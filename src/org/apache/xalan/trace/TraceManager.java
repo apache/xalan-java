@@ -162,15 +162,15 @@ public class TraceManager
    * @param mode Template mode
    * @param styleNode Stylesheet template node
    */
-  public void fireTraceEvent(Node sourceNode, QName mode,
-                             ElemTemplateElement styleNode)
+  public void fireTraceEvent(ElemTemplateElement styleNode)
   {
 
-    if (hasTraceListeners())
-    {
-      fireTraceEvent(new TracerEvent(m_transformer, sourceNode, mode,
-                                     styleNode));
-    }
+  // %DTBD%
+//    if (hasTraceListeners())
+//    {
+//      fireTraceEvent(new TracerEvent(m_transformer, sourceNode, mode,
+//                                     styleNode));
+//    }
   }
 
   /**
@@ -206,14 +206,15 @@ public class TraceManager
    * @throws javax.xml.transform.TransformerException
    */
   public void fireSelectedEvent(
-          Node sourceNode, ElemTemplateElement styleNode, String attributeName, XPath xpath, XObject selection)
+          int sourceNode, ElemTemplateElement styleNode, String attributeName, XPath xpath, XObject selection)
             throws javax.xml.transform.TransformerException
   {
 
-    if (hasTraceListeners())
-      fireSelectedEvent(new SelectionEvent(m_transformer, sourceNode,
-                                           styleNode, attributeName, xpath,
-                                           selection));
+  // %DTBD%
+//    if (hasTraceListeners())
+//      fireSelectedEvent(new SelectionEvent(m_transformer, sourceNode,
+//                                           styleNode, attributeName, xpath,
+//                                           selection));
   }
 
   /**

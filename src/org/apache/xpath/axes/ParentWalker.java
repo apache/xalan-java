@@ -60,7 +60,8 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 /**
  * Walker for the 'parent' axes.
@@ -84,7 +85,7 @@ public class ParentWalker extends AxesWalker
    *
    * @param root The context node of this step.
    */
-  public void setRoot(Node root)
+  public void setRoot(int root)
   {
 
     m_gotParent = false;
@@ -101,7 +102,7 @@ public class ParentWalker extends AxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   visible children in the TreeWalker's logical view.
    */
-  public Node firstChild()
+  public int firstChild()
   {
 
     // Follow rule about returning the first occuring in document order 
@@ -110,13 +111,12 @@ public class ParentWalker extends AxesWalker
     {
       m_gotParent = true;
 
-      // Patch from Merlin
-      Node n = m_lpi.getDOMHelper().getParentOfNode(m_root);
+      int n = getDTM(m_root).getParent(m_root);
 
       return setCurrentIfNotNull(n);
     }
 
-    return null;
+    return DTM.NULL;
   }
 
   /** True if we already obtained the parent node.  */
@@ -129,6 +129,6 @@ public class ParentWalker extends AxesWalker
    */
   protected int getLevelMax()
   {
-    return m_lpi.getDOMHelper().getLevel(m_root) - 1;
+    return getDTM(m_root).getLevel(m_root) - 1;
   }
 }

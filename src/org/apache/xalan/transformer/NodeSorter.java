@@ -61,8 +61,10 @@ import java.util.Vector;
 import java.text.NumberFormat;
 import java.text.CollationKey;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xpath.XPathContext;
@@ -112,22 +114,26 @@ public class NodeSorter
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public void sort(NodeVector v, Vector keys, XPathContext support)
+  public void sort(DTMIterator v, Vector keys, XPathContext support)
           throws javax.xml.transform.TransformerException
   {
 
     m_keys = keys;
 
     // QuickSort2(v, 0, v.size() - 1 );
-    int n = v.size();
+    int n = v.getLength();
 
+    // %OPT% Change mergesort to just take a DTMIterator?
+    // We would also have to adapt DTMIterator to have the function 
+    // of NodeCompareElem.
+    
     // Create a vector of node compare elements
     // based on the input vector of nodes
     Vector nodes = new Vector();
 
     for (int i = 0; i < n; i++)
     {
-      NodeCompareElem elem = new NodeCompareElem((Node) v.elementAt(i));
+      NodeCompareElem elem = new NodeCompareElem(v.item(i));
 
       nodes.addElement(elem);
     }
@@ -139,8 +145,9 @@ public class NodeSorter
     // return sorted vector of nodes
     for (int i = 0; i < n; i++)
     {
-      v.setElementAt(((NodeCompareElem) nodes.elementAt(i)).m_node, i);
+      v.setItem(((NodeCompareElem) nodes.elementAt(i)).m_node, i);
     }
+    v.setCurrentPos(0);
 
     // old code...
     //NodeVector scratchVector = new NodeVector(n);
@@ -294,8 +301,8 @@ public class NodeSorter
       // be a glitch in the mergesort
       // if(r1.getType() == r1.CLASS_NODESET)
       // {
-      result = support.getDOMHelper().isNodeAfter(n1.m_node, n2.m_node)
-               ? -1 : 1;
+      DTM dtm = support.getDTM(n1.m_node); // %OPT%
+      result = dtm.isNodeAfter(n1.m_node, n2.m_node) ? -1 : 1;
 
       // }
     }
@@ -462,22 +469,22 @@ public class NodeSorter
       }
     } // end QuickSort2  */
 
-  /**
-   * Simple function to swap two elements in
-   * a vector.
-   * 
-   * @param v Vector of nodes to swap
-   * @param i Index of first node to swap
-   * @param i Index of second node to swap
-   */
-  private void swap(Vector v, int i, int j)
-  {
-
-    Node node = (Node) v.elementAt(i);
-
-    v.setElementAt(v.elementAt(j), i);
-    v.setElementAt(node, j);
-  }
+//  /**
+//   * Simple function to swap two elements in
+//   * a vector.
+//   * 
+//   * @param v Vector of nodes to swap
+//   * @param i Index of first node to swap
+//   * @param i Index of second node to swap
+//   */
+//  private void swap(Vector v, int i, int j)
+//  {
+//
+//    int node = (Node) v.elementAt(i);
+//
+//    v.setElementAt(v.elementAt(j), i);
+//    v.setElementAt(node, j);
+//  }
 
   /**
    * <meta name="usage" content="internal"/>
@@ -488,7 +495,7 @@ public class NodeSorter
   {
 
     /** Current node          */
-    Node m_node;
+    int m_node;
 
     /** This maxkey value was chosen arbitrarily. We are assuming that the    
     // maxkey + 1 keys will only hit fairly rarely and therefore, we
@@ -514,7 +521,7 @@ public class NodeSorter
      *
      * @throws javax.xml.transform.TransformerException
      */
-    NodeCompareElem(Node node) throws javax.xml.transform.TransformerException
+    NodeCompareElem(int node) throws javax.xml.transform.TransformerException
     {
 
       boolean tryNextKey = true;
@@ -546,10 +553,14 @@ public class NodeSorter
 
         if (r.getType() == XObject.CLASS_NODESET)
         {
-          NodeIterator ni = (NodeIterator) r.object();
+          // %REVIEW%
+          DTMIterator ni = (DTMIterator)r.object();
+          int current = ni.getCurrentNode();
+          if(DTM.NULL == current)
+            current = ni.nextNode();
 
-          if (ni instanceof ContextNodeList)
-            tryNextKey = (((ContextNodeList) ni).getCurrentNode() != null);
+          // if (ni instanceof ContextNodeList) // %REVIEW%
+          tryNextKey = (DTM.NULL != current);
 
           // else abdicate... should never happen, but... -sb
         }

@@ -87,9 +87,19 @@ public class TreeWalker
    *
    * @return the ContentHandler used for the tree walk
    */
-  public ContentHandler getcontentHandler()
+  public ContentHandler getContentHandler()
   {
     return m_contentHandler;
+  }
+
+  /**
+   * Get the ContentHandler used for the tree walk.
+   *
+   * @return the ContentHandler used for the tree walk
+   */
+  public void setContentHandler(ContentHandler ch)
+  {
+    m_contentHandler = ch;
   }
 
   /**
@@ -213,15 +223,8 @@ public class TreeWalker
   private final void dispatachChars(Node node)
      throws org.xml.sax.SAXException
   {
-    if(node.isSupported(org.apache.xalan.stree.SaxEventDispatch.SUPPORTSINTERFACE, "1.0"))
-    {
-      ((org.apache.xalan.stree.SaxEventDispatch)node).dispatchCharactersEvent(m_contentHandler);
-    }
-    else
-    {
-      String data = ((Text) node).getData();
-      this.m_contentHandler.characters(data.toCharArray(), 0, data.length());
-    }
+    String data = ((Text) node).getData();
+    this.m_contentHandler.characters(data.toCharArray(), 0, data.length());
   }
 
   /**

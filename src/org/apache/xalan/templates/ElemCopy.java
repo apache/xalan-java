@@ -56,7 +56,8 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.*;
+//import org.w3c.dom.*;
+import org.apache.xml.dtm.DTM;
 
 import org.xml.sax.*;
 
@@ -130,46 +131,47 @@ public class ElemCopy extends ElemUse
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
     try
     {
-      short nodeType = sourceNode.getNodeType();
+      XPathContext xctxt = transformer.getXPathContext();
+      int sourceNode = xctxt.getCurrentNode();
+      DTM dtm = xctxt.getDTM(sourceNode);
+      short nodeType = dtm.getNodeType(sourceNode);
 
-      if ((Node.DOCUMENT_NODE != nodeType) && (Node.DOCUMENT_FRAGMENT_NODE != nodeType))
+      if ((DTM.DOCUMENT_NODE != nodeType) && (DTM.DOCUMENT_FRAGMENT_NODE != nodeType))
       {
         ResultTreeHandler rthandler = transformer.getResultTreeHandler();
 
         // TODO: Process the use-attribute-sets stuff
         rthandler.cloneToResultTree(sourceNode, false);
 
-        if (Node.ELEMENT_NODE == nodeType)
+        if (DTM.ELEMENT_NODE == nodeType)
         {
-          super.execute(transformer, sourceNode, mode);
+          super.execute(transformer);
           rthandler.processNSDecls(sourceNode);
-          transformer.executeChildTemplates(this, sourceNode, mode, true);
+          transformer.executeChildTemplates(this, true);
           
-          DOMHelper dhelper = transformer.getXPathContext().getDOMHelper();
-          String ns = dhelper.getNamespaceOfNode(sourceNode);
-          String localName = dhelper.getLocalNameOfNode(sourceNode);
+          String ns = dtm.getNamespaceURI(sourceNode);
+          String localName = dtm.getLocalName(sourceNode);
           transformer.getResultTreeHandler().endElement(ns, localName,
-                                                        sourceNode.getNodeName());
+                                                        dtm.getNodeName(sourceNode));
         }
         else
         {
           if (TransformerImpl.S_DEBUG)
-            transformer.getTraceManager().fireTraceEvent(sourceNode, mode,
-                                                         this);
+            transformer.getTraceManager().fireTraceEvent(this);
         }
       }
       else
       {
         if (TransformerImpl.S_DEBUG)
-          transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+          transformer.getTraceManager().fireTraceEvent(this);
 
-        super.execute(transformer, sourceNode, mode);
-        transformer.executeChildTemplates(this, sourceNode, mode, true);
+        super.execute(transformer);
+        transformer.executeChildTemplates(this, true);
       }
     }
     catch(org.xml.sax.SAXException se)

@@ -60,7 +60,8 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 /**
  * Walker for the 'following-sibling' axes.
@@ -89,10 +90,10 @@ public class FollowingSiblingWalker extends AxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   next sibling in the TreeWalker's logical view.
    */
-  public Node nextSibling()
+  public int nextSibling()
   {
 
-    Node n = m_currentNode.getNextSibling();
+    int n = getDTM(m_root).getNextSibling(m_currentNode);
 
     return setCurrentIfNotNull(n);
   }
@@ -104,6 +105,6 @@ public class FollowingSiblingWalker extends AxesWalker
    */
   protected int getLevelMax()
   {
-    return m_lpi.getDOMHelper().getLevel(m_root);
+    return getDTM(m_root).getLevel(m_root);
   }
 }

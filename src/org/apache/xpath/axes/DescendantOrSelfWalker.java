@@ -60,7 +60,8 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 /**
  * Walker for the 'descendant-or-self' axes.
@@ -84,7 +85,7 @@ public class DescendantOrSelfWalker extends DescendantWalker
    *
    * @param root The context node of this step.
    */
-  public void setRoot(Node root)
+  public void setRoot(int root)
   {
 
     m_processedSelf = false;
@@ -100,7 +101,7 @@ public class DescendantOrSelfWalker extends DescendantWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   visible children in the TreeWalker's logical view.
    */
-  public Node firstChild()
+  public int firstChild()
   {
 
     // Follow my made-up rule about returning the self node as a child.

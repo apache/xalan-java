@@ -56,8 +56,11 @@
  */
 package org.apache.xpath.axes;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeFilter;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeFilter;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.dtm.DTMIterator;
 
 import org.apache.xpath.patterns.NodeTestFilter;
 
@@ -85,39 +88,41 @@ public class ChildWalkerMultiStep extends AxesWalker
    *
    * @return the next valid child node.
    */
-  protected Node getNextNode()
+  protected int getNextNode()
   {
     if (m_isFresh)
       m_isFresh = false;
 
-    Node current = this.getCurrentNode();
+    int current = this.getCurrentNode();
     
-    if (current.isSupported(FEATURE_NODETESTFILTER, "1.0"))
-      ((NodeTestFilter) current).setNodeTest(this);
+    // %NODETESTFILTER%
+//    if (current.isSupported(FEATURE_NODETESTFILTER, "1.0"))
+//      ((NodeTestFilter) current).setNodeTest(this);
+    DTM dtm = getDTM(m_root);
 
-    Node next = (m_root == m_currentNode)
-                ? m_currentNode.getFirstChild()
-                : m_currentNode.getNextSibling();
+    int next = (m_root == m_currentNode)
+                ? dtm.getFirstChild(m_currentNode)
+                : dtm.getNextSibling(m_currentNode);
 
-    if (null != next)
+    if (DTM.NULL != next)
     {
       m_currentNode = next;
 
-      while (acceptNode(next) != NodeFilter.FILTER_ACCEPT)
+      while (acceptNode(next) != DTMIterator.FILTER_ACCEPT)
       {
-        next = next.getNextSibling();
+        next = dtm.getNextSibling(next);
 
-        if (null == next)
+        if (DTM.NULL == next)
           break;
         else
           m_currentNode = next;
       }
       
-      if(null == next)
+      if(DTM.NULL == next)
         m_currentNode = current; // don't advance the current node.
     }          
 
-    if (null == next)
+    if (DTM.NULL == next)
       this.m_isDone = true;
 
     return next;
@@ -133,7 +138,7 @@ public class ChildWalkerMultiStep extends AxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   next node  in the TreeWalker's logical view.
    */
-  public Node nextNode()
+  public int nextNode()
   {
 
     AxesWalker walker = m_lpi.getLastUsedWalker();
@@ -141,7 +146,7 @@ public class ChildWalkerMultiStep extends AxesWalker
 
     while (null != walker)
     {
-      Node next;
+      int next;
       if(fast)
       {
         next = walker.getNextNode();
@@ -150,11 +155,11 @@ public class ChildWalkerMultiStep extends AxesWalker
       {
         next = walker.nextNode();
         // In this case, nextNode finished the walk, so we just return.
-        if(null != next)
+        if(DTM.NULL != next)
           return next;
       }
 
-      if (null != next)
+      if (DTM.NULL != next)
       {
         if (null != walker.m_nextWalker)
         {
@@ -177,7 +182,7 @@ public class ChildWalkerMultiStep extends AxesWalker
       }
     }
 
-    return null;
+    return DTM.NULL;
   }
   
   /**

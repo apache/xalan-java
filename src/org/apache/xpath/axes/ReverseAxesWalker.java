@@ -66,8 +66,10 @@ import org.apache.xpath.objects.XObject;
 
 import javax.xml.transform.TransformerException;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeFilter;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeFilter;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 /**
  * Walker for a reverse axes.
@@ -96,15 +98,15 @@ public class ReverseAxesWalker extends AxesWalker
     return true;
   }
 
-  /**
-   *  Set the root node of the TreeWalker.
-   *
-   * @param root The context node of this step.
-   */
-  public void setRoot(Node root)
-  {
-    super.setRoot(root);
-  }
+//  /**
+//   *  Set the root node of the TreeWalker.
+//   *
+//   * @param root The context node of this step.
+//   */
+//  public void setRoot(int root)
+//  {
+//    super.setRoot(root);
+//  }
 
   /**
    * Get the current sub-context position.  In order to do the
@@ -143,9 +145,9 @@ public class ReverseAxesWalker extends AxesWalker
 
         // Count 'em all
         int count = 1;
-        Node next;
+        int next;
 
-        while (null != (next = clone.nextNode()))
+        while (DTM.NULL != (next = clone.nextNode()))
         {
           count++;
         }
@@ -206,9 +208,9 @@ public class ReverseAxesWalker extends AxesWalker
 
       // Count 'em all
       // count = 1;
-      Node next;
+      int next;
 
-      while (null != (next = clone.nextNode()))
+      while (DTM.NULL != (next = clone.nextNode()))
       {
         count++;
       }
@@ -224,6 +226,7 @@ public class ReverseAxesWalker extends AxesWalker
     }
 
     // System.out.println("getLastPos - pos: "+count);
+    // System.out.println("pos (ReverseAxesWalker): "+count);
     return count;
   }
 }

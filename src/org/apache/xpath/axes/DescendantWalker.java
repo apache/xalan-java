@@ -60,7 +60,8 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 /**
  * Walker for the 'descendant' axes.
@@ -84,10 +85,9 @@ public class DescendantWalker extends AxesWalker
    *
    * @param root The context node of this step.
    */
-  public void setRoot(Node root)
+  public void setRoot(int root)
   {
-
-    m_nextLevelAmount = root.hasChildNodes() ? 1 : 0;
+    m_nextLevelAmount = getDTM(root).hasChildNodes(root) ? 1 : 0;
 
     super.setRoot(root);
   }
@@ -100,20 +100,20 @@ public class DescendantWalker extends AxesWalker
    * @return  The new parent node, or null if the current node has no parent
    *   in the TreeWalker's logical view.
    */
-  public Node parentNode()
+  public int parentNode()
   {
 
-    Node n;
+    int n;
 
-    if (m_root.equals(m_currentNode)) // why not == ?  -sb
+    if (m_root == m_currentNode) // why not == ?  -sb
     {
-      n = null;
+      n = DTM.NULL;
     }
     else
     {
-      Node p = m_currentNode.getParentNode();
+      int p = getDTM(m_currentNode).getParent(m_currentNode);
 
-      n = m_root.equals(p) ? null : p;
+      n = (m_root == p) ? DTM.NULL : p;
     }
 
     m_nextLevelAmount = 0;
@@ -129,13 +129,13 @@ public class DescendantWalker extends AxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   visible children in the TreeWalker's logical view.
    */
-  public Node firstChild()
+  public int firstChild()
   {
-    
-    Node next = (m_currentNode.getNodeType() != Node.ATTRIBUTE_NODE) ?
-                m_currentNode.getFirstChild() : null;
+    DTM dtm = getDTM(m_currentNode);
+    int next = (dtm.getNodeType(m_currentNode) != DTM.ATTRIBUTE_NODE) ?
+                dtm.getFirstChild(m_currentNode) : DTM.NULL;
 
-    m_nextLevelAmount = (null == next) ? 0 : (next.hasChildNodes() ? 1 : 0);
+    m_nextLevelAmount = (DTM.NULL == next) ? 0 : (dtm.hasChildNodes(next) ? 1 : 0);
 
     return setCurrentIfNotNull(next);
   }
@@ -147,13 +147,13 @@ public class DescendantWalker extends AxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   next sibling in the TreeWalker's logical view.
    */
-  public Node nextSibling()
+  public int nextSibling()
   {
+    DTM dtm = getDTM(m_root);
+    int next = (m_root == m_currentNode)
+                ? DTM.NULL : dtm.getNextSibling(m_currentNode);
 
-    Node next = m_root.equals(m_currentNode)
-                ? null : m_currentNode.getNextSibling();
-
-    m_nextLevelAmount = (null == next) ? 0 : (next.hasChildNodes() ? 1 : 0);
+    m_nextLevelAmount = (DTM.NULL == next) ? 0 : (dtm.hasChildNodes(next) ? 1 : 0);
 
     return setCurrentIfNotNull(next);
   }

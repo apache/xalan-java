@@ -56,8 +56,9 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.DOMException;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.DOMException;
+import org.apache.xml.dtm.DTM;
 
 import javax.xml.transform.TransformerException;
 
@@ -107,7 +108,7 @@ public class ElemApplyImport extends ElemTemplateElement
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
 
@@ -118,14 +119,15 @@ public class ElemApplyImport extends ElemTemplateElement
     }
 
     if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+      transformer.getTraceManager().fireTraceEvent(this);
 
-    if (null != sourceNode)
+    int sourceNode = transformer.getXPathContext().getCurrentNode();
+    if (DTM.NULL != sourceNode)
     {
 
       // This will have to change to current template, (which will have 
       // to be the top of a current template stack).
-      transformer.applyTemplateToNode(this, null, sourceNode, mode);
+      transformer.applyTemplateToNode(this, null, sourceNode);
     }
     else  // if(null == sourceNode)
     {
@@ -141,10 +143,8 @@ public class ElemApplyImport extends ElemTemplateElement
    * @param newChild New element to append to this element's children list
    *
    * @return null, xsl:apply-Imports cannot have children 
-   *
-   * @throws DOMException
    */
-  public Node appendChild(Node newChild) throws DOMException
+  public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
 
     error(XSLTErrorResources.ER_CANNOT_ADD,

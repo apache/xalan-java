@@ -64,7 +64,6 @@ import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
-import org.apache.xpath.DOMHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.UnionPathIterator;
@@ -74,10 +73,10 @@ import org.apache.xalan.transformer.KeyManager;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.XPathContext;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+
+import org.apache.xml.utils.XMLString;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -103,11 +102,11 @@ public class FuncKey extends Function2Args
     // TransformerImpl transformer = (TransformerImpl)xctxt;
     TransformerImpl transformer = (TransformerImpl) xctxt.getOwnerObject();
     XNodeSet nodes = null;
-    Node context = xctxt.getCurrentNode();
-    Document docContext = (Node.DOCUMENT_NODE == context.getNodeType())
-                          ? (Document) context : context.getOwnerDocument();
+    int context = xctxt.getCurrentNode();
+    DTM dtm = xctxt.getDTM(context);
+    int docContext = dtm.getDocument();
 
-    if (null == docContext)
+    if (DTM.NULL == docContext)
     {
 
       // path.error(context, XPATHErrorResources.ER_CONTEXT_HAS_NO_OWNERDOC); //"context does not have an owner document!");
@@ -122,13 +121,14 @@ public class FuncKey extends Function2Args
     if (argIsNodeSet)
     {
       Hashtable usedrefs = null;
-      NodeIterator ni = arg.nodeset();
-      Node pos;
+      DTMIterator ni = arg.nodeset();
+      int pos;
       UnionPathIterator upi = new UnionPathIterator();
 
-      while (null != (pos = ni.nextNode()))
+      while (DTM.NULL != (pos = ni.nextNode()))
       {
-        String ref = DOMHelper.getNodeData(pos);
+        dtm = xctxt.getDTM(pos);
+        XMLString ref = dtm.getStringValue(pos);
 
         if (null == ref)
           continue;
@@ -168,7 +168,7 @@ public class FuncKey extends Function2Args
     }
     else
     {
-      String ref = arg.str();
+      XMLString ref = arg.xstr();
       LocPathIterator nl = kmgr.getNodeSetByKey(xctxt, docContext, keyname,
                                                 ref,
                                                 xctxt.getNamespaceContext());

@@ -61,11 +61,13 @@ import java.util.Vector;
 
 import java.io.IOException;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+//import org.w3c.dom.Element;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.Stylesheet;
+import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xml.utils.QName;
 
 import javax.xml.transform.TransformerException;
@@ -345,30 +347,33 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
    * @throws TransformerException          if parsing trouble
    */
   public void processElement(
-          String localPart, Element element, TransformerImpl transformer, Stylesheet stylesheetTree, Node sourceTree, Node sourceNode, QName mode, Object methodKey)
+          String localPart, ElemTemplateElement element, TransformerImpl transformer, 
+          Stylesheet stylesheetTree, Object methodKey)
             throws TransformerException, IOException
   {
 
     Object result = null;
-    XSLProcessorContext xpc = new XSLProcessorContext(transformer,
-                                stylesheetTree, sourceTree, sourceNode, mode);
+    XSLProcessorContext xpc = new XSLProcessorContext(transformer, stylesheetTree);
 
-    try
+    // %DTBD%
+//    try
     {
       Vector argv = new Vector(2);
 
       argv.addElement(xpc);
       argv.addElement(element);
 
-      result = callFunction(localPart, argv, methodKey,
-                            transformer.getXPathContext());
+      // %DTBD% This wants an ExpressionContext.
+//      result = callFunction(localPart, argv, methodKey,
+//                            transformer.getXPathContext());
     }
-    catch (XPathProcessorException e)
-    {
-
-      // e.printStackTrace ();
-      throw new TransformerException(e.getMessage(), e);
-    }
+    // %DTBD%
+//    catch (XPathProcessorException e)
+//    {
+//
+//      // e.printStackTrace ();
+//      throw new TransformerException(e.getMessage(), e);
+//    }
 
     if (result != null)
     {

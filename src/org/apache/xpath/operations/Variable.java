@@ -125,7 +125,7 @@ public class Variable extends Expression
 //      error(xctxt, XPATHErrorResources.ER_COULDNOT_GET_VAR_NAMED,
 //            new Object[]{ m_qname.getLocalPart() });  //"Could not get variable named "+varName);
       
-      result = new XNodeSet();
+      result = new XNodeSet(xctxt.getDTMManager());
     }
 
     return result;

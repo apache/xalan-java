@@ -62,7 +62,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xml.utils.FastStringBuffer;
 
-import org.w3c.dom.*;
+//import org.w3c.dom.*;
+import org.apache.xml.dtm.DTM;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -150,7 +151,7 @@ public class AVTPartXPath extends AVTPart
    * @throws javax.xml.transform.TransformerException
    */
   public void evaluate(
-          XPathContext xctxt, FastStringBuffer buf, Node context, org.apache.xml.utils.PrefixResolver nsNode)
+          XPathContext xctxt, FastStringBuffer buf, int context, org.apache.xml.utils.PrefixResolver nsNode)
             throws javax.xml.transform.TransformerException
   {
 
@@ -158,7 +159,7 @@ public class AVTPartXPath extends AVTPart
 
     if (null != xobj)
     {
-      buf.append(xobj.str());
+      xobj.appendToFsb(buf);
     }
   }
 }

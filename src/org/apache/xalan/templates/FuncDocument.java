@@ -62,9 +62,9 @@ import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.io.IOException;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMManager;
 
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.functions.Function;
@@ -74,7 +74,6 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.DOMHelper;
 import org.apache.xpath.SourceTreeManager;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
@@ -89,8 +88,10 @@ import org.xml.sax.Locator;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.ErrorListener;
-import org.apache.xml.utils.SAXSourceLocator;
 import javax.xml.transform.Source;
+
+import org.apache.xml.utils.SAXSourceLocator;
+import org.apache.xml.utils.XMLString;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -121,9 +122,10 @@ public class FuncDocument extends Function2Args
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
-    Node context = xctxt.getCurrentNode();
-    Document docContext = (Node.DOCUMENT_NODE == context.getNodeType())
-                          ? (Document) context : context.getOwnerDocument();
+    int context = xctxt.getCurrentNode();
+    DTM dtm = xctxt.getDTM(context);
+    
+    int docContext = dtm.getDocument();
     XObject arg = (XObject) this.getArg0().execute(xctxt);
     String base = "";
     Expression arg1Expr = this.getArg1();
@@ -139,25 +141,26 @@ public class FuncDocument extends Function2Args
 
       if (XObject.CLASS_NODESET == arg2.getType())
       {
-        Node baseNode = arg2.nodeset().nextNode();
+        int baseNode = arg2.nodeset().nextNode();
 
-        if (baseNode == null)
+        if (baseNode == DTM.NULL)
           warn(xctxt, XSLTErrorResources.WG_EMPTY_SECOND_ARG, null);
+        
+        DTM baseDTM = xctxt.getDTM(baseNode);
+        base = baseDTM.getDocumentBaseURI();
 
-        Document baseDoc = (baseNode == null
-                            ? null
-                            : (Node.DOCUMENT_NODE == baseNode.getNodeType())
-                              ? (Document) baseNode
-                              : baseNode.getOwnerDocument());
-
-        if (baseDoc == null || baseDoc instanceof Stylesheet)
-        {
-
-          // base = ((Stylesheet)baseDoc).getBaseIdentifier();
-          base = xctxt.getNamespaceContext().getBaseIdentifier();
-        }
-        else
-          base = xctxt.getSourceTreeManager().findURIFromDoc(baseDoc);
+        // %REVIEW% This doesn't seem to be a problem with the conformance
+        // suite, but maybe it's just not doing a good test?
+//        int baseDoc = baseDTM.getDocument();
+//
+//        if (baseDoc == DTM.NULL /* || baseDoc instanceof Stylesheet  -->What to do?? */)
+//        {
+//
+//          // base = ((Stylesheet)baseDoc).getBaseIdentifier();
+//          base = xctxt.getNamespaceContext().getBaseIdentifier();
+//        }
+//        else
+//          base = xctxt.getSourceTreeManager().findURIFromDoc(baseDoc);
       }
       else
       {
@@ -179,21 +182,21 @@ public class FuncDocument extends Function2Args
       base = xctxt.getNamespaceContext().getBaseIdentifier();
     }
 
-    XNodeSet nodes = new XNodeSet();
+    XNodeSet nodes = new XNodeSet(xctxt.getDTMManager());
     NodeSet mnl = nodes.mutableNodeset();
-    NodeIterator iterator = (XObject.CLASS_NODESET == arg.getType())
+    DTMIterator iterator = (XObject.CLASS_NODESET == arg.getType())
                             ? arg.nodeset() : null;
-    Node pos = null;
+    int pos = DTM.NULL;
 
-    while ((null == iterator) || (null != (pos = iterator.nextNode())))
+    while ((null == iterator) || (DTM.NULL != (pos = iterator.nextNode())))
     {
-      String ref = (null != iterator)
-                   ? DOMHelper.getNodeData(pos) : arg.str();
+      XMLString ref = (null != iterator)
+                   ? xctxt.getDTM(pos).getStringValue(pos) : arg.xstr();
 
       if (null == ref)
         continue;
 
-      if (null == docContext)
+      if (DTM.NULL == docContext)
       {
         error(xctxt, XSLTErrorResources.ER_NO_CONTEXT_OWNERDOC, null);  //"context does not have an owner document!");
       }
@@ -215,18 +218,19 @@ public class FuncDocument extends Function2Args
         base = null;
       }
 
-      Node newDoc = getDoc(xctxt, context, ref, base);
+      int newDoc = getDoc(xctxt, context, ref.toString(), base);
 
       // nodes.mutableNodeset().addNode(newDoc);  
-      if (null != newDoc)
+      if (DTM.NULL != newDoc)
       {
-
         // TODO: mnl.addNodeInDocOrder(newDoc, true, xctxt); ??
         if (!mnl.contains(newDoc))
+        {
           mnl.addElement(newDoc);
+        }
       }
 
-      if (null == iterator || newDoc == null)
+      if (null == iterator || newDoc == DTM.NULL)
         break;
     }
 
@@ -246,14 +250,14 @@ public class FuncDocument extends Function2Args
    *
    * @throws javax.xml.transform.TransformerException
    */
-  Node getDoc(XPathContext xctxt, Node context, String uri, String base)
+  int getDoc(XPathContext xctxt, int context, String uri, String base)
           throws javax.xml.transform.TransformerException
   {
 
     // System.out.println("base: "+base+", uri: "+uri);
     SourceTreeManager treeMgr = xctxt.getSourceTreeManager();
     
-    Node newDoc;
+    int newDoc;
     try
     {
       Source source = treeMgr.resolveURI(base, uri, xctxt.getSAXLocator());
@@ -269,7 +273,7 @@ public class FuncDocument extends Function2Args
       throw new TransformerException(te);
     }
 
-    if (null != newDoc)
+    if (DTM.NULL != newDoc)
       return newDoc;
 
     // If the uri length is zero, get the uri of the stylesheet.
@@ -282,7 +286,7 @@ public class FuncDocument extends Function2Args
     {
       if ((null != uri) && (uri.toString().length() > 0))
       {
-        newDoc = treeMgr.getSourceTree(base, uri, xctxt.getSAXLocator());
+        newDoc = treeMgr.getSourceTree(base, uri, xctxt.getSAXLocator(), xctxt);
 
         // System.out.println("newDoc: "+((Document)newDoc).getDocumentElement().getNodeName());
       }
@@ -294,7 +298,7 @@ public class FuncDocument extends Function2Args
     {
 
       // throwable.printStackTrace();
-      newDoc = null;
+      newDoc = DTM.NULL;
 
       // path.warn(XSLTErrorResources.WG_ENCODING_NOT_SUPPORTED_USING_JAVA, new Object[]{((base == null) ? "" : base )+uri}); //"Can not load requested doc: "+((base == null) ? "" : base )+uri);
       while (throwable
@@ -359,7 +363,7 @@ public class FuncDocument extends Function2Args
       diagnosticsString = throwable.getMessage(); //sw.toString();
     }
 
-    if (null == newDoc)
+    if (DTM.NULL == newDoc)
     {
 
       // System.out.println("what?: "+base+", uri: "+uri);
@@ -376,7 +380,7 @@ public class FuncDocument extends Function2Args
     }
     else
     {
-
+      // %REVIEW%
       // TBD: What to do about XLocator?
       // xctxt.getSourceTreeManager().associateXLocatorToNode(newDoc, url, null);
     }

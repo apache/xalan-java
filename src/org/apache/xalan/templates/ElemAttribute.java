@@ -56,8 +56,9 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.DOMException;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.DOMException;
+import org.apache.xml.dtm.DTM;
 
 import javax.xml.transform.TransformerException;
 
@@ -118,7 +119,7 @@ public class ElemAttribute extends ElemElement
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
     ResultTreeHandler rhandler = transformer.getResultTreeHandler();
@@ -129,9 +130,10 @@ public class ElemAttribute extends ElemElement
     {
       // Make sure the trace event is sent.
       if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+        transformer.getTraceManager().fireTraceEvent(this);
 
       XPathContext xctxt = transformer.getXPathContext();
+      int sourceNode = xctxt.getCurrentNode();
       String attrName = m_name_avt.evaluate(xctxt, sourceNode, this);
       transformer.getMsgMgr().warn(this,
                                    XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE,
@@ -142,7 +144,7 @@ public class ElemAttribute extends ElemElement
       // warn(templateChild, sourceNode, "Trying to add attribute after element child has been added, ignoring...");
     }
     
-    super.execute(transformer, sourceNode, mode);
+    super.execute(transformer);
     
   }
   
@@ -211,7 +213,7 @@ public class ElemAttribute extends ElemElement
    * @throws TransformerException
    */
   void constructNode(
-          String nodeName, String prefix, String nodeNamespace, TransformerImpl transformer, Node sourceNode, QName mode)
+          String nodeName, String prefix, String nodeNamespace, TransformerImpl transformer)
             throws TransformerException
   {
 
@@ -229,7 +231,7 @@ public class ElemAttribute extends ElemElement
           throw new TransformerException(se);
         }
       }
-      String val = transformer.transformToString(this, sourceNode, mode);
+      String val = transformer.transformToString(this);
       String localName = QName.getLocalPart(nodeName);
       rhandler.addAttribute(nodeNamespace, localName, nodeName, "CDATA", val);
     }
@@ -251,7 +253,7 @@ public class ElemAttribute extends ElemElement
    *
    * @throws DOMException
    */
-  public Node appendChild(Node newChild) throws DOMException
+  public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
 
     int type = ((ElemTemplateElement) newChild).getXSLToken();

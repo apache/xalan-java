@@ -72,8 +72,6 @@ import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Node;
 
-import org.apache.xalan.stree.ElementImpl;
-
 /**
  * An XSLT extension that allows a stylesheet to
  * access JDBC data. From the stylesheet perspective,

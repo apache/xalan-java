@@ -56,7 +56,7 @@
  */
 package org.apache.xpath;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
 
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;

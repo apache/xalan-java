@@ -58,8 +58,10 @@ package org.apache.xalan.templates;
 
 import org.apache.xml.utils.res.XResourceBundle;
 
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.*;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import org.xml.sax.*;
 
@@ -508,13 +510,14 @@ public class ElemNumber extends ElemTemplateElement
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
 
     if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+      transformer.getTraceManager().fireTraceEvent(this);
 
+    int sourceNode = transformer.getXPathContext().getCurrentNode();
     String countString = getCountString(transformer, sourceNode);
 
     try
@@ -537,7 +540,7 @@ public class ElemNumber extends ElemTemplateElement
    *
    * @throws DOMException
    */
-  public Node appendChild(Node newChild) throws DOMException
+  public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
 
     error(XSLTErrorResources.ER_CANNOT_ADD,
@@ -564,12 +567,13 @@ public class ElemNumber extends ElemTemplateElement
    *
    * @throws javax.xml.transform.TransformerException
    */
-  Node findAncestor(
-          XPathContext xctxt, XPath fromMatchPattern, XPath countMatchPattern, Node context, Element namespaceContext)
+  int findAncestor(
+          XPathContext xctxt, XPath fromMatchPattern, XPath countMatchPattern, 
+          int context, ElemNumber namespaceContext)
             throws javax.xml.transform.TransformerException
   {
-
-    while (null != context)
+    DTM dtm = xctxt.getDTM(context);
+    while (DTM.NULL != context)
     {
       if (null != fromMatchPattern)
       {
@@ -591,7 +595,7 @@ public class ElemNumber extends ElemTemplateElement
         }
       }
 
-      context = xctxt.getDOMHelper().getParentOfNode(context);
+      context = dtm.getParent(context);
     }
 
     return context;
@@ -613,19 +617,20 @@ public class ElemNumber extends ElemTemplateElement
    *
    * @throws javax.xml.transform.TransformerException
    */
-  private Node findPrecedingOrAncestorOrSelf(
-          XPathContext xctxt, XPath fromMatchPattern, XPath countMatchPattern, Node context, Element namespaceContext)
+  private int findPrecedingOrAncestorOrSelf(
+          XPathContext xctxt, XPath fromMatchPattern, XPath countMatchPattern, 
+          int context, ElemNumber namespaceContext)
             throws javax.xml.transform.TransformerException
   {
-
-    while (null != context)
+    DTM dtm = xctxt.getDTM(context);
+    while (DTM.NULL != context)
     {
       if (null != fromMatchPattern)
       {
         if (fromMatchPattern.getMatchScore(xctxt, context)
                 != XPath.MATCH_SCORE_NONE)
         {
-          context = null;
+          context = DTM.NULL;
 
           break;
         }
@@ -640,19 +645,19 @@ public class ElemNumber extends ElemTemplateElement
         }
       }
 
-      Node prevSibling = context.getPreviousSibling();
+      int prevSibling = dtm.getPreviousSibling(context);
 
-      if (null == prevSibling)
+      if (DTM.NULL == prevSibling)
       {
-        context = xctxt.getDOMHelper().getParentOfNode(context);
+        context = dtm.getParent(context);
       }
       else
       {
 
         // Now go down the chain of children of this sibling 
-        context = prevSibling.getLastChild();
+        context = dtm.getLastChild(prevSibling);
 
-        if (context == null)
+        if (context == DTM.NULL)
           context = prevSibling;
       }
     }
@@ -670,48 +675,48 @@ public class ElemNumber extends ElemTemplateElement
    *
    * @throws javax.xml.transform.TransformerException
    */
-  XPath getCountMatchPattern(XPathContext support, Node contextNode)
+  XPath getCountMatchPattern(XPathContext support, int contextNode)
           throws javax.xml.transform.TransformerException
   {
 
     XPath countMatchPattern = m_countMatchPattern;
-
+    DTM dtm = support.getDTM(contextNode);
     if (null == countMatchPattern)
     {
-      switch (contextNode.getNodeType())
+      switch (dtm.getNodeType(contextNode))
       {
-      case Node.ELEMENT_NODE :
+      case DTM.ELEMENT_NODE :
 
         // countMatchPattern = m_stylesheet.createMatchPattern(contextNode.getNodeName(), this);
-        countMatchPattern = new XPath(contextNode.getNodeName(), this, this,
+        countMatchPattern = new XPath(dtm.getNodeName(contextNode), this, this,
                                       XPath.MATCH, support.getErrorListener());
         break;
-      case Node.ATTRIBUTE_NODE :
+      case DTM.ATTRIBUTE_NODE :
 
         // countMatchPattern = m_stylesheet.createMatchPattern("@"+contextNode.getNodeName(), this);
-        countMatchPattern = new XPath("@" + contextNode.getNodeName(), this,
+        countMatchPattern = new XPath("@" + dtm.getNodeName(contextNode), this,
                                       this, XPath.MATCH, support.getErrorListener());
         break;
-      case Node.CDATA_SECTION_NODE :
-      case Node.TEXT_NODE :
+      case DTM.CDATA_SECTION_NODE :
+      case DTM.TEXT_NODE :
 
         // countMatchPattern = m_stylesheet.createMatchPattern("text()", this);
         countMatchPattern = new XPath("text()", this, this, XPath.MATCH, support.getErrorListener());
         break;
-      case Node.COMMENT_NODE :
+      case DTM.COMMENT_NODE :
 
         // countMatchPattern = m_stylesheet.createMatchPattern("comment()", this);
         countMatchPattern = new XPath("comment()", this, this, XPath.MATCH, support.getErrorListener());
         break;
-      case Node.DOCUMENT_NODE :
+      case DTM.DOCUMENT_NODE :
 
         // countMatchPattern = m_stylesheet.createMatchPattern("/", this);
         countMatchPattern = new XPath("/", this, this, XPath.MATCH, support.getErrorListener());
         break;
-      case Node.PROCESSING_INSTRUCTION_NODE :
+      case DTM.PROCESSING_INSTRUCTION_NODE :
 
         // countMatchPattern = m_stylesheet.createMatchPattern("pi("+contextNode.getNodeName()+")", this);
-        countMatchPattern = new XPath("pi(" + contextNode.getNodeName()
+        countMatchPattern = new XPath("pi(" + dtm.getNodeName(contextNode)
                                       + ")", this, this, XPath.MATCH, support.getErrorListener());
         break;
       default :
@@ -732,7 +737,7 @@ public class ElemNumber extends ElemTemplateElement
    *
    * @throws TransformerException
    */
-  String getCountString(TransformerImpl transformer, Node sourceNode)
+  String getCountString(TransformerImpl transformer, int sourceNode)
           throws TransformerException
   {
 
@@ -768,7 +773,7 @@ public class ElemNumber extends ElemTemplateElement
 
           for (int i = lastIndex; i >= 0; i--)
           {
-            Node target = ancestors.elementAt(i);
+            int target = ancestors.elementAt(i);
 
             list[lastIndex - i] = ctable.countNode(xctxt, this, target);
           }
@@ -790,11 +795,12 @@ public class ElemNumber extends ElemTemplateElement
    *
    * @throws TransformerException
    */
-  public Node getPreviousNode(XPathContext xctxt, Node pos)
+  public int getPreviousNode(XPathContext xctxt, int pos)
           throws TransformerException
   {
 
     XPath countMatchPattern = getCountMatchPattern(xctxt, pos);
+    DTM dtm = xctxt.getDTM(pos);
 
     if (Constants.NUMBERLEVEL_ANY == m_level)
     {
@@ -803,22 +809,23 @@ public class ElemNumber extends ElemTemplateElement
       // Do a backwards document-order walk 'till a node is found that matches 
       // the 'from' pattern, or a node is found that matches the 'count' pattern, 
       // or the top of the tree is found.
-      while (null != pos)
+      while (DTM.NULL != pos)
       {
 
         // Get the previous sibling, if there is no previous sibling, 
         // then count the parent, but if there is a previous sibling, 
         // dive down to the lowest right-hand (last) child of that sibling.
-        Node next = pos.getPreviousSibling();
+        int next = dtm.getPreviousSibling(pos);
 
-        if (null == next)
+        if (DTM.NULL == next)
         {
-          next = pos.getParentNode();
+          next = dtm.getParent(pos);
 
-          if ((null != next) && ((((null != fromMatchPattern) && (fromMatchPattern.getMatchScore(
-                  xctxt, next) != XPath.MATCH_SCORE_NONE))) || (next.getNodeType() == Node.DOCUMENT_NODE)))
+          if ((DTM.NULL != next) && ((((null != fromMatchPattern) && (fromMatchPattern.getMatchScore(
+                  xctxt, next) != XPath.MATCH_SCORE_NONE))) 
+              || (dtm.getNodeType(next) == DTM.DOCUMENT_NODE)))
           {
-            pos = null;  // return null from function.
+            pos = DTM.NULL;  // return null from function.
 
             break;  // from while loop
           }
@@ -827,20 +834,20 @@ public class ElemNumber extends ElemTemplateElement
         {
 
           // dive down to the lowest right child.
-          Node child = next;
+          int child = next;
 
-          while (null != child)
+          while (DTM.NULL != child)
           {
-            child = next.getLastChild();
+            child = dtm.getLastChild(next);
 
-            if (null != child)
+            if (DTM.NULL != child)
               next = child;
           }
         }
 
         pos = next;
 
-        if ((null != pos)
+        if ((DTM.NULL != pos)
                 && ((null == countMatchPattern)
                     || (countMatchPattern.getMatchScore(xctxt, pos)
                         != XPath.MATCH_SCORE_NONE)))
@@ -851,11 +858,11 @@ public class ElemNumber extends ElemTemplateElement
     }
     else  // NUMBERLEVEL_MULTI or NUMBERLEVEL_SINGLE
     {
-      while (null != pos)
+      while (DTM.NULL != pos)
       {
-        pos = pos.getPreviousSibling();
+        pos = dtm.getPreviousSibling(pos);
 
-        if ((null != pos)
+        if ((DTM.NULL != pos)
                 && ((null == countMatchPattern)
                     || (countMatchPattern.getMatchScore(xctxt, pos)
                         != XPath.MATCH_SCORE_NONE)))
@@ -878,11 +885,11 @@ public class ElemNumber extends ElemTemplateElement
    *
    * @throws TransformerException
    */
-  public Node getTargetNode(XPathContext xctxt, Node sourceNode)
+  public int getTargetNode(XPathContext xctxt, int sourceNode)
           throws TransformerException
   {
 
-    Node target = null;
+    int target = DTM.NULL;
     XPath countMatchPattern = getCountMatchPattern(xctxt, sourceNode);
 
     if (Constants.NUMBERLEVEL_ANY == m_level)
@@ -916,14 +923,15 @@ public class ElemNumber extends ElemTemplateElement
    * @throws javax.xml.transform.TransformerException
    */
   NodeVector getMatchingAncestors(
-          XPathContext xctxt, Node node, boolean stopAtFirstFound)
+          XPathContext xctxt, int node, boolean stopAtFirstFound)
             throws javax.xml.transform.TransformerException
   {
 
     NodeSet ancestors = new NodeSet();
     XPath countMatchPattern = getCountMatchPattern(xctxt, node);
+    DTM dtm = xctxt.getDTM(node);
 
-    while (null != node)
+    while (DTM.NULL != node)
     {
       if ((null != m_fromMatchPattern)
               && (m_fromMatchPattern.getMatchScore(xctxt, node)
@@ -953,7 +961,7 @@ public class ElemNumber extends ElemTemplateElement
           break;
       }
 
-      node = xctxt.getDOMHelper().getParentOfNode(node);
+      node = dtm.getParent(node);
     }
 
     return ancestors;
@@ -970,7 +978,7 @@ public class ElemNumber extends ElemTemplateElement
    *
    * @throws TransformerException
    */
-  Locale getLocale(TransformerImpl transformer, Node contextNode)
+  Locale getLocale(TransformerImpl transformer, int contextNode)
           throws TransformerException
   {
 
@@ -992,9 +1000,10 @@ public class ElemNumber extends ElemTemplateElement
         //Locale.getDefault().getDisplayCountry());
         if (null == locale)
         {
-          transformer.getMsgMgr().warn(this, null, contextNode,
-                                       XSLTErrorResources.WG_LOCALE_NOT_FOUND,
-                                       new Object[]{ langValue });  //"Warning: Could not find locale for xml:lang="+langValue);
+          // %DTBD%
+//          transformer.getMsgMgr().warn(this, null, contextNode,
+//                                       XSLTErrorResources.WG_LOCALE_NOT_FOUND,
+//                                       new Object[]{ langValue });  //"Warning: Could not find locale for xml:lang="+langValue);
 
           locale = Locale.getDefault();
         }
@@ -1019,7 +1028,7 @@ public class ElemNumber extends ElemTemplateElement
    * @throws TransformerException
    */
   private DecimalFormat getNumberFormatter(
-          TransformerImpl transformer, Node contextNode) throws TransformerException
+          TransformerImpl transformer, int contextNode) throws TransformerException
   {
     // Patch from Steven Serocki
     // Maybe we really want to do the clone in getLocale() and return  
@@ -1078,7 +1087,7 @@ public class ElemNumber extends ElemTemplateElement
    * @throws TransformerException
    */
   String formatNumberList(
-          TransformerImpl transformer, int[] list, Node contextNode)
+          TransformerImpl transformer, int[] list, int contextNode)
             throws TransformerException
   {
 
@@ -1235,7 +1244,7 @@ public class ElemNumber extends ElemTemplateElement
    * @throws javax.xml.transform.TransformerException
    */
   private void getFormattedNumber(
-          TransformerImpl transformer, Node contextNode, 
+          TransformerImpl transformer, int contextNode, 
           char numberType, int numberWidth, int listElement, 
           FastStringBuffer formattedNumber)
             throws javax.xml.transform.TransformerException

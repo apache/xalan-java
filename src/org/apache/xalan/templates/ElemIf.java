@@ -56,7 +56,8 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.*;
+//import org.w3c.dom.*;
+import org.apache.xml.dtm.DTM;
 
 import org.xml.sax.*;
 
@@ -147,23 +148,24 @@ public class ElemIf extends ElemTemplateElement
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
 
     if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+      transformer.getTraceManager().fireTraceEvent(this);
 
     XPathContext xctxt = transformer.getXPathContext();
+    
+    int sourceNode = xctxt.getCurrentNode();
     XObject test = m_test.execute(xctxt, sourceNode, this);
-
     if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
               "test", m_test, test);
 
     if (test.bool())
     {
-      transformer.executeChildTemplates(this, sourceNode, mode, true);
+      transformer.executeChildTemplates(this, true);
     }
   }
 }

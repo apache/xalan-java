@@ -62,7 +62,8 @@ import java.util.Enumeration;
 
 import java.io.Serializable;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 import javax.xml.transform.TransformerException;
 
@@ -457,43 +458,44 @@ public class TemplateList implements java.io.Serializable
    * @return The head of a linked list that contains all possible match pattern to 
    * template associations.
    */
-  public TemplateSubPatternAssociation getHead(XPathContext xctxt, Node targetNode)
+  public TemplateSubPatternAssociation getHead(XPathContext xctxt, int targetNode)
   {
 
-    short targetNodeType = targetNode.getNodeType();
+    DTM dtm = xctxt.getDTM(targetNode);
+    short targetNodeType = dtm.getNodeType(targetNode);
     TemplateSubPatternAssociation head;
 
     switch (targetNodeType)
     {
-    case Node.ELEMENT_NODE :
-    case Node.ATTRIBUTE_NODE :
+    case DTM.ELEMENT_NODE :
+    case DTM.ATTRIBUTE_NODE :
       head = (TemplateSubPatternAssociation) m_patternTable.get(
-        xctxt.getDOMHelper().getLocalNameOfNode(targetNode));
+        dtm.getLocalName(targetNode));
       break;
-    case Node.TEXT_NODE :
-    case Node.CDATA_SECTION_NODE :
+    case DTM.TEXT_NODE :
+    case DTM.CDATA_SECTION_NODE :
       head = m_textPatterns;
       break;
-    case Node.ENTITY_REFERENCE_NODE :
-    case Node.ENTITY_NODE :
+    case DTM.ENTITY_REFERENCE_NODE :
+    case DTM.ENTITY_NODE :
       head = (TemplateSubPatternAssociation) m_patternTable.get(
-        targetNode.getNodeName());
+        dtm.getNodeName(targetNode)); // %REVIEW% I think this is right
       break;
-    case Node.PROCESSING_INSTRUCTION_NODE :
+    case DTM.PROCESSING_INSTRUCTION_NODE :
       head = (TemplateSubPatternAssociation) m_patternTable.get(
-        xctxt.getDOMHelper().getLocalNameOfNode(targetNode));
+        dtm.getLocalName(targetNode));
       break;
-    case Node.COMMENT_NODE :
+    case DTM.COMMENT_NODE :
       head = m_commentPatterns;
       break;
-    case Node.DOCUMENT_NODE :
-    case Node.DOCUMENT_FRAGMENT_NODE :
+    case DTM.DOCUMENT_NODE :
+    case DTM.DOCUMENT_FRAGMENT_NODE :
       head = m_docPatterns;
       break;
-    case Node.NOTATION_NODE :
+    case DTM.NOTATION_NODE :
     default :
       head = (TemplateSubPatternAssociation) m_patternTable.get(
-        targetNode.getNodeName());
+        dtm.getNodeName(targetNode)); // %REVIEW% I think this is right
     }
 
     return (null == head) ? m_wildCardPatterns : head;
@@ -518,7 +520,7 @@ public class TemplateList implements java.io.Serializable
    * @throws TransformerException
    */
   public ElemTemplate getTemplate(XPathContext xctxt,
-                                Node targetNode,
+                                int targetNode,
                                 QName mode,
                                 int maxImportLevel,
                                 boolean quietConflictWarnings)
@@ -585,7 +587,7 @@ public class TemplateList implements java.io.Serializable
    * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
    */
   private void checkConflicts(TemplateSubPatternAssociation head,
-                              XPathContext xctxt, Node targetNode, QName mode)
+                              XPathContext xctxt, int targetNode, QName mode)
   {
 
     // TODO: Check for conflicts.

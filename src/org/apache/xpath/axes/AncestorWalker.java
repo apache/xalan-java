@@ -61,9 +61,10 @@ import java.util.Stack;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.DOMHelper;
+import org.apache.xml.utils.IntStack;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 /**
  * Walker for the 'ancestor' axes.
@@ -103,19 +104,19 @@ public class AncestorWalker extends ReverseAxesWalker
    *
    * @param n
    */
-  protected void pushAncestors(Node n)
+  protected void pushAncestors(int n)
   {
 
-    m_ancestors = new Stack();
+    m_ancestors = new IntStack();
 
-    DOMHelper dh = m_lpi.getDOMHelper();
+    DTM dtm = getDTM(n);
 
-    while (null != (n = dh.getParentOfNode(n)))
+    while (DTM.NULL != (n = dtm.getParent(n)))
     {
       m_ancestors.push(n);
     }
 
-    m_nextLevelAmount = m_ancestors.isEmpty() ? 0 : 1;
+    m_nextLevelAmount = m_ancestors.empty() ? 0 : 1;
     m_ancestorsPos = m_ancestors.size() - 1;
   }
 
@@ -124,7 +125,7 @@ public class AncestorWalker extends ReverseAxesWalker
    *
    * @param root The context node of this step.
    */
-  public void setRoot(Node root)
+  public void setRoot(int root)
   {
     pushAncestors(root);
     super.setRoot(root);
@@ -138,10 +139,11 @@ public class AncestorWalker extends ReverseAxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   visible children in the TreeWalker's logical view.
    */
-  public Node firstChild()
+  public int firstChild()
   {
 
-    Node next = (m_ancestorsPos < 0) ? null : (Node) m_ancestors.elementAt(m_ancestorsPos--);
+    int next = (m_ancestorsPos < 0) ? DTM.NULL 
+                              : (int) m_ancestors.elementAt(m_ancestorsPos--);
 
     m_nextLevelAmount = (m_ancestorsPos < 0) ? 0 : 1;
 
@@ -151,7 +153,7 @@ public class AncestorWalker extends ReverseAxesWalker
   /** Stack of ancestors.  We have to do this instead of 
    *  just using getParent on the fly, because we have to walk the ancestors 
    *  in document order. */
-  transient protected Stack m_ancestors;
+  transient protected IntStack m_ancestors;
   
   /** The position within the stack.
    *  @serial */
@@ -165,9 +167,9 @@ public class AncestorWalker extends ReverseAxesWalker
   protected int getLevelMax()
   {
 
-    DOMHelper dh = m_lpi.getDOMHelper();
-    Node p = dh.getParentOfNode(m_root);
+    DTM dtm = getDTM(m_root);
+    int p = dtm.getParent(m_root);
 
-    return (null == p) ? 1 : dh.getLevel(p);
+    return (DTM.NULL == p) ? 1 : dtm.getLevel(p);
   }
 }

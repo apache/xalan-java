@@ -58,7 +58,7 @@ package org.apache.xalan.templates;
 
 import java.io.Serializable;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerException;
 
@@ -185,7 +185,7 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
    *
    * @throws TransformerException
    */
-  public boolean matches(XPathContext xctxt, Node targetNode, QName mode)
+  public boolean matches(XPathContext xctxt, int targetNode, QName mode)
           throws TransformerException
   {
 

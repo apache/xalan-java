@@ -56,10 +56,13 @@
  */
 package org.apache.xpath;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.Document;
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.DocumentFragment;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.Document;
+//import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.DocumentFragment;
+
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import java.util.Vector;
 
@@ -227,6 +230,36 @@ public class XPath implements Serializable
   {  
     this(exprString, locator, prefixResolver, type, null);    
   }
+  
+  /**
+   * <meta name="usage" content="experimental"/>
+   * Given an expression and a context, evaluate the XPath
+   * and call the callback as nodes are found.  Only some simple
+   * types of expresions right now can call back, so if this
+   * method returns null, then the callbacks have been called, otherwise
+   * a valid XObject will be returned.
+   * 
+   * @param xctxt The execution context.
+   * @param contextNode The node that "." expresses.
+   * @param namespaceContext The context in which namespaces in the
+   * XPath are supposed to be expanded.
+
+   * @return The result of the XPath or null if callbacks are used.
+   * @throws TransformerException thrown if
+   * the error condition is severe enough to halt processing.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public XObject execute(
+          XPathContext xctxt, org.w3c.dom.Node contextNode, 
+          PrefixResolver namespaceContext)
+            throws javax.xml.transform.TransformerException
+  {
+    return execute(
+          xctxt, xctxt.getDTMHandleFromNode(contextNode), 
+          namespaceContext);
+  }
+  
 
   /**
    * <meta name="usage" content="experimental"/>
@@ -235,24 +268,19 @@ public class XPath implements Serializable
    * types of expresions right now can call back, so if this
    * method returns null, then the callbacks have been called, otherwise
    * a valid XObject will be returned.
+   * 
    * @param xctxt The execution context.
    * @param contextNode The node that "." expresses.
    * @param namespaceContext The context in which namespaces in the
    * XPath are supposed to be expanded.
+   * 
    * @throws TransformerException thrown if the active ProblemListener decides
-   * the error condition is severe enough to halt processing.
-   * @param callback Interface that implements the processLocatedNode method.
-   * @param callbackInfo Object that will be passed to the processLocatedNode method.
-   * @param stopAtFirst True if the search should stop once the first node in document
-   * order is found.
-   * @return The result of the XPath or null if callbacks are used.
-   * @throws TransformerException thrown if
    * the error condition is severe enough to halt processing.
    *
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(
-          XPathContext xctxt, Node contextNode, PrefixResolver namespaceContext)
+          XPathContext xctxt, int contextNode, PrefixResolver namespaceContext)
             throws javax.xml.transform.TransformerException
   {
 
@@ -285,7 +313,7 @@ public class XPath implements Serializable
       {
         e = ((org.apache.xml.utils.WrappedRuntimeException) e).getException();
       }
-
+      e.printStackTrace();
 
       String msg = e.getMessage();
       msg = (msg == null || msg.length()== 0)? "Unknown error in XPath" : msg;
@@ -326,7 +354,7 @@ public class XPath implements Serializable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public double getMatchScore(XPathContext xctxt, Node context)
+  public double getMatchScore(XPathContext xctxt, int context)
           throws javax.xml.transform.TransformerException
   {
 
@@ -338,9 +366,12 @@ public class XPath implements Serializable
       XObject score = m_mainExp.execute(xctxt);
 
       if (DEBUG_MATCHES)
+      {
+        DTM dtm = xctxt.getDTM(context);
         System.out.println("score: " + score.num() + " for "
-                           + context.getNodeName() + " for xpath "
+                           + dtm.getNodeName(context) + " for xpath "
                            + this.getPatternString());
+      }
 
       return score.num();
     }
@@ -380,7 +411,7 @@ public class XPath implements Serializable
    *                              throw an exception.
    */
   public void warn(
-          XPathContext xctxt, Node sourceNode, int msg, Object[] args)
+          XPathContext xctxt, int sourceNode, int msg, Object[] args)
             throws javax.xml.transform.TransformerException
   {
 
@@ -433,7 +464,7 @@ public class XPath implements Serializable
    *                              throw an exception.
    */
   public void error(
-          XPathContext xctxt, Node sourceNode, int msg, Object[] args)
+          XPathContext xctxt, int sourceNode, int msg, Object[] args)
             throws javax.xml.transform.TransformerException
   {
 

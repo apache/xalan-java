@@ -62,7 +62,7 @@ import org.apache.xalan.extensions.ExtensionsTable;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.transformer.TransformerImpl;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
 
 import java.util.Vector;
 

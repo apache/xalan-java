@@ -56,8 +56,11 @@
  */
 package org.apache.xpath.axes;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeFilter;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeFilter;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.dtm.DTMIterator;
 
 import org.apache.xpath.patterns.NodeTestFilter;
 
@@ -85,7 +88,7 @@ public class ChildWalkerOneStep extends AxesWalker
    */
   protected int getLevelMax()
   {
-    return m_lpi.getDOMHelper().getLevel(m_root);
+    return getDTM(m_root).getLevel(m_root);
   }
 
   /**
@@ -93,28 +96,28 @@ public class ChildWalkerOneStep extends AxesWalker
    *
    * @return The next node in the walk, or null.
    */
-  public Node nextNode()
+  public int nextNode()
   {
 
-    Node next;
+    int next;
 
     if (m_root == m_currentNode)
     {
-      next = m_currentNode.getFirstChild();
+      next = getDTM(m_currentNode).getFirstChild(m_currentNode);
       m_isFresh = false;
     }
     else
-      next = m_currentNode.getNextSibling();
+      next = getDTM(m_currentNode).getNextSibling(m_currentNode);
 
-    if (null != next)
+    if (DTM.NULL != next)
     {
       m_currentNode = next;
 
-      while (acceptNode(next) != NodeFilter.FILTER_ACCEPT)
+      while (acceptNode(next) != DTMIterator.FILTER_ACCEPT)
       {
-        next = next.getNextSibling();
+        next = getDTM(next).getNextSibling(next);
 
-        if (null != next)
+        if (DTM.NULL != next)
           m_currentNode = next;
         else
         {

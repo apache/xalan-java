@@ -56,8 +56,10 @@
  */
 package org.apache.xpath.functions;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.Element;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import java.util.Vector;
 
@@ -93,46 +95,14 @@ public class FuncLast extends Function
     // assert(null != m_contextNodeList, "m_contextNodeList must be non-null");
     // If we're in a predicate, then this will return non-null.
     SubContextList iter = xctxt.getSubContextList();
-
+    // System.out.println("iter: "+iter);
     if (null != iter)
       return iter.getLastPos(xctxt);
 
-    ContextNodeList cnl = xctxt.getContextNodeList();
-
-    if (cnl.size() == 0)
-    {
-      try
-      {
-        NodeIterator ni = (NodeIterator)cnl.clone();
-        int count = cnl.getCurrentPos();
-        while(null != ni.nextNode())
-          count++;
-        cnl.setLast(count);
-        return count;
-      }
-      catch(CloneNotSupportedException cnse){}
-    }
-    return cnl.size();
-
-    /*
-    // The code below has massive problem if inside of a predicate.  -sb
-    if (cnl.size() == 0)
-    {
-      int currentPos = cnl.getCurrentPos();
-
-      // This has problems if inside a predicate.  For now, just clone.
-      if (!cnl.isFresh())
-        cnl.reset();
-
-      cnl.setShouldCacheNodes(true);
-      cnl.runTo(-1);
-      cnl.setCurrentPos(currentPos);
-      System.out.println("cnl.getCurrentPos() after: "+cnl.getCurrentPos());
-    }
-
-    // System.out.println("cnl.size(): "+cnl.size());
-    return cnl.size();
-    */
+    DTMIterator cnl = xctxt.getContextNodeList();
+    int count = cnl.getLength();
+    // System.out.println("count: "+count);    
+    return count;
   }
 
   /**
@@ -145,6 +115,8 @@ public class FuncLast extends Function
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    return new XNumber((double) getCountOfContextNodeList(xctxt));
+    XNumber xnum = new XNumber((double) getCountOfContextNodeList(xctxt));
+    // System.out.println("last: "+xnum.num());
+    return xnum;
   }
 }

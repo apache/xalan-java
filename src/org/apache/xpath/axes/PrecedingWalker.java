@@ -61,7 +61,8 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.DOMHelper;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 /**
  * Walker for the 'preceding' axes.
@@ -90,19 +91,19 @@ public class PrecedingWalker extends ReverseAxesWalker
    *
    * @param root The context node of this step.
    */
-  public void setRoot(Node root)
+  public void setRoot(int root)
   {
-
-    if (Node.ATTRIBUTE_NODE == root.getNodeType())
+    DTM dtm = getDTM(root);
+    if (DTM.ATTRIBUTE_NODE == dtm.getNodeType(root))
     {
-      root = m_lpi.getDOMHelper().getParentOfNode(root);
+      root = dtm.getParent(root);
     }
 
     super.setRoot(root);
 
-    m_doc = m_lpi.getDOMHelper().getRootNode(root);
+    m_doc = dtm.getDocument();
     m_currentNode = m_doc;
-    m_nextLevelAmount = root.hasChildNodes() ? 1 : 0;
+    m_nextLevelAmount = (dtm.getFirstChild(root) != DTM.NULL) ? 1 : 0;
 
     super.resetProximityPositions();
   }
@@ -120,26 +121,26 @@ public class PrecedingWalker extends ReverseAxesWalker
    * @return  The new parent node, or null if the current node has no parent
    *   in the TreeWalker's logical view.
    */
-  public Node parentNode()
+  public int parentNode()
   {
 
-    Node next = m_currentNode.getParentNode();
+    int next = getDTM(m_currentNode).getParent(m_currentNode);
 
     // If we're at the root of the tree, we're done.
-    if ((null == next) || m_doc.equals(next))
-      return null;
+    if ((DTM.NULL == next) || m_doc == next)
+      return DTM.NULL;
 
     // If the parent vertice is an ancestor of the step 
     // context, then all siblings are to the left of the 
     // ancestor path, so we're done.
     if (isAncestorOfRootContext(next))
-      return null;
+      return DTM.NULL;
 
     m_nextLevelAmount = 0;
 
 //    if(null != next)
 //    {
-//      Node attrNode = next.getAttributes().getNamedItem("id");
+//      int attrNode = next.getAttributes().getNamedItem("id");
 //      if(null != attrNode)
 //        System.out.println("parentNode: "+attrNode.getNodeValue());
 //      else
@@ -159,23 +160,25 @@ public class PrecedingWalker extends ReverseAxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   visible children in the TreeWalker's logical view.
    */
-  public Node firstChild()
+  public int firstChild()
   {
 
     // Walk down the left edge of the current sub-tree.
     // Get the next child on the 'preceding' axes. This will 
     // skip any children nodes that are ancestors of the step context,
     // but will return children of those nodes.
-    if (m_root.equals(m_currentNode))
-      return null;
+    if (m_root == m_currentNode)
+      return DTM.NULL;
 
-    Node nextNode = m_currentNode;
+    int nextNode = m_currentNode;
+    
+    DTM dtm = getDTM(m_root);
 
-    while (null != nextNode)
+    while (DTM.NULL != nextNode)
     {
-      Node n = nextNode.getFirstChild();
+      int n = dtm.getFirstChild(nextNode);
 
-      if (null != n)
+      if (DTM.NULL != n)
       {
         nextNode = n;
       }
@@ -185,28 +188,28 @@ public class PrecedingWalker extends ReverseAxesWalker
         // If the next sibling is an ancestor, then continue 
         // on to get it's first child, otherwise nextSibling() 
         // will get it.
-        nextNode = nextNode.getNextSibling();
+        nextNode = dtm.getNextSibling(nextNode);
 
-        if (null != nextNode)
+        if (DTM.NULL != nextNode)
         {
-          if (m_root.equals(nextNode) ||!isAncestorOfRootContext(nextNode))
-            return null;
+          if ((m_root == nextNode) ||!isAncestorOfRootContext(nextNode))
+            return DTM.NULL;
           else
             continue;
         }
       }
 
-      if (null != nextNode)
+      if (DTM.NULL != nextNode)
       {
-        if (m_root.equals(nextNode))
-          return null;
+        if (m_root == nextNode)
+          return DTM.NULL;
         else if (!isAncestorOfRootContext(nextNode))
           break;
       }
     }
 
-    m_nextLevelAmount = (null == nextNode)
-                        ? 0 : (nextNode.hasChildNodes() ? 1 : 0);
+    m_nextLevelAmount = (DTM.NULL == nextNode)
+                        ? 0 : (dtm.hasChildNodes(nextNode) ? 1 : 0);
 
 //    if(null != nextNode)
 //    {
@@ -229,32 +232,33 @@ public class PrecedingWalker extends ReverseAxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   next sibling in the TreeWalker's logical view.
    */
-  public Node nextSibling()
+  public int nextSibling()
   {
 
-    if (m_root.equals(m_currentNode))
-      return null;
-
-    Node next = m_currentNode.getNextSibling();
+    if (m_root == m_currentNode)
+      return DTM.NULL;
     
-    if ((null == next) || m_root.equals(next)
+    DTM dtm = getDTM(m_root);
+    int next = dtm.getNextSibling(m_currentNode);
+    
+    if ((DTM.NULL == next) || m_root == next
             /* || isAncestorOfRootContext(next) */)
-      return null;
+      return DTM.NULL;
       
     if(isAncestorOfRootContext(next))
     {
-      next = next.getFirstChild();
+      next = dtm.getFirstChild(next);
       
-      if ((null == next) || m_root.equals(next)
+      if ((DTM.NULL == next) || (m_root == next)
               /* || isAncestorOfRootContext(next) */)
-        return null;
+        return DTM.NULL;
     }
 
-    m_nextLevelAmount = (null == next) ? 0 : (next.hasChildNodes() ? 1 : 0);
+    m_nextLevelAmount = (DTM.NULL == next) ? 0 : (dtm.hasChildNodes(next) ? 1 : 0);
 
 //    if(null != next)
 //    {
-//      Node attrNode = next.getAttributes().getNamedItem("id");
+//      int attrNode = next.getAttributes().getNamedItem("id");
 //      if(null != attrNode)
 //        System.out.println("nextSibling: "+attrNode.getNodeValue());
 //      else
@@ -267,7 +271,7 @@ public class PrecedingWalker extends ReverseAxesWalker
   }
 
   /** The document owner node.  */
-  transient Node m_doc;
+  transient int m_doc = DTM.NULL;
 
   /**
    * Tell what's the maximum level this axes can descend to.

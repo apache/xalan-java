@@ -56,8 +56,10 @@
  */
 package org.apache.xpath.axes;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeFilter;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeFilter;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import org.apache.xpath.patterns.NodeTestFilter;
 
@@ -84,7 +86,7 @@ public class RootWalkerMultiStep extends ChildWalkerMultiStep
    *
    * @param root The context node of this step.
    */
-  public void setRoot(Node root)
+  public void setRoot(int root)
   {
 
     super.setRoot(root);
@@ -97,42 +99,46 @@ public class RootWalkerMultiStep extends ChildWalkerMultiStep
    *
    * @return the next valid child node.
    */
-  protected Node getNextNode()
+  protected int getNextNode()
   {
 
     if (m_isFresh)
       m_isFresh = false;
 
-    Node current = this.getCurrentNode();
+    int current = this.getCurrentNode();
 
-    if (current.isSupported(FEATURE_NODETESTFILTER, "1.0"))
-      ((NodeTestFilter) current).setNodeTest(this);
+    // %NODETESTFILTER%
+//    if (current.isSupported(FEATURE_NODETESTFILTER, "1.0"))
+//      ((NodeTestFilter) current).setNodeTest(this);
 
-    Node next;
+    int next;
 
     if (!m_processedRoot)
     {
       m_processedRoot = true;
-      next = m_lpi.getDOMHelper().getRootNode(m_currentNode);
+      
+      next = getDTM(m_currentNode).getDocument();
     }
     else
-      next = null;
+      next = DTM.NULL;
 
-    if (null != next)
+    if (DTM.NULL != next)
     {
       m_currentNode = next;
 
       // doesn't seem like we need to do this!
-      if (acceptNode(next) != NodeFilter.FILTER_ACCEPT)
+      if (acceptNode(next) != DTMIterator.FILTER_ACCEPT)
       {
-        next = null;
+        next = DTM.NULL;
       }
 
-      if (null == next)
+      if (DTM.NULL == next)
+      {
         m_currentNode = current;  // don't advance the current node.
+        this.m_isDone = true;
+      }
     }
-
-    if (null == next)
+    else
       this.m_isDone = true;
 
     return next;

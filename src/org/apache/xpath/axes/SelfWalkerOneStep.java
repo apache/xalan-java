@@ -56,8 +56,10 @@
  */
 package org.apache.xpath.axes;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeFilter;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeFilter;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -84,21 +86,21 @@ public class SelfWalkerOneStep extends AxesWalker
    *
    * @return The self node or null.
    */
-  public Node nextNode()
+  public int nextNode()
   {
 
     if (m_isFresh)
     {
       m_isFresh = false;
 
-      if (acceptNode(m_root) == NodeFilter.FILTER_ACCEPT)
+      if (acceptNode(m_root) == DTMIterator.FILTER_ACCEPT)
         return m_root;
       else
-        return null;
+        return DTM.NULL;
     }
     else
     {
-      return null;
+      return DTM.NULL;
     }
   }
 }

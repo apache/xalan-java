@@ -56,7 +56,8 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.*;
+//import org.w3c.dom.*;
+import org.apache.xml.dtm.DTM;
 
 import org.xml.sax.*;
 
@@ -119,12 +120,12 @@ public class ElemChoose extends ElemTemplateElement
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
 
     if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+      transformer.getTraceManager().fireTraceEvent(this);
 
     boolean found = false;
 
@@ -140,6 +141,8 @@ public class ElemChoose extends ElemTemplateElement
         ElemWhen when = (ElemWhen) childElem;
 
         // must be xsl:when
+        XPathContext xctxt = transformer.getXPathContext();
+        int sourceNode = xctxt.getCurrentNode();
         XObject test = when.getTest().execute(transformer.getXPathContext(),
                                               sourceNode, this);
 
@@ -149,7 +152,7 @@ public class ElemChoose extends ElemTemplateElement
 
         if ((null != test) && test.bool())
         {
-          transformer.executeChildTemplates(when, sourceNode, mode, true);
+          transformer.executeChildTemplates(when, true);
 
           return;
         }
@@ -159,7 +162,7 @@ public class ElemChoose extends ElemTemplateElement
         found = true;
 
         // xsl:otherwise                
-        transformer.executeChildTemplates(childElem, sourceNode, mode, true);
+        transformer.executeChildTemplates(childElem, true);
 
         return;
       }
@@ -179,7 +182,7 @@ public class ElemChoose extends ElemTemplateElement
    *
    * @throws DOMException
    */
-  public Node appendChild(Node newChild) throws DOMException
+  public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
 
     int type = ((ElemTemplateElement) newChild).getXSLToken();

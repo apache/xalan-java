@@ -58,8 +58,10 @@ package org.apache.xpath.functions;
 
 import org.apache.xpath.res.XPATHErrorResources;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import java.util.Vector;
 
@@ -87,13 +89,13 @@ public class FuncCount extends FunctionOneArg
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
-    NodeIterator nl = m_arg0.execute(xctxt).nodeset();
+    DTMIterator nl = m_arg0.execute(xctxt).nodeset();
 
     // We should probably make a function on the iterator for this, 
     // as a given implementation could optimize.
     int i = 0;
 
-    while (null != nl.nextNode())
+    while (DTM.NULL != nl.nextNode())
     {
       i++;
     }

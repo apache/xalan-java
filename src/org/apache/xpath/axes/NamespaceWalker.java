@@ -62,8 +62,9 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.NamedNodeMap;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.NamedNodeMap;
+import org.apache.xml.dtm.DTM;
 
 /**
  * Walker for the 'namespace' axes.
@@ -83,66 +84,20 @@ public class NamespaceWalker extends AxesWalker
   }
 
   /**
-   * Get a cloned AxesWalker.
-   *
-   * @return A cloned NamespaceWalker.
-   *
-   * @throws CloneNotSupportedException
-   */
-  public Object clone() throws CloneNotSupportedException
-  {
-
-    NamespaceWalker clone = (NamespaceWalker) super.clone();
-
-    if (null != this.m_namespaces)
-    {
-      clone.m_namespaces = (Stack) this.m_namespaces.clone();
-    }
-
-    return clone;
-  }
-
-  /**
-   *  Set the root node of the TreeWalker.
+   *  The root node of the TreeWalker.
    *
    * @param root The context node of this step.
    */
-  public void setRoot(Node root)
+  public void setRoot(int root)
   {
 
-    m_nextLevelAmount = 1;
-    m_namespaces = new Stack();
+    // System.out.println("ChildWalker.setRoot");
+    m_nextLevelAmount = (getDTM(root).getFirstNamespaceNode(root, true) != DTM.NULL) ? 1 : 0;
 
-    Node nsContext = root;
-
-    while (null != nsContext)
-    {
-      NamedNodeMap attributeList = nsContext.getAttributes();
-
-      if (null != attributeList)
-      {
-        int nAttrs = attributeList.getLength();
-
-        // System.out.println("setRoot - nAttrs: "+nAttrs);
-        for (int i = (nAttrs - 1); i >= 0; i--)
-        {
-          Node attr = attributeList.item(i);
-
-          if (m_lpi.getDOMHelper().isNamespaceNode(attr))
-          {
-
-            // System.out.println("setRoot - pushing namespace: "+attr.getNodeName());
-            m_namespaces.push(attr);
-          }
-        }
-      }
-
-      nsContext = nsContext.getParentNode();
-    }
-
+    // System.out.println("Back from calling hasChildNodes");
     super.setRoot(root);
 
-    // System.out.println("============");
+    // System.out.println("Exiting ChildWalker.setRoot");
   }
 
   /**
@@ -153,12 +108,22 @@ public class NamespaceWalker extends AxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   visible children in the TreeWalker's logical view.
    */
-  public Node firstChild()
+  public int firstChild()
   {
 
+    // System.out.println("ChildWalker.firstChild");
     m_nextLevelAmount = 0;
 
-    return nextSibling();
+    if (m_root == m_currentNode)
+    {
+      DTM dtm = getDTM(m_root);
+      // System.out.println("NamespaceWalker - Calling getFirstNamespaceNode: "+dtm.getNodeName(m_currentNode));
+      int nsNode = dtm.getFirstNamespaceNode(m_currentNode, true);
+      
+      return setCurrentIfNotNull(nsNode);
+    }
+    else
+      return DTM.NULL;
   }
 
   /**
@@ -168,17 +133,20 @@ public class NamespaceWalker extends AxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   next sibling in the TreeWalker's logical view.
    */
-  public Node nextSibling()
+  public int nextSibling()
   {
 
-    Node next = m_namespaces.isEmpty() ? null : (Node) m_namespaces.pop();
-
-    // System.out.println("nextSibling: "+this.nodeToString(next));
-    return this.setCurrentIfNotNull(next);
+    if (m_root != m_currentNode)
+    {
+      DTM dtm = getDTM(m_root);
+      // System.out.println("NamespaceWalker - Calling getNextNamespaceNode: "+dtm.getNodeName(m_currentNode));
+      int nsNode = dtm.getNextNamespaceNode(m_root, m_currentNode, true);
+      
+      return setCurrentIfNotNull(nsNode);
+    }
+    else
+      return DTM.NULL;
   }
-
-  /** Stack of namespace decl nodes (xmlns attributes).   */
-  transient Stack m_namespaces;
 
   /**
    * Tell what's the maximum level this axes can descend to.
@@ -187,6 +155,6 @@ public class NamespaceWalker extends AxesWalker
    */
   protected int getLevelMax()
   {
-    return m_lpi.getDOMHelper().getLevel(m_root);
+    return getDTM(m_root).getLevel(m_root);
   }
 }

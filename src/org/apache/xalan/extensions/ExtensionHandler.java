@@ -67,6 +67,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import org.apache.xalan.templates.Stylesheet;
+import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xml.utils.QName;
 
 // Temp??
@@ -216,7 +217,6 @@ public abstract class ExtensionHandler
    * @throws TransformerException          if parsing trouble
    */
   public abstract void processElement(
-    String localPart, Element element, TransformerImpl transformer,
-      Stylesheet stylesheetTree, Node sourceTree, Node sourceNode,
-        QName mode, Object methodKey) throws TransformerException, IOException;
+    String localPart, ElemTemplateElement element, TransformerImpl transformer,
+      Stylesheet stylesheetTree, Object methodKey) throws TransformerException, IOException;
 }

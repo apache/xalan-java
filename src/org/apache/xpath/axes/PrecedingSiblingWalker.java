@@ -60,7 +60,8 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 /**
  * Walker for the 'preceding-sibling' axes.
@@ -89,37 +90,38 @@ public class PrecedingSiblingWalker extends ReverseAxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   next sibling in the TreeWalker's logical view.
    */
-  public Node nextSibling()
+  public int nextSibling()
   {
 
-    Node next;
+    int next;
 
+    DTM dtm = getDTM(m_root);
     if (m_currentNode == m_root)
     {
-      if(m_currentNode.getNodeType() == Node.ATTRIBUTE_NODE)
+      if(dtm.getNodeType(m_currentNode) == DTM.ATTRIBUTE_NODE)
       {
         // then don't bother, since attributes don't have siblings.
         // Otherwise, we would go up to the parent, and get the so-called 
         // first attribute.
-        next = null;
+        next = DTM.NULL;
       }
       else
       {
-        Node parent = m_lpi.getDOMHelper().getParentOfNode(m_currentNode);
+        int parent = dtm.getParent(m_currentNode);
   
-        if (null == parent)
-          return null;
+        if (DTM.NULL == parent)
+          return DTM.NULL;
   
-        next = parent.getFirstChild();
+        next = dtm.getFirstChild(parent);
       }
     }
     else
     {
-      next = m_currentNode.getNextSibling();
+      next = dtm.getNextSibling(m_currentNode);
     }
 
-    if (null != next && next.equals(m_root))
-      next = null;
+    if (DTM.NULL != next && next == m_root)
+      next = DTM.NULL;
 
     return setCurrentIfNotNull(next);
   }
@@ -131,6 +133,6 @@ public class PrecedingSiblingWalker extends ReverseAxesWalker
    */
   protected int getLevelMax()
   {
-    return m_lpi.getDOMHelper().getLevel(m_root);
+    return getDTM(m_root).getLevel(m_root);
   }
 }

@@ -60,12 +60,15 @@ import java.util.Vector;
 
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xml.utils.QName;
+import org.apache.xml.utils.XMLString;
 import org.apache.xalan.templates.KeyDeclaration;
 import org.apache.xpath.NodeSet;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.DOMException;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -83,7 +86,7 @@ public class KeyRefIterator extends LocPathIterator
   
   /** Use field of key function.
    *  @serial         */
-  private String m_lookupKey;  
+  private XMLString m_lookupKey;  
   
   /** Main Key iterator for this iterator.
    *  @serial    */
@@ -109,7 +112,7 @@ public class KeyRefIterator extends LocPathIterator
    * @param ref Key value to match
    * @param ki The main key iterator used to walk the source tree 
    */
-  public KeyRefIterator(String ref, KeyIterator ki)
+  public KeyRefIterator(XMLString ref, KeyIterator ki)
   {
 
     super(ki.getPrefixResolver());
@@ -128,16 +131,12 @@ public class KeyRefIterator extends LocPathIterator
    * 
    * @return  The next <code>Node</code> in the set being iterated over, or
    *   <code>null</code> if there are no more members in that set.
-   * 
-   * @throws DOMException
-   *    INVALID_STATE_ERR: Raised if this method is called after the
-   *   <code>detach</code> method was invoked.
    */
-  public Node nextNode() throws DOMException
+  public int nextNode()
   {
 
    if (m_foundLast)
-      return null;
+      return DTM.NULL;
     
     // If the cache is on, and the node has already been found, then 
     // just return from the list.
@@ -150,21 +149,21 @@ public class KeyRefIterator extends LocPathIterator
     if ((null != m_cachedNodes)
             && (m_next < m_cachedNodes.size()))        
     {
-      Node next = m_cachedNodes.elementAt(m_next); 
+      int next = m_cachedNodes.elementAt(m_next); 
       this.setCurrentPos(++m_next); 
       m_lastFetched = next;
       
       return next;
     }    
 
-    Node next = null;       
+    int next = DTM.NULL;       
     if ( m_ki.getLookForMoreNodes()) 
     {
       ((KeyWalker)m_ki.getFirstWalker()).m_lookupKey = m_lookupKey;
       next = m_ki.nextNode();        
     }
     
-    if (null != next)
+    if (DTM.NULL != next)
     {  
       m_lastFetched = next;
       this.setCurrentPos(++m_next);
@@ -173,8 +172,8 @@ public class KeyRefIterator extends LocPathIterator
     else
       m_foundLast = true;                      
     
-    m_lastFetched = null;
-    return null;
+    m_lastFetched = DTM.NULL;
+    return DTM.NULL;
   }
   
   /**
@@ -225,7 +224,7 @@ public class KeyRefIterator extends LocPathIterator
    *
    * @param node Node to add to cached nodes
    */
-  public void addNode(Node node) 
+  public void addNode(int node) 
   {
     NodeSet m_cachedNodes = getCachedNodes();
     if (null != m_cachedNodes)

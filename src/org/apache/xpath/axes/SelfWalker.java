@@ -60,7 +60,8 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 /**
  * Walker for the 'self' axes.
@@ -88,7 +89,7 @@ public class SelfWalker extends AxesWalker
    *
    * @param root The context node of this step.
    */
-  public void setRoot(Node root)
+  public void setRoot(int root)
   {
 
     m_processedSelf = false;
@@ -104,7 +105,7 @@ public class SelfWalker extends AxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   visible children in the TreeWalker's logical view.
    */
-  public Node firstChild()
+  public int firstChild()
   {
 
     // Follow my made-up rule about returning the self node as a child.
@@ -115,7 +116,7 @@ public class SelfWalker extends AxesWalker
       return setCurrentIfNotNull(m_root);
     }
 
-    return null;
+    return DTM.NULL;
   }
 
   /** True if the self node has been processed.   */
@@ -128,6 +129,6 @@ public class SelfWalker extends AxesWalker
    */
   protected int getLevelMax()
   {
-    return m_lpi.getDOMHelper().getLevel(m_root);
+    return getDTM(m_root).getLevel(m_root);
   }
 }

@@ -56,9 +56,11 @@
  */
 package org.apache.xalan.extensions;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.DocumentFragment;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
@@ -74,6 +76,8 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.XPathContext;
+
+import org.apache.xml.dtm.DTM;
 
 // import org.apache.xalan.xslt.*;
 
@@ -97,15 +101,16 @@ public class XSLProcessorContext
    * @param mode the current mode being executed.
    */
   public XSLProcessorContext(TransformerImpl transformer,
-                             Stylesheet stylesheetTree, Node sourceTree,
-                             Node sourceNode, QName mode)
+                             Stylesheet stylesheetTree)
   {
 
     this.transformer = transformer;
     this.stylesheetTree = stylesheetTree;
-    this.mode = mode;
-    this.sourceTree = sourceTree;
-    this.sourceNode = sourceNode;
+    // %TBD%
+    org.apache.xpath.XPathContext xctxt = transformer.getXPathContext();
+    this.mode = transformer.getMode();
+    this.sourceNode = xctxt.getCurrentNode();
+    this.sourceTree = xctxt.getDTM(this.sourceNode);
   }
 
   /** An instance of a transformer          */
@@ -135,29 +140,29 @@ public class XSLProcessorContext
   }
 
   /**  The root of the source tree being executed.        */
-  private Node sourceTree;
+  private org.apache.xml.dtm.DTM sourceTree;
 
   /**
    * Get the root of the source tree being executed.
    *
    * @return the root of the source tree being executed.
    */
-  public Node getSourceTree()
+  public org.w3c.dom.Node getSourceTree()
   {
-    return sourceTree;
+    return sourceTree.getNode(sourceTree.getDocument());
   }
 
   /** the current context node.          */
-  private Node sourceNode;
+  private int sourceNode;
 
   /**
    * Get the current context node.
    *
    * @return the current context node.
    */
-  public Node getContextNode()
+  public org.w3c.dom.Node getContextNode()
   {
-    return sourceNode;
+    return sourceTree.getNode(sourceNode);
   }
 
   /** the current mode being executed.         */
@@ -217,18 +222,19 @@ public class XSLProcessorContext
       {
         value = new XNumber(((Double) obj).doubleValue());
       }
-      else if (obj instanceof DocumentFragment)
-      {
-        value = new XRTreeFrag((DocumentFragment) obj);
-      }
-      else if (obj instanceof Node)
-      {
-        value = new XNodeSet((Node) obj);
-      }
-      else if (obj instanceof NodeIterator)
-      {
-        value = new XNodeSet((NodeIterator) obj);
-      }
+      // %TDM%
+//      else if (obj instanceof DocumentFragment)
+//      {
+//        value = new XRTreeFrag((DocumentFragment) obj);
+//      }
+//      else if (obj instanceof Node)
+//      {
+//        value = new XNodeSet((Node) obj);
+//      }
+//      else if (obj instanceof NodeIterator)
+//      {
+//        value = new XNodeSet((NodeIterator) obj);
+//      }
       else
       {
         value = new XString(obj.toString());
@@ -246,45 +252,48 @@ public class XSLProcessorContext
 
         rtreeHandler.characters(s.toCharArray(), 0, s.length());
         break;
+
       case XObject.CLASS_NODESET :  // System.out.println(value);
-        NodeIterator nl = value.nodeset();
-        Node pos;
+        DTMIterator nl = value.nodeset();
+        
+        int pos;
 
-        while (null != (pos = nl.nextNode()))
+        while (DTM.NULL != (pos = nl.nextNode()))
         {
-          Node top = pos;
+          DTM dtm = nl.getDTM(pos);
+          int top = pos;
 
-          while (null != pos)
+          while (DTM.NULL != pos)
           {
             rtreeHandler.flushPending();
             rtreeHandler.cloneToResultTree(pos, true);
 
-            Node nextNode = pos.getFirstChild();
+            int nextNode = dtm.getFirstChild(pos);
 
-            while (null == nextNode)
+            while (DTM.NULL == nextNode)
             {
-              if (Node.ELEMENT_NODE == pos.getNodeType())
+              if (DTM.ELEMENT_NODE == dtm.getNodeType(pos))
               {
-                rtreeHandler.endElement("", "", pos.getNodeName());
+                rtreeHandler.endElement("", "", dtm.getNodeName(pos));
               }
 
               if (top == pos)
                 break;
 
-              nextNode = pos.getNextSibling();
+              nextNode = dtm.getNextSibling(pos);
 
-              if (null == nextNode)
+              if (DTM.NULL == nextNode)
               {
-                pos = pos.getParentNode();
+                pos = dtm.getParent(pos);
 
                 if (top == pos)
                 {
-                  if (Node.ELEMENT_NODE == pos.getNodeType())
+                  if (DTM.ELEMENT_NODE == dtm.getNodeType(pos))
                   {
-                    rtreeHandler.endElement("", "", pos.getNodeName());
+                    rtreeHandler.endElement("", "", dtm.getNodeName(pos));
                   }
 
-                  nextNode = null;
+                  nextNode = DTM.NULL;
 
                   break;
                 }

@@ -136,7 +136,7 @@ public class ElemParam extends ElemVariable
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
 
@@ -145,13 +145,13 @@ public class ElemParam extends ElemVariable
 
     if (null == arg)
     {
-      super.execute(transformer, sourceNode, mode);
+      super.execute(transformer);
     }
     else
     {
       arg.setIsVisible(true);
       if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+        transformer.getTraceManager().fireTraceEvent(this);
     }
   }
 }

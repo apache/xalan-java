@@ -368,25 +368,25 @@ public class ElemTemplate extends ElemTemplateElement
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
-
     if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+      transformer.getTraceManager().fireTraceEvent(this);
 
-    if (null != sourceNode)
-    {
-      transformer.executeChildTemplates(this, sourceNode, mode, true);
-    }
-    else  // if(null == sourceNode)
-    {
-      transformer.getMsgMgr().error(this,
-        this, sourceNode,
-        XSLTErrorResources.ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES);
-
-      //"sourceNode is null in handleApplyTemplatesInstruction!");
-    }
+      // %REVIEW% commenting out of the code below.
+//    if (null != sourceNode)
+//    {
+      transformer.executeChildTemplates(this, true);
+//    }
+//    else  // if(null == sourceNode)
+//    {
+//      transformer.getMsgMgr().error(this,
+//        this, sourceNode,
+//        XSLTErrorResources.ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES);
+//
+//      //"sourceNode is null in handleApplyTemplatesInstruction!");
+//    }
   }
 
   /**

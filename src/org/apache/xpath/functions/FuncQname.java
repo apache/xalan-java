@@ -58,9 +58,11 @@ package org.apache.xpath.functions;
 
 import org.apache.xpath.res.XPATHErrorResources;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.Attr;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Attr;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import java.util.Vector;
 
@@ -88,41 +90,14 @@ public class FuncQname extends FunctionDef1Arg
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
-    Node context = getArg0AsNode(xctxt);
+    int context = getArg0AsNode(xctxt);
     XObject val;
 
-    if (null != context)
+    if (DTM.NULL != context)
     {
-      short ntype = context.getNodeType();
-
-      if (ntype == Node.ATTRIBUTE_NODE)
-      {
-        String qname = ((Attr) context).getName();
-
-        if (xctxt.getDOMHelper().isNamespaceNode(context))
-        {
-          if (qname.equals("xmlns"))
-            val = XString.EMPTYSTRING;
-          else
-          {
-            qname = QName.getLocalPart(qname);
-            val = (null == qname) ? XString.EMPTYSTRING : new XString(qname);
-          }
-        }
-        else
-          val = new XString(qname);
-      }
-      else if ((ntype == Node.ELEMENT_NODE)
-               || (ntype == Node.PROCESSING_INSTRUCTION_NODE))
-      {
-        String qname = context.getNodeName();
-
-        val = new XString(qname);
-      }
-      else
-      {
-        val = XString.EMPTYSTRING;
-      }
+      DTM dtm = xctxt.getDTM(context);
+      String qname = dtm.getNodeNameX(context);
+      val = (null == qname) ? XString.EMPTYSTRING : new XString(qname);
     }
     else
     {

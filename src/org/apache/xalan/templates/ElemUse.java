@@ -58,7 +58,7 @@ package org.apache.xalan.templates;
 
 import java.util.Vector;
 
-import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 import javax.xml.transform.TransformerException;
 
@@ -160,7 +160,7 @@ public class ElemUse extends ElemTemplateElement
    * @throws TransformerException
    */
   private void applyAttrSets(
-          TransformerImpl transformer, StylesheetRoot stylesheet, QName attributeSetsNames[], Node sourceNode, QName mode)
+          TransformerImpl transformer, StylesheetRoot stylesheet, QName attributeSetsNames[])
             throws TransformerException
   {
 
@@ -182,7 +182,7 @@ public class ElemUse extends ElemTemplateElement
             ElemAttributeSet attrSet =
               (ElemAttributeSet) attrSets.elementAt(k);
 
-            attrSet.execute(transformer, sourceNode, mode);
+            attrSet.execute(transformer);
           }
         }
       }
@@ -207,17 +207,16 @@ public class ElemUse extends ElemTemplateElement
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
-
     if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+      transformer.getTraceManager().fireTraceEvent(this);
 
     if (null != m_attributeSetsNames)
     {
       applyAttrSets(transformer, getStylesheetRoot(),
-                    m_attributeSetsNames, sourceNode, mode);
+                    m_attributeSetsNames);
     }
   }
 }

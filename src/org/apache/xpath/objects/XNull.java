@@ -56,8 +56,11 @@
  */
 package org.apache.xpath.objects;
 
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.DocumentFragment;
+//import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.DocumentFragment;
+
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.NodeSet;
@@ -137,13 +140,11 @@ public class XNull extends XObject
    *
    * @return The object as a result tree fragment.
    */
-  public DocumentFragment rtree(XPathContext support)
+  public int rtree(XPathContext support)
   {
-
-    DocumentFragment result =
-      support.getDOMHelper().getDOMFactory().createDocumentFragment();
-
-    return result;
+    // DTM frag = support.createDocumentFragment();
+    // %REVIEW%
+    return DTM.NULL;
   }
 
   /**
@@ -151,7 +152,7 @@ public class XNull extends XObject
    *
    * @return null
    */
-  public NodeIterator nodeset()
+  public DTMIterator nodeset()
   {
     return null;
   }

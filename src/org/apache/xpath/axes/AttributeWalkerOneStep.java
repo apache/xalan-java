@@ -56,9 +56,11 @@
  */
 package org.apache.xpath.axes;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.traversal.NodeFilter;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.NamedNodeMap;
+//import org.w3c.dom.traversal.NodeFilter;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import org.apache.xpath.patterns.NodeTestFilter;
 
@@ -69,37 +71,6 @@ import org.apache.xpath.patterns.NodeTestFilter;
  */
 public class AttributeWalkerOneStep extends AxesWalker
 {
-
-  /** The attribute list from the context node.  */
-  transient NamedNodeMap m_attributeList;
-
-  /** The current index into m_attributeList.  -1 to start. */
-  transient int m_attrListPos;
-
-  /** The number of attributes in m_attributeList, or -2 if no attributes. */
-  transient int m_nAttrs;
-
-  /**
-   *  The root node of the TreeWalker.
-   *
-   * @param root The context node of the node step.
-   */
-  public void setRoot(Node root)
-  {
-
-    super.setRoot(root);
-
-    if (root.getNodeType() == Node.ELEMENT_NODE)
-    {
-      m_attrListPos = -1;
-      m_attributeList = m_currentNode.getAttributes();
-
-      if (null != m_attributeList)
-        m_nAttrs = m_attributeList.getLength();
-      else
-        m_nAttrs = -2;
-    }
-  }
 
   /**
    * Construct an AxesWalker using a LocPathIterator.
@@ -112,45 +83,52 @@ public class AttributeWalkerOneStep extends AxesWalker
   }
 
   /**
+   * Tell what's the maximum level this axes can descend to.
+   *
+   * @return An estimation of the maximum level this axes can descend to.
+   */
+  protected int getLevelMax()
+  {
+    return getDTM(m_root).getLevel(m_root);
+  }
+
+  /**
    * Get the next node in document order on the axes.
    *
-   * @return The next node in the itteration, or null.
+   * @return The next node in the walk, or null.
    */
-  public Node nextNode()
+  public int nextNode()
   {
 
-    if (m_isFresh)
-      m_isFresh = false;
+    int next;
 
-    Node current = this.getCurrentNode();
-
-    if (current.isSupported(FEATURE_NODETESTFILTER, "1.0"))
-      ((NodeTestFilter) current).setNodeTest(this);
-
-    Node next = null;
-
-    while (null != m_attributeList)
+    if (m_root == m_currentNode)
     {
-      m_attrListPos++;
+      next = getDTM(m_currentNode).getFirstAttribute(m_currentNode);
+      m_isFresh = false;
+    }
+    else
+      next = getDTM(m_currentNode).getNextAttribute(m_currentNode);
 
-      if (m_attrListPos < m_nAttrs)
+    if (DTM.NULL != next)
+    {
+      m_currentNode = next;
+
+      while (acceptNode(next) != DTMIterator.FILTER_ACCEPT)
       {
-        next = m_attributeList.item(m_attrListPos);
+        next = getDTM(next).getNextAttribute(next);
 
-        if (null != next)
+        if (DTM.NULL != next)
           m_currentNode = next;
+        else
+        {
+          this.m_isDone = true;
 
-        if (acceptNode(next) == NodeFilter.FILTER_ACCEPT)
           break;
-      }
-      else
-      {
-        next = null;
-        m_attributeList = null;
+        }
       }
     }
-
-    if (null == next)
+    else
       this.m_isDone = true;
 
     return next;

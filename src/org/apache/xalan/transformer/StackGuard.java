@@ -56,9 +56,10 @@
  */
 package org.apache.xalan.transformer;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.Text;
-import org.w3c.dom.Element;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.Text;
+//import org.w3c.dom.Element;
+import org.apache.xml.dtm.DTM;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -119,10 +120,10 @@ public class StackGuard
   }
 
   /** Stylesheet Template node          */
-  Node m_xslRule;
+  ElemTemplateElement m_xslRule;
 
   /** Source node          */
-  Node m_sourceXML;
+  int m_sourceXML;
 
   /** Stack where ElemTempalteElements will be pushed          */
   java.util.Stack stack = new java.util.Stack();
@@ -140,7 +141,7 @@ public class StackGuard
    * @param xslTemplate Current template node
    * @param sourceXML Source Node
    */
-  public StackGuard(ElemTemplateElement xslTemplate, Node sourceXML)
+  public StackGuard(ElemTemplateElement xslTemplate, int sourceXML)
   {
     m_xslRule = xslTemplate;
     m_sourceXML = sourceXML;
@@ -158,7 +159,7 @@ public class StackGuard
   {
 
     if (((StackGuard) obj).m_xslRule.equals(m_xslRule)
-            && ((StackGuard) obj).m_sourceXML.equals(m_sourceXML))
+            && ((StackGuard) obj).m_sourceXML == m_sourceXML)
     {
       return true;
     }
@@ -176,18 +177,19 @@ public class StackGuard
   {
 
     // for the moment, these diagnostics are really bad...
-    if (m_sourceXML instanceof Text)
-    {
-      Text tx = (Text) m_sourceXML;
-
-      pw.println(tx.getData());
-    }
-    else if (m_sourceXML instanceof Element)
-    {
-      Element elem = (Element) m_sourceXML;
-
-      pw.println(elem.getNodeName());
-    }
+    // %DTBD% We need an execution context.
+//    if (m_sourceXML instanceof Text)
+//    {
+//      Text tx = (Text) m_sourceXML;
+//
+//      pw.println(tx.getData());
+//    }
+//    else if (m_sourceXML instanceof Element)
+//    {
+//      Element elem = (Element) m_sourceXML;
+//
+//      pw.println(elem.getNodeName());
+//    }
   }
 
   /**
@@ -249,7 +251,7 @@ public class StackGuard
    *
    * @throws TransformerException
    */
-  public void push(ElemTemplateElement xslTemplate, Node sourceXML)
+  public void push(ElemTemplateElement xslTemplate, int sourceXML)
           throws TransformerException
   {
 

@@ -63,7 +63,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.*;
 import org.apache.xalan.extensions.ExtensionsTable;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.traversal.NodeIterator;
 
@@ -139,7 +139,7 @@ public class FuncExtFunction extends Function
 
     ExtensionsTable etable = xctxt.getExtensionsTable();
     Object val = etable.extFunction(m_namespace, m_extensionName, argVec,
-                                    m_methodKey, xctxt);
+                                    m_methodKey, xctxt.getExpressionContext());
 
     if (null != val)
     {
@@ -168,17 +168,19 @@ public class FuncExtFunction extends Function
       {
         result = new XNumber(((Double) val).doubleValue());
       }
-      else if (val instanceof DocumentFragment)
+      // %TBD%
+//      else if (val instanceof DocumentFragment)
+//      {
+//        result = new XRTreeFrag((DocumentFragment) val);
+//      }
+//      else if (val instanceof NodeIterator)
+//      {
+//        result = new XNodeSet((NodeIterator) val);
+//      }
+      else if (val instanceof org.w3c.dom.Node)
       {
-        result = new XRTreeFrag((DocumentFragment) val);
-      }
-      else if (val instanceof NodeIterator)
-      {
-        result = new XNodeSet((NodeIterator) val);
-      }
-      else if (val instanceof Node)
-      {
-        result = new XNodeSet((Node) val);
+        result = new XNodeSet(xctxt.getDTMHandleFromNode((org.w3c.dom.Node)val), 
+                              xctxt.getDTMManager());
       }
       else
       {

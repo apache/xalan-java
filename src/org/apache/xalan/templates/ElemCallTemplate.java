@@ -170,12 +170,12 @@ public class ElemCallTemplate extends ElemForEach
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
 
     if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+      transformer.getTraceManager().fireTraceEvent(this);
 
     if (null != m_template)
     {
@@ -185,7 +185,7 @@ public class ElemCallTemplate extends ElemForEach
       int savedSearchStart = vars.getSearchStart();
 
       if (null != m_paramElems)
-        transformer.pushParams(xctxt, this, sourceNode, mode);
+        transformer.pushParams(xctxt, this);
       else
         vars.pushContextMarker();
       
@@ -199,7 +199,7 @@ public class ElemCallTemplate extends ElemForEach
 
         // template.executeChildTemplates(transformer, sourceNode, mode, true);
         transformer.pushElemTemplateElement(m_template);
-        m_template.execute(transformer, sourceNode, mode);
+        m_template.execute(transformer);
       }
       finally
       {
@@ -269,7 +269,7 @@ public class ElemCallTemplate extends ElemForEach
    *
    * @throws DOMException
    */
-  public Node appendChild(Node newChild) throws DOMException
+  public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
 
     int type = ((ElemTemplateElement) newChild).getXSLToken();

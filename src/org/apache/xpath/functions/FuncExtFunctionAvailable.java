@@ -60,7 +60,7 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.extensions.ExtensionsTable;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
 
 import java.util.Vector;
 

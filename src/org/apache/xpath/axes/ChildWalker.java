@@ -60,7 +60,8 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 /**
  * Walker for the 'child' axes.
@@ -84,11 +85,11 @@ public class ChildWalker extends AxesWalker
    *
    * @param root The context node of this step.
    */
-  public void setRoot(Node root)
+  public void setRoot(int root)
   {
 
     // System.out.println("ChildWalker.setRoot");
-    m_nextLevelAmount = root.hasChildNodes() ? 1 : 0;
+    m_nextLevelAmount = getDTM(root).hasChildNodes(root) ? 1 : 0;
 
     // System.out.println("Back from calling hasChildNodes");
     super.setRoot(root);
@@ -104,7 +105,7 @@ public class ChildWalker extends AxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   visible children in the TreeWalker's logical view.
    */
-  public Node firstChild()
+  public int firstChild()
   {
 
     // System.out.println("ChildWalker.firstChild");
@@ -112,12 +113,11 @@ public class ChildWalker extends AxesWalker
 
     if (m_root == m_currentNode)
     {
-
       // System.out.println("ChildWalker - Calling getFirstChild");
-      return setCurrentIfNotNull(this.m_root.getFirstChild());
+      return setCurrentIfNotNull(getDTM(m_root).getFirstChild(m_root));
     }
     else
-      return null;
+      return DTM.NULL;
   }
 
   /**
@@ -127,13 +127,12 @@ public class ChildWalker extends AxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   next sibling in the TreeWalker's logical view.
    */
-  public Node nextSibling()
+  public int nextSibling()
   {
-
     if (m_root != m_currentNode)
-      return setCurrentIfNotNull(m_currentNode.getNextSibling());
+      return setCurrentIfNotNull(getDTM(m_currentNode).getNextSibling(m_currentNode));
     else
-      return null;
+      return DTM.NULL;
   }
 
   /**
@@ -143,6 +142,6 @@ public class ChildWalker extends AxesWalker
    */
   protected int getLevelMax()
   {
-    return m_lpi.getDOMHelper().getLevel(m_root);
+    return getDTM(m_root).getLevel(m_root);
   }
 }

@@ -56,11 +56,8 @@
  */
 package org.apache.xpath.patterns;
 
-import org.w3c.dom.traversal.NodeFilter;
-
 import org.apache.xpath.compiler.OpCodes;
 import org.apache.xpath.XPath;
-import org.apache.xpath.DOMHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNumber;
@@ -68,8 +65,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.WhitespaceStrippingElementMatcher;
 import org.apache.xml.utils.PrefixResolver;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeFilter;
+import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.dtm.DTM;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -93,10 +90,6 @@ public class NodeTest extends Expression
    * @serial
    */
   protected int m_whatToShow;
-
-  /** This bit specifies a namespace, and extends the SHOW_XXX stuff 
-   *  in {@link org.w3c.dom.traversal.NodeFilter}. */
-  public static final int SHOW_NAMESPACE = 0x00001000;
 
   /**
    * Special bitmap for match patterns starting with a function.
@@ -292,40 +285,40 @@ public class NodeTest extends Expression
 
     java.util.Vector v = new java.util.Vector();
 
-    if (0 != (whatToShow & NodeFilter.SHOW_ATTRIBUTE))
+    if (0 != (whatToShow & DTMFilter.SHOW_ATTRIBUTE))
       v.addElement("SHOW_ATTRIBUTE");
 
-    if (0 != (whatToShow & NodeFilter.SHOW_CDATA_SECTION))
+    if (0 != (whatToShow & DTMFilter.SHOW_CDATA_SECTION))
       v.addElement("SHOW_CDATA_SECTION");
 
-    if (0 != (whatToShow & NodeFilter.SHOW_COMMENT))
+    if (0 != (whatToShow & DTMFilter.SHOW_COMMENT))
       v.addElement("SHOW_COMMENT");
 
-    if (0 != (whatToShow & NodeFilter.SHOW_DOCUMENT))
+    if (0 != (whatToShow & DTMFilter.SHOW_DOCUMENT))
       v.addElement("SHOW_DOCUMENT");
 
-    if (0 != (whatToShow & NodeFilter.SHOW_DOCUMENT_FRAGMENT))
+    if (0 != (whatToShow & DTMFilter.SHOW_DOCUMENT_FRAGMENT))
       v.addElement("SHOW_DOCUMENT_FRAGMENT");
 
-    if (0 != (whatToShow & NodeFilter.SHOW_DOCUMENT_TYPE))
+    if (0 != (whatToShow & DTMFilter.SHOW_DOCUMENT_TYPE))
       v.addElement("SHOW_DOCUMENT_TYPE");
 
-    if (0 != (whatToShow & NodeFilter.SHOW_ELEMENT))
+    if (0 != (whatToShow & DTMFilter.SHOW_ELEMENT))
       v.addElement("SHOW_ELEMENT");
 
-    if (0 != (whatToShow & NodeFilter.SHOW_ENTITY))
+    if (0 != (whatToShow & DTMFilter.SHOW_ENTITY))
       v.addElement("SHOW_ENTITY");
 
-    if (0 != (whatToShow & NodeFilter.SHOW_ENTITY_REFERENCE))
+    if (0 != (whatToShow & DTMFilter.SHOW_ENTITY_REFERENCE))
       v.addElement("SHOW_ENTITY_REFERENCE");
 
-    if (0 != (whatToShow & NodeFilter.SHOW_NOTATION))
+    if (0 != (whatToShow & DTMFilter.SHOW_NOTATION))
       v.addElement("SHOW_NOTATION");
 
-    if (0 != (whatToShow & NodeFilter.SHOW_PROCESSING_INSTRUCTION))
+    if (0 != (whatToShow & DTMFilter.SHOW_PROCESSING_INSTRUCTION))
       v.addElement("SHOW_PROCESSING_INSTRUCTION");
 
-    if (0 != (whatToShow & NodeFilter.SHOW_TEXT))
+    if (0 != (whatToShow & DTMFilter.SHOW_TEXT))
       v.addElement("SHOW_TEXT");
 
     int n = v.size();
@@ -394,53 +387,32 @@ public class NodeTest extends Expression
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt, Node context)
+  public XObject execute(XPathContext xctxt, int context)
           throws javax.xml.transform.TransformerException
   {
-    short nodeType = context.getNodeType();
-    
-    // Yuck!  Blech!  -sb
-    if((Node.TEXT_NODE == nodeType || Node.CDATA_SECTION_NODE == nodeType) && !context.isSupported(SUPPORTS_PRE_STRIPPING, null))
-    {
-      Node parent = context.getParentNode();
-      if(null != parent && Node.ELEMENT_NODE == parent.getNodeType())
-      {
-        String data = context.getNodeValue();
-        if(org.apache.xml.utils.XMLCharacterRecognizer.isWhiteSpace(data))
-        {
-          // Ugly trick for now.
-          PrefixResolver resolver = xctxt.getNamespaceContext();
-          if(resolver instanceof WhitespaceStrippingElementMatcher)
-          {
-            WhitespaceStrippingElementMatcher wsem = 
-               (WhitespaceStrippingElementMatcher)resolver;
-            if(wsem.shouldStripWhiteSpace(xctxt, (org.w3c.dom.Element)parent))
-            {
-              return SCORE_NONE;
-            }
-          }
-        }
-      }
-    }
+    DTM dtm = xctxt.getDTM(context);
+    short nodeType = dtm.getNodeType(context);
 
-    if (m_whatToShow == NodeFilter.SHOW_ALL)
+    if (m_whatToShow == DTMFilter.SHOW_ALL)
       return m_score;
 
     int nodeBit = (m_whatToShow & (0x00000001 << (nodeType - 1)));
 
     switch (nodeBit)
     {
-    case NodeFilter.SHOW_DOCUMENT_FRAGMENT :
-    case NodeFilter.SHOW_DOCUMENT :
+    case DTMFilter.SHOW_DOCUMENT_FRAGMENT :
+    case DTMFilter.SHOW_DOCUMENT :
       return SCORE_OTHER;
-    case NodeFilter.SHOW_COMMENT :
+    case DTMFilter.SHOW_COMMENT :
       return m_score;
-    case NodeFilter.SHOW_CDATA_SECTION :
-    case NodeFilter.SHOW_TEXT :
-      return (!xctxt.getDOMHelper().shouldStripSourceNode(context))
-             ? m_score : SCORE_NONE;
-    case NodeFilter.SHOW_PROCESSING_INSTRUCTION :
-      return subPartMatch(context.getNodeName(), m_name)
+    case DTMFilter.SHOW_CDATA_SECTION :
+    case DTMFilter.SHOW_TEXT :
+      // was: 
+      // return (!xctxt.getDOMHelper().shouldStripSourceNode(context))
+      //       ? m_score : SCORE_NONE;
+      return m_score;
+    case DTMFilter.SHOW_PROCESSING_INSTRUCTION :
+      return subPartMatch(dtm.getNodeName(context), m_name)
              ? m_score : SCORE_NONE;
 
     // From the draft: "Two expanded names are equal if they 
@@ -455,37 +427,17 @@ public class NodeTest extends Expression
     // namespace declarations. The node test will be true for any node 
     // of the principal type whose expanded name has the URI to which 
     // the prefix expands, regardless of the local part of the name."
-    case NodeFilter.SHOW_ATTRIBUTE :
+    case DTMFilter.SHOW_NAMESPACE :
     {
-      int isNamespace = (m_whatToShow & SHOW_NAMESPACE);
+      String ns = dtm.getNodeValue(context);
 
-      if (0 == isNamespace)
-      {
-        DOMHelper dh = xctxt.getDOMHelper();
-
-        if (!dh.isNamespaceNode(context))
-          return (m_isTotallyWild || (subPartMatchNS(dh.getNamespaceOfNode(context), m_namespace) && subPartMatch(dh.getLocalNameOfNode(context), m_name)))
-                 ? m_score : SCORE_NONE;
-        else
-          return SCORE_NONE;
-      }
-      else
-      {
-        if (xctxt.getDOMHelper().isNamespaceNode(context))
-        {
-          String ns = context.getNodeValue();
-
-          return (subPartMatch(ns, m_name)) ? m_score : SCORE_NONE;
-        }
-        else
-          return SCORE_NONE;
-      }
+      return (subPartMatch(ns, m_name)) ? m_score : SCORE_NONE;
     }
-    case NodeFilter.SHOW_ELEMENT :
+    case DTMFilter.SHOW_ATTRIBUTE :
+    case DTMFilter.SHOW_ELEMENT :
     {
-      DOMHelper dh = xctxt.getDOMHelper();
-
-      return (m_isTotallyWild || (subPartMatchNS(dh.getNamespaceOfNode(context), m_namespace) && subPartMatch(dh.getLocalNameOfNode(context), m_name)))
+      return (m_isTotallyWild || (subPartMatchNS(dtm.getNamespaceURI(context), m_namespace) 
+           && subPartMatch(dtm.getLocalName(context), m_name)))
              ? m_score : SCORE_NONE;
     }
     default :
@@ -509,7 +461,6 @@ public class NodeTest extends Expression
   public XObject execute(XPathContext xctxt)
           throws javax.xml.transform.TransformerException
   {
-
     return execute(xctxt, xctxt.getCurrentNode());
   }
 }

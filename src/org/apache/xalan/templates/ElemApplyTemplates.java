@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.*;
+//import org.w3c.dom.*;
 
 import org.xml.sax.*;
 
@@ -170,36 +170,47 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
 
     transformer.pushCurrentTemplateRuleIsNull(false);
 
+    boolean pushMode = false;
+    
     try
     {
       if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
-
-      if (null != sourceNode)
-      {
-
+        transformer.getTraceManager().fireTraceEvent(this);
+        
+        // %REVIEW% Do we need this check??
+//      if (null != sourceNode)
+//      {
+          
         // boolean needToTurnOffInfiniteLoopCheck = false;
+        QName mode = transformer.getMode();
         if (!m_isDefaultTemplate)
         {
-          mode = m_mode;
+          if(((null == mode) && (null != m_mode) ) ||
+              ((null != mode) && !mode.equals(m_mode)))
+          {
+            pushMode = true;
+            transformer.pushMode(m_mode);
+          }
         }
 
-        transformSelectedNodes(transformer, sourceNode, null, mode);
-      }
-      else  // if(null == sourceNode)
-      {
-        transformer.getMsgMgr().error(this,
-          XSLTErrorResources.ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES);  //"sourceNode is null in handleApplyTemplatesInstruction!");
-      }
+        transformSelectedNodes(transformer, null);
+//      }
+//      else  // if(null == sourceNode)
+//      {
+//        transformer.getMsgMgr().error(this,
+//          XSLTErrorResources.ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES);  //"sourceNode is null in handleApplyTemplatesInstruction!");
+//      }
     }
     finally
     {
+      if(pushMode)
+        transformer.popMode();
       transformer.popCurrentTemplateRuleIsNull();
     }
   }
@@ -231,7 +242,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * @throws TransformerException
    */
   int pushParams(
-          TransformerImpl transformer, XPathContext xctxt, Node sourceNode, QName mode)
+          TransformerImpl transformer, XPathContext xctxt)
             throws TransformerException
   {
 
@@ -240,8 +251,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
     
     if (null != m_paramElems)
     {  
-      transformer.pushParams(xctxt, this, sourceNode, mode);
-     }  
+      transformer.pushParams(xctxt, this);
+    }  
     else
       vars.pushContextMarker();
     

@@ -74,8 +74,9 @@ import org.apache.xml.utils.StringVector;
 import org.apache.xpath.XPath;
 
 // DOM Imports
-import org.w3c.dom.Node;
-import org.w3c.dom.Document;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.Document;
+import org.apache.xml.dtm.DTM;
 
 // SAX2 Imports
 import javax.xml.transform.TransformerException;
@@ -127,7 +128,7 @@ import javax.xml.transform.SourceLocator;
  * @see <a href="http://www.w3.org/TR/xslt#section-Stylesheet-Structure">section-Stylesheet-Structure in XSLT Specification</a>
  */
 public class Stylesheet extends ElemTemplateElement
-        implements java.io.Serializable, Document
+        implements java.io.Serializable /* , Document */
 {
 
   /**
@@ -1351,7 +1352,7 @@ public class Stylesheet extends ElemTemplateElement
    */
   public short getNodeType()
   {
-    return Node.DOCUMENT_NODE;
+    return DTM.DOCUMENT_NODE;
   }
 
   /**
@@ -1394,7 +1395,7 @@ public class Stylesheet extends ElemTemplateElement
     if (null == m_templates)
       throw new ArrayIndexOutOfBoundsException();
 
-    replaceChild(v, (Node) m_templates.elementAt(i));
+    replaceChild(v, (ElemTemplateElement)m_templates.elementAt(i));
     m_templates.setElementAt(v, i);
     v.setStylesheet(this);
   }

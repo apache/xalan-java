@@ -186,7 +186,7 @@ public class PrintTraceListener implements TraceListener
         // You may not have line numbers if the selection is occuring from a
         // default template.
         ElemTemplateElement parent =
-          (ElemTemplateElement) ete.getParentNode();
+          (ElemTemplateElement) ete.getParentElem();
 
         if (parent == ete.getStylesheetRoot().getDefaultRootRule())
         {
@@ -215,36 +215,36 @@ public class PrintTraceListener implements TraceListener
       if (ev.m_selection.getType() == ev.m_selection.CLASS_NODESET)
       {
         m_pw.println();
-
-        NodeIterator nl = ev.m_selection.nodeset();
-        if(nl instanceof ContextNodeList)
-        {
-          try
-          {
-            nl = ((ContextNodeList)nl).cloneWithReset();
-          }
-          catch(CloneNotSupportedException cnse)
-          {
-            m_pw.println("     [Can't trace nodelist because it it threw a CloneNotSupportedException]");
-            return;
-          }
-          Node pos = nl.nextNode();
-
-          if (null == pos)
-          {
-            m_pw.println("     [empty node list]");
-          }
-          else
-          {
-            while (null != pos)
-            {
-              m_pw.println("     " + pos);
-
-              pos = nl.nextNode();
-            }
-          }
-        }
-        else
+        // %DTBD%
+//        NodeIterator nl = ev.m_selection.nodeset();
+//        if(nl instanceof ContextNodeList)
+//        {
+//          try
+//          {
+//            nl = ((ContextNodeList)nl).cloneWithReset();
+//          }
+//          catch(CloneNotSupportedException cnse)S
+//          {
+//            m_pw.println("     [Can't trace nodelist because it it threw a CloneNotSupportedException]");
+//            return;
+//          }
+//          Node pos = nl.nextNode();
+//
+//          if (null == pos)
+//          {
+//            m_pw.println("     [empty node list]");
+//          }
+//          else
+//          {
+//            while (null != pos)
+//            {
+//              m_pw.println("     " + pos);
+//
+//              pos = nl.nextNode();
+//            }
+//          }
+//        }
+//        else
         {
             m_pw.println("     [Can't trace nodelist because it isn't a ContextNodeList]");
         }

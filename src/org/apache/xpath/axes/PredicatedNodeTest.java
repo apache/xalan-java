@@ -9,9 +9,11 @@ import org.apache.xpath.axes.SubContextList;
 
 import org.apache.xml.utils.PrefixResolver;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeFilter;
-
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeFilter;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMFilter;
 
 public abstract class PredicatedNodeTest extends NodeTest implements SubContextList
 {
@@ -257,7 +259,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
    *
    * @throws javax.xml.transform.TransformerException
    */
-  boolean executePredicates(Node context, XPathContext xctxt)
+  boolean executePredicates(int context, XPathContext xctxt)
           throws javax.xml.transform.TransformerException
   {
 
@@ -350,18 +352,16 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
    *
    * @return Informative string about the argument.
    */
-  protected String nodeToString(Node n)
+  protected String nodeToString(int n)
   {
-
-    try
+    if(DTM.NULL != n)
     {
-      return (null != n)
-             ? n.getNodeName() + "{" + ((org.apache.xalan.stree.Child) n).getUid() + "}"
-             : "null";
+      DTM dtm = m_lpi.getXPathContext().getDTM(n);
+      return dtm.getNodeName(n) + "{" + (n+1) + "}";
     }
-    catch (ClassCastException cce)
+    else
     {
-      return (null != n) ? n.getNodeName() : "null";
+      return "null";
     }
   }
   
@@ -376,7 +376,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
    * @return  a constant to determine whether the node is accepted,
    *   rejected, or skipped, as defined  above .
    */
-  public short acceptNode(Node n)
+  public short acceptNode(int n)
   {
 
     XPathContext xctxt = m_lpi.getXPathContext();
@@ -395,10 +395,10 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
           countProximityPosition(0);
 
           if (!executePredicates(n, xctxt))
-            return NodeFilter.FILTER_SKIP;
+            return DTMIterator.FILTER_SKIP;
         }
 
-        return NodeFilter.FILTER_ACCEPT;
+        return DTMIterator.FILTER_ACCEPT;
       }
     }
     catch (javax.xml.transform.TransformerException se)
@@ -412,7 +412,7 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
       xctxt.popCurrentNode();
     }
 
-    return NodeFilter.FILTER_SKIP;
+    return DTMIterator.FILTER_SKIP;
   }
 
   

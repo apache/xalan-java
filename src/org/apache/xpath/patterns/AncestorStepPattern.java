@@ -62,8 +62,10 @@ import org.apache.xpath.XPathContext;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.axes.LocPathIterator;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
+
+import org.apache.xml.dtm.DTM;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -161,26 +163,30 @@ public class AncestorStepPattern extends StepPattern
   {
 
     XObject score = NodeTest.SCORE_NONE;
-    Node parent = xctxt.getCurrentNode();
-
-    while (null != (parent = xctxt.getDOMHelper().getParentOfNode(parent)))
+    int parent = xctxt.getCurrentNode();
+    DTM dtm = xctxt.getDTM(parent);
+    
+    if(null != dtm)
     {
-      try
+      while (DTM.NULL != (parent = dtm.getParent(parent)))
       {
-        xctxt.pushCurrentNode(parent);
-
-        score = execute(xctxt);
-
-        if (score != NodeTest.SCORE_NONE)
+        try
         {
-          score = SCORE_OTHER;
-
-          break;
+          xctxt.pushCurrentNode(parent);
+  
+          score = execute(xctxt);
+  
+          if (score != NodeTest.SCORE_NONE)
+          {
+            score = SCORE_OTHER;
+  
+            break;
+          }
         }
-      }
-      finally
-      {
-        xctxt.popCurrentNode();
+        finally
+        {
+          xctxt.popCurrentNode();
+        }
       }
     }
 

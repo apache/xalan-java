@@ -60,7 +60,8 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 /**
  * Walker for the FROM_ROOT axes.
@@ -89,7 +90,7 @@ public class RootWalker extends AxesWalker
    *
    * @param root The context node of this step.
    */
-  public void setRoot(Node root)
+  public void setRoot(int root)
   {      
 
     super.setRoot(root);
@@ -104,7 +105,7 @@ public class RootWalker extends AxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   visible children in the TreeWalker's logical view.
    */
-  public Node firstChild()
+  public int firstChild()
   {
 
     // Follow rule about returning the first occuring in document order 
@@ -113,12 +114,12 @@ public class RootWalker extends AxesWalker
     {
       m_processedRoot = true;
 
-      Node n = m_lpi.getDOMHelper().getRootNode(m_currentNode);
+      int n = getDTM(m_currentNode).getDocument();
 
       return setCurrentIfNotNull(n);
     }
 
-    return null;
+    return DTM.NULL;
   }
 
   /** True if the root node has been processed.   */

@@ -88,11 +88,12 @@ import org.apache.xml.utils.PrefixResolver;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.SourceLocator;
 import org.apache.xml.utils.SAXSourceLocator;
+import org.apache.xml.dtm.DTMFilter;
 
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
 
-import org.w3c.dom.traversal.NodeFilter;
+// import org.w3c.dom.traversal.NodeFilter;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -774,58 +775,58 @@ public class Compiler extends OpMap
     switch (testType)
     {
     case OpCodes.NODETYPE_COMMENT :
-      return NodeFilter.SHOW_COMMENT;
+      return DTMFilter.SHOW_COMMENT;
     case OpCodes.NODETYPE_TEXT :
-//      return NodeFilter.SHOW_TEXT | NodeFilter.SHOW_COMMENT;
-      return NodeFilter.SHOW_TEXT | NodeFilter.SHOW_CDATA_SECTION ;
+//      return DTMFilter.SHOW_TEXT | DTMFilter.SHOW_COMMENT;
+      return DTMFilter.SHOW_TEXT | DTMFilter.SHOW_CDATA_SECTION ;
     case OpCodes.NODETYPE_PI :
-      return NodeFilter.SHOW_PROCESSING_INSTRUCTION;
+      return DTMFilter.SHOW_PROCESSING_INSTRUCTION;
     case OpCodes.NODETYPE_NODE :
-//      return NodeFilter.SHOW_ALL;
+//      return DTMFilter.SHOW_ALL;
       switch (axesType)
       {
       case OpCodes.FROM_NAMESPACE:
-        return NodeFilter.SHOW_ATTRIBUTE | NodeTest.SHOW_NAMESPACE;
+        return DTMFilter.SHOW_ATTRIBUTE | DTMFilter.SHOW_NAMESPACE;
       case OpCodes.FROM_ATTRIBUTES :
       case OpCodes.MATCH_ATTRIBUTE :
-        return NodeFilter.SHOW_ATTRIBUTE;
+        return DTMFilter.SHOW_ATTRIBUTE;
       case OpCodes.FROM_SELF:
       case OpCodes.FROM_ANCESTORS_OR_SELF:
       case OpCodes.FROM_DESCENDANTS_OR_SELF:
-        return NodeFilter.SHOW_ALL;
+        return DTMFilter.SHOW_ALL;
       default:
         if (getOp(0) == OpCodes.OP_MATCHPATTERN)
-          return ~NodeFilter.SHOW_ATTRIBUTE
-                  & ~NodeFilter.SHOW_DOCUMENT
-                  & ~NodeFilter.SHOW_DOCUMENT_FRAGMENT;
+          return ~DTMFilter.SHOW_ATTRIBUTE
+                  & ~DTMFilter.SHOW_DOCUMENT
+                  & ~DTMFilter.SHOW_DOCUMENT_FRAGMENT;
         else
-          return ~NodeFilter.SHOW_ATTRIBUTE;
+          return ~DTMFilter.SHOW_ATTRIBUTE;
       }
     case OpCodes.NODETYPE_ROOT :
-      return NodeFilter.SHOW_DOCUMENT | NodeFilter.SHOW_DOCUMENT_FRAGMENT;
+      return DTMFilter.SHOW_DOCUMENT | DTMFilter.SHOW_DOCUMENT_FRAGMENT;
     case OpCodes.NODETYPE_FUNCTEST :
       return NodeTest.SHOW_BYFUNCTION;
     case OpCodes.NODENAME :
       switch (axesType)
       {
       case OpCodes.FROM_NAMESPACE :
-        return NodeFilter.SHOW_ATTRIBUTE | NodeTest.SHOW_NAMESPACE;
+        return DTMFilter.SHOW_ATTRIBUTE | DTMFilter.SHOW_NAMESPACE;
       case OpCodes.FROM_ATTRIBUTES :
       case OpCodes.MATCH_ATTRIBUTE :
-        return NodeFilter.SHOW_ATTRIBUTE;
+        return DTMFilter.SHOW_ATTRIBUTE;
 
       // break;
       case OpCodes.MATCH_ANY_ANCESTOR :
       case OpCodes.MATCH_IMMEDIATE_ANCESTOR :
-        return NodeFilter.SHOW_ELEMENT;
+        return DTMFilter.SHOW_ELEMENT;
 
       // break;
       default :
-        return NodeFilter.SHOW_ELEMENT;
+        return DTMFilter.SHOW_ELEMENT;
       }
     default :
       // System.err.println("We should never reach here.");
-      return NodeFilter.SHOW_ALL;
+      return DTMFilter.SHOW_ALL;
     }
   }
 
@@ -869,12 +870,12 @@ public class Compiler extends OpMap
     case OpCodes.FROM_ROOT :
       argLen = getArgLengthOfStep(opPos);
       opPos = getFirstChildPosOfStep(opPos);
-      pattern = new StepPattern(NodeFilter.SHOW_DOCUMENT | NodeFilter.SHOW_DOCUMENT_FRAGMENT);
+      pattern = new StepPattern(DTMFilter.SHOW_DOCUMENT | DTMFilter.SHOW_DOCUMENT_FRAGMENT);
       break;
     case OpCodes.MATCH_ATTRIBUTE :
       argLen = getArgLengthOfStep(opPos);
       opPos = getFirstChildPosOfStep(opPos);
-      pattern = new StepPattern(NodeFilter.SHOW_ATTRIBUTE,
+      pattern = new StepPattern(DTMFilter.SHOW_ATTRIBUTE,
                                 getStepNS(startOpPos),
                                 getStepLocalName(startOpPos));
       break;

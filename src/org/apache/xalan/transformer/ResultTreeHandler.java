@@ -73,12 +73,15 @@ import org.apache.xpath.DOMHelper;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPathContext;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.Attr;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.NamedNodeMap;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Attr;
+//import org.w3c.dom.DocumentFragment;
+//import org.w3c.dom.NodeList;
+//import org.w3c.dom.NamedNodeMap;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMFilter;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -231,10 +234,10 @@ public class ResultTreeHandler extends QueuedEvents
                            + qse.getLocalName());
 
       System.out.println("ResultTreeHandler#startElement: " + ns + "#" + localName);
-      if(null == ns)
-      {
-        (new RuntimeException(localName+" has a null namespace!")).printStackTrace();
-      }
+//      if(null == ns)
+//      {
+//        (new RuntimeException(localName+" has a null namespace!")).printStackTrace();
+//      }
     }
 
     checkForSerializerSwitch(ns, localName);
@@ -275,7 +278,7 @@ public class ResultTreeHandler extends QueuedEvents
 
       System.out.println("ResultTreeHandler#endElement: " + ns + "#" + localName);
     }
-
+  
     flushPending(EVT_ENDELEMENT);
     m_contentHandler.endElement(ns, localName, name);
 
@@ -725,6 +728,23 @@ public class ResultTreeHandler extends QueuedEvents
    *            wrapping another exception.
    */
   public void skippedEntity(String name) throws org.xml.sax.SAXException{}
+  
+  /**
+   * Set whether Namespace declarations have been added to 
+   * this element
+   *
+   *
+   * @param b Flag indicating whether Namespace declarations 
+   * have been added to this element
+   */
+  public void setNSDeclsHaveBeenAdded(boolean b)
+  {
+    QueuedStartElement qe = getQueuedElem();
+    if (null != qe) 
+    {
+      qe.setNSDeclsHaveBeenAdded(b);
+    }
+  }
 
   /**
    * Flush the pending element.
@@ -791,15 +811,13 @@ public class ResultTreeHandler extends QueuedEvents
   public void outputResultTreeFragment(XObject obj, XPathContext support)
           throws org.xml.sax.SAXException
   {
-
-    DocumentFragment docFrag = obj.rtree(support);
-    TreeWalker tw = new TreeWalker(this, support.getDOMHelper());
-
-    Node n;
-    for (n = docFrag.getFirstChild(); null != n; n = n.getNextSibling())
+    int doc = obj.rtree();
+    DTM dtm = support.getDTM(doc);
+  
+    for (int n = dtm.getFirstChild(doc); DTM.NULL != n; n = dtm.getNextSibling(n))
     {
       flushPending(EVT_NODE);  // I think.
-      tw.traverse(n);
+      dtm.dispatchToEvents(n, this);
     }
   }
 
@@ -811,7 +829,7 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * @throws org.xml.sax.SAXException
    */
-  public void cloneToResultTree(Node node, boolean shouldCloneAttributes)
+  public void cloneToResultTree(int node, boolean shouldCloneAttributes)
           throws org.xml.sax.SAXException
   {
     try
@@ -843,7 +861,7 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * @throws org.xml.sax.SAXException
    */
-  void ensurePrefixIsDeclared(String ns, String rawName) throws org.xml.sax.SAXException
+  public void ensurePrefixIsDeclared(String ns, String rawName) throws org.xml.sax.SAXException
   {
 
     if (ns != null && ns.length() > 0)
@@ -856,8 +874,39 @@ public class ResultTreeHandler extends QueuedEvents
       {
         String foundURI = m_nsSupport.getURI(prefix);
 
-        if ((null == foundURI) ||!foundURI.equals(ns))
+        if ((null == foundURI) || !foundURI.equals(ns))
+        {
+          
           startPrefixMapping(prefix, ns, false);
+        }
+      }
+    }
+  }
+  
+  /**
+   * This function checks to make sure a given prefix is really
+   * declared.  It might not be, because it may be an excluded prefix.
+   * If it's not, it still needs to be declared at this point.
+   * TODO: This needs to be done at an earlier stage in the game... -sb
+   *
+   * @param ns Namespace URI of the element 
+   * @param rawName Raw name of element (with prefix)
+   *
+   * @throws org.xml.sax.SAXException
+   */
+  public void ensureNamespaceDeclDeclared(DTM dtm, int namespace) throws org.xml.sax.SAXException
+  {
+    String uri = dtm.getNodeValue(namespace);
+    String prefix = dtm.getNodeNameX(namespace);
+
+    if ((uri != null && uri.length() > 0) && (null != prefix))
+    {
+      String foundURI = m_nsSupport.getURI(prefix);
+
+      if ((null == foundURI) || !foundURI.equals(uri))
+      {
+        
+        startPrefixMapping(prefix, uri, false);
       }
     }
   }
@@ -934,7 +983,7 @@ public class ResultTreeHandler extends QueuedEvents
    * Add the attributes that have been declared to the attribute list.
    * (Seems like I shouldn't have to do this...)
    */
-  protected void addNSDeclsToAttrs()
+  public void addNSDeclsToAttrs()
   {
 
     Enumeration prefixes = m_nsSupport.getDeclaredPrefixes();
@@ -974,43 +1023,39 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * @throws TransformerException
    */
-  public void processNSDecls(Node src) throws TransformerException
+  public void processNSDecls(int src) throws TransformerException
   {
 
     try
     {
       int type;
+      DTM dtm = m_transformer.getXPathContext().getDTM(src);
 
       // Vector nameValues = null;
       // Vector alreadyProcessedPrefixes = null;
-      Node parent;
+      int parent;
 
-      if (((type = src.getNodeType()) == Node.ELEMENT_NODE || (type == Node.ENTITY_REFERENCE_NODE))
-          && (parent = src.getParentNode()) != null)
+      if (((type = dtm.getNodeType(src)) == DTM.ELEMENT_NODE || 
+           (type == DTM.ENTITY_REFERENCE_NODE))
+          && (parent = dtm.getParent(src)) != DTM.NULL)
       {
         processNSDecls(parent);
       }
 
-      if (type == Node.ELEMENT_NODE)
+      if (type == DTM.ELEMENT_NODE)
       {
-        NamedNodeMap nnm = src.getAttributes();
-        int nAttrs = nnm.getLength();
 
-        for (int i = 0; i < nAttrs; i++)
+        for (int namespace = dtm.getFirstNamespaceNode(src, true);
+             DTM.NULL != namespace; namespace = dtm.getNextNamespaceNode(src, namespace, true))
         {
-          Node attr = nnm.item(i);
-          String aname = attr.getNodeName();
+          // String prefix = dtm.getPrefix(namespace);
+          String prefix = dtm.getNodeNameX(namespace);
+          String desturi = getURI(prefix);
+          String srcURI = dtm.getNodeValue(namespace);
 
-          if (QName.isXMLNSDecl(aname))
+          if (!srcURI.equalsIgnoreCase(desturi))
           {
-            String prefix = QName.getPrefixFromXMLNSDecl(aname);
-            String desturi = getURI(prefix);
-            String srcURI = attr.getNodeValue();
-
-            if (!srcURI.equalsIgnoreCase(desturi))
-            {
-              this.startPrefixMapping(prefix, srcURI, false);
-            }
+            this.startPrefixMapping(prefix, srcURI, false);
           }
         }
       }
@@ -1243,24 +1288,47 @@ public class ResultTreeHandler extends QueuedEvents
    * @return True if the namespace is already defined in 
    * list of namespaces
    */
-  public boolean isDefinedNSDecl(Attr attr)
+  public boolean isDefinedNSDecl(int attr)
   {
-
-    String rawName = attr.getNodeName();
-
-    if (rawName.equals("xmlns") || rawName.startsWith("xmlns:"))
+    DTM dtm = m_transformer.getXPathContext().getDTM(attr);
+    if(DTM.NAMESPACE_NODE == dtm.getNodeType(attr))
     {
-      int index;
-      String prefix = (index = rawName.indexOf(":")) < 0
-                      ? "" : rawName.substring(0, index);
+      // String prefix = dtm.getPrefix(attr);
+      String prefix = dtm.getNodeNameX(attr);
       String uri = getURI(prefix);
-
-      if ((null != uri) && uri.equals(attr.getValue()))
+  
+      if ((null != uri) && uri.equals(dtm.getStringValue(attr)))
         return true;
     }
 
     return false;
   }
+  
+  /**
+   * Returns whether a namespace is defined 
+   *
+   *
+   * @param attr Namespace attribute node
+   * @param dtm The DTM that owns attr.
+   *
+   * @return True if the namespace is already defined in 
+   * list of namespaces
+   */
+  public boolean isDefinedNSDecl(int attr, DTM dtm)
+  {
+    if(DTM.NAMESPACE_NODE == dtm.getNodeType(attr))
+    {
+      // String prefix = dtm.getPrefix(attr);
+      String prefix = dtm.getNodeNameX(attr);
+      String uri = getURI(prefix);
+  
+      if ((null != uri) && uri.equals(dtm.getStringValue(attr)))
+        return true;
+    }
+
+    return false;
+  }
+
 
   /**
    * Copy an DOM attribute to the created output element, executing
@@ -1271,21 +1339,21 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * @throws TransformerException
    */
-  public void addAttribute(Attr attr) throws TransformerException
+  public void addAttribute(int attr) throws TransformerException
   {
+    DTM dtm = m_transformer.getXPathContext().getDTM(attr);
 
-    if (isDefinedNSDecl(attr))
+    if (isDefinedNSDecl(attr, dtm))
       return;
-
-    DOMHelper helper = m_transformer.getXPathContext().getDOMHelper();
     
-    String ns = helper.getNamespaceOfNode(attr);
+    String ns = dtm.getNamespaceURI(attr);
     if(ns == null)
       ns = "";
 
+    // %OPT% ...can I just store the node handle?    
     addAttribute(ns,
-                 helper.getLocalNameOfNode(attr), attr.getNodeName(),
-                 "CDATA", attr.getValue());
+                 dtm.getLocalName(attr), dtm.getNodeName(attr),
+                 "CDATA", dtm.getNodeValue(attr));
   }  // end copyAttributeToTarget method
 
   /**
@@ -1295,16 +1363,13 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * @throws TransformerException
    */
-  public void addAttributes(Node src) throws TransformerException
+  public void addAttributes(int src) throws TransformerException
   {
+    DTM dtm = m_transformer.getXPathContext().getDTM(src);
 
-    NamedNodeMap nnm = src.getAttributes();
-    int nAttrs = nnm.getLength();
-
-    for (int i = 0; i < nAttrs; i++)
+    for (int node = dtm.getFirstAttribute(src); DTM.NULL != node; 
+         node = dtm.getNextAttribute(node))
     {
-      Attr node = (Attr) nnm.item(i);
-
       addAttribute(node);
     }
   }
@@ -1347,13 +1412,15 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * @return the current context node in the source tree.
    */
-  public Node getCurrentNode()
+  public org.w3c.dom.Node getCurrentNode()
   {
-    QueuedStartElement qe = getQueuedElem();
-    if(null != qe && qe.isPending)
-      return qe.getCurrentNode();
-    else
-      return m_transformer.getCurrentNode();
+    // %DTBD% Need DTM2DOM stuff
+    return null;
+//    QueuedStartElement qe = getQueuedElem();
+//    if(null != qe && qe.isPending)
+//      return qe.getCurrentNode();
+//    else
+//      return m_transformer.getCurrentNode();
   }
 
   /**
@@ -1405,13 +1472,15 @@ public class ResultTreeHandler extends QueuedEvents
    * @return the node in the source tree that matched
    * the template obtained via getMatchedTemplate().
    */
-  public Node getMatchedNode()
+  public org.w3c.dom.Node getMatchedNode()
   {
-    QueuedStartElement qe = getQueuedElem();
-    if(null != qe && qe.isPending)
-      return qe.getMatchedNode();
-    else
-      return m_transformer.getMatchedNode();
+    // %DTBD% Need DTM2DOM stuff
+    return null;
+//    QueuedStartElement qe = getQueuedElem();
+//    if(null != qe && qe.isPending)
+//      return qe.getMatchedNode();
+//    else
+//      return m_transformer.getMatchedNode();
   }
 
   /**
@@ -1419,13 +1488,15 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * @return the current context node list.
    */
-  public NodeIterator getContextNodeList()
+  public org.w3c.dom.traversal.NodeIterator getContextNodeList()
   {
-    QueuedStartElement qe = getQueuedElem();
-    if(null != qe && qe.isPending)
-      return qe.getContextNodeList();
-    else
-      return m_transformer.getContextNodeList();
+    // %DTBD% Need DTM2DOM stuff
+    return null;
+//    QueuedStartElement qe = getQueuedElem();
+//    if(null != qe && qe.isPending)
+//      return qe.getContextNodeList();
+//    else
+//      return m_transformer.getContextNodeList();
   }
 
   /**

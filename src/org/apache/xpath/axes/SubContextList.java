@@ -58,8 +58,8 @@ package org.apache.xpath.axes;
 
 import org.apache.xpath.XPathContext;
 
-import org.w3c.dom.Node;
-
+//import org.w3c.dom.Node;
+ 
 /**
  * <meta name="usage" content="advanced"/>
  * A class that implements this interface is a sub context node list, meaning it

@@ -58,13 +58,10 @@ package org.apache.xalan.transformer;
 
 import org.apache.xalan.templates.Stylesheet;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.Text;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Comment;
-import org.w3c.dom.CDATASection;
-import org.w3c.dom.ProcessingInstruction;
-import org.w3c.dom.EntityReference;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMFilter;
+import org.apache.xml.utils.XMLString;
 
 import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
@@ -112,94 +109,27 @@ public class ClonerToResultTree
    * 
    * @throws TransformerException
    */
-  public void cloneToResultTree(Node node, boolean shouldCloneAttributes)
+  public void cloneToResultTree(int node, boolean shouldCloneAttributes)
     throws TransformerException
   {
 
     try
     {
-      boolean stripWhiteSpace = false;
       XPathContext xctxt = m_transformer.getXPathContext();
-      DOMHelper dhelper = xctxt.getDOMHelper();
+      DTM dtm = xctxt.getDTM(node);
 
-      switch (node.getNodeType())
+      switch (dtm.getNodeType(node))
       {
-      case Node.TEXT_NODE :
-        {
-          Text tx = (Text) node;
-          String data = null;
-
-          // System.out.println("stripWhiteSpace = "+stripWhiteSpace+", "+tx.getData());
-          if (stripWhiteSpace)
-          {
-            if (!dhelper.isIgnorableWhitespace(tx))
-            {
-              data = tx.getData();
-
-              if ((null != data) && (0 == data.trim().length()))
-              {
-                data = null;
-              }
-            }
-          }
-          else
-          {
-            Node parent = node.getParentNode();
-
-            if (null != parent)
-            {
-              if (Node.DOCUMENT_NODE != parent.getNodeType())
-              {
-                data = tx.getData();
-
-                if ((null != data) && (0 == data.length()))
-                {
-                  data = null;
-                }
-              }
-            }
-            else
-            {
-              data = tx.getData();
-
-              if ((null != data) && (0 == data.length()))
-              {
-                data = null;
-              }
-            }
-          }
-
-          if (null != data)
-          {
-
-            // TODO: Hack around the issue of comments next to literals.
-            // This would be, when a comment is present, the whitespace
-            // after the comment must be added to the literal.  The
-            // parser should do this, but XML4J doesn't seem to.
-            // <foo>some lit text
-            //     <!-- comment -->
-            //     </foo>
-            // Loop through next siblings while they are comments, then,
-            // if the node after that is a ignorable text node, append
-            // it to the text node just added.
-            if (dhelper.isIgnorableWhitespace(tx))
-            {
-              m_rth.ignorableWhitespace(data.toCharArray(), 0, data.length());
-            }
-            else
-            {
-              m_rth.characters(data.toCharArray(), 0, data.length());
-            }
-          }
-        }
+      case DTM.TEXT_NODE :
+        dtm.dispatchCharactersEvents(node, m_rth);
         break;
-      case Node.DOCUMENT_FRAGMENT_NODE :
-      case Node.DOCUMENT_NODE :
+      case DTM.DOCUMENT_FRAGMENT_NODE :
+      case DTM.DOCUMENT_NODE :
 
         // Can't clone a document, but refrain from throwing an error
         // so that copy-of will work
         break;
-      case Node.ELEMENT_NODE :
+      case DTM.ELEMENT_NODE :
         {
           Attributes atts;
 
@@ -209,56 +139,39 @@ public class ClonerToResultTree
             m_rth.processNSDecls(node);
           }
 
-          String ns = dhelper.getNamespaceOfNode(node);
-          String localName = dhelper.getLocalNameOfNode(node);
+          String ns = dtm.getNamespaceURI(node);
+          String localName = dtm.getLocalName(node);
 
-          m_rth.startElement(ns, localName, node.getNodeName(), null);
+          m_rth.startElement(ns, localName, dtm.getNodeNameX(node), null);
         }
         break;
-      case Node.CDATA_SECTION_NODE :
-        {
-          m_rth.startCDATA();
-
-          String data = ((CDATASection) node).getData();
-
-          m_rth.characters(data.toCharArray(), 0, data.length());
-          m_rth.endCDATA();
-        }
+      case DTM.CDATA_SECTION_NODE :
+        m_rth.startCDATA();          
+        dtm.dispatchCharactersEvents(node, m_rth);
+        m_rth.endCDATA();
         break;
-      case Node.ATTRIBUTE_NODE :
-        {
-          if (m_rth.isDefinedNSDecl((Attr) node))
-            break;
-
-          String ns = dhelper.getNamespaceOfNode(node);
-          String localName = dhelper.getLocalNameOfNode(node);
-
-          m_rth.addAttribute(ns, localName, node.getNodeName(), "CDATA",
-                             ((Attr) node).getValue());
-        }
+      case DTM.ATTRIBUTE_NODE :
+        m_rth.addAttribute(node);
         break;
-      case Node.COMMENT_NODE :
-        {
-          m_rth.comment(((Comment) node).getData());
-        }
+      case DTM.COMMENT_NODE :
+        XMLString xstr = dtm.getStringValue (node);
+        xstr.dispatchAsComment(m_rth);
         break;
-      case Node.ENTITY_REFERENCE_NODE :
-        {
-          EntityReference er = (EntityReference) node;
-
-          m_rth.entityReference(er.getNodeName());
-        }
+      case DTM.ENTITY_REFERENCE_NODE :
+        m_rth.entityReference(dtm.getNodeNameX(node));
         break;
-      case Node.PROCESSING_INSTRUCTION_NODE :
+      case DTM.PROCESSING_INSTRUCTION_NODE :
         {
-          ProcessingInstruction pi = (ProcessingInstruction) node;
-
-          m_rth.processingInstruction(pi.getTarget(), pi.getData());
+          // %REVIEW% Is the node name the same as the "target"?
+          m_rth.processingInstruction(dtm.getNodeNameX(node), 
+                                      dtm.getNodeValue(node));
         }
         break;
       default :
-        m_transformer.getMsgMgr().error(null, XSLTErrorResources.ER_CANT_CREATE_ITEM,
-                                        new Object[]{ node.getNodeName() });  //"Can not create item in result tree: "+node.getNodeName());
+        //"Can not create item in result tree: "+node.getNodeName());
+        m_transformer.getMsgMgr().error(null, 
+                         XSLTErrorResources.ER_CANT_CREATE_ITEM,
+                         new Object[]{ dtm.getNodeName(node) });  
       }
     }
     catch(org.xml.sax.SAXException se)

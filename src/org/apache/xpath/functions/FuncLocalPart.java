@@ -58,8 +58,10 @@ package org.apache.xpath.functions;
 
 import org.apache.xpath.res.XPATHErrorResources;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import java.util.Vector;
 
@@ -86,11 +88,9 @@ public class FuncLocalPart extends FunctionDef1Arg
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
-    Node context = getArg0AsNode(xctxt);
-    
-    String s = (context != null)
-                       ? xctxt.getDOMHelper().getLocalNameOfNode(context)
-                       : "";
+    int context = getArg0AsNode(xctxt);
+    DTM dtm = xctxt.getDTM(context);
+    String s = (context != DTM.NULL) ? dtm.getLocalName(context) : "";
     if(s.startsWith("#") || s.equals("xmlns"))
       s = "";
 

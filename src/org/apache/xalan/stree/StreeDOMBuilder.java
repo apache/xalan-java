@@ -217,7 +217,6 @@ public class StreeDOMBuilder extends DOMBuilder
     }
     
     append(elem);
-
     m_elemStack.push(elem);
 
     m_currentNode = elem;

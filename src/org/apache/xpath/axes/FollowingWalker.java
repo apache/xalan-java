@@ -63,7 +63,8 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.DOMHelper;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 /**
  * Walker for the 'following' axes.
@@ -87,12 +88,13 @@ public class FollowingWalker extends AxesWalker
    *
    * @param root The context node of this step.
    */
-  public void setRoot(Node root)
+  public void setRoot(int root)
   {      
 
     super.setRoot(root);
     
-    if(root.getNodeType() == Node.ATTRIBUTE_NODE)
+    DTM dtm = getDTM(root);
+    if(dtm.getNodeType(root) == DTM.ATTRIBUTE_NODE)
     {
       // The current node could be an attribute node, so getNextSibling() will 
       // always return null.  In that case, we want to continue the search 
@@ -101,15 +103,15 @@ public class FollowingWalker extends AxesWalker
       // don't have to consider following attributes, since they never match 
       // the following axes.
       /*
-      Node e = m_lpi.getDOMHelper().getParentOfNode(root);
+      int e = m_lpi.getDOMHelper().getParentOfNode(root);
       root = e.getLastChild();
       if(null == root)
         root = e;
       m_currentAncestor = e.getParentNode();
       */
-      Node e = m_lpi.getDOMHelper().getParentOfNode(root);
+      int e = dtm.getParent(root);
       m_currentNode = e;
-      m_currentAncestor = e.getOwnerDocument(); // Not totally sure why
+      m_currentAncestor = dtm.getDocument(); // Not totally sure why
     } 
     else
       m_currentAncestor = root;
@@ -130,22 +132,22 @@ public class FollowingWalker extends AxesWalker
    * @return  The new parent node, or null if the current node has no parent
    *   in the TreeWalker's logical view.
    */
-  public Node parentNode()
+  public int parentNode()
   {
 
-    Node n;
-//    Node nextAncestor = (null != m_currentAncestor)
+    int n;
+//    int nextAncestor = (null != m_currentAncestor)
 //                        ? m_currentAncestor.getParentNode() : null;
-    Node nextParent = m_currentNode.getParentNode();
+    int nextParent = getDTM(m_root).getParent(m_currentNode);
 
 //    if (nextParent == nextAncestor)
 //    {
 //      n = null;
 //
-//      Node ancestor = m_currentAncestor;
+//      int ancestor = m_currentAncestor;
 //
 //      while ((null != ancestor)
-//             && (null != (ancestor = (Node) ancestor.getParentNode())))
+//             && (null != (ancestor = (int) ancestor.getParentNode())))
 //      {
 //        n = ancestor.getNextSibling();
 //
@@ -162,7 +164,7 @@ public class FollowingWalker extends AxesWalker
 
 //    if(null != n)
 //    {
-//      Node attrNode = n.getAttributes().getNamedItem("id");
+//      int attrNode = n.getAttributes().getNamedItem("id");
 //      if(null != attrNode)
 //        System.out.println("parentNode: "+attrNode.getNodeValue());
 //      else
@@ -182,13 +184,14 @@ public class FollowingWalker extends AxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   visible children in the TreeWalker's logical view.
    */
-  public Node firstChild()
+  public int firstChild()
   {
 
-    Node n;
+    int n;
+    DTM dtm = getDTM(m_root);
     if(m_currentAncestor == m_currentNode)
     {
-//      if(m_currentNode.getNodeType() == Node.ATTRIBUTE_NODE)
+//      if(m_currentNode.getNodeType() == DTM.ATTRIBUTE_NODE)
 //      {
 //        // The current node could be an attribute node, so getNextSibling() will 
 //        // always return null.  In that case, we want to continue the search 
@@ -199,18 +202,18 @@ public class FollowingWalker extends AxesWalker
 //        n = m_lpi.getDOMHelper().getParentOfNode(m_currentNode).getFirstChild();
 //      } 
 //      else
-        n = m_currentNode.getNextSibling();
+        n = dtm.getNextSibling(m_currentNode);
     }
     else
     {
-      n = m_currentNode.getFirstChild();
+      n = dtm.getFirstChild(m_currentNode);
     }
 
-    m_nextLevelAmount = (null == n) ? 0 : (n.hasChildNodes() ? 1 : 0);
+    m_nextLevelAmount = (DTM.NULL == n) ? 0 : (dtm.hasChildNodes(n) ? 1 : 0);
     
 //    if(null != n)
 //    {
-//      Node attrNode = n.getAttributes().getNamedItem("id");
+//      int attrNode = n.getAttributes().getNamedItem("id");
 //      if(null != attrNode)
 //        System.out.println("firstChild: "+attrNode.getNodeValue());
 //      else
@@ -229,17 +232,18 @@ public class FollowingWalker extends AxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   next sibling in the TreeWalker's logical view.
    */
-  public Node nextSibling()
+  public int nextSibling()
   {
 
-    Node n;    
-    n = m_currentNode.getNextSibling();
+    int n;    
+    DTM dtm = getDTM(m_root);
+    n = dtm.getNextSibling(m_currentNode);
 
-    m_nextLevelAmount = (null == n) ? 0 : (n.hasChildNodes() ? 1 : 0);
+    m_nextLevelAmount = (DTM.NULL == n) ? 0 : (dtm.hasChildNodes(n) ? 1 : 0);
 
 //    if(null != n)
 //    {
-//      Node attrNode = n.getAttributes().getNamedItem("id");
+//      int attrNode = n.getAttributes().getNamedItem("id");
 //      if(null != attrNode)
 //        System.out.println("nextSibling: "+attrNode.getNodeValue());
 //      else
@@ -253,7 +257,7 @@ public class FollowingWalker extends AxesWalker
 
   /** What this is is frankly a little unclear.  It is used in getParent 
    *  to see if we should continue to climb the tree. */
-  transient Node m_currentAncestor;
+  transient int m_currentAncestor = DTM.NULL;
 
   /**
    * Tell what's the maximum level this axes can descend to.

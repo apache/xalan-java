@@ -360,49 +360,6 @@ public class Parent extends Child
 
     m_last = child;
 
-    // getDocumentImpl().getLevelIndexer().insertNode(child);
-    if (Node.ELEMENT_NODE == child.getNodeType())
-    {
-      SourceTreeHandler sh = doc.getSourceTreeHandler();
-
-      if ((null != sh) && sh.m_shouldCheckWhitespace)
-      {
-        TransformerImpl transformer = sh.getTransformerImpl();
-
-        if (null != transformer)
-        {
-          StylesheetRoot stylesheet = transformer.getStylesheet();
-
-          try
-          {
-            ElementImpl elem = (ElementImpl) child;
-            if(null == doc.m_xpathContext)
-              doc.m_xpathContext = new org.apache.xpath.XPathContext(doc);
-            WhiteSpaceInfo info =
-              stylesheet.getWhiteSpaceInfo(doc.m_xpathContext,
-                                           elem);
-            boolean shouldStrip;
-
-            if (null == info)
-            {
-              shouldStrip = sh.getShouldStripWhitespace();
-            }
-            else
-            {
-              shouldStrip = info.getShouldStripSpace();
-            }
-
-            sh.setShouldStripWhitespace(shouldStrip);
-          }
-          catch (TransformerException se)
-          {
-
-            // TODO: Diagnostics
-          }
-        }
-      }
-    }
-
     return newChild;
   }
 

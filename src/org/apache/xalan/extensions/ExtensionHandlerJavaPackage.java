@@ -64,10 +64,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.io.IOException;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
+//import org.w3c.dom.Element;
+//import org.w3c.dom.Node;
+
+import org.apache.xml.dtm.DTM;
+
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.Stylesheet;
+import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xml.utils.QName;
 
 import org.apache.xpath.objects.XObject;
@@ -411,12 +415,9 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
    */
 
   public void processElement (String localPart,
-                              Element element,
+                              ElemTemplateElement element,
                               TransformerImpl transformer,
                               Stylesheet stylesheetTree,
-                              Node sourceTree,
-                              Node sourceNode,
-                              QName mode,
                               Object methodKey)
     throws TransformerException, IOException
   {
@@ -454,10 +455,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
     }
 
     XSLProcessorContext xpc = new XSLProcessorContext(transformer, 
-                                                      stylesheetTree,
-                                                      sourceTree, 
-                                                      sourceNode, 
-                                                      mode);
+                                                      stylesheetTree);
 
     try
     {

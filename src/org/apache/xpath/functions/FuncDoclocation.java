@@ -56,9 +56,10 @@
  */
 package org.apache.xpath.functions;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.Document;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import java.util.Vector;
 
@@ -86,21 +87,24 @@ public class FuncDoclocation extends FunctionDef1Arg
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
-    Node whereNode = getArg0AsNode(xctxt);
+    int whereNode = getArg0AsNode(xctxt);
     String fileLocation = null;
 
-    if (null != whereNode)
+    if (DTM.NULL != whereNode)
     {
-      if (Node.DOCUMENT_FRAGMENT_NODE == whereNode.getNodeType())
+      DTM dtm = xctxt.getDTM(whereNode);
+      
+      // %REVIEW%
+      if (DTM.DOCUMENT_FRAGMENT_NODE ==  dtm.getNodeType(whereNode))
       {
-        whereNode = whereNode.getFirstChild();
+        whereNode = dtm.getFirstChild(whereNode);
       }
 
-      if (null != whereNode)
-      {
-        Document owner = whereNode.getOwnerDocument();
-
-        fileLocation = xctxt.getSourceTreeManager().findURIFromDoc(owner);
+      if (DTM.NULL != whereNode)
+      {        
+        fileLocation = dtm.getDocumentBaseURI();
+//        int owner = dtm.getDocument();
+//        fileLocation = xctxt.getSourceTreeManager().findURIFromDoc(owner);
       }
     }
 

@@ -56,7 +56,8 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.*;
+//import org.w3c.dom.*;
+import org.apache.xml.dtm.DTM;
 
 import org.xml.sax.*;
 
@@ -147,19 +148,21 @@ public class ElemPI extends ElemTemplateElement
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
 
     if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+      transformer.getTraceManager().fireTraceEvent(this);
 
-    String piName = m_name_atv.evaluate(transformer.getXPathContext(),
-                                        sourceNode, this);
+    XPathContext xctxt = transformer.getXPathContext();
+    int sourceNode = xctxt.getCurrentNode();
+    String piName = m_name_atv.evaluate(xctxt, sourceNode, this);
 
     if (piName.equalsIgnoreCase("xml"))
     {
-      error(XSLTErrorResources.ER_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML);  //"processing-instruction name can not be 'xml'");
+      // %DTBD%
+//      error(XSLTErrorResources.ER_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML);  //"processing-instruction name can not be 'xml'");
     }
     else if (!isValidNCName(piName))
     {
@@ -175,7 +178,7 @@ public class ElemPI extends ElemTemplateElement
     // | xsl:element
     // | xsl:attribute
     // ">
-    String data = transformer.transformToString(this, sourceNode, mode);
+    String data = transformer.transformToString(this);
 
     try
     {
@@ -196,7 +199,7 @@ public class ElemPI extends ElemTemplateElement
    *
    * @throws DOMException
    */
-  public Node appendChild(Node newChild) throws DOMException
+  public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
 
     int type = ((ElemTemplateElement) newChild).getXSLToken();

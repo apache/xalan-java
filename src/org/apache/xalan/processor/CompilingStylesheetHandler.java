@@ -107,12 +107,12 @@ import org.apache.xml.utils.synthetic.JavaUtils;
 public class CompilingStylesheetHandler
   extends StylesheetHandler
 {
-	/** Constants for the "maythrow" field (gates whether catch
-	 * statements are generated):
-	 */
-	final int MAY_THROW_SAX_EXCEPTION=0x01;
-	
-	
+        /** Constants for the "maythrow" field (gates whether catch
+         * statements are generated):
+         */
+        final int MAY_THROW_SAX_EXCEPTION=0x01;
+        
+        
   /**
    * Create a StylesheetHandler object, creating a root stylesheet 
    * as the target.
@@ -137,63 +137,63 @@ public class CompilingStylesheetHandler
   public void endDocument ()
     throws org.xml.sax.SAXException
   {
-	  
+          
 //    try
 //    {
-	  
-	  // Perform normal end-of-parse operations -- in particular, 
-	  // the "composition" process which performs data gathering
-	  // and optimization of the interpretable tree.
+          
+          // Perform normal end-of-parse operations -- in particular, 
+          // the "composition" process which performs data gathering
+          // and optimization of the interpretable tree.
       super.endDocument();
       
       if(isStylesheetParsingComplete())
       {    
         Stylesheet current=getStylesheet();
 
-		// Record the Templates as we compile them; this list gets
-		// passed into the "bundling" code to copy their excutable code
-		// into the .xsb file.
-		// TODO: Can we just use the StylesheetRoot's list?
+                // Record the Templates as we compile them; this list gets
+                // passed into the "bundling" code to copy their excutable code
+                // into the .xsb file.
+                // TODO: Can we just use the StylesheetRoot's list?
         Vector compiledTemplates=new Vector();
 
-		// cache the typecast
+                // cache the typecast
         StylesheetRoot root=(StylesheetRoot)getStylesheetRoot();
         
-		// For all templates used in this stylesheet (including
-		// those from imported and included stylesheets), 
-		// compile to Java. (Takes advantage of the fact that
-		// ComposedStylesheet processing has already gathered
-		// these and reconciled conflicts.)
-		
-		// New TemplateList being generated
-		org.apache.xalan.templates.TemplateList newTl 
-			= new org.apache.xalan.templates.TemplateList();
-		// Iterate over contents of old TemplateList
-		org.apache.xalan.templates.TemplateList.TemplateWalker tw
-			=root.getTemplateListComposed().getWalker();
-		
-		// Scan all templates in old list, compile, insert into new
-		ElemTemplate et;
-		while ( null != (et = tw.next()) )
-		{
-			ElemTemplate ct = compileTemplate(et);
-			
-			// If compilation succeeds, use it; else fall back on interp
-			newTl.setTemplate( (ct!=null) ? ct : et);
-		}
-		// Postprocess/reconcile list
-		newTl.compose();
-		// And make it active
-		root.setTemplateListComposed(newTl);
+                // For all templates used in this stylesheet (including
+                // those from imported and included stylesheets), 
+                // compile to Java. (Takes advantage of the fact that
+                // ComposedStylesheet processing has already gathered
+                // these and reconciled conflicts.)
+                
+                // New TemplateList being generated
+                org.apache.xalan.templates.TemplateList newTl 
+                        = new org.apache.xalan.templates.TemplateList();
+                // Iterate over contents of old TemplateList
+                org.apache.xalan.templates.TemplateList.TemplateWalker tw
+                        =root.getTemplateListComposed().getWalker();
+                
+                // Scan all templates in old list, compile, insert into new
+                ElemTemplate et;
+                while ( null != (et = tw.next()) )
+                {
+                        ElemTemplate ct = compileTemplate(et);
+                        
+                        // If compilation succeeds, use it; else fall back on interp
+                        newTl.setTemplate( (ct!=null) ? ct : et);
+                }
+                // Postprocess/reconcile list
+                newTl.compose();
+                // And make it active
+                root.setTemplateListComposed(newTl);
 
-		// TODO: Theoretically, we can now discard imports/includes
-		// -- they're no longer pointing at the right ElemTemplates
-		// anyway. There's discussion of doing so in any case when
-		// they aren't needed for tooling support. Always do it here,
-		// leave it to be handled there, or other?
+                // TODO: Theoretically, we can now discard imports/includes
+                // -- they're no longer pointing at the right ElemTemplates
+                // anyway. There's discussion of doing so in any case when
+                // they aren't needed for tooling support. Always do it here,
+                // leave it to be handled there, or other?
 
 /****** OLD APPROACH
-		int nImports = root.getGlobalImportCount();
+                int nImports = root.getGlobalImportCount();
         for(int imp = 0; imp < nImports; imp++)
         {
           org.apache.xalan.templates.StylesheetComposed
@@ -235,16 +235,16 @@ public class CompilingStylesheetHandler
         root.recomposeTemplates(true); 
  ****** OLD APPROACH */
 
-		// TODO: Theoretically, we no longer need the Imported trees.
-		// Eliminating them would save some bytes in memory and in the
-		// .xsb bundle file. (They should be needed only for tooling 
-		// support, which doesn't seem to apply to compiled operation.)
-		// Try that _AFTER_ the compile loop has been revived!
-		
+                // TODO: Theoretically, we no longer need the Imported trees.
+                // Eliminating them would save some bytes in memory and in the
+                // .xsb bundle file. (They should be needed only for tooling 
+                // support, which doesn't seem to apply to compiled operation.)
+                // Try that _AFTER_ the compile loop has been revived!
+                
         // TODO: Should bundling occur elsewhere or be optional?
         CompiledStylesheetBundle.createBundle(root,compiledTemplates);
       }
-	  
+          
 //    }
 //    catch(TransformerException te)
 //    {
@@ -394,8 +394,8 @@ public class CompilingStylesheetHandler
         }
         
         // Compile the new java class. Note that any existing class
-		// by the same name will be walked upon... which is why I'm
-		// going to the trouble of generating unique classnames.
+                // by the same name will be walked upon... which is why I'm
+                // going to the trouble of generating unique classnames.
         // TODO: ***** ISSUE: Where write out the class? Parameterize.
         // Needs to be somewhere on the classpath, or we need a classloader.
         Class realclass=compileSyntheticClass(tClass,".");
@@ -440,18 +440,18 @@ public class CompilingStylesheetHandler
   
   int compileElemTemplateElement(ElemTemplateElement kid,StringBuffer body,Vector interpretVector)
   {
-	int maythrow=0;  
+        int maythrow=0;  
     ++uniqueVarSuffix; // Maintain unique variable naming
       
         switch(kid.getXSLToken())
         {
         case Constants.ELEMNAME_LITERALRESULT:
-			maythrow=compileElemLiteralResult((ElemLiteralResult)kid,body,interpretVector);
+                        maythrow=compileElemLiteralResult((ElemLiteralResult)kid,body,interpretVector);
             break;
 
-	// TODO: ***** Redirection of attr value not working yet.
-	// TODO: ***** Attrs should be preprocessed (SAX-ordered)
-	//case Constants.ELEMNAME_ATTRIBUTE:
+        // TODO: ***** Redirection of attr value not working yet.
+        // TODO: ***** Attrs should be preprocessed (SAX-ordered)
+        //case Constants.ELEMNAME_ATTRIBUTE:
         //    compileElemAttribute((ElemAttribute)kid,body,interpretVector);
         //    break;
                 
@@ -466,14 +466,14 @@ public class CompilingStylesheetHandler
             );
                 break;
         }
-		
-		return maythrow;
+                
+                return maythrow;
   }  
   
   int compileElemLiteralResult(ElemLiteralResult ele,StringBuffer body,Vector interpretVector)
   {
-	int maythrow=0;
-	
+        int maythrow=0;
+        
     ++uniqueVarSuffix; // Maintain unique variable naming
       
     body.append("rhandler.startElement(\""
@@ -532,13 +532,14 @@ public class CompilingStylesheetHandler
             {
                 // Literal value, can fully resolve at compile time.
                 // Exception won't be thrown, but we've gotta catch
-                try{
-                    avtValueExpression=makeQuotedString(
-                        avt.evaluate(null,null,null)
-                        );
-                }catch(TransformerException e)
-                {
-                }
+//                try{
+                  // %XTBD% ??
+//                    avtValueExpression=makeQuotedString(
+//                        avt.evaluate(null,null,null)
+//                        );
+//                }catch(TransformerException e)
+//                {
+//                }
             }
             else
             {
@@ -573,8 +574,8 @@ public class CompilingStylesheetHandler
     // Process children
     // TODO:***** "Process m_extensionElementPrefixes && m_attributeSetsNames"
 
-	// TODO: Should maythrow be passed outward, unwinding try/catch?
-	// maythrow !=
+        // TODO: Should maythrow be passed outward, unwinding try/catch?
+        // maythrow !=
     compileChildTemplates(ele,body,interpretVector);
 
     // Close the patient
@@ -584,8 +585,8 @@ public class CompilingStylesheetHandler
                 +ele.getRawName()+"\");\n");
     if(newNSlevel)
         body.append("nsSupport.popContext();\n");
-	
-	return maythrow | MAY_THROW_SAX_EXCEPTION;
+        
+        return maythrow | MAY_THROW_SAX_EXCEPTION;
   }
 
   // Detect and report AttributeSet loops.
@@ -630,13 +631,14 @@ public class CompilingStylesheetHandler
 
                 // Recurse, since attrsets can reference attrsets
                 compileUseAttrSet(attrSet,body,interpretVector);
-                        
-                ElemAttribute attr = (ElemAttribute)attrSet.getFirstChild();
-                while(null != attr)
-                {
-                    compileElemTemplateElement(attr,body,interpretVector);
-                    attr = (ElemAttribute)attr.getNextSibling();
-                }
+                    
+                // %XTBD%    
+//                ElemAttribute attr = (ElemAttribute)attrSet.getFirstChild();
+//                while(null != attr)
+//                {
+//                    compileElemTemplateElement(attr,body,interpretVector);
+//                    attr = (ElemAttribute)attr.getNextSibling();
+//                }
                     
                 attrSetStack.pop();
             }
@@ -647,18 +649,19 @@ public class CompilingStylesheetHandler
   String compileAVTvalue(org.apache.xalan.templates.AVT avt,StringBuffer body,Vector interpretVector)
   {
       // Literal string is easy -- except for potential of " within "".
-      if(avt.isContextInsensitive())
-          try
-          {
-            return makeQuotedString(avt.evaluate(null,null,null));
-          } catch(TransformerException e)
-          {
-              // Should never arise
-              String s=">UNEXPECTED ERROR evaluating context-insensitive AVT<";
-              System.err.println(s);
-              e.printStackTrace();
-              return "\""+s+'"';
-          }
+      // %XTBD%
+//      if(avt.isContextInsensitive())
+//          try
+//          {
+//            return makeQuotedString(avt.evaluate(null,null,null));
+//          } catch(TransformerException e)
+//          {
+//              // Should never arise
+//              String s=">UNEXPECTED ERROR evaluating context-insensitive AVT<";
+//              System.err.println(s);
+//              e.printStackTrace();
+//              return "\""+s+'"';
+//          }
       
       // Otherwise no compilation yet, just reference and return expression.
       // Note that we do _not_ code-gen directly into the body, due to
@@ -668,8 +671,8 @@ public class CompilingStylesheetHandler
       interpretVector.addElement(avt);
       return 
           "( ((org.apache.xalan.templates.AVT)m_interpretArray["
-		  +offset
-		  +"]).evaluate(transformer.getXPathContext(),sourceNode,this,new StringBuffer()) )"
+                  +offset
+                  +"]).evaluate(transformer.getXPathContext(),sourceNode,this,new StringBuffer()) )"
           ;
   }
   
@@ -866,7 +869,7 @@ public class CompilingStylesheetHandler
   void compileChildTemplates(ElemTemplateElement source,StringBuffer body,Vector interpretVector)
   {      
     int maythrow=0;
-	
+        
     ++uniqueVarSuffix; // Maintain unique variable naming
       
     // If no kids, no code gen.
@@ -896,25 +899,25 @@ public class CompilingStylesheetHandler
           kid!=null;
           kid=kid.getNextSiblingElem())
          {
-			//TODO: NEED EQUIVALENT? This Node is Going Away...
-			// body.append("transformer.pushElemTemplateElement(kid);\n");
-		  
-			maythrow|=compileElemTemplateElement(kid,body,interpretVector);
+                        //TODO: NEED EQUIVALENT? This Node is Going Away...
+                        // body.append("transformer.pushElemTemplateElement(kid);\n");
+                  
+                        maythrow|=compileElemTemplateElement(kid,body,interpretVector);
 
-			//TODO: NEED EQUIVALENT? This Node is Going Away...
-			// body.append("transformer.popElemTemplateElement(kid);\n");
+                        //TODO: NEED EQUIVALENT? This Node is Going Away...
+                        // body.append("transformer.popElemTemplateElement(kid);\n");
          }
 
-	  // End the class wrapper. 
-	  // TODO: Should "maythrow" be returned and processed @ outermost compile?
-	  body.append("\n\n}\n");
-	  if(0!=(maythrow & MAY_THROW_SAX_EXCEPTION))
-		body.append("catch(org.xml.sax.SAXException se) {\n"
-					+"  throw new javax.xml.transform.TransformerException(se);\n"
-					+"}\n"
-					);
+          // End the class wrapper. 
+          // TODO: Should "maythrow" be returned and processed @ outermost compile?
+          body.append("\n\n}\n");
+          if(0!=(maythrow & MAY_THROW_SAX_EXCEPTION))
+                body.append("catch(org.xml.sax.SAXException se) {\n"
+                                        +"  throw new javax.xml.transform.TransformerException(se);\n"
+                                        +"}\n"
+                                        );
       body.append(
-		"finally {\n"
+                "finally {\n"
         +"  xctxt.setSAXLocator("+savedLocatorName+");\n"
         +"  // Pop all the variables in this element frame.\n"
         +"  "+varstackName+".popElemFrame();\n"
@@ -983,13 +986,13 @@ public class CompilingStylesheetHandler
     // Try to pick up the same classpath we're executing under. That
     // ought to include everything in Xalan and the standard libraries.
     String classpath=System.getProperty ("java.class.path");
-	
+        
     // If compiling with the -g switch (Java debugging), we should retain 
     // the Java source code to support debugging into the synthesized class.
     // Some additional diagnostics are also turned on as a side effect.
     // TODO: Find a better place to put the debugging control. Property? Parm?
     String javac_options=
-	System.getProperty("org.apache.xalan.processor.CompilingStylesheetHandler.options","");
+        System.getProperty("org.apache.xalan.processor.CompilingStylesheetHandler.options","");
     boolean debug=(javac_options.indexOf("-g")>=0);
 
     // Run the compilation. Encapsulates the fallbacks and
@@ -1078,8 +1081,8 @@ public class CompilingStylesheetHandler
     long templateNumber;
     synchronized(this)
     {   // Atomic get-next-count -- last-ditch protection against
-		// the risk of multiple threads trying to process the same
-		// stylesheet at the same instant on the same machine.
+                // the risk of multiple threads trying to process the same
+                // stylesheet at the same instant on the same machine.
         templateNumber = ++templateCounter;
     }
     

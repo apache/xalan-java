@@ -72,13 +72,16 @@ import org.apache.xalan.trace.GenerateEvent;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemTemplate;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
+
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 /**
  * Tracks the state of a queued element event.
  */
-public class QueuedStartElement extends QueuedSAXEvent implements TransformState
+public class QueuedStartElement extends QueuedSAXEvent
 {
 
   /**
@@ -124,7 +127,7 @@ public class QueuedStartElement extends QueuedSAXEvent implements TransformState
   /**
    * The current context node in the source tree.
    */
-  private Node m_currentNode;
+  private int m_currentNode;
   
   /**
    * The xsl:template that is in effect, which may be a matched template
@@ -141,12 +144,12 @@ public class QueuedStartElement extends QueuedSAXEvent implements TransformState
    * The node in the source tree that matched
    * the template obtained via getMatchedTemplate().
    */
-  private Node m_matchedNode;
+  private int m_matchedNode;
   
   /**
    * The current context node list.
    */
-  private NodeIterator m_contextNodeList;
+  private DTMIterator m_contextNodeList;
   
   /**
    * Clear the pending event.
@@ -158,10 +161,10 @@ public class QueuedStartElement extends QueuedSAXEvent implements TransformState
     if(m_isTransformClient)
     {
       m_currentElement = null;
-      m_currentNode = null;
+      m_currentNode = DTM.NULL;
       m_currentTemplate = null;
       m_matchedTemplate = null;
-      m_matchedNode = null;
+      m_matchedNode = DTM.NULL;
       m_contextNodeList = null; // TODO: Need to clone
     }
   }
@@ -190,9 +193,9 @@ public class QueuedStartElement extends QueuedSAXEvent implements TransformState
     if(m_isTransformClient && (null != m_transformer))
     {
       m_currentElement = m_transformer.getCurrentElement();
-      m_currentNode = m_transformer.getCurrentNode();
       m_currentTemplate = m_transformer.getCurrentTemplate();
       m_matchedTemplate = m_transformer.getMatchedTemplate();
+      m_currentNode = m_transformer.getCurrentNode();
       m_matchedNode = m_transformer.getMatchedNode();
       m_contextNodeList = m_transformer.getContextNodeList(); // TODO: Need to clone
     }
@@ -301,6 +304,7 @@ public class QueuedStartElement extends QueuedSAXEvent implements TransformState
    */
   void setNSDeclsHaveBeenAdded(boolean b)
   {
+    // System.out.println("setNSDeclsHaveBeenAdded: "+b);
     m_nsDeclsHaveBeenAdded = b;
   }
 
@@ -390,9 +394,9 @@ public class QueuedStartElement extends QueuedSAXEvent implements TransformState
    *
    * @return the current context node in the source tree.
    */
-  public Node getCurrentNode()
+  public int getCurrentNode()
   {
-    return m_currentTemplate;
+    return m_currentNode;
   }
   
   /**
@@ -436,7 +440,7 @@ public class QueuedStartElement extends QueuedSAXEvent implements TransformState
    * @return the node in the source tree that matched
    * the template obtained via getMatchedTemplate().
    */
-  public Node getMatchedNode()
+  public int getMatchedNode()
   {
     return m_matchedNode;
   }
@@ -446,7 +450,7 @@ public class QueuedStartElement extends QueuedSAXEvent implements TransformState
    *
    * @return the current context node list.
    */
-  public NodeIterator getContextNodeList()
+  public DTMIterator getContextNodeList()
   {
     return m_contextNodeList;
   }

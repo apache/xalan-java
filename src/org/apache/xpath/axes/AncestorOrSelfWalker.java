@@ -61,9 +61,10 @@ import java.util.Stack;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.DOMHelper;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.utils.IntStack;
 
 /**
  * Walker for the 'ancestor-or-self' axes.
@@ -87,21 +88,21 @@ public class AncestorOrSelfWalker extends AncestorWalker
    *
    * @param n The context node.
    */
-  protected void pushAncestors(Node n)
+  protected void pushAncestors(int n)
   {
 
-    m_ancestors = new Stack();
+    m_ancestors = new IntStack();
 
     m_ancestors.push(n);
 
-    DOMHelper dh = m_lpi.getDOMHelper();
+    DTM dtm = getDTM(n);
 
-    while (null != (n = dh.getParentOfNode(n)))
+    while (DTM.NULL != (n = dtm.getParent(n)))
     {
       m_ancestors.push(n);
     }
 
-    m_nextLevelAmount = m_ancestors.isEmpty() ? 0 : 1;
+    m_nextLevelAmount = m_ancestors.empty() ? 0 : 1;
     m_ancestorsPos = m_ancestors.size() - 1;
   }
 
@@ -112,6 +113,6 @@ public class AncestorOrSelfWalker extends AncestorWalker
    */
   protected int getLevelMax()
   {
-    return m_lpi.getDOMHelper().getLevel(m_root);
+    return getDTM(m_root).getLevel(m_root);
   }
 }

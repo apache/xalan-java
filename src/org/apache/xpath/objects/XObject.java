@@ -56,10 +56,13 @@
  */
 package org.apache.xpath.objects;
 
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Text;
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.DocumentFragment;
+//import org.w3c.dom.Text;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
+
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import java.io.Serializable;
 
@@ -69,6 +72,7 @@ import org.apache.xpath.NodeSet;
 import org.apache.xpath.XPathException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.Expression;
+import org.apache.xml.utils.XMLString;
 
 /**
  * <meta name="usage" content="general"/>
@@ -143,17 +147,24 @@ public class XObject extends Expression implements Serializable
     {
       result = new XNumber(((Double) val).doubleValue());
     }
-    else if (val instanceof DocumentFragment)
+    else if (val instanceof org.w3c.dom.DocumentFragment)
     {
-      result = new XRTreeFrag((DocumentFragment) val);
+      // result = new XRTreeFrag((DocumentFragment) val);
+      // %REVIEW%
+      result = new XObject(val);
     }
-    else if (val instanceof Node)
+    else if (val instanceof org.w3c.dom.traversal.NodeIterator)
     {
-      result = new XNodeSet((Node) val);
+      // result = new XNodeSet((NodeIterator) val);
+      // %REVIEW%
+      result = new XObject(val);
     }
-    else if (val instanceof NodeIterator)
+    else if (val instanceof org.w3c.dom.Node)
     {
-      result = new XNodeSet((NodeIterator) val);
+      // result = new XNodeSet(xctxt.getDTMHandleFromNode((org.w3c.dom.Node)val), 
+      //                      xctxt.getDTMManager());
+      // %REVIEW%
+      result = new XObject(val);
     }
     else
     {
@@ -239,6 +250,16 @@ public class XObject extends Expression implements Serializable
 
     return false;
   }
+  
+  /**
+   * Cast result object to a string.
+   *
+   * @return The string this wraps or the empty string if null
+   */
+  public XMLString xstr()
+  {
+    return XMLStringFactoryImpl.getFactory().newstr(str());
+  }
 
   /**
    * Cast result object to a string.
@@ -268,20 +289,18 @@ public class XObject extends Expression implements Serializable
    *
    * @return the objec as a result tree fragment.
    */
-  public DocumentFragment rtree(XPathContext support)
+  public int rtree(XPathContext support)
   {
 
-    DocumentFragment result = rtree();
+    int result = rtree();
 
-    if (null == result)
+    if (DTM.NULL == result)
     {
-      result =
-        support.getDOMHelper().getDOMFactory().createDocumentFragment();
-
-      Text textNode =
-        support.getDOMHelper().getDOMFactory().createTextNode(str());
-
-      result.appendChild(textNode);
+      DTM frag = support.createDocumentFragment();
+      
+      // %OPT%
+      frag.appendTextChild(str());
+      result = frag.getDocument();
     }
 
     return result;
@@ -292,9 +311,9 @@ public class XObject extends Expression implements Serializable
    *
    * @return null
    */
-  public DocumentFragment rtree()
+  public int rtree()
   {
-    return null;
+    return DTM.NULL;
   }
 
   /**
@@ -315,7 +334,7 @@ public class XObject extends Expression implements Serializable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public NodeIterator nodeset() throws javax.xml.transform.TransformerException
+  public DTMIterator nodeset() throws javax.xml.transform.TransformerException
   {
 
     error(XPATHErrorResources.ER_CANT_CONVERT_TO_NODELIST,
@@ -373,9 +392,10 @@ public class XObject extends Expression implements Serializable
     case CLASS_UNKNOWN :
       result = m_obj;
       break;
-    case CLASS_RTREEFRAG :
-      result = rtree(support);
-      break;
+      // %TBD%  What to do here?
+//    case CLASS_RTREEFRAG :
+//      result = rtree(support);
+//      break;
     default :
       error(XPATHErrorResources.ER_CANT_CONVERT_TO_TYPE,
             new Object[]{ getTypeString(),
@@ -489,7 +509,7 @@ public class XObject extends Expression implements Serializable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public boolean equals(XObject obj2) throws javax.xml.transform.TransformerException
+  public boolean equals(XObject obj2)
   {
 
     // In order to handle the 'all' semantics of 
@@ -558,4 +578,15 @@ public class XObject extends Expression implements Serializable
       throw new XPathException(fmsg);
     }
   }
+  
+  /**
+   * Cast result object to a string.
+   *
+   * @return The string this wraps or the empty string if null
+   */
+  public void appendToFsb(org.apache.xml.utils.FastStringBuffer fsb)
+  {
+    fsb.append(str());
+  }
+
 }

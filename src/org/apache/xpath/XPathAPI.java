@@ -159,7 +159,9 @@ public class XPathAPI
     XObject list = eval(contextNode, str, namespaceNode);
 
     // Have the XObject return its result as a NodeSet.
-    return list.nodeset();
+    // %TBD% Convert to DOM nodeset
+//    return list.nodeset();
+    return null;
   }
 
   /**
@@ -272,7 +274,9 @@ public class XPathAPI
     XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
 
     // Execute the XPath, and have it return the result
-    return xpath.execute(xpathSupport, contextNode, prefixResolver);
+    // %TBD% Need to convert contextNode to a DTM node
+//    return xpath.execute(xpathSupport, contextNode, prefixResolver);
+    return null;
   }
 
   /**
@@ -311,6 +315,8 @@ public class XPathAPI
     XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
 
     // Execute the XPath, and have it return the result
-    return xpath.execute(new XPathContext(), contextNode, prefixResolver);
+    // %TBD% Need to convert contextNode to a DTM node
+    // return xpath.execute(new XPathContext(), contextNode, prefixResolver);
+    return null;
   }
 }

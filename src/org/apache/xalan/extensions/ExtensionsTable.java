@@ -226,7 +226,8 @@ public class ExtensionsTable
    * @throws javax.xml.transform.TransformerException
    */
   public Object extFunction(
-          String ns, String funcName, Vector argVec, Object methodKey, ExpressionContext exprContext)
+          String ns, String funcName, Vector argVec, Object methodKey, 
+          ExpressionContext exprContext)
             throws javax.xml.transform.TransformerException
   {
 

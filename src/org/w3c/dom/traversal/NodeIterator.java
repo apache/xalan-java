@@ -104,5 +104,7 @@ public interface NodeIterator {
      * raise the exception INVALID_STATE_ERR.
      */
     public void detach();
+    
+
 
 }

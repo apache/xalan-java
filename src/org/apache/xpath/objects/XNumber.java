@@ -57,6 +57,7 @@
 package org.apache.xpath.objects;
 
 import org.w3c.dom.*;
+import java.math.BigDecimal;
 
 /**
  * <meta name="usage" content="general"/>
@@ -123,6 +124,156 @@ public class XNumber extends XObject
   {
     return (Double.isNaN(m_val) || (m_val == 0.0)) ? false : true;
   }
+
+//  /**
+//   * Cast result object to a string.
+//   *
+//   * @return "NaN" if the number is NaN, Infinity or -Infinity if
+//   * the number is infinite or the string value of the number.
+//   */
+//  private static final int PRECISION = 16;
+//  public String str()
+//  {
+//
+//    if (Double.isNaN(m_val))
+//    {
+//      return "NaN";
+//    }
+//    else if (Double.isInfinite(m_val))
+//    {
+//      if (m_val > 0)
+//        return "Infinity";
+//      else
+//        return "-Infinity";
+//    }
+//
+//    long longVal = (long)m_val;
+//    if ((double)longVal == m_val)
+//      return Long.toString(longVal);
+//
+//
+//    String s = Double.toString(m_val);
+//    int len = s.length();
+//
+//    if (s.charAt(len - 2) == '.' && s.charAt(len - 1) == '0')
+//    {
+//      return s.substring(0, len - 2);
+//    }
+//
+//    int exp = 0;
+//    int e = s.indexOf('E');
+//    if (e != -1)
+//    {
+//      exp = Integer.parseInt(s.substring(e + 1));
+//      s = s.substring(0,e);
+//      len = e;
+//    }
+//
+//    // Calculate Significant Digits:
+//    // look from start of string for first digit
+//    // look from end for last digit
+//    // significant digits = end - start + (0 or 1 depending on decimal location)
+//
+//    int decimalPos = -1;
+//    int start = (s.charAt(0) == '-') ? 1 : 0;
+//    findStart: for( ; start < len; start++ )
+//    {
+//      switch (s.charAt(start))
+//      {
+//      case '0':
+//        break;
+//      case '.':
+//        decimalPos = start;
+//        break;
+//      default:
+//        break findStart;
+//      }
+//    }
+//    int end = s.length() - 1;
+//    findEnd: for( ; end > start; end-- )
+//    {
+//      switch (s.charAt(end))
+//      {
+//      case '0':
+//        break;
+//      case '.':
+//        decimalPos = end;
+//        break;
+//      default:
+//        break findEnd;
+//      }
+//    }
+//
+//    int sigDig = end - start;
+//
+//    // clarify decimal location if it has not yet been found
+//    if (decimalPos == -1)
+//      decimalPos = s.indexOf('.');
+//
+//    // if decimal is not between start and end, add one to sigDig
+//    if (decimalPos < start || decimalPos > end)
+//      ++sigDig;
+//
+//    // reduce significant digits to PRECISION if necessary
+//    if (sigDig > PRECISION)
+//    {
+//      // re-scale BigDecimal in order to get significant digits = PRECISION
+//      BigDecimal num = new BigDecimal(s);
+//      int newScale = num.scale() - (sigDig - PRECISION);
+//      if (newScale < 0)
+//        newScale = 0;
+//      s = num.setScale(newScale, BigDecimal.ROUND_HALF_UP).toString();
+//
+//      // remove trailing '0's; keep track of decimalPos
+//      int truncatePoint = s.length();
+//      while (s.charAt(--truncatePoint) == '0')
+//        ;
+//
+//      if (s.charAt(truncatePoint) == '.')
+//      {
+//        decimalPos = truncatePoint;
+//      }
+//      else
+//      {
+//        decimalPos = s.indexOf('.');
+//        truncatePoint += 1;
+//      }
+//
+//      s = s.substring(0, truncatePoint);
+//      len = s.length();
+//    }
+//
+//    // Account for exponent by adding zeros as needed 
+//    // and moving the decimal place
+//
+//    if (exp == 0)
+//       return s;
+//
+//    start = 0;
+//    String sign;
+//    if (s.charAt(0) == '-')
+//    {
+//      sign = "-";
+//      start++;
+//    }
+//    else
+//      sign = "";
+//
+//    String wholePart = s.substring(start, decimalPos);
+//    String decimalPart = s.substring(decimalPos + 1);
+//
+//    // get the number of digits right of the decimal
+//    int decimalLen = decimalPart.length();
+//
+//    if (exp >= decimalLen)
+//      return sign + wholePart + decimalPart + zeros(exp - decimalLen);
+//
+//    if (exp > 0)
+//      return sign + wholePart + decimalPart.substring(0, exp) + "."
+//             + decimalPart.substring(exp);
+//
+//    return sign + "0." + zeros(-1 - exp) + wholePart + decimalPart;
+//  }
 
   /**
    * Cast result object to a string.
@@ -191,6 +342,7 @@ public class XNumber extends XObject
            + s.substring(2, e);
   }
 
+
   /**
    * Return a string of '0' of the given length
    *
@@ -201,6 +353,8 @@ public class XNumber extends XObject
    */
   static private String zeros(int n)
   {
+    if (n < 1)
+      return "";
 
     char[] buf = new char[n];
 
@@ -232,7 +386,7 @@ public class XNumber extends XObject
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public boolean equals(XObject obj2) throws javax.xml.transform.TransformerException
+  public boolean equals(XObject obj2)
   {
 
     // In order to handle the 'all' semantics of 
@@ -241,6 +395,13 @@ public class XNumber extends XObject
     if (obj2.getType() == XObject.CLASS_NODESET)
       return obj2.equals(this);
 
-    return m_val == obj2.num();
+    try
+    {
+      return m_val == obj2.num();
+    }
+    catch(javax.xml.transform.TransformerException te)
+    {
+      throw new org.apache.xml.utils.WrappedRuntimeException(te);
+    }
   }
 }

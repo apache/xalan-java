@@ -56,7 +56,8 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.*;
+//import org.w3c.dom.*;
+import org.apache.xml.dtm.DTM;
 
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
@@ -589,7 +590,7 @@ public class ElemLiteralResult extends ElemUse
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
 
@@ -605,7 +606,7 @@ public class ElemLiteralResult extends ElemUse
       {
 
         // Process any possible attributes from xsl:use-attribute-sets first
-        super.execute(transformer, sourceNode, mode);
+        super.execute(transformer);
 
         //xsl:version, excludeResultPrefixes???
         // Process the list of avts next
@@ -617,6 +618,7 @@ public class ElemLiteralResult extends ElemUse
           {
             AVT avt = (AVT) m_avts.elementAt(i);
             XPathContext xctxt = transformer.getXPathContext();
+            int sourceNode = xctxt.getCurrentNode();
             String stringedValue = avt.evaluate(xctxt, sourceNode, this);
 
             if (null != stringedValue)
@@ -634,7 +636,7 @@ public class ElemLiteralResult extends ElemUse
 
         // Now process all the elements in this subtree
         // TODO: Process m_extensionElementPrefixes && m_attributeSetsNames
-        transformer.executeChildTemplates(this, sourceNode, mode, true);
+        transformer.executeChildTemplates(this, true);
       }
       finally
       {

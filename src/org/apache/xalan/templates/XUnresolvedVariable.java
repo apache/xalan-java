@@ -66,8 +66,9 @@ import org.apache.xpath.objects.XString;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.Node;
+//import org.w3c.dom.DocumentFragment;
+//import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 /**
  * An instance of this class holds unto a variable until 
@@ -77,7 +78,7 @@ import org.w3c.dom.Node;
 public class XUnresolvedVariable extends XObject
 {  
   /** The node context for execution. */
-  transient private Node m_context;
+  transient private int m_context;
   
   /** The transformer context for execution. */
   transient private TransformerImpl m_transformer;
@@ -116,7 +117,7 @@ public class XUnresolvedVariable extends XObject
    * ends, i.e. at the point we should terminate the search.
    * @param isGlobal true if this is a global variable.
    */
-  public XUnresolvedVariable(ElemVariable obj, Node sourceNode, 
+  public XUnresolvedVariable(ElemVariable obj, int sourceNode, 
                              TransformerImpl transformer,
                              int varStackPos, int varStackContext,
                              boolean isGlobal)

@@ -60,6 +60,7 @@ import java.util.Vector;
 
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.QName;
 import org.apache.xalan.templates.KeyDeclaration;
 import org.apache.xpath.XPathContext;
@@ -67,11 +68,12 @@ import org.apache.xpath.axes.DescendantOrSelfWalker;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPath;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.traversal.NodeFilter;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.DOMException;
+//import org.w3c.dom.NamedNodeMap;
+//import org.w3c.dom.traversal.NodeFilter;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
 
 import javax.xml.transform.TransformerException;
 
@@ -135,7 +137,7 @@ public class KeyIterator extends LocPathIterator
    * @param keyDeclarations The key declarations from the stylesheet 
    * @param xctxt The XPath runtime state
    */
-  public KeyIterator(Node doc, PrefixResolver nscontext, QName name,
+  public KeyIterator(int doc, PrefixResolver nscontext, QName name,
                      Vector keyDeclarations, XPathContext xctxt)
   {
 
@@ -157,15 +159,13 @@ public class KeyIterator extends LocPathIterator
    * 
    * @return  The next <code>Node</code> in the set being iterated over, or
    *   <code>null</code> if there are no more members in that set.
-   *
-   * @throws DOMException
    */
-  public Node nextNode() throws DOMException
+  public int nextNode()
   {
 
     // If the cache is on, and the node has already been found, then 
     // just return from the list.
-    Node n = super.nextNode();
+    int n = super.nextNode();
 
     // System.out.println("--> "+((null == n) ? "null" : n.getNodeName()));
     return n;
@@ -177,15 +177,15 @@ public class KeyIterator extends LocPathIterator
    *
    * @param lookupKey value of the key to look for
    */
-  public void setLookupKey(String lookupKey)
+  public void setLookupKey(XMLString lookupKey)
   {
 
     // System.out.println("setLookupKey - lookupKey: "+lookupKey);
     ((KeyWalker) m_firstWalker).m_lookupKey = lookupKey;
 
-    m_firstWalker.setRoot(
-      (this.getContext().getNodeType() == Node.DOCUMENT_NODE)
-      ? this.getContext() : this.getContext().getOwnerDocument());
+    int context = getContext();
+    DTM dtm = this.getDTM(context);
+    m_firstWalker.setRoot(dtm.getDocument());
     this.setLastUsedWalker(m_firstWalker);
     this.setNextPosition(0);
   }
@@ -208,7 +208,7 @@ public class KeyIterator extends LocPathIterator
    * @param ref Key value(ref)(from key use field)
    * @param node Node matching that ref 
    */
-  void addRefNode(String ref, Node node)
+  void addRefNode(XMLString ref, int node)
   {
     m_keyTable.addRefNode(ref, node);
   }

@@ -56,8 +56,11 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.*;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.*;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMTreeWalker;
 
 import org.xml.sax.*;
 
@@ -146,16 +149,17 @@ public class ElemCopyOf extends ElemTemplateElement
    * @throws TransformerException
    */
   public void execute(
-          TransformerImpl transformer, Node sourceNode, QName mode)
+          TransformerImpl transformer)
             throws TransformerException
   {
 
     try
     {
       if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+        transformer.getTraceManager().fireTraceEvent(this);
 
       XPathContext xctxt = transformer.getXPathContext();
+      int sourceNode = xctxt.getCurrentNode();
       XObject value = m_selectExpression.execute(xctxt, sourceNode, this);
 
       if (TransformerImpl.S_DEBUG)
@@ -181,30 +185,30 @@ public class ElemCopyOf extends ElemTemplateElement
         case XObject.CLASS_NODESET :
 
           // System.out.println(value);
-          NodeIterator nl = value.nodeset();
+          DTMIterator nl = value.nodeset();
 
           // Copy the tree.
-          org.apache.xml.utils.TreeWalker tw =
-                                                new TreeWalker2Result(transformer, handler);
-          Node pos;
+          DTMTreeWalker tw = new TreeWalker2Result(transformer, handler);
+          int pos;
 
-          while (null != (pos = nl.nextNode()))
+          while (DTM.NULL != (pos = nl.nextNode()))
           {
-            short t = pos.getNodeType();
+            DTM dtm = xctxt.getDTMManager().getDTM(pos);
+            short t = dtm.getNodeType(pos);
 
             // If we just copy the whole document, a startDoc and endDoc get 
             // generated, so we need to only walk the child nodes.
-            if (t == Node.DOCUMENT_NODE)
+            if (t == DTM.DOCUMENT_NODE)
             {
-              for (Node child = pos.getFirstChild(); child != null;
-                   child = child.getNextSibling())
+              for (int child = dtm.getFirstChild(pos); child != DTM.NULL;
+                   child = dtm.getNextSibling(child))
               {
                 tw.traverse(child);
               }
             }
-            else if (t == Node.ATTRIBUTE_NODE)
+            else if (t == DTM.ATTRIBUTE_NODE)
             {
-              handler.addAttribute((Attr) pos);
+              handler.addAttribute(pos);
             }
             else
             {
@@ -218,6 +222,7 @@ public class ElemCopyOf extends ElemTemplateElement
                                            transformer.getXPathContext());
           break;
         default :
+          
           s = value.str();
 
           handler.characters(s.toCharArray(), 0, s.length());
@@ -238,10 +243,8 @@ public class ElemCopyOf extends ElemTemplateElement
    * @param newChild Child to add to this node's child list
    *
    * @return Child just added to child list
-   *
-   * @throws DOMException
    */
-  public Node appendChild(Node newChild) throws DOMException
+  public ElemTemplateElement appendChild(ElemTemplateElement newChild)
   {
 
     error(XSLTErrorResources.ER_CANNOT_ADD,

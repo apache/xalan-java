@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.*;
+//import org.w3c.dom.*;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xml.utils.FastStringBuffer;
@@ -106,7 +106,7 @@ public class AVTPartSimple extends AVTPart
    * @param NodeList The current Context Node List.
    */
   public void evaluate(XPathContext xctxt, FastStringBuffer buf,
-                       Node context,
+                       int context,
                        org.apache.xml.utils.PrefixResolver nsNode)
   {
     buf.append(m_val);

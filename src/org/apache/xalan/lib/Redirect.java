@@ -75,6 +75,8 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.Result;
 import javax.xml.transform.TransformerException;
 
+import org.w3c.dom.*;
+
 /**
  * Implements three extension elements to allow an XSLT transformation to
  * redirect its output to multiple output files.
@@ -363,7 +365,7 @@ public class Redirect
       // Result was supplied, the filename is relative to the source document.
       // When transforming with a SAXResult or DOMResult, call
       // TransformerImpl.setOutputTarget() to set the desired Result base.
-//      String base = urlToFileName(elem.getStylesheet().getSystemId());
+  //      String base = urlToFileName(elem.getStylesheet().getSystemId());
 
       Result outputTarget = transformer.getOutputTarget();
       if ( (null != outputTarget) && ((base = outputTarget.getSystemId()) != null) ) {

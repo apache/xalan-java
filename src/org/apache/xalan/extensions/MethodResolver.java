@@ -732,16 +732,18 @@ public class MethodResolver
           {
             return ((XRTreeFrag) xobj).asNodeIterator();
           }
-          else if (javaClass == NodeList.class)
-          {
-            return ((XRTreeFrag) xobj).convertToNodeset();
-          }
+          // %DTBD%
+//          else if (javaClass == NodeList.class)
+//          {
+//            return ((XRTreeFrag) xobj).convertToNodeset();
+//          }
           // Same comment as above
           // else if(Node.class.isAssignableFrom(javaClass))
-          else if(javaClass == Node.class)
-          {
-            return xobj.rtree().getFirstChild();
-          }
+          // %DTBD%
+//          else if(javaClass == Node.class)
+//          {
+//            return xobj.rtree().getFirstChild();
+//          }
           else if(javaClass == java.lang.String.class)
           {
             return xobj.str();
@@ -754,14 +756,15 @@ public class MethodResolver
           {
             return convertDoubleToNumber(xobj.num(), javaClass);
           }
-          else
-          {
-            Node child = xobj.rtree().getFirstChild();
-            if(javaClass.isAssignableFrom(child.getClass()))
-              return child;
-            else
-              return null;
-          }
+          // %DTBD%
+//          else
+//          {
+//            Node child = xobj.rtree().getFirstChild();
+//            if(javaClass.isAssignableFrom(child.getClass()))
+//              return child;
+//            else
+//              return null;
+//          }
         }
         // break; Unreachable
         
@@ -790,8 +793,9 @@ public class MethodResolver
           {
             // Xalan ensures that nodeset() always returns an
             // iterator positioned at the beginning.
-            NodeIterator ni = xobj.nodeset();
-            return ni.nextNode(); // may be null.
+            // %DTBD%
+//            NodeIterator ni = xobj.nodeset();
+//            return ni.nextNode(); // may be null.
           }
           else if(javaClass == java.lang.String.class)
           {
@@ -805,14 +809,15 @@ public class MethodResolver
           {
             return convertDoubleToNumber(xobj.num(), javaClass);
           }
-          else
-          {
-            Node child = xobj.nodeset().nextNode();
-            if(javaClass.isAssignableFrom(child.getClass()))
-              return child;
-            else
-              return null;
-          }
+          // %DTBD%
+//          else
+//          {
+//            Node child = xobj.nodeset().nextNode();
+//            if(javaClass.isAssignableFrom(child.getClass()))
+//              return child;
+//            else
+//              return null;
+//          }
         }
         // break; Unreachable
         

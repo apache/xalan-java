@@ -56,8 +56,10 @@
  */
 package org.apache.xpath.functions;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import java.util.Vector;
 
@@ -99,11 +101,38 @@ public class FuncPosition extends Function
       return prox;
     }
 
-    ContextNodeList cnl = (ContextNodeList) xctxt.getContextNodeList();
+    DTMIterator cnl = xctxt.getContextNodeList();
 
     if (null != cnl)
     {
-
+      int n = cnl.getCurrentNode();
+      if(n == DTM.NULL)
+      {
+        if(cnl.getCurrentPos() == 0)
+          return 0;
+          
+        // Then I think we're in a sort.  See sort21.xsl. So the iterator has 
+        // already been spent, and is not on the node we're processing. 
+        // It's highly possible that this is an issue for other context-list 
+        // functions.  Shouldn't be a problem for last(), and it shouldn't be 
+        // a problem for current().
+        try 
+        { 
+          cnl = cnl.cloneWithReset(); 
+        }
+        catch(CloneNotSupportedException cnse)
+        {
+          throw new org.apache.xml.utils.WrappedRuntimeException(cnse);
+        }
+        int currentNode = xctxt.getContextNode();
+        // System.out.println("currentNode: "+currentNode);
+        while(DTM.NULL != (n = cnl.nextNode()))
+        {
+          if(n == currentNode)
+            break;
+        }
+      }
+      // System.out.println("n: "+n);
       // System.out.println("FuncPosition- cnl.getCurrentPos(): "+cnl.getCurrentPos());
       return cnl.getCurrentPos();
     }
@@ -122,6 +151,8 @@ public class FuncPosition extends Function
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    return new XNumber((double) getPositionInContextNodeList(xctxt));
+    double pos = (double) getPositionInContextNodeList(xctxt);
+    
+    return new XNumber(pos);
   }
 }

@@ -56,8 +56,10 @@
  */
 package org.apache.xpath.functions;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.Element;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.Element;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 
 import java.util.Vector;
 
@@ -85,17 +87,20 @@ public class FuncLang extends FunctionOneArg
   {
 
     String lang = m_arg0.execute(xctxt).str();
-    Node parent = xctxt.getCurrentNode();
+    int parent = xctxt.getCurrentNode();
     boolean isLang = false;
+    DTM dtm = xctxt.getDTM(parent);
 
-    while (null != parent)
+    while (DTM.NULL != parent)
     {
-      if (Node.ELEMENT_NODE == parent.getNodeType())
+      if (DTM.ELEMENT_NODE == dtm.getNodeType(parent))
       {
-        String langVal = ((Element) parent).getAttribute("xml:lang");
+        int langAttr = dtm.getAttributeNode(parent, "http://www.w3.org/XML/1998/namespace", "lang");
 
-        if ((null != langVal) && (langVal.length() > 0))
+        if (DTM.NULL != langAttr)
         {
+          String langVal = dtm.getNodeValue(langAttr);
+          // %OPT%
           if (langVal.toLowerCase().startsWith(lang.toLowerCase()))
           {
             int valLen = lang.length();
@@ -111,7 +116,7 @@ public class FuncLang extends FunctionOneArg
         }
       }
 
-      parent = xctxt.getDOMHelper().getParentOfNode(parent);
+      parent = dtm.getParent(parent);
     }
 
     return isLang ? XBoolean.S_TRUE : XBoolean.S_FALSE;

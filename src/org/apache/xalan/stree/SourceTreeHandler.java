@@ -64,6 +64,8 @@ import org.w3c.dom.Node;
 
 import org.xml.sax.ContentHandler;
 
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.DOMBuilder;
 import org.apache.xml.utils.XMLCharacterRecognizer;
 import org.apache.xml.utils.BoolStack;
@@ -92,6 +94,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.Result;
 import javax.xml.transform.ErrorListener;
+import javax.xml.transform.dom.DOMSource;
 
 
 /**
@@ -110,9 +113,9 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    * @param transformer The transformer this will use to transform a
    * source tree into a result tree.
    */
-  public SourceTreeHandler(TransformerImpl transformer)
+  public SourceTreeHandler(TransformerImpl transformer, String baseSystemID)
   {
-    this(transformer, false);
+    this(transformer, false, baseSystemID);
   }
 
   /**
@@ -122,7 +125,8 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    * @param transformer The transformer this will use to transform a
    * source tree into a result tree.
    */
-  public SourceTreeHandler(TransformerImpl transformer, boolean doFragment)
+  public SourceTreeHandler(TransformerImpl transformer, boolean doFragment, 
+                           String baseSystemID)
   {
 //    m_id = m_idCount++;
     m_transformer = transformer;
@@ -131,7 +135,44 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
 
     xctxt.setDOMHelper(new StreeDOMHelper());
     
+    DTMManager mgr = m_transformer.getXPathContext().getDTMManager();
+    DTM dtm;
     if(doFragment)
+    {
+      m_root = new DocumentFragmentImpl(1024);
+      m_docFrag = (DocumentFragmentImpl)m_root;
+    }
+    else
+    {
+      m_root = new DocumentImpl(this);
+    }
+    DOMSource ds = new DOMSource(m_root, baseSystemID);
+    dtm = mgr.getDTM(ds, false, transformer, false);
+    
+    m_DTMroot = dtm.getDocument();
+
+    m_initedRoot = false;
+    m_shouldCheckWhitespace =
+      transformer.getStylesheet().shouldCheckWhitespace();
+  }
+  
+  /**
+   * Create a SourceTreeHandler that will start a transformation as
+   * soon as a startDocument occurs.
+   *
+   * @param transformer The transformer this will use to transform a
+   * source tree into a result tree.
+   */
+  public SourceTreeHandler(TransformerImpl transformer, DTMManager dtm, 
+                           boolean doFragment)
+  {
+//    m_id = m_idCount++;
+    m_transformer = transformer;
+
+    XPathContext xctxt = transformer.getXPathContext();
+    xctxt.setDOMHelper(new StreeDOMHelper());
+    
+     if(doFragment)
     {
       m_root = new DocumentFragmentImpl(1024);
       m_docFrag = (DocumentFragmentImpl)m_root;
@@ -170,6 +211,21 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
 
   /** The root of the source document          */
   private DocImpl m_root;
+
+  /** The DTM root for the DTM2DOM **/
+  private int m_DTMroot;
+  
+  /** Get the DTM root for the DTM2DOM **/
+  public int getDTMRoot()
+  {
+    return m_DTMroot;
+  }
+
+  /** Set the DTM root for the DTM2DOM **/
+  public void setDTMRoot(int root)
+  {
+    root = m_DTMroot;
+  }
 
   /** If this is non-null, the fragment where the nodes will be added. */
   private DocumentFragment m_docFrag;
@@ -403,10 +459,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
           }
         } 
         
-        if(null != m_docFrag)
-          m_transformer.setSourceTreeDocForThread(m_docFrag);
-        else
-          m_transformer.setSourceTreeDocForThread(m_root);
+        m_transformer.setSourceTreeDocForThread(m_DTMroot);
 
         Thread t = m_transformer.createTransformThread();
 
@@ -414,7 +467,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
 
         int cpriority = Thread.currentThread().getPriority();
 
-        // t.setPriority(cpriority-1);
+        t.setPriority(cpriority-1);
         t.setPriority(cpriority);
         t.start();
       }
@@ -450,7 +503,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
       {
         try
         {
-          m_transformer.transformNode(m_root);
+          m_transformer.transformNode(m_DTMroot);
         }
         catch(TransformerException te)
         {
@@ -1009,7 +1062,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
     
     m_inputSource = new StreamSource(baseID);
     
-    stm.putDocumentInCache(m_root, m_inputSource);
+    stm.putDocumentInCache(m_DTMroot, m_inputSource);
   }
   
   /**

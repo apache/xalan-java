@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.templates;
 
-import org.w3c.dom.Node;
+import org.apache.xml.dtm.DTM;
 
 import java.util.Vector;
 import java.util.StringTokenizer;
@@ -498,7 +498,7 @@ public class AVT implements java.io.Serializable
    * @throws javax.xml.transform.TransformerException
    */
   public String evaluate(
-          XPathContext xctxt, Node context, org.apache.xml.utils.PrefixResolver nsNode)
+          XPathContext xctxt, int context, org.apache.xml.utils.PrefixResolver nsNode)
             throws javax.xml.transform.TransformerException
   {
 

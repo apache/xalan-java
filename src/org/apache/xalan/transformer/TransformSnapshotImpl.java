@@ -56,7 +56,15 @@ class TransformSnapshotImpl implements TransformSnapshot
    * org.apache.xalan.transformer.TransformState interface,  
    * so a tool can discover the matched template, and matched 
    * node. */
-  private NodeVector m_currentMatchTemplates = new NodeVector();
+  private Stack m_currentMatchTemplates = new Stack();
+
+  /** A node vector used as a stack to track the current 
+   * ElemTemplate that was matched, as well as the node that 
+   * was matched.  Needed for the 
+   * org.apache.xalan.transformer.TransformState interface,  
+   * so a tool can discover the matched template, and matched 
+   * node. */
+  private NodeVector m_currentMatchNodes = new NodeVector();
 
   /**
    * The table of counters for xsl:number support.
@@ -121,7 +129,8 @@ class TransformSnapshotImpl implements TransformSnapshot
   
       m_currentTemplateRuleIsNull = (BoolStack)transformer.m_currentTemplateRuleIsNull.clone();
       m_currentTemplateElements = (NodeVector)transformer.m_currentTemplateElements.clone();
-      m_currentMatchTemplates = (NodeVector)transformer.m_currentMatchTemplates.clone();
+      m_currentMatchTemplates = (Stack)transformer.m_currentMatchTemplates.clone();
+      m_currentMatchNodes = (NodeVector)transformer.m_currentMatchedNodes.clone();
       m_countersTable = (CountersTable)transformer.m_countersTable.clone();
       m_attrSetStack = (Stack)transformer.m_attrSetStack.clone();
     }
@@ -164,8 +173,9 @@ class TransformSnapshotImpl implements TransformSnapshot
       xpc.setAxesIteratorStackStacks((Stack)m_axesIteratorStack.clone());
   
       transformer.m_currentTemplateRuleIsNull = (BoolStack)m_currentTemplateRuleIsNull.clone();
-      transformer.m_currentTemplateElements = (NodeVector)m_currentTemplateElements.clone();
-      transformer.m_currentMatchTemplates = (NodeVector)m_currentMatchTemplates.clone();
+      transformer.m_currentTemplateElements = (Stack)m_currentTemplateElements.clone();
+      transformer.m_currentMatchTemplates = (Stack)m_currentMatchTemplates.clone();
+      transformer.m_currentMatchedNodes = (NodeVector)m_currentMatchNodes.clone();
       transformer.m_countersTable = (CountersTable)m_countersTable.clone();
       transformer.m_attrSetStack = (Stack)m_attrSetStack.clone();
     }

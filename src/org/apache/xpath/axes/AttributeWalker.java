@@ -60,8 +60,9 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.NamedNodeMap;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.NamedNodeMap;
+import org.apache.xml.dtm.DTM;
 
 /**
  * Walker for the 'attribute' axes.
@@ -85,42 +86,40 @@ public class AttributeWalker extends AxesWalker
    *
    * @param root The context node of this step.
    */
-  public void setRoot(Node root)
+  public void setRoot(int root)
   {
 
-    m_attrListPos = -1;
-    m_attributeList = null;
-    m_nAttrs = -2;
-    m_nextLevelAmount = 1;
+    // System.out.println("ChildWalker.setRoot");
+    m_nextLevelAmount = (getDTM(root).getFirstAttribute(root) != DTM.NULL) ? 1 : 0;
 
+    // System.out.println("Back from calling hasChildNodes");
     super.setRoot(root);
+
+    // System.out.println("Exiting ChildWalker.setRoot");
   }
 
   /**
-   * Moves the <code>TreeWalker</code> to the first visible child of the
+   *  Moves the <code>TreeWalker</code> to the first visible child of the
    * current node, and returns the new node. If the current node has no
    * visible children, returns <code>null</code> , and retains the current
    * node.
    * @return  The new node, or <code>null</code> if the current node has no
    *   visible children in the TreeWalker's logical view.
    */
-  public Node firstChild()
+  public int firstChild()
   {
 
-    if (m_currentNode.getNodeType() == Node.ELEMENT_NODE)
-    {
-      m_attrListPos = -1;
-      m_attributeList = m_currentNode.getAttributes();
-
-      if (null != m_attributeList)
-        m_nAttrs = m_attributeList.getLength();
-      else
-        m_nAttrs = -2;
-    }
-
+    // System.out.println("ChildWalker.firstChild");
     m_nextLevelAmount = 0;
 
-    return nextSibling();
+    if (m_root == m_currentNode)
+    {
+
+      // System.out.println("ChildWalker - Calling getFirstChild");
+      return setCurrentIfNotNull(getDTM(m_root).getFirstAttribute(m_currentNode));
+    }
+    else
+      return DTM.NULL;
   }
 
   /**
@@ -130,33 +129,14 @@ public class AttributeWalker extends AxesWalker
    * @return  The new node, or <code>null</code> if the current node has no
    *   next sibling in the TreeWalker's logical view.
    */
-  public Node nextSibling()
+  public int nextSibling()
   {
 
-    // Attributes don't really have siblings, but we'll fake it.
-    if (null != m_attributeList)
-    {
-      m_attrListPos++;
-
-      if (m_attrListPos < m_nAttrs)
-      {
-        return setCurrentIfNotNull(m_attributeList.item(m_attrListPos));
-      }
-      else
-        m_attributeList = null;
-    }
-
-    return null;
+    if (m_root != m_currentNode)
+      return setCurrentIfNotNull(getDTM(m_root).getNextAttribute(m_currentNode));
+    else
+      return DTM.NULL;
   }
-
-  /** The attribute list for the given context.    */
-  transient NamedNodeMap m_attributeList;
-
-  /** The position within the attribute list.  */
-  transient int m_attrListPos;
-
-  /** The number of attributes within the list.  */
-  transient int m_nAttrs;
 
   /**
    * Tell what's the maximum level this axes can descend to.
@@ -165,6 +145,6 @@ public class AttributeWalker extends AxesWalker
    */
   protected int getLevelMax()
   {
-    return m_lpi.getDOMHelper().getLevel(m_root);
+    return getDTM(m_root).getLevel(m_root);
   }
 }

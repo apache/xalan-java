@@ -63,9 +63,12 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.axes.SubContextList;
 import org.apache.xpath.compiler.PsuedoNames;
 
-import org.w3c.dom.traversal.NodeFilter;
-import org.w3c.dom.Node;
-import org.w3c.dom.traversal.NodeIterator;
+// import org.w3c.dom.traversal.NodeFilter;
+// import org.w3c.dom.Node;
+// import org.w3c.dom.traversal.NodeIterator;
+
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMFilter;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -84,7 +87,7 @@ public class StepPattern extends NodeTest implements SubContextList
    */
   public StepPattern(int whatToShow, String namespace, String name)
   {
-    
+
     super(whatToShow, namespace, name);
   }
 
@@ -116,22 +119,22 @@ public class StepPattern extends NodeTest implements SubContextList
 
     switch (whatToShow)
     {
-    case NodeFilter.SHOW_COMMENT :
+    case DTMFilter.SHOW_COMMENT :
       m_targetString = PsuedoNames.PSEUDONAME_COMMENT;
       break;
-    case NodeFilter.SHOW_TEXT :
-    case NodeFilter.SHOW_CDATA_SECTION :
-    case (NodeFilter.SHOW_TEXT | NodeFilter.SHOW_CDATA_SECTION):
+    case DTMFilter.SHOW_TEXT :
+    case DTMFilter.SHOW_CDATA_SECTION :
+    case (DTMFilter.SHOW_TEXT | DTMFilter.SHOW_CDATA_SECTION):
       m_targetString = PsuedoNames.PSEUDONAME_TEXT;
       break;
-    case NodeFilter.SHOW_ALL :
+    case DTMFilter.SHOW_ALL :
       m_targetString = PsuedoNames.PSEUDONAME_ANY;
       break;
-    case NodeFilter.SHOW_DOCUMENT :
-    case NodeFilter.SHOW_DOCUMENT | NodeFilter.SHOW_DOCUMENT_FRAGMENT :
+    case DTMFilter.SHOW_DOCUMENT :
+    case DTMFilter.SHOW_DOCUMENT | DTMFilter.SHOW_DOCUMENT_FRAGMENT :
       m_targetString = PsuedoNames.PSEUDONAME_ROOT;
       break;
-    case NodeFilter.SHOW_ELEMENT :
+    case DTMFilter.SHOW_ELEMENT :
       if (this.WILD == m_name)
         m_targetString = PsuedoNames.PSEUDONAME_ANY;
       else
@@ -344,10 +347,12 @@ public class StepPattern extends NodeTest implements SubContextList
   public int getProximityPosition(XPathContext xctxt)
   {
 
-    Node context = xctxt.getCurrentNode();
+    int context = xctxt.getCurrentNode();
+    
+    DTM dtm = xctxt.getDTM(context);
 
     // System.out.println("context: "+context.getNodeName());
-    Node parentContext = xctxt.getDOMHelper().getParentOfNode(context);
+    int parentContext = dtm.getParent(context);
 
     // System.out.println("parentContext: "+parentContext.getNodeName());
     try
@@ -356,8 +361,8 @@ public class StepPattern extends NodeTest implements SubContextList
 
       int pos = 0;
 
-      for (Node child = parentContext.getFirstChild(); child != null;
-              child = child.getNextSibling())
+      for (int child = dtm.getFirstChild(parentContext); child != DTM.NULL;
+              child = dtm.getNextSibling(child))
       {
         try
         {
@@ -367,7 +372,7 @@ public class StepPattern extends NodeTest implements SubContextList
           {
             pos++;
 
-            if (child.equals(context))
+            if (child == context)
             {
               return pos;
             }
@@ -409,8 +414,9 @@ public class StepPattern extends NodeTest implements SubContextList
   public int getLastPos(XPathContext xctxt)
   {
 
-    Node context = xctxt.getCurrentNode();
-    Node parentContext = xctxt.getDOMHelper().getParentOfNode(context);
+    int context = xctxt.getCurrentNode();
+    DTM dtm = xctxt.getDTM(context);
+    int parentContext = dtm.getParent(context);
 
     try
     {
@@ -418,8 +424,8 @@ public class StepPattern extends NodeTest implements SubContextList
 
       int count = 0;
 
-      for (Node child = parentContext.getFirstChild(); child != null;
-              child = child.getNextSibling())
+      for (int child = dtm.getFirstChild(parentContext); child != DTM.NULL;
+              child = dtm.getNextSibling(child))
       {
         try
         {
@@ -469,10 +475,11 @@ public class StepPattern extends NodeTest implements SubContextList
   {
 
     XObject score;
-    Node parent =
-      xctxt.getDOMHelper().getParentOfNode(xctxt.getCurrentNode());
+    int currentNode = xctxt.getCurrentNode();
+    DTM dtm = xctxt.getDTM(currentNode);
+    int parent = dtm.getParent(currentNode);
 
-    if (null != parent)
+    if (DTM.NULL != parent)
     {
       try
       {
@@ -542,7 +549,7 @@ public class StepPattern extends NodeTest implements SubContextList
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public double getMatchScore(XPathContext xctxt, Node context)
+  public double getMatchScore(XPathContext xctxt, int context)
           throws javax.xml.transform.TransformerException
   {
 

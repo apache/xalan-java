@@ -56,7 +56,7 @@
  */
 package org.apache.xpath;
 
-import org.w3c.dom.Node;
+//import org.w3c.dom.Node;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -74,7 +74,7 @@ public class SourceTree
    * {@link org.w3c.dom.Document} node.
    * @param url The URI of the source tree.
    */
-  public SourceTree(Node root, String url)
+  public SourceTree(int root, String url)
   {
     m_root = root;
     m_url = url;
@@ -85,5 +85,5 @@ public class SourceTree
 
   /** The root of the source tree, which may or may not be a 
    * {@link org.w3c.dom.Document} node.  */
-  public Node m_root;
+  public int m_root;
 }
