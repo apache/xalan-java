@@ -490,9 +490,16 @@ public class ApplyXSLT extends HttpServlet
 	OutputFormatExtended of = xslSourceRoot.getOutput();
 	String encoding = of.getEncoding();
 	String media = of.getMediaType();
-    if (encoding != null)
-      return media + "; charset=" + encoding;
-    return media;
+	if (media != null)
+	{
+      if (encoding != null)
+        return media + "; charset=" + encoding;
+      return media;
+	}
+	else
+	{
+	  return "text/html";	
+	}
   }
 
   /**
