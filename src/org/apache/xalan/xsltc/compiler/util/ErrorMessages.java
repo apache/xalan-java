@@ -244,17 +244,19 @@ public class ErrorMessages extends ResourceBundle {
 	"   -h             prints this usage statement\n",  
  
 	// TRANSFORM_USAGE_STR
-	"Usage: \n" +
-	"   java org.apache.xalan.xsltc.cmdline.Transform [-j <jarfile>] [-x] [-s]\n" +
-	"         {-u <document_url> | <document>} <class> [<param1>=<value1> ...]\n" +
-	"   Where <document> is the xml document to be transformed, or\n" +
-	"         <document_url> is a url for the xml document,\n" +
-	"         <class> is the translet class which is either in\n" +
-	"         user's CLASSPATH or in the <jarfile> specified \n" +
-	"         with the -j option.\n" +
-	"   Notes:\n"+
-	"         The -x option switches on debug messages.\n"+
-	"         The -s option disables calling System.exit.",
+	"SYNOPSIS \n" +
+	"   java org.apache.xalan.xsltc.cmdline.Transform [-j <jarfile>]\n"+
+        "      [-x] [-s] {-u <document_url> | <document>} <class>\n" +
+        "      [<param1>=<value1> ...]\n\n" +
+        "   uses the translet <class> to transform an XML document \n"+
+	"   specified as <document>. The translet <class> is either in\n"+
+	"   the user's CLASSPATH or in the optionally specified <jarfile>.\n"+
+	"OPTIONS\n" +
+	"   -j <jarfile>    specifies a jarfile from which to load translet\n"+
+	"   -x              turns on additional debugging message output\n" +
+	"   -s              disables calling System.exit\n" +
+	"   -u <document_url> specifies XML input document as a URL\n", 
+
 
 	// STRAY_SORT_ERR
 	"<xsl:sort> can only be used within <xsl:for-each> or <xsl:apply-templates>.",
