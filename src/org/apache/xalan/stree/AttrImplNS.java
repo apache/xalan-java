@@ -11,6 +11,7 @@ public class AttrImplNS extends AttrImpl
   AttrImplNS(String uri, String name, String value)
   {
     super(name, value);
+    // System.out.println("AttrImplNS - name: "+name);
     // System.out.println("uri: "+uri+", "+name);
     m_namespaceURI = uri;
     int index = name.indexOf(':');
