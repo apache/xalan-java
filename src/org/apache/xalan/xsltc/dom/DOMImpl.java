@@ -1361,34 +1361,50 @@ public final class DOMImpl implements DOM, Externalizable {
      */             
     private class NthDescendantIterator extends DescendantIterator {
 
-	int _pos;
+	final NodeIterator _source;
+	final int _pos;
+	final int _ourtype;
 
-	public NthDescendantIterator(int pos) {
+	public NthDescendantIterator(NodeIterator source, int pos, int type) {
+	    _source = source;
+	    _ourtype = type;
 	    _pos = pos;
-	    _limit = _treeNodeLimit;
 	}
 
 	// The start node of this iterator is always the root!!!
 	public NodeIterator setStartNode(int node) {
-	    NodeIterator iterator = super.setStartNode(1);
-	    _limit = _treeNodeLimit;
-	    return iterator;
+	    _source.setStartNode(node);
+	    return this;
 	}
 
 	public int next() {
 	    int node;
-	    while ((node = super.next()) != END) {
+	    while ((node = _source.next()) != END) {
 		int parent = _parent[node];
 		int child = _offsetOrChild[parent];
 		int pos = 0;
 
-		do {
-		    if (isElement(child)) pos++;
-		} while ((pos < _pos) && (child = _nextSibling[child]) != 0);
+		if (_ourtype != -1) {
+		    do {
+			if (isElement(child) && _type[child] == _ourtype) pos++;
+		    } while ((pos<_pos) && (child = _nextSibling[child]) != 0);
+		}
+		else {
+		    do {
+			if (isElement(child)) pos++;
+		    } while ((pos<_pos) && (child = _nextSibling[child]) != 0);
+		}
+
 		if (node == child) return node;
 	    }
 	    return(END);
 	}
+
+	public NodeIterator reset() {
+	    _source.reset();
+	    return this;
+	}
+
 
     } // end of NthDescendantIterator
 
@@ -2335,8 +2351,13 @@ public final class DOMImpl implements DOM, Externalizable {
     /**
      * Returns the nth descendant of a node (1 = parent, 2 = gramps)
      */
-    public NodeIterator getNthDescendant(int node, int n) {
-	return (new NthDescendantIterator(n));
+    public NodeIterator getNthDescendant(int type, int n) {
+	NodeIterator source;
+	if (type == -1)
+	    source = new DescendantIterator();
+	else
+	    source = new TypedDescendantIterator(type);
+	return(new NthDescendantIterator(source, n, type));
     }
 
     /**

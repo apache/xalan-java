@@ -153,7 +153,10 @@ public final class BasisLibrary implements Operators {
 	    return ((DOM)obj).getStringValue();
 	}
 	else {
-	    return obj.toString();
+	    if (obj != null)
+		return obj.toString();
+	    else
+		return stringF(node, dom);
 	}
     }
 

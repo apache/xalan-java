@@ -84,6 +84,7 @@ class VariableBase extends TopLevelElement {
     protected LocalVariableGen _local;      // Reference to JVM variable
     protected Instruction _loadInstruction; // Instruction to load JVM variable
     protected Expression  _select;          // Reference to variable expression
+    protected String      select;           // Textual repr. of variable expr.
     protected int         _stackIndex = -1; // Stack index relative to base ptr.
 
     // References to this variable (when local)

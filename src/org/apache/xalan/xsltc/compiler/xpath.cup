@@ -452,6 +452,7 @@ AbbreviatedRelativeLocationPath ::= RelativeLocationPath:rlp DSLASH Step:step
         {: 
 	   Step nodeStep;
 	   final Step temp = (Step) step;
+           // THIS CODE IS NOT GOOD - PREDICATES ARE MISPLACED!!!!!
 	   if (temp.getAxis() == Axis.CHILD) {
 	       // Expand 'rlp//child::E' into 'rlp/descendant::E'
 	       nodeStep = new Step(Axis.DESCENDANT, 
