@@ -141,15 +141,15 @@ public class ElemParam extends ElemVariable
   {
 
     VariableStack vars = transformer.getXPathContext().getVarStack();
-    Object obj =
-      vars.getParamVariable(transformer.getXPathContext(), getName());
+    Arg arg = vars.getParamArg(getName());
 
-    if (null == obj)
+    if (null == arg)
     {
       super.execute(transformer, sourceNode, mode);
     }
     else
     {
+      arg.setIsParamVar(false);
       if (TransformerImpl.S_DEBUG)
         transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
     }
