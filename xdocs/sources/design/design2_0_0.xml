@@ -1,0 +1,523 @@
+<?xml version="1.0"?>
+<!DOCTYPE s1 SYSTEM "sbk:/style/dtd/document.dtd">
+<s1 title="Xalan-J 2.0 Design">
+  <p><link>Xalan-J 2.0 Design</link><img src="xmllogo.gif" alt="xmllogo.gif"/></p>
+  <p>Author: Scott Boag<br/>State: In Progress</p>
+  <ul> 
+	   <li><link anchor="intro">Introduction</link></li>
+ 	   <li><link anchor="overarch">Overview of Architecture</link></li>
+	   <li><link anchor="process">Process Module</link></li>
+	   <li><link anchor="templates">Templates Module</link></li>
+	   <li><link anchor="transformer">Transformer Module</link></li>
+       <ul>
+         <li><link anchor="stree">Stree Module</link></li>
+         <li><link anchor="extensions">Extensions Module</link></li>
+     </ul>
+	   <li><link anchor="xpath">XPath Module</link></li>
+       <ul><li><link anchor="xpathdbconn">XPath Database Connection</link></li></ul>
+	   <li><link anchor="utils">Utils Package</link></li>         
+	   <li><link anchor="other">Other Packages</link></li>         
+	   <li><link anchor="coding">Coding Conventions</link></li>
+	   <li><link anchor="open">Open Issues</link></li>     
+   <li><jump href="http://xml.apache.org/xalan-j/apidocs/index.html">Xalan-J 2.0 Javadoc</jump></li>
+  </ul><anchor name="intro"/>
+  <s2 title="Introduction"> 
+	 <p><link>Introduction</link></p> 
+	 <p>This document presents the basic design for Xalan-J 2.0, which is a
+		<jump href="http://www.awl.com/cseng/titles/0-201-89542-0/techniques/refactoring.htm">refactoring</jump>
+		and redesign of the Xalan-J 1.x processor. The main goals of this redesign are
+		to: </p> 
+	 <ol> 
+		<li>Make the design and code more understandable by Open Source
+		  people.</li> 
+		<li>Reduce code size and complexity.</li>
+		<li>By simplifying the code, make optimization easier.</li> 
+		<li>Make modules generally more localized, and less tangled with other
+		  modules.</li> 
+		<li>Begin the adoption of the TrAX (Transformations for XML)
+		  interfaces.</li> 
+	 <li>Increase the streamability of transformations.</li></ol> 
+	 <p>The techniques used toward these goals are to:</p> 
+	 <ol> 
+		<li>In general, flatten the hierarchy of packages, in order to make the
+		  structure more apparent from the top-level view.</li> 
+		<li>Break the construction and the validation of the XSLT stylesheet from
+		  the stylesheet objects themselves.</li>
+		<li>Drive the construction of the stylesheet through a table, so that it
+		  is less prone to error.</li> 
+		<li>Break the transformation process into a separate package, away from
+		  the stylesheet objects.</li> 
+		<li>Create this design document, as a starting point for people interested in
+		  approaching the code.</li> 
+	 </ol> 
+	 <p>The goals are not:</p> 
+	 <ol> 
+		<li>To add more features in the progress of this refactoring. This is
+		  design and code clean-up in order to meet the above-named goals. We expect that it will be <em>much</em> easier to add
+		  features once this work is completed.</li> 
+		<li>To optimize code for the sake of optimization. However, we
+		  expect that the code will be faster once this work is complete.</li> 
+	 </ol> 
+	 <p>How well we've achieved the goals will be measured by feedback from the
+		<jump href="http://xml-archive.webweaving.org/xml-archive-xalan">Xalan-dev</jump> list, and by software metrics tools.</p> 
+	 <p>Please note that the diagrams in this design document are meant to be
+		useful abstractions, and may not always be exact.</p> 
+  </s2><anchor name="overarch"/> 
+  <s2 title="Overview of Architecture"> 
+	 <p><link>Overview of Architecture</link></p> 
+	 <p>Xalan 2.0 is divided into four major modules, and various smaller
+		modules. The main modules are:</p> 
+	 <gloss> 
+		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/processor/package-summary.html">org.apache.xalan.processor</jump></code></label> 
+		<item>The module that processes the stylesheet, and provides the main
+		  entry point into Xalan.</item> 
+	 </gloss> 
+	 <gloss> 
+		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/templates/package-summary.html">org.apache.xalan.templates</jump></code></label> 
+		<item>The module that defines the stylesheet structures, including the
+		  Stylesheet object, template element instructions, and Attribute Value
+		  Templates. </item> 
+	 </gloss> 
+	 <gloss> 
+		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/transformer/package-summary.html">org.apache.xalan.transformer</jump></code></label> 
+		<item>The module that applies the source tree to the Templates, and
+		  produces a result tree.</item> 
+	 </gloss> 
+	 <gloss> 
+		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xpath/package-summary.html">org.apache.xpath</jump></code></label> 
+		<item>The module that processes both XPath expressions, and XSLT Match
+		  patterns.</item> 
+	 </gloss> 
+	 <p>In addition to the above modules, Xalan implements the
+		<jump href="http://trax.openxml.org/">TrAX</jump> interfaces, and depends on the
+	 <jump href="http://www.megginson.com/SAX/Java/index.html">SAX2</jump> and <jump href="http://www.w3.org/TR/DOM-Level-2/">DOM</jump> packages.
+</p><p><img src="trax.gif" alt="trax.gif"/></p><p>There is also a general utilities package that contains both XML utility
+	 classes such as QName, but generally useful classes such as
+	 StringToIntTable.</p> 
+	 <p>In the diagram below, the dashed lines denote visibility. All packages
+		access the SAX2 and DOM packages.</p> 
+	 <p><img src="xalan1_1x1.gif" alt="xalan1_1x1.gif"/></p> 
+	 <p>In addition to the above packages, there are the following additional
+		packages:</p> 
+	 <gloss> 
+		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/client/package-summary.html">org.apache.xalan.client</jump></code></label> 
+		<item>This package has a client applet. I suspect this should be moved
+		  into the samples directory.</item> 
+	 </gloss> 
+	 <gloss> 
+		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/extensions/package-summary.html">org.apache.xalan.extensions</jump></code></label> 
+		<item>This holds classes belonging to the Xalan extensions mechanism,
+		  which allows Java code and script to be called from within a stylesheet.</item>
+		
+	 </gloss> 
+	 <gloss> 
+		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/lib/package-summary.html">org.apache.xalan.lib</jump></code></label> 
+		<item>This is the built-in Xalan extensions library, which holds
+		  extensions such as Redirect (which allows a stylesheet to produce multiple
+		  output files).</item> 
+	 </gloss> 
+	 <gloss> 
+		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/res/package-summary.html">org.apache.xalan.res</jump></code></label> 
+		<item>This holds resource files needed by Xalan, such as error message
+		  resources.</item> 
+	 </gloss> 
+	 <gloss> 
+		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/trace/package-summary.html">org.apache.xalan.trace</jump></code></label> 
+		<item>This package contains classes and interfaces that allow a caller to
+		  add trace listeners to the transformation, allowing an interface to XSLT
+		  debuggers and similar tools.</item> 
+	 </gloss> 
+	 <gloss> 
+		<label><code><jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/xslt/package-summary.html">org.apache.xalan.xslt</jump></code></label> 
+		<item>This package is for backwards compatibility with applications that
+		  depend on Xalan 1.x interfaces.</item> 
+	 </gloss> 
+  <p>A more conceptual view of this architecture is as follows:</p><p><img src="conceptual.gif" alt="Picture of conceptual architecture."/></p></s2><anchor name="process"/> 
+  <s2 title="Process Module"> 
+	 <p><link>Process Module</link></p> 
+	 <p>The <code>org.apache.xalan.process</code> module implements the
+		<code>org.apache.xalan.trax.Processor</code> interface, which provides a
+		factory method for creating a concrete Processor instance, and provides methods
+		for creating a <code>org.apache.xalan.trax.Templates</code> instance, which, in
+		Xalan and XSLT terms, is the Stylesheet. Thus the task of the process module is
+		to read the XSLT input in the form of a file, stream, SAX events, or a DOM
+		tree, and produce a Templates/Stylesheet object.</p> 
+	 <p>The overall strategy is to define a schema that dictates the legal
+		structure for XSLT elements and attributes, and to associate with those
+		elements construction-time processors that can fill in the appropriate fields
+		in the top-level Stylesheet object, and also associate classes in the templates
+		module that can be created in a generalized fashion. This makes the validation
+		object-to-class associations centralized and declarative.</p> 
+	 <p>The schema's root class is
+		<code>org.apache.xalan.processor.XSLTSchema</code>, and it is here that the
+		XSLT schema structure is defined. XSLTSchema uses
+		<code>org.apache.xalan.processor.XSLTElementDef</code> to define elements, and
+		<code>org.apache.xalan.processor.XSLTAttributeDef</code> to define attributes.
+		Both classes hold the allowed namespace, local name, and type of element or
+		attribute. The XSLTElementDef also holds a reference to a
+		<code>org.apache.xalan.processor.XSLTElementProcessor</code>, and a sometimes a
+		<code>Class</code> object, with which it can create objects that derive from
+		<code>org.apache.xalan.templates.ElemTemplateElement</code>. In addition, the
+		XSLTElementDef instance holds a list of XSLTElementDef instances that define
+		legal elements or character events that are allowed as children of the given
+		element.</p> 
+	 <p>The implementation of the <code>org.apache.xalan.trax.Processor</code>
+		interface is in <code>org.apache.xalan.processor.StylesheetProcessor</code>,
+		which creates a <code>org.apache.xalan.processor.StylesheetHandler</code>
+		instance. This instance acts as the ContentHandler for the parse events, and is
+		handed to the <code>org.xml.sax.XMLReader</code>, which the StylesheetProcessor
+		uses to parse the XSLT document. The StylesheetHandler then receives the parse
+		events, which maintains the state of the construction, and passes the events on
+		to the appropriate XSLTElementProcessor for the given event, as dictated by the
+		XSLTElementDef that is associated with the given event.</p> 
+	 <p><img src="process.gif" alt="process.gif"/></p> 
+  </s2><anchor name="templates"/> 
+  <s2 title="Templates Module"> 
+	 <p><link>Templates Module</link></p> 
+	 <p>The <code>org.apache.xalan.templates</code> module implements the
+		<code>org.apache.xalan.trax.Templates</code> interface, and defines a set of
+		classes that represent a Stylesheet. The primary purpose of this module is to
+		hold stylesheet data, not to perform procedural tasks associated with the
+		construction of the data, nor tasks associated with the transformation itself.
+		</p> 
+	 <p>A <code>StylesheetRoot</code>, which implements the
+		<code>Templates</code> interface, is a type of <code>StylesheetComposed</code>,
+		which is a <code>Stylesheet</code> composed of itself and all included
+		<code>Stylesheet</code> objects. A <code>StylesheetRoot</code> has a global
+		imports list, which is a list of all imported <code>StylesheetComposed</code>
+		instances. From each <code>StylesheetComposed</code> object, one can iterate
+		through the list of directly or indirectly included <code>Stylesheet</code>
+		objects, and one call also iterate through the list of all
+		<code>StylesheetComposed</code> objects of lesser import precedence.
+		<code>StylesheetRoot</code> is a <code>StylesheetComposed</code>, which is a
+		<code>Stylesheet</code>.</p> 
+	 <p>Each stylesheet has a set of properties, which can be set by various
+		means, usually either via an attribute on xsl:stylesheet, or via a top-level
+		xsl instruction (for instance, xsl:attribute-set). The get methods for these
+		properties only access the declaration within the given <code>Stylesheet</code>
+		object, and never takes into account included or imported stylesheets. The
+		<code>StylesheetComposed</code> derivative object, if it is a root
+		<code>Stylesheet</code> or imported <code>Stylesheet</code>, has "composed"
+		getter methods that do take into account imported and included stylesheets, for
+		some of these properties. The table of Stylesheet properties, with composed
+		methods, is as follows. Note that the names of the attributes are according to
+		a formula for translating the xsl names to the Java get/set method names.</p> 
+	 <table> 
+		<tr> 
+		  <th>Property</th> 
+		  <th>Type</th> 
+		  <th>XSL Origin</th> 
+		  <th>Composed Methods</th> 
+		  <th>Note</th> 
+		</tr> 
+		<tr> 
+		  <td>XmlnsXsl</td> 
+		  <td>String</td> 
+		  <td>xmlns:xsl</td> 
+		  <td>(none, applies to stylesheet only)</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>ExtensionElementPrefixes</td> 
+		  <td>StringVector</td> 
+		  <td><code><jump href="http://www.w3.org/TR/xslt#extension-element">extension-element-prefixes</jump></code>
+			 attribute</td> 
+		  <td>(none, applies to stylesheet only)</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>ExcludeResultPrefixes</td> 
+		  <td>StringVector</td> 
+		  <td><code><jump href="http://www.w3.org/TR/xslt#literal-result-element">exclude-result-prefixes
+			 or xsl:exclude-result-prefixes</jump></code> attributes</td> 
+		  <td>(not sure about this... only from root?)</td> 
+		  <td>I think this should be a root method, and a single list should be
+			 made, like with xsl:output.</td> 
+		</tr> 
+		<tr> 
+		  <td>Id</td> 
+		  <td>String</td> 
+		  <td>The <code><jump href="http://www.w3.org/TR/xslt#section-Embedding-Stylesheets">id</jump></code>
+			 attribute</td> 
+		  <td>(none, applies to stylesheet only)</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>Version</td> 
+		  <td>String</td> 
+		  <td>The <code><jump href="http://www.w3.org/TR/xslt#forwards">version</jump></code> attribute</td> 
+		  <td>(none, applies to stylesheet only)</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>XmlSpace</td> 
+		  <td>boolean</td> 
+		  <td><code><jump href="http://www.w3.org/TR/xslt#strip">xml:space</jump></code> attribute</td> 
+		  <td>(none, applies to stylesheet only)</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>Import</td> 
+		  <td>Vector (list of StylesheetComposed objects)</td> 
+		  <td><code><jump href="http://www.w3.org/TR/xslt#import">xsl:import</jump></code> element</td> 
+		  <td>getImportComposed(int i) / getImportCountComposed()</td> 
+		  <td>Composed list contains all imported sheets, not the importing sheet
+			 itself.</td> 
+		</tr> 
+		<tr> 
+		  <td>Include</td> 
+		  <td>Vector (list of Stylesheet objects)</td> 
+		  <td><code><jump href="http://www.w3.org/TR/xslt#include">xsl:include</jump></code> element</td>
+		  
+		  <td>getIncludeComposed(int i) / getIncludeCountComposed()</td> 
+		  <td>Composed list contains all directly or indirectly included
+			 stylesheets.</td> 
+		</tr> 
+		<tr> 
+		  <td>DecimalFormat</td> 
+		  <td>Stack (list of DecimalFormatProperties objects)</td> 
+		  <td><code><jump href="http://www.w3.org/TR/xslt#format-number">xsl:decimal-format</jump></code>
+			 element</td> 
+		  <td>getDecimalFormatComposed(QName name)</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>StripSpaces</td> 
+		  <td>Stack (list of XPath match pattern objects)</td> 
+		  <td><code><jump href="http://www.w3.org/TR/xslt#strip">xsl:strip-space</jump></code>
+			 element</td> 
+		  <td>getWhiteSpaceInfo(TransformerImpl transformContext, Node
+			 sourceTree, Element targetElement)</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>PreserveSpaces</td> 
+		  <td>Stack (list of XPath match pattern objects)</td> 
+		  <td><code><jump href="http://www.w3.org/TR/xslt#strip">xsl:preserve-space</jump></code>
+			 element</td> 
+		  <td>getWhiteSpaceInfo(TransformerImpl transformContext, Node
+			 sourceTree, Element targetElement)</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>Output</td> 
+		  <td>OutputFormatExtended</td> 
+		  <td><code><jump href="http://www.w3.org/TR/xslt#output">xsl:output</jump></code> element</td> 
+		  <td>getOutputComposed() on StylesheetRoot only</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>Key</td> 
+		  <td>Vector (list of KeyDeclaration objects)</td> 
+		  <td><code><jump href="http://www.w3.org/TR/xslt#key">xsl:key</jump></code> element</td> 
+		  <td>getKeysComposed()</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>AttributeSet</td> 
+		  <td>Vector (list of ElemAttributeSet objects)</td> 
+		  <td><code><jump href="http://www.w3.org/TR/xslt#attribute-sets">xsl:attribute-set</jump></code>
+			 element</td> 
+		  <td>On StylesheetRoot only?</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>Variable</td> 
+		  <td>Vector (list of ElemVariable objects)</td> 
+		  <td><code><jump href="http://www.w3.org/TR/xslt#top-level-variables">xsl:variable</jump></code>
+			 element</td> 
+		  <td></td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>Param</td> 
+		  <td>Vector (list of ElemParam objects)</td> 
+		  <td><code><jump href="http://www.w3.org/TR/xslt#top-level-variables">xsl:param</jump></code>
+			 element</td> 
+		  <td></td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>Template</td> 
+		  <td>Vector (list of ElemTemplate objects)</td> 
+		  <td><code><jump href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">xsl:template</jump></code>
+			 element</td> 
+		  <td>getTemplateComposed(TransformerImpl transformContext, Node
+			 sourceTree, Node targetNode, QName mode) and getTemplateComposed(QName
+			 qname)</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>NamespaceAlias</td> 
+		  <td>Vector (list of ElemTemplate objects)</td> 
+		  <td><code><jump href="http://www.w3.org/TR/xslt#literal-result-element">xsl:namespace-alias</jump></code>
+			 element</td> 
+		  <td>On StylesheetRoot only?</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>NonXslTopLevel</td> 
+		  <td>Hashtable (table of opaque objects keyed by QName)</td> 
+		  <td>Any top-level non-xslt element.</td> 
+		  <td>none.</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>Href</td> 
+		  <td>URL</td> 
+		  <td>The location of the stylesheet, possibly set by xsl:include or
+			 xsl:import.</td> 
+		  <td>none.</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>StylesheetRoot</td> 
+		  <td>StylesheetRoot</td> 
+		  <td>The root of the stylesheet tree, for quick access.</td> 
+		  <td>none.</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>StylesheetParent</td> 
+		  <td>Stylesheet</td> 
+		  <td>The importing or including stylesheet.</td> 
+		  <td>none.</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>StylesheetComposed</td> 
+		  <td>StylesheetComposed</td> 
+		  <td>The closest importing stylesheet.</td> 
+		  <td>none.</td> 
+		  <td></td> 
+		</tr> 
+		<tr> 
+		  <td>NamespaceDecls</td> 
+		  <td>Linked list of NameSpace elements</td> 
+		  <td>xmlns:foo attribute map</td> 
+		  <td>(none, applies to stylesheet only)</td> 
+		  <td></td> 
+		</tr> 
+	 </table> 
+  </s2><anchor name="transformer"/> 
+  <s2 title="Transformer Module"> 
+	 <p><link>Transformer Module</link></p> 
+	 <p>The <jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/transformer/package-summary.html">Transformer</jump> module is in charge of run-time transformations.  The <jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/transformer/TransformerImpl.html">TransformerImpl</jump> object, which implements the TrAX <jump href="http://trax.openxml.org/javadoc/trax/Transformer.html">Transformer</jump> interface, and has an association with a <jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/templates/StylesheetRoot.html">StylesheetRoot</jump> object, begins the processing of the source tree (or provides a <jump href="http://www.megginson.com/SAX/Java/javadoc/org/xml/sax/ContentHandler.html">ContentHandler</jump> reference), and performs the transformation.  The Transformer package does as much of the transformation as it can, but element level operations are generally performed in the <jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/templates/ElemTemplateElement.html#execute(org.apache.xalan.transformer.TransformerImpl, org.w3c.dom.Node, org.apache.xalan.utils.QName)">ElemTemplateElement.execute(...)</jump> methods.</p><p>Result Tree events are fed into a <jump href="http://xml.apache.org/xalan-j/apidocs/org/apache/xalan/transformer/ResultTreeHandler.html">ResultTreeHandler</jump> object, which acts as a layer between the direct calls to the result 
+tree content handler (often a Serializer), and the Transformer.  For one thing, 
+ we have to delay the call to
+ startElement(name, atts) because of the
+ xsl:attribute and xsl:copy calls.  In other words,
+ the attributes have to be fully collected before you
+ can call startElement.</p><p>Other important classes in this package are:</p><gloss><label>CountersTable and Counter</label><item>The Counter class does incremental counting for support of xsl:number.
+ This class stores a cache of counted nodes (m_countNodes). 
+  It tries to cache the counted nodes in document order... 
+ the node count is based on its position in the cache list.  The CountersTable class is a table of counters, keyed by ElemNumber objects, each 
+ of which has a list of Counter objects.</item></gloss><gloss><label>KeyIterator, KeyManager, and KeyTable</label><item>These classes handle mapping of keys declared with the xsl:key element.</item></gloss><gloss><label>TransformState</label><item>This interface is meant to be used by a consumer of SAX2 events produced by Xalan, and enables the consumer 
+ to get information about the state of the transform.  It 
+ is primarily intended as a tooling interface.</item></gloss><p>Even though the following modules are defined in the org.apache.xalan package, instead of the transformer package, they are defined in this section as they are mostly related to runtime transformation.</p><anchor name="stree"/>
+  <s3 title="Stree Module"><p><link>Stree Module [And discussions about streaming]</link></p><p>The Stree module implements the default <jump href="http://www.w3.org/TR/xpath#data-model">Source Tree </jump> for Xalan, that is to be transformed.  It implements read-only <jump href="http://www.w3.org/TR/DOM-Level-2/">DOM2</jump> interfaces, and provides some information needed for fast transforms, such as document order indexes.  It also attempts to allow a streaming transform by launching the transform on a secondary thread as soon as the SAX2 <jump href="http://www.megginson.com/SAX/Java/javadoc/org/xml/sax/ContentHandler.html#startDocument()">StartDocument</jump> event has occurred.  When the transform requests a node, and node is not present, the getFirstChild and GetNextSibling methods will wait until the child node has arrived, or an <jump href="http://www.megginson.com/SAX/Java/javadoc/org/xml/sax/ContentHandler.html#endElement(java.lang.String,%20java.lang.String,%20java.lang.String)">endElement</jump> event has occurred.</p><p>Note that the secondary thread is an issue.  It would be better to do the same thing as described above on a single thread, but using the parser in 'pull' mode, or simply with a parseNext method so the parse would occur in blocks.</p><p>This kind of streaming is not perfect because it still requires an entire source tree to be concretely built.  There have been a lot of good discussions on the xalan-dev list about how to do static analysis of a stylesheet, and be able to allocate only the nodes needed by the transform, while they are needed (or not allocate source objects at all).</p><p>Vincent-Olivier Arsenault &lt;vincent@neuro6.com&gt; has proposed the following design:</p><p>By looking at the stylesheet you know how streamable it is (of course this
+needs strict adherence to the xslt recommendation). since there's a root
+template and no &lt;xsl:apply-templates/&gt; you can build your context list
+containing only absolute xpath which means nodes get out of context
+faster).</p>
+
+<p>The paths of the relevant nodes, for this stylesheet, are (ok this is an
+example, so I may be missing some):</p>
+<ol>
+<li>path: "/address" context: "address" (at &lt;/address&gt;, you get rid of the
+whole "person/address" stuff);</li>
+
+<li>path: "/adn" context: "adn";</li>
+
+<li>path: "/medicalrecord" context: "/" (for possibly repetitive nodes, the
+context is always the parent node).</li>
+</ol>
+<p>And all the rest goes to trash!!!!</p>
+
+<p>Let me refine:</p>
+
+<p>you analyze the whole stylesheet like that (would be good if optimization
+and xpath list could be done simultaneously) and you end up with a list of
+expanded paths mapped to all the templates.</p>
+
+<p>An entry in the list (i would call this list the transformation stack) would
+consist of 4 things:</p>
+<ol>
+<li>the relevance context xpath (on which the input nodes will be tested for
+pertinence: do we keep it of not);</li>
+
+<li>the transformation rule to apply to the matching nodes (this can just be a
+forwarder to another template transformation stack);</li>
+
+<li>a result buffer (in which the nodes that can't be streamed are temporarily
+stored);</li>
+
+<li>the streaming context xpath (triggers streaming of the buffer to the
+output).</li>
+</ol><anchor name="extensions"/>
+</s3><s3 title="Extensions Module"><p><link>Extensions Module</link></p><p>This package contains an implementation of Xalan Extension Mechanism, which uses the <jump href="http://oss.software.ibm.com/developerworks/opensource/bsf/">Bean Scripting Framework</jump>.
+
+The Bean Scripting Framework (BSF) is an architecture for incorporating scripting into Java applications and applets.  Scripting languages such as Netscape Rhino (Javascript), VBScript, Perl, Tcl, Python, NetRexx and Rexx can be used to augment XSLT's functionality.  In addition, the Xalan extension mechanism allows use of Java classes.  See the <jump href="http://xml.apache.org/xalan/extensions.html">Xalan-J 1 extension documentation</jump> for a description of using extensions in a stylesheet. Please note that the W3C XSL Working Group is working on a specification for standard extension bindings, and this module will change to follow that specification.  </p><p>[More needed... -sb]</p></s3></s2><anchor name="xpath"/> 
+  <s2 title="XPath Module"> 
+	 <p><link>XPath Module</link></p> 
+	 <p>This module is pulled out of the Xalan package, and put in the org.apache package, to emphasize that the intention is that this package can be used independently of the XSLT engine, even though it has dependencies on the Xalan utils module.</p><p><img src="org_apache.gif" alt="xalan ---> xpath"/></p> 
+  <p>The XPath module first compiles the XPath strings into expression trees, and then executes these expressions via a call to the XPath execute(...) function.  </p>  <p>Major classes are:</p><gloss><label>XPath</label><item>Represents a compiled XPath.  Major function is <code>XObject execute(XPathContext xctxt, Node contextNode, 
+                         PrefixResolver namespaceContext).</code></item></gloss><gloss><label>XPathAPI</label><item>The methods in this class are convenience methods into the
+ low-level XPath API.</item></gloss><gloss><label>XPathContext</label><item>Used as the runtime execution context for XPath.</item></gloss><gloss><label>DOMHelper</label><item>Used as a helper for handling DOM issues.  May be subclassed to take advantage 
+   of specific DOM implementations.</item></gloss><gloss><label>SourceTreeManager</label><item>bottlenecks all management of source trees.  The methods
+ in this class should allow easy garbage collection of source 
+ trees, and should centralize parsing for those source trees.</item></gloss><gloss><label>Expression</label><item>The base-class of all expression objects, allowing polymorphic behaviors.</item></gloss><p>The general architecture of the XPath module is divided into the compiler, and categories of expression objects.</p><p><img src="xpath.gif" alt="xpath modules"/></p><p>The most important module is the axes module.  This module implements the DOM2 <jump href="http://www.w3.org/TR/DOM-Level-2/traversal.html#Iterator-overview">NodeIterator</jump> interface, and is meant to allow XPath clients to either override the default behavior or to replace this behavior.</p><p>The LocPathIterator and UnionPathIterator classes implement the <jump href="http://www.w3.org/TR/DOM-Level-2/java-binding.html#org.w3c.dom.traversal.NodeIterator">NodeIterator</jump> interface, and polymorphically use AxesWalker derived objects to execute each step in the path.  The whole trick is to execute the LocationPath in depth-first document order so that nodes can be found without necessarily looking ahead or performing a breadth-first search.</p><anchor name="xpathdbconn"/><s3 title="XPath Database Connection"><p><link>XPath Direct Database Connections</link></p><p>An important part of the XPath design in both Xalan 1 and Xalan 2, is to enable database connections to be used as drivers directly to the XPath <jump href="http://www.w3.org/TR/xpath#location-paths">LocationPath</jump> handling.  This allows databases to be directly connected to the transform, and be able to take advantage of internal indexing and the like.  While in Xalan 1 this was done via the <jump href="http://xml.apache.org/xalan/apidocs/org/apache/xalan/xpath/XLocator.html">XLocator</jump> interface, in Xalan 2 this interface is no longer used, and has been replaced by the DOM2 <jump href="http://www.w3.org/TR/DOM-Level-2/traversal.html#Iterator-overview">NodeIterator</jump> interface.  An application or extension should be able to install their own NodeIterator for a given document.</p><p><img src="data.gif" alt="data.gif"/></p><p>[More to do]</p></s3></s2><anchor name="utils"/> 
+  <s2 title="Utils Package"> 
+	 <p><link>Utils Package</link></p> 
+  <p>This package contains general utilities for use by both the xalan and xpath packages.  It is the intention that many of these utility classes (or their equivalents) be eventually brought into the org.apache.xml package for general use.  The list of major utilities are as follows:</p><gloss><label>AttList</label><item>Wraps a DOM attribute list in a SAX Attributes.</item></gloss><gloss><label>BoolStack, IntStack, IntVector, etc.</label><item>Simple stacks and vectors  for primitive values.</item></gloss><gloss><label>DefaultErrorHandler</label><item>Implements SAX error handler for default reporting.</item></gloss><gloss><label>DOMBuilder</label><item>Takes SAX events (in addition to some extra events 
+ that SAX doesn't handle yet) and adds the result to a document 
+ or document fragment.</item></gloss><gloss><label>Heap</label><item>Classic heap implementation.</item></gloss><gloss><label>MutableAttrListImpl</label><item>Mutable version of AttributesImpl.</item></gloss><gloss><label>NameSpace</label><item>A representation of a namespace.</item></gloss><gloss><label>NodeVector</label><item>A very simple table that stores a list of Nodes.</item></gloss><gloss><label>ObjectPool</label><item>Used for reuse of objects.</item></gloss><gloss><label>PrefixResolver</label><item>The class that implements this interface can resolve prefixes 
+ to namespaces.</item></gloss><gloss><label>PrefixResolverDefault</label><item>This class implements a generic PrefixResolver for a DOM, that 
+ can be used to perform prefix-to-namespace lookup 
+ for an XPath.</item></gloss><gloss><label>QName</label><item>Class to represent a  qualified XML name.</item></gloss><gloss><label>StringToStringTable</label><item>A very simple lookup table that stores a list of strings for lookup.  Used when a hashtable is too much overhead.</item></gloss><gloss><label>SystemIDResolver</label><item>Able to take a SystemID string and try and turn it into a good absolute URL.</item></gloss><gloss><label>TreeWalker</label><item>Implements a Visitor design pattern, doing a pre-order walk of the DOM tree, calling a ContentHandler interface as it goes.  Used for DOM-to-SAX conversion.</item></gloss><gloss><label>Trie</label><item>A digital search trie for 7-bit ASCII text.</item></gloss><gloss><label>UnImplNode</label><item>To be subclassed by classes that wish to act as DOM nodes, without having to implement all the methods.  Widely used.</item></gloss></s2><anchor name="other"/>
+  <s2 title="Other Packages"> 
+	 <p><link>Other Packages</link></p> 
+	 <gloss><label>client</label><item>Implementation of Xalan Applet [should we keep this?].
+
+</item></gloss> 
+		<gloss><label>dtm</label><item>Implementation of the Document Table Model (DTM) [Should we keep this?].</item></gloss> 
+		<gloss><label>extensions</label><item>Implementation of Xalan Extension Mechanism, which uses the Bean Scripting Framework.</item></gloss> 
+		<gloss><label>lib</label><item>Implementation of Xalan-specific extensions [I want to add lots more extensions to this package!].</item></gloss><gloss><label>res</label><item>Contains strings that require internationalization.</item></gloss></s2><anchor name="coding"/> 
+  <s2 title="Coding Conventions"> 
+	 <p><link>Coding Conventions</link></p> 
+	 <p>This section documents the coding conventions used in the Xalan
+		source.</p> 
+	 <ol> 
+		<li>Class files are arranged with constructors and possibly an init()
+		  function first, public API methods second, package specific, protected, and
+		  private methods following (arranged based on related functionality), member
+		  variables with their getter/setter access methods last.</li> 
+		<li>Non-static member variables are prefixed with "m_".</li> 
+		<li>static final member variables should always be upper case, without
+		  the "m_" prefix. They need not have accessors.</li> 
+		<li>Private member variables that are not accessed outside the class need
+		  not have getter/setter methods declared.</li> 
+		<li>Private member variables that are accessed outside the class should
+		  have either package specific or public getter/setter methods declared. All
+		  accessors should follow the bean design patterns.</li> 
+		<li>Package-scoped member variables, public member variables, and
+		  protected member variables should not be declared.</li> 
+	 </ol> 
+  </s2><anchor name="open"/> 
+  <s2 title="Open Issues"> 
+	 <p><link>Open Issues</link></p> 
+	 <p>This section documents architectural and design issues that I still
+		consider to be open or unsolved. (This list is ongoing, and will change over
+		time... it's simply a place for me to note problems that are ongoing and need
+		to be solved.)</p> 
+	 <gloss> 
+		<label>Space stripping</label> 
+		<item>In Xalan 1.x, it is clear that space stripping was a major
+		  performance issue. This needs to be solved in Xalan 2.0 by stripping the
+		  space nodes as the document is being parsed. This is a major problem though for
+		  DOM trees. This can be perhaps be solved by preprocessing the DOM tree and
+		  creating a table of space-stripping parent elements, when the nodes can't be
+		  pre-stripped.</item> 
+	 </gloss> 
+  </s2>
+</s1>
