@@ -100,7 +100,8 @@ import org.apache.xpath.axes.AxesWalker;
  * in which case the UnionPathIterator will cache the nodes.</p>
  */
 public class LocPathIterator extends Expression
-        implements Cloneable, NodeIterator, ContextNodeList, NodeList, java.io.Serializable 
+  implements Cloneable, NodeIterator, 
+  ContextNodeList, NodeList, java.io.Serializable 
 {
 
   /** NEEDSDOC Field m_pool          */

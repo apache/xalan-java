@@ -76,6 +76,8 @@ import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.StackGuard;
 import org.apache.xalan.stree.SaxEventDispatch;
 
+import javax.xml.transform.SourceLocator;
+
 /**
  * <meta name="usage" content="advanced"/>
  * Implement xsl:for-each.
@@ -380,7 +382,7 @@ public class ElemForEach extends ElemTemplateElement
     // Push the ContextNodeList on a stack, so that select="position()"
     // and the like will work.
     // System.out.println("pushing context node list...");
-    Locator savedLocator = xctxt.getSAXLocator();
+    SourceLocator savedLocator = xctxt.getSAXLocator();
 
     xctxt.pushContextNodeList((ContextNodeList) sourceNodes);
     transformer.pushElemTemplateElement(null);

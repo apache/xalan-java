@@ -54,37 +54,42 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xalan.processor;
+package org.apache.xalan.utils;
 
-import org.apache.xalan.templates.ElemTemplate;
-import org.apache.xalan.templates.ElemTemplateElement;
+import javax.xml.transform.SourceLocator;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.Attributes;
+import org.xml.sax.helpers.LocatorImpl;
+import org.xml.sax.Locator;
+
+import java.io.Serializable;
 
 /**
- * TransformerFactory for xsl:template markup.
+ * Class SAXSourceLocator extends org.xml.sax.helpers.LocatorImpl
+ * for the purpose of implementing the SourceLocator interface, 
+ * and thus can be both a SourceLocator and a SAX Locator.
  */
-class ProcessorTemplate extends ProcessorTemplateElem
+public class SAXSourceLocator extends LocatorImpl
+        implements SourceLocator, Serializable
 {
 
   /**
-   * Append the current template element to the current
-   * template element, and then push it onto the current template
-   * element stack.
+   * Constructor SAXSourceLocator
    *
-   * NEEDSDOC @param handler
-   * NEEDSDOC @param elem
-   *
-   * @throws SAXException
    */
-  protected void appendAndPush(
-          StylesheetHandler handler, ElemTemplateElement elem)
-            throws SAXException
+  public SAXSourceLocator(){}
+
+  /**
+   * Constructor SAXSourceLocator
+   *
+   *
+   * NEEDSDOC @param locator
+   */
+  public SAXSourceLocator(Locator locator)
   {
 
-    super.appendAndPush(handler, elem);
-    elem.setDOMBackPointer(handler.getOriginatingNode());
-    handler.getStylesheet().setTemplate((ElemTemplate) elem);
+    this.setColumnNumber(locator.getColumnNumber());
+    this.setLineNumber(locator.getLineNumber());
+    this.setPublicId(locator.getPublicId());
+    this.setSystemId(locator.getSystemId());
   }
 }

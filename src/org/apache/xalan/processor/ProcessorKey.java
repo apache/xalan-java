@@ -67,7 +67,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import java.util.Vector;
 
 /**
- * Processor for xsl:key markup.
+ * TransformerFactory for xsl:key markup.
  * <pre>
  * <!ELEMENT xsl:key EMPTY>
  * <!ATTLIST xsl:key

@@ -69,6 +69,8 @@ import java.io.StringReader;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.util.Properties;
+
 // Needed Xalan classes
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -76,13 +78,19 @@ import org.apache.xalan.stree.SourceTreeHandler;
 import org.apache.xalan.transformer.TransformerImpl;
 
 // Needed TRaX classes
-import org.apache.trax.Result;
-import org.apache.trax.Processor;
-import org.apache.trax.ProcessorFactoryException;
-import org.apache.trax.Transformer;
-import org.apache.trax.TransformException;
-import org.apache.trax.Templates;
-import org.apache.trax.TemplatesBuilder;
+import javax.xml.transform.Result;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Source;
+import javax.xml.transform.Result;
+import javax.xml.transform.sax.TemplatesHandler;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 // Needed SAX classes
 import org.xml.sax.InputSource;
@@ -118,16 +126,16 @@ public class XSLTProcessorApplet extends Applet
   /**
    * The stylesheet processor
    */
-  Processor m_processor = null;
+  SAXTransformerFactory m_tfactory = null;
 
   /** NEEDSDOC Field m_processorName          */
-  String m_processorName = "org.apache.xalan.processor.StylesheetProcessor";
+  String m_processorName = "org.apache.xalan.processor.TransformerFactoryImpl";
 
   /** NEEDSDOC Field m_reader          */
   XMLReader m_reader = null;
-
+  
   /** NEEDSDOC Field m_templatesBuilder          */
-  TemplatesBuilder m_templatesBuilder = null;
+  TemplatesHandler m_templatesBuilder = null;
 
   /**
    * @serial
@@ -303,42 +311,42 @@ public class XSLTProcessorApplet extends Applet
   protected void initLiaison(){}
 
   /**
-   *  Obtain a new instance of a Stysheet Processor object
+   *  Obtain a new instance of a Stysheet TransformerFactory object
    *  as specified by m_processorName.
-   *  Workaround for Processor.newInstance() which an
+   *  Workaround for TransformerFactory.newInstance() which an
    *  applet cannot use because it reads a system property.
-   *  @return Concrete instance of an Processor object.
+   *  @return Concrete instance of an TransformerFactory object.
    *
-   * @throws ProcessorFactoryException
+   * @throws TransformerConfigurationException
    */
-  Processor newProcessorInstance() throws ProcessorFactoryException
+  SAXTransformerFactory newProcessorInstance() throws TransformerConfigurationException
   {
 
-    Processor m_processor = null;
+    TransformerFactory tfactory = null;
 
     try
     {
       Class factoryClass = Class.forName(m_processorName);
 
-      m_processor = (Processor) factoryClass.newInstance();
+      tfactory = (TransformerFactory) factoryClass.newInstance();
     }
     catch (java.lang.IllegalAccessException iae)
     {
-      throw new ProcessorFactoryException(
-        "Transformation Processor can not be accessed!", iae);
+      throw new TransformerConfigurationException(
+        "Transformation TransformerFactory can not be accessed!", iae);
     }
     catch (java.lang.InstantiationException ie)
     {
-      throw new ProcessorFactoryException(
-        "Not able to create Transformation Processor!", ie);
+      throw new TransformerConfigurationException(
+        "Not able to create Transformation TransformerFactory!", ie);
     }
     catch (java.lang.ClassNotFoundException cnfe)
     {
-      throw new ProcessorFactoryException(
-        "Transformation Processor not found!", cnfe);
+      throw new TransformerConfigurationException(
+        "Transformation TransformerFactory not found!", cnfe);
     }
 
-    return m_processor;
+    return (SAXTransformerFactory)tfactory;
   }
 
   /**
@@ -350,10 +358,10 @@ public class XSLTProcessorApplet extends Applet
    *
    * @throws IOException
    * @throws SAXException
-   * @throws TransformException
+   * @throws TransformerException
    */
   void transform(TransformerImpl transformer, InputSource xmlSource)
-          throws SAXException, TransformException, IOException
+          throws SAXException, TransformerException, IOException
   {
 
     try
@@ -390,11 +398,11 @@ public class XSLTProcessorApplet extends Applet
     {
       se.printStackTrace();
 
-      throw new TransformException(se);
+      throw new TransformerException(se);
     }
     catch (IOException ioe)
     {
-      throw new TransformException(ioe);
+      throw new TransformerException(ioe);
     }
   }
 
@@ -449,14 +457,15 @@ public class XSLTProcessorApplet extends Applet
         "<?xml version='1.0'?><xsl:stylesheet xmlns:xsl='http://www.w3.org/1999/XSL/Transform' version='1.0'><xsl:template match='foo'><out/></xsl:template></xsl:stylesheet>");
       PrintWriter pw = new PrintWriter(new StringWriter());
 
-      m_processor = newProcessorInstance();
+      m_tfactory = (SAXTransformerFactory)newProcessorInstance();
       m_reader = XMLReaderFactory.createXMLReader(
         "org.apache.xerces.parsers.SAXParser");
-      m_templatesBuilder = m_processor.getTemplatesBuilder();
+      
+      m_templatesBuilder = m_tfactory.newTemplatesHandler();
 
       m_reader.setContentHandler(m_templatesBuilder);
 
-      synchronized (m_processor)
+      synchronized (m_tfactory)
       {
         m_reader.parse(new InputSource(xslbuf));
 
@@ -465,18 +474,16 @@ public class XSLTProcessorApplet extends Applet
           (TransformerImpl) templates.newTransformer();
 
         // Result result = new Result(pw);
-        Serializer serializer =
-          SerializerFactory.getSerializer(templates.getOutputFormat());
+        TransformerHandler serializer =
+          m_tfactory.newTransformerHandler();
 
         // org.apache.serialize.Serializer serializer = new org.apache.xml.serialize.transition.HTMLSerializer();
         // org.apache.serialize.Serializer serializer = org.apache.serialize.SerializerFactory.getSerializer( "HTML" );
-        serializer.setWriter(pw);
-
-        org.xml.sax.ContentHandler handler = serializer.asContentHandler();
+        serializer.setResult(new StreamResult(pw));
 
         // new org.apache.xml.org.apache.serialize.HTMLSerializer(pw, new OutputFormat()).asContentHandler();
-        transformer.setContentHandler(handler);
-        transformer.setParent(m_reader);
+        transformer.setContentHandler(serializer);
+        // transformer.setParent(m_reader);
         transform(transformer, new InputSource(xmlbuf));
         this.showStatus("PRIMED the pump!");
       }
@@ -576,7 +583,7 @@ public class XSLTProcessorApplet extends Applet
    *
    * NEEDSDOC @param key
    * @param expr The parameter expression to be submitted.
-   * @see org.apache.xalan.xslt.Processor#setStylesheetParam(String, String)
+   * @see org.apache.xalan.xslt.TransformerFactory#setStylesheetParam(String, String)
    */
   public void setStylesheetParam(String key, String expr)
   {
@@ -819,7 +826,7 @@ public class XSLTProcessorApplet extends Applet
    *
    * @throws SAXException
    */
-  private String doTransformation(Processor processor) throws SAXException
+  private String doTransformation(TransformerFactory processor) throws SAXException
   {
 
     URL documentURL = null;
@@ -831,7 +838,7 @@ public class XSLTProcessorApplet extends Applet
 
     try
     {
-      m_templatesBuilder = m_processor.getTemplatesBuilder();
+      m_templatesBuilder = m_tfactory.newTemplatesHandler();
 
       m_reader.setContentHandler(m_templatesBuilder);
 
@@ -855,16 +862,24 @@ public class XSLTProcessorApplet extends Applet
       // Result result = new Result(pw);
       // org.apache.serialize.Serializer serializer = new org.apache.xml.serialize.transition.HTMLSerializer(); this.showStatus("serializer is "+ serializer);
       //org.apache.serialize.Serializer serializer = org.apache.serialize.SerializerFactory.getSerializer( "HTML" );
-      Serializer serializer =
-        SerializerFactory.getSerializer(templates.getOutputFormat());
+      TransformerHandler serializer =
+        m_tfactory.newTransformerHandler();
+      
+      serializer.setResult(new StreamResult(pw));
 
-      serializer.setWriter(pw);
-
-      org.xml.sax.ContentHandler handler = serializer.asContentHandler();
-
-      transformer.setContentHandler(handler);
-      transformer.setParent(m_reader);
+      transformer.setContentHandler(serializer);
+      // transformer.setParent(m_reader);
       transform(transformer, xmlSource);
+    }
+    catch (TransformerException tfe)
+    {
+      tfe.printStackTrace();
+      System.exit(-1);
+    }
+    catch (TransformerConfigurationException tfe)
+    {
+      tfe.printStackTrace();
+      System.exit(-1);
     }
     catch (MalformedURLException e)
     {
@@ -904,11 +919,11 @@ public class XSLTProcessorApplet extends Applet
         this.showStatus(
           "Waiting for Xalan and Xerces to finish loading and JITing...");
 
-        synchronized (m_processor)
+        synchronized (m_tfactory)
         {
 
           // TransformerImpl processor = new XSLProcessor(m_liaison);
-          htmlData = doTransformation(m_processor);
+          htmlData = doTransformation(m_tfactory);
         }
       }
       else
@@ -918,7 +933,7 @@ public class XSLTProcessorApplet extends Applet
     }
     catch (NoClassDefFoundError e)
     {
-      System.out.println("Can not find " + whichParser + " XML Processor!!");
+      System.out.println("Can not find " + whichParser + " XML TransformerFactory!!");
     }
 
     return htmlData;

@@ -143,7 +143,7 @@ public class Extensions {
 	{
 		NodeSet ns1 = new NodeSet(ni1);
 		NodeSet ns2 = new NodeSet(ni2);
-		NodeSet inter= new NodeSet();
+		// NodeSet inter= new NodeSet();
 		NodeSet diff = new NodeSet();
 		diff.setShouldCacheNodes(true);		
 		for (int i = 0; i < ns1.getLength(); i++)

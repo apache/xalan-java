@@ -75,9 +75,11 @@ import org.apache.xalan.trace.*;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.trax.Transformer;
-import org.apache.trax.ProcessorException;
-import org.apache.trax.Templates;
+
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.Templates;
+import javax.xml.transform.stream.OutputKeys;
 
 /**
  * <meta name="usage" content="general"/>
@@ -91,9 +93,9 @@ public class StylesheetRoot extends StylesheetComposed
    * Uses an XSL stylesheet document.
    * @param transformer  The XSLTProcessor implementation.
    * @param baseIdentifier The file name or URL for the XSL stylesheet.
-   * @exception ProcessorException if the baseIdentifier can not be resolved to a URL.
+   * @exception TransformerConfigurationException if the baseIdentifier can not be resolved to a URL.
    */
-  public StylesheetRoot() throws ProcessorException
+  public StylesheetRoot() throws TransformerConfigurationException
   {
 
     super(null);
@@ -108,7 +110,7 @@ public class StylesheetRoot extends StylesheetComposed
     }
     catch (SAXException se)
     {
-      throw new ProcessorException("Can't init default templates!", se);
+      throw new TransformerConfigurationException("Can't init default templates!", se);
     }
   }
 
@@ -127,11 +129,66 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * Create a new transformation context for this Templates object.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A Transformer instance, never null.
    */
   public Transformer newTransformer()
   {
     return new TransformerImpl(this);
+  }
+  
+  /**
+   * Get the static properties for xsl:output.  The object returned will
+   * be a clone of the internal values, and thus it can be mutated
+   * without mutating the Templates object, and then handed in to
+   * the process method.
+   *
+   * <p>For XSLT, Attribute Value Templates attribute values will
+   * be returned unexpanded (since there is no context at this point).</p>
+   *
+   * @return A Properties object, not null.
+   */
+  public Properties getOutputProperties()
+  {
+    Properties oprops = new Properties();
+    
+    if (m_outputFormatComposed instanceof OutputFormatExtended)
+    {
+      OutputFormatExtended ofe = (OutputFormatExtended) m_outputFormatComposed;
+      if(ofe.methodHasBeenSet())
+        oprops.put(OutputKeys.METHOD, ofe.getMethod());
+      if(ofe.indentHasBeenSet())
+        oprops.put(OutputKeys.INDENT, ofe.getIndent() ? "yes" : "no");
+      if(ofe.doctypePublicHasBeenSet())
+        oprops.put(OutputKeys.DOCTYPE_PUBLIC, ofe.getDoctypePublicId());
+      if(ofe.doctypeSystemHasBeenSet())
+        oprops.put(OutputKeys.DOCTYPE_SYSTEM, ofe.getDoctypeSystemId());
+      if(ofe.mediaTypeHasBeenSet())
+        oprops.put(OutputKeys.MEDIA_TYPE, ofe.getMediaType());
+      if(ofe.omitXmlDeclarationHasBeenSet())
+        oprops.put(OutputKeys.OMIT_XML_DECLARATION, ofe.getOmitXMLDeclaration() ? "yes" : "no");
+      if(ofe.standaloneHasBeenSet())
+        oprops.put(OutputKeys.STANDALONE, ofe.getStandalone() ? "yes" : "no");
+      if(ofe.encodingHasBeenSet())
+        oprops.put(OutputKeys.ENCODING, ofe.getEncoding());
+      if(ofe.versionHasBeenSet())
+        oprops.put(OutputKeys.VERSION, ofe.getVersion());
+    }
+    else
+    {
+      OutputFormat ofe = m_outputFormatComposed;
+      // Just set them all for now.
+      oprops.put(OutputKeys.METHOD, ofe.getMethod());
+      oprops.put(OutputKeys.INDENT, ofe.getIndent() ? "yes" : "no");
+      oprops.put(OutputKeys.DOCTYPE_PUBLIC, ofe.getDoctypePublicId());
+      oprops.put(OutputKeys.DOCTYPE_SYSTEM, ofe.getDoctypeSystemId());
+      oprops.put(OutputKeys.MEDIA_TYPE, ofe.getMediaType());
+      oprops.put(OutputKeys.OMIT_XML_DECLARATION, ofe.getOmitXMLDeclaration() ? "yes" : "no");
+      oprops.put(OutputKeys.STANDALONE, ofe.getStandalone() ? "yes" : "no");
+      oprops.put(OutputKeys.ENCODING, ofe.getEncoding());
+      oprops.put(OutputKeys.VERSION, ofe.getVersion());
+    }
+    
+    return oprops;
   }
 
   /**
@@ -153,7 +210,7 @@ public class StylesheetRoot extends StylesheetComposed
    * the xsl:output elements have been merged; different output
    * methods may have different default values for an attribute.</p>
    * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
-   * @return A OutputProperties object that may be mutated.
+   * @return A Properties object that may be mutated.
    *
    * @see org.xml.org.apache.serialize.OutputFormat
    */

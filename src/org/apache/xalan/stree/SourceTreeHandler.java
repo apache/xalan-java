@@ -66,6 +66,7 @@ import org.apache.xalan.utils.DOMBuilder;
 import org.apache.xalan.utils.XMLCharacterRecognizer;
 import org.apache.xalan.utils.BoolStack;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.SourceTreeManager;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.WhiteSpaceInfo;
@@ -80,14 +81,22 @@ import org.xml.sax.SAXException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 
-import org.apache.trax.Transformer;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.Result;
+
 
 /**
  * This class handles SAX2 parse events to create a source
  * tree for transformation.
  */
-public class SourceTreeHandler implements ContentHandler, LexicalHandler
+public class SourceTreeHandler implements TransformerHandler
 {
+  static int m_idCount = 0;
+  int m_id;
 
   /**
    * Create a SourceTreeHandler that will start a transformation as
@@ -97,7 +106,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
    */
   public SourceTreeHandler(TransformerImpl transformer)
   {
-
+    m_id = m_idCount++;
     m_transformer = transformer;
 
     XPathContext xctxt = ((TransformerImpl) transformer).getXPathContext();
@@ -108,16 +117,6 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
     //  m_root = new IndexedDocImpl();
     // else
     m_root = new DocumentImpl(this);
-
-    String urlOfSource = transformer.getBaseURLOfSource();
-
-    if (null == m_inputSource)
-    {
-      m_inputSource = new InputSource(urlOfSource);
-    }
-
-    transformer.getXPathContext().getSourceTreeManager().putDocumentInCache(
-      m_root, m_inputSource);
 
     m_initedRoot = false;
     m_shouldCheckWhitespace =
@@ -139,17 +138,6 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
 
   /** NEEDSDOC Field m_transformer          */
   TransformerImpl m_transformer;
-
-  /**
-   * NEEDSDOC Method getTransformer 
-   *
-   *
-   * NEEDSDOC (getTransformer) @return
-   */
-  public TransformerImpl getTransformer()
-  {
-    return m_transformer;
-  }
 
   /** NEEDSDOC Field m_sourceTreeHandler          */
   private DOMBuilder m_sourceTreeHandler;
@@ -195,7 +183,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
   }
 
   /** NEEDSDOC Field m_inputSource          */
-  InputSource m_inputSource;
+  Source m_inputSource;
 
   /**
    * NEEDSDOC Method setInputSource 
@@ -203,7 +191,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
    *
    * NEEDSDOC @param source
    */
-  public void setInputSource(InputSource source)
+  public void setInputSource(Source source)
   {
     m_inputSource = source;
   }
@@ -214,7 +202,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
    *
    * NEEDSDOC (getInputSource) @return
    */
-  public InputSource getInputSource()
+  public Source getInputSource()
   {
     return m_inputSource;
   }
@@ -289,7 +277,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
    */
   public void startDocument() throws SAXException
   {
-
+    // System.out.println("startDocument: "+m_id);
     synchronized (m_root)
     {
 
@@ -338,6 +326,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
 
     notifyWaiters();
   }
+  
 
   /**
    * Implement the endDocument event.
@@ -346,7 +335,7 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
    */
   public void endDocument() throws SAXException
   {
-
+    // System.out.println("endDocument: "+m_id);
     ((Parent) m_root).setComplete(true);
 
     m_eventsCount = m_maxEventsToNotify;
@@ -362,7 +351,14 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
 
       if (!m_useMultiThreading && (null != m_transformer))
       {
-        m_transformer.transformNode(m_root);
+        try
+        {
+          m_transformer.transformNode(m_root);
+        }
+        catch(TransformerException te)
+        {
+          throw new SAXException(te);
+        }
       }
     }
 
@@ -816,4 +812,54 @@ public class SourceTreeHandler implements ContentHandler, LexicalHandler
 
     m_shouldStripWhitespaceStack.setTop(shouldStrip);
   }
+  
+  /**
+   * Method setResult allows the user of the TransformerHandler
+   * to set the result of the transform.
+   *
+   * @param result A Result instance, should not be null.
+   * 
+   * @throws TransformerException if result is invalid for some reason.
+   */
+  public void setResult(Result result)
+    throws TransformerException
+  {
+    ContentHandler handler = m_transformer.createResultContentHandler(result);
+    m_transformer.setContentHandler(handler);    
+  }
+  
+  /**
+   * Set the base ID (URL or system ID) from where relative 
+   * URLs will be resolved.
+   * @param baseID Base URL for the source tree.
+   */
+  public void setBaseID(String baseID)
+  {
+    m_transformer.setBaseURLOfSource(baseID);
+    
+    XPathContext xctxt = m_transformer.getXPathContext();
+    SourceTreeManager stm = xctxt.getSourceTreeManager();
+    
+    stm.putDocumentInCache(m_root, new StreamSource(baseID));
+  }
+  
+  /**
+   * Get the Transformer associated with this handler, which 
+   * is needed in order to set parameters and output properties.
+   */
+  public Transformer getTransformer()
+  {
+    return m_transformer;
+  }
+  
+  /**
+   * Get the Transformer associated with this handler, which 
+   * is needed in order to set parameters and output properties.
+   */
+  TransformerImpl getTransformerImpl()
+  {
+    return m_transformer;
+  }
+
+
 }

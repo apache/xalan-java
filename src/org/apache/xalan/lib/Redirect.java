@@ -59,7 +59,9 @@ package org.apache.xalan.lib;
 import java.util.*;
 import java.io.*;
 import java.net.URL;
+
 import org.xml.sax.ContentHandler;
+
 import org.apache.serialize.OutputFormat;
 import org.apache.xalan.extensions.XSLProcessorContext;
 import org.apache.xalan.transformer.TransformerImpl;
@@ -68,6 +70,9 @@ import org.apache.xalan.templates.ElemExtensionCall;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPath;
+
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.TransformerException;
 
 /**
  * Implements three extension elements to allow an XSLT transformation to
@@ -359,15 +364,22 @@ public class Redirect
 
     FileOutputStream ostream = new FileOutputStream(file);
     
-    ContentHandler flistener 
-      = transformer.createResultContentHandler(new org.apache.trax.Result(ostream), format);
-
-    flistener.startDocument();
-    if(shouldPutInTable)
+    try
     {
-      m_outputStreams.put(fileName, ostream);
-      m_formatterListeners.put(fileName, flistener);
+      ContentHandler flistener 
+        = transformer.createResultContentHandler(new StreamResult(ostream), format);
+      flistener.startDocument();
+      if(shouldPutInTable)
+      {
+        m_outputStreams.put(fileName, ostream);
+        m_formatterListeners.put(fileName, flistener);
+      }
+      return flistener;
     }
-    return flistener;
+    catch(TransformerException te)
+    {
+      throw new org.xml.sax.SAXException(te);
+    }
+    
   }
 }

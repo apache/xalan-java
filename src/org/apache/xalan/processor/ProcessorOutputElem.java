@@ -68,7 +68,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 
 /**
- * Processor for xsl:output markup.
+ * TransformerFactory for xsl:output markup.
  * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
  * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
  */

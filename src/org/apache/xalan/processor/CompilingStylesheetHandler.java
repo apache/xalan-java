@@ -70,10 +70,9 @@ import org.apache.xalan.templates.ElemAttribute;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.XMLNSDecl;
-import org.apache.trax.ProcessorException;
-import org.apache.trax.TemplatesBuilder;
-import org.apache.trax.Templates;
-import org.apache.trax.TransformException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.Templates;
+import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathFactory;
 import org.apache.xpath.compiler.XPathParser;
@@ -113,11 +112,11 @@ public class CompilingStylesheetHandler
   /**
    * Create a StylesheetHandler object, creating a root stylesheet 
    * as the target.
-   * @exception May throw ProcessorException if a StylesheetRoot 
+   * @exception May throw TransformerConfigurationException if a StylesheetRoot 
    * can not be constructed for some reason.
    */
-  public CompilingStylesheetHandler(StylesheetProcessor processor)
-    throws ProcessorException
+  public CompilingStylesheetHandler(TransformerFactoryImpl processor)
+    throws TransformerConfigurationException
   {
     super(processor);
   }
@@ -830,7 +829,7 @@ if(runSerializer)
         +"// so all the variables can be popped at once when we're done.\n"
         +"org.apache.xpath.VariableStack "+varstackName+" = transformer.getXPathContext().getVarStack();\n"
         +varstackName+".pushElemFrame();\n"
-        +"org.xml.sax.Locator "+savedLocatorName+" = xctxt.getSAXLocator();\n"
+        +"SourceLocator "+savedLocatorName+" = xctxt.getSAXLocator();\n"
         );
 
       body.append("try {\n\n");

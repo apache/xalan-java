@@ -68,6 +68,8 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xpath.VariableStack;
 import org.apache.xalan.transformer.TransformerImpl;
 
+import javax.xml.transform.SourceLocator;
+
 /**
  * <meta name="usage" content="advanced"/>
  * Implement xsl:call-template.
@@ -172,7 +174,7 @@ public class ElemCallTemplate extends ElemForEach
       else
         vars.pushContextMarker();
 
-      Locator savedLocator = xctxt.getSAXLocator();
+      SourceLocator savedLocator = xctxt.getSAXLocator();
 
       try
       {

@@ -85,17 +85,23 @@ import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.processor.StylesheetProcessor;
+import org.apache.xalan.processor.TransformerFactoryImpl;
 import org.apache.xalan.trace.PrintTraceListener;
 import org.apache.xalan.trace.TraceListener;
 import org.apache.xalan.trace.TraceManager;
 
 // Needed TRaX classes
-import org.apache.trax.Result;
-import org.apache.trax.Processor;
-import org.apache.trax.ProcessorFactoryException;
-import org.apache.trax.Transformer;
-import org.apache.trax.Templates;
+import javax.xml.transform.Result;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TFactoryConfigurationError;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.Templates;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.stream.OutputKeys;
 
 // Needed SAX classes
 import org.xml.sax.InputSource;
@@ -193,20 +199,20 @@ public class Process
     }
     else
     {
-      Processor processor;
+      TransformerFactory tfactory;
 
       try
       {
-        processor = Processor.newInstance("xslt");
+        tfactory = TransformerFactory.newInstance();
       }
-      catch (ProcessorFactoryException pfe)
+      catch (TFactoryConfigurationError pfe)
       {
         pfe.printStackTrace(dumpWriter);
         diagnosticsWriter.println(
           XSLMessages.createMessage(
             XSLTErrorResources.ER_NOT_SUCCESSFUL, null));  //"XSL Process was not successful.");
 
-        processor = null;  // shut up compiler
+        tfactory = null;  // shut up compiler
 
         System.exit(-1);
       }
@@ -222,7 +228,6 @@ public class Process
       String media = null;
       Vector params = new Vector();
       boolean quietConflictWarnings = false;
-      boolean isSAX = false;
 
       for (int i = 0; i < argv.length; i++)
       {
@@ -233,7 +238,7 @@ public class Process
 
           tracer.m_traceTemplates = true;
 
-          // processor.setTraceTemplates(true);
+          // tfactory.setTraceTemplates(true);
         }
         else if ("-TG".equalsIgnoreCase(argv[i]))
         {
@@ -242,7 +247,7 @@ public class Process
 
           tracer.m_traceGeneration = true;
 
-          // processor.setTraceSelect(true);
+          // tfactory.setTraceSelect(true);
         }
         else if ("-TS".equalsIgnoreCase(argv[i]))
         {
@@ -251,7 +256,7 @@ public class Process
 
           tracer.m_traceSelection = true;
 
-          // processor.setTraceTemplates(true);
+          // tfactory.setTraceTemplates(true);
         }
         else if ("-TTC".equalsIgnoreCase(argv[i]))
         {
@@ -260,7 +265,7 @@ public class Process
 
           tracer.m_traceElements = true;
 
-          // processor.setTraceTemplateChildren(true);
+          // tfactory.setTraceTemplateChildren(true);
         }
         else if ("-INDENT".equalsIgnoreCase(argv[i]))
         {
@@ -405,10 +410,6 @@ public class Process
         {
           outputType = "html";
         }
-        else if ("-SAX".equalsIgnoreCase(argv[i]))
-        {
-          isSAX = true;
-        }
         else if ("-EDUMP".equalsIgnoreCase(argv[i]))
         {
           doStackDumpOnError = true;
@@ -436,7 +437,7 @@ public class Process
 
         Templates stylesheet =
           (null != xslFileName)
-          ? processor.process(new InputSource(xslFileName)) : null;
+          ? tfactory.newTemplates(new StreamSource(xslFileName)) : null;
         PrintWriter resultWriter;
         OutputStream outputStream = (null != outFileName)
                                     ? new FileOutputStream(outFileName)
@@ -446,12 +447,13 @@ public class Process
         // document?
         if (null == stylesheet)
         {
-          InputSource[] sources =
-            processor.getAssociatedStylesheets(new InputSource(inFileName),
+          SAXTransformerFactory stf = (SAXTransformerFactory)tfactory;
+          Source source =
+            stf.getAssociatedStylesheet(new StreamSource(inFileName),
                                                media, null, null);
 
-          if ((null != sources) && (sources.length > 0))
-            stylesheet = processor.processMultiple(sources);
+          if (null != source)
+            stylesheet = tfactory.newTemplates(source);
           else
           {
             if (null != media)
@@ -470,10 +472,8 @@ public class Process
           // Override the output format?
           if (null != outputType)
           {
-            OutputFormat of = stylesheet.getOutputFormat();
-
-            of.setMethod(outputType);
-            transformer.setOutputFormat(of);
+            transformer.setOutputProperty(OutputKeys.METHOD,
+                                          outputType);
           }
 
           if (transformer instanceof TransformerImpl)
@@ -493,59 +493,22 @@ public class Process
 
           for (int i = 0; i < nParams; i += 2)
           {
-            transformer.setParameter((String) params.elementAt(i), null,
+            transformer.setParameter((String) params.elementAt(i),
                                      (String) params.elementAt(i + 1));
           }
 
           if (null != inFileName)
           {
-            if (isSAX)
-            {
-              OutputFormat format = stylesheet.getOutputFormat();
-
-              if (null != outputType)
-                format.setMethod(outputType);
-
-              Serializer serializer = SerializerFactory.getSerializer(format);
-
-              serializer.setOutputStream(outputStream);
-              transformer.setContentHandler(serializer.asContentHandler());
-              transformer.setProperty("http://xml.apache.org/xslt/sourcebase",
-                                      inFileName);
-
-              XMLReader reader = XMLReaderFactory.createXMLReader();
-
-              reader.setFeature(
-                "http://xml.org/sax/features/namespace-prefixes", true);
-              reader.setFeature(
-                "http://apache.org/xml/features/validation/dynamic", true);
-
-              ContentHandler chandler = transformer.getInputContentHandler();
-
-              reader.setContentHandler(chandler);
-
-              if (chandler instanceof org.xml.sax.ext.LexicalHandler)
-                reader.setProperty(
-                  "http://xml.org/sax/properties/lexical-handler", chandler);
-              else
-                reader.setProperty(
-                  "http://xml.org/sax/properties/lexical-handler", null);
-
-              reader.parse(inFileName);
-            }
-            else
-            {
-              transformer.transform(new InputSource(inFileName),
-                                    new Result(outputStream));
-            }
+            transformer.transform(new StreamSource(inFileName),
+                                  new StreamResult(outputStream));
           }
           else
           {
             StringReader reader =
               new StringReader("<?xml version=\"1.0\"?> <doc/>");
 
-            transformer.transform(new InputSource(reader),
-                                  new Result(outputStream));
+            transformer.transform(new StreamSource(reader),
+                                  new StreamResult(outputStream));
           }
         }
         else

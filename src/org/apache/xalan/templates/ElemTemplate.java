@@ -65,6 +65,8 @@ import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 
+import javax.xml.transform.SourceLocator;
+
 /**
  * <meta name="usage" content="advanced"/>
  * Implement xsl:template.
@@ -127,7 +129,7 @@ public class ElemTemplate extends ElemTemplateElement
    *
    * NEEDSDOC @param locator
    */
-  public void setLocaterInfo(Locator locator)
+  public void setLocaterInfo(SourceLocator locator)
   {
 
     m_publicId = locator.getPublicId();

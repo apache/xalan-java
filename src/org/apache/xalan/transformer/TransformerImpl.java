@@ -60,6 +60,8 @@ package org.apache.xalan.transformer;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.Enumeration;
+import java.util.Properties;
+import java.util.StringTokenizer;
 
 import java.io.StringWriter;
 import java.io.IOException;
@@ -68,6 +70,7 @@ import java.io.UnsupportedEncodingException;
 // Xalan imports
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.stree.SourceTreeHandler;
+import org.apache.xalan.templates.OutputFormatExtended;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemAttributeSet;
 import org.apache.xalan.templates.ElemTemplateElement;
@@ -125,18 +128,29 @@ import org.xml.sax.helpers.XMLFilterImpl;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
+import org.xml.sax.XMLFilter;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.ErrorHandler;
 
 // TRaX Imports
-import org.apache.trax.Result;
-import org.apache.trax.Transformer;
-import org.apache.trax.TransformException;
-import org.apache.trax.URIResolver;
+import javax.xml.transform.Source;
+import javax.xml.transform.Result;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.OutputKeys;
 
 // Imported JAVA API for XML Parsing 1.0 classes
 import javax.xml.parsers.DocumentBuilder;
@@ -169,8 +183,8 @@ import javax.xml.parsers.ParserConfigurationException;
  * @see XSLTProcessorFactory
  * @see XSLTProcessor
  */
-public class TransformerImpl extends XMLFilterImpl
-        implements Transformer, Runnable, TransformState
+public class TransformerImpl extends Transformer
+        implements Runnable, TransformState
 {
   /**
    * True if the parser events should be on the main thread,
@@ -188,7 +202,7 @@ public class TransformerImpl extends XMLFilterImpl
    * The output format object set by the user.  May be null.
    */
   private OutputFormat m_outputFormat;
-
+  
   /** The output serializer         */
   private Serializer m_serializer;
   
@@ -196,6 +210,11 @@ public class TransformerImpl extends XMLFilterImpl
    * The content handler for the source input tree.
    */
   ContentHandler m_inputContentHandler;
+  
+  /**
+   * The content handler for the result tree.
+   */
+  private ContentHandler m_outputContentHandler = null;
 
   /**
    * Use member variable to store param variables as they're
@@ -303,6 +322,11 @@ public class TransformerImpl extends XMLFilterImpl
    * of trace listeners. Set this to false for optimization purposes.
    */
   public static boolean S_DEBUG = false;
+  
+  /**
+   * The SAX error handler, where errors and warnings are sent.
+   */
+  private ErrorHandler m_errorHandler = null;
 
   /**
    * The trace manager.
@@ -318,7 +342,7 @@ public class TransformerImpl extends XMLFilterImpl
    * parse thread is not the main thread, in order for the parse 
    * thread's run method to get to the input source.   
    * (Delete this if reversing threads is outlawed. -sb)    */
-  private InputSource m_xmlSource;
+  private Source m_xmlSource;
 
   /** This is needed for support of setSourceTreeDocForThread(Node doc),
    * which must be called in order for the transform thread's run 
@@ -378,24 +402,6 @@ public class TransformerImpl extends XMLFilterImpl
   // ========= Transformer Interface Implementation ==========
 
   /**
-   * Transform a document.
-   *
-   * @param input The input source for the document entity.
-   *
-   * @param xmlSource A SAX InputSource object, must not be null.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @exception java.io.IOException An IO exception from the parser,
-   *            possibly from a byte stream or character stream
-   *            supplied by the application.
-   * @see org.xml.sax.XMLReader#parse(org.xml.sax.InputSource)
-   */
-  public void parse(InputSource xmlSource) throws SAXException, IOException
-  {
-    transform(xmlSource);
-  }
-
-  /**
    * <meta name="usage" content="experimental"/>
    * Get true if the parser events should be on the main thread,
    * false if not.  Experimental.  Can not be set right now.
@@ -432,21 +438,35 @@ public class TransformerImpl extends XMLFilterImpl
 
   /**
    * Process the source tree to SAX parse events.
-   * @param xmlSource  The input for the source tree.
+   * @param source  The input for the source tree.
    *
-   * @throws TransformException
+   * @throws TransformerException
    */
-  public void transform(InputSource xmlSource) throws TransformException
+  public void transform(Source source) 
+    throws TransformerException
   {
-
+    if(source instanceof DOMSource)
+    {
+      DOMSource dsource = (DOMSource)source;
+      m_urlOfSource = dsource.getBaseID();
+      this.transformNode(dsource.getNode());
+      return;
+    }
+    InputSource xmlSource = SAXSource.sourceToInputSource(source);
+    if(null == xmlSource)
+    {
+      throw new TransformerException("Can't transform a Source of type "+
+        source.getClass().getName()+"!");
+    }
+    
     if (null != xmlSource.getSystemId())
       m_urlOfSource = xmlSource.getSystemId();
 
     try
     {
-
-      // Get an already set XMLReader, or create one.
-      XMLReader reader = this.getParent();
+      XMLReader reader = null;
+      if(source instanceof SAXSource)
+        reader = ((SAXSource)source).getXMLReader();
 
       if (null == reader)
       {
@@ -484,7 +504,7 @@ public class TransformerImpl extends XMLFilterImpl
       {
         SourceTreeHandler sth = (SourceTreeHandler) inputHandler;
 
-        sth.setInputSource(xmlSource);
+        sth.setInputSource(source);
         sth.setUseMultiThreading(true);
 
         Node doc = sth.getRoot();
@@ -492,9 +512,9 @@ public class TransformerImpl extends XMLFilterImpl
         if (null != doc)
         {
           getXPathContext().getSourceTreeManager().putDocumentInCache(doc,
-                  xmlSource);
+                  source);
 
-          m_xmlSource = xmlSource;
+          m_xmlSource = source;
           m_doc = doc;
 
           if (isParserEventsOnMain())
@@ -528,14 +548,14 @@ public class TransformerImpl extends XMLFilterImpl
 
       if (null != e)
       {
-        if (e instanceof org.apache.trax.TransformException)
-          throw (org.apache.trax.TransformException) e;
+        if (e instanceof javax.xml.transform.TransformerException)
+          throw (javax.xml.transform.TransformerException) e;
         else if (e instanceof org.apache.xalan.utils.WrappedRuntimeException)
-          throw new org.apache.trax.TransformException(
+          throw new javax.xml.transform.TransformerException(
             ((org.apache.xalan.utils.WrappedRuntimeException) e).getException());
         else
         {
-          throw new org.apache.trax.TransformException(e);
+          throw new javax.xml.transform.TransformerException(e);
         }
       }
       else if (null != m_resultTreeHandler)
@@ -554,20 +574,17 @@ public class TransformerImpl extends XMLFilterImpl
           ((org.apache.xalan.utils.WrappedRuntimeException) throwable).getException();
       }
 
-      throw new TransformException(wre.getException());
+      throw new TransformerException(wre.getException());
     }
     catch (SAXException se)
     {
-      se.printStackTrace();
+      // se.printStackTrace(); ?? -sb
 
-      if (se instanceof TransformException)
-        throw (TransformException) se;
-      else
-        throw new TransformException(se);
+      throw new TransformerException(se);
     }
     catch (IOException ioe)
     {
-      throw new TransformException(ioe);
+      throw new TransformerException(ioe);
     }
     finally
     {
@@ -583,6 +600,16 @@ public class TransformerImpl extends XMLFilterImpl
   public String getBaseURLOfSource()
   {
     return m_urlOfSource;
+  }
+  
+  /**
+   * Get the base URL of the source.
+   *
+   * @return The base URL of the source tree, or null. 
+   */
+  public void setBaseURLOfSource(String base)
+  {
+    m_urlOfSource = base;
   }
 
   /**
@@ -601,17 +628,58 @@ public class TransformerImpl extends XMLFilterImpl
    *            XMLReader recognizes the property name but
    *            cannot set the requested value.
    *
-   * @throws SAXNotRecognizedException
-   * @throws SAXNotSupportedException
+   * @throws TransformerException
    */
-  public Object getProperty(String name)
-          throws SAXNotRecognizedException, SAXNotSupportedException
-  {
-
-    if (name.equals("http://xml.apache.org/xslt/sourcebase"))
-      return name;
+  public String getOutputProperty(String name)
+          throws TransformerException
+  {    
+    if (m_outputFormat instanceof OutputFormatExtended)
+    {
+      OutputFormatExtended ofe = (OutputFormatExtended) m_outputFormat;
+      if(name.equals(OutputKeys.METHOD))
+        return ofe.methodHasBeenSet() ? ofe.getMethod() : null;
+      else if(name.equals(OutputKeys.INDENT))
+        return ofe.indentHasBeenSet() ? (ofe.getIndent() ? "yes" : "no") : null;
+      else if(name.equals(OutputKeys.DOCTYPE_PUBLIC))
+        return ofe.doctypePublicHasBeenSet() ? ofe.getDoctypePublicId() : null;
+      else if(name.equals(OutputKeys.DOCTYPE_SYSTEM))
+        return ofe.doctypeSystemHasBeenSet() ? ofe.getDoctypeSystemId() : null;
+      else if(name.equals(OutputKeys.MEDIA_TYPE))
+        return ofe.mediaTypeHasBeenSet() ? ofe.getMediaType() : null;
+      else if(name.equals(OutputKeys.OMIT_XML_DECLARATION))
+        return ofe.omitXmlDeclarationHasBeenSet() ? (ofe.getOmitXMLDeclaration() ? "yes" : "no") : null;
+      else if(name.equals(OutputKeys.STANDALONE))
+        return ofe.standaloneHasBeenSet() ? (ofe.getStandalone() ? "yes" : "no") : null;
+      else if(name.equals(OutputKeys.ENCODING))
+        return ofe.encodingHasBeenSet() ? ofe.getEncoding() : null;
+      else if(name.equals(OutputKeys.VERSION))
+        return ofe.versionHasBeenSet() ? ofe.getVersion() : null;
+    }
     else
-      return super.getProperty(name);
+    {
+      OutputFormat ofe = m_outputFormat;
+      // Just set them all for now.
+      if(name.equals(OutputKeys.METHOD))
+        return ofe.getMethod();
+      else if(name.equals(OutputKeys.INDENT))
+        return ofe.getIndent() ? "yes" : "no";
+      else if(name.equals(OutputKeys.DOCTYPE_PUBLIC))
+        return ofe.getDoctypePublicId();
+      else if(name.equals(OutputKeys.DOCTYPE_SYSTEM))
+        return ofe.getDoctypeSystemId();
+      else if(name.equals(OutputKeys.MEDIA_TYPE))
+        return ofe.getMediaType();
+      else if(name.equals(OutputKeys.OMIT_XML_DECLARATION))
+        return ofe.getOmitXMLDeclaration() ? "yes" : "no";
+      else if(name.equals(OutputKeys.STANDALONE))
+        return ofe.getStandalone() ? "yes" : "no";
+      else if(name.equals(OutputKeys.ENCODING))
+        return ofe.getEncoding();
+      else if(name.equals(OutputKeys.VERSION))
+        return ofe.getVersion();
+    }
+    
+    return null;
   }
 
   /**
@@ -629,18 +697,76 @@ public class TransformerImpl extends XMLFilterImpl
    *            XMLReader recognizes the property name but
    *            cannot set the requested value.
    *
-   * @throws SAXNotRecognizedException
-   * @throws SAXNotSupportedException
+   * @throws TransformerException
    */
-  public void setProperty(String name, Object value)
-          throws SAXNotRecognizedException, SAXNotSupportedException
+  public void setOutputProperty(String name, String value)
+    throws TransformerException
   {
-
-    if (name.equals("http://xml.apache.org/xslt/sourcebase"))
-      m_urlOfSource = (String) value;
-    else
-      super.getProperty(name);
+    OutputFormat ofe = m_outputFormat;
+    if(null == ofe)
+      ofe = m_stylesheetRoot.getOutputComposed();
+    if(name.equals(OutputKeys.METHOD))
+      ofe.setMethod(value);
+    else if(name.equals(OutputKeys.INDENT))
+      ofe.setIndent(value.equals("yes"));
+    else if(name.equals(OutputKeys.DOCTYPE_PUBLIC))
+      ofe.setDoctypePublicId(value);
+    else if(name.equals(OutputKeys.DOCTYPE_SYSTEM))
+      ofe.setDoctypeSystemId(value);
+    else if(name.equals(OutputKeys.MEDIA_TYPE))
+      ofe.setMediaType(value);
+    else if(name.equals(OutputKeys.OMIT_XML_DECLARATION))
+      ofe.setOmitXMLDeclaration(value.equals("yes"));
+    else if(name.equals(OutputKeys.STANDALONE))
+      ofe.setStandalone(value.equals("yes"));
+    else if(name.equals(OutputKeys.ENCODING))
+      ofe.setEncoding(value);
+    else if(name.equals(OutputKeys.VERSION))
+      ofe.setVersion(value);
   }
+  
+  /**
+   * Set the output properties for the transformation.  These
+   * properties will override properties set in the templates
+   * with xsl:output.
+   *
+   * <p>If argument to this function is null, any properties
+   * previously set will be removed.</p>
+   *
+   * @param oformat A set of output properties that will be
+   * used to override any of the same properties in effect
+   * for the transformation.
+   */
+  public void setOutputProperties(Properties oformat)
+  {
+    Enumeration names = oformat.propertyNames();
+    OutputFormat ofe = m_outputFormat;
+    if(null == ofe)
+      ofe = m_stylesheetRoot.getOutputComposed();
+    while(names.hasMoreElements())
+    {
+      String name = (String)names.nextElement();
+      if(name.equals(OutputKeys.METHOD))
+        ofe.setMethod(oformat.getProperty(name));
+      else if(name.equals(OutputKeys.INDENT))
+        ofe.setIndent(oformat.getProperty(name).equals("yes"));
+      else if(name.equals(OutputKeys.DOCTYPE_PUBLIC))
+        ofe.setDoctypePublicId(oformat.getProperty(name));
+      else if(name.equals(OutputKeys.DOCTYPE_SYSTEM))
+        ofe.setDoctypeSystemId(oformat.getProperty(name));
+      else if(name.equals(OutputKeys.MEDIA_TYPE))
+        ofe.setMediaType(oformat.getProperty(name));
+      else if(name.equals(OutputKeys.OMIT_XML_DECLARATION))
+        ofe.setOmitXMLDeclaration(oformat.getProperty(name).equals("yes"));
+      else if(name.equals(OutputKeys.STANDALONE))
+        ofe.setStandalone(oformat.getProperty(name).equals("yes"));
+      else if(name.equals(OutputKeys.ENCODING))
+        ofe.setEncoding(oformat.getProperty(name));
+      else if(name.equals(OutputKeys.VERSION))
+        ofe.setVersion(oformat.getProperty(name));
+    }
+  }
+
 
   /**
    * <meta name="usage" content="internal"/>
@@ -650,10 +776,19 @@ public class TransformerImpl extends XMLFilterImpl
    *
    * @return The Node result of the parse, never null.
    *
-   * @throws TransformException
+   * @throws TransformerException
    */
-  public Node parseToNode(InputSource xmlSource) throws TransformException
+  public Node parseToNode(Source source) throws TransformerException
   {
+    if(source instanceof DOMSource)
+      return ((DOMSource)source).getNode();
+    
+    InputSource xmlSource = SAXSource.sourceToInputSource(source);
+    if(null == xmlSource)
+    {
+      throw new TransformerException("Can't transform a Source of type "+
+        source.getClass().getName()+"!");
+    }
 
     // Duplicate code from above... but slightly different.  
     // TODO: Work on this...
@@ -664,7 +799,9 @@ public class TransformerImpl extends XMLFilterImpl
       try
       {
         // Get an already set XMLReader, or create one.
-        XMLReader reader = this.getParent();
+        XMLReader reader = null;
+        if(source instanceof SAXSource)
+          reader = ((SAXSource)source).getXMLReader();
 
         if (null == reader)
         {
@@ -712,19 +849,19 @@ public class TransformerImpl extends XMLFilterImpl
       }
       catch (java.lang.IllegalAccessException iae)
       {
-        throw new TransformException(iae);
+        throw new TransformerException(iae);
       }
       catch (InstantiationException ie)
       {
-        throw new TransformException(ie);
+        throw new TransformerException(ie);
       }
       catch (SAXException se)
       {
-        throw new TransformException(se);
+        throw new TransformerException(se);
       }
       catch (IOException ioe)
       {
-        throw new TransformException(ioe);
+        throw new TransformerException(ioe);
       }
 
     return doc;
@@ -740,10 +877,10 @@ public class TransformerImpl extends XMLFilterImpl
    * @return A valid ContentHandler that will create the 
    * result tree when it is fed SAX events.
    *
-   * @throws TransformException
+   * @throws TransformerException
    */
   public ContentHandler createResultContentHandler(Result outputTarget)
-          throws TransformException
+          throws TransformerException
   {
     return createResultContentHandler(outputTarget, getOutputFormat());
   }
@@ -759,33 +896,45 @@ public class TransformerImpl extends XMLFilterImpl
    * @return A valid ContentHandler that will create the 
    * result tree when it is fed SAX events.
    *
-   * @throws TransformException
+   * @throws TransformerException
    */
   public ContentHandler createResultContentHandler(
-          Result outputTarget, OutputFormat format) throws TransformException
+          Result outputTarget, OutputFormat format) throws TransformerException
   {
 
     ContentHandler handler;
 
     // If the Result object contains a Node, then create 
     // a ContentHandler that will add nodes to the input node.
-    Node outputNode = outputTarget.getNode();
-
-    if (null != outputNode)
+    Node outputNode = null;
+    if(outputTarget instanceof DOMResult)
     {
-      short type = outputNode.getNodeType();
-      Document doc = (Node.DOCUMENT_NODE == type)
-                     ? (Document) outputNode : outputNode.getOwnerDocument();
+      outputNode = ((DOMResult)outputTarget).getNode();
 
-      handler = (Node.DOCUMENT_FRAGMENT_NODE == type)
-                ? new DOMBuilder(doc, (DocumentFragment) outputNode)
-                : new DOMBuilder(doc, outputNode);
+      if (null != outputNode)
+      {
+        short type = outputNode.getNodeType();
+        Document doc = (Node.DOCUMENT_NODE == type)
+                       ? (Document) outputNode : outputNode.getOwnerDocument();
+
+        handler = (Node.DOCUMENT_FRAGMENT_NODE == type)
+                  ? new DOMBuilder(doc, (DocumentFragment) outputNode)
+                    : new DOMBuilder(doc, outputNode);
+      }
+      else
+      {
+        throw new TransformerException("DOMResult Result doesn't contain a Node!");
+      }
     }
-
+    else if(outputTarget instanceof SAXResult)
+    {
+      handler = ((SAXResult)outputTarget).getHandler();
+    }
     // Otherwise, create a ContentHandler that will serialize the 
     // result tree to either a stream or a writer.
-    else
+    else if(outputTarget instanceof StreamResult)
     {
+      StreamResult sresult = (StreamResult)outputTarget;
       String method = format.getMethod();
 
       if (null == method)
@@ -795,10 +944,10 @@ public class TransformerImpl extends XMLFilterImpl
       {
         Serializer serializer = SerializerFactory.getSerializer(format);
 
-        if (null != outputTarget.getCharacterStream())
-          serializer.setWriter(outputTarget.getCharacterStream());
+        if (null != sresult.getCharacterStream())
+          serializer.setWriter(sresult.getCharacterStream());
         else
-          serializer.setOutputStream(outputTarget.getByteStream());
+          serializer.setOutputStream(sresult.getByteStream());
 
         handler = serializer.asContentHandler();
 
@@ -806,12 +955,17 @@ public class TransformerImpl extends XMLFilterImpl
       }
       catch (UnsupportedEncodingException uee)
       {
-        throw new TransformException(uee);
+        throw new TransformerException(uee);
       }
       catch (IOException ioe)
       {
-        throw new TransformException(ioe);
+        throw new TransformerException(ioe);
       }
+    }
+    else
+    {
+      throw new TransformerException("Can't transform to a Result of type "+
+        outputTarget.getClass().getName()+"!");
     }
 
     return handler;
@@ -822,10 +976,10 @@ public class TransformerImpl extends XMLFilterImpl
    * @param xmlSource  The input for the source tree.
    * @param outputTarget The output source target.
    *
-   * @throws TransformException
+   * @throws TransformerException
    */
-  public void transform(InputSource xmlSource, Result outputTarget)
-          throws TransformException
+  public void transform(Source xmlSource, Result outputTarget)
+          throws TransformerException
   {
 
     ContentHandler handler = createResultContentHandler(outputTarget);
@@ -841,10 +995,10 @@ public class TransformerImpl extends XMLFilterImpl
    * @param node  The input source node, which can be any valid DOM node.
    * @param outputTarget The output source target.
    *
-   * @throws TransformException
+   * @throws TransformerException
    */
   public void transformNode(Node node, Result outputTarget)
-          throws TransformException
+          throws TransformerException
   {
 
     ContentHandler handler = createResultContentHandler(outputTarget);
@@ -860,9 +1014,9 @@ public class TransformerImpl extends XMLFilterImpl
    * @param node  The input source node, which can be any valid DOM node.
    * @param outputTarget The output source target.
    *
-   * @throws TransformException
+   * @throws TransformerException
    */
-  public void transformNode(Node node) throws TransformException
+  public void transformNode(Node node) throws TransformerException
   {
 
     try
@@ -913,10 +1067,7 @@ public class TransformerImpl extends XMLFilterImpl
     }
     catch (SAXException se)
     {
-      if (se instanceof org.apache.trax.TransformException)
-        throw (org.apache.trax.TransformException) se;
-      else
-        throw new TransformException(se);
+      throw new TransformerException(se);
     }
   }
 
@@ -1044,11 +1195,123 @@ public class TransformerImpl extends XMLFilterImpl
 
     varstack.pushVariable(qname, xobject);
   }
+  
+  /**
+   * Set a parameter for the transformation.
+   *
+   * @param name The name of the parameter,
+   *             which may have a namespace URI.
+   * @param value The value object.  This can be any valid Java object
+   * -- it's up to the processor to provide the proper
+   * coersion to the object, or simply pass it on for use
+   * in extensions.
+   */
+  public void setParameter(String name, Object value)
+  {
+    StringTokenizer tokenizer = new StringTokenizer(name, "{}", false);
+    try
+    {
+      // The first string might be the namespace, or it might be 
+      // the local name, if the namespace is null.
+      String s1 = tokenizer.nextToken();
+      String s2 = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
+      if(null == s2)
+        setParameter(s1, null, value);
+      else
+        setParameter(s2, s1, value);
+    }
+    catch(java.util.NoSuchElementException  nsee)
+    {
+      // Should throw some sort of an error.
+    }
+  }
+  
+  /**
+   * Get a parameter that was explicitly set with setParameter 
+   * or setParameters.
+   *
+   * @return A parameter that has been set with setParameter 
+   * or setParameters,
+   * *not* all the xsl:params on the stylesheet (which require 
+   * a transformation Source to be evaluated).
+   */
+  public Object getParameter(String name)
+  {
+    StringTokenizer tokenizer = new StringTokenizer(name, "{}", false);
+    try
+    {
+      VariableStack varstack = getXPathContext().getVarStack();
+      // The first string might be the namespace, or it might be 
+      // the local name, if the namespace is null.
+      QName qname;
+      String s1 = tokenizer.nextToken();
+      String s2 = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
+      if(null == s2)
+        qname = new QName(null, s1);
+      else
+        qname = new QName(s1, s2);
+      try
+      {
+        return varstack.getVariable(qname);
+      }
+      catch(SAXException se)
+      {
+        return null;
+      }
+    }
+    catch(java.util.NoSuchElementException  nsee)
+    {
+      // Should throw some sort of an error.
+      return null;
+    }  
+  }
+
+  /**
+   * Set a bag of parameters for the transformation. Note that 
+   * these will not be additive, they will replace the existing
+   * set of parameters.
+   *
+   * @param name The name of the parameter,
+   *             which may have a namespace URI.
+   * @param value The value object.  This can be any valid Java object
+   * -- it's up to the processor to provide the proper
+   * coersion to the object, or simply pass it on for use
+   * in extensions.
+   */
+  public void setParameters(Properties params)
+  {
+    resetParameters();
+    Enumeration names = params.propertyNames();
+    while(names.hasMoreElements())
+    {
+      String name = params.getProperty((String)names.nextElement());
+      StringTokenizer tokenizer = new StringTokenizer(name, "{}", false);
+      try
+      {
+        // The first string might be the namespace, or it might be 
+        // the local name, if the namespace is null.
+        String s1 = tokenizer.nextToken();
+        String s2 = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
+        if(null == s2)
+          setParameter(s1, null, params.getProperty(name));
+        else
+          setParameter(s2, s1, params.getProperty(name));
+      }
+      catch(java.util.NoSuchElementException  nsee)
+      {
+        // Should throw some sort of an error.
+      }
+    }
+  }
 
   /**
    * Reset the parameters to a null list.
    */
-  public void resetParameters(){}
+  public void resetParameters()
+  {
+    VariableStack varstack = new VariableStack();
+    getXPathContext().setVarStack(varstack);
+  }
 
   /**
    * Given a template, search for
@@ -1183,21 +1446,44 @@ public class TransformerImpl extends XMLFilterImpl
     getXPathContext().getSourceTreeManager().setURIResolver(resolver);
   }
 
+  // ======== End Transformer Implementation ========  
+
   /**
-   * Set the entity resolver, which will be passed on to any 
-   * XMLReaders that are created.
+   * Set the content event handler.
    *
-   * @param resolver The entity resolver, or null.
-   * 
-   * @see org.xml.sax.EntityResolver
+   * @param resolver The new content handler.
+   * @exception java.lang.NullPointerException If the handler
+   *            is null.
+   * @see org.xml.sax.XMLReader#setContentHandler
    */
-  public void setEntityResolver(org.xml.sax.EntityResolver resolver)
+  public void setContentHandler (ContentHandler handler)
   {
-    super.setEntityResolver(resolver);
-    getXPathContext().getSourceTreeManager().setEntityResolver(resolver);
+    if (handler == null) 
+    {
+      throw new NullPointerException("Null content handler");
+    } 
+    else 
+    {
+      m_outputContentHandler = handler;
+      
+      if (null == m_resultTreeHandler)
+        m_resultTreeHandler = new ResultTreeHandler(this, handler);
+      else
+        m_resultTreeHandler.setContentHandler(handler);
+    }
   }
 
-  // ======== End Transformer Implementation ========  
+
+  /**
+   * Get the content event handler.
+   *
+   * @return The current content handler, or null if none was set.
+   * @see org.xml.sax.XMLReader#getContentHandler
+   */
+  public ContentHandler getContentHandler ()
+  {
+    return m_outputContentHandler;
+  }
 
 
   /**
@@ -1596,7 +1882,7 @@ public class TransformerImpl extends XMLFilterImpl
 
     varstack.pushElemFrame();
 
-    Locator savedLocator = xctxt.getSAXLocator();
+    SourceLocator savedLocator = xctxt.getSAXLocator();
 
     try
     {
@@ -2137,6 +2423,39 @@ public class TransformerImpl extends XMLFilterImpl
 
     return m_msgMgr;
   }
+  
+  /**
+   * Set the error event handler.
+   *
+   * @param handle The new error handler.
+   * @exception java.lang.NullPointerException If the handler
+   *            is null.
+   * @see org.xml.sax.XMLReader#setErrorHandler
+   */
+  public void setErrorHandler (ErrorHandler handler)
+  {
+    if (handler == null) 
+    {
+      throw new NullPointerException("Null error handler");
+    } 
+    else 
+    {
+      m_errorHandler = handler;
+    }
+  }
+
+
+  /**
+   * Get the current error event handler.
+   *
+   * @return The current error handler, or null if none was set.
+   * @see org.xml.sax.XMLReader#getErrorHandler
+   */
+  public ErrorHandler getErrorHandler ()
+  {
+    return m_errorHandler;
+  }
+
 
   /**
    * Get an instance of the trace manager for this transformation.
@@ -2151,61 +2470,10 @@ public class TransformerImpl extends XMLFilterImpl
   }
 
   /**
-   * Set the parent reader.
-   *
-   * <p>This is the {@link org.xml.sax.XMLReader XMLReader} from which
-   * this filter will obtain its events and to which it will pass its
-   * configuration requests.  The parent may itself be another filter.</p>
-   *
-   * <p>If there is no parent reader set, any attempt to parse
-   * or to set or get a feature or property will fail.</p>
-   *
-   * @param parent The parent XML reader.
-   * @exception java.lang.NullPointerException If the parent is null.
-   */
-  public void setParent(XMLReader parent)
-  {
-
-    super.setParent(parent);
-
-    // the setting of the parent's content handler directly works 
-    // because parse (InputSource input) is overridden, and 
-    // setupParse(); in XMLFilterImpl is never called.
-    parent.setContentHandler(getInputContentHandler());
-  }
-
-  /**
-   * Allow an application to register a content event handler.
-   *
-   * <p>If the application does not register a content handler, all
-   * content events reported by the SAX parser will be silently
-   * ignored.</p>
-   *
-   * <p>Applications may register a new or different handler in the
-   * middle of a parse, and the SAX parser must begin using the new
-   * handler immediately.</p>
-   *
-   * @param handler The content handler.
-   * @exception java.lang.NullPointerException If the handler
-   *            argument is null.
-   * @see #getContentHandler
-   */
-  public void setContentHandler(ContentHandler handler)
-  {
-
-    super.setContentHandler(handler);
-
-    if (null == m_resultTreeHandler)
-      m_resultTreeHandler = new ResultTreeHandler(this, handler);
-    else
-      m_resultTreeHandler.setContentHandler(handler);
-  }
-
-  /**
    * Look up the value of a feature.
    *
    * <p>The feature name is any fully-qualified URI.  It is
-   * possible for an Processor to recognize a feature name but
+   * possible for an TransformerFactory to recognize a feature name but
    * to be unable to return its value; this is especially true
    * in the case of an adapter for a SAX1 Parser, which has
    * no way of knowing whether the underlying parser is
@@ -2225,9 +2493,9 @@ public class TransformerImpl extends XMLFilterImpl
    *        URI.
    * @return The current state of the feature (true or false).
    * @exception org.xml.sax.SAXNotRecognizedException When the
-   *            Processor does not recognize the feature name.
+   *            TransformerFactory does not recognize the feature name.
    * @exception org.xml.sax.SAXNotSupportedException When the
-   *            Processor recognizes the feature name but
+   *            TransformerFactory recognizes the feature name but
    *            cannot determine its value at this time.
    *
    * @throws SAXNotRecognizedException
@@ -2358,7 +2626,8 @@ public class TransformerImpl extends XMLFilterImpl
       }
       else
       {
-        getXPathContext().getPrimaryReader().parse(m_xmlSource);
+        InputSource isource = SAXSource.sourceToInputSource(m_xmlSource);
+        getXPathContext().getPrimaryReader().parse(isource);
       }
     }
     catch (Exception e)
@@ -2366,5 +2635,6 @@ public class TransformerImpl extends XMLFilterImpl
       postExceptionFromThread(e);
     }
   }
+  
 }  // end TransformerImpl class
 

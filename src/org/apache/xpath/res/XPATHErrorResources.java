@@ -475,7 +475,7 @@ public class XPATHErrorResources extends XSLResourceBundle
   static
   {
     contents[ER_COULDNOT_CREATE_XMLPROCESSORLIAISON][1] =
-      "Could not create XML Processor Liaison: {0}";
+      "Could not create XML TransformerFactory Liaison: {0}";
   }
 
   /** NEEDSDOC Field ER_DIDNOT_FIND_XPATH_SELECT_EXP          */

@@ -77,7 +77,8 @@ import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xpath.VariableStack;
 
 // TRaX imports
-import org.apache.trax.Templates;
+import javax.xml.transform.Templates;
+import javax.xml.transform.SourceLocator;
 
 // Serializer imports
 import org.apache.serialize.OutputFormat;
@@ -108,13 +109,13 @@ import org.xml.sax.helpers.NamespaceSupport;
  * @see Stylesheet
  */
 public class ElemTemplateElement extends UnImplNode
-        implements PrefixResolver, Serializable, Locator
+        implements PrefixResolver, Serializable, SourceLocator
 {
 
   /**
    * Construct a template element instance.
    *
-   * @param transformer The XSLT Processor.
+   * @param transformer The XSLT TransformerFactory.
    * @param stylesheetTree The owning stylesheet.
    * @param name The name of the element.
    * @param atts The element attributes.
@@ -160,7 +161,7 @@ public class ElemTemplateElement extends UnImplNode
    * This function will be called on top-level elements
    * only, just before the transform begins.
    *
-   * @param transformer The XSLT Processor.
+   * @param transformer The XSLT TransformerFactory.
    *
    * @throws SAXException
    */
@@ -175,7 +176,7 @@ public class ElemTemplateElement extends UnImplNode
    * @exception java.io.FileNotFoundException
    * @exception java.io.IOException
    * @exception SAXException
-   * @param transformer The XSLT Processor.
+   * @param transformer The XSLT TransformerFactory.
    * @param sourceNode The current context node.
    * @param mode The current mode.
    */
@@ -567,7 +568,7 @@ public class ElemTemplateElement extends UnImplNode
    *
    * NEEDSDOC @param locator
    */
-  public void setLocaterInfo(Locator locator)
+  public void setLocaterInfo(SourceLocator locator)
   {
     m_lineNumber = locator.getLineNumber();
     m_columnNumber = locator.getColumnNumber();

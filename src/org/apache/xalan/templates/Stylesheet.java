@@ -81,6 +81,8 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
 
+import javax.xml.transform.SourceLocator;
+
 /**
  * Represents a stylesheet element.
  * <p>All properties in this class have a fixed form of bean-style property
@@ -1226,7 +1228,7 @@ public class Stylesheet extends ElemTemplateElement
    *
    * NEEDSDOC @param locator
    */
-  public void setLocaterInfo(Locator locator)
+  public void setLocaterInfo(SourceLocator locator)
   {
 
     if (null != locator)

@@ -426,12 +426,12 @@ class XSLTElementDef
   }
 
   /**
-   * If non-null, the ContentHandler/Processor for this element.
+   * If non-null, the ContentHandler/TransformerFactory for this element.
    */
   private XSLTElementProcessor m_elementProcessor;
 
   /**
-   * Return the ContentHandler/Processor for this element.
+   * Return the ContentHandler/TransformerFactory for this element.
    *
    * NEEDSDOC ($objectName$) @return
    */
@@ -441,7 +441,7 @@ class XSLTElementDef
   }
 
   /**
-   * Return the ContentHandler/Processor for this element.
+   * Return the ContentHandler/TransformerFactory for this element.
    *
    * NEEDSDOC @param handler
    */

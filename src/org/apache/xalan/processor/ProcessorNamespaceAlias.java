@@ -62,7 +62,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 
 /**
- * Processor for xsl:namespace-alias markup.
+ * TransformerFactory for xsl:namespace-alias markup.
  * A stylesheet can use the xsl:namespace-alias element to
  * declare that one namespace URI is an alias for another namespace URI.
  * <pre>

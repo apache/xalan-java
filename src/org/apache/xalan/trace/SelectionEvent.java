@@ -102,7 +102,7 @@ public class SelectionEvent implements java.util.EventListener
 
   /**
    * Create an event originating at the given node of the style tree.
-   * @param processor The XSLT Processor.
+   * @param processor The XSLT TransformerFactory.
    * @param sourceNode The current context node.
    * @param mode The current mode.
    * @param m_styleNode node in the style tree reference for the event.

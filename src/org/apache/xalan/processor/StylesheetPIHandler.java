@@ -64,6 +64,9 @@ import org.xml.sax.Attributes;
 import java.util.Vector;
 import java.util.StringTokenizer;
 
+import javax.xml.transform.Source;
+import javax.xml.transform.sax.SAXSource;
+
 import org.apache.xalan.utils.SystemIDResolver;
 
 /**
@@ -76,8 +79,8 @@ public class StylesheetPIHandler extends DefaultHandler
   /** NEEDSDOC Field STARTELEM_FOUND_MSG          */
   static final String STARTELEM_FOUND_MSG = "##startElement found";
 
-  /** NEEDSDOC Field m_source          */
-  InputSource m_source;
+  /** NEEDSDOC Field m_baseID          */
+  String m_baseID;
 
   /** NEEDSDOC Field m_media          */
   String m_media;
@@ -99,11 +102,11 @@ public class StylesheetPIHandler extends DefaultHandler
    * NEEDSDOC @param title
    * NEEDSDOC @param charset
    */
-  public StylesheetPIHandler(InputSource source, String media, String title,
+  public StylesheetPIHandler(String baseID, String media, String title,
                              String charset)
   {
 
-    m_source = source;
+    m_baseID = baseID;
     m_media = media;
     m_title = title;
     m_charset = charset;
@@ -114,21 +117,16 @@ public class StylesheetPIHandler extends DefaultHandler
    *
    * NEEDSDOC ($objectName$) @return
    */
-  public InputSource[] getAssociatedStylesheets()
+  public Source getAssociatedStylesheet()
   {
 
     int sz = m_stylesheets.size();
 
     if (sz > 0)
     {
-      InputSource[] inputs = new InputSource[sz];
-
-      for (int i = 0; i < sz; i++)
-      {
-        inputs[i] = (InputSource) m_stylesheets.elementAt(i);
-      }
-
-      return inputs;
+      SAXSource ssource 
+        = new SAXSource((InputSource) m_stylesheets.elementAt(sz-1));
+      return ssource;
     }
     else
       return null;
@@ -175,8 +173,7 @@ public class StylesheetPIHandler extends DefaultHandler
         {
           href = tokenizer.nextToken();
           href = href.substring(1, href.length() - 1);
-          href = SystemIDResolver.getAbsoluteURI(href,
-                                                 m_source.getSystemId());
+          href = SystemIDResolver.getAbsoluteURI(href, m_baseID);
         }
         else if (name.equals("title"))
         {

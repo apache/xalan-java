@@ -239,7 +239,7 @@ public class ElemExtensionDecl extends ElemTemplateElement
    * This function will be called on top-level elements
    * only, just before the transform begins.
    *
-   * @param transformer The XSLT Processor.
+   * @param transformer The XSLT TransformerFactory.
    *
    * @throws SAXException
    */

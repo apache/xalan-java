@@ -172,7 +172,6 @@ public class ResultTreeHandler extends QueuedEvents
    */
   public void endDocument() throws SAXException
   {
-
     flushPending(EVT_ENDDOCUMENT);
 
     QueuedStartDocument qsd = getQueuedDocAtBottom();

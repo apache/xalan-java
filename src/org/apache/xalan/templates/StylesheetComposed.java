@@ -60,7 +60,7 @@ import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Enumeration;
 
-import org.apache.trax.ProcessorException;
+import javax.xml.transform.TransformerConfigurationException;
 import org.apache.xpath.XPath;
 import org.apache.xalan.utils.QName;
 import org.apache.serialize.OutputFormat;

@@ -73,7 +73,7 @@ import java.net.URL;
 
 import java.io.IOException;
 
-import org.apache.trax.URIResolver;
+import javax.xml.transform.URIResolver;
 
 import org.w3c.dom.Node;
 

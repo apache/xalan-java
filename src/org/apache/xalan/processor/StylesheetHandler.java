@@ -58,26 +58,34 @@ package org.apache.xalan.processor;
 
 import java.net.URL;
 
+import javax.xml.transform.sax.TemplatesHandler;
+import javax.xml.transform.Templates;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
+
 import java.util.Stack;
+
+import org.apache.xalan.res.XSLMessages;
 
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.ElemUnknown;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.Stylesheet;
-import org.apache.xalan.templates.ElemUnknown;
+
 import org.apache.xalan.utils.NodeConsumer;
-import org.apache.xalan.utils.XMLCharacterRecognizer;
-import org.apache.trax.ProcessorException;
-import org.apache.trax.TemplatesBuilder;
-import org.apache.trax.Templates;
-import org.apache.trax.TransformException;
-import org.apache.xpath.XPath;
-import org.apache.xpath.XPathFactory;
-import org.apache.xpath.compiler.XPathParser;
-import org.apache.xpath.compiler.FunctionTable;
-import org.apache.xpath.functions.Function;
-import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.utils.PrefixResolver;
+import org.apache.xalan.utils.XMLCharacterRecognizer;
+
+import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.compiler.XPathParser;
+
+import org.apache.xpath.functions.Function;
+
+import org.apache.xpath.XPathFactory;
+import org.apache.xpath.XPath;
+
+import org.w3c.dom.Node;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -85,13 +93,16 @@ import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.helpers.NamespaceSupport;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import org.w3c.dom.Node;
+import org.xml.sax.helpers.NamespaceSupport;
+import org.xml.sax.helpers.DefaultHandler;
+
+import javax.xml.transform.SourceLocator;
+import org.apache.xalan.utils.SAXSourceLocator;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -100,9 +111,8 @@ import org.w3c.dom.Node;
  * a ContentHandler stack, and pushing appropriate content
  * handlers as parse events occur.
  */
-public class StylesheetHandler
-        implements EntityResolver, DTDHandler, ContentHandler, ErrorHandler,
-                   TemplatesBuilder, PrefixResolver, NodeConsumer
+public class StylesheetHandler extends DefaultHandler
+        implements TemplatesHandler, PrefixResolver, NodeConsumer
 {
 
   /**
@@ -110,13 +120,13 @@ public class StylesheetHandler
    * as the target.
    *
    * NEEDSDOC @param processor
-   * @exception May throw ProcessorException if a StylesheetRoot
+   * @exception May throw TransformerConfigurationException if a StylesheetRoot
    * can not be constructed for some reason.
    *
-   * @throws ProcessorException
+   * @throws TransformerConfigurationException
    */
-  public StylesheetHandler(StylesheetProcessor processor)
-          throws ProcessorException
+  public StylesheetHandler(TransformerFactoryImpl processor)
+          throws TransformerConfigurationException
   {
 
     // m_schema = new XSLTSchema();
@@ -134,7 +144,7 @@ public class StylesheetHandler
    *
    * NEEDSDOC @param processor
    */
-  void init(StylesheetProcessor processor)
+  void init(TransformerFactoryImpl processor)
   {
 
     // Not sure about double-check of this flag, but 
@@ -239,7 +249,7 @@ public class StylesheetHandler
   public String getBaseIdentifier()
   {
 
-    org.xml.sax.Locator locator = getLocator();
+    SourceLocator locator = getLocator();
 
     return (null == locator) ? "" : locator.getSystemId();
   }
@@ -288,9 +298,9 @@ public class StylesheetHandler
    * @version Alpha
    * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
    *
-   * @throws TransformException
+   * @throws TransformerException
    */
-  public Templates getTemplates() throws TransformException
+  public Templates getTemplates()
   {
     return getStylesheetRoot();
   }
@@ -418,7 +428,7 @@ public class StylesheetHandler
    * Receive a Locator object for document events.
    * This is called by the parser to push a locator for the
    * stylesheet being parsed. The stack needs to be popped
-   * after the stylesheed has been parsed. We pop in in
+   * after the stylesheed has been parsed. We pop in
    * popStylesheet.
    *
    * @param locator A locator for all SAX document events.
@@ -429,7 +439,7 @@ public class StylesheetHandler
   {
 
     // System.out.println("pushing locator for: "+locator.getSystemId());
-    m_stylesheetLocatorStack.push(locator);
+    m_stylesheetLocatorStack.push(new SAXSourceLocator(locator));
   }
 
   /**
@@ -746,11 +756,11 @@ public class StylesheetHandler
   {
 
     String formattedMsg = m_XSLMessages.createWarning(msg, args);
-    Locator locator = getLocator();
+    SAXSourceLocator locator = getLocator();
     ErrorHandler handler = m_stylesheetProcessor.getErrorHandler();
 
     if (null != handler)
-      handler.warning(new ProcessorException(formattedMsg, locator));
+      handler.warning(new SAXParseException(formattedMsg, locator));
   }
 
   /**
@@ -782,11 +792,11 @@ public class StylesheetHandler
   protected void error(String msg, Exception e) throws SAXException
   {
 
-    Locator locator = getLocator();
+    SAXSourceLocator locator = getLocator();
     ErrorHandler handler = m_stylesheetProcessor.getErrorHandler();
-    ProcessorException pe = (null == e)
-                            ? new ProcessorException(msg, locator)
-                            : new ProcessorException(msg, locator, e);
+    SAXParseException pe = (null == e)
+                            ? new SAXParseException(msg, locator)
+                            : new SAXParseException(msg, locator, e);
 
     if (null != handler)
       handler.fatalError(pe);
@@ -947,16 +957,16 @@ public class StylesheetHandler
   }
 
   /**
-   *  The XSLT Processor for needed services.
+   *  The XSLT TransformerFactory for needed services.
    */
-  private StylesheetProcessor m_stylesheetProcessor;
+  private TransformerFactoryImpl m_stylesheetProcessor;
 
   /**
-   * Get the XSLT Processor for needed services.
+   * Get the XSLT TransformerFactory for needed services.
    *
    * NEEDSDOC ($objectName$) @return
    */
-  StylesheetProcessor getStylesheetProcessor()
+  TransformerFactoryImpl getStylesheetProcessor()
   {
     return m_stylesheetProcessor;
   }
@@ -1236,19 +1246,18 @@ public class StylesheetHandler
    *
    * NEEDSDOC ($objectName$) @return
    */
-  public Locator getLocator()
+  public SAXSourceLocator getLocator()
   {
 
     if (m_stylesheetLocatorStack.isEmpty())
     {
-      org.xml.sax.helpers.LocatorImpl locator =
-        new org.xml.sax.helpers.LocatorImpl();
+      SAXSourceLocator locator = new SAXSourceLocator();
 
       locator.setSystemId(this.getStylesheetProcessor().getDOMsystemID());
       m_stylesheetLocatorStack.push(locator);
     }
 
-    return ((Locator) m_stylesheetLocatorStack.peek());
+    return ((SAXSourceLocator) m_stylesheetLocatorStack.peek());
   }
 
   /**

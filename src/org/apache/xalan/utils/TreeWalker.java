@@ -88,19 +88,19 @@ public class TreeWalker
    *
    * NEEDSDOC ($objectName$) @return
    */
-  public ContentHandler getFormatterListener()
+  public ContentHandler getcontentHandler()
   {
     return m_contentHandler;
   }
 
   /**
    * Constructor.
-   * @param   formatterListener The implemention of the
-   * FormatterListener operation (toXMLString, digest, ...)
+   * @param   contentHandler The implemention of the
+   * contentHandler operation (toXMLString, digest, ...)
    */
-  public TreeWalker(ContentHandler formatterListener)
+  public TreeWalker(ContentHandler contentHandler)
   {
-    this.m_contentHandler = formatterListener;
+    this.m_contentHandler = contentHandler;
   }
 
   /**

@@ -86,11 +86,14 @@ import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.utils.PrefixResolver;
-import org.apache.trax.ProcessorException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.SourceLocator;
+import org.apache.xalan.utils.SAXSourceLocator;
 
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.Locator;
+// import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import org.w3c.dom.traversal.NodeFilter;
 
@@ -108,7 +111,7 @@ public class Compiler extends OpMap
    * NEEDSDOC @param errorHandler
    * NEEDSDOC @param locator
    */
-  public Compiler(ErrorHandler errorHandler, Locator locator)
+  public Compiler(ErrorHandler errorHandler, SourceLocator locator)
   {
     m_errorHandler = errorHandler;
     m_locator = locator;
@@ -1061,9 +1064,14 @@ public class Compiler extends OpMap
 
     if (null != m_errorHandler)
     {
-
-      // TO DO: Need to get stylesheet Locator from here.
-      m_errorHandler.warning(new ProcessorException(fmsg));
+      m_errorHandler.warning(new SAXParseException(fmsg, (SAXSourceLocator)m_locator));
+    }
+    else
+    {
+      System.out.println(fmsg
+                          +"; file "+m_locator.getSystemId()
+                          +"; line "+m_locator.getLineNumber()
+                          +"; column "+m_locator.getColumnNumber());
     }
   }
 
@@ -1103,10 +1111,11 @@ public class Compiler extends OpMap
   {
 
     java.lang.String fmsg = XSLMessages.createXPATHMessage(msg, args);
-    ProcessorException te = new ProcessorException(fmsg, m_locator);
 
     if (null != m_errorHandler)
-      m_errorHandler.fatalError(te);
+    {
+      m_errorHandler.fatalError(new SAXParseException(fmsg, (SAXSourceLocator)m_locator));
+    }
     else
     {
 
@@ -1114,7 +1123,7 @@ public class Compiler extends OpMap
       //                    +"; file "+te.getSystemId()
       //                    +"; line "+te.getLineNumber()
       //                    +"; column "+te.getColumnNumber());
-      throw te;
+      throw new SAXParseException(fmsg, (SAXSourceLocator)m_locator);
     }
   }
 
@@ -1147,5 +1156,5 @@ public class Compiler extends OpMap
   ErrorHandler m_errorHandler;
 
   /** NEEDSDOC Field m_locator          */
-  Locator m_locator;
+  SourceLocator m_locator;
 }

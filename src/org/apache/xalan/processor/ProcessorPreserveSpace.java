@@ -62,7 +62,7 @@ import org.xml.sax.Attributes;
 import java.util.Vector;
 
 /**
- * Processor for xsl:preserve-space markup.
+ * TransformerFactory for xsl:preserve-space markup.
  * <pre>
  * <!ELEMENT xsl:preserve-space EMPTY>
  * <!ATTLIST xsl:preserve-space elements CDATA #REQUIRED>

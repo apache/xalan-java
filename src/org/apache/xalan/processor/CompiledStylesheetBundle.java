@@ -70,10 +70,9 @@ import org.apache.xalan.templates.ElemAttribute;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.XMLNSDecl;
-import org.apache.trax.ProcessorException;
-import org.apache.trax.TemplatesBuilder;
-import org.apache.trax.Templates;
-import org.apache.trax.TransformException;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.Templates;
+import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathFactory;
 import org.apache.xpath.compiler.XPathParser;
@@ -292,12 +291,12 @@ public class CompiledStylesheetBundle
 	* Xalan code was changed between when the bundle was created and when it
 	* is being reloaded.
 	*/
-	public org.apache.trax.Templates loadBundle(String filename)
+	public javax.xml.transform.Templates loadBundle(String filename)
 		throws java.io.IOException,java.lang.ClassNotFoundException
 	{
 		java.io.InputStream is=null;
 		java.io.ObjectInputStream os=null;
-		org.apache.trax.Templates ss=null;
+		javax.xml.transform.Templates ss=null;
 		
 		try
 		{
@@ -308,7 +307,7 @@ public class CompiledStylesheetBundle
 			is=cl.getResourceAsStream("Stylesheet.ser");
 			// Read objects from the .ser, loading from bundle if necessary
 			os=new ClassLoaderObjectInputStream(cl,is);
-			ss=(org.apache.trax.Templates)os.readObject();
+			ss=(javax.xml.transform.Templates)os.readObject();
 		}
 		finally
 		{

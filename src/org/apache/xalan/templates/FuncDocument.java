@@ -60,6 +60,7 @@ import java.util.Vector;
 
 import java.io.StringWriter;
 import java.io.PrintWriter;
+import java.io.IOException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -88,7 +89,10 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import org.apache.trax.TransformException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.SourceLocator;
+import org.apache.xalan.utils.SAXSourceLocator;
+import javax.xml.transform.Source;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -249,7 +253,22 @@ public class FuncDocument extends Function2Args
 
     // System.out.println("base: "+base+", uri: "+uri);
     SourceTreeManager treeMgr = xctxt.getSourceTreeManager();
-    Node newDoc = treeMgr.findNodeFromURL(base, uri, xctxt.getSAXLocator());
+    
+    Node newDoc;
+    try
+    {
+      Source source = treeMgr.resolveURI(base, uri, xctxt.getSAXLocator());
+      newDoc = treeMgr.getNode(source);
+    }
+    catch (IOException ioe)
+    {
+      throw new SAXParseException(ioe.getMessage(), 
+        (SAXSourceLocator)xctxt.getSAXLocator(), ioe);
+    }
+    catch(TransformerException te)
+    {
+      throw new SAXException(te);
+    }
 
     if (null != newDoc)
       return newDoc;
@@ -383,16 +402,25 @@ public class FuncDocument extends Function2Args
 
     String formattedMsg = XSLMessages.createMessage(msg, args);
     ErrorHandler errHandler = xctxt.getPrimaryReader().getErrorHandler();
-    TransformException te = new TransformException(formattedMsg,
-                              xctxt.getSAXLocator());
+    SAXParseException spe = new SAXParseException(formattedMsg,
+                              (SAXSourceLocator)xctxt.getSAXLocator());
 
     if (null != errHandler)
-      errHandler.error(te);
+      errHandler.error(spe);
     else
     {
-      System.out.println(te.getMessage() + "; file " + te.getSystemId()
-                         + "; line " + te.getLineNumber() + "; column "
-                         + te.getColumnNumber());
+      if(null != spe.getSystemId())
+      {
+        System.out.println(spe.getMessage() + "; file " 
+                           + spe.getSystemId()
+                           + "; line " + spe.getLineNumber() + "; column "
+                           + spe.getColumnNumber());
+      }
+      else
+      {
+        System.out.println(spe.getMessage());
+      }
+      throw spe;
     }
   }
 
@@ -412,19 +440,25 @@ public class FuncDocument extends Function2Args
   {
 
     String formattedMsg = XSLMessages.createWarning(msg, args);
-    ErrorHandler errHandler = (null != xctxt.getPrimaryReader())
-                              ? xctxt.getPrimaryReader().getErrorHandler()
-                              : null;
-    TransformException te = new TransformException(formattedMsg,
-                              xctxt.getSAXLocator());
+    ErrorHandler errHandler = xctxt.getPrimaryReader().getErrorHandler();
+    SAXParseException spe = new SAXParseException(formattedMsg,
+                              (SAXSourceLocator)xctxt.getSAXLocator());
 
     if (null != errHandler)
-      errHandler.warning(te);
+      errHandler.error(spe);
     else
     {
-      System.out.println(te.getMessage() + "; file " + te.getSystemId()
-                         + "; line " + te.getLineNumber() + "; column "
-                         + te.getColumnNumber());
+      if(null != spe.getSystemId())
+      {
+        System.out.println(spe.getMessage() + "; file " 
+                           + spe.getSystemId()
+                           + "; line " + spe.getLineNumber() + "; column "
+                           + spe.getColumnNumber());
+      }
+      else
+      {
+        System.out.println(spe.getMessage());
+      }
     }
   }
 

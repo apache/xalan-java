@@ -60,11 +60,13 @@ import org.apache.xalan.res.XSLMessages;
 
 import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
+import org.xml.sax.helpers.LocatorImpl;
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXParseException;
 
 import org.w3c.dom.Node;
 
-import org.apache.trax.TransformException;
+import javax.xml.transform.TransformerException;
 
 /**
  * This class will manage error messages, warning messages, and other types of
@@ -108,14 +110,14 @@ public class MsgMgr
     if (null != errHandler)
     {
       if (terminate)
-        errHandler.fatalError(new TransformException(msg));
+        errHandler.fatalError(new SAXParseException(msg, new LocatorImpl()));
       else
-        errHandler.warning(new TransformException(msg));
+        errHandler.warning(new SAXParseException(msg, new LocatorImpl()));
     }
     else
     {
       if (terminate)
-        throw new TransformException(msg);
+        throw new SAXException(msg);
       else
         System.out.println(msg);
     }
@@ -191,7 +193,7 @@ public class MsgMgr
     ErrorHandler errHandler = m_transformer.getErrorHandler();
 
     if (null != errHandler)
-      errHandler.warning(new TransformException(formattedMsg));
+      errHandler.warning(new SAXParseException(formattedMsg, new LocatorImpl()));
     else
       System.out.println(formattedMsg);
   }
@@ -217,9 +219,9 @@ public class MsgMgr
     ErrorHandler errHandler = m_transformer.getErrorHandler();
 
     if (null != errHandler)
-      errHandler.fatalError(new TransformException(msg));
+      errHandler.fatalError(new SAXParseException(msg, new LocatorImpl()));
     else
-      throw new TransformException(msg);
+      throw new SAXException(msg);
   }
 
   /**
@@ -298,9 +300,9 @@ public class MsgMgr
     ErrorHandler errHandler = m_transformer.getErrorHandler();
 
     if (null != errHandler)
-      errHandler.fatalError(new TransformException(formattedMsg));
+      errHandler.fatalError(new SAXParseException(formattedMsg, new LocatorImpl()));
     else
-      throw new TransformException(formattedMsg);
+      throw new SAXException(formattedMsg);
   }
 
   /**
@@ -349,8 +351,8 @@ public class MsgMgr
     ErrorHandler errHandler = m_transformer.getErrorHandler();
 
     if (null != errHandler)
-      errHandler.warning(new TransformException(formattedMsg));
+      errHandler.warning(new SAXParseException(formattedMsg, new LocatorImpl()));
     else
-      throw new TransformException(formattedMsg);
+      throw new SAXException(formattedMsg);
   }
 }

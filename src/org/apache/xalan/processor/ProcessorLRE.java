@@ -69,6 +69,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
 
+import javax.xml.transform.TransformerConfigurationException;
+import org.apache.xalan.utils.SAXSourceLocator;
+
 /**
  * <meta name="usage" content="internal"/>
  * NEEDSDOC Class ProcessorLRE <needs-comment/>
@@ -112,11 +115,19 @@ public class ProcessorLRE extends ProcessorTemplateElem
 
       handler.pushProcessor(lreProcessor);
 
-      Stylesheet stylesheet = new StylesheetRoot();
+      Stylesheet stylesheet;
+      try
+      {
+        stylesheet = new StylesheetRoot();
+      }
+      catch(TransformerConfigurationException tfe)
+      {
+        throw new SAXException(tfe);
+      }
 
       // stylesheet.setDOMBackPointer(handler.getOriginatingNode());
 	  // ***** Note that we're assigning an empty locator. Is this necessary?
-      stylesheet.setLocaterInfo(new org.xml.sax.helpers.LocatorImpl());
+      stylesheet.setLocaterInfo(new SAXSourceLocator());
       stylesheet.setPrefixes(handler.getNamespaceSupport());
       handler.pushStylesheet(stylesheet);
 

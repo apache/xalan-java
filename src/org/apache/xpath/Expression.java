@@ -63,8 +63,11 @@ import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.res.XSLMessages;
 
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXParseException;
 
-import org.apache.trax.ProcessorException;
+import javax.xml.transform.TransformerConfigurationException;
+import org.apache.xalan.utils.SAXSourceLocator;
+import javax.xml.transform.SourceLocator;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -110,7 +113,7 @@ public abstract class Expression
     {
 
       // TO DO: Need to get stylesheet Locator from here.
-      eh.warning(new ProcessorException(fmsg));
+      eh.warning(new SAXParseException(fmsg, (SAXSourceLocator)xctxt.getSAXLocator()));
     }
   }
 
@@ -152,17 +155,20 @@ public abstract class Expression
   {
 
     java.lang.String fmsg = XSLMessages.createXPATHMessage(msg, args);
-    ProcessorException te = new ProcessorException(fmsg,
-                              m_xpath.getLocator());
     ErrorHandler eh = xctxt.getPrimaryReader().getErrorHandler();
 
     if (null != eh)
+    {
+      SAXParseException te = new SAXParseException(fmsg,
+                      (SAXSourceLocator)m_xpath.getLocator());
       eh.fatalError(te);
+    }
     else
     {
-      System.out.println(te.getMessage() + "; file " + te.getSystemId()
-                         + "; line " + te.getLineNumber() + "; column "
-                         + te.getColumnNumber());
+      SourceLocator slocator = m_xpath.getLocator();
+      System.out.println(fmsg + "; file " + slocator.getSystemId()
+                         + "; line " + slocator.getLineNumber() + "; column "
+                         + slocator.getColumnNumber());
     }
   }
 }

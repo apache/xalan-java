@@ -56,9 +56,11 @@
  */
 package org.apache.xpath;
 
-import org.xml.sax.Locator;
+// import org.xml.sax.Locator;
 
 import org.apache.xalan.utils.PrefixResolver;
+
+import javax.xml.transform.SourceLocator;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -78,6 +80,6 @@ public interface XPathFactory
    *
    * NEEDSDOC ($objectName$) @return
    */
-  XPath create(String exprString, Locator locator,
+  XPath create(String exprString, SourceLocator locator,
                PrefixResolver prefixResolver, int type);
 }

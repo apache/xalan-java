@@ -65,18 +65,18 @@ import org.xml.sax.SAXException;
 
 import org.w3c.dom.Node;
 
-import org.apache.trax.Processor;
-import org.apache.trax.ProcessorException;
-import org.apache.trax.Templates;
-import org.apache.trax.TemplatesBuilder;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.Templates;
+import javax.xml.transform.sax.TemplatesHandler;
 
 /**
- * The StylesheetProcessor, which implements the TRaX Processor
+ * The TransformerFactoryImpl, which implements the TRaX TransformerFactory
  * interface, processes XSLT Stylesheets into a Templates object.
  * This version has been modified to kick off conversion to JAVA,
  * via CompilingStylesheetHandler
  */
-public class CompilingStylesheetProcessor extends StylesheetProcessor
+public class CompilingStylesheetProcessor extends TransformerFactoryImpl
 {
 
   /**
@@ -86,17 +86,17 @@ public class CompilingStylesheetProcessor extends StylesheetProcessor
    *
    * <h3>Open issues:</h3>
    * <dl>
-   *    <dt><h4>Should Processor derive from org.xml.sax.ContentHandler?</h4></dt>
-   *    <dd>Instead of requesting an object from the Processor class, should
-   *        the Processor class simply derive from org.xml.sax.ContentHandler?</dd>
+   *    <dt><h4>Should TransformerFactory derive from org.xml.sax.ContentHandler?</h4></dt>
+   *    <dd>Instead of requesting an object from the TransformerFactory class, should
+   *        the TransformerFactory class simply derive from org.xml.sax.ContentHandler?</dd>
    * </dl>
    * @return A TemplatesBuilder object, or null if not supported.
-   * @exception May throw a ProcessorException if a StylesheetHandler can
+   * @exception May throw a TransformerConfigurationException if a StylesheetHandler can
    * not be constructed for some reason.
    *
-   * @throws ProcessorException
+   * @throws TransformerConfigurationException
    */
-  public TemplatesBuilder getTemplatesBuilder() throws ProcessorException
+  public TemplatesHandler newTemplatesHandler() throws TransformerConfigurationException
   {
     return new CompilingStylesheetHandler(this);
   }

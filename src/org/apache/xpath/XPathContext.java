@@ -87,14 +87,21 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
-import org.xml.sax.Locator;
+import org.xml.sax.SAXParseException;
+// import org.xml.sax.Locator;
 
 // TRaX imports
-import org.apache.trax.URIResolver;
-import org.apache.trax.TransformException;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.TransformerException;
+import org.apache.xalan.utils.SAXSourceLocator;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.dom.DOMSource;
 
 // Temporary!!!
 import org.apache.xalan.extensions.ExtensionsTable;
+
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.Source;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -133,7 +140,7 @@ public class XPathContext implements ExpressionContext
   public void reset(){}
 
   /** NEEDSDOC Field m_saxLocation          */
-  Locator m_saxLocation;
+  SourceLocator m_saxLocation;
 
   /**
    * NEEDSDOC Method setSAXLocator 
@@ -141,7 +148,7 @@ public class XPathContext implements ExpressionContext
    *
    * NEEDSDOC @param location
    */
-  public void setSAXLocator(Locator location)
+  public void setSAXLocator(SourceLocator location)
   {
     m_saxLocation = location;
   }
@@ -152,7 +159,7 @@ public class XPathContext implements ExpressionContext
    *
    * NEEDSDOC (getSAXLocator) @return
    */
-  public Locator getSAXLocator()
+  public SourceLocator getSAXLocator()
   {
     return m_saxLocation;
   }
@@ -373,23 +380,20 @@ public class XPathContext implements ExpressionContext
   public final String getAbsoluteURI(String urlString, String base)
           throws SAXException
   {
-
-    InputSource inputSource;
-
     try
     {
-      inputSource = getSourceTreeManager().resolveURI(base, urlString,
-              getSAXLocator());
+      Source source = getSourceTreeManager().resolveURI(base, urlString,
+                                                        getSAXLocator());
+      return source.getBaseID();
+    }
+    catch (TransformerException te)
+    {
+      throw new SAXException(te);
     }
     catch (IOException ioe)
     {
-      inputSource = null;  // shutup compiler.
-
       throw new SAXException(ioe);
     }
-
-    // System.out.println("url: "+url.toString());
-    return inputSource.getSystemId();
   }
 
   /** NEEDSDOC Field m_XSLMessages          */
@@ -412,10 +416,10 @@ public class XPathContext implements ExpressionContext
     if (errorHandler != null)
     {
       errorHandler.fatalError(
-        new TransformException(
+        new SAXParseException(
           m_XSLMessages.createMessage(
             XPATHErrorResources.ER_INCORRECT_PROGRAMMER_ASSERTION,
-            new Object[]{ msg })));
+            new Object[]{ msg }), (SAXSourceLocator)this.getSAXLocator()));
     }
   }
 

@@ -92,7 +92,7 @@ public class NodeSorter
   NumberFormat m_formatter = NumberFormat.getNumberInstance();
 
   /**
-   * Construct a NodeSorter, passing in the XSL Processor
+   * Construct a NodeSorter, passing in the XSL TransformerFactory
    * so it can know how to get the node data according to
    * the proper whitespace rules.
    *

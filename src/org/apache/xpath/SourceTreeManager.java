@@ -67,8 +67,8 @@ import java.util.Vector;
 import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 
-import org.apache.trax.URIResolver;
-import org.apache.trax.TransformException;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.TransformerException;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -77,12 +77,19 @@ import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
-import org.xml.sax.Locator;
+// import org.xml.sax.Locator;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.stree.SourceTreeHandler;
 import org.apache.xalan.utils.SystemIDResolver;
 import org.apache.xpath.res.XPATHErrorResources;
+
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.Source;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
+import org.apache.xalan.utils.SAXSourceLocator;
 
 /**
  * This class bottlenecks all management of source trees.  The methods
@@ -173,56 +180,24 @@ public class SourceTreeManager
    * NEEDSDOC ($objectName$) @return
    *
    * @throws IOException
-   * @throws TransformException
+   * @throws TransformerException
    */
-  public InputSource resolveURI(
-          String base, String urlString, Locator locator)
-            throws TransformException, IOException
+  public Source resolveURI(
+          String base, String urlString, SourceLocator locator)
+            throws TransformerException, IOException, SAXException
   {
-
-    String uri;
-
-    try
+    Source source = null;
+    
+    if(null != m_uriResolver)
     {
-      uri = SystemIDResolver.getAbsoluteURI(urlString, base);
+      source = m_uriResolver.resolve(urlString, base);
     }
-    catch (SAXException se)
+    
+    if(null == source)
     {
+      String uri = SystemIDResolver.getAbsoluteURI(urlString, base);
 
-      // Try and see if the entity resolver can do the job. 
-      // If not, throw an exception.
-      if (null != m_entityResolver)
-      {
-        try
-        {
-          return m_entityResolver.resolveEntity(null, urlString);
-        }
-        catch (SAXException se2)
-        {
-          throw new TransformException("URL of base: " + base + " and url: "
-                                       + urlString + " can't be resolved",
-                                         locator, se2);
-        }
-      }
-      else
-        throw new TransformException("URL of base: " + base + " and url: "
-                                     + urlString + " can't be resolved",
-                                       locator, se);
-    }
-
-    InputSource source;
-
-    try
-    {
-      if (null != m_entityResolver)
-        source = m_entityResolver.resolveEntity(null, urlString);
-      else
-        source = new InputSource(uri);
-    }
-    catch (SAXException se2)
-    {
-      throw new TransformException("URL: " + urlString
-                                   + " can't be resolved", locator, se2);
+      source = new StreamSource(uri);
     }
 
     return source;
@@ -235,12 +210,12 @@ public class SourceTreeManager
    * NEEDSDOC @param n
    * NEEDSDOC @param source
    */
-  public void putDocumentInCache(Node n, InputSource source)
+  public void putDocumentInCache(Node n, Source source)
   {
 
     try
     {
-      Node cachedNode = findNodeFromURL(source);
+      Node cachedNode = getNode(source);
 
       if (null != cachedNode)
       {
@@ -248,17 +223,17 @@ public class SourceTreeManager
           throw new RuntimeException(
             "Programmer's Error!  "
             + "putDocumentInCache found reparse of doc: "
-            + source.getSystemId());
+            + source.getBaseID());
 
         return;
       }
 
-      if (null != source.getSystemId())
+      if (null != source.getBaseID())
       {
-        m_sourceTree.addElement(new SourceTree(n, source.getSystemId()));
+        m_sourceTree.addElement(new SourceTree(n, source.getBaseID()));
       }
     }
-    catch (TransformException te)
+    catch (TransformerException te)
     {
       throw new org.apache.xalan.utils.WrappedRuntimeException(te);
     }
@@ -272,12 +247,15 @@ public class SourceTreeManager
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws TransformException
+   * @throws TransformerException
    */
-  public Node findNodeFromURL(InputSource source) throws TransformException
+  public Node getNode(Source source) throws TransformerException
   {
+    if(source instanceof DOMSource)
+      return ((DOMSource)source).getNode();
 
-    String url = source.getSystemId();
+    // TODO: Not sure if the BaseID is really the same thing as the ID.
+    String url = source.getBaseID();
 
     if (null == url)
       return null;
@@ -286,13 +264,13 @@ public class SourceTreeManager
     int n = m_sourceTree.size();
     ;
 
-    // System.out.println("findNodeFromURL: "+n);
+    // System.out.println("getNode: "+n);
     for (int i = 0; i < n; i++)
     {
       SourceTree sTree = (SourceTree) m_sourceTree.elementAt(i);
 
-      // System.out.println("findNodeFromURL -         url: "+url);
-      // System.out.println("findNodeFromURL - sTree.m_url: "+sTree.m_url);
+      // System.out.println("getNode -         url: "+url);
+      // System.out.println("getNode - sTree.m_url: "+sTree.m_url);
       if (url.equals(sTree.m_url))
       {
         node = sTree.m_root;
@@ -301,58 +279,8 @@ public class SourceTreeManager
       }
     }
 
-    // System.out.println("findNodeFromURL - returning: "+node);
+    // System.out.println("getNode - returning: "+node);
     return node;
-  }
-
-  /**
-   * Given a URL, find the node associated with that document.
-   *
-   * NEEDSDOC @param base
-   * @param url
-   * NEEDSDOC @param locator
-   *
-   * NEEDSDOC ($objectName$) @return
-   *
-   * @throws TransformException
-   */
-  public Node findNodeFromURL(String base, String url, Locator locator)
-          throws TransformException
-  {
-
-    try
-    {
-      InputSource source = this.resolveURI(base, url, locator);
-
-      if (null != source.getSystemId())
-        url = source.getSystemId();
-
-      Node node = null;
-      int n = m_sourceTree.size();
-      ;
-
-      // System.out.println("findNodeFromURL: "+n);
-      for (int i = 0; i < n; i++)
-      {
-        SourceTree sTree = (SourceTree) m_sourceTree.elementAt(i);
-
-        // System.out.println("findNodeFromURL -         url: "+url);
-        // System.out.println("findNodeFromURL - sTree.m_url: "+sTree.m_url);
-        if (url.equals(sTree.m_url))
-        {
-          node = sTree.m_root;
-
-          break;
-        }
-      }
-
-      // System.out.println("findNodeFromURL - returning: "+node);
-      return node;
-    }
-    catch (IOException ioe)
-    {
-      throw new TransformException(ioe, locator);
-    }
   }
 
   /**
@@ -364,23 +292,27 @@ public class SourceTreeManager
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws TransformException
+   * @throws TransformerException
    */
-  public Node getSourceTree(String base, String urlString, Locator locator)
-          throws TransformException
+  public Node getSourceTree(String base, String urlString, SourceLocator locator)
+          throws SAXException
   {
 
     // System.out.println("getSourceTree");
     try
     {
-      InputSource source = this.resolveURI(base, urlString, locator);
+      Source source = this.resolveURI(base, urlString, locator);
 
       // System.out.println("getSourceTree - base: "+base+", urlString: "+urlString+", source: "+source.getSystemId());
       return getSourceTree(source, locator);
     }
     catch (IOException ioe)
     {
-      throw new TransformException(ioe, locator);
+      throw new SAXParseException(ioe.getMessage(), (SAXSourceLocator)locator, ioe);
+    }
+    catch (TransformerException te)
+    {
+      throw new SAXParseException(te.getMessage(), (SAXSourceLocator)locator, te);
     }
   }
 
@@ -392,34 +324,22 @@ public class SourceTreeManager
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws TransformException
+   * @throws TransformerException
    */
-  public Node getSourceTree(InputSource source, Locator locator)
-          throws TransformException
+  public Node getSourceTree(Source source, SourceLocator locator)
+          throws TransformerException
   {
+    Node n = getNode(source);
 
-    // Try first to see if we have a node cached that matches this 
-    // systemID.
-    if (null != source.getSystemId())
-    {
-      Node n = findNodeFromURL(null, source.getSystemId(), locator);
+    if (null != n)
+      return n;
 
-      if (null != n)
-        return n;
-    }
+    n = getDOMNode(source, locator);
 
-    Node root = null;
+    if (null != n)
+      putDocumentInCache(n, source);
 
-    if (null != m_uriResolver)
-      root = m_uriResolver.getDOMNode(source);
-
-    if (null == root)
-      root = getDOMNode(source, locator);
-
-    if (null != root)
-      putDocumentInCache(root, source);
-
-    return root;
+    return n;
   }
 
   /**
@@ -430,11 +350,16 @@ public class SourceTreeManager
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws TransformException
+   * @throws TransformerException
    */
-  public Node getDOMNode(InputSource source, Locator locator)
-          throws TransformException
+  public Node getDOMNode(Source source, SourceLocator locator)
+          throws TransformerException
   {
+    
+    if(source instanceof DOMSource)
+    {
+      return ((DOMSource)source).getNode();
+    }
 
     Node doc = null;
 
@@ -465,7 +390,8 @@ public class SourceTreeManager
       }
       catch (SAXException se){}
 
-      reader.parse(source);
+      InputSource isource = SAXSource.sourceToInputSource(source);
+      reader.parse(isource);
 
       if (handler instanceof org.apache.xalan.stree.SourceTreeHandler)
       {
@@ -474,11 +400,11 @@ public class SourceTreeManager
     }
     catch (IOException ioe)
     {
-      throw new TransformException(ioe, locator);
+      throw new TransformerException(ioe.getMessage(), locator, ioe);
     }
     catch (SAXException se)
     {
-      throw new TransformException(se, locator);
+      throw new TransformerException(se.getMessage(), locator, se);
     }
 
     return doc;
@@ -498,16 +424,16 @@ public class SourceTreeManager
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws TransformException
+   * @throws TransformerException
    */
-  public XMLReader getXMLReader(InputSource inputSource, Locator locator)
-          throws TransformException
+  public XMLReader getXMLReader(Source inputSource, SourceLocator locator)
+          throws TransformerException
   {
 
     try
     {
-      XMLReader reader = (null != m_uriResolver)
-                         ? m_uriResolver.getXMLReader(inputSource) : null;
+      XMLReader reader = (inputSource instanceof SAXSource)
+                         ? ((SAXSource)inputSource).getXMLReader() : null;
 
       if (null == reader)
         reader = XMLReaderFactory.createXMLReader();
@@ -530,7 +456,7 @@ public class SourceTreeManager
     }
     catch (SAXException se)
     {
-      throw new TransformException(se, locator);
+      throw new TransformerException(se.getMessage(), locator, se);
     }
   }
 }

@@ -63,8 +63,10 @@ import org.apache.xalan.templates.StylesheetComposed;
 import org.xml.sax.SAXException;
 import org.xml.sax.Attributes;
 
+import javax.xml.transform.TransformerConfigurationException;
+
 /**
- * Processor for xsl:stylesheet or xsl:transform markup.
+ * TransformerFactory for xsl:stylesheet or xsl:transform markup.
  * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
  * @see <a href="http://www.w3.org/TR/xslt#stylesheet-element">stylesheet-element in XSLT Specification</a>
  */
@@ -107,7 +109,14 @@ class ProcessorStylesheetElement extends XSLTElementProcessor
 
     if (stylesheetType == StylesheetHandler.STYPE_ROOT)
     {
-      stylesheet = new StylesheetRoot();
+      try
+      {
+        stylesheet = new StylesheetRoot();
+      }
+      catch(TransformerConfigurationException tfe)
+      {
+        throw new SAXException(tfe);
+      }
     }
     else
     {

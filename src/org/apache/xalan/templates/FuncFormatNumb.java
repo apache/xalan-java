@@ -71,10 +71,12 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 
 import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXParseException;
 
 import org.w3c.dom.Node;
 
-import org.apache.trax.TransformException;
+import javax.xml.transform.TransformerException;
+import org.apache.xalan.utils.SAXSourceLocator;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -200,7 +202,8 @@ public class FuncFormatNumb extends Function3Args
     String formattedMsg = XSLMessages.createWarning(msg, args);
     ErrorHandler errHandler = xctxt.getPrimaryReader().getErrorHandler();
 
-    errHandler.warning(new TransformException(formattedMsg));
+    errHandler.warning(new SAXParseException(formattedMsg,
+                                             (SAXSourceLocator)xctxt.getSAXLocator()));
   }
 
   /**

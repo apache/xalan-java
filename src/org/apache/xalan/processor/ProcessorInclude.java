@@ -73,14 +73,20 @@ import java.io.IOException;
 
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import org.apache.trax.URIResolver;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Node;
 
 import org.apache.xalan.utils.SystemIDResolver;
 
 /**
- * Processor class for xsl:include markup.
+ * TransformerFactory class for xsl:include markup.
  * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
  * @see <a href="http://www.w3.org/TR/xslt#include">include in XSLT Specification</a>
  */
@@ -180,70 +186,59 @@ class ProcessorInclude extends XSLTElementProcessor
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
             throws SAXException
   {
-
-    URIResolver uriresolver =
-      handler.getStylesheetProcessor().getURIResolver();
+    TransformerFactoryImpl processor = handler.getStylesheetProcessor();
+    URIResolver uriresolver = processor.getURIResolver();
 
     try
     {
-      XMLReader reader = null;
-      boolean tryCreatingReader = true;
-      EntityResolver entityResolver =
-        handler.getStylesheetProcessor().getEntityResolver();
-      InputSource inputSource;
+      Source source = null;
 
-      if (null != entityResolver)
+      if (null != uriresolver)
       {
-        inputSource = entityResolver.resolveEntity(null, getHref());
+        try
+        {
+          source = uriresolver.resolve(getHref(),
+                                       handler.getBaseIdentifier());
+        }
+        catch(TransformerException te)
+        {
+          handler.error("Error with URI Resolver!", te);
+        }
 
-        // TODO: Check for relative URL, and absolutize it???  Or no?
+        if (null != source && source instanceof DOMSource)
+        {
+          Node node = ((DOMSource)source).getNode();
+          TreeWalker walker = new TreeWalker(handler);
+
+          walker.traverse(node);
+          return;
+        }
       }
-      else
+      
+      if(null == source)
       {
         String absURL = SystemIDResolver.getAbsoluteURI(getHref(),
                           handler.getBaseIdentifier());
 
-        inputSource = new InputSource(absURL);
+        source = new StreamSource(absURL);
       }
-
-      if (null != uriresolver)
+      
+      XMLReader reader = null;
+      
+      if(source instanceof SAXSource)
       {
-        tryCreatingReader = false;
-        reader = uriresolver.getXMLReader(inputSource);
-
-        if (null == reader)
-        {
-          Node node = uriresolver.getDOMNode(inputSource);
-
-          if (null != node)
-          {
-            TreeWalker walker = new TreeWalker(handler);
-
-            walker.traverse(node);
-          }
-          else
-            tryCreatingReader = true;
-        }
+        SAXSource saxSource = (SAXSource)source;
+        reader = saxSource.getXMLReader(); // may be null
       }
+      
+      InputSource inputSource = SAXSource.sourceToInputSource(source);
 
-      if (tryCreatingReader)
-      {
-        reader = handler.getStylesheetProcessor().getXMLReader();
-
-        if (null == reader)
-        {
-          reader = XMLReaderFactory.createXMLReader();
-        }
-        else
-        {
-          Class readerClass = ((Object) reader).getClass();
-
-          reader = (XMLReader) readerClass.newInstance();
-        }
-      }
+      if (null == reader)
+        reader = XMLReaderFactory.createXMLReader();
 
       if (null != reader)
       {
+        EntityResolver entityResolver = processor.getEntityResolver();
         if (null != entityResolver)
           reader.setEntityResolver(entityResolver);
 
@@ -261,14 +256,6 @@ class ProcessorInclude extends XSLTElementProcessor
           handler.popBaseIndentifier();
         }
       }
-    }
-    catch (InstantiationException ie)
-    {
-      handler.error("Could not clone parser!", ie);
-    }
-    catch (IllegalAccessException iae)
-    {
-      handler.error("Can not access class!", iae);
     }
     catch (IOException ioe)
     {

@@ -351,7 +351,7 @@ public class XSLTErrorResources extends XSLResourceBundle
   static
   {
     contents[ER_COULD_NOT_CREATE_XML_PROC_LIAISON][1] =
-      "Could not create XML Processor Liaison: {0}";
+      "Could not create XML TransformerFactory Liaison: {0}";
   }
 
   /** NEEDSDOC Field ER_PROCESS_NOT_SUCCESSFUL          */
@@ -664,7 +664,7 @@ public class XSLTErrorResources extends XSLResourceBundle
 
   static
   {
-    contents[ER_PROCESSOR_ERROR][1] = "XSLT Processor Error";
+    contents[ER_PROCESSOR_ERROR][1] = "XSLT TransformerFactory Error";
   }
 
   /** NEEDSDOC Field ER_NOT_ALLOWED_INSIDE_STYLESHEET          */

@@ -353,7 +353,7 @@ public class Parent extends Child
 
       if ((null != sh) && sh.m_shouldCheckWhitespace)
       {
-        TransformerImpl transformer = sh.getTransformer();
+        TransformerImpl transformer = sh.getTransformerImpl();
 
         if (null != transformer)
         {

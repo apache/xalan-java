@@ -62,7 +62,7 @@ import org.xml.sax.Attributes;
 import java.util.Vector;
 
 /**
- * Processor for xsl:strip-space markup.
+ * TransformerFactory for xsl:strip-space markup.
  * <pre>
  * <!ELEMENT xsl:strip-space EMPTY>
  * <!ATTLIST xsl:strip-space elements CDATA #REQUIRED>

@@ -80,7 +80,7 @@ public class GenerateEvent implements java.util.EventListener
 {
 
   /**
-   * The XSLT Processor, which either directly or indirectly contains most needed information.
+   * The XSLT TransformerFactory, which either directly or indirectly contains most needed information.
    * Accessing the m_stylesheetRoot member variable will get you to the stylesheet information.
    *
    * @see org.apache.xalan.xslt.TransformerImpl, org.apache.xalan.xslt.StylesheetRoot,
@@ -177,7 +177,7 @@ public class GenerateEvent implements java.util.EventListener
   /**
    * Constructor for startDocument, endDocument events.
    *
-   * @param processor The XSLT Processor instance.
+   * @param processor The XSLT TransformerFactory instance.
    * @param eventType One of the EVENTTYPE_XXX constants.
    */
   public GenerateEvent(TransformerImpl processor, int eventType)
@@ -189,7 +189,7 @@ public class GenerateEvent implements java.util.EventListener
   /**
    * Constructor for startElement, endElement events.
    *
-   * @param processor The XSLT Processor Instance.
+   * @param processor The XSLT TransformerFactory Instance.
    * @param eventType One of the EVENTTYPE_XXX constants.
    * @param name The name of the element.
    * @param atts The SAX attribute list.
@@ -207,7 +207,7 @@ public class GenerateEvent implements java.util.EventListener
   /**
    * Constructor for characters, cdate events.
    *
-   * @param processor The XSLT Processor instance.
+   * @param processor The XSLT TransformerFactory instance.
    * @param eventType One of the EVENTTYPE_XXX constants.
    * @param ch The char array from the SAX event.
    * @param start The start offset to be used in the char array.

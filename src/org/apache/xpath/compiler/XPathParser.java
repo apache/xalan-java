@@ -69,9 +69,11 @@ import org.apache.xalan.utils.StringKey;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.Locator;
+import org.xml.sax.helpers.LocatorImpl;
 
-import org.apache.trax.ProcessorException;
+import javax.xml.transform.TransformerConfigurationException;
 
 /**
  * <meta name="usage" content="general"/>
@@ -536,7 +538,7 @@ public class XPathParser implements java.io.Serializable
     {
 
       // TO DO: Need to get stylesheet Locator from here.
-      ehandler.warning(new ProcessorException(fmsg, (Locator) null));
+      ehandler.warning(new SAXParseException(fmsg, new LocatorImpl()));
     }
     else
     {
@@ -583,7 +585,7 @@ public class XPathParser implements java.io.Serializable
     {
 
       // TO DO: Need to get stylesheet Locator from here.
-      ehandler.fatalError(new ProcessorException(fmsg, (Locator) null));
+      ehandler.fatalError(new SAXParseException(fmsg, new LocatorImpl()));
     }
     else
     {

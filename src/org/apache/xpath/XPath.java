@@ -84,9 +84,12 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.objects.*;
 
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.Locator;
+import org.xml.sax.SAXParseException;
+// import org.xml.sax.Locator;
 
-import org.apache.trax.TransformException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.SourceLocator;
+import org.apache.xalan.utils.SAXSourceLocator;
 import org.apache.xpath.patterns.NodeTest;
 
 /**
@@ -129,7 +132,7 @@ public class XPath implements Serializable
   }
 
   /** NEEDSDOC Field m_locator          */
-  private Locator m_locator;
+  private SourceLocator m_locator;
 
   /**
    * NEEDSDOC Method getLocator 
@@ -137,7 +140,7 @@ public class XPath implements Serializable
    *
    * NEEDSDOC (getLocator) @return
    */
-  public Locator getLocator()
+  public SourceLocator getLocator()
   {
     return m_locator;
   }
@@ -148,7 +151,7 @@ public class XPath implements Serializable
    *
    * NEEDSDOC @param l
    */
-  public void setLocator(Locator l)
+  public void setLocator(SourceLocator l)
   {
 	// Note potential hazards -- l may not be serializable, or may be changed
 	  // after being assigned here.
@@ -187,15 +190,10 @@ public class XPath implements Serializable
    * @throws org.xml.sax.SAXException
    */
   public XPath(
-          String exprString, Locator locator, PrefixResolver prefixResolver, int type)
+          String exprString, SourceLocator locator, PrefixResolver prefixResolver, int type)
             throws org.xml.sax.SAXException
   {
-
-    // TODO: would like not to clone the locator...
-	// but it may not be serializable, and it may be changed after being
-	// passed in.
-    if(null != locator)
-      m_locator = new org.apache.xalan.utils.SerializableLocatorImpl(locator); 
+    m_locator = locator; 
       
     m_patternString = exprString;
 
@@ -261,8 +259,12 @@ public class XPath implements Serializable
     }
     catch (Exception e)
     {
-      if (e instanceof org.apache.trax.TransformException)
-        throw (org.apache.trax.TransformException) e;
+      if (e instanceof javax.xml.transform.TransformerException)
+      {
+        TransformerException te = (TransformerException)e;
+        throw new SAXParseException(te.getMessage(), 
+          (SAXSourceLocator)te.getLocator(), e);
+      }
       else
       {
         while (e instanceof org.apache.xalan.utils.WrappedRuntimeException)
@@ -270,8 +272,8 @@ public class XPath implements Serializable
           e = ((org.apache.xalan.utils.WrappedRuntimeException) e).getException();
         }
 
-        throw new org.apache.trax.TransformException("Error in XPath",
-                m_locator, e);
+        throw new SAXParseException("Error in XPath",
+                (SAXSourceLocator)m_locator, e);
       }
     }
     finally
@@ -484,7 +486,7 @@ public class XPath implements Serializable
     {
 
       // TO DO: Need to get stylesheet Locator from here.
-      ehandler.warning(new TransformException(fmsg));
+      ehandler.warning(new SAXParseException(fmsg, (SAXSourceLocator)xctxt.getSAXLocator()));
     }
   }
 
@@ -528,16 +530,18 @@ public class XPath implements Serializable
 
     String fmsg = XSLMessages.createXPATHMessage(msg, args);
     ErrorHandler ehandler = xctxt.getPrimaryReader().getErrorHandler();
-    TransformException te = new TransformException(fmsg,
-                              xctxt.getSAXLocator());
 
     if (null != ehandler)
-      ehandler.fatalError(te);
+    {
+      ehandler.fatalError(new SAXParseException(fmsg,
+                              (SAXSourceLocator)xctxt.getSAXLocator()));
+    }
     else
     {
-      System.out.println(te.getMessage() + "; file " + te.getSystemId()
-                         + "; line " + te.getLineNumber() + "; column "
-                         + te.getColumnNumber());
+      SourceLocator slocator = xctxt.getSAXLocator();
+      System.out.println(fmsg + "; file " + slocator.getSystemId()
+                         + "; line " + slocator.getLineNumber() + "; column "
+                         + slocator.getColumnNumber());
     }
   }
 

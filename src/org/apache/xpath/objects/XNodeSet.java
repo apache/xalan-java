@@ -229,7 +229,7 @@ public class XNodeSet extends XObject
 
     return frag;
   }
-
+  
   /**
    * Cast result object to a nodelist.
    *

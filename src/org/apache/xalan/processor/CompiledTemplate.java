@@ -63,6 +63,9 @@
 package org.apache.xalan.processor;
 import org.apache.xalan.templates.ElemTemplate;
 
+import javax.xml.transform.SourceLocator;
+import org.apache.xalan.utils.SAXSourceLocator;
+
 public abstract class CompiledTemplate
 extends ElemTemplate 
 implements java.io.Serializable
@@ -121,8 +124,7 @@ implements java.io.Serializable
 			  String publicId,String systemId,
 			  java.lang.Object[] interpretArray)
   {
-    org.xml.sax.helpers.LocatorImpl locator=
-      new org.xml.sax.helpers.LocatorImpl();
+    SAXSourceLocator locator = new SAXSourceLocator();
     locator.setLineNumber(lineNumber);
     locator.setColumnNumber(columnNumber);
     locator.setPublicId(publicId);

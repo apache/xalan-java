@@ -62,7 +62,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
 
-import org.apache.trax.Transformer;
+import javax.xml.transform.Transformer;
 
 /**
  * This interface is meant to be used by a consumer of
