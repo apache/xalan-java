@@ -109,17 +109,6 @@ public class Constants
   public static final String 
     S_BUILTIN_EXTENSIONS_URL = "http://xml.apache.org/xslt"; 
   
-  /** NEEDSDOC: PARSER_PATH
-   */
-  public static final String 
-	PARSER_PATH = "com/ibm/xml/parser/Parser";
-
-  /** NEEDSDOC: LIAISON_CLASS
-   */
-  public static final String 
-    //  LIAISON_CLASS = "org.apache.xpath.DOM2Helper";
-	LIAISON_CLASS = "org.apache.xalan.dtm.DTMLiaison";
-
   /**
    * The minimum version of XSLT supported by this processor.
    */
