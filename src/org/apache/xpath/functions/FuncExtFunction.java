@@ -45,7 +45,7 @@ public class FuncExtFunction extends Function
     }
     ExtensionsTable etable = xctxt.getExtensionsTable();
     Object val = etable.extFunction(m_namespace, m_extensionName, 
-                                    argVec, m_methodKey);
+                                    argVec, m_methodKey, xctxt);
     if(null != val)
     {
       if(val instanceof XObject)
