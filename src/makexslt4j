@@ -134,6 +134,8 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemElement.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemEmpty.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemExtensionCall.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemExtensionDecl.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemExtensionScript.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemFallback.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemForEach.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)templates$(PATHSEP)ElemIf.java \
