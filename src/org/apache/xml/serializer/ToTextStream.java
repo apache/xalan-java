@@ -292,6 +292,7 @@ void writeNormalizedChars(
     final boolean isCData)
     throws IOException, org.xml.sax.SAXException
 {
+    final java.io.Writer writer = m_writer;
     final int end = start + length;
 
     /* copy a few "constants" before the loop for performance */
@@ -306,7 +307,7 @@ void writeNormalizedChars(
 
             if (S_LINEFEED == c)
             {
-                m_writer.write(m_lineSep, 0, m_lineSepLen);
+                writer.write(m_lineSep, 0, m_lineSepLen);
             }
             else if (c > M_MAXCHARACTER)
             {
@@ -320,12 +321,12 @@ void writeNormalizedChars(
                 }
                 else
                 {
-                    m_writer.write(c);
+                    writer.write(c);
                 }
 
                 if ((i != 0) && (i < (end - 1)))
                 {
-                    m_writer.write(CDATA_DELIMITER_OPEN);
+                    writer.write(CDATA_DELIMITER_OPEN);
                     m_cdataTagOpen = true;
                 }
             }
@@ -335,14 +336,14 @@ void writeNormalizedChars(
                     && (']' == ch[i + 1])
                     && ('>' == ch[i + 2])))
             {
-                m_writer.write(CDATA_CONTINUE);
+                writer.write(CDATA_CONTINUE);
                 i += 2;
             }
             else
             {
                 if (c <= M_MAXCHARACTER)
                 {
-                    m_writer.write(c);
+                    writer.write(c);
                 }
 
                 else if (isUTF16Surrogate(c))
@@ -351,7 +352,7 @@ void writeNormalizedChars(
                 }
                 else
                 {
-                    m_writer.write(c);
+                    writer.write(c);
                 }
             }
         }
@@ -365,11 +366,11 @@ void writeNormalizedChars(
 
             if (S_LINEFEED == c)
             {
-                m_writer.write(m_lineSep, 0, m_lineSepLen);
+                writer.write(m_lineSep, 0, m_lineSepLen);
             }
             else if (c <= M_MAXCHARACTER)
             {
-                m_writer.write(c);
+                writer.write(c);
             }
             else if (isUTF16Surrogate(c))
             {
@@ -377,7 +378,7 @@ void writeNormalizedChars(
             }
             else
             {
-                m_writer.write(c);
+                writer.write(c);
             }
         }
     }
