@@ -1,6 +1,0 @@
-stylebook-1.0-b3_xalan-2.jar - Tool for generating Xalan documentation. Integrated with Xalan-Java 2 and Xerces 2.
-
-Source:	  http://cvs.apache.org/viewcvs.cgi/xml-stylebook/
-Used by: 	Xalan-Java 2, Xalan-C++
-
-See bsf.stylebook-1.0-b3_xalan-2.LICENSE.txt for the Apache Software license that applies to stylebook-1.0-b3_xalan-2.jar.
