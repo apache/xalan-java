@@ -118,8 +118,8 @@ public class LocPathIterator extends Expression
     throws org.xml.sax.SAXException
   {
     int firstStepPos = compiler.getFirstChildPos(opPos);
-    this.loadWalkers(compiler, firstStepPos, 0);
-    // allocateWalkerStacks(m_firstStepPos);
+    m_firstWalker = WalkerFactory.loadWalkers(this, compiler, firstStepPos, 0);
+    m_lastUsedWalker = m_firstWalker;
   }
   
   /**
@@ -129,9 +129,7 @@ public class LocPathIterator extends Expression
                          boolean isMatchPattern)
     throws org.xml.sax.SAXException
   {
-    loadOneWalker(compiler, opPos);
-    // m_firstStepPos = xpath.getFirstChildPos(opPos);
-    // allocateWalkerStacks(firstStepPos);
+    m_firstWalker = WalkerFactory.loadOneWalker(this, compiler, opPos);
   }
   
   ObjectPool m_pool = new ObjectPool();
@@ -490,70 +488,7 @@ public class LocPathIterator extends Expression
       }
     }
   }
-    
-  /**
-   * List of AxesIterators.
-   */
-  private Stack m_savedAxesWalkers = new Stack();
-  
-  /**
-   * <meta name="usage" content="advanced"/>
-   * This method is for building an array of possible levels
-   * where the target element(s) could be found for a match.
-   * @param xpath The xpath that is executing.
-   * @param context The current source tree context node.
-   */
-  protected void loadOneWalker(Compiler compiler, int stepOpCodePos)
-    throws org.xml.sax.SAXException
-  {
-    int stepType = compiler.getOpMap()[stepOpCodePos];
-    if( stepType != OpCodes.ENDOP )
-    {
-      // m_axesWalkers = new AxesWalker[1];
-      
-      // As we unwind from the recursion, create the iterators.
-      AxesWalker ai = AxesWalker.createDefaultWalker(compiler, stepType, this);
-      ai.init(compiler, stepOpCodePos, stepType);
-      m_firstWalker = ai;
-    }
-  }
-          
-  /**
-   * <meta name="usage" content="advanced"/>
-   * This method is for building an array of possible levels
-   * where the target element(s) could be found for a match.
-   * @param xpath The xpath that is executing.
-   * @param context The current source tree context node.
-   */
-  protected void loadWalkers(Compiler compiler, int stepOpCodePos, int stepIndex)
-    throws org.xml.sax.SAXException
-  {
-    int stepType;
-    AxesWalker walker, prevWalker = null;
-    int ops[] = compiler.getOpMap();
-    while( OpCodes.ENDOP != (stepType = ops[stepOpCodePos]) )
-    {      
-      
-      // As we unwind from the recursion, create the iterators.
-      walker = AxesWalker.createDefaultWalker(compiler, stepOpCodePos, this);
-      walker.init(compiler, stepOpCodePos, stepType);
-      if(null == m_firstWalker)
-      {
-        m_firstWalker = walker;
-        m_lastUsedWalker = walker;
-      }
-      else
-      {
-        prevWalker.setNextWalker(walker);
-        walker.setPrevWalker(prevWalker);
-      }
-      prevWalker = walker;
-      stepOpCodePos = compiler.getNextStepPos(stepOpCodePos);
-      if(stepOpCodePos < 0)
-        break;
-    }
-  }
-  
+        
   /**
    * 
    */

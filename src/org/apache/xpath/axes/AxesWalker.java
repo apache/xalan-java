@@ -105,7 +105,7 @@ public abstract class AxesWalker extends NodeTest
   {
     m_lpi = locPathIterator;
   }
-      
+  
   /**
    * Init an AxesWalker.
    */
@@ -143,121 +143,8 @@ public abstract class AxesWalker extends NodeTest
       clone.m_proximityPositions = new int[this.m_proximityPositions.length];
       System.arraycopy(this.m_proximityPositions, 0, clone.m_proximityPositions, 0, this.m_proximityPositions.length);
     }
+    m_testedForNTF = false;
     return clone;
-  }
-  
-  /**
-   * Create the proper Walker from the axes type.
-   */
-  public static AxesWalker createDefaultWalker(Compiler compiler,
-                                               int opPos, 
-                                               LocPathIterator lpi)
-  {
-    AxesWalker ai;
-    int whatToShow = compiler.getWhatToShow(opPos);
-    int stepType = compiler.getOp(opPos);
-    /*
-    System.out.println("0: "+compiler.getOp(opPos));
-    System.out.println("1: "+compiler.getOp(opPos+1));
-    System.out.println("2: "+compiler.getOp(opPos+2));
-    System.out.println("3: "+compiler.getOp(opPos+3));
-    System.out.println("4: "+compiler.getOp(opPos+4));
-    System.out.println("5: "+compiler.getOp(opPos+5));
-    */
-    boolean simpleInit = false;
-    switch(stepType)
-    {
-    case OpCodes.OP_VARIABLE:
-    case OpCodes.OP_EXTFUNCTION:
-    case OpCodes.OP_FUNCTION:
-    case OpCodes.OP_GROUP:
-      ai = new FilterExprWalker(lpi);
-      simpleInit = true;
-      break;
-    case OpCodes.FROM_ROOT: 
-      ai = new RootWalker(lpi); 
-      simpleInit = true;
-      break;
-    case OpCodes.FROM_ANCESTORS: 
-      ai = new AncestorWalker(lpi); 
-      break;
-    case OpCodes.FROM_ANCESTORS_OR_SELF: 
-      ai = new AncestorOrSelfWalker(lpi); 
-      break;
-    case OpCodes.FROM_ATTRIBUTES: 
-      ai = new AttributeWalker(lpi); 
-      break;
-    case OpCodes.FROM_NAMESPACE: 
-      ai = new NamespaceWalker(lpi); 
-      break;
-    case OpCodes.FROM_CHILDREN: 
-      ai = new ChildWalker(lpi);  
-      {
-        if(false && compiler.getPatternString().startsWith("(preceding-sibling::*|following-sibling::*)"))
-        {
-          ai.DEBUG = true;
-          ai.DEBUG_LOCATED = true;
-          ai.DEBUG_TRAVERSAL = true;
-          ai.DEBUG_WAITING = true;
-        }
-      }
-      break;
-    case OpCodes.FROM_DESCENDANTS: 
-      ai = new DescendantWalker(lpi); 
-      break;
-    case OpCodes.FROM_DESCENDANTS_OR_SELF: 
-      ai = new DescendantOrSelfWalker(lpi); 
-      break;
-    case OpCodes.FROM_FOLLOWING: 
-      ai = new FollowingWalker(lpi); 
-      break;
-    case OpCodes.FROM_FOLLOWING_SIBLINGS: 
-      ai = new FollowingSiblingWalker(lpi); 
-      break;
-    case OpCodes.FROM_PRECEDING: 
-      ai = new PrecedingWalker(lpi); 
-      break;
-    case OpCodes.FROM_PRECEDING_SIBLINGS: 
-      ai = new PrecedingSiblingWalker(lpi); 
-      break;
-    case OpCodes.FROM_PARENT: 
-      ai = new ParentWalker(lpi); 
-      break;
-    case OpCodes.FROM_SELF: 
-      ai = new SelfWalker(lpi); 
-      break;
-
-    case OpCodes.MATCH_ATTRIBUTE: 
-      ai = new AttributeWalker(lpi); 
-      break;
-    case OpCodes.MATCH_ANY_ANCESTOR: 
-      ai = new ChildWalker(lpi); 
-      break;
-    case OpCodes.MATCH_IMMEDIATE_ANCESTOR: 
-      ai = new ChildWalker(lpi); 
-      break;
-    default: 
-      throw new RuntimeException("Programmer's assertion: unknown opcode: "+stepType);
-    }
-    /*
-    System.out.print("construct: ");
-    NodeTest.debugWhatToShow(whatToShow);
-    System.out.println("or stuff: "+(whatToShow & (NodeFilter.SHOW_ATTRIBUTE 
-                           | NodeFilter.SHOW_ELEMENT
-                           | NodeFilter.SHOW_PROCESSING_INSTRUCTION)));
-    */
-    if((0 == (whatToShow & (NodeFilter.SHOW_ATTRIBUTE 
-                            | NodeFilter.SHOW_ELEMENT
-                            | NodeFilter.SHOW_PROCESSING_INSTRUCTION))) ||
-       (whatToShow == NodeFilter.SHOW_ALL))
-      ai.initNodeTest(whatToShow);
-    else
-    {
-      ai.initNodeTest(whatToShow, 
-                      compiler.getStepNS(opPos), 
-                      compiler.getStepLocalName(opPos));
-    }
-    return ai;
   }
   
   /**
@@ -280,7 +167,15 @@ public abstract class AxesWalker extends NodeTest
    */
   private int m_argLen;
   protected int getArgLen() { return m_argLen; }
-          
+
+  /**
+   * The type of this walker based on the pattern analysis.
+   * @see org.apache.xpath.axes.WalkerFactory
+   */
+  protected int m_analysis = WalkerFactory.NO_OPTIMIZE;
+  int getAnalysis() { return m_analysis; }
+  void setAnalysis(int a) { m_analysis = a; }
+
   /**
    * An array of counts that correspond to the number 
    * of predicates the step contains.
@@ -369,7 +264,7 @@ public abstract class AxesWalker extends NodeTest
   {
     return m_predicateIndex;
   }
-    
+  
   /**
    * Process the predicates.
    */
@@ -429,7 +324,7 @@ public abstract class AxesWalker extends NodeTest
    * Number of predicates (in effect).
    */
   int m_predicateCount;
-    
+  
   /**
    * Get the number of predicates that this walker has.
    */
@@ -445,7 +340,7 @@ public abstract class AxesWalker extends NodeTest
   {
     m_predicateCount = count;
   }
-    
+  
   /**
    * Init predicate info.
    */
@@ -463,7 +358,7 @@ public abstract class AxesWalker extends NodeTest
   {
     return m_predicates[index];
   }
-      
+  
   /**
    * Tell if the given node is a parent of the 
    * step context, or the step context node itself.
@@ -485,7 +380,7 @@ public abstract class AxesWalker extends NodeTest
    *  The root node of the TreeWalker, as specified when it was created.
    */
   Node m_root;
-    
+  
   /**
    * The root node of the TreeWalker, as specified in setRoot(Node root).
    * Note that this may actually be below the current node.
@@ -541,7 +436,7 @@ public abstract class AxesWalker extends NodeTest
    *    NOT_SUPPORTED_ERR: Raised if the specified <code>currentNode</code> 
    *   is<code>null</code> .
    */
-  public Node getCurrentNode()
+  public final Node getCurrentNode()
   { 
     return m_currentNode; 
   }
@@ -591,7 +486,7 @@ public abstract class AxesWalker extends NodeTest
   {
     return true;
   }
-      
+  
   /**
    *  Moves to and returns the closest visible ancestor node of the current 
    * node. If the search for parentNode attempts to step upward from the 
@@ -670,8 +565,8 @@ public abstract class AxesWalker extends NodeTest
   {
     throw new RuntimeException("previousNode not supported!");
   }
-    
-  private AxesWalker m_nextWalker;
+  
+  protected AxesWalker m_nextWalker;
   
   public void setNextWalker(AxesWalker walker)
   {
@@ -750,7 +645,7 @@ public abstract class AxesWalker extends NodeTest
                : "null";
     }
   }
-    
+  
   /**
    * Diagnostics.
    */
@@ -972,7 +867,7 @@ public abstract class AxesWalker extends NodeTest
     
     return ok;
   }
-    
+  
   private boolean m_didSwitch = false;
   
   /**
@@ -1000,7 +895,7 @@ public abstract class AxesWalker extends NodeTest
                      ws.toString()+", .);");
 
         if(checkOKToTraverse(prevStepWalker, ws, 
-                                      ws.m_currentNode, ws.m_nextLevelAmount))
+                             ws.m_currentNode, ws.m_nextLevelAmount))
         {
           if(null != walker)
           {
@@ -1024,7 +919,7 @@ public abstract class AxesWalker extends NodeTest
         }
       }
     }
-            
+    
     return walker;
   }
   
@@ -1087,7 +982,7 @@ public abstract class AxesWalker extends NodeTest
         printDebug("Calling checkOKToTraverse("+prevWalker.toString()+", "+
                    walker.toString()+", .);");
       if(!checkOKToTraverse(prevWalker, walker, 
-                           walker.m_currentNode, walker.m_nextLevelAmount))
+                            walker.m_currentNode, walker.m_nextLevelAmount))
       {
         if(DEBUG_WAITING)
           printDebug("[Adding "+walker.toString()+" to WAITING list");
@@ -1114,6 +1009,9 @@ public abstract class AxesWalker extends NodeTest
   
   boolean m_isDone = false;
   
+  // See note where this is used about this variable.
+  protected boolean m_testedForNTF = false;
+  
   /**
    * Get the next node in document order on the axes.
    */
@@ -1122,13 +1020,9 @@ public abstract class AxesWalker extends NodeTest
     if(m_isFresh)
       m_isFresh = false;
     
-    try
-    {
-      // I wish there was a better way to do this...
-      // System.out.println("\nCalling setNodeTest on: "+(this.getCurrentNode()));
-      ((NodeTestFilter)this.getCurrentNode()).setNodeTest(this);
-    }
-    catch(ClassCastException cce){}
+    Node current = this.getCurrentNode();
+    if(current.supports("NodeTestFilter", "1.0"))
+      ((NodeTestFilter)current).setNodeTest(this);
     
     Node next = this.firstChild();
 
@@ -1173,7 +1067,7 @@ public abstract class AxesWalker extends NodeTest
     Node nextNode = null;
     AxesWalker walker = m_lpi.getLastUsedWalker();
     // DOMHelper dh = m_lpi.getDOMHelper();
-    walker.printEntryDebug();
+    // walker.printEntryDebug();
     m_didSwitch = false;
     boolean processWaiters = true;
 
@@ -1213,7 +1107,7 @@ public abstract class AxesWalker extends NodeTest
         
         if(null == nextNode)
         {
-          AxesWalker prev = walker;
+          // AxesWalker prev = walker; ?? -sb
           walker = walker.m_prevWalker;
           if(null != walker)
             walker.printEntryDebug();
@@ -1259,7 +1153,7 @@ public abstract class AxesWalker extends NodeTest
             walker = walker.m_nextWalker;
             /*
             if((walker.getRoot() != null) &&
-               prev.getLevelMax() >= walker.getLevelMax()) // bogus, but might be ok
+            prev.getLevelMax() >= walker.getLevelMax()) // bogus, but might be ok
             */
             if(isWaiting(walker))
             {
@@ -1291,12 +1185,12 @@ public abstract class AxesWalker extends NodeTest
       } // while(null != walker)
       
     }
-      // Not sure what is going on here, but we were loosing
-      // the next node in the nodeset because it's coming from a 
-      // different document. 
-      while((null != nextNode) && (null != m_prevReturned)
-            && nextNode.getOwnerDocument() == m_prevReturned.getOwnerDocument()                   
-            && m_lpi.getDOMHelper().isNodeAfter(nextNode, m_prevReturned));
+    // Not sure what is going on here, but we were loosing
+    // the next node in the nodeset because it's coming from a 
+    // different document. 
+    while((null != nextNode) && (null != m_prevReturned)
+          && nextNode.getOwnerDocument() == m_prevReturned.getOwnerDocument()                   
+          && m_lpi.getDOMHelper().isNodeAfter(nextNode, m_prevReturned));
     
     m_prevReturned = nextNode;
     if(DEBUG_LOCATED)

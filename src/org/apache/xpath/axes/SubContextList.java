@@ -13,3 +13,4 @@ public interface SubContextList
    */
   public int getProximityPosition(XPathContext xctxt);
 }
+ 

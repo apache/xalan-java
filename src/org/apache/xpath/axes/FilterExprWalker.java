@@ -210,12 +210,9 @@ public class FilterExprWalker extends AxesWalker
     {
       if(null != m_nodeSet)
       {
-        try
-        {
-          // I wish there was a better way to do this...
-          ((NodeTestFilter)m_nodeSet).setNodeTest(this);
-        }
-        catch(ClassCastException cce){}
+        Node current = this.getCurrentNode();
+        if(current instanceof NodeTestFilter)
+          ((NodeTestFilter)current).setNodeTest(this);
 
         next = m_nodeSet.nextNode();
       }
