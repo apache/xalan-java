@@ -430,7 +430,7 @@ public class ElemTemplateElement extends UnImplNode
    */
   public String getPublicId ()
   {
-    return m_parentNode.getPublicId();
+    return (null != m_parentNode) ? m_parentNode.getPublicId() : null;
   }
   
   /**
@@ -445,7 +445,8 @@ public class ElemTemplateElement extends UnImplNode
    */
   public String getSystemId ()
   {
-    return m_parentNode.getSystemId();
+    return (null != m_parentNode) ? m_parentNode.getSystemId() : null;
+    // return m_parentNode.getSystemId();
   }
 
   
