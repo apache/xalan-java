@@ -348,6 +348,18 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
 	 "WG_ILLEGAL_VARIABLE_REFERENCE";
   public static final String WG_UNSUPPORTED_ENCODING ="WG_UNSUPPORTED_ENCODING";
 
+/**  detach() not supported by XRTreeFragSelectWrapper   */
+public static final String ER_DETACH_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
+	"ER_DETACH_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER";
+/**  num() not supported by XRTreeFragSelectWrapper   */
+public static final String ER_NUM_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
+	"ER_NUM_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER";
+/**  xstr() not supported by XRTreeFragSelectWrapper   */
+public static final String ER_XSTR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
+	"ER_XSTR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER";
+/**  str() not supported by XRTreeFragSelectWrapper   */
+public static final String ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
+	"ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER";
 
   // Error messages...
 
@@ -831,6 +843,22 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
 
   { ER_RTF_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER,
        "asNodeIterator() not supported by XRTreeFragSelectWrapper"},
+       
+	/**  detach() not supported by XRTreeFragSelectWrapper   */
+   { ER_DETACH_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER,
+		"detach() not supported by XRTreeFragSelectWrapper"},
+		
+	/**  num() not supported by XRTreeFragSelectWrapper   */
+   { ER_NUM_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER,
+		"num() not supported by XRTreeFragSelectWrapper"},
+		
+	/**  xstr() not supported by XRTreeFragSelectWrapper   */
+   { ER_XSTR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER,
+		"xstr() not supported by XRTreeFragSelectWrapper"},
+		
+	/**  str() not supported by XRTreeFragSelectWrapper   */
+   { ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER,
+		"str() not supported by XRTreeFragSelectWrapper"},
   
    /**  fsb() not supported for XStringForChars   */
  // public static final int ER_FSB_NOT_SUPPORTED_XSTRINGFORCHARS = 80;

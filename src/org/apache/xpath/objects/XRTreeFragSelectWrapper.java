@@ -30,8 +30,6 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class XRTreeFragSelectWrapper extends XRTreeFrag implements Cloneable
 {
-  XObject m_selected;
-
   public XRTreeFragSelectWrapper(Expression expr)
   {
     super(expr);
@@ -64,6 +62,7 @@ public class XRTreeFragSelectWrapper extends XRTreeFrag implements Cloneable
   public XObject execute(XPathContext xctxt)
           throws javax.xml.transform.TransformerException
   {
+	 XObject m_selected;
      m_selected = ((Expression)m_obj).execute(xctxt);
      m_selected.allowDetachToRelease(m_allowRelease);
      if (m_selected.getType() == CLASS_STRING)
@@ -83,13 +82,7 @@ public class XRTreeFragSelectWrapper extends XRTreeFrag implements Cloneable
    */
   public void detach()
   {
-    if(m_allowRelease)
-    {
-      m_selected.detach();
-      m_selected = null;
-    }
-    
-    super.detach();
+	throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_DETACH_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER, null)); //"detach() not supported by XRTreeFragSelectWrapper!");
   }
   
   /**
@@ -101,7 +94,7 @@ public class XRTreeFragSelectWrapper extends XRTreeFrag implements Cloneable
     throws javax.xml.transform.TransformerException
   {
 
-    return m_selected.num();
+	throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NUM_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER, null)); //"num() not supported by XRTreeFragSelectWrapper!");
   }
 
   
@@ -112,7 +105,7 @@ public class XRTreeFragSelectWrapper extends XRTreeFrag implements Cloneable
    */
   public XMLString xstr()
   {
-    return m_selected.xstr();
+	throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_XSTR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER, null)); //"xstr() not supported by XRTreeFragSelectWrapper!");
   }
 
   /**
@@ -122,7 +115,7 @@ public class XRTreeFragSelectWrapper extends XRTreeFrag implements Cloneable
    */
   public String str()
   {
-    return m_selected.str();
+	throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER, null)); //"str() not supported by XRTreeFragSelectWrapper!");
   }
   
   /**
