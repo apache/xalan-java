@@ -90,7 +90,7 @@ public class StreamableNode extends UnImplNode
   }
 
   /**
-   * NEEDSDOC Method supports 
+   * NEEDSDOC Method isSupported 
    *
    *
    * NEEDSDOC @param feature
@@ -98,7 +98,7 @@ public class StreamableNode extends UnImplNode
    *
    * NEEDSDOC (supports) @return
    */
-  public boolean supports(String feature, String version)
+  public boolean isSupported(String feature, String version)
   {
     return (AxesWalker.FEATURE_NODETESTFILTER == feature)
            || feature.equals(AxesWalker.FEATURE_NODETESTFILTER);
