@@ -160,9 +160,7 @@ public final class Util {
  	    ErrorMsg err = new ErrorMsg(ErrorMsg.FILE_ACCESS_ERR, systemId);
 	    throw new TransformerConfigurationException(err.toString());
 	}
-	finally {
-	    return input;
-	}
+	return input;
     }
 
 }

@@ -378,8 +378,8 @@ public final class XSLTC {
 	}
 	finally {
 	    _reader = null; // reset this here to be sure it is not re-used
-	    return !_parser.errorsFound();
 	}
+	return !_parser.errorsFound();
     }
 
     /**
