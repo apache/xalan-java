@@ -65,6 +65,7 @@
 package org.apache.xalan.xsltc.dom;
 
 import java.util.Vector;
+import java.util.Locale;
 import java.text.Collator;
 import java.text.CollationKey;
 
@@ -81,7 +82,17 @@ public abstract class NodeSortRecord {
     public static int COMPARE_ASCENDING  = 0;
     public static int COMPARE_DESCENDING = 1;
 
-    protected static Collator _collator = Collator.getInstance();
+    /**
+     * A reference to a locale. May be updated by subclass if the stylesheet
+     * specifies a different language.
+     */
+    protected Locale _locale = Locale.getDefault();
+
+    /**
+     * A reference to a collator. May be updated by subclass if the stylesheet
+     * specifies a different language (will be updated iff _locale is updated).
+     */
+    protected Collator _collator = Collator.getInstance();
 
     protected int   _levels = 1;
     protected int[] _compareType;
