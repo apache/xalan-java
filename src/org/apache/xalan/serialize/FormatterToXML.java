@@ -70,6 +70,8 @@ import java.util.Hashtable;
 import org.xml.sax.*;
 import org.xml.sax.ext.LexicalHandler;
 
+import org.w3c.dom.Node;
+
 import org.apache.serialize.SerializerHandler;
 import org.apache.serialize.OutputFormat;
 import org.apache.serialize.helpers.XMLOutputFormat;
@@ -77,7 +79,11 @@ import org.apache.serialize.Serializer;
 import org.apache.serialize.OutputFormat;
 import org.apache.serialize.DOMSerializer;
 import org.apache.serialize.QName;
+
 import org.apache.xalan.utils.BoolStack;
+import org.apache.xalan.utils.TreeWalker;
+import org.apache.xalan.utils.WrappedRuntimeException;
+
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -89,7 +95,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class FormatterToXML
         implements ContentHandler, LexicalHandler, SerializerHandler,
-                   Serializer
+                   Serializer, DOMSerializer
 {
 
   /**
@@ -510,7 +516,10 @@ public class FormatterToXML
   public synchronized void init(OutputStream output, OutputFormat format)
           throws UnsupportedEncodingException
   {
-
+    if(null == format)
+    {
+      format = new org.apache.serialize.helpers.XMLOutputFormat();
+    }
     m_encoding = Encodings.getMimeEncoding(format.getEncoding());
 
     if (m_encoding.equals("WINDOWS-1250") || m_encoding.equals("US-ASCII")
@@ -2177,7 +2186,7 @@ public class FormatterToXML
    */
   public DOMSerializer asDOMSerializer() throws IOException
   {
-    return null;  // for now
+    return this;  // for now
   }
 
   /**
@@ -2193,5 +2202,30 @@ public class FormatterToXML
   {
     return false;
   }
+  
+  /**
+   * Serializes the DOM node. Throws an exception only if an I/O
+   * exception occured while serializing.
+   *
+   * @param elem The element to serialize
+   * @throws IOException An I/O exception occured while serializing
+   */
+  public void serialize(Node node) throws IOException
+  {
+    try
+    {
+      TreeWalker walker = new TreeWalker(this);
+      walker.traverse(node);
+    }
+    catch(SAXException se)
+    {
+      throw new WrappedRuntimeException(se);
+    }
+  }
+
 }  //ToXMLStringVisitor
+
+
+
+
 
