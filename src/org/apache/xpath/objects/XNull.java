@@ -140,7 +140,7 @@ public class XNull extends XObject
    *
    * @return The object as a result tree fragment.
    */
-  public int rtree(XPathContext support)
+  public int rtf(XPathContext support)
   {
     // DTM frag = support.createDocumentFragment();
     // %REVIEW%
@@ -152,7 +152,7 @@ public class XNull extends XObject
    *
    * @return null
    */
-  public DTMIterator nodeset()
+  public DTMIterator iter()
   {
     return null;
   }

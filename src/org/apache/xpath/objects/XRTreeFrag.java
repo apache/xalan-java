@@ -286,7 +286,7 @@ public class XRTreeFrag extends XObject implements Cloneable
    *
    * @return The document fragment this wraps
    */
-  public int rtree()
+  public int rtf()
   {
     return m_dtmRoot;
   }

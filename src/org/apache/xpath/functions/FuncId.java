@@ -164,7 +164,7 @@ public class FuncId extends FunctionOneArg
 
     if (XObject.CLASS_NODESET == argType)
     {
-      DTMIterator ni = arg.nodeset();
+      DTMIterator ni = arg.iter();
       StringVector usedrefs = null;
       int pos = ni.nextNode();
 

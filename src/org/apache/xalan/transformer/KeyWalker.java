@@ -211,7 +211,7 @@ public class KeyWalker extends AxesWalker
         }
         else
         {
-          DTMIterator nl = xuse.nodeset();
+          DTMIterator nl = xuse.iter();
           int useNode;
           short result = -1;
           /*

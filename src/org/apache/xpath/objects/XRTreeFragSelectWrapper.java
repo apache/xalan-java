@@ -110,9 +110,9 @@ public class XRTreeFragSelectWrapper extends XRTreeFrag implements Cloneable
    *
    * @return The document fragment this wraps
    */
-  public int rtree()
+  public int rtf()
   {
-    throw new RuntimeException("rtree() not supported by XRTreeFragSelectWrapper!");
+    throw new RuntimeException("rtf() not supported by XRTreeFragSelectWrapper!");
   }
 
   /**

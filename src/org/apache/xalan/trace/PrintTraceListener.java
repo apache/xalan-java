@@ -218,7 +218,7 @@ public class PrintTraceListener implements TraceListener
 			{
 				m_pw.println();
 				
-				org.apache.xml.dtm.DTMIterator nl = ev.m_selection.nodeset();
+				org.apache.xml.dtm.DTMIterator nl = ev.m_selection.iter();
 
 				try
 				{

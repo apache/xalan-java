@@ -121,7 +121,7 @@ public class FuncKey extends Function2Args
     if (argIsNodeSetDTM)
     {
       Hashtable usedrefs = null;
-      DTMIterator ni = arg.nodeset();
+      DTMIterator ni = arg.iter();
       int pos;
       UnionPathIterator upi = new UnionPathIterator();
 

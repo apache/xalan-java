@@ -199,7 +199,7 @@ public class ElemCopyOf extends ElemTemplateElement
         case XObject.CLASS_NODESET :
 
           // System.out.println(value);
-          DTMIterator nl = value.nodeset();
+          DTMIterator nl = value.iter();
 
           // Copy the tree.
           DTMTreeWalker tw = new TreeWalker2Result(transformer, handler);

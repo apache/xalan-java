@@ -1535,7 +1535,14 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     case Node.CDATA_SECTION_NODE :
     case Node.ATTRIBUTE_NODE :
       String str = node.getNodeValue();
-      ch.characters(str.toCharArray(), 0, str.length());
+      if(ch instanceof CharacterNodeHandler)
+      {
+        ((CharacterNodeHandler)ch).characters(node);
+      }
+      else
+      {
+        ch.characters(str.toCharArray(), 0, str.length());
+      }
       break;
 //    /* case Node.PROCESSING_INSTRUCTION_NODE :
 //      // warning(XPATHErrorResources.WG_PARSING_AND_PREPARING);        
@@ -1577,6 +1584,12 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     {
       treeWalker.setContentHandler(null);
     }
+  }
+  
+  public interface CharacterNodeHandler
+  {
+    public void characters(Node node)
+            throws org.xml.sax.SAXException;
   }
 
 }

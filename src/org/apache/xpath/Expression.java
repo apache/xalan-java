@@ -235,7 +235,7 @@ public abstract class Expression implements java.io.Serializable
   public int asNode(XPathContext xctxt)
     throws javax.xml.transform.TransformerException
   {
-    return execute(xctxt).nodeset().nextNode();
+    return execute(xctxt).iter().nextNode();
   }
   
   /**
@@ -258,7 +258,7 @@ public abstract class Expression implements java.io.Serializable
     try
     {
       xctxt.pushCurrentNodeAndExpression(contextNode, contextNode);
-      return execute(xctxt).nodeset();
+      return execute(xctxt).iter();
     }
     finally
     {

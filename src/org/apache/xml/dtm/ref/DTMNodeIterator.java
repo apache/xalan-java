@@ -101,7 +101,14 @@ public class DTMNodeIterator implements org.w3c.dom.traversal.NodeIterator
    * */
   public DTMNodeIterator(DTMIterator dtmIterator)
     {
-      dtm_iter=dtmIterator;
+      try
+      {
+        dtm_iter=(DTMIterator)dtmIterator.clone();
+      }
+      catch(CloneNotSupportedException cnse)
+      {
+        throw new org.apache.xml.utils.WrappedRuntimeException(cnse);
+      }
     }
 
   /** Access the wrapped DTMIterator. I'm not sure whether anyone will

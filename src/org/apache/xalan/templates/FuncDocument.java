@@ -141,7 +141,7 @@ public class FuncDocument extends Function2Args
 
       if (XObject.CLASS_NODESET == arg2.getType())
       {
-        int baseNode = arg2.nodeset().nextNode();
+        int baseNode = arg2.iter().nextNode();
 
         if (baseNode == DTM.NULL)
           warn(xctxt, XSLTErrorResources.WG_EMPTY_SECOND_ARG, null);
@@ -185,7 +185,7 @@ public class FuncDocument extends Function2Args
     XNodeSet nodes = new XNodeSet(xctxt.getDTMManager());
     NodeSetDTM mnl = nodes.mutableNodeset();
     DTMIterator iterator = (XObject.CLASS_NODESET == arg.getType())
-                            ? arg.nodeset() : null;
+                            ? arg.iter() : null;
     int pos = DTM.NULL;
 
     while ((null == iterator) || (DTM.NULL != (pos = iterator.nextNode())))

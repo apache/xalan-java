@@ -95,7 +95,8 @@ import javax.xml.transform.Transformer;
  * can call startElement.
  */
 public class ResultTreeHandler extends QueuedEvents
-        implements ContentHandler, LexicalHandler, TransformState
+        implements ContentHandler, LexicalHandler, TransformState,
+        org.apache.xml.dtm.ref.dom2dtm.DOM2DTM.CharacterNodeHandler
 {
 
   /** Indicate whether running in Debug mode */
@@ -260,7 +261,9 @@ public class ResultTreeHandler extends QueuedEvents
       m_snapshot.m_currentElement = m_transformer.getCurrentElement();
       m_snapshot.m_currentTemplate = m_transformer.getCurrentTemplate();
       m_snapshot.m_matchedTemplate = m_transformer.getMatchedTemplate();
-      m_snapshot.m_currentNode = m_transformer.getCurrentNode();
+      int currentNodeHandle = m_transformer.getCurrentNode();
+      DTM dtm = m_transformer.getXPathContext().getDTM(currentNodeHandle);
+      m_snapshot.m_currentNode = dtm.getNode(currentNodeHandle);
       m_snapshot.m_matchedNode = m_transformer.getMatchedNode();
       m_snapshot.m_contextNodeList = m_transformer.getContextNodeList(); // TODO: Need to clone
     }
@@ -475,6 +478,32 @@ public class ResultTreeHandler extends QueuedEvents
 
       m_tracer.fireGenerateEvent(ge);
     }
+  }
+  
+  public void characters(org.w3c.dom.Node node)
+          throws org.xml.sax.SAXException
+  {
+
+    flushPending(true);
+    
+    if(m_isTransformClient)
+      m_snapshot.m_currentNode = node;
+
+    String data = node.getNodeValue();
+    char [] ch = data.toCharArray();
+    int length = data.length();
+    m_contentHandler.characters(ch, 0, length);
+    
+    if (null != m_tracer)
+    {
+      GenerateEvent ge = new GenerateEvent(m_transformer,
+                                           GenerateEvent.EVENTTYPE_CHARACTERS,
+                                           ch, 0, length);
+
+      m_tracer.fireGenerateEvent(ge);
+    }  
+    if(m_isTransformClient)
+      m_snapshot.m_currentNode = null;
   }
 
   /**
@@ -813,6 +842,7 @@ public class ResultTreeHandler extends QueuedEvents
       {
         m_contentHandler.startElement(m_url, m_localName, m_name,
                                       m_attributes);
+        
         if(null != m_tracer)
         {
           GenerateEvent ge =
@@ -821,6 +851,8 @@ public class ResultTreeHandler extends QueuedEvents
   
           m_tracer.fireGenerateEvent(ge);
         }
+        if(m_isTransformClient)
+          m_snapshot.m_currentNode = null;
       }
 
       m_elemIsPending = false;
@@ -904,7 +936,7 @@ public class ResultTreeHandler extends QueuedEvents
           throws org.xml.sax.SAXException
   {
 
-    int doc = obj.rtree();
+    int doc = obj.rtf();
     DTM dtm = support.getDTM(doc);
 
     for (int n = dtm.getFirstChild(doc); DTM.NULL != n;
@@ -1487,10 +1519,9 @@ public class ResultTreeHandler extends QueuedEvents
   public org.w3c.dom.Node getCurrentNode()
   {
     
-    if (m_elemIsPending)
+    if (m_snapshot.m_currentNode != null)
     {
-      DTM dtm = m_transformer.getXPathContext().getDTM(m_snapshot.m_currentNode);
-      return dtm.getNode(m_snapshot.m_currentNode);
+      return m_snapshot.m_currentNode;
     }
     else
     {
@@ -1649,7 +1680,7 @@ public class ResultTreeHandler extends QueuedEvents
     /**
      * The current context node in the source tree.
      */
-    int m_currentNode;
+    org.w3c.dom.Node m_currentNode;
     
     /**
      * The xsl:template that is in effect, which may be a matched template

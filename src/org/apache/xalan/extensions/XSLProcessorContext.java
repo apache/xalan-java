@@ -255,7 +255,7 @@ public class XSLProcessorContext
         break;
 
       case XObject.CLASS_NODESET :  // System.out.println(value);
-        DTMIterator nl = value.nodeset();
+        DTMIterator nl = value.iter();
         
         int pos;
 

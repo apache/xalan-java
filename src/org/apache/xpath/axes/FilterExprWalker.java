@@ -163,7 +163,7 @@ public class FilterExprWalker extends AxesWalker
         obj = m_expr.execute(m_lpi.getXPathContext());
       
       // System.out.println("Back from m_expr.execute(m_lpi.getXPathContext()): "+obj);
-      m_nodeSet = (null != obj) ? obj.nodeset() : null;
+      m_nodeSet = (null != obj) ? obj.iter() : null;
       
       m_peek = DTM.NULL;
     }

@@ -167,7 +167,7 @@ public class XPathAPI
     // Have the XObject return its result as a NodeSetDTM.
     // %TBD% Convert to DOM nodeset
 		
-    return new DTMNodeIterator(list.nodeset());
+    return new DTMNodeIterator(list.iter());
     
   }
 
@@ -207,7 +207,7 @@ public class XPathAPI
     XObject list = eval(contextNode, str, namespaceNode);
 
     // Return a NodeList.
-    return new DTMNodeList(list.nodeset());
+    return new DTMNodeList(list.iter());
   }
 
   /**

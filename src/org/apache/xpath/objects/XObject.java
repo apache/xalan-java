@@ -56,10 +56,10 @@
  */
 package org.apache.xpath.objects;
 
-//import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.DocumentFragment;
 //import org.w3c.dom.Text;
 //import org.w3c.dom.Node;
-//import org.w3c.dom.traversal.NodeIterator;
+import org.w3c.dom.traversal.NodeIterator;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 
@@ -344,10 +344,10 @@ public class XObject extends Expression implements Serializable, Cloneable
    *
    * @return the objec as a result tree fragment.
    */
-  public int rtree(XPathContext support)
+  public int rtf(XPathContext support)
   {
 
-    int result = rtree();
+    int result = rtf();
 
     if (DTM.NULL == result)
     {
@@ -361,13 +361,55 @@ public class XObject extends Expression implements Serializable, Cloneable
 
     return result;
   }
+  
+  /**
+   * Cast result object to a result tree fragment.
+   *
+   * @param support XPath context to use for the conversion
+   *
+   * @return the objec as a result tree fragment.
+   */
+  public DocumentFragment rtree(XPathContext support)
+  {
+    DocumentFragment docFrag = null;
+    int result = rtf();
+
+    if (DTM.NULL == result)
+    {
+      DTM frag = support.createDocumentFragment();
+
+      // %OPT%
+      frag.appendTextChild(str());
+
+      docFrag = (DocumentFragment)frag.getNode(frag.getDocument());
+    }
+    else
+    {
+      DTM frag = support.getDTM(result);
+      docFrag = (DocumentFragment)frag.getNode(frag.getDocument());
+    }
+
+    return docFrag;
+  }
+  
+  
+  
+  /**
+   * For functions to override.
+   *
+   * @return null
+   */
+  public DocumentFragment rtree()
+  {
+    return null;
+  }
 
   /**
    * For functions to override.
    *
    * @return null
    */
-  public int rtree()
+  public int rtf()
   {
     return DTM.NULL;
   }
@@ -390,7 +432,23 @@ public class XObject extends Expression implements Serializable, Cloneable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public DTMIterator nodeset() throws javax.xml.transform.TransformerException
+  public DTMIterator iter() throws javax.xml.transform.TransformerException
+  {
+
+    error(XPATHErrorResources.ER_CANT_CONVERT_TO_NODELIST,
+          new Object[]{ getTypeString() });  //"Can not convert "+getTypeString()+" to a NodeList!");
+
+    return null;
+  }
+  
+  /**
+   * Cast result object to a nodelist. Always issues an error.
+   *
+   * @return null
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public NodeIterator nodeset() throws javax.xml.transform.TransformerException
   {
 
     error(XPATHErrorResources.ER_CANT_CONVERT_TO_NODELIST,
@@ -441,7 +499,7 @@ public class XObject extends Expression implements Serializable, Cloneable
       result = new Double(num());
       break;
     case CLASS_NODESET :
-      result = nodeset();
+      result = iter();
       break;
     case CLASS_BOOLEAN :
       result = new Boolean(bool());

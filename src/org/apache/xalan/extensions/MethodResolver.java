@@ -805,7 +805,7 @@ public class MethodResolver
           if ( (javaClass == NodeIterator.class) ||
                (javaClass == java.lang.Object.class) )
           {
-            return xobj.nodeset();
+            return xobj.iter();
           }
           // Same comment as above
           // else if(NodeList.class.isAssignableFrom(javaClass))
@@ -817,9 +817,9 @@ public class MethodResolver
           // else if(Node.class.isAssignableFrom(javaClass))
           else if(javaClass == Node.class)
           {
-            // Xalan ensures that nodeset() always returns an
+            // Xalan ensures that iter() always returns an
             // iterator positioned at the beginning.
-            DTMIterator ni = xobj.nodeset();
+            DTMIterator ni = xobj.iter();
             int handle = ni.nextNode();           
             return ni.getDTM(handle).getNode(handle); // may be null.
           }
@@ -837,7 +837,7 @@ public class MethodResolver
           }
           else
           {
-            DTMIterator iter = xobj.nodeset();
+            DTMIterator iter = xobj.iter();
             int childHandle = iter.nextNode();
             DTM dtm = iter.getDTM(childHandle);
             Node child = dtm.getNode(childHandle);

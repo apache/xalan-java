@@ -279,7 +279,7 @@ public class XString extends XObject implements XMLString
    *
    * @return A document fragment with this string as a child node
    */
-  public int rtree(XPathContext support)
+  public int rtf(XPathContext support)
   {
 
     DTM frag = support.createDocumentFragment();
