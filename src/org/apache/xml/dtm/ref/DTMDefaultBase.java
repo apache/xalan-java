@@ -1123,7 +1123,7 @@ public abstract class DTMDefaultBase implements DTM
       {
         if(newEType==getExpandedTypeID(nsList.elementAt(i)))
           {
-            nsList.setElementAt(namespaceNodeIndex,i);
+            nsList.setElementAt(namespaceNodeIndex | m_dtmIdent,i);
             return;
           }
       }
