@@ -1134,7 +1134,8 @@ Copyright:
          used to compile (at least for official builds) -->
     <patternset id="bin-distro" >
       <include name="${dist.file}/readme.html"/>
-      <include name="${dist.file}/License"/>
+      <include name="${dist.file}/LICENSE"/>
+      <include name="${dist.file}/NOTICE"/>      
       <include name="${dist.file}/KEYS"/>
       <include name="${dist.file}/bin/${name}.jar"/>
       
@@ -1155,6 +1156,8 @@ Copyright:
     </patternset>
     <patternset id="src-distro" >
       <include name="${dist.file}/*"/>
+      <include name="${dist.file}/LICENSE"/>
+      <include name="${dist.file}/NOTICE"/>      
       <include name="${dist.file}/bin/ant.jar"/>
       <include name="${dist.file}/bin/${parser.jar.name}"/>
       <include name="${dist.file}/bin/${xmlapis.jar.name}"/>
