@@ -538,11 +538,10 @@ public class NodeSequence extends XObject
         // If this NodeSequence wraps a mutable nodeset, then
         // m_last will not reflect the size of the nodeset if
         // it has been mutated...
-        if (m_iter instanceof NodeSetDTM)
+        if (null != m_obj && m_obj instanceof NodeSetDTM)
         {
-            return m_iter.getLength();
+            return ((NodeSetDTM)m_obj).getLength();
         }    
-        
 	  	if(-1 == m_last)
 	  	{
 	  		int pos = m_next;
