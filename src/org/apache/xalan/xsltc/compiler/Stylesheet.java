@@ -676,13 +676,15 @@ public final class Stylesheet extends SyntaxTreeNode {
     private Vector resolveReferences(Vector input) {
 	Vector result = new Vector();
 
+	int zeroDep = 0;
+
 	while (input.size() > 0) {
 	    boolean changed = false;
 	    for (int i = 0; i < input.size(); ) {
 		final VariableBase var = (VariableBase)input.elementAt(i);
 		final Vector dep = var.getDependencies();
 		if (dep == null) {
-		    result.insertElementAt(var, 0);
+		    result.insertElementAt(var, zeroDep++);
 		    input.remove(i);
 		    changed = true;
 		}
