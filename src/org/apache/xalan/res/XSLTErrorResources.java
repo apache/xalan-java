@@ -1281,7 +1281,7 @@ public class XSLTErrorResources extends XResourceBundleBase
   static
   {
     contents[WG_COULD_NOT_RESOLVE_PREFIX + MAX_CODE][1] =
-      "Could not resolve namespace prefix: {0}. The attribute will be ignored.";
+      "Could not resolve namespace prefix: {0}. The node will be ignored.";
   }
 
   /** WG_STYLESHEET_REQUIRES_VERSION_ATTRIB          */
