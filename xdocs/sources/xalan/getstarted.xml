@@ -15,6 +15,7 @@
 <ul>
 <li>The JDK or JRE 1.2.2, or 1.3.x</li>
 <li>xalan.jar</li>
+<li>xml-apis.jar</li>
 <li>&xml4j-jar;, or another <link idref="usagepatterns" anchor="plug">XML Parser</link></li>
 </ul>
 <p>You can get the JDK or JRE from <jump href="http://www.ibm.com/java/jdk">ibm.com/java/jdk/</jump> or <jump href="http://www.java.sun.com">java.sun.com</jump>.</p> 
