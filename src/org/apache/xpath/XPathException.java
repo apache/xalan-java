@@ -60,7 +60,6 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import javax.xml.transform.TransformerException;
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.w3c.dom.Node;
 
 /**
@@ -130,14 +129,14 @@ public class XPathException extends TransformerException
    * this to work, the SourceLocator must be the owning ElemTemplateElement.
    * @return The dereference to the ElemVariable, or null if not found.
    */
-  public Object getStylesheetNode(ExpressionNode ex)
+  public org.w3c.dom.Node getStylesheetNode(ExpressionNode ex)
   {
   	
     ExpressionNode owner = getExpressionOwner(ex);
 
-    if (null != owner && owner instanceof org.apache.xalan.templates.ElemTemplateElement)
+    if (null != owner && owner instanceof org.w3c.dom.Node)
     {
-		return ((org.apache.xalan.templates.ElemTemplateElement)owner).getDOMBackPointer();
+		return ((org.w3c.dom.Node)owner);
     }
     return null;
 
