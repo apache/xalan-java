@@ -63,62 +63,39 @@
 
 package org.apache.xalan.xsltc.trax;
 
-import java.io.File;
-import java.io.IOException;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
-import org.apache.xalan.xsltc.dom.DOMBuilder;
+import org.apache.xalan.xsltc.dom.DOMWSFilter;
 import org.apache.xalan.xsltc.dom.SAXImpl;
 import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMManager;
+import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 
 public final class XSLTCSource implements Source {
 
     private String     _systemId = null;
-    private DOM        _dom      = null;
-
-    private final static String LEXICAL_HANDLER_PROPERTY =
-	"http://xml.org/sax/properties/lexical-handler";
+    private Source     _source   = null;
+    private ThreadLocal _dom     = new ThreadLocal();
 
     /**
-     * Create a new XSLTC-specific DOM source
-     * @param size The estimated node-count for this DOM. A good guess here
-     * speeds up the DOM build process.
+     * Create a new XSLTC-specific source from a system ID 
      */
-    public XSLTCSource(int size) 
+    public XSLTCSource(String systemId) 
     {
-      XSLTCDTMManager dtmManager =
-                XSLTCDTMManager.newInstance();
-      int dtmPos = dtmManager.getFirstFreeDTMID();
-      int documentID = dtmPos << DTMManager.IDENT_DTM_NODE_BITS;
-      _dom = new SAXImpl(dtmManager, this, documentID, null,
-                              null, false, size, true, false);
-      dtmManager.addDTM((DTM)_dom, dtmPos);
+        _systemId = systemId;
     }
 
     /**
-     * Create a new XSLTC-specific DOM source
+     * Create a new XSLTC-specific source from a JAXP Source
      */
-    public XSLTCSource() 
+    public XSLTCSource(Source source) 
     {
-      XSLTCDTMManager dtmManager =
-                XSLTCDTMManager.newInstance();
-      int dtmPos = dtmManager.getFirstFreeDTMID();
-      int documentID = dtmPos << DTMManager.IDENT_DTM_NODE_BITS;
-      _dom = (DOM)new SAXImpl(dtmManager, this, documentID, null,
-                              null, false, true);
-      dtmManager.addDTM((DTM)_dom, dtmPos);
+        _source = source;
     }
 
     /**
@@ -130,12 +107,10 @@ public final class XSLTCSource implements Source {
      * @param systemId The system Id for this Source
      */
     public void setSystemId(String systemId) {
-	if ((new File(systemId)).exists())
-	    _systemId = "file:"+systemId;
-	else
-	    _systemId = systemId;
-
-        ((SAXImpl)_dom).setDocumentURI(_systemId);
+        _systemId = systemId;
+        if (_source != null) {
+            _source.setSystemId(systemId);
+        }
     }
 
     /**
@@ -145,98 +120,59 @@ public final class XSLTCSource implements Source {
      *         or null if setSystemId was not called.
      */
     public String getSystemId() {
-	return(_systemId);
-    }
-
-    /**
-     * Build the internal XSLTC-specific DOM.
-     * @param reader An XMLReader that will pass the XML contents to the DOM
-     * @param systemId Specifies the input file
-     * @throws SAXException
-     */
-    public void build(XMLReader reader, String systemId) throws SAXException {
-	try {
-	    // Make sure that the system id is set before proceding
-	    if ((systemId == null) && (_systemId == null)) {
-		ErrorMsg err = new ErrorMsg(ErrorMsg.XSLTC_SOURCE_ERR);
-		throw new SAXException(err.toString());
-	    }
-
-	    // Use this method in case we need to prepend 'file:' to url
-	    if (systemId == null) systemId = _systemId;
-	    setSystemId(systemId);
-
-	    // Create an input source for the parser first, just in case the
-	    // systemId is invalid. We don't want to waste time creating a SAX
-	    // parser before we know that we actually have some valid input.
-	    InputSource input = new InputSource(systemId);
-
-	    DOMBuilder builder;
-        // Can we assume we're dealing with SAX here and therefore use SAXIMPL??
-            // if (_dom instanceof DOMImpl)
-            //   builder = ((DOMImpl)_dom).getBuilder();
-            // else
-            builder = ((SAXImpl)_dom).getBuilder();
-
-	    // Set the DOM builder up to receive content and lexical events
-	    reader.setContentHandler(builder);
-	    reader.setDTDHandler(builder);
-	    try {
-		reader.setProperty(LEXICAL_HANDLER_PROPERTY, builder);
-	    }
-	    catch (SAXException e) {
-		// quitely ignored
-	    }
-
-	    // Now, finally - parse the input document
-	    reader.parse(input);
+	if (_source != null) {
+	    return _source.getSystemId();
 	}
-	catch (IOException e) {
-	    throw new SAXException(e);
+	else {
+	    return(_systemId);
 	}
     }
-
+    
     /**
-     * Build the internal XSLTC-specific DOM.
-     * @param systemId Specifies the input file
-     * @throws SAXException
+     * Internal interface which returns a DOM for a given DTMManager and translet.
      */
-    public void build(String systemId) throws SAXException {
-	try {
-	    // Create an XMLReader (SAX parser) for processing the input
-	    final SAXParserFactory factory = SAXParserFactory.newInstance();
-	    final SAXParser parser = factory.newSAXParser();
-	    final XMLReader reader = parser.getXMLReader();
-
-	    build(reader, systemId);
-	}
-	catch (ParserConfigurationException e) {
-	    throw new SAXException(e);
-	}
+    protected DOM getDOM(XSLTCDTMManager dtmManager, AbstractTranslet translet)
+        throws SAXException
+    {
+        SAXImpl idom = (SAXImpl)_dom.get();
+                
+        if (idom != null) {
+            if (dtmManager != null) {
+                idom.migrateTo(dtmManager);
+            }
+        }
+        else {
+            Source source = _source;
+            if (source == null) {
+                if (_systemId != null && _systemId.length() > 0) {
+                    source = new StreamSource(_systemId);
+                }
+                else {
+                    ErrorMsg err = new ErrorMsg(ErrorMsg.XSLTC_SOURCE_ERR);
+                    throw new SAXException(err.toString());
+                }
+            }
+            
+            DOMWSFilter wsfilter = null;
+            if (translet != null && translet instanceof StripFilter) {
+                wsfilter = new DOMWSFilter(translet);
+            }
+                
+            boolean hasIdCall = (translet != null) ? translet.hasIdCall() : false;
+            
+            if (dtmManager == null) {
+                dtmManager = XSLTCDTMManager.newInstance();
+            }
+            
+            idom = (SAXImpl)dtmManager.getDTM(source, true, wsfilter, false, false, hasIdCall);
+            
+            String systemId = getSystemId();
+            if (systemId != null) {
+                idom.setDocumentURI(systemId);
+            }
+            _dom.set(idom);
+        }
+        return idom;
     }
 
-    /**
-     * Build the internal XSLTC-specific DOM.
-     * @param reader An XMLReader that will pass the XML contents to the DOM
-     * @throws SAXException
-     */
-    public void build(XMLReader reader) throws SAXException {
-	build(reader, _systemId);
-    }
-
-    /**
-     * Build the internal XSLTC-specific DOM.
-     * The setSystemId() must be called prior to this method.
-     * @throws SAXException
-     */
-    public void build() throws SAXException {
-	build(_systemId);
-    }    
-
-    /**
-     * Returns the internal DOM that is encapsulated in this Source
-     */
-    protected DOM getDOM() {
-	return(_dom);
-    }
 }

@@ -185,6 +185,12 @@ public final class TransformerImpl extends Transformer
     private TransformerFactoryImpl _tfactory = null;
     
     /**
+     * A reference to the XSLTCDTMManager which is used to build the DOM/DTM
+     * for this transformer.
+     */
+    private XSLTCDTMManager _dtmManager = null;
+    
+    /**
      * A flag indicating whether we use incremental building of the DTM.
      */
     //private boolean _isIncremental = false;
@@ -442,7 +448,7 @@ public final class TransformerImpl extends Transformer
                                                       : false;
 	    // Get systemId from source
 	    if (source != null) {
-		   _sourceSystemId = source.getSystemId();
+                _sourceSystemId = source.getSystemId();
 	    }
 
 	    if (source instanceof SAXSource) {
@@ -459,10 +465,12 @@ public final class TransformerImpl extends Transformer
 
 		// Create a new internal DOM and set up its builder to trap
 		// all content/lexical events
-		XSLTCDTMManager dtmManager = XSLTCDTMManager.newInstance();
+		if (_dtmManager == null) {
+		    _dtmManager = XSLTCDTMManager.newInstance();
+		}
 
                 //dtmManager.setIncremental(_isIncremental);
-		saxImpl = (SAXImpl)dtmManager.getDTM(sax, false, wsfilter, true, false,
+		saxImpl = (SAXImpl)_dtmManager.getDTM(sax, false, wsfilter, true, false,
                                                  hasUserReader, 0, hasIdCall);
 		//final DOMBuilder builder = ((SAXImpl)dom).getBuilder();
 		try {
@@ -477,10 +485,12 @@ public final class TransformerImpl extends Transformer
 	    }
 	    else if (source instanceof DOMSource) {
 		// Create a new internal DTM and build it directly from DOM
-		XSLTCDTMManager dtmManager = XSLTCDTMManager.newInstance();
+		if (_dtmManager == null) {
+		    _dtmManager = XSLTCDTMManager.newInstance();
+		}
     
                 //dtmManager.setIncremental(_isIncremental);
-		saxImpl = (SAXImpl)dtmManager.getDTM(source, false, wsfilter, true,
+		saxImpl = (SAXImpl)_dtmManager.getDTM(source, false, wsfilter, true,
                                                  false, hasIdCall);
 		saxImpl.setDocumentURI(_sourceSystemId);
 	    }
@@ -494,7 +504,9 @@ public final class TransformerImpl extends Transformer
 
 		// Create a new internal DOM and set up its builder to trap
 		// all content/lexical events
-		XSLTCDTMManager dtmManager = XSLTCDTMManager.newInstance();
+		if (_dtmManager == null) {
+		    _dtmManager = XSLTCDTMManager.newInstance();
+		}
 
 		//dtmManager.setIncremental(_isIncremental);
 		
@@ -513,14 +525,18 @@ public final class TransformerImpl extends Transformer
 		    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_SOURCE_ERR);
 		    throw new TransformerException(err.toString());
 		}
-		saxImpl = (SAXImpl)dtmManager.getDTM(new SAXSource(reader, input),
+		saxImpl = (SAXImpl)_dtmManager.getDTM(new SAXSource(reader, input),
                                                  false, wsfilter, true,
                                                  false, hasIdCall);
 		saxImpl.setDocumentURI(_sourceSystemId);
 	    }
 	    else if (source instanceof XSLTCSource) {
 		final XSLTCSource xsltcsrc = (XSLTCSource)source;
-		dom = xsltcsrc.getDOM();
+		if (_dtmManager == null) {
+		    _dtmManager = XSLTCDTMManager.newInstance();
+		}
+		
+		dom = xsltcsrc.getDOM(_dtmManager, _translet);
 	    }
 	    // DOM already set via a call to setDOM()
 	    else if (_dom != null) {
@@ -632,7 +648,7 @@ public final class TransformerImpl extends Transformer
 	    new DOM2TO(domsrc.getNode(), handler).parse();
 	}
 	else if (source instanceof XSLTCSource) {
-	    final DOM dom = ((XSLTCSource) source).getDOM();
+	    final DOM dom = ((XSLTCSource) source).getDOM(null, _translet);
 	    ((SAXImpl)dom).copy(handler);
 	}
 	else {
