@@ -103,8 +103,8 @@ Copyright:
   <property name="site.book" value="${xdocs.dir}/sources/xalan-jsite.xml"/>
 
   <property name="test.loggingLevel" value="5"/>
-  <property name="test.excludes" value="impincl12.xsl;embed01.xsl;embed07.xsl"/>
-  <property name="test.embedded" value="embed02.xsl"/>
+  <property name="test.excludes" value="impincl12.xsl"/>
+  <property name="test.embedded" value="embed01.xsl;embed02.xsl;embed07.xsl"/>
 
   <!-- =================================================================== -->
   <!-- Prepares the xdocs/style and the build directories                  -->
