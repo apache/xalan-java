@@ -332,9 +332,9 @@ public class XNI2DTM
     return false;
   }
   
-  /** ADDED FOR XPATH2: Retrieve the typed value(s), based on the schema type
-   * 
-   * %REVIEW% That may not be 
+  /** ADDED FOR XPATH2: Retrieve the typed value(s), based on the schema type.
+   * This is "the error value" for non-nodes, document, namespace, comment or 
+   * processing instruction nodes.
    * */
   public DTMSequence getTypedValue(int nodeHandle)
   {
@@ -347,13 +347,27 @@ public class XNI2DTM
     int identity=makeNodeIdentity(nodeHandle);
     if(identity==DTM.NULL)
       return DTMSequence.EMPTY;
+      
+    int nodetype=_type(identity);
+    if(nodetype==DTM.DOCUMENT_NODE 
+    	|| nodetype==DTM.NAMESPACE_NODE
+    	|| nodetype==DTM.COMMENT_NODE
+    	|| nodetype==DTM.PROCESSING_INSTRUCTION_NODE)
+      return DTMSequence.EMPTY;
                 
     XPath2Type actualType=(XPath2Type)m_schemaTypeOverride.elementAt(identity);
     if(actualType==null)
       actualType=(XPath2Type)m_expandedNameTable.getSchemaType(m_exptype.elementAt(identity));
 
+	// No schema type. Return as any.
     if(actualType==null)
-      return DTMSequence.EMPTY;
+    {
+    	return new DTM_XSequence(getStringValue(nodeHandle).toString(),
+    		(nodetype!=this.ELEMENT_NODE) 
+    			?  XPath2Type.XSANYSIMPLETYPE
+    			: XPath2Type.XSANYTYPE );
+    }
+
                 
         /* %REVIEW% Efficiency issues; value may be in FSB or scattered,
         	 in which case generating a Java String may arguably be wasteful. 
@@ -363,6 +377,9 @@ public class XNI2DTM
         //GONK efficiency;
         
     // Gathers all text. Is that right? Should we not do if type is not known?
+    //
+    // %OPT% toString is needed because getStringValue returns an XString...
+    // might be good to have a lower-level string accessor.
     String textvalue=getStringValue(nodeHandle).toString();
     
     // DTM node should provide the namespace context.

@@ -81,6 +81,24 @@ import org.apache.xml.dtm.DTMSequence;
    * */
 public class XPath2Type
 {
+	/** Manefest constant: dtm.getTypedValue() wants to be able to return
+	 * untyped values. Rather than trying to dig it out of the schema context, 
+	 * it's easier to have one ready for use... */
+	public static final XPath2Type XSSTRING=
+		new XPath2Type(null,"http://www.w3.org/2001/XMLSchema","string");	
+	/** Manefest constant: dtm.getTypedValue() wants to be able to return
+	 * untyped values as strings, and needs a suitable type object. Rather
+	 * than trying to dig it out of the schema context, it's easier to
+	 * have one ready for use... */
+	public static final XPath2Type XSANYTYPE=
+		new XPath2Type(null,"http://www.w3.org/2001/XMLSchema","anyType");	
+	/** Manefest constant: dtm.getTypedValue() wants to be able to return
+	 * untyped values as strings, and needs a suitable type object. Rather
+	 * than trying to dig it out of the schema context, it's easier to
+	 * have one ready for use... */
+	public static final XPath2Type XSANYSIMPLETYPE=
+		new XPath2Type(null,"http://www.w3.org/2001/XMLSchema","anySimpleType");	
+	
   	public XSTypeDefinition m_xniType;
   	public String m_namespace;
   	public String m_localName;
@@ -201,8 +219,13 @@ public class XPath2Type
   {
     Object value;
     DTM_XSequence seq=null;
+    
+    if(m_xniType==null)
+    {
+      seq=new DTM_XSequence(textvalue,this);
+    }
 
-    if(m_xniType instanceof XSSimpleTypeDefinition)
+    else if(m_xniType instanceof XSSimpleTypeDefinition)
     {           
       //create an instance of 'ValidatedInfo' to get back information 
       //(like actual value, normalizedValue etc..)after content is validated.
