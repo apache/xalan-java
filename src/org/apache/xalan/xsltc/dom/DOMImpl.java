@@ -3332,7 +3332,6 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _currentOffset += length;
 
 	    _disableEscaping = !_escaping;	
-
 	}
 
 	/**
@@ -3347,8 +3346,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _currentAttributeNode = 1;
 	    _type2[0] = NAMESPACE;
 
-	    startPrefixMapping(EMPTYSTRING, EMPTYSTRING);
+	    definePrefixAndUri(EMPTYSTRING, EMPTYSTRING);
 	    startPrefixMapping(XML_PREFIX, "http://www.w3.org/XML/1998/namespace");
+
 	    _lengthOrAttr[ROOTNODE] = _nextNamespace;
 	    _parent2[_nextNamespace] = ROOTNODE;
 	    _nextNamespace = DOM.NULL;
@@ -3416,8 +3416,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	 */
 	public void startElement(String uri, String localName,
 				 String qname, Attributes attributes)
-	    throws SAXException {
-
+	    throws SAXException 
+	{
+// System.out.println("DOMImpl.startElement() qname = " + qname);
 	    makeTextNode(false);
 
 	    // Get node index and setup parent/child references
@@ -3542,8 +3543,25 @@ public final class DOMImpl implements DOM, Externalizable {
 	 * SAX2: Begin the scope of a prefix-URI Namespace mapping.
 	 */
 	public void startPrefixMapping(String prefix, String uri) 
-	    throws SAXException {
+	    throws SAXException 
+	{
+	    final Stack stack = definePrefixAndUri(prefix, uri);
 
+	    makeTextNode(false);
+	    int attr = makeNamespaceNode(prefix, uri);
+	    if (_nextNamespace == DOM.NULL) {
+		_nextNamespace = attr;
+	    }
+	    else {
+		_nextSibling2[attr-1] = attr;
+	    }
+	    _nextSibling2[attr] = DOM.NULL;
+	    _prefix2[attr] = ((Integer) stack.elementAt(0)).shortValue();
+	}
+
+	private Stack definePrefixAndUri(String prefix, String uri) 
+	    throws SAXException 
+	{
 	    // Get the stack associated with this namespace prefix
 	    Stack stack = (Stack)_nsPrefixes.get(prefix);
 	    if (stack == null) {
@@ -3559,17 +3577,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    stack.push(uri);
 
-	    if (!prefix.equals(EMPTYSTRING) || !uri.equals(EMPTYSTRING)) {
-		makeTextNode(false);
-		int attr = makeNamespaceNode(prefix, uri);
-		if (_nextNamespace == DOM.NULL)
-		    _nextNamespace = attr;
-		else
-		    _nextSibling2[attr-1] = attr;
-		_nextSibling2[attr] = DOM.NULL;
-		// _prefix2[attr] = idx.shortValue();
-		_prefix2[attr] = ((Integer) stack.elementAt(0)).shortValue();
-	    }
+	    return stack;
 	}
 
 	/**
