@@ -129,7 +129,7 @@ public class DOM2SAX implements XMLReader , Locator {
             case Node.DOCUMENT_NODE :
                     _contentHdlr.setDocumentLocator(this);
                     _contentHdlr.startDocument();
-                    Node next = currNode.getNextSibling();
+                    Node next = currNode.getFirstChild();
                     while ( next != null ) {
                         parse(next);
                         next = next.getNextSibling();
@@ -154,7 +154,7 @@ public class DOM2SAX implements XMLReader , Locator {
                     _contentHdlr.startElement(currNode.getNamespaceURI(),
                         currNode.getLocalName(), currNode.getNodeName(),
                         attrList);
-                    next = currNode.getNextSibling();
+                    next = currNode.getFirstChild();
                     while ( next != null ) {
                         parse(next);
                         next = next.getNextSibling();
