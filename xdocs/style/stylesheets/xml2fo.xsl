@@ -17,8 +17,9 @@ TBD: - The faq doesn't show in the content
      xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
      xmlns:fo="http://www.w3.org/1999/XSL/Format">
      
-   <!-- to use document func to get resources.xml -->
-  <xsl:param name="resourceFile" select="'../../sources/xalan/resources.xml'"/>  
+     <!-- to use with document() to get resources.xml -->
+    <xsl:param name="resourceFile" select="'../../sources/xalan/resources.xml'"/>
+    <xsl:param name="project" select="Xalan"/>
               
 <xsl:template match ="/">
 	<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
@@ -44,7 +45,7 @@ TBD: - The faq doesn't show in the content
 			    	  font-size="10pt" 
 					  font-family="serif" 
 					  line-height="14pt" >
-				Xalan documentation - p. <fo:page-number/>
+				<xsl:value-of select="$project"/> documentation - p. <fo:page-number/>
 			</fo:block>
 		</fo:static-content> 
 
@@ -57,7 +58,7 @@ TBD: - The faq doesn't show in the content
                     background-color="blue"
                     color="white"
                     text-align="center">
-            Xalan - an XSL Transformer
+            <xsl:value-of select="$project"/> - an XSL Transformer
           </fo:block>
 
 
