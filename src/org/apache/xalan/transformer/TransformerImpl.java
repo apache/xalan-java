@@ -2466,7 +2466,8 @@ public class TransformerImpl extends Transformer
    */
   public ElemTemplateElement getCurrentElement()
   {
-    return m_currentTemplateElements[m_currentTemplateElementsTop-1];
+    return (m_currentTemplateElementsTop > 0) ? 
+        m_currentTemplateElements[m_currentTemplateElementsTop-1] : null;
   }
 
   /**
