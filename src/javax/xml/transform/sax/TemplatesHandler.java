@@ -88,5 +88,5 @@ public interface TemplatesHandler extends ContentHandler
    * resolve relative URIs in the stylesheet.
    * @param baseID Base URI for this stylesheet.
    */
-  public void setSystemID(String systemID);
+  public void setSystemId(String systemID);
 }

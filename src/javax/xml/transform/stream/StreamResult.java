@@ -72,6 +72,12 @@ import java.io.Writer;
  */
 public class StreamResult implements Result
 {
+  /** If {@link javax.xml.transform.TransformerFactory#getFeature} 
+   * returns true when passed this value as an argument,
+   * the Transformer supports Result output of this type.
+   */
+  public static final String FEATURE 
+    = "http://javax.xml.transform.stream.StreamResult/feature";
 
   /**
    * Zero-argument default constructor.

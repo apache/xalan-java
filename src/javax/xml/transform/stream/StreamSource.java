@@ -70,6 +70,12 @@ import java.io.Reader;
  */
 public class StreamSource implements Source
 {
+  /** If {@link javax.xml.transform.TransformerFactory#getFeature} 
+   * returns true when passed this value as an argument,
+   * the Transformer supports Source input of this type.
+   */
+  public static final String FEATURE 
+    = "http://javax.xml.transform.stream.StreamSource/feature";
 
   /**
    * Zero-argument default constructor. If this constructor 

@@ -74,6 +74,12 @@ import org.w3c.dom.Node;
  */
 public class DOMResult implements Result
 {
+  /** If {@link javax.xml.transform.TransformerFactory#getFeature} 
+   * returns true when passed this value as an argument,
+   * the Transformer supports Result output of this type.
+   */
+  public static final String FEATURE 
+    = "http://javax.xml.transform.dom.DOMResult/feature";
 
   /**
    * Zero-argument default constructor.  If this constructor is used, and 

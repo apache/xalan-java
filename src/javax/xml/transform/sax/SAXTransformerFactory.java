@@ -78,6 +78,23 @@ import org.xml.sax.XMLFilter;
  */
 public abstract class SAXTransformerFactory extends TransformerFactory
 {
+  /** If {@link javax.xml.transform.TransformerFactory#getFeature} 
+   * returns true when passed this value as an argument,
+   * the TransformerFactory returned from 
+   * {@link javax.xml.transform.TransformerFactory#newInstance} may 
+   * be safely cast to a SAXTransformerFactory.
+   */
+  public static final String FEATURE 
+    = "http://javax.xml.transform.sax.SAXTransformerFactory/feature";
+
+  /** If {@link javax.xml.transform.TransformerFactory#getFeature} 
+   * returns true when passed this value as an argument,
+   * the {@link #newXMLFilter(Source src)} 
+   * and {@link #newXMLFilter(Templates templates)} methods are supported.
+   */
+  public static final String FEATURE_XMLFILTER 
+    = "http://javax.xml.transform.sax.SAXTransformerFactory/feature/xmlfilter";
+
   /**
    * The default constructor is protected on purpose.
    */

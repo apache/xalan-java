@@ -2,312 +2,23 @@
 <html>
 <head>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>
-</title>
+<title>javax.xml.transform</title>
 </head>
-<body> 
-  <h2>Transformations API For XML (TrAX)</h2> 
-  <p>
-<b>Edit Date: </b>November 12, 2000</p> 
-   
-    
-  <h3>Introduction</h3> 
-  <p>This overview describes the set of APIs contained in
-	 javax.xml.transform. These interfaces are referred to, for the sake of brevity,
-	 as TrAX (Transformations for XML). </p> 
-  <p>There is a broad need for Java applications to be able to transform XML
-	 and related tree-shaped data structures. In fact, XML is not normally very
-	 useful to an application without going through some sort of transformation,
-	 unless the semantic structure is used directly as data. Almost all xml-related
-	 applications need to perform transformations. Transformations may be described
-	 by Java code, Perl code, <A href="http://www.w3.org/TR/xslt">XSLT</A>
-	 Stylesheets, other types of script, or by proprietary formats. The inputs, one
-	 or multiple, to a transformation, may be a URL, XML stream, a DOM tree, SAX
-	 Events, or a proprietary format or data structure. The output types are the
-	 pretty much the same types as the inputs, but different inputs may need to be
-	 combined with different outputs.</p> 
-  <p>The great challenge of a transformation API is how to deal with
-	 combinations of inputs and outputs, without becoming specialized for any of the
-	 given types.</p> 
-  <p>The Java community will greatly benefit from a common API that will
-	 allow them to understand and apply a single model, write to consistent
-	 interfaces, and apply the transformations polymorphically. TrAX attempts to
-	 define a model that is clean and generic, yet will fill the requirements of
-	 general applications across a great variety of uses. </p> 
-   
-	 <h3>General Terminology</h3> 
-	 <p>This section will explain some general terminology used in this
-		document. Technical terminology will be explained in the Model section. In many
-		cases, the general terminology overlaps with the technical terminology.</p> 
-	 <ul>
-<li>
-<p>
-<b>Tree</b>
-<br>This term, as used within this document, describes an
-			 abstract structure that consists of nodes or events that may be produced by
-			 XML. A Tree physically may be a DOM tree, a series of well balanced parse
-			 events (such as those coming from a SAX2 ContentHander), a series of requests
-			 (the result of which can describe a tree), or a stream of marked-up
-			 characters.</p>
-</li>
-<li>
-<p>
-<b>Source Tree(s)</b>
-<br>One or more trees that are the inputs to the
-			 transformation.</p>
-</li>
-<li>
-<p>
-<b>Result Tree(s)</b>
-<br>One or more trees that are the output of the
-			 transformation.</p>
-</li>
-<li>
-<p>
-<b>Transformation</b>
-<br>The processor of consuming a stream or tree to produce
-			 another stream or tree.</p>
-</li>
-<li>
-<p>
-<b>Identity (or Copy) Transformation</b>
-<br>The process of transformation from a source to a result,
-			 making as few structural changes as possible and no informational changes. The
-			 term is somewhat loosely used, as the process is really a copy.</p>
-</li>
-<li>
-<p>
-<b>Serialization</b>
-<br>The process of taking a tree and turning it into a stream. In
-			 some sense, serialization is a specialization of transformation.</p>
-</li>
-<li>
-<p>
-<b>Parsing</b>
-<br>The process of taking a stream and turning it into a tree. In
-			 some sense, parsing is a specialization of transformation.</p>
-</li>
-<li>
-<p>
-<b>Transformer</b>
-<br>A transformer is the thing that executes the transformation.
-			 </p>
-</li>
-<li>
-<p>
-<b>Transformation instructions</b>
-<br>Describes the transformation. A form of code, script, or
-			 simply a declaration or series of declarations.</p>
-</li>
-<li>
-<p>
-<b>Stylesheet</b>
-<br>The same as "transformation instructions", except it is
-			 likely to be used in conjunction with <A href="http://www.w3.org/TR/xslt">XSLT</A>.</p>
-</li>
-<li>
-<p>
-<b>Template or Templates</b>
-<br>Another form of "transformation instructions", except in the
-			 TrAX interface it is used to describe the processed transformation
-			 instructions. A template is an object through which the source flows, to be
-			 formed into the result.</p>
-</li>
-<li>
-<p>
-<b>Processor</b>
-<br>A general term for the thing that may both process the
-			 transformation instructions, and perform the transformation.</p>
-</li>
-<li>
-<p>
-<b>DOM</b>
-<br>Document Object Model, specifically referring to the
-			 <A href="#http://www.w3.org/TR/DOM-Level-2 ">Document Object Model
-			 (DOM) Level 2 Specification</A>.</p>
-</li>
-<li>
-<p>
-<b>SAX</b>
-<br>Simple API for XML, specifically referring to the
-			 <A href="#http://www.megginson.com/SAX/SAX2">SAX 2.0
-			 release</A>.</p>
-</li>
-</ul> 
-   
-  <h3>Requirements</h3> 
-  <p>The following requirements have been determined from broad experience
-	 with XML projects from the various members participating on the JCP.</p> 
-  <ol>
-<li>TrAX must provide a clean, simple
-		interface for simple uses.</li>
-<li>TrAX must be powerful enough to be
-		applied to a wide range of uses, such as, e-commerce, content management,
-		server content delivery, and client applications.</li>
-<li>A processor that implements a TrAX
-		interface must be optimizeable. Performance is a critical issue for most
-		transformation use cases.</li>
-<li>As a specialization of the above
-		requirement, a TrAX processor must be able to support a compiled model, so that
-		a single set of transformation instructions can be compiled, optimized, and
-		applied to a large set of input sources.</li>
-<li>TrAX must not be dependent an any
-		given type of transformation instructions. For instance, it must remain
-		independent of <A href="http://www.w3.org/TR/xslt">XSLT</A>.</li>
-<li>TrAX must be able to allow processors
-		to transform DOM trees.</li>
-<li>TrAX must be able to allow processors to
-		produce DOM trees.</li>
-<li>TrAX must be able to allow processors
-		to transform SAX events.</li>
-<li>TrAX must be able to allow processors to
-		produce SAX events.</li>
-<li>TrAX must be able to allow
-		processors to transform streams of XML.</li>
-<li>TrAX must be able to allow processors
-		to produce XML, HTML, and other types of streams.</li>
-<li>TrAX must be able to allow
-		processors to implement the various combinations of inputs and outputs within a
-		single processor.</li>
-<li>TrAX must be able to allow
-		processors to implement only a limited set of inputs. For instance, it should
-		be possible to write a processor that implements the TrAX interfaces that only
-		processor DOM trees, not streams or SAX events.</li>
-<li>TrAX should allow a
-		processor to implement transformations of proprietary data structures. For
-		instance, it should be possible to implement a processor that provides TrAX
-		interfaces that performs transformation of JDOM trees.</li>
-<li>TrAX must be able to allow
-		the setting of serialization properties, without constraint as to what the
-		details of those properties are.</li>
-<li>TrAX must allow the setting
-		of parameters to the transformation instructions.</li>
-<li>TrAX must be able to
-		support the setting of parameters and properties as XML Namespaced items (i.e.
-		qualified names).</li>
-<li>TrAX must be able to
-		support URL resolution from within the transformation, and have it return the
-		needed data structure.</li>
-<li>TrAX must have a mechanism for
-		reporting of errors and warnings by the calling application.</li>
-</ol>   
-  <h3>Model</h3> 
-  <p>The section defines the abstract model for TrAX, apart from the details
-	 of the interfaces.</p> 
-  <p>A TRaX <A href="#pattern-TransformerFactory">TransformerFactory</A> is an object
-	 that processes transformation instructions, and produces
-	 <A href="#pattern-Templates">Templates</A> (in the technical
-	 terminology). The <A href="#pattern-Templates">Templates</A>
-	 provide <A href="#pattern-Transformer">Transformer</A>, which
-	 transform one or more <A href="#pattern-Source">Source</A>s into
-	 one or more <A href="#pattern-Result">Result</A>s.</p> 
-  <p>To use the TRaX interface, you create a
-	 <A href="#pattern-TransformerFactory">TransformerFactory</A>,
-	 which may directly provide <A href="#pattern-Transformers">Transformers</A>, or which can provide
-	 <A href="#pattern-Templates">Templates</A> from a variety of
-	 <A href="#pattern-Source">Source</A>s. The
-	 <A href="#pattern-Templates">Templates</A> object is normally a
-	 processed or compiled representation of the transformation instructions, and
-	 provides a <A href="#pattern-Transformer">Transformer</A>. The
-	 <A href="#pattern-Transformer">Transformer</A> processes a
-	 <A href="#pattern-Transformer">Source</A> according to the
-	 instructions found in the <A href="#pattern-Templates">Templates</A>, and produces a
-	 <A href="#pattern-Result">Result</A>.</p> 
-  <p>The process of transformation from a tree, either in the form of an
-	 object model, or in the form of parse events, into a stream, is known as
-	 <U>serialization</U>. This term, although it overlaps with Java
-	 object serialization, is the best description of this process.</p>
-  <H3>TRaX Patterns</H3>
-<ul>
-<p>
-<b><a name="pattern-Processor">Processor</a></b>
-<br>
-<br>
-<i>Intent: </i>Generic concept for the
-  set of objects that implement the TrAX
-  interfaces.<br>
-<i>Responsibilities: </i>Create compiled transformation
-  instructions, transform resources, and manager parameters and properties of
-  those transformations.<br>
-<i>Thread safety: </i>Only the Templates
-  object can be used concurrently in multiple threads. The rest of the processor
-  does not do synchronized blocking, and so can not be used
-  concurrently.</p>
-<p>
-<b><a name="pattern-TransformerFactory">TransformerFactory</a></b>
-<br>
-<br>
-<i>Intent: </i>Serve as a vendor neutral Processor interface for
-  <A href="http://www.w3.org/TR/xslt">XSLT</A> processors and similar
-  processors.<br>
-<i>Responsibilities: </i>Serve as a factory for a concrete
-  implementation of an TransformerFactory, serve as a direct factory for
-  Transformer objects, serve as a factory for Templates objects, and manage
-  processor specific features.<br>
-<i>Thread safety: </i>TransformerFactorys can not run concurrently.</p>
-<p>
-<b><a name="pattern-Templates">Templates</a></b>
-<br>
-<br>
-<i>Intent: </i>The run time
-  representation of the transformation instructions.<br>
-<i>Responsibilities: </i>Acts as a data bag for transformation instructions, act as a
-  factory for Transformers.<br>
-<i>Thread safety: </i>Threadsafe
-  concurrently over multiple threads once construction is
-  complete.</p>
-<p>
-<b><a name="pattern-Transformer">Transformer</a></b>
-<br>
-<br>
-<i>Intent: </i>Act
-  as a per-thread execution context for transformations, act as an interface for
-  performing the transformation.<br>
-<i>Responsibilities: </i>Perform the
-  transformation.<br>
-<i>Thread safety: </i>Only safe one instance per
-  thread.<br>
-<i>Notes: </i>The Transformer is bound to the Templates object
-  that created it.</p>
-<p>
-<b><a name="pattern-Source">Source</a></b>
-<br>
-<br>
-<i>Intent: </i>Serve as a single
-  vendor-neutral object for multiple types of input.<br>
-<i>Responsibilities: </i>Act as simple data holder for System IDs, DOM nodes, streams,
-  etc.<br>
-<i>Thread safety: </i>Threadsafe concurrently over multiple
-  threads for read-only, must be synchronized for edit.</p>
-<p>
-<b><a name="pattern-Result">Result</a></b>
-<br>
-<br>
-<i>Potential alternate name: </i>ResultTarget<br>
-<i>Intent: </i>Serve
-  as a single object for multiple types of output, so there can be simple process
-  method signatures.<br>
-<i>Responsibilities: </i>Act as simple data holder for
-  output stream, DOM node, ContentHandler, etc.<br>
-<i>Thread safety: </i>Threadsafe concurrently over multiple threads for read-only,
-  must be synchronized for edit.</p>
-</ul> 
-   
-	 <h3>Interfaces and Usage</h3> 
-	 <p> TrAX defines a top-level series of interfaces in
-		{@link javax.xml.transform}. These interfaces have no dependencies on
-		SAX or the DOM standard, and try to make as few assumptions as possible about
-		the details of the source and result of a transform. It achieves this by
-		defining {@link javax.xml.transform.Source} and
-		{@link javax.xml.transform.Result} interfaces.</p> 
-	 <p>In order to define concrete, usable classes for the user, TrAX
-		defines specialization of the interfaces found at the TrAX root level. These
-		interfaces are found in {@link javax.xml.transform.sax},
-		{@link javax.xml.transform.dom}, and
-		{@link javax.xml.transform.stream}.</p> 
-	 <p>The following illustrates a very simple transformation from input URI
-		to result stream.</p> 
-	 <code>
+<body>
+<p>This package defines the generic APIs for processing transformation
+		instructions, and performing a transformation from source to result. These
+		interfaces have no dependencies on SAX or the DOM standard, and try to make as
+		few assumptions as possible about the details of the source and result of a
+		transformation. It achieves this by defining 
+		{@link javax.xml.transform.Source} and 
+		{@link javax.xml.transform.Result} interfaces.</p>
+<p>To define concrete classes for the user, TrAX defines specializations
+		of the interfaces found at the TrAX root level. These interfaces are found in 
+		{@link javax.xml.transform.sax}, {@link javax.xml.transform.dom},
+		and {@link javax.xml.transform.stream}.</p>
+<p>The following illustrates a simple transformation from input URI to
+		result stream.</p>
+<code>
 <pre>    // Create a transform factory instance.
     TransformerFactory tfactory = TransformerFactory.newInstance();
     
@@ -320,84 +31,93 @@
                            new StreamResult(System.out));
 </pre>
 </code> 
-	  
 		<h3>Creating Objects</h3> 
-		<p>TrAX allows a concrete
+		<p>TrAX allows a concrete 
 		  {@link javax.xml.transform.TransformerFactory} object to be created from
-		  the static function
-		  {@link javax.xml.transform.TransformerFactory#newInstance}. The system
-		  property that controls which factory implementation to create is named
-		  "javax.xml.transform.TransformerFactory". This property names a class that is a
-		  concrete subclass of this TransformerFactory abstract class. If no property is
-		  defined, a platform default will be used.</p> 
-	  
+		  the static function 
+		  {@link javax.xml.transform.TransformerFactory#newInstance}. The
+		  "javax.xml.transform.TransformerFactory" system property determines which
+		  factory implementation to instantiate. This property names a concrete subclass
+		  of the TransformerFactory abstract class. If this system property is not
+		  defined, a platform default is used.</p> 
 	  
 		<h3>Specification of Inputs and Outputs</h3> 
-		<p>TrAX defines two interface objects called
-		  {@link javax.xml.transform.Source} and
+		<p>TrAX defines two interface objects called 
+		  {@link javax.xml.transform.Source} and 
 		  {@link javax.xml.transform.Result}. In order to pass Source and Result
-		  objects to the TrAX interfaces, concrete classes need to be used. TrAX defines
-		  three concrete representations of source and result pairs:
-		  {@link javax.xml.transform.stream.StreamSource} and
+		  objects to the TrAX interfaces, concrete classes must be used. TrAX defines
+		  three concrete representations for each of these objects: 
+		  {@link javax.xml.transform.stream.StreamSource} and 
 		  {@link javax.xml.transform.stream.StreamResult},
-		  {@link javax.xml.transform.sax.SAXSource} and
-		  {@link javax.xml.transform.sax.SAXResult}, and
-		  {@link javax.xml.transform.dom.DOMSource} and
-		  {@link javax.xml.transform.dom.DOMResult}.</p> 
-	  
-	  
-		<h3>
+		  {@link javax.xml.transform.sax.SAXSource} and 
+		  {@link javax.xml.transform.sax.SAXResult}, and 
+		  {@link javax.xml.transform.dom.DOMSource} and 
+		  {@link javax.xml.transform.dom.DOMResult}. Each of these objects defines
+		  a FEATURE string (which is i the form of a URL), which can be passed into 
+		  {@link javax.xml.transform.TransformerFactory#getFeature} to see if the
+		  given type of Source or Result object is supported. For instance, to test if a
+		  DOMSource and a StreamResult is supported, you can apply the following
+		  test.</p> 
+		<code>
+<pre>    TransformerFactory tfactory = TransformerFactory.newInstance();
+
+    if (tfactory.getFeature(DOMSource.FEATURE) &amp;&amp; tfactory.getFeature(StreamResult.FEATURE))
+    {
+       ...
+    }</pre>
+</code>
+   
+	 <h3>
 <a name="qname-delimiter">Qualified Name representation</a>
 </h3> 
-		<p>One of the facts of dealing with XML objects is having to deal with
-		  <A href="http://www.w3.org/TR/REC-xml-names">Namespaces</A>. Qualified
-		  Names appear in XML markup as prefixed names. But the prefixes themselves do
-		  not hold identity, rather, it is the URIs that they contextually map to that
-		  hold the identity. Therefore, when passing Qualified Names in among Java
-		  programs, it is impossible to pass "xyz:foo" without have some sort of object
-		  that maps "xyz" to a namespace. </p> 
-		<p>One solution to this has been to create a "QName" object that holds
-		  the namespace URI, as well as the prefix and local name. But this is not a
-		  great solution when you want to use unique strings as keys in a dictionary
-		  object, for instance. Not having a string representation also makes it very
-		  hard to specify namespaced identity outside the context of a XML
-		  document.</p> 
-		<p>In order to pass namespaced values to transformations, for instance
-		  as a set of properties to the Serializer, this specification defines that
-		  parameter String object specified as "qname" be passed as two-part string, with
-		  the first part being the URL, the delimiter being the '{' for the start of the
-		  URI and '}' signifies the end, with the local name following. If the qname has
-		  a null URL, then the String object will only contain the local name. An
-		  application can safely check for a non-null URI by testing to see if the first
-		  character of the name is a '{' character.</p> 
-		<p>For example, if a URI and local name were obtained from an element
-		  defined with &lt;xyz:foo xmlns:xyz="http://xyz.foo.com/yada/baz.html"/&gt;,
-		  then the TrAX QName would be "{http://xyz.foo.com/yada/baz.html}foo". Note that
-		  the prefix is lost.</p> 
-	  
-	  
-		<h3>Result Tree Serialization</h3> 
-		<p>Serialization of the result tree to a stream can be controlled with
-		  the {@link javax.xml.transform.Transformer#setOutputProperties} and the
-		  {@link javax.xml.transform.Transformer#setOutputProperty} methods.
-		  Strings that match the <A href="http://www.w3.org/TR/xslt#output">XSLT
-		  specification for xsl:output attributes</A> can be referenced from the
-		  {@link javax.xml.transform.OutputKeys} class. Other strings can be
-		  specified as well, however, if the transformer does not recognize one, a
-		  {@link java.lang.IllegalArgumentException} will be thrown,
-		  if the key name is not <A href="#qname-delimiter">namespace qualified</A>. Output key names that are
-		  qualified by a namespace will be silently ignored, or passed on to the
-		  serializer mechanism.</p> 
-		<p>If all that is desired is the simple identity transformation of a
-		  source to a result, then {@link javax.xml.transform.TransformerFactory}
-		  provides a
-		  {@link javax.xml.transform.TransformerFactory#newTransformer()} method
-		  that does not have any arguments. The method will create a Transformer that
-		  will simply perform a copy of the source to the result. The most common uses of
-		  this will be to create a DOM from SAX events, or create an XML or HTML stream
-		  from DOM or SAX events. The following example illustrates the serialization of
-		  a DOM node to an XML stream.</p> 
-		<code>
+	 <p>
+<A href="http://www.w3.org/TR/REC-xml-names">Namespaces</A>
+		present something of a problem area when dealing with XML objects. Qualified
+		Names appear in XML markup as prefixed names. But the prefixes themselves do
+		not hold identity. Rather, it is the URIs that they contextually map to that
+		hold the identity. Therefore, when passing a Qualified Name like "xyz:foo"
+		among Java programs, one must provide a means to map "xyz" to a namespace.
+		</p> 
+	 <p>One solution has been to create a "QName" object that holds the
+		namespace URI, as well as the prefix and local name, but this is not always an
+		optimal solution, as when, for example, you want to use unique strings as keys
+		in a dictionary object. Not having a string representation also makes it
+		difficult to specify a namespaced identity outside the context of an XML
+		document.</p> 
+	 <p>In order to pass namespaced values to transformations, for instance
+		as a set of properties to the Serializer, this specification defines that a
+		String "qname" object parameter be passed as two-part string, the namespace URI
+		enclosed in curly braces ({}), followed by the local name. If the qname has a
+		null URI, then the String object only contains the local name. An application
+		can safely check for a non-null URI by testing to see if the first character of
+		the name is a '{' character.</p> 
+	 <p>For example, if a URI and local name were obtained from an element
+		defined with &lt;xyz:foo xmlns:xyz="http://xyz.foo.com/yada/baz.html"/&gt;,
+		then the TrAX Qualified Name would be "{http://xyz.foo.com/yada/baz.html}foo".
+		Note that the prefix is lost.</p> 
+   
+	 <h3>Result Tree Serialization</h3> 
+	 <p>Serialization of the result tree to a stream can be controlled with
+		the {@link javax.xml.transform.Transformer#setOutputProperties} and the 
+		{@link javax.xml.transform.Transformer#setOutputProperty} methods.
+		Strings that match the <A href="http://www.w3.org/TR/xslt#output">XSLT
+		specification for xsl:output attributes</A> can be referenced from the 
+		{@link javax.xml.transform.OutputKeys} class. Other strings can be
+		specified as well. If the transformer does not recognize an output key, a 
+		{@link java.lang.IllegalArgumentException} is thrown, unless the 
+		unless the key name is <A href="#qname-delimiter">namespace qualified</A>. Output key names that are
+		qualified by a namespace are ignored or passed on to the serializer
+		mechanism.</p> 
+	 <p>If all that is desired is the simple identity transformation of a
+		source to a result, then {@link javax.xml.transform.TransformerFactory}
+		provides a
+		{@link javax.xml.transform.TransformerFactory#newTransformer()} method
+		with no arguments. This method creates a Transformer that effectively copies
+		the source to the result. This method may be used to create a DOM from SAX
+		events or to create an XML or HTML stream from a DOM or SAX events. The
+		following example illustrates the serialization of a DOM node to an XML
+		stream.</p> 
+	 <code>
 <pre>    TransformerFactory tfactory = TransformerFactory.newInstance();    
     Transformer serializer = tfactory.newTransformer();
     Properties oprops = new Properties();
@@ -407,70 +127,66 @@
     serializer.transform(new DOMSource(doc), 
                          new StreamResult(System.out));</pre>
 </code> 
-   
-   
-	 <h3>Exceptions and Error Reporting</h3> 
-	 <p>The TrAX APIs throw three types of specialized exceptions. A
-		{@link javax.xml.transform.TFactoryConfigurationError} is parallel to
-		the {@link javax.xml.parsers.FactoryConfigurationError}, and is thrown
-		when a problem with configuration with the Transformer Factories exists. This
-		error will typically be thrown when the class of a transformation factory
-		specified in the system properties cannot be found or instantiated.</p> 
-	 <p>A
-		{@link javax.xml.transform.TransformerConfigurationException} may be
-		thrown if for any reason a Transformer can not be created. A
-		TransformerConfigurationException may be thrown if there is a syntax error in
-		the transformation instructions, when, for example,
-		{@link javax.xml.transform.TransformerFactory#newTransformer} is
-		called.</p> 
-	 <p>{@link javax.xml.transform.TransformerException} is a general
-		exception that occurs during the course of a transformation. A transformer
-		exception may wrap another exception, and if any of the
-		{@link javax.xml.transform.TransformerException#printStackTrace()}
-		methods are called on it, it will produce a list of stack dumps, starting from
-		the most recent. The transformer exception also provides a
-		{@link javax.xml.transform.SourceLocator} object which indicates where
-		in the source tree or transformation instructions the error
-		occured.{@link javax.xml.transform.TransformerException#getMessageAndLocation()}
-		may be called to get an error message with location info, and
-		{@link javax.xml.transform.TransformerException#getLocationAsString()}
-		may be called to get just the location string.</p> 
-	 <p>Transformation warnings and errors are normally first sent to a
-		{@link javax.xml.transform.ErrorListener}, at which point the
-		implementor may decide to report the error or warning, and may decide to throw
-		an exception for a non-fatal error. The error listener may be set via
-		{@link javax.xml.transform.TransformerFactory#setErrorListener} for
-		reporting errors that have to do with syntax errors in the transformation
-		instructions, or via
-		{@link javax.xml.transform.Transformer#setErrorListener} to report
-		errors that occur during the transformation. The error listener on both objects
-		should always be valid and non-null, whether set by the user or a default
-		implementation provided by the processor.</p> 
-   
-   
-	 <h3>Resolution of URIs within a transformation</h3> 
-	 <p>TrAX provides a way for URLs that are referenced from within the
-		stylesheet instructions or within the transformation to be reused, by creating
-		a class that implements the {@link javax.xml.transform.URIResolver}
-		interface, and using
-		{@link javax.xml.transform.TransformerFactory#setURIResolver} and
-		{@link javax.xml.transform.Transformer#setURIResolver} to set the URI
-		resolution for the transformation instructions and the transformation. The URI
-		resolver needs to implement only one method,
-		{@link javax.xml.transform.URIResolver#resolve}. The TrAX implementation
-		will pass into this method a string that represents the URL, found in the
-		stylesheet instructions or built as part of the transformation process, as the
-		first argument. The second argument will be the base URI in effect when the URL
-		passed as the first argument was encountered. The
-		{@link javax.xml.transform.Source} object must be usable by the
-		transformer, according to it's implemented features.</p> 
-	 <p>The following example illustrates the use of the URI resolver to
-		resolve URIs to DOM nodes, in a transformation whose input is totally DOM
-		based.</p> 
-	 <code>
+ 
+  <h3>Exceptions and Error Reporting</h3> 
+  <p>The TrAX APIs throw three types of specialized exceptions. A
+	 {@link javax.xml.transform.TFactoryConfigurationError} is parallel to
+	 the {@link javax.xml.parsers.FactoryConfigurationError}, and is thrown
+	 when a configuration problem with the TransformerFactory exists. This error
+	 will typically be thrown when the transformation factory class specified with
+	 the "javax.xml.transform.TransformerFactory" system property cannot be found or
+	 instantiated.</p> 
+  <p>A {@link javax.xml.transform.TransformerConfigurationException}
+	 may be thrown if for any reason a Transformer can not be created. A
+	 TransformerConfigurationException may be thrown if there is a syntax error in
+	 the transformation instructions, for example when
+	 {@link javax.xml.transform.TransformerFactory#newTransformer} is
+	 called.</p> 
+  <p>{@link javax.xml.transform.TransformerException} is a general
+	 exception that occurs during the course of a transformation. A transformer
+	 exception may wrap another exception, and if any of the
+	 {@link javax.xml.transform.TransformerException#printStackTrace()}
+	 methods are called on it, it will produce a list of stack dumps, starting from
+	 the most recent. The transformer exception also provides a
+	 {@link javax.xml.transform.SourceLocator} object which indicates where
+	 in the source tree or transformation instructions the error occurred.
+	 {@link javax.xml.transform.TransformerException#getMessageAndLocation()}
+	 may be called to get an error message with location info, and
+	 {@link javax.xml.transform.TransformerException#getLocationAsString()}
+	 may be called to get just the location string.</p> 
+  <p>Transformation warnings and errors are normally first sent to a
+	 {@link javax.xml.transform.ErrorListener}, at which point the
+	 implementor may decide to report the error or warning, and may decide to throw
+	 an exception for a non-fatal error. The error listener may be set via
+	 {@link javax.xml.transform.TransformerFactory#setErrorListener} for
+	 reporting errors that have to do with syntax errors in the transformation
+	 instructions, or via
+	 {@link javax.xml.transform.Transformer#setErrorListener} to report
+	 errors that occur during the transformation. The error listener on both objects
+	 should always be valid and non-null, whether set by the user or a default
+	 implementation provided by the processor.</p> 
+ 
+  <h3>Resolution of URIs within a transformation</h3> 
+  <p>TrAX provides a way for URIs referenced from within the stylesheet
+	 instructions or within the transformation to be resolved by the calling
+	 application. This can be done by creating a class that implements the
+	 URIResolver interface, with its one method,
+	 {@link javax.xml.transform.URIResolver#resolve}, and use this class to
+	 set the URI resolution for the transformation instructions or transformation
+	 with {@link javax.xml.transform.TransformerFactory#setURIResolver} or
+	 {@link javax.xml.transform.Transformer#setURIResolver}. The
+	 URIResolver.resolve method takes two String arguments, the URI found in the
+	 stylesheet instructions or built as part of the transformation process, and the
+	 base URI in effect when the URI passed as the first argument was encountered.
+	 The returned {@link javax.xml.transform.Source} object must be usable by
+	 the transformer, as specified in its implemented features.</p> 
+  <p>The following example illustrates the use of the URI resolver to
+	 resolve URIs to DOM nodes, in a transformation whose input is totally DOM
+	 based.</p> 
+  <code>
 <pre>    TransformerFactory tfactory = TransformerFactory.newInstance();
 
-    if (tfactory.getFeature(Features.DOM))
+    if (tfactory.getFeature(DOMSource.FEATURE) &amp;&amp; tfactory.getFeature(StreamResult.FEATURE))
     {
       DocumentBuilderFactory dfactory =
                                        DocumentBuilderFactory.newInstance();
@@ -480,7 +196,7 @@
       // Set up to resolve URLs that correspond to our inc1.xsl, 
       // to a DOM node. Use an anonymous class for the URI resolver.
       final Node xslInc1 = docBuilder.parse("xsl/inc1/inc1.xsl");
-      final Node xslInc2 = docBuilder.parse("xsl/inc1/inc2/inc2.xsl");
+      final Node xslInc2 = docBuilder.parse("xsl/inc2/inc2.xsl");
       tfactory.setURIResolver(new URIResolver() { 
         public Source resolve(String href, String base) 
         throws TransformerException
@@ -522,8 +238,5 @@
     }
 </pre>
 </code>
- 
-
-
 </body>
 </html>
