@@ -646,6 +646,13 @@ public class ErrorMessages extends ListResourceBundle {
         { ErrorMsg.ER_RESULT_NULL,
             "Result should not be null"},
 
+        /*
+         * Note to translators:  This message indicates that the value argument
+         * of setParameter must be a valid Java Object.
+         */
+        {ErrorMsg.JAXP_INVALID_SET_PARAM_VALUE,
+        "The value of param {0} must be a valid Java Object"},            
+
 
         {ErrorMsg.COMPILE_STDIN_ERR,
         "The -i option must be used with the -o option."},
