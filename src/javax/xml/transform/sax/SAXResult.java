@@ -126,7 +126,7 @@ public class SAXResult implements Result {
      * handling lexical parse events.
      */
     public void setLexicalHandler(LexicalHandler handler) {
-        this.lexhandler = lexhandler;
+        this.lexhandler = handler;
     }
 
     /**
