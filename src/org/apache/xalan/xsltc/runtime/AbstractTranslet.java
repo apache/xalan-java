@@ -66,7 +66,7 @@
 package org.apache.xalan.xsltc.runtime;
 
 import java.io.File;
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -123,18 +123,18 @@ public abstract class AbstractTranslet implements Translet {
     // Variable's stack: <tt>vbase</tt> and <tt>vframe</tt> are used 
     // to denote the current variable frame.
     protected int vbase = 0, vframe = 0;
-    protected Vector varsStack = new Vector();
+    protected ArrayList varsStack = new ArrayList();
 
     // Parameter's stack: <tt>pbase</tt> and <tt>pframe</tt> are used 
     // to denote the current parameter frame.
     protected int pbase = 0, pframe = 0;
-    protected Vector paramsStack = new Vector();
+    protected ArrayList paramsStack = new ArrayList();
 
     /**
      * Push a new parameter frame.
      */
     public final void pushParamFrame() {
-	paramsStack.insertElementAt(new Integer(pbase), pframe);
+	paramsStack.add(pframe, new Integer(pbase));
 	pbase = ++pframe;
     }
 
@@ -143,9 +143,9 @@ public abstract class AbstractTranslet implements Translet {
      */
     public final void popParamFrame() {
 	if (pbase > 0) {
-	    final int oldpbase = ((Integer)paramsStack.elementAt(--pbase)).intValue();
+	    final int oldpbase = ((Integer)paramsStack.get(--pbase)).intValue();
 	    for (int i = pbase; i < pframe; i++) {
-		paramsStack.setElementAt(null, i);	// for the GC
+		paramsStack.set(i, null);	// for the GC
 	    }
 	    pframe = pbase; pbase = oldpbase;
 	}
@@ -172,7 +172,7 @@ public abstract class AbstractTranslet implements Translet {
 
 	// Local parameters need to be re-evaluated for each iteration
 	for (int i = pframe - 1; i >= pbase; i--) {
-	    final Parameter param = (Parameter) paramsStack.elementAt(i);
+	    final Parameter param = (Parameter) paramsStack.get(i);
 	    if (param._name.equals(name)) {
 		// Only overwrite if current value is the default value and
 		// the new value is _NOT_ the default value.
@@ -187,7 +187,7 @@ public abstract class AbstractTranslet implements Translet {
 
 	// Add new parameter to parameter stack
 	final Parameter param = new Parameter(name, value, isDefault);
-	paramsStack.insertElementAt(param, pframe++);
+	paramsStack.add(pframe++, param);
 	return value;
     }
 
@@ -205,7 +205,7 @@ public abstract class AbstractTranslet implements Translet {
      */
     public final Object getParameter(String name) {
 	for (int i = pframe - 1; i >= pbase; i--) {
-	    final Parameter param = (Parameter)paramsStack.elementAt(i);
+	    final Parameter param = (Parameter)paramsStack.get(i);
 	    if (param._name.equals(name)) return param._value;
 	}
 	return null;
@@ -215,10 +215,14 @@ public abstract class AbstractTranslet implements Translet {
      * Push a new variable frame.
      */
     public final void pushVarFrame(int frameSize) {
-	varsStack.insertElementAt(new Integer(vbase), vframe);
+	varsStack.add(vframe, new Integer(vbase));
 	vbase = ++vframe;
 	vframe += frameSize;
-	varsStack.setSize(vframe + 1);	// clear stack frame
+
+	// Clear stack frame
+	for (int i = vbase; i <= vframe + 1; i++) {
+	    varsStack.add(i, null);
+	}
     }
 
     /**
@@ -226,9 +230,9 @@ public abstract class AbstractTranslet implements Translet {
      */
     public final void popVarFrame() {
 	if (vbase > 0) {
-	    final int oldvbase = ((Integer)varsStack.elementAt(--vbase)).intValue();
+	    final int oldvbase = ((Integer)varsStack.get(--vbase)).intValue();
 	    for (int i = vbase; i < vframe; i++) {
-		varsStack.setElementAt(null, i);	// for the GC
+		varsStack.set(i, null);		// for the GC
 	    }
 	    vframe = vbase; vbase = oldvbase;
 	}
@@ -238,14 +242,14 @@ public abstract class AbstractTranslet implements Translet {
      * Get the value of a variable given its index.
      */
     public final Object getVariable(int vindex) {
-	return varsStack.elementAt(vbase + vindex);
+	return varsStack.get(vbase + vindex);
     }
 	
     /**
      * Set the value of a variable in the current frame.
      */
     public final void addVariable(int vindex, Object value) {
-	varsStack.setElementAt(value, vbase + vindex);
+	varsStack.set(vbase + vindex, value);
     }
 
     /**
