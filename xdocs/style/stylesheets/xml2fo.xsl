@@ -384,6 +384,10 @@ TBD: - The faq doesn't show in the content
             white-space-collapse="false">
      <xsl:apply-templates/> 
    </fo:block>
+
+</xsl:template>
+  <xsl:template match ="br">
+  <fo:block></fo:block>
 </xsl:template>
 
 <!-- code -->
