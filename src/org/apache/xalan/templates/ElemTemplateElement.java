@@ -1012,6 +1012,7 @@ public class ElemTemplateElement extends UnImplNode
           decl = new XMLNSDecl(prefix, uri, shouldExclude);
 
         m_prefixTable.addElement(decl);
+        
       }
     }
 
@@ -1047,7 +1048,8 @@ public class ElemTemplateElement extends UnImplNode
                                  shouldExclude);
           }
           
-          m_prefixTable.addElement(decl);
+          //m_prefixTable.addElement(decl);
+          addOrReplaceDecls(decl);
         }
       }
     }
@@ -1057,6 +1059,29 @@ public class ElemTemplateElement extends UnImplNode
       // Must be stylesheet element without any result prefixes!
       m_prefixTable = new Vector();
     }
+  }
+  
+  /**
+   * Add or replace this namespace declaration in list
+   * of namespaces in scope for this element.
+   *
+   * @param newDecl namespace declaration to add to list
+   */
+  void addOrReplaceDecls(XMLNSDecl newDecl)
+  {
+      int n = m_prefixTable.size();
+
+        for (int i = n - 1; i >= 0; i--)
+        {
+          XMLNSDecl decl = (XMLNSDecl) m_prefixTable.elementAt(i);
+
+          if (decl.getPrefix().equals(newDecl.getPrefix()))
+          {
+            return;
+          }
+        }
+      m_prefixTable.addElement(newDecl);    
+    
   }
   
   /**
