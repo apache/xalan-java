@@ -246,8 +246,8 @@ public class ErrorMessages extends ResourceBundle {
 	// TRANSFORM_USAGE_STR
 	"SYNOPSIS \n" +
 	"   java org.apache.xalan.xsltc.cmdline.Transform [-j <jarfile>]\n"+
-        "      [-x] [-s] {-u <document_url> | <document>} <class>\n" +
-        "      [<param1>=<value1> ...]\n\n" +
+        "      [-x] [-s] [-n <iterations>] {-u <document_url> | <document>}\n" +  
+        "      <class> [<param1>=<value1> ...]\n\n" +
         "   uses the translet <class> to transform an XML document \n"+
 	"   specified as <document>. The translet <class> is either in\n"+
 	"   the user's CLASSPATH or in the optionally specified <jarfile>.\n"+
@@ -255,6 +255,8 @@ public class ErrorMessages extends ResourceBundle {
 	"   -j <jarfile>    specifies a jarfile from which to load translet\n"+
 	"   -x              turns on additional debugging message output\n" +
 	"   -s              disables calling System.exit\n" +
+	"   -n <iterations> runs the transformation <iterations> times and\n" +
+	"                   displays profiling information\n" +
 	"   -u <document_url> specifies XML input document as a URL\n", 
 
 

@@ -208,7 +208,12 @@ final public class Transform {
 	    tohFactory.setEncoding(_translet._encoding);
 	    tohFactory.setOutputMethod(_translet._method);
 
-	    if (_iterations > 1) {
+	    if (_iterations == -1) {
+		translet.transform(dom, _useExperimentalOutputSystem ?
+					tohFactory.getTransletOutputHandler() :
+					tohFactory.getOldTransletOutputHandler());
+	    }
+	    else if (_iterations > 0) {
 		long mm = System.currentTimeMillis();
 		for (int i = 0; i < _iterations; i++) {
 		    translet.transform(dom, _useExperimentalOutputSystem ?
@@ -217,13 +222,10 @@ final public class Transform {
 		}
 		mm = System.currentTimeMillis() - mm;
 
-		System.err.println("transform  = " + (mm / _iterations) + " ms");
-		System.err.println("throughput = " + (1000.0 / (mm / _iterations)) + " tps");
-	    }
-	    else {
-		translet.transform(dom, _useExperimentalOutputSystem ?
-					tohFactory.getTransletOutputHandler() :
-					tohFactory.getOldTransletOutputHandler());
+		System.err.println("\n<!--");
+		System.err.println("  transform  = " + (mm / _iterations) + " ms");
+		System.err.println("  throughput = " + (1000.0 / (mm / _iterations)) + " tps");
+		System.err.println("-->");
 	    }
 	}
 	catch (TransletException e) {
@@ -296,7 +298,7 @@ final public class Transform {
 	try {
 	    if (args.length > 0) {
 		int i;
-		int iterations = 1;
+		int iterations = -1;
 		boolean uri = false, debug = false;
 		boolean isJarFileSpecified = false;
 		String  jarFile = null;
