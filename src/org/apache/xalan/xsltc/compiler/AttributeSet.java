@@ -84,6 +84,7 @@ final class AttributeSet extends TopLevelElement {
     // Element contents
     private QName            _name;
     private UseAttributeSets _useSets;
+    private AttributeSet     _mergeSet;
     private String           _method;
     private boolean          _ignore = false;
     
@@ -161,39 +162,14 @@ final class AttributeSet extends TopLevelElement {
 
 	if (_ignore) return (Type.Void);
 
-	final AttributeSet other = stable.addAttributeSet(this);
-	if (other != null) {
-	    _method = other.getMethodName();
-	    merge(other);
-	    other.ignore();
-	}
-	else {
-	    _method = AttributeSetPrefix + getXSLTC().nextAttributeSetSerial();
-	}
+        // _mergeSet Point to any previous definition of this attribute set
+	_mergeSet = stable.addAttributeSet(this);
+
+	_method = AttributeSetPrefix + getXSLTC().nextAttributeSetSerial();
 
 	if (_useSets != null) _useSets.typeCheck(stable);
 	typeCheckContents(stable);
 	return Type.Void;
-    }
-
-    /**
-     * Merge this attribute set with some other one
-     */
-    private void merge(AttributeSet other) {
-	// Both attribute sets may inherit from other sets...
-	if (_useSets == null)
-	    _useSets = other._useSets;
-	else
-	    _useSets.addAttributeSets(other.getAttribute("use-attribute-sets"));
-
-	// Merge the contents of the two attribute sets...
-	final Enumeration attributes = other.elements();
-	while (attributes.hasMoreElements()) {
-	    SyntaxTreeNode element = (SyntaxTreeNode)attributes.nextElement();
-	    if (element instanceof XslAttribute) {
-		setFirstElement((XslAttribute)element);
-	    }
-	}
     }
 
     /**
@@ -205,6 +181,21 @@ final class AttributeSet extends TopLevelElement {
 
 	// Create a new method generator for an attribute set method
 	methodGen = new AttributeSetMethodGenerator(_method, classGen);
+
+        // Generate a reference to previous attribute-set definitions with the
+        // same name first.  Those later in the stylesheet take precedence.
+        if (_mergeSet != null) {
+            final ConstantPoolGen cpg = classGen.getConstantPool();
+            final InstructionList il = methodGen.getInstructionList();
+            final String methodName = _mergeSet.getMethodName();
+
+            il.append(classGen.loadTranslet());
+            il.append(methodGen.loadHandler());
+            il.append(methodGen.loadIterator());
+            final int method = cpg.addMethodref(classGen.getClassName(),
+                                                methodName, ATTR_SET_SIG);
+            il.append(new INVOKESPECIAL(method));
+        }
 
 	// Translate other used attribute sets first, as local attributes
 	// take precedence (last attributes overrides first)
