@@ -102,15 +102,34 @@ public class DescendantIterator extends LocPathIterator
     if (OpCodes.FROM_SELF == stepType)
     {
       orSelf = true;
-      firstStepPos += 8;
+      // firstStepPos += 8;
     }
     else if(OpCodes.FROM_ROOT == stepType)
     {
       fromRoot = true;
       // Ugly code... will go away when AST work is done.
-      if(ops[firstStepPos+4] == OpCodes.FROM_DESCENDANTS_OR_SELF)
+      int nextStepPos = compiler.getNextStepPos(firstStepPos);
+      if(ops[nextStepPos] == OpCodes.FROM_DESCENDANTS_OR_SELF)
         orSelf = true;
-      firstStepPos += 8;
+      // firstStepPos += 8;
+    }
+    
+    // Find the position of the last step.
+    int nextStepPos = firstStepPos;
+    while(true)
+    {
+      nextStepPos = compiler.getNextStepPos(nextStepPos);
+      if(nextStepPos > 0)
+      {
+        int stepOp = compiler.getOp(nextStepPos);
+        if(OpCodes.ENDOP != stepOp)
+          firstStepPos = nextStepPos;
+        else
+          break;
+      }
+      else
+        break;
+      
     }
     
     // Fix for http://nagoya.apache.org/bugzilla/show_bug.cgi?id=1336
@@ -346,6 +365,8 @@ public class DescendantIterator extends LocPathIterator
     String localName = getLocalName();
     String namespace = getNamespace();
     int what = m_whatToShow;
+    
+    // System.out.print(" (DescendantIterator) ");
     
     // System.out.println("what: ");
     // NodeTest.debugWhatToShow(what);

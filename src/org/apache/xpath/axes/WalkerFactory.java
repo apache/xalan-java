@@ -286,9 +286,10 @@ public class WalkerFactory
     // "/descendant-or-self::node()/table[3]" in order for the indexes 
     // to work right.
     else if (isOptimizableForDescendantIterator(compiler, firstStepPos, 0)
-             && getStepCount(analysis) <= 3 
-             && walksDescendants(analysis) 
-             && walksSubtreeOnlyFromRootOrContext(analysis))
+              // && getStepCount(analysis) <= 3 
+              // && walksDescendants(analysis) 
+              // && walksSubtreeOnlyFromRootOrContext(analysis)
+             )
     {
       if (DEBUG_ITERATOR_CREATION)
         diagnoseIterator("DescendantIterator", analysis, compiler);
@@ -556,8 +557,15 @@ public class WalkerFactory
     boolean foundSelf = false;
     boolean foundDS = false;
     
+    int nodeTestType = OpCodes.NODETYPE_NODE;
+    
     while (OpCodes.ENDOP != (stepType = ops[stepOpCodePos]))
     {
+      // The DescendantIterator can only do one node test.  If there's more 
+      // than one, use another iterator.
+      if(nodeTestType != OpCodes.NODETYPE_NODE && nodeTestType != OpCodes.NODETYPE_ROOT)
+        return false;
+        
       stepCount++;
       if(stepCount > 3)
         return false;
@@ -609,11 +617,23 @@ public class WalkerFactory
         throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NULL_ERROR_HANDLER, new Object[]{Integer.toString(stepType)})); //"Programmer's assertion: unknown opcode: "
                                   // + stepType);
       }
+      
+      nodeTestType = compiler.getStepTestType(stepOpCodePos);
 
-      stepOpCodePos = compiler.getNextStepPos(stepOpCodePos);
+      int nextStepOpCodePos = compiler.getNextStepPos(stepOpCodePos);
 
-      if (stepOpCodePos < 0)
+      if (nextStepOpCodePos < 0)
         break;
+        
+      if(OpCodes.ENDOP != ops[nextStepOpCodePos])
+      {
+        if(compiler.countPredicates(stepOpCodePos) > 0)
+        {
+          return false;
+        }
+      }
+      
+      stepOpCodePos = nextStepOpCodePos;
     }
 
     return true;
@@ -873,8 +893,8 @@ public class WalkerFactory
           StepPattern attrPat = new StepPattern(whatToShow, 
                                     pat.getNamespace(),
                                     pat.getLocalName(),
-				//newAxis, pat.getPredicateAxis);
-						newAxis, 0); // don't care about the predicate axis
+                                //newAxis, pat.getPredicateAxis);
+                                                newAxis, 0); // don't care about the predicate axis
           XNumber score = pat.getStaticScore();
           pat.setNamespace(null);
           pat.setLocalName(NodeTest.WILD);
