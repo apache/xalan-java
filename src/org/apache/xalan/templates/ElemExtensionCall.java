@@ -97,7 +97,8 @@ public class ElemExtensionCall extends ElemLiteralResult
 
   // String m_extHandlerLookup;
 
-  /** Flag indicating if the extension is available for execution    */
+  // YOU CAN'T DO THIS HERE, AS STYLESHEETS MUST BE IMMUTABLE DURING RUNTIME. -sb
+  /* Flag indicating if the extension is available for execution    */
   transient boolean isAvailable = false;
 
   /** Language used by extension.
@@ -145,6 +146,7 @@ public class ElemExtensionCall extends ElemLiteralResult
   public boolean elementIsAvailable()
   {
     return isAvailable;
+    // This needs to ask the execution context...
   }
 
   /**
@@ -239,6 +241,39 @@ public class ElemExtensionCall extends ElemLiteralResult
 
     return decl;
   }
+  
+  /**
+   * Execute the fallbacks when an extension is not available.
+   *
+   * @param transformer non-null reference to the the current transform-time state.
+   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   * @param mode reference, which may be null, to the <a href="http://www.w3.org/TR/xslt#modes">current mode</a>.
+   *
+   * @throws TransformerException
+   */
+  public void executeFallbacks(
+          TransformerImpl transformer, Node sourceNode, QName mode)
+            throws TransformerException
+  {
+    for (ElemTemplateElement child = m_firstChild; child != null;
+             child = child.m_nextSibling)
+    {
+      if (child.getXSLToken() == Constants.ELEMNAME_FALLBACK)
+      {
+        try
+        {
+          transformer.pushElemTemplateElement(child);
+          child.execute(transformer, sourceNode, mode);
+        }
+        finally
+        {
+          transformer.popElemTemplateElement();
+        }
+      }
+    }
+
+  }
+
 
   /**
    * Execute an extension.
@@ -269,7 +304,14 @@ public class ElemExtensionCall extends ElemLiteralResult
       {
         nsh = etable.makeJavaNamespace(m_extns);
 
-        etable.addExtensionNamespace(m_extns, nsh);
+        if(null != nsh)
+          etable.addExtensionNamespace(m_extns, nsh);
+        else
+        {
+          executeFallbacks(transformer, sourceNode, mode);
+          return;
+        }
+
       }
 
       try
@@ -278,6 +320,7 @@ public class ElemExtensionCall extends ElemLiteralResult
         // We set isAvailable to true so that if the extension element processes its
         // children, and one of those children is an <xsl:fallback>, it won't get invoked.
 
+        // YOU CAN'T DO THIS HERE, AS STYLESHEETS MUST BE IMMUTABLE DURING RUNTIME. -sb
         isAvailable = true;
         nsh.processElement(this.getLocalName(), this, transformer,
                            getStylesheet(), sourceNode.getOwnerDocument(),
@@ -287,7 +330,7 @@ public class ElemExtensionCall extends ElemLiteralResult
       {
 
         // System.out.println(e);
-        // e.printStackTrace();
+        // e.printzStackTrace();
         String msg = e.getMessage();
 
         if (null != msg)
@@ -307,24 +350,12 @@ public class ElemExtensionCall extends ElemLiteralResult
         }
 
         // transformer.message(msg);
+        
+        // YOU CAN'T DO THIS HERE, AS STYLESHEETS MUST BE IMMUTABLE DURING RUNTIME. -sb
         isAvailable = false;
-
-        for (ElemTemplateElement child = m_firstChild; child != null;
-             child = child.m_nextSibling)
-        {
-          if (child.getXSLToken() == Constants.ELEMNAME_FALLBACK)
-          {
-            try
-            {
-              transformer.pushElemTemplateElement(child);
-              child.execute(transformer, sourceNode, mode);
-            }
-            finally
-            {
-              transformer.popElemTemplateElement();
-            }
-          }
-        }
+        
+        executeFallbacks(
+          transformer, sourceNode, mode);
       }
     }
     catch(org.xml.sax.SAXException se)
