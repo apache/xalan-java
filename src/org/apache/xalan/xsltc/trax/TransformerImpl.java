@@ -236,10 +236,10 @@ public final class TransformerImpl extends Transformer
         }
 
 	_tohFactory = TransletOutputHandlerFactory.newInstance();
-	_tohFactory.setEncoding(_encoding);
-
-	// Is _method already set? TODO
-	_tohFactory.setOutputMethod(_translet._method);
+	_tohFactory.setEncoding(
+	    (String) _properties.getProperty(OutputKeys.ENCODING));
+	_tohFactory.setOutputMethod(
+	    (String) _properties.getProperty(OutputKeys.METHOD));
 
 	// Return the content handler for this Result object
 	try {
@@ -790,8 +790,14 @@ public final class TransformerImpl extends Transformer
      * @throws IllegalArgumentException Never, errors are ignored
      */
     public void setOutputProperties(Properties properties)
-	throws IllegalArgumentException {
-	_properties.putAll(properties);
+	throws IllegalArgumentException 
+    {
+	// Notice that _properties.putAll() will not copy default props
+	final Enumeration propertyNames = properties.propertyNames();
+	while (propertyNames.hasMoreElements()) {
+	    final String prop = (String) propertyNames.nextElement();
+	    _properties.setProperty(prop, (String) properties.getProperty(prop));
+	}
     }
 
     /**
