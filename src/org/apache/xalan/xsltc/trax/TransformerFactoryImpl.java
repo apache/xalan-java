@@ -602,10 +602,9 @@ public class TransformerFactoryImpl
 	        
 	    try {
 	        final Class clazz = loadTranslet(transletName);
-	        final Translet translet = (Translet)clazz.newInstance();	            
 	        resetTransientAttributes();
 	            
-	        return new TemplatesImpl(translet, transletName, null, _indentNumber, this);
+	        return new TemplatesImpl(new Class[]{clazz}, transletName, null, _indentNumber, this);
 	    }
 	    catch (ClassNotFoundException cnfe) {
 	        ErrorMsg err = new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, transletName);

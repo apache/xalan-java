@@ -102,11 +102,6 @@ public final class TemplatesImpl implements Templates, Serializable {
     private byte[][] _bytecodes = null;
     
     /**
-     * The Translet instance from which the template is created.
-     */
-    private Translet _translet = null;
-
-    /**
      * Contains the translet class definition(s). These are created when 
      * this Templates is created or when it is read back from disk.
      */
@@ -167,14 +162,15 @@ public final class TemplatesImpl implements Templates, Serializable {
     }
     
     /**
-     * Create an XSLTC template object from a Translet instance.
+     * Create an XSLTC template object from the translet class definition(s).
      */
-    protected TemplatesImpl(Translet translet, String transletName,
+    protected TemplatesImpl(Class[] transletClasses, String transletName,
 	Properties outputProperties, int indentNumber,
 	TransformerFactoryImpl tfactory) 
     {
-	_translet  = translet;
+	_class     = transletClasses;
 	_name      = transletName;
+	_transletIndex = 0;
 	_outputProperties = outputProperties;
 	_indentNumber = indentNumber;
 	_tfactory = tfactory;
@@ -331,7 +327,7 @@ public final class TemplatesImpl implements Templates, Serializable {
 	    // The translet needs to keep a reference to all its auxiliary 
 	    // class to prevent the GC from collecting them
 	    Translet translet = (Translet) _class[_transletIndex].newInstance();
-	    final int classCount = _bytecodes.length;
+	    final int classCount = _class.length;
 	    for (int i = 0; i < classCount; i++) {
 		if (i != _transletIndex) {
 		    translet.addAuxiliaryClass(_class[i]);
@@ -358,14 +354,9 @@ public final class TemplatesImpl implements Templates, Serializable {
 	throws TransformerConfigurationException 
     {
 	TransformerImpl transformer;
-	if (_translet != null) {
-	    transformer = new TransformerImpl(_translet, _outputProperties,
-			      _indentNumber, _tfactory);
-	}
-	else {
-	    transformer = new TransformerImpl(getTransletInstance(), _outputProperties,
-			      _indentNumber, _tfactory);
-	}
+
+	transformer = new TransformerImpl(getTransletInstance(), _outputProperties,
+	    _indentNumber, _tfactory);
 	
 	if (_uriResolver != null) {
 	    transformer.setURIResolver(_uriResolver);
