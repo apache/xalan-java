@@ -392,7 +392,7 @@ public class QueuedStartElement extends QueuedSAXEvent implements TransformState
    */
   public Node getCurrentNode()
   {
-    return m_currentTemplate;
+    return m_currentNode;
   }
   
   /**
