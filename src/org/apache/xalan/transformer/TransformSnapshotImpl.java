@@ -49,9 +49,9 @@
  *
  * This software consists of voluntary contributions made by many
  * individuals on behalf of the Apache Software Foundation and was
- * originally based on software copyright (c) 1999, Lotus
- * Development Corporation., http://www.lotus.com.  For more
- * information on the Apache Software Foundation, please see
+ * originally based on software copyright (c) 1999-2003, Lotus Development
+ * Corporation., http://www.lotus.com.  For more information on the Apache
+ * Software Foundation, please see
  * <http://www.apache.org/>.
  */
 package org.apache.xalan.transformer;
@@ -70,12 +70,17 @@ import org.apache.xpath.XPathContext;
 
 import org.xml.sax.helpers.NamespaceSupport;
 
+import org.apache.xml.serializer.NamespaceMappings;
+import org.apache.xml.serializer.SerializationHandler;
 /**
  * This class holds a "snapshot" of it's current transformer state,
  * which can later be restored.
  *
  * This only saves state which can change over the course of the side-effect-free
  * (i.e. no extensions that call setURIResolver, etc.).
+ * 
+ * @deprecated  It doesn't look like this code, which is for tooling, has
+ * functioned propery for a while, so it doesn't look like it is being used.
  */
 class TransformSnapshotImpl implements TransformSnapshot
 {
@@ -160,16 +165,18 @@ class TransformSnapshotImpl implements TransformSnapshot
   /**
    * Use the SAX2 helper class to track result namespaces.
    */
-  private NamespaceSupport m_nsSupport;
+  private NamespaceMappings m_nsSupport;
 
   /** The number of events queued */
-  int m_eventCount;
+//  int m_eventCount;
 
   /**
    * Constructor TransformSnapshotImpl
    * Take a snapshot of the currently executing context.
    *
    * @param transformer Non null transformer instance
+   * @deprecated  It doesn't look like this code, which is for tooling, has
+   * functioned propery for a while, so it doesn't look like it is being used.
    */
   TransformSnapshotImpl(TransformerImpl transformer)
   {
@@ -178,25 +185,15 @@ class TransformSnapshotImpl implements TransformSnapshot
     {
 
       // Are all these clones deep enough?
-      ResultTreeHandler rtf = transformer.getResultTreeHandler();
+      SerializationHandler rtf = transformer.getResultTreeHandler();
 
-      m_eventCount = rtf.m_eventCount;
-
-      // yuck.  No clone. Hope this is good enough.
-      m_nsSupport = new NamespaceSupport2();
-
-      Enumeration prefixes = rtf.m_nsSupport.getPrefixes();
-
-      while (prefixes.hasMoreElements())
       {
-        String prefix = (String) prefixes.nextElement();
-        String uri = rtf.m_nsSupport.getURI(prefix);
-
-        m_nsSupport.declarePrefix(prefix, uri);
+        // save serializer fields
+        m_nsSupport = (NamespaceMappings)rtf.getNamespaceMappings().clone();
+        
+        // Do other fields need to be saved/restored?
       }
-
-      m_nsContextPushed = rtf.m_nsContextPushed;
-
+ 
       XPathContext xpc = transformer.getXPathContext();
 
       m_variableStacks = (VariableStack) xpc.getVarStack().clone();
@@ -235,6 +232,9 @@ class TransformSnapshotImpl implements TransformSnapshot
    * based on some previously taken snapshot where we can then start execution 
    *
    * @param transformer Non null transformer instance
+   * 
+   * @deprecated  It doesn't look like this code, which is for tooling, has
+   * functioned propery for a while, so it doesn't look like it is being used.
    */
   void apply(TransformerImpl transformer)
   {
@@ -243,26 +243,12 @@ class TransformSnapshotImpl implements TransformSnapshot
     {
 
       // Are all these clones deep enough?
-      ResultTreeHandler rtf = transformer.getResultTreeHandler();
+      SerializationHandler rtf = transformer.getResultTreeHandler();
 
       if (rtf != null)
       {
-        rtf.m_eventCount = 1;  //1 for start document event! m_eventCount;
-
-        // yuck.  No clone. Hope this is good enough.
-        rtf.m_nsSupport = new NamespaceSupport();
-
-        Enumeration prefixes = m_nsSupport.getPrefixes();
-
-        while (prefixes.hasMoreElements())
-        {
-          String prefix = (String) prefixes.nextElement();
-          String uri = m_nsSupport.getURI(prefix);
-
-          rtf.m_nsSupport.declarePrefix(prefix, uri);
-        }
-
-        rtf.m_nsContextPushed = m_nsContextPushed;
+        // restore serializer fields
+         rtf.setNamespaceMappings((NamespaceMappings)m_nsSupport.clone());
       }
 
       XPathContext xpc = transformer.getXPathContext();

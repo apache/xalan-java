@@ -178,7 +178,7 @@ public abstract class QueuedEvents
   }
 
   /** Instance of a serializer          */
-  private org.apache.xalan.serialize.Serializer m_serializer;
+  private org.apache.xml.serializer.Serializer m_serializer;
 
   /**
    * This is only for use of object pooling, so that
@@ -186,7 +186,7 @@ public abstract class QueuedEvents
    *
    * @param s non-null instance of a serializer 
    */
-  void setSerializer(org.apache.xalan.serialize.Serializer s)
+  void setSerializer(org.apache.xml.serializer.Serializer s)
   {
     m_serializer = s;
   }
@@ -197,7 +197,7 @@ public abstract class QueuedEvents
    *
    * @return The serializer
    */
-  org.apache.xalan.serialize.Serializer getSerializer()
+  org.apache.xml.serializer.Serializer getSerializer()
   {
     return m_serializer;
   }

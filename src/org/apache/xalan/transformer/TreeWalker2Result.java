@@ -56,8 +56,10 @@
  */
 package org.apache.xalan.transformer;
 
+import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.ref.DTMTreeWalker;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.XPathContext;
 
 /**
@@ -72,7 +74,7 @@ public class TreeWalker2Result extends DTMTreeWalker
   TransformerImpl m_transformer;
 
   /** The result tree handler          */
-  ResultTreeHandler m_handler;
+  SerializationHandler m_handler;
 
   /** Node where to start the tree walk           */
   int m_startNode;
@@ -84,7 +86,7 @@ public class TreeWalker2Result extends DTMTreeWalker
    * @param handler The Result tree handler to use
    */
   public TreeWalker2Result(TransformerImpl transformer,
-                           ResultTreeHandler handler)
+                           SerializationHandler handler)
   {
 
     super(handler, null);
@@ -155,27 +157,21 @@ public class TreeWalker2Result extends DTMTreeWalker
           String namespace = m_dtm.getNamespaceURI(node);
                                         
           //xcntxt.pushCurrentNode(node);       
-          m_handler.startElement(namespace, localName, elemName, null);
-
+          // SAX-like call to allow adding attributes afterwards
+          m_handler.startElement(namespace, localName, elemName);
           boolean hasNSDecls = false;
           DTM dtm = m_dtm;
           for (int ns = dtm.getFirstNamespaceNode(node, true); 
                DTM.NULL != ns; ns = dtm.getNextNamespaceNode(node, ns, true))
           {
-            m_handler.ensureNamespaceDeclDeclared(dtm, ns);
+            SerializerUtils.ensureNamespaceDeclDeclared(m_handler,dtm, ns);
           }
                                                 
-          // %REVIEW% This flag is apparently never set true. Is that
-          // a bug, or should this code be phased out?
-          if(hasNSDecls)
-          {
-            m_handler.addNSDeclsToAttrs();
-          }
                                                 
           for (int attr = dtm.getFirstAttribute(node); 
                DTM.NULL != attr; attr = dtm.getNextAttribute(attr))
           {
-            m_handler.addAttribute(attr);
+            SerializerUtils.addAttribute(m_handler, attr);
           }
         }
                                 

@@ -70,6 +70,7 @@ import javax.xml.transform.ErrorListener;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
@@ -80,9 +81,9 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.xalan.extensions.ExtensionsTable;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.serialize.Method;
-import org.apache.xalan.serialize.Serializer;
-import org.apache.xalan.serialize.SerializerFactory;
+import org.apache.xml.serializer.Method;
+import org.apache.xml.serializer.Serializer;
+import org.apache.xml.serializer.SerializerFactory;
 import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemAttributeSet;
@@ -102,6 +103,12 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTMWSFilter;
+import org.apache.xml.serializer.ToHTMLSAXHandler;
+import org.apache.xml.serializer.ToSAXHandler;
+import org.apache.xml.serializer.ToTextSAXHandler;
+import org.apache.xml.serializer.ToTextStream;
+import org.apache.xml.serializer.ToXMLSAXHandler;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.DOMBuilder;
 import org.apache.xml.utils.DOMHelper;
@@ -117,7 +124,7 @@ import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.XObject;
-
+import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
@@ -125,6 +132,7 @@ import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
 
+import org.apache.xalan.trace.GenerateEvent;
 /**
  * <meta name="usage" content="advanced"/>
  * This class implements the
@@ -132,7 +140,7 @@ import org.xml.sax.ext.LexicalHandler;
  * representation of the transformation execution.</p>
  */
 public class TransformerImpl extends Transformer
-        implements Runnable, DTMWSFilter, ExtensionsProvider
+        implements Runnable, DTMWSFilter, ExtensionsProvider, org.apache.xml.serializer.SerializerTrace
 {
 
   // Synch object to gaurd against setting values from the TrAX interface 
@@ -166,8 +174,6 @@ public class TransformerImpl extends Transformer
    */
   private OutputProperties m_outputFormat;
 
-  /** The output serializer */
-  private Serializer m_serializer;
 
   /**
    * The content handler for the source input tree.
@@ -194,7 +200,7 @@ public class TransformerImpl extends Transformer
    *  Please note that each of these also holds onto a Text Serializer.  
    */
   private ObjectPool m_textResultHandlerObjectPool =
-    new ObjectPool("org.apache.xalan.transformer.ResultTreeHandler");
+    new ObjectPool("org.apache.xml.serializer.ToTextStream");
 
   /**
    * Related to m_textResultHandlerObjectPool, this is a pool of
@@ -208,7 +214,7 @@ public class TransformerImpl extends Transformer
    * A static text format object, which can be used over and
    * over to create the text serializers.    
    */
-  private OutputProperties m_textformat = new OutputProperties(Method.Text);
+  private OutputProperties m_textformat = new OutputProperties(Method.TEXT);
 
   // Commenteded out in response to problem reported by 
   // Nicola Brown <Nicola.Brown@jacobsrimell.com>
@@ -281,7 +287,7 @@ public class TransformerImpl extends Transformer
   /**
    * Output handler to bottleneck SAX events.
    */
-  private ResultTreeHandler m_resultTreeHandler;
+  private SerializationHandler m_serializationHandler;  
 
   /** The key manager, which manages xsl:keys. */
   private KeyManager m_keyManager = new KeyManager();
@@ -498,7 +504,7 @@ public class TransformerImpl extends Transformer
       m_currentMatchTemplates.removeAllElements();
       m_currentMatchedNodes.removeAllElements();
       
-      m_resultTreeHandler = null;
+      m_serializationHandler = null;      
       m_outputTarget = null;
       m_keyManager = new KeyManager();
       m_attrSetStack = null;
@@ -693,9 +699,9 @@ public class TransformerImpl extends Transformer
           throw new javax.xml.transform.TransformerException(e);
         }
       }
-      else if (null != m_resultTreeHandler)
+      else if (null != m_serializationHandler)
       {
-        m_resultTreeHandler.endDocument();
+        m_serializationHandler.endDocument();
       }
     }
     catch (org.apache.xml.utils.WrappedRuntimeException wre)
@@ -954,142 +960,189 @@ public class TransformerImpl extends Transformer
     return (Properties) getOutputFormat().getProperties().clone();
   }
 
-  /**
-   * Create a result ContentHandler from a Result object, based
-   * on the current OutputProperties.
-   *
-   * @param outputTarget Where the transform result should go,
-   * should not be null.
-   *
-   * @return A valid ContentHandler that will create the
-   * result tree when it is fed SAX events.
-   *
-   * @throws TransformerException
-   */
-  public ContentHandler createResultContentHandler(Result outputTarget)
-          throws TransformerException
-  {
-    return createResultContentHandler(outputTarget, getOutputFormat());
-  }
-
-  /**
-   * Create a ContentHandler from a Result object and an OutputProperties.
-   *
-   * @param outputTarget Where the transform result should go,
-   * should not be null.
-   * @param format The OutputProperties object that will contain
-   * instructions on how to serialize the output.
-   *
-   * @return A valid ContentHandler that will create the
-   * result tree when it is fed SAX events.
-   *
-   * @throws TransformerException
-   */
-  public ContentHandler createResultContentHandler(
-          Result outputTarget, OutputProperties format)
+    /**
+     * Create a result ContentHandler from a Result object, based
+     * on the current OutputProperties.
+     *
+     * @param outputTarget Where the transform result should go,
+     * should not be null.
+     *
+     * @return A valid ContentHandler that will create the
+     * result tree when it is fed SAX events.
+     *
+     * @throws TransformerException
+     */
+    public SerializationHandler createSerializationHandler(Result outputTarget)
             throws TransformerException
-  {
-
-    ContentHandler handler = null;
-
-    // If the Result object contains a Node, then create 
-    // a ContentHandler that will add nodes to the input node.
-    org.w3c.dom.Node outputNode = null;
-
-    if (outputTarget instanceof DOMResult)
     {
-      outputNode = ((DOMResult) outputTarget).getNode();
+       SerializationHandler xoh =
+        createSerializationHandler(outputTarget, getOutputFormat());
+       return xoh;
+    }
 
-      org.w3c.dom.Document doc;
-      short type;
+    /**
+     * Create a ContentHandler from a Result object and an OutputProperties.
+     *
+     * @param outputTarget Where the transform result should go,
+     * should not be null.
+     * @param format The OutputProperties object that will contain
+     * instructions on how to serialize the output.
+     *
+     * @return A valid ContentHandler that will create the
+     * result tree when it is fed SAX events.
+     *
+     * @throws TransformerException
+     */
+    public SerializationHandler createSerializationHandler(
+            Result outputTarget, OutputProperties format)
+              throws TransformerException
+    {
 
-      if (null != outputNode)
+      SerializationHandler xoh;
+
+      // If the Result object contains a Node, then create
+      // a ContentHandler that will add nodes to the input node.
+      org.w3c.dom.Node outputNode = null;
+
+      if (outputTarget instanceof DOMResult)
       {
-        type = outputNode.getNodeType();
-        doc = (org.w3c.dom.Node.DOCUMENT_NODE == type)
-              ? (org.w3c.dom.Document) outputNode
-              : outputNode.getOwnerDocument();
+        outputNode = ((DOMResult) outputTarget).getNode();
+
+        org.w3c.dom.Document doc;
+        short type;
+
+        if (null != outputNode)
+        {
+          type = outputNode.getNodeType();
+          doc = (org.w3c.dom.Node.DOCUMENT_NODE == type)
+                ? (org.w3c.dom.Document) outputNode
+                : outputNode.getOwnerDocument();
+        }
+        else
+        {
+          doc = org.apache.xml.utils.DOMHelper.createDocument();
+          outputNode = doc;
+          type = outputNode.getNodeType();
+
+          ((DOMResult) outputTarget).setNode(outputNode);
+        }
+
+        ContentHandler handler =
+          (org.w3c.dom.Node.DOCUMENT_FRAGMENT_NODE == type)
+          ? new DOMBuilder(doc, (org.w3c.dom.DocumentFragment) outputNode)
+          : new DOMBuilder(doc, outputNode);
+          String encoding = format.getProperty(OutputKeys.ENCODING);          
+          xoh = new ToXMLSAXHandler(handler, (LexicalHandler)handler, encoding);
+      }
+      else if (outputTarget instanceof SAXResult)
+      {
+        ContentHandler handler = ((SAXResult) outputTarget).getHandler();
+        
+        if (null == handler)
+           throw new IllegalArgumentException(
+             "handler can not be null for a SAXResult"); 
+             
+        LexicalHandler lexHandler;
+        if (handler instanceof LexicalHandler)     
+            lexHandler = (LexicalHandler)  handler;
+        else
+            lexHandler = null;
+            
+        String encoding = format.getProperty(OutputKeys.ENCODING); 
+        String method = format.getProperty(OutputKeys.METHOD);
+        if (org.apache.xml.serializer.Method.HTML.equals(method))
+        {
+            xoh = new ToHTMLSAXHandler(handler, lexHandler, encoding);
+        }
+        else if (org.apache.xml.serializer.Method.TEXT.equals(method))
+        {
+            xoh = new ToTextSAXHandler(handler, lexHandler, encoding);
+        } 
+        else 
+        {
+            xoh = new ToXMLSAXHandler(handler, lexHandler, encoding);    
+        }       
+        
+        if (handler instanceof TransformerClient) {
+            XalanTransformState state = new XalanTransformState();
+            ((TransformerClient)handler).setTransformState(state);
+            ((ToSAXHandler)xoh).setTransformState(state);
+        }
+
+ 
+      }
+
+      // Otherwise, create a ContentHandler that will serialize the
+      // result tree to either a stream or a writer.
+      else if (outputTarget instanceof StreamResult)
+      {
+        StreamResult sresult = (StreamResult) outputTarget;
+        String method = format.getProperty(OutputKeys.METHOD);
+
+        try
+        {
+          SerializationHandler serializer =
+            (SerializationHandler) SerializerFactory.getSerializer(format.getProperties());
+
+          if (null != sresult.getWriter())
+            serializer.setWriter(sresult.getWriter());
+          else if (null != sresult.getOutputStream())
+            serializer.setOutputStream(sresult.getOutputStream());
+          else if (null != sresult.getSystemId())
+          {
+            String fileURL = sresult.getSystemId();
+
+            if (fileURL.startsWith("file:///"))
+            {
+              if (fileURL.substring(8).indexOf(":") >0)
+                fileURL = fileURL.substring(8);
+              else
+                fileURL = fileURL.substring(7);
+            }
+
+            m_outputStream = new java.io.FileOutputStream(fileURL);
+
+            serializer.setOutputStream(m_outputStream);
+            
+            xoh = serializer;
+          }
+          else
+            throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_OUTPUT_SPECIFIED, null)); //"No output specified!");
+
+          // handler = serializer.asContentHandler();
+
+        //  this.setSerializer(serializer);
+
+          xoh = serializer;  
+        }
+//        catch (UnsupportedEncodingException uee)
+//        {
+//          throw new TransformerException(uee);
+//        }
+        catch (IOException ioe)
+        {
+          throw new TransformerException(ioe);
+        }
       }
       else
       {
-        doc = DOMHelper.createDocument();
-        outputNode = doc;
-        type = outputNode.getNodeType();
-
-        ((DOMResult) outputTarget).setNode(outputNode);
+        throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_CANNOT_TRANSFORM_TO_RESULT_TYPE, new Object[]{outputTarget.getClass().getName()})); //"Can't transform to a Result of type "
+                                       //+ outputTarget.getClass().getName()
+                                       //+ "!");
       }
+      
+      // before we forget, lets make the created handler hold a reference
+      // to the current TransformImpl object
+      xoh.setTransformer(this);
 
-      handler =
-        (org.w3c.dom.Node.DOCUMENT_FRAGMENT_NODE == type)
-        ? new DOMBuilder(doc, (org.w3c.dom.DocumentFragment) outputNode)
-        : new DOMBuilder(doc, outputNode);
+      SourceLocator srcLocator = getStylesheet();
+      xoh.setSourceLocator(srcLocator);
+      
+      
+      return xoh;
+
+   
     }
-    else if (outputTarget instanceof SAXResult)
-    {
-      handler = ((SAXResult) outputTarget).getHandler();
-
-      if (null == handler)
-        throw new IllegalArgumentException(
-          "handler can not be null for a SAXResult");
-    }
-
-    // Otherwise, create a ContentHandler that will serialize the 
-    // result tree to either a stream or a writer.
-    else if (outputTarget instanceof StreamResult)
-    {
-      StreamResult sresult = (StreamResult) outputTarget;
-      String method = format.getProperty(OutputKeys.METHOD);
-
-      try
-      {
-        Serializer serializer =
-          SerializerFactory.getSerializer(format.getProperties());
-
-        if (null != sresult.getWriter())
-          serializer.setWriter(sresult.getWriter());
-        else if (null != sresult.getOutputStream())
-          serializer.setOutputStream(sresult.getOutputStream());
-        else if (null != sresult.getSystemId())
-        {
-          String fileURL = sresult.getSystemId();
-
-          if (fileURL.startsWith("file:///"))
-          {
-            if (fileURL.substring(8).indexOf(":") >0)
-              fileURL = fileURL.substring(8);
-            else 
-              fileURL = fileURL.substring(7);
-          }
-
-          m_outputStream = new java.io.FileOutputStream(fileURL);
-
-          serializer.setOutputStream(m_outputStream);
-        }
-        else
-          throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_OUTPUT_SPECIFIED, null)); //"No output specified!");
-
-        handler = serializer.asContentHandler();
-
-        this.setSerializer(serializer);
-      }
-      catch (UnsupportedEncodingException uee)
-      {
-        throw new TransformerException(uee);
-      }
-      catch (IOException ioe)
-      {
-        throw new TransformerException(ioe);
-      }
-    }
-    else
-    {
-      throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_CANNOT_TRANSFORM_TO_RESULT_TYPE, new Object[]{outputTarget.getClass().getName()})); //"Can't transform to a Result of type "
-                                     //+ outputTarget.getClass().getName()
-                                     //+ "!");
-    }
-
-    return handler;
-  }
         
         /**
    * Process the source tree to the output result.
@@ -1118,11 +1171,11 @@ public class TransformerImpl extends Transformer
 
     synchronized (m_reentryGuard)
     {
-      ContentHandler handler = createResultContentHandler(outputTarget);
+      SerializationHandler xoh = createSerializationHandler(outputTarget);
+      this.setSerializationHandler(xoh);        
 
       m_outputTarget = outputTarget;
 
-      this.setContentHandler(handler);
       transform(xmlSource, shouldRelease);
     }
   }
@@ -1142,11 +1195,11 @@ public class TransformerImpl extends Transformer
   {
     
 
-    ContentHandler handler = createResultContentHandler(outputTarget);
+    SerializationHandler xoh = createSerializationHandler(outputTarget);
+    this.setSerializationHandler(xoh);
 
     m_outputTarget = outputTarget;
 
-    this.setContentHandler(handler);
     transformNode(node);
   }
 
@@ -1165,7 +1218,7 @@ public class TransformerImpl extends Transformer
     //dml
     setExtensionsTable(getStylesheet());
     // Make sure we're not writing to the same output content handler.
-    synchronized (m_outputContentHandler)
+    synchronized (m_serializationHandler)
     {
       m_hasBeenReset = false;
       
@@ -1216,9 +1269,9 @@ public class TransformerImpl extends Transformer
         // m_stylesheetRoot.getStartRule().execute(this);
 
         // System.out.println("Done with applyTemplateToNode - "+Thread.currentThread().getName());
-        if (null != m_resultTreeHandler)
+        if (null != m_serializationHandler)
         {
-          m_resultTreeHandler.endDocument();
+          m_serializationHandler.endDocument();
         }
       }
       catch (Exception se)
@@ -1238,21 +1291,21 @@ public class TransformerImpl extends Transformer
             se = e;
         }
         
-        if (null != m_resultTreeHandler)
+        if (null != m_serializationHandler)
         {
           try
           {
             if(se instanceof org.xml.sax.SAXParseException)
-              m_resultTreeHandler.fatalError((org.xml.sax.SAXParseException)se);
+              m_serializationHandler.fatalError((org.xml.sax.SAXParseException)se);
             else if(se instanceof TransformerException)
             {
               TransformerException te = ((TransformerException)se);
               SAXSourceLocator sl = new SAXSourceLocator( te.getLocator() );
-              m_resultTreeHandler.fatalError(new org.xml.sax.SAXParseException(te.getMessage(), sl, te)); 
+              m_serializationHandler.fatalError(new org.xml.sax.SAXParseException(te.getMessage(), sl, te)); 
             }
             else
             {
-              m_resultTreeHandler.fatalError(new org.xml.sax.SAXParseException(se.getMessage(), new SAXSourceLocator(), se)); 
+              m_serializationHandler.fatalError(new org.xml.sax.SAXParseException(se.getMessage(), new SAXSourceLocator(), se)); 
             }             
           }
           catch (Exception e){}
@@ -1379,30 +1432,6 @@ public class TransformerImpl extends Transformer
     return format;
   }
 
-  /**
-   * <meta name="usage" content="internal"/>
-   * Get the current serializer in use, which may well not
-   * be the main serializer (for instance, this may well be
-   * a text serializer for string creation from templates).
-   *
-   * @return The current serializer, or null if there is none.
-   */
-  public Serializer getSerializer()
-  {
-    return m_serializer;
-  }
-
-  /**
-   * <meta name="usage" content="internal"/>
-   * Set the current serializer.
-   *
-   * @param s The current serializer, or null.
-   */
-  public void setSerializer(Serializer s)
-  {
-    m_serializer = s;
-  }
-  
   /**
    * Set a parameter for the templates.
    * 
@@ -1750,10 +1779,16 @@ public class TransformerImpl extends Transformer
     {
       m_outputContentHandler = handler;
 
-      if (null == m_resultTreeHandler)
-        m_resultTreeHandler = new ResultTreeHandler(this, handler);
+      if (null == m_serializationHandler)
+      {
+        ToXMLSAXHandler h = new ToXMLSAXHandler();
+        h.setContentHandler(handler);
+        h.setTransformer(this);
+        
+        m_serializationHandler = h;
+      }
       else
-        m_resultTreeHandler.setContentHandler(handler);
+        m_serializationHandler.setContentHandler(handler);
     }
   }
 
@@ -1835,12 +1870,19 @@ public class TransformerImpl extends Transformer
     int resultFragment; // not yet reliably = dtmFrag.getDocument();
 
     // Save the current result tree handler.
-    ResultTreeHandler savedRTreeHandler = this.m_resultTreeHandler;
+    SerializationHandler savedRTreeHandler = this.m_serializationHandler;
+ 
 
     // And make a new handler for the RTF.
-    m_resultTreeHandler = new ResultTreeHandler(this, rtfHandler);
-
-    ResultTreeHandler rth = m_resultTreeHandler;
+    ToSAXHandler h = new ToXMLSAXHandler();
+    h.setContentHandler(rtfHandler);
+    h.setTransformer(this);
+    
+    // Replace the old handler (which was already saved)
+    m_serializationHandler = h;
+ 
+    // use local variable for the current handler
+    SerializationHandler rth = m_serializationHandler;
 
     try
     {
@@ -1879,7 +1921,7 @@ public class TransformerImpl extends Transformer
     {
 
       // Restore the previous result tree handler.
-      this.m_resultTreeHandler = savedRTreeHandler;
+      this.m_serializationHandler = savedRTreeHandler;
     }
 
     return resultFragment;
@@ -1924,55 +1966,41 @@ public class TransformerImpl extends Transformer
     }
 
     // Save the current result tree handler.
-    ResultTreeHandler savedRTreeHandler = this.m_resultTreeHandler;
+    SerializationHandler savedRTreeHandler = this.m_serializationHandler;
 
     // Create a Serializer object that will handle the SAX events 
     // and build the ResultTreeFrag nodes.
     StringWriter sw = (StringWriter) m_stringWriterObjectPool.getInstance();
 
-    m_resultTreeHandler =
-      (ResultTreeHandler) m_textResultHandlerObjectPool.getInstance();
+    m_serializationHandler =
+        (ToTextStream) m_textResultHandlerObjectPool.getInstance();
 
-    Serializer serializer = m_resultTreeHandler.getSerializer();
-
-    try
-    {
-      if (null == serializer)
+      if (null == m_serializationHandler)
       {
-        serializer =
-          SerializerFactory.getSerializer(m_textformat.getProperties());
+        // if we didn't get one from the pool, go make a new one
 
-        m_resultTreeHandler.setSerializer(serializer);
-        serializer.setWriter(sw);
+        
+        Serializer serializer = org.apache.xml.serializer.SerializerFactory.getSerializer(
+            m_textformat.getProperties());
+        m_serializationHandler = (SerializationHandler) serializer;
+      } 
 
-        ContentHandler shandler = serializer.asContentHandler();
-
-        m_resultTreeHandler.init(this, shandler);
-      }
-      else
-      {
-
-        // Leave Commented.  -sb
-        // serializer.setWriter(sw);
-        // serializer.setOutputFormat(m_textformat);
-        // ContentHandler shandler = serializer.asContentHandler();
-        // m_resultTreeHandler.setContentHandler(shandler);
-      }
-    }
-    catch (IOException ioe)
-    {
-      throw new TransformerException(ioe);
-    }
-
+        m_serializationHandler.setTransformer(this);
+        m_serializationHandler.setWriter(sw);
+ 
+ 
     String result;
 
     try
     {
-      this.m_resultTreeHandler.startDocument();
+        /* Don't call startDocument, the SerializationHandler  will
+         * generate its own internal startDocument call anyways
+         */
+      // this.m_serializationHandler.startDocument();
 
       // Do the transformation of the child elements.
       executeChildTemplates(elem, true);
-      this.m_resultTreeHandler.endDocument();
+        this.m_serializationHandler.endDocument();
 
       result = sw.toString();
     }
@@ -1991,11 +2019,11 @@ public class TransformerImpl extends Transformer
       catch (Exception ioe){}
 
       m_stringWriterObjectPool.freeInstance(sw);
-      m_textResultHandlerObjectPool.freeInstance(m_resultTreeHandler);
-      m_resultTreeHandler.reset();
+      m_serializationHandler.reset();
+      m_textResultHandlerObjectPool.freeInstance(m_serializationHandler);
 
       // Restore the previous result tree handler.
-      m_resultTreeHandler = savedRTreeHandler;
+      m_serializationHandler = savedRTreeHandler;
     }
 
     return result;
@@ -2223,52 +2251,6 @@ public class TransformerImpl extends Transformer
    * <meta name="usage" content="advanced"/>
    * Execute each of the children of a template element.
    *
-   * @param elem The ElemTemplateElement that contains the children
-   * that should execute.
-   * @param handler The ContentHandler to where the result events
-   * should be fed.
-   *
-   * @throws TransformerException
-   */
-  public void executeChildTemplates(
-          ElemTemplateElement elem, ContentHandler handler)
-            throws TransformerException
-  {
-
-    ResultTreeHandler rth = this.getResultTreeHandler();
-
-    // These may well not be the same!  In this case when calling 
-    // the Redirect extension, it has already set the ContentHandler
-    // in the Transformer.
-    ContentHandler savedRTHHandler = rth.getContentHandler();
-    ContentHandler savedHandler = this.getContentHandler();
-
-    try
-    {
-      getResultTreeHandler().flushPending();
-      this.setContentHandler(handler);
-
-      // %REVIEW% Make sure current node is being pushed.
-      executeChildTemplates(elem, true);
-    }
-    catch (org.xml.sax.SAXException se)
-    {
-      throw new TransformerException(se);
-    }
-    finally
-    {
-      this.setContentHandler(savedHandler);
-
-      // This fixes a bug where the ResultTreeHandler's ContentHandler
-      // was being reset to the wrong ContentHandler.
-      rth.setContentHandler(savedRTHHandler);
-    }
-  }
-
-  /**
-   * <meta name="usage" content="advanced"/>
-   * Execute each of the children of a template element.
-   *
    * @param transformer The XSLT transformer instance.
    *
    * @param elem The ElemTemplateElement that contains the children
@@ -2297,7 +2279,7 @@ public class TransformerImpl extends Transformer
       {
         // Have to push stuff on for tooling...
         this.pushElemTemplateElement(t);
-        m_resultTreeHandler.characters(chars, 0, chars.length);
+        m_serializationHandler.characters(chars, 0, chars.length);
       }
       catch(SAXException se)
       {
@@ -2351,6 +2333,50 @@ public class TransformerImpl extends Transformer
     // Check for infinite loops if we have to
 //    if (check)
 //      getStackGuard().pop();
+  }
+    /**
+      * <meta name="usage" content="advanced"/>
+      * Execute each of the children of a template element.
+      *
+      * @param elem The ElemTemplateElement that contains the children
+      * that should execute.
+      * @param handler The ContentHandler to where the result events
+      * should be fed.
+      *
+      * @throws TransformerException
+      */
+     public void executeChildTemplates(
+             ElemTemplateElement elem, ContentHandler handler)
+               throws TransformerException
+     {
+
+       SerializationHandler xoh = this.getSerializationHandler();
+
+       // These may well not be the same!  In this case when calling
+       // the Redirect extension, it has already set the ContentHandler
+       // in the Transformer.
+       SerializationHandler savedHandler = xoh;
+
+       try
+       {
+         xoh.flushPending();
+
+         // %REVIEW% Make sure current node is being pushed.
+         LexicalHandler lex = null;
+         if (handler instanceof LexicalHandler) {
+            lex = (LexicalHandler) lex;
+         }
+         m_serializationHandler = new ToXMLSAXHandler(handler, lex, savedHandler.getEncoding());
+         executeChildTemplates(elem, true);
+       }
+       catch (TransformerException e)
+       {
+         throw e;
+       }
+       finally
+       {
+         m_serializationHandler = savedHandler;
+    }
   }
 
   /**
@@ -2810,16 +2836,27 @@ public class TransformerImpl extends Transformer
   }
 
   /**
-   * Get the ResultTreeHandler object.
+   * Get the SerializationHandler object.
    *
-   * @return The current ResultTreeHandler, which may not
+   * @return The current SerializationHandler, which may not
    * be the main result tree manager.
    */
-  public ResultTreeHandler getResultTreeHandler()
+  public SerializationHandler getResultTreeHandler()
   {
-    return m_resultTreeHandler;
+    return m_serializationHandler;
   }
 
+  /**
+   * Get the SerializationHandler object.
+   *
+   * @return The current SerializationHandler, which may not
+   * be the main result tree manager.
+   */
+  public SerializationHandler getSerializationHandler()
+  {
+    return m_serializationHandler;
+  }
+  
   /**
    * Get the KeyManager object.
    *
@@ -3234,7 +3271,7 @@ public class TransformerImpl extends Transformer
     //
     //      sth.setExceptionThrown(e);
     //    }
-    ContentHandler ch = getContentHandler();
+ //   ContentHandler ch = getContentHandler();
 
     //    if(ch instanceof SourceTreeHandler)
     //    {
@@ -3333,7 +3370,8 @@ public class TransformerImpl extends Transformer
    * This will get a snapshot of the current executing context 
    *
    *
-   * @return TransformerSnapshot object, snapshot of executing context
+   * @return TransformSnapshot object, snapshot of executing context
+   * @deprecated This is an internal tooling API that nobody seems to be using
    */
   public TransformSnapshot getSnapshot()
   {
@@ -3348,6 +3386,7 @@ public class TransformerImpl extends Transformer
    * @param ts The snapshot of where to start execution
    *
    * @throws TransformerException
+   * @deprecated This is an internal tooling API that nobody seems to be using
    */
   public void executeFromSnapshot(TransformSnapshot ts)
           throws TransformerException
@@ -3366,6 +3405,7 @@ public class TransformerImpl extends Transformer
    * from the snapshot point.
    *
    * @param ts The snapshot of where to start execution
+   * @deprecated This is an internal tooling API that nobody seems to be using
    */
   public void resetToStylesheet(TransformSnapshot ts)
   {
@@ -3413,5 +3453,85 @@ public class TransformerImpl extends Transformer
       return DTMWSFilter.INHERIT;
     }
   }
+  /**
+   * Initializer method.
+   *
+   * @param transformer non-null transformer instance
+   * @param realHandler Content Handler instance
+   */
+   public void init(ToXMLSAXHandler h,Transformer transformer, ContentHandler realHandler)
+   {
+      h.setTransformer(transformer);
+      h.setContentHandler(realHandler);
+   }
+      
+   public void setSerializationHandler(SerializationHandler xoh)
+   {
+      m_serializationHandler = xoh;
+   }
+   
+   
+     
+	/**
+	 * Fire off characters, cdate events.
+	 * @see org.apache.xml.utils.SerializerTrace#fireGenerateEvent(int, char[], int, int)
+	 */
+	public void fireGenerateEvent(
+		int eventType,
+		char[] ch,
+		int start,
+		int length) {
+			
+		GenerateEvent ge = new GenerateEvent(this, eventType, ch, start, length);
+		m_traceManager.fireGenerateEvent(ge);					
+	}
+
+	/**
+	 * Fire off startElement, endElement events.
+	 * @see org.apache.xml.utils.SerializerTrace#fireGenerateEvent(int, String, Attributes)
+	 */
+	public void fireGenerateEvent(
+		int eventType,
+		String name,
+		Attributes atts) {
+			
+		GenerateEvent ge = new GenerateEvent(this, eventType, name, atts);
+		m_traceManager.fireGenerateEvent(ge);					
+	}
+
+	/**
+	 * Fire off processingInstruction events.
+	 * @see org.apache.xml.utils.SerializerTrace#fireGenerateEvent(int, String, String)
+	 */
+	public void fireGenerateEvent(int eventType, String name, String data) {
+		GenerateEvent ge = new GenerateEvent(this, eventType, name,data);
+		m_traceManager.fireGenerateEvent(ge);				
+	}
+
+	/**
+	 * Fire off comment and entity ref events.
+	 * @see org.apache.xml.utils.SerializerTrace#fireGenerateEvent(int, String)
+	 */
+	public void fireGenerateEvent(int eventType, String data) {
+		GenerateEvent ge = new GenerateEvent(this, eventType, data);
+		m_traceManager.fireGenerateEvent(ge);		
+	}
+
+	/**
+	 * Fire off startDocument, endDocument events.
+	 * @see org.apache.xml.utils.SerializerTrace#fireGenerateEvent(int)
+	 */
+	public void fireGenerateEvent(int eventType) {
+		GenerateEvent ge = new GenerateEvent(this, eventType);
+		m_traceManager.fireGenerateEvent(ge);
+	}
+
+	/**
+	 * @see org.apache.xml.utils.SerializerTrace#hasTraceListeners()
+	 */
+	public boolean hasTraceListeners() {
+		return m_traceManager.hasTraceListeners();
+	}
+
 }  // end TransformerImpl class
 

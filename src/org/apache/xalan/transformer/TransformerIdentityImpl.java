@@ -76,12 +76,12 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
+import org.apache.xml.serializer.Serializer;
+import org.apache.xml.serializer.SerializerFactory;
+import org.apache.xml.serializer.Method;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.serialize.Method;
-import org.apache.xalan.serialize.Serializer;
-import org.apache.xalan.serialize.SerializerFactory;
 import org.apache.xalan.templates.OutputProperties;
 import org.apache.xml.utils.DOMBuilder;
 import org.apache.xml.utils.TreeWalker;
@@ -896,6 +896,17 @@ public class TransformerIdentityImpl extends Transformer
   {
     if(!m_flushedStartDoc)
     {
+      if (m_resultContentHandler == null)
+      {
+        try
+        {
+          createResultContentHandler(m_result);
+        }
+        catch(TransformerException te)
+        {
+            throw new SAXException(te);
+        }
+      }
       m_resultContentHandler.startDocument();
       m_flushedStartDoc = true;
     }

@@ -63,9 +63,9 @@ import java.util.Properties;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.serialize.Method;
-import org.apache.xalan.serialize.Serializer;
-import org.apache.xalan.serialize.SerializerFactory;
+import org.apache.xml.serializer.Serializer;
+import org.apache.xml.serializer.SerializerFactory;
+import org.apache.xml.serialize.Method;
 import org.apache.xalan.templates.OutputProperties;
 
 import org.xml.sax.ContentHandler;
@@ -118,7 +118,8 @@ public class SerializerSwitcher
 
       try
       {
-        Serializer oldSerializer = transformer.getSerializer();
+//        Serializer oldSerializer = transformer.getSerializer();
+        Serializer oldSerializer = null;
 
         if (null != oldSerializer)
         {
@@ -137,7 +138,7 @@ public class SerializerSwitcher
               serializer.setOutputStream(os);
           }
 
-          transformer.setSerializer(serializer);
+//          transformer.setSerializer(serializer);
 
           ContentHandler ch = serializer.asContentHandler();
 

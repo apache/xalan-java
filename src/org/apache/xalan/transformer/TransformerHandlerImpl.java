@@ -81,6 +81,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
+import org.apache.xml.serializer.SerializationHandler;
 
 
 /**
@@ -197,10 +198,12 @@ public class TransformerHandlerImpl
 
     try
     {
-      ContentHandler handler =
-        m_transformer.createResultContentHandler(result);
-
-      m_transformer.setContentHandler(handler);
+//      ContentHandler handler =
+//        m_transformer.createResultContentHandler(result);
+//      m_transformer.setContentHandler(handler);
+        SerializationHandler xoh = 
+            m_transformer.createSerializationHandler(result);
+        m_transformer.setSerializationHandler(xoh);
     }
     catch (javax.xml.transform.TransformerException te)
     {

@@ -58,7 +58,9 @@ package org.apache.xalan.transformer;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.XMLString;
 
 /**
@@ -68,26 +70,6 @@ import org.apache.xml.utils.XMLString;
  */
 public class ClonerToResultTree
 {
-
-  /** Result tree handler for the cloned tree           */
-  private ResultTreeHandler m_rth;
-
-  /** Transformer instance to use for cloning          */
-  private TransformerImpl m_transformer;
-
-  /**
-   * Constructor ClonerToResultTree
-   *
-   *
-   * @param transformer non-null transformer instance to use for the cloning
-   * @param rth non-null result tree handler for the cloned tree
-   */
-  public ClonerToResultTree(TransformerImpl transformer,
-                            ResultTreeHandler rth)
-  {
-    m_rth = rth;
-    m_transformer = transformer;
-  }
 
 //  /**
 //   * Clone an element with or without children.
@@ -184,7 +166,7 @@ public class ClonerToResultTree
    * @throws TransformerException
    */
   public static void cloneToResultTree(int node, int nodeType, DTM dtm, 
-                                             ResultTreeHandler rth,
+                                             SerializationHandler rth,
                                              boolean shouldCloneAttributes)
     throws TransformerException
   {
@@ -208,15 +190,18 @@ public class ClonerToResultTree
           String ns = dtm.getNamespaceURI(node);
           if (ns==null) ns="";
           String localName = dtm.getLocalName(node);
-          rth.startElement(ns, localName, dtm.getNodeNameX(node), null);
+      //  rth.startElement(ns, localName, dtm.getNodeNameX(node), null);
+      //  don't call a real SAX startElement (as commented out above),
+      //  call a SAX-like startElement, to be able to add attributes after this call
+          rth.startElement(ns, localName, dtm.getNodeNameX(node));
           
 	  // If outputting attrs as separate events, they must
 	  // _follow_ the startElement event. (Think of the
 	  // xsl:attribute directive.)
           if (shouldCloneAttributes)
           {
-            rth.addAttributes(node);
-            rth.processNSDecls(node, nodeType, dtm);
+            SerializerUtils.addAttributes(rth, node);
+            SerializerUtils.processNSDecls(rth, node, nodeType, dtm);
           }
         }
         break;
@@ -226,14 +211,14 @@ public class ClonerToResultTree
         rth.endCDATA();
         break;
       case DTM.ATTRIBUTE_NODE :
-        rth.addAttribute(node);
+        SerializerUtils.addAttribute(rth, node);
         break;
 			case DTM.NAMESPACE_NODE:
 				// %REVIEW% Normally, these should have been handled with element.
 				// It's possible that someone may write a stylesheet that tries to
 				// clone them explicitly. If so, we need the equivalent of
 				// rth.addAttribute().
-  			rth.processNSDecls(node,DTM.NAMESPACE_NODE,dtm);
+  			    SerializerUtils.processNSDecls(rth,node,DTM.NAMESPACE_NODE,dtm);
 				break;
       case DTM.COMMENT_NODE :
         XMLString xstr = dtm.getStringValue (node);

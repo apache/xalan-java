@@ -60,6 +60,7 @@ import javax.xml.transform.Transformer;
 
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xml.serializer.TransformStateSetter;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
@@ -78,8 +79,13 @@ import org.w3c.dom.traversal.NodeIterator;
  * <p>Note that the current stylesheet and root stylesheet can
  * be retrieved from the ElemTemplateElement obtained from
  * either getCurrentElement() or getCurrentTemplate().</p>
+ * 
+ * This interface contains only getter methods, any setters are in the interface
+ * TransformStateSetter which this interface extends.
+ * 
+ * @see org.apache.xml.serializer.TransformStateSetter
  */
-public interface TransformState
+public interface TransformState extends TransformStateSetter
 {
 
   /**
@@ -152,4 +158,7 @@ public interface TransformState
    * @return the TrAX Transformer object in effect.
    */
   Transformer getTransformer();
+  
+
+    
 }
