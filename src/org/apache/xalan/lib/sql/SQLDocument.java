@@ -78,7 +78,7 @@ public class SQLDocument extends DTMDocument
 
   /**
    */
-  private boolean DEBUG = false;
+  private boolean DEBUG = true;
 
   /**
    */
@@ -330,7 +330,9 @@ public class SQLDocument extends DTMDocument
     // to measure when we are actually reading rows.
     addRowToDTMFromResultSet();
 
-    // this.dumpDTM();
+// We can't do this until the Document is regiostered with the Manager
+// Which has not happened yet
+//    if (DEBUG) this.dumpDTM();
   }
 
 
