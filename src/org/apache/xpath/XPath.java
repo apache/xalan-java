@@ -187,9 +187,10 @@ public class XPath implements Serializable
   public static final int MATCH = 1;
 
   /**
-   * Construct an XPath object.  The object must be initialized by the
-   * XPathParser.initXPath method.
+   * Construct an XPath object.  
    *
+   * (Needs review -sc) This method initializes an XPathParser/
+   * Compiler and compiles the expression.
    * @param exprString The XPath expression.
    * @param locator The location of the expression, may be null.
    * @param prefixResolver A prefix resolver to use to resolve prefixes to 
@@ -228,9 +229,10 @@ public class XPath implements Serializable
   }
   
   /**
-   * Construct an XPath object.  The object must be initialized by the
-   * XPathParser.initXPath method.
+   * Construct an XPath object.  
    *
+   * (Needs review -sc) This method initializes an XPathParser/
+   * Compiler and compiles the expression.
    * @param exprString The XPath expression.
    * @param locator The location of the expression, may be null.
    * @param prefixResolver A prefix resolver to use to resolve prefixes to 
