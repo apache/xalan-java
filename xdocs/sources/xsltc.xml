@@ -65,6 +65,9 @@
    <document id="xsltc_predicates"
              label="XPath Predicates"
              source="xsltc/xsltc_predicates.xml"/>
+   <document id="xsltc_iterators"
+             label="Xsltc Iterators"
+             source="xsltc/xsltc_iterators.xml"/>
  <separator/>
  <external href="todo.html" label="To-do list"/>
             
