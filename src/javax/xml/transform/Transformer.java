@@ -71,7 +71,8 @@ import java.util.Properties;
  * <p>An object of this class can not be used concurrently over
  * multiple threads.</p>
  * 
- * <p>A Transformer may be used multiple times.</p>
+ * <p>A Transformer may be used multiple times.  Parameters and 
+ * output properties are preserved across transformations.</p>
  *
  * @version Alpha
  * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
@@ -118,12 +119,7 @@ public abstract class Transformer
    * these will not be additive, they will replace the existing
    * set of parameters.
    *
-   * @param name The name of the parameter,
-   *             which may have a namespace URI.
-   * @param value The value object.  This can be any valid Java object
-   * -- it's up to the processor to provide the proper
-   * coersion to the object, or simply pass it on for use
-   * in extensions.
+   * @param params A list of name-value pairs.
    */
   public abstract void setParameters(Properties params);
 
@@ -135,6 +131,15 @@ public abstract class Transformer
    * or null.
    */
   public abstract void setURIResolver(URIResolver resolver);
+
+  /**
+   * Get an object that will be used to resolve URIs used in
+   * document(), etc.
+   * 
+   * @return An object that implements the URIResolver interface,
+   * or null.
+   */
+  public abstract URIResolver getURIResolver();
 
   /**
    * Set the output properties for the transformation.  These
