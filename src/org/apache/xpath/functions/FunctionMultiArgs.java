@@ -60,23 +60,23 @@ import org.apache.xpath.Expression;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Base class for functions that accept an undetermined number of multiple 
+ * Base class for functions that accept an undetermined number of multiple
  * arguments.
  */
 public class FunctionMultiArgs extends Function3Args
 {
 
-  /** Argument expressions that are at index 3 or greater.  */
+  /** Argument expressions that are at index 3 or greater. */
   Expression[] m_args;
 
   /**
-   * Set an argument expression for a function.  This method is called by the 
+   * Set an argument expression for a function.  This method is called by the
    * XPath compiler.
    *
    * @param arg non-null expression that represents the argument.
    * @param argNum The argument number index.
    *
-   * @throws WrongNumberArgsException If a derived class determines that the 
+   * @throws WrongNumberArgsException If a derived class determines that the
    * number of arguments is incorrect.
    */
   public void setArg(Expression arg, int argNum)
@@ -107,7 +107,7 @@ public class FunctionMultiArgs extends Function3Args
   }
 
   /**
-   * Check that the number of arguments passed to this function is correct. 
+   * Check that the number of arguments passed to this function is correct.
    *
    *
    * @param argNum The number of arguments that is being passed to the function.
@@ -115,4 +115,29 @@ public class FunctionMultiArgs extends Function3Args
    * @throws WrongNumberArgsException
    */
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException{}
+
+  /**
+   * Tell if this expression or it's subexpressions can traverse outside
+   * the current subtree.
+   *
+   * @return true if traversal outside the context node's subtree can occur.
+   */
+  public boolean canTraverseOutsideSubtree()
+  {
+
+    if (super.canTraverseOutsideSubtree())
+      return true;
+    else
+    {
+      int n = m_args.length;
+
+      for (int i = 0; i < n; i++)
+      {
+        if (m_args[i].canTraverseOutsideSubtree())
+          return true;
+      }
+
+      return false;
+    }
+  }
 }

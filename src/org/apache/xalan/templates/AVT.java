@@ -72,6 +72,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.processor.StylesheetHandler;
+
 import javax.xml.transform.ErrorListener;
 
 /**
@@ -105,7 +106,7 @@ public class AVT implements java.io.Serializable
   {
     return m_rawName;
   }
-  
+
   /**
    * Get the raw name of the attribute, with the prefix unprocessed.
    *
@@ -130,7 +131,7 @@ public class AVT implements java.io.Serializable
   {
     return m_name;
   }
-  
+
   /**
    * Set the local name of the attribute.
    *
@@ -155,7 +156,7 @@ public class AVT implements java.io.Serializable
   {
     return m_uri;
   }
-  
+
   /**
    * Get the namespace URI of the attribute.
    *
@@ -370,10 +371,11 @@ public class AVT implements java.io.Serializable
                 {
                   handler.warn(XSLTErrorResources.WG_FOUND_CURLYBRACE, null);  //"Found \"}\" but no attribute template open!");
                 }
-                catch(org.xml.sax.SAXException se)
+                catch (org.xml.sax.SAXException se)
                 {
                   throw new TransformerException(se);
                 }
+
                 buffer.append("}");
 
                 // leave the lookahead to be processed by the next round.
@@ -403,10 +405,11 @@ public class AVT implements java.io.Serializable
               handler.warn(XSLTErrorResources.WG_ATTR_TEMPLATE,
                            new Object[]{ error });  //"Attr Template, "+error);
             }
-            catch(org.xml.sax.SAXException se)
+            catch (org.xml.sax.SAXException se)
             {
               throw new TransformerException(se);
             }
+
             break;
           }
         }  // end while(tokenizer.hasMoreTokens())
@@ -480,7 +483,7 @@ public class AVT implements java.io.Serializable
   /**
    * Evaluate the AVT and return a String.
    *
-   * @param xctxt Te XPathContext to use to evaluate this. 
+   * @param xctxt Te XPathContext to use to evaluate this.
    * @param context The current source tree context.
    * @param nsNode The current namespace context (stylesheet tree context).
    * @param NodeList The current Context Node List.
@@ -542,5 +545,30 @@ public class AVT implements java.io.Serializable
   public boolean isContextInsensitive()
   {
     return null != m_simpleString;
+  }
+
+  /**
+   * Tell if this expression or it's subexpressions can traverse outside
+   * the current subtree.
+   *
+   * @return true if traversal outside the context node's subtree can occur.
+   */
+  public boolean canTraverseOutsideSubtree()
+  {
+
+    if (null != m_parts)
+    {
+      int n = m_parts.size();
+
+      for (int i = 0; i < n; i++)
+      {
+        AVTPart part = (AVTPart) m_parts.elementAt(i);
+
+        if (part.canTraverseOutsideSubtree())
+          return true;
+      }
+    }
+
+    return false;
   }
 }

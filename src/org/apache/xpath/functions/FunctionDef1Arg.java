@@ -64,22 +64,22 @@ import org.apache.xpath.objects.XNumber;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Base class for functions that accept one argument that can be defaulted if 
+ * Base class for functions that accept one argument that can be defaulted if
  * not specified.
  */
 public class FunctionDef1Arg extends FunctionOneArg
 {
 
   /**
-   * Execute the first argument expression that is expected to return a 
+   * Execute the first argument expression that is expected to return a
    * nodeset.  If the argument is null, then return the current context node.
    *
    * @param xctxt Runtime XPath context.
    *
-   * @return The first node of the executed nodeset, or the current context 
+   * @return The first node of the executed nodeset, or the current context
    *         node if the first argument is null.
    *
-   * @throws javax.xml.transform.TransformerException if an error occurs while 
+   * @throws javax.xml.transform.TransformerException if an error occurs while
    *                                   executing the argument expression.
    */
   protected Node getArg0AsNode(XPathContext xctxt)
@@ -92,16 +92,16 @@ public class FunctionDef1Arg extends FunctionOneArg
   }
 
   /**
-   * Execute the first argument expression that is expected to return a 
-   * string.  If the argument is null, then get the string value from the 
+   * Execute the first argument expression that is expected to return a
+   * string.  If the argument is null, then get the string value from the
    * current context node.
    *
    * @param xctxt Runtime XPath context.
    *
-   * @return The string value of the first argument, or the string value of the 
+   * @return The string value of the first argument, or the string value of the
    *         current context node if the first argument is null.
    *
-   * @throws javax.xml.transform.TransformerException if an error occurs while 
+   * @throws javax.xml.transform.TransformerException if an error occurs while
    *                                   executing the argument expression.
    */
   protected String getArg0AsString(XPathContext xctxt)
@@ -114,16 +114,16 @@ public class FunctionDef1Arg extends FunctionOneArg
   }
 
   /**
-   * Execute the first argument expression that is expected to return a 
-   * number.  If the argument is null, then get the number value from the 
+   * Execute the first argument expression that is expected to return a
+   * number.  If the argument is null, then get the number value from the
    * current context node.
    *
    * @param xctxt Runtime XPath context.
    *
-   * @return The number value of the first argument, or the number value of the 
+   * @return The number value of the first argument, or the number value of the
    *         current context node if the first argument is null.
    *
-   * @throws javax.xml.transform.TransformerException if an error occurs while 
+   * @throws javax.xml.transform.TransformerException if an error occurs while
    *                                   executing the argument expression.
    */
   protected double getArg0AsNumber(XPathContext xctxt)
@@ -136,7 +136,7 @@ public class FunctionDef1Arg extends FunctionOneArg
   }
 
   /**
-   * Check that the number of arguments passed to this function is correct. 
+   * Check that the number of arguments passed to this function is correct.
    *
    * @param argNum The number of arguments that is being passed to the function.
    *
@@ -146,5 +146,16 @@ public class FunctionDef1Arg extends FunctionOneArg
   {
     if (argNum > 1)
       throw new WrongNumberArgsException("0 or 1");
+  }
+
+  /**
+   * Tell if this expression or it's subexpressions can traverse outside
+   * the current subtree.
+   *
+   * @return true if traversal outside the context node's subtree can occur.
+   */
+  public boolean canTraverseOutsideSubtree()
+  {
+    return (null == m_arg0) ? false : super.canTraverseOutsideSubtree();
   }
 }

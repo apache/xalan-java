@@ -69,11 +69,29 @@ import org.w3c.dom.Node;
 public class Operation extends Expression
 {
 
-  /** The left operand expression.  */
+  /** The left operand expression. */
   protected Expression m_left;
 
-  /** The right operand expression.   */
+  /** The right operand expression. */
   protected Expression m_right;
+
+  /**
+   * Tell if this expression or it's subexpressions can traverse outside
+   * the current subtree.
+   *
+   * @return true if traversal outside the context node's subtree can occur.
+   */
+  public boolean canTraverseOutsideSubtree()
+  {
+
+    if (null != m_left && m_left.canTraverseOutsideSubtree())
+      return true;
+
+    if (null != m_right && m_right.canTraverseOutsideSubtree())
+      return true;
+
+    return false;
+  }
 
   /**
    * Set the left and right operand expressions for this operation.
@@ -89,7 +107,7 @@ public class Operation extends Expression
   }
 
   /**
-   * Execute a binary operation by calling execute on each of the operands, 
+   * Execute a binary operation by calling execute on each of the operands,
    * and then calling the operate method on the derived class.
    *
    *
@@ -99,7 +117,8 @@ public class Operation extends Expression
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+  public XObject execute(XPathContext xctxt)
+          throws javax.xml.transform.TransformerException
   {
 
     XObject left = m_left.execute(xctxt);

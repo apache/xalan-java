@@ -104,4 +104,16 @@ public abstract class AVTPart implements java.io.Serializable
    * @param support XPathContext to set. 
    */
   public void setXPathSupport(XPathContext support){}
+  
+  /**
+   * Tell if this expression or it's subexpressions can traverse outside 
+   * the current subtree.
+   * 
+   * @return true if traversal outside the context node's subtree can occur.
+   */
+   public boolean canTraverseOutsideSubtree()
+   {
+    return false;
+   }
+
 }

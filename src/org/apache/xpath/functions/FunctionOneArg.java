@@ -111,4 +111,16 @@ public class FunctionOneArg extends Function
     if (argNum != 1)
       throw new WrongNumberArgsException("1");
   }
+  
+  /**
+   * Tell if this expression or it's subexpressions can traverse outside 
+   * the current subtree.
+   * 
+   * @return true if traversal outside the context node's subtree can occur.
+   */
+   public boolean canTraverseOutsideSubtree()
+   {
+    return m_arg0.canTraverseOutsideSubtree();
+   }
+
 }

@@ -75,6 +75,17 @@ public class AVTPartXPath extends AVTPart
    * Simple string value;
    */
   private XPath m_xpath;
+  
+  /**
+   * Tell if this expression or it's subexpressions can traverse outside 
+   * the current subtree.
+   * 
+   * @return true if traversal outside the context node's subtree can occur.
+   */
+   public boolean canTraverseOutsideSubtree()
+   {
+    return m_xpath.getExpression().canTraverseOutsideSubtree();
+   }
 
   /**
    * Construct a simple AVT part.
