@@ -80,4 +80,7 @@ public interface Constants {
     final static int PROCESSING_INSTRUCTION = DOM.PROCESSING_INSTRUCTION;
 
     public static String XSLT_URI = "http://www.w3.org/1999/XSL/Transform";
+    public static final String NAMESPACE_FEATURE =
+	"http://xml.org/sax/features/namespaces";
+
 }
