@@ -151,7 +151,7 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
     // empty iterator to be returned when there are no children
     private final static DTMAxisIterator EMPTYITERATOR = EmptyIterator.getInstance();
     // The number of expanded names
-    private int _namesSize = 0;
+    private int _namesSize = -1;
 
     // Namespace related stuff
     private Hashtable _nsIndex = new Hashtable();
@@ -207,7 +207,8 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
         return getDocumentURI();
     }
 
-    public void setupMapping(String[] names, String[] namespaces) {
+    public void setupMapping(String[] names, String[] urisArray,
+                             int[] typesArray, String[] namespaces) {
         // This method only has a function in DOM adapters
     }
 
@@ -361,10 +362,7 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
         public TypedNamespaceIterator(int nodeType) { 
             super();
             if(m_expandedNameTable != null){
-                final String prefix = m_expandedNameTable.getLocalName(nodeType);
-                if((prefix != null) &&  (prefix.charAt(0) == '?') ) {
-                  _nsPrefix = prefix.substring(1);
-                }
+                _nsPrefix = m_expandedNameTable.getLocalName(nodeType);
             }
         }
 
@@ -374,9 +372,9 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
         * @return The next node handle in the iteration, or END.
         */
         public int next() {
-             if((_nsPrefix == null) ||(_nsPrefix.length() == 0) ){
-                 return (END);
-             }          
+            if ((_nsPrefix == null) ||(_nsPrefix.length() == 0) ){
+                return (END);
+            }          
             int node = END;
             for (node = super.next(); node != END; node = super.next()) {
                 if (_nsPrefix.compareTo(getLocalName(node))== 0) {
@@ -532,21 +530,29 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
     /**
      * Sets up a translet-to-dom type mapping table
      */
-    private int[] setupMapping(String[] namesArray, int nNames) {
+    private int[] setupMapping(String[] names, String[] uris, int[] types, int nNames) {
         // Padding with number of names, because they
         // may need to be added, i.e for RTFs. See copy03  
-        final int[] types = new int[m_expandedNameTable.getSize()];
+        final int[] result = new int[m_expandedNameTable.getSize()];
         for (int i = 0; i < nNames; i++)      {
-            int type = getGeneralizedType(namesArray[i]);
-            types[type] = type;
+            //int type = getGeneralizedType(namesArray[i]);
+            int type = m_expandedNameTable.getExpandedTypeID(uris[i], names[i], types[i], false);
+            result[type] = type;
         }
-        return types;
+        return result;
     }
 
     /**
      * Returns the internal type associated with an expanded QName
      */
     public int getGeneralizedType(final String name) {
+        return getGeneralizedType(name, true);
+    }
+
+    /**
+     * Returns the internal type associated with an expanded QName
+     */
+    public int getGeneralizedType(final String name, boolean searchOnly) {
         String lName, ns = null;
         int index = -1;
         int code;
@@ -573,32 +579,25 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
         // Extract local name
         lName = (lNameStartIdx == 0) ? name : name.substring(lNameStartIdx);
 
-        return this.getExpandedTypeID(ns, lName, code);
+        return m_expandedNameTable.getExpandedTypeID(ns, lName, code, searchOnly);
     }
 
     /**
      * Get mapping from DOM element/attribute types to external types
      */
-    public short[] getMapping(String[] names)
+    public short[] getMapping(String[] names, String[] uris, int[] types)
     {
+        // Delegate the work to getMapping2 if the document is not fully built.
+        // Some of the processing has to be different in this case.
+        if (_namesSize < 0) {
+            return getMapping2(names, uris, types);
+        }
+
         int i;
         final int namesLength = names.length;
         final int exLength = m_expandedNameTable.getSize();
-        int[] generalizedTypes = null;
-        if (namesLength > 0) {
-            generalizedTypes = new int[namesLength];
-        }
       
-        int resultLength = exLength;
-      
-        for (i = 0; i < namesLength; i++) {
-            generalizedTypes[i] = getGeneralizedType(names[i]);
-            if (_namesSize == 0 && generalizedTypes[i] >= resultLength) {
-                resultLength = generalizedTypes[i] + 1;
-            }
-        }
-      
-        final short[] result = new short[resultLength];
+        final short[] result = new short[exLength];
 
         // primitive types map to themselves
         for (i = 0; i < DTM.NTYPES; i++) {
@@ -611,24 +610,22 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
       	
         // actual mapping of caller requested names
         for (i = 0; i < namesLength; i++) {
-            int genType = generalizedTypes[i];         
-            if (_namesSize > 0) {
-                if (genType < result.length) {
-                    result[genType] = (short)(i + DTM.NTYPES);
-                }
-            }
-            else {
+            int genType = m_expandedNameTable.getExpandedTypeID(uris[i],
+                                                                names[i],
+                                                                types[i],
+                                                                true);
+            if (genType >= 0 && genType < exLength) {
                 result[genType] = (short)(i + DTM.NTYPES);
             }
         }
 
-        return(result);
+        return result;
     }
 
     /**
      * Get mapping from external element/attribute types to DOM types
      */
-    public int[] getReverseMapping(String[] names)
+    public int[] getReverseMapping(String[] names, String[] uris, int[] types)
     {
         int i;
         final int[] result = new int[names.length + DTM.NTYPES];
@@ -640,12 +637,64 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
         
         // caller's types map into appropriate dom types
         for (i = 0; i < names.length; i++) {
-            int type = getGeneralizedType(names[i]);
+            int type = m_expandedNameTable.getExpandedTypeID(uris[i], names[i], types[i], true);
             result[i+DTM.NTYPES] = type;
         }
         return(result);
     }
     
+    /**
+     * Get mapping from DOM element/attribute types to external types.
+     * This method is used when the document is not fully built.
+     */
+    private short[] getMapping2(String[] names, String[] uris, int[] types)
+    {
+        int i;
+        final int namesLength = names.length;
+        final int exLength = m_expandedNameTable.getSize();
+        int[] generalizedTypes = null;
+        if (namesLength > 0) {
+            generalizedTypes = new int[namesLength];
+        }
+
+        int resultLength = exLength;
+
+        for (i = 0; i < namesLength; i++) {
+            // When the document is not fully built, the searchOnly
+            // flag should be set to false. That means we should add
+            // the type if it is not already in the expanded name table.
+            //generalizedTypes[i] = getGeneralizedType(names[i], false);
+            generalizedTypes[i] =
+                m_expandedNameTable.getExpandedTypeID(uris[i],
+                                                      names[i],
+                                                      types[i],
+                                                      false);
+            if (_namesSize < 0 && generalizedTypes[i] >= resultLength) {
+                resultLength = generalizedTypes[i] + 1;
+            }
+        }
+
+        final short[] result = new short[resultLength];
+
+        // primitive types map to themselves
+        for (i = 0; i < DTM.NTYPES; i++) {
+            result[i] = (short)i;
+        }
+
+        for (i = NTYPES; i < exLength; i++) {
+            result[i] = m_expandedNameTable.getType(i);
+        }
+
+        // actual mapping of caller requested names
+        for (i = 0; i < namesLength; i++) {
+            int genType = generalizedTypes[i];
+            if (genType >= 0 && genType < resultLength) {
+                result[genType] = (short)(i + DTM.NTYPES);
+            }
+        }
+
+        return(result);
+    }
     /**
      * Get mapping from DOM namespace types to external namespace types
      */

@@ -126,7 +126,7 @@ public interface DOM {
     public int getSize();
     public String getDocumentURI(int node);
     public void setFilter(StripFilter filter);
-    public void setupMapping(String[] names, String[] namespaces);
+    public void setupMapping(String[] names, String[] urisArray, int[] typesArray, String[] namespaces);
     public boolean isElement(final int node);
     public boolean isAttribute(final int node);
     public String lookupNamespace(int node, String prefix)

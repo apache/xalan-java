@@ -580,7 +580,7 @@ public class SimpleResultTreeImpl extends EmptySerializer implements DOM, DTM
     {
     }
     
-    public void setupMapping(String[] names, String[] namespaces)
+    public void setupMapping(String[] names, String[] uris, int[] types, String[] namespaces)
     {
     }
     
