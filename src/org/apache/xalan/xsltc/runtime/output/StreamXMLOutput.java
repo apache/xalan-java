@@ -131,7 +131,7 @@ public class StreamXMLOutput extends StreamOutput {
 	    closeStartTag();
 	}
 	else if (_cdataTagOpen) {
-	    closeCDATA();
+	    endCDATA();
 	}
 
 	// Handle document type declaration (for first element only)
@@ -159,7 +159,7 @@ public class StreamXMLOutput extends StreamOutput {
     public void endElement(String elementName) throws TransletException { 
 // System.out.println("endElement = " + elementName);
 	if (_cdataTagOpen) {
-	    closeCDATA();
+	    endCDATA();
 	}
 
 	if (_startTagOpen) {
@@ -248,7 +248,7 @@ public class StreamXMLOutput extends StreamOutput {
 	    closeStartTag();
 	}
 	else if (_cdataTagOpen) {
-	    closeCDATA();
+	    endCDATA();
 	}
 	appendComment(comment);
     }
@@ -261,7 +261,7 @@ public class StreamXMLOutput extends StreamOutput {
 	    closeStartTag();
 	}
 	else if (_cdataTagOpen) {
-	    closeCDATA();
+	    endCDATA();
 	}
 
 	_buffer.append("<?").append(target).append(' ')
@@ -339,7 +339,12 @@ public class StreamXMLOutput extends StreamOutput {
 	_cdataTagOpen = true;
     }
 
-    private void closeCDATA() {
+    public void startCDATA() throws TransletException {
+	_buffer.append(BEGCDATA);
+	_cdataTagOpen = true;
+    }
+
+    public void endCDATA() throws TransletException {
 	_buffer.append(ENDCDATA);
 	_cdataTagOpen = false;
     }

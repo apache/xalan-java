@@ -186,6 +186,8 @@ public final class SAXAdapter implements TransletOutputHandler {
     }
 
     // The SAX handler does not handle these:
+    public void startCDATA() throws TransletException {}
+    public void endCDATA() throws TransletException {}
     public void setType(int type) {}
     public void setHeader(String header) {}
     public void setIndent(boolean indent) {}

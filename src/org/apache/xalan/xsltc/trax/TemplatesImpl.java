@@ -128,8 +128,11 @@ public final class TemplatesImpl implements Templates, Serializable {
      */
     private URIResolver _uriResolver = null;
 
-    // Temporary
-    private boolean _oldOutputSystem;
+    /**
+     * A reference to the transformer factory that this templates
+     * object belongs to.
+     */
+    private TransformerFactoryImpl _tfactory = null;
 
     private class TransletClassLoader extends ClassLoader {
 
@@ -148,13 +151,13 @@ public final class TemplatesImpl implements Templates, Serializable {
      */
     protected TemplatesImpl(byte[][] bytecodes, String transletName,
 	Properties outputProperties, int indentNumber,
-	boolean oldOutputSystem) 
+	TransformerFactoryImpl tfactory) 
     {
 	_bytecodes = bytecodes;
 	_name      = transletName;
 	_outputProperties = outputProperties;
 	_indentNumber = indentNumber;
-	_oldOutputSystem = oldOutputSystem;
+	_tfactory = tfactory;
     }
 
     public synchronized void writeExternal(ObjectOutput out) 
@@ -334,7 +337,7 @@ public final class TemplatesImpl implements Templates, Serializable {
     {
 	final TransformerImpl transformer =
 	    new TransformerImpl(getTransletInstance(), _outputProperties,
-			        _indentNumber, _oldOutputSystem);
+			        _indentNumber, _tfactory);
 	if (_uriResolver != null) {
 	    transformer.setURIResolver(_uriResolver);
 	}

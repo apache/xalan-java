@@ -89,7 +89,7 @@ abstract class StreamOutput extends OutputBase {
     protected static final int MAX_INDENT_LEVEL = (INDENT.length >> 1);
     protected static final int MAX_INDENT       = INDENT.length;
 
-    protected static final int BUFFER_SIZE = 64 * 1024;
+    protected static final int BUFFER_SIZE = 32 * 1024;
     protected static final int OUTPUT_BUFFER_SIZE = 4 * 1024;
 
     protected Writer  _writer;
@@ -111,7 +111,6 @@ abstract class StreamOutput extends OutputBase {
 
     protected int     _indentNumber = 2;
 
-    // protected HashSet _attributes = new HashSet();
     protected Vector _attributes = new Vector();
 
     static class Attribute {

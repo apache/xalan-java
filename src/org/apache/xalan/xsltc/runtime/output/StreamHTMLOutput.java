@@ -98,19 +98,21 @@ public class StreamHTMLOutput extends StreamOutput {
     public StreamHTMLOutput(StreamOutput output) {
 	super(output);
 	setIndent(true);  // default for HTML
-// System.out.println("StreamHTMLOutput.<init>");
+// System.out.println("StreamHTMLOutput.<init> this = " + this);
     }
 
     public StreamHTMLOutput(Writer writer, String encoding) {
 	super(writer, encoding);
-// System.out.println("StreamHTMLOutput.<init>");
+	setIndent(true);  // default for HTML
+//System.out.println("StreamHTMLOutput.<init> this = " + this);
     }
 
     public StreamHTMLOutput(OutputStream out, String encoding) 
 	throws IOException
     {
 	super(out, encoding);
-// System.out.println("StreamHTMLOutput.<init>");
+	setIndent(true);  // default for HTML
+//System.out.println("StreamHTMLOutput.<init> this = " + this);
     }
 
     public void startDocument() throws TransletException { 
