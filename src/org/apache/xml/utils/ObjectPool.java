@@ -76,7 +76,6 @@ public class ObjectPool implements java.io.Serializable
   /**
    * Constructor ObjectPool
    *
-   *
    * @param type Type of objects for this pool
    */
   public ObjectPool(Class type)
@@ -84,6 +83,25 @@ public class ObjectPool implements java.io.Serializable
     objectType = type;
     freeStack = new Vector();
   }
+  
+  /**
+   * Constructor ObjectPool
+   *
+   * @param className Fully qualified name of the type of objects for this pool.
+   */
+  public ObjectPool(String className)
+  {
+    try
+    {
+      objectType = Class.forName(className);
+    }
+    catch(ClassNotFoundException cnfe)
+    {
+      throw new WrappedRuntimeException(cnfe);
+    }
+    freeStack = new Vector();
+  }
+
 
   /**
    * Constructor ObjectPool
