@@ -128,7 +128,8 @@ public class XSLTErrorResources extends ListResourceBundle
   /* 
    * Static variables
    */
-  public static final String ER_NO_CURLYBRACE = "ER_NO_CURLYBRACE";;
+  public static final String ER_NO_CURLYBRACE = "ER_NO_CURLYBRACE";
+  public static final String ER_FUNCTION_NOT_SUPPORTED = "ER_FUNCTION_NOT_SUPPORTED";
   public static final String ER_ILLEGAL_ATTRIBUTE = "ER_ILLEGAL_ATTRIBUTE";
   public static final String ER_NULL_SOURCENODE_APPLYIMPORTS = "ER_NULL_SOURCENODE_APPLYIMPORTS";
   public static final String ER_CANNOT_ADD = "ER_CANNOT_ADD"; 
@@ -1013,9 +1014,9 @@ public class XSLTErrorResources extends ListResourceBundle
 
   /** ER_FUNCTION_NOT_SUPPORTED          */
 //  public static final int ER_FUNCTION_NOT_SUPPORTED = 80;
-
-    //{ ER_FUNCTION_NOT_SUPPORTED, 
-    // "Function not supported!"},
+//  add this message to fix bug 21478
+    { ER_FUNCTION_NOT_SUPPORTED, 
+     "Function not supported!"},
 
   /** ER_XSLT_ERROR          */
 //  public static final int ER_XSLT_ERROR = 81;
