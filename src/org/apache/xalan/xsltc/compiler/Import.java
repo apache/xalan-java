@@ -70,6 +70,7 @@ import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.Enumeration;
 
+import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
@@ -100,21 +101,10 @@ final class Import extends TopLevelElement {
 		return;
 	    }
 
-	    String currLoadedDoc = context.getSystemId();
-	    SourceLoader loader = context.getSourceLoader();
 	    InputSource input = null;
 	    XMLReader reader = null;
-
-            // Initialize currLoadedDocURL using currLoadedDoc
-            URL docToLoadURL = null, currLoadedDocURL = null;      
-            if (currLoadedDoc != null && currLoadedDoc.length() > 0) {
-                try {
-                    currLoadedDocURL = new URL(currLoadedDoc);
-                }
-                catch (MalformedURLException e) {
-                    // ignore
-                }
-            }
+	    String currLoadedDoc = context.getSystemId();
+	    SourceLoader loader = context.getSourceLoader();
             
             // Use SourceLoader if available
 	    if (loader != null) {
@@ -127,14 +117,8 @@ final class Import extends TopLevelElement {
 
             // No SourceLoader or not resolved by SourceLoader
             if (input == null) {
-                docToLoadURL = (currLoadedDocURL != null) ?
-                    new URL(currLoadedDocURL, docToLoad) :
-                    new URL("file", "", System.getProperty("user.dir")
-                            + System.getProperty("file.separator")
-                            + docToLoad);
-                
-		docToLoad = docToLoadURL.toString();
-		input = new InputSource(docToLoad);
+                docToLoad = SystemIDResolver.getAbsoluteURI(docToLoad, currLoadedDoc);
+                input = new InputSource(docToLoad);
 	    }
 
 	    // Return if we could not resolve the URL

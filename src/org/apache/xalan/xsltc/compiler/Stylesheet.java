@@ -74,6 +74,7 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
+import org.apache.xml.utils.SystemIDResolver;
 import org.apache.bcel.generic.ANEWARRAY;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.FieldGen;
@@ -415,35 +416,8 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     public void setSystemId(String systemId) {
-        URL systemIdURL = null; 
-        
-        if (systemId != null && systemId.length() > 0) {
-            try {
-                systemIdURL = new URL(systemId);
-            }
-            catch (MalformedURLException e) {
-                String userDir = System.getProperty("user.dir");
-                String fileSep = System.getProperty("file.separator");
-                
-                // Make it absolute if a relative path (drive letters?)
-                if (!systemId.startsWith(fileSep)) {
-                    systemId = userDir + fileSep + systemId;
-                }
-                try {
-                    systemIdURL = new URL("file", "", systemId);
-                }
-                catch (MalformedURLException ep) {
-                    try {
-                        systemIdURL = new URL("file", "", userDir + fileSep);
-                    }
-                    catch (MalformedURLException epp) {
-                        // ignore
-                    }
-                }
-            }
-        }
-        if (systemIdURL != null) {
-            _systemId = systemIdURL.toString();
+        if (systemId != null) {
+            _systemId = SystemIDResolver.getAbsoluteURI(systemId);
         }
     }
     

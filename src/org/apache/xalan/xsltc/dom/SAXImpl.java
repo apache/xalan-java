@@ -89,6 +89,7 @@ import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM2;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.serializer.ToXMLSAXHandler;
 import org.apache.xml.utils.XMLStringFactory;
+import org.apache.xml.utils.SystemIDResolver;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Document;
@@ -189,37 +190,7 @@ public final class SAXImpl extends SAX2DTM2 implements DOM, DOMBuilder
      * Define the origin of the document from which the tree was built
      */
     public void setDocumentURI(String uri) {
-        URL documentURI = null; 
-        
-        if (uri != null && uri.length() > 0) {
-            try {
-                documentURI = new URL(uri);
-            }
-            catch (MalformedURLException e) {
-                String userDir = System.getProperty("user.dir");
-                String fileSep = System.getProperty("file.separator");
-                
-                // Make it absolute if a relative path
-                if (!uri.startsWith(fileSep)) {
-                    uri = userDir + fileSep + uri;
-                }
-                try {
-                    documentURI = new URL("file", "", uri);
-                }
-                catch (MalformedURLException ep) {
-                    try {
-                        documentURI = new URL("file", "", userDir + fileSep);
-                    }
-                    catch (MalformedURLException epp) {
-                        // ignore
-                    }
-                }
-            }
-        }
-        if (documentURI != null) {       
-            _documentURI = documentURI.toString();
-            setDocumentBaseURI(_documentURI);
-        }
+        setDocumentBaseURI(SystemIDResolver.getAbsoluteURI(uri));
     }
 
     /**

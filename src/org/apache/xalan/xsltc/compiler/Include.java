@@ -70,6 +70,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
 
+import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
@@ -104,17 +105,6 @@ final class Include extends TopLevelElement {
 	    XMLReader reader = null;
 	    String currLoadedDoc = context.getSystemId();
 	    SourceLoader loader = context.getSourceLoader();
-
-            // Initialize currLoadedDocURL using currLoadedDoc
-            URL docToLoadURL = null, currLoadedDocURL = null;      
-            if (currLoadedDoc != null && currLoadedDoc.length() > 0) {
-                try {
-                    currLoadedDocURL = new URL(currLoadedDoc);
-                }
-                catch (MalformedURLException e) {
-                    // ignore
-                }
-            }
             
             // Use SourceLoader if available
 	    if (loader != null) {
@@ -127,14 +117,8 @@ final class Include extends TopLevelElement {
 
             // No SourceLoader or not resolved by SourceLoader
             if (input == null) {
-                docToLoadURL = (currLoadedDocURL != null) ?
-                    new URL(currLoadedDocURL, docToLoad) :
-                    new URL("file", "", System.getProperty("user.dir")
-                            + System.getProperty("file.separator")
-                            + docToLoad);
-                
-		docToLoad = docToLoadURL.toString();
-		input = new InputSource(docToLoad);
+                docToLoad = SystemIDResolver.getAbsoluteURI(docToLoad, currLoadedDoc);
+                input = new InputSource(docToLoad);
 	    }
 
 	    // Return if we could not resolve the URL
@@ -158,7 +142,7 @@ final class Include extends TopLevelElement {
 	    if (_included == null) return;
 
 	    _included.setSourceLoader(loader);
-	    _included.setSystemId(docToLoadURL.toString());
+	    _included.setSystemId(docToLoad);
 	    _included.setParentStylesheet(context);
 	    _included.setIncludingStylesheet(context);
 	    _included.setTemplateInlining(context.getTemplateInlining());
@@ -186,14 +170,6 @@ final class Include extends TopLevelElement {
 		    }
 		}
 	    }
-	}
-	catch (MalformedURLException e) {
-	    // Update systemId in parent stylesheet for error reporting
-	    context.setSystemId(getAttribute("href"));
-
-	    final ErrorMsg msg = 
-		new ErrorMsg(ErrorMsg.FILE_NOT_FOUND_ERR, docToLoad, this);
-	    parser.reportError(Constants.FATAL, msg);
 	}
 	catch (Exception e) {
 	    e.printStackTrace();
