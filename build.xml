@@ -138,8 +138,8 @@ Copyright:
   <!-- =================================================================== -->
    
   <target name="compile" depends="prepare">
-    <echo message="compile entire source tree (except Xalan-J 1 compatability classes)"/>
-    <echo message="  and copy .properties and .res files to build tree." />
+    <echo message="compile entire source tree and copy "/>
+    <echo message="  .properties and .res files to build tree." />
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
            includes="**/*.java"
