@@ -967,9 +967,8 @@ public abstract class DTMDefaultBase implements DTM
 
     int type = getNodeType(nodeHandle);
 
-    if (DTM.ATTRIBUTE_NODE == type)
+    if (DTM.ATTRIBUTE_NODE == type || DTM.ELEMENT_NODE == type)
     {
-
       // Assume that attributes and namespace nodes immediately follow the element.
       int identity = nodeHandle & m_mask;
 
