@@ -316,10 +316,10 @@ public class XSLTCDTMManager extends DTMManagerDefault
             // System.out.println("Using IncrementalSAXSource_Xerces to avoid threading");
             try {
               // should be ok, it's in the same package - no need for thread class loader,
-							// AND theoretically no need for reflection...
+              // AND theoretically no need for reflection...
               // Class c=Class.forName( "org.apache.xml.dtm.ref.IncrementalSAXSource_Xerces" );
-              // coParser=(IncrementalSAXSource)c.newInstance();
-							coParser=org.apache.xml.dtm.ref.IncrementalSAXSource_Xerces.createIncrementalSAXSource();
+               coParser=org.apache.xml.dtm.ref.IncrementalSAXSource_Xerces
+                                              .createIncrementalSAXSource();
             }  catch( Exception ex ) {
               ex.printStackTrace();
               coParser=null;
@@ -520,7 +520,7 @@ public class XSLTCDTMManager extends DTMManagerDefault
         // Go ahead and add the DTM to the lookup table.  This needs to be
         // done before any parsing occurs. Note offset 0, since we've just
         // created a new DTM.
- 	    addDTM(dtm, dtmPos, 0);
+        addDTM(dtm, dtmPos, 0);
 
         boolean haveXercesParser =
           (null != reader)
@@ -528,10 +528,10 @@ public class XSLTCDTMManager extends DTMManagerDefault
 	
         if (haveXercesParser)
           incremental = true;  // No matter what.  %REVIEW%
-	
+
         // If the reader is null, but they still requested an incremental build,
         // then we still want to set up the IncrementalSAXSource stuff.
-        if (this.m_incremental && incremental /* || ((null == reader) && incremental) */)
+        if (this.m_incremental && incremental)
         {
           IncrementalSAXSource coParser=null;
 
@@ -541,10 +541,11 @@ public class XSLTCDTMManager extends DTMManagerDefault
             // System.out.println("Using IncrementalSAXSource_Xerces to avoid threading");
             try {
               // should be ok, it's in the same package - no need for thread class loader,
-							// AND theoretically no need for reflection...
+              // AND theoretically no need for reflection...
               // Class c=Class.forName( "org.apache.xml.dtm.ref.IncrementalSAXSource_Xerces" );
               // coParser=(IncrementalSAXSource)c.newInstance();
-							coParser=org.apache.xml.dtm.ref.IncrementalSAXSource_Xerces.createIncrementalSAXSource();
+              coParser=org.apache.xml.dtm.ref.IncrementalSAXSource_Xerces
+                                             .createIncrementalSAXSource();
             }  catch( Exception ex ) {
               ex.printStackTrace();
               coParser=null;
