@@ -311,22 +311,22 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
       }
       else
       {
-	// Use JAXP1.1 ( if possible )
-	try {
-	    javax.xml.parsers.SAXParserFactory factory=
-		javax.xml.parsers.SAXParserFactory.newInstance();
-	    factory.setNamespaceAware( true );
-	    javax.xml.parsers.SAXParser jaxpParser=
-		factory.newSAXParser();
-	    reader=jaxpParser.getXMLReader();
-	    
-	} catch( javax.xml.parsers.ParserConfigurationException ex ) {
-	    throw new org.xml.sax.SAXException( ex );
-	} catch( javax.xml.parsers.FactoryConfigurationError ex1 ) {
-	    throw new org.xml.sax.SAXException( ex1.toString() );
-	} catch( NoSuchMethodError ex2 ) {
-	}
-	
+        // Use JAXP1.1 ( if possible )
+        try {
+            javax.xml.parsers.SAXParserFactory factory=
+                javax.xml.parsers.SAXParserFactory.newInstance();
+            factory.setNamespaceAware( true );
+            javax.xml.parsers.SAXParser jaxpParser=
+                factory.newSAXParser();
+            reader=jaxpParser.getXMLReader();
+            
+        } catch( javax.xml.parsers.ParserConfigurationException ex ) {
+            throw new org.xml.sax.SAXException( ex );
+        } catch( javax.xml.parsers.FactoryConfigurationError ex1 ) {
+            throw new org.xml.sax.SAXException( ex1.toString() );
+        } catch( NoSuchMethodError ex2 ) {
+        }
+        
         if (null == reader)
         {
           reader = XMLReaderFactory.createXMLReader();
@@ -507,7 +507,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     = "<xsl:stylesheet "+
       "xmlns:xsl='http://www.w3.org/1999/XSL/Transform' "+
       "version='1.0'>"+
-      "<xsl:template match='/'>"+
+      "<xsl:template match='/|node()'>"+
       "<xsl:copy-of select='.'/>"+
       "</xsl:template>"+
       "</xsl:stylesheet>";
@@ -617,17 +617,17 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
 
       // Use JAXP1.1 ( if possible )
       try {
-	  javax.xml.parsers.SAXParserFactory factory=
-	      javax.xml.parsers.SAXParserFactory.newInstance();
-	  factory.setNamespaceAware( true );
-	  javax.xml.parsers.SAXParser jaxpParser=
-	      factory.newSAXParser();
-	  reader=jaxpParser.getXMLReader();
-	  
+          javax.xml.parsers.SAXParserFactory factory=
+              javax.xml.parsers.SAXParserFactory.newInstance();
+          factory.setNamespaceAware( true );
+          javax.xml.parsers.SAXParser jaxpParser=
+              factory.newSAXParser();
+          reader=jaxpParser.getXMLReader();
+          
       } catch( javax.xml.parsers.ParserConfigurationException ex ) {
-	  throw new org.xml.sax.SAXException( ex );
+          throw new org.xml.sax.SAXException( ex );
       } catch( javax.xml.parsers.FactoryConfigurationError ex1 ) {
-	  throw new org.xml.sax.SAXException( ex1.toString() );
+          throw new org.xml.sax.SAXException( ex1.toString() );
       } catch( NoSuchMethodError ex2 ) {
       }
       
