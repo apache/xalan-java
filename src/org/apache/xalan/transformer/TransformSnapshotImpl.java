@@ -67,6 +67,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import java.util.Stack;
 
 import org.xml.sax.helpers.NamespaceSupport;
+import org.apache.xml.utils.NamespaceSupport2;
 
 import java.util.Enumeration;
 
@@ -183,7 +184,7 @@ class TransformSnapshotImpl implements TransformSnapshot
       m_eventCount = rtf.m_eventCount;
 
       // yuck.  No clone. Hope this is good enough.
-      m_nsSupport = new NamespaceSupport();
+      m_nsSupport = new NamespaceSupport2();
 
       Enumeration prefixes = rtf.m_nsSupport.getPrefixes();
 

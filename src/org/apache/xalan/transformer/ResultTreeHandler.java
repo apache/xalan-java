@@ -78,7 +78,9 @@ import org.apache.xml.dtm.DTMFilter;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
+
 import org.xml.sax.helpers.NamespaceSupport;
+import org.apache.xml.utils.NamespaceSupport2;
 import org.xml.sax.Locator;
 
 import javax.xml.transform.TransformerException;
@@ -1626,7 +1628,7 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Use the SAX2 helper class to track result namespaces.
    */
-  NamespaceSupport m_nsSupport = new NamespaceSupport();
+  NamespaceSupport m_nsSupport = new NamespaceSupport2();
 
   /**
    * The transformer object.

@@ -92,7 +92,9 @@ import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
+
 import org.xml.sax.helpers.NamespaceSupport;
+import org.apache.xml.utils.NamespaceSupport2;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.transform.SourceLocator;
@@ -601,7 +603,7 @@ public class StylesheetHandler extends DefaultHandler
           String uri, String localName, String rawName, Attributes attributes)
             throws org.xml.sax.SAXException
   {
-                NamespaceSupport nssupport = this.getNamespaceSupport();
+      NamespaceSupport nssupport = this.getNamespaceSupport();
     nssupport.pushContext();
     
     int n = m_prefixMappings.size();
@@ -1477,19 +1479,19 @@ public class StylesheetHandler extends DefaultHandler
    */
   private boolean warnedAboutOldXSLTNamespace = false;
 
-  /** Stack of {@link org.xml.sax.helpers.NamespaceSupport} objects. */
+  /** Stack of NamespaceSupport objects. */
   Stack m_nsSupportStack = new Stack();
 
   /**
-   * Push a new {@link org.xml.sax.helpers.NamespaceSupport} instance.
+   * Push a new NamespaceSupport instance.
    */
   void pushNewNamespaceSupport()
   {
-    m_nsSupportStack.push(new NamespaceSupport());
+    m_nsSupportStack.push(new NamespaceSupport2());
   }
 
   /**
-   * Pop the current {@link org.xml.sax.helpers.NamespaceSupport} object.
+   * Pop the current NamespaceSupport object.
    *
    */
   void popNamespaceSupport()

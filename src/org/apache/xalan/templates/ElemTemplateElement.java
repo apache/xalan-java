@@ -91,7 +91,9 @@ import org.apache.xml.dtm.DTM;
 // SAX Imports
 import org.xml.sax.Locator;
 import javax.xml.transform.TransformerException;
+
 import org.xml.sax.helpers.NamespaceSupport;
+import org.apache.xml.utils.NamespaceSupport2;
 
 /**
  * <meta name="usage" content="advanced"/>
