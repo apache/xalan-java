@@ -55,10 +55,11 @@
  */
 package org.apache.xpath.rwapi.expression;
 
-import org.apache.xpath.rwapi.*;
+import org.apache.xpath.rwapi.XPathException;
 
 /**
- * Represents a node test
+ * Represents item test. An item test includes both node tests and the context item
+ * selection.  
  * <pre>
  * [28]   NodeTest   ::=   KindTest |  NameTest 
  * [29]   NameTest   ::=   QName |  Wildcard 
@@ -72,18 +73,46 @@ import org.apache.xpath.rwapi.*;
  * [34]   TextTest   ::=   "text" "(" ")" 
  * [35]   AnyKindTest   ::=   "node" "(" ")"
  * </pre>
- * @see <a href="http://www.w3.org/TR/xpath20/#doc-NodeTest">XPath 2.0 specification</a>
+ * @see <a href="http://www.w3.org/TR/xpath20/#doc-NodeTest">Node test specification</a>
+ * @see <a href="http://www.w3.org/TR/xpath20/#abbrev">Context item specification</a>
  */
-public interface NodeTest extends Expr {
+public interface NodeTest {
     
-    String WILDCARD = "*";
+    /**
+     * The node test is a wildcard
+     */
+    static final String WILDCARD = "*";
     
-    short PROCESSING_INSTRUCTION_TEST = 0;
-    short COMMENT_TEST = 1;
-    short ANY_KIND_TEST = 2;
-    short TEXT_TEST = 3;
+    /**
+     * The item test is a processing instruction kind test 
+     */
+	static final short PROCESSING_INSTRUCTION_TEST = 0;
+	
+	/**
+	 * The item test is a comment kind test
+	 */
+	static final short COMMENT_TEST = 1;
+	
+	/**	 
+	 * The item test is any kind of test (except context item test)
+	 */
+	static final short ANY_KIND_TEST = 2;
+	
+	/**
+	 * The item test is a text kind test
+	 */
+	static final short TEXT_TEST = 3;
+	
+	/**
+	 * The node test is a context item test
+	 */
+	static final short CONTEXT_ITEM_TEST = 4;
     
-    String[] KIND_TEST_NAME = { "processing-instruction()", "comment()", "node()", "text()" };
+    /**
+     * Full name of kind tests. 
+     * This array is kept in synchronization with kind test constants
+     */
+	static final String[] KIND_TEST_NAME = { "processing-instruction()", "comment()", "node()", "text()", "." };
     
     /**
      * Return true whenever this node test is a name test

@@ -60,6 +60,7 @@ import org.apache.xpath.rwapi.expression.Expr;
 import org.apache.xpath.rwapi.expression.NodeTest;
 import org.apache.xpath.rwapi.expression.Visitor;
 import org.apache.xpath.rwapi.impl.parser.Node;
+import org.apache.xpath.rwapi.impl.parser.SimpleNode;
 import org.apache.xpath.rwapi.impl.parser.XPath;
 import org.apache.xpath.rwapi.impl.parser.XPathTreeConstants;
 
@@ -67,7 +68,7 @@ import org.apache.xpath.rwapi.impl.parser.XPathTreeConstants;
 /**
  *
  */
-public class KindTestImpl extends ExprImpl implements NodeTest
+public class KindTestImpl extends SimpleNode implements NodeTest
 {
     protected short m_kindTest;
 
@@ -145,10 +146,10 @@ public class KindTestImpl extends ExprImpl implements NodeTest
     /**
      * @see org.apache.xpath.rwapi.expression.Expr#getExprType()
      */
-    public short getExprType()
-    {
-        return Expr.KINDTEST_EXPR;
-    }
+  //  public short getExprType()
+   // {
+   //     return Expr.KINDTEST_EXPR;
+   // }
 
     /**
      * @see org.apache.xpath.rwapi.expression.Expr#cloneExpression()
@@ -215,7 +216,7 @@ public class KindTestImpl extends ExprImpl implements NodeTest
     /**
      * @see org.apache.xpath.rwapi.impl.ExprImpl#getString(StringBuffer, boolean)
      */
-    protected void getString(StringBuffer expr, boolean abbreviate)
+    public void getString(StringBuffer expr, boolean abbreviate)
     {
         expr.append(KIND_TEST_NAME[m_kindTest]);
     }

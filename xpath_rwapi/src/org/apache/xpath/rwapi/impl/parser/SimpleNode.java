@@ -575,5 +575,12 @@ public class SimpleNode implements Node
             }
         }
     }
+    
+	/**
+	 * Gets the node as an string
+	 */
+	 public void getString(StringBuffer expr, boolean abbreviate)
+	 {
+	 }
 
 }

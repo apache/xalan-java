@@ -331,7 +331,7 @@ public class OperatorImpl extends ExprImpl implements OperatorExpr
      * @param expr DOCUMENT ME!
      * @param abbreviate DOCUMENT ME!
      */
-    protected void getString(StringBuffer expr, boolean abbreviate)
+    public void getString(StringBuffer expr, boolean abbreviate)
     {
         int size = getOperandCount();
         String oper = getOperatorChar();

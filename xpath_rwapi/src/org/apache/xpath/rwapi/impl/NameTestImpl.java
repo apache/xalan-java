@@ -60,13 +60,14 @@ import org.apache.xpath.rwapi.expression.Expr;
 import org.apache.xpath.rwapi.expression.NodeTest;
 import org.apache.xpath.rwapi.impl.parser.Node;
 import org.apache.xpath.rwapi.impl.parser.QName;
+import org.apache.xpath.rwapi.impl.parser.SimpleNode;
 import org.apache.xpath.rwapi.impl.parser.Token;
 import org.apache.xpath.rwapi.impl.parser.XPathTreeConstants;
 
 /**
  *
  */
-public class NameTestImpl extends ExprImpl implements NodeTest {
+public class NameTestImpl extends SimpleNode implements NodeTest {
 
     String m_localPart;
     String m_prefix;
@@ -129,16 +130,15 @@ public class NameTestImpl extends ExprImpl implements NodeTest {
 	/**
 	 * @see org.apache.xpath.rwapi.expression.Expr#getExprType()
 	 */
-	public short getExprType() {
-		return Expr.NAMETEST_EXPR;
-	}
+	//	return Expr.NAMETEST_EXPR;
+	//}
 
 	/**
 	 * @see org.apache.xpath.rwapi.expression.Expr#cloneExpression()
 	 */
-	public Expr cloneExpression() {
-		return new NameTestImpl(m_localPart, m_prefix);
-	}
+	//public Expr cloneExpression() {
+	//	return new NameTestImpl(m_localPart, m_prefix);
+	//}
 
 	/**
 	 * @see org.apache.xpath.rwapi.expression.Expr#getString(boolean)
@@ -173,7 +173,7 @@ public class NameTestImpl extends ExprImpl implements NodeTest {
 	/**
 	 * @see org.apache.xpath.rwapi.impl.ExprImpl#getString(StringBuffer, boolean)
 	 */
-	protected void getString(StringBuffer expr, boolean abbreviate) {
+	public void getString(StringBuffer expr, boolean abbreviate) {
         if ( m_prefix != null ) {
     		expr.append(m_prefix).append(":").append(m_localPart);
         } else {

@@ -222,7 +222,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
     /**
      * @see org.apache.xpath.rwapi.expression.StepExpr#getStepNodeTest()
      */
-    public NodeTest getStepNodeTest() throws XPathException
+    public NodeTest getNodeTest() throws XPathException
     {
         if (m_axisType == -1)
         {
@@ -375,7 +375,7 @@ public class StepExprImpl extends ExprImpl implements StepExpr
     /**
      * @see org.apache.xpath.rwapi.impl.ExprImpl#getString(StringBuffer, boolean)
      */
-    protected void getString(StringBuffer expr, boolean abbreviate)
+    public void getString(StringBuffer expr, boolean abbreviate)
     {
         try
         {
@@ -400,29 +400,29 @@ public class StepExprImpl extends ExprImpl implements StepExpr
             {
                 if (abbreviate && (m_axisType == AXIS_CHILD))
                 {
-                    ((ExprImpl) getStepNodeTest()).getString(expr, abbreviate);
+                    ((SimpleNode) getNodeTest()).getString(expr, abbreviate);
                 }
                 else if (abbreviate && (m_axisType == AXIS_ATTRIBUTE))
                 {
                     expr.append("@");
-                    ((ExprImpl) getStepNodeTest()).getString(expr, abbreviate);
+                    ((SimpleNode) getNodeTest()).getString(expr, abbreviate);
                 }
                 else if (abbreviate && (m_axisType == AXIS_PARENT)
-                             && getStepNodeTest().isKindTest()
-                             && (getStepNodeTest().getKindTest() == NodeTest.ANY_KIND_TEST))
+                             && getNodeTest().isKindTest()
+                             && (getNodeTest().getKindTest() == NodeTest.ANY_KIND_TEST))
                 {
                     expr.append("..");
                 }
                 else if (abbreviate && (m_axisType == AXIS_DESCENDANT_OR_SELF)
-                             && getStepNodeTest().isKindTest()
-                             && (getStepNodeTest().getKindTest() == NodeTest.ANY_KIND_TEST))
+                             && getNodeTest().isKindTest()
+                             && (getNodeTest().getKindTest() == NodeTest.ANY_KIND_TEST))
                 {
                     // empty step
                 }
                 else
                 {
                     expr.append(getAxisName()).append("::");
-                    ((ExprImpl) getStepNodeTest()).getString(expr, abbreviate);
+                    ((SimpleNode) getNodeTest()).getString(expr, abbreviate);
                 }
             }
 

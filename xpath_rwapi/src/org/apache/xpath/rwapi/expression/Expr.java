@@ -70,129 +70,113 @@ package org.apache.xpath.rwapi.expression;
 public interface Expr extends Visitable {
 
     /**
-     * Path expression type.
+     * The expression is a path expression
      */
-    short PATH_EXPR = 0;
+    static final short PATH_EXPR = 0;
     
     /**
-     * Logical expression type. 
-     * Represents 'or' and 'and' expressions
+     * The expression is a logical expression. 
+     * Represents 'or' and 'and' expressions.
      */
-    short LOGICAL_EXPR = 1;
+	static final short LOGICAL_EXPR = 1;
     
     /**
-     * Conditionnal expression type. 
-     * Represents 'if' expressions
+     * The expression is a conditionnal expression (if) 
      */
-    short CONDITIONAL_EXPR = 2;
+	static final short CONDITIONAL_EXPR = 2;
     
     /**
-     * Iteration expression type.
-     * Represents 'for' expressions
+     * The expression is an iteration expression (for)   
      */
-    short ITERATION_EXPR = 3;
+	static final short ITERATION_EXPR = 3;
     
     /**
-     * 'Every' expression type.     
+     * The expression is a quantified expression of type every     
      */
-    short EVERY_EXPR = 4;
+	static final short EVERY_EXPR = 4;
     
 	/**
-	 * 'Some' expression type.     
+	 * The expression is a quantified expression of type some     
 	 */
-	short SOME_EXPR = 22;
+	static final short SOME_EXPR = 22;
     
     /**
-     * Comparison expression type. Represents value comparisons, general
-     * comparisons, node comparisons, and order comparisons.
+     * The expression is a comparison expression type. 
+     * Includes value comparisons, general comparisons, node comparisons
+     * and order comparisons.
      */
-    short COMPARISON_EXPR = 5;
+	static final  short COMPARISON_EXPR = 5;
     
     /**
-     * Arithmetic expression type.
-     * Represents arithmetic operators for addition, subtraction, multiplication, division, and modulus
+     * The expression is an arithmetic expression.
+     * Includes arithmetic operators for addition, subtraction, multiplication, division and modulus
      */
-    short ARITHMETIC_EXPR = 6;
+	static final short ARITHMETIC_EXPR = 6;
     
     /**
-     * Sequence of expressions type.
+     * The expression is a sequence.
      */
-    short SEQUENCE_EXPR = 7;
+	static final short SEQUENCE_EXPR = 7;
     
     /**
-     * Union and Intersection
+     * The expression is a combine expression (union and intersection)
      */
-    short COMBINE_EXPR = 8;
-    
+	static final short COMBINE_EXPR = 8;
+   
     /**
-     * 
+     * The expression is a validate expression 
      */
-    short PRIMARY_EXPR = 9;
-    
+	static final short VALIDATE_EXPR = 10;
+       
     /**
-     * 
+     * The expression is a literal expression
      */
-    short VALIDATE_EXPR = 10;
-    
-    /**
-     * 
-     */
-    short NAMETEST_EXPR = 11;
-    
-     /**
-     * 
-     */
-    short KINDTEST_EXPR = 12;
-    
-
-     /**
-     * Literal primary expression type constant
-     */
-    short LITERAL_EXPR = 13;
+	static final short LITERAL_EXPR = 13;
 
     /**
-     * Function call primary expression type constant
+     * The expression is a function call
      */
-    short FUNCTION_CALL_EXPR = 14;
+	static final short FUNCTION_CALL_EXPR = 14;
 
     /**
-     * Variable reference primary expression type constant
+     * The expression is a variable reference
      */
-    short VARIABLE_REF_EXPR = 15;
+	static final short VARIABLE_REF_EXPR = 15;
 
     /**
-     * Range expression type constant
+     * The expression is a range expression
      */
-    short RANGE_EXPR = 16;
+	static final short RANGE_EXPR = 16;
     
     /**
      * Step
+     * %review% to remove since a step can't exist outside of path
      */
-    short STEP = 17;
+	static final short STEP = 17;
     
     /**
-     * Instance of
+     * The expression is an instance of expression
      */
-    short INSTANCE_OF_EXPR = 18;    
+	static final short INSTANCE_OF_EXPR = 18;    
      
     /**
-     * Unary expression
+     * The expression is an unary expression
      */
-    short UNARY_EXPR = 19;
+	static final short UNARY_EXPR = 19;
     
     /**
-     * Cast expression
+     * The expression is a cast expression
      */
-    short CAST_EXPR = 20;
+	static final short CAST_EXPR = 20;
     
     /**
-     * Castable expression
+     * The expression is a castable expression
      */
-    short CASTABLE_EXPR = 21;
+	static final short CASTABLE_EXPR = 21;
 
     /**
-     * Gets the expression or expression component type
-     * @return The type of this expression: one of the constants define in this
+     * Gets the global expression type. 
+     * @return The type of this expression: one of the constants defined in this
      * interface
      */
     short getExprType();

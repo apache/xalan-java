@@ -218,7 +218,7 @@ public class ForAndQuantifiedExprImpl extends ExprImpl
     /* (non-Javadoc)
      * @see org.apache.xpath.rwapi.impl.ExprImpl#getString(java.lang.StringBuffer, boolean)
      */
-    protected void getString(StringBuffer expr, boolean abbreviate)
+    public void getString(StringBuffer expr, boolean abbreviate)
     {
         switch (getExprType())
         {

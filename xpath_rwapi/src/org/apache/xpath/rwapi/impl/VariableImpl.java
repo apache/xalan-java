@@ -124,7 +124,7 @@ public class VariableImpl extends ExprImpl implements Variable {
 	/**
 	 * @see org.apache.xpath.rwapi.impl.ExprImpl#getString(StringBuffer, boolean)
 	 */
-	protected void getString(StringBuffer expr, boolean abbreviate) {
+	public void getString(StringBuffer expr, boolean abbreviate) {
 		expr.append('$').append(m_varName);
 	}
 

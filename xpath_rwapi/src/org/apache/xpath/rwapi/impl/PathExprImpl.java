@@ -129,7 +129,7 @@ public class PathExprImpl extends OperatorImpl implements PathExpr
      * @see org.apache.xpath.rwapi.impl.ExprImpl#getString(StringBuffer,
      *      boolean)
      */
-    protected void getString(StringBuffer expr, boolean abbreviate)
+    public void getString(StringBuffer expr, boolean abbreviate)
     {
         if (m_isAbsolute)
         {

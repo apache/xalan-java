@@ -357,7 +357,7 @@ public class Test
             Object res = eval.evaluate(ctx, e);
 
             // Xalan dependent code
-            System.out.println("10[$var] ?= " + ((XObject) res).str());
+            System.out.println("-5 ?= " + ((XObject) res).str());
         }
         catch (Exception e)
         {

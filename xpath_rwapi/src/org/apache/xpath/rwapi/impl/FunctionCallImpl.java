@@ -124,7 +124,7 @@ public class FunctionCallImpl extends OperatorImpl implements FunctionCall {
 	/**
 	 * @see org.apache.xpath.rwapi.impl.ExprImpl#getString(StringBuffer, boolean)
 	 */
-	protected void getString(StringBuffer expr, boolean abbreviate) {
+	public void getString(StringBuffer expr, boolean abbreviate) {
 		if (m_prefix != null) {
 			expr.append(m_prefix).append(":").append(m_localPart);
 		} else {

@@ -255,7 +255,7 @@ public class LiteralImpl extends ExprImpl implements Literal
     /**
      * @see org.apache.xpath.rwapi.impl.ExprImpl#getString(StringBuffer, boolean)
      */
-    protected void getString(StringBuffer expr, boolean abbreviate)
+    public void getString(StringBuffer expr, boolean abbreviate)
     {
         expr.append(m_literal.toString());
     }

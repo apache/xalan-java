@@ -92,7 +92,7 @@ public abstract class ExprImpl extends SimpleNode implements Expr{
     /**
      * Gets expression as external string representation
      */
-    protected void getString(StringBuffer expr, boolean abbreviate) {
+    public void getString(StringBuffer expr, boolean abbreviate) {
     }
 
 
