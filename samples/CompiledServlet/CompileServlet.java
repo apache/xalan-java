@@ -72,7 +72,6 @@ import javax.servlet.http.*;
 
 import org.apache.xalan.xsltc.compiler.*;
 import org.apache.xalan.xsltc.compiler.util.*;
-import org.apache.xalan.xsltc.util.getopt.*;
 
 public class CompileServlet extends HttpServlet {
 

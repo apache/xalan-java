@@ -71,7 +71,8 @@ import javax.servlet.http.*;
 import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.runtime.*;
+import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xalan.xsltc.runtime.output.*;
 import org.apache.xalan.xsltc.dom.*;
 
 /**
@@ -132,13 +133,17 @@ public final class TransformServlet extends HttpServlet {
 		// Read input document from the DOM cache
 		DOMImpl dom = cache.retrieveDocument(documentURI, 0, translet);
 
-		// Initialize the output handler
-		DefaultSAXOutputHandler saxHandler = 
-		    new DefaultSAXOutputHandler(out);
+		// Create output handler
+		TransletOutputHandlerFactory tohFactory = 
+		    TransletOutputHandlerFactory.newInstance();
+		tohFactory.setOutputType(TransletOutputHandlerFactory.STREAM);
+		tohFactory.setEncoding(translet._encoding);
+		tohFactory.setOutputMethod(translet._method);
+		tohFactory.setWriter(out);
 
 		// Start the transformation
 		final long start = System.currentTimeMillis();
-		translet.transform(dom, new TextOutput(saxHandler));
+		translet.transform(dom, tohFactory.getTransletOutputHandler());
 		final long done = System.currentTimeMillis() - start;
 		out.println("<!-- transformed by XSLTC in "+done+"msecs -->");
 	    }
