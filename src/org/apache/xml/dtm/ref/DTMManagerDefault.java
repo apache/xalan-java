@@ -133,7 +133,7 @@ public class DTMManagerDefault extends DTMManager
   /**
    * The default table for exandedNameID lookups.
    */
-  private static ExpandedNameTable m_expandedNameTable =
+  private ExpandedNameTable m_expandedNameTable =
     new ExpandedNameTable();
 
   /**
