@@ -371,6 +371,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
       if (node2 == DTM.NULL) 
           return true;
     	
+      /*
       // Hack for ordering attribute nodes
       if (getNodeType(node1) == DTM.ATTRIBUTE_NODE) {
           node1 = getParent(node1);
@@ -378,6 +379,7 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
       if (getNodeType(node2) == DTM.ATTRIBUTE_NODE) {
           node2 = getParent(node2);
       }
+      */
 
       return (node1 < node2);
     }
