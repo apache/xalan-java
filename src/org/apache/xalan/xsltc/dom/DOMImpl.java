@@ -2701,8 +2701,8 @@ public final class DOMImpl implements DOM, Externalizable {
      * Performs a shallow copy (ref. XSLs copy())
      */
     public String shallowCopy(final int node, TransletOutputHandler handler)
-	throws TransletException {
-
+	throws TransletException 
+    {
 	final int type = _type[node];
 
 	switch(type) {
@@ -2746,8 +2746,8 @@ public final class DOMImpl implements DOM, Externalizable {
 
     private String copyElement(int node, int type,
 			       TransletOutputHandler handler)
-	throws TransletException {
-
+	throws TransletException 
+    {
 	type = type - NTYPES;
 	String name = _namesArray[type];
 	final int pi = _prefix[node];
@@ -2771,6 +2771,15 @@ public final class DOMImpl implements DOM, Externalizable {
 		handler.startElement(name);
 	    }
 	}
+
+	// Copy element namespaces
+	for (int a = _lengthOrAttr[node]; a != NULL; a = _nextSibling[a]) {
+	    if (_type[a] == NAMESPACE) {
+		handler.namespace(_prefixArray[_prefix[a]],
+				  makeStringValue(a));
+	    }
+	}
+
 	return name;
     }
 
