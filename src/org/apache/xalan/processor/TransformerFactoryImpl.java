@@ -483,7 +483,8 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   {
 
     Templates templates = newTemplates(src);
-
+    if( templates==null ) return null;
+    
     return newXMLFilter(templates);
   }
 
@@ -533,6 +534,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   {
 
     Templates templates = newTemplates(src);
+    if( templates==null ) return null;
     
     return newTransformerHandler(templates);
   }
@@ -629,7 +631,15 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
           throws TransformerConfigurationException
   {
     try {
-      return newTemplates(source).newTransformer();
+      Templates tmpl=newTemplates( source );
+      /* this can happen if an ErrorListener is present and it doesn't
+         throw any exception in fatalError. 
+         The spec says: "a Transformer must use this interface
+         instead of throwing an exception" - the newTemplates() does
+	 that, and returns null.
+      */
+      if( tmpl==null ) return null;
+      return tmpl.newTransformer();
     } catch( TransformerConfigurationException ex ) {
       if( m_errorListener != null ) {
 	try {
