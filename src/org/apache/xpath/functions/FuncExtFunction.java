@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999-2003 The Apache Software Foundation.  All rights 
+ * Copyright (c) 1999-2004 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -226,7 +226,10 @@ public class FuncExtFunction extends Function
       Expression arg = (Expression) m_argVec.elementAt(i);
       
       XObject xobj = arg.execute(xctxt);
-
+      /*
+       * Should cache the arguments for func:function
+       */
+      xobj.allowDetachToRelease(false); 
       argVec.addElement(xobj);
     }
     //dml
