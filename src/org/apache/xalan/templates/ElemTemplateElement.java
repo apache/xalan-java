@@ -125,6 +125,14 @@ public class ElemTemplateElement extends UnImplNode
   {
   }
   
+  /**
+   * Tell if this template is a compiled template.
+   */
+  public boolean isCompiledTemplate()
+  {
+    return false;
+  }
+  
   /** 
    * Get an integer representation of the element type.
    * 
