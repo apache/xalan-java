@@ -68,28 +68,30 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
+import org.apache.xalan.xsltc.runtime.AttributeList;
 
 
 public class SAXHTMLOutput extends SAXOutput  { 
-   private boolean   _headTagOpen = false;
+    private boolean   _headTagOpen = false;
+    private String _mediaType = "text/html";
 
-   public SAXHTMLOutput(ContentHandler handler, String encoding) {
+    public SAXHTMLOutput(ContentHandler handler, String encoding) {
 	super(handler, encoding);
-   }
+    }
 
-   public SAXHTMLOutput(ContentHandler handler, LexicalHandler lex, 
+    public SAXHTMLOutput(ContentHandler handler, LexicalHandler lex, 
 	String encoding)
-   {
+    {
 	super(handler, lex, encoding);
-   }
+    }
 
 
-   public void startElement(String elementName) throws TransletException {
-   }
+    public void startElement(String elementName) throws TransletException {
+    }
 
-   public void attribute(String name, final String value) 
+    public void attribute(String name, final String value) 
 	throws TransletException
-   {
+    {
 	final String patchedName = patchQName(name);
 	final String localName = getLocalName(patchedName);
 	final int index = _attributes.getIndex(name); 
@@ -97,42 +99,98 @@ public class SAXHTMLOutput extends SAXOutput  {
 	if (!_startTagOpen) {
             BasisLibrary.runTimeError(BasisLibrary.STRAY_ATTRIBUTE_ERR,name);
         }
-	/*
-         * The following is an attempt to escape an URL stored in a href
-         * attribute of HTML output. Normally URLs should be encoded at
-         * the time they are created, since escaping or unescaping a
-         * completed URI might change its semantics. We limit or escaping
-         * to include space characters only - and nothing else. This is for
-         * two reasons: (1) performance and (2) we want to make sure that
-         * we do not change the meaning of the URL.
-         */
-        final String tmp = name.toLowerCase();
-        if (tmp.equals("href") || tmp.equals("src") || 
-            tmp.equals("cite")) 
-        {
-		/************
-            if (index >= 0) {
-                _attributes.setAttribute(index, EMPTYSTRING, EMPTYSTRING, 
-                    name, "CDATA", quickAndDirtyUrlEncode(escapeAttr(value)));
-            }
-            else {
-                _attributes.addAttribute(EMPTYSTRING, EMPTYSTRING, name, 
-                    "CDATA", quickAndDirtyUrlEncode(escapeAttr(value)));
-            }
-		**************/
+        if (index >= 0) {
+            _attributes.setAttribute(index, EMPTYSTRING, EMPTYSTRING,
+                    name, "CDATA", value);
         }
         else {
-            if (index >= 0) {
-                _attributes.setAttribute(index, EMPTYSTRING, EMPTYSTRING,
-                    name, "CDATA", value);
-            }
-            else {
-                _attributes.addAttribute(EMPTYSTRING, EMPTYSTRING,
-                    name, "CDATA", value);
+            _attributes.addAttribute(EMPTYSTRING, EMPTYSTRING,
+                name, "CDATA", value);
+        }
+    }
+
+    /**
+    * Send characters to the output document
+    */
+    public void characters(char[] ch, int off, int len)
+        throws TransletException 
+    {
+	try {
+            // Close any open start tag
+            if (_startTagOpen) closeStartTag();
+            _saxHandler.characters(ch, off, len);
+        }
+        catch (SAXException e) {
+            throw new TransletException(e);
+        }
+    }
+
+    /**
+     * This method is called when all the data needed for a call to the
+     * SAX handler's startElement() method has been gathered.
+     */
+    public void closeStartTag() throws TransletException {
+        try {
+            _startTagOpen = false;
+
+            // Now is time to send the startElement event
+            _saxHandler.startElement(null, _elementName, _elementName, 
+		_attributes);
+
+            // Insert <META> tag directly after <HEAD> element in HTML output
+            if (_headTagOpen) {
+                emitHeader();
+                _headTagOpen = false;
             }
         }
-   }
+        catch (SAXException e) {
+            throw new TransletException(e);
+        }
+    }
+
+
+    /**
+     * Emit header through the SAX handler
+     */
+    private void emitHeader() throws SAXException {
+        AttributeList attrs = new AttributeList();
+        attrs.add("http-equiv", "Content-Type");
+        attrs.add("content", _mediaType+"; charset="+_encoding);
+        _saxHandler.startElement(EMPTYSTRING, EMPTYSTRING, "meta", attrs);
+        _saxHandler.endElement(EMPTYSTRING, EMPTYSTRING, "meta");
+    }
 
    
+    /**
+     * End an element or CDATA section in the output document
+     */
+    public void endElement(String elementName) throws TransletException {
+        try {
+            // Close any open element
+            if (_startTagOpen) closeStartTag();
+            _saxHandler.endElement(EMPTYSTRING, EMPTYSTRING,
+                (String)(_qnameStack.pop()));
+        } catch (SAXException e) {
+            throw new TransletException(e);
+        }
 
+    }
+
+    private void initNamespaces() { 
+	//empty 
+    }
+
+    private String lookupNamespace(String prefix) { 
+	return null;	// no-op	
+    }
+
+    private void popNamespace(String prefix) throws SAXException {
+	//empty
+    }
+
+    private String getNamespaceURI(String qname, boolean isElement)
+        throws TransletException
+    {
+	return null;	// no-op	
+    } 
 }
