@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2001 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,10 +24,9 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Xalan" and "Apache Software Foundation" must
- *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
- *    permission, please contact apache@apache.org.
+ * 4. The name "Apache Software Foundation" must not be used to endorse or
+ *    promote products derived from this software without prior written
+ *    permission. For written permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
  *    nor may "Apache" appear in their name, without prior written
@@ -48,14 +47,9 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the Apache Software Foundation and was
- * originally based on software copyright (c) 1999, Lotus
- * Development Corporation., http://www.lotus.com.  For more
+ * individuals on behalf of the Apache Software Foundation.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
- */
-/**
- * $Id$
  */
 package javax.xml.transform.sax;
 
@@ -78,7 +72,8 @@ import org.xml.sax.InputSource;
  */
 public class SAXSource implements Source {
 
-    /** If {@link javax.xml.transform.TransformerFactory#getFeature}
+    /**
+     * If {@link javax.xml.transform.TransformerFactory#getFeature}
      * returns true when passed this value as an argument,
      * the Transformer supports Source input of this type.
      */
@@ -87,15 +82,17 @@ public class SAXSource implements Source {
 
     /**
      * Zero-argument default constructor.  If this constructor
-     * is used, and no other method is called, the Transformer
+     * is used, and no other method is called, the
+     * {@link javax.xml.transform.Transformer}
      * assumes an empty input tree, with a default root node.
      */
     public SAXSource() {}
 
     /**
-     * Create a SAXSource, using an XMLReader and a SAX InputSource.
-     * The Transformer or SAXTransformerFactory will set itself
-     * to be the reader's ContentHandler, and then will call
+     * Create a <code>SAXSource</code>, using an {@link org.xml.sax.XMLReader}
+     * and a SAX InputSource. The {@link javax.xml.transform.Transformer}
+     * or {@link javax.xml.transform.sax.SAXTransformerFactory} will set itself
+     * to be the reader's {@link org.xml.sax.ContentHandler}, and then will call
      * reader.parse(inputSource).
      *
      * @param reader An XMLReader to be used for the parse.
@@ -108,11 +105,12 @@ public class SAXSource implements Source {
     }
 
     /**
-     * Create a SAXSource, using a SAX InputSource.
-     * The Transformer or SAXTransformerFactory creates a
-     * reader via org.xml.sax.helpers.XMLReaderFactory
+     * Create a <code>SAXSource</code>, using a SAX <code>InputSource</code>.
+     * The {@link javax.xml.transform.Transformer} or
+     * {@link javax.xml.transform.sax.SAXTransformerFactory} creates a
+     * reader via {@link org.xml.sax.helpers.XMLReaderFactory}
      * (if setXMLReader is not used), sets itself as
-     * the reader's ContentHandler, and calls
+     * the reader's {@link org.xml.sax.ContentHandler}, and calls
      * reader.parse(inputSource).
      *
      * @param inputSource An input source reference that must be non-null
@@ -226,3 +224,4 @@ public class SAXSource implements Source {
         }
     }
 }
+

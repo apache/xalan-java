@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  * @since SAX 2.0
  * @author David Megginson, 
  *         <a href="mailto:sax@megginson.com">sax@megginson.com</a>
- * @version 2.0
+ * @version 2.0r2pre
  * @see org.xml.sax.XMLReader
  */
 final public class XMLReaderFactory
@@ -75,7 +75,7 @@ final public class XMLReaderFactory
      *            or if the class cannot be loaded and instantiated.
      * @see #createXMLReader(java.lang.String)
      */
-    public static XMLReader createXMLReader ()
+    public static synchronized XMLReader createXMLReader ()
 	throws SAXException
     {
 	String className = System.getProperty("org.xml.sax.driver");
@@ -109,7 +109,7 @@ final public class XMLReaderFactory
      *            loaded, instantiated, and cast to XMLReader.
      * @see #createXMLReader()
      */
-    public static XMLReader createXMLReader (String className)
+    public static synchronized XMLReader createXMLReader (String className)
 	throws SAXException
     {
 	try {

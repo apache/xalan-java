@@ -35,7 +35,7 @@ package org.xml.sax;
  * @since SAX 1.0
  * @author David Megginson, 
  *         <a href="mailto:sax@megginson.com">sax@megginson.com</a>
- * @version 2.0
+ * @version 2.0r2pre
  * @see org.xml.sax.Parser#setErrorHandler
  * @see org.xml.sax.SAXParseException 
  */

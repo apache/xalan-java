@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2001 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,10 +24,9 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Xalan" and "Apache Software Foundation" must
- *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
- *    permission, please contact apache@apache.org.
+ * 4. The name "Apache Software Foundation" must not be used to endorse or
+ *    promote products derived from this software without prior written
+ *    permission. For written permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
  *    nor may "Apache" appear in their name, without prior written
@@ -48,14 +47,9 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the Apache Software Foundation and was
- * originally based on software copyright (c) 1999, Lotus
- * Development Corporation., http://www.lotus.com.  For more
+ * individuals on behalf of the Apache Software Foundation.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
- */
-/**
- * $Id$
  */
 package javax.xml.transform;
 
@@ -63,19 +57,20 @@ import java.util.Properties;
 
 
 /**
- * An instace of this abstract class can transform a
+ * An instance of this abstract class can transform a
  * source tree into a result tree.
  *
  * <p>An instance of this class can be obtained with the <code>
- * TransformerFactory.newTransformer</code> method. This instance may
- * then be used to process XML from a variety of sources and write
- * the transformation output to a variety of sinks.</p>
+ * {@link TransformerFactory#newTransformer TransformerFactory.newTransformer}
+ * method. This instance may then be used to process XML from a
+ * variety of sources and write the transformation output to a
+ * variety of sinks.</p>
  *
  * <p>An object of this class may not be used in multiple threads
  * running concurrently.  Different Transformers may be used
  * concurrently by different threads.</p>
  *
- * <p>A Transformer may be used multiple times.  Parameters and
+ * <p>A <code>Transformer</code> may be used multiple times.  Parameters and
  * output properties are preserved across transformations.</p>
  */
 public abstract class Transformer {
@@ -125,8 +120,7 @@ public abstract class Transformer {
      * cannot be determined until the node context is evaluated during
      * the transformation process.
      *
-     * @return A parameter that has been set with setParameter, or null if 
-     * a parameter with the given name was not found.
+     * @return A parameter that has been set with setParameter.
      */
     public abstract Object getParameter(String name);
 

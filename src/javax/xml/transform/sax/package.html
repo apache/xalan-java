@@ -20,7 +20,7 @@
   specify the SAX source.</p>
 <p>The {@link javax.xml.transform.sax.SAXResult} class allows the
   setting of a {@link org.xml.sax.ContentHandler} to be the receiver of
-  SAX2 events from the transformation.</p>
+  SAX2 events from the transformation. 
 <p>The {@link javax.xml.transform.sax.SAXTransformerFactory} extends
   {@link javax.xml.transform.TransformerFactory} to provide factory
   methods for creating {@link javax.xml.transform.sax.TemplatesHandler},
@@ -29,7 +29,8 @@
 <p>To obtain a {@link javax.xml.transform.sax.SAXTransformerFactory},
   the caller must cast the {@link javax.xml.transform.TransformerFactory}
   instance returned from
-  {@link javax.xml.transform.TransformerFactory#newInstance}.</p>
+  {@link javax.xml.transform.TransformerFactory#newInstance}. 
+
 <p>The {@link javax.xml.transform.sax.TransformerHandler} interface
   allows a transformation to be created from SAX2 parse events, which is a "push"
   model rather than the "pull" model that normally occurs for a transformation.
@@ -46,15 +47,16 @@
   Transformer handler, a {@link javax.xml.transform.Transformer} reference
   will need to be obtained from
   {@link javax.xml.transform.sax.TransformerHandler#getTransformer}, and
-  the methods invoked from that reference.</p>
+  the methods invoked from that reference. 
+
 <p>The {@link javax.xml.transform.sax.TemplatesHandler} interface
   allows the creation of {@link javax.xml.transform.Templates} objects
   from SAX2 parse events. Once the {@link org.xml.sax.ContentHandler}
   events are complete, the Templates object may be obtained from
-  {@link javax.xml.transform.sax.TemplatesHandler#getTemplates}. Note that 
+  {@link javax.xml.transform.sax.TemplatesHandler#getTemplates}. Note that
   {@link javax.xml.transform.sax.TemplatesHandler#setSystemId} should
   normally be called in order to establish a base system ID from which relative
-  URLs may be resolved.</p>
+  URLs may be resolved. 
 <p>The
   {@link javax.xml.transform.sax.SAXTransformerFactory#newXMLFilter}
   method allows the creation of a {@link org.xml.sax.XMLFilter}, which

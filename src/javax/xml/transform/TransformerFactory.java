@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2001 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,10 +24,9 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Xalan" and "Apache Software Foundation" must
- *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
- *    permission, please contact apache@apache.org.
+ * 4. The name "Apache Software Foundation" must not be used to endorse or
+ *    promote products derived from this software without prior written
+ *    permission. For written permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
  *    nor may "Apache" appear in their name, without prior written
@@ -48,14 +47,9 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the Apache Software Foundation and was
- * originally based on software copyright (c) 1999, Lotus
- * Development Corporation., http://www.lotus.com.  For more
+ * individuals on behalf of the Apache Software Foundation.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
- */
-/**
- * $Id$
  */
 package javax.xml.transform;
 
@@ -69,22 +63,31 @@ import java.io.BufferedReader;
 import java.util.Properties;
 import java.util.Enumeration;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 
 /**
- * A TransformerFactory instance can be used to create Transformer and Template
- * objects.
+ * A TransformerFactory instance can be used to create
+ * {@link javax.xml.transform.Transformer} and
+ * {@link javax.xml.transform.Templates} objects.
  *
- * <p>The system property that determines which Factory implementation
- * to create is named "javax.xml.transform.TransformerFactory". This
- * property names a concrete subclass of the TransformerFactory abstract
- *  class. If the property is not defined, a platform default is be used.</p>
+ * <p>The system property that determines which Factory implementation to
+ * create is named <code>"javax.xml.transform.TransformerFactory"</code>.
+ * This property names a concrete subclass of the
+ * <code>TransformerFactory</code> abstract class. If the property is not
+ * defined, a platform default is be used.</p>
+ *
+ * An implementation of the <code>TransformerFactory</code> class is
+ * <em>NOT</em> guaranteed to be thread safe. It is up to the user application 
+ * to make sure about the use of the <code>TransformerFactory</code> from 
+ * more than one thread. Alternatively the application can have one instance 
+ * of the <code>TransformerFactory</code> per thread.
+ * An application can use the same instance of the factory to obtain one or 
+ * more instances of a <code>Transformer</code> or <code>Templates</code> 
+ * provided the instance of the factory isn't being used in more than one 
+ * thread at a time.
  */
 public abstract class TransformerFactory {
-
-    /** The default property name according to the JAXP spec. */
-    private static final String defaultPropName =
-        "javax.xml.transform.TransformerFactory";
-
     /**
      * Default constructor is protected on purpose.
      */
@@ -92,7 +95,7 @@ public abstract class TransformerFactory {
 
     /**
      * Obtain a new instance of a <code>TransformerFactory</code>.
-     * This static method creates a new factory instance 
+     * This static method creates a new factory instance
      * This method uses the following ordered lookup procedure to determine
      * the <code>TransformerFactory</code> implementation class to
      * load:
@@ -102,10 +105,11 @@ public abstract class TransformerFactory {
      * property.
      * </li>
      * <li>
-     * Use the JAVA_HOME(the parent directory where jdk is
-     * installed)/lib/jaxp.properties for a property file that contains the
-     * name of the implementation class keyed on the same value as the
-     * system property defined above.
+     * Use the properties file "lib/jaxp.properties" in the JRE directory.
+     * This configuration file is in standard <code>java.util.Properties
+     * </code> format and contains the fully qualified name of the
+     * implementation class with the key being the system property defined
+     * above.
      * </li>
      * <li>
      * Use the Services API (as detailed in the JAR specification), if
@@ -129,70 +133,20 @@ public abstract class TransformerFactory {
      * if the implmentation is not available or cannot be instantiated.
      */
     public static TransformerFactory newInstance()
-            throws TransformerFactoryConfigurationError {
-
-        String classname =
-            findFactory(defaultPropName,
-                        "org.apache.xalan.processor.TransformerFactoryImpl");
-
-        if (classname == null) {
-            throw new TransformerFactoryConfigurationError(
-                "No default implementation found");
-        }
-
-        TransformerFactory factoryImpl;
-
-        try {
-            Class clazz = getClassForName(classname);
-
-            factoryImpl = (TransformerFactory) clazz.newInstance();
-        } catch (ClassNotFoundException cnfe) {
-            throw new TransformerFactoryConfigurationError(cnfe);
-        } catch (IllegalAccessException iae) {
-            throw new TransformerFactoryConfigurationError(iae);
-        } catch (InstantiationException ie) {
-            throw new TransformerFactoryConfigurationError(ie);
-        }
-
-        return factoryImpl;
-    }
-
-
-    
-    /** a zero length Object array used in getClassForName() */
-    private static final Object NO_OBJS[] = new Object[0];
-    /** the Method object for getContextClassLoader */
-    private static java.lang.reflect.Method getCCL;
-    
-    static {
-	try { 
-	    getCCL = Thread.class.getMethod("getContextClassLoader",
-					    new Class[0]);
-	} catch (Exception e) {
-	    getCCL = null;
-	}
-    }
-    
-    private static Class getClassForName(String className )
-        throws ClassNotFoundException
+        throws TransformerFactoryConfigurationError
     {
-	if (getCCL != null) {
-	    try {
-		ClassLoader contextClassLoader =
-		    (ClassLoader) getCCL.invoke(Thread.currentThread(),
-						NO_OBJS);
-		return contextClassLoader.loadClass(className);
-	    } catch (ClassNotFoundException cnfe) {
-		// nothing, try again with Class.forName 
-	    } catch (Exception e) {
-		getCCL = null; // don't try again
-		// fallback
-	    }
-	}
-	
-	return Class.forName(className);
+        try {
+            return (TransformerFactory) FactoryFinder.find(
+                /* The default property name according to the JAXP spec */
+                "javax.xml.transform.TransformerFactory",
+                /* The fallback implementation class name */
+                "org.apache.xalan.processor.TransformerFactoryImpl");
+        } catch (FactoryFinder.ConfigurationError e) {
+            throw new TransformerFactoryConfigurationError(e.getException(),
+                                                           e.getMessage());
+        }
     }
-  
+
     /**
      * Process the Source into a Transformer object.  Care must
      * be given not to use this object in multiple threads running concurrently.
@@ -337,129 +291,4 @@ public abstract class TransformerFactory {
      * @return The current error handler, which should never be null.
      */
     public abstract ErrorListener getErrorListener();
-
-    // -------------------- private methods --------------------
-
-    /**
-     * Avoid reading all the files when the findFactory
-     * method is called the second time (cache the result of
-     * finding the default impl).
-     */
-    private static String foundFactory = null;
-
-    /**
-     * Temp debug code - this will be removed after we test everything
-     */
-    private static boolean debug;
-    static {
-	try {
-	    debug = System.getProperty("jaxp.debug") != null;
-	} catch( SecurityException ex ) {}
-    }
-
-    /**
-     * Private implementation method - will find the implementation
-     * class in the specified order.
-     *
-     * @param factoryId   Name of the factory interface.
-     * @param xmlProperties Name of the properties file based on JAVA/lib.
-     * @param defaultFactory Default implementation, if nothing else is found.
-     *
-     * @return The factory class name.
-     */
-    private static String findFactory(String factoryId,
-                                      String defaultFactory) {
-
-        // Use the system property first
-        try {
-	    String systemProp = null;
-	    try {
-		systemProp = System.getProperty(factoryId);
-	    } catch( SecurityException se ) {}
-
-            if (systemProp != null) {
-                if (debug) {
-                    System.err.println("JAXP: found system property"
-                                       + systemProp);
-                }
-
-                return systemProp;
-            }
-        } catch (SecurityException se) {}
-
-        if (foundFactory != null) {
-            return foundFactory;
-        }
-
-        // try to read from $java.home/lib/jaxp.properties
-        try {
-            String javah      = System.getProperty("java.home");
-            String configFile = javah + File.separator + "lib"
-                                + File.separator + "jaxp.properties";
-            File   f          = new File(configFile);
-
-            if (f.exists()) {
-                Properties props = new Properties();
-
-                props.load(new FileInputStream(f));
-
-                foundFactory = props.getProperty(factoryId);
-
-                if (debug) {
-                    System.err.println("JAXP: found java.home property "
-                                       + foundFactory);
-                }
-
-                if (foundFactory != null) {
-                    return foundFactory;
-                }
-            }
-        } catch (Exception ex) {
-            if (debug) {
-                ex.printStackTrace();
-            }
-        }
-
-        String serviceId = "META-INF/services/" + factoryId;
-
-        // try to find services in CLASSPATH
-        try {
-            ClassLoader cl = TransformerFactory.class.getClassLoader();
-            InputStream is = null;
-
-            if (cl == null) {
-                is = ClassLoader.getSystemResourceAsStream(serviceId);
-            } else {
-                is = cl.getResourceAsStream(serviceId);
-            }
-
-            if (is != null) {
-                if (debug) {
-                    System.err.println("JAXP: found  " + serviceId);
-                }
-
-                BufferedReader rd =
-                    new BufferedReader(new InputStreamReader(is));
-
-                foundFactory = rd.readLine();
-
-                rd.close();
-
-                if (debug) {
-                    System.err.println("JAXP: loaded from services: "
-                                       + foundFactory);
-                }
-
-                if ((foundFactory != null) &&!"".equals(foundFactory)) {
-                    return foundFactory;
-                }
-            }
-        } catch (Exception ex) {
-            if (debug) {
-                ex.printStackTrace();
-            }
-        }
-
-        return defaultFactory;
-    }
 }

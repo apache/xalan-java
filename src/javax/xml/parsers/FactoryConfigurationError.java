@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2001 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,10 +24,9 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Xalan" and "Apache Software Foundation" must
- *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
- *    permission, please contact apache@apache.org.
+ * 4. The name "Apache Software Foundation" must not be used to endorse or
+ *    promote products derived from this software without prior written
+ *    permission. For written permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
  *    nor may "Apache" appear in their name, without prior written
@@ -49,12 +48,10 @@
  *
  * This software consists of voluntary contributions made by many
  * individuals on behalf of the Apache Software Foundation and was
- * originally based on software copyright (c) 1999, Lotus
- * Development Corporation., http://www.lotus.com.  For more
- * information on the Apache Software Foundation, please see
- * <http://www.apache.org/>.
+ * originally based on software copyright (c) 1999-2001, Sun Microsystems,
+ * Inc., http://www.sun.com.  For more information on the Apache Software
+ * Foundation, please see <http://www.apache.org/>.
  */
-
 
 package javax.xml.parsers;
 
@@ -70,7 +67,6 @@ package javax.xml.parsers;
 
 public class FactoryConfigurationError extends Error {
 
-    /** @serial */
     private Exception exception;
 
     /**
@@ -80,7 +76,7 @@ public class FactoryConfigurationError extends Error {
 
      public FactoryConfigurationError() {
          super();
-         this.exception = null; 
+    	 this.exception = null; 
      }
 
     /**
@@ -128,7 +124,9 @@ public class FactoryConfigurationError extends Error {
     /**
      * Return the message (if any) for this error . If there is no
      * message for the exception and there is an encapsulated
-     * exception then the message of that exception will be returned.
+     * exception then the message of that exception, if it exists will be 
+     * returned. Else the name of the encapsulated exception will be
+     * returned.
      *
      * @return The error message.
      */

@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2001 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,10 +24,9 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Xalan" and "Apache Software Foundation" must
- *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
- *    permission, please contact apache@apache.org.
+ * 4. The name "Apache Software Foundation" must not be used to endorse or
+ *    promote products derived from this software without prior written
+ *    permission. For written permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
  *    nor may "Apache" appear in their name, without prior written
@@ -48,14 +47,9 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the Apache Software Foundation and was
- * originally based on software copyright (c) 1999, Lotus
- * Development Corporation., http://www.lotus.com.  For more
+ * individuals on behalf of the Apache Software Foundation.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
- */
-/**
- * $Id$
  */
 package javax.xml.transform.sax;
 
@@ -76,7 +70,8 @@ import org.xml.sax.ext.LexicalHandler;
  */
 public class SAXResult implements Result {
 
-    /** If {@link javax.xml.transform.TransformerFactory#getFeature}
+    /**
+     * If {@link javax.xml.transform.TransformerFactory#getFeature}
      * returns true when passed this value as an argument,
      * the Transformer supports Result output of this type.
      */
@@ -89,7 +84,7 @@ public class SAXResult implements Result {
     public SAXResult() {}
 
     /**
-     * Create a SAXResult that targets a SAX2 ContentHandler.
+     * Create a SAXResult that targets a SAX2 {@link org.xml.sax.ContentHandler}.
      *
      * @param handler Must be a non-null ContentHandler reference.
      */
@@ -98,7 +93,7 @@ public class SAXResult implements Result {
     }
 
     /**
-     * Set the target to be a SAX2 ContentHandler.
+     * Set the target to be a SAX2 {@link org.xml.sax.ContentHandler}.
      *
      * @param handler Must be a non-null ContentHandler reference.
      */
@@ -107,7 +102,7 @@ public class SAXResult implements Result {
     }
 
     /**
-     * Get the ContentHandler that is the Result.
+     * Get the {@link org.xml.sax.ContentHandler} that is the Result.
      *
      * @return The ContentHandler that is to be transformation output.
      */
@@ -116,13 +111,14 @@ public class SAXResult implements Result {
     }
 
     /**
-     * Set the SAX2 LexicalHandler for the output.
+     * Set the SAX2 {@link org.xml.sax.ext.LexicalHandler} for the output.
      *
      * <p>This is needed to handle XML comments and the like.  If the
      * lexical handler is not set, an attempt should be made by the
-     * transformer to cast the ContentHandler to a LexicalHandler.</p>
+     * transformer to cast the {@link org.xml.sax.ContentHandler} to a
+     * <code>LexicalHandler</code>.</p>
      *
-     * @param handler A non-null LexicalHandler for
+     * @param handler A non-null <code>LexicalHandler</code> for
      * handling lexical parse events.
      */
     public void setLexicalHandler(LexicalHandler handler) {
@@ -130,9 +126,9 @@ public class SAXResult implements Result {
     }
 
     /**
-     * Get a SAX2 LexicalHandler for the output.
+     * Get a SAX2 {@link org.xml.sax.ext.LexicalHandler} for the output.
      *
-     * @return A LexicalHandler, or null.
+     * @return A <code>LexicalHandler</code>, or null.
      */
     public LexicalHandler getLexicalHandler() {
         return lexhandler;
@@ -140,7 +136,7 @@ public class SAXResult implements Result {
 
     /**
      * Method setSystemId Set the systemID that may be used in association
-     * with the ContentHandler.
+     * with the {@link org.xml.sax.ContentHandler}.
      *
      * @param systemId The system identifier as a URI string.
      */

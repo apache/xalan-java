@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2001 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,10 +24,9 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Xalan" and "Apache Software Foundation" must
- *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
- *    permission, please contact apache@apache.org.
+ * 4. The name "Apache Software Foundation" must not be used to endorse or
+ *    promote products derived from this software without prior written
+ *    permission. For written permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
  *    nor may "Apache" appear in their name, without prior written
@@ -48,14 +47,9 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the Apache Software Foundation and was
- * originally based on software copyright (c) 1999, Lotus
- * Development Corporation., http://www.lotus.com.  For more
+ * individuals on behalf of the Apache Software Foundation.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
- */
-/**
- * $Id$
  */
 package javax.xml.transform;
 
@@ -72,8 +66,7 @@ import javax.xml.transform.SourceLocator;
  */
 public class TransformerException extends Exception {
 
-    /** Field locator specifies where the error occured.
-     *  @serial */
+    /** Field locator specifies where the error occured */
     SourceLocator locator;
 
     /**
@@ -96,8 +89,7 @@ public class TransformerException extends Exception {
         locator = location;
     }
 
-    /** Field containedException specifies a wrapped exception.  May be null.
-     *  @serial */
+    /** Field containedException specifies a wrapped exception.  May be null. */
     Throwable containedException;
 
     /**
@@ -148,7 +140,7 @@ public class TransformerException extends Exception {
      */
     public synchronized Throwable initCause(Throwable cause) {
 
-        if ((this.containedException == null) && (cause != null)) {
+        if (this.containedException != null) {
             throw new IllegalStateException("Can't overwrite cause");
         }
 
@@ -182,7 +174,7 @@ public class TransformerException extends Exception {
      */
     public TransformerException(Throwable e) {
 
-        super(e.getMessage());
+        super(e.toString());
 
         this.containedException = e;
         this.locator            = null;
@@ -201,7 +193,7 @@ public class TransformerException extends Exception {
     public TransformerException(String message, Throwable e) {
 
         super(((message == null) || (message.length() == 0))
-              ? e.getMessage()
+              ? e.toString()
               : message);
 
         this.containedException = e;
@@ -246,6 +238,9 @@ public class TransformerException extends Exception {
     /**
      * Get the error message with location information
      * appended.
+     *
+     * @return A <code>String</code> representing the error message with
+     *         location information appended.
      */
     public String getMessageAndLocation() {
 
@@ -341,7 +336,6 @@ public class TransformerException extends Exception {
      * @param s The writer where the dump will be sent to.
      */
     public void printStackTrace(java.io.PrintWriter s) {
-
         if (s == null) {
             s = new java.io.PrintWriter(System.err, true);
         }
@@ -352,7 +346,6 @@ public class TransformerException extends Exception {
             if (null != locInfo) {
                 s.println(locInfo);
             }
-
             super.printStackTrace(s);
         } catch (Throwable e) {}
 
@@ -401,5 +394,6 @@ public class TransformerException extends Exception {
                 exception = null;
             }
         }
+	s.flush();
     }
 }

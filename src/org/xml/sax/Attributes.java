@@ -49,7 +49,7 @@ package org.xml.sax;
  * @since SAX 2.0
  * @author David Megginson, 
  *         <a href="mailto:sax@megginson.com">sax@megginson.com</a>
- * @version 2.0
+ * @version 2.0r2pre
  * @see org.xml.sax.helpers.AttributeListImpl
  */
 public interface Attributes
@@ -167,7 +167,7 @@ public interface Attributes
      * @return The index of the attribute, or -1 if it does not
      *         appear in the list.
      */
-    public int getIndex (String uri, String localPart);
+    public int getIndex (String uri, String localName);
 
 
     /**

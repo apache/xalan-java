@@ -2,7 +2,7 @@
  * The Apache Software License, Version 1.1
  *
  *
- * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2001 The Apache Software Foundation.  All rights 
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,10 +24,9 @@
  *    Alternately, this acknowledgment may appear in the software itself,
  *    if and wherever such third-party acknowledgments normally appear.
  *
- * 4. The names "Xalan" and "Apache Software Foundation" must
- *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
- *    permission, please contact apache@apache.org.
+ * 4. The name "Apache Software Foundation" must not be used to endorse or
+ *    promote products derived from this software without prior written
+ *    permission. For written permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
  *    nor may "Apache" appear in their name, without prior written
@@ -48,21 +47,17 @@
  * ====================================================================
  *
  * This software consists of voluntary contributions made by many
- * individuals on behalf of the Apache Software Foundation and was
- * originally based on software copyright (c) 1999, Lotus
- * Development Corporation., http://www.lotus.com.  For more
+ * individuals on behalf of the Apache Software Foundation.  For more
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
- */
-/**
- * $Id$
  */
 package javax.xml.transform;
 
 /**
  * <p>To provide customized error handling, implement this interface and
  * use the setErrorListener method to register an instance of the implmentation
- * with the Transformer. The Transformer then reports all errors and warnings through this interface.</p>
+ * with the {@link javax.xml.transform.Transformer}. The Transformer then reports
+ * all errors and warnings through this interface.</p>
  *
  * <p>If an application does <em>not</em>
  * register an ErrorListener, errors are reported to System.err.</p>
@@ -81,9 +76,9 @@ public interface ErrorListener {
     /**
      * Receive notification of a warning.
      *
-     * <p>Transformers can use this method to report conditions that
-     * are not errors or fatal errors.  The default behaviour is to
-     * take no action.</p>
+     * <p>{@link javax.xml.transform.Transformer} can use this method to report
+     * conditions that are not errors or fatal errors.  The default behaviour
+     * is to take no action.</p>
      *
      * <p>After invoking this method, the Transformer must continue with
      * the transformation. It should still be possible for the
@@ -105,7 +100,7 @@ public interface ErrorListener {
      *
      * <p>The transformer must continue to try and provide normal transformation
      * after invoking this method.  It should still be possible for the
-     * application to process the document through to the end if no other errors 
+     * application to process the document through to the end if no other errors
      * are encountered.</p>
      *
      * @param exception The error information encapsulated in a
@@ -124,8 +119,8 @@ public interface ErrorListener {
      *
      * <p>The transformer must continue to try and provide normal transformation
      * after invoking this method.  It should still be possible for the
-     * application to process the document through to the end if no other errors 
-     * are encountered, but there is no guarantee that the output will be 
+     * application to process the document through to the end if no other errors
+     * are encountered, but there is no guarantee that the output will be
      * useable.</p>
      *
      * @param exception The error information encapsulated in a

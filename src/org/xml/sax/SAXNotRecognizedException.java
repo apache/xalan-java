@@ -23,11 +23,20 @@ package org.xml.sax;
  * @since SAX 2.0
  * @author David Megginson, 
  *         <a href="mailto:sax@megginson.com">sax@megginson.com</a>
- * @version 2.0
+ * @version 2.0r2pre
  * @see org.xml.sax.SAXNotSupportedException
  */
 public class SAXNotRecognizedException extends SAXException
 {
+
+    /**
+     * Default constructor.
+     */
+    public SAXNotRecognizedException ()
+    {
+	super();
+    }
+
 
     /**
      * Construct a new exception with the given message.

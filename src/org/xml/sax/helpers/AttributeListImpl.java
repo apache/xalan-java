@@ -57,7 +57,7 @@ import java.util.Vector;
  * @since SAX 1.0
  * @author David Megginson, 
  *         <a href="mailto:sax@megginson.com">sax@megginson.com</a>
- * @version 2.0
+ * @version 2.0r2pre
  * @see org.xml.sax.AttributeList
  * @see org.xml.sax.DocumentHandler#startElement 
  */
