@@ -650,6 +650,11 @@ implements IncrementalSAXSource, ContentHandler, LexicalHandler, ErrorHandler, R
     {
       arg=ex;
     }
+    catch(StopException ex)
+    {
+      // Expected and harmless
+      if(DEBUG)System.out.println("Active IncrementalSAXSource_Filter normal stop exception");
+    }
     catch (SAXException ex)
     {
       Exception inner=ex.getException();
