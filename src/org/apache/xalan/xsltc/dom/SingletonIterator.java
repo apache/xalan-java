@@ -92,9 +92,8 @@ public class SingletonIterator extends NodeIteratorBase {
 	    return resetPosition();
 	}
 	else if (_isRestartable) {
-	    if (_node == Integer.MIN_VALUE) {
+	    if (_node <= 0)
 		_node = _startNode = node;
-	    }
 	    return resetPosition();
 	}
 	return this;
