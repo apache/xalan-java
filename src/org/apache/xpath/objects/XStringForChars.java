@@ -169,7 +169,7 @@ public class XStringForChars extends XString
    */
   public char charAt(int index)
   {
-    return ((char[])m_obj)[index];
+    return ((char[])m_obj)[index+m_start];
   }
 
   /**
@@ -195,7 +195,7 @@ public class XStringForChars extends XString
    */
   public void getChars(int srcBegin, int srcEnd, char dst[], int dstBegin)
   {
-    System.arraycopy((char[])m_obj, m_start+srcBegin, dst, dstBegin, m_start+srcEnd);
+    System.arraycopy((char[])m_obj, m_start+srcBegin, dst, dstBegin, srcEnd);
   }
   
 }
