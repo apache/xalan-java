@@ -66,15 +66,14 @@ package org.apache.xml.utils;
 public class Trie
 {
 
-  /** NEEDSDOC Field ALPHA_SIZE          */
+  /** Size of the m_nextChar array.  */
   public static final int ALPHA_SIZE = 128;
 
-  /** NEEDSDOC Field m_Root          */
+  /** The root node of the tree.    */
   Node m_Root;
 
   /**
-   * Constructor Trie
-   *
+   * Construct the trie.
    */
   public Trie()
   {
@@ -82,13 +81,12 @@ public class Trie
   }
 
   /**
-   * NEEDSDOC Method put 
+   * Put an object into the trie for lookup.
    *
+   * @param key must be a 7-bit ASCII string
+   * @param value any java object.
    *
-   * NEEDSDOC @param key
-   * NEEDSDOC @param value
-   *
-   * NEEDSDOC (put) @return
+   * @return The old object that matched key, or null.
    */
   public Object put(String key, Object value)
   {
@@ -126,12 +124,11 @@ public class Trie
   }
 
   /**
-   * NEEDSDOC Method get 
+   * Get an object that matches the key.
    *
+   * @param key must be a 7-bit ASCII string
    *
-   * NEEDSDOC @param key
-   *
-   * NEEDSDOC (get) @return
+   * @return The object that matches the key, or null.
    */
   public Object get(String key)
   {
@@ -161,14 +158,13 @@ public class Trie
 
   /**
    * <meta name="usage" content="internal"/>
-   * NEEDSDOC Class Node <needs-comment/>
+   * The node representation for the trie.
    */
   class Node
   {
 
     /**
-     * Constructor Node
-     *
+     * Constructor, creates a Node[ALPHA_SIZE].
      */
     Node()
     {
@@ -176,10 +172,10 @@ public class Trie
       m_Value = null;
     }
 
-    /** NEEDSDOC Field m_nextChar[]          */
+    /** The next nodes.   */
     Node m_nextChar[];
 
-    /** NEEDSDOC Field m_Value          */
+    /** The value.   */
     Object m_Value;
   }
 }
