@@ -371,7 +371,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 	// variables and/or parameters before we parse the other elements...
 	for (int i=0; i<count; i++) {
 	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
-	    if (child instanceof VariableBase) {
+	    if ((child instanceof VariableBase) ||
+		(child instanceof NamespaceAlias)) {
 		parser.getSymbolTable().setCurrentNode(child);
 		child.parseContents(parser);
 	    }
@@ -390,6 +391,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	for (int i=0; i<count; i++) {
 	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
 	    if (!(child instanceof VariableBase) &&
+		!(child instanceof NamespaceAlias) &&
 		!(child instanceof Import) &&
 		!(child instanceof Include)) {
 		parser.getSymbolTable().setCurrentNode(child);
