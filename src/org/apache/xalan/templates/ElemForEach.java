@@ -78,6 +78,13 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
    * @serial
    */
   protected Expression m_selectExpression = null;
+  
+  
+  /**
+   * Used to fix bug#16889
+   * Store XPath away for later processing.
+   */
+  protected XPath m_xpath = null;  
 
   /**
    * Set the "select" attribute.
@@ -87,6 +94,10 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   public void setSelect(XPath xpath)
   {
     m_selectExpression = xpath.getExpression();
+    
+    // The following line is part of the codes added to fix bug#16889
+    // Store xpath which will be needed when firing Selected Event
+    m_xpath = xpath;    
   }
 
   /**
@@ -241,7 +252,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 
     transformer.pushCurrentTemplateRuleIsNull(true);    
     if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(this);
+      transformer.getTraceManager().fireTraceEvent(this);//trigger for-each element event
 
     try
     {
@@ -330,12 +341,34 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
       if (null != keys)
         sourceNodes = sortNodes(xctxt, keys, sourceNodes);
 
-      if (TransformerImpl.S_DEBUG)
-      {
-        transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
-                "select", new XPath(m_selectExpression),
-                new org.apache.xpath.objects.XNodeSet(sourceNodes));
-      }
+    if (TransformerImpl.S_DEBUG)
+    {
+
+        // The original code, which is broken for bug#16889,
+        // which fails to get the original select expression in the select event. 
+        /*  transformer.getTraceManager().fireSelectedEvent(
+         *    sourceNode,
+         *            this,
+         *            "select",
+         *            new XPath(m_selectExpression),
+         *            new org.apache.xpath.objects.XNodeSet(sourceNodes));
+         */ 
+
+        // The following code fixes bug#16889
+        // Solution: Store away XPath in setSelect(Xath), and use it here.
+        // Pass m_xath, which the current node is associated with, onto the TraceManager.
+        
+        Expression expr = m_xpath.getExpression();
+        org.apache.xpath.objects.XObject xObject = expr.execute(xctxt);
+        int current = xctxt.getCurrentNode();
+        transformer.getTraceManager().fireSelectedEvent(
+            current,
+            this,
+            "select",
+            m_xpath,
+            xObject);
+    }
+
 
 
       xctxt.pushCurrentNode(DTM.NULL);
