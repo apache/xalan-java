@@ -970,8 +970,32 @@ QName ::= QNAME:qname
         | KEY
         {: RESULT = parser.getQName("key"); :}
 
+        | ANCESTOR
+        {: RESULT = parser.getQName("child"); :}
+
+        | ANCESTORORSELF
+        {: RESULT = parser.getQName("ancestor-or-self"); :}
+
+        | ATTRIBUTE
+        {: RESULT = parser.getQName("attribute"); :}
+
         | CHILD
         {: RESULT = parser.getQName("child"); :}
+
+        | DESCENDANT
+        {: RESULT = parser.getQName("decendant"); :}
+
+        | DESCENDANTORSELF
+        {: RESULT = parser.getQName("decendant-or-self"); :}
+
+        | FOLLOWING
+        {: RESULT = parser.getQName("following"); :}
+
+        | FOLLOWINGSIBLING
+        {: RESULT = parser.getQName("following-sibling"); :}
+
+        | NAMESPACE
+        {: RESULT = parser.getQName("namespace"); :}
 
         | PARENT
         {: RESULT = parser.getQName("parent"); :}
@@ -979,8 +1003,8 @@ QName ::= QNAME:qname
         | PRECEDING
         {: RESULT = parser.getQName("preceding"); :}
 
-        | ATTRIBUTE
-        {: RESULT = parser.getQName("attribute"); :}
+        | PRECEDINGSIBLING
+        {: RESULT = parser.getQName("preceding-sibling"); :}
 
         | SELF
         {: RESULT = parser.getQName("self"); :}
