@@ -129,6 +129,10 @@ final class Param extends VariableBase {
 	}
 	
 	select = getAttribute("select");
+	if (select.length() > 0) {
+	    _select = getParser().parseExpression(this, "select", null);
+	}
+
 
 	// Children must be parsed first -> static scoping
 	parseChildren(parser);
@@ -174,12 +178,6 @@ final class Param extends VariableBase {
      * element has a body and no 'select' expression.
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-
-	// Parse the XPath expression in this method to allow for
-	// forward references to other varibables
-	if (select.length() > 0) {
-	    _select = getParser().parseExpression(this, "select", null);
-	}
 
 	// Get the type from the select exrepssion...
 	if (_select != null) {
