@@ -94,7 +94,7 @@ import org.apache.xalan.trace.TraceManager;
 import javax.xml.transform.Result;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TFactoryConfigurationError;
+import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Source;
@@ -192,7 +192,7 @@ public class Process
       {
         tfactory = TransformerFactory.newInstance();
       }
-      catch (TFactoryConfigurationError pfe)
+      catch (TransformerFactoryConfigurationError pfe)
       {
         pfe.printStackTrace(dumpWriter);
         diagnosticsWriter.println(

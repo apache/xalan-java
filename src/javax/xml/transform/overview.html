@@ -2,20 +2,24 @@
 <html>
 <head>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>
-</title>
+<title></title>
 </head>
 <body> 
-  <h2>Transformation API For XML (TrAX)</h2> 
-  <p>
+  
+<h2>Transformation API For XML (TrAX)</h2> 
+  
+<p>
 <b>Edit Date: </b>November 12, 2000</p> 
    
     
-  <h3>Introduction</h3> 
-  <p>This overview describes the set of APIs contained in
+  
+<h3>Introduction</h3> 
+  
+<p>This overview describes the set of APIs contained in
 	 javax.xml.transform. For the sake of brevity, these interfaces are referred to
 	 as TrAX (Transformations for XML). </p> 
-  <p>There is a broad need for Java applications to be able to transform XML
+  
+<p>There is a broad need for Java applications to be able to transform XML
 	 and related tree-shaped data structures. In fact, XML is not normally very
 	 useful to an application without going through some sort of transformation,
 	 unless the semantic structure is used directly as data. Almost all XML-related
@@ -26,20 +30,25 @@
 	 Events, or a proprietary format or data structure. The output types are the
 	 pretty much the same types as the inputs, but different inputs may need to be
 	 combined with different outputs.</p> 
-  <p>The great challenge of a transformation API is how to deal with all the
+  
+<p>The great challenge of a transformation API is how to deal with all the
 	 possible combinations of inputs and outputs, without becoming specialized for
 	 any of the given types.</p> 
-  <p>The Java community will greatly benefit from a common API that will
+  
+<p>The Java community will greatly benefit from a common API that will
 	 allow them to understand and apply a single model, write to consistent
 	 interfaces, and apply the transformations polymorphically. TrAX attempts to
 	 define a model that is clean and generic, yet fills general application
 	 requirements across a wide variety of uses. </p> 
    
-	 <h3>General Terminology</h3> 
-	 <p>This section will explain some general terminology used in this
+	 
+<h3>General Terminology</h3> 
+	 
+<p>This section will explain some general terminology used in this
 		document. Technical terminology will be explained in the Model section. In many
 		cases, the general terminology overlaps with the technical terminology.</p> 
-	 <ul>
+	 
+<ul>
 <li>
 <p>
 <b>Tree</b>
@@ -137,10 +146,13 @@
 </li>
 </ul> 
    
-  <h3>Requirements</h3> 
-  <p>The following requirements have been determined from broad experience
+  
+<h3>Requirements</h3> 
+  
+<p>The following requirements have been determined from broad experience
 	 with XML projects from the various members participating on the JCP.</p> 
-  <ol>
+  
+<ol>
 <li>TrAX must provide a clean, simple
 		interface for simple uses.</li>
 <li>TrAX must be powerful enough to be
@@ -193,17 +205,21 @@
 <li>TrAX must have a mechanism for
 		reporting errors and warnings to the calling application.</li>
 </ol>   
-  <h3>Model</h3> 
-  <p>The section defines the abstract model for TrAX, apart from the details
+  
+<h3>Model</h3> 
+  
+<p>The section defines the abstract model for TrAX, apart from the details
 	 of the interfaces.</p> 
-  <p>A TRaX <A href="#pattern-TransformerFactory">TransformerFactory</A> is an object
+  
+<p>A TRaX <A href="#pattern-TransformerFactory">TransformerFactory</A> is an object
 	 that processes transformation instructions, and produces
 	 <A href="#pattern-Templates">Templates</A> (in the technical
 	 terminology). A <A href="#pattern-Templates">Templates</A>
 	 object provides a <A href="#pattern-Transformer">Transformer</A>, which transforms one or
 	 more <A href="#pattern-Source">Source</A>s into one or more
 	 <A href="#pattern-Result">Result</A>s.</p> 
-  <p>To use the TRaX interface, you create a
+  
+<p>To use the TRaX interface, you create a
 	 <A href="#pattern-TransformerFactory">TransformerFactory</A>,
 	 which may directly provide a <A href="#pattern-Transformers">Transformers</A>, or which can provide
 	 <A href="#pattern-Templates">Templates</A> from a variety of
@@ -215,11 +231,13 @@
 	 <A href="#pattern-Transformer">Source</A> according to the
 	 instructions found in the <A href="#pattern-Templates">Templates</A>, and produces a
 	 <A href="#pattern-Result">Result</A>.</p> 
-  <p>The process of transformation from a tree, either in the form of an
+  
+<p>The process of transformation from a tree, either in the form of an
 	 object model, or in the form of parse events, into a stream, is known as
 	 <U>serialization</U>. We believe this is the most suitable term for
 	 this process, despite the overlap with Java object serialization.</p>
-  <H3>TRaX Patterns</H3>
+  
+<H3>TRaX Patterns</H3>
 <ul>
 <p>
 <b><a name="pattern-Processor">Processor</a></b>
@@ -297,5 +315,6 @@
   must be synchronized for edit.</p>
 </ul> 
   
+
 </body>
 </html>

@@ -60,6 +60,7 @@ package javax.xml.transform;
  * Provides string constants that can be used to set
  * output properties for a Transformer, or to retrieve
  * output properties from a Transformer or Templates object.
+ * <p>A properties in this class are read-only.</p>
  *
  * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
  * XSL Transformations (XSLT) W3C Recommendation</a>
@@ -94,6 +95,14 @@ public class OutputKeys
    *
    * <p><code>version</code> specifies the version of the output
    * method.</p>
+   * <p>When the output method is "xml", the version value specifies the 
+   * version of XML to be used for outputting the result tree. The default 
+   * value for the xml output method is 1.0. When the output method is 
+   * "html", the version value indicates the version of the HTML. 
+   * The default value for the xml output method is 4.0, which specifies 
+   * that the result should be output as HTML conforming to the HTML 4.0 
+   * Recommendation [HTML].  If the output method is "text", the version 
+   * property is ignored.</p>
    * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
    * XSL Transformations (XSLT) W3C Recommendation</a> 
    */
@@ -139,9 +148,9 @@ public class OutputKeys
 
   /**
    * doctype-public = <var>string</var>.
+   * <p>See the documentation for the {@link #DOCTYPE_SYSTEM} property 
+   * for a description of what the value of the key should be.</p>
    *
-   * <p><code>doctype-public</code> specifies the public identifier
-   * to be used in the document type declaration.</p>
    * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
    * XSL Transformations (XSLT) W3C Recommendation</a>
    */
@@ -149,6 +158,27 @@ public class OutputKeys
 
   /**
    * doctype-system = <var>string</var>.
+   * <p><code>doctype-public</code> specifies the public identifier
+   * to be used in the document type declaration.</p>
+   * <p>If the doctype-system property is specified, the xml output method 
+   * should output a document type declaration immediately before the first 
+   * element. The name following &lt;!DOCTYPE should be the name of the first 
+   * element. If doctype-public property is also specified, then the xml 
+   * output method should output PUBLIC followed by the public identifier 
+   * and then the system identifier; otherwise, it should output SYSTEM 
+   * followed by the system identifier. The internal subset should be empty. 
+   * The doctype-public attribute should be ignored unless the doctype-system 
+   * attribute is specified.</p>
+   * <p>If the doctype-public or doctype-system attributes are specified, 
+   * then the html output method should output a document type declaration 
+   * immediately before the first element. The name following &lt;!DOCTYPE 
+   * should be HTML or html. If the doctype-public attribute is specified, 
+   * then the output method should output PUBLIC followed by the specified 
+   * public identifier; if the doctype-system attribute is also specified, 
+   * it should also output the specified system identifier following the 
+   * public identifier. If the doctype-system attribute is specified but 
+   * the doctype-public attribute is not specified, then the output method 
+   * should output SYSTEM followed by the specified system identifier.</p>
    *
    * <p><code>doctype-system</code> specifies the system identifier
    * to be used in the document type declaration.</p>
@@ -160,9 +190,9 @@ public class OutputKeys
   /**
    * cdata-section-elements = <var>expanded names</var>.
    *
-   * <p><code>cdata-section-elements</code> specifies a list of the
-   * names of elements whose text node children should be output using
-   * CDATA sections.</p>
+   * <p><code>cdata-section-elements</code> specifies a whitespace delimited 
+   * list of the names of elements whose text node children should be output 
+   * using CDATA sections.</p>
    * 
    * @see <a href="http://www.w3.org/TR/xslt#output">section 16 of the
    * XSL Transformations (XSLT) W3C Recommendation.</a>

@@ -9,6 +9,7 @@ import javax.xml.transform.Transformer;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.DTDHandler;
 
 /**
  * A TransformerHandler 
@@ -16,7 +17,7 @@ import org.xml.sax.ext.LexicalHandler;
  * them to a Result.
  */
 public interface TransformerHandler 
-  extends ContentHandler, LexicalHandler
+  extends ContentHandler, LexicalHandler, DTDHandler
 {  
   /**
    * Enables the user of the TransformerHandler to set the

@@ -73,7 +73,7 @@ public class TransformerException extends Exception
   SourceLocator locator;
 
   /**
-   * Method getLocator retrieves and instance of a SourceLocator
+   * Method getLocator retrieves an instance of a SourceLocator
    * object that specifies where an error occured.
    *
    * @return A SourceLocator object, or null if none was specified.
@@ -81,6 +81,17 @@ public class TransformerException extends Exception
   public SourceLocator getLocator()
   {
     return locator;
+  }
+  
+  /**
+   * Method setLocator sets an instance of a SourceLocator
+   * object that specifies where an error occured.
+   *
+   * @param location A SourceLocator object, or null to clear the location.
+   */
+  public void setLocator(SourceLocator location)
+  {
+    locator = location;
   }
 
   /** Field containedException specifies a wrapped exception.  May be null. */

@@ -105,11 +105,11 @@ public abstract class TransformerFactory
    *
    * @return new TransformerFactory instance, never null.
    *
-   * @throws TFactoryConfigurationError
+   * @throws TransformerFactoryConfigurationError
    * if the implmentation is not available or cannot be instantiated.
    */
   public static TransformerFactory newInstance()
-          throws TFactoryConfigurationError
+          throws TransformerFactoryConfigurationError
   {
 
     String classname = findFactory(defaultPropName,
@@ -117,7 +117,7 @@ public abstract class TransformerFactory
 
     if (classname == null)
     {
-      throw new TFactoryConfigurationError(
+      throw new TransformerFactoryConfigurationError(
         "No default implementation found");
     }
 
@@ -131,15 +131,15 @@ public abstract class TransformerFactory
     }
     catch (ClassNotFoundException cnfe)
     {
-      throw new TFactoryConfigurationError(cnfe);
+      throw new TransformerFactoryConfigurationError(cnfe);
     }
     catch (IllegalAccessException iae)
     {
-      throw new TFactoryConfigurationError(iae);
+      throw new TransformerFactoryConfigurationError(iae);
     }
     catch (InstantiationException ie)
     {
-      throw new TFactoryConfigurationError(ie);
+      throw new TransformerFactoryConfigurationError(ie);
     }
 
     return factoryImpl;

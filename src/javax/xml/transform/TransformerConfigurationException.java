@@ -22,7 +22,6 @@ public class TransformerConfigurationException extends TransformerException {
      * Create a new <code>TransformerConfigurationException</code> with no
      * detail mesage.
      */
-
     public TransformerConfigurationException() {
         super("Configuration Error");
     }
@@ -33,7 +32,6 @@ public class TransformerConfigurationException extends TransformerException {
      *
      * @param msg The error message for the exception.
      */
-    
     public TransformerConfigurationException(String msg) {
         super(msg);
     }
@@ -45,8 +43,7 @@ public class TransformerConfigurationException extends TransformerException {
      * @param e The exception to be encapsulated in a
      * TransformerConfigurationException.
      */
-    
-    public TransformerConfigurationException(Exception e) {
+    public TransformerConfigurationException(Throwable e) {
         super(e);
     }
 
@@ -59,10 +56,38 @@ public class TransformerConfigurationException extends TransformerException {
      * @param msg The detail message.
      * @param e The exception to be wrapped in a TransformerConfigurationException
      */
-    
-    public TransformerConfigurationException(String msg, Exception e) {
+    public TransformerConfigurationException(String msg, Throwable e) {
         super(msg, e);
     }
+    
+  /**
+   * Create a new TransformerConfigurationException from a message and a Locator.
+   *
+   * <p>This constructor is especially useful when an application is
+   * creating its own exception from within a DocumentHandler
+   * callback.</p>
+   *
+   * @param message The error or warning message.
+   * @param locator The locator object for the error or warning.
+   */
+  public TransformerConfigurationException(String message, SourceLocator locator) {
 
+    super(message, locator);
+  }
+
+  /**
+   * Wrap an existing exception in a TransformerConfigurationException.
+   *
+   * @param message The error or warning message, or null to
+   *                use the message from the embedded exception.
+   * @param locator The locator object for the error or warning.
+   * @param e Any exception.
+   */
+  public TransformerConfigurationException(String message, SourceLocator locator,
+                              Throwable e) {
+
+    super(message, locator, e);
+  }
+  
 }
 

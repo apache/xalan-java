@@ -186,16 +186,20 @@ public abstract class Transformer
   /**
    * Get a copy of the output properties for the transformation.
    * 
-   * <p>The properties should contain a set of layered properties.  The 
-   * first "layer" will contain the properties that were set with 
-   * setOutputProperties and setOutputProperty.  Subsequent layers 
-   * contain the properties set in the stylesheet and the 
-   * default properties for the transformation type.
-   * There is no guarantee on how the layers are ordered after the 
-   * first layer.  Thus, getOutputProperties().getProperty(String key) will obtain any 
-   * property in effect for the stylesheet, while 
+   * <p>The properties returned should contain properties set by the user, 
+   * and properties set by the stylesheet, and these properties 
+   * are "defaulted" by default properties specified by <a href="http://www.w3.org/TR/xslt#output">section 16 of the
+   * XSL Transformations (XSLT) W3C Recommendation</a>.  The properties that 
+   * were specifically set by the user or the stylesheet should be in the base 
+   * Properties list, while the XSLT default properties that were not 
+   * specifically set should be the default Properties list.  Thus, 
+   * getOutputProperties().getProperty(String key) will obtain any 
+   * property in that was set by {@link #setOutputProperty}, 
+   * {@link #setOutputProperties}, in the stylesheet, <em>or</em> the default 
+   * properties, while 
    * getOutputProperties().get(String key) will only retrieve properties 
-   * that were explicitly set with setOutputProperties and setOutputProperty.</p>
+   * that were explicitly set by {@link #setOutputProperty}, 
+   * {@link #setOutputProperties}, or in the stylesheet.</p>
    * 
    * <p>Note that mutation of the Properties object returned will not 
    * effect the properties that the transformation contains.</p>
