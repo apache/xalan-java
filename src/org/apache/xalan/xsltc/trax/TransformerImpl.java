@@ -426,7 +426,7 @@ public final class TransformerImpl extends Transformer
     /**
      * Builds an internal DOM from a TrAX Source object
      */
-    private DOM getDOM(Source source, int mask)
+    private DOM getDOM(Source source)
 	throws TransformerException {
 	try {
 	    DOM dom = null;
@@ -442,7 +442,7 @@ public final class TransformerImpl extends Transformer
                                                       : false;
 	    // Get systemId from source
 	    if (source != null) {
-		_sourceSystemId = source.getSystemId();
+		   _sourceSystemId = source.getSystemId();
 	    }
 
 	    if (source instanceof SAXSource) {
@@ -652,7 +652,7 @@ public final class TransformerImpl extends Transformer
 		transformIdentity(source, handler);
 	    }
 	    else {
-		_translet.transform(getDOM(source, 0), handler);
+		_translet.transform(getDOM(source), handler);
 	    }
 	}
 	catch (TransletException e) {
@@ -1141,13 +1141,18 @@ public final class TransformerImpl extends Transformer
      * DOMCache interface. This approach is simple, but removes the
      * possibility of using external document caches with XSLTC.
      *
-     * @param uri  An URI pointing to the document location
-     * @param mask Contains a document ID (passed from the translet)
+     * @param baseURI The URI for the stylesheet
+     * @param href The href argument passed to the document function.
      * @param translet A reference to the translet requesting the document
      */
-    public DOM retrieveDocument(String uri, int mask, Translet translet) {
+    public DOM retrieveDocument(String baseURI, String href, Translet translet) {
 	try {
-	    return getDOM(_uriResolver.resolve(uri, _sourceSystemId), mask);
+        
+        // Argument to document function was: document('');
+        if (href.length() == 0) {
+            href = new String(baseURI);
+        }    
+	    return getDOM(_uriResolver.resolve(href, baseURI));
 	}
 	catch (TransformerException e) {
 	    if (_errorListener != null)
