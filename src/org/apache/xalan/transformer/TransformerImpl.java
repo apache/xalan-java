@@ -1354,7 +1354,7 @@ public class TransformerImpl extends Transformer
     QName qname = new QName(namespace, name);
     XObject xobject = XObject.create(value);
 
-    varstack.pushOrReplaceVariable(qname, xobject);
+    varstack.pushOrReplaceParameter(qname, xobject);
   }
   
   Vector m_userParams;
@@ -1580,8 +1580,19 @@ public class TransformerImpl extends Transformer
   }  // end pushParams method
 
   /**
-   * Internal -- push the global variables onto
-   * the context's variable stack.
+   * Internal -- push the global variables from the Stylesheet onto
+   * the context's runtime variable stack.
+   * <p>If we encounter a variable
+   * that is already defined in the variable stack, we ignore it.  This
+   * is because the second variable definition will be at a lower import
+   * precedence.  Presumably, global variables at the same import precedence
+   * with the same name will have been caught during the recompose process.
+   * <p>However, if we encounter a parameter that is already defined in the
+   * variable stack, we need to see if this is a parameter whose value was
+   * supplied by a setParameter call.  If so, we need to "receive" the one
+   * already in the stack, ignoring this one.  If it is just an earlier
+   * xsl:param or xsl:variable definition, we ignore it using the same
+   * reasoning as explained above for the variable.
    *
    * @param contextNode The root of the source tree, can't be null.
    *
@@ -1606,8 +1617,15 @@ public class TransformerImpl extends Transformer
     {
       ElemVariable v = (ElemVariable) vars.elementAt(i);
 
-      if (vs.variableIsDeclared(v.getName()))
+      Arg previouslyDeclared = vs.getDeclaredVariable(v.getName());
+      if (null != previouslyDeclared)
+      {
+        if ( (v instanceof ElemParam) && previouslyDeclared.isFromWithParam() )
+        {
+          previouslyDeclared.setIsVisible(true);
+        }
         continue;
+      }
 
       // XObject xobj = v.getValue(this, contextNode);
       XObject xobj = new XUnresolvedVariable(v, contextNode, 

@@ -259,7 +259,7 @@ public class VariableStack extends Stack
 
   
   /**
-   * Push an argument onto the stack, or replace it 
+   * Push a parameter onto the stack, or replace it 
    * if it already exists.  Don't forget
    * to call startContext before pushing a series of
    * arguments for a given macro call.
@@ -267,7 +267,7 @@ public class VariableStack extends Stack
    * @param qname The qualified name of the variable.
    * @param val The wrapped value of the variable.
    */
-  public void pushOrReplaceVariable(QName qname, XObject xval)
+  public void pushOrReplaceParameter(QName qname, XObject xval)
   {
     Stack frame = getCurrentFrame();
     if(frame == m_emptyStackFrame)
@@ -345,16 +345,16 @@ public class VariableStack extends Stack
 
   
   /**
-   * Tell if a variable or parameter is already declared, 
+   * Returns a variable or parameter that is already declared, 
    * either in the current context or in the global space.
    *
    * @param qname The qualified name of the variable.
    *
-   * @return true if the variable is already declared.
+   * @return the Arg if the variable is already declared, otherwise <code>null</code>.
    *
    * @throws TransformerException
    */
-  public boolean variableIsDeclared(QName qname) throws TransformerException
+  public Arg getDeclaredVariable(QName qname) throws TransformerException
   {
 
     Stack frame = getCurrentFrame();
@@ -365,13 +365,13 @@ public class VariableStack extends Stack
 
       if (((Arg) obj).getQName().equals(qname))
       {
-        return true;
+        return (Arg) obj;
       }
     }
           
     Stack gframe = (Stack)this.elementAt(0);
     if(gframe == frame)
-      return false;
+      return null;
     
     for (int i = (gframe.size() - 1); i >= 0; i--)
     {
@@ -379,11 +379,11 @@ public class VariableStack extends Stack
 
       if (((Arg) obj).getQName().equals(qname))
       {
-        return true;
+        return (Arg) obj;
       }
     }
 
-    return false;
+    return null;
   }
 
 
@@ -454,7 +454,7 @@ public class VariableStack extends Stack
     {
       Arg arg = (Arg)gframe.elementAt(i);
 
-      if (arg.getQName().equals(name))
+      if (arg.getQName().equals(name) && arg.isVisible())
       {
         XObject val = arg.getVal();
         if(val.getType() == XObject.CLASS_UNRESOLVEDVARIABLE)
