@@ -88,6 +88,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.processor.StylesheetProcessor;
 
 import org.apache.xalan.trace.PrintTraceListener;
 import org.apache.xalan.trace.TraceListener;
@@ -127,40 +128,6 @@ import org.apache.xml.serialize.SerializerFactory;
  */
 public class Process
 {
-  /*
-  * Retrieve a propery bundle from a specified file and load it 
-  * int the System properties.
-  * @param file The string name of the property file.  
-  */
-  private static void loadPropertyFileToSystem(String file) 
-  {
-    InputStream is;
-    try
-    {   		   
-      Properties props = new Properties();
-      is = Process.class.getResourceAsStream(file);    
-      // get a buffered version
-      BufferedInputStream bis = new BufferedInputStream (is);
-      props.load (bis);                                     // and load up the property bag from this
-      bis.close ();                                          // close out after reading
-      // OK, now we only want to set system properties that 
-      // are not already set.
-      Properties systemProps = System.getProperties();
-      Enumeration propEnum = props.propertyNames();
-      while(propEnum.hasMoreElements())
-      {
-        String prop = (String)propEnum.nextElement();
-        if(!systemProps.containsKey(prop))
-          systemProps.put(prop, props.getProperty(prop));
-      }
-      System.setProperties(systemProps);
-    }
-    catch (Exception ex)
-    {
-      ex.printStackTrace();
-    }
-  }
-
   /**
    * Prints argument options.
    */
@@ -249,7 +216,7 @@ public class Process
     java.io.PrintWriter dumpWriter = diagnosticsWriter;
 
     XSLTErrorResources resbundle = (XSLTErrorResources)(XSLMessages.loadResourceBundle(Constants.ERROR_RESOURCES));
-    loadPropertyFileToSystem(XSLT_PROPERTIES);
+    // loadPropertyFileToSystem(XSLT_PROPERTIES);
 
     if(argv.length < 1)
     {
