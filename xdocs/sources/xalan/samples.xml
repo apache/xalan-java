@@ -71,6 +71,7 @@
 <li><link anchor="servlet">servlet</link></li>
 <li><link anchor="extensions">Extensions</link></li>
 <li><link anchor="trace">Trace</link></li>
+<li><link anchor="validate">Validate</link></li>
 <li><link anchor="trax">trax</link></li>&xsltcsampleshead;
 </ul>  
 	  <s2 title="Samples to help you get started">
@@ -458,7 +459,22 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       <p><code>java Trace</code></p>
       <p>and examine the result in events.log. For more information, see <link idref="usagepatterns" anchor="debugging">Debugger
       Interface</link></p>
-     </s2><anchor name="trax"/>
+     </s2><anchor name="validate"/>
+     <s2 title="Validate">
+     <p>What it does: Uses the <jump href="apidocs\javax\xml\parsers\SAXParser.html">JAXP SAXParser</jump> with a SAX event handler 
+     (extends <jump href="apidocs/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</jump> and implements 
+     <jump href="apidocs/org/xml/sax/ext/LexicalHandler.html">LexicalHandler</jump>) to verify that XML files conform to their declared 
+     document type. You can use this utility to verify that an individual file or all the .xml files in a directory are
+     well-formed and valid. Each .xml file should contain a DOCTYPE declaration.</p>
+     <p>Run this sample from any directory with</p>
+     <p><code>java Validate <ref>file-or-dir-name</ref> [<ref>logfile</ref></code>]</p>
+     <p>where <ref>file-or-dir-name</ref> is an XML file or directory pathname, and <ref>logfile</ref> designates a log.
+     If you omit the second argument, Validate reports its findings to the screen.</p>
+     <note>A limitation: Files containing document parts appear to fail if you check them with Validate. Check readme.xml, 
+     which "includes" by entity reference a number of files, and it passes. The parse operation scans the entire document
+     with the includes. Check an "included" file (such as history.xml) as if it were an independent document and it fails.</note>
+     </s2>
+     <anchor name="trax"/>
      <s2 title="trax">
      <p>What it does: run a number of samples illustrating uses of the <link idref="trax">TRaX (Transformation API for XML)</link> interfaces.</p>
      <p>Run this sample from the trax subdirectory with</p>
