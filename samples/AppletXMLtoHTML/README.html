@@ -12,16 +12,12 @@
     </tr>
   </table>
   <hr>
-  <p>This applet transforms XML into HTML. Given the restrictions imposed by the applet sandbox, the local
-  copy of this applet does not load and run correctly in some environments and with some versions of IE/Netscape. 
-  Run the applet from an HTTP server, and these problems disappear.</p>
+  <p>This applet transforms XML into HTML. It looks for xalan.jar and xerces.jar in the applet directory. 
+  Either copy xalan.jar and xerces.jar to samples/AppletXMLtoHTML, or adjust the applet archive setting in 
+  client.html.</p>
 
-  <p>To run the applet from one of our Domino servers,
-  <a href="http://ipg.lotus.com/lotusxsl/appletXMLtoHTML.html"><b>click here</b></a>.</p>
+<p>For information about the samples (what they illustrate and how to run them), see <a href="../../docs/samples.html">Samples</a>.</p>
 
-  <p>The local copy of client.html assumes that xalan.jar and xerces.jar are in the Xalan root directory, 
-  two directories above the samples/applet subdirectory. If these JAR files are located elsewhere,
-  you must edit the applet archive attribute in client.html to point to xalan.jar and xerces.jar.</p>
-  <p>To run the applet locally, <a href="appletXMLtoHTML.html"><b>click here</b></a>.</p>
+
 </body>
 </html>
