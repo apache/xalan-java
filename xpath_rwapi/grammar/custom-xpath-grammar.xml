@@ -1562,7 +1562,7 @@
   </production>
 
   
-  <production name="SimpleForClause" if="xpath">
+  <production name="SimpleForClause" if="xpath" node-type="void">
     <ref name="ForVariable"/>
     <ref name="VarName"/>
     <ref name="In"/>

@@ -26,7 +26,7 @@ Authors:
 
 Copyright:
   Copyright (c) 1999-2003 The Apache Software Foundation.
-   $Id:$
+   $Id$
 ==================================================================== -->
 
 <project name="XPathAPI" default="javacc" basedir=".">
@@ -36,18 +36,20 @@ Copyright:
   <property name="build.debug" value="on"/>
   <!-- Note bin.dir assumes we're using Xalan's checked-in copy of ant.jar -->
   <property name="bin.dir" value="${ant.home}/bin"/>
-  <property name="jarfilename" value="xpathapi.jar"/>
+  <property name="jarfilename" value="xpath.jar"/>
 
   <property name="spec" value="xpath"/>
   <property name="grammar.dir" value="grammar"/>
   <property name="tree.xsl" value="${grammar.dir}/etree.xsl"/>
 
-  <property name="src.dir" value="src"/>
-  <property name="rwapi.package" value="org/apache/xpath/rwapi"/>
-  <property name="target.parser" value="${src.dir}/${rwapi.package}/impl/parser"/>
+  <property name="src.dir" value="src2"/>
+  <property name="xpath.dir" value="org/apache/xpath"/>
+  <property name="xml.dir" value="org/apache/xml"/>
+  <property name="parser.dir" value="${src.dir}/${xpath.dir}/impl/parser"/>
+  <property name="parser.package" value="org.apache.xpath.impl.parser"/>
 
-  <property name="test.class" value="org.apache.xpath.rwapi.test.Test2"/>
-  <property name="test.expr" value="a/b/c"/>
+  <property name="test.class" value="org.apache.xpath.test.TestAST"/>
+  <property name="test.expr" value=""/>
   
   <path id="classpath">
     <!-- This should include all .jars needed to compile, including 
@@ -62,47 +64,58 @@ Copyright:
   </path>
 
   <target name="clean"
-    description="Clean up ALL classfiles, generated sources, and ${jarfilename}">
+    description="Clean up classfiles and ${jarfilename}">
     <delete dir="${build.classes}"/>
     <delete file="${build.dir}/${jarfilename}"/>
+  </target>
+
+  <target name="clean-gen" depends="clean"
+    description="Clean up generated files as well as compiled ones">
     <delete file="${grammar.dir}/custom-xpath-grammar.xml"/>
-    <delete file="${target.parser}/xpath-grammar.jjt"/>
+    <delete file="${parser.dir}/xpath-grammar.jj"/>
+    <delete file="${parser.dir}/xpath-grammar.jjt"/>
+    <delete>
+      <fileset dir="${parser.dir}" includes="XPath.java,XPathConstants.java,XPathTreeConstants.java,XPathTokenManager.java,XPathVisitor.java"/>
+    </delete>
   </target>
 
   <target name="init">
     <echo message="Preset classpath is ${java.class.path}; ant.home is ${ant.home}"/>
     <mkdir dir="${build.classes}"/>
-    <mkdir dir="${target.parser}"/>
+    <mkdir dir="${parser.dir}"/>
   </target>
 
   <!-- ==== Code generation targets ==== -->
   <target name="gen-grammar" depends="init"
     description="[1]Use style task to turn grammar into jjt files">
 
-    <!-- first customized from original xpath grammar -->
+    <!-- Transform spec-defined xpath-grammar.xml into our custom-xpath-grammar.xml -->
     <style style="${grammar.dir}/customize.xsl" in="${grammar.dir}/xpath-grammar.xml" 
       out="${grammar.dir}/custom-xpath-grammar.xml" force="yes" extension=".xml" 
       destdir="${grammar.dir}" classpathref="classpath" />
 
+    <!-- Transform our custom-xpath-grammar.xml into jjtree input xpath-grammar.jjt -->
     <style style="${tree.xsl}" in="${grammar.dir}/custom-xpath-grammar.xml" 
-      out="${target.parser}/xpath-grammar.jjt" force="yes" extension=".jjt" 
+      out="${parser.dir}/xpath-grammar.jjt" force="yes" extension=".jjt" 
       destdir="${spec}" classpathref="classpath" >
         <param name="spec" expression="${spec}"/>
-        <param name="package-name" expression="org.apache.xpath.rwapi.impl.parser"/>
+        <param name="package-name" expression="${parser.package}"/>
     </style>
   </target>
   
   <target name="jjtree" depends="gen-grammar"
     description="[2]Use JJTree to create tree sources">
-    <jjtree target="${target.parser}/xpath-grammar.jjt" 
+    <!-- JJTree converts .jjt file into .jj file for input to javacc -->
+    <jjtree target="${parser.dir}/xpath-grammar.jjt" 
     		javacchome="${bin.dir}" 
-    		outputdirectory="${target.parser}"
+    		outputdirectory="${parser.dir}"
     		static="false"/>
   </target>
 
   <target name="javacc" depends="jjtree"
     description="[3]Compile compile the tree sources">
-    <javacc target="${target.parser}/xpath-grammar.jj" 
+    <!-- javacc converts .jj file into source .java files -->
+    <javacc target="${parser.dir}/xpath-grammar.jj" 
 	    javacchome="${bin.dir}"
 	    debugtokenmanager="${debug}"
 	    debugparser="${debug}"
@@ -110,7 +123,7 @@ Copyright:
 	    static="false"
 	    unicodeinput="${unicodeinput}"
 	    javaunicodeescape="${unicodeinput}"
-        outputdirectory="${target.parser}"/>
+        outputdirectory="${parser.dir}"/>
   </target>
   
   <!-- ==== Code compilation and jar targets ==== -->
@@ -125,7 +138,7 @@ Copyright:
     description="[5]Jar standalone XPath engine into ${jarfilename}">
     <jar jarfile="${build.dir}/${jarfilename}">
       <fileset dir="${build.classes}"
-               includes="${rwapi.package}/**"/>
+               includes="${xpath.dir}/**,${xml.dir}/**,${xpath.dir}/test/TestSamples.xml"/>
     </jar>
   </target>
 
