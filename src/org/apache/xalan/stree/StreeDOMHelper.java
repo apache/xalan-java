@@ -63,7 +63,9 @@ import org.w3c.dom.Document;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class StreeDOMHelper <needs-comment/>
+ * Provides XSLTProcessor an interface to the Xerces XML parser.  This
+ * liaison should be used if Xerces DOM nodes are being process as
+ * the source tree or as the result tree.
  */
 public class StreeDOMHelper extends DOM2Helper
 {
@@ -74,12 +76,20 @@ public class StreeDOMHelper extends DOM2Helper
    * NEEDSDOC @param node
    *
    * NEEDSDOC ($objectName$) @return
-   */
+   *
 
   // public Document createDocument()
   // {
   //  return new DocumentImpl();
-  // }
+  // }*/
+  
+  /**
+   * Get the specified node's position in the document
+   *
+   * @param node A node in the document tree
+   *
+   * @return The position of the node in the document
+   */
   public String getUniqueID(Node node)
   {
 
@@ -99,9 +109,9 @@ public class StreeDOMHelper extends DOM2Helper
    * <meta name="usage" content="internal"/>
    * Get the depth level of this node in the tree.
    *
-   * NEEDSDOC @param node1
+   * @param node1 A node in the document tree
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The depth level of this node in the tree
    */
   public short getLevel(Node node1)
   {
@@ -119,9 +129,9 @@ public class StreeDOMHelper extends DOM2Helper
   /**
    * Tell if the given node is a namespace decl node.
    *
-   * NEEDSDOC @param n
+   * @param n A node in the document tree
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return true if the node is a namespace decl node
    */
   public boolean isNamespaceNode(Node n)
   {

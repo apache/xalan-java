@@ -66,26 +66,26 @@ import org.apache.xalan.utils.FastStringBuffer;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class TextImpl <needs-comment/>
+ * Class to hold information about a Text node.
  */
 public class TextImpl extends Child implements Text, SaxEventDispatch
 {
 
-  /** NEEDSDOC Field m_data          */
+  /** Text from this Text node          */
   protected String m_data;
 
-  /** NEEDSDOC Field m_start          */
+  /** Start of text from this Text node          */
   protected int m_start;
 
-  /** NEEDSDOC Field m_length          */
+  /** Length of text from this text node          */
   protected int m_length;
 
   /**
    * Constructor TextImpl
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param data
+   * @param doc Document object
+   * @param data Text from node 
    */
   public TextImpl(DocumentImpl doc, String data)
   {
@@ -101,10 +101,10 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
    * Constructor TextImpl
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param doc Document object
+   * @param ch Array containing text from node 
+   * @param start Start location of text in array
+   * @param length Length of text in array 
    */
   public TextImpl(DocumentImpl doc, char ch[], int start, int length)
   {
@@ -121,10 +121,10 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
   }
 
   /**
-   * NEEDSDOC Method dispatchSaxEvent 
+   * Handle a Characters event 
    *
    *
-   * NEEDSDOC @param ch
+   * @param ch Content handler to handle SAX events
    *
    * @throws SAXException
    */
@@ -141,7 +141,7 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
    * A short integer indicating what type of node this is. The named
    * constants for this value are defined in the org.w3c.dom.Node interface.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return TEXT_NODE node type
    */
   public short getNodeType()
   {
@@ -151,7 +151,7 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
   /**
    * Returns the node name. 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Text node name 
    */
   public String getNodeName()
   {
@@ -165,7 +165,7 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Text node name 
    */
   public String getLocalName()
   {
@@ -176,7 +176,7 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
    * Retrieve character data currently stored in this node.
    *
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Text from this text node 
    * @throws DOMExcpetion(DOMSTRING_SIZE_ERR) In some implementations,
    * the stored data may exceed the permitted length of strings. If so,
    * getData() will throw this DOMException advising the user to
@@ -195,7 +195,7 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
    * Report number of characters currently stored in this node's
    * data. It may be 0, meaning that the value is an empty string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return number of characters in this node's data.
    */
   public int getLength()
   {
@@ -203,10 +203,10 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
   }
 
   /**
-   * NEEDSDOC Method getNodeValue 
+   * Return the text that constitutes this node's data. 
    *
    *
-   * NEEDSDOC (getNodeValue) @return
+   * @return this node's data
    */
   public String getNodeValue()
   {
@@ -218,13 +218,13 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
   }
 
   /**
-   * NEEDSDOC Method supports 
+   * Find out if a given feature is supported 
    *
    *
-   * NEEDSDOC @param feature
-   * NEEDSDOC @param version
+   * @param feature Feature to check
+   * @param version Version to check
    *
-   * NEEDSDOC (supports) @return
+   * @return true if feature is SaxEventDispatch.SUPPORTSINTERFACE 
    */
   public boolean supports(String feature, String version)
   {

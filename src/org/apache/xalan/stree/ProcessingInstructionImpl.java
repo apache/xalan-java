@@ -61,24 +61,24 @@ import org.w3c.dom.ProcessingInstruction;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class ProcessingInstructionImpl <needs-comment/>
+ * Class to hold information about ProcessingInstruction node
  */
 public class ProcessingInstructionImpl extends Child
         implements ProcessingInstruction
 {
 
-  /** NEEDSDOC Field m_name          */
+  /** PI's target (see getTarget for more info          */
   private String m_name;
 
-  /** NEEDSDOC Field m_data          */
+  /** PI's content         */
   private String m_data;
 
   /**
    * Implement the processingInstruction event.
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param target
-   * NEEDSDOC @param data
+   * @param doc Document object
+   * @param target PI's target
+   * @param data PI's content
    */
   ProcessingInstructionImpl(DocumentImpl doc, String target, String data)
   {
@@ -96,7 +96,7 @@ public class ProcessingInstructionImpl extends Child
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This PI's target 
    */
   public String getLocalName()
   {
@@ -104,9 +104,10 @@ public class ProcessingInstructionImpl extends Child
   }
 
   /**
-   * Get the PI name. 
+   * Get the PI name.
+   * Note that getNodeName is aliased to getTarget. 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This PI's target
    */
   public String getNodeName()
   {
@@ -117,7 +118,7 @@ public class ProcessingInstructionImpl extends Child
    * A short integer indicating what type of node this is. The named
    * constants for this value are defined in the org.w3c.dom.Node interface.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return PROCESSING_INSTRUCTION_NODE node type
    */
   public short getNodeType()
   {
@@ -135,7 +136,7 @@ public class ProcessingInstructionImpl extends Child
    * <p>
    * Note that getNodeName is aliased to getTarget.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This PI's target
    */
   public String getTarget()
   {
@@ -147,7 +148,7 @@ public class ProcessingInstructionImpl extends Child
    * white space character after the target to the character immediately
    * preceding the <code>?&gt;</code>.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return This PI's data
    * @exception DOMException
    *   NO_MODIFICATION_ALLOWED_ERR: Raised when the node is readonly.
    */
@@ -157,10 +158,10 @@ public class ProcessingInstructionImpl extends Child
   }
 
   /**
-   * NEEDSDOC Method getNodeValue 
+   * Same as getData 
    *
    *
-   * NEEDSDOC (getNodeValue) @return
+   * @return This PI's data
    */
   public String getNodeValue()
   {

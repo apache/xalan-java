@@ -67,20 +67,22 @@ import org.xml.sax.SAXException;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class StreeDOMBuilder <needs-comment/>
+ * This class takes SAX events (in addition to some extra events
+ * that SAX doesn't handle yet) and adds the result to a document
+ * or document fragment.
  */
 public class StreeDOMBuilder extends DOMBuilder
 {
 
-  /** NEEDSDOC Field m_docImpl          */
+  /** Source document node          */
   protected DocumentImpl m_docImpl;
 
   /**
    * StreeDOMBuilder instance constructor... it will add the DOM nodes
    * to the document fragment.
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param node
+   * @param doc Root node of DOM being created
+   * @param node Node currently being processed
    */
   public StreeDOMBuilder(Document doc, Node node)
   {
@@ -94,8 +96,8 @@ public class StreeDOMBuilder extends DOMBuilder
    * StreeDOMBuilder instance constructor... it will add the DOM nodes
    * to the document fragment.
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param docFrag
+   * @param doc Root node of DOM being created
+   * @param docFrag Document fragment node of DOM being created
    */
   public StreeDOMBuilder(Document doc, DocumentFragment docFrag)
   {
@@ -109,7 +111,7 @@ public class StreeDOMBuilder extends DOMBuilder
    * StreeDOMBuilder instance constructor... it will add the DOM nodes
    * to the document.
    *
-   * NEEDSDOC @param doc
+   * @param doc Root node of DOM being created
    */
   public StreeDOMBuilder(Document doc)
   {
@@ -131,12 +133,12 @@ public class StreeDOMBuilder extends DOMBuilder
   }
 
   /**
-   * NEEDSDOC Method characters 
+   * Receive notification of character data.
    *
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param ch The characters from the XML document.
+   * @param start The start position in the array.
+   * @param length The number of characters to read from the array.
    *
    * @throws SAXException
    */
@@ -150,12 +152,12 @@ public class StreeDOMBuilder extends DOMBuilder
   }
 
   /**
-   * NEEDSDOC Method ignorableWhitespace 
+   * Receive notification of ignorable whitespace in element content. 
    *
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param ch The characters from the XML document.
+   * @param start The start position in the array.
+   * @param length The number of characters to read from the array.
    *
    * @throws SAXException
    */
@@ -166,12 +168,15 @@ public class StreeDOMBuilder extends DOMBuilder
   }
 
   /**
-   * NEEDSDOC Method charactersRaw 
+   * If available, when the disable-output-escaping attribute is used,
+   * output raw text without escaping.  A PI will be inserted in front
+   * of the node with the name "lotusxsl-next-is-raw" and a value of
+   * "formatter-to-dom". 
    *
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param ch The characters from the XML document.
+   * @param start The start position in the array.
+   * @param length The number of characters to read from the array.
    *
    * @throws SAXException
    */
@@ -185,12 +190,12 @@ public class StreeDOMBuilder extends DOMBuilder
   }
 
   /**
-   * NEEDSDOC Method comment 
+   * Report an XML comment anywhere in the document.
    *
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param ch An array holding the characters in the comment.
+   * @param start The starting position in the array.
+   * @param length The number of characters to use from the array.
    *
    * @throws SAXException
    */
@@ -200,12 +205,12 @@ public class StreeDOMBuilder extends DOMBuilder
   }
 
   /**
-   * NEEDSDOC Method cdata 
+   * Receive notification of cdata. 
    *
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param ch The characters from the XML document.
+   * @param start The start position in the array.
+   * @param length The number of characters to read from the array.
    *
    * @throws SAXException
    */

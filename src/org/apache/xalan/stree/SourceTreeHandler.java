@@ -102,7 +102,8 @@ public class SourceTreeHandler implements TransformerHandler
    * Create a SourceTreeHandler that will start a transformation as
    * soon as a startDocument occurs.
    *
-   * NEEDSDOC @param transformer
+   * @param transformer The transformer this will use to transform a
+   * source tree into a result tree.
    */
   public SourceTreeHandler(TransformerImpl transformer)
   {
@@ -136,25 +137,28 @@ public class SourceTreeHandler implements TransformerHandler
     m_initedRoot = false;
   }
 
-  /** NEEDSDOC Field m_transformer          */
+  /** 
+   * The transformer this will use to transform a
+   * source tree into a result tree.          
+   */
   TransformerImpl m_transformer;
 
-  /** NEEDSDOC Field m_sourceTreeHandler          */
+  /** DOMBuilder object this will use          */
   private DOMBuilder m_sourceTreeHandler;
 
-  /** NEEDSDOC Field m_root          */
+  /** The root of the source document          */
   private Document m_root;  // Normally a Document
 
-  /** NEEDSDOC Field m_initedRoot          */
+  /** No longer used??          */
   private boolean m_initedRoot;
 
-  /** NEEDSDOC Field m_shouldCheckWhitespace          */
+  /** Flag indicating whether we should check whitespaces          */
   boolean m_shouldCheckWhitespace = false;
 
   /**
    * Get the root document of tree that is being or will be created.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Root document
    */
   public Node getRoot()
   {
@@ -164,7 +168,7 @@ public class SourceTreeHandler implements TransformerHandler
   /**
    * Set the root document of tree will be created.
    *
-   * NEEDSDOC @param root
+   * @param root root document of tree that will be created
    */
   public void setRoot(Document root)
   {
@@ -172,24 +176,24 @@ public class SourceTreeHandler implements TransformerHandler
   }
 
   /**
-   * NEEDSDOC Method setExceptionThrown 
+   * If an exception was thrown, keep track of it
    *
    *
-   * NEEDSDOC @param e
+   * @param e Exception that was thrown
    */
   public void setExceptionThrown(Exception e)
   {
     ((DocumentImpl) m_root).m_exceptionThrown = e;
   }
 
-  /** NEEDSDOC Field m_inputSource          */
+  /** Source Document          */
   Source m_inputSource;
 
   /**
-   * NEEDSDOC Method setInputSource 
+   * Set the Source document 
    *
    *
-   * NEEDSDOC @param source
+   * @param source source document
    */
   public void setInputSource(Source source)
   {
@@ -197,10 +201,10 @@ public class SourceTreeHandler implements TransformerHandler
   }
 
   /**
-   * NEEDSDOC Method getInputSource 
+   * Get Source Document.
    *
    *
-   * NEEDSDOC (getInputSource) @return
+   * @return source document
    */
   public Source getInputSource()
   {
@@ -210,18 +214,21 @@ public class SourceTreeHandler implements TransformerHandler
   /**
    * Implement the setDocumentLocator event.
    *
-   * NEEDSDOC @param locator
+   * @param locator Document locator
    */
   public void setDocumentLocator(Locator locator){}
 
-  /** NEEDSDOC Field m_useMultiThreading          */
+  /** 
+   * Flag to indicate whether to use multiple threads for the transformation
+   * and the parse.          
+   */
   private boolean m_useMultiThreading = false;
 
   /**
    * Set whether or not the tree being built should handle
    * transformation while the parse is still going on.
    *
-   * NEEDSDOC @param b
+   * @param b Flag to indicate whether to use multiple threads
    */
   public void setUseMultiThreading(boolean b)
   {
@@ -232,20 +239,26 @@ public class SourceTreeHandler implements TransformerHandler
    * Tell whether or not the tree being built should handle
    * transformation while the parse is still going on.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Flag to indicate whether to use multiple threads
    */
   public boolean getUseMultiThreading()
   {
     return m_useMultiThreading;
   }
 
-  /** NEEDSDOC Field indexedLookup          */
+  /** Flag indicating whether indexed lookup is being used to search the source tree          */
   private boolean indexedLookup = false;  // for now 
 
-  /** NEEDSDOC Field m_eventsCount          */
+  /** 
+   * Field to hold the number of tasks on the transform thread 
+   * so far waiting for a notify() from the parse thread.          
+   */
   private int m_eventsCount = 0;
 
-  /** NEEDSDOC Field m_maxEventsToNotify          */
+  /** 
+   * Minimum number of waiting tasks before the transform thread
+   * gets a notify() event.            
+   */
   private int m_maxEventsToNotify = 18;
 
   /**
@@ -371,10 +384,10 @@ public class SourceTreeHandler implements TransformerHandler
   }
 
   /**
-   * NEEDSDOC Method printTree 
+   * Print the tree starting at the specified node. 
    *
    *
-   * NEEDSDOC @param n
+   * @param n A node in a Document.
    */
   private void printTree(Node n)
   {
@@ -393,10 +406,10 @@ public class SourceTreeHandler implements TransformerHandler
   /**
    * Implement the startElement event.
    *
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param name
-   * NEEDSDOC @param atts
+   * @param ns Namespace of the element
+   * @param localName Local part of the qualified name of the element
+   * @param name Name of the element
+   * @param atts List of attributes associated with the element
    *
    * @throws SAXException
    */
@@ -417,9 +430,9 @@ public class SourceTreeHandler implements TransformerHandler
   /**
    * Implement the endElement event.
    *
-   * NEEDSDOC @param ns
-   * NEEDSDOC @param localName
-   * NEEDSDOC @param name
+   * @param ns Namespace of the element
+   * @param localName Local part of the qualified name of the element
+   * @param name Name of the element
    *
    * @throws SAXException
    */
@@ -470,9 +483,9 @@ public class SourceTreeHandler implements TransformerHandler
   /**
    * Implement the characters event.
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param ch Character array from the characters event
+   * @param start Start index of characters to process in the array
+   * @param length Number of characters to process in the array 
    *
    * @throws SAXException
    */
@@ -497,9 +510,9 @@ public class SourceTreeHandler implements TransformerHandler
   /**
    * Implement the characters event.
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param ch Character array from the characters event
+   * @param start Start index of characters to process in the array
+   * @param length Number of characters to process in the array
    *
    * @throws SAXException
    */
@@ -518,9 +531,9 @@ public class SourceTreeHandler implements TransformerHandler
   /**
    * Implement the ignorableWhitespace event.
    *
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param ch Character array from the characters event
+   * @param start Start index of characters to process in the array
+   * @param length Number of characters to process in the array
    *
    * @throws SAXException
    */
@@ -542,8 +555,8 @@ public class SourceTreeHandler implements TransformerHandler
   /**
    * Implement the processingInstruction event.
    *
-   * NEEDSDOC @param target
-   * NEEDSDOC @param data
+   * @param target Target of PI node
+   * @param data Content of PI node
    *
    * @throws SAXException
    */
@@ -744,17 +757,17 @@ public class SourceTreeHandler implements TransformerHandler
    */
   public void skippedEntity(String name) throws SAXException{}
 
-  /** NEEDSDOC Field m_shouldStripWS          */
+  /** Flag indicating whether to strip whitespace nodes          */
   private boolean m_shouldStripWS = false;
 
-  /** NEEDSDOC Field m_shouldStripWhitespaceStack          */
+  /** Stack of flags indicating whether to strip whitespace nodes          */
   private BoolStack m_shouldStripWhitespaceStack = new BoolStack();
 
   /**
-   * NEEDSDOC Method getShouldStripWhitespace 
+   * Find out whether or not to strip whispace nodes.  
    *
    *
-   * NEEDSDOC (getShouldStripWhitespace) @return
+   * @return whether or not to strip whispace nodes.
    */
   boolean getShouldStripWhitespace()
   {
@@ -762,10 +775,10 @@ public class SourceTreeHandler implements TransformerHandler
   }
 
   /**
-   * NEEDSDOC Method pushShouldStripWhitespace 
+   * Set whether to strip whitespaces and push in current value of   
+   * m_shouldStripWS in m_shouldStripWhitespaceStack.
    *
-   *
-   * NEEDSDOC @param shouldStrip
+   * @param shouldStrip Flag indicating whether to strip whitespace nodes
    */
   void pushShouldStripWhitespace(boolean shouldStrip)
   {
@@ -776,7 +789,8 @@ public class SourceTreeHandler implements TransformerHandler
   }
 
   /**
-   * NEEDSDOC Method popShouldStripWhitespace 
+   * Set whether to strip whitespaces at this point by popping out  
+   * m_shouldStripWhitespaceStack. 
    *
    */
   void popShouldStripWhitespace()
@@ -785,10 +799,11 @@ public class SourceTreeHandler implements TransformerHandler
   }
 
   /**
-   * NEEDSDOC Method setShouldStripWhitespace 
+   * Set whether to strip whitespaces and set the top of the stack to 
+   * the current value of m_shouldStripWS.  
    *
    *
-   * NEEDSDOC @param shouldStrip
+   * @param shouldStrip Flag indicating whether to strip whitespace nodes
    */
   void setShouldStripWhitespace(boolean shouldStrip)
   {

@@ -67,17 +67,17 @@ import org.w3c.dom.Node;
 public class WhiteSpace extends Child
 {
 
-  /** NEEDSDOC Field m_data          */
+  /** White space data          */
   String m_data;
 
   /**
    * Constructor WhiteSpace
    *
    *
-   * NEEDSDOC @param doc
-   * NEEDSDOC @param ch
-   * NEEDSDOC @param start
-   * NEEDSDOC @param length
+   * @param doc Document object
+   * @param ch Array containing whitespace data
+   * @param start Start of data in array
+   * @param length Length of data in array
    */
   public WhiteSpace(DocumentImpl doc, char ch[], int start, int length)
   {
@@ -91,7 +91,7 @@ public class WhiteSpace extends Child
    * A short integer indicating what type of node this is. The named
    * constants for this value are defined in the org.w3c.dom.Node interface.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return TEXT_NODE node type
    */
   public short getNodeType()
   {
@@ -101,7 +101,7 @@ public class WhiteSpace extends Child
   /**
    * Returns the node name. 
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Text node name 
    */
   public String getNodeName()
   {
@@ -115,7 +115,7 @@ public class WhiteSpace extends Child
    * it is <code>null</code>.
    * @since DOM Level 2
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Text node name
    */
   public String getLocalName()
   {
@@ -126,7 +126,7 @@ public class WhiteSpace extends Child
    * Retrieve character data currently stored in this node.
    *
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Text associated with this node
    * @throws DOMExcpetion(DOMSTRING_SIZE_ERR) In some implementations,
    * the stored data may exceed the permitted length of strings. If so,
    * getData() will throw this DOMException advising the user to
@@ -141,7 +141,7 @@ public class WhiteSpace extends Child
    * Report number of characters currently stored in this node's
    * data. It may be 0, meaning that the value is an empty string.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Length of text associated with this node
    */
   public int getLength()
   {
@@ -149,10 +149,10 @@ public class WhiteSpace extends Child
   }
 
   /**
-   * NEEDSDOC Method getNodeValue 
+   * Text associated with this node 
    *
    *
-   * NEEDSDOC (getNodeValue) @return
+   * @return Text associated with this node
    */
   public String getNodeValue()
   {

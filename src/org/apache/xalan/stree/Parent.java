@@ -68,7 +68,8 @@ import org.xml.sax.SAXException;
 
 /**
  * <meta name="usage" content="internal"/>
- * NEEDSDOC Class Parent <needs-comment/>
+ * Class representing a parent node. A parent is also a child unless
+ * it is the root node. 
  */
 public class Parent extends Child
 {
@@ -77,26 +78,26 @@ public class Parent extends Child
    * Constructor Parent
    *
    *
-   * NEEDSDOC @param doc
+   * @param doc Document object
    */
   public Parent(DocumentImpl doc)
   {
     super(doc);
   }
 
-  /** NEEDSDOC Field m_posInChildList          */
+  /** The position of this node in its parent's children list          */
   protected int m_posInChildList;
 
-  /** NEEDSDOC Field m_childCount          */
+  /** Number of children of this node. This number also includes attribute nodes  */
   protected int m_childCount = 0;  // includes attributes, elements
 
-  /** NEEDSDOC Field m_isComplete          */
+  /** Flag indicating whether all children of this node have been processed         */
   boolean m_isComplete = false;
 
-  /** NEEDSDOC Field m_last          */
+  /** This node's last child          */
   Child m_last;
 
-  /** NEEDSDOC Field m_first          */
+  /** This node's first child          */
   Child m_first;
 
   /**
@@ -106,7 +107,7 @@ public class Parent extends Child
    * it is likely that more children will be added.
    * DON'T CALL THIS FUNCTION IF YOU CAN HELP IT!!!
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return number of children this node currently contains
    */
   public int getChildCount()
   {
@@ -184,9 +185,10 @@ public class Parent extends Child
    * Get the position of the child of an element in the document.
    * Note that this is assuming an index starting at 1
    *
-   * NEEDSDOC @param pos
+   * @param pos Position of the child in this parent's children list
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the position of this child in the document or -1 if the child 
+   * is not found
    */
   public int getChildUID(int pos)
   {
@@ -200,7 +202,7 @@ public class Parent extends Child
    * Get the nth child.
    * @param i the index of the child.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The child node at the specified position or null if none found 
    * @exception ArrayIndexOutOfBoundsException if the index is out of bounds.
    * @exception NullPointerException if there are no children.
    */
@@ -259,7 +261,7 @@ public class Parent extends Child
    * The first child of this node. If there is no such node, this returns
    * <code>null</code>.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The first child of this parent or null if none found 
    */
   public Node getFirstChild()
   {
@@ -297,7 +299,7 @@ public class Parent extends Child
    * The last child of this node. If there is no such node, this returns
    * <code>null</code>.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The last child of this parent 
    */
   public Node getLastChild()
   {
@@ -316,7 +318,7 @@ public class Parent extends Child
    * Append a child to the child list.
    * @param newChild Must be a org.apache.xalan.stree.Child.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The node we just added to this parent's children list
    * @exception ClassCastException if the newChild isn't a org.apache.xalan.stree.Child.
    *
    * @throws DOMException
@@ -394,7 +396,7 @@ public class Parent extends Child
    * Return if this node has had all it's children added, i.e.
    * if a endElement event has occured.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return whether this node has had all it's children added or not
    */
   public boolean isComplete()
   {
@@ -409,7 +411,7 @@ public class Parent extends Child
    * Set that this node's child list is complete, i.e.
    * an endElement event has occured.
    *
-   * NEEDSDOC @param isComplete
+   * @param isComplete flag indicating whether this node has had all it's children added
    */
   public void setComplete(boolean isComplete)
   {
@@ -417,10 +419,10 @@ public class Parent extends Child
   }
 
   /**
-   * NEEDSDOC Method throwParseError 
+   * Throw a ParseError exception  
    *
    *
-   * NEEDSDOC @param e
+   * @param e The original exception
    */
   protected void throwParseError(Exception e)
   {
