@@ -843,12 +843,12 @@ Copyright:
 
   <target name="autojavadocs-1.4-if" if="using-java-1.4" 
           depends="check-using-java-1.4">
-	  <antcall target="autojavadocs-1.4"/>
+    <antcall target="autojavadocs-1.4"/>
   </target>
 
   <target name="autojavadocs-non1.4-if" unless="using-java-1.4" 
           depends="check-using-java-1.4">
-	  <antcall target="autojavadocs-non1.4"/>
+    <antcall target="autojavadocs-non1.4"/>
   </target>
 
   <target name="autojavadocs-1.4">
@@ -861,7 +861,8 @@ Copyright:
       
     <!-- Ant ignores destdir arg if doclet is set, so must send to doclet in doclet subelement-->
     <javadoc
-	 destdir="${build.apidocs}"
+         additionalparam="-breakiterator"
+         destdir="${build.apidocs}"
          public="true"
          sourcepath="${src.dir}"
          overview="${src.dir}/javadocOverview.html"
