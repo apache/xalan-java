@@ -281,14 +281,29 @@ public class SAX2DTM2 extends SAX2DTM
         while (node != DTM.NULL && _exptype2(node) != nodeType) {
           node = _nextsib2(node);
         }
-      } else {
+      }
+      // %OPT% If the nodeType is element (matching child:*), we only
+      // need to compare the expType with DTM.NTYPES. A child node of 
+      // an element can be either an element, text, comment or
+      // processing instruction node. Only element node has an extended
+      // type greater than or equal to DTM.NTYPES.
+      else if (nodeType == DTM.ELEMENT_NODE) {
+      	while (node != DTM.NULL) {
+      	  eType = _exptype2(node);
+      	  if (eType >= DTM.NTYPES)
+      	    break;
+      	  else
+      	    node = _nextsib2(node);
+      	}
+      }
+      else {
         while (node != DTM.NULL) {
           eType = _exptype2(node);
           if (eType < DTM.NTYPES) {
             if (eType == nodeType) {
               break;
             }
-          } else if (m_expandedNameTable.getType(eType) == nodeType) {
+          } else if (m_extendedTypes[eType].getNodeType() == nodeType) {
             break;
           }
           node = _nextsib2(node);
@@ -440,13 +455,14 @@ public class SAX2DTM2 extends SAX2DTM
 
       int node = _currentNode;
       int eType;
-      int nodeType = _nodeType;
+      final int nodeType = _nodeType;
 
+      final int blocksize = m_blocksize;
       if (nodeType >= DTM.NTYPES) {
         do {
           node = _nextsib2(node);
         } while (node != DTM.NULL && _exptype2(node) != nodeType);
-      } else {
+     } else {
         while ((node = _nextsib2(node)) != DTM.NULL) {
           eType = _exptype2(node);
           if (eType < DTM.NTYPES) {
@@ -1273,7 +1289,7 @@ public class SAX2DTM2 extends SAX2DTM
       if (_isRestartable)
       {
         int nodeID = makeNodeIdentity(node);
-        int nodeType = _nodeType;
+        final int nodeType = _nodeType;
 
         if (!_includeSelf && node != DTM.NULL) {
           nodeID = _parent2(nodeID);
@@ -1290,7 +1306,8 @@ public class SAX2DTM2 extends SAX2DTM
             }
             nodeID = _parent2(nodeID);
           }
-        } else {
+        }
+        else {
           while (nodeID != END) {
             int eType = _exptype2(nodeID);
 
@@ -1364,7 +1381,7 @@ public class SAX2DTM2 extends SAX2DTM
      * @param identity The index number of the node in question.
      * @return true if the index is a descendant of _startNode.
      */
-    protected boolean isDescendant(int identity)
+    protected final boolean isDescendant(int identity)
     {
       return (_parent2(identity) >= _startNode) || (_startNode == identity);
     }
@@ -1449,7 +1466,7 @@ public class SAX2DTM2 extends SAX2DTM
     public int next()
     {
       int node;
-      int type;
+      int expType;
 
       if (_startNode == NULL) {
         return NULL;
@@ -1457,17 +1474,52 @@ public class SAX2DTM2 extends SAX2DTM
 
       node = _currentNode;
 
-      do
+      final int nodeType = _nodeType;
+      if (nodeType >= DTM.NTYPES)
       {
-        node++;
-        type = _type2(node);
+        do
+        {
+          node++;
+	  expType = _exptype2(node);
 
-        if (NULL == type ||!isDescendant(node)) {
-          _currentNode = NULL;
-          return END;
+          if (NULL == expType ||!isDescendant(node)) {
+            _currentNode = NULL;
+            return END;
+          }
         }
+        while (expType != nodeType);      
       }
-      while (type != _nodeType && _exptype2(node) != _nodeType);
+      // %OPT% If the start node is root (e.g. in the case of //node),
+      // we can save the isDescendant() check, because all nodes are
+      // descendants of root.
+      else if (_startNode == DTMDefaultBase.ROOTNODE)
+      {
+	do
+	{
+	  node++;
+	  expType = _exptype2(node);
+
+	  if (NULL == expType) {
+	    _currentNode = NULL;
+	    return END;
+	  }
+	}
+	while (m_extendedTypes[expType].getNodeType() != nodeType && expType != nodeType);        
+      }
+      else
+      {
+        do
+        {
+          node++;
+	  expType = _exptype2(node);
+
+          if (NULL == expType ||!isDescendant(node)) {
+            _currentNode = NULL;
+            return END;
+          }
+        }
+        while (m_extendedTypes[expType].getNodeType() != nodeType && expType != nodeType);
+      }
 
       _currentNode = node;
       return returnNode(makeNodeHandle(node));
@@ -1684,6 +1736,39 @@ public class SAX2DTM2 extends SAX2DTM
   }
 
   /**
+   * Override the processingInstruction() interface in SAX2DTM2.
+   * 
+   * %OPT% This one is different from SAX2DTM.processingInstruction()
+   * in that we do not use extended types for PI nodes. The name of
+   * the PI is saved in the DTMStringPool.
+   * 
+   * Receive notification of a processing instruction.
+   * 
+   * @param target The processing instruction target.
+   * @param data The processing instruction data, or null if
+   *             none is supplied.
+   * @throws SAXException Any SAX exception, possibly
+   *            wrapping another exception.
+   * @see org.xml.sax.ContentHandler#processingInstruction
+   */
+  public void processingInstruction(String target, String data)
+	  throws SAXException
+  {
+
+    charactersFlush();
+
+    int dataIndex = m_data.size();
+    m_previous = addNode(DTM.PROCESSING_INSTRUCTION_NODE, 
+			 DTM.PROCESSING_INSTRUCTION_NODE,
+			 m_parents.peek(), m_previous,
+			 -dataIndex, false);
+
+    m_data.addElement(m_valuesOrPrefixes.stringToIndex(target));
+    m_data.addElement(m_valuesOrPrefixes.stringToIndex(data));
+
+  }
+
+  /**
    * The optimized version of DTMDefaultBase.getNodeType().
    * 
    * Given a node handle, return its DOM- style node type.
@@ -1788,6 +1873,30 @@ public class SAX2DTM2 extends SAX2DTM
   }
 
   /**
+   * Override SAX2DTM.getLocalName() in SAX2DTM2
+   * Processing for PIs is different.
+   * 
+   * Given a node handle, return its XPath- style localname. (As defined in
+   * Namespaces, this is the portion of the name after any colon character).
+   *
+   * @param nodeHandle the id of the node.
+   * @return String Local name of this node.
+   */
+  public String getLocalName(int nodeHandle)
+  {
+    int expType = _exptype(makeNodeIdentity(nodeHandle));
+    
+    if (expType == DTM.PROCESSING_INSTRUCTION_NODE)
+    {
+      int dataIndex = _dataOrQName(makeNodeIdentity(nodeHandle));
+      dataIndex = m_data.elementAt(-dataIndex);
+      return m_valuesOrPrefixes.indexToString(dataIndex);     
+    }
+    else
+      return m_expandedNameTable.getLocalName(expType);
+  }
+
+  /**
    * The optimized version of SAX2DTM.getNodeNameX().
    * 
    * Given  a node handle, return the XPath node name. This should be the name
@@ -1801,6 +1910,14 @@ public class SAX2DTM2 extends SAX2DTM
 
     int nodeID = makeNodeIdentity(nodeHandle);
     int eType = _exptype2(nodeID);
+    
+    if (eType == DTM.PROCESSING_INSTRUCTION_NODE)
+    {
+      int dataIndex = _dataOrQName(nodeID);
+      dataIndex = m_data.elementAt(-dataIndex);
+      return m_valuesOrPrefixes.indexToString(dataIndex);           
+    }
+    
     final ExtendedType extType = m_extendedTypes[eType];
                          
     if (extType.getNamespace().length() == 0)
@@ -1821,6 +1938,63 @@ public class SAX2DTM2 extends SAX2DTM
     }
   }
 
+  /**
+   * The optimized version of SAX2DTM.getNodeName().
+   * 
+   * Given a node handle, return its DOM-style node name. This will include
+   * names such as #text or #document.
+   *
+   * @param nodeHandle the id of the node.
+   * @return String Name of this node, which may be an empty string.
+   * %REVIEW% Document when empty string is possible...
+   * %REVIEW-COMMENT% It should never be empty, should it?
+   */
+  public String getNodeName(int nodeHandle)
+  {
+
+    int nodeID = makeNodeIdentity(nodeHandle);
+    int eType = _exptype2(nodeID);
+
+    final ExtendedType extType = m_extendedTypes[eType];
+    if (extType.getNamespace().length() == 0)
+    {
+      int type = extType.getNodeType();
+      
+      String localName = extType.getLocalName(); 
+      if (type == DTM.NAMESPACE_NODE)
+      {
+	if (localName.length() == 0)
+	  return "xmlns";
+	else
+	  return "xmlns:" + localName;
+      }
+      else if (type == DTM.PROCESSING_INSTRUCTION_NODE)
+      {
+	int dataIndex = _dataOrQName(nodeID);
+	dataIndex = m_data.elementAt(-dataIndex);
+	return m_valuesOrPrefixes.indexToString(dataIndex);           	
+      }
+      else if (localName.length() == 0)
+      {
+	return m_fixednames[type];
+      }
+      else
+	return localName;      
+    }
+    else
+    {
+      int qnameIndex = m_dataOrQName.elementAt(nodeID);
+
+      if (qnameIndex < 0)
+      {
+	qnameIndex = -qnameIndex;
+	qnameIndex = m_data.elementAt(qnameIndex);
+      }
+
+      return m_valuesOrPrefixes.indexToString(qnameIndex);
+    }
+  }
+  
   /**
    * The optimized version of SAX2DTM.getStringValue(int).
    * 
