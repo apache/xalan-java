@@ -53,97 +53,111 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath.impl.parser;
+package org.apache.xpath.impl;
 
-import org.apache.xpath.expression.NodeTest;
+import org.apache.xpath.datamodel.SequenceType;
+import org.apache.xpath.expression.CastableAsExpr;
+import org.apache.xpath.expression.Expr;
+import org.apache.xpath.expression.Visitor;
+import org.apache.xpath.impl.parser.Node;
+import org.apache.xpath.impl.parser.SimpleNode;
+import org.apache.xpath.impl.parser.XPath;
 
 /**
- * QNameNode wrappers a 'real' QName object.
- * //@TODO should be renamed! 13-Mar-03 -sc
+ * Default implementation of 'castable as' expression type.
  */
-public class QName extends SimpleNode {
-
-    /**
-     * The wrapped QName
-     */
-    org.apache.xml.QName m_qname;
-    
+public class CastableAsExprImpl extends ExprImpl implements CastableAsExpr {
 
 	/**
-	 * Constructor for QName.
+	 * Constructor for CastableExprImpl.
 	 * @param i
 	 */
-	public QName(int i) {
+	public CastableAsExprImpl(int i) {
 		super(i);
+		
+		children = new Node[2];
 	}
 
 	/**
-	 * Constructor for QName.
+	 * Constructor for CastableExprImpl.
 	 * @param p
 	 * @param i
 	 */
-	public QName(XPath p, int i) {
+	public CastableAsExprImpl(XPath p, int i) {
 		super(p, i);
-		//m_prefixResolver = p.m_prefixResolver;
+		
+		children = new Node[2];
+	}
+	
+	/**
+	 * Constructor for cloning
+	 */
+	public CastableAsExprImpl(CastableAsExprImpl expr) 
+	{
+		super(expr.id);
+		
+		
+		children = new Node[2];
+		children[0] = (Node) ((Expr) children[0]).cloneExpression();
+		children[1] = children[1]; // TODO: clone
 	}
 
 	/**
-	 * @see org.apache.xpath.impl.parser.SimpleNode#processToken(Token)
+	 * @see org.apache.xpath.expression.Expr#getExprType()
 	 */
-	public void processToken(Token t) {
-		super.processToken(t);
-		String qname;
-		switch (id) {
-			case XPathTreeConstants.JJTSTAR :
-				//m_prefix = null;
-                //m_localPart = NodeTest.WILDCARD;
-                             
-                m_qname = new org.apache.xml.QName(NodeTest.WILDCARD);                
-				break;
-			case XPathTreeConstants.JJTSTARCOLONNCNAME :
-                //m_prefix = NodeTest.WILDCARD;
-                //m_localPart = t.image.trim(); 
-                //m_localPart=m_localPart.substring(m_localPart.indexOf(":")+1);
-                qname = t.image.trim();
-                qname = qname.substring(qname.indexOf(":")+1);
-                m_qname = new org.apache.xml.QName(NodeTest.WILDCARD, qname);
-                
-				break;
-			case XPathTreeConstants.JJTNCNAMECOLONSTAR :
-            case XPathTreeConstants.JJTQNAME :
-            case XPathTreeConstants.JJTQNAMELPAR :
-				qname = t.image;
-				int parenIndex = qname.lastIndexOf("("); 
-				if (parenIndex > 0) {
-					qname = qname.substring(0, parenIndex);
-				}
-				qname = qname.trim();
-				//m_qname = new org.apache.xml.utils.QName(qname, m_prefixResolver);
-                int colonIdx = qname.indexOf(":");
-                //String m_prefix;
-                //String m_localPart;
-                if ( colonIdx == -1 ) {
-                    //m_prefix = null;
-                    //m_localPart = qname;
-					m_qname = new org.apache.xml.QName(qname);
-                } else {
-                //m_prefix = qname.substring(0, colonIdx );
-                //m_localPart = qname.substring(colonIdx + 1);
-                m_qname = new org.apache.xml.QName(null, qname.substring(colonIdx + 1), qname.substring(0, colonIdx ) );                
-                }
-				break;
-                   
-           default:
-           throw new RuntimeException( "Invalid jjtree id: doesn't match a QName id=" + id);
-		}
+	public short getExprType() {
+		return Expr.CASTABLE_EXPR;
 	}
 
+	/**
+	 * @see org.apache.xpath.expression.Expr#cloneExpression()
+	 */
+	public Expr cloneExpression() {
+		return new CastableAsExprImpl(this);
+	}
 
 	/**
-	 * @return org.apache.xml.QName
+	 * @see org.apache.xpath.expression.CastableExpr#getCastableExpr()
 	 */
-	public org.apache.xml.QName getQName() {
-		return m_qname;
+	public Expr getExpr() {
+		return (Expr) children[0];
+	}
+
+	/**
+	 * @see org.apache.xpath.expression.CastableExpr#getSingleType()
+	 */
+	public SequenceType getSingleType() {
+		return (SequenceType) children[1];
+	}
+    
+    /**
+     * @see org.apache.xpath.impl.parser.Node#jjtAddChild(Node, int)
+     */
+    public void jjtAddChild(Node n, int i) {
+        if (((SimpleNode) n).canBeReduced()) {
+            super.jjtAddChild(n.jjtGetChild(0), i);
+        } else {
+             super.jjtAddChild(n, i);
+        }
+    }
+
+
+	/* (non-Javadoc)
+	 * @see org.apache.xpath.impl.parser.SimpleNode#getString(java.lang.StringBuffer, boolean)
+	 */
+	public void getString(StringBuffer expr, boolean abbreviate) {
+		((ExprImpl) getExpr()).getString(expr, abbreviate);
+		expr.append(" castable as ");
+		((SimpleNode) getSingleType()).getString(expr, abbreviate);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.xpath.expression.Visitable#visit(org.apache.xpath.expression.Visitor)
+	 */
+	public void visit(Visitor visitor) {
+		visitor.visitCastableAs(this);
+		
+		getExpr().visit(visitor);		
 	}
 
 }

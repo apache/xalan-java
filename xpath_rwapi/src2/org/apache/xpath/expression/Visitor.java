@@ -106,5 +106,10 @@ public interface Visitor {
 	 * Visit instance of expression
 	 */
 	boolean visitInstanceOf(InstanceOfExpr expr);
+	
+	/**
+	 * Visit 'castable as' expression
+	 */
+	boolean visitCastableAs(CastableAsExpr expr);
 
 }

@@ -53,89 +53,27 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath.impl;
+package org.apache.xpath.expression;
 
-import org.apache.xpath.datamodel.ItemType;
-import org.apache.xpath.expression.CastableExpr;
-import org.apache.xpath.expression.Expr;
-import org.apache.xpath.impl.parser.Node;
-import org.apache.xpath.impl.parser.SimpleNode;
-import org.apache.xpath.impl.parser.XPath;
+import org.apache.xpath.datamodel.SequenceType;
 
 /**
- *
+ * Represent "castable as" expression.
+ * @see <a href="http://www.w3.org/TR/xpath20/#id-castable">
+ * XPath 2.0 specification</a>
  */
-public class CastableExprImpl extends ExprImpl implements CastableExpr {
+public interface CastableAsExpr extends Expr {
 
-	/**
-	 * Constructor for CastableExprImpl.
-	 * @param i
-	 */
-	public CastableExprImpl(int i) {
-		super(i);
-	}
-
-	/**
-	 * Constructor for CastableExprImpl.
-	 * @param p
-	 * @param i
-	 */
-	public CastableExprImpl(XPath p, int i) {
-		super(p, i);
-	}
-
-	/**
-	 * @see org.apache.xpath.expression.Expr#getExprType()
-	 */
-	public short getExprType() {
-		return Expr.CASTABLE_EXPR;
-	}
-
-	/**
-	 * @see org.apache.xpath.expression.Expr#cloneExpression()
-	 */
-	public Expr cloneExpression() {
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.expression.Expr#getString(boolean)
-	 */
-	public String getString(boolean abbreviate) {
-		return null;
-	}
-	
-
-	/**
-	 * @see org.apache.xpath.expression.CastableExpr#getCastableExpr()
-	 */
-	public Expr getCastableExpr() {
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.expression.CastableExpr#getSingleType()
-	 */
-	public ItemType getSingleType() {
-		return null;
-	}
+    /**
+     * Gets the type against the test is performed.
+     * @return A single type
+     */
+    SequenceType getSingleType();
     
     /**
-     * @see org.apache.xpath.impl.parser.Node#jjtAddChild(Node, int)
+     * Gets the expression on which the castable test is performed.
+     * @return An XPath expression
      */
-    public void jjtAddChild(Node n, int i) {
-        if (((SimpleNode) n).canBeReduced()) {
-            super.jjtAddChild(n.jjtGetChild(0), i);
-        } else {
-             super.jjtAddChild(n, i);
-        }
-    }
-
-	/**
-	 * @see org.apache.xpath.impl.parser.SimpleNode#canBeReduced()
-	 */
-	public boolean canBeReduced() {
-		return children.length == 1; // means that there is no SingleType (pos=1)
-	}
-
+    Expr getExpr();
+    
 }

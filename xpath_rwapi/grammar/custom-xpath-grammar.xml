@@ -1385,20 +1385,20 @@
 		<level>
 			<prefix name="IfExpr" if="xpath core xquery" condition="&gt; 1">
 				<sequence>
-					<ref name="IfLpar"/>
+					<ref name="IfLpar" node-type="void"/>
 					<ref name="Expr"/>
-					<ref name="Rpar"/>
+					<ref name="Rpar" node-type="void"/>
           
-					<ref name="Then"/>
+					<ref name="Then" node-type="void"/>
 					<ref name="Expr"/>
-					<ref name="Else"/>
+					<ref name="Else" node-type="void"/>
 				</sequence>
 			</prefix>  
 		</level>
 		<level>
       <postfix name="InstanceofExpr" if="xquery xpath" prefix-seq-type="?" condition="&gt; 1">
 				  <sequence>
-					  <ref name="Instanceof"/>
+					  <ref name="Instanceof" node-type="void"/>
 					  <ref name="SequenceType"/>
 				  </sequence>
       </postfix>       
@@ -1406,7 +1406,7 @@
 		<level>
       <postfix name="CastableExpr" if="xquery xpath" prefix-seq-type="?" condition="&gt; 1">
           <sequence>
-            <ref name="Castable"/>
+            <ref name="Castable" node-type="void"/>
             <ref name="SingleType"/>
           </sequence>
       </postfix>       
@@ -1631,7 +1631,7 @@
 	
 	<production name="CastExpr" if="xpath core xquery">
 	      <sequence>
-		  <ref name="CastAs"/>
+		  <ref name="CastAs" node-type="void"/>
        	  <ref name="SingleType"/>
       	</sequence>
    		<ref name="ParenthesizedExpr"/>
@@ -1642,7 +1642,7 @@
 	
 	<production name="TreatExpr" if="xpath core xquery">
   		<sequence>
-        		<ref name="TreatAs" if="xpath xquery"/>
+        		<ref name="TreatAs" if="xpath xquery" node-type="void"/>
         		<ref name="SequenceType"/>
       	</sequence>
       	<ref name="ParenthesizedExpr"/>    
@@ -1995,7 +1995,7 @@
 		</choice>
   </production>
 	
-  <production name="ItemType" if="xquery core xpath">
+  <production name="ItemType" if="xquery core xpath" node-type="void">
     <choice break="true">
       <sequence>
         <choice>
@@ -2052,7 +2052,7 @@
     <ref name="QName"/>
   </production>
 
-  <production name="OccurrenceIndicator" if="xquery core xpath">
+  <production name="OccurrenceIndicator" if="xquery core xpath" node-type="void">
     <optional>
       <choice>
         <ref name="Star" if="xpath xquery core" show="no"/>

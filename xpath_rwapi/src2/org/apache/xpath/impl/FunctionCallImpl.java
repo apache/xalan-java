@@ -64,12 +64,10 @@ import org.apache.xpath.impl.parser.XPath;
 import org.apache.xpath.impl.parser.XPathTreeConstants;
 
 /**
- *
+ * Default implementation of function call expression type.
  */
 public class FunctionCallImpl extends OperatorImpl implements FunctionCall {
 
-	//String m_localPart;
-	//String m_prefix;
 	/**
 	 * Name of the function
 	 */
@@ -111,11 +109,8 @@ public class FunctionCallImpl extends OperatorImpl implements FunctionCall {
 	 */
 	final public void jjtAddChild(Node n, int i) {
 		
-		if (n.getId() == XPathTreeConstants.JJTQNAMELPAR) {
-				//m_localPart = ((QName) n).getLocalPart();
-				//m_prefix = ((QName) n).getPrefix();
-				m_qname = ((org.apache.xpath.impl.parser.QName) n).getQName();
-				
+		if (n.getId() == XPathTreeConstants.JJTQNAMELPAR) {				
+				m_qname = ((org.apache.xpath.impl.parser.QNameWrapper) n).getQName();				
 			} else {
 				// parameter
 				// -1 because of QNAMELPAR 

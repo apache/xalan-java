@@ -127,7 +127,8 @@ public class QName implements Serializable {
         if (namespaceURI.equals(XMLConstants.DEFAULT_NS_URI)) {
             return localPart;
         } else {
-            return "{" + namespaceURI + "}" + localPart;
+            //return "{" + namespaceURI + "}" + localPart;
+			return prefix +  ":" + localPart;
         }
     }
 

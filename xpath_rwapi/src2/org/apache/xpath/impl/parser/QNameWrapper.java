@@ -53,25 +53,85 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.xpath.expression;
+package org.apache.xpath.impl.parser;
 
-import org.apache.xpath.datamodel.ItemType;
+import org.apache.xml.QName;
+import org.apache.xpath.expression.NodeTest;
 
 /**
- * Represent "castable as" expression.
- * @see <a href="http://www.w3.org/TR/xpath20/#id-castable">
- * XPath 2.0 specification</a>
+ * QNameNode wrappers a 'real' QName object.
  */
-public interface CastableExpr extends Expr {
+public class QNameWrapper extends SimpleNode {
 
     /**
-     * 
+     * The wrapped QName
      */
-    ItemType getSingleType();
+    QName m_qname;
     
-    /**
-     * 
-     */
-    Expr getCastableExpr();
-    
+
+	/**
+	 * Constructor for QName.
+	 * @param i
+	 */
+	public QNameWrapper(int i) {
+		super(i);
+	}
+
+	/**
+	 * Constructor for QName.
+	 * @param p
+	 * @param i
+	 */
+	public QNameWrapper(XPath p, int i) {
+		super(p, i);
+		//m_prefixResolver = p.m_prefixResolver;
+	}
+
+	/**
+	 * @see org.apache.xpath.impl.parser.SimpleNode#processToken(Token)
+	 */
+	public void processToken(Token t) {
+		super.processToken(t);
+		String qname;
+		switch (id) {
+			case XPathTreeConstants.JJTSTAR :
+                m_qname = new QName(NodeTest.WILDCARD);                
+				break;
+			case XPathTreeConstants.JJTSTARCOLONNCNAME :               
+                qname = t.image.trim();
+                qname = qname.substring(qname.indexOf(":")+1);
+                m_qname = new QName(NodeTest.WILDCARD, qname, NodeTest.WILDCARD);
+                
+				break;
+			case XPathTreeConstants.JJTNCNAMECOLONSTAR :
+            case XPathTreeConstants.JJTQNAME :
+            case XPathTreeConstants.JJTQNAMELPAR :
+				qname = t.image;
+				int parenIndex = qname.lastIndexOf("("); 
+				if (parenIndex > 0) {
+					qname = qname.substring(0, parenIndex);
+				}
+				qname = qname.trim();
+				int colonIdx = qname.indexOf(":");
+                if ( colonIdx == -1 ) {
+					m_qname = new QName(qname);
+                } else {
+                	// TODO: Need a prefix resolver 
+                m_qname = new QName("defaultns", qname.substring(colonIdx + 1), qname.substring(0, colonIdx ) );                
+                }
+				break;
+                   
+           default:
+           throw new RuntimeException( "Invalid jjtree id: doesn't match a QName id=" + id);
+		}
+	}
+
+
+	/**
+	 * @return org.apache.xml.QName
+	 */
+	public org.apache.xml.QName getQName() {
+		return m_qname;
+	}
+
 }

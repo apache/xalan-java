@@ -1145,7 +1145,7 @@ void InstanceofExpr() #InstanceofExpr(> 1) :
 void CastableExpr() #CastableExpr(> 1) :
 {}
 {
-  ComparisonExpr() (<Castable>{jjtThis.processToken(token);} #Castable(true) SingleType())?
+  ComparisonExpr() (<Castable> SingleType())?
 }
 
 void ComparisonExpr() #ComparisonExpr(> 1) :

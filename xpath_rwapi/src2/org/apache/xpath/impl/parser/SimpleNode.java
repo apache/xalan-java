@@ -2,7 +2,7 @@
 package org.apache.xpath.impl.parser;
 
 import org.apache.xpath.impl.CastOrTreatAsExprImpl;
-import org.apache.xpath.impl.CastableExprImpl;
+import org.apache.xpath.impl.CastableAsExprImpl;
 import org.apache.xpath.impl.ConditionalExprImpl;
 import org.apache.xpath.impl.ForAndQuantifiedExprImpl;
 import org.apache.xpath.impl.FunctionCallImpl;
@@ -120,11 +120,11 @@ public class SimpleNode implements Node
 
            
             case XPathTreeConstants.JJTCASTABLEEXPR:
-                newNode = (CastableExprImpl) nodeFactory.createNode(id);
+                newNode = (CastableAsExprImpl) nodeFactory.createNode(id);
 
                 if (newNode == null)
                 {
-                    newNode = new CastableExprImpl(id);
+                    newNode = new CastableAsExprImpl(id);
                 }
 
                 break;
@@ -245,7 +245,7 @@ public class SimpleNode implements Node
             case XPathTreeConstants.JJTSTAR:
             case XPathTreeConstants.JJTNCNAMECOLONSTAR:
             case XPathTreeConstants.JJTSTARCOLONNCNAME:
-                newNode = new QName(id);
+                newNode = new QNameWrapper(id);
 
                 break;
 

@@ -1576,7 +1576,7 @@ apply.
 		<level>
       <postfix name="CastableExpr" if="xquery xpath" prefix-seq-type="?" condition="> 1">
           <sequence>
-            <ref name="Castable"/>
+            <ref name="Castable" node-type="void"/>
             <ref name="SingleType"/>
           </sequence>
       </postfix>       
@@ -2196,7 +2196,7 @@ apply.
   <production name="SequenceType" if="xquery core xpath">
 	  <choice>
       <sequence>
-        <ref name="ItemType"/>
+        <ref name="ItemType" />
         <ref name="OccurrenceIndicator"/>
       </sequence>
       <ref name="Empty"/>

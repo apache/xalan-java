@@ -302,7 +302,7 @@
 		</ast>
 	</expr>
 	
-	<expr value="attribute::*">
+	<expr value="attribute::*" normalized-round-trip="@*"> <!-- the abbreviate notation is used for tests -->
 		<ast>
 			<node name="ExprSequence">
 				<node name="PathExpr">
@@ -894,8 +894,31 @@
 		</ast>
 	</expr>
 	
-	<!-- Castable expr -->
+	<!-- Castable as expr -->
 	
+	<expr value="5 castable as xs:integer">
+		<ast>
+			<node name="ExprSequence">
+				<node name="CastableExpr">
+					<node name="IntegerLiteral"/>
+					<node name="SingleType"/>
+				</node>
+			</node>
+		</ast>
+	</expr>
+	
+	<!-- Constructor functions -->
+	
+	<expr value="xs:date('2000-01-01')">
+		<ast>
+			<node name="ExprSequence">
+				<node name="FunctionCall">
+					<node name="StringLiteral"/>
+				</node>
+			</node>
+		</ast>
+	</expr>
+
 	<!-- For expr -->
 	
 	<expr value="for $a in a return b">

@@ -1163,18 +1163,6 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case Castable:
         jj_consume_token(Castable);
-                                SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTCASTABLE);
-                                boolean jjtc001 = true;
-                                jjtree.openNodeScope(jjtn001);
-        try {
-                                jjtree.closeNodeScope(jjtn001,  true);
-                                jjtc001 = false;
-                               jjtn001.processToken(token);
-        } finally {
-                                if (jjtc001) {
-                                  jjtree.closeNodeScope(jjtn001,  true);
-                                }
-        }
         SingleType();
         break;
       default:

@@ -159,7 +159,7 @@ public class NameTestImpl extends SimpleNode implements NodeTest
     public void jjtAddChild(Node n, int i)
     {
         // don't add n in the tree
-        m_qname = ((org.apache.xpath.impl.parser.QName) n).getQName();
+        m_qname = ((org.apache.xpath.impl.parser.QNameWrapper) n).getQName();
     }
 
     /**

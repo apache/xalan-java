@@ -55,10 +55,15 @@
  */
 package org.apache.xpath.test;
 
+import java.io.StringReader;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apache.xpath.XPathFactory;
+import org.apache.xpath.expression.CastableAsExpr;
 import org.apache.xpath.expression.ConditionalExpr;
 import org.apache.xpath.expression.Expr;
-import org.apache.xpath.expression.ExprContext;
 import org.apache.xpath.expression.ExpressionFactory;
 import org.apache.xpath.expression.ForAndQuantifiedExpr;
 import org.apache.xpath.expression.InstanceOfExpr;
@@ -75,18 +80,11 @@ import org.apache.xpath.impl.parser.SimpleNode;
 import org.apache.xpath.impl.parser.XPath;
 import org.apache.xpath.impl.parser.XPathTreeConstants;
 import org.apache.xpath.objects.XObject;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import org.xml.sax.InputSource;
-
-import java.io.StringReader;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 
 /**
@@ -217,11 +215,16 @@ public class TestSamples
                     {
                         return false;
                     }
-                    
-					public boolean visitInstanceOf(InstanceOfExpr expr)
-										{
-											return false;
-										}
+
+                    public boolean visitInstanceOf(InstanceOfExpr expr)
+                    {
+                        return false;
+                    }
+
+                    public boolean visitCastableAs(CastableAsExpr expr)
+                    {
+                        return false;
+                    }
                 });
 
             // Simple Evaluation check
@@ -326,19 +329,19 @@ public class TestSamples
                         System.err.print(
                             "Bad external or internal representation: ");
                         System.err.println(ab + "  !=  " + xpathString);
-                        
-						tree.dump("|");
 
-													// Produce the raw tree
-													System.err.println("Raw tree is");
+                        tree.dump("|");
 
-													SimpleNode.PRODUCE_RAW_TREE = true;
+                        // Produce the raw tree
+                        System.err.println("Raw tree is");
 
-													parser = new XPath(new StringReader(xpathString));
-													tree = parser.XPath2();
-													tree.dump("|");
+                        SimpleNode.PRODUCE_RAW_TREE = true;
 
-													SimpleNode.PRODUCE_RAW_TREE = false;
+                        parser = new XPath(new StringReader(xpathString));
+                        tree = parser.XPath2();
+                        tree.dump("|");
+
+                        SimpleNode.PRODUCE_RAW_TREE = false;
                         testOK = false;
                     }
                 }
