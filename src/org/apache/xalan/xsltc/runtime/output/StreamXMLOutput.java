@@ -92,7 +92,7 @@ public class StreamXMLOutput extends StreamOutput {
 	super(writer, encoding);
 	initCDATA();
 	initNamespaces();
-// System.out.println("StreamXMLOutput.<init>");
+//System.out.println("StreamXMLOutput.<init>");
     }
 
     public StreamXMLOutput(OutputStream out, String encoding) 
@@ -101,11 +101,11 @@ public class StreamXMLOutput extends StreamOutput {
 	super(out, encoding);
 	initCDATA();
 	initNamespaces();
-// System.out.println("StreamXMLOutput.<init>");
+//System.out.println("StreamXMLOutput.<init>");
     }
 
     public void startDocument() throws TransletException { 
-// System.out.println("startDocument");
+//System.out.println("startDocument");
 	if (!_omitHeader) {
 	    final StringBuffer header = new StringBuffer("<?xml version=\"");
 	    header.append(_version).append("\" encoding=\"").append(_encoding);
@@ -280,19 +280,19 @@ public class StreamXMLOutput extends StreamOutput {
 	throws TransletException 
     {
 // System.out.println("namespace prefix = " + prefix + " uri = " + uri);
-
+	String escaped = escapeString(uri);
 	if (_startTagOpen) {
-	    if (pushNamespace(prefix, uri)) {
+	    if (pushNamespace(prefix, escaped)) {
 		_buffer.append(' ').append(XMLNS_PREFIX);
 		if (prefix != null && prefix != EMPTYSTRING) {
 		    _buffer.append(':').append(prefix);
 		}
-		_buffer.append("=\"").append(uri).append('"');
+		_buffer.append("=\"").append(escaped).append('"');
 	    }
 	}
 	else if (prefix != EMPTYSTRING || uri != EMPTYSTRING) {
 	    BasisLibrary.runTimeError(BasisLibrary.STRAY_NAMESPACE_ERR,
-				      prefix, uri);
+				      prefix, escaped);
 	}
     }
 
