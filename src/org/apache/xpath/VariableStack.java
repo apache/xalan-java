@@ -236,6 +236,22 @@ public class VariableStack extends Stack
     throws SAXException
   {
     int nElems = getCurrentStackFrameIndex();
+    
+    // Look in the current frame
+    int nSize = size();
+    for(int i = (nSize - 1); i >= nElems; i--)
+    {
+      Object obj = this.elementAt(i);
+      if(obj == m_elemFrameBoundry)
+      {
+        break;
+      }
+      else if(((Arg)obj).equals(name))
+      {
+        return ((Arg)obj).getVal();
+      }
+    }  
+    
     // Sub 1 extra for the context marker.
     for(int i = (nElems - 1); i >= 0; i--)
     {

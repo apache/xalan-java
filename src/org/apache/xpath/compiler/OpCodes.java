@@ -579,6 +579,16 @@ public class OpCodes
   
   /**
    * <meta name="usage" content="advanced"/>
+   * [NODETYPE_ANY]
+   * No size or arguments.
+   * 
+   * returns: 
+   *  XBoolean
+   */
+  public static final int NODETYPE_FUNCTEST = 1034;
+  
+  /**
+   * <meta name="usage" content="advanced"/>
    * [FROM_stepType]
    * [length, including predicates]
    * [length of just the step, without the predicates]

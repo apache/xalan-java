@@ -534,6 +534,9 @@ public class Compiler extends OpMap
     case OpCodes.NODETYPE_ROOT:
       return NodeFilter.SHOW_DOCUMENT;
       
+    case OpCodes.NODETYPE_FUNCTEST:
+      return NodeTest.SHOW_BYFUNCTION;
+      
     case OpCodes.NODENAME:
       switch(axesType)
       {

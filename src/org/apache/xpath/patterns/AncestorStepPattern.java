@@ -21,6 +21,28 @@ public class AncestorStepPattern extends StepPattern
     super(whatToShow);
   }
   
+  /**
+   * Overide the super method so that we can handle
+   * match patterns starting with a function such as id()// 
+   */  
+  public XObject execute(XPathContext xctxt)
+    throws org.xml.sax.SAXException
+  {
+    int whatToShow = getWhatToShow();
+    if(whatToShow == NodeTest.SHOW_BYFUNCTION)
+    {
+      XObject score = NodeTest.SCORE_NONE;
+      if(null != m_relativePathPattern)
+      {
+        score = m_relativePathPattern.execute(xctxt);
+      }
+      return score;
+    }
+    else 
+      return super.execute(xctxt);
+  }
+
+  
   public XObject executeRelativePathPattern(XPathContext xctxt)
     throws org.xml.sax.SAXException
   {

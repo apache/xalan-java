@@ -25,6 +25,12 @@ public class NodeTest extends Expression
   public static final int SHOW_NAMESPACE = 0x00001000;
   
   /**
+   * Special bitmap for match patterns starting with a function. 
+   * Make sure this does not conflict with dom.traversal.NodeFilter
+   */  
+  public static final int SHOW_BYFUNCTION = 0x00010000;
+  
+  /**
    * This attribute determines which node types are accepted.
    * These constants are defined in the <code>NodeFilter</code> 
    * interface.

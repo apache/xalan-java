@@ -1194,7 +1194,7 @@ public class XPathParser implements java.io.Serializable
       nextToken();
     }
     consumeExpected('(');
-    while(!tokenIs(')'))
+    while(!tokenIs(')') && m_token != null)
     {
       if(tokenIs(','))
       {
@@ -1303,7 +1303,13 @@ public class XPathParser implements java.io.Serializable
       m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 2] = 4;
       m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] = OpCodes.NODETYPE_NODE;
     }
-    else
+    // There is probably a better way to test for this 
+    // transition... but it gets real hairy if you try 
+    // to do it in basis().
+    else if(tokenIs('*') ||
+            tokenIs('@') ||
+            tokenIs('/') ||
+            Character.isLetter(m_token.charAt(0)))
     {
       Basis();
 
@@ -1656,9 +1662,11 @@ public class XPathParser implements java.io.Serializable
       if(tokenIs('/') && lookahead('/', 1))
       {
         appendOp(4, OpCodes.MATCH_ANY_ANCESTOR);
+        
         // Tell how long the step is without the predicate
         m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 2] = 4;
-        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] = OpCodes.NODETYPE_ROOT;
+        m_ops.m_opMap[m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - 1] = OpCodes.NODETYPE_FUNCTEST;
+        nextToken();
         nextToken();
       }
     }

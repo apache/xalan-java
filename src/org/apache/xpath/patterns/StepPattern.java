@@ -189,19 +189,25 @@ public class StepPattern extends NodeTest implements SubContextList
   public XObject executeRelativePathPattern(XPathContext xctxt)
     throws org.xml.sax.SAXException
   {
-    XObject score;
-    try
+    XObject score;    
+    Node parent = xctxt.getDOMHelper().getParentOfNode(xctxt.getCurrentNode());
+    if (null != parent)
     {
-      Node parent = xctxt.getDOMHelper().getParentOfNode(xctxt.getCurrentNode());
-      xctxt.pushCurrentNode(parent);
-      score = execute(xctxt);
-      if(score != NodeTest.SCORE_NONE)
-        score = SCORE_OTHER;
-    }
-    finally
-    {
-      xctxt.popCurrentNode();
-    }
+      try
+      {
+        xctxt.pushCurrentNode(parent);
+        score = execute(xctxt);
+        if(score != NodeTest.SCORE_NONE)
+          score = SCORE_OTHER;
+      }
+      finally
+      {
+        xctxt.popCurrentNode();
+      }
+    }  
+    else
+      score = NodeTest.SCORE_NONE;    
+    
     return score;
   }
   
