@@ -143,7 +143,7 @@ public final class DupFilterIterator extends NodeIteratorBase {
     private boolean isDup(int node) {
 	boolean retval = false;
 	int size = _data.length;
-	for ( int i=0; i<size; i++ ){
+	for (int i=0; i<size; i++) {
 	    if (_data[i] == node) {
 		retval = true; break;
 	    }
@@ -156,7 +156,7 @@ public final class DupFilterIterator extends NodeIteratorBase {
      * node set covered by this iterator, not within the DOM.
      */
     public int getPosition() {
-	return (_last - _current);
+	return (_current);
     }
 
     /**
