@@ -171,9 +171,7 @@ final class KeyCall extends FunctionCall {
 	// be added to the resulting node-set.
 	_valueType = _value.typeCheck(stable);
 
-	if (_valueType != Type.NodeSet && _valueType != Type.ResultTree
-		&& _valueType != Type.String) 
-	{
+	if (_valueType != Type.NodeSet && _valueType != Type.String) {
 	    _value = new CastExpr(_value, Type.String);
 	}
 
@@ -262,7 +260,7 @@ final class KeyCall extends FunctionCall {
 	// If the second paramter is a node-set we need to go through each
 	// node in the set, convert each one to a string and do a look up in
 	// the named index, and then merge all the resulting node sets.
-	if (_valueType == Type.NodeSet || _valueType == Type.ResultTree) {
+	if (_valueType == Type.NodeSet) {
 	    // Save current node and current iterator on the stack
 	    il.append(methodGen.loadCurrentNode());
 	    il.append(methodGen.loadIterator());
