@@ -62,12 +62,12 @@ package org.apache.xml.utils;
  * applications, thread-safety of a StringBuffer is a somewhat
  * dubious concept in any case.
  * <p>
- * Note that Stree is using a single FastStringBuffer as a string pool,
- * by recording start and length indices within a single buffer. This
+ * Note that Stree and DTM used a single FastStringBuffer as a string pool,
+ * by recording start and length indices within this single buffer. This
  * minimizes heap overhead, but of course requires more work when retrieving
  * the data.
  * <p>
- * This has been recoded to operate as a "chunked buffer". Doing so
+ * FastStringBuffer operates as a "chunked buffer". Doing so
  * reduces the need to recopy existing information when an append
  * exceeds the space available; we just allocate another chunk and
  * flow across to it. (The array of chunks may need to grow,
@@ -76,8 +76,15 @@ package org.apache.xml.utils;
  * boundaries; larger chunks make that less frequent.
  * <p>
  * The size values are parameterized, to allow tuning this code. In
- * theory, RTFs might want to be tuned differently from the main
- * document's text.
+ * theory, Result Tree Fragments might want to be tuned differently 
+ * from the main document's text. 
+ * <p>
+ * %REVIEW% An experiment in self-tuning is
+ * included in the code (using nested FastStringBuffers to achieve
+ * variation in chunk sizes), but this implementation has proven to
+ * be problematic when data may be being copied from the FSB into itself.
+ * We should either re-architect that to make this safe (if possible)
+ * or remove that code and clean up for performance/maintainability reasons.
  * <p>
  */
 public class FastStringBuffer
@@ -348,7 +355,6 @@ public class FastStringBuffer
    */
   public final void setLength(int l)
   {
-
     m_lastChunk = l >>> m_chunkBits;
 
     if (m_lastChunk == 0 && m_innerFSB != null)
@@ -359,6 +365,17 @@ public class FastStringBuffer
     else
     {
       m_firstFree = l & m_chunkMask;
+      
+	  // There's an edge case if l is an exact multiple of m_chunkBits, which risks leaving
+	  // us pointing at the start of a chunk which has not yet been allocated. Rather than 
+	  // pay the cost of dealing with that in the append loops (more scattered and more
+	  // inner-loop), we correct it here by moving to the safe side of that
+	  // line -- as we would have left the indexes had we appended up to that point.
+      if(m_firstFree==0 && m_lastChunk>0)
+      {
+      	--m_lastChunk;
+      	m_firstFree=m_chunkSize;
+      }
     }
   }
 
