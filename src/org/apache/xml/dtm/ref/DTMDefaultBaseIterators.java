@@ -971,14 +971,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
       {
         _startNode = node;
 
-        for (node = getFirstAttribute(node); node != END;
-                node = getNextAttribute(node))
-        {
-          if (getExpandedTypeID(node) == _nodeType)
-            break;
-        }
-
-        _currentNode = node;
+        _currentNode = getTypedAttribute(node, _nodeType);
 
         return resetPosition();
       }
