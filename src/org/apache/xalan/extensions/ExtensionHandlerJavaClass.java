@@ -63,8 +63,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Constructor;
 import java.io.IOException;
 
-import org.w3c.xslt.ExpressionContext;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.apache.xalan.transformer.TransformerImpl;
@@ -285,7 +283,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
               // This is tricky.  We get the actual number of target arguments (excluding any
               //   ExpressionContext).  If we passed in the same number, we need the implied object.
               int nTargetArgs = convertedArgs[0].length;
-              if (org.w3c.xslt.ExpressionContext.class.isAssignableFrom(paramTypes[0]))
+              if (ExpressionContext.class.isAssignableFrom(paramTypes[0]))
                 nTargetArgs--;
               if (methodArgs.length <= nTargetArgs)
                 return m.invoke(m_defaultInstance, convertedArgs[0]);

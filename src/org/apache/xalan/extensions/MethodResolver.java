@@ -11,7 +11,6 @@ import org.w3c.dom.traversal.NodeIterator;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
-import org.w3c.xslt.ExpressionContext;
 import org.xml.sax.SAXException;
 
 /**
@@ -85,7 +84,7 @@ public class MethodResolver
       {
         Class javaClass = paramTypes[0];
         // System.out.println("first javaClass: "+javaClass.getName());
-        if(org.w3c.xslt.ExpressionContext.class.isAssignableFrom(javaClass))
+        if(ExpressionContext.class.isAssignableFrom(javaClass))
         {
           isFirstExpressionContext = true;
           scoreStart = 0;
@@ -207,7 +206,7 @@ public class MethodResolver
         if(numberMethodParams == (argsLen-xsltParamStart+1))
         {
           Class javaClass = paramTypes[0];
-          if(org.w3c.xslt.ExpressionContext.class.isAssignableFrom(javaClass))
+          if(ExpressionContext.class.isAssignableFrom(javaClass))
           {
             isFirstExpressionContext = true;
             scoreStart = 0;
@@ -349,7 +348,7 @@ public class MethodResolver
       argsOut[0] = new Object[nParams];
       int paramIndex = 0;
       if((nParams > 0) 
-         && org.w3c.xslt.ExpressionContext.class.isAssignableFrom(paramTypes[0]))
+         && ExpressionContext.class.isAssignableFrom(paramTypes[0]))
       {
         argsOut[0][0] = exprContext;
         // System.out.println("Incrementing paramIndex in convertParams: "+paramIndex);

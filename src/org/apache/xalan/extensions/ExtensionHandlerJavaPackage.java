@@ -63,8 +63,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Constructor;
 import java.io.IOException;
 
-import org.w3c.xslt.ExpressionContext;
-
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.apache.xalan.transformer.TransformerImpl;

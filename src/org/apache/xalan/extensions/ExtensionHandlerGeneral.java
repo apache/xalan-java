@@ -67,8 +67,6 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.utils.QName;
 
-import org.w3c.xslt.ExpressionContext;
-
 import org.xml.sax.SAXException;
 
 // Temp??

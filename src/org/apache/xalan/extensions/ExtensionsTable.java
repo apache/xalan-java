@@ -60,7 +60,6 @@ import java.util.Hashtable;
 import java.util.Vector;
 import org.apache.xpath.objects.XNull;
 import org.apache.xpath.XPathProcessorException;
-import org.w3c.xslt.ExpressionContext;
 
 public class ExtensionsTable
 {

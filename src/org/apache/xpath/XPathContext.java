@@ -81,7 +81,7 @@ import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.traversal.TreeWalker;
 import org.w3c.dom.Node;
 
-import org.w3c.xslt.ExpressionContext;
+import org.apache.xalan.extensions.ExpressionContext;
 
 // SAX2 imports
 import org.xml.sax.ErrorHandler;

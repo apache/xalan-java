@@ -59,8 +59,6 @@ package org.apache.xalan.extensions;
 import java.util.Vector;
 import java.io.IOException;
 
-import org.w3c.xslt.ExpressionContext;
-
 import org.xml.sax.SAXException;
 
 import org.w3c.dom.Element;
