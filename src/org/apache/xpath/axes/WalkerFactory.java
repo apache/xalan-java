@@ -434,8 +434,7 @@ public class WalkerFactory
       case OpCodes.OP_LOCATIONPATH:
         break; // OK
       case OpCodes.OP_FUNCTION:
-        boolean isProx 
-          = functionProximateOrContainsProximate(compiler, op);
+        boolean isProx = functionProximateOrContainsProximate(compiler, opPos);
         if(isProx)
           return true;
         break;
