@@ -209,20 +209,6 @@ final public class Transform {
 	    TextOutput textOutput =
 		new TextOutput((ContentHandler)saxHandler,
 			       (LexicalHandler)saxHandler, encoding);
-	    // Transform and pass output to the translet output handler
-	    translet.transform(dom, textOutput);
-
-	    if (_debug) {
-		TransletOutputBase handler = new TransletOutputBase();
-		long start = System.currentTimeMillis();
-		final int nTimes = 100;
-		for (int i = 0; i < nTimes; i++)
-		    translet.transform(dom, dom.getIterator(), handler);
-		long end = System.currentTimeMillis();
-		System.out.println("total " + (end - start) + " msec for " 
-				   + nTimes + " transformations");
-		System.out.println(((double)end - start)/nTimes + " msec avg");
-	    }
 	}
 	catch (TransletException e) {
 	    if (_debug) e.printStackTrace();
