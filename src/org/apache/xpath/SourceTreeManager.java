@@ -409,9 +409,9 @@ public class SourceTreeManager
       catch (org.xml.sax.SAXNotRecognizedException snre){}
 
       InputSource isource = SAXSource.sourceToInputSource(source);
-
+System.out.println("parse: "+isource.getSystemId());
       reader.parse(isource);
-
+System.out.println("done with parse: "+isource.getSystemId());
       if (handler instanceof org.apache.xalan.stree.SourceTreeHandler)
       {
         doc = ((org.apache.xalan.stree.SourceTreeHandler) handler).getRoot();
@@ -455,7 +455,24 @@ public class SourceTreeManager
                          ? ((SAXSource) inputSource).getXMLReader() : null;
 
       if (null == reader)
-        reader = XMLReaderFactory.createXMLReader();
+      {
+        try {
+          javax.xml.parsers.SAXParserFactory factory=
+              javax.xml.parsers.SAXParserFactory.newInstance();
+          factory.setNamespaceAware( true );
+          javax.xml.parsers.SAXParser jaxpParser=
+              factory.newSAXParser();
+          reader=jaxpParser.getXMLReader();
+          
+        } catch( javax.xml.parsers.ParserConfigurationException ex ) {
+          throw new org.xml.sax.SAXException( ex );
+        } catch( javax.xml.parsers.FactoryConfigurationError ex1 ) {
+            throw new org.xml.sax.SAXException( ex1.toString() );
+        } catch( NoSuchMethodError ex2 ) {
+        }
+        if(null == reader)
+          reader = XMLReaderFactory.createXMLReader();
+      }
 
       try
       {
