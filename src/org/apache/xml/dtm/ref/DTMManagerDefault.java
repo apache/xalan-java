@@ -434,7 +434,8 @@ public class DTMManagerDefault extends DTMManager
       // use getParent to find the root, instead of getOwnerDocument.  Otherwise
       // DOM2DTM#getHandleOfNode will be very unhappy.
       Node root = node;
-      for (Node p = root.getParentNode(); p != null; p = p.getParentNode())
+      Node p = (root.getNodeType() == Node.ATTRIBUTE_NODE) ? ((org.w3c.dom.Attr)root).getOwnerElement() : root.getParentNode();
+      for (; p != null; p = p.getParentNode())
       {
         root = p;
       }
