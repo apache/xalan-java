@@ -455,15 +455,19 @@ public final class TextOutput implements TransletOutputHandler {
             // the first CDATA and '>' at the beginning of the next. Other
 	    // special characters/sequences are _NOT_ escaped within CDATA.
 	    Integer I = (Integer)_cdataStack.peek();
-	    if (I.intValue() == _depth) {
-		if (_cdataTagOpen)
-		    _saxHandler.characters(ch, off, len);
-		else
-		    startCDATA(ch, off, len);
+	    if ((I.intValue() == _depth) && (!_cdataTagOpen)) {
+		startCDATA(ch, off, len);
 	    }
 	    // Output escaped characters if required. Non-ASCII characters
             // within HTML attributes should _NOT_ be escaped.
 	    else if (_escapeChars) {
+		if (_outputType == HTML) {
+		    final String qname = (String)_qnameStack.peek();
+		    if ((qname.equals("style")) || (qname.equals("script"))) {
+			_saxHandler.characters(ch, off, len);
+			return;
+		    }
+		}
 		escapeCharacters(ch, off, len);
 	    }
 	    // Output the chracters as the are

@@ -509,7 +509,9 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
                         _writer.write(GT_LT_SL);
                         _writer.write(_element);
                     }
-		    _writer.write(GT_CR);
+		    else {
+			_writer.write(GT_CR);
+		    }
                 }
                 else {
                     // XML: output empty element as <tag/>
