@@ -330,6 +330,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
     
     synchronized (m_root)
     {
+      m_inDTD = false;
       m_root.setSourceTreeHandler(this);
       m_root.setUid(1);
       m_root.setLevel(new Integer(1).shortValue());
@@ -599,6 +600,9 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    */
   public void characters(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
+    if(m_inDTD)
+      return;
+      
     if(DEBUG)
     {
       System.out.print("SourceTreeHandler#characters: ");
@@ -657,6 +661,8 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   public void ignorableWhitespace(char ch[], int start, int length)
           throws org.xml.sax.SAXException
   {
+    if(m_inDTD)
+      return;
 
     synchronized (m_root)
     {
@@ -703,6 +709,8 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    */
   public void comment(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
+    if(m_inDTD)
+      return;
 
     synchronized (m_root)
     {
@@ -758,6 +766,8 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
 
     notifyWaiters();
   }
+  
+  private boolean m_inDTD = false;
 
   /**
    * Report the start of DTD declarations, if any.
@@ -779,6 +789,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   public void startDTD(String name, String publicId, String systemId)
           throws org.xml.sax.SAXException
   {
+    m_inDTD = true; 
     if (m_root instanceof DocumentImpl)
     {
       DocumentImpl doc = ((DocumentImpl)m_root);
@@ -795,6 +806,7 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
    */
   public void endDTD() throws org.xml.sax.SAXException
   {
+    m_inDTD = false; 
   }
 
   /**
