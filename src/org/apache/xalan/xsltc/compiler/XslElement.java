@@ -160,14 +160,15 @@ final class XslElement extends Instruction {
 	_name = AttributeValue.create(this, name, parser);
 
 	// Next check that the local part of the QName is legal (no whitespace)
-	if ((_name instanceof SimpleAttributeValue) &&
-	    (local.indexOf(' ') > -1)) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.ILLEGAL_ELEM_NAME_ERR,
-					local, this);
-	    parser.reportError(WARNING, err);
-	    parseChildren(parser);
-	    _ignore = true; // Ignore the element if the local part is invalid
-	    return;
+	if (_name instanceof SimpleAttributeValue) {
+	    if (local.equals(EMPTYSTRING) || (local.indexOf(' ') > -1)) {
+		ErrorMsg err = new ErrorMsg(ErrorMsg.ILLEGAL_ELEM_NAME_ERR,
+					    local, this);
+		parser.reportError(WARNING, err);
+		parseChildren(parser);
+		_ignore = true; // Ignore the element if local part is invalid
+		return;
+	    }
 	}
 
 	// Handle the 'use-attribute-sets' attribute
