@@ -110,7 +110,8 @@
     API)</link>.</li>
     </ol>
     <p>For more information, see <link idref="getstarted" anchor="classpath">Setting up the system classpath</link>.</p>
-    <p><anchor name="environmentcheck"/><em>Using the EnvironmentCheck utility:</em> To help diagnose classpath problems, try running Xalan's environment checking utility, checked in at 
+    <p><anchor name="environmentcheck"/></p>
+    <p><em>Using the EnvironmentCheck utility:</em> To help diagnose classpath problems, try running Xalan's environment checking utility, checked in at 
     xml-xalan/java/src/org/apache/xalan/xslt/EnvironmentCheck.</p>
     <p>You can run this utility from the command line as follows:</p>
     <p><code>java org.apache.xalan.xslt.EnvironmentCheck [-out outFile]</code></p>

@@ -29,7 +29,7 @@
 include xalansamples.jar (all samples other than the servlet) and xalanservlet.jar. To run extensions, include bsf.jar. All these JAR files 
 are distributed with &xslt4j;. For extensions implemented in JavaScript or another scripting language, see <link idref="extensions" anchor="supported-lang">extensions language 
 requirements</link> to identify any additional JAR files you must place on the classpath and where you can get them.</p>
-<p>If you are using <link idref="xsltc_usage">XSLTC</link>, see <link idref="xsltc_usage" anchor="classpath">Setting the system classpath for XSLTC</link>.</p>
+&xsltcclasspath;
 <p>If you are using JDK or JRE 1.2.2, include tools.jar on the classpath.</p>
 </s2><anchor name="samples"/>
 <s2 title="Trying out the samples">
