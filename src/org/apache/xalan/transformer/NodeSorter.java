@@ -88,10 +88,10 @@ public class NodeSorter
   /** Vector of NodeSortKeys          */
   Vector m_keys;  // vector of NodeSortKeys
 
-  /**
-   * TODO: Adjust this for locale.
-   */
-  NumberFormat m_formatter = NumberFormat.getNumberInstance();
+//  /**
+//   * TODO: Adjust this for locale.
+//   */
+//  NumberFormat m_formatter = NumberFormat.getNumberInstance();
 
   /**
    * Construct a NodeSorter, passing in the XSL TransformerFactory
