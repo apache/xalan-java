@@ -12,7 +12,7 @@ for the TrAX API.
 </ul>
 <anchor name="xsltcnew"/>
 <s3 title="Changes and New Features">
-<p>This - being the first release of XSLTC on Apache (xml.apache.org) - "What's changed" is 
+<p>Since this is the first release of XSLTC on Apache (xml.apache.org), changes are  
 relative to Preview 5 of XSLTC posted on www.sun.com/xml/developers.</p>
 <ul>
   <li>Simplified stylesheets are now implemented.</li>
@@ -51,14 +51,14 @@ but which are supported by a number of other XSLT processors:</p>
 <anchor name="xsltcknownproblems"/>
 <s3 title="Known Problems">
 <ul>
-  <li>Casting variables. XSLTC requires you to explicitly type cast values 
+  <li>Casting variables: XSLTC requires you to explicitly type cast values 
   returned by variables or expressions, when you use them in tests. Always a good
   practice, but it may seem like overkill in some in contexts, where other XSLT processors
   automatically assume or convert to the correct type. For example. unless you cast $country
   to a string in the following apply-templates, entry nodes whose &lt;country&gt; elements
   contain a string matching the global $country parameter are NOT selected.<br/><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<code>&lt;xsl:apply-templates select="entry[country=string($country)]"/&gt;</code></li>
-  <li>Order dependency of conditions within a predicate. If you have a predicate in a select or match
+  <li>Order dependency of conditions within a predicate: If you have a predicate in a select or match
   expression that has multiple conditions, one of which contains a union (X or Y), put it last. 
   Otherwise, the predicate fails to match node that it should.</li>
   <li>When using DOM caching, as shown in the Servlet demo, if the source document is local to the 
