@@ -315,6 +315,8 @@ public class ElemLiteralResult extends ElemUse
    */
   public void setNamespace(String ns)
   {
+    if(null == ns) // defensive, shouldn't have to do this.
+      ns = "";
     m_namespace = ns;
   }
 
