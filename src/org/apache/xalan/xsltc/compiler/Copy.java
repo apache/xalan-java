@@ -115,6 +115,7 @@ final class Copy extends Instruction {
 					Util.getJCRefType("I"),
 					il.getEnd());
 
+	// Get the name of the node to copy and save for later
 	il.append(methodGen.loadDOM());
 	il.append(methodGen.loadCurrentNode());
 	il.append(methodGen.loadHandler());
@@ -128,27 +129,42 @@ final class Copy extends Instruction {
 	il.append(DUP);
 	il.append(new ASTORE(name.getIndex()));
 	final BranchHandle ifBlock1 = il.append(new IFNULL(null));
+
+	// Get the length of the node name and save for later
 	il.append(new ALOAD(name.getIndex()));
 	final int lengthMethod = cpg.addMethodref(STRING_CLASS,"length","()I");
 	il.append(new INVOKEVIRTUAL(lengthMethod));
-	// save length for later tests
 	il.append(new ISTORE(length.getIndex()));
-	// only if use-attribute-sets specified compile this seq
+
+	// Copy in attribute sets if specified
 	if (_useSets != null) {
-	    // check if element; if not skip to translate body
-	    il.append(new ILOAD(length.getIndex()));
-	    final BranchHandle ifBlock2 = il.append(new IFEQ(null));
-	    // length != 0 -> element -> do attribute sets
-	    _useSets.translate(classGen, methodGen);
-	    // not an element; root
-	    ifBlock2.setTarget(il.append(NOP));
+	    // If the parent of this element will result in an element being
+	    // output then we know that it is safe to copy out the attributes
+	    final SyntaxTreeNode parent = getParent();
+	    if ((parent instanceof LiteralElement) ||
+		(parent instanceof LiteralElement)) {
+		_useSets.translate(classGen, methodGen);
+	    }
+	    // If not we have to check to see if the copy will result in an
+	    // element being output.
+	    else {
+		// check if element; if not skip to translate body
+		il.append(new ILOAD(length.getIndex()));
+		final BranchHandle ifBlock2 = il.append(new IFEQ(null));
+		// length != 0 -> element -> do attribute sets
+		_useSets.translate(classGen, methodGen);
+		// not an element; root
+		ifBlock2.setTarget(il.append(NOP));
+	    }
 	}
-	// instantiate body of xsl:copy
+
+	// Instantiate body of xsl:copy
 	translateContents(classGen, methodGen);
-	// check if element
+
+	// Call the output handler's endElement() if we copied an element
+	// (The DOM.shallowCopy() method calls startElement().)
 	il.append(new ILOAD(length.getIndex()));
 	final BranchHandle ifBlock3 = il.append(new IFEQ(null));
-	// emit endElement
 	il.append(methodGen.loadHandler());
 	il.append(new ALOAD(name.getIndex()));
 	il.append(methodGen.endElement());
