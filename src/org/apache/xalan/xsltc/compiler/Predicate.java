@@ -484,68 +484,98 @@ final class Predicate extends Expression implements Closure {
 	return (getStep() != null && getCompareValue() != null);
     }
 
-    /**
-     * Utility method for optimisation. See isNodeValueTest()
-     */
-    public Expression getCompareValue() {
-	if (_value != null) return _value;
-	if (_exp == null) return null;
-
-	if (_exp instanceof EqualityExpr) {
-	    EqualityExpr exp = (EqualityExpr)_exp;
-	    Expression left = exp.getLeft();
-	    Expression right = exp.getRight();
-
-	    Type tleft = left.getType();
-	    Type tright = right.getType();
-
-	    
-	    if (left instanceof CastExpr) left = ((CastExpr)left).getExpr();
-	    if (right instanceof CastExpr) right = ((CastExpr)right).getExpr();
-	    
-	    try {
-		if ((tleft == Type.String) && (!(left instanceof Step)))
-		    _value = exp.getLeft();
-		if (left instanceof VariableRefBase) 
-		    _value = new CastExpr(left, Type.String);
-		if (_value != null) return _value;
-	    }
-	    catch (TypeCheckError e) { }
-
-	    try {
-		if ((tright == Type.String) && (!(right instanceof Step)))
-		    _value = exp.getRight();
-		if (right instanceof VariableRefBase)
-		    _value = new CastExpr(right, Type.String);
-		if (_value != null) return _value;
-	    }
-	    catch (TypeCheckError e) { }
-
-	}
-	return null;
-    }
-
-    /**
-     * Utility method for optimisation. See isNodeValueTest()
+   /**
+     * Returns the step in an expression of the form 'step = value'. 
+     * Null is returned if the expression is not of the right form.
+     * Optimization if off if null is returned.
      */
     public Step getStep() {
-	if (_step != null) return _step;
-	if (_exp == null) return null;
+        // Returned cached value if called more than once
+	if (_step != null) {
+            return _step;
+        }
+        
+        // Nothing to do if _exp is null
+	if (_exp == null) {
+            return null;
+        }
 
+        // Ignore if not equality expression
 	if (_exp instanceof EqualityExpr) {
 	    EqualityExpr exp = (EqualityExpr)_exp;
 	    Expression left = exp.getLeft();
 	    Expression right = exp.getRight();
 
-	    if (left instanceof CastExpr) left = ((CastExpr)left).getExpr();
-	    if (left instanceof Step) _step = (Step)left;
+            // Unwrap and set _step if appropriate
+	    if (left instanceof CastExpr) {
+                left = ((CastExpr) left).getExpr();
+            }
+	    if (left instanceof Step) {
+                _step = (Step) left;
+            }
 	    
-	    if (right instanceof CastExpr) right = ((CastExpr)right).getExpr();
-	    if (right instanceof Step) _step = (Step)right;
+            // Unwrap and set _step if appropriate
+	    if (right instanceof CastExpr) {
+                right = ((CastExpr)right).getExpr();
+            }
+	    if (right instanceof Step) {
+                _step = (Step)right;
+            }
 	}
 	return _step;
     }
 
+    /**
+     * Returns the value in an expression of the form 'step = value'. 
+     * A value may be either a literal string or a variable whose 
+     * type is string. Optimization if off if null is returned.
+     */
+    public Expression getCompareValue() {
+        // Returned cached value if called more than once
+	if (_value != null) {
+            return _value;
+        }
+        
+        // Nothing to to do if _exp is null
+	if (_exp == null) {
+            return null;
+        }
+
+        // Ignore if not an equality expression
+	if (_exp instanceof EqualityExpr) {
+	    EqualityExpr exp = (EqualityExpr) _exp;
+	    Expression left = exp.getLeft();
+	    Expression right = exp.getRight();
+            
+            // Return if left is literal string
+            if (left instanceof LiteralExpr) {
+                _value = left;
+                return _value;
+            }
+            // Return if left is a variable reference of type string
+            if (left instanceof VariableRefBase &&
+                left.getType() == Type.String) 
+            {
+                _value = left;
+                return _value;
+            }
+            
+            // Return if right is literal string
+            if (right instanceof LiteralExpr) {
+                _value = right;
+                return _value;
+            }
+            // Return if left is a variable reference whose type is string
+            if (right instanceof VariableRefBase &&
+                right.getType() == Type.String) 
+            {
+                _value = right;
+                return _value;
+            }
+	}
+	return null;
+    }
+ 
     /**
      * Translate a predicate expression. This translation pushes
      * two references on the stack: a reference to a newly created
