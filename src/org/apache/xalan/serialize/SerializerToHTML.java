@@ -285,6 +285,11 @@ public class SerializerToHTML extends SerializerToXML
 
     ElemDesc elemDesc;
 
+    elemDesc = (ElemDesc) m_elementFlags.get("AREA");
+
+    elemDesc.setAttr("HREF", ElemDesc.ATTRURL);
+    elemDesc.setAttr("NOHREF", ElemDesc.ATTREMPTY);
+
     elemDesc = (ElemDesc) m_elementFlags.get("BASE");
 
     elemDesc.setAttr("HREF", ElemDesc.ATTRURL);
@@ -316,11 +321,12 @@ public class SerializerToHTML extends SerializerToXML
     elemDesc.setAttr("USEMAP", ElemDesc.ATTRURL);
     elemDesc.setAttr("CHECKED", ElemDesc.ATTREMPTY);
     elemDesc.setAttr("DISABLED", ElemDesc.ATTREMPTY);
+    elemDesc.setAttr("ISMAP", ElemDesc.ATTREMPTY);
     elemDesc.setAttr("READONLY", ElemDesc.ATTREMPTY);
 
     elemDesc = (ElemDesc) m_elementFlags.get("SELECT");
 
-    elemDesc.setAttr("READONLY", ElemDesc.ATTREMPTY);
+    elemDesc.setAttr("DISABLED", ElemDesc.ATTREMPTY);
     elemDesc.setAttr("MULTIPLE", ElemDesc.ATTREMPTY);
 
     elemDesc = (ElemDesc) m_elementFlags.get("OPTGROUP");
@@ -345,12 +351,14 @@ public class SerializerToHTML extends SerializerToXML
 
     elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
     elemDesc.setAttr("FOR", ElemDesc.ATTRURL);
+    elemDesc.setAttr("DEFER", ElemDesc.ATTREMPTY);
 
     elemDesc = (ElemDesc) m_elementFlags.get("IMG");
 
     elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
     elemDesc.setAttr("LONGDESC", ElemDesc.ATTRURL);
     elemDesc.setAttr("USEMAP", ElemDesc.ATTRURL);
+    elemDesc.setAttr("ISMAP", ElemDesc.ATTREMPTY);
 
     elemDesc = (ElemDesc) m_elementFlags.get("OBJECT");
 
@@ -359,6 +367,7 @@ public class SerializerToHTML extends SerializerToXML
     elemDesc.setAttr("DATA", ElemDesc.ATTRURL);
     elemDesc.setAttr("ARCHIVE", ElemDesc.ATTRURL);
     elemDesc.setAttr("USEMAP", ElemDesc.ATTRURL);
+    elemDesc.setAttr("DECLARE", ElemDesc.ATTREMPTY);
 
     elemDesc = (ElemDesc) m_elementFlags.get("FORM");
 
