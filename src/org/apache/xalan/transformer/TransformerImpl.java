@@ -2027,11 +2027,12 @@ public class TransformerImpl extends Transformer
     DTM dtm = m_xcontext.getDTM(child);
     short nodeType = dtm.getNodeType(child);
     boolean isDefaultTextRule = false;
+    boolean isApplyImports = false;    
 
     if (null == template)
     {
       int maxImportLevel, endImportLevel=0;
-      boolean isApplyImports = ((xslInstruction == null)
+      isApplyImports = ((xslInstruction == null)
                                 ? false
                                 : xslInstruction.getXSLToken()
                                   == Constants.ELEMNAME_APPLY_IMPORTS);
@@ -2121,8 +2122,10 @@ public class TransformerImpl extends Transformer
       pushPairCurrentMatched(template, child);
       
       // Fix copy copy29 test.
-      DTMIterator cnl = new org.apache.xpath.NodeSetDTM(child, m_xcontext.getDTMManager());
-      m_xcontext.pushContextNodeList(cnl);
+      if (!isApplyImports) {
+          DTMIterator cnl = new org.apache.xpath.NodeSetDTM(child, m_xcontext.getDTMManager());
+          m_xcontext.pushContextNodeList(cnl);
+      }
 
       if (isDefaultTextRule)
       {
@@ -2171,8 +2174,10 @@ public class TransformerImpl extends Transformer
     {
       m_xcontext.getVarStack().unlink();
       m_xcontext.popCurrentNode();
-      m_xcontext.popContextNodeList();
-      popCurrentMatched();
+      if (!isApplyImports) {
+          m_xcontext.popContextNodeList();
+          popCurrentMatched();
+      }
       popElemTemplateElement();
     }
 

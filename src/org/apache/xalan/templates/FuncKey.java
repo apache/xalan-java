@@ -109,7 +109,7 @@ public class FuncKey extends Function2Args
     XNodeSet nodes = null;
     int context = xctxt.getCurrentNode();
     DTM dtm = xctxt.getDTM(context);
-    int docContext = dtm.getDocument();
+    int docContext = dtm.getDocumentRoot(context);
 
     if (DTM.NULL == docContext)
     {
