@@ -170,6 +170,22 @@ public class ElemForEach extends ElemTemplateElement
         getStylesheetRoot().m_selectDefault.getExpression();
     }
   }
+  
+  /**
+   * This after the template's children have been composed.
+   */
+  public void endCompose(StylesheetRoot sroot) throws TransformerException
+  {
+    int length = getSortElemCount();
+
+    for (int i = 0; i < length; i++)
+    {
+      getSortElem(i).endCompose(sroot);
+    }
+    
+    super.endCompose(sroot);
+  }
+
 
   //  /**
   //   * This function is called after everything else has been
