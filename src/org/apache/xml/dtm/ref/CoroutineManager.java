@@ -63,7 +63,6 @@ import org.apache.xml.res.XMLMessages;
 
 
 /**
- * <meta name="usage" content="internal"/>
  * <p>Support the coroutine design pattern.</p>
  * 
  * <p>A coroutine set is a very simple cooperative non-preemptive
@@ -153,6 +152,7 @@ public class CoroutineManager
    * in-use table to grow without bound. If we switch to a more efficient
    * sparse-array mechanism, it may be possible to raise or eliminate
    * this boundary.
+   * @xsl.usage internal
    */
   static final int m_unreasonableId=1024;
 
