@@ -427,7 +427,9 @@ final class LiteralElement extends Instruction {
 	    for (int i = 0; i < count; i++) {
 		SyntaxTreeNode node = 
 		    (SyntaxTreeNode)_attributeElements.elementAt(i);
-		node.translate(classGen, methodGen);
+		if (!(node instanceof XslAttribute)) {
+		    node.translate(classGen, methodGen);
+	        }
 	    }
 	}
 	
@@ -469,7 +471,7 @@ final class LiteralElement extends Instruction {
      * Check whether all attributes are unique.
      */
     private boolean checkAttributesUnique() {
-    	 boolean hasHiddenXslAttribute = hasXslAttributeChildren(this, true);
+    	 boolean hasHiddenXslAttribute = canProduceAttributeNodes(this, true);
     	 if (hasHiddenXslAttribute)
     	     return false;
     	 
@@ -515,11 +517,12 @@ final class LiteralElement extends Instruction {
     }
     
     /**
-     * Return true if the given SyntaxTreeNode may contains <xsl:attribute>s in it. The flag
-     * ignoreXslAttribute indicates if the direct <xsl:attribute> children of this node 
-     * are included.
+     * Return true if the instructions under the given SyntaxTreeNode can produce attribute nodes
+     * to an element. Only return false when we are sure that no attribute node is produced. 
+     * Return true if we are not sure. If the flag ignoreXslAttribute is true, the direct 
+     * <xsl:attribute> children of the current node are not included in the check.
      */
-    private boolean hasXslAttributeChildren(SyntaxTreeNode node, boolean ignoreXslAttribute) {
+    private boolean canProduceAttributeNodes(SyntaxTreeNode node, boolean ignoreXslAttribute) {
     	Vector contents = node.getContents();
     	int size = contents.size();
     	for (int i = 0; i < size; i++) {
@@ -531,20 +534,33 @@ final class LiteralElement extends Instruction {
     	    	else
     	    	    return false;
     	    }
-   	    else if (hasOutputEffect(child))
+    	    // Cannot add an attribute to an element after children have been added to it.
+    	    // We can safely return false when the instruction can produce an output node.
+   	    else if (child instanceof LiteralElement
+   	        || child instanceof ValueOf
+   	        || child instanceof XslElement
+   	        || child instanceof Comment
+   	        || child instanceof Number
+   	        || child instanceof ProcessingInstruction)
     	        return false;
     	    else if (child instanceof XslAttribute) {
     	    	if (ignoreXslAttribute)
     	    	    continue;
     	    	else
     	    	    return true;
-    	    } 	         
+    	    }
+    	    // In general, there is no way to check whether <xsl:call-template> or 
+    	    // <xsl:apply-templates> can produce attribute nodes. <xsl:copy> and
+    	    // <xsl:copy-of> can also copy attribute nodes to an element. Return
+    	    // true in those cases to be safe.
     	    else if (child instanceof CallTemplate
-    	        || child instanceof ApplyTemplates)
+    	        || child instanceof ApplyTemplates
+    	        || child instanceof Copy
+    	        || child instanceof CopyOf)
     	        return true;
     	    else if ((child instanceof If
     	               || child instanceof ForEach)
-    	             && hasXslAttributeChildren(child, false)) {
+    	             && canProduceAttributeNodes(child, false)) {
      	    	return true;
     	    }
     	    else if (child instanceof Choose) {
@@ -553,7 +569,7 @@ final class LiteralElement extends Instruction {
     	    	for (int k = 0; k < num; k++) {
     	    	    SyntaxTreeNode chooseChild = (SyntaxTreeNode)chooseContents.elementAt(k);
     	    	    if (chooseChild instanceof When || chooseChild instanceof Otherwise) {
-    	    	    	if (hasXslAttributeChildren(chooseChild, false))
+    	    	    	if (canProduceAttributeNodes(chooseChild, false))
     	    	    	    return true;
     	    	    }
     	    	}
@@ -562,18 +578,4 @@ final class LiteralElement extends Instruction {
     	return false;
     }
     
-    /**
-     * Return true if this node can output something to the result tree.
-     */
-    private boolean hasOutputEffect(SyntaxTreeNode node) {
-        return (node instanceof LiteralElement)
-            || (node instanceof ValueOf)
-            || (node instanceof Copy)
-            || (node instanceof CopyOf)
-            || (node instanceof XslElement)
-            || (node instanceof Comment)
-            || (node instanceof Number)
-            || (node instanceof ProcessingInstruction);
-    }
-
 }  
