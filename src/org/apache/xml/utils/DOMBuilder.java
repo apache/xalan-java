@@ -253,7 +253,7 @@ public class DOMBuilder
    *
    *
    * @param ns The namespace of the node
-   * @param localName The local part of the qualified name 
+   * @param localName The local part of the qualified name
    * @param name The element name.
    * @param atts The attributes attached to the element, if any.
    * @see #endElement
@@ -278,22 +278,22 @@ public class DOMBuilder
     try
     {
       int nAtts = atts.getLength();
-  
+
       if (0 != nAtts)
       {
         for (int i = 0; i < nAtts; i++)
         {
-  
+
           //System.out.println("type " + atts.getType(i) + " name " + atts.getLocalName(i) );
           // First handle a possible ID attribute
           if (atts.getType(i).equalsIgnoreCase("ID"))
             setIDAttribute(atts.getValue(i), elem);
-  
+
           String attrNS = atts.getURI(i);
-          
+
           if("".equals(attrNS))
             attrNS = null; // DOM represents no-namespace as null
-  
+
           // System.out.println("attrNS: "+attrNS+", localName: "+atts.getQName(i)
           //                   +", qname: "+atts.getQName(i)+", value: "+atts.getValue(i));
           // Crimson won't let us set an xmlns: attribute on the DOM.
@@ -307,13 +307,13 @@ public class DOMBuilder
           elem.setAttributeNS(attrNS,attrQName, atts.getValue(i));
         }
       }
-      
+
       // append(elem);
-  
+
       m_elemStack.push(elem);
-  
+
       m_currentNode = elem;
-      
+
       // append(elem);
     }
     catch(java.lang.Exception de)
@@ -321,7 +321,7 @@ public class DOMBuilder
       // de.printStackTrace();
       throw new org.xml.sax.SAXException(de);
     }
-    
+
   }
 
   /**
@@ -399,14 +399,15 @@ public class DOMBuilder
     }
 
     String s = new String(ch, start, length);
-    Node childNode = m_currentNode.getLastChild();
-    if( childNode != null && childNode.getNodeType() == Node.TEXT_NODE ){ 
-       ((Text)childNode).appendData(s); 
-    } 
-    else{ 
-       Text text = m_doc.createTextNode(s);       
-       append(text);       
-    }     
+    Node childNode;
+    childNode =  m_currentNode != null ? m_currentNode.getLastChild(): null;
+    if( childNode != null && childNode.getNodeType() == Node.TEXT_NODE ){
+       ((Text)childNode).appendData(s);
+    }
+    else{
+       Text text = m_doc.createTextNode(s);
+       append(text);
+    }
   }
 
   /**
@@ -417,12 +418,12 @@ public class DOMBuilder
    *
    * @param ch Array containing the characters
    * @param start Index to start of characters in the array
-   * @param length Number of characters in the array 
+   * @param length Number of characters in the array
    */
   public void charactersRaw(char ch[], int start, int length)
           throws org.xml.sax.SAXException
   {
-    if(isOutsideDocElem()  
+    if(isOutsideDocElem()
        && org.apache.xml.utils.XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
       return;  // avoid DOM006 Hierarchy request error
 
@@ -505,10 +506,10 @@ public class DOMBuilder
 
     append(m_doc.createTextNode(s));
   }
-  
+
   /**
    * Tell if the current node is outside the document element.
-   * 
+   *
    * @return true if the current node is outside the document element.
    */
    private boolean isOutsideDocElem()
@@ -602,7 +603,7 @@ public class DOMBuilder
    */
   public void cdata(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
-    if(isOutsideDocElem()  
+    if(isOutsideDocElem()
        && org.apache.xml.utils.XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
       return;  // avoid DOM006 Hierarchy request error
 
