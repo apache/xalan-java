@@ -200,7 +200,8 @@ public class XSLTEngineImpl implements  XSLTProcessor
     throws org.xml.sax.SAXException
   {    
     m_tfactory = TransformerFactory.newInstance();
-    m_problemListener = new ProblemListenerDefault();    
+    m_problemListener = new ProblemListenerDefault();
+    //m_liaison =  (DOM2Helper)createLiaison();
   }
 
   /**
@@ -294,6 +295,15 @@ public class XSLTEngineImpl implements  XSLTProcessor
 
     //xctxt.setDOMHelper(m_liaison);    
   }
+  
+  /** 
+   * Get a Liaison class
+   */
+  public XMLParserLiaison createLiaison()
+    throws org.xml.sax.SAXException
+  {
+    return new org.apache.xalan.xpath.xml.XMLParserLiaisonDefault();    
+  }
  
   /**
    * Reset the state.  This needs to be called after a process() call
@@ -355,11 +365,16 @@ public class XSLTEngineImpl implements  XSLTProcessor
             m_stylesheetParams.put(name, val);
           }
           catch(TransformerException te)
-          {}
+          {
+            throw new SAXException(te);
+          }
         }
         m_needToEval = false;
         m_evalList = null;
       }
+      
+      sourceTree = getSourceTreeFromInput(inputSource);
+      
       if(null != stylesheetSource)
       {
         try{
@@ -371,9 +386,8 @@ public class XSLTEngineImpl implements  XSLTProcessor
         }  
         
       }      
-      else if(null != inputSource)
-      {        
-        sourceTree = getSourceTreeFromInput(inputSource);
+      else if( null != inputSource)
+      { 
         if(null != sourceTree)
         {
           String stylesheetURI = null;
@@ -394,7 +408,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
                   {
                     String typeVal = tokenizer.nextToken();
                     typeVal = typeVal.substring(1, typeVal.length()-1);
-                    if(!typeVal.equals("text/xsl"))
+                    if(!typeVal.equals("text/xsl") && !typeVal.equals("text/xml") && !typeVal.equals("application/xml+xslt"))
                     {
                       isOK = false;
                     }
@@ -432,7 +446,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
             prevStylesheet = stylesheet;
             isRoot = false;
           }
-        }
+        }        
       }
       else
       {
@@ -478,7 +492,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
         }  
         
         try{
-          m_transformerImpl.transform(inputSource.getSourceObject(),
+          m_transformerImpl.transform(new DOMSource(sourceTree),
                     outputTarget.getResultObject());
         }
         catch (TransformerException te)
@@ -525,6 +539,25 @@ public class XSLTEngineImpl implements  XSLTProcessor
         return new StylesheetRoot(this, baseIdentifier); 
       
       Source inSource = new XSLTInputSource(baseIdentifier).getSourceObject();
+      Templates templates = m_tfactory.newTemplates(inSource);
+      StylesheetRoot stylesheet = new StylesheetRoot((org.apache.xalan.templates.StylesheetRoot)templates);      
+      return stylesheet;      
+    }
+    catch (TransformerConfigurationException tce)
+    {
+      throw new SAXException(tce);
+    }
+  }
+  
+  /**
+   * Bottleneck the creation of the stylesheet for derivation purposes.
+   */
+  StylesheetRoot createStylesheetRoot(String baseIdentifier, XSLTInputSource source)
+    throws MalformedURLException, FileNotFoundException,
+           IOException, SAXException
+  {
+    try{
+      Source inSource = source.getSourceObject();
       Templates templates = m_tfactory.newTemplates(inSource);
       StylesheetRoot stylesheet = new StylesheetRoot((org.apache.xalan.templates.StylesheetRoot)templates);      
       return stylesheet;      
@@ -586,7 +619,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
       }
       else
       {
-        m_stylesheetRoot = createStylesheetRoot(stylesheetSource.getSystemId());
+        m_stylesheetRoot = createStylesheetRoot(stylesheetSource.getSystemId(), stylesheetSource);
         addTraceListenersToStylesheet();
         
         
@@ -786,7 +819,6 @@ public class XSLTEngineImpl implements  XSLTProcessor
     FileNotFoundException,
     IOException
   {
-    StylesheetRoot m_stylesheetRoot = null;
     Stylesheet stylesheet = null;
     String[] stringHolder =
     {
@@ -945,8 +977,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
       URL xslURL = getURLFromString(xslURLString, xmlBaseIdent);
 
       XSLTInputSource inputSource = new XSLTInputSource(xslURL.toString());
-      String liaisonClassName = m_liaison.getClass().getName();
-
+      
       if(null != m_liaison)
       {
         try{
