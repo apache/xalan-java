@@ -194,12 +194,13 @@ Copyright:
     <gunzip src="${doc.generator.styletargz}"/>
     <untar src="${doc.generator.styletar}" dest="${xdocs.dir}"/>
     <delete file="${doc.generator.styletar}"/>
-    
-    <echo message="Transform todo.xml and put the result in ${build.docs}"/>
+
+    <!--removing todo.xml, which is completely out of date; placed developer list in readme.xml -->    
+    <!--echo message="Transform todo.xml and put the result in ${build.docs}"/>
     <java fork="yes" classname="${xalan.cmdline.class}">
       <classpath refid="docs.class.path" />
       <arg line="-in todo.xml -xsl todo.xsl -out build/docs/todo.html"/>
-    </java> 
+    </java--> 
     <!-- We use a Notes agent to periodically extract Xalan-Java 2 commits from our team database into commits.xml.  The following operation 
     transforms commits.xml (just including source code commits) and puts the result in xdocs/sources/xalan for inclusion in the 
     readme.xml -->      
