@@ -59,17 +59,18 @@
  *
  */
 
-import java.io.*;
-import java.util.NoSuchElementException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import java.util.StringTokenizer;
-import java.util.Vector;
 
-import org.xml.sax.*;
-
-import org.apache.xalan.xsltc.*;
-import org.apache.xalan.xsltc.runtime.AbstractTranslet;
-import org.apache.xalan.xsltc.runtime.output.*;
-import org.apache.xalan.xsltc.dom.*;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import sunlabs.brazil.server.Handler;
 import sunlabs.brazil.server.Request;
@@ -81,14 +82,15 @@ import sunlabs.brazil.server.Server;
  * implements the Handler interface from the Brazil project, see:
  * http://www.sun.com/research/brazil/
  *
- * Note that the XSLTC transformation engine is invoked through its native
- * interface and not the javax.xml.transform (JAXP) interface. This because
- * XSLTC still does not offer precompiled transformations through JAXP.
+ * Note that the XSLTC transformation engine is invoked through the JAXP
+ * interface, using the XSLTC "use-classpath" attribute.  The
+ * "use-from-classpath" attribute specifies to the XSLTC TransformerFactory
+ * that a precompiled version of the stylesheet (translet) may be available,
+ * and that should be used in preference to recompiling the stylesheet.
  */
 public class TransformHandler implements Handler {
 
-    // A cache for internal DOM structures
-    private static DocumentCache cache = null;
+    private TransformerFactory m_tf = null;
 
     // These two are used while parsing the parameters in the URL
     private final String PARAM_TRANSLET = "translet=";
@@ -96,20 +98,22 @@ public class TransformHandler implements Handler {
     private final String PARAM_STATS = "stats=";
 
     // All output goes here:
-    private PrintWriter _out = null;
+    private PrintWriter m_out = null;
 
     /**
      * Dump an error message to output
      */
     public void errorMessage(String message, Exception e) {
-	if (_out == null) return;
-	_out.println("<h1>XSL transformation error</h1>"+message);
-	_out.println("<br>Exception:</br>"+e.toString());
+	if (m_out == null) {
+            return;
+        }
+	m_out.println("<h1>XSL transformation error</h1>"+message);
+	m_out.println("<br>Exception:</br>"+e.toString());
     }
 
     public void errorMessage(String message) {
-	if (_out == null) return;
-	_out.println("<h1>XSL transformation error</h1>"+message);
+	if (m_out == null) return;
+	m_out.println("<h1>XSL transformation error</h1>"+message);
     }
 
     /**
@@ -126,7 +130,7 @@ public class TransformHandler implements Handler {
 
 	// Initialise the output buffer
 	final StringWriter sout = new StringWriter();
-	_out = new PrintWriter(sout);
+	m_out = new PrintWriter(sout);
 
 	// These two hold the parameters from the URL 'translet' and 'document'
 	String transletName = null;
@@ -149,55 +153,32 @@ public class TransformHandler implements Handler {
 	}
 
 	try {
-	    // Initialize the document cache with 32 DOM slots
-	    if (cache == null) cache = new DocumentCache(32);
-
-	    // Output statistics if user looked up "server:port/?stats=xxx"
-	    if (stats != null) {
-		cache.getStatistics(_out); // get cache statistics (in HTML)
-	    }
 	    // Make sure that both parameters were specified
-	    else if ((transletName == null) || (document == null)) {
+	    if ((transletName == null) || (document == null)) {
 		errorMessage("Parameters <b><tt>translet</tt></b> and/or "+
 			     "<b><tt>document</tt></b> not specified.");
 	    }
 	    else {
-		// Get a reference to the translet class
-	        Class transletClass = Class.forName(transletName);
-		// Instanciate the translet object (inherits AbstractTranslet)
-		AbstractTranslet translet =
-		    (AbstractTranslet)transletClass.newInstance();
-		translet.setDOMCache(cache);
+                if (m_tf == null) {
+                    m_tf = TransformerFactory.newInstance();
+                    try {
+                        m_tf.setAttribute("use-classpath", Boolean.TRUE);
+                    } catch (IllegalArgumentException iae) {
+                        System.err.println(
+                            "Could not set XSLTC-specific TransformerFactory "
+                          + "attributes.  Transformation failed.");
+                    }
+                }
+                Transformer t =
+                     m_tf.newTransformer(new StreamSource(transletName));
 
-		// Get the DOM from the DOM cache
-		DOMImpl dom = cache.retrieveDocument(document, 0, translet);
-
-		if (dom == null) {
-		    errorMessage("Could not locate: \"<b>"+document+"\"</b>");
-		}
-		else {
-		    // Create output handler
-		    TransletOutputHandlerFactory tohFactory = 
-			TransletOutputHandlerFactory.newInstance();
-		    tohFactory.setOutputType(TransletOutputHandlerFactory.STREAM);
-		    tohFactory.setEncoding(translet._encoding);
-		    tohFactory.setOutputMethod(translet._method);
-		    tohFactory.setWriter(_out);
-
-		    // Do the actual transformation
-		    final long start = System.currentTimeMillis();
-		    translet.transform(dom, tohFactory.getTransletOutputHandler());
-		    final long done = System.currentTimeMillis() - start;
-		    _out.println("<!-- transformed by XSLTC in "+done+"ms -->");
-		}
+		// Do the actual transformation
+		final long start = System.currentTimeMillis();
+		t.transform(new StreamSource(document),
+                            new StreamResult(m_out));
+		final long done = System.currentTimeMillis() - start;
+		m_out.println("<!-- transformed by XSLTC in "+done+"ms -->");
 	    }
-	}
-	catch (SAXException e) {
-	    errorMessage("Error parsing document \""+document+"\"");
-	}
-	catch (ClassNotFoundException e) {
-	    errorMessage("Could not locate the translet class: \""+
-			 transletName+"\"<br>Exception:</br>",e);
 	}
 	catch (Exception e) {
 	    errorMessage("Internal error.",e);
