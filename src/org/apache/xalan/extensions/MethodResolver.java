@@ -613,7 +613,7 @@ public class MethodResolver
       for(k = 0; k < nConversions; k++)
       {
         ConversionInfo cinfo = convInfo[k];
-        if(cinfo.m_class.isAssignableFrom(javaClass))
+        if(javaClass.isAssignableFrom(cinfo.m_class))
         {
           score += cinfo.m_score;
           break; // from k loop
