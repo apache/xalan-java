@@ -138,7 +138,7 @@ public class StringType extends Type {
      *
      * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
      */
-    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
+    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen,
 			    RealType type) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();

@@ -805,6 +805,7 @@ public final class BasisLibrary implements Operators {
      */
     public static double stringToReal(String s) {
 	try {
+	    if (s.length() == 0) return(0.0);
 	    return Double.valueOf(s).doubleValue();
 	}
 	catch (NumberFormatException e) {
