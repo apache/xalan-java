@@ -64,7 +64,7 @@
   <li><link anchor="compile">Compiling translets from the command line</link></li>
   <li><link anchor="run">Running translets from the command line</link></li>
   <li><link anchor="api">Calling XSLTC with the TrAX/JAXP API</link></li>
-  <li><link anchor="nativeapi">Calling XSLTC with the native API</link></li>
+  <li><link anchor="native_api">Calling XSLTC with the native API</link></li>
   <li><link anchor="constraints">XSLTC usage constraints</link></li>  
 </ul>
 <p>See also: <jump href="xsltc/index.html">XSLTC Design</jump></p>
@@ -385,10 +385,269 @@ transformer.transform(new StreamSource(xmlInURI),
                       new StreamResult(new FileOutputStream(htmlOutURI)));</source>
 <p>For a working sample that illustrates this usage pattern, see <link idref="samples" anchor="xsltc2">JAXPTransletMultipleTransformations</link>.</p>
 </s3>
-</s2>
-<s3 title="Calling XSLTC with the native API">
-<p></p>
-</s3><anchor name="constraints"/>
+</s2><anchor name="native_api"/>
+<s2 title="Calling XSLTC with the native API">
+<p>This section demonstrates how to use the native XSLTC API in a standalone Java application.</p> 
+<p>Processing an XML document with a translet involves three main steps:</p>
+<ol> 
+  <li><link anchor="native_compile">Compile the stylesheet to a translet</link>.</li>
+  <li><link anchor="native_parse">Parse the input XML document</link>.</li> 
+  <li><link anchor="native_transform">Use the translet to transform the XML document</link>.</li>
+</ol><anchor name="native_overview"/>
+<s3 title="Code overview">
+<p>XsltApp.java illustrates the basic structure for coding a transformation with the native XSLTC API. In the following listing, the method for performing each of the three steps is an empty shell. The methods are filled in the listings in subsequent sections.</p>
+<source>import org.apache.xalan.xsltc.Translet;
+import org.apache.xalan.xsltc.dom.DOMImpl;
+
+public class XsltApp {
+  public static void main(String[] args) {
+    XsltApp proc = new XsltApp();
+    proc.run(args);
+  }
+
+  public void run(String[] args) {
+    if (args.length != 2) {
+      System.err.println("Usage:\n\tprocessor &lt;xmlfile&gt; &lt;xslfile&gt;" +
+            "\n\n\twhere &lt;xmlfile&gt; = xml input filename, and" +
+            "\n\t      &lt;xslfile&gt; = stylesheet filename.");
+      System.exit(1);
+    }
+    String xmldocFilename     = args[0];
+    String stylesheetFilename = args[1];
+
+    // Compile the stylesheet to a translet
+    Translet translet = compileStylesheet(stylesheetFilename);
+
+    // Parse the input XML document
+    DOMImpl dom = getDOM(xmldocFilename);
+
+    // Transform the XML document against the translet
+    doTransform(translet, dom);
+    System.exit(0);
+  }
+  
+  // compile the stylesheet [Empty shell: see below]
+  private Translet compileStylesheet(String stylesheetName) { return null; }
+
+  // parse the input XML document [Empty shell: see below]
+  private DOMImpl getDOM(String xmldocname) { return null; }
+
+  // transform the XML document [Empty shell: see below]
+  private void doTransform(Translet translet, DOMImpl dom) { }
+}</source>
+
+<p>XsltApp takes two command line arguments: the input XML document filename, and the
+XSL stylesheet filename. The public run() method processes the commandline args,
+and then carries out the three steps.</p> 
+<p>The first step is accomplished by calling the compileStylesheet() method. This method
+takes the stylesheet filename as input (String), and returns an instance
+of the translet, as type org.apache.xalan.xsltc.Translet.</p>
+
+<p>The input XML document now needs to be parsed. This is accomplished by the getDOM() method. This method takes the XML document's filename (String)
+and returns the Document Object Model for the document, as an object of
+type org.apache.xalan.xsltc.dom.DOMImpl. </p>
+
+<p>Finally, the transformation prescribed by the stylesheet is carried out by
+calling the doTransform() method. This method takes the translet (compiled
+stylesheet) and the dom (Document Object Model for the XML document) as
+input parameters. In this example, the results of the transformation are
+output to standard output, so this method returns nothing. </p>
+
+<p>If all three steps are carried out successfully, the application exits with
+a successful (zero) value.</p>
+
+<p>The following sections examine each of the three steps in detail.</p>
+</s3><anchor name="native_compile"/>
+<s3 title="1. Compiling the Stylesheet to a Translet">
+<p>The 'compileStylesheet' method:</p>
+
+<source>import java.io.File;
+import java.net.MalformedURLException; 
+import org.apache.xalan.xsltc.compiler.XSLTC;
+...
+  private Translet compileStylesheet(String stylesheetName) {
+    Translet retval = null;
+    String transletName = stylesheetName.substring(0,
+                              stylesheetName.indexOf('.'));
+    try {
+      XSLTC xsltc = new XSLTC();
+      xsltc.init();
+      File stylesheet = new File(stylesheetName);
+      xsltc.compile(stylesheet.toURL());
+      Class clazz = Class.forName(transletName);
+      retval = (Translet)clazz.newInstance();
+    } 
+    catch (MalformedURLException e) {
+      System.err.println("Could not create URL to stylesheet file: " +
+                          stylesheetName + ".\n" + e.getMessage());
+      System.exit(1);
+    } 
+    catch (ClassNotFoundException e) {
+      System.err.println("Could not find class file: " +
+                          transletName + ".class .\n" + e.getMessage());
+      System.exit(1);
+    } 
+    catch (InstantiationException e) {
+      System.err.println("Could not instantiate class file: " +
+                          transletName + ".class .\n" + e.getMessage());
+      System.exit(1);
+    } 
+    catch (IllegalAccessException e) {
+      System.err.println("Could not instantiate class file: " +
+            transletName + ".class, illegal access.\n" + e.getMessage());
+      System.exit(1);
+    }
+    return retval;
+  }</source>
+
+<p>This method reads in the stylesheet file, compiles it to Java bytecodes 
+(the translet), and then writes the bytecodes to the filesystem, as a 
+series of .class files. Their base name is derived from the name of the 
+stylesheet. </p>
+
+<p>The XSLT compiler object (org.apache.xalan.xsltc.compiler.XSLTC), is created,
+initialized and then its compile() method is called passing in a URL
+to the stylesheet itself. Once the .class files have been written,
+the translet is instantiated using Java reflection to create the Class
+and then a new instance of the Class as 'retval' of type 
+org.apache.xalan.xsltc.Translet. </p>
+
+<p>Notice all of the various exceptions that could be thrown in the process
+have been handled with explicit warning messages and a System.exit with a non-zero return value. 
+In your applications, you may want to handle these exceptions differently.</p>
+
+</s3><anchor name="native_parse"/>
+<s3 title="2. Parsing the XML Document">
+
+<p>Parsing the input XML document is handled in the getDOM() method:</p>
+
+<source>import java.io.IOException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.ParserConfigurationException;
+import org.apache.xalan.xsltc.compiler.Constants;
+import org.apache.xalan.xsltc.dom.DTDMonitor;
+import org.xml.sax.XMLReader;
+import org.xml.sax.SAXException;
+...
+  private DTDMonitor _dtdMonitor = null;
+
+  private DOMImpl getDOM(String xmldocname) {
+    final SAXParserFactory factory = SAXParserFactory.newInstance();
+    try {
+      factory.setFeature(Constants.NAMESPACE_FEATURE, true);
+    } 
+    catch (Exception e) {
+      factory.setNamespaceAware(true);
+    }
+    final DOMImpl dom = new DOMImpl();
+    dom.setDocumentURI(xmldocname);
+    XMLReader reader = null;
+    SAXParser parser = null;
+    _dtdMonitor = new DTDMonitor();
+    try {
+      parser = factory.newSAXParser();
+      reader = parser.getXMLReader();
+      reader.setContentHandler(dom.getBuilder());
+      _dtdMonitor.handleDTD(reader);
+      reader.parse(xmldocname);
+    } 
+    catch (ParserConfigurationException e) {
+      System.err.println("SAX Parser is not configured properly.\n"+
+                          e.getMessage());
+      System.exit(1);
+    } 
+    catch (SAXException e ) {
+      System.err.println("SAX Parser could not be created.\n"+
+                          e.getMessage());
+      System.exit(1);
+    } 
+    catch (IOException e ) {
+      System.err.println("XML Reader could not read xml document '"+
+                          xmldocname + "'," + e.getMessage());
+      System.exit(1);
+    }
+    return dom;
+  }</source>
+
+<p>The method parses the input XML document and creates a Document
+Object Model to return to the run() method for later use. To parse the 
+document we use a javax.xml.parsers.SAXParser, from the JAXP.  The JAXP
+model uses a factory method; accordingly we first create the factory,
+which is of type javax.xml.parsers.SAXParserFactory. After configuring 
+the factory to handle namespaces, the procedure gets an org.xml.sax.XMLReader
+from the SAXParser. The reader is registered
+with the class DTDMonitor, and then the reader is instructed to parse
+the XML document. The DOMImpl object is returned to the main() method.</p> 
+
+<note>Before the document is parsed, the DOMImpl is configured with the
+XML document's URI with a call to the setDocumentURI() method. This
+is necessary to define the origin of the document from which the DOM tree
+is built. This information is needed for xsl:import, xsl:include, and
+the document() function.</note>
+</s3><anchor name="native_transform"/>
+<s3 title="3. Doing the Transformation">
+
+<p>Now everything is set to carry out the XSL transformation. The doTransform()
+method takes a reference to the Translet object generated 
+from the stylesheet, and the DOMImpl object created from the XML document.</p>
+
+<source>import java.io.IOException;
+import org.apache.xalan.xsltc.runtime.DefaultSAXOutputHandler;
+import org.apache.xalan.xsltc.runtime.TextOutput;
+import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xalan.xsltc.TransletException;
+...
+  private void doTransform(Translet translet, DOMImpl dom) {
+    DefaultSAXOutputHandler outputhandlr = null;
+    TextOutput textoutput = null;
+    try {
+      outputhandlr= new DefaultSAXOutputHandler(System.out, "utf-8");
+      textoutput = new TextOutput(outputhandlr, "utf-8");
+    } 
+    catch (IOException e) {
+      System.err.println("Could not create SAX Output Handler."+
+                          e.getMessage());
+      System.exit(1);
+    }
+  
+    // for XSL keys
+    AbstractTranslet absTranslet = (AbstractTranslet)translet;
+    absTranslet.setIndexSize(dom.getSize());
+    _dtdMonitor.buildIdIndex(dom, 0, absTranslet);
+
+    try {
+      absTranslet.transform(dom, textoutput);
+    } 
+    catch (TransletException e) {
+      System.err.println("Could not transform XML document."+
+                          e.getMessage());
+      System.exit(1);
+    }
+  }</source>
+
+<p>The Translet's transform() method takes two arguments: the DOMImpl
+reference created in the getDOM() method, and an xsltc.runtime.TextOutput
+object. TextOutput is a ContentHandler wrapper class that implements the
+xsltc.TransletOutputHandler interface. In this example, the content
+handler (DefaultSAXOutputHandler) is wrapped.</p>     
+
+<p>Translet is an interface. AbstractTranslet is a class that implements that
+interface. Before the transform() method is called, setIndexSize(int)
+is called to pass in the maximum DOM size to the translet and the DTDMonitor
+is called to build the node index that the Key (xsl:key implementation)
+class uses. This is a general case, if you are not using keys, then you
+do not need to set the index size, consequently you would not need to
+work with the AbstractTranslet either. In that case, you can  use the
+Translet directly by calling translet.transform(dom, textoutput). </p>
+</s3><anchor name="native_conclusion"/>
+<s3 title="Conclusion">
+<p>The native XSLT compiler API provides a way to compile an XSL stylesheet
+into a translet. The translet can then be used to transform the DOMImpl
+of an input XML document.   This example demonstrated how to compile a
+stylesheet into a translet, parse an input XML document, and then transform
+the XML document using the translet.</p>
+</s3></s2><anchor name="constraints"/>
 <s2 title="XSLTC usage constraints">
 <p>See <link idref="readme" anchor="xsltcconf">Conformance issues</link> and <link idref="readme" 
 anchor="xsltcknownproblems">Known problems</link>.</p>
