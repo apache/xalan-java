@@ -116,45 +116,131 @@ public final class DupFilterIterator extends DTMAxisIteratorBase {
 
 	// KeyIndex iterators are always relative to the root node, so there
 	// is never any point in re-reading the iterator (and we SHOULD NOT).
-	if ((_source instanceof KeyIndex) && (_data != null)) return this;
+	if ((_source instanceof KeyIndex) && (_data != null)) {
+            return this;
+        }
 
 	// If the _data array is populated, and the current start node is
 	// equal to the new start node, we know we already have what we need.
 	if ((_data == null) || (node != _startNode)) {
+            _startNode = node;
+            _source.setStartNode(node);
+            int[] data = new int[INIT_DATA_SIZE];
+            int sourceNodeCount = 0;
 
-	    _startNode = node;
-	    _last = 0;
-	    _source.setStartNode(node);
-	    _data = new int[INIT_DATA_SIZE];
+	    // Gather all nodes from the source iterator
+            while ((node = _source.next()) != END) {
+                if (sourceNodeCount == data.length) {
+                    int[] newArray = new int[data.length * 2];
+                    System.arraycopy(data, 0, newArray, 0, sourceNodeCount);
+                    data = newArray;
+                }
+                data[sourceNodeCount++] = node;
+            }
 
-	    // Gather all nodes from the source iterator, eliminate dups
-	    while ((node = _source.next()) != END) {
-		if (_last == _data.length) {
-		    int[] newArray = new int[_data.length * 2];
-		    System.arraycopy(_data, 0, newArray, 0, _last);
-		    _data = newArray;
-		}
+            // %REVIEW%:  Is this the best approach?  Code used to keep nodes
+            // in sorted order as they were retrieved from _source.next(),
+            // inserting at appropriate point at each step, eliminating
+            // duplicates.  That was a win when there were relatively few
+            // unique nodes.  When there were very many, the insertions
+            // became very expensive.  Perhaps we could use that approach
+            // while the number of nodes is small, and then switch to sorting
+            // after the fact when it reaches a threshold.
 
-		// Go through all nodes in turn
-		for (i=0; i<_last; i++) {
-		    // Is this a duplicate of the new node
-		    if (_data[i] == node) {
-			break;
-		    }
-		    // Should the new node be inserted at this position?
-		    else if (_data[i] > node) {
-			for (j = _last++; j>i; j--)
-			    _data[j] = _data[j-1];
-			_data[i] = node;
-			break;
-		    }
-		}
-		if (i == _last) _data[_last++] = node;
-	    }
+            // Factor out the trivial case to avoid overhead of sort
+            if (sourceNodeCount > 1) {
+                // Sort source nodes using merge sort:  Merge two sorted
+                // subranges of the array into new sorted ranges, beginning
+                // with trivially sorted subranges of size 1.
+                int[] mergeArray = new int[sourceNodeCount];
+
+                int doubleMergeSize = 1;
+                for (int mergeSize = 1;
+                     mergeSize < sourceNodeCount;
+                     mergeSize = doubleMergeSize) {
+                    int mLow = 0;
+                    doubleMergeSize = mergeSize + mergeSize;
+
+                    // Merge adjacent subranges of the array of appropriate size
+                    for (int r1Low = 0;
+                         r1Low < sourceNodeCount;
+                         r1Low = r1Low + doubleMergeSize) {
+                        final int r2Low = r1Low + mergeSize;
+                        final int numElemsInSecondSet =
+                                    Math.min(mergeSize, sourceNodeCount-r2Low);
+                        merge(data, r1Low, mergeSize,
+                              data, r2Low, numElemsInSecondSet,
+                              mergeArray, mLow);
+                        mLow = mLow + mergeSize + numElemsInSecondSet;
+                    }
+
+                    // Now switch the arrays to double the merger ranges
+                    int[] tempArr = mergeArray;
+                    mergeArray = data;
+                    data = tempArr;
+                }
+
+                // Sweep through to see whether there are any duplicates
+                for (i = 0;
+                     i < sourceNodeCount-1 && data[i] != data[i+1];
+                     i++);
+
+                // If any duplicates were found, start compacting them out
+                if (i < sourceNodeCount-1) {
+                    int nextUniqueIdx = i+1;
+                    for (j = i+2; j < sourceNodeCount; j++) {
+                        if (data[nextUniqueIdx-1] != data[j]) {
+                            data[nextUniqueIdx++] = data[j];
+                        }
+                    }
+                    sourceNodeCount = nextUniqueIdx;
+                }
+            }
+            _last = sourceNodeCount;
+            _data = data;
 	}
 
 	_current = 0;  // set to beginning 
 	return this;
+    }
+
+    /**
+     *
+     * Merge two sorted subranges of arrays into a target array.  The resulting
+     * elements in the target array will be in sorted order.
+     *
+     * @param a An array containing the first sorted subrange
+     * @param aLow The starting index for the first array's subrange
+     * @param aCount The number of elements in the first array's subrange
+     * @param b An array containing the second sorted subrange
+     * @param bLow The starting index for the second array's subrange
+     * @param bCount The number of elements in the second array's subrange
+     * @param t The target array which will contain the two merged subranges
+     * @param tLow The starting index in the target array for the merged result
+     *
+     */
+    private static void merge(int[] a, int aLow, int aCount,
+                              int[] b, int bLow, int bCount,
+                              int[] t, int tLow) {
+        int aHigh = aLow + aCount - 1;
+        int bHigh = bLow + bCount - 1;
+        int tHigh = tLow + aCount + bCount - 1;
+
+        for (int i = tLow; i <= tHigh; i++) {
+            if (aLow > aHigh) {
+                for (int j = i; j <= tHigh; j++) {
+                    t[j] = b[bLow++];
+                }
+                break;
+            } else if (bLow > bHigh) {
+                for (int j = i; j <= tHigh; j++) {
+                    t[j] = a[aLow++];
+                }
+                break;
+            }
+
+            t[i] = (a[aLow] < b[bLow]) ? a[aLow++] : b[bLow++];
+        }
     }
 
     /**
