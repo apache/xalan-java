@@ -268,43 +268,61 @@ public final class WriterToUTF8Buffered extends Writer
 
     int lengthx3 = (length << 1) + length;
 
-    if (lengthx3 >= buf_length)
+    if (lengthx3 >= buf_length - count)
     {
-
-      /* If the request length exceeds the size of the output buffer,
-         flush the output buffer and then write the data directly.
-         In this way buffered streams will cascade harmlessly. */
+      // The requested length is greater than the unused part of the buffer
       flushBuffer();
-      writeDirect(chars, start, length);
 
-      return;
+      if (lengthx3 >= buf_length)
+      {
+        /*
+         * The requested length exceeds the size of the buffer,
+         * so don't bother to buffer this one, just write it out
+         * directly. The buffer is already flushed so this is a 
+         * safe thing to do.
+         */
+        writeDirect(chars, start, length);
+        return;
+      }
     }
 
-    if (lengthx3 > buf_length - count)
-    {
-      flushBuffer();
-    }
 
-    final OutputStream os = m_os;
+
     final int n = length+start;
-    for (int i = start; i < n; i++)
+    final byte[] buf_loc = buf; // local reference for faster access
+    int count_loc = count;      // local integer for faster access
+    int i = start;
     {
+        /* This block could be omitted and the code would produce
+         * the same result. But this block exists to give the JIT
+         * a better chance of optimizing a tight and common loop which
+         * occurs when writing out ASCII characters. 
+         */ 
+        char c;
+        for(; i < n && (c = chars[i])< 0x80 ; i++ )
+            buf_loc[count_loc++] = (byte)c;
+    }
+    for (; i < n; i++)
+    {
+
       final char c = chars[i];
 
       if (c < 0x80)
-        buf[count++] = (byte) (c);
+        buf_loc[count_loc++] = (byte) (c);
       else if (c < 0x800)
       {
-        buf[count++] = (byte) (0xc0 + (c >> 6));
-        buf[count++] = (byte) (0x80 + (c & 0x3f));
+        buf_loc[count_loc++] = (byte) (0xc0 + (c >> 6));
+        buf_loc[count_loc++] = (byte) (0x80 + (c & 0x3f));
       }
       else
       {
-        buf[count++] = (byte) (0xe0 + (c >> 12));
-        buf[count++] = (byte) (0x80 + ((c >> 6) & 0x3f));
-        buf[count++] = (byte) (0x80 + (c & 0x3f));
+        buf_loc[count_loc++] = (byte) (0xe0 + (c >> 12));
+        buf_loc[count_loc++] = (byte) (0x80 + ((c >> 6) & 0x3f));
+        buf_loc[count_loc++] = (byte) (0x80 + (c & 0x3f));
       }
     }
+    // Store the local integer back into the instance variable
+    count = count_loc;
 
   }
 
