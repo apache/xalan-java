@@ -54,6 +54,7 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
+
 package org.apache.xalan.extensions;
 
 import java.util.Hashtable;
@@ -70,10 +71,6 @@ import org.w3c.xslt.ExpressionContext;
 
 import org.xml.sax.SAXException;
 
-import com.ibm.bsf.BSFManager;
-import com.ibm.bsf.BSFEngine;
-import com.ibm.bsf.BSFException;
-
 // Temp??
 import org.apache.xalan.transformer.TransformerImpl;
 
@@ -81,6 +78,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPathProcessorException;
 
 import org.apache.xalan.utils.StringVector;
+
+import java.lang.reflect.Method;
 
 
 /**
@@ -97,13 +96,46 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
   private String m_scriptSrcURL;       // URL of source of script (if any)
   private Hashtable m_functions = new Hashtable ();      // functions of namespace
   private Hashtable m_elements = new Hashtable ();       // elements of namespace
-  private BSFManager m_mgr = new BSFManager();    // mgr used to run scripts
-  private BSFEngine  m_engine = null;             // engine used 
 
-  public ExtensionHandlerGeneral()
-  {
-    super();
+  // BSF objects used to invoke BSF by reflection.  Do not import the BSF classes
+  // since we don't want a compile dependency on BSF.
+
+  private Object m_mgr;                          // BSF manager used to run scripts
+  private Object m_engine;                       // BSF engine used to run scripts
+
+  // static fields
+
+  private static final String BSF_MANAGER = "com.ibm.bsf.BSFManager";
+  private static final Class managerClass;
+  private static final Method mgrLoadScriptingEngine;
+  private static final String BSF_ENGINE = "com.ibm.bsf.BSFEngine";
+  private static final Method engineExec;             // Engine call to "compile" scripts
+  private static final Method engineCall;             // Engine call to invoke scripts
+  private static final Integer NEG1INT = new Integer(-1);
+
+  static {
+    try
+    {
+      managerClass = Class.forName(BSF_MANAGER);
+      mgrLoadScriptingEngine = managerClass.getMethod("loadScriptingEngine",
+                                                             new Class[] {String.class});
+      Class engineClass = Class.forName(BSF_ENGINE);
+      engineExec = engineClass.getMethod("exec",
+                         new Class[] {String.class, Integer.TYPE, Integer.TYPE, Object.class});
+      engineCall = engineClass.getMethod("call",
+                         new Class[] {Object.class, String.class,
+                                                       Class.forName("[Ljava.lang.Object;")});
+    }
+    catch (Exception e)
+    {
+      managerClass = null;
+      mgrLoadScriptingEngine = null;
+      engineExec = null;
+      engineCall = null;
+      e.printStackTrace();
+    }
   }
+
 
   /**
    * Construct a new extension namespace handler given all the information
@@ -125,20 +157,7 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
                                  String scriptSrc)
     throws SAXException
   {
-    super();
-    init( namespaceUri, elemNames, funcNames, scriptLang,
-	  scriptSrcURL, scriptSrc);
-  }
-
-  public void init(String namespaceUri,
-		   StringVector elemNames,
-		   StringVector funcNames, 
-		   String scriptLang,
-		   String scriptSrcURL,
-		   String scriptSrc)
-    throws SAXException
-  {
-    super.init(namespaceUri, scriptLang);
+    super(namespaceUri, scriptLang);
 
     if (elemNames != null)
     {
@@ -170,15 +189,20 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
       throw new SAXException("src attribute not yet supported for " + scriptLang);
     }
 
+    if (null == managerClass)
+      throw new SAXException("Could not initialize BSF manager");
+
     try
     {
-      m_engine = m_mgr.loadScriptingEngine(scriptLang);
-      m_engine.exec("XalanScript", -1, -1, m_scriptSrc);	// "Compile" the program
+      m_mgr = managerClass.newInstance();
+      m_engine = mgrLoadScriptingEngine.invoke(m_mgr, new Object[] {scriptLang});
+      // "Compile" the program
+      engineExec.invoke(m_engine, new Object[] {"XalanScript", NEG1INT, NEG1INT, m_scriptSrc});
     }
-    catch (BSFException e)
+    catch (Exception e)
     {
       e.printStackTrace();
-      throw new SAXException(e);
+      throw new SAXException("Could not compile extension", e);
     }
   }
 
@@ -241,7 +265,7 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
           Object o = args.elementAt(i);
           argArray[i] = (o instanceof XObject) ? ((XObject)o).object() : o;
        }
-       return m_engine.call (null, funcName, argArray);
+       return engineCall.invoke(m_engine, new Object[] {null, funcName, argArray});
     }
     catch (Exception e) 
     {

@@ -181,7 +181,8 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
             if ( (paramTypes.length == 2)
               && paramTypes[0].isAssignableFrom(
                                      org.apache.xalan.extensions.XSLProcessorContext.class)
-              && paramTypes[1].isAssignableFrom(org.w3c.dom.Element.class) )
+              && paramTypes[1].isAssignableFrom(
+                                       org.apache.xalan.templates.ElemExtensionCall.class) )
             {
               return true;
             }

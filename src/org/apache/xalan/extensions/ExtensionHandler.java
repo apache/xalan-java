@@ -67,7 +67,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.utils.QName;
-import org.apache.xalan.utils.StringVector;
 
 // Temp??
 import org.apache.xalan.transformer.TransformerImpl;
@@ -88,57 +87,7 @@ public abstract class ExtensionHandler
   protected String m_namespaceUri;  // uri of the extension namespace
   protected String m_scriptLang;    // scripting language of implementation
 
-  public static final String BSF_HANDLER=
-    "org.apache.xalan.extensions.ExtensionHandlerGeneral";
 
-  /** Use dynamic loading to load the BSF ( or other ) extension handler.
-   */
-  public static ExtensionHandler createGeneralHandler(String namespaceUri,
-						      StringVector elemNames,
-						      StringVector funcNames, 
-						      String scriptLang,
-						      String scriptSrcURL,
-						      String scriptSrc)
-    throws SAXException
-  {
-    try {
-      Class ehClass=Class.forName( BSF_HANDLER );
-      ExtensionHandler eh= (ExtensionHandler)ehClass.newInstance();
-      eh.init( namespaceUri, elemNames, funcNames, scriptLang,
-	       scriptSrcURL, scriptSrc );
-      return eh;
-    } catch ( Exception ex ) {
-      return null;
-    }
-  }
-
-  /** Initalize an extension handler with all the information needed.
-   * @param namespaceUri the extension namespace URI that I'm implementing
-   * @param funcNames    string containing list of functions of extension NS
-   * @param lang         language of code implementing the extension
-   * @param srcURL       value of src attribute (if any) - treated as a URL
-   *                     or a classname depending on the value of lang. If
-   *                     srcURL is not null, then scriptSrc is ignored.
-   * @param scriptSrc    the actual script code (if any)
-   */
-  protected void init( String namespaceUri,
-		       StringVector elemNames,
-		       StringVector funcNames, 
-		       String scriptLang,
-		       String scriptSrcURL,
-		       String scriptSrc)
-    throws SAXException
-  {
-    
-  }
-
-  /**
-   * Construct a new extension handler. It must be initialized
-   * with init()
-   */
-  protected ExtensionHandler() {
-  }
-  
   /**
    * Construct a new extension namespace handler given all the information
    * needed.
@@ -148,24 +97,12 @@ public abstract class ExtensionHandler
    */
 
   protected ExtensionHandler (String namespaceUri,
-			      String scriptLang)
-  {
-    this.init( namespaceUri, scriptLang);
-  }
-
-  /**
-   * Initialize a new extension namespace handler given all the information
-   * needed.
-   * 
-   * @param namespaceUri the extension namespace URI that I'm implementing
-   * @param scriptLang   language of code implementing the extension
-   */
-  protected void init(String namespaceUri,
-		      String scriptLang)
+                              String scriptLang)
   {
     m_namespaceUri = namespaceUri;
     m_scriptLang   = scriptLang;
   }
+
 
   /**
    * Tests whether a certain function name is known within this namespace.
@@ -235,3 +172,4 @@ public abstract class ExtensionHandler
     throws SAXException, IOException;
 
 }
+
