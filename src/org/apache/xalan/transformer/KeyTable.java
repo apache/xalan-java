@@ -154,26 +154,25 @@ public class KeyTable
   }
 
   /**
-   * @return key declaration for the key associated to this KeyTable
+   * @return key declarations for the key associated to this KeyTable
    */
-  private KeyDeclaration getKeyDeclaration() {
+  private Vector getKeyDeclarations() {
     int nDeclarations = m_keyDeclarations.size();
+    Vector keyDecls = new Vector(nDeclarations);
 
     // Walk through each of the declarations made with xsl:key
     for (int i = 0; i < nDeclarations; i++)
     {
       KeyDeclaration kd = (KeyDeclaration) m_keyDeclarations.elementAt(i);
 
-      // Only continue if the name on this key declaration
+      // Add the declaration if the name on this key declaration
       // matches the name on the iterator for this walker.
-      if (kd.getName().equals(getKeyTableName()))
-      {
-        return kd;
+      if (kd.getName().equals(getKeyTableName())) {
+        keyDecls.add(kd);
       }
     }
 
-    // should never happen
-    return null;
+    return keyDecls;
   }
 
   /**
@@ -182,14 +181,15 @@ public class KeyTable
    */
   private Hashtable getRefsTable()
   {
-    if (m_refsTable == null)
-    {
-      m_refsTable = new Hashtable(89);  // initial capacity set to a prime number to improve hash algorithm performance
+    if (m_refsTable == null) {
+      // initial capacity set to a prime number to improve hash performance
+      m_refsTable = new Hashtable(89);
 
       KeyIterator ki = (KeyIterator) (m_keyNodes).getContainedIter();
       XPathContext xctxt = ki.getXPathContext();
 
-      KeyDeclaration keyDeclaration = getKeyDeclaration();
+      Vector keyDecls = getKeyDeclarations();
+      int nKeyDecls = keyDecls.size();
 
       int currentNode;
       m_keyNodes.reset();
@@ -197,28 +197,30 @@ public class KeyTable
       {
         try
         {
-          XObject xuse = keyDeclaration.getUse().execute(xctxt, currentNode, ki.getPrefixResolver());
+          for (int keyDeclIdx = 0; keyDeclIdx < nKeyDecls; keyDeclIdx++) {
+            KeyDeclaration keyDeclaration =
+                (KeyDeclaration) keyDecls.elementAt(keyDeclIdx);
+            XObject xuse =
+                keyDeclaration.getUse().execute(xctxt,
+                                                currentNode,
+                                                ki.getPrefixResolver());
 
-          if (xuse.getType() != xuse.CLASS_NODESET)
-          {
-            XMLString exprResult = xuse.xstr();
-            addValueInRefsTable(xctxt, exprResult, currentNode);
-          }
-          else
-          {
-            DTMIterator i = ((XNodeSet)xuse).iterRaw();
-            int currentNodeInUseClause;
-
-            while (DTM.NULL != (currentNodeInUseClause = i.nextNode()))
-            {
-              DTM dtm = xctxt.getDTM(currentNodeInUseClause);
-              XMLString exprResult = dtm.getStringValue(currentNodeInUseClause);
+            if (xuse.getType() != xuse.CLASS_NODESET) {
+              XMLString exprResult = xuse.xstr();
               addValueInRefsTable(xctxt, exprResult, currentNode);
+            } else {
+              DTMIterator i = ((XNodeSet)xuse).iterRaw();
+              int currentNodeInUseClause;
+
+              while (DTM.NULL != (currentNodeInUseClause = i.nextNode())) {
+                DTM dtm = xctxt.getDTM(currentNodeInUseClause);
+                XMLString exprResult =
+                    dtm.getStringValue(currentNodeInUseClause);
+                addValueInRefsTable(xctxt, exprResult, currentNode);
+              }
             }
           }
-        }
-        catch (TransformerException te)
-        {
+        } catch (TransformerException te) {
           throw new WrappedRuntimeException(te);
         }
       }
