@@ -76,6 +76,12 @@ import java.util.ResourceBundle;
  */
 public class XSLTErrorResources extends PropertyResourceBundle
 {
+  public XSLTErrorResources()
+  	throws java.io.IOException
+  {
+    super(null);
+  }
+  
   public XSLTErrorResources(InputStream is) 
   	throws java.io.IOException
   {

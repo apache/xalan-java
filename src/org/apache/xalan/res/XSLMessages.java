@@ -135,7 +135,7 @@ public class XSLMessages
 
     if (fResourceBundle != null)
     {
-      String msgKey = XSLTErrorResources.getWarningKey(errorCode);
+      String msgKey = XPATHErrorResources.getWarningKey(errorCode);
 
       return createXPATHMsg(fResourceBundle, msgKey, args);
     }
@@ -164,7 +164,7 @@ public class XSLMessages
 
     if (fResourceBundle != null)
     {
-      String msgKey = XSLTErrorResources.getMessageKey(errorCode);
+      String msgKey = XPATHErrorResources.getMessageKey(errorCode);
 
       return createXPATHMsg(fResourceBundle, msgKey, args);
     }

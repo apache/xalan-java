@@ -77,6 +77,13 @@ import java.util.ResourceBundle;
  */
 public class XPATHErrorResources extends PropertyResourceBundle
 {
+  
+  public XPATHErrorResources()
+  	throws java.io.IOException
+  {
+    super(null);
+  }
+  
   public XPATHErrorResources(InputStream is) 
   	throws java.io.IOException
   {
