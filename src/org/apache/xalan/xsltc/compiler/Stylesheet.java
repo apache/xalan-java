@@ -333,17 +333,16 @@ public final class Stylesheet extends SyntaxTreeNode {
 	// variables and/or parameters before we parse the other elements...
 	for (int i=0; i<count; i++) {
 	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
-	    if ((child instanceof Import) || (child instanceof Include)) {
+	    if (child instanceof VariableBase) {
 		parser.getSymbolTable().setCurrentNode(child);
 		child.parseContents(parser);
 	    }
 	}
 
-	// We have to scan the stylesheet element's top-level elements for
-	// variables and/or parameters before we parse the other elements...
+	// Then we have to go through the included/imported stylesheets
 	for (int i=0; i<count; i++) {
 	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
-	    if (child instanceof VariableBase) {
+	    if ((child instanceof Import) || (child instanceof Include)) {
 		parser.getSymbolTable().setCurrentNode(child);
 		child.parseContents(parser);
 	    }
