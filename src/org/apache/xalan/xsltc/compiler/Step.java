@@ -58,6 +58,7 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
  *
  */
 
@@ -358,6 +359,8 @@ final class Step extends RelativeLocationPath {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
+	int idx = 0;
+
 	if (_predicates.size() == 0) {
 	    translate(classGen, methodGen);
 	}
@@ -394,10 +397,10 @@ final class Step extends RelativeLocationPath {
 		    il.append(new ICONST(DOM.RETURN_PARENT));
 		}
 		predicate.translate(classGen, methodGen);
-		int iter = cpg.addInterfaceMethodref(DOM_INTF,
-					     GET_NODE_VALUE_ITERATOR,
-					     GET_NODE_VALUE_ITERATOR_SIG);
-		il.append(new INVOKEINTERFACE(iter, 5));
+		idx = cpg.addInterfaceMethodref(DOM_INTF,
+						GET_NODE_VALUE_ITERATOR,
+						GET_NODE_VALUE_ITERATOR_SIG);
+		il.append(new INVOKEINTERFACE(idx, 5));
 	    }
 	    // Handle '//*[n]' expression
 	    else if (predicate.isNthDescendant()) {
@@ -405,43 +408,45 @@ final class Step extends RelativeLocationPath {
 		//il.append(methodGen.loadContextNode());
 		il.append(new ICONST(-1));
 		predicate.translate(classGen, methodGen);
-		int iter = cpg.addInterfaceMethodref(DOM_INTF,
-						     "getNthDescendant",
-						     "(II)"+NODE_ITERATOR_SIG);
-		il.append(new INVOKEINTERFACE(iter, 3));
+		idx = cpg.addInterfaceMethodref(DOM_INTF,
+						"getNthDescendant",
+						"(II)"+NODE_ITERATOR_SIG);
+		il.append(new INVOKEINTERFACE(idx, 3));
 	    }
 	    // Handle 'elem[n]' expression
 	    else if (predicate.isNthPositionFilter()) {
-		if ((_axis == 4) || (_axis == 5)) {
+		// Special case for typed descendant / decendant-or-self axis
+		if (((_axis == Axis.DESCENDANT) ||
+		     (_axis == Axis.DESCENDANTORSELF)) &&
+		    (_nodeType > DOM.ATTRIBUTE)) {
 		    il.append(methodGen.loadDOM());
 		    il.append(new PUSH(cpg, _nodeType));
 		    predicate.translate(classGen, methodGen);
-		    int iter = cpg.addInterfaceMethodref(DOM_INTF,
-							 "getNthDescendant",
-							 "(II)"+NODE_ITERATOR_SIG);
-		    il.append(new INVOKEINTERFACE(iter, 3));		    
+		    idx = cpg.addInterfaceMethodref(DOM_INTF,
+						    "getNthDescendant",
+						    "(II)"+NODE_ITERATOR_SIG);
+		    il.append(new INVOKEINTERFACE(idx, 3));		    
 		}
 		else {
-		    final int initNI =
-			cpg.addMethodref(NTH_ITERATOR_CLASS,
-					 "<init>",
-					 "(" + NODE_ITERATOR_SIG + "I)V");
+		    idx = cpg.addMethodref(NTH_ITERATOR_CLASS,
+					   "<init>",
+					   "("+NODE_ITERATOR_SIG+"I)V");
 		    il.append(new NEW(cpg.addClass(NTH_ITERATOR_CLASS)));
 		    il.append(DUP);
 		    translatePredicates(classGen, methodGen); // recursive call
 		    predicate.translate(classGen, methodGen);
-		    il.append(new INVOKESPECIAL(initNI));
+		    il.append(new INVOKESPECIAL(idx));
 		}
 	    }
 	    else {
-		final int init = cpg.addMethodref(CURRENT_NODE_LIST_ITERATOR,
-						  "<init>",
-						  "("
-						  + NODE_ITERATOR_SIG
-						  + CURRENT_NODE_LIST_FILTER_SIG
-						  + NODE_SIG
-						  + TRANSLET_SIG
-						  + ")V");
+		idx = cpg.addMethodref(CURRENT_NODE_LIST_ITERATOR,
+				       "<init>",
+				       "("
+				       + NODE_ITERATOR_SIG
+				       + CURRENT_NODE_LIST_FILTER_SIG
+				       + NODE_SIG
+				       + TRANSLET_SIG
+				       + ")V");
 		// create new CurrentNodeListIterator
 		il.append(new NEW(cpg.addClass(CURRENT_NODE_LIST_ITERATOR)));
 		il.append(DUP);
@@ -454,7 +459,7 @@ final class Step extends RelativeLocationPath {
 		    final String className = classGen.getClassName();
 		    il.append(new CHECKCAST(cpg.addClass(className)));
 		}
-		il.append(new INVOKESPECIAL(init));
+		il.append(new INVOKESPECIAL(idx));
 	    }
 	}
     }
