@@ -148,7 +148,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     m_pos=m_root = domSource.getNode();
     // Initialize DTM navigation
     m_last_parent=m_last_kid=NULL;
-    m_last_kid=addNode(m_root, 0, m_last_parent,m_last_kid, NULL);
+    m_last_kid=addNode(m_root, m_last_parent,m_last_kid, NULL);
 
     // Apparently the domSource root may not actually be the
     // Document node. If it's an Element node, we need to immediately
@@ -169,7 +169,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
           // No need to force nodetype in this case;
           // addNode() will take care of switching it from
           // Attr to Namespace if necessary.
-          attrIndex=addNode(attrs.item(i),1,0,attrIndex,NULL);
+          attrIndex=addNode(attrs.item(i),0,attrIndex,NULL);
           m_firstch.setElementAt(DTM.NULL,attrIndex);
         }
         // Terminate list of attrs, and make sure they aren't
@@ -188,7 +188,6 @@ public class DOM2DTM extends DTMDefaultBaseIterators
    * Construct the node map from the node.
    *
    * @param node The node that is to be added to the DTM.
-   * @param level The current level in the tree.
    * @param parentIndex The current parent index.
    * @param previousSibling The previous sibling index.
    * @param forceNodeType If not DTM.NULL, overrides the DOM node type.
@@ -197,7 +196,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
    *
    * @return The index identity of the node that was added.
    */
-  protected int addNode(Node node, int level, int parentIndex,
+  protected int addNode(Node node, int parentIndex,
                         int previousSibling, int forceNodeType)
   {
     int nodeIndex = m_nodes.size();
@@ -238,12 +237,6 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     }
     
     m_nodes.addElement(node);
-    
-    // Do casts here so that if we change the sizes, the changes are localized.
-    // %REVIEW% Remember to change this cast if we change
-    // m_level's type, or we may truncate values without warning!
-    if(!DTMDefaultBase.DISABLE_PRECALC_LEVEL)
-      m_level.addElement((byte)level); // setElementAt(level,nodeIndex)?
     
     m_firstch.setElementAt(NOTPROCESSED,nodeIndex);
     m_nextsib.setElementAt(NOTPROCESSED,nodeIndex);
@@ -520,10 +513,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
         // Inserting next. NOTE that we force the node type; for
         // coalesced Text, this records CDATASections adjacent to
         // ordinary Text as Text.
-	int level=0;
-	if(!DTMDefaultBase.DISABLE_PRECALC_LEVEL)
-	  level=m_level.elementAt(m_last_parent)+1;
-	int nextindex=addNode(next,level,m_last_parent,m_last_kid,
+	int nextindex=addNode(next,m_last_parent,m_last_kid,
 			      nexttype);
 	
         m_last_kid=nextindex;
@@ -536,14 +526,13 @@ public class DOM2DTM extends DTMDefaultBaseIterators
             int attrsize=(attrs==null) ? 0 : attrs.getLength();
             if(attrsize>0)
               {
-                int attrlevel=level+1;
                 int attrIndex=NULL; // start with no previous sib
                 for(int i=0;i<attrsize;++i)
                   {
                     // No need to force nodetype in this case;
                     // addNode() will take care of switching it from
                     // Attr to Namespace if necessary.
-                    attrIndex=addNode(attrs.item(i),attrlevel,
+                    attrIndex=addNode(attrs.item(i),
                                       nextindex,attrIndex,NULL);
                     m_firstch.setElementAt(DTM.NULL,attrIndex);
                   }

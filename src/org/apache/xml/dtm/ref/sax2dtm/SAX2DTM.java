@@ -117,9 +117,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   /** The parent stack, needed only for construction. */
   transient private IntStack m_parents = new IntStack();
 
-  /** The current construction level, needed only for construction time. */
-  transient private int m_levelAmount = 0;
-
   /** The current previous node, needed only for construction time. */
   transient private int m_previous = 0;
 
@@ -800,7 +797,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    *
    * @param type raw type ID, one of DTM.XXX_NODE.
    * @param expandedTypeID The expended type ID.
-   * @param level The current level in the tree.
    * @param parentIndex The current parent index.
    * @param previousSibling The previous sibling index.
    * @param dataOrPrefix index into m_data table, or string handle.
@@ -809,19 +805,13 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    *
    * @return The index identity of the node that was added.
    */
-  protected int addNode(int type, int expandedTypeID, int level,
+  protected int addNode(int type, int expandedTypeID,
                         int parentIndex, int previousSibling,
                         int dataOrPrefix, boolean canHaveFirstChild)
   {
 
     // Common to all nodes:
     int nodeIndex = m_size++;
-    // %REVIEW% This is being phased out
-    if(!DTMDefaultBase.DISABLE_PRECALC_LEVEL)
-    {
-      // Do the hard casts here, to localize changes that may have to be made.
-      m_level.addElement((byte)level); 
-    }
     m_firstch.addElement(canHaveFirstChild ? NOTPROCESSED : DTM.NULL);
     m_nextsib.addElement(NOTPROCESSED);
     m_prevsib.addElement(previousSibling);
@@ -1318,7 +1308,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
         int exName = m_expandedNameTable.getExpandedTypeID(DTM.TEXT_NODE);
         int dataIndex = m_data.size();
 
-        m_previous = addNode(m_coalescedTextType, exName, m_levelAmount,
+        m_previous = addNode(m_coalescedTextType, exName,
                              m_parents.peek(), m_previous, dataIndex, false);
 
         m_data.addElement(m_textPendingStart);
@@ -1477,9 +1467,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
     int doc = addNode(DTM.DOCUMENT_NODE,
                       m_expandedNameTable.getExpandedTypeID(DTM.DOCUMENT_NODE),
-                      m_levelAmount, DTM.NULL, DTM.NULL, 0, true);
-
-    m_levelAmount++;
+                      DTM.NULL, DTM.NULL, 0, true);
 
     m_parents.push(doc);
 
@@ -1515,8 +1503,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     m_parents = null;
     m_prefixMappings = null;
     m_contextIndexes = null;
-
-    m_levelAmount--;
 
     m_endDocumentOccured = true;
   }
@@ -1648,13 +1634,11 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     String prefix = getPrefix(qName, uri);
     int prefixIndex = (null != prefix)
                       ? m_valuesOrPrefixes.stringToIndex(qName) : 0;
-    int elemNode = addNode(DTM.ELEMENT_NODE, exName, m_levelAmount,
+    int elemNode = addNode(DTM.ELEMENT_NODE, exName,
                            m_parents.peek(), m_previous, prefixIndex, true);
 
     indexNode(exName, elemNode);
     
-    m_levelAmount++;
-
     m_parents.push(elemNode);
 
     int startDecls = m_contextIndexes.peek();
@@ -1674,7 +1658,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
       int val = m_valuesOrPrefixes.stringToIndex(declURL);
 
-      prev = addNode(DTM.NAMESPACE_NODE, exName, m_levelAmount, elemNode,
+      prev = addNode(DTM.NAMESPACE_NODE, exName, elemNode,
                      prev, val, false);
     }
 
@@ -1729,7 +1713,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       }
 
       exName = m_expandedNameTable.getExpandedTypeID(attrUri, attrLocalName, nodeType);
-      prev = addNode(nodeType, exName, m_levelAmount, elemNode, prev, val,
+      prev = addNode(nodeType, exName, elemNode, prev, val,
                      false);
     }
 
@@ -1787,8 +1771,6 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     // Do it again for this one (the one pushed by the last endElement).
     m_prefixMappings.setSize(m_contextIndexes.pop());
     m_contextIndexes.push(m_prefixMappings.size());  // for the next element.
-
-    m_levelAmount--;
 
     int lastNode = m_previous;
 
@@ -1888,7 +1870,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     int dataIndex = m_valuesOrPrefixes.stringToIndex(data);
 
     m_previous = addNode(DTM.PROCESSING_INSTRUCTION_NODE, exName,
-                         m_levelAmount, m_parents.peek(), m_previous,
+                         m_parents.peek(), m_previous,
                          dataIndex, false);
   }
 
@@ -2208,7 +2190,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     int dataIndex = m_valuesOrPrefixes.stringToIndex(new String(ch, start,
                       length));
 
-    m_previous = addNode(DTM.COMMENT_NODE, exName, m_levelAmount,
+    m_previous = addNode(DTM.COMMENT_NODE, exName, 
                          m_parents.peek(), m_previous, dataIndex, false);
   }
 

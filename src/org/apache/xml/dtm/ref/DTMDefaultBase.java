@@ -90,12 +90,6 @@ import java.io.*; // for dumpDTM
  */
 public abstract class DTMDefaultBase implements DTM
 {
-  /** %OPT% %REVIEW% When true, don't build the m_level array;
-   *  instead, support _level()/getLevel() by counting upward to the
-   *  root. This is exposed because SAX2DTM and DOM2DTM should
-   *  respond to it. */
-  protected static final boolean DISABLE_PRECALC_LEVEL=true;
-
   /**
    * The number of nodes, which is also used to determine the next
    *  node index.
@@ -104,12 +98,6 @@ public abstract class DTMDefaultBase implements DTM
 
   /** The expanded names, one array element for each node. */
   protected SuballocatedIntVector m_exptype;
-
-  /** levels deep, one array element for each node.
-   *
-   * %REVIEW% Used only when DISABLE_PRECALC_LEVEL is false!
-   */
-  protected SuballocatedByteVector m_level;
 
   /** First child values, one array element for each node. */
   protected SuballocatedIntVector m_firstch;
@@ -222,9 +210,6 @@ public abstract class DTMDefaultBase implements DTM
     m_nextsib = new SuballocatedIntVector(m_initialblocksize);
     m_prevsib = new SuballocatedIntVector(m_initialblocksize);
     m_parent = new SuballocatedIntVector(m_initialblocksize);
-
-    if(!DISABLE_PRECALC_LEVEL)
-      m_level = new SuballocatedByteVector(m_initialblocksize);
 
     m_mgr = mgr;
     m_documentBaseURI = (null != source) ? source.getSystemId() : null;
@@ -512,17 +497,10 @@ public abstract class DTMDefaultBase implements DTM
         return NULL;
     }
 
-    if(DISABLE_PRECALC_LEVEL)
-    {
-      int i=0;
-      while(NULL != (identity=_parent(identity)))
-        ++i;
-      return i;
-    }
-    else
-    {
-      return m_level.elementAt(identity);
-    }
+    int i=0;
+    while(NULL != (identity=_parent(identity)))
+      ++i;
+    return i;
   }
 
   /**
