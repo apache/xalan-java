@@ -23,6 +23,11 @@ package org.apache.xml.utils;
  * The API is a subset of java.util.Hashtable
  * The key must be a 7-bit ASCII string
  * The value may be any Java Object
+ * One can get an object stored in a trie from its key, 
+ * but the search is either case sensitive or case 
+ * insensitive to the characters in the key, and this
+ * choice of sensitivity or insensitivity is made when
+ * the Trie is created, before any objects are put in it.
  * @xsl.usage internal
  */
 public class Trie
@@ -32,17 +37,32 @@ public class Trie
   public static final int ALPHA_SIZE = 128;
 
   /** The root node of the tree.    */
-  Node m_Root;
+  final Node m_Root;
   
   /** helper buffer to convert Strings to char arrays */
   private char[] m_charBuffer = new char[0];
+  
+  /** true if the search for an object is lower case only with the key */
+  private final boolean m_lowerCaseOnly;
 
   /**
-   * Construct the trie.
+   * Construct the trie that has a case insensitive search.
    */
   public Trie()
   {
     m_Root = new Node();
+    m_lowerCaseOnly = false;
+  }
+  
+  /**
+   * Construct the trie given the desired case sensitivity with the key.
+   * @param lowerCaseOnly true if the search keys are to be loser case only,
+   * not case insensitive.
+   */  
+  public Trie(boolean lowerCaseOnly) 
+  {
+      m_Root = new Node();
+      m_lowerCaseOnly = lowerCaseOnly;
   }
 
   /**
@@ -67,7 +87,7 @@ public class Trie
 
     for (int i = 0; i < len; i++)
     {
-      Node nextNode = node.m_nextChar[Character.toUpperCase(key.charAt(i))];
+      Node nextNode = node.m_nextChar[Character.toLowerCase(key.charAt(i))];
 
       if (nextNode != null)
       {
@@ -78,9 +98,17 @@ public class Trie
         for (; i < len; i++)
         {
           Node newNode = new Node();
-          // put this value into the tree with a case insensitive key
-          node.m_nextChar[Character.toUpperCase(key.charAt(i))] = newNode;
-          node.m_nextChar[Character.toLowerCase(key.charAt(i))] = newNode;
+          if (m_lowerCaseOnly) 
+          {
+            // put this value into the tree only with a lower case key 
+            node.m_nextChar[Character.toLowerCase(key.charAt(i))] = newNode;
+          }
+          else
+          {
+            // put this value into the tree with a case insensitive key
+            node.m_nextChar[Character.toUpperCase(key.charAt(i))] = newNode;
+            node.m_nextChar[Character.toLowerCase(key.charAt(i))] = newNode;
+          }
           node = newNode;
         }
         break;
@@ -181,7 +209,7 @@ public Object get(final String key)
    * The node representation for the trie.
    * @xsl.usage internal
    */
-  class Node
+  private class Node
   {
 
     /**
@@ -194,7 +222,7 @@ public Object get(final String key)
     }
 
     /** The next nodes.   */
-    Node m_nextChar[];
+    final Node m_nextChar[];
 
     /** The value.   */
     Object m_Value;
@@ -209,8 +237,9 @@ public Object get(final String key)
    */
   public Trie(Trie existingTrie) 
   {
-      // use the same table
+      // copy some fields from the existing Trie into this one.
       m_Root = existingTrie.m_Root;
+      m_lowerCaseOnly = existingTrie.m_lowerCaseOnly;
       
       // get a buffer just big enough to hold the longest key in the table.
       int max = existingTrie.getLongestKeyLength();
