@@ -79,7 +79,7 @@ public class XSLProcessorVersion
    * Version String like <CODE>"<B>Xalan</B>i v.r[.dd| <B>D</B>nn]"</CODE>.
    * <P>Semantics of the version string are identical to the Xerces project.</P>
    */
-  public static String S_VERSION = "2.0_D07";
+  public static String S_VERSION = "2.0.0";
 
   /**
    * Constant name of product.
@@ -142,5 +142,5 @@ public class XSLProcessorVersion
    *          well as defect fixes. 'D' drops may not be as stable as
    *          the final releases.
    */
-  public static int DEVELOPMENT = 05;
+  public static int DEVELOPMENT = 0;
 }
