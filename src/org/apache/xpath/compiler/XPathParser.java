@@ -2054,6 +2054,9 @@ public class XPathParser
 
       try
       {
+      	// XPath 1.0 does not support number in exp notation
+      	if ((m_token.indexOf('e') > -1)||(m_token.indexOf('E') > -1))
+      		throw new NumberFormatException();
         num = Double.valueOf(m_token).doubleValue();
       }
       catch (NumberFormatException nfe)
