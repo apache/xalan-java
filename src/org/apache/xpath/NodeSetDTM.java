@@ -151,6 +151,7 @@ public class NodeSetDTM extends NodeVector
 
     super();
     m_manager = nodelist.getDTMManager();
+    m_root = nodelist.getRoot();
 
     addNodes((DTMIterator) nodelist);
   }
@@ -167,6 +168,7 @@ public class NodeSetDTM extends NodeVector
     super();
 
     m_manager = ni.getDTMManager();
+    m_root = ni.getRoot();
     addNodes(ni);
   }
   
@@ -253,8 +255,15 @@ public class NodeSetDTM extends NodeVector
    */
   public int getRoot()
   {
-    // %TBD%?
-    return DTM.NULL;
+    if(DTM.NULL == m_root)
+    {
+      if(size() > 0)
+        return item(0);
+      else
+        return DTM.NULL;
+    }
+    else
+      return m_root;
   }
   
   /**
@@ -1195,6 +1204,9 @@ public class NodeSetDTM extends NodeVector
   /** True if this list is cached.
    *  @serial  */
   transient protected boolean m_cacheNodes = true;
+  
+  /** The root of the iteration, if available. */
+  protected int m_root = DTM.NULL;
 
   /**
    * Get whether or not this is a cached node set.
