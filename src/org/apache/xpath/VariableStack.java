@@ -436,10 +436,7 @@ public class VariableStack extends Stack
         }
       }
     }
-    
-    if(gframe == frame)
-      return null;
-    
+     
     for (int i = (gframe.size() - 1); i >= 0; i--)
     {
       Arg arg = (Arg)gframe.elementAt(i);
