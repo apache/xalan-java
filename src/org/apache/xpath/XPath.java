@@ -78,7 +78,6 @@ import org.apache.xpath.compiler.FunctionTable; // temp
 import org.apache.xpath.objects.XObject;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.objects.*;
-import org.apache.xalan.extensions.ExtensionsTable;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.Locator;
 import trax.TransformException;

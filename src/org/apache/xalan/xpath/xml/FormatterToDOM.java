@@ -57,10 +57,6 @@
 package org.apache.xalan.xpath.xml;
 
 import org.w3c.dom.*;
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.SerializerFactory;
-import org.apache.xml.serialize.BaseMarkupSerializer;
-import org.apache.xml.serialize.OutputFormat;
 
 /**
  * <meta name="usage" content="general"/>

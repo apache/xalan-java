@@ -61,12 +61,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 
-import org.apache.xml.serialize.Serializer;
-import org.apache.xml.serialize.SerializerFactory;
-import org.apache.xml.serialize.XMLSerializer;
-import org.apache.xml.serialize.BaseMarkupSerializer;
-import org.apache.xml.serialize.Method;
-import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.transition.XMLSerializer;
 
 
 /**
@@ -77,7 +72,7 @@ import org.apache.xml.serialize.OutputFormat;
 public class FormatterToXML //extends BaseMarkupSerializer 
 {
   XMLSerializer m_serializer;
-  public void FormatterToXML()
+  public FormatterToXML()
   {
     m_serializer = new XMLSerializer();
     //super( new OutputFormat( Method.XML, null, false ) );     
