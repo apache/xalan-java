@@ -86,7 +86,7 @@ final class ValueOf extends Instruction {
 
         // make sure required attribute(s) have been set
         if (_select.isDummy()) {
-	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "select");
+	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "select");
 	    return;
         }
         final String str = getAttribute("disable-output-escaping");

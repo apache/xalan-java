@@ -77,7 +77,7 @@ final class UseAttributeSets extends Instruction {
 
     // Only error that can occur:
     private final static String ATTR_SET_NOT_FOUND =
-	"Attempting to use non-existing attribute set: ";
+	"";
 
     // Contains the names of all references attribute sets
     private final Vector _sets = new Vector(2);
@@ -139,9 +139,9 @@ final class UseAttributeSets extends Instruction {
 	    }
 	    // Generate an error if the attribute set does not exist
 	    else {
-		final ErrorMsg msg =  new ErrorMsg(ATTR_SET_NOT_FOUND+name,
-						   getLineNumber());
-		getParser().reportError(Constants.ERROR, msg);
+		final Parser parser = getParser();
+		final String atrs = name.toString();
+		reportError(this, parser, ErrorMsg.ATTRIBSET_UNDEF_ERR, atrs);
 	    }
 	}
     }

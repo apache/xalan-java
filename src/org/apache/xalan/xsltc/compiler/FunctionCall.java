@@ -224,7 +224,7 @@ class FunctionCall extends Expression {
 		 */
 		final Parser parser = getParser();
 		if (parser != null) {
-		    reportWarning(this ,parser, ErrorMsg.FUNRESOL_ERR,
+		    reportWarning(this, parser, ErrorMsg.FUNCTION_RESOLVE_ERR,
 				  _fname.toString());
 		}
 		unresolvedExternal = true;
@@ -280,8 +280,8 @@ class FunctionCall extends Expression {
 	
 	if (methods == null) {
 	    // Method not found in this class
-	    throw new TypeCheckError(ErrorMsg.METUNDEF_ERR, 
-				     _fname.getLocalPart());
+	    final String name = _fname.getLocalPart();
+	    throw new TypeCheckError(ErrorMsg.METHOD_NOT_FOUND_ERR, name);
 	}
 
 	final int nMethods = methods.size();
@@ -316,8 +316,7 @@ class FunctionCall extends Expression {
 	    }
 	}
 
-	StringBuffer buf = new StringBuffer("Attempted to call method ");
-	buf.append(_className);
+	final StringBuffer buf = new StringBuffer(_className);
 	buf.append('.');
 	buf.append(_fname.getLocalPart());
 	buf.append('(');
@@ -327,11 +326,8 @@ class FunctionCall extends Expression {
 	    if (a < (nArgs-1)) buf.append(", ");
 	}
 	buf.append(");");
-	getParser().reportError(Constants.WARNING,new ErrorMsg(buf.toString()));
-
-	throw new TypeCheckError(ErrorMsg.CANNOTCV_ERR, 
-				 _fname.getLocalPart(),
-				 _className);
+	final String args = buf.toString();
+	throw new TypeCheckError(ErrorMsg.ARGUMENT_CONVERSION_ERR, args);
     }
 
     /**
@@ -493,7 +489,7 @@ class FunctionCall extends Expression {
 		final Class clazz = Class.forName(_className);
 		if (clazz == null) {
 		    final ErrorMsg msg =
-			new ErrorMsg(ErrorMsg.CLSUNDEF_ERR, _className);
+			new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
 		    getParser().reportError(Constants.ERROR, msg);
 		}
 		else {
@@ -519,7 +515,7 @@ class FunctionCall extends Expression {
 	    }
 	    catch (ClassNotFoundException e) {
 		final ErrorMsg msg =
-		    new ErrorMsg(ErrorMsg.CLSUNDEF_ERR, _className);
+		    new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
 		getParser().reportError(Constants.ERROR, msg);
 	    }
 	}
@@ -569,7 +565,9 @@ class FunctionCall extends Expression {
 		return "V";
 	    }
 	    else {
-		throw new Error("unknown type in getSignature");
+		final String name = clazz.toString();
+		ErrorMsg err = new ErrorMsg(ErrorMsg.UNKNOWN_SIG_TYPE_ERR,name);
+		throw new Error(err.toString());
 	    }
 	}
 	else {

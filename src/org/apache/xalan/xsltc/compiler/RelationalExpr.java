@@ -273,8 +273,7 @@ final class RelationalExpr extends Expression implements Operators {
 		break;
 		
 	    default:
-		final ErrorMsg msg = 
-		    new ErrorMsg("Unknown operator for relational expression");
+		ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_RELAT_OP_ERR,this);
 		getParser().reportError(Constants.FATAL, msg);
 	    }
 

@@ -79,7 +79,7 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class UnsupportedElement extends SyntaxTreeNode {
 
     private Fallback _fallback = null;
-    private String _message = null;
+    private ErrorMsg _message = null;
 
     /**
      * Basic consutrcor - stores element uri/prefix/localname
@@ -97,7 +97,7 @@ final class UnsupportedElement extends SyntaxTreeNode {
      * should describe the unsupported element itself and what category
      * the element belongs in.
      */
-    public void setErrorMessage(String message) {
+    public void setErrorMessage(ErrorMsg message) {
 	_message = message;
     }
 
@@ -152,7 +152,7 @@ final class UnsupportedElement extends SyntaxTreeNode {
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	if (_fallback == null) {
-	    throw new TypeCheckError(new ErrorMsg(_message));
+	    throw new TypeCheckError(_message);
 	}
 	return(_fallback.typeCheck(stable));
     }

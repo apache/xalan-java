@@ -75,7 +75,7 @@ final class ProcessingInstruction extends Instruction {
 	final String name  = getAttribute("name");
 	_name = AttributeValue.create(this, name, parser);
 	if (name.equals("xml")) {
-	    reportError(this, parser, ErrorMsg.ILLEG_PI_ERR, "xml");
+	    reportError(this, parser, ErrorMsg.ILLEGAL_PI_ERR, "xml");
 	}
 	parseChildren(parser);
     }
@@ -110,15 +110,12 @@ final class ProcessingInstruction extends Instruction {
 	// get String out of the handler
 	il.append(new INVOKEVIRTUAL(cpg.addMethodref(STRING_VALUE_HANDLER,
 						     "getValue",
-						     "()" + STRING_SIG)));
+						     "()"+STRING_SIG)));
 	// call "processingInstruction"
 	final int processingInstruction =
 	    cpg.addInterfaceMethodref(TRANSLET_OUTPUT_INTERFACE,
 				      "processingInstruction", 
-				      "("
-				      + STRING_SIG
-				      + STRING_SIG
-				      + ")V");
+				      "("+STRING_SIG+STRING_SIG+")V");
 	il.append(new INVOKEINTERFACE(processingInstruction, 3));
 	// Restore old handler base from stack
 	il.append(methodGen.storeHandler());

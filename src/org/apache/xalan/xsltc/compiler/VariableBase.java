@@ -249,13 +249,12 @@ class VariableBase extends TopLevelElement {
 	if (name.length() > 0)
 	    setName(parser.getQName(name));
         else
-	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "name");
+	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "name");
 
 	// Check whether variable/param of the same name is already in scope
 	VariableBase other = parser.lookupVariable(_name);
 	if ((other != null) && (other.getParent() == getParent())) {
-	    ErrorMsg msg = new ErrorMsg(ErrorMsg.VARREDEF_ERR, _name, this);
-	    parser.reportError(Constants.ERROR, msg);
+	    reportError(this, parser, ErrorMsg.VARIABLE_REDEF_ERR, name);
 	}
 	
 	select = getAttribute("select");

@@ -170,7 +170,7 @@ final class Whitespace extends TopLevelElement {
 	// Get the list of elements to strip/preserve
 	_elementList = getAttribute("elements");
 	if (_elementList == null || _elementList.length() == 0) {
-	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "elements");
+	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "elements");
 	    return;
 	}
 

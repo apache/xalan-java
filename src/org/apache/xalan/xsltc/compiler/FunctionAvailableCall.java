@@ -82,7 +82,9 @@ final class FunctionAvailableCall extends FunctionCall {
 	if (argument() instanceof LiteralExpr) {
 	    return _type = Type.Boolean;
 	}
-	throw new TypeCheckError(ErrorMsg.LITERALS_ERR, "function-available");
+	ErrorMsg err = new ErrorMsg(ErrorMsg.NEED_LITERAL_ERR,
+				    "function-available", this);
+	throw new TypeCheckError(err);
     }
 
     /**

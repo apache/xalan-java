@@ -313,13 +313,11 @@ public final class Stylesheet extends SyntaxTreeNode {
 	// Make sure the XSL version set in this stylesheet
 	_version = getAttribute("version");
 	if ((_version == null) || (_version.equals(EMPTYSTRING))) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.NREQATTR_ERR, "version", this);
-	    parser.reportError(Constants.ERROR, err);
+	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "version");
 	}
 	// Verify that the version is 1.0 and nothing else
 	else if (!_version.equals("1.0")) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.UNSUPVER_ERR, _version, this);
-	    parser.reportError(Constants.ERROR, err);
+	    reportError(this, parser, ErrorMsg.XSL_VERSION_ERR, _version);
 	}
 
 	// Add the implicit mapping of 'xml' to the XML namespace URI
@@ -329,7 +327,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	final Stylesheet sheet = stable.addStylesheet(_name, this);
 	if (sheet != null) {
 	    // Error: more that one stylesheet defined
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.STLREDEF_ERR, this);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.MULTIPLE_STYLESHEET_ERR,this);
 	    parser.reportError(Constants.ERROR, err);
 	}
 
@@ -698,8 +696,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    }
 	    // If nothing was changed in this pass then we have a circular ref
 	    if (!changed) {
-		final String refs = input.toString();
-		ErrorMsg err = new ErrorMsg(ErrorMsg.CIRCULAR_ERR, refs, this);
+		ErrorMsg err = new ErrorMsg(ErrorMsg.CIRCULAR_VARIABLE_ERR,
+					    input.toString(), this);
 		getParser().reportError(Constants.ERROR, err);
 		return(result);
 	    }

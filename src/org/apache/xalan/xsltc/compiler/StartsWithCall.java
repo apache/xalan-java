@@ -89,7 +89,9 @@ final class StartsWithCall extends FunctionCall {
 
 	// Check that the function was passed exactly two arguments
 	if (argumentCount() != 2) {
-	    throw new TypeCheckError(ErrorMsg.FUNRESOL_ERR, getName());
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.ILLEGAL_ARG_ERR,
+					getName(), this);
+	    throw new TypeCheckError(err);
 	}
 
 	// The first argument must be a String, or cast to a String

@@ -118,26 +118,6 @@ public class Parser implements Constants, ContentHandler {
 
     private int _currentImportPrecedence = 1;
 
-    private final static String CLASS_NOT_FOUND =
-	"Internal XSLTC class not in classpath: ";
-    private final static String INTERNAL_ERROR =
-	"Unrecoverable XSLTC compilation error: ";
-    private final static String UNSUPPORTED_XSL_ERROR =
-	"Unsupported XSL element: ";
-    private final static String INVALID_EXT_ERROR =
-	"Invalid XSLTC extension: ";
-    private final static String UNSUPPORTED_EXT_ERROR =
-	"Unsupported XSLT extension: ";
-    private final static String TEXT_NODE_ERROR =
-	"Text data outside of top-level <xsl:stylesheet> element.";
-    private final static String MISSING_HREF_ERROR =
-	"Processing instruction <?xml-stylesheet ... ?> is missing href data.";
-    private final static String MISSING_XSLT_URI_ERROR =
-	"The input document is not a stylesheet "+
-	"(the XSL namespace is not declared in the root element).";
-    private final static String MISSING_XSLT_TARGET_ERROR =
-	"Could not find stylesheet target ";
-
     public Parser(XSLTC xsltc) {
 	_xsltc = xsltc;
     }
@@ -241,12 +221,13 @@ public class Parser implements Constants, ContentHandler {
 	    // Get the namespace uri from the symbol table
 	    if (prefix.equals("xmlns") == false) {
 		namespace = _symbolTable.lookupNamespace(prefix);
-		if (namespace == null) namespace = Constants.EMPTYSTRING;
+		if (namespace == null) namespace = EMPTYSTRING;
 	    }
 	    return getQName(namespace, prefix, localname);
 	}
 	else {
-	    return getQName(_symbolTable.lookupNamespace(Constants.EMPTYSTRING), null, stringRep);
+	    final String uri = _symbolTable.lookupNamespace(EMPTYSTRING);
+	    return getQName(uri, null, stringRep);
 	}
     }
     
@@ -262,16 +243,17 @@ public class Parser implements Constants, ContentHandler {
 	    if (prefix.equals("xmlns") == false) {
 		namespace = _symbolTable.lookupNamespace(prefix);
 		if (namespace == null) {
-		    reportError(Constants.ERROR,
-			new ErrorMsg(ErrorMsg.NSPUNDEF_ERR, prefix)); 
-		    Exception e = new Exception();
-		    e.printStackTrace();
+		    final int line = _locator.getLineNumber();
+		    ErrorMsg err = new ErrorMsg(ErrorMsg.NAMESPACE_UNDEF_ERR,
+						line, prefix);
+		    reportError(ERROR, err);
 		}
 	    }
 	    return getQName(namespace, prefix, localname);
 	}
 	else {
-	    return getQName(_symbolTable.lookupNamespace(Constants.EMPTYSTRING), null, stringRep);
+	    final String defURI = _symbolTable.lookupNamespace(EMPTYSTRING);
+	    return getQName(defURI, null, stringRep);
 	}
     }
 
@@ -279,8 +261,8 @@ public class Parser implements Constants, ContentHandler {
 	if (namespace == null) {
 	    QName name = (QName)_qNames.get(localname);
 	    if (name == null) {
-		_qNames.put(localname,
-			    name = new QName(null, prefix, localname));
+		name = new QName(null, prefix, localname);
+		_qNames.put(localname, name);
 	    }
 	    return name;
 	}
@@ -345,8 +327,8 @@ public class Parser implements Constants, ContentHandler {
 	    return stylesheet;
 	}
 	catch (ClassCastException e) {
-	    throw new CompilerException("The input document does not "+
-					"contain an XSL stylesheet.");
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.NOT_STYLESHEET_ERR, element);
+	    throw new CompilerException(err.toString());
 	}
     }
     
@@ -362,8 +344,10 @@ public class Parser implements Constants, ContentHandler {
 		while (elements.hasMoreElements()) {
 		    Object child = elements.nextElement();
 		    if (child instanceof Text) {
-			reportError(Constants.ERROR,
-			    new ErrorMsg(TEXT_NODE_ERROR));
+			final int l = _locator.getLineNumber();
+			ErrorMsg err =
+			    new ErrorMsg(ErrorMsg.ILLEGAL_TEXT_NODE_ERR,l,null);
+			reportError(ERROR, err);
 		    }
 		}
 		if (!errorsFound()) {
@@ -372,7 +356,7 @@ public class Parser implements Constants, ContentHandler {
 	    }
 	}
 	catch (TypeCheckError e) {
-	    reportError(Constants.ERROR, new ErrorMsg(e.toString()));
+	    reportError(ERROR, new ErrorMsg(e.toString()));
 	}
     }
 
@@ -391,14 +375,24 @@ public class Parser implements Constants, ContentHandler {
 	    return (SyntaxTreeNode)getStylesheet(_root);	
 	}
 	catch (IOException e) {
-	    reportError(Constants.ERROR,
-		new ErrorMsg(e.getMessage()));
+	    if (_xsltc.debug()) e.printStackTrace();
+	    reportError(ERROR,new ErrorMsg(e.getMessage()));
 	}
 	catch (SAXException e) {
-	    reportError(Constants.ERROR, new ErrorMsg(e.getMessage()));
+	    Throwable ex = e.getException();
+	    if (_xsltc.debug()) {
+		e.printStackTrace();
+		if (ex != null) ex.printStackTrace();
+	    }
+	    reportError(ERROR, new ErrorMsg(e.getMessage()));
 	}
 	catch (CompilerException e) {
-	    reportError(Constants.ERROR, new ErrorMsg(e.getMessage()));
+	    if (_xsltc.debug()) e.printStackTrace();
+	    reportError(ERROR, new ErrorMsg(e.getMessage()));
+	}
+	catch (Exception e) {
+	    if (_xsltc.debug()) e.printStackTrace();
+	    reportError(ERROR, new ErrorMsg(e.getMessage()));
 	}
 	return null;
     }
@@ -423,15 +417,14 @@ public class Parser implements Constants, ContentHandler {
 	    return(parse(reader, input));
 	}
 	catch (ParserConfigurationException e) {
-	    reportError(Constants.ERROR,
-		new ErrorMsg("JAXP parser not configured correctly"));
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.SAX_PARSER_CONFIG_ERR);
+	    reportError(ERROR, err);
 	}
 	catch (SAXParseException e){
-	    reportError(Constants.ERROR,
-		new ErrorMsg(e.getMessage(),e.getLineNumber()));
+	    reportError(ERROR, new ErrorMsg(e.getMessage(),e.getLineNumber()));
 	}
 	catch (SAXException e) {
-	    reportError(Constants.ERROR, new ErrorMsg(e.getMessage()));
+	    reportError(ERROR, new ErrorMsg(e.getMessage()));
 	}
 	return null;
     }
@@ -474,16 +467,21 @@ public class Parser implements Constants, ContentHandler {
 	// Assume that this is a pure XSL stylesheet if there is not
 	// <?xml-stylesheet ....?> processing instruction
 	if (_target == null) {
-	    if (!_rootNamespaceDef)
-		throw new CompilerException(MISSING_XSLT_URI_ERROR);
+	    if (!_rootNamespaceDef) {
+		ErrorMsg msg = new ErrorMsg(ErrorMsg.MISSING_XSLT_URI_ERR);
+		throw new CompilerException(msg.toString());
+	    }
 	    return(root);
 	}
 
 	// Find the xsl:stylesheet or xsl:transform with this reference
 	if (_target.charAt(0) == '#') {
 	    SyntaxTreeNode element = findStylesheet(root, _target.substring(1));
-	    if (element == null)
-		throw new CompilerException(MISSING_XSLT_TARGET_ERROR+_target);
+	    if (element == null) {
+		ErrorMsg msg = new ErrorMsg(ErrorMsg.MISSING_XSLT_TARGET_ERR,
+					    _target, root);
+		throw new CompilerException(msg.toString());
+	    }
 	    return(element);
 	}
 	else {
@@ -797,12 +795,13 @@ public class Parser implements Constants, ContentHandler {
 		}
 	    }
 	    catch (ClassNotFoundException e) {
-		reportError(Constants.ERROR,
-		    new ErrorMsg(CLASS_NOT_FOUND+className));
+		ErrorMsg err = new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, node);
+		reportError(ERROR, err);
 	    }
 	    catch (Exception e) {
-		reportError(Constants.ERROR,
-		    new ErrorMsg(INTERNAL_ERROR+e.getMessage()));
+		ErrorMsg err = new ErrorMsg(ErrorMsg.INTERNAL_ERR,
+					    e.getMessage(), node);
+		reportError(FATAL, err);
 	    }
 	}
 	else {
@@ -811,13 +810,17 @@ public class Parser implements Constants, ContentHandler {
 		if (uri.equals(XSLT_URI)) {
 		    node = new UnsupportedElement(uri, prefix, local);
 		    UnsupportedElement element = (UnsupportedElement)node;
-		    element.setErrorMessage(UNSUPPORTED_XSL_ERROR+local);
+		    ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_XSL_ERR,
+						_locator.getLineNumber(),local);
+		    element.setErrorMessage(msg);
 		}
 		// Check if this is an XSLTC extension element
 		else if (uri.equals(TRANSLET_URI)) {
 		    node = new UnsupportedElement(uri, prefix, local);
 		    UnsupportedElement element = (UnsupportedElement)node;
-		    element.setErrorMessage(INVALID_EXT_ERROR+local);
+		    ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_EXT_ERR,
+						_locator.getLineNumber(),local);
+		    element.setErrorMessage(msg);
 		}
 		// Check if this is an extension of some other XSLT processor
 		else {
@@ -826,8 +829,11 @@ public class Parser implements Constants, ContentHandler {
 			if (sheet != (SyntaxTreeNode)_parentStack.peek()) {
 			    node = new UnsupportedElement(uri, prefix, local);
 			    UnsupportedElement elem = (UnsupportedElement)node;
-			    elem.setErrorMessage(UNSUPPORTED_EXT_ERROR+
-						 prefix+":"+local);
+			    ErrorMsg msg =
+				new ErrorMsg(ErrorMsg.UNSUPPORTED_EXT_ERR,
+					     _locator.getLineNumber(),
+					     prefix+":"+local);
+			    elem.setErrorMessage(msg);
 			}
 		    }
 		}
@@ -911,17 +917,15 @@ public class Parser implements Constants, ContentHandler {
 		    return node;
 		}
 	    } 
-	    reportError(Constants.ERROR,
-		new ErrorMsg(ErrorMsg.XPATHPAR_ERR, line, expression));
+	    reportError(ERROR, new ErrorMsg(ErrorMsg.XPATH_PARSER_ERR,
+					    expression, parent));
 	}
 	catch (ClassCastException e) {
-	    reportError(Constants.ERROR,
-			new ErrorMsg(ErrorMsg.XPATHPAR_ERR, line, expression));
+	    reportError(ERROR, new ErrorMsg(ErrorMsg.XPATH_PARSER_ERR,
+					    expression, parent));
 	}
 	catch (Exception e) {
-	    if (_xsltc.debug()) {
-		e.printStackTrace();
-	    }
+	    if (_xsltc.debug()) e.printStackTrace();
 	    // Intentional fall through
 	}
 	// Return a dummy pattern (which is an expression)
@@ -936,27 +940,13 @@ public class Parser implements Constants, ContentHandler {
 	return _errors.size() > 0;
     }
 
-    public void internalError() {
-	Exception e = new Exception();
-	e.printStackTrace();
-	reportError(Constants.INTERNAL,
-	    new ErrorMsg("Internal compiler error.\n"+
-                "Please report to xalan-dev@xml.apache.org\n"+
-                "(include stack trace)"));
-    }
-
-    public void notYetImplemented(String message) {
-	reportError(Constants.UNSUPPORTED, new ErrorMsg(message));
-    }
-
-
     /**
      * Prints all compile-time errors
      */
     public void printErrors() {
 	final int size = _errors.size();
 	if (size > 0) {
-	    System.err.println("Compile errors:");
+	    System.err.println(ErrorMsg.getCompileErrorMessage());
 	    for (int i = 0; i < size; i++) {
 		System.err.println("  " + _errors.elementAt(i));
 	    }
@@ -969,7 +959,7 @@ public class Parser implements Constants, ContentHandler {
     public void printWarnings() {
 	final int size = _warnings.size();
 	if (size > 0) {
-	    System.err.println("Warning:");
+	    ErrorMsg.getCompileWarningMessage();
 	    for (int i = 0; i < size; i++) {
 		System.err.println("  " + _warnings.elementAt(i));
 	    }
@@ -1070,7 +1060,9 @@ public class Parser implements Constants, ContentHandler {
 
 	SyntaxTreeNode element = makeInstance(uri, prefix, localname);
 	if (element == null) {
-	    throw new SAXException("Error while parsing stylesheet.");
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.ELEMENT_PARSE_ERR,
+					prefix+':'+localname);
+	    throw new SAXException(err.toString());
 	}
 
 	// If this is the root element of the XML document we need to make sure

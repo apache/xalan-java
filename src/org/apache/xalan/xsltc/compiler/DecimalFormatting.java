@@ -103,7 +103,7 @@ final class DecimalFormatting extends TopLevelElement {
 	// Check if a set of symbols has already been registered under this name
 	SymbolTable stable = parser.getSymbolTable();
 	if (stable.getDecimalFormatting(_name) != null)
-	    reportWarning(this, parser, ErrorMsg.DFSREDEF_ERR,_name.toString());
+	    reportWarning(this, parser, ErrorMsg.SYMBOLS_REDEF_ERR,_name.toString());
 	else
 	    stable.addDecimalFormatting(_name, this);
     }
@@ -222,7 +222,7 @@ final class DecimalFormatting extends TopLevelElement {
 	// Push the format name, which is empty, on the stack
 	// for call to addDecimalFormat()
 	il.append(classGen.loadTranslet());
-	il.append(new PUSH(cpg, Constants.EMPTYSTRING));
+	il.append(new PUSH(cpg, EMPTYSTRING));
 
 	// Manufacture a DecimalFormatSymbols on the stack
 	// for call to addDecimalFormat()

@@ -96,7 +96,7 @@ final class ForEach extends Instruction {
 
         // make sure required attribute(s) have been set
         if (_select.isDummy()) {
-	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "select");
+	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "select");
 	    return;
         }
     }
@@ -113,8 +113,7 @@ final class ForEach extends Instruction {
 	    typeCheckContents(stable);
 	    return Type.Void;
 	}
-	String msg = "Unsupported type for <xsl:for-each select='"+_type+"'/>";
-	throw new TypeCheckError(new ErrorMsg(msg));
+	throw new TypeCheckError(this);
     }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
@@ -141,7 +140,7 @@ final class ForEach extends Instruction {
 
 	    // <xsl:sort> cannot be applied to a result tree - issue warning
 	    if (sortObjects.size() > 0) {
-		ErrorMsg msg = new ErrorMsg(ErrorMsg.TREESORT_ERR);
+		ErrorMsg msg = new ErrorMsg(ErrorMsg.RESULT_TREE_SORT_ERR,this);
 		getParser().reportError(WARNING, msg);
 	    }
 

@@ -136,7 +136,7 @@ final class BinOpExpr extends Expression {
 	    il.append(_type.REM());
 	    break;
 	default:
-	    final ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLBINOP_ERR, this);
+	    ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_BINARY_OP_ERR, this);
 	    getParser().reportError(Constants.ERROR, msg);
 	}
     }

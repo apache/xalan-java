@@ -65,91 +65,188 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
+import org.apache.xalan.xsltc.compiler.Stylesheet;
 import org.apache.xalan.xsltc.compiler.SyntaxTreeNode;
 
 import java.net.URL;
 import java.text.MessageFormat;
 
 public final class ErrorMsg {
+
     private int _code;
     private int _line;
     private String _message = null;
     private String _url = null;
     Object[] _params = null;
 	
-    public static final int STLREDEF_ERR = 0;
-    public static final int TMPREDEF_ERR = 1;
-    public static final int VARREDEF_ERR = 2;
-    public static final int VARUNDEF_ERR = 3;
-    public static final int CLSUNDEF_ERR = 4;
-    public static final int METUNDEF_ERR = 5;
-    public static final int TMPUNDEF_ERR = 6;
-    public static final int CANNOTCV_ERR = 7;
-    public static final int FILENOTF_ERR = 8;
-    public static final int INVALURI_ERR = 9;
-    public static final int FILECANT_ERR = 10;
-    public static final int STYORTRA_ERR = 11;
-    public static final int NSPUNDEF_ERR = 12;
-    public static final int FUNRESOL_ERR = 13;
-    public static final int LITERALS_ERR = 14;
-    public static final int XPATHPAR_ERR = 15;
-    public static final int NREQATTR_ERR = 16;
-    public static final int FUNC_USE_ERR = 17;
-    public static final int ILLEG_PI_ERR = 18;
-    public static final int ATTROUTS_ERR = 19;
-    public static final int ILL_ATTR_ERR = 20;
-    public static final int CIRCULAR_INC = 21;
-    public static final int TREESORT_ERR = 22;
-    public static final int DFSREDEF_ERR = 23;
-    public static final int UNSUPVER_ERR = 24;
-    public static final int CIRCULAR_ERR = 25;
-    public static final int ILLBINOP_ERR = 26;
-    public static final int ILLEGARG_ERR = 27;
-    public static final int DOCUMARG_ERR = 28;
+    public static final int MULTIPLE_STYLESHEET_ERR = 0;
+    public static final int TEMPLATE_REDEF_ERR      = 1;
+    public static final int TEMPLATE_UNDEF_ERR      = 2;
+    public static final int VARIABLE_REDEF_ERR      = 3;
+    public static final int VARIABLE_UNDEF_ERR      = 4;
+    public static final int CLASS_NOT_FOUND_ERR     = 5;
+    public static final int METHOD_NOT_FOUND_ERR    = 6;
+    public static final int ARGUMENT_CONVERSION_ERR = 7;
+    public static final int FILE_NOT_FOUND_ERR      = 8;
+    public static final int INVALID_URI_ERR         = 9;
+    public static final int FILE_ACCESS_ERR         = 10;
+    public static final int MISSING_ROOT_ERR        = 11;
+    public static final int NAMESPACE_UNDEF_ERR     = 12;
+    public static final int FUNCTION_RESOLVE_ERR    = 13;
+    public static final int NEED_LITERAL_ERR        = 14;
+    public static final int XPATH_PARSER_ERR        = 15;
+    public static final int REQUIRED_ATTR_ERR       = 16;
+    public static final int ILLEGAL_CHAR_ERR        = 17;
+    public static final int ILLEGAL_PI_ERR          = 18;
+    public static final int STRAY_ATTRIBUTE_ERR     = 19;
+    public static final int ILLEGAL_ATTRIBUTE_ERR   = 20;
+    public static final int CIRCULAR_INCLUDE_ERR    = 21;
+    public static final int RESULT_TREE_SORT_ERR    = 22;
+    public static final int SYMBOLS_REDEF_ERR       = 23;
+    public static final int XSL_VERSION_ERR         = 24;
+    public static final int CIRCULAR_VARIABLE_ERR   = 25;
+    public static final int ILLEGAL_BINARY_OP_ERR   = 26;
+    public static final int ILLEGAL_ARG_ERR         = 27;
+    public static final int DOCUMENT_ARG_ERR        = 28;
+    public static final int MISSING_WHEN_ERR        = 29;
+    public static final int MULTIPLE_OTHERWISE_ERR  = 30;
+    public static final int STRAY_OTHERWISE_ERR     = 31;
+    public static final int STRAY_WHEN_ERR          = 32;
+    public static final int WHEN_ELEMENT_ERR        = 33;
+    public static final int UNNAMED_ATTRIBSET_ERR   = 34;
+    public static final int ILLEGAL_CHILD_ERR       = 35;
+    public static final int ILLEGAL_ELEM_NAME_ERR   = 36;
+    public static final int ILLEGAL_ATTR_NAME_ERR   = 37;
+    public static final int ILLEGAL_TEXT_NODE_ERR   = 38;
+    public static final int SAX_PARSER_CONFIG_ERR   = 39;
+    public static final int INTERNAL_ERR            = 40;
+    public static final int UNSUPPORTED_XSL_ERR     = 41;
+    public static final int UNSUPPORTED_EXT_ERR     = 42;
+    public static final int MISSING_XSLT_URI_ERR    = 43;
+    public static final int MISSING_XSLT_TARGET_ERR = 44;
+    public static final int NOT_IMPLEMENTED_ERR     = 45;
+    public static final int NOT_STYLESHEET_ERR      = 46;
+    public static final int ELEMENT_PARSE_ERR       = 47;
+    public static final int KEY_USE_ATTR_ERR        = 48;
+    public static final int OUTPUT_VERSION_ERR      = 49;
+    public static final int ILLEGAL_RELAT_OP_ERR    = 50;
+    public static final int ATTRIBSET_UNDEF_ERR     = 51;
+    public static final int ATTR_VAL_TEMPLATE_ERR   = 52;
+    public static final int UNKNOWN_SIG_TYPE_ERR    = 53;
 
-    public static final int MISSING_WHEN_ERR       = 29;
-    public static final int MULTIPLE_OTHERWISE_ERR = 30;
-    public static final int STRAY_OTHERWISE_ERR    = 31;
-    public static final int STRAY_WHEN_ERR         = 32;
-    public static final int WHEN_ELEMENT_ERR       = 33;
 
+    // These message should be read from a locale-specific resource bundle
     static final String messages_d[] = { 
+	// MULTIPLE_STYLESHEET_ERR
 	"More than one stylesheet defined in the same file.",
+	// TEMPLATE_REDEF_ERR	
 	"Template ''{0}'' already defined in this stylesheet.",
-	"Variable ''{0}'' is multiply defined in the same scope.",
-	"Variable or parameter ''{0}'' is undefined.",
-	"Cannot find external class ''{0}''.",
-	"Cannot find external method ''{0}'' (It must be static and public).",
+	// TEMPLATE_UNDEF_ERR
 	"Template ''{0}'' not defined in this stylesheet.",
-	"Cannot convert argument/return type in call to Method ''{0}'' of class ''{1}''.",
+	// VARIABLE_REDEF_ERR	
+	"Variable ''{0}'' is multiply defined in the same scope.",
+	// VARIABLE_UNDEF_ERR
+	"Variable or parameter ''{0}'' is undefined.",
+	// CLASS_NOT_FOUND_ERR
+	"Cannot find class ''{0}''.",
+	// METHOD_NOT_FOUND_ERR
+	"Cannot find external method ''{0}'' (must be static and public).",
+	// ARGUMENT_CONVERSION_ERR
+	"Cannot convert argument/return type in call to method ''{1}''",
+	// FILE_NOT_FOUND_ERR
 	"File or URI ''{0}'' not found.",
+	// INVALID_URI_ERR
 	"Invalid URI ''{0}''.",
+	// FILE_ACCESS_ERR
 	"Cannot open file ''{0}''.",
-	"'stylesheet' or 'transform' element expected.",
-	"Element prefix ''{0}'' is undeclared.",
+	// MISSING_ROOT_ERR
+	"<xsl:stylesheet> or <xsl:transform> element expected.",
+	// NAMESPACE_UNDEF_ERR
+	"Namespace prefix ''{0}'' is undeclared.",
+	// FUNCTION_RESOLVE_ERR
 	"Unable to resolve call to function ''{0}''.",
+	// NEED_LITERAL_ERR
 	"Argument to ''{0}'' must be a literal string.",
+	// XPATH_PARSER_ERR
 	"Error parsing XPath expression ''{0}''.",
+	// REQUIRED_ATTR_ERR
 	"Required attribute ''{0}'' is missing.",
-	"Illegal use of function ''{0}''.",
+	// ILLEGAL_CHAR_ERR
+	"Illegal character ''{0}'' in XPath expression.",
+	// ILLEGAL_PI_ERR
 	"Illegal name ''{0}'' for processing instruction.",
+	// STRAY_ATTRIBUTE_ERR
 	"Attribute ''{0}'' outside of element.",
-	"Illegal attribute name ''{0}''.",
+	// ILLEGAL_ATTRIBUTE_ERR
+	"Illegal attribute ''{0}''.",
+	// CIRCULAR_INCLUDE_ERR
 	"Circular import/include. Stylesheet ''{0}'' already loaded.",
-	"Applying <xsl:sort> to a result tree is not supported (<xsl:sort> "+
-	"elements are ignored). You can, and should, sort the nodes when "+
-	"creating the result tree.",
+	// RESULT_TREE_SORT_ERR
+	"Result-tree fragments cannot be supports (<xsl:sort> elements are "+
+	"ignored). You must sort the nodes when creating the result tree.",
+	// SYMBOLS_REDEF_ERR
 	"Decimal formatting ''{0}'' is already defined.",
+	// XSL_VERSION_ERR
 	"XSL version ''{0}'' is not supported by XSLTC.",
+	// CIRCULAR_VARIABLE_ERR
 	"Circular variable/parameter references: ''{0}''.",
+	// ILLEGAL_BINARY_OP_ERR
 	"Unknown operator for binary expression.",
+	// ILLEGAL_ARG_ERR
 	"Illegal argument(s) for function call.",
+	// DOCUMENT_ARG_ERR
 	"Second argument to document() function must be a node-set.",
+	// MISSING_WHEN_ERR
 	"At least one <xsl:when> element required in <xsl:choose>.",
+	// MULTIPLE_OTHERWISE_ERR
 	"Only one <xsl:otherwise> element allowed in <xsl:choose>.",
+	// STRAY_OTHERWISE_ERR
 	"<xsl:otherwise> can only be used within <xsl:choose>.",
-	"<xsl:whe> can only be used within <xsl:choose>.",
-	"Only <xsl:when> and <xsl:otherwise> elements allowed in <xsl:choose>."
+	// STRAY_WHEN_ERR
+	"<xsl:when> can only be used within <xsl:choose>.",
+	// WHEN_ELEMENT_ERR	
+	"Only <xsl:when> and <xsl:otherwise> elements allowed in <xsl:choose>.",
+	// UNNAMED_ATTRIBSET_ERR
+	"<xsl:attribute-set> is missing the 'name' attribute.",
+	// ILLEGAL_CHILD_ERR
+	"Illegal child element.",
+	// ILLEGAL_ELEM_NAME_ERR
+	"You cannot call an element ''{0}''",
+	// ILLEGAL_ATTR_NAME_ERR
+	"You cannot call an attribute ''{0}''",
+	// ILLEGAL_TEXT_NODE_ERR
+	"Text data outside of top-level <xsl:stylesheet> element.",
+	// SAX_PARSER_CONFIG_ERR
+	"JAXP parser not configured correctly",
+	// INTERNAL_ERR
+	"Unrecoverable XSLTC compilation error: ''{0}''",
+	// UNSUPPORTED_XSL_ERR
+	"Unsupported XSL element ''{0}''.",
+	// UNSUPPORTED_EXT_ERR
+	"Unrecognised XSLTC extension ''{0}''.",
+	// MISSING_XSLT_URI_ERR
+	"The input document is not a stylesheet "+
+	"(the XSL namespace is not declared in the root element).",
+	// MISSING_XSLT_TARGET_ERR
+	"Could not find stylesheet target ''{0}''.",
+	// NOT_IMPLEMENTED_ERR
+	"Not implemented: ''{0}''.",
+	// NOT_STYLESHEET_ERR
+	"The input document does not contain an XSL stylesheet.",
+	// ELEMENT_PARSE_ERR
+	"Could not parse element ''{0}''",
+	// KEY_USE_ATTR_ERR
+	"The use-attribute of <key> must be node, node-set, string or number.",
+	// OUTPUT_VERSION_ERR
+	"Output XML document version should be 1.0",
+	// ILLEGAL_RELAT_OP_ERR
+	"Unknown operator for relational expression",
+	// ATTRIBSET_UNDEF_ERR
+	"Attempting to use non-existing attribute set ''{0}''.",
+	// ATTR_VAL_TEMPLATE_ERR
+	"Cannot parse attribute value template ''{0}''.",
+	// UNKNOWN_SIG_TYPE_ERR
+	"Unknown data-type in signature for class ''{0}''."
     };
 
     public ErrorMsg(int code) {
@@ -212,8 +309,20 @@ public final class ErrorMsg {
 	_params[1] = param2;
     }
 
+    public static String getCompileErrorMessage() {
+	return "Compiler error(s):";
+    }
+
+    public static String getCompileWarningMessage() {
+	return "Compiler warning(s):";
+    }
+
     private String getFileName(SyntaxTreeNode node) {
-	return node.getStylesheet().getSystemId();
+	Stylesheet stylesheet = node.getStylesheet();
+	if (stylesheet != null)
+	    return stylesheet.getSystemId();
+	else
+	    return null;
     }
 
     private String formatLine() {
@@ -223,7 +332,7 @@ public final class ErrorMsg {
 	    result.append(": ");
 	}
 	if (_line > 0) {
-	    result.append("Line ");
+	    result.append("line ");
 	    result.append(Integer.toString(_line));
 	    result.append(": ");
 	}

@@ -100,8 +100,8 @@ final class CallTemplate extends Instruction {
 	    typeCheckContents(stable);
 	}
 	else {
-	    ErrorMsg errorMsg = new ErrorMsg(ErrorMsg.TMPUNDEF_ERR, _name);
-	    throw new TypeCheckError(errorMsg);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.TEMPLATE_UNDEF_ERR,_name,this);
+	    throw new TypeCheckError(err);
 	}
 	return Type.Void;
     }

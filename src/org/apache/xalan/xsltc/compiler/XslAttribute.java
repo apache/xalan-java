@@ -73,10 +73,6 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class XslAttribute extends Instruction {
 
-    // Error messages:
-    private final static String ILLEGAL_ATTRIBUTE_NAME =
-	"Illegal attribute name: 'xmlns'";
-
     // Attribute contents
     private AttributeValue _name; // name treated as AVT (7.1.3)
     private AttributeValueTemplate _namespace = null;
@@ -112,7 +108,7 @@ final class XslAttribute extends Instruction {
 	boolean generated = false;
 
 	if ((prefix != null) && (prefix.equals("xmlns"))) {
-	    reportError(this, parser, ErrorMsg.ILL_ATTR_ERR, name);
+	    reportError(this, parser, ErrorMsg.ILLEGAL_ATTR_NAME_ERR, name);
 	    return;
 	}
 
@@ -131,7 +127,7 @@ final class XslAttribute extends Instruction {
 	    if (item instanceof If) continue;
 	    if (item instanceof Choose) continue;
 	    if (item instanceof CopyOf) continue;  // bug fix 3320, g. briem
-	    reportWarning(this, parser, ErrorMsg.ATTROUTS_ERR, name);
+	    reportWarning(this, parser, ErrorMsg.STRAY_ATTRIBUTE_ERR, name);
 	}
 
 	// Get namespace from namespace attribute?
@@ -180,9 +176,7 @@ final class XslAttribute extends Instruction {
 	}
 
 	if (name.equals("xmlns")) {
-	    final ErrorMsg msg = 
-		new ErrorMsg(ILLEGAL_ATTRIBUTE_NAME, getLineNumber());
-	    parser.reportError(Constants.ERROR, msg);
+	    reportError(this, parser, ErrorMsg.ILLEGAL_ATTR_NAME_ERR, name);
 	    return;
 	}
 

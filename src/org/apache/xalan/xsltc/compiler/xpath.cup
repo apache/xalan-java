@@ -180,8 +180,9 @@ parser code {:
 	    return super.parse();
         }
         catch (IllegalCharException e) {
-	    addError(new ErrorMsg("Illegal character '" + e.getMessage() +
-	    	"' in XPath expression.", lineNumber));
+            ErrorMsg err = new ErrorMsg(ErrorMsg.ILLEGAL_CHAR_ERR,
+                                        lineNumber, e.getMessage());
+            _parser.reportError(Constants.FATAL, err);
         }
         return null;
     }
@@ -201,7 +202,6 @@ parser code {:
     }
 
     public final void addError(ErrorMsg error) {
-        //_parser.addError(error);
 	_parser.reportError(Constants.ERROR, error);
     } 
            

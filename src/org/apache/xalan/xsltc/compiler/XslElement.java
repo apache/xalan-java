@@ -105,7 +105,8 @@ final class XslElement extends Instruction {
 	// Get the "name" attribute of the <xsl:element> element
 	String name = getAttribute("name");
 	if ((name == null) || (name.equals(EMPTYSTRING))) {
-	    final ErrorMsg msg = new ErrorMsg("You can't call an element \"\"");
+	    ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_ELEM_NAME_ERR,
+					name, this);
 	    parser.reportError(WARNING, msg);
 	    _ignore = true; // Ignore the element if the QName is invalid
 	    return;
@@ -130,8 +131,9 @@ final class XslElement extends Instruction {
 
 	    // Signal error if the prefix does not map to any namespace URI 
 	    if (namespace == null) {
-		final ErrorMsg msg = new ErrorMsg(ErrorMsg.NSPUNDEF_ERR,prefix);
-		parser.reportError(WARNING, msg);
+		ErrorMsg err = new ErrorMsg(ErrorMsg.NAMESPACE_UNDEF_ERR,
+					    prefix, this);
+		parser.reportError(WARNING, err);
 		parseChildren(parser);
 		_ignore = true; // Ignore the element if prefix is undeclared
 		return;
@@ -160,8 +162,9 @@ final class XslElement extends Instruction {
 	// Next check that the local part of the QName is legal (no whitespace)
 	if ((_name instanceof SimpleAttributeValue) &&
 	    (local.indexOf(' ') > -1)) {
-	    final String errmsg = "You can't call an element \""+local+"\"";
-	    parser.reportError(WARNING, new ErrorMsg(errmsg));
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.ILLEGAL_ELEM_NAME_ERR,
+					local, this);
+	    parser.reportError(WARNING, err);
 	    parseChildren(parser);
 	    _ignore = true; // Ignore the element if the local part is invalid
 	    return;

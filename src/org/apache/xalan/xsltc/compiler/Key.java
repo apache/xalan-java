@@ -80,9 +80,6 @@ final class Key extends TopLevelElement {
     private Expression _use;      // The nodes to include in the key
     private Type       _useType;  // The data type of the key's contents
 
-    private final String USE_TYPE_ERR =
-	"The use-attribute of <key> must be node, node-set, string or number.";
-
     /**
      * Parse the <xsl:key> element and attributes
      * @param parser A reference to the stylesheet parser
@@ -96,15 +93,15 @@ final class Key extends TopLevelElement {
 
         // Make sure required attribute(s) have been set
         if (_name == null) {
-	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "name");
+	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "name");
 	    return;
         }
         if (_match.isDummy()) {
-	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "match");
+	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "match");
 	    return;
         }
         if (_use.isDummy()) {
-	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "use");
+	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "use");
 	    return;
         }
     }
@@ -144,7 +141,8 @@ final class Key extends TopLevelElement {
 	if (!(_useType instanceof StringType) &&
 	    !(_useType instanceof NodeSetType) &&
 	    !(_useType instanceof RealType)) {
-	    throw new TypeCheckError(new ErrorMsg(USE_TYPE_ERR));
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.KEY_USE_ATTR_ERR, this);
+	    throw new TypeCheckError(err);
 	}
 
 	return Type.Void;

@@ -94,7 +94,7 @@ final class DocumentCall extends FunctionCall {
 	// At least one argument - two at most
 	final int ac = argumentCount();
 	if ((ac < 1) || (ac > 2)) {
-	    ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGARG_ERR, this);
+	    ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_ARG_ERR, this);
 	    throw new TypeCheckError(msg);
 	}
 
@@ -102,14 +102,13 @@ final class DocumentCall extends FunctionCall {
 	_uri = argument(0);
 	if (_uri instanceof LiteralExpr) {
 	    LiteralExpr expr = (LiteralExpr)_uri;
-	    if (expr.getValue().equals(Constants.EMPTYSTRING)) {
+	    if (expr.getValue().equals(EMPTYSTRING)) {
 		Stylesheet stylesheet = getStylesheet();
 		if (stylesheet == null) {
-		    ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGARG_ERR, this);
+		    ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_ARG_ERR, this);
 		    throw new TypeCheckError(msg);
 		}
-		_uri = new LiteralExpr(stylesheet.getSystemId(),
-				       Constants.EMPTYSTRING);
+		_uri = new LiteralExpr(stylesheet.getSystemId(), EMPTYSTRING);
 	    }
 	}
 
@@ -122,7 +121,7 @@ final class DocumentCall extends FunctionCall {
 	if (ac == 2) {
 	    _base = argument(1);
 	    if (!_base.typeCheck(stable).identicalTo(Type.NodeSet)) {
-		ErrorMsg msg = new ErrorMsg(ErrorMsg.DOCUMARG_ERR, this);
+		ErrorMsg msg = new ErrorMsg(ErrorMsg.DOCUMENT_ARG_ERR, this);
 		throw new TypeCheckError(msg);
 	    }
 	}

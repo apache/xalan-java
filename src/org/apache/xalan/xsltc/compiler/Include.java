@@ -91,7 +91,7 @@ final class Include extends TopLevelElement {
 	try {
 	    String docToLoad = getAttribute("href");
 	    if (context.checkForLoop(docToLoad)) {
-		final int errno = ErrorMsg.CIRCULAR_INC;
+		final int errno = ErrorMsg.CIRCULAR_INCLUDE_ERR;
 		final ErrorMsg msg = new ErrorMsg(errno, docToLoad, this);
 		parser.reportError(Constants.FATAL, msg);
 		return;

@@ -77,6 +77,8 @@ abstract class Instruction extends SyntaxTreeNode {
      * Translate this node into JVM bytecodes.
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-	getParser().notYetImplemented("instruction: " + getClass());
+	ErrorMsg msg = new ErrorMsg(ErrorMsg.NOT_IMPLEMENTED_ERR,
+				    getClass(), this);
+	getParser().reportError(FATAL, msg);
     }
 }

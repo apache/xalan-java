@@ -98,7 +98,7 @@ final class WithParam extends Instruction {
 	    _name = parser.getQName(name);
 	}
         else {
-	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "name");
+	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "name");
         }
 	
 	final String select = getAttribute("select");

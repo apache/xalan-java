@@ -73,9 +73,9 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class AttributeValueTemplate extends AttributeValue {
 
     public AttributeValueTemplate(String value, Parser parser) {
-	check(value);
-	parseAVTemplate(0, value, parser);
 	setParser(parser);
+	if (check(value, parser))
+	    parseAVTemplate(0, value, parser);
     }
 
     private void parseAVTemplate(final int start, String text, Parser parser) {
@@ -195,9 +195,13 @@ final class AttributeValueTemplate extends AttributeValue {
 	}
     }
 
-    private void check(String value) {
+    private void reportError(String value, Parser parser) {
+	reportError(getParent(), parser, ErrorMsg.ATTR_VAL_TEMPLATE_ERR, value);
+    }
+
+    private boolean check(String value, Parser parser) {
 	// !!! how about quoted/escaped braces?
-	if (value == null) return;
+	if (value == null) return true;
 
 	final char[] chars = value.toCharArray();
 	int level = 0;
@@ -223,10 +227,14 @@ final class AttributeValueTemplate extends AttributeValue {
 	    case 1:
 		continue;
 	    default:
-		throw new Error("bad AttributeValueTemplate: " + value);
+		reportError(value, parser);
+		return false;
 	    }
 	}
-	if (level != 0)
-	    throw new Error("bad AttributeValueTemplate: " + value);
+	if (level != 0) {
+	    reportError(value, parser);
+	    return false;
+	}
+	return true;
     }
 }

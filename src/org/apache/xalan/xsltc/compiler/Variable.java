@@ -124,8 +124,8 @@ final class Variable extends VariableBase {
 		final int them = var.getImportPrecedence();
 		// It is an error if the two have the same import precedence
 		if (us == them) {
-		    reportError(this, parser, ErrorMsg.VARREDEF_ERR,
-				_name.toString());
+		    final String name = _name.toString();
+		    reportError(this, parser, ErrorMsg.VARIABLE_REDEF_ERR,name);
 		}
 		// Ignore this if previous definition has higher precedence
 		else if (them > us) {

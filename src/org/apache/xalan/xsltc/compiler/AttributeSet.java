@@ -78,12 +78,6 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class AttributeSet extends TopLevelElement {
 
-    // Error messages
-    private static final String NO_NAME_ERROR =
-	"Attribute set missing 'name' attribute.";
-    private static final String BASTARD_ERROR =
-	"Attribute sets can only have <xsl:attribute> child elements.";
-
     // This prefix is used for the method name of attribute set methods
     private static final String AttributeSetPrefix = "$as$";
     
@@ -126,8 +120,8 @@ final class AttributeSet extends TopLevelElement {
 	
 	// Get this attribute set's name
 	_name = parser.getQName(getAttribute("name"));
-	if ((_name == null) || (_name.equals(Constants.EMPTYSTRING))) {
-	    final ErrorMsg msg = new ErrorMsg(NO_NAME_ERROR, getLineNumber());
+	if ((_name == null) || (_name.equals(EMPTYSTRING))) {
+	    ErrorMsg msg = new ErrorMsg(ErrorMsg.UNNAMED_ATTRIBSET_ERR, this);
 	    parser.reportError(Constants.ERROR, msg);
 	}
 
@@ -148,8 +142,7 @@ final class AttributeSet extends TopLevelElement {
 		child.parseContents(parser);
 	    }
 	    else {
-		final ErrorMsg msg =
-		    new ErrorMsg(BASTARD_ERROR, getLineNumber());
+		ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGAL_CHILD_ERR, this);
 		parser.reportError(Constants.ERROR, msg);
 	    }
 	}

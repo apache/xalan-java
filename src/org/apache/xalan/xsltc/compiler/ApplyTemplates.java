@@ -126,9 +126,7 @@ final class ApplyTemplates extends Instruction {
 		typeCheckContents(stable); // with-params
 		return Type.Void;
 	    }
-	    String msg = "Unsupported type for <xsl:apply-templates select='"+
-		_type+"'/>";
-	    throw new TypeCheckError(new ErrorMsg(msg));
+	    throw new TypeCheckError(this);
 	}
 	else {
 	    typeCheckContents(stable);		// with-params
@@ -173,8 +171,8 @@ final class ApplyTemplates extends Instruction {
 	if ((_type != null) && (_type instanceof ResultTreeType)) {
 	    // <xsl:sort> cannot be applied to a result tree - issue warning
 	    if (sortObjects.size() > 0) {
-		ErrorMsg msg = new ErrorMsg(ErrorMsg.TREESORT_ERR);
-		getParser().reportError(WARNING, msg);
+		ErrorMsg err = new ErrorMsg(ErrorMsg.RESULT_TREE_SORT_ERR,this);
+		getParser().reportError(WARNING, err);
 	    }
 	    // Put the result tree (a DOM adapter) on the stack
 	    _select.translate(classGen, methodGen);	

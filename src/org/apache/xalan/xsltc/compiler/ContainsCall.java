@@ -97,7 +97,7 @@ final class ContainsCall extends FunctionCall {
 
 	// Check that the function was passed exactly two arguments
 	if (argumentCount() != 2) {
-	    throw new TypeCheckError(ErrorMsg.FUNRESOL_ERR, getName());
+	    throw new TypeCheckError(ErrorMsg.ILLEGAL_ARG_ERR, getName(), this);
 	}
 
 	// The first argument must be a String, or cast to a String

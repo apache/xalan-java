@@ -76,9 +76,8 @@ final class StringCall extends FunctionCall {
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	final int argc = argumentCount();
 	if (argc > 1) {
-	    final String errmsg =
-		"The string() function cannot take more than one parameter";
-	    throw new TypeCheckError(new ErrorMsg(errmsg));
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.ILLEGAL_ARG_ERR, this);
+	    throw new TypeCheckError(err);
 	}
 
 	if (argc > 0) {

@@ -103,7 +103,7 @@ final class When extends Instruction {
 
 	// Make sure required attribute(s) have been set
 	if (_test.isDummy()) {
-	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "test");
+	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "test");
 	}
     }
 

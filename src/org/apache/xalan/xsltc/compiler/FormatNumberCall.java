@@ -124,7 +124,7 @@ final class FormatNumberCall extends FunctionCall {
 	
 	il.append(classGen.loadTranslet());
 	if (_name == null) {
-	    il.append(new PUSH(cpg, Constants.EMPTYSTRING));
+	    il.append(new PUSH(cpg, EMPTYSTRING));
 	}
 	else {
 	    _name.translate(classGen, methodGen);

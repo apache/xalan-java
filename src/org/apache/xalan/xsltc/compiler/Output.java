@@ -97,8 +97,6 @@ final class Output extends TopLevelElement {
     // Some global constants
     private final static String STRING_SIG = "Ljava/lang/String;";
     private final static String ONE_DOT_ZERO_STRING = "1.0";
-    private final static String OUTPUT_VERSION_ERROR =
-	"Output XML document type should be 1.0";
 
     /**
      * Displays the contents of this element (for debugging)
@@ -140,7 +138,7 @@ final class Output extends TopLevelElement {
 	    _version = ONE_DOT_ZERO_STRING;
 	}
 	if (!_version.equals(ONE_DOT_ZERO_STRING)) {
-	    ErrorMsg msg = new ErrorMsg(OUTPUT_VERSION_ERROR);
+	    ErrorMsg msg = new ErrorMsg(ErrorMsg.OUTPUT_VERSION_ERR, this);
 	    parser.reportError(Constants.WARNING, msg);
 	}
 

@@ -91,8 +91,7 @@ final class TransletOutput extends Instruction {
 
 	// Verify that the filename is in fact set
 	if ((filename == null) || (filename.equals(EMPTYSTRING))) {
-	    final ErrorMsg msg = new ErrorMsg(MISSING_FILE_ATTR);
-	    parser.reportError(Constants.ERROR, msg);
+	    reportError(this, parser, ErrorMsg.REQUIRED_ATTR_ERR, "file");
 	}
 
 	// Save filename as an attribute value template
