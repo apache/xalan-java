@@ -57,7 +57,6 @@
  * <http://www.apache.org/>.
  *
  * @author G. Todd Miller 
- *
  */
 
 
@@ -102,9 +101,7 @@ class SAX2DOM implements ContentHandler {
 
     public void startDocument() {
 	_document = _builder.newDocument();
-	Element root = (Element)_document.createElement("root");
-	_document.appendChild(root);
-	_nodeStk.push(root);
+	// bugfix 6417, contributed by Tim Elcott
     }
 
     public void endDocument() {
