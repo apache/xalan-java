@@ -59,6 +59,7 @@ package org.apache.xalan.processor;
 import org.xml.sax.ContentHandler;
 
 import org.apache.xalan.templates.Constants;
+import org.apache.xml.utils.QName;
 
 /**
  * This class defines the allowed structure for an element in a XSLT stylesheet,
@@ -86,12 +87,20 @@ class XSLTElementDef
    * @param contentHandler The element processor for this element.
    * @param classObject The class of the object that this element def should produce.
    */
-  XSLTElementDef(String namespace, String name, String nameAlias,
+  XSLTElementDef(XSLTSchema schema, String namespace, String name, String nameAlias,
                  XSLTElementDef[] elements, XSLTAttributeDef[] attributes,
                  XSLTElementProcessor contentHandler, Class classObject)
   {
     build(namespace, name, nameAlias, elements, attributes, contentHandler,
           classObject);
+    if ( (null != namespace)
+    &&  (namespace.equals(Constants.S_XSLNAMESPACEURL)
+        || namespace.equals(Constants.S_BUILTIN_EXTENSIONS_URL)) )
+    {
+      schema.addAvailableElement(new QName(namespace, name));
+      if(null != nameAlias)
+        schema.addAvailableElement(new QName(namespace, nameAlias));
+    } 
   }
 
   /**

@@ -74,6 +74,7 @@ import org.apache.xpath.compiler.XPathParser;
 import org.apache.xalan.trace.*;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.processor.XSLTSchema;
 import org.apache.xalan.transformer.TransformerImpl;
 
 import javax.xml.transform.Transformer;
@@ -92,8 +93,6 @@ public class StylesheetRoot extends StylesheetComposed
 
   /**
    * Uses an XSL stylesheet document.
-   * @param transformer  The XSLTProcessor implementation.
-   * @param baseIdentifier The file name or URL for the XSL stylesheet.
    * @exception TransformerConfigurationException if the baseIdentifier can not be resolved to a URL.
    */
   public StylesheetRoot() throws TransformerConfigurationException
@@ -116,6 +115,24 @@ public class StylesheetRoot extends StylesheetComposed
   }
 
   /**
+   * The schema used when creating this StylesheetRoot
+   */
+  private XSLTSchema m_schema;
+
+  /**
+   * Creates a StylesheetRoot and retains a pointer to the schema used to create this
+   * StylesheetRoot.  The schema may be needed later for an element-available() function call.
+   * @exception TransformerConfigurationException if the baseIdentifier can not be resolved to a URL.
+   */
+  public StylesheetRoot(XSLTSchema schema) throws TransformerConfigurationException
+  {
+
+    this();
+    m_schema = schema;
+
+  }
+
+  /**
    * Tell if this is the root of the stylesheet tree.
    *
    * NEEDSDOC ($objectName$) @return
@@ -123,6 +140,16 @@ public class StylesheetRoot extends StylesheetComposed
   public boolean isRoot()
   {
     return true;
+  }
+
+  /**
+   * Get the schema associated with this StylesheetRoot
+   *
+   * @return the schema in effect when this StylesheetRoot was built
+   */
+  public XSLTSchema getSchema()
+  {
+    return m_schema;
   }
 
   //============== Templates Interface ================
