@@ -665,12 +665,11 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   }
 
   /**
-   * Set an object that will be used to resolve URIs used in
+   * Get the object that will be used to resolve URIs used in
    * xsl:import, etc.  This will be used as the default for the
    * transformation.
    *
-   * @return An object that implements the URIResolver interface,
-   * or null.
+   * @return The URIResolver that was set with setURIResolver.
    */
   public URIResolver getURIResolver()
   {
