@@ -586,6 +586,9 @@ public class Process
         else
         {
           strResult = new StreamResult(System.out);
+          tfactory.setAttribute(
+           org.apache.xalan.processor.TransformerFactoryImpl.FEATURE_INCREMENTAL
+           , Boolean.TRUE);
         }
 
         SAXTransformerFactory stf = (SAXTransformerFactory) tfactory;
@@ -920,6 +923,6 @@ public class Process
    * */
   static void doExit(int i)
   {
-	  System.exit(i);
+          System.exit(i);
   }
 }
