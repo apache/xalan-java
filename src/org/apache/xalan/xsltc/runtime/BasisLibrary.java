@@ -671,13 +671,7 @@ public final class BasisLibrary implements Operators {
 
     public static boolean compare(NodeIterator left, final String rstring,
 				  int op, int node, DOM dom) {
-	
-	if (compareStrings(dom.getNodeValue(node), rstring, op, dom)) {
-	    return true;
-	}
-	else {
-	    return false;
-	}
+	return compareStrings(dom.getNodeValue(node), rstring, op, dom);
     }
 
     public static boolean compare(Object left, Object right,
