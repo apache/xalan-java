@@ -92,7 +92,7 @@ TBD: - The faq doesn't show in the content
                            <xsl:attribute name="internal-destination">
                            <xsl:value-of select="@id"/>
                            </xsl:attribute>
-                          <xsl:value-of select="s1/@title"/>
+                          <xsl:value-of select="s1/@title|faqs/@title"/>
                         </fo:basic-link> 
                      </fo:block>
                   </fo:table-cell>
@@ -255,13 +255,14 @@ TBD: - The faq doesn't show in the content
 </xsl:template>
 
 <!-- q in faq -->
-<xsl:template match ="q">
-   <fo:block font-size="11pt" 
+<xsl:template match="q">
+   <fo:block font-size="14pt" 
             font-family="sans-serif" 
-            line-height="13pt"
-            space-after.optimum="3pt"
-            space-before.optimum="3pt"
-            text-align="justify">
+            line-height="18pt"
+            space-before.optimum="10pt"
+            space-after.optimum="9pt"
+            text-align="start"
+            padding-top="3pt">     
       <xsl:apply-templates/> 
     </fo:block>
 </xsl:template>
