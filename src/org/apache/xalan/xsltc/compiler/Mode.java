@@ -24,6 +24,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
 
+import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.BranchHandle;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.DUP;
@@ -1429,20 +1430,20 @@ for (int i = 0; i < _templates.size(); i++) {
     }
 
     /**
-     * Peephole optimization: Remove sequences of [ALOAD, POP].
-     */
+      * Peephole optimization.
+      */
     private void peepHoleOptimization(MethodGenerator methodGen) {
-    InstructionList il = methodGen.getInstructionList();
-    InstructionFinder find = new InstructionFinder(il);
+        InstructionList il = methodGen.getInstructionList();
+        InstructionFinder find = new InstructionFinder(il);
 	InstructionHandle ih;
 	String pattern;
 
-	// Remove seqences of ALOAD, POP (GTM)
-	pattern = "`aload'`pop'`instruction'";
-	for(Iterator iter=find.search(pattern); iter.hasNext();){
-	    InstructionHandle[] match = (InstructionHandle[])iter.next();
+	// LoadInstruction, POP => (removed)
+	pattern = "LoadInstruction POP";
+	for (Iterator iter = find.search(pattern); iter.hasNext();) {
+	    InstructionHandle[] match = (InstructionHandle[]) iter.next();
 	    try {
-		if ((!match[0].hasTargeters()) && (!match[1].hasTargeters())) {
+		if (!match[0].hasTargeters() && !match[1].hasTargeters()) {
                     il.delete(match[0], match[1]);
                 }
 	    }
@@ -1450,45 +1451,73 @@ for (int i = 0; i < _templates.size(); i++) {
                 // TODO: move target down into the list
             }
 	}
-	// Replace sequences of ILOAD_?, ALOAD_?, SWAP with ALOAD_?, ILOAD_?
-	pattern = "`iload'`aload'`swap'`instruction'";
-	for(Iterator iter=find.search(pattern); iter.hasNext();){
-            InstructionHandle[] match = (InstructionHandle[])iter.next();
-            try {
-                org.apache.bcel.generic.Instruction iload;
-                org.apache.bcel.generic.Instruction aload;
-                if ((!match[0].hasTargeters()) &&
-                    (!match[1].hasTargeters()) &&
-                    (!match[2].hasTargeters())) {
-                    iload = match[0].getInstruction();
-                    aload = match[1].getInstruction();
-                    il.insert(match[0], aload);
-                    il.insert(match[0], iload);
-                    il.delete(match[0], match[2]);
+        
+	// ILOAD_N, ILOAD_N, SWAP, ISTORE_N => ILOAD_N
+	pattern = "ILOAD ILOAD SWAP ISTORE";
+	for (Iterator iter = find.search(pattern); iter.hasNext();) {
+            InstructionHandle[] match = (InstructionHandle[]) iter.next();
+            try {              
+                org.apache.bcel.generic.ILOAD iload1 = 
+                    (org.apache.bcel.generic.ILOAD) match[0].getInstruction();
+                org.apache.bcel.generic.ILOAD iload2 = 
+                    (org.apache.bcel.generic.ILOAD) match[1].getInstruction();
+                org.apache.bcel.generic.ISTORE istore = 
+                    (org.apache.bcel.generic.ISTORE) match[3].getInstruction();
+                
+                if (!match[1].hasTargeters() &&
+                    !match[2].hasTargeters() &&
+                    !match[3].hasTargeters() &&
+                    iload1.getIndex() == iload2.getIndex() &&
+                    iload2.getIndex() == istore.getIndex())
+                {
+                    il.delete(match[1], match[3]);
                 }
             }
             catch (TargetLostException e) {
                 // TODO: move target down into the list
             }
         }
-        
-        // Replace sequences of ALOAD_1, ALOAD_1 with ALOAD_1, DUP 
-	pattern = "`aload_1'`aload_1'`instruction'";
-        for(Iterator iter=find.search(pattern); iter.hasNext();){
+
+        // LoadInstruction_N, LoadInstruction_M, SWAP => LoadInstruction_M, LoadInstruction_N
+	pattern = "LoadInstruction LoadInstruction SWAP";
+	for (Iterator iter = find.search(pattern); iter.hasNext();) {
             InstructionHandle[] match = (InstructionHandle[])iter.next();
             try {
-	        org.apache.bcel.generic.Instruction iload;
-                org.apache.bcel.generic.Instruction aload;
-                if ((!match[0].hasTargeters()) && (!match[1].hasTargeters())) {
-                    il.insert(match[1], new DUP());
-                    il.delete(match[1]);
+                if (!match[0].hasTargeters() &&
+                    !match[1].hasTargeters() &&
+                    !match[2].hasTargeters()) 
+                {
+                    Instruction load_m = match[1].getInstruction();
+                    il.insert(match[0], load_m);
+                    il.delete(match[1], match[2]);
                 }
             }
             catch (TargetLostException e) {
                 // TODO: move target down into the list
             }
         }
-        
+                
+        // ALOAD_N ALOAD_N => ALOAD_N DUP
+	pattern = "ALOAD ALOAD";
+        for (Iterator iter = find.search(pattern); iter.hasNext();) {
+            InstructionHandle[] match = (InstructionHandle[])iter.next();
+            try {
+                if (!match[1].hasTargeters()) {
+                    org.apache.bcel.generic.ALOAD aload1 = 
+                        (org.apache.bcel.generic.ALOAD) match[0].getInstruction();
+                    org.apache.bcel.generic.ALOAD aload2 = 
+                        (org.apache.bcel.generic.ALOAD) match[1].getInstruction();
+                    
+                    if (aload1.getIndex() == aload2.getIndex()) {
+                        il.insert(match[1], new DUP());
+                        il.delete(match[1]);
+                    }
+                }
+            }
+            catch (TargetLostException e) {
+                // TODO: move target down into the list
+            }
+        }
     }
 
     public InstructionHandle getTemplateInstructionHandle(Template template) {
