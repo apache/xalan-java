@@ -717,7 +717,8 @@ public class XSLTAttributeDef
 
     for (int i = 0; i < nQNames; i++)
     {
-      qnames.addElement(new QName(tokenizer.nextToken()));
+      // Fix from Alexander Rudnev
+      qnames.addElement(new QName(tokenizer.nextToken(), handler));
     }
 
     return qnames;
