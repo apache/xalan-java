@@ -1,5 +1,5 @@
 NAME
-	xsltc - Apache/Xalan XSLT Compiler 
+	xsltc - optional command wrapper for Apache/Xalan XSLT Compiler 
 
 SYNOPSIS
 	xsltc [-o <output>] [-d <directory>] [-j <jarfile>] 
@@ -7,7 +7,7 @@ SYNOPSIS
 
 DESCRIPTION
 	This command-line tool is a wrapper for the Java class
-	org.apache.xalan.xsltc.cmdline.Compile
+	org.apache.xalan.xsltc.cmdline.Compile. (See CODE below)
 
 	The Sun XSLT Compiler is a Java-based tool for compiling XSLT
 	stylesheets into lightweight and portable Java byte codes 
@@ -68,6 +68,25 @@ OPERANDS
 
 	<stylesheet>    A path name of an input stylesheet file. 
 
+CODE
+	Here is an example wrapper script to implement this command.
+        You should define 'INSTALLDIR' to be the directory where you
+        have installed XalanJ, for example, '/usr/local/xml-xalan'.
+
+	#!/bin/sh
+	JAR=${INSTALLDIR}/java/bin/xsltc.jar
+	XER=${INSTALLDIR}/java/bin/xercesImpl.jar
+	XML=${INSTALLDIR}/java/bin/xml-apis.jar
+	JCPR=${INSTALLDIR}/java/bin/runtime.jar
+	BCEL=${INSTALLDIR}/java/bin/BCEL.jar
+	JCP=${INSTALLDIR}/java/bin/java_cup.jar
+	JLEX=${INSTALLDIR}/java/bin/JLex.jar
+	REGEXP=${INSTALLDIR}/java/bin/regexp.jar
+
+        CLASSPATH=.:${JAR}:${XER}:${XML}:${JCPR}:${BCEL}:${JCP}:${JLEX}:${REGEXP}
+        java -cp ${CLASSPATH} org.apache.xalan.xsltc.cmdline.Compile "$@"
+~
+	
 
 EXAMPLES
 	Example 1:  Creating a translet from stylesheet 'hamlet.xsl'.
