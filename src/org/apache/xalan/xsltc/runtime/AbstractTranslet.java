@@ -84,7 +84,7 @@ public abstract class AbstractTranslet implements Translet {
     // appear as fields (with the same type, only public) in Output.java
     public String  _version = "1.0";
     public String  _method = null;
-    public String  _encoding = "utf-8";
+    public String  _encoding = "UTF-8";
     public boolean _omitHeader = false;
     public String  _standalone = null;
     public String  _doctypePublic = null;

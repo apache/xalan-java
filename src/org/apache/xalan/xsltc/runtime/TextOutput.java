@@ -197,7 +197,7 @@ public final class TextOutput implements TransletOutputHandler {
     private void init() throws IOException {
 	// Reset all output configuration from <xsl:output>
 	_outputType = UNKNOWN;
-	_encoding = "utf-8";
+	_encoding = "UTF-8";
 	_mediaType = "text/html";
 
 	// Reset all internal variables and tables
@@ -941,7 +941,7 @@ public final class TextOutput implements TransletOutputHandler {
     public void setType(int type)  {
 	try {
 	    _outputType = type;
-	    if (_encoding == null) _encoding = "utf-8";
+	    if (_encoding == null) _encoding = "UTF-8";
 	    if (_saxHandler instanceof DefaultSAXOutputHandler)
 		((DefaultSAXOutputHandler)_saxHandler).setOutputType(type);
 	}

@@ -92,7 +92,7 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
 
     // Settings passed on from TextOutput
     private int	    _outputType = TextOutput.UNKNOWN;
-    private String  _encoding   = "utf-8";
+    private String  _encoding   = "UTF-8";
     private String  _version    = "1.0";
     private String  _standalone = null;
     private boolean _indent = false;
@@ -138,7 +138,7 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
      * Constructor - simple, initially for use in servlets
      */
     public DefaultSAXOutputHandler(Writer writer) throws IOException {
-	this(writer, "utf-8");
+	this(writer, "UTF-8");
     }
 
     /**
@@ -152,7 +152,7 @@ public class DefaultSAXOutputHandler implements ContentHandler, LexicalHandler {
             writer = new OutputStreamWriter(out, _encoding = encoding);
         }
         catch (java.io.UnsupportedEncodingException e) {
-            writer = new OutputStreamWriter(out, _encoding = "utf-8" );
+            writer = new OutputStreamWriter(out, _encoding = "UTF-8" );
         }
         _writer = new BufferedWriter(writer);
 	init();

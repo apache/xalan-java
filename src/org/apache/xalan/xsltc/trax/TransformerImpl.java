@@ -207,7 +207,7 @@ public final class TransformerImpl extends Transformer
 	    _encoding = _translet._encoding;
 	}
 	else {
-	    _encoding = "utf-8"; // default output encoding
+	    _encoding = "UTF-8"; // default output encoding
 	}
 
 	try {
@@ -664,7 +664,7 @@ public final class TransformerImpl extends Transformer
 	
 	// Level3: Return the default property value
 	Properties third = new Properties();
-	third.setProperty(OutputKeys.ENCODING, "utf-8");
+	third.setProperty(OutputKeys.ENCODING, "UTF-8");
 	third.setProperty(OutputKeys.METHOD, XML_STRING);
 	third.setProperty(OutputKeys.INDENT, NO_STRING);
 	third.setProperty(OutputKeys.DOCTYPE_PUBLIC, EMPTY_STRING);
