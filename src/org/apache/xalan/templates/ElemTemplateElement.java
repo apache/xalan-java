@@ -306,9 +306,7 @@ public class ElemTemplateElement extends UnImplNode
    */
   public void error(int msg)
   {
-    error(
-      XSLMessages.createMessage(
-        XSLTErrorResources.ER_ELEMTEMPLATEELEM_ERR, null));
+    error(msg, null);
   }
   
   /**
