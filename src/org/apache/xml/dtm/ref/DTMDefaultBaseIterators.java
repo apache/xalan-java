@@ -399,13 +399,17 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
      */
     public int next()
     {
-
       int result = _currentNode;
 
-      if ((_nodeType != -1) && (getExpandedTypeID(_currentNode) != _nodeType))
-        result = END;
-      else
-        result = _currentNode;
+      if (_nodeType >= DTM.NTYPES) {
+        if (_nodeType != getExpandedTypeID(_currentNode)) {
+          result = END;
+        }
+      } else if (_nodeType != NULL) {
+        if (_nodeType != getNodeType(_currentNode)) {
+          result = END;
+        }
+      }
 
       _currentNode = END;
 
@@ -472,10 +476,24 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
       int eType;
       int node = _currentNode;
 
-      while (node != DTM.NULL
-                && (eType = _exptype(node)) != _nodeType
-                && m_expandedNameTable.getType(eType) != _nodeType) {
-        node = _nextsib(node);
+      int nodeType = _nodeType;
+
+      if (nodeType >= DTM.NTYPES) {
+        while (node != DTM.NULL && _exptype(node) != nodeType) {
+          node = _nextsib(node);
+        }
+      } else {
+        while (node != DTM.NULL) {
+          eType = _exptype(node);
+          if (eType < DTM.NTYPES) {
+            if (eType == nodeType) {
+              break;
+            }
+          } else if (m_expandedNameTable.getType(eType) == nodeType) {
+            break;
+          }
+          node = _nextsib(node);
+        }
       }
 
       if (node == DTM.NULL) {
@@ -651,11 +669,12 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
     {
     	int node;
 
-      for (node = _currentNode; node != END; node = getNextNamespaceNode(_startNode, node, true))
-      {
-        if (getExpandedTypeID(node) == _nodeType || getNodeType(node) == _nodeType
-           || getNamespaceType(node) == _nodeType)
-        {
+      for (node = _currentNode;
+           node != END;
+           node = getNextNamespaceNode(_startNode, node, true)) {
+        if (getExpandedTypeID(node) == _nodeType
+            || getNodeType(node) == _nodeType
+            || getNamespaceType(node) == _nodeType) {
           _currentNode = node;
 
           return returnNode(node);
@@ -752,13 +771,27 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
     	if(_startNode == _currentNode)
         return NULL;
 
-      _currentNode = _startNode;
+      int nodeType = _nodeType;
+      int node = _startNode;
+      int expType = getExpandedTypeID(node);
 
-      if (getExpandedTypeID(_startNode) == _nodeType || getNodeType(_startNode) == _nodeType)
-        {
-          return returnNode(_startNode);
+      _currentNode = node;
+
+      if (nodeType >= DTM.NTYPES) {
+        if (nodeType == expType) {
+          return returnNode(node);
         }
-      
+      } else {
+        if (expType < DTM.NTYPES) {
+          if (expType == nodeType) {
+            return returnNode(node);
+          }
+        } else {
+          if (m_expandedNameTable.getType(expType) == nodeType) {
+            return returnNode(node);
+          }
+        }
+      }
 
       return END;
     }
@@ -906,10 +939,24 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
 
       int node = _currentNode;
       int eType;
-      
-      while ((node = _nextsib(node)) != DTM.NULL && 
-             (eType = _exptype(node)) != _nodeType && 
-             m_expandedNameTable.getType(eType)!= _nodeType) {}
+      int nodeType = _nodeType;
+
+      if (nodeType >= DTM.NTYPES) {
+        do {
+          node = _nextsib(node);
+        } while (node != DTM.NULL && _exptype(node) != nodeType);
+      } else {
+        while ((node = _nextsib(node)) != DTM.NULL) {
+          eType = _exptype(node);
+          if (eType < DTM.NTYPES) {
+            if (eType == nodeType) {
+              break;
+            }
+          } else if (m_expandedNameTable.getType(eType) == nodeType) {
+            break;
+          }
+        }
+      }
 
       _currentNode = node;
 
@@ -1153,11 +1200,27 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
       int node = _currentNode;
       int expType;
 
-      while (node != NULL
-                  && node != _startNodeID
-                  && ((expType = _exptype(node)) != _nodeType)
-                  && (m_expandedNameTable.getType(expType) != _nodeType)) {
-        node = _nextsib(node);
+      int nodeType = _nodeType;
+      int startID = _startNodeID;
+
+      if (nodeType >= DTM.NTYPES) {
+        while (node != NULL && node != startID && _exptype(node) != nodeType) {
+          node = _nextsib(node);
+        }
+      } else {
+        while (node != NULL && node != startID) {
+          expType = _exptype(node);
+          if (expType < DTM.NTYPES) {
+            if (expType == nodeType) {
+              break;
+            }
+          } else {
+            if (m_expandedNameTable.getType(expType) == nodeType) {
+              break;
+            }
+          }
+          node = _nextsib(node);
+        }
       }
 
       if (node == DTM.NULL || node == _startNodeID) {
@@ -1333,13 +1396,6 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
     public void gotoMark() {
         _sp = _markedsp;
         _currentNode = _markedNode;
-        _stack[0] = _markedDescendant;
-        int parent = _parent(_currentNode);
-        for (int index = 1; index < _sp-1; index++) {
-             _stack[index] = parent;
-             parent = _parent(parent);
-        }
-       _stack[_sp] = _currentNode;
     }
   }  // end of PrecedingIterator
 
@@ -1372,26 +1428,57 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
      */
     public int next()
     {
+      int node = _currentNode;
+      int nodeType = _nodeType;
 
-      int node;      
-      
-      do{
-       node = _currentNode + 1;
-      if ((_sp >= 0) && (node < _stack[_sp]))
-      {
-        node = makeNodeHandle((_currentNode = node)); // | m_dtmIdent);
-      }
-      else
-      {
-        _currentNode = node;  // skip ancestor
+      if (nodeType >= DTM.NTYPES) {
+        while (true) {
+          node = node + 1;
 
-        node = (--_sp >= 0 ? makeNodeHandle(node)/*next()*/ : NULL);
+          if (_sp < 0) {
+            node = NULL;
+            break;
+          } else if (node >= _stack[_sp]) {
+            if (--_sp < 0) {
+              node = NULL;
+              break;
+            }
+          } else if (_exptype(node) == nodeType) {
+            break;
+          }
+        }
+      } else {
+        int expType;
+
+        while (true) {
+          node = node + 1;
+
+          if (_sp < 0) {
+            node = NULL;
+            break;
+          } else if (node >= _stack[_sp]) {
+            if (--_sp < 0) {
+              node = NULL;
+              break;
+            }
+          } else {
+            expType = _exptype(node);
+            if (expType < DTM.NTYPES) {
+              if (expType == nodeType) {
+                break;
+              }
+            } else {
+              if (m_expandedNameTable.getType(expType) == nodeType) {
+                break;
+              }
+            }
+          }
+        }
       }
-      }
-     while (node /*= super.next())*/ != NULL
-             && (getExpandedTypeID(node) != _nodeType && getNodeType(node) != _nodeType));
+
+      _currentNode = node;
              
-      return (node == NULL ? NULL : returnNode(node));
+      return (node == NULL) ? NULL : returnNode(makeNodeHandle(node));
     }
   }  // end of TypedPrecedingIterator
 
@@ -1483,7 +1570,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
     {
 
       int node;
-      
+
       do{
        node = _currentNode;
 
@@ -1685,6 +1772,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
       if (_isRestartable)
       {
         int nodeID = makeNodeIdentity(node);
+        int nodeType = _nodeType;
 
         if (!_includeSelf && node != DTM.NULL) {
           nodeID = _parent(nodeID);
@@ -1692,14 +1780,26 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
 
         _startNode = node;
 
-        while (nodeID != END) {
-          int eType = _exptype(nodeID);
+        if (nodeType >= DTM.NTYPES) {
+          while (nodeID != END) {
+            int eType = _exptype(nodeID);
 
-          if ((eType == _nodeType)
-                 || (m_expandedNameTable.getType(eType) == _nodeType)) {
-            m_ancestors.addElement(makeNodeHandle(nodeID));
+            if (eType == nodeType) {
+              m_ancestors.addElement(makeNodeHandle(nodeID));
+            }
+            nodeID = _parent(nodeID);
           }
-          nodeID = _parent(nodeID);
+        } else {
+          while (nodeID != END) {
+            int eType = _exptype(nodeID);
+
+            if ((eType >= DTM.NTYPES
+                    && m_expandedNameTable.getType(eType) == nodeType)
+                || (eType < DTM.NTYPES && eType == nodeType)) {
+              m_ancestors.addElement(makeNodeHandle(nodeID));
+            }
+            nodeID = _parent(nodeID);
+          }
         }
         m_ancestorsPos = m_ancestors.size()-1;
 
@@ -1848,7 +1948,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
     public int next()
     {
       int node;
-      int eType;
+      int type;
 
       if (_startNode == NULL) {
         return NULL;
@@ -1859,15 +1959,14 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
       do
       {
         node++;
-        int type = _type(node);
+        type = _type(node);
 
         if (NULL == type ||!isDescendant(node)) {
           _currentNode = NULL;
           return END;
         }
       }
-      while ((eType = _exptype(node)) != _nodeType
-                 && m_expandedNameTable.getType(eType) != _nodeType);
+      while (type != _nodeType && _exptype(node) != _nodeType);
 
       _currentNode = node;
       return returnNode(makeNodeHandle(node));
@@ -2080,10 +2179,21 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
 
       //final int result = super.next();
       final int result = _currentNode;
+      int nodeType = _nodeType;
 
       _currentNode = END;
 
-      return (getExpandedTypeID(result) == _nodeType || getNodeType(result) == _nodeType) ? returnNode(result) : NULL;
+      if (nodeType >= DTM.NTYPES) {
+        if (getExpandedTypeID(result) == nodeType) {
+          return returnNode(result);
+        }
+      } else {
+        if (getNodeType(result) == nodeType) {
+          return returnNode(result);
+        }
+      }
+
+      return NULL;
     }
   }  // end of TypedSingletonIterator
 }
