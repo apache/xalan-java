@@ -161,7 +161,7 @@ public class ElemCopyOf extends ElemTemplateElement
         
         // Copy the tree.
         org.apache.xalan.utils.TreeWalker tw 
-          = new TreeWalker2Result(transformer, handler, this);
+          = new TreeWalker2Result(transformer, handler);
         Node pos;
         while(null != (pos = nl.nextNode()))
         {
