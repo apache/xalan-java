@@ -183,7 +183,7 @@ public class ElemExtensionCall extends ElemLiteralResult
    *
    * @throws TransformerException
    */
-  public void executeFallbacks(
+  private void executeFallbacks(
           TransformerImpl transformer)
             throws TransformerException
   {
@@ -211,7 +211,7 @@ public class ElemExtensionCall extends ElemLiteralResult
    *
    * @return true if this extension element has a <xsl:fallback> child element.
    */
-  public boolean hasFallbackChildren()
+  private boolean hasFallbackChildren()
   {
     for (ElemTemplateElement child = m_firstChild; child != null;
              child = child.m_nextSibling)

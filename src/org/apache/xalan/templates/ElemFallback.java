@@ -130,7 +130,9 @@ public class ElemFallback extends ElemTemplateElement
             throws TransformerException
   {
 
-    if (Constants.ELEMNAME_EXTENSIONCALL == m_parentNode.getXSLToken())
+    int parentElemType = m_parentNode.getXSLToken();
+    if (Constants.ELEMNAME_EXTENSIONCALL == parentElemType 
+        || Constants.ELEMNAME_UNDEFINED == parentElemType)
     {
 
       if (TransformerImpl.S_DEBUG)
@@ -146,7 +148,7 @@ public class ElemFallback extends ElemTemplateElement
 
       // Should never happen
       System.out.println(
-        "Error!  parent of xsl:fallback must be an extension element!");
+        "Error!  parent of xsl:fallback must be an extension or unknown element!");
     }
   }
 }
