@@ -67,7 +67,7 @@
 
   <ul>
     <li><link anchor="purpose">Node iterator function</link></li>
-    <li><link anchor="interface"><code>NodeIterator</code> interface</link></li>
+    <li><link anchor="interface">NodeIterator interface</link></li>
     <li><link anchor="baseclass">Node iterator base class</link></li>    
     <li><link anchor="details">Implementation details</link></li>    
   </ul>
@@ -96,7 +96,7 @@
     <code>org.apache.xalan.xsltc.NodeIterator</code>.</p>
 
     <p>The most basic operations in the <code>NodeIterator</code> interface are
-    for setting the iterators start-node. The <i>&quot;start-node&quot;</i> is
+    for setting the iterators start-node. The &quot;start-node&quot; is
     an index into the DOM. This index, and the axis of the iterator, determine
     the node-set that the iterator contains. The axis is programmed into the
     various node iterator implementations, while the start-node can be set by
@@ -113,7 +113,7 @@
     public NodeIterator reset();</source>
 
     <p>Two additional methods are provided to set the position within the
-    node-set. The first method below will <i>mark</i> the current node in the
+    node-set. The first method below will  mark  the current node in the
     node-set, while the second will (at any point) set the iterators position
     back to that node.</p><source>
     public void setMark();
@@ -134,8 +134,8 @@
 
     <p>All node iterators that implement an XPath axis will return the node-set
     in the natural order of the axis. For example, the iterator implementing the
-    <i>ancestor</i> axis will return nodes in reverse document order (bottom to
-    top), while the iterator implementing the <i>descendant</i> will return
+     ancestor  axis will return nodes in reverse document order (bottom to
+    top), while the iterator implementing the  descendant  will return
     nodes in document order. The node iterator interface has a method that can
     be used to determine if an iterator returns nodes in reverse document order:
     </p><source>
@@ -175,7 +175,7 @@
 
     <p>Now, there are three iterators at work here. The first iterator is the
     one that is wrapped inside the variable <code>my-nodes</code> - this
-    iterator contains <i>all</i> <code>&lt;baz/&gt;</code> elements in the
+    iterator contains  all  <code>&lt;baz/&gt;</code> elements in the
     document. The second iterator contains all <code>&lt;bar&gt;</code>
     elements under the current element (this is the iterator used by the
     outer <code>for-each</code> loop). The third and last iterator is the one
@@ -232,7 +232,7 @@
     <p>The <code>includeSelf()</code> is used with certain axis iterators that
     implement both the <code>ancestor</code> and <code>ancestor-or-self</code>
     axis and similar. One common implementation is used for these axes and
-    this method is used to signal that the <i>&quot;self&quot;</i> node should
+    this method is used to signal that the  &quot;self&quot;  node should
     also be included in the node-set.</p>
 
     <p>The <code>returnNode()</code> method is called by the implementation of
@@ -274,15 +274,15 @@
 
     <s3 title="StepIterator">
     
-    <p>The <code>StepIterator</code> is used to <i>chain</i> other iterators. A
+    <p>The <code>StepIterator</code> is used to  chain  other iterators. A
     very basic example is this XPath expression:</p><source>
     &lt;xsl:for-each select="foo/bar"></source>
 
     <p>To generate the appropriate node-set for this loop we need three
     iterators. The compiler will generate code that first creates a typed axis
-    iterator; the axis will be <i>child</i> and the type will be that assigned
+    iterator; the axis will be  child  and the type will be that assigned
     to <code>&lt;foo&gt;</code> elements. Then a second typed axis iterator will
-    be created; this also a <i>child</i>-iterator, but this one with the type
+    be created; this also a  child -iterator, but this one with the type
     assigned to <code>&lt;bar&gt;</code> elements. The third iterator is a
     step iterator that encapsulates the two axis iterators. The step iterator is
     the initialized with the context node.</p>
@@ -292,9 +292,9 @@
     the step iterator will scan all <code>foo</code> elements for any
     <code>bar</code> child elements. When a <code>StepIterator</code> is
     initialized with a start-node it passes the start node to the
-    <code>setStartNode()</code> method of its <i>source</i>-iterator (left).
+    <code>setStartNode()</code> method of its  source -iterator (left).
     It then calls <code>next()</code> on that iterator to get the start-node
-    for the <i>iterator</i> iterator (right):</p><source>
+    for the  iterator  iterator (right):</p><source>
     // Set start node for left-hand iterator...
     _source.setStartNode(_startNode);
     // ... and get start node for right-hand iterator from left-hand,
@@ -302,7 +302,7 @@
 
     <p>The step iterator will keep returning nodes from its right iterator until
     it runs out of nodes. Then a new start-node is retrieved by again calling
-    <code>next()</code> on the <i>source</i>-iterator. This is why the
+    <code>next()</code> on the  source -iterator. This is why the
     right-hand iterator always has to be restartable - even if the step iterator
     is placed inside a variable or parameter. This becomes even more complicated
     for step iterators that encapsulate other step iterators. We'll make our
@@ -314,9 +314,9 @@
     <p><img src="iterator_stack.gif" alt="iterator_stack.gif"/></p>
     <p><ref>Figure 1: Stacked step iterators</ref></p>
 
-    <p>The <i>&quot;foo&quot;</i> iterator is used to supply the second step
+    <p>The  &quot;foo&quot;  iterator is used to supply the second step
     iterator with start nodes. The second step iterator will pass these start
-    nodes to the <i>&quot;bar&quot;</i> iterator, which will be used to get the
+    nodes to the  &quot;bar&quot;  iterator, which will be used to get the
     start nodes for the third step iterator, and so on....</p>
 
     </s3>
@@ -342,7 +342,7 @@
 
     <p>The first predicate reduces the node set from containing all
     <code>&lt;foo&gt;</code> elements, to containing only those elements that
-    have a <i>&quot;blob&quot;</i> attribute with the value 'boo'. The
+    have a  &quot;blob&quot;  attribute with the value 'boo'. The
     <code>CurrentNodeListIterator</code> is used to contain this reduced
     node-set. The iterator is constructed by passing it a source iterator (in
     this case an iterator that contains all <code>&lt;foo&gt;</code> elements)
