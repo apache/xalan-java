@@ -791,8 +791,8 @@ abstract public class SerializerBase
 
     /**
      * Push a boolean state based on if the name of the element
-     * is found in the list of qnames.  A state is always pushed,
-     * one way or the other.
+     * is found in the list of qnames.  A state is only pushed if
+     * there were some cdata-section-names were specified.
      *
      * @param namespaceURI Should be a non-null reference to the namespace URL
      *        of the element that owns the state, or empty string.
@@ -841,13 +841,8 @@ abstract public class SerializerBase
                     break;
                 }
             }
+            m_cdataSectionStates.push(b);
         }
-        else
-        {
-            b = m_cdataSectionStates.peekOrFalse();
-        }
-
-        m_cdataSectionStates.push(b);
     }
 
     /**

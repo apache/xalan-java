@@ -615,7 +615,7 @@ public class ToHTMLStream extends ToStream
     }
 
     /** The name of the current element. */
-    private String m_currentElementName = null;
+//    private String m_currentElementName = null;
 
     /**
      * Receive notification of the beginning of a document.
@@ -727,9 +727,15 @@ public class ToHTMLStream extends ToStream
         // System.out.println("SerializerToHTML#startElement("+namespaceURI+", "+localName+", "+name+", ...);");
 
         if (m_cdataTagOpen)
-            closeCDATA();
+        {
+			closeCDATA();
+			m_cdataTagOpen = false;
+        }
         else if (m_needToCallStartDocument)
-            startDocumentInternal();
+        {
+			startDocumentInternal();
+			m_needToCallStartDocument = false;
+        }
             
 //        if (m_needToOutputDocTypeDecl 
 //        && ( (null != getDoctypeSystem()) || (null!= getDoctypePublic())))
@@ -757,11 +763,7 @@ public class ToHTMLStream extends ToStream
         }
 
         ElemDesc elemDesc = getElemDesc(name);
-        // remember for later
-        m_elementLocalName = localName;
-        m_elementURI = namespaceURI;
-        m_elementName = name;
-        m_elementDesc = elemDesc;
+ 
         
         // ElemDesc parentElemDesc = getElemDesc(m_currentElementName);
         boolean isBlockElement = elemDesc.is(ElemDesc.BLOCK);
@@ -772,7 +774,7 @@ public class ToHTMLStream extends ToStream
             m_ispreserve = false;
         else if (
             m_doIndent
-            && (null != m_currentElementName)
+            && (null != m_elementName)
             && (!m_inBlockElem || isBlockElement) /* && !isWhiteSpaceSensitive */
             )
         {
@@ -782,10 +784,14 @@ public class ToHTMLStream extends ToStream
         }
 
         m_inBlockElem = !isBlockElement;
+        
+		// remember for later
+		 m_elementLocalName = localName;
+		 m_elementURI = namespaceURI;
+		 m_elementName = name;
+		 m_elementDesc = elemDesc;        
 
         m_isRawStack.push(elemDesc.is(ElemDesc.RAW));
-
-        m_currentElementName = name;
 
         // m_parents.push(m_currentElementName);
         m_writer.write('<');
@@ -803,7 +809,10 @@ public class ToHTMLStream extends ToStream
         if (isHeadElement)
         {
             if (m_startTagOpen)
+            {
                 closeStartTag();
+                m_startTagOpen = false;
+            }
 
             if (!m_omitMetaTag)
             {
@@ -896,18 +905,23 @@ public class ToHTMLStream extends ToStream
             m_writer.write(name);
             m_writer.write('>');
 
-            m_currentElementName = name;
+            m_elementName = name;
 
-            m_cdataSectionStates.pop();
-            if (!m_preserves.isEmpty())
+            if (m_cdataSectionElements != null)
+                m_cdataSectionStates.pop();
+            if (m_doIndent && !m_preserves.isEmpty())
                 m_preserves.pop();
         }
         else
         {
+            if (m_tracer != null)
+                super.fireStartElem(m_elementName);
             /* process any attributes gathered after the
              * startElement(String) call
              */
-            processAttributes();
+            int nAttrs = m_attributes.getLength();
+            if (nAttrs > 0)
+                processAttributes(nAttrs);
             if (!elemDesc.is(ElemDesc.EMPTY))
             {
                 m_writer.write('>');
@@ -1435,9 +1449,9 @@ public class ToHTMLStream extends ToStream
         throws org.xml.sax.SAXException
     {
 
-        if ((null != m_currentElementName)
-            && (m_currentElementName.equalsIgnoreCase("SCRIPT")
-                || m_currentElementName.equalsIgnoreCase("STYLE")))
+        if ((null != m_elementName)
+            && (m_elementName.equalsIgnoreCase("SCRIPT")
+                || m_elementName.equalsIgnoreCase("STYLE")))
         {
             try
             {
@@ -1576,21 +1590,14 @@ public class ToHTMLStream extends ToStream
      * calls for an element from calls to 
      * attribute(String name, String value)
      * 
-     * @param attribSAX official attributes from a SAX call to startElement
+     * @param nAttrs the number of attributes in m_attributes 
+     * to be processed
      *
      * @throws org.xml.sax.SAXException
      */
-    public void processAttributes()
+    public void processAttributes(int nAttrs)
         throws IOException,SAXException
     {
-
-        // finish processing attributes, time to fire off the start element event
-        if (m_tracer != null)
-            super.fireStartElem(m_elementName);
-                
-        int nAttrs = 0;
-        if ((nAttrs = m_attributes.getLength()) > 0)
-        {
             /* 
              * process the collected attributes
              */
@@ -1601,15 +1608,7 @@ public class ToHTMLStream extends ToStream
                     m_attributes.getValue(i),
                     m_elementDesc);
             }
-            
-
-                     
-            
-
-                     
             m_attributes.clear();
-
-        }
     }
 
     /**
@@ -1620,31 +1619,36 @@ public class ToHTMLStream extends ToStream
      */
     protected void closeStartTag() throws SAXException
     {
-        if (m_startTagOpen)
-        {
-            try
-            {
-                
-            processAttributes();
+			try
+			{
 
-            m_writer.write('>');
-
-            /* whether Xalan or XSLTC, we have the prefix mappings now, so
-             * lets determine if the current element is specified in the cdata-
-             * section-elements list.
-             */
-            pushCdataSectionState();
-
-            m_isprevtext = false;
-            m_preserves.push(m_ispreserve);
-            m_startTagOpen = false;
+            // finish processing attributes, time to fire off the start element event
+            if (m_tracer != null)
+                super.fireStartElem(m_elementName);  
             
-            }
-            catch(IOException e)
+            int nAttrs = m_attributes.getLength();   
+            if (nAttrs>0) 
+			    processAttributes(nAttrs);
+
+			m_writer.write('>');
+
+			/* whether Xalan or XSLTC, we have the prefix mappings now, so
+			 * lets determine if the current element is specified in the cdata-
+			 * section-elements list.
+			 */
+			if (m_cdataSectionElements != null) 
+			    pushCdataSectionState();
+            if (m_doIndent)
             {
-                throw new SAXException(e);
+			    m_isprevtext = false;
+		        m_preserves.push(m_ispreserve);
             }
-        }
+            
+			}
+			catch(IOException e)
+			{
+				throw new SAXException(e);
+			}
     }
     /**
      * Initialize the serializer with the specified output stream and output

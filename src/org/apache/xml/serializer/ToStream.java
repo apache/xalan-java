@@ -123,18 +123,31 @@ abstract public class ToStream extends SerializerBase
     /**
      * Stack to keep track of whether or not we need to
      * preserve whitespace.
+     * 
+     * Used to push/pop values used for the field m_ispreserve, but
+     * m_ispreserve is only relevant if m_doIndent is true.
+     * If m_doIndent is false this field has no impact.
+     * 
      */
     protected BoolStack m_preserves = new BoolStack();
 
     /**
      * State flag to tell if preservation of whitespace
-     * is important.
+     * is important. 
+     * 
+     * Used only in shouldIndent() but only if m_doIndent is true.
+     * If m_doIndent is false this flag has no impact.
+     * 
      */
     protected boolean m_ispreserve = false;
 
     /**
      * State flag that tells if the previous node processed
      * was text, so we can tell if we should preserve whitespace.
+     * 
+     * Used in endDocument() and shouldIndent() but
+     * only if m_doIndent is true. 
+     * If m_doIndent is false this flag has no impact.
      */
     protected boolean m_isprevtext = false;
 
@@ -191,6 +204,9 @@ abstract public class ToStream extends SerializerBase
 
     /**
      * Flag to signal that a newline should be added.
+     * 
+     * Used only in indent() which is called only if m_doIndent is true.
+     * If m_doIndent is false this flag has no impact.
      */
     boolean m_startNewLine;
 
@@ -1442,7 +1458,11 @@ abstract public class ToStream extends SerializerBase
         }
 
         if (m_startTagOpen)
+        {
             closeStartTag();
+            m_startTagOpen = false;
+        }
+            
 
         int startClean = start;
         int lengthClean = 0;
@@ -1830,21 +1850,12 @@ abstract public class ToStream extends SerializerBase
      * Process the colleced attributes from SAX- like calls for an element from
      * calls to addattibute(String name, String value)
      * 
-     *
+     * @param nAttrs the number of attributes in m_attributes to be processed
      * @throws org.xml.sax.SAXException
      */
-    public void processAttributes() throws IOException, SAXException
+    public void processAttributes(int nAttrs) throws IOException, SAXException
     {
 
-        // finish processing attributes, time to fire off the start element event
-        if (m_tracer != null)
-            super.fireStartElem(m_elementName);
-
-        int nAttrs = 0;
-        // if passed real SAX attributes, then process only them
-
-        if ((nAttrs = m_attributes.getLength()) > 0)
-        {
             /* real SAX attributes are not passed in, so process the 
              * attributes that were collected after the startElement call.
              * _attribVector is a "cheap" list for Stream serializer output
@@ -1869,8 +1880,6 @@ abstract public class ToStream extends SerializerBase
              * .removeAllElements() is used as it is from JDK 1.1.8
              */
             m_attributes.clear();
-
-        }
     }
 
     /**
@@ -1947,10 +1956,11 @@ abstract public class ToStream extends SerializerBase
         {
             if (m_startTagOpen)
             {
-                /* The start tag is still open and we have hit
-                 * endElement, so close it down
-                 */
-                processAttributes();
+                if (m_tracer != null)
+                    super.fireStartElem(m_elementName);
+                int nAttrs = m_attributes.getLength();
+                if (nAttrs > 0)
+                    processAttributes(nAttrs);
                 if (m_spaceBeforeClose)
                     m_writer.write(" />");
                 else
@@ -1972,7 +1982,8 @@ abstract public class ToStream extends SerializerBase
                 m_writer.write('/');
                 m_writer.write(name);
                 m_writer.write('>');
-                m_cdataSectionStates.pop();
+                if (m_cdataSectionElements != null)
+                    m_cdataSectionStates.pop();
             }
         }
         catch (IOException e)
@@ -1980,7 +1991,7 @@ abstract public class ToStream extends SerializerBase
             throw new SAXException(e);
         }
 
-        if (!m_startTagOpen)
+        if (!m_startTagOpen && m_doIndent)
         {
             m_ispreserve = m_preserves.isEmpty() ? false : m_preserves.pop();
         }
@@ -2324,7 +2335,11 @@ abstract public class ToStream extends SerializerBase
 
             try
             {
-                processAttributes();
+                if (m_tracer != null)
+                    super.fireStartElem(m_elementName);
+                int nAttrs = m_attributes.getLength();
+                if (nAttrs > 0)
+                    processAttributes(nAttrs);
                 m_writer.write('>');
             }
             catch (IOException e)
@@ -2336,12 +2351,14 @@ abstract public class ToStream extends SerializerBase
              * lets determine if the current element is specified in the cdata-
              * section-elements list.
              */
-            pushCdataSectionState();
+            if (m_cdataSectionElements != null)
+                pushCdataSectionState();
 
-            m_isprevtext = false;
-            m_preserves.push(m_ispreserve);
-            m_startTagOpen = false;
-
+            if (m_doIndent)
+            {
+                m_isprevtext = false;
+                m_preserves.push(m_ispreserve);
+            }
         }
 
     }
