@@ -282,6 +282,13 @@ public class TransformerImpl extends XMLFilterImpl
           // What can we do?
           // TODO: User diagnostics.
         }
+        try
+        {
+          reader.setFeature("http://apache.org/xml/features/validation/dynamic", true);
+        }
+        catch(SAXException se)
+        {
+        }
         
         // Get the input content handler, which will handle the 
         // parse events and create the source tree.
