@@ -78,7 +78,7 @@ public class SQLDocument extends DTMDocument
 
   /**
    */
-  private boolean DEBUG = true;
+  private boolean DEBUG = false;
 
   /**
    */
