@@ -444,21 +444,24 @@ public final class VariableStack implements Cloneable
       org.apache.xalan.templates.ElemTemplateElement prev =
         (org.apache.xalan.templates.ElemTemplateElement) prefixResolver;
 
-      while ( !(prev.getParentNode() instanceof org.apache.xalan.templates.Stylesheet) )
+      if (!(prev instanceof org.apache.xalan.templates.Stylesheet))
       {
-        org.apache.xalan.templates.ElemTemplateElement savedprev = prev;
-
-        while (null != (prev = prev.getPreviousSiblingElem()))
+        while ( !(prev.getParentNode() instanceof org.apache.xalan.templates.Stylesheet) )
         {
-          if (prev instanceof org.apache.xalan.templates.ElemVariable)
-          {
-            vvar = (org.apache.xalan.templates.ElemVariable) prev;
+          org.apache.xalan.templates.ElemTemplateElement savedprev = prev;
 
-            if (vvar.getName().equals(qname))
-              return getLocalVariable(xctxt, vvar.getIndex());
+          while (null != (prev = prev.getPreviousSiblingElem()))
+          {
+            if (prev instanceof org.apache.xalan.templates.ElemVariable)
+            {
+              vvar = (org.apache.xalan.templates.ElemVariable) prev;
+
+              if (vvar.getName().equals(qname))
+                return getLocalVariable(xctxt, vvar.getIndex());
+            }
           }
+          prev = savedprev.getParentElem();
         }
-        prev = savedprev.getParentElem();
       }
 
       vvar = prev.getStylesheetRoot().getVariableOrParamComposed(qname);

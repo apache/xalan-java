@@ -206,27 +206,30 @@ public class Variable extends Expression
 
           org.apache.xalan.templates.ElemTemplateElement prev = 
             (org.apache.xalan.templates.ElemTemplateElement) prefixResolver;
-            
-          while ( !(prev.getParentNode() instanceof org.apache.xalan.templates.Stylesheet) )
-          {
-            org.apache.xalan.templates.ElemTemplateElement savedprev = prev;
 
-            while (null != (prev = prev.getPreviousSiblingElem()))
+          if (!(prev instanceof org.apache.xalan.templates.Stylesheet))
+          {            
+            while ( !(prev.getParentNode() instanceof org.apache.xalan.templates.Stylesheet) )
             {
-              if(prev instanceof org.apache.xalan.templates.ElemVariable)
+              org.apache.xalan.templates.ElemTemplateElement savedprev = prev;
+
+              while (null != (prev = prev.getPreviousSiblingElem()))
               {
-                vvar = (org.apache.xalan.templates.ElemVariable) prev;
-                
-                if (vvar.getName().equals(m_qname))
+                if(prev instanceof org.apache.xalan.templates.ElemVariable)
                 {
-                  m_index = vvar.getIndex();
-                  m_isGlobal = false;
-                  m_fixUpWasCalled = true;
-                  return execute(xctxt);
+                  vvar = (org.apache.xalan.templates.ElemVariable) prev;
+                
+                  if (vvar.getName().equals(m_qname))
+                  {
+                    m_index = vvar.getIndex();
+                    m_isGlobal = false;
+                    m_fixUpWasCalled = true;
+                    return execute(xctxt);
+                  }
                 }
               }
+              prev = savedprev.getParentElem();
             }
-            prev = savedprev.getParentElem();
           }
 
           vvar = prev.getStylesheetRoot().getVariableOrParamComposed(m_qname);
