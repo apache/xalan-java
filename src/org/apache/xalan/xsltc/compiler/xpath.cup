@@ -452,9 +452,10 @@ AbsoluteLocationPath ::= SLASH
 AbbreviatedRelativeLocationPath ::= RelativeLocationPath:rlp DSLASH Step:step
         {: 
 	   Step nodeStep;
-	   final Step temp = (Step) step;
+	   final Step temp = (Step)step;
+           final int  axis = temp.getAxis();
            // THIS CODE IS NOT GOOD - PREDICATES ARE MISPLACED!!!!!
-	   if (temp.getAxis() == Axis.CHILD) {
+	   if ((axis == Axis.CHILD) || (axis == Axis.ATTRIBUTE)) {
 	       // Expand 'rlp//child::E' into 'rlp/descendant::E'
 	       nodeStep = new Step(Axis.DESCENDANT, 
 				   temp.getNodeType(), 

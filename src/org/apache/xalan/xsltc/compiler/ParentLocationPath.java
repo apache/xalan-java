@@ -73,16 +73,25 @@ final class ParentLocationPath extends RelativeLocationPath {
     private final RelativeLocationPath _path;
     private Type stype;
     private boolean _orderNodes = false;
+    private boolean _axisMismatch = false;
 
     public ParentLocationPath(RelativeLocationPath path, Expression step) {
 	_path = path;
 	_step = step;
 	_path.setParent(this);
 	_step.setParent(this);
+
+	if (_step instanceof Step) {
+	    _axisMismatch = checkAxisMismatch();
+	}
     }
 		
     public void setAxis(int axis) {
 	_path.setAxis(axis);
+    }
+
+    public int getAxis() {
+	return _path.getAxis();
     }
 
     public RelativeLocationPath getPath() {
@@ -107,19 +116,74 @@ final class ParentLocationPath extends RelativeLocationPath {
 	stype = _step.typeCheck(stable);
 	_path.typeCheck(stable);
 
-	if (descendantAxis() && _path.descendantAxis())
-	    _orderNodes = true;
+	if (_axisMismatch) enableNodeOrdering();
 
 	return _type = Type.NodeSet;	
     }
 
-    public boolean descendantAxis() {
-	if (_step instanceof Step) {
-	    return ((Step)_step).descendantAxis();
+    public void enableNodeOrdering() {
+	SyntaxTreeNode parent = getParent();
+	if (parent instanceof ParentLocationPath)
+	    ((ParentLocationPath)parent).enableNodeOrdering();
+	else {
+	    _orderNodes = true;
 	}
-	else if (_step instanceof ParentLocationPath) {
-	    return ((ParentLocationPath)_step).descendantAxis();
-	}
+    }
+
+    /**
+     * This method is used to determine if this parent location path is a
+     * combination of two step's with axes that will create duplicate or
+     * unordered nodes.
+     */
+    public boolean checkAxisMismatch() {
+
+	int left = _path.getAxis();
+	int right = ((Step)_step).getAxis();
+
+	if (((left == Axis.ANCESTOR) || (left == Axis.ANCESTORORSELF)) &&
+	    ((right == Axis.CHILD) ||
+	     (right == Axis.DESCENDANT) ||
+	     (right == Axis.DESCENDANTORSELF) ||
+	     (right == Axis.PARENT) ||
+	     (right == Axis.PRECEDING) ||
+	     (right == Axis.PRECEDINGSIBLING)))
+	    return true;
+
+	if ((left == Axis.CHILD) &&
+	    (right == Axis.ANCESTOR) ||
+	    (right == Axis.ANCESTORORSELF) ||
+	    (right == Axis.PARENT) ||
+	    (right == Axis.PRECEDING))
+	    return true;
+
+	if ((left == Axis.DESCENDANT) || (left == Axis.DESCENDANTORSELF))
+	    return true;
+
+	if (((left == Axis.FOLLOWING) || (left == Axis.FOLLOWINGSIBLING)) &&
+	    ((right == Axis.FOLLOWING) ||
+	     (right == Axis.PARENT) ||
+	     (right == Axis.PRECEDING) ||
+	     (right == Axis.PRECEDINGSIBLING)))
+	    return true;
+
+	if (((left == Axis.PRECEDING) || (left == Axis.PRECEDINGSIBLING)) &&
+	    ((right == Axis.DESCENDANT) ||
+	     (right == Axis.DESCENDANTORSELF) ||
+	     (right == Axis.FOLLOWING) ||
+	     (right == Axis.FOLLOWINGSIBLING) ||
+	     (right == Axis.PARENT) ||
+	     (right == Axis.PRECEDING) ||
+	     (right == Axis.PRECEDINGSIBLING)))
+	    return true;
+
+	return false;
+    }
+
+    public final boolean descendantAxis() {
+	if (_path.descendantAxis())
+	    return true;
+	if (_step instanceof RelativeLocationPath)
+	    return ((RelativeLocationPath)_step).descendantAxis();
 	return(false);
     }
 

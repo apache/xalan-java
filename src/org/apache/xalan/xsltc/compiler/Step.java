@@ -206,17 +206,18 @@ final class Step extends RelativeLocationPath {
 	_hadPredicates = hasPredicates();
 
 	if (isAbbreviatedDot()) {
-	    _type = Type.Node;
+	    if (hasParent())
+		_type = Type.NodeSet;
+	    else
+		_type = Type.Node;
 	}
 	else if (isAbbreviatedDDot()) {
 	    _type = Type.NodeSet;
 	}
 	else {
 	    // Special case for '@attr' with no parent or predicates
-	    if (_axis == Axis.ATTRIBUTE
-		&& _nodeType != NodeTest.ATTRIBUTE
-		&& !hasParent()
-		&& !hasPredicates()) {
+	    if ((_axis == Axis.ATTRIBUTE) && (_nodeType!=NodeTest.ATTRIBUTE) &&
+		(!hasParent()) && (!hasPredicates())) {
 		_type = Type.Node;
 	    }
 	    else {
@@ -231,6 +232,34 @@ final class Step extends RelativeLocationPath {
 	    }
 	}
 	return _type;
+    }
+
+    /**
+     * This method is used to determine whether the node-set produced by
+     * this step must be reversed before returned to the parent element.
+     * <xsl:apply-templates> should always return nodes in document order,
+     * while others, such as <xsl:value-of> and <xsl:for-each> should return
+     * nodes in the order of the axis in use.
+     */
+    private boolean reverseNodeSet() {
+	// Check if axis returned nodes in reverse document order
+	if ((_axis == Axis.ANCESTOR)  || (_axis == Axis.ANCESTORORSELF) ||
+	    (_axis == Axis.PRECEDING) || (_axis == Axis.PRECEDINGSIBLING)) {
+
+	    // Do not reverse nodes if we have a parent step that will reverse
+	    // the nodes for us.
+	    if (hasParent()) return false;
+	    if (hasPredicates()) return false;
+	    if (_hadPredicates) return false;
+	    
+	    // Check if this step occured under an <xsl:apply-templates> element
+	    SyntaxTreeNode parent = this;
+	    do {
+		parent = parent.getParent();
+		if (parent instanceof ApplyTemplates) return true;
+	    } while (parent != null);
+	}
+	return false;
     }
 
     /**
@@ -274,8 +303,18 @@ final class Step extends RelativeLocationPath {
 	    }
 
 	    // Special case for '.'
-	    if (_type == Type.Node) {
-		il.append(methodGen.loadContextNode());
+	    if (isAbbreviatedDot()) {
+		if (_type == Type.Node) {
+		    il.append(methodGen.loadContextNode());
+		}
+		else {
+		    il.append(new NEW(cpg.addClass(SINGLETON_ITERATOR)));
+		    il.append(DUP);
+		    il.append(methodGen.loadContextNode());
+		    final int init = cpg.addMethodref(SINGLETON_ITERATOR, "<init>",
+						      "(" + NODE_SIG +")V");
+		    il.append(new INVOKESPECIAL(init));
+		}
 		return;
 	    }
 
@@ -340,7 +379,7 @@ final class Step extends RelativeLocationPath {
 
 		// Now, for reverse iterators we may need to re-arrange the
 		// node ordering (ancestor-type iterators).
-		if (!(getParent() instanceof ForEach) && (!hasParent()))
+		if (reverseNodeSet())
 		    orderIterator(classGen, methodGen);
 		break;
 	    }
@@ -476,16 +515,12 @@ final class Step extends RelativeLocationPath {
 			      MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	if ((_axis == Axis.ANCESTOR)  || (_axis == Axis.ANCESTORORSELF) ||
-	    (_axis == Axis.PRECEDING) || (_axis == Axis.PRECEDINGSIBLING)) {
-	    final int init = cpg.addMethodref(REVERSE_ITERATOR, "<init>",
-					      "("+NODE_ITERATOR_SIG+")V");
-
-	    il.append(new NEW(cpg.addClass(REVERSE_ITERATOR)));
-	    il.append(DUP_X1);
-	    il.append(SWAP);
-	    il.append(new INVOKESPECIAL(init));
-	}
+	final int init = cpg.addMethodref(REVERSE_ITERATOR, "<init>",
+					  "("+NODE_ITERATOR_SIG+")V");
+	il.append(new NEW(cpg.addClass(REVERSE_ITERATOR)));
+	il.append(DUP_X1);
+	il.append(SWAP);
+	il.append(new INVOKESPECIAL(init));
     }
 
 
