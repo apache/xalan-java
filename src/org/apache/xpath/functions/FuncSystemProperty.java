@@ -83,8 +83,11 @@ import org.apache.xpath.objects.XString;
 public class FuncSystemProperty extends FunctionOneArg
 {
 
-  /** The name of the property file where the name will be stored.  */
-  static String XSLT_PROPERTIES = "/org/apache/xalan/res/XSLTInfo.properties";
+  /** 
+   * The path/filename of the property file: XSLTInfo.properties  
+   * Maintenance note: see also org.apache.xalan.processor.TransformerFactoryImpl.XSLT_PROPERTIES
+   */
+  static String XSLT_PROPERTIES = "org/apache/xalan/res/XSLTInfo.properties";
 	
 	/** a zero length Class array used in loadPropertyFile() */
   private static final Class[] NO_CLASSES = new Class[0];
@@ -205,8 +208,8 @@ public class FuncSystemProperty extends FunctionOneArg
   /**
    * Retrieve a propery bundle from a specified file
    * 
-   * @param file The string name of the property file.  The file is loaded from 
-   *             the workplace base directory
+   * @param file The string name of the property file.  The name 
+   * should already be fully qualified as path/filename
    * @param target The target property bag the file will be placed into.
    */
   public void loadPropertyFile(String file, Properties target)
@@ -220,13 +223,17 @@ public class FuncSystemProperty extends FunctionOneArg
         java.lang.reflect.Method getCCL = Thread.class.getMethod("getContextClassLoader", NO_CLASSES);
         if (getCCL != null) {
           ClassLoader contextClassLoader = (ClassLoader) getCCL.invoke(Thread.currentThread(), NO_OBJS);
-          is = contextClassLoader.getResourceAsStream("org/apache/xpath/functions/" + file);
+          is = contextClassLoader.getResourceAsStream(file); // file should be already fully specified
         }
       }
       catch (Exception e) {}
 
-      if (is == null);
-        is = FuncSystemProperty.class.getResourceAsStream(file);
+      if (is == null) {
+        // NOTE! For the below getResourceAsStream in Sun JDK 1.1.8M
+        //  we apparently must add the leading slash character - I 
+        //  don't know why, but if it's not there, we throw an NPE from the below loading
+        is = FuncSystemProperty.class.getResourceAsStream("/" + file); // file should be already fully specified
+      }
 
       // get a buffered version
       BufferedInputStream bis = new BufferedInputStream(is);

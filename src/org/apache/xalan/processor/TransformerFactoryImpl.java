@@ -112,9 +112,12 @@ import java.util.Enumeration;
 public class TransformerFactoryImpl extends SAXTransformerFactory
 {
 
-  /** The Xalan properties file. */
+  /** 
+   * The path/filename of the property file: XSLTInfo.properties  
+   * Maintenance note: see also org.apache.xpath.functions.FuncSystemProperty.XSLT_PROPERTIES
+   */
   public static String XSLT_PROPERTIES =
-    "/org/apache/xalan/res/XSLTInfo.properties";
+    "org/apache/xalan/res/XSLTInfo.properties";
 
   /** Flag tells if the properties file has been loaded to the system */
   private static boolean isInited = false;
@@ -164,13 +167,16 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
             java.lang.reflect.Method getCCL = Thread.class.getMethod("getContextClassLoader", NO_CLASSES);
             if (getCCL != null) {
               ClassLoader contextClassLoader = (ClassLoader) getCCL.invoke(Thread.currentThread(), NO_OBJS);
-              is = contextClassLoader.getResourceAsStream("org/apache/xalan/processor/" + file);
+              is = contextClassLoader.getResourceAsStream(file); // file should be already fully specified
             }
           }
           catch (Exception e) {}
 
           if (is == null) {
-            is = TransformerFactoryImpl.class.getResourceAsStream(file);
+            // NOTE! For the below getResourceAsStream in Sun JDK 1.1.8M
+            //  we apparently must add the leading slash character - I 
+            //  don't know why, but if it's not there, we throw an NPE from the below loading
+            is = TransformerFactoryImpl.class.getResourceAsStream("/" + file); // file should be already fully specified
           }
 
           // get a buffered version
