@@ -292,9 +292,10 @@ public class XPath implements Serializable
       TransformerException te = new TransformerException(msg,
               getLocator(), e);
       ErrorListener el = xctxt.getErrorListener();
+      // te.printStackTrace();
       if(null != el) // defensive, should never happen.
       {
-        el.error(te);
+        el.fatalError(te);
       }
       else
         throw te;
