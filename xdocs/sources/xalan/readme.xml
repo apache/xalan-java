@@ -79,7 +79,7 @@
    </ul>
      <anchor name="done"/>
      <s3 title="Changes since &xslt4j; 2.2.D6">
-     <p>&xslt4j-current; is a production release. For enhanced performance, it incorporates the 
+     <p>&xslt4j-current; is a Developer release. For enhanced performance, it incorporates the 
      <link idref="dtm">DTM</link>.</p>
      &done-j;
      </s3>

@@ -64,7 +64,71 @@ for the TrAX API.
  PR: n/a
  Obtained from: n/a
  Submitted by: Erwin Bolwidt &lt;ejb@klomp.org&gt;
- Reviewed by: Morten Jorgensen &lt;morten@xml.apache.org&gt;<br/><br/></li></ul>
+ Reviewed by: Morten Jorgensen &lt;morten@xml.apache.org&gt;<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler Parser.java
+ SyntaxTreeNode.java XSLTC.java<br/><ref>Committer's log entry: </ref>Cleaned up the XSLTC compiler class in an attempt to make it more flexible.
+ This class was originally written as a command-line interface, but it has
+ now grown huge and messy. I separated the command-line stuff from the
+ methods that make up the actual functionality and made some methods public.
+ This is part of the preparation for our new implementation of the JAXP
+ Templates object.
+ PR: n/a
+ Obtained from: n.a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/runtime DefaultRun.java<br/><ref>Added: </ref>java/src/org/apache/xalan/xsltc/cmdline Compile.java
+ Transform.java<br/><ref>Committer's log entry: </ref>Extracted the command-line stuff from the core XSLTC packages. The command-
+ line handling is now in xalan.xsltc.cmdline.Compile and
+ xalan.xsltc.cmdline.Transform. The command-line stuff is still left in
+ xalan.xsltc.compiler.XSLTC and xalan.xsltc.runtime.DefaultRun for backwards
+ compatability. This should be removed shortly.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/cmdline Compile.java
+ java/src/org/apache/xalan/xsltc/compiler XSLTC.java<br/><ref>Added: </ref>java/src/org/apache/xalan/xsltc/cmdline/getopt GetOpt.java
+ GetOptsException.java IllegalArgumentException.java
+ MissingOptArgException.java
+ java/src/org/apache/xalan/xsltc/trax TemplatesImpl.java
+ TransformerImpl.java<br/><ref>Removed: </ref>java/src/org/apache/xalan/xsltc/util/getopt GetOpt.java
+ GetOptsException.java IllegalArgumentException.java
+ MissingOptArgException.java<br/><ref>Committer's log entry: </ref>Moved the org.apache.xalan.xsltc.util.getopt package to
+ org.apache.xalan.xsltc.cmdline.getopt. Also added some skeleton
+ code in a new org.apache.xalan.xsltc.trax directory.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/trax TransletTemplates.java<br/><ref>Committer's log entry: </ref>minor adjustment
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>tmiller@apache.org<ref> on </ref>07/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/trax
+ TransformerFactoryImpl.java<br/><ref>Committer's log entry: </ref>removed obselete try/catch<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler XSLTC.java
+ java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java
+ java/src/org/apache/xalan/xsltc/trax TemplatesImpl.java
+ TransformerFactoryImpl.java TransformerImpl.java<br/><ref>Removed: </ref>java/src/org/apache/xalan/xsltc/trax TransletTemplates.java<br/><ref>Committer's log entry: </ref>A first stab at our new TrAX design.`
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/13/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler XSLTC.java
+ java/src/org/apache/xalan/xsltc/trax TemplatesImpl.java
+ TransformerFactoryImpl.java TransformerImpl.java<br/><ref>Committer's log entry: </ref>A few minor adjustments to yesterdays JAXP/TrAX implementation. These is one
+ change in the way the compiler (XSLTC) generates bytecode arrays, and the
+ rest is basically a cleanup of error reporting and a few added comments.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/16/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/dom DocumentCache.java<br/><ref>Added: </ref>java/src/org/apache/xalan/xsltc/trax OutputSettings.java<br/><ref>Committer's log entry: </ref>Reduced the refresh rate of the DocumentCache to 1 second.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>amiro@apache.org<ref> on </ref>07/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/dom DocumentCache.java<br/><ref>Committer's log entry: </ref>Submitted by: Tom Amiro
+ Fixes bug 1591. Changed the lastModified() method to return
+ the correct timestamp for local files beginnig with the "file:"
+ protocol. Incorporated Brian Ewin's suggestion to use URLdecode.
+ Todd Miller and Morten Jorgensen<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>07/17/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/dom DOMImpl.java
+ java/src/org/apache/xalan/xsltc/trax TemplatesImpl.java
+ TransformerFactoryImpl.java TransformerImpl.java<br/><ref>Committer's log entry: </ref>Added some javadoc comments to our trax stuff. Added preliminary support
+ for getting/setting output properties, and for getting/setting URL resolvers.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org<br/><br/></li></ul>
 </s3>
 <anchor name="xsltcconf"/>
 <s3 title="XSLT 1.0 Conformance and Extensions">

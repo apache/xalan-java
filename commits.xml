@@ -323,4 +323,405 @@ variables and parameters from StylesheetRoot.</Log>
 <Modified>java/src/org/apache/xml/dtm/ref DTMNodeProxy.java</Modified>
 <Log>Now implements DocumentFragment.</Log>
 </Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>07/11/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/res XSLTInfo.properties</Modified>
+<Log>Updated version to 2.2.0.</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>07/11/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor XSLProcessorVersion.java</Modified>
+<Log>Updated version to 2.2.0.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/11/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref DTMNodeProxy.java</Modified>
+<Log>Fixed very ugly bug, left-over from DTM1, in getValue, where +1 was being 
+added per the old attribute structure of DTM1.</Log>
+</Commit>
+<Commit category="core">
+<Who>johng@apache.org</Who>
+<DateCommitted>07/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql ConnectionPool.java
+ DefaultConnectionPool.java PooledConnection.java
+ QueryParameter.java XConnection.java</Modified>
+<Added>java/src/org/apache/xalan/lib/sql ConnectionPoolManager.java
+ ObjectArray.java SQLDocument.java
+ SQLErrorDocument.java</Added>
+<Removed>java/src/org/apache/xalan/lib/sql Column.java
+ ColumnAttribute.java ColumnData.java
+ ColumnHeader.java ExtensionError.java Row.java
+ RowSet.java SQLExtensionError.java
+ StreamableNode.java XConnectionPoolManager.java
+ XStatement.java</Removed>
+<Log>First round of changes to port DOM mode to DTM Mode
+ Submitted by: John Gentilin mailto://johng@apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>07/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler Parser.java
+ SyntaxTreeNode.java XSLTC.java</Modified>
+<Log>Cleaned up the XSLTC compiler class in an attempt to make it more flexible.
+ This class was originally written as a command-line interface, but it has
+ now grown huge and messy. I separated the command-line stuff from the
+ methods that make up the actual functionality and made some methods public.
+ This is part of the preparation for our new implementation of the JAXP
+ Templates object.
+ PR: n/a
+ Obtained from: n.a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>07/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/runtime DefaultRun.java</Modified>
+<Added>java/src/org/apache/xalan/xsltc/cmdline Compile.java
+ Transform.java</Added>
+<Log>Extracted the command-line stuff from the core XSLTC packages. The command-
+ line handling is now in xalan.xsltc.cmdline.Compile and
+ xalan.xsltc.cmdline.Transform. The command-line stuff is still left in
+ xalan.xsltc.compiler.XSLTC and xalan.xsltc.runtime.DefaultRun for backwards
+ compatability. This should be removed shortly.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>07/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/cmdline Compile.java
+ java/src/org/apache/xalan/xsltc/compiler XSLTC.java</Modified>
+<Added>java/src/org/apache/xalan/xsltc/cmdline/getopt GetOpt.java
+ GetOptsException.java IllegalArgumentException.java
+ MissingOptArgException.java
+ java/src/org/apache/xalan/xsltc/trax TemplatesImpl.java
+ TransformerImpl.java</Added>
+<Removed>java/src/org/apache/xalan/xsltc/util/getopt GetOpt.java
+ GetOptsException.java IllegalArgumentException.java
+ MissingOptArgException.java</Removed>
+<Log>Moved the org.apache.xalan.xsltc.util.getopt package to
+ org.apache.xalan.xsltc.cmdline.getopt. Also added some skeleton
+ code in a new org.apache.xalan.xsltc.trax directory.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>07/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/trax TransletTemplates.java</Modified>
+<Log>minor adjustment
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>tmiller@apache.org</Who>
+<DateCommitted>07/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/trax
+ TransformerFactoryImpl.java</Modified>
+<Log>removed obselete try/catch</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>07/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler XSLTC.java
+ java/src/org/apache/xalan/xsltc/runtime
+ AbstractTranslet.java
+ java/src/org/apache/xalan/xsltc/trax TemplatesImpl.java
+ TransformerFactoryImpl.java TransformerImpl.java</Modified>
+<Removed>java/src/org/apache/xalan/xsltc/trax TransletTemplates.java</Removed>
+<Log>A first stab at our new TrAX design.`
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>07/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java</Modified>
+<Log>Check if locator property is set before trying to use locator fields</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>07/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/trace PrintTraceListener.java</Modified>
+<Log>Don't print locator message if locator is null</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer
+ TransformerHandlerImpl.java</Modified>
+<Log>In startDocument, run m_contentHandler.startDocument before you start the 
+thread.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer TransformerImpl.java</Modified>
+<Log>Call wait for initial events before the the transform is started.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref CoroutineSAXParser.java</Modified>
+<Log>Allow co_yield to be called after the parse has finished.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/12/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql SQLDocument.java
+ SQLErrorDocument.java</Modified>
+<Log>Added setProperty and getSourceLocatorFor empty methods.</Log>
+</Commit>
+<Commit category="core">
+<Who>garyp@apache.org</Who>
+<DateCommitted>07/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java</Modified>
+<Log>Fix problem reported by Carsten Ziegeler &lt;cziegeler@sundn.de&gt;. Using 
+ApplyXPath (or doing a transformation) with DOM input was resulting in an NPE 
+due to declareNamespaceInContext() being called before setting m_exptype which 
+is needed by declareNamespaceInContext().</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>07/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/compiler XSLTC.java
+ java/src/org/apache/xalan/xsltc/trax TemplatesImpl.java
+ TransformerFactoryImpl.java TransformerImpl.java</Modified>
+<Log>A few minor adjustments to yesterdays JAXP/TrAX implementation. These is one
+ change in the way the compiler (XSLTC) generates bytecode arrays, and the
+ rest is basically a cleanup of error reporting and a few added comments.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/transformer
+ TransformerHandlerImpl.java</Modified>
+<Log>Add pauseForTransformThreadStartup. Call this in startDocument just
+ after starting the transform thread. This should get rid of any variability
+ with racing threads.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/extensions
+ XSLProcessorContext.java</Modified>
+<Log>Fix problem reported by jason heddings &lt;Jason.Heddings@Sun.COM&gt;.
+
+ "In v2.0.1, I was able to pass a Node to this function and have the node
+ be copied to the result tree (as expected). In the source code for
+ XSLProcessorContext, it appears that the only objects that can be sent
+ to the result tree are XObjects. Everything else is converted to a
+ String. So for instance, I can no longer create a ProcessingInstruction
+ and pass it to the result tree via this method since the PI is simply
+ converted to a String."</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/serialize SerializerToHTML.java</Modified>
+<Log>Application of patch submitted by Benjamin Riefenstahl 
+&lt;Benjamin.Riefenstahl@ision.net&gt;
+
+ Motivation: We are using Xalan to generate HTML pages. We have the
+ requirement to integrate code for ad banners. The ad server provider
+ has written the code to use with compatibility to NetScape 4 in mind.
+ The code uses the NetScape proprietory &lt;LAYER&gt; element and &lt;IFRAME&gt;
+ elements for other browsers. The SRC attributes of these elements
+ contain URLs with several URL parameters separated by '&amp;', as is the
+ common convention.
+
+ Problem: The code is integrated in our XSL stylesheets. In the
+ stylesheet the '&amp;' has to be written as the entity '&amp;amp;'. That's
+ ok. The problem is that in the output the '&amp;' is also written as
+ '&amp;amp;' which is not ok, because NetScape doesn't understand that.
+ OTOH the same URL is written with '&amp;' when used in an &lt;A&gt; element.
+
+ Solution: This goes down to a different handling of attribute values
+ in the class SerializeToHTML, depending on whether the attribute in
+ question is known to contain a URI or not. Xalan knows this for &lt;A&gt;
+ but not for &lt;LAYER&gt; and &lt;IFRAME&gt;. When I compare the list in
+ SerializeToHTML.java with the HTML specs, I find a couple of other
+ missing URI attributes in SerializeToHTML.java. When I add the
+ missing pieces, the generation works fine.
+
+ Patch: Here is the patch (diff -c) for xalan-j_2_2_D6. I also have
+ one for xalan-j_2_0_1 which is the version I actually tested this
+ with. Please let me know if this is insufficient or the patch is
+ wrong or if there is something else I can do to fix this problem.</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/13/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java</Modified>
+<Log>On code review of previous checkin from Gary P., we determined there
+ was a problem with the point at which type was declared a
+ DTM.NAMESPACE_NODE. So that part was moved back up (actuall
+ a bit higher than where it was before),
+ and the call to declareNamespaceInContext was moved a bit
+ further down.</Log>
+</Commit>
+<Commit category="core">
+<Who>johng@apache.org</Who>
+<DateCommitted>07/15/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql XConnection.java</Modified>
+<Log>Project Update
+ Submitted by: John Gentilin mailto://johng@apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>johng@apache.org</Who>
+<DateCommitted>07/15/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql SQLDocument.java</Modified>
+<Log>Project Update
+ Submitted by: John gentilin mailto://johng@apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>johng@apache.org</Who>
+<DateCommitted>07/15/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql SQLDocument.java</Modified>
+<Log>Fixup from previous check-in, defined new
+ functions.
+ Submitted by: John Gentilin mailto://johng@apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>johng@apache.org</Who>
+<DateCommitted>07/15/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql SQLDocument.java</Modified>
+<Log>Project Update</Log>
+</Commit>
+<Commit category="core">
+<Who>johng@apache.org</Who>
+<DateCommitted>07/15/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql SQLDocument.java</Modified>
+<Log>reduced Attribute's for testing</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>07/16/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/dom DocumentCache.java</Modified>
+<Added>java/src/org/apache/xalan/xsltc/trax OutputSettings.java</Added>
+<Log>Reduced the refresh rate of the DocumentCache to 1 second.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>sboag@apache.org</Who>
+<DateCommitted>07/16/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java</Modified>
+<Log>Minor hack to catch an attribute value being null.</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>amiro@apache.org</Who>
+<DateCommitted>07/17/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/dom DocumentCache.java</Modified>
+<Log>Submitted by: Tom Amiro
+ Fixes bug 1591. Changed the lastModified() method to return
+ the correct timestamp for local files beginnig with the "file:"
+ protocol. Incorporated Brian Ewin's suggestion to use URLdecode.
+ Todd Miller and Morten Jorgensen</Log>
+</Commit>
+<Commit category="xsltc">
+<Who>morten@apache.org</Who>
+<DateCommitted>07/17/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/xsltc/dom DOMImpl.java
+ java/src/org/apache/xalan/xsltc/trax TemplatesImpl.java
+ TransformerFactoryImpl.java TransformerImpl.java</Modified>
+<Log>Added some javadoc comments to our trax stuff. Added preliminary support
+ for getting/setting output properties, and for getting/setting URL resolvers.
+ PR: n/a
+ Obtained from: n/a
+ Submitted by: morten@xml.apache.org
+ Reviewed by: morten@xml.apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>07/17/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/templates ElemNumber.java
+ java/src/org/apache/xalan/transformer Counter.java
+ CountersTable.java KeyRefIterator.java
+ java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java
+ java/src/org/apache/xpath NodeSetDTM.java
+ java/src/org/apache/xpath/axes LocPathIterator.java
+ UnionPathIterator.java WalkingIteratorSorted.java
+ java/src/org/apache/xpath/objects XNodeSet.java
+ XRTreeFrag.java</Modified>
+<Log>Add new parameter to NodeSetDTM constructor. We need to have a DTMManager on 
+hand. Change code to use the new constructors.</Log>
+</Commit>
+<Commit category="core">
+<Who>mmidy@apache.org</Who>
+<DateCommitted>07/17/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java</Modified>
+<Log>OOps! Back out this last change. Old code on my machine!!!</Log>
+</Commit>
+<Commit category="core">
+<Who>johng@apache.org</Who>
+<DateCommitted>07/17/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/lib/sql SQLDocument.java</Modified>
+<Log>Fixed a few bugs, almost there
+ Submitted by: John Gentilin mailto://johng@apache.org</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>07/18/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref CoroutineManager.java
+ CoroutineSAXParser.java
+ CoroutineSAXParser_Xerces.java</Modified>
+<Added>java/src/org/apache/xml/dtm/ref IncrementalSAXSource.java
+ IncrementalSAXSource_Filter.java
+ IncrementalSAXSource_Xerces.java</Added>
+<Log>Starting to phase out Coroutine*Parser* in favor of IncrementalSAXSource*.
+ The latter simplifies the code, and should help us avoid some of the
+ confusion that can arise in using the older tools.
+
+ Most importantly, it greatly simplifies the calling sequences, by discarding
+ the "which file do you want to parse" and "do you want to parse any more
+ files" transactions. These now operate _only_ as filters, and only as single
+ -use (though in fact the Xerces-specific version is reusable, and we may
+ reintroduce that feature in the generic filtering version at a later date).
+
+ Note too that we have swept the CoroutineManager completely
+ under the covers of the filter's API. There's no particular reason to expose
+ that implementation detal to the outside world.
+
+ Still to be done: Rework the rest of Xalan to use the new code.</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>07/18/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref CoroutineParser.java</Modified>
+<Log>Starting to phase out Coroutine*Parser* in favor of IncrementalSAXSource*.
+ See comment in previous check-in; I just missed this one....</Log>
+</Commit>
+<Commit category="core">
+<Who>jkesselm@apache.org</Who>
+<DateCommitted>07/18/2001</DateCommitted>
+<Modified>java/src/org/apache/xml/dtm/ref DTMStringPool.java</Modified>
+<Log>doc.</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>07/18/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/res XSLTInfo.properties</Modified>
+<Log>2.2.D7</Log>
+</Commit>
+<Commit category="core">
+<Who>dleslie@apache.org</Who>
+<DateCommitted>07/18/2001</DateCommitted>
+<Modified>java/src/org/apache/xalan/processor XSLProcessorVersion.java</Modified>
+<Log>2.2.D7</Log>
+</Commit>
 </Commits>
