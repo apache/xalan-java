@@ -667,6 +667,7 @@ public class URI implements Serializable {
       }
       else if (!isReservedCharacter(testChar) && 
                !isUnreservedCharacter(testChar)) {
+        if('\\' != testChar)
         throw new MalformedURIException(
                   "Path contains invalid character: " + testChar);
       }
