@@ -25,6 +25,14 @@ implements java.io.Serializable
   // making that threadsafe is a bit ugly. 
   transient protected java.util.Hashtable m_nsThreadContexts=new java.util.Hashtable();
 
+  /**
+   * Tell if this template is a compiled template.
+   */
+  public boolean isCompiledTemplate()
+  {
+    return true;
+  }
+
   /** Accessor to let interpretive children query current namespace state.
    * Note that unlike the interpreted version, the namespace state of this
    * code changes over time... and that we need to maintain a unique state
