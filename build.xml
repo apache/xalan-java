@@ -99,7 +99,7 @@ Copyright:
   <property name="doc.generator.styletar" value="${xdocs.dir}/xml-site-style.tar"/>
   
   <property name="site.root" value="./xml-site"/>
-  <property name="site.dir" value="${site.root}/target/xalan"/>
+  <property name="site.dir" value="${site.root}/target/xalan-j"/>
   <property name="site.book" value="${xdocs.dir}/sources/xalan-jsite.xml"/>
 
   <property name="test.loggingLevel" value="5"/>
