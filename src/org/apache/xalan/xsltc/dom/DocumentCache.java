@@ -85,6 +85,7 @@ import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xalan.xsltc.runtime.Constants;
 
 public final class DocumentCache implements DOMCache {
 
@@ -97,9 +98,6 @@ public final class DocumentCache implements DOMCache {
     private XMLReader _reader;
 
     private static final int REFRESH_INTERVAL = 1000;
-
-    private static final String NAMESPACE_FEATURE =
-	"http://xml.org/sax/features/namespaces";
 
     /*
      * Inner class containing a DOMImpl object and DTD handler
@@ -207,7 +205,7 @@ public final class DocumentCache implements DOMCache {
 	    // Create a SAX parser and get the XMLReader object it uses
 	    final SAXParserFactory factory = SAXParserFactory.newInstance();
 	    try {
-		factory.setFeature(NAMESPACE_FEATURE,true);
+		factory.setFeature(Constants.NAMESPACE_FEATURE,true);
 	    }
 	    catch (Exception e) {
 		factory.setNamespaceAware(true);

@@ -82,11 +82,9 @@ import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
+import org.apache.xalan.xsltc.runtime.Constants;
 
 final public class DefaultRun {
-
-    private static final String NAMESPACE_FEATURE =
-	"http://xml.org/sax/features/namespaces";
 
     private TransletOutputHandler _handler;
 
@@ -130,7 +128,7 @@ final public class DefaultRun {
 	    // Create a SAX parser and get the XMLReader object it uses
 	    final SAXParserFactory factory = SAXParserFactory.newInstance();
 	    try {
-		factory.setFeature(NAMESPACE_FEATURE, true);
+		factory.setFeature(Constants.NAMESPACE_FEATURE, true);
 	    }
 	    catch (Exception e) {
 		factory.setNamespaceAware(true);

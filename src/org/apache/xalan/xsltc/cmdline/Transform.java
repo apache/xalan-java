@@ -90,9 +90,6 @@ import org.apache.xalan.xsltc.dom.DTDMonitor;
 
 final public class Transform {
 
-    private static final String NAMESPACE_FEATURE =
-	"http://xml.org/sax/features/namespaces";
-
     private TransletOutputHandler _handler;
 
     private String  _fileName;
@@ -133,7 +130,7 @@ final public class Transform {
 	    // Create a SAX parser and get the XMLReader object it uses
 	    final SAXParserFactory factory = SAXParserFactory.newInstance();
 	    try {
-		factory.setFeature(NAMESPACE_FEATURE,true);
+		factory.setFeature(Constants.NAMESPACE_FEATURE,true);
 	    }
 	    catch (Exception e) {
 		factory.setNamespaceAware(true);
