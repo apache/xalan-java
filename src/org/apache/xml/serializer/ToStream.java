@@ -152,10 +152,15 @@ abstract public class ToStream extends SerializerBase
     protected int m_maxCharacter = Encodings.getLastPrintable();
 
     /**
-     * Use the system line seperator to write line breaks.
+     * The system line separator for writing out line breaks.
      */
     protected final char[] m_lineSep =
         System.getProperty("line.separator").toCharArray();
+        
+    /**
+     * True if the the system line separator is to be used.
+     */    
+    protected boolean m_lineSepUse = true;    
 
     /**
      * The length of the line seperator, since the write is done
@@ -701,6 +706,25 @@ abstract public class ToStream extends SerializerBase
         else
             m_writer = writer;
     }
+    
+    /**
+     * Set if the operating systems end-of-line line separator should
+     * be used when serializing.  If set false NL character 
+     * (decimal 10) is left alone, otherwise the new-line will be replaced on
+     * output with the systems line separator. For example on UNIX this is
+     * NL, while on Windows it is two characters, CR NL, where CR is the
+     * carriage-return (decimal 13).
+     *  
+     * @param use_sytem_line_break True if an input NL is replaced with the 
+     * operating systems end-of-line separator.
+     * @return The previously set value of the serializer.
+     */
+    public boolean setLineSepUse(boolean use_sytem_line_break)
+    {
+        boolean oldValue = m_lineSepUse;
+        m_lineSepUse = use_sytem_line_break;
+        return oldValue;
+    }
 
     /**
      * Specifies an output stream to which the document should be
@@ -1083,6 +1107,8 @@ abstract public class ToStream extends SerializerBase
      * @param start The start position in the array.
      * @param length The number of characters to read from the array.
      * @param isCData true if a CDATA block should be built around the characters.
+     * @param useSystemLineSeparator true if the operating systems 
+     * end-of-line separator should be output rather than a new-line character.
      *
      * @throws IOException
      * @throws org.xml.sax.SAXException
@@ -1091,7 +1117,8 @@ abstract public class ToStream extends SerializerBase
         char ch[],
         int start,
         int length,
-        boolean isCData)
+        boolean isCData,
+        boolean useSystemLineSeparator)
         throws IOException, org.xml.sax.SAXException
     {
         final java.io.Writer writer = m_writer;
@@ -1101,7 +1128,7 @@ abstract public class ToStream extends SerializerBase
         {
             char c = ch[i];
 
-            if (CharInfo.S_LINEFEED == c)
+            if (CharInfo.S_LINEFEED == c && useSystemLineSeparator)
             {
                 writer.write(m_lineSep, 0, m_lineSepLen);
             }
@@ -1269,7 +1296,7 @@ abstract public class ToStream extends SerializerBase
                 charactersRaw(ch, start, length);
             }
             else
-                writeNormalizedChars(ch, start, length, true);
+                writeNormalizedChars(ch, start, length, true, m_lineSepUse);
 
             /* used to always write out CDATA closing delimiter here,
              * but now we delay, so that we can merge CDATA sections on output.    
@@ -1432,7 +1459,7 @@ abstract public class ToStream extends SerializerBase
             for (i = start;
                 ((i < end)                
                     && ((ch1 = chars[i]) == 0x20
-                        || ch1 == 0xA
+                        || (ch1 == 0xA && m_lineSepUse)
                         || ch1 == 0xD
                         || ch1 == 0x09));
                 i++)
@@ -1960,7 +1987,7 @@ abstract public class ToStream extends SerializerBase
 
         // namespaces declared at the current depth are no longer valid
         // so get rid of them    
-        m_prefixMap.popNamespaces(m_elemContext.m_currentElemDepth);
+        m_prefixMap.popNamespaces(m_elemContext.m_currentElemDepth, null);
 
         try
         {
@@ -2900,6 +2927,7 @@ abstract public class ToStream extends SerializerBase
          this.m_spaceBeforeClose = false;
          this.m_startNewLine = false;
          this.m_triedToGetConverter = false;
+         this.m_lineSepUse = true;
          // DON'T SET THE WRITER TO NULL, IT MAY BE REUSED !!
          // this.m_writer = null;        
  

@@ -233,7 +233,7 @@ public class ToTextStream extends ToStream
     
     try
     {
-        writeNormalizedChars(ch, start, length, false);
+        writeNormalizedChars(ch, start, length, false, m_lineSepUse);
         if (m_tracer != null)
             super.fireCharEvent(ch, start, length);      
     }
@@ -260,7 +260,7 @@ public class ToTextStream extends ToStream
 
     try
     {
-      writeNormalizedChars(ch, start, length, false);
+      writeNormalizedChars(ch, start, length, false, m_lineSepUse);
     }
     catch(IOException ioe)
     {
@@ -277,7 +277,9 @@ public class ToTextStream extends ToStream
  * @param start The start position in the array.
  * @param length The number of characters to read from the array.
  * @param isCData true if a CDATA block should be built around the characters.
- *
+ * @param useLineSep true if the operating systems 
+ * end-of-line separator should be output rather than a new-line character.
+ * 
  * @throws IOException
  * @throws org.xml.sax.SAXException
  */
@@ -285,7 +287,8 @@ void writeNormalizedChars(
     final char ch[],
     final int start,
     final int length,
-    final boolean isCData)
+    final boolean isCData,
+    final boolean useLineSep)
     throws IOException, org.xml.sax.SAXException
 {
     final java.io.Writer writer = m_writer;
@@ -301,7 +304,7 @@ void writeNormalizedChars(
         {
             final char c = ch[i];
 
-            if (S_LINEFEED == c)
+            if (S_LINEFEED == c && useLineSep)
             {
                 writer.write(m_lineSep, 0, m_lineSepLen);
             }
@@ -360,7 +363,7 @@ void writeNormalizedChars(
         {
             final char c = ch[i];
 
-            if (S_LINEFEED == c)
+            if (S_LINEFEED == c && useLineSep)
             {
                 writer.write(m_lineSep, 0, m_lineSepLen);
             }
@@ -410,7 +413,7 @@ void writeNormalizedChars(
   {
     try
     {
-        writeNormalizedChars(ch, start, length, false);
+        writeNormalizedChars(ch, start, length, false, m_lineSepUse);
         if (m_tracer != null)
             super.fireCDATAEvent(ch, start, length);              
     }
@@ -452,7 +455,7 @@ void writeNormalizedChars(
 
     try
     {
-      writeNormalizedChars(ch, start, length, false);
+      writeNormalizedChars(ch, start, length, false, m_lineSepUse);
     }
     catch(IOException ioe)
     {

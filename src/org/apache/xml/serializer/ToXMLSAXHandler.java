@@ -295,7 +295,8 @@ public class ToXMLSAXHandler extends ToSAXHandler
         /* Pop all namespaces at the current element depth.
          * We are not waiting for official endPrefixMapping() calls.
          */
-        m_prefixMap.popNamespaces(m_elemContext.m_currentElemDepth);
+        m_prefixMap.popNamespaces(m_elemContext.m_currentElemDepth,
+            m_saxHandler);
         m_elemContext = m_elemContext.m_prev;
     }
 

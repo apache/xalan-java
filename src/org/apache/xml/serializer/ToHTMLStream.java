@@ -1434,7 +1434,7 @@ public class ToHTMLStream extends ToStream
 
                 // writer.write("<![CDATA[");
                 // writer.write(chars, start, length);
-                writeNormalizedChars(chars, start, length, false);
+                writeNormalizedChars(chars, start, length, false, m_lineSepUse);
 
                 // writer.write("]]>");
                 
@@ -1509,7 +1509,7 @@ public class ToHTMLStream extends ToStream
                     indent();
 
                 // writer.write(ch, start, length);
-                writeNormalizedChars(ch, start, length, true);
+                writeNormalizedChars(ch, start, length, true, m_lineSepUse);
             }
             catch (IOException ioe)
             {

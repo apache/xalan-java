@@ -59,6 +59,9 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Stack;
 
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+
 /**
  * This class keeps track of the currently defined namespaces. Conceptually the
  * prefix/uri/depth triplets are pushed on a stack pushed on a stack. The depth
@@ -255,8 +258,10 @@ public class NamespaceMappings
      * declared at the given element depth, or deepter.
      * @param elemDepth the element depth for which mappings declared at this
      * depth or deeper will no longer be valid
+     * @param saxHandler The ContentHandler to notify of any endPrefixMapping()
+     * calls.  This parameter can be null.
      */
-    public void popNamespaces(int elemDepth)
+    public void popNamespaces(int elemDepth, ContentHandler saxHandler)
     {
         while (true)
         {
@@ -270,7 +275,20 @@ public class NamespaceMappings
              */
 
             m_nodeStack.pop();
-            popNamespace((String) m_prefixStack.pop());
+            final String prefix = (String) m_prefixStack.pop(); 
+            popNamespace(prefix);
+            if (saxHandler != null)
+            {
+                try
+                {
+                    saxHandler.endPrefixMapping(prefix);
+                }
+                catch (SAXException e)
+                {
+                    // not much we can do if they aren't willing to listen
+                }
+            }
+               
         }
     }
 
