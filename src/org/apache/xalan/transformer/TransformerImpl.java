@@ -103,6 +103,7 @@ import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.Arg;
 import org.apache.xpath.XPathAPI;
 import org.apache.xpath.VariableStack;
+import org.apache.xpath.SourceTreeManager;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.axes.ContextNodeList;
 
@@ -397,6 +398,9 @@ public class TransformerImpl extends Transformer
     m_doc = null;
     m_isTransformDone = false;
     m_inputContentHandler = null;
+    
+    // For now, reset the document cache each time.
+    getXPathContext().getSourceTreeManager().reset();
   }
 
   // ========= Transformer Interface Implementation ==========
@@ -511,8 +515,8 @@ public class TransformerImpl extends Transformer
 
         if (null != doc)
         {
-          getXPathContext().getSourceTreeManager().putDocumentInCache(doc,
-                  source);
+          SourceTreeManager stm = getXPathContext().getSourceTreeManager();
+          stm.putDocumentInCache(doc, source);
 
           m_xmlSource = source;
           m_doc = doc;
@@ -785,7 +789,65 @@ public class TransformerImpl extends Transformer
         ofe.setVersion(oformat.getProperty(name));
     }
   }
-
+  
+  /**
+   * Get a copy of the output properties for the transformation.  These
+   * properties will override properties set in the templates
+   * with xsl:output.
+   * 
+   * <p>Note that mutation of the Properties object returned will not 
+   * effect the properties that the transformation contains.</p>
+   *
+   * @returns A copy of the set of output properties in effect
+   * for the next transformation.
+   */
+  public Properties getOutputProperties()
+  {
+    Properties oprops = new Properties();
+    
+    OutputFormat outputProps = m_outputFormat;
+    if(null == outputProps)
+      outputProps = m_stylesheetRoot.getOutputComposed();
+    
+    if (outputProps instanceof OutputFormatExtended)
+    {
+      OutputFormatExtended ofe = (OutputFormatExtended) outputProps;
+      if(ofe.methodHasBeenSet())
+        oprops.put(OutputKeys.METHOD, ofe.getMethod());
+      if(ofe.indentHasBeenSet())
+        oprops.put(OutputKeys.INDENT, ofe.getIndent() ? "yes" : "no");
+      if(ofe.doctypePublicHasBeenSet())
+        oprops.put(OutputKeys.DOCTYPE_PUBLIC, ofe.getDoctypePublicId());
+      if(ofe.doctypeSystemHasBeenSet())
+        oprops.put(OutputKeys.DOCTYPE_SYSTEM, ofe.getDoctypeSystemId());
+      if(ofe.mediaTypeHasBeenSet())
+        oprops.put(OutputKeys.MEDIA_TYPE, ofe.getMediaType());
+      if(ofe.omitXmlDeclarationHasBeenSet())
+        oprops.put(OutputKeys.OMIT_XML_DECLARATION, ofe.getOmitXMLDeclaration() ? "yes" : "no");
+      if(ofe.standaloneHasBeenSet())
+        oprops.put(OutputKeys.STANDALONE, ofe.getStandalone() ? "yes" : "no");
+      if(ofe.encodingHasBeenSet())
+        oprops.put(OutputKeys.ENCODING, ofe.getEncoding());
+      if(ofe.versionHasBeenSet())
+        oprops.put(OutputKeys.VERSION, ofe.getVersion());
+    }
+    else
+    {
+      OutputFormat ofe = outputProps;
+      // Just set them all for now.
+      oprops.put(OutputKeys.METHOD, ofe.getMethod());
+      oprops.put(OutputKeys.INDENT, ofe.getIndent() ? "yes" : "no");
+      oprops.put(OutputKeys.DOCTYPE_PUBLIC, ofe.getDoctypePublicId());
+      oprops.put(OutputKeys.DOCTYPE_SYSTEM, ofe.getDoctypeSystemId());
+      oprops.put(OutputKeys.MEDIA_TYPE, ofe.getMediaType());
+      oprops.put(OutputKeys.OMIT_XML_DECLARATION, ofe.getOmitXMLDeclaration() ? "yes" : "no");
+      oprops.put(OutputKeys.STANDALONE, ofe.getStandalone() ? "yes" : "no");
+      oprops.put(OutputKeys.ENCODING, ofe.getEncoding());
+      oprops.put(OutputKeys.VERSION, ofe.getVersion());
+    }
+    
+    return oprops;
+  }
 
   /**
    * <meta name="usage" content="internal"/>
