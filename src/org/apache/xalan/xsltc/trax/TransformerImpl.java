@@ -164,11 +164,6 @@ public final class TransformerImpl extends Transformer
     private DOM _dom = null;
 
     /**
-     * DTD monitor needed for id()/key().
-     */
-    private DTDMonitor _dtdMonitor = null;
-
-    /**
      * Number of indent spaces to add when indentation is on.
      */
     private int _indentNumber;
@@ -378,20 +373,12 @@ public final class TransformerImpl extends Transformer
     }
 
     /**
-     * Set the internal DTD Monitor to use for the next transformation
-     */
-    protected void setDTDMonitor(DTDMonitor dtdMonitor) {
-	_dtdMonitor = dtdMonitor;
-    }
-
-    /**
      * Builds an internal DOM from a TrAX Source object
      */
     private DOM getDOM(Source source, int mask)
 	throws TransformerException {
 	try {
 	    DOM dom = null;
-	    DTDMonitor dtd = null;
 
 	    // Get systemId from source
 	    if (source != null) {
@@ -409,10 +396,6 @@ public final class TransformerImpl extends Transformer
 		    reader = _tfactory.getXMLReader();
 		}
 
-		// Create a DTD monitor to trap all DTD/declarative events
-		dtd = new DTDMonitor();
-		dtd.handleDTD(reader);
-
 		// Create a new internal DOM and set up its builder to trap
 		// all content/lexical events
 		DTMManager dtmManager = XSLTCDTMManager.newInstance(
@@ -427,34 +410,19 @@ public final class TransformerImpl extends Transformer
 		    // quitely ignored
 		}
 		reader.setContentHandler(builder);
+		reader.setDTDHandler(builder);
 		((SAXImpl)dom).setDocumentURI(_sourceSystemId);
 	    }
 	    else if (source instanceof DOMSource) {
-                // %HZ% - Need to change following - it's wrapping DOM with
-                // SAX to get to DTM.  Should wrap DOM with DTM directly!
 		final DOMSource domsrc = (DOMSource) source;
-		final org.w3c.dom.Node node = domsrc.getNode();
-		final DOM2SAX dom2sax = new DOM2SAX(node);
-                final boolean isComplete =
-                    (node.getNodeType() == org.w3c.dom.Node.DOCUMENT_NODE);
 
-		// Create a DTD monitor to trap all DTD/declarative events
-		dtd = new DTDMonitor();
-		dtd.handleDTD(dom2sax);
-
-		// Create a new internal DOM and set up its builder to trap
-		// all content/lexical events
+		// Create a new internal DTM and build it directly from DOM
 		DTMManager dtmManager = XSLTCDTMManager.newInstance(
                    org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
     
-		dom = (SAXImpl)dtmManager.getDTM(null, false, null, true,
+		dom = (DOMImpl)dtmManager.getDTM(domsrc, false, null, true,
                                                  true);
-		final DOMBuilder builder = ((SAXImpl)dom).getBuilder();
-		dom2sax.setContentHandler(builder);
-
-		dom2sax.parse();
-
-		((SAXImpl)dom).setDocumentURI(_sourceSystemId);
+		((DOMImpl)dom).setDocumentURI(_sourceSystemId);
 	    }
 	    // Handle StreamSource input
 	    else if (source instanceof StreamSource) {
@@ -463,10 +431,6 @@ public final class TransformerImpl extends Transformer
 		final InputStream streamInput = stream.getInputStream();
 		final Reader streamReader = stream.getReader();
 		final XMLReader reader = _tfactory.getXMLReader();
-
-		// Create a DTD monitor to trap all DTD/declarative events
-		dtd = new DTDMonitor();
-		dtd.handleDTD(reader);
 
 		// Create a new internal DOM and set up its builder to trap
 		// all content/lexical events
@@ -490,27 +454,20 @@ public final class TransformerImpl extends Transformer
 	    }
 	    else if (source instanceof XSLTCSource) {
 		final XSLTCSource xsltcsrc = (XSLTCSource)source;
-		dtd = xsltcsrc.getDTD();
 		dom = xsltcsrc.getDOM();
 	    }
 	    // DOM already set via a call to setDOM()
 	    else if (_dom != null) {
-		dtd = _dtdMonitor;	   // must be set via setDTDMonitor()
 		dom = _dom; _dom = null;   // use only once, so reset to 'null'
 	    }
 	    else {
 		return null;
 	    }
 
-	    // Set size of key/id indices
 	    if (!_isIdentity) {
-		_translet.setIndexSize(dom.getSize());
-
-		// If there are any elements with ID attributes, build an index
-		dtd.buildIdIndex(dom, mask, _translet);
-
-		// Pass unparsed entity URIs to the translet
-		_translet.setDTDMonitor(dtd);
+                // Give the translet the opportunity to make a prepass of
+                // the document, in case it can extract useful information early
+		_translet.prepassDocument(dom);
 	    }
 	    return dom;
 

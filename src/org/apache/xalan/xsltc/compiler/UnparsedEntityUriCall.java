@@ -74,29 +74,30 @@ final class UnparsedEntityUriCall extends FunctionCall {
     private Expression _entity;
 
     public UnparsedEntityUriCall(QName fname, Vector arguments) {
-	super(fname, arguments);
-	_entity = argument();
+        super(fname, arguments);
+        _entity = argument();
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	final Type entity = _entity.typeCheck(stable);
-	if (entity instanceof StringType == false) {
-	    _entity = new CastExpr(_entity, Type.String);
-	}
-	return _type = Type.String;
+        final Type entity = _entity.typeCheck(stable);
+        if (entity instanceof StringType == false) {
+            _entity = new CastExpr(_entity, Type.String);
+        }
+        return _type = Type.String;
     }
     
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final InstructionList il = methodGen.getInstructionList();
-	// Feck the this pointer on the stack...
-	il.append(classGen.loadTranslet());
-	// ...then the entity name...
-	_entity.translate(classGen, methodGen);
-	// ...to get the value from the hashtable in AbstractTranslet.
-	il.append(new INVOKEVIRTUAL(cpg.addMethodref(TRANSLET_CLASS,
-						     "getUnparsedEntity",
-						     "(Ljava/lang/String;)"+
-						     "Ljava/lang/String;")));
+        final ConstantPoolGen cpg = classGen.getConstantPool();
+        final InstructionList il = methodGen.getInstructionList();
+        // Feck the this pointer on the stack...
+        il.append(methodGen.loadDOM());
+        // ...then the entity name...
+        _entity.translate(classGen, methodGen);
+        // ...to get the URI from the DOM object.
+        il.append(new INVOKEINTERFACE(
+                         cpg.addInterfaceMethodref(DOM_INTF,
+                                                   GET_UNPARSED_ENTITY_URI,
+                                                   GET_UNPARSED_ENTITY_URI_SIG),
+                         2));
     }
 }

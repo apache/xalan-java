@@ -168,44 +168,17 @@ final public class Transform {
 	    final SAXParser parser = factory.newSAXParser();
 	    final XMLReader reader = parser.getXMLReader();
 
-        // Create a DTD monitor and pass it to the XMLReader object
-	    final DTDMonitor dtdMonitor = new DTDMonitor(reader);
-	    
 	    // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
-      DTMManager dtmManager = XSLTCDTMManager.newInstance(
+            DTMManager dtmManager = XSLTCDTMManager.newInstance(
                  org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
 
-      final SAXImpl dom = (SAXImpl)dtmManager.getDTM(new SAXSource(reader, new InputSource(_fileName)), false, null, true, true);
-		//final DOMImpl dom = new DOMImpl();
-/*	    DOMBuilder builder = dom.getBuilder();
-	    reader.setContentHandler(builder);
-
-	    try {
-		String prop = "http://xml.org/sax/properties/lexical-handler";
-		reader.setProperty(prop, builder);
-	    }
-	    catch (SAXException e) {
-		// quitely ignored
-	    }  */
-
-
-	    
-	    // Create a DTD monitor and pass it to the XMLReader object
-	   // final DTDMonitor dtdMonitor = new DTDMonitor(reader);
+            final SAXImpl dom = (SAXImpl)dtmManager.getDTM(
+                             new SAXSource(reader, new InputSource(_fileName)),
+                             false, null, true, true);
 
 	    AbstractTranslet _translet = (AbstractTranslet)translet;
 	    dom.setDocumentURI(_fileName);
-/*	    if (_uri)
-		reader.parse(_fileName);
-	    else
-		reader.parse(new File(_fileName).toURL().toExternalForm());
-
-	    builder = null;  */
-
-	    // If there are any elements with ID attributes, build an index
-	    dtdMonitor.buildIdIndex(dom, 0, _translet);
-	    // Pass unparsed entity descriptions to the translet
-	    _translet.setDTDMonitor(dtdMonitor);
+            _translet.prepassDocument(dom);
 
 	    // Pass global parameters
 	    int n = _params.size();

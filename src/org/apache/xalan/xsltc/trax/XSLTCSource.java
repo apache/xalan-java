@@ -90,7 +90,6 @@ public final class XSLTCSource implements Source {
 
     private String     _systemId = null;
     private DOM        _dom      = null;
-    private DTDMonitor _dtd      = null;
 
     private final static String LEXICAL_HANDLER_PROPERTY =
 	"http://xml.org/sax/properties/lexical-handler";
@@ -102,15 +101,14 @@ public final class XSLTCSource implements Source {
      */
     public XSLTCSource(int size) 
     {
-      DTMManager dtmManager = XSLTCDTMManager.newInstance(
-                                                     org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
+      DTMManager dtmManager =
+                XSLTCDTMManager.newInstance(org.apache.xpath.objects
+                                            .XMLStringFactoryImpl.getFactory());
       int dtmPos = ((DTMManagerDefault)dtmManager).getFirstFreeDTMID();
       int documentID = dtmPos << DTMManager.IDENT_DTM_NODE_BITS;
-      _dom = (DOM)new SAXImpl(dtmManager, this, documentID, null, dtmManager.getXMLStringFactory(), true,  size);
+      _dom = (DOM)new SAXImpl(dtmManager, this, documentID, null,
+                              dtmManager.getXMLStringFactory(), true, size);
       ((DTMManagerDefault)dtmManager).addDTM((DTM)_dom, dtmPos);
-              //((XSLTCDTMManager)dtmManager).getDTM(this, false, null, true, true, size);
-      //_dom = new DOMImpl(size);
-      _dtd = new DTDMonitor();
     }
 
     /**
@@ -118,15 +116,14 @@ public final class XSLTCSource implements Source {
      */
     public XSLTCSource() 
     {
-      DTMManager dtmManager = XSLTCDTMManager.newInstance(
-                                                     org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());                                      
+      DTMManager dtmManager =
+                XSLTCDTMManager.newInstance(org.apache.xpath.objects
+                                            .XMLStringFactoryImpl.getFactory());
       int dtmPos = ((DTMManagerDefault)dtmManager).getFirstFreeDTMID();
       int documentID = dtmPos << DTMManager.IDENT_DTM_NODE_BITS;
-      _dom = (DOM)new SAXImpl(dtmManager, this, documentID, null, dtmManager.getXMLStringFactory(), true);
+      _dom = (DOM)new SAXImpl(dtmManager, this, documentID, null,
+                              dtmManager.getXMLStringFactory(), true);
       ((DTMManagerDefault)dtmManager).addDTM((DTM)_dom, dtmPos);
-              //(DOM)dtmManager.getDTM(this, false, null, true, true);
-      //_dom = new DOMImpl();
-      _dtd = new DTDMonitor();
     }
 
     /**
@@ -143,7 +140,7 @@ public final class XSLTCSource implements Source {
 	else
 	    _systemId = systemId;
 
-    ((SAXImpl)_dom).setDocumentURI(_systemId);
+        ((SAXImpl)_dom).setDocumentURI(_systemId);
     }
 
     /**
@@ -179,20 +176,16 @@ public final class XSLTCSource implements Source {
 	    // parser before we know that we actually have some valid input.
 	    InputSource input = new InputSource(systemId);
 
-	    // Set out DTD monitor up to receive all DTD and declarative
-	    // events from the SAX parser. This is necessary to properly
-	    // build the index used for the id() function
-	    _dtd.handleDTD(reader);
-
 	    DOMBuilder builder;
         // Can we assume we're dealing with SAX here and therefore use SAXIMPL??
-       // if (_dom instanceof DOMImpl)
-       //   builder = ((DOMImpl)_dom).getBuilder();
-       // else
-          builder = ((SAXImpl)_dom).getBuilder();
+            // if (_dom instanceof DOMImpl)
+            //   builder = ((DOMImpl)_dom).getBuilder();
+            // else
+            builder = ((SAXImpl)_dom).getBuilder();
 
 	    // Set the DOM builder up to receive content and lexical events
 	    reader.setContentHandler(builder);
+	    reader.setDTDHandler(builder);
 	    try {
 		reader.setProperty(LEXICAL_HANDLER_PROPERTY, builder);
 	    }
@@ -251,12 +244,4 @@ public final class XSLTCSource implements Source {
     protected DOM getDOM() {
 	return(_dom);
     }
-
-    /**
-     * Returns the internal DTD that is encapsulated in this Source
-     */
-    protected DTDMonitor getDTD() {
-	return(_dtd);
-    }
-
 }

@@ -62,8 +62,12 @@
 package org.apache.xalan.xsltc.dom;
 
 import org.xml.sax.ContentHandler;
+import org.xml.sax.DTDHandler;
 import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.ext.DeclHandler;
 
-public interface ExtendedSAX extends ContentHandler, LexicalHandler { 
+public interface ExtendedSAX extends ContentHandler, LexicalHandler, DTDHandler,
+                                     DeclHandler
+{ 
     public boolean setEscaping(boolean escape);
 }

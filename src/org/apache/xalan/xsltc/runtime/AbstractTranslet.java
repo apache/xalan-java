@@ -76,7 +76,6 @@ import org.apache.xalan.xsltc.dom.DOMAdapter;
 import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.SAXImpl;
 import org.apache.xalan.xsltc.dom.KeyIndex;
-import org.apache.xalan.xsltc.dom.DTDMonitor;
 import org.apache.xalan.xsltc.util.IntegerArray;
 import org.apache.xalan.xsltc.runtime.output.*;
 
@@ -107,6 +106,9 @@ public abstract class AbstractTranslet implements Translet {
 
     // Use one empty string instead of constantly instanciating String("");
     private final static String EMPTYSTRING = "";
+
+    // This is the name of the index used for ID attributes
+    private final static String ID_INDEX_NAME = "##id";
 
     
     /************************************************************************
@@ -347,56 +349,57 @@ public abstract class AbstractTranslet implements Translet {
 	return(null);
     }
 
-    /************************************************************************
-     * Unparsed entity URI handling - implements unparsed-entity-uri()
-     ************************************************************************/
-
-    // Keeps all unparsed entity URIs specified in the XML input
-    public Hashtable _unparsedEntities = null;
-
     /**
-     * Get the value of an unparsed entity URI.
-     * This method is used by the compiler/UnparsedEntityUriCall class.
+     * Give the translet an opportunity to perform a prepass on the document
+     * to extract any information that it can store in an optimized form.
+     *
+     * Currently, it only extracts information about attributes of type ID.
      */
-    public final String getUnparsedEntity(String name) {
-	final String uri = (String)_unparsedEntities.get(name);
-	return uri == null ? EMPTYSTRING : uri;
+    public final void prepassDocument(DOM document) {
+        setIndexSize(document.getSize());
+        buildIDIndex(document);
     }
 
     /**
-     * Add an unparsed entity URI. The URI/value pairs are passed from the
-     * DOM builder to the translet.
+     * Leverages the Key Class to implement the XSLT id() function.
+     * buildIdIndex creates the index (##id) that Key Class uses.
+     * The index contains the element node index (int) and Id value (String).
      */
-    public final void addUnparsedEntity(String name, String uri) {
-	if (_unparsedEntities == null)
-	    _unparsedEntities = new Hashtable();
-	if (_unparsedEntities.containsKey(name) == false)
-	    _unparsedEntities.put(name, uri);
-    }
-    
-    /**
-     * Add an unparsed entity URI. The URI/value pairs are passed from the
-     * DOM builder to the translet.
-     */
-    public final void setUnparsedEntityURIs(Hashtable table) {
-	if (_unparsedEntities == null)
-	    _unparsedEntities = table;
-	else {
-	    Enumeration keys = table.keys();
-	    while (keys.hasMoreElements()) {
-		String name = (String)keys.nextElement();
-		_unparsedEntities.put(name,table.get(name));
-	    }
-	}
-    }
+    private final void buildIDIndex(DOM document) {
+        // %HZ% %REVISIT%  This works fine when the document is built from
+        // %HZ% %REVISIT%  SAX events, but if it is built from a W3C DOM,
+        // %HZ% %REVISIT%  the only means of associating ID's with elements is
+        // %HZ% %REVISIT%  the getElementById method.  There's no way of
+        // %HZ% %REVISIT%  knowing a priori which ID values are in the DOM,
+        // %HZ% %REVISIT%  which elements have attributes of type ID, nor
+        // %HZ% %REVISIT%  even which attributes are of type ID.  Not
+        // %HZ% %REVISIT%  surprisingly, the old DOMImpl didn't correctly
+        // %HZ% %REVISIT%  handle the id() function.  We'll probably need to
+        // %HZ% %REVISIT%  build KeyIndex objects that operate on the DOM
+        // %HZ% %REVISIT%  directly to solve this problem.
+        final Hashtable elementsByID = document.getElementsWithIDs();
 
-    /**
-     * The DTD monitor used by the DOM builder scans the input document DTD
-     * for unparsed entity URIs. These are passed to the translet using
-     * this method.
-     */
-    public final void setDTDMonitor(DTDMonitor monitor) {
-	setUnparsedEntityURIs(monitor.getUnparsedEntityURIs());
+        if (elementsByID == null) {
+            return;
+        }
+
+        // Given a Hashtable of DTM nodes indexed by ID attribute values,
+        // loop through the table copying information to a KeyIndex
+        // for the mapping from ID attribute value to DTM node
+        final Enumeration idValues = elementsByID.keys();
+        boolean hasIDValues = false;
+
+        while (idValues.hasMoreElements()) {
+            final Object idValue = idValues.nextElement();
+            final int element = ((Integer)elementsByID.get(idValue)).intValue();
+
+            buildKeyIndex(ID_INDEX_NAME, element, idValue);
+            hasIDValues = true;
+        }
+
+        if (hasIDValues) {
+            setKeyIndexDom(ID_INDEX_NAME, document);
+        }
     }
 
     /************************************************************************

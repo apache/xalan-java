@@ -84,7 +84,6 @@ import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.dom.DOMImpl;
-import org.apache.xalan.xsltc.dom.DTDMonitor;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.Constants;
 
@@ -119,7 +118,6 @@ public final class DocumentCache implements DOMCache {
 
 	// DOM and DTD handler references
 	private SAXImpl    _dom = null;
-	private DTDMonitor _dtdMonitor = null;
 	
 	/**
 	 * Constructor - load document and initialise statistics
@@ -140,18 +138,13 @@ public final class DocumentCache implements DOMCache {
 	 */
 	public void loadDocument(String uri) {
 
-      DTMManager dtmManager = XSLTCDTMManager.newInstance(
+           DTMManager dtmManager = XSLTCDTMManager.newInstance(
                  org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());                                      
-      	//_dom = new DOMImpl();
-	    _dtdMonitor = new DTDMonitor();
-
 	    try {
 		final long stamp = System.currentTimeMillis();
-          _dtdMonitor.handleDTD(_reader);
-		//_reader.setContentHandler(_dom.getBuilder());
-        _dom = (SAXImpl)dtmManager.getDTM(new SAXSource(_reader, new InputSource(uri)), false, null, true, true);
-
-		//_reader.parse(uri);
+                _dom = (SAXImpl)dtmManager.getDTM(
+                                 new SAXSource(_reader, new InputSource(uri)),
+                                 false, null, true, true);
 		_dom.setDocumentURI(uri);
 
 		// The build time can be used for statistics for a better
@@ -164,13 +157,10 @@ public final class DocumentCache implements DOMCache {
 	    }
 	    catch (Exception e) {
 		_dom = null;
-		_dtdMonitor = null;
 	    }
 	}
 
 	public DOM getDocument()       { return(_dom); }
-
-	public DTDMonitor getDTDMonitor()  { return(_dtdMonitor); }
 
 	public long getFirstReferenced()   { return(_firstReferenced); }
 
@@ -322,8 +312,7 @@ public final class DocumentCache implements DOMCache {
 	}
 
 	// Get the references to the actual DOM and DTD handler
-	final DOM        dom = doc.getDocument();
-	final DTDMonitor dtd = doc.getDTDMonitor();
+	final DOM dom = doc.getDocument();
 
 	// The dom reference may be null if the URL pointed to a
 	// non-existing document
@@ -333,12 +322,9 @@ public final class DocumentCache implements DOMCache {
 
 	final AbstractTranslet translet = (AbstractTranslet)trs;
 
-	// Set minimum needed size for key/id indices in the translet
-	translet.setIndexSize(dom.getSize());
-	// Create index for any ID attributes defined in the document DTD
-	dtd.buildIdIndex(dom, mask, translet);
-	// Pass all unparsed entities to the translet
-	translet.setUnparsedEntityURIs(dtd.getUnparsedEntityURIs());
+	// Give the translet an early opportunity to extract any
+        // information from the DOM object that it would like.
+	translet.prepassDocument(dom);
 
 	return(doc.getDocument());
     }
