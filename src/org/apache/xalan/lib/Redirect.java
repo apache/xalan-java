@@ -81,9 +81,10 @@ import org.w3c.dom.*;
  * Implements three extension elements to allow an XSLT transformation to
  * redirect its output to multiple output files.
  *
- * <p>You must declare the Xalan namespace (xmlns:lxslt="http://xml.apache.org/xslt"),
- * a namespace for the extension prefix (such as xmlns:redirect="org.apache.xalan.lib.Redirect"),
- * and declare the extension namespace as an extension (extension-element-prefixes="redirect").
+ * It is accessed by specifying a namespace URI as follows:
+ * <pre>
+ *    xmlns:redirect="http://xml.apache.org/xalan/redirect"
+ * </pre>
  *
  * <p>You can either just use redirect:write, in which case the file will be
  * opened and immediately closed after the write, or you can bracket the
@@ -116,8 +117,7 @@ import org.w3c.dom.*;
  * <PRE>
  * &lt;?xml version="1.0"?>
  * &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/XSL/Transform/1.0"
- *                 xmlns:lxslt="http://xml.apache.org/xslt"
- *                 xmlns:redirect="org.apache.xalan.lib.Redirect"
+ *                 xmlns:redirect="http://xml.apache.org/xalan/redirect"
  *                 extension-element-prefixes="redirect">
  *
  *   &lt;xsl:template match="/">
