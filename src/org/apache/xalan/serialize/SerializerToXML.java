@@ -648,8 +648,15 @@ public class SerializerToXML
   public void startDTD(String name, String publicId, String systemId)
           throws org.xml.sax.SAXException
   {
+    m_doctypeSystem = systemId;
+    m_doctypePublic = publicId;
 
-    // Do nothing for now.
+    if ((true == m_needToOutputDocTypeDecl) && (null != m_doctypeSystem))
+    {
+      outputDocTypeDecl(name);
+    }
+
+    m_needToOutputDocTypeDecl = false;
   }
 
   /**
@@ -1816,9 +1823,6 @@ public class SerializerToXML
    */
   public void startEntity(String name) throws org.xml.sax.SAXException
   {
-
-    entityReference(name);
-
     m_inEntityRef = true;
   }
 
