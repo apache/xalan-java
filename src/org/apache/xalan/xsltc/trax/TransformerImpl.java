@@ -120,6 +120,11 @@ public final class TransformerImpl extends Transformer
     private String           _encoding = null;
     private ContentHandler   _handler  = null;
 
+    /**
+     * SystemId set in input source.
+     */
+    private String _sourceSystemId = null;
+
     private ErrorListener _errorListener = this;
     private URIResolver   _uriResolver = null;
     private Properties    _properties, _propertiesClone;
@@ -460,13 +465,15 @@ public final class TransformerImpl extends Transformer
 	    DOMImpl dom = null;
 	    DTDMonitor dtd = null;
 
+	    // Get systemId from source
+	    _sourceSystemId = source.getSystemId();
+
 	    // Handle SAXSource input
 	    if (source instanceof SAXSource) {
 		// Get all info from the input SAXSource object
 		final SAXSource   sax    = (SAXSource)source;
 		XMLReader   reader = sax.getXMLReader();
 		final InputSource input  = sax.getInputSource();
-		final String      systemId = sax.getSystemId();
 
 		// if reader was not set with setXMLReader by user,
 		// then we must create one ourselves.
@@ -494,11 +501,11 @@ public final class TransformerImpl extends Transformer
 
 		// Parse the input and build the internal DOM
 		reader.parse(input);
-		dom.setDocumentURI(systemId);
+		dom.setDocumentURI(_sourceSystemId);
 	    }
 	    // Handle DOMSource input
 	    else if (source instanceof DOMSource) {
-		final DOMSource   domsrc = (DOMSource)source;
+		final DOMSource domsrc = (DOMSource) source;
 		final org.w3c.dom.Node node = domsrc.getNode();
 
 		boolean isComplete = true;
@@ -506,9 +513,8 @@ public final class TransformerImpl extends Transformer
 		    isComplete = false;
 		}
 
-		final DOM2SAX     dom2sax = new DOM2SAX(node);
+		final DOM2SAX dom2sax = new DOM2SAX(node);
 		final InputSource input = null; 
-		final String      systemId = domsrc.getSystemId(); 
 
 		// Create a DTD monitor to trap all DTD/declarative events
 		dtd = new DTDMonitor();
@@ -528,7 +534,7 @@ public final class TransformerImpl extends Transformer
 		if (!isComplete) {
 		    builder.endDocument();
 		}
-		dom.setDocumentURI(systemId);
+		dom.setDocumentURI(_sourceSystemId);
 	    }
 	    // Handle StreamSource input
 	    else if (source instanceof StreamSource) {
@@ -536,7 +542,6 @@ public final class TransformerImpl extends Transformer
 		final StreamSource stream = (StreamSource)source;
 		final InputStream  streamInput = stream.getInputStream();
 		final Reader streamReader = stream.getReader();
-		final String systemId = stream.getSystemId();
 
 		// With a StreamSource we need to create our own parser
 		final SAXParserFactory factory = SAXParserFactory.newInstance();
@@ -569,20 +574,23 @@ public final class TransformerImpl extends Transformer
 		InputSource input;
 		if (streamInput != null) {
 		    input = new InputSource(streamInput);
-		    input.setSystemId(systemId); 
-		} else if (streamReader != null) {
+		    input.setSystemId(_sourceSystemId); 
+		} 
+		else if (streamReader != null) {
 		    input = new InputSource(streamReader);
-		    input.setSystemId(systemId); 
-		} else if (systemId != null) {
-		    input = new InputSource(systemId);
-		} else {
+		    input.setSystemId(_sourceSystemId); 
+		} 
+		else if (_sourceSystemId != null) {
+		    input = new InputSource(_sourceSystemId);
+		} 
+		else {
 		    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_SOURCE_ERR);
 		    throw new TransformerException(err.toString());
 		}
 
 		// Parse the input and build the internal DOM
 		reader.parse(input);
-		dom.setDocumentURI(systemId);
+		dom.setDocumentURI(_sourceSystemId);
 	    }
 	    // Handle XSLTC-internal Source input
 	    else if (source instanceof XSLTCSource) {
@@ -1047,7 +1055,7 @@ public final class TransformerImpl extends Transformer
      */
     public DOMImpl retrieveDocument(String uri, int mask, Translet translet) {
 	try {
-	    return(getDOM(_uriResolver.resolve(uri, ""), mask));
+	    return getDOM(_uriResolver.resolve(uri, _sourceSystemId), mask);
 	}
 	catch (TransformerException e) {
 	    if (_errorListener != null)

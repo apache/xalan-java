@@ -123,6 +123,11 @@ public final class TemplatesImpl implements Templates, Serializable {
      */
     private int _indentNumber;
 
+    /**
+     * This URIResolver is passed to all Transformers.
+     */
+    private URIResolver _uriResolver = null;
+
     // Temporary
     private boolean _oldOutputSystem;
 
@@ -165,6 +170,13 @@ public final class TemplatesImpl implements Templates, Serializable {
 	_outputProperties = outputProperties;
 	_indentNumber = indentNumber;
 	_oldOutputSystem = oldOutputSystem;
+    }
+
+    /**
+     * Store URIResolver needed for Transformers.
+     */
+    public void setURIResolver(URIResolver resolver) {
+	_uriResolver = resolver;
     }
 
     /**
@@ -317,9 +329,15 @@ public final class TemplatesImpl implements Templates, Serializable {
      * @throws TransformerConfigurationException
      */
     public Transformer newTransformer()
-	throws TransformerConfigurationException {
-        return new TransformerImpl(getTransletInstance(), _outputProperties,
-	    _indentNumber, _oldOutputSystem);
+	throws TransformerConfigurationException 
+    {
+	final TransformerImpl transformer =
+	    new TransformerImpl(getTransletInstance(), _outputProperties,
+			        _indentNumber, _oldOutputSystem);
+	if (_uriResolver != null) {
+	    transformer.setURIResolver(_uriResolver);
+	}
+	return transformer;
     }
 
     /**
@@ -330,8 +348,7 @@ public final class TemplatesImpl implements Templates, Serializable {
      */
     public Properties getOutputProperties() { 
 	try {
-	    Transformer transformer = newTransformer();
-	    return transformer.getOutputProperties();
+	    return newTransformer().getOutputProperties();
 	}
 	catch (TransformerConfigurationException e) {
 	    return null;
