@@ -60,7 +60,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import org.apache.xerces.parsers.DOMParser;
 import org.apache.xpath.XPathAPI;
-//import org.apache.xpath.xml.FormatterToXML;
 import org.apache.xml.utils.TreeWalker;
 import org.apache.xml.utils.DOMBuilder;
 import org.w3c.dom.Document;
@@ -69,7 +68,6 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
-//import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 
@@ -79,14 +77,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException; 
 
 // Imported Serializer classes
-import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.serialize.Serializer;
 import org.apache.xalan.serialize.SerializerFactory;
 import org.apache.xalan.serialize.DOMSerializer;
 import org.apache.xalan.serialize.Method;
-
-//import org.apache.xalan.serialize.FormatterToXML;
-//import org.apache.xalan.serialize.helpers.XMLOutputFormat;
+import org.apache.xalan.templates.OutputProperties;
 
 /**
  *  Very basic utility for applying an XPath epxression to an xml file and printing information
@@ -156,7 +151,8 @@ public class ApplyXPath
 	    try
 	    {
         // Get a Serializer
-   	    Serializer ser = SerializerFactory.getSerializer(Method.XML);
+   	    Serializer ser = SerializerFactory.getSerializer
+                              (OutputProperties.getDefaultMethodProperties("xml"));          
         // Serialize to the screen.
         ser.setOutputStream(System.out);
         
