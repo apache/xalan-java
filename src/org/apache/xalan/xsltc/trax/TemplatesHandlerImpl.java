@@ -170,11 +170,6 @@ public class TemplatesHandlerImpl
 	try {
 	    XSLTC xsltc = _parser.getXSLTC();
 
-	    // Set a document loader (for xsl:include/import) if defined
-	    if (_uriResolver != null) {
-		xsltc.setSourceLoader(this);
-	    }
-
 	    // Set the translet class name if not already set
 	    String transletName = null;
 	    if (_systemId != null) {
@@ -197,12 +192,18 @@ public class TemplatesHandlerImpl
 		stylesheet = _parser.makeStylesheet(root);
 		stylesheet.setSystemId(_systemId);
 		stylesheet.setParentStylesheet(null);
+
+                // Set a document loader (for xsl:include/import) if defined
+                if (_uriResolver != null) {
+                    stylesheet.setSourceLoader(this);
+                }
+
 		_parser.setCurrentStylesheet(stylesheet);
 
 		// Set it as top-level in the XSLTC object
 		xsltc.setStylesheet(stylesheet);
 
-		// Create AST under the Stylesheet element 
+		// Create AST under the Stylesheet element
 		_parser.createAST(stylesheet);
 	    }
 
@@ -263,7 +264,7 @@ public class TemplatesHandlerImpl
     }
 
     // -- ContentHandler --------------------------------------------------
-    
+
     /**
      * Re-initialize parser and forward SAX2 event.
      */
@@ -275,7 +276,7 @@ public class TemplatesHandlerImpl
     /**
      * Just forward SAX2 event to parser object.
      */
-    public void endDocument() { 
+    public void endDocument() {
         _parser.endDocument();
     }
 
@@ -289,19 +290,19 @@ public class TemplatesHandlerImpl
     /**
      * Just forward SAX2 event to parser object.
      */
-    public void endPrefixMapping(String prefix) { 
+    public void endPrefixMapping(String prefix) {
         _parser.endPrefixMapping(prefix);
     }
 
     /**
      * Just forward SAX2 event to parser object.
      */
-    public void startElement(String uri, String localname, String qname, 
-        Attributes attributes) throws SAXException 
+    public void startElement(String uri, String localname, String qname,
+        Attributes attributes) throws SAXException
     {
         _parser.startElement(uri, localname, qname, attributes);
     }
-    
+
     /**
      * Just forward SAX2 event to parser object.
      */
@@ -315,25 +316,25 @@ public class TemplatesHandlerImpl
     public void characters(char[] ch, int start, int length) {
         _parser.characters(ch, start, length);
     }
-    
+
     /**
      * Just forward SAX2 event to parser object.
      */
     public void processingInstruction(String name, String value) {
         _parser.processingInstruction(name, value);
     }
-    
+
     /**
      * Just forward SAX2 event to parser object.
      */
-    public void ignorableWhitespace(char[] ch, int start, int length) { 
+    public void ignorableWhitespace(char[] ch, int start, int length) {
         _parser.ignorableWhitespace(ch, start, length);
     }
 
     /**
      * Just forward SAX2 event to parser object.
      */
-    public void skippedEntity(String name) { 
+    public void skippedEntity(String name) {
         _parser.skippedEntity(name);
     }
 
