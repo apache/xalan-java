@@ -292,11 +292,90 @@ public final class Stylesheet extends SyntaxTreeNode {
 	}
 	// Parse the children of this node
 	else {
-	    parseChildren(element, parser);
+	    parseOwnChildren(element, parser);
 	}
 
 	// Remove namespaces from symbol table
 	parser.popNamespaces(element);
+    }
+
+    /**
+     * Parse all the children of <tt>element</tt>.
+     * XSLT commands are recognized by the XSLT namespace
+     */
+    public final void parseOwnChildren(Element element, Parser parser) {
+	final NodeList nl = element.getChildNodes();
+	final int n = nl != null ? nl.getLength() : 0;
+	Vector locals = null;	// only create when needed
+
+	// We have to scan the stylesheet element's top-level elements for
+	// variables and/or parameters before we parse the other elements...
+	for (int i = 0; i < n; i++) {
+	    final Node node = nl.item(i);
+	    if (node.getNodeType() == Node.ELEMENT_NODE) {
+		final Element child = (Element)node;
+		final String uri = child.getNamespaceURI();
+		final String tag = child.getLocalName();
+		if (uri.equals(XSLT_URI)) {
+		    if (tag.equals("param") || tag.equals("variable")) {
+			parser.pushNamespaces(child);
+			SyntaxTreeNode instance = parser.makeInstance(child);
+			addElement(instance);
+			instance.parseContents(child, parser);
+			QName varOrParamName = updateScope(parser, instance);
+			if (varOrParamName != null) {
+			    if (locals == null) {
+				locals = new Vector(2);
+			    }
+			    locals.addElement(varOrParamName);
+			}
+			parser.popNamespaces(child);
+		    }
+		}
+	    }
+	}
+
+	// Now go through all the other top-level elements...
+	for (int i = 0; i < n; i++) {
+	    final Node node = nl.item(i);
+	    switch (node.getNodeType()) {
+	    case Node.ELEMENT_NODE:
+		
+		final Element child = (Element)node;
+		final String uri = child.getNamespaceURI();
+		final String tag = child.getLocalName();
+		// Skip if this is a variable/parameter
+		if (uri.equals(XSLT_URI)) {
+		    if (tag.equals("param") || tag.equals("variable")) break;
+		}
+
+		// Add namespace declarations to symbol table
+		parser.pushNamespaces(child);
+		final SyntaxTreeNode instance = parser.makeInstance(child);
+		addElement(instance);
+		if (!(instance instanceof Fallback))
+		    instance.parseContents(child, parser);
+		// Remove namespace declarations from symbol table
+		parser.popNamespaces(child);
+		break;
+		
+	    case Node.TEXT_NODE:
+		// !!! need to take a look at whitespace stripping
+		final String temp = node.getNodeValue();
+		if (temp.trim().length() > 0) {
+		    addElement(new Text(temp));
+		}
+		break;
+	    }
+	}
+	
+	// after the last element, remove any locals from scope
+	if (locals != null) {
+	    final int nLocals = locals.size();
+	    for (int i = 0; i < nLocals; i++) {
+		parser.removeVariable((QName)locals.elementAt(i));
+	    }
+	}
     }
 
     public void processModes() {
@@ -530,7 +609,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	il.append(new PUSH(cpg, DOM.ROOTNODE));
 	il.append(new ISTORE(current.getIndex()));
 
-	// Initialize global variables and parameters
+	// Initialize global variables and parameterns
 	final int m = _globals.size();
 	for (int i = 0; i < m; i++) {
 	    TopLevelElement elem = (TopLevelElement)_globals.elementAt(i);
