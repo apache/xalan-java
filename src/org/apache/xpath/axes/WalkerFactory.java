@@ -1382,7 +1382,7 @@ public class WalkerFactory
   public static boolean walksNamespaces(int analysis)
   {
     return (0 != (analysis & BIT_NAMESPACE));
-  }
+  }  
 
   public static boolean walksChildren(int analysis)
   {
@@ -1607,11 +1607,16 @@ public class WalkerFactory
     // can also cause duplicates to happen.  But select="axis*/@::*" patterns 
     // are OK, as are select="@foo/axis::*" patterns.
     // Unfortunately, we can't do this just via the analysis bits.
-
+    
     int stepType;
     int ops[] = compiler.getOpMap();
     int stepCount = 0;
     boolean foundWildAttribute = false;
+    
+    // Steps that can traverse anything other than down a 
+    // subtree or that can produce duplicates when used in 
+    // combonation are counted with this variable.
+    int potentialDuplicateMakingStepCount = 0;
     
     while (OpCodes.ENDOP != (stepType = ops[stepOpCodePos]))
     {        
@@ -1630,7 +1635,9 @@ public class WalkerFactory
         String localName = compiler.getStepLocalName(stepOpCodePos);
         // System.err.println("localName: "+localName);
         if(localName.equals("*"))
-          foundWildAttribute = true;  
+        {
+          foundWildAttribute = true;
+        }
         break;
       case OpCodes.FROM_FOLLOWING :
       case OpCodes.FROM_FOLLOWING_SIBLINGS :
@@ -1646,10 +1653,13 @@ public class WalkerFactory
       case OpCodes.FROM_ANCESTORS_OR_SELF :      
       case OpCodes.MATCH_ANY_ANCESTOR :
       case OpCodes.MATCH_IMMEDIATE_ANCESTOR :
-      case OpCodes.FROM_ROOT :
-      case OpCodes.FROM_CHILDREN :
       case OpCodes.FROM_DESCENDANTS_OR_SELF :
       case OpCodes.FROM_DESCENDANTS :
+        if(potentialDuplicateMakingStepCount > 0)
+            return false;
+        potentialDuplicateMakingStepCount++;
+      case OpCodes.FROM_ROOT :
+      case OpCodes.FROM_CHILDREN :
       case OpCodes.FROM_SELF :
         if(foundWildAttribute)
           return false;
