@@ -203,9 +203,13 @@
 	    <code>java -Xbootclasspath/p:&lt;path&gt;
 		    org.apache.xalan.xslt.Process</code>
             <br />
-	    <br />where &lt;path&gt; is a colon separated lists of the paths to the files xalan.jar, 
+	    <br />where &lt;path&gt; is a &lt;path.separator&gt; separated list of the paths to the files xalan.jar, 
 	     xercesImpl.jar, and xml-apis.jar (e.g. bin/xalan.jar:bin/xercesImpl.jar:bin/xml-apis.jar) 
 	     containing the new-version of &xslt4j;.
+	     <br /><br />
+	     &lt;path.separator&gt; depends on the OS and version of the JDK. For Windows, it is likely a semicolon (;).
+	     For Unix, it is likely a colon (:). To determine which &lt;path.separator&gt; to use, you can execute "java -X";
+	     it will mention the appropriate separator in the help output.
           </li>
         </ul>
         <p>The following methods
