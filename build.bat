@@ -24,7 +24,8 @@ set DOCLET=bin\xalanjdoc.jar
 
 rem DOCLET must be on system CLASSPATH for javadocs task to work. Just including it in
 rem -classpath arg for java or javadoc call doesn't work....
-set CLASSPATH=%ANT%;%XERCES%;%BSF%;%BSFENGINES%;%DOCGENERATOR%;%DOCLET%;%CLASSPATH%
+rem set CLASSPATH=%ANT%;%XERCES%;%BSF%;%BSFENGINES%;%DOCGENERATOR%;%DOCLET%;%CLASSPATH%
+set CLASSPATH=%ANT%;%XERCES%;%DOCGENERATOR%;%DOCLET%;%CLASSPATH%
 echo.
 echo Building with classpath %CLASSPATH%
 echo Starting Ant...
