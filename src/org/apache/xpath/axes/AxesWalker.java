@@ -133,7 +133,7 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Construct an AxesWalker using a LocPathIterator.
    *
-   * NEEDSDOC @param locPathIterator
+   * @param locPathIterator non-null reference to the parent iterator.
    */
   public AxesWalker(LocPathIterator locPathIterator)
   {
@@ -176,7 +176,7 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Get a cloned AxesWalker.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A new AxesWalker that can be used without mutating this one.
    *
    * @throws CloneNotSupportedException
    */
@@ -390,7 +390,7 @@ public abstract class AxesWalker extends NodeTest
     m_predicateIndex = 0;
 
     int nPredicates = m_predicateCount;
-
+    // System.out.println("nPredicates: "+nPredicates);
     if (nPredicates == 0)
       return true;
 
@@ -404,24 +404,51 @@ public abstract class AxesWalker extends NodeTest
 
       for (int i = 0; i < nPredicates; i++)
       {
+        // System.out.println("Executing predicate expression - waiting count: "+m_lpi.getWaitingCount());
+        int savedWaitingBottom = m_lpi.m_waitingBottom;
+        m_lpi.m_waitingBottom = m_lpi.getWaitingCount();
         XObject pred;
-
-        pred = m_predicates[i].execute(xctxt);
-
+        try
+        {
+          pred = m_predicates[i].execute(xctxt);
+        }
+        finally
+        {
+          m_lpi.m_waitingBottom = savedWaitingBottom;
+        }
+        // System.out.println("\nBack from executing predicate expression - waiting count: "+m_lpi.getWaitingCount());
+        // System.out.println("pred.getType(): "+pred.getType());
         if (XObject.CLASS_NUMBER == pred.getType())
         {
           if (DEBUG_PREDICATECOUNTING)
           {
-            System.out.println("=============");
+            System.out.flush();
+            System.out.println("\n===== start predicate count ========");
             System.out.println("m_predicateIndex: " + m_predicateIndex);
-            System.out.println("getProximityPosition(m_predicateIndex): "
-                               + getProximityPosition(m_predicateIndex));
+            // System.out.println("getProximityPosition(m_predicateIndex): "
+            //                   + getProximityPosition(m_predicateIndex));
             System.out.println("pred.num(): " + pred.num());
+            System.out.println("waiting count: "+m_lpi.getWaitingCount());
           }
 
-          if (this.getProximityPosition(m_predicateIndex) != (int) pred.num())
+          int proxPos = this.getProximityPosition(m_predicateIndex);
+          if (proxPos != (int) pred.num())
           {
+            if (DEBUG_PREDICATECOUNTING)
+            {
+              System.out.println("\nnode context: "+nodeToString(context));
+              System.out.println("index predicate is false: "+proxPos);
+              System.out.println("waiting count: "+m_lpi.getWaitingCount());
+              System.out.println("\n===== end predicate count ========");
+            }
             return false;
+          }
+          else if (DEBUG_PREDICATECOUNTING)
+          {
+            System.out.println("\nnode context: "+nodeToString(context));
+            System.out.println("index predicate is true: "+proxPos);
+            System.out.println("waiting count: "+m_lpi.getWaitingCount());
+            System.out.println("\n===== end predicate count ========");
           }
         }
         else if (!pred.bool())
@@ -1028,9 +1055,9 @@ public abstract class AxesWalker extends NodeTest
 
     if (DEBUG_WAITING)
     {
-      int nWaiting = m_lpi.m_waiting.size();
+      int nWaiting = m_lpi.getWaitingCount();
 
-      for (int i = 0; i < nWaiting; i++)
+      for (int i = m_lpi.m_waitingBottom; i < nWaiting; i++)
       {
         AxesWalker ws = (AxesWalker) m_lpi.m_waiting.elementAt(i);
 
@@ -1163,9 +1190,9 @@ public abstract class AxesWalker extends NodeTest
     if ((null != walker) && (null == walker.m_currentNode))
       return walker;
 
-    int nWaiting = m_lpi.m_waiting.size();
+    int nWaiting = m_lpi.getWaitingCount();
 
-    for (int i = 0; i < nWaiting; i++)
+    for (int i = m_lpi.m_waitingBottom; i < nWaiting; i++)
     {
       AxesWalker ws = (AxesWalker) m_lpi.m_waiting.elementAt(i);
       AxesWalker prevStepWalker = ws.m_prevWalker;
@@ -1183,13 +1210,10 @@ public abstract class AxesWalker extends NodeTest
           {
             AxesWalker deferedWalker = walker;
 
-            if (DEBUG_WAITING)
-              printDebug("[Moving " + deferedWalker.toString() + ", "
-                         + nodeToString(deferedWalker.m_currentNode)
-                         + " to WAITING list]");
-
             if (!isWaiting(deferedWalker))
-              m_lpi.addToWaitList(deferedWalker);
+            {
+              addToWaitList(deferedWalker);
+            }
           }
 
           walker = ws;
@@ -1222,9 +1246,9 @@ public abstract class AxesWalker extends NodeTest
 
     DOMHelper dh = m_lpi.getDOMHelper();
     AxesWalker first = null;
-    int nWaiting = m_lpi.m_waiting.size();
+    int nWaiting = m_lpi.getWaitingCount();
 
-    for (int i = 0; i < nWaiting; i++)
+    for (int i = m_lpi.m_waitingBottom; i < nWaiting; i++)
     {
       AxesWalker ws = (AxesWalker) m_lpi.m_waiting.elementAt(i);
 
@@ -1261,9 +1285,9 @@ public abstract class AxesWalker extends NodeTest
   boolean isWaiting(AxesWalker walker)
   {
 
-    int nWaiting = m_lpi.m_waiting.size();
+    int nWaiting = m_lpi.getWaitingCount();
 
-    for (int i = 0; i < nWaiting; i++)
+    for (int i = m_lpi.m_waitingBottom; i < nWaiting; i++)
     {
       AxesWalker ws = (AxesWalker) m_lpi.m_waiting.elementAt(i);
 
@@ -1272,6 +1296,16 @@ public abstract class AxesWalker extends NodeTest
     }
 
     return false;
+  }
+  
+  private final void addToWaitList(AxesWalker walker)
+  {
+      if (DEBUG_WAITING)
+        printDebug("[Moving " + walker.toString() + ", "
+                   + nodeToString(walker.m_currentNode)
+                   + " to WAITING list]");
+                   
+      m_lpi.addToWaitList(walker);
   }
 
   /**
@@ -1306,12 +1340,12 @@ public abstract class AxesWalker extends NodeTest
             if (DEBUG_WAITING)
               printDebug("checkNeedsToWait.clone: " + walker.toString());
 
-            m_lpi.addToWaitList((AxesWalker) walker.clone());
+            addToWaitList((AxesWalker) walker.clone());
           }
           catch (CloneNotSupportedException cnse){}
         }
         else
-          m_lpi.addToWaitList(walker);
+          addToWaitList(walker);
 
         walker = walker.m_prevWalker;
 
@@ -1621,7 +1655,8 @@ public abstract class AxesWalker extends NodeTest
 
       XObject score = execute(xctxt);
 
-      // System.out.println("::acceptNode - score: "+score.num()+"::");
+      if(DEBUG)
+        System.out.println("\n::acceptNode - score: "+score.num()+"::");
       if (score != NodeTest.SCORE_NONE)
       {
         if (m_predicateCount > 0)

@@ -156,7 +156,15 @@ public class LocPathIterator extends Expression
 
   /** The list of "waiting" step walkers.
    * @see org.apache.xpath.axes.AxesWalker     */
-  public Vector m_waiting = new Vector();
+  Vector m_waiting = new Vector();
+  
+  int getWaitingCount()
+  {
+    return m_waiting.size() - m_waitingBottom;
+  }
+    
+  /** The starting point in m_waiting where the waiting step walkers are. */
+  int m_waitingBottom = 0;
   
   /** An index to the point in the variable stack where we should
    * begin variable searches for this iterator.
@@ -641,6 +649,7 @@ public class LocPathIterator extends Expression
     m_lastFetched = null;
     m_next = 0;
     m_last = 0;
+    m_waitingBottom = 0;
 
     if (null != m_firstWalker)
     {
