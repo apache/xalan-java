@@ -384,7 +384,7 @@ public class XPathContext implements ExpressionContext
     {
       Source source = getSourceTreeManager().resolveURI(base, urlString,
                                                         getSAXLocator());
-      return source.getBaseID();
+      return source.getSystemId();
     }
     catch (TransformerException te)
     {

@@ -283,7 +283,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     {
       DOMSource dsource = (DOMSource)source;
       node = dsource.getNode();
-      baseID = dsource.getBaseID();
+      baseID = dsource.getSystemId();
     }
     else
     {
@@ -567,7 +567,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     {
       DOMSource dsource = (DOMSource)source;
       Node node = dsource.getNode();
-      String baseID = dsource.getBaseID();
+      String baseID = dsource.getSystemId();
       builder.setBaseID(baseID);
       return processFromNode(node, baseID);
     }

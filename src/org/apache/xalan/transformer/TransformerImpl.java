@@ -453,7 +453,7 @@ public class TransformerImpl extends Transformer
     if(source instanceof DOMSource)
     {
       DOMSource dsource = (DOMSource)source;
-      m_urlOfSource = dsource.getBaseID();
+      m_urlOfSource = dsource.getSystemId();
       this.transformNode(dsource.getNode());
       return;
     }

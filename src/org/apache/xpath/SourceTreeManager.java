@@ -239,14 +239,14 @@ public class SourceTreeManager
           throw new RuntimeException(
             "Programmer's Error!  "
             + "putDocumentInCache found reparse of doc: "
-            + source.getBaseID());
+            + source.getSystemId());
 
         return;
       }
 
-      if (null != source.getBaseID())
+      if (null != source.getSystemId())
       {
-        m_sourceTree.addElement(new SourceTree(n, source.getBaseID()));
+        m_sourceTree.addElement(new SourceTree(n, source.getSystemId()));
       }
     }
     catch (TransformerException te)
@@ -271,7 +271,7 @@ public class SourceTreeManager
       return ((DOMSource)source).getNode();
 
     // TODO: Not sure if the BaseID is really the same thing as the ID.
-    String url = source.getBaseID();
+    String url = source.getSystemId();
 
     if (null == url)
       return null;
