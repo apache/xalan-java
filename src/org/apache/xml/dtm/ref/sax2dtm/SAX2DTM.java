@@ -67,7 +67,7 @@ import org.xml.sax.ext.*;
 import javax.xml.transform.Source;
 
 import org.apache.xml.utils.FastStringBuffer;
-import org.apache.xml.utils.ChunkedIntVector;
+import org.apache.xml.utils.SuballocatedIntVector;
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.XMLCharacterRecognizer;
 import org.apache.xml.utils.SystemIDResolver;
@@ -122,7 +122,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   private FastStringBuffer m_chars = new FastStringBuffer(13, 13);
 
   /** This vector holds offset and length data. */
-  protected ChunkedIntVector m_data;
+  protected SuballocatedIntVector m_data;
 
   /** The parent stack, needed only for construction. */
   transient private IntStack m_parents = new IntStack();
@@ -162,7 +162,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   private boolean m_endDocumentOccured = false;
 
   /** Data or qualified name values, one array element for each node. */
-  protected ChunkedIntVector m_dataOrQName;
+  protected SuballocatedIntVector m_dataOrQName;
 
   /**
    * This table holds the ID string to node associations, for
@@ -231,9 +231,9 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     super(mgr, source, dtmIdentity, whiteSpaceFilter, 
           xstringfactory, doIndexing);
           
-    m_data = new ChunkedIntVector(doIndexing ? (1024*2) : 512, 1024);
+    m_data = new SuballocatedIntVector(doIndexing ? (1024*2) : 512, 1024);
 
-    m_dataOrQName = new ChunkedIntVector(m_initialblocksize);
+    m_dataOrQName = new SuballocatedIntVector(m_initialblocksize);
 
     int doc = addNode(DTM.DOCUMENT_NODE,
                       m_expandedNameTable.getExpandedTypeID(DTM.DOCUMENT_NODE),
@@ -808,7 +808,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   protected void ensureSize(int index)
   {
-	// dataOrQName is an ChunkedIntVector and hence self-sizing.
+	// dataOrQName is an SuballocatedIntVector and hence self-sizing.
 	// But DTMDefaultBase may need fixup.
       super.ensureSize(index);
   }

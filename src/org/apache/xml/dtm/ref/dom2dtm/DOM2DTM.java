@@ -58,7 +58,7 @@ package org.apache.xml.dtm.ref.dom2dtm;
 
 import org.apache.xml.dtm.ref.*;
 import org.apache.xml.dtm.*;
-import org.apache.xml.utils.ChunkedIntVector;
+import org.apache.xml.utils.SuballocatedIntVector;
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.StringBufferPool;
