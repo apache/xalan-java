@@ -304,6 +304,16 @@ public class DTMNodeProxy
   {
     return dtm.getNodeValue(node);
   }
+  
+  /**
+   * @return The string value of the node
+   * 
+   * @throws DOMException
+   */
+  public final String getStringValue() throws DOMException
+  {
+  	return dtm.getStringValue(node).toString();
+  }
 
   /**
    *
