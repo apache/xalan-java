@@ -166,7 +166,8 @@ class StepPattern extends RelativePathPattern {
 
 	for (int i = 0; i < n && noContext; i++) {
 	    final Predicate pred = (Predicate)_predicates.elementAt(i);
-	    if (pred.getExpr().hasPositionCall()) {
+	    if (pred.getExpr().hasPositionCall()
+                || pred.isNthPositionFilter()) {
 		noContext = false;
 	    }
 	}
@@ -185,33 +186,43 @@ class StepPattern extends RelativePathPattern {
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	if (hasPredicates()) {
-	    // Type check all the predicates (e -> position() = e)
-	    final int n = _predicates.size();
-	    for (int i = 0; i < n; i++) {
-		final Predicate pred = (Predicate)_predicates.elementAt(i);
-		pred.typeCheck(stable);
-	    }
+        if (hasPredicates()) {
+            // Type check all the predicates (e -> position() = e)
+            final int n = _predicates.size();
+            for (int i = 0; i < n; i++) {
+                final Predicate pred = (Predicate)_predicates.elementAt(i);
+                pred.typeCheck(stable);
+            }
 
-	    // Analyze context cases
-	    _contextCase = analyzeCases();
+            // Analyze context cases
+            _contextCase = analyzeCases();
 
-	    // Create an instance of Step to do the translation
-	    if (_contextCase == SIMPLE_CONTEXT) {
-		_step = new Step(_axis, _nodeType, null);
-		_step.setParser(getParser());
-		_step.typeCheck(stable);
-	    }
-	    else if (_contextCase == GENERAL_CONTEXT) {
-		final int len = _predicates.size();
-		for (int i = 0; i < len; i++)
-		    ((Predicate)_predicates.elementAt(i)).dontOptimize();
-		_step = new Step(_axis, _nodeType, _predicates);
-		_step.setParser(getParser());
-		_step.typeCheck(stable);
-	    }
-	}
-	return _axis == Axis.CHILD ? Type.Element : Type.Attribute;
+            Step step = null;
+
+            // Create an instance of Step to do the translation
+            if (_contextCase == SIMPLE_CONTEXT) {
+                Predicate pred = (Predicate)_predicates.elementAt(0);
+                if (pred.isNthPositionFilter()) {
+                    _contextCase = GENERAL_CONTEXT;
+                    step = new Step(_axis, _nodeType, _predicates);
+                } else {
+                    step = new Step(_axis, _nodeType, null);
+                }
+            } else if (_contextCase == GENERAL_CONTEXT) {
+                final int len = _predicates.size();
+                for (int i = 0; i < len; i++) {
+                    ((Predicate)_predicates.elementAt(i)).dontOptimize();
+                }
+
+                step = new Step(_axis, _nodeType, _predicates);
+            }
+            if (step != null) {
+                step.setParser(getParser());
+                step.typeCheck(stable);
+                _step = step;
+            }
+        }
+        return _axis == Axis.CHILD ? Type.Element : Type.Attribute;
     }
 
     private void translateKernel(ClassGenerator classGen, 
