@@ -59,7 +59,7 @@
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
- *
+ * @author G. Todd Miller
  */
 
 package org.apache.xalan.xsltc.runtime;
@@ -77,7 +77,30 @@ import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.StripWhitespaceFilter;
 import org.apache.xalan.xsltc.dom.KeyIndex;
 
-public abstract class AbstractTranslet implements Translet {
+// GTM added all these
+import javax.xml.transform.Transformer;	
+import javax.xml.transform.Source;
+import javax.xml.transform.Result;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
+import javax.xml.transform.ErrorListener;
+import java.lang.IllegalArgumentException;
+import java.util.Properties;
+import java.lang.IllegalArgumentException;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.SAXParser;
+import org.xml.sax.XMLReader;
+import org.apache.xalan.xsltc.dom.DTDMonitor;
+import java.io.File;
+import java.io.OutputStream;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
+import java.net.UnknownHostException;
+// END.
+
+public abstract class AbstractTranslet extends Transformer implements Translet {
 
     protected String _encoding = "utf-8";
 
@@ -102,6 +125,7 @@ public abstract class AbstractTranslet implements Translet {
     private DOMCache _domCache = null;
 
     private final static String EMPTYSTRING = "";
+
 
     public final DOMAdapter makeDOMAdapter(DOM dom)
 	throws TransletException {
@@ -360,5 +384,140 @@ public abstract class AbstractTranslet implements Translet {
 
     public DOMCache getDOMCache() {
 	return(_domCache);
+    }
+
+    private String _transletName;
+
+    public void setTransletName(String name) {
+	_transletName = name;
+    }
+
+    public String getTransletName() {
+	return _transletName;
+    }
+
+    /*********************************************************
+     *  Transformer methods
+     *********************************************************/
+
+    public void clearParameters() {  
+	paramsStack.clear();
+    }
+
+    public ErrorListener getErrorListener() {  
+	/* TBD */
+	return null; 
+    }
+
+    public void setErrorListener(ErrorListener listener) throws 
+        IllegalArgumentException {  /* TBD */ }
+
+    public Properties getOutputProperties() throws IllegalArgumentException { 
+        /*TBD*/ 
+    	return null; 
+    }
+
+    public String getOutputProperty(String name) throws 
+	IllegalArgumentException
+    { 
+        /*TBD*/ 
+	return ""; 
+    }
+
+    public void setOutputProperties(Properties props) throws 
+	IllegalArgumentException 
+    { 
+	/*TBD */ 
+    }
+
+    public void setOutputProperty(String name, String value) throws 
+	IllegalArgumentException 
+    {
+	/*TBD*/ 
+    }
+
+    public URIResolver getURIResolver() { /*TBD*/ return null; }
+
+    public void setParameter(String name, Object value) { 
+	addParameter(name, value);
+    }
+    public void setURIResolver(URIResolver resolver) { /*TBD*/}
+
+    public void transform(Source xmlsrc, Result outputTarget)
+        throws TransformerException 
+    {
+	doTransform( xmlsrc.getSystemId(), 
+		     ((StreamResult)outputTarget).getOutputStream() ); 
+    }
+
+    private void doTransform(String xmlDocName, OutputStream ostream) {
+        try {
+            final Translet translet = (Translet)this; // GTM added
+
+            // Create a SAX parser and get the XMLReader object it uses
+            final SAXParserFactory factory = SAXParserFactory.newInstance();
+            final SAXParser parser = factory.newSAXParser();
+            final XMLReader reader = parser.getXMLReader();
+
+            // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
+            final DOMImpl dom = new DOMImpl();
+            reader.setContentHandler(dom.getBuilder());
+            // Create a DTD monitor and pass it to the XMLReader object
+            final DTDMonitor dtdMonitor = new DTDMonitor();
+            dtdMonitor.handleDTD(reader);
+
+            dom.setDocumentURI(xmlDocName);
+        /****************
+            if (_uri)
+                reader.parse(xmlDocName);
+            else
+        *******************/
+            reader.parse("file:"+(new File(xmlDocName).getAbsolutePath()));
+           
+            // Set size of key/id indices
+            setIndexSize(dom.getSize());
+            // If there are any elements with ID attributes, build an index
+            dtdMonitor.buildIdIndex(dom, 0, this);
+
+            setUnparsedEntityURIs(dtdMonitor.getUnparsedEntityURIs());
+
+            // Transform the document
+            String encoding = translet.getOutputEncoding();
+            if (encoding == null) encoding = "UTF-8";
+
+            //TextOutput textOutput = new TextOutput(System.out, encoding);
+            DefaultSAXOutputHandler saxHandler = new
+                DefaultSAXOutputHandler(ostream, encoding);
+            TextOutput textOutput = new TextOutput(saxHandler, encoding);
+            translet.transform(dom, textOutput);
+            textOutput.flush();
+
+        }
+        catch (TransletException e) {
+            System.err.println("\nTranslet Error: " + e.getMessage());
+            System.exit(1);
+        }
+        catch (RuntimeException e) {
+            System.err.println("\nRuntime Error: " + e.getMessage());
+            System.exit(1);
+        }
+        catch (FileNotFoundException e) {
+           //System.err.println("Error:File or URI '"+_fileName+"' not found.");
+            System.exit(1);
+        }
+        catch (MalformedURLException e) {
+            //System.err.println("Error: Invalid URI '"+_fileName+"'.");
+            System.exit(1);
+        }
+        catch (UnknownHostException e) {
+            //System.err.println("Error: Can't resolve URI specification '"+
+                               //_fileName+"'.");
+            System.exit(1);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error: internal error.");
+            System.exit(1);
+        }
     }
 }
