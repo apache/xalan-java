@@ -113,25 +113,6 @@ public class SAXResult implements Result
   }
 
   /**
-   * Set the SAX2 DeclHandler for the output.
-   *
-   * @param handler
-   */
-  void setDeclHandler(DeclHandler handler)
-  {
-    this.declhandler = declhandler;
-  }
-
-  /**
-   * Get the SAX2 DeclHandler for the output.
-   * @return A DeclHandler, or null.
-   */
-  DeclHandler getDeclHandler()
-  {
-    return declhandler;
-  }
-
-  /**
    * Set the SAX2 LexicalHandler for the output.
    *
    * @param handler
@@ -158,11 +139,6 @@ public class SAXResult implements Result
    * Field handler
    */
   private ContentHandler handler;
-
-  /**
-   * Field declhandler
-   */
-  private DeclHandler declhandler;
 
   /**
    * Field lexhandler
