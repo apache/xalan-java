@@ -61,6 +61,7 @@ package org.apache.xml.dtm;
  * <p>The ancestor, descendant, following, preceding and self axes partition a
  * document (ignoring attribute and namespace nodes): they do not overlap
  * and together they contain all the nodes in the document.</p>
+ *
  */
 public interface Axis
 {
