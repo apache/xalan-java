@@ -213,39 +213,14 @@ public class XRTreeFrag extends XObject
     }
   }
   
-  class NodeIteratorWrapper implements NodeIterator, NodeList
+  class NodeIteratorWrapper implements NodeIterator
   {
-    int m_pos = -1;
-    DocumentFragment m_docFrag;
-    NodeList m_nl;
+    private int m_pos = -1;
+    private DocumentFragment m_docFrag;
     
     NodeIteratorWrapper(DocumentFragment df)
     {
       m_docFrag = df;
-      m_nl = df.getChildNodes();
-    }
-    
-    /**
-     *  Returns the <code>index</code> th item in the collection. If 
-     * <code>index</code> is greater than or equal to the number of nodes in 
-     * the list, this returns <code>null</code> .
-     * @param index  Index into the collection.
-     * @return  The node at the <code>index</code> th position in the 
-     *   <code>NodeList</code> , or <code>null</code> if that is not a valid 
-     *   index.
-     */
-    public Node item(int index)
-    {
-      return m_nl.item(index);
-    }
-
-    /**
-     *  The number of nodes in the list. The range of valid child node indices 
-     * is 0 to <code>length-1</code> inclusive. 
-     */
-    public int getLength()
-    {
-      return m_nl.getLength();
     }
     
     /**
@@ -304,11 +279,10 @@ public class XRTreeFrag extends XObject
     public Node nextNode()
                          throws DOMException
     {
-      int next = m_pos+1;
-      if((next >= 0) && (next < m_nl.getLength()))  
+      if (-1 == m_pos)
       {
-        m_pos++;
-        return m_nl.item(next);
+        m_pos = 0;
+        return m_docFrag;
       }
       else
         return null;
@@ -326,11 +300,10 @@ public class XRTreeFrag extends XObject
     public Node previousNode()
                              throws DOMException
     {
-      int prev = m_pos-1;
-      if((prev >= 0) && (prev < m_nl.getLength()))  
+      if (0 == m_pos)
       {
-        m_pos--;
-        return m_nl.item(prev);
+        m_pos = -1;
+        return m_docFrag;
       }
       else
         return null;
