@@ -738,6 +738,7 @@ public final class TransformerImpl extends Transformer
 	if (name.equals(OutputKeys.OMIT_XML_DECLARATION)) return true;
 	if (name.equals(OutputKeys.STANDALONE)) return true;
 	if (name.equals(OutputKeys.VERSION)) return true;
+	if (name.charAt(0) == '{') return true;
 	return false;
     }
 
