@@ -69,7 +69,7 @@
     do the following:</p>
  		<ol>
     <li>Download &xslt4j;.<br/><br/></li> 
-    <li><link idref="getstarted" anchor="classpath">Set the Java classpath</link> to include xalan.jar and
+    <li><link idref="getstarted" anchor="classpath">Set the Java classpath</link> to include xalan.jar, xml-apis.jar, and
     xerces.jar (or another conformant XML Parser -- see <link idref="usagepatterns" anchor="plug">Plugging in 
     the Transformer and XML parser</link>).<br/><br/></li>
     <li>Call java and the Process class with the appropriate flags and

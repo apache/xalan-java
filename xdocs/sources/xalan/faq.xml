@@ -97,7 +97,7 @@
     <q>I'm getting a NoClassDefFound error. What has to be on the classpath?</q>
     
     <a><ol>
-    <li>xalan.jar and xerces.jar (or the XML parser you are using) must always be on the classpath.<br/><br/></li>
+    <li>xalan.jar, xml-apis.jar, and xerces.jar (or the XML parser you are using) must always be on the classpath.<br/><br/></li>
     <li>To run the samples in the samples subdirectories, xalansamples.jar must be on the classpath. To run the servlet (in
     samples/servlet), xalanservlet.jar must be on the classpath along with the javax.servlet and javax.servlet.http packages. Sun distributes
     the javax.servlet packages in the JSWDK servlet.jar file.<br/><br/></li>

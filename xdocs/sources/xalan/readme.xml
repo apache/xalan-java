@@ -86,7 +86,8 @@
      <p>Beginning with this release, xalan.jar contains just the &xslt4j; implementation. The source files for the SAX level 2, DOM 2, 
      and JAXP 1.1 interfaces are pulled from the xml-commons repository (<resource-ref idref="xmlapirepository"/>), and are built as
      xml-apis.jar. These interfaces are shared by a number of tools, so placing them in their own jar simplifies coordination and reduces 
-     the risk of duplication. <em>To run &xslt4j;, you must add xml-apis.jar to your classpath.</em></p>
+     the risk of duplication. <em>To run &xslt4j;, you must add xml-apis.jar to your classpath.</em> See <link idref="getstarted"
+     anchor="classpath">Setting up the system class path</link>.</p>
      <p>Beginning with this release, we are placing two distribution files in the <resource-ref idref="xslt4j-distdir"/>: a binary
      distribution file, which includes everything needed to run &xslt4j; and build applications, and a source distribution. For
      more information, see <link idref="getstarted" anchor="download">Downloading what you need</link>.</p>
