@@ -479,15 +479,22 @@ public class StepPattern extends NodeTest implements SubContextList
               {
                 XObject pred = m_predicates[i].execute(xctxt);
 
-                if (XObject.CLASS_NUMBER == pred.getType())
+                try
                 {
-                  throw new Error("Why: Should never have been called");
+                  if (XObject.CLASS_NUMBER == pred.getType())
+                  {
+                    throw new Error("Why: Should never have been called");
+                  }
+                  else if (!pred.boolWithSideEffects())
+                  {
+                    pass = false;
+  
+                    break;
+                  }
                 }
-                else if (!pred.bool())
+                finally
                 {
-                  pass = false;
-
-                  break;
+                  pred.detach();
                 }
               }
             }
@@ -561,20 +568,27 @@ public class StepPattern extends NodeTest implements SubContextList
               {
                 XObject pred = m_predicates[i].execute(xctxt);
 
-                if (XObject.CLASS_NUMBER == pred.getType())
+                try
                 {
-                  if ((pos + 1) != (int) pred.num())
+                  if (XObject.CLASS_NUMBER == pred.getType())
+                  {
+                    if ((pos + 1) != (int) pred.numWithSideEffects())
+                    {
+                      pass = false;
+  
+                      break;
+                    }
+                  }
+                  else if (!pred.boolWithSideEffects())
                   {
                     pass = false;
-
+  
                     break;
                   }
                 }
-                else if (!pred.bool())
+                finally
                 {
-                  pass = false;
-
-                  break;
+                  pred.detach();
                 }
               }
             }
@@ -762,33 +776,41 @@ public class StepPattern extends NodeTest implements SubContextList
         {
           XObject pred = m_predicates[i].execute(xctxt);
 
-          if (XObject.CLASS_NUMBER == pred.getType())
+          try
           {
-            int pos = (int) pred.num();
-
-            if (positionAlreadySeen)
+            if (XObject.CLASS_NUMBER == pred.getType())
             {
-              result = (pos == 1);
-
-              break;
-            }
-            else
-            {
-              positionAlreadySeen = true;
-
-              if (!checkProximityPosition(xctxt, i, dtm, currentNode, pos))
+              int pos = (int) pred.num();
+  
+              if (positionAlreadySeen)
               {
-                result = false;
-
+                result = (pos == 1);
+  
                 break;
               }
+              else
+              {
+                positionAlreadySeen = true;
+  
+                if (!checkProximityPosition(xctxt, i, dtm, currentNode, pos))
+                {
+                  result = false;
+  
+                  break;
+                }
+              }
+            
+            }
+            else if (!pred.boolWithSideEffects())
+            {
+              result = false;
+  
+              break;
             }
           }
-          else if (!pred.bool())
+          finally
           {
-            result = false;
-
-            break;
+            pred.detach();
           }
         }
         finally

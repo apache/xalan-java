@@ -290,6 +290,18 @@ public class XObject extends Expression implements Serializable, Cloneable
 
     return 0.0;
   }
+  
+  /**
+   * Cast result object to a number, but allow side effects, such as the 
+   * incrementing of an iterator.
+   *
+   * @return numeric value of the string conversion from the 
+   * next node in the NodeSetDTM, or NAN if no node was found
+   */
+  public double numWithSideEffects()  throws javax.xml.transform.TransformerException
+  {
+    return num();
+  }
 
   /**
    * Cast result object to a boolean. Always issues an error.
@@ -306,6 +318,18 @@ public class XObject extends Expression implements Serializable, Cloneable
 
     return false;
   }
+  
+  /**
+   * Cast result object to a boolean, but allow side effects, such as the 
+   * incrementing of an iterator.
+   *
+   * @return True if there is a next node in the nodeset
+   */
+  public boolean boolWithSideEffects() throws javax.xml.transform.TransformerException
+  {
+    return bool();
+  }
+
 
   /**
    * Cast result object to a string.

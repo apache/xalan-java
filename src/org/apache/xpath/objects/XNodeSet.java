@@ -173,6 +173,22 @@ public class XNodeSet extends XObject
 
     return (node != DTM.NULL) ? getNumberFromNode(node) : Double.NaN;
   }
+  
+  /**
+   * Cast result object to a number, but allow side effects, such as the 
+   * incrementing of an iterator.
+   *
+   * @return numeric value of the string conversion from the 
+   * next node in the NodeSetDTM, or NAN if no node was found
+   */
+  public double numWithSideEffects()
+  {
+    DTMIterator nl = iterRaw();
+    int node = nl.nextNode();
+
+    return (node != DTM.NULL) ? getNumberFromNode(node) : Double.NaN;
+  }
+
 
   /**
    * Cast result object to a boolean.
@@ -183,6 +199,18 @@ public class XNodeSet extends XObject
   {
     return (iter().nextNode() != DTM.NULL);
   }
+  
+  /**
+   * Cast result object to a boolean, but allow side effects, such as the 
+   * incrementing of an iterator.
+   *
+   * @return True if there is a next node in the nodeset
+   */
+  public boolean boolWithSideEffects()
+  {
+    return (iterRaw().nextNode() != DTM.NULL);
+  }
+
   
   /**
    * Get the string conversion from a single node.
