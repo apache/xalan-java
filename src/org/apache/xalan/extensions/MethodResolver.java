@@ -138,7 +138,8 @@ public class MethodResolver
         // System.out.println("numberMethodParams: "+numberMethodParams);
         // System.out.println("argsIn.length: "+argsIn.length);
         // System.out.println("exprContext: "+exprContext);
-        if(numberMethodParams == (argsIn.length+1))
+        int argsLen = (null != argsIn) ? argsIn.length : 0;
+        if(numberMethodParams == (argsLen+1))
         {
           Class javaClass = paramTypes[0];
           if(javaClass.isAssignableFrom(org.w3c.xslt.ExpressionContext.class))
@@ -155,7 +156,7 @@ public class MethodResolver
         else
             scoreStart = 100;
         
-        if(argsIn.length == (numberMethodParams - paramStart))
+        if(argsLen == (numberMethodParams - paramStart))
         {
           // then we have our candidate.
           int score = scoreMatch(paramTypes, paramStart, argsIn, scoreStart);
@@ -197,7 +198,7 @@ public class MethodResolver
     throws org.xml.sax.SAXException
   {
     // System.out.println("In convertParams");
-    int nMethods = argsIn.length;
+    int nMethods = (null != argsIn) ? argsIn.length : 0;
     int paramIndex = 0;
     if((paramTypes.length > 0) 
        && paramTypes[0].isAssignableFrom(org.w3c.xslt.ExpressionContext.class))
@@ -371,7 +372,7 @@ public class MethodResolver
   public static int scoreMatch(Class[] javeParamTypes, int paramTypesStart,
                                Object[] xsltArgs, int score)
   {
-    int nParams = xsltArgs.length;
+    int nParams = (null != xsltArgs) ? xsltArgs.length : 0;
     for(int i = 0, paramTypesIndex = paramTypesStart; 
         i < nParams; 
         i++, paramTypesIndex++)
