@@ -174,7 +174,9 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns 'true' if a specific node is an element (of any type)
      */
     private boolean isElement(final int node) {
-	if ((node<_firstAttributeNode) && (_type[node]>=NTYPES)) return true;
+	final int type = _type[node];
+	if ((node<_firstAttributeNode) &&
+	    (type>=PROCESSING_INSTRUCTION)) return true;
 	return false;
     }
 
@@ -195,6 +197,10 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns true if node1 comes before node2 in document order
      */
     public boolean lessThan(int node1, int node2) {
+	// Hack for ordering attribute nodes
+	if (node1 >= _firstAttributeNode) node1 = _parent[node1];
+	if (node2 >= _firstAttributeNode) node2 = _parent[node2];
+
 	if ((node2 < _treeNodeLimit) && (node1 < node2))
 	    return(true);
 	else
@@ -2475,6 +2481,10 @@ public final class DOMImpl implements DOM, Externalizable {
 	    copyPI(node, handler);
 	    return null;
 	case COMMENT:
+	    final String comment = new String(_text,
+					      _offsetOrChild[node],
+					      _lengthOrAttr[node]);
+	    handler.comment(comment);
 	    return null;
 	default:
 	    if (isElement(node)) {
