@@ -124,6 +124,8 @@ public class TransformerFactoryImpl
 	"Cannot access file or URL ";
     private static final String COMPILE_ERR =
 	"Could not compile stylesheet";
+    private static final String INVALID_ATTRIBUTE =
+	"TransformerFactory does not recognise attribute: ";
 
     // This Hashtable is used to store parameters for locating
     // <?xml-stylesheet ...?> processing instructions in XML documents.
@@ -206,6 +208,7 @@ public class TransformerFactoryImpl
 	// for translets that cannot be given a name from their system-id.
 	if ((name.equals("translet-name")) && (value instanceof String))
 	    _defaultTransletName = (String)value;
+	throw new IllegalArgumentException(INVALID_ATTRIBUTE+name);
     }
 
     /**
