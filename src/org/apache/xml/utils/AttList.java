@@ -132,7 +132,10 @@ public class AttList implements Attributes
    */
   public String getURI(int index)
   {
-    return m_dh.getNamespaceOfNode(((Attr) m_attrs.item(index)));
+    String ns = m_dh.getNamespaceOfNode(((Attr) m_attrs.item(index)));
+    if(null == ns)
+      ns = "";
+    return ns;
   }
 
   /**
