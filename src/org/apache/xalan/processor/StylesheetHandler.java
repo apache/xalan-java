@@ -780,7 +780,7 @@ public class StylesheetHandler
   /**
    * Return the stylesheet that this handler is constructing.
    */
-  StylesheetRoot getStylesheetRoot()
+  public StylesheetRoot getStylesheetRoot()
   {
     return (StylesheetRoot)m_stylesheets.elementAt(0);
   }
@@ -930,7 +930,7 @@ public class StylesheetHandler
   /**
    * Get the current stylesheet Locator object.
    */
-  Locator getLocator()
+  public Locator getLocator()
   {
     return m_stylesheetLocatorStack.isEmpty()
            ? null :
