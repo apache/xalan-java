@@ -141,7 +141,7 @@ public abstract class DTMManager
    * load:
    * <ul>
    * <li>
-   * Use the <code>javax.xml.parsers.DocumentBuilderFactory</code> system
+   * Use the <code>org.apache.xml.dtm.DTMManager</code> system
    * property.
    * </li>
    * <li>
@@ -151,14 +151,15 @@ public abstract class DTMManager
    * system property defined above.
    * </li>
    * <li>
-   * Use the Services API (as detailed in teh JAR specification), if
+   * Use the Services API (as detailed in the JAR specification), if
    * available, to determine the classname. The Services API will look
    * for a classname in the file
    * <code>META-INF/services/javax.xml.parsers.DTMManager</code>
    * in jars available to the runtime.
    * </li>
    * <li>
-   * Platform default <code>DTMManager</code> instance.
+   * Use the default <code>DTMManager</code> classname, which is
+   * <code>org.apache.xml.dtm.ref.DTMManagerDefault</code>.
    * </li>
    * </ul>
    *
@@ -169,7 +170,7 @@ public abstract class DTMManager
    * @return new DTMManager instance, never null.
    *
    * @throws DTMConfigurationException
-   * if the implmentation is not available or cannot be instantiated.
+   * if the implementation is not available or cannot be instantiated.
    */
   public static DTMManager newInstance(XMLStringFactory xsf) 
            throws DTMConfigurationException

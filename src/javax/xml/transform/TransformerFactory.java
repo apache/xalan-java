@@ -98,7 +98,7 @@ public abstract class TransformerFactory {
      * load:
      * <ul>
      * <li>
-     * Use the <code>javax.xml.parsers.DocumentBuilderFactory</code> system
+     * Use the <code>javax.xml.transform.TransformerFactory</code> system
      * property.
      * </li>
      * <li>
@@ -108,10 +108,10 @@ public abstract class TransformerFactory {
      * system property defined above.
      * </li>
      * <li>
-     * Use the Services API (as detailed in teh JAR specification), if
+     * Use the Services API (as detailed in the JAR specification), if
      * available, to determine the classname. The Services API will look
      * for a classname in the file
-     * <code>META-INF/services/javax.xml.parsers.TransformerFactory</code>
+     * <code>META-INF/services/javax.xml.transform.TransformerFactory</code>
      * in jars available to the runtime.
      * </li>
      * <li>
