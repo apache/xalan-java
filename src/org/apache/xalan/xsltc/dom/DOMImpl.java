@@ -2962,14 +2962,13 @@ public final class DOMImpl implements DOM, Externalizable {
 	return c == 0x20 || c == 0x0A || c == 0x0D || c == 0x09;
     }
 
-
     /****************************************************************/
     /*               DOM builder class definition                   */
     /****************************************************************/
     private final class DOMBuilderImpl implements DOMBuilder {
 
 	private final static int ATTR_ARRAY_SIZE = 32;
-	private final static int REUSABLE_TEXT_SIZE = 32;
+	private final static int REUSABLE_TEXT_SIZE = 0;  // turned off
 	private final static int INIT_STACK_LENGTH = 64;
 
 	private Hashtable _shortTexts           = null;
@@ -2981,8 +2980,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	private int[]     _previousSiblingStack = new int[INIT_STACK_LENGTH];
 	private int       _sp;
 	private int       _baseOffset           = 0;
-	private int       _currentOffset        = 0;
 	private int       _currentNode          = 0;
+	private int       _currentOffset        = 0;
 
 	// Temporary structures for attribute nodes
 	private int       _currentAttributeNode = 1;
@@ -2998,8 +2997,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	private int       _uriCount     = 0;
 	private int       _prefixCount  = 0;
 
-	private int       _nextNamespace = DOM.NULL;
 	private int       _lastNamespace = DOM.NULL;
+	private int       _nextNamespace = DOM.NULL;
 	
 	// Stack used to keep track of what whitespace text nodes are protected
 	// by xml:space="preserve" attributes and which nodes that are not.
