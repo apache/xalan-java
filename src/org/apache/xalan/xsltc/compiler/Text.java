@@ -126,7 +126,12 @@ final class Text extends Instruction {
 	parseChildren(parser);
 
 	if (_text == null) {
-	    _ignore = true;
+	    if (_textElement) {
+		_text = EMPTYSTRING;
+	    }
+	    else {
+		_ignore = true;
+	    }
 	}
 	else if (_textElement) {
 	    if (_text.length() == 0) _ignore = true;
