@@ -194,6 +194,23 @@ public class TreeWalker
 
   /** Flag indicating whether following text to be processed is raw text          */
   boolean nextIsRaw = false;
+  
+  /**
+   * Optimized dispatch of characters.
+   */
+  private final void dispatachChars(Node node)
+     throws org.xml.sax.SAXException
+  {
+    if(node.isSupported(org.apache.xalan.stree.SaxEventDispatch.SUPPORTSINTERFACE, "1.0"))
+    {
+      ((org.apache.xalan.stree.SaxEventDispatch)node).dispatchCharactersEvent(m_contentHandler);
+    }
+    else
+    {
+      String data = ((Text) node).getData();
+      this.m_contentHandler.characters(data.toCharArray(), 0, data.length());
+    }
+  }
 
   /**
    * Start processing given node
@@ -288,7 +305,6 @@ public class TreeWalker
     break;
     case Node.CDATA_SECTION_NODE :
     {
-      String data = ((Text) node).getData();
       boolean isLexH = (m_contentHandler instanceof LexicalHandler);
       LexicalHandler lh = isLexH
                           ? ((LexicalHandler) this.m_contentHandler) : null;
@@ -297,8 +313,8 @@ public class TreeWalker
       {
         lh.startCDATA();
       }
-
-      this.m_contentHandler.characters(data.toCharArray(), 0, data.length());
+      
+      dispatachChars(node);
 
       {
         if (isLexH)
@@ -317,14 +333,12 @@ public class TreeWalker
         nextIsRaw = false;
 
         m_contentHandler.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
-        m_contentHandler.characters(data.toCharArray(), 0,
-                                         data.length());
+        dispatachChars(node);
         m_contentHandler.processingInstruction(javax.xml.transform.Result.PI_ENABLE_OUTPUT_ESCAPING, "");
       }
       else
       {
-        this.m_contentHandler.characters(data.toCharArray(), 0,
-                                         data.length());
+        dispatachChars(node);
       }
     }
     break;
