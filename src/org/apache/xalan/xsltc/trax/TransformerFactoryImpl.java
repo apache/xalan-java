@@ -130,6 +130,15 @@ public class TransformerFactoryImpl
     public final static String ENABLE_INLINING = "enable-inlining";
     public final static String INDENT_NUMBER = "indent-number";
     
+    static {
+        // If 'org.xml.sax.driver' not set, default to Xerces
+        String saxDriver = System.getProperty("org.xml.sax.driver");
+        if (saxDriver == null) {
+            System.setProperty("org.xml.sax.driver", 
+                               "org.apache.xerces.parsers.SAXParser");                              
+        }        
+    }
+    
     /**
      * This error listener is used only for this factory and is not passed to
      * the Templates or Transformer objects that we create.
