@@ -120,6 +120,11 @@ public class TraceManager
     if (null != m_traceListeners)
     {
       m_traceListeners.removeElement(tl);
+      // The following line added to fix the bug#5140: hasTraceListeners() returns true
+      // after adding and removing a listener.
+      
+      // Check: if m_traceListeners is empty, then set it to NULL.
+      if (0 == m_traceListeners.size()) m_traceListeners = null;
     }
   }
 
