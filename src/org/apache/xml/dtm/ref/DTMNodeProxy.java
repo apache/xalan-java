@@ -203,7 +203,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Node
    */
   public final String getNodeName()
@@ -222,7 +222,7 @@ public class DTMNodeProxy
    * <p>
    * Note that getNodeName is aliased to getTarget.
    *
-   * @return
+   *
    */
   public final String getTarget()
   {
@@ -231,7 +231,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Node as of DOM Level 2
    */
   public final String getLocalName()
@@ -262,7 +262,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Node as of DOM Level 2
    */
   public final String getNamespaceURI()
@@ -310,7 +310,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.Node
@@ -344,7 +344,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Node
    */
   public final short getNodeType()
@@ -354,7 +354,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Node
    */
   public final Node getParentNode()
@@ -370,7 +370,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Node
    */
   public final Node getOwnerNode()
@@ -383,7 +383,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Node
    */
   public final NodeList getChildNodes()
@@ -399,7 +399,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Node
    */
   public final Node getFirstChild()
@@ -412,7 +412,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Node
    */
   public final Node getLastChild()
@@ -425,7 +425,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Node
    */
   public final Node getPreviousSibling()
@@ -438,7 +438,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Node
    */
   public final Node getNextSibling()
@@ -457,7 +457,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Node
    */
   public final NamedNodeMap getAttributes()
@@ -472,7 +472,7 @@ public class DTMNodeProxy
    *
    * @param name
    *
-   * (hasAttribute) @return
+   *
    */
   public boolean hasAttribute(String name)
   {
@@ -486,7 +486,7 @@ public class DTMNodeProxy
    * @param name
    * @param x
    *
-   * (hasAttributeNS) @return
+   *
    */
   public boolean hasAttributeNS(String name, String x)
   {
@@ -495,7 +495,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Node
    */
   public final Document getOwnerDocument()
@@ -509,7 +509,7 @@ public class DTMNodeProxy
    * @param newChild
    * @param refChild
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.Node -- DTMNodeProxy is read-only
@@ -525,7 +525,7 @@ public class DTMNodeProxy
    * @param newChild
    * @param oldChild
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.Node -- DTMNodeProxy is read-only
@@ -540,7 +540,7 @@ public class DTMNodeProxy
    *
    * @param oldChild
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.Node -- DTMNodeProxy is read-only
@@ -554,7 +554,7 @@ public class DTMNodeProxy
    *
    * @param newChild
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.Node -- DTMNodeProxy is read-only
@@ -566,7 +566,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Node
    */
   public final boolean hasChildNodes()
@@ -578,7 +578,7 @@ public class DTMNodeProxy
    *
    * @param deep
    *
-   * @return
+   *
    * @see org.w3c.dom.Node -- DTMNodeProxy is read-only
    */
   public final Node cloneNode(boolean deep)
@@ -588,7 +588,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Document
    */
   public final DocumentType getDoctype()
@@ -598,7 +598,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Document
    */
   public final DOMImplementation getImplementation()
@@ -610,7 +610,7 @@ public class DTMNodeProxy
    * Fragment and hence not have a clear-cut Document Element. We can
    * make it work in the well-formed cases but would that be confusing for others?
    * 
-   * @return
+   *
    * @see org.w3c.dom.Document
    */
   public final Element getDocumentElement()
@@ -655,7 +655,7 @@ public class DTMNodeProxy
    *
    * @param tagName
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.Document
@@ -667,7 +667,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Document
    */
   public final DocumentFragment createDocumentFragment()
@@ -679,7 +679,7 @@ public class DTMNodeProxy
    *
    * @param data
    *
-   * @return
+   *
    * @see org.w3c.dom.Document
    */
   public final Text createTextNode(String data)
@@ -691,7 +691,7 @@ public class DTMNodeProxy
    *
    * @param data
    *
-   * @return
+   *
    * @see org.w3c.dom.Document
    */
   public final Comment createComment(String data)
@@ -703,7 +703,7 @@ public class DTMNodeProxy
    *
    * @param data
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.Document
@@ -719,7 +719,7 @@ public class DTMNodeProxy
    * @param target
    * @param data
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.Document
@@ -734,7 +734,7 @@ public class DTMNodeProxy
    *
    * @param name
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.Document
@@ -748,7 +748,7 @@ public class DTMNodeProxy
    *
    * @param name
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.Document
@@ -763,7 +763,7 @@ public class DTMNodeProxy
    *
    * @param tagname
    *
-   * @return
+   *
    * @see org.w3c.dom.Document
    */
   public final NodeList getElementsByTagName(String tagname)
@@ -776,7 +776,7 @@ public class DTMNodeProxy
    * @param importedNode
    * @param deep
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.Document as of DOM Level 2 -- DTMNodeProxy is read-only
@@ -792,7 +792,7 @@ public class DTMNodeProxy
    * @param namespaceURI
    * @param qualifiedName
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.Document as of DOM Level 2
@@ -808,7 +808,7 @@ public class DTMNodeProxy
    * @param namespaceURI
    * @param qualifiedName
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.Document as of DOM Level 2
@@ -824,7 +824,7 @@ public class DTMNodeProxy
    * @param namespaceURI
    * @param localName
    *
-   * @return
+   *
    * @see org.w3c.dom.Document as of DOM Level 2
    */
   public final NodeList getElementsByTagNameNS(String namespaceURI,
@@ -837,7 +837,7 @@ public class DTMNodeProxy
    *
    * @param elementId
    *
-   * @return
+   *
    * @see org.w3c.dom.Document as of DOM Level 2
    */
   public final Element getElementById(String elementId)
@@ -849,7 +849,7 @@ public class DTMNodeProxy
    *
    * @param offset
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.Text
@@ -861,7 +861,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.CharacterData
@@ -885,7 +885,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.CharacterData
    */
   public final int getLength()
@@ -899,7 +899,7 @@ public class DTMNodeProxy
    * @param offset
    * @param count
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.CharacterData
@@ -964,7 +964,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Element
    */
   public final String getTagName()
@@ -976,7 +976,7 @@ public class DTMNodeProxy
    *
    * @param name
    *
-   * @return
+   *
    * @see org.w3c.dom.Element
    */
   public final String getAttribute(String name)
@@ -1017,7 +1017,7 @@ public class DTMNodeProxy
    *
    * @param name
    *
-   * @return
+   *
    * @see org.w3c.dom.Element
    */
   public final Attr getAttributeNode(String name)
@@ -1031,7 +1031,7 @@ public class DTMNodeProxy
    *
    * @param newAttr
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.Element
@@ -1045,7 +1045,7 @@ public class DTMNodeProxy
    *
    * @param oldAttr
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.Element
@@ -1058,7 +1058,7 @@ public class DTMNodeProxy
   /**
    * Introduced in DOM Level 2.
    *
-   * @return
+   *
    */
   public boolean hasAttributes()
   {
@@ -1076,7 +1076,7 @@ public class DTMNodeProxy
    * @param namespaceURI
    * @param localName
    *
-   * @return
+   *
    * @see org.w3c.dom.Element
    */
   public final String getAttributeNS(String namespaceURI, String localName)
@@ -1121,7 +1121,7 @@ public class DTMNodeProxy
    * @param namespaceURI
    * @param localName
    *
-   * @return
+   *
    * @see org.w3c.dom.Element
    */
   public final Attr getAttributeNodeNS(String namespaceURI, String localName)
@@ -1133,7 +1133,7 @@ public class DTMNodeProxy
    *
    * @param newAttr
    *
-   * @return
+   *
    *
    * @throws DOMException
    * @see org.w3c.dom.Element
@@ -1145,7 +1145,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Attr
    */
   public final String getName()
@@ -1155,7 +1155,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Attr
    */
   public final boolean getSpecified()
@@ -1169,7 +1169,7 @@ public class DTMNodeProxy
 
   /**
    *
-   * @return
+   *
    * @see org.w3c.dom.Attr
    */
   public final String getValue()
@@ -1190,7 +1190,7 @@ public class DTMNodeProxy
   /**
    * Get the owner element of an attribute.
    *
-   * @return
+   *
    * @see org.w3c.dom.Attr as of DOM Level 2
    */
   public final Element getOwnerElement()
@@ -1209,7 +1209,7 @@ public class DTMNodeProxy
    *
    * NEEDSDOC @param source
    *
-   * NEEDSDOC (adoptNode) @return
+   *
    *
    * @throws DOMException
    */
@@ -1228,7 +1228,7 @@ public class DTMNodeProxy
    * of this document. This is <code>null</code> when unspecified.
    * @since DOM Level 3
    *
-   * NEEDSDOC ($objectName$) @return
+   *
    */
   public String getEncoding()
   {
@@ -1261,7 +1261,7 @@ public class DTMNodeProxy
    * document is standalone.
    * @since DOM Level 3
    *
-   * NEEDSDOC ($objectName$) @return
+   *
    */
   public boolean getStandalone()
   {
@@ -1298,7 +1298,7 @@ public class DTMNodeProxy
    * defaults.
    * @since DOM Level 3
    *
-   * NEEDSDOC ($objectName$) @return
+   *
    */
   public boolean getStrictErrorChecking()
   {
@@ -1335,7 +1335,7 @@ public class DTMNodeProxy
    * number of this document. This is <code>null</code> when unspecified.
    * @since DOM Level 3
    *
-   * NEEDSDOC ($objectName$) @return
+   *
    */
   public String getVersion()
   {
