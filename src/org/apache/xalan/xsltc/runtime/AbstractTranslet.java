@@ -481,12 +481,11 @@ public abstract class AbstractTranslet extends Transformer implements Translet {
 	    dtdMonitor.handleDTD(reader);
  
 	    dom.setDocumentURI(xmlDocName);
-         /****************
-             if (_uri)
-                 reader.parse(xmlDocName);
-             else
-         *******************/
-	    reader.parse("file:"+(new File(xmlDocName).getAbsolutePath()));
+	    if (xmlDocName.startsWith("file:/")) {   
+		reader.parse(xmlDocName);            
+	    } else {                                
+	        reader.parse("file:"+(new File(xmlDocName).getAbsolutePath()));
+	    }
 
 	    // Set size of key/id indices
 	    setIndexSize(dom.getSize());
