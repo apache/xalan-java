@@ -63,6 +63,7 @@ import org.xml.sax.*;
 import org.apache.xpath.*;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xalan.trace.SelectionEvent;
 import org.apache.xml.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -70,6 +71,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
 
 import javax.xml.transform.TransformerException;
+import org.apache.xalan.stree.SaxEventDispatch;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -91,6 +93,8 @@ public class ElemValueOf extends ElemTemplateElement
    * @serial
    */
   private XPath m_selectExpression = null;
+  
+  private boolean m_isDot = false;
 
   /**
    * Set the "select" attribute.
@@ -102,6 +106,11 @@ public class ElemValueOf extends ElemTemplateElement
    */
   public void setSelect(XPath v)
   {
+    if(null != v)
+    {
+      String s = v.getPatternString();
+      m_isDot = (null != s) && s.equals(".");
+    }
     m_selectExpression = v;
   }
 
@@ -223,14 +232,58 @@ public class ElemValueOf extends ElemTemplateElement
       if (TransformerImpl.S_DEBUG)
         transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
 
-      XObject value = m_selectExpression.execute(transformer.getXPathContext(),
+      Node child;
+      XObject value;
+      
+      // Optimize for "."
+      if(m_isDot && !TransformerImpl.S_DEBUG)
+      {
+        child = sourceNode;
+        value = null;
+      }
+      else
+      {
+        value = m_selectExpression.execute(transformer.getXPathContext(),
                                                  sourceNode, this);
+        if(value.getType() == XObject.CLASS_NODESET)
+        {
+          org.w3c.dom.traversal.NodeIterator iterator = value.nodeset();
+          child = iterator.nextNode();
+          if(null == child)
+            return;
+        }
+        else
+          child = null;
+        if (TransformerImpl.S_DEBUG)
+          transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+                                                          "select", m_selectExpression, value);
+      }
+         
+      String s;                                                                                             
+      if(null != child)
+      {
+        if (child.isSupported(SaxEventDispatch.SUPPORTSINTERFACE, "1.0"))
+        {
+          if (m_disableOutputEscaping)
+          {
+            ResultTreeHandler rth = transformer.getResultTreeHandler();
+            rth.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
+            ((SaxEventDispatch) child).dispatchCharactersEvent(rth);
+            rth.processingInstruction(javax.xml.transform.Result.PI_ENABLE_OUTPUT_ESCAPING, "");
+          }
+          else
+            ((SaxEventDispatch) child).dispatchCharactersEvent(transformer.getResultTreeHandler());
+          return;
+        }
+        else
+        {
+          s = XNodeSet.getStringFromNode(child);
+        }
+      }
+      else
+        s = value.str();
 
-      if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
-                                                        "select", m_selectExpression, value);
-
-      String s = value.str();
+      
       int len = (null != s) ? s.length() : 0;
       if(len > 0)
       {
