@@ -100,7 +100,7 @@ public class FuncBoolean extends FunctionOneArg
       }
       else
       {
-        return ((XSequenceImpl)seq).bool() ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+        return ((XObject)seq).bool() ? XBoolean.S_TRUE : XBoolean.S_FALSE;
       }
     }
     return XBoolean.S_FALSE;
