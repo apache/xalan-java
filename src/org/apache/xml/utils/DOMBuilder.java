@@ -28,6 +28,7 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
+import org.w3c.dom.CDATASection;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -324,6 +325,9 @@ public class DOMBuilder
   }
 
   /**
+
+
+
    * Receive notification of the end of an element.
    *
    * <p>The SAX parser will invoke this method at the end of every
@@ -395,9 +399,14 @@ public class DOMBuilder
     }
 
     String s = new String(ch, start, length);
-    Text text = m_doc.createTextNode(s);
-
-    append(text);
+    Node childNode = m_currentNode.getLastChild();
+    if( childNode != null && childNode.getNodeType() == Node.TEXT_NODE ){ 
+       ((Text)childNode).appendData(s); 
+    } 
+    else{ 
+       Text text = m_doc.createTextNode(s);       
+       append(text);       
+    }     
   }
 
   /**
@@ -555,6 +564,7 @@ public class DOMBuilder
   public void startCDATA() throws org.xml.sax.SAXException
   {
     m_inCData = true;
+    append(m_doc.createCDATASection(""));
   }
 
   /**
@@ -598,7 +608,8 @@ public class DOMBuilder
 
     String s = new String(ch, start, length);
 
-    append(m_doc.createCDATASection(s));
+    CDATASection section  =(CDATASection) m_currentNode.getLastChild();
+    section.appendData(s);
   }
 
   /**
