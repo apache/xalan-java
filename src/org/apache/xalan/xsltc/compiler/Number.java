@@ -34,7 +34,7 @@ import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.INVOKESTATIC;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.InstructionList;
-import org.apache.bcel.generic.L2I;
+import org.apache.bcel.generic.D2I;
 import org.apache.bcel.generic.LocalVariableGen;
 import org.apache.bcel.generic.NEW;
 import org.apache.bcel.generic.PUSH;
@@ -511,15 +511,16 @@ final class Number extends Instruction implements Closure {
 	    compileDefault(classGen, methodGen);
 	    _value.translate(classGen, methodGen);
 
-	    // Round the number to the nearest integer
-	    index = cpg.addMethodref(MATH_CLASS, "round", "(D)J");
+	    // Using java.lang.Math.floor(number + 0.5) to return a double value
+            il.append(new PUSH(cpg, 0.5));
+            il.append(DADD);
+	    index = cpg.addMethodref(MATH_CLASS, "floor", "(D)D");
 	    il.append(new INVOKESTATIC(index));
-	    il.append(new L2I());
 
 	    // Call setValue on the node counter
 	    index = cpg.addMethodref(NODE_COUNTER, 
 				     "setValue", 
-				     "(I)" + NODE_COUNTER_SIG);
+				     "(D)" + NODE_COUNTER_SIG);
 	    il.append(new INVOKEVIRTUAL(index));
 	}
 	else if (isDefault()) {

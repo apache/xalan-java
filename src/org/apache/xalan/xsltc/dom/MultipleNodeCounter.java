@@ -46,7 +46,12 @@ public abstract class MultipleNodeCounter extends NodeCounter {
 
     public String getCounter() {
 	if (_value != Integer.MIN_VALUE) {
-	    return formatNumbers(_value);
+            //See Errata E24
+            if (_value == 0) return "0";
+            else if (Double.isNaN(_value)) return "NaN";
+            else if (_value < 0 && Double.isInfinite(_value)) return "-Infinity";
+            else if (Double.isInfinite(_value)) return "Infinity";
+	    else return formatNumbers((int)_value);
 	}
 
 	IntegerArray ancestors = new IntegerArray();

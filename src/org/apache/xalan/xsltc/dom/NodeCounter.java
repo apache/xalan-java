@@ -37,7 +37,7 @@ public abstract class NodeCounter {
 
     protected int _node = END;
     protected int _nodeType = DOM.FIRST_TYPE - 1;
-    protected int _value = Integer.MIN_VALUE;
+    protected double _value = Integer.MIN_VALUE;
 
     public final DOM          _document;
     public final DTMAxisIterator _iterator;
@@ -84,7 +84,7 @@ public abstract class NodeCounter {
      * If the user specified a value attribute, use this instead of 
      * counting nodes.
      */
-    public NodeCounter setValue(int value) {
+    public NodeCounter setValue(double value) {
     _value = value;
     return this;
     }

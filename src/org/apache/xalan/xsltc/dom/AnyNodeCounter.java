@@ -42,7 +42,12 @@ public abstract class AnyNodeCounter extends NodeCounter {
     public String getCounter() {
 	int result;
 	if (_value != Integer.MIN_VALUE) {
-	    result = _value;
+            //See Errata E24
+            if (_value == 0) return "0";
+            else if (Double.isNaN(_value)) return "NaN";
+            else if (_value < 0 && Double.isInfinite(_value)) return "-Infinity";
+            else if (Double.isInfinite(_value)) return "Infinity";
+            else return formatNumbers((int)_value);
 	}
 	else {
 	    int next = _node; 
@@ -83,7 +88,12 @@ public abstract class AnyNodeCounter extends NodeCounter {
 	public String getCounter() {
 	    int result;
 	    if (_value != Integer.MIN_VALUE) {
-		result = _value;
+                    //See Errata E24
+                    if (_value == 0) return "0";
+                    else if (Double.isNaN(_value)) return "NaN";
+                    else if (_value < 0 && Double.isInfinite(_value)) return "-Infinity";
+                    else if (Double.isInfinite(_value)) return "Infinity";
+                    else result = (int) _value;
 	    }
 	    else {
 		int next = _node;
