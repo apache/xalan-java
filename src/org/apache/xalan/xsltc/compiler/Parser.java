@@ -94,7 +94,7 @@ public class Parser implements Constants, ContentHandler {
     private XSLTC _xsltc;             // Reference to the compiler object.
     private XPathParser _xpathParser; // Reference to the XPath parser.
     private Vector _errors;           // Contains all compilation errors
-    private Vector _warnings;        // Contains all compilation errors
+    private Vector _warnings;         // Contains all compilation errors
 
     private Hashtable   _instructionClasses; // Maps instructions to classes
     private Hashtable   _qNames;
@@ -107,6 +107,8 @@ public class Parser implements Constants, ContentHandler {
     private SymbolTable _symbolTable; // Maps QNames to syntax-tree nodes
     private Output      _output = null;
     private Template    _template;    // Reference to the template being parsed.
+
+    private boolean     _rootNamespaceDef = false; // Used for validity check
 
     private SyntaxTreeNode _root = null;
 
@@ -128,6 +130,9 @@ public class Parser implements Constants, ContentHandler {
 	"Text data outside of top-level <xsl:stylesheet> element.";
     private final static String MISSING_HREF_ERROR =
 	"Processing instruction <?xml-stylesheet ... ?> is missing href data.";
+    private final static String MISSING_XSLT_URI_ERROR =
+	"The input document is not a stylesheet "+
+	"(the XSL namespace is not declared in the root element).";
 
     public Parser(XSLTC xsltc) {
 	_xsltc = xsltc;
@@ -452,7 +457,11 @@ public class Parser implements Constants, ContentHandler {
 
 	// Assume that this is a pure XSL stylesheet if there is not
 	// <?xml-stylesheet ....?> processing instruction
-	if (_target == null) return(root);
+	if (_target == null) {
+	    if (!_rootNamespaceDef)
+		throw new CompilerException(MISSING_XSLT_URI_ERROR);
+	    return(root);
+	}
 
 	// Find the xsl:stylesheet or xsl:transform with this reference
 	if (_target.charAt(0) == '#') {
@@ -1038,7 +1047,14 @@ public class Parser implements Constants, ContentHandler {
 	    throw new SAXException("Error while parsing stylesheet.");
 	}
 
+	// If this is the root element of the XML document we need to make sure
+	// that it contains a definition of the XSL namespace URI
 	if (_root == null) {
+	    if ((_prefixMapping == null) ||
+		(_prefixMapping.containsValue(Constants.XSLT_URI) == false))
+		_rootNamespaceDef = false;
+	    else
+		_rootNamespaceDef = true;
 	    _root = element;
 	}
 	else {
