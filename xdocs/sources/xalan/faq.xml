@@ -137,5 +137,23 @@
        <code>xmlns:foo="http://my-namespace"</code></p>       
        <p>Then you can use foo: in your XPath expression.</p>
        <p>Hint: Don't use default namespaces, and the problem doesn't arise.</p></a>
-    </faq>   
+    </faq>
+       
+    <faq title="Using the 'signature' file to verify a download">
+      <q>How does I use the "signature" file to verify my download?</q>
+      <a>
+        <p>For each Xalan download file in <resource-ref idref="xslt4j-distdir"/>, there is a corresponding signature file. 
+        The signature file for xalan-j_2_0_1.tar.gz, for example, is xalan-j_2_0_1.tar.gz.sig.</p>
+        <p>The .sig files are PGP signatures of the actual .zip or .tar.gz
+        download files.  You can use these files to verify the authenticiy of the download. You do not need the .sig file to 
+        use the corresponding donwload file.</p>
+        <p>To check the authenticity of a Xalan distribution, you need a copy of
+        PGP which is available in a number of licenses, including some free
+        non-commercial licenses, either from an mit.edu site or on
+        the pgp.com site. Once you have a version of PGP installed, you
+        should be able to 'verify the signature' of the .sig file, which basically verifies that the corresponding 
+        .zip or tar.gz file has not been changed since we signed it.</p>
+      </a>
+    </faq>
+
 </faqs>
