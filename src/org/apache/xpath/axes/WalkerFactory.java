@@ -546,6 +546,7 @@ public class WalkerFactory
       switch(predOp)
       {
         case OpCodes.OP_VARIABLE:
+        	return true; // Would need more smarts to tell if this could be a number or not!
         case OpCodes.OP_LOCATIONPATH:
           // OK.
           break;
