@@ -859,7 +859,7 @@ public final class BasisLibrary implements Operators {
 	    }
 	    // Convert var/param -> node-set
 	    else if (obj instanceof NodeIterator) {
-		return((NodeIterator)obj);
+		return(((NodeIterator)obj).cloneIterator());
 	    }
 	    // Convert var/param -> result-tree fragment
 	    else if (obj instanceof DOM) {
