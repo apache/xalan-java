@@ -378,7 +378,7 @@ public class DTMDocument extends DTMDefaultBaseIterators
     try
     {
       Object o = m_ObjectArray.getAt(makeNodeIdentity(parm1));
-      if (o != null)
+      if (o != null && o != S_ELEMENT_NODE)
       {
         return o.toString();
       }
@@ -396,31 +396,81 @@ public class DTMDocument extends DTMDefaultBaseIterators
 
 
   /**
-   * @param parm1
-   * @return
+   * Get the string-value of a node as a String object
+   * (see http://www.w3.org/TR/xpath#data-model
+   * for the definition of a node's string-value).
+   *
+   * @param nodeHandle The node ID.
+   *
+   * @return A string object that represents the string-value of the given node.
    */
-  public XMLString getStringValue( int parm1 )
+  public XMLString getStringValue(int nodeHandle)
   {
-    int nodeIdx = makeNodeIdentity(parm1);
+    int nodeIdx = makeNodeIdentity(nodeHandle);
     if (DEBUG) System.out.println("getStringValue(" + nodeIdx + ")");
-    try
-    {
+
       Object o = m_ObjectArray.getAt(nodeIdx);
-      if (o != null)
+    if ( o == S_ELEMENT_NODE )
+      {
+        FastStringBuffer buf = StringBufferPool.get();
+        String s;
+
+        try
+        {
+          getNodeData(nodeIdx, buf);
+
+          s = (buf.length() > 0) ? buf.toString() : "";
+        }
+        finally
+        {
+          StringBufferPool.free(buf);
+        }
+
+        return m_xstrf.newstr( s );
+      }
+      else if( o != null )
       {
         return m_xstrf.newstr(o.toString());
-      }
-      else
-      {
-        return m_xstrf.emptystr();
-      }
     }
-    catch(Exception e)
+    else
+      return(m_xstrf.emptystr());
+  }
+
+  /**
+   * Retrieve the text content of a DOM subtree, appending it into a
+   * user-supplied FastStringBuffer object. Note that attributes are
+   * not considered part of the content of an element.
+   * <p>
+   * There are open questions regarding whitespace stripping.
+   * Currently we make no special effort in that regard, since the standard
+   * DOM doesn't yet provide DTD-based information to distinguish
+   * whitespace-in-element-context from genuine #PCDATA. Note that we
+   * should probably also consider xml:space if/when we address this.
+   * DOM Level 3 may solve the problem for us.
+   * <p>
+   * %REVIEW% Actually, since this method operates on the DOM side of the
+   * fence rather than the DTM side, it SHOULDN'T do
+   * any special handling. The DOM does what the DOM does; if you want
+   * DTM-level abstractions, use DTM-level methods.
+   *
+   * @param nodeIdx Index of node whose subtree is to be walked, gathering the
+   * contents of all Text or CDATASection nodes.
+   * @param buf FastStringBuffer into which the contents of the text
+   * nodes are to be concatenated.
+   */
+  protected void getNodeData(int nodeIdx, FastStringBuffer buf)
+  {
+    for ( int child = m_firstch.elementAt(nodeIdx) ; child != DTM.NULL ; child = m_nextsib.elementAt(child) )
     {
-      error("Getting String Value");
-      return null;
+      Object o = m_ObjectArray.getAt(child);
+      if ( o == S_ELEMENT_NODE )
+        getNodeData(child, buf);
+      else if ( o != null )
+        buf.append(o.toString());
     }
   }
+
+
 
 
   /**
