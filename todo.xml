@@ -37,13 +37,13 @@
  <actions>
 
    <target-release-description>
-    <date>01/09/01</date>
-    <level>beta3</level>
-    <goal type="conformance">XSLT 1.0 and XPath 1.0 compliant, 98% conformance test passage.</goal>
+    <date>01/19/01</date>
+    <level>production</level>
+    <goal type="conformance">XSLT 1.0 and XPath 1.0 compliant, 99% conformance test passage.</goal>
     <goal type="performance">Reasonable, competative performance. [need metrics]</goal>
-    <goal type="stability">Stable, reasonable.</goal>
+    <goal type="stability">Robust.</goal>
     <goal type="api">API Complete.</goal>
-    <goal type="documentation">Documentation functionally complete.</goal>
+    <goal type="documentation">Documentation complete.</goal>
    </target-release-description>
 
   <!-- Move to completed section when done. -->
@@ -54,20 +54,19 @@
   
  </actions>
 
- <actions>
+ <actions priority="long-term" >
+  <!-- Move to completed section when done. -->
 
    <target-release-description>
-    <date>01/15/01</date>
-    <level>production</level>
-    <goal type="conformance">XSLT 1.0 and XPath 1.0 compliant, 99% conformance test passage.</goal>
-    <goal type="performance">Reasonable, competative performance. [need metrics]</goal>
-    <goal type="stability">Robust.</goal>
+    <date>4/15/01</date>
+    <level>beta</level>
+    <goal type="conformance">XSLT 1.1 and XPath 1.0+addendum compliant, 100% conformance test passage.</goal>
+    <goal type="performance">Very good performance. [need metrics]</goal>
+    <goal type="stability">Stable, reasonable.</goal>
     <goal type="api">API Complete.</goal>
-    <goal type="documentation">Documentation complete.</goal>
+    <goal type="documentation">Documentation functionally complete.</goal>
    </target-release-description>
-
-  <!-- Move to completed section when done. -->
-  
+   
    <action context="code" category="conformance" who="GP">
       Verify that the recomposing procedure for each of the recomposable
       elements matches the standard (including errata).
@@ -143,20 +142,6 @@
     We have some at Lotus we need to cleanup and checkin, and we 
     hope to get more examples from Gary and other list members.
   </action>
- </actions>
-
- <actions priority="long-term" >
-  <!-- Move to completed section when done. -->
-
-   <target-release-description>
-    <date>4/15/01</date>
-    <level>beta</level>
-    <goal type="conformance">XSLT 1.1 and XPath 1.0+addendum compliant, 100% conformance test passage.</goal>
-    <goal type="performance">Very good performance. [need metrics]</goal>
-    <goal type="stability">Stable, reasonable.</goal>
-    <goal type="api">API Complete.</goal>
-    <goal type="documentation">Documentation functionally complete.</goal>
-   </target-release-description>
    
    <action context="code" category="performance" who="SB">
     Delete nodes in the source tree when possible.  (?? Note sure if this 
