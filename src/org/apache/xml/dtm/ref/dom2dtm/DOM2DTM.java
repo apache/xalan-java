@@ -143,12 +143,43 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     super(mgr, domSource, dtmIdentity, whiteSpaceFilter, 
           xstringfactory, doIndexing);
 
-        // Initialize DOM navigation
+    // Initialize DOM navigation
     m_pos=m_root = domSource.getNode();
-        // Initialize DTM navigation
+    // Initialize DTM navigation
     m_last_parent=m_last_kid=NULL;
     m_last_kid=addNode(m_root, 0, m_last_parent,m_last_kid, NULL);
-        // Initialize DTM-completed status 
+
+    // Apparently the domSource root may not actually be the
+    // Document node. If it's an Element node, we need to immediately
+    // add its attributes. Adapted from nextNode().
+    // %REVIEW% Move this logic into addNode and recurse? Cleaner!
+    //
+    // (If it's an EntityReference node, we're probably scrod. For now
+    // I'm just hoping nobody is ever quite that foolish... %REVIEW%)
+    if(ELEMENT_NODE == m_root.getNodeType())
+    {
+      NamedNodeMap attrs=m_root.getAttributes();
+      int attrsize=(attrs==null) ? 0 : attrs.getLength();
+      if(attrsize>0)
+      {
+	int attrIndex=NULL; // start with no previous sib
+	for(int i=0;i<attrsize;++i)
+	{
+	  // No need to force nodetype in this case;
+	  // addNode() will take care of switching it from
+	  // Attr to Namespace if necessary.
+	  attrIndex=addNode(attrs.item(i),1,0,attrIndex,NULL);
+	  m_firstch.setElementAt(DTM.NULL,attrIndex);
+	}
+	// Terminate list of attrs, and make sure they aren't
+	// considered children of the element
+	m_nextsib.setElementAt(DTM.NULL,attrIndex);
+
+	// IMPORTANT: This does NOT change m_last_parent or m_last_kid!
+      } // if attrs exist
+    } //if(ELEMENT_NODE)
+
+    // Initialize DTM-completed status 
     m_nodesAreProcessed = false;
   }
 
