@@ -1,0 +1,200 @@
+/*
+ * The Apache Software License, Version 1.1
+ *
+ *
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:  
+ *       "This product includes software developed by the
+ *        Apache Software Foundation (http://www.apache.org/)."
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "Xalan" and "Apache Software Foundation" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written 
+ *    permission, please contact apache@apache.org.
+ *
+ * 5. Products derived from this software may not be called "Apache",
+ *    nor may "Apache" appear in their name, without prior written
+ *    permission of the Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Software Foundation and was
+ * originally based on software copyright (c) 1999, Lotus
+ * Development Corporation., http://www.lotus.com.  For more
+ * information on the Apache Software Foundation, please see
+ * <http://www.apache.org/>.
+ */
+package javax.xml.transform.sax;
+
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+
+import java.lang.String;
+
+import java.io.OutputStream;
+import java.io.Writer;
+
+import org.xml.sax.XMLReader;
+import org.xml.sax.ext.DeclHandler;
+import org.xml.sax.ext.LexicalHandler;
+import org.xml.sax.InputSource;
+
+/**
+ * Acts as an holder for SAX-style Source tree input.
+ *
+ * @version Alpha
+ * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
+ */
+public class SAXSource implements Source
+{
+
+  /**
+   * Zero-argument default constructor.
+   */
+  public SAXSource(){}
+
+  /**
+   * Create a SAXSource, using an XMLReader and an InputSource.
+   * The Transformer or SAXTransformerFactory will set itself
+   * to be the reader's content handler, and then will call
+   * reader.parse(inputSource).
+   *
+   * NEEDSDOC @param reader
+   * NEEDSDOC @param inputSource
+   */
+  public SAXSource(XMLReader reader, InputSource inputSource)
+  {
+    this.reader = reader;
+    this.inputSource = inputSource;
+  }
+
+  /**
+   * Create a SAXSource, using an InputSource.
+   * The Transformer or SAXTransformerFactory will create a
+   * reader via org.xml.sax.helpers.ParserFactory
+   * (if setXMLReader is not used), and will set itself
+   * to be the content handler of that reader, and then will call
+   * reader.parse(inputSource).
+   *
+   * NEEDSDOC @param inputSource
+   */
+  public SAXSource(InputSource inputSource)
+  {
+    this.inputSource = inputSource;
+  }
+
+  /**
+   * Set the XMLReader to be used for the source tree input.
+   *
+   * @param reader A valid XMLReader or XMLFilter reference.
+   */
+  public void setXMLReader(XMLReader reader)
+  {
+    this.reader = reader;
+  }
+
+  /**
+   * Get the XMLReader to be used for the source tree input.
+   *
+   * @return A valid XMLReader or XMLFilter reference, or null.
+   */
+  public XMLReader getXMLReader()
+  {
+    return reader;
+  }
+
+  /**
+   * Set the InputSource to be used for the source tree input.
+   *
+   * @param inputSource A valid InputSource reference.
+   */
+  public void setInputSource(InputSource inputSource)
+  {
+    this.inputSource = inputSource;
+  }
+  
+  /**
+   * Get the InputSource to be used for the source tree input.
+   *
+   * @return A valid InputSource reference, or null.
+   */
+  public InputSource getInputSource()
+  {
+    return inputSource;
+  }
+
+  /** The XMLReader to be used for the source tree input. OK if null.        */
+  private XMLReader reader;
+
+  /** The InputSource to be used for the source tree input.  Should not be null. */
+  private InputSource inputSource;
+  
+  /**
+   * Try and obtain a SAX InputSource object from a TrAX Source 
+   * object.
+   * 
+   * @param source Must be a non-null Source reference.
+   * 
+   * @return An InputSource, or null if source can not be converted.
+   */
+  public static InputSource sourceToInputSource(Source source)
+  {
+    if(source instanceof SAXSource)
+    {
+      return ((SAXSource)source).getInputSource();
+    }
+    else if(source instanceof StreamSource)
+    {
+      StreamSource ss = (StreamSource)source;
+      InputSource isource= new InputSource(ss.getSystemId());
+      isource.setByteStream(ss.getByteStream());
+      isource.setCharacterStream(ss.getCharacterStream());
+      isource.setPublicId(ss.getPublicId());
+      return isource;
+    }
+    else
+      return null;
+  }
+  
+  /**
+   * Get the base ID (URL or system ID) from where URLs 
+   * will be resolved.
+   * 
+   * @return Base URL for the source tree, or null.
+   */
+  public String getBaseID()
+  {
+    return (null != inputSource) ? inputSource.getSystemId() : null;
+  }
+
+}
