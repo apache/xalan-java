@@ -298,7 +298,16 @@ public class WalkerFactory
     }
     else
     { 
-      if(canCrissCross(analysis) && !isSet(analysis, BIT_NAMESPACE))
+      if(isNaturalDocOrder(compiler, firstStepPos, 0, analysis))
+      {
+        if (false || DEBUG_ITERATOR_CREATION)
+        {
+          diagnoseIterator("WalkingIterator", analysis, compiler);
+        }
+  
+        iter = new WalkingIterator(compiler, opPos, analysis, true);
+      }
+      else
       {
 //        if (DEBUG_ITERATOR_CREATION)
 //          diagnoseIterator("MatchPatternIterator", analysis, compiler);
@@ -308,17 +317,6 @@ public class WalkerFactory
           diagnoseIterator("WalkingIteratorSorted", analysis, compiler);
 
         iter = new WalkingIteratorSorted(compiler, opPos, analysis, true);
-
-
-      }
-      else
-      {
-        if (false || DEBUG_ITERATOR_CREATION)
-        {
-          diagnoseIterator("WalkingIterator", analysis, compiler);
-        }
-  
-        iter = new WalkingIterator(compiler, opPos, analysis, true);
       }
     }
     if(iter instanceof LocPathIterator)
@@ -1566,6 +1564,110 @@ public class WalkerFactory
       return true;
     else
       return false;
+  }
+  
+  /**
+   * Tell if the pattern can be 'walked' with the iteration steps in natural 
+   * document order, without duplicates.
+   *
+   * @param compiler non-null reference to compiler object that has processed
+   *                 the XPath operations into an opcode map.
+   * @param stepOpCodePos The opcode position for the step.
+   * @param stepIndex The top-level step index withing the iterator.
+   * @param analysis The general analysis of the pattern.
+   *
+   * @return 32 bits as an integer that give information about the location
+   * path as a whole.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  private static boolean isNaturalDocOrder(
+          Compiler compiler, int stepOpCodePos, int stepIndex, int analysis)
+            throws javax.xml.transform.TransformerException
+  {
+    if(canCrissCross(analysis))
+      return false;
+      
+    // Namespaces can present some problems, so just punt if we're looking for 
+    // these.
+    if(isSet(analysis, BIT_NAMESPACE))
+      return false;
+      
+    // The following, preceding, following-sibling, and preceding sibling can 
+    // be found in doc order if we get to this point, but if they occur 
+    // together, they produce 
+    // duplicates, so it's better for us to eliminate this case so we don't 
+    // have to check for duplicates during runtime if we're using a 
+    // WalkingIterator.
+    if(isSet(analysis, BIT_FOLLOWING | BIT_FOLLOWING_SIBLING) && 
+       isSet(analysis, BIT_PRECEDING | BIT_PRECEDING_SIBLING))
+      return  false;
+      
+    // OK, now we have to check for select="@*/axis::*" patterns, which 
+    // can also cause duplicates to happen.  But select="axis*/@::*" patterns 
+    // are OK, as are select="@foo/axis::*" patterns.
+    // Unfortunately, we can't do this just via the analysis bits.
+
+    int stepType;
+    int ops[] = compiler.getOpMap();
+    int stepCount = 0;
+    boolean foundWildAttribute = false;
+    
+    while (OpCodes.ENDOP != (stepType = ops[stepOpCodePos]))
+    {        
+      stepCount++;
+        
+      switch (stepType)
+      {
+      case OpCodes.FROM_ATTRIBUTES :
+      case OpCodes.MATCH_ATTRIBUTE :
+        if(foundWildAttribute) // Maybe not needed, but be safe.
+          return false;
+        
+        // This doesn't seem to work as a test for wild card.  Hmph.
+        // int nodeTestType = compiler.getStepTestType(stepOpCodePos);  
+        
+        String localName = compiler.getStepLocalName(stepOpCodePos);
+        // System.err.println("localName: "+localName);
+        if(localName.equals("*"))
+          foundWildAttribute = true;  
+        break;
+      case OpCodes.FROM_FOLLOWING :
+      case OpCodes.FROM_FOLLOWING_SIBLINGS :
+      case OpCodes.FROM_PRECEDING :
+      case OpCodes.FROM_PRECEDING_SIBLINGS :
+      case OpCodes.FROM_PARENT :
+      case OpCodes.OP_VARIABLE :
+      case OpCodes.OP_EXTFUNCTION :
+      case OpCodes.OP_FUNCTION :
+      case OpCodes.OP_GROUP :
+      case OpCodes.FROM_NAMESPACE :
+      case OpCodes.FROM_ANCESTORS :
+      case OpCodes.FROM_ANCESTORS_OR_SELF :      
+      case OpCodes.MATCH_ANY_ANCESTOR :
+      case OpCodes.MATCH_IMMEDIATE_ANCESTOR :
+      case OpCodes.FROM_ROOT :
+      case OpCodes.FROM_CHILDREN :
+      case OpCodes.FROM_DESCENDANTS_OR_SELF :
+      case OpCodes.FROM_DESCENDANTS :
+      case OpCodes.FROM_SELF :
+        if(foundWildAttribute)
+          return false;
+        break;
+      default :
+        throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NULL_ERROR_HANDLER, new Object[]{Integer.toString(stepType)})); //"Programmer's assertion: unknown opcode: "
+                                  // + stepType);
+      }
+
+      int nextStepOpCodePos = compiler.getNextStepPos(stepOpCodePos);
+
+      if (nextStepOpCodePos < 0)
+        break;
+              
+      stepOpCodePos = nextStepOpCodePos;
+    }
+
+    return true;
   }
   
   public static boolean isOneStep(int analysis)

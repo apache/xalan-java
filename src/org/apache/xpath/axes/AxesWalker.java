@@ -243,7 +243,6 @@ public class AxesWalker extends PredicatedNodeTest
     m_foundLast = false;
     m_root = root;
     m_currentNode = root;
-    m_prevReturned = DTM.NULL;
 
     if (DTM.NULL == root)
     {
@@ -376,59 +375,46 @@ public class AxesWalker extends PredicatedNodeTest
     int nextNode = DTM.NULL;
     AxesWalker walker = wi().getLastUsedWalker();
 
-    do
+    while (true)
     {
-      while (true)
+      if (null == walker)
+        break;
+
+      nextNode = walker.getNextNode();
+
+      if (DTM.NULL == nextNode)
       {
-        if (null == walker)
-          break;
 
-        nextNode = walker.getNextNode();
-
-        if (DTM.NULL == nextNode)
+        walker = walker.m_prevWalker;
+      }
+      else
+      {
+        if (walker.acceptNode(nextNode) != DTMIterator.FILTER_ACCEPT)
         {
+          continue;
+        }
 
-          walker = walker.m_prevWalker;
+        if (null == walker.m_nextWalker)
+        {
+          wi().setLastUsedWalker(walker);
+
+          // return walker.returnNextNode(nextNode);
+          break;
         }
         else
         {
-          if (walker.acceptNode(nextNode) != DTMIterator.FILTER_ACCEPT)
-          {
-            continue;
-          }
+          AxesWalker prev = walker;
 
-          if (null == walker.m_nextWalker)
-          {
-            wi().setLastUsedWalker(walker);
+          walker = walker.m_nextWalker;
 
-            // return walker.returnNextNode(nextNode);
-            break;
-          }
-          else
-          {
-            AxesWalker prev = walker;
+          walker.setRoot(nextNode);
 
-            walker = walker.m_nextWalker;
+          walker.m_prevWalker = prev;
 
-            walker.setRoot(nextNode);
-
-            walker.m_prevWalker = prev;
-
-            continue;
-          }
-        }  // if(null != nextNode)
-      }  // while(null != walker)
-    }
-
-    // Not sure what is going on here, but we were loosing
-    // the next node in the nodeset because it's coming from a 
-    // different document. 
-    while (
-      (DTM.NULL != nextNode) && (DTM.NULL != m_prevReturned)
-      && getDTM(nextNode).getDocument() == getDTM(m_prevReturned).getDocument()
-      && getDTM(nextNode).isNodeAfter(nextNode, m_prevReturned));
-
-    m_prevReturned = nextNode;
+          continue;
+        }
+      }  // if(null != nextNode)
+    }  // while(null != walker)
 
     return nextNode;
   }
@@ -553,9 +539,6 @@ public class AxesWalker extends PredicatedNodeTest
    */
   private transient int m_currentNode = DTM.NULL;
   
-  /** The node last returned from nextNode(). */
-  transient int m_prevReturned = DTM.NULL;
-
   /** True if an itteration has not begun.  */
   transient boolean m_isFresh;
 

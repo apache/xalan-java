@@ -127,7 +127,7 @@ public class WalkingIteratorSorted extends WalkingIterator
       {
         int axis = walker.getAxis();
         boolean isSimpleDownAxis = ((axis == Axis.CHILD)
-           || (axis == Axis.ATTRIBUTE) || (axis == Axis.SELF)
+           || (axis == Axis.SELF)
            || (axis == Axis.ROOT));
         if(walker.isDocOrdered())
         {
@@ -135,12 +135,12 @@ public class WalkingIteratorSorted extends WalkingIterator
             walker = walker.getNextWalker();
           else
           {
-            boolean nextIsNull = (null == walker.getNextWalker());
-            if(nextIsNull)
+            boolean isLastWalker = (null == walker.getNextWalker());
+            if(isLastWalker)
             {
               if(walker.isDocOrdered() && (axis == Axis.DESCENDANT || 
                  axis == Axis.DESCENDANTORSELF || axis == Axis.DESCENDANTSFROMROOT
-                 || axis == Axis.DESCENDANTSORSELFFROMROOT))
+                 || axis == Axis.DESCENDANTSORSELFFROMROOT) || (axis == Axis.ATTRIBUTE))
                 return true;
             }
             return false;
