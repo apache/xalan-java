@@ -178,6 +178,28 @@
            &lt;Tomcat_Home&gt; is where the Tomcat application server is installed.</p>
       </a>
     </faq>    
+    <faq title='Issues running Applets with &xslt4jc-short; in Web Browsers with JAVA Plug-in (JRE 1.4)'>
+      <q>I got javax.xml.transform.TransformerException running my applet which uses &xslt4jc-short; in JRE 1.4.</q>
+      <a>
+        <p><anchor name='applet'/></p>
+        <p>To overwrite an older version of &xslt4j; packaged with Sun JRE 1.4 you can add a newer xalan.jar to the
+        &lt;jre-home&gt;\lib\endorsed directory. Read the FAQ about <link anchor='jdk14'>Issues running 
+        &xslt4j; on JDK 1.4</link>.  If there is a META-INF/services/javax.xml.transform.TransformerFactory
+        file in xalan.jar (as there is in the Xalan Java distributions), then the TransformerFactoryImpl 
+        setting in this file will be used by the JVM during the factory finder lookup procedure.  
+        The TransformerFactoryImpl for the Xalan Java Interpretive processor is the default setting in the 
+        META-INF/services/javax.xml.transform.TransformerFactory file, therefore, you will get an error
+        when your applet attempts to use the &xslt4jc-short; implementation.</p>
+        <p>To work around this problem, you can change the contents of the 
+        META-INF/services/javax.xml.transform.TransformerFactory file in xalan.jar so that it refers to the
+        transformer factory class implementation for &xslt4jc-short;, org.apache.xalan.xsltc.trax.TransformerFactoryImpl. </p>
+        <p>Another solution is to create a jar that contains a META-INF/services/javax.xml.transform.TransformerFactory file 
+        containing the value org.apache.xalan.xsltc.trax.TransformerFactoryImpl.  Place the jar in the 
+         &lt;jre-home&gt;\lib\endorsed directory. When you name your jar file, the ASCII code of the first 
+        character should be smaller than the ASCII code of "X" to ensure that your jar will be loaded before 
+        xalan.jar</p>
+      </a>
+    </faq>        
     <faq title="Using the 'signature' file to verify a download">
       <q>How do I use the "signature" file to verify my download?</q>
       <a>
