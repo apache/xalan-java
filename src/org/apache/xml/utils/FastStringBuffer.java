@@ -356,6 +356,8 @@ public class FastStringBuffer
   public final void append(String value)
   {
     int strlen=value.length();
+    if (0 == strlen)
+      return;
     int copyfrom=0;
     char[] chunk=m_array[m_lastChunk];
     int available=m_lastChunkSize-m_firstFree;
@@ -432,6 +434,8 @@ public class FastStringBuffer
   public final void append(StringBuffer value)
   {
     int strlen=value.length();
+    if (0 == strlen)
+      return;
     int copyfrom=0;
     char[] chunk=m_array[m_lastChunk];
     int available=m_lastChunkSize-m_firstFree;
@@ -511,6 +515,8 @@ public class FastStringBuffer
   public final void append(char[] chars, int start, int length)
   {
     int strlen=length;
+    if (0 == strlen)
+      return;
     int copyfrom=start;
     char[] chunk=m_array[m_lastChunk];
     int available=m_lastChunkSize-m_firstFree;
@@ -592,6 +598,8 @@ public class FastStringBuffer
     // probably on a different alignment due to previously appended
     // data. We have to work through the source in bite-sized chunks.
     int strlen=value.length();
+    if (0 == strlen)
+      return;
     int copyfrom=0;
     char[] chunk=m_array[m_lastChunk];
     int available=m_lastChunkSize-m_firstFree;
