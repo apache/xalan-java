@@ -817,9 +817,11 @@ public final class TextOutput implements TransletOutputHandler {
 	try {
 	    if (_startTagOpen)
 		pushNamespace(prefix, uri);
-	    else
+	    else {
+		if ((prefix == EMPTYSTRING) && (uri == EMPTYSTRING)) return;
 		throw new TransletException("namespace declaration '"+prefix+
 					    "'='"+uri+"' outside of element");
+	    }
 	}
 	catch (SAXException e) {
 	    throw new TransletException(e);
