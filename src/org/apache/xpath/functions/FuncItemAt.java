@@ -98,7 +98,7 @@ public class FuncItemAt extends Function2Args
   	
   	int pos = m_arg1.execute(xctxt).integer();
   	
-  	if (seqParam.getLength() <= pos)
+  	if (pos-1 <0 || seqParam.getLength() <= pos)
   	this.error(xctxt, XPATHErrorResources.ER_ERROR_OCCURED, null);
   	
   	return ((XSequenceImpl)seqParam).getItem(pos-1);  	

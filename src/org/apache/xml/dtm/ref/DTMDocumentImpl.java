@@ -67,6 +67,7 @@ import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
+import org.apache.xml.utils.NodeVector;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
@@ -1928,6 +1929,8 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
          * @return The handle of the matching element.
          */
         public int getElementById(String elementId) {return 0;}
+        
+        public NodeVector getElementByIdref(String elementIdef) {return null;}
 
         /**
          * The getUnparsedEntityURI function returns the URI of the unparsed

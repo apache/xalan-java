@@ -60,7 +60,7 @@ package org.apache.xpath.functions;
 
 import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.objects.XObject;
@@ -112,8 +112,8 @@ public class FuncCompare extends FunctionMultiArgs
 		{
 			// This should probably be error rather than 
 			// exception -- %REVIEW%
-			throw new XPathException(XSLMessages.createMessage(
-      			XSLTErrorResources.WG_CANNOT_FIND_COLLATOR,
+			throw new XPathException(XSLMessages.createXPATHMessage(
+      			XPATHErrorResources.ER_CANNOT_FIND_COLLATOR,
 		      	new Object[]{collation}
 	    	  	) );
 		}

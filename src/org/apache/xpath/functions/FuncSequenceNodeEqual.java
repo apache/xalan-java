@@ -56,22 +56,31 @@
  */
 package org.apache.xpath.functions;
 
-import javax.xml.transform.TransformerException;
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.XType;
-import org.apache.xml.utils.XMLString;
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
+import org.apache.xml.utils.DateTimeObj;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XDouble;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XSequence;
+import org.apache.xpath.objects.XSequenceImpl;
+import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XNodeSequenceSingleton;
+import org.apache.xpath.objects.XBoolean;
+import java.util.Comparator;
+import org.apache.xml.dtm.XType;
+import org.apache.xpath.parser.regexp.*;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xpath.XPathException;
+
+import java.text.Collator;
+import java.net.URL;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Execute the Sum() function.
+ * Execute the xs:matches() function.
  */
-public class FuncSum extends FunctionOneArg
+public class FuncSequenceNodeEqual extends Function2Args
 {
 
   /**
@@ -84,51 +93,36 @@ public class FuncSum extends FunctionOneArg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    XSequence nl = m_arg0.execute(xctxt).xseq();
-	if (nl.equals(XSequence.EMPTY))
-	 return XSequence.EMPTY;
-	
-	double sum = 0;
-	XObject item;
-	while ((item = nl.next()) != null)
+  	XSequence seq1 = m_arg0.execute(xctxt).xseq();
+  	XSequence seq2 = m_arg1.execute(xctxt).xseq();
+  	
+  	if (seq1.getLength() != seq2.getLength())
+  	  return new XBoolean(false);	
+  	
+  	
+
+	XObject item1, item2;
+	  
+	while((item1 = seq1.next()) != null)  	
 	{
-	  int type = item.getValueType();
-	  if(type == XType.ANYTYPE || type == XType.ANYSIMPLETYPE)
-	  {
-	    type = XObject.CLASS_NUMBER;
+	    boolean found = false;
+	    int type = item1.getType();
+	    item2 = seq2.next();
+	    if(type == XType.NODE)
+	    {
+	      if(item1 instanceof XNodeSequenceSingleton)
+	      {
+	        XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item1;
+	        
+	        if (type == item2.getType())
+	        {
+	          if (!xnss.deepEquals((XNodeSequenceSingleton)item2)) 
+	            return new XBoolean(false);
+	        }
+	      }
+	    }
 	  }
-	  if (type != XObject.CLASS_NUMBER)
-       throw new javax.xml.transform.TransformerException("Argument not Numeric");
-        
-	  if(item instanceof XNodeSequenceSingleton)
-      {
-        XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
-        sum += xnss.num();
-      }
-      else
-       {
-          sum += item.num();
-       }
-	}
-
-    return new XDouble(sum);
+	  return new XBoolean(true);
+    
   }
- /* {
-
-    DTMIterator nodes = m_arg0.asIterator(xctxt, xctxt.getCurrentNode());
-    double sum = 0.0;
-    int pos;
-
-    while (DTM.NULL != (pos = nodes.nextNode()))
-    {
-      DTM dtm = nodes.getDTM(pos);
-      XMLString s = dtm.getStringValue(pos);
-
-      if (null != s)
-        sum += s.toDouble();
-    }
-    nodes.detach();
-
-    return new XDouble(sum);
-  }*/
 }

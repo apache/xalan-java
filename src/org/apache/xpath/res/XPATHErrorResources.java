@@ -464,6 +464,9 @@ public class XPATHErrorResources extends PropertyResourceBundle
   
 // Variable accessed before it is bound!
   public static final int ER_VARIABLE_ACCESSED_BEFORE_BIND = 85;
+  
+  /** ER_CANNOT_FIND_COLLATOR          */
+  public static final int ER_CANNOT_FIND_COLLATOR = 86;
 
   // Warnings...
 

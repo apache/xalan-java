@@ -1378,6 +1378,11 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     }
     return DTM.NULL;
   }
+  
+  public NodeVector getElementByIdref(String elementIdref)
+  {
+    return null;
+  }
 
   /**
    * The getUnparsedEntityURI function returns the URI of the unparsed

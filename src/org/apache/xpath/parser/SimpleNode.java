@@ -393,7 +393,22 @@ m_builtInFunctions.put(
       new FuncDistinctValues());      
 m_builtInFunctions.put(
       new QName("avg"),
-      new FuncAverage());
+      new FuncAverage());            
+m_builtInFunctions.put(
+      new QName("max"),
+      new FuncMax());            
+m_builtInFunctions.put(
+      new QName("min"),
+      new FuncMin());            
+m_builtInFunctions.put(
+      new QName("idref"),
+      new FuncIdref());            
+m_builtInFunctions.put(
+      new QName("sequence-node-equal"),
+      new FuncSequenceNodeEqual());            
+m_builtInFunctions.put(
+      new QName("sequence-deep-equal"),
+      new FuncSequenceDeepEqual());
   }
 
   /**

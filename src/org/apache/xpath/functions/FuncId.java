@@ -73,7 +73,10 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XNodeSequenceSingleton;
+import org.apache.xpath.objects.XSequence;
 import org.apache.xml.utils.StringVector;
+import org.apache.xml.dtm.XType;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -156,8 +159,39 @@ public class FuncId extends FunctionOneArg
     if (DTM.NULL == docContext)
       error(xctxt, XPATHErrorResources.ER_CONTEXT_HAS_NO_OWNERDOC, null);
 
-    XObject arg = m_arg0.execute(xctxt);
-    int argType = arg.getType();
+    XSequence arg = m_arg0.execute(xctxt).xseq();
+    int count = arg.getLength();
+    
+    XNodeSet nodes = new XNodeSet(xctxt.getDTMManager());
+    NodeSetDTM nodeSet = nodes.mutableNodeset();
+    
+    StringVector usedrefs = null;
+    XObject item;
+    while ((item = arg.next()) != null)
+	{
+	  int type = item.getType();
+	  // Not sure what we do about a sequence of nodes at this point!! 
+	  /* 
+	  if(item instanceof XNodeSequenceSingleton)
+      {
+        XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
+        int pos = xnss.getNodeHandle();
+        String refval = xnss.getStringFromNode(pos).toString();
+        usedrefs = getNodesByID(xctxt, docContext, refval, usedrefs, nodeSet,
+                                (count -1) != arg.getCurrentPos());
+      }
+      else*/
+      {
+        String refval = item.str();
+        getNodesByID(xctxt, docContext, refval, null, nodeSet, false);
+      }          
+      
+	}
+	if(nodeSet.getLength() == 0)
+     return XSequence.EMPTY;
+   else
+     return nodes;
+  /*  int argType = arg.getType();
     XNodeSet nodes = new XNodeSet(xctxt.getDTMManager());
     NodeSetDTM nodeSet = nodes.mutableNodeset();
 
@@ -190,5 +224,6 @@ public class FuncId extends FunctionOneArg
     }
 
     return nodes;
+    */
   }
 }

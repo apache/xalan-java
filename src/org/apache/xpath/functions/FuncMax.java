@@ -56,22 +56,39 @@
  */
 package org.apache.xpath.functions;
 
-import javax.xml.transform.TransformerException;
+import org.apache.xpath.res.XPATHErrorResources;
+
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMSequence;
 import org.apache.xml.dtm.XType;
-import org.apache.xml.utils.XMLString;
+
+import java.util.Vector;
+
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XDouble;
+import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XSequence;
+import org.apache.xpath.objects.XSequenceImpl;
+import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XNodeSequenceSingleton;
+import org.apache.xpath.objects.XObjectFactory;
+import org.apache.xpath.objects.XDouble;
+import org.apache.xml.dtm.XType;
+import org.apache.xalan.res.XSLMessages;
+
+import java.text.Collator;
+import java.net.URL;
+import java.util.Comparator;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Execute the Sum() function.
+ * Execute the Count() function.
  */
-public class FuncSum extends FunctionOneArg
+public class FuncMax extends Function2Args
 {
 
   /**
@@ -87,48 +104,98 @@ public class FuncSum extends FunctionOneArg
     XSequence nl = m_arg0.execute(xctxt).xseq();
 	if (nl.equals(XSequence.EMPTY))
 	 return XSequence.EMPTY;
-	
-	double sum = 0;
+	 
+	if (XType.NOTHOMOGENOUS == nl.getTypes())
+  	 this.error(xctxt, XPATHErrorResources.ER_ERROR_OCCURED, null);
+  	
+	 	 
+  	Comparator comparator = null;
+  	if (m_arg1 != null)
+  	{
+  	  String collation = m_arg1.execute(xctxt).str();
+  	  try{
+  	    URL uri = new URL(collation);
+  	    comparator = Collator.getInstance();
+  	  }
+  	  catch(java.net.MalformedURLException mue)
+  	  {
+  	    comparator = null;
+  	  }
+  	}
+		
+  	XObject max = null;
 	XObject item;
 	while ((item = nl.next()) != null)
 	{
-	  int type = item.getValueType();
-	  if(type == XType.ANYTYPE || type == XType.ANYSIMPLETYPE)
-	  {
-	    type = XObject.CLASS_NUMBER;
-	  }
-	  if (type != XObject.CLASS_NUMBER)
-       throw new javax.xml.transform.TransformerException("Argument not Numeric");
-        
-	  if(item instanceof XNodeSequenceSingleton)
-      {
-        XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
-        sum += xnss.num();
-      }
-      else
-       {
-          sum += item.num();
-       }
+	  int type = item.getType();
+	  
+	  if(type == XType.NODE)
+  	  {
+  	    if(item instanceof XNodeSequenceSingleton)
+        {
+          XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
+          if (max == null || xnss.greaterThan(max))
+          {
+            max = xnss;
+          }
+  	    }
+  	  }
+  	  else if (type == XObject.CLASS_STRING)
+  	  {  
+  	    if (comparator == null)
+  	    {
+  	      if (max == null || ((XString)item).compareTo(max.xstr()) > 0)
+  	      {
+  	        max = item;
+  	      }  	      
+  	    } 
+  	    else
+  	    {
+  	      if (max == null || comparator.compare(item.str(), max.str()) > 0)
+  	      {
+  	        max = item;
+  	      }    	      
+  	    }  	        	    
+  	  }
+  	  else
+  	  {
+  	    if(max == null || item.greaterThan(max))  	      	    
+  	    {
+  	      max = item;
+  	    }
+  	  }
 	}
 
-    return new XDouble(sum);
+    return max;
   }
- /* {
+  
+  /**
+   * Check that the number of arguments passed to this function is correct. 
+   *
+   *
+   * @param argNum The number of arguments that is being passed to the function.
+   *
+   * @throws WrongNumberArgsException
+   */
+  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
+  {
+    if (argNum < 1 || argNum > 2)
+      reportWrongNumberArgs();
+  }
 
-    DTMIterator nodes = m_arg0.asIterator(xctxt, xctxt.getCurrentNode());
-    double sum = 0.0;
-    int pos;
-
-    while (DTM.NULL != (pos = nodes.nextNode()))
-    {
-      DTM dtm = nodes.getDTM(pos);
-      XMLString s = dtm.getStringValue(pos);
-
-      if (null != s)
-        sum += s.toDouble();
-    }
-    nodes.detach();
-
-    return new XDouble(sum);
-  }*/
+  /**
+   * Constructs and throws a WrongNumberArgException with the appropriate
+   * message for this function object.
+   *
+   * @throws WrongNumberArgsException
+   */
+  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
+      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("oneortwo", null));
+  }
+  
+  /** Return the number of children the node has. */
+  public int exprGetNumChildren()
+  {
+  	return (m_arg1 == null) ?  1 :  2;
+  }
 }

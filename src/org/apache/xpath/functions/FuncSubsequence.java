@@ -147,4 +147,12 @@ public class FuncSubsequence extends Function3Args
   protected void reportWrongNumberArgs() throws WrongNumberArgsException {
       throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("twoorthree", null));
   }
+  
+  
+  
+  /** Return the number of children the node has. */
+  public int exprGetNumChildren()
+  {
+  	return (m_arg2 == null) ?  2 :  3;
+  }
 }

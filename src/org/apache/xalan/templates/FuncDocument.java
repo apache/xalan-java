@@ -65,6 +65,7 @@ import java.io.IOException;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.XType;
 
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.functions.Function;
@@ -72,6 +73,8 @@ import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XSequence;
+import org.apache.xpath.objects.XNodeSequenceSingleton;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.SourceTreeManager;
@@ -125,7 +128,8 @@ public class FuncDocument extends Function2Args
     DTM dtm = xctxt.getDTM(context);
     
     int docContext = dtm.getDocumentRoot(context);
-    XObject arg = (XObject) this.getArg0().execute(xctxt);
+    //XObject arg = (XObject) this.getArg0().execute(xctxt);
+    XSequence arg = this.getArg0().execute(xctxt).xseq();
 
     String base = "";
     Expression arg1Expr = this.getArg1();
@@ -137,8 +141,24 @@ public class FuncDocument extends Function2Args
       // of the node in the second argument node-set that is first in document 
       // order is used as the base URI for resolving the 
       // relative URI into an absolute URI. 
-      XObject arg2 = arg1Expr.execute(xctxt);
-
+      //XObject arg2 = arg1Expr.execute(xctxt);
+      XSequence arg2 = arg1Expr.execute(xctxt).xseq();
+      XObject item;
+      if ((item = arg2.next()) == null ||
+            item.getType() != XType.NODE)
+         warn(xctxt, XSLTErrorResources.WG_EMPTY_SECOND_ARG, null);   
+         
+      if (item != null)
+       {
+         if(item instanceof XNodeSequenceSingleton)
+         {
+           XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
+          int baseNode = xnss.getNodeHandle(); 
+           base = xnss.getDTM().getDocumentBaseURI();
+         }
+       }
+    }
+/*
       if (XObject.CLASS_NODESET == arg2.getType())
       {
         int baseNode = arg2.iter().nextNode();
@@ -153,7 +173,7 @@ public class FuncDocument extends Function2Args
         // suite, but maybe it's just not doing a good test?
 //        int baseDoc = baseDTM.getDocument();
 //
-//        if (baseDoc == DTM.NULL /* || baseDoc instanceof Stylesheet  -->What to do?? */)
+//        if (baseDoc == DTM.NULL /* || baseDoc instanceof Stylesheet  -->What to do?? /)
 //        {
 //
 //          // base = ((Stylesheet)baseDoc).getBaseIdentifier();
@@ -161,12 +181,12 @@ public class FuncDocument extends Function2Args
 //        }
 //        else
 //          base = xctxt.getSourceTreeManager().findURIFromDoc(baseDoc);
-      }
+   /*   }
       else
       {
         base = arg2.str();
       }
-    }
+    }*/
     else
     {
 
@@ -185,6 +205,28 @@ public class FuncDocument extends Function2Args
 
     XNodeSet nodes = new XNodeSet(xctxt.getDTMManager());
     NodeSetDTM mnl = nodes.mutableNodeset();
+    
+    XObject item;
+    while ((item = arg.next()) != null)
+    {
+      int pos = DTM.NULL;
+       XMLString ref = null;
+      int type = item.getType();
+      if (type == XType.NODE)
+       {
+         if(item instanceof XNodeSequenceSingleton)
+         {
+           XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
+           pos = xnss.getNodeHandle();
+           ref = xnss.getStringFromNode(pos);
+         }
+       }
+       else
+       {
+         ref = item.xstr();
+       }
+       
+       /*
     DTMIterator iterator = (XObject.CLASS_NODESET == arg.getType())
                             ? arg.iter() : null;
     int pos = DTM.NULL;
@@ -193,7 +235,8 @@ public class FuncDocument extends Function2Args
     {
       XMLString ref = (null != iterator)
                    ? xctxt.getDTM(pos).getStringValue(pos) : arg.xstr();
-      
+    
+    */  
       // The first and only argument was a nodeset, the base in that
       // case is the base URI of the node from the first argument nodeset. 
       // Remember, when the document function has exactly one argument and
@@ -245,11 +288,14 @@ public class FuncDocument extends Function2Args
         }
       }
 
-      if (null == iterator || newDoc == DTM.NULL)
+      if (null == item || newDoc == DTM.NULL)
         break;
     }
 
-    return nodes;
+    if (mnl.getLength() == 0)
+      return XSequence.EMPTY;
+    else  
+      return nodes;
   }
 
   /**

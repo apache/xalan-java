@@ -886,6 +886,9 @@ public class XNI2DTM
       AttributePSVImpl attrPSVI=(AttributePSVImpl)attrAugs.getItem(org.apache.xerces.impl.Constants.ATTRIBUTE_PSVI);
       XPath2Type xp2attrtype=new XPath2Type(attrPSVI,true);
       
+      if (xp2attrtype.getTypeName().equalsIgnoreCase("ID"))
+          setIDAttribute(valString, elemNode);
+      
       prev = addNode(nodeType, exName, elemNode, prev, val,
                      false, xp2attrtype);
     } // Attribute list loop

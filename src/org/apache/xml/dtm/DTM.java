@@ -57,6 +57,7 @@
 package org.apache.xml.dtm;
 
 import org.apache.xml.utils.XMLString;
+import org.apache.xml.utils.NodeVector;
 import org.apache.xpath.objects.*;
 
 import javax.xml.transform.SourceLocator;
@@ -718,6 +719,25 @@ public interface DTM
    * @return The handle of the matching element.
    */
   public int getElementById(String elementId);
+  
+  /**
+   * Returns the <code>Element</code> whose <code>IDREF</code> is given by
+   * <code>elementIdref</code>. If no such element exists, returns
+   * <code>DTM.NULL</code>. Behavior is not defined if more than one element
+   * has this <code>IDREF</code>. Attributes (including those
+   * with the name "IDREF") are not of type IDREF unless so defined by DTD/Schema
+   * information available to the DTM implementation.
+   * Implementations that do not know whether attributes are of type ID or
+   * not are expected to return <code>DTM.NULL</code>.
+   *
+   * <p>%REVIEW% Presumably IDREFs are still scoped to a single document,
+   * and this operation searches only within a single document, right?
+   * Wouldn't want collisions between DTMs in the same process.</p>
+   *
+   * @param elementIdref The unique <code>idref</code> value for an element.
+   * @return The handle of the matching element.
+   */
+  public NodeVector getElementByIdref(String elementIdref);
 
   /**
    * The getUnparsedEntityURI function returns the URI of the unparsed

@@ -56,23 +56,97 @@
  */
 package org.apache.xpath.functions;
 
-import javax.xml.transform.TransformerException;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+
+import org.apache.xpath.res.XPATHErrorResources;
+
+//import org.w3c.dom.Node;
+//import org.w3c.dom.traversal.NodeIterator;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.XType;
-import org.apache.xml.utils.XMLString;
+
+import java.util.Vector;
+
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XDouble;
+import org.apache.xpath.XPath;
+import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XSequence;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNodeSequenceSingleton;
+import org.apache.xpath.objects.XSequence;
+import org.apache.xml.utils.StringVector;
+import org.apache.xml.utils.NodeVector;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Execute the Sum() function.
+ * Execute the Id() function.
  */
-public class FuncSum extends FunctionOneArg
+public class FuncIdref extends FunctionOneArg
 {
+
+  /**
+   * Fill in a list with nodes that match a space delimited list if ID 
+   * ID references.
+   *
+   * @param xctxt The runtime XPath context.
+   * @param docContext The document where the nodes are being looked for.
+   * @param refval A space delimited list of ID references.
+   * @param usedrefs List of references for which nodes were found.
+   * @param nodeSet Node set where the nodes will be added to.
+   * @param mayBeMore true if there is another set of nodes to be looked for.
+   *
+   * @return The usedrefs value.
+   */
+  private StringVector getNodesByIDREF(XPathContext xctxt, int docContext,
+                                    String refval, StringVector usedrefs,
+                                    NodeSetDTM nodeSet, boolean mayBeMore)
+  {
+
+    if (null != refval)
+    {
+      String ref = null;
+//      DOMHelper dh = xctxt.getDOMHelper();
+      StringTokenizer tokenizer = new StringTokenizer(refval);
+      boolean hasMore = tokenizer.hasMoreTokens();
+      DTM dtm = xctxt.getDTM(docContext);
+
+      while (hasMore)
+      {
+        ref = tokenizer.nextToken();
+        hasMore = tokenizer.hasMoreTokens();
+
+        if ((null != usedrefs) && usedrefs.contains(ref))
+        {
+          ref = null;
+
+          continue;
+        }
+
+        NodeVector nv = dtm.getElementByIdref(ref);
+
+        if (nv != null && nv.size() >0)
+        {
+          int node;
+          for (int i=0; i < nv.size(); i++)
+          {
+            node = nv.elementAt(i);
+            nodeSet.addNodeInDocOrder(node, xctxt);
+          }
+        }
+
+        if ((null != ref) && (hasMore || mayBeMore))
+        {
+          if (null == usedrefs)
+            usedrefs = new StringVector();
+
+          usedrefs.addElement(ref);
+        }
+      }
+    }
+
+    return usedrefs;
+  }
 
   /**
    * Execute the function.  The function must return
@@ -84,51 +158,44 @@ public class FuncSum extends FunctionOneArg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    XSequence nl = m_arg0.execute(xctxt).xseq();
-	if (nl.equals(XSequence.EMPTY))
-	 return XSequence.EMPTY;
-	
-	double sum = 0;
-	XObject item;
-	while ((item = nl.next()) != null)
+
+    int context = xctxt.getCurrentNode();
+    DTM dtm = xctxt.getDTM(context);
+    int docContext = dtm.getDocument();
+
+    if (DTM.NULL == docContext)
+      error(xctxt, XPATHErrorResources.ER_CONTEXT_HAS_NO_OWNERDOC, null);
+
+    XSequence arg = m_arg0.execute(xctxt).xseq();
+    int count = arg.getLength();
+    
+    XNodeSet nodes = new XNodeSet(xctxt.getDTMManager());
+    NodeSetDTM nodeSet = nodes.mutableNodeset();
+    
+    StringVector usedrefs = null;
+    XObject item;
+    while ((item = arg.next()) != null)
 	{
-	  int type = item.getValueType();
-	  if(type == XType.ANYTYPE || type == XType.ANYSIMPLETYPE)
-	  {
-	    type = XObject.CLASS_NUMBER;
-	  }
-	  if (type != XObject.CLASS_NUMBER)
-       throw new javax.xml.transform.TransformerException("Argument not Numeric");
-        
+	  /*
+	  int type = item.getType();
 	  if(item instanceof XNodeSequenceSingleton)
       {
         XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
-        sum += xnss.num();
+        int pos = xnss.getNodeHandle();
+        String refval = xnss.getStringFromNode(pos).toString();
+        usedrefs = getNodesByID(xctxt, docContext, refval, usedrefs, nodeSet,
+                                (count -1) != arg.getCurrentPos());
       }
-      else
-       {
-          sum += item.num();
-       }
+      else*/
+      {
+        String refval = item.str();
+        getNodesByIDREF(xctxt, docContext, refval, null, nodeSet, false);
+      }          
+      
 	}
-
-    return new XDouble(sum);
+	if(nodeSet.getLength() == 0)
+     return XSequence.EMPTY;
+   else
+     return nodes;
   }
- /* {
-
-    DTMIterator nodes = m_arg0.asIterator(xctxt, xctxt.getCurrentNode());
-    double sum = 0.0;
-    int pos;
-
-    while (DTM.NULL != (pos = nodes.nextNode()))
-    {
-      DTM dtm = nodes.getDTM(pos);
-      XMLString s = dtm.getStringValue(pos);
-
-      if (null != s)
-        sum += s.toDouble();
-    }
-    nodes.detach();
-
-    return new XDouble(sum);
-  }*/
 }

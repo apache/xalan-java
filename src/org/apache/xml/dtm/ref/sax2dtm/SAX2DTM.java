@@ -76,6 +76,7 @@ import org.apache.xml.utils.WrappedRuntimeException;
 import org.apache.xml.utils.XMLCharacterRecognizer;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
+import org.apache.xml.utils.NodeVector;
 import org.xml.sax.*;
 import org.xml.sax.ext.*;
 
@@ -1487,6 +1488,34 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     while (null == intObj);
 
     return DTM.NULL;
+  }
+  
+  public NodeVector getElementByIdref(String idref)
+  {
+
+    int node;
+    boolean isMore = true;
+    NodeVector nv = new NodeVector(); 
+    
+    DTMAxisIterator iterator = this.getAxisIterator(Axis.DESCENDANTORSELF);
+    while ((node = iterator.next()) != DTM.NULL)
+    {
+      int attrNode = getFirstAttribute(node);
+      while (attrNode != DTM.NULL)
+      {      
+        if(getSchemaTypeLocalName(attrNode).equalsIgnoreCase("IDREF"))
+          nv.addElement(node);
+        
+        attrNode = getNextAttribute(attrNode);   
+      }
+      
+    // if (!isMore || m_endDocumentOccured)
+    //    break;
+
+    //  isMore = nextNode();
+    }
+
+    return nv;
   }
 
   /**
