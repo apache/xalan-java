@@ -526,10 +526,7 @@ public abstract class AbstractTranslet implements Translet {
 
 	// It is an error if this method is called with anything else than
 	// the translet post-processor (TextOutput)
-	if (!(output instanceof TextOutput)) {
-	    System.err.println("output is "+output);
-	    return;
-	}
+	if (!(output instanceof TextOutput)) return;
 
 	TextOutput handler = (TextOutput)output;
 

@@ -453,7 +453,7 @@ public final class TextOutput implements TransletOutputHandler {
 
 	_qnameStack.push(elementName);
 
-	if (_cdata.get(elementName) != null)
+	if ((_cdata != null) && (_cdata.get(elementName) != null))
 	    _cdataStack.push(new Integer(_depth));
 
 	// Insert <META> tag directly after <HEAD> element in HTML doc
