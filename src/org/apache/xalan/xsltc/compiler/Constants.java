@@ -165,6 +165,8 @@ public interface Constants extends InstructionConstants {
 	= "Lorg/apache/xalan/xsltc/dom/NodeSortRecord;";
     public static final String NODE_SORT_FACTORY_SIG
 	= "Lorg/apache/xalan/xsltc/dom/NodeSortRecordFactory;";
+    public static final String LOCALE_CLASS
+	= "java.util.Locale";
     public static final String LOCALE_SIG
 	= "Ljava/util/Locale;";
     public static final String STRING_VALUE_HANDLER
