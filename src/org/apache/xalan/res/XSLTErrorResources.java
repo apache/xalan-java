@@ -1254,7 +1254,7 @@ public class XSLTErrorResources extends XResourceBundleBase
 
   static
   {
-    contents[WG_OLD_XSLT_NS + MAX_CODE][1] = "Old XSLT Namespace: {0}";
+    contents[WG_OLD_XSLT_NS + MAX_CODE][1] = "Missing or incorrect XSLT Namespace. ";
   }
 
   /** WG_ONE_DEFAULT_XSLDECIMALFORMAT_ALLOWED          */

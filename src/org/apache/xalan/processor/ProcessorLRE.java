@@ -62,6 +62,9 @@ import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.ElemExtensionCall;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xpath.XPath;
 import org.apache.xalan.templates.StylesheetRoot;
 
@@ -72,6 +75,8 @@ import org.xml.sax.helpers.AttributesImpl;
 
 import javax.xml.transform.TransformerConfigurationException;
 import org.apache.xml.utils.SAXSourceLocator;
+
+import java.util.Vector;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -181,8 +186,28 @@ public class ProcessorLRE extends ProcessorTemplateElem
         // Set properties from the attributes, but don't throw 
         // an error if there is an attribute defined that is not 
         // allowed on a stylesheet.
+				try{
         stylesheetProcessor.setPropertiesFromAttributes(handler, "stylesheet",
                                                         stylesheetAttrs, stylesheet);
+				}
+				catch (Exception e)
+				{
+					// This is pretty ugly, but it will have to do for now. 
+					// This is just trying to append some text specifying that
+					// this error came from a missing or invalid XSLT namespace
+					// declaration.
+					// If someone comes up with a better solution, please feel 
+					// free to contribute it. -mm
+					String msg = e.getMessage();
+					if (stylesheet.getDeclaredPrefixes() == null || 
+						!declaredXSLNS(stylesheet))
+					{
+						msg = msg +"; " + XSLMessages.createWarning(XSLTErrorResources.WG_OLD_XSLT_NS, null);
+						
+					}
+					//else
+						throw new org.xml.sax.SAXException(msg, e);
+				}
         handler.pushElemTemplateElement(stylesheet);
 
         ElemTemplate template = new ElemTemplate();
@@ -346,4 +371,18 @@ public class ProcessorLRE extends ProcessorTemplateElem
 
     super.endElement(handler, uri, localName, rawName);
   }
+	
+	private boolean declaredXSLNS(Stylesheet stylesheet)
+	{
+		Vector declaredPrefixes = stylesheet.getDeclaredPrefixes();
+		int n = declaredPrefixes.size();
+
+		for (int i = 0; i < n; i++)
+		{
+			XMLNSDecl decl = (XMLNSDecl) declaredPrefixes.elementAt(i);
+			if(decl.getURI().equals(Constants.S_XSLNAMESPACEURL))
+				return true;
+		}
+		return false;
+	}
 }
