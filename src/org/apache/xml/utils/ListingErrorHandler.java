@@ -57,22 +57,19 @@
 
 package org.apache.xml.utils;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import org.xml.sax.*;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.SourceLocator;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-
-import javax.xml.transform.ErrorListener;
-import javax.xml.transform.SourceLocator;
-import javax.xml.transform.TransformerException;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+import java.io.InputStream;
+import org.apache.xml.utils.SystemIDResolver;
 
 
 /**
@@ -97,8 +94,7 @@ public class ListingErrorHandler implements ErrorHandler, ErrorListener
     public ListingErrorHandler(PrintWriter pw)
     {
         if (null == pw)
-            throw new NullPointerException(XSLMessages.createMessage(XSLTErrorResources.ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER, null));
-            // "ListingErrorHandler created with null PrintWriter!");
+            throw new NullPointerException("ListingErrorHandler created with null PrintWriter!");
             
         m_pw = pw;
     }

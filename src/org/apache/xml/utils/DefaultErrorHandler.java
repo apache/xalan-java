@@ -60,10 +60,6 @@ import org.xml.sax.*;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.SourceLocator;
-
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
- 
 import java.io.PrintWriter;
 import java.io.PrintStream;
 
@@ -338,12 +334,12 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
       String id = (null != locator.getPublicId() )
                   ? locator.getPublicId()
                     : (null != locator.getSystemId())
-                      ? locator.getSystemId() : XSLMessages.createMessage(XSLTErrorResources.ER_SYSTEMID_UNKNOWN, null); //"SystemId Unknown";
+                      ? locator.getSystemId() : "SystemId Unknown";
 
-      pw.print(id + "; " +XSLMessages.createMessage("line", null) + locator.getLineNumber()
-                         + "; " +XSLMessages.createMessage("column", null) + locator.getColumnNumber()+"; ");
+      pw.print(id + "; Line " + locator.getLineNumber()
+                         + "; Column " + locator.getColumnNumber()+"; ");
     }
     else
-      pw.print("("+XSLMessages.createMessage(XSLTErrorResources.ER_LOCATION_UNKNOWN, null)+")");
+      pw.print("(Location of error unknown)");
   }
 }

@@ -71,7 +71,6 @@ import org.apache.xml.utils.NodeConsumer;
  * This class does a pre-order walk of the DOM tree, calling a ContentHandler
  * interface as it goes.
  */
-
 public class TreeWalker
 {
 
@@ -168,21 +167,14 @@ public class TreeWalker
   }
 
   /**
-   * Perform a pre-order traversal non-recursive style.  
+   * Perform a pre-order traversal non-recursive style.
    *
-   * Note that TreeWalker assumes that the subtree is intended to represent 
-   * a complete (though not necessarily well-formed) document and, during a 
-   * traversal, startDocument and endDocument will always be issued to the 
-   * SAX listener.
-   *  
    * @param pos Node in the tree where to start traversal
    *
    * @throws TransformerException
    */
   public void traverse(Node pos) throws org.xml.sax.SAXException
   {
-
-   	this.m_contentHandler.startDocument();
 
     Node top = pos;
 
@@ -219,16 +211,10 @@ public class TreeWalker
 
       pos = nextNode;
     }
-    this.m_contentHandler.endDocument();
   }
 
   /**
    * Perform a pre-order traversal non-recursive style.
-
-   * Note that TreeWalker assumes that the subtree is intended to represent 
-   * a complete (though not necessarily well-formed) document and, during a 
-   * traversal, startDocument and endDocument will always be issued to the 
-   * SAX listener.
    *
    * @param pos Node in the tree where to start traversal
    * @param top Node in the tree where to end traversal
@@ -238,8 +224,6 @@ public class TreeWalker
   public void traverse(Node pos, Node top) throws org.xml.sax.SAXException
   {
 
-	this.m_contentHandler.startDocument();
-	
     while (null != pos)
     {
       startNode(pos);
@@ -270,7 +254,6 @@ public class TreeWalker
 
       pos = nextNode;
     }
-    this.m_contentHandler.endDocument();
   }
 
   /** Flag indicating whether following text to be processed is raw text          */
@@ -342,7 +325,7 @@ public class TreeWalker
       // ??;
       break;
     case Node.DOCUMENT_NODE :
-    
+      this.m_contentHandler.startDocument();
       break;
     case Node.ELEMENT_NODE :
       NamedNodeMap atts = ((Element) node).getAttributes();
@@ -471,8 +454,8 @@ public class TreeWalker
     switch (node.getNodeType())
     {
     case Node.DOCUMENT_NODE :
+      this.m_contentHandler.endDocument();
       break;
-      
     case Node.ELEMENT_NODE :
       String ns = m_dh.getNamespaceOfNode(node);
       if(null == ns)

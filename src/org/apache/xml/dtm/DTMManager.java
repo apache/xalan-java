@@ -486,7 +486,7 @@ public abstract class DTMManager
           System.err.println("DTM: found  " + serviceId);
         }
 
-        BufferedReader rd = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is,"UTF-8"));
 
         foundFactory = rd.readLine();
 

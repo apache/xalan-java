@@ -56,33 +56,28 @@
  */
 package org.apache.xml.dtm.ref;
 
-import org.apache.xml.dtm.*;
-import org.apache.xml.utils.SuballocatedIntVector;
-import org.apache.xml.utils.SuballocatedByteVector;
-import org.apache.xml.utils.IntStack;
-import org.apache.xml.utils.BoolStack;
-import org.apache.xml.utils.StringBufferPool;
-import org.apache.xml.utils.FastStringBuffer;
-import org.apache.xml.utils.TreeWalker;
-import org.apache.xml.utils.QName;
-import org.apache.xml.utils.XMLCharacterRecognizer;
-
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Vector;
-
-import org.xml.sax.ContentHandler;
-
-import org.apache.xml.utils.NodeVector;
 
 import javax.xml.transform.Source;
 
-import org.apache.xml.utils.XMLString;
-import org.apache.xml.utils.XMLStringFactory;
-
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-
-import java.io.*; // for dumpDTM
-
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMAxisTraverser;
+import org.apache.xml.dtm.DTMException;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTMSequence;
+import org.apache.xml.dtm.DTMWSFilter;
+import org.apache.xml.utils.BoolStack;
+import org.apache.xml.utils.SuballocatedIntVector;
+import org.apache.xml.utils.XMLString;
+import org.apache.xml.utils.XMLStringFactory;
+import org.apache.xpath.objects.XSequence;
 /**
  * The <code>DTMDefaultBase</code> class serves as a helper base for DTMs.
  * It sets up structures for navigation and type, while leaving data
@@ -460,7 +455,7 @@ public abstract class DTMDefaultBase implements DTM
     if (NULL != info)
       return m_expandedNameTable.getType(info);
     else
-      return NULL;
+      return (short)NULL;
   }
 
   /**
@@ -820,7 +815,7 @@ public abstract class DTMDefaultBase implements DTM
         case DTM.NOTATION_NODE :
           typestring = "NOTATION";
           break;
-        case DTM.NULL :
+        case (short)DTM.NULL:
           typestring = "null";
           break;
         case DTM.PROCESSING_INSTRUCTION_NODE :
@@ -1401,7 +1396,7 @@ public abstract class DTMDefaultBase implements DTM
    */
   public int getDocument()
   {
-    return m_dtmIdent.elementAt(0); // makeNodeHandle(0)
+    return m_dtmIdent.elementAt(0);
   }
 
   /**
@@ -1436,6 +1431,20 @@ public abstract class DTMDefaultBase implements DTM
   public int getDocumentRoot(int nodeHandle)
   {
     return getDocument();
+  }
+
+  /**
+   * Given a node identifier, find the owning document node.  Unlike the DOM,
+   * this considers the owningDocument of a Document to be itself. Note that
+   * in shared DTMs this may not be zero.
+   *
+   * @param nodeId the id of the node.
+   * @return int Node identifier of owning document, or the nodeId if it is
+   *             a Document.
+   */
+  protected int _documentRoot(int nodeIdentifier)
+  {
+    return 0;
   }
 
   /**
@@ -2128,8 +2137,6 @@ public abstract class DTMDefaultBase implements DTM
 
 	 /** Query which DTMManager this DTM is currently being handled by.
 	  * 
-	  * %REVEW% Should this become part of the base DTM API?
-	  * 
 	  * @return a DTMManager, or null if this is a "stand-alone" DTM.
 	  */
 	 public DTMManager getManager()
@@ -2148,4 +2155,73 @@ public abstract class DTMDefaultBase implements DTM
 		 if(m_mgr==null) return null;
 		 return m_dtmIdent;
 	 }
+	 
+
+  /**
+    * EXPERIMENTAL XPath2 Support:
+    * 
+    * Query schema type name of a given node.
+    * 
+    * %REVIEW% Is this actually needed?
+    * 
+    * @param nodeHandle DTM Node Handle of Node to be queried
+    * @return null if no type known, else returns the expanded-QName (namespace URI
+    *	rather than prefix) of the type actually
+    *    resolved in the instance document. Note that this may be derived from,
+    *	rather than identical to, the type declared in the schema.
+    */
+   public String getSchemaTypeName(int nodeHandle)
+   { return null; }
+  	
+  /** 
+    * EXPERIMENTAL XPath2 Support:
+    * 
+	* Query schema type namespace of a given node.
+    * 
+    * %REVIEW% Is this actually needed?
+    * 
+    * @param nodeHandle DTM Node Handle of Node to be queried
+    * @return null if no type known, else returns the namespace URI
+    *	of the type actually resolved in the instance document. This may
+    * 	be null if the default/unspecified namespace was used.
+    *    Note that this may be derived from,
+    *	rather than identical to, the type declared in the schema.
+    */
+   public String getSchemaTypeNamespace(int nodeHandle)
+   { return null; }
+
+  /** EXPERIMENTAL XPath2 Support: Query schema type localname of a given node.
+   * 
+   * %REVIEW% Is this actually needed?
+   * 
+   * @param nodeHandle DTM Node Handle of Node to be queried
+   * @return null if no type known, else returns the localname of the type
+   *    resolved in the instance document. Note that this may be derived from,
+   *	rather than identical to, the type declared in the schema.
+   */
+  public String getSchemaTypeLocalName(int nodeHandle)
+   { return null; }
+
+  /** EXPERIMENTAL XPath2 Support: Query whether node's type is derived from a specific type
+   * 
+   * @param nodeHandle DTM Node Handle of Node to be queried
+   * @param namespace String containing URI of namespace for the type we're intersted in
+   * @param localname String containing local name for the type we're intersted in
+   * @return true if node has a Schema Type which equals or is derived from 
+   *	the specified type. False if the node has no type or that type is not
+   * 	derived from the specified type.
+   */
+  public boolean isNodeSchemaType(int nodeHandle, String namespace, String localname)
+   { return false; }
+  
+  /** EXPERIMENTAL XPath2 Support: Retrieve the typed value(s), based on the schema
+   *  type.
+   * 
+   * @param nodeHandle DTM Node Handle of Node to be queried
+   * @return XSequence object containing one or more values and their type
+   * information. If no typed value is available, returns an empty sequence.
+   * */
+  public DTMSequence getTypedValue(int nodeHandle)
+   {return DTMSequence.EMPTY;}
+	 
 }

@@ -112,10 +112,23 @@ public class DTMNodeList implements org.w3c.dom.NodeList
         dtm_iter=(DTMIterator)dtmIterator.cloneWithReset();
       }
       catch(CloneNotSupportedException cnse) {}
-      dtm_iter.setShouldCacheNodes(true);
+      dtm_iter.setShouldCache(true);
       dtm_iter.runTo(-1);
       dtm_iter.setCurrentPos(pos);
     }
+    
+  /** Public constructor: Create a NodeList to support a XNodeSequenceSingleton.
+   *
+   * @param dtm The DTM containing this node.
+   * @param node node-handle integer.
+   * @param dummy unused.
+   * */
+  public DTMNodeList(DTM dtm,int node, boolean dummy)
+  {
+    dtm_iter=null;
+    m_parentDTM=dtm;
+    m_firstChild=node;
+  }
 
   /** Public constructor: Create a NodeList to support
    * DTMNodeProxy.getChildren().

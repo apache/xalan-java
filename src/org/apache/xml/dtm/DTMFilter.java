@@ -175,6 +175,24 @@ public interface DTMFilter
    * possibly, to create a DTM-specific field for these additional bits.
    */
   public static final int SHOW_BYFUNCTION = 0x00010000;
+  
+  /**
+   * Special bit for supporting "item" in ItemType..
+   * <p>
+   * %REVIEW% Might be safer to start from higher bits and work down,
+   * to leave room for the DOM to expand its set of constants... Or,
+   * possibly, to create a DTM-specific field for these additional bits.
+   */
+  public static final int SHOW_ITEM = 0x00020000;
+
+  /**
+   * Special bit for supporting "untyped" in ItemType..
+   * <p>
+   * %REVIEW% Might be safer to start from higher bits and work down,
+   * to leave room for the DOM to expand its set of constants... Or,
+   * possibly, to create a DTM-specific field for these additional bits.
+   */
+  public static final int SHOW_UNTYPED = 0x00040000;
 
   /**
    * Test whether a specified node is visible in the logical view of a

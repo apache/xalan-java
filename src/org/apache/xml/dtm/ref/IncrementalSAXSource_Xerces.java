@@ -61,12 +61,16 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import java.io.IOException;
 import org.apache.xerces.parsers.SAXParser;
+import org.apache.xml.utils.WrappedRuntimeException;
 import org.xml.sax.XMLReader;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import javax.xml.transform.TransformerException;
 
 
 /** <p>IncrementalSAXSource_Xerces takes advantage of the fact that Xerces1
@@ -177,7 +181,41 @@ public class IncrementalSAXSource_Xerces
 			this.fParseSome=dummy.fParseSome;
 			this.fIncrementalParser=dummy.fIncrementalParser;
 		}
-  }
+
+		// General SAX-level feature initialization
+		try
+		{
+			fIncrementalParser.setFeature("http://xml.org/sax/features/validation",true);
+		}
+		catch(org.xml.sax.SAXNotRecognizedException e) {e.printStackTrace();}
+		catch(org.xml.sax.SAXNotSupportedException e) {e.printStackTrace();}
+		try
+		{
+			fIncrementalParser.setFeature("http://apache.org/xml/features/validation/dynamic",true);
+		}
+		catch(org.xml.sax.SAXNotRecognizedException e) {e.printStackTrace();}
+		catch(org.xml.sax.SAXNotSupportedException e) {e.printStackTrace();}
+
+		// %REVIEW% Turning on schema support is necessary for some
+		// of the information we'd like to retrieve. Unfortunately,
+		// XERCES currently slows down by 90% (ie, takes twice as
+		// long to run!) with this feature enabled, even if the
+		// document never references schemas. We could make this
+		// optional (resurrect the old -VALIDATE switch?), but it's
+		// really not clear we want the user to have to deal with
+		// manually setting this appropriately for every document.
+		// The default would have to be full validation, slow mode.
+		//
+		// I'm trying to convince Xerces that higher speed should be
+		// given higher priority.
+		try
+		{
+			fIncrementalParser.setFeature("http://apache.org/xml/features/validation/schema",true);
+		}
+		catch(org.xml.sax.SAXNotRecognizedException e) {e.printStackTrace();}
+		catch(org.xml.sax.SAXNotSupportedException e) {e.printStackTrace();}
+		
+   }
 
   /** Create a IncrementalSAXSource_Xerces wrapped around
    * an existing SAXParser. Currently this works only for recent
@@ -348,7 +386,39 @@ public class IncrementalSAXSource_Xerces
     return arg;
   }
 	
-	// Private methods -- conveniences to hide the reflection details
+  static final Object[] parmstrue={Boolean.TRUE};
+	
+  /** deliverAllNodes() is a simple API which tells the coroutine
+   * parser to run until all nodes have been delivered.  
+   * This is a bit of a kluge, intended to address the case where
+   * we're using IncrementalSAXSource_Xerces not for its incrementality
+   * but as a wrapper around the Xerces XNI layer; its primary purpose
+   * is to simplify the logic in DTMManagerDefault.java
+   * */
+  public void deliverAllNodes() throws SAXException
+  {
+    try
+    {
+      Object ret =
+        (Boolean) (fConfigParse.invoke(fPullParserConfig, parmstrue));
+    }
+    catch (IllegalAccessException iae)
+    {
+      throw new WrappedRuntimeException(
+        new TransformerException(iae));
+    }
+    catch (InvocationTargetException ite)
+    {
+      throw new WrappedRuntimeException(
+        new TransformerException(ite.getTargetException()));
+    }
+    catch (RuntimeException ex)
+    {
+      throw new WrappedRuntimeException(new TransformerException(ex));
+    }
+  }
+  
+  	// Private methods -- conveniences to hide the reflection details
 	private boolean parseSomeSetup(InputSource source) 
 		throws SAXException, IOException, IllegalAccessException, 
 					 java.lang.reflect.InvocationTargetException,
@@ -479,6 +549,18 @@ public class IncrementalSAXSource_Xerces
     }
     
   }
+  
+  /** EXPERIMENTAL AS OF 3/22/02: Support for XNI2DTM, allowing us to
+   * bind direct to the parser's XNI stream.
+   * 
+   * %BUG% Gonk -- This requires hard link to Xerces2. Could use reflection
+   * typecasting, but for now... Does anyone still care about Xerces1?
+   * */
+  public org.apache.xerces.xni.parser.XMLPullParserConfiguration getXNIParserConfiguration()
+  {
+  	return (org.apache.xerces.xni.parser.XMLPullParserConfiguration)fPullParserConfig;
+  }
+
 
   
 } // class IncrementalSAXSource_Xerces

@@ -56,23 +56,21 @@
  */
 package org.apache.xml.dtm.ref;
 
-import org.apache.xml.dtm.*;
-import java.util.Hashtable;
-//import java.util.Stack;
-import java.util.Vector;
-
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xml.dtm.ref.ChunkedIntArray;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.DTMAxisTraverser;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTMSequence;
+import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.utils.FastStringBuffer;
-
-import org.xml.sax.ContentHandler;
-import org.xml.sax.Locator;
-import org.xml.sax.Attributes;
-import org.xml.sax.ext.LexicalHandler;
-
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.ext.LexicalHandler;
 
 /**
  * This is the implementation of the DTM document interface.  It receives
@@ -148,6 +146,8 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
    * @see setIncrementalSAXSource
    */
   private IncrementalSAXSource m_incrSAXSource=null;
+  
+  DTMManager m_manager;
 
 
         // ========= DTM data structure declarations. ==============
@@ -196,11 +196,15 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
          * DTMManager's responsibility to assign a unique number to each
          * document.
          */
-        public DTMDocumentImpl(DTMManager mgr, int documentNumber,
-                               DTMWSFilter whiteSpaceFilter,
-                               XMLStringFactory xstringfactory){
-                initDocument(documentNumber);	 // clear nodes and document handle
-                m_xsf = xstringfactory;
+        public DTMDocumentImpl(
+          DTMManager mgr,
+          int documentNumber,
+          DTMWSFilter whiteSpaceFilter,
+          XMLStringFactory xstringfactory)
+        {
+          m_manager = mgr;
+          initDocument(documentNumber); // clear nodes and document handle
+          m_xsf = xstringfactory;
         }
 
   /** Bind a IncrementalSAXSource to this DTM. If we discover we need nodes
@@ -2445,5 +2449,79 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
    {
    }
 
+   /**
+    * EXPERIMENTAL XPath2 Support:
+    * 
+    * Query schema type name of a given node.
+    * 
+    * %REVIEW% Is this actually needed?
+    * 
+    * @param nodeHandle DTM Node Handle of Node to be queried
+    * @return null if no type known, else returns the expanded-QName (namespace URI
+    *	rather than prefix) of the type actually
+    *    resolved in the instance document. Note that this may be derived from,
+    *	rather than identical to, the type declared in the schema.
+    */
+   public String getSchemaTypeName(int nodeHandle)
+   { return null; }
+  	
+  /** 
+    * EXPERIMENTAL XPath2 Support:
+    * 
+	* Query schema type namespace of a given node.
+    * 
+    * %REVIEW% Is this actually needed?
+    * 
+    * @param nodeHandle DTM Node Handle of Node to be queried
+    * @return null if no type known, else returns the namespace URI
+    *	of the type actually resolved in the instance document. This may
+    * 	be null if the default/unspecified namespace was used.
+    *    Note that this may be derived from,
+    *	rather than identical to, the type declared in the schema.
+    */
+   public String getSchemaTypeNamespace(int nodeHandle)
+   { return null; }
+
+  /** EXPERIMENTAL XPath2 Support: Query schema type localname of a given node.
+   * 
+   * %REVIEW% Is this actually needed?
+   * 
+   * @param nodeHandle DTM Node Handle of Node to be queried
+   * @return null if no type known, else returns the localname of the type
+   *    resolved in the instance document. Note that this may be derived from,
+   *	rather than identical to, the type declared in the schema.
+   */
+  public String getSchemaTypeLocalName(int nodeHandle)
+   { return null; }
+
+  /** EXPERIMENTAL XPath2 Support: Query whether node's type is derived from a specific type
+   * 
+   * @param nodeHandle DTM Node Handle of Node to be queried
+   * @param namespace String containing URI of namespace for the type we're intersted in
+   * @param localname String containing local name for the type we're intersted in
+   * @return true if node has a Schema Type which equals or is derived from 
+   *	the specified type. False if the node has no type or that type is not
+   * 	derived from the specified type.
+   */
+  public boolean isNodeSchemaType(int nodeHandle, String namespace, String localname)
+   { return false; }
+  
+  /** EXPERIMENTAL XPath2 Support: Retrieve the typed value(s), based on the schema
+   *  type.
+   * 
+   * @param nodeHandle DTM Node Handle of Node to be queried
+   * @return XSequence object containing one or more values and their type
+   * information. If no typed value is available, returns an empty sequence.
+   * */
+  public DTMSequence getTypedValue(int nodeHandle)
+   {return DTMSequence.EMPTY;}
+
+  /**
+   * @see org.apache.xml.dtm.DTM#getManager()
+   */
+  public DTMManager getManager()
+  {
+    return m_manager;
+  }
 
 }

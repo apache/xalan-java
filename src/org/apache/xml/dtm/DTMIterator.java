@@ -256,16 +256,18 @@ public interface DTMIterator
   //========= Random Access ==========
 
   /**
-   * If setShouldCacheNodes(true) is called, then nodes will
+   * If setShouldCache(true) is called, then nodes will
    * be cached, enabling random access, and giving the ability to do 
    * sorts and the like.  They are not cached by default.
    *
-   * %REVIEW% Shouldn't the other random-access methods throw an exception
-   * if they're called on a DTMIterator with this flag set false?
+   * %REVIEW% Should random-access methods 
+   * (specifically setCurrentPosition() and item())
+   * throw an exception if they're called on a DTMIterator 
+   * with this flag set false?
    *
    * @param b true if the nodes should be cached.
    */
-  public void setShouldCacheNodes(boolean b);
+  public void setShouldCache(boolean b);
   
   /**
    * Tells if this iterator can have nodes added to it or set via 

@@ -82,6 +82,12 @@ import org.xml.sax.ext.*;
 /**
  * This class implements a DTM that tends to be optimized more for speed than
  * for compactness, that is constructed via SAX2 ContentHandler events.
+ * 
+ * NOTE: This version of the code incorporates the logic needed to allow
+ * "shared DTMs", where a single DTM contains several documents which may
+ * be tail-pruned away. This mode is used for result tree 
+ * fragments/temporary trees. A separate constructor *must* be used to
+ * invoke this mode.
  */
 public class SAX2DTM extends DTMDefaultBaseIterators
         implements EntityResolver, DTDHandler, ContentHandler, ErrorHandler,
@@ -89,6 +95,14 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 {
   /** Set true to monitor SAX events and similar diagnostic info. */
   private static final boolean DEBUG = false;
+  
+	/** See discussion in endDocument() */
+	static final boolean JJK_LEAVE_DOCUMENT_CURRENT=false;  
+
+  /** Set true when the DTM goes into Shared DTM mode -- specifically, when
+   * the shared-mode constructor is invoked.
+   * */
+  private boolean m_isSharedDTM=false;
 
   /**
    * If we're building the model incrementally on demand, we need to
@@ -116,11 +130,26 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    * between RTFs, and tail-pruning... consider going back to the larger/faster.
    *
    * Made protected rather than private so SAX2RTFDTM can access it.
+   * Minimum chunk size pushed up now that SAX2RTFDTM is in use (larger
+   * minimum allocation, lower overhead as it grows). 
+   * %REVIEW% Variable size disabled in FSB. Consider (13,13).
    */
-  //private FastStringBuffer m_chars = new FastStringBuffer(13, 13);
-  protected FastStringBuffer m_chars = new FastStringBuffer(5, 13);
+  protected FastStringBuffer m_chars = new FastStringBuffer(10, 13);
 
-  /** This vector holds offset and length data.
+  /** This vector holds _integer pairs_ representing the "node value"
+   * referenced by m_dataOrQName. It's basically a kluge to save a word 
+   * per node for nodes which don't carry this information... AND is
+   * overloaded to handle two distinct cases.
+   * 
+   * In: index (and index+1) from m_dataOrQName 
+   * 
+   * Out: Offset and length references into m_chars (for character content)
+   * 	***OR***
+   * 	(IF m_dataOrQName returned a negated index for an Attr node,
+   *    indicating a prefixed attribute):
+   * 	m_valuesOrPrefixes identifiers of prefix and value 
+   *
+   * %REVIEW% Is this really the best solution? I hae me doots!
    */
   protected SuballocatedIntVector m_data;
 
@@ -164,7 +193,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   protected DTMTreeWalker m_walker = new DTMTreeWalker();
 
   /** pool of string values that come as strings. */
-  private DTMStringPool m_valuesOrPrefixes = new DTMStringPool();
+  protected DTMStringPool m_valuesOrPrefixes = new DTMStringPool();
 
   /** End document has been reached.
    * Made protected rather than private so SAX2RTFDTM can access it.
@@ -237,9 +266,34 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   protected IntVector m_sourceColumn;
   
+  /** Index of most recently started Document, or NULL if the DTM is shared and empty.  */
+  private int m_currentDocumentNode=0;
+  
+  /** Tail-pruning mark: Number of nodes in use. Null if not a shared DTM. */
+  IntStack mark_size=null;
+  /** Tail-pruning mark: Number of data items in use. Null if not a shared DTM. */
+  IntStack mark_data_size=null;
+  /** Tail-pruning mark: Number of size-of-data fields in use. Null if not a shared DTM. */
+  IntStack mark_char_size=null;
+  /** Tail-pruning mark: Number of dataOrQName slots in use. Null if not a shared DTM. */
+  IntStack mark_doq_size=null;
+  /** Tail-pruning mark: Number of namespace declaration sets in use. Null if not a shared DTM.
+   * %REVIEW% I don't think number of NS sets is ever different from number
+   * of NS elements. We can probabably reduce these to a single stack and save
+   * some storage.
+   * */
+  IntStack mark_nsdeclset_size=null;
+  /** Tail-pruning mark: Number of namespace declaration elements in use. Null if not a shared DTM.
+   * %REVIEW% I don't think number of NS sets is ever different from number
+   * of NS elements. We can probabably reduce these to a single stack and save
+   * some storage.
+   */
+  IntStack mark_nsdeclelem_size=null;
+    
   /**
    * Construct a SAX2DTM object ready to be constructed from SAX2
-   * ContentHandler events.
+   * ContentHandler events. DTMs produced by this constructor do _NOT_
+   * support shared mode.
    *
    * @param mgr The DTMManager who owns this DTM.
    * @param source the JAXP 1.1 Source object for this DTM.
@@ -261,8 +315,10 @@ public class SAX2DTM extends DTMDefaultBaseIterators
           
     // %REVIEW%  Initial size pushed way down to reduce weight of RTFs
     // (I'm not entirely sure 0 would work, so I'm playing it safe for now.)
+    // %REVIEW% Given shared RTF DTM, we might be able to push this
+    // back up again...?
     //m_data = new SuballocatedIntVector(doIndexing ? (1024*2) : 512, 1024);
-    m_data = new SuballocatedIntVector(32, 1024);
+    m_data = new SuballocatedIntVector(32);
 
     m_data.addElement(0);   // Need placeholder in case index into here must be <0.
 
@@ -278,6 +334,57 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     m_sourceColumn = (m_useSourceLocationProperty) ?  new IntVector() : null; 
   }
 
+  /**
+   * Construct a SAX2DTM object ready to be constructed from SAX2
+   * ContentHandler events. DTMs produced by this constructor may support
+   * shared mode.
+   *
+   * @param mgr The DTMManager who owns this DTM.
+   * @param source the JAXP 1.1 Source object for this DTM.
+   * @param dtmIdentity The DTM identity ID for this DTM.
+   * @param whiteSpaceFilter The white space filter for this DTM, which may
+   *                         be null.
+   * @param xstringfactory XMLString factory for creating character content.
+   * @param doIndexing true if the caller considers it worth it to use 
+   *    indexing schemes. HOWEVER: Indexes may be suppressed if shared is
+   *    true, since they tend to be hard to prune efficiently.
+   * @param shared true if the caller may want to write multiple documents
+   *    into this DTM and prune them away again. This should be set true
+   *    only for Result-Tree-Fragment/Temporary-Tree DTMs.
+   */
+  public SAX2DTM(DTMManager mgr, Source source, int dtmIdentity,
+                 DTMWSFilter whiteSpaceFilter,
+                 XMLStringFactory xstringfactory,
+                 boolean doIndexing, boolean shared)
+  {
+  	// Normal construction. Note doIndexing forced false when shared is true.
+  	this(mgr, source, dtmIdentity, whiteSpaceFilter, xstringfactory,
+         doIndexing & !shared);
+         
+    m_isSharedDTM=shared;
+         
+    if(shared)
+    {
+		// NEVER track source locators for RTFs; they aren't meaningful. I think.
+		// (If we did track them, we'd need to tail-prune these too.)
+		m_useSourceLocationProperty=false; //org.apache.xalan.processor.TransformerFactoryImpl.m_source_location;
+		m_sourceSystemId =  null;
+		m_sourceLine = null;
+		m_sourceColumn = null;
+		
+		// Initialize data structures for tail-pruning
+		mark_size=new IntStack();
+		mark_data_size=new IntStack();
+		mark_char_size=new IntStack();
+		mark_doq_size=new IntStack();
+		mark_nsdeclset_size=new IntStack();
+		mark_nsdeclelem_size=new IntStack();
+		
+		// Safety-net, to help make sure we're using this as intended
+		m_currentDocumentNode=NULL;
+    }
+  }
+             
   /**
    * Get the data or qualified name for the given node identity.
    *
@@ -304,6 +411,32 @@ public class SAX2DTM extends DTMDefaultBaseIterators
         return m_dataOrQName.elementAt(identity);
     }
   }
+  
+  /**
+   * Given a node identifier, find the owning document node.  Unlike the DOM,
+   * this considers the owningDocument of a Document to be itself. Note that
+   * in shared DTMs this may be nonzero.
+   *
+   * @param nodeId the id of the node.
+   * @return int Node identifier of owning document, or the nodeId if it is
+   *             a Document.
+   */
+  protected int _documentRoot(int nodeIdentifier)
+  {
+  	if(nodeIdentifier==NULL) return NULL;
+  	
+  	if(!m_isSharedDTM)
+  		return 0;
+
+  	// Otherwise, shared DTM and we have to do this the slow way.
+    for(int parent=_parent(nodeIdentifier);
+    	parent!=NULL;
+    	nodeIdentifier=parent,parent=_parent(nodeIdentifier))
+    	;
+    
+    return nodeIdentifier;
+  }
+  
 
   /**
    * Ask the CoRoutine parser to doTerminate and clear the reference.
@@ -569,8 +702,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
 
     int expandedTypeID = getExpandedTypeID(nodeHandle);
-    // If just testing nonzero, no need to shift...
-    int namespaceID = m_expandedNameTable.getNamespaceID(expandedTypeID);                     
+    int namespaceID =  m_expandedNameTable.getNamespaceID(expandedTypeID);
 
     if (0 == namespaceID)
     {
@@ -617,8 +749,8 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   public String getNodeNameX(int nodeHandle)
   {
 
-    int expandedTypeID = getExpandedTypeID(nodeHandle);    
-    int namespaceID = m_expandedNameTable.getNamespaceID(expandedTypeID);                      
+    int expandedTypeID = getExpandedTypeID(nodeHandle);
+    int namespaceID =  m_expandedNameTable.getNamespaceID(expandedTypeID);
 
     if (0 == namespaceID)
     {
@@ -690,13 +822,13 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     identity += 1;
 
-    while (identity >= m_size)
-    {
-      if (null == m_incrementalSAXSource)
-        return DTM.NULL;
+    while (identity >= m_size && nextNode())
+    	;
 
-      nextNode();
-    }
+	// If we exited because nextNode ran off the end of the document,
+	// rather than because we found the node we needed, return null.
+	if(identity>=m_size)
+		return DTM.NULL;
 
     return identity;
   }
@@ -746,8 +878,13 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
   /**
    * This method should try and build one or more nodes in the table.
+   * 
+   * %OPT% When working with Xerces2, an incremental parsing step may not
+   * actually generate a SAX event that causes a node to be built. Our higher-
+   * level code is already looping to see if the desired node was obtained...
+   * but should we also be looping more tightly here?
    *
-   * @return The true if a next node is found or false if
+   * @return True if parsing proceeded normally or false if
    *         there are no more nodes.
    */
   protected boolean nextNode()
@@ -1103,6 +1240,12 @@ public class SAX2DTM extends DTMDefaultBaseIterators
         return getPrefix(qname, null);
       }
     }
+    else if (DTM.NAMESPACE_NODE == type)
+    {
+    	if(!"xmlns".equals(getLocalName(nodeHandle)))
+    		return "xmlns";
+    	// else return "".
+    }
 
     return "";
   }
@@ -1138,6 +1281,54 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     return DTM.NULL;
   }
+  
+  /**
+   * Given a DTM, find the owning document node. In the case of
+   * SAX2RTFDTM, which may contain multiple documents, this returns
+   * the <b>most recently started</b> document, or null if the DTM is
+   * empty or no document is currently under construction.
+   *
+   * %REVIEW% Should we continue to report the most recent after
+   * construction has ended? I think not, given that it may have been
+   * tail-pruned.
+   *
+   *  @param nodeHandle the id of the node.
+   *  @return int Node handle of Document node, or null if this DTM does not
+   *  contain an "active" document.
+   * */
+  public int getDocument()
+  {
+  	// %REVIEW% Would adding these lines affect speed, and if so which way?
+  	// if(!m_isSharedDTM)
+  	//	return m_dtmIdent.elementAt(0); // like DTMDefaultBase
+    return makeNodeHandle(m_currentDocumentNode);
+  }
+  
+  /**
+   * Given a node handle, find the owning document node, using DTM semantics
+   * (Document owns itself) rather than DOM semantics (Document has no owner).
+   *
+   * (I'm counting on the fact that getOwnerDocument() is implemented on top
+   * of this call, in the superclass, to avoid having to rewrite that one.
+   * Be careful if that code changes!)
+   *
+   * @param nodeHandle the id of the node.
+   * @return int Node handle of owning document
+   */
+  public int getDocumentRoot(int nodeHandle)
+  {
+  	if(!m_isSharedDTM)
+  		return getDocument();
+  	
+  	// If shared, we have to do it the hard way
+    for(int id=makeNodeIdentity(nodeHandle);
+		id!=NULL;
+		id=_parent(id))
+		if(_type(id)==DTM.DOCUMENT_NODE)
+  			return makeNodeHandle(id);
+
+    return DTM.NULL; // Safety net; should never happen
+  }
 
   /**
    * Return the public identifier of the external subset,
@@ -1171,8 +1362,13 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   public String getNamespaceURI(int nodeHandle)
   {
+  	int identity=makeNodeIdentity(nodeHandle);
+  	
+  	// DOM says all namespace nodes are in the namespace namespace.
+  	if (_type(identity) == NAMESPACE_NODE)
+  		return "http://www.w3.org/XML/1998/namespace";
 
-    return m_expandedNameTable.getNamespace(_exptype(makeNodeIdentity(nodeHandle)));
+    return m_expandedNameTable.getNamespace(_exptype(identity));
   }
 
   /**
@@ -1302,7 +1498,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    *
    * @return The prefix if there is one, or null.
    */
-  private String getPrefix(String qname, String uri)
+  protected String getPrefix(String qname, String uri)
   {
 
     String prefix;
@@ -1545,6 +1741,18 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   {
     if (DEBUG)
       System.out.println("startDocument");
+      
+    if(m_isSharedDTM)
+    {
+		// (Re)initialize the tree construction process
+		// %REVIEW% Slightly wasteful on the first document written to 
+		// the shared DTM, since these have already been allocated.
+		m_endDocumentOccured = false;
+		m_prefixMappings = new java.util.Vector();
+		m_contextIndexes = new IntStack();
+		m_parents = new IntStack();
+	    m_currentDocumentNode=m_size;
+    }
 
 		
     int doc = addNode(DTM.DOCUMENT_NODE,
@@ -1569,12 +1777,12 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     if (DEBUG)
       System.out.println("endDocument");
 
-		charactersFlush();
+	charactersFlush();
 
-    m_nextsib.setElementAt(NULL,0);
+    m_nextsib.setElementAt(NULL,m_currentDocumentNode);
 
-    if (m_firstch.elementAt(0) == NOTPROCESSED)
-      m_firstch.setElementAt(NULL,0);
+    if (m_firstch.elementAt(m_currentDocumentNode) == NOTPROCESSED)
+      m_firstch.setElementAt(NULL,m_currentDocumentNode);
 
     if (DTM.NULL != m_previous)
       m_nextsib.setElementAt(DTM.NULL,m_previous);
@@ -1583,6 +1791,15 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     m_prefixMappings = null;
     m_contextIndexes = null;
 
+	// This is debatable. Clearing it in shared DTMs does help keep
+	// us honest, by ensuring against using getDocument() in a situation
+	// where we aren't sure which document is being referred to.
+	// We _shouldn't_ clear it in non-shared DTMs, since -- at this time,
+	// anyway -- some of the start-up code assumes that getDocument() on the
+	// source document will work after the doc is closed.
+    if(!JJK_LEAVE_DOCUMENT_CURRENT && m_isSharedDTM)
+	    m_currentDocumentNode= NULL; // no longer open
+	    
     m_endDocumentOccured = true;
   }
 
@@ -1679,7 +1896,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     return false;
   }
 	
-	boolean m_pastFirstElement=false;
+	protected boolean m_pastFirstElement=false;
 
   /**
    * Receive notification of the start of an element.
@@ -2349,4 +2566,100 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     }
     return null;
   }
+  
+  /** "Tail-pruning" support for RTFs.
+   * 
+   * This function pushes information about the current size of the
+   * DTM's data structures onto a stack, for use by popRewindMark()
+   * (which see).
+   * 
+   * This will fail with null-pointer exceptions if called on a non-shared
+   * DTM. That's deliberate, since it's considered a severe coding error.
+   * 
+   * %REVIEW% I have no idea how to rewind m_elemIndexes. However,
+   * RTFs should not be indexed, so I can simply panic if that case
+   * arises. Hey, it works...
+   * */
+  public void pushRewindMark()
+  {
+    if(m_indexing || m_elemIndexes!=null) 
+      throw new java.lang.NullPointerException("Coding error; Don't try to mark/rewind an indexed DTM");
+
+    // Values from DTMDefaultBase
+    // %REVIEW% Can the namespace stack sizes ever differ? If not, save space!
+    mark_size.push(m_size);
+    mark_nsdeclset_size.push( (m_namespaceDeclSets==null) ? 0 : m_namespaceDeclSets.size() );
+    mark_nsdeclelem_size.push( (m_namespaceDeclSetElements==null) ? 0 : m_namespaceDeclSetElements.size() );
+    
+    // Values from SAX2DTM
+    mark_data_size.push(m_data.size());
+    mark_char_size.push(m_chars.size());
+    mark_doq_size.push(m_dataOrQName.size());	
+  }
+  
+  /** "Tail-pruning" support for RTFs.
+   * 
+   * This function pops the information previously saved by
+   * pushRewindMark (which see) and uses it to discard all nodes added
+   * to the DTM after that time. We expect that this will allow us to
+   * reuse storage more effectively.
+   * 
+   * This is _not_ intended to be called while a document is still being
+   * constructed -- only between endDocument and the next startDocument
+   * 
+   * %REVIEW% WARNING: This is the first use of some of the truncation
+   * methods.  If Xalan blows up after this is called, that's a likely
+   * place to check.
+   * 
+   * %REVIEW% Our original design for DTMs permitted them to share
+   * string pools.  If there any risk that this might be happening, we
+   * can _not_ rewind and recover the string storage. One solution
+   * might to assert that DTMs used for RTFs Must Not take advantage
+   * of that feature, but this seems excessively fragile. Another, much
+   * less attractive, would be to just let them leak... Nah.
+   * 
+   * This will fail with null-pointer exceptions if called on a non-shared
+   * DTM. That's deliberate, since it's considered a severe coding error.
+   * 
+   * @return true if and only if the pop completely emptied the
+   * RTF. That response is used when determining how to unspool
+   * RTF-started-while-RTF-open situations.
+   * */
+  public boolean popRewindMark()
+  {
+    boolean top=mark_size.empty();
+    
+    m_size=top ? 0 : mark_size.pop();
+    m_exptype.setSize(m_size);
+    m_firstch.setSize(m_size);
+    m_nextsib.setSize(m_size);
+    m_prevsib.setSize(m_size);
+    m_parent.setSize(m_size);
+
+    m_elemIndexes=null;
+
+    int ds= top ? 0 : mark_nsdeclset_size.pop();
+    if (m_namespaceDeclSets!=null)
+      m_namespaceDeclSets.setSize(ds);
+      
+    int ds1= top ? 0 : mark_nsdeclelem_size.pop();
+    if (m_namespaceDeclSetElements!=null)
+      m_namespaceDeclSetElements.setSize(ds1);
+  
+    // Values from SAX2DTM
+    m_data.setSize(top ? 0 : mark_data_size.pop());
+    m_chars.setLength(top ? 0 : mark_char_size.pop());
+    m_dataOrQName.setSize(top ? 0 : mark_doq_size.pop());
+
+    // Return true iff DTM now empty
+    return m_size==0;
+  }
+  
+  /** @return true if a DTM tree is currently under construction.
+   * */
+  public boolean isTreeIncomplete()
+  {
+  	return !m_endDocumentOccured;
+  	
+  }  
 }

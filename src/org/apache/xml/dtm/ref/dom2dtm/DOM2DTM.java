@@ -94,6 +94,9 @@ import org.apache.xalan.res.XSLMessages;
  * Note too that we do not currently attempt to track document
  * mutation. If you alter the DOM after wrapping DOM2DTM around it,
  * all bets are off.
+ * %REVIEW% We _could_ ask the DOM whether it supports mutation
+ * events, and if so use that to invalidate the DTM or at least
+ * toss a warning back into Xalan...
  * */
 public class DOM2DTM extends DTMDefaultBaseIterators
 {

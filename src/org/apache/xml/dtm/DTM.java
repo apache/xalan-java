@@ -57,6 +57,7 @@
 package org.apache.xml.dtm;
 
 import org.apache.xml.utils.XMLString;
+import org.apache.xpath.objects.*;
 
 import javax.xml.transform.SourceLocator;
 
@@ -192,9 +193,11 @@ public interface DTM
   public static final short NAMESPACE_NODE = 13;
   
   /**
-   * The number of valid nodetypes.
+   * The number of valid nodetypes. REMEMBER TO UPDATE THIS if you add more
+   * node types.
    */
   public static final short  NTYPES = 14;
+  
 
   // ========= DTM Implementation Control Functions. ==============
   // %TBD% RETIRED -- do via setFeature if needed. Remove from impls.
@@ -217,6 +220,7 @@ public interface DTM
    * @param value an <code>Object</code> value
    */
   public void setProperty(String property, Object value);
+  
 
   // ========= Document Navigation Functions =========
 
@@ -999,6 +1003,75 @@ public interface DTM
    * to shutdown any subsystem activity that may of been assoiated with
    * the active DTM Implementation.
    */
+  public void documentRelease();
+   
+   
+   /**
+    * EXPERIMENTAL XPath2 Support:
+    * 
+    * Query schema type name of a given node.
+    * 
+    * %REVIEW% Is this actually needed?
+    * 
+    * @param nodeHandle DTM Node Handle of Node to be queried
+    * @return null if no type known, else returns the expanded-QName (namespace URI
+    *	rather than prefix) of the type actually
+    *    resolved in the instance document. Note that this may be derived from,
+    *	rather than identical to, the type declared in the schema.
+    */
+   public String getSchemaTypeName(int nodeHandle);
+  	
+  /** 
+    * EXPERIMENTAL XPath2 Support:
+    * 
+	* Query schema type namespace of a given node.
+    * 
+    * %REVIEW% Is this actually needed?
+    * 
+    * @param nodeHandle DTM Node Handle of Node to be queried
+    * @return null if no type known, else returns the namespace URI
+    *	of the type actually resolved in the instance document. This may
+    * 	be null if the default/unspecified namespace was used.
+    *    Note that this may be derived from,
+    *	rather than identical to, the type declared in the schema.
+    */
+   public String getSchemaTypeNamespace(int nodeHandle);
 
-   public void documentRelease();
+  /** EXPERIMENTAL XPath2 Support: Query schema type localname of a given node.
+   * 
+   * %REVIEW% Is this actually needed?
+   * 
+   * @param nodeHandle DTM Node Handle of Node to be queried
+   * @return null if no type known, else returns the localname of the type
+   *    resolved in the instance document. Note that this may be derived from,
+   *	rather than identical to, the type declared in the schema.
+   */
+  public String getSchemaTypeLocalName(int nodeHandle);
+
+  /** EXPERIMENTAL XPath2 Support: Query whether node's type is derived from a specific type
+   * 
+   * @param nodeHandle DTM Node Handle of Node to be queried
+   * @param namespace String containing URI of namespace for the type we're intersted in
+   * @param localname String containing local name for the type we're intersted in
+   * @return true if node has a Schema Type which equals or is derived from 
+   *	the specified type. False if the node has no type or that type is not
+   * 	derived from the specified type.
+   */
+  public boolean isNodeSchemaType(int nodeHandle, String namespace, String localname);
+  
+  /** EXPERIMENTAL XPath2 Support: Retrieve the typed value(s), based on the schema
+   *  type.
+   * 
+   * @param nodeHandle DTM Node Handle of Node to be queried
+   * @return XSequence object containing one or more values and their type
+   * information. If no typed value is available, returns an empty sequence.
+   * */
+  public DTMSequence getTypedValue(int nodeHandle);
+
+  /** Query which DTMManager this DTM is currently being handled by.
+   * 
+   * @return a DTMManager, or null if this is a "stand-alone" DTM.
+   */
+  public DTMManager getManager();
+
 }

@@ -77,6 +77,11 @@ import java.util.Hashtable;
  * */
 public class ExpandedNameTable
 {
+  // A bit of a kluge... We want assign-only-once behavior for the
+  // schemaType field, and null is a legitimate value... so we need
+  // a cheap non-null singleton object to use as the not-yet-set flag.
+  // As it happens, almost anything will work...
+  static final Object UNKNOWN_SCHEMA_TYPE=Boolean.FALSE;    
 
   /** Probably a reference to static pool.     */
   private DTMStringPool m_locNamesPool;
@@ -282,12 +287,45 @@ public class ExpandedNameTable
     return (short)etype.nodetype;
   }
   
-  
+  /** Store the default schema datatype associated with this expanded
+      name.
+
+      @return true if the default has been set (or if the new value
+      matches the old one), false if the new doesn't match (meaning
+      you'd better record this as a per-node exception).
+  */
+  public boolean setSchemaType(int ExpandedNameID, Object schemaType)
+  {
+    ExtendedType et=(ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
+    if(et.schemaType==UNKNOWN_SCHEMA_TYPE)
+    {
+      et.schemaType=schemaType;
+      return true;
+    }
+    else if(et.schemaType==schemaType || 
+    	(et.schemaType!=null && et.schemaType.equals(schemaType)) )
+      return true;
+    else
+      return false;
+  }
+
+  /** @return the default schema datatype associated with this expanded
+      name, null if none has been bound OR if the type bound was itself
+      null.
+  */
+  public Object getSchemaType(int ExpandedNameID)
+  {
+    ExtendedType et=(ExtendedType)m_extendedTypes.elementAt (ExpandedNameID);
+    return (et.schemaType==UNKNOWN_SCHEMA_TYPE) ? null : et.schemaType;
+  }
+
   /**
    * Private class representing an extended type object 
    */
   private class ExtendedType
   {
+    protected Object schemaType=UNKNOWN_SCHEMA_TYPE;
+    
     protected int nodetype;
     protected String namespace;
     protected String localName;

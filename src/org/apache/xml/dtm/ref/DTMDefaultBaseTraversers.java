@@ -195,9 +195,8 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
     }
 
     if (null == traverser)
-      throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_AXIS_TRAVERSER_NOT_SUPPORTED, new Object[]{Axis.names[axis]}));
-      // "Axis traverser not supported: "
-      //                       + Axis.names[axis]);
+      throw new DTMException("Axis traverser not supported: "
+                             + Axis.names[axis]);
 
     m_traversers[axis] = traverser;
 
@@ -1257,7 +1256,8 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 			// compute in ID space
       int subtreeRootIdent = makeNodeIdentity(context);
 
-      for (current = makeNodeIdentity(current) - 1; current >= 0; current--)
+      int doc=_documentRoot(subtreeRootIdent);
+      for (current = makeNodeIdentity(current) - 1; current >= doc; current--)
       {
         short type = _type(current);
 
@@ -1286,7 +1286,8 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 			// Compute in ID space
       int subtreeRootIdent = makeNodeIdentity(context);
 
-      for (current = makeNodeIdentity(current) - 1; current >= 0; current--)
+      int doc=_documentRoot(subtreeRootIdent);
+      for (current = makeNodeIdentity(current) - 1; current >= doc; current--)
       {
         int exptype = m_exptype.elementAt(current);
 
@@ -1321,7 +1322,8 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 			// Compute in ID space
       int subtreeRootIdent = makeNodeIdentity(context );
 
-      for (current = makeNodeIdentity(current) - 1; current >= 0; current--)
+      int doc=_documentRoot(subtreeRootIdent);
+      for (current = makeNodeIdentity(current) - 1; current >= doc; current--)
       {
         short type = _type(current);
 
@@ -1349,7 +1351,8 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
 			// Compute in ID space
       int subtreeRootIdent = makeNodeIdentity(context);
 
-      for (current = makeNodeIdentity(current) - 1; current >= 0; current--)
+      int doc=_documentRoot(subtreeRootIdent);
+      for (current = makeNodeIdentity(current) - 1; current >= doc; current--)
       {
         int exptype = m_exptype.elementAt(current);
 
@@ -1486,7 +1489,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     public int first(int context)
     {
-      return getDocument();
+      return getDocumentRoot(context);
     }
 
     /**
@@ -1499,7 +1502,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     public int first(int context, int expandedTypeID)
     {
-      return (getExpandedTypeID(getDocument()) == expandedTypeID)
+      return (getExpandedTypeID(getDocumentRoot(context)) == expandedTypeID)
              ? context : next(context, context, expandedTypeID);
     }
 
@@ -1619,8 +1622,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     protected int getSubtreeRoot(int handle)
     {
-			// %REVIEW% Shouldn't this always be 0?
-      return makeNodeIdentity(getDocument());
+      return _documentRoot(makeNodeIdentity(handle));
     }
 
     /**
@@ -1632,7 +1634,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     public int first(int context)
     {
-      return getDocument();
+      return getDocumentRoot(context);
     }
     
     /**
@@ -1653,7 +1655,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
     {
       if (isIndexed(expandedTypeID))
       {
-        int identity = 0;
+        int identity = _documentRoot(makeNodeIdentity(context));
         int firstPotential = getFirstPotential(identity);
 
         return makeNodeHandle(getNextIndexed(identity, firstPotential, expandedTypeID));
@@ -1681,7 +1683,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     protected int getFirstPotential(int identity)
     {
-      return _firstch(0);
+      return _firstch(_documentRoot(identity));
     }
 
     /**
@@ -1691,7 +1693,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     protected int getSubtreeRoot(int handle)
     {
-      return 0;
+      return _documentRoot(makeNodeIdentity(handle));
     }
 
     /**
@@ -1703,7 +1705,7 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
      */
     public int first(int context)
     {
-      return makeNodeHandle(_firstch(0));
+      return makeNodeHandle(_firstch(_documentRoot(makeNodeIdentity(context))));
     }
     
     /**
@@ -1724,13 +1726,13 @@ public abstract class DTMDefaultBaseTraversers extends DTMDefaultBase
     {
       if (isIndexed(expandedTypeID))
       {
-        int identity = 0; 
+        int identity = _documentRoot(makeNodeIdentity(context)); 
         int firstPotential = getFirstPotential(identity);
 
         return makeNodeHandle(getNextIndexed(identity, firstPotential, expandedTypeID));
       }
 
-      int root = getDocument(); 
+      int root = getDocumentRoot(context); 
       return next(root, root, expandedTypeID);
     }
     

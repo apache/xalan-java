@@ -1373,4 +1373,162 @@ public class FastStringBuffer
     source.m_chunkSize = 1 << (source.m_chunkBits);
     source.m_chunkMask = source.m_chunkSize - 1;
   }
+
+	/** Support for DTM2XNI. Rather than push XNI awareness into this class,
+	 * (as we did for SAX in sendSAX*), yield the content in a reasonably
+	 * efficient manner for the caller to pass along.
+	 * */
+  public CharacterBlockEnumeration enumerateCharacterBlocks(int start, int length)
+  {
+  	return new FSBCharacterBlockEnumeration(start,length);
+  }
+  
+	/** Support for DTM2XNI. Rather than push XNI awareness into this class,
+	 * (as we did for SAX in sendSAX*), yield the content in a reasonably
+	 * efficient manner for the caller to pass along.
+	 * 
+	 * %BUG% %REVIEW% Currently does _NOT_ support inner FSBs.
+	 * We need to either rearchitect those or get rid of 'em...
+	 * */
+  protected class FSBCharacterBlockEnumeration
+  extends CharacterBlockEnumeration
+  {
+  	int f_remaining;
+  	int f_chunk;
+  	
+  	FSBCharacterBlockEnumeration(int start,int length)
+  	{
+  		if(m_innerFSB!=null)
+			throw new UnsupportedOperationException("Can't handle innerFSBs yet");
+  		
+  		int l=length();
+  		if(start>l)
+  		{
+  			// Don't start off end -- take that as empty
+  			_start=_length=f_remaining=0;
+  			_chars=m_array[0];
+  		}
+  		else
+  		{
+  			// Don't run off end -- truncate to fit
+	  		l-=start;
+ 	 		f_remaining = (l>length) ? length : l;
+ 	 		
+ 	 		// Set up first chunk
+ 	 		f_chunk=start>>>m_chunkBits;
+ 	 		
+ 	 		_start=start & m_chunkMask;
+ 	 		
+ 	 		l=m_chunkSize-start;
+ 	 		_length = (l>f_remaining) ? f_remaining : l;
+ 	 		
+  			f_remaining -= _length;
+  		}
+  	}
+
+  	/** Not supported in this implementaton */
+	public FSBCharacterBlockEnumeration()
+	{
+		throw new UnsupportedOperationException("Not supported in this implementaton");
+	}
+	
+  	/** Not supported in this implementaton */
+	public FSBCharacterBlockEnumeration(String s)
+	{
+		throw new UnsupportedOperationException("Not supported in this implementaton");
+	}
+	
+  	/** Not supported in this implementaton */
+	public FSBCharacterBlockEnumeration(String s, int start, int length)
+	{
+		throw new UnsupportedOperationException("Not supported in this implementaton");
+	}
+	
+  	/** Not supported in this implementaton */
+	public FSBCharacterBlockEnumeration(char[] ch)
+	{
+		throw new UnsupportedOperationException("Not supported in this implementaton");
+	}
+
+  	/** Not supported in this implementaton */
+	public FSBCharacterBlockEnumeration(char[] ch, int start, int length)
+	{
+		throw new UnsupportedOperationException("Not supported in this implementaton");
+	}
+	
+	/** @return true if another character block can be accessed by calling
+	 * nextElement()
+	 */
+	public boolean hasMoreElements()
+	{
+		return f_remaining>0;
+	}
+	
+	/** Advance to the next character block. 
+	 * 
+	 * @returns either this CharacterBlockEnumeration object (as a
+	 * transient accessor to the "element") or null if no more elements are available.
+	 * This is a bit of a kluge, but it allows us to claim that we
+	 * implement the Java Enumeration interface if we want to do so, and
+	 * it seems to be as good or bad as any other return value.
+	 * */
+	public Object nextElement()
+	{
+		if(f_remaining==0)
+			return null;
+			
+		// Next chunk
+		++f_chunk;
+		_start=0;
+ 		_length = (m_chunkSize>f_remaining) ? f_remaining : m_chunkSize;
+		f_remaining -= _length;
+		return this;
+	}
+	
+	
+	/** @return the starting offset in the current block's character array
+	 * */
+	public int getStart()
+	{
+		return _start;
+	}
+
+	/** @return the length of the the current block
+	 * */
+	public int getLength()
+	{
+		return _length;
+	}
+
+	/** 
+	 * @return the current block's character array. Data will begin at
+	 * offset {start}.
+	 * */
+	public char[] getChars()
+	{
+		char[] ch=(_length>0)
+			? m_array[f_chunk] 
+			: EMPTY;
+		return ch;
+	}
+
+	/** @param target A char[] to be copied into. If a buffer is not supplied
+	 * we will create one.
+	 *
+	 * @param targetStart Offset in the target at which copying should begin.
+	 * 
+	 * @return the buffer, filled with {length} characters starting at offset
+	 * {targetStart}. Characters before or after that block should be unaffected.
+	 * */
+	public char[] getChars(char[] target, int targetStart)
+	{
+		if(_length>0)
+		{
+			System.arraycopy(m_array[f_chunk],_start,target,targetStart,_length);
+		}
+			
+		return target;
+	}
+  	
+  }
 }

@@ -54,6 +54,7 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>. 
  *
+ * $Id$ 
  */
 
 package org.apache.xml.utils.synthetic;

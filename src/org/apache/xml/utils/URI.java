@@ -91,6 +91,7 @@ import org.apache.xalan.res.XSLMessages;
  * default port for a specific scheme). Rather, it only knows the
  * grammar and basic set of operations that can be applied to a URI.
  *
+ * @version  $Id$
  *
  */
 public class URI implements Serializable
