@@ -292,7 +292,6 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
       // Should be able to get this from the iterator but there must be a bug.
       DTM dtm = xctxt.getDTM(sourceNode);
-      int docID = sourceNode & DTMManager.IDENT_DTM_DEFAULT;
       
       int argsFrame = -1;
       if(nParams > 0)
@@ -319,10 +318,9 @@ public class ElemApplyTemplates extends ElemCallTemplate
         currentNodes[currentNodePos] = child;
         currentExpressionNodes[currentExpressionNodePos] = child;
 
-        if((child & DTMManager.IDENT_DTM_DEFAULT) != docID)
+        if(xctxt.getDTM(child) != dtm)
         {
           dtm = xctxt.getDTM(child);
-          docID = sourceNode & DTMManager.IDENT_DTM_DEFAULT;
         }
         
         final int exNodeType = dtm.getExpandedTypeID(child);

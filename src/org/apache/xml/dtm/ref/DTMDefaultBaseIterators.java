@@ -1183,7 +1183,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
 
       if (_isRestartable)
       {
-        node = node & m_mask;
+        node = makeNodeIdentity(node);
 
         // iterator is not a clone
         int parent, index;
@@ -1229,7 +1229,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
 
       if ((_sp >= 0) && (node < _stack[_sp]))
       {
-        return returnNode((_currentNode = node) | m_dtmIdent);
+        return returnNode(makeNodeHandle(_currentNode = node));
       }
       else
       {
@@ -1615,7 +1615,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
 
       if (_isRestartable)
       {
-        node = node & m_mask;
+        node = makeNodeIdentity(node);
         _startNode = node;
 
         if (_includeSelf)
@@ -1667,7 +1667,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
         if (ATTRIBUTE_NODE == type || NAMESPACE_NODE == type)
           continue;
 
-        return returnNode(node | m_dtmIdent);  // make handle.
+        return returnNode(makeNodeHandle(node));  // make handle.
       }
     }
   }  // end of DescendantIterator
@@ -1743,7 +1743,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
 
       while ((node = super.next()) != END)
       {
-        node = (node & m_mask);
+        node = makeNodeIdentity(node);
 
         int parent = _parent(node);
         int child = _firstch(parent);

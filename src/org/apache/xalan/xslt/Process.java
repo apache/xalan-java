@@ -554,7 +554,7 @@ public class Process
           tfactory.setAttribute
             ("http://xml.apache.org/xalan/features/optimize", 
              java.lang.Boolean.FALSE);
-	}
+				}
         else
           System.err.println(
             XSLMessages.createMessage(

@@ -524,15 +524,18 @@ public abstract class DTMManager
    * files which use it... including the IDKey testcases.
    *
    * (FuncGenerateKey currently uses the node identifier directly and
-   * thus is sensitive to its format. The IDKEY results will still be
+   * thus is affected when this changes. The IDKEY results will still be
    * _correct_ (presuming no other breakage), but simple equality
    * comparison against the previous "golden" files will probably
-   * complain.)  */
-  public static final int IDENT_DTM_NODE_BITS = 22;
+   * complain.)
+   * */
+  public static final int IDENT_DTM_NODE_BITS = 16;
     
 
   /** When this bitmask is ANDed with a DTM node handle number, the result
-   * is the node's index number within that DTM.
+   * is the low bits of the node's index number within that DTM. To obtain
+   * the high bits, add the DTM ID portion's offset as assigned in the DTM 
+   * Manager.
    */
   public static final int IDENT_NODE_DEFAULT = (1<<IDENT_DTM_NODE_BITS)-1;
 

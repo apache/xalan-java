@@ -213,13 +213,28 @@ public class DOM2DTM extends DTMDefaultBaseIterators
                         int previousSibling, int forceNodeType)
   {
     int nodeIndex = m_nodes.size();
-    // Report DTM overflow
-    if(nodeIndex>DTMManager.IDENT_NODE_DEFAULT)
+
+    // Have we overflowed a DTM Identity's addressing range?
+    if(m_dtmIdent.size() == (nodeIndex>>>DTMManager.IDENT_DTM_NODE_BITS))
     {
-      // %REVIEW% Wrong error message, but I've been told we're trying
-      // not to add messages right not for I18N reasons.
-      // %REVIEW% Should this be a Fatal Error?
-      error(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DTMIDS_AVAIL, null));//"No more DTM IDs are available";
+      try
+      {
+        if(m_mgr==null)
+          throw new ClassCastException();
+                                
+                                // Handle as Extended Addressing
+        DTMManagerDefault mgrD=(DTMManagerDefault)m_mgr;
+        int id=mgrD.getFirstFreeDTMID();
+        mgrD.addDTM(this,id,nodeIndex);
+        m_dtmIdent.addElement(id<<DTMManager.IDENT_DTM_NODE_BITS);
+      }
+      catch(ClassCastException e)
+      {
+        // %REVIEW% Wrong error message, but I've been told we're trying
+        // not to add messages right not for I18N reasons.
+        // %REVIEW% Should this be a Fatal Error?
+        error(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DTMIDS_AVAIL, null));//"No more DTM IDs are available";
+      }
     }
 
     m_size++;
@@ -378,7 +393,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
                 if(null != m_wsfilter)
                 {
                   short wsv =
-                    m_wsfilter.getShouldStripSpace(m_last_parent|m_dtmIdent,this);
+                    m_wsfilter.getShouldStripSpace(makeNodeHandle(m_last_parent),this);
                   boolean shouldStrip = (DTMWSFilter.INHERIT == wsv) 
                     ? getShouldStripWhitespace() 
                     : (DTMWSFilter.STRIP == wsv);
@@ -616,7 +631,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
   public Node getNode(int nodeHandle)
   {
 
-    int identity = nodeHandle & m_mask;
+    int identity = makeNodeIdentity(nodeHandle);
 
     return (Node) m_nodes.elementAt(identity);
   }
@@ -685,7 +700,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
         for (; i < len; i++)
         {
           if (m_nodes.elementAt(i) == node)
-            return i | m_dtmIdent;         
+            return makeNodeHandle(i);
         }
 
         isMore = nextNode();
@@ -774,7 +789,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     {
 
       // Assume that attributes immediately follow the element.
-      int identity = nodeHandle & m_mask;
+      int identity = makeNodeIdentity(nodeHandle);
 
       while (DTM.NULL != (identity = getNextNodeIdentity(identity)))
       {
@@ -792,7 +807,7 @@ public class DOM2DTM extends DTMDefaultBaseIterators
           String nodelocalname = node.getLocalName();
 
           if (nodeuri.equals(namespaceURI) && name.equals(nodelocalname))
-            return identity | m_dtmIdent;
+            return makeNodeHandle(identity);
         }
         else if (DTM.NAMESPACE_NODE != type)
         {

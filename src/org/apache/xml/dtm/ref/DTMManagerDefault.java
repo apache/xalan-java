@@ -103,19 +103,88 @@ public class DTMManagerDefault extends DTMManager
 {
 
   /**
-   * Vector of DTMs that this manager manages.
+   * Map from DTM identifier numbers to DTM objects that this manager manages.
+   * One DTM may have several prefix numbers, if extended node indexing
+   * is in use; in that case, m_dtm_offsets[] will used to control which
+   * prefix maps to which section of the DTM.
+   * 
+   * This array grows as necessary; see addDTM().
+   * 
+   * %REVIEW% Could use a Fast...Vector approach. Growth is uncommon,
+   * so I'm not worrying about it.
    */
-  protected DTM m_dtms[] = new DTM[IDENT_MAX_DTMS];
+  protected DTM m_dtms[] = new DTM[256];
+	
+	/** Map from DTM identifier numbers to offsets. For small DTMs with a 
+	 * single identifier, this will always be 0. In extended addressing, where
+	 * additional identifiers are allocated to access nodes beyond the range of
+	 * a single Node Handle, this table is used to map the handle's node field
+	 * into the actual node identifier.
+   * 
+   * This array grows as necessary; see addDTM().
+   * 
+   * %REVIEW% Could use a FastIntVector approach. Growth is uncommon,
+   * so I'm not worrying about it.
+	 */
+	protected int m_dtm_offsets[] = new int[256];
 
+  /**
+   * Add a DTM to the DTM table. This convenience call adds it as the 
+   * "base DTM ID", with offset 0. The other version of addDTM should 
+   * be used if you want to add "extended" DTM IDs with nonzero offsets.
+   *
+   * @param dtm Should be a valid reference to a DTM.
+   * @param id Integer DTM ID to be bound to this DTM
+   */
+  public void addDTM(DTM dtm, int id) {	addDTM(dtm,id,0); }
+
+	
   /**
    * Add a DTM to the DTM table.
    *
    * @param dtm Should be a valid reference to a DTM.
+   * @param id Integer DTM ID to be bound to this DTM.
+   * @param offset Integer addressing offset. The internal DTM Node ID is
+   * obtained by adding this offset to the node-number field of the 
+   * public DTM Handle. For the first DTM ID accessing each DTM, this is 0;
+   * for extended addressing it will be a multiple of 1<<IDENT_DTM_NODE_BITS.
    */
-  public void addDTM(DTM dtm, int id)
+  public void addDTM(DTM dtm, int id, int offset)
   {
+		if(id>=IDENT_MAX_DTMS)
+		{
+			// TODO: %REVIEW% Not really the right error message.
+	    throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DTMIDS_AVAIL, null)); //"No more DTM IDs are available!");			 
+		}
+		
+		// We used to just allocate the array size to IDENT_MAX_DTMS.
+		// But we expect to increase that to 16 bits, and I'm not willing
+		// to allocate that much space unless needed. We could use one of our
+		// handy-dandy Fast*Vectors, but this will do for now.
+		// %REVIEW%
+		int oldlen=m_dtms.length;
+		if(oldlen<=id)
+		{
+			// Various growth strategies are possible. I think we don't want 
+			// to over-allocate excessively, and I'm willing to reallocate
+			// more often to get that. See also Fast*Vector classes.
+			//
+			// %REVIEW% Should throw a more diagnostic error if we go over the max...
+			int newlen=Math.min((id+256),IDENT_MAX_DTMS);
+
+			DTM new_m_dtms[] = new DTM[newlen];
+			System.arraycopy(m_dtms,0,new_m_dtms,0,oldlen);
+			m_dtms=new_m_dtms;
+			int new_m_dtm_offsets[] = new int[newlen];
+			System.arraycopy(m_dtm_offsets,0,new_m_dtm_offsets,0,oldlen);
+			m_dtm_offsets=new_m_dtm_offsets;
+		}
+		
     m_dtms[id] = dtm;
+		m_dtm_offsets[id]=offset;
     dtm.documentRegistration();
+		// The DTM should have been told who its manager was when we created it.
+		// Do we need to allow for adopting DTMs _not_ created by this manager?
   }
 
   /**
@@ -131,7 +200,7 @@ public class DTMManagerDefault extends DTMManager
         return i;
       }
     }
-    throw new DTMException(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DTMIDS_AVAIL, null)); //"No more DTM IDs are available!");
+		return n; // count on addDTM() to throw exception if out of range
   }
 
   /**
@@ -193,7 +262,7 @@ public class DTMManagerDefault extends DTMManager
       DOM2DTM dtm = new DOM2DTM(this, (DOMSource) source, documentID,
                                 whiteSpaceFilter, xstringFactory, doIndexing);
 
-      addDTM(dtm, dtmPos);
+      addDTM(dtm, dtmPos, 0);
 
 //      if (DUMPTREE)
 //      {
@@ -249,7 +318,7 @@ public class DTMManagerDefault extends DTMManager
 
         // Go ahead and add the DTM to the lookup table.  This needs to be
         // done before any parsing occurs.
-        addDTM(dtm, dtmPos);
+        addDTM(dtm, dtmPos, 0);
 
         boolean haveXercesParser =
           (null != reader)
@@ -422,8 +491,14 @@ public class DTMManagerDefault extends DTMManager
       // subtree, but that's going to entail additional work
       // checking more DTMs... and getHandleFromNode is not a
       // cheap operation in most implementations.
-      // [I had to change this to look forward... sorry.  -sb]
-      int max = m_dtms.length;
+			//
+			// TODO: %REVIEW% If extended addressing, we may recheck a DTM
+			// already examined. Ouch. But with the increased number of DTMs,
+			// scanning back to check this is painful. 
+			// POSSIBLE SOLUTIONS: 
+			//   Generate a list of _unique_ DTM objects?
+			//   Have each DTM cache last DOM node search?
+			int max = m_dtms.length;
       for(int i = 0; i < max; i++)
         {
           DTM thisDTM=m_dtms[i];
@@ -545,12 +620,11 @@ public class DTMManagerDefault extends DTMManager
   }
 
   /**
-   * NEEDSDOC Method getDTM
+   * Return the DTM object containing a representation of this node.
    *
+   * @param nodeHandle DTM Handle indicating which node to retrieve
    *
-   * NEEDSDOC @param nodeHandle
-   *
-   * NEEDSDOC (getDTM) @return
+   * @return a reference to the DTM object containing this node.
    */
   public DTM getDTM(int nodeHandle)
   {
@@ -562,32 +636,41 @@ public class DTMManagerDefault extends DTMManager
     catch(java.lang.ArrayIndexOutOfBoundsException e)
     {
       if(nodeHandle==DTM.NULL)
-	return null;		// Accept as a special case.
+				return null;		// Accept as a special case.
       else
-	throw e;		// Programming error; want to know about it.
+				throw e;		// Programming error; want to know about it.
     }    
   }
 
   /**
-   * Given a DTM, find it's ID number in the DTM list.
+   * Given a DTM, find the ID number in the DTM tables which addresses
+   * the start of the document. If extended addressing is in use, other
+   * DTM IDs may also be assigned to this DTM.
    *
+   * @param dtm The DTM which (hopefully) contains this node.
    *
-   * @param dtm The DTM reference in question.
-   *
-   * @return The ID, or -1 if not found in the list.
+   * @return The ID, or -1 if the DTM doesn't belong to this manager.
    */
   public int getDTMIdentity(DTM dtm)
   {
-
-    // A backwards search should normally be the fastest.
-    // [But we can't do it... sorry.  -sb]
+		// Shortcut using DTMDefaultBase's extension hooks
+		// %REVIEW% Should the lookup be part of the basic DTM API?
+		if(dtm instanceof DTMDefaultBase)
+		{
+			DTMDefaultBase dtmdb=(DTMDefaultBase)dtm;
+			if(dtmdb.getManager()==this)
+				return dtmdb.getDTMIDs().elementAt(0);
+			else
+				return -1;
+		}
+				
     int n = m_dtms.length;
 
     for (int i = 0; i < n; i++)
     {
       DTM tdtm = m_dtms[i];
 
-      if (tdtm == dtm)
+      if (tdtm == dtm && m_dtm_offsets[i]==0)
         return i;
     }
 
@@ -595,13 +678,19 @@ public class DTMManagerDefault extends DTMManager
   }
 
   /**
-   * NEEDSDOC Method release
+   * Release the DTMManager's reference(s) to a DTM, making it unmanaged.
+   * This is typically done as part of returning the DTM to the heap after
+   * we're done with it.
    *
+   * @param dtm the DTM to be released.
+   * 
+   * @param shouldHardDelete If false, this call is a suggestion rather than an
+   * order, and we may not actually release the DTM. This is intended to 
+   * support intelligent caching of documents... which is not implemented
+   * in this version of the DTM manager.
    *
-   * NEEDSDOC @param dtm
-   * NEEDSDOC @param shouldHardDelete
-   *
-   * NEEDSDOC (release) @return
+   * @return true if the DTM was released, false if shouldHardDelete was set
+   * and we decided not to.
    */
   public boolean release(DTM dtm, boolean shouldHardDelete)
   {
@@ -621,12 +710,28 @@ public class DTMManagerDefault extends DTMManager
       ((SAX2DTM) dtm).clearCoRoutine();
     }
 
-    int i = getDTMIdentity(dtm);
-
-    if (i >= 0)
-    {
-      m_dtms[i] = null;
-    }
+		// Multiple DTM IDs maybe assigned to a single DTM. 
+		// The Right Answer is to ask which (if it supports
+		// extension, the DTM will need a list anyway). The 
+		// Wrong Answer, applied if the DTM can't help us,
+		// is to linearly search them all; this may be very
+		// painful.
+		//
+		// %REVIEW% Should the lookup move up into the basic DTM API?
+		if(dtm instanceof DTMDefaultBase)
+		{
+			org.apache.xml.utils.SuballocatedIntVector ids=((DTMDefaultBase)dtm).getDTMIDs();
+			for(int i=ids.size()-1;i>=0;--i)
+				m_dtms[ids.elementAt(i)>>DTMManager.IDENT_DTM_NODE_BITS]=null;
+		}
+		else
+		{
+			int i = getDTMIdentity(dtm);
+		  if (i >= 0)
+			{
+				m_dtms[i] = null;
+			}
+		}
 
     dtm.documentRelease();
     return true;
@@ -736,5 +841,4 @@ public class DTMManagerDefault extends DTMManager
   {
     return m_expandedNameTable;
   }
-
 }

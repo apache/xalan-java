@@ -440,7 +440,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
           throws SAXException
   {
 
-    int identity = nodeHandle & m_mask;
+    int identity = makeNodeIdentity(nodeHandle);
     int type = _type(identity);
 
     if (isTextType(type))
@@ -468,7 +468,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
         while (DTM.NULL != identity && (_level(identity) > level))
         {
-          type = getNodeType(identity);
+          type = _type(identity);
 
           if (isTextType(type))
           {
@@ -555,7 +555,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     }
     else
     {
-      int qnameIndex = m_dataOrQName.elementAt(nodeHandle & m_mask);
+      int qnameIndex = m_dataOrQName.elementAt(makeNodeIdentity(nodeHandle));
 
       if (qnameIndex < 0)
       {
@@ -593,7 +593,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     }
     else
     {
-      int qnameIndex = m_dataOrQName.elementAt(nodeHandle & m_mask);
+      int qnameIndex = m_dataOrQName.elementAt(makeNodeIdentity(nodeHandle));
 
       if (qnameIndex < 0)
       {
@@ -812,14 +812,29 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     // Common to all nodes:
     int nodeIndex = m_size++;
 
-    // Report DTM overflow
-    if(nodeIndex>DTMManager.IDENT_NODE_DEFAULT)
+    // Have we overflowed a DTM Identity's addressing range?
+    if(m_dtmIdent.size() == (nodeIndex>>>DTMManager.IDENT_DTM_NODE_BITS))
     {
-      // %REVIEW% Wrong error message, but I've been told we're trying
-      // not to add messages right not for I18N reasons.
-      // %REVIEW% Should this be a Fatal Error?
-      error(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DTMIDS_AVAIL, null));//"No more DTM IDs are available";
+      try
+      {
+        if(m_mgr==null)
+          throw new ClassCastException();
+                                
+                                // Handle as Extended Addressing
+        DTMManagerDefault mgrD=(DTMManagerDefault)m_mgr;
+        int id=mgrD.getFirstFreeDTMID();
+        mgrD.addDTM(this,id,nodeIndex);
+        m_dtmIdent.addElement(id<<DTMManager.IDENT_DTM_NODE_BITS);
+      }
+      catch(ClassCastException e)
+      {
+        // %REVIEW% Wrong error message, but I've been told we're trying
+        // not to add messages right not for I18N reasons.
+        // %REVIEW% Should this be a Fatal Error?
+        error(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DTMIDS_AVAIL, null));//"No more DTM IDs are available";
+      }
     }
+
     m_firstch.addElement(canHaveFirstChild ? NOTPROCESSED : DTM.NULL);
     m_nextsib.addElement(NOTPROCESSED);
     m_prevsib.addElement(previousSibling);
@@ -863,8 +878,8 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   public String getNodeValue(int nodeHandle)
   {
 
-    int identity = nodeHandle & m_mask;
-    int type = getNodeType(identity);
+    int identity = makeNodeIdentity(nodeHandle);
+    int type = _type(identity);
 
     if (isTextType(type))
     {
@@ -904,7 +919,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   public String getLocalName(int nodeHandle)
   {
-    return m_expandedNameTable.getLocalName(_exptype(nodeHandle & m_mask));
+    return m_expandedNameTable.getLocalName(_exptype(makeNodeIdentity(nodeHandle)));
   }
 
   /**
@@ -1002,7 +1017,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   public String getPrefix(int nodeHandle)
   {
 
-    int identity = nodeHandle & m_mask;
+    int identity = makeNodeIdentity(nodeHandle);
     int type = getNodeType(identity);
 
     if (DTM.ELEMENT_NODE == type)
@@ -1100,7 +1115,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   public String getNamespaceURI(int nodeHandle)
   {
 
-    return m_expandedNameTable.getNamespace(_exptype(nodeHandle & m_mask));
+    return m_expandedNameTable.getNamespace(_exptype(makeNodeIdentity(nodeHandle)));
   }
 
   /**
@@ -1115,8 +1130,8 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   public XMLString getStringValue(int nodeHandle)
   {
 
-    int identity = nodeHandle & m_mask;
-    int type = getNodeType(identity);
+    int identity = makeNodeIdentity(nodeHandle);
+    int type = _type(identity);
 
     if (isTextType(type))
     {
@@ -1140,7 +1155,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
         while (DTM.NULL != identity && (_level(identity) > level))
         {
-          type = getNodeType(identity);
+          type = _type(identity);
 
           if (isTextType(type))
           {
@@ -1206,7 +1221,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       intObj = (Integer) m_idAttributes.get(elementId);
 
       if (null != intObj)
-        return intObj.intValue() | m_dtmIdent;
+        return makeNodeHandle(intObj.intValue());
 
       if (!isMore || m_endDocumentOccured)
         break;
@@ -1743,7 +1758,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     if (null != m_wsfilter)
     {
-      short wsv = m_wsfilter.getShouldStripSpace(elemNode | m_dtmIdent, this);
+      short wsv = m_wsfilter.getShouldStripSpace(makeNodeHandle(elemNode), this);
       boolean shouldStrip = (DTMWSFilter.INHERIT == wsv)
                             ? getShouldStripWhitespace()
                             : (DTMWSFilter.STRIP == wsv);
