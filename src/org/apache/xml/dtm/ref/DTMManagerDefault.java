@@ -117,7 +117,7 @@ import org.apache.xalan.res.XSLMessages;
  * */
 public class DTMManagerDefault extends DTMManager
 {
-  static final boolean JKESS_XNI_EXPERIMENT=true;
+  static final boolean JKESS_XNI_EXPERIMENT=false;
 
   /** Set this to true if you want a dump of the DTM after creation. */
   private static final boolean DUMPTREE = false;
@@ -350,12 +350,14 @@ public class DTMManagerDefault extends DTMManager
           dtm = new SAX2RTFDTM(this, source, documentID, whiteSpaceFilter,
                                xstringFactory, doIndexing);
         }
+        /******************************************************
         // EXPERIMENTAL 3/22/02
-        else if(JKESS_XNI_EXPERIMENT && m_incremental)
-        {
+        //else if(JKESS_XNI_EXPERIMENT && m_incremental)
+        {        	
           dtm = new XNI2DTM(this, source, documentID, whiteSpaceFilter,
                             xstringFactory, doIndexing);
         }
+        ********************************************************/
         else // Create the basic SAX2DTM.
         {
           dtm = new SAX2DTM(this, source, documentID, whiteSpaceFilter,
