@@ -1148,23 +1148,29 @@ public class Parser implements Constants, ContentHandler {
 	String string = new String(ch, start, length);
 	SyntaxTreeNode parent = (SyntaxTreeNode)_parentStack.peek();
 
+	if (string.length() == 0) return;
+
 	// If this text occurs within an <xsl:text> element we append it
 	// as-is to the existing text element
 	if (parent instanceof Text) {
-	    if (string.length() > 0) {
-		((Text)parent).setText(string);
-	    }
+	    ((Text)parent).setText(string);
+	    return;
 	}
-	// Ignore text nodes that occur directly under <xsl:stylesheet>
-	else if (parent instanceof Stylesheet) {
 
-	}
-	// Add it as a regular text node otherwise
-	else {
-	    if (string.trim().length() > 0) {
-		parent.addElement(new Text(string));
+	// Ignore text nodes that occur directly under <xsl:stylesheet>
+	if (parent instanceof Stylesheet) return;
+
+	SyntaxTreeNode bro = parent.lastChild();
+	if ((bro != null) && (bro instanceof Text)) {
+	    Text text = (Text)bro;
+	    if (!text.isTextElement()) {
+		text.setText(string);
+		return;
 	    }
 	}
+
+	// Add it as a regular text node otherwise
+	parent.addElement(new Text(string));
     }
 
     private String getTokenValue(String token) {

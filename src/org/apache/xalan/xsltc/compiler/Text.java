@@ -71,13 +71,17 @@ import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class Text extends Instruction {
+
     private String _text;
     private boolean _escaping = true;
+    private boolean _ignore = false;
+    private boolean _textElement = false;
 
     /**
      * Create a blank Text syntax tree node.
      */
     public Text() {
+	_textElement = true;
     }
 
     /**
@@ -117,10 +121,33 @@ final class Text extends Instruction {
 		
     public void parseContents(Parser parser) {
         final String str = getAttribute("disable-output-escaping");
-	if ((str != null) && (str.equals("yes"))) {
-	    _escaping = false;
-	}
+	if ((str != null) && (str.equals("yes"))) _escaping = false;
+
 	parseChildren(parser);
+
+	if (_text == null) {
+	    _ignore = true;
+	}
+	else if (_textElement) {
+	    if (_text.length() == 0) _ignore = true;
+	}
+	else if (getParent() instanceof LiteralElement) {
+	    LiteralElement element = (LiteralElement)getParent();
+	    String space = element.getAttribute("xml:space");
+	    if ((space == null) || (!space.equals("preserve")))
+		if (_text.trim().length() == 0) _ignore = true;
+	}
+	else {
+	    if (_text.trim().length() == 0) _ignore = true;
+	}
+    }
+
+    public void ignore() {
+	_ignore = true;
+    }
+
+    public boolean isTextElement() {
+	return _textElement;
     }
 
     protected boolean contextDependent() {
@@ -131,7 +158,7 @@ final class Text extends Instruction {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
-	if (_text != null && _text.length() > 0) {
+	if (!_ignore) {
 	    // Turn off character escaping if so is wanted.
 	    final int esc = cpg.addInterfaceMethodref(OUTPUT_HANDLER,
 						      "setEscaping", "(Z)Z");

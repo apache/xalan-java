@@ -708,6 +708,15 @@ public abstract class SyntaxTreeNode implements Constants {
     }
 
     /**
+     * Returns this element's last child
+     * @return The child node.
+     */
+    protected final SyntaxTreeNode lastChild() {
+	if (_contents.size() == 0) return null;
+	return (SyntaxTreeNode)_contents.lastElement();
+    }
+
+    /**
      * Displays the contents of this syntax tree node (to stdout).
      * This method is intended for debugging _only_, and should be overridden
      * by all syntax tree node implementations.

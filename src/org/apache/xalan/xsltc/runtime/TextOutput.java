@@ -124,7 +124,12 @@ public final class TextOutput implements TransletOutputHandler {
     private static final int BEGCOMM_length = BEGCOMM.length;
     private static final int ENDCOMM_length = ENDCOMM.length;
 
-    private static final String EMPTYSTRING = "";
+    private static final String EMPTYSTRING     = "";
+    private static final String HREF_STR        = "href";
+    private static final String SRC_STR         = "str";
+    private static final String CHAR_ESC_START  = "&#";
+    private static final String CDATA_ESC_START = "]]>&#";
+    private static final String CDATA_ESC_END   = ";<![CDATA[";
 
     private AttributeList _attributes = new AttributeList();
     private String        _elementName = null;
@@ -361,54 +366,6 @@ public final class TextOutput implements TransletOutputHandler {
     }
 
     /**
-     * Utility method - escape special characters and pass to SAX handler
-     */
-    private void escapeCharacters(char[] ch, int off, int len)
-	throws SAXException {
-
-	int limit = off + len;
-	int offset = off;
-
-	if (limit > ch.length) limit = ch.length;;
-
-	// Step through characters and escape all special characters
-	for (int i = off; i < limit; i++) {
-	    switch (ch[i]) {
-	    case '&':
-		_saxHandler.characters(ch, offset, i - offset);
-		_saxHandler.characters(AMP, 0, AMP_length);
-		offset = i + 1;
-		break;
-		/* Quotes should only be escaped inside attribute values
-	    case '"':
-		_saxHandler.characters(ch, offset, i - offset);
-		_saxHandler.characters(QUOTE, 0, QUOTE_length);
-		offset = i + 1;
-		break;
-		*/
-	    case '<':
-		_saxHandler.characters(ch, offset, i - offset);
-		_saxHandler.characters(LT, 0, LT_length);
-		offset = i + 1;
-		break;
-	    case '>':
-		_saxHandler.characters(ch, offset, i - offset);
-		_saxHandler.characters(GT, 0, GT_length);
-		offset = i + 1;
-		break;
-	    case '\u00a0':
-		_saxHandler.characters(ch, offset, i - offset);
-		_saxHandler.characters(NBSP, 0, NBSP_length);
-		offset = i + 1;
-		break;
-	    }
-	    // TODO - more characters need escaping!!!
-	}
-	// Output remaining characters (that do not need escaping).
-	if (offset < limit) _saxHandler.characters(ch, offset, limit - offset);
-    }
-
-    /**
      * Utility method - pass a whole charactes as CDATA to SAX handler
      */
     private void startCDATA(char[] ch, int off, int len) throws SAXException {
@@ -464,7 +421,10 @@ public final class TextOutput implements TransletOutputHandler {
 		    startCDATA(ch, off, len);
 		// Output characters escaped if required.
 		else if (_escapeChars)
-		    escapeCharacters(ch, off, len);
+		    if (_cdataTagOpen)
+			escapeCDATA(ch, off, len);
+		    else
+			escapeCharacters(ch, off, len);
 		// Output the chracters as the are if not.
 		else
 		    _saxHandler.characters(ch, off, len);
@@ -582,9 +542,92 @@ public final class TextOutput implements TransletOutputHandler {
     }
 
     /**
+     * Utility method - escape special characters and pass to SAX handler
+     */
+    private void escapeCharacters(char[] ch, int off, int len)
+	throws SAXException {
+
+	int limit = off + len;
+	int offset = off;
+
+	if (limit > ch.length) limit = ch.length;;
+
+	// Step through characters and escape all special characters
+	for (int i = off; i < limit; i++) {
+	    switch (ch[i]) {
+	    case '&':
+		_saxHandler.characters(ch, offset, i - offset);
+		_saxHandler.characters(AMP, 0, AMP_length);
+		offset = i + 1;
+		break;
+	    case '<':
+		_saxHandler.characters(ch, offset, i - offset);
+		_saxHandler.characters(LT, 0, LT_length);
+		offset = i + 1;
+		break;
+	    case '>':
+		_saxHandler.characters(ch, offset, i - offset);
+		_saxHandler.characters(GT, 0, GT_length);
+		offset = i + 1;
+		break;
+	    case '\u00a0':
+		_saxHandler.characters(ch, offset, i - offset);
+		_saxHandler.characters(NBSP, 0, NBSP_length);
+		offset = i + 1;
+		break;
+	    default:
+		// Escape all characters not in the basic ASCII character set
+		// to simple (hexadecimal) character references
+		if (ch[i] > '\u00ff') {
+		    StringBuffer buf = new StringBuffer(CHAR_ESC_START);
+		    buf.append(Integer.toString((int)ch[i]));
+		    buf.append(';');
+		    final String esc = buf.toString();
+		    final char[] chars = esc.toCharArray();
+		    final int    strlen = esc.length();
+		    _saxHandler.characters(ch, offset, i - offset);
+		    _saxHandler.characters(chars, 0, strlen);
+		    offset = i + 1;
+		}
+	    }
+	}
+	// Output remaining characters (that do not need escaping).
+	if (offset < limit) _saxHandler.characters(ch, offset, limit - offset);
+    }
+
+    /**
+     * Utility method - escape special characters and pass to SAX handler
+     */
+    private void escapeCDATA(char[] ch, int off, int len)
+	throws SAXException {
+
+	int limit = off + len;
+	int offset = off;
+
+	if (limit > ch.length) limit = ch.length;;
+
+	// Step through characters and escape all special characters
+	for (int i = off; i < limit; i++) {
+	    if (ch[i] > '\u00ff') {
+		StringBuffer buf = new StringBuffer(CDATA_ESC_START);
+		buf.append(Integer.toString((int)ch[i]));
+		buf.append(CDATA_ESC_END);
+		final String esc = buf.toString();
+		final char[] chars = esc.toCharArray();
+		final int    strlen = esc.length();
+		_saxHandler.characters(ch, offset, i - offset);
+		_saxHandler.characters(chars, 0, strlen);
+		offset = i + 1;
+	    }
+	}
+	// Output remaining characters (that do not need escaping).
+	if (offset < limit) _saxHandler.characters(ch, offset, limit - offset);
+    }
+
+    /**
      * This method escapes special characters used in attribute values
      */
-    private String escapeChars(String value) {
+    private String escapeString(String value) {
 
 	int i;
 	char[] ch = value.toCharArray();
@@ -625,6 +668,33 @@ public final class TextOutput implements TransletOutputHandler {
 	    buf.append(ch, offset, limit - offset);
 	}
 	return(buf.toString());
+    }
+
+    /**
+     * This method escapes special characters used in HTML attribute values
+     */
+    private String escapeAttr(String base) {
+
+	final int len = base.length() - 1;
+	final String str = "&quot;";
+	int pos;
+
+	while ((pos = base.indexOf('"')) > -1) {
+	    if (pos == 0) {
+		final String after = base.substring(1);
+		base = str + after;
+	    }
+	    else if (pos == len) {
+		final String before = base.substring(0, pos);
+		base = before + str;
+	    }
+	    else {
+		final String before = base.substring(0, pos);
+		final String after = base.substring(pos+1);
+		base = before + str + after;
+	    }
+	}
+	return base;
     }
 
     /**
@@ -707,7 +777,7 @@ public final class TextOutput implements TransletOutputHandler {
 	    }
 	    else {
 		// Output as regular attribute
-		_attributes.add(expandAttribute(name), escapeChars(value));
+		_attributes.add(expandAttribute(name), escapeString(value));
 	    }
 	    return;
 	case HTML:
@@ -722,10 +792,11 @@ public final class TextOutput implements TransletOutputHandler {
 	    // we do not change the meaning of the URL.
 
 	    // URL-encode href attributes in HTML output
-	    if  (name.toLowerCase().equals("href"))
-		_attributes.add(name,quickAndDirtyUrlEncode(escapeChars(value)));
+	    final String tmp = name.toLowerCase();
+	    if  (tmp.equals(HREF_STR) || tmp.equals(SRC_STR))
+		_attributes.add(name,quickAndDirtyUrlEncode(escapeAttr(value)));
 	    else
-
+		_attributes.add(expandAttribute(name), escapeAttr(value));
 	    return;
 	}
     }
