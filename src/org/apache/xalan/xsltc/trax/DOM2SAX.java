@@ -66,24 +66,31 @@ package org.apache.xalan.xsltc.trax;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
+import org.xml.sax.Locator;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 import org.w3c.dom.Node;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import java.io.IOException;
+import org.w3c.dom.Entity;
+import org.w3c.dom.Notation;
 
-/**
- * skeleton extension of XMLFilterImpl for now.  
- */
-public class DOM2SAX implements XMLReader {
+public class DOM2SAX implements XMLReader , Locator {
+    private Document _dom = null;
+    private ContentHandler _contentHdlr = null;
+ 
     public DOM2SAX(Node root) {
+	_dom = (Document)root;
     }
 
     public ContentHandler getContentHandler() { 
-	return null;
+	return _contentHdlr;
     }
     public DTDHandler getDTDHandler() { 
 	return null;
@@ -101,6 +108,97 @@ public class DOM2SAX implements XMLReader {
     {
     }
     public void parse(InputSource input) throws IOException, SAXException {
+	Node currNode = _dom; 
+	while (currNode != null) {
+	    // start of node processing
+	    switch (currNode.getNodeType()) {
+		case Node.ATTRIBUTE_NODE : 
+		    break;
+		case Node.CDATA_SECTION_NODE : 
+		    break;
+		case Node.COMMENT_NODE : 
+		    break;
+		case Node.DOCUMENT_FRAGMENT_NODE : 
+		    break;
+		case Node.DOCUMENT_NODE : 
+		    _contentHdlr.setDocumentLocator(this);
+		    _contentHdlr.startDocument(); 	    
+		    break;
+		case Node.DOCUMENT_TYPE_NODE : 
+		    break;
+		case Node.ELEMENT_NODE : 
+		    AttributesImpl attrList = new AttributesImpl();
+		    NamedNodeMap map = currNode.getAttributes();
+		    int length = map.getLength();
+		    for (int i=0; i<length; i++ ){
+			Node attrNode = map.item(i);
+			short code = attrNode.getNodeType();
+			attrList.addAttribute(attrNode.getNamespaceURI(),
+			    attrNode.getLocalName(),
+			    attrNode.getNodeName(),
+			    getNodeTypeFromCode(code),  // must be better way
+			    attrNode.getNodeValue());
+		    }
+		    _contentHdlr.startElement(currNode.getNamespaceURI(),
+		        currNode.getLocalName(), currNode.getNodeName(),
+			attrList); 
+		    break;
+		case Node.ENTITY_NODE : 
+		   /***
+		    Entity edecl = (Entity)currNode;
+		    String name = edecl.getNotationName();
+		    if ( name != null ) {
+			_contentHdlr.unparsedEntityDecl(currNode.getNodeName(),
+			    edecl.getPublicId(), edecl.getSystemId(), name);
+		    } 
+		    **/
+		    break;
+		case Node.ENTITY_REFERENCE_NODE : 
+		    break;
+		case Node.NOTATION_NODE :
+		    /***
+		    Notation ndecl = (Notation)currNode;
+		    _contentHdlr.notationDecl(currNode.getNodeName(),
+			ndecl.getPublicId(), ndecl.getSystemId());
+		    **/
+		    break;
+		case Node.PROCESSING_INSTRUCTION_NODE : 
+		    _contentHdlr.processingInstruction(currNode.getNodeName(),
+			currNode.getNodeValue());
+		    break;
+		case Node.TEXT_NODE : 
+		    String data = currNode.getNodeValue();
+		    length = data.length();
+		    char[] array = new char[length];
+		    data.getChars(0, length, array, 0);
+		    _contentHdlr.characters(array, 0, length); 
+		    break;
+	    }
+
+	    // move to first child
+	    Node next = currNode.getFirstChild();
+	    if (next != null) {
+		currNode = next;
+		continue;
+	    }
+
+	    // no child nodes, walk the tree
+	    while (currNode != null) {
+		switch (currNode.getNodeType()) {
+		    case Node.DOCUMENT_NODE: 
+			break;
+		    case Node.ELEMENT_NODE: 
+			break;
+		}
+		next = currNode.getNextSibling();
+		if (next != null ) {
+		    currNode = next;
+		    break;
+		}
+		// move up a level
+		currNode = currNode.getParentNode();
+	    }
+	}
     }
     public void parse(String sysId) throws IOException, SAXException {
     }
@@ -108,6 +206,7 @@ public class DOM2SAX implements XMLReader {
 	NullPointerException 
     {
 	if (handler == null ) throw new NullPointerException();
+	_contentHdlr = handler;
     }
     public void setDTDHandler(DTDHandler handler) throws NullPointerException {
 	if (handler == null )  throw new NullPointerException();
@@ -132,5 +231,44 @@ public class DOM2SAX implements XMLReader {
 	SAXNotSupportedException
     {
 	return null;
+    }
+
+    // Locator methods
+    public int getColumnNumber() { return 0; }
+    public int getLineNumber() { return 0; }
+    public String getPublicId() { return null; }
+    public String getSystemId() { return null; }
+
+
+    // private 
+    private String getNodeTypeFromCode(short code) {
+	String retval = null;
+	switch (code) {
+                case Node.ATTRIBUTE_NODE : 
+		    retval = "ATTRIBUTE_NODE"; break; 
+                case Node.CDATA_SECTION_NODE :
+		    retval = "CDATA_SECTION_NODE"; break; 
+                case Node.COMMENT_NODE :
+		    retval = "COMMENT_NODE"; break; 
+                case Node.DOCUMENT_FRAGMENT_NODE :
+		    retval = "DOCUMENT_FRAGMENT_NODE"; break; 
+                case Node.DOCUMENT_NODE :
+		    retval = "DOCUMENT_NODE"; break; 
+                case Node.DOCUMENT_TYPE_NODE :
+		    retval = "DOCUMENT_TYPE_NODE"; break; 
+                case Node.ELEMENT_NODE :
+		    retval = "ELEMENT_NODE"; break; 
+                case Node.ENTITY_NODE :
+		    retval = "ENTITY_NODE"; break; 
+                case Node.ENTITY_REFERENCE_NODE :
+		    retval = "ENTITY_REFERENCE_NODE"; break; 
+                case Node.NOTATION_NODE :
+		    retval = "NOTATION_NODE"; break; 
+                case Node.PROCESSING_INSTRUCTION_NODE :
+		    retval = "PROCESSING_INSTRUCTION_NODE"; break; 
+                case Node.TEXT_NODE:
+		    retval = "TEXT_NODE"; break; 
+        }
+	return retval;
     }
 }
