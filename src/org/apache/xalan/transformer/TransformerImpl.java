@@ -620,6 +620,14 @@ public class TransformerImpl extends Transformer
 
     try
     {
+        
+      // Patch for bugzilla #13863.  If we don't reset the namespaceContext
+      // then we will get a NullPointerException if transformer is reused 
+      // (for stylesheets that use xsl:key).  Not sure if this should go 
+      // here or in reset(). -is  
+      if(getXPathContext().getNamespaceContext() == null){
+         getXPathContext().setNamespaceContext(getStylesheet());
+      }
       String base = source.getSystemId();
       
       // If no systemID of the source, use the base of the stylesheet.
