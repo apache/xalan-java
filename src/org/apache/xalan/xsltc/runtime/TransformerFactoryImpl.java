@@ -82,6 +82,7 @@ import org.apache.xalan.xsltc.compiler.XSLTC;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.MalformedURLException;
 
@@ -230,20 +231,31 @@ public class TransformerFactoryImpl extends SAXTransformerFactory {
     {
 	XSLTC xsltc = new XSLTC();
 	xsltc.init();
-	String stylesheetName = stylesheet.getSystemId();
-	int index = stylesheetName.indexOf('.');
-	String transletName = stylesheetName.substring(0,index);
-	boolean isSuccessful = true;
-	try {
-	    File file = new File(stylesheetName);
-	    URL url = file.toURL();
-	    // GTM isSuccessful = xsltc.compile(url);
-	    isSuccessful = xsltc.compile(url, _errorListener); // GTM
-	} catch (MalformedURLException e) {
-	    throw new TransformerConfigurationException(
-		"URL for stylesheet '" + stylesheetName + 
-		"' can not be formed."); 
-	}
+
+        // compile stylesheet
+        boolean isSuccessful = true;
+        StreamSource strmsrc = (StreamSource)stylesheet;
+        InputStream inputStream = strmsrc.getInputStream();
+        String stylesheetName = stylesheet.getSystemId();
+        String transletName = "no_name";
+        if (inputStream != null) {
+            isSuccessful = xsltc.compile(inputStream, transletName);
+        } else if (stylesheetName != null ){
+            int index = stylesheetName.indexOf('.');
+            transletName = stylesheetName.substring(0,index);
+            try {
+                File file = new File(stylesheetName);
+                URL url = file.toURL();
+                isSuccessful = xsltc.compile(url);
+            } catch (MalformedURLException e) {
+                throw new TransformerConfigurationException(
+                    "URL for stylesheet '" + stylesheetName +
+                    "' can not be formed.");
+            }
+        } else {
+           throw new TransformerConfigurationException(
+                "Stylesheet must have a system id or be an InputStream.");
+        }
 
 	if (!isSuccessful) {
 	    throw new TransformerConfigurationException(
