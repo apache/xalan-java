@@ -63,6 +63,7 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 //import org.apache.xml.dtm.CoroutineManager;
 import org.apache.xerces.parsers.SAXParser;
+import org.xml.sax.XMLReader;
 
 /** <p>CoroutineSAXParser_Xerces takes advantage of the fact that Xerces
  * incremental mode is already a coroutine of sorts, and just wraps our
@@ -111,7 +112,7 @@ implements CoroutineParser
 
     public void init( CoroutineManager co, int appCoroutineID, XMLReader ixsp ) {
       if(ixsp!=null)
-        incrementalParser=ixsp;
+        incrementalParser=(SAXParser)ixsp;
       else
         incrementalParser=new SAXParser();
       
