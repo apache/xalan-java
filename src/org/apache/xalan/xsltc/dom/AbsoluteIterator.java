@@ -75,8 +75,8 @@ public final class AbsoluteIterator extends NodeIteratorBase {
     }
 
     public int next() {
-	// Should never be called
-	return returnNode(NodeIterator.END);
+	// Should never be called - well, it is!!!
+	return _source.next();
     }
 	
     public NodeIterator setStartNode(int node) {
