@@ -29,8 +29,12 @@ import java.io.Writer;
  * moment it does not do buffering, though I reserve the right to do some
  * buffering down the line if I can prove that it will be faster even if the
  * output stream is buffered.
+ * 
+ * This class is only used internally within Xalan.
+ * 
+ * @xsl.usage internal
  */
-public class WriterToASCI extends Writer
+public class WriterToASCI extends Writer implements WriterChain
 {
 
   /** The byte stream to write to.  */
@@ -139,4 +143,11 @@ public class WriterToASCI extends Writer
     return m_os;
   }
 
+  /**
+   * Get the writer that this writer directly chains to.
+   */
+  public Writer getWriter()
+  {
+      return null;
+  }
 }

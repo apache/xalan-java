@@ -19,6 +19,7 @@
 package org.apache.xml.serializer;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Writer;
 
 /**
@@ -38,7 +39,7 @@ import java.io.Writer;
  * resonable facsimile of the true output.
  *
  */
-public class SerializerTraceWriter extends Writer
+public class SerializerTraceWriter extends Writer implements WriterChain
 {
 
     /** The real writer to immediately write to.
@@ -315,4 +316,23 @@ public class SerializerTraceWriter extends Writer
         }
     }
 
+    /**
+     * Get the writer that this one directly wraps.
+     */
+    public Writer getWriter()
+    {
+        return m_writer;
+    }
+
+    /**
+     * Get the OutputStream that is the at the end of the
+     * chain of writers.
+     */
+    public OutputStream getOutputStream()
+    {
+        OutputStream retval = null;
+        if (m_writer instanceof WriterChain)
+            retval = ((WriterChain) m_writer).getOutputStream();
+        return retval;
+    }
 }

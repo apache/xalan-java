@@ -34,7 +34,7 @@ import java.io.Writer;
  * 
  * @xsl.usage internal
  */
-final class WriterToUTF8Buffered extends Writer
+final class WriterToUTF8Buffered extends Writer implements WriterChain
 {
     
   /** number of bytes that the byte buffer can hold.
@@ -430,5 +430,12 @@ final class WriterToUTF8Buffered extends Writer
   public OutputStream getOutputStream()
   {
     return m_os;
+  }
+
+  public Writer getWriter()
+  {
+    // Only one of getWriter() or getOutputStream() can return null
+    // This type of writer wraps an OutputStream, not a Writer.
+    return null;
   }
 }

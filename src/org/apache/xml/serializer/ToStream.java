@@ -46,8 +46,8 @@ import org.xml.sax.SAXException;
 /**
  * This abstract class is a base class for other stream 
  * serializers (xml, html, text ...) that write output to a stream.
- * @author Santiago Pericas-Geertsen
- * @author G. Todd Miller 
+ * 
+ * @xsl.usage internal
  */
 abstract public class ToStream extends SerializerBase
 {
