@@ -1654,74 +1654,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	return(new NodeValueIterator(iterator, type, value, op));
     }
 
-    /**************************************************************
-     * Iterator that assured that a single node is only returned once
-     * and that the nodes are returned in document order.
-     */             
-    private final class OrderedIterator extends NodeIteratorBase {
-
-	private BitArray  _nodes = null;
-	private int       _save = 0;
-	private int       _mark = 0;
-	private int       _start = 0;
-	private int       _node = -1;
-	private int       _last = 0;
-
-	public OrderedIterator(NodeIterator source, int node) {
-	    _nodes = new BitArray(_treeNodeLimit);
-	    source.setStartNode(node);
-	    while ((_node = source.next()) != END) {
-		if (_start == -1) _start = _node;
-		_last = _node;
-		_nodes.setBit(_node);
-	    }
-	    _node = -1;
-	}
- 
-	public int next() {
-	    while ((_node < _treeNodeLimit) && (!_nodes.getBit(++_node))) ;
-	    if (_node >= _treeNodeLimit) return(END);
-	    return returnNode(_node);
-	}
-
-	public NodeIterator reset() {
-	    _node = _start - 1;
-	    return(this);
-	}
-
-	public int getLast() {
-	    return(_last);
-	}
-         
-	public void setMark() {
-	    _save = _node;
-	}
-
-	public void gotoMark() {
-	    _node = _save;
-	}
-
-	public NodeIterator setStartNode(int start) {
-	    _start = start;
-	    return((NodeIterator)this);
-	}
-
-	public boolean isReverse() {
-	    return(false);
-	}
-
-	public NodeIterator cloneIterator() {
-	    return((NodeIterator)this);
-	}
-
-    } // end of OrderedIterator
-
-
     /**
      * Encapsulates an iterator in an OrderedIterator to ensure node order
      */
     public NodeIterator orderNodes(NodeIterator source, int node) {
-	return new OrderedIterator(source, node);
+	return new DupFilterIterator(source);
     }
 
     /**
