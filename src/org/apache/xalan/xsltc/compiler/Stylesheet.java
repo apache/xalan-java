@@ -340,6 +340,14 @@ public final class Stylesheet extends SyntaxTreeNode {
 
     public void numberFormattingUsed() {
 	_numberFormattingUsed = true;
+        /*
+         * Fix for bug 23046, if the stylesheet is included, set the 
+         * numberFormattingUsed flag to the parent stylesheet too.
+         * AbstractTranslet.addDecimalFormat() will be inlined once for the
+         * outer most stylesheet. 
+         */ 
+        Stylesheet parent = getParentStylesheet();
+        if (null != parent) parent.numberFormattingUsed();        
     }
 
     public void setImportPrecedence(final int precedence) {
