@@ -394,6 +394,9 @@ public class ElemLiteralResult extends ElemUse
 
   /**
    * Get the original namespace of the Literal Result Element.
+   * 
+   * %REVIEW% Why isn't this overriding the getNamespaceURI method
+   * rather than introducing a new one?
    *
    * @return The Namespace URI, or the empty string if the
    *        element has no Namespace URI.
@@ -461,6 +464,20 @@ public class ElemLiteralResult extends ElemUse
   {
     return m_rawName;
   }
+	
+ /**
+   * Get the prefix part of the raw name of the Literal Result Element.
+   *
+   * @return The prefix, or the empty string if noprefix was provided.
+   */
+  public String getPrefix()
+  {
+		int len=m_rawName.length()-m_localName.length()-1;
+    return (len>0)
+			? m_rawName.substring(0,len)
+			: "";
+  }
+
 
   /**
    * The "extension-element-prefixes" property, actually contains URIs.
@@ -476,7 +493,7 @@ public class ElemLiteralResult extends ElemUse
    */
   public void setExtensionElementPrefixes(StringVector v)
   {
-    m_ExtensionElementURIs = v; // JJK Being set, but not applied?
+    m_ExtensionElementURIs = v;
   }
 
   /**
@@ -645,15 +662,13 @@ public class ElemLiteralResult extends ElemUse
     try
     {
       ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+			
+			// JJK Bugzilla 3464, test namespace85 -- make sure LRE's
+			// namespace is asserted even if default, since xsl:element
+			// may have changed the context.
+			rhandler.startPrefixMapping(getPrefix(),getNamespace());
 
       // Add namespace declarations.
-			// JJK ISSUE: Need to make sure extensionElementURIs asserted here...
-			// and passed downward to contained LREs. (Regression LRE21)
-			// This method is inherited; I think that means we either subclass it or
-			// pre-apply this flag to the declarations. 
-			// ISSUE: Needs to be inherited downward, which means it's a real scoped
-			// change in the state of the namespace declaration.
-      // gonk();
       executeNSDecls(transformer);
       rhandler.startElement(getNamespace(), getLocalName(), getRawName(), null);
 
@@ -700,6 +715,9 @@ public class ElemLiteralResult extends ElemUse
         // cause a system hang.
         rhandler.endElement(getNamespace(), getLocalName(), getRawName());
         unexecuteNSDecls(transformer);
+				
+				// JJK Bugzilla 3464, test namespace85 -- balance explicit start.
+				rhandler.endPrefixMapping(getPrefix());
       }
     }
     catch (org.xml.sax.SAXException se)
