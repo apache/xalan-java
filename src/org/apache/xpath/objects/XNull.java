@@ -28,6 +28,7 @@ import org.apache.xpath.XPathContext;
  */
 public class XNull extends XNodeSet
 {
+    static final long serialVersionUID = -6841683711458983005L;
 
   /**
    * Create an XObject.

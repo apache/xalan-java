@@ -29,6 +29,7 @@ import org.apache.xpath.objects.XString;
  */
 public class FuncConcat extends FunctionMultiArgs
 {
+    static final long serialVersionUID = 1737228885202314413L;
 
   /**
    * Execute the function.  The function must return

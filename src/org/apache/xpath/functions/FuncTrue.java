@@ -28,6 +28,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class FuncTrue extends Function
 {
+    static final long serialVersionUID = 5663314547346339447L;
 
   /**
    * Execute the function.  The function must return

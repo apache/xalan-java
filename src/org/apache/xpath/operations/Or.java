@@ -27,6 +27,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class Or extends Operation
 {
+    static final long serialVersionUID = -644107191353853079L;
 
   /**
    * OR two expressions and return the boolean result. Override

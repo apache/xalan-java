@@ -42,6 +42,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class XPath implements Serializable, ExpressionOwner
 {
+    static final long serialVersionUID = 3976493477939110553L;
 
   /** The top of the expression tree. 
    *  @serial */

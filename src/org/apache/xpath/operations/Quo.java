@@ -27,6 +27,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class Quo extends Operation
 {
+    static final long serialVersionUID = 693765299196169905L;
 
   // Actually, this is no longer supported by xpath...
 

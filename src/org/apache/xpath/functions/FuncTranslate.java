@@ -28,6 +28,7 @@ import org.apache.xpath.objects.XString;
  */
 public class FuncTranslate extends Function3Args
 {
+    static final long serialVersionUID = -1672834340026116482L;
 
   /**
    * Execute the function.  The function must return

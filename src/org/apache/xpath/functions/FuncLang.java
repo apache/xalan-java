@@ -29,6 +29,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class FuncLang extends FunctionOneArg
 {
+    static final long serialVersionUID = -7868705139354872185L;
 
   /**
    * Execute the function.  The function must return

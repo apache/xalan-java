@@ -45,6 +45,7 @@ import org.w3c.dom.traversal.NodeIterator;
  */
 public class XObject extends Expression implements Serializable, Cloneable
 {
+    static final long serialVersionUID = -821887098985662951L;
 
   /**
    * The java object which this object wraps.

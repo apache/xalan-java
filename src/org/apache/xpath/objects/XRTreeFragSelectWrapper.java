@@ -30,6 +30,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class XRTreeFragSelectWrapper extends XRTreeFrag implements Cloneable
 {
+    static final long serialVersionUID = -6526177905590461251L;
   public XRTreeFragSelectWrapper(Expression expr)
   {
     super(expr);

@@ -38,6 +38,7 @@ import org.apache.xpath.patterns.StepPattern;
  */
 public class MatchPatternIterator extends LocPathIterator
 {
+    static final long serialVersionUID = -5201153767396296474L;
 
   /** This is the select pattern, translated into a match pattern. */
   protected StepPattern m_pattern;

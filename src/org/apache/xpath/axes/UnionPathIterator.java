@@ -38,6 +38,7 @@ import org.apache.xpath.compiler.OpCodes;
 public class UnionPathIterator extends LocPathIterator
         implements Cloneable, DTMIterator, java.io.Serializable, PathComponent
 {
+    static final long serialVersionUID = -3910351546843826781L;
 
   /**
    * Constructor to create an instance which you can add location paths to.

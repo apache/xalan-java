@@ -28,6 +28,7 @@ import org.apache.xpath.XPathContext;
  */
 public class ReverseAxesWalker extends AxesWalker
 {
+    static final long serialVersionUID = 2847007647832768941L;
 
   /**
    * Construct an AxesWalker using a LocPathIterator.

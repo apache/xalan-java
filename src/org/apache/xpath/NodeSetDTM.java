@@ -59,6 +59,7 @@ public class NodeSetDTM extends NodeVector
         implements /* NodeList, NodeIterator, */ DTMIterator, 
         Cloneable
 {
+    static final long serialVersionUID = 7686480133331317070L;
 
   /**
    * Create an empty nodelist.

@@ -27,6 +27,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class Bool extends UnaryOperation
 {
+    static final long serialVersionUID = 44705375321914635L;
 
   /**
    * Apply the operation to two operands, and return the result.

@@ -28,6 +28,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class FuncCeiling extends FunctionOneArg
 {
+    static final long serialVersionUID = -1275988936390464739L;
 
   /**
    * Execute the function.  The function must return

@@ -35,6 +35,7 @@ import org.apache.xpath.XPathVisitor;
  */
 public class XString extends XObject implements XMLString
 {
+    static final long serialVersionUID = 2020470518395094525L;
 
   /** Empty string XString object */
   public static XString EMPTYSTRING = new XString("");

@@ -28,6 +28,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class FuncContains extends Function2Args
 {
+    static final long serialVersionUID = 5084753781887919723L;
 
   /**
    * Execute the function.  The function must return

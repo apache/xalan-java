@@ -27,6 +27,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class Number extends UnaryOperation
 {
+    static final long serialVersionUID = 7196954482871619765L;
 
   /**
    * Apply the operation to two operands, and return the result.

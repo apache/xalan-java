@@ -25,6 +25,7 @@ package org.apache.xpath.objects;
  */
 public class XBooleanStatic extends XBoolean
 {
+    static final long serialVersionUID = -8064147275772687409L;
 
   /** The value of the object.
    *  @serial          */

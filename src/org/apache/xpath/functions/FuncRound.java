@@ -28,6 +28,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class FuncRound extends FunctionOneArg
 {
+    static final long serialVersionUID = -7970583902573826611L;
 
   /**
    * Execute the function.  The function must return

@@ -32,6 +32,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class FuncPosition extends Function
 {
+    static final long serialVersionUID = -9092846348197271582L;
   private boolean m_isTopLevel;
   
   /**

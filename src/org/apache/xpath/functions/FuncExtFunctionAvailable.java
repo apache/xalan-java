@@ -31,6 +31,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class FuncExtFunctionAvailable extends FunctionOneArg
 {
+    static final long serialVersionUID = 5118814314918592241L;
 
   /**
    * Execute the function.  The function must return

@@ -31,6 +31,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class FunctionMultiArgs extends Function3Args
 {
+    static final long serialVersionUID = 7117257746138417181L;
 
   /** Argument expressions that are at index 3 or greater.
    *  @serial */

@@ -35,6 +35,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class NodeTest extends Expression
 {
+    static final long serialVersionUID = -5736721866747906182L;
 
   /**
    * The namespace or local name for node tests with a wildcard.

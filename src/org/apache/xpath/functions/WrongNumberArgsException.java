@@ -25,6 +25,7 @@ package org.apache.xpath.functions;
  */
 public class WrongNumberArgsException extends Exception
 {
+    static final long serialVersionUID = -4551577097576242432L;
 
   /**
    * Constructor WrongNumberArgsException

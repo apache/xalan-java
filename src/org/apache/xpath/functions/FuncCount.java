@@ -29,6 +29,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class FuncCount extends FunctionOneArg
 {
+    static final long serialVersionUID = -7116225100474153751L;
 
   /**
    * Execute the function.  The function must return

@@ -30,6 +30,7 @@ import org.apache.xpath.patterns.NodeTest;
  */
 public class UnionChildIterator extends ChildTestIterator
 {
+    static final long serialVersionUID = 3500298482193003495L;
   /**
    * Even though these may hold full LocPathIterators, this array does 
    * not have to be cloned, since only the node test and predicate 

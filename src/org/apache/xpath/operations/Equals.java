@@ -27,6 +27,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class Equals extends Operation
 {
+    static final long serialVersionUID = -2658315633903426134L;
 
   /**
    * Apply the operation to two operands, and return the result.

@@ -29,6 +29,7 @@ import org.apache.xpath.XPathVisitor;
  */
 public class XNumber extends XObject
 {
+    static final long serialVersionUID = -2720400709619020193L;
 
   /** Value of the XNumber object.
    *  @serial         */

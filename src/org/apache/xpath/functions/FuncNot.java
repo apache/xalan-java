@@ -28,6 +28,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class FuncNot extends FunctionOneArg
 {
+    static final long serialVersionUID = 7299699961076329790L;
 
   /**
    * Execute the function.  The function must return

@@ -30,6 +30,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class ContextMatchStepPattern extends StepPattern
 {
+    static final long serialVersionUID = -1888092779313211942L;
 
   /**
    * Construct a ContextMatchStepPattern.

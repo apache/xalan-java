@@ -31,6 +31,7 @@ import org.xml.sax.ContentHandler;
  */
 public class FuncNormalizeSpace extends FunctionDef1Arg
 {
+    static final long serialVersionUID = -3377956872032190880L;
 
   /**
    * Execute the function.  The function must return

@@ -29,6 +29,7 @@ import org.apache.xpath.objects.XString;
  */
 public class FuncSubstringAfter extends Function2Args
 {
+    static final long serialVersionUID = -8119731889862512194L;
 
   /**
    * Execute the function.  The function must return

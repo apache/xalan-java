@@ -26,6 +26,7 @@ import org.apache.xpath.objects.XNodeSet;
 
 public class FilterExprIterator extends BasicTestIterator
 {
+    static final long serialVersionUID = 2552176105165737614L;
   /** The contained expression. Should be non-null.
    *  @serial   */
   private Expression m_expr;

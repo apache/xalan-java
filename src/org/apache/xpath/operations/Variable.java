@@ -39,6 +39,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class Variable extends Expression implements PathComponent
 {
+    static final long serialVersionUID = -4334975375609297049L;
   /** Tell if fixupVariables was called.
    *  @serial   */
   private boolean m_fixUpWasCalled = false;

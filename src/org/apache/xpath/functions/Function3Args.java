@@ -29,6 +29,7 @@ import org.apache.xpath.XPathVisitor;
  */
 public class Function3Args extends Function2Args
 {
+    static final long serialVersionUID = 7915240747161506646L;
 
   /** The third argument passed to the function (at index 2).
    *  @serial  */

@@ -29,6 +29,7 @@ import org.apache.xpath.compiler.Compiler;
  */
 public class AttributeIterator extends ChildTestIterator
 {
+    static final long serialVersionUID = -8417986700712229686L;
 
   /**
    * Create a AttributeIterator object.

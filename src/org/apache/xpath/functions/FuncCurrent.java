@@ -37,6 +37,7 @@ import org.apache.xalan.res.XSLTErrorResources;
  */
 public class FuncCurrent extends Function
 {
+    static final long serialVersionUID = 5715316804877715008L;
 
   /**
    * Execute the function.  The function must return

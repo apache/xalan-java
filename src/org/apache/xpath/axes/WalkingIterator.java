@@ -32,6 +32,7 @@ import org.apache.xpath.compiler.Compiler;
 
 public class WalkingIterator extends LocPathIterator implements ExpressionOwner
 {
+    static final long serialVersionUID = 9110225941815665906L;
   /**
    * Create a WalkingIterator iterator, including creation
    * of step walkers from the opcode list, and call back

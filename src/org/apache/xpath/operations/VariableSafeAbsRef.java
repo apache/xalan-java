@@ -39,6 +39,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class VariableSafeAbsRef extends Variable
 {
+    static final long serialVersionUID = -9174661990819967452L;
 	
   /**
    * Dereference the variable, and return the reference value.  Note that lazy 

@@ -47,6 +47,7 @@ import org.apache.xpath.res.XPATHErrorResources;
 public abstract class LocPathIterator extends PredicatedNodeTest
         implements Cloneable, DTMIterator, java.io.Serializable, PathComponent
 {
+    static final long serialVersionUID = -4602476357268405754L;
 	
   /**
    * Create a LocPathIterator object.

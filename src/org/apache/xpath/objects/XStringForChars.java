@@ -28,6 +28,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class XStringForChars extends XString
 {
+    static final long serialVersionUID = -2235248887220850467L;
   /** The start position in the fsb. */
   int m_start;
   

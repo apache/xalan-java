@@ -31,6 +31,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class FuncSubstring extends Function3Args
 {
+    static final long serialVersionUID = -5996676095024715502L;
 
   /**
    * Execute the function.  The function must return

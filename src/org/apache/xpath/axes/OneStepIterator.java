@@ -34,6 +34,7 @@ import org.apache.xpath.compiler.Compiler;
  */
 public class OneStepIterator extends ChildTestIterator
 {
+    static final long serialVersionUID = 4623710779664998283L;
   /** The traversal axis from where the nodes will be filtered. */
   protected int m_axis = -1;
 

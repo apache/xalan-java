@@ -32,6 +32,7 @@ import org.apache.xpath.compiler.Compiler;
  */
 public class ChildTestIterator extends BasicTestIterator
 {
+    static final long serialVersionUID = -7936835957960705722L;
   /** The traverser to use to navigate over the descendants. */
   transient protected DTMAxisTraverser m_traverser;
   

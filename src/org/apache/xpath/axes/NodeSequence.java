@@ -36,6 +36,7 @@ import org.apache.xpath.objects.XObject;
 public class NodeSequence extends XObject
   implements DTMIterator, Cloneable, PathComponent
 {
+    static final long serialVersionUID = 3866261934726581044L;
   /** The index of the last node in the iteration. */
   protected int m_last = -1;
   

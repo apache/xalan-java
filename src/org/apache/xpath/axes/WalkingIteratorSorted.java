@@ -28,6 +28,7 @@ import org.apache.xpath.compiler.Compiler;
  */
 public class WalkingIteratorSorted extends WalkingIterator
 {
+    static final long serialVersionUID = -4512512007542368213L;
 
 //  /** True if the nodes will be found in document order */
 //  protected boolean m_inNaturalOrder = false;

@@ -26,6 +26,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class Gte extends Operation
 {
+    static final long serialVersionUID = 9142945909906680220L;
 
   /**
    * Apply the operation to two operands, and return the result.

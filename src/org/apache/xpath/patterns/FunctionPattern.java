@@ -33,6 +33,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class FunctionPattern extends StepPattern
 {
+    static final long serialVersionUID = -5426793413091209944L;
 
   /**
    * Construct a FunctionPattern from a

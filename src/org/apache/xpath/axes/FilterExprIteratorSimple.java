@@ -34,6 +34,7 @@ import org.apache.xpath.objects.XNodeSet;
  */
 public class FilterExprIteratorSimple extends LocPathIterator
 {
+    static final long serialVersionUID = -6978977187025375579L;
   /** The contained expression. Should be non-null.
    *  @serial   */
   private Expression m_expr;

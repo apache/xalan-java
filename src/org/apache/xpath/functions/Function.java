@@ -38,6 +38,7 @@ import org.apache.xpath.objects.XObject;
  */
 public abstract class Function extends Expression
 {
+    static final long serialVersionUID = 6927661240854599768L;
 
   /**
    * Set an argument expression for a function.  This method is called by the 

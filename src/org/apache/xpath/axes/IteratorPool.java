@@ -29,6 +29,7 @@ import org.apache.xml.utils.WrappedRuntimeException;
  */
 public class IteratorPool implements java.io.Serializable
 {
+    static final long serialVersionUID = -460927331149566998L;
 
   /** Type of objects in this pool.
    *  @serial          */

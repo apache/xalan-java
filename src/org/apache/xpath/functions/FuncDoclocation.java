@@ -30,6 +30,7 @@ import org.apache.xpath.objects.XString;
  */
 public class FuncDoclocation extends FunctionDef1Arg
 {
+    static final long serialVersionUID = 7469213946343568769L;
 
   /**
    * Execute the function.  The function must return

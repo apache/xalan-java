@@ -31,6 +31,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class UnionPattern extends Expression
 {
+    static final long serialVersionUID = -6670449967116905820L;
 
   /** Array of the contained step patterns to be tested.
    *  @serial  */

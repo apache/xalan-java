@@ -32,6 +32,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class FunctionDef1Arg extends FunctionOneArg
 {
+    static final long serialVersionUID = 2325189412814149264L;
 
   /**
    * Execute the first argument expression that is expected to return a

@@ -32,6 +32,7 @@ import org.apache.xpath.compiler.Compiler;
  */
 public class ChildIterator extends LocPathIterator
 {
+    static final long serialVersionUID = -6935428015142993583L;
 
   /**
    * Create a ChildIterator object.

@@ -27,6 +27,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class Div extends Operation
 {
+    static final long serialVersionUID = 6220756595959798135L;
 
   /**
    * Apply the operation to two operands, and return the result.

@@ -30,6 +30,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class XStringForFSB extends XString
 {
+    static final long serialVersionUID = -1533039186550674548L;
 
   /** The start position in the fsb. */
   int m_start;

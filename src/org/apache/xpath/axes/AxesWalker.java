@@ -38,6 +38,7 @@ import org.apache.xpath.res.XPATHErrorResources;
 public class AxesWalker extends PredicatedNodeTest
         implements Cloneable, PathComponent, ExpressionOwner
 {
+    static final long serialVersionUID = -2966031951306601247L;
   
   /**
    * Construct an AxesWalker using a LocPathIterator.

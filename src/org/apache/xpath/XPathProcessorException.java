@@ -25,6 +25,7 @@ package org.apache.xpath;
  */
 public class XPathProcessorException extends XPathException
 {
+    static final long serialVersionUID = 1215509418326642603L;
 
   /**
    * Create an XPathProcessorException object that holds

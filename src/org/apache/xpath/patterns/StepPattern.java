@@ -36,6 +36,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class StepPattern extends NodeTest implements SubContextList, ExpressionOwner
 {
+    static final long serialVersionUID = 9071668960168152644L;
 
   /** The axis for this test. */
   protected int m_axis;

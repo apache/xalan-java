@@ -28,6 +28,7 @@ import org.apache.xpath.objects.XString;
  */
 public class FuncUnparsedEntityURI extends FunctionOneArg
 {
+    static final long serialVersionUID = 845309759097448178L;
 
   /**
    * Execute the function.  The function must return

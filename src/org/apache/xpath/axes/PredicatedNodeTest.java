@@ -31,6 +31,7 @@ import org.apache.xpath.patterns.NodeTest;
 
 public abstract class PredicatedNodeTest extends NodeTest implements SubContextList
 {
+    static final long serialVersionUID = -6193530757296377351L;
 
   /**
    * Construct an AxesWalker using a LocPathIterator.

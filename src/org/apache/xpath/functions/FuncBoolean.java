@@ -28,6 +28,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class FuncBoolean extends FunctionOneArg
 {
+    static final long serialVersionUID = 4328660760070034592L;
 
   /**
    * Execute the function.  The function must return

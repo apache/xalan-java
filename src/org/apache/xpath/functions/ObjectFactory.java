@@ -624,7 +624,7 @@ class ObjectFactory {
      */
     static class ConfigurationError 
         extends Error {
-
+                static final long serialVersionUID = -5782303800588797207L;
         //
         // Data
         //

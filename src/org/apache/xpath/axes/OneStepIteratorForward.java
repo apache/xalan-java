@@ -33,6 +33,7 @@ import org.apache.xpath.compiler.Compiler;
  */
 public class OneStepIteratorForward extends ChildTestIterator
 {
+    static final long serialVersionUID = -1576936606178190566L;
   /** The traversal axis from where the nodes will be filtered. */
   protected int m_axis = -1;
 

@@ -28,6 +28,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class FuncFloor extends FunctionOneArg
 {
+    static final long serialVersionUID = 2326752233236309265L;
 
   /**
    * Execute the function.  The function must return

@@ -28,6 +28,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class FuncStartsWith extends Function2Args
 {
+    static final long serialVersionUID = 2194585774699567928L;
 
   /**
    * Execute the function.  The function must return

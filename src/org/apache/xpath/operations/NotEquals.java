@@ -26,6 +26,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class NotEquals extends Operation
 {
+    static final long serialVersionUID = -7869072863070586900L;
 
   /**
    * Apply the operation to two operands, and return the result.

@@ -29,6 +29,7 @@ import org.apache.xpath.objects.XString;
  */
 public class FuncGenerateId extends FunctionDef1Arg
 {
+    static final long serialVersionUID = 973544842091724273L;
 
   /**
    * Execute the function.  The function must return

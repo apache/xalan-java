@@ -31,6 +31,7 @@ import org.apache.xpath.compiler.Compiler;
  */
 public abstract class BasicTestIterator extends LocPathIterator
 {
+    static final long serialVersionUID = 3505378079378096623L;
   /**
    * Create a LocPathIterator object.
    *

@@ -39,6 +39,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class FuncExtFunction extends Function
 {
+    static final long serialVersionUID = 5196115554693708718L;
 
   /**
    * The namespace for the extension function, which should not normally
