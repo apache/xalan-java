@@ -71,7 +71,11 @@ import java.net.MalformedURLException;
 import java.util.Hashtable;
 import java.util.Date;
 
-import com.sun.xml.parser.Parser;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.XMLReader;
 import org.xml.sax.SAXException;
 
 import org.apache.xalan.xsltc.DOM;
@@ -83,12 +87,13 @@ import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 
 public final class DocumentCache implements DOMCache {
 
-    private int            _size;
-    private Hashtable      _references;
-    private String[]       _URIs;
-    private int            _count;
-    private int            _current;
-    private Parser         _parser;
+    private int       _size;
+    private Hashtable _references;
+    private String[]  _URIs;
+    private int       _count;
+    private int       _current;
+    private SAXParser _parser;
+    private XMLReader _reader;
 
     /*
      * Inner class containing a DOMImpl object and DTD handler
@@ -132,9 +137,9 @@ public final class DocumentCache implements DOMCache {
 	    try {
 		final long stamp = System.currentTimeMillis();
 
-		_parser.setDocumentHandler(_dom.getBuilder());
-		_parser.setDTDHandler(_dtdMonitor);
-		_parser.parse(uri);
+		_reader.setContentHandler(_dom.getBuilder());
+		_dtdMonitor.handleDTD(_reader);
+		_reader.parse(uri);
 		_dom.setDocumentURI(uri);
 
 		// The build time can be used for statistics for a better
@@ -185,13 +190,23 @@ public final class DocumentCache implements DOMCache {
     /**
      * DocumentCache constructor
      */
-    public DocumentCache(int size) {
+    public DocumentCache(int size) throws SAXException {
 	_count = 0;
 	_current = 0;
 	_size  = size;
 	_references = new Hashtable(_size+2);
 	_URIs = new String[_size];
-	_parser = new Parser();
+
+	try {
+	    // Create a SAX parser and get the XMLReader object it uses
+	    final SAXParserFactory factory = SAXParserFactory.newInstance();
+	    _parser = factory.newSAXParser();
+	    _reader = _parser.getXMLReader();
+	}
+	catch (ParserConfigurationException e) {
+	    System.err.println("Your SAX parser is not configured correctly.");
+	    System.exit(-1);
+	}
     }
 
     /**

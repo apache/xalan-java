@@ -67,7 +67,7 @@ package org.apache.xalan.xsltc.compiler;
 import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.Vector;
-import java.util.StringTokenizer;
+
 import org.w3c.dom.*;
 import com.sun.xml.tree.ElementEx;
 
@@ -78,7 +78,6 @@ final class LiteralElement extends Instruction {
     private String _name;
     private QName _qname;
     private Hashtable _accessedPrefixes = null;
-    private final Hashtable _exclude = new Hashtable();
     private LiteralElement _parent;
 
     /**
@@ -98,12 +97,23 @@ final class LiteralElement extends Instruction {
     }
 
     /**
+     * Returns the namespace URI for which a prefix is pointing to
+     */
+    public String lookupNamespace(String prefix) {
+	if (_accessedPrefixes == null)
+	    return(null);
+	else
+	    return((String)_accessedPrefixes.get(prefix));
+    }
+
+    /**
      * Method used to keep track of what namespaces that are references by
      * this literal element and its attributes. The output must contain a
      * definition for each namespace, so we stuff them in a hashtable.
      */
     public void registerNamespace(String prefix, String uri,
 				  SymbolTable stable, boolean declared) {
+
 	// Check if the parent has a declaration for this namespace
 	if (_parent != null) {
 	    final String parentUri = _parent.lookupNamespace(prefix);
@@ -135,16 +145,6 @@ final class LiteralElement extends Instruction {
     }
 
     /**
-     * Returns the namespace URI for which a prefix is pointing to
-     */
-    public String lookupNamespace(String prefix) {
-	if (_accessedPrefixes == null)
-	    return(null);
-	else
-	    return((String)_accessedPrefixes.get(prefix));
-    }
-
-    /**
      * Translates the prefix of a QName according to the rules set in
      * the attributes of xsl:stylesheet. Also registers a QName to assure
      * that the output element contains the necessary namespace declarations.
@@ -163,8 +163,7 @@ final class LiteralElement extends Instruction {
 	// Check if we must translate the prefix
 	final String alternative = stable.lookupPrefixAlias(prefix);
 	if (alternative != null) {
-	    String uri = stable.lookupNamespace(prefix);
-	    _exclude.put(uri, uri);
+	    stable.excludeNamespaces(prefix);
 	    prefix = alternative;
 	}
 
@@ -183,36 +182,13 @@ final class LiteralElement extends Instruction {
     }
 
     /**
-     *
-     */
-    private void excludeNamespaces(String prefixes, SymbolTable stable) {
-
-	// Get prefixes and traverse them
-	StringTokenizer tokens = new StringTokenizer(prefixes);
-	while (tokens.hasMoreTokens()) {
-	    // Get next prefix - special case for default namespace
-	    String prefix = tokens.nextToken();
-	    if (prefix.equals("#default")) prefix = "";
-	    // Get the matching URI and store in hashtable.
-	    String uri = stable.lookupNamespace(prefix);
-	    if (uri != null) _exclude.put(uri, uri);
-	}
-	
-    }
-
-    int called = 0;
-    
-    /**
      * Determines the final QName for the element and its attributes.
      * Registers all namespaces that are used by the element/attributes
      */
     public void parseContents(ElementEx element, Parser parser) {
 	final SymbolTable stable = parser.getSymbolTable();
 
-	// Create hashtable to hold namespace URIs
-	_exclude.put("","");
-
-	// Get any literal element ancestor
+	// Find the closest literal element ancestor (if there is one)
 	SyntaxTreeNode _parent = getParent();
 	while ((_parent != null) && !(_parent instanceof LiteralElement))
 	    _parent = _parent.getParent();
@@ -225,50 +201,67 @@ final class LiteralElement extends Instruction {
 	// Process all attributes and register all namespaces they use
 	final NamedNodeMap attributes = element.getAttributes();
 	for (int i = 0; i < attributes.getLength(); i++) {
+
 	    final Attr attribute = (Attr)attributes.item(i);
 	    final QName qname = parser.getQName(attribute.getName());
 	    final String val = attribute.getValue();
 
-	    // Namespace declarations are handled separately !!!
-	    if (qname != parser.getUseAttributeSets()) {
-		// First check that the attribute is not in the XSL namespace
-		if (qname.getPrefix() != null) {
-		    final String ns = stable.lookupNamespace(qname.getPrefix());
-		    if ((ns != null) && (ns.equals(XSLT_URI))) {
-			final String local = qname.getLocalPart();
-			if (local.equals("exclude-result-prefixes"))
-			    excludeNamespaces(val, stable);
-			continue;
-		    }
-		}
-		// Then add the attribute to the element
+	    // Handle xsl:use-attribute-sets
+	    if (qname == parser.getUseAttributeSets()) {
+		addElement(new UseAttributeSets(val, parser));
+	    }
+	    // Handle xsl:extension-element-prefixes
+	    else if (qname == parser.getExtensionElementPrefixes()) {
+		stable.excludeNamespaces(val);
+	    }
+	    // Handle xsl:exclude-result-prefixes
+	    else if (qname == parser.getExcludeResultPrefixes()) {
+		stable.excludeNamespaces(val);
+	    }
+	    // Ignore other attributes in XSL namespace
+	    else if (qname.getNamespace() == XSLT_URI) {
+		
+	    }
+	    // Handle literal attributes (attributes not in XSL namespace)
+	    else {
+		// Namespace declarations are handled separately !!!
 		final String name = translateQName(qname,stable);
 		if (!name.startsWith("xmlns"))
 		    addElement(new LiteralAttribute(name, val, parser));
-	    }
-	    else {
-		addElement(new UseAttributeSets(val, parser));
 	    }
 	}
 
 	// Register all namespaces that are in scope, except for those that
 	// are listed in the xsl:stylesheet element's *-prefixes attributes
-	final Hashtable   exclude = stable.getExcludedNamespaces();
 	final Enumeration include = stable.getInScopeNamespaces();
 	while (include.hasMoreElements()) {
 	    final String prefix = (String)include.nextElement();
 	    if (!prefix.equals("xml")) {
 		final String uri = stable.lookupNamespace(prefix);
 		if ((uri != null) && (!uri.equals(XSLT_URI))) {
-		    if ((exclude.get(uri) == null) &&
-			(_exclude.get(uri) == null)) {
+		    if (!stable.isExcludedNamespace(uri))
 			registerNamespace(prefix,uri,stable,true);
-		    }
 		}
 	    }
 	}
 
 	parseChildren(element, parser);
+
+	// Process all attributes and register all namespaces they use
+	for (int i = 0; i < attributes.getLength(); i++) {
+	    final Attr attribute = (Attr)attributes.item(i);
+	    final QName qname = parser.getQName(attribute.getName());
+	    final String val = attribute.getValue();
+
+	    // Handle xsl:extension-element-prefixes
+	    if (qname == parser.getExtensionElementPrefixes()) {
+		stable.unExcludeNamespaces(val);
+	    }
+	    // Handle xsl:exclude-result-prefixes
+	    else if (qname == parser.getExcludeResultPrefixes()) {
+		stable.unExcludeNamespaces(val);
+	    }
+	}
     }
 
     /**

@@ -69,7 +69,7 @@ import java.util.Hashtable;
 import java.util.Stack;
 
 import org.apache.xalan.xsltc.*;
-import org.xml.sax.DocumentHandler;
+import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 public final class TextOutput implements TransletOutputHandler {
@@ -120,18 +120,17 @@ public final class TextOutput implements TransletOutputHandler {
     private Stack     _nodeStack;
     private Stack     _prefixStack;
 
-
     // Holds the current tree depth (see startElement() and endElement()).
     private int _depth = 0;
 
     private String _encoding;
 
-    private DocumentHandler  _saxHandler;
+    private ContentHandler _saxHandler;
 
     /**
      * Constructor
      */
-    public TextOutput(DocumentHandler handler) throws IOException {
+    public TextOutput(ContentHandler handler) throws IOException {
         _saxHandler = handler;
         init();
     }
@@ -139,7 +138,7 @@ public final class TextOutput implements TransletOutputHandler {
     /**
      * Constructor
      */
-    public TextOutput(DocumentHandler handler, String encoding)
+    public TextOutput(ContentHandler handler, String encoding)
 	throws IOException {
         _saxHandler = handler;
         init();
@@ -180,18 +179,18 @@ public final class TextOutput implements TransletOutputHandler {
     /**
      * Emit header through the SAX handler
      */
-    private void emitHeader() throws SAXException{
+    private void emitHeader() throws SAXException {
 	// Make sure the _encoding string contains something
-	if ((_encoding == null) || (_encoding == "")) _encoding = "utf-8";
+	if ((_encoding == null) || (_encoding == EMPTYSTRING))
+	    _encoding = "utf-8";
 
 	// Output HTML header as META element
 	if (_outputType == HTML) {
 	    AttributeList attrs = new AttributeList();
 	    attrs.add("http-equiv","Content-Type");
 	    attrs.add("content","text/html; charset="+_encoding);
-	    attrs.prepare();
-	    _saxHandler.startElement("meta", attrs);
-	    _saxHandler.endElement("meta");
+	    _saxHandler.startElement(null, null, "meta", attrs);
+	    _saxHandler.endElement(null, null, "meta");
 	}
     }
 
@@ -212,7 +211,6 @@ public final class TextOutput implements TransletOutputHandler {
     public void closeStartTag() throws TransletException {
 	try {
 	    _startTagOpen = false;
-	    _attributes.prepare();
 	    
 	    // Output current element, either as element or CDATA section
 	    if (_cdataElements.containsKey(_elementName)) {
@@ -226,13 +224,21 @@ public final class TextOutput implements TransletOutputHandler {
 		int col = _elementName.indexOf(':');
 		if (col > 0) {
 		    final String prefix = _elementName.substring(0,col);
-		    if (lookupNamespace(prefix) == null) {
+		    final String localname = _elementName.substring(col+1);
+		    final String uri = lookupNamespace(prefix);
+		    if (uri == null) {
 			throw new TransletException("Namespace for prefix "+
 						    prefix+" has not been "+
 						    "declared.");
 		    }
+		    _saxHandler.startElement(uri, localname,
+					     _elementName, _attributes);
 		}
-		_saxHandler.startElement(_elementName, _attributes);
+		else {
+		    final String uri = lookupNamespace(EMPTYSTRING);
+		    _saxHandler.startElement(uri, _elementName,
+					     _elementName, _attributes);
+		}
 	    }
 
 	    // Insert <META> tag directly after <HEAD> element in HTML output
@@ -289,7 +295,7 @@ public final class TextOutput implements TransletOutputHandler {
      * output.
      */ 
     public void insertCdataElement(String elementName) {
-	_cdataElements.put(elementName,"");
+	_cdataElements.put(elementName,EMPTYSTRING);
     }
 
     /**
@@ -558,7 +564,7 @@ public final class TextOutput implements TransletOutputHandler {
                 _cdataTagOpen = false;
             }
 
-            _saxHandler.endElement(elementName);
+            _saxHandler.endElement(null, null, elementName);
 
             popNamespaces();
             _depth--;
@@ -628,45 +634,60 @@ public final class TextOutput implements TransletOutputHandler {
 	_nodeStack = new Stack();
 	_prefixStack = new Stack();
 
-	_depth = -1;
-	pushNamespace("","");
+	// Define the default namespace (initially maps to "" uri)
+	Stack stack =  new Stack();
+	_namespaces.put(EMPTYSTRING, stack);
+	stack.push(EMPTYSTRING);
+	_prefixStack.push(EMPTYSTRING);
+	_nodeStack.push(new Integer(-1));
 	_depth = 0;
     }
 
     /**
      * Declare a prefix to point to a namespace URI
      */
-    private void pushNamespace(String prefix, String uri) {
+    private void pushNamespace(String prefix, String uri) throws SAXException {
 	Stack stack;
+	// Get the stack that contains URIs for the specified prefix
 	if ((stack = (Stack)_namespaces.get(prefix)) == null) {
 	    stack = new Stack();
 	    _namespaces.put(prefix, stack);
 	}
+	// Quit now if the URI the prefix currently maps to is the same as this
+	if (!stack.empty() && uri.equals(stack.peek())) return;
+	// Put this URI on top of the stack for this prefix
 	stack.push(uri);
 	_prefixStack.push(prefix);
 	_nodeStack.push(new Integer(_depth));
+	_saxHandler.startPrefixMapping(prefix, uri);
     }
 
     /**
      * Undeclare the namespace that is currently pointed to by a given prefix
      */
-    private void popNamespace(String prefix) {
+    private void popNamespace(String prefix) throws SAXException {
 	Stack stack;
 	if ((stack = (Stack)_namespaces.get(prefix)) != null) {
 	    stack.pop();
+	    _saxHandler.endPrefixMapping(prefix);
 	}
     }
 
     /**
      * Pop all namespace definitions that were delcared by the current element
      */
-    private void popNamespaces() {
-	while (true) {
-	    if (_nodeStack.isEmpty()) return;
-	    Integer i = (Integer)(_nodeStack.peek());
-	    if (i.intValue() != _depth) return;
-	    _nodeStack.pop();
-	    popNamespace((String)_prefixStack.pop());
+    private void popNamespaces() throws TransletException {
+	try {
+	    while (true) {
+		if (_nodeStack.isEmpty()) return;
+		Integer i = (Integer)(_nodeStack.peek());
+		if (i.intValue() != _depth) return;
+		_nodeStack.pop();
+		popNamespace((String)_prefixStack.pop());
+	    }
+	}
+	catch (SAXException e) {
+	    throw new TransletException(e);
 	}
     }
 
@@ -685,31 +706,24 @@ public final class TextOutput implements TransletOutputHandler {
      */
     public void declareNamespace(final String name, final String uri)
 	throws TransletException {
-	if (_startTagOpen) {
-	    String prefix;
-	    int col = name.indexOf(':');
-	    if (col == -1)
-		prefix = EMPTYSTRING;
-	    else
-		prefix = name.substring(col+1);
-
-	    // Do not output the namespace declaration if it is already
-	    // in scope with the same prefix
-	    final String ns = lookupNamespace(prefix);
-	    if ((ns != null) && (ns == uri))
-		return;
-	    if ((uri.equals(EMPTYSTRING)) && (prefix.equals(EMPTYSTRING)))
-		return;
-	    // Push the namespace definition
-	    pushNamespace(prefix,uri);
-	    _attributes.add(name,uri);
+	try {
+	    if (_startTagOpen) {
+		if (name.indexOf(':') == -1)
+		    pushNamespace(EMPTYSTRING,uri);
+		else
+		    pushNamespace(name.substring(6),uri);
+	    }
+	    else if (_cdataTagOpen) {
+		throw new TransletException("namespace declaration within "+
+					    "CDATA element");
+	    }
+	    else {
+		throw new TransletException("namespace declaration '"+name+
+					    "'='"+uri+"' outside of element");
+	    }
 	}
-	else if (_cdataTagOpen) {
-	    throw new TransletException("namespace declaration within CDATA");
-	}
-	else {
-	    throw new TransletException("namespace declaration '"+name+
-					"'='"+uri+"' outside of element");
+	catch (SAXException e) {
+	    throw new TransletException(e);
 	}
     }
 
@@ -727,7 +741,7 @@ public final class TextOutput implements TransletOutputHandler {
 
 	if (uri == null)
 	    return(local);
-	else if (uri.equals(""))
+	else if (uri == EMPTYSTRING)
 	    return(local);
 	else
 	    return(uri+":"+local);

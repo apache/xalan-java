@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * @(#)$Id$
  *
  * The Apache Software License, Version 1.1
  *
@@ -71,12 +71,12 @@ import java.io.OutputStreamWriter;
 import java.io.BufferedWriter;
 import java.util.Hashtable;
 
-import org.xml.sax.DocumentHandler;
+import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
-import org.xml.sax.AttributeList;
+import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-public class DefaultSAXOutputHandler implements DocumentHandler{
+public class DefaultSAXOutputHandler implements ContentHandler {
 
     // The output writer
     private Writer _writer;
@@ -109,17 +109,22 @@ public class DefaultSAXOutputHandler implements DocumentHandler{
     private static final char[] GT_CR    = ">\n".toCharArray();
     private static final char[] GT_LT_SL = "></".toCharArray();
     private static final char[] SL_GT    = "/>".toCharArray();
+    private static final char[] XMLNS    = " xmlns".toCharArray();
 
     // All of these are used to control/track output indentation
     private static final char[] INDENT = "                    ".toCharArray();
     private static final int MAX_INDENT_LEVEL = (INDENT.length >> 1);
     private static final int MAX_INDENT       = INDENT.length;
 
+    private static final String EMPTYSTRING = "";
+
     private boolean   _indent = false;
     private boolean   _indentNextEndTag = false;
     private boolean   _linefeedNextStartTag = false;
     private int       _indentLevel = 0;
 
+    // This is used for aggregating namespace declarations
+    private AttributeList _namespaceDeclarations = new AttributeList();
 
     /**
      * Constructor - simple, initially for use in servlets
@@ -138,12 +143,10 @@ public class DefaultSAXOutputHandler implements DocumentHandler{
 
         OutputStreamWriter writer;
         try {
-            writer = new OutputStreamWriter(out, encoding);
-	    _encoding = encoding;
+            writer = new OutputStreamWriter(out, _encoding = encoding);
         }
         catch (java.io.UnsupportedEncodingException e) {
-            writer = new OutputStreamWriter(out, "utf-8");
-	    _encoding = "utf-8";
+            writer = new OutputStreamWriter(out, _encoding = "utf-8" );
         }
         _writer = new BufferedWriter(writer);
 	init();
@@ -162,10 +165,11 @@ public class DefaultSAXOutputHandler implements DocumentHandler{
      */
     private void init() throws IOException {
 
+	// These are HTML tags that can occur as empty elements with
+	// no closing tags (such as <br> insteadof XHTML's <br/>).
         final String[] tags = { "area", "base", "basefont", "br",
 				"col", "frame", "hr", "img", "input",
 				"isindex", "link", "meta", "param" };
-
         for (int i = 0; i < tags.length; i++)
             _emptyElements.put(tags[i],tags[i]);
 
@@ -194,23 +198,21 @@ public class DefaultSAXOutputHandler implements DocumentHandler{
 	// Assume this is an HTML document if first element is <html>
 	if ((element != null) && (element.toLowerCase().equals("html"))) {
 	    _outputType = TextOutput.HTML;
-	    System.out.println("output method determine to be HTML");
 	}
 	// Otherwise we assume this is an XML document
 	else {
-	    System.out.println("output method determine to be XML");
 	    _outputType = TextOutput.XML;
 	    emitHeader();
 	}
     }
 
     /**
-     * SAX: Receive notification of the beginning of a document.
+     * SAX2: Receive notification of the beginning of a document.
      */
     public void startDocument() throws SAXException { }
 
     /**
-     * SAX: Receive notification of the end of an element.
+     * SAX2: Receive notification of the end of an element.
      */
     public void endDocument() throws SAXException  { 
         try {
@@ -221,9 +223,10 @@ public class DefaultSAXOutputHandler implements DocumentHandler{
     }
 
     /**
-     * SAX: Receive notification of the beginning of an element.
+     * SAX2: Receive notification of the beginning of an element.
      */
-    public void startElement(String elementName, AttributeList attrs) throws
+    public void startElement(String uri, String localname,
+			     String elementName, Attributes attrs) throws
 	SAXException {
 	try {
 	    // Determine the output document type if not already known
@@ -246,11 +249,27 @@ public class DefaultSAXOutputHandler implements DocumentHandler{
 	    _writer.write(elementName);
 	    _startTagOpen = true;
 
-	    // Output attributes (process in reverse order
+	    // Output namespace declarations first...
+	    int declCount = _namespaceDeclarations.getLength();
+	    for (int i=0; i<declCount; i++) {
+		final String prefix = _namespaceDeclarations.getQName(i);
+		_writer.write(XMLNS);
+		if ((prefix != null) && (prefix != EMPTYSTRING)) {
+		    _writer.write(':');
+		    _writer.write(prefix);
+		}
+		_writer.write('=');
+		_writer.write('\"');
+		_writer.write(_namespaceDeclarations.getValue(i));
+		_writer.write('\"');
+            }
+	    _namespaceDeclarations.clear();
+
+	    // ...then output all attributes
 	    int attrCount = attrs.getLength();
 	    for (int i=0; i<attrCount; i++) {
 		_writer.write(' ');
-		_writer.write(attrs.getName(i));
+		_writer.write(attrs.getQName(i));
 		_writer.write('=');
 		_writer.write('\"');
 		_writer.write(attrs.getValue(i));
@@ -262,10 +281,12 @@ public class DefaultSAXOutputHandler implements DocumentHandler{
     }
 
     /**
-     * SAX: Receive notification of the end of an element.
+     * SAX2: Receive notification of the end of an element.
      */
-    public void endElement(String elementName)  throws SAXException {
+    public void endElement(String uri, String localname,
+			   String elementName)  throws SAXException {
 	try {
+
             _linefeedNextStartTag = false;
 
             if (_indent) _indentLevel--;
@@ -277,12 +298,16 @@ public class DefaultSAXOutputHandler implements DocumentHandler{
                 if ((_indent) && (_indentNextEndTag)) indent(false);
                 char[] endTag = (char[])_endTags.get(elementName);
                 if (endTag == null) {
+		    // CHANGED OUTPUT LAYOUT
+		    /*
 		    if (_outputType == TextOutput.HTML) { 
                         endTag = ("</"+elementName+">\n").toCharArray();
 		    } else {
 			// works for XML, TEXT
                         endTag = ("</"+elementName+">").toCharArray();
 		    }
+		    */
+		    endTag = ("</"+elementName+">\n").toCharArray();
                     _endTags.put(elementName,endTag);
                 }
                 _writer.write(endTag);
@@ -309,7 +334,7 @@ public class DefaultSAXOutputHandler implements DocumentHandler{
     }
 
     /**
-     * SAX: Receive notification of character data.
+     * SAX2: Receive notification of character data.
      */
     public void characters(char[] ch, int off, int len) throws SAXException {
         try {
@@ -332,7 +357,7 @@ public class DefaultSAXOutputHandler implements DocumentHandler{
     }
 
     /**
-     * SAX: Receive notification of a processing instruction.
+     * SAX2: Receive notification of a processing instruction.
      */
     public void processingInstruction(String target, String data) throws 
 	SAXException {
@@ -353,14 +378,34 @@ public class DefaultSAXOutputHandler implements DocumentHandler{
     }
 
     /**
-     * SAX: Receive notification of ignorable whitespace in element content.
+     * SAX2: Receive notification of ignorable whitespace in element content.
      */
     public void ignorableWhitespace(char[] ch, int start, int len) { }
 
     /**
-     * SAX: Receive an object for locating the origin of SAX document events.
+     * SAX2: Receive an object for locating the origin of SAX document events.
      */
     public void setDocumentLocator(Locator locator) { } 
+
+    /**
+     * SAX2: Receive notification of a skipped entity.
+     */
+    public void skippedEntity(String name) { }
+
+    /**
+     * SAX2: Begin the scope of a prefix-URI Namespace mapping.
+     *       Namespace declarations are output in startElement()
+     */
+    public void startPrefixMapping(String prefix, String uri) {
+	_namespaceDeclarations.add(prefix,uri);
+    }
+
+    /**
+     * SAX2: End the scope of a prefix-URI Namespace mapping.
+     */
+    public void endPrefixMapping(String prefix) {
+	// Do nothing
+    }
 
     /**
      * Adds a newline in the output stream and indents to correct level

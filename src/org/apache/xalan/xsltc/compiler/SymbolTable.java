@@ -66,6 +66,7 @@ package org.apache.xalan.xsltc.compiler;
 import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.StringTokenizer;
 
 import org.apache.xalan.xsltc.compiler.util.*;
 
@@ -233,30 +234,65 @@ final class SymbolTable {
     }
 
     /**
-     * Adds a namespace to the list of URIs that should _NOT_ be included
-     * in all literal result elements
+     *
      */
-    public void excludeNamespace(String prefix) {
-	String uri;
-	if (prefix.equals("#default"))
-	    uri = lookupNamespace("");
-	else
-	    uri = lookupNamespace(prefix);
-	if (uri != null) {
-	    _excludedURI.put(uri,uri);
-	}
-    }
-
     public void excludeURI(String uri) {
-	if (uri != null) _excludedURI.put(uri, uri);
+	if (uri == null) return;
+	Integer refcnt = (Integer)_excludedURI.get(uri);
+	if (refcnt == null)
+	    refcnt = new Integer(1);
+	else
+	    refcnt = new Integer(refcnt.intValue() + 1);
+	_excludedURI.put(uri,refcnt);
     }
 
     /**
-     * Returns a hashtable with all namespace URIs that should _NOT_
-     * be included in literal result elements (unless referenced within
-     * the element).
+     *
      */
-    public Hashtable getExcludedNamespaces() {
-	return(_excludedURI);
+    public void excludeNamespaces(String prefixes) {
+	if (prefixes != null) {
+	    StringTokenizer tokens = new StringTokenizer(prefixes);
+	    while (tokens.hasMoreTokens()) {
+		final String prefix = tokens.nextToken();
+		final String uri;
+		if (prefix.equals("#default"))
+		    uri = lookupNamespace("");
+		else
+		    uri = lookupNamespace(prefix);
+		if (uri != null) excludeURI(uri);
+	    }
+	}
+    }
+
+    /**
+     *
+     */
+    public boolean isExcludedNamespace(String uri) {
+	if (uri == null) return false;
+	final Integer refcnt = (Integer)_excludedURI.get(uri);
+	if (refcnt == null) return false;
+	if (refcnt.intValue() > 0) return true;
+	return false;
+    }
+
+    /**
+     *
+     */
+    public void unExcludeNamespaces(String prefixes) {
+	if (prefixes != null) {
+	    StringTokenizer tokens = new StringTokenizer(prefixes);
+	    while (tokens.hasMoreTokens()) {
+		final String prefix = tokens.nextToken();
+		final String uri;
+		if (prefix.equals("#default"))
+		    uri = lookupNamespace("");
+		else
+		    uri = lookupNamespace(prefix);
+		Integer refcnt = (Integer)_excludedURI.get(uri);
+		if (refcnt != null)
+		    _excludedURI.put(uri, new Integer(refcnt.intValue() - 1));
+	    }
+	}	
     }
 }
+

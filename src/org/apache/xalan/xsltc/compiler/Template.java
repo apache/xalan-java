@@ -281,8 +281,6 @@ public final class Template extends TopLevelElement {
 	final InstructionList il = methodGen.getInstructionList();
 
 	if (_disabled) return;
-
-
 	// bug fix #4433133, add a call to named template from applyTemplates 
 	String className = _stylesheet.getClassName();
 	final String DOM_CLASS_SIG = classGen.getDOMClassSig();

@@ -97,6 +97,8 @@ public final class Parser implements Constants {
     private Hashtable   _qNames;
     private Hashtable   _namespaces;
     private QName       _useAttributeSets;
+    private QName       _excludeResultPrefixes;
+    private QName       _extensionElementPrefixes;
     private Hashtable   _variableScope;
     private Stylesheet  _currentStylesheet;
     private SymbolTable _symbolTable; // Maps QNames to syntax-tree nodes
@@ -134,6 +136,10 @@ public final class Parser implements Constants {
 	initSymbolTable();
 	
 	_useAttributeSets = getQName(XSLT_URI, XSL, "use-attribute-sets");
+	_excludeResultPrefixes
+	    = getQName(XSLT_URI, XSL, "exclude-result-prefixes");
+	_extensionElementPrefixes
+	    = getQName(XSLT_URI, XSL, "extension-element-prefixes");
     }
     
     public void addVariable(Variable var) {
@@ -256,6 +262,14 @@ public final class Parser implements Constants {
 
     public QName getUseAttributeSets() {
 	return _useAttributeSets;
+    }
+
+    public QName getExtensionElementPrefixes() {
+	return _extensionElementPrefixes;
+    }
+
+    public QName getExcludeResultPrefixes() {
+	return _excludeResultPrefixes;
     }
     
     /**	

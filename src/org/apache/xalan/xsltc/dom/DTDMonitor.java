@@ -66,17 +66,17 @@ package org.apache.xalan.xsltc.dom;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import org.xml.sax.*;
-
-import com.sun.xml.parser.Resolver;
-import com.sun.xml.parser.DtdEventListener;
-import com.sun.xml.parser.Parser;
+import org.xml.sax.XMLReader;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.ext.DeclHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 
-
-final public class DTDMonitor implements DtdEventListener {
+final public class DTDMonitor implements DTDHandler, DeclHandler {
 
     // This is the name of the index used for ID attributes
     private final static String ID_INDEX_NAME = "##id";
@@ -85,10 +85,104 @@ final public class DTDMonitor implements DtdEventListener {
     // Stores names of all unparsed entities
     private Hashtable _unparsedEntities = new Hashtable();
 
+    // Name of DTD declaration handler property of an XMLReader object
+    private final static String DECL_HANDLER_PROP =
+	"http://xml.org/sax/properties/declaration-handler";
+
+    // Error message used when the SAX parser does not generate DTD events
+    private final static String NO_DTD_SUPPORT_STR =
+	"Your SAX parser does not handle DTD declarations";
+
     /**
-     * Constructor
+     * Constructor - does nothing
      */
     public DTDMonitor() { }
+
+    /**
+     * Set an instance of this class as the DTD declaration handler for
+     * an XMLReader object (using the setProperty() method).
+     */
+    public void handleDTD(XMLReader reader) throws RuntimeException {
+	try {
+	    reader.setProperty(DECL_HANDLER_PROP, this);
+	    reader.setDTDHandler(this);
+	}
+	catch (SAXNotRecognizedException e) {
+	    throw(new RuntimeException(NO_DTD_SUPPORT_STR));
+	}
+	catch (SAXNotSupportedException e) {
+	    throw(new RuntimeException(NO_DTD_SUPPORT_STR));
+	}
+    }
+
+    /**
+     * SAX2: Receive notification of a notation declaration event.
+     */
+    public void notationDecl(String name, String publicId, String systemId)
+	throws SAXException { }
+
+    /**
+     * SAX2: Receive notification of an unparsed entity declaration event.
+     * The only method here that does not have to do with ID attributes.
+     * Passes names of unparsed entities to the translet.
+     */
+    public void unparsedEntityDecl(String name, String publicId,
+				   String systemId, String notation)
+	throws SAXException {
+	if (_unparsedEntities.containsKey(name) == false) {
+	    _unparsedEntities.put(name, systemId);
+	}
+    }
+
+    public Hashtable getUnparsedEntityURIs() {
+	return(_unparsedEntities);
+    }
+
+    /**
+     * Stores the association between the name of an ID attribute and the
+     * name of element that may contain it  Such an association would be
+     * represented in a DTD as in:
+     *              <!ATTLIST Person SSN ID #REQUIRED>
+     * where 'Person' would be elemtName and 'SSN' would be the ID attribute
+     */
+    public void attributeDecl(String element, String attribute, String type,
+			      String[] options, String defaultValue,
+			      boolean fixed, boolean required) {
+	_idAttributes.put(element, "@"+attribute);
+    }
+
+    /**
+     * SAX2 extension handler for DTD declaration events
+     * Report an attribute type declaration
+     */
+    public void attributeDecl(String element, String attribute, 
+			      String type, String defaultValue, String value) {
+	// Stores the association between the name of an ID attribute and the
+	// name of element that may contain it  Such an association would be
+	// represented in a DTD as in:
+	//           <!ATTLIST Person SSN ID #REQUIRED>
+	// where 'Person' would be elemtName and 'SSN' would be the ID attribute
+	_idAttributes.put(element, "@"+attribute);
+    }
+    
+    /**
+     * SAX2 extension handler for DTD declaration events
+     * Report an element type declaration.
+     */
+    public void elementDecl(String element, String model) { }
+                 
+    /**
+     * SAX2 extension handler for DTD declaration events
+     * Report a parsed external entity declaration.
+     */
+    public void externalEntityDecl(String name, String pid, String sid) { }
+                 
+
+    /**
+     * SAX2 extension handler for DTD declaration events
+     * Report an internal entity declaration.
+     */
+    public void internalEntityDecl(String name, String value) { }
 
     /**
      * Retrieves the name of the ID attribute associated with an element type
@@ -127,50 +221,5 @@ final public class DTDMonitor implements DtdEventListener {
 	} 
     }
 
-    /**
-     * The only method here that does not have to do with ID attributes.
-     * Passes names of unparsed entities to the translet.
-     */
-    public void unparsedEntityDecl(String name, String publicId,
-				   String systemId, String notation)
-	throws SAXException {
-	if (_unparsedEntities.containsKey(name) == false) {
-	    _unparsedEntities.put(name, systemId);
-	}
-    }
-
-    public Hashtable getUnparsedEntityURIs() {
-	return(_unparsedEntities);
-    }
-
-    /**
-     * Stores the association between the name of an ID attribute and the
-     * name of element that may contain it  Such an association would be
-     * represented in a DTD as in:
-     *              <!ATTLIST Person SSN ID #REQUIRED>
-     * where 'Person' would be elemtName and 'SSN' would be the ID attribute
-     */
-    public void attributeDecl(String element, String attribute, String type,
-			      String[] options, String defaultValue,
-			      boolean fixed, boolean required) {
-	_idAttributes.put(element, "@"+attribute);
-    }
-
-    public void notationDecl(String name, String publicId, String systemId)
-	throws SAXException { }
-
-    public void elementDecl(String elemtName, String contentModel) { }
-
-    public void endDtd() { }
-
-    public void externalDtdDecl(String publicId, String systemId) { }
-
-    public void externalEntityDecl(String name, String publicId,
-				   String systemId) { }
-	
-    public void internalDtdDecl(String internalSubset) { }
-
-    public void internalEntityDecl(String name, String value) { }
-    
-    public void startDtd(String rootName) { }
 }
+

@@ -101,6 +101,8 @@ public abstract class AbstractTranslet implements Translet {
 
     private DOMCache _domCache = null;
 
+    private final static String EMPTYSTRING = "";
+
     public final DOMAdapter makeDOMAdapter(DOM dom)
 	throws TransletException {
 	if (dom instanceof DOMImpl) {
@@ -225,6 +227,7 @@ public abstract class AbstractTranslet implements Translet {
      */
     public void addDecimalFormat(String name, DecimalFormatSymbols symbols) {
 	// Remove any existing entries with the same name.
+	if (name == null) name = EMPTYSTRING;
 	_formatSymbols.remove(name);
 	// Construct a DecimalFormat object containing the symbols we got
 	final DecimalFormat df = new DecimalFormat();
@@ -238,10 +241,11 @@ public abstract class AbstractTranslet implements Translet {
      * Retrieves a named DecimalFormat object from _formatSymbols hashtable.
      */
     public final DecimalFormat getDecimalFormat(String name) {
+	if (name == null) name = EMPTYSTRING;
 	final DecimalFormat df = (DecimalFormat)_formatSymbols.get(name);
 	if (df == null) {
 	    // This should really result in an error
-	    return((DecimalFormat)_formatSymbols.get(""));
+	    return((DecimalFormat)_formatSymbols.get(EMPTYSTRING));
 	}
 	else {
 	    return df;
@@ -257,7 +261,7 @@ public abstract class AbstractTranslet implements Translet {
     
     public final String getUnparsedEntity(String name) {
 	final String uri = (String)_unparsedEntities.get(name);
-	return uri == null ? "" : uri;
+	return uri == null ? EMPTYSTRING : uri;
     }
 
     public final void setUnparsedEntityURIs(Hashtable table) {
@@ -307,6 +311,7 @@ public abstract class AbstractTranslet implements Translet {
     public final void characters(final String string,
 				 TransletOutputHandler handler) 
 	throws TransletException {
+	if (string == null) return;
 	final int length = string.length();
 	if (length > _characterArray.length) {
 	    _characterArray = new char[length];

@@ -101,28 +101,30 @@ final class XslElement extends Instruction {
     public void parseContents(ElementEx element, Parser parser) {
 
 	final SymbolTable stable = parser.getSymbolTable();
+
+	// First try to get namespace from the namespace attribute
 	String namespace = element.getAttribute("namespace");
+
+	// If that is undefied we use the prefix in the supplied QName
 	String name = element.getAttribute("name");
 	QName qname = parser.getQNameSafe(name);
 	final String prefix = qname.getPrefix();
-
-	// Ignore this element if it refers to a non-existant namespace
 	if ((namespace == null || namespace == "") && (prefix != null)) {
 	    namespace = stable.lookupNamespace(prefix); 
 	    if (namespace == null) {
 		parser.addWarning(new ErrorMsg(ErrorMsg.NSPUNDEF_ERR, prefix));
 		parseChildren(element, parser);
-		_ignore = true;
+		_ignore = true; // Ignore the element if prefix is undeclared
 		return;
 	    }
 	}
 
-	// Ignore this element if it has an illegal local name
+	// Next check that the local part of the QName is legal (no whitespace)
 	if (qname.getLocalPart().indexOf(' ') > -1) {
 	    parser.addWarning(new ErrorMsg("You can't call an element \""+
 					   qname.getLocalPart()+"\""));
 	    parseChildren(element, parser);
-	    _ignore = true;
+	    _ignore = true; // Ignore the element if the local part is invalid
 	    return;
 	}
 
@@ -132,11 +134,12 @@ final class XslElement extends Instruction {
 	    _namespace = new AttributeValueTemplate(namespace,parser);
 	    // Get the current prefix for that namespace (if any)
 	    _namespacePrefix = stable.lookupPrefix(namespace);
-	    // Declare the namespace
-	    if ((_namespacePrefix = prefix) == null)
-		_namespacePrefix = ""; // redeclare default namespace
+	    // Is it the default namespace?
+	    if ((_namespacePrefix = prefix) == null) _namespacePrefix = "";
+	    // Make this prefix-namespace mapping in scope (in symbol table)
 	    stable.pushNamespace(_namespacePrefix,namespace);
 
+	    // Construct final element QName
 	    if (_namespacePrefix.equals(""))
 		name = qname.getLocalPart();
 	    else
@@ -145,6 +148,7 @@ final class XslElement extends Instruction {
 
 	_name = AttributeValue.create(this, name, parser);
 
+	// Handle the 'use-attribute-sets' attribute
 	final String useSets = element.getAttribute("use-attribute-sets");
 	if (useSets.length() > 0) {
 	    addElement(new UseAttributeSets(useSets, parser));
@@ -152,6 +156,7 @@ final class XslElement extends Instruction {
 
 	parseChildren(element, parser);
 
+	// Make any prefix-namespace mapping out-of-scope
 	if (_namespace != null) stable.popNamespace(_namespacePrefix);
     }
 
@@ -170,12 +175,15 @@ final class XslElement extends Instruction {
 
     /**
      * Compiles code that emits the element with the necessary namespace
-     * definitions.
+     * definitions. The element itself is ignored if the element definition
+     * was in any way erronous, but the child nodes are still processed.
+     * See the overriden translateContents() method as well.
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
+	// Ignore this element if not correctly declared
 	if (!_ignore) {
 	    // Compile code that emits the element start tag
 	    il.append(methodGen.loadHandler());
@@ -199,6 +207,7 @@ final class XslElement extends Instruction {
 	// Compile code that emits the element attributes and contents
 	translateContents(classGen, methodGen);
 
+	// Ignore this element if not correctly declared
 	if (!_ignore) {
 	    // Compile code that emits the element end tag
 	    il.append(methodGen.endElement());

@@ -64,7 +64,14 @@ package org.apache.xalan.xsltc.dom;
 
 import java.io.File;
 import java.net.URL;
-import com.sun.xml.parser.Parser;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.XMLReader;
+import org.xml.sax.SAXException;
+
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
 import org.apache.xalan.xsltc.Translet;
@@ -116,14 +123,20 @@ public final class LoadDocument {
 	}
 	else {
 	    // Parse the input document and construct DOM object
-	    final Parser parser = new Parser();
-	    dom = new DOMImpl();
-	    parser.setDocumentHandler(dom.getBuilder());
+	    // Create a SAX parser and get the XMLReader object it uses
+	    final SAXParserFactory factory = SAXParserFactory.newInstance();
+	    final SAXParser parser = factory.newSAXParser();
+	    final XMLReader reader = parser.getXMLReader();
 
+	    // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
+	    dom = new DOMImpl();
+	    reader.setContentHandler(dom.getBuilder());
+	    // Create a DTD monitor and pass it to the XMLReader object
 	    DTDMonitor dtdMonitor = new DTDMonitor();
-	    parser.setDTDHandler(dtdMonitor);
-	    parser.parse(uri);
+	    dtdMonitor.handleDTD(reader);
+
 	    dom.setDocumentURI(uri);
+	    reader.parse(uri);
 
 	    // Set size of key/id indices
 	    translet.setIndexSize(dom.getSize());

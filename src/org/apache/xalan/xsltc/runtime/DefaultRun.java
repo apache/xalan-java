@@ -71,19 +71,19 @@ import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.Vector;
 
-import com.sun.xml.parser.Resolver;
-import com.sun.xml.parser.DtdEventListener;
-import com.sun.xml.parser.Parser;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.*;
+import org.xml.sax.XMLReader;
+import org.xml.sax.SAXException;
 
 import org.apache.xalan.xsltc.*;
 import org.apache.xalan.xsltc.dom.DOMImpl;
 import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.dom.DTDMonitor;
 
-public final class DefaultRun {
+final class DefaultRun {
 
     private TransletOutputHandler _handler;
 
@@ -124,20 +124,24 @@ public final class DefaultRun {
 	    final Class clazz = Class.forName(_className);
 	    final Translet translet = (Translet)clazz.newInstance();
 
-	    final Parser parser = new Parser();
+	    // Create a SAX parser and get the XMLReader object it uses
+	    final SAXParserFactory factory = SAXParserFactory.newInstance();
+	    final SAXParser parser = factory.newSAXParser();
+	    final XMLReader reader = parser.getXMLReader();
+
+	    // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
 	    final DOMImpl dom = new DOMImpl();
-	    parser.setDocumentHandler(dom.getBuilder());
+	    reader.setContentHandler(dom.getBuilder());
+	    // Create a DTD monitor and pass it to the XMLReader object
+	    final DTDMonitor dtdMonitor = new DTDMonitor();
+	    dtdMonitor.handleDTD(reader);
 
 	    _translet = (AbstractTranslet)translet;
-
-	    DTDMonitor dtdMonitor = new DTDMonitor();
-	    parser.setDTDHandler(dtdMonitor);
 	    dom.setDocumentURI(_fileName);
-
 	    if (_uri)
-		parser.parse(_fileName);
+		reader.parse(_fileName);
 	    else
-		parser.parse("file:"+(new File(_fileName).getAbsolutePath()));
+		reader.parse("file:"+(new File(_fileName).getAbsolutePath()));
 	    
 	    // Set size of key/id indices
 	    _translet.setIndexSize(dom.getSize());
@@ -182,7 +186,7 @@ public final class DefaultRun {
 		System.err.println(e.toString());
 		e.printStackTrace();
 	    }
-	    doSystemExit(1); return;	    
+	    System.exit(1);	    
 	}
 	catch (RuntimeException e) {
 	    System.err.println("\nRuntime Error: " + e.getMessage());
@@ -190,29 +194,29 @@ public final class DefaultRun {
 		System.err.println(e.toString());
 		e.printStackTrace();
 	    }
-	    doSystemExit(1); return;
+	    System.exit(1);
 	}
 	catch (FileNotFoundException e) {
 	    System.err.println("Error: File or URI '"+_fileName+"' not found.");
-	    doSystemExit(1); return;
+	    System.exit(1);
 	}
 	catch (MalformedURLException e) {
 	    System.err.println("Error: Invalid URI '"+_fileName+"'.");
-	    doSystemExit(1); return;
+	    System.exit(1);
 	}
 	catch (ClassNotFoundException e) {
 	    System.err.println("Error: Cannot find class '"+_className+"'.");
-	    doSystemExit(1); return;
+	    System.exit(1);
 	}
         catch (UnknownHostException e) {
 	    System.err.println("Error: Can't resolve URI specification '"+ 
 			       _fileName+"'.");
-	    doSystemExit(1); return;
+	    System.exit(1);
         }
 	catch (Exception e) {
 	    e.printStackTrace();
 	    System.err.println("Error: internal error.");
-	    doSystemExit(1); return;
+	    System.exit(1);
 	}
     }
 
@@ -228,26 +232,9 @@ public final class DefaultRun {
 
     public static void printUsage() {
 	System.err.println(USAGE_STRING);
-	doSystemExit(1); throw new RuntimeException("System.exit(1) would be called");
+	System.exit(1);
     }
 
-    /** If we should call System.exit or not */
-    protected static boolean allowSystemExit = true;
-
-    /** Worker method to call System.exit or not */
-    protected static void doSystemExit(int retVal) {
-        if (allowSystemExit)
-            System.exit(retVal);
-    }
-
-    /** 
-     * Command line runnability.
-     * j jarFileName
-     * u (isUriSpecified)
-     * x (isDebugSpecified)
-     * h printUsage()
-     * s (don't allow System.exit)
-     */
     public static void main(String[] args) {
 	try {
 	    if (args.length > 0) {
@@ -263,9 +250,6 @@ public final class DefaultRun {
 		    }
 		    else if (args[i].equals("-x")) {
 			debug = true;
-		    }
-		    else if (args[i].equals("-s")) {
-			allowSystemExit = false;
 		    }
 		    else if (args[i].equals("-j")) {
 			isJarFileSpecified = true;	
@@ -305,7 +289,7 @@ public final class DefaultRun {
 		if (i == args.length) {
 		    handler.setParameters(params);
 		    handler.doTransform();
-		    doSystemExit(0); return;
+		    System.exit(0);
 		}
 	    }
 	    printUsage();
