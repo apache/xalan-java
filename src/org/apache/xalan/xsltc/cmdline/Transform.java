@@ -173,9 +173,7 @@ final public class Transform {
 	    }
 	    
 	    // Create a DTD monitor and pass it to the XMLReader object
-	    final DTDMonitor dtdMonitor = new DTDMonitor();
-	    dtdMonitor.handleDTD(reader);
-
+	    final DTDMonitor dtdMonitor = new DTDMonitor(reader);
 	    AbstractTranslet _translet = (AbstractTranslet)translet;
 	    dom.setDocumentURI(_fileName);
 	    if (_uri)
@@ -185,11 +183,9 @@ final public class Transform {
 
 	    builder = null;
 
-	    // Set size of key/id indices
-	    _translet.setIndexSize(dom.getSize());
 	    // If there are any elements with ID attributes, build an index
 	    dtdMonitor.buildIdIndex(dom, 0, _translet);
-
+	    // Pass unparsed entity descriptions to the translet
 	    _translet.setDTDMonitor(dtdMonitor);
 
 	    // Pass global parameters
@@ -209,6 +205,9 @@ final public class Transform {
 	    TextOutput textOutput =
 		new TextOutput((ContentHandler)saxHandler,
 			       (LexicalHandler)saxHandler, encoding);
+
+	    // Transform and pass output to the translet output handler
+	    translet.transform(dom, textOutput);
 	}
 	catch (TransletException e) {
 	    if (_debug) e.printStackTrace();

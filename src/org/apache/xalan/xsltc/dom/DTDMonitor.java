@@ -101,6 +101,13 @@ final public class DTDMonitor implements DTDHandler, DeclHandler {
     public DTDMonitor() { }
 
     /**
+     * Constructor
+     */
+    public DTDMonitor(XMLReader reader) throws RuntimeException {
+	handleDTD(reader);
+    }
+
+    /**
      * Set an instance of this class as the DTD declaration handler for
      * an XMLReader object (using the setProperty() method).
      */
@@ -205,6 +212,9 @@ final public class DTDMonitor implements DTDHandler, DeclHandler {
 
 	// These variables are put up here for speed
 	int node, attr, type, typeCache;
+
+	// Set size of key/id indices
+	translet.setIndexSize(dom.getSize());
 
 	// Do nothing if there were no ID declarations in the DTD
 	if ((_idAttributes == null) || (_idAttributes.isEmpty())) return;
