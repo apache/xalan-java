@@ -87,6 +87,7 @@ import org.apache.xalan.xsltc.compiler.util.MethodType;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.runtime.AttributeList;
+import org.apache.xml.utils.ObjectFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -943,7 +944,8 @@ public class Parser implements Constants, ContentHandler {
 
 	if (className != null) {
 	    try {
-		final Class clazz = Class.forName(className);
+		final Class clazz = ObjectFactory.findProviderClass(
+                    className, ObjectFactory.findClassLoader(), true);
 		node = (SyntaxTreeNode)clazz.newInstance();
 		node.setQName(qname);
 		node.setParser(this);

@@ -59,18 +59,22 @@ package org.apache.xml.serializer;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.util.BitSet;
-import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Locale;
-import java.util.MissingResourceException;
 import java.util.PropertyResourceBundle;
+import java.util.Enumeration;
+import java.util.ResourceBundle;
+
+import javax.xml.transform.TransformerException;
 
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
 import org.apache.xml.utils.CharKey;
+import org.apache.xml.utils.ObjectFactory;
 import org.apache.xml.utils.SystemIDResolver;
+import org.apache.xml.utils.WrappedRuntimeException;
+
 /**
  * This class provides services that tell if a character should have
  * special treatement, such as entity reference substitution or normalization
@@ -81,8 +85,6 @@ import org.apache.xml.utils.SystemIDResolver;
  */
 public class CharInfo
 {
-
-
     /** Lookup table for characters to entity references. */
     private Hashtable m_charToEntityRef = new Hashtable();
 
@@ -177,15 +179,12 @@ public class CharInfo
      */
     private CharInfo(String entitiesResource)
     {
-        PropertyResourceBundle entities;
-        InputStream is = null;
-        BufferedReader reader = null;
-        int index;
-        String name;
-        String value;
-        int code;
-        String line;
-        
+        this(entitiesResource, false);
+    }
+
+    private CharInfo(String entitiesResource, boolean internal)
+    {
+        ResourceBundle entities = null;
         boolean noExtraEntities = true;
 
         // Make various attempts to interpret the parameter as a properties
@@ -195,13 +194,21 @@ public class CharInfo
         //   2) try using the class loader to find the specified file a resource
         //      file
         //   3) try treating the resource a URI
-        entities = loadEntitiesResource(entitiesResource);
-        if (null != entities) {
+
+        if (internal) { 
+            try {
+                // Load entity property files by using PropertyResourceBundle,
+                // cause of security issure for applets
+                entities = PropertyResourceBundle.getBundle(entitiesResource);
+            } catch (Exception e) {}
+        }
+
+        if (entities != null) {
             Enumeration enum = entities.getKeys();
             while (enum.hasMoreElements()){
-                name = (String) enum.nextElement();
-                value = entities.getString(name);
-                code = Integer.parseInt(value);
+                String name = (String) enum.nextElement();
+                String value = entities.getString(name);
+                int code = Integer.parseInt(value);
                 defineEntity(name, (char) code);
                 if (extraEntity(code))
                     noExtraEntities = false;
@@ -209,32 +216,27 @@ public class CharInfo
             set(S_LINEFEED);
             set(S_CARRIAGERETURN);
         } else {
-            // Load user specified resource file by using URL loading, it
-            // requires a valid URI as parameter;                
-            try {
-                try {
-                    // Maintenance note: we should evaluate replacing getting
-                    // the ClassLoader with
-                    // javax.xml.transform.FactoryFinder.findClassLoader()
-                    // or similar code
-                    ClassLoader cl = CharInfo.class.getClassLoader();
+            InputStream is = null;
 
+            // Load user specified resource file by using URL loading, it
+            // requires a valid URI as parameter
+            try {
+                if (internal) {
+                    is = CharInfo.class.getResourceAsStream(entitiesResource);
+                } else {
+                    ClassLoader cl = ObjectFactory.findClassLoader();
                     if (cl == null) {
-                        is = ClassLoader.getSystemResourceAsStream(
-                                                             entitiesResource);
+                        is = ClassLoader.getSystemResourceAsStream(entitiesResource);
                     } else {
                         is = cl.getResourceAsStream(entitiesResource);
                     }
-                } catch (Exception e) { }
 
-                if (is == null) {
-                    is = CharInfo.class.getResourceAsStream(entitiesResource);
-                }
-
-                if (is == null) {
-                    URL url = new URL(entitiesResource);
-
-                    is = url.openStream();
+                    if (is == null) {
+                        try {
+                            URL url = new URL(entitiesResource);
+                            is = url.openStream();
+                        } catch (Exception e) {}
+                    }
                 }
 
                 if (is == null) {
@@ -262,14 +264,15 @@ public class CharInfo
                 // versions of Xalan), this should work well enough to keep us
                 // on the air until we're ready to officially decommit from
                 // VJ++.
+
+                BufferedReader reader;
                 try {
-                    reader = new BufferedReader(new InputStreamReader(is,
-                                                                      "UTF-8"));
-                } catch (java.io.UnsupportedEncodingException e) {
+                    reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                } catch (UnsupportedEncodingException e) {
                     reader = new BufferedReader(new InputStreamReader(is));
                 }
 
-                line = reader.readLine();
+                String line = reader.readLine();
 
                 while (line != null) {
                     if (line.length() == 0 || line.charAt(0) == '#') {
@@ -278,22 +281,22 @@ public class CharInfo
                         continue;
                     }
 
-                    index = line.indexOf(' ');
+                    int index = line.indexOf(' ');
 
                     if (index > 1) {
-                        name = line.substring(0, index);
+                        String name = line.substring(0, index);
 
                         ++index;
 
                         if (index < line.length()) {
-                            value = line.substring(index);
+                            String value = line.substring(index);
                             index = value.indexOf(' ');
 
                             if (index > 0) {
                                 value = value.substring(0, index);
                             }
 
-                            code = Integer.parseInt(value);
+                            int code = Integer.parseInt(value);
 
                             defineEntity(name, (char) code);
                             if (extraEntity(code))
@@ -307,24 +310,25 @@ public class CharInfo
                 is.close();
                 set(S_LINEFEED);
                 set(S_CARRIAGERETURN);
-            } catch (Exception except) {
+            } catch (Exception e) {
                 throw new RuntimeException(
                     XMLMessages.createXMLMessage(
                         XMLErrorResources.ER_RESOURCE_COULD_NOT_LOAD,
                         new Object[] { entitiesResource,
-                                       except.toString(),
+                                       e.toString(),
                                        entitiesResource,
-                                       except.toString()}));
+                                       e.toString()}));
             } finally {
                 if (is != null) {
                     try {
                         is.close();
-                    } catch (Exception except) { }
+                    } catch (Exception except) {}
                 }
             }
         }
+
         onlyQuotAmpLtGt = noExtraEntities;
-        
+
         // initialize the array with a cache of the BitSet values
         for (int i=0; i<ASCII_MAX; i++)
             quickASCII[i] = get(i);    
@@ -333,15 +337,14 @@ public class CharInfo
         // for use by ToStream.character(char[], int , int)
         for (int ch = 0; ch <ASCII_MAX; ch++)
         if((((0x20 <= ch || (0x0A == ch || 0x0D == ch || 0x09 == ch)))
-             && (!get(ch)))
-             || ('"' == ch))
-         {
-             isCleanASCII[ch] = true;
-         }
-         else
-             isCleanASCII[ch] = false;     
+             && (!get(ch))) || ('"' == ch))
+        {
+            isCleanASCII[ch] = true;
+        }
+        else {
+            isCleanASCII[ch] = false;     
+        }
     }
-
 
     /**
      * Defines a new character reference. The reference's name and value are
@@ -425,7 +428,7 @@ public class CharInfo
 //        return isCleanASCII;
 //    }
 
- 
+
     /**
      * Factory that reads in a resource file that describes the mapping of
      * characters to entity references.
@@ -444,84 +447,42 @@ public class CharInfo
      */
     public static CharInfo getCharInfo(String entitiesFileName)
     {
-        CharInfo retobj = null;
-     
-        Hashtable getCharInfo_cache = HashtableHolder.m_getCharInfo_cache;
- 
-        retobj = (CharInfo) getCharInfo_cache.get(entitiesFileName);
-        
-        if (retobj == null)
-        {
-            // try to load it.
-            try
-            {
-                retobj = new CharInfo(entitiesFileName);
-                getCharInfo_cache.put(entitiesFileName, retobj);
-            }
-            catch (Exception e)
-            {
-                retobj = null;
-            }
+        CharInfo charInfo = (CharInfo) m_getCharInfoCache.get(entitiesFileName);
+        if (charInfo != null) {
+            return charInfo;
         }
-        if (null == retobj)
-        {
-            String absoluteEntitiesFileName;
 
-            if (entitiesFileName.indexOf(':') < 0)
-            {
+        // try to load it internally - cache
+        try {
+            charInfo = new CharInfo(entitiesFileName, true);
+            m_getCharInfoCache.put(entitiesFileName, charInfo);
+            return charInfo;
+        } catch (Exception e) {}
+
+        // try to load it externally - do not cache
+        try {
+            return new CharInfo(entitiesFileName);
+        } catch (Exception e) {}
+
+        String absoluteEntitiesFileName;
+
+        if (entitiesFileName.indexOf(':') < 0) {
+            absoluteEntitiesFileName =
+                SystemIDResolver.getAbsoluteURIFromRelative(entitiesFileName);
+        } else {
+            try {
                 absoluteEntitiesFileName =
-                    SystemIDResolver.getAbsoluteURIFromRelative(
-                        entitiesFileName);
+                    SystemIDResolver.getAbsoluteURI(entitiesFileName, null);
+            } catch (TransformerException te) {
+                throw new WrappedRuntimeException(te);
             }
-            else
-            {
-                try
-                {
-                    absoluteEntitiesFileName =
-                        SystemIDResolver.getAbsoluteURI(entitiesFileName, null);
-                }
-                catch (javax.xml.transform.TransformerException te)
-                {
-                    throw new org.apache.xml.utils.WrappedRuntimeException(te);
-                }
-            }
-            retobj = new CharInfo(absoluteEntitiesFileName);
-            getCharInfo_cache.put(entitiesFileName, retobj);
         }
-        return retobj;
-    }
-    
-//Load entity property files by using PropertyResourceBundle, cause of security issure for applets
-        private PropertyResourceBundle loadEntitiesResource(String baseName)
-                                throws MissingResourceException
-        {    
-                try
-                {
-                        Locale locale = Locale.getDefault();
-                        java.lang.ClassLoader loader = this.getClass().getClassLoader(); 
-                        return (PropertyResourceBundle)PropertyResourceBundle.getBundle(baseName);
-                }
-                catch (MissingResourceException e)
-                {
-                        return null;
-                }
-        }
-    
-    /**
-     * This class is not loaded until first referenced (see Java Language
-     * Specification by Gosling/Joy/Steele, section 12.4.1)
-     * 
-     * The static members are created when this class is first referenced, as a
-     * lazy initialization not needing checking against null or any
-     * synchronization later on.
-     * 
-     */    
-    private static class HashtableHolder
-    {
-        /** Table of user-specified char infos. */
-        private static Hashtable m_getCharInfo_cache = new Hashtable();
 
+        return new CharInfo(absoluteEntitiesFileName, false);
     }
+
+    /** Table of user-specified char infos. */
+    private static Hashtable m_getCharInfoCache = new Hashtable();
 
     /**
      * Returns the array element holding the bit value for the
@@ -593,17 +554,6 @@ public class CharInfo
                           (1 << (i & LOW_ORDER_BITMASK))
             ) != 0;  // 0L for 64 bit words
         return in_the_set;
-    }
-    
-    /**
-     * This is private to force the use of the factory method:
-     * getCharInfo(String) instead.
-     */
-    private CharInfo()
-    {
-        // this constructor should never be called, the next line
-        // is only here to make the compiler happy.
-        onlyQuotAmpLtGt = true;
     }
     
     // record if there are any entities other than

@@ -75,7 +75,7 @@ import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
-import org.apache.xalan.xsltc.runtime.TransletLoader;
+import org.apache.xml.utils.ObjectFactory;
 
 final class FunctionAvailableCall extends FunctionCall {
 
@@ -169,24 +169,22 @@ final class FunctionAvailableCall extends FunctionCall {
 	  methodName = replaceDash(methodName);
 
 	try {
-	    TransletLoader loader = new TransletLoader();
-	    final Class clazz = loader.loadClass(className);
+            final Class clazz = ObjectFactory.findProviderClass(
+                className, ObjectFactory.findClassLoader(), true);
 
 	    if (clazz == null) {
 	    	return false;
 	    }
-	    else {
-		final Method[] methods = clazz.getMethods();
 
-		for (int i = 0; i < methods.length; i++) {
-		    final int mods = methods[i].getModifiers();
+	    final Method[] methods = clazz.getMethods();
 
-		    if (Modifier.isPublic(mods)
-			&& Modifier.isStatic(mods)
+	    for (int i = 0; i < methods.length; i++) {
+		final int mods = methods[i].getModifiers();
+
+		if (Modifier.isPublic(mods) && Modifier.isStatic(mods)
 			&& methods[i].getName().equals(methodName))
-		    {
-			return true;
-		    }
+		{
+		    return true;
 		}
 	    }
 	}

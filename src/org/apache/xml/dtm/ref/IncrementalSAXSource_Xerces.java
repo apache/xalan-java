@@ -64,6 +64,7 @@ import java.lang.reflect.Method;
 import org.apache.xerces.parsers.SAXParser;
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
+import org.apache.xml.utils.ObjectFactory;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -131,17 +132,20 @@ public class IncrementalSAXSource_Xerces
 			// Reflection is used to allow us to continue to compile against
 			// Xerces1. If/when we can abandon the older versions of the parser,
 			// this will simplify significantly.
-			Class me=this.getClass();
 			
 			// If we can't get the magic constructor, no need to look further.
-			Class xniConfigClass=Class.forName("org.apache.xerces.xni.parser.XMLParserConfiguration");
+			Class xniConfigClass=ObjectFactory.findProviderClass(
+                            "org.apache.xerces.xni.parser.XMLParserConfiguration",
+                            ObjectFactory.findClassLoader(), true);
 			Class[] args1={xniConfigClass};
 			Constructor ctor=SAXParser.class.getConstructor(args1);
 			
 			// Build the parser configuration object. StandardParserConfiguration
 			// happens to implement XMLPullParserConfiguration, which is the API
 			// we're going to want to use.
-			Class xniStdConfigClass=Class.forName("org.apache.xerces.parsers.StandardParserConfiguration");
+			Class xniStdConfigClass=ObjectFactory.findProviderClass(
+                            "org.apache.xerces.parsers.StandardParserConfiguration",
+                            ObjectFactory.findClassLoader(), true);
 			fPullParserConfig=xniStdConfigClass.newInstance();
 			Object[] args2={fPullParserConfig};
 			fIncrementalParser = (SAXParser)ctor.newInstance(args2);
@@ -149,7 +153,9 @@ public class IncrementalSAXSource_Xerces
 			// Preload all the needed the configuration methods... I want to know they're
 			// all here before we commit to trying to use them, just in case the
 			// API changes again.
-			Class fXniInputSourceClass=Class.forName("org.apache.xerces.xni.parser.XMLInputSource");
+			Class fXniInputSourceClass=ObjectFactory.findProviderClass(
+                            "org.apache.xerces.xni.parser.XMLInputSource",
+                            ObjectFactory.findClassLoader(), true);
 			Class[] args3={fXniInputSourceClass};
 			fConfigSetInput=xniStdConfigClass.getMethod("setInputSource",args3);
 

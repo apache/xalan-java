@@ -68,7 +68,7 @@ import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
-import org.apache.xalan.xsltc.runtime.TransletLoader;
+import org.apache.xml.utils.ObjectFactory;
 
 public class NodeSortRecordFactory {
 
@@ -81,19 +81,6 @@ public class NodeSortRecordFactory {
     private int   _order[];
     private int   _type[];
     private final AbstractTranslet _translet;
-
-    public Class loadTranslet(String name) throws ClassNotFoundException {
-	// First try to load the class using the default class loader
-	try {
-	    return Class.forName(name);
-	}
-	catch (ClassNotFoundException e) {
-	    // ignore
-	}
-
-	// Then try to load the class using the bootstrap class loader
-	return new TransletLoader().loadTranslet(name);
-    }
 
     /**
      * Creates a NodeSortRecord producing object. The DOM specifies which tree
@@ -111,7 +98,10 @@ public class NodeSortRecordFactory {
 	    // This should return a Class definition if using TrAX
 	    _class = translet.getAuxiliaryClass(className);
 	    // This code is only run when the native API is used
-	    if (_class == null) _class = loadTranslet(className);
+	    if (_class == null) {
+                _class = ObjectFactory.findProviderClass(
+                    className, ObjectFactory.findClassLoader(), true);
+            } 
 	    _translet = (AbstractTranslet)translet;
 
 	    int levels = order.length;

@@ -80,8 +80,8 @@ import org.apache.xalan.xsltc.dom.SAXImpl;
 import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.Constants;
+import org.apache.xml.utils.ObjectFactory;
 import org.apache.xalan.xsltc.runtime.Parameter;
-import org.apache.xalan.xsltc.runtime.TransletLoader;
 import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
 import org.apache.xml.serializer.SerializationHandler;
 
@@ -130,24 +130,10 @@ final public class Transform {
 	_jarFileSrc = jarFile;	
     }
 
-    private Class loadTranslet(String name) throws ClassNotFoundException {
-	// First try to load the class using the default class loader
-	try {
-	    return Class.forName(name);
-	}
-	catch (ClassNotFoundException e) {
-	    // ignore
-	}
-
-	// Then try to load the class using the bootstrap class loader
-	TransletLoader loader = new TransletLoader();
-	return loader.loadTranslet(name);
-    }
-
     private void doTransform() {
 	try {
-	    
-	    final Class clazz = loadTranslet(_className);
+            final Class clazz = ObjectFactory.findProviderClass(
+                _className, ObjectFactory.findClassLoader(), true);
 	    final AbstractTranslet translet = (AbstractTranslet)clazz.newInstance();
 
 	    // Create a SAX parser and get the XMLReader object it uses

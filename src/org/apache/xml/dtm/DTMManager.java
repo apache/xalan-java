@@ -58,6 +58,7 @@ package org.apache.xml.dtm;
 
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
+import org.apache.xml.utils.ObjectFactory;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.XMLStringFactory;
 
@@ -90,7 +91,7 @@ public abstract class DTMManager
   
   /** The default class name to use as the manager. */
   private static String defaultClassName =
-  "org.apache.xml.dtm.ref.DTMManagerDefault";
+    "org.apache.xml.dtm.ref.DTMManagerDefault";
 
   /**
    * Factory for creating XMLString objects.
@@ -138,7 +139,7 @@ public abstract class DTMManager
    * </li>
    * <li>
    * Use the JAVA_HOME(the parent directory where jdk is
-   * installed)/lib/jaxp.properties for a property file that contains the
+   * installed)/lib/xalan.properties for a property file that contains the
    * name of the implementation class keyed on the same value as the
    * system property defined above.
    * </li>
@@ -146,7 +147,7 @@ public abstract class DTMManager
    * Use the Services API (as detailed in the JAR specification), if
    * available, to determine the classname. The Services API will look
    * for a classname in the file
-   * <code>META-INF/services/javax.xml.parsers.DTMManager</code>
+   * <code>META-INF/services/org.apache.xml.dtm.DTMManager</code>
    * in jars available to the runtime.
    * </li>
    * <li>
@@ -167,20 +168,24 @@ public abstract class DTMManager
   public static DTMManager newInstance(XMLStringFactory xsf) 
            throws DTMConfigurationException
   {
-
-     DTMManager factoryImpl = null;
-     try {
-        factoryImpl = (DTMManager) FactoryFinder.find(defaultPropName,
-              /* The fallback implementation class name */
-                                                      defaultClassName);
-     } catch (FactoryFinder.ConfigurationError e) {
-           throw new DTMConfigurationException(XMLMessages.createXMLMessage(XMLErrorResources.ER_NO_DEFAULT_IMPL, null)); //"No default implementation found");
-     }
-
+    DTMManager factoryImpl = null;
+    try
+    {
+      factoryImpl = (DTMManager) ObjectFactory
+        .createObject(defaultPropName, defaultClassName);
+    }
+    catch (ObjectFactory.ConfigurationError e)
+    {
+      throw new DTMConfigurationException(XMLMessages.createXMLMessage(
+        XMLErrorResources.ER_NO_DEFAULT_IMPL, null), e.getException());
+        //"No default implementation found");
+    }
 
     if (factoryImpl == null)
     {
-      throw new DTMConfigurationException(XMLMessages.createXMLMessage(XMLErrorResources.ER_NO_DEFAULT_IMPL, null)); //"No default implementation found");
+      throw new DTMConfigurationException(XMLMessages.createXMLMessage(
+        XMLErrorResources.ER_NO_DEFAULT_IMPL, null));
+        //"No default implementation found");
     }
 
     factoryImpl.setXMLStringFactory(xsf);

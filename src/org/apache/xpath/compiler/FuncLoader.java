@@ -56,6 +56,9 @@
  */
 package org.apache.xpath.compiler;
 
+import javax.xml.transform.TransformerException;
+
+import org.apache.xml.utils.ObjectFactory;
 import org.apache.xpath.functions.Function;
 
 /**
@@ -113,42 +116,21 @@ public class FuncLoader
    * @throws javax.xml.transform.TransformerException if ClassNotFoundException, 
    *    IllegalAccessException, or InstantiationException is thrown.
    */
-  public Function getFunction() throws javax.xml.transform.TransformerException
+  public Function getFunction() throws TransformerException
   {
-
     try
     {
-      Class function;
-
-      // first get package name if necessary
-      if (m_funcName.indexOf(".") < 0)
-      {
-
-        // String thisName = this.getClass().getName();
-        // int lastdot = thisName.lastIndexOf(".");
-        // String classname = thisName.substring(0,lastdot+1) + m_funcName; 
-        String classname = "org.apache.xpath.functions." + m_funcName;
-
-        function = Class.forName(classname);
+      String className = m_funcName;
+      if (className.indexOf(".") < 0) {
+        className = "org.apache.xpath.functions." + className;
       }
-      else
-        function = Class.forName(m_funcName);
 
-      Function func = (Function) function.newInstance();
-
-      return func;
+      return (Function) ObjectFactory.newInstance(
+        className, ObjectFactory.findClassLoader(), true);
     }
-    catch (ClassNotFoundException e)
+    catch (ObjectFactory.ConfigurationError e)
     {
-      throw new javax.xml.transform.TransformerException(e);
-    }
-    catch (IllegalAccessException e)
-    {
-      throw new javax.xml.transform.TransformerException(e);
-    }
-    catch (InstantiationException e)
-    {
-      throw new javax.xml.transform.TransformerException(e);
+      throw new TransformerException(e.getException());
     }
   }
 }

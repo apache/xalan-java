@@ -69,6 +69,7 @@ import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xml.utils.ObjectFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
@@ -401,12 +402,11 @@ public class Extensions
     try
     {
       // Use reflection to try to find xml-commons utility 'Which'
-      // Classloader note: if anyone really cares, we could try to 
-      //    use the context classloader instead
-      Class clazz = Class.forName(WHICH_CLASSNAME);
+      Class clazz = ObjectFactory.findProviderClass(
+        WHICH_CLASSNAME, ObjectFactory.findClassLoader(), true);
       if (null == clazz)
         return null;
-
+        
       // Fully qualify names since this is the only method they're used in
       java.lang.reflect.Method method = clazz.getMethod(WHICH_METHODNAME, WHICH_METHOD_ARGS);
       Hashtable report = new Hashtable();

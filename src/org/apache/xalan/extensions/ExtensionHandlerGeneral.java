@@ -73,6 +73,7 @@ import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.ref.DTMNodeList;
+import org.apache.xml.utils.ObjectFactory;
 import org.apache.xml.utils.StringVector;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xpath.XPathProcessorException;
@@ -104,66 +105,22 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
   // BSF objects used to invoke BSF by reflection.  Do not import the BSF classes
   // since we don't want a compile dependency on BSF.
 
-  /** Instance of Manager class          */
-  private Object m_mgr;  // 
+  /** BSF manager used to run scripts */
+  private Object m_engine;
 
-  /** BSF manager used to run scripts         */
-  private Object m_engine;  
+  /** Engine call to invoke scripts */
+  private Method m_engineCall;
 
   // static fields
 
-  /** BSFManager package name          */
+  /** BSFManager package name */
   private static final String BSF_MANAGER = "com.ibm.bsf.BSFManager";
 
-  /** Manager class          */
-  private static Class managerClass;
-
-  /** Manager load scripting engine          */
-  private static Method mgrLoadScriptingEngine;
-
-  /** BSFEngine package name          */
+  /** BSFEngine package name */
   private static final String BSF_ENGINE = "com.ibm.bsf.BSFEngine";
 
-  /** Engine call to "compile" scripts         */
-  private static Method engineExec;   
-
-  /** Engine call to invoke scripts          */
-  private static Method engineCall;   
-
-  /** Negative one integer         */
+  /** Negative one integer */
   private static final Integer NEG1INT = new Integer(-1);
-
-  static
-  {
-    try
-    {
-      //managerClass = Class.forName(BSF_MANAGER);
-                        managerClass = ExtensionHandler.getClassForName(BSF_MANAGER);
-      mgrLoadScriptingEngine = managerClass.getMethod("loadScriptingEngine",
-              new Class[]{ String.class });
-
-      //Class engineClass = Class.forName(BSF_ENGINE);
-                        Class engineClass = ExtensionHandler.getClassForName(BSF_ENGINE);
-
-      engineExec = engineClass.getMethod("exec", new Class[]{ String.class,
-                                                              Integer.TYPE,
-                                                              Integer.TYPE,
-                                                              Object.class });
-      engineCall = engineClass.getMethod("call", new Class[]{ Object.class,
-                                                              String.class,
-                                                              Class.forName(
-                                                                "[Ljava.lang.Object;") });
-    }
-    catch (Exception e)
-    {
-      managerClass = null;
-      mgrLoadScriptingEngine = null;
-      engineExec = null;
-      engineCall = null;
-
-      e.printStackTrace();
-    }
-  }
 
   /**
    * Construct a new extension namespace handler given all the information
@@ -268,19 +225,37 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
       }
       
     }
-   
-    if (null == managerClass)
+
+    Object manager = null;
+    try
+    {
+      manager = ObjectFactory.newInstance(
+        BSF_MANAGER, ObjectFactory.findClassLoader(), true);
+    }
+    catch (ObjectFactory.ConfigurationError e)
+    {
+      e.printStackTrace();
+    }
+
+    if (manager == null)
+    {
       throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_CANNOT_INIT_BSFMGR, null)); //"Could not initialize BSF manager");
+    }
 
     try
     {
-      m_mgr = managerClass.newInstance();
-      m_engine = mgrLoadScriptingEngine.invoke(m_mgr,
-                                               new Object[]{ scriptLang });
+      Method loadScriptingEngine = manager.getClass()
+        .getMethod("loadScriptingEngine", new Class[]{ String.class });
+
+      m_engine = loadScriptingEngine.invoke(manager,
+        new Object[]{ scriptLang });
+
+      Method engineExec = m_engine.getClass().getMethod("exec",
+        new Class[]{ String.class, Integer.TYPE, Integer.TYPE, Object.class });
 
       // "Compile" the program
-      engineExec.invoke(m_engine, new Object[]{ "XalanScript", NEG1INT,
-                                                NEG1INT, m_scriptSrc });
+      engineExec.invoke(m_engine,
+        new Object[]{ "XalanScript", NEG1INT, NEG1INT, m_scriptSrc });
     }
     catch (Exception e)
     {
@@ -347,8 +322,13 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
         }
       }
 
-      return engineCall.invoke(m_engine, new Object[]{ null, funcName,
-                                                       argArray });
+      if (m_engineCall != null) {
+        m_engineCall = m_engine.getClass().getMethod("call",
+          new Class[]{ Object.class, String.class, Object[].class });
+      }
+
+      return m_engineCall.invoke(m_engine,
+        new Object[]{ null, funcName, argArray });
     }
     catch (Exception e)
     {

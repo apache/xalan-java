@@ -90,6 +90,7 @@ import org.apache.xalan.trace.PrintTraceListener;
 import org.apache.xalan.trace.TraceManager;
 import org.apache.xalan.transformer.XalanProperties;
 import org.apache.xml.utils.DefaultErrorHandler;
+import org.apache.xml.utils.ObjectFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -462,12 +463,12 @@ public class Process
           {
             try
             {
-              uriResolver =
-                (URIResolver) Class.forName(argv[++i],true,ClassLoader.getSystemClassLoader()).newInstance();
+              uriResolver = (URIResolver) ObjectFactory.newInstance(
+                argv[++i], ObjectFactory.findClassLoader(), true);
 
               tfactory.setURIResolver(uriResolver);
             }
-            catch (Exception cnfe)
+            catch (ObjectFactory.ConfigurationError cnfe)
             {
               System.err.println(
                 XSLMessages.createMessage(
@@ -491,10 +492,10 @@ public class Process
           {
             try
             {
-              entityResolver =
-                (EntityResolver) Class.forName(argv[++i],true,ClassLoader.getSystemClassLoader()).newInstance();
+              entityResolver = (EntityResolver) ObjectFactory.newInstance(
+                argv[++i], ObjectFactory.findClassLoader(), true);
             }
-            catch (Exception cnfe)
+            catch (ObjectFactory.ConfigurationError cnfe)
             {
               System.err.println(
                 XSLMessages.createMessage(
@@ -518,10 +519,10 @@ public class Process
           {
             try
             {
-              contentHandler =
-                (ContentHandler) Class.forName(argv[++i],true,ClassLoader.getSystemClassLoader()).newInstance();
+              contentHandler = (ContentHandler) ObjectFactory.newInstance(
+                argv[++i], ObjectFactory.findClassLoader(), true);
             }
-            catch (Exception cnfe)
+            catch (ObjectFactory.ConfigurationError cnfe)
             {
               System.err.println(
                 XSLMessages.createMessage(

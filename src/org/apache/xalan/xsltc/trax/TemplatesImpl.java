@@ -68,8 +68,6 @@ package org.apache.xalan.xsltc.trax;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Properties;
 
 import javax.xml.transform.Templates;
@@ -82,6 +80,7 @@ import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.Hashtable;
+import org.apache.xml.utils.ObjectFactory;
 
 public final class TemplatesImpl implements Templates, Serializable {
 
@@ -150,18 +149,21 @@ public final class TemplatesImpl implements Templates, Serializable {
      */
     private transient TransformerFactoryImpl _tfactory = null;
 
-    private class TransletClassLoader extends ClassLoader {
-
-	protected TransletClassLoader(ClassLoader parent){
+    static final class TransletClassLoader extends ClassLoader {
+	TransletClassLoader(ClassLoader parent) {
 	    super(parent);
 	}
-	public Class defineClass(byte[] b) {
-	    return super.defineClass(null, b, 0, b.length);
+
+        /**
+         * Access to final protected superclass member from outer class.
+         */
+	Class defineClass(byte[] b) {
+	    return defineClass(null, b, 0, b.length);
 	}
     }
 
 
-   /**
+    /**
      * Create an XSLTC template object from the bytecodes.
      * The bytecodes for the translet and auxiliary classes, plus the name of
      * the main translet class, must be supplied.
@@ -284,20 +286,8 @@ public final class TemplatesImpl implements Templates, Serializable {
 	    throw new TransformerConfigurationException(err.toString());
 	}
 
-	TransletClassLoader loader = 
-	    (TransletClassLoader) AccessController.doPrivileged(
-		new PrivilegedAction() {
-			public Object run() {
-			    /* 
-			     * Get the loader from the current thread instead of
-			     * the class. This is important for translets that load
-			     * external Java classes and run in multi-threaded envs.
-			     */
-			    return new TransletClassLoader(
-				Thread.currentThread().getContextClassLoader());
-			}
-		    }
-		);
+        TransletClassLoader loader =
+            new TransletClassLoader(ObjectFactory.findClassLoader());
 
 	try {
 	    final int classCount = _bytecodes.length;

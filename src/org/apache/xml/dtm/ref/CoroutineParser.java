@@ -166,12 +166,11 @@ public interface CoroutineParser {
    * */
   public void doTerminate(int appCoroutine);
 
-
-    /**
-     *  Initialize the coroutine parser. Same parameters could be passed
-     *  in a non-default constructor, or by using using Class.forName and
-     *  newInstance and then calling init()
-     */
+  /**
+   * Initialize the coroutine parser. Same parameters could be passed
+   * in a non-default constructor, or by using using context ClassLoader
+   * and newInstance and then calling init()
+   */
   public void init( CoroutineManager co, int appCoroutineID, XMLReader parser );
 
 } // class CoroutineParser

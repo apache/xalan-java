@@ -63,6 +63,7 @@ import javax.xml.transform.OutputKeys;
 
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
+import org.apache.xml.utils.ObjectFactory;
 import org.xml.sax.ContentHandler;
 
 /**
@@ -96,38 +97,33 @@ public abstract class SerializerFactory
    * @throws WrappedRuntimeException (apparently -sc) if an
    * exception is thrown while trying to find serializer
    */
-    public static Serializer getSerializer(Properties format)
-    {
-
+  public static Serializer getSerializer(Properties format)
+  {
       Serializer ser = null;
 
       try
       {
-        Class cls;
         String method = format.getProperty(OutputKeys.METHOD);
 
         if (method == null)
           throw new IllegalArgumentException(
             "The output format has a null method name");
 
-
-
-        String className;
-
-          className =
+        String className =
             format.getProperty(OutputPropertiesFactory.S_KEY_CONTENT_HANDLER);
 
-          if (null == className)
-          {
-            throw new IllegalArgumentException(
-              "The output format must have a '"
-              + OutputPropertiesFactory.S_KEY_CONTENT_HANDLER + "' property!");
-          }
+        if (className == null)
+        {
+          throw new IllegalArgumentException(
+            "The output format must have a '"
+            + OutputPropertiesFactory.S_KEY_CONTENT_HANDLER + "' property!");
+        }
 
-          cls = Utils.ClassForName(className);
+        ClassLoader loader = ObjectFactory.findClassLoader();
 
-          // _serializers.put(method, cls);
+        Class cls = ObjectFactory.findProviderClass(className, loader, true);
 
+        // _serializers.put(method, cls);
 
         Object obj = cls.newInstance();
 
@@ -153,15 +149,13 @@ public abstract class SerializerFactory
                    * SAX ContentHandler events to the users handler.
                    */
                   className = SerializerConstants.DEFAULT_SAX_SERIALIZER;
-                  cls = Utils.ClassForName(className);
+                  cls = ObjectFactory.findProviderClass(className, loader, true);
                   SerializationHandler sh =
                       (SerializationHandler) cls.newInstance();
                   sh.setContentHandler( (ContentHandler) obj);
                   sh.setOutputFormat(format);
 
                   ser = sh;
-
-
                }
                else
                {
@@ -181,5 +175,5 @@ public abstract class SerializerFactory
       }
 
       return ser;
-    }
+  }
 }

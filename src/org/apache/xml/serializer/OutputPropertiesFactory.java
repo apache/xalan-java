@@ -59,6 +59,8 @@ package org.apache.xml.serializer;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Enumeration;
 import java.util.Properties;
 import javax.xml.transform.OutputKeys;
@@ -134,12 +136,8 @@ public class OutputPropertiesFactory
     private static final String S_XALAN_PREFIX = "org.apache.xslt.";
     private static final int S_XALAN_PREFIX_LEN = S_XALAN_PREFIX.length();
 
-    /** a zero length Class array used in loadPropertiesFile() */
-    private static final Class[] NO_CLASSES = new Class[0];
     /** Synchronization object for lazy initialization of the above tables. */
     private static Integer m_synch_object = new Integer(1);
-    /** a zero length Object array used in loadPropertiesFile() */
-    private static final Object[] NO_OBJS = new Object[0];
 
     /** the directory in which the various method property files are located */
     private static final String PROP_DIR = "org/apache/xml/serializer/";
@@ -167,6 +165,30 @@ public class OutputPropertiesFactory
 
     /** The properties when method="" for the "unknown" wrapper */
     private static Properties m_unknown_properties = null;
+
+    private static final Class
+        ACCESS_CONTROLLER_CLASS = findAccessControllerClass();
+
+    private static Class findAccessControllerClass() {
+        try
+        {
+            // This Class was introduced in JDK 1.2. With the re-architecture of
+            // security mechanism ( starting in JDK 1.2 ), we have option of
+            // giving privileges to certain part of code using doPrivileged block.
+            // In JDK1.1.X applications won't be having security manager and if
+            // there is security manager ( in applets ), code need to be signed
+            // and trusted for having access to resources.
+
+            return Class.forName("java.security.AccessController");
+        }
+        catch (Exception e)
+        {
+            //User may be using older JDK ( JDK <1.2 ). Allow him/her to use it.
+            // But don't try to use doPrivileged
+        }
+
+        return null;
+    }
 
     /**
      * Creates an empty OutputProperties with the defaults specified by
@@ -239,11 +261,11 @@ public class OutputPropertiesFactory
                     m_unknown_properties =
                         loadPropertiesFile(fileName, m_xml_properties);
                 }
+
                 defaultProperties = m_unknown_properties;
             }
             else
             {
-
                 // TODO: Calculate res file from name.
                 defaultProperties = m_xml_properties;
             }
@@ -286,128 +308,25 @@ public class OutputPropertiesFactory
 
         InputStream is = null;
         BufferedInputStream bis = null;
-        Class accessControllerClass = null;
 
         try
         {
-            try
+            if (ACCESS_CONTROLLER_CLASS != null)
             {
-                try
-                {
-
-                    // This Class was introduced in JDK 1.2. With the re-architecture of
-                    // security mechanism ( starting in JDK 1.2 ), we have option of
-                    // giving privileges to certain part of code using doPrivileged block.
-                    // In JDK1.1.X applications won't be having security manager and if
-                    // there is security manager ( in applets ), code need to be signed
-                    // and trusted for having access to resources.
-
-                    accessControllerClass =
-                        Utils.ClassForName("java.security.AccessController");
-
-                    // If we are here means user is using JDK >= 1.2.
-                    // Using doPrivileged to be able to read property file without opening
-                    // up secured container permissions like J2EE container
-
-                    is =
-                        (
-                            InputStream) java
-                                .security
-                                .AccessController
-                                .doPrivileged(
-                                    new java
-                                    .security
-                                    .PrivilegedAction()
-                    {
-
+                is = (InputStream) AccessController
+                    .doPrivileged(new PrivilegedAction() {
                         public Object run()
                         {
-                            try
-                            {
-                                java.lang.reflect.Method getCCL =
-                                    Thread.class.getMethod(
-                                        "getContextClassLoader",
-                                        NO_CLASSES);
-                                if (getCCL != null)
-                                {
-                                    ClassLoader contextClassLoader =
-                                        (ClassLoader) getCCL.invoke(
-                                            Thread.currentThread(),
-                                            NO_OBJS);
-                                    return (
-                                        contextClassLoader.getResourceAsStream(
-                                            PROP_DIR + resourceName));
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                            }
-
-                            return null;
-
+                            return OutputPropertiesFactory.class
+                                .getResourceAsStream(resourceName);
                         }
                     });
-                }
-                catch (ClassNotFoundException e)
-                {
-                    //User may be using older JDK ( JDK <1.2 ). Allow him/her to use it.
-                    // But don't try to use doPrivileged
-                    try
-                    {
-                        java.lang.reflect.Method getCCL =
-                            Thread.class.getMethod(
-                                "getContextClassLoader",
-                                NO_CLASSES);
-                        if (getCCL != null)
-                        {
-                            ClassLoader contextClassLoader =
-                                (ClassLoader) getCCL.invoke(
-                                    Thread.currentThread(),
-                                    NO_OBJS);
-                            is =
-                                contextClassLoader.getResourceAsStream(
-                                    PROP_DIR + resourceName);
-                        }
-                    }
-                    catch (Exception exception)
-                    {
-                    }
-                }
             }
-            catch (Exception e)
+            else
             {
-            }
-
-            if (is == null)
-            {
-                if (accessControllerClass != null)
-                {
-                    is =
-                        (
-                            InputStream) java
-                                .security
-                                .AccessController
-                                .doPrivileged(
-                                    new java
-                                    .security
-                                    .PrivilegedAction()
-                    {
-                        public Object run()
-                        {
-                            return OutputPropertiesFactory
-                                .class
-                                .getResourceAsStream(
-                                resourceName);
-                        }
-                    });
-                }
-                else
-                {
-                    // User may be using older JDK ( JDK < 1.2 )
-                    is =
-                        OutputPropertiesFactory.class.getResourceAsStream(
-                            resourceName);
-                }
+                // User may be using older JDK ( JDK < 1.2 )
+                is = OutputPropertiesFactory.class
+                    .getResourceAsStream(resourceName);
             }
 
             bis = new BufferedInputStream(is);

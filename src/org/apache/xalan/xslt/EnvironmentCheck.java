@@ -66,6 +66,8 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.apache.xml.utils.ObjectFactory;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -108,9 +110,7 @@ import org.w3c.dom.Node;
  *
  * <p>Also see http://xml.apache.org/xalan-j/faq.html</p>
  *
- * <p>Note: This class is pretty simplistic: it does a fairly simple 
- * unordered search of the classpath; it only uses Class.forName() 
- * to load things, not actually querying the classloader; so the 
+ * <p>Note: This class is pretty simplistic: 
  * results are not necessarily definitive nor will it find all 
  * problems related to environment setup.  Also, you should avoid 
  * calling this in deployed production code, both because it is 
@@ -835,7 +835,8 @@ public class EnvironmentCheck
       final String JAXP1_CLASS = "javax.xml.parsers.DocumentBuilder";
       final String JAXP11_METHOD = "getDOMImplementation";
 
-      clazz = classForName(JAXP1_CLASS);
+      clazz = ObjectFactory.findProviderClass(
+        JAXP1_CLASS, ObjectFactory.findClassLoader(), true);
 
       Method method = clazz.getMethod(JAXP11_METHOD, noArgs);
 
@@ -880,7 +881,9 @@ public class EnvironmentCheck
     {
       final String XALAN1_VERSION_CLASS =
         "org.apache.xalan.xslt.XSLProcessorVersion";
-      Class clazz = classForName(XALAN1_VERSION_CLASS);
+
+      Class clazz = ObjectFactory.findProviderClass(
+        XALAN1_VERSION_CLASS, ObjectFactory.findClassLoader(), true);
 
       // Found Xalan-J 1.x, grab it's version fields
       StringBuffer buf = new StringBuffer();
@@ -911,7 +914,9 @@ public class EnvironmentCheck
       //    is being replaced by class below
       final String XALAN2_VERSION_CLASS =
         "org.apache.xalan.processor.XSLProcessorVersion";
-      Class clazz = classForName(XALAN2_VERSION_CLASS);
+
+      Class clazz = ObjectFactory.findProviderClass(
+        XALAN2_VERSION_CLASS, ObjectFactory.findClassLoader(), true);
 
       // Found Xalan-J 2.x, grab it's version fields
       StringBuffer buf = new StringBuffer();
@@ -932,7 +937,9 @@ public class EnvironmentCheck
       final String XALAN2_2_VERSION_METHOD = "getVersion";
       final Class noArgs[] = new Class[0];
 
-      Class clazz = classForName(XALAN2_2_VERSION_CLASS);
+      Class clazz = ObjectFactory.findProviderClass(
+        XALAN2_2_VERSION_CLASS, ObjectFactory.findClassLoader(), true);
+
       Method method = clazz.getMethod(XALAN2_2_VERSION_METHOD, noArgs);
       Object returnValue = method.invoke(null, new Object[0]);
 
@@ -962,7 +969,9 @@ public class EnvironmentCheck
     try
     {
       final String XERCES1_VERSION_CLASS = "org.apache.xerces.framework.Version";
-      Class clazz = classForName(XERCES1_VERSION_CLASS);
+
+      Class clazz = ObjectFactory.findProviderClass(
+        XERCES1_VERSION_CLASS, ObjectFactory.findClassLoader(), true);
 
       // Found Xerces-J 1.x, grab it's version fields
       Field f = clazz.getField("fVersion");
@@ -979,7 +988,9 @@ public class EnvironmentCheck
     try
     {
       final String XERCES2_VERSION_CLASS = "org.apache.xerces.impl.Version";
-      Class clazz = classForName(XERCES2_VERSION_CLASS);
+
+      Class clazz = ObjectFactory.findProviderClass(
+        XERCES2_VERSION_CLASS, ObjectFactory.findClassLoader(), true);
 
       // Found Xerces-J 2.x, grab it's version fields
       Field f = clazz.getField("fVersion");
@@ -995,7 +1006,9 @@ public class EnvironmentCheck
     try
     {
       final String CRIMSON_CLASS = "org.apache.crimson.parser.Parser2";
-      Class clazz = classForName(CRIMSON_CLASS);
+
+      Class clazz = ObjectFactory.findProviderClass(
+        CRIMSON_CLASS, ObjectFactory.findClassLoader(), true);
 
       //@todo determine specific crimson version
       h.put(VERSION + "crimson", CLASS_PRESENT);
@@ -1023,7 +1036,9 @@ public class EnvironmentCheck
       final String ANT_VERSION_METHOD = "getAntVersion"; // noArgs
       final Class noArgs[] = new Class[0];
 
-      Class clazz = classForName(ANT_VERSION_CLASS);
+      Class clazz = ObjectFactory.findProviderClass(
+        ANT_VERSION_CLASS, ObjectFactory.findClassLoader(), true);
+
       Method method = clazz.getMethod(ANT_VERSION_METHOD, noArgs);
       Object returnValue = method.invoke(null, new Object[0]);
 
@@ -1061,7 +1076,9 @@ public class EnvironmentCheck
 
     try
     {
-      Class clazz = classForName(DOM_LEVEL2_CLASS);
+      Class clazz = ObjectFactory.findProviderClass(
+        DOM_LEVEL2_CLASS, ObjectFactory.findClassLoader(), true);
+
       Method method = clazz.getMethod(DOM_LEVEL2_METHOD, twoStringArgs);
 
       // If we succeeded, we have loaded interfaces from a 
@@ -1070,10 +1087,11 @@ public class EnvironmentCheck
 
       try
       {
-
         // Check for the working draft version, which is 
         //  commonly found, but won't work anymore
-        clazz = classForName(DOM_LEVEL2WD_CLASS);
+        clazz = ObjectFactory.findProviderClass(
+          DOM_LEVEL2WD_CLASS, ObjectFactory.findClassLoader(), true);
+
         method = clazz.getMethod(DOM_LEVEL2WD_METHOD, twoStringArgs);
 
         h.put(ERROR + VERSION + "DOM.draftlevel", "2.0wd");
@@ -1083,9 +1101,10 @@ public class EnvironmentCheck
       {
         try
         {
-
           // Check for the final draft version as well
-          clazz = classForName(DOM_LEVEL2FD_CLASS);
+          clazz = ObjectFactory.findProviderClass(
+            DOM_LEVEL2FD_CLASS, ObjectFactory.findClassLoader(), true);
+
           method = clazz.getMethod(DOM_LEVEL2FD_METHOD, twoStringArgs);
 
           h.put(VERSION + "DOM.draftlevel", "2.0fd");
@@ -1138,7 +1157,9 @@ public class EnvironmentCheck
     {
       // This method was only added in the final SAX 2.0 release; 
       //  see changes.html "Changes from SAX 2.0beta2 to SAX 2.0prerelease"
-      Class clazz = classForName(SAX_VERSION2BETA_CLASSNF);
+      Class clazz = ObjectFactory.findProviderClass(
+        SAX_VERSION2BETA_CLASSNF, ObjectFactory.findClassLoader(), true);
+
       Method method = clazz.getMethod(SAX_VERSION2BETA_METHODNF, attributesArg);
 
       // If we succeeded, we have loaded interfaces from a 
@@ -1154,7 +1175,9 @@ public class EnvironmentCheck
             
       try
       {
-        Class clazz = classForName(SAX_VERSION2_CLASS);
+        Class clazz = ObjectFactory.findProviderClass(
+          SAX_VERSION2_CLASS, ObjectFactory.findClassLoader(), true);
+
         Method method = clazz.getMethod(SAX_VERSION2_METHOD, oneStringArg);
 
         // If we succeeded, we have loaded interfaces from a 
@@ -1171,7 +1194,9 @@ public class EnvironmentCheck
           
         try
         {
-          Class clazz = classForName(SAX_VERSION1_CLASS);
+          Class clazz = ObjectFactory.findProviderClass(
+            SAX_VERSION1_CLASS, ObjectFactory.findClassLoader(), true);
+
           Method method = clazz.getMethod(SAX_VERSION1_METHOD, oneStringArg);
 
           // If we succeeded, we have loaded interfaces from a 
@@ -1188,59 +1213,6 @@ public class EnvironmentCheck
             
         }
       }
-    }
-  }
-
-  /** 
-   * Worker method to load a class.  
-   * Factor out loading classes for future use and JDK differences.  
-   * Copied from javax.xml.*.FactoryFinder
-   * @param className name of class to load from 
-   * an appropriate classLoader
-   * @return the class asked for
-   */
-  protected static Class classForName(String className)
-        throws ClassNotFoundException
-  {
-    ClassLoader classLoader = findClassLoader();
-    if (classLoader == null) 
-    {
-      return Class.forName(className);
-    } 
-    else 
-    {
-      return classLoader.loadClass(className);
-    }
-  }
-  
-  /**
-   * Worker method to figure out which ClassLoader to use.  
-   * For JDK 1.2 and later use the context ClassLoader. 
-   * Copied from javax.xml.*.FactoryFinder
-   * @return the appropriate ClassLoader
-   */
-  protected static ClassLoader findClassLoader()
-        throws ClassNotFoundException
-  {
-    ClassLoader classLoader = null;
-    Method m = null;
-
-    try 
-    {
-      m = Thread.class.getMethod("getContextClassLoader", null);
-    } 
-    catch (NoSuchMethodException e) 
-    {
-      // Assume that we are running JDK 1.1, use the current ClassLoader
-      return EnvironmentCheck.class.getClassLoader();
-    }
-    try 
-    {
-      return (ClassLoader) m.invoke(Thread.currentThread(), null);
-    } 
-    catch (Exception e) 
-    {
-      throw new RuntimeException(e.toString());
     }
   }
 

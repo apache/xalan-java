@@ -69,7 +69,6 @@ import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
@@ -81,6 +80,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.xml.utils.ObjectFactory;
 import org.xml.sax.XMLFilter;
 
 /**
@@ -92,9 +92,9 @@ import org.xml.sax.XMLFilter;
 public class SmartTransformerFactoryImpl extends SAXTransformerFactory 
 {
 
-    private TransformerFactory _xsltcFactory = null;
-    private TransformerFactory _xalanFactory = null;
-    private TransformerFactory _currFactory = null;
+    private SAXTransformerFactory _xsltcFactory = null;
+    private SAXTransformerFactory _xalanFactory = null;
+    private SAXTransformerFactory _currFactory = null;
     private ErrorListener      _errorlistener = null;
     private URIResolver        _uriresolver = null;
 
@@ -108,28 +108,7 @@ public class SmartTransformerFactoryImpl extends SAXTransformerFactory
     public SmartTransformerFactoryImpl() { }
 
     private void createXSLTCTransformerFactory() {
-	// set up error messages from each factory...
- 	final String xsltcMessage =
-	    "org.apache.xalan.xsltc.trax.SmartTransformerFactoryImpl "+
-            "could not create an "+
-            "org.apache.xalan.xsltc.trax.TransformerFactoryImpl.";
-	
-	// try to create instance of XSLTC factory...	
-	try {
-	    Class xsltcFactClass = Class.forName(
-		"org.apache.xalan.xsltc.trax.TransformerFactoryImpl");
-	    _xsltcFactory = (org.apache.xalan.xsltc.trax.TransformerFactoryImpl)
-		xsltcFactClass.newInstance();
-	} 
-	catch (ClassNotFoundException e) {
-	    System.err.println(xsltcMessage);
-	} 
- 	catch (InstantiationException e) {
-	    System.err.println(xsltcMessage);
-	}
- 	catch (IllegalAccessException e) {
-	    System.err.println(xsltcMessage);
-	}
+	_xsltcFactory = new TransformerFactoryImpl();
 	_currFactory = _xsltcFactory;
     }
 
@@ -140,8 +119,9 @@ public class SmartTransformerFactoryImpl extends SAXTransformerFactory
 	    "org.apache.xalan.processor.TransformerFactoryImpl.";
 	// try to create instance of Xalan factory...	
 	try {
-	    Class xalanFactClass = Class.forName(
-		"org.apache.xalan.processor.TransformerFactoryImpl");
+            Class xalanFactClass = ObjectFactory.findProviderClass(
+                "org.apache.xalan.processor.TransformerFactoryImpl",
+                ObjectFactory.findClassLoader(), true);
 	    _xalanFactory = (SAXTransformerFactory)
 		xalanFactClass.newInstance();
 	} 
@@ -332,7 +312,7 @@ public class SmartTransformerFactoryImpl extends SAXTransformerFactory
 	if (_uriresolver != null) {
 	    _xsltcFactory.setURIResolver(_uriresolver);
 	}
-	return ((SAXTransformerFactory)_xsltcFactory).newTemplatesHandler();
+	return _xsltcFactory.newTemplatesHandler();
     }
 
     /**
@@ -352,7 +332,7 @@ public class SmartTransformerFactoryImpl extends SAXTransformerFactory
 	if (_uriresolver != null) {
 	    _xalanFactory.setURIResolver(_uriresolver);
 	}
-	return ((SAXTransformerFactory)_xalanFactory).newTransformerHandler(); 
+	return _xalanFactory.newTransformerHandler(); 
     }
 
     /**
@@ -372,8 +352,7 @@ public class SmartTransformerFactoryImpl extends SAXTransformerFactory
 	if (_uriresolver != null) {
 	    _xalanFactory.setURIResolver(_uriresolver);
 	}
-	return 
-            ((SAXTransformerFactory)_xalanFactory).newTransformerHandler(src); 
+	return _xalanFactory.newTransformerHandler(src); 
     }
 
 
@@ -394,8 +373,7 @@ public class SmartTransformerFactoryImpl extends SAXTransformerFactory
 	if (_uriresolver != null) {
 	    _xsltcFactory.setURIResolver(_uriresolver);
 	}
-        return 
-        ((SAXTransformerFactory)_xsltcFactory).newTransformerHandler(templates);
+        return _xsltcFactory.newTransformerHandler(templates);
     }
 
 

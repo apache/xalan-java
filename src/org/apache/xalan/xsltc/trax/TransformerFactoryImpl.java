@@ -97,11 +97,10 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.compiler.SourceLoader;
 import org.apache.xalan.xsltc.compiler.XSLTC;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
-import org.apache.xalan.xsltc.runtime.TransletLoader;
+import org.apache.xml.utils.ObjectFactory;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLFilter;
@@ -565,24 +564,6 @@ public class TransformerFactoryImpl
     }
 
     /**
-     * Load the translet class using the context class loader of the current
-     * thread or the default class loader.
-     */
-    private Class loadTranslet(String name)
-        throws ClassNotFoundException
-    {
-	// First try to load the class using the context class loader of the current thread
-	try {
-	    TransletLoader loader = new TransletLoader();
-	    return loader.loadTranslet(name);
-	}
-	catch (ClassNotFoundException e) {
-	    // Then try to load the class using the default class loader.
-	    return Class.forName(name);
-	}
-    }
-    
-    /**
      * javax.xml.transform.sax.TransformerFactory implementation.
      * Process the Source into a Templates object, which is a a compiled
      * representation of the source.
@@ -604,7 +585,8 @@ public class TransformerFactoryImpl
 	        transletName = _packageName + "." + transletName;
 	        
 	    try {
-	        final Class clazz = loadTranslet(transletName);
+                final Class clazz = ObjectFactory.findProviderClass(
+                    transletName, ObjectFactory.findClassLoader(), true);
 	        resetTransientAttributes();
 	            
 	        return new TemplatesImpl(new Class[]{clazz}, transletName, null, _indentNumber, this);

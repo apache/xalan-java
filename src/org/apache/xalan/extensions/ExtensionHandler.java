@@ -57,7 +57,6 @@
 package org.apache.xalan.extensions;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
@@ -66,6 +65,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xml.utils.ObjectFactory;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -79,70 +79,29 @@ import org.apache.xpath.functions.FuncExtFunction;
 public abstract class ExtensionHandler
 {
 
-  /** uri of the extension namespace          */
+  /** uri of the extension namespace */
   protected String m_namespaceUri; 
 
-  /** scripting language of implementation          */
+  /** scripting language of implementation */
   protected String m_scriptLang;
 
-  /** a zero length Object array used in getClassForName() */
-  private static final Object NO_OBJS[] = new Object[0];
-
-  /** the Method object for getContextClassLoader */
-  private static Method getCCL;
-
-  static
-  {
-    try
-    {
-      getCCL = Thread.class.getMethod("getContextClassLoader", new Class[0]);
-    }
-    catch (Exception e)
-    {
-      getCCL = null;
-    }
-  }
-
   /**
-   * Replacement for Class.forName.  This method loads a class using the context class loader
-   * if we're running under Java2 or higher.  If we're running under Java1, this
-   * method just uses Class.forName to load the class.
+   * This method loads a class using the context class loader if we're
+   * running under Java2 or higher.
    * 
    * @param className Name of the class to load
    */
-  public static Class getClassForName(String className)
+  static Class getClassForName(String className)
       throws ClassNotFoundException
   {
-    Class result = null;
-    
     // Hack for backwards compatibility with XalanJ1 stylesheets
-    if(className.equals("org.apache.xalan.xslt.extensions.Redirect"))
+    if(className.equals("org.apache.xalan.xslt.extensions.Redirect")) {
       className = "org.apache.xalan.lib.Redirect";
-      
-    if (getCCL != null)
-    {
-      try {
-        ClassLoader contextClassLoader =
-                              (ClassLoader) getCCL.invoke(Thread.currentThread(), NO_OBJS);
-        result = contextClassLoader.loadClass(className);
-      }
-      catch (ClassNotFoundException cnfe)
-      {
-        result = Class.forName(className);
-      }
-      catch (Exception e)
-      {
-        getCCL = null;
-        result = Class.forName(className);
-      }
     }
 
-    else
-       result = Class.forName(className);
-
-    return result;
- }
-
+    return ObjectFactory.findProviderClass(
+        className, ObjectFactory.findClassLoader(), true);
+  }
 
   /**
    * Construct a new extension namespace handler given all the information

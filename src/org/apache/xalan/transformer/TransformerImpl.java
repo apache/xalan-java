@@ -58,7 +58,6 @@ package org.apache.xalan.transformer;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Stack;
@@ -98,6 +97,7 @@ import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetComposed;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XUnresolvedVariable;
+import org.apache.xalan.trace.GenerateEvent;
 import org.apache.xalan.trace.TraceManager;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
@@ -111,7 +111,6 @@ import org.apache.xml.serializer.ToXMLSAXHandler;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.DOMBuilder;
-import org.apache.xml.utils.DOMHelper;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xml.utils.ObjectPool;
 import org.apache.xml.utils.ObjectStack;
@@ -132,7 +131,6 @@ import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
 
-import org.apache.xalan.trace.GenerateEvent;
 /**
  * <meta name="usage" content="advanced"/>
  * This class implements the
@@ -200,7 +198,7 @@ public class TransformerImpl extends Transformer
    *  Please note that each of these also holds onto a Text Serializer.  
    */
   private ObjectPool m_textResultHandlerObjectPool =
-    new ObjectPool("org.apache.xml.serializer.ToTextStream");
+    new ObjectPool(ToTextStream.class);
 
   /**
    * Related to m_textResultHandlerObjectPool, this is a pool of
@@ -208,7 +206,7 @@ public class TransformerImpl extends Transformer
    * (I'm not sure if this is really needed any more.  -sb)      
    */
   private ObjectPool m_stringWriterObjectPool =
-    new ObjectPool("java.io.StringWriter");
+    new ObjectPool(StringWriter.class);
 
   /**
    * A static text format object, which can be used over and
@@ -819,7 +817,7 @@ public class TransformerImpl extends Transformer
 
     if (null == value)
     {
-      if (!props.isLegalPropertyKey(qnameString))
+      if (!OutputProperties.isLegalPropertyKey(qnameString))
         throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_OUTPUT_PROPERTY_NOT_RECOGNIZED, new Object[]{qnameString})); //"output property not recognized: "
                                            //+ qnameString);
     }
@@ -852,7 +850,7 @@ public class TransformerImpl extends Transformer
 
     if (null == value)
     {
-      if (!props.isLegalPropertyKey(qnameString))
+      if (!OutputProperties.isLegalPropertyKey(qnameString))
         throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_OUTPUT_PROPERTY_NOT_RECOGNIZED, new Object[]{qnameString})); //"output property not recognized: "
                                           // + qnameString);
     }
@@ -886,7 +884,7 @@ public class TransformerImpl extends Transformer
           (OutputProperties) getStylesheet().getOutputComposed().clone();
       }
 
-      if (!m_outputFormat.isLegalPropertyKey(name))
+      if (!OutputProperties.isLegalPropertyKey(name))
         throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_OUTPUT_PROPERTY_NOT_RECOGNIZED, new Object[]{name})); //"output property not recognized: "
                                            //+ name);
 

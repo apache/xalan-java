@@ -56,7 +56,6 @@
  */
 package org.apache.xalan.lib.sql;
 
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.Driver;
@@ -68,6 +67,7 @@ import java.util.Vector;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xml.utils.ObjectFactory;
 
 /**
  * For internal connectiones, i.e. Connection information supplies in the
@@ -478,33 +478,17 @@ public class DefaultConnectionPool implements ConnectionPool
 
      try
      {
-        // We need to implement the context classloader
-        Class cls = null;
-        try
-        {
-          Method m = Thread.class.getMethod("getContextClassLoader", null);
-          ClassLoader classLoader = (ClassLoader) m.invoke(Thread.currentThread(), null);
-          cls = classLoader.loadClass(m_driver);
-        }
-        catch (Exception e)
-        {
-          cls = Class.forName(m_driver);
-        }
-
-        if (cls == null)
-          cls = Class.forName(m_driver);
-
         // We have also had problems with drivers unloading
         // load an instance that will get freed with the class.
-        m_Driver = (Driver) cls.newInstance();
+        m_Driver = (Driver) ObjectFactory.newInstance(
+          m_driver, ObjectFactory.findClassLoader(), true);
 
-        // Register the Driver that was loaded with the Contect Classloader
+        // Register the Driver that was loaded with the Context Classloader
         // but we will ask for connections directly from the Driver
         // instance
         DriverManager.registerDriver(m_Driver);
-
      }
-     catch(ClassNotFoundException e)
+     catch(ObjectFactory.ConfigurationError e)
      {
        throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_INVALID_DRIVER_NAME, null));
        // "Invalid Driver Name Specified!");

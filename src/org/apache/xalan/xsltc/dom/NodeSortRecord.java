@@ -73,6 +73,7 @@ import org.apache.xalan.xsltc.CollatorFactory;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
+import org.apache.xml.utils.ObjectFactory;
 
 /**
  * Base class for sort records containing application specific sort keys 
@@ -113,7 +114,7 @@ public abstract class NodeSortRecord {
     private Object[] _values; // Contains either CollationKey or Double
 
     /**
-     * This constructor is run by a call to Class.forName() in the
+     * This constructor is run by a call to ClassLoader in the
      * makeNodeSortRecord method in the NodeSortRecordFactory class. Since we
      * cannot pass any parameters to the constructor in that case we just set
      * the default values here and wait for new values through initialize().
@@ -155,7 +156,8 @@ public abstract class NodeSortRecord {
 
         if (colFactClassname != null) {
             try {
-		Object candObj = nsrFactory.loadTranslet(colFactClassname);
+                Object candObj = ObjectFactory.findProviderClass(
+                    colFactClassname, ObjectFactory.findClassLoader(), true);
                 _collatorFactory = (CollatorFactory)candObj;
             } 
 	    catch (ClassNotFoundException e) {

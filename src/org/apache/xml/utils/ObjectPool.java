@@ -97,7 +97,8 @@ public class ObjectPool implements java.io.Serializable
   {
     try
     {
-      objectType = Class.forName(className);
+      objectType = ObjectFactory.findProviderClass(
+        className, ObjectFactory.findClassLoader(), true);
     }
     catch(ClassNotFoundException cnfe)
     {

@@ -61,6 +61,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -76,6 +77,7 @@ import java.util.StringTokenizer;
  * @version $Revision$ $Date$
  * @author <a href="mailto:arkin@intalio.com">Assaf Arkin</a>
  */
+
 public class Encodings extends Object
 {
 
@@ -87,19 +89,33 @@ public class Encodings extends Object
     /**
      * Standard filename for properties file with encodings data.
      */
-    static final String ENCODINGS_FILE =
-        "org/apache/xml/serializer/Encodings.properties";
+    static final String ENCODINGS_FILE = "Encodings.properties";
 
     /**
      * Standard filename for properties file with encodings data.
      */
     static final String ENCODINGS_PROP = "org.apache.xalan.serialize.encodings";
 
-    /** a zero length Class array used in loadPropertyFile() */
-    private static final Class[] NO_CLASSES = new Class[0];
+    /** SUN JVM internal ByteToChar converter method */
+    private static final Method
+        SUN_CHAR2BYTE_CONVERTER_METHOD = findCharToByteConverterMethod();
 
-    /** a zero length Object array used in loadPropertyFile() */
-    private static final Object[] NO_OBJS = new Object[0];
+    private static Method findCharToByteConverterMethod() {
+        try
+        {
+            Class charToByteConverterClass =
+                Class.forName("sun.io.CharToByteConverter");
+            Class argTypes[] = {String.class};
+            return charToByteConverterClass.getMethod("getConverter", argTypes);
+        }
+        catch (Exception e)
+        {
+            System.err.println(
+                "Warning: Could not get charToByteConverterClass!");
+        }
+
+        return null;
+    }
 
     /**
      * Returns a writer for the specified encoding based on
@@ -155,25 +171,10 @@ public class Encodings extends Object
      */
     public static Object getCharToByteConverter(String encoding)
     {
-
-        Class charToByteConverterClass = null;
-        java.lang.reflect.Method getConverterMethod = null;
-
-        try
-        {
-            charToByteConverterClass =
-                Utils.ClassForName("sun.io.CharToByteConverter");
-            Class argTypes[] = new Class[1];
-            argTypes[0] = String.class;
-            getConverterMethod =
-                charToByteConverterClass.getMethod("getConverter", argTypes);
-        }
-        catch (Exception e)
-        {
-            System.err.println(
-                "Warning: Could not get charToByteConverterClass!");
+        if (SUN_CHAR2BYTE_CONVERTER_METHOD == null) {
             return null;
         }
+
         Object args[] = new Object[1];
         for (int i = 0; i < _encodings.length; ++i)
         {
@@ -182,8 +183,9 @@ public class Encodings extends Object
                 try
                 {
                     args[0] = _encodings[i].javaName;
-                    Object converter = getConverterMethod.invoke(null, args);
-                    if (null != converter)
+                    Object converter =
+                        SUN_CHAR2BYTE_CONVERTER_METHOD.invoke(null, args);
+                    if (null != converter) 
                         return converter;
                 }
                 catch (Exception iae)
@@ -360,31 +362,8 @@ public class Encodings extends Object
                 url = new URL(urlString);
             if (url == null)
             {
-                ClassLoader cl = null;
-                try
-                {
-                    java.lang.reflect.Method getCCL =
-                        Thread.class.getMethod(
-                            "getContextClassLoader",
-                            NO_CLASSES);
-                    if (getCCL != null)
-                    {
-                        cl =
-                            (ClassLoader) getCCL.invoke(
-                                Thread.currentThread(),
-                                NO_OBJS);
-                    }
-                }
-                catch (Exception e)
-                {
-                }
-                if (cl != null)
-                {
-                    url = cl.getResource(ENCODINGS_FILE);
-                }
+                url = Encodings.class.getResource(ENCODINGS_FILE);
             }
-            if (url == null)
-                url = ClassLoader.getSystemResource(ENCODINGS_FILE);
 
             Properties props = new Properties();
             if (url != null)

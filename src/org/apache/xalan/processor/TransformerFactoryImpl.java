@@ -109,10 +109,10 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * The path/filename of the property file: XSLTInfo.properties  
    * Maintenance note: see also org.apache.xpath.functions.FuncSystemProperty.XSLT_PROPERTIES
    */
-  public static String XSLT_PROPERTIES =
+  public static final String XSLT_PROPERTIES =
     "org/apache/xalan/res/XSLTInfo.properties";
 
-     /**
+  /**
    * Constructor TransformerFactoryImpl
    *
    */
@@ -120,12 +120,6 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   {
   }
 
-  /** a zero length Class array used in loadPropertyFileToSystem() */
-  private static final Class[] NO_CLASSES = new Class[0];
-
-  /** a zero length Object array used in loadPropertyFileToSystem() */
-  private static final Object[] NO_OBJS = new Object[0];
-  
   /** Static string to be used for incremental feature */
   public static final String FEATURE_INCREMENTAL = "http://xml.apache.org/xalan/features/incremental";
 
@@ -137,9 +131,11 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
 
   /**
    * Retrieve a propery bundle from XSLT_PROPERTIES and load it
-   * int the System properties.
+   * into the System properties.
+   * Maintenance Note: Consider this to be removed. Setting system properties
+   * from a library might have undesirable side effects and should be avoided.
    */
-   static 
+  static 
   {
       try
       {
@@ -149,21 +145,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         {
           Properties props = new Properties();
 
-          try {
-            java.lang.reflect.Method getCCL = Thread.class.getMethod("getContextClassLoader", NO_CLASSES);
-            if (getCCL != null) {
-              ClassLoader contextClassLoader = (ClassLoader) getCCL.invoke(Thread.currentThread(), NO_OBJS);
-              is = contextClassLoader.getResourceAsStream(XSLT_PROPERTIES); // file should be already fully specified
-            }
-          }
-          catch (Exception e) {}
-
-          if (is == null) {
-            // NOTE! For the below getResourceAsStream in Sun JDK 1.1.8M
-            //  we apparently must add the leading slash character - I 
-            //  don't know why, but if it's not there, we throw an NPE from the below loading
-            is = TransformerFactoryImpl.class.getResourceAsStream("/" + XSLT_PROPERTIES); // file should be already fully specified
-          }
+          is = TransformerFactoryImpl.class.getResourceAsStream("/" + XSLT_PROPERTIES);
 
           // get a buffered version
           BufferedInputStream bis = new BufferedInputStream(is);
@@ -195,9 +177,9 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         // In this case the caller is required to have 
         // the needed attributes already defined.
       }
-   }
+  }
 
-public javax.xml.transform.Templates processFromNode(Node node)
+  public javax.xml.transform.Templates processFromNode(Node node)
           throws TransformerConfigurationException
   {
 

@@ -72,19 +72,12 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class FuncSystemProperty extends FunctionOneArg
 {
-
-  /** 
-   * The path/filename of the property file: XSLTInfo.properties  
-   * Maintenance note: see also org.apache.xalan.processor.TransformerFactoryImpl.XSLT_PROPERTIES
+  /**
+   * The path/filename of the property file: XSLTInfo.properties
+   * Maintenance note: see also
+   * org.apache.xalan.processor.TransformerFactoryImpl.XSLT_PROPERTIES
    */
   static String XSLT_PROPERTIES = "org/apache/xalan/res/XSLTInfo.properties";
-	
-	/** a zero length Class array used in loadPropertyFile() */
-  private static final Class[] NO_CLASSES = new Class[0];
-
-  /** a zero length Object array used in loadPropertyFile() */
-  private static final Object[] NO_OBJS = new Object[0];
-
 
   /**
    * Execute the function.  The function must return
@@ -101,9 +94,9 @@ public class FuncSystemProperty extends FunctionOneArg
     int indexOfNSSep = fullName.indexOf(':');
     String result;
     String propName = "";
-    
-    /* List of properties where the name of the property argument is 
-     *  to be looked for. */
+
+    // List of properties where the name of the
+    // property argument is to be looked for.
     Properties xsltInfo = new Properties();
 
     loadPropertyFile(XSLT_PROPERTIES, xsltInfo);
@@ -204,26 +197,11 @@ public class FuncSystemProperty extends FunctionOneArg
    */
   public void loadPropertyFile(String file, Properties target)
   {
-
-    InputStream is = null;
-
     try
     {
-      try {
-        java.lang.reflect.Method getCCL = Thread.class.getMethod("getContextClassLoader", NO_CLASSES);
-        if (getCCL != null) {
-          ClassLoader contextClassLoader = (ClassLoader) getCCL.invoke(Thread.currentThread(), NO_OBJS);
-          is = contextClassLoader.getResourceAsStream(file); // file should be already fully specified
-        }
-      }
-      catch (Exception e) {}
-
-      if (is == null) {
-        // NOTE! For the below getResourceAsStream in Sun JDK 1.1.8M
-        //  we apparently must add the leading slash character - I 
-        //  don't know why, but if it's not there, we throw an NPE from the below loading
-        is = FuncSystemProperty.class.getResourceAsStream("/" + file); // file should be already fully specified
-      }
+      // Reflect TransformerFactoryImpl behavior
+      // i.e. do not use context ClassLoader
+      InputStream is = FuncSystemProperty.class.getResourceAsStream("/" + file);
 
       // get a buffered version
       BufferedInputStream bis = new BufferedInputStream(is);

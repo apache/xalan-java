@@ -95,7 +95,7 @@ import org.apache.xalan.xsltc.compiler.util.ObjectType;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
-import org.apache.xalan.xsltc.runtime.TransletLoader;
+import org.apache.xml.utils.ObjectFactory;
 
 class FunctionCall extends Expression {
 
@@ -203,59 +203,56 @@ class FunctionCall extends Expression {
      * These two tables are used when calling external (Java) functions.
      */
     static {
-
 	try {
-	    final Class objectClass   = Class.forName("java.lang.Object");
-	    final Class stringClass   = Class.forName("java.lang.String");
 	    final Class nodeClass     = Class.forName("org.w3c.dom.Node");
 	    final Class nodeListClass = Class.forName("org.w3c.dom.NodeList");
 
 	    // Possible conversions between internal and Java types
-	    _internal2Java.put(Type.Boolean, new JavaType(objectClass,2));
-	    _internal2Java.put(Type.Boolean, new JavaType(java.lang.Boolean.class,1));
+	    _internal2Java.put(Type.Boolean, new JavaType(Object.class,2));
+	    _internal2Java.put(Type.Boolean, new JavaType(Boolean.class,1));
 	    _internal2Java.put(Type.Boolean, new JavaType(Boolean.TYPE,0));
 
-	    _internal2Java.put(Type.Int, new JavaType(objectClass, 8));
+	    _internal2Java.put(Type.Int, new JavaType(Object.class, 8));
 	    _internal2Java.put(Type.Int, new JavaType(Character.TYPE, 7));
 	    _internal2Java.put(Type.Int, new JavaType(Byte.TYPE, 6));
 	    _internal2Java.put(Type.Int, new JavaType(Short.TYPE, 5));
 	    _internal2Java.put(Type.Int, new JavaType(Integer.TYPE, 0));
-	    _internal2Java.put(Type.Int, new JavaType(java.lang.Integer.class, 1));
+	    _internal2Java.put(Type.Int, new JavaType(Integer.class, 1));
 	    _internal2Java.put(Type.Int, new JavaType(Long.TYPE, 2));
 	    _internal2Java.put(Type.Int, new JavaType(Float.TYPE, 3));
 	    _internal2Java.put(Type.Int, new JavaType(Double.TYPE, 4));
 
-	    _internal2Java.put(Type.Real, new JavaType(objectClass, 8));
+	    _internal2Java.put(Type.Real, new JavaType(Object.class, 8));
 	    _internal2Java.put(Type.Real, new JavaType(Character.TYPE, 7)); 
 	    _internal2Java.put(Type.Real, new JavaType(Byte.TYPE, 6));
 	    _internal2Java.put(Type.Real, new JavaType(Short.TYPE, 5));
 	    _internal2Java.put(Type.Real, new JavaType(Integer.TYPE, 4));
 	    _internal2Java.put(Type.Real, new JavaType(Long.TYPE, 3));
 	    _internal2Java.put(Type.Real, new JavaType(Float.TYPE, 2));
-	    _internal2Java.put(Type.Real, new JavaType(java.lang.Double.class, 1));
+	    _internal2Java.put(Type.Real, new JavaType(Double.class, 1));
 	    _internal2Java.put(Type.Real, new JavaType(Double.TYPE, 0));
 
-	    _internal2Java.put(Type.String, new JavaType(objectClass, 1));
-	    _internal2Java.put(Type.String, new JavaType(stringClass, 0)); 
+	    _internal2Java.put(Type.String, new JavaType(Object.class, 1));
+	    _internal2Java.put(Type.String, new JavaType(String.class, 0)); 
 
 	    _internal2Java.put(Type.Node, new JavaType(nodeClass, 0));  
 	    _internal2Java.put(Type.Node, new JavaType(nodeListClass, 1));
-	    _internal2Java.put(Type.Node, new JavaType(objectClass, 2));
-	    _internal2Java.put(Type.Node, new JavaType(stringClass, 3));
+	    _internal2Java.put(Type.Node, new JavaType(Object.class, 2));
+	    _internal2Java.put(Type.Node, new JavaType(String.class, 3));
 
 	    _internal2Java.put(Type.NodeSet, new JavaType(Integer.TYPE, 10));
-	    _internal2Java.put(Type.NodeSet, new JavaType(stringClass, 3)); 
-	    _internal2Java.put(Type.NodeSet, new JavaType(objectClass, 2));
+	    _internal2Java.put(Type.NodeSet, new JavaType(String.class, 3)); 
+	    _internal2Java.put(Type.NodeSet, new JavaType(Object.class, 2));
 	    _internal2Java.put(Type.NodeSet, new JavaType(nodeClass, 1)); 
 	    _internal2Java.put(Type.NodeSet, new JavaType(nodeListClass,0)); 
 
 	    _internal2Java.put(Type.ResultTree, new JavaType(nodeClass, 1)); 
 	    _internal2Java.put(Type.ResultTree, new JavaType(nodeListClass, 0));
-	    _internal2Java.put(Type.ResultTree, new JavaType(objectClass, 2));
-	    _internal2Java.put(Type.ResultTree, new JavaType(stringClass, 3));
+	    _internal2Java.put(Type.ResultTree, new JavaType(Object.class, 2));
+	    _internal2Java.put(Type.ResultTree, new JavaType(String.class, 3));
 	    _internal2Java.put(Type.ResultTree, new JavaType(Double.TYPE, 4));
 
-	    _internal2Java.put(Type.Reference, new JavaType(objectClass,0));
+	    _internal2Java.put(Type.Reference, new JavaType(Object.class,0));
 
 	    // Possible conversions between Java and internal types
 	    _java2Internal.put(Boolean.TYPE, Type.Boolean); 
@@ -268,9 +265,9 @@ class FunctionCall extends Expression {
 	    _java2Internal.put(Float.TYPE, Type.Real);
 	    _java2Internal.put(Double.TYPE, Type.Real);
 
-	    _java2Internal.put(stringClass, Type.String);
+	    _java2Internal.put(String.class, Type.String);
 
-	    _java2Internal.put(objectClass, Type.Reference);
+	    _java2Internal.put(Object.class, Type.Reference);
 
 	    // Conversions from org.w3c.dom.Node/NodeList to internal NodeSet
 	    _java2Internal.put(nodeListClass, Type.NodeSet);
@@ -386,9 +383,9 @@ class FunctionCall extends Expression {
 		}
 		else {
 		    if (_className != null && _className.length() > 0) {
-		    	try {			  	
-		      	    TransletLoader loader = new TransletLoader();
-		            _clazz = loader.loadClass(_className);			  	
+		    	try {
+                            _clazz = ObjectFactory.findProviderClass(
+                                _className, ObjectFactory.findClassLoader(), true);
 		            _namespace_format = NAMESPACE_FORMAT_CLASS;
 		    	}
 		    	catch (ClassNotFoundException e) {
@@ -889,9 +886,9 @@ class FunctionCall extends Expression {
 	    final int nArgs = _arguments.size();
 	    try {
 	      if (_clazz == null) {
-		TransletLoader loader = new TransletLoader();
-		_clazz = loader.loadClass(_className);
-		
+                _clazz = ObjectFactory.findProviderClass(
+                  _className, ObjectFactory.findClassLoader(), true);
+
 		if (_clazz == null) {
 		  final ErrorMsg msg =
 		        new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
@@ -936,9 +933,9 @@ class FunctionCall extends Expression {
         final int nArgs = _arguments.size();
         try {
           if (_clazz == null) {
-            TransletLoader loader = new TransletLoader();
-            _clazz = loader.loadClass(_className);
-          
+            _clazz = ObjectFactory.findProviderClass(
+              _className, ObjectFactory.findClassLoader(), true);
+
             if (_clazz == null) {
               final ErrorMsg msg = new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, _className);
               getParser().reportError(Constants.ERROR, msg);
