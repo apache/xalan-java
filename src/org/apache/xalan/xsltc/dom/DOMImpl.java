@@ -1411,12 +1411,15 @@ public final class DOMImpl implements DOM, Externalizable {
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
 		_last = -1;
-		if (node >= _firstAttributeNode)
-		    _startNode = node = _parent[node];
-		else if (_includeSelf)
+		if (_includeSelf) {
 		    _startNode = node;
-		else
+		}
+		else if (node >= _firstAttributeNode) {
+		    _startNode = node = _parent[node];
+		}
+		else {
 		    _startNode = _parent[node];
+		}
 		_index = _startNode;
 		return resetPosition();
 	    }
