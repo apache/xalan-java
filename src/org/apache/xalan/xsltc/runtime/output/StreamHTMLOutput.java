@@ -244,7 +244,7 @@ public class StreamHTMLOutput extends StreamOutput {
 		name.equalsIgnoreCase(SRC_STR)  || 
 		name.equals(CITE_STR)) 
 	    {
-		attr = new Attribute(name, encodeURL(value));
+		attr = new Attribute(name, escapeURL(value));
 	    }
 	    else {
 		attr = new Attribute(name, escapeNonURL(value));
@@ -314,25 +314,6 @@ public class StreamHTMLOutput extends StreamOutput {
     }
 
     /**
-     * Replaces whitespaces in a URL with '%20'
-     */
-    private String encodeURL(String base) {
-	final int length = base.length();
-	final StringBuffer result = new StringBuffer();
-
-	for (int i = 0; i < length; i++) {
-	    final char ch = base.charAt(i);
-	    if (ch == ' ') {
-		result.append("%20");
-	    }
-	    else {
-		result.append(ch);
-	    }
-	}
-	return result.toString();
-    }
-
-    /**
      * Escape non ASCII characters (> u007F) as &#XXX; entities.
      */
     private String escapeNonURL(String base) {
@@ -354,6 +335,61 @@ public class StreamHTMLOutput extends StreamOutput {
 	    } 
   	}
 	return result.toString();
+    }
+
+    /**
+     * This method escapes special characters used in HTML attribute values
+     */
+    private String escapeURL(String base) {
+	final char[] chs = base.toCharArray();
+	final StringBuffer result = new StringBuffer();
+
+	final int length = chs.length;
+        for (int i = 0; i < length; i++) {
+	    final char ch = chs[i];
+
+	    if (ch <= 0x20) {
+		result.append('%').append(makeHHString(ch));
+	    } 
+	    else if (ch > '\u007F') {
+		result.append('%')
+		      .append(makeHHString((ch >> 6) | 0xC0))
+		      .append('%')
+		      .append(makeHHString((ch & 0x3F) | 0x80));
+	    }
+	    else {
+		// These chars are reserved or unsafe in URLs
+	        switch (ch) {
+		    case '\u007F' :
+		    case '\u007B' :
+		    case '\u007D' :
+		    case '\u007C' :
+		    case '\\'     :
+		    case '\t'     :
+		    case '\u005E' :
+		    case '\u007E' :
+		    case '\u005B' :
+		    case '\u005D' :
+		    case '\u0060' :
+		    case '\u0020' :
+		        result.append('%')
+		              .append(Integer.toHexString((int) ch));
+		        break;
+		    case '"':
+			result.append("&quot;");
+			break;
+		    default:	
+		        result.append(ch); 
+			break;
+	        }
+	    } 
+  	}
+	return result.toString();
+    }
+
+    private String makeHHString(int i) {
+	final String s = Integer.toHexString(i).toUpperCase();
+	return (s.length() == 1) ? "0" + s : s;
     }
 
     /**

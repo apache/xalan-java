@@ -191,14 +191,10 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 
 	// Handle document type declaration (for first element only)
 	if (_firstElement) {
-	    if (_doctypeSystem != null || _doctypePublic != null) {
+	    if (_doctypeSystem != null) {
 		appendDTD(elementName);
 	    }
 	    _firstElement = false;
-	}
-
-	if (_cdata != null && _cdata.containsKey(elementName)) {
-	    _cdataStack.push(new Integer(_depth));
 	}
 
 	if (_indent) {
@@ -212,6 +208,10 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 
 	_depth++;
 	_startTagOpen = true;
+
+	if (_cdata != null && _cdata.containsKey(elementName)) {
+	    _cdataStack.push(new Integer(_depth));
+	}
     }
 
     public void endElement(String elementName) throws TransletException { 
@@ -244,49 +244,43 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	    _indentNextEndTag = true;
 	}
 
+	if (((Integer) _cdataStack.peek()).intValue() == _depth) {
+	    _cdataStack.pop();
+	}
+
 	popNamespaces();
 	_depth--;
     }
 
     public void characters(String characters) throws TransletException { 
-// System.out.println("characters() '" + characters + "'");
+	characters(characters.toCharArray(), 0, characters.length());
+    }
+
+    public void characters(char[] characters, int offset, int length)
+	throws TransletException 
+    {
+// System.out.println("characters() '" + new String(characters, 0, length));
+
+	if (length <= 0) return;
+
 	if (_startTagOpen) {
 	    closeStartTag();
 	}
 
 	final Integer I = (Integer) _cdataStack.peek();
 	if (I.intValue() == _depth && !_cdataTagOpen) {
-	    startCDATA(characters.toCharArray(), 0, characters.length());
+	    startCDATA(characters, offset, length);
 	} 
 	else if (_escaping) {
 	    if (_cdataTagOpen) {
-		escapeCDATA(characters.toCharArray(), 0, 
-			    characters.length());
+		escapeCDATA(characters, 0, length);
 	    } 
 	    else {
-		escapeCharacters(characters.toCharArray(), 0, 
-			         characters.length());
+		escapeCharacters(characters, 0, length);
 	    }
 	} 
 	else {
-	    _buffer.append(characters);
-	}
-    }
-
-    public void characters(char[] characters, int offset, int length)
-	throws TransletException 
-    { 
-	if (length > 0) {
-	    if (_startTagOpen) {
-		closeStartTag();
-	    }
-
-	    if (_escaping) {
-		escapeCharacters(characters, offset, length);
-	    }
-	    else {
-		_buffer.append(characters, offset, length);
-	    }
+	    _buffer.append(characters, 0, length);
 	}
     }
 
@@ -297,7 +291,7 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	if (_startTagOpen) {
 	    int k;
 	    final Attribute attr = 
-		new Attribute(patchName(name), value);
+		new Attribute(patchName(name), escapeString(value));
 
 	    if ((k = _attributes.indexOf(attr)) >= 0) {
 		_attributes.setElementAt(attr, k);
@@ -380,7 +374,6 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	    _namespaces.put(prefix, stack = new Stack());
 	}
 
-	// Quit now if the URI the prefix currently maps to is the same as this
 	if (!stack.empty() && uri.equals(stack.peek())) {
 	    return false;
 	}
@@ -431,11 +424,11 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 
 	// Detect any occurence of "]]>" in the character array
 	for (int i = offset; i < limit - 2; i++) {
-	    if (ch[i] == ']' && ch[i+1] == ']' && ch[i+2] == '>') {
-		_buffer.append(ch, offset, i - offset);
-		_buffer.append(CNTCDATA);
+	    if (ch[i] == ']' && ch[i + 1] == ']' && ch[i + 2] == '>') {
+		_buffer.append(ch, offset, i - offset)
+		       .append(CNTCDATA);
 		offset = i + 3;
-		i = i + 2; 	// Skip next chars ']' and '>'.
+		i += 2; 	// Skip next chars ']' and '>'.
 	    }
 	}
 
@@ -455,8 +448,8 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
      * Utility method - escape special characters and pass to SAX handler
      */
     private void escapeCDATA(char[] ch, int off, int len) {
-	int limit = off + len;
 	int offset = off;
+	int limit = off + len;
 
 	if (limit > ch.length) {
 	    limit = ch.length;
@@ -466,12 +459,10 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	for (int i = off; i < limit; i++) {
 	    final char current = ch[i];
 
-	    if ((current >= '\u007F' && current < '\u00A0') ||
-		(_is8859Encoded && current > '\u00FF'))
-	    {
+	    if (current > '\u00ff') {
 		_buffer.append(ch, offset, i - offset)
 		       .append(CDATA_ESC_START)
-		       .append(Integer.toString((int) ch[i]))
+		       .append(Integer.toString((int) current))
 		       .append(CDATA_ESC_END);
 		offset = i + 1;
 	    }
@@ -480,6 +471,46 @@ public class StreamXMLOutput extends StreamOutput implements Constants {
 	if (offset < limit) {
 	    _buffer.append(ch, offset, limit - offset);
 	}
+    }
+
+    /**
+     * This method escapes special characters used in attribute values
+     */
+    private String escapeString(String value) {
+	final char[] ch = value.toCharArray();
+	final int limit = ch.length;
+	StringBuffer result = new StringBuffer();
+	
+	int offset = 0;
+	for (int i = 0; i < limit; i++) {
+	    switch (ch[i]) {
+	    case '&':
+		result.append(ch, offset, i - offset).append(AMP);
+		offset = i + 1;
+		break;
+	    case '"':
+		result.append(ch, offset, i - offset).append(QUOTE);
+		offset = i + 1;
+		break;
+	    case '<':
+		result.append(ch, offset, i - offset).append(LT);
+		offset = i + 1;
+		break;
+	    case '>':
+		result.append(ch, offset, i - offset).append(GT);
+		offset = i + 1;
+		break;
+	    case '\n':
+		result.append(ch, offset, i - offset).append(CRLF);
+		offset = i + 1;
+		break;
+	    }
+	}
+
+	if (offset < limit) {
+	    result.append(ch, offset, limit - offset);
+	}
+	return result.toString();
     }
 
     /**
