@@ -90,10 +90,10 @@ public class SystemIDResolver
 
     if (null != curdir)
     {
-			if (uri != null)
-				uri = "file:///" + curdir + System.getProperty("file.separator") + uri;
-			else
-				uri = "file:///" + curdir + System.getProperty("file.separator");
+                        if (uri != null)
+                                uri = "file:///" + curdir + System.getProperty("file.separator") + uri;
+                        else
+                                uri = "file:///" + curdir + System.getProperty("file.separator");
     }
 
     if (null != uri && (uri.indexOf('\\') > -1))
@@ -101,6 +101,25 @@ public class SystemIDResolver
 
     return uri;
   }
+  
+  /**
+   * Take a SystemID string and try and turn it into a good absolute URL.
+   *
+   * @param urlString url A URL string, which may be relative or absolute.
+   *
+   * @return The resolved absolute URI
+   * @throws TransformerException thrown if the string can't be turned into a URL.
+   */
+  public static String getAbsoluteURI(String url)
+          throws TransformerException
+  {
+    if (url.indexOf(':') < 0)
+    {
+      url = getAbsoluteURIFromRelative(url);
+    }
+    return url;
+  }
+
 
   /**
    * Take a SystemID string and try and turn it into a good absolute URL.
@@ -114,9 +133,9 @@ public class SystemIDResolver
   public static String getAbsoluteURI(String urlString, String base)
           throws TransformerException
   {
-		boolean isAbsouteUrl = false;
-		if (urlString.indexOf(':') > 0)
-			isAbsouteUrl = true;
+    boolean isAbsouteUrl = false;
+    if (urlString.indexOf(':') > 0)
+            isAbsouteUrl = true;
 
     if ((!isAbsouteUrl) && ((null == base)
             || (base.indexOf(':') < 0)))
@@ -135,7 +154,7 @@ public class SystemIDResolver
       else
       {
         urlString = urlString.substring(5);
-				isAbsouteUrl = false;
+                                isAbsouteUrl = false;
       }
     }   
 
