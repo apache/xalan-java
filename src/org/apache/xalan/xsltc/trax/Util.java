@@ -65,6 +65,10 @@ package org.apache.xalan.xsltc.trax;
 import java.io.InputStream;
 import java.io.Reader;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.dom.DOMSource;
@@ -128,12 +132,30 @@ public final class Util {
                       */
 
                     if (reader == null) {
-                       reader= XMLReaderFactory.createXMLReader();
-                       reader.setFeature
-                        ("http://xml.org/sax/features/namespaces",true);
-                       reader.setFeature
-                        ("http://xml.org/sax/features/namespace-prefixes",false);
+                       try {
+                           reader= XMLReaderFactory.createXMLReader();
+                       } catch (Exception e ) {
+                           try {
+
+                               //Incase there is an exception thrown 
+                               // resort to JAXP 
+                               SAXParserFactory parserFactory = 
+                                      SAXParserFactory.newInstance();
+                               parserFactory.setNamespaceAware(true);
+                               reader = parserFactory.newSAXParser()
+                                     .getXMLReader();
+
+                               
+                           } catch (ParserConfigurationException pce ) {
+                               throw new TransformerConfigurationException
+                                 ("ParserConfigurationException" ,pce);
+                           }
+                       }
                     }
+                    reader.setFeature
+                        ("http://xml.org/sax/features/namespaces",true);
+                    reader.setFeature
+                        ("http://xml.org/sax/features/namespace-prefixes",false);
 
                     xsltc.setXMLReader(reader);
                 }catch (SAXNotRecognizedException snre ) {

@@ -81,6 +81,8 @@ import java.util.zip.ZipFile;
 
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.ParserConfigurationException;
+
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
@@ -1064,13 +1066,12 @@ public class TransformerFactoryImpl
             }
             catch (Exception e) {
                try {
-                    // If unable to create an instance, let's try to use Xerces
-                    Class clazz = Thread.currentThread().getContextClassLoader()
-                        .loadClass("org.apache.xerces.parsers.SAXParser");
-                    result = (XMLReader) clazz.newInstance();
+                    // If unable to create an instance, let's try to use 
+                    // the XMLReader from JAXP
+                    result = _parserFactory.newSAXParser().getXMLReader();
                 }
-                catch (ClassNotFoundException cnfe) {
-                    throw e;   // ignore cnfe
+                catch (ParserConfigurationException pce) {
+                    throw e;   // ignore pce
                 }
             }
  
