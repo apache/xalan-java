@@ -585,6 +585,13 @@ public class Parser implements Constants, ContentHandler {
 	initStdClass("preserve-space", "Whitespace");
 	initStdClass("processing-instruction", "ProcessingInstruction");
 	initStdClass("namespace-alias", "NamespaceAlias");
+
+        // XSLT 2.0
+        initStdClass("for-each-group", "ForEachGroup");
+        initStdClass("matching-substring", "MatchingSubstring");
+        initStdClass("non-matching-substring", "NonMatchingSubstring");
+        initStdClass("result", "Result");
+        initStdClass("result-document", "ResultDocument");
     }
 
     private void initStdClass(String elementName, String className) {
