@@ -236,7 +236,10 @@ public class TransformerImpl extends XMLFilterImpl
       } 
       catch (SAXException se) 
       {
-        throw new TransformException(se);
+        if(se instanceof trax.TransformException)
+          throw (trax.TransformException)se;
+        else
+          throw new TransformException(se);
       } 
       catch (ClassNotFoundException e1) 
       {
@@ -292,11 +295,25 @@ public class TransformerImpl extends XMLFilterImpl
         // Kick off the parse.  When the ContentHandler gets 
         // the startDocument event, it will call transformNode( node ).
         reader.parse( xmlSource );
+        
+        // This has to be done to catch exceptions thrown from 
+        // the transform thread spawned by the STree handler.
+        Exception e = getExceptionThrown();
+        if(null != e)
+        {
+          if(e instanceof trax.TransformException)
+            throw (trax.TransformException)e;
+          else
+            throw new trax.TransformException(e);
+        }
       }
       catch(SAXException se)
       {
-        se.printStackTrace();
-        throw new TransformException(se);
+        // se.printStackTrace();
+        if(se instanceof TransformException)
+          throw (TransformException)se;
+        else
+          throw new TransformException(se);
       }
       catch(IOException ioe)
       {
@@ -527,7 +544,10 @@ public class TransformerImpl extends XMLFilterImpl
     }
     catch(SAXException se)
     {
-      throw new TransformException(se);
+      if(se instanceof trax.TransformException)
+        throw (trax.TransformException)se;
+      else
+        throw new TransformException(se);
     }
   }
   
@@ -1624,6 +1644,13 @@ public class TransformerImpl extends XMLFilterImpl
   // Implement Runnable //  
   ////////////////////////
   
+  private Exception m_exceptionThrown;
+  
+  public Exception getExceptionThrown()
+  {
+    return m_exceptionThrown;
+  }
+  
   /**
    * Run the transform thread.
    */
@@ -1635,6 +1662,8 @@ public class TransformerImpl extends XMLFilterImpl
     }
     catch(Exception e)
     {
+      // e.printStackTrace();
+      m_exceptionThrown = e;
       ; // should have already been reported via the error handler?
     }
   }
