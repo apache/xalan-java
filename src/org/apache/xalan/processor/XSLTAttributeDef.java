@@ -71,6 +71,7 @@ import java.util.Vector;
 
 import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.Constants;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.utils.SystemIDResolver;
 import org.apache.xalan.utils.StringVector;
@@ -390,6 +391,11 @@ public class XSLTAttributeDef
         m_setterString = "addLiteralResultAttribute";
 
         return m_setterString;
+      }
+      else if ( m_name.equals("space")
+                && m_namespace.equals(Constants.S_XMLNAMESPACEURI) )
+      {
+        m_setterString = "setXmlSpace";
       }
 
       StringBuffer outBuf = new StringBuffer();
