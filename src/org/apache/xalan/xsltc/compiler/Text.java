@@ -65,6 +65,7 @@
 package org.apache.xalan.xsltc.compiler;
 
 import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.GETSTATIC;
 import org.apache.bcel.generic.INVOKEINTERFACE;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.PUSH;
@@ -179,12 +180,23 @@ final class Text extends Instruction {
 		il.append(new INVOKEINTERFACE(esc, 2));
 	    }
 
-	    final int characters = cpg.addInterfaceMethodref(OUTPUT_HANDLER,
-							     "characters",
-							     "(" + STRING_SIG + ")V");
-	    il.append(methodGen.loadHandler());
-	    il.append(new PUSH(cpg, _text));
-	    il.append(new INVOKEINTERFACE(characters, 2));
+            il.append(methodGen.loadHandler());
+
+            // Call characters(String) or characters(char[],int,int), as
+            // appropriate.
+            if (!canLoadAsArrayOffsetLength()) {
+                final int characters = cpg.addInterfaceMethodref(OUTPUT_HANDLER,
+                                                           "characters",
+                                                           "("+STRING_SIG+")V");
+                il.append(new PUSH(cpg, _text));
+                il.append(new INVOKEINTERFACE(characters, 2));
+            } else {
+                final int characters = cpg.addInterfaceMethodref(OUTPUT_HANDLER,
+                                                                 "characters",
+                                                                 "([CII)V");
+                loadAsArrayOffsetLength(classGen, methodGen);
+	        il.append(new INVOKEINTERFACE(characters, 4));
+            }
 
 	    // Restore character escaping setting to whatever it was.
 	    // Note: setEscaping(bool) returns the original (old) value
@@ -196,5 +208,52 @@ final class Text extends Instruction {
 	    }
 	}
 	translateContents(classGen, methodGen);
+    }
+
+    /**
+     * Check whether this Text node can be stored in a char[] in the translet.
+     * Calling this is precondition to calling loadAsArrayOffsetLength.
+     * @see #loadAsArrayOffsetLength(ClassGenerator,MethodGenerator)
+     * @return true if this Text node can be
+     */
+    public boolean canLoadAsArrayOffsetLength() {
+        // Magic number!  21845*3 == 65535.  BCEL uses a DataOutputStream to
+        // serialize class files.  The Java run-time places a limit on the size
+        // of String data written using a DataOutputStream - it cannot require
+        // more than 64KB when represented as UTF-8.  The number of bytes
+        // required to represent a Java string as UTF-8 cannot be greater
+        // than three times the number of char's in the string, hence the
+        // check for 21845.
+
+        return (_text.length() <= 21845);
+    }
+
+    /**
+     * Generates code that loads the array that will contain the character
+     * data represented by this Text node, followed by the offset of the
+     * data from the start of the array, and then the length of the data.
+     *
+     * The pre-condition to calling this method is that
+     * canLoadAsArrayOffsetLength() returns true.
+     * @see #canLoadArrayOffsetLength()
+     */
+    public void loadAsArrayOffsetLength(ClassGenerator classGen,
+                                        MethodGenerator methodGen) {
+        final ConstantPoolGen cpg = classGen.getConstantPool();
+        final InstructionList il = methodGen.getInstructionList();
+        final XSLTC xsltc = classGen.getParser().getXSLTC();
+
+        // The XSLTC object keeps track of character data
+        // that is to be stored in char arrays.
+        final int offset = xsltc.addCharacterData(_text);
+        final int length = _text.length();
+        String charDataFieldName =
+            STATIC_CHAR_DATA_FIELD + (xsltc.getCharacterDataCount()-1);
+
+        il.append(new GETSTATIC(cpg.addFieldref(xsltc.getClassName(),
+                                       charDataFieldName,
+                                       STATIC_CHAR_DATA_FIELD_SIG)));
+        il.append(new PUSH(cpg, offset));
+        il.append(new PUSH(cpg, _text.length()));
     }
 }

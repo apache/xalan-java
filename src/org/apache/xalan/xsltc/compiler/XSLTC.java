@@ -126,6 +126,9 @@ public final class XSLTC {
     private Vector    _namespaceIndex; // Index of all registered namespaces
     private Hashtable _namespaces; // Hashtable of all registered namespaces
 
+    // All literal text in the stylesheet
+    private Vector m_characterData;
+
     // These define the various methods for outputting the translet
     public static final int FILE_OUTPUT        = 0;
     public static final int JAR_OUTPUT         = 1;
@@ -838,4 +841,57 @@ public final class XSLTC {
 	return _debug;
     }
 
+
+    /**
+     * Retrieve a string representation of the character data to be stored
+     * in the translet as a <code>char[]</code>.  There may be more than
+     * one such array required.
+     * @param index The index of the <code>char[]</code>.  Zero-based.
+     * @return String The character data to be stored in the corresponding
+     *               <code>char[]</code>.
+     */
+    public String getCharacterData(int index) {
+        return ((StringBuffer) m_characterData.elementAt(index)).toString();
+    }
+
+    /**
+     * Get the number of char[] arrays, thus far, that will be created to
+     * store literal text in the stylesheet.
+     */
+    public int getCharacterDataCount() {
+        return (m_characterData != null) ? m_characterData.size() : 0;
+    }
+
+    /**
+     * Add literal text to char arrays that will be used to store character
+     * data in the stylesheet.
+     * @param newData String data to be added to char arrays.
+     *                Pre-condition:  <code>newData.length() &le; 21845</code>
+     * @return int offset at which character data will be stored
+     */
+    public int addCharacterData(String newData) {
+        StringBuffer currData;
+        if (m_characterData == null) {
+            m_characterData = new Vector();
+            currData = new StringBuffer();
+            m_characterData.addElement(currData);
+        } else {
+            currData = (StringBuffer) m_characterData
+                                           .elementAt(m_characterData.size()-1);
+        }
+
+        // Character data could take up to three-times as much space when
+        // written to the class file as UTF-8.  The maximum size for a
+        // constant is 65535/3.  If we exceed that,
+        // (We really should use some "bin packing".)
+        if (newData.length() + currData.length() > 21845) {
+            currData = new StringBuffer();
+            m_characterData.addElement(currData);
+        }
+
+        int newDataOffset = currData.length();
+        currData.append(newData);
+
+        return newDataOffset;
+    }
 }

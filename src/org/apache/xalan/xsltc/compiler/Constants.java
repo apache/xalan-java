@@ -409,6 +409,10 @@ public interface Constants extends InstructionConstants {
 
     public static final String DOM_FIELD
 	= "_dom";
+    public static final String STATIC_CHAR_DATA_FIELD
+        = "_scharData";
+    public static final String STATIC_CHAR_DATA_FIELD_SIG
+        = "[C";
     public static final String FORMAT_SYMBOLS_FIELD	 
 	= "format_symbols";
 
