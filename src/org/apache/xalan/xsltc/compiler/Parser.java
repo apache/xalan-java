@@ -322,6 +322,8 @@ public class Parser implements Constants, ContentHandler {
 		stylesheet = new Stylesheet();
 		stylesheet.setSimplified();
 		stylesheet.addElement(element);
+		stylesheet.setAttributes(element.getAttributes());
+		element.addPrefixMapping(EMPTYSTRING, EMPTYSTRING);
 	    }
 	    stylesheet.setParser(this);
 	    return stylesheet;
