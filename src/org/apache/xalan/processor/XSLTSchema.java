@@ -385,9 +385,10 @@ public class XSLTSchema extends XSLTElementDef
                                  Constants.S_XSLNAMESPACEURL, "choose",
                                  null /*alias */,
                                  new XSLTElementDef[]{ xslWhen,
-                                                       xslOtherwise } /* elements */, new XSLTAttributeDef[]{ spaceAttr },
-                                                                                      new ProcessorTemplateElem(),
-                                                                                      ElemChoose.class /* class object */);
+                                       xslOtherwise } /* elements */, 
+                                new XSLTAttributeDef[]{ spaceAttr },
+                                              new ProcessorTemplateElem(),
+                                              ElemChoose.class /* class object */);
     XSLTElementDef xslAttribute = new XSLTElementDef(this,
                                     Constants.S_XSLNAMESPACEURL, "attribute",
                                     null /*alias */,

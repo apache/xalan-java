@@ -455,6 +455,9 @@ public class XPathContext implements ExpressionContext
    * The current context node list.
    */
   private Stack m_contextNodeLists = new Stack();
+  
+  public Stack getContextNodeListsStack() { return m_contextNodeLists; }
+  public void setContextNodeListsStack(Stack s) { m_contextNodeLists = s; }
 
   /**
    * Get the current context node list.
@@ -502,6 +505,9 @@ public class XPathContext implements ExpressionContext
   /** The stack of <a href="http://www.w3.org/TR/xslt#dt-current-node">current node</a> objects.
    *  Not to be confused with the current node list.  */
   private NodeVector m_currentNodes = new NodeVector();
+  
+  public NodeVector getCurrentNodeStack() {return m_currentNodes; }
+  public void setCurrentNodeStack(NodeVector nv) { m_currentNodes = nv; }
 
   /**
    * Get the current context node.
@@ -554,6 +560,9 @@ public class XPathContext implements ExpressionContext
 
   /** A stack of the current sub-expression nodes.  */
   private NodeVector m_currentExpressionNodes = new NodeVector();
+  
+  public NodeVector getCurrentExpressionNodeStack() { return m_currentExpressionNodes; }
+  public void setCurrentExpressionNodeStack(NodeVector nv) { m_currentExpressionNodes = nv; }
 
   /**
    * Get the current node that is the expression's context (i.e. for current() support).
@@ -613,6 +622,9 @@ public class XPathContext implements ExpressionContext
    * Stack of AxesIterators.
    */
   private Stack m_axesIteratorStack = new Stack();
+  
+  public Stack getAxesIteratorStackStacks() { return m_axesIteratorStack; }
+  public void setAxesIteratorStackStacks(Stack s) { m_axesIteratorStack = s; }
 
   /**
    * <meta name="usage" content="internal"/>

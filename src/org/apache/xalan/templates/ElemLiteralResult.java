@@ -636,10 +636,6 @@ public class ElemLiteralResult extends ElemUse
         // TODO: Process m_extensionElementPrefixes && m_attributeSetsNames
         transformer.executeChildTemplates(this, sourceNode, mode, true);
       }
-      catch(TransformerException te)
-      {
-        throw te;
-      }
       finally
       {
         // If you don't do this in a finally statement, an exception could 

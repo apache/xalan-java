@@ -1441,7 +1441,7 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Use the SAX2 helper class to track result namespaces.
    */
-  private NamespaceSupport m_nsSupport = new NamespaceSupport();
+  NamespaceSupport m_nsSupport = new NamespaceSupport();
 
   /**
    * The transformer object.

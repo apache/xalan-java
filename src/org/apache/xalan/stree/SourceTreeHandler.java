@@ -278,6 +278,13 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
     return m_useMultiThreading;
   }
   
+  /**
+   * Simple count incremented in startDocument and decremented in 
+   * endDocument, to make sure this contentHandler isn't being double 
+   * entered.
+   */
+  private int m_entryCount = 0;
+  
   /** Indicate whether running in Debug mode        */
   private static final boolean DEBUG = false;
 
@@ -327,6 +334,13 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
   public void startDocument() throws org.xml.sax.SAXException
   {
     // System.out.println("startDocument: "+m_id);
+    
+    if(m_entryCount != 0)
+      throw new org.xml.sax.SAXException(
+    "startDocument can not be called while within startDocument/endDocument! "+
+    "Threading problem?");
+    
+    m_entryCount++; // decremented at the end of endDocument
     
     synchronized (m_root)
     {
@@ -462,11 +476,18 @@ public class SourceTreeHandler extends org.xml.sax.helpers.DefaultHandler implem
 
           // This should wait until the transformThread is considered not alive.
           transformThread.join();
+          if(!m_transformer.hasTransformThreadErrorCatcher())
+          {
+            Exception e = m_transformer.getExceptionThrown();
+            if(null != e)
+              throw new org.xml.sax.SAXException(e);
+          }
           m_transformer.setTransformThread(null);
         }
         catch (InterruptedException ie){}
       }
     }
+    m_entryCount--; // incremented at the start of startDocument
   }
 
   /**

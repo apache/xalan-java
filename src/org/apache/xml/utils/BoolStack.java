@@ -62,7 +62,7 @@ import java.util.EmptyStackException;
  * <meta name="usage" content="internal"/>
  * Simple stack for boolean values.
  */
-public final class BoolStack
+public final class BoolStack implements Cloneable
 {
 
   /** Array of boolean values          */
@@ -209,4 +209,11 @@ public final class BoolStack
 
     m_values = newVector;
   }
+  
+  public Object clone() 
+    throws CloneNotSupportedException
+  {
+    return super.clone();
+  }
+
 }

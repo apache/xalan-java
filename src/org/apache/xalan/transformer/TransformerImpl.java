@@ -254,7 +254,7 @@ public class TransformerImpl extends Transformer
    * ElemTemplateElement.  Needed for the 
    * org.apache.xalan.transformer.TransformState interface,  
    * so a tool can discover the calling template. */
-  private NodeVector m_currentTemplateElements = new NodeVector(64);
+  NodeVector m_currentTemplateElements = new NodeVector(64);
 
   /** A node vector used as a stack to track the current 
    * ElemTemplate that was matched, as well as the node that 
@@ -262,7 +262,7 @@ public class TransformerImpl extends Transformer
    * org.apache.xalan.transformer.TransformState interface,  
    * so a tool can discover the matched template, and matched 
    * node. */
-  private NodeVector m_currentMatchTemplates = new NodeVector();
+  NodeVector m_currentMatchTemplates = new NodeVector();
 
   /**
    * The root of a linked set of stylesheets.
@@ -300,18 +300,18 @@ public class TransformerImpl extends Transformer
    * Stack for the purposes of flagging infinite recursion with
    * attribute sets.
    */
-  private Stack m_attrSetStack = null;
+  Stack m_attrSetStack = null;
 
   /**
    * The table of counters for xsl:number support.
    * @see ElemNumber
    */
-  private CountersTable m_countersTable = null;
+  CountersTable m_countersTable = null;
 
   /**
    * Is > 0 when we're processing a for-each.
    */
-  private BoolStack m_currentTemplateRuleIsNull = new BoolStack();
+  BoolStack m_currentTemplateRuleIsNull = new BoolStack();
 
   /** The message manager, which manages error messages, warning 
    * messages, and other types of message events.   */
@@ -458,6 +458,17 @@ public class TransformerImpl extends Transformer
   {
     m_transformThread = t;
   }
+  
+  private boolean m_hasTransformThreadErrorCatcher = false;
+  
+  /**
+   * Return true if the transform was initiated from the transform method, 
+   * otherwise it was probably done from a pure parse events.
+   */
+  public boolean hasTransformThreadErrorCatcher()
+  {
+    return m_hasTransformThreadErrorCatcher;
+  }
 
   /**
    * Process the source tree to SAX parse events.
@@ -504,6 +515,7 @@ public class TransformerImpl extends Transformer
 
     try
     {
+      m_hasTransformThreadErrorCatcher = true;
       XMLReader reader = null;
       if(source instanceof SAXSource)
         reader = ((SAXSource)source).getXMLReader();
@@ -676,6 +688,7 @@ public class TransformerImpl extends Transformer
     }
     finally
     {
+      m_hasTransformThreadErrorCatcher = false;
       // This looks to be redundent to the one done in TransformNode.
       reset();
     }
@@ -2202,10 +2215,6 @@ public class TransformerImpl extends Transformer
         t.execute(this, sourceNode, mode);
       }
     }
-    catch(TransformerException te)
-    {
-      throw te;
-    }
     finally
     {
       popElemTemplateElement();
@@ -2906,17 +2915,20 @@ public class TransformerImpl extends Transformer
 
     synchronized (this)
     {
-      String msg = e.getMessage();
+      // See message from me on 3/27/2001 to Patrick Moore.
+//      String msg = e.getMessage();
 
       // System.out.println(e.getMessage());
+      
+      // Is this really needed?  -sb
       notifyAll();
 
-      if (null == msg)
-      {
-
-        // m_throwNewError = false;
-        e.printStackTrace();
-      }
+//      if (null == msg)
+//      {
+//
+//        // m_throwNewError = false;
+//        e.printStackTrace();
+//      }
 
       // throw new org.apache.xml.utils.WrappedRuntimeException(e);
     }
@@ -2966,6 +2978,26 @@ public class TransformerImpl extends Transformer
     {
       postExceptionFromThread(e);
     }
+  }
+  
+  // Fragment re-execution interfaces for a tool.
+  
+  public TransformSnapshot getSnapshot()
+  {
+    return new TransformSnapshotImpl(this);
+  }
+  
+  /**
+   * This will execute the following XSLT instructions
+   * from the snapshot point.
+   */
+  public void executeFromSnapshot(TransformSnapshot ts)
+  {
+    ((TransformSnapshotImpl)ts).apply(this);
+  }
+  
+  public void stopTransformation()
+  {
   }
   
 }  // end TransformerImpl class

@@ -67,8 +67,14 @@ import javax.xml.transform.TransformerException;
 /**
  * Acts as a base class for queued SAX events.
  */
-public abstract class QueuedSAXEvent
+public abstract class QueuedSAXEvent implements Cloneable
 {
+  
+  public Object clone() 
+    throws CloneNotSupportedException
+  {
+    return super.clone();
+  }
 
   /**
    * Constructor QueuedSAXEvent
