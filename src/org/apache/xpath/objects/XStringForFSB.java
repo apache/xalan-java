@@ -61,9 +61,6 @@ import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
 import org.apache.xml.utils.XMLCharacterRecognizer;
 
-import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
-
 import java.util.Locale;
 
 /**
@@ -71,15 +68,13 @@ import java.util.Locale;
  */
 public class XStringForFSB extends XString
 {
+	FastStringBuffer m_fsb;
 
   /** The start position in the fsb. */
   int m_start;
 
   /** The length of the string. */
   int m_length;
-
-  /** If the str() function is called, the string will be cached here. */
-  protected String m_strCache = null;
 
   /** cached hash code */
   protected int m_hash = 0;
@@ -93,30 +88,30 @@ public class XStringForFSB extends XString
    */
   public XStringForFSB(FastStringBuffer val, int start, int length)
   {
-
-    super(val);
-
-    m_start = start;
-    m_length = length;
-
     if (null == val)
       throw new IllegalArgumentException(
-        XSLMessages.createXPATHMessage(XPATHErrorResources.ER_FASTSTRINGBUFFER_CANNOT_BE_NULL, null));
+        "The FastStringBuffer argument can not be null!!");
+
+    m_fsb=val;
+    m_start = start;
+    m_length = length;
   }
 
   /**
-   * Construct a XNodeSet object.
+   * Block inherited ctor. (DO ctors inherit?)
    *
    * @param val String object this will wrap.
    */
+  /*
   private XStringForFSB(String val)
   {
 
     super(val);
 
     throw new IllegalArgumentException(
-      XSLMessages.createXPATHMessage(XPATHErrorResources.ER_FSB_CANNOT_TAKE_STRING, null)); // "XStringForFSB can not take a string for an argument!");
+      "XStringForFSB can not take a string for an argument!");
   }
+  */
 
   /**
    * Cast result object to a string.
@@ -125,7 +120,7 @@ public class XStringForFSB extends XString
    */
   public FastStringBuffer fsb()
   {
-    return ((FastStringBuffer) m_obj);
+    return (m_fsb);
   }
   
   /**
@@ -146,14 +141,8 @@ public class XStringForFSB extends XString
    */
   public boolean hasString()
   {
-    return (null != m_strCache);
+    return (null != m_stringValue);
   }
-
-//  /** NEEDSDOC Field strCount */
-//  public static int strCount = 0;
-//
-//  /** NEEDSDOC Field xtable */
-//  static java.util.Hashtable xtable = new java.util.Hashtable();
 
   /**
    * Since this object is incomplete without the length and the offset, we 
@@ -174,9 +163,9 @@ public class XStringForFSB extends XString
   public String str()
   {
 
-    if (null == m_strCache)
+    if (null == m_stringValue)
     {
-      m_strCache = fsb().getString(m_start, m_length);
+      m_stringValue = fsb().getString(m_start, m_length);
 
 //      strCount++;
 //
@@ -202,8 +191,26 @@ public class XStringForFSB extends XString
       // System.exit(-1);
     }
 
-    return m_strCache;
+    return m_stringValue;
   }
+  
+  /** Yield result object's string value as a sequence of Character Blocks
+	* @return a CharacterBlockEnumeration displaying the contents of
+	* this object's string value (as in str()). May be empty, may
+	* yield multiple blocks depending on the FSB's contents. (The latter
+	* case is why we need to enumerate, of course!)
+	* */
+  public org.apache.xml.utils.CharacterBlockEnumeration enumerateCharacterBlocks()
+  {
+  	// %REVIEW% %OPT% I'm not sure this is an optimization. Depends on
+  	// how retrieval of char[] from String works in any given JVM.
+  	// See comments in CharacterBlockEnumeration, and run some tests.
+    if (null != m_stringValue)
+    	return new org.apache.xml.utils.CharacterBlockEnumeration(m_stringValue);
+	else  	
+	  	return fsb().enumerateCharacterBlocks(m_start,m_length);
+  }
+  
 
   /**
    * Directly call the
@@ -375,7 +382,7 @@ public class XStringForFSB extends XString
       return true;
     }
     if(obj2.getType() == XObject.CLASS_NUMBER)
-    	return obj2.equals(this);
+    	return ((XNodeSet)obj2).equalsExistential(this);
 
     String str = obj2.str();
     int n = m_length;
@@ -470,7 +477,7 @@ public class XStringForFSB extends XString
       // nodeset comparisons, we always call the 
       // nodeset function.
     else if (obj2 instanceof XNodeSet)
-      return obj2.equals(this);
+      return ((XNodeSet)obj2).equalsExistential(this);
     else if (obj2 instanceof XStringForFSB)
       return equals((XMLString) this);
     else
@@ -697,6 +704,7 @@ public class XStringForFSB extends XString
   {
     return startsWith(prefix, 0);
   }
+
 
   /**
    * Returns the index within this string of the first occurrence of the

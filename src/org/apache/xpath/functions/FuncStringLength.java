@@ -56,17 +56,10 @@
  */
 package org.apache.xpath.functions;
 
-import org.apache.xpath.res.XPATHErrorResources;
-
-//import org.w3c.dom.Node;
-
-import java.util.Vector;
-
+import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
+import org.apache.xpath.objects.XInteger;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNumber;
-import org.apache.xpath.objects.XNodeSet;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -85,6 +78,6 @@ public class FuncStringLength extends FunctionDef1Arg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    return new XNumber(getArg0AsString(xctxt).length());
+    return new XInteger(getArg0AsString(xctxt).length());
   }
 }

@@ -57,25 +57,21 @@
 package org.apache.xpath;
 
 //import org.w3c.dom.Node;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNodeSet;
-import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
+import java.io.Serializable;
+import java.util.Vector;
 
-import org.xml.sax.XMLReader;
-import org.xml.sax.ContentHandler;
-
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-
-import org.apache.xml.utils.SAXSourceLocator;
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xml.utils.XMLString;
-import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.DTM;
-
-import javax.xml.transform.SourceLocator;
 import javax.xml.transform.ErrorListener;
+import javax.xml.transform.TransformerException;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.utils.XMLString;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.parser.SimpleNode;
+import org.apache.xpath.res.XPATHErrorResources;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 
 /**
  * This abstract class serves as the base for all expression objects.  An
@@ -86,8 +82,15 @@ import javax.xml.transform.ErrorListener;
  * and walkers, which must be cloned in order to be used -- the original must
  * still be immutable.
  */
-public abstract class Expression implements java.io.Serializable, ExpressionNode, XPathVisitable
+public abstract class Expression extends SimpleNode 
+	implements java.io.Serializable, ExpressionNode, XPathVisitable
 {
+	
+  public Expression()
+  {
+  	super();
+  }
+  
 
   /**
    * The location where this expression was built from.  Need for diagnostic
@@ -291,7 +294,8 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
 
     try
     {
-      xctxt.pushCurrentNodeAndExpression(contextNode, contextNode);
+      xctxt.pushCurrentNode(contextNode);
+      xctxt.pushCurrentExpressionNode(contextNode);
 
       return execute(xctxt).iter();
     }
@@ -322,7 +326,8 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
 
     try
     {
-      xctxt.pushCurrentNodeAndExpression(contextNode, contextNode);
+      xctxt.pushCurrentNode(contextNode);
+      xctxt.pushCurrentExpressionNode(contextNode);
 
       XNodeSet nodeset = (XNodeSet)execute(xctxt);
       return nodeset.iterRaw();
@@ -374,17 +379,10 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
   }
 
   /**
-   * This function is used to fixup variables from QNames to stack frame
-   * indexes at stylesheet build time.
-   * @param vars List of QNames that correspond to variables.  This list
-   * should be searched backwards for the first qualified name that
-   * corresponds to the variable reference qname.  The position of the
-   * QName in the vector from the start of the vector will be its position
-   * in the stack frame (but variables above the globalsTop value will need
-   * to be offset to the current stack frame).
-   * NEEDSDOC @param globalsSize
+   * Fix up variables from QNames to stack frame
+   * @param vcs Interface to variable stack composition interface.
    */
-  public abstract void fixupVariables(java.util.Vector vars, int globalsSize);
+  public abstract void fixupVariables(VariableComposeState vcs);
   
   /**
    * Compare this object with another object and see 
@@ -464,7 +462,9 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
         XPATHErrorResources.ER_INCORRECT_PROGRAMMER_ASSERTION,
         new Object[]{ msg });
 
-      throw new RuntimeException(fMsg);
+      RuntimeException a = new RuntimeException(fMsg);
+      a.printStackTrace();
+      throw a;
     }
   }
 
@@ -531,6 +531,7 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
   public void exprAddChild(ExpressionNode n, int i)
   {
   	assertion(false, "exprAddChild method not implemented!");
+  	
   }
 
   /** This method returns a child node.  The children are numbered
@@ -630,4 +631,17 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
   	  return 0;
   	return m_parent.getColumnNumber();
   }
+  
+  /**
+   * Clone this object, but make certian it is deep.  This is useful 
+   * for derived classes that may want the default clone to be 
+   * light weight, but then want to deep clone in some special cases.
+   * @see java.lang.Object#clone()
+   */
+  public Object cloneDeep() throws CloneNotSupportedException
+  {
+    XNodeSet xns = (XNodeSet)clone();
+    return xns;
+  }
+
 }

@@ -60,10 +60,14 @@ import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.parser.Node;
+import org.apache.xpath.parser.Pattern;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -75,16 +79,16 @@ public class UnionPattern extends Expression
 
   /** Array of the contained step patterns to be tested.
    *  @serial  */
-  private StepPattern[] m_patterns;
+  private ExpressionNode[] m_patterns;
   
   /**
    * No arguments to process, so this does nothing.
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
     for (int i = 0; i < m_patterns.length; i++) 
     {
-      m_patterns[i].fixupVariables(vars, globalsSize);
+      ((Expression)m_patterns[i]).fixupVariables(vcs);
     }
   }
 
@@ -102,7 +106,7 @@ public class UnionPattern extends Expression
       int n = m_patterns.length;
       for (int i = 0; i < n; i++) 
       {
-        if(m_patterns[i].canTraverseOutsideSubtree())
+        if(((StepPattern)m_patterns[i]).canTraverseOutsideSubtree())
           return true;
       }
      }
@@ -127,6 +131,88 @@ public class UnionPattern extends Expression
     }
     
   }
+  
+  /** This method tells the node to add its argument to the node's
+    list of children.  */
+  public void exprAddChild(ExpressionNode n, int i)
+  {
+  	
+  	if(null == m_patterns)
+  	{
+  		m_patterns = new ExpressionNode[i+1];
+  	}
+  	if(i >= m_patterns.length)
+  	{
+   		ExpressionNode newPats[] = new ExpressionNode[i+1];
+  		System.arraycopy(m_patterns, 0, newPats, 0, m_patterns.length);
+  		m_patterns = newPats;
+  		
+  	}
+    m_patterns[i] = n;
+  }
+  
+  public void jjtAddChild(org.apache.xpath.parser.Node n, int i) 
+  {
+  	if(n instanceof UnionPattern)
+  	{
+  		// Undo the work of having the unions as binary operators.
+  		// Certainly, this makes no sense for match patters.
+  		UnionPattern up = (UnionPattern)n;
+  		int count = up.jjtGetNumChildren();
+  		for(int j = 0; j < count; j++)
+  		{
+  			n = up.jjtGetChild(j);
+  			if(n instanceof Pattern)
+		  	{
+		  		n = n.jjtGetChild(0);
+		  		// n.jjtSetParent(this);  // Called in jjtClose
+		  	}
+
+  			exprAddChild((ExpressionNode)n, i+j);
+  		}
+  	}
+  	else
+  	{
+  		if(n instanceof Pattern)
+		{
+		  	n = n.jjtGetChild(0);
+		  	// n.jjtSetParent(this); // Called in jjtClose
+		}
+    	exprAddChild((ExpressionNode)n, i);
+  	}
+  }
+    
+  /** This method returns a child node.  The children are numbered
+     from zero, left to right. */
+  public ExpressionNode exprGetChild(int i)
+  {
+  	return m_patterns[i];
+  }
+
+  /** Return the number of children the node has. */
+  public int exprGetNumChildren()
+  {
+  	if(null == m_patterns)
+  	{
+  		return 0;
+  	}
+  	else 
+  	{
+  		return m_patterns.length;
+  	}
+  }
+  
+  public void jjtClose() 
+  {
+  	super.jjtClose();
+  	int childCount = jjtGetNumChildren();
+  	for(int i = 0; i < childCount; i++)
+  	{
+  		Node child = jjtGetChild(i);
+  		child.jjtSetParent(this);
+  	}
+  }
+
 
   /**
    * Get the contained step patterns to be tested. 
@@ -134,9 +220,9 @@ public class UnionPattern extends Expression
    *
    * @return an array of the contained step patterns to be tested. 
    */
-  public StepPattern[] getPatterns()
+  public ExpressionNode[] getPatterns()
   {
-    return m_patterns;
+    return (ExpressionNode[])m_patterns;
   }
 
   /**
@@ -160,7 +246,7 @@ public class UnionPattern extends Expression
 
     for (int i = 0; i < n; i++)
     {
-      XObject score = m_patterns[i].execute(xctxt);
+      XObject score = ((Expression)m_patterns[i]).execute(xctxt);
 
       if (score != NodeTest.SCORE_NONE)
       {
@@ -193,7 +279,7 @@ public class UnionPattern extends Expression
      */
     public Expression getExpression()
     {
-      return m_patterns[m_index];
+      return (Expression)m_patterns[m_index];
     }
 
 
@@ -218,7 +304,7 @@ public class UnionPattern extends Expression
   		int n = m_patterns.length;
   		for(int i = 0; i < n; i++)
   		{
-  			m_patterns[i].callVisitors(new UnionPathPartOwner(i), visitor);
+  			((Expression)m_patterns[i]).callVisitors(new UnionPathPartOwner(i), visitor);
   		}
   	}
   }
@@ -241,7 +327,7 @@ public class UnionPattern extends Expression
   			
   		for(int i = 0; i < n; i++)
   		{
-  			if(!m_patterns[i].deepEquals(up.m_patterns[i]))
+  			if(!((Expression)m_patterns[i]).deepEquals((Expression)up.m_patterns[i]))
   				return false;
   		}
   	}

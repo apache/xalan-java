@@ -56,23 +56,14 @@
  */
 package org.apache.xpath.functions;
 
-import org.apache.xpath.res.XPATHErrorResources;
-
-//import org.w3c.dom.Node;
-//import org.w3c.dom.traversal.NodeIterator;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
-
-import java.util.Vector;
-
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNodeSet;
-import org.apache.xpath.axes.PredicatedNodeTest;
 import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xpath.axes.ContextNodeList;
-import org.apache.xpath.axes.SubContextList;
+import org.apache.xpath.axes.PredicatedNodeTest;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XObject;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -137,7 +128,7 @@ public class FuncCurrent extends Function
   /**
    * No arguments to process, so this does nothing.
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
     // no-op
   }

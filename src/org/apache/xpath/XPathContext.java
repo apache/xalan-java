@@ -71,17 +71,21 @@ import org.apache.xml.utils.NSInfo;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.NodeVector;
+import org.apache.xml.utils.WrappedRuntimeException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xpath.axes.SubContextList;
+import org.apache.xpath.objects.XNodeSequenceSingleton;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XSequence;
 import org.apache.xpath.objects.XString;
 
 import org.apache.xalan.extensions.ExpressionContext;
 
 // SAX2 imports
+import org.w3c.dom.traversal.NodeIterator;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 // import org.xml.sax.Locator;
@@ -112,13 +116,19 @@ import org.apache.xml.utils.IntStack;
 import org.apache.xpath.axes.DescendantIterator;
 
 // For  handling.
-import org.apache.xml.dtm.ref.sax2dtm.SAX2RTFDTM;
+import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
 
 /**
  * <meta name="usage" content="advanced"/>
  * Default class for the runtime execution context for XPath.
  * 
- * <p>This class extends DTMManager but does not directly implement it.</p>
+ * <p>XPathContext has been enhanced to carry the proposed "static context"
+ * information for XPath 2.0. This sketch was initially based on
+ * http://www.w3.org/TR/2002/WD-xpath20-2002043
+ * </p> 
+ * 
+ * <p>This class extends DTMManager but does not directly implement it;
+ * instead, it operates as proxy for an actual DTMManager.</p>
  */
 public class XPathContext extends DTMManager // implements ExpressionContext
 {
@@ -141,7 +151,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * Most recent "reusable" DTM for Global Result Tree Fragments. No stack is
    * required since we're never going to pop these.
    */
-  private SAX2RTFDTM m_global_rtfdtm=null;
+  private SAX2DTM m_global_rtfdtm=null;
   
 	
   /**
@@ -342,8 +352,8 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   public XPathContext()
   {
     m_prefixResolvers[m_prefixResolversTop++] = null;
-    m_currentNodes[m_currentNodesFirstFree++] = DTM.NULL;
-    m_currentNodes[m_currentExpressionNodesFirstFree++] = DTM.NULL;
+    m_currentItems[m_currentNodesFirstFree++] = XSequence.EMPTY;
+    m_currentExpressionNodes[m_currentExpressionNodesFirstFree++] = DTM.NULL;
     m_saxLocations[m_saxLocationsTop++] = null;
   }
 
@@ -360,8 +370,8 @@ public class XPathContext extends DTMManager // implements ExpressionContext
     }
     catch (NoSuchMethodException nsme) {}
     m_prefixResolvers[m_prefixResolversTop++] = null;
-    m_currentNodes[m_currentNodesFirstFree++] = DTM.NULL;
-    m_currentNodes[m_currentExpressionNodesFirstFree++] = DTM.NULL;
+    m_currentItems[m_currentNodesFirstFree++] = XSequence.EMPTY;
+    m_currentExpressionNodes[m_currentExpressionNodesFirstFree++] = DTM.NULL;
     m_saxLocations[m_saxLocationsTop++] = null;
   }
 
@@ -392,7 +402,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 	m_contextNodeLists = new Stack();
 	m_currentExpressionNodes = new int[RECURSIONLIMIT];
 	m_currentExpressionNodesFirstFree = 0;
-	m_currentNodes = new int[RECURSIONLIMIT];
+	m_currentItems = new XObject[RECURSIONLIMIT];
 	m_currentNodesFirstFree = 0;
 	m_iteratorRoots = new NodeVector();
 	m_predicatePos = new IntStack();
@@ -401,8 +411,8 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 	int m_prefixResolversTop = 0;
 	
 	m_prefixResolvers[m_prefixResolversTop++] = null;
-    m_currentNodes[m_currentNodesFirstFree++] = DTM.NULL;
-    m_currentNodes[m_currentExpressionNodesFirstFree++] = DTM.NULL;
+    m_currentItems[m_currentNodesFirstFree++] = XSequence.EMPTY;
+    m_currentExpressionNodes[m_currentExpressionNodesFirstFree++] = DTM.NULL;
     m_saxLocations[m_saxLocationsTop++] = null;
   }
 
@@ -690,13 +700,50 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * @return  the <a href="http://www.w3.org/TR/xslt#dt-current-node-list">current node list</a>,
    * also refered to here as a <term>context node list</term>.
    */
-  public final DTMIterator getContextNodeList()
+  public final XSequence getContextSequence()
   {
 
     if (m_contextNodeLists.size() > 0)
-      return (DTMIterator) m_contextNodeLists.peek();
+      return (XSequence) m_contextNodeLists.peek();
     else
       return null;
+  }
+  
+  /**
+   * Get the current context node list.
+   *
+   * @return  the <a href="http://www.w3.org/TR/xslt#dt-current-node-list">current node list</a>,
+   * also refered to here as a <term>context node list</term>.
+   */
+  public final DTMIterator getContextNodeList()
+  {
+
+    try
+    {
+      if (m_contextNodeLists.size() > 0)
+      {
+        Object contextSequence = m_contextNodeLists.peek();
+        if (contextSequence instanceof DTMIterator)
+        {
+          return (DTMIterator) contextSequence;
+        }
+        else
+          if (contextSequence instanceof XObject)
+          {
+            return ((XObject) contextSequence).iter();
+          }
+          else
+          {
+            return null; // or error
+          }
+      }
+      else
+        return null;
+    }
+    catch (TransformerException e)
+    {
+      throw new WrappedRuntimeException(e);
+    }
   }
 
   /**
@@ -706,9 +753,40 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * @param nl the <a href="http://www.w3.org/TR/xslt#dt-current-node-list">current node list</a>,
    * also refered to here as a <term>context node list</term>.
    */
-  public final void pushContextNodeList(DTMIterator nl)
+  public final void pushContextSequence(XSequence xseq)
   {
-    m_contextNodeLists.push(nl);
+    m_contextNodeLists.push(xseq);
+  }
+
+  /**
+   * <meta name="usage" content="internal"/>
+   * Pop the current context node list.
+   */
+  public final void popContextSequence()
+  {
+  	if(m_contextNodeLists.isEmpty())
+  	  System.err.println("Warning: popContextNodeList when stack is empty!");
+  	else
+      m_contextNodeLists.pop();
+  }
+  
+/**
+   * <meta name="usage" content="internal"/>
+   * Set the current context node list.
+   *
+   * @param nl the <a href="http://www.w3.org/TR/xslt#dt-current-node-list">current node list</a>,
+   * also refered to here as a <term>context node list</term>.
+   */
+  public final void pushContextNodeList(DTMIterator iterator)
+  {
+    if(iterator instanceof XSequence)
+      m_contextNodeLists.push((XSequence)iterator);
+    else
+    {
+      XNodeSet nodeset = new XNodeSet(iterator);
+      nodeset.setCurrentPos(iterator.getCurrentPos());
+      m_contextNodeLists.push(nodeset);
+    }
   }
 
   /**
@@ -717,11 +795,12 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final void popContextNodeList()
   {
-  	if(m_contextNodeLists.isEmpty())
-  	  System.err.println("Warning: popContextNodeList when stack is empty!");
-  	else
+    if(m_contextNodeLists.isEmpty())
+      System.err.println("Warning: popContextNodeList when stack is empty!");
+    else
       m_contextNodeLists.pop();
   }
+
 
   /**
    * The ammount to use for stacks that record information during the 
@@ -733,13 +812,14 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    *  Not to be confused with the current node list.  %REVIEW% Note that there 
    *  are no bounds check and resize for this stack, so if it is blown, it's all 
    *  over.  */
-  private int m_currentNodes[] = new int[RECURSIONLIMIT];
+  private XObject m_currentItems[] = new XObject[RECURSIONLIMIT];
+  
   protected int m_currentNodesFirstFree = 0;
    
 //  private NodeVector m_currentNodes = new NodeVector();
   
-  public int[] getCurrentNodeStack() {return m_currentNodes; }
-  public void setCurrentNodeStack(int[] nv) { m_currentNodes = nv; }
+//  public XObject[] getCurrentItemStack() {return m_currentItems; }
+  public void setCurrentNodeStack(XObject[] nv) { m_currentItems = nv; }
 
   /**
    * Get the current context node.
@@ -748,8 +828,47 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public final int getCurrentNode()
   {
-    return m_currentNodes[m_currentNodesFirstFree-1];
+    XObject current = m_currentItems[m_currentNodesFirstFree - 1];
+    if (current instanceof XNodeSequenceSingleton)
+      return ((XNodeSequenceSingleton) current).getNodeHandle();
+//    else if (current instanceof DTMIterator)
+//      return ((DTMIterator) current).getCurrentNode();
+    else
+      return DTM.NULL;
   }
+  
+  /**
+   * Get the current context node.
+   *
+   * @return the <a href="http://www.w3.org/TR/xslt#dt-current-node">current node</a>.
+   */
+  public final XObject getCurrentItem()
+  {
+    return m_currentItems[m_currentNodesFirstFree - 1];
+  }
+  
+  /**
+   * Set the current context node.
+   *
+   * @param cn the <a href="http://www.w3.org/TR/xslt#dt-current-node">current node</a>.
+   */
+  public final void setCurrentItem(XObject cn)
+  {
+    m_currentItems[m_currentNodesFirstFree - 1] = cn;
+  }
+
+  
+  /**
+   * Set the current context node.
+   *
+   * @param cn the <a href="http://www.w3.org/TR/xslt#dt-current-node">current node</a>.
+   */
+  public final void setCurrentNode(int cn)
+  {
+    DTM dtm = m_dtmManager.getDTM(cn);
+    m_currentItems[m_currentNodesFirstFree - 1] = new XNodeSequenceSingleton(cn, dtm);
+  }
+
   
   /**
    * Set the current context node and expression node.
@@ -757,11 +876,39 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * @param cn the <a href="http://www.w3.org/TR/xslt#dt-current-node">current node</a>.
    * @param en the sub-expression context node.
    */
+  public final void pushCurrentItemAndExpression(XObject cn, int en)
+  {
+    m_currentItems[m_currentNodesFirstFree++] = cn;
+    m_currentExpressionNodes[m_currentExpressionNodesFirstFree++] = en;
+  }
+  
+  /**
+   * Set the current context node and expression node.
+   *
+   * @param cn the <a href="http://www.w3.org/TR/xslt#dt-current-node">current node</a>.
+   * @param en the sub-expression context node.
+   * @deprecated
+   */
+  public final void pushCurrentItemAndExpression(int cn, int en)
+  {
+    pushCurrentNode(cn);
+    m_currentExpressionNodes[m_currentExpressionNodesFirstFree++] = en;
+  }
+  
+  /**
+   * Set the current context node and expression node.
+   *
+   * @param cn the <a href="http://www.w3.org/TR/xslt#dt-current-node">current node</a>.
+   * @param en the sub-expression context node.
+   * @deprecated
+   */
   public final void pushCurrentNodeAndExpression(int cn, int en)
   {
-    m_currentNodes[m_currentNodesFirstFree++] = cn;
-    m_currentExpressionNodes[m_currentExpressionNodesFirstFree++] = cn;
+    pushCurrentNode(cn);
+    m_currentExpressionNodes[m_currentExpressionNodesFirstFree++] = en;
   }
+
+
 
   /**
    * Set the current context node.
@@ -779,12 +926,28 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * @param en the sub-expression context node.
    * @param nc the namespace context (prefix resolver.
    */
-  public final void pushExpressionState(int cn, int en, PrefixResolver nc)
+  public final void pushExpressionState(XObject cn, int en, PrefixResolver nc)
   {
-    m_currentNodes[m_currentNodesFirstFree++] = cn;
-    m_currentExpressionNodes[m_currentExpressionNodesFirstFree++] = cn;
+    m_currentItems[m_currentNodesFirstFree++] = cn;
+    m_currentExpressionNodes[m_currentExpressionNodesFirstFree++] = en;
     m_prefixResolvers[m_prefixResolversTop++] = nc;
   }
+  
+  /**
+   * Push the current context node, expression node, and prefix resolver.
+   *
+   * @param cn the <a href="http://www.w3.org/TR/xslt#dt-current-node">current node</a>.
+   * @param en the sub-expression context node.
+   * @param nc the namespace context (prefix resolver.
+   * @deprecated
+   */
+  public final void pushExpressionState(int cn, int en, PrefixResolver nc)
+  {
+    pushCurrentNode(cn);
+    m_currentExpressionNodes[m_currentExpressionNodesFirstFree++] = en;
+    m_prefixResolvers[m_prefixResolversTop++] = nc;
+  }
+
   
   /**
    * Pop the current context node, expression node, and prefix resolver.
@@ -796,29 +959,77 @@ public class XPathContext extends DTMManager // implements ExpressionContext
     m_prefixResolversTop--;
   }
 
-
+  /**
+   * Set the current context node.
+   *
+   * @param n the <a href="http://www.w3.org/TR/xslt#dt-current-node">current node</a>.
+   * @deprecated
+   */
+  public final void pushCurrentNode(int nodeHandle)
+  {
+    DTM dtm = getDTM(nodeHandle);
+    XNodeSequenceSingleton xseq = new XNodeSequenceSingleton(nodeHandle, dtm);
+    // xseq.next(); // so get current will work.  Is this right? -sb
+    m_currentItems[m_currentNodesFirstFree++] = xseq;
+  }
+  
+  /**
+   * Pop the current context node.
+   * @deprecated
+   */
+  public final void popCurrentNode()
+  {
+    m_currentNodesFirstFree--;
+  }
 
   /**
    * Set the current context node.
    *
    * @param n the <a href="http://www.w3.org/TR/xslt#dt-current-node">current node</a>.
    */
-  public final void pushCurrentNode(int n)
+  public final void pushCurrentItem(XObject xobj)
   {
-    m_currentNodes[m_currentNodesFirstFree++] = n;
+    m_currentItems[m_currentNodesFirstFree++] = xobj;
+  }
+  
+  /**
+   * Pop the current context node.
+   */
+  public final void popCurrentItem()
+  {
+    m_currentNodesFirstFree--;
   }
   
   public int getCurrentNodeFirstFree()
   {
     return m_currentNodesFirstFree;
-  }
-
-  /**
-   * Pop the current context node.
+  }	
+	 /**
+   * The current group. 
+   * The current group will only be non-empty when an
+   * xsl-for-each-group instruction is being evaluated. 
    */
-  public final void popCurrentNode()
+  private XSequence m_currentGroup ; 
+  
+  /**
+   * Return the current group or and empty NodeSet
+   * if one is not found. 
+   */
+  public XSequence getCurrentGroup()
   {
-    m_currentNodesFirstFree--;
+  	if (m_currentGroup == null)
+  	  m_currentGroup = XSequence.EMPTY;
+  	return m_currentGroup;
+  }
+  
+  /**
+   * Set the current group.
+   * The current group will only be non-empty when an
+   * xsl-for-each-group instruction is being evaluated.
+   */
+  public void setCurrentGroup(XSequence currentGroup)
+  {
+  	m_currentGroup = currentGroup;
   }
   
   /**
@@ -1071,15 +1282,19 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * @return An iterator for the current context list, as
    * defined in XSLT.
    */
-  public final DTMIterator getContextNodes()
+  public final XSequence getContextNodes()
   {
 
     try
     {
-      DTMIterator cnl = getContextNodeList();
+      XSequence cnl = getContextSequence();
 
       if (null != cnl)
-        return cnl.cloneWithReset();
+      {
+        cnl = (XSequence)cnl.clone();
+        cnl.reset();
+        return cnl;
+      }
       else
         return null;  // for now... this might ought to be an empty iterator.
     }
@@ -1144,6 +1359,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
      */
     public org.w3c.dom.traversal.NodeIterator getContextNodes()
     {
+      DTMIterator iterator = getContextNodeList();
       return new org.apache.xml.dtm.ref.DTMNodeIterator(getContextNodeList());
     }
   
@@ -1223,7 +1439,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 	// the latter will ever arise, but I'd rather be just a bit paranoid..
 	if( m_global_rtfdtm==null || m_global_rtfdtm.isTreeIncomplete() )
 	{
-  		m_global_rtfdtm=(SAX2RTFDTM)m_dtmManager.getDTM(null,true,null,false,false);
+  		m_global_rtfdtm=(SAX2DTM)m_dtmManager.getDTM(null,true,null,false,false);
 	}
     return m_global_rtfdtm;
   }
@@ -1242,7 +1458,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   public DTM getRTFDTM()
   {
-  	SAX2RTFDTM rtfdtm;
+  	SAX2DTM rtfdtm;
 
   	// We probably should _NOT_ be applying whitespace filtering at this stage!
   	//
@@ -1257,17 +1473,17 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 	if(m_rtfdtm_stack==null)
 	{
 		m_rtfdtm_stack=new Vector();
-  		rtfdtm=(SAX2RTFDTM)m_dtmManager.getDTM(null,true,null,false,false);
+  		rtfdtm=(SAX2DTM)m_dtmManager.getDTM(null,true,null,false,false);
     m_rtfdtm_stack.addElement(rtfdtm);
 		++m_which_rtfdtm;
 	}
 	else if(m_which_rtfdtm<0)
 	{
-		rtfdtm=(SAX2RTFDTM)m_rtfdtm_stack.elementAt(++m_which_rtfdtm);
+		rtfdtm=(SAX2DTM)m_rtfdtm_stack.elementAt(++m_which_rtfdtm);
 	}
 	else
 	{
-		rtfdtm=(SAX2RTFDTM)m_rtfdtm_stack.elementAt(m_which_rtfdtm);
+		rtfdtm=(SAX2DTM)m_rtfdtm_stack.elementAt(m_which_rtfdtm);
   		
 	  	// It might already be under construction -- the classic example would be
  	 	// an xsl:variable which uses xsl:call-template as part of its value. To
@@ -1278,10 +1494,10 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   		if(rtfdtm.isTreeIncomplete())
 	  	{
 	  		if(++m_which_rtfdtm < m_rtfdtm_stack.size())
-				rtfdtm=(SAX2RTFDTM)m_rtfdtm_stack.elementAt(m_which_rtfdtm);
+				rtfdtm=(SAX2DTM)m_rtfdtm_stack.elementAt(m_which_rtfdtm);
 	  		else
 	  		{
-		  		rtfdtm=(SAX2RTFDTM)m_dtmManager.getDTM(null,true,null,false,false);
+		  		rtfdtm=(SAX2DTM)m_dtmManager.getDTM(null,true,null,false,false);
           m_rtfdtm_stack.addElement(rtfdtm); 	
 	  		}
  	 	}
@@ -1298,7 +1514,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   {
   	m_last_pushed_rtfdtm.push(m_which_rtfdtm);
   	if(null!=m_rtfdtm_stack)
-	  	((SAX2RTFDTM)(getRTFDTM())).pushRewindMark();
+	  	((SAX2DTM)(getRTFDTM())).pushRewindMark();
   }
   
   /** Pop the RTFDTM's context mark. This discards any RTFs added after the last
@@ -1325,7 +1541,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   	{
   		if(previous>=0) // guard against none-active
   		{
-	  		boolean isEmpty=((SAX2RTFDTM)(m_rtfdtm_stack.elementAt(previous))).popRewindMark();
+	  		boolean isEmpty=((SAX2DTM)(m_rtfdtm_stack.elementAt(previous))).popRewindMark();
   		}
   	}
   	else while(m_which_rtfdtm!=previous)
@@ -1333,8 +1549,181 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   		// Empty each DTM before popping, so it's ready for reuse
   		// _DON'T_ pop the previous, since it's still open (which is why we
   		// stacked up more of these) and did not receive a mark.
-  		boolean isEmpty=((SAX2RTFDTM)(m_rtfdtm_stack.elementAt(m_which_rtfdtm))).popRewindMark();
+  		boolean isEmpty=((SAX2DTM)(m_rtfdtm_stack.elementAt(m_which_rtfdtm))).popRewindMark();
   		--m_which_rtfdtm; 
   	}
   }
+ 
+ 
+   //================================================================
+   // XPath 2.0 PRELIMINARY: Static Context
+   
+   /** XPATH2: Type Exception Policy: If "strict", type compatability errors
+    * should be reported as such. If "flexible", "fallback conversions" will
+    * be invoked and only if they fail will an error be reported.
+    * */
+   private boolean m2_typeExceptionPolicyStrict=true;
+ 
+   /** XPATH2: Type Exception Policy: If _strict_, type compatability errors
+    * should be reported as such. If _flexible_, "fallback conversions" will
+    * be invoked and only if they fail will an error be reported.
+    *
+    * @param strict True for strict type checking, false for flexible
+    * interpretation (attempt fallback).
+    * */
+   public void setTypeExceptionPolicyStrict(boolean strict)
+   {
+     m2_typeExceptionPolicyStrict=strict;
+   }
+ 
+   /** XPATH2: Type Exception Policy: If _strict_, type compatability errors
+    * should be reported as such. If _flexible_, "fallback conversions" will
+    * be invoked and only if they fail will an error be reported.
+    *
+    * @returns True for strict type checking, false for flexible
+    * interpretation (attempt fallback).
+    * */
+   public boolean isTypeExceptionPolicyStrict()
+   {
+     return m2_typeExceptionPolicyStrict;
+   }
+ 
+   /* XPATH2: In-Scope Namespaces: See setNamespaceContext. */
+ 
+   /** XPATH2: Default Namespace: Namespace URI to be presumed for
+    * any unprefixed QName appearing where an element or type name is
+    * expected. If null, the default is "no namespace".
+    *  
+    *  %REVIEW% What about attr names?
+    * */
+   private String m2_defaultNamespaceURI=null;
+   
+   /** XPATH2: Default Namespace: Namespace URI to be presumed for
+    * any unprefixed QName appearing where an element or type name is
+    * expected.
+    *  
+    *  %REVIEW% What about attr names?
+    *
+    * @param uri URI to be use. If null, the default is "no namespace".
+    * Empty string is currently treated as a real but poorly formed URI;
+    * we can quibble about that...
+    * */
+   public void setDefaultNamespaceURI(String uri)
+   {
+     m2_defaultNamespaceURI=uri;
+   }
+   
+   /** XPATH2: Default Namespace: Namespace URI to be presumed for
+    * any unprefixed QName appearing where an element or type name is
+    * expected.
+    *  
+    *  %REVIEW% What about attr names?
+    *
+    * @returns uri URI to be use. If null, the default is "no namespace".
+    * Empty string is currently treated as a real but poorly formed URI;
+    * we can quibble about that...
+    * */
+   public String getDefaultNamespaceURI()
+   {
+     return m2_defaultNamespaceURI;
+   }
+   
+   /** XPATH2: Default Function Namespace: Namespace URI to be presumed for
+    * any unprefixed QName appearing where a function name is
+    * expected. If null, the default is "no namespace".
+    * */
+   private String m2_defaultFunctionNamespaceURI=null;
+   
+   /** XPATH2: Default Function Namespace: Namespace URI to be presumed for
+    * any unprefixed QName appearing where a function name is
+    * expected. If null, the default is "no namespace".
+    *
+    * @param uri URI to be use. If null, the default is "no namespace".
+    * Empty string is currently treated as a real but poorly formed URI;
+    * we can quibble about that...
+    * */
+   public void setDefaultFunctionNamespaceURI(String uri)
+   {
+     m2_defaultFunctionNamespaceURI=uri;
+   }
+   
+   /** XPATH2: Default Function Namespace: Namespace URI to be presumed for
+    * any unprefixed QName appearing where a function name is
+    * expected. If null, the default is "no namespace".
+    *
+    * @returns uri URI to be use. If null, the default is "no namespace".
+    * Empty string is currently treated as a real but poorly formed URI;
+    * we can quibble about that...
+    * */
+   public String getDefaultFunctionNamespaceURI()
+   {
+     return m2_defaultFunctionNamespaceURI;
+   }
+   
+   /* XPATH2: In-Scope Variables: See getVarStack, getVariableOrParam....
+      %REVIEW% In XPath2 variables have type, and static variables have
+      static type; make sure it's retrievable.
+    */
+   
+   /** XPATH2: In-Scope Schema Definitions: Set of (QName,type definition)
+       pairs, defining the types available for reference in the expression.
+       Includes the built-in schema types, all globally-declared types in
+       explicitly imported schemas -- but, significantly, does NOT necessarily
+       include the types referenced by any given instance document!
+ 
+ 	%ISSUE% Xerces dependencies are very roughly encapsulated, but
+ 	this is EXTREMELY ugly architecturally.
+   */
+   private org.apache.xml.dtm.ref.xni2dtm.AbstractSchema m2_issd=null;
+   
+   public void addInScopeSchemaDefinitions(String publicID, String systemID)
+   {
+   	if(m2_issd == null)
+   		m2_issd=new org.apache.xml.dtm.ref.xni2dtm.AbstractSchema();
+   		
+   	m2_issd.appendSchema(publicID, systemID, getBaseURI());
+   }
+   
+   public org.apache.xml.dtm.ref.xni2dtm.AbstractSchema getInScopeSchemaDefinitions()
+   {
+   	return m2_issd;
+   }
+   
+   /** XPATH2: Base URI. Should be used by the document() function. Seems
+    * to be needed by other operations as well, though XPath doesn't make this
+    * clear -- eg, resolving import-schema URI references.
+    * 
+    * The definition here is swiped from FuncDocument, and _should_ yield the
+    * base URI of the stylesheet node currently being executed. I'm not 110%
+    * sure it works in all cases. %REVIEW%
+    * */
+   public String getBaseURI()
+   {
+   	return getNamespaceContext().getBaseIdentifier();
+   }
+
+	/** XPATH2 support: We need a central place to ask which version we're
+	 * currently trying to support, since some behaviors may change.
+	 * 
+	 * We know where to look if called from a stylesheet. 
+	 * 
+	 * I'm not sure where to look if we're using the XPath API; we
+	 * may need to define an API for that purpose.
+	 * 
+	 * @return String containing "1.0", "2.0", etc. If someone wants to
+	 * compare sub-fields of this string... we don't currently help them.
+	 * */   
+   public String getXPathVersion()
+   {
+   	try
+   	{
+   		return ((org.apache.xalan.transformer.TransformerImpl)m_owner).getStylesheet().getVersion();
+   	}
+   	catch(Exception e)
+   	{
+   		// %REVIEW% %TODO% Where does a bare XPath get this info?
+   		return "1.0";
+   	}
+   	
+   }
 }

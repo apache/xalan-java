@@ -56,11 +56,10 @@
  */
 package org.apache.xpath.operations;
 
-import java.util.Vector;
-
-import javax.xml.transform.TransformerException;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XObject;
@@ -68,7 +67,7 @@ import org.apache.xpath.objects.XObject;
 /**
  * The baseclass for a binary operation.
  */
-public class Operation extends Expression implements ExpressionOwner
+public abstract class Operation extends Expression implements ExpressionOwner
 {
 
   /** The left operand expression.
@@ -78,6 +77,18 @@ public class Operation extends Expression implements ExpressionOwner
   /** The right operand expression.
    *  @serial */
   protected Expression m_right;
+  
+  static GenericOpFunc NOTSUPPORTED = new GenericOpFunc()
+  {
+    /**
+     * @see org.apache.xpath.operations.opfuncs.GenericOpFunc#operate(XPathContext, XObject, XObject)
+     */
+    public XObject operate(XPathContext xctxt, XObject lhs, XObject rhs)
+    {
+      return null;
+    }
+
+  };
   
   /**
    * This function is used to fixup variables from QNames to stack frame 
@@ -89,10 +100,10 @@ public class Operation extends Expression implements ExpressionOwner
    * in the stack frame (but variables above the globalsTop value will need 
    * to be offset to the current stack frame).
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
-    m_left.fixupVariables(vars, globalsSize);
-    m_right.fixupVariables(vars, globalsSize);
+    m_left.fixupVariables(vcs);
+    m_right.fixupVariables(vcs);
   }
 
 
@@ -123,51 +134,49 @@ public class Operation extends Expression implements ExpressionOwner
    */
   public void setLeftRight(Expression l, Expression r)
   {
-    m_left = l;
-    m_right = r;
-    l.exprSetParent(this);
-    r.exprSetParent(this);
+    jjtAddChild(l, 0); 
+    jjtAddChild(r, 1); 
+  }
+  
+  
+  /**
+   * Add the left or right node of the operation.
+   */
+  public void jjtAddChild(org.apache.xpath.parser.Node n, int i) 
+  {
+  	n = fixupPrimarys(n);  // yuck.
+  	if(0 == i)
+  	{
+    	m_left = (Expression)n;
+    	m_left.jjtSetParent(this);
+  	}
+  	else if(1 == i)
+  	{
+    	m_right = (Expression)n;
+    	m_right.jjtSetParent(this);
+  	}
+  	else
+  	{
+  		// assertion... should not be able to occur.
+  		throw new RuntimeException("Can't add more than two children to an operation!");
+  	}
+  }
+  
+  /** This method returns a child node.  The children are numbered
+     from zero, left to right. */
+  public ExpressionNode exprGetChild(int i)
+  {
+  	assertion(i <= 1, "Operation can only have one or two children!");
+  	return (0 == i) ? m_left : m_right;
   }
 
-  /**
-   * Execute a binary operation by calling execute on each of the operands,
-   * and then calling the operate method on the derived class.
-   *
-   *
-   * @param xctxt The runtime execution context.
-   *
-   * @return The XObject result of the operation.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject execute(XPathContext xctxt)
-          throws javax.xml.transform.TransformerException
+  /** Return the number of children the node has. */
+  public int exprGetNumChildren()
   {
-
-    XObject left = m_left.execute(xctxt, true);
-    XObject right = m_right.execute(xctxt, true);
-
-    XObject result = operate(left, right);
-    left.detach();
-    right.detach();
-    return result;
-  }
-
-  /**
-   * Apply the operation to two operands, and return the result.
-   *
-   *
-   * @param left non-null reference to the evaluated left operand.
-   * @param right non-null reference to the evaluated right operand.
-   *
-   * @return non-null reference to the XObject that represents the result of the operation.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject operate(XObject left, XObject right)
-          throws javax.xml.transform.TransformerException
-  {
-    return null;  // no-op
+  	int count = 1;
+   	if(null != m_right)
+  		count++;
+  	return count;
   }
 
   /** @return the left operand of binary operation, as an Expression.
@@ -247,4 +256,12 @@ public class Operation extends Expression implements ExpressionOwner
   		
   	return true;
   }
+  /**
+   * Tell if this node should have it's PathExpr ancestory reduced.
+   */
+  public boolean isPathExprReduced()
+  {
+  	return true;
+  }
+
 }

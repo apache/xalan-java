@@ -56,24 +56,26 @@
  */
 package org.apache.xpath.objects;
 
-import org.w3c.dom.DocumentFragment;
-//import org.w3c.dom.Text;
-//import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.traversal.NodeIterator;
-import org.apache.xml.dtm.*;
-
 import java.io.Serializable;
 
-import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.XType;
+import org.apache.xml.utils.DateTimeObj;
+import org.apache.xml.utils.Duration;
+import org.apache.xml.utils.XMLString;
+import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
-import org.apache.xpath.XPathContext;
 import org.apache.xpath.NodeSetDTM;
+import org.apache.xpath.VariableComposeState;
+import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xpath.Expression;
-import org.apache.xml.utils.XMLString;
+import org.apache.xpath.res.XPATHErrorResources;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.traversal.NodeIterator;
 
 /**
  * <meta name="usage" content="general"/>
@@ -81,31 +83,36 @@ import org.apache.xml.utils.XMLString;
  * converting the object to various types, such as a string.
  * This class acts as the base class to other XPath type objects,
  * such as XString, and provides polymorphic casting capabilities.
+ * 
+ * Caveat: Default method implementations provided herein may be
+ * inefficient, since they have to retrieve the "contained object"
+ * which may not exist until demanded.
  */
-public class XObject extends Expression implements Serializable, Cloneable
+public abstract class XObject extends Expression implements Serializable, Cloneable
 {
-
   /**
-   * The java object which this object wraps.
-   *  @serial  
+   * Create an undifferentiated XObject.
+   * Note: Abstract methods can't be constructed...
+   * ... and constructors don't inherit, even as abstracts.
    */
-  protected Object m_obj;  // This may be NULL!!!
+  /*
+  protected XObject(){}
+  */
 
   /**
    * Create an XObject.
-   */
-  public XObject(){}
-
-  /**
-   * Create an XObject.
+   * Note: Abstract methods can't be constructed...
+   * ... and constructors don't inherit, even as abstracts.
    *
    * @param obj Can be any object, should be a specific type
    * for derived classes, or null.
    */
-  public XObject(Object obj)
+  /*
+  protected XObject(Object obj)
   {
-    m_obj = obj;
+    //m_obj = obj;
   }
+  */
 
   /**
    * For support of literal objects in xpaths.
@@ -150,12 +157,15 @@ public class XObject extends Expression implements Serializable, Cloneable
   public void destruct()
   {
 
-    if (null != m_obj)
+    if (null != object())
     {
       allowDetachToRelease(true);
       detach();
-
-      m_obj = null;
+      
+      // %BUG% When m_obj was part of this class, we were
+      // nulling it out at this point. Do we need to move
+      // this logic down into the subclasses?
+	  //	  m_obj = null;
     }
   }
   
@@ -216,22 +226,57 @@ public class XObject extends Expression implements Serializable, Cloneable
   public static final int CLASS_NULL = -1;
 
   /** Constant for UNKNOWN object type */
-  public static final int CLASS_UNKNOWN = 0;
+  public static final int CLASS_UNKNOWN = XType.ANYTYPE;
 
   /** Constant for BOOLEAN  object type */
-  public static final int CLASS_BOOLEAN = 1;
+  public static final int CLASS_BOOLEAN = XType.BOOLEAN;
 
   /** Constant for NUMBER object type */
-  public static final int CLASS_NUMBER = 2;
+  public static final int CLASS_NUMBER = XType.DOUBLE;
 
   /** Constant for STRING object type */
-  public static final int CLASS_STRING = 3;
+  public static final int CLASS_STRING = XType.STRING;
 
   /** Constant for NODESET object type */
-  public static final int CLASS_NODESET = 4;
+  public static final int CLASS_NODESET = XType.NODE;
 
   /** Constant for RESULT TREE FRAGMENT object type */
-  public static final int CLASS_RTREEFRAG = 5;
+  public static final int CLASS_RTREEFRAG = XType.RTREEFRAG;
+	
+	/** Constant for DATE object type */
+  public static final int CLASS_DATE = XType.DATE;
+  
+  /** Constant for DATETIME object type */
+  public static final int CLASS_DATETIME = XType.DATETIME;
+  
+  /** Constant for DURATION object type */
+  public static final int CLASS_DURATION = XType.DURATION;
+  
+  /** Constant for DURATION object type */
+  public static final int CLASS_YMDURATION = XType.YEARMONTHDURATION;
+
+
+/** Constant for DURATION object type */
+  public static final int CLASS_DTDURATION = XType.DAYTIMEDURATION;
+
+  
+  /** Constant for TIME object type */
+  public static final int CLASS_TIME = XType.TIME;
+  
+  /** Constant for GDAY object type */
+  public static final int CLASS_GDAY = XType.GDAY;
+  
+  /** Constant for GMONTH object type */
+  public static final int CLASS_GMONTH = XType.GMONTH;
+  
+  /** Constant for GMONTHDAY object type */
+  public static final int CLASS_GMONTHDAY = XType.GMONTHDAY;
+  
+  /** Constant for GYEAR object type */
+  public static final int CLASS_GYEAR = XType.GYEAR;
+  
+  /** Constant for GYEARMONTH object type */
+  public static final int CLASS_GYEARMONTH = XType.GYEARMONTH;
 
   /** Represents an unresolved variable type as an integer. */
   public static final int CLASS_UNRESOLVEDVARIABLE = 600;
@@ -245,6 +290,19 @@ public class XObject extends Expression implements Serializable, Cloneable
   {
     return CLASS_UNKNOWN;
   }
+  
+  /**
+   * Get the type of the value that this object represents.
+   * For most objects this is the same as getType(), but for 
+   * nodes it is the type of the inner value.
+   *
+   * @return one of the 19 simple types from XType.
+   */
+  public int getValueType()
+  {
+    return getType();
+  }
+
 
   /**
    * Given a request type, return the equivalent string.
@@ -272,6 +330,34 @@ public class XObject extends Expression implements Serializable, Cloneable
 
     return 0.0;
   }
+  
+  /**
+   * Get result object as a integer.
+   *
+   * @return At this level, the num() value cast to an integer.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public int integer() throws javax.xml.transform.TransformerException
+  {
+
+    return (int)num();
+  }
+  
+  /**
+   * Get result object as a integer.
+   *
+   * @return At this level, the num() value cast to an integer.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public float floatVal() throws javax.xml.transform.TransformerException
+  {
+
+    return (float)num();
+  }
+
+
   
   /**
    * Cast result object to a number, but allow side effects, such as the 
@@ -330,7 +416,8 @@ public class XObject extends Expression implements Serializable, Cloneable
    */
   public String str()
   {
-    return (m_obj != null) ? m_obj.toString() : "";
+  	Object obj=object();
+    return (obj != null) ? obj.toString() : "";
   }
 
   /**
@@ -426,9 +513,30 @@ public class XObject extends Expression implements Serializable, Cloneable
    *
    * @return The object that this class wraps
    */
-  public Object object()
+  abstract public Object object();
+  
+  /**
+   * Return the sequence representing this object.
+   * @return XSequence
+   */
+  public XSequence xseq()
   {
-    return m_obj;
+  	Object obj=object();
+    try
+    {
+      // This feels a bit heavy weight, but most of the 
+      // derived classes will override this method.
+      if(null == obj || getType() == CLASS_NULL)
+        return XSequence.EMPTY;
+      else if(obj instanceof XSequence)
+        return (XSequence)((XSequence)obj).clone(); // Clone??
+      else
+        return new XSequenceSingleton(this);
+    }
+    catch (CloneNotSupportedException e)
+    {
+      return (XSequence)obj;
+    }
   }
 
   /**
@@ -489,6 +597,18 @@ public class XObject extends Expression implements Serializable, Cloneable
 
     return null;
   }
+  
+  /**
+   * Get the node representation of this object, or return DTM.NULL if 
+   * there is no node representation.
+   * 
+   * @return int DTM.NULL if there is no node representation, or the 
+   * node handle.
+   */
+  public int getNodeHandle()
+  {
+    return DTM.NULL;
+  }
 
 
   /**
@@ -505,7 +625,7 @@ public class XObject extends Expression implements Serializable, Cloneable
     error(XPATHErrorResources.ER_CANT_CONVERT_TO_MUTABLENODELIST,
           new Object[]{ getTypeString() });  //"Can not convert "+getTypeString()+" to a NodeSetDTM!");
 
-    return (NodeSetDTM) m_obj;
+    return (NodeSetDTM) object();
   }
 
   /**
@@ -539,7 +659,7 @@ public class XObject extends Expression implements Serializable, Cloneable
       result = new Boolean(bool());
       break;
     case CLASS_UNKNOWN :
-      result = m_obj;
+      result = object();
       break;
 
     // %TBD%  What to do here?
@@ -662,24 +782,43 @@ public class XObject extends Expression implements Serializable, Cloneable
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public boolean equals(XObject obj2)
+  public boolean equalsExistential(XObject obj2)
   {
-
     // In order to handle the 'all' semantics of 
     // nodeset comparisons, we always call the 
     // nodeset function.
-    if (obj2.getType() == XObject.CLASS_NODESET)
-      return obj2.equals(this);
-
-    if (null != m_obj)
+    if (obj2.isNodesetExpr())
     {
-      return m_obj.equals(obj2.m_obj);
+      // Note: obj2 _must_ overload this function, or we
+      // dive into infinite recursion if "this" is also a
+      // nodeset.
+      return obj2.equalsExistential(this);
     }
+
+    return equals(obj2);
+  }
+
+  /**
+   * Tell if two objects are functionally equal.
+   *
+   * @param obj2 Object to compare this to
+   *
+   * @return True if this object is equal to the given object
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public boolean equals(XObject obj2)
+  {
+    Object obj = object();
+    if (null != obj)
+      return obj.equals(obj2.object());
     else
     {
-      return obj2.m_obj == null;
+      return obj2.object() == null;
     }
   }
+
+  
 
   /**
    * Tell if two objects are functionally not equal.
@@ -746,7 +885,7 @@ public class XObject extends Expression implements Serializable, Cloneable
   /**
    * XObjects should not normally need to fix up variables.
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
     // no-op
   }
@@ -783,10 +922,138 @@ public class XObject extends Expression implements Serializable, Cloneable
   	// If equals at the expression level calls deepEquals, I think we're 
   	// still safe from infinite recursion since this object overrides 
   	// equals.  I hope.
-  	if(!this.equals((XObject)expr))
+  	if(!this.equalsExistential((XObject)expr))
   		return false;
   		
   	return true;
+  }
+  
+  /**
+   * Tell if this node should have it's PathExpr ancestory reduced.
+   */
+  public boolean isPathExprReduced()
+  {
+  	return true;
+  }
+  
+  /**
+   * Tell if this item is a proper sequence, or should be treated as a 
+   * value.  This is needed for nested sequences (we implement sequences 
+   * as nested, even though it appears from the caller's perspective and 
+   * from XPath's perspective that sequences are not nested).  XObjects 
+   * that return true from this method must implement XSequence, though not 
+   * all XObjects that implement XSequence must return true from this 
+   * method.
+   * @return true if this sequence can be treated as a value or node, falst 
+   *          if this is a proper sequence.
+   */
+  public boolean isSequenceProper()
+  {
+    return false;
+  }
+
+  /**
+   * @see org.apache.xml.dtm.XSequence#isSingletonOrEmpty()
+   */
+  public boolean isSingletonOrEmpty()
+  {
+    return true;
+  }
+
+  /**
+   * Cast result object to a DURATION.
+   *
+   * @return Duration
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public Duration duration() throws javax.xml.transform.TransformerException
+  {
+
+    error(XPATHErrorResources.ER_CANT_CONVERT_TO_TYPE,
+          new Object[]{ getTypeString(), "DURATION" });  //"Can not convert "+getTypeString()+" to a number");
+
+    return null; // To shut up compiler
+  }
+  
+  /**
+   * Cast result object to a DAYTIMEDURATION.
+   *
+   * @return Duration
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public Duration daytimeDuration() throws javax.xml.transform.TransformerException
+  {
+
+    error(XPATHErrorResources.ER_CANT_CONVERT_TO_TYPE,
+          new Object[]{ getTypeString(), "DAYTIMEDURATION" });  //"Can not convert "+getTypeString()+" to a number");
+
+    return null; // To shut up compiler
+  }
+  
+  /**
+   * Cast result object to a YEARMONTHDURATION.
+   *
+   * @return Duration
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public Duration yearmonthDuration() throws javax.xml.transform.TransformerException
+  {
+
+    error(XPATHErrorResources.ER_CANT_CONVERT_TO_TYPE,
+          new Object[]{ getTypeString(), "YEARMONTHDURATION" });  //"Can not convert "+getTypeString()+" to a number");
+
+    return null; // To shut up compiler
+  }
+
+  /**
+   * Cast result object to a DATE.
+   *
+   * @return DateTimeObj
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public DateTimeObj date() throws javax.xml.transform.TransformerException
+  {
+
+    error(XPATHErrorResources.ER_CANT_CONVERT_TO_TYPE,
+          new Object[]{ getTypeString(), "DATE" });  //"Can not convert "+getTypeString()+" to a number");
+
+    return null; // To shut up compiler
+  }
+  
+  /**
+   * Cast result object to a DATETIME.
+   *
+   * @return DateTimeObj
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public DateTimeObj datetime() throws javax.xml.transform.TransformerException
+  {
+
+    error(XPATHErrorResources.ER_CANT_CONVERT_TO_TYPE,
+          new Object[]{ getTypeString(), "DATETIME" });  //"Can not convert "+getTypeString()+" to a number");
+
+    return null; // To shut up compiler
+  }
+
+  /**
+   * Cast result object to a TIME.
+   *
+   * @return DateTimeObj
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public DateTimeObj time() throws javax.xml.transform.TransformerException
+  {
+
+    error(XPATHErrorResources.ER_CANT_CONVERT_TO_TYPE,
+          new Object[]{ getTypeString(), "TIME" });  //"Can not convert "+getTypeString()+" to a number");
+
+    return null; // To shut up compiler
   }
 
 }

@@ -58,6 +58,7 @@ package org.apache.xpath.objects;
 
 import javax.xml.transform.TransformerException;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.XMLString;
@@ -66,34 +67,16 @@ import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.w3c.dom.NodeList;
 
-import org.apache.xml.dtm.Axis;
-import org.apache.xpath.axes.RTFIterator;
-
 /**
  * <meta name="usage" content="general"/>
  * This class represents an XPath result tree fragment object, and is capable of
  * converting the RTF to other types, such as a string.
  */
-public class XRTreeFrag extends XObject implements Cloneable
+public class XRTreeFrag extends XNodeSet implements Cloneable
 {
-  DTM m_dtm;
-  int m_dtmRoot;
-  XPathContext m_xctxt;
-  boolean m_allowRelease = false;
+  DTM m_dtm=null; // For possible storage management during finalize/destruct
+  boolean m_allowRelease;
 
-//  /**
-//   * Create an XRTreeFrag Object.
-//   *
-//   * @param frag Document fragment this will wrap
-//   */
-//  public XRTreeFrag(DTMIterator frag)
-//  {
-//    super(frag);
-//    
-//    // Obviously, this constructor should be avoided when possible.
-//    m_dtmRoot = frag.cloneWithReset().nextNode();
-//  }
-  
   /**
    * Create an XRTreeFrag Object.
    *
@@ -101,13 +84,13 @@ public class XRTreeFrag extends XObject implements Cloneable
    */
   public XRTreeFrag(int root, XPathContext xctxt, ExpressionNode parent)
   {
-    super(null);
+    super(root,xctxt);
     
-    // Obviously, this constructor should be avoided when possible.
     exprSetParent(parent);
-    m_dtmRoot = root;
-    m_xctxt = xctxt;
+
     m_dtm = xctxt.getDTM(root);
+    
+    m_iter=xctxt.createDTMIterator(root);
   }
   
   /**
@@ -117,43 +100,36 @@ public class XRTreeFrag extends XObject implements Cloneable
    */
   public XRTreeFrag(int root, XPathContext xctxt)
   {
-    super(null);
-    
-    // Obviously, this constructor should be avoided when possible.
-    m_dtmRoot = root;
-    m_xctxt = xctxt;
+    super(root,xctxt);
+
     m_dtm = xctxt.getDTM(root);
+    m_iter=xctxt.createDTMIterator(root);
   }
 
-  
-  /**
-   * Return a java object that's closest to the representation
-   * that should be handed to an extension.
-   *
-   * @return The object that this class wraps
-   */
-  public Object object()
-  {
-    if (m_xctxt != null)
-      return new org.apache.xml.dtm.ref.DTMNodeIterator((DTMIterator)(new org.apache.xpath.NodeSetDTM(m_dtmRoot, m_xctxt.getDTMManager())));
-    else
-      return super.object();
-  }
-  
   /**
    * Create an XRTreeFrag Object.
    *
    * @param frag Document fragment this will wrap
    */
-  public XRTreeFrag(Expression expr)
+  /*
+  private XRTreeFrag(Expression expr)
   {
     super(expr);
+    
+    // Can't retrieve m_iter until the expression has been executed.
+    // Can't execute without an XCTXT.
+    // Can't win.
+    // Should this constructor exist at all? It seems to be here to support
+    // XRTreeFragSelectWrapper... but I'm not sure that should be considered
+    // an RTF rather than an XNodeSet!!!
   }
-  
+  */
+
   /**
    * Release any resources this object may have by calling destruct().
-   * %ISSUE% This release will occur asynchronously. Resources it manipulates
-   * MUST be thread-safe!
+   * 
+   * STRONG WARNING: This release will occur asynchronously. Resources it 
+   * manipulates MUST be thread-safe!
    *
    * @throws Throwable
    */
@@ -193,16 +169,14 @@ public class XRTreeFrag extends XObject implements Cloneable
   {
     if(m_allowRelease)
     {
-    	// %REVIEW% Do we actually _need_ detach, now that DTM RTF
-    	// storage is managed as a stack?
       // See #destruct() for a comment about this next check.
-      int ident = m_xctxt.getDTMIdentity(m_dtm);
-      DTM foundDTM = m_xctxt.getDTM(ident);      
+      int ident = m_dtmMgr.getDTMIdentity(m_dtm);
+      DTM foundDTM = m_dtmMgr.getDTM(ident);      
       if(foundDTM == m_dtm)
       {
-        m_xctxt.release(m_dtm, true);
+        m_dtmMgr.release(m_dtm, true);
         m_dtm = null;
-        m_xctxt = null;
+        m_dtmMgr = null;
       }
       m_obj = null;
     }
@@ -234,13 +208,13 @@ public class XRTreeFrag extends XObject implements Cloneable
       //    getDTMIdentity(dtm)).
       // 6) Transform#2 tries to reference DTMManagerDefault#m_dtms[2], finds it is 
       //    null, and chaos results.
-      int ident = m_xctxt.getDTMIdentity(m_dtm);
-      DTM foundDTM = m_xctxt.getDTM(ident);      
+      int ident = m_dtmMgr.getDTMIdentity(m_dtm);
+      DTM foundDTM = m_dtmMgr.getDTM(ident);      
       if(foundDTM == m_dtm)
       {
-        m_xctxt.release(m_dtm, true);
+        m_dtmMgr.release(m_dtm, true);
         m_dtm = null;
-        m_xctxt = null;
+        m_dtmMgr = null;
       }
     }
     m_obj = null;
@@ -248,6 +222,7 @@ public class XRTreeFrag extends XObject implements Cloneable
 
   /**
    * Tell what kind of class this is.
+   * %REVIEW% Should we really be distinguishing RTF from other NodeSets?
    *
    * @return type CLASS_RTREEFRAG 
    */
@@ -259,6 +234,7 @@ public class XRTreeFrag extends XObject implements Cloneable
   /**
    * Given a request type, return the equivalent string.
    * For diagnostic purposes.
+   * %REVIEW% Should we really be distinguishing RTF from other NodeSets?
    *
    * @return type string "#RTREEFRAG"
    */
@@ -269,13 +245,13 @@ public class XRTreeFrag extends XObject implements Cloneable
 
   /**
    * Cast result object to a number.
+   * Note that this is different from XNodeSet's definition; we convert
+   * the entire string content, not just item(0).
    *
    * @return The result tree fragment as a number or NaN
    */
   public double num()
-    throws javax.xml.transform.TransformerException
   {
-
     XMLString s = xstr();
 
     return s.toDouble();
@@ -296,19 +272,23 @@ public class XRTreeFrag extends XObject implements Cloneable
   
   /**
    * Cast result object to an XMLString.
+   * Note that this is different from XNodeSet's definition; we convert
+   * the entire string content, not just item(0).
    *
    * @return The document fragment node data or the empty string. 
    */
   public XMLString xstr()
   {
     if(null == m_xmlStr)
-      m_xmlStr = m_dtm.getStringValue(m_dtmRoot);
+      m_xmlStr = m_dtm.getStringValue(item(0));
     
     return m_xmlStr;
   }
   
   /**
-   * Cast result object to a string.
+   * Append result object's content to a FastStringBuffer.
+   * Note that this is different from XNodeSet's definition; we convert
+   * the entire string content, not just item(0).
    *
    * @return The string this wraps or the empty string if null
    */
@@ -321,12 +301,14 @@ public class XRTreeFrag extends XObject implements Cloneable
 
   /**
    * Cast result object to a string.
+   * Note that this is different from XNodeSet's definition; we convert
+   * the entire string content, not just item(0).
    *
    * @return The document fragment node data or the empty string. 
    */
   public String str()
   {
-    String str = m_dtm.getStringValue(m_dtmRoot).toString();
+    String str = m_dtm.getStringValue(item(0)).toString();
 
     return (null == str) ? "" : str;
   }
@@ -334,40 +316,60 @@ public class XRTreeFrag extends XObject implements Cloneable
   /**
    * Cast result object to a result tree fragment.
    *
-   * @return The document fragment this wraps
+   * @return The DTM Node Handle of the root node of the 
+   * document fragment this wraps
    */
   public int rtf()
   {
-    return m_dtmRoot;
+    return item(0);
   }
 
   /**
-   * Cast result object to a DTMIterator.
-   * dml - modified to return an RTFIterator for
-   * benefit of EXSLT object-type function in 
-   * {@link org.apache.xalan.lib.ExsltCommon}.
+   * Cast result object to a DTMIterator. Standard XObject method,
+   * replaces special-case asNodeIterator()
    * @return The document fragment as a DTMIterator
    */
+  public DTMIterator iter()
+  {
+    //return m_dtmMgr.createDTMIterator(item(0));
+    return super.iter();
+  }
+  
+  /** @deprecated Unnecessarily nonstandard.
+   * @see iter()
+   * */
   public DTMIterator asNodeIterator()
   {
-    DTMIterator iter = new RTFIterator(Axis.SELF);
-    iter.setRoot(m_dtmRoot, m_xctxt);    
-    return iter;
+    return iter();
   }
+  
 
   /**
-   * Cast result object to a nodelist. (special function).
+   * Cast result object to a DOM nodelist, primarily
+   * for use as an extension function argument.
+   * (tandard XObject function, replaces special-case convertToNodeset()
    *
    * @return The document fragment as a nodelist
    */
-  public NodeList convertToNodeset()
+  public NodeList nodelist() throws javax.xml.transform.TransformerException
   {
-
+  	return super.nodelist();
+	/*
     if (m_obj instanceof NodeList)
       return (NodeList) m_obj;
     else
-      return new org.apache.xml.dtm.ref.DTMNodeList(asNodeIterator());
+      return new org.apache.xml.dtm.ref.DTMNodeList(iter());
+     */
   }
+
+  /** @deprecated Unnecessarily nonstandard.
+   * @see nodeList()
+   * */
+  public NodeList convertToNodeset() throws javax.xml.transform.TransformerException
+  {
+  	return nodelist();
+  }
+
 
   /**
    * Tell if two objects are functionally equal.
@@ -389,7 +391,7 @@ public class XRTreeFrag extends XObject implements Cloneable
         // In order to handle the 'all' semantics of 
         // nodeset comparisons, we always call the 
         // nodeset function.
-        return obj2.equals(this);
+        return ((XNodeSet)obj2).equalsExistential(this);
       }
       else if (XObject.CLASS_BOOLEAN == obj2.getType())
       {

@@ -70,11 +70,9 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.parser.Node;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -102,6 +100,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
    */
   protected LocPathIterator()
   {
+    setLocPathIterator(this);
   }
 
 
@@ -115,48 +114,10 @@ public abstract class LocPathIterator extends PredicatedNodeTest
   {
 
     setLocPathIterator(this);
+
     m_prefixResolver = nscontext;
   }
 
-  /**
-   * Create a LocPathIterator object, including creation
-   * of step walkers from the opcode list, and call back
-   * into the Compiler to create predicate expressions.
-   *
-   * @param compiler The Compiler which is creating
-   * this expression.
-   * @param opPos The position of this iterator in the
-   * opcode list from the compiler.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  protected LocPathIterator(Compiler compiler, int opPos, int analysis)
-          throws javax.xml.transform.TransformerException
-  {
-    this(compiler, opPos, analysis, true);
-  }
-
-  /**
-   * Create a LocPathIterator object, including creation
-   * of step walkers from the opcode list, and call back
-   * into the Compiler to create predicate expressions.
-   *
-   * @param compiler The Compiler which is creating
-   * this expression.
-   * @param opPos The position of this iterator in the
-   * opcode list from the compiler.
-   * @param shouldLoadWalkers True if walkers should be
-   * loaded, or false if this is a derived iterator and
-   * it doesn't wish to load child walkers.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  protected LocPathIterator(
-          Compiler compiler, int opPos, int analysis, boolean shouldLoadWalkers)
-            throws javax.xml.transform.TransformerException
-  {
-    setLocPathIterator(this);
-  }
   
   /** 
    * Get the analysis bits for this walker, as defined in the WalkerFactory.
@@ -233,7 +194,10 @@ public abstract class LocPathIterator extends PredicatedNodeTest
    */
   public DTMManager getDTMManager()
   {
-    return m_execContext.getDTMManager();
+    if(null != m_execContext)
+      return m_execContext.getDTMManager();
+    else
+      return null;
   }
   
   /**
@@ -253,8 +217,12 @@ public abstract class LocPathIterator extends PredicatedNodeTest
   {
 
     XNodeSet iter = new XNodeSet((LocPathIterator)m_clones.getInstance());
-
-    iter.setRoot(xctxt.getCurrentNode(), xctxt);
+    int nodeHandle = xctxt.getCurrentNode();
+    if(nodeHandle == DTM.NULL)
+    {
+      throw new RuntimeException("Can not execute path expression without a current node being active!");
+    }
+    iter.setRoot(nodeHandle, xctxt);
 
     return iter;
   }
@@ -460,10 +428,10 @@ public abstract class LocPathIterator extends PredicatedNodeTest
    *
    * @param b True if this iterator should cache nodes.
    */
-  public void setShouldCacheNodes(boolean b)
+  public void setShouldCache(boolean b)
   {
 
-    assertion(false, "setShouldCacheNodes not supported by this iterater!");
+    assertion(false, "setShouldCache not supported by this iterater!");
   }
   
   /**
@@ -619,7 +587,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
   public int previousNode()
   {
     throw new RuntimeException(
-      XSLMessages.createXPATHMessage(XPATHErrorResources.ER_NODESETDTM_CANNOT_ITERATE, null)); //"This NodeSetDTM can not iterate to a previous node!");
+      "This NodeSetDTM can not iterate to a previous node!");
   }
 
   /**
@@ -1064,4 +1032,25 @@ public abstract class LocPathIterator extends PredicatedNodeTest
     return getLength();
   }
 
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString()
+  {
+  	String namespace = getNamespace();
+  	String localname = getLocalName();
+  	if(getAxis() >= 0)
+  	{
+	  	return org.apache.xml.dtm.Axis.names[getAxis()]+"::"+
+	  		((null != namespace) ? (namespace+":") : "")+
+	  		((null != localname) ? localname : "node()")+
+	  		" "+super.toString();
+  	}
+  	else
+  	{
+  		return super.toString();
+  	}
+  }
+
+  
 }

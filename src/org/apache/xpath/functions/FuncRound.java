@@ -58,12 +58,10 @@ package org.apache.xpath.functions;
 
 //import org.w3c.dom.Node;
 
-import java.util.Vector;
-
+import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
+import org.apache.xpath.objects.XDouble;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNumber;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -82,7 +80,7 @@ public class FuncRound extends FunctionOneArg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    return new XNumber(java.lang.Math.floor(m_arg0.execute(xctxt).num()
+    return new XDouble(java.lang.Math.floor(m_arg0.execute(xctxt).num()
                                             + 0.5));
   }
 }

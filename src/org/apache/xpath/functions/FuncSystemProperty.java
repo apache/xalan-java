@@ -61,7 +61,6 @@ import java.util.Properties;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 
-import java.lang.ClassLoader;
 
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -72,6 +71,7 @@ import java.util.Vector;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
+import org.apache.xpath.objects.XDouble;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XString;
@@ -194,7 +194,13 @@ public class FuncSystemProperty extends FunctionOneArg
       try
       {
         // Needs to return the version number of the spec we conform to.
-        return new XNumber(1.0);
+        String verStr = xctxt.getXPathVersion();
+        if(Double.valueOf(verStr).doubleValue() == 2.0)
+          return new XString(verStr);
+        else if(Double.valueOf(verStr).doubleValue() < 1.9)
+          return new XDouble(1.0);
+        else
+          return new XString("2.0");
       }
       catch (Exception ex)
       {

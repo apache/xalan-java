@@ -65,7 +65,6 @@ import org.w3c.dom.NodeList;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
-import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.XPathContext;
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.PrefixResolver;
@@ -319,7 +318,7 @@ public class CachedXPathAPI
       ? ((Document) namespaceNode).getDocumentElement() : namespaceNode);
 
     // Create the XPath object.
-    XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
+    XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null, 1.0);
 
     // Execute the XPath, and have it return the result
     // return xpath.execute(xpathSupport, contextNode, prefixResolver);
@@ -361,7 +360,7 @@ public class CachedXPathAPI
     //    because XPathContext is weak in a number of areas... perhaps
     //    XPathContext should be done away with.)
     // Create the XPath object.
-    XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
+    XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null, 1.0);
 
     // Execute the XPath, and have it return the result
     XPathContext xpathSupport = new XPathContext();

@@ -62,9 +62,8 @@ import org.apache.xpath.objects.XBoolean;
 /**
  * The '<' operation expression executer.
  */
-public class Lt extends Operation
+public class Lt extends OperationSimple
 {
-
   /**
    * Apply the operation to two operands, and return the result.
    *

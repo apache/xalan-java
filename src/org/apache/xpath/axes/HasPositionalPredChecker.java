@@ -8,10 +8,10 @@ import org.apache.xpath.functions.FuncPosition;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.operations.Div;
-import org.apache.xpath.operations.Minus;
+import org.apache.xpath.operations.Subtract;
 import org.apache.xpath.operations.Mod;
 import org.apache.xpath.operations.Mult;
-import org.apache.xpath.operations.Plus;
+import org.apache.xpath.operations.Add;
 import org.apache.xpath.operations.Quo;
 import org.apache.xpath.operations.Variable;
 
@@ -81,8 +81,8 @@ public class HasPositionalPredChecker extends XPathVisitor
       if((pred instanceof Variable) || 
          (pred instanceof XNumber) ||
          (pred instanceof Div) ||
-         (pred instanceof Plus) ||
-         (pred instanceof Minus) ||
+         (pred instanceof Add) ||
+         (pred instanceof Subtract) ||
          (pred instanceof Mod) ||
          (pred instanceof Quo) ||
          (pred instanceof Mult) ||

@@ -56,11 +56,11 @@
  */
 package org.apache.xpath.functions;
 
-import java.util.Vector;
-
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.XPathVisitor;
 
 /**
@@ -95,11 +95,11 @@ public class Function3Args extends Function2Args
    * in the stack frame (but variables above the globalsTop value will need 
    * to be offset to the current stack frame).
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
-    super.fixupVariables(vars, globalsSize);
+    super.fixupVariables(vcs);
     if(null != m_arg2)
-      m_arg2.fixupVariables(vars, globalsSize);
+      m_arg2.fixupVariables(vcs);
   }
 
   /**
@@ -216,5 +216,18 @@ public class Function3Args extends Function2Args
   	return true;
   }
 
+  /** This method returns a child node.  The children are numbered
+     from zero, left to right. */
+  public ExpressionNode exprGetChild(int i)
+  {
+  	assertion(i <= 2, "Function2Args only allows index two or less to be accessed at this level!");
+  	return (2 == i) ? m_arg2 : super.exprGetChild(i);
+  }
+
+  /** Return the number of children the node has. */
+  public int exprGetNumChildren()
+  {
+  	return 2;
+  }
 
 }

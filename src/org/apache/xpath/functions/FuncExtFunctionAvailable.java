@@ -56,21 +56,14 @@
  */
 package org.apache.xpath.functions;
 
-import org.apache.xml.utils.PrefixResolver;
+import javax.xml.transform.TransformerException;
 import org.apache.xalan.templates.Constants;
-//import org.apache.xalan.transformer.TransformerImpl;
-//import org.apache.xalan.extensions.ExtensionsTable;
-
-//import org.w3c.dom.Node;
-
-import java.util.Vector;
-
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.ExtensionsProvider;
-import org.apache.xpath.compiler.Keywords;
-import org.apache.xpath.objects.XObject;
+import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.parser.SimpleNode;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -116,7 +109,9 @@ public class FuncExtFunctionAvailable extends FunctionOneArg
     {
       try
       {
-        return Keywords.functionAvailable(methName) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+      	// TBD: At least properly construct the QName object.
+      	Object funcObj = SimpleNode.m_builtInFunctions.get(new QName(methName));
+        return (null != funcObj) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
       }
       catch (Exception e)
       {

@@ -62,9 +62,8 @@ import org.apache.xpath.objects.XBoolean;
 /**
  * The '>=' operation expression executer.
  */
-public class Gte extends Operation
+public class Gte extends OperationSimple
 {
-
   /**
    * Apply the operation to two operands, and return the result.
    *

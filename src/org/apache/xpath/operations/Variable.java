@@ -59,15 +59,12 @@ package org.apache.xpath.operations;
 import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.ElemVariable;
-import org.apache.xalan.templates.Stylesheet;
-import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
-import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
@@ -75,9 +72,8 @@ import org.apache.xpath.axes.PathComponent;
 import org.apache.xpath.axes.WalkerFactory;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.parser.Node;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
 
 
 /**
@@ -157,9 +153,11 @@ public class Variable extends Expression implements PathComponent
    * in the stack frame (but variables above the globalsTop value will need 
    * to be offset to the current stack frame).
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
     m_fixUpWasCalled = true;
+    Vector vars = vcs.getVariableNames();
+    int globalsSize = vcs.getGlobalsSize();
     int sz = vars.size();
 
     for (int i = vars.size()-1; i >= 0; i--) 
@@ -428,5 +426,38 @@ public class Variable extends Expression implements PathComponent
   	return false;
   }
   
+  /**
+   * Tell if this node should have it's PathExpr ancestory reduced.
+   */
+  public boolean isPathExprReduced()
+  {
+  	// Assume that the parent of the parent is always a PathExpr when this 
+  	// method is called.
+  	Node pathOwner = jjtGetParent().jjtGetParent();
+  	return pathOwner.jjtGetNumChildren() == 1 ? true : false;
+  }
+
+  public java.lang.String toString()
+  {
+  	return "$"+m_qname;
+  }
+
+  /**
+   * Returns the fixUpWasCalled.
+   * @return boolean
+   */
+  public boolean isFixUpWasCalled()
+  {
+    return m_fixUpWasCalled;
+  }
+
+  /**
+   * Sets the fixUpWasCalled.
+   * @param fixUpWasCalled The fixUpWasCalled to set
+   */
+  public void setFixUpWasCalled(boolean fixUpWasCalled)
+  {
+    m_fixUpWasCalled = fixUpWasCalled;
+  }
 
 }

@@ -1,17 +1,21 @@
 package org.apache.xpath.axes;
 
-import java.util.Vector;
-
 import javax.xml.transform.TransformerException;
+
 import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XSequence;
+import org.apache.xpath.objects.XSequenceSingleton;
 
 /**
  * Class to use for one-step iteration that doesn't have a predicate, and 
@@ -24,7 +28,7 @@ public class FilterExprIteratorSimple extends LocPathIterator
   private Expression m_expr;
 
   /** The result of executing m_expr.  Needs to be deep cloned on clone op.  */
-  transient private XNodeSet m_exprObj;
+  transient private XSequence m_exprObj;
 
   private boolean m_mustHardReset = false;
   private boolean m_canDetachNodeset = true;
@@ -72,7 +76,7 @@ public class FilterExprIteratorSimple extends LocPathIterator
    * Execute the expression.  Meant for reuse by other FilterExpr iterators 
    * that are not derived from this object.
    */
-  public static XNodeSet executeFilterExpr(int context, XPathContext xctxt, 
+  public static XSequence executeFilterExpr(int context, XPathContext xctxt, 
   												PrefixResolver prefixResolver,
   												boolean isTopLevel,
   												int stackFrame,
@@ -80,7 +84,7 @@ public class FilterExprIteratorSimple extends LocPathIterator
     throws org.apache.xml.utils.WrappedRuntimeException
   {
     PrefixResolver savedResolver = xctxt.getNamespaceContext();
-    XNodeSet result = null;
+    XSequence result = null;
 
     try
     {
@@ -101,14 +105,26 @@ public class FilterExprIteratorSimple extends LocPathIterator
         int savedStart = vars.getStackFrame();
         vars.setStackFrame(stackFrame);
 
-        result = (org.apache.xpath.objects.XNodeSet) expr.execute(xctxt);
-        result.setShouldCacheNodes(true);
+        result = (XSequence) expr.execute(xctxt);
+        result.setShouldCache(true);
 
         // These two statements need to be combined into one operation.
         vars.setStackFrame(savedStart);
       }
       else
-          result = (org.apache.xpath.objects.XNodeSet) expr.execute(xctxt);
+          result = (XNodeSet) expr.execute(xctxt);
+         
+      /* %REVIEW% %OPT%
+      	Unfortunately, not all variables can be statically resolved into either
+      	definitely RTF or definitely not RTF. 
+      	
+      	%REVIEW% FIX: Should be using standardized error strings.
+      */ 
+      if(result instanceof org.apache.xpath.objects.XRTreeFrag
+      		&& "1.0".equals(xctxt.getXPathVersion())
+      		)
+      		xctxt.getErrorListener().error(new TransformerException(
+      			"Result Tree Fragments/Temporary Trees are not Nodesets in XSLT 1.0. Switch version to 2.0 or use the nodeset() extension"));
 
     }
     catch (javax.xml.transform.TransformerException se)
@@ -142,7 +158,11 @@ public class FilterExprIteratorSimple extends LocPathIterator
 
     if (null != m_exprObj)
     {
-      m_lastFetched = next = m_exprObj.nextNode();
+      XObject item = m_exprObj.next();
+      if(item != null && item != XSequence.EMPTY)
+        m_lastFetched = next = item.getNodeHandle();
+      else
+        m_lastFetched = next = DTM.NULL;
     }
     else
       m_lastFetched = next = DTM.NULL;
@@ -186,10 +206,10 @@ public class FilterExprIteratorSimple extends LocPathIterator
    * in the stack frame (but variables above the globalsTop value will need 
    * to be offset to the current stack frame).
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
-    super.fixupVariables(vars, globalsSize);
-    m_expr.fixupVariables(vars, globalsSize);
+    super.fixupVariables(vcs);
+    m_expr.fixupVariables(vcs);
   }
 
   /**
@@ -231,7 +251,12 @@ public class FilterExprIteratorSimple extends LocPathIterator
    */
   public boolean isDocOrdered()
   {
-    return m_exprObj.isDocOrdered();
+    if(m_exprObj instanceof XNodeSet)
+      return ((XNodeSet)m_exprObj).isDocOrdered();
+    else if(m_exprObj instanceof XSequenceSingleton)
+      return true;
+    else
+      return false;
   }
 
   class filterExprOwner implements ExpressionOwner
@@ -294,8 +319,8 @@ public class FilterExprIteratorSimple extends LocPathIterator
    */
   public int getAxis()
   {
-  	if(null != m_exprObj)
-    	return m_exprObj.getAxis();
+  	if(null != m_exprObj && m_exprObj instanceof XNodeSet)
+    	return ((XNodeSet)m_exprObj).getAxis();
     else
     	return Axis.FILTEREDLIST;
   }

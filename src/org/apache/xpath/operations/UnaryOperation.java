@@ -56,13 +56,12 @@
  */
 package org.apache.xpath.operations;
 
-import java.util.Vector;
-
-import javax.xml.transform.TransformerException;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
+import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -85,9 +84,9 @@ public abstract class UnaryOperation extends Expression implements ExpressionOwn
    * in the stack frame (but variables above the globalsTop value will need 
    * to be offset to the current stack frame).
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
-    m_right.fixupVariables(vars, globalsSize);
+    m_right.fixupVariables(vcs);
   }
   
   /**
@@ -194,6 +193,49 @@ public abstract class UnaryOperation extends Expression implements ExpressionOwn
   	if(!m_right.deepEquals(((UnaryOperation)expr).m_right))
   		return false;
   		
+  	return true;
+  }
+  
+  /**
+   * Add the left or right node of the operation.
+   */
+  public void jjtAddChild(org.apache.xpath.parser.Node n, int i) 
+  {
+  	n = fixupPrimarys(n);  // yuck.
+  	if(0 == i)
+  	{
+    	m_right = (Expression)n;
+    	m_right.exprSetParent(this);
+  	}
+  	else
+  	{
+  		// assertion... should not be able to occur.
+  		throw new RuntimeException("Can't add more than one child to an UnaryOperation!");
+  	}
+  }
+  
+  /** This method returns a child node.  The children are numbered
+     from zero, left to right. */
+  public ExpressionNode exprGetChild(int i)
+  {
+  	assertion(i == 0, "UnaryOperation can only have one child!");
+  	return m_right;
+  }
+
+  /** Return the number of children the node has. */
+  public int exprGetNumChildren()
+  {
+  	int count = 0;
+   	if(null != m_right)
+  		count++;
+  	return count;
+  }
+
+  /**
+   * Tell if this node should have it's PathExpr ancestory reduced.
+   */
+  public boolean isPathExprReduced()
+  {
   	return true;
   }
 

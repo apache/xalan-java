@@ -60,17 +60,12 @@ package org.apache.xpath.functions;
 //import org.w3c.dom.traversal.NodeIterator;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
-
-import java.util.Vector;
-
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.axes.SubContextList;
-import org.apache.xpath.axes.ContextNodeList;
-import org.apache.xpath.NodeSetDTM;
-import org.apache.xpath.compiler.Compiler;
+import org.apache.xpath.objects.XInteger;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XSequence;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -86,8 +81,73 @@ public class FuncPosition extends Function
    */
   public void postCompileStep(Compiler compiler)
   {
-    m_isTopLevel = compiler.getLocationPathDepth() == -1;
+  	// TBD: Figure out isTopLevel for new parser world.
+    // m_isTopLevel = compiler.getLocationPathDepth() == -1;
   }
+  
+//    /**
+//   * Get the position in the current context node list.
+//   *
+//   * @param xctxt Runtime XPath context.
+//   *
+//   * @return The current position of the itteration in the context node list, 
+//   *         or -1 if there is no active context node list.
+//   */
+//  public int getPositionInContextNodeList(XPathContext xctxt)
+//  {
+//
+//    // System.out.println("FuncPosition- entry");
+//    // If we're in a predicate, then this will return non-null.
+//    SubContextList iter = m_isTopLevel ? null : xctxt.getSubContextList();
+//
+//    if (null != iter)
+//    {
+//      int prox = iter.getProximityPosition(xctxt);
+// 
+//      // System.out.println("FuncPosition- prox: "+prox);
+//      return prox;
+//    }
+//
+//    DTMIterator cnl = xctxt.getContextNodeList();
+//
+//    if (null != cnl)
+//    {
+//      int n = cnl.getCurrentNode();
+//      if(n == DTM.NULL)
+//      {
+//        if(cnl.getCurrentPos() == 0)
+//          return 0;
+//          
+//        // Then I think we're in a sort.  See sort21.xsl. So the iterator has 
+//        // already been spent, and is not on the node we're processing. 
+//        // It's highly possible that this is an issue for other context-list 
+//        // functions.  Shouldn't be a problem for last(), and it shouldn't be 
+//        // a problem for current().
+//        try 
+//        { 
+//          cnl = cnl.cloneWithReset(); 
+//        }
+//        catch(CloneNotSupportedException cnse)
+//        {
+//          throw new org.apache.xml.utils.WrappedRuntimeException(cnse);
+//        }
+//        int currentNode = xctxt.getContextNode();
+//        // System.out.println("currentNode: "+currentNode);
+//        while(DTM.NULL != (n = cnl.nextNode()))
+//        {
+//          if(n == currentNode)
+//            break;
+//        }
+//      }
+//      // System.out.println("n: "+n);
+//      // System.out.println("FuncPosition- cnl.getCurrentPos(): "+cnl.getCurrentPos());
+//      return cnl.getCurrentPos();
+//    }
+//
+//    // System.out.println("FuncPosition - out of guesses: -1");
+//    return -1;
+//  }
+
 
   /**
    * Get the position in the current context node list.
@@ -106,20 +166,21 @@ public class FuncPosition extends Function
 
     if (null != iter)
     {
-      int prox = iter.getProximityPosition(xctxt);
+      int prox = iter.getProximityPosition(xctxt)-1;
  
       // System.out.println("FuncPosition- prox: "+prox);
       return prox;
     }
 
-    DTMIterator cnl = xctxt.getContextNodeList();
+    XSequence cnl = xctxt.getContextSequence();
 
     if (null != cnl)
     {
-      int n = cnl.getCurrentNode();
-      if(n == DTM.NULL)
+      XObject current = cnl.getCurrent();
+      if(current == null)
       {
-        if(cnl.getCurrentPos() == 0)
+        int pos = cnl.getCurrentPos();
+        if(pos == 0)
           return 0;
           
         // Then I think we're in a sort.  See sort21.xsl. So the iterator has 
@@ -129,17 +190,19 @@ public class FuncPosition extends Function
         // a problem for current().
         try 
         { 
-          cnl = cnl.cloneWithReset(); 
+          cnl = (XSequence)cnl.clone(); 
+          cnl.reset();
         }
         catch(CloneNotSupportedException cnse)
         {
           throw new org.apache.xml.utils.WrappedRuntimeException(cnse);
         }
-        int currentNode = xctxt.getContextNode();
+        XObject currentItem = xctxt.getCurrentItem();
+        XObject item;
         // System.out.println("currentNode: "+currentNode);
-        while(DTM.NULL != (n = cnl.nextNode()))
+        while(null != (item = cnl.next()))
         {
-          if(n == currentNode)
+          if(item.equals(currentItem))
             break;
         }
       }
@@ -162,15 +225,15 @@ public class FuncPosition extends Function
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    double pos = (double) getPositionInContextNodeList(xctxt);
+    int pos = getPositionInContextNodeList(xctxt);
     
-    return new XNumber(pos);
+    return new XInteger(pos+1);
   }
   
   /**
    * No arguments to process, so this does nothing.
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
     // no-op
   }

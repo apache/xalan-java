@@ -60,10 +60,8 @@ package org.apache.xpath.objects;
 //import org.w3c.dom.DocumentFragment;
 
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
-
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.NodeSetDTM;
 
 /**
  * <meta name="usage" content="general"/>
@@ -78,7 +76,7 @@ public class XNull extends XNodeSet
    */
   public XNull()
   {
-    super();
+    super((DTMManager)null); // compile-time cast is needed
   }
 
   /**
@@ -168,4 +166,14 @@ public class XNull extends XNodeSet
   {
     return obj2.getType() == CLASS_NULL;
   }
+  
+  /**
+   * Return the sequence representing this object.
+   * @return XSequence
+   */
+  public XSequence xseq()
+  {
+    return XSequence.EMPTY;
+  }
+
 }

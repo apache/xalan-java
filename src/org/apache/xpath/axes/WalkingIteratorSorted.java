@@ -56,12 +56,9 @@
  */
 package org.apache.xpath.axes;
 
-import org.apache.xpath.XPathContext;
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xpath.compiler.Compiler;
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.Axis;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xpath.VariableComposeState;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -83,31 +80,9 @@ public class WalkingIteratorSorted extends WalkingIterator
    * @param nscontext The namespace context for this iterator,
    * should be OK if null.
    */
-  public WalkingIteratorSorted(PrefixResolver nscontext)
+  public WalkingIteratorSorted(PrefixResolver nscontext, org.apache.xpath.parser.PathExpr path)
   {
-    super(nscontext);
-  }
-
-  /**
-   * Create a WalkingIterator iterator, including creation
-   * of step walkers from the opcode list, and call back
-   * into the Compiler to create predicate expressions.
-   *
-   * @param compiler The Compiler which is creating
-   * this expression.
-   * @param opPos The position of this iterator in the
-   * opcode list from the compiler.
-   * @param shouldLoadWalkers True if walkers should be
-   * loaded, or false if this is a derived iterator and
-   * it doesn't wish to load child walkers.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  WalkingIteratorSorted(
-          Compiler compiler, int opPos, int analysis, boolean shouldLoadWalkers)
-            throws javax.xml.transform.TransformerException
-  {
-    super(compiler, opPos, analysis, shouldLoadWalkers);
+    super(nscontext, path);
   }
   
   /**
@@ -120,7 +95,6 @@ public class WalkingIteratorSorted extends WalkingIterator
   {
     return m_inNaturalOrderStatic;
   }
-
     
   /**
    * Tell if the nodeset can be walked in doc order, via static analysis. 
@@ -231,9 +205,9 @@ public class WalkingIteratorSorted extends WalkingIterator
    * in the stack frame (but variables above the globalsTop value will need 
    * to be offset to the current stack frame).
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
-    super.fixupVariables(vars, globalsSize);
+    super.fixupVariables(vcs);
 
     int analysis = getAnalysisBits();
     if(WalkerFactory.isNaturalDocOrder(analysis))
@@ -247,6 +221,14 @@ public class WalkingIteratorSorted extends WalkingIterator
     	//    WalkerFactory.getAnalysisString(analysis));
     }
     
+  }
+
+  /**
+   * @see java.lang.Object#toString()
+   */
+  public String toString()
+  {
+    return "(sorted node list) "+super.toString();
   }
 
 }

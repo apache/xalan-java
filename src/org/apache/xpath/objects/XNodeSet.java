@@ -59,34 +59,38 @@ package org.apache.xpath.objects;
 //import org.w3c.dom.Node;
 //import org.w3c.dom.Text;
 //import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.NodeList;
-
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
-
-import org.apache.xpath.DOMHelper;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.NodeSetDTM;
-import org.apache.xpath.axes.ContextNodeList;
-import org.apache.xpath.axes.NodeSequence;
-import org.apache.xml.utils.StringVector;
+import org.apache.xml.dtm.XType;
+import org.apache.xml.utils.WrappedRuntimeException;
 import org.apache.xml.utils.XMLString;
+import org.apache.xpath.NodeSetDTM;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.traversal.NodeIterator;
 
 /**
  * <meta name="usage" content="general"/>
  * This class represents an XPath nodeset object, and is capable of
  * converting the nodeset to other types, such as a string.
  */
-public class XNodeSet extends NodeSequence
+public class XNodeSet extends NodeSequence implements XSequence
 {  
+  XNodeSequenceSingleton m_current;
+  
+  
+  // XNodeSetForDOM (subclass) accesses this member as NodeSetDTM
+  // NodeSequence (superclass) sometimes uses it as NodeVector
+  //NodeSetDTM m_obj;
+  
   /**
    * Default constructor for derived objects.
    */
+  /*
   protected XNodeSet()
   {
   }
+  */
 
   /**
    * Construct a XNodeSet object.
@@ -95,50 +99,78 @@ public class XNodeSet extends NodeSequence
    */
   public XNodeSet(DTMIterator val)
   {
-  	super();
   	if(val instanceof XNodeSet)
   	{
-	    setIter(((XNodeSet)val).m_iter);
-	    m_dtmMgr = ((XNodeSet)val).m_dtmMgr;
-	    m_last = ((XNodeSet)val).m_last;
-	    if(!((XNodeSet)val).hasCache())
-	    	((XNodeSet)val).setShouldCacheNodes(true);
-	    m_obj = ((XNodeSet)val).m_obj;
+		// One would expect an explicit copy ctor to take precedence,
+		// but apparently it doesn't always do so;
+		// moving this alternative into XNodeSet(XNodeSet)
+		// yields erroneous results. I don't quite understand why.
+
+  		XNodeSet xns=(XNodeSet)val;
+	    setIter(xns.m_iter);
+	    m_dtmMgr = xns.m_dtmMgr;
+	    m_last = xns.m_last;
+	    if(!xns.hasCache())
+	    	xns.setShouldCache(true);
+	    m_obj = xns.m_obj;
   	}
   	else
+  	{
     	setIter(val);
+  		m_dtmMgr=val.getDTMManager(); // Hadn't been being done..?
+  	}
   }
   
   /**
-   * Construct a XNodeSet object.
+   * Construct a XNodeSet object by copying from another XNodeSet
+   *
+   * Currently, all copy constructions are being caught by the
+   * XNodeSet(DTMIterator) ctor. I've disabled this one for
+   * clarity; we should consider deleting it entirely.
    *
    * @param val Value of the XNodeSet object
    */
+  /*
   public XNodeSet(XNodeSet val)
   {
-  	super();
+  	super(val.getDTMManager());
     setIter(val.m_iter);
     m_dtmMgr = val.m_dtmMgr;
     m_last = val.m_last;
     if(!val.hasCache())
-    	val.setShouldCacheNodes(true);
+    	val.setShouldCache(true);
     m_obj = val.m_obj;
   }
-
-
+  */
+  
+  /**
+   * Passthrough for XRTreeFrag(Expression) constructor, since
+   * c'tors are not inherited and there seems to be no way to 
+   * invoke super.super.super().
+   *
+   * @param frag Document fragment this will wrap
+   */
+  /*
+  protected XNodeSet(org.apache.xpath.Expression expr)
+  {
+    super(expr);
+  }
+  */
+    
   /**
    * Construct an empty XNodeSet object.  This is used to create a mutable 
    * nodeset to which random nodes may be added.
    */
   public XNodeSet(DTMManager dtmMgr) 
   {
-    super(dtmMgr);
+    this(DTM.NULL,dtmMgr);
   }
 
   /**
-   * Construct a XNodeSet object for one node.
+   * Construct a XNodeSet object for one node. (Or empty, if
+   * the node handle is DTM.NULL.)
    *
-   * @param n Node to add to the new XNodeSet object
+   * @param n Handle of DTM node to add to the new XNodeSet object
    */
   public XNodeSet(int n, DTMManager dtmMgr)
   {
@@ -148,7 +180,7 @@ public class XNodeSet extends NodeSequence
 
     if (DTM.NULL != n)
     {
-      ((NodeSetDTM) m_obj).addNode(n);
+      ((NodeSetDTM)m_obj).addNode(n);
       m_last = 1;
     }
     else
@@ -163,6 +195,22 @@ public class XNodeSet extends NodeSequence
   public int getType()
   {
     return CLASS_NODESET;
+  }
+  
+  /**
+   * @see org.apache.xpath.objects.XObject#getValueType()
+   */
+  public int getValueType()
+  {
+    int nodeHandle = getCurrentNode();
+    if (DTM.NULL != nodeHandle)
+    {
+      DTM dtm = getDTM(nodeHandle);
+      
+      return XType.getTypeID(dtm, nodeHandle);
+    }
+    else
+      return XType.ANYTYPE;
   }
 
   /**
@@ -409,6 +457,15 @@ public class XNodeSet extends NodeSequence
   }
   
   /**
+   * Return the sequence representing this object.
+   * @return XSequence
+   */
+  public XSequence xseq()
+  {
+    return this;
+  }
+  
+  /**
    * Cast result object to a nodelist.
    *
    * @return The nodeset as a nodelist
@@ -455,20 +512,19 @@ public class XNodeSet extends NodeSequence
    */
   public NodeSetDTM mutableNodeset()
   {
-    NodeSetDTM mnl;
-
-    if(m_obj instanceof NodeSetDTM)
-    {
-      mnl = (NodeSetDTM) m_obj;
-    }
-    else
-    {
-      mnl = new NodeSetDTM(iter());
-      m_obj = mnl;
-      setCurrentPos(0);
-    }
-
-    return mnl;
+     NodeSetDTM mnl;
+ 
+     if(m_obj instanceof NodeSetDTM)
+     {
+       mnl = (NodeSetDTM) m_obj;
+     }
+     else
+     {
+       mnl = new NodeSetDTM(iter());
+       m_obj = mnl;
+       setCurrentPos(0);
+     }
+     return mnl;  	
   }
 
   /** Less than comparator         */
@@ -507,7 +563,7 @@ public class XNodeSet extends NodeSequence
     boolean result = false;
     int type = obj2.getType();
 
-    if (XObject.CLASS_NODESET == type)
+    if (obj2.isNodesetExpr())
     {
       // %OPT% This should be XMLString based instead of string based...
 
@@ -719,7 +775,7 @@ public class XNodeSet extends NodeSequence
   {
     return compare(obj2, S_GTE);
   }
-
+  
   /**
    * Tell if two objects are functionally equal.
    *
@@ -730,6 +786,21 @@ public class XNodeSet extends NodeSequence
    * @throws javax.xml.transform.TransformerException
    */
   public boolean equals(XObject obj2)
+  {
+    int nodeHandle = obj2.getNodeHandle();
+    return nodeHandle == getNodeHandle();
+  }
+
+  /**
+   * Tell if two objects are functionally equal.
+   *
+   * @param obj2 object to compare this nodeset to
+   *
+   * @return see this.compare(...) 
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public boolean equalsExistential(XObject obj2)
   {
     try
     {
@@ -754,6 +825,172 @@ public class XNodeSet extends NodeSequence
   {
     return compare(obj2, S_NEQ);
   }
+  
+  /**
+   * @see org.apache.xpath.Expression#cloneDeep()
+   */
+  public Object cloneDeep() throws CloneNotSupportedException
+  {
+    XNodeSet xns = (XNodeSet)super.clone();
+    if(null != m_iter)
+      xns.m_iter = (DTMIterator)m_iter.clone();
+    return xns;
+  }
+
+//  /**
+//   * @see org.apache.xml.dtm.DTMIterator#cloneWithReset()
+//   */
+//  public DTMIterator cloneWithReset() throws CloneNotSupportedException
+//  {
+//    DTMIterator clone = super.cloneWithReset();
+//    return clone;
+//  }
+
+  /**
+   * @see org.apache.xpath.objects.XSequence#getCurrent()
+   */
+  public XObject getCurrent()
+  {
+    if (null == m_current)
+    {
+      if (null != m_iter)
+      {
+        int nodeHandle = getCurrentNode();
+        // I don't think it's a good idea here to have m_current 
+        // get assigned, since next or previous didn't already assign it! 
+        return new XNodeSequenceSingleton(
+          nodeHandle,
+          m_iter.getDTM(nodeHandle));
+      }
+      else
+      {
+        return null;
+      }
+    }
+    return m_current;
+  }
+
+  /**
+   * @see org.apache.xpath.objects.XSequence#getIsRandomAccess()
+   */
+  public boolean getIsRandomAccess()
+  {
+    return true; // though I'm not sure about this.
+  }
+
+  /**
+   * @see org.apache.xpath.objects.XSequence#getTypeLocalName()
+   */
+  public String getTypeLocalName()
+  {
+    int nodeHandle = getCurrentNode();
+    if (DTM.NULL != nodeHandle)
+    {
+      DTM dtm = getDTM(nodeHandle);
+
+      return dtm.getSchemaTypeLocalName(nodeHandle);
+    }
+    else
+      return null;
+  }
+
+  /**
+   * @see org.apache.xpath.objects.XSequence#getTypeNS()
+   */
+  public String getTypeNS()
+  {
+    int nodeHandle = getCurrentNode();
+    if (DTM.NULL != nodeHandle)
+    {
+      DTM dtm = getDTM(nodeHandle);
+      return dtm.getSchemaTypeNamespace(nodeHandle);
+    }
+    else
+      return null;
+  }
+
+  /**
+   * @see org.apache.xpath.objects.XSequence#getTypes()
+   */
+  public int getTypes()
+  {
+    return XType.ANYTYPE; // don't try to predict yet.
+  }
+
+  /**
+   * @see org.apache.xpath.objects.XSequence#isPureNodeSequence()
+   */
+  public boolean isPureNodeSequence()
+  {
+    return true;
+  }
+
+  /**
+   * @see org.apache.xpath.objects.XSequence#isSchemaType(String, String)
+   */
+  public boolean isSchemaType(String namespace, String localname)
+  {
+    int nodeHandle = getCurrentNode();
+    if (DTM.NULL != nodeHandle)
+    {
+      DTM dtm = getDTM(nodeHandle);
+      return dtm.isNodeSchemaType(nodeHandle, namespace, localname);
+    }
+    else
+      return false;
+  }
+
+  /**
+   * @see org.apache.xpath.objects.XSequence#isSingletonOrEmpty()
+   */
+  public boolean isSingletonOrEmpty()
+  {
+    return false;
+  }
+
+  /**
+   * @see org.apache.xpath.objects.XSequence#next()
+   */
+  public XObject next()
+  {
+    int node = nextNode();
+    if (DTM.NULL == node)
+      m_current = null;
+    else
+      m_current = new XNodeSequenceSingleton(node, this);
+    return m_current;
+  }
+
+  /**
+   * @see org.apache.xpath.objects.XSequence#previous()
+   */
+  public XObject previous()
+  {
+    int node = previousNode();
+    if (DTM.NULL == node)
+      m_current = null;
+    else
+      m_current = new XNodeSequenceSingleton(node, this);
+    return m_current;
+  }
+
+  /**
+   * @see org.apache.xpath.objects.XObject#isSequenceProper()
+   */
+  public boolean isSequenceProper()
+  {
+    return true;
+  }
+
+
+  /**
+   * @see org.apache.xpath.objects.XObject#getNodeHandle()
+   */
+  public int getNodeHandle()
+  {
+    return getCurrentNode();
+  }
+
 }
 
 /**

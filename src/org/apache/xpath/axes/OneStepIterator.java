@@ -7,7 +7,7 @@ import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.compiler.Compiler;
+import org.apache.xpath.parser.StepExpr;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -26,19 +26,17 @@ public class OneStepIterator extends ChildTestIterator
   /**
    * Create a OneStepIterator object.
    *
-   * @param compiler A reference to the Compiler that contains the op map.
-   * @param opPos The position within the op map, which contains the
-   * location path expression for this itterator.
+   * @param stepExpr The step expression from the parser.
+   * @param analysis The analysis bits for the total path expression.
    *
    * @throws javax.xml.transform.TransformerException
    */
-  OneStepIterator(Compiler compiler, int opPos, int analysis)
+  OneStepIterator(StepExpr stepExpr, int analysis)
           throws javax.xml.transform.TransformerException
   {
-    super(compiler, opPos, analysis);
-    int firstStepPos = compiler.getFirstChildPos(opPos);
+    super(stepExpr, analysis);
     
-    m_axis = WalkerFactory.getAxisFromStep(compiler, firstStepPos);
+    m_axis = stepExpr.getAxis();
     
   }
   

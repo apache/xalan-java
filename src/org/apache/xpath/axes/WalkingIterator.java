@@ -1,50 +1,45 @@
 package org.apache.xpath.axes;
 
-import java.util.Vector;
-
 import javax.xml.transform.TransformerException;
+
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.compiler.Compiler;
+import org.apache.xpath.parser.Node;
+import org.apache.xpath.parser.NonExecutableExpression;
 
 /**
  * Location path iterator that uses Walkers.
  */
 
 public class WalkingIterator extends LocPathIterator implements ExpressionOwner
-{
+{  
   /**
-   * Create a WalkingIterator iterator, including creation
-   * of step walkers from the opcode list, and call back
-   * into the Compiler to create predicate expressions.
+   * Create a WalkingIterator object.
    *
-   * @param compiler The Compiler which is creating
-   * this expression.
-   * @param opPos The position of this iterator in the
-   * opcode list from the compiler.
-   * @param shouldLoadWalkers True if walkers should be
-   * loaded, or false if this is a derived iterator and
-   * it doesn't wish to load child walkers.
-   *
-   * @throws javax.xml.transform.TransformerException
+   * @param nscontext The namespace context for this iterator,
+   * should be OK if null.
    */
-  WalkingIterator(
-          Compiler compiler, int opPos, int analysis, boolean shouldLoadWalkers)
-            throws javax.xml.transform.TransformerException
+  public WalkingIterator(PrefixResolver nscontext, org.apache.xpath.parser.PathExpr path)
   {
-    super(compiler, opPos, analysis, shouldLoadWalkers);
-    
-    int firstStepPos = compiler.getFirstChildPos(opPos);
 
-    if (shouldLoadWalkers)
+    super(nscontext);
+    
+    try
     {
-      m_firstWalker = WalkerFactory.loadWalkers(this, compiler, firstStepPos, 0);
-      m_lastUsedWalker = m_firstWalker;
+    	m_firstWalker = WalkerFactory.loadWalkers(path, this);
+    	m_lastUsedWalker = m_firstWalker;
     }
+    catch(TransformerException te)
+    {
+    	throw new org.apache.xml.utils.WrappedRuntimeException(te);
+    }
+
   }
   
   /**
@@ -55,9 +50,9 @@ public class WalkingIterator extends LocPathIterator implements ExpressionOwner
    */
   public WalkingIterator(PrefixResolver nscontext)
   {
-
     super(nscontext);
   }
+
   
   
   /** 
@@ -264,7 +259,7 @@ public class WalkingIterator extends LocPathIterator implements ExpressionOwner
    * in the stack frame (but variables above the globalsTop value will need 
    * to be offset to the current stack frame).
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
     m_predicateIndex = -1;
 
@@ -272,7 +267,7 @@ public class WalkingIterator extends LocPathIterator implements ExpressionOwner
 
     while (null != walker)
     {
-      walker.fixupVariables(vars, globalsSize);
+      walker.fixupVariables(vcs);
       walker = walker.getNextWalker();
     }
   }
@@ -313,6 +308,7 @@ public class WalkingIterator extends LocPathIterator implements ExpressionOwner
    */
   public void setExpression(Expression exp)
   {
+    // assertion(null != exp, "Expression owner can not be set to null!");
   	exp.exprSetParent(this);
   	m_firstWalker = (AxesWalker)exp;
   }
@@ -340,5 +336,52 @@ public class WalkingIterator extends LocPathIterator implements ExpressionOwner
 
       return true;
     }
+
+  public Node jjtGetChild(int i) 
+  {
+    int superclassChildCount = super.jjtGetNumChildren();
+    if((null != m_firstWalker) && i == 0)
+    	return m_firstWalker;
+    else
+    	return super.jjtGetChild(i-((null == m_firstWalker) ? 0 : 1));
+  }
+
+  public int jjtGetNumChildren() 
+  {
+  	int superChildCount = super.jjtGetNumChildren();
+    return superChildCount+((null == m_firstWalker) ? 0 : 1);
+  }
+  
+  
+
+  /**
+   * @see org.apache.xpath.parser.SimpleNode#checkTreeIntegrity(int, int, boolean)
+   */
+  public boolean checkTreeIntegrity(
+    int levelCount,
+    int childNumber,
+    boolean parentOK)
+  {
+    ExpressionNode expOwner = getExpressionOwner();
+    if(null != expOwner)
+    {
+      if(!(expOwner instanceof Node))
+        parentOK = flagProblem(" Expression owner is not a Node! It's a "+expOwner.getClass().getName());
+      else if(expOwner instanceof NonExecutableExpression)
+        parentOK = flagProblem(" Expression owner is a NonExecutableExpression!");
+    }
+    return super.checkTreeIntegrity(levelCount, childNumber, parentOK);
+  
+  }
+
+  /**
+   * @see org.apache.xpath.parser.Node#jjtClose()
+   */
+  public void jjtClose()
+  {
+    if(null == getExpressionOwner())
+      flagProblem("The expression owner can not be null on jjtClose!");
+    super.jjtClose();
+  }
 
 }

@@ -58,16 +58,14 @@ package org.apache.xpath.functions;
 
 //import org.w3c.dom.Node;
 
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XNodeSet;
-import org.apache.xpath.objects.XNumber;
-import org.apache.xpath.objects.XString;
+import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xpath.res.XPATHErrorResources;
-
-import org.apache.xml.utils.XMLString;
-
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.utils.XMLString;
+import org.apache.xpath.ExpressionNode;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XString;
+import org.apache.xpath.res.XPATHErrorResources;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -205,4 +203,19 @@ public class FunctionDef1Arg extends FunctionOneArg
   {
     return (null == m_arg0) ? false : super.canTraverseOutsideSubtree();
   }
+  
+  /** This method returns a child node.  The children are numbered
+     from zero, left to right. */
+  public ExpressionNode exprGetChild(int i)
+  {
+  	assertion(i == 0, "FunctionDef1Arg only allows index zero to be accessed at this level!");
+  	return m_arg0;
+  }
+
+  /** Return the number of children the node has. */
+  public int exprGetNumChildren()
+  {
+  	return (null == m_arg0) ? 0 : 1;
+  }
+
 }

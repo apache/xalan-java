@@ -69,7 +69,6 @@ import org.w3c.dom.Node;
  */
 public class And extends Operation
 {
-
   /**
    * AND two expressions and return the boolean result. Override
    * superclass method for optimization purposes.
@@ -83,7 +82,6 @@ public class And extends Operation
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-
     XObject expr1 = m_left.execute(xctxt);
 
     if (expr1.bool())

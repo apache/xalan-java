@@ -66,38 +66,29 @@ import org.apache.xpath.XPathVisitor;
  * This class represents an XPath number, and is capable of
  * converting the number to other types, such as a string.
  */
-public class XNumber extends XObject
+public abstract class XNumber extends XObject
 {
-
-  /** Value of the XNumber object.
-   *  @serial         */
-  double m_val;
-
   /**
    * Construct a XNodeSet object.
    *
    * @param d Value of the object
    */
-  public XNumber(double d)
+  protected XNumber()
   {
-    super();
-
-    m_val = d;
   }
-  
+
+
   /**
    * Construct a XNodeSet object.
    *
    * @param d Value of the object
    */
+  /*
   public XNumber(Number num)
   {
-
-    super();
-
-    m_val = num.doubleValue();
-    m_obj = num;
+    super(num);
   }
+  */
 
   /**
    * Tell that this is a CLASS_NUMBER.
@@ -120,39 +111,6 @@ public class XNumber extends XObject
     return "#NUMBER";
   }
 
-  /**
-   * Cast result object to a number.
-   *
-   * @return the value of the XNumber object
-   */
-  public double num()
-  {
-    return m_val;
-  }
-  
-  /**
-   * Evaluate expression to a number.
-   *
-   * @return 0.0
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public double num(XPathContext xctxt) 
-    throws javax.xml.transform.TransformerException
-  {
-
-    return m_val;
-  }
-
-  /**
-   * Cast result object to a boolean.
-   *
-   * @return false if the value is NaN or equal to 0.0
-   */
-  public boolean bool()
-  {
-    return (Double.isNaN(m_val) || (m_val == 0.0)) ? false : true;
-  }
 
 //  /**
 //   * Cast result object to a string.
@@ -312,20 +270,27 @@ public class XNumber extends XObject
    */
   public String str()
   {
-
-    if (Double.isNaN(m_val))
+  	double num;
+  	try 
+  	{
+    	num = num(); 
+    } 
+    catch(TransformerException te) 
+    {
+    	throw new RuntimeException(te.getMessage()); 
+    }
+    if (Double.isNaN(num))
     {
       return "NaN";
     }
-    else if (Double.isInfinite(m_val))
+    else if (Double.isInfinite(num))
     {
-      if (m_val > 0)
+      if (num > 0)
         return "Infinity";
       else
         return "-Infinity";
     }
 
-    double num = m_val;
     String s = Double.toString(num);
     int len = s.length();
 
@@ -401,12 +366,26 @@ public class XNumber extends XObject
    *
    * @return The value of this XNumber as a Double object
    */
-  public Object object()
+  abstract public Object object();
+  /*
   {
     if(null == m_obj)
-      m_obj = new Double(m_val);
+    {
+	  double num;
+	  try 
+	  {
+	    num = num(); 
+	  } 
+	  catch(TransformerException te) 
+	  {
+	    throw new RuntimeException(te.getMessage()); 
+	  }
+
+      m_obj = new Double(num);
+    }
     return m_obj;
   }
+  */
 
   /**
    * Tell if two objects are functionally equal.
@@ -427,11 +406,13 @@ public class XNumber extends XObject
     try
     {
 	    if (t == XObject.CLASS_NODESET)
-	      return obj2.equals(this);
+	      return ((XNodeSet)obj2).equalsExistential(this);
 	    else if(t == XObject.CLASS_BOOLEAN)
 	      return obj2.bool() == bool();
 		else
-	       return m_val == obj2.num();
+		{
+	       return num() == obj2.num();
+		}
     }
     catch(javax.xml.transform.TransformerException te)
     {

@@ -69,6 +69,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.objects.XSequence;
 import org.apache.xpath.objects.XString;
 
 /**
@@ -100,10 +101,10 @@ public class FuncCount extends FunctionOneArg
 //      i++;
 //    }
 //    nl.detach();
-	DTMIterator nl = m_arg0.asIterator(xctxt, xctxt.getCurrentNode());
+	XSequence nl = m_arg0.execute(xctxt).xseq();
 	int i = nl.getLength();	
 	nl.detach();
 
-    return new XNumber((double) i);
+    return new org.apache.xpath.objects.XInteger(i);
   }
 }

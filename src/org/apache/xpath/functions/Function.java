@@ -61,11 +61,13 @@ package org.apache.xpath.functions;
 import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.parser.Node;
+import org.apache.xpath.parser.PathExpr;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -77,7 +79,7 @@ import org.apache.xpath.objects.XObject;
  * the arguments don't have to be added to an array, but causes
  * a larger code footprint.
  */
-public abstract class Function extends Expression
+public abstract class Function extends Expression implements Cloneable
 {
 
   /**
@@ -96,6 +98,24 @@ public abstract class Function extends Expression
 			// throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("zero", null));
       reportWrongNumberArgs();
   }
+  
+  
+  /**
+   * @see ExpressionOwner#setExpression(Expression)
+   */
+  public void jjtAddChild(Node exp, int argNum)
+  {
+  	try
+  	{
+  		exp = fixupPrimarys(exp);
+  		setArg((Expression)exp, argNum);
+  	}
+  	catch(WrongNumberArgsException wnae)
+  	{
+  		throw new org.apache.xml.utils.WrappedRuntimeException(wnae);
+  	}
+  }
+
 
   /**
    * Check that the number of arguments passed to this function is correct.
@@ -179,4 +199,32 @@ public abstract class Function extends Expression
   {
     // no default action
   }
+  
+//  public void jjtAddChild(org.apache.xpath.parser.Node n, int i) {
+//    // at least for now, just ignore this.
+//  }
+  
+  /** This method tells the node to add its argument to the node's
+    list of children.  */
+  public void exprAddChild(ExpressionNode n, int i)
+  {
+  	try
+  	{
+  		setArg((Expression)n, i);
+  	}
+  	catch(WrongNumberArgsException wnae)
+  	{
+  		throw new RuntimeException(wnae.getMessage());
+  	}
+  }
+
+  /**
+   * Tell if this node should have it's PathExpr ancestory reduced.
+   */
+  public boolean isPathExprReduced()
+  {
+   	Node pathOwner = jjtGetParent().jjtGetParent();
+  	return pathOwner.jjtGetNumChildren() == 1 ? true : false;
+  }
+
 }

@@ -71,15 +71,23 @@ import org.apache.xpath.axes.WalkerFactory; // evil import.
 public class ContextMatchStepPattern extends StepPattern
 {
 
+//  /**
+//   * Construct a ContextMatchStepPattern.
+//   *
+//   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
+//   */
+//  public ContextMatchStepPattern(int axis, int paxis)
+//  {
+//    super(DTMFilter.SHOW_ALL, axis, paxis);
+//  }
+  
   /**
    * Construct a ContextMatchStepPattern.
-   *
-   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
    */
-  public ContextMatchStepPattern(int axis, int paxis)
+  public ContextMatchStepPattern()
   {
-    super(DTMFilter.SHOW_ALL, axis, paxis);
   }
+
 
   /**
    * Execute this pattern step, including predicates.

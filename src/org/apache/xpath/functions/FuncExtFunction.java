@@ -58,22 +58,14 @@ package org.apache.xpath.functions;
 
 import java.util.Vector;
 
-import org.apache.xpath.Expression;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.ExtensionsProvider;
-import org.apache.xpath.objects.*;
-import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.extensions.ExtensionsTable;
-import org.apache.xml.dtm.DTMIterator;
-
-//import org.w3c.dom.Node;
-import org.w3c.dom.DocumentFragment;
-import org.w3c.dom.traversal.NodeIterator;
-
-import org.apache.xml.dtm.*;
-import org.apache.xpath.axes.*;
-import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.Expression;
+import org.apache.xpath.ExtensionsProvider;
+import org.apache.xpath.VariableComposeState;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XNull;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.res.XPATHErrorResources;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -122,7 +114,7 @@ public class FuncExtFunction extends Function
    * to be offset to the current stack frame).
    * NEEDSDOC @param globalsSize
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
 
     if (null != m_argVec)
@@ -133,7 +125,7 @@ public class FuncExtFunction extends Function
       {
         Expression arg = (Expression) m_argVec.elementAt(i);
 
-        arg.fixupVariables(vars, globalsSize);
+        arg.fixupVariables(vcs);
       }
     }
   }
@@ -188,6 +180,12 @@ public class FuncExtFunction extends Function
       Expression arg = (Expression) m_argVec.elementAt(i);
       
       XObject xobj = arg.execute(xctxt);
+      
+      if(null == xobj)
+        throw new RuntimeException("Arg executed to a null XObject!!! arg: "+arg);
+        
+      if(null == xobj.object())
+        throw new RuntimeException("Arg executed to a null object!!! arg: "+arg);
 
       argVec.addElement(xobj);
     }
@@ -198,6 +196,7 @@ public class FuncExtFunction extends Function
 
     if (null != val)
     {
+      // If val is an XObject, it will just pass through create.
       result = XObject.create(val, xctxt);
     }
     else
@@ -221,7 +220,11 @@ public class FuncExtFunction extends Function
   public void setArg(Expression arg, int argNum)
           throws WrongNumberArgsException
   {
-    m_argVec.addElement(arg);
+    // m_argVec.addElement(arg);
+    if(argNum >= m_argVec.size())
+      m_argVec.setSize(argNum+1);
+    
+    m_argVec.setElementAt(arg, argNum);
   }
 
   /**

@@ -2,7 +2,8 @@ package org.apache.xpath.axes;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xpath.compiler.Compiler;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XSequence;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.XPathContext;
 import org.apache.xml.utils.PrefixResolver;
@@ -20,21 +21,21 @@ import org.apache.xml.dtm.DTM;
 public class SelfIteratorNoPredicate extends LocPathIterator
 {
 
-  /**
-   * Create a SelfIteratorNoPredicate object.
-   *
-   * @param compiler A reference to the Compiler that contains the op map.
-   * @param opPos The position within the op map, which contains the
-   * location path expression for this itterator.
-   * @param analysis Analysis bits.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  SelfIteratorNoPredicate(Compiler compiler, int opPos, int analysis)
-          throws javax.xml.transform.TransformerException
-  {
-    super(compiler, opPos, analysis, false);
-  }
+//  /**
+//   * Create a SelfIteratorNoPredicate object.
+//   *
+//   * @param compiler A reference to the Compiler that contains the op map.
+//   * @param opPos The position within the op map, which contains the
+//   * location path expression for this itterator.
+//   * @param analysis Analysis bits.
+//   *
+//   * @throws javax.xml.transform.TransformerException
+//   */
+//  SelfIteratorNoPredicate(Compiler compiler, int opPos, int analysis)
+//          throws javax.xml.transform.TransformerException
+//  {
+//    super(compiler, opPos, analysis, false);
+//  }
   
   /**
    * Create a SelfIteratorNoPredicate object.
@@ -51,6 +52,26 @@ public class SelfIteratorNoPredicate extends LocPathIterator
   {
     super(null);
   }
+  
+  /**
+   * Execute this iterator, meaning create a clone that can
+   * store state, and initialize it for fast execution from
+   * the current runtime state.  When this is called, no actual
+   * query from the current context node is performed.
+   *
+   * @param xctxt The XPath execution context.
+   *
+   * @return An XNodeSet reference that holds this iterator.
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public XObject execute(XPathContext xctxt)
+          throws javax.xml.transform.TransformerException
+  {
+    XObject item = xctxt.getCurrentItem();
+    return item;
+  }
+
 
 
   /**

@@ -62,9 +62,8 @@ import org.apache.xpath.objects.XBoolean;
 /**
  * The '>' operation expression executer.
  */
-public class Gt extends Operation
+public class Gt extends OperationSimple
 {
-
   /**
    * Apply the operation to two operands, and return the result.
    *

@@ -56,47 +56,77 @@
  */
 package org.apache.xpath.operations;
 
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNumber;
+import javax.xml.transform.TransformerException;
+
+import org.apache.xml.dtm.XType;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XDouble;
+import org.apache.xpath.objects.XFloat;
+import org.apache.xpath.objects.XInteger;
+import org.apache.xpath.objects.XObject;
 
 /**
  * The 'mod' operation expression executer.
  */
-public class Mod extends Operation
+public class Mod extends OperationNormalized
 {
-
-  /**
-   * Apply the operation to two operands, and return the result.
-   *
-   *
-   * @param left non-null reference to the evaluated left operand.
-   * @param right non-null reference to the evaluated right operand.
-   *
-   * @return non-null reference to the XObject that represents the result of the operation.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  public XObject operate(XObject left, XObject right)
-          throws javax.xml.transform.TransformerException
+  static OpFuncLookupTable m_funcs;
   {
-    return new XNumber(left.num() % right.num());
+    m_funcs = new OpFuncLookupTable();
+    m_funcs.setFunc(XType.DOUBLE, new GenericOpFunc()
+    {
+      public XObject operate(XPathContext xctxt, XObject lhs, XObject rhs)
+        throws TransformerException
+      {
+        return new XDouble(lhs.num() % rhs.num());
+      }
+    });
+    m_funcs.setFunc(XType.FLOAT, new GenericOpFunc()
+    {
+      public XObject operate(XPathContext xctxt, XObject lhs, XObject rhs)
+        throws TransformerException
+      {
+        return new XFloat(lhs.floatVal() % rhs.floatVal());
+      }
+    });
+    m_funcs.setFunc(XType.INTEGER, new GenericOpFunc()
+    {
+      public XObject operate(XPathContext xctxt, XObject lhs, XObject rhs)
+        throws TransformerException
+      {
+        return new XInteger(lhs.integer() % rhs.integer());
+      }
+    });
+    m_funcs.setFunc(XType.DECIMAL, NOTSUPPORTED);
+
+    m_funcs.setFunc(XType.DURATION, NOTSUPPORTED);
+    m_funcs.setFunc(XType.DAYTIMEDURATION, NOTSUPPORTED);
+    m_funcs.setFunc(XType.YEARMONTHDURATION, NOTSUPPORTED);
+    
+    m_funcs.setFunc(XType.DATETIME, NOTSUPPORTED);
+    m_funcs.setFunc(XType.TIME, NOTSUPPORTED);
+    m_funcs.setFunc(XType.DATE, NOTSUPPORTED);
+    m_funcs.setFunc(XType.GYEARMONTH, NOTSUPPORTED);
+    m_funcs.setFunc(XType.GYEAR, NOTSUPPORTED);
+    m_funcs.setFunc(XType.GMONTHDAY, NOTSUPPORTED);
+    m_funcs.setFunc(XType.GDAY, NOTSUPPORTED);
+    m_funcs.setFunc(XType.GMONTH, NOTSUPPORTED);
+
+    m_funcs.setFunc(XType.BOOLEAN, NOTSUPPORTED);
+    m_funcs.setFunc(XType.STRING, NOTSUPPORTED);
+    m_funcs.setFunc(XType.BASE64BINARY, NOTSUPPORTED);
+    m_funcs.setFunc(XType.HEXBINARY, NOTSUPPORTED);
+    m_funcs.setFunc(XType.ANYURI, NOTSUPPORTED);
+    m_funcs.setFunc(XType.QNAME, NOTSUPPORTED);
+    m_funcs.setFunc(XType.NOTATION, NOTSUPPORTED);
   }
   
   /**
-   * Evaluate this operation directly to a double.
-   *
-   * @param xctxt The runtime execution context.
-   *
-   * @return The result of the operation as a double.
-   *
-   * @throws javax.xml.transform.TransformerException
+   * @see org.apache.xpath.operations.Operation#getLookupTable()
    */
-  public double num(XPathContext xctxt)
-          throws javax.xml.transform.TransformerException
+  public OpFuncLookupTable getLookupTable()
   {
-
-    return (m_left.num(xctxt) % m_right.num(xctxt));
+    return m_funcs;
   }
 
 }

@@ -56,16 +56,16 @@
  */
 package org.apache.xpath.operations;
 
+import javax.xml.transform.TransformerException;
+import org.apache.xpath.objects.XDouble;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNumber;
 
 /**
  * The 'quo' operation expression executer. (no longer supported by XPath).
  * @deprecated.
  */
-public class Quo extends Operation
+public class Quo extends OperationSimple
 {
-
   // Actually, this is no longer supported by xpath...
 
   /**
@@ -82,6 +82,6 @@ public class Quo extends Operation
   public XObject operate(XObject left, XObject right)
           throws javax.xml.transform.TransformerException
   {
-    return new XNumber((int) (left.num() / right.num()));
+    return new XDouble((int) (left.num() / right.num()));
   }
 }

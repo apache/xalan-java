@@ -56,6 +56,7 @@
  */
 package org.apache.xpath.objects;
 
+import org.apache.xml.dtm.XType;
 import org.w3c.dom.*;
 
 /**
@@ -65,33 +66,26 @@ import org.w3c.dom.*;
  */
 public class XBoolean extends XObject
 {
+	boolean m_val;
 
-  /**
-   * <meta name="usage" content="internal"/>
-   * A true boolean object so we don't have to keep creating them.
-   */
-  public static XBoolean S_TRUE = new XBooleanStatic(true);
+  public final static XBoolean S_TRUE = new XBoolean(true);
+  public final static XBoolean S_FALSE = new XBoolean(false);
 
-  /**
-   * <meta name="usage" content="internal"/>
-   * A true boolean object so we don't have to keep creating them.
-   */
-  public static XBoolean S_FALSE = new XBooleanStatic(false);
-
-  /** Value of the object.
-   *  @serial         */
-  boolean m_val;
 
   /**
    * Construct a XBoolean object.
+   * 
+   * NOTE: Arguably, this should not be a public ctor; folks
+   * should instead be calling a factory which returns one of
+   * the statics. Problem with that: If XBoolean ever directly
+   * implements XSequence, and XSequence behaves as a singleton
+   * iterator... Count this as downside of that approach.
+   * %REVIEW%
    *
    * @param b Value of the boolean object
    */
   public XBoolean(boolean b)
   {
-
-    super();
-
     m_val = b;
   }
   
@@ -102,13 +96,17 @@ public class XBoolean extends XObject
    */
   public XBoolean(Boolean b)
   {
-
-    super();
-
     m_val = b.booleanValue();
-    m_obj = b;
   }
-
+  
+  /**
+   * Return the sequence representing this object.
+   * @return XSequence
+   */
+  public XSequence xseq()
+  {
+    return new XSequenceSingleton(this);
+  }
 
   /**
    * Tell that this is a CLASS_BOOLEAN.
@@ -169,9 +167,7 @@ public class XBoolean extends XObject
    */
   public Object object()
   {
-    if(null == m_obj)
-      m_obj = m_val ? S_TRUE : S_FALSE;
-    return m_obj;
+	return m_val ? Boolean.TRUE : Boolean.FALSE;
   }
 
   /**
@@ -185,12 +181,13 @@ public class XBoolean extends XObject
    */
   public boolean equals(XObject obj2)
   {
-
+  	// Alternative approach would be implement equals(XNodeset)...?
+  	
     // In order to handle the 'all' semantics of 
     // nodeset comparisons, we always call the 
     // nodeset function.
-    if (obj2.getType() == XObject.CLASS_NODESET)
-      return obj2.equals(this);
+    if (obj2.isNodesetExpr())
+      return ((XNodeSet)obj2).equalsExistential(this);
 
     try
     {

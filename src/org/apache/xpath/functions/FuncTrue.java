@@ -58,12 +58,10 @@ package org.apache.xpath.functions;
 
 //import org.w3c.dom.Node;
 
-import java.util.Vector;
-
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
-import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XObject;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -88,7 +86,7 @@ public class FuncTrue extends Function
   /**
    * No arguments to process, so this does nothing.
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
     // no-op
   }

@@ -10,10 +10,13 @@ import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.parser.Node;
+import org.apache.xpath.parser.Predicates;
+import org.apache.xpath.parser.StepExpr;
 import org.apache.xpath.patterns.NodeTest;
 
 public abstract class PredicatedNodeTest extends NodeTest implements SubContextList
@@ -140,22 +143,24 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
    *
    * @throws javax.xml.transform.TransformerException
    */
-  protected void initPredicateInfo(Compiler compiler, int opPos)
+  protected void initPredicateInfo(StepExpr stepExpr)
           throws javax.xml.transform.TransformerException
   {
-
-    int pos = compiler.getFirstPredicateOpPos(opPos);
-
-    if(pos > 0)
+    Expression lastChild = (Expression)stepExpr.jjtGetChild(stepExpr.jjtGetNumChildren()-1);
+    if(lastChild instanceof Predicates)
     {
-      m_predicates = compiler.getCompiledPredicates(pos);
-      if(null != m_predicates)
-      {
-      	for(int i = 0; i < m_predicates.length; i++)
-      	{
-      		m_predicates[i].exprSetParent(this);
-      	}
-      }
+    	Predicates preds = (Predicates)lastChild;
+    	int numPreds = preds.jjtGetNumChildren();
+    	if(numPreds > 0)
+    	{
+    		m_predicates = new Expression[numPreds];
+	      	for(int i = 0; i < m_predicates.length; i++)
+	      	{
+	      		Expression pred = (Expression)preds.jjtGetChild(i);
+	      		m_predicates[i] = pred;
+	      		pred.exprSetParent(this);
+	      	}
+    	}
     }
   }
 
@@ -393,15 +398,15 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
    * in the stack frame (but variables above the globalsTop value will need 
    * to be offset to the current stack frame).
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
-    super.fixupVariables(vars, globalsSize);
+    super.fixupVariables(vcs);
 
     int nPredicates = getPredicateCount();
 
     for (int i = 0; i < nPredicates; i++)
     {
-      m_predicates[i].fixupVariables(vars, globalsSize);
+      m_predicates[i].fixupVariables(vcs);
     }
   }
 
@@ -624,5 +629,63 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
     	m_predicates[m_index] = exp;
     }
   }
-    
+  
+  public String toString()
+  {
+  	int myCount = (null == m_predicates) ? 0 : m_predicates.length;
+  	String str = "";
+  	
+  	for(int i = 0; i < myCount; i++)
+  	{
+  		// java.io.StringWriter sw = new java.io.StringWriter();
+  		char buf[] = new char[1024*32];
+  		java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+  		java.io.PrintStream ps = new java.io.PrintStream(baos);
+  		
+  		m_predicates[i].dump("", ps);
+  		ps.flush();
+  		String predString = baos.toString().trim();
+  		
+  		str += "["+predString+"]";
+  	}
+  	str += " "+super.toString();
+  	return str;
+  }
+
+  
+//  public Node jjtGetChild(int i) 
+//  {
+//    int superclassChildCount = super.jjtGetNumChildren();
+//  	int myCount = (null == m_predicates) ? 0 : m_predicates.length;
+//    if(i < myCount)
+//    	return m_predicates[i];
+//    else
+//    	return super.jjtGetChild(i-myCount);
+//  }
+//
+//  public int jjtGetNumChildren() 
+//  {
+//  	int myCount = (null == m_predicates) ? 0 : m_predicates.length;
+//    return super.jjtGetNumChildren()+myCount;
+//  }
+
+  /**
+   * Tell if this node is part of a PathExpr chain.  For instance:
+   * <pre>
+   * 	|UnaryExpr
+   * 	|   PathExpr
+   * 	|      StepExpr
+   * 	|         AxisChild child::
+   * 	|         NodeTest
+   * 	|            NameTest
+   * 	|               QName foo
+   * 	|         Predicates   * 
+   * </pre><br/>
+   * In this example, UnaryExpr, PathExpr, and StepExpr should all return true.
+   */
+  public boolean isPathExpr()
+  {
+  	return true;
+  }
+
 }

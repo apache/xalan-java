@@ -19,7 +19,6 @@ public interface ExpressionOwner
    * @param exp the raw Expression object, which should not normally be null.
    */
   public void setExpression(Expression exp);
-
-
+  
 }
 

@@ -61,13 +61,15 @@ import java.util.Vector;
 import javax.xml.transform.TransformerException;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.patterns.StepPattern.PredOwner;
+import org.apache.xpath.parser.Node;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -76,22 +78,30 @@ import org.apache.xpath.patterns.StepPattern.PredOwner;
 public class FunctionPattern extends StepPattern
 {
 
+//  /**
+//   * Construct a FunctionPattern from a
+//   * {@link org.apache.xpath.functions.Function expression}.
+//   *
+//   *
+//   * @param a should be a {@link org.apache.xpath.functions.Function expression}.
+//   *
+//   * NEEDSDOC @param expr
+//   */
+//  public FunctionPattern(Expression expr, int axis, int predaxis)
+//  {
+//
+//    super(0, null, null, axis, predaxis);
+//
+//    m_functionExpr = expr;
+//  }
+
   /**
-   * Construct a FunctionPattern from a
-   * {@link org.apache.xpath.functions.Function expression}.
-   *
-   *
-   * @param a should be a {@link org.apache.xpath.functions.Function expression}.
-   *
-   * NEEDSDOC @param expr
+   * Construct a FunctionPattern.
    */
-  public FunctionPattern(Expression expr, int axis, int predaxis)
+  public FunctionPattern()
   {
-
-    super(0, null, null, axis, predaxis);
-
-    m_functionExpr = expr;
   }
+  
 
   /**
    * Static calc of match score.
@@ -109,7 +119,41 @@ public class FunctionPattern extends StepPattern
    * Should be a {@link org.apache.xpath.functions.Function expression}.
    *  @serial   
    */
-  Expression m_functionExpr;
+  protected Expression m_functionExpr;
+  
+  /**
+   * @see ExpressionOwner#setExpression(Expression)
+   */
+  public void setFunctionExpression(Expression exp)
+  {
+    exp.exprSetParent(this);
+  	m_functionExpr = exp;
+  }
+  
+  /**
+   * Add parameters to the function expression.
+   */
+  public void jjtAddChild(Node n, int i) 
+  {
+  	if(!(n instanceof org.apache.xpath.parser.QName))
+  	{
+  		m_functionExpr.jjtAddChild(n, i-1);
+  	}
+  }
+
+//  public void jjtClose() 
+//  {
+//  	if(
+//  }
+
+  public Node jjtGetChild(int i) 
+  {
+    return m_functionExpr.jjtGetChild(i);
+  }
+
+  public int jjtGetNumChildren() {
+    return m_functionExpr.jjtGetNumChildren();
+  }
   
   /**
    * This function is used to fixup variables from QNames to stack frame 
@@ -121,10 +165,10 @@ public class FunctionPattern extends StepPattern
    * in the stack frame (but variables above the globalsTop value will need 
    * to be offset to the current stack frame).
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
-    super.fixupVariables(vars, globalsSize);
-    m_functionExpr.fixupVariables(vars, globalsSize);
+    super.fixupVariables(vcs);
+    m_functionExpr.fixupVariables(vcs);
   }
 
   
@@ -286,5 +330,18 @@ public class FunctionPattern extends StepPattern
     m_functionExpr.callVisitors(new FunctionOwner(), visitor);
     super.callSubtreeVisitors(visitor);
   }
+  
+  /**
+   * Get the string represenentation of this step for diagnostic purposes.
+   *
+   *
+   * @return A string representation of this step, built by reverse-engineering 
+   * the contained info.
+   */
+  public String toString()
+  {
+  	return m_functionExpr.toString();
+  }
+
 
 }

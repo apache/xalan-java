@@ -16,13 +16,14 @@ import java.util.Locale;
  */
 public class XStringForChars extends XString
 {
-  /** The start position in the fsb. */
+	/** Pointer to the block containing this string */
+	char[] m_chars;
+	
+  /** The start position in the character array. */
   int m_start;
   
   /** The length of the string. */
   int m_length;
-  
-  protected String m_strCache = null;
   
   /**
    * Construct a XNodeSet object.
@@ -33,26 +34,28 @@ public class XStringForChars extends XString
    */
   public XStringForChars(char[] val, int start, int length)
   {
-    super(val);
-    m_start = start;
-    m_length = length;
     if(null == val)
       throw new IllegalArgumentException(
                           XSLMessages.createXPATHMessage(XPATHErrorResources.ER_FASTSTRINGBUFFER_CANNOT_BE_NULL, null)); //"The FastStringBuffer argument can not be null!!");
+    m_chars=val;
+    m_start = start;
+    m_length = length;
   }
 
 
   /**
-   * Construct a XNodeSet object.
+   * Block inherited constructor. (DO ctors inherit?)
    *
    * @param val String object this will wrap.
    */
+  /*
   private XStringForChars(String val)
   {
     super(val);
     throw new IllegalArgumentException(
                       XSLMessages.createXPATHMessage(XPATHErrorResources.ER_XSTRINGFORCHARS_CANNOT_TAKE_STRING, null)); //"XStringForChars can not take a string for an argument!");
   }
+  */
   
   /**
    * Cast result object to a string.
@@ -71,7 +74,7 @@ public class XStringForChars extends XString
    */
   public void appendToFsb(org.apache.xml.utils.FastStringBuffer fsb)
   {
-    fsb.append((char[])m_obj, m_start, m_length);
+    fsb.append(m_chars, m_start, m_length);
   }
 
   
@@ -82,7 +85,7 @@ public class XStringForChars extends XString
    */
   public boolean hasString()
   {
-    return (null != m_strCache);
+    return (null != m_stringValue);
   }
 
   
@@ -93,12 +96,22 @@ public class XStringForChars extends XString
    */
   public String str()
   {
-    if(null == m_strCache)
-      m_strCache = new String((char[])m_obj, m_start, m_length);
+    if(null == m_stringValue)
+      m_stringValue = new String(m_chars, m_start, m_length);
     
-    return m_strCache;
+    return m_stringValue;
   }
   
+
+  /** Yield result object's string value as a sequence of Character Blocks
+	* @return a CharacterBlockEnumeration displaying the contents of
+	* this object's string value (as in str()). May be empty.
+	* */
+  public org.apache.xml.utils.CharacterBlockEnumeration enumerateCharacterBlocks()
+  {
+  	return new org.apache.xml.utils.CharacterBlockEnumeration(
+		m_chars, m_start, m_length);
+  }
 
   /**
    * Since this object is incomplete without the length and the offset, we 
@@ -125,7 +138,7 @@ public class XStringForChars extends XString
   public void dispatchCharactersEvents(org.xml.sax.ContentHandler ch)
       throws org.xml.sax.SAXException
   {
-    ch.characters((char[])m_obj, m_start, m_length);
+    ch.characters(m_chars, m_start, m_length);
   }
       
   /**
@@ -140,7 +153,7 @@ public class XStringForChars extends XString
   public void dispatchAsComment(org.xml.sax.ext.LexicalHandler lh)
       throws org.xml.sax.SAXException
   {
-    lh.comment((char[])m_obj, m_start, m_length);
+    lh.comment(m_chars, m_start, m_length);
   }
   
   /**
@@ -169,7 +182,7 @@ public class XStringForChars extends XString
    */
   public char charAt(int index)
   {
-    return ((char[])m_obj)[index+m_start];
+    return (m_chars)[index+m_start];
   }
 
   /**
@@ -195,7 +208,7 @@ public class XStringForChars extends XString
    */
   public void getChars(int srcBegin, int srcEnd, char dst[], int dstBegin)
   {
-    System.arraycopy((char[])m_obj, m_start+srcBegin, dst, dstBegin, srcEnd);
+    System.arraycopy(m_chars, m_start+srcBegin, dst, dstBegin, srcEnd);
   }
   
 }

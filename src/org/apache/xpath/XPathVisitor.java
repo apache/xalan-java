@@ -57,6 +57,7 @@
 package org.apache.xpath;
 
 import org.apache.xpath.patterns.NodeTest;
+import org.apache.xpath.types.InstanceofExpr;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.functions.Function;
@@ -233,6 +234,19 @@ public class XPathVisitor
 	{
 		return true;
 	}
+  
+  /**
+   * Visit a number literal.
+   * @param owner The owner of the expression, to which the expression can 
+   *              be reset if rewriting takes place.
+   * @param num The number literal object.
+   * @return true if the sub expressions should be traversed.
+   */
+  public boolean visitInstanceOf(ExpressionOwner owner, InstanceofExpr num)
+  {
+    return true;
+  }
+
 
 
 }

@@ -56,11 +56,11 @@
  */
 package org.apache.xpath.functions;
 
-import java.util.Vector;
-
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.XPathVisitor;
 
 /**
@@ -152,10 +152,10 @@ public class FunctionOneArg extends Function implements ExpressionOwner
    * in the stack frame (but variables above the globalsTop value will need 
    * to be offset to the current stack frame).
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
     if(null != m_arg0)
-      m_arg0.fixupVariables(vars, globalsSize);
+      m_arg0.fixupVariables(vcs);
   }
   
   /**
@@ -205,6 +205,20 @@ public class FunctionOneArg extends Function implements ExpressionOwner
   		return false;
 
   	return true;
+  }
+
+  /** This method returns a child node.  The children are numbered
+     from zero, left to right. */
+  public ExpressionNode exprGetChild(int i)
+  {
+  	assertion(i == 0, "FunctionOneArg only allows index zero to be accessed!");
+  	return m_arg0;
+  }
+
+  /** Return the number of children the node has. */
+  public int exprGetNumChildren()
+  {
+  	return 1;
   }
 
 

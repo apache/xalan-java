@@ -60,15 +60,14 @@ package org.apache.xpath.objects;
 import java.util.Locale;
 
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.XType;
 import org.apache.xml.utils.XMLCharacterRecognizer;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.ext.LexicalHandler;
+import org.apache.xpath.parser.Token;
 
 /**
  * <meta name="usage" content="general"/>
@@ -77,19 +76,38 @@ import org.xml.sax.ext.LexicalHandler;
  */
 public class XString extends XObject implements XMLString
 {
+	/** Java String object representing this XString.
+	 * Note that this field is also used as a cache by
+	 * XString's subclasses
+	 * */
+	protected String m_stringValue=null;
 
   /** Empty string XString object */
   public static XString EMPTYSTRING = new XString("");
+  
+  /**
+   * Construct a XString object, with a null value.
+   * 
+   * This one's actually being used, unlike most XObject empty ctors,
+   * because it may be created and _then_ set (by processToken)
+   * during stylesheet parsing.
+   */
+  public XString()
+  {
+  }
+
 
   /**
    * Construct a XString object.  This constructor exists for derived classes.
    *
    * @param val String object this will wrap.
    */
+  /*
   protected XString(Object val)
   {
     super(val);
   }
+  */
 
   /**
    * Construct a XNodeSet object.
@@ -98,8 +116,18 @@ public class XString extends XObject implements XMLString
    */
   public XString(String val)
   {
-    super(val);
+    m_stringValue=val;
   }
+  
+  /**
+   * Return the sequence representing this object.
+   * @return XSequence
+   */
+  public XSequence xseq()
+  {
+    return new XSequenceSingleton(this);
+  }
+
 
   /**
    * Tell that this is a CLASS_STRING.
@@ -130,6 +158,11 @@ public class XString extends XObject implements XMLString
   public boolean hasString()
   {
     return true;
+  }
+  
+  public Object object()
+  {
+  	return m_stringValue; // str()?
   }
 
   /**
@@ -271,7 +304,17 @@ public class XString extends XObject implements XMLString
    */
   public String str()
   {
-    return (null != m_obj) ? ((String) m_obj) : "";
+  	// Should this actively replace null with ""?
+  	return (m_stringValue==null) ? "" : m_stringValue;
+  }
+  
+  /** Yield result object's string value as a sequence of Character Blocks
+	* @return a CharacterBlockEnumeration displaying the contents of
+	* this object's string value (as in str()). May be empty.
+	* */
+  public org.apache.xml.utils.CharacterBlockEnumeration enumerateCharacterBlocks()
+  {
+  	return new org.apache.xml.utils.CharacterBlockEnumeration(str());
   }
 
   /**
@@ -402,8 +445,8 @@ public class XString extends XObject implements XMLString
     int t = obj2.getType();
     try
     {
-	    if (XObject.CLASS_NODESET == t)
-	      return obj2.equals(this);
+	    if (obj2.isNodesetExpr())
+	      return ((XNodeSet)obj2).equalsExistential(this);
 	    // If at least one object to be compared is a boolean, then each object 
 	    // to be compared is converted to a boolean as if by applying the 
 	    // boolean function. 
@@ -471,7 +514,7 @@ public class XString extends XObject implements XMLString
       // nodeset comparisons, we always call the 
       // nodeset function.
     else if (obj2 instanceof XNodeSet)
-      return obj2.equals(this);
+      return ((XNodeSet)obj2).equalsExistential(this);
     else if(obj2 instanceof XNumber)
     	return obj2.equals(this);
     else
@@ -1207,5 +1250,25 @@ public class XString extends XObject implements XMLString
   {
   	visitor.visitStringLiteral(owner, this);
   }
+  
+  public void processToken(Token t) 
+  { 
+  	int strLen = t.image.length();
+  	
+  	if(strLen >= 2)
+  	{
+  		assertion(t.image.charAt(0) == '"' || t.image.charAt(0) == '\'', 
+  			"First character of string literal must be a quote or apos!");
+  		assertion(t.image.charAt(strLen-1) == '"' || t.image.charAt(strLen-1) == '\'', 
+  			"Last character of string literal must be a quote or apos!");
+  		m_stringValue = t.image.substring(1, strLen-1);
+  	}
+  	else
+  	{
+      m_stringValue = "";
+  	}
+  		
+  }
+
 
 }

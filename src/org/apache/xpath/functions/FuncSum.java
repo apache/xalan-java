@@ -56,19 +56,13 @@
  */
 package org.apache.xpath.functions;
 
+import javax.xml.transform.TransformerException;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
-
-import java.util.Vector;
-
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.DOMHelper;
-import org.apache.xpath.XPath;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNumber;
-import org.apache.xpath.objects.XString;
-
 import org.apache.xml.utils.XMLString;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XDouble;
+import org.apache.xpath.objects.XObject;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -102,6 +96,6 @@ public class FuncSum extends FunctionOneArg
     }
     nodes.detach();
 
-    return new XNumber(sum);
+    return new XDouble(sum);
   }
 }

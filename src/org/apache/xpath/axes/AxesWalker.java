@@ -66,11 +66,8 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.compiler.Compiler;
-import org.apache.xpath.patterns.NodeTest;
-
-import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.parser.Node;
+import org.apache.xpath.parser.StepExpr;
 
 /**
  * Serves as common interface for axes Walkers, and stores common
@@ -106,13 +103,11 @@ public class AxesWalker extends PredicatedNodeTest
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public void init(Compiler compiler, int opPos, int stepType)
+  public void init(org.apache.xpath.parser.StepExpr stepExpr)
           throws javax.xml.transform.TransformerException
   {
 
-    initPredicateInfo(compiler, opPos);
-
-    // int testType = compiler.getOp(nodeTestOpPos);
+    initPredicateInfo(stepExpr);
   }
 
   /**
@@ -264,7 +259,7 @@ public class AxesWalker extends PredicatedNodeTest
     if (DTM.NULL == root)
     {
       throw new RuntimeException(
-        XSLMessages.createXPATHMessage(XPATHErrorResources.ER_SETTING_WALKER_ROOT_TO_NULL, null)); //"\n !!!! Error! Setting the root of a walker to null!!!");
+        "\n !!!! Error! Setting the root of a walker to null!!!");
     }
 
     resetProximityPositions();
@@ -624,4 +619,61 @@ public class AxesWalker extends PredicatedNodeTest
 
   /** The DTM inner traversal class, that corresponds to the super axis. */
   protected DTMAxisTraverser m_traverser; 
+  
+  public Node jjtGetChild(int i) 
+  {
+    if((null != m_nextWalker) && i == 0)
+    	return m_nextWalker;
+    else
+    	return null;
+  }
+
+  public int jjtGetNumChildren() 
+  {
+  	
+    return ((null == m_nextWalker) ? 0 : 1);
+  }
+
+  public String toString()
+  {
+  	String namespace = getNamespace();
+  	String localname = getLocalName();
+  	return org.apache.xml.dtm.Axis.names[m_axis]+"::"+
+  		((null != namespace) ? (namespace+":") : "")+
+  		((null != localname) ? localname : "node()")+
+  		" "+super.toString();
+  }
+  
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

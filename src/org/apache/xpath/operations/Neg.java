@@ -56,9 +56,10 @@
  */
 package org.apache.xpath.operations;
 
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNumber;
+import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XDouble;
+import org.apache.xpath.objects.XObject;
 
 /**
  * The unary '-' operation expression executer.
@@ -78,7 +79,7 @@ public class Neg extends UnaryOperation
    */
   public XObject operate(XObject right) throws javax.xml.transform.TransformerException
   {
-    return new XNumber(-right.num());
+    return new XDouble(-right.num());
   }
   
   /**

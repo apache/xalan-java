@@ -464,68 +464,7 @@ public class XPATHErrorResources extends PropertyResourceBundle
   
 // Variable accessed before it is bound!
   public static final int ER_VARIABLE_ACCESSED_BEFORE_BIND = 85;
-  
-  // XStringForFSB can not take a string for an argument!
-  public static final int ER_FSB_CANNOT_TAKE_STRING = 86;
-  
-  // Error! Setting the root of a walker to null!
-  public static final int ER_SETTING_WALKER_ROOT_TO_NULL = 87;
-  
-  // This NodeSetDTM can not iterate to a previous node!
-  public static final int ER_NODESETDTM_CANNOT_ITERATE = 88;
-  
-  // This NodeSet can not iterate to a previous node!
-  public static final int ER_NODESET_CANNOT_ITERATE = 89;
 
-  // This NodeSetDTM can not do indexing or counting functions!
-  public static final int ER_NODESETDTM_CANNOT_INDEX = 90;
-  
-  // This NodeSet can not do indexing or counting functions!
-  public static final int ER_NODESET_CANNOT_INDEX = 91;
-
-  // Can not call setShouldCacheNodes after nextNode has been called!
-  public static final int ER_CANNOT_CALL_SETSHOULDCACHENODE = 92;
-  
-  // {0} only allows {1} arguments
-  public static final int ER_ONLY_ALLOWS = 93;
-  
-  // Programmer's assertion in getNextStepPos: unknown stepType: {0}
-  public static final int ER_UNKNOWN_STEP = 94;
-  
-  /** Problem with RelativeLocationPath */
-  public static final int ER_EXPECTED_REL_LOC_PATH = 95;
-
-
-   /** Problem with LocationPath */
-  public static final int ER_EXPECTED_LOC_PATH = 96;
-
-
-   /** Problem with Step */
-  public static final int ER_EXPECTED_LOC_STEP = 97;
-
-
-   /** Problem with NodeTest */
-  public static final int ER_EXPECTED_NODE_TEST = 98;
-
-
-   /** Expected step pattern */
-  public static final int ER_EXPECTED_STEP_PATTERN = 99;
-
-  
-   /** Expected relative path pattern */
-  public static final int ER_EXPECTED_REL_PATH_PATTERN = 100;
-  
-  /** localname in QNAME should be a valid NCName */  
-  public static final int ER_ARG_LOCALNAME_INVALID = 101;
-
-  /** prefix in QNAME should be a valid NCName */
-  public static final int ER_ARG_PREFIX_INVALID = 102;
-
- 
-
-
-
-  
   // Warnings...
 
   /** Field WG_LOCALE_NAME_NOT_HANDLED          */

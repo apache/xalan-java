@@ -6,7 +6,7 @@ import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.VariableStack;
-import org.apache.xpath.compiler.Compiler;
+import org.apache.xpath.parser.StepExpr;
 
 /**
  * Base for iterators that handle predicates.  Does the basic next 
@@ -50,13 +50,12 @@ public abstract class BasicTestIterator extends LocPathIterator
    *
    * @throws javax.xml.transform.TransformerException
    */
-  protected BasicTestIterator(Compiler compiler, int opPos, int analysis)
+  protected BasicTestIterator(StepExpr stepExpr, int analysis)
           throws javax.xml.transform.TransformerException
   {
-    super(compiler, opPos, analysis, false);
+    super(stepExpr.getParser().getPrefixResolver());
     
-    int firstStepPos = compiler.getFirstChildPos(opPos);
-    int whatToShow = compiler.getWhatToShow(firstStepPos);
+    int whatToShow = stepExpr.getWhatToShow();
 
     if ((0 == (whatToShow
                & (DTMFilter.SHOW_ATTRIBUTE 
@@ -67,34 +66,11 @@ public abstract class BasicTestIterator extends LocPathIterator
       initNodeTest(whatToShow);
     else
     {
-      initNodeTest(whatToShow, compiler.getStepNS(firstStepPos),
-                              compiler.getStepLocalName(firstStepPos));
+      initNodeTest(whatToShow, stepExpr.getNamespaceURI(),
+                              stepExpr.getLocalName());
     }
-    initPredicateInfo(compiler, firstStepPos);
+    initPredicateInfo(stepExpr);
   }
-
-  /**
-   * Create a LocPathIterator object, including creation
-   * of step walkers from the opcode list, and call back
-   * into the Compiler to create predicate expressions.
-   *
-   * @param compiler The Compiler which is creating
-   * this expression.
-   * @param opPos The position of this iterator in the
-   * opcode list from the compiler.
-   * @param shouldLoadWalkers True if walkers should be
-   * loaded, or false if this is a derived iterator and
-   * it doesn't wish to load child walkers.
-   *
-   * @throws javax.xml.transform.TransformerException
-   */
-  protected BasicTestIterator(
-          Compiler compiler, int opPos, int analysis, boolean shouldLoadWalkers)
-            throws javax.xml.transform.TransformerException
-  {
-    super(compiler, opPos, analysis, shouldLoadWalkers);
-  }
-
 	
   /**
    * Get the next node via getNextXXX.  Bottlenecked for derived class override.
@@ -197,6 +173,7 @@ public abstract class BasicTestIterator extends LocPathIterator
 
     return clone;
   }
+  
 
 
 }

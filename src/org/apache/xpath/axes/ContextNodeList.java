@@ -99,7 +99,7 @@ public interface ContextNodeList
    *
    * @param b true if the nodes should be cached.
    */
-  public void setShouldCacheNodes(boolean b);
+  public void setShouldCache(boolean b);
 
   /**
    * If an index is requested, NodeSetDTM will call this method

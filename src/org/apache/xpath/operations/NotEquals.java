@@ -62,9 +62,8 @@ import org.apache.xpath.objects.XBoolean;
 /**
  * The '!=' operation expression executer.
  */
-public class NotEquals extends Operation
+public class NotEquals extends OperationSimple
 {
-
   /**
    * Apply the operation to two operands, and return the result.
    *

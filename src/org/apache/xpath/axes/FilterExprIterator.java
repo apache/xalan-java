@@ -1,12 +1,18 @@
 package org.apache.xpath.axes;
 
+import java.io.PrintStream;
 import java.util.Vector;
 
 import org.apache.xml.dtm.DTM;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XSequence;
+import org.apache.xpath.objects.XSequenceSingleton;
+import org.apache.xpath.parser.Node;
 
 public class FilterExprIterator extends BasicTestIterator
 {
@@ -15,7 +21,7 @@ public class FilterExprIterator extends BasicTestIterator
   private Expression m_expr;
 
   /** The result of executing m_expr.  Needs to be deep cloned on clone op.  */
-  transient private XNodeSet m_exprObj;
+  transient private XSequence m_exprObj;
 
   private boolean m_mustHardReset = false;
   private boolean m_canDetachNodeset = true;
@@ -70,7 +76,11 @@ public class FilterExprIterator extends BasicTestIterator
   {
     if (null != m_exprObj)
     {
-      m_lastFetched = m_exprObj.nextNode();
+      XObject item = m_exprObj.next();
+      if(item != null && item != XSequence.EMPTY)
+        m_lastFetched = item.getNodeHandle();
+      else
+        m_lastFetched = DTM.NULL;
     }
     else
       m_lastFetched = DTM.NULL;
@@ -100,10 +110,10 @@ public class FilterExprIterator extends BasicTestIterator
    * in the stack frame (but variables above the globalsTop value will need 
    * to be offset to the current stack frame).
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
-    super.fixupVariables(vars, globalsSize);
-    m_expr.fixupVariables(vars, globalsSize);
+    super.fixupVariables(vcs);
+    m_expr.fixupVariables(vcs);
   }
 
   /**
@@ -145,7 +155,12 @@ public class FilterExprIterator extends BasicTestIterator
    */
   public boolean isDocOrdered()
   {
-    return m_exprObj.isDocOrdered();
+    if(m_exprObj instanceof XNodeSet)
+      return ((XNodeSet)m_exprObj).isDocOrdered();
+    else if(m_exprObj instanceof XSequenceSingleton)
+      return true;
+    else
+      return false;
   }
 
   class filterExprOwner implements ExpressionOwner
@@ -199,5 +214,29 @@ public class FilterExprIterator extends BasicTestIterator
 
     return true;
   }
+  
+//  /**
+//   * @see org.apache.xpath.parser.Node#jjtGetChild(int)
+//   */
+//  public Node jjtGetChild(int i)
+//  {
+//    return (0 == i) ? m_expr : null;
+//  }
+//
+//  /**
+//   * @see org.apache.xpath.parser.Node#jjtGetNumChildren()
+//   */
+//  public int jjtGetNumChildren()
+//  {
+//    return (null != m_expr) ? 1 : 0;
+//  }
+//
+//  /**
+//   * @see org.apache.xpath.parser.SimpleNode#dump(String, PrintStream)
+//   */
+//  public void dump(String prefix, PrintStream ps)
+//  {
+//    super.dump(prefix, ps);
+//  }
 
 }

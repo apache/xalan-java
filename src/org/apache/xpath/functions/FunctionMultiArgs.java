@@ -56,14 +56,13 @@
  */
 package org.apache.xpath.functions;
 
-import java.util.Vector;
-
-import org.apache.xpath.Expression;
-import org.apache.xpath.ExpressionOwner;
-import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.functions.Function3Args.Arg2Owner;
-import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
+import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.VariableComposeState;
+import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.res.XPATHErrorResources;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -95,21 +94,24 @@ public class FunctionMultiArgs extends Function3Args
       super.setArg(arg, argNum);
     else
     {
+      argNum-=3;
       if (null == m_args)
       {
-        m_args = new Expression[1];
-        m_args[0] = arg;
+        m_args = new Expression[argNum+1];
+        m_args[argNum] = arg;
       }
       else
       {
-
         // Slow but space conservative.
-        Expression[] args = new Expression[m_args.length + 1];
+        if(argNum >= m_args.length)
+        {
+          Expression[] args = new Expression[argNum + 1];
+          System.arraycopy(m_args, 0, args, 0, m_args.length);
+          m_args = args;
+        }
 
-        System.arraycopy(m_args, 0, args, 0, m_args.length);
-
-        args[m_args.length] = arg;
-        m_args = args;
+        m_args[argNum] = arg;
+        
       }
       arg.exprSetParent(this);
     }
@@ -125,14 +127,14 @@ public class FunctionMultiArgs extends Function3Args
    * in the stack frame (but variables above the globalsTop value will need 
    * to be offset to the current stack frame).
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
-    super.fixupVariables(vars, globalsSize);
+    super.fixupVariables(vcs);
     if(null != m_args)
     {
       for (int i = 0; i < m_args.length; i++) 
       {
-        m_args[i].fixupVariables(vars, globalsSize);
+        m_args[i].fixupVariables(vcs);
       }
     }
   }
@@ -261,4 +263,18 @@ public class FunctionMultiArgs extends Function3Args
 
       return true;
     }
+    
+  /** This method returns a child node.  The children are numbered
+     from zero, left to right. */
+  public ExpressionNode exprGetChild(int i)
+  {
+  	return (i < 3) ? super.exprGetChild(i) : m_args[i - 3];
+  }
+
+  /** Return the number of children the node has. */
+  public int exprGetNumChildren()
+  {
+  	return ((null != m_args) ? m_args.length : 0)+super.exprGetNumChildren();
+  }
+
 }

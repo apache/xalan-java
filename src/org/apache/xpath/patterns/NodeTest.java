@@ -61,13 +61,13 @@ import java.util.Vector;
 import javax.xml.transform.TransformerException;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMFilter;
-import org.apache.xml.dtm.ref.ExpandedNameTable;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.objects.XDouble;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -188,68 +188,68 @@ public class NodeTest extends Expression
    *  {@link #SCORE_OTHER}.
    *  @serial
    */
-  XNumber m_score;
+  XDouble m_score;
 
   /**
    * The match score if the pattern consists of just a NodeTest.
    *  @see <a href="http://www.w3.org/TR/xslt#conflict">XSLT Specification - 5.5 Conflict Resolution for Template Rules</a> 
    */
-  public static final XNumber SCORE_NODETEST =
-    new XNumber(XPath.MATCH_SCORE_NODETEST);
+  public static final XDouble SCORE_NODETEST =
+    new XDouble(XPath.MATCH_SCORE_NODETEST);
 
   /**
    * The match score if the pattern pattern has the form NCName:*.
    *  @see <a href="http://www.w3.org/TR/xslt#conflict">XSLT Specification - 5.5 Conflict Resolution for Template Rules</a> 
    */
-  public static final XNumber SCORE_NSWILD =
-    new XNumber(XPath.MATCH_SCORE_NSWILD);
+  public static final XDouble SCORE_NSWILD =
+    new XDouble(XPath.MATCH_SCORE_NSWILD);
 
   /**
    * The match score if the pattern has the form
    * of a QName optionally preceded by an @ character.
    *  @see <a href="http://www.w3.org/TR/xslt#conflict">XSLT Specification - 5.5 Conflict Resolution for Template Rules</a> 
    */
-  public static final XNumber SCORE_QNAME =
-    new XNumber(XPath.MATCH_SCORE_QNAME);
+  public static final XDouble SCORE_QNAME =
+    new XDouble(XPath.MATCH_SCORE_QNAME);
 
   /**
    * The match score if the pattern consists of something
    * other than just a NodeTest or just a qname.
    *  @see <a href="http://www.w3.org/TR/xslt#conflict">XSLT Specification - 5.5 Conflict Resolution for Template Rules</a> 
    */
-  public static final XNumber SCORE_OTHER =
-    new XNumber(XPath.MATCH_SCORE_OTHER);
+  public static final XDouble SCORE_OTHER =
+    new XDouble(XPath.MATCH_SCORE_OTHER);
 
   /**
    * The match score if no match is made.
    *  @see <a href="http://www.w3.org/TR/xslt#conflict">XSLT Specification - 5.5 Conflict Resolution for Template Rules</a> 
    */
-  public static final XNumber SCORE_NONE =
-    new XNumber(XPath.MATCH_SCORE_NONE);
+  public static final XDouble SCORE_NONE =
+    new XDouble(XPath.MATCH_SCORE_NONE);
 
-  /**
-   * Construct an NodeTest that tests for namespaces and node names.
-   *
-   *
-   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
-   * @param namespace The namespace to be tested.
-   * @param name The local name to be tested.
-   */
-  public NodeTest(int whatToShow, String namespace, String name)
-  {
-    initNodeTest(whatToShow, namespace, name);
-  }
-
-  /**
-   * Construct an NodeTest that doesn't test for node names.
-   *
-   *
-   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
-   */
-  public NodeTest(int whatToShow)
-  {
-    initNodeTest(whatToShow);
-  }
+//  /**
+//   * Construct an NodeTest that tests for namespaces and node names.
+//   *
+//   *
+//   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
+//   * @param namespace The namespace to be tested.
+//   * @param name The local name to be tested.
+//   */
+//  public NodeTest(int whatToShow, String namespace, String name)
+//  {
+//    initNodeTest(whatToShow, namespace, name);
+//  }
+//
+//  /**
+//   * Construct an NodeTest that doesn't test for node names.
+//   *
+//   *
+//   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
+//   */
+//  public NodeTest(int whatToShow)
+//  {
+//    initNodeTest(whatToShow);
+//  }
   
   /**
    * @see Expression#deepEquals(Expression)
@@ -334,13 +334,13 @@ public class NodeTest extends Expression
    * True if this test has a null namespace and a local name of {@link #WILD}.
    *  @serial 
    */
-  private boolean m_isTotallyWild;
+  boolean m_isTotallyWild;
   
   /**
    * Get the static score for this node test.
    * @return Should be one of the SCORE_XXX constants.
    */
-  public XNumber getStaticScore()
+  public XDouble getStaticScore()
   {
     return m_score;
   }
@@ -349,7 +349,7 @@ public class NodeTest extends Expression
    * Set the static score for this node test.
    * @param score Should be one of the SCORE_XXX constants.
    */
-  public void setStaticScore(XNumber score)
+  public void setStaticScore(XDouble score)
   {
     m_score = score;
   }
@@ -715,7 +715,7 @@ public class NodeTest extends Expression
   /**
    * Node tests by themselves do not need to fix up variables.
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
     // no-op
   }

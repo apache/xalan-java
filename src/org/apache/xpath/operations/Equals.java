@@ -56,7 +56,6 @@
  */
 package org.apache.xpath.operations;
 
-import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
@@ -64,9 +63,8 @@ import org.apache.xpath.objects.XObject;
 /**
  * The '=' operation expression executer.
  */
-public class Equals extends Operation
+public class Equals extends OperationSimple
 {
-
   /**
    * Apply the operation to two operands, and return the result.
    *
@@ -81,7 +79,7 @@ public class Equals extends Operation
   public XObject operate(XObject left, XObject right)
           throws javax.xml.transform.TransformerException
   {
-    return left.equals(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+    return left.equalsExistential(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
   }
   
   /**
@@ -96,14 +94,14 @@ public class Equals extends Operation
    * @throws javax.xml.transform.TransformerException
    */
   public boolean bool(XPathContext xctxt)
-          throws javax.xml.transform.TransformerException
+    throws javax.xml.transform.TransformerException
   {
     XObject left = m_left.execute(xctxt, true);
     XObject right = m_right.execute(xctxt, true);
 
-    boolean result = left.equals(right) ? true : false;
-	left.detach();
-	right.detach();
+    boolean result = left.equalsExistential(right) ? true : false;
+    left.detach();
+    right.detach();
     return result;
   }
 

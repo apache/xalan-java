@@ -1,6 +1,8 @@
 package org.apache.xpath.objects;
 
 import org.apache.xml.dtm.*;
+import org.apache.xml.utils.DateTimeObj;
+import org.apache.xml.utils.Duration;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.axes.OneStepIterator;
@@ -37,15 +39,20 @@ public class XObjectFactory
     }
     else if (val instanceof Double)
     {
-      result = new XNumber(((Double) val));
+      result = new XDouble(((Double) val));
+    }
+    else if (val instanceof Integer)
+    {
+      result = new XInteger(((Integer) val)); 
     }
     else
-    {
-      result = new XObject(val);
+    { 
+      result = new XJavaObject(val);
     }
 
     return result;
   }
+  
   
   /**
    * Create the right XObject based on the type of the object passed.
@@ -74,9 +81,21 @@ public class XObjectFactory
     {
       result = new XBoolean((Boolean)val);
     }
-    else if (val instanceof Number)
+    else if (val instanceof Double)
     {
-      result = new XNumber(((Number) val));
+      result = new XDouble(((Double) val));
+    }
+    else if (val instanceof Integer)
+    {
+      result = new XInteger(((Integer) val));
+    }
+    else if (val instanceof DateTimeObj)
+    {
+      result = new XDateTime((DateTimeObj) val);
+    }
+    else if (val instanceof Duration)
+    {
+      result = new XDuration((Duration) val);
     }
     else if (val instanceof DTM)
     {
@@ -131,7 +150,7 @@ public class XObjectFactory
     }
     else
     {
-      result = new XObject(val);
+      result = new XJavaObject(val);
     }
 
     return result;

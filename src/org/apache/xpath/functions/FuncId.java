@@ -69,7 +69,6 @@ import org.apache.xml.dtm.DTMIterator;
 import java.util.Vector;
 
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.DOMHelper;
 import org.apache.xpath.XPath;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.objects.XObject;

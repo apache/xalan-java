@@ -56,6 +56,11 @@
  */
 package org.apache.xpath.patterns;
 
+import java.io.ByteArrayOutputStream;
+import java.io.CharArrayWriter;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
@@ -64,12 +69,16 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisTraverser;
 import org.apache.xml.dtm.DTMFilter;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SubContextList;
-import org.apache.xpath.compiler.PsuedoNames;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.parser.Node;
+import org.apache.xpath.parser.PatternAxis;
+import org.apache.xpath.parser.Predicates;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -79,48 +88,86 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
 {
 
   /** The axis for this test. */
-  protected int m_axis;
+  protected int m_axis = org.apache.xml.dtm.Axis.SELF;
+
+//  /**
+//   * Construct a StepPattern that tests for namespaces and node names.
+//   *
+//   *
+//   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
+//   * @param namespace The namespace to be tested.
+//   * @param name The local name to be tested.
+//   * @param axis The Axis for this test, one of of Axes.ANCESTORORSELF, etc.
+//   * @param axisForPredicate No longer used.
+//   */
+//  public StepPattern(int whatToShow, String namespace, String name, int axis,
+//                     int axisForPredicate)
+//  {
+//
+//    super(whatToShow, namespace, name);
+//
+//    m_axis = axis;
+//  }
+//
+//  /**
+//   * Construct a StepPattern that doesn't test for node names.
+//   *
+//   *
+//   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
+//   * @param axis The Axis for this test, one of of Axes.ANCESTORORSELF, etc.
+//   * @param axisForPredicate No longer used.
+//   */
+//  public StepPattern(int whatToShow, int axis, int axisForPredicate)
+//  {
+//
+//    super(whatToShow);
+//
+//    m_axis = axis;
+//  }
 
   /**
-   * Construct a StepPattern that tests for namespaces and node names.
-   *
-   *
-   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
-   * @param namespace The namespace to be tested.
-   * @param name The local name to be tested.
-   * @param axis The Axis for this test, one of of Axes.ANCESTORORSELF, etc.
-   * @param axisForPredicate No longer used.
+   * Construct a StepPattern.
    */
-  public StepPattern(int whatToShow, String namespace, String name, int axis,
-                     int axisForPredicate)
+  public StepPattern()
   {
-
-    super(whatToShow, namespace, name);
-
-    m_axis = axis;
   }
 
-  /**
-   * Construct a StepPattern that doesn't test for node names.
-   *
-   *
-   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
-   * @param axis The Axis for this test, one of of Axes.ANCESTORORSELF, etc.
-   * @param axisForPredicate No longer used.
-   */
-  public StepPattern(int whatToShow, int axis, int axisForPredicate)
-  {
-
-    super(whatToShow);
-
-    m_axis = axis;
-  }
 
   /**
    * The target local name or psuedo name, for hash table lookup optimization.
    *  @serial
    */
   String m_targetString;  // only calculate on head
+  
+  /**
+   * Psuedo name for a wild card pattern ('*').
+   */
+  public static final String PSEUDONAME_ANY = "*";
+
+  /**
+   * Psuedo name for the root node.
+   */
+  public static final String PSEUDONAME_ROOT = "/";
+
+  /**
+   * Psuedo name for a text node.
+   */
+  public static final String PSEUDONAME_TEXT = "#text";
+
+  /**
+   * Psuedo name for a comment node.
+   */
+  public static final String PSEUDONAME_COMMENT = "#comment";
+
+  /**
+   * Psuedo name for a processing instruction node.
+   */
+  public static final String PSEUDONAME_PI = "#pi";
+
+  /**
+   * Psuedo name for an unknown type value.
+   */
+  public static final String PSEUDONAME_OTHER = "*";
 
   /**
    * Calculate the local name or psuedo name of the node that this pattern will test,
@@ -136,28 +183,28 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
     switch (whatToShow)
     {
     case DTMFilter.SHOW_COMMENT :
-      m_targetString = PsuedoNames.PSEUDONAME_COMMENT;
+      m_targetString = PSEUDONAME_COMMENT;
       break;
     case DTMFilter.SHOW_TEXT :
     case DTMFilter.SHOW_CDATA_SECTION :
     case (DTMFilter.SHOW_TEXT | DTMFilter.SHOW_CDATA_SECTION) :
-      m_targetString = PsuedoNames.PSEUDONAME_TEXT;
+      m_targetString = PSEUDONAME_TEXT;
       break;
     case DTMFilter.SHOW_ALL :
-      m_targetString = PsuedoNames.PSEUDONAME_ANY;
+      m_targetString = PSEUDONAME_ANY;
       break;
     case DTMFilter.SHOW_DOCUMENT :
     case DTMFilter.SHOW_DOCUMENT | DTMFilter.SHOW_DOCUMENT_FRAGMENT :
-      m_targetString = PsuedoNames.PSEUDONAME_ROOT;
+      m_targetString = PSEUDONAME_ROOT;
       break;
     case DTMFilter.SHOW_ELEMENT :
       if (this.WILD == m_name)
-        m_targetString = PsuedoNames.PSEUDONAME_ANY;
+        m_targetString = PSEUDONAME_ANY;
       else
         m_targetString = m_name;
       break;
     default :
-      m_targetString = PsuedoNames.PSEUDONAME_ANY;
+      m_targetString = PSEUDONAME_ANY;
       break;
     }
   }
@@ -193,22 +240,22 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
    * to be offset to the current stack frame).
    * @param globalsSize The number of variables in the global variable area.
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
 
-    super.fixupVariables(vars, globalsSize);
+    super.fixupVariables(vcs);
 
     if (null != m_predicates)
     {
       for (int i = 0; i < m_predicates.length; i++)
       {
-        m_predicates[i].fixupVariables(vars, globalsSize);
+        m_predicates[i].fixupVariables(vcs);
       }
     }
 
     if (null != m_relativePathPattern)
     {
-      m_relativePathPattern.fixupVariables(vars, globalsSize);
+      m_relativePathPattern.fixupVariables(vcs);
     }
   }
 
@@ -345,6 +392,9 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
     }
     else
       super.calcScore();
+      
+    if(null != m_relativePathPattern)
+      m_relativePathPattern.calcScore();
 
     if (null == m_targetString)
       calcTargetString();
@@ -814,10 +864,23 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
 
     return result;
   }
+  
+  /** This method returns a child node.  The children are numbered
+     from zero, left to right. */
+  public ExpressionNode exprGetChild(int i)
+  {
+  	assertion(i == 0, "StepPattern can only have one child!");
+  	return m_relativePathPattern;
+  }
+
+  /** Return the number of children the node has. */
+  public int exprGetNumChildren()
+  {
+  	return (null == m_relativePathPattern) ? 0 : 1;
+  }
 
   /**
    * Get the string represenentation of this step for diagnostic purposes.
-   *
    *
    * @return A string representation of this step, built by reverse-engineering 
    * the contained info.
@@ -826,8 +889,9 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   {
 
     StringBuffer buf = new StringBuffer();
-
-    for (StepPattern pat = this; pat != null; pat = pat.m_relativePathPattern)
+	
+	  StepPattern pat = this;
+    // for (StepPattern pat = this; pat != null; pat = pat.m_relativePathPattern)
     {
       if (pat != this)
         buf.append("/");
@@ -901,7 +965,11 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
         for (int i = 0; i < pat.m_predicates.length; i++)
         {
           buf.append("[");
-          buf.append(pat.m_predicates[i]);
+          ByteArrayOutputStream baos = new ByteArrayOutputStream();
+          PrintStream ps = new PrintStream(baos);
+          pat.m_predicates[i].dump("  ", ps);
+          ps.close();
+          buf.append(baos.toString());
           buf.append("]");
         }
       }
@@ -1053,6 +1121,56 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   }
   
   /**
+   * This method is called by the parser to add the PatternAxis, 
+   * NodeTest, and Predicates.  We only use the node the populate 
+   * the fields of this class.
+   */
+  public void jjtAddChild(org.apache.xpath.parser.Node n, int index) 
+  {
+    if(n instanceof org.apache.xpath.parser.PatternAxis)
+    {
+    	m_axis = ((org.apache.xpath.parser.PatternAxis)n).getAxis();
+    	if(Axis.ATTRIBUTE == m_axis)
+    	{
+    		m_whatToShow = DTMFilter.SHOW_ATTRIBUTE;
+    		if(0 == index)
+    			m_axis = Axis.SELF;
+    	}
+    } 
+    else if(n instanceof org.apache.xpath.parser.NodeTest)
+    {
+    	org.apache.xpath.parser.NodeTest ntest = (org.apache.xpath.parser.NodeTest)n;
+    	m_isTotallyWild = ntest.isTotallyWild();
+    	m_namespace = ntest.getNamespaceURI();
+    	m_name = ntest.getLocalName();
+    	if(Axis.ATTRIBUTE == m_axis)
+    		m_whatToShow = DTMFilter.SHOW_ATTRIBUTE;
+    	else
+    		m_whatToShow = ntest.getWhatToShow();
+    }
+    else if(n instanceof org.apache.xpath.parser.Predicates)
+    {
+    	Vector preds = ((org.apache.xpath.parser.Predicates)n).getPreds();
+    	if(null != preds)
+    	{
+    		int nPreds = preds.size();
+    		m_predicates = new Expression[nPreds];
+    		for(int i = 0; i < nPreds; i++)
+    		{
+    			m_predicates[i] = (Expression)preds.elementAt(i);
+    		}
+    		
+    	}
+    }
+    else
+    {
+    	// Assertion, should never happen.
+    	throw new RuntimeException("node can only be a QName or Wildcard!");
+    }
+  }
+
+  
+  /**
    * @see Expression#deepEquals(Expression)
    */
   public boolean deepEquals(Expression expr)
@@ -1087,5 +1205,13 @@ public class StepPattern extends NodeTest implements SubContextList, ExpressionO
   	return true;
   }
 
+
+  /**
+   * @see org.apache.xpath.parser.Node#jjtClose()
+   */
+  public void jjtClose()
+  {
+    super.jjtClose();
+  }
 
 }

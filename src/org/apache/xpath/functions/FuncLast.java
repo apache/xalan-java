@@ -58,20 +58,14 @@ package org.apache.xpath.functions;
 
 //import org.w3c.dom.Node;
 //import org.w3c.dom.Element;
-import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
-
-import java.util.Vector;
-
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.XPath;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNumber;
-import org.apache.xpath.NodeSetDTM;
-import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xpath.axes.ContextNodeList;
 import org.apache.xpath.axes.SubContextList;
-import org.apache.xpath.compiler.Compiler;
+import org.apache.xpath.objects.XInteger;
+import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XSequence;
 
 
 /**
@@ -89,7 +83,8 @@ public class FuncLast extends Function
    */
   public void postCompileStep(Compiler compiler)
   {
-    m_isTopLevel = compiler.getLocationPathDepth() == -1;
+  	// TBD: Figure out isTopLevel for new parser world.
+    // m_isTopLevel = compiler.getLocationPathDepth() == -1;
   }
 
   /**
@@ -113,7 +108,7 @@ public class FuncLast extends Function
     if (null != iter)
       return iter.getLastPos(xctxt);
 
-    DTMIterator cnl = xctxt.getContextNodeList();
+    XSequence cnl = xctxt.getContextSequence();
     int count;
     if(null != cnl)
     {
@@ -135,7 +130,7 @@ public class FuncLast extends Function
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    XNumber xnum = new XNumber((double) getCountOfContextNodeList(xctxt));
+    XNumber xnum = new XInteger(getCountOfContextNodeList(xctxt));
     // System.out.println("last: "+xnum.num());
     return xnum;
   }
@@ -143,7 +138,7 @@ public class FuncLast extends Function
   /**
    * No arguments to process, so this does nothing.
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
     // no-op
   }

@@ -57,16 +57,10 @@
 package org.apache.xpath.axes;
 
 import javax.xml.transform.TransformerException;
-
-import org.apache.xpath.compiler.Compiler;
-import org.apache.xpath.patterns.NodeTest;
-import org.apache.xpath.XPathContext;
-import org.apache.xml.utils.PrefixResolver;
-
-//import org.w3c.dom.Node;
-//import org.w3c.dom.DOMException;
+import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.parser.StepExpr;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -77,22 +71,35 @@ import org.apache.xml.dtm.DTMIterator;
  */
 public class ChildIterator extends LocPathIterator
 {
-
   /**
    * Create a ChildIterator object.
    *
-   * @param compiler A reference to the Compiler that contains the op map.
-   * @param opPos The position within the op map, which contains the
-   * location path expression for this itterator.
-   * @param analysis Analysis bits of the entire pattern.
+   * @param stepExpr The step expression from the parser.
+   * @param analysis The analysis bits for the total path expression.
    *
    * @throws javax.xml.transform.TransformerException
    */
-  ChildIterator(Compiler compiler, int opPos, int analysis)
+  ChildIterator(StepExpr stepExpr, int analysis)
           throws javax.xml.transform.TransformerException
   {
-    super(compiler, opPos, analysis, false);
   }
+
+
+//  /**
+//   * Create a ChildIterator object.
+//   *
+//   * @param compiler A reference to the Compiler that contains the op map.
+//   * @param opPos The position within the op map, which contains the
+//   * location path expression for this itterator.
+//   * @param analysis Analysis bits of the entire pattern.
+//   *
+//   * @throws javax.xml.transform.TransformerException
+//   */
+//  ChildIterator(Compiler compiler, int opPos, int analysis)
+//          throws javax.xml.transform.TransformerException
+//  {
+//    super(compiler, opPos, analysis, false);
+//  }
   
   /**
    * Return the first node out of the nodeset, if this expression is 

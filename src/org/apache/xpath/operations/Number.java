@@ -56,9 +56,10 @@
  */
 package org.apache.xpath.operations;
 
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNumber;
+import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XDouble;
+import org.apache.xpath.objects.XObject;
 
 /**
  * The 'number()' operation expression executer.
@@ -82,7 +83,7 @@ public class Number extends UnaryOperation
     if (XObject.CLASS_NUMBER == right.getType())
       return right;
     else
-      return new XNumber(right.num());
+      return new XDouble(right.num());
   }
   
   /**

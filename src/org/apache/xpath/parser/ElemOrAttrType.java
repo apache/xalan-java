@@ -1,0 +1,153 @@
+/*
+ * The Apache Software License, Version 1.1
+ *
+ *
+ * Copyright (c) 1999 The Apache Software Foundation.  All rights 
+ * reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer. 
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution,
+ *    if any, must include the following acknowledgment:  
+ *       "This product includes software developed by the
+ *        Apache Software Foundation (http://www.apache.org/)."
+ *    Alternately, this acknowledgment may appear in the software itself,
+ *    if and wherever such third-party acknowledgments normally appear.
+ *
+ * 4. The names "Xalan" and "Apache Software Foundation" must
+ *    not be used to endorse or promote products derived from this
+ *    software without prior written permission. For written 
+ *    permission, please contact apache@apache.org.
+ *
+ * 5. Products derived from this software may not be called "Apache",
+ *    nor may "Apache" appear in their name, without prior written
+ *    permission of the Apache Software Foundation.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE APACHE SOFTWARE FOUNDATION OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the Apache Software Foundation and was
+ * originally based on software copyright (c) 1999, Lotus
+ * Development Corporation., http://www.lotus.com.  For more
+ * information on the Apache Software Foundation, please see
+ * <http://www.apache.org/>.
+ */
+package org.apache.xpath.parser;
+
+/**
+ * The responsibility of enclosing_type is to .
+ * 
+ * Created Jul 17, 2002
+ * @author sboag
+ */
+public class ElemOrAttrType extends NonExecutableExpression
+{
+  /** The ElemOrAttrType name, meaning the tag QName, may be null. */
+  private org.apache.xml.utils.QName m_elemOrAttrName;
+
+  /** The SchemaType name, meaning the tag QName, may be null. */
+  private org.apache.xml.utils.QName m_schemaTypeName;
+
+  /**
+   * Constructor for ElemOrAttrType.
+   * @param parser
+   * @param value
+   */
+  public ElemOrAttrType(XPath parser, String value)
+  {
+    super(parser, value);
+  }
+
+  /**
+   * Constructor for ElemOrAttrType.
+   * @param parser
+   */
+  public ElemOrAttrType(XPath parser)
+  {
+    super(parser);
+  }
+  
+  /**
+   * Returns the elemOrAttrName.
+   * @return org.apache.xml.utils.QName
+   */
+  public org.apache.xml.utils.QName getElemOrAttrName()
+  {
+    return m_elemOrAttrName;
+  }
+
+  /**
+   * Returns the schemaTypeName.
+   * @return org.apache.xml.utils.QName
+   */
+  public org.apache.xml.utils.QName getSchemaTypeName()
+  {
+    return m_schemaTypeName;
+  }
+
+  /**
+   * Sets the elemOrAttrName.
+   * @param elemOrAttrName The elemOrAttrName to set
+   */
+  public void setElemOrAttrName(org.apache.xml.utils.QName elemOrAttrName)
+  {
+    m_elemOrAttrName = elemOrAttrName;
+  }
+
+  /**
+   * Sets the schemaTypeName.
+   * @param schemaTypeName The schemaTypeName to set
+   */
+  public void setSchemaTypeName(org.apache.xml.utils.QName schemaTypeName)
+  {
+    m_schemaTypeName = schemaTypeName;
+  }
+
+  /**
+   * @see org.apache.xpath.parser.Node#jjtSetParent(Node)
+   */
+  public void jjtSetParent(Node n)
+  {
+    ItemType itype = (ItemType)n;
+    itype.setElemOrAttrName(m_elemOrAttrName);
+    
+    itype.setSchemaTypeName(m_schemaTypeName);
+    super.jjtSetParent(n);
+  }
+
+  /**
+   * @see org.apache.xpath.parser.Node#jjtAddChild(Node, int)
+   */
+  public void jjtAddChild(Node n, int i)
+  {
+    super.jjtAddChild(n, i);
+    if(n instanceof QName && !(n instanceof SchemaType))
+    {
+      QName qname = (QName)n;
+      m_elemOrAttrName = qname.getQName();
+    }
+  }
+
+}

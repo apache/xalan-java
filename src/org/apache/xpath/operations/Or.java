@@ -69,6 +69,13 @@ import org.w3c.dom.Node;
  */
 public class Or extends Operation
 {
+  /**
+   * @see org.apache.xpath.operations.Operation#getLookupTable()
+   */
+  public OpFuncLookupTable getLookupTable()
+  {
+    return null;
+  }
 
   /**
    * OR two expressions and return the boolean result. Override
