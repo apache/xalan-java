@@ -105,4 +105,15 @@ public class StringKey extends Object
   {
     return obj.equals(m_str);
   }
+  
+  /**
+   * Return the value of the string key.
+   * 
+   * @return  a string representation of the object.
+   */
+  public String toString() 
+  {
+      return m_str;
+  }
+
 }
