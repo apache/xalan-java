@@ -348,26 +348,29 @@ class Lexer
         addToTokenQueue(pat.substring(i, i + 1));
         break;
       case ':' :
-        if (posOfNSSep == (i - 1))
+        if (i>0)
         {
-          if (startSubstring != -1)
+          if (posOfNSSep == (i - 1))
           {
-            if (startSubstring < (i - 1))
-              addToTokenQueue(pat.substring(startSubstring, i - 1));
+            if (startSubstring != -1)
+            {
+              if (startSubstring < (i - 1))
+                addToTokenQueue(pat.substring(startSubstring, i - 1));
+            }
+
+            isNum = false;
+            isAttrName = false;
+            startSubstring = -1;
+            posOfNSSep = -1;
+
+            addToTokenQueue(pat.substring(i - 1, i + 1));
+
+            break;
           }
-
-          isNum = false;
-          isAttrName = false;
-          startSubstring = -1;
-          posOfNSSep = -1;
-
-          addToTokenQueue(pat.substring(i - 1, i + 1));
-
-          break;
-        }
-        else
-        {
-          posOfNSSep = i;
+          else
+          {
+            posOfNSSep = i;
+          }
         }
 
       // fall through on purpose
