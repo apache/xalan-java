@@ -77,6 +77,8 @@ import java.io.*;
 
 import java.util.*;
 
+import javax.xml.transform.TransformerException;
+
 /**
  * <meta name="usage" content="advanced"/>
  * Implement a Literal Result Element.
@@ -91,9 +93,9 @@ public class ElemUnknown extends ElemLiteralResult
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException{}
+            throws TransformerException{}
 }

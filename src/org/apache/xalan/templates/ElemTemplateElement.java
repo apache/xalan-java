@@ -81,8 +81,8 @@ import javax.xml.transform.Templates;
 import javax.xml.transform.SourceLocator;
 
 // Serializer imports
-import org.apache.serialize.OutputFormat;
-import org.apache.serialize.Serializer;
+import org.apache.xalan.serialize.OutputFormat;
+import org.apache.xalan.serialize.Serializer;
 
 // DOM Imports
 import org.w3c.dom.Node;
@@ -92,7 +92,7 @@ import org.w3c.dom.Document;
 
 // SAX Imports
 import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.helpers.NamespaceSupport;
 
 /**
@@ -121,7 +121,7 @@ public class ElemTemplateElement extends UnImplNode
    * @param atts The element attributes.
    * @param lineNumber The line in the XSLT file that the element occurs on.
    * @param columnNumber The column index in the XSLT file that the element occurs on.
-   * @exception SAXException Never.
+   * @exception TransformerException Never.
    */
   public ElemTemplateElement(){}
 
@@ -163,9 +163,9 @@ public class ElemTemplateElement extends UnImplNode
    *
    * @param transformer The XSLT TransformerFactory.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void runtimeInit(TransformerImpl transformer) throws SAXException{}
+  public void runtimeInit(TransformerImpl transformer) throws TransformerException{}
 
   /**
    * Execute the element's primary function.  Subclasses of this
@@ -175,14 +175,14 @@ public class ElemTemplateElement extends UnImplNode
    * @exception java.net.MalformedURLException
    * @exception java.io.FileNotFoundException
    * @exception java.io.IOException
-   * @exception SAXException
+   * @exception TransformerException
    * @param transformer The XSLT TransformerFactory.
    * @param sourceNode The current context node.
    * @param mode The current mode.
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException{}
+            throws TransformerException{}
 
   /**
    * Get the owning "composed" stylesheet.  This looks up the
@@ -262,7 +262,7 @@ public class ElemTemplateElement extends UnImplNode
   }
 
   /**
-   * Throw a template element runtime error.  (Note: should we throw a SAXException instead?)
+   * Throw a template element runtime error.  (Note: should we throw a TransformerException instead?)
    *
    * @param msg Description of the error that occured.
    * NEEDSDOC @param args
@@ -636,9 +636,9 @@ public class ElemTemplateElement extends UnImplNode
    *
    * NEEDSDOC @param nsSupport
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void setPrefixes(NamespaceSupport nsSupport) throws SAXException
+  public void setPrefixes(NamespaceSupport nsSupport) throws TransformerException
   {
     setPrefixes(nsSupport, false);
   }
@@ -651,10 +651,10 @@ public class ElemTemplateElement extends UnImplNode
    * NEEDSDOC @param nsSupport
    * NEEDSDOC @param excludeXSLDecl
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void setPrefixes(NamespaceSupport nsSupport, boolean excludeXSLDecl)
-          throws SAXException
+          throws TransformerException
   {
 
     Enumeration decls = nsSupport.getDeclaredPrefixes();
@@ -759,10 +759,10 @@ public class ElemTemplateElement extends UnImplNode
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   private boolean excludeResultNSDecl(String prefix, String uri)
-          throws SAXException
+          throws TransformerException
   {
 
     if (uri != null)
@@ -788,9 +788,9 @@ public class ElemTemplateElement extends UnImplNode
    * (Recursive method, walking the elements depth-first,
    * processing parents before children).
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void resolvePrefixTables() throws SAXException
+  public void resolvePrefixTables() throws TransformerException
   {
 
     // Always start with a fresh prefix table!
@@ -879,25 +879,32 @@ public class ElemTemplateElement extends UnImplNode
    *
    * NEEDSDOC @param transformer
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  void executeNSDecls(TransformerImpl transformer) throws SAXException
+  void executeNSDecls(TransformerImpl transformer) throws TransformerException
   {
 
-    if (null != m_prefixTable)
+    try
     {
-      ResultTreeHandler rhandler = transformer.getResultTreeHandler();
-      int n = m_prefixTable.size();
-
-      for (int i = n - 1; i >= 0; i--)
+      if (null != m_prefixTable)
       {
-        XMLNSDecl decl = (XMLNSDecl) m_prefixTable.elementAt(i);
+        ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+        int n = m_prefixTable.size();
 
-        if (!decl.getIsExcluded())
+        for (int i = n - 1; i >= 0; i--)
         {
-          rhandler.startPrefixMapping(decl.getPrefix(), decl.getURI(), true);
+          XMLNSDecl decl = (XMLNSDecl) m_prefixTable.elementAt(i);
+
+          if (!decl.getIsExcluded())
+          {
+            rhandler.startPrefixMapping(decl.getPrefix(), decl.getURI(), true);
+          }
         }
       }
+    }
+    catch(org.xml.sax.SAXException se)
+    {
+      throw new TransformerException(se);
     }
   }
 
@@ -907,25 +914,32 @@ public class ElemTemplateElement extends UnImplNode
    *
    * NEEDSDOC @param transformer
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  void unexecuteNSDecls(TransformerImpl transformer) throws SAXException
+  void unexecuteNSDecls(TransformerImpl transformer) throws TransformerException
   {
 
-    if (null != m_prefixTable)
+    try
     {
-      ResultTreeHandler rhandler = transformer.getResultTreeHandler();
-      int n = m_prefixTable.size();
-
-      for (int i = 0; i < n; i++)
+      if (null != m_prefixTable)
       {
-        XMLNSDecl decl = (XMLNSDecl) m_prefixTable.elementAt(i);
+        ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+        int n = m_prefixTable.size();
 
-        if (!decl.getIsExcluded())
+        for (int i = 0; i < n; i++)
         {
-          rhandler.endPrefixMapping(decl.getPrefix());
+          XMLNSDecl decl = (XMLNSDecl) m_prefixTable.elementAt(i);
+
+          if (!decl.getIsExcluded())
+          {
+            rhandler.endPrefixMapping(decl.getPrefix());
+          }
         }
       }
+    }
+    catch(org.xml.sax.SAXException se)
+    {
+      throw new TransformerException(se);
     }
   }
 

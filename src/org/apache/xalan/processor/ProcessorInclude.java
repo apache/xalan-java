@@ -61,7 +61,7 @@ import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 import org.xml.sax.InputSource;
@@ -135,19 +135,10 @@ class ProcessorInclude extends XSLTElementProcessor
    *        there are no attributes, it shall be an empty
    *        Attributes object.
    * NEEDSDOC @param attributes
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.apache.xalan.processor.StylesheetHandler#startElement
-   * @see org.apache.xalan.processor.StylesheetHandler#endElement
-   * @see org.xml.sax.ContentHandler#startElement
-   * @see org.xml.sax.ContentHandler#endElement
-   * @see org.xml.sax.Attributes
-   *
-   * @throws SAXException
    */
   public void startElement(
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     setPropertiesFromAttributes(handler, rawName, attributes, this);
@@ -180,11 +171,11 @@ class ProcessorInclude extends XSLTElementProcessor
    * NEEDSDOC @param rawName
    * NEEDSDOC @param attributes
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   protected void parse(
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
     TransformerFactoryImpl processor = handler.getStylesheetProcessor();
     URIResolver uriresolver = processor.getURIResolver();
@@ -195,22 +186,22 @@ class ProcessorInclude extends XSLTElementProcessor
 
       if (null != uriresolver)
       {
-        try
-        {
-          source = uriresolver.resolve(getHref(),
-                                       handler.getBaseIdentifier());
-        }
-        catch(TransformerException te)
-        {
-          handler.error("Error with URI Resolver!", te);
-        }
+        source = uriresolver.resolve(getHref(),
+                                     handler.getBaseIdentifier());
 
         if (null != source && source instanceof DOMSource)
         {
           Node node = ((DOMSource)source).getNode();
           TreeWalker walker = new TreeWalker(handler);
 
-          walker.traverse(node);
+          try
+          {
+            walker.traverse(node);
+          }
+          catch(org.xml.sax.SAXException se)
+          {
+            throw new TransformerException(se);
+          }
           return;
         }
       }
@@ -238,20 +229,14 @@ class ProcessorInclude extends XSLTElementProcessor
 
       if (null != reader)
       {
-        EntityResolver entityResolver = processor.getEntityResolver();
-        if (null != entityResolver)
-          reader.setEntityResolver(entityResolver);
-
         reader.setContentHandler(handler);
         try
         {
           reader.setFeature("http://apache.org/xml/features/validation/dynamic",
                             true);
         }
-        catch(org.xml.sax.SAXNotRecognizedException snre)
-        {
-          // We don't care.
-        }
+        catch(org.xml.sax.SAXException se) {}
+        
         handler.pushBaseIndentifier(inputSource.getSystemId());
 
         try
@@ -269,10 +254,9 @@ class ProcessorInclude extends XSLTElementProcessor
       handler.error(XSLTErrorResources.ER_IOEXCEPTION,
                     new Object[]{ getHref() }, ioe);
     }
-    catch (SAXException ioe)
+    catch(TransformerException te)
     {
-      handler.error(XSLTErrorResources.ER_IOEXCEPTION,
-                    new Object[]{ getHref() }, ioe);
+      handler.error(te.getMessage(), te);
     }
   }
 }

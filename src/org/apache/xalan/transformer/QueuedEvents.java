@@ -180,7 +180,7 @@ abstract class QueuedEvents
   }
 
   /** NEEDSDOC Field m_serializer          */
-  private org.apache.serialize.Serializer m_serializer;
+  private org.apache.xalan.serialize.Serializer m_serializer;
 
   /**
    * This is only for use of object pooling, so the that
@@ -188,7 +188,7 @@ abstract class QueuedEvents
    *
    * NEEDSDOC @param s
    */
-  void setSerializer(org.apache.serialize.Serializer s)
+  void setSerializer(org.apache.xalan.serialize.Serializer s)
   {
     m_serializer = s;
   }
@@ -199,7 +199,7 @@ abstract class QueuedEvents
    *
    * NEEDSDOC ($objectName$) @return
    */
-  org.apache.serialize.Serializer getSerializer()
+  org.apache.xalan.serialize.Serializer getSerializer()
   {
     return m_serializer;
   }

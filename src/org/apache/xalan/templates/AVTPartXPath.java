@@ -95,11 +95,11 @@ public class AVTPartXPath extends AVTPart
    * NEEDSDOC @param factory
    * NEEDSDOC @param liaison
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public AVTPartXPath(
           String val, org.apache.xalan.utils.PrefixResolver nsNode, XPathParser xpathProcessor, XPathFactory factory, XPathContext liaison)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
     m_xpath = new XPath(val, null, nsNode, XPath.SELECT);
   }
@@ -123,11 +123,11 @@ public class AVTPartXPath extends AVTPart
    * @param nsNode The current namespace context (stylesheet tree context).
    * @param NodeList The current Context Node List.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public void evaluate(
           XPathContext xctxt, FastStringBuffer buf, Node context, org.apache.xalan.utils.PrefixResolver nsNode)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     XObject xobj = m_xpath.execute(xctxt, context, nsNode);

@@ -62,6 +62,9 @@ import org.xml.sax.*;
 
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.transformer.ResultTreeHandler;
+
+import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -205,26 +208,33 @@ public class ElemTextLiteral extends ElemTemplateElement
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
-
-    if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
-
-    if (m_disableOutputEscaping)
+    try
     {
-      transformer.getResultTreeHandler().startNonEscaping();
+      if (TransformerImpl.S_DEBUG)
+        transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+
+      ResultTreeHandler rth = transformer.getResultTreeHandler();
+      if (m_disableOutputEscaping)
+      {
+        rth.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
+      }
+
+      rth.characters(m_ch, 0, m_ch.length);
+
+      if (m_disableOutputEscaping)
+      {
+        rth.processingInstruction(javax.xml.transform.Result.PI_ENABLE_OUTPUT_ESCAPING, "");
+      }
     }
-
-    transformer.getResultTreeHandler().characters(m_ch, 0, m_ch.length);
-
-    if (m_disableOutputEscaping)
+    catch(SAXException se)
     {
-      transformer.getResultTreeHandler().endNonEscaping();
+      throw new TransformerException(se);
     }
   }
 }

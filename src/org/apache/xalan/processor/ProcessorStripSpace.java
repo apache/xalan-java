@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.processor;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 
 import java.util.Vector;
@@ -87,19 +87,10 @@ class ProcessorStripSpace extends ProcessorPreserveSpace
    *        there are no attributes, it shall be an empty
    *        Attributes object.
    * NEEDSDOC @param attributes
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.apache.xalan.processor.StylesheetHandler#startElement
-   * @see org.apache.xalan.processor.StylesheetHandler#endElement
-   * @see org.xml.sax.ContentHandler#startElement
-   * @see org.xml.sax.ContentHandler#endElement
-   * @see org.xml.sax.Attributes
-   *
-   * @throws SAXException
    */
   public void startElement(
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
     setPropertiesFromAttributes(handler, rawName, attributes, this);
     handler.getStylesheet().setStripSpaces(getElements());

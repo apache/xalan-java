@@ -116,9 +116,9 @@ public class AncestorStepPattern extends StepPattern
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
     int whatToShow = getWhatToShow();
@@ -146,10 +146,10 @@ public class AncestorStepPattern extends StepPattern
    *
    * NEEDSDOC (executeRelativePathPattern) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public XObject executeRelativePathPattern(XPathContext xctxt)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     XObject score = NodeTest.SCORE_NONE;

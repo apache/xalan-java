@@ -54,10 +54,10 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.serialize.helpers;
+package org.apache.xalan.serialize.helpers;
 
-import org.apache.serialize.OutputFormat;
-import org.apache.serialize.Method;
+import org.apache.xalan.serialize.OutputFormat;
+import org.apache.xalan.serialize.Method;
 
 /**
  * Output format for HTML documents.

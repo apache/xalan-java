@@ -73,6 +73,8 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.ClonerToResultTree;
 
+import javax.xml.transform.TransformerException;
+
 /**
  * <meta name="usage" content="advanced"/>
  * Implement xsl:apply-templates.
@@ -163,11 +165,11 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
 
     transformer.pushCurrentTemplateRuleIsNull(false);
@@ -220,11 +222,11 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   void pushParams(
           TransformerImpl transformer, XPathContext xctxt, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
 
     VariableStack vars = xctxt.getVarStack();

@@ -85,12 +85,11 @@ import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.helpers.NamespaceSupport;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.TransformerException;
 
 // Java Compiler support.
 import org.apache.xalan.utils.synthetic.JavaUtils;
@@ -125,21 +124,23 @@ public class CompilingStylesheetHandler
    * Run standard cleanup of the internal representation,
    * then start trying to replace that rep with custom code.
    *
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#endDocument
    */
   public void endDocument ()
-    throws SAXException
+    throws org.xml.sax.SAXException
   {
-    super.endDocument();
-	
-	Vector compiledTemplates=new Vector();
-	 
-    Stylesheet current=getStylesheet();
-    if(isStylesheetParsingComplete())
-    {    
-		// Begin compiling. Loop modeled on StylesheetRoot.recompose()
+    try
+    {
+      super.endDocument();
+      
+      Vector compiledTemplates=new Vector();
+      
+      Stylesheet current=getStylesheet();
+      if(isStylesheetParsingComplete())
+      {    
+        // Begin compiling. Loop modeled on StylesheetRoot.recompose()
         // calling recomposeTemplates().
         StylesheetRoot root=(StylesheetRoot)getStylesheetRoot();
         
@@ -147,35 +148,35 @@ public class CompilingStylesheetHandler
         int nImports = root.getGlobalImportCount();
         for(int imp = 0; imp < nImports; imp++)
         {
-            org.apache.xalan.templates.StylesheetComposed
-                sheet = root.getGlobalImport(imp);
+          org.apache.xalan.templates.StylesheetComposed
+            sheet = root.getGlobalImport(imp);
 
-            // loop from sheet.recomposeTemplates
-            // Scan both main and included stylesheets
-            int nIncludes = sheet.getIncludeCountComposed();
-            for(int k = nIncludes-1; k >= -1; k--)
+          // loop from sheet.recomposeTemplates
+          // Scan both main and included stylesheets
+          int nIncludes = sheet.getIncludeCountComposed();
+          for(int k = nIncludes-1; k >= -1; k--)
+          {
+            Stylesheet included = (-1 == k) ? sheet : sheet.getIncludeComposed(k);
+            int n = included.getTemplateCount();
+            for(int i = 0; i < n; i++)
             {
-                Stylesheet included = (-1 == k) ? sheet : sheet.getIncludeComposed(k);
-                int n = included.getTemplateCount();
-                for(int i = 0; i < n; i++)
+              ElemTemplate t=included.getTemplate(i);
+              
+              if(!(t instanceof CompiledTemplate))
+              {
+                ElemTemplate newT=compileTemplate(t);
+                if(newT!=t)
                 {
-                    ElemTemplate t=included.getTemplate(i);
-					
-					if(!(t instanceof CompiledTemplate))
-					{
-	                    ElemTemplate newT=compileTemplate(t);
-		                if(newT!=t)
-						{
-			                included.replaceTemplate(newT,i);
-							compiledTemplates.addElement(newT);
-						}
-				    }
-				}
+                  included.replaceTemplate(newT,i);
+                  compiledTemplates.addElement(newT);
+                }
+              }
             }
-			// Need to rebuild each sheet's cache.
-			sheet.recomposeTemplates(true); 
+          }
+          // Need to rebuild each sheet's cache.
+          sheet.recomposeTemplates(true); 
         }
-    
+        
         // After compiling I think we have to reconstruct the cached
         // "composed templates" set. 
         // NOTE: RECOMPOSE WAS A ONE-TIME OP
@@ -184,9 +185,14 @@ public class CompilingStylesheetHandler
         // entry point... Or flush might be made the new default
         // behavior; I don't know whether that would be appropriate.
         root.recomposeTemplates(true); 
-		
-		// TODO: Should bundling occur elsewhere?
-		CompiledStylesheetBundle.createBundle(root,compiledTemplates);
+        
+        // TODO: Should bundling occur elsewhere?
+        CompiledStylesheetBundle.createBundle(root,compiledTemplates);
+      }
+    }
+    catch(TransformerException te)
+    {
+      throw new org.xml.sax.SAXException(te);
     }
   }
   
@@ -275,7 +281,7 @@ public class CompilingStylesheetHandler
         exec.addParameter(
             tClass.forClass(org.apache.xalan.utils.QName.class),"mode");
         exec.addExceptionType(
-            tClass.forClass(org.xml.sax.SAXException.class));
+            tClass.forClass(javax.xml.transform.TransformerException.class));
 
         // If there are no kids, the body is a no-op.
         ElemTemplateElement firstChild = source.getFirstChildElem();
@@ -300,7 +306,7 @@ public class CompilingStylesheetHandler
               +"org.apache.xalan.transformer.ResultTreeHandler rhandler = transformer.getResultTreeHandler();\n"
               +"org.xml.sax.ContentHandler saxChandler = rhandler.getContentHandler();\n"
               +"if(null == sourceNode) {\n"
-              // throws(org.xml.sax.SAXException
+              // throws(javax.xml.transform.TransformerException
               +"  transformer.getMsgMgr().error(this, sourceNode,\n" 
               +"    org.apache.xalan.res.XSLTErrorResources.ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES);\n"
               //sourceNode is null in handleApplyTemplatesInstruction!
@@ -473,7 +479,7 @@ public class CompilingStylesheetHandler
                     avtValueExpression=makeQuotedString(
                         avt.evaluate(null,null,null)
                         );
-                }catch(SAXException e)
+                }catch(TransformerException e)
                 {
                 }
             }
@@ -558,7 +564,7 @@ public class CompilingStylesheetHandler
                     /**/System.err.println(errmsg);
                     /**/body.append("// ***** "+errmsg+" *****/\n");
                     /**/return;
-                    //throw new SAXException(XSLMessages.createMessage(XSLTErrorResources.ER_XSLATTRSET_USED_ITSELF, new Object[]{attrSet.getName().getLocalPart()})); //"xsl:attribute-set '"+m_qname.m_localpart+
+                    //throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_XSLATTRSET_USED_ITSELF, new Object[]{attrSet.getName().getLocalPart()})); //"xsl:attribute-set '"+m_qname.m_localpart+
                 }
                 attrSetStack.push(attrSet);
 
@@ -585,7 +591,7 @@ public class CompilingStylesheetHandler
           try
           {
             return makeQuotedString(avt.evaluate(null,null,null));
-          } catch(SAXException e)
+          } catch(TransformerException e)
           {
               // Should never arise
               String s=">UNEXPECTED ERROR evaluating context-insensitive AVT<";
@@ -649,14 +655,14 @@ public class CompilingStylesheetHandler
                 +"java.io.StringWriter "+sw+";\n"
                 
                 +"try\n{\n"
-                +"org.apache.xml.org.apache.serialize.SerializerFactory "+sfactory+"=org.apache.xml.org.apache.serialize.SerializerFactory.getSerializerFactory(\"text\");\n"
+                +"org.apache.xml.org.apache.xalan.serialize.SerializerFactory "+sfactory+"=org.apache.xml.org.apache.xalan.serialize.SerializerFactory.getSerializerFactory(\"text\");\n"
                 +sw+"=new java.io.StringWriter();\n"
-                +"org.apache.xml.org.apache.serialize.OutputFormat "+format+"=new org.apache.xml.org.apache.serialize.OutputFormat();\n"
+                +"org.apache.xml.org.apache.xalan.serialize.OutputFormat "+format+"=new org.apache.xml.org.apache.xalan.serialize.OutputFormat();\n"
                 +format+".setPreserveSpace(true);\n"
-                +"org.apache.xml.org.apache.serialize.Serializer "+serializer+"="+sfactory+".makeSerializer("+sw+","+format+");\n"
+                +"org.apache.xml.org.apache.xalan.serialize.Serializer "+serializer+"="+sfactory+".makeSerializer("+sw+","+format+");\n"
                 +shandler+"="+serializer+".asContentHandler();\n"
                 +"}\ncatch (java.io.IOException "+ioe+")\n{\n"
-                +"throw new org.xml.sax.SAXException("+ioe+");\n}\n"
+                +"throw new javax.xml.transform.TransformerException("+ioe+");\n}\n"
                 // TODO: ***** DO WE NEED transformer.setResultTreeHandler()?
                 +"rhandler=new org.apache.xalan.transformer.ResultTreeHandler(transformer,"+shandler+");\n\n"
                 +"rhandler.startDocument();\n"

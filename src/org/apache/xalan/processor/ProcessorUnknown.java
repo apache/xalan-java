@@ -65,7 +65,7 @@ import org.apache.xalan.templates.Constants;
 import org.apache.xpath.XPath;
 import org.apache.xalan.templates.StylesheetRoot;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 
 /**
@@ -85,15 +85,10 @@ public class ProcessorUnknown extends ProcessorTemplateElem
    * NEEDSDOC @param localName
    * NEEDSDOC @param rawName
    * @param attributes The specified or defaulted attributes.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.xml.sax.ContentHandler#startElement
-   *
-   * @throws SAXException
    */
   public void startElement(
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
-            throws SAXException{}
+            throws org.xml.sax.SAXException{}
 
   /**
    * Receive notification of the end of an element.
@@ -105,13 +100,8 @@ public class ProcessorUnknown extends ProcessorTemplateElem
    * NEEDSDOC @param uri
    * NEEDSDOC @param localName
    * NEEDSDOC @param rawName
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.xml.sax.ContentHandler#endElement
-   *
-   * @throws SAXException
    */
   public void endElement(
           StylesheetHandler handler, String uri, String localName, String rawName)
-            throws SAXException{}
+            throws org.xml.sax.SAXException{}
 }

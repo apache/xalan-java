@@ -61,7 +61,7 @@ import java.util.Vector;
 
 import org.w3c.dom.*;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.utils.NSInfo;
 import org.apache.xalan.utils.QName;
@@ -126,10 +126,10 @@ public class DOMHelper
    * @param textNode A text node from the source tree.
    * @return true if the text node should be stripped of extra whitespace.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public boolean shouldStripSourceNode(Node textNode)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     // return (null == m_envSupport) ? false : m_envSupport.shouldStripSourceNode(textNode);

@@ -93,10 +93,10 @@ public class IndexedLocPathIterator extends LocPathIterator
    * @param compiler Compiler for this iterator
    * @param opPos Position in OPMAP
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public IndexedLocPathIterator(Compiler compiler, int opPos)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
     super(compiler, opPos);
   }

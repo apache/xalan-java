@@ -78,6 +78,8 @@ import org.apache.xalan.transformer.CountersTable;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.utils.NodeVector;
 
+import javax.xml.transform.TransformerException;
+
 // import org.apache.xalan.dtm.*;
 
 /**
@@ -493,11 +495,11 @@ public class ElemNumber extends ElemTemplateElement
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
 
     if (TransformerImpl.S_DEBUG)
@@ -505,8 +507,15 @@ public class ElemNumber extends ElemTemplateElement
 
     String countString = getCountString(transformer, sourceNode);
 
-    transformer.getResultTreeHandler().characters(countString.toCharArray(),
-            0, countString.length());
+    try
+    {
+      transformer.getResultTreeHandler().characters(countString.toCharArray(),
+                                                    0, countString.length());
+    }
+    catch(SAXException se)
+    {
+      throw new TransformerException(se);
+    }
   }
 
   /**
@@ -543,11 +552,11 @@ public class ElemNumber extends ElemTemplateElement
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   Node findAncestor(
           XPathContext xctxt, XPath fromMatchPattern, XPath countMatchPattern, Node context, Element namespaceContext)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     while (null != context)
@@ -594,11 +603,11 @@ public class ElemNumber extends ElemTemplateElement
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   private Node findPrecedingOrAncestorOrSelf(
           XPathContext xctxt, XPath fromMatchPattern, XPath countMatchPattern, Node context, Element namespaceContext)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     while (null != context)
@@ -651,10 +660,10 @@ public class ElemNumber extends ElemTemplateElement
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   XPath getCountMatchPattern(XPathContext support, Node contextNode)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     XPath countMatchPattern = m_countMatchPattern;
@@ -713,10 +722,10 @@ public class ElemNumber extends ElemTemplateElement
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   String getCountString(TransformerImpl transformer, Node sourceNode)
-          throws SAXException
+          throws TransformerException
   {
 
     int[] list = null;
@@ -771,10 +780,10 @@ public class ElemNumber extends ElemTemplateElement
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public Node getPreviousNode(XPathContext xctxt, Node pos)
-          throws SAXException
+          throws TransformerException
   {
 
     XPath countMatchPattern = getCountMatchPattern(xctxt, pos);
@@ -859,10 +868,10 @@ public class ElemNumber extends ElemTemplateElement
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public Node getTargetNode(XPathContext xctxt, Node sourceNode)
-          throws SAXException
+          throws TransformerException
   {
 
     Node target = null;
@@ -894,11 +903,11 @@ public class ElemNumber extends ElemTemplateElement
    * NEEDSDOC @param stopAtFirstFound
    * @return The number of ancestors that match the pattern.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   NodeVector getMatchingAncestors(
           XPathContext xctxt, Node node, boolean stopAtFirstFound)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     NodeSet ancestors = new NodeSet();
@@ -948,10 +957,10 @@ public class ElemNumber extends ElemTemplateElement
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   Locale getLocale(TransformerImpl transformer, Node contextNode)
-          throws SAXException
+          throws TransformerException
   {
 
     Locale locale = null;
@@ -996,10 +1005,10 @@ public class ElemNumber extends ElemTemplateElement
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   private DecimalFormat getNumberFormatter(
-          TransformerImpl transformer, Node contextNode) throws SAXException
+          TransformerImpl transformer, Node contextNode) throws TransformerException
   {
 
     Locale locale = getLocale(transformer, contextNode);
@@ -1053,11 +1062,11 @@ public class ElemNumber extends ElemTemplateElement
    * TODO: Optimize formatNumberList so that it caches the last count and
    * reuses that info for the next count.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   String formatNumberList(
           TransformerImpl transformer, int[] list, Node contextNode)
-            throws SAXException
+            throws TransformerException
   {
 
     String numStr;
@@ -1210,11 +1219,11 @@ public class ElemNumber extends ElemTemplateElement
    * NEEDSDOC @param listElement
    * NEEDSDOC @param formattedNumber
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   private void getFormattedNumber(
           TransformerImpl transformer, Node contextNode, char numberType, int numberWidth, int listElement, FastStringBuffer formattedNumber)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     DecimalFormat formatter = getNumberFormatter(transformer, contextNode);

@@ -320,10 +320,10 @@ public class XNodeSet extends XObject
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public boolean compare(XObject obj2, Comparator comparator)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     boolean result = false;
@@ -513,9 +513,9 @@ public class XNodeSet extends XObject
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public boolean lessThan(XObject obj2) throws org.xml.sax.SAXException
+  public boolean lessThan(XObject obj2) throws javax.xml.transform.TransformerException
   {
     return compare(obj2, S_LT);
   }
@@ -527,9 +527,9 @@ public class XNodeSet extends XObject
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public boolean lessThanOrEqual(XObject obj2) throws org.xml.sax.SAXException
+  public boolean lessThanOrEqual(XObject obj2) throws javax.xml.transform.TransformerException
   {
     return compare(obj2, S_LTE);
   }
@@ -541,9 +541,9 @@ public class XNodeSet extends XObject
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public boolean greaterThan(XObject obj2) throws org.xml.sax.SAXException
+  public boolean greaterThan(XObject obj2) throws javax.xml.transform.TransformerException
   {
     return compare(obj2, S_GT);
   }
@@ -555,10 +555,10 @@ public class XNodeSet extends XObject
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public boolean greaterThanOrEqual(XObject obj2)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
     return compare(obj2, S_GTE);
   }
@@ -570,9 +570,9 @@ public class XNodeSet extends XObject
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public boolean equals(XObject obj2) throws org.xml.sax.SAXException
+  public boolean equals(XObject obj2) throws javax.xml.transform.TransformerException
   {
     return compare(obj2, S_EQ);
   }
@@ -584,9 +584,9 @@ public class XNodeSet extends XObject
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public boolean notEquals(XObject obj2) throws org.xml.sax.SAXException
+  public boolean notEquals(XObject obj2) throws javax.xml.transform.TransformerException
   {
     return compare(obj2, S_NEQ);
   }

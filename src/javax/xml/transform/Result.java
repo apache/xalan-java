@@ -64,10 +64,56 @@ import java.io.Writer;
 /**
  * An object that implements this interface contains the information
  * needed to build a result tree for a transformation.
- *
- * @version Alpha
- * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
  */
 public interface Result
 {
-}
+  /**
+   * The name of a processing instruction that will be sent 
+   * if the result tree should switch to disabling output escaping mode.
+   * 
+   * <p>Normally, result tree serialization escapes & and < (and 
+   * possibly other characters) when outputting text nodes. 
+   * This ensures that the output is well-formed XML. However, 
+   * it is sometimes convenient to be able to produce output that is 
+   * almost, but not quite well-formed XML; for example, 
+   * the output may include ill-formed sections which are 
+   * intended to be transformed into well-formed XML by a 
+   * subsequent non-XML aware process. If a processing instruction is 
+   * sent with this name, serialization should be output 
+   * without any escaping. </p>
+   * 
+   * <p>Result DOM trees may also have PI_DISABLE_OUTPUT_ESCAPING and 
+   * PI_ENABLE_OUTPUT_ESCAPING inserted into the tree.</p>
+   * 
+   * @see <a href="http://www.w3.org/TR/xslt#disable-output-escaping">disable-output-escaping in XSLT Specification</a>
+   */
+  public static final String PI_DISABLE_OUTPUT_ESCAPING = "javax.xml.transform.disable-output-escaping";
+  
+  /**
+   * The name of a processing instruction that will be sent 
+   * if the result tree should switch to enabling output escaping mode,
+   * following a PI_DISABLE_OUTPUT_ESCAPING processing instruction.
+   * 
+   * @see <a href="http://www.w3.org/TR/xslt#disable-output-escaping">disable-output-escaping in XSLT Specification</a>
+   */
+  public static final String PI_ENABLE_OUTPUT_ESCAPING = "javax.xml.transform.disable-output-escaping";
+
+  /**
+   * Set the system identifier for this Result.
+   *
+   * <p>The system identifier is optional if the result is not 
+   * a system identifier, but it is still useful to provide one,
+   * since the application can use it to resolve relative output identifiers,
+   * and can include it in error messages and warnings.</p>
+   *
+   * @param systemId The system identifier as a URL string.
+   */
+  public void setSystemId(String systemId);
+
+  /**
+   * Get the system identifier that was set with setSystemId.
+   *
+   * @return The system identifier that was set with setSystemId, or null
+   * if setSystemId was not called.
+   */
+  public String getSystemId();}

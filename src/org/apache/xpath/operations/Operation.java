@@ -97,9 +97,9 @@ public class Operation extends Expression
    *
    * NEEDSDOC (execute) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
     XObject left = m_left.execute(xctxt);
@@ -117,10 +117,10 @@ public class Operation extends Expression
    *
    * NEEDSDOC (operate) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public XObject operate(XObject left, XObject right)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
     return null;  // no-op
   }

@@ -102,7 +102,7 @@ public class PrecedingWalker extends ReverseAxesWalker
     {
       super.resetProximityPositions();
     }
-    catch (org.xml.sax.SAXException se)
+    catch (javax.xml.transform.TransformerException se)
     {
 
       // TODO: Fix this...
@@ -113,9 +113,9 @@ public class PrecedingWalker extends ReverseAxesWalker
   /**
    * Reset the proximity positions counts.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public void resetProximityPositions() throws org.xml.sax.SAXException{}
+  public void resetProximityPositions() throws javax.xml.transform.TransformerException{}
 
   /**
    *  Moves to and returns the closest visible ancestor node of the current

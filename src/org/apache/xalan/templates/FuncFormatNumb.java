@@ -70,12 +70,10 @@ import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXParseException;
-
 import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.ErrorListener;
 import org.apache.xalan.utils.SAXSourceLocator;
 
 /**
@@ -91,9 +89,9 @@ public class FuncFormatNumb extends Function3Args
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
     // A bit of an ugly hack to get our context.
@@ -193,16 +191,16 @@ public class FuncFormatNumb extends Function3Args
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public void warn(XPathContext xctxt, int msg, Object args[])
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     String formattedMsg = XSLMessages.createWarning(msg, args);
-    ErrorHandler errHandler = xctxt.getPrimaryReader().getErrorHandler();
+    ErrorListener errHandler = xctxt.getErrorListener();
 
-    errHandler.warning(new SAXParseException(formattedMsg,
+    errHandler.warning(new TransformerException(formattedMsg,
                                              (SAXSourceLocator)xctxt.getSAXLocator()));
   }
 

@@ -107,11 +107,11 @@ class NodeSortKey
    * NEEDSDOC @param caseOrderUpper
    * NEEDSDOC @param namespaceContext
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   NodeSortKey(
           TransformerImpl transformer, XPath selectPat, boolean treatAsNumbers, boolean descending, String langValue, boolean caseOrderUpper, org.apache.xalan.utils.PrefixResolver namespaceContext)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     m_processor = transformer;

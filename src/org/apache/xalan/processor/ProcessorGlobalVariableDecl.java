@@ -59,7 +59,7 @@ package org.apache.xalan.processor;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemVariable;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 
 /**
@@ -78,11 +78,11 @@ class ProcessorGlobalVariableDecl extends ProcessorTemplateElem
    * NEEDSDOC @param handler
    * NEEDSDOC @param elem
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   protected void appendAndPush(
           StylesheetHandler handler, ElemTemplateElement elem)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     // Just push, but don't append.
@@ -99,15 +99,10 @@ class ProcessorGlobalVariableDecl extends ProcessorTemplateElem
    * NEEDSDOC @param uri
    * NEEDSDOC @param localName
    * NEEDSDOC @param rawName
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.xml.sax.ContentHandler#endElement
-   *
-   * @throws SAXException
    */
   public void endElement(
           StylesheetHandler handler, String uri, String localName, String rawName)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     ElemVariable v = (ElemVariable) handler.getElemTemplateElement();

@@ -171,9 +171,9 @@ public class PrintTraceListener implements TraceListener
    *
    * @param ev the generate event.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public void selected(SelectionEvent ev) throws org.xml.sax.SAXException
+  public void selected(SelectionEvent ev) throws javax.xml.transform.TransformerException
   {
 
     if (m_traceSelection)

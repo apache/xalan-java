@@ -62,7 +62,7 @@ import org.apache.xalan.templates.StylesheetComposed;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -101,19 +101,10 @@ class ProcessorImport extends ProcessorInclude
    *        there are no attributes, it shall be an empty
    *        Attributes object.
    * NEEDSDOC @param attributes
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.apache.xalan.processor.StylesheetHandler#startElement
-   * @see org.apache.xalan.processor.StylesheetHandler#endElement
-   * @see org.xml.sax.ContentHandler#startElement
-   * @see org.xml.sax.ContentHandler#endElement
-   * @see org.xml.sax.Attributes
-   *
-   * @throws SAXException
    */
   public void startElement(
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     setPropertiesFromAttributes(handler, rawName, attributes, this);
@@ -122,7 +113,7 @@ class ProcessorImport extends ProcessorInclude
 
     if (handler.importStackContains(hrefUrl))
     {
-      throw new SAXException(
+      throw new org.xml.sax.SAXException(
         XSLMessages.createMessage(
           XSLTErrorResources.ER_IMPORTING_ITSELF, new Object[]{ hrefUrl }));  //"(StylesheetHandler) "+hrefUrl+" is directly or indirectly importing itself!");
     }

@@ -68,7 +68,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.utils.QName;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 // Temp??
 import org.apache.xalan.transformer.TransformerImpl;
@@ -177,11 +177,11 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
    * NEEDSDOC @param scriptSrcURL
    * @param scriptSrc    the actual script code (if any)
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public ExtensionHandlerGeneral(
           String namespaceUri, StringVector elemNames, StringVector funcNames, String scriptLang, String scriptSrcURL, String scriptSrc)
-            throws SAXException
+            throws TransformerException
   {
 
     super(namespaceUri, scriptLang);
@@ -217,12 +217,12 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
 
     if (m_scriptSrcURL != null)
     {
-      throw new SAXException("src attribute not yet supported for "
+      throw new TransformerException("src attribute not yet supported for "
                              + scriptLang);
     }
 
     if (null == managerClass)
-      throw new SAXException("Could not initialize BSF manager");
+      throw new TransformerException("Could not initialize BSF manager");
 
     try
     {
@@ -238,7 +238,7 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
     {
       e.printStackTrace();
 
-      throw new SAXException("Could not compile extension", e);
+      throw new TransformerException("Could not compile extension", e);
     }
   }
 
@@ -279,11 +279,11 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
    * @exception MalformedURLException if loading trouble
    * @exception FileNotFoundException if loading trouble
    * @exception IOException           if loading trouble
-   * @exception SAXException          if parsing trouble
+   * @exception TransformerException          if parsing trouble
    */
   public Object callFunction(
           String funcName, Vector args, Object methodKey, ExpressionContext exprContext)
-            throws SAXException
+            throws TransformerException
   {
 
     Object[] argArray;
@@ -316,13 +316,13 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
         }
 
         // System.out.println("Call to extension function failed: "+msg);
-        throw new SAXException(e);
+        throw new TransformerException(e);
       }
       else
       {
 
         // Should probably make a TRaX Extension Exception.
-        throw new SAXException("Could not create extension: " + funcName
+        throw new TransformerException("Could not create extension: " + funcName
                                + " because of: " + e);
       }
     }
@@ -347,11 +347,11 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
    * @exception MalformedURLException if loading trouble
    * @exception FileNotFoundException if loading trouble
    * @exception IOException           if loading trouble
-   * @exception SAXException          if parsing trouble
+   * @exception TransformerException          if parsing trouble
    */
   public void processElement(
           String localPart, Element element, TransformerImpl transformer, Stylesheet stylesheetTree, Node sourceTree, Node sourceNode, QName mode, Object methodKey)
-            throws SAXException, IOException
+            throws TransformerException, IOException
   {
 
     Object result = null;
@@ -372,7 +372,7 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
     {
 
       // e.printStackTrace ();
-      throw new SAXException(e.getMessage(), e);
+      throw new TransformerException(e.getMessage(), e);
     }
 
     if (result != null)

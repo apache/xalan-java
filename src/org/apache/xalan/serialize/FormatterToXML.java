@@ -72,13 +72,12 @@ import org.xml.sax.ext.LexicalHandler;
 
 import org.w3c.dom.Node;
 
-import org.apache.serialize.SerializerHandler;
-import org.apache.serialize.OutputFormat;
-import org.apache.serialize.helpers.XMLOutputFormat;
-import org.apache.serialize.Serializer;
-import org.apache.serialize.OutputFormat;
-import org.apache.serialize.DOMSerializer;
-import org.apache.serialize.QName;
+import org.apache.xalan.serialize.OutputFormat;
+import org.apache.xalan.serialize.helpers.XMLOutputFormat;
+import org.apache.xalan.serialize.Serializer;
+import org.apache.xalan.serialize.OutputFormat;
+import org.apache.xalan.serialize.DOMSerializer;
+import org.apache.xalan.serialize.QName;
 
 import org.apache.xalan.utils.BoolStack;
 import org.apache.xalan.utils.TreeWalker;
@@ -94,7 +93,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  * Warning: this class will be replaced by the Xerces Serializer classes.
  */
 public class FormatterToXML
-        implements ContentHandler, LexicalHandler, SerializerHandler,
+        implements ContentHandler, LexicalHandler, 
                    Serializer, DOMSerializer
 {
 
@@ -180,9 +179,9 @@ public class FormatterToXML
   /**
    * Output a system-dependent line break.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  protected final void outputLineSep() throws SAXException
+  protected final void outputLineSep() throws org.xml.sax.SAXException
   {
 
     for (int z = 0; z < m_lineSepLen; z++)
@@ -518,7 +517,7 @@ public class FormatterToXML
   {
     if(null == format)
     {
-      format = new org.apache.serialize.helpers.XMLOutputFormat();
+      format = new org.apache.xalan.serialize.helpers.XMLOutputFormat();
     }
     m_encoding = Encodings.getMimeEncoding(format.getEncoding());
 
@@ -572,9 +571,9 @@ public class FormatterToXML
    *
    * NEEDSDOC @param name
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  void outputDocTypeDecl(String name) throws SAXException
+  void outputDocTypeDecl(String name) throws org.xml.sax.SAXException
   {
 
     accum("<!DOCTYPE ");
@@ -603,9 +602,9 @@ public class FormatterToXML
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void startDocument() throws SAXException
+  public void startDocument() throws org.xml.sax.SAXException
   {
 
     if (m_inEntityRef)
@@ -632,9 +631,9 @@ public class FormatterToXML
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void endDocument() throws SAXException
+  public void endDocument() throws org.xml.sax.SAXException
   {
 
     if (m_doIndent &&!m_isprevtext)
@@ -657,13 +656,13 @@ public class FormatterToXML
    *        external DTD subset, or null if none was declared.
    * @param systemId The declared system identifier for the
    *        external DTD subset, or null if none was declared.
-   * @exception SAXException The application may raise an
+   * @exception org.xml.sax.SAXException The application may raise an
    *            exception.
    * @see #endDTD
    * @see #startEntity
    */
   public void startDTD(String name, String publicId, String systemId)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     // Do nothing for now.
@@ -672,10 +671,10 @@ public class FormatterToXML
   /**
    * Report the end of DTD declarations.
    *
-   * @exception SAXException The application may raise an exception.
+   * @exception org.xml.sax.SAXException The application may raise an exception.
    * @see #startDTD
    */
-  public void endDTD() throws SAXException
+  public void endDTD() throws org.xml.sax.SAXException
   {
 
     // Do nothing for now.
@@ -688,10 +687,10 @@ public class FormatterToXML
    * NEEDSDOC @param prefix
    * NEEDSDOC @param uri
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void startPrefixMapping(String prefix, String uri)
-          throws SAXException{}
+          throws org.xml.sax.SAXException{}
 
   /**
    * NEEDSDOC Method endPrefixMapping 
@@ -699,9 +698,9 @@ public class FormatterToXML
    *
    * NEEDSDOC @param prefix
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void endPrefixMapping(String prefix) throws SAXException{}
+  public void endPrefixMapping(String prefix) throws org.xml.sax.SAXException{}
 
   /**
    * NEEDSDOC Method subPartMatch 
@@ -777,11 +776,11 @@ public class FormatterToXML
    * @see #endElement
    * @see org.xml.sax.AttributeList
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void startElement(
           String namespaceURI, String localName, String name, Attributes atts)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     if (m_inEntityRef)
@@ -831,9 +830,9 @@ public class FormatterToXML
    * Check to see if a parent's ">" has been written, and, if
    * it has not, write it.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  protected void writeParentTagEnd() throws SAXException
+  protected void writeParentTagEnd() throws org.xml.sax.SAXException
   {
 
     if (!m_elemStack.isEmpty())
@@ -885,10 +884,10 @@ public class FormatterToXML
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void endElement(String namespaceURI, String localName, String name)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     if (m_inEntityRef)
@@ -932,10 +931,10 @@ public class FormatterToXML
    * @param   name   The name of the attribute.
    * @param   value   The value of the attribute.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   protected void processAttribute(String name, String value)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     accum(' ');
@@ -954,9 +953,9 @@ public class FormatterToXML
    * The contents of the un-escaping section will be delivered through
    * the regular <tt>characters</tt> event.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void startNonEscaping() throws SAXException
+  public void startNonEscaping() throws org.xml.sax.SAXException
   {
     m_disableOutputEscapingStates.push(true);
   }
@@ -966,9 +965,9 @@ public class FormatterToXML
    *
    * @see #startNonEscaping
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void endNonEscaping() throws SAXException
+  public void endNonEscaping() throws org.xml.sax.SAXException
   {
     m_disableOutputEscapingStates.pop();
   }
@@ -983,9 +982,9 @@ public class FormatterToXML
    * The contents of the whitespace preserving section will be delivered
    * through the regular <tt>characters</tt> event.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void startPreserving() throws SAXException
+  public void startPreserving() throws org.xml.sax.SAXException
   {
 
     // Not sure this is really what we want.  -sb
@@ -999,9 +998,9 @@ public class FormatterToXML
    *
    * @see #startPreserving
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void endPreserving() throws SAXException
+  public void endPreserving() throws org.xml.sax.SAXException
   {
 
     // Not sure this is really what we want.  -sb
@@ -1017,20 +1016,22 @@ public class FormatterToXML
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void processingInstruction(String target, String data)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     if (m_inEntityRef)
       return;
 
-    // Use a fairly nasty hack to tell if the next node is supposed to be 
-    // unescaped text.
-    if (target.equals("xslt-next-is-raw") && data.equals("formatter-to-dom"))
+    if (target.equals(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING))
     {
-      m_disableOutputEscapingStates.setTop(true);
+      startNonEscaping();
+    }
+    else if (target.equals(javax.xml.transform.Result.PI_ENABLE_OUTPUT_ESCAPING))
+    {
+      endNonEscaping();
     }
     else
     {
@@ -1064,9 +1065,9 @@ public class FormatterToXML
    * @param ch An array holding the characters in the comment.
    * @param start The starting position in the array.
    * @param length The number of characters to use from the array.
-   * @exception SAXException The application may raise an exception.
+   * @exception org.xml.sax.SAXException The application may raise an exception.
    */
-  public void comment(char ch[], int start, int length) throws SAXException
+  public void comment(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
 
     if (m_inEntityRef)
@@ -1090,10 +1091,10 @@ public class FormatterToXML
   /**
    * Report the start of a CDATA section.
    *
-   * @exception SAXException The application may raise an exception.
+   * @exception org.xml.sax.SAXException The application may raise an exception.
    * @see #endCDATA
    */
-  public void startCDATA() throws SAXException
+  public void startCDATA() throws org.xml.sax.SAXException
   {
     m_inCData = true;
   }
@@ -1101,10 +1102,10 @@ public class FormatterToXML
   /**
    * Report the end of a CDATA section.
    *
-   * @exception SAXException The application may raise an exception.
+   * @exception org.xml.sax.SAXException The application may raise an exception.
    * @see #startCDATA
    */
-  public void endCDATA() throws SAXException
+  public void endCDATA() throws org.xml.sax.SAXException
   {
     m_inCData = false;
   }
@@ -1134,9 +1135,9 @@ public class FormatterToXML
    * @see #ignorableWhitespace
    * @see org.xml.sax.Locator
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void cdata(char ch[], int start, int length) throws SAXException
+  public void cdata(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
 
     try
@@ -1171,7 +1172,7 @@ public class FormatterToXML
     }
     catch (IOException ioe)
     {
-      throw new SAXException(
+      throw new org.xml.sax.SAXException(
         XSLMessages.createXPATHMessage(XPATHErrorResources.ER_OIERROR, null),
         ioe);  //"IO error", ioe);
     }
@@ -1197,9 +1198,9 @@ public class FormatterToXML
    *
    * NEEDSDOC @param b
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  protected final void accum(byte b) throws SAXException
+  protected final void accum(byte b) throws org.xml.sax.SAXException
   {
 
     if (m_bytesEqualChars)
@@ -1223,9 +1224,9 @@ public class FormatterToXML
    *
    * NEEDSDOC @param b
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  protected final void accum(char b) throws SAXException
+  protected final void accum(char b) throws org.xml.sax.SAXException
   {
 
     if (m_bytesEqualChars)
@@ -1251,10 +1252,10 @@ public class FormatterToXML
    * NEEDSDOC @param start
    * NEEDSDOC @param length
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   protected final void accum(char chars[], int start, int length)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     int n = start + length;
@@ -1282,7 +1283,7 @@ public class FormatterToXML
         }
         catch (IOException ioe)
         {
-          throw new SAXException(ioe);
+          throw new org.xml.sax.SAXException(ioe);
         }
       }
       else
@@ -1305,9 +1306,9 @@ public class FormatterToXML
    *
    * NEEDSDOC @param s
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  protected final void accum(String s) throws SAXException
+  protected final void accum(String s) throws org.xml.sax.SAXException
   {
 
     int n = s.length();
@@ -1338,7 +1339,7 @@ public class FormatterToXML
         }
         catch (IOException ioe)
         {
-          throw new SAXException(ioe);
+          throw new org.xml.sax.SAXException(ioe);
         }
       }
       else
@@ -1359,9 +1360,9 @@ public class FormatterToXML
    * NEEDSDOC Method flushBytes 
    *
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  private final void flushBytes() throws SAXException
+  private final void flushBytes() throws org.xml.sax.SAXException
   {
 
     try
@@ -1372,16 +1373,16 @@ public class FormatterToXML
     }
     catch (IOException ioe)
     {
-      throw new SAXException(ioe);
+      throw new org.xml.sax.SAXException(ioe);
     }
   }
 
   /**
    * Flush the formatter's result stream.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public final void flushWriter() throws SAXException
+  public final void flushWriter() throws org.xml.sax.SAXException
   {
 
     if (m_shouldFlush && (null != m_writer))
@@ -1392,7 +1393,7 @@ public class FormatterToXML
       }
       catch (IOException ioe)
       {
-        throw new SAXException(ioe);
+        throw new org.xml.sax.SAXException(ioe);
       }
     }
   }
@@ -1401,9 +1402,9 @@ public class FormatterToXML
    * NEEDSDOC Method flushChars 
    *
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  private final void flushChars() throws SAXException
+  private final void flushChars() throws org.xml.sax.SAXException
   {
 
     try
@@ -1414,7 +1415,7 @@ public class FormatterToXML
     }
     catch (IOException ioe)
     {
-      throw new SAXException(ioe);
+      throw new org.xml.sax.SAXException(ioe);
     }
   }
 
@@ -1422,9 +1423,9 @@ public class FormatterToXML
    * NEEDSDOC Method flush 
    *
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public final void flush() throws SAXException
+  public final void flush() throws org.xml.sax.SAXException
   {
 
     if (m_bytesEqualChars)
@@ -1462,10 +1463,10 @@ public class FormatterToXML
    * @see #ignorableWhitespace
    * @see org.xml.sax.Locator
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void characters(char chars[], int start, int length)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
     if (m_inEntityRef)
       return;
@@ -1544,10 +1545,10 @@ public class FormatterToXML
    * NEEDSDOC @param start
    * NEEDSDOC @param length
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void charactersRaw(char ch[], int start, int length)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     if (m_inEntityRef)
@@ -1569,10 +1570,10 @@ public class FormatterToXML
    * NEEDSDOC @param isCData
    *
    * @throws IOException
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   void writeNormalizedChars(char ch[], int start, int length, boolean isCData)
-          throws IOException, SAXException
+          throws IOException, org.xml.sax.SAXException
   {
 
     int end = start + length;
@@ -1611,7 +1612,7 @@ public class FormatterToXML
 
           if (i + 1 >= end)
           {
-            throw new SAXException(
+            throw new org.xml.sax.SAXException(
               XSLMessages.createXPATHMessage(
                 XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
                 new Object[]{ Integer.toHexString((int) c) }));  //"Invalid UTF-16 surrogate detected: "
@@ -1623,7 +1624,7 @@ public class FormatterToXML
             next = ch[++i];
 
             if (!(0xdc00 <= next && next < 0xe000))
-              throw new SAXException(
+              throw new org.xml.sax.SAXException(
                 XSLMessages.createXPATHMessage(
                   XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
                   new Object[]{
@@ -1678,7 +1679,7 @@ public class FormatterToXML
 
           if (i + 1 >= end)
           {
-            throw new SAXException(
+            throw new org.xml.sax.SAXException(
               XSLMessages.createXPATHMessage(
                 XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
                 new Object[]{ Integer.toHexString((int) c) }));  //"Invalid UTF-16 surrogate detected: "
@@ -1690,7 +1691,7 @@ public class FormatterToXML
             next = ch[++i];
 
             if (!(0xdc00 <= next && next < 0xe000))
-              throw new SAXException(
+              throw new org.xml.sax.SAXException(
                 XSLMessages.createXPATHMessage(
                   XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
                   new Object[]{
@@ -1730,10 +1731,10 @@ public class FormatterToXML
    *            wrapping another exception.
    * @see #characters
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void ignorableWhitespace(char ch[], int start, int length)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     if (0 == length)
@@ -1748,9 +1749,9 @@ public class FormatterToXML
    *
    * NEEDSDOC @param name
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void skippedEntity(String name) throws SAXException
+  public void skippedEntity(String name) throws org.xml.sax.SAXException
   {
 
     // TODO: Should handle
@@ -1766,12 +1767,12 @@ public class FormatterToXML
    *
    * @param name The name of the entity.  If it is a parameter
    *        entity, the name will begin with '%'.
-   * @exception SAXException The application may raise an exception.
+   * @exception org.xml.sax.SAXException The application may raise an exception.
    * @see #endEntity
    * @see org.xml.sax.misc.DeclHandler#internalEntityDecl
    * @see org.xml.sax.misc.DeclHandler#externalEntityDecl
    */
-  public void startEntity(String name) throws SAXException
+  public void startEntity(String name) throws org.xml.sax.SAXException
   {
 
     entityReference(name);
@@ -1783,10 +1784,10 @@ public class FormatterToXML
    * Report the end of an entity.
    *
    * @param name The name of the entity that is ending.
-   * @exception SAXException The application may raise an exception.
+   * @exception org.xml.sax.SAXException The application may raise an exception.
    * @see #startEntity
    */
-  public void endEntity(String name) throws SAXException
+  public void endEntity(String name) throws org.xml.sax.SAXException
   {
     m_inEntityRef = false;
   }
@@ -1796,9 +1797,9 @@ public class FormatterToXML
    *
    * NEEDSDOC @param name
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void entityReference(String name) throws SAXException
+  public void entityReference(String name) throws org.xml.sax.SAXException
   {
 
     writeParentTagEnd();
@@ -1823,11 +1824,11 @@ public class FormatterToXML
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   final int accumDefaultEntity(
           char ch, int i, char[] chars, int len, boolean escLF)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     if (!escLF && (0x0D == ch) && ((i + 1) < len) && (0x0A == chars[i + 1]))
@@ -1912,11 +1913,11 @@ public class FormatterToXML
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   final int accumDefaultEscape(
           char ch, int i, char[] chars, int len, boolean escLF)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     int pos = accumDefaultEntity(ch, i, chars, len, escLF);
@@ -1933,7 +1934,7 @@ public class FormatterToXML
 
         if (i + 1 >= len)
         {
-          throw new SAXException(
+          throw new org.xml.sax.SAXException(
             XSLMessages.createXPATHMessage(
               XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
               new Object[]{ Integer.toHexString(ch) }));  //"Invalid UTF-16 surrogate detected: "
@@ -1945,7 +1946,7 @@ public class FormatterToXML
           next = chars[++i];
 
           if (!(0xdc00 <= next && next < 0xe000))
-            throw new SAXException(
+            throw new org.xml.sax.SAXException(
               XSLMessages.createXPATHMessage(
                 XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
                 new Object[]{
@@ -1994,10 +1995,10 @@ public class FormatterToXML
    * @return              XML-formatted string.
    * @see #backReference
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void writeAttrString(String string, String encoding)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     char[] stringChars = string.toCharArray();
@@ -2031,9 +2032,9 @@ public class FormatterToXML
    * @param n         Number of spaces to print.
    * @exception IOException   Thrown if <var>pw</var> is invalid.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void printSpace(int n) throws SAXException
+  public void printSpace(int n) throws org.xml.sax.SAXException
   {
 
     for (int i = 0; i < n; i++)
@@ -2048,9 +2049,9 @@ public class FormatterToXML
    * @param n         Number of spaces to print.
    * @exception IOException   Thrown if <var>pw</var> is invalid.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void indent(int n) throws SAXException
+  public void indent(int n) throws org.xml.sax.SAXException
   {
 
     if (m_startNewLine)
@@ -2223,7 +2224,7 @@ public class FormatterToXML
       TreeWalker walker = new TreeWalker(this);
       walker.traverse(node);
     }
-    catch(SAXException se)
+    catch(org.xml.sax.SAXException se)
     {
       throw new WrappedRuntimeException(se);
     }

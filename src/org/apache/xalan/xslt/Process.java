@@ -101,12 +101,11 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.stream.OutputKeys;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.TransformerException;
 
 // Needed SAX classes
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.ParserAdapter;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -117,9 +116,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 
 // Needed Serializer classes
-import org.apache.serialize.OutputFormat;
-import org.apache.serialize.Serializer;
-import org.apache.serialize.SerializerFactory;
+import org.apache.xalan.serialize.OutputFormat;
+import org.apache.xalan.serialize.Serializer;
+import org.apache.xalan.serialize.SerializerFactory;
 
 /**
  * <meta name="usage" content="general"/>
@@ -457,10 +456,10 @@ public class Process
           else
           {
             if (null != media)
-              throw new SAXException("No stylesheet found in: " + inFileName
+              throw new TransformerException("No stylesheet found in: " + inFileName
                                      + ", media=" + media);
             else
-              throw new SAXException("No xml-stylesheet PI found in: "
+              throw new TransformerException("No xml-stylesheet PI found in: "
                                      + inFileName);
           }
         }

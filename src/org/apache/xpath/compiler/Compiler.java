@@ -90,10 +90,8 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.SourceLocator;
 import org.apache.xalan.utils.SAXSourceLocator;
 
-import org.xml.sax.ErrorHandler;
-// import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.traversal.NodeFilter;
 
@@ -111,7 +109,7 @@ public class Compiler extends OpMap
    * NEEDSDOC @param errorHandler
    * NEEDSDOC @param locator
    */
-  public Compiler(ErrorHandler errorHandler, SourceLocator locator)
+  public Compiler(ErrorListener errorHandler, SourceLocator locator)
   {
     m_errorHandler = errorHandler;
     if(null != locator)
@@ -145,9 +143,9 @@ public class Compiler extends OpMap
    * @param callbackInfo Object that will be passed to the processLocatedNode method.
    * @return The result of the XPath.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  public Expression compile(int opPos) throws org.xml.sax.SAXException
+  public Expression compile(int opPos) throws TransformerException
   {
 
     int op = m_opMap[opPos];
@@ -236,10 +234,10 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   private Expression compileOperation(Operation operation, int opPos)
-          throws SAXException
+          throws TransformerException
   {
 
     int leftPos = getFirstChildPos(opPos);
@@ -258,10 +256,10 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   private Expression compileUnary(UnaryOperation unary, int opPos)
-          throws SAXException
+          throws TransformerException
   {
 
     int rightPos = getFirstChildPos(opPos);
@@ -279,9 +277,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression or(int opPos) throws org.xml.sax.SAXException
+  protected Expression or(int opPos) throws TransformerException
   {
     return compileOperation(new Or(), opPos);
   }
@@ -294,9 +292,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression and(int opPos) throws org.xml.sax.SAXException
+  protected Expression and(int opPos) throws TransformerException
   {
     return compileOperation(new And(), opPos);
   }
@@ -309,9 +307,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression notequals(int opPos) throws org.xml.sax.SAXException
+  protected Expression notequals(int opPos) throws TransformerException
   {
     return compileOperation(new NotEquals(), opPos);
   }
@@ -324,9 +322,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression equals(int opPos) throws org.xml.sax.SAXException
+  protected Expression equals(int opPos) throws TransformerException
   {
     return compileOperation(new Equals(), opPos);
   }
@@ -339,9 +337,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression lte(int opPos) throws org.xml.sax.SAXException
+  protected Expression lte(int opPos) throws TransformerException
   {
     return compileOperation(new Lte(), opPos);
   }
@@ -354,9 +352,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression lt(int opPos) throws org.xml.sax.SAXException
+  protected Expression lt(int opPos) throws TransformerException
   {
     return compileOperation(new Lt(), opPos);
   }
@@ -369,9 +367,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression gte(int opPos) throws org.xml.sax.SAXException
+  protected Expression gte(int opPos) throws TransformerException
   {
     return compileOperation(new Gte(), opPos);
   }
@@ -384,9 +382,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression gt(int opPos) throws org.xml.sax.SAXException
+  protected Expression gt(int opPos) throws TransformerException
   {
     return compileOperation(new Gt(), opPos);
   }
@@ -399,9 +397,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression plus(int opPos) throws org.xml.sax.SAXException
+  protected Expression plus(int opPos) throws TransformerException
   {
     return compileOperation(new Plus(), opPos);
   }
@@ -414,9 +412,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression minus(int opPos) throws org.xml.sax.SAXException
+  protected Expression minus(int opPos) throws TransformerException
   {
     return compileOperation(new Minus(), opPos);
   }
@@ -429,9 +427,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression mult(int opPos) throws org.xml.sax.SAXException
+  protected Expression mult(int opPos) throws TransformerException
   {
     return compileOperation(new Mult(), opPos);
   }
@@ -443,10 +441,10 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    * @returns arg1 / arg2.
    */
-  protected Expression div(int opPos) throws org.xml.sax.SAXException
+  protected Expression div(int opPos) throws TransformerException
   {
     return compileOperation(new Div(), opPos);
   }
@@ -459,9 +457,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression mod(int opPos) throws org.xml.sax.SAXException
+  protected Expression mod(int opPos) throws TransformerException
   {
     return compileOperation(new Mod(), opPos);
   }
@@ -475,9 +473,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression quo(int opPos) throws org.xml.sax.SAXException
+  protected Expression quo(int opPos) throws TransformerException
   {
     return compileOperation(new Quo(), opPos);
   }
@@ -490,9 +488,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression neg(int opPos) throws org.xml.sax.SAXException
+  protected Expression neg(int opPos) throws TransformerException
   {
     return compileUnary(new Neg(), opPos);
   }
@@ -505,9 +503,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression string(int opPos) throws org.xml.sax.SAXException
+  protected Expression string(int opPos) throws TransformerException
   {
     return compileUnary(new org.apache.xpath.operations.String(), opPos);
   }
@@ -520,9 +518,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression bool(int opPos) throws org.xml.sax.SAXException
+  protected Expression bool(int opPos) throws TransformerException
   {
     return compileUnary(new org.apache.xpath.operations.Bool(), opPos);
   }
@@ -535,9 +533,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression number(int opPos) throws org.xml.sax.SAXException
+  protected Expression number(int opPos) throws TransformerException
   {
     return compileUnary(new org.apache.xpath.operations.Number(), opPos);
   }
@@ -582,9 +580,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression variable(int opPos) throws org.xml.sax.SAXException
+  protected Expression variable(int opPos) throws TransformerException
   {
 
     Variable var = new Variable();
@@ -612,9 +610,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression group(int opPos) throws org.xml.sax.SAXException
+  protected Expression group(int opPos) throws TransformerException
   {
 
     // no-op
@@ -629,9 +627,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression arg(int opPos) throws org.xml.sax.SAXException
+  protected Expression arg(int opPos) throws TransformerException
   {
 
     // no-op
@@ -648,9 +646,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression union(int opPos) throws org.xml.sax.SAXException
+  protected Expression union(int opPos) throws TransformerException
   {
     return new UnionPathIterator(this, opPos);
   }
@@ -668,9 +666,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  public Expression locationPath(int opPos) throws org.xml.sax.SAXException
+  public Expression locationPath(int opPos) throws TransformerException
   {
     locPathDepth++;
     LocPathIterator iter = WalkerFactory.newLocPathIterator(this, opPos);
@@ -689,9 +687,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  public Expression predicate(int opPos) throws org.xml.sax.SAXException
+  public Expression predicate(int opPos) throws TransformerException
   {
     return compile(opPos + 2);
   }
@@ -704,9 +702,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  protected Expression matchPattern(int opPos) throws org.xml.sax.SAXException
+  protected Expression matchPattern(int opPos) throws TransformerException
   {
 
     // First, count...
@@ -748,10 +746,10 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
   public Expression locationPathPattern(int opPos)
-          throws org.xml.sax.SAXException
+          throws TransformerException
   {
 
     opPos = getFirstChildPos(opPos);
@@ -843,11 +841,11 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
   protected StepPattern stepPattern(
           int opPos, int stepCount, StepPattern ancestorPattern)
-            throws org.xml.sax.SAXException
+            throws TransformerException
   {
 
     int startOpPos = opPos;
@@ -919,10 +917,10 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC (getCompiledPredicates) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
   public Expression[] getCompiledPredicates(int opPos)
-          throws org.xml.sax.SAXException
+          throws TransformerException
   {
 
     int count = countPredicates(opPos);
@@ -946,9 +944,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  public int countPredicates(int opPos) throws org.xml.sax.SAXException
+  public int countPredicates(int opPos) throws TransformerException
   {
 
     int count = 0;
@@ -969,10 +967,10 @@ public class Compiler extends OpMap
    * NEEDSDOC @param opPos
    * NEEDSDOC @param predicates
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
   private void compilePredicates(int opPos, Expression[] predicates)
-          throws org.xml.sax.SAXException
+          throws TransformerException
   {
 
     for (int i = 0; OpCodes.OP_PREDICATE == getOp(opPos); i++)
@@ -989,9 +987,9 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  Expression compileFunction(int opPos) throws org.xml.sax.SAXException
+  Expression compileFunction(int opPos) throws TransformerException
   {
 
     int endFunc = opPos + m_opMap[opPos + 1] - 1;
@@ -1024,7 +1022,7 @@ public class Compiler extends OpMap
       {
         java.lang.String name = FunctionTable.m_functions[funcID].getName();
 
-        throw new SAXException(name + " only allows " + wnae.m_argsExpected
+        throw new TransformerException(name + " only allows " + wnae.m_argsExpected
                                + " arguments");
       }
 
@@ -1045,10 +1043,10 @@ public class Compiler extends OpMap
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
   private Expression compileExtension(int opPos)
-          throws org.xml.sax.SAXException
+          throws TransformerException
   {
 
     int endExtFunc = opPos + m_opMap[opPos + 1] - 1;
@@ -1098,16 +1096,16 @@ public class Compiler extends OpMap
    * NEEDSDOC @param msg
    * NEEDSDOC @param args
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  public void warn(int msg, Object[] args) throws org.xml.sax.SAXException
+  public void warn(int msg, Object[] args) throws TransformerException
   {
 
     java.lang.String fmsg = XSLMessages.createXPATHWarning(msg, args);
 
     if (null != m_errorHandler)
     {
-      m_errorHandler.warning(new SAXParseException(fmsg, (SAXSourceLocator)m_locator));
+      m_errorHandler.warning(new TransformerException(fmsg, m_locator));
     }
     else
     {
@@ -1125,10 +1123,10 @@ public class Compiler extends OpMap
    * NEEDSDOC @param b
    * NEEDSDOC @param msg
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
   public void assert(boolean b, java.lang.String msg)
-          throws org.xml.sax.SAXException
+          throws TransformerException
   {
 
     if (!b)
@@ -1148,16 +1146,16 @@ public class Compiler extends OpMap
    * NEEDSDOC @param msg
    * NEEDSDOC @param args
    *
-   * @throws org.xml.sax.SAXException
+   * @throws TransformerException
    */
-  public void error(int msg, Object[] args) throws org.xml.sax.SAXException
+  public void error(int msg, Object[] args) throws TransformerException
   {
 
     java.lang.String fmsg = XSLMessages.createXPATHMessage(msg, args);
 
     if (null != m_errorHandler)
     {
-      m_errorHandler.fatalError(new SAXParseException(fmsg, (SAXSourceLocator)m_locator));
+      m_errorHandler.fatalError(new TransformerException(fmsg, m_locator));
     }
     else
     {
@@ -1166,7 +1164,7 @@ public class Compiler extends OpMap
       //                    +"; file "+te.getSystemId()
       //                    +"; line "+te.getLineNumber()
       //                    +"; column "+te.getColumnNumber());
-      throw new SAXParseException(fmsg, (SAXSourceLocator)m_locator);
+      throw new TransformerException(fmsg, (SAXSourceLocator)m_locator);
     }
   }
 
@@ -1196,7 +1194,7 @@ public class Compiler extends OpMap
   }
 
   /** NEEDSDOC Field m_errorHandler          */
-  ErrorHandler m_errorHandler;
+  ErrorListener m_errorHandler;
 
   /** NEEDSDOC Field m_locator          */
   SourceLocator m_locator;

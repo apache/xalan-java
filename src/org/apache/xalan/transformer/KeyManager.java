@@ -90,11 +90,11 @@ public class KeyManager
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public LocPathIterator getNodeSetByKey(
           XPathContext xctxt, Node doc, QName name, String ref, PrefixResolver nscontext)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     LocPathIterator nl = null;

@@ -95,7 +95,7 @@ import javax.xml.transform.stream.StreamSource;
 // Needed SAX classes
 import org.xml.sax.InputSource;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.ParserAdapter;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -105,9 +105,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 
 // Needed Serializer classes
-import org.apache.serialize.OutputFormat;
-import org.apache.serialize.Serializer;
-import org.apache.serialize.SerializerFactory;
+import org.apache.xalan.serialize.OutputFormat;
+import org.apache.xalan.serialize.Serializer;
+import org.apache.xalan.serialize.SerializerFactory;
 
 /**
  * <meta name="usage" content="general"/>
@@ -357,11 +357,11 @@ public class XSLTProcessorApplet extends Applet
    * applet cannot use because it reads a system property.
    *
    * @throws IOException
-   * @throws SAXException
+   * @throws TransformerException
    * @throws TransformerException
    */
   void transform(TransformerImpl transformer, InputSource xmlSource)
-          throws SAXException, TransformerException, IOException
+          throws TransformerException, TransformerException, IOException
   {
 
     try
@@ -369,12 +369,8 @@ public class XSLTProcessorApplet extends Applet
       m_reader.setFeature("http://xml.org/sax/features/namespace-prefixes",
                           true);
     }
-    catch (SAXException se)
-    {
-
-      // What can we do?
-      // TODO: User diagnostics.
-    }
+    catch (org.xml.sax.SAXNotSupportedException snse) {}
+    catch (org.xml.sax.SAXNotRecognizedException snre) {}
 
     try
     {
@@ -384,8 +380,14 @@ public class XSLTProcessorApplet extends Applet
       ContentHandler inputHandler = new SourceTreeHandler(transformer);
 
       m_reader.setContentHandler(inputHandler);
-      m_reader.setProperty("http://xml.org/sax/properties/lexical-handler",
-                           inputHandler);
+      try
+      {
+        m_reader.setProperty("http://xml.org/sax/properties/lexical-handler",
+                             inputHandler);
+      }
+      catch(org.xml.sax.SAXNotRecognizedException snre)
+      {
+      }
 
       // Set the reader for cloning purposes.
       transformer.getXPathContext().setPrimaryReader(m_reader);
@@ -394,7 +396,7 @@ public class XSLTProcessorApplet extends Applet
       // the startDocument event, it will call transformNode( node ).
       m_reader.parse(xmlSource);
     }
-    catch (SAXException se)
+    catch (org.xml.sax.SAXException se)
     {
       se.printStackTrace();
 
@@ -477,11 +479,11 @@ public class XSLTProcessorApplet extends Applet
         TransformerHandler serializer =
           m_tfactory.newTransformerHandler();
 
-        // org.apache.serialize.Serializer serializer = new org.apache.xml.serialize.transition.HTMLSerializer();
-        // org.apache.serialize.Serializer serializer = org.apache.serialize.SerializerFactory.getSerializer( "HTML" );
+        // org.apache.xalan.serialize.Serializer serializer = new org.apache.xml.serialize.transition.HTMLSerializer();
+        // org.apache.xalan.serialize.Serializer serializer = org.apache.xalan.serialize.SerializerFactory.getSerializer( "HTML" );
         serializer.setResult(new StreamResult(pw));
 
-        // new org.apache.xml.org.apache.serialize.HTMLSerializer(pw, new OutputFormat()).asContentHandler();
+        // new org.apache.xml.org.apache.xalan.serialize.HTMLSerializer(pw, new OutputFormat()).asContentHandler();
         transformer.setContentHandler(serializer);
         // transformer.setParent(m_reader);
         transform(transformer, new InputSource(xmlbuf));
@@ -824,9 +826,9 @@ public class XSLTProcessorApplet extends Applet
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  private String doTransformation(TransformerFactory processor) throws SAXException
+  private String doTransformation(TransformerFactory processor) throws TransformerException
   {
 
     URL documentURL = null;
@@ -860,8 +862,8 @@ public class XSLTProcessorApplet extends Applet
         transformer.setParameter(m_key, null, m_expression);
 
       // Result result = new Result(pw);
-      // org.apache.serialize.Serializer serializer = new org.apache.xml.serialize.transition.HTMLSerializer(); this.showStatus("serializer is "+ serializer);
-      //org.apache.serialize.Serializer serializer = org.apache.serialize.SerializerFactory.getSerializer( "HTML" );
+      // org.apache.xalan.serialize.Serializer serializer = new org.apache.xml.serialize.transition.HTMLSerializer(); this.showStatus("serializer is "+ serializer);
+      //org.apache.xalan.serialize.Serializer serializer = org.apache.xalan.serialize.SerializerFactory.getSerializer( "HTML" );
       TransformerHandler serializer =
         m_tfactory.newTransformerHandler();
       
@@ -871,9 +873,9 @@ public class XSLTProcessorApplet extends Applet
       // transformer.setParent(m_reader);
       transform(transformer, xmlSource);
     }
-    catch (TransformerException tfe)
+    catch (org.xml.sax.SAXException se)
     {
-      tfe.printStackTrace();
+      se.printStackTrace();
       System.exit(-1);
     }
     catch (TransformerConfigurationException tfe)
@@ -904,9 +906,9 @@ public class XSLTProcessorApplet extends Applet
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  private String processTransformation() throws SAXException
+  private String processTransformation() throws TransformerException
   {
 
     String htmlData = null;

@@ -57,7 +57,7 @@
 package org.apache.xalan.transformer;
 
 import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 
 import org.apache.xalan.trace.TraceManager;
@@ -199,9 +199,9 @@ public abstract class QueuedSAXEvent
   /**
    * Flush the event.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  void flush() throws SAXException
+  void flush() throws org.xml.sax.SAXException
   {
     clearPending();
   }

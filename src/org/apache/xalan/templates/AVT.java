@@ -64,8 +64,7 @@ import java.util.StringTokenizer;
 import org.apache.xalan.utils.StringBufferPool;
 import org.apache.xalan.utils.FastStringBuffer;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.ErrorHandler;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
@@ -73,6 +72,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.utils.PrefixResolver;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.processor.StylesheetHandler;
+import javax.xml.transform.ErrorListener;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -150,10 +150,10 @@ public class AVT implements java.io.Serializable
    * NEEDSDOC @param rawName
    * NEEDSDOC @param stringedValue
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public AVT(StylesheetHandler handler, String uri, String name, String rawName, String stringedValue)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     m_uri = uri;
@@ -339,7 +339,14 @@ public class AVT implements java.io.Serializable
               {
 
                 // Illegal, I think...
-                handler.warn(XSLTErrorResources.WG_FOUND_CURLYBRACE, null);  //"Found \"}\" but no attribute template open!");
+                try
+                {
+                  handler.warn(XSLTErrorResources.WG_FOUND_CURLYBRACE, null);  //"Found \"}\" but no attribute template open!");
+                }
+                catch(org.xml.sax.SAXException se)
+                {
+                  throw new TransformerException(se);
+                }
                 buffer.append("}");
 
                 // leave the lookahead to be processed by the next round.
@@ -364,9 +371,15 @@ public class AVT implements java.io.Serializable
 
           if (null != error)
           {
-            handler.warn(XSLTErrorResources.WG_ATTR_TEMPLATE,
-                         new Object[]{ error });  //"Attr Template, "+error);
-
+            try
+            {
+              handler.warn(XSLTErrorResources.WG_ATTR_TEMPLATE,
+                           new Object[]{ error });  //"Attr Template, "+error);
+            }
+            catch(org.xml.sax.SAXException se)
+            {
+              throw new TransformerException(se);
+            }
             break;
           }
         }  // end while(tokenizer.hasMoreTokens())
@@ -447,11 +460,11 @@ public class AVT implements java.io.Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public String evaluate(
           XPathContext xctxt, Node context, org.apache.xalan.utils.PrefixResolver nsNode)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     FastStringBuffer buf = StringBufferPool.get();

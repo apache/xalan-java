@@ -62,7 +62,7 @@ import org.apache.xalan.utils.QName;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -93,11 +93,11 @@ public class WhitespaceList extends TemplateList
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   protected ElemTemplate getTemplate(
           StylesheetComposed imported, XPathContext support, Node targetNode, QName mode, boolean quietConflictWarnings)
-            throws SAXException
+            throws TransformerException
   {
     return imported.getWhiteSpaceInfo(support, (Element) targetNode);
   }

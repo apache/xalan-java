@@ -69,26 +69,42 @@ import org.w3c.dom.Node;
  * Acts as an holder for a transformation Source tree in the 
  * form of a Document Object Model.
  *
- * @version Alpha
- * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
  * @see <a href="http://www.w3.org/TR/DOM-Level-2">Document Object Model (DOM) Level 2 Specification</a>
  */
 public class DOMSource implements Source
 {
 
   /**
-   * Zero-argument default constructor.
+   * Zero-argument default constructor.  If this is used, and 
+   * no output DOM source is set, then the transformer will 
+   * create an empty source Document using 
+   * {@link javax.xml.parsers.DocumentBuilder#newDocument}.
+   * The created node may be retrieved once the transformation 
+   * is complete, via the getNode method.
    */
   public DOMSource(){}
 
   /**
-   * Create a new output target with a DOM node.
+   * Create a new input source with a DOM node.
    *
    * @param n The DOM node that will contain the Source tree.
    */
   public DOMSource(Node n)
   {
     setNode(n);
+  }
+
+  /**
+   * Create a new input source with a DOM node, and with the 
+   * system ID also passed in as the base URI.
+   *
+   * @param node The DOM node that will contain the Source tree.
+   * @param systemID Specifies the base URI associated with node.
+   */
+  public DOMSource(Node node, String systemID)
+  {
+    setNode(node);
+    setSystemId(systemID);
   }
 
   /**
@@ -117,7 +133,7 @@ public class DOMSource implements Source
    * 
    * @param baseID Base URL for this DOM tree.
    */
-  public void setBaseID(String baseID)
+  public void setSystemId(String baseID)
   {
     this.baseID = baseID;
   }
@@ -128,7 +144,7 @@ public class DOMSource implements Source
    * 
    * @return Base URL for this DOM tree.
    */
-  public String getBaseID()
+  public String getSystemId()
   {
     return this.baseID;
   }

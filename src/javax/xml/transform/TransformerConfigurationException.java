@@ -15,22 +15,16 @@ package javax.xml.transform;
 
 /**
  * Indicates a serious configuration error.
- *
- * @since JAXP 1.0
- * @version 1.0
  */
-
-public class TransformerConfigurationException extends Exception {
+public class TransformerConfigurationException extends TransformerException {
   
-    private Exception exception;
-
     /**
      * Create a new <code>TransformerConfigurationException</code> with no
      * detail mesage.
      */
 
     public TransformerConfigurationException() {
-        super();
+        super("Configuration Error");
     }
 
     /**
@@ -53,8 +47,7 @@ public class TransformerConfigurationException extends Exception {
      */
     
     public TransformerConfigurationException(Exception e) {
-        super();
-        this.exception = e;
+        super(e);
     }
 
     /**
@@ -68,40 +61,8 @@ public class TransformerConfigurationException extends Exception {
      */
     
     public TransformerConfigurationException(String msg, Exception e) {
-        super(msg);
-        this.exception = e;
+        super(msg, e);
     }
-
-
-    /**
-     * Return the message (if any) for this error . If there is no
-     * message for the exception and there is an encapsulated
-     * exception then the message of that exception will be returned.
-     *
-     * @return The error message.
-     */
-    
-    public String getMessage () {
-        String message = super.getMessage ();
-  
-        if (message == null && exception != null) {
-            return exception.getMessage();
-        }
-
-        return message;
-    }
-  
-    /**
-     * Return the actual exception (if any) that caused this exception to
-     * be raised.
-     *
-     * @return The encapsulated exception, or null if there is none.
-     */
-    
-    public Exception getException () {
-        return exception;
-    }
-
 
 }
 

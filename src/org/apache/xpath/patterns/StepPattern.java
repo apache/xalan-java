@@ -232,10 +232,10 @@ public class StepPattern extends NodeTest implements SubContextList
    *
    * NEEDSDOC (executeStep) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public XObject executeStep(XPathContext xctxt)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     XObject score;
@@ -340,7 +340,7 @@ public class StepPattern extends NodeTest implements SubContextList
         }
       }
     }
-    catch (org.xml.sax.SAXException se)
+    catch (javax.xml.transform.TransformerException se)
     {
 
       // TODO: should keep throw sax exception...
@@ -394,7 +394,7 @@ public class StepPattern extends NodeTest implements SubContextList
 
       return count;
     }
-    catch (org.xml.sax.SAXException se)
+    catch (javax.xml.transform.TransformerException se)
     {
 
       // TODO: should keep throw sax exception...
@@ -416,10 +416,10 @@ public class StepPattern extends NodeTest implements SubContextList
    *
    * NEEDSDOC (executeRelativePathPattern) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public XObject executeRelativePathPattern(XPathContext xctxt)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     XObject score;
@@ -456,9 +456,9 @@ public class StepPattern extends NodeTest implements SubContextList
    *
    * NEEDSDOC (execute) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
     XObject score;
@@ -487,10 +487,10 @@ public class StepPattern extends NodeTest implements SubContextList
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public double getMatchScore(XPathContext xctxt, Node context)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     xctxt.pushCurrentNode(context);

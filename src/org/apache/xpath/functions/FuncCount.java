@@ -82,9 +82,9 @@ public class FuncCount extends FunctionOneArg
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
     NodeIterator nl = m_arg0.execute(xctxt).nodeset();

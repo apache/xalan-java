@@ -56,7 +56,7 @@
  */
 package org.apache.xpath.axes;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.compiler.Compiler;
 
@@ -80,10 +80,10 @@ public class ChildIterator extends LocPathIterator
    * @param opPos The position within the op map, which contains the 
    * location path expression for this itterator.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public ChildIterator(Compiler compiler, int opPos)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
     super(compiler, opPos, false);
   }

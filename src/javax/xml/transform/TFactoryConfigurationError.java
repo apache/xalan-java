@@ -20,12 +20,10 @@
 package javax.xml.transform;
 
 /**
- * Thrown when a problem with configuration with the Parser Factories
+ * Thrown when a problem with configuration with the Transformer Factories
  * exists. This error will typically be thrown when the class of a
- * parser factory specified in the system properties cannot be found
+ * transformation factory specified in the system properties cannot be found
  * or instantiated.
- *
- * @version 1.0
  */
 public class TFactoryConfigurationError extends Error {
 

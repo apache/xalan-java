@@ -85,12 +85,11 @@ import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.helpers.NamespaceSupport;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.ErrorListener;
 
 /**
  * <meta name="usage" content="advanced"/>

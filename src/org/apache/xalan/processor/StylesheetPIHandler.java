@@ -57,7 +57,7 @@
 package org.apache.xalan.processor;
 
 import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.InputSource;
 import org.xml.sax.Attributes;
 
@@ -138,15 +138,15 @@ public class StylesheetPIHandler extends DefaultHandler
    * @param target The processing instruction target.
    * @param data The processing instruction data, or null if
    *             none is supplied.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#processingInstruction
    *
-   * @throws SAXException
+   * @throws TransformerException
    * @see <a href="http://www.w3.org/TR/xml-stylesheet/">Associating Style Sheets with XML documents, Version 1.0</a>
    */
   public void processingInstruction(String target, String data)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     if (target.equals("xml-stylesheet"))
@@ -173,7 +173,14 @@ public class StylesheetPIHandler extends DefaultHandler
         {
           href = tokenizer.nextToken();
           href = href.substring(1, href.length() - 1);
-          href = SystemIDResolver.getAbsoluteURI(href, m_baseID);
+          try
+          {
+            href = SystemIDResolver.getAbsoluteURI(href, m_baseID);
+          }
+          catch(TransformerException te)
+          {
+            throw new org.xml.sax.SAXException(te);
+          }
         }
         else if (name.equals("title"))
         {
@@ -241,7 +248,7 @@ public class StylesheetPIHandler extends DefaultHandler
 
   /**
    * The spec notes that "The xml-stylesheet processing instruction is allowed only in the prolog of an XML document.",
-   * so, at least for right now, I'm going to go ahead an throw a SAXException
+   * so, at least for right now, I'm going to go ahead an throw a TransformerException
    * in order to stop the parse.
    *
    * NEEDSDOC @param namespaceURI
@@ -249,11 +256,11 @@ public class StylesheetPIHandler extends DefaultHandler
    * NEEDSDOC @param qName
    * NEEDSDOC @param atts
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void startElement(
           String namespaceURI, String localName, String qName, Attributes atts)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
     throw new StopParseException();
   }

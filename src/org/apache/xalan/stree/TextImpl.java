@@ -60,7 +60,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
 import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.utils.FastStringBuffer;
 
@@ -126,9 +126,10 @@ public class TextImpl extends Child implements Text, SaxEventDispatch
    *
    * @param ch Content handler to handle SAX events
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void dispatchSaxEvent(ContentHandler ch) throws SAXException
+  public void dispatchSaxEvent(ContentHandler ch) 
+    throws org.xml.sax.SAXException
   {
 
     if (-1 == m_start)

@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.utils;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.utils.URI;
 import org.apache.xalan.utils.URI.MalformedURIException;
@@ -103,10 +103,10 @@ public class SystemIDResolver
    * NEEDSDOC @param base
    *
    * NEEDSDOC ($objectName$) @return
-   * @exception SAXException thrown if the string can't be turned into a URL.
+   * @exception TransformerException thrown if the string can't be turned into a URL.
    */
   public static String getAbsoluteURI(String urlString, String base)
-          throws SAXException
+          throws TransformerException
   {
 
     if ((urlString.indexOf(':') < 0) && (null != base)
@@ -146,7 +146,7 @@ public class SystemIDResolver
     }
     catch (MalformedURIException mue)
     {
-      throw new SAXException(mue);
+      throw new TransformerException(mue);
     }
 
     String uriStr = uri.toString();

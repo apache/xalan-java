@@ -99,9 +99,9 @@ public class FuncCurrent extends Function
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
     // If we're in a predicate, then this will return non-null.

@@ -65,9 +65,6 @@ import javax.xml.transform.SourceLocator;
 /**
  * This class specifies an exceptional condition that occured 
  * during the transformation process.
- *
- * @version Alpha
- * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
  */
 public class TransformerException extends Exception
 {
@@ -182,59 +179,14 @@ public class TransformerException extends Exception
     this.containedException = e;
     this.locator = locator;
   }
-  
+        
   /**
-   * Print the the trace of methods from where the error 
-   * originated.  This will trace all nested exception 
-   * objects, as well as this object.
-   * @param s The stream where the dump will be sent to.
+   * Get the error message with location information 
+   * appended.
    */
-  public void printStackTrace(java.io.PrintStream s) 
+  public String getMessageAndLocation()
   {
-    if(s == null)
-      s = System.err;
-    try
-    {
-      super.printStackTrace(s);
-    }
-    catch(Exception e){}
-    Exception exception = getException();
-    for(int i = 0; (i < 10) && (null != exception); i++)
-    {
-      s.println("---------");
-      exception.printStackTrace(s);
-      try
-      {
-        Method meth = ((Object)exception).getClass().getMethod("getException", null);
-        if(null != meth)
-        {
-          Exception prev = exception;
-          exception = (Exception)meth.invoke(exception, null);
-          if(prev == exception)
-            break;
-        }
-        else
-        {
-          exception = null;
-        }
-      }
-      catch(InvocationTargetException ite)
-      {
-        exception = null;
-      }
-      catch(IllegalAccessException iae)
-      {
-        exception = null;
-      }
-      catch(NoSuchMethodException nsme)
-      {
-        exception = null;
-      }
-    }
-  }
-    
-  private void appendMessageAndInfo(StringBuffer sbuffer)
-  {
+    StringBuffer sbuffer = new StringBuffer();
     String message = super.getMessage();    
     if(null != message)
     {
@@ -262,8 +214,64 @@ public class TransformerException extends Exception
         sbuffer.append(column);
       }
     }
+    return sbuffer.toString();
   }
   
+  /**
+   * Get the location information as a string.
+   * 
+   * @return A string with location info, or null 
+   * if there is no location information.
+   */
+  public String getLocationAsString()
+  {
+    if(null != locator)
+    {
+      StringBuffer sbuffer = new StringBuffer();
+      String systemID = locator.getSystemId();
+      int line = locator.getLineNumber();
+      int column = locator.getColumnNumber();
+
+      if(null != systemID)
+      {
+        sbuffer.append("; SystemID: ");
+        sbuffer.append(systemID);
+      }
+      if(0 != line)
+      {
+        sbuffer.append("; Line#: ");
+        sbuffer.append(line);
+      }
+      if(0 != column)
+      {
+        sbuffer.append("; Column#: ");
+        sbuffer.append(column);
+      }
+      return sbuffer.toString();
+    }
+    else return null;
+  }
+  
+  /**
+   * Print the the trace of methods from where the error 
+   * originated.  This will trace all nested exception 
+   * objects, as well as this object.
+   */
+  public void printStackTrace() 
+  {
+    printStackTrace(new java.io.PrintWriter(System.err, true));
+  }
+  
+  /**
+   * Print the the trace of methods from where the error 
+   * originated.  This will trace all nested exception 
+   * objects, as well as this object.
+   * @param s The stream where the dump will be sent to.
+   */
+  public void printStackTrace(java.io.PrintStream s) 
+  {
+    printStackTrace(new java.io.PrintWriter(s));
+  }
 
   /**
    * Print the the trace of methods from where the error 
@@ -274,12 +282,17 @@ public class TransformerException extends Exception
   public void printStackTrace(java.io.PrintWriter s) 
   {
     if(s == null)
-      s = new java.io.PrintWriter(System.err);
+      s = new java.io.PrintWriter(System.err, true);
     try
     {
+      String locInfo = getLocationAsString();
+      if(null != locInfo)
+        s.println(locInfo);
       super.printStackTrace(s);
     }
-    catch(Exception e){}
+    catch(Exception e)
+    {
+    }
     Exception exception = getException();
     
     for(int i = 0; (i < 10) && (null != exception); i++)
@@ -287,6 +300,12 @@ public class TransformerException extends Exception
       s.println("---------");
       try
       {
+        if(exception instanceof TransformerException)
+        {
+          String locInfo = ((TransformerException)exception).getLocationAsString();
+          if(null != locInfo)
+            s.println(locInfo);
+        }
         exception.printStackTrace(s);
       }
       catch(Exception e)

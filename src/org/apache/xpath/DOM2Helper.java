@@ -69,12 +69,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 import org.w3c.dom.Attr;
-
-import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import org.xml.sax.Parser;
 
 import javax.xml.parsers.*;
+
+import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="general"/>
@@ -98,13 +98,13 @@ public class DOM2Helper extends DOMHelper
    *
    * NEEDSDOC @param node
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void checkNode(Node node) throws SAXException
+  public void checkNode(Node node) throws TransformerException
   {
 
     // if(!(node instanceof org.apache.xerces.dom.NodeImpl))
-    //  throw new SAXException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_XERCES_CANNOT_HANDLE_NODES, new Object[]{((Object)node).getClass()})); //"DOM2Helper can not handle nodes of type"
+    //  throw new TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_XERCES_CANNOT_HANDLE_NODES, new Object[]{((Object)node).getClass()})); //"DOM2Helper can not handle nodes of type"
     //+((Object)node).getClass());
   }
 
@@ -163,7 +163,7 @@ public class DOM2Helper extends DOMHelper
    *
    * @param source The input source for the top-level of the
    *        XML document.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @exception java.io.IOException An IO exception from the parser,
    *            possibly from a byte stream or character stream
@@ -175,9 +175,9 @@ public class DOM2Helper extends DOMHelper
    * @see #setContentHandler
    * @see #setErrorHandler
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void parse(InputSource source) throws SAXException
+  public void parse(InputSource source) throws TransformerException
   {
 
     try
@@ -208,11 +208,9 @@ public class DOM2Helper extends DOMHelper
 
       parser.setFeature("http://apache.org/xml/features/allow-java-encodings", true);
       */
-      String ident = (null == source.getSystemId())
-                     ? "Input XSL" : source.getSystemId();
 
       parser.setErrorHandler(
-        new org.apache.xalan.utils.DefaultErrorHandler(ident));
+        new org.apache.xalan.utils.DefaultErrorHandler());
 
       // if(null != m_entityResolver)
       // {
@@ -221,13 +219,17 @@ public class DOM2Helper extends DOMHelper
       // }
       setDocument(parser.parse(source));
     }
+    catch (org.xml.sax.SAXException se)
+    {
+      throw new TransformerException(se);
+    }
     catch (ParserConfigurationException pce)
     {
-      throw new SAXException(pce);
+      throw new TransformerException(pce);
     }
     catch (IOException ioe)
     {
-      throw new SAXException(ioe);
+      throw new TransformerException(ioe);
     }
 
     // setDocument(((org.apache.xerces.parsers.DOMParser)parser).getDocument());

@@ -63,10 +63,6 @@ import java.lang.String;
 import java.io.OutputStream;
 import java.io.Writer;
 
-import org.xml.sax.ContentHandler;
-import org.xml.sax.ext.DeclHandler;
-import org.xml.sax.ext.LexicalHandler;
-
 /**
  * Acts as an holder for a transformation result, 
  * which may be XML, plain Text, HTML, or some other form of markup.

@@ -77,6 +77,7 @@ import org.apache.xalan.transformer.StackGuard;
 import org.apache.xalan.stree.SaxEventDispatch;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -207,11 +208,11 @@ public class ElemForEach extends ElemTemplateElement
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
 
     transformer.pushCurrentTemplateRuleIsNull(true);
@@ -250,11 +251,11 @@ public class ElemForEach extends ElemTemplateElement
    *
    * NEEDSDOC (sortNodes) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   protected NodeIterator sortNodes(
           XPathContext xctxt, Vector keys, NodeIterator sourceNodes)
-            throws SAXException
+            throws TransformerException
   {
 
     NodeSorter sorter = new NodeSorter(xctxt);
@@ -310,11 +311,11 @@ public class ElemForEach extends ElemTemplateElement
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   void pushParams(
           TransformerImpl transformer, XPathContext xctxt, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
 
     VariableStack vars = xctxt.getVarStack();
@@ -343,7 +344,7 @@ public class ElemForEach extends ElemTemplateElement
    *
    * NEEDSDOC @param transformer
    * NEEDSDOC @param sourceNode
-   * @exception SAXException Thrown in a variety of circumstances.
+   * @exception TransformerException Thrown in a variety of circumstances.
    * @param stylesheetTree The owning stylesheet tree.
    * @param xslInstruction The stylesheet element context (depricated -- I do
    *      not think we need this).
@@ -359,156 +360,163 @@ public class ElemForEach extends ElemTemplateElement
    */
   public void transformSelectedNodes(
           TransformerImpl transformer, Node sourceNode, ElemTemplateElement template, QName mode)
-            throws SAXException
+            throws TransformerException
   {
-    boolean rdebug = TransformerImpl.S_DEBUG;
-    XPathContext xctxt = transformer.getXPathContext();
-    XPath selectPattern = getSelectOrDefault();
-    XObject selectResult = selectPattern.execute(xctxt, sourceNode, this);
-    
-    if (rdebug)
-      transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
-              "test", selectPattern, selectResult);
-    
-    Vector keys = transformer.processSortKeys(this, sourceNode);
-    NodeIterator sourceNodes = selectResult.nodeset();
-
-    // Sort if we need to.
-    if (null != keys)
-      sourceNodes = sortNodes(xctxt, keys, sourceNodes);
-
-    pushParams(transformer, xctxt, sourceNode, mode);
-
-    // Push the ContextNodeList on a stack, so that select="position()"
-    // and the like will work.
-    // System.out.println("pushing context node list...");
-    SourceLocator savedLocator = xctxt.getSAXLocator();
-
-    xctxt.pushContextNodeList((ContextNodeList) sourceNodes);
-    transformer.pushElemTemplateElement(null);
-
-    ResultTreeHandler rth = transformer.getResultTreeHandler();
-    StylesheetRoot sroot = getStylesheetRoot();
-    TemplateList tl = sroot.getTemplateListComposed();
-
-    // StylesheetComposed stylesheet = getStylesheetComposed();
-    StackGuard guard = transformer.getStackGuard();
-    boolean check = (guard.m_recursionLimit > -1);
-    boolean quiet = transformer.getQuietConflictWarnings();
-    boolean needToFindTemplate = (null == template);
-
     try
     {
-      Node child;
+      boolean rdebug = TransformerImpl.S_DEBUG;
+      XPathContext xctxt = transformer.getXPathContext();
+      XPath selectPattern = getSelectOrDefault();
+      XObject selectResult = selectPattern.execute(xctxt, sourceNode, this);
+      
+      if (rdebug)
+        transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+                                                        "test", selectPattern, selectResult);
+      
+      Vector keys = transformer.processSortKeys(this, sourceNode);
+      NodeIterator sourceNodes = selectResult.nodeset();
 
-      while (null != (child = sourceNodes.nextNode()))
+      // Sort if we need to.
+      if (null != keys)
+        sourceNodes = sortNodes(xctxt, keys, sourceNodes);
+
+      pushParams(transformer, xctxt, sourceNode, mode);
+
+      // Push the ContextNodeList on a stack, so that select="position()"
+      // and the like will work.
+      // System.out.println("pushing context node list...");
+      SourceLocator savedLocator = xctxt.getSAXLocator();
+
+      xctxt.pushContextNodeList((ContextNodeList) sourceNodes);
+      transformer.pushElemTemplateElement(null);
+
+      ResultTreeHandler rth = transformer.getResultTreeHandler();
+      StylesheetRoot sroot = getStylesheetRoot();
+      TemplateList tl = sroot.getTemplateListComposed();
+
+      // StylesheetComposed stylesheet = getStylesheetComposed();
+      StackGuard guard = transformer.getStackGuard();
+      boolean check = (guard.m_recursionLimit > -1);
+      boolean quiet = transformer.getQuietConflictWarnings();
+      boolean needToFindTemplate = (null == template);
+
+      try
       {
-        if (needToFindTemplate)
+        Node child;
+
+        while (null != (child = sourceNodes.nextNode()))
         {
-          template = tl.getTemplate(xctxt, child, mode, quiet);
-
-          // If that didn't locate a node, fall back to a default template rule.
-          // See http://www.w3.org/TR/xslt#built-in-rule.
-          if (null == template)
+          if (needToFindTemplate)
           {
-            switch (child.getNodeType())
-            {
-            case Node.DOCUMENT_FRAGMENT_NODE :
-            case Node.ELEMENT_NODE :
-              template = sroot.getDefaultRule();
-              break;
-            case Node.CDATA_SECTION_NODE :
-              if (child.supports(SaxEventDispatch.SUPPORTSINTERFACE, "1.0"))
-              {
-                ((SaxEventDispatch) child).dispatchSaxEvent(rth);
-              }
-              else
-              {
-                rth.startCDATA();
+            template = tl.getTemplate(xctxt, child, mode, quiet);
 
+            // If that didn't locate a node, fall back to a default template rule.
+            // See http://www.w3.org/TR/xslt#built-in-rule.
+            if (null == template)
+            {
+              switch (child.getNodeType())
+              {
+              case Node.DOCUMENT_FRAGMENT_NODE :
+              case Node.ELEMENT_NODE :
+                template = sroot.getDefaultRule();
+                break;
+              case Node.CDATA_SECTION_NODE :
+                if (child.supports(SaxEventDispatch.SUPPORTSINTERFACE, "1.0"))
+                {
+                  ((SaxEventDispatch) child).dispatchSaxEvent(rth);
+                }
+                else
+                {
+                  rth.startCDATA();
+
+                  String data = child.getNodeValue();
+
+                  rth.characters(data.toCharArray(), 0, data.length());
+                  rth.endCDATA();
+                }
+
+                continue;
+              case Node.TEXT_NODE :
+                if (child.supports(SaxEventDispatch.SUPPORTSINTERFACE, "1.0"))
+                {
+                  ((SaxEventDispatch) child).dispatchSaxEvent(rth);
+                }
+                else
+                {
+                  String data = child.getNodeValue();
+
+                  rth.characters(data.toCharArray(), 0, data.length());
+                }
+
+                continue;
+              case Node.ATTRIBUTE_NODE :
                 String data = child.getNodeValue();
 
                 rth.characters(data.toCharArray(), 0, data.length());
-                rth.endCDATA();
+
+                continue;
+              case Node.DOCUMENT_NODE :
+                template = sroot.getDefaultRootRule();
+                break;
+              default :
+
+                // No default rules for processing instructions and the like.
+                continue;
               }
-
-              continue;
-            case Node.TEXT_NODE :
-              if (child.supports(SaxEventDispatch.SUPPORTSINTERFACE, "1.0"))
-              {
-                ((SaxEventDispatch) child).dispatchSaxEvent(rth);
-              }
-              else
-              {
-                String data = child.getNodeValue();
-
-                rth.characters(data.toCharArray(), 0, data.length());
-              }
-
-              continue;
-            case Node.ATTRIBUTE_NODE :
-              String data = child.getNodeValue();
-
-              rth.characters(data.toCharArray(), 0, data.length());
-
-              continue;
-            case Node.DOCUMENT_NODE :
-              template = sroot.getDefaultRootRule();
-              break;
-            default :
-
-              // No default rules for processing instructions and the like.
-              continue;
             }
           }
-        }
 
-        // If we are processing the default text rule, then just clone 
-        // the value directly to the result tree.
-        try
-        {
-          transformer.pushPairCurrentMatched(template, child);
-
-          if (check)
-            guard.push(this, child);
-
-          // Fire a trace event for the template.
-          if (rdebug)
-            transformer.getTraceManager().fireTraceEvent(child, mode,
-                    template);
-
-          // And execute the child templates.
-          if (template.isCompiledTemplate())
-            template.execute(transformer, child, mode);
-          else
+          // If we are processing the default text rule, then just clone 
+          // the value directly to the result tree.
+          try
           {
+            transformer.pushPairCurrentMatched(template, child);
 
-            // Loop through the children of the template, calling execute on 
-            // each of them.
-            for (ElemTemplateElement t = template.m_firstChild; t != null;
-                    t = t.m_nextSibling)
+            if (check)
+              guard.push(this, child);
+
+            // Fire a trace event for the template.
+            if (rdebug)
+              transformer.getTraceManager().fireTraceEvent(child, mode,
+                                                           template);
+
+            // And execute the child templates.
+            if (template.isCompiledTemplate())
+              template.execute(transformer, child, mode);
+            else
             {
-              xctxt.setSAXLocator(t);
-              transformer.setCurrentElement(t);
-              t.execute(transformer, child, mode);
+
+              // Loop through the children of the template, calling execute on 
+              // each of them.
+              for (ElemTemplateElement t = template.m_firstChild; t != null;
+                   t = t.m_nextSibling)
+              {
+                xctxt.setSAXLocator(t);
+                transformer.setCurrentElement(t);
+                t.execute(transformer, child, mode);
+              }
             }
           }
-        }
-        finally
-        {
-          transformer.popCurrentMatched();
+          finally
+          {
+            transformer.popCurrentMatched();
 
-          if (check)
-            guard.pop();
+            if (check)
+              guard.pop();
+          }
         }
       }
+      finally
+      {
+        xctxt.setSAXLocator(savedLocator);
+        xctxt.popContextNodeList();
+        transformer.popElemTemplateElement();
+        popParams(xctxt);
+      }
     }
-    finally
+    catch(SAXException se)
     {
-      xctxt.setSAXLocator(savedLocator);
-      xctxt.popContextNodeList();
-      transformer.popElemTemplateElement();
-      popParams(xctxt);
+      throw new TransformerException(se);
     }
   }
 

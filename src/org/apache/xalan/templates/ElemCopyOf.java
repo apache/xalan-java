@@ -70,6 +70,8 @@ import org.apache.xalan.transformer.TreeWalker2Result;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
 
+import javax.xml.transform.TransformerException;
+
 /**
  * <meta name="usage" content="advanced"/>
  * Implement xsl:copy-of.
@@ -140,84 +142,92 @@ public class ElemCopyOf extends ElemTemplateElement
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
 
-    if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
-
-    XPathContext xctxt = transformer.getXPathContext();
-    XObject value = m_selectExpression.execute(xctxt, sourceNode, this);
-
-    if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
-              "select", m_selectExpression, value);
-
-    ResultTreeHandler handler = transformer.getResultTreeHandler();
-
-    if (null != value)
+    try
     {
-      int type = value.getType();
-      String s;
+      if (TransformerImpl.S_DEBUG)
+        transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
 
-      switch (type)
+      XPathContext xctxt = transformer.getXPathContext();
+      XObject value = m_selectExpression.execute(xctxt, sourceNode, this);
+
+      if (TransformerImpl.S_DEBUG)
+        transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+                                                        "select", m_selectExpression, value);
+
+      ResultTreeHandler handler = transformer.getResultTreeHandler();
+
+      if (null != value)
       {
-      case XObject.CLASS_BOOLEAN :
-      case XObject.CLASS_NUMBER :
-      case XObject.CLASS_STRING :
-        s = value.str();
+        int type = value.getType();
+        String s;
 
-        handler.characters(s.toCharArray(), 0, s.length());
-        break;
-      case XObject.CLASS_NODESET :
-
-        // System.out.println(value);
-        NodeIterator nl = value.nodeset();
-
-        // Copy the tree.
-        org.apache.xalan.utils.TreeWalker tw =
-          new TreeWalker2Result(transformer, handler);
-        Node pos;
-
-        while (null != (pos = nl.nextNode()))
+        switch (type)
         {
-          short t = pos.getNodeType();
+        case XObject.CLASS_BOOLEAN :
+        case XObject.CLASS_NUMBER :
+        case XObject.CLASS_STRING :
+          s = value.str();
 
-          // If we just copy the whole document, a startDoc and endDoc get 
-          // generated, so we need to only walk the child nodes.
-          if (t == Node.DOCUMENT_NODE)
+          handler.characters(s.toCharArray(), 0, s.length());
+          break;
+        case XObject.CLASS_NODESET :
+
+          // System.out.println(value);
+          NodeIterator nl = value.nodeset();
+
+          // Copy the tree.
+          org.apache.xalan.utils.TreeWalker tw =
+                                                new TreeWalker2Result(transformer, handler);
+          Node pos;
+
+          while (null != (pos = nl.nextNode()))
           {
-            for (Node child = pos.getFirstChild(); child != null;
-                    child = child.getNextSibling())
+            short t = pos.getNodeType();
+
+            // If we just copy the whole document, a startDoc and endDoc get 
+            // generated, so we need to only walk the child nodes.
+            if (t == Node.DOCUMENT_NODE)
             {
-              tw.traverse(child);
+              for (Node child = pos.getFirstChild(); child != null;
+                   child = child.getNextSibling())
+              {
+                tw.traverse(child);
+              }
+            }
+            else if (t == Node.ATTRIBUTE_NODE)
+            {
+              handler.addAttribute((Attr) pos);
+            }
+            else
+            {
+              tw.traverse(pos);
             }
           }
-          else if (t == Node.ATTRIBUTE_NODE)
-          {
-            handler.addAttribute((Attr) pos);
-          }
-          else
-          {
-            tw.traverse(pos);
-          }
-        }
-        break;
-      case XObject.CLASS_RTREEFRAG :
-        handler.outputResultTreeFragment(value,
-                                         transformer.getXPathContext());
-        break;
-      default :
-        s = value.str();
+          break;
+        case XObject.CLASS_RTREEFRAG :
+          handler.outputResultTreeFragment(value,
+                                           transformer.getXPathContext());
+          break;
+        default :
+          s = value.str();
 
-        handler.characters(s.toCharArray(), 0, s.length());
-        break;
+          handler.characters(s.toCharArray(), 0, s.length());
+          break;
+        }
       }
     }
+    catch(org.xml.sax.SAXException se)
+    {
+      throw new TransformerException(se);
+    }
+
   }
 
   /**

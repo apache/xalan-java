@@ -54,39 +54,66 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.serialize;
+package org.apache.xalan.serialize.helpers;
+
+import org.apache.xalan.serialize.OutputFormat;
+import org.apache.xalan.serialize.Method;
 
 /**
- * Names of the four default output methods.
+ * Output format for XHTML documents.
  * <p>
- * Four default output methods are defined: XML, HTML, XHTML and TEXT.
- * Serializers may support additional output methods. The names of
- * these output methods should be encoded as <tt>namespace:local</tt>.
+ * The output format affects the manner in which a document is
+ * serialized. The output format determines the output method,
+ * encoding, indentation, document type, and various other properties
+ * that affect the manner in which a document is serialized.
  *
  * @version Alpha
  * @author <a href="mailto:arkin@exoffice.com">Assaf Arkin</a>
- * @see OutputFormat
  */
-public final class Method
+public class XHTMLOutputFormat extends OutputFormat
 {
 
   /**
-   * The output method for XML documents: <tt>xml</tt>.
+   * Constructor XHTMLOutputFormat
+   *
    */
-  public static final String XML = "xml";
+  public XHTMLOutputFormat()
+  {
+
+    setMethod(Method.XHTML);
+    setMediaType("text/html");
+    setOmitXMLDeclaration(true);
+    setPreserveSpace(false);
+    setDoctypePublicId("-//W3C//DTD XHTML 1.0 Strict//EN");
+    setDoctypeSystemId(
+      "http://www.w3.org/TR/WD-html-in-xml/DTD/xhtml1-strict.dtd");
+  }
 
   /**
-   * The output method for HTML documents: <tt>html</tt>.
+   * Constructor XHTMLOutputFormat
+   *
+   *
+   * NEEDSDOC @param encoding
    */
-  public static final String HTML = "html";
+  public XHTMLOutputFormat(String encoding)
+  {
+
+    this();
+
+    setEncoding(encoding);
+  }
 
   /**
-   * The output method for XHTML documents: <tt>xhtml</tt>.
+   * Constructor XHTMLOutputFormat
+   *
+   *
+   * NEEDSDOC @param indenting
    */
-  public static final String XHTML = "xhtml";
+  public XHTMLOutputFormat(boolean indenting)
+  {
 
-  /**
-   * The output method for text documents: <tt>text</tt>.
-   */
-  public static final String Text = "text";
+    this();
+
+    setIndent(indenting);
+  }
 }

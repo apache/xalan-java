@@ -113,9 +113,9 @@ public class Function extends Expression
    * @param xctxt The execution current context.
    * @return A valid XObject.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
     // Programmer's assert.  (And, no, I don't want the method to be abstract).

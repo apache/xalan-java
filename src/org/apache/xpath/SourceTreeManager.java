@@ -71,8 +71,6 @@ import javax.xml.transform.URIResolver;
 import javax.xml.transform.TransformerException;
 
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ContentHandler;
@@ -82,6 +80,7 @@ import org.xml.sax.EntityResolver;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.stree.SourceTreeHandler;
 import org.apache.xalan.utils.SystemIDResolver;
+import org.apache.xalan.utils.SAXSourceLocator;
 import org.apache.xpath.res.XPATHErrorResources;
 
 import javax.xml.transform.SourceLocator;
@@ -89,7 +88,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
-import org.apache.xalan.utils.SAXSourceLocator;
+import javax.xml.transform.TransformerException;
 
 /**
  * This class bottlenecks all management of source trees.  The methods
@@ -200,7 +199,7 @@ public class SourceTreeManager
    */
   public Source resolveURI(
           String base, String urlString, SourceLocator locator)
-            throws TransformerException, IOException, SAXException
+            throws TransformerException, IOException, TransformerException
   {
     Source source = null;
     
@@ -311,7 +310,7 @@ public class SourceTreeManager
    * @throws TransformerException
    */
   public Node getSourceTree(String base, String urlString, SourceLocator locator)
-          throws SAXException
+          throws TransformerException
   {
 
     // System.out.println("getSourceTree");
@@ -324,11 +323,11 @@ public class SourceTreeManager
     }
     catch (IOException ioe)
     {
-      throw new SAXParseException(ioe.getMessage(), (SAXSourceLocator)locator, ioe);
+      throw new TransformerException(ioe.getMessage(), (SAXSourceLocator)locator, ioe);
     }
     catch (TransformerException te)
     {
-      throw new SAXParseException(te.getMessage(), (SAXSourceLocator)locator, te);
+      throw new TransformerException(te.getMessage(), (SAXSourceLocator)locator, te);
     }
   }
 
@@ -404,7 +403,7 @@ public class SourceTreeManager
         reader.setProperty("http://xml.org/sax/properties/lexical-handler",
                            handler);
       }
-      catch (SAXException se){}
+      catch (org.xml.sax.SAXException se){}
 
       InputSource isource = SAXSource.sourceToInputSource(source);
       reader.parse(isource);
@@ -418,7 +417,7 @@ public class SourceTreeManager
     {
       throw new TransformerException(ioe.getMessage(), locator, ioe);
     }
-    catch (SAXException se)
+    catch (org.xml.sax.SAXException se)
     {
       throw new TransformerException(se.getMessage(), locator, se);
     }
@@ -461,7 +460,7 @@ public class SourceTreeManager
         reader.setFeature("http://apache.org/xml/features/validation/dynamic",
                           true);
       }
-      catch (SAXException se)
+      catch (org.xml.sax.SAXException se)
       {
 
         // What can we do?
@@ -470,7 +469,7 @@ public class SourceTreeManager
 
       return reader;
     }
-    catch (SAXException se)
+    catch (org.xml.sax.SAXException se)
     {
       throw new TransformerException(se.getMessage(), locator, se);
     }

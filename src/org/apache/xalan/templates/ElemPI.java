@@ -65,6 +65,8 @@ import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 
+import javax.xml.transform.TransformerException;
+
 /**
  * <meta name="usage" content="advanced"/>
  * Implement xsl:processing-instruction.
@@ -141,11 +143,11 @@ public class ElemPI extends ElemTemplateElement
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
 
     if (TransformerImpl.S_DEBUG)
@@ -174,7 +176,14 @@ public class ElemPI extends ElemTemplateElement
     // ">
     String data = transformer.transformToString(this, sourceNode, mode);
 
-    transformer.getResultTreeHandler().processingInstruction(piName, data);
+    try
+    {
+      transformer.getResultTreeHandler().processingInstruction(piName, data);
+    }
+    catch(org.xml.sax.SAXException se)
+    {
+      throw new TransformerException(se);
+    }
   }
 
   /**

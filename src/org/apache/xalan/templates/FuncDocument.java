@@ -83,14 +83,12 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.transformer.TransformerImpl;
 
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.ErrorListener;
 import org.apache.xalan.utils.SAXSourceLocator;
 import javax.xml.transform.Source;
 
@@ -118,9 +116,9 @@ public class FuncDocument extends Function2Args
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
     Node context = xctxt.getCurrentNode();
@@ -245,10 +243,10 @@ public class FuncDocument extends Function2Args
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   Node getDoc(XPathContext xctxt, Node context, String uri, String base)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     // System.out.println("base: "+base+", uri: "+uri);
@@ -262,12 +260,12 @@ public class FuncDocument extends Function2Args
     }
     catch (IOException ioe)
     {
-      throw new SAXParseException(ioe.getMessage(), 
+      throw new TransformerException(ioe.getMessage(), 
         (SAXSourceLocator)xctxt.getSAXLocator(), ioe);
     }
     catch(TransformerException te)
     {
-      throw new SAXException(te);
+      throw new TransformerException(te);
     }
 
     if (null != newDoc)
@@ -315,9 +313,9 @@ public class FuncDocument extends Function2Args
       StringWriter sw = new StringWriter();
       PrintWriter diagnosticsWriter = new PrintWriter(sw);
 
-      if (throwable instanceof SAXException)
+      if (throwable instanceof TransformerException)
       {
-        SAXException spe = (SAXException) throwable;
+        TransformerException spe = (TransformerException) throwable;
 
         {
           Exception e = spe;
@@ -330,15 +328,16 @@ public class FuncDocument extends Function2Args
                                         + e.getMessage());
             }
 
-            if (e instanceof SAXParseException)
+            if (e instanceof TransformerException)
             {
-              SAXParseException spe2 = (SAXParseException) e;
+              TransformerException spe2 = (TransformerException) e;
 
-              if (null != spe2.getSystemId())
-                diagnosticsWriter.println("   ID: " + spe2.getSystemId()
-                                          + " Line #" + spe2.getLineNumber()
+              SourceLocator locator = spe2.getLocator();
+              if ((null != locator) && (null != locator.getSystemId()))
+                diagnosticsWriter.println("   ID: " + locator.getSystemId()
+                                          + " Line #" + locator.getLineNumber()
                                           + " Column #"
-                                          + spe2.getColumnNumber());
+                                          + locator.getColumnNumber());
 
               e = spe2.getException();
 
@@ -394,34 +393,19 @@ public class FuncDocument extends Function2Args
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public void error(XPathContext xctxt, int msg, Object args[])
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     String formattedMsg = XSLMessages.createMessage(msg, args);
-    ErrorHandler errHandler = xctxt.getPrimaryReader().getErrorHandler();
-    SAXParseException spe = new SAXParseException(formattedMsg,
+    ErrorListener errHandler = xctxt.getErrorListener();
+    TransformerException spe = new TransformerException(formattedMsg,
                               (SAXSourceLocator)xctxt.getSAXLocator());
 
     if (null != errHandler)
       errHandler.error(spe);
-    else
-    {
-      if(null != spe.getSystemId())
-      {
-        System.out.println(spe.getMessage() + "; file " 
-                           + spe.getSystemId()
-                           + "; line " + spe.getLineNumber() + "; column "
-                           + spe.getColumnNumber());
-      }
-      else
-      {
-        System.out.println(spe.getMessage());
-      }
-      throw spe;
-    }
   }
 
   /**
@@ -433,33 +417,19 @@ public class FuncDocument extends Function2Args
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public void warn(XPathContext xctxt, int msg, Object args[])
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     String formattedMsg = XSLMessages.createWarning(msg, args);
-    ErrorHandler errHandler = xctxt.getPrimaryReader().getErrorHandler();
-    SAXParseException spe = new SAXParseException(formattedMsg,
+    ErrorListener errHandler = xctxt.getErrorListener();
+    TransformerException spe = new TransformerException(formattedMsg,
                               (SAXSourceLocator)xctxt.getSAXLocator());
 
     if (null != errHandler)
       errHandler.error(spe);
-    else
-    {
-      if(null != spe.getSystemId())
-      {
-        System.out.println(spe.getMessage() + "; file " 
-                           + spe.getSystemId()
-                           + "; line " + spe.getLineNumber() + "; column "
-                           + spe.getColumnNumber());
-      }
-      else
-      {
-        System.out.println(spe.getMessage());
-      }
-    }
   }
 
   /*

@@ -74,9 +74,9 @@ public class Number extends UnaryOperation
    *
    * NEEDSDOC (operate) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XObject operate(XObject right) throws org.xml.sax.SAXException
+  public XObject operate(XObject right) throws javax.xml.transform.TransformerException
   {
 
     if (XObject.CLASS_NUMBER == right.getType())

@@ -115,9 +115,9 @@ public class FuncLoader
    *
    * NEEDSDOC (getFunction) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public Function getFunction() throws org.xml.sax.SAXException
+  public Function getFunction() throws javax.xml.transform.TransformerException
   {
 
     try
@@ -144,15 +144,15 @@ public class FuncLoader
     }
     catch (ClassNotFoundException e)
     {
-      throw new org.xml.sax.SAXException(e);
+      throw new javax.xml.transform.TransformerException(e);
     }
     catch (IllegalAccessException e)
     {
-      throw new org.xml.sax.SAXException(e);
+      throw new javax.xml.transform.TransformerException(e);
     }
     catch (InstantiationException e)
     {
-      throw new org.xml.sax.SAXException(e);
+      throw new javax.xml.transform.TransformerException(e);
     }
   }
 }

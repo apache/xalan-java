@@ -85,10 +85,10 @@ public class FuncLast extends Function
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public int getCountOfContextNodeList(XPathContext xctxt)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     //    assert(null != m_contextNodeList, "m_contextNodeList must be non-null");
@@ -123,9 +123,9 @@ public class FuncLast extends Function
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
     return new XNumber((double) getCountOfContextNodeList(xctxt));
   }

@@ -59,7 +59,7 @@ package org.apache.xalan.templates;
 import org.w3c.dom.Node;
 import org.w3c.dom.DOMException;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -163,127 +163,134 @@ public class ElemAttribute extends ElemTemplateElement
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
-
-    if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
-
-    ResultTreeHandler rhandler = transformer.getResultTreeHandler();
-    XPathContext xctxt = transformer.getXPathContext();
-
-    // The attribute name has to be evaluated as an AVT.
-    String attrName = m_name_avt.evaluate(xctxt, sourceNode, this);
-    String origAttrName = attrName;  // save original attribute name
-
-    // Get the children of the xsl:attribute element as the string value.
-    String val = transformer.transformToString(this, sourceNode, mode);
-
-    // If they are trying to add an attribute when there isn't an 
-    // element pending, it is an error.
-    if (!rhandler.isElementPending())
+    try
     {
-      transformer.getMsgMgr().warn(
-        XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_NAME,
-        new Object[]{ origAttrName });
+      if (TransformerImpl.S_DEBUG)
+        transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
 
-      return;
+      ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+      XPathContext xctxt = transformer.getXPathContext();
 
-      // warn(templateChild, sourceNode, "Trying to add attribute after element child has been added, ignoring...");
-    }
+      // The attribute name has to be evaluated as an AVT.
+      String attrName = m_name_avt.evaluate(xctxt, sourceNode, this);
+      String origAttrName = attrName;  // save original attribute name
 
-    if (null == attrName)
-      return;
+      // Get the children of the xsl:attribute element as the string value.
+      String val = transformer.transformToString(this, sourceNode, mode);
 
-    String attrNameSpace = null;  // by default
-
-    // Did they declare a namespace attribute?
-    if (null != m_namespace_avt)
-    {
-
-      // The namespace attribute is an AVT also.
-      attrNameSpace = m_namespace_avt.evaluate(xctxt, sourceNode, this);
-
-      if (null != attrNameSpace && attrNameSpace.length() > 0)
+      // If they are trying to add an attribute when there isn't an 
+      // element pending, it is an error.
+      if (!rhandler.isElementPending())
       {
+        transformer.getMsgMgr().warn(
+                                     XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_NAME,
+                                     new Object[]{ origAttrName });
 
-        // Get the prefix for that attribute in the result namespace.
-        String prefix = rhandler.getPrefix(attrNameSpace);
+        return;
 
-        // If we didn't find the prefix mapping, make up a prefix 
-        // and have it declared in the result tree.
-        if (null == prefix)
-        {
-          prefix = rhandler.getNewUniqueNSPrefix();
-
-          rhandler.startPrefixMapping(prefix, attrNameSpace, false);
-        }
-
-        // add the prefix to the attribute name.
-        attrName = (prefix + ":" + QName.getLocalPart(attrName));
+        // warn(templateChild, sourceNode, "Trying to add attribute after element child has been added, ignoring...");
       }
-    }
 
-    // Is the attribute xmlns type?
-    else if (QName.isXMLNSDecl(origAttrName))
-    {
+      if (null == attrName)
+        return;
 
-      // Then just declare the namespace prefix and get out.
-      String prefix = QName.getPrefixFromXMLNSDecl(origAttrName);
-      String ns = rhandler.getURI(prefix);
+      String attrNameSpace = null;  // by default
 
-      if (null == ns)
-        rhandler.startPrefixMapping(prefix, val, false);
-
-      return;
-    }
-
-    // Note we are using original attribute name for these tests. 
-    else
-    {
-
-      // Does the attribute name have a prefix?
-      String nsprefix = QName.getPrefixPart(origAttrName);
-
-      if (null == nsprefix)
-        nsprefix = "";
-
-      // We're going to claim that this must be resolved in 
-      // the result tree namespace.
-      try
+      // Did they declare a namespace attribute?
+      if (null != m_namespace_avt)
       {
-        attrNameSpace = getNamespaceForPrefix(nsprefix);
 
-        if ((null == attrNameSpace) && (nsprefix.length() > 0))
+        // The namespace attribute is an AVT also.
+        attrNameSpace = m_namespace_avt.evaluate(xctxt, sourceNode, this);
+
+        if (null != attrNameSpace && attrNameSpace.length() > 0)
         {
+
+          // Get the prefix for that attribute in the result namespace.
+          String prefix = rhandler.getPrefix(attrNameSpace);
+
+          // If we didn't find the prefix mapping, make up a prefix 
+          // and have it declared in the result tree.
+          if (null == prefix)
+          {
+            prefix = rhandler.getNewUniqueNSPrefix();
+
+            rhandler.startPrefixMapping(prefix, attrNameSpace, false);
+          }
+
+          // add the prefix to the attribute name.
+          attrName = (prefix + ":" + QName.getLocalPart(attrName));
+        }
+      }
+
+      // Is the attribute xmlns type?
+      else if (QName.isXMLNSDecl(origAttrName))
+      {
+
+        // Then just declare the namespace prefix and get out.
+        String prefix = QName.getPrefixFromXMLNSDecl(origAttrName);
+        String ns = rhandler.getURI(prefix);
+
+        if (null == ns)
+          rhandler.startPrefixMapping(prefix, val, false);
+
+        return;
+      }
+
+      // Note we are using original attribute name for these tests. 
+      else
+      {
+
+        // Does the attribute name have a prefix?
+        String nsprefix = QName.getPrefixPart(origAttrName);
+
+        if (null == nsprefix)
+          nsprefix = "";
+
+        // We're going to claim that this must be resolved in 
+        // the result tree namespace.
+        try
+        {
+          attrNameSpace = getNamespaceForPrefix(nsprefix);
+
+          if ((null == attrNameSpace) && (nsprefix.length() > 0))
+          {
+            transformer.getMsgMgr().warn(
+                                         XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
+                                         new Object[]{ nsprefix });
+
+            return;
+          }
+        }
+        catch (Exception ex)
+        {
+
+          // Could not resolve prefix
+          attrNameSpace = null;
+
           transformer.getMsgMgr().warn(
-            XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
-            new Object[]{ nsprefix });
+                                       XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
+                                       new Object[]{ nsprefix });
 
           return;
         }
       }
-      catch (Exception ex)
-      {
 
-        // Could not resolve prefix
-        attrNameSpace = null;
+      String localName = QName.getLocalPart(attrName);
 
-        transformer.getMsgMgr().warn(
-          XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
-          new Object[]{ nsprefix });
-
-        return;
-      }
+      rhandler.addAttribute(attrNameSpace, localName, attrName, "CDATA", val);
     }
-
-    String localName = QName.getLocalPart(attrName);
-
-    rhandler.addAttribute(attrNameSpace, localName, attrName, "CDATA", val);
+    catch(org.xml.sax.SAXException se)
+    {
+      throw new TransformerException(se);
+    }
+    
   }
 
   /**

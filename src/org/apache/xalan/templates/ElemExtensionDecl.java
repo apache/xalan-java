@@ -67,7 +67,7 @@ import org.apache.xalan.extensions.ExtensionHandlerGeneral;
 import org.apache.xalan.extensions.ExtensionsTable;
 import org.apache.xalan.transformer.TransformerImpl;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -241,9 +241,9 @@ public class ElemExtensionDecl extends ElemTemplateElement
    *
    * @param transformer The XSLT TransformerFactory.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void runtimeInit(TransformerImpl transformer) throws SAXException
+  public void runtimeInit(TransformerImpl transformer) throws TransformerException
   {
 
     String lang = null;
@@ -253,7 +253,7 @@ public class ElemExtensionDecl extends ElemTemplateElement
     String declNamespace = getNamespaceForPrefix(prefix);
 
     if (null == declNamespace)
-      throw new SAXException("Prefix " + prefix
+      throw new TransformerException("Prefix " + prefix
                              + " does not have a corresponding "
                              + "namespace declaration");
 
@@ -290,7 +290,7 @@ public class ElemExtensionDecl extends ElemTemplateElement
       lang = "javaclass";
 
     if (lang.equals("javaclass") && (scriptSrc != null))
-      throw new SAXException("Element content not allowed for lang=javaclass "
+      throw new TransformerException("Element content not allowed for lang=javaclass "
                              + scriptSrc);
 
     XPathContext liaison = ((XPathContext) transformer.getXPathContext());

@@ -78,7 +78,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 
 // SAX2 Imports
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.Locator;
 
 import javax.xml.transform.SourceLocator;
@@ -188,10 +188,10 @@ public class Stylesheet extends ElemTemplateElement
    * NEEDSDOC @param stream
    *
    * @throws IOException
-   * @throws SAXException
+   * @throws TransformerException
    */
   private void readObject(ObjectInputStream stream)
-          throws IOException, SAXException
+          throws IOException, TransformerException
   {
 
     // System.out.println("Reading Stylesheet");
@@ -201,7 +201,7 @@ public class Stylesheet extends ElemTemplateElement
     }
     catch (ClassNotFoundException cnfe)
     {
-      throw new SAXException(cnfe);
+      throw new TransformerException(cnfe);
     }
 
     // System.out.println("Done reading Stylesheet");
@@ -1067,9 +1067,9 @@ public class Stylesheet extends ElemTemplateElement
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public ElemTemplate getTemplate(int i) throws SAXException
+  public ElemTemplate getTemplate(int i) throws TransformerException
   {
 
     if (null == m_templates)
@@ -1229,7 +1229,7 @@ public class Stylesheet extends ElemTemplateElement
         {
           m_href = SystemIDResolver.getAbsoluteURI(m_systemId, null);
         }
-        catch (SAXException se)
+        catch (TransformerException se)
         {
 
           // Ignore this for right now
@@ -1359,9 +1359,9 @@ public class Stylesheet extends ElemTemplateElement
    * NEEDSDOC @param v
    * NEEDSDOC @param i
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void replaceTemplate(ElemTemplate v, int i) throws SAXException
+  public void replaceTemplate(ElemTemplate v, int i) throws TransformerException
   {
 
     if (null == m_templates)

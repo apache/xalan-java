@@ -82,9 +82,9 @@ public interface TraceListener extends java.util.EventListener
    *
    * @param ev the generate event.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public void selected(SelectionEvent ev) throws org.xml.sax.SAXException;
+  public void selected(SelectionEvent ev) throws javax.xml.transform.TransformerException;
 
   /**
    * Method that is called just after the formatter listener is called.

@@ -70,9 +70,9 @@ import org.apache.xalan.utils.BoolStack;
 import org.apache.xalan.utils.Trie;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.serialize.OutputFormat;
-import org.apache.serialize.Method;
-import org.apache.serialize.helpers.HTMLOutputFormat;
+import org.apache.xalan.serialize.OutputFormat;
+import org.apache.xalan.serialize.Method;
+import org.apache.xalan.serialize.helpers.HTMLOutputFormat;
 
 /**
  * <meta name="usage" content="general"/>
@@ -597,9 +597,9 @@ public class FormatterToHTML extends FormatterToXML
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void startDocument() throws SAXException
+  public void startDocument() throws org.xml.sax.SAXException
   {
 
     m_needToOutputDocTypeDecl = true;
@@ -651,11 +651,11 @@ public class FormatterToHTML extends FormatterToXML
    *  @see #endElement
    *  @see org.xml.sax.AttributeList
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void startElement(
           String namespaceURI, String localName, String name, Attributes atts)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     boolean savedDoIndent = m_doIndent;
@@ -740,10 +740,10 @@ public class FormatterToHTML extends FormatterToXML
    *  @exception org.xml.sax.SAXException Any SAX exception, possibly
    *             wrapping another exception.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void endElement(String namespaceURI, String localName, String name)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     m_currentIndent -= this.indent;
@@ -828,10 +828,10 @@ public class FormatterToHTML extends FormatterToXML
    * NEEDSDOC @param elemDesc
    * @param   value   The value of the attribute.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   protected void processAttribute(
-          String name, ElemDesc elemDesc, String value) throws SAXException
+          String name, ElemDesc elemDesc, String value) throws org.xml.sax.SAXException
   {
 
     String nameUpper = name.toUpperCase();
@@ -874,9 +874,9 @@ public class FormatterToHTML extends FormatterToXML
    * @param   encoding    CURRENTLY NOT IMPLEMENTED.
    * @see #backReference
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void writeAttrURI(String string, String encoding) throws SAXException
+  public void writeAttrURI(String string, String encoding) throws org.xml.sax.SAXException
   {
 
     char[] stringArray = string.toCharArray();
@@ -926,10 +926,10 @@ public class FormatterToHTML extends FormatterToXML
    * @param   encoding    CURRENTLY NOT IMPLEMENTED.
    * @see #backReference
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void writeAttrString(String string, String encoding)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     final char chars[] = string.toCharArray();
@@ -969,7 +969,7 @@ public class FormatterToHTML extends FormatterToXML
 
             if (i + 1 >= strLen)
             {
-              throw new SAXException(
+              throw new org.xml.sax.SAXException(
                 XSLMessages.createXPATHMessage(
                   XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
                   new Object[]{ Integer.toHexString(ch) }));  //"Invalid UTF-16 surrogate detected: "
@@ -981,7 +981,7 @@ public class FormatterToHTML extends FormatterToXML
               next = chars[++i];
 
               if (!(0xdc00 <= next && next < 0xe000))
-                throw new SAXException(
+                throw new org.xml.sax.SAXException(
                   XSLMessages.createXPATHMessage(
                     XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
                     new Object[]{
@@ -1071,9 +1071,9 @@ public class FormatterToHTML extends FormatterToXML
    *
    * NEEDSDOC (copyEntityIntoBuf) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  private int copyEntityIntoBuf(String s, int pos) throws SAXException
+  private int copyEntityIntoBuf(String s, int pos) throws org.xml.sax.SAXException
   {
 
     int l = s.length();
@@ -1115,10 +1115,10 @@ public class FormatterToHTML extends FormatterToXML
    * @see #ignorableWhitespace
    * @see org.xml.sax.Locator
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void characters(char chars[], int start, int length)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     if (0 == length)
@@ -1158,7 +1158,7 @@ public class FormatterToHTML extends FormatterToXML
       }
       catch (IOException ioe)
       {
-        throw new SAXException(
+        throw new org.xml.sax.SAXException(
           XSLMessages.createXPATHMessage(
           XPATHErrorResources.ER_OIERROR, null), ioe);  //"IO error", ioe);
       }
@@ -1376,7 +1376,7 @@ public class FormatterToHTML extends FormatterToXML
 
         if (i + 1 >= length)
         {
-          throw new SAXException(
+          throw new org.xml.sax.SAXException(
             XSLMessages.createXPATHMessage(
               XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
               new Object[]{ Integer.toHexString(ch) }));  //"Invalid UTF-16 surrogate detected: "
@@ -1388,7 +1388,7 @@ public class FormatterToHTML extends FormatterToXML
           next = chars[++i];
 
           if (!(0xdc00 <= next && next < 0xe000))
-            throw new SAXException(
+            throw new org.xml.sax.SAXException(
               XSLMessages.createXPATHMessage(
                 XPATHErrorResources.ER_INVALID_UTF16_SURROGATE,
                 new Object[]{
@@ -1481,9 +1481,9 @@ public class FormatterToHTML extends FormatterToXML
    *  @see #ignorableWhitespace
    *  @see org.xml.sax.Locator
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void cdata(char ch[], int start, int length) throws SAXException
+  public void cdata(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
 
     if ((null != m_currentElementName)
@@ -1504,7 +1504,7 @@ public class FormatterToHTML extends FormatterToXML
       }
       catch (IOException ioe)
       {
-        throw new SAXException(
+        throw new org.xml.sax.SAXException(
           XSLMessages.createXPATHMessage(
           XPATHErrorResources.ER_OIERROR, null), ioe);  //"IO error", ioe);
       }
@@ -1525,7 +1525,7 @@ public class FormatterToHTML extends FormatterToXML
       }
       catch(IOException ioe)
       {
-        throw new SAXException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_OIERROR, null),ioe); //"IO error", ioe);
+        throw new org.xml.sax.SAXException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_OIERROR, null),ioe); //"IO error", ioe);
       }
     }
     */
@@ -1544,10 +1544,10 @@ public class FormatterToHTML extends FormatterToXML
    *  @exception org.xml.sax.SAXException Any SAX exception, possibly
    *             wrapping another exception.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void processingInstruction(String target, String data)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     // Use a fairly nasty hack to tell if the next node is supposed to be 
@@ -1579,9 +1579,9 @@ public class FormatterToHTML extends FormatterToXML
    *
    * NEEDSDOC @param name
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void entityReference(String name) throws SAXException
+  public void entityReference(String name) throws org.xml.sax.SAXException
   {
 
     this.accum("&");

@@ -83,11 +83,8 @@ import org.w3c.dom.Node;
 import org.apache.xalan.extensions.ExpressionContext;
 
 // SAX2 imports
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
-import org.xml.sax.SAXParseException;
 // import org.xml.sax.Locator;
 
 // TRaX imports
@@ -102,6 +99,7 @@ import org.apache.xalan.extensions.ExtensionsTable;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.Source;
+import javax.xml.transform.ErrorListener;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -117,7 +115,7 @@ public class XPathContext implements ExpressionContext
 
   /**
    * Create an XPathContext instance.
-   * @param owner Value that can be retreaved via the getOwnerObject() method.
+   * @param owner Value that can be retrieved via the getOwnerObject() method.
    * @see getOwnerObject
    */
   public XPathContext(Object owner)
@@ -130,9 +128,9 @@ public class XPathContext implements ExpressionContext
    *
    * NEEDSDOC @param from
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void copyFromOtherLiaison(XPathContext from) throws SAXException{}
+  public void copyFromOtherLiaison(XPathContext from) throws TransformerException{}
 
   /**
    * Reset for new run.
@@ -244,9 +242,9 @@ public class XPathContext implements ExpressionContext
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XObject getVariable(QName qname) throws org.xml.sax.SAXException
+  public XObject getVariable(QName qname) throws javax.xml.transform.TransformerException
   {
 
     Object obj = getVarStack().getVariable(this, qname);
@@ -312,6 +310,32 @@ public class XPathContext implements ExpressionContext
   {
     m_sourceTreeManager = mgr;
   }
+  
+  // =================================================
+
+  /** The ErrorListener where errors and warnings are to be reported.   */
+  private ErrorListener m_errorListener;
+
+  /**
+   * Get the ErrorListener where errors and warnings are to be reported.
+   *
+   * @return A non-null ErrorListener reference.
+   */
+  public final ErrorListener getErrorListener()
+  {
+    return m_errorListener;
+  }
+
+  /**
+   * Set the ErrorListener where errors and warnings are to be reported.
+   *
+   * @param listener A non-null ErrorListener reference.
+   */
+  public void setErrorListener(ErrorListener listener)
+  {
+    m_errorListener = listener;
+  }
+
 
   // =================================================
 
@@ -375,10 +399,10 @@ public class XPathContext implements ExpressionContext
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public final String getAbsoluteURI(String urlString, String base)
-          throws SAXException
+          throws TransformerException
   {
     try
     {
@@ -388,11 +412,11 @@ public class XPathContext implements ExpressionContext
     }
     catch (TransformerException te)
     {
-      throw new SAXException(te);
+      throw new TransformerException(te);
     }
     catch (IOException ioe)
     {
-      throw new SAXException(ioe);
+      throw new TransformerException(ioe);
     }
   }
 
@@ -406,17 +430,17 @@ public class XPathContext implements ExpressionContext
    * NEEDSDOC @param b
    * NEEDSDOC @param msg
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  private void assert(boolean b, String msg) throws org.xml.sax.SAXException
+  private void assert(boolean b, String msg) throws javax.xml.transform.TransformerException
   {
 
-    ErrorHandler errorHandler = getPrimaryReader().getErrorHandler();
+    ErrorListener errorHandler = getErrorListener();
 
     if (errorHandler != null)
     {
       errorHandler.fatalError(
-        new SAXParseException(
+        new TransformerException(
           m_XSLMessages.createMessage(
             XPATHErrorResources.ER_INCORRECT_PROGRAMMER_ASSERTION,
             new Object[]{ msg }), (SAXSourceLocator)this.getSAXLocator()));

@@ -64,7 +64,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.WhiteSpaceInfo;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -380,7 +380,7 @@ public class Parent extends Child
 
             sh.setShouldStripWhitespace(shouldStrip);
           }
-          catch (SAXException se)
+          catch (TransformerException se)
           {
 
             // TODO: Diagnostics

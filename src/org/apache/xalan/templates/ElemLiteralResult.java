@@ -73,6 +73,8 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
 
+import javax.xml.transform.TransformerException;
+
 import java.io.*;
 
 import java.util.*;
@@ -389,10 +391,10 @@ public class ElemLiteralResult extends ElemUse
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   private boolean excludeResultNSDecl(String prefix, String uri)
-          throws SAXException
+          throws TransformerException
   {
 
     if (null != m_excludeResultPrefixes)
@@ -412,9 +414,9 @@ public class ElemLiteralResult extends ElemUse
    * processing parents before children).
    * Overide super method to handle exclude-result-prefix attribute.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void resolvePrefixTables() throws SAXException
+  public void resolvePrefixTables() throws TransformerException
   {
 
     // Always start with a fresh prefix table!
@@ -516,52 +518,59 @@ public class ElemLiteralResult extends ElemUse
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
 
-    ResultTreeHandler rhandler = transformer.getResultTreeHandler();
-
-    // Add namespace declarations.
-    executeNSDecls(transformer);
-    rhandler.startElement(getNamespace(), getLocalName(), getRawName());
-
-    // Process any possible attributes from xsl:use-attribute-sets first
-    super.execute(transformer, sourceNode, mode);
-
-    //xsl:version, excludeResultPrefixes???
-    // Process the list of avts next
-    if (null != m_avts)
+    try
     {
-      int nAttrs = m_avts.size();
+      ResultTreeHandler rhandler = transformer.getResultTreeHandler();
 
-      for (int i = (nAttrs - 1); i >= 0; i--)
+      // Add namespace declarations.
+      executeNSDecls(transformer);
+      rhandler.startElement(getNamespace(), getLocalName(), getRawName());
+
+      // Process any possible attributes from xsl:use-attribute-sets first
+      super.execute(transformer, sourceNode, mode);
+
+      //xsl:version, excludeResultPrefixes???
+      // Process the list of avts next
+      if (null != m_avts)
       {
-        AVT avt = (AVT) m_avts.elementAt(i);
-        XPathContext xctxt = transformer.getXPathContext();
-        String stringedValue = avt.evaluate(xctxt, sourceNode, this);
+        int nAttrs = m_avts.size();
 
-        if (null != stringedValue)
+        for (int i = (nAttrs - 1); i >= 0; i--)
         {
+          AVT avt = (AVT) m_avts.elementAt(i);
+          XPathContext xctxt = transformer.getXPathContext();
+          String stringedValue = avt.evaluate(xctxt, sourceNode, this);
 
-          // Important Note: I'm not going to check for excluded namespace 
-          // prefixes here.  It seems like it's to expensive, and I'm not 
-          // even sure this is right.  But I could be wrong, so this needs 
-          // to be tested against other implementations.
-          rhandler.addAttribute(avt.getURI(), avt.getName(),
-                                avt.getRawName(), "CDATA", stringedValue);
-        }
-      }  // end for
+          if (null != stringedValue)
+          {
+
+            // Important Note: I'm not going to check for excluded namespace 
+            // prefixes here.  It seems like it's to expensive, and I'm not 
+            // even sure this is right.  But I could be wrong, so this needs 
+            // to be tested against other implementations.
+            rhandler.addAttribute(avt.getURI(), avt.getName(),
+                                  avt.getRawName(), "CDATA", stringedValue);
+          }
+        }  // end for
+      }
+
+      // Now process all the elements in this subtree
+      // TODO: Process m_extensionElementPrefixes && m_attributeSetsNames
+      transformer.executeChildTemplates(this, sourceNode, mode);
+      rhandler.endElement(getNamespace(), getLocalName(), getRawName());
+      unexecuteNSDecls(transformer);
     }
-
-    // Now process all the elements in this subtree
-    // TODO: Process m_extensionElementPrefixes && m_attributeSetsNames
-    transformer.executeChildTemplates(this, sourceNode, mode);
-    rhandler.endElement(getNamespace(), getLocalName(), getRawName());
-    unexecuteNSDecls(transformer);
+    catch(org.xml.sax.SAXException se)
+    {
+      throw new TransformerException(se);
+    }
   }
 
   /**

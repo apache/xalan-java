@@ -62,7 +62,7 @@ import org.apache.xalan.utils.NodeVector;
 import org.apache.xpath.NodeSet;  // for isNodeAfter support
 import org.apache.xpath.XPathContext;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.XPath;
@@ -122,9 +122,9 @@ class Counter
    * NEEDSDOC @param numberElem
    * NEEDSDOC @param countNodes
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  Counter(ElemNumber numberElem, NodeSet countNodes) throws SAXException
+  Counter(ElemNumber numberElem, NodeSet countNodes) throws TransformerException
   {
     m_countNodes = countNodes;
     m_numberElem = numberElem;
@@ -135,9 +135,9 @@ class Counter
    *
    * NEEDSDOC @param numberElem
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  Counter(ElemNumber numberElem) throws SAXException
+  Counter(ElemNumber numberElem) throws TransformerException
   {
     m_numberElem = numberElem;
   }

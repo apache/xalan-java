@@ -59,7 +59,7 @@ package org.apache.xalan.processor;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.XMLReader;
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLFilter;
@@ -68,6 +68,7 @@ import org.w3c.dom.Node;
 
 import org.apache.xalan.utils.TreeWalker;
 import org.apache.xalan.utils.SystemIDResolver;
+import org.apache.xalan.utils.DefaultErrorHandler;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.TrAXFilter;
 
@@ -84,6 +85,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.ErrorListener;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -199,7 +201,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
 
       return builder.getTemplates();
     }
-    catch (SAXException se)
+    catch (org.xml.sax.SAXException se)
     {
       // Should remove this later... but right now diagnostics from 
       // TransformerConfigurationException are not good.
@@ -289,8 +291,6 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     {
       isource = SAXSource.sourceToInputSource(source);
       baseID = isource.getSystemId();
-      if(source instanceof SAXSource)
-        reader = ((SAXSource)source).getXMLReader();
     }
     
 
@@ -324,7 +324,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
 
       // OK, good.
     }
-    catch (SAXException se)
+    catch (org.xml.sax.SAXException se)
     {
       throw new TransformerConfigurationException("getAssociatedStylesheets failed", se);
     }
@@ -568,16 +568,13 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
       DOMSource dsource = (DOMSource)source;
       Node node = dsource.getNode();
       String baseID = dsource.getSystemId();
-      builder.setBaseID(baseID);
+      builder.setSystemID(baseID);
       return processFromNode(node, baseID);
     }
     
     try
     {
       InputSource isource = SAXSource.sourceToInputSource(source);
-
-      if(null != isource)
-        builder.setBaseID(isource.getSystemId());
 
       XMLReader reader = null;
       if (source instanceof SAXSource)
@@ -594,7 +591,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         reader.setFeature("http://apache.org/xml/features/validation/dynamic",
                           true);
       }
-      catch (SAXException ex)
+      catch (org.xml.sax.SAXException ex)
       {
 
         // feature not recognized
@@ -607,7 +604,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     {
       throw new TransformerConfigurationException(ioe);
     }
-    catch(SAXException se)
+    catch(org.xml.sax.SAXException se)
     {
       throw new TransformerConfigurationException(se);
     }
@@ -675,6 +672,32 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   {
     return m_uriResolver;
   }
-
+  
+  private ErrorListener m_errorListener = new DefaultErrorHandler();
+  
+  /**
+   * Get the error listener in effect for the TransformerFactory.
+   * 
+   * @return A non-null reference to an error listener.
+   */
+  public ErrorListener getErrorListener()
+  {
+    return m_errorListener;
+  }
+  
+  /**
+   * Set an error listener for the TransformerFactory.
+   * 
+   * @param listener Must be a non-null reference to an ErrorListener.
+   * 
+   * @throws IllegalArgumentException if the listener argument is null.
+   */
+  public void setErrorListener(ErrorListener listener)
+    throws IllegalArgumentException
+  {
+    if(null == listener)
+      throw new IllegalArgumentException("ErrorListener");
+    m_errorListener = listener;
+  }
 
 }

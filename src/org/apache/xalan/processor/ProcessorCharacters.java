@@ -58,7 +58,7 @@ package org.apache.xalan.processor;
 
 import java.lang.StringBuffer;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemText;
 import org.apache.xalan.templates.ElemTextLiteral;
@@ -79,10 +79,8 @@ public class ProcessorCharacters extends XSLTElementProcessor
    * is sent to the current processor when any non-text event occurs.
    *
    * NEEDSDOC @param handler
-   *
-   * @throws SAXException
    */
-  public void startNonText(StylesheetHandler handler) throws SAXException
+  public void startNonText(StylesheetHandler handler) throws org.xml.sax.SAXException
   {
 
     if (this == handler.getCurrentProcessor())
@@ -98,7 +96,14 @@ public class ProcessorCharacters extends XSLTElementProcessor
 
       elem.setDOMBackPointer(handler.getOriginatingNode());
       elem.setLocaterInfo(handler.getLocator());
-      elem.setPrefixes(handler.getNamespaceSupport());
+      try
+      {
+        elem.setPrefixes(handler.getNamespaceSupport());
+      }
+      catch(TransformerException te)
+      {
+        throw new org.xml.sax.SAXException(te);
+      }
 
       boolean doe = (null != m_xslTextElement)
                     ? m_xslTextElement.getDisableOutputEscaping() : false;
@@ -128,15 +133,13 @@ public class ProcessorCharacters extends XSLTElementProcessor
    * @param start The start position in the character array.
    * @param length The number of characters to use from the
    *               character array.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#characters
-   *
-   * @throws SAXException
    */
   public void characters(
           StylesheetHandler handler, char ch[], int start, int length)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     m_accumulator.append(ch, start, length);
@@ -161,19 +164,15 @@ public class ProcessorCharacters extends XSLTElementProcessor
    * @param atts The attributes attached to the element.  If
    *        there are no attributes, it shall be an empty
    *        Attributes object.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
    * @see org.apache.xalan.processor.StylesheetHandler#startElement
    * @see org.apache.xalan.processor.StylesheetHandler#endElement
    * @see org.xml.sax.ContentHandler#startElement
    * @see org.xml.sax.ContentHandler#endElement
    * @see org.xml.sax.Attributes
-   *
-   * @throws SAXException
    */
   public void endElement(
           StylesheetHandler handler, String uri, String localName, String rawName)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     // Since this has been installed as the current processor, we 

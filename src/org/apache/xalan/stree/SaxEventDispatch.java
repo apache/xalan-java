@@ -57,7 +57,7 @@
 package org.apache.xalan.stree;
 
 import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 /**
  * This class allows a node to implement an interface that will
@@ -85,7 +85,8 @@ public interface SaxEventDispatch
    *
    * @param ch A non-null reference to a ContentHandler.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void dispatchSaxEvent(ContentHandler ch) throws SAXException;
+  public void dispatchSaxEvent(ContentHandler ch) 
+        throws org.xml.sax.SAXException;
 }

@@ -54,7 +54,7 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package javax.xml.transform.stream;
+package javax.xml.transform;
 
 /**
  * Class OutputKeys provides string constants that can be used to set

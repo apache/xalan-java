@@ -64,8 +64,8 @@ import java.io.*;
 
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.res.XSLMessages;
-import org.apache.serialize.OutputFormat;
-import org.apache.serialize.helpers.TextOutputFormat;
+import org.apache.xalan.serialize.OutputFormat;
+import org.apache.xalan.serialize.helpers.TextOutputFormat;
 
 /**
  * <meta name="usage" content="general"/>
@@ -165,9 +165,9 @@ public class FormatterToText extends FormatterToXML
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void startDocument() throws SAXException
+  public void startDocument() throws org.xml.sax.SAXException
   {
 
     // No action for the moment.
@@ -185,9 +185,9 @@ public class FormatterToText extends FormatterToXML
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void endDocument() throws SAXException
+  public void endDocument() throws org.xml.sax.SAXException
   {
     this.flush();
     flushWriter();
@@ -218,11 +218,11 @@ public class FormatterToText extends FormatterToXML
    * @see #endElement
    * @see org.xml.sax.AttributeList
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void startElement(
           String namespaceURI, String localName, String name, Attributes atts)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     // No action for the moment.
@@ -246,10 +246,10 @@ public class FormatterToText extends FormatterToXML
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void endElement(String namespaceURI, String localName, String name)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     // No action for the moment.
@@ -280,9 +280,9 @@ public class FormatterToText extends FormatterToXML
    * @see #ignorableWhitespace
    * @see org.xml.sax.Locator
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void characters(char ch[], int start, int length) throws SAXException
+  public void characters(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
 
     this.accum(ch, start, length);
@@ -299,10 +299,10 @@ public class FormatterToText extends FormatterToXML
    * NEEDSDOC @param start
    * NEEDSDOC @param length
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void charactersRaw(char ch[], int start, int length)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     accum(ch, start, length);
@@ -336,9 +336,9 @@ public class FormatterToText extends FormatterToXML
    * @see #ignorableWhitespace
    * @see org.xml.sax.Locator
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void cdata(char ch[], int start, int length) throws SAXException
+  public void cdata(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
 
     accum(ch, start, length);
@@ -371,10 +371,10 @@ public class FormatterToText extends FormatterToXML
    *            wrapping another exception.
    * @see #characters
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void ignorableWhitespace(char ch[], int start, int length)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     // No action for the moment.
@@ -397,10 +397,10 @@ public class FormatterToText extends FormatterToXML
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void processingInstruction(String target, String data)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     // No action for the moment.
@@ -412,9 +412,9 @@ public class FormatterToText extends FormatterToXML
    * @exception org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void comment(String data) throws SAXException
+  public void comment(String data) throws org.xml.sax.SAXException
   {
 
     // No action for the moment.
@@ -425,9 +425,9 @@ public class FormatterToText extends FormatterToXML
    *
    * NEEDSDOC @param name
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void entityReference(String name) throws SAXException
+  public void entityReference(String name) throws org.xml.sax.SAXException
   {
 
     // No action for the moment.

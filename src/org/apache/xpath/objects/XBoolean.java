@@ -163,9 +163,9 @@ public class XBoolean extends XObject
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public boolean equals(XObject obj2) throws org.xml.sax.SAXException
+  public boolean equals(XObject obj2) throws javax.xml.transform.TransformerException
   {
 
     // In order to handle the 'all' semantics of 

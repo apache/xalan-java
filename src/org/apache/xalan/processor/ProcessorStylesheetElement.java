@@ -60,7 +60,7 @@ import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetComposed;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 
 import javax.xml.transform.TransformerConfigurationException;
@@ -89,62 +89,60 @@ class ProcessorStylesheetElement extends XSLTElementProcessor
    *        there are no attributes, it shall be an empty
    *        Attributes object.
    * NEEDSDOC @param attributes
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.apache.xalan.processor.StylesheetHandler#startElement
-   * @see org.apache.xalan.processor.StylesheetHandler#endElement
-   * @see org.xml.sax.ContentHandler#startElement
-   * @see org.xml.sax.ContentHandler#endElement
-   * @see org.xml.sax.Attributes
-   *
-   * @throws SAXException
    */
   public void startElement(
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
-    int stylesheetType = handler.getStylesheetType();
-    Stylesheet stylesheet;
-
-    if (stylesheetType == StylesheetHandler.STYPE_ROOT)
+    try
     {
-      try
-      {
-        stylesheet = new StylesheetRoot();
-      }
-      catch(TransformerConfigurationException tfe)
-      {
-        throw new SAXException(tfe);
-      }
-    }
-    else
-    {
-      Stylesheet parent = handler.getStylesheet();
+      int stylesheetType = handler.getStylesheetType();
+      Stylesheet stylesheet;
 
-      if (stylesheetType == StylesheetHandler.STYPE_IMPORT)
+      if (stylesheetType == StylesheetHandler.STYPE_ROOT)
       {
-        StylesheetComposed sc = new StylesheetComposed(parent);
-
-        parent.setImport(sc);
-
-        stylesheet = sc;
+        try
+        {
+          stylesheet = new StylesheetRoot();
+        }
+        catch(TransformerConfigurationException tfe)
+        {
+          throw new TransformerException(tfe);
+        }
       }
       else
       {
-        stylesheet = new Stylesheet(parent);
+        Stylesheet parent = handler.getStylesheet();
 
-        parent.setInclude(stylesheet);
+        if (stylesheetType == StylesheetHandler.STYPE_IMPORT)
+        {
+          StylesheetComposed sc = new StylesheetComposed(parent);
+
+          parent.setImport(sc);
+
+          stylesheet = sc;
+        }
+        else
+        {
+          stylesheet = new Stylesheet(parent);
+
+          parent.setInclude(stylesheet);
+        }
       }
-    }
 
-    stylesheet.setDOMBackPointer(handler.getOriginatingNode());
-    stylesheet.setLocaterInfo(handler.getLocator());
-    stylesheet.setPrefixes(handler.getNamespaceSupport());
-    handler.pushStylesheet(stylesheet);
-    setPropertiesFromAttributes(handler, rawName, attributes,
-                                handler.getStylesheet());
-    handler.pushElemTemplateElement(handler.getStylesheet());
+      stylesheet.setDOMBackPointer(handler.getOriginatingNode());
+      stylesheet.setLocaterInfo(handler.getLocator());
+      stylesheet.setPrefixes(handler.getNamespaceSupport());
+      handler.pushStylesheet(stylesheet);
+      setPropertiesFromAttributes(handler, rawName, attributes,
+                                  handler.getStylesheet());
+      handler.pushElemTemplateElement(handler.getStylesheet());
+    }
+    catch(TransformerException te)
+    {
+      throw new org.xml.sax.SAXException(te);
+    }
   }
 
   /**
@@ -157,15 +155,10 @@ class ProcessorStylesheetElement extends XSLTElementProcessor
    * NEEDSDOC @param uri
    * NEEDSDOC @param localName
    * NEEDSDOC @param rawName
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.xml.sax.ContentHandler#endElement
-   *
-   * @throws SAXException
    */
   public void endElement(
           StylesheetHandler handler, String uri, String localName, String rawName)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
     handler.popElemTemplateElement();
     handler.popStylesheet();

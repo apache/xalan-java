@@ -69,7 +69,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XRTreeFrag;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 /**
  * Utility class to help resolve method overloading with Xalan XSLT 
@@ -110,7 +110,7 @@ public class MethodResolver
    * @param argsOut An array of the exact size as argsIn, which will be 
    * populated with converted arguments if a suitable method is found.
    * @return A constructor that will work with the argsOut array.
-   * @exception SAXException may be thrown for Xalan conversion
+   * @exception TransformerException may be thrown for Xalan conversion
    * exceptions.
    */
   public static Constructor getConstructor(Class classObj, 
@@ -119,7 +119,7 @@ public class MethodResolver
                                            ExpressionContext exprContext)
     throws NoSuchMethodException,
            SecurityException,
-           SAXException
+           TransformerException
   {
     Constructor bestConstructor = null;
     Class[] bestParamTypes = null;
@@ -182,7 +182,7 @@ public class MethodResolver
     }
     /*** This is commented out until we can do a better object -> object scoring 
     else if (bestScoreCount > 1)
-      throw new SAXException("More than one best match for constructor for "
+      throw new TransformerException("More than one best match for constructor for "
                                                                    + classObj.getName());
     ***/
     else
@@ -202,7 +202,7 @@ public class MethodResolver
    * @param argsOut An array of the exact size as argsIn, which will be 
    * populated with converted arguments if a suitable method is found.
    * @return A method that will work with the argsOut array.
-   * @exception SAXException may be thrown for Xalan conversion
+   * @exception TransformerException may be thrown for Xalan conversion
    * exceptions.
    */
   public static Method getMethod(Class classObj,
@@ -213,7 +213,7 @@ public class MethodResolver
                                  int searchMethod)
     throws NoSuchMethodException,
            SecurityException,
-           SAXException
+           TransformerException
   {
     // System.out.println("---> Looking for method: "+name);
     // System.out.println("---> classObj: "+classObj);
@@ -309,7 +309,7 @@ public class MethodResolver
     }
     /*** This is commented out until we can do a better object -> object scoring 
     else if (bestScoreCount > 1)
-      throw new SAXException("More than one best match for method " + name);
+      throw new TransformerException("More than one best match for method " + name);
     ***/
     else
       convertParams(argsIn, argsOut, bestParamTypes, exprContext);
@@ -324,14 +324,14 @@ public class MethodResolver
    * @param classObj The Class of the object that should have the method.
    * @param name The name of the method to be invoked.
    * @return A method that will work to be called as an element.
-   * @exception SAXException may be thrown for Xalan conversion
+   * @exception TransformerException may be thrown for Xalan conversion
    * exceptions.
    */
   public static Method getElementMethod(Class classObj,
                                         String name)
     throws NoSuchMethodException,
            SecurityException,
-           SAXException
+           TransformerException
   {
     // System.out.println("---> Looking for element method: "+name);
     // System.out.println("---> classObj: "+classObj);
@@ -385,7 +385,7 @@ public class MethodResolver
                                                                         name, 0, null));
     }
     else if (bestScoreCount > 1)
-      throw new SAXException("More than one best match for element method " + name);
+      throw new TransformerException("More than one best match for element method " + name);
     
     return bestMethod;
   }
@@ -398,13 +398,13 @@ public class MethodResolver
    * populated with converted arguments.
    * @param paramTypes An array of class objects, of the exact same 
    * size as argsIn and argsOut.
-   * @exception SAXException may be thrown for Xalan conversion
+   * @exception TransformerException may be thrown for Xalan conversion
    * exceptions.
    */
   public static void convertParams(Object[] argsIn, 
                                    Object[][] argsOut, Class[] paramTypes,
                                    ExpressionContext exprContext)
-    throws org.xml.sax.SAXException
+    throws javax.xml.transform.TransformerException
   {
     // System.out.println("In convertParams");
     if (paramTypes == null)
@@ -662,11 +662,11 @@ public class MethodResolver
    * @param javaClass The type of object to convert to.
    * @returns An object suitable for passing to the Method.invoke 
    * function in the args array, which may be null in some cases.
-   * @exception SAXException may be thrown for Xalan conversion
+   * @exception TransformerException may be thrown for Xalan conversion
    * exceptions.
    */
   static Object convert(Object xsltObj, Class javaClass)
-    throws org.xml.sax.SAXException
+    throws javax.xml.transform.TransformerException
   {
     if(xsltObj instanceof XObject)
     {

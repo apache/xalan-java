@@ -63,14 +63,14 @@ import java.util.Enumeration;
 import javax.xml.transform.TransformerConfigurationException;
 import org.apache.xpath.XPath;
 import org.apache.xalan.utils.QName;
-import org.apache.serialize.OutputFormat;
+import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPathContext;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -331,9 +331,9 @@ public class StylesheetComposed extends Stylesheet
    * from xsl:strip-space and xsl:preserve space information.
    * @return null if node is not matched.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  void recomposeWhiteSpaceInfo() throws SAXException
+  void recomposeWhiteSpaceInfo() throws TransformerException
   {
 
     int nIncludes = getIncludeCountComposed();
@@ -401,10 +401,10 @@ public class StylesheetComposed extends Stylesheet
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public WhiteSpaceInfo getWhiteSpaceInfo(
-          XPathContext support, Element targetElement) throws SAXException
+          XPathContext support, Element targetElement) throws TransformerException
   {
 
     if (null != m_whiteSpaceInfoList)
@@ -674,9 +674,9 @@ public class StylesheetComposed extends Stylesheet
    * Aggregate the list of templates and included templates into a single list.
    * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void recomposeTemplates() throws SAXException
+  public void recomposeTemplates() throws TransformerException
   {
 
     int nIncludes = getIncludeCountComposed();
@@ -705,9 +705,9 @@ public class StylesheetComposed extends Stylesheet
    *
    * NEEDSDOC @param flushFirst
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void recomposeTemplates(boolean flushFirst) throws SAXException
+  public void recomposeTemplates(boolean flushFirst) throws TransformerException
   {
 
     if (flushFirst)
@@ -728,11 +728,11 @@ public class StylesheetComposed extends Stylesheet
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public ElemTemplate getTemplateComposed(
           XPathContext support, Node targetNode, QName mode, boolean quietConflictWarnings)
-            throws SAXException
+            throws TransformerException
   {
     return m_templateList.getTemplate(support, targetNode, mode,
                                       quietConflictWarnings);

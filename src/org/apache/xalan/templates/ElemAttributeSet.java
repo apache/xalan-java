@@ -59,7 +59,7 @@ package org.apache.xalan.templates;
 import org.w3c.dom.Node;
 import org.w3c.dom.DOMException;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -139,16 +139,16 @@ public class ElemAttributeSet extends ElemUse
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
 
     if (transformer.isRecursiveAttrSet(this))
     {
-      throw new SAXException(
+      throw new TransformerException(
         XSLMessages.createMessage(
           XSLTErrorResources.ER_XSLATTRSET_USED_ITSELF,
           new Object[]{ m_qname.getLocalPart() }));  //"xsl:attribute-set '"+m_qname.m_localpart+

@@ -131,9 +131,9 @@ class Lexer
    * elements.
    * @param pat XSLT Expression.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  void tokenize(String pat) throws org.xml.sax.SAXException
+  void tokenize(String pat) throws javax.xml.transform.TransformerException
   {
     tokenize(pat, null);
   }
@@ -144,10 +144,10 @@ class Lexer
    * @param pat XSLT Expression.
    * @param targetStrings Vector to hold Strings, may be null.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   void tokenize(String pat, Vector targetStrings)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     m_compiler.m_tokenQueueSize = 0;

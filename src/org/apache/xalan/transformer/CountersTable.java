@@ -61,7 +61,7 @@ import java.util.Vector;
 
 import org.w3c.dom.Node;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
@@ -156,10 +156,10 @@ public class CountersTable extends Hashtable
    * NEEDSDOC @param node
    * @return The node count, or 0 if not found.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public int countNode(XPathContext support, ElemNumber numberElem, Node node)
-          throws SAXException
+          throws TransformerException
   {
 
     int count = 0;

@@ -171,7 +171,7 @@ implements java.io.Serializable
 			  org.apache.xalan.transformer.TransformerImpl transformer,
 		      org.w3c.dom.Node sourceNode,
 		      org.apache.xalan.utils.QName mode)
-       throws org.xml.sax.SAXException;
+       throws javax.xml.transform.TransformerException;
   
   /** During deserialization, reinstantiate the transient thread-table
    */

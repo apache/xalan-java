@@ -77,10 +77,10 @@ public class Quo extends Operation
    *
    * NEEDSDOC (operate) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public XObject operate(XObject left, XObject right)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
     return new XNumber((int) (left.num() / right.num()));
   }

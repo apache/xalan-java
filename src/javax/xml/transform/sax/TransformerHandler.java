@@ -10,19 +10,25 @@ import javax.xml.transform.Transformer;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
 
+/**
+ * The SAXTransformerFactory provides a reference to an 
+ * object, which implements this interface, and which can 
+ * listen to SAX ContentHandler parse events, and transform 
+ * them to a Result.
+ */
 public interface TransformerHandler 
   extends ContentHandler, LexicalHandler
-{
+{  
   /**
    * Method setResult allows the user of the TransformerHandler
    * to set the result of the transform.
    *
    * @param result A Result instance, should not be null.
    * 
-   * @throws TransformerException if result is invalid for some reason.
+   * @throws IllegalArgumentException if result is invalid for some reason.
    */
   public void setResult(Result result)
-    throws TransformerException;
+    throws IllegalArgumentException;
     
   /**
    * Set the base ID (URL or system ID) from where relative 

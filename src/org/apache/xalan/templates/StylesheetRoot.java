@@ -67,7 +67,7 @@ import java.io.*;
 import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
-import org.apache.serialize.*;
+import org.apache.xalan.serialize.*;
 import org.apache.xalan.utils.*;
 import org.apache.xpath.*;
 import org.apache.xpath.compiler.XPathParser;
@@ -77,9 +77,10 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.transformer.TransformerImpl;
 
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.Templates;
-import javax.xml.transform.stream.OutputKeys;
+import javax.xml.transform.OutputKeys;
 
 /**
  * <meta name="usage" content="general"/>
@@ -108,7 +109,7 @@ public class StylesheetRoot extends StylesheetComposed
 
       initDefaultRule();
     }
-    catch (SAXException se)
+    catch (TransformerException se)
     {
       throw new TransformerConfigurationException("Can't init default templates!", se);
     }
@@ -212,7 +213,7 @@ public class StylesheetRoot extends StylesheetComposed
    * @see <a href="http://www.w3.org/TR/xslt#output">output in XSLT Specification</a>
    * @return A Properties object that may be mutated.
    *
-   * @see org.xml.org.apache.serialize.OutputFormat
+   * @see org.xml.org.apache.xalan.serialize.OutputFormat
    */
   public OutputFormat getOutputFormat()
   {
@@ -238,9 +239,9 @@ public class StylesheetRoot extends StylesheetComposed
    * properties that need to be combined or calculated from
    * the combination of imported and included stylesheets.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void recompose() throws SAXException
+  public void recompose() throws TransformerException
   {
 
     recomposeImports();
@@ -592,9 +593,9 @@ public class StylesheetRoot extends StylesheetComposed
   /**
    * Create the default rule if needed.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  private void initDefaultRule() throws SAXException
+  private void initDefaultRule() throws TransformerException
   {
 
     // Then manufacture a default

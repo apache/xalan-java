@@ -83,12 +83,9 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.objects.*;
 
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXParseException;
-// import org.xml.sax.Locator;
-
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.ErrorListener;
 import org.apache.xalan.utils.SAXSourceLocator;
 import org.apache.xpath.patterns.NodeTest;
 
@@ -187,11 +184,11 @@ public class XPath implements Serializable
    * NEEDSDOC @param prefixResolver
    * NEEDSDOC @param type
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public XPath(
           String exprString, SourceLocator locator, PrefixResolver prefixResolver, int type)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
     m_locator = locator; 
       
@@ -228,21 +225,21 @@ public class XPath implements Serializable
    * @param contextNode The node that "." expresses.
    * @param namespaceContext The context in which namespaces in the
    * XPath are supposed to be expanded.
-   * @exception SAXException thrown if the active ProblemListener decides
+   * @exception TransformerException thrown if the active ProblemListener decides
    * the error condition is severe enough to halt processing.
    * @param callback Interface that implements the processLocatedNode method.
    * @param callbackInfo Object that will be passed to the processLocatedNode method.
    * @param stopAtFirst True if the search should stop once the first node in document
    * order is found.
    * @return The result of the XPath or null if callbacks are used.
-   * @exception SAXException thrown if
+   * @exception TransformerException thrown if
    * the error condition is severe enough to halt processing.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(
           XPathContext xctxt, Node contextNode, PrefixResolver namespaceContext)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     PrefixResolver savedPrefixResolver = xctxt.getNamespaceContext();
@@ -262,7 +259,7 @@ public class XPath implements Serializable
       if (e instanceof javax.xml.transform.TransformerException)
       {
         TransformerException te = (TransformerException)e;
-        throw new SAXParseException(te.getMessage(), 
+        throw new TransformerException(te.getMessage(), 
           (SAXSourceLocator)te.getLocator(), e);
       }
       else
@@ -272,7 +269,7 @@ public class XPath implements Serializable
           e = ((org.apache.xalan.utils.WrappedRuntimeException) e).getException();
         }
 
-        throw new SAXParseException("Error in XPath",
+        throw new TransformerException("Error in XPath",
                 (SAXSourceLocator)m_locator, e);
       }
     }
@@ -299,10 +296,10 @@ public class XPath implements Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public double getMatchScore(XPathContext xctxt, Node context)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     xctxt.pushCurrentNode(context);
@@ -472,21 +469,21 @@ public class XPath implements Serializable
    * NEEDSDOC @param msg
    * NEEDSDOC @param args
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public void warn(
           XPathContext xctxt, Node sourceNode, int msg, Object[] args)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     String fmsg = XSLMessages.createXPATHWarning(msg, args);
-    ErrorHandler ehandler = xctxt.getPrimaryReader().getErrorHandler();
+    ErrorListener ehandler = xctxt.getErrorListener();
 
     if (null != ehandler)
     {
 
       // TO DO: Need to get stylesheet Locator from here.
-      ehandler.warning(new SAXParseException(fmsg, (SAXSourceLocator)xctxt.getSAXLocator()));
+      ehandler.warning(new TransformerException(fmsg, (SAXSourceLocator)xctxt.getSAXLocator()));
     }
   }
 
@@ -497,9 +494,9 @@ public class XPath implements Serializable
    * NEEDSDOC @param b
    * NEEDSDOC @param msg
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public void assert(boolean b, String msg) throws org.xml.sax.SAXException
+  public void assert(boolean b, String msg) throws javax.xml.transform.TransformerException
   {
 
     if (!b)
@@ -521,19 +518,19 @@ public class XPath implements Serializable
    * NEEDSDOC @param msg
    * NEEDSDOC @param args
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public void error(
           XPathContext xctxt, Node sourceNode, int msg, Object[] args)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     String fmsg = XSLMessages.createXPATHMessage(msg, args);
-    ErrorHandler ehandler = xctxt.getPrimaryReader().getErrorHandler();
+    ErrorListener ehandler = xctxt.getErrorListener();
 
     if (null != ehandler)
     {
-      ehandler.fatalError(new SAXParseException(fmsg,
+      ehandler.fatalError(new TransformerException(fmsg,
                               (SAXSourceLocator)xctxt.getSAXLocator()));
     }
     else

@@ -58,7 +58,7 @@ package org.apache.xalan.processor;
 
 import org.apache.xalan.templates.KeyDeclaration;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 
 import org.apache.xalan.res.XSLMessages;
@@ -101,19 +101,10 @@ class ProcessorKey extends XSLTElementProcessor
    *        there are no attributes, it shall be an empty
    *        Attributes object.
    * NEEDSDOC @param attributes
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.apache.xalan.processor.StylesheetHandler#startElement
-   * @see org.apache.xalan.processor.StylesheetHandler#endElement
-   * @see org.xml.sax.ContentHandler#startElement
-   * @see org.xml.sax.ContentHandler#endElement
-   * @see org.xml.sax.Attributes
-   *
-   * @throws SAXException
    */
   public void startElement(
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     KeyDeclaration kd = new KeyDeclaration();
@@ -132,12 +123,10 @@ class ProcessorKey extends XSLTElementProcessor
    *                error reporting.
    * @param attributes The list of attributes.
    * @param target The target element where the properties will be set.
-   *
-   * @throws SAXException
    */
   void setPropertiesFromAttributes(
           StylesheetHandler handler, String rawName, Attributes attributes, Object target)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     XSLTElementDef def = getElemDef();

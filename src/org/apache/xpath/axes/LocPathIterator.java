@@ -198,10 +198,10 @@ public class LocPathIterator extends Expression
    * @param opPos The position of this iterator in the 
    * opcode list from the compiler.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public LocPathIterator(Compiler compiler, int opPos)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
     this(compiler, opPos, true);
   }
@@ -219,11 +219,11 @@ public class LocPathIterator extends Expression
    * loaded, or false if this is a derived iterator and 
    * it doesn't wish to load child walkers.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public LocPathIterator(
           Compiler compiler, int opPos, boolean shouldLoadWalkers)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     int firstStepPos = compiler.getFirstChildPos(opPos);
@@ -246,9 +246,9 @@ public class LocPathIterator extends Expression
    *
    * @return An XNodeSet reference that holds this iterator.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
     try
@@ -264,7 +264,7 @@ public class LocPathIterator extends Expression
     }
     catch (CloneNotSupportedException ncse)
     {
-      throw new org.xml.sax.SAXException(ncse);
+      throw new javax.xml.transform.TransformerException(ncse);
     }
   }
     
@@ -315,7 +315,7 @@ public class LocPathIterator extends Expression
 
   /**
    * Get the current position, which is one less than
-   * the next nextNode() call will retreave.  i.e. if
+   * the next nextNode() call will retrieve.  i.e. if
    * you call getCurrentPos() and the return is 0, the next
    * fetch will take place at index 1.
    *

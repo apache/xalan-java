@@ -59,7 +59,7 @@ package org.apache.xalan.processor;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemText;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 /**
  * Process xsl:text.
@@ -77,11 +77,11 @@ public class ProcessorText extends ProcessorTemplateElem
    * NEEDSDOC @param handler
    * NEEDSDOC @param elem
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   protected void appendAndPush(
           StylesheetHandler handler, ElemTemplateElement elem)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     // Don't push this element onto the element stack.
@@ -106,20 +106,16 @@ public class ProcessorText extends ProcessorTemplateElem
    * NEEDSDOC @param uri
    * NEEDSDOC @param localName
    * NEEDSDOC @param rawName
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.xml.sax.ContentHandler#endElement
-   *
-   * @throws SAXException
    */
   public void endElement(
           StylesheetHandler handler, String uri, String localName, String rawName)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
-    ProcessorCharacters charProcessor =
-      (ProcessorCharacters) handler.getProcessorFor(null, "text()", "text");
+    ProcessorCharacters charProcessor 
+      = (ProcessorCharacters) handler.getProcessorFor(null, "text()", "text");
 
     charProcessor.setXslTextElement(null);
+
   }
 }

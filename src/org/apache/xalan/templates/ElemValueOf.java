@@ -69,6 +69,8 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
 
+import javax.xml.transform.TransformerException;
+
 /**
  * <meta name="usage" content="advanced"/>
  * Implement xsl:value-of.
@@ -207,37 +209,44 @@ public class ElemValueOf extends ElemTemplateElement
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
 
-    if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
-
-    XObject value = m_selectExpression.execute(transformer.getXPathContext(),
-                                               sourceNode, this);
-
-    if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
-              "select", m_selectExpression, value);
-
-    String s = value.str();
-	int len = (null != s) ? s.length() : 0;
-    if(len > 0)
+    try
     {
-      ResultTreeHandler hth = transformer.getResultTreeHandler();
+      if (TransformerImpl.S_DEBUG)
+        transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
 
-      if (m_disableOutputEscaping)
+      XObject value = m_selectExpression.execute(transformer.getXPathContext(),
+                                                 sourceNode, this);
+
+      if (TransformerImpl.S_DEBUG)
+        transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+                                                        "select", m_selectExpression, value);
+
+      String s = value.str();
+      int len = (null != s) ? s.length() : 0;
+      if(len > 0)
       {
-        hth.startNonEscaping();
-        hth.characters(s.toCharArray(), 0, len);
-        hth.endNonEscaping();
+        ResultTreeHandler rth = transformer.getResultTreeHandler();
+
+        if (m_disableOutputEscaping)
+        {
+          rth.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
+          rth.characters(s.toCharArray(), 0, len);
+          rth.processingInstruction(javax.xml.transform.Result.PI_ENABLE_OUTPUT_ESCAPING, "");
+        }
+        else
+          rth.characters(s.toCharArray(), 0, len);
       }
-      else
-        hth.characters(s.toCharArray(), 0, len);
+    }
+    catch(SAXException se)
+    {
+      throw new TransformerException(se);
     }
   }
 

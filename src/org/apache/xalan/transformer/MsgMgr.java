@@ -58,15 +58,14 @@ package org.apache.xalan.transformer;
 
 import org.apache.xalan.res.XSLMessages;
 
-import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.LocatorImpl;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXParseException;
 
 import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.dom.DOMLocator;
 
 /**
  * This class will manage error messages, warning messages, and other types of
@@ -100,24 +99,24 @@ public class MsgMgr
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void message(String msg, boolean terminate) throws SAXException
+  public void message(String msg, boolean terminate) throws TransformerException
   {
 
-    ErrorHandler errHandler = m_transformer.getErrorHandler();
+    ErrorListener errHandler = m_transformer.getErrorListener();
 
     if (null != errHandler)
     {
       if (terminate)
-        errHandler.fatalError(new SAXParseException(msg, new LocatorImpl()));
+        errHandler.fatalError(new TransformerException(msg));
       else
-        errHandler.warning(new SAXParseException(msg, new LocatorImpl()));
+        errHandler.warning(new TransformerException(msg));
     }
     else
     {
       if (terminate)
-        throw new SAXException(msg);
+        throw new TransformerException(msg);
       else
         System.out.println(msg);
     }
@@ -131,9 +130,9 @@ public class MsgMgr
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void warn(int msg) throws SAXException
+  public void warn(int msg) throws TransformerException
   {
     warn(null, null, msg, null);
   }
@@ -147,9 +146,9 @@ public class MsgMgr
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void warn(int msg, Object[] args) throws SAXException
+  public void warn(int msg, Object[] args) throws TransformerException
   {
     warn(null, null, msg, args);
   }
@@ -164,10 +163,10 @@ public class MsgMgr
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void warn(Node styleNode, Node sourceNode, int msg)
-          throws SAXException
+          throws TransformerException
   {
     warn(styleNode, sourceNode, msg, null);
   }
@@ -183,17 +182,17 @@ public class MsgMgr
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void warn(Node styleNode, Node sourceNode, int msg, Object args[])
-          throws SAXException
+          throws TransformerException
   {
 
     String formattedMsg = m_XSLMessages.createWarning(msg, args);
-    ErrorHandler errHandler = m_transformer.getErrorHandler();
+    ErrorListener errHandler = m_transformer.getErrorListener();
 
     if (null != errHandler)
-      errHandler.warning(new SAXParseException(formattedMsg, new LocatorImpl()));
+      errHandler.warning(new TransformerException(formattedMsg));
     else
       System.out.println(formattedMsg);
   }
@@ -207,21 +206,21 @@ public class MsgMgr
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void error(String msg) throws SAXException
+  public void error(String msg) throws TransformerException
   {
 
     // Locator locator = m_stylesheetLocatorStack.isEmpty()
     //                  ? null :
     //                    ((Locator)m_stylesheetLocatorStack.peek());
     // Locator locator = null;
-    ErrorHandler errHandler = m_transformer.getErrorHandler();
+    ErrorListener errHandler = m_transformer.getErrorListener();
 
     if (null != errHandler)
-      errHandler.fatalError(new SAXParseException(msg, new LocatorImpl()));
+      errHandler.fatalError(new TransformerException(msg));
     else
-      throw new SAXException(msg);
+      throw new TransformerException(msg);
   }
 
   /**
@@ -233,9 +232,9 @@ public class MsgMgr
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void error(int msg) throws SAXException
+  public void error(int msg) throws TransformerException
   {
     error(null, null, msg, null);
   }
@@ -250,9 +249,9 @@ public class MsgMgr
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void error(int msg, Object[] args) throws SAXException
+  public void error(int msg, Object[] args) throws TransformerException
   {
     error(null, null, msg, args);
   }
@@ -267,9 +266,9 @@ public class MsgMgr
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void error(int msg, Exception e) throws SAXException
+  public void error(int msg, Exception e) throws TransformerException
   {
     error(msg, null, e);
   }
@@ -285,9 +284,9 @@ public class MsgMgr
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void error(int msg, Object args[], Exception e) throws SAXException
+  public void error(int msg, Object args[], Exception e) throws TransformerException
   {
 
     //msg  = (null == msg) ? XSLTErrorResources.ER_PROCESSOR_ERROR : msg;
@@ -297,12 +296,12 @@ public class MsgMgr
     //                   ? null :
     //                    ((Locator)m_stylesheetLocatorStack.peek());
     // Locator locator = null;
-    ErrorHandler errHandler = m_transformer.getErrorHandler();
+    ErrorListener errHandler = m_transformer.getErrorListener();
 
     if (null != errHandler)
-      errHandler.fatalError(new SAXParseException(formattedMsg, new LocatorImpl()));
+      errHandler.fatalError(new TransformerException(formattedMsg));
     else
-      throw new SAXException(formattedMsg);
+      throw new TransformerException(formattedMsg);
   }
 
   /**
@@ -316,10 +315,10 @@ public class MsgMgr
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void error(Node styleNode, Node sourceNode, int msg)
-          throws SAXException
+          throws TransformerException
   {
     error(styleNode, sourceNode, msg, null);
   }
@@ -336,10 +335,10 @@ public class MsgMgr
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void error(Node styleNode, Node sourceNode, int msg, Object args[])
-          throws SAXException
+          throws TransformerException
   {
 
     String formattedMsg = m_XSLMessages.createMessage(msg, args);
@@ -348,11 +347,11 @@ public class MsgMgr
     //                   ? null :
     //                    ((Locator)m_stylesheetLocatorStack.peek());
     // Locator locator = null;
-    ErrorHandler errHandler = m_transformer.getErrorHandler();
+    ErrorListener errHandler = m_transformer.getErrorListener();
 
     if (null != errHandler)
-      errHandler.warning(new SAXParseException(formattedMsg, new LocatorImpl()));
+      errHandler.warning(new TransformerException(formattedMsg));
     else
-      throw new SAXException(formattedMsg);
+      throw new TransformerException(formattedMsg);
   }
 }

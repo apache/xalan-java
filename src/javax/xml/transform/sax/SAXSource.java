@@ -71,15 +71,14 @@ import org.xml.sax.InputSource;
 
 /**
  * Acts as an holder for SAX-style Source tree input.
- *
- * @version Alpha
- * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
  */
 public class SAXSource implements Source
 {
 
   /**
-   * Zero-argument default constructor.
+   * Zero-argument default constructor.  If this constructor 
+   * is used, and no other method is called, the transformer 
+   * will assume an empty input tree, with a default root node.
    */
   public SAXSource(){}
 
@@ -142,7 +141,7 @@ public class SAXSource implements Source
    */
   public void setInputSource(InputSource inputSource)
   {
-    this.inputSource = inputSource;
+    inputSource = inputSource;
   }
   
   /**
@@ -156,12 +155,34 @@ public class SAXSource implements Source
   }
   
   /**
+   * Set the system identifier for this Source.
+   *
+   * <p>The system identifier is optional if there is a byte stream
+   * or a character stream, but it is still useful to provide one,
+   * since the application can use it to resolve relative URIs
+   * and can include it in error messages and warnings (the parser
+   * will attempt to open a connection to the URI only if
+   * there is no byte stream or character stream specified).</p>
+   *
+   * @param systemId The system identifier as a URL string.
+   */
+  public void setSystemId(String systemId)
+  {
+    if(null == inputSource)
+    {
+      inputSource = new InputSource(systemId);
+    }
+    else
+      inputSource.setSystemId(systemId);
+  }
+  
+  /**
    * Get the base ID (URL or system ID) from where URLs 
    * will be resolved.
    * 
    * @return Base URL for the source tree, or null.
    */
-  public String getBaseID()
+  public String getSystemId()
   {
     return (null != inputSource) ? inputSource.getSystemId() : null;
   }

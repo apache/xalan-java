@@ -77,7 +77,7 @@ import org.apache.xalan.utils.SystemIDResolver;
 import org.apache.xalan.utils.StringVector;
 import org.apache.xpath.XPath;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 /**
  * This class defines an attribute for an element in a XSLT stylesheet,
@@ -213,54 +213,54 @@ public class XSLTAttributeDef
   /** NEEDSDOC Field T_CDATA, T_URL, T_AVT, T_PATTERN, T_EXPR, T_CHAR, T_PRIORITY, T_YESNO, T_QNAME, T_QNAMES, T_ENUM, T_SIMPLEPATTERNLIST, T_NMTOKEN, T_STRINGLIST, T_PREFIX_URLLIST          */
   static final int T_CDATA = 1,
 
-  // <!-- Used for the type of an attribute value that is a URI reference.-->
-  T_URL = 2,
+    // <!-- Used for the type of an attribute value that is a URI reference.-->
+    T_URL = 2,
 
-  // <!-- Used for the type of an attribute value that is an
-  // attribute value template.-->
-  T_AVT = 3,  // Attribute Value Template
+    // <!-- Used for the type of an attribute value that is an
+    // attribute value template.-->
+    T_AVT = 3,  // Attribute Value Template
 
-  // <!-- Used for the type of an attribute value that is a pattern.-->
-  T_PATTERN = 4,
+    // <!-- Used for the type of an attribute value that is a pattern.-->
+    T_PATTERN = 4,
 
-  // <!-- Used for the type of an attribute value that is an expression.-->
-  T_EXPR = 5,
+    // <!-- Used for the type of an attribute value that is an expression.-->
+    T_EXPR = 5,
 
-  // <!-- Used for the type of an attribute value that consists
-  // of a single character.-->
-  T_CHAR = 6,
+    // <!-- Used for the type of an attribute value that consists
+    // of a single character.-->
+    T_CHAR = 6,
 
-  // <!-- Used for the type of an attribute value that is a priority. -->
-  T_PRIORITY = 7,
+    // <!-- Used for the type of an attribute value that is a priority. -->
+    T_PRIORITY = 7,
 
-  // Used for boolean values
-  T_YESNO = 8,
+    // Used for boolean values
+    T_YESNO = 8,
 
-  // <!-- Used for the type of an attribute value that is a QName; the prefix
-  // gets expanded by the XSLT processor. -->
-  T_QNAME = 9,
+    // <!-- Used for the type of an attribute value that is a QName; the prefix
+    // gets expanded by the XSLT processor. -->
+    T_QNAME = 9,
 
-  // <!-- Like qname but a whitespace-separated list of QNames. -->
-  T_QNAMES = 10,
+    // <!-- Like qname but a whitespace-separated list of QNames. -->
+    T_QNAMES = 10,
 
-  // <!-- Used for enumerated values -->
-  T_ENUM = 11,
+    // <!-- Used for enumerated values -->
+    T_ENUM = 11,
 
-  // Used for simple match patterns, i.e. xsl:strip-space spec.
-  T_SIMPLEPATTERNLIST = 12,
+    // Used for simple match patterns, i.e. xsl:strip-space spec.
+    T_SIMPLEPATTERNLIST = 12,
 
-  // Used for a known token.
-  T_NMTOKEN = 13,
+    // Used for a known token.
+    T_NMTOKEN = 13,
 
-  // Used for a list of white-space delimited strings.
-  T_STRINGLIST = 14,
+    // Used for a list of white-space delimited strings.
+    T_STRINGLIST = 14,
 
-  // Used for a list of white-space delimited strings.
-  T_PREFIX_URLLIST = 15;
+    // Used for a list of white-space delimited strings.
+    T_PREFIX_URLLIST = 15;
 
   /** NEEDSDOC Field m_foreignAttr          */
   static XSLTAttributeDef m_foreignAttr = new XSLTAttributeDef("*", "*",
-                                            XSLTAttributeDef.T_CDATA, false);
+                                                               XSLTAttributeDef.T_CDATA, false);
 
   /**
    * The allowed namespace for this element.
@@ -440,16 +440,23 @@ public class XSLTAttributeDef
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   AVT processAVT(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
-            throws SAXException
+                 StylesheetHandler handler, String uri, String name, String rawName, String value)
+    throws org.xml.sax.SAXException
   {
+    
+    try
+    {
+      AVT avt = new AVT(handler, uri, name, rawName, value);
 
-    AVT avt = new AVT(handler, uri, name, rawName, value);
-
-    return avt;
+      return avt;
+    }
+    catch(TransformerException te)
+    {
+      throw new org.xml.sax.SAXException(te);
+    }
   }
 
   /**
@@ -464,11 +471,11 @@ public class XSLTAttributeDef
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   Object processCDATA(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
-            throws SAXException
+                      StylesheetHandler handler, String uri, String name, String rawName, String value)
+    throws org.xml.sax.SAXException
   {
     return value;
   }
@@ -485,17 +492,17 @@ public class XSLTAttributeDef
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   Object processCHAR(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
-            throws SAXException
+                     StylesheetHandler handler, String uri, String name, String rawName, String value)
+    throws org.xml.sax.SAXException
   {
 
     if (value.length() != 1)
     {
       handler.error(
-        "An XSLT attribute of type T_CHAR must be only 1 character!", null);
+                    "An XSLT attribute of type T_CHAR must be only 1 character!", null);
     }
 
     return new Character(value.charAt(0));
@@ -513,11 +520,11 @@ public class XSLTAttributeDef
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   Object processENUM(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
-            throws SAXException
+                     StylesheetHandler handler, String uri, String name, String rawName, String value)
+    throws org.xml.sax.SAXException
   {
 
     int enum = this.getEnum(value);
@@ -537,16 +544,23 @@ public class XSLTAttributeDef
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   Object processEXPR(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
-            throws SAXException
+                     StylesheetHandler handler, String uri, String name, String rawName, String value)
+    throws org.xml.sax.SAXException
   {
 
-    XPath expr = handler.createXPath(value);
+    try
+    {
+      XPath expr = handler.createXPath(value);
 
-    return expr;
+      return expr;
+    }
+    catch(TransformerException te)
+    {
+      throw new org.xml.sax.SAXException(te);
+    }
   }
 
   /**
@@ -561,11 +575,11 @@ public class XSLTAttributeDef
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   Object processNMTOKEN(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
-            throws SAXException
+                        StylesheetHandler handler, String uri, String name, String rawName, String value)
+    throws org.xml.sax.SAXException
   {
     return value;
   }
@@ -582,16 +596,23 @@ public class XSLTAttributeDef
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   Object processPATTERN(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
-            throws SAXException
+                        StylesheetHandler handler, String uri, String name, String rawName, String value)
+    throws org.xml.sax.SAXException
   {
 
-    XPath pattern = handler.createMatchPatternXPath(value);
+    try
+    {
+      XPath pattern = handler.createMatchPatternXPath(value);
 
-    return pattern;
+      return pattern;
+    }
+    catch(TransformerException te)
+    {
+      throw new org.xml.sax.SAXException(te);
+    }
   }
 
   /**
@@ -606,11 +627,11 @@ public class XSLTAttributeDef
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   Object processPRIORITY(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
-            throws SAXException
+                         StylesheetHandler handler, String uri, String name, String rawName, String value)
+    throws org.xml.sax.SAXException
   {
     return Double.valueOf(value);
   }
@@ -627,11 +648,11 @@ public class XSLTAttributeDef
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   Object processQNAME(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
-            throws SAXException
+                      StylesheetHandler handler, String uri, String name, String rawName, String value)
+    throws org.xml.sax.SAXException
   {
     return new QName(value, handler);
   }
@@ -648,11 +669,11 @@ public class XSLTAttributeDef
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   Vector processQNAMES(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
-            throws SAXException
+                       StylesheetHandler handler, String uri, String name, String rawName, String value)
+    throws org.xml.sax.SAXException
   {
 
     StringTokenizer tokenizer = new StringTokenizer(value, " \t\n\r\f");
@@ -679,25 +700,32 @@ public class XSLTAttributeDef
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   Vector processSIMPLEPATTERNLIST(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
-            throws SAXException
+                                  StylesheetHandler handler, String uri, String name, String rawName, String value)
+    throws org.xml.sax.SAXException
   {
 
-    StringTokenizer tokenizer = new StringTokenizer(value, " \t\n\r\f");
-    int nPatterns = tokenizer.countTokens();
-    Vector patterns = new Vector(nPatterns);
-
-    for (int i = 0; i < nPatterns; i++)
+    try
     {
-      XPath pattern = handler.createMatchPatternXPath(tokenizer.nextToken());
+      StringTokenizer tokenizer = new StringTokenizer(value, " \t\n\r\f");
+      int nPatterns = tokenizer.countTokens();
+      Vector patterns = new Vector(nPatterns);
 
-      patterns.addElement(pattern);
+      for (int i = 0; i < nPatterns; i++)
+      {
+        XPath pattern = handler.createMatchPatternXPath(tokenizer.nextToken());
+
+        patterns.addElement(pattern);
+      }
+      return patterns;
+    }
+    catch(TransformerException te)
+    {
+      throw new org.xml.sax.SAXException(te);
     }
 
-    return patterns;
   }
 
   /**
@@ -712,11 +740,11 @@ public class XSLTAttributeDef
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   StringVector processSTRINGLIST(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
-            throws SAXException
+                                 StylesheetHandler handler, String uri, String name, String rawName, String value)
+    throws org.xml.sax.SAXException
   {
 
     StringTokenizer tokenizer = new StringTokenizer(value, " \t\n\r\f");
@@ -743,11 +771,11 @@ public class XSLTAttributeDef
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   StringVector processPREFIX_URLLIST(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
-            throws SAXException
+                                     StylesheetHandler handler, String uri, String name, String rawName, String value)
+    throws org.xml.sax.SAXException
   {
 
     StringTokenizer tokenizer = new StringTokenizer(value, " \t\n\r\f");
@@ -777,11 +805,11 @@ public class XSLTAttributeDef
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   String processURL(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
-            throws SAXException
+                    StylesheetHandler handler, String uri, String name, String rawName, String value)
+    throws org.xml.sax.SAXException
   {
 
     // return SystemIDResolver.getAbsoluteURI(value, 
@@ -801,11 +829,11 @@ public class XSLTAttributeDef
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   private Boolean processYESNO(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
-            throws SAXException
+                               StylesheetHandler handler, String uri, String name, String rawName, String value)
+    throws org.xml.sax.SAXException
   {
     return new Boolean(value.equals("yes") ? true : false);
   }
@@ -821,11 +849,11 @@ public class XSLTAttributeDef
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   Object processValue(
-          StylesheetHandler handler, String uri, String name, String rawName, String value)
-            throws SAXException
+                      StylesheetHandler handler, String uri, String name, String rawName, String value)
+    throws org.xml.sax.SAXException
   {
 
     int type = getType();
@@ -892,10 +920,10 @@ public class XSLTAttributeDef
    * NEEDSDOC @param handler
    * NEEDSDOC @param elem
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   void setDefAttrValue(StylesheetHandler handler, Object elem)
-          throws SAXException
+    throws org.xml.sax.SAXException
   {
     setAttrValue(handler, this.getNamespace(), this.getName(),
                  this.getName(), this.getDefault(), elem);
@@ -967,11 +995,11 @@ public class XSLTAttributeDef
    * NEEDSDOC @param attrValue
    * NEEDSDOC @param elem
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   void setAttrValue(
-          StylesheetHandler handler, String attrUri, String attrLocalName, String attrRawName, String attrValue, Object elem)
-            throws SAXException
+                    StylesheetHandler handler, String attrUri, String attrLocalName, String attrRawName, String attrValue, Object elem)
+    throws org.xml.sax.SAXException
   {
 
     String setterString = getSetterMethodName();

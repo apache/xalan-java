@@ -63,9 +63,7 @@ import org.xml.sax.ext.LexicalHandler;
 
 /**
  * This is a SAX ContentHandler that may be used to process SAX
- * events into an Templates objects.  This is an abstract class
- * instead of an interface, so it can be a ContentHandler object,
- * for passing into the JAXP SAXParser interface.
+ * parse events into an Templates objects.
  * 
  * <p>Note that TemplatesHandler doesn't need to implement LexicalHandler.</p>
  */
@@ -91,5 +89,5 @@ public interface TemplatesHandler extends ContentHandler
    * resolve relative URLs in the stylesheet.
    * @param baseID Base URL for this stylesheet.
    */
-  public void setBaseID(String baseID);
+  public void setSystemID(String systemID);
 }

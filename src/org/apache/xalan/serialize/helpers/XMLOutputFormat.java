@@ -54,41 +54,63 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.serialize;
+package org.apache.xalan.serialize.helpers;
 
-import java.io.IOException;
-
-import org.w3c.dom.Node;
+import org.apache.xalan.serialize.OutputFormat;
+import org.apache.xalan.serialize.Method;
 
 /**
- * Interface for a DOM serializer implementation.
+ * Output format for XML documents.
  * <p>
- * The DOM serializer is a facet of a serializer. A serializer may or may
- * not support a DOM serializer.
- * <p>
- * Example:
- * <pre>
- * Document     doc;
- * Serializer   ser;
- * OutputStream os;
- *
- * ser.setOutputStream( os );
- * ser.asDOMSerializer( doc );
- * </pre>
- *
+ * The output format affects the manner in which a document is
+ * serialized. The output format determines the output method,
+ * encoding, indentation, document type, and various other properties
+ * that affect the manner in which a document is serialized.
  *
  * @version Alpha
- * @author <a href="mailto:Scott_Boag/CAM/Lotus@lotus.com">Scott Boag</a>
  * @author <a href="mailto:arkin@exoffice.com">Assaf Arkin</a>
  */
-public interface DOMSerializer
+public class XMLOutputFormat extends OutputFormat
 {
+
   /**
-   * Serializes the DOM node. Throws an exception only if an I/O
-   * exception occured while serializing.
+   * Constructor XMLOutputFormat
    *
-   * @param elem The element to serialize
-   * @throws IOException An I/O exception occured while serializing
    */
-  public void serialize(Node node) throws IOException;
+  public XMLOutputFormat()
+  {
+
+    setMethod(Method.XML);
+    setMediaType("text/xml");
+    setPreserveSpace(true);
+  }
+
+  /**
+   * Constructor XMLOutputFormat
+   *
+   *
+   * NEEDSDOC @param encoding
+   */
+  public XMLOutputFormat(String encoding)
+  {
+
+    this();
+
+    setEncoding(encoding);
+  }
+
+  /**
+   * Constructor XMLOutputFormat
+   *
+   *
+   * NEEDSDOC @param indenting
+   */
+  public XMLOutputFormat(boolean indenting)
+  {
+
+    this();
+
+    setIndent(indenting);
+    setPreserveSpace(false);
+  }
 }

@@ -60,7 +60,7 @@ import java.util.Vector;
 
 import org.w3c.dom.Node;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.*;
 import org.apache.xalan.utils.QName;
@@ -156,11 +156,11 @@ public class ElemUse extends ElemTemplateElement
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   private void applyAttrSets(
           TransformerImpl transformer, StylesheetComposed stylesheet, QName attributeSetsNames[], Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
 
     if (null != attributeSetsNames)
@@ -203,11 +203,11 @@ public class ElemUse extends ElemTemplateElement
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
 
     if (TransformerImpl.S_DEBUG)

@@ -59,7 +59,7 @@ package org.apache.xalan.templates;
 import org.w3c.dom.Node;
 import org.w3c.dom.DOMException;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
@@ -104,11 +104,11 @@ public class ElemApplyImport extends ElemTemplateElement
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
 
     if (transformer.currentTemplateRuleIsNull())

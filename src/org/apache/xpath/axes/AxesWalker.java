@@ -147,10 +147,10 @@ public abstract class AxesWalker extends NodeTest
    * NEEDSDOC @param opPos
    * NEEDSDOC @param stepType
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public void init(Compiler compiler, int opPos, int stepType)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     // int nodeTestOpPos = compiler.getFirstChildPosOfStep(opPos);
@@ -307,9 +307,9 @@ public abstract class AxesWalker extends NodeTest
   /**
    * Reset the proximity positions counts.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public void resetProximityPositions() throws org.xml.sax.SAXException
+  public void resetProximityPositions() throws javax.xml.transform.TransformerException
   {
 
     if (m_predicateCount > 0)
@@ -329,9 +329,9 @@ public abstract class AxesWalker extends NodeTest
    *
    * NEEDSDOC @param i
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public void initProximityPosition(int i) throws org.xml.sax.SAXException
+  public void initProximityPosition(int i) throws javax.xml.transform.TransformerException
   {
     m_proximityPositions[i] = 0;
   }
@@ -381,10 +381,10 @@ public abstract class AxesWalker extends NodeTest
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   boolean executePredicates(Node context, XPathContext xctxt)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     m_predicateIndex = 0;
@@ -473,10 +473,10 @@ public abstract class AxesWalker extends NodeTest
    * NEEDSDOC @param compiler
    * NEEDSDOC @param opPos
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   private void initPredicateInfo(Compiler compiler, int opPos)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     int pos = compiler.getFirstPredicateOpPos(opPos);
@@ -568,7 +568,7 @@ public abstract class AxesWalker extends NodeTest
     {
       resetProximityPositions();
     }
-    catch (org.xml.sax.SAXException se)
+    catch (javax.xml.transform.TransformerException se)
     {
 
       // TODO: Fix this...
@@ -1635,7 +1635,7 @@ public abstract class AxesWalker extends NodeTest
         return NodeFilter.FILTER_ACCEPT;
       }
     }
-    catch (org.xml.sax.SAXException se)
+    catch (javax.xml.transform.TransformerException se)
     {
 
       // TODO: Fix this.

@@ -69,20 +69,17 @@ import org.w3c.dom.Node;
  * Acts as an holder for a transformation result tree, in the 
  * form of a Document Object Model (DOM).  If no node is set, 
  * the transformation will create a Document node as the holder 
- * for the result of the transformation, which may be retreaved 
+ * for the result of the transformation, which may be retrieved 
  * via getNode.
- *
- * @version Alpha
- * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
- * @see <a href="http://www.w3.org/TR/DOM-Level-2">Document Object Model (DOM) Level 2 Specification</a>
  */
 public class DOMResult implements Result
 {
 
   /**
-   * Zero-argument default constructor.  If this constructor 
-   * is used, and setNode is not called, the transformer will 
-   * create a Document node for the result.
+   * Zero-argument default constructor.  If this constructor is used, and 
+   * no output DOM source is set, then the transformer will 
+   * create an output {@link org.w3c.dom.Document} using 
+   * {@link javax.xml.parsers.DocumentBuilder#newDocument}.
    */
   public DOMResult(){}
 
@@ -91,9 +88,22 @@ public class DOMResult implements Result
    *
    * @param n The DOM node that will contain the result tree.
    */
-  public DOMResult(Node n)
+  public DOMResult(Node node)
   {
-    setNode(n);
+    setNode(node);
+  }
+
+  /**
+   * Create a new output target with a DOM node.
+   *
+   * @param node The DOM node that will contain the result tree.
+   * @param systemID The system identifier which may be used in association 
+   * with this node.
+   */
+  public DOMResult(Node node, String systemID)
+  {
+    setNode(node);
+    setSystemId(systemID);
   }
 
   /**
@@ -120,6 +130,29 @@ public class DOMResult implements Result
   {
     return node;
   }
+  
+  /**
+   * Method setSystemId Set the systemID that may be used in association
+   * with the node.
+   *
+   * @param systemId The system identifier as a URL string.
+   */
+  public void setSystemId(String systemId)
+  {
+    this.systemId = systemId;
+  }
+
+  /**
+   * Get the system identifier that was set with setSystemId.
+   *
+   * @return The system identifier that was set with setSystemId, or null
+   * if setSystemId was not called.
+   */
+  public String getSystemId()
+  {
+    return systemId;
+  }
+
 
   //////////////////////////////////////////////////////////////////////
   // Internal state.
@@ -129,4 +162,11 @@ public class DOMResult implements Result
    * The node to which the transformation will be appended.
    */
   private Node node;
+  
+  /**
+   * The systemID that may be used in association
+   * with the node.
+   */
+  private String systemId;
+
 }

@@ -64,7 +64,6 @@ import org.xml.sax.ext.LexicalHandler;
 import org.apache.xpath.DOM2Helper;
 import org.apache.xpath.DOMHelper;
 import org.apache.xalan.utils.NodeConsumer;
-import org.apache.serialize.SerializerHandler;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -108,9 +107,9 @@ public class TreeWalker
    *
    * NEEDSDOC @param pos
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void traverse(Node pos) throws SAXException
+  public void traverse(Node pos) throws org.xml.sax.SAXException
   {
 
     Node top = pos;
@@ -156,9 +155,9 @@ public class TreeWalker
    * NEEDSDOC @param pos
    * NEEDSDOC @param top
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void traverse(Node pos, Node top) throws SAXException
+  public void traverse(Node pos, Node top) throws org.xml.sax.SAXException
   {
 
     while (null != pos)
@@ -194,7 +193,7 @@ public class TreeWalker
   }
 
   /*
-  public void traverse(Node pos) throws SAXException
+  public void traverse(Node pos) throws TransformerException
   {
     startNode(pos);
     NodeList children = pos.getChildNodes();
@@ -219,9 +218,9 @@ public class TreeWalker
    *
    * NEEDSDOC @param node
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  protected void startNode(Node node) throws SAXException
+  protected void startNode(Node node) throws org.xml.sax.SAXException
   {
 
     if (m_contentHandler instanceof NodeConsumer)
@@ -324,24 +323,10 @@ public class TreeWalker
       {
         nextIsRaw = false;
 
-        boolean isSerH = (m_contentHandler instanceof SerializerHandler);
-        SerializerHandler serH =
-          isSerH ? ((SerializerHandler) this.m_contentHandler) : null;
-
-        if (isSerH)
-        {
-          serH.startNonEscaping();
-        }
-
-        this.m_contentHandler.characters(data.toCharArray(), 0,
+        m_contentHandler.processingInstruction(javax.xml.transform.Result.PI_DISABLE_OUTPUT_ESCAPING, "");
+        m_contentHandler.characters(data.toCharArray(), 0,
                                          data.length());
-
-        {
-          if (isSerH)
-          {
-            serH.endNonEscaping();
-          }
-        }
+        m_contentHandler.processingInstruction(javax.xml.transform.Result.PI_ENABLE_OUTPUT_ESCAPING, "");
       }
       else
       {
@@ -376,9 +361,9 @@ public class TreeWalker
    *
    * NEEDSDOC @param node
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  protected void endNode(Node node) throws SAXException
+  protected void endNode(Node node) throws org.xml.sax.SAXException
   {
 
     switch (node.getNodeType())

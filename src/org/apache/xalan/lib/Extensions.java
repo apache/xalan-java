@@ -151,7 +151,7 @@ public class Extensions {
 	 * in ni2
 	 */	
 	public static NodeSet intersection(NodeIterator ni1, NodeIterator ni2)
-			throws org.xml.sax.SAXException
+			throws javax.xml.transform.TransformerException
 	{
 		NodeSet ns1 = new NodeSet(ni1);
 		NodeSet ns2 = new NodeSet(ni2);
@@ -174,7 +174,7 @@ public class Extensions {
 	 * in ni2
 	 */	
 	public static NodeSet difference(NodeIterator ni1, NodeIterator ni2)
-			throws org.xml.sax.SAXException	
+			throws javax.xml.transform.TransformerException	
 	{
 		NodeSet ns1 = new NodeSet(ni1);
 		NodeSet ns2 = new NodeSet(ni2);
@@ -198,7 +198,7 @@ public class Extensions {
 	 * only include the first such node found.
 	 */	
 	public static NodeSet distinct(NodeIterator ni)
-			throws org.xml.sax.SAXException	
+			throws javax.xml.transform.TransformerException	
 	{
 		NodeSet ns = new NodeSet(ni);
 		NodeSet dist = new NodeSet();

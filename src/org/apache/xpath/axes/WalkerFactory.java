@@ -82,11 +82,11 @@ public class WalkerFactory
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   static AxesWalker loadOneWalker(
           LocPathIterator lpi, Compiler compiler, int stepOpCodePos)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     AxesWalker firstWalker = null;
@@ -119,11 +119,11 @@ public class WalkerFactory
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   static AxesWalker loadWalkers(
           LocPathIterator lpi, Compiler compiler, int stepOpCodePos, int stepIndex)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     int stepType;
@@ -168,10 +168,10 @@ public class WalkerFactory
    *
    * NEEDSDOC (newLocPathIterator) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public static LocPathIterator newLocPathIterator(
-          Compiler compiler, int opPos) throws org.xml.sax.SAXException
+          Compiler compiler, int opPos) throws javax.xml.transform.TransformerException
   {
 
     int firstStepPos = compiler.getFirstChildPos(opPos);
@@ -232,11 +232,11 @@ public class WalkerFactory
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   private static int analyze(
           Compiler compiler, int stepOpCodePos, int stepIndex)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     int stepType;
@@ -364,10 +364,10 @@ public class WalkerFactory
    *
    * NEEDSDOC (analyzePredicate) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   static int analyzePredicate(Compiler compiler, int opPos, int stepType)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     int argLen;

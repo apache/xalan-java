@@ -203,11 +203,11 @@ public class TraceManager
    * NEEDSDOC @param xpath
    * NEEDSDOC @param selection
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public void fireSelectedEvent(
           Node sourceNode, ElemTemplateElement styleNode, String attributeName, XPath xpath, XObject selection)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     if (hasTraceListeners())
@@ -221,10 +221,10 @@ public class TraceManager
    *
    * NEEDSDOC @param se
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public void fireSelectedEvent(SelectionEvent se)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     if (hasTraceListeners())

@@ -69,6 +69,8 @@ import org.apache.xalan.trace.SelectionEvent;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 
+import javax.xml.transform.TransformerException;
+
 /**
  * <meta name="usage" content="advanced"/>
  * Implement xsl:variable.
@@ -214,9 +216,9 @@ public class ElemVariable extends ElemTemplateElement
    *
    * NEEDSDOC @param param
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public ElemVariable(ElemVariable param) throws SAXException
+  public ElemVariable(ElemVariable param) throws TransformerException
   {
 
     m_selectPattern = param.m_selectPattern;
@@ -235,11 +237,11 @@ public class ElemVariable extends ElemTemplateElement
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
 
     if (TransformerImpl.S_DEBUG)
@@ -258,10 +260,10 @@ public class ElemVariable extends ElemTemplateElement
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public XObject getValue(TransformerImpl transformer, Node sourceNode)
-          throws SAXException
+          throws TransformerException
   {
 
     XObject var;

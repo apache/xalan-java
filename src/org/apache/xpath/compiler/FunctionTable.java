@@ -267,10 +267,10 @@ public class FunctionTable
    *
    * NEEDSDOC (getFunction) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public static Function getFunction(int which)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
     return m_functions[which].getFunction();
   }

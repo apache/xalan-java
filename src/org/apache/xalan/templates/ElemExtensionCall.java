@@ -79,6 +79,8 @@ import org.apache.xalan.extensions.ExtensionHandler;
 import org.apache.xalan.extensions.ExtensionsTable;
 import org.apache.xalan.transformer.TransformerImpl;
 
+import javax.xml.transform.TransformerException;
+
 /**
  * <meta name="usage" content="advanced"/>
  * Implement an extension element.
@@ -240,82 +242,89 @@ public class ElemExtensionCall extends ElemLiteralResult
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
-
-    transformer.getResultTreeHandler().flushPending();
-
-    XPathContext liaison = ((XPathContext) transformer.getXPathContext());
-    ExtensionsTable etable = liaison.getExtensionsTable();
-    ExtensionHandler nsh = etable.get(m_extns);
-
-    // We're seeing this extension namespace used for the first time.  Try to
-    // autodeclare it as a java namespace.
-
-    if (null == nsh)
-    {
-      nsh = etable.makeJavaNamespace(m_extns);
-
-      etable.addExtensionNamespace(m_extns, nsh);
-    }
 
     try
     {
+      transformer.getResultTreeHandler().flushPending();
 
-      // We set isAvailable to true so that if the extension element processes its
-      // children, and one of those children is an <xsl:fallback>, it won't get invoked.
+      XPathContext liaison = ((XPathContext) transformer.getXPathContext());
+      ExtensionsTable etable = liaison.getExtensionsTable();
+      ExtensionHandler nsh = etable.get(m_extns);
 
-      isAvailable = true;
-      nsh.processElement(this.getLocalName(), this, transformer,
-                         getStylesheet(), sourceNode.getOwnerDocument(),
-                         sourceNode, mode, this);
-    }
-    catch (Exception e)
-    {
+      // We're seeing this extension namespace used for the first time.  Try to
+      // autodeclare it as a java namespace.
 
-      // System.out.println(e);
-      // e.printStackTrace();
-      String msg = e.getMessage();
-
-      if (null != msg)
+      if (null == nsh)
       {
-        if (msg.startsWith("Stopping after fatal error:"))
-        {
-          msg = msg.substring("Stopping after fatal error:".length());
-        }
+        nsh = etable.makeJavaNamespace(m_extns);
 
-        transformer.getMsgMgr().message(
-          XSLMessages.createMessage(
-          XSLTErrorResources.ER_CALL_TO_EXT_FAILED, new Object[]{ msg }),
-          false);  //"Call to extension element failed: "+msg);
+        etable.addExtensionNamespace(m_extns, nsh);
+      }
 
+      try
+      {
+
+        // We set isAvailable to true so that if the extension element processes its
+        // children, and one of those children is an <xsl:fallback>, it won't get invoked.
+
+        isAvailable = true;
+        nsh.processElement(this.getLocalName(), this, transformer,
+                           getStylesheet(), sourceNode.getOwnerDocument(),
+                           sourceNode, mode, this);
+      }
+      catch (Exception e)
+      {
+
+        // System.out.println(e);
         // e.printStackTrace();
-        // System.exit(-1);
-      }
+        String msg = e.getMessage();
 
-      // transformer.message(msg);
-      isAvailable = false;
-
-      for (ElemTemplateElement child = m_firstChild; child != null;
-              child = child.m_nextSibling)
-      {
-        if (child.getXSLToken() == Constants.ELEMNAME_FALLBACK)
+        if (null != msg)
         {
-          try
+          if (msg.startsWith("Stopping after fatal error:"))
           {
-            transformer.pushElemTemplateElement(child);
-            child.execute(transformer, sourceNode, mode);
+            msg = msg.substring("Stopping after fatal error:".length());
           }
-          finally
+
+          transformer.getMsgMgr().message(
+                                          XSLMessages.createMessage(
+                                                                    XSLTErrorResources.ER_CALL_TO_EXT_FAILED, new Object[]{ msg }),
+                                          false);  //"Call to extension element failed: "+msg);
+
+          // e.printStackTrace();
+          // System.exit(-1);
+        }
+
+        // transformer.message(msg);
+        isAvailable = false;
+
+        for (ElemTemplateElement child = m_firstChild; child != null;
+             child = child.m_nextSibling)
+        {
+          if (child.getXSLToken() == Constants.ELEMNAME_FALLBACK)
           {
-            transformer.popElemTemplateElement();
+            try
+            {
+              transformer.pushElemTemplateElement(child);
+              child.execute(transformer, sourceNode, mode);
+            }
+            finally
+            {
+              transformer.popElemTemplateElement();
+            }
           }
         }
       }
+    }
+    catch(org.xml.sax.SAXException se)
+    {
+      throw new TransformerException(se);
     }
   }
 
@@ -350,11 +359,11 @@ public class ElemExtensionCall extends ElemLiteralResult
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public String getAttribute(
           String rawName, Node sourceNode, TransformerImpl transformer)
-            throws SAXException
+            throws TransformerException
   {
 
     AVT avt = getLiteralResultAttribute(rawName);

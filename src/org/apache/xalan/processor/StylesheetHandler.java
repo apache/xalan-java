@@ -57,6 +57,7 @@
 package org.apache.xalan.processor;
 
 import java.net.URL;
+import java.io.IOException;
 
 import javax.xml.transform.sax.TemplatesHandler;
 import javax.xml.transform.Templates;
@@ -91,17 +92,15 @@ import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 import org.xml.sax.helpers.NamespaceSupport;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.TransformerException;
 import org.apache.xalan.utils.SAXSourceLocator;
 
 /**
@@ -188,9 +187,9 @@ public class StylesheetHandler extends DefaultHandler
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XPath createXPath(String str) throws org.xml.sax.SAXException
+  public XPath createXPath(String str) throws javax.xml.transform.TransformerException
   {
     return new XPath(str, getLocator(), this, XPath.SELECT);
   }
@@ -202,9 +201,9 @@ public class StylesheetHandler extends DefaultHandler
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  XPath createMatchPatternXPath(String str) throws org.xml.sax.SAXException
+  XPath createMatchPatternXPath(String str) throws javax.xml.transform.TransformerException
   {
     return new XPath(str, getLocator(), this, XPath.MATCH);
   }
@@ -311,7 +310,7 @@ public class StylesheetHandler extends DefaultHandler
    * resolve relative URLs in the stylesheet.
    * @param baseID Base URL for this stylesheet.
    */
-  public void setBaseID(String baseID)
+  public void setSystemID(String baseID)
   {
     pushBaseIndentifier(baseID);
   }
@@ -323,26 +322,17 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Resolve an external entity.
    *
-   * <p>Always return null, so that the parser will use the system
-   * identifier provided in the XML document.  This method implements
-   * the SAX default behaviour: application writers can override it
-   * in a subclass to do special translations such as catalog lookups
-   * or URI redirection.</p>
-   *
    * @param publicId The public identifer, or null if none is
    *                 available.
    * @param systemId The system identifier provided in the XML
    *                 document.
    * @return The new input source, or null to require the
    *         default behaviour.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.xml.sax.EntityResolver#resolveEntity
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public InputSource resolveEntity(String publicId, String systemId)
-          throws SAXException
+    throws org.xml.sax.SAXException
   {
     return getCurrentProcessor().resolveEntity(this, publicId, systemId);
   }
@@ -396,10 +386,11 @@ public class StylesheetHandler extends DefaultHandler
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   XSLTElementProcessor getProcessorFor(
-          String uri, String localName, String rawName) throws SAXException
+          String uri, String localName, String rawName) 
+    throws org.xml.sax.SAXException
   {
 
     XSLTElementProcessor currentProcessor = getCurrentProcessor();
@@ -407,8 +398,8 @@ public class StylesheetHandler extends DefaultHandler
     XSLTElementProcessor elemProcessor = def.getProcessorFor(uri, localName);
 
     if (null == elemProcessor
-            && Double.valueOf(getStylesheet().getVersion()).doubleValue()
-               > Constants.XSLTVERSUPPORTED)
+        && Double.valueOf(getStylesheet().getVersion()).doubleValue()
+           > Constants.XSLTVERSUPPORTED)
     {
       elemProcessor = def.getProcessorForUnknown(uri, localName);
     }
@@ -450,13 +441,13 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Receive notification of the beginning of the document.
    *
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#startDocument
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void startDocument() throws SAXException
+  public void startDocument() throws org.xml.sax.SAXException
   {
     m_stylesheetLevel++;
   }
@@ -481,40 +472,47 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Receive notification of the end of the document.
    *
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#endDocument
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void endDocument() throws SAXException
+  public void endDocument() throws org.xml.sax.SAXException
   {
-
-    if (null != getStylesheetRoot())
+    try
     {
-      if (0 == m_stylesheetLevel)
-        getStylesheetRoot().recompose();
+      if (null != getStylesheetRoot())
+      {
+        if (0 == m_stylesheetLevel)
+          getStylesheetRoot().recompose();
 
-      // Resolve the result prefix tables in the elements.
-      if(null != getLastPoppedStylesheet())
-        getLastPoppedStylesheet().resolvePrefixTables();
+        // Resolve the result prefix tables in the elements.
+        if(null != getLastPoppedStylesheet())
+          getLastPoppedStylesheet().resolvePrefixTables();
+      }
+      else
+        throw new TransformerException("Did not find the stylesheet root!");
+
+      XSLTElementProcessor elemProcessor = getCurrentProcessor();
+
+      if (null != elemProcessor)
+        elemProcessor.startNonText(this);
+
+      m_stylesheetLevel--;
+      
+      // WARNING: This test works only as long as stylesheets are parsed
+      // more or less recursively. If we switch to an iterative "work-list"
+      // model, this will become true prematurely. In that case, 
+      // isStylesheetParsingComplete() will have to be adjusted to be aware
+      // of the worklist.
+      m_parsingComplete=(m_stylesheetLevel<0);
     }
-    else
-      throw new SAXException("Did not find the stylesheet root!");
+    catch(TransformerException te)
+    {
+      throw new org.xml.sax.SAXException(te);
+    }
 
-    XSLTElementProcessor elemProcessor = getCurrentProcessor();
-
-    if (null != elemProcessor)
-      elemProcessor.startNonText(this);
-
-    m_stylesheetLevel--;
-	
-	// WARNING: This test works only as long as stylesheets are parsed
-	// more or less recursively. If we switch to an iterative "work-list"
-	// model, this will become true prematurely. In that case, 
-	// isStylesheetParsingComplete() will have to be adjusted to be aware
-	// of the worklist.
-	m_parsingComplete=(m_stylesheetLevel<0);
   }
 
   /**
@@ -527,14 +525,14 @@ public class StylesheetHandler extends DefaultHandler
    *
    * @param prefix The Namespace prefix being declared.
    * @param uri The Namespace URI mapped to the prefix.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#startPrefixMapping
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void startPrefixMapping(String prefix, String uri)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     // m_nsSupport.pushContext();
@@ -550,13 +548,13 @@ public class StylesheetHandler extends DefaultHandler
    * output to a file).</p>
    *
    * @param prefix The Namespace prefix being declared.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#endPrefixMapping
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void endPrefixMapping(String prefix) throws SAXException
+  public void endPrefixMapping(String prefix) throws org.xml.sax.SAXException
   {
 
     // m_nsSupport.popContext();
@@ -565,9 +563,9 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Flush the characters buffer.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  private void flushCharacters() throws SAXException
+  private void flushCharacters() throws org.xml.sax.SAXException
   {
 
     XSLTElementProcessor elemProcessor = getCurrentProcessor();
@@ -585,15 +583,10 @@ public class StylesheetHandler extends DefaultHandler
    * NEEDSDOC @param localName
    * NEEDSDOC @param rawName
    * @param attributes The specified or defaulted attributes.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.xml.sax.ContentHandler#startElement
-   *
-   * @throws SAXException
    */
   public void startElement(
           String uri, String localName, String rawName, Attributes attributes)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     m_elementID++;
@@ -606,11 +599,12 @@ public class StylesheetHandler extends DefaultHandler
     flushCharacters();
 
     XSLTElementProcessor elemProcessor = getProcessorFor(uri, localName,
-                                           rawName);
+                                                         rawName);
 
     this.pushProcessor(elemProcessor);
     elemProcessor.startElement(this, uri, localName, rawName, attributes);
     this.getNamespaceSupport().pushContext();
+
   }
 
   /**
@@ -622,14 +616,14 @@ public class StylesheetHandler extends DefaultHandler
    * NEEDSDOC @param uri
    * NEEDSDOC @param localName
    * NEEDSDOC @param rawName
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#endElement
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void endElement(String uri, String localName, String rawName)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     m_elementID--;
@@ -656,13 +650,14 @@ public class StylesheetHandler extends DefaultHandler
    * @param start The start position in the character array.
    * @param length The number of characters to use from the
    *               character array.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#characters
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void characters(char ch[], int start, int length) throws SAXException
+  public void characters(char ch[], int start, int length) 
+    throws org.xml.sax.SAXException
   {
 
     if (!m_shouldProcess)
@@ -694,14 +689,14 @@ public class StylesheetHandler extends DefaultHandler
    * @param start The start position in the character array.
    * @param length The number of characters to use from the
    *               character array.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#ignorableWhitespace
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void ignorableWhitespace(char ch[], int start, int length)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     if (!m_shouldProcess)
@@ -721,14 +716,14 @@ public class StylesheetHandler extends DefaultHandler
    * @param target The processing instruction target.
    * @param data The processing instruction data, or null if
    *             none is supplied.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#processingInstruction
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void processingInstruction(String target, String data)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     if (!m_shouldProcess)
@@ -747,13 +742,13 @@ public class StylesheetHandler extends DefaultHandler
    * invoking other methods.</p>
    *
    * @param name The name of the skipped entity.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#processingInstruction
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void skippedEntity(String name) throws SAXException
+  public void skippedEntity(String name) throws org.xml.sax.SAXException
   {
 
     if (!m_shouldProcess)
@@ -761,10 +756,6 @@ public class StylesheetHandler extends DefaultHandler
 
     getCurrentProcessor().skippedEntity(this, name);
   }
-
-  ////////////////////////////////////////////////////////////////////
-  // Implementation of the ErrorHandler interface.
-  ////////////////////////////////////////////////////////////////////
 
   /**
    * <meta name="usage" content="internal"/>
@@ -775,17 +766,24 @@ public class StylesheetHandler extends DefaultHandler
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void warn(int msg, Object args[]) throws SAXException
+  public void warn(int msg, Object args[]) throws org.xml.sax.SAXException
   {
 
     String formattedMsg = m_XSLMessages.createWarning(msg, args);
     SAXSourceLocator locator = getLocator();
-    ErrorHandler handler = m_stylesheetProcessor.getErrorHandler();
+    ErrorListener handler = m_stylesheetProcessor.getErrorListener();
 
-    if (null != handler)
-      handler.warning(new SAXParseException(formattedMsg, locator));
+    try
+    {
+      if (null != handler)
+        handler.warning(new TransformerException(formattedMsg, locator));
+    }
+    catch(TransformerException te)
+    {
+      throw new org.xml.sax.SAXException(te);
+    }
   }
 
   /**
@@ -812,21 +810,36 @@ public class StylesheetHandler extends DefaultHandler
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  protected void error(String msg, Exception e) throws SAXException
+  protected void error(String msg, Exception e) throws org.xml.sax.SAXException
   {
 
     SAXSourceLocator locator = getLocator();
-    ErrorHandler handler = m_stylesheetProcessor.getErrorHandler();
-    SAXParseException pe = (null == e)
-                            ? new SAXParseException(msg, locator)
-                            : new SAXParseException(msg, locator, e);
+    ErrorListener handler = m_stylesheetProcessor.getErrorListener();
+    TransformerException pe;
+    if(!(e instanceof TransformerException))
+    {
+      pe = (null == e)
+           ? new TransformerException(msg, locator)
+             : new TransformerException(msg, locator, e);
+    }
+    else
+      pe = (TransformerException)e;
 
     if (null != handler)
-      handler.fatalError(pe);
+    {
+      try
+      {
+        handler.fatalError(pe);
+      }
+      catch(TransformerException te)
+      {
+        throw new org.xml.sax.SAXException(te);
+      }
+    }
     else
-      throw pe;
+      throw new org.xml.sax.SAXException(pe);
   }
 
   /**
@@ -840,10 +853,10 @@ public class StylesheetHandler extends DefaultHandler
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   protected void error(int msg, Object args[], Exception e)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     String formattedMsg = m_XSLMessages.createMessage(msg, args);
@@ -855,14 +868,13 @@ public class StylesheetHandler extends DefaultHandler
    * Receive notification of a parser warning.
    *
    * @param e The warning information encoded as an exception.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
-   * @see org.xml.sax.ErrorHandler#warning
-   * @see org.xml.sax.SAXParseException
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void warning(SAXParseException e) throws SAXException
+  public void warning(org.xml.sax.SAXParseException e) 
+    throws org.xml.sax.SAXException
   {
 
     // Need to set up a diagnosticsWriter here?
@@ -876,14 +888,13 @@ public class StylesheetHandler extends DefaultHandler
    * Receive notification of a recoverable parser error.
    *
    * @param e The warning information encoded as an exception.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
-   * @see org.xml.sax.ErrorHandler#warning
-   * @see org.xml.sax.SAXParseException
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void error(SAXParseException e) throws SAXException
+  public void error(org.xml.sax.SAXParseException e) 
+    throws org.xml.sax.SAXException
   {
 
     // Need to set up a diagnosticsWriter here?
@@ -896,7 +907,7 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * Report a fatal XML parsing error.
    *
-   * <p>The default implementation throws a SAXParseException.
+   * <p>The default implementation throws a TransformerException.
    * Application writers may override this method in a subclass if
    * they need to take specific actions for each fatal error (such as
    * collecting all of the errors into a single report): in any case,
@@ -905,14 +916,12 @@ public class StylesheetHandler extends DefaultHandler
    * the parser may no longer report parsing events.</p>
    *
    * @param e The error information encoded as an exception.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
-   * @see org.xml.sax.ErrorHandler#fatalError
-   * @see org.xml.sax.SAXParseException
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void fatalError(SAXParseException e) throws SAXException
+  public void fatalError(org.xml.sax.SAXParseException e) throws org.xml.sax.SAXException
   {
     throw e;
   }

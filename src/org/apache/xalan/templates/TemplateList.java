@@ -64,7 +64,7 @@ import java.io.Serializable;
 
 import org.w3c.dom.Node;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.utils.QName;
 import org.apache.xpath.XPath;
@@ -548,11 +548,11 @@ public class TemplateList implements java.io.Serializable
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public ElemTemplate getTemplate(
           XPathContext xctxt, Node targetNode, QName mode, boolean quietConflictWarnings)
-            throws SAXException
+            throws TransformerException
   {
 
     TemplateSubPatternAssociation head = getHead(xctxt, targetNode);
@@ -628,11 +628,11 @@ public class TemplateList implements java.io.Serializable
    *
    * @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   protected ElemTemplate getTemplate(
           StylesheetComposed imported, XPathContext support, Node targetNode, QName mode, boolean quietConflictWarnings)
-            throws SAXException
+            throws TransformerException
   {
     return imported.getTemplateComposed(support, targetNode, mode,
                                         quietConflictWarnings);

@@ -65,6 +65,8 @@ import org.apache.xalan.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 
+import javax.xml.transform.TransformerException;
+
 /**
  * <meta name="usage" content="advanced"/>
  * Implement xsl:comment.
@@ -106,27 +108,33 @@ public class ElemComment extends ElemTemplateElement
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
+    try
+    {
+      if (TransformerImpl.S_DEBUG)
+        transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
 
-    if (TransformerImpl.S_DEBUG)
-      transformer.getTraceManager().fireTraceEvent(sourceNode, mode, this);
+      // Note the content model is:
+      // <!ENTITY % instructions "
+      // %char-instructions;
+      // | xsl:processing-instruction
+      // | xsl:comment
+      // | xsl:element
+      // | xsl:attribute
+      // ">
+      String data = transformer.transformToString(this, sourceNode, mode);
 
-    // Note the content model is:
-    // <!ENTITY % instructions "
-    // %char-instructions;
-    // | xsl:processing-instruction
-    // | xsl:comment
-    // | xsl:element
-    // | xsl:attribute
-    // ">
-    String data = transformer.transformToString(this, sourceNode, mode);
-
-    transformer.getResultTreeHandler().comment(data);
+      transformer.getResultTreeHandler().comment(data);
+    }
+    catch(org.xml.sax.SAXException se)
+    {
+      throw new TransformerException(se);
+    }
   }
 
   /**

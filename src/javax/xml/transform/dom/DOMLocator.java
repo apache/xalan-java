@@ -63,14 +63,11 @@ import org.w3c.dom.Node;
 /**
  * Interface DOMLocator is used to indicate the position of a 
  * node in a source DOM.  This is to be used primarily for 
- * error reporting.  In order to use this, the receaver of an 
+ * error reporting.  In order to use this, the receiver of an 
  * error will need to downcast the SourceLocator object returned 
  * by an exception.  Some transformers may use this object for 
  * purposes other than error reporting, for instance, to indicate 
  * a source node that originated a result node.
- *
- * @version Alpha
- * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
  */
 public interface DOMLocator extends SourceLocator
 {

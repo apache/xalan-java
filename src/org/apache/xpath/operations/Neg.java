@@ -74,9 +74,9 @@ public class Neg extends UnaryOperation
    *
    * NEEDSDOC (operate) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XObject operate(XObject right) throws org.xml.sax.SAXException
+  public XObject operate(XObject right) throws javax.xml.transform.TransformerException
   {
     return new XNumber(-right.num());
   }

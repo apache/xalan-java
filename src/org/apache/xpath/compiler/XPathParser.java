@@ -67,13 +67,13 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.utils.StringKey;
 
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.LocatorImpl;
 
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.ErrorListener;
 
 /**
  * <meta name="usage" content="general"/>
@@ -125,11 +125,11 @@ public class XPathParser implements java.io.Serializable
    * @param namespaceContext An object that is able to resolve prefixes in
    * the XPath to namespaces.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public void initXPath(
           Compiler compiler, String expression, PrefixResolver namespaceContext)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     m_ops = compiler;
@@ -184,11 +184,11 @@ public class XPathParser implements java.io.Serializable
    * @param namespaceContext An object that is able to resolve prefixes in
    * the XPath to namespaces.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public void initMatchPattern(
           Compiler compiler, String expression, PrefixResolver namespaceContext)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     m_ops = compiler;
@@ -230,14 +230,14 @@ public class XPathParser implements java.io.Serializable
   }
 
   /** NEEDSDOC Field m_errorHandler          */
-  private ErrorHandler m_errorHandler;
+  private ErrorListener m_errorHandler;
 
   /**
    * Allow an application to register an error event handler.
    *
    * NEEDSDOC @param handler
    */
-  public void setErrorHandler(ErrorHandler handler)
+  public void setErrorHandler(ErrorListener handler)
   {
     m_errorHandler = handler;
   }
@@ -247,7 +247,7 @@ public class XPathParser implements java.io.Serializable
    *
    * NEEDSDOC ($objectName$) @return
    */
-  public ErrorHandler getErrorHandler()
+  public ErrorListener getErrorListener()
   {
     return m_errorHandler;
   }
@@ -479,10 +479,10 @@ public class XPathParser implements java.io.Serializable
    *
    * NEEDSDOC @param expected
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   private final void consumeExpected(String expected)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     if (tokenIs(expected))
@@ -502,10 +502,10 @@ public class XPathParser implements java.io.Serializable
    *
    * NEEDSDOC @param expected
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   private final void consumeExpected(char expected)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     if (tokenIs(expected))
@@ -526,22 +526,22 @@ public class XPathParser implements java.io.Serializable
    * NEEDSDOC @param msg
    * NEEDSDOC @param args
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  void warn(int msg, Object[] args) throws SAXException
+  void warn(int msg, Object[] args) throws TransformerException
   {
 
     String fmsg = XSLMessages.createXPATHWarning(msg, args);
-    ErrorHandler ehandler = this.getErrorHandler();
+    ErrorListener ehandler = this.getErrorListener();
 
     if (null != ehandler)
     {
-
       // TO DO: Need to get stylesheet Locator from here.
-      ehandler.warning(new SAXParseException(fmsg, new LocatorImpl()));
+      ehandler.warning(new TransformerException(fmsg));
     }
     else
     {
+      // Should never happen.
       System.out.println(fmsg);
     }
   }
@@ -573,19 +573,18 @@ public class XPathParser implements java.io.Serializable
    * NEEDSDOC @param msg
    * NEEDSDOC @param args
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  void error(int msg, Object[] args) throws SAXException
+  void error(int msg, Object[] args) throws TransformerException
   {
 
     String fmsg = XSLMessages.createXPATHMessage(msg, args);
-    ErrorHandler ehandler = this.getErrorHandler();
+    ErrorListener ehandler = this.getErrorListener();
 
     if (null != ehandler)
     {
-
       // TO DO: Need to get stylesheet Locator from here.
-      ehandler.fatalError(new SAXParseException(fmsg, new LocatorImpl()));
+      ehandler.fatalError(new TransformerException(fmsg));
     }
     else
     {
@@ -703,9 +702,9 @@ public class XPathParser implements java.io.Serializable
    * Expr  ::=  OrExpr
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void Expr() throws org.xml.sax.SAXException
+  protected void Expr() throws javax.xml.transform.TransformerException
   {
     OrExpr();
   }
@@ -717,9 +716,9 @@ public class XPathParser implements java.io.Serializable
    * | OrExpr 'or' AndExpr
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void OrExpr() throws org.xml.sax.SAXException
+  protected void OrExpr() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -744,9 +743,9 @@ public class XPathParser implements java.io.Serializable
    * | AndExpr 'and' EqualityExpr
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void AndExpr() throws org.xml.sax.SAXException
+  protected void AndExpr() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -777,9 +776,9 @@ public class XPathParser implements java.io.Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected int EqualityExpr(int addPos) throws org.xml.sax.SAXException
+  protected int EqualityExpr(int addPos) throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -837,9 +836,9 @@ public class XPathParser implements java.io.Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected int RelationalExpr(int addPos) throws org.xml.sax.SAXException
+  protected int RelationalExpr(int addPos) throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -914,9 +913,9 @@ public class XPathParser implements java.io.Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected int AdditiveExpr(int addPos) throws org.xml.sax.SAXException
+  protected int AdditiveExpr(int addPos) throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -975,9 +974,9 @@ public class XPathParser implements java.io.Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected int MultiplicativeExpr(int addPos) throws org.xml.sax.SAXException
+  protected int MultiplicativeExpr(int addPos) throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -1051,9 +1050,9 @@ public class XPathParser implements java.io.Serializable
    * | '-' UnaryExpr
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void UnaryExpr() throws org.xml.sax.SAXException
+  protected void UnaryExpr() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -1079,9 +1078,9 @@ public class XPathParser implements java.io.Serializable
    * StringExpr  ::=  Expr
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void StringExpr() throws org.xml.sax.SAXException
+  protected void StringExpr() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -1099,9 +1098,9 @@ public class XPathParser implements java.io.Serializable
    * StringExpr  ::=  Expr
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void BooleanExpr() throws org.xml.sax.SAXException
+  protected void BooleanExpr() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -1125,9 +1124,9 @@ public class XPathParser implements java.io.Serializable
    * NumberExpr  ::=  Expr
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void NumberExpr() throws org.xml.sax.SAXException
+  protected void NumberExpr() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -1150,9 +1149,9 @@ public class XPathParser implements java.io.Serializable
    * | UnionExpr '|' PathExpr
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void UnionExpr() throws org.xml.sax.SAXException
+  protected void UnionExpr() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -1271,9 +1270,9 @@ public class XPathParser implements java.io.Serializable
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void PathExpr() throws org.xml.sax.SAXException
+  protected void PathExpr() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -1306,9 +1305,9 @@ public class XPathParser implements java.io.Serializable
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void FilterExpr() throws org.xml.sax.SAXException
+  protected void FilterExpr() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -1358,9 +1357,9 @@ public class XPathParser implements java.io.Serializable
    * | FunctionCall
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void PrimaryExpr() throws org.xml.sax.SAXException
+  protected void PrimaryExpr() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -1416,9 +1415,9 @@ public class XPathParser implements java.io.Serializable
    * Argument    ::=    Expr
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void Argument() throws org.xml.sax.SAXException
+  protected void Argument() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -1435,9 +1434,9 @@ public class XPathParser implements java.io.Serializable
    * FunctionCall    ::=    FunctionName '(' ( Argument ( ',' Argument)*)? ')'
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void FunctionCall() throws org.xml.sax.SAXException
+  protected void FunctionCall() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -1523,9 +1522,9 @@ public class XPathParser implements java.io.Serializable
    * | AbsoluteLocationPath
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void LocationPath() throws org.xml.sax.SAXException
+  protected void LocationPath() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -1564,9 +1563,9 @@ public class XPathParser implements java.io.Serializable
    * | AbbreviatedRelativeLocationPath
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void RelativeLocationPath() throws org.xml.sax.SAXException
+  protected void RelativeLocationPath() throws javax.xml.transform.TransformerException
   {
 
     Step();
@@ -1583,9 +1582,9 @@ public class XPathParser implements java.io.Serializable
    * Step    ::=    Basis Predicate
    * | AbbreviatedStep
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void Step() throws org.xml.sax.SAXException
+  protected void Step() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -1641,9 +1640,9 @@ public class XPathParser implements java.io.Serializable
    * Basis    ::=    AxisName '::' NodeTest
    * | AbbreviatedBasis
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void Basis() throws org.xml.sax.SAXException
+  protected void Basis() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -1719,9 +1718,9 @@ public class XPathParser implements java.io.Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected int AxisName() throws org.xml.sax.SAXException
+  protected int AxisName() throws javax.xml.transform.TransformerException
   {
 
     Object val = Keywords.m_axisnames.get(m_token);
@@ -1747,9 +1746,9 @@ public class XPathParser implements java.io.Serializable
    *
    * NEEDSDOC @param axesType
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void NodeTest(int axesType) throws org.xml.sax.SAXException
+  protected void NodeTest(int axesType) throws javax.xml.transform.TransformerException
   {
 
     if (lookahead('(', 1))
@@ -1844,9 +1843,9 @@ public class XPathParser implements java.io.Serializable
    * Predicate ::= '[' PredicateExpr ']'
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void Predicate() throws org.xml.sax.SAXException
+  protected void Predicate() throws javax.xml.transform.TransformerException
   {
 
     if (tokenIs('['))
@@ -1862,9 +1861,9 @@ public class XPathParser implements java.io.Serializable
    * PredicateExpr ::= Expr
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void PredicateExpr() throws org.xml.sax.SAXException
+  protected void PredicateExpr() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -1884,9 +1883,9 @@ public class XPathParser implements java.io.Serializable
    * Prefix ::=  NCName
    * LocalPart ::=  NCName
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void QName() throws org.xml.sax.SAXException
+  protected void QName() throws javax.xml.transform.TransformerException
   {
     // Namespace
     if(lookahead(':', 1))
@@ -1931,9 +1930,9 @@ public class XPathParser implements java.io.Serializable
    * | "'" [^']* "'"
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void Literal() throws org.xml.sax.SAXException
+  protected void Literal() throws javax.xml.transform.TransformerException
   {
 
     int last = m_token.length() - 1;
@@ -1971,9 +1970,9 @@ public class XPathParser implements java.io.Serializable
    * Number ::= [0-9]+('.'[0-9]+)? | '.'[0-9]+
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void Number() throws org.xml.sax.SAXException
+  protected void Number() throws javax.xml.transform.TransformerException
   {
 
     if (null != m_token)
@@ -2011,9 +2010,9 @@ public class XPathParser implements java.io.Serializable
    * | Pattern '|' LocationPathPattern
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void Pattern() throws org.xml.sax.SAXException
+  protected void Pattern() throws javax.xml.transform.TransformerException
   {
 
     while (true)
@@ -2039,9 +2038,9 @@ public class XPathParser implements java.io.Serializable
    * | '//'? RelativePathPattern
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void LocationPathPattern() throws org.xml.sax.SAXException
+  protected void LocationPathPattern() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];
@@ -2105,9 +2104,9 @@ public class XPathParser implements java.io.Serializable
    * (Also handle doc())
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void IdKeyPattern() throws org.xml.sax.SAXException
+  protected void IdKeyPattern() throws javax.xml.transform.TransformerException
   {
     FunctionCall();
   }
@@ -2119,9 +2118,9 @@ public class XPathParser implements java.io.Serializable
    * | RelativePathPattern '//' StepPattern
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void RelativePathPattern() throws org.xml.sax.SAXException
+  protected void RelativePathPattern() throws javax.xml.transform.TransformerException
   {
 
     StepPattern();
@@ -2138,9 +2137,9 @@ public class XPathParser implements java.io.Serializable
    * StepPattern  ::=  AbbreviatedNodeTestStep
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void StepPattern() throws org.xml.sax.SAXException
+  protected void StepPattern() throws javax.xml.transform.TransformerException
   {
     AbbreviatedNodeTestStep();
   }
@@ -2150,9 +2149,9 @@ public class XPathParser implements java.io.Serializable
    * AbbreviatedNodeTestStep    ::=    '@'? NodeTest Predicate
    *
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void AbbreviatedNodeTestStep() throws org.xml.sax.SAXException
+  protected void AbbreviatedNodeTestStep() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH];

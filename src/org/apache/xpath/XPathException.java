@@ -58,18 +58,18 @@ package org.apache.xpath;
 
 import org.w3c.dom.Node;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="general"/>
  * This class implements an exception object that all
  * XPath classes will throw in case of an error.  This class
- * extends SAXException, and may hold other exceptions. In the
+ * extends TransformerException, and may hold other exceptions. In the
  * case of nested exceptions, printStackTrace will dump
  * all the traces of the nested exceptions, not just the trace
  * of this object.
  */
-public class XPathException extends SAXException
+public class XPathException extends TransformerException
 {
 
   /** NEEDSDOC Field m_styleNode          */
@@ -170,9 +170,9 @@ public class XPathException extends SAXException
       s.println("---------");
       exception.printStackTrace(s);
 
-      if (exception instanceof SAXException)
+      if (exception instanceof TransformerException)
       {
-        SAXException se = (SAXException) exception;
+        TransformerException se = (TransformerException) exception;
         Exception prev = exception;
 
         exception = se.getException();
@@ -206,9 +206,9 @@ public class XPathException extends SAXException
       if (null != nextMessage)
         lastMessage = nextMessage;
 
-      if (exception instanceof SAXException)
+      if (exception instanceof TransformerException)
       {
-        SAXException se = (SAXException) exception;
+        TransformerException se = (TransformerException) exception;
         Exception prev = exception;
 
         exception = se.getException();
@@ -258,9 +258,9 @@ public class XPathException extends SAXException
         s.println("Could not print stack trace...");
       }
 
-      if (exception instanceof SAXException)
+      if (exception instanceof TransformerException)
       {
-        SAXException se = (SAXException) exception;
+        TransformerException se = (TransformerException) exception;
         Exception prev = exception;
 
         exception = se.getException();
@@ -281,7 +281,7 @@ public class XPathException extends SAXException
 
   /**
    *  Return the embedded exception, if any.
-   *  Overrides org.xml.sax.SAXException.getException().
+   *  Overrides javax.xml.transform.TransformerException.getException().
    * 
    *  @return The embedded exception, or null if there is none.
    */

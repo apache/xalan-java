@@ -75,9 +75,6 @@ import java.util.Enumeration;
  * property names a class that is a concrete subclass of this
  * TransformerFactory abstract class. If no property is defined, 
  * a platform default will be used.</p>
- *
- * @version Alpha
- * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
  */
 public abstract class TransformerFactory
 {
@@ -228,6 +225,7 @@ public abstract class TransformerFactory
    * Set an object that will be used to resolve URIs used in
    * xsl:import, etc.  This will be used as the default for the
    * transformation.
+   * 
    * @param resolver An object that implements the URIResolver interface,
    * or null.
    */
@@ -256,11 +254,12 @@ public abstract class TransformerFactory
 
   /**
    * Allows the user to set specific attributes on the underlying
-   * implementation.
+   * implementation.  An attribute in this context is defined to 
+   * be an option that the implementation provides.
    * 
    * @param name The name of the attribute.
    * @param value The value of the attribute.
-   * @exception IllegalArgumentException thrown if the underlying
+   * @throws IllegalArgumentException thrown if the underlying
    * implementation doesn't recognize the attribute.
    */
   public abstract void setAttribute(String name, Object value)
@@ -271,11 +270,30 @@ public abstract class TransformerFactory
    * implementation.
    * @param name The name of the attribute.
    * @return value The value of the attribute.
-   * @exception IllegalArgumentException thrown if the underlying
+   * @throws IllegalArgumentException thrown if the underlying
    * implementation doesn't recognize the attribute.
    */
   public abstract Object getAttribute(String name)
     throws IllegalArgumentException;
+  
+  /**
+   * Set the error event listener for the TransformerFactory. This 
+   * will be used for the processing of transformation instructions, 
+   * and not for the transformation itself.
+   *
+   * @param listener The new error listener.
+   * @throws IllegalArgumentException if listener is null.
+   */
+  public abstract void setErrorListener (ErrorListener listener)
+    throws IllegalArgumentException;
+
+  /**
+   * Get the error event handler for the TransformerFactory.
+   *
+   * @return The current error handler, which should never be null.
+   */
+  public abstract ErrorListener getErrorListener ();
+
 
   // -------------------- private methods --------------------
 

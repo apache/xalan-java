@@ -63,7 +63,7 @@ import org.w3c.dom.Element;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemTemplateElement;
 
@@ -196,9 +196,9 @@ public class StackGuard
    *
    * NEEDSDOC @param guard
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void checkForInfinateLoop(StackGuard guard) throws SAXException
+  public void checkForInfinateLoop(StackGuard guard) throws TransformerException
   {
 
     int nRules = stack.size();
@@ -235,7 +235,7 @@ public class StackGuard
         guard.print(pw);
         pw.println("End of infinite loop diagnosis.");
 
-        throw new SAXException(sw.getBuffer().toString());
+        throw new TransformerException(sw.getBuffer().toString());
       }
     }
   }
@@ -247,10 +247,10 @@ public class StackGuard
    * NEEDSDOC @param xslTemplate
    * NEEDSDOC @param sourceXML
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void push(ElemTemplateElement xslTemplate, Node sourceXML)
-          throws SAXException
+          throws TransformerException
   {
 
     StackGuard guard = new StackGuard(xslTemplate, sourceXML);

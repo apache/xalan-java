@@ -66,6 +66,8 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
 
+import javax.xml.transform.TransformerException;
+
 /**
  * <meta name="usage" content="advanced"/>
  * Implement xsl:decimal-format.
@@ -190,113 +192,120 @@ public class ElemElement extends ElemUse
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
-
-    ResultTreeHandler rhandler = transformer.getResultTreeHandler();
-    XPathContext xctxt = transformer.getXPathContext();
-    String elemName = m_name_avt.evaluate(xctxt, sourceNode, this);
-
-    // make sure that if a prefix is specified on the attribute name, it is valid
-    int indexOfNSSep = elemName.indexOf(':');
-    String ns = "";
-
-    if (indexOfNSSep >= 0)
+    try
     {
-      String nsprefix = elemName.substring(0, indexOfNSSep);
 
-      // Catch the exception this may cause. We don't want to stop processing.
-      try
+      ResultTreeHandler rhandler = transformer.getResultTreeHandler();
+      XPathContext xctxt = transformer.getXPathContext();
+      String elemName = m_name_avt.evaluate(xctxt, sourceNode, this);
+
+      // make sure that if a prefix is specified on the attribute name, it is valid
+      int indexOfNSSep = elemName.indexOf(':');
+      String ns = "";
+
+      if (indexOfNSSep >= 0)
       {
-        ns = getNamespaceForPrefix(nsprefix);
+        String nsprefix = elemName.substring(0, indexOfNSSep);
 
-        // Check if valid QName. Assuming that if the prefix is defined,
-        // it is valid.
-        if (indexOfNSSep + 1 == elemName.length()
-                ||!isValidNCName(elemName.substring(indexOfNSSep + 1)))
+        // Catch the exception this may cause. We don't want to stop processing.
+        try
         {
-          transformer.getMsgMgr().warn(
-            XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_NAME,
-            new Object[]{ elemName });
+          ns = getNamespaceForPrefix(nsprefix);
 
-          elemName = null;
-        }
-      }
-      catch (Exception ex)
-      {
-
-        // Could not resolve prefix
-        ns = null;
-
-        transformer.getMsgMgr().warn(
-          XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
-          new Object[]{ nsprefix });
-      }
-    }
-
-    // Check if valid QName
-    else if (elemName.length() == 0 ||!isValidNCName(elemName))
-    {
-      transformer.getMsgMgr().warn(
-        XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_NAME,
-        new Object[]{ elemName });
-
-      elemName = null;
-    }
-
-    // Only do this if name is valid
-    String elemNameSpace = null;
-    String prefix = null;
-
-    if (null != elemName && null != ns)
-    {
-      if (null != m_namespace_avt)
-      {
-        elemNameSpace = m_namespace_avt.evaluate(xctxt, sourceNode, this);
-
-        if (null != elemNameSpace && elemNameSpace.length() > 0)
-        {
-
-          // Get the prefix for that attribute in the result namespace.
-          prefix = rhandler.getPrefix(elemNameSpace);
-
-          // If we didn't find the prefix mapping, make up a prefix 
-          // and have it declared in the result tree.
-          if (null == prefix)
+          // Check if valid QName. Assuming that if the prefix is defined,
+          // it is valid.
+          if (indexOfNSSep + 1 == elemName.length()
+              ||!isValidNCName(elemName.substring(indexOfNSSep + 1)))
           {
-            prefix = rhandler.getNewUniqueNSPrefix();
-          }
+            transformer.getMsgMgr().warn(
+                                         XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_NAME,
+                                         new Object[]{ elemName });
 
-          // add the prefix to the attribute name.
-          elemName = (prefix + ":" + QName.getLocalPart(elemName));
+            elemName = null;
+          }
+        }
+        catch (Exception ex)
+        {
+
+          // Could not resolve prefix
+          ns = null;
+
+          transformer.getMsgMgr().warn(
+                                       XSLTErrorResources.WG_COULD_NOT_RESOLVE_PREFIX,
+                                       new Object[]{ nsprefix });
         }
       }
 
-      // Add namespace declarations.
-      executeNSDecls(transformer);
+      // Check if valid QName
+      else if (elemName.length() == 0 ||!isValidNCName(elemName))
+      {
+        transformer.getMsgMgr().warn(
+                                     XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_NAME,
+                                     new Object[]{ elemName });
 
-      if (null != prefix)
-        rhandler.startPrefixMapping(prefix, elemNameSpace, true);
+        elemName = null;
+      }
 
-      rhandler.startElement(elemNameSpace, QName.getLocalPart(elemName),
-                            elemName);
+      // Only do this if name is valid
+      String elemNameSpace = null;
+      String prefix = null;
+
+      if (null != elemName && null != ns)
+      {
+        if (null != m_namespace_avt)
+        {
+          elemNameSpace = m_namespace_avt.evaluate(xctxt, sourceNode, this);
+
+          if (null != elemNameSpace && elemNameSpace.length() > 0)
+          {
+
+            // Get the prefix for that attribute in the result namespace.
+            prefix = rhandler.getPrefix(elemNameSpace);
+
+            // If we didn't find the prefix mapping, make up a prefix 
+            // and have it declared in the result tree.
+            if (null == prefix)
+            {
+              prefix = rhandler.getNewUniqueNSPrefix();
+            }
+
+            // add the prefix to the attribute name.
+            elemName = (prefix + ":" + QName.getLocalPart(elemName));
+          }
+        }
+
+        // Add namespace declarations.
+        executeNSDecls(transformer);
+
+        if (null != prefix)
+          rhandler.startPrefixMapping(prefix, elemNameSpace, true);
+
+        rhandler.startElement(elemNameSpace, QName.getLocalPart(elemName),
+                              elemName);
+      }
+
+      // Instantiate content of xsl:element. Note that if startElement was not
+      // called(ie: if invalid element name, the element's attributes will be
+      // excluded because transformer.m_pendingElementName will be null.
+      super.execute(transformer, sourceNode, mode);
+      transformer.executeChildTemplates(this, sourceNode, mode);
+
+      // Now end the element if name was valid
+      if (null != elemName && null != ns)
+      {
+        rhandler.endElement("", "", elemName);
+        unexecuteNSDecls(transformer);
+      }
     }
-
-    // Instantiate content of xsl:element. Note that if startElement was not
-    // called(ie: if invalid element name, the element's attributes will be
-    // excluded because transformer.m_pendingElementName will be null.
-    super.execute(transformer, sourceNode, mode);
-    transformer.executeChildTemplates(this, sourceNode, mode);
-
-    // Now end the element if name was valid
-    if (null != elemName && null != ns)
+    catch(SAXException se)
     {
-      rhandler.endElement("", "", elemName);
-      unexecuteNSDecls(transformer);
+      throw new TransformerException(se);
     }
   }
 }

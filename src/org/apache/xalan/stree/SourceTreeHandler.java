@@ -74,10 +74,9 @@ import org.apache.xalan.templates.WhiteSpaceInfo;
 import org.w3c.dom.Document;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 
@@ -87,6 +86,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.Result;
+import javax.xml.transform.ErrorListener;
 
 
 /**
@@ -286,9 +286,9 @@ public class SourceTreeHandler implements TransformerHandler
   /**
    * Implement the startDocument event.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void startDocument() throws SAXException
+  public void startDocument() throws org.xml.sax.SAXException
   {
     // System.out.println("startDocument: "+m_id);
     synchronized (m_root)
@@ -329,9 +329,9 @@ public class SourceTreeHandler implements TransformerHandler
   /**
    * Implement the endDocument event.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void endDocument() throws SAXException
+  public void endDocument() throws org.xml.sax.SAXException
   {
     // System.out.println("endDocument: "+m_id);
     ((Parent) m_root).setComplete(true);
@@ -355,7 +355,7 @@ public class SourceTreeHandler implements TransformerHandler
         }
         catch(TransformerException te)
         {
-          throw new SAXException(te);
+          throw new org.xml.sax.SAXException(te);
         }
       }
     }
@@ -411,11 +411,11 @@ public class SourceTreeHandler implements TransformerHandler
    * @param name Name of the element
    * @param atts List of attributes associated with the element
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void startElement(
           String ns, String localName, String name, Attributes atts)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     synchronized (m_root)
@@ -434,10 +434,10 @@ public class SourceTreeHandler implements TransformerHandler
    * @param localName Local part of the qualified name of the element
    * @param name Name of the element
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void endElement(String ns, String localName, String name)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     synchronized (m_root)
@@ -461,10 +461,10 @@ public class SourceTreeHandler implements TransformerHandler
    * the regular {@link org.xml.sax.ContentHandler#characters
    * characters} event.</p>
    *
-   * @exception SAXException The application may raise an exception.
+   * @exception TransformerException The application may raise an exception.
    * @see #endCDATA
    */
-  public void startCDATA() throws SAXException
+  public void startCDATA() throws org.xml.sax.SAXException
   {
     m_isCData = true;
   }
@@ -472,10 +472,10 @@ public class SourceTreeHandler implements TransformerHandler
   /**
    * Report the end of a CDATA section.
    *
-   * @exception SAXException The application may raise an exception.
+   * @exception TransformerException The application may raise an exception.
    * @see #startCDATA
    */
-  public void endCDATA() throws SAXException
+  public void endCDATA() throws org.xml.sax.SAXException
   {
     m_isCData = false;
   }
@@ -487,9 +487,9 @@ public class SourceTreeHandler implements TransformerHandler
    * @param start Start index of characters to process in the array
    * @param length Number of characters to process in the array 
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void characters(char ch[], int start, int length) throws SAXException
+  public void characters(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
 
     synchronized (m_root)
@@ -514,10 +514,10 @@ public class SourceTreeHandler implements TransformerHandler
    * @param start Start index of characters to process in the array
    * @param length Number of characters to process in the array
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void charactersRaw(char ch[], int start, int length)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     synchronized (m_root)
@@ -535,10 +535,10 @@ public class SourceTreeHandler implements TransformerHandler
    * @param start Start index of characters to process in the array
    * @param length Number of characters to process in the array
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void ignorableWhitespace(char ch[], int start, int length)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     synchronized (m_root)
@@ -558,10 +558,10 @@ public class SourceTreeHandler implements TransformerHandler
    * @param target Target of PI node
    * @param data Content of PI node
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void processingInstruction(String target, String data)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     synchronized (m_root)
@@ -582,9 +582,9 @@ public class SourceTreeHandler implements TransformerHandler
    * @param ch An array holding the characters in the comment.
    * @param start The starting position in the array.
    * @param length The number of characters to use from the array.
-   * @exception SAXException The application may raise an exception.
+   * @exception TransformerException The application may raise an exception.
    */
-  public void comment(char ch[], int start, int length) throws SAXException
+  public void comment(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
 
     synchronized (m_root)
@@ -609,12 +609,12 @@ public class SourceTreeHandler implements TransformerHandler
    *
    * @param name The name of the entity.  If it is a parameter
    *        entity, the name will begin with '%'.
-   * @exception SAXException The application may raise an exception.
+   * @exception TransformerException The application may raise an exception.
    * @see #endEntity
    * @see org.xml.sax.ext.DeclHandler#internalEntityDecl
    * @see org.xml.sax.ext.DeclHandler#externalEntityDecl
    */
-  public void startEntity(String name) throws SAXException
+  public void startEntity(String name) throws org.xml.sax.SAXException
   {
 
     synchronized (m_root)
@@ -629,10 +629,10 @@ public class SourceTreeHandler implements TransformerHandler
    * Report the end of an entity.
    *
    * @param name The name of the entity that is ending.
-   * @exception SAXException The application may raise an exception.
+   * @exception TransformerException The application may raise an exception.
    * @see #startEntity
    */
-  public void endEntity(String name) throws SAXException
+  public void endEntity(String name) throws org.xml.sax.SAXException
   {
 
     synchronized (m_root)
@@ -655,21 +655,21 @@ public class SourceTreeHandler implements TransformerHandler
    *        external DTD subset, or null if none was declared.
    * @param systemId The declared system identifier for the
    *        external DTD subset, or null if none was declared.
-   * @exception SAXException The application may raise an
+   * @exception TransformerException The application may raise an
    *            exception.
    * @see #endDTD
    * @see #startEntity
    */
   public void startDTD(String name, String publicId, String systemId)
-          throws SAXException{}
+          throws org.xml.sax.SAXException{}
 
   /**
    * Report the end of DTD declarations.
    *
-   * @exception SAXException The application may raise an exception.
+   * @exception TransformerException The application may raise an exception.
    * @see #startDTD
    */
-  public void endDTD() throws SAXException{}
+  public void endDTD() throws org.xml.sax.SAXException{}
 
   /**
    * Begin the scope of a prefix-URI Namespace mapping.
@@ -696,15 +696,15 @@ public class SourceTreeHandler implements TransformerHandler
    *
    * @param prefix The Namespace prefix being declared.
    * @param uri The Namespace URI the prefix is mapped to.
-   * @exception org.xml.sax.SAXException The client may throw
+   * @exception javax.xml.transform.TransformerException The client may throw
    *            an exception during processing.
    * @see #endPrefixMapping
    * @see #startElement
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void startPrefixMapping(String prefix, String uri)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     synchronized (m_root)
@@ -724,14 +724,14 @@ public class SourceTreeHandler implements TransformerHandler
    * guaranteed.</p>
    *
    * @param prefix The prefix that was being mapping.
-   * @exception org.xml.sax.SAXException The client may throw
+   * @exception javax.xml.transform.TransformerException The client may throw
    *            an exception during processing.
    * @see #startPrefixMapping
    * @see #endElement
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void endPrefixMapping(String prefix) throws SAXException
+  public void endPrefixMapping(String prefix) throws org.xml.sax.SAXException
   {
     m_sourceTreeHandler.endPrefixMapping(prefix);
   }
@@ -750,12 +750,12 @@ public class SourceTreeHandler implements TransformerHandler
    *
    * @param name The name of the skipped entity.  If it is a
    *        parameter entity, the name will begin with '%'.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void skippedEntity(String name) throws SAXException{}
+  public void skippedEntity(String name) throws org.xml.sax.SAXException{}
 
   /** Flag indicating whether to strip whitespace nodes          */
   private boolean m_shouldStripWS = false;
@@ -822,10 +822,19 @@ public class SourceTreeHandler implements TransformerHandler
    * @throws TransformerException if result is invalid for some reason.
    */
   public void setResult(Result result)
-    throws TransformerException
+    throws IllegalArgumentException
   {
-    ContentHandler handler = m_transformer.createResultContentHandler(result);
-    m_transformer.setContentHandler(handler);    
+    if(null == result)
+      throw new IllegalArgumentException("result should not be null");
+    try
+    {
+      ContentHandler handler = m_transformer.createResultContentHandler(result);
+      m_transformer.setContentHandler(handler); 
+    }
+    catch(TransformerException te)
+    {
+      throw new IllegalArgumentException("result could not be set");
+    }
   }
   
   /**

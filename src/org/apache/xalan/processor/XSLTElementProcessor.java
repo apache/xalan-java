@@ -61,14 +61,13 @@ import org.xml.sax.Attributes;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 
 import org.xml.sax.helpers.AttributesImpl;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.TransformerException;
 
 import java.util.Vector;
 
@@ -122,15 +121,10 @@ public class XSLTElementProcessor
    *                 document.
    * @return The new input source, or null to require the
    *         default behaviour.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.xml.sax.EntityResolver#resolveEntity
-   *
-   * @throws SAXException
    */
   public InputSource resolveEntity(
           StylesheetHandler handler, String publicId, String systemId)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
     return null;
   }
@@ -178,10 +172,8 @@ public class XSLTElementProcessor
    * is sent to the current processor when any non-text event occurs.
    *
    * NEEDSDOC @param handler
-   *
-   * @throws SAXException
    */
-  public void startNonText(StylesheetHandler handler) throws SAXException
+  public void startNonText(StylesheetHandler handler) throws org.xml.sax.SAXException
   {
 
     // no op
@@ -197,15 +189,10 @@ public class XSLTElementProcessor
    * NEEDSDOC @param localName
    * NEEDSDOC @param rawName
    * @param attributes The specified or defaulted attributes.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.xml.sax.ContentHandler#startElement
-   *
-   * @throws SAXException
    */
   public void startElement(
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     // no op
@@ -221,15 +208,10 @@ public class XSLTElementProcessor
    * NEEDSDOC @param uri
    * NEEDSDOC @param localName
    * NEEDSDOC @param rawName
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.xml.sax.ContentHandler#endElement
-   *
-   * @throws SAXException
    */
   public void endElement(
           StylesheetHandler handler, String uri, String localName, String rawName)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     // no op
@@ -244,15 +226,10 @@ public class XSLTElementProcessor
    * @param start The start position in the character array.
    * @param length The number of characters to use from the
    *               character array.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.xml.sax.ContentHandler#characters
-   *
-   * @throws SAXException
    */
   public void characters(
           StylesheetHandler handler, char ch[], int start, int length)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
     handler.error("Characters are not allowed at this point in the document!",
                   null);
@@ -267,15 +244,10 @@ public class XSLTElementProcessor
    * @param start The start position in the character array.
    * @param length The number of characters to use from the
    *               character array.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.xml.sax.ContentHandler#ignorableWhitespace
-   *
-   * @throws SAXException
    */
   public void ignorableWhitespace(
           StylesheetHandler handler, char ch[], int start, int length)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     // no op
@@ -289,15 +261,10 @@ public class XSLTElementProcessor
    * @param target The processing instruction target.
    * @param data The processing instruction data, or null if
    *             none is supplied.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.xml.sax.ContentHandler#processingInstruction
-   *
-   * @throws SAXException
    */
   public void processingInstruction(
           StylesheetHandler handler, String target, String data)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     // no op
@@ -309,14 +276,9 @@ public class XSLTElementProcessor
    *
    * NEEDSDOC @param handler
    * @param name The name of the skipped entity.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.xml.sax.ContentHandler#processingInstruction
-   *
-   * @throws SAXException
    */
   public void skippedEntity(StylesheetHandler handler, String name)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     // no op
@@ -330,12 +292,10 @@ public class XSLTElementProcessor
    *                error reporting.
    * @param attributes The list of attributes.
    * @param target The target element where the properties will be set.
-   *
-   * @throws SAXException
    */
   void setPropertiesFromAttributes(
           StylesheetHandler handler, String rawName, Attributes attributes, Object target)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
     setPropertiesFromAttributes(handler, rawName, attributes, target, true);
   }
@@ -352,11 +312,11 @@ public class XSLTElementProcessor
    * attribute is not defined.
    * @return the attributes not allowed on this element.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   Attributes setPropertiesFromAttributes(
           StylesheetHandler handler, String rawName, Attributes attributes, Object target, boolean throwError)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     XSLTElementDef def = getElemDef();

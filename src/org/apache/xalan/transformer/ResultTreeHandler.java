@@ -79,13 +79,12 @@ import org.w3c.dom.NamedNodeMap;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.NamespaceSupport;
 import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
-import org.apache.serialize.SerializerHandler;
+import javax.xml.transform.ErrorListener;
 
 /**
  * This class is a layer between the direct calls to the result
@@ -97,7 +96,7 @@ import org.apache.serialize.SerializerHandler;
  * can call startElement.
  */
 public class ResultTreeHandler extends QueuedEvents
-        implements ContentHandler, SerializerHandler, LexicalHandler
+        implements ContentHandler, LexicalHandler
 {
 
   /** NEEDSDOC Field DEBUG          */
@@ -159,18 +158,18 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * Bottleneck the startDocument event.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void startDocument() throws SAXException{}
+  public void startDocument() throws org.xml.sax.SAXException{}
 
   /**
    * Bottleneck the endDocument event.  This may be called
    * more than once in order to make sure the pending start
    * document is called.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void endDocument() throws SAXException
+  public void endDocument() throws org.xml.sax.SAXException
   {
     flushPending(EVT_ENDDOCUMENT);
 
@@ -202,10 +201,10 @@ public class ResultTreeHandler extends QueuedEvents
    * NEEDSDOC @param localName
    * NEEDSDOC @param name
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void startElement(String ns, String localName, String name)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
     startElement(ns, localName, name, null);
   }
@@ -220,11 +219,11 @@ public class ResultTreeHandler extends QueuedEvents
    * NEEDSDOC @param name
    * NEEDSDOC @param atts
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void startElement(
           String ns, String localName, String name, Attributes atts)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     QueuedStartElement qse = getQueuedElem();
@@ -262,10 +261,10 @@ public class ResultTreeHandler extends QueuedEvents
    * NEEDSDOC @param localName
    * NEEDSDOC @param name
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void endElement(String ns, String localName, String name)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     flushPending(EVT_ENDELEMENT);
@@ -317,15 +316,15 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * @param prefix The Namespace prefix being declared.
    * @param uri The Namespace URI the prefix is mapped to.
-   * @exception org.xml.sax.SAXException The client may throw
+   * @exception javax.xml.transform.TransformerException The client may throw
    *            an exception during processing.
    * @see #endPrefixMapping
    * @see #startElement
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void startPrefixMapping(String prefix, String uri)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
     startPrefixMapping(prefix, uri, false);
   }
@@ -338,10 +337,10 @@ public class ResultTreeHandler extends QueuedEvents
    * NEEDSDOC @param uri
    * NEEDSDOC @param shouldFlush
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void startPrefixMapping(
-          String prefix, String uri, boolean shouldFlush) throws SAXException
+          String prefix, String uri, boolean shouldFlush) throws org.xml.sax.SAXException
   {
 
     if (shouldFlush)
@@ -383,14 +382,14 @@ public class ResultTreeHandler extends QueuedEvents
    * guaranteed.</p>
    *
    * @param prefix The prefix that was being mapping.
-   * @exception org.xml.sax.SAXException The client may throw
+   * @exception javax.xml.transform.TransformerException The client may throw
    *            an exception during processing.
    * @see #startPrefixMapping
    * @see #endElement
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void endPrefixMapping(String prefix) throws SAXException{}
+  public void endPrefixMapping(String prefix) throws org.xml.sax.SAXException{}
 
   /**
    * Bottleneck the characters event.
@@ -399,9 +398,9 @@ public class ResultTreeHandler extends QueuedEvents
    * NEEDSDOC @param start
    * NEEDSDOC @param length
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void characters(char ch[], int start, int length) throws SAXException
+  public void characters(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
 
     if (m_startDoc.isPending
@@ -428,10 +427,10 @@ public class ResultTreeHandler extends QueuedEvents
    * NEEDSDOC @param start
    * NEEDSDOC @param length
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void ignorableWhitespace(char ch[], int start, int length)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     QueuedStartDocument qsd = getQueuedDoc();
@@ -460,12 +459,11 @@ public class ResultTreeHandler extends QueuedEvents
    * NEEDSDOC @param target
    * NEEDSDOC @param data
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void processingInstruction(String target, String data)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
-
     flushPending(EVT_PROCESSINGINSTRUCTION);
     m_contentHandler.processingInstruction(target, data);
 
@@ -484,9 +482,9 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * NEEDSDOC @param data
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void comment(String data) throws SAXException
+  public void comment(String data) throws org.xml.sax.SAXException
   {
 
     flushPending(EVT_COMMENT);
@@ -513,9 +511,9 @@ public class ResultTreeHandler extends QueuedEvents
    * NEEDSDOC @param start
    * NEEDSDOC @param length
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void comment(char ch[], int start, int length) throws SAXException
+  public void comment(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
 
     flushPending(EVT_COMMENT);
@@ -540,9 +538,9 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * NEEDSDOC @param name
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void entityReference(String name) throws SAXException
+  public void entityReference(String name) throws org.xml.sax.SAXException
   {
 
     flushPending(EVT_ENTITYREF);
@@ -568,9 +566,9 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * NEEDSDOC @param name
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void startEntity(String name) throws SAXException
+  public void startEntity(String name) throws org.xml.sax.SAXException
   {
 
     flushPending(EVT_STARTENTITY);
@@ -586,9 +584,9 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * NEEDSDOC @param name
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void endEntity(String name) throws SAXException
+  public void endEntity(String name) throws org.xml.sax.SAXException
   {
 
     flushPending(EVT_ENDENTITY);
@@ -615,9 +613,9 @@ public class ResultTreeHandler extends QueuedEvents
    * NEEDSDOC @param s2
    * NEEDSDOC @param s3
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void startDTD(String s1, String s2, String s3) throws SAXException
+  public void startDTD(String s1, String s2, String s3) throws org.xml.sax.SAXException
   {
 
     flushPending(EVT_STARTDTD);
@@ -631,9 +629,9 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * End the DTD.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void endDTD() throws SAXException
+  public void endDTD() throws org.xml.sax.SAXException
   {
 
     flushPending(EVT_ENDDTD);
@@ -645,92 +643,11 @@ public class ResultTreeHandler extends QueuedEvents
   }
 
   /**
-   * Starts an un-escaping section. All characters printed within an
-   * un-escaping section are printed as is, without escaping special
-   * characters into entity references. Only XML and HTML serializers
-   * need to support this method.
-   * <p>
-   * The contents of the un-escaping section will be delivered through
-   * the regular <tt>characters</tt> event.
-   *
-   * @throws SAXException
-   */
-  public void startNonEscaping() throws SAXException
-  {
-
-    flushPending(EVT_STARTNONESCAPING);
-
-    if (m_contentHandler instanceof SerializerHandler)
-    {
-      ((SerializerHandler) m_contentHandler).startNonEscaping();
-    }
-  }
-
-  /**
-   * Ends an un-escaping section.
-   *
-   * @see #startNonEscaping
-   *
-   * @throws SAXException
-   */
-  public void endNonEscaping() throws SAXException
-  {
-
-    flushPending(EVT_ENDNONESCAPING);
-
-    if (m_contentHandler instanceof SerializerHandler)
-    {
-      ((SerializerHandler) m_contentHandler).endNonEscaping();
-    }
-  }
-
-  /**
-   * Starts a whitespace preserving section. All characters printed
-   * within a preserving section are printed without indentation and
-   * without consolidating multiple spaces. This is equivalent to
-   * the <tt>xml:space=&quot;preserve&quot;</tt> attribute. Only XML
-   * and HTML serializers need to support this method.
-   * <p>
-   * The contents of the whitespace preserving section will be delivered
-   * through the regular <tt>characters</tt> event.
-   *
-   * @throws SAXException
-   */
-  public void startPreserving() throws SAXException
-  {
-
-    flushPending(EVT_STARTPRESERVING);
-
-    if (m_contentHandler instanceof SerializerHandler)
-    {
-      ((SerializerHandler) m_contentHandler).startPreserving();
-    }
-  }
-
-  /**
-   * Ends a whitespace preserving section.
-   *
-   * @see #startPreserving
-   *
-   * @throws SAXException
-   */
-  public void endPreserving() throws SAXException
-  {
-
-    flushPending(EVT_ENDENDPRESERVING);
-
-    if (m_contentHandler instanceof SerializerHandler)
-    {
-      ((SerializerHandler) m_contentHandler).endPreserving();
-    }
-  }
-
-  /**
    * Start the CDATACharacters.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void startCDATA() throws SAXException
+  public void startCDATA() throws org.xml.sax.SAXException
   {
 
     flushPending(EVT_STARTCDATA);
@@ -744,9 +661,9 @@ public class ResultTreeHandler extends QueuedEvents
   /**
    * End the CDATA characters.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void endCDATA() throws SAXException
+  public void endCDATA() throws org.xml.sax.SAXException
   {
 
     flushPending(EVT_ENDCDATA);
@@ -771,19 +688,19 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * @param name The name of the skipped entity.  If it is a
    *        parameter entity, the name will begin with '%'.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void skippedEntity(String name) throws SAXException{}
+  public void skippedEntity(String name) throws org.xml.sax.SAXException{}
 
   /**
    * Flush the pending element.
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void flushPending() throws SAXException
+  public void flushPending() throws org.xml.sax.SAXException
   {
     flushPending(EVT_NODE);
   }
@@ -793,9 +710,9 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * NEEDSDOC @param type
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  public void flushPending(int type) throws SAXException
+  public void flushPending(int type) throws org.xml.sax.SAXException
   {
 
     QueuedStartElement qe = getQueuedElem();
@@ -825,10 +742,10 @@ public class ResultTreeHandler extends QueuedEvents
    * NEEDSDOC @param obj
    * NEEDSDOC @param support
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void outputResultTreeFragment(XObject obj, XPathContext support)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     DocumentFragment docFrag = obj.rtree(support);
@@ -849,12 +766,19 @@ public class ResultTreeHandler extends QueuedEvents
    * NEEDSDOC @param node
    * NEEDSDOC @param shouldCloneAttributes
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   public void cloneToResultTree(Node node, boolean shouldCloneAttributes)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
-    m_cloner.cloneToResultTree(node, shouldCloneAttributes);
+    try
+    {
+      m_cloner.cloneToResultTree(node, shouldCloneAttributes);
+    }
+    catch(TransformerException te)
+    {
+      throw new org.xml.sax.SAXException(te);
+    }
   }
 
   /**
@@ -874,9 +798,9 @@ public class ResultTreeHandler extends QueuedEvents
    * NEEDSDOC @param ns
    * NEEDSDOC @param rawName
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  void ensurePrefixIsDeclared(String ns, String rawName) throws SAXException
+  void ensurePrefixIsDeclared(String ns, String rawName) throws org.xml.sax.SAXException
   {
 
     if (ns != null && ns.length() > 0)
@@ -899,9 +823,9 @@ public class ResultTreeHandler extends QueuedEvents
    * Add the attributes that have been declared to the attribute list.
    * (Seems like I shouldn't have to do this...)
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  protected void sendStartPrefixMappings() throws SAXException
+  protected void sendStartPrefixMappings() throws org.xml.sax.SAXException
   {
 
     Enumeration prefixes = m_nsSupport.getDeclaredPrefixes();
@@ -919,9 +843,9 @@ public class ResultTreeHandler extends QueuedEvents
    * Add the attributes that have been declared to the attribute list.
    * (Seems like I shouldn't have to do this...)
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
-  protected void sendEndPrefixMappings() throws SAXException
+  protected void sendEndPrefixMappings() throws org.xml.sax.SAXException
   {
 
     Enumeration prefixes = m_nsSupport.getDeclaredPrefixes();
@@ -942,17 +866,24 @@ public class ResultTreeHandler extends QueuedEvents
    * NEEDSDOC @param ns
    * NEEDSDOC @param localName
    *
-   * @throws SAXException
+   * @throws org.xml.sax.SAXException
    */
   private void checkForSerializerSwitch(String ns, String localName)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
-    QueuedStartDocument qdab = getQueuedDocAtBottom();
-
-    if (qdab.isPending)
+    try
     {
-      SerializerSwitcher.switchSerializerIfHTML(m_transformer, ns, localName);
+      QueuedStartDocument qdab = getQueuedDocAtBottom();
+
+      if (qdab.isPending)
+      {
+        SerializerSwitcher.switchSerializerIfHTML(m_transformer, ns, localName);
+      }
+    }
+    catch(TransformerException te)
+    {
+      throw new org.xml.sax.SAXException(te);
     }
   }
 
@@ -995,45 +926,52 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * NEEDSDOC @param src
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void processNSDecls(Node src) throws SAXException
+  public void processNSDecls(Node src) throws TransformerException
   {
 
-    int type;
-
-    // Vector nameValues = null;
-    // Vector alreadyProcessedPrefixes = null;
-    Node parent;
-
-    if (((type = src.getNodeType()) == Node.ELEMENT_NODE || (type == Node.ENTITY_REFERENCE_NODE))
-            && (parent = src.getParentNode()) != null)
+    try
     {
-      processNSDecls(parent);
-    }
+      int type;
 
-    if (type == Node.ELEMENT_NODE)
-    {
-      NamedNodeMap nnm = src.getAttributes();
-      int nAttrs = nnm.getLength();
+      // Vector nameValues = null;
+      // Vector alreadyProcessedPrefixes = null;
+      Node parent;
 
-      for (int i = 0; i < nAttrs; i++)
+      if (((type = src.getNodeType()) == Node.ELEMENT_NODE || (type == Node.ENTITY_REFERENCE_NODE))
+          && (parent = src.getParentNode()) != null)
       {
-        Node attr = nnm.item(i);
-        String aname = attr.getNodeName();
+        processNSDecls(parent);
+      }
 
-        if (QName.isXMLNSDecl(aname))
+      if (type == Node.ELEMENT_NODE)
+      {
+        NamedNodeMap nnm = src.getAttributes();
+        int nAttrs = nnm.getLength();
+
+        for (int i = 0; i < nAttrs; i++)
         {
-          String prefix = QName.getPrefixFromXMLNSDecl(aname);
-          String desturi = getURI(prefix);
-          String srcURI = attr.getNodeValue();
+          Node attr = nnm.item(i);
+          String aname = attr.getNodeName();
 
-          if (!srcURI.equalsIgnoreCase(desturi))
+          if (QName.isXMLNSDecl(aname))
           {
-            this.startPrefixMapping(prefix, srcURI);
+            String prefix = QName.getPrefixFromXMLNSDecl(aname);
+            String desturi = getURI(prefix);
+            String srcURI = attr.getNodeValue();
+
+            if (!srcURI.equalsIgnoreCase(desturi))
+            {
+              this.startPrefixMapping(prefix, srcURI);
+            }
           }
         }
       }
+    }
+    catch(org.xml.sax.SAXException se)
+    {
+      throw new TransformerException(se);
     }
   }
 
@@ -1178,11 +1116,11 @@ public class ResultTreeHandler extends QueuedEvents
    * @param type The attribute type as a string.
    * @param value The attribute value.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void addAttribute(
           String uri, String localName, String rawName, String type, String value)
-            throws SAXException
+            throws TransformerException
   {
 
     QueuedStartElement qe = getQueuedElem();
@@ -1190,7 +1128,14 @@ public class ResultTreeHandler extends QueuedEvents
     if (!qe.nsDeclsHaveBeenAdded())
       addNSDeclsToAttrs();
 
-    ensurePrefixIsDeclared(uri, rawName);
+    try
+    {
+      ensurePrefixIsDeclared(uri, rawName);
+    }
+    catch(org.xml.sax.SAXException se)
+    {
+      throw new TransformerException(se);
+    }
 
     if (DEBUG)
       System.out.println("Adding attr: " + localName + ", " + uri);
@@ -1268,9 +1213,9 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * NEEDSDOC @param attr
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void addAttribute(Attr attr) throws SAXException
+  public void addAttribute(Attr attr) throws TransformerException
   {
 
     if (isDefinedNSDecl(attr))
@@ -1288,9 +1233,9 @@ public class ResultTreeHandler extends QueuedEvents
    *
    * NEEDSDOC @param src
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void addAttributes(Node src) throws SAXException
+  public void addAttributes(Node src) throws TransformerException
   {
 
     NamedNodeMap nnm = src.getAttributes();
@@ -1413,18 +1358,6 @@ public class ResultTreeHandler extends QueuedEvents
 
   /** NEEDSDOC Field EVT_ENDDTD          */
   private static final int EVT_ENDDTD = 17;
-
-  /** NEEDSDOC Field EVT_STARTNONESCAPING          */
-  private static final int EVT_STARTNONESCAPING = 18;
-
-  /** NEEDSDOC Field EVT_ENDNONESCAPING          */
-  private static final int EVT_ENDNONESCAPING = 19;
-
-  /** NEEDSDOC Field EVT_STARTPRESERVING          */
-  private static final int EVT_STARTPRESERVING = 20;
-
-  /** NEEDSDOC Field EVT_ENDENDPRESERVING          */
-  private static final int EVT_ENDENDPRESERVING = 21;
 
   /** NEEDSDOC Field EVT_STARTCDATA          */
   private static final int EVT_STARTCDATA = 22;

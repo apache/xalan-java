@@ -58,7 +58,7 @@ package org.apache.xalan.processor;
 
 import org.apache.xalan.templates.ElemTemplateElement;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 
 import java.lang.reflect.Method;
@@ -87,41 +87,43 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
    * NEEDSDOC @param localName
    * NEEDSDOC @param rawName
    * @param attributes The specified or defaulted attributes.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.xml.sax.ContentHandler#startElement
-   *
-   * @throws SAXException
    */
   public void startElement(
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
-
-    // ElemTemplateElement parent = handler.getElemTemplateElement();
-    XSLTElementDef def = getElemDef();
-    Class classObject = def.getClassObject();
-    ElemTemplateElement elem = null;
 
     try
     {
-      elem = (ElemTemplateElement) classObject.newInstance();
+      // ElemTemplateElement parent = handler.getElemTemplateElement();
+      XSLTElementDef def = getElemDef();
+      Class classObject = def.getClassObject();
+      ElemTemplateElement elem = null;
 
-      elem.setDOMBackPointer(handler.getOriginatingNode());
-      elem.setLocaterInfo(handler.getLocator());
-      elem.setPrefixes(handler.getNamespaceSupport());
-    }
-    catch (InstantiationException ie)
-    {
-      handler.error("Failed creating ElemTemplateElement instance!", ie);
-    }
-    catch (IllegalAccessException iae)
-    {
-      handler.error("Failed creating ElemTemplateElement instance!", iae);
-    }
+      try
+      {
+        elem = (ElemTemplateElement) classObject.newInstance();
 
-    setPropertiesFromAttributes(handler, rawName, attributes, elem);
-    appendAndPush(handler, elem);
+        elem.setDOMBackPointer(handler.getOriginatingNode());
+        elem.setLocaterInfo(handler.getLocator());
+        elem.setPrefixes(handler.getNamespaceSupport());
+      }
+      catch (InstantiationException ie)
+      {
+        handler.error("Failed creating ElemTemplateElement instance!", ie);
+      }
+      catch (IllegalAccessException iae)
+      {
+        handler.error("Failed creating ElemTemplateElement instance!", iae);
+      }
+
+      setPropertiesFromAttributes(handler, rawName, attributes, elem);
+      appendAndPush(handler, elem);
+    }
+    catch(TransformerException te)
+    {
+      throw new org.xml.sax.SAXException(te);
+    }
   }
 
   /**
@@ -132,11 +134,11 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
    * NEEDSDOC @param handler
    * NEEDSDOC @param elem
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   protected void appendAndPush(
           StylesheetHandler handler, ElemTemplateElement elem)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     ElemTemplateElement parent = handler.getElemTemplateElement();
@@ -155,15 +157,10 @@ public class ProcessorTemplateElem extends XSLTElementProcessor
    * NEEDSDOC @param uri
    * NEEDSDOC @param localName
    * NEEDSDOC @param rawName
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.xml.sax.ContentHandler#endElement
-   *
-   * @throws SAXException
    */
   public void endElement(
           StylesheetHandler handler, String uri, String localName, String rawName)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
     handler.popElemTemplateElement();
   }

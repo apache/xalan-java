@@ -81,9 +81,9 @@ public class FuncNumber extends FunctionDef1Arg
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
     return new XNumber(getArg0AsNumber(xctxt));
   }

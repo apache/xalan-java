@@ -71,8 +71,8 @@ public interface RawCharacterHandler
    * NEEDSDOC @param start
    * NEEDSDOC @param length
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public void charactersRaw(char ch[], int start, int length)
-    throws org.xml.sax.SAXException;
+    throws javax.xml.transform.TransformerException;
 }

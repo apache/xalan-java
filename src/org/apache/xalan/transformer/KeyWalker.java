@@ -73,7 +73,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.traversal.NodeIterator;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -222,7 +222,7 @@ public class KeyWalker extends DescendantOrSelfWalker
         }
       }  // end for(int i = 0; i < nDeclarations; i++)
     }
-    catch (SAXException se)
+    catch (TransformerException se)
     {
 
       // TODO: What to do?

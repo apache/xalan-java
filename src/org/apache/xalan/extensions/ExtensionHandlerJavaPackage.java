@@ -71,7 +71,7 @@ import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.utils.QName;
 
 import org.apache.xpath.objects.XObject;
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -236,14 +236,14 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
    * @exception MalformedURLException if loading trouble
    * @exception FileNotFoundException if loading trouble
    * @exception IOException           if loading trouble
-   * @exception SAXException          if parsing trouble
+   * @exception TransformerException          if parsing trouble
    */
 
   public Object callFunction (String funcName, 
                               Vector args, 
                               Object methodKey,
                               ExpressionContext exprContext)
-    throws SAXException 
+    throws TransformerException 
   {
 
     String className;
@@ -287,7 +287,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
         }
         catch (ClassNotFoundException e) 
         {
-          throw new SAXException(e);
+          throw new TransformerException(e);
         }
         c = MethodResolver.getConstructor(classObj, 
                                           methodArgs,
@@ -327,7 +327,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
         }
         catch (ClassNotFoundException e) 
         {
-          throw new SAXException(e);
+          throw new TransformerException(e);
         }
         m = MethodResolver.getMethod(classObj,
                                      methodName,
@@ -343,7 +343,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
 
         if (args.size() < 1)
         {
-          throw new SAXException("Instance method call to method " + funcName
+          throw new TransformerException("Instance method call to method " + funcName
                                     + " requires an Object instance as first argument");
         }
         targetObject = args.elementAt(0);
@@ -384,14 +384,14 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
     {
       Throwable realException = ite.getTargetException();
       if (realException instanceof Exception)
-        throw new SAXException((Exception) realException);
+        throw new TransformerException((Exception) realException);
       else
-        throw new SAXException(ite);
+        throw new TransformerException(ite);
     }
     catch (Exception e)
     {
       // e.printStackTrace();
-      throw new SAXException(e);
+      throw new TransformerException(e);
     }
   }
 
@@ -412,7 +412,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
    * @param mode           The current mode.
    * @param methodKey      A key that uniquely identifies this element call.
    * @exception IOException           if loading trouble
-   * @exception SAXException          if parsing trouble
+   * @exception TransformerException          if parsing trouble
    */
 
   public void processElement (String localPart,
@@ -423,7 +423,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
                               Node sourceNode,
                               QName mode,
                               Object methodKey)
-    throws SAXException, IOException
+    throws TransformerException, IOException
   {
     Object result = null;
     Class classObj;
@@ -436,24 +436,24 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
         String fullName = m_className + localPart;
         int lastDot = fullName.lastIndexOf(".");
         if (lastDot < 0)
-          throw new SAXException("Invalid element name specified " + fullName);
+          throw new TransformerException("Invalid element name specified " + fullName);
         try
         {
           classObj = Class.forName(fullName.substring(0, lastDot));
         }
         catch (ClassNotFoundException e) 
         {
-          throw new SAXException(e);
+          throw new TransformerException(e);
         }
         localPart = fullName.substring(lastDot + 1);
         m = MethodResolver.getElementMethod(classObj, localPart);
         if (!Modifier.isStatic(m.getModifiers()))
-          throw new SAXException("Element name method must be static " + fullName);
+          throw new TransformerException("Element name method must be static " + fullName);
       }
       catch (Exception e)
       {
         // e.printStackTrace ();
-        throw new SAXException (e);
+        throw new TransformerException (e);
       }
       putToCache(methodKey, null, null, m);
     }
@@ -471,7 +471,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
     catch (Exception e)
     {
       // e.printStackTrace ();
-      throw new SAXException (e);
+      throw new TransformerException (e);
     }
 
     if (result != null)

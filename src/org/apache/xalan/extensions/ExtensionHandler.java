@@ -60,7 +60,7 @@ import java.util.Vector;
 
 import java.io.IOException;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -128,11 +128,11 @@ public abstract class ExtensionHandler
    *
    * @return the return value of the function evaluation.
    *
-   * @exception SAXException          if parsing trouble
+   * @exception TransformerException          if parsing trouble
    */
   public abstract Object callFunction(
     String funcName, Vector args, Object methodKey,
-      ExpressionContext exprContext) throws SAXException;
+      ExpressionContext exprContext) throws TransformerException;
 
   /**
    * Process a call to this extension namespace via an element. As a side
@@ -153,10 +153,10 @@ public abstract class ExtensionHandler
    * @exception MalformedURLException if loading trouble
    * @exception FileNotFoundException if loading trouble
    * @exception IOException           if loading trouble
-   * @exception SAXException          if parsing trouble
+   * @exception TransformerException          if parsing trouble
    */
   public abstract void processElement(
     String localPart, Element element, TransformerImpl transformer,
       Stylesheet stylesheetTree, Node sourceTree, Node sourceNode,
-        QName mode, Object methodKey) throws SAXException, IOException;
+        QName mode, Object methodKey) throws TransformerException, IOException;
 }

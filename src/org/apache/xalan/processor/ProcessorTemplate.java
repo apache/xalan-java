@@ -59,7 +59,7 @@ package org.apache.xalan.processor;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 
 /**
@@ -76,11 +76,11 @@ class ProcessorTemplate extends ProcessorTemplateElem
    * NEEDSDOC @param handler
    * NEEDSDOC @param elem
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   protected void appendAndPush(
           StylesheetHandler handler, ElemTemplateElement elem)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     super.appendAndPush(handler, elem);

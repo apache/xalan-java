@@ -69,9 +69,6 @@ import org.xml.sax.ext.LexicalHandler;
 
 /**
  * Acts as an holder for a transformation result tree.
- *
- * @version Alpha
- * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
  */
 public class SAXResult implements Result
 {
@@ -135,6 +132,29 @@ public class SAXResult implements Result
   {
     return lexhandler;
   }
+  
+  /**
+   * Method setSystemId Set the systemID that may be used in association
+   * with the ContentHandler.
+   *
+   * @param systemId The system identifier as a URL string.
+   */
+  public void setSystemId(String systemId)
+  {
+    this.systemId = systemId;
+  }
+
+  /**
+   * Get the system identifier that was set with setSystemId.
+   *
+   * @return The system identifier that was set with setSystemId, or null
+   * if setSystemId was not called.
+   */
+  public String getSystemId()
+  {
+    return systemId;
+  }
+
 
   //////////////////////////////////////////////////////////////////////
   // Internal state.
@@ -149,4 +169,10 @@ public class SAXResult implements Result
    * The handler for lexical events.
    */
   private LexicalHandler lexhandler;
+  
+  /**
+   * The systemID that may be used in association
+   * with the node.
+   */
+  private String systemId;
 }

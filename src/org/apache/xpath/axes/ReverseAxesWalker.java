@@ -64,7 +64,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.OpCodes;
 import org.apache.xpath.objects.XObject;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeFilter;

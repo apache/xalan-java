@@ -2,13 +2,12 @@ package org.apache.xalan.transformer;
 
 import java.io.IOException;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.XMLFilter;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.XMLFilterImpl;
@@ -16,6 +15,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.ErrorListener;
 
 import org.apache.xalan.stree.SourceTreeHandler;
 
@@ -70,7 +70,7 @@ public class TrAXFilter extends XMLFilterImpl
    * Parse a document.
    *
    * @param input The input source for the document entity.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @exception java.io.IOException An IO exception from the parser,
    *            possibly from a byte stream or character stream
@@ -78,7 +78,7 @@ public class TrAXFilter extends XMLFilterImpl
    * @see org.xml.sax.XMLReader#parse(org.xml.sax.InputSource)
    */
   public void parse (InputSource input)
-    throws SAXException, IOException
+    throws org.xml.sax.SAXException, IOException
   {
     if(null == getParent())
     {
@@ -90,7 +90,7 @@ public class TrAXFilter extends XMLFilterImpl
         parent.setFeature("http://apache.org/xml/features/validation/dynamic",
                           true);
       }
-      catch (SAXException se){}
+      catch (org.xml.sax.SAXException se){}
       // setParent calls setupParse...
       setParent(parent);
     }
@@ -101,17 +101,17 @@ public class TrAXFilter extends XMLFilterImpl
     }
     if(null == m_transformer.getContentHandler())
     {
-      throw new SAXException("parse can not be called if the ContentHandler has not been set!");
+      throw new org.xml.sax.SAXException("parse can not be called if the ContentHandler has not been set!");
     }
 
     getParent().parse(input);
     Exception e = m_transformer.getExceptionThrown();
     if(null != e)
     {
-      if(e instanceof SAXException)
-        throw (SAXException)e;
+      if(e instanceof org.xml.sax.SAXException)
+        throw (org.xml.sax.SAXException)e;
       else
-        throw new SAXException(e);
+        throw new org.xml.sax.SAXException(e);
     }
   }
   
@@ -119,7 +119,7 @@ public class TrAXFilter extends XMLFilterImpl
    * Parse a document.
    *
    * @param systemId The system identifier as a fully-qualified URI.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @exception java.io.IOException An IO exception from the parser,
    *            possibly from a byte stream or character stream
@@ -127,7 +127,7 @@ public class TrAXFilter extends XMLFilterImpl
    * @see org.xml.sax.XMLReader#parse(java.lang.String)
    */
   public void parse (String systemId)
-    throws SAXException, IOException
+    throws org.xml.sax.SAXException, IOException
   {
     parse(new InputSource(systemId));
   }
@@ -162,8 +162,9 @@ public class TrAXFilter extends XMLFilterImpl
     else
       p.setDTDHandler(this);
     
-    if(null != m_transformer.getErrorHandler())
-      p.setErrorHandler(m_transformer.getErrorHandler());
+    ErrorListener elistener = m_transformer.getErrorListener();
+    if((null != elistener) && (elistener instanceof org.xml.sax.ErrorHandler))
+      p.setErrorHandler((org.xml.sax.ErrorHandler)elistener);
     else
       p.setErrorHandler(this);
   }
@@ -182,9 +183,9 @@ public class TrAXFilter extends XMLFilterImpl
     // super.setContentHandler(m_transformer.getResultTreeHandler());
   }
   
-  public void setErrorHandler (ErrorHandler handler)
+  public void setErrorListener (ErrorListener handler)
   {
-    m_transformer.setErrorHandler(handler);
+    m_transformer.setErrorListener(handler);
   }
 
 }

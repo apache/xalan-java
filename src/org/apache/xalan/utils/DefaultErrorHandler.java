@@ -57,16 +57,16 @@
 package org.apache.xalan.utils;
 
 import org.xml.sax.*;
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.SourceLocator;
 
 /**
  * <meta name="usage" content="general"/>
  * Implement SAX error handler for default reporting.
  */
-public class DefaultErrorHandler implements ErrorHandler
+public class DefaultErrorHandler implements ErrorHandler, ErrorListener
 {
-
-  /** NEEDSDOC Field m_xmlID          */
-  String m_xmlID = null;
 
   /**
    * Constructor DefaultErrorHandler
@@ -74,9 +74,8 @@ public class DefaultErrorHandler implements ErrorHandler
    *
    * NEEDSDOC @param identifier
    */
-  public DefaultErrorHandler(String identifier)
+  public DefaultErrorHandler()
   {
-    m_xmlID = identifier;
   }
 
   /**
@@ -92,14 +91,15 @@ public class DefaultErrorHandler implements ErrorHandler
    *
    * @param exception The warning information encapsulated in a
    *                  SAX parse exception.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
-   * @see org.xml.sax.SAXParseException
+   * @see javax.xml.transform.TransformerException
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void warning(SAXParseException exception) throws SAXException
   {
+    printLocation(exception);
     System.out.println("Parser warning: " + exception.getMessage());
   }
 
@@ -121,14 +121,15 @@ public class DefaultErrorHandler implements ErrorHandler
    *
    * @param exception The error information encapsulated in a
    *                  SAX parse exception.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
-   * @see org.xml.sax.SAXParseException
+   * @see javax.xml.transform.TransformerException
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void error(SAXParseException exception) throws SAXException
   {
+    printLocation(exception);
     System.out.println("Parser error: " + exception.getMessage());
   }
 
@@ -148,24 +149,130 @@ public class DefaultErrorHandler implements ErrorHandler
    *
    * @param exception The error information encapsulated in a
    *                  SAX parse exception.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
-   * @see org.xml.sax.SAXParseException
+   * @see javax.xml.transform.TransformerException
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void fatalError(SAXParseException exception) throws SAXException
   {
+    printLocation(exception);
 
+    throw exception;
+  }
+  
+  /**
+   * Receive notification of a warning.
+   *
+   * <p>SAX parsers will use this method to report conditions that
+   * are not errors or fatal errors as defined by the XML 1.0
+   * recommendation.  The default behaviour is to take no action.</p>
+   *
+   * <p>The SAX parser must continue to provide normal parsing events
+   * after invoking this method: it should still be possible for the
+   * application to process the document through to the end.</p>
+   *
+   * @param exception The warning information encapsulated in a
+   *                  SAX parse exception.
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
+   *            wrapping another exception.
+   * @see javax.xml.transform.TransformerException
+   *
+   * @throws TransformerException
+   */
+  public void warning(TransformerException exception) throws TransformerException
+  {
+    printLocation(exception);
+
+    System.out.println("Parser warning: " + exception.getMessage());
+  }
+
+  /**
+   * Receive notification of a recoverable error.
+   *
+   * <p>This corresponds to the definition of "error" in section 1.2
+   * of the W3C XML 1.0 Recommendation.  For example, a validating
+   * parser would use this callback to report the violation of a
+   * validity constraint.  The default behaviour is to take no
+   * action.</p>
+   *
+   * <p>The SAX parser must continue to provide normal parsing events
+   * after invoking this method: it should still be possible for the
+   * application to process the document through to the end.  If the
+   * application cannot do so, then the parser should report a fatal
+   * error even if the XML 1.0 recommendation does not require it to
+   * do so.</p>
+   *
+   * @param exception The error information encapsulated in a
+   *                  SAX parse exception.
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
+   *            wrapping another exception.
+   * @see javax.xml.transform.TransformerException
+   *
+   * @throws TransformerException
+   */
+  public void error(TransformerException exception) throws TransformerException
+  {
+    printLocation(exception);
+
+    System.out.println("Parser error: " + exception.getMessage());
+  }
+
+  /**
+   * Receive notification of a non-recoverable error.
+   *
+   * <p>This corresponds to the definition of "fatal error" in
+   * section 1.2 of the W3C XML 1.0 Recommendation.  For example, a
+   * parser would use this callback to report the violation of a
+   * well-formedness constraint.</p>
+   *
+   * <p>The application must assume that the document is unusable
+   * after the parser has invoked this method, and should continue
+   * (if at all) only for the sake of collecting addition error
+   * messages: in fact, SAX parsers are free to stop reporting any
+   * other events once this method has been invoked.</p>
+   *
+   * @param exception The error information encapsulated in a
+   *                  SAX parse exception.
+   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
+   *            wrapping another exception.
+   * @see javax.xml.transform.TransformerException
+   *
+   * @throws TransformerException
+   */
+  public void fatalError(TransformerException exception) throws TransformerException
+  {
+    printLocation(exception);
+
+    throw exception;
+  }
+  
+  private void printLocation(org.xml.sax.SAXParseException exception)
+  {
     // System.out.println("Parser fatal error: "+exception.getMessage());
-    String id = (exception.getPublicId() != exception.getPublicId())
-                ? exception.getPublicId()
-                : (null != exception.getSystemId())
-                  ? exception.getSystemId() : m_xmlID;
+    String id = (null != exception.getSystemId())
+                ? exception.getSystemId() : "SystemId Unknown";
 
     System.out.println(id + "; Line " + exception.getLineNumber()
                        + "; Column " + exception.getColumnNumber());
+  }
 
-    throw exception;
+  
+  private void printLocation(TransformerException exception)
+  {
+    SourceLocator locator = exception.getLocator();
+    
+    if(null != locator)
+    {
+      // System.out.println("Parser fatal error: "+exception.getMessage());
+      String id = (locator.getPublicId() != locator.getPublicId())
+                  ? locator.getPublicId()
+                    : (null != locator.getSystemId())
+                      ? locator.getSystemId() : "SystemId Unknown";
+
+      System.out.println(id + "; Line " + locator.getLineNumber()
+                         + "; Column " + locator.getColumnNumber());
+    }
   }
 }

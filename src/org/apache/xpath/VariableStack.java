@@ -69,7 +69,7 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -236,9 +236,9 @@ public class VariableStack extends Stack
    *
    * @return true if the variable is already declared.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public boolean variableIsDeclared(QName qname) throws SAXException
+  public boolean variableIsDeclared(QName qname) throws TransformerException
   {
 
     int nElems = (-1 == m_searchStart) ? this.size() : m_searchStart;
@@ -280,9 +280,9 @@ public class VariableStack extends Stack
    *
    * @return The wrapped value of the variable.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public XObject getParamVariable(XPathContext xctxt, QName qname) throws SAXException
+  public XObject getParamVariable(XPathContext xctxt, QName qname) throws TransformerException
   {
 
     XObject val = null;
@@ -318,9 +318,9 @@ public class VariableStack extends Stack
    *
    * @return The wrapped value of the variable.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public Object getVariable(XPathContext xctxt, QName name) throws SAXException
+  public Object getVariable(XPathContext xctxt, QName name) throws TransformerException
   {
 
     int nElems = (-1 == m_searchStart) ? this.size() : m_searchStart;

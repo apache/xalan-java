@@ -56,7 +56,7 @@
  */
 package org.apache.xpath;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.Document;
@@ -92,10 +92,10 @@ public class XPathAPI
    * @param str A valid XPath string.
    * @return The first node found that matches the XPath, or null.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public static Node selectSingleNode(Node contextNode, String str)
-          throws SAXException
+          throws TransformerException
   {
     return selectSingleNode(contextNode, str, contextNode);
   }
@@ -109,11 +109,11 @@ public class XPathAPI
    * @param namespaceNode The node from which prefixes in the XPath will be resolved to namespaces.
    * @return The first node found that matches the XPath, or null.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public static Node selectSingleNode(
           Node contextNode, String str, Node namespaceNode)
-            throws SAXException
+            throws TransformerException
   {
 
     // Have the XObject return its result as a NodeSet.
@@ -131,10 +131,10 @@ public class XPathAPI
    *  @param str A valid XPath string.
    *  @return A NodeIterator, should never be null.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public static NodeIterator selectNodeIterator(Node contextNode, String str)
-          throws SAXException
+          throws TransformerException
   {
     return selectNodeIterator(contextNode, str, contextNode);
   }
@@ -148,11 +148,11 @@ public class XPathAPI
    *  @param namespaceNode The node from which prefixes in the XPath will be resolved to namespaces.
    *  @return A NodeIterator, should never be null.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public static NodeIterator selectNodeIterator(
           Node contextNode, String str, Node namespaceNode)
-            throws SAXException
+            throws TransformerException
   {
 
     // Execute the XPath, and have it return the result
@@ -170,10 +170,10 @@ public class XPathAPI
    *  @param str A valid XPath string.
    *  @return A NodeIterator, should never be null.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public static NodeList selectNodeList(Node contextNode, String str)
-          throws SAXException
+          throws TransformerException
   {
     return selectNodeList(contextNode, str, contextNode);
   }
@@ -187,11 +187,11 @@ public class XPathAPI
    *  @param namespaceNode The node from which prefixes in the XPath will be resolved to namespaces.
    *  @return A NodeIterator, should never be null.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public static NodeList selectNodeList(
           Node contextNode, String str, Node namespaceNode)
-            throws SAXException
+            throws TransformerException
   {
 
     // Execute the XPath, and have it return the result
@@ -215,9 +215,9 @@ public class XPathAPI
    *  @see org.apache.xpath.objects.XString
    *  @see org.apache.xpath.objects.XRTreeFrag
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public static XObject eval(Node contextNode, String str) throws SAXException
+  public static XObject eval(Node contextNode, String str) throws TransformerException
   {
     return eval(contextNode, str, contextNode);
   }
@@ -240,10 +240,10 @@ public class XPathAPI
    *  @see org.apache.xpath.objects.XString
    *  @see org.apache.xpath.objects.XRTreeFrag
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public static XObject eval(Node contextNode, String str, Node namespaceNode)
-          throws SAXException
+          throws TransformerException
   {
 
     // Since we don't have a XML Parser involved here, install some default support
@@ -287,11 +287,11 @@ public class XPathAPI
    *   @see org.apache.xpath.objects.XString
    *   @see org.apache.xpath.objects.XRTreeFrag
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public static XObject eval(
           Node contextNode, String str, PrefixResolver prefixResolver)
-            throws SAXException
+            throws TransformerException
   {
 
     // Since we don't have a XML Parser involved here, install some default support

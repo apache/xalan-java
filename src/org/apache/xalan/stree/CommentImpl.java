@@ -60,7 +60,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Comment;
 
 import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.ext.LexicalHandler;
 
 import org.apache.xalan.utils.FastStringBuffer;
@@ -139,9 +139,9 @@ public class CommentImpl extends TextImpl implements Comment
    *
    * @param ch Character array with comment data
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void dispatchSaxEvent(ContentHandler ch) throws SAXException
+  public void dispatchSaxEvent(ContentHandler ch) throws org.xml.sax.SAXException
   {
 
     if (-1 == m_start)

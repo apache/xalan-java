@@ -65,6 +65,8 @@ import org.apache.xalan.trace.*;
 import org.apache.xalan.utils.QName;
 import org.apache.xalan.transformer.TransformerImpl;
 
+import javax.xml.transform.TransformerException;
+
 /**
  * <meta name="usage" content="advanced"/>
  * Implement xsl:param.
@@ -112,9 +114,9 @@ public class ElemParam extends ElemVariable
    *
    * NEEDSDOC @param param
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public ElemParam(ElemParam param) throws SAXException
+  public ElemParam(ElemParam param) throws TransformerException
   {
     super(param);
   }
@@ -131,11 +133,11 @@ public class ElemParam extends ElemVariable
    * NEEDSDOC @param sourceNode
    * NEEDSDOC @param mode
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void execute(
           TransformerImpl transformer, Node sourceNode, QName mode)
-            throws SAXException
+            throws TransformerException
   {
 
     VariableStack vars = transformer.getXPathContext().getVarStack();

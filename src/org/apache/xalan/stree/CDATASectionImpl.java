@@ -60,7 +60,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.CDATASection;
 
 import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.ext.LexicalHandler;
 
 import org.apache.xalan.utils.FastStringBuffer;
@@ -138,9 +138,9 @@ public class CDATASectionImpl extends TextImpl implements CDATASection
    *
    * @param ch Content Handler
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void dispatchSaxEvent(ContentHandler ch) throws SAXException
+  public void dispatchSaxEvent(ContentHandler ch) throws org.xml.sax.SAXException
   {
 
     LexicalHandler lh = ((LexicalHandler) ch);

@@ -59,7 +59,7 @@ package org.apache.xalan.transformer;
 import java.util.Vector;
 
 import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 
 import org.apache.xalan.utils.MutableAttrListImpl;
@@ -272,7 +272,7 @@ public class QueuedStartElement extends QueuedSAXEvent
    *
    * @throws SAXException
    */
-  void flush() throws SAXException
+  void flush() throws org.xml.sax.SAXException
   {
 
     if (isPending)

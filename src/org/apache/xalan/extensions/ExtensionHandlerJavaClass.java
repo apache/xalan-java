@@ -71,7 +71,7 @@ import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.utils.QName;
 
 import org.apache.xpath.objects.XObject;
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -213,14 +213,14 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
    * @param methodKey A key that uniquely identifies this class and method call.
    * @param exprContext The context in which this expression is being executed.
    * @return the return value of the function evaluation.
-   * @exception SAXException
+   * @exception TransformerException
    */
 
   public Object callFunction (String funcName, 
                               Vector args, 
                               Object methodKey,
                               ExpressionContext exprContext)
-    throws SAXException 
+    throws TransformerException 
   {
 
     Object[] methodArgs;
@@ -346,14 +346,14 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
     {
       Throwable realException = ite.getTargetException();
       if (realException instanceof Exception)
-        throw new SAXException((Exception) realException);
+        throw new TransformerException((Exception) realException);
       else
-        throw new SAXException(ite);
+        throw new TransformerException(ite);
     }
     catch (Exception e)
     {
       // e.printStackTrace();
-      throw new SAXException(e);
+      throw new TransformerException(e);
     }
   }
 
@@ -375,7 +375,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
    * @param mode           The current mode.
    * @param methodKey      A key that uniquely identifies this element call.
    * @exception IOException           if loading trouble
-   * @exception SAXException          if parsing trouble
+   * @exception TransformerException          if parsing trouble
    */
 
   public void processElement(String localPart,
@@ -386,7 +386,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
                              Node sourceNode,
                              QName mode,
                              Object methodKey)
-    throws SAXException, IOException
+    throws TransformerException, IOException
   {
     Object result = null;
 
@@ -402,7 +402,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
       catch (Exception e)
       {
         // e.printStackTrace ();
-        throw new SAXException (e.getMessage (), e);
+        throw new TransformerException (e.getMessage (), e);
       }
       putToCache(methodKey, null, null, m);
     }
@@ -420,7 +420,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
     catch (Exception e)
     {
       // e.printStackTrace ();
-      throw new SAXException (e.getMessage (), e);
+      throw new TransformerException (e.getMessage (), e);
     }
 
     if (result != null)

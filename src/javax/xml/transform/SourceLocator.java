@@ -59,9 +59,6 @@ package javax.xml.transform;
 /**
  * This interface is primarily for the purposes of reporting where
  * an error occured in the source or transformation instructions.
- *
- * @version Alpha
- * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
  */
 public interface SourceLocator
 {

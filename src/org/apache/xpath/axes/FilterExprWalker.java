@@ -98,10 +98,10 @@ public class FilterExprWalker extends AxesWalker
    * NEEDSDOC @param opPos
    * NEEDSDOC @param stepType
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public void init(Compiler compiler, int opPos, int stepType)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     super.init(compiler, opPos, stepType);
@@ -145,7 +145,7 @@ public class FilterExprWalker extends AxesWalker
       
       m_peek = null;
     }
-    catch (org.xml.sax.SAXException se)
+    catch (javax.xml.transform.TransformerException se)
     {
 
       // TODO: Fix...
@@ -212,7 +212,7 @@ public class FilterExprWalker extends AxesWalker
 
       return NodeFilter.FILTER_ACCEPT;
     }
-    catch (org.xml.sax.SAXException se)
+    catch (javax.xml.transform.TransformerException se)
     {
       throw new RuntimeException(se.getMessage());
     }

@@ -71,10 +71,6 @@ import java.util.Properties;
  * multiple threads.</p>
  * <p>A Transformer may be used multiple times.  Parameters and 
  * output properties are preserved across transformations.</p>
- *
- * @version Alpha
- * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
- * @since JAXP 1.1
  */
 public abstract class Transformer
 {
@@ -84,7 +80,8 @@ public abstract class Transformer
    * @param xmlSource  The input for the source tree.
    * @param outputTarget The output source target.
    *
-   * @throws TransformerException
+   * @throws TransformerException If an unrecoverable error occurs 
+   * during the course of the transformation.
    */
   public abstract void transform(Source xmlSource, Result outputTarget)
     throws TransformerException;
@@ -112,36 +109,18 @@ public abstract class Transformer
    * in extensions.
    */
   public abstract void setParameter(String name, Object value);
-  
-  /**
-   * Set a bag of parameters for the transformation. Note that 
-   * these will not be additive, they will replace the existing
-   * set of parameters.
-   * 
-   * <p>In order to pass namespaced names, the name can be passed as 
-   * a two-part string, with
-   * the first part being the URL, the delimiter being the '{' for the start of the
-   * URI and '}' signifies the end, with the local name following. If the qname has
-   * a null URL, then the String object will only contain the local name. An
-   * application can safely check for a non-null URI by testing to see if the first
-   * character of the name is a '{' character.</p> 
-   * <p>For example, if a URI and local name were obtained from an element
-   * defined with &lt;xyz:foo xmlns:xyz="http://xyz.foo.com/yada/baz.html"/&gt;,
-   * then the TrAX QName would be "{http://xyz.foo.com/yada/baz.html}foo". Note that
-   * no prefix is used.</p>
-   *
-   * @param params A list of name-value pairs.
-   */
-  public abstract void setParameters(Properties params);
-  
+    
   /**
    * Get a parameter that was explicitly set with setParameter 
    * or setParameters.
+   * 
+   * <p>This does not return objects from default values of 
+   * parameters, since, among other reasons, these require a 
+   * node context to be evaluated, and thus can not be resolved 
+   * until the transformation is underway.</p>
    *
    * @return A parameter that has been set with setParameter 
-   * or setParameters,
-   * *not* all the xsl:params on the stylesheet (which require 
-   * a transformation Source to be evaluated).
+   * or setParameters.
    */
   public abstract Object getParameter(String name);
 
@@ -182,19 +161,35 @@ public abstract class Transformer
    * defined with &lt;xyz:foo xmlns:xyz="http://xyz.foo.com/yada/baz.html"/&gt;,
    * then the TrAX QName would be "{http://xyz.foo.com/yada/baz.html}foo". Note that
    * no prefix is used.</p>
+   * 
+   * <p>If a given property is not supported, it will be silently ignored.</p>
    *
    * @param oformat A set of output properties that will be
    * used to override any of the same properties in effect
    * for the transformation.
    * 
-   * @see javax.xml.transform.stream.OutputKeys
+   * @see javax.xml.transform.OutputKeys
+   * @see java.util.Properties
+   * 
+   * @throws IllegalArgumentException if any of the argument keys are not 
+   * recognized and are not namespace qualified.
    */
-  public abstract void setOutputProperties(Properties oformat);
+  public abstract void setOutputProperties(Properties oformat)
+    throws IllegalArgumentException;
 
   /**
-   * Get a copy of the output properties for the transformation.  These
-   * properties will override properties set in the templates
-   * with xsl:output.
+   * Get a copy of the output properties for the transformation.
+   * 
+   * <p>The properties should contain a set of layered properties.  The 
+   * first "layer" will contain the properties that were set with 
+   * setOutputProperties and setOutputProperty.  Subsequent layers 
+   * contain the properties set in the stylesheet and the 
+   * default properties for the transformation type.
+   * There is no guarantee on how the layers are structured passed the 
+   * first layer.  Thus, getOutputProperties().getProperty(String key) will obtain any 
+   * property in effect for the stylesheet, while 
+   * getOutputProperties().get(String key) will only retrieve properties 
+   * that were explicitly set with setOutputProperties and setOutputProperty.</p>
    * 
    * <p>Note that mutation of the Properties object returned will not 
    * effect the properties that the transformation contains.</p>
@@ -202,7 +197,8 @@ public abstract class Transformer
    * @returns A copy of the set of output properties in effect
    * for the next transformation.
    * 
-   * @see javax.xml.transform.stream.OutputKeys
+   * @see javax.xml.transform.OutputKeys
+   * @see java.util.Properties
    */
   public abstract Properties getOutputProperties();
 
@@ -226,12 +222,13 @@ public abstract class Transformer
    * property name, which may be namespace qualified.
    * @param value The non-null string value of the output property.
    *
-   * @throws TransformerException
+   * @throws IllegalArgumentException If the property is not supported, and is 
+   * not qualified with a namespace.
    * 
-   * @see javax.xml.transform.stream.OutputKeys
+   * @see javax.xml.transform.OutputKeys
    */
   public abstract void setOutputProperty(String name, String value)
-    throws TransformerException;
+    throws IllegalArgumentException;
 
   /**
    * Get an output property that is in effect for the 
@@ -245,10 +242,27 @@ public abstract class Transformer
    * @return The string value of the output property, or null 
    * if no property was found.
    *
-   * @throws TransformerException
+   * @throws IllegalArgumentException If the property is not supported.
    * 
-   * @see javax.xml.transform.stream.OutputKeys
+   * @see javax.xml.transform.OutputKeys
    */
   public abstract String getOutputProperty(String name)
-    throws TransformerException;
+    throws IllegalArgumentException;
+  
+  /**
+   * Set the error event listener in effect for the transformation.
+   *
+   * @param listener The new error listener.
+   * @throws IllegalArgumentException if 
+   */
+  public abstract void setErrorListener (ErrorListener listener)
+    throws IllegalArgumentException;
+
+  /**
+   * Get the error event handler in effect for the transformation.
+   *
+   * @return The current error handler, which should never be null.
+   */
+  public abstract ErrorListener getErrorListener ();
+
 }

@@ -72,7 +72,9 @@ public class StreamSource implements Source
 {
 
   /**
-   * Zero-argument default constructor.
+   * Zero-argument default constructor. If this constructor 
+   * is used, and no other method is called, the transformer 
+   * will assume an empty input tree, with a default root node.
    */
   public StreamSource(){}
 
@@ -127,6 +129,24 @@ public class StreamSource implements Source
   {
     setCharacterStream(characterStream);
   }
+  
+  /**
+   * Construct a StreamSource from a character reader.  Normally, 
+   * a stream should be used rather than a reader, so that 
+   * the XML parser may resolve character encoding specified 
+   * by the XML declaration.  However, in many cases the encoding 
+   * of the input stream is already resolved, as in the case of 
+   * reading XML from a StringReader.
+   *
+   * @param characterStream A valid Reader reference to an XML character stream.
+   * @param systemId Must be a string that conforms to the URL syntax.
+   */
+  public StreamSource(Reader characterStream, String systemId)
+  {
+    setCharacterStream(characterStream);
+    setSystemId(systemId);
+  }
+
 
   /**
    * Construct a StreamSource from a URL.
@@ -245,20 +265,6 @@ public class StreamSource implements Source
     return systemId;
   }
   
-  /**
-   * Get the base ID (URL or system ID) from where URLs 
-   * will be resolved.
-   * 
-   * <p>In the case of StreamSource, this will get the 
-   * systemID value.</p>
-   * 
-   * @return Base URL for the source tree.
-   */
-  public String getBaseID()
-  {
-    return systemId;
-  }
-
   //////////////////////////////////////////////////////////////////////
   // Internal state.
   //////////////////////////////////////////////////////////////////////

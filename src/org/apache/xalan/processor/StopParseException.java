@@ -56,13 +56,11 @@
  */
 package org.apache.xalan.processor;
 
-import org.xml.sax.SAXException;
-
 /**
  * <meta name="usage" content="internal"/>
  * NEEDSDOC Class StopParseException <needs-comment/>
  */
-public class StopParseException extends SAXException
+public class StopParseException extends org.xml.sax.SAXException
 {
 
   /**

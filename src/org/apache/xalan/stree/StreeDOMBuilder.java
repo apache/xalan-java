@@ -63,7 +63,7 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -140,9 +140,9 @@ public class StreeDOMBuilder extends DOMBuilder
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void characters(char ch[], int start, int length) throws SAXException
+  public void characters(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
 
     if (m_inCData)
@@ -159,10 +159,10 @@ public class StreeDOMBuilder extends DOMBuilder
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void ignorableWhitespace(char ch[], int start, int length)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
     append(new TextImpl(m_docImpl, ch, start, length));
   }
@@ -178,10 +178,10 @@ public class StreeDOMBuilder extends DOMBuilder
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public void charactersRaw(char ch[], int start, int length)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     append(m_doc.createProcessingInstruction("xslt-next-is-raw",
@@ -197,9 +197,9 @@ public class StreeDOMBuilder extends DOMBuilder
    * @param start The starting position in the array.
    * @param length The number of characters to use from the array.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void comment(char ch[], int start, int length) throws SAXException
+  public void comment(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
     append(new CommentImpl(m_docImpl, ch, start, length));
   }
@@ -212,9 +212,9 @@ public class StreeDOMBuilder extends DOMBuilder
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
-  public void cdata(char ch[], int start, int length) throws SAXException
+  public void cdata(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
     append(new CDATASectionImpl(m_docImpl, ch, start, length));
   }

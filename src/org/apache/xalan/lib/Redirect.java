@@ -62,7 +62,7 @@ import java.net.URL;
 
 import org.xml.sax.ContentHandler;
 
-import org.apache.serialize.OutputFormat;
+import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.extensions.XSLProcessorContext;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.StylesheetRoot;
@@ -158,7 +158,7 @@ public class Redirect
     throws java.net.MalformedURLException,
            java.io.FileNotFoundException,
            java.io.IOException,
-           org.xml.sax.SAXException
+           javax.xml.transform.TransformerException
   {
     String fileName = getFilename(context, elem);
     Object flistener = m_formatterListeners.get(fileName);
@@ -183,7 +183,7 @@ public class Redirect
     throws java.net.MalformedURLException,
            java.io.FileNotFoundException,
            java.io.IOException,
-           org.xml.sax.SAXException
+           javax.xml.transform.TransformerException
   {
     String fileName = getFilename(context, elem);
     Object flObject = m_formatterListeners.get(fileName);
@@ -216,7 +216,14 @@ public class Redirect
       OutputStream ostream = (OutputStream)m_outputStreams.get(fileName);
       if(null != ostream)
       {
-        formatter.endDocument();
+        try
+        {
+          formatter.endDocument();
+        }
+        catch(org.xml.sax.SAXException se)
+        {
+          throw new TransformerException(se);
+        }
         ostream.close();
         m_outputStreams.remove(fileName);
         m_formatterListeners.remove(fileName);
@@ -232,14 +239,21 @@ public class Redirect
     throws java.net.MalformedURLException,
     java.io.FileNotFoundException,
     java.io.IOException,
-    org.xml.sax.SAXException
+    javax.xml.transform.TransformerException
   {
     String fileName = getFilename(context, elem);
     Object formatterObj = m_formatterListeners.get(fileName);
     if(null != formatterObj)
     {
       ContentHandler fl = (ContentHandler)formatterObj;
-      fl.endDocument();
+      try
+      {
+        fl.endDocument();
+      }
+      catch(org.xml.sax.SAXException se)
+      {
+        throw new TransformerException(se);
+      }
       OutputStream ostream = (OutputStream)m_outputStreams.get(fileName);
       if(null != ostream)
       {
@@ -257,7 +271,7 @@ public class Redirect
     throws java.net.MalformedURLException,
     java.io.FileNotFoundException,
     java.io.IOException,
-    org.xml.sax.SAXException
+    javax.xml.transform.TransformerException
   {
     String fileName;
     String fileNameExpr 
@@ -333,7 +347,7 @@ public class Redirect
     throws java.net.MalformedURLException,
     java.io.FileNotFoundException,
     java.io.IOException,
-    org.xml.sax.SAXException
+    javax.xml.transform.TransformerException
   {
     File file = new File(fileName);
     TransformerImpl transformer = context.getTransformer();
@@ -368,7 +382,14 @@ public class Redirect
     {
       ContentHandler flistener 
         = transformer.createResultContentHandler(new StreamResult(ostream), format);
-      flistener.startDocument();
+      try
+      {
+        flistener.startDocument();
+      }
+      catch(org.xml.sax.SAXException se)
+      {
+        throw new TransformerException(se);
+      }
       if(shouldPutInTable)
       {
         m_outputStreams.put(fileName, ostream);
@@ -378,7 +399,7 @@ public class Redirect
     }
     catch(TransformerException te)
     {
-      throw new org.xml.sax.SAXException(te);
+      throw new javax.xml.transform.TransformerException(te);
     }
     
   }

@@ -76,7 +76,7 @@ public interface ContextNodeList
 
   /**
    * Get the current position, which is one less than
-   * the next nextNode() call will retreave.  i.e. if
+   * the next nextNode() call will retrieve.  i.e. if
    * you call getCurrentPos() and the return is 0, the next
    * fetch will take place at index 1.
    *

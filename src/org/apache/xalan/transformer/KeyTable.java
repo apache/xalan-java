@@ -121,11 +121,11 @@ public class KeyTable
    * @param keyDeclarations The stylesheet's xsl:key declarations.
    * @param xmlLiaison The parser liaison for support of getNodeData(useNode).
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public KeyTable(
           Node doc, PrefixResolver nscontext, QName name, Vector keyDeclarations, XPathContext xmlLiaison)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     m_docKey = doc;

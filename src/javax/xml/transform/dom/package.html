@@ -1,6 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
-  <title>javax.xml.transform.dom Package</title>
-  <body>
-    <p>DOM specific TrAX APIs.<p>
- </body>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>javax.xml.transform.dom</title>
+</head>
+<body>
+<p>This package implements DOM specific transformation APIs.</p>
+<p>The {@link javax.xml.transform.dom.DOMSource} class allows the
+client of the TrAX implementation to specify a
+DOM{@link org.w3c.dom.Node} as the source of the input tree. The model
+of how the transformer deals with the DOM tree in terms of mismatches with
+the<A href="http://www.w3.org/TR/xslt#data-model">XSLT data model</A> or
+other data models is beyond the scope of this API specification. Any of the
+nodes derived from {@link org.w3c.dom.Node} are legal input.</p>
+<p>The {@link javax.xml.transform.dom.DOMResult} class allows
+a{@link org.w3c.dom.Node} to be specified to which result DOM nodes will
+be appended, or, if an output node is not specified, the transformer will
+create an output {@link org.w3c.dom.Document} node
+using{@link javax.xml.parsers.DocumentBuilder#newDocument}. If a node is
+specified, it should be one of
+{@link org.w3c.dom.Document},{@link org.w3c.dom.Element},
+or{@link org.w3c.dom.DocumentFragment}. Specification of any other type
+of nodes is implementation dependent and undefined by this API. If the result
+is a{@link org.w3c.dom.Document}, the output of the transformation must
+have a single element root to set as the document element.</p>
+<p>The {@link javax.xml.transform.dom.DOMLocator} node may be passed
+to {@link javax.xml.transform.TransformerException} objects, and
+retrieved by trying to cast the result of
+the{@link javax.xml.transform.TransformerException#getLocator()} method.
+The implementation has no responsibility to use a DOMLocator instead of
+a{@link javax.xml.transform.SourceLocator} (though line numbers and the
+like doesn't make much sense for a DOM), so the result of getLocator must
+always be tested with an instanceof. </p>
+<p>The following example performs a transformation using DOM nodes as input
+for the transformer factory, as input for the transformer, and as the output of
+the transformation.</p>
+<code>
+<pre>    TransformerFactory tfactory = TransformerFactory.newInstance();
+
+    // Make sure the TransformerFactory supports the DOM feature.
+    if (tfactory.getFeature(Features.DOM))
+    {
+      // Use javax.xml.parsers to create our DOMs.
+      DocumentBuilderFactory dfactory = DocumentBuilderFactory.newInstance();
+      dfactory.setNamespaceAware(true); // do this always for XSLT
+      DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
+      
+      // Create the Templates from a DOM.
+      Node xslDOM = docBuilder.parse(xslID);
+      DOMSource dsource = new DOMSource(xslDOM, xslID);
+      Templates templates = tfactory.newTemplates(dsource);
+
+      // Create the source tree in the form of a DOM.
+      Node sourceNode = docBuilder.parse(sourceID);
+      
+      // Create a DOMResult that the transformation will fill in.
+      DOMResult dresult = new DOMResult();
+      
+      // And transform from the source DOM tree to a result DOM tree.
+      Transformer transformer = templates.newTransformer();
+      transformer.transform(new DOMSource(sourceNode, sourceID), dresult);
+      
+      // The root of the result tree may now be obtained from 
+      // the DOMResult object.
+      Node out = dresult.getNode();
+      
+      // Serialize it to System.out for diagnostics.
+      Transformer serializer = tfactory.newTransformer();
+      serializer.transform(new DOMSource(out), new StreamResult(System.out));
+    }</pre>
+</code>
+</body>
 </html>

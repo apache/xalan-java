@@ -106,9 +106,9 @@ public class XObject extends Expression implements Serializable
    *
    * @return This object.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
     return this;
   }
@@ -212,9 +212,9 @@ public class XObject extends Expression implements Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public double num() throws org.xml.sax.SAXException
+  public double num() throws javax.xml.transform.TransformerException
   {
 
     error(XPATHErrorResources.ER_CANT_CONVERT_TO_NUMBER,
@@ -228,9 +228,9 @@ public class XObject extends Expression implements Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public boolean bool() throws org.xml.sax.SAXException
+  public boolean bool() throws javax.xml.transform.TransformerException
   {
 
     error(XPATHErrorResources.ER_CANT_CONVERT_TO_NUMBER,
@@ -312,9 +312,9 @@ public class XObject extends Expression implements Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public NodeIterator nodeset() throws org.xml.sax.SAXException
+  public NodeIterator nodeset() throws javax.xml.transform.TransformerException
   {
 
     error(XPATHErrorResources.ER_CANT_CONVERT_TO_NODELIST,
@@ -328,9 +328,9 @@ public class XObject extends Expression implements Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public NodeSet mutableNodeset() throws org.xml.sax.SAXException
+  public NodeSet mutableNodeset() throws javax.xml.transform.TransformerException
   {
 
     error(XPATHErrorResources.ER_CANT_CONVERT_TO_MUTABLENODELIST,
@@ -347,10 +347,10 @@ public class XObject extends Expression implements Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public Object castToType(int t, XPathContext support)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     Object result;
@@ -393,9 +393,9 @@ public class XObject extends Expression implements Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public boolean lessThan(XObject obj2) throws org.xml.sax.SAXException
+  public boolean lessThan(XObject obj2) throws javax.xml.transform.TransformerException
   {
 
     // In order to handle the 'all' semantics of 
@@ -416,9 +416,9 @@ public class XObject extends Expression implements Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public boolean lessThanOrEqual(XObject obj2) throws org.xml.sax.SAXException
+  public boolean lessThanOrEqual(XObject obj2) throws javax.xml.transform.TransformerException
   {
 
     // In order to handle the 'all' semantics of 
@@ -439,9 +439,9 @@ public class XObject extends Expression implements Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public boolean greaterThan(XObject obj2) throws org.xml.sax.SAXException
+  public boolean greaterThan(XObject obj2) throws javax.xml.transform.TransformerException
   {
 
     // In order to handle the 'all' semantics of 
@@ -462,10 +462,10 @@ public class XObject extends Expression implements Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public boolean greaterThanOrEqual(XObject obj2)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     // In order to handle the 'all' semantics of 
@@ -486,9 +486,9 @@ public class XObject extends Expression implements Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public boolean equals(XObject obj2) throws org.xml.sax.SAXException
+  public boolean equals(XObject obj2) throws javax.xml.transform.TransformerException
   {
 
     // In order to handle the 'all' semantics of 
@@ -507,9 +507,9 @@ public class XObject extends Expression implements Serializable
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public boolean notEquals(XObject obj2) throws org.xml.sax.SAXException
+  public boolean notEquals(XObject obj2) throws javax.xml.transform.TransformerException
   {
 
     // In order to handle the 'all' semantics of 
@@ -527,9 +527,9 @@ public class XObject extends Expression implements Serializable
    *
    * NEEDSDOC @param msg
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void error(int msg) throws org.xml.sax.SAXException
+  protected void error(int msg) throws javax.xml.transform.TransformerException
   {
     error(msg, null);
   }
@@ -541,9 +541,9 @@ public class XObject extends Expression implements Serializable
    * NEEDSDOC @param msg
    * NEEDSDOC @param args
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  protected void error(int msg, Object[] args) throws org.xml.sax.SAXException
+  protected void error(int msg, Object[] args) throws javax.xml.transform.TransformerException
   {
 
     String fmsg = XSLMessages.createXPATHMessage(msg, args);

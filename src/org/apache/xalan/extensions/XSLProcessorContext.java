@@ -65,7 +65,7 @@ import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.utils.QName;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
@@ -182,121 +182,128 @@ public class XSLProcessorContext
    * @param obj the Java object to output. If its of an X<something> type
    *        then that conversion is done first and then sent out.
    *
-   * @throws SAXException
+   * @throws TransformerException
    * @throws java.io.FileNotFoundException
    * @throws java.io.IOException
    * @throws java.net.MalformedURLException
    */
   public void outputToResultTree(Stylesheet stylesheetTree, Object obj)
-          throws SAXException, java.net.MalformedURLException,
+          throws TransformerException, java.net.MalformedURLException,
                  java.io.FileNotFoundException, java.io.IOException
   {
 
-    ResultTreeHandler rtreeHandler = transformer.getResultTreeHandler();
-    XObject value;
+    try
+    {
+      ResultTreeHandler rtreeHandler = transformer.getResultTreeHandler();
+      XObject value;
 
-    // Make the return object into an XObject because it
-    // will be easier below.  One of the reasons to do this
-    // is to keep all the conversion functionality in the
-    // XObject classes.
-    if (obj instanceof XObject)
-    {
-      value = (XObject) obj;
-    }
-    else if (obj instanceof String)
-    {
-      value = new XString((String) obj);
-    }
-    else if (obj instanceof Boolean)
-    {
-      value = new XBoolean(((Boolean) obj).booleanValue());
-    }
-    else if (obj instanceof Double)
-    {
-      value = new XNumber(((Double) obj).doubleValue());
-    }
-    else if (obj instanceof DocumentFragment)
-    {
-      value = new XRTreeFrag((DocumentFragment) obj);
-    }
-    else if (obj instanceof Node)
-    {
-      value = new XNodeSet((Node) obj);
-    }
-    else if (obj instanceof NodeIterator)
-    {
-      value = new XNodeSet((NodeIterator) obj);
-    }
-    else
-    {
-      value = new XString(obj.toString());
-    }
-
-    int type = value.getType();
-    String s;
-
-    switch (type)
-    {
-    case XObject.CLASS_BOOLEAN :
-    case XObject.CLASS_NUMBER :
-    case XObject.CLASS_STRING :
-      s = value.str();
-
-      rtreeHandler.characters(s.toCharArray(), 0, s.length());
-      break;
-    case XObject.CLASS_NODESET :  // System.out.println(value);
-      NodeIterator nl = value.nodeset();
-      Node pos;
-
-      while (null != (pos = nl.nextNode()))
+      // Make the return object into an XObject because it
+      // will be easier below.  One of the reasons to do this
+      // is to keep all the conversion functionality in the
+      // XObject classes.
+      if (obj instanceof XObject)
       {
-        Node top = pos;
+        value = (XObject) obj;
+      }
+      else if (obj instanceof String)
+      {
+        value = new XString((String) obj);
+      }
+      else if (obj instanceof Boolean)
+      {
+        value = new XBoolean(((Boolean) obj).booleanValue());
+      }
+      else if (obj instanceof Double)
+      {
+        value = new XNumber(((Double) obj).doubleValue());
+      }
+      else if (obj instanceof DocumentFragment)
+      {
+        value = new XRTreeFrag((DocumentFragment) obj);
+      }
+      else if (obj instanceof Node)
+      {
+        value = new XNodeSet((Node) obj);
+      }
+      else if (obj instanceof NodeIterator)
+      {
+        value = new XNodeSet((NodeIterator) obj);
+      }
+      else
+      {
+        value = new XString(obj.toString());
+      }
 
-        while (null != pos)
+      int type = value.getType();
+      String s;
+
+      switch (type)
+      {
+      case XObject.CLASS_BOOLEAN :
+      case XObject.CLASS_NUMBER :
+      case XObject.CLASS_STRING :
+        s = value.str();
+
+        rtreeHandler.characters(s.toCharArray(), 0, s.length());
+        break;
+      case XObject.CLASS_NODESET :  // System.out.println(value);
+        NodeIterator nl = value.nodeset();
+        Node pos;
+
+        while (null != (pos = nl.nextNode()))
         {
-          rtreeHandler.flushPending();
-          rtreeHandler.cloneToResultTree(pos, true);
+          Node top = pos;
 
-          Node nextNode = pos.getFirstChild();
-
-          while (null == nextNode)
+          while (null != pos)
           {
-            if (Node.ELEMENT_NODE == pos.getNodeType())
+            rtreeHandler.flushPending();
+            rtreeHandler.cloneToResultTree(pos, true);
+
+            Node nextNode = pos.getFirstChild();
+
+            while (null == nextNode)
             {
-              rtreeHandler.endElement("", "", pos.getNodeName());
-            }
-
-            if (top == pos)
-              break;
-
-            nextNode = pos.getNextSibling();
-
-            if (null == nextNode)
-            {
-              pos = pos.getParentNode();
+              if (Node.ELEMENT_NODE == pos.getNodeType())
+              {
+                rtreeHandler.endElement("", "", pos.getNodeName());
+              }
 
               if (top == pos)
-              {
-                if (Node.ELEMENT_NODE == pos.getNodeType())
-                {
-                  rtreeHandler.endElement("", "", pos.getNodeName());
-                }
-
-                nextNode = null;
-
                 break;
+
+              nextNode = pos.getNextSibling();
+
+              if (null == nextNode)
+              {
+                pos = pos.getParentNode();
+
+                if (top == pos)
+                {
+                  if (Node.ELEMENT_NODE == pos.getNodeType())
+                  {
+                    rtreeHandler.endElement("", "", pos.getNodeName());
+                  }
+
+                  nextNode = null;
+
+                  break;
+                }
               }
             }
-          }
 
-          pos = nextNode;
+            pos = nextNode;
+          }
         }
+        break;
+      case XObject.CLASS_RTREEFRAG :
+        rtreeHandler.outputResultTreeFragment(value,
+                                              transformer.getXPathContext());
+        break;
       }
-      break;
-    case XObject.CLASS_RTREEFRAG :
-      rtreeHandler.outputResultTreeFragment(value,
-                                            transformer.getXPathContext());
-      break;
+    }
+    catch(org.xml.sax.SAXException se)
+    {
+      throw new TransformerException(se);
     }
   }
 

@@ -160,9 +160,9 @@ public class UnionPathIterator extends Expression
    *
    * NEEDSDOC (execute) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
     try
@@ -351,10 +351,10 @@ public class UnionPathIterator extends Expression
    * NEEDSDOC @param compiler
    * NEEDSDOC @param opPos
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public UnionPathIterator(Compiler compiler, int opPos)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     super();
@@ -429,10 +429,10 @@ public class UnionPathIterator extends Expression
    * NEEDSDOC @param opPos
    * NEEDSDOC @param count
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   protected void loadLocationPaths(Compiler compiler, int opPos, int count)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     // TODO: Handle unwrapped FilterExpr
@@ -480,10 +480,10 @@ public class UnionPathIterator extends Expression
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   protected LocPathIterator createLocPathIterator(
-          Compiler compiler, int opPos) throws org.xml.sax.SAXException
+          Compiler compiler, int opPos) throws javax.xml.transform.TransformerException
   {
     return WalkerFactory.newLocPathIterator(compiler, opPos);
   }
@@ -599,7 +599,7 @@ public class UnionPathIterator extends Expression
 
   /**
    * Get the current position, which is one less than
-   * the next nextNode() call will retreave.  i.e. if
+   * the next nextNode() call will retrieve.  i.e. if
    * you call getCurrentPos() and the return is 0, the next
    * fetch will take place at index 1.
    *

@@ -67,9 +67,6 @@ import javax.xml.transform.TransformerException;
  * <p>Templates must be threadsafe for a given instance
  * over multiple threads concurrently, and are generally meant to
  * be used multiple times in a given session.</p>
- *
- * @version Alpha
- * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
  */
 public interface Templates
 {

@@ -91,12 +91,12 @@ public abstract class AVTPart implements java.io.Serializable
    * @param nsNode The current namespace context (stylesheet tree context).
    * @param NodeList The current Context Node List.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public abstract void evaluate(
     XPathContext xctxt, FastStringBuffer buf, Node context,
       org.apache.xalan.utils.PrefixResolver nsNode)
-        throws org.xml.sax.SAXException;
+        throws javax.xml.transform.TransformerException;
 
   /**
    * Set the XPath support.

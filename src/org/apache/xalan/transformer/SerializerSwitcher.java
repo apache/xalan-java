@@ -62,12 +62,12 @@ import java.io.OutputStream;
 import org.apache.xalan.templates.StylesheetRoot;
 
 import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
-import org.apache.serialize.Serializer;
-import org.apache.serialize.SerializerFactory;
-import org.apache.serialize.Method;
-import org.apache.serialize.OutputFormat;
+import org.apache.xalan.serialize.Serializer;
+import org.apache.xalan.serialize.SerializerFactory;
+import org.apache.xalan.serialize.Method;
+import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.templates.OutputFormatExtended;
 
 /**
@@ -85,11 +85,11 @@ public class SerializerSwitcher
    * NEEDSDOC @param ns
    * NEEDSDOC @param localName
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public static void switchSerializerIfHTML(
           TransformerImpl transformer, String ns, String localName)
-            throws SAXException
+            throws TransformerException
   {
 
     if (null == transformer)
@@ -143,7 +143,7 @@ public class SerializerSwitcher
         }
         catch (java.io.IOException e)
         {
-          throw new SAXException(e);
+          throw new TransformerException(e);
         }
       }
     }

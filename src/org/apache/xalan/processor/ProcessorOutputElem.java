@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.processor;
 
-import org.apache.serialize.OutputFormat;
+import org.apache.xalan.serialize.OutputFormat;
 
 import java.util.Hashtable;
 
@@ -64,7 +64,7 @@ import org.apache.xalan.templates.OutputFormatExtended;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.Stylesheet;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 
 /**
@@ -91,19 +91,10 @@ class ProcessorOutputElem extends XSLTElementProcessor
    *        there are no attributes, it shall be an empty
    *        Attributes object.
    * NEEDSDOC @param attributes
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.apache.xalan.processor.StylesheetHandler#startElement
-   * @see org.apache.xalan.processor.StylesheetHandler#endElement
-   * @see org.xml.sax.ContentHandler#startElement
-   * @see org.xml.sax.ContentHandler#endElement
-   * @see org.xml.sax.Attributes
-   *
-   * @throws SAXException
    */
   public void startElement(
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     OutputFormatExtended ofe = new OutputFormatExtended();

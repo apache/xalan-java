@@ -62,13 +62,13 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.res.XSLMessages;
 
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
 
 import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import org.apache.xalan.utils.SAXSourceLocator;
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.ErrorListener;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -94,10 +94,10 @@ public abstract class Expression
    *
    * NEEDSDOC (execute) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public abstract XObject execute(XPathContext xctxt)
-    throws org.xml.sax.SAXException;
+    throws javax.xml.transform.TransformerException;
 
   /**
    * Warn the user of an problem.
@@ -106,36 +106,19 @@ public abstract class Expression
    * NEEDSDOC @param msg
    * NEEDSDOC @param args
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public void warn(XPathContext xctxt, int msg, Object[] args)
-          throws org.xml.sax.SAXException
+    throws javax.xml.transform.TransformerException
   {
 
     java.lang.String fmsg = XSLMessages.createXPATHWarning(msg, args);
-    XMLReader reader = xctxt.getPrimaryReader();
-    
-    if (null != reader && null != reader.getErrorHandler())
+    if(null != xctxt)
     {
-      ErrorHandler eh = reader.getErrorHandler();
+      ErrorListener eh = xctxt.getErrorListener();
 
       // TO DO: Need to get stylesheet Locator from here.
-      eh.warning(new SAXParseException(fmsg, (SAXSourceLocator)xctxt.getSAXLocator()));
-    }
-    else
-    {
-      // Where to send diagnostics in this case?
-      if(null != m_slocator)
-      {
-        SourceLocator slocator = m_slocator;
-        System.out.println(fmsg + "; file " + slocator.getSystemId()
-                           + "; line " + slocator.getLineNumber() + "; column "
-                           + slocator.getColumnNumber()); 
-      }
-      else
-      {
-        System.out.println(fmsg); 
-      }
+      eh.warning(new TransformerException(fmsg, xctxt.getSAXLocator()));
     }
   }
 
@@ -146,10 +129,10 @@ public abstract class Expression
    * NEEDSDOC @param b
    * NEEDSDOC @param msg
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public void assert(boolean b, java.lang.String msg)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     if (!b)
@@ -170,35 +153,19 @@ public abstract class Expression
    * NEEDSDOC @param msg
    * NEEDSDOC @param args
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public void error(XPathContext xctxt, int msg, Object[] args)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     java.lang.String fmsg = XSLMessages.createXPATHMessage(msg, args);
-    XMLReader reader = xctxt.getPrimaryReader();
-    if((null != reader) && (null != reader.getErrorHandler()))
+    if(null != xctxt)
     {
-      ErrorHandler eh = reader.getErrorHandler();
+      ErrorListener eh = xctxt.getErrorListener();
 
-      SAXParseException te = new SAXParseException(fmsg,
-                                                   (SAXSourceLocator)m_slocator);
+      TransformerException te = new TransformerException(fmsg, m_slocator);
       eh.fatalError(te);
-    }
-    else
-    {
-      if(null != m_slocator)
-      {
-        SourceLocator slocator = m_slocator;
-        System.out.println(fmsg + "; file " + slocator.getSystemId()
-                           + "; line " + slocator.getLineNumber() + "; column "
-                           + slocator.getColumnNumber());
-      }
-      else
-      {
-        System.out.println(fmsg);
-      }
     }
     
   }

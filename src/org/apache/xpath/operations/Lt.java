@@ -75,10 +75,10 @@ public class Lt extends Operation
    *
    * NEEDSDOC (operate) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public XObject operate(XObject left, XObject right)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
     return left.lessThan(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
   }

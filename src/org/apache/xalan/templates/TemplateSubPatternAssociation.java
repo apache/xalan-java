@@ -60,7 +60,7 @@ import java.io.Serializable;
 
 import org.w3c.dom.Node;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
@@ -189,10 +189,10 @@ class TemplateSubPatternAssociation implements Serializable, Cloneable
    * NEEDSDOC @param mode
    * @return The mode associated with the template.
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   public boolean matches(XPathContext xctxt, Node targetNode, QName mode)
-          throws SAXException
+          throws TransformerException
   {
 
     double score = m_stepPattern.getMatchScore(xctxt, targetNode);

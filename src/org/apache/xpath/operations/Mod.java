@@ -75,10 +75,10 @@ public class Mod extends Operation
    *
    * NEEDSDOC (operate) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public XObject operate(XObject left, XObject right)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
     return new XNumber(left.num() % right.num());
   }

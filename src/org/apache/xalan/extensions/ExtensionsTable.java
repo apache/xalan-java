@@ -140,10 +140,10 @@ public class ExtensionsTable
    *
    * @return whether the given function is available or not.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public boolean functionAvailable(String ns, String funcName)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     boolean isAvailable = false;
@@ -179,10 +179,10 @@ public class ExtensionsTable
    *
    * @return whether the given function is available or not.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public boolean elementAvailable(String ns, String elemName)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     boolean isAvailable = false;
@@ -223,11 +223,11 @@ public class ExtensionsTable
    *
    * @return result of executing the function
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public Object extFunction(
           String ns, String funcName, Vector argVec, Object methodKey, ExpressionContext exprContext)
-            throws org.xml.sax.SAXException
+            throws javax.xml.transform.TransformerException
   {
 
     Object result = null;
@@ -272,7 +272,7 @@ public class ExtensionsTable
             // System.out.println("Call to extension function failed: "+msg);
             result = new XNull();
 
-            // throw new org.xml.sax.SAXException(e);
+            // throw new javax.xml.transform.TransformerException(e);
           }
         }
       }
@@ -291,10 +291,10 @@ public class ExtensionsTable
    * @param ns        the URI of namespace in which the function is needed
    * @return          an ExtensionHandler for this namespace
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public ExtensionHandler makeJavaNamespace(String ns)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     // First, prepare the name of the actual class or package.  We strip

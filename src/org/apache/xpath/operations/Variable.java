@@ -96,9 +96,9 @@ public class Variable extends Expression
    *
    * NEEDSDOC (execute) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws org.xml.sax.SAXException
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
     // Is the variable fetched always the same?

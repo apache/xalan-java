@@ -77,10 +77,10 @@ public class FunctionDef1Arg extends FunctionOneArg
    *
    * NEEDSDOC (getArg0AsNode) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   protected Node getArg0AsNode(XPathContext xctxt)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     return (null == m_arg0)
@@ -96,10 +96,10 @@ public class FunctionDef1Arg extends FunctionOneArg
    *
    * NEEDSDOC (getArg0AsString) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   protected String getArg0AsString(XPathContext xctxt)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     return (null == m_arg0)
@@ -115,10 +115,10 @@ public class FunctionDef1Arg extends FunctionOneArg
    *
    * NEEDSDOC (getArg0AsNumber) @return
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   protected double getArg0AsNumber(XPathContext xctxt)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     return (null == m_arg0)

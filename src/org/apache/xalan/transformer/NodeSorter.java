@@ -71,7 +71,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xalan.utils.NodeVector;
 
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -110,10 +110,10 @@ public class NodeSorter
    * @param keys a vector of NodeSortKeys.
    * NEEDSDOC @param support
    *
-   * @throws org.xml.sax.SAXException
+   * @throws javax.xml.transform.TransformerException
    */
   public void sort(NodeVector v, Vector keys, XPathContext support)
-          throws org.xml.sax.SAXException
+          throws javax.xml.transform.TransformerException
   {
 
     m_keys = keys;
@@ -158,11 +158,11 @@ public class NodeSorter
    *
    * NEEDSDOC ($objectName$) @return
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   int compare(
           NodeCompareElem n1, NodeCompareElem n2, int kIndex, XPathContext support)
-            throws SAXException
+            throws TransformerException
   {
 
     int result = 0;
@@ -316,10 +316,10 @@ public class NodeSorter
    * NEEDSDOC @param r
    * NEEDSDOC @param support
    *
-   * @throws SAXException
+   * @throws TransformerException
    */
   void mergesort(Vector a, Vector b, int l, int r, XPathContext support)
-          throws SAXException
+          throws TransformerException
   {
 
     if ((r - l) > 0)
@@ -409,7 +409,7 @@ public class NodeSorter
    */
 
   /*  private void QuickSort2(Vector v, int lo0, int hi0, XPathContext support)
-      throws org.xml.sax.SAXException,
+      throws javax.xml.transform.TransformerException,
              java.net.MalformedURLException,
              java.io.FileNotFoundException,
              java.io.IOException
@@ -511,9 +511,9 @@ public class NodeSorter
      *
      * NEEDSDOC @param node
      *
-     * @throws org.xml.sax.SAXException
+     * @throws javax.xml.transform.TransformerException
      */
-    NodeCompareElem(Node node) throws org.xml.sax.SAXException
+    NodeCompareElem(Node node) throws javax.xml.transform.TransformerException
     {
 
       boolean tryNextKey = true;

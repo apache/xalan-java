@@ -64,29 +64,26 @@ import java.io.Reader;
 /**
  * An object that implements this interface contains the information
  * needed to act as source input.
- *
- * @version Alpha
- * @author <a href="mailto:scott_boag@lotus.com">Scott Boag</a>
  */
 public interface Source
 {
   /**
-   * Get the base ID (URL or system ID) of the source tree.
-   * 
-   * <p>Editor's note: this method will probably go away from 
-   * this level, be we ought to have some discussion of what 
-   * it is on the mailing list.  I'm of mixed emotions.
-   * It is really an aid to implementors.</p>
-   * 
-   * <p>The baseID value may be set automatically by 
-   * the derived class.  For instance, in a StreamSource, the 
-   * baseID property is the same as the SystemID property.
-   * For an SAXSource, the baseID property is the same as 
-   * the InputSource's SystemID property.  Other Source derivations,
-   * such as DOMSource, may have a specific method to set the 
-   * baseID.</p>
-   * 
-   * @return Base URL for the source tree.
+   * Set the system identifier for this Source.
+   *
+   * <p>The system identifier is optional if the source does not 
+   * get it's data from a URL, but it is still useful to provide one,
+   * since the application can use it to resolve relative URIs
+   * and can include it in error messages and warnings.</p>
+   *
+   * @param systemId The system identifier as a URL string.
    */
-  public String getBaseID();
+  public void setSystemId(String systemId);
+
+  /**
+   * Get the system identifier that was set with setSystemId.
+   *
+   * @return The system identifier that was set with setSystemId, or null
+   * if setSystemId was not called.
+   */
+  public String getSystemId();
 }

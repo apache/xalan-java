@@ -62,11 +62,8 @@ import org.apache.xalan.utils.NodeVector;
 
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
 import org.xml.sax.Locator;
 import org.xml.sax.Attributes;
-
-import org.apache.serialize.SerializerHandler;
 
 import org.w3c.dom.*;  // we pretty much use everything in the DOM here.
 
@@ -77,7 +74,7 @@ import org.w3c.dom.*;  // we pretty much use everything in the DOM here.
  * or document fragment.
  */
 public class DOMBuilder
-        implements ContentHandler, LexicalHandler, SerializerHandler
+        implements ContentHandler, LexicalHandler
 {
 
   /** NEEDSDOC Field m_doc          */
@@ -164,10 +161,8 @@ public class DOMBuilder
    * Append a node to the current container.
    *
    * NEEDSDOC @param newNode
-   *
-   * @throws SAXException
    */
-  protected void append(Node newNode) throws SAXException
+  protected void append(Node newNode) throws org.xml.sax.SAXException
   {
 
     Node currentNode = m_currentNode;
@@ -193,7 +188,7 @@ public class DOMBuilder
 
         if ((null != data) && (data.trim().length() > 0))
         {
-          throw new SAXException(
+          throw new org.xml.sax.SAXException(
             XSLMessages.createXPATHMessage(
               XPATHErrorResources.ER_CANT_OUTPUT_TEXT_BEFORE_DOC, null));  //"Warning: can't output text before document element!  Ignoring...");
         }
@@ -204,7 +199,7 @@ public class DOMBuilder
       {
         if (m_doc.getDocumentElement() != null)
         {
-          throw new SAXException(
+          throw new org.xml.sax.SAXException(
             XSLMessages.createXPATHMessage(
               XPATHErrorResources.ER_CANT_HAVE_MORE_THAN_ONE_ROOT, null));  //"Can't have more than one root on a DOM!");
         }
@@ -252,13 +247,8 @@ public class DOMBuilder
    * <p>The SAX parser will invoke this method only once, before any
    * other methods in this interface or in DTDHandler (except for
    * setDocumentLocator).</p>
-   *
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   *
-   * @throws SAXException
    */
-  public void startDocument() throws SAXException
+  public void startDocument() throws org.xml.sax.SAXException
   {
 
     // No action for the moment.
@@ -272,13 +262,8 @@ public class DOMBuilder
    * not invoke this method until it has either abandoned parsing
    * (because of an unrecoverable error) or reached the end of
    * input.</p>
-   *
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   *
-   * @throws SAXException
    */
-  public void endDocument() throws SAXException
+  public void endDocument() throws org.xml.sax.SAXException
   {
 
     // No action for the moment.
@@ -304,16 +289,12 @@ public class DOMBuilder
    * NEEDSDOC @param localName
    * @param name The element type name.
    * @param atts The attributes attached to the element, if any.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
    * @see #endElement
    * @see org.xml.sax.Attributes
-   *
-   * @throws SAXException
    */
   public void startElement(
           String ns, String localName, String name, Attributes atts)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     Element elem;
@@ -374,13 +355,9 @@ public class DOMBuilder
    * NEEDSDOC @param ns
    * NEEDSDOC @param localName
    * @param name The element type name
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   *
-   * @throws SAXException
    */
   public void endElement(String ns, String localName, String name)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
     m_currentNode = m_elemStack.popAndTop();
   }
@@ -396,55 +373,6 @@ public class DOMBuilder
 
     // Do nothing. This method is meant to be overiden.
   }
-
-  /**
-   * Starts an un-escaping section. All characters printed within an
-   * un-escaping section are printed as is, without escaping special
-   * characters into entity references. Only XML and HTML serializers
-   * need to support this method.
-   * <p>
-   * The contents of the un-escaping section will be delivered through
-   * the regular <tt>characters</tt> event.
-   *
-   * @throws SAXException
-   */
-  public void startNonEscaping() throws SAXException
-  {
-    append(m_doc.createProcessingInstruction("xslt-next-is-raw",
-                                             "formatter-to-dom"));
-  }
-
-  /**
-   * Ends an un-escaping section.
-   *
-   * @see #startNonEscaping
-   *
-   * @throws SAXException
-   */
-  public void endNonEscaping() throws SAXException{}
-
-  /**
-   * Starts a whitespace preserving section. All characters printed
-   * within a preserving section are printed without indentation and
-   * without consolidating multiple spaces. This is equivalent to
-   * the <tt>xml:space=&quot;preserve&quot;</tt> attribute. Only XML
-   * and HTML serializers need to support this method.
-   * <p>
-   * The contents of the whitespace preserving section will be delivered
-   * through the regular <tt>characters</tt> event.
-   *
-   * @throws SAXException
-   */
-  public void startPreserving() throws SAXException{}
-
-  /**
-   * Ends a whitespace preserving section.
-   *
-   * @see #startPreserving
-   *
-   * @throws SAXException
-   */
-  public void endPreserving() throws SAXException{}
 
   /**
    * Receive notification of character data.
@@ -466,14 +394,10 @@ public class DOMBuilder
    * @param ch The characters from the XML document.
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
    * @see #ignorableWhitespace
    * @see org.xml.sax.Locator
-   *
-   * @throws SAXException
    */
-  public void characters(char ch[], int start, int length) throws SAXException
+  public void characters(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
 
     if (m_inCData)
@@ -498,11 +422,9 @@ public class DOMBuilder
    * NEEDSDOC @param ch
    * NEEDSDOC @param start
    * NEEDSDOC @param length
-   *
-   * @throws SAXException
    */
   public void charactersRaw(char ch[], int start, int length)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     String s = new String(ch, start, length);
@@ -522,12 +444,11 @@ public class DOMBuilder
    *
    * @param name The name of the entity.  If it is a parameter
    *        entity, the name will begin with '%'.
-   * @exception SAXException The application may raise an exception.
    * @see #endEntity
    * @see org.xml.sax.misc.DeclHandler#internalEntityDecl
    * @see org.xml.sax.misc.DeclHandler#externalEntityDecl
    */
-  public void startEntity(String name) throws SAXException
+  public void startEntity(String name) throws org.xml.sax.SAXException
   {
 
     // Almost certainly the wrong behavior...
@@ -538,19 +459,16 @@ public class DOMBuilder
    * Report the end of an entity.
    *
    * @param name The name of the entity that is ending.
-   * @exception SAXException The application may raise an exception.
    * @see #startEntity
    */
-  public void endEntity(String name) throws SAXException{}
+  public void endEntity(String name) throws org.xml.sax.SAXException{}
 
   /**
    * Receive notivication of a entityReference.
    *
    * NEEDSDOC @param name
-   *
-   * @throws SAXException
    */
-  public void entityReference(String name) throws SAXException
+  public void entityReference(String name) throws org.xml.sax.SAXException
   {
     append(m_doc.createEntityReference(name));
   }
@@ -575,14 +493,10 @@ public class DOMBuilder
    * @param ch The characters from the XML document.
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
    * @see #characters
-   *
-   * @throws SAXException
    */
   public void ignorableWhitespace(char ch[], int start, int length)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     String s = new String(ch, start, length);
@@ -604,13 +518,9 @@ public class DOMBuilder
    * @param target The processing instruction target.
    * @param data The processing instruction data, or null if
    *        none was supplied.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   *
-   * @throws SAXException
    */
   public void processingInstruction(String target, String data)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
     append(m_doc.createProcessingInstruction(target, data));
   }
@@ -625,9 +535,8 @@ public class DOMBuilder
    * @param ch An array holding the characters in the comment.
    * @param start The starting position in the array.
    * @param length The number of characters to use from the array.
-   * @exception SAXException The application may raise an exception.
    */
-  public void comment(char ch[], int start, int length) throws SAXException
+  public void comment(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
     append(m_doc.createComment(new String(ch, start, length)));
   }
@@ -638,10 +547,9 @@ public class DOMBuilder
   /**
    * Report the start of a CDATA section.
    *
-   * @exception SAXException The application may raise an exception.
    * @see #endCDATA
    */
-  public void startCDATA() throws SAXException
+  public void startCDATA() throws org.xml.sax.SAXException
   {
     m_inCData = true;
   }
@@ -649,10 +557,9 @@ public class DOMBuilder
   /**
    * Report the end of a CDATA section.
    *
-   * @exception SAXException The application may raise an exception.
    * @see #startCDATA
    */
-  public void endCDATA() throws SAXException
+  public void endCDATA() throws org.xml.sax.SAXException
   {
     m_inCData = false;
   }
@@ -677,14 +584,10 @@ public class DOMBuilder
    * @param ch The characters from the XML document.
    * @param start The start position in the array.
    * @param length The number of characters to read from the array.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
    * @see #ignorableWhitespace
    * @see org.xml.sax.Locator
-   *
-   * @throws SAXException
    */
-  public void cdata(char ch[], int start, int length) throws SAXException
+  public void cdata(char ch[], int start, int length) throws org.xml.sax.SAXException
   {
 
     String s = new String(ch, start, length);
@@ -703,13 +606,11 @@ public class DOMBuilder
    *        external DTD subset, or null if none was declared.
    * @param systemId The declared system identifier for the
    *        external DTD subset, or null if none was declared.
-   * @exception SAXException The application may raise an
-   *            exception.
    * @see #endDTD
    * @see #startEntity
    */
   public void startDTD(String name, String publicId, String systemId)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     // Do nothing for now.
@@ -718,10 +619,9 @@ public class DOMBuilder
   /**
    * Report the end of DTD declarations.
    *
-   * @exception SAXException The application may raise an exception.
    * @see #startDTD
    */
-  public void endDTD() throws SAXException
+  public void endDTD() throws org.xml.sax.SAXException
   {
 
     // Do nothing for now.
@@ -752,15 +652,11 @@ public class DOMBuilder
    *
    * @param prefix The Namespace prefix being declared.
    * @param uri The Namespace URI the prefix is mapped to.
-   * @exception org.xml.sax.SAXException The client may throw
-   *            an exception during processing.
    * @see #endPrefixMapping
    * @see #startElement
-   *
-   * @throws SAXException
    */
   public void startPrefixMapping(String prefix, String uri)
-          throws SAXException
+          throws org.xml.sax.SAXException
   {
 
     /*
@@ -796,14 +692,10 @@ public class DOMBuilder
    * guaranteed.</p>
    *
    * @param prefix The prefix that was being mapping.
-   * @exception org.xml.sax.SAXException The client may throw
-   *            an exception during processing.
    * @see #startPrefixMapping
    * @see #endElement
-   *
-   * @throws SAXException
    */
-  public void endPrefixMapping(String prefix) throws SAXException{}
+  public void endPrefixMapping(String prefix) throws org.xml.sax.SAXException{}
 
   /**
    * Receive notification of a skipped entity.
@@ -819,10 +711,6 @@ public class DOMBuilder
    *
    * @param name The name of the skipped entity.  If it is a
    *        parameter entity, the name will begin with '%'.
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   *
-   * @throws SAXException
    */
-  public void skippedEntity(String name) throws SAXException{}
+  public void skippedEntity(String name) throws org.xml.sax.SAXException{}
 }

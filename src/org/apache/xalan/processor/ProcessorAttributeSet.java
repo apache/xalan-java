@@ -60,7 +60,7 @@ import org.apache.xalan.templates.ElemAttributeSet;
 import org.apache.xalan.templates.ElemTemplateElement;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerException;
 
 /**
  * This class processes parse events for an xsl:attribute-set.
@@ -86,24 +86,28 @@ class ProcessorAttributeSet extends XSLTElementProcessor
    *        there are no attributes, it shall be an empty
    *        Attributes object.
    * NEEDSDOC @param attributes
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
    * @see org.apache.xalan.processor.StylesheetHandler#startElement
    * @see org.xml.sax.ContentHandler#startElement
    * @see org.xml.sax.ContentHandler#endElement
    * @see org.xml.sax.Attributes
-   *
-   * @throws SAXException
    */
   public void startElement(
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
 
     ElemAttributeSet eat = new ElemAttributeSet();
 
     eat.setLocaterInfo(handler.getLocator());
-    eat.setPrefixes(handler.getNamespaceSupport());
+    try
+    {
+      eat.setPrefixes(handler.getNamespaceSupport());
+    }
+    catch(TransformerException te)
+    {
+      throw new org.xml.sax.SAXException(te);
+    }
+
     eat.setDOMBackPointer(handler.getOriginatingNode());
     setPropertiesFromAttributes(handler, rawName, attributes, eat);
     handler.getStylesheet().setAttributeSet(eat);
@@ -125,15 +129,10 @@ class ProcessorAttributeSet extends XSLTElementProcessor
    * NEEDSDOC @param uri
    * NEEDSDOC @param localName
    * NEEDSDOC @param rawName
-   * @exception org.xml.sax.SAXException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @see org.xml.sax.ContentHandler#endElement
-   *
-   * @throws SAXException
    */
   public void endElement(
           StylesheetHandler handler, String uri, String localName, String rawName)
-            throws SAXException
+            throws org.xml.sax.SAXException
   {
     handler.popElemTemplateElement();
   }

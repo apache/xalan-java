@@ -54,13 +54,13 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.serialize.helpers;
+package org.apache.xalan.serialize.helpers;
 
-import org.apache.serialize.OutputFormat;
-import org.apache.serialize.Method;
+import org.apache.xalan.serialize.OutputFormat;
+import org.apache.xalan.serialize.Method;
 
 /**
- * Output format for XML documents.
+ * Output format for text documents.
  * <p>
  * The output format affects the manner in which a document is
  * serialized. The output format determines the output method,
@@ -70,28 +70,28 @@ import org.apache.serialize.Method;
  * @version Alpha
  * @author <a href="mailto:arkin@exoffice.com">Assaf Arkin</a>
  */
-public class XMLOutputFormat extends OutputFormat
+public class TextOutputFormat extends OutputFormat
 {
 
   /**
-   * Constructor XMLOutputFormat
+   * Constructor TextOutputFormat
    *
    */
-  public XMLOutputFormat()
+  public TextOutputFormat()
   {
 
-    setMethod(Method.XML);
-    setMediaType("text/xml");
+    setMethod(Method.Text);
+    setMediaType("text/plain");
     setPreserveSpace(true);
   }
 
   /**
-   * Constructor XMLOutputFormat
+   * Constructor TextOutputFormat
    *
    *
    * NEEDSDOC @param encoding
    */
-  public XMLOutputFormat(String encoding)
+  public TextOutputFormat(String encoding)
   {
 
     this();
@@ -100,12 +100,12 @@ public class XMLOutputFormat extends OutputFormat
   }
 
   /**
-   * Constructor XMLOutputFormat
+   * Constructor TextOutputFormat
    *
    *
    * NEEDSDOC @param indenting
    */
-  public XMLOutputFormat(boolean indenting)
+  public TextOutputFormat(boolean indenting)
   {
 
     this();

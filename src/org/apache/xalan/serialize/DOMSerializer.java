@@ -54,63 +54,41 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package org.apache.serialize.helpers;
+package org.apache.xalan.serialize;
 
-import org.apache.serialize.OutputFormat;
-import org.apache.serialize.Method;
+import java.io.IOException;
+
+import org.w3c.dom.Node;
 
 /**
- * Output format for text documents.
+ * Interface for a DOM serializer implementation.
  * <p>
- * The output format affects the manner in which a document is
- * serialized. The output format determines the output method,
- * encoding, indentation, document type, and various other properties
- * that affect the manner in which a document is serialized.
+ * The DOM serializer is a facet of a serializer. A serializer may or may
+ * not support a DOM serializer.
+ * <p>
+ * Example:
+ * <pre>
+ * Document     doc;
+ * Serializer   ser;
+ * OutputStream os;
+ *
+ * ser.setOutputStream( os );
+ * ser.asDOMSerializer( doc );
+ * </pre>
+ *
  *
  * @version Alpha
+ * @author <a href="mailto:Scott_Boag/CAM/Lotus@lotus.com">Scott Boag</a>
  * @author <a href="mailto:arkin@exoffice.com">Assaf Arkin</a>
  */
-public class TextOutputFormat extends OutputFormat
+public interface DOMSerializer
 {
-
   /**
-   * Constructor TextOutputFormat
+   * Serializes the DOM node. Throws an exception only if an I/O
+   * exception occured while serializing.
    *
+   * @param elem The element to serialize
+   * @throws IOException An I/O exception occured while serializing
    */
-  public TextOutputFormat()
-  {
-
-    setMethod(Method.Text);
-    setMediaType("text/plain");
-    setPreserveSpace(true);
-  }
-
-  /**
-   * Constructor TextOutputFormat
-   *
-   *
-   * NEEDSDOC @param encoding
-   */
-  public TextOutputFormat(String encoding)
-  {
-
-    this();
-
-    setEncoding(encoding);
-  }
-
-  /**
-   * Constructor TextOutputFormat
-   *
-   *
-   * NEEDSDOC @param indenting
-   */
-  public TextOutputFormat(boolean indenting)
-  {
-
-    this();
-
-    setIndent(indenting);
-    setPreserveSpace(false);
-  }
+  public void serialize(Node node) throws IOException;
 }

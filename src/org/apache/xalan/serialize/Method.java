@@ -54,53 +54,39 @@
  * information on the Apache Software Foundation, please see
  * <http://www.apache.org/>.
  */
-package javax.xml.transform.sax;
+package org.apache.xalan.serialize;
 
 /**
- * Interface that supplements {@link org.xml.sax.DocumentHandler} and
- * {@link org.xml.sax.ContentHandler} with additional methods suitable
- * for serialization.
+ * Names of the four default output methods.
+ * <p>
+ * Four default output methods are defined: XML, HTML, XHTML and TEXT.
+ * Serializers may support additional output methods. The names of
+ * these output methods should be encoded as <tt>namespace:local</tt>.
  *
  * @version Alpha
  * @author <a href="mailto:arkin@exoffice.com">Assaf Arkin</a>
+ * @see OutputFormat
  */
-public interface SerializerHandler
+public final class Method
 {
 
   /**
-   * Starts an un-escaping section. All characters printed within an
-   * un-escaping section are printed as is, without escaping special
-   * characters into entity references. Only XML and HTML serializers
-   * need to support this method.
-   * <p>
-   * The contents of the un-escaping section will be delivered through
-   * the regular <tt>characters</tt> event.
+   * The output method for XML documents: <tt>xml</tt>.
    */
-  public void startNonEscaping();
+  public static final String XML = "xml";
 
   /**
-   * Ends an un-escaping section.
-   *
-   * @see #startNonEscaping
+   * The output method for HTML documents: <tt>html</tt>.
    */
-  public void endNonEscaping();
+  public static final String HTML = "html";
 
   /**
-   * Starts a whitespace preserving section. All characters printed
-   * within a preserving section are printed without indentation and
-   * without consolidating multiple spaces. This is equivalent to
-   * the <tt>xml:space=&quot;preserve&quot;</tt> attribute. Only XML
-   * and HTML serializers need to support this method.
-   * <p>
-   * The contents of the whitespace preserving section will be delivered
-   * through the regular <tt>characters</tt> event.
+   * The output method for XHTML documents: <tt>xhtml</tt>.
    */
-  public void startPreserving();
+  public static final String XHTML = "xhtml";
 
   /**
-   * Ends a whitespace preserving section.
-   *
-   * @see #startPreserving
+   * The output method for text documents: <tt>text</tt>.
    */
-  public void endPreserving();
+  public static final String Text = "text";
 }
