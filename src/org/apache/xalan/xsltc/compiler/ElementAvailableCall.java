@@ -70,30 +70,6 @@ import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class ElementAvailableCall extends FunctionCall {
-    static HashSet AvailableElements = new HashSet();
-
-    static {
-	// AvailableElements.add("apply-imports");
-	AvailableElements.add("apply-templates");
-	AvailableElements.add("attribute");
-	AvailableElements.add("call-template");
-	AvailableElements.add("choose");
-	AvailableElements.add("comment");
-	AvailableElements.add("copy");
-	AvailableElements.add("copy-of");
-	AvailableElements.add("element");
-	// AvailableElements.add("fallback");
-	AvailableElements.add("for-each");
-	AvailableElements.add("preserve-space");
-	AvailableElements.add("strip-space");
-	AvailableElements.add("if");
-	AvailableElements.add("message");
-	AvailableElements.add("number");
-	AvailableElements.add("processing-instruction");
-	AvailableElements.add("text");
-	AvailableElements.add("value-of");
-	AvailableElements.add("variable");
-    }
 
     public ElementAvailableCall(QName fname, Vector arguments) {
 	super(fname, arguments);
@@ -113,19 +89,10 @@ final class ElementAvailableCall extends FunctionCall {
      * Returns the result that this function will return
      */
     public boolean getResult() {
+	final Parser parser = getParser();
 	final LiteralExpr arg = (LiteralExpr)argument();
-	final String namespace = arg.getNamespace();
-	boolean result = false;
-	if (namespace != null) {
-	    final String value = arg.getValue();
-	    final int colon = value.indexOf(':');
-	    final String name = colon >= 0
-		? value.substring(colon + 1) 
-		: value;
-	    result = namespace.equals(XSLT_URI) &&
-		AvailableElements.contains(name);
-	}
-	return(result);
+	final QName qname = parser.getQName(arg.getValue());
+	return(parser.elementSupported(qname));
     }
 
     /**

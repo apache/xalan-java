@@ -568,6 +568,14 @@ public final class Parser implements Constants, ContentHandler {
 				COMPILER_PACKAGE + '.' + className);
     }
 
+    public boolean elementSupported(QName qname) {
+	return(_instructionClasses.get(qname) != null);
+    }
+
+    public boolean functionSupported(String fname) {
+	return(_symbolTable.lookupPrimop(fname) != null);
+    }
+
     private void initExtClasses() {
 	initExtClass("output", "TransletOutput");
     }
@@ -591,11 +599,8 @@ public final class Parser implements Constants, ContentHandler {
 	MethodType R_D  = new MethodType(Type.Real, Type.NodeSet);
 	MethodType R_O  = new MethodType(Type.Real, Type.Reference);
 	MethodType I_I  = new MethodType(Type.Int, Type.Int);
-	MethodType D_O  = new MethodType(Type.NodeSet, Type.Reference);
-	MethodType D_SS = new MethodType(Type.NodeSet,
-					 Type.String, Type.String);
-	MethodType D_SD = new MethodType(Type.NodeSet,
-					 Type.String, Type.NodeSet);
+ 	MethodType D_O  = new MethodType(Type.NodeSet, Type.Reference);
+	MethodType D_V  = new MethodType(Type.NodeSet, Type.Void);
 	MethodType D_S  = new MethodType(Type.NodeSet, Type.String);
 	MethodType D_D  = new MethodType(Type.NodeSet, Type.NodeSet);
 	MethodType A_V  = new MethodType(Type.Node, Type.Void);
@@ -612,22 +617,26 @@ public final class Parser implements Constants, ContentHandler {
 	MethodType I_II = new MethodType(Type.Int, Type.Int, Type.Int);
 	MethodType B_RR = new MethodType(Type.Boolean, Type.Real, Type.Real);
 	MethodType B_II = new MethodType(Type.Boolean, Type.Int, Type.Int);
-	MethodType B_BB = new MethodType(Type.Boolean, Type.Boolean,
-					 Type.Boolean);
-	MethodType B_SS = new MethodType(Type.Boolean, Type.String,
-					 Type.String);
-	MethodType S_SS = new MethodType(Type.String, Type.String,
-					 Type.String);
-	MethodType S_SD = new MethodType(Type.String, Type.String,
-					 Type.NodeSet);
-	MethodType S_DS  = new MethodType(Type.String, Type.Real, Type.String);
-	MethodType S_DSS = new MethodType(Type.String, Type.Real, Type.String,
-					  Type.String);
-	MethodType S_SR  = new MethodType(Type.String, Type.String, Type.Real);
-	MethodType S_SRR = new MethodType(Type.String, Type.String, Type.Real,
-					  Type.Real);
-	MethodType S_SSS = new MethodType(Type.String, Type.String,
-					  Type.String, Type.String);
+	MethodType S_SS = new MethodType(Type.String, Type.String, Type.String);
+	MethodType S_DS = new MethodType(Type.String, Type.Real, Type.String);
+	MethodType S_SR = new MethodType(Type.String, Type.String, Type.Real);
+
+	MethodType D_SS =
+	    new MethodType(Type.NodeSet, Type.String, Type.String);
+	MethodType D_SD = 
+	    new MethodType(Type.NodeSet, Type.String, Type.NodeSet);
+	MethodType B_BB =
+	    new MethodType(Type.Boolean, Type.Boolean, Type.Boolean);
+	MethodType B_SS =
+	    new MethodType(Type.Boolean, Type.String, Type.String);
+	MethodType S_SD =
+	    new MethodType(Type.String, Type.String, Type.NodeSet);
+	MethodType S_DSS =
+	    new MethodType(Type.String, Type.Real, Type.String, Type.String);
+	MethodType S_SRR =
+	    new MethodType(Type.String, Type.String, Type.Real, Type.Real);
+	MethodType S_SSS =
+	    new MethodType(Type.String, Type.String, Type.String, Type.String);
 
 	/*
 	 * Standard functions: implemented but not in this table concat().
@@ -668,6 +677,10 @@ public final class Parser implements Constants, ContentHandler {
 	_symbolTable.addPrimop("id", D_S);
 	_symbolTable.addPrimop("id", D_D);
 	_symbolTable.addPrimop("namespace-uri", S_V);
+	_symbolTable.addPrimop("function-available", B_S);
+	_symbolTable.addPrimop("element-available", B_S);
+	_symbolTable.addPrimop("document", D_S);
+	_symbolTable.addPrimop("document", D_V);
 
 	// The following functions are implemented in the basis library
 	_symbolTable.addPrimop("count", I_D);
@@ -682,7 +695,6 @@ public final class Parser implements Constants, ContentHandler {
 	_symbolTable.addPrimop("substring-before", S_SS);
 	_symbolTable.addPrimop("normalize-space", S_V);
 	_symbolTable.addPrimop("normalize-space", S_S);
-	_symbolTable.addPrimop("function-available", B_S);
 	_symbolTable.addPrimop("system-property", S_S);
 
 	// Operators +, -, *, /, % defined on real types.

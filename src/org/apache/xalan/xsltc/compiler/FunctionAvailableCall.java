@@ -70,46 +70,6 @@ import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class FunctionAvailableCall extends FunctionCall {
-    static HashSet AvailableFunctions = new HashSet();
-
-    static {
-	AvailableFunctions.add("boolean");
-	AvailableFunctions.add("ceiling");
-	AvailableFunctions.add("concat");
-	AvailableFunctions.add("contains");
-	AvailableFunctions.add("count");
-	AvailableFunctions.add("current");
-	AvailableFunctions.add("document");
-	AvailableFunctions.add("element-available");
-	AvailableFunctions.add("false");
-	AvailableFunctions.add("floor");
-	AvailableFunctions.add("format-number");
-	AvailableFunctions.add("function-available");
-	AvailableFunctions.add("generate-id");
-	AvailableFunctions.add("id");
-	AvailableFunctions.add("key");
-	AvailableFunctions.add("lang");
-	AvailableFunctions.add("last");
-	AvailableFunctions.add("local-name");
-	AvailableFunctions.add("name");
-	AvailableFunctions.add("namespace-uri");
-	AvailableFunctions.add("normalize-space");
-	AvailableFunctions.add("not");
-	AvailableFunctions.add("number");
-	AvailableFunctions.add("position");
-	AvailableFunctions.add("round");
-	AvailableFunctions.add("starts-with");
-	AvailableFunctions.add("string");
-	AvailableFunctions.add("string-length");
-	AvailableFunctions.add("substring");
-	AvailableFunctions.add("substring-after");
-	AvailableFunctions.add("substring-before");
-	AvailableFunctions.add("sum");
-	AvailableFunctions.add("system-property");
-	AvailableFunctions.add("translate");
-	AvailableFunctions.add("true");
-	AvailableFunctions.add("unparsed-entity-uri");
-    }
 
     public FunctionAvailableCall(QName fname, Vector arguments) {
 	super(fname, arguments);
@@ -126,20 +86,22 @@ final class FunctionAvailableCall extends FunctionCall {
     }
 
     /**
+     * Returns the result that this function will return
+     */
+    public boolean getResult() {
+	final Parser parser = getParser();
+	final LiteralExpr arg = (LiteralExpr)argument();
+	return(parser.functionSupported(arg.getValue()));
+    }
+
+    /**
      * Calls to 'function-available' are resolved at compile time since 
      * the namespaces declared in the stylsheet are not available at run
      * time. Consequently, arguments to this function must be literals.
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-	final InstructionList il = methodGen.getInstructionList();
 	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final LiteralExpr arg = (LiteralExpr)argument();
-	final String namespace = arg.getNamespace();
-	boolean result = false;
-
-	if (namespace == null) {
-	    result = AvailableFunctions.contains(arg.getValue());
-	}
-	il.append(new PUSH(cpg, result));
+	final boolean result = getResult();
+	methodGen.getInstructionList().append(new PUSH(cpg, result));
     }
 }

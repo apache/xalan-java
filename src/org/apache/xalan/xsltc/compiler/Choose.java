@@ -149,13 +149,22 @@ final class Choose extends Instruction {
 
 	    InstructionHandle truec = il.getEnd();
 
-	    if (nextElement != null)
+	    if (nextElement != null) 
 		nextElement.setTarget(il.append(NOP));
 	    test.translateDesynthesized(classGen, methodGen);
-	    if ((test instanceof FunctionCall) &&
-		!(test instanceof ElementAvailableCall) &&
-		!(test instanceof ContainsCall))
-		test._falseList.add(il.append(new IFEQ(null)));
+
+	    if (test instanceof FunctionCall) {
+		FunctionCall call = (FunctionCall)test;
+		try {
+		    Type type = call.typeCheck(getParser().getSymbolTable());
+		    if (type != Type.Boolean) {
+			test._falseList.add(il.append(new IFEQ(null)));
+		    }
+		}
+		catch (TypeCheckError e) { 
+		    // handled later!
+		}
+	    }
 	    // remember end of condition
 	    truec = il.getEnd();
 

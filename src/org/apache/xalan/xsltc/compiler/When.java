@@ -96,7 +96,10 @@ final class When extends Instruction {
 	if (_test instanceof ElementAvailableCall) {
 	    ElementAvailableCall call = (ElementAvailableCall)_test;
 	    _ignore = !call.getResult();
-	    return;
+	}
+	if (_test instanceof FunctionAvailableCall) {
+	    FunctionAvailableCall call = (FunctionAvailableCall)_test;
+	    _ignore = !call.getResult();
 	}
 
 	parseChildren(parser);
