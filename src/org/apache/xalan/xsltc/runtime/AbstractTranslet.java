@@ -143,41 +143,12 @@ public abstract class AbstractTranslet implements Translet {
      */
     public final void popParamFrame() {
 	if (pbase > 0) {
-	    int bot = pbase - 1;
-	    int top = pframe - 1;
-	    pframe = pbase - 1;
-	    pbase = ((Integer) paramsStack.elementAt(pframe)).intValue();
-	    // bug fix #3424, John Howard.
-	    // remove objects that are in the stack since objects are	
-	    // added with insertElementAt(int) and will cause memory retention
-	    for (int i=top; i>=bot; i--) {
-		paramsStack.removeElementAt(i);
+	    final int oldpbase = ((Integer)paramsStack.elementAt(--pbase)).intValue();
+	    for (int i = pbase; i < pframe; i++) {
+		paramsStack.setElementAt(null, i);	// for the GC
 	    }
+	    pframe = pbase; pbase = oldpbase;
 	}
-    }
-
-    /**
-     * Replace a certain character in a string with a new substring.
-     */
-    private static String replace(String base, char c, String str) {
-	final int len = base.length() - 1;
-	int pos;
-	while ((pos = base.indexOf(c)) > -1) {
-	    if (pos == 0) {
-		final String after = base.substring(1);
-		base = str + after;
-	    }
-	    else if (pos == len) {
-		final String before = base.substring(0, pos);
-		base = before + str;
-	    }
-	    else {
-		final String before = base.substring(0, pos);
-		final String after = base.substring(pos+1);
-		base = before + str + after;
-	    }
-	}
-	return base;
     }
 
     /**
@@ -224,6 +195,7 @@ public abstract class AbstractTranslet implements Translet {
      * Clears the parameter stack.
      */
     public void clearParameters() {  
+	pbase = pframe = 0;
 	paramsStack.clear();
     }
 
@@ -246,6 +218,7 @@ public abstract class AbstractTranslet implements Translet {
 	varsStack.insertElementAt(new Integer(vbase), vframe);
 	vbase = ++vframe;
 	vframe += frameSize;
+	varsStack.setSize(vframe + 1);	// clear stack frame
     }
 
     /**
@@ -253,16 +226,11 @@ public abstract class AbstractTranslet implements Translet {
      */
     public final void popVarFrame() {
 	if (vbase > 0) {
-	    int bot = vbase - 1;
-	    int top = vframe - 1;
-	    vframe = vbase - 1;
-	    vbase = ((Integer)varsStack.elementAt(vframe)).intValue();
-	    // bug fix 3424, John Howard
-	    // remove objects that are in the stack since objects are	
-	    // added with insertElementAt(int) and will cause memory retention
-	    for (int i=top; i>=bot; i--) {
-		varsStack.removeElementAt(i);
+	    final int oldvbase = ((Integer)varsStack.elementAt(--vbase)).intValue();
+	    for (int i = vbase; i < vframe; i++) {
+		varsStack.setElementAt(null, i);	// for the GC
 	    }
+	    vframe = vbase; vbase = oldvbase;
 	}
     }
 
@@ -270,18 +238,38 @@ public abstract class AbstractTranslet implements Translet {
      * Get the value of a variable given its index.
      */
     public final Object getVariable(int vindex) {
-	// bug fix 3424, John Howard
 	return varsStack.elementAt(vbase + vindex);
     }
 	
-
     /**
      * Set the value of a variable in the current frame.
      */
     public final void addVariable(int vindex, Object value) {
-	final int index = vbase + vindex;
-	if (index > varsStack.size()) varsStack.setSize(index);
-	varsStack.insertElementAt(value, index);
+	varsStack.setElementAt(value, vbase + vindex);
+    }
+
+    /**
+     * Replace a certain character in a string with a new substring.
+     */
+    private static String replace(String base, char c, String str) {
+	final int len = base.length() - 1;
+	int pos;
+	while ((pos = base.indexOf(c)) > -1) {
+	    if (pos == 0) {
+		final String after = base.substring(1);
+		base = str + after;
+	    }
+	    else if (pos == len) {
+		final String before = base.substring(0, pos);
+		base = before + str;
+	    }
+	    else {
+		final String before = base.substring(0, pos);
+		final String after = base.substring(pos+1);
+		base = before + str + after;
+	    }
+	}
+	return base;
     }
 
     /************************************************************************
