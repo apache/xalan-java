@@ -56,55 +56,42 @@
  */
 package org.apache.xalan.processor;
 
-import java.net.URL;
-
-import java.io.IOException;
-
-import javax.xml.transform.sax.TemplatesHandler;
-import javax.xml.transform.Templates;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerConfigurationException;
-
+import java.util.EmptyStackException;
 import java.util.Stack;
+import java.util.Vector;
 
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.Templates;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.sax.TemplatesHandler;
+import org.apache.xalan.extensions.ExpressionVisitor;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.Constants;
-import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.templates.ElemUnknown;
 import org.apache.xalan.templates.ElemForEach;
-import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
+import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xml.utils.BoolStack;
+import org.apache.xml.utils.NamespaceSupport2;
 import org.apache.xml.utils.NodeConsumer;
 import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.XMLCharacterRecognizer;
-import org.apache.xml.utils.BoolStack;
-import org.apache.xpath.compiler.FunctionTable;
-import org.apache.xpath.compiler.XPathParser;
-import org.apache.xpath.functions.Function;
-import org.apache.xpath.XPathFactory;
 import org.apache.xpath.XPath;
-
-import org.apache.xpath.functions.FuncExtFunction;
-import org.apache.xalan.extensions.ExpressionVisitor;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.parser.SimpleNode;
 import org.w3c.dom.Node;
-
 import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.DTDHandler;
-import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
-
-import org.xml.sax.helpers.NamespaceSupport;
-import org.apache.xml.utils.NamespaceSupport2;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import javax.xml.transform.SourceLocator;
-import javax.xml.transform.ErrorListener;
-import javax.xml.transform.TransformerException;
-
-import org.apache.xml.utils.SAXSourceLocator;
+import org.xml.sax.helpers.NamespaceSupport;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -159,14 +146,18 @@ public class StylesheetHandler extends DefaultHandler
           m_xpathFunctionsInited = true;
 
           Function func = new org.apache.xalan.templates.FuncDocument();
-
-          FunctionTable.installFunction("document", func);
+          
+          SimpleNode.m_builtInFunctions.put(new QName("document"), func);
 
           // func = new org.apache.xalan.templates.FuncKey();
           // FunctionTable.installFunction("key", func);
           func = new org.apache.xalan.templates.FuncFormatNumb();
 
-          FunctionTable.installFunction("format-number", func);
+          SimpleNode.m_builtInFunctions.put(new QName("format-number"), func);
+					
+          func = new org.apache.xalan.templates.FuncCurrentGroup();
+
+          SimpleNode.m_builtInFunctions.put(new QName("current-group"), func);
         }
       }
     }
@@ -196,7 +187,9 @@ public class StylesheetHandler extends DefaultHandler
           throws javax.xml.transform.TransformerException
   {
     ErrorListener handler = m_stylesheetProcessor.getErrorListener();
-    XPath xpath = new XPath(str, owningTemplate, this, XPath.SELECT, handler);
+    XPath xpath = new XPath(str, owningTemplate, owningTemplate, 
+      XPath.SELECT, handler, getStylesheetRoot().getVersionNumber());
+      
     // Visit the expression, registering namespaces for any extension functions it includes.
     xpath.callVisitors(xpath, new ExpressionVisitor(getStylesheetRoot()));
     return xpath;
@@ -216,7 +209,8 @@ public class StylesheetHandler extends DefaultHandler
           throws javax.xml.transform.TransformerException
   {
     ErrorListener handler = m_stylesheetProcessor.getErrorListener();
-    return new XPath(str, owningTemplate, this, XPath.MATCH, handler);
+    return new XPath(str, owningTemplate, owningTemplate, XPath.MATCH, handler,
+          getStylesheetRoot().getVersionNumber());
   }
 
   /**
@@ -422,8 +416,8 @@ public class StylesheetHandler extends DefaultHandler
     }
 
     if (null == elemProcessor)
-      error(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_ALLOWED_IN_POSITION, new Object[]{rawName}),null);//rawName + " is not allowed in this position in the stylesheet!",
-            
+      error(rawName + " is not allowed in this position in the stylesheet!",
+            null);
                 
     return elemProcessor;
   }
@@ -740,8 +734,8 @@ public class StylesheetHandler extends DefaultHandler
       // If it's whitespace, just ignore it, otherwise flag an error.
       if (!XMLCharacterRecognizer.isWhiteSpace(ch, start, length))
         error(
-          XSLMessages.createMessage(XSLTErrorResources.ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION, null),null);//"Non-whitespace text is not allowed in this position in the stylesheet!",
-          
+          "Non-whitespace text is not allowed in this position in the stylesheet!",
+          null);
     }
     else
       elemProcessor.characters(this, ch, start, length);

@@ -221,6 +221,7 @@ final class ParentLocationPath extends RelativeLocationPath {
 	    final int path = ((Step)_path).getAxis();
 	    final int step = ((Step)stp).getAxis();
 	    if ((path == Axis.DESCENDANTORSELF && step == Axis.CHILD) ||
+		(path == Axis.DESCENDANTORSELF && step == Axis.ATTRIBUTE) ||
 		(path == Axis.PRECEDING        && step == Axis.PARENT)) {
 		final int incl = cpg.addMethodref(NODE_ITERATOR_BASE,
 						  "includeSelf",

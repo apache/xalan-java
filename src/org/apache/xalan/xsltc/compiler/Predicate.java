@@ -189,7 +189,7 @@ final class Predicate extends Expression {
 		(parent instanceof Pattern) ||
 		(parent instanceof FilterExpr)) {
 
-		final QName position = getParser().getQNameIgnoreDefaultNs("position");
+		final QName position = getParser().getQName("position");
 		final PositionCall positionCall = new PositionCall(position);
 		positionCall.setParser(getParser());
 		positionCall.setParent(this);
@@ -208,8 +208,8 @@ final class Predicate extends Expression {
 
 		    if (fexp instanceof KeyCall)
 			_canOptimize = false;
-		    else if (fexp instanceof VariableRefBase)
-		        _canOptimize = false;
+		    //else if (fexp instanceof VariableRefBase)
+		    //    _canOptimize = false;
 		    else if (fexp instanceof ParentLocationPath)
 			_canOptimize = false;
 		    else if (fexp instanceof UnionPathExpr)

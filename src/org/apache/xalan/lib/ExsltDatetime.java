@@ -65,7 +65,7 @@ import java.text.SimpleDateFormat;
 import java.text.DateFormat;
 import java.text.ParseException;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.objects.XDouble;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 
@@ -269,30 +269,30 @@ public class ExsltDatetime
      *   xs:gYear (CCYY) 
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber year(String datetimeIn)
+    public static XDouble year(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       boolean ad = edz[0].length() == 0; // AD (Common Era -- empty leader)
       String datetime = edz[1];
       if (datetime == null) 
-        return new XNumber(Double.NaN);
+        return new XDouble(Double.NaN);
       
       String[] formats = {dt, d, gym, gy};
       double yr = getNumber(datetime, formats, Calendar.YEAR);
       if (ad || yr == Double.NaN)
-        return new XNumber(yr);
+        return new XDouble(yr);
       else
-        return new XNumber(-yr);
+        return new XDouble(-yr);
     }
      
     /**
      * See above.
      */
-    public static XNumber year()
+    public static XDouble year()
     {
       Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.YEAR));
+      return new XDouble(cal.get(Calendar.YEAR));
     }
     
     /**
@@ -309,25 +309,25 @@ public class ExsltDatetime
      *    xs:gYearMonth (CCYY-MM) 
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber monthInYear(String datetimeIn)
+    public static XDouble monthInYear(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null)
-        return new XNumber(Double.NaN);      
+        return new XDouble(Double.NaN);      
       
       String[] formats = {dt, d, gym};
-      return new XNumber(getNumber(datetime, formats, Calendar.MONTH));
+      return new XDouble(getNumber(datetime, formats, Calendar.MONTH));
     }
     
     /**
      * See above.
      */
-    public static XNumber monthInYear()
+    public static XDouble monthInYear()
     {      
       Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.MONTH));
+      return new XDouble(cal.get(Calendar.MONTH));
    }
     
     /**
@@ -343,25 +343,25 @@ public class ExsltDatetime
      *    xs:date (CCYY-MM-DD) 
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber weekInYear(String datetimeIn)
+    public static XDouble weekInYear(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XNumber(Double.NaN);      
+        return new XDouble(Double.NaN);      
       
       String[] formats = {dt, d};
-      return new XNumber(getNumber(datetime, formats, Calendar.WEEK_OF_YEAR));
+      return new XDouble(getNumber(datetime, formats, Calendar.WEEK_OF_YEAR));
     }
         
     /**
      * See above.
      */
-    public static XNumber weekInYear()
+    public static XDouble weekInYear()
     {
        Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.WEEK_OF_YEAR));
+      return new XDouble(cal.get(Calendar.WEEK_OF_YEAR));
    }
 
     /**
@@ -377,25 +377,25 @@ public class ExsltDatetime
      *     xs:date (CCYY-MM-DD) 
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber dayInYear(String datetimeIn)
+    public static XDouble dayInYear(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XNumber(Double.NaN);            
+        return new XDouble(Double.NaN);            
       
       String[] formats = {dt, d};
-      return new XNumber(getNumber(datetime, formats, Calendar.DAY_OF_YEAR));
+      return new XDouble(getNumber(datetime, formats, Calendar.DAY_OF_YEAR));
     }
     
     /**
      * See above.
      */
-    public static XNumber dayInYear()
+    public static XDouble dayInYear()
     {
        Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.DAY_OF_YEAR));
+      return new XDouble(cal.get(Calendar.DAY_OF_YEAR));
    }
     
 
@@ -414,23 +414,23 @@ public class ExsltDatetime
      *      xs:gDay (---DD) 
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber dayInMonth(String datetimeIn)
+    public static XDouble dayInMonth(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       String[] formats = {dt, d, gmd, gd};
       double day = getNumber(datetime, formats, Calendar.DAY_OF_MONTH);
-      return new XNumber(day);
+      return new XDouble(day);
     }
     
     /**
      * See above.
      */
-    public static XNumber dayInMonth()
+    public static XDouble dayInMonth()
     {
       Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.DAY_OF_MONTH));
+      return new XDouble(cal.get(Calendar.DAY_OF_MONTH));
    }
     
     /**
@@ -447,25 +447,25 @@ public class ExsltDatetime
      *      xs:date (CCYY-MM-DD) 
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber dayOfWeekInMonth(String datetimeIn)
+    public static XDouble dayOfWeekInMonth(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XNumber(Double.NaN);            
+        return new XDouble(Double.NaN);            
 
       String[] formats =  {dt, d};
-      return new XNumber(getNumber(datetime, formats, Calendar.DAY_OF_WEEK_IN_MONTH));
+      return new XDouble(getNumber(datetime, formats, Calendar.DAY_OF_WEEK_IN_MONTH));
     }
     
     /**
      * See above.
      */
-    public static XNumber dayOfWeekInMonth()
+    public static XDouble dayOfWeekInMonth()
     {
        Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.DAY_OF_WEEK_IN_MONTH));
+      return new XDouble(cal.get(Calendar.DAY_OF_WEEK_IN_MONTH));
    }
       
     
@@ -483,25 +483,25 @@ public class ExsltDatetime
      * If the date/time string is not in one of these formats, then NaN is returned. 
                             The numbering of days of the week starts at 1 for Sunday, 2 for Monday and so on up to 7 for Saturday.  
      */
-    public static XNumber dayInWeek(String datetimeIn)
+    public static XDouble dayInWeek(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XNumber(Double.NaN);            
+        return new XDouble(Double.NaN);            
 
       String[] formats = {dt, d};
-      return new XNumber(getNumber(datetime, formats, Calendar.DAY_OF_WEEK));
+      return new XDouble(getNumber(datetime, formats, Calendar.DAY_OF_WEEK));
     }
     
     /**
      * See above.
      */
-    public static XNumber dayInWeek()
+    public static XDouble dayInWeek()
     {
        Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.DAY_OF_WEEK));
+      return new XDouble(cal.get(Calendar.DAY_OF_WEEK));
    }        
 
     /**
@@ -517,25 +517,25 @@ public class ExsltDatetime
      *     xs:time (hh:mm:ss) 
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber hourInDay(String datetimeIn)
+    public static XDouble hourInDay(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XNumber(Double.NaN);            
+        return new XDouble(Double.NaN);            
       
       String[] formats = {d, t};
-      return new XNumber(getNumber(datetime, formats, Calendar.HOUR_OF_DAY));
+      return new XDouble(getNumber(datetime, formats, Calendar.HOUR_OF_DAY));
     }
     
     /**
      * See above.
      */
-    public static XNumber hourInDay()
+    public static XDouble hourInDay()
     {
        Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.HOUR_OF_DAY));
+      return new XDouble(cal.get(Calendar.HOUR_OF_DAY));
    }
     
     /**
@@ -551,25 +551,25 @@ public class ExsltDatetime
      *      xs:time (hh:mm:ss) 
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber minuteInHour(String datetimeIn)
+    public static XDouble minuteInHour(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XNumber(Double.NaN);            
+        return new XDouble(Double.NaN);            
       
       String[] formats = {dt,t};
-      return new XNumber(getNumber(datetime, formats, Calendar.MINUTE));
+      return new XDouble(getNumber(datetime, formats, Calendar.MINUTE));
     }    
     
     /**
      * See above.
      */
-   public static XNumber minuteInHour()
+   public static XDouble minuteInHour()
     {
        Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.MINUTE));
+      return new XDouble(cal.get(Calendar.MINUTE));
    }    
 
     /**
@@ -585,25 +585,25 @@ public class ExsltDatetime
      *      xs:time (hh:mm:ss) 
      * If the date/time string is not in one of these formats, then NaN is returned. 
      */
-    public static XNumber secondInMinute(String datetimeIn)
+    public static XDouble secondInMinute(String datetimeIn)
       throws ParseException
     {
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XNumber(Double.NaN);            
+        return new XDouble(Double.NaN);            
       
       String[] formats = {dt, t};
-      return new XNumber(getNumber(datetime, formats, Calendar.SECOND));
+      return new XDouble(getNumber(datetime, formats, Calendar.SECOND));
     }
 
     /**
      * See above.
      */
-    public static XNumber secondInMinute()
+    public static XDouble secondInMinute()
     {
        Calendar cal = Calendar.getInstance();
-      return new XNumber(cal.get(Calendar.SECOND));
+      return new XDouble(cal.get(Calendar.SECOND));
     }
        
     /**
@@ -627,12 +627,12 @@ public class ExsltDatetime
       String[] edz = getEraDatetimeZone(datetimeIn);
       String datetime = edz[1];
       if (datetime == null) 
-        return new XNumber(Double.NaN);            
+        return new XDouble(Double.NaN);            
             
       String[] formats = {dt, d, gym, gy};
       double dbl = getNumber(datetime, formats, Calendar.YEAR);
       if (dbl == Double.NaN) 
-        return new XNumber(Double.NaN);
+        return new XDouble(Double.NaN);
       int yr = (int)dbl;
       return new XBoolean(yr % 400 == 0 || (yr % 100 != 0 && yr % 4 == 0));
     }

@@ -114,7 +114,6 @@ import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.WrappedRuntimeException;
 import org.apache.xpath.Arg;
-import org.apache.xpath.DOMHelper;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
@@ -411,7 +410,7 @@ public class TransformerImpl extends Transformer
   private ExtensionsTable m_extensionsTable = null;
 
   /**
-   * Get the extensions table object. 
+   * Get the extensions table object.
    *
    * @return The extensions table.
    */
@@ -505,7 +504,7 @@ public class TransformerImpl extends Transformer
       
       m_currentMatchTemplates.removeAllElements();
       m_currentMatchedNodes.removeAllElements();
-      
+
       m_resultTreeHandler = null;
       m_outputTarget = null;
       m_keyManager = new KeyManager();
@@ -679,19 +678,7 @@ public class TransformerImpl extends Transformer
 
       if (null != e)
       {
-        if (e instanceof javax.xml.transform.TransformerException)
-        {
-          throw (javax.xml.transform.TransformerException) e;
-        }
-        else if (e instanceof org.apache.xml.utils.WrappedRuntimeException)
-        {
-          fatalError(
-              ((org.apache.xml.utils.WrappedRuntimeException) e).getException());
-        }
-        else
-        {
-          throw new javax.xml.transform.TransformerException(e);
-        }
+        fatalError(e);
       }
       else if (null != m_resultTreeHandler)
       {
@@ -734,6 +721,8 @@ public class TransformerImpl extends Transformer
   {
     if (throwable instanceof org.xml.sax.SAXParseException)
       m_errorHandler.fatalError(new TransformerException(throwable.getMessage(),new SAXSourceLocator((org.xml.sax.SAXParseException)throwable)));
+    if (throwable instanceof TransformerException)
+      m_errorHandler.fatalError((TransformerException)throwable);
     else
       m_errorHandler.fatalError(new TransformerException(throwable));
     
@@ -1095,7 +1084,7 @@ public class TransformerImpl extends Transformer
           throws TransformerException
   {
                 transform(xmlSource, outputTarget, true);
-        }
+  }
 
   /**
    * Process the source tree to the output result.
@@ -1370,6 +1359,30 @@ public class TransformerImpl extends Transformer
                               : m_outputFormat;
 
     return format;
+  }
+  
+  private org.apache.xml.utils.StringVector fileOutVector = null;
+  
+  /**
+   * XSLT 2.0 -- cannot output to same file more than once during a transformation.
+   * @param fileName Absolute file pathname.
+   * @returns true if this fileName has already been used.
+   */
+  public boolean OutputFileAlreadyUsed(String fileName)
+  {
+    if (null == fileOutVector)
+      fileOutVector = new org.apache.xml.utils.StringVector();
+    
+    if (fileOutVector.contains(fileName))
+    {
+      // System.out.println("OutputFileAlreadyUsed " + fileName);
+      return true;
+    }
+    else
+    {
+      fileOutVector.addElement(fileName);
+      return false;
+    }
   }
 
   /**
@@ -2429,7 +2442,7 @@ public class TransformerImpl extends Transformer
         caseOrderUpper = false;
       }
 
-      keys.addElement(new NodeSortKey(this, sort.getSelect(), treatAsNumbers,
+      keys.addElement(new SortKey(this, sort.getSelect(), treatAsNumbers,
                                       descending, langString, caseOrderUpper,
                                       foreach));
       if (TransformerImpl.S_DEBUG)
@@ -2486,6 +2499,7 @@ public class TransformerImpl extends Transformer
   {
   	return m_currentTemplateElements;
   }
+  
 
   /**
    * Push the current template element.

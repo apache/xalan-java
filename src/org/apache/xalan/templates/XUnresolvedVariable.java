@@ -77,6 +77,8 @@ import org.apache.xml.dtm.DTM;
  */
 public class XUnresolvedVariable extends XObject
 {  
+	ElemVariable m_elemVariable;
+	
   /** The node context for execution. */
   transient private int m_context;
   
@@ -122,7 +124,8 @@ public class XUnresolvedVariable extends XObject
                              int varStackPos, int varStackContext,
                              boolean isGlobal)
   {
-    super(obj);
+    //super(obj);
+    m_elemVariable=obj;
     m_context = sourceNode;
     m_transformer = transformer;
     
@@ -160,13 +163,12 @@ public class XUnresolvedVariable extends XObject
     //// vars.setStackFrame(m_varStackPos);
    
 
-    ElemVariable velem = (ElemVariable)m_obj;
     try
     {
       m_doneEval = false;
-      if(-1 != velem.m_frameSize)
-      	vars.link(velem.m_frameSize);
-      XObject var = velem.getValue(m_transformer, m_context);
+      if(-1 != m_elemVariable.m_frameSize)
+      	vars.link(m_elemVariable.m_frameSize);
+      XObject var = m_elemVariable.getValue(m_transformer, m_context);
       m_doneEval = true;
       return var;
     }
@@ -175,7 +177,7 @@ public class XUnresolvedVariable extends XObject
       // These two statements need to be combined into one operation.
       // vars.setStackFrame(currentFrame);
       
-      if(-1 != velem.m_frameSize)
+      if(-1 != m_elemVariable.m_frameSize)
 	  	vars.unlink(currentFrame);
     }
   }
@@ -227,4 +229,8 @@ public class XUnresolvedVariable extends XObject
   }
 
 
+  public Object object()
+  {
+  	return m_elemVariable;
+  }
 }

@@ -201,7 +201,7 @@ class TransformSnapshotImpl implements TransformSnapshot
       XPathContext xpc = transformer.getXPathContext();
 
       m_variableStacks = (VariableStack) xpc.getVarStack().clone();
-      m_currentNodes = (int[]) xpc.getCurrentNodeStack().clone();
+//      m_currentNodes = (int[]) xpc.getCurrentNodeStack().clone();
       m_currentExpressionNodes =
         (int[]) xpc.getCurrentExpressionNodeStack().clone();
       m_contextNodeLists = (Stack) xpc.getContextNodeListsStack().clone();
@@ -269,7 +269,7 @@ class TransformSnapshotImpl implements TransformSnapshot
       XPathContext xpc = transformer.getXPathContext();
 
       xpc.setVarStack((VariableStack) m_variableStacks.clone());
-      xpc.setCurrentNodeStack((int[]) m_currentNodes.clone());
+//      xpc.setCurrentNodeStack((int[]) m_currentNodes.clone());
       xpc.setCurrentExpressionNodeStack(
         (int[]) m_currentExpressionNodes.clone());
       xpc.setContextNodeListsStack((Stack) m_contextNodeLists.clone());

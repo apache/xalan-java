@@ -1050,7 +1050,7 @@ public class ElemTemplateElement extends UnImplNode
    *
    * @throws TransformerException
    */
-  private boolean excludeResultNSDecl(String prefix, String uri)
+   boolean excludeResultNSDecl(String prefix, String uri)
           throws TransformerException
   {
 

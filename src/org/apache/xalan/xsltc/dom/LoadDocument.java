@@ -62,9 +62,8 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import java.net.URL;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.net.URL;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -91,24 +90,22 @@ public final class LoadDocument {
      */
     public static NodeIterator document(String uri, String base,
 					AbstractTranslet translet, DOM dom)
-	throws Exception 
-    {
-	final String originalUri = uri;
+	throws Exception {
+
 	MultiDOM multiplexer = (MultiDOM)dom;
 
 	// Return an empty iterator if the URI is clearly invalid
 	// (to prevent some unncessary MalformedURL exceptions).
-	if (uri == null || uri.equals("")) {
-	    return new SingletonIterator(DOM.NULL,true);
-	}
+	if ((uri == null) || (uri.equals("")))
+	    return(new SingletonIterator(DOM.NULL,true));
 
 	// Prepend URI base to URI (from context)
-	if (base != null && !base.equals("")) {
-	    if (!uri.startsWith(base)     &&   // unless URI contains base
-		!uri.startsWith("/")      &&   // unless URI is abs. file path
-		!uri.startsWith("http:/") &&   // unless URI is abs. http URL
-		!uri.startsWith("file:/")) {   // unless URI is abs. file URL
-		uri = base + uri;
+	if ((base != null) && (!base.equals(""))) {
+	    if ((!uri.startsWith(base)) &&     // unless URI contains base
+		(!uri.startsWith("/")) &&      // unless URI is abs. file path
+		(!uri.startsWith("http:/")) && // unless URI is abs. http URL
+		(!uri.startsWith("file:/"))) { // unless URI is abs. file URL
+		uri = base+uri;
 	    }
 	}
 
@@ -131,11 +128,7 @@ public final class LoadDocument {
 	mask = multiplexer.nextMask(); // peek
 
 	if (cache != null) {
-	    newdom = cache.retrieveDocument(originalUri, mask, translet);
-	    if (newdom == null) {
-		final Exception e = new FileNotFoundException(originalUri);
-		throw new TransletException(e);
-	    }
+	    newdom = cache.retrieveDocument(uri, mask, translet);
 	}
 	else {
 	    // Parse the input document and construct DOM object
@@ -254,10 +247,8 @@ public final class LoadDocument {
 		throw new IllegalArgumentException(err);
 	    }
 	}
-	catch (TransletException e) {
-	    throw e;
-	}
 	catch (Exception e) {
+	    e.printStackTrace();
 	    throw new TransletException(e);
 	}
     }

@@ -75,18 +75,17 @@ public final class MultiHashtable extends Hashtable {
 	return vector;
     }
 	
-    public Object maps(Object from, Object to) {
-	if (from == null) return null;
+    public boolean maps(Object from, Object to) {
+	if (from == null) return false;
 	final Vector vector = (Vector) get(from);
 	if (vector != null) {
 	    final int n = vector.size();
 	    for (int i = 0; i < n; i++) {
-                final Object item = vector.elementAt(i);
-		if (item.equals(to)) {
-		    return item;
+		if (vector.elementAt(i).equals(to)) {
+		    return true;
 		}
 	    }
 	}
-	return null;
+	return false;
     }
 }

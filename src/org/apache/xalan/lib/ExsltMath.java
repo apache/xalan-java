@@ -71,7 +71,6 @@ import org.apache.xpath.objects.XRTreeFrag;
 
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.DOMHelper;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.ref.DTMNodeIterator;
 import org.apache.xml.utils.XMLString;
@@ -195,7 +194,7 @@ public class ExsltMath
    * @param expCon is passed in by the Xalan extension processor
    * @param ni The NodeIterator for the node-set to be evaluated.
    * 
-   * @return node-set with nodes containing the maximum value found, an empty node-set
+   * @return node-set with nodes containing the minimum value found, an empty node-set
    * if any node cannot be converted to a number.
    */
   public static NodeSet highest (ExpressionContext expCon, NodeIterator ni)
@@ -205,7 +204,7 @@ public class ExsltMath
     NodeIterator niClone = ns.cloneWithReset();
     double high = new Double(max(expCon, niClone)).doubleValue();
     NodeSet highNodes = new NodeSet();
-    highNodes.setShouldCacheNodes(true);
+    highNodes.setShouldCache(true);
     
     if (Double.isNaN(high))
       return highNodes;  // empty Nodeset
@@ -234,7 +233,7 @@ public class ExsltMath
    * @param expCon is passed in by the Xalan extension processor
    * @param ni The NodeIterator for the node-set to be evaluated.
    * 
-   * @return node-set with nodes containing the minimum value found, an empty node-set
+   * @return node-set with nodes containing the maximum value found, an empty node-set
    * if any node cannot be converted to a number.
    * 
    */
@@ -246,7 +245,7 @@ public class ExsltMath
     double low = new Double(min(expCon, niClone)).doubleValue();
 
     NodeSet lowNodes = new NodeSet();
-    lowNodes.setShouldCacheNodes(true);
+    lowNodes.setShouldCache(true);
     
     if (Double.isNaN(low))
       return lowNodes;  // empty Nodeset

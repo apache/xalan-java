@@ -776,18 +776,18 @@ public class MethodResolver
           if ( (javaClass == NodeIterator.class) ||
                (javaClass == java.lang.Object.class) )
           {
-            DTMIterator dtmIter = ((XRTreeFrag) xobj).asNodeIterator();
+            DTMIterator dtmIter = ((XRTreeFrag) xobj).iter();
             return new DTMNodeIterator(dtmIter);
           }
           else if (javaClass == NodeList.class)
           {
-            return ((XRTreeFrag) xobj).convertToNodeset();
+            return ((XRTreeFrag) xobj).nodelist();
           }
           // Same comment as above
           // else if(Node.class.isAssignableFrom(javaClass))
           else if(javaClass == Node.class)
           {
-            DTMIterator iter = ((XRTreeFrag) xobj).asNodeIterator();
+            DTMIterator iter = ((XRTreeFrag) xobj).iter();
             int rootHandle = iter.nextNode();
             DTM dtm = iter.getDTM(rootHandle);
             return dtm.getNode(dtm.getFirstChild(rootHandle));
@@ -806,7 +806,7 @@ public class MethodResolver
           }
           else
           {
-            DTMIterator iter = ((XRTreeFrag) xobj).asNodeIterator();
+            DTMIterator iter = ((XRTreeFrag) xobj).iter();
             int rootHandle = iter.nextNode();
             DTM dtm = iter.getDTM(rootHandle);
             Node child = dtm.getNode(dtm.getFirstChild(rootHandle));

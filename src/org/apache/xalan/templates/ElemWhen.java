@@ -134,7 +134,7 @@ public class ElemWhen extends ElemTemplateElement
     super.compose(sroot);
     java.util.Vector vnames = sroot.getComposeState().getVariableNames();
     if(null != m_test)
-      m_test.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+      m_test.fixupVariables(sroot.getComposeState());
   }
 
   /**

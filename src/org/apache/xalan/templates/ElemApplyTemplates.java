@@ -69,7 +69,9 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XNodeSequenceSingleton;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XSequence;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
@@ -295,8 +297,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
         vars.setStackFrame(argsFrame);
       }
       
-      xctxt.pushCurrentNode(DTM.NULL);
-      int[] currentNodes = xctxt.getCurrentNodeStack();
+      xctxt.pushCurrentItem(XSequence.EMPTY);
+      // XObject[] currentNodes = xctxt.getCurrentItemStack();
       int currentNodePos = xctxt.getCurrentNodeFirstFree() - 1;
       
       xctxt.pushCurrentExpressionNode(DTM.NULL);
@@ -311,13 +313,12 @@ public class ElemApplyTemplates extends ElemCallTemplate
       int child;
       while (DTM.NULL != (child = sourceNodes.nextNode()))
       {
-        currentNodes[currentNodePos] = child;
-        currentExpressionNodes[currentExpressionNodePos] = child;
-
         if(xctxt.getDTM(child) != dtm)
         {
           dtm = xctxt.getDTM(child);
         }
+        xctxt.setCurrentNode(child);
+        currentExpressionNodes[currentExpressionNodePos] = child;
         
         final int exNodeType = dtm.getExpandedTypeID(child);
         final int nodeType = dtm.getNodeType(child);
@@ -364,8 +365,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
         }
                 
         transformer.pushPairCurrentMatched(template, child);
-        if (check)
-	        guard.checkForInfinateLoop();
+        if(check)
+          guard.checkForInfinateLoop();
 
         int currentFrameBottom;  // See comment with unlink, below
         if(template.m_frameSize > 0)

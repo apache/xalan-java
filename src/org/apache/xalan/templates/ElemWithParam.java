@@ -198,7 +198,7 @@ public class ElemWithParam extends ElemTemplateElement
     
     java.util.Vector vnames = sroot.getComposeState().getVariableNames();
     if(null != m_selectPattern)
-      m_selectPattern.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+      m_selectPattern.fixupVariables(sroot.getComposeState());
       
     // m_index must be resolved by ElemApplyTemplates and ElemCallTemplate!
   }

@@ -73,34 +73,39 @@ import org.apache.xalan.xsltc.runtime.TransletLoader;
 
 final class FunctionAvailableCall extends FunctionCall {
 
-    private Expression _arg; 
-    private String     _nameOfFunct = null; 
-    private String     _namespaceOfFunct = null; 	
     private boolean    _isFunctionAvailable = false; 
+    private Expression _arg; 
+    private String     _namespaceOfFunct =null; 	
+    private String     _nameOfFunct =null; 
+
 
     /**
      * Constructs a FunctionAvailableCall FunctionCall. Takes the
-     * function name qname, for example, 'function-available', and 
-     * a list of arguments where the arguments must be instances of 
-     * LiteralExpression. 
+     * function name qname, for example, 'function-available', and a list
+     * of arguments where the arguments must be instances of 
+     * LiteralExpression. The test for availability considers
+     * internal xsl functions such as 'floor' as well as external
+     * Java functions, such as 'java.lang.Math.sin'.  The case of
+     * external functions is handled here, the case of internal
+     * functions is handled in getResult. 
      */
     public FunctionAvailableCall(QName fname, Vector arguments) {
 	super(fname, arguments);
 	_arg = (Expression)arguments.elementAt(0);
 	_type = null; 
-
         if (_arg instanceof LiteralExpr) {
-	    LiteralExpr arg = (LiteralExpr) _arg;
+	    LiteralExpr arg = (LiteralExpr)_arg;
             _namespaceOfFunct = arg.getNamespace();
             _nameOfFunct = arg.getValue();
-
-            if (_namespaceOfFunct != null &&
-	        (_namespaceOfFunct.startsWith(JAVA_EXT_XSLTC) ||
-		 _namespaceOfFunct.startsWith(JAVA_EXT_XALAN))) 
+            if ((_namespaceOfFunct != null) && 
+                (!_namespaceOfFunct.equals(Constants.EMPTYSTRING)))
 	    {
+		// the function is external, such as a java function
                 _isFunctionAvailable = hasMethods();
             }
+	    // the case of internal function is handled in getResult.
         }
+	// case where _arg is not instanceof LiteralExpr can not be handled.
     }
 
     /**
@@ -108,24 +113,17 @@ final class FunctionAvailableCall extends FunctionCall {
      * returns the type of function-available to be boolean.  
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	if (_type != null) {
+	// may be already set
+	if ( _type != null ) {
 	   return _type;
 	}
 	if (_arg instanceof LiteralExpr) {
-	    return _type = Type.Boolean;
+	    _type = Type.Boolean;
+	    return Type.Boolean;	
 	}
 	ErrorMsg err = new ErrorMsg(ErrorMsg.NEED_LITERAL_ERR,
 			"function-available", this);
 	throw new TypeCheckError(err);
-    }
-
-    /**
-     * Returns an object representing the compile-time evaluation 
-     * of an expression. We are only using this for function-available
-     * and element-available at this time.
-     */
-    public Object evaluateAtCompileTime() {
-	return getResult() ? Boolean.TRUE : Boolean.FALSE;
     }
 
     /**
@@ -188,68 +186,65 @@ final class FunctionAvailableCall extends FunctionCall {
      * the specified method is found in the specifed class. 
      */
     private boolean hasMethods() {
+        
 	LiteralExpr arg = (LiteralExpr)_arg;
 	final String externalFunctName = getExternalFunctionName();
-
 	if (externalFunctName == null) {
 	    return false;
 	}
-
 	final String className = getClassName(externalFunctName);
 
-	try {
-	    TransletLoader loader = new TransletLoader();
-	    final Class clazz = loader.loadClass(className);
+        if (_namespaceOfFunct.startsWith(JAVA_EXT_XSLTC) ||
+            _namespaceOfFunct.startsWith(JAVA_EXT_XALAN)) {
+            try {
+                TransletLoader loader = new TransletLoader();
+                final Class clazz = loader.loadClass(className);
 
-	    if (clazz == null) {
-		final ErrorMsg msg =
-		    new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, className);
-		getParser().reportError(Constants.ERROR, msg);
-	    }
-	    else {
-		final String methodName = getMethodName(externalFunctName);
-		final Method[] methods = clazz.getDeclaredMethods();
+                if (clazz == null) {
+                    final ErrorMsg msg =
+                        new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, className);
+                    getParser().reportError(Constants.ERROR, msg);
+                }
+                else {
+                    final String methodName = getMethodName(externalFunctName);
+                    final Method[] methods = clazz.getDeclaredMethods();
 
-		for (int i = 0; i < methods.length; i++) {
-		    final int mods = methods[i].getModifiers();
+                    for (int i = 0; i < methods.length; i++) {
+                        final int mods = methods[i].getModifiers();
 
-		    if (Modifier.isPublic(mods)
-			&& Modifier.isStatic(mods)
-			&& methods[i].getName().equals(methodName))
-		    {
-			return true;
-		    }
-		}
-	    }
-	}
-	catch (ClassNotFoundException e) {
-	    final ErrorMsg msg =
-		new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, className);
-		    getParser().reportError(Constants.ERROR, msg);
-	}
+                        if (Modifier.isPublic(mods)
+                            && Modifier.isStatic(mods)
+                            && methods[i].getName().equals(methodName))
+                        {
+			    return true;
+                        }
+                    }
+                }
+            }
+            catch (ClassNotFoundException e) {
+                final ErrorMsg msg =
+                    new ErrorMsg(ErrorMsg.CLASS_NOT_FOUND_ERR, className);
+                getParser().reportError(Constants.ERROR, msg);
+            }
+        }
         return false;   
     }
 
     /**
-     * Reports on whether the function specified in the argument to
+     * reports on whether the function specified in the argument to
      * xslt function 'function-available' was found.
      */
     public boolean getResult() {
-	if (_nameOfFunct == null) { 
-	    return false;
-	}
-
-        if (_namespaceOfFunct == null ||
-            _namespaceOfFunct.equals(EMPTYSTRING) ||
-	    _namespaceOfFunct.equals(EXT_XALAN) ||
-	    _namespaceOfFunct.equals(TRANSLET_URI))
+        if ((_namespaceOfFunct == null) ||
+           (_namespaceOfFunct.equals(Constants.EMPTYSTRING)))
         {
+            // no namespace, so the function is an internal xslt function.
             final Parser parser = getParser();
-            _isFunctionAvailable = 
-		parser.functionSupported(Util.getLocalName(_nameOfFunct));
+            _isFunctionAvailable = parser.functionSupported(_nameOfFunct);
         }
  	return _isFunctionAvailable;
     }
+
 
     /**
      * Calls to 'function-available' are resolved at compile time since 

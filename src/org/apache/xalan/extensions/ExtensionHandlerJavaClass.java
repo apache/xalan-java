@@ -305,6 +305,9 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
 
           if (targetObject instanceof XObject)
             targetObject = ((XObject) targetObject).object();
+          
+          if(null == targetObject)
+            throw new RuntimeException("The object is null for targetObject: "+targetObject);
 
           if (m_classObj.isAssignableFrom(targetObject.getClass()))
             resolveType = MethodResolver.DYNAMIC;
@@ -411,15 +414,6 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
     try
     {
       result = m.invoke(m_defaultInstance, new Object[] {xpc, element});
-    }
-    catch (InvocationTargetException e)
-    {
-      Throwable targetException = e.getTargetException();
-      
-      if (targetException != null)
-        throw new TransformerException (targetException.getMessage (), targetException);
-      else
-        throw new TransformerException (e.getMessage (), e);
     }
     catch (Exception e)
     {

@@ -79,8 +79,7 @@ abstract class StreamOutput extends OutputBase {
     protected static final String LT       = "&lt;";
     protected static final String GT       = "&gt;";
     protected static final String CRLF     = "&#xA;";
-    protected static final String APOS     = "&apos;";
-    protected static final String QUOT     = "&quot;";
+    protected static final String QUOTE    = "&quot;";
     protected static final String NBSP     = "&nbsp;";
 
     protected static final String CHAR_ESC_START  = "&#";
@@ -89,7 +88,7 @@ abstract class StreamOutput extends OutputBase {
     protected static final int MAX_INDENT_LEVEL = (INDENT.length >> 1);
     protected static final int MAX_INDENT       = INDENT.length;
 
-    protected static final int BUFFER_SIZE = 32 * 1024;
+    protected static final int BUFFER_SIZE = 64 * 1024;
     protected static final int OUTPUT_BUFFER_SIZE = 4 * 1024;
 
     protected Writer  _writer;
@@ -109,8 +108,7 @@ abstract class StreamOutput extends OutputBase {
     protected boolean _escaping     = true;
     protected String  _encoding     = "UTF-8";
 
-    protected int     _indentNumber = 2;
-
+    // protected HashSet _attributes = new HashSet();
     protected Vector _attributes = new Vector();
 
     static class Attribute {
@@ -140,7 +138,6 @@ abstract class StreamOutput extends OutputBase {
 	_encoding = output._encoding;
 	_is8859Encoded = output._is8859Encoded;
 	_buffer = output._buffer;
-	_indentNumber = output._indentNumber;
     }
 
     protected StreamOutput(Writer writer, String encoding) {
@@ -161,10 +158,6 @@ abstract class StreamOutput extends OutputBase {
 	    _writer = new OutputStreamWriter(out, _encoding = "utf-8");
 	}
 	_buffer = new StringBuffer(BUFFER_SIZE);
-    }
-
-    public void setIndentNumber(int value) {
-	_indentNumber = value;
     }
 
     /**
@@ -238,15 +231,59 @@ abstract class StreamOutput extends OutputBase {
 	}
 
 	_buffer.append(INDENT, 0, 
-	    _indentLevel < MAX_INDENT_LEVEL ? _indentLevel * _indentNumber 
+	    _indentLevel < MAX_INDENT_LEVEL ? _indentLevel + _indentLevel 
 		: MAX_INDENT);
     }
 
-    /**
-     * This method escapes special characters used in text nodes. It
-     * is overriden for XML and HTML output.
-     */
     protected void escapeCharacters(char[] ch, int off, int len) {
+	int limit = off + len;
+	int offset = off;
+
+	if (limit > ch.length) {
+	    limit = ch.length;
+	}
+
+	// Step through characters and escape all special characters
+	for (int i = off; i < limit; i++) {
+	    final char current = ch[i];
+
+	    switch (current) {
+	    case '&':
+		_buffer.append(ch, offset, i - offset);
+		_buffer.append(AMP);
+		offset = i + 1;
+		break;
+	    case '<':
+		_buffer.append(ch, offset, i - offset);
+		_buffer.append(LT);
+		offset = i + 1;
+		break;
+	    case '>':
+		_buffer.append(ch, offset, i - offset);
+		_buffer.append(GT);
+		offset = i + 1;
+		break;
+	    case '\u00a0':
+		_buffer.append(ch, offset, i - offset);
+		_buffer.append(NBSP);
+		offset = i + 1;
+		break;
+	    default:
+		if ((current >= '\u007F' && current < '\u00A0') ||
+		    (_is8859Encoded && current > '\u00FF'))
+		{
+		    _buffer.append(ch, offset, i - offset);
+		    _buffer.append(CHAR_ESC_START);
+		    _buffer.append(Integer.toString((int)ch[i]));
+		    _buffer.append(';');
+		    offset = i + 1;
+		}
+	    }
+	}
+	// Output remaining characters (that do not need escaping).
+	if (offset < limit) {
+	    _buffer.append(ch, offset, limit - offset);
+	}
     }
 
     protected void appendAttributes() {
@@ -269,34 +306,5 @@ abstract class StreamOutput extends OutputBase {
 	appendAttributes();
 	_buffer.append('>');
 	_startTagOpen = false;
-    }
-
-    /**
-     * Ensure that comments do not include the sequence "--" and
-     * that they do not end with "-".
-     */
-    protected void appendComment(String comment) 
-	throws TransletException 
-    {
-	boolean lastIsDash = false;
-	final int n = comment.length();
-
-	_buffer.append("<!--");
-	for (int i = 0; i < n; i++) {
-	    final char ch = comment.charAt(i);
-	    final boolean isDash = (ch == '-');
-
-	    if (lastIsDash && isDash) {
-		_buffer.append(" -");
-	    }
-	    else {
-		_buffer.append(ch);
-	    }
-	    lastIsDash = isDash;
-	}
-	if (lastIsDash) {
-	    _buffer.append(' ');
-	}
-	_buffer.append("-->");
     }
 }

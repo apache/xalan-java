@@ -89,7 +89,7 @@ import java.io.IOException;
 import org.w3c.dom.Entity;
 import org.w3c.dom.Notation;
 
-public class DOM2SAX implements XMLReader, Locator {
+class DOM2SAX implements XMLReader, Locator {
 
     private final static String EMPTYSTRING = "";
     private static final String XMLNS_PREFIX = "xmlns";
@@ -184,22 +184,6 @@ public class DOM2SAX implements XMLReader, Locator {
 
     public void parse(InputSource unused) throws IOException, SAXException {
         parse(_dom);
-    }
-
-    public void parse() throws IOException, SAXException {
-	if (_dom != null) {
-	    boolean isIncomplete = 
-		(_dom.getNodeType() != org.w3c.dom.Node.DOCUMENT_NODE);
-
-	    if (isIncomplete) {
-		_sax.startDocument();
-		parse(_dom);
-		_sax.endDocument();
-	    }
-	    else {
-		parse(_dom);
-	    }
-	}
     }
 
     /**

@@ -2005,12 +2005,22 @@ public class SerializerToXML
   
         m_inDoctype = false;
       }
-
-       
-      writer.write("<!ATTLIST ");
-      writer.write(eName);
-      writer.write(" "); 
-
+  
+      if (!eName.equals(m_elemName))
+      {
+        writer.write("<!ATTLIST ");
+        writer.write(eName);
+        writer.write(" ");
+  
+        m_elemName = eName;
+      }
+      else
+      {
+        m_pos -= 3;
+  
+        writer.write(m_lineSep, 0, m_lineSepLen);
+      }
+  
       writer.write(aName);
       writer.write(" ");
       writer.write(type);

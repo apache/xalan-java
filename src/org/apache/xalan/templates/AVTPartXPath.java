@@ -60,7 +60,6 @@ import org.apache.xpath.*;
 import org.apache.xpath.Expression;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.compiler.XPathParser;
 import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xpath.ExpressionOwner;
 
@@ -90,9 +89,9 @@ public class AVTPartXPath extends AVTPart
    * in the stack frame (but variables above the globalsTop value will need 
    * to be offset to the current stack frame).
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
-    m_xpath.fixupVariables(vars, globalsSize);
+    m_xpath.fixupVariables(vcs);
   }
   
   /**
@@ -136,11 +135,12 @@ public class AVTPartXPath extends AVTPart
    */
   public AVTPartXPath(
           String val, org.apache.xml.utils.PrefixResolver nsNode, 
-          XPathParser xpathProcessor, XPathFactory factory, 
-          XPathContext liaison)
+          Object xpathProcessor, XPathFactory factory, 
+          XPathContext liaison, double version)
             throws javax.xml.transform.TransformerException
   {
-    m_xpath = new XPath(val, null, nsNode, XPath.SELECT, liaison.getErrorListener());
+    m_xpath = new XPath(val, null, nsNode, XPath.SELECT, 
+      liaison.getErrorListener(), version);
   }
 
   /**
@@ -172,7 +172,7 @@ public class AVTPartXPath extends AVTPart
             throws javax.xml.transform.TransformerException
   {
 
-    XObject xobj = m_xpath.execute(xctxt, context, nsNode);
+    XObject xobj = m_xpath.execute(xctxt, /* context, */ nsNode);
 
     if (null != xobj)
     {

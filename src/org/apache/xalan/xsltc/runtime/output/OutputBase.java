@@ -288,8 +288,7 @@ public abstract class OutputBase implements TransletOutputHandler, Constants {
         return uri;
     }
 
-    public void startCDATA() throws TransletException { }
-    public void endCDATA() throws TransletException { }
+    // -- Temporary
     public void namespace(String prefix, String uri) throws TransletException { }
     public void setType(int type) { }
     public void setIndent(boolean indent) { }

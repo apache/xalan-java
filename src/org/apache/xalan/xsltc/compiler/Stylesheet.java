@@ -399,12 +399,13 @@ public final class Stylesheet extends SyntaxTreeNode {
      * Parse all direct children of the <xsl:stylesheet/> element.
      */
     public final void parseOwnChildren(Parser parser) {
+
 	final Vector contents = getContents();
 	final int count = contents.size();
 
 	// We have to scan the stylesheet element's top-level elements for
-	// variables and/or parameters before we parse the other elements
-	for (int i = 0; i < count; i++) {
+	// variables and/or parameters before we parse the other elements...
+	for (int i=0; i<count; i++) {
 	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
 	    if ((child instanceof VariableBase) ||
 		(child instanceof NamespaceAlias)) {
@@ -413,11 +414,22 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    }
 	}
 
-	// Now go through all the other top-level elements...
-	for (int i = 0; i < count; i++) {
+	// Then we have to go through the included/imported stylesheets
+	for (int i=0; i<count; i++) {
 	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
-	    if (!(child instanceof VariableBase) && 
-		!(child instanceof NamespaceAlias)) {
+	    if ((child instanceof Import) || (child instanceof Include)) {
+		parser.getSymbolTable().setCurrentNode(child);
+		child.parseContents(parser);		
+	    }
+	}
+
+	// Now go through all the other top-level elements...
+	for (int i=0; i<count; i++) {
+	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
+	    if (!(child instanceof VariableBase) &&
+		!(child instanceof NamespaceAlias) &&
+		!(child instanceof Import) &&
+		!(child instanceof Include)) {
 		parser.getSymbolTable().setCurrentNode(child);
 		child.parseContents(parser);
 	    }
@@ -426,7 +438,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    // <xsl:apply-imports/> element was ever used in this stylesheet
 	    if (!_templateInlining && (child instanceof Template)) {
 		Template template = (Template)child;
-		String name = "template$dot$" + template.getPosition();
+		String name = "template$dot$"+template.getPosition();
 		template.setName(parser.getQName(name));
 	    }
 	}

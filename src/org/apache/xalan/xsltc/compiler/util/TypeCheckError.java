@@ -89,10 +89,6 @@ public class TypeCheckError extends Exception {
 	_error = new ErrorMsg(code, param1, param2);
     }
 
-    public ErrorMsg getErrorMsg() {
-        return _error;
-    }
-
     public String toString() {
 	String result;
 

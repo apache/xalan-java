@@ -56,33 +56,26 @@
  */
 package org.apache.xalan.lib.sql;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Date;
-import java.sql.Timestamp;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Time;
-import java.util.Properties;
-import java.util.Vector;
-import java.util.StringTokenizer;
-import java.lang.IllegalArgumentException;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Node;
-import java.util.Vector;
+import java.sql.Timestamp;
 import java.util.Enumeration;
-import java.math.BigDecimal;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
+import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMManagerDefault;
 import org.apache.xpath.XPathContext;
-import org.apache.xalan.extensions.ExpressionContext;
-import org.apache.xpath.objects.XBooleanStatic;
+import org.apache.xpath.objects.XBoolean;
 
 import org.w3c.dom.*;
 import java.sql.*;
@@ -241,7 +234,7 @@ public class XConnection
    * @param ConnPoolName
    * @return
    */
-  public XBooleanStatic connect( ExpressionContext exprContext, String ConnPoolName )
+  public XBoolean connect( ExpressionContext exprContext, String ConnPoolName )
   {
     try
     {
@@ -251,12 +244,12 @@ public class XConnection
         throw new java.lang.IllegalArgumentException("Invalid Pool Name");
 
       m_IsDefaultPool = false;
-      return new XBooleanStatic(true);
+      return XBoolean.S_TRUE;
     }
     catch (Exception e)
     {
       buildErrorDocument(exprContext, e);
-      return new XBooleanStatic(false);
+      return  new XBoolean(false) /* XBoolean.S_FALSE? */;
     }
 
   }
@@ -268,22 +261,22 @@ public class XConnection
    * @param dbURL database URL of the form jdbc:subprotocol:subname.
    * @return
    */
-  public XBooleanStatic connect( ExpressionContext exprContext, String driver, String dbURL )
+  public XBoolean connect( ExpressionContext exprContext, String driver, String dbURL )
   {
     try
     {
       init(driver, dbURL, new Properties());
-      return new XBooleanStatic(true);
+      return XBoolean.S_TRUE;
     }
     catch(SQLException e)
     {
       buildErrorDocument(exprContext, e);
-      return new XBooleanStatic(false);
+      return XBoolean.S_FALSE;
     }
     catch (Exception e)
     {
       buildErrorDocument(exprContext, e);
-      return new XBooleanStatic(false);
+      return XBoolean.S_FALSE;
     }
   }
 
@@ -292,22 +285,22 @@ public class XConnection
    * @param protocolElem
    * @return
    */
-  public XBooleanStatic connect( ExpressionContext exprContext, Element protocolElem )
+  public XBoolean connect( ExpressionContext exprContext, Element protocolElem )
   {
     try
     {
       initFromElement(protocolElem);
-      return new XBooleanStatic(true);
+      return XBoolean.S_TRUE;
     }
     catch(SQLException e)
     {
       buildErrorDocument(exprContext, e);
-      return new XBooleanStatic(false);
+      return XBoolean.S_FALSE;
     }
     catch (Exception e)
     {
       buildErrorDocument(exprContext, e);
-      return new XBooleanStatic(false);
+      return XBoolean.S_FALSE;
     }
   }
 
@@ -316,22 +309,22 @@ public class XConnection
    * @param list
    * @return
    */
-  public XBooleanStatic connect( ExpressionContext exprContext, NodeList list )
+  public XBoolean connect( ExpressionContext exprContext, NodeList list )
   {
     try
     {
       initFromElement( (Element) list.item(0) );
-      return new XBooleanStatic(true);
+      return XBoolean.S_TRUE;
     }
     catch(SQLException e)
     {
       buildErrorDocument(exprContext, e);
-      return new XBooleanStatic(false);
+      return XBoolean.S_FALSE;
     }
     catch (Exception e)
     {
       buildErrorDocument(exprContext, e);
-      return new XBooleanStatic(false);
+      return XBoolean.S_FALSE;
     }
   }
 
@@ -344,7 +337,7 @@ public class XConnection
    * @param password connection password.
    * @return
    */
-  public XBooleanStatic connect( ExpressionContext exprContext, String driver, String dbURL, String user, String password )
+  public XBoolean connect( ExpressionContext exprContext, String driver, String dbURL, String user, String password )
   {
     try
     {
@@ -354,17 +347,17 @@ public class XConnection
 
       init(driver, dbURL, prop);
 
-      return new XBooleanStatic(true);
+      return XBoolean.S_TRUE;
     }
     catch(SQLException e)
     {
       buildErrorDocument(exprContext, e);
-      return new XBooleanStatic(false);
+      return XBoolean.S_FALSE;
     }
     catch (Exception e)
     {
       buildErrorDocument(exprContext, e);
-      return new XBooleanStatic(false);
+      return XBoolean.S_FALSE;
     }
   }
 
@@ -378,7 +371,7 @@ public class XConnection
    * normally including at least "user" and "password".
    * @return
    */
-  public XBooleanStatic connect( ExpressionContext exprContext, String driver, String dbURL, Element protocolElem )
+  public XBoolean connect( ExpressionContext exprContext, String driver, String dbURL, Element protocolElem )
   {
     try
     {
@@ -393,17 +386,17 @@ public class XConnection
 
       init(driver, dbURL, prop);
 
-      return new XBooleanStatic(true);
+      return XBoolean.S_TRUE;
     }
     catch(SQLException e)
     {
       buildErrorDocument(exprContext, e);
-      return new XBooleanStatic(false);
+      return XBoolean.S_FALSE;
     }
     catch (Exception e)
     {
       buildErrorDocument(exprContext, e);
-      return new XBooleanStatic(false);
+      return XBoolean.S_FALSE;
     }
   }
 

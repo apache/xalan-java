@@ -98,21 +98,19 @@ public class StreamHTMLOutput extends StreamOutput {
     public StreamHTMLOutput(StreamOutput output) {
 	super(output);
 	setIndent(true);  // default for HTML
-// System.out.println("StreamHTMLOutput.<init> this = " + this);
+// System.out.println("StreamHTMLOutput.<init>");
     }
 
     public StreamHTMLOutput(Writer writer, String encoding) {
 	super(writer, encoding);
-	setIndent(true);  // default for HTML
-//System.out.println("StreamHTMLOutput.<init> this = " + this);
+// System.out.println("StreamHTMLOutput.<init>");
     }
 
     public StreamHTMLOutput(OutputStream out, String encoding) 
 	throws IOException
     {
 	super(out, encoding);
-	setIndent(true);  // default for HTML
-//System.out.println("StreamHTMLOutput.<init> this = " + this);
+// System.out.println("StreamHTMLOutput.<init>");
     }
 
     public void startDocument() throws TransletException { 
@@ -262,7 +260,7 @@ public class StreamHTMLOutput extends StreamOutput {
 	if (_startTagOpen) {
 	    closeStartTag();
 	}
-	appendComment(comment);
+	_buffer.append("<!--").append(comment).append("-->");
     }
 
     public void processingInstruction(String target, String data)
@@ -418,54 +416,4 @@ public class StreamHTMLOutput extends StreamOutput {
 	    _headTagOpen = false;
 	}
     } 
-
-    /**
-     * This method escapes special characters used in text nodes
-     */
-    protected void escapeCharacters(char[] ch, int off, int len) {
-	int limit = off + len;
-	int offset = off;
-
-	if (limit > ch.length) {
-	    limit = ch.length;
-	}
-
-	// Step through characters and escape all special characters
-	for (int i = off; i < limit; i++) {
-	    final char current = ch[i];
-
-	    switch (current) {
-	    case '&':
-		_buffer.append(ch, offset, i - offset).append(AMP);
-		offset = i + 1;
-		break;
-	    case '<':
-		_buffer.append(ch, offset, i - offset).append(LT);
-		offset = i + 1;
-		break;
-	    case '>':
-		_buffer.append(ch, offset, i - offset).append(GT);
-		offset = i + 1;
-		break;
-	    case '\u00A0':
-		_buffer.append(ch, offset, i - offset).append(NBSP);
-		offset = i + 1;
-		break;
-	    default:
-		if ((current >= '\u007F' && current < '\u00A0') ||
-		    (_is8859Encoded && current > '\u00FF'))
-		{
-		    _buffer.append(ch, offset, i - offset)
-			   .append(CHAR_ESC_START)
-			   .append(Integer.toString((int)ch[i]))
-			   .append(';');
-		    offset = i + 1;
-		}
-	    }
-	}
-	// Output remaining characters (that do not need escaping).
-	if (offset < limit) {
-	    _buffer.append(ch, offset, limit - offset);
-	}
-    }
 }

@@ -56,9 +56,9 @@
  */
 package org.apache.xalan.extensions;
 
-import org.w3c.dom.traversal.NodeIterator;
-import org.w3c.dom.Node;
 import org.apache.xpath.objects.XObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.traversal.NodeIterator;
 
 /**
  * An object that implements this interface can supply

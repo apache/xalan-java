@@ -503,4 +503,12 @@ public class FuncDocument extends Function2Args
     return true;
   }
 
+  /**
+   * @see org.apache.xpath.ExpressionNode#exprGetNumChildren()
+   */
+  public int exprGetNumChildren()
+  {
+    return ((getArg0() == null) ? 0 : 1) + ((getArg1() == null) ? 0 : 1);
+  }
+
 }

@@ -70,13 +70,11 @@ import org.xml.sax.*;
 
 import java.util.*;
 
-import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.DecimalFormat;
 
 import org.apache.xpath.*;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.compiler.XPathParser;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xml.utils.QName;
@@ -85,7 +83,6 @@ import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xalan.res.*;
 import org.apache.xalan.transformer.DecimalToRoman;
 import org.apache.xalan.transformer.CountersTable;
-import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.NodeVector;
 
@@ -544,21 +541,21 @@ public class ElemNumber extends ElemTemplateElement
     StylesheetRoot.ComposeState cstate = sroot.getComposeState();
     java.util.Vector vnames = cstate.getVariableNames();
     if(null != m_countMatchPattern)
-      m_countMatchPattern.fixupVariables(vnames, cstate.getGlobalsSize());
+      m_countMatchPattern.fixupVariables(cstate);
     if(null != m_format_avt)
-      m_format_avt.fixupVariables(vnames, cstate.getGlobalsSize());
+      m_format_avt.fixupVariables(cstate);
     if(null != m_fromMatchPattern)
-      m_fromMatchPattern.fixupVariables(vnames, cstate.getGlobalsSize());
+      m_fromMatchPattern.fixupVariables(cstate);
     if(null != m_groupingSeparator_avt)
-      m_groupingSeparator_avt.fixupVariables(vnames, cstate.getGlobalsSize());
+      m_groupingSeparator_avt.fixupVariables(cstate);
     if(null != m_groupingSize_avt)
-      m_groupingSize_avt.fixupVariables(vnames, cstate.getGlobalsSize());
+      m_groupingSize_avt.fixupVariables(cstate);
     if(null != m_lang_avt)
-      m_lang_avt.fixupVariables(vnames, cstate.getGlobalsSize());
+      m_lang_avt.fixupVariables(cstate);
     if(null != m_lettervalue_avt)
-      m_lettervalue_avt.fixupVariables(vnames, cstate.getGlobalsSize());
+      m_lettervalue_avt.fixupVariables(cstate);
     if(null != m_valueExpr)
-      m_valueExpr.fixupVariables(vnames, cstate.getGlobalsSize());
+      m_valueExpr.fixupVariables(cstate);
   }
 
 
@@ -598,7 +595,7 @@ public class ElemNumber extends ElemTemplateElement
             throws TransformerException
   {
 
-     if (TransformerImpl.S_DEBUG)
+    if (TransformerImpl.S_DEBUG)
       transformer.getTraceManager().fireTraceEvent(this);
 
     int sourceNode = transformer.getXPathContext().getCurrentNode();
@@ -765,7 +762,7 @@ public class ElemNumber extends ElemTemplateElement
    * @throws javax.xml.transform.TransformerException
    */
   XPath getCountMatchPattern(XPathContext support, int contextNode)
-          throws javax.xml.transform.TransformerException
+    throws javax.xml.transform.TransformerException
   {
 
     XPath countMatchPattern = m_countMatchPattern;
@@ -774,49 +771,101 @@ public class ElemNumber extends ElemTemplateElement
     {
       switch (dtm.getNodeType(contextNode))
       {
-      case DTM.ELEMENT_NODE :
-        MyPrefixResolver resolver;
+        case DTM.ELEMENT_NODE :
+          MyPrefixResolver resolver;
 
-        if (dtm.getNamespaceURI(contextNode) == null) {
-             resolver =  new MyPrefixResolver(dtm.getNode(contextNode), dtm,contextNode, false);
-        } else {
-            resolver = new MyPrefixResolver(dtm.getNode(contextNode), dtm,contextNode, true);
-        }
+          if (dtm.getNamespaceURI(contextNode) == null)
+          {
+            resolver =
+              new MyPrefixResolver(
+                dtm.getNode(contextNode),
+                dtm,
+                contextNode,
+                false);
+          }
+          else
+          {
+            resolver =
+              new MyPrefixResolver(
+                dtm.getNode(contextNode),
+                dtm,
+                contextNode,
+                true);
+          }
 
-        countMatchPattern = new XPath(dtm.getNodeName(contextNode), this, resolver,
-                                      XPath.MATCH, support.getErrorListener());
-        break;
+          countMatchPattern =
+            new XPath(
+              dtm.getNodeName(contextNode),
+              this,
+              resolver,
+              XPath.MATCH,
+              support.getErrorListener(),
+              getStylesheetRoot().getVersionNumber());
+          break;
 
-      case DTM.ATTRIBUTE_NODE :
+        case DTM.ATTRIBUTE_NODE :
 
-        // countMatchPattern = m_stylesheet.createMatchPattern("@"+contextNode.getNodeName(), this);
-        countMatchPattern = new XPath("@" + dtm.getNodeName(contextNode), this,
-                                      this, XPath.MATCH, support.getErrorListener());
-        break;
-      case DTM.CDATA_SECTION_NODE :
-      case DTM.TEXT_NODE :
+          // countMatchPattern = m_stylesheet.createMatchPattern("@"+contextNode.getNodeName(), this);
+          countMatchPattern =
+            new XPath(
+              "@" + dtm.getNodeName(contextNode),
+              this,
+              this,
+              XPath.MATCH,
+              support.getErrorListener(),
+              getStylesheetRoot().getVersionNumber());
+          break;
+        case DTM.CDATA_SECTION_NODE :
+        case DTM.TEXT_NODE :
 
-        // countMatchPattern = m_stylesheet.createMatchPattern("text()", this);
-        countMatchPattern = new XPath("text()", this, this, XPath.MATCH, support.getErrorListener());
-        break;
-      case DTM.COMMENT_NODE :
+          // countMatchPattern = m_stylesheet.createMatchPattern("text()", this);
+          countMatchPattern =
+            new XPath(
+              "text()",
+              this,
+              this,
+              XPath.MATCH,
+              support.getErrorListener(),
+              getStylesheetRoot().getVersionNumber());
+          break;
+        case DTM.COMMENT_NODE :
 
-        // countMatchPattern = m_stylesheet.createMatchPattern("comment()", this);
-        countMatchPattern = new XPath("comment()", this, this, XPath.MATCH, support.getErrorListener());
-        break;
-      case DTM.DOCUMENT_NODE :
+          // countMatchPattern = m_stylesheet.createMatchPattern("comment()", this);
+          countMatchPattern =
+            new XPath(
+              "comment()",
+              this,
+              this,
+              XPath.MATCH,
+              support.getErrorListener(),
+              getStylesheetRoot().getVersionNumber());
+          break;
+        case DTM.DOCUMENT_NODE :
 
-        // countMatchPattern = m_stylesheet.createMatchPattern("/", this);
-        countMatchPattern = new XPath("/", this, this, XPath.MATCH, support.getErrorListener());
-        break;
-      case DTM.PROCESSING_INSTRUCTION_NODE :
+          // countMatchPattern = m_stylesheet.createMatchPattern("/", this);
+          countMatchPattern =
+            new XPath(
+              "/",
+              this,
+              this,
+              XPath.MATCH,
+              support.getErrorListener(),
+              getStylesheetRoot().getVersionNumber());
+          break;
+        case DTM.PROCESSING_INSTRUCTION_NODE :
 
-        // countMatchPattern = m_stylesheet.createMatchPattern("pi("+contextNode.getNodeName()+")", this);
-        countMatchPattern = new XPath("pi(" + dtm.getNodeName(contextNode)
-                                      + ")", this, this, XPath.MATCH, support.getErrorListener());
-        break;
-      default :
-        countMatchPattern = null;
+          // countMatchPattern = m_stylesheet.createMatchPattern("pi("+contextNode.getNodeName()+")", this);
+          countMatchPattern =
+            new XPath(
+              "pi(" + dtm.getNodeName(contextNode) + ")",
+              this,
+              this,
+              XPath.MATCH,
+              support.getErrorListener(),
+              getStylesheetRoot().getVersionNumber());
+          break;
+        default :
+          countMatchPattern = null;
       }
     }
 
@@ -1131,49 +1180,31 @@ public class ElemNumber extends ElemTemplateElement
     Locale locale = (Locale)getLocale(transformer, contextNode).clone();
 
     // Helper to format local specific numbers to strings.
-    DecimalFormat formatter = null;
+    DecimalFormat formatter;
 
     //synchronized (locale)
     //{
-    //     formatter = (DecimalFormat) NumberFormat.getNumberInstance(locale);
+      formatter = (DecimalFormat) NumberFormat.getNumberInstance(locale);
     //}
 
     String digitGroupSepValue =
       (null != m_groupingSeparator_avt)
       ? m_groupingSeparator_avt.evaluate(
       transformer.getXPathContext(), contextNode, this) : null;
-      
-      
-    // Validate grouping separator if an AVT was used; otherwise this was 
-    // validated statically in XSLTAttributeDef.java.
-    if ((digitGroupSepValue != null) && (!m_groupingSeparator_avt.isSimple()) &&
-        (digitGroupSepValue.length() != 1))
-    {
-            transformer.getMsgMgr().warn(
-               this, XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_VALUE,
-               new Object[]{ Constants.ATTRNAME_NAME, m_groupingSeparator_avt.getName()});   
-    }                  
-      
-      
     String nDigitsPerGroupValue =
       (null != m_groupingSize_avt)
       ? m_groupingSize_avt.evaluate(
       transformer.getXPathContext(), contextNode, this) : null;
 
     // TODO: Handle digit-group attributes
-    if ((null != digitGroupSepValue) && (null != nDigitsPerGroupValue) &&
-        // Ignore if separation value is empty string
-        (digitGroupSepValue.length() > 0))
+    if ((null != digitGroupSepValue) && (null != nDigitsPerGroupValue))
     {
       try
       {
-        formatter = (DecimalFormat) NumberFormat.getNumberInstance(locale);
         formatter.setGroupingSize(
           Integer.valueOf(nDigitsPerGroupValue).intValue());
-        
-        DecimalFormatSymbols symbols = formatter.getDecimalFormatSymbols();
-        symbols.setGroupingSeparator(digitGroupSepValue.charAt(0));
-        formatter.setDecimalFormatSymbols(symbols);
+        formatter.getDecimalFormatSymbols().setGroupingSeparator(
+          digitGroupSepValue.charAt(0));
         formatter.setGroupingUsed(true);
       }
       catch (NumberFormatException ex)
@@ -1363,7 +1394,8 @@ public class ElemNumber extends ElemTemplateElement
             throws javax.xml.transform.TransformerException
   {
 
-
+    DecimalFormat formatter = getNumberFormatter(transformer, contextNode);
+    String padString = formatter.format(0);
     String letterVal =
       (m_lettervalue_avt != null)
       ? m_lettervalue_avt.evaluate(
@@ -1619,9 +1651,7 @@ public class ElemNumber extends ElemTemplateElement
       break;
     }
     default :  // "1"
-      DecimalFormat formatter = getNumberFormatter(transformer, contextNode);
-      String padString = formatter == null ? String.valueOf(0) : formatter.format(0);    
-      String numString = formatter == null ? String.valueOf(listElement) : formatter.format(listElement);
+      String numString = formatter.format(listElement);
       int nPadding = numberWidth - numString.length();
 
       for (int k = 0; k < nPadding; k++)

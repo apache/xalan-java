@@ -1411,15 +1411,12 @@ public final class DOMImpl implements DOM, Externalizable {
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
 		_last = -1;
-		if (_includeSelf) {
-		    _startNode = node;
-		}
-		else if (node >= _firstAttributeNode) {
+		if (node >= _firstAttributeNode)
 		    _startNode = node = _parent[node];
-		}
-		else {
+		else if (_includeSelf)
+		    _startNode = node;
+		else
 		    _startNode = _parent[node];
-		}
 		_index = _startNode;
 		return resetPosition();
 	    }
@@ -2701,8 +2698,8 @@ public final class DOMImpl implements DOM, Externalizable {
      * Performs a shallow copy (ref. XSLs copy())
      */
     public String shallowCopy(final int node, TransletOutputHandler handler)
-	throws TransletException 
-    {
+	throws TransletException {
+
 	final int type = _type[node];
 
 	switch(type) {
@@ -2746,40 +2743,32 @@ public final class DOMImpl implements DOM, Externalizable {
 
     private String copyElement(int node, int type,
 			       TransletOutputHandler handler)
-	throws TransletException 
-    {
+	throws TransletException {
+
 	type = type - NTYPES;
 	String name = _namesArray[type];
 	final int pi = _prefix[node];
 	final int ui = _namespace[type];
-
 	if (pi > 0) {
 	    final String prefix = _prefixArray[pi];
 	    final String uri = _uriArray[ui];
 	    final String local = getLocalName(node);
-
-	    name = prefix.equals(EMPTYSTRING) ? local : (prefix + ':' + local);
+	    if (prefix.equals(EMPTYSTRING))
+		name = local;
+	    else
+		name = prefix+':'+local;
 	    handler.startElement(name);
 	    handler.namespace(prefix, uri);
 	}
 	else {
 	    if (ui > 0) {
-		handler.startElement(name = getLocalName(node));
+		handler.startElement(getLocalName(node));
 		handler.namespace(EMPTYSTRING, _uriArray[ui]);
 	    }
 	    else {
 		handler.startElement(name);
 	    }
 	}
-
-	// Copy element namespaces
-	for (int a = _lengthOrAttr[node]; a != NULL; a = _nextSibling[a]) {
-	    if (_type[a] == NAMESPACE) {
-		handler.namespace(_prefixArray[_prefix[a]],
-				  makeStringValue(a));
-	    }
-	}
-
 	return name;
     }
 

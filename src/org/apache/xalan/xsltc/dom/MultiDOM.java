@@ -76,7 +76,6 @@ import org.apache.xalan.xsltc.runtime.Hashtable;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
 public final class MultiDOM implements DOM {
-
     private static final int NO_TYPE = DOM.FIRST_TYPE - 2;
     private static final int INITIAL_SIZE = 4;
     private static final int CLR = 0x00FFFFFF;
@@ -89,11 +88,12 @@ public final class MultiDOM implements DOM {
     private Hashtable _documents = new Hashtable();
 
     private final class AxisIterator implements NodeIterator {
+	// constitutive data
 	private final int _axis;
 	private final int _type;
-
+	// implementation mechanism
+	private NodeIterator _source;
 	private int _mask;
-	private NodeIterator _source = null;
 	
 	public AxisIterator(final int axis, final int type) {
 	    _axis = axis;
@@ -112,23 +112,19 @@ public final class MultiDOM implements DOM {
 	}
 
 	public NodeIterator setStartNode(final int node) {
-	    final int dom = node >>> 24;
-	    final int mask = node & SET;
+	    _mask = node & SET;
+	    int dom = node >>> 24;
 
-	    // Get a new source first time and when mask changes
-	    if (_source == null || _mask != mask) {
-		if (_type == NO_TYPE) {
-		    _source = _adapters[dom].getAxisIterator(_axis);
-		}
-		else if (_axis == Axis.CHILD && _type != ELEMENT) {
-		    _source = _adapters[dom].getTypedChildren(_type);
-		}
-		else {
-		    _source = _adapters[dom].getTypedAxisIterator(_axis, _type);
-		}
+	    // consider caching these
+	    if ((_type == NO_TYPE) || (_type == DOM.ELEMENT)) {
+		_source = _adapters[dom].getAxisIterator(_axis);
 	    }
-
-	    _mask = mask;
+	    else if (_axis == Axis.CHILD) {
+		_source = _adapters[dom].getTypedChildren(_type);
+	    }
+	    else {
+		_source = _adapters[dom].getTypedAxisIterator(_axis,_type);
+	    }
 	    _source.setStartNode(node & CLR);
 	    return this;
 	}
@@ -147,7 +143,10 @@ public final class MultiDOM implements DOM {
 	}
     
 	public boolean isReverse() {
-	    return (_source == null) ? false : _source.isReverse();
+	    if (_source == null)
+		return(false);
+	    else
+		return _source.isReverse();
 	}
     
 	public void setMark() {
@@ -291,9 +290,7 @@ public final class MultiDOM implements DOM {
 	    return((domIdx.intValue() << 24));
     }
 
-    /** 
-      * Returns singleton iterator containg the document root 
-      */
+    /** returns singleton iterator containg the document root */
     public NodeIterator getIterator() {
 	// main source document @ 0
 	return _adapters[0].getIterator();

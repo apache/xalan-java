@@ -71,7 +71,9 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XSequence;
 import org.apache.xml.utils.NodeVector;
+import org.apache.xml.utils.WrappedRuntimeException;
 
 import javax.xml.transform.TransformerException;
 
@@ -173,7 +175,7 @@ public class NodeSorter
   {
 
     int result = 0;
-    NodeSortKey k = (NodeSortKey) m_keys.elementAt(kIndex);
+    SortKey k = (SortKey) m_keys.elementAt(kIndex);
 
     if (k.m_treatAsNumbers)
     {
@@ -532,6 +534,17 @@ public class NodeSorter
      *
      * @throws javax.xml.transform.TransformerException
      */
+    NodeCompareElem() 
+    {}
+		
+		/**
+     * Constructor NodeCompareElem
+     *
+     *
+     * @param node Current node
+     *
+     * @throws javax.xml.transform.TransformerException
+     */
     NodeCompareElem(int node) throws javax.xml.transform.TransformerException
     {
 
@@ -541,7 +554,7 @@ public class NodeSorter
 
       if (!m_keys.isEmpty())
       {
-        NodeSortKey k1 = (NodeSortKey) m_keys.elementAt(0);
+        SortKey k1 = (SortKey) m_keys.elementAt(0);
         XObject r = k1.m_selectPat.execute(m_execContext, node,
                                            k1.m_namespaceContext);
 
@@ -561,14 +574,31 @@ public class NodeSorter
         {
           m_key1Value = k1.m_col.getCollationKey(r.str());
         }
+//        if (r.getType() == XObject.CLASS_NODESET)
+//        {
+//          // %REVIEW%
+//          DTMIterator ni = ((XNodeSet)r).iterRaw();
+//          int current = ni.getCurrentNode();
+//          if(DTM.NULL == current)
+//            current = ni.nextNode();
+//
+//          // if (ni instanceof ContextNodeList) // %REVIEW%
+//          tryNextKey = (DTM.NULL != current);
+//
+//          // else abdicate... should never happen, but... -sb
+//        }
 
         if (r.getType() == XObject.CLASS_NODESET)
         {
-          // %REVIEW%
-          DTMIterator ni = ((XNodeSet)r).iterRaw();
-          int current = ni.getCurrentNode();
-          if(DTM.NULL == current)
-            current = ni.nextNode();
+          
+          int current = r.getNodeHandle();
+          if (DTM.NULL == current)
+          {
+            XSequence xseq = (XSequence) r.xseq();
+            XObject next = xseq.next();
+            if (null != next)
+              current = next.getNodeHandle();
+          }
 
           // if (ni instanceof ContextNodeList) // %REVIEW%
           tryNextKey = (DTM.NULL != current);
@@ -578,7 +608,7 @@ public class NodeSorter
 
         if (m_keys.size() > 1)
         {
-          NodeSortKey k2 = (NodeSortKey) m_keys.elementAt(1);
+          SortKey k2 = (SortKey) m_keys.elementAt(1);
 
           if (!tryNextKey)
           {

@@ -407,7 +407,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   		}
   	}
   	
-  	assertion(false, "Could not find common ancestor!!!");
+  	assert(false, "Could not find common ancestor!!!");
   	return null;
   }
   
@@ -497,7 +497,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   	AxesWalker walker = wi.getFirstWalker();
   	for(int i = 0; i < numSteps; i++)
   	{
-  		assertion(null != walker, "Walker should not be null!");
+  		assert(null != walker, "Walker should not be null!");
   		walker = walker.getNextWalker();
   	}
   	
@@ -579,7 +579,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   		aw2 = aw2.getNextWalker();
   	}
   	
-  	assertion((null != aw1) || (null != aw2), "Total match is incorrect!");
+  	assert((null != aw1) || (null != aw2), "Total match is incorrect!");
   	
   	return true;
   }
@@ -1311,21 +1311,21 @@ public class RedundentExprEliminator extends XSLTVisitor
                                           LocPathIterator path) 
 		throws RuntimeException 
   {
-  	assertion(owner.getExpression() == path, "owner.getExpression() != path!!!");
+  	assert(owner.getExpression() == path, "owner.getExpression() != path!!!");
 	int n = paths.size();
 	// There should never be any duplicates in the list!
 	for(int i = 0; i < n; i++)
 	{
 		ExpressionOwner ew = (ExpressionOwner)paths.elementAt(i);
-		assertion(ew != owner, "duplicate owner on the list!!!");
-		assertion(ew.getExpression() != path, "duplicate expression on the list!!!");
+		assert(ew != owner, "duplicate owner on the list!!!");
+		assert(ew.getExpression() != path, "duplicate expression on the list!!!");
 	}
   }
   
   /**
    * Simple assertion.
    */
-  protected static void assertion(boolean b, String msg)
+  protected static void assert(boolean b, String msg)
   {
   	if(!b)
   	{
@@ -1363,7 +1363,7 @@ public class RedundentExprEliminator extends XSLTVisitor
   	MultistepExprHolder(ExpressionOwner exprOwner, int stepCount, MultistepExprHolder next)
   	{
   		m_exprOwner = exprOwner;
-  		assertion(null != m_exprOwner, "exprOwner can not be null!");
+  		assert(null != m_exprOwner, "exprOwner can not be null!");
   		m_stepCount = stepCount;
   		m_next = next;
   	}
@@ -1433,7 +1433,7 @@ public class RedundentExprEliminator extends XSLTVisitor
 			next = next.m_next;
 		}
 		
-		assertion(false, "unlink failed!!!");
+		assert(false, "unlink failed!!!");
 		return null;
 	}
 		

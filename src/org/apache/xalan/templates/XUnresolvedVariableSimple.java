@@ -15,9 +15,12 @@ import org.apache.xpath.objects.XObject;
  */
 public class XUnresolvedVariableSimple extends XObject
 {
+	ElemVariable m_elemVariable;
+	
   public XUnresolvedVariableSimple(ElemVariable obj)
   {
-    super(obj);
+    //super(obj);
+	m_elemVariable=obj; 
   }
     
 	
@@ -32,7 +35,7 @@ public class XUnresolvedVariableSimple extends XObject
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-  	Expression expr = ((ElemVariable)m_obj).getSelect().getExpression();
+  	Expression expr = m_elemVariable.getSelect().getExpression();
     XObject xobj = expr.execute(xctxt);
     xobj.allowDetachToRelease(false);
     return xobj;
@@ -59,6 +62,10 @@ public class XUnresolvedVariableSimple extends XObject
     return "XUnresolvedVariableSimple (" + object().getClass().getName() + ")";
   }
 
+	public Object object()
+	{
+		return m_elemVariable;
+	}
 
 }
 

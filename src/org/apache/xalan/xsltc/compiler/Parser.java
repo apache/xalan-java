@@ -740,6 +740,7 @@ public class Parser implements Constants, ContentHandler {
 	MethodType R_D  = new MethodType(Type.Real, Type.NodeSet);
 	MethodType R_O  = new MethodType(Type.Real, Type.Reference);
 	MethodType I_I  = new MethodType(Type.Int, Type.Int);
+	MethodType J_J  = new MethodType(Type.Lng, Type.Lng);  //GTM,bug 3592
  	MethodType D_O  = new MethodType(Type.NodeSet, Type.Reference);
 	MethodType D_V  = new MethodType(Type.NodeSet, Type.Void);
 	MethodType D_S  = new MethodType(Type.NodeSet, Type.String);
@@ -754,7 +755,7 @@ public class Parser implements Constants, ContentHandler {
 	MethodType B_V  = new MethodType(Type.Boolean, Type.Void);
 	MethodType B_B  = new MethodType(Type.Boolean, Type.Boolean);
 	MethodType B_S  = new MethodType(Type.Boolean, Type.String);
-	MethodType D_X  = new MethodType(Type.NodeSet, Type.Object);
+	MethodType D_T  = new MethodType(Type.NodeSet, Type.ResultTree);
 	MethodType R_RR = new MethodType(Type.Real, Type.Real, Type.Real);
 	MethodType I_II = new MethodType(Type.Int, Type.Int, Type.Int);
 	MethodType B_RR = new MethodType(Type.Boolean, Type.Real, Type.Real);
@@ -840,7 +841,7 @@ public class Parser implements Constants, ContentHandler {
 	_symbolTable.addPrimop("system-property", S_S);
 
 	// Extensions
-	_symbolTable.addPrimop("nodeset", D_X);
+	_symbolTable.addPrimop("nodeset", D_T);
 
 	// Operators +, -, *, /, % defined on real types.
 	_symbolTable.addPrimop("+", R_RR);	
@@ -880,6 +881,7 @@ public class Parser implements Constants, ContentHandler {
 	// Unary minus.
 	_symbolTable.addPrimop("u-", R_R);	
 	_symbolTable.addPrimop("u-", I_I);	
+	_symbolTable.addPrimop("u-", J_J);  // GTM,bug 3592	
     }
 
     public SymbolTable getSymbolTable() {
@@ -1008,10 +1010,7 @@ public class Parser implements Constants, ContentHandler {
 	            versionIsOne = attrs.getValue(i).equals("1.0");
 	        }
 
-		// Ignore if special or if it has a prefix
-	        if (attrQName.startsWith("xml") ||
-		    attrQName.indexOf(':') > 0) continue;
-
+	        if (attrQName.startsWith("xml")) continue;
 	        for (j = 0; j < legal.length; j++) {
 	            if (attrQName.equalsIgnoreCase(legal[j])) {
 		        break;

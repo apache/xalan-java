@@ -385,9 +385,8 @@ public class ElemTemplate extends ElemTemplateElement
   {
     super.compose(sroot);
     StylesheetRoot.ComposeState cstate = sroot.getComposeState();
-    java.util.Vector vnames = cstate.getVariableNames();
     if(null != m_matchPattern)
-      m_matchPattern.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+      m_matchPattern.fixupVariables(sroot.getComposeState());
       
     cstate.resetStackFrameSize();
     m_inArgsSize = 0;

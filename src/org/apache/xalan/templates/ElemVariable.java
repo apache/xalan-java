@@ -393,13 +393,13 @@ public class ElemVariable extends ElemTemplateElement
     // to the variable now being defined.
     java.util.Vector vnames = cstate.getVariableNames();
     if(null != m_selectPattern)
-      m_selectPattern.fixupVariables(vnames, cstate.getGlobalsSize());
+      m_selectPattern.fixupVariables(cstate);
       
     // Only add the variable if this is not a global.  If it is a global, 
     // it was already added by stylesheet root.
     if(!(m_parentNode instanceof Stylesheet))
     {
-      m_index = cstate.addVariableName(m_qname) - cstate.getGlobalsSize();
+      addVariableName(cstate);
     }
     else
     {
@@ -412,6 +412,16 @@ public class ElemVariable extends ElemTemplateElement
     // This has to be done after the addVariableName, so that the variable 
     // pushed won't be immediately popped again in endCompose.
     super.compose(sroot);
+  }
+
+
+  /**
+   * Mainly for ElemFuncResult to override.
+   * @param cstate
+   */
+  protected void addVariableName(StylesheetRoot.ComposeState cstate)
+  {
+    m_index = cstate.addVariableName(m_qname) - cstate.getGlobalsSize();
   }
   
   /**

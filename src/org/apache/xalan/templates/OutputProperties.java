@@ -878,6 +878,15 @@ public class OutputProperties extends ElemTemplateElement
     return m_properties;
   }
   
+
+  /**
+   * Get the name property (XSLT 2.0).
+   */
+  public QName getName()
+  {
+    return getQNameProperty("name");
+  }
+  
   /**
    * Copy the keys and values from the source to this object.  This will
    * not copy the default values.  This is meant to be used by going from
@@ -985,6 +994,10 @@ public class OutputProperties extends ElemTemplateElement
       {
         String oldValue = (String) this.m_properties.get(key);
         String newValue = (String) newProps.m_properties.get(key);
+        // add name QName prop to the test?
+        //QName oldName = this.getQNameProperty("name");
+        //QName newName = newProps.getQNameProperty("name");
+        //if ( ((oldName.equals(newName) &&  oldValue == null) 
         if ( ((oldValue == null) && (newValue != null)) || !oldValue.equals(newValue) )
         {
           String msg = key + " can not be multiply defined at the same "

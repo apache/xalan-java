@@ -151,11 +151,12 @@ class ProcessorKey extends XSLTElementProcessor
       {
         String valueString = attributes.getValue(i);
 
-        if (valueString.indexOf(org.apache.xpath.compiler.Keywords.FUNC_KEY_STRING
-                                + "(") >= 0)
-          handler.error(
-            XSLMessages.createMessage(
-            XSLTErrorResources.ER_INVALID_KEY_CALL, null), null);
+        // TBD: Figure out what this is all about, and what to do about it in the new world.
+//        if (valueString.indexOf(org.apache.xpath.compiler.Keywords.FUNC_KEY_STRING
+//                                + "(") >= 0)
+//          handler.error(
+//            XSLMessages.createMessage(
+//            XSLTErrorResources.ER_INVALID_KEY_CALL, null), null);
 
         processedDefs.addElement(attrDef);
         attrDef.setAttrValue(handler, attrUri, attrLocalName,

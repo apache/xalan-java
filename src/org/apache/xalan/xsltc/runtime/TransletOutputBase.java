@@ -85,8 +85,6 @@ public class TransletOutputBase implements TransletOutputHandler {
 	throws TransletException {}
     public boolean setEscaping(boolean escape) 
 	throws TransletException { return true; }
-    public void startCDATA() throws TransletException {}
-    public void endCDATA() throws TransletException {}
     public String expandQName(String withPrefix) { return(withPrefix); }
     public void setType(int type) {}
     public void setIndent(boolean indent) {}

@@ -393,28 +393,35 @@ public class Stylesheet extends ElemTemplateElement
    *
    * @return true if the prefix should normally be excluded.>
    */
-  public boolean containsExcludeResultPrefix(String prefix, String uri) 
+  public boolean containsExcludeResultPrefix(String prefix, String uri)
   {
 
-    if (null == m_ExcludeResultPrefixs || uri == null )
-      return false;
-    
-    // This loop is ok here because this code only runs during
-    // stylesheet compile time.
-    for (int i =0; i< m_ExcludeResultPrefixs.size(); i++)
+    if (null != m_ExcludeResultPrefixs && uri != null)
     {
-      if (uri.equals(getNamespaceForPrefix(m_ExcludeResultPrefixs.elementAt(i))))
-        return true;
+
+      // This loop is ok here because this code only runs during
+      // stylesheet compile time.
+      for (int i = 0; i < m_ExcludeResultPrefixs.size(); i++)
+      {
+        if (uri
+          .equals(getNamespaceForPrefix(m_ExcludeResultPrefixs.elementAt(i))))
+          return true;
+      }
     }
+
+    // Go up the parent chain to see if any of them might want to exclude.
+    // Note that the parent may not be a parent as regards XML, but may 
+    // be another stylesheet.
+    return (null != m_parentNode)
+      ? m_parentNode.containsExcludeResultPrefix(prefix, uri)
+      : false;
+
+    /*  if (prefix.length() == 0)
+        prefix = Constants.ATTRVAL_DEFAULT_PREFIX;
     
-    return false;
-
-  /*  if (prefix.length() == 0)
-      prefix = Constants.ATTRVAL_DEFAULT_PREFIX;
-
-    return m_ExcludeResultPrefixs.contains(prefix); */
+      return m_ExcludeResultPrefixs.contains(prefix); */
   }
-
+  
   /**
    * The "id" property.
    * @serial
@@ -470,6 +477,25 @@ public class Stylesheet extends ElemTemplateElement
   {
     return m_Version;
   }
+  
+  /**
+   * Get the "version" property as a double.  If no version information can 
+   * be found, revert to 1.0.
+   * @see <a href="http://www.w3.org/TR/xslt#forwards">forwards in XSLT Specification</a>
+   *
+   * @return The value of the "version" property as a double.
+   */
+  public double getVersionNumber()
+  {
+    if(null == m_Version)
+      return 1.0;
+    else
+    {
+      return Double.valueOf(m_Version).doubleValue();
+      // return Double.parseDouble(m_Version);
+    }
+  }
+
 
   /**
    * The "xsl:import" list.

@@ -87,9 +87,7 @@ public final class IntegerArray {
     }
 
     public Object clone() {
-	final IntegerArray clone = new IntegerArray(_array);
-	clone._free = _free;
-	return clone;
+	return new IntegerArray(_array);
     }
 
     public int[] toIntArray() {
@@ -107,24 +105,23 @@ public final class IntegerArray {
     }
 
     public int indexOf(int n) {
-	for (int i = 0; i < _free; i++) {
-	    if (n == _array[i]) return i;
-	}
+	for (int i = 0; i < _free; i++)
+	    if (n == _array[i])
+		return i;
 	return -1;
     }
 
     public final void add(int value) {
-	if (_free == _size) {
+	if (_free == _size)
 	    growArray(_size * 2);
-	}
 	_array[_free++] = value;
     }
   
     /** adds new int at the end if not already present */
     public void addNew(int value) {
-	for (int i = 0; i < _free; i++) {
-	    if (_array[i] == value) return;  // already in array
-	}
+	for (int i = 0; i < _free; i++)
+	    if (_array[i] == value)	// already in array
+		return;
 	add(value);
     }
 
@@ -166,8 +163,7 @@ public final class IntegerArray {
 	    }
 	    out.println(_array[_free - 1]);
 	}
-	else {
+	else
 	    out.println("IntegerArray: empty");
-	}
     }
 }

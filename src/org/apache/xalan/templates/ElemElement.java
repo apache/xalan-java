@@ -168,11 +168,10 @@ public class ElemElement extends ElemUse
     super.compose(sroot);
     
     StylesheetRoot.ComposeState cstate = sroot.getComposeState();
-    java.util.Vector vnames = cstate.getVariableNames();
     if(null != m_name_avt)
-      m_name_avt.fixupVariables(vnames, cstate.getGlobalsSize());
+      m_name_avt.fixupVariables(cstate);
     if(null != m_namespace_avt)
-      m_namespace_avt.fixupVariables(vnames, cstate.getGlobalsSize());
+      m_namespace_avt.fixupVariables(cstate);
   }
 
 
@@ -285,15 +284,12 @@ public class ElemElement extends ElemUse
  	ResultTreeHandler rhandler = transformer.getResultTreeHandler();
     XPathContext xctxt = transformer.getXPathContext();
     int sourceNode = xctxt.getCurrentNode();
-    
-    
-    String nodeName = m_name_avt == null ? null : m_name_avt.evaluate(xctxt, sourceNode, this);
+    String nodeName = m_name_avt.evaluate(xctxt, sourceNode, this);
 
     String prefix = null;
     String nodeNamespace = "";
 
-    // Only validate if an AVT was used.
-    if ((nodeName != null) && (!m_name_avt.isSimple()) && (!validateNodeName(nodeName)))
+    if (!validateNodeName(nodeName))
     {
       transformer.getMsgMgr().warn(
         this, XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_VALUE,
@@ -302,7 +298,7 @@ public class ElemElement extends ElemUse
       nodeName = null;
     }
 
-    else if (nodeName != null)
+    else
     {
       prefix = QName.getPrefixPart(nodeName);
 

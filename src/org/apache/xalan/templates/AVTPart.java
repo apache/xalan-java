@@ -59,6 +59,7 @@ package org.apache.xalan.templates;
 //import org.w3c.dom.*;
 import org.apache.xml.dtm.DTM;
 
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.XPathContext;
 import org.apache.xml.utils.FastStringBuffer;
 
@@ -127,7 +128,7 @@ public abstract class AVTPart implements java.io.Serializable, XSLTVisitable
    * in the stack frame (but variables above the globalsTop value will need 
    * to be offset to the current stack frame).
    */
-  public abstract void fixupVariables(java.util.Vector vars, int globalsSize);
+  public abstract void fixupVariables(VariableComposeState vcs);
 
 
 }

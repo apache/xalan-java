@@ -756,9 +756,11 @@ PrimaryExpr ::= VariableReference:vr
 
         | INT:num
         {: 
+	   // bug fix 3592, num comes in as a Long rather than an Integer
+	   //               see xpath.lex, {Digit}+ rule. 
 	   long value = num.longValue();
-	   if (value < Integer.MIN_VALUE || value > Integer.MAX_VALUE) {
-		RESULT = new RealExpr(value);
+	   if ((value < Integer.MIN_VALUE) || (value > Integer.MAX_VALUE)) {
+		RESULT = new LongExpr(num.longValue());
 	   }
 	   else {
                if (num.doubleValue() == -0)
@@ -767,7 +769,7 @@ PrimaryExpr ::= VariableReference:vr
                    RESULT = new IntExpr(num.intValue());
                else if (num.doubleValue() == 0.0)
                    RESULT = new RealExpr(num.doubleValue());
-               else 
+               else
                    RESULT = new IntExpr(num.intValue());
 	   }
         :}

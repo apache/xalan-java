@@ -57,24 +57,17 @@
 package org.apache.xalan.templates;
 
 //import org.w3c.dom.*;
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
-
-import org.xml.sax.*;
-
-import org.apache.xpath.*;
-import org.apache.xpath.objects.XString;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNodeSet;
-import org.apache.xalan.trace.SelectionEvent;
-import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.transformer.ResultTreeHandler;
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xml.utils.QName;
-import org.apache.xml.utils.XMLString;
-
 import javax.xml.transform.TransformerException;
+
+import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.transformer.ResultTreeHandler;
+import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xpath.Expression;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XSequence;
+import org.xml.sax.SAXException;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -102,6 +95,12 @@ public class ElemValueOf extends ElemTemplateElement
    * @serial
    */
   private boolean m_isDot = false;
+  
+  /**
+   * Seperator attribute.
+   * @serial
+   */
+  private AVT m_separator;
 
   /**
    * Set the "select" attribute.
@@ -192,6 +191,24 @@ public class ElemValueOf extends ElemTemplateElement
   {
     return m_disableOutputEscaping;
   }
+  
+  /**
+   * Returns the separator.
+   * @return String
+   */
+  public AVT getSeparator()
+  {
+    return m_separator;
+  }
+
+  /**
+   * Sets the separator.
+   * @param separator The separator to set
+   */
+  public void setSeparator(AVT separator)
+  {
+    m_separator = separator;
+  }
 
   /**
    * Get an integer representation of the element type.
@@ -220,11 +237,8 @@ public class ElemValueOf extends ElemTemplateElement
 
     super.compose(sroot);
 
-    java.util.Vector vnames = sroot.getComposeState().getVariableNames();
-
     if (null != m_selectExpression)
-      m_selectExpression.fixupVariables(
-        vnames, sroot.getComposeState().getGlobalsSize());
+      m_selectExpression.fixupVariables(sroot.getComposeState());
   }
 
   /**
@@ -266,12 +280,12 @@ public class ElemValueOf extends ElemTemplateElement
     try
     {
       // Optimize for "."
-      if (false && m_isDot && !TransformerImpl.S_DEBUG)
+      if (m_isDot && !TransformerImpl.S_DEBUG)
       {
-        int child = xctxt.getCurrentNode();
-        DTM dtm = xctxt.getDTM(child);
+        XObject item = xctxt.getCurrentItem();
+        // DTM dtm = xctxt.getDTM(child);
 
-        xctxt.pushCurrentNode(child);
+        // xctxt.pushCurrentNode(child);
 
         if (m_disableOutputEscaping)
           rth.processingInstruction(
@@ -279,7 +293,8 @@ public class ElemValueOf extends ElemTemplateElement
 
         try
         {
-          dtm.dispatchCharactersEvents(child, rth, false);
+          item.dispatchCharactersEvents(rth);
+          // dtm.dispatchCharactersEvents(child, rth, false);
         }
         finally
         {
@@ -287,7 +302,7 @@ public class ElemValueOf extends ElemTemplateElement
             rth.processingInstruction(
               javax.xml.transform.Result.PI_ENABLE_OUTPUT_ESCAPING, "");
 
-          xctxt.popCurrentNode();
+          // xctxt.popCurrentNode();
         }
       }
       else
@@ -296,7 +311,8 @@ public class ElemValueOf extends ElemTemplateElement
 
         int current = xctxt.getCurrentNode();
 
-        xctxt.pushCurrentNodeAndExpression(current, current);
+        xctxt.pushCurrentNode(current);
+        xctxt.pushCurrentExpressionNode(current);
 
         if (m_disableOutputEscaping)
           rth.processingInstruction(
@@ -305,18 +321,51 @@ public class ElemValueOf extends ElemTemplateElement
         try
         {
           Expression expr = m_selectExpression.getExpression();
+          String sep;
+          if(null != m_separator)
+            sep = m_separator.evaluate(xctxt, current, this);
+          else
+            sep = null;
 
-          if (TransformerImpl.S_DEBUG)
+         if (sep != null)
           {
-            XObject obj = expr.execute(xctxt);
-
-            transformer.getTraceManager().fireSelectedEvent(current, this,
-                    "select", m_selectExpression, obj);
-            obj.dispatchCharactersEvents(rth);
+          	XObject value = expr.execute(xctxt);
+           if (value.isSequenceProper())
+            {
+              XSequence xseq = value.xseq();
+              XObject xobj = xseq.next();
+            
+             while (xobj != null)
+              {
+             	xobj.dispatchCharactersEvents(rth);
+                xobj = xseq.next();
+              if (null != xobj)
+                  rth.characters(sep.toCharArray(), 0, sep.length());
+            
+            // %Review% Not sure this is correct. Should the sequence object
+            // be what is passed to the trace manager here?? 
+              if (TransformerImpl.S_DEBUG)
+                {
+                  transformer.getTraceManager().fireSelectedEvent(current, this,
+                    "select", m_selectExpression, xobj);
+                }
+              }
+            }
           }
           else
-          {
-            expr.executeCharsToContentHandler(xctxt, rth);
+         {
+           if (TransformerImpl.S_DEBUG)
+            {
+              XObject obj = expr.execute(xctxt);
+
+              transformer.getTraceManager().fireSelectedEvent(current, this,
+                    "select", m_selectExpression, obj);
+              obj.dispatchCharactersEvents(rth);
+            }
+           else
+            {
+              expr.executeCharsToContentHandler(xctxt, rth);
+            }
           }
         }
         finally
@@ -334,17 +383,13 @@ public class ElemValueOf extends ElemTemplateElement
     {
       throw new TransformerException(se);
     }
-    catch (RuntimeException re) {
-    	TransformerException te = new TransformerException(re);
-    	te.setLocator(this);
-    	throw te;
-    }
     finally
     {
       if (TransformerImpl.S_DEBUG)
 	    transformer.getTraceManager().fireTraceEndEvent(this); 
     }
   }
+  
 
   /**
    * Add a child to the child list.

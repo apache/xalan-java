@@ -111,15 +111,6 @@ abstract class Expression extends SyntaxTreeNode {
     }
 		
     /**
-     * Returns an object representing the compile-time evaluation 
-     * of an expression. We are only using this for function-available
-     * and element-available at this time.
-     */
-    public Object evaluateAtCompileTime() {
-	return null;
-    }
-
-    /**
      * Type check all the children of this node.
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
@@ -180,7 +171,15 @@ abstract class Expression extends SyntaxTreeNode {
 	    return;		// nothing to do
 	}
 
-	if ( (this instanceof VariableRefBase) == false ) {
+	if (this instanceof VariableRefBase) {
+	    // The method cloneIterator() also does resetting
+	    final int clone =
+		cpg.addInterfaceMethodref(NODE_ITERATOR,
+					  "cloneIterator",
+					  "()" + NODE_ITERATOR_SIG);
+	    il.append(new INVOKEINTERFACE(clone, 1));
+	}
+	else {
 	    il.append(methodGen.loadContextNode());
 	    il.append(methodGen.setStartNode());
 	}
@@ -204,14 +203,6 @@ abstract class Expression extends SyntaxTreeNode {
 			     MethodGenerator methodGen) {
 	final InstructionList il = methodGen.getInstructionList();
 	_falseList.add(il.append(new IFEQ(null)));
-    }
-
-    public FlowList getFalseList() {
-	return _falseList;
-    }
-
-    public FlowList getTrueList() {
-	return _trueList;
     }
 
     public void backPatchFalseList(InstructionHandle ih) {

@@ -174,6 +174,7 @@ public class Constants
                               ELEMNAME_STRIPSPACE = 32,
                               ELEMNAME_STYLESHEET = 25, ELEMNAME_TEXT = 42,
                               ELEMNAME_VALUEOF = 30, ELEMNAME_WHEN = 38,
+		                          ELEMNAME_FOREACHGROUP = 94,
 
   // Pattern by example support  
   ELEMNAME_ROOT = 44, ELEMNAME_ANY = 45, ELEMNAME_ELEMENT = 46,
@@ -196,7 +197,7 @@ public class Constants
   ELEMNAME_EXTENSIONSCRIPT = 86, ELEMNAME_OUTPUT = 80,
   ELEMNAME_COMPONENT = 81, ELEMNAME_SCRIPT = 82;
 
-  // Next free number: 90 (88 and 89 used for EXSLT elements);
+  // Next free number: 96 (88-93 used for XSLT2.0 and EXSLT elements);
 
   /**
    * Literals for XSL element names.  Note that there are more
@@ -237,6 +238,7 @@ public class Constants
       ELEMNAME_EXTENSION_STRING = "functions",
       ELEMNAME_FALLBACK_STRING = "fallback",
       ELEMNAME_FOREACH_STRING = "for-each",
+	  ELEMNAME_FOREACHGROUP_STRING = "for-each-group",
       ELEMNAME_IF_STRING = "if",
       ELEMNAME_IMPORT_STRING = "import",
       ELEMNAME_INCLUDE_STRING = "include",
@@ -272,16 +274,32 @@ public class Constants
       ELEMNAME_WITHPARAM_STRING = "with-param";
   
   /**
+   * Literals for XSLT 2.0 elements (stylesheet function; principal and 
+   * secondary result documents).
+   */
+  public static final String
+    ELEMNAME_FUNCTION_STRING = "function",
+    ELEMNAME_FUNCRESULT_STRING = "result",
+    ELEMNAME_PRINCIPALRESULTDOCUMENT_STRING = "principal-result-document",
+    ELEMNAME_RESULTDOCUMENT_STRING = "result-document",
+    ELEMNAME_NAMESPACE_STRING = "namespace";
+  public static final int
+    ELEMNAME_FUNCTION = 88,
+    ELEMNAME_FUNCRESULT = 89,
+    ELEMNAME_PRINCIPALRESULTDOCUMENT = 90,
+    ELEMNAME_RESULTDOCUMENT = 91,
+    ELEMNAME_NAMESPACE = 95;
+  
+  /**
    * Literals for EXSLT function elements.
    */
   public static final String
     EXSLT_ELEMNAME_FUNCTION_STRING = "function",
     EXSLT_ELEMNAME_FUNCRESULT_STRING = "result";
   public static final int
-    EXSLT_ELEMNAME_FUNCTION = 88,
-    EXSLT_ELEMNAME_FUNCRESULT = 89;
-  
-  
+    EXSLT_ELEMNAME_FUNCTION = 92,
+    EXSLT_ELEMNAME_FUNCRESULT = 93;
+    
   /**
    * Literals for XSL attribute names.  Note that there may be more
    * names than IDs, because some names may map to the same ID.
@@ -317,6 +335,10 @@ public class Constants
       ATTRNAME_FROM = "from",
       ATTRNAME_GROUPINGSEPARATOR = "grouping-separator",
       ATTRNAME_GROUPINGSIZE = "grouping-size",
+		  ATTRNAME_GROUPBY = "group-by",
+      ATTRNAME_GROUPADJACENT = "group-adjacent",
+      ATTRNAME_GROUPSTARTING_WITH = "group-starting-with",
+      ATTRNAME_GROUPENDING_WITH = "group-ending-with",
       ATTRNAME_HREF = "href",
       ATTRNAME_ID = "id",
       ATTRNAME_IMPORTANCE = "importance",
@@ -463,8 +485,6 @@ public class Constants
   /** For Stylesheet-prefix and result-prefix in xsl:namespace-alias          */
   public static final String ATTRVAL_DEFAULT_PREFIX = "#default";
 
- /** Integer equivalents for above        */
-  public static final int NUMBERLETTER_ALPHABETIC = 1, NUMBERLETTER_TRADITIONAL = 2;
   
   /** Integer equivelents for above        */
   public static final int NUMBERLEVEL_SINGLE = 1, NUMBERLEVEL_MULTI = 2,
@@ -484,14 +504,6 @@ public class Constants
                              ATTRVAL_CASEORDER_UPPER = "upper-first",
                              ATTRVAL_CASEORDER_LOWER = "lower-first";
 
- /** Integer equivelents for DATATYPE attribute */
-  public static final int SORTDATATYPE_TEXT = 1, SORTDATATYPE_NUMBER = 2;
-
-  /** Integer equivelents for ORDER attribute */
-  public static final int SORTORDER_ASCENDING = 1, SORTORDER_DESCENDING = 2;
-  
-  /** Integer equivelents for CASE-ORDER attribute */
-  public static final int SORTCASEORDER_UPPERFIRST = 1, SORTCASEORDER_LOWERFIRST = 2;
   
   /** some stuff for Decimal-format       */
   public static final String ATTRVAL_INFINITY = "Infinity",

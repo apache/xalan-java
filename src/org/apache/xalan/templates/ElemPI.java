@@ -125,7 +125,7 @@ public class ElemPI extends ElemTemplateElement
     super.compose(sroot);
     java.util.Vector vnames = sroot.getComposeState().getVariableNames();
     if(null != m_name_atv)
-      m_name_atv.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+      m_name_atv.fixupVariables(sroot.getComposeState());
   }
 
 
@@ -173,28 +173,16 @@ public class ElemPI extends ElemTemplateElement
 
     XPathContext xctxt = transformer.getXPathContext();
     int sourceNode = xctxt.getCurrentNode();
-    
-    String piName = m_name_atv == null ? null : m_name_atv.evaluate(xctxt, sourceNode, this);
-    
-    // Ignore processing instruction if name is null
-    if (piName == null) return;
+    String piName = m_name_atv.evaluate(xctxt, sourceNode, this);
 
     if (piName.equalsIgnoreCase("xml"))
     {
-     	transformer.getMsgMgr().warn(
-        this, XSLTErrorResources.WG_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML,
-              new Object[]{ Constants.ATTRNAME_NAME, piName });
-		return;
+      error(XSLTErrorResources.ER_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML);  //"processing-instruction name can not be 'xml'");
     }
-    
-    // Only check if an avt was used (ie. this wasn't checked at compose time.)
-    // Ignore processing instruction, if invalid
-    else if ((!m_name_atv.isSimple()) && (!isValidNCName(piName)))
+    else if (!isValidNCName(piName))
     {
-     	transformer.getMsgMgr().warn(
-        this, XSLTErrorResources.WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME,
-              new Object[]{ Constants.ATTRNAME_NAME, piName });
-		return;    	
+      error(XSLTErrorResources.ER_PROCESSINGINSTRUCTION_NOTVALID_NCNAME,
+            new Object[]{ piName });  //"processing-instruction name must be a valid NCName: "+piName);
     }
 
     // Note the content model is:

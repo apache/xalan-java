@@ -197,11 +197,10 @@ public class Encodings extends Object
    */
   public static int getLastPrintable(String encoding)
   {
-
     for (int i = 0; i < _encodings.length; ++i)
     {
       if (_encodings[i].name.equalsIgnoreCase(encoding)
-              || _encodings[i].javaName.equalsIgnoreCase(encoding))
+        || _encodings[i].javaName.equalsIgnoreCase(encoding))
         return _encodings[i].lastPrintable;
     }
 
@@ -341,78 +340,96 @@ public class Encodings extends Object
   private static EncodingInfo[] loadEncodingInfo()
   {
     URL url = null;
-    try {
-      String urlString = null;
-      try {
-        urlString = System.getProperty("org.apache.xalan.serialize.encodings", "");
-      }
-      catch (SecurityException e) {}
-      
+    try
+    {
+      String urlString =
+        System.getProperty("org.apache.xalan.serialize.encodings", "");
       if (urlString != null && urlString.length() > 0)
-        url = new URL (urlString);
-      if (url == null) {
-        ClassLoader cl = null;          
-        try{
-          java.lang.reflect.Method getCCL = Thread.class.getMethod("getContextClassLoader", NO_CLASSES);
-          if (getCCL != null) {
+        url = new URL(urlString);
+      if (url == null)
+      {
+        ClassLoader cl = null;
+        try
+        {
+          java.lang.reflect.Method getCCL =
+            Thread.class.getMethod("getContextClassLoader", NO_CLASSES);
+          if (getCCL != null)
+          {
             cl = (ClassLoader) getCCL.invoke(Thread.currentThread(), NO_OBJS);
           }
         }
-        catch (Exception e) {}
-        if (cl != null) {
+        catch (Exception e)
+        {
+        }
+        if (cl != null)
+        {
           url = cl.getResource(ENCODINGS_FILE);
         }
       }
       if (url == null)
         url = ClassLoader.getSystemResource(ENCODINGS_FILE);
 
-      Properties props = new Properties ();
-      if (url != null) {
+      Properties props = new Properties();
+      if (url != null)
+      {
         InputStream is = url.openStream();
         props.load(is);
         is.close();
       }
-      else {
-      // Seems to be no real need to force failure here, let the system
-      //   do its best... The issue is not really very critical, and the
-      //   output will be in any case _correct_ though maybe not always
-      //   human-friendly... :)
-      // But maybe report/log the resource problem?
-      // Any standard ways to report/log errors in Xalan (in static context)?
+      else
+      {
+        // Seems to be no real need to force failure here, let the system
+        //   do its best... The issue is not really very critical, and the
+        //   output will be in any case _correct_ though maybe not always
+        //   human-friendly... :)
+        // But maybe report/log the resource problem?
+        // Any standard ways to report/log errors in Xalan (in static context)?
       }
 
-      int totalEntries = props.size();
-      EncodingInfo[] ret = new EncodingInfo[totalEntries];
-      Enumeration keys = props.keys();
-      for (int i = 0; i < totalEntries; ++i) {
-        String mimeName = (String) keys.nextElement();
-        String val = props.getProperty(mimeName);
-        int pos = val.indexOf(' ');
-        String javaName;
-        int lastPrintable;
-        if (pos < 0)
-        {
-          // Maybe report/log this problem?
-          //  "Last printable character not defined for encoding " +
-          //  mimeName + " (" + val + ")" ...
-          javaName = val;
-          lastPrintable = 0x00FF;
-        }
-        else
-        {
-          javaName = val.substring(0, pos);
-          lastPrintable =
-                         Integer.decode(val.substring(pos).trim()).intValue();
-        }
-        ret [i] = new EncodingInfo (mimeName, javaName, lastPrintable);
-      }
-      return ret;
-    } catch (java.net.MalformedURLException mue) {
+      return loadEncodingInfoFromProps(props);
+    }
+    catch (java.net.MalformedURLException mue)
+    {
       throw new org.apache.xml.utils.WrappedRuntimeException(mue);
     }
-    catch (java.io.IOException ioe) {
+    catch (java.io.IOException ioe)
+    {
       throw new org.apache.xml.utils.WrappedRuntimeException(ioe);
     }
+    catch(Exception ex)
+    {
+      return loadEncodingInfoFromProps(new Properties());
+    }
+  }
+
+  private static EncodingInfo[] loadEncodingInfoFromProps(Properties props)
+  {
+    int totalEntries = props.size();
+    EncodingInfo[] ret = new EncodingInfo[totalEntries];
+    Enumeration keys = props.keys();
+    for (int i = 0; i < totalEntries; ++i)
+    {
+      String mimeName = (String) keys.nextElement();
+      String val = props.getProperty(mimeName);
+      int pos = val.indexOf(' ');
+      String javaName;
+      int lastPrintable;
+      if (pos < 0)
+      {
+        // Maybe report/log this problem?
+        //  "Last printable character not defined for encoding " +
+        //  mimeName + " (" + val + ")" ...
+        javaName = val;
+        lastPrintable = 0x00FF;
+      }
+      else
+      {
+        javaName = val.substring(0, pos);
+        lastPrintable = Integer.decode(val.substring(pos).trim()).intValue();
+      }
+      ret[i] = new EncodingInfo(mimeName, javaName, lastPrintable);
+    }
+    return ret;
   }
 
   private static final EncodingInfo[] _encodings = loadEncodingInfo();

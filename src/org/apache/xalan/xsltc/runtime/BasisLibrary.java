@@ -69,7 +69,6 @@ package org.apache.xalan.xsltc.runtime;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import java.text.NumberFormat;
 import java.text.MessageFormat;
 import java.text.FieldPosition;
 import java.text.DecimalFormat;
@@ -85,16 +84,6 @@ import org.apache.xalan.xsltc.dom.DOMAdapter;
 import org.apache.xalan.xsltc.dom.MultiDOM;
 import org.apache.xalan.xsltc.dom.AbsoluteIterator;
 import org.apache.xalan.xsltc.dom.SingletonIterator;
-
-import org.apache.xalan.xsltc.dom.DOMImpl;
-import org.apache.xalan.xsltc.dom.DOMBuilder;
-import org.apache.xalan.xsltc.dom.StepIterator;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import javax.xml.parsers.DocumentBuilderFactory; 
-import javax.xml.parsers.DocumentBuilder; 
-import org.apache.xalan.xsltc.trax.DOM2SAX;
 
 /**
  * Standard XSLT functions. All standard functions expect the current node 
@@ -465,20 +454,10 @@ public final class BasisLibrary implements Operators {
     /**
      * Implements the nodeset() extension function. 
      */
-    public static NodeIterator nodesetF(Object obj) {
-	if (obj instanceof DOM) {
-	   final DOMAdapter adapter = (DOMAdapter) obj;
-	   return new SingletonIterator(
-		  DOM.ROOTNODE | adapter.getMultiDOMMask(), true);
-	}
-        else if (obj instanceof NodeIterator) {
-	   return (NodeIterator) obj;
-        }
-        else {
-	    final String className = obj.getClass().getName();
-	    runTimeError(DATA_CONVERSION_ERR, "node-set", className);
-	    return null;
-        }
+    public static NodeIterator nodesetF(DOM rtf) {
+	final DOMAdapter adapter = (DOMAdapter) rtf;
+	return new SingletonIterator(
+	    DOM.ROOTNODE | adapter.getMultiDOMMask(), true);
     }
 
     //-- Begin utility functions
@@ -832,7 +811,7 @@ public final class BasisLibrary implements Operators {
     private static boolean hasSimpleType(Object obj) {
 	return obj instanceof Boolean || obj instanceof Double ||
 	    obj instanceof Integer || obj instanceof String ||
-	    obj instanceof Node || obj instanceof DOM; 
+	    obj instanceof Node;
     }
 
     /**
@@ -865,9 +844,7 @@ public final class BasisLibrary implements Operators {
     private static String defaultPattern = "";
 
     static {
-	NumberFormat f = NumberFormat.getInstance(Locale.getDefault());
-	defaultFormatter = (f instanceof DecimalFormat) ?
-	    (DecimalFormat) f : new DecimalFormat();
+	defaultFormatter = new DecimalFormat();
 	defaultFormatter.setGroupingUsed(false);
     }
 
@@ -912,9 +889,7 @@ public final class BasisLibrary implements Operators {
 				      DecimalFormat formatter) {
 	try {
 	    StringBuffer result = new StringBuffer();
-	    if (pattern != defaultPattern) {
-		formatter.applyLocalizedPattern(pattern);
-	    }
+	    formatter.applyLocalizedPattern(pattern);
 
 	    //------------------------------------------------------
  	    // bug fix # 9179 - make sure localized pattern contains
@@ -967,133 +942,6 @@ public final class BasisLibrary implements Operators {
 	    runTimeError(DATA_CONVERSION_ERR, "reference", className);
 	    return null;
 	}
-    }
-
-    /**
-     * Utility function used to convert a w3c NodeList into a internal
-     * DOM iterator. 
-     */
-    public static NodeIterator nodeList2Iterator(org.w3c.dom.NodeList nodeList,
-	Translet translet, DOM dom) 
-    {
-	int size = nodeList.getLength();
-
-	// w3c NodeList -> w3c DOM
-	DocumentBuilderFactory dfac = DocumentBuilderFactory.newInstance();
-	DocumentBuilder docbldr = null;
-	try {
-	    docbldr = dfac.newDocumentBuilder();
-	} catch (javax.xml.parsers.ParserConfigurationException e) {
-	    runTimeError(RUN_TIME_INTERNAL_ERR, e.getMessage());
-            return null;
-
-	}
-	// create new w3c DOM
-	Document doc = docbldr.newDocument();	
-        org.w3c.dom.Node topElementNode = 
-            doc.appendChild(doc.createElementNS("", "__top__"));
-
-	// copy Nodes from NodeList into new w3c DOM
-	for (int i=0; i<size; i++){
-	    org.w3c.dom.Node curr = nodeList.item(i);
-	    int nodeType = curr.getNodeType();
-	    if (nodeType == org.w3c.dom.Node.DOCUMENT_NODE) {
-		// ignore the root node of node list
-		continue;
-	    }
-	    String value = null;
-	    try {
-	        value = curr.getNodeValue();
-	    } catch (DOMException ex) {
-		runTimeError(RUN_TIME_INTERNAL_ERR, ex.getMessage());
-                return null;
-	    }
-	    String namespaceURI = curr.getNamespaceURI();
-	    String nodeName = curr.getNodeName();
-	    org.w3c.dom.Node newNode = null; 
-	    switch (nodeType){
-		case org.w3c.dom.Node.ATTRIBUTE_NODE: 
-		     newNode = doc.createAttributeNS(namespaceURI,
-			nodeName);
-                     break;
-		case org.w3c.dom.Node.CDATA_SECTION_NODE: 
-		     newNode = doc.createCDATASection(value);
-                     break;
-		case org.w3c.dom.Node.COMMENT_NODE: 
-		     newNode = doc.createComment(value);
-                     break;
-		case org.w3c.dom.Node.DOCUMENT_FRAGMENT_NODE: 
-		     newNode = doc.createDocumentFragment();
-                     break;
-		case org.w3c.dom.Node.DOCUMENT_TYPE_NODE: 
-		     // nothing ?
-                     break;
-		case org.w3c.dom.Node.ELEMENT_NODE: 
-		     newNode = doc.createElementNS(namespaceURI, nodeName);
-		     break;
-		case org.w3c.dom.Node.ENTITY_NODE: 
-		     // nothing ? 
-                     break;
-		case org.w3c.dom.Node.ENTITY_REFERENCE_NODE: 
-		     newNode = doc.createEntityReference(nodeName);
-		     break;
-		case org.w3c.dom.Node.NOTATION_NODE: 
-		     // nothing ? 
-		     break;
-		case org.w3c.dom.Node.PROCESSING_INSTRUCTION_NODE: 
-		     newNode = doc.createProcessingInstruction(nodeName,
-			value);
-		     break;
-		case org.w3c.dom.Node.TEXT_NODE: 
-		     newNode = doc.createTextNode(value);
-		     break;
-	    }
-	    try {
-	        topElementNode.appendChild(newNode);
-	    } catch (DOMException e) {
-		runTimeError(RUN_TIME_INTERNAL_ERR, e.getMessage());
-		return null;
-	    }
-	}
-	// w3c DOM -> DOM2SAX -> DOMBuilder -> DOMImpl
-	DOMImpl idom = new DOMImpl();
-	final DOM2SAX dom2sax = new DOM2SAX(doc);
-	final DOMBuilder domBuilder = idom.getBuilder();
-	dom2sax.setContentHandler(domBuilder);
-	try {
-	    dom2sax.parse(); 
-	} 
-        catch (java.io.IOException e){
-	    runTimeError(RUN_TIME_INTERNAL_ERR, e.getMessage());
-            return null;
-	}
-        catch (org.xml.sax.SAXException e){
-	    runTimeError(RUN_TIME_INTERNAL_ERR, e.getMessage());
-            return null;
-	}
-	
-
-	if (dom instanceof MultiDOM) {
-            final MultiDOM multiDOM = (MultiDOM) dom;
-
-	    // Create DOMAdapter and register with MultiDOM
-	    DOMAdapter domAdapter = new DOMAdapter(idom, 
-                translet.getNamesArray(),
-		translet.getNamespaceArray());
-            multiDOM.addDOMAdapter(domAdapter);
-
-	    NodeIterator iter1 = multiDOM.getAxisIterator(Axis.CHILD);
-	    NodeIterator iter2 = multiDOM.getAxisIterator(Axis.CHILD);
-            NodeIterator iter = new AbsoluteIterator(
-                new StepIterator(iter1, iter2));
-
- 	    iter.setStartNode(DOM.ROOTNODE | domAdapter.getMultiDOMMask());
-	    return iter;
-	}
-        else {
-	    runTimeError(RUN_TIME_INTERNAL_ERR, "nodeList2Iterator()");
-	    return null;
-        }
     }
 
     /**

@@ -96,31 +96,9 @@ final class LogicalExpr extends Expression {
      * needed for context changes in node steps containing multiple predicates.
      */
     public boolean hasPositionCall() {
-	return (_left.hasPositionCall() || _right.hasPositionCall());
-    }
-
-    /**
-     * Returns an object representing the compile-time evaluation 
-     * of an expression. We are only using this for function-available
-     * and element-available at this time.
-     */
-    public Object evaluateAtCompileTime() {
-	final Object leftb = _left.evaluateAtCompileTime();
-	final Object rightb = _right.evaluateAtCompileTime();
-
-	// Return null if we can't evaluate at compile time
-	if (leftb == null || rightb == null) {
-	    return null;
-	}
-
-	if (_op == AND) {
-	    return (leftb == Boolean.TRUE && rightb == Boolean.TRUE) ?
-		Boolean.TRUE : Boolean.FALSE;
-	}
-	else {
-	    return (leftb == Boolean.TRUE || rightb == Boolean.TRUE) ?
-		Boolean.TRUE : Boolean.FALSE;
-	}
+	if (_left.hasPositionCall()) return true;
+	if (_right.hasPositionCall()) return true;
+	return false;
     }
 
     /**

@@ -74,7 +74,6 @@ import org.xml.sax.helpers.*;
 import org.apache.xalan.serialize.*;
 import org.apache.xml.utils.*;
 import org.apache.xpath.*;
-import org.apache.xpath.compiler.XPathParser;
 import org.apache.xalan.trace.*;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
@@ -116,7 +115,7 @@ public class StylesheetRoot extends StylesheetComposed
 
     try
     {
-      m_selectDefault = new XPath("node()", this, this, XPath.SELECT, errorListener);
+      m_selectDefault = new XPath("node()", this, this, XPath.SELECT, errorListener, getVersionNumber());
 
       initDefaultRule(errorListener);
     }
@@ -483,7 +482,14 @@ public class StylesheetRoot extends StylesheetComposed
    * will be set as stylesheets are encountered.
    * @serial
    */
-  private OutputProperties m_outputProperties;
+  private OutputProperties m_outputProperties; // Keep for time being?? 
+  // Can set from ElemPrincipalResultDocument.
+  protected void setOutputProperties(OutputProperties primaryProps)
+  {
+    m_outputProperties = primaryProps;
+  }
+  
+  private Hashtable m_outputPropertiesTable = new Hashtable();
 
   /**
    * Recompose the output format object from the included elements.
@@ -492,9 +498,30 @@ public class StylesheetRoot extends StylesheetComposed
    */
   void recomposeOutput(OutputProperties oprops)
     throws TransformerException
-  {
-    
-    m_outputProperties.copyFrom(oprops);
+  { 
+      // code commented out because of regressions. -sb   
+      // //System.out.println("StylesheetRoot.recomposeOutput() " + oprops.getName());
+      // // put into m_outputPropertiesTable
+      // 
+      // Object key = (oprops.getName() != null)
+      //               ? (Object)oprops.getName(): (Object)new String("") ;
+      // 
+      // if (m_outputPropertiesTable.containsKey(key))
+      // {
+      //   //System.out.println("has key " + key);
+      //   ((OutputProperties)m_outputPropertiesTable.get(key)).copyFrom(oprops);
+      // }
+      // else
+      // { 
+      //   //System.out.println("new key " + key);
+      //   OutputProperties outputProps = new OutputProperties(Method.XML);
+      //   outputProps.copyFrom(oprops);
+      //   m_outputPropertiesTable.put(key, outputProps);
+      // }
+      //m_outputProperties.copyFrom(oprops); 
+       
+      // Code restored from Xalan main branch.   
+      m_outputProperties.copyFrom(oprops);
   }
 
   /**
@@ -515,7 +542,19 @@ public class StylesheetRoot extends StylesheetComposed
     // System.out.println("getOutputComposed.getIndenting: "+m_outputProperties.getIndenting());
     return m_outputProperties;
   }
+  
+  //dml
+  public OutputProperties getOutputComposed(QName qname)
+  {
+    Object key = (qname != null)
+                  ? (Object)qname : (Object)new String("") ;
+    OutputProperties oprops = (OutputProperties)m_outputPropertiesTable.get(key);
+    
+    return oprops;
+  }
 
+  // following flag must be changed to include QName param.
+  
   /** Flag indicating whether an output method has been set by the user.
    *  @serial           */
   private boolean m_outputMethodSet = false;
@@ -1059,7 +1098,8 @@ public class StylesheetRoot extends StylesheetComposed
    *
    * @throws TransformerException
    */
-  private void initDefaultRule(ErrorListener errorListener) throws TransformerException
+  private void initDefaultRule(ErrorListener errorListener)
+    throws TransformerException
   {
 
     // Then manufacture a default
@@ -1067,7 +1107,14 @@ public class StylesheetRoot extends StylesheetComposed
 
     m_defaultRule.setStylesheet(this);
 
-    XPath defMatch = new XPath("*", this, this, XPath.MATCH, errorListener);
+    XPath defMatch =
+      new XPath(
+        "*",
+        this,
+        this,
+        XPath.MATCH,
+        errorListener,
+        getVersionNumber());
 
     m_defaultRule.setMatch(defMatch);
 
@@ -1076,7 +1123,7 @@ public class StylesheetRoot extends StylesheetComposed
     childrenElement.setIsDefaultTemplate(true);
     childrenElement.setSelect(m_selectDefault);
     m_defaultRule.appendChild(childrenElement);
-    
+
     m_startRule = m_defaultRule;
 
     // -----------------------------
@@ -1084,7 +1131,14 @@ public class StylesheetRoot extends StylesheetComposed
 
     m_defaultTextRule.setStylesheet(this);
 
-    defMatch = new XPath("text() | @*", this, this, XPath.MATCH, errorListener);
+    defMatch =
+      new XPath(
+        "text() | @*",
+        this,
+        this,
+        XPath.MATCH,
+        errorListener,
+        getVersionNumber());
 
     m_defaultTextRule.setMatch(defMatch);
 
@@ -1092,7 +1146,14 @@ public class StylesheetRoot extends StylesheetComposed
 
     m_defaultTextRule.appendChild(elemValueOf);
 
-    XPath selectPattern = new XPath(".", this, this, XPath.SELECT, errorListener);
+    XPath selectPattern =
+      new XPath(
+        ".",
+        this,
+        this,
+        XPath.SELECT,
+        errorListener,
+        getVersionNumber());
 
     elemValueOf.setSelect(selectPattern);
 
@@ -1101,7 +1162,14 @@ public class StylesheetRoot extends StylesheetComposed
 
     m_defaultRootRule.setStylesheet(this);
 
-    defMatch = new XPath("/", this, this, XPath.MATCH, errorListener);
+    defMatch =
+      new XPath(
+        "/",
+        this,
+        this,
+        XPath.MATCH,
+        errorListener,
+        getVersionNumber());
 
     m_defaultRootRule.setMatch(defMatch);
 
@@ -1216,7 +1284,7 @@ public class StylesheetRoot extends StylesheetComposed
     /**
      * Class to track state global state during the compose() operation.
      */
-    class ComposeState
+    class ComposeState implements VariableComposeState
     {
       ComposeState()
       {
@@ -1261,7 +1329,7 @@ public class StylesheetRoot extends StylesheetComposed
        * @param qname A qualified name of a param or variable, should be non-null.
        * @return the index where the variable was added.
        */
-      int addVariableName(final org.apache.xml.utils.QName qname)
+      public int addVariableName(final org.apache.xml.utils.QName qname)
       {
         int pos = m_variableNames.size();
         m_variableNames.addElement(qname);
@@ -1271,12 +1339,12 @@ public class StylesheetRoot extends StylesheetComposed
         return pos;
       }
       
-      void resetStackFrameSize()
+      public void resetStackFrameSize()
       {
         m_maxStackFrameSize = 0;
       }
       
-      int getFrameSize()
+      public int getFrameSize()
       {
         return m_maxStackFrameSize;
       }
@@ -1286,7 +1354,7 @@ public class StylesheetRoot extends StylesheetComposed
        * in a template element at startElement, so that it can be popped 
        * at endElement.
        */
-      int getCurrentStackFrameSize()
+      public int getCurrentStackFrameSize()
       {
         return m_variableNames.size();
       }
@@ -1294,24 +1362,24 @@ public class StylesheetRoot extends StylesheetComposed
       /**
        * Set the current size of the stack frame.
        */
-      void setCurrentStackFrameSize(int sz)
+      public void setCurrentStackFrameSize(int sz)
       {
         m_variableNames.setSize(sz);
       }
       
-      int getGlobalsSize()
+      public int getGlobalsSize()
       {
         return m_variables.size();
       }
       
       IntStack m_marks = new IntStack();
       
-      void pushStackMark()
+      public void pushStackMark()
       {
         m_marks.push(getCurrentStackFrameSize());
       }
       
-      void popStackMark()
+      public void popStackMark()
       {
         int mark = m_marks.pop();
         setCurrentStackFrameSize(mark);
@@ -1324,7 +1392,7 @@ public class StylesheetRoot extends StylesheetComposed
        * returned is owned by this class, and so should not really be mutated, or 
        * stored anywhere.
        */
-      java.util.Vector getVariableNames()
+      public java.util.Vector getVariableNames()
       {
         return m_variableNames;
       }

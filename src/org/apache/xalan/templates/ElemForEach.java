@@ -70,16 +70,21 @@ import org.xml.sax.*;
 import org.apache.xpath.*;
 import org.apache.xpath.Expression;
 import org.apache.xpath.axes.ContextNodeList;
+import org.apache.xpath.objects.XNodeSequenceSingleton;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XSequence;
 
 import java.util.Vector;
 
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.transformer.ItemSorter;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.NodeSorter;
 import org.apache.xalan.transformer.ResultTreeHandler;
+import org.apache.xalan.transformer.StackGuard;
 import org.apache.xalan.transformer.ClonerToResultTree;
 
 import javax.xml.transform.SourceLocator;
@@ -175,8 +180,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     java.util.Vector vnames = sroot.getComposeState().getVariableNames();
 
     if (null != m_selectExpression)
-      m_selectExpression.fixupVariables(
-        vnames, sroot.getComposeState().getGlobalsSize());
+      m_selectExpression.fixupVariables(sroot.getComposeState());
     else
     {
       m_selectExpression =
@@ -335,7 +339,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   {
 
     NodeSorter sorter = new NodeSorter(xctxt);
-    sourceNodes.setShouldCacheNodes(true);
+    sourceNodes.setShouldCache(true);
     sourceNodes.runTo(-1);
     xctxt.pushContextNodeList(sourceNodes);
 
@@ -351,6 +355,42 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 
     return sourceNodes;
   }
+  
+  /**
+   * Sort given nodes
+   *
+   *
+   * @param xctxt The XPath runtime state for the sort.
+   * @param keys Vector of sort keyx
+   * @param sourceNodes Iterator of nodes to sort
+   *
+   * @return iterator of sorted nodes
+   *
+   * @throws TransformerException
+   */
+  public XSequence sortSequence(
+          XPathContext xctxt, Vector keys, XSequence sequence)
+            throws TransformerException
+  {
+
+    ItemSorter sorter = new ItemSorter(xctxt);
+    sequence.setShouldCache(true);
+    sequence.getLength();  // force cache to fill up.
+    xctxt.pushContextSequence(sequence);
+
+    try
+    {
+      sequence = sorter.sort(sequence, keys, xctxt);
+      sequence.reset();
+    }
+    finally
+    {
+      xctxt.popContextSequence();
+    }
+
+    return sequence;
+  }
+
 
   /**
    * <meta name="usage" content="advanced"/>
@@ -362,132 +402,152 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
    * @throws TransformerException Thrown in a variety of circumstances.
    */
   public void transformSelectedNodes(TransformerImpl transformer)
-          throws TransformerException
+    throws TransformerException
   {
 
     final XPathContext xctxt = transformer.getXPathContext();
     final int sourceNode = xctxt.getCurrentNode();
-    DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt,
-            sourceNode);
-
+    // DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
+    XObject selectResult = m_selectExpression.execute(xctxt);
+    XSequence xseq = selectResult.xseq();
+    
     try
     {
 
-      final Vector keys = (m_sortElems == null)
-              ? null
-              : transformer.processSortKeys(this, sourceNode);
+      final Vector keys =
+        (m_sortElems == null)
+          ? null
+          : transformer.processSortKeys(this, sourceNode);
 
       // Sort if we need to.
+      // TBD: We have to adapt sortNodes to sequence sorting.
       if (null != keys)
-        sourceNodes = sortNodes(xctxt, keys, sourceNodes);
+      {
+        xseq = sortSequence(xctxt, keys, xseq);
+      }
 
       if (TransformerImpl.S_DEBUG)
       {
-        transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
-                "select", new XPath(m_selectExpression),
-                new org.apache.xpath.objects.XNodeSet(sourceNodes));
+        transformer.getTraceManager().fireSelectedEvent(
+          sourceNode,
+          this,
+          "select",
+          new XPath(m_selectExpression),
+          (org.apache.xpath.objects.XNodeSet)xseq);
       }
 
       final ResultTreeHandler rth = transformer.getResultTreeHandler();
       ContentHandler chandler = rth.getContentHandler();
 
-      xctxt.pushCurrentNode(DTM.NULL);
+      xctxt.pushCurrentItem(XSequence.EMPTY);
 
-      int[] currentNodes = xctxt.getCurrentNodeStack();
+      // XObject[] currentItems = xctxt.getCurrentItemStack();
       int currentNodePos = xctxt.getCurrentNodeFirstFree() - 1;
 
       xctxt.pushCurrentExpressionNode(DTM.NULL);
 
       int[] currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
       int currentExpressionNodePos =
-              xctxt.getCurrentExpressionNodesFirstFree() - 1;
+        xctxt.getCurrentExpressionNodesFirstFree() - 1;
 
       xctxt.pushSAXLocatorNull();
-      xctxt.pushContextNodeList(sourceNodes);
+            
+      // TBD: Check spec what we're supposed to do here. -sb
+      xctxt.pushContextSequence(xseq);
       transformer.pushElemTemplateElement(null);
 
       // pushParams(transformer, xctxt);
       // Should be able to get this from the iterator but there must be a bug.
       DTM dtm = xctxt.getDTM(sourceNode);
       int docID = sourceNode & DTMManager.IDENT_DTM_DEFAULT;
-      int child;
+      XObject item;
 
-      while (DTM.NULL != (child = sourceNodes.nextNode()))
+      while (null != (item = xseq.next()))
       {
-        currentNodes[currentNodePos] = child;
-        currentExpressionNodes[currentExpressionNodePos] = child;
-
-        if ((child & DTMManager.IDENT_DTM_DEFAULT) != docID)
+        xctxt.setCurrentItem(item);
+        if(item instanceof XNodeSequenceSingleton)
         {
-          dtm = xctxt.getDTM(child);
-          docID = sourceNode & DTMManager.IDENT_DTM_DEFAULT;
+          XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
+          int nodeHandle = xnss.getNodeHandle();
+          currentExpressionNodes[currentExpressionNodePos] = nodeHandle;
+  
+          if ((nodeHandle & DTMManager.IDENT_DTM_DEFAULT) != docID)
+          {
+            dtm = xnss.getDTM();
+            docID = sourceNode & DTMManager.IDENT_DTM_DEFAULT;
+          }
+          //final int exNodeType = dtm.getExpandedTypeID(child);
+          final int nodeType = dtm.getNodeType(nodeHandle);
         }
-
-        //final int exNodeType = dtm.getExpandedTypeID(child);
-        final int nodeType = dtm.getNodeType(child); 
 
         // Fire a trace event for the template.
         if (TransformerImpl.S_DEBUG)
         {
-           transformer.getTraceManager().fireTraceEvent(this);
+          transformer.getTraceManager().fireTraceEvent(this);
         }
 
         // And execute the child templates.
         // Loop through the children of the template, calling execute on 
         // each of them.
-        for (ElemTemplateElement t = this.m_firstChild; t != null;
-             t = t.m_nextSibling)
+        for (ElemTemplateElement t = this.m_firstChild;
+          t != null;
+          t = t.m_nextSibling)
         {
           xctxt.setSAXLocator(t);
           transformer.setCurrentElement(t);
           t.execute(transformer);
         }
-        
+
         if (TransformerImpl.S_DEBUG)
         {
-         // We need to make sure an old current element is not 
+          // We need to make sure an old current element is not 
           // on the stack.  See TransformerImpl#getElementCallstack.
           transformer.setCurrentElement(null);
           transformer.getTraceManager().fireTraceEndEvent(this);
         }
 
-
-	 	// KLUGE: Implement <?xalan:doc_cache_off?> 
-	 	// ASSUMPTION: This will be set only when the XPath was indeed
-	 	// a call to the Document() function. Calling it in other
-	 	// situations is likely to fry Xalan.
-	 	//
-	 	// %REVIEW% We need a MUCH cleaner solution -- one that will
-	 	// handle cleaning up after document() and getDTM() in other
-		// contexts. The whole SourceTreeManager mechanism should probably
-	 	// be moved into DTMManager rather than being explicitly invoked in
-	 	// FuncDocument and here.
-	 	if(m_doc_cache_off)
-		{
-	 	  if(DEBUG)
-	 	    System.out.println("JJK***** CACHE RELEASE *****\n"+
-				       "\tdtm="+dtm.getDocumentBaseURI());
-	  	// NOTE: This will work because this is _NOT_ a shared DTM, and thus has
-	  	// only a single Document node. If it could ever be an RTF or other
-	 	// shared DTM, this would require substantial rework.
-	 	  xctxt.getSourceTreeManager().removeDocumentFromCache(dtm.getDocument());
-	 	  xctxt.release(dtm,false);
-	 	}
+        // KLUGE: Implement <?xalan:doc_cache_off?> 
+        // ASSUMPTION: This will be set only when the XPath was indeed
+        // a call to the Document() function. Calling it in other
+        // situations is likely to fry Xalan.
+        //
+        // %REVIEW% We need a MUCH cleaner solution -- one that will
+        // handle cleaning up after document() and getDTM() in other
+        // contexts. The whole SourceTreeManager mechanism should probably
+        // be moved into DTMManager rather than being explicitly invoked in
+        // FuncDocument and here.
+        if (m_doc_cache_off)
+        {
+          if (DEBUG)
+            System.out.println(
+              "JJK***** CACHE RELEASE *****\n"
+                + "\tdtm="
+                + dtm.getDocumentBaseURI());
+          // NOTE: This will work because this is _NOT_ a shared DTM, and thus has
+          // only a single Document node. If it could ever be an RTF or other
+          // shared DTM, this would require substantial rework.
+          xctxt.getSourceTreeManager().removeDocumentFromCache(
+            dtm.getDocument());
+          xctxt.release(dtm, false);
+        }
       }
     }
     finally
     {
       if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireSelectedEndEvent(sourceNode, this,
-                "select", new XPath(m_selectExpression),
-                new org.apache.xpath.objects.XNodeSet(sourceNodes));
+        transformer.getTraceManager().fireSelectedEndEvent(
+          sourceNode,
+          this,
+          "select",
+          new XPath(m_selectExpression),
+          (XNodeSet)xseq);
 
       xctxt.popSAXLocator();
-      xctxt.popContextNodeList();
+      xctxt.popContextSequence();
       transformer.popElemTemplateElement();
       xctxt.popCurrentExpressionNode();
-      xctxt.popCurrentNode();
-      sourceNodes.detach();
+      xctxt.popCurrentItem();
+      xseq.detach();
     }
   }
 

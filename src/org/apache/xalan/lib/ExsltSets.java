@@ -93,7 +93,7 @@ import javax.xml.parsers.*;
  * This class contains EXSLT set extension functions.
  * It is accessed by specifying a namespace URI as follows:
  * <pre>
- *    xmlns:set="http://exslt.org/sets"
+ *    xmlns:set="http://exslt.org/xalan/sets"
  * </pre>
  * 
  * The documentation for each function has been copied from the relevant
@@ -145,8 +145,8 @@ public class ExsltSets
    * 
    * @param ni1 NodeIterator for first node-set.
    * @param ni2 NodeIterator for second node-set.
-   * @return a node-set containing the nodes in ni1 that follow in document order the first
-   * node in ni2; an empty node-set if the first node in ni2 is not in ni1; all of ni1 if ni2
+   * @return a node-set containing the nodes in ni1 that precede in document order the first
+   * node in ni2; an empty node-set if the first noe in ni2 is not in ni1; all of ni1 if ni2
    * is empty.
    * 
    * @see <a href="http://www.exslt.org/">EXSLT</a>

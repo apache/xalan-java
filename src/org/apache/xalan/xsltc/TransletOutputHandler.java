@@ -82,8 +82,6 @@ public interface TransletOutputHandler {
     public void comment(String comment) throws TransletException;
     public void processingInstruction(String target, String data)
 	throws TransletException;
-    public void startCDATA() throws TransletException;
-    public void endCDATA() throws TransletException;
     public void setType(int type);
     public void setIndent(boolean indent);
     public void omitHeader(boolean value);

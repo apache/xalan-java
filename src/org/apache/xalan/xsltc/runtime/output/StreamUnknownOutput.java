@@ -285,10 +285,6 @@ public class StreamUnknownOutput extends StreamOutput {
 	_handler.setCdataElements(elements);
     }
 
-    public void setIndentNumber(int value) {
-	_handler.setIndentNumber(value);
-    }
-
     private void initStreamOutput() 
 	throws TransletException 
     {

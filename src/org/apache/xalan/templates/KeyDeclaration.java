@@ -191,11 +191,10 @@ public class KeyDeclaration extends ElemTemplateElement
     throws javax.xml.transform.TransformerException
   {
     super.compose(sroot);
-    java.util.Vector vnames = sroot.getComposeState().getVariableNames();
     if(null != m_matchPattern)
-      m_matchPattern.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+      m_matchPattern.fixupVariables(sroot.getComposeState());
     if(null != m_use)
-      m_use.fixupVariables(vnames, sroot.getComposeState().getGlobalsSize());
+      m_use.fixupVariables(sroot.getComposeState());
   }
 
   /**

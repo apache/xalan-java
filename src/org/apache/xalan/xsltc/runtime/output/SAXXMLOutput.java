@@ -153,24 +153,27 @@ public class SAXXMLOutput extends SAXOutput {
     public void attribute(String name, final String value)
         throws TransletException 
     {
-	if (_startTagOpen) {
-	    final String patchedName = patchName(name);
-	    final String localName = getLocalName(patchedName);
-	    final String uri = getNamespaceURI(patchedName, false);
+	final String patchedName = patchName(name);
+        final String localName = getLocalName(patchedName);
+        final String uri = getNamespaceURI(patchedName, false);
 
-	    final int index = (localName == null) ?
-		    _attributes.getIndex(name) :    /* don't use patchedName */
-		    _attributes.getIndex(uri, localName);
+        final int index = (localName == null) ?
+                _attributes.getIndex(name) :    /* don't use patchedName */
+                _attributes.getIndex(uri, localName);
 
-	    if (index >= 0) {       // Duplicate attribute?
-		_attributes.setAttribute(index, uri, localName,
-		    patchedName, "CDATA", value);
-	    }
-	    else {
-		_attributes.addAttribute(uri, localName, patchedName,
-		    "CDATA", value);
-	    }
+        if (!_startTagOpen) {
+            BasisLibrary.runTimeError(BasisLibrary.STRAY_ATTRIBUTE_ERR,
+                patchedName);
+        }
+
+	if (index >= 0) {       // Duplicate attribute?
+	    _attributes.setAttribute(index, uri, localName,
+		patchedName, "CDATA", value);
 	}
+	else {
+	    _attributes.addAttribute(uri, localName, patchedName,
+		"CDATA", value);
+        }
     }
 
     public void characters(char[] ch, int off, int len)
@@ -327,26 +330,10 @@ public class SAXXMLOutput extends SAXOutput {
         }
     }
 
-    public void startCDATA() throws TransletException {
-	try {
-	    // Output start bracket - "<![CDATA["
-	    _saxHandler.characters(BEGCDATA, 0, BEGCDATA.length);
-	    _cdataTagOpen = true;
-	}
-	catch (SAXException e) {
-            throw new TransletException(e);
-	}
-    }
-
-    public void closeCDATA() throws TransletException {
-	try {
-	    // Output closing bracket - "]]>"
-	    _saxHandler.characters(ENDCDATA, 0, ENDCDATA.length);
-	    _cdataTagOpen = false;
-	}
-	catch (SAXException e) {
-            throw new TransletException(e);
-	}
+    protected void closeCDATA() throws SAXException {
+        // Output closing bracket - "]]>"
+        _saxHandler.characters(ENDCDATA, 0, ENDCDATA.length);
+        _cdataTagOpen = false;
     }
 
     /**

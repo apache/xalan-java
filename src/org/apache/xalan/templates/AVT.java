@@ -66,6 +66,7 @@ import org.apache.xml.utils.FastStringBuffer;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xpath.VariableComposeState;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -592,14 +593,9 @@ public class AVT implements java.io.Serializable, XSLTVisitable
   /**
    * This function is used to fixup variables from QNames to stack frame 
    * indexes at stylesheet build time.
-   * @param vars List of QNames that correspond to variables.  This list 
-   * should be searched backwards for the first qualified name that 
-   * corresponds to the variable reference qname.  The position of the 
-   * QName in the vector from the start of the vector will be its position 
-   * in the stack frame (but variables above the globalsTop value will need 
-   * to be offset to the current stack frame).
+   * @param vcs variable compose state.
    */
-  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  public void fixupVariables(VariableComposeState vcs)
   {
     if (null != m_parts)
     {
@@ -609,7 +605,7 @@ public class AVT implements java.io.Serializable, XSLTVisitable
       {
         AVTPart part = (AVTPart) m_parts.elementAt(i);
 
-        part.fixupVariables(vars, globalsSize);
+        part.fixupVariables(vcs);
       }
     }
   }
@@ -632,11 +628,4 @@ public class AVT implements java.io.Serializable, XSLTVisitable
   	}
   }
 
-
-  /**
-   * Returns true if this AVT is simple
-   */
-  public boolean isSimple() {
-  	return m_simpleString != null;
-  }
 }

@@ -90,12 +90,13 @@ final class When extends Instruction {
 
     public void parseContents(Parser parser) {
 	_test = parser.parseExpression(this, "test", null);
-
-	// Ignore xsl:if when test is false (function-available() and
-	// element-available())
-	Object result = _test.evaluateAtCompileTime();
-	if (result != null && result instanceof Boolean) {
-	    _ignore = !((Boolean) result).booleanValue();
+	if (_test instanceof ElementAvailableCall) {
+	    ElementAvailableCall call = (ElementAvailableCall)_test;
+	    _ignore = !call.getResult();
+	}
+	if (_test instanceof FunctionAvailableCall) {
+	    FunctionAvailableCall call = (FunctionAvailableCall)_test;
+	    _ignore = !call.getResult();
 	}
 
 	parseChildren(parser);

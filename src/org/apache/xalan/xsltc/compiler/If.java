@@ -102,11 +102,17 @@ final class If extends Instruction {
 	    return;
         }
 
-	// Ignore xsl:if when test is false (function-available() and
-	// element-available())
-	Object result = _test.evaluateAtCompileTime();
-	if (result != null && result instanceof Boolean) {
-	    _ignore = !((Boolean) result).booleanValue();
+	// We will ignore the contents of this <xsl:if> if we know that the
+	// test will always return 'false'.
+	if (_test instanceof ElementAvailableCall) {
+	    ElementAvailableCall call = (ElementAvailableCall)_test;
+	    _ignore = !call.getResult();
+	    return;
+	}
+	if (_test instanceof FunctionAvailableCall) {
+	    FunctionAvailableCall call = (FunctionAvailableCall)_test;
+	    _ignore = !call.getResult();
+	    return;
 	}
 
 	parseChildren(parser);

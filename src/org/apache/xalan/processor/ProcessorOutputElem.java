@@ -72,6 +72,7 @@ import javax.xml.transform.TransformerException;
 
 import org.xml.sax.Attributes;
 
+
 /**
  * TransformerFactory for xsl:output markup.
  * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
@@ -79,7 +80,7 @@ import org.xml.sax.Attributes;
  */
 class ProcessorOutputElem extends XSLTElementProcessor
 {
-
+  
   /** The output properties, set temporarily while the properties are 
    *  being set from the attributes, and then nulled after that operation 
    *  is completed.  */
@@ -90,10 +91,21 @@ class ProcessorOutputElem extends XSLTElementProcessor
    * @see javax.xml.transform.OutputKeys#CDATA_SECTION_ELEMENTS
    * @param newValue non-null reference to processed attribute value.
    */
+  public void setCdataSectionElements(java.util.Vector newValue, QName qname)
+  {
+    m_outputProperties.setQNameProperties(OutputKeys.CDATA_SECTION_ELEMENTS, newValue);
+  }
+
+  /**
+   * Set the cdata-section-elements property from the attribute value.
+   * @see javax.xml.transform.OutputKeys#CDATA_SECTION_ELEMENTS
+   * @param newValue non-null reference to processed attribute value.
+   */
   public void setCdataSectionElements(java.util.Vector newValue)
   {
     m_outputProperties.setQNameProperties(OutputKeys.CDATA_SECTION_ELEMENTS, newValue);
   }
+
 
   /**
    * Set the doctype-public property from the attribute value.
@@ -204,6 +216,18 @@ class ProcessorOutputElem extends XSLTElementProcessor
     QName key = new QName(attrUri, attrLocalName);
     m_outputProperties.setProperty(key, attrValue);
   }
+  
+  //XSLT 2.0
+ 
+  public void setName(QName v)
+  {
+    m_outputProperties.setQNameProperty("name", v);
+  }    
+  
+  public QName getName()
+  {
+    return m_outputProperties.getQNameProperty("name");
+  }
 
   /**
    * Receive notification of the start of an xsl:output element.
@@ -234,7 +258,7 @@ class ProcessorOutputElem extends XSLTElementProcessor
     m_outputProperties.setLocaterInfo(handler.getLocator());
     m_outputProperties.setUid(handler.nextUid());
     setPropertiesFromAttributes(handler, rawName, attributes, this);
-    
+
     // Access this only from the Hashtable level... we don't want to 
     // get default properties.
     String entitiesFileName =
@@ -254,7 +278,8 @@ class ProcessorOutputElem extends XSLTElementProcessor
       }
     }
     
-    handler.getStylesheet().setOutput(m_outputProperties);
+    // for 2.0, can have multiple output properties, identified by name.
+    handler.getStylesheet().setOutput(m_outputProperties); 
     
     ElemTemplateElement parent = handler.getElemTemplateElement();
     parent.appendChild(m_outputProperties);

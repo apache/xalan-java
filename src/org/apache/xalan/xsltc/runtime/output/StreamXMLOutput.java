@@ -131,7 +131,7 @@ public class StreamXMLOutput extends StreamOutput {
 	    closeStartTag();
 	}
 	else if (_cdataTagOpen) {
-	    endCDATA();
+	    closeCDATA();
 	}
 
 	// Handle document type declaration (for first element only)
@@ -159,7 +159,7 @@ public class StreamXMLOutput extends StreamOutput {
     public void endElement(String elementName) throws TransletException { 
 // System.out.println("endElement = " + elementName);
 	if (_cdataTagOpen) {
-	    endCDATA();
+	    closeCDATA();
 	}
 
 	if (_startTagOpen) {
@@ -248,9 +248,10 @@ public class StreamXMLOutput extends StreamOutput {
 	    closeStartTag();
 	}
 	else if (_cdataTagOpen) {
-	    endCDATA();
+	    closeCDATA();
 	}
-	appendComment(comment);
+
+	_buffer.append("<!--").append(comment).append("-->");
     }
 
     public void processingInstruction(String target, String data)
@@ -261,7 +262,7 @@ public class StreamXMLOutput extends StreamOutput {
 	    closeStartTag();
 	}
 	else if (_cdataTagOpen) {
-	    endCDATA();
+	    closeCDATA();
 	}
 
 	_buffer.append("<?").append(target).append(' ')
@@ -339,12 +340,7 @@ public class StreamXMLOutput extends StreamOutput {
 	_cdataTagOpen = true;
     }
 
-    public void startCDATA() throws TransletException {
-	_buffer.append(BEGCDATA);
-	_cdataTagOpen = true;
-    }
-
-    public void endCDATA() throws TransletException {
+    private void closeCDATA() {
 	_buffer.append(ENDCDATA);
 	_cdataTagOpen = false;
     }
@@ -394,7 +390,7 @@ public class StreamXMLOutput extends StreamOutput {
 		offset = i + 1;
 		break;
 	    case '"':
-		result.append(ch, offset, i - offset).append(QUOT);
+		result.append(ch, offset, i - offset).append(QUOTE);
 		offset = i + 1;
 		break;
 	    case '<':
@@ -416,51 +412,5 @@ public class StreamXMLOutput extends StreamOutput {
 	    result.append(ch, offset, limit - offset);
 	}
 	return result.toString();
-    }
-
-    /**
-     * This method escapes special characters used in text nodes
-     */
-    protected void escapeCharacters(char[] ch, int off, int len) {
-	int limit = off + len;
-	int offset = off;
-
-	if (limit > ch.length) {
-	    limit = ch.length;
-	}
-
-	// Step through characters and escape all special characters
-	for (int i = off; i < limit; i++) {
-	    final char current = ch[i];
-
-	    switch (current) {
-	    case '&':
-		_buffer.append(ch, offset, i - offset).append(AMP);
-		offset = i + 1;
-		break;
-	    case '<':
-		_buffer.append(ch, offset, i - offset).append(LT);
-		offset = i + 1;
-		break;
-	    case '>':
-		_buffer.append(ch, offset, i - offset).append(GT);
-		offset = i + 1;
-		break;
-	    default:
-		if ((current >= '\u007F' && current < '\u00A0') ||
-		    (_is8859Encoded && current > '\u00FF'))
-		{
-		    _buffer.append(ch, offset, i - offset)
-			   .append(CHAR_ESC_START)
-			   .append(Integer.toString((int)ch[i]))
-			   .append(';');
-		    offset = i + 1;
-		}
-	    }
-	}
-	// Output remaining characters (that do not need escaping).
-	if (offset < limit) {
-	    _buffer.append(ch, offset, limit - offset);
-	}
     }
 }

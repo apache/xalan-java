@@ -134,9 +134,6 @@ public final class ResultTreeType extends Type {
 	else if (type == Type.Reference) {
 	    translateTo(classGen, methodGen, (ReferenceType)type);
 	}
-	else if (type == Type.Object) {
-	    translateTo(classGen, methodGen, (ObjectType) type);
-	}
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 					toString(), type.toString());
@@ -371,16 +368,6 @@ public final class ResultTreeType extends Type {
     }
 
     /**
-     * Subsume result tree into ObjectType.
-     *
-     * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
-     */
-    public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
-			    ObjectType type) {
-	methodGen.getInstructionList().append(NOP);	
-    }
-
-    /**
      * Translates a result tree into a non-synthesized boolean.
      * It does not push a 0 or a 1 but instead returns branchhandle list
      * to be appended to the false list.
@@ -430,11 +417,7 @@ public final class ResultTreeType extends Type {
 						  MAKE_NODE_LIST_SIG2);
 	    il.append(new INVOKEINTERFACE(index, 2));
 	}
-	else if (className.equals("java.lang.Object")) {
-	    il.append(NOP);
-	}
 	else {
-System.out.println("ResultTreeType.translateTo()");
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.DATA_CONVERSION_ERR,
 					toString(), className);
 	    classGen.getParser().reportError(Constants.FATAL, err);

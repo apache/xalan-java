@@ -71,7 +71,6 @@ import org.apache.xpath.objects.XRTreeFrag;
 
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.DOMHelper;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.ref.DTMNodeIterator;
@@ -94,7 +93,7 @@ import javax.xml.parsers.*;
  * This class contains EXSLT common extension functions.
  * It is accessed by specifying a namespace URI as follows:
  * <pre>
- *    xmlns:exslt="http://exslt.org/common"
+ *    xmlns:exslt="http://exslt.org/xalan/common"
  * </pre>
  * 
  * The documentation for each function has been copied from the relevant

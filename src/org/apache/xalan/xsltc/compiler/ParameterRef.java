@@ -112,12 +112,10 @@ final class ParameterRef extends VariableRefBase {
 	}
 
 	if (_variable.getType() instanceof NodeSetType) {
-	    // The method cloneIterator() also does resetting
-            final int clone = cpg.addInterfaceMethodref(NODE_ITERATOR,
-                                                       "cloneIterator",
-                                                       "()" +
-                                                        NODE_ITERATOR_SIG);
-            il.append(new INVOKEINTERFACE(clone, 1));
+	    final int reset = cpg.addInterfaceMethodref(NODE_ITERATOR,
+							"reset",
+							"()"+NODE_ITERATOR_SIG);
+	    il.append(new INVOKEINTERFACE(reset,1));	    
 	}
 
     }

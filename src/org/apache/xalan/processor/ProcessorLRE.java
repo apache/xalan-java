@@ -215,7 +215,8 @@ public class ProcessorLRE extends ProcessorTemplateElem
         appendAndPush(handler, template);
 
         XPath rootMatch = new XPath("/", stylesheet, stylesheet, XPath.MATCH, 
-             handler.getStylesheetProcessor().getErrorListener());
+             handler.getStylesheetProcessor().getErrorListener(), 
+             stylesheet.getVersionNumber());
 
         template.setMatch(rootMatch);
 

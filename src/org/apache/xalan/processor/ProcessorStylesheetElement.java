@@ -102,14 +102,16 @@ class ProcessorStylesheetElement extends XSLTElementProcessor
 
       if (stylesheetType == StylesheetHandler.STYPE_ROOT)
       {
-        try
-        {
+      	// TBD: Figure out what TransformerConfigurationException isn't thrown anymore in the new world.
+      	// Likely that this will magically reappear.
+//        try
+//        {
           stylesheet = new StylesheetRoot(handler.getSchema(), handler.getStylesheetProcessor().getErrorListener());
-        }
-        catch(TransformerConfigurationException tfe)
-        {
-          throw new TransformerException(tfe);
-        }
+//        }
+//        catch(TransformerConfigurationException tfe)
+//        {
+//          throw new TransformerException(tfe); 
+//        }
       }
       else
       {

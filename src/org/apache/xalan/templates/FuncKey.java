@@ -64,6 +64,7 @@ import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XSequence;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.UnionPathIterator;
@@ -84,6 +85,10 @@ import org.apache.xml.utils.XMLString;
  */
 public class FuncKey extends Function2Args
 {
+  public FuncKey()
+  {
+    super();
+  }
 
   /** Dummy value to be used in usedrefs hashtable           */
   static private Boolean ISTRUE = new Boolean(true);
@@ -121,8 +126,8 @@ public class FuncKey extends Function2Args
     // Don't bother with nodeset logic if the thing is only one node.
     if(argIsNodeSetDTM)
     {
-    	XNodeSet ns = (XNodeSet)arg;
-    	ns.setShouldCacheNodes(true);
+    	XSequence ns = arg.xseq();
+    	ns.setShouldCache(true);
     	int len = ns.getLength();
     	if(len <= 1)
     		argIsNodeSetDTM = false;

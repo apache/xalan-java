@@ -64,7 +64,6 @@
 package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
-import java.util.Iterator;
 import org.apache.bcel.generic.*;
 
 public final class FlowList {
@@ -119,34 +118,5 @@ public final class FlowList {
 	    }
 	    _elements.clear();		// avoid backpatching more than once
 	}
-    }
-
-    /**
-     * Redirect the handles from oldList to newList. "This" flow list
-     * is assumed to be relative to oldList.
-     */
-    public FlowList copyAndRedirect(InstructionList oldList, 
-	InstructionList newList) 
-    {
-	final FlowList result = new FlowList();
-	if (_elements == null) {
-	    return result;
-	}
-
-	final int n = _elements.size();
-	final Iterator oldIter = oldList.iterator();
-	final Iterator newIter = newList.iterator();
-	
-	while (oldIter.hasNext()) {
-	    final InstructionHandle oldIh = (InstructionHandle) oldIter.next();
-	    final InstructionHandle newIh = (InstructionHandle) newIter.next();
-
-	    for (int i = 0; i < n; i++) {
-		if (_elements.elementAt(i) == oldIh) {
-		    result.add(newIh);
-		}
-	    }
-	}
-	return result;
     }
 }

@@ -341,11 +341,7 @@ public final class XSLTC {
 	    if ((!_parser.errorsFound()) && (_stylesheet != null)) {
 		_stylesheet.setCallsNodeset(_callsNodeset);
 		_stylesheet.setMultiDocument(_multiDocument);
-
-		// Class synchronization is needed for BCEL
-		synchronized (getClass()) {
-		    _stylesheet.translate();
-		}
+		_stylesheet.translate();
 	    }
 	}
 	catch (Exception e) {
@@ -692,10 +688,7 @@ public final class XSLTC {
 	try {
 	    switch (_outputType) {
 	    case FILE_OUTPUT:
-		clazz.dump(
-		    new BufferedOutputStream(
-			new FileOutputStream(
-			    getOutputFile(clazz.getClassName()))));
+		clazz.dump(getOutputFile(clazz.getClassName()));
 		break;
 	    case JAR_OUTPUT:
 		_classes.addElement(clazz);	 
@@ -727,7 +720,7 @@ public final class XSLTC {
 	// create the manifest
 	final Manifest manifest = new Manifest();
 	final java.util.jar.Attributes atrs = manifest.getMainAttributes();
-	atrs.put(java.util.jar.Attributes.Name.MANIFEST_VERSION,"1.1");
+	atrs.put(java.util.jar.Attributes.Name.MANIFEST_VERSION,"1.0");
 
 	final Map map = manifest.getEntries();
 	// create manifest

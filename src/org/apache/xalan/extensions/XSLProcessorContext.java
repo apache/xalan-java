@@ -223,7 +223,7 @@ public class XSLProcessorContext
       }
       else if (obj instanceof Double)
       {
-        value = new XNumber(((Double) obj).doubleValue());
+        value = new org.apache.xpath.objects.XDouble(((Double) obj).doubleValue());
       }
       else if (obj instanceof DocumentFragment)
       {

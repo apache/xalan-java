@@ -140,7 +140,7 @@ public class ElemLiteralResult extends ElemUse
       for (int i = (nAttrs - 1); i >= 0; i--)
       {
         AVT avt = (AVT) m_avts.elementAt(i);
-        avt.fixupVariables(vnames, cstate.getGlobalsSize());
+        avt.fixupVariables(cstate);
       } 
     }   
   }
@@ -630,16 +630,15 @@ public class ElemLiteralResult extends ElemUse
    *
    * @throws TransformerException
    */
-  private boolean excludeResultNSDecl(String prefix, String uri)
+  private boolean lreExcludeResultNSDecl(String prefix, String uri)
           throws TransformerException
   {
-
     if (null != m_excludeResultPrefixes)
     {
       return containsExcludeResultPrefix(prefix, uri);
     }
-
     return false;
+
   }
   
   /**

@@ -323,7 +323,8 @@ public class Redirect
     {
       org.apache.xpath.XPathContext xctxt 
         = context.getTransformer().getXPathContext();
-      XPath myxpath = new XPath(fileNameExpr, elem, xctxt.getNamespaceContext(), XPath.SELECT);
+      XPath myxpath = new XPath(fileNameExpr, elem, xctxt.getNamespaceContext(), 
+                                XPath.SELECT, null, 1.0);
       XObject xobj = myxpath.execute(xctxt, context.getContextNode(), elem);
       fileName = xobj.str();
       if((null == fileName) || (fileName.length() == 0))

@@ -60,15 +60,20 @@ package org.apache.xalan.templates;
 //import org.w3c.dom.traversal.NodeIterator;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.XType;
 import org.apache.xml.dtm.ref.DTMTreeWalker;
 
 import org.xml.sax.*;
 
 import org.apache.xpath.*;
+import org.apache.xpath.objects.XNodeSequenceSingleton;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XSequence;
+import org.apache.xpath.objects.XString;
 import org.apache.xalan.trace.SelectionEvent;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.utils.QName;
+import org.apache.xml.utils.XMLString;
 import org.apache.xalan.transformer.TreeWalker2Result;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
@@ -86,6 +91,7 @@ import javax.xml.transform.TransformerException;
  */
 public class ElemCopyOf extends ElemTemplateElement
 {
+  AVT m_separator;
 
   /**
    * The required select attribute contains an expression.
@@ -126,7 +132,9 @@ public class ElemCopyOf extends ElemTemplateElement
     super.compose(sroot);
     
     StylesheetRoot.ComposeState cstate = sroot.getComposeState();
-    m_selectExpression.fixupVariables(cstate.getVariableNames(), cstate.getGlobalsSize());
+    m_selectExpression.fixupVariables(cstate);
+    if(null != m_separator)
+      m_separator.fixupVariables(cstate);
   }
 
   /**
@@ -162,41 +170,95 @@ public class ElemCopyOf extends ElemTemplateElement
    *
    * @throws TransformerException
    */
-  public void execute(
-          TransformerImpl transformer)
-            throws TransformerException
+  public void execute(TransformerImpl transformer) throws TransformerException
   {
     if (TransformerImpl.S_DEBUG)
-    	transformer.getTraceManager().fireTraceEvent(this);
+      transformer.getTraceManager().fireTraceEvent(this);
 
     try
     {
       XPathContext xctxt = transformer.getXPathContext();
+      XObject value = m_selectExpression.execute(xctxt, this);
       int sourceNode = xctxt.getCurrentNode();
-      XObject value = m_selectExpression.execute(xctxt, sourceNode, this);
 
       if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
-                                                        "select", m_selectExpression, value);
+        transformer.getTraceManager().fireSelectedEvent(
+          sourceNode,
+          this,
+          "select",
+          m_selectExpression,
+          value);
 
       ResultTreeHandler handler = transformer.getResultTreeHandler();
 
       if (null != value)
-                        {
-        int type = value.getType();
+      {
         String s;
 
-        switch (type)
+        if (value.isSequenceProper())
         {
-        case XObject.CLASS_BOOLEAN :
-        case XObject.CLASS_NUMBER :
-        case XObject.CLASS_STRING :
-          s = value.str();
+          XSequence xseq = value.xseq();
+          XObject xobj = xseq.next();
+          String sep;
+          if(null != m_separator)
+            sep = m_separator.evaluate(xctxt, sourceNode, this);
+          else
+            sep = null;
+          while (xobj != null)
+          {
+            executeToResultTree(transformer, xctxt, xobj, handler);
+            xobj = xseq.next();
+            if (null != xobj && null != sep)
+              handler.characters(sep.toCharArray(), 0, sep.length());
+          }
+        }
+        else
+        {
 
-          handler.characters(s.toCharArray(), 0, s.length());
-          break;
-        case XObject.CLASS_NODESET :
+          executeToResultTree(transformer, xctxt, value, handler);
+        }
+      }
 
+      // I don't think we want this.  -sb
+      //  if (TransformerImpl.S_DEBUG)
+      //  transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+      //  "endSelect", m_selectExpression, value);
+
+    }
+    catch (org.xml.sax.SAXException se)
+    {
+      throw new TransformerException(se);
+    }
+    finally
+    {
+      if (TransformerImpl.S_DEBUG)
+        transformer.getTraceManager().fireTraceEndEvent(this);
+    }
+
+  }
+
+  public void executeToResultTree(
+    TransformerImpl transformer,
+    XPathContext xctxt,
+    XObject value,
+    ResultTreeHandler handler)
+    throws SAXException, TransformerException
+  {
+
+    int type = value.getType();
+    String s;
+
+    switch (type)
+    {
+      case XObject.CLASS_BOOLEAN :
+      case XObject.CLASS_NUMBER :
+      case XObject.CLASS_STRING :
+        value.dispatchCharactersEvents(handler);
+        // s = value.str();
+        // handler.characters(s.toCharArray(), 0, s.length());
+        break;
+      case XObject.CLASS_NODESET :
+        {
           // System.out.println(value);
           DTMIterator nl = value.iter();
 
@@ -213,13 +275,51 @@ public class ElemCopyOf extends ElemTemplateElement
             // generated, so we need to only walk the child nodes.
             if (t == DTM.DOCUMENT_NODE)
             {
-              for (int child = dtm.getFirstChild(pos); child != DTM.NULL;
-                   child = dtm.getNextSibling(child))
+              for (int child = dtm.getFirstChild(pos);
+                child != DTM.NULL;
+                child = dtm.getNextSibling(child))
               {
                 tw.traverse(child);
               }
             }
-            else if (t == DTM.ATTRIBUTE_NODE)
+            else
+              if (t == DTM.ATTRIBUTE_NODE)
+              {
+                handler.addAttribute(pos);
+              }
+              else
+              {
+                tw.traverse(pos);
+              }
+          }
+        }
+        // nl.detach();
+        break;
+      case XObject.CLASS_RTREEFRAG :
+        handler.outputResultTreeFragment(value, transformer.getXPathContext());
+        break;
+      case XObject.CLASS_UNKNOWN :
+        if (value instanceof XNodeSequenceSingleton)
+        {
+          XNodeSequenceSingleton xnss = (XNodeSequenceSingleton) value;
+          int pos = xnss.getNodeHandle();
+          DTM dtm = xnss.getDTM();
+          short t = dtm.getNodeType(pos);
+          DTMTreeWalker tw = new TreeWalker2Result(transformer, handler);
+
+          // If we just copy the whole document, a startDoc and endDoc get 
+          // generated, so we need to only walk the child nodes.
+          if (t == DTM.DOCUMENT_NODE)
+          {
+            for (int child = dtm.getFirstChild(pos);
+              child != DTM.NULL;
+              child = dtm.getNextSibling(child))
+            {
+              tw.traverse(child);
+            }
+          }
+          else
+            if (t == DTM.ATTRIBUTE_NODE)
             {
               handler.addAttribute(pos);
             }
@@ -227,36 +327,15 @@ public class ElemCopyOf extends ElemTemplateElement
             {
               tw.traverse(pos);
             }
-          }
-          // nl.detach();
-          break;
-        case XObject.CLASS_RTREEFRAG :
-          handler.outputResultTreeFragment(value,
-                                           transformer.getXPathContext());
-          break;
-        default :
-          
-          s = value.str();
 
-          handler.characters(s.toCharArray(), 0, s.length());
           break;
         }
-      }
-                        
-      // I don't think we want this.  -sb
-      //  if (TransformerImpl.S_DEBUG)
-      //  transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
-      //  "endSelect", m_selectExpression, value);
+      default :
 
-    }
-    catch(org.xml.sax.SAXException se)
-    {
-      throw new TransformerException(se);
-    }
-    finally
-    {
-      if (TransformerImpl.S_DEBUG)
-        transformer.getTraceManager().fireTraceEndEvent(this);
+        s = value.str();
+
+        handler.characters(s.toCharArray(), 0, s.length());
+        break;
     }
 
   }
@@ -288,6 +367,24 @@ public class ElemCopyOf extends ElemTemplateElement
   	if(callAttrs)
   		m_selectExpression.getExpression().callVisitors(m_selectExpression, visitor);
     super.callChildVisitors(visitor, callAttrs);
+  }
+
+  /**
+   * Returns the separator.
+   * @return String
+   */
+  public AVT getSeparator()
+  {
+    return m_separator;
+  }
+
+  /**
+   * Sets the separator.
+   * @param separator The separator to set
+   */
+  public void setSeparator(AVT separator)
+  {
+    m_separator = separator;
   }
 
 }

@@ -83,16 +83,11 @@ public final class AbsoluteIterator extends NodeIteratorBase {
 	_source.setRestartable(isRestartable);
     }
 	
-    int _mask = -1;
-
     public NodeIterator setStartNode(int node) {
-	if (_mask == -1) {
-            _mask = node & 0xFF000000;
-        }
-	_startNode = _mask | DOM.ROOTNODE;
+	_startNode = DOM.ROOTNODE;
 	if (_isRestartable) {
 	    resetPosition();
-	    return _source.setStartNode(_startNode = _mask | DOM.ROOTNODE);
+	    return _source.setStartNode(_startNode = DOM.ROOTNODE);
 	}
 	return reset();
     }

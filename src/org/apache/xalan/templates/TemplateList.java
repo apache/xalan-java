@@ -56,27 +56,20 @@
  */
 package org.apache.xalan.templates;
 
+import java.io.Serializable;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
-import java.util.Enumeration;
-
-import java.io.Serializable;
-
-//import org.w3c.dom.Node;
-import org.apache.xml.dtm.DTM;
-
-import org.apache.xml.dtm.ref.ExpandedNameTable;
 
 import javax.xml.transform.TransformerException;
-
-import org.apache.xml.utils.QName;
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xpath.XPath;
-import org.apache.xpath.compiler.PsuedoNames;
-import org.apache.xpath.patterns.NodeTest;
-import org.apache.xpath.Expression;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.utils.QName;
+import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.patterns.StepPattern;
 import org.apache.xpath.patterns.UnionPattern;
 
@@ -141,12 +134,12 @@ public class TemplateList implements java.io.Serializable
       else if (matchExpr instanceof UnionPattern)
       {
         UnionPattern upat = (UnionPattern) matchExpr;
-        StepPattern[] pats = upat.getPatterns();
+        ExpressionNode[] pats = upat.getPatterns();
         int n = pats.length;
 
         for (int i = 0; i < n; i++)
         {
-          insertPatternInTable(pats[i], template);
+          insertPatternInTable((StepPattern)pats[i], template);
         }
       }
       else
@@ -640,7 +633,8 @@ public class TemplateList implements java.io.Serializable
       // current ElemTemplateElement via a cast to the prefix resolver.
       // Setting this fixes bug idkey03.
       xctxt.pushNamespaceContextNull();
-      xctxt.pushCurrentNodeAndExpression(targetNode, targetNode);
+      xctxt.pushCurrentNode(targetNode);
+      xctxt.pushCurrentExpressionNode(targetNode);
       try
       {
         do
@@ -705,7 +699,8 @@ public class TemplateList implements java.io.Serializable
       // current ElemTemplateElement via a cast to the prefix resolver.
       // Setting this fixes bug idkey03.
       xctxt.pushNamespaceContextNull();
-      xctxt.pushCurrentNodeAndExpression(targetNode, targetNode);
+      xctxt.pushCurrentNode(targetNode);
+      xctxt.pushCurrentExpressionNode(targetNode);
       try
       {
         do
@@ -876,11 +871,11 @@ public class TemplateList implements java.io.Serializable
   private void putHead(String key, TemplateSubPatternAssociation assoc)
   {
 
-    if (key.equals(PsuedoNames.PSEUDONAME_TEXT))
+    if (key.equals(StepPattern.PSEUDONAME_TEXT))
       m_textPatterns = assoc;
-    else if (key.equals(PsuedoNames.PSEUDONAME_ROOT))
+    else if (key.equals(StepPattern.PSEUDONAME_ROOT))
       m_docPatterns = assoc;
-    else if (key.equals(PsuedoNames.PSEUDONAME_COMMENT))
+    else if (key.equals(StepPattern.PSEUDONAME_COMMENT))
       m_commentPatterns = assoc;
 
     m_patternTable.put(key, assoc);
