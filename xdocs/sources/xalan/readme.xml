@@ -40,16 +40,27 @@
      <p>&xslt4j; 2.6.0 contains the following functional enhancements, performance enhancements and 
         bug fixes:</p>
      <ul>
-     <li>Eliminated the use of "enum" as a name to allow compilation under JDK 1.5</li>
-     <li>Split the namesArray into three for translet - improves translet initialization time.</li>
-     <li>Added a translet versioning mechanism.</li>
-     <li>Added a new TransformThread sample.</li>
-     <li>Caching of XMLReaders is now shared by XSLTC and Interpretive (in DTMManager).</li>
+     <li>Improvement in translet initialization time.</li>
+     <li>Addition of a translet versioning mechanism.  If the translet version
+         detected by the XSLTC runtime is more recent than any supported by the
+         XSLTC runtime, an error will be reported.</li>
      <li>Changes that allow XSLTC to use other DTM implementations.</li>
-     <li>Conversions from reference types to double, string and boolean.</li>
+     <li>Changes in the XML Serializer.  The serializer will no longer put a newline after
+         the xml header tag unless indent="yes". See bugzilla 
+         <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=24304">24304</jump>.</li>     
+     <li>Rename of Xalan Java's xalan:doc-cache-off processing instruction to 
+         xalan-doc-cache-off.  This change was necessary due to a recent
+         change in Xerces.  Xerces has started detecting the Namespace 
+         well-formedness rule that a processing instruction's PITarget must not contain 
+         a colon. The old-style PI (xalan:doc-cache-off) will be accepted provided that
+         the XML parser does not report it as an error.  See bugzilla 
+         <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=26217">26217</jump>.</li>
+     <li>Enhancement to XSLTC's URIResolvers and the general mechanism to resolve relative URIs.
+         XSLTC is now compatible with Xalan Intepretive.</li>
+     <li>Addition of a TransformThread sample that demonstrates how to use different transformers
+         on different threads and in different modes.</li>
      <li>Upgrade to Xerces-J (2.6.2) and a new version of xml-commons (xml-commons-external-1.2.01)</li>
-     <li>Enhancement to XSLTC's URIResolvers and the general mechanism to resolve relative URIs to be
-         compatible with Xalan Intepretive.</li>
+     <li>Elimination of "enum" as a name to allow compilation under JDK 1.5</li>   
         
      <li>Bugzilla fixes:     
       <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=797">797</jump>,
@@ -84,7 +95,6 @@
       <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=25416">25416</jump>,
       <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=25442">25442</jump>,
       <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=25449">25449</jump>,
-      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=25506">25506</jump>,
       <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=25816">25816</jump>,
       <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=25924">25924</jump>,
       <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=26019">26019</jump>,
@@ -95,8 +105,7 @@
       <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=26697">26697</jump>,
       <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=26742">26742</jump>,
       <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=26829">26829</jump>,
-      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=26842">26842</jump>,
-      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=27016">27016</jump>
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=26842">26842</jump>                                                                       
      </li>
      <li>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
       <jump href="http://nagoya.apache.org/eyebrowse/index.html">Apache mailing list archive index</jump>.
