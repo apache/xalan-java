@@ -147,9 +147,8 @@ public class XSLTServletWithParams extends HttpServlet {
   {
 	  if (request != null) 
     { 
-	    String[] paramVals = request.getParameterValues(param); 
-	    if (paramVals != null) 
-		return paramVals[0];
+	    String paramVal = request.getParameter(param); 
+		  return paramVal;
 	  }
 	  return null;
   }
@@ -163,14 +162,13 @@ public class XSLTServletWithParams extends HttpServlet {
       String paramName = (String) paramNames.nextElement();
       try
       {
-        String[] paramVals = request.getParameterValues(paramName);
-        if (paramVals != null)
-            transformer.setParameter(paramName, paramVals[0]);                                            
+        String paramVal = request.getParameter(paramName);
+        if (paramVal != null)
+          transformer.setParameter(paramName, paramVal);                                            
       }
       catch (Exception e)
       {
       }
     }
-  }
-  
+  }  
 }
