@@ -141,8 +141,17 @@ public final class DOMAdapter implements DOM {
     }
     
     public NodeIterator getTypedAxisIterator(final int axis, final int type) {
-	NodeIterator iterator =
-	    _domImpl.getTypedAxisIterator(axis, _reverse[type]);
+	NodeIterator iterator;
+
+	if (axis == Axis.NAMESPACE) {
+	    if ((type == NO_TYPE) || (type > _NSreverse.length))
+		iterator = _domImpl.getAxisIterator(axis);
+	    else
+		iterator = _domImpl.getTypedAxisIterator(axis,_NSreverse[type]);
+	}
+	else
+	    iterator = _domImpl.getTypedAxisIterator(axis, _reverse[type]);
+	
 	if ((_reverse[type] == DOM.TEXT) && (_filter != null))
 	    iterator = _domImpl.strippingIterator(iterator,_mapping,_filter);
 	return(iterator);

@@ -70,27 +70,45 @@ parser code {:
 
     public int findNodeType(int axis, Object test, boolean inPattern) {
 	if (test == null) {  // *
-            return axis == Axis.ATTRIBUTE
-                   ? NodeTest.ATTRIBUTE
-                   : NodeTest.ELEMENT;
+            if (axis == Axis.ATTRIBUTE)
+                return NodeTest.ATTRIBUTE;
+            else if (axis == Axis.NAMESPACE)
+                return -1;
+            else
+                return NodeTest.ELEMENT;
         }
         else if (test instanceof Integer) {
             return ((Integer)test).intValue();
         }
         else {
 	    QName name = (QName)test;
+
+	    if (axis == Axis.NAMESPACE) {
+                if (name.toString().equals("*"))
+                    return -1;
+                else
+                    return _xsltc.registerNamespace(name);
+            }
+
             if (name.getPrefix() == null || name.getNamespace() == null) {
                 final String local = name.getLocalPart();
-	        if (local.equals("*"))
-                    return(NodeTest.ELEMENT);
+	        if (local.equals("*")) {
+                    if (axis == Axis.ATTRIBUTE)
+                        return(NodeTest.ATTRIBUTE);
+                    else
+                        return(NodeTest.ELEMENT);
+                }
                 else if (local.equals("@*"))
                     return(NodeTest.ATTRIBUTE);
 	        if (inPattern)
                     name = new QName(null,null,local);
             }
-	    return axis == Axis.ATTRIBUTE
-		? _xsltc.registerAttribute(name)
-		: _xsltc.registerElement(name);
+            if (axis == Axis.ATTRIBUTE) {
+                return _xsltc.registerAttribute(name);
+            }
+            else {
+		return _xsltc.registerElement(name);
+            }
         }
     }
 

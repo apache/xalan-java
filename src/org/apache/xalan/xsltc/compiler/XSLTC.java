@@ -578,6 +578,17 @@ public final class XSLTC {
     }
 
     /**
+     * Registers an element and gives it a type so that it can be mapped to
+     * DOM element types at run-time.
+     */
+    public int registerNamespace(QName name) {
+	final SymbolTable stable = _parser.getSymbolTable();
+	final String uri = stable.lookupNamespace(name.toString());
+	final int code = registerNamespace(uri);
+	return code; 
+    }
+
+    /**
      * Registers a namespace and gives it a type so that it can be mapped to
      * DOM namespace types at run-time.
      */

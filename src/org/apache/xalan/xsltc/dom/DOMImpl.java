@@ -406,6 +406,10 @@ public final class DOMImpl implements DOM, Externalizable {
 	public NamedNodeMap getAttributes() {
 	    if (getNodeType() == Node.ELEMENT_NODE) {
 		int attribute = _lengthOrAttr[_index];
+		// Skip attribute nodes
+		while (_type[attribute] == NAMESPACE) {
+		    attribute = _nextSibling[attribute];
+		}
 		if (attribute != NULL) {
 		    final IntegerArray attributes = new IntegerArray(4);
 		    do {
@@ -546,7 +550,11 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
 
 	public boolean hasAttributes() {
-	    return (_lengthOrAttr[_index] != NULL);
+	    int attribute = _lengthOrAttr[_index];
+	    while (_type[attribute] == NAMESPACE) {
+		attribute = _nextSibling[attribute];
+	    }
+	    return (attribute != NULL);
 	}
 
     }
@@ -826,7 +834,10 @@ public final class DOMImpl implements DOM, Externalizable {
 	public int next() {
 	    final int save = _attribute;
 	    int node = save;
-	    _attribute = _nextSibling[_attribute];
+	    do {
+		_attribute = _nextSibling[_attribute];
+	    } while(_type[_attribute] == NAMESPACE);
+	    
 	    for (node = _lengthOrAttr[_startNode = node];
 		 node != NULL && getNamespaceType(node) != _nsType;
 		 node = _nextSibling[node]);
@@ -907,9 +918,16 @@ public final class DOMImpl implements DOM, Externalizable {
 	// assumes caller will pass element nodes
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
-		_attribute = isElement(node)
-		    ? _lengthOrAttr[_startNode = node]
-		    : NULL;
+		if (isElement(node)) {
+		    _attribute = _lengthOrAttr[_startNode = node];
+		    // Skip namespace nodes
+		    while ((_attribute != NULL) &&
+			   (_type[_attribute] == NAMESPACE))
+			_attribute = _nextSibling[_attribute];
+		}
+		else {
+		    _attribute = NULL;
+		}
 		return resetPosition();
 	    }
 	    return this;
@@ -968,6 +986,92 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _attribute = _markedNode;
 	}
     } // end of TypedAttributeIterator
+
+
+    /**************************************************************
+     * Iterator that returns namespace nodes
+     */
+    private class NamespaceIterator extends NodeIteratorBase {
+	
+	protected int _node;
+	protected int _ns;
+         
+	// assumes caller will pass element nodes
+	public NodeIterator setStartNode(int node) {
+	    if (_isRestartable) {
+		if (isElement(node)) {
+		    _startNode = _node = node;
+		    _ns = _lengthOrAttr[_node];
+		    while ((_ns != DOM.NULL) && (_type[_ns] != NAMESPACE)) {
+			_ns = _nextSibling[_ns];
+		    }
+		}
+		else {
+		    _ns = DOM.NULL;
+		}
+		return resetPosition();
+	    }
+	    return this;
+	}
+                  
+	public int next() {
+	    while (_node != NULL) {
+		final int node = _ns;
+		_ns = _nextSibling[_ns];
+
+		while ((_ns == DOM.NULL) && (_node != DOM.NULL)) {
+		    _node = _parent[_node];
+		    _ns = _lengthOrAttr[_node];
+		    while ((_ns != DOM.NULL) && (_type[_ns] != NAMESPACE)) {
+			_ns = _nextSibling[_ns];
+		    }
+		}
+		if (_type[node] == NAMESPACE)
+		    return returnNode(node);
+	    }
+	    return NULL;
+	}
+
+	public void setMark() {
+	    _markedNode = _ns;
+	}
+
+	public void gotoMark() {
+	    _ns = _markedNode;
+	}
+	
+    } // end of NamespaceIterator
+
+
+    /**************************************************************
+     * Iterator that returns namespace nodes
+     */
+    private final class TypedNamespaceIterator extends NamespaceIterator {
+
+	final int _uriType;
+
+	public TypedNamespaceIterator(int type) {
+	    _uriType = type;
+	}
+
+	public int next() {
+	    int node;
+
+	    while ((node = _ns) != DOM.NULL) {
+		_ns = _nextSibling[_ns];
+		while ((_ns == DOM.NULL) && (_node != DOM.NULL)) {
+		    _node = _parent[_node];
+		    _ns = _lengthOrAttr[_node];
+		    while ((_ns != DOM.NULL) && (_type[_ns] != NAMESPACE)) {
+			_ns = _nextSibling[_ns];
+		    }
+		}
+		if (_prefix[node] == _uriType) return returnNode(node);
+	    }
+	    return DOM.NULL;
+	}
+         
+    } // end of AttributeIterator
 
 
     /**************************************************************
@@ -1775,6 +1879,7 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns the (String) value of any node in the tree
      */
     public String getNodeValue(final int node) {
+	// NS prefix = _prefixArray[_prefix[node]]
 	if ((node == NULL) || (node > _treeNodeLimit)) return EMPTYSTRING;
 	switch(_type[node]) {
 	case ROOT:
@@ -1861,7 +1966,8 @@ public final class DOMImpl implements DOM, Externalizable {
 		len = uri.length();
 		if (len > 0) len++;
 	    }
-	    if (name.charAt(len) == '@')
+
+	    if ((name.length() > 0) && (name.charAt(len) == '@'))
 		result[i] = (short)ATTRIBUTE;
 	    else
 		result[i] = (short)ELEMENT;
@@ -2054,11 +2160,12 @@ public final class DOMImpl implements DOM, Externalizable {
 	switch(type) {
 	case DOM.ROOT:
 	case DOM.TEXT:
-	case DOM.UNUSED:
 	case DOM.ELEMENT:
 	case DOM.ATTRIBUTE:
 	case DOM.COMMENT:
 	    return EMPTYSTRING;
+	case DOM.NAMESPACE:
+	    return _prefixArray[_prefix[node]];
 	case DOM.PROCESSING_INSTRUCTION:
 	    final String pistr = makeStringValue(node);
 	    final int col = pistr.indexOf(' ');
@@ -2215,7 +2322,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	    iterator = new PrecedingSiblingIterator();
 	    break;
 	case Axis.NAMESPACE:
-	    return(new TypedAttributeIterator(getGeneralizedType("xmlns")));
+	    iterator = new NamespaceIterator();
+	    break;
 	default:
 	    BasisLibrary.runTimeError("Error: iterator for axis '" + 
 				      Axis.names[axis] + "' not implemented");
@@ -2239,7 +2347,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	if (type == NO_TYPE) {
 	    return(EMPTYITERATOR);
 	}
-        else if (type == ELEMENT) {
+        else if ((type == ELEMENT) && (axis != Axis.NAMESPACE)) {
 	    iterator = new FilterIterator(getAxisIterator(axis),
 					  getElementFilter());
 	}
@@ -2276,6 +2384,12 @@ public final class DOMImpl implements DOM, Externalizable {
 		break;
 	    case Axis.PRECEDINGSIBLING:
 		iterator = new TypedPrecedingSiblingIterator(type);
+		break;
+	    case Axis.NAMESPACE:
+		if (type == ELEMENT)
+		    iterator = new NamespaceIterator();
+		else
+		    iterator = new TypedNamespaceIterator(type);
 		break;
 	    default:
 		BasisLibrary.runTimeError("Error: typed iterator for axis " + 
@@ -2404,18 +2518,27 @@ public final class DOMImpl implements DOM, Externalizable {
 	case ATTRIBUTE:
 	    shallowCopy(node, handler);
 	    break;
+	case NAMESPACE:
+	    shallowCopy(node, handler);
+	    break;
 	default:
 	    if (isElement(node)) {
 		// Start element definition
 		final String name = copyElement(node, type, handler);
 		// Copy element attribute
 		for (int a=_lengthOrAttr[node]; a!=NULL; a=_nextSibling[a]) {
-		    final String uri = getNamespaceName(a);
-		    if (uri != EMPTYSTRING) {
-			final String prefix = _prefixArray[_prefix[a]];
-			handler.namespace(prefix, uri);
+		    if (_type[a] != NAMESPACE) {
+			final String uri = getNamespaceName(a);
+			if (uri != EMPTYSTRING) {
+			    final String prefix = _prefixArray[_prefix[a]];
+			    handler.namespace(prefix, uri);
+			}
+			handler.attribute(getNodeName(a), makeStringValue(a));
 		    }
-		    handler.attribute(getNodeName(a), makeStringValue(a));
+		    else {
+			handler.namespace(_prefixArray[_prefix[a]],
+					  makeStringValue(a));
+		    }
 		}
 		// Copy element children
 		for (int c=_offsetOrChild[node]; c!=NULL; c=_nextSibling[c])
@@ -2458,10 +2581,6 @@ public final class DOMImpl implements DOM, Externalizable {
 
     /**
      * Performs a shallow copy (ref. XSLs copy())
-     *
-     * TODO: Copy namespace declarations. Can't be done until we
-     *       add namespace nodes and keep track of NS prefixes
-     * TODO: Copy comment nodes
      */
     public String shallowCopy(final int node, TransletOutputHandler handler)
 	throws TransletException {
@@ -2484,6 +2603,10 @@ public final class DOMImpl implements DOM, Externalizable {
 					      _offsetOrChild[node],
 					      _lengthOrAttr[node]);
 	    handler.comment(comment);
+	    return null;
+	case NAMESPACE:
+	    handler.namespace(_prefixArray[_prefix[node]],
+			      makeStringValue(node));
 	    return null;
 	default:
 	    if (isElement(node)) {
@@ -2641,7 +2764,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	private int       _currentNode          = 0;
 
 	// Temporary structures for attribute nodes
-	private int       _currentAttributeNode = 0;
+	private int       _currentAttributeNode = 1;
 	private short[]   _type2        = new short[ATTR_ARRAY_SIZE];
 	private short[]   _prefix2      = new short[ATTR_ARRAY_SIZE];
 	private int[]     _parent2      = new int[ATTR_ARRAY_SIZE];
@@ -2653,6 +2776,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	private Hashtable _nsPrefixes   = new Hashtable();
 	private int       _uriCount     = 0;
 	private int       _prefixCount  = 0;
+
+	private int       _nextNamespace = DOM.NULL;
+	private int       _lastNamespace = DOM.NULL;
 	
 	// Stack used to keep track of what whitespace text nodes are protected
 	// by xml:space="preserve" attributes and which nodes that are not.
@@ -2672,7 +2798,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
 
 	/**
-	 * Returns the namespace URI that a prefix currentl maps to
+	 * Returns the namespace URI that a prefix currently maps to
 	 */
 	private String getNamespaceURI(String prefix) {
 	    // Get the stack associated with this namespace prefix
@@ -2888,6 +3014,16 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _length[attributeNode] = length;
 	}
 
+	private int makeNamespaceNode(String prefix, String uri)
+	    throws SAXException {
+
+    	    final int node = nextAttributeNode();
+	    _type2[node] = NAMESPACE;
+	    characters(uri);
+	    storeAttrValRef(node);
+	    return node;	    
+	}
+
 	/**
 	 * Creates an attribute node
 	 */
@@ -2929,8 +3065,6 @@ public final class DOMImpl implements DOM, Externalizable {
 		_type2[node] = (short)obj.intValue();
 	    }
 
-	    _parent2[node] = parent;
-
 	    final int col = qname.lastIndexOf(':');
 	    if (col > 0) {
 		_prefix2[node] = registerPrefix(qname.substring(0, col));
@@ -2959,13 +3093,13 @@ public final class DOMImpl implements DOM, Externalizable {
 	/**
 	 * SAX2: Receive notification of the beginning of a document.
 	 */
-	public void startDocument() {
+	public void startDocument() throws SAXException {
 	    _shortTexts     = new Hashtable();
 	    _names          = new Hashtable();
 	    _sp             = 0;
 	    _parentStack[0] = ROOTNODE;	// root
 	    _currentNode    = ROOTNODE + 1;
-	    _currentAttributeNode = 0;
+	    _currentAttributeNode = 1;
 	    startPrefixMapping(EMPTYSTRING, EMPTYSTRING);
 	}
 
@@ -3009,8 +3143,10 @@ public final class DOMImpl implements DOM, Externalizable {
 		if ((!qname.startsWith(XML_STRING)) && (col > -1)) {
 		    final String uri = _namesArray[i].substring(0, col);
 		    final Integer idx = (Integer)_nsIndex.get(uri);
-		    _namespace[i] = idx.shortValue();
-		    _uriArray[idx.intValue()] = uri;
+		    if (idx != null) {
+			_namespace[i] = idx.shortValue();
+			_uriArray[idx.intValue()] = uri;
+		    }
 		}
 	    }
 
@@ -3038,23 +3174,36 @@ public final class DOMImpl implements DOM, Externalizable {
 	    linkChildren(node);
 	    _parentStack[++_sp] = node;
 
+	    _lengthOrAttr[node] = DOM.NULL;
+
 	    final int count = attributes.getLength();
 
-	    // Process attribute list and create attr nodes
+	    // Append any namespace nodes
+	    if (_nextNamespace != DOM.NULL) {
+		_lengthOrAttr[node] = _nextNamespace;
+		while (_nextNamespace != DOM.NULL) {
+		    _parent2[_nextNamespace] = node;
+		    int tail = _nextNamespace;
+		    _nextNamespace = _nextSibling2[_nextNamespace];
+		    // Chain last namespace node to following attribute node(s)
+		    if ((_nextNamespace == DOM.NULL) && (count > 0))
+			_nextSibling2[tail] = _currentAttributeNode;
+		}
+	    }
+
+	    // Append any attribute nodes
 	    if (count > 0) {
-		int attr = _currentAttributeNode + 1;
-		_lengthOrAttr[node] = attr;
+		int attr = _currentAttributeNode;
+		if (_lengthOrAttr[node] == DOM.NULL)
+		    _lengthOrAttr[node] = attr;
 		for (int i = 0; i<count; i++) {
 		    attr = makeAttributeNode(node, attributes, i);
+		    _parent2[attr] = node;;
 		    _nextSibling2[attr] = attr + 1;
 		}
 		_nextSibling2[attr] = DOM.NULL;
 	    }
-	    // The element has no attributes
-	    else {
-		_lengthOrAttr[node] = DOM.NULL;
-	    }	    
-	    
+
 	    final int col = qname.lastIndexOf(':');
 
 	    // Assign an internal type to this element (may exist)
@@ -3129,7 +3278,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	/**
 	 * SAX2: Begin the scope of a prefix-URI Namespace mapping.
 	 */
-	public void startPrefixMapping(String prefix, String uri) {
+	public void startPrefixMapping(String prefix, String uri) 
+	    throws SAXException {
+
 	    // Get the stack associated with this namespace prefix
 	    Stack stack = (Stack)_nsPrefixes.get(prefix);
 	    if (stack == null) {
@@ -3139,10 +3290,22 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 
 	    // Check if the URI already exists before pushing on stack
-	    if (_nsIndex.get(uri) == null) {
-		_nsIndex.put(uri, new Integer(_uriCount++));
+	    Integer idx;
+	    if ((idx = (Integer)_nsIndex.get(uri)) == null) {
+		_nsIndex.put(uri, idx = new Integer(_uriCount++));
 	    }
 	    stack.push(uri);
+
+	    if (!prefix.equals(EMPTYSTRING) || !uri.equals(EMPTYSTRING)) {
+		makeTextNode(false);
+		int attr = makeNamespaceNode(prefix, uri);
+		if (_nextNamespace == DOM.NULL)
+		    _nextNamespace = attr;
+		else
+		    _nextSibling2[attr-1] = attr;
+		_nextSibling2[attr] = DOM.NULL;
+		_prefix2[attr] = idx.shortValue();
+	    }
 	}
 
 	/**

@@ -72,7 +72,7 @@ public interface DOM {
     public final static int  NO_TYPE                = -1;
     public final static int  ROOT                   = 0;
     public final static int  TEXT                   = 1;
-    public final static int  UNUSED                 = 2;
+    public final static int  NAMESPACE              = 2;
     public final static int  ELEMENT                = 3;
     public final static int  ATTRIBUTE              = 4;
     public final static int  PROCESSING_INSTRUCTION = 5;
