@@ -123,6 +123,36 @@ public class SAX2RTFDTM extends SAX2DTM
    * some storage.
    */
   IntStack mark_nsdeclelem_size=new IntStack();
+
+  /**
+   * Tail-pruning mark:  initial number of nodes in use
+   */
+  int m_emptyNodeCount;
+
+  /**
+   * Tail-pruning mark:  initial number of namespace declaration sets
+   */
+  int m_emptyNSDeclSetCount;
+
+  /**
+   * Tail-pruning mark:  initial number of namespace declaration elements
+   */
+  int m_emptyNSDeclSetElemsCount;
+
+  /**
+   * Tail-pruning mark:  initial number of data items in use
+   */
+  int m_emptyDataCount;
+
+  /**
+   * Tail-pruning mark:  initial number of characters in use
+   */
+  int m_emptyCharsCount;
+
+  /**
+   * Tail-pruning mark:  default initial number of dataOrQName slots in use
+   */
+  int m_emptyDataQNCount;
   
   public SAX2RTFDTM(DTMManager mgr, Source source, int dtmIdentity,
                  DTMWSFilter whiteSpaceFilter,
@@ -134,11 +164,24 @@ public class SAX2RTFDTM extends SAX2DTM
           
     // NEVER track source locators for RTFs; they aren't meaningful. I think.
     // (If we did track them, we'd need to tail-prune these too.)
-    m_useSourceLocationProperty=false; //org.apache.xalan.processor.TransformerFactoryImpl.m_source_location;
-    m_sourceSystemId = (m_useSourceLocationProperty) ? new StringVector() : null;
- 	m_sourceLine = (m_useSourceLocationProperty) ?  new IntVector() : null;
-    m_sourceColumn = (m_useSourceLocationProperty) ?  new IntVector() : null;
-    
+    //org.apache.xalan.processor.TransformerFactoryImpl.m_source_location;
+    m_useSourceLocationProperty=false;
+    m_sourceSystemId = (m_useSourceLocationProperty) ? new StringVector()
+                                                     : null;
+    m_sourceLine = (m_useSourceLocationProperty) ? new IntVector() : null;
+    m_sourceColumn = (m_useSourceLocationProperty) ? new IntVector() : null;
+
+    // Record initial sizes of fields that are pushed and restored
+    // for RTF tail-pruning.  More entries can be popped than pushed, so
+    // we need this to mark the primordial state of the DTM.
+    m_emptyNodeCount = m_size;
+    m_emptyNSDeclSetCount = (m_namespaceDeclSets == null)
+                                 ? 0 : m_namespaceDeclSets.size();
+    m_emptyNSDeclSetElemsCount = (m_namespaceDeclSetElements == null)
+                                      ? 0 : m_namespaceDeclSetElements.size();
+    m_emptyDataCount = m_data.size();
+    m_emptyCharsCount = m_chars.size();
+    m_emptyDataQNCount = m_dataOrQName.size();
   }
   
   /**
@@ -173,11 +216,11 @@ public class SAX2RTFDTM extends SAX2DTM
    */
   public int getDocumentRoot(int nodeHandle)
   {
-    for(int id=makeNodeIdentity(nodeHandle);
-		id!=NULL;
-		id=_parent(id))
-		if(_type(id)==DTM.DOCUMENT_NODE)
-  			return makeNodeHandle(id);
+    for (int id=makeNodeIdentity(nodeHandle); id!=NULL; id=_parent(id)) {
+      if (_type(id)==DTM.DOCUMENT_NODE) {
+        return makeNodeHandle(id);
+      }
+    }
 
     return DTM.NULL; // Safety net; should never happen
   }
@@ -192,13 +235,13 @@ public class SAX2RTFDTM extends SAX2DTM
    */
   protected int _documentRoot(int nodeIdentifier)
   {
-  	if(nodeIdentifier==NULL) return NULL;
-  	
-    for(int parent=_parent(nodeIdentifier);
-    	parent!=NULL;
-    	nodeIdentifier=parent,parent=_parent(nodeIdentifier))
-    	;
-    
+    if(nodeIdentifier==NULL) return NULL;
+
+    for (int parent=_parent(nodeIdentifier);
+         parent!=NULL;
+         nodeIdentifier=parent,parent=_parent(nodeIdentifier))
+      ;
+   
     return nodeIdentifier;
   }
 
@@ -211,7 +254,7 @@ public class SAX2RTFDTM extends SAX2DTM
    * (even as Protected) and carry the additional code.
    *
    * @throws SAXException Any SAX exception, possibly
-   *            wrapping another exception. 
+   *            wrapping another exception.
    * @see org.xml.sax.ContentHandler#startDocument
    * */
   public void startDocument() throws SAXException
@@ -221,11 +264,11 @@ public class SAX2RTFDTM extends SAX2DTM
     m_prefixMappings = new java.util.Vector();
     m_contextIndexes = new IntStack();
     m_parents = new IntStack();
-    
+   
     m_currentDocumentNode=m_size;
     super.startDocument();
   }
-  
+ 
   /**
    * Receive notification of the end of the document.
    *
@@ -257,56 +300,60 @@ public class SAX2RTFDTM extends SAX2DTM
     m_currentDocumentNode= NULL; // no longer open
     m_endDocumentOccured = true;
   }
-  
+ 
 
   /** "Tail-pruning" support for RTFs.
-   * 
+   *
    * This function pushes information about the current size of the
    * DTM's data structures onto a stack, for use by popRewindMark()
    * (which see).
-   * 
+   *
    * %REVIEW% I have no idea how to rewind m_elemIndexes. However,
    * RTFs will not be indexed, so I can simply panic if that case
    * arises. Hey, it works...
    * */
   public void pushRewindMark()
   {
-    if(m_indexing || m_elemIndexes!=null) 
+    if(m_indexing || m_elemIndexes!=null)
       throw new java.lang.NullPointerException("Coding error; Don't try to mark/rewind an indexed DTM");
 
     // Values from DTMDefaultBase
     // %REVIEW% Can the namespace stack sizes ever differ? If not, save space!
     mark_size.push(m_size);
-    mark_nsdeclset_size.push( (m_namespaceDeclSets==null) ? 0 : m_namespaceDeclSets.size() );
-    mark_nsdeclelem_size.push( (m_namespaceDeclSetElements==null) ? 0 : m_namespaceDeclSetElements.size() );
-    
+    mark_nsdeclset_size.push((m_namespaceDeclSets==null)
+                                   ? 0
+                                   : m_namespaceDeclSets.size());
+    mark_nsdeclelem_size.push((m_namespaceDeclSetElements==null)
+                                   ? 0
+                                   : m_namespaceDeclSetElements.size());
+   
     // Values from SAX2DTM
     mark_data_size.push(m_data.size());
     mark_char_size.push(m_chars.size());
-    mark_doq_size.push(m_dataOrQName.size());	
+    mark_doq_size.push(m_dataOrQName.size());
   }
-  
+ 
   /** "Tail-pruning" support for RTFs.
-   * 
+   *
    * This function pops the information previously saved by
    * pushRewindMark (which see) and uses it to discard all nodes added
    * to the DTM after that time. We expect that this will allow us to
    * reuse storage more effectively.
-   * 
+   *
    * This is _not_ intended to be called while a document is still being
    * constructed -- only between endDocument and the next startDocument
-   * 
+   *
    * %REVIEW% WARNING: This is the first use of some of the truncation
    * methods.  If Xalan blows up after this is called, that's a likely
    * place to check.
-   * 
+   *
    * %REVIEW% Our original design for DTMs permitted them to share
    * string pools.  If there any risk that this might be happening, we
    * can _not_ rewind and recover the string storage. One solution
    * might to assert that DTMs used for RTFs Must Not take advantage
    * of that feature, but this seems excessively fragile. Another, much
    * less attractive, would be to just let them leak... Nah.
-   * 
+   *
    * @return true if and only if the pop completely emptied the
    * RTF. That response is used when determining how to unspool
    * RTF-started-while-RTF-open situations.
@@ -314,8 +361,8 @@ public class SAX2RTFDTM extends SAX2DTM
   public boolean popRewindMark()
   {
     boolean top=mark_size.empty();
-    
-    m_size=top ? 0 : mark_size.pop();
+   
+    m_size=top ? m_emptyNodeCount : mark_size.pop();
     m_exptype.setSize(m_size);
     m_firstch.setSize(m_size);
     m_nextsib.setSize(m_size);
@@ -324,28 +371,29 @@ public class SAX2RTFDTM extends SAX2DTM
 
     m_elemIndexes=null;
 
-    int ds= top ? 0 : mark_nsdeclset_size.pop();
-    if (m_namespaceDeclSets!=null)
+    int ds= top ? m_emptyNSDeclSetCount : mark_nsdeclset_size.pop();
+    if (m_namespaceDeclSets!=null) {
       m_namespaceDeclSets.setSize(ds);
-      
-    int ds1= top ? 0 : mark_nsdeclelem_size.pop();
-    if (m_namespaceDeclSetElements!=null)
+    }
+
+    int ds1= top ? m_emptyNSDeclSetElemsCount : mark_nsdeclelem_size.pop();
+    if (m_namespaceDeclSetElements!=null) {
       m_namespaceDeclSetElements.setSize(ds1);
-  
-    // Values from SAX2DTM
-    m_data.setSize(top ? 0 : mark_data_size.pop());
-    m_chars.setLength(top ? 0 : mark_char_size.pop());
-    m_dataOrQName.setSize(top ? 0 : mark_doq_size.pop());
+    }
+ 
+    // Values from SAX2DTM - m_data always has a reserved entry
+    m_data.setSize(top ? m_emptyDataCount : mark_data_size.pop());
+    m_chars.setLength(top ? m_emptyCharsCount : mark_char_size.pop());
+    m_dataOrQName.setSize(top ? m_emptyDataQNCount : mark_doq_size.pop());
 
     // Return true iff DTM now empty
     return m_size==0;
   }
-  
+ 
   /** @return true if a DTM tree is currently under construction.
    * */
   public boolean isTreeIncomplete()
   {
-  	return !m_endDocumentOccured;
-  	
+    return !m_endDocumentOccured;
   }
 }
