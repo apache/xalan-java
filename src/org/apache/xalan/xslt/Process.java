@@ -116,7 +116,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class Process
 {
-
   /**
    * Prints argument options.
    *
@@ -124,9 +123,9 @@ public class Process
    */
   protected static void printArgOptions(ResourceBundle resbundle)
   {
-
     System.out.println(resbundle.getString("xslProc_option"));  //"xslproc options: ");
     System.out.println(resbundle.getString("optionIN"));  //"    -IN inputXMLURL");
+    System.out.println(resbundle.getString("optionXSLTC"));  //"    [-XSLTC (use XSLTC for transformation)]
     System.out.println(resbundle.getString("optionXSL"));  //"   [-XSL XSLTransformationURL]");
     System.out.println(resbundle.getString("optionOUT"));  //"   [-OUT outputFileName]");
 
@@ -202,8 +201,25 @@ public class Process
     }
     else
     {
+      boolean useXSLTC = false;
+      for (int i = 0; i < argv.length; i++)
+      {
+        if ("-XSLTC".equalsIgnoreCase(argv[i]))
+        {
+          useXSLTC = true;
+        }
+      }
+        
       TransformerFactory tfactory;
-
+      if (useXSLTC)
+      {
+	 String key = "javax.xml.transform.TransformerFactory";
+	 String value = "org.apache.xalan.xsltc.trax.TransformerFactoryImpl";
+	 Properties props = System.getProperties();
+	 props.put(key, value);
+	 System.setProperties(props);      
+      }
+      
       try
       {
         tfactory = TransformerFactory.newInstance();
@@ -239,39 +255,63 @@ public class Process
 
       for (int i = 0; i < argv.length; i++)
       {
-        if ("-TT".equalsIgnoreCase(argv[i]))
+        if ("-XSLTC".equalsIgnoreCase(argv[i]))
         {
-          if (null == tracer)
-            tracer = new PrintTraceListener(diagnosticsWriter);
+          // The -XSLTC option has been processed.
+        }
+        else if ("-TT".equalsIgnoreCase(argv[i]))
+        {
+          if (!useXSLTC)
+          {
+            if (null == tracer)
+              tracer = new PrintTraceListener(diagnosticsWriter);
 
-          tracer.m_traceTemplates = true;
+            tracer.m_traceTemplates = true;
+          }
+          else
+            printInvalidXSLTCOption("-TT");
 
           // tfactory.setTraceTemplates(true);
         }
         else if ("-TG".equalsIgnoreCase(argv[i]))
         {
-          if (null == tracer)
-            tracer = new PrintTraceListener(diagnosticsWriter);
+          if (!useXSLTC)
+          {
+            if (null == tracer)
+              tracer = new PrintTraceListener(diagnosticsWriter);
 
-          tracer.m_traceGeneration = true;
+            tracer.m_traceGeneration = true;
+          }
+          else
+            printInvalidXSLTCOption("-TG");
 
           // tfactory.setTraceSelect(true);
         }
         else if ("-TS".equalsIgnoreCase(argv[i]))
         {
-          if (null == tracer)
-            tracer = new PrintTraceListener(diagnosticsWriter);
+          if (!useXSLTC)
+          {
+            if (null == tracer)
+              tracer = new PrintTraceListener(diagnosticsWriter);
 
-          tracer.m_traceSelection = true;
+            tracer.m_traceSelection = true;
+          }
+          else
+            printInvalidXSLTCOption("-TS");
 
           // tfactory.setTraceTemplates(true);
         }
         else if ("-TTC".equalsIgnoreCase(argv[i]))
         {
-          if (null == tracer)
-            tracer = new PrintTraceListener(diagnosticsWriter);
+          if (!useXSLTC)
+          {
+            if (null == tracer)
+              tracer = new PrintTraceListener(diagnosticsWriter);
 
-          tracer.m_traceElements = true;
+            tracer.m_traceElements = true;
+          }
+          else
+            printInvalidXSLTCOption("-TTC");
 
           // tfactory.setTraceTemplateChildren(true);
         }
@@ -361,20 +401,6 @@ public class Process
                 XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
                 new Object[]{ "-PARAM" }));  //"Missing argument for);
         }
-        else if ("-TREEDUMP".equalsIgnoreCase(argv[i]))  // sc 28-Feb-01 appears to be unused; can we remove?
-        {
-          if (i + 1 < argv.length)
-            treedumpFileName = argv[++i];
-          else
-            System.err.println(
-              XSLMessages.createMessage(
-                XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
-                new Object[]{ "-treedump" }));  //"Missing argument for);
-        }
-        else if ("-F".equalsIgnoreCase(argv[i]))  // sc 28-Feb-01 appears to be unused; can we remove?
-        {
-          formatOutput = true;
-        }
         else if ("-E".equalsIgnoreCase(argv[i]))
         {
 
@@ -391,29 +417,15 @@ public class Process
         }
         else if ("-QC".equalsIgnoreCase(argv[i]))
         {
-          quietConflictWarnings = true;
+          if (!useXSLTC)
+            quietConflictWarnings = true;
+          else
+            printInvalidXSLTCOption("-QC");
         }
         else if ("-Q".equalsIgnoreCase(argv[i]))
         {
           setQuietMode = true;
         }
-
-        /*
-        else if("-VALIDATE".equalsIgnoreCase(argv[i]))
-        {
-          String shouldValidate;
-          if(((i+1) < argv.length) && (argv[i+1].charAt(0) != '-'))
-          {
-            shouldValidate = argv[++i];
-          }
-          else
-          {
-            shouldValidate = "yes";
-          }
-
-          // xmlProcessorLiaison.setUseValidation(shouldValidate.equalsIgnoreCase("yes"));
-        }
-        */
         else if ("-DIAG".equalsIgnoreCase(argv[i]))
         {
           doDiag = true;
@@ -523,12 +535,20 @@ public class Process
           }
         }
         else if ("-L".equalsIgnoreCase(argv[i]))
-          useSourceLocation = true;
+        {
+          if (!useXSLTC)
+            useSourceLocation = true;
+          else
+            printInvalidXSLTCOption("-L");
+        }
         else if ("-INCREMENTAL".equalsIgnoreCase(argv[i]))
         {
-          tfactory.setAttribute
-            ("http://xml.apache.org/xalan/features/incremental", 
-             java.lang.Boolean.TRUE);
+          if (!useXSLTC)
+            tfactory.setAttribute
+              ("http://xml.apache.org/xalan/features/incremental", 
+               java.lang.Boolean.TRUE);
+          else
+            printInvalidXSLTCOption("-INCREMENTAL");
         }
         else if ("-NOOPTIMIZE".equalsIgnoreCase(argv[i]))
         {
@@ -537,19 +557,32 @@ public class Process
           // %REVIEW% We should have a generalized syntax for negative
           // switches...  and probably should accept the inverse even
           // if it is the default.
-          tfactory.setAttribute
-            ("http://xml.apache.org/xalan/features/optimize", 
-             java.lang.Boolean.FALSE);
+          if (!useXSLTC)
+            tfactory.setAttribute
+              ("http://xml.apache.org/xalan/features/optimize", 
+               java.lang.Boolean.FALSE);
+          else
+            printInvalidXSLTCOption("-NOOPTIMIZE");
 	}
         else if ("-RL".equalsIgnoreCase(argv[i]))
         {
-          if (i + 1 < argv.length)
-            recursionLimit = Integer.parseInt(argv[++i]);
+          if (!useXSLTC)
+          {
+            if (i + 1 < argv.length)
+              recursionLimit = Integer.parseInt(argv[++i]);
+            else
+              System.err.println(
+                XSLMessages.createMessage(
+                  XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
+                  new Object[]{ "-rl" }));  //"Missing argument for);
+          }
           else
-            System.err.println(
-              XSLMessages.createMessage(
-                XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
-                new Object[]{ "-rl" }));  //"Missing argument for);
+          {
+            if (i + 1 < argv.length)
+             i++;
+             
+            printInvalidXSLTCOption("-RL");
+          }
         }
 
         else
@@ -620,7 +653,7 @@ public class Process
         SAXTransformerFactory stf = (SAXTransformerFactory) tfactory;
         
 		// This is currently controlled via TransformerFactoryImpl.
-        if (useSourceLocation)
+        if (!useXSLTC && useSourceLocation)
            stf.setAttribute(XalanProperties.SOURCE_LOCATION, Boolean.TRUE);        
 
         // Did they pass in a stylesheet, or should we get it from the 
@@ -766,8 +799,9 @@ public class Process
                 reader = XMLReaderFactory.createXMLReader();
               }
               
-              stf.setAttribute(org.apache.xalan.processor.TransformerFactoryImpl.FEATURE_INCREMENTAL, 
-                 Boolean.TRUE);
+              if (!useXSLTC)
+                stf.setAttribute(org.apache.xalan.processor.TransformerFactoryImpl.FEATURE_INCREMENTAL, 
+                   Boolean.TRUE);
                  
               TransformerHandler th = stf.newTransformerHandler(stylesheet);
               
@@ -798,36 +832,8 @@ public class Process
               
               th.setResult(strResult);
               
-              // System.out.println("sending parse events to the handler...");
-              // for (int i = 0; i < 50; i++) 
-              {
-// System.out.print(".");
-// if((i % 50) == 0)
-//   System.out.println("");
-                reader.parse(new InputSource(inFileName));
-                // Transformer t = ((org.apache.xalan.transformer.TransformerHandlerImpl)th).getTransformer();
-                // System.err.println("Calling reset");
-                // ((TransformerImpl)t).reset();
-              }
-              
-              
-
-//              if (contentHandler != null)
-//              {
-//                SAXResult result = new SAXResult(contentHandler);
-//
-//                transformer.transform(
-//                  new SAXSource(reader, new InputSource(inFileName)), result);
-//              }
-//              else
-//              {
-//                transformer.transform(
-//                  new SAXSource(reader, new InputSource(inFileName)),
-//                  strResult);
-//              }
-
-              // ===============
-              }
+              reader.parse(new InputSource(inFileName));
+              }                            
             }
             else
             {
@@ -983,6 +989,14 @@ public class Process
    * */
   static void doExit(int i)
   {
-          System.exit(i);
+    System.exit(i);
+  }
+  
+  /**
+   * Print a message if an option cannot be used with -XSLTC.
+   */
+  private static void printInvalidXSLTCOption(String option)
+  {
+    System.err.println(XSLMessages.createMessage("invalid_xsltc_option", new Object[]{option}));
   }
 }
