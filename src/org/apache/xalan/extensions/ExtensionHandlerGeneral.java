@@ -100,6 +100,10 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
   private BSFManager m_mgr = new BSFManager();    // mgr used to run scripts
   private BSFEngine  m_engine = null;             // engine used 
 
+  public ExtensionHandlerGeneral()
+  {
+    super();
+  }
 
   /**
    * Construct a new extension namespace handler given all the information
@@ -121,7 +125,20 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
                                  String scriptSrc)
     throws SAXException
   {
-    super(namespaceUri, scriptLang);
+    super();
+    init( namespaceUri, elemNames, funcNames, scriptLang,
+	  scriptSrcURL, scriptSrc);
+  }
+
+  public void init(String namespaceUri,
+		   StringVector elemNames,
+		   StringVector funcNames, 
+		   String scriptLang,
+		   String scriptSrcURL,
+		   String scriptSrc)
+    throws SAXException
+  {
+    super.init(namespaceUri, scriptLang);
 
     if (elemNames != null)
     {

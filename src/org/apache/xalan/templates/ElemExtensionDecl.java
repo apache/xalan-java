@@ -6,7 +6,6 @@ import org.apache.xalan.utils.NameSpace;
 import org.apache.xalan.utils.StringToStringTable;
 import org.apache.xalan.utils.StringVector;
 import org.apache.xalan.extensions.ExtensionHandler;
-import org.apache.xalan.extensions.ExtensionHandlerGeneral;
 import org.apache.xalan.extensions.ExtensionsTable;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.xml.sax.SAXException;
@@ -157,12 +156,13 @@ public class ElemExtensionDecl extends ElemTemplateElement
       }
       else     // not java
       {
-        nsh = new ExtensionHandlerGeneral(declNamespace,
-                                          this.m_elements,
-                                          this.m_functions,
-                                          lang,
-                                          srcURL,
-                                          scriptSrc);
+	  nsh = ExtensionHandler.createGeneralHandler(
+						      declNamespace,
+						      this.m_elements,
+						      this.m_functions,
+						      lang,
+						      srcURL,
+						      scriptSrc);
         // System.out.println("Adding NS Handler: declNamespace = "+
         //                   declNamespace+", lang = "+lang+", srcURL = "+
         //                   srcURL+", scriptSrc="+scriptSrc);
