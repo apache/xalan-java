@@ -72,6 +72,7 @@ import org.apache.xml.utils.TreeWalker;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.DefaultErrorHandler;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.transformer.TransformerIdentityImpl;
 import org.apache.xalan.transformer.TrAXFilter;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -538,16 +539,16 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     return th;
   }
 
-  /** The identity transform string, for support of newTransformerHandler()
-   *  and newTransformer().  */
-  private static final String identityTransform =
-    "<xsl:stylesheet " + "xmlns:xsl='http://www.w3.org/1999/XSL/Transform' "
-    + "version='1.0'>" + "<xsl:template match='/|node()'>"
-    + "<xsl:copy-of select='.'/>" + "</xsl:template>" + "</xsl:stylesheet>";
-
-  /** The identity transform Templates, built from identityTransform, 
-   *  for support of newTransformerHandler() and newTransformer().  */
-  private static Templates m_identityTemplate = null;
+//  /** The identity transform string, for support of newTransformerHandler()
+//   *  and newTransformer().  */
+//  private static final String identityTransform =
+//    "<xsl:stylesheet " + "xmlns:xsl='http://www.w3.org/1999/XSL/Transform' "
+//    + "version='1.0'>" + "<xsl:template match='/|node()'>"
+//    + "<xsl:copy-of select='.'/>" + "</xsl:template>" + "</xsl:stylesheet>";
+//
+//  /** The identity transform Templates, built from identityTransform, 
+//   *  for support of newTransformerHandler() and newTransformer().  */
+//  private static Templates m_identityTemplate = null;
 
   /**
    * Get a TransformerHandler object that can process SAX
@@ -563,20 +564,21 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
           throws TransformerConfigurationException
   {
 
-    if (null == m_identityTemplate)
-    {
-      synchronized (identityTransform)
-      {
-        if (null == m_identityTemplate)
-        {
-          StringReader reader = new StringReader(identityTransform);
-
-          m_identityTemplate = newTemplates(new StreamSource(reader));
-        }
-      }
-    }
-
-    return newTransformerHandler(m_identityTemplate);
+//    if (null == m_identityTemplate)
+//    {
+//      synchronized (identityTransform)
+//      {
+//        if (null == m_identityTemplate)
+//        {
+//          StringReader reader = new StringReader(identityTransform);
+//
+//          m_identityTemplate = newTemplates(new StreamSource(reader));
+//        }
+//      }
+//    }
+//
+//    return newTransformerHandler(m_identityTemplate);
+    return new TransformerIdentityImpl();
   }
 
   /**
@@ -615,20 +617,21 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   public Transformer newTransformer() throws TransformerConfigurationException
   {
 
-    if (null == m_identityTemplate)
-    {
-      synchronized (identityTransform)
-      {
-        if (null == m_identityTemplate)
-        {
-          StringReader reader = new StringReader(identityTransform);
-
-          m_identityTemplate = newTemplates(new StreamSource(reader));
-        }
-      }
-    }
-
-    return m_identityTemplate.newTransformer();
+//    if (null == m_identityTemplate)
+//    {
+//      synchronized (identityTransform)
+//      {
+//        if (null == m_identityTemplate)
+//        {
+//          StringReader reader = new StringReader(identityTransform);
+//
+//          m_identityTemplate = newTemplates(new StreamSource(reader));
+//        }
+//      }
+//    }
+//
+//    return m_identityTemplate.newTransformer();
+      return new TransformerIdentityImpl();
   }
 
   /**
