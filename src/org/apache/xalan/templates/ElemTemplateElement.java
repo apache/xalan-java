@@ -743,7 +743,7 @@ public class ElemTemplateElement extends UnImplNode
   {
     ResultTreeHandler rhandler = transformer.getResultTreeHandler();
     int n = m_prefixTable.size();
-    for(int i = 0; i < n; i++)
+    for(int i = n-1; i >= 0; i--)
     {
       XMLNSDecl decl = (XMLNSDecl)m_prefixTable.elementAt(i);
       if(!decl.getIsExcluded())
