@@ -377,7 +377,7 @@ public class XercesLiaison extends XMLParserLiaisonDefault //implements XPathSup
   /**
    * Get the parent of a node.
    */
-  public Node getParentOfNode(Node node)
+  static public Node getParentOfNode(Node node)
     throws RuntimeException
   {
     return (Node.ATTRIBUTE_NODE == node.getNodeType())

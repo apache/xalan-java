@@ -275,7 +275,7 @@ public class XNodeSet extends XObject
     return m_xnodeset.notEquals(obj2.m_xObject);
   }  
  
- static class NodeIteratorWrapper extends org.apache.xpath.NodeSet
+ static class NodeIteratorWrapper extends org.apache.xpath.NodeSetDTM
   {
 
     /** Position of next node          */
