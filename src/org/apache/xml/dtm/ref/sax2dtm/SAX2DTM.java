@@ -855,24 +855,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     // Have we overflowed a DTM Identity's addressing range?
     if(m_dtmIdent.size() == (nodeIndex>>>DTMManager.IDENT_DTM_NODE_BITS))
     {
-      try
-      {
-        if(m_mgr==null)
-          throw new ClassCastException();
-                                
-                                // Handle as Extended Addressing
-        DTMManagerDefault mgrD=(DTMManagerDefault)m_mgr;
-        int id=mgrD.getFirstFreeDTMID();
-        mgrD.addDTM(this,id,nodeIndex);
-        m_dtmIdent.addElement(id<<DTMManager.IDENT_DTM_NODE_BITS);
-      }
-      catch(ClassCastException e)
-      {
-        // %REVIEW% Wrong error message, but I've been told we're trying
-        // not to add messages right not for I18N reasons.
-        // %REVIEW% Should this be a Fatal Error?
-        error(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DTMIDS_AVAIL, null));//"No more DTM IDs are available";
-      }
+      addNewDTMID(nodeIndex);
     }
 
     m_firstch.addElement(canHaveFirstChild ? NOTPROCESSED : DTM.NULL);
@@ -882,27 +865,13 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     m_exptype.addElement(expandedTypeID);
     m_dataOrQName.addElement(dataOrPrefix);
 
-	if (m_useSourceLocationProperty && m_locator != null) 
-	{
-		m_sourceSystemId.addElement(m_locator.getSystemId());
-		m_sourceLine.addElement(m_locator.getLineNumber());
-		m_sourceColumn.addElement(m_locator.getColumnNumber());
-
-		//%REVIEW% %BUG% Prevent this from arising in the first place
-		// by not allowing the enabling conditions to change after we start
-		// building the document.
-		if (m_sourceSystemId.size() != m_size) 
-		{
-			System.err.println("CODING ERROR in Source Location: " + m_size
-				+ " != "
-				+ m_sourceSystemId.size());
-			System.exit(1);
-		}
-	}
-
-
-    if (DTM.NULL != previousSibling)
+    if (DTM.NULL != previousSibling) {
       m_nextsib.setElementAt(nodeIndex,previousSibling);
+    }
+
+    if (m_locator != null && m_useSourceLocationProperty) {
+      setSourceLocation();
+    }
 
     // Note that nextSibling is not processed until charactersFlush()
     // is called, to handle successive characters() events.
@@ -923,6 +892,52 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     }
 
     return nodeIndex;
+  }
+
+  /**
+   * Get a new DTM ID beginning at the specified node index.
+   * @param  nodeIndex The node identity at which the new DTM ID will begin
+   * addressing.
+   */
+  private void addNewDTMID(int nodeIndex) {
+    try
+    {
+      if(m_mgr==null)
+        throw new ClassCastException();
+                              
+                              // Handle as Extended Addressing
+      DTMManagerDefault mgrD=(DTMManagerDefault)m_mgr;
+      int id=mgrD.getFirstFreeDTMID();
+      mgrD.addDTM(this,id,nodeIndex);
+      m_dtmIdent.addElement(id<<DTMManager.IDENT_DTM_NODE_BITS);
+    }
+    catch(ClassCastException e)
+    {
+      // %REVIEW% Wrong error message, but I've been told we're trying
+      // not to add messages right not for I18N reasons.
+      // %REVIEW% Should this be a Fatal Error?
+      error(XSLMessages.createMessage(XSLTErrorResources.ER_NO_DTMIDS_AVAIL, null));//"No more DTM IDs are available";
+    }
+  }
+
+  /**
+   * Store the source location of the current node.  This method must be called
+   * as every node is added to the DTM or for no node.
+   */
+  private void setSourceLocation() {
+    m_sourceSystemId.addElement(m_locator.getSystemId());
+    m_sourceLine.addElement(m_locator.getLineNumber());
+    m_sourceColumn.addElement(m_locator.getColumnNumber());
+
+    //%REVIEW% %BUG% Prevent this from arising in the first place
+    // by not allowing the enabling conditions to change after we start
+    // building the document.
+    if (m_sourceSystemId.size() != m_size) {
+        System.err.println("CODING ERROR in Source Location: " + m_size
+   	                    + " != "
+                            + m_sourceSystemId.size());
+        System.exit(1);
+    }
   }
 
   /**
