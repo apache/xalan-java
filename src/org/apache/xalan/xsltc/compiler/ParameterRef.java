@@ -79,9 +79,6 @@ final class ParameterRef extends VariableRefBase {
 	return "parameter-ref(" + _variable.getName() + ')';
     }
 
-    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	return _type = Type.Reference;
-    }
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
