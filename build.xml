@@ -114,7 +114,8 @@ Copyright:
   <!-- xml-commons and xml-apis.jar information -->
   <property name="xml-commons-srcs.tar.gz" value="${src.dir}/xml-commons-src.tar.gz"/>
   <property name="xml-commons-srcs.tar" value="${build.dir}/xml-commons-src.tar"/>
-  <property name="build.xml-apis.jar" value="${build.dir}/xml-apis.jar"/>
+  <property name="xml-apis.jar.name" value="xml-apis.jar"/>
+  <property name="build.xml-apis.jar" value="${build.dir}/${xml-apis.jar.name}"/>
 
   <!-- Set of files in the xml-commons that go in xml-apis.jar -->
   <patternset id="api-patternset">
@@ -356,7 +357,7 @@ Copyright:
   <!-- Creates the xalan JAR                                               -->
   <!-- =================================================================== -->
   <target name="jar" depends="compile"
-    description="Jar up xalan.jar, plus the xml-apis.jar" >
+    description="Jar up xalan.jar, plus the ${xml-apis.jar.name}" >
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${impl.version}"/>
     <copy todir="${build.dir}" file="${manifest.mf}" filtering="true"/>
@@ -656,10 +657,10 @@ Copyright:
     <mkdir dir="${dist.dir}/docs/compat_apidocs"/>    
     <mkdir dir="${dist.dir}/samples"/>
         
-        <!-- Copy bin directory -->
+    <!-- Copy bin directory, which includes preexisting checked-in .jar files -->
     <copy todir="${dist.dir}/bin">
           <fileset dir="${bin.dir}"/>
-        </copy>  
+    </copy>  
 
     <!-- Copy sources and source documentation -->
     <copy todir="${dist.dir}/src">
@@ -682,7 +683,12 @@ Copyright:
     <copy file="${build.dir}/xalansamples.jar" todir="${dist.dir}/bin"/>
     <copy file="${build.dir}/xalanservlet.jar" todir="${dist.dir}/bin"/>
 
-    <!-- Copy various built .jar files into the bin directory (subject to change) -->
+    <!-- Copy various built product .jars into the bin directory 
+         of the distro, note that changes to what .jars we ship 
+         must also be duplicated in the appropriate patternsets 
+         below that actually define the contents of our two 
+         *-bin.zip/tar.gz and *-src.zip/tar.gz files.
+    -->
     <copy file="${build.xalan.jar}" todir="${dist.dir}/bin"/>
     <copy file="${build.xml-apis.jar}" todir="${dist.dir}/bin"/>
     <copy file="${build.compat.jar}" todir="${dist.dir}/bin"/>    
@@ -699,6 +705,7 @@ Copyright:
       <include name="${dist.file}/License"/>
       <include name="${dist.file}/KEYS"/>
       <include name="${dist.file}/bin/${name}.jar"/>
+      <include name="${dist.file}/bin/${xml-apis.jar.name}"/>
       <include name="${dist.file}/bin/xsltc.jar"/>
       <include name="${dist.file}/bin/xerces.jar"/>
       <include name="${dist.file}/bin/${bsf.jar.name}"/>
@@ -719,6 +726,9 @@ Copyright:
       <include name="${dist.file}/xdocs/"/>
       <include name="${dist.file}/compat_src/"/>
     </patternset>
+    <!-- For convenience, list the assorted XSLTC engine dependency
+         .jar files separately, since they go in both -bin and -src.
+    -->
     <patternset id="xsltc-deps-jars" >
       <include name="${dist.file}/bin/${bcel.jar.name}"/>
       <include name="${dist.file}/bin/${java_cup.jar.name}"/>
