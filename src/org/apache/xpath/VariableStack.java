@@ -74,15 +74,9 @@ import javax.xml.transform.TransformerException;
 /**
  * <meta name="usage" content="internal"/>
  * Defines a class to keep track of a stack for
- * template arguments and variables, since we can't
- * simply bind the variables to templates and walk
- * the preceding children and ancestors.  The stack
- * is delimited by context markers which bound call
- * frames, and which you can't search past for a variable,
- * and by element frames, which are Arg objects with
- * the given ElemTemplateElement instead of a qname. You
- * can search past element frames, and they accumulate
- * until they are popped.
+ * template arguments and variables.  The VariableStack extends 
+ * Stack, and each element in the stack is a stack frame, i.e. a 
+ * Stack itself.  The zero element is the global stack frame.
  *
  * Note: Someone recently made the suggestion that the
  * globals should not be kept at the bottom of the stack,
@@ -98,19 +92,24 @@ public class VariableStack extends Stack
   {
     pushContextMarker();
   }
-
-  /**
-   * Hold the position of the start of the current element contexts.
-   */
-  private IntStack m_contextPositions = new IntStack();
-
-  /** The top of the globals space.     */
-  private int m_globalStackFrameIndex = -1;
   
-  /** Where to start the current search for a variable.
-   * If this is -1, the search should start at the top 
-   * of the stack. */
-  private int m_searchStart = -1;
+  /**
+   * Pushes an item onto the top of this stack. This has exactly 
+   * the same effect as:
+   * <blockquote><pre>
+   * addElement(item)</pre></blockquote>
+   *
+   * @param   item   the item to be pushed onto this stack.
+   * @return  the <code>item</code> argument.
+   * @see     java.util.Vector#addElement
+   */
+  public Object push(Object item) 
+  {
+      if(!(item instanceof Stack))
+        throw new RuntimeException("You can only push a Stack on the variable stack!");
+
+      return super.push(item);
+  }
   
   /**
    * Set where to start the current search for a variable.
@@ -135,7 +134,7 @@ public class VariableStack extends Stack
    */
   public int getSearchStartOrTop()
   {
-    return (-1 == m_searchStart) ? this.size() : m_searchStart;
+    return (-1 == m_searchStart) ? this.size()-1 : m_searchStart;
   }
   
   /**
@@ -149,11 +148,6 @@ public class VariableStack extends Stack
   {
     return m_searchStart;
   }
-
-  /**
-   * Hold the position of the start of the current element frame.
-   */
-  private IntStack m_elemFramePos = new IntStack();
 
   /**
    * Mark the top of the global stack frame.
@@ -170,7 +164,7 @@ public class VariableStack extends Stack
    */
   public void pushContextPosition(int pos)
   {
-    m_contextPositions.push(pos);
+    // m_contextPositions.push(pos);
   }
   
   /**
@@ -179,7 +173,7 @@ public class VariableStack extends Stack
    */
   public void popContextPosition()
   {
-    m_contextPositions.pop();
+    // m_contextPositions.pop();
   }
   
   /**
@@ -190,7 +184,8 @@ public class VariableStack extends Stack
    */
   public int getContextPos()
   {
-    return m_contextPositions.peek();
+    // return m_contextPositions.peek();
+    return this.size()-1;
   }
   
   /**
@@ -201,7 +196,8 @@ public class VariableStack extends Stack
    */
   public void pushContextMarker()
   {
-    m_contextPositions.push(this.size());
+    // m_contextPositions.push(this.size());
+    push(m_emptyStackFrame);
   }
 
   /**
@@ -210,10 +206,35 @@ public class VariableStack extends Stack
   public void popCurrentContext()
   {
 
-    int newSize = m_contextPositions.pop();
+    // int newSize = m_contextPositions.pop();
 
-    setSize(newSize);
+    // setSize(newSize);
+    pop();
   }
+  
+  /**
+   * Get the current stack frame.
+   * 
+   * @return non-null reference to current stack frame, which may be 
+   * the global stack.
+   */
+   private Stack getCurrentFrame()
+   {
+      int stackFrameIndex = (-1 == m_searchStart) ? this.size()-1 : m_searchStart;
+      return (Stack)this.elementAt(stackFrameIndex);
+   }
+   
+  /**
+   * Allocate variables frame.
+   */
+   private Stack allocateCurrentFrame()
+   {
+      int stackFrameIndex = (-1 == m_searchStart) ? this.size()-1 : m_searchStart;
+      Stack newFrame = new Stack();
+      this.setElementAt(newFrame, stackFrameIndex);
+      return newFrame;
+   }
+
   
   /**
    * Push an argument onto the stack, or replace it 
@@ -226,17 +247,18 @@ public class VariableStack extends Stack
    */
   public void pushOrReplaceVariable(QName qname, XObject xval)
   {
-    int n = this.size();
-    for(int i = n-1; i >= 0; i--)
+    Stack frame = getCurrentFrame();
+    
+    for (int i = (frame.size() - 1); i >= 0; i--)
     {
-      Arg arg = (Arg)this.elementAt(i);
+      Arg arg = (Arg)frame.elementAt(i);
       if(arg.getQName().equals(qname))
       {
         this.setElementAt(new Arg(qname, xval), i);
         return;
       }
     }
-    push(new Arg(qname, xval, false));
+    frame.push(new Arg(qname, xval, false));
   }
 
 
@@ -250,8 +272,27 @@ public class VariableStack extends Stack
    */
   public void pushVariable(QName qname, XObject val)
   {
-    push(new Arg(qname, val, false));
+    Stack frame = getCurrentFrame();
+    if(frame == m_emptyStackFrame)
+      frame = allocateCurrentFrame();
+    frame.push(new Arg(qname, val, false));
   }
+  
+  /**
+   * Push an argument onto the stack.  Don't forget
+   * to call startContext before pushing a series of
+   * arguments for a given macro call.
+   *
+   * @param arg The variable argument.
+   */
+  public void pushVariableArg(Arg arg)
+  {
+    Stack frame = getCurrentFrame();
+    if(frame == m_emptyStackFrame)
+      frame = allocateCurrentFrame();
+    frame.push(arg);
+  }
+
   
   /**
    * Tell if a variable or parameter is already declared, 
@@ -266,26 +307,25 @@ public class VariableStack extends Stack
   public boolean variableIsDeclared(QName qname) throws TransformerException
   {
 
-    int nElems = (-1 == m_searchStart) ? this.size() : m_searchStart;
-    int endContextPos = m_contextPositions.peek();
-
-    for (int i = (nElems - 1); i >= endContextPos; i--)
+    Stack frame = getCurrentFrame();
+    
+    for (int i = (frame.size() - 1); i >= 0; i--)
     {
-      Object obj = elementAt(i);
+      Object obj = frame.elementAt(i);
 
       if (((Arg) obj).getQName().equals(qname))
       {
         return true;
       }
     }
-    
-    if(endContextPos < m_globalStackFrameIndex)
+          
+    Stack gframe = (Stack)this.elementAt(0);
+    if(gframe == frame)
       return false;
     
-    // Look in the global space
-    for (int i = (m_globalStackFrameIndex - 1); i >= 0; i--)
+    for (int i = (gframe.size() - 1); i >= 0; i--)
     {
-      Object obj = elementAt(i);
+      Object obj = gframe.elementAt(i);
 
       if (((Arg) obj).getQName().equals(qname))
       {
@@ -311,12 +351,11 @@ public class VariableStack extends Stack
   {
 
     XObject val = null;
-    int nElems = (-1 == m_searchStart) ? this.size() : m_searchStart;
-    int endContextPos = m_contextPositions.peek();
-
-    for (int i = (nElems - 1); i >= endContextPos; i--)
+    Stack frame = getCurrentFrame();
+    
+    for (int i = (frame.size() - 1); i >= 0; i--)
     {
-      Arg arg = (Arg)elementAt(i);
+      Arg arg = (Arg)frame.elementAt(i);
 
       if (arg.getQName().equals(qname))
       {
@@ -348,12 +387,11 @@ public class VariableStack extends Stack
   public XObject getVariable(XPathContext xctxt, QName name) throws TransformerException
   {
 
-    int nElems = (-1 == m_searchStart) ? this.size() : m_searchStart;
-    int endContextPos = m_contextPositions.peek();
-
-    for (int i = (nElems - 1); i >= endContextPos; i--)
+    Stack frame = getCurrentFrame();
+    
+    for (int i = (frame.size() - 1); i >= 0; i--)
     {
-      Arg arg = (Arg) elementAt(i);
+      Arg arg = (Arg)frame.elementAt(i);
 
       if (arg.getQName().equals(name))
       {
@@ -367,13 +405,13 @@ public class VariableStack extends Stack
       }
     }
     
-    if(endContextPos < m_globalStackFrameIndex)
+    Stack gframe = (Stack)this.elementAt(0);
+    if(gframe == frame)
       return null;
-
-    // Look in the global space
-    for (int i = (m_globalStackFrameIndex - 1); i >= 0; i--)
+    
+    for (int i = (gframe.size() - 1); i >= 0; i--)
     {
-      Arg arg = (Arg)elementAt(i);
+      Arg arg = (Arg)gframe.elementAt(i);
 
       if (arg.getQName().equals(name))
       {
@@ -397,7 +435,9 @@ public class VariableStack extends Stack
    */
   public void pushElemFrame()
   {
-    m_elemFramePos.push(this.size());
+    Stack frame = getCurrentFrame();
+
+    m_elemFramePos.push(frame.size());
   }
 
   /**
@@ -406,9 +446,30 @@ public class VariableStack extends Stack
   public void popElemFrame()
   {
 
+    Stack frame = getCurrentFrame();
     int newSize = m_elemFramePos.pop();
 
-    setSize(newSize);
+    frame.setSize(newSize);
   }
+  
+  
+  /**
+   * Hold the position of the start of the current element frame.
+   */
+  private IntStack m_elemFramePos = new IntStack();
+  
+  /**
+   * Hold the position of the start of the current element contexts.
+   */
+  private static final Stack m_emptyStackFrame = new Stack();
+
+  /** The top of the globals space.     */
+  private int m_globalStackFrameIndex = -1;
+  
+  /** Where to start the current search for a variable.
+   * If this is -1, the search should start at the top 
+   * of the stack. */
+  private int m_searchStart = -1;
+
 }  // end XSLArgStack
 
