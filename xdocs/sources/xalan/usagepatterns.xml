@@ -266,8 +266,20 @@ org.apache.trax.Result result = new org.apache.trax.Result(resultDoc);
 <li>Include <jump href="apidocs/org/apache/xalan/client/XSLTProcessorApplet.html">XSLTProcessorApplet</jump> in an HTML client.<br/><br/></li>
 <li>Specify the XML source document and XSL stylesheet.<br/><br/>
 You can use the DocumentURL and StyleURL PARAM tags or the <jump href="apidocs/org/apache/xalan/client/XSLTProcessorApplet.html#setDocumentURL(java.lang.String)">setdocumentURL()</jump> and <jump href="apidocs/org/apache/xalan/client/XSLTProcessorApplet.html#setStyleURL(java.lang.String)">setStyleURL()</jump> methods. If the XML document contains a stylesheet Processing Instruction (PI), you do not need to specify an XSL stylesheet.<br/><br/></li>
-<li>Call the <jump href="apidocs/org/apache/xalan/client/XSLTProcessorApplet.html#transformToHtml(java.lang.String,java.lang.String)">transformToHtml()</jump> method, which performs the transformation and returns the new document as a String.</li></ol>
-<p>For an example, see the <jump href="../samples/appletXMLtoHTML/readme.html">sample applet readme</jump>.</p>
+<li>Call the <jump href="apidocs/org/apache/xalan/client/XSLTProcessorApplet.html#transformToHtml(java.lang.String,java.lang.String)">transformToHtml()</jump> or <jump href="apidocs/org/apache/xalan/client/XSLTProcessorApplet.html#getHtmlText()">getHtmlText()</jump> method, which performs the transformation and returns the new document as a String.</li></ol>
+<note>The transformToHTML() method takes arguments for the XML source document and XSL stylesheet. The getHtmlText() method takes no arguments: it uses property or parameter settings, as in the example below.</note>
+<p>For an example, see the <link idref="samples" anchor="appletxmltohtml">AppletXMLtoHTML</link> sample applet. The &lt;applet&gt; tag is in samples/AppletXMLtoHTML/client.html:</p>
+<source>&lt;applet  
+    name="xslControl"
+    code="org.apache.xalan.client.XSLTProcessorApplet.class"
+    archive="xalan.jar,xerces.jar"
+    height="0"
+    width"0">
+    &lt;param name="documentURL" value="xalanApplets.xml"/&gt;
+    &lt;param name="styleURL" value="s1ToHTML.xsl"/&gt;
+&lt;/applet&gt;</source>
+<p>When the user clicks the Transform button, the HTML client calls the getHtmlText() method, and puts the returned HTML text in a frame for the user to view.</p>
+
 </s2><anchor name="servlet"/>
 <s2 title="Using &xslt4j; in a servlet">
 <p>You can set up a servlet to use &xslt4j; to respond to requests for XML documents by transforming those documents into HTML and serving them to clients. For a sample of how this might be done, see <link idref="samples" anchor="servlet">sample servlet</link>.</p>
