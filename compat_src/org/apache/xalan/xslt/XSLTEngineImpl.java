@@ -2236,7 +2236,8 @@ public class XSLTEngineImpl implements  XSLTProcessor
   {    
     if (m_evalList == null)
       m_evalList = new Vector();
-    m_evalList.addElement(key);
+    if (!m_evalList.contains(key))
+      m_evalList.addElement(key);
     setParameter(key, expression);
     m_needToEval = true;
   }
