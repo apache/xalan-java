@@ -121,7 +121,7 @@ transformer.transform
   <label>System property</label>
     <item>Setting</item>
   <label><code>javax.xml.transform.TransformerFactory</code></label>
-   <item><code>org.apache.xalan.proccessor.TransformerFactoryImpl</code></item>    
+   <item><code>org.apache.xalan.processor.TransformerFactoryImpl</code></item>    
   <label><code>javax.xml.parsers.DocumentBuilderFactory</code></label>
    <item><code>org.apache.xerces.jaxp.DocumentBuilderFactoryImpl</code></item>    
   <label><code>javax.xml.parsers.SAXParserFactory</code></label>
