@@ -85,7 +85,7 @@ import org.xml.sax.Attributes;
 /**
  * Implementation of a JAXP1.1 TemplatesHandler
  */
-public class TemplatesHandlerImpl 
+public class TemplatesHandlerImpl
     implements ContentHandler, TemplatesHandler, SourceLoader
 {
     /**
@@ -108,7 +108,7 @@ public class TemplatesHandlerImpl
      * object belongs to.
      */
     private TransformerFactoryImpl _tfactory = null;
-    
+
     /**
      * A reference to XSLTC's parser object.
      */
@@ -122,7 +122,7 @@ public class TemplatesHandlerImpl
     {
 	_indentNumber = indentNumber;
 	_tfactory = tfactory;
-    
+
         // Initialize a parser object
         XSLTC xsltc = new XSLTC();
         xsltc.init();
@@ -202,13 +202,14 @@ public class TemplatesHandlerImpl
 		// Set it as top-level in the XSLTC object
 		xsltc.setStylesheet(stylesheet);
 
-		// Create AST under the Stylesheet element
+		// Create AST under the Stylesheet element 
 		_parser.createAST(stylesheet);
 	    }
 
 	    // Generate the bytecodes and output the translet class(es)
 	    if (!_parser.errorsFound() && stylesheet != null) {
 		stylesheet.setMultiDocument(xsltc.isMultiDocument());
+		stylesheet.setHasIdCall(xsltc.hasIdCall());
 
                 // Class synchronization is needed for BCEL
                 synchronized (xsltc.getClass()) {
@@ -260,7 +261,7 @@ public class TemplatesHandlerImpl
 	}
 	return null;
     }
-    
+
     // -- ContentHandler --------------------------------------------------
     
     /**

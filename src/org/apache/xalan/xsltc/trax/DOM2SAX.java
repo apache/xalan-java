@@ -83,6 +83,7 @@ import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.AttributesImpl;
+import org.apache.xalan.xsltc.dom.SAXImpl;
 
 public class DOM2SAX implements XMLReader, Locator {
 
@@ -92,6 +93,7 @@ public class DOM2SAX implements XMLReader, Locator {
     private Node _dom = null;
     private ContentHandler _sax = null;
     private LexicalHandler _lex = null;
+    private SAXImpl _saxImpl = null;
     private Hashtable _nsPrefixes = new Hashtable();
 
     public DOM2SAX(Node root) {
@@ -108,6 +110,10 @@ public class DOM2SAX implements XMLReader, Locator {
 	_sax = handler;
 	if (handler instanceof LexicalHandler) {
 	    _lex = (LexicalHandler) handler;
+	}
+	
+	if (handler instanceof SAXImpl) {
+	    _saxImpl = (SAXImpl)handler;
 	}
     }
 
@@ -310,7 +316,12 @@ public class DOM2SAX implements XMLReader, Locator {
 	    }
 
 	    // Generate SAX event to start element
-	    _sax.startElement(uri, localName, qname, attrs);
+	    if (_saxImpl != null) {
+	        _saxImpl.startElement(uri, localName, qname, attrs, node);
+	    }
+	    else {
+	        _sax.startElement(uri, localName, qname, attrs);
+	    }
 
 	    // Traverse all child nodes of the element (if any)
 	    next = node.getFirstChild();

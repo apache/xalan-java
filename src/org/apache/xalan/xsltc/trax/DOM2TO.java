@@ -64,11 +64,10 @@ package org.apache.xalan.xsltc.trax;
 
 import java.io.IOException;
 
-import org.apache.xalan.xsltc.TransletOutputHandler;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-
+import org.apache.xml.serializer.SerializationHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;
@@ -93,9 +92,9 @@ public class DOM2TO implements XMLReader, Locator {
     /**
      * A reference to the output handler receiving the events.
      */
-    private TransletOutputHandler _handler;
+    private SerializationHandler _handler;
 
-    public DOM2TO(Node root, TransletOutputHandler handler) {
+    public DOM2TO(Node root, SerializationHandler handler) {
 	_dom = root;
 	_handler = handler;
     }
@@ -176,7 +175,7 @@ public class DOM2TO implements XMLReader, Locator {
 	case Node.ELEMENT_NODE:
 	    // Generate SAX event to start element
 	    final String qname = node.getNodeName();
-	    _handler.startElement(qname);
+	    _handler.startElement(null, null, qname);
 	    String prefix;
 	    final NamedNodeMap map = node.getAttributes();
 	    final int length = map.getLength();
@@ -192,7 +191,7 @@ public class DOM2TO implements XMLReader, Locator {
 		    colon = qnameAttr.lastIndexOf(':');
 		    prefix = (colon > 0) ? qnameAttr.substring(colon + 1) 
 			: EMPTYSTRING;
-		    _handler.namespace(prefix, uriAttr);
+		    _handler.namespaceAfterStartElement(prefix, uriAttr);
 		}
 		else {
 		    final String uriAttr = attr.getNamespaceURI();
@@ -201,9 +200,9 @@ public class DOM2TO implements XMLReader, Locator {
 			colon = qnameAttr.lastIndexOf(':');
 			prefix = (colon > 0) ? qnameAttr.substring(0, colon) 
 			    : EMPTYSTRING;
-			_handler.namespace(prefix, uriAttr);
+			_handler.namespaceAfterStartElement(prefix, uriAttr);
 		    }
-		    _handler.attribute(qnameAttr, attr.getNodeValue());
+		    _handler.addAttribute(qnameAttr, attr.getNodeValue());
 		}
 	    }
 
@@ -214,7 +213,7 @@ public class DOM2TO implements XMLReader, Locator {
 	    if (uri != null) {	
 		final int colon = qname.lastIndexOf(':');
 		prefix = (colon > 0) ? qname.substring(0, colon) : EMPTYSTRING;
-		_handler.namespace(prefix, uri);
+		_handler.namespaceAfterStartElement(prefix, uri);
 	    }
 
 	    // Traverse all child nodes of the element (if any)

@@ -65,21 +65,19 @@
 package org.apache.xalan.xsltc.trax;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.UnknownHostException;
 import java.net.UnknownServiceException;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.ErrorListener;
@@ -96,17 +94,20 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
+import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
-import org.apache.xalan.xsltc.TransletOutputHandler;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
-import org.apache.xalan.xsltc.dom.DOMBuilder;
-import org.apache.xalan.xsltc.dom.DOMImpl;
-import org.apache.xalan.xsltc.dom.DTDMonitor;
+import org.apache.xalan.xsltc.dom.DOMWSFilter;
+import org.apache.xalan.xsltc.dom.SAXImpl;
+import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
+import org.apache.xml.dtm.DTMWSFilter;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -115,7 +116,7 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.ext.LexicalHandler;
 
 public final class TransformerImpl extends Transformer
-    implements DOMCache, ErrorListener 
+    implements DOMCache, ErrorListener
 {
     private final static String EMPTY_STRING = "";
     private final static String NO_STRING    = "no";
@@ -170,12 +171,7 @@ public final class TransformerImpl extends Transformer
     /**
      * A reference to a internal DOM represenation of the input.
      */
-    private DOMImpl _dom = null;
-
-    /**
-     * DTD monitor needed for id()/key().
-     */
-    private DTDMonitor _dtdMonitor = null;
+    private DOM _dom = null;
 
     /**
      * Number of indent spaces to add when indentation is on.
@@ -187,6 +183,11 @@ public final class TransformerImpl extends Transformer
      * object belongs to.
      */
     private TransformerFactoryImpl _tfactory = null;
+    
+    /**
+     * A flag indicating whether we use incremental building of the DTM.
+     */
+    //private boolean _isIncremental = false;
 
     /**
      * A flag indicating whether this transformer implements the identity 
@@ -245,6 +246,7 @@ public final class TransformerImpl extends Transformer
 	_propertiesClone = (Properties) _properties.clone();
 	_indentNumber = indentNumber;
 	_tfactory = tfactory;
+	//_isIncremental = tfactory._incremental;
     }
 
     /**
@@ -278,7 +280,7 @@ public final class TransformerImpl extends Transformer
 	    transferOutputProperties(_translet);
 	}
 	    
-	final TransletOutputHandler toHandler = getOutputHandler(result);
+	final SerializationHandler toHandler = getOutputHandler(result);
 	if (toHandler == null) {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_HANDLER_ERR);
 	    throw new TransformerException(err.toString());
@@ -305,7 +307,7 @@ public final class TransformerImpl extends Transformer
      * the type and contents of the TrAX Result object passed to the 
      * transform() method. 
      */
-    public TransletOutputHandler getOutputHandler(Result result) 
+    public SerializationHandler getOutputHandler(Result result) 
 	throws TransformerException 
     {
 	// Get output method using get() to ignore defaults 
@@ -337,12 +339,12 @@ public final class TransformerImpl extends Transformer
 		    _tohFactory.setLexicalHandler((LexicalHandler) handler);
 		}
 		_tohFactory.setOutputType(TransletOutputHandlerFactory.SAX);
-		return _tohFactory.getTransletOutputHandler();
+		return _tohFactory.getSerializationHandler();
             }
 	    else if (result instanceof DOMResult) {
 		_tohFactory.setNode(((DOMResult) result).getNode());
 		_tohFactory.setOutputType(TransletOutputHandlerFactory.DOM);
-		return _tohFactory.getTransletOutputHandler();
+		return _tohFactory.getSerializationHandler();
             }
 	    else if (result instanceof StreamResult) {
 		// Get StreamResult
@@ -358,14 +360,14 @@ public final class TransformerImpl extends Transformer
 		final Writer writer = target.getWriter();
 		if (writer != null) {
 		    _tohFactory.setWriter(writer);
-		    return _tohFactory.getTransletOutputHandler();
+		    return _tohFactory.getSerializationHandler();
 		}
 
 		// or try to get an OutputStream from Result object
 		final OutputStream ostream = target.getOutputStream();
 		if (ostream != null) {
 		    _tohFactory.setOutputStream(ostream);
-		    return _tohFactory.getTransletOutputHandler();
+		    return _tohFactory.getSerializationHandler();
 		}
 
 		// or try to get just a systemId string from Result object
@@ -383,20 +385,20 @@ public final class TransformerImpl extends Transformer
                     url = new URL(systemId);
 		    _tohFactory.setOutputStream(
 			new FileOutputStream(url.getFile()));
-		    return _tohFactory.getTransletOutputHandler();
+		    return _tohFactory.getSerializationHandler();
                 }
                 else if (systemId.startsWith("http:")) {
                     url = new URL(systemId);
                     final URLConnection connection = url.openConnection();
 		    _tohFactory.setOutputStream(connection.getOutputStream());
-		    return _tohFactory.getTransletOutputHandler();
+		    return _tohFactory.getSerializationHandler();
                 }
                 else {
                     // system id is just a filename
                     url = new File(systemId).toURL();
 		    _tohFactory.setOutputStream(
 			new FileOutputStream(url.getFile()));
-		    return _tohFactory.getTransletOutputHandler();
+		    return _tohFactory.getSerializationHandler();
                 }
 	    }
 	}
@@ -415,29 +417,29 @@ public final class TransformerImpl extends Transformer
     }
 
     /**
-     * Set the internal DOMImpl that will be used for the next transformation
+     * Set the internal DOM that will be used for the next transformation
      */
-    protected void setDOM(DOMImpl dom) {
+    protected void setDOM(DOM dom) {
 	_dom = dom;
-    }
-
-    /**
-     * Set the internal DOMImpl that will be used for the next transformation
-     */
-    protected void setDTDMonitor(DTDMonitor dtdMonitor) {
-	_dtdMonitor = dtdMonitor;
     }
 
     /**
      * Builds an internal DOM from a TrAX Source object
      */
-    private DOMImpl getDOM(Source source, int mask)
-	throws TransformerException 
-    {
+    private DOM getDOM(Source source, int mask)
+	throws TransformerException {
 	try {
-	    DOMImpl dom = null;
-	    DTDMonitor dtd = null;
-
+	    DOM dom = null;
+	    SAXImpl saxImpl = null;
+	    DTMWSFilter wsfilter;
+	    if (_translet != null && _translet instanceof StripFilter) {
+	        wsfilter = new DOMWSFilter(_translet);
+            } else {
+	        wsfilter = null;
+            }
+            
+            boolean hasIdCall = (_translet != null) ? _translet.hasIdCall() 
+                                                      : false;
 	    // Get systemId from source
 	    if (source != null) {
 		_sourceSystemId = source.getSystemId();
@@ -448,50 +450,41 @@ public final class TransformerImpl extends Transformer
 		final SAXSource sax = (SAXSource)source;
 		XMLReader reader = sax.getXMLReader();
 		final InputSource input = sax.getInputSource();
+                final boolean hasUserReader = reader != null;
 
 		// Create a reader if not set by user
 		if (reader == null) {
 		    reader = _tfactory.getXMLReader();
 		}
 
-		// Create a DTD monitor to trap all DTD/declarative events
-		dtd = new DTDMonitor();
-		dtd.handleDTD(reader);
+		// Create a new internal DOM and set up its builder to trap
+		// all content/lexical events
+		XSLTCDTMManager dtmManager = XSLTCDTMManager.newInstance();
 
-		// Create a new internal DOM and set up its builder 
-		dom = new DOMImpl();
-		final DOMBuilder builder = dom.getBuilder();
+                //dtmManager.setIncremental(_isIncremental);
+		saxImpl = (SAXImpl)dtmManager.getDTM(sax, false, wsfilter, true, false,
+                                                 hasUserReader, 0, hasIdCall);
+		//final DOMBuilder builder = ((SAXImpl)dom).getBuilder();
 		try {
-		    reader.setProperty(LEXICAL_HANDLER_PROPERTY, builder);
+		    reader.setProperty(LEXICAL_HANDLER_PROPERTY, saxImpl);
 		}
 		catch (SAXException e) {
 		    // quitely ignored
 		}
-		reader.setContentHandler(builder);
-
-		// Parse the input and build the internal DOM
-		reader.parse(input);
-		dom.setDocumentURI(_sourceSystemId);
+		reader.setContentHandler(saxImpl);
+		reader.setDTDHandler(saxImpl);
+		saxImpl.setDocumentURI(_sourceSystemId);
 	    }
 	    else if (source instanceof DOMSource) {
-		final DOMSource domsrc = (DOMSource) source;
-		final org.w3c.dom.Node node = domsrc.getNode();
-		final DOM2SAX dom2sax = new DOM2SAX(node);
-
-		// Create a DTD monitor to trap all DTD/declarative events
-		dtd = new DTDMonitor();
-		dtd.handleDTD(dom2sax);
-
-		// Create a new internal DOM and set up its builder to trap
-		// all content/lexical events
-		dom = new DOMImpl();
-		final DOMBuilder builder = dom.getBuilder();
-		dom2sax.setContentHandler(builder);
-
-		// Parse the input and build the internal DOM
-		dom2sax.parse();
-		dom.setDocumentURI(_sourceSystemId);
+		// Create a new internal DTM and build it directly from DOM
+		XSLTCDTMManager dtmManager = XSLTCDTMManager.newInstance();
+    
+                //dtmManager.setIncremental(_isIncremental);
+		saxImpl = (SAXImpl)dtmManager.getDTM(source, false, wsfilter, true,
+                                                 false, hasIdCall);
+		saxImpl.setDocumentURI(_sourceSystemId);
 	    }
+	    // Handle StreamSource input
 	    else if (source instanceof StreamSource) {
 		// Get all info from the input StreamSource object
 		final StreamSource stream = (StreamSource)source;
@@ -499,89 +492,76 @@ public final class TransformerImpl extends Transformer
 		final Reader streamReader = stream.getReader();
 		final XMLReader reader = _tfactory.getXMLReader();
 
-		// Create a DTD monitor to trap all DTD/declarative events
-		dtd = new DTDMonitor();
-		dtd.handleDTD(reader);
-
 		// Create a new internal DOM and set up its builder to trap
 		// all content/lexical events
-		dom = new DOMImpl();
-		final DOMBuilder builder = dom.getBuilder();
-		try {
-		    reader.setProperty(LEXICAL_HANDLER_PROPERTY, builder);
-		}
-		catch (SAXException e) {
-		    // quitely ignored
-		}
-		reader.setContentHandler(builder);
+		XSLTCDTMManager dtmManager = XSLTCDTMManager.newInstance();
 
+		//dtmManager.setIncremental(_isIncremental);
+		
 		InputSource input;
 		if (streamInput != null) {
 		    input = new InputSource(streamInput);
-		    input.setSystemId(_sourceSystemId); 
-		} 
+		    input.setSystemId(_sourceSystemId);
+		}
 		else if (streamReader != null) {
 		    input = new InputSource(streamReader);
-		    input.setSystemId(_sourceSystemId); 
-		} 
-		else if (_sourceSystemId != null) {
+		    input.setSystemId(_sourceSystemId);
+		}
+		else if (_sourceSystemId != null)
 		    input = new InputSource(_sourceSystemId);
-		} 
 		else {
 		    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_SOURCE_ERR);
 		    throw new TransformerException(err.toString());
 		}
-
-		// Parse the input and build the internal DOM
-		reader.parse(input);
-		dom.setDocumentURI(_sourceSystemId);
+		saxImpl = (SAXImpl)dtmManager.getDTM(new SAXSource(reader, input),
+                                                 false, wsfilter, true,
+                                                 false, hasIdCall);
+		saxImpl.setDocumentURI(_sourceSystemId);
 	    }
 	    else if (source instanceof XSLTCSource) {
 		final XSLTCSource xsltcsrc = (XSLTCSource)source;
-		dtd = xsltcsrc.getDTD();
 		dom = xsltcsrc.getDOM();
 	    }
 	    // DOM already set via a call to setDOM()
 	    else if (_dom != null) {
-		dtd = _dtdMonitor;	   // must be set via setDTDMonitor()
 		dom = _dom; _dom = null;   // use only once, so reset to 'null'
 	    }
 	    else {
 		return null;
 	    }
 
-	    // Set size of key/id indices
-	    if (!_isIdentity) {
-		_translet.setIndexSize(dom.getSize());
-
-		// If there are any elements with ID attributes, build an index
-		dtd.buildIdIndex(dom, mask, _translet);
-
-		// Pass unparsed entity URIs to the translet
-		_translet.setDTDMonitor(dtd);
+	    if (saxImpl != null) {
+	        dom = saxImpl;
 	    }
+	    
+	    if (!_isIdentity) {
+                // Give the translet the opportunity to make a prepass of
+                // the document, in case it can extract useful information early
+		_translet.prepassDocument(dom);
+	    }
+	    	    
 	    return dom;
 
 	}
-	catch (FileNotFoundException e) {
-	    if (_errorListener != null)	postErrorToListener(e.getMessage());
-	    throw new TransformerException(e);
-	}
-	catch (MalformedURLException e) {
-	    if (_errorListener != null)	postErrorToListener(e.getMessage());
-	    throw new TransformerException(e);
-	}
-	catch (UnknownHostException e) {
-	    if (_errorListener != null)	postErrorToListener(e.getMessage());
-	    throw new TransformerException(e);
-	}
+	//catch (FileNotFoundException e) {
+//	    if (_errorListener != null)	postErrorToListener(e.getMessage());
+//	    throw new TransformerException(e);
+//	}
+	//catch (MalformedURLException e) {
+//	    if (_errorListener != null)	postErrorToListener(e.getMessage());
+//	    throw new TransformerException(e);
+//	}
+//	catch (UnknownHostException e) {
+//	    if (_errorListener != null)	postErrorToListener(e.getMessage());
+//	    throw new TransformerException(e);
+//	}
 	catch (Exception e) {
 	    if (_errorListener != null)	postErrorToListener(e.getMessage());
 	    throw new TransformerException(e);
 	}
     }
  
-    private void transformIdentity(Source source, TransletOutputHandler handler)
+    private void transformIdentity(Source source, SerializationHandler handler)
 	throws Exception 
     {
 	// Get systemId from source
@@ -602,7 +582,7 @@ public final class TransformerImpl extends Transformer
 	    catch (SAXException e) {
 		// Falls through
 	    }
-	    reader.setContentHandler(new SAX2TO(handler));
+	    reader.setContentHandler(handler);
 
 	    // Create input source from source
 	    InputSource input;
@@ -642,7 +622,7 @@ public final class TransformerImpl extends Transformer
 	    catch (SAXException e) {
 		// Falls through
 	    }
-	    reader.setContentHandler(new SAX2TO(handler));
+	    reader.setContentHandler(handler);
 
 	    // Start pushing SAX events
 	    reader.parse(input);
@@ -652,8 +632,8 @@ public final class TransformerImpl extends Transformer
 	    new DOM2TO(domsrc.getNode(), handler).parse();
 	}
 	else if (source instanceof XSLTCSource) {
-	    final DOMImpl dom = ((XSLTCSource) source).getDOM();
-	    dom.copy(handler);
+	    final DOM dom = ((XSLTCSource) source).getDOM();
+	    ((SAXImpl)dom).copy(handler);
 	}
 	else {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_NO_SOURCE_ERR);
@@ -664,7 +644,7 @@ public final class TransformerImpl extends Transformer
     /**
      * Internal transformation method - uses the internal APIs of XSLTC
      */
-    private void transform(Source source, TransletOutputHandler handler, 
+    private void transform(Source source, SerializationHandler handler, 
 	String encoding) throws TransformerException 
     {
 	try {
@@ -925,7 +905,7 @@ public final class TransformerImpl extends Transformer
      * This method is used to pass any properties to the output handler
      * when running the identity transform.
      */
-    public void transferOutputProperties(TransletOutputHandler handler)
+    public void transferOutputProperties(SerializationHandler handler)
     {
 	// Return right now if no properties are set
 	if (_properties == null) return;
@@ -960,7 +940,7 @@ public final class TransformerImpl extends Transformer
 		handler.setVersion(value);
 	    }
 	    else if (name.equals(OutputKeys.OMIT_XML_DECLARATION)) {
-		handler.omitHeader(
+		handler.setOmitXMLDeclaration(
 		    value != null && value.toLowerCase().equals("yes"));
 	    }
 	    else if (name.equals(OutputKeys.INDENT)) {
@@ -969,13 +949,34 @@ public final class TransformerImpl extends Transformer
 	    }
 	    else if (name.equals(OutputKeys.CDATA_SECTION_ELEMENTS)) {
 		if (value != null) {
-		    Hashtable table = new Hashtable();
 		    StringTokenizer e = new StringTokenizer(value);
+                    Vector uriAndLocalNames = null;
 		    while (e.hasMoreTokens()) {
 			final String token = e.nextToken();
-			table.put(token, token);
-		    }
-		    handler.setCdataElements(table);
+
+                        // look for the last colon, as the String may be
+                        // something like "http://abc.com:local"
+                        int lastcolon = token.lastIndexOf(':');
+                        String uri;
+                        String localName;
+                        if (lastcolon > 0) {
+                            uri = token.substring(0, lastcolon);
+                            localName = token.substring(lastcolon+1);
+                        } else {
+                            // no colon at all, lets hope this is the
+                            // local name itself then
+                            uri = null;
+                            localName = token;
+                        }
+
+                        if (uriAndLocalNames == null) {
+                            uriAndLocalNames = new Vector();
+                        }
+                        // add the uri/localName as a pair, in that order
+                        uriAndLocalNames.addElement(uri);
+                        uriAndLocalNames.addElement(localName);
+                    }
+                    handler.setCdataSectionElements(uriAndLocalNames);
 		}
 	    }
 	}
@@ -1144,7 +1145,7 @@ public final class TransformerImpl extends Transformer
      * @param mask Contains a document ID (passed from the translet)
      * @param translet A reference to the translet requesting the document
      */
-    public DOMImpl retrieveDocument(String uri, int mask, Translet translet) {
+    public DOM retrieveDocument(String uri, int mask, Translet translet) {
 	try {
 	    return getDOM(_uriResolver.resolve(uri, _sourceSystemId), mask);
 	}
@@ -1154,7 +1155,7 @@ public final class TransformerImpl extends Transformer
 	    return(null);
 	}
     }
-
+    
     /**
      * Receive notification of a recoverable error. 
      * The transformer must continue to provide normal parsing events after
