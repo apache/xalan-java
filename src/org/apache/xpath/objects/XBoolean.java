@@ -94,6 +94,21 @@ public class XBoolean extends XObject
 
     m_val = b;
   }
+  
+  /**
+   * Construct a XBoolean object.
+   *
+   * @param b Value of the boolean object
+   */
+  public XBoolean(Boolean b)
+  {
+
+    super();
+
+    m_val = b.booleanValue();
+    m_obj = b;
+  }
+
 
   /**
    * Tell that this is a CLASS_BOOLEAN.
@@ -154,7 +169,9 @@ public class XBoolean extends XObject
    */
   public Object object()
   {
-    return new Boolean(m_val);
+    if(null == m_obj)
+      m_obj = m_val ? S_TRUE : S_FALSE;
+    return m_obj;
   }
 
   /**

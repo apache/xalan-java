@@ -1336,7 +1336,7 @@ public class TransformerImpl extends Transformer
 
     VariableStack varstack = getXPathContext().getVarStack();
     QName qname = new QName(namespace, name);
-    XObject xobject = XObject.create(value);
+    XObject xobject = XObject.create(value, getXPathContext());
     
     StylesheetRoot sroot = m_stylesheetRoot;
     Vector vars = sroot.getVariablesAndParamsComposed();
@@ -1383,12 +1383,12 @@ public class TransformerImpl extends Transformer
 
       if (null == s2)
       {
-        replaceOrPushUserParam(new QName(s1), new XObject(value));
+        replaceOrPushUserParam(new QName(s1), XObject.create(value, getXPathContext()));
         setParameter(s1, null, value);
       }
       else
       {
-        replaceOrPushUserParam(new QName(s1, s2), new XObject(value));
+        replaceOrPushUserParam(new QName(s1, s2), XObject.create(value, getXPathContext()));
         setParameter(s2, s1, value);
       }
     }
@@ -3085,7 +3085,7 @@ public class TransformerImpl extends Transformer
       {
         m_isTransformDone = false;
         
-	// Should no longer be needed...
+        // Should no longer be needed...
 //          if(m_inputContentHandler instanceof TransformerHandlerImpl)
 //          {
 //            TransformerHandlerImpl thi = (TransformerHandlerImpl)m_inputContentHandler;

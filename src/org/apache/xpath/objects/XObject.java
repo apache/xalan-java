@@ -61,8 +61,7 @@ import org.w3c.dom.DocumentFragment;
 //import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
-import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.*;
 
 import java.io.Serializable;
 
@@ -73,6 +72,8 @@ import org.apache.xpath.XPathException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.Expression;
 import org.apache.xml.utils.XMLString;
+import org.apache.xpath.axes.OneStepIterator;
+import org.apache.xpath.axes.DescendantIterator;
 
 /**
  * <meta name="usage" content="general"/>
@@ -172,7 +173,9 @@ public class XObject extends Expression implements Serializable, Cloneable
   }
 
   /**
-   * Create the right XObject based on the type of the object passed.
+   * Create the right XObject based on the type of the object passed.  This 
+   * function can not make an XObject that exposes DOM Nodes, NodeLists, and 
+   * NodeIterators to the XSLT stylesheet as node-sets.
    *
    * @param val The java object which this object will wrap.
    *
@@ -193,34 +196,99 @@ public class XObject extends Expression implements Serializable, Cloneable
     }
     else if (val instanceof Boolean)
     {
-      result = ((Boolean) val).booleanValue()
-               ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+      result = new XBoolean((Boolean)val);
     }
     else if (val instanceof Double)
     {
-      result = new XNumber(((Double) val).doubleValue());
+      result = new XNumber(((Double) val));
     }
-    else if (val instanceof org.w3c.dom.DocumentFragment)
+    else
     {
-
-      // result = new XRTreeFrag((DocumentFragment) val);
-      // %REVIEW%
       result = new XObject(val);
+    }
+
+    return result;
+  }
+  
+  /**
+   * Create the right XObject based on the type of the object passed.
+   * This function <emph>can</emph> make an XObject that exposes DOM Nodes, NodeLists, and 
+   * NodeIterators to the XSLT stylesheet as node-sets.
+   *
+   * @param val The java object which this object will wrap.
+   * @param xctxt The XPath context.
+   *
+   * @return the right XObject based on the type of the object passed.
+   */
+  static public XObject create(Object val, XPathContext xctxt)
+  {
+
+    XObject result;
+
+    if (val instanceof XObject)
+    {
+      result = (XObject) val;
+    }
+    else if (val instanceof String)
+    {
+      result = new XString((String) val);
+    }
+    else if (val instanceof Boolean)
+    {
+      result = new XBoolean((Boolean)val);
+    }
+    else if (val instanceof Number)
+    {
+      result = new XNumber(((Number) val));
+    }
+    else if (val instanceof DTM)
+    {
+      DTM dtm = (DTM)val;
+      try
+      {
+        int dtmRoot = dtm.getDocument();
+        DTMAxisIterator iter = dtm.getAxisIterator(Axis.SELF);
+        iter.setStartNode(dtmRoot);
+        DTMIterator iterator = new OneStepIterator(iter);
+        result = new XNodeSet(iterator);
+      }
+      catch(Exception ex)
+      {
+        throw new org.apache.xml.utils.WrappedRuntimeException(ex);
+      }
+    }
+    else if (val instanceof DTMAxisIterator)
+    {
+      DTMAxisIterator iter = (DTMAxisIterator)val;
+      try
+      {
+       DTMIterator iterator = new OneStepIterator(iter);
+       result = new XNodeSet(iterator);
+     }
+      catch(Exception ex)
+      {
+        throw new org.apache.xml.utils.WrappedRuntimeException(ex);
+      }
+    }
+    else if (val instanceof DTMIterator)
+    {
+      result = new XNodeSet((DTMIterator) val);
+    }
+    // This next three instanceofs are a little worrysome, since a NodeList 
+    // might also implement a Node!
+    else if (val instanceof org.w3c.dom.Node)
+    {
+      result = new XNodeSetForDOM((org.w3c.dom.Node)val, xctxt);
+    }
+    // This must come after org.w3c.dom.Node, since many Node implementations 
+    // also implement NodeList.
+    else if (val instanceof org.w3c.dom.NodeList)
+    {
+      result = new XNodeSetForDOM((org.w3c.dom.NodeList)val, xctxt);
     }
     else if (val instanceof org.w3c.dom.traversal.NodeIterator)
     {
-
-      // result = new XNodeSet((NodeIterator) val);
-      // %REVIEW%
-      result = new XObject(val);
-    }
-    else if (val instanceof org.w3c.dom.Node)
-    {
-
-      // result = new XNodeSet(xctxt.getDTMHandleFromNode((org.w3c.dom.Node)val), 
-      //                      xctxt.getDTMManager());
-      // %REVIEW%
-      result = new XObject(val);
+      result = new XNodeSetForDOM((org.w3c.dom.traversal.NodeIterator)val, xctxt);
     }
     else
     {

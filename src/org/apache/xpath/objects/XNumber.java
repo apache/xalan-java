@@ -79,10 +79,23 @@ public class XNumber extends XObject
    */
   public XNumber(double d)
   {
-
     super();
 
     m_val = d;
+  }
+  
+  /**
+   * Construct a XNodeSet object.
+   *
+   * @param d Value of the object
+   */
+  public XNumber(Number num)
+  {
+
+    super();
+
+    m_val = num.doubleValue();
+    m_obj = num;
   }
 
   /**
@@ -389,7 +402,9 @@ public class XNumber extends XObject
    */
   public Object object()
   {
-    return new Double(m_val);
+    if(null == m_obj)
+      m_obj = new Double(m_val);
+    return m_obj;
   }
 
   /**

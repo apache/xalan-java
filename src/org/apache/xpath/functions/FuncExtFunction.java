@@ -184,60 +184,7 @@ public class FuncExtFunction extends Function
 
     if (null != val)
     {
-      if (val instanceof XObject)
-      {
-        result = (XObject) val;
-      }
-      else if (val instanceof String)
-      {
-        result = new XString((String) val);
-      }
-      else if (val instanceof Boolean)
-      {
-        result = ((Boolean) val).booleanValue()
-                 ? XBoolean.S_TRUE : XBoolean.S_FALSE;
-      }
-      else if (val instanceof Number)
-      {
-        result = new XNumber(((Number) val).doubleValue());
-      }
-      else if (val instanceof DocumentFragment)
-      {
-        int handle = xctxt.getDTMHandleFromNode((DocumentFragment)val);
-        
-        result = new XRTreeFrag(handle, xctxt);
-      }
-      else if (val instanceof DTM)
-      {
-        DTM dtm = (DTM)val;
-        DTMIterator iterator = new DescendantIterator();
-        iterator.setRoot(dtm.getDocument(), xctxt);
-        result = new XNodeSet(iterator);
-      }
-      else if (val instanceof DTMAxisIterator)
-      {
-        DTMAxisIterator iter = (DTMAxisIterator)val;
-        DTMIterator iterator = new OneStepIterator(iter);
-        result = new XNodeSet(iterator);
-      }
-      else if (val instanceof DTMIterator)
-      {
-        result = new XNodeSet((DTMIterator) val);
-      }
-      else if (val instanceof NodeIterator)
-      {
-        result = new XNodeSet(new org.apache.xpath.NodeSetDTM(((NodeIterator)val), xctxt));
-      }
-      else if (val instanceof org.w3c.dom.Node)
-      {
-        result =
-          new XNodeSet(xctxt.getDTMHandleFromNode((org.w3c.dom.Node) val),
-                       xctxt.getDTMManager());
-      }
-      else
-      {
-        result = new XObject(val);
-      }
+      result = XObject.create(val, xctxt);
     }
     else
     {

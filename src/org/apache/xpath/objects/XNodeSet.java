@@ -80,11 +80,18 @@ import org.apache.xml.utils.XMLString;
  */
 public class XNodeSet extends XObject
 {
-  private DTMManager m_dtmMgr;
+  protected DTMManager m_dtmMgr;
   
   public DTMManager getDTMMgr()
   {
     return m_dtmMgr;
+  }
+  
+  /**
+   * Default constructor for derived objects.
+   */
+  protected XNodeSet()
+  {
   }
 
   /**

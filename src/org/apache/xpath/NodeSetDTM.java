@@ -57,7 +57,7 @@
 package org.apache.xpath;
 
 import org.w3c.dom.Node;
-//import org.w3c.dom.NodeList;
+import org.w3c.dom.NodeList;
 //import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.traversal.NodeIterator;
 //import org.w3c.dom.traversal.NodeFilter;
@@ -190,6 +190,29 @@ public class NodeSetDTM extends NodeVector
       addNodeInDocOrder(handle, xctxt);
     }
   }
+  
+  /**
+   * Create a NodeSetDTM, and copy the members of the
+   * given DTMIterator into it.
+   *
+   * @param ni Iterator which yields Nodes to be made members of the new set.
+   */
+  public NodeSetDTM(NodeList nodeList, XPathContext xctxt)
+  {
+
+    super();
+
+    m_manager = xctxt.getDTMManager();
+
+    int n = nodeList.getLength();
+    for (int i = 0; i < n; i++) 
+    {
+      Node node = nodeList.item(i);
+      int handle = xctxt.getDTMHandleFromNode(node);
+      addNodeInDocOrder(handle, xctxt);
+    }
+  }
+
 
   /**
    * Create a NodeSetDTM which contains the given Node.
