@@ -349,7 +349,7 @@ public final class MultiDOM implements DOM {
         }
         else if (dtmIds != null) {
             int domPos = 0;
-            for (int i = dtmSize - 1; i >= 0; i++) {
+            for (int i = dtmSize - 1; i >= 0; i--) {
                 domPos = dtmIds.elementAt(i) >>> DTMManager.IDENT_DTM_NODE_BITS;
                 _adapters[domPos] = adapter;
             }
