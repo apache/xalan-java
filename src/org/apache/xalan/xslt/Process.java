@@ -137,7 +137,7 @@ public class Process
     // System.out.println(resbundle.getString("optionE")); //"   [-E (Do not expand entity refs)]");
     System.out.println(resbundle.getString("optionV"));  //"   [-V (Version info)]");
     System.out.println(resbundle.getString("optionQC"));  //"   [-QC (Quiet Pattern Conflicts Warnings)]");
-    System.out.println(resbundle.getString("optionQ"));  //"   [-Q  (Quiet Mode)]");
+    // System.out.println(resbundle.getString("optionQ"));  //"   [-Q  (Quiet Mode)]"); // sc 28-Feb-01 commented out
     System.out.println(resbundle.getString("optionTT"));  //"   [-TT (Trace the templates as they are being called.)]");
     System.out.println(resbundle.getString("optionTG"));  //"   [-TG (Trace each generation event.)]");
     System.out.println(resbundle.getString("optionTS"));  //"   [-TS (Trace each selection event.)]");
@@ -150,8 +150,13 @@ public class Process
     System.out.println(resbundle.getString("optionTEXT"));  //"   [-TEXT (Use simple Text formatter.)]");
     System.out.println(resbundle.getString("optionHTML"));  //"   [-HTML (Use HTML formatter.)]");
     System.out.println(resbundle.getString("optionPARAM"));  //"   [-PARAM name expression (Set a stylesheet parameter)]");
+    // sc 28-Feb-01 these below should really be added as resources
     System.out.println(
-      "[-MEDIA use media attribute to find stylesheet associated with a document.]");  //"   [-PARAM name expression (Set a stylesheet parameter)]");
+      "   [-MEDIA mediaType (use media attribute to find stylesheet associated with a document.)]");
+    System.out.println(
+      "   [-FLAVOR flavorName (Explicitly use s2s=SAX or d2d=DOM to do transform.)]"); // Added by sboag/scurcuru; experimental
+    System.out.println(
+      "   [-DIAG (Print overall milliseconds transform took.)]");
   }
 
   /** Default properties file          */
@@ -348,7 +353,7 @@ public class Process
                 XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
                 new Object[]{ "-PARAM" }));  //"Missing argument for);
         }
-        else if ("-treedump".equalsIgnoreCase(argv[i]))
+        else if ("-treedump".equalsIgnoreCase(argv[i])) // sc 28-Feb-01 appears to be unused; can we remove?
         {
           if (i + 1 < argv.length)
             treedumpFileName = argv[++i];
@@ -358,7 +363,7 @@ public class Process
                 XSLTErrorResources.ER_MISSING_ARG_FOR_OPTION,
                 new Object[]{ "-treedump" }));  //"Missing argument for);
         }
-        else if ("-F".equalsIgnoreCase(argv[i]))
+        else if ("-F".equalsIgnoreCase(argv[i])) // sc 28-Feb-01 appears to be unused; can we remove?
         {
           formatOutput = true;
         }
@@ -432,6 +437,15 @@ public class Process
               XSLTErrorResources.ER_INVALID_OPTION, new Object[]{ argv[i] }));  //"Invalid argument:);
       }
 
+      // Must have an XML document to continue
+      if (null == inFileName)
+      {
+        System.out.println("ERROR: must supply argument -IN inputXMLURL");
+        printArgOptions(resbundle);
+        System.exit(-1); // This should be settable as to whether we call 
+                         // exit or not, for the occasional user who calls 
+                         // us programmatically
+      }
       // The main XSL transformation occurs here!
       try
       {
@@ -508,6 +522,7 @@ public class Process
 
             impl.setQuietConflictWarnings(quietConflictWarnings);
 
+            // sc 28-Feb-01 if we re-implement this, please uncomment helpmsg in printArgOptions
             // impl.setDiagnosticsOutput( setQuietMode ? null : diagnosticsWriter );
           }
 
