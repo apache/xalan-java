@@ -68,6 +68,7 @@ import org.apache.xpath.*;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xalan.utils.QName;
+import org.apache.xalan.utils.StringBufferPool;
 import org.apache.xalan.res.*;
 import org.apache.xalan.transformer.DecimalToRoman;
 import org.apache.xalan.transformer.CountersTable;
@@ -809,8 +810,7 @@ public class ElemNumber extends ElemTemplateElement
     Locale locale = null;
     if(null != m_lang_avt)
     {
-      String langValue = m_lang_avt.evaluate(transformer.getXPathContext(), contextNode, this,
-                                             new StringBuffer());
+      String langValue = m_lang_avt.evaluate(transformer.getXPathContext(), contextNode, this);
       if(null != langValue)
       {
         // Not really sure what to do about the country code, so I use the
@@ -850,14 +850,12 @@ public class ElemNumber extends ElemTemplateElement
 
     String digitGroupSepValue = (null != m_groupingSeparator_avt)
                                 ?  m_groupingSeparator_avt.evaluate(transformer.getXPathContext(),
-                                                                    contextNode, this,
-                                                                    new StringBuffer())
+                                                                    contextNode, this)
                                    : null;
 
     String nDigitsPerGroupValue = (null != m_groupingSize_avt)
                                   ?  m_groupingSize_avt.evaluate(transformer.getXPathContext(),
-                                                                 contextNode, this,
-                                                                 new StringBuffer())
+                                                                 contextNode, this)
                                      : null;
 
     // TODO: Handle digit-group attributes
@@ -891,119 +889,127 @@ public class ElemNumber extends ElemTemplateElement
   String formatNumberList(TransformerImpl transformer, int[] list, Node contextNode)
     throws SAXException
   {
-    StringBuffer formattedNumber = new StringBuffer();
-    int nNumbers = list.length, numberWidth = 1;
-    char numberType = '1';
-    String formatToken, lastSepString = null, formatTokenString = null;
-    // If a seperator hasn't been specified, then use "."  
-    // as a default separator. 
-    // For instance: [2][1][5] with a format value of "1 "
-    // should format to "2.1.5 " (I think).
-    // Otherwise, use the seperator specified in the format string.
-    // For instance: [2][1][5] with a format value of "01-001. "
-    // should format to "02-001-005 ".
-    String lastSep = ".";                
-    boolean isFirstToken = true;        // true if first token  
-
-    String formatValue = (null != m_format_avt)
-                         ? m_format_avt.evaluate(transformer.getXPathContext(), contextNode, this,
-                                                 new StringBuffer())
-                           : null;
-    if(null == formatValue) formatValue = "1";
-
-    NumberFormatStringTokenizer formatTokenizer = new NumberFormatStringTokenizer(formatValue);
-    
-    // int sepCount = 0;                  // keep track of seperators
-    // Loop through all the numbers in the list.
-    for(int i = 0; i < nNumbers; i++)
+    String numStr;
+    StringBuffer formattedNumber = StringBufferPool.get();
+    try
     {
-      // Loop to the next digit, letter, or separator.
-      if(formatTokenizer.hasMoreTokens())
+      int nNumbers = list.length, numberWidth = 1;
+      char numberType = '1';
+      String formatToken, lastSepString = null, formatTokenString = null;
+      // If a seperator hasn't been specified, then use "."  
+      // as a default separator. 
+      // For instance: [2][1][5] with a format value of "1 "
+      // should format to "2.1.5 " (I think).
+      // Otherwise, use the seperator specified in the format string.
+      // For instance: [2][1][5] with a format value of "01-001. "
+      // should format to "02-001-005 ".
+      String lastSep = ".";                
+      boolean isFirstToken = true;        // true if first token  
+
+      String formatValue = (null != m_format_avt)
+                           ? m_format_avt.evaluate(transformer.getXPathContext(), contextNode, this)
+                             : null;
+      if(null == formatValue) formatValue = "1";
+
+      NumberFormatStringTokenizer formatTokenizer = new NumberFormatStringTokenizer(formatValue);
+      
+      // int sepCount = 0;                  // keep track of seperators
+      // Loop through all the numbers in the list.
+      for(int i = 0; i < nNumbers; i++)
+      {
+        // Loop to the next digit, letter, or separator.
+        if(formatTokenizer.hasMoreTokens())
+        {
+          formatToken = formatTokenizer.nextToken();
+          
+          // If the first character of this token is a character or digit, then 
+          // it is a number format directive.
+          if(Character.isLetterOrDigit(formatToken.charAt(formatToken.length()-1)))
+          {
+            numberWidth = formatToken.length();
+            numberType = formatToken.charAt(numberWidth-1);
+          }
+          // If there is a number format directive ahead, 
+          // then append the formatToken.
+          else if(formatTokenizer.isLetterOrDigitAhead())
+          {          
+            formatTokenString = formatToken;
+            
+            // Append the formatToken string...
+            // For instance [2][1][5] with a format value of "1--1. "
+            // should format to "2--1--5. " (I guess).
+            while(formatTokenizer.nextIsSep())
+            {
+              formatToken = formatTokenizer.nextToken();
+              formatTokenString += formatToken;
+            }
+            // Record this separator, so it can be used as the 
+            // next separator, if the next is the last.
+            // For instance: [2][1][5] with a format value of "1-1 "
+            // should format to "2-1-5 ".
+            if (!isFirstToken)
+              lastSep = formatTokenString;
+            
+            // Since we know the next is a number or digit, we get it now.
+            formatToken = formatTokenizer.nextToken();
+            numberWidth = formatToken.length();
+            numberType = formatToken.charAt(numberWidth-1);
+          }
+          else // only separators left
+          {
+            // Set up the string for the trailing characters after 
+            // the last number is formatted (i.e. after the loop).
+            lastSepString = formatToken;
+            
+            // And append any remaining characters to the lastSepString.
+            while(formatTokenizer.hasMoreTokens())
+            {
+              formatToken = formatTokenizer.nextToken();
+              lastSepString += formatToken;
+            }
+          } // else
+          
+        } // end if(formatTokenizer.hasMoreTokens())
+        
+        // if this is the first token and there was a prefix
+        // append the prefix else, append the separator
+        // For instance, [2][1][5] with a format value of "(1-1.) "
+        // should format to "(2-1-5.) " (I guess).
+        if(null != formatTokenString && isFirstToken)
+        {
+          formattedNumber.append(formatTokenString);
+        }  
+        else if(null != lastSep && !isFirstToken)
+          formattedNumber.append(lastSep);
+        
+        getFormattedNumber(transformer, contextNode, numberType, numberWidth, list[i], formattedNumber);
+        isFirstToken = false;              // After the first pass, this should be false
+        
+      } // end for loop
+      
+
+      // Check to see if we finished up the format string...
+      
+      // Skip past all remaining letters or digits
+      while(formatTokenizer.isLetterOrDigitAhead())
+        formatTokenizer.nextToken();
+      
+      if(lastSepString != null)
+        formattedNumber.append(lastSepString);
+      
+      while(formatTokenizer.hasMoreTokens())
       {
         formatToken = formatTokenizer.nextToken();
-        
-        // If the first character of this token is a character or digit, then 
-        // it is a number format directive.
-        if(Character.isLetterOrDigit(formatToken.charAt(formatToken.length()-1)))
-        {
-          numberWidth = formatToken.length();
-          numberType = formatToken.charAt(numberWidth-1);
-        }
-        // If there is a number format directive ahead, 
-        // then append the formatToken.
-        else if(formatTokenizer.isLetterOrDigitAhead())
-        {          
-          formatTokenString = formatToken;
-          
-          // Append the formatToken string...
-          // For instance [2][1][5] with a format value of "1--1. "
-          // should format to "2--1--5. " (I guess).
-          while(formatTokenizer.nextIsSep())
-          {
-            formatToken = formatTokenizer.nextToken();
-            formatTokenString += formatToken;
-          }
-          // Record this separator, so it can be used as the 
-          // next separator, if the next is the last.
-          // For instance: [2][1][5] with a format value of "1-1 "
-          // should format to "2-1-5 ".
-          if (!isFirstToken)
-            lastSep = formatTokenString;
-          
-          // Since we know the next is a number or digit, we get it now.
-          formatToken = formatTokenizer.nextToken();
-          numberWidth = formatToken.length();
-          numberType = formatToken.charAt(numberWidth-1);
-        }
-        else // only separators left
-        {
-          // Set up the string for the trailing characters after 
-          // the last number is formatted (i.e. after the loop).
-          lastSepString = formatToken;
-          
-          // And append any remaining characters to the lastSepString.
-          while(formatTokenizer.hasMoreTokens())
-          {
-            formatToken = formatTokenizer.nextToken();
-            lastSepString += formatToken;
-          }
-        } // else
-        
-      } // end if(formatTokenizer.hasMoreTokens())
-      
-      // if this is the first token and there was a prefix
-      // append the prefix else, append the separator
-      // For instance, [2][1][5] with a format value of "(1-1.) "
-      // should format to "(2-1-5.) " (I guess).
-      if(null != formatTokenString && isFirstToken)
-      {
-        formattedNumber.append(formatTokenString);
-      }  
-      else if(null != lastSep && !isFirstToken)
-        formattedNumber.append(lastSep);
-      
-      getFormattedNumber(transformer, contextNode, numberType, numberWidth, list[i], formattedNumber);
-      isFirstToken = false;              // After the first pass, this should be false
-      
-    } // end for loop
-    
-
-    // Check to see if we finished up the format string...
-    
-    // Skip past all remaining letters or digits
-    while(formatTokenizer.isLetterOrDigitAhead())
-      formatTokenizer.nextToken();
-    
-    if(lastSepString != null)
-      formattedNumber.append(lastSepString);
-    
-    while(formatTokenizer.hasMoreTokens())
+        formattedNumber.append(formatToken);
+      }
+      numStr = formattedNumber.toString();
+    }
+    finally
     {
-      formatToken = formatTokenizer.nextToken();
-      formattedNumber.append(formatToken);
+      StringBufferPool.free(formattedNumber);
     }
 
-    return formattedNumber.toString();
+    return numStr;
   } // end formatNumberList method
 
   /*
@@ -1020,8 +1026,7 @@ public class ElemNumber extends ElemTemplateElement
     DecimalFormat formatter = getNumberFormatter(transformer, contextNode);
     String padString = formatter.format(0);
     String letterVal = (m_lettervalue_avt != null) ? m_lettervalue_avt.evaluate(transformer.getXPathContext(),
-                                                                                contextNode, this,
-                                                                                new StringBuffer()) : null;
+                                                                                contextNode, this) : null;
     switch(numberType)
     {     
     case 'A':
@@ -1044,9 +1049,16 @@ public class ElemNumber extends ElemTemplateElement
         alphabet= (char[]) thisBundle.getObject(Constants.LANG_ALPHABET);
         m_alphaCountTable = alphabet;
       }
-      StringBuffer stringBuf = new StringBuffer();
-      int2alphaCount(listElement, m_alphaCountTable, stringBuf);
-      formattedNumber.append(stringBuf.toString().toLowerCase(getLocale(transformer, contextNode)));      
+      StringBuffer stringBuf = StringBufferPool.get();
+      try
+      {
+        int2alphaCount(listElement, m_alphaCountTable, stringBuf);
+        formattedNumber.append(stringBuf.toString().toLowerCase(getLocale(transformer, contextNode)));   
+      }
+      finally
+      {
+        StringBufferPool.free(stringBuf);
+      }
       break;
     case 'I':
       formattedNumber.append( long2roman(listElement, true));
