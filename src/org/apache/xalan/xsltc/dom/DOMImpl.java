@@ -175,8 +175,7 @@ public final class DOMImpl implements DOM, Externalizable {
      */
     private boolean isElement(final int node) {
 	final int type = _type[node];
-	if ((node<_firstAttributeNode) &&
-	    (type>=PROCESSING_INSTRUCTION)) return true;
+	if ((node < _firstAttributeNode) && (type >= NTYPES)) return true;
 	return false;
     }
 
