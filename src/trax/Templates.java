@@ -10,7 +10,7 @@ import org.apache.xml.serialize.OutputFormat;
  * The Templates object is the runtime representation of compiled 
  * transformation instructions.  Templatess must be threadsafe for a given instance 
  * over multiple threads concurrently, and are generally meant to 
- * be used many multiple times for a given session.
+ * be used multiple times in a given session.
  *
  * <h3>Open issues:</h3>
  * <dl>

@@ -24,7 +24,7 @@ import org.w3c.dom.Node;
  * and 2) through external specification by a system property named 
  * "org.xml.trax.Processor.[type]" obtained using 
  * java.lang.System.getProperty().  The [type] part of the property specifies 
- * the language to be used, for instance, "trax.processor.xslt" would 
+ * the processing language to be used, for instance, "trax.processor.xslt" would 
  * specify an XSLT processor.  This property (or platform default) 
  * names a class that is a concrete subclass of org.xml.trax.Processor.
  * The subclass shall implement a public no-args constructor used by 

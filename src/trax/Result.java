@@ -10,7 +10,7 @@ import java.io.Writer;
 import org.w3c.dom.Node;
 
 /**
- * Acts as an holder for result tree specifications.
+ * Acts as an holder for a transformation result tree.
  * <p>This class is modeled after the SAX InputSource class, except that it
  * is for the Result target, and in addition to streams, and writers,
  * it also can specify a DOM node to which nodes will be appended.</p>
@@ -49,7 +49,7 @@ public class Result
   /**
    * Create a new output target with a character stream.
    *
-   * @param characterStream The character stream where the results will be written.
+   * @param characterStream The character stream where the result will be written.
    */ 
   public Result (Writer characterStream)
   {
@@ -57,9 +57,9 @@ public class Result
   }
 
   /**
-   * Create a new output target with a character stream.
+   * Create a new output target with a DOM node.
    *
-   * @param characterStream The character stream where the results will be written.
+   * @param n The DOM node that will contain the result tree.
    */
   public Result (Node n)
   {
@@ -108,7 +108,7 @@ public class Result
   }
 
   /**
-   * Set the node that will contain the result nodes.
+   * Set the node that will contain the result DOM tree.
    */
   public void setNode (Node node)
   {
@@ -116,7 +116,7 @@ public class Result
   }
 
   /**
-   * Get the node that will contain the result nodes.
+   * Get the node that will contain the result tree.
    */
   public Node getNode ()
   {

@@ -23,8 +23,8 @@ package trax;
 public interface TemplatesBuilder extends org.xml.sax.ContentHandler
 {
   /**
-   * When this object is used as a ContentHandler or DocumentHandler, it will 
-   * create a Templates object, which the caller can get once 
+   * When this object is used as a ContentHandler or DocumentHandler, it  
+   * creates a Templates object, which the caller can get once 
    * the SAX events have been completed.
    * @return The stylesheet object that was created during 
    * the SAX event process, or null if no stylesheet has 
