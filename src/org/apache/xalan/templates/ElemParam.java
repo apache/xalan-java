@@ -127,7 +127,9 @@ public class ElemParam extends ElemVariable
   {
     super.compose(sroot);
     m_qnameID = sroot.getComposeState().getQNameID(m_qname);
-    if(m_parentNode.getXSLToken() == Constants.ELEMNAME_TEMPLATE)
+    int parentToken = m_parentNode.getXSLToken();
+    if (parentToken == Constants.ELEMNAME_TEMPLATE
+        || parentToken == Constants.EXSLT_ELEMNAME_FUNCTION)
       ((ElemTemplate)m_parentNode).m_inArgsSize++;
   }
   
