@@ -370,12 +370,14 @@ public class DescendantIterator extends LocPathIterator
    * exception INVALID_STATE_ERR.
    */
   public void detach()
-  {    
-    m_traverser = null;    
-    m_extendedTypeID = 0;
-    
-    // Always call the superclass detach last!
-    super.detach();
+  {
+    if (m_allowDetach) {
+      m_traverser = null;    
+      m_extendedTypeID = 0;
+
+      // Always call the superclass detach last!
+      super.detach();
+    }
   }
   
   /**
