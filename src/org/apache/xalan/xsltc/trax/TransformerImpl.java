@@ -411,7 +411,7 @@ public final class TransformerImpl extends Transformer
                                    org.apache.xpath.objects.XMLStringFactoryImpl
                                                        .getFactory());
 
-		dom = (SAXImpl)dtmManager.getDTM(sax, false, null, true, true,
+		dom = (SAXImpl)dtmManager.getDTM(sax, false, null, true, false,
                                                  hasUserReader);
 		final DOMBuilder builder = ((SAXImpl)dom).getBuilder();
 		try {
@@ -434,7 +434,7 @@ public final class TransformerImpl extends Transformer
                                                          .getFactory());
     
 		dom = (DOMImpl)dtmManager.getDTM(domsrc, false, null, true,
-                                                 true, false);
+                                                 false, false);
 		((DOMImpl)dom).setDocumentURI(_sourceSystemId);
 	    }
 	    // Handle StreamSource input
@@ -468,7 +468,7 @@ public final class TransformerImpl extends Transformer
 		    throw new TransformerException(err.toString());
 		}
 		dom = (SAXImpl)dtmManager.getDTM(new SAXSource(reader, input),
-                                                 false, null, true, true,
+                                                 false, null, true, false,
                                                  false);
 		((SAXImpl)dom).setDocumentURI(_sourceSystemId);
 	    }

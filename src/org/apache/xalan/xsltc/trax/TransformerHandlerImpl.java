@@ -219,7 +219,7 @@ public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
                  org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
 
             // Construct the DTM using the SAX events that come through
-            _dom = (SAXImpl)dtmManager.getDTM(null, false, null, true, true);
+            _dom = (SAXImpl)dtmManager.getDTM(null, false, null, true, false);
 	    _handler = _dom.getBuilder();
 	    _lexHandler = (LexicalHandler) _handler;
 	    _dtdHandler = (DTDHandler) _handler;

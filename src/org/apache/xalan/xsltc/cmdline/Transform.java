@@ -177,7 +177,7 @@ final public class Transform {
 
             final SAXImpl dom = (SAXImpl)dtmManager.getDTM(
                              new SAXSource(reader, new InputSource(_fileName)),
-                             false, null, true, true);
+                             false, null, true, false);
 
 	    AbstractTranslet _translet = (AbstractTranslet)translet;
 	    dom.setDocumentURI(_fileName);
