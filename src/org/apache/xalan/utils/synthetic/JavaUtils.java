@@ -167,7 +167,7 @@ public class JavaUtils
 			}
 			catch (Throwable th)
 			{
-				System.err.println("WARNING: Unable to load Java 1.1 compiler.");
+				System.err.println("INFORMATIONAL: Unable to load Java compiler API (eg tools.jar).");
 				System.err.println("\tSwitching to command-line invocation.");
 				cantLoadCompiler=true;
 			}
