@@ -138,10 +138,10 @@ public class DTMNodeList implements org.w3c.dom.NodeList
   /** Access the wrapped DTMIterator. I'm not sure whether anyone will
    * need this or not, but let's write it and think about it.
    * */
-  DTMIterator getDTMIterator()
-    {
-      return dtm_iter;
-    }
+  public DTMIterator getDTMIterator()
+  {
+    return dtm_iter;
+  }
   
 
   //================================================================
