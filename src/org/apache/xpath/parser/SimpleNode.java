@@ -362,7 +362,19 @@ m_builtInFunctions.put(
       new FuncReplace());
 m_builtInFunctions.put(
       new QName("tokenize"),
-      new FuncTokenize());    
+      new FuncTokenize());
+m_builtInFunctions.put(
+      new QName("empty"),
+      new FuncEmpty());
+m_builtInFunctions.put(
+      new QName("exists"),
+      new FuncExists());
+m_builtInFunctions.put(
+      new QName("index-of"),
+      new FuncIndexOf());
+m_builtInFunctions.put(
+      new QName("item-at"),
+      new FuncItemAt());
   }
 
   /**

@@ -336,18 +336,34 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
     {
     	if(tokenTree.size() > 0)
     	{
-    	for(i=0; i<tokenTree.size(); i++)
+    	for(i=0; i<tokenTree.size() && index<length; i++)
   		{
   			child = tokenTree.getChild(i);
-  			regexp.compileToken(child);
-  			int[] range = regexp.matchString(selectResult, index, length);
-    	   int start = range[0];
+  			int[] range;
+  			// Needs review!!! See regex020, E4...
+  			if (child.getType() == Token.PAREN &&
+  			(i+1 < tokenTree.size()) &&
+  			tokenTree.getChild(i+1).getType() == Token.CHAR)
+  			{
+  				regexp.compileToken(tokenTree.getChild(i+1));
+  			    range = regexp.matchString(selectResult, index, length);
+    	       int start = range[0] > length ? length : range[0]; 
+    	        regexp.compileToken(child);
+    	        range = regexp.matchString(selectResult, index, start);
+  			}
+  			else
+  			{
+  				regexp.compileToken(child);
+  				range = regexp.matchString(selectResult, index, length);
+  			} 
+  			int start = range[0];
     	   int end = range[1];
     	   if (end >=0)
     	   {
     		if (child.getType() == Token.PAREN)
-    		matchSeq.insertItemAt(new XString(selectResult.substring(start, end)), t++);
-    		noMatchSeq.insertItemAt(new XString(selectResult.substring(index, start)), j++); 
+    		  matchSeq.insertItemAt(new XString(selectResult.substring(start, end)), t++);
+    		if (index != start)
+    		  noMatchSeq.insertItemAt(new XString(selectResult.substring(index, start)), j++); 
     	    index = end;
     	   }
     	   else

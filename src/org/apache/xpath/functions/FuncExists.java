@@ -60,19 +60,15 @@ package org.apache.xpath.functions;
 //import org.w3c.dom.traversal.NodeIterator;
 import org.apache.xml.utils.DateTimeObj;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XSequence;
-import org.apache.xpath.objects.XSequenceImpl;
-import org.apache.xpath.objects.XString;
-import org.apache.xpath.parser.regexp.*;
-import org.apache.xpath.parser.regexp.RegularExpression;
-import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XBoolean;
 
 /**
  * <meta name="usage" content="advanced"/>
- * Execute the xs:matches() function.
+ * Execute the xs:current-dateTime() function.
  */
-public class FuncTokenize extends Function3Args
+public class FuncExists extends FunctionOneArg
 {
 
   /**
@@ -85,67 +81,8 @@ public class FuncTokenize extends Function3Args
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-  	String input = m_arg0.strOrNull(xctxt);
-  	String pattern = m_arg1.strOrNull(xctxt);
-    if (input == null || pattern == null)
-      return XSequence.EMPTY;
-  	String flags = "";
-  	if (m_arg2 != null)
-  	flags = m_arg2.execute(xctxt).str(); 
-  	
-  	RegularExpression regex = new RegularExpression(pattern, flags);
-  	XSequenceImpl seq = new XSequenceImpl();
-  	int index = 0;
-    int length = input.length();
-    int i=0;    	
-    while (index < length)
-    {
-    	int[] range = regex.matchString(input, index, length);
-    	int start = range[0];
-    	int end = range[1];
-    	if (end >= 0)
-    	{
-    		seq.insertItemAt(new XString(input.substring(index, start)), i++); 
-    	    index = end;
-    	    // if the matching chars were the last ones in input string
-    	    if (index == length)
-    	      seq.insertItemAt(new XString(""), i++); 
-    	    
-    	}
-    	else
-    	{
-    	   seq.insertItemAt(new XString(input.substring(index)), i++); 
-    	   index = length;
-    	}
-    }
-    if (seq.getLength() == 0)
-      return XSequence.EMPTY;
-    else
-      return seq;
+    XSequence seq = m_arg0.execute(xctxt).xseq();
+    return new XBoolean(seq != XSequence.EMPTY);
     
-  }
-  
-  /**
-   * Check that the number of arguments passed to this function is correct. 
-   *
-   *
-   * @param argNum The number of arguments that is being passed to the function.
-   *
-   * @throws WrongNumberArgsException
-   */
-  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
-  {
-    if (argNum < 3 || argNum > 4)
-      reportWrongNumberArgs();
-  }
-
-  /**
-   * Constructs and throws a WrongNumberArgException with the appropriate
-   * message for this function object.
-   *
-   * @throws WrongNumberArgsException
-   */
-  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
-      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("twoorthree", null));
   }
 }

@@ -140,7 +140,8 @@ public class XType
     "yearMonthDuration", // YEARMONTHDURATION = 23;
     "dayTimeDuration", // DAYTIMEDURATION = 24;
     "AnySimpleType", // ANYSIMPLETYPE = 25;
-    "EMPTY" // EMPTYSEQ = 26;
+    "EMPTY", // EMPTYSEQ = 26;
+    "sequence" // SEQ = 27;
   };
   
   public static final int NOTHOMOGENOUS = 0xFFFFFFFF;

@@ -61,16 +61,25 @@ package org.apache.xpath.functions;
 import org.apache.xml.utils.DateTimeObj;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XSequence;
+import org.apache.xpath.objects.XSequenceImpl;
+import org.apache.xpath.objects.XString;
+import org.apache.xpath.objects.XNodeSequenceSingleton;
+import org.apache.xpath.objects.XInteger;
+import java.util.Comparator;
+import org.apache.xml.dtm.XType;
 import org.apache.xpath.parser.regexp.*;
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.res.XPATHErrorResources;
+
+import java.text.Collator;
+import java.net.URL;
 
 /**
  * <meta name="usage" content="advanced"/>
  * Execute the xs:matches() function.
  */
-public class FuncReplace extends FunctionMultiArgs
+public class FuncIndexOf extends Function3Args
 {
 
   /**
@@ -83,135 +92,78 @@ public class FuncReplace extends FunctionMultiArgs
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-  	String input = m_arg0.strOrNull(xctxt);
-  	String pattern = m_arg1.strOrNull(xctxt);
-  	String replace = m_arg2.strOrNull(xctxt);
-  	
-  	if (input == null || replace == null || pattern == null)
+  	XSequence seqParam = m_arg0.execute(xctxt).xseq();
+  	if (seqParam == XSequence.EMPTY)
   	  return XSequence.EMPTY;
-  	  
-  	String flags = "";
-  	if (m_args != null)
-  	flags = m_args[0].execute(xctxt).str(); 
   	
-  	RegularExpression regex = new RegularExpression(pattern, flags);
-  	String outString = "";
-  	int groups = regex.getNumberOfGroups();
-  	Token tokenTree = regex.getTokenTree();
-  	int indexVar;
-  	if (groups > 1 && (((indexVar = replace.indexOf("$")) > 0 && 
-  	                  replace.charAt(indexVar - 1) != '\\') || indexVar==0))
+  	XObject srchParam = m_arg1.execute(xctxt);  	
+  	
+    Comparator comparator = null;
+  	if (m_arg2 != null)
   	{
-  		
-  		Token child;
-  		int index = 0;
-       int length = input.length();
-       while (index < length)
-    {
-    	boolean matched = false;
-    	String[] s = new String[tokenTree.size()];
-    	int t=0;
-  		for(int i=0; i<tokenTree.size(); i++)
-  		{
-  			child = tokenTree.getChild(i);
-  			int[] range;
-  			// Note: Not really sure this is correct.
-  			// Needs review!!! See regex020, E4...
-  			// the begining of the following character token will
-  			// be the end of this paren token.
-  			if (child.getType() == Token.PAREN &&
-  			(i+1 < tokenTree.size()) &&
-  			tokenTree.getChild(i+1).getType() == Token.CHAR)
-  			{
-  				regex.compileToken(tokenTree.getChild(i+1));
-  			    range = regex.matchString(input, index, length);
-    	       int start = range[0] > length ? length : range[0]; 
-    	        regex.compileToken(child);
-    	        range = regex.matchString(input, index, start);
-  			}
-  			else
-  			{
-  				regex.compileToken(child);
-  				range = regex.matchString(input, index, length);
-  			}  			
-  			
-    	int start = range[0];
-    	int end = range[1];
-    	if (end >= 0)
-    	{
-    		if (child.getType() == Token.PAREN)
-    		s[t++] = input.substring(start, end);
-    		outString = outString + input.substring(index, start);
-    	    index = end;
-    	    matched = true;
-  		}
-  		else
-    	{
-    	    s[t++] = "";
-    	    outString = outString + input.substring(index);
-    	    index = length;    	    
-    	    break;
-    	}
-  		}
-  		
-  		if(!matched)
-  		break;   		
-    	
-    	//int j = 0;
-    	String repVars = "";
-    	int start = 0;
-    	while(start < replace.length())
-    	{
-    		indexVar = replace.indexOf("$", start);
-    		if (indexVar >= 0)
-    		{
-    		repVars = repVars+ replace.substring(start, indexVar);
-    		if (indexVar >0 && replace.charAt(indexVar-1) == '\\') 
-    		{
-    		repVars = repVars.replace('\\', '$');
-    		start = indexVar + 1;
-    		}
-    		else
-    		{
-    			// need to account for the fact that our array starts at 0 
-    		repVars = repVars + s[Integer.parseInt(String.valueOf(replace.charAt(indexVar+1))) - 1];
-    		start = indexVar + 2;
-    		}
-    		}
-    		else
-    		{
-    			repVars = repVars+ replace.substring(start);
-    			break;
-    		}
-    	}
-    	outString = outString + repVars; 
-    }
+  	  String collation = m_arg2.execute(xctxt).str();
+  	  try{
+  	    URL uri = new URL(collation);
+  	    comparator = Collator.getInstance();
+  	  }
+  	  catch(java.net.MalformedURLException mue)
+  	  {
+  	    comparator = null;
+  	  }
   	}
-  	else
-  { 
-  	//String outString = "";
-  	int index = 0;
-    int length = input.length();
-    int i=0, j=0;    	
-    while (index < length)
-    {
-    	int[] range = regex.matchString(input, index, length);
-    	int start = range[0];
-    	int end = range[1];
-    	if (end >= 0)
-    	{
-    		outString = outString + input.substring(index, start);
-    	    outString = outString + replace; 
-    	    index = end;
-    	}
-    	else
-    	{
-    	   outString = outString + input.substring(index);
-    	    index = length;
-    	}
-    }
-  }
-  	return new XString(outString);
+  	
+  	XSequenceImpl seq = new XSequenceImpl();  	
+  	
+  	int pos = 0;
+  	XObject item;
+  	  
+  	while((item = seqParam.next()) != null)  	
+  	{
+  	  int type = seqParam.getType();
+  	  if (type != srchParam.getType())
+  	  	this.error(xctxt, XPATHErrorResources.ER_ERROR_OCCURED, null);
+  	
+  	  if (type == XObject.CLASS_STRING)
+  	  {
+  	    if (comparator == null)
+  	    {
+  	      if (item.equals(srchParam))
+  	       seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);  	      
+  	    }
+  	    else
+  	    {
+  	      if (comparator.compare(item.str(), srchParam.str()) == 0)
+  	       seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);  	      
+  	    }  	      
+  	    
+  	  }
+  	  else if(type == XType.NODE)
+  	  {
+  	    if(item instanceof XNodeSequenceSingleton)
+        {
+          XNodeSequenceSingleton xnss = (XNodeSequenceSingleton)item;
+          if (comparator == null)
+          {
+            if (xnss.equalsExistential(srchParam))
+               seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
+          }
+          else
+          {
+            if (comparator.compare(xnss.str(), srchParam.str()) == 0)
+               seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
+          }
+  	    }
+  	  }
+  	  else
+  	  {
+  	    if (item.equals(srchParam))
+  	    seq.insertItemAt(new XInteger(seqParam.getCurrentPos()), pos++);
+  	  }
+  	}
+  	
+  	if (seq.getLength() == 0)
+  	    return XSequence.EMPTY;
+  	    else return seq; 
     
   }
   
@@ -225,7 +177,7 @@ public class FuncReplace extends FunctionMultiArgs
    */
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
-    if (argNum < 3 || argNum > 4)
+    if (argNum < 2 || argNum > 4)
       reportWrongNumberArgs();
   }
 
@@ -236,6 +188,6 @@ public class FuncReplace extends FunctionMultiArgs
    * @throws WrongNumberArgsException
    */
   protected void reportWrongNumberArgs() throws WrongNumberArgsException {
-      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("threeorfour", null));
+      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("twoorthree", null));
   }
 }

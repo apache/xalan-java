@@ -196,7 +196,7 @@ public class ElemMatchingSubstring extends ElemTemplateElement
 
       xctxt.pushCurrentItem(XSequence.EMPTY);
 
-      int currentNodePos = xctxt.getCurrentNodeFirstFree() - 1;
+      //int currentNodePos = xctxt.getCurrentNodeFirstFree() - 1;
 
       xctxt.pushCurrentExpressionNode(DTM.NULL);
 
@@ -212,7 +212,7 @@ public class ElemMatchingSubstring extends ElemTemplateElement
       XObject item;
       
        //for each item in the population, evaluate the expression
-       // while (null != (item = m_substringSequence.next()))
+        //while (null != (item = m_substringSequence.next()))
          if (null != (item = m_substringSequence.next()))
           {
           	xctxt.setCurrentItem(item);

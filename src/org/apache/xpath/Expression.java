@@ -64,10 +64,12 @@ import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.XType;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XSequence;
 import org.apache.xpath.parser.SimpleNode;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.xml.sax.ContentHandler;
@@ -246,6 +248,45 @@ public abstract class Expression extends SimpleNode
           throws javax.xml.transform.TransformerException
   {
     return execute(xctxt).xstr();
+  }
+  
+  /**
+   * Cast result object to a string.
+   *
+   *
+   * @param xctxt The XPath runtime context.
+   * @return The string this wraps or the empty string if null
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public String strOrNull(XPathContext xctxt)
+          throws javax.xml.transform.TransformerException
+  {
+    XObject obj = execute(xctxt);
+    if(obj instanceof XSequence)
+    {
+      XSequence seq = (XSequence)obj;
+      int len = seq.getLength();
+      if(len > 1) //!seq.isSingletonOrEmpty())
+      {
+        this.error(xctxt, XPATHErrorResources.ER_CANT_CONVERT_TO_TYPE,new Object[]{XType.getLocalNameFromType(XType.SEQ), XType.getLocalNameFromType(XType.STRING)}); 
+        return null;
+      }
+      else
+      {
+        if (len == 0)
+          return null;
+        else
+          return obj.str();
+      }
+    }
+    else
+    {
+      if (obj.object() == null)
+        return null;
+      else
+        return obj.str();
+    }
   }
 
   /**
