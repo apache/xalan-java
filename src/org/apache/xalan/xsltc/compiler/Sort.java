@@ -380,7 +380,7 @@ final class Sort extends Instruction implements Closure {
 		il.append(DUP);
 		il.append(var.loadInstruction());
 		il.append(new PUTFIELD(
-			cpg.addFieldref(sortRecordFactoryClass, var.getVariable(), 
+			cpg.addFieldref(sortRecordFactoryClass, var.getEscapedName(), 
 			    var.getType().toSignature())));
 		dups.add(varRef);
 	    }
@@ -421,7 +421,7 @@ final class Sort extends Instruction implements Closure {
 
 		final VariableBase var = varRef.getVariable();
 		sortRecordFactory.addField(new Field(ACC_PUBLIC, 
-					   cpg.addUtf8(var.getVariable()),
+					   cpg.addUtf8(var.getEscapedName()),
 					   cpg.addUtf8(var.getType().toSignature()),
 					   null, cpg.getConstantPool()));
 		dups.add(varRef);
@@ -508,12 +508,12 @@ final class Sort extends Instruction implements Closure {
 	    il.append(ALOAD_0);
 	    il.append(new GETFIELD(
 		cpg.addFieldref(className,
-		    var.getVariable(), varType.toSignature())));
+		    var.getEscapedName(), varType.toSignature())));
 
 	    // Put field in record class
 	    il.append(new PUTFIELD(
 		cpg.addFieldref(sortRecordClass,
-		    var.getVariable(), varType.toSignature())));
+		    var.getEscapedName(), varType.toSignature())));
 	}
 	il.append(POP);
 	il.append(ARETURN);
@@ -569,7 +569,7 @@ final class Sort extends Instruction implements Closure {
 
 		final VariableBase var = varRef.getVariable();
 		sortRecord.addField(new Field(ACC_PUBLIC, 
-				    cpg.addUtf8(var.getVariable()),
+				    cpg.addUtf8(var.getEscapedName()),
 				    cpg.addUtf8(var.getType().toSignature()),
 				    null, cpg.getConstantPool()));
 		dups.add(varRef);

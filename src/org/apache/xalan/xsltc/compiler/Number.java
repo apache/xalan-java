@@ -396,7 +396,7 @@ final class Number extends Instruction implements Closure {
 		((VariableRefBase) _closureVars.get(i)).getVariable();
 
 	    nodeCounterGen.addField(new Field(ACC_PUBLIC, 
-					cpg.addUtf8(var.getVariable()),
+					cpg.addUtf8(var.getEscapedName()),
 					cpg.addUtf8(var.getType().toSignature()),
 					null, cpg.getConstantPool()));
 	}
@@ -494,7 +494,7 @@ final class Number extends Instruction implements Closure {
 	    il.append(DUP);
 	    il.append(var.loadInstruction());
 	    il.append(new PUTFIELD(
-		    cpg.addFieldref(_className, var.getVariable(), 
+		    cpg.addFieldref(_className, var.getEscapedName(), 
 			varType.toSignature())));
 	}
     }

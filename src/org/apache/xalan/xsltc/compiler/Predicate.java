@@ -372,7 +372,7 @@ final class Predicate extends Expression implements Closure {
 	    VariableBase var = ((VariableRefBase) _closureVars.get(i)).getVariable();
 
 	    filterGen.addField(new Field(ACC_PUBLIC, 
-					cpg.addUtf8(var.getVariable()),
+					cpg.addUtf8(var.getEscapedName()),
 					cpg.addUtf8(var.getType().toSignature()),
 					null, cpg.getConstantPool()));
 	}
@@ -578,7 +578,7 @@ final class Predicate extends Expression implements Closure {
 		il.append(ALOAD_0);
 		il.append(new GETFIELD(
 		    cpg.addFieldref(variableClosure.getInnerClassName(), 
-			var.getVariable(), varType.toSignature())));
+			var.getEscapedName(), varType.toSignature())));
 	    }
 	    else {
 		// Use a load of instruction if in translet class
@@ -587,7 +587,7 @@ final class Predicate extends Expression implements Closure {
 
 	    // Store variable in new closure
 	    il.append(new PUTFIELD(
-		    cpg.addFieldref(_className, var.getVariable(), 
+		    cpg.addFieldref(_className, var.getEscapedName(), 
 			varType.toSignature())));
 	}
     }
