@@ -78,7 +78,7 @@ public class StackGuard
    * infinite loop situation, when there is none.
    * Post version 1.0.0, we'll make this a runtime feature.   
    */
-  private static int m_recursionLimit = -1;
+  static int m_recursionLimit = -1;
   
   /**
    * Get the recursion limit.
