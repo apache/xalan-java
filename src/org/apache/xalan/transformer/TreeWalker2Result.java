@@ -72,7 +72,6 @@ import org.apache.xpath.DOMHelper;
 public class TreeWalker2Result extends TreeWalker
 {
   TransformerImpl m_transformer;
-  ElemTemplateElement m_elem;
   ResultTreeHandler m_handler;
   Node m_startNode;
   
@@ -80,11 +79,10 @@ public class TreeWalker2Result extends TreeWalker
    * Constructor.
    */
   public TreeWalker2Result(TransformerImpl transformer, 
-                           ResultTreeHandler handler, ElemTemplateElement elem) 
+                           ResultTreeHandler handler) 
   {
     super(handler);
     m_transformer = transformer;
-    m_elem = elem;
     m_handler = handler;
   }
   
