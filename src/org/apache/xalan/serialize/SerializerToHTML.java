@@ -1001,7 +1001,9 @@ public class SerializerToHTML extends SerializerToXML
 // The encoded signes are in Hex form. So %xx my be in form %3C that is "<" sign. I will try to change here a little.
           
 //        if( ((i+2) < len) && isASCIIDigit(stringArray[i+1]) && isASCIIDigit(stringArray[i+2]) )
-        if ( ((i+2) < len) && isHHSign(new String(stringArray,i+1,2)) )
+        
+// We are no longer escaping '%'
+       /* if ( ((i+2) < len) && isHHSign(new String(stringArray,i+1,2)) )
         {
           accum(ch);
         }
@@ -1012,9 +1014,9 @@ public class SerializerToHTML extends SerializerToXML
            accum('%');
            accum(makeHHString(ch));
           }
-          else
+          else*/
             accum(ch);
-        }   
+       // }   
                
       } 
       // Since http://www.ietf.org/rfc/rfc2396.txt refers to the URI grammar as
