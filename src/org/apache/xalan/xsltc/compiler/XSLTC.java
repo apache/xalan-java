@@ -139,6 +139,7 @@ public final class XSLTC {
     private int     _outputType = FILE_OUTPUT; // by default
 
     private Vector  _classes;
+    private boolean _callsNodeset = false;
     private boolean _multiDocument = false;
 
     /**
@@ -317,6 +318,7 @@ public final class XSLTC {
 	    }
 	    // Generate the bytecodes and output the translet class(es)
 	    if ((!_parser.errorsFound()) && (_stylesheet != null)) {
+		_stylesheet.setCallsNodeset(_callsNodeset);
 		_stylesheet.setMultiDocument(_multiDocument);
 		_stylesheet.translate();
 	    }
@@ -435,7 +437,6 @@ public final class XSLTC {
 	_parser.printWarnings();
     }
 
-
     /**
      * This method is called by the XPathParser when it encounters a call
      * to the document() function. Affects the DOM used by the translet.
@@ -446,6 +447,19 @@ public final class XSLTC {
 
     public boolean isMultiDocument() {
 	return _multiDocument;
+    }
+
+    /**
+     * This method is called by the XPathParser when it encounters a call
+     * to the nodeset() extension function. Implies multi document.
+     */
+    protected void setCallsNodeset(boolean flag) {
+	if (flag) setMultiDocument(flag);
+	_callsNodeset = flag;
+    }
+
+    public boolean callsNodeset() {
+	return _callsNodeset;
     }
 
     /**

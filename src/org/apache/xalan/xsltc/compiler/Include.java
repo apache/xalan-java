@@ -107,28 +107,28 @@ final class Include extends TopLevelElement {
 		input = loader.loadSource(docToLoad, currLoadedDoc, xsltc);
 	    }
 	    else {
-                // bug 7835, patch by Stefan Kost (s.kost@webmacher.de)
-                if ((currLoadedDoc != null) && (currLoadedDoc.length() > 0)) {
-                    File file = new File(currLoadedDoc);
-                    if (file.exists()) {
-                        currLoadedDoc = "file:" + file.getCanonicalPath();
-                    }
-                    final URL url = new URL(new URL(currLoadedDoc), docToLoad);
-                    docToLoad = url.toString();
-                    input = new InputSource(docToLoad);
-                }
-                else {
-                    File file = new File(System.getProperty("user.dir"),
-                        docToLoad);
-                    if (file.exists()) {
-                        docToLoad = "file:" + file.getCanonicalPath();
-                    }
-                    else {
-                        throw new FileNotFoundException(
-                          "Could not load file " + docToLoad);
-                    }
-                    input = new InputSource(docToLoad);
-                }
+		// bug 7835, patch by Stefan Kost (s.kost@webmacher.de)
+		if ((currLoadedDoc != null) && (currLoadedDoc.length() > 0)) {
+		    File file = new File(currLoadedDoc);
+		    if (file.exists()) {
+		        currLoadedDoc = "file:" + file.getCanonicalPath();
+		    }
+		    final URL url = new URL(new URL(currLoadedDoc), docToLoad);
+		    docToLoad = url.toString();
+		    input = new InputSource(docToLoad);
+		}
+		else {
+		    File file = new File(System.getProperty("user.dir"),
+			docToLoad);
+		    if (file.exists()) {
+			docToLoad = "file:" + file.getCanonicalPath();
+		    }
+		    else {
+			throw new FileNotFoundException(
+			  "Could not load file " + docToLoad);
+		    }
+		    input = new InputSource(docToLoad);
+		}
 	    }
 
 	    final SyntaxTreeNode root = parser.parse(input);

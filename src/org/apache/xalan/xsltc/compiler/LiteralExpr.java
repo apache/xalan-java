@@ -88,10 +88,7 @@ final class LiteralExpr extends Expression {
      */
     public LiteralExpr(String value, String namespace) {
 	_value = value;
-	if (namespace.equals(Constants.EMPTYSTRING))
-	    _namespace = null;
-	else
-	    _namespace = namespace;
+	_namespace = namespace.equals(Constants.EMPTYSTRING) ? null : namespace;
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {

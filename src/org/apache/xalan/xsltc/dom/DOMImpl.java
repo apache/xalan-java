@@ -141,7 +141,8 @@ public final class DOMImpl implements DOM, Externalizable {
     private BitArray  _dontEscape = null; 
 
     // The URI to this document
-    private String    _documentURI;
+    private String    _documentURI = null;
+    static private int _documentURIIndex = 0;
 
     // Support for access/navigation through org.w3c.dom API
     private Node[] _nodes;
@@ -163,15 +164,46 @@ public final class DOMImpl implements DOM, Externalizable {
      * Returns the origin of the document from which the tree was built
      */
     public String getDocumentURI() {
-	return(_documentURI);
+	return (_documentURI != null) ? _documentURI : "rtf" + _documentURIIndex++;
     }
 
     public String getDocumentURI(int node) {
-	return(_documentURI);
+	return getDocumentURI();
     }
 
     public void setupMapping(String[] names, String[] namespaces) {
 	// This method only has a function in DOM adapters
+    }
+
+    /**
+     * Lookup a namespace URI from a prefix starting at node. This method 
+     * is used in the execution of xsl:element when the prefix is not known 
+     * at compile time.
+     */
+    public String lookupNamespace(int node, String prefix) 
+	throws TransletException 
+    {
+	int anode, nsnode;
+	final AncestorIterator ancestors = new AncestorIterator();
+	
+	if (isElement(node)) {
+	    ancestors.includeSelf();
+	}
+
+	ancestors.setStartNode(node);
+	while ((anode = ancestors.next()) != NULL) {
+	    final NodeIterator namespaces = 
+		new NamespaceIterator().setStartNode(anode);
+
+	    while ((nsnode = namespaces.next()) != NULL) {
+		if (_prefixArray[_prefix[nsnode]].equals(prefix)) {
+		    return getNodeValue(nsnode);
+		}
+	    }
+	}
+
+	// TODO: Internationalization?
+	throw new TransletException("Namespace prefix '" + prefix + "' is undeclared.");
     }
 
     /**
@@ -1487,7 +1519,9 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	public int next() {
 	    while (++_node < _limit) {
-		if (_type[_node] > TEXT) return(returnNode(_node));
+		if (_type[_node] > TEXT) {
+		    return(returnNode(_node));
+		}
 	    } 
 	    return(NULL);
 	}
@@ -3268,12 +3302,17 @@ public final class DOMImpl implements DOM, Externalizable {
 	{
     	    final int node = nextAttributeNode();
 	    final String qname = attList.getQName(i);
-	    String localname = attList.getLocalName(i);
+	    String localName = attList.getLocalName(i);
 	    final String value = attList.getValue(i);
 	    StringBuffer namebuf = new StringBuffer(EMPTYSTRING);
 	    
 	    if (qname.startsWith(XMLSPACE_STRING)) {
 		xmlSpaceDefine(attList.getValue(i), parent);
+	    }
+
+	    // If local name is null set it to the empty string
+	    if (localName == null) {
+		localName = EMPTYSTRING;
 	    }
 
 	    // Create the internal attribute node name (uri+@+localname)
@@ -3283,7 +3322,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		namebuf.append(':');
 	    }
 	    namebuf.append('@');
-	    namebuf.append(localname.length() > 0 ? localname : qname);
+	    namebuf.append(localName.length() > 0 ? localName : qname);
 
 	    String name = namebuf.toString();
 
@@ -3435,6 +3474,11 @@ public final class DOMImpl implements DOM, Externalizable {
 			_nextSibling2[last] = _currentAttributeNode;
 		    }
 		}
+	    }
+
+	    // If local name is null set it to the empty string
+	    if (localName == null) {
+		localName = EMPTYSTRING;
 	    }
 
 	    // Append any attribute nodes
