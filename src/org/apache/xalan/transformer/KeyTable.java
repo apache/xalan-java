@@ -126,7 +126,8 @@ public class KeyTable
     m_keyNodes = new XNodeSet(ki);
     m_keyNodes.allowDetachToRelease(false);
     
-    m_keyNodes.setRoot(xctxt.getDTM(doc).getDocument(), xctxt);
+    m_keyNodes.setRoot(doc, xctxt);
+
   }  
 
   /**
