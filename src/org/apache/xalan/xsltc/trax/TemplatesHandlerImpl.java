@@ -135,6 +135,8 @@ public class TemplatesHandlerImpl extends Parser implements TemplatesHandler {
 	    String transletName = TransformerFactoryImpl._defaultTransletName;
 	    if (_systemId != null) transletName = Util.baseName(_systemId);
 	    xsltc.setClassName(transletName);
+	    // get java-legal class name from XSLTC module
+	    transletName = xsltc.getClassName();
 
 	    Stylesheet stylesheet = null;
 	    SyntaxTreeNode root = getDocumentRoot();
