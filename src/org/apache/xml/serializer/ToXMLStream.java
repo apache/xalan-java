@@ -25,8 +25,8 @@ import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xml.res.XMLErrorResources;
-import org.apache.xml.res.XMLMessages;
+import org.apache.xml.serializer.utils.SerializerMessages;
+import org.apache.xml.serializer.utils.Utils;
 import org.xml.sax.SAXException;
 
 /**
@@ -39,7 +39,7 @@ import org.xml.sax.SAXException;
  * 
  * @xsl.usage internal
  */
-public class ToXMLStream extends ToStream
+public final class ToXMLStream extends ToStream
 {
 
     /**
@@ -449,8 +449,8 @@ public class ToXMLStream extends ToStream
             // Generate a warning of the ignored attributes
 
             // Create the warning message
-            String msg = XMLMessages.createXMLMessage(
-                    XMLErrorResources.ER_ILLEGAL_ATTRIBUTE_POSITION,new Object[]{ localName });
+            String msg = Utils.messages.createMessage(
+                    SerializerMessages.ER_ILLEGAL_ATTRIBUTE_POSITION,new Object[]{ localName });
 
             try {
                 // Prepare to issue the warning message

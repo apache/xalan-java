@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  * </pre>
  * @xsl.usage internal
  */
-public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
+abstract interface ExtendedContentHandler extends org.xml.sax.ContentHandler
 {
     /**
      * Add at attribute to the current element
@@ -83,6 +83,14 @@ public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
      * @throws SAXException
      */
     public void characters(String chars) throws SAXException;
+    
+    /**
+     * This method is used to notify of a character event, but passing the data
+     * as a DOM Node rather than the standard character array.
+     * @param node a DOM Node containing text.
+     * @throws SAXException
+     */    
+    public void characters(org.w3c.dom.Node node) throws org.xml.sax.SAXException;
     /**
      * This method is used to notify that an element has ended. Unlike the
      * standard SAX method

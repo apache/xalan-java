@@ -37,9 +37,10 @@ import org.xml.sax.ext.LexicalHandler;
  * information over these calls it will invoke the equivalent SAX methods
  * on a handler, the ultimate xsl:output method is known to be "xml".
  * 
+ * This class is not a public API, it is only public because it is used by Xalan.
  * @xsl.usage internal
  */
-public class ToXMLSAXHandler extends ToSAXHandler
+public final class ToXMLSAXHandler extends ToSAXHandler
 {
 
     /**

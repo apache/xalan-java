@@ -39,30 +39,29 @@ import java.util.StringTokenizer;
  * to override encoding names and provide the last printable character
  * for each encoding.
  * 
- * This class is for internal use within Xalan. However, it is used directly
+ * This class is only for internal use within Xalan. However, it is used directly
  * by org.apache.xalan.xsltc.compiler.Output.
  *
- * @author <a href="mailto:arkin@intalio.com">Assaf Arkin</a>
  * @xsl.usage internal
  */
 
-public class Encodings extends Object
+public final class Encodings extends Object
 {
 
     /**
      * The last printable character for unknown encodings.
      */
-    static final int m_defaultLastPrintable = 0x7F;
+    private static final int m_defaultLastPrintable = 0x7F;
 
     /**
      * Standard filename for properties file with encodings data.
      */
-    static final String ENCODINGS_FILE = "org/apache/xml/serializer/Encodings.properties";
+    private static final String ENCODINGS_FILE = "org/apache/xml/serializer/Encodings.properties";
 
     /**
      * Standard filename for properties file with encodings data.
      */
-    static final String ENCODINGS_PROP = "org.apache.xalan.serialize.encodings";
+    private static final String ENCODINGS_PROP = "org.apache.xalan.serialize.encodings";
 
     /** SUN JVM internal ByteToChar converter method */
     private static final Method
@@ -103,7 +102,7 @@ public class Encodings extends Object
      * @throws UnsupportedEncodingException There is no convertor
      *  to support this encoding
      */
-    public static Writer getWriter(OutputStream output, String encoding)
+    static Writer getWriter(OutputStream output, String encoding)
         throws UnsupportedEncodingException
     {
 
@@ -145,7 +144,7 @@ public class Encodings extends Object
      * @param encoding The encoding
      * @return An object which should be a sun.io.CharToByteConverter, or null.
      */
-    public static Object getCharToByteConverter(String encoding)
+    static Object getCharToByteConverter(String encoding)
     {
         if (SUN_CHAR2BYTE_CONVERTER_METHOD == null) {
             return null;
@@ -181,7 +180,7 @@ public class Encodings extends Object
      * @param encoding The encoding
      * @return The last printable character
      */
-    public static int getLastPrintable(String encoding)
+    static int getLastPrintable(String encoding)
     {
         EncodingInfo ei;
 
@@ -200,13 +199,13 @@ public class Encodings extends Object
      *
      * @return the default size
      */
-    public static int getLastPrintable()
+    static int getLastPrintable()
     {
         return m_defaultLastPrintable;
     }
 
     /** The default encoding, ISO style, ISO style.   */
-    public static final String DEFAULT_MIME_ENCODING = "UTF-8";
+    static final String DEFAULT_MIME_ENCODING = "UTF-8";
 
     /**
      * Get the proper mime encoding.  From the XSLT recommendation: "The encoding
@@ -224,7 +223,7 @@ public class Encodings extends Object
      *
      * @return The ISO-style encoding string, or null if failure.
      */
-    public static String getMimeEncoding(String encoding)
+    static String getMimeEncoding(String encoding)
     {
 
         if (null == encoding)
@@ -283,7 +282,7 @@ public class Encodings extends Object
      *
      * @return ISO-style encoding string.
      */
-    public static String convertJava2MimeEncoding(String encoding)
+    private static String convertJava2MimeEncoding(String encoding)
     {
         EncodingInfo enc =
             (EncodingInfo) _encodingTableKeyJava.get(encoding.toUpperCase());
@@ -419,11 +418,11 @@ public class Encodings extends Object
         }
         catch (java.net.MalformedURLException mue)
         {
-            throw new org.apache.xml.utils.WrappedRuntimeException(mue);
+            throw new org.apache.xml.serializer.utils.WrappedRuntimeException(mue);
         }
         catch (java.io.IOException ioe)
         {
-            throw new org.apache.xml.utils.WrappedRuntimeException(ioe);
+            throw new org.apache.xml.serializer.utils.WrappedRuntimeException(ioe);
         }
     }
 

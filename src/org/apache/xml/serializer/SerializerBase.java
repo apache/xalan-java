@@ -24,8 +24,8 @@ import java.util.Vector;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.Transformer;
 
-import org.apache.xml.res.XMLErrorResources;
-import org.apache.xml.res.XMLMessages;
+import org.apache.xml.serializer.utils.SerializerMessages;
+import org.apache.xml.serializer.utils.Utils;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
@@ -40,8 +40,8 @@ import org.xml.sax.SAXParseException;
  * @author Santiago Pericas-Geertsen
  * @author G. Todd Miller 
  */
-abstract public class SerializerBase
-    implements SerializationHandler, SerializerConstants, org.apache.xml.dtm.ref.dom2dtm.DOM2DTM.CharacterNodeHandler
+abstract class SerializerBase
+    implements SerializationHandler, SerializerConstants
 {
     
 
@@ -861,8 +861,8 @@ abstract public class SerializerBase
                 if (uri == null && !prefix.equals(XMLNS_PREFIX))
                 {
                     throw new RuntimeException(
-                        XMLMessages.createXMLMessage(
-                            XMLErrorResources.ER_NAMESPACE_PREFIX,
+                        Utils.messages.createMessage(
+                            SerializerMessages.ER_NAMESPACE_PREFIX,
                             new Object[] { qname.substring(0, col) }  ));
                 }
             }

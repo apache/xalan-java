@@ -37,9 +37,10 @@ import java.io.Writer;
  * and the underlying writer may not be UTF-8 encoding. There may also be
  * encoding differences.  So the main pupose of this class is to provide a
  * resonable facsimile of the true output.
- *
+ * 
+ * @xsl.usage internal
  */
-public class SerializerTraceWriter extends Writer implements WriterChain
+final class SerializerTraceWriter extends Writer implements WriterChain
 {
 
     /** The real writer to immediately write to.

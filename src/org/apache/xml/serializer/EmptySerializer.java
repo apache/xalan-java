@@ -38,6 +38,11 @@ import org.xml.sax.SAXParseException;
 /**
  * This class is an adapter class. Its only purpose is to be extended and
  * for that extended class to over-ride all methods that are to be used. 
+ * 
+ * This class is not a public API, it is only public because it is used by
+ * XSLTC.
+ * 
+ * @xsl.usage internal
  */
 public class EmptySerializer implements SerializationHandler
 {
@@ -694,5 +699,13 @@ public class EmptySerializer implements SerializationHandler
         throws SAXException
     {
         couldThrowSAXException();
+    }
+
+    /**
+     * @see org.apache.xml.serializer.ExtendedContentHandler#characters(org.w3c.dom.Node)
+     */
+    public void characters(Node node) throws SAXException
+    {
+        couldThrowSAXException();        
     }
 }

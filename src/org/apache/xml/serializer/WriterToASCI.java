@@ -34,7 +34,7 @@ import java.io.Writer;
  * 
  * @xsl.usage internal
  */
-public class WriterToASCI extends Writer implements WriterChain
+class WriterToASCI extends Writer implements WriterChain
 {
 
   /** The byte stream to write to.  */

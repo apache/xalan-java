@@ -29,13 +29,9 @@ import java.util.Vector;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 
-import org.apache.xml.res.XMLErrorResources;
-import org.apache.xml.res.XMLMessages;
-import org.apache.xml.utils.BoolStack;
-import org.apache.xml.utils.FastStringBuffer;
-import org.apache.xml.utils.QName;
-import org.apache.xml.utils.TreeWalker;
-import org.apache.xml.utils.WrappedRuntimeException;
+import org.apache.xml.serializer.utils.SerializerMessages;
+import org.apache.xml.serializer.utils.Utils;
+import org.apache.xml.serializer.utils.WrappedRuntimeException;
 import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
@@ -209,7 +205,7 @@ abstract public class ToStream extends SerializerBase
         try
         {
             TreeWalker walker =
-                new TreeWalker(this, new org.apache.xml.utils.DOM2Helper());
+                new TreeWalker(this);
 
             walker.traverse(node);
         }
@@ -989,8 +985,8 @@ abstract public class ToStream extends SerializerBase
         if (i + 1 >= end)
         {
             throw new IOException(
-                XMLMessages.createXMLMessage(
-                    XMLErrorResources.ER_INVALID_UTF16_SURROGATE,
+                Utils.messages.createMessage(
+                    SerializerMessages.ER_INVALID_UTF16_SURROGATE,
                     new Object[] { Integer.toHexString((int) c)}));
             //"Invalid UTF-16 surrogate detected: "
 
@@ -1002,8 +998,8 @@ abstract public class ToStream extends SerializerBase
 
             if (!(0xdc00 <= next && next < 0xe000))
                 throw new IOException(
-                    XMLMessages.createXMLMessage(
-                        XMLErrorResources.ER_INVALID_UTF16_SURROGATE,
+                    Utils.messages.createMessage(
+                        SerializerMessages.ER_INVALID_UTF16_SURROGATE,
                         new Object[] {
                             Integer.toHexString((int) c)
                                 + " "
@@ -1292,8 +1288,8 @@ abstract public class ToStream extends SerializerBase
         catch (IOException ioe)
         {
             throw new org.xml.sax.SAXException(
-                XMLMessages.createXMLMessage(
-                    XMLErrorResources.ER_OIERROR,
+                Utils.messages.createMessage(
+                    SerializerMessages.ER_OIERROR,
                     null),
                 ioe);
             //"IO error", ioe);
@@ -1621,8 +1617,8 @@ abstract public class ToStream extends SerializerBase
                 if (i + 1 >= len)
                 {
                     throw new IOException(
-                        XMLMessages.createXMLMessage(
-                            XMLErrorResources.ER_INVALID_UTF16_SURROGATE,
+                        Utils.messages.createMessage(
+                            SerializerMessages.ER_INVALID_UTF16_SURROGATE,
                             new Object[] { Integer.toHexString(ch)}));
                     //"Invalid UTF-16 surrogate detected: "
 
@@ -1634,8 +1630,8 @@ abstract public class ToStream extends SerializerBase
 
                     if (!(0xdc00 <= next && next < 0xe000))
                         throw new IOException(
-                            XMLMessages.createXMLMessage(
-                                XMLErrorResources
+                            Utils.messages.createMessage(
+                                SerializerMessages
                                     .ER_INVALID_UTF16_SURROGATE,
                                 new Object[] {
                                     Integer.toHexString(ch)
@@ -2466,7 +2462,7 @@ abstract public class ToStream extends SerializerBase
             Vector v = new Vector();
             int l = s.length();
             boolean inCurly = false;
-            FastStringBuffer buf = new FastStringBuffer();
+            StringBuffer buf = new StringBuffer();
 
             // parse through string, breaking on whitespaces.  I do this instead
             // of a tokenizer so I can track whitespace inside of curly brackets,
@@ -2482,7 +2478,7 @@ abstract public class ToStream extends SerializerBase
                         if (buf.length() > 0)
                         {
                             addCdataSectionElement(buf.toString(), v);
-                            buf.reset();
+                            buf.setLength(0);
                         }
                         continue;
                     }
@@ -2498,7 +2494,7 @@ abstract public class ToStream extends SerializerBase
             if (buf.length() > 0)
             {
                 addCdataSectionElement(buf.toString(), v);
-                buf.reset();
+                buf.setLength(0);
             }
             // call the official, public method to set the collected names
             setCdataSectionElements(v);
@@ -2518,7 +2514,6 @@ abstract public class ToStream extends SerializerBase
 
         StringTokenizer tokenizer =
             new StringTokenizer(URI_and_localName, "{}", false);
-        QName qname;
         String s1 = tokenizer.nextToken();
         String s2 = tokenizer.hasMoreTokens() ? tokenizer.nextToken() : null;
 
@@ -2918,4 +2913,183 @@ abstract public class ToStream extends SerializerBase
          m_maxCharacter = Encodings.getLastPrintable(encoding);
          return;
      }
+     
+    /**
+     * Simple stack for boolean values.
+     * 
+     * This class is a copy of the one in org.apache.xml.utils. 
+     * It exists to cut the serializers dependancy on that package.
+     * A minor changes from that package are:
+     * doesn't implement Clonable
+     *  
+     * @xsl.usage internal
+     */
+    static final class BoolStack
+    {
+
+      /** Array of boolean values          */
+      private boolean m_values[];
+
+      /** Array size allocated           */
+      private int m_allocatedSize;
+
+      /** Index into the array of booleans          */
+      private int m_index;
+
+      /**
+       * Default constructor.  Note that the default
+       * block size is very small, for small lists.
+       */
+      public BoolStack()
+      {
+        this(32);
+      }
+
+      /**
+       * Construct a IntVector, using the given block size.
+       *
+       * @param size array size to allocate
+       */
+      public BoolStack(int size)
+      {
+
+        m_allocatedSize = size;
+        m_values = new boolean[size];
+        m_index = -1;
+      }
+
+      /**
+       * Get the length of the list.
+       *
+       * @return Current length of the list
+       */
+      public final int size()
+      {
+        return m_index + 1;
+      }
+
+      /**
+       * Clears the stack.
+       *
+       */
+      public final void clear()
+      {
+        m_index = -1;
+      }
+
+      /**
+       * Pushes an item onto the top of this stack.
+       *
+       *
+       * @param val the boolean to be pushed onto this stack.
+       * @return  the <code>item</code> argument.
+       */
+      public final boolean push(boolean val)
+      {
+
+        if (m_index == m_allocatedSize - 1)
+          grow();
+
+        return (m_values[++m_index] = val);
+      }
+
+      /**
+       * Removes the object at the top of this stack and returns that
+       * object as the value of this function.
+       *
+       * @return     The object at the top of this stack.
+       * @throws  EmptyStackException  if this stack is empty.
+       */
+      public final boolean pop()
+      {
+        return m_values[m_index--];
+      }
+
+      /**
+       * Removes the object at the top of this stack and returns the
+       * next object at the top as the value of this function.
+       *
+       *
+       * @return Next object to the top or false if none there
+       */
+      public final boolean popAndTop()
+      {
+
+        m_index--;
+
+        return (m_index >= 0) ? m_values[m_index] : false;
+      }
+
+      /**
+       * Set the item at the top of this stack  
+       *
+       *
+       * @param b Object to set at the top of this stack
+       */
+      public final void setTop(boolean b)
+      {
+        m_values[m_index] = b;
+      }
+
+      /**
+       * Looks at the object at the top of this stack without removing it
+       * from the stack.
+       *
+       * @return     the object at the top of this stack.
+       * @throws  EmptyStackException  if this stack is empty.
+       */
+      public final boolean peek()
+      {
+        return m_values[m_index];
+      }
+
+      /**
+       * Looks at the object at the top of this stack without removing it
+       * from the stack.  If the stack is empty, it returns false.
+       *
+       * @return     the object at the top of this stack.
+       */
+      public final boolean peekOrFalse()
+      {
+        return (m_index > -1) ? m_values[m_index] : false;
+      }
+
+      /**
+       * Looks at the object at the top of this stack without removing it
+       * from the stack.  If the stack is empty, it returns true.
+       *
+       * @return     the object at the top of this stack.
+       */
+      public final boolean peekOrTrue()
+      {
+        return (m_index > -1) ? m_values[m_index] : true;
+      }
+
+      /**
+       * Tests if this stack is empty.
+       *
+       * @return  <code>true</code> if this stack is empty;
+       *          <code>false</code> otherwise.
+       */
+      public boolean isEmpty()
+      {
+        return (m_index == -1);
+      }
+
+      /**
+       * Grows the size of the stack
+       *
+       */
+      private void grow()
+      {
+
+        m_allocatedSize *= 2;
+
+        boolean newVector[] = new boolean[m_allocatedSize];
+
+        System.arraycopy(m_values, 0, newVector, 0, m_index + 1);
+
+        m_values = newVector;
+      }
+    }
 }

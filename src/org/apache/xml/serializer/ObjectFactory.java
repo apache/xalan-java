@@ -42,7 +42,7 @@ import java.util.Properties;
  * class and modified to be used as a general utility for creating objects 
  * dynamically.
  *
- * @version $Id$
+ * @xsl.usage internal
  */
 class ObjectFactory {
 

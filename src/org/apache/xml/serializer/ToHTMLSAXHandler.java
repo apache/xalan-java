@@ -34,12 +34,15 @@ import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 
 /**
- * This class accepts SAX-like calls, then sends true SAX calls to a
- * wrapped SAX handler.  There is optimization done knowing that the ultimate
- * output is HTML.
+ * This class receives notification of SAX-like events, and with gathered
+ * information over these calls it will convert them to the equivalent SAX methods
+ * on a handler, the ultimate xsl:output method is known to be "html".
+ * 
+ * This class is not a public API, it is only public because it is used by Xalan.
+ * 
  * @xsl.usage internal
  */
-public class ToHTMLSAXHandler extends ToSAXHandler
+public final class ToHTMLSAXHandler extends ToSAXHandler
 {
 	/**
 	 *  Handle document type declaration (for first element only)

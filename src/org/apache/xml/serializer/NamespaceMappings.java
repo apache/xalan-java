@@ -55,6 +55,10 @@ import org.xml.sax.SAXException;
  * processed.  At any given moment of processing the currently visible prefixes
  * are on the stack and a prefix can be found given a uri, or a uri can be found
  * given a prefix.
+ * 
+ * This class is public only because it is used by Xalan. It is not a public API
+ * 
+ * @xsl.usage internal
  */
 public class NamespaceMappings
 {
@@ -167,7 +171,7 @@ public class NamespaceMappings
     /**
      * Undeclare the namespace that is currently pointed to by a given prefix
      */
-    public boolean popNamespace(String prefix)
+    boolean popNamespace(String prefix)
     {
         // Prefixes "xml" and "xmlns" cannot be redefined
         if (prefix.startsWith(XML_PREFIX))
@@ -190,7 +194,7 @@ public class NamespaceMappings
      * @param uri a String with the uri to which the prefix is to map
      * @param elemDepth the depth of current declaration
      */
-    public boolean pushNamespace(String prefix, String uri, int elemDepth)
+    boolean pushNamespace(String prefix, String uri, int elemDepth)
     {
         // Prefixes "xml" and "xmlns" cannot be redefined
         if (prefix.startsWith(XML_PREFIX))
@@ -224,7 +228,7 @@ public class NamespaceMappings
      * @param saxHandler The ContentHandler to notify of any endPrefixMapping()
      * calls.  This parameter can be null.
      */
-    public void popNamespaces(int elemDepth, ContentHandler saxHandler)
+    void popNamespaces(int elemDepth, ContentHandler saxHandler)
     {
         while (true)
         {
@@ -280,7 +284,7 @@ public class NamespaceMappings
         
     }
     
-    public final void reset()
+    final void reset()
     {
         this.count = 0;
         this.m_namespaces.clear();

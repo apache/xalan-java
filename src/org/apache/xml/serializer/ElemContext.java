@@ -46,8 +46,9 @@ package org.apache.xml.serializer;
  * child element is done.  Previously there was some redundant and error-prone
  * calculations going on to retore information.
  * 
+ * @xsl.usage internal
  */
-class ElemContext
+final class ElemContext
 {
     // Fields that form the context of the element
 

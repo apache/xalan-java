@@ -25,17 +25,22 @@ import java.util.Properties;
 
 import javax.xml.transform.Result;
 
-import org.apache.xml.res.XMLErrorResources;
-import org.apache.xml.res.XMLMessages;
-import org.apache.xml.utils.Trie;
+import org.apache.xml.serializer.utils.SerializerMessages;
+import org.apache.xml.serializer.utils.Utils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
- * @author Santiago Pericas-Geertsen
- * @author G. Todd Miller 
+ * This serializer takes a series of SAX or
+ * SAX-like events and writes its output
+ * to the given stream.
+ * 
+ * This class is not a public API, it is public
+ * because it is used internally in Xalan.
+ * 
+ * @xsl.usage internal
  */
-public class ToHTMLStream extends ToStream 
+public final class ToHTMLStream extends ToStream 
 {
 
     /** This flag is set while receiving events from the DTD */
@@ -1437,8 +1442,8 @@ public class ToHTMLStream extends ToStream
             catch (IOException ioe)
             {
                 throw new org.xml.sax.SAXException(
-                    XMLMessages.createXMLMessage(
-                        XMLErrorResources.ER_OIERROR,
+                    Utils.messages.createMessage(
+                        SerializerMessages.ER_OIERROR,
                         null),
                     ioe);
                 //"IO error", ioe);
@@ -1504,8 +1509,8 @@ public class ToHTMLStream extends ToStream
             catch (IOException ioe)
             {
                 throw new org.xml.sax.SAXException(
-                    XMLMessages.createXMLMessage(
-                        XMLErrorResources.ER_OIERROR,
+                    Utils.messages.createMessage(
+                        SerializerMessages.ER_OIERROR,
                         null),
                     ioe);
                 //"IO error", ioe);
@@ -1912,5 +1917,325 @@ public class ToHTMLStream extends ToStream
 //        m_isRawStack.clear();
         m_omitMetaTag = false;
         m_specialEscapeURLs = true;     
+    }
+    
+    private static class Trie
+    {
+        /**
+         * A digital search trie for 7-bit ASCII text
+         * The API is a subset of java.util.Hashtable
+         * The key must be a 7-bit ASCII string
+         * The value may be any Java Object
+         * One can get an object stored in a trie from its key, 
+         * but the search is either case sensitive or case 
+         * insensitive to the characters in the key, and this
+         * choice of sensitivity or insensitivity is made when
+         * the Trie is created, before any objects are put in it.
+         * 
+         * This class is a copy of the one in org.apache.xml.utils. 
+         * It exists to cut the serializers dependancy on that package.
+         *  
+         * @xsl.usage internal
+         */
+
+        /** Size of the m_nextChar array.  */
+        public static final int ALPHA_SIZE = 128;
+
+        /** The root node of the tree.    */
+        final Node m_Root;
+
+        /** helper buffer to convert Strings to char arrays */
+        private char[] m_charBuffer = new char[0];
+
+        /** true if the search for an object is lower case only with the key */
+        private final boolean m_lowerCaseOnly;
+
+        /**
+         * Construct the trie that has a case insensitive search.
+         */
+        public Trie()
+        {
+            m_Root = new Node();
+            m_lowerCaseOnly = false;
+        }
+
+        /**
+         * Construct the trie given the desired case sensitivity with the key.
+         * @param lowerCaseOnly true if the search keys are to be loser case only,
+         * not case insensitive.
+         */
+        public Trie(boolean lowerCaseOnly)
+        {
+            m_Root = new Node();
+            m_lowerCaseOnly = lowerCaseOnly;
+        }
+
+        /**
+         * Put an object into the trie for lookup.
+         *
+         * @param key must be a 7-bit ASCII string
+         * @param value any java object.
+         *
+         * @return The old object that matched key, or null.
+         */
+        public Object put(String key, Object value)
+        {
+
+            final int len = key.length();
+            if (len > m_charBuffer.length)
+            {
+                // make the biggest buffer ever needed in get(String)
+                m_charBuffer = new char[len];
+            }
+
+            Node node = m_Root;
+
+            for (int i = 0; i < len; i++)
+            {
+                Node nextNode =
+                    node.m_nextChar[Character.toLowerCase(key.charAt(i))];
+
+                if (nextNode != null)
+                {
+                    node = nextNode;
+                }
+                else
+                {
+                    for (; i < len; i++)
+                    {
+                        Node newNode = new Node();
+                        if (m_lowerCaseOnly)
+                        {
+                            // put this value into the tree only with a lower case key 
+                            node.m_nextChar[Character.toLowerCase(
+                                key.charAt(i))] =
+                                newNode;
+                        }
+                        else
+                        {
+                            // put this value into the tree with a case insensitive key
+                            node.m_nextChar[Character.toUpperCase(
+                                key.charAt(i))] =
+                                newNode;
+                            node.m_nextChar[Character.toLowerCase(
+                                key.charAt(i))] =
+                                newNode;
+                        }
+                        node = newNode;
+                    }
+                    break;
+                }
+            }
+
+            Object ret = node.m_Value;
+
+            node.m_Value = value;
+
+            return ret;
+        }
+
+        /**
+         * Get an object that matches the key.
+         *
+         * @param key must be a 7-bit ASCII string
+         *
+         * @return The object that matches the key, or null.
+         */
+        public Object get(final String key)
+        {
+
+            final int len = key.length();
+
+            /* If the name is too long, we won't find it, this also keeps us
+             * from overflowing m_charBuffer
+             */
+            if (m_charBuffer.length < len)
+                return null;
+
+            Node node = m_Root;
+            switch (len) // optimize the look up based on the number of chars
+            {
+                // case 0 looks silly, but the generated bytecode runs
+                // faster for lookup of elements of length 2 with this in
+                // and a fair bit faster.  Don't know why.
+                case 0 :
+                    {
+                        return null;
+                    }
+
+                case 1 :
+                    {
+                        final char ch = key.charAt(0);
+                        if (ch < ALPHA_SIZE)
+                        {
+                            node = node.m_nextChar[ch];
+                            if (node != null)
+                                return node.m_Value;
+                        }
+                        return null;
+                    }
+                    //                comment out case 2 because the default is faster            
+                    //                case 2 :
+                    //                    {
+                    //                        final char ch0 = key.charAt(0);
+                    //                        final char ch1 = key.charAt(1);
+                    //                        if (ch0 < ALPHA_SIZE && ch1 < ALPHA_SIZE)
+                    //                        {
+                    //                            node = node.m_nextChar[ch0];
+                    //                            if (node != null)
+                    //                            {
+                    //                        
+                    //                                if (ch1 < ALPHA_SIZE) 
+                    //                                {
+                    //                                    node = node.m_nextChar[ch1];
+                    //                                    if (node != null)
+                    //                                        return node.m_Value;
+                    //                                }
+                    //                            }
+                    //                        }
+                    //                        return null;
+                    //                   }
+                default :
+                    {
+                        for (int i = 0; i < len; i++)
+                        {
+                            // A thread-safe way to loop over the characters
+                            final char ch = key.charAt(i);
+                            if (ALPHA_SIZE <= ch)
+                            {
+                                // the key is not 7-bit ASCII so we won't find it here
+                                return null;
+                            }
+
+                            node = node.m_nextChar[ch];
+                            if (node == null)
+                                return null;
+                        }
+
+                        return node.m_Value;
+                    }
+            }
+        }
+
+        /**
+         * The node representation for the trie.
+         * @xsl.usage internal
+         */
+        private class Node
+        {
+
+            /**
+             * Constructor, creates a Node[ALPHA_SIZE].
+             */
+            Node()
+            {
+                m_nextChar = new Node[ALPHA_SIZE];
+                m_Value = null;
+            }
+
+            /** The next nodes.   */
+            final Node m_nextChar[];
+
+            /** The value.   */
+            Object m_Value;
+        }
+        /**
+         * Construct the trie from another Trie.
+         * Both the existing Trie and this new one share the same table for
+         * lookup, and it is assumed that the table is fully populated and
+         * not changing anymore.
+         * 
+         * @param existingTrie the Trie that this one is a copy of.
+         */
+        public Trie(Trie existingTrie)
+        {
+            // copy some fields from the existing Trie into this one.
+            m_Root = existingTrie.m_Root;
+            m_lowerCaseOnly = existingTrie.m_lowerCaseOnly;
+
+            // get a buffer just big enough to hold the longest key in the table.
+            int max = existingTrie.getLongestKeyLength();
+            m_charBuffer = new char[max];
+        }
+
+        /**
+         * Get an object that matches the key.
+         * This method is faster than get(), but is not thread-safe.
+         *
+         * @param key must be a 7-bit ASCII string
+         *
+         * @return The object that matches the key, or null.
+         */
+        public Object get2(final String key)
+        {
+
+            final int len = key.length();
+
+            /* If the name is too long, we won't find it, this also keeps us
+             * from overflowing m_charBuffer
+             */
+            if (m_charBuffer.length < len)
+                return null;
+
+            Node node = m_Root;
+            switch (len) // optimize the look up based on the number of chars
+            {
+                // case 0 looks silly, but the generated bytecode runs
+                // faster for lookup of elements of length 2 with this in
+                // and a fair bit faster.  Don't know why.
+                case 0 :
+                    {
+                        return null;
+                    }
+
+                case 1 :
+                    {
+                        final char ch = key.charAt(0);
+                        if (ch < ALPHA_SIZE)
+                        {
+                            node = node.m_nextChar[ch];
+                            if (node != null)
+                                return node.m_Value;
+                        }
+                        return null;
+                    }
+                default :
+                    {
+                        /* Copy string into array. This is not thread-safe because
+                         * it modifies the contents of m_charBuffer. If multiple
+                         * threads were to use this Trie they all would be
+                         * using this same array (not good). So this 
+                         * method is not thread-safe, but it is faster because
+                         * converting to a char[] and looping over elements of
+                         * the array is faster than a String's charAt(i).
+                         */
+                        key.getChars(0, len, m_charBuffer, 0);
+
+                        for (int i = 0; i < len; i++)
+                        {
+                            final char ch = m_charBuffer[i];
+                            if (ALPHA_SIZE <= ch)
+                            {
+                                // the key is not 7-bit ASCII so we won't find it here
+                                return null;
+                            }
+
+                            node = node.m_nextChar[ch];
+                            if (node == null)
+                                return null;
+                        }
+
+                        return node.m_Value;
+                    }
+            }
+        }
+
+        /**
+         * Get the length of the longest key used in the table. 
+         */
+        public int getLongestKeyLength()
+        {
+            return m_charBuffer.length;
+        }
     }
 }

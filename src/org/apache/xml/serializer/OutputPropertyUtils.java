@@ -24,9 +24,12 @@ import java.util.Properties;
  * This class contains some static methods that act as helpers when parsing a
  * Java Property object.
  * 
+ * This class is not a public API. It is only public because it is used by Xalan.
+ * 
  * @see java.util.Properties
+ * @xsl.usage internal
  */
-public class OutputPropertyUtils
+public final class OutputPropertyUtils
 {
     /**
       * Searches for the boolean property with the specified key in the property list.

@@ -27,7 +27,11 @@ import org.w3c.dom.Node;
  * specific types in their signature, so that there are no dependancies
  * of the serializer on Xalan.
  * 
+ * This interface is not a public API, it is only public because it is
+ * used by Xalan.
+ * 
  * @see org.apache.xalan.transformer.TransformState
+ * @xsl.usage internal
  */
 public interface TransformStateSetter
 {

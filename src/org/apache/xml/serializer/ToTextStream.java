@@ -20,15 +20,17 @@ package org.apache.xml.serializer;
 
 import java.io.IOException;
 
-import org.apache.xml.res.XMLErrorResources;
-import org.apache.xml.res.XMLMessages;
+import org.apache.xml.serializer.utils.SerializerMessages;
+import org.apache.xml.serializer.utils.Utils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
- * @author Santiago Pericas-Geertsen
+ * This class is not a public API, it is only public because it is used
+ * by Xalan.
+ * @xsl.usage internal
  */
-public class ToTextStream extends ToStream 
+public final class ToTextStream extends ToStream 
 { 
 
        
@@ -347,8 +349,8 @@ void writeNormalizedChars(
                          * so somthing is wrong.
                          */ 
                         String integralValue = Integer.toString(c);
-                        throw new SAXException(XMLMessages.createXMLMessage(
-                            XMLErrorResources.ER_ILLEGAL_CHARACTER,
+                        throw new SAXException(Utils.messages.createMessage(
+                            SerializerMessages.ER_ILLEGAL_CHARACTER,
                             new Object[]{ integralValue, encoding}));
                     }
                     else 
@@ -395,8 +397,8 @@ void writeNormalizedChars(
                      * so somthing is wrong.
                      */ 
                     String integralValue = Integer.toString(c);
-                    throw new SAXException(XMLMessages.createXMLMessage(
-                        XMLErrorResources.ER_ILLEGAL_CHARACTER,
+                    throw new SAXException(Utils.messages.createMessage(
+                        SerializerMessages.ER_ILLEGAL_CHARACTER,
                         new Object[]{ integralValue, encoding}));
                 }
                 else 

@@ -22,7 +22,7 @@ package org.apache.xml.serializer;
  * Constants used in serialization, such as the string "xmlns"
  * @xsl.usage internal
  */
-public interface SerializerConstants
+interface SerializerConstants
 {
 
     /** To insert ]]> in a CDATA section by ending the last CDATA section with

@@ -30,11 +30,10 @@ import java.util.ResourceBundle;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xml.res.XMLErrorResources;
-import org.apache.xml.res.XMLMessages;
-import org.apache.xml.utils.CharKey;
-import org.apache.xml.utils.SystemIDResolver;
-import org.apache.xml.utils.WrappedRuntimeException;
+import org.apache.xml.serializer.utils.SerializerMessages;
+import org.apache.xml.serializer.utils.SystemIDResolver;
+import org.apache.xml.serializer.utils.Utils;
+import org.apache.xml.serializer.utils.WrappedRuntimeException;
 
 /**
  * This class provides services that tell if a character should have
@@ -46,7 +45,7 @@ import org.apache.xml.utils.WrappedRuntimeException;
  * 
  * @xsl.usage internal
  */
-class CharInfo
+final class CharInfo
 {
     /** Given a character, lookup a String to output (e.g. a decorated entity reference). */
     private Hashtable m_charToString = new Hashtable();
@@ -214,8 +213,8 @@ class CharInfo
 
                 if (is == null) {
                     throw new RuntimeException(
-                        XMLMessages.createXMLMessage(
-                            XMLErrorResources.ER_RESOURCE_COULD_NOT_FIND,
+                        Utils.messages.createMessage(
+                            SerializerMessages.ER_RESOURCE_COULD_NOT_FIND,
                             new Object[] {entitiesResource, entitiesResource}));
                 }
 
@@ -285,8 +284,8 @@ class CharInfo
                 set(S_CARRIAGERETURN);
             } catch (Exception e) {
                 throw new RuntimeException(
-                    XMLMessages.createXMLMessage(
-                        XMLErrorResources.ER_RESOURCE_COULD_NOT_LOAD,
+                    Utils.messages.createMessage(
+                        SerializerMessages.ER_RESOURCE_COULD_NOT_LOAD,
                         new Object[] { entitiesResource,
                                        e.toString(),
                                        entitiesResource,
@@ -385,7 +384,7 @@ class CharInfo
      * @return The String that the character is mapped to, or null if not found.
      * @xsl.usage internal
      */
-    synchronized public String getOutputStringForChar(char value)
+    synchronized String getOutputStringForChar(char value)
     {
         // CharKey m_charKey = new CharKey(); //Alternative to synchronized
         m_charKey.setChar(value);
@@ -402,7 +401,7 @@ class CharInfo
      * or entity references.
      * @xsl.usage internal
      */
-    public final boolean isSpecialAttrChar(int value)
+    final boolean isSpecialAttrChar(int value)
     {
         // for performance try the values in the boolean array first,
         // this is faster access than the BitSet for common ASCII values
@@ -425,7 +424,7 @@ class CharInfo
      * or entity references.
      * @xsl.usage internal
      */
-    public final boolean isSpecialTextChar(int value)
+    final boolean isSpecialTextChar(int value)
     {
         // for performance try the values in the boolean array first,
         // this is faster access than the BitSet for common ASCII values
@@ -445,7 +444,7 @@ class CharInfo
      * @return true if the character can go to the writer as-is
      * @xsl.usage internal
      */
-    public final boolean isTextASCIIClean(int value)
+    final boolean isTextASCIIClean(int value)
     {
         return isCleanTextASCII[value];
     }
@@ -478,7 +477,7 @@ class CharInfo
      * 
      * @xsl.usage internal
      */
-    public static CharInfo getCharInfo(String entitiesFileName, String method)
+    static CharInfo getCharInfo(String entitiesFileName, String method)
     {
         CharInfo charInfo = (CharInfo) m_getCharInfoCache.get(entitiesFileName);
         if (charInfo != null) {
@@ -647,13 +646,81 @@ class CharInfo
         }
     }
     
-    void defineChar2StringMapping(String outputString, char inputChar) 
+    private void defineChar2StringMapping(String outputString, char inputChar) 
     {
         CharKey character = new CharKey(inputChar);
         m_charToString.put(character, outputString);
         set(inputChar);        
     }
 
+    /**
+     * Simple class for fast lookup of char values, when used with
+     * hashtables.  You can set the char, then use it as a key.
+     * 
+     * This class is a copy of the one in org.apache.xml.utils. 
+     * It exists to cut the serializers dependancy on that package.
+     *  
+     * @xsl.usage internal
+     */
+    private static class CharKey extends Object
+    {
+
+      /** String value          */
+      private char m_char;
+
+      /**
+       * Constructor CharKey
+       *
+       * @param key char value of this object.
+       */
+      public CharKey(char key)
+      {
+        m_char = key;
+      }
+  
+      /**
+       * Default constructor for a CharKey.
+       *
+       * @param key char value of this object.
+       */
+      public CharKey()
+      {
+      }
+  
+      /**
+       * Get the hash value of the character.  
+       *
+       * @return hash value of the character.
+       */
+      public final void setChar(char c)
+      {
+        m_char = c;
+      }
+
+
+
+      /**
+       * Get the hash value of the character.  
+       *
+       * @return hash value of the character.
+       */
+      public final int hashCode()
+      {
+        return (int)m_char;
+      }
+
+      /**
+       * Override of equals() for this object 
+       *
+       * @param obj to compare to
+       *
+       * @return True if this object equals this string value 
+       */
+      public final boolean equals(Object obj)
+      {
+        return ((CharKey)obj).m_char == m_char;
+      }
+    }
    
 
 }

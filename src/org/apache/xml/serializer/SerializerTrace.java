@@ -23,6 +23,8 @@ import org.xml.sax.Attributes;
 /**
  * This interface defines a set of integer constants that identify trace event
  * types.
+ * 
+ * @xsl.usage internal
  */
 
 public interface SerializerTrace {

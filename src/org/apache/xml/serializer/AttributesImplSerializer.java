@@ -31,8 +31,10 @@ import org.xml.sax.helpers.AttributesImpl;
  * serializer.
  * 
  * @see org.xml.sax.Attributes
+ * 
+ * @xsl.usage internal
  */
-public class AttributesImplSerializer extends AttributesImpl
+final class AttributesImplSerializer extends AttributesImpl
 {
     /**
      * Hash table of qName/index values to quickly lookup the index
@@ -45,7 +47,7 @@ public class AttributesImplSerializer extends AttributesImpl
      * This is the number of attributes before switching to the hash table,
      * and can be tuned, but 12 seems good for now - bjm
      */
-    public static final int MAX = 12;
+    private static final int MAX = 12;
     
     /**
      * One less than the number of attributes before switching to

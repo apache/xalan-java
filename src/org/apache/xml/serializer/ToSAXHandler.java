@@ -31,9 +31,11 @@ import org.xml.sax.ext.LexicalHandler;
  * This class is used to provide a base behavior to be inherited
  * by other To...SAXHandler serializers.
  * 
+ * This class is not a public API, it is only public because it is used by Xalan.
+ * 
  * @xsl.usage internal
  */
-abstract public class ToSAXHandler extends SerializerBase 
+public abstract class ToSAXHandler extends SerializerBase 
 {
     public ToSAXHandler()
     {

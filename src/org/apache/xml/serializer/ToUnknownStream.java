@@ -45,8 +45,11 @@ import org.xml.sax.SAXException;
  * simply passed directly to the wrapped handler.
  *
  * The user of this class doesn't know if the output is ultimatley XML or HTML.
+ * 
+ * This class is not a public API, it is public because it is used within Xalan.
+ * @xsl.usage internal
  */
-public class ToUnknownStream extends SerializerBase
+public final class ToUnknownStream extends SerializerBase
 {
 
     /**

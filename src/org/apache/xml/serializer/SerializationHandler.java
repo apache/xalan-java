@@ -32,6 +32,10 @@ import org.xml.sax.ext.DeclHandler;
  * This interface is the one that a serializer implements. It is a group of
  * other interfaces, such as ExtendedContentHandler, ExtendedLexicalHandler etc.
  * In addition there are other methods, such as reset().
+ * 
+ * This class is public only because it isused by Xalan, it is not a public API.
+ * 
+ * @xsl.usage internal
  */
 public interface SerializationHandler
     extends

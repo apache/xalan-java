@@ -31,15 +31,14 @@ import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 
 /**
- * @author minchau
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
- * @author Santiago Pericas-Geertsen
+ * This class receives notification of SAX-like events, and with gathered
+ * information over these calls it will convert them to the equivalent SAX methods
+ * on a handler, the ultimate xsl:output method is known to be "text".
+ * 
+ * This class is not a public API, it is only public because it is used by Xalan.
+ * @xsl.usage internal
  */
-public class ToTextSAXHandler extends ToSAXHandler 
+public final class ToTextSAXHandler extends ToSAXHandler 
 {
     /**
      * From XSLTC
