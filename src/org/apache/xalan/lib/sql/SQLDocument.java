@@ -386,7 +386,11 @@ public class SQLDocument extends DTMDocument
       // fetched on demand.
       // We need to do this here so at least on row is set up
       // to measure when we are actually reading rows.
-      addRowToDTMFromResultSet();
+
+      // We won't grab the first record in case the skip function
+      // is applied prior to looking at the first record.
+      // JCG Changed 9/15/04
+      // addRowToDTMFromResultSet();
     }
     catch(SQLException e)
     {
@@ -404,11 +408,11 @@ public class SQLDocument extends DTMDocument
     if (! m_QueryParser.hasParameters() )
     {
       m_Statement = conn.createStatement();
-      if (! m_Statement.execute(m_QueryParser.getSQLQuery()))
-      {
-        throw new SQLException("Error in Query");
-      }
+      m_ResultSet = m_Statement.executeQuery(m_QueryParser.getSQLQuery());
+
+
     }
+
     else if (m_QueryParser.isCallable())
     {
       CallableStatement cstmt =
@@ -417,6 +421,8 @@ public class SQLDocument extends DTMDocument
       m_QueryParser.populateStatement(cstmt, m_ExpressionContext);
       m_Statement = cstmt;
       if (! cstmt.execute()) throw new SQLException("Error in Callable Statement");
+
+      m_ResultSet = m_Statement.getResultSet();
     }
     else
     {
@@ -424,11 +430,43 @@ public class SQLDocument extends DTMDocument
         conn.prepareStatement(m_QueryParser.getSQLQuery());
       m_QueryParser.populateStatement(stmt, m_ExpressionContext);
       m_Statement = stmt;
-      if (! stmt.execute()) throw new SQLException("Error in Prepared Statement");
+      m_ResultSet = stmt.executeQuery();
     }
 
-    m_ResultSet = m_Statement.getResultSet();
   }
+
+  /**
+   * Push the record set forward value rows. Used to help in 
+   * SQL pagination.
+   * 
+   * @param value
+   */
+  public void skip( int value )
+  {
+    try
+    {
+      if (m_ResultSet != null) m_ResultSet.relative(value);
+    }
+    catch(Exception origEx)
+    {
+      // For now let's assume that the relative method is not supported.
+      // So let's do it manually.
+      try
+      {
+        for (int x=0; x<value; x++)
+        {
+          if (! m_ResultSet.next()) break;
+        }
+      }
+      catch(Exception e)
+      {
+        // If we still fail, add in both exceptions
+        m_XConnection.setError(origEx, this, checkWarnings());
+        m_XConnection.setError(e, this, checkWarnings());
+      }
+    }
+  }
+
 
   /**
    * Extract the Meta Data and build the Column Attribute List.
@@ -1004,6 +1042,13 @@ public class SQLDocument extends DTMDocument
   if ( m_ResultSet != null )
   {
       int id = _exptype(identity);
+      
+      // We need to prime the pump since we don't do it in execute any more.
+      if (m_FirstRowIdx == DTM.NULL)
+      {
+        addRowToDTMFromResultSet();
+      }
+      
       if (
         ( id == m_Row_TypeID) &&
         (identity >= m_LastRowIdx) )
