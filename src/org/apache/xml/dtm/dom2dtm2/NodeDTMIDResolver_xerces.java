@@ -113,6 +113,72 @@ public class NodeDTMIDResolver_xerces implements NodeDTMIDResolver
 	 * */
 	public int findID(Node n)
 	{
+		if(true) /*****************/
+		{
+	  	// %REVIEW% Should we have stored which doc we're applying to,
+  		// and enforce membership? Probably good idea since we're
+	  	// relying on implementation characteristics.
+	  	
+		if(n==null) return DTM.NULL;
+
+		// If it's our built-in, we've got a custom method
+		if(n instanceof DOM2DTMdefaultNamespaceDeclarationNode)
+		{
+		  return
+			((DOM2DTMdefaultNamespaceDeclarationNode)n).getIDOfNode();
+		}
+
+
+		int ntype=n.getNodeType();
+		Integer id;
+		
+
+		NodeImpl n3=(NodeImpl)n; 
+		id=(Integer)n3.getUserData(KEY_ID);
+		
+		if(id==null)
+		{
+		  switch(ntype)
+		  {
+		  case Node.TEXT_NODE:
+		  case Node.CDATA_SECTION_NODE:
+		  case Node.ENTITY_REFERENCE_NODE:
+		    // Special handling for text nodes: Map them
+		    // as the first node in their Logically
+		    // Consecutive Text block.
+		    //
+		    // %REVEIW% Should this lookup be recursive, so IDs are
+		    // set on all the intermediates as a side effect?
+		    //
+		    // Get the "containing" node; it may be same as n.
+		    NodeImpl root=(NodeImpl)findContainingXPathNode(n);
+		    id=(Integer)root.getUserData(KEY_ID); 
+		    if(id==null)
+		    {
+		      // Assign ID. Note sequence; first is added at 0.
+		      id=new Integer(m_map.size());
+		      root.setUserData(KEY_ID,id,null);
+		      m_map.addElement(root);
+		    }
+		    if(root!=n3)
+			    n3.setUserData(KEY_ID,id,null);
+		    break;
+		    
+		  default:
+		      // Assign ID. Note sequence; first is added at 0.
+		      id=new Integer(m_map.size());
+		      n3.setUserData(KEY_ID,id,null);
+		      m_map.addElement(n);
+		    break;
+
+		  }// end switch
+		}// end if ID was null
+		
+		// If this throws NPE, something above is Broken
+		return id.intValue();		
+			
+		} /***********************/
+		
 	  	// %REVIEW% Should we have stored which doc we're applying to,
   		// and enforce membership? Probably good idea since we're
 	  	// relying on implementation characteristics.
