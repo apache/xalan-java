@@ -1928,18 +1928,6 @@ public final class DOMImpl implements DOM, Externalizable {
     }
 
     /**
-     * Don't know if this is ever used (shouldn't be with the explicit
-     * external/internal type mapping - this is really ugly)
-     */
-    /*
-    public String getAttributeValue(final int eType,
-				    final int node,
-				    final short[] reverseMapping) {
-	return getAttributeValue(reverseMapping[eType], node);
-    }
-    */
-
-    /**
      * Returns the value of a given attribute type of a given element
      */
     public String getAttributeValue(final int type, final int element) {
@@ -2290,9 +2278,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	final int start = _offsetOrChild[node];
 	final int length = _lengthOrAttr[node];
 	int i = start + 1;
-	while (text[i] != ' ') {
-	    ++i;
-	}
+	while (text[i] != ' ') ++i;
+
 	handler.processingInstruction(new String(text, start, i - start),
 				      new String(text, i + 1, length - i));
     }
@@ -2460,8 +2447,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	private int     _idx = 1;
 	private boolean _preserve = false;
 
-	private static final String XML_STRING = "xml";
-	private static final String XMLNS_STRING = "xmlns";
+	private static final String XML_STRING = "xml:";
 	private static final String XMLSPACE_STRING = "xml:space";
 	private static final String PRESERVE_STRING = "preserve";
 
@@ -2486,81 +2472,6 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
 
 	/**
-	 * Generate the internal type for an element's expanded QName
-	 */
-	private short internElement(String uri, String localname)
-	    throws SAXException {
-	    
-	    final String name;
-	    if (uri != EMPTYSTRING)
-		name = uri + ':' + localname;
-	    else
-		name = localname;
-
-	    // Stuff the QName into the names vector & hashtable
-	    Integer obj = (Integer)_names.get(name);
-	    if (obj == null) {
-		_names.put(name, obj = new Integer(_nextNameCode++));
-	    }
-	    return (short)obj.intValue();
-	}
-
-	/**
-	 * Generate the internal type for an element's expanded QName
-	 */
-	private short internElement(String name) throws SAXException {
-	    // Expand prefix:localname to full QName
-	    int col = name.lastIndexOf(':');
-	    if (col > -1) {
-		final String uri = getNamespaceURI(name.substring(0, col));
-		name = uri + name.substring(col);
-	    }
-	    // Append default namespace with the name has no prefix
-	    else {
-		final String uri = getNamespaceURI(EMPTYSTRING);
-		if (!uri.equals(EMPTYSTRING)) name = uri + ':' + name;
-	    }
-
-	    // Stuff the QName into the names vector & hashtable
-	    Integer obj = (Integer)_names.get(name);
-	    if (obj == null) {
-		_names.put(name, obj = new Integer(_nextNameCode++));
-	    }
-	    return (short)obj.intValue();
-	}
-
-	/**
-	 * Generate the internal type for an attribute's expanded QName
-	 */
-	private short internAttribute(String name, boolean xmlAttr)
-	    throws SAXException {
-
-	    // Leave XML attributes as the are
-	    if (xmlAttr) {
-		name = name.substring(0,4)+'@'+name.substring(4);
-	    }
-	    else {
-		int col;
-		// Expand prefix:localname to full QName
-		if ((col = name.lastIndexOf(':')) != -1)
-		    name = getNamespaceURI(name.substring(0,col))+
-			':'+'@'+name.substring(col+1);
-		// Attributes with no prefix belong in the "" namespace,
-		// and not in the namespace that the "" prefix points to,
-		// so the attribute name remains the way it is.
-		else
-		    name = '@'+name;
-	    }
-
-	    // Stuff the QName into the names vector & hashtable
-	    Integer obj = (Integer)_names.get(name);
-	    if (obj == null) {
-		_names.put(name, obj = new Integer(_nextNameCode++));
-	    }
-	    return (short)obj.intValue();
-	}
-	
-	/**
 	 * Call this when an xml:space attribute is encountered to
 	 * define the whitespace strip/preserve settings.
 	 */
@@ -2582,7 +2493,7 @@ public final class DOMImpl implements DOM, Externalizable {
 		_preserve = !_preserve;
 	    }
 	}
-	
+
 	/**
 	 * Returns the next available node. Increases the various arrays
 	 * that constitute the node if necessary.
@@ -2633,30 +2544,47 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
 
 	/**
-	 * Creates a text-node and checks if it is a whitespace node.
+	 * Generate the internal type for an element's expanded QName
 	 */
-	private int maybeCreateTextNode(boolean isWhitespace) {
-	    if (_currentOffset > _baseOffset) {
-		final int node = nextNode();
-		final int limit = _currentOffset;
-		// Tag as whitespace node if the parser tells us that it is...
-		if (isWhitespace) {
-		    _whitespace.setBit(node);
-		}
-		// ...otherwise we check if this is a whitespace node, unless
-		// the node is protected by an xml:space="preserve" attribute.
-		else if (!_preserve) {
-		    int i = _baseOffset;
-		    while (isWhitespaceChar(_text[i++]) && i < limit) ;
-		    if ((i == limit) && isWhitespaceChar(_text[i-1]))
-			_whitespace.setBit(node);
-		}
-		_type[node] = TEXT;
-		linkChildren(node);
-		storeTextRef(node);
-		return node;
+	private short makeElementNode(String uri, String localname)
+	    throws SAXException {
+	    
+	    final String name;
+	    if (uri != EMPTYSTRING)
+		name = uri + ':' + localname;
+	    else
+		name = localname;
+
+	    // Stuff the QName into the names vector & hashtable
+	    Integer obj = (Integer)_names.get(name);
+	    if (obj == null) {
+		_names.put(name, obj = new Integer(_nextNameCode++));
 	    }
-	    return -1;
+	    return (short)obj.intValue();
+	}
+
+	/**
+	 * Generate the internal type for an element's expanded QName
+	 */
+	private short makeElementNode(String name) throws SAXException {
+	    // Expand prefix:localname to full QName
+	    int col = name.lastIndexOf(':');
+	    if (col > -1) {
+		final String uri = getNamespaceURI(name.substring(0, col));
+		name = uri + name.substring(col);
+	    }
+	    // Append default namespace with the name has no prefix
+	    else {
+		final String uri = getNamespaceURI(EMPTYSTRING);
+		if (!uri.equals(EMPTYSTRING)) name = uri + ':' + name;
+	    }
+
+	    // Stuff the QName into the names vector & hashtable
+	    Integer obj = (Integer)_names.get(name);
+	    if (obj == null) {
+		_names.put(name, obj = new Integer(_nextNameCode++));
+	    }
+	    return (short)obj.intValue();
 	}
 
 	/*
@@ -2698,6 +2626,34 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
 	
 	/**
+	 * Creates a text-node and checks if it is a whitespace node.
+	 */
+	private int makeTextNode(boolean isWhitespace) {
+	    if (_currentOffset > _baseOffset) {
+		final int node = nextNode();
+		final int limit = _currentOffset;
+		// Tag as whitespace node if the parser tells us that it is...
+		if (isWhitespace) {
+		    _whitespace.setBit(node);
+		}
+		// ...otherwise we check if this is a whitespace node, unless
+		// the node is protected by an xml:space="preserve" attribute.
+		else if (!_preserve) {
+		    int i = _baseOffset;
+		    while (isWhitespaceChar(_text[i++]) && i < limit) ;
+		    if ((i == limit) && isWhitespaceChar(_text[i-1])) 
+			_whitespace.setBit(node);
+		}
+
+		_type[node] = TEXT;
+		linkChildren(node);
+		storeTextRef(node);
+		return node;
+	    }
+	    return -1;
+	}
+
+	/**
 	 * Links an attribute value (an occurance of a sequence of characters
 	 * in the _text[] array) to a specific attribute node index.
 	 */
@@ -2712,22 +2668,39 @@ public final class DOMImpl implements DOM, Externalizable {
 	 */
 	private int makeAttributeNode(int parent, Attributes attList, int i)
 	    throws SAXException {
-	    final String name = attList.getQName(i);
-	    boolean xmlAttr = false;
 
-	    // Trap namespace declarations and xml:space attributes
-	    if (name.startsWith(XML_STRING)) {
-		if (name.startsWith(XMLNS_STRING))
-		    return -1;
-		else if (name.startsWith(XMLSPACE_STRING))
+    	    final int node = nextAttributeNode();
+
+	    final String qname = attList.getQName(i);
+	    final String uri = attList.getURI(i);
+	    final String localname = attList.getLocalName(i);
+	    final String value = attList.getValue(i);
+
+	    String name = null;
+
+	    // Create the internal attribute node name (uri+@+localname)
+	    if (qname.startsWith(XML_STRING)) {
+		if (qname.startsWith(XMLSPACE_STRING))
 		    xmlSpaceDefine(attList.getValue(i), parent);
-		if (name.charAt(3) == ':')
-		    xmlAttr = true;
+		name = "xml:@"+localname;
+	    }
+	    else {
+		if (uri.equals(EMPTYSTRING))
+		    name = '@'+localname;
+		else
+		    name = uri+":@"+localname;
 	    }
 
-	    // fall through to handle a regular attribute
-    	    final int node = nextAttributeNode();
-	    _type2[node] = internAttribute(name, xmlAttr);
+	    // Get the index of the attribute node name (create new if non-ex).
+	    Integer obj = (Integer)_names.get(name);
+	    if (obj == null) {
+		_type2[node] = (short)_nextNameCode;
+		_names.put(name, obj = new Integer(_nextNameCode++));
+	    }
+	    else {
+		_type2[node] = (short)obj.intValue();
+	    }
+
 	    _parent2[node] = parent;
 	    characters(attList.getValue(i));
 	    storeAttrValRef(node);
@@ -2747,7 +2720,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    System.arraycopy(ch, start, _text, _currentOffset, length);
 	    _currentOffset += length;
-	    maybeCreateTextNode(false);
+	    makeTextNode(false);
 	}
 
 	/**
@@ -2760,7 +2733,6 @@ public final class DOMImpl implements DOM, Externalizable {
 	    _parentStack[0] = ROOTNODE;	// root
 	    _currentNode    = ROOTNODE + 1;
 	    _currentAttributeNode = 0;
-	    //addNamespace(EMPTYSTRING,EMPTYSTRING); // default namespace
 	    startPrefixMapping(EMPTYSTRING, EMPTYSTRING);
 	}
 
@@ -2769,7 +2741,6 @@ public final class DOMImpl implements DOM, Externalizable {
 	 */
 	public void endDocument() {
 
-	    maybeCreateTextNode(false);
 	    _shortTexts = null;
 	    final int namesSize = _nextNameCode - NTYPES;
 
@@ -2800,6 +2771,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    for (int i = 0; i<namesSize; i++) {
 		final String qname = _namesArray[i];
 		final int col = _namesArray[i].lastIndexOf(':');
+		// Elements/attributes with the xml prefix are not in a NS
 		if ((!qname.startsWith(XML_STRING)) && (col > -1)) {
 		    final String uri = _namesArray[i].substring(0, col);
 		    final Integer idx = (Integer)_nsIndex.get(uri);
@@ -2816,37 +2788,33 @@ public final class DOMImpl implements DOM, Externalizable {
 				 String qname, Attributes attributes)
 	    throws SAXException {
 
-	    maybeCreateTextNode(false);
+	    // Get node index and setup parent/child references
 	    final int node = nextNode();
 	    linkChildren(node);
 	    _parentStack[++_sp] = node;
 
-	    // Process attribute list
-	    final int length = attributes.getLength();
-	    if (length > 0) {
-		int i = 1, attrNode = makeAttributeNode(node, attributes, 0);
-		while (attrNode == -1 && i < length) {
-		    attrNode = makeAttributeNode(node, attributes, i++);
-		}
-		if (attrNode != -1) {
-		    _lengthOrAttr[node] = attrNode; // first attr
-		    while (i < length) {
-			final int attrNode2 =
-			    makeAttributeNode(node, attributes, i++);
-			if (attrNode2 != -1) {
-			    _nextSibling2[attrNode] = attrNode2;
-			    attrNode = attrNode2;
-			}
-		    }
-		}
-	    }
+	    int count = attributes.getLength();
 
-	    // Assign an internal type to this element (may exist)
-	    if (uri != null && localName.length() > 0) { 
-		_type[node] = internElement(uri, localName);
-	    } else {
-		_type[node] = internElement(qname);
+	    // Process attribute list in reverse order and create attr nodes
+	    if (count > 0) {
+		int attr = _currentAttributeNode + 1;
+		_lengthOrAttr[node] = attr;
+		while (count > 0) {
+		    attr = makeAttributeNode(node, attributes, (--count));
+		    _nextSibling2[attr] = attr + 1;
+		}
+		_nextSibling2[attr] = DOM.NULL;
 	    }
+	    // The element has no attributes
+	    else {
+		_lengthOrAttr[node] = DOM.NULL;
+	    }	    
+	    
+	    // Assign an internal type to this element (may exist)
+	    if ((uri != null) && (localName.length() > 0))
+		_type[node] = makeElementNode(uri, localName);
+	    else
+		_type[node] = makeElementNode(qname);
 	}
 	
 	/**
@@ -2854,11 +2822,8 @@ public final class DOMImpl implements DOM, Externalizable {
 	 */
 	public void endElement(String namespaceURI, String localName,
 			       String qname) {
-	    maybeCreateTextNode(false);
 	    // Revert to strip/preserve-space setting from before this element
 	    xmlSpaceRevert(_parentStack[_sp]);
-	    // Pop all namespace declarations found in this element
-	    //_nsDeclarations.pop(_parentStack[_sp]);
 	    _previousSiblingStack[_sp--] = 0;
 	}
 
@@ -2867,11 +2832,14 @@ public final class DOMImpl implements DOM, Externalizable {
 	 */
 	public void processingInstruction(String target, String data)
 	    throws SAXException {
-	    maybeCreateTextNode(false);
 	    final int node = nextNode();
 	    _type[node] = PROCESSING_INSTRUCTION;
 	    linkChildren(node);
-	    characters(target + ' ' + data);
+	    // This is really stupid - do NOT create String object here!!!
+	    //characters(target + ' ' + data);
+	    characters(target);
+	    characters(" ");
+	    characters(data);
 	    storeTextRef(node);
 	}
 
@@ -2885,7 +2853,7 @@ public final class DOMImpl implements DOM, Externalizable {
 	    }
 	    System.arraycopy(ch, start, _text, _currentOffset, length);
 	    _currentOffset += length;
-	    maybeCreateTextNode(true);
+	    makeTextNode(true);
 	}
 
 	/**
@@ -2944,40 +2912,44 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
 	
 	private void resizeArrays(final int newSize, final int length) {
-	    final short[] newType = new short[newSize];
-	    System.arraycopy(_type, 0, newType, 0, length);
-	    _type = newType;
-	    final int[] newParent = new int[newSize];
-	    System.arraycopy(_parent, 0, newParent, 0, length);
-	    _parent = newParent;
-	    final int[] newNextSibling = new int[newSize];
-	    System.arraycopy(_nextSibling, 0, newNextSibling, 0, length);
-	    _nextSibling = newNextSibling;
-	    final int[] newOffsetOrChild = new int[newSize];
-	    System.arraycopy(_offsetOrChild, 0, newOffsetOrChild, 0, length);
-	    _offsetOrChild = newOffsetOrChild;
-	    final int[] newLengthOrAttr = new int[newSize];
-	    System.arraycopy(_lengthOrAttr, 0, newLengthOrAttr, 0, length);
-	    _lengthOrAttr = newLengthOrAttr;
-	    _whitespace.resize(newSize);
+	    if (newSize > length) {
+		final short[] newType = new short[newSize];
+		System.arraycopy(_type, 0, newType, 0, length);
+		_type = newType;
+		final int[] newParent = new int[newSize];
+		System.arraycopy(_parent, 0, newParent, 0, length);
+		_parent = newParent;
+		final int[] newNextSibling = new int[newSize];
+		System.arraycopy(_nextSibling, 0, newNextSibling, 0, length);
+		_nextSibling = newNextSibling;
+		final int[] newOffsetOrChild = new int[newSize];
+		System.arraycopy(_offsetOrChild, 0, newOffsetOrChild, 0,length);
+		_offsetOrChild = newOffsetOrChild;
+		final int[] newLengthOrAttr = new int[newSize];
+		System.arraycopy(_lengthOrAttr, 0, newLengthOrAttr, 0, length);
+		_lengthOrAttr = newLengthOrAttr;
+		_whitespace.resize(newSize);
+	    }
 	}
 	
 	private void resizeArrays2(final int newSize, final int length) {
-	    final short[] newType = new short[newSize];
-	    System.arraycopy(_type2, 0, newType, 0, length);
-	    _type2 = newType;
-	    final int[] newParent = new int[newSize];
-	    System.arraycopy(_parent2, 0, newParent, 0, length);
-	    _parent2 = newParent;
-	    final int[] newNextSibling = new int[newSize];
-	    System.arraycopy(_nextSibling2, 0, newNextSibling, 0, length);
-	    _nextSibling2 = newNextSibling;
-	    final int[] newOffset = new int[newSize];
-	    System.arraycopy(_offset, 0, newOffset, 0, length);
-	    _offset = newOffset;
-	    final int[] newLength = new int[newSize];
-	    System.arraycopy(_length, 0, newLength, 0, length);
-	    _length = newLength;
+	    if (newSize > length) {
+		final short[] newType = new short[newSize];
+		System.arraycopy(_type2, 0, newType, 0, length);
+		_type2 = newType;
+		final int[] newParent = new int[newSize];
+		System.arraycopy(_parent2, 0, newParent, 0, length);
+		_parent2 = newParent;
+		final int[] newNextSibling = new int[newSize];
+		System.arraycopy(_nextSibling2, 0, newNextSibling, 0, length);
+		_nextSibling2 = newNextSibling;
+		final int[] newOffset = new int[newSize];
+		System.arraycopy(_offset, 0, newOffset, 0, length);
+		_offset = newOffset;
+		final int[] newLength = new int[newSize];
+		System.arraycopy(_length, 0, newLength, 0, length);
+		_length = newLength;
+	    }
 	}
 	
 	private void shiftAttributes(final int shift) {
