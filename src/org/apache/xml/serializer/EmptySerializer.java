@@ -717,4 +717,12 @@ public class EmptySerializer implements SerializationHandler
     {
         aMethodIsCalled();        
     }
+
+    /**
+     * @see org.apache.xml.serializer.ExtendedContentHandler#addAttribute(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    public void addAttribute(String uri, String localName, String rawName, String type, String value) throws SAXException 
+    {
+        couldThrowSAXException();        
+    }
 }

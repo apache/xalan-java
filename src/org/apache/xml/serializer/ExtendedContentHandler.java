@@ -248,4 +248,22 @@ abstract interface ExtendedContentHandler extends org.xml.sax.ContentHandler
      * @param uri the uri that the prefix of the qName is mapped to.
      */    
     public void addXSLAttribute(String qName, final String value, final String uri);
+    
+    /**
+     * Add at attribute to the current element, not from an xsl:attribute
+     * element.
+     * @param uri the namespace URI of the attribute name
+     * @param localName the local name of the attribute (without prefix)
+     * @param rawName the qualified name of the attribute
+     * @param type the attribute type typically character data (CDATA)
+     * @param value the value of the attribute
+     * @throws SAXException
+     */
+    public void addAttribute(
+        String uri,
+        String localName,
+        String rawName,
+        String type,
+        String value)
+        throws SAXException;
 }

@@ -1319,5 +1319,18 @@ public abstract class SerializerBase
         return (getEncoding() == null);
         
     }
+    
+    /**
+     * This method adds an attribute the the current element,
+     * but should not be used for an xsl:attribute child.
+     * @see org.apache.xml.serializer.ExtendedContentHandler#addAttribute(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+     */
+    public void addAttribute(String uri, String localName, String rawName, String type, String value) throws SAXException 
+    {
+        if (m_elemContext.m_startTagOpen)
+        {
+            addAttributeAlways(uri, localName, rawName, type, value, false);
+        }
+    }
 
 }
