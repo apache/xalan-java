@@ -952,7 +952,19 @@ public abstract class BaseMarkupSerializer
     // Generic node serializing methods methods //
     //------------------------------------------//
 
-
+    /**
+     * Serialize a node from the node-set value returned by an XPath expression.
+     * @param node The node to serialize
+     */
+	public void serializeXPathReturnNode(Node node)
+		throws IOException
+	{
+		prepare();
+		serializeNode(node);
+		_printer.breakLine();
+		_printer.flush();
+	}
+	
     /**
      * Serialize the DOM node. This method is shared across XML, HTML and XHTML
      * serializers and the differences are masked out in a separate {@link
@@ -969,7 +981,6 @@ public abstract class BaseMarkupSerializer
         switch ( node.getNodeType() ) {
         case Node.TEXT_NODE : {
             String text;
-
             text = node.getNodeValue();
             if ( text != null )
                 characters( node.getNodeValue() );
@@ -1089,7 +1100,10 @@ public abstract class BaseMarkupSerializer
             break;
         }
 
-        default:
+        default: // added dml
+			String text = node.getNodeValue();
+            if ( text != null )
+                characters(node.getNodeValue());
             break;
         }
     }
