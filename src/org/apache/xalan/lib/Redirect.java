@@ -59,17 +59,15 @@ package org.apache.xalan.lib;
 import java.util.*;
 import java.io.*;
 import java.net.URL;
-import org.w3c.dom.*;
 import org.xml.sax.ContentHandler;
 import org.apache.serialize.OutputFormat;
 import org.apache.xalan.extensions.XSLProcessorContext;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.ElemExtensionCall;
-import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.XPathAPI;
+import org.apache.xpath.XPath;
 
 /**
  * Implements three extension elements to allow an XSLT transformation to
@@ -95,7 +93,7 @@ import org.apache.xpath.XPathAPI;
  * &lt;?xml version="1.0"?>
  * &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/XSL/Transform/1.0"
  *                 xmlns:lxslt="http://xml.apache.org/xslt"
- *                 xmlns:redirect="org.apache.xalan.xslt.extensions.Redirect"
+ *                 xmlns:redirect="org.apache.xalan.lib.Redirect"
  *                 extension-element-prefixes="redirect">
  *
  *   &lt;xsl:template match="/">
@@ -151,7 +149,7 @@ public class Redirect
   /**
    * Open the given file and put it in the XML, HTML, or Text formatter listener's table.
    */
-  public void open(XSLProcessorContext context, Element elem)
+  public void open(XSLProcessorContext context, ElemExtensionCall elem)
     throws java.net.MalformedURLException,
            java.io.FileNotFoundException,
            java.io.IOException,
@@ -162,12 +160,12 @@ public class Redirect
     if(null == flistener)
     {
       String mkdirsExpr 
-        = ((ElemExtensionCall)elem).getAttribute ("mkdirs", context.getContextNode(), 
+        = elem.getAttribute ("mkdirs", context.getContextNode(), 
                                                   context.getTransformer());
       boolean mkdirs = (mkdirsExpr != null)
                        ? (mkdirsExpr.equals("true") || mkdirsExpr.equals("yes")) : true;
 	  // ContentHandler fl = 
-	  makeFormatterListener(context, (ElemTemplateElement)elem, fileName, true, mkdirs);
+	  makeFormatterListener(context, elem, fileName, true, mkdirs);
 	  // fl.startDocument();
     }
   }
@@ -176,7 +174,7 @@ public class Redirect
    * Write the evalutation of the element children to the given file. Then close the file
    * unless it was opened with the open extension element and is in the formatter listener's table.
    */
-  public void write(XSLProcessorContext context, Element elem)
+  public void write(XSLProcessorContext context, ElemExtensionCall elem)
     throws java.net.MalformedURLException,
            java.io.FileNotFoundException,
            java.io.IOException,
@@ -194,7 +192,7 @@ public class Redirect
                                                   context.getTransformer());
       boolean mkdirs = (mkdirsExpr != null)
                        ? (mkdirsExpr.equals("true") || mkdirsExpr.equals("yes")) : true;
-      formatter = makeFormatterListener(context, (ElemTemplateElement)elem, fileName, true, mkdirs);
+      formatter = makeFormatterListener(context, elem, fileName, true, mkdirs);
     }
     else
     {
@@ -204,7 +202,7 @@ public class Redirect
     
     TransformerImpl transf = context.getTransformer();
     
-    transf.executeChildTemplates((ElemTemplateElement)elem,
+    transf.executeChildTemplates(elem,
                                  context.getContextNode(),
                                  context.getMode(), formatter);
     
@@ -225,7 +223,7 @@ public class Redirect
   /**
    * Close the given file and remove it from the formatter listener's table.
    */
-  public void close(XSLProcessorContext context, Element elem)
+  public void close(XSLProcessorContext context, ElemExtensionCall elem)
     throws java.net.MalformedURLException,
     java.io.FileNotFoundException,
     java.io.IOException,
@@ -250,7 +248,7 @@ public class Redirect
   /**
    * Get the filename from the 'select' or the 'file' attribute.
    */
-  private String getFilename(XSLProcessorContext context, Element elem)
+  private String getFilename(XSLProcessorContext context, ElemExtensionCall elem)
     throws java.net.MalformedURLException,
     java.io.FileNotFoundException,
     java.io.IOException,
@@ -265,20 +263,20 @@ public class Redirect
     {
       org.apache.xpath.XPathContext xctxt 
         = context.getTransformer().getXPathContext();
-      XObject xobj = XPathAPI.eval(context.getContextNode(), fileNameExpr, xctxt.getNamespaceContext());
+      XPath myxpath = new XPath(fileNameExpr, elem, xctxt.getNamespaceContext(), XPath.SELECT);
+      XObject xobj = myxpath.execute(xctxt, context.getContextNode(), xctxt.getNamespaceContext());
       fileName = xobj.str();
       if((null == fileName) || (fileName.length() == 0))
       {
-        fileName = ((ElemExtensionCall)elem).getAttribute ("file", 
-                                                context.getContextNode(), 
-                                                context.getTransformer());
+        fileName = elem.getAttribute ("file", 
+                                      context.getContextNode(), 
+                                      context.getTransformer());
       }
     }
     else
     {
-      fileName = ((ElemExtensionCall)elem).getAttribute ("file", 
-                                                         context.getContextNode(), 
-                                                         context.getTransformer());
+      fileName = elem.getAttribute ("file", context.getContextNode(), 
+                                                               context.getTransformer());
     }
     if(null == fileName)
     {
@@ -323,7 +321,7 @@ public class Redirect
    * Create a new ContentHandler, based on attributes of the current ContentHandler.
    */
   private ContentHandler makeFormatterListener(XSLProcessorContext context,
-                                               ElemTemplateElement elem,
+                                               ElemExtensionCall elem,
                                                String fileName,
                                                boolean shouldPutInTable,
                                                boolean mkdirs)
