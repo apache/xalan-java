@@ -81,6 +81,8 @@ Copyright:
   <property name="runtime.jar" value="${bin.dir}/${runtime.jar.name}"/>
   <property name="regexp.jar.name" value="regexp.jar"/>
   <property name="regexp.jar" value="${bin.dir}/${regexp.jar.name}"/>
+  <property name="xpathapi.jar.name" value="xpathapi.jar"/>
+  <property name="xpathapi.jar" value="./xpath_rwapi/build/${xpathapi.jar.name}"/>
 
   <!-- Defines general variables used by the other targets; name controls output xalan.jar  -->
   <property name="version.VERSION" value="2"/>
@@ -320,6 +322,7 @@ Copyright:
     <pathelement location="${java_cup.jar}" />
     <pathelement location="${runtime.jar}" />
     <pathelement location="${crimson.jar}" />
+    <pathelement location="${xpathapi.jar}" />
     <!-- build.classes needed for 
          org.apache.xalan.xsltc.util.JavaCupRedirect -->
     <pathelement location="${build.classes}" />
@@ -1061,13 +1064,14 @@ Copyright:
     <!-- copy file="grammar/SimpleNode.java" todir="${target.parser}"/>
     <copy file="grammar/Test.java" todir="${target.parser}"/ -->
     <!-- copy file="XPathApplet.java" todir="${spec}-src"/ -->
-    <style style="${tree.xsl}" in="grammar/xpath-grammar.xml" 
+    <style style="${tree.xsl}" in="grammar/xpath-grammar.xml" processor="trax"
 	   out="${spec}-src/xpath-grammar.jjt" force="yes" extension=".jjt" destdir="${spec}-src">
       <param name="spec" expression="${spec}"/>
     </style>
   </target>
   
-  <target name="jjtree" depends="gen-grammar">
+  <!-- <target name="jjtree" depends="gen-grammar"> -->
+  <target name="jjtree">
     <jjtree target="${spec}-src/xpath-grammar.jjt" 
 	    javacchome="bin"
 	    />
@@ -1086,9 +1090,9 @@ Copyright:
 	    sanitycheck="true"
 	    unicodeinput="${unicodeinput}"
 	    javaunicodeescape="${unicodeinput}"
-      outputdirectory="F:\xalan3\xml-xalan\java\src\org\apache\xpath\parser"
+	    outputdirectory="./src/org/apache/xpath/parser"
 	    />
-      <copy file="${spec}-src/XPathTreeConstants.java" todir="F:\xalan3\xml-xalan\java\src\org\apache\xpath\parser"/>
+      <copy file="${spec}-src/XPathTreeConstants.java" todir="./src/org/apache/xpath/parser"/>
   </target>
   
   <target name="compile.parser" depends="javacc">
