@@ -71,7 +71,7 @@ import org.w3c.dom.traversal.NodeIterator;
  * <meta name="usage" content="advanced"/>
  * This class implements an optimized iterator for
  * children patterns that have a node test, but no predicate.
- * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator.
+ * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
  */
 public class ChildTestIterator extends LocPathIterator
 {

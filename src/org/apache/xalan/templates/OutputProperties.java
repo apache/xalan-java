@@ -335,7 +335,7 @@ public class OutputProperties extends ElemTemplateElement
    *
    * @param key the key to be placed into the property list.
    * @param value the value corresponding to <tt>key</tt>.
-   * @see {@link javax.xml.transform.OutputKeys}.
+   * @see javax.xml.transform.OutputKeys
    */
   public void setProperty(QName key, String value)
   {
@@ -347,7 +347,7 @@ public class OutputProperties extends ElemTemplateElement
    *
    * @param key the key to be placed into the property list.
    * @param value the value corresponding to <tt>key</tt>.
-   * @see {@link javax.xml.transform.OutputKeys}.
+   * @see javax.xml.transform.OutputKeys
    */
   public void setProperty(String key, String value)
   {
@@ -391,7 +391,7 @@ public class OutputProperties extends ElemTemplateElement
    *
    * @param key the key to be placed into the property list.
    * @param value the value corresponding to <tt>key</tt>.
-   * @see {@link javax.xml.transform.OutputKeys}.
+   * @see javax.xml.transform.OutputKeys
    */
   public void setBooleanProperty(QName key, boolean value)
   {
@@ -403,7 +403,7 @@ public class OutputProperties extends ElemTemplateElement
    *
    * @param key the key to be placed into the property list.
    * @param value the value corresponding to <tt>key</tt>.
-   * @see {@link javax.xml.transform.OutputKeys}.
+   * @see javax.xml.transform.OutputKeys
    */
   public void setBooleanProperty(String key, boolean value)
   {
@@ -470,7 +470,7 @@ public class OutputProperties extends ElemTemplateElement
    *
    * @param key the key to be placed into the property list.
    * @param value the value corresponding to <tt>key</tt>.
-   * @see {@link javax.xml.transform.OutputKeys}.
+   * @see javax.xml.transform.OutputKeys
    */
   public void setIntProperty(QName key, int value)
   {
@@ -482,7 +482,7 @@ public class OutputProperties extends ElemTemplateElement
    *
    * @param key the key to be placed into the property list.
    * @param value the value corresponding to <tt>key</tt>.
-   * @see {@link javax.xml.transform.OutputKeys}.
+   * @see javax.xml.transform.OutputKeys
    */
   public void setIntProperty(String key, int value)
   {
@@ -550,7 +550,7 @@ public class OutputProperties extends ElemTemplateElement
    *
    * @param key the key to be placed into the property list.
    * @param value the value corresponding to <tt>key</tt>.
-   * @see {@link javax.xml.transform.OutputKeys}.
+   * @see javax.xml.transform.OutputKeys
    */
   public void setQNameProperty(QName key, QName value)
   {
@@ -561,7 +561,7 @@ public class OutputProperties extends ElemTemplateElement
    * Reset the default properties based on the method.
    *
    * @param method the method value.
-   * @see {@link javax.xml.transform.OutputKeys}.
+   * @see javax.xml.transform.OutputKeys
    */
   public void setMethodDefaults(String method)
   {
@@ -582,7 +582,7 @@ public class OutputProperties extends ElemTemplateElement
    *
    * @param key the key to be placed into the property list.
    * @param value the value corresponding to <tt>key</tt>.
-   * @see {@link javax.xml.transform.OutputKeys}.
+   * @see javax.xml.transform.OutputKeys
    */
   public void setQNameProperty(String key, QName value)
   {
@@ -647,7 +647,7 @@ public class OutputProperties extends ElemTemplateElement
    *
    * @param key the key to be placed into the property list.
    * @param v non-null list of QNames corresponding to <tt>key</tt>.
-   * @see {@link javax.xml.transform.OutputKeys}.
+   * @see javax.xml.transform.OutputKeys
    */
   public void setQNameProperties(QName key, Vector v)
   {
@@ -660,7 +660,7 @@ public class OutputProperties extends ElemTemplateElement
    *
    * @param key the key to be placed into the property list.
    * @param v non-null list of QNames corresponding to <tt>key</tt>.
-   * @see {@link javax.xml.transform.OutputKeys}.
+   * @see javax.xml.transform.OutputKeys
    */
   public void setQNameProperties(String key, Vector v)
   {

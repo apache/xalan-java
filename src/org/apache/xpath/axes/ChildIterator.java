@@ -68,7 +68,7 @@ import org.w3c.dom.DOMException;
  * This class implements an optimized iterator for 
  * "node()" patterns, that is, any children of the 
  * context node.
- * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator.
+ * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
  */
 public class ChildIterator extends LocPathIterator
 {

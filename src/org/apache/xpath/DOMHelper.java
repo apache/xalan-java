@@ -1248,7 +1248,7 @@ public class DOMHelper
    * @param node DOM Node to be examined
    * @return String containing a concatenation of all the 
    * textual content within that node. 
-   * @see getNodeData(Node,FastStringBuffer)
+   * @see #getNodeData(Node,FastStringBuffer)
    * 
    */
   public static String getNodeData(Node node)

@@ -96,8 +96,8 @@ public class Arg
   }
 
   /** Field m_val: Stored XObject value of this argument
-   * @see getVal()
-   * @see setVal()
+   * @see #getVal()
+   * @see #setVal()
    */
   private XObject m_val;
 
@@ -105,7 +105,7 @@ public class Arg
    * Get the value for this argument.
    *
    * @return the argument's stored XObject value.
-   * @see setVal()
+   * @see #setVal()
    */
   public XObject getVal()
   {
@@ -116,7 +116,7 @@ public class Arg
    * Set the value of this argument.
    *
    * @param val an XObject representing the arguments's value.
-   * @see getVal()
+   * @see #getVal()
    */
   public void setVal(XObject val)
   {
@@ -124,8 +124,8 @@ public class Arg
   }
 
   /** Field m_expression: Stored expression value of this argument.
-   * @see setExpression
-   * @see getExpression
+   * @see #setExpression
+   * @see #getExpression
    * */
   private String m_expression;
 
@@ -134,7 +134,7 @@ public class Arg
    *
    * @return String containing the expression previously stored into this
    * argument
-   * @see setExpression
+   * @see #setExpression
    */
   public String getExpression()
   {
@@ -146,7 +146,7 @@ public class Arg
    *
    * @param expr String containing the expression to be stored as this
    * argument's value.
-   * @see getExpression
+   * @see #getExpression
    */
   public void setExpression(String expr)
   {

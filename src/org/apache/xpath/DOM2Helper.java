@@ -178,11 +178,8 @@ public class DOM2Helper extends DOMHelper
    *            possibly from a byte stream or character stream
    *            supplied by the application.
    * @see org.xml.sax.InputSource
-   * @see #parse(java.lang.String)
-   * @see #setEntityResolver
-   * @see #setDTDHandler
-   * @see #setContentHandler
-   * @see #setErrorHandler
+   * @see org.xml.sax.XMLReader#setContentHandler
+   * @see org.xml.sax.XMLReader#setErrorHandler
    *
    * @throws TransformerException
    */

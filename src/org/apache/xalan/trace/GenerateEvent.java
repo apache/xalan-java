@@ -83,7 +83,7 @@ public class GenerateEvent implements java.util.EventListener
    * The XSLT TransformerFactory, which either directly or indirectly contains most needed information.
    * Accessing the m_stylesheetRoot member variable will get you to the stylesheet information.
    *
-   * @see org.apache.xalan.xslt.TransformerImpl, org.apache.xalan.xslt.StylesheetRoot,
+   * @see org.apache.xalan.transformer.TransformerImpl, org.apache.xalan.templates.StylesheetRoot,
    *     org.apache.xalan.xslt.Stylesheet
    */
   public TransformerImpl m_processor;

@@ -73,7 +73,7 @@ import org.w3c.dom.traversal.NodeFilter;
  * <meta name="usage" content="advanced"/>
  * This class implements an optimized iterator for
  * attribute axes patterns.
- * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator.
+ * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
  */
 public class AttributeIterator extends LocPathIterator
 {

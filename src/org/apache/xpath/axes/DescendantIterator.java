@@ -73,7 +73,7 @@ import org.w3c.dom.traversal.NodeFilter;
  * <meta name="usage" content="advanced"/>
  * This class implements an optimized iterator for
  * descendant, descendant-or-self, or "//foo" patterns.
- * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator.
+ * @see org.apache.xpath.axes.WalkerFactory#newLocPathIterator
  */
 public class DescendantIterator extends LocPathIterator
 {
