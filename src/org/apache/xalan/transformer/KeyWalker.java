@@ -62,6 +62,8 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xalan.templates.KeyDeclaration;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.DescendantOrSelfWalker;
 import org.apache.xpath.objects.XObject;
@@ -167,7 +169,7 @@ public class KeyWalker extends DescendantOrSelfWalker
    */
   public short acceptNode(Node testNode)
   {
-
+		boolean foundKey = false;
     KeyIterator ki = (KeyIterator) m_lpi;
     Vector keys = ki.getKeyDeclarations();
 
@@ -189,6 +191,7 @@ public class KeyWalker extends DescendantOrSelfWalker
         if(!kd.getName().equals(name)) 
           continue;
         
+				foundKey = true;
         ki.getXPathContext().setNamespaceContext(ki.getPrefixResolver());
 
         // See if our node matches the given key declaration according to 
@@ -250,6 +253,9 @@ public class KeyWalker extends DescendantOrSelfWalker
       // TODO: What to do?
     }
 
+		if (!foundKey)
+			throw new RuntimeException
+				(XSLMessages.createMessage(XSLTErrorResources.ER_NO_XSLKEY_DECLARATION, new Object[]{name.getLocalName()}));
     return this.FILTER_REJECT;
   }
   
