@@ -132,7 +132,7 @@ public class XNodeSet extends NodeSequence
    */
   public XNodeSet(DTMManager dtmMgr) 
   {
-    super(dtmMgr);
+     this(DTM.NULL,dtmMgr);
   }
 
   /**
