@@ -604,11 +604,13 @@ public class TransformerIdentityImpl extends Transformer
         m_outputFormat = new OutputProperties(method);
       else
         m_outputFormat = new OutputProperties();
-    }
 
-    if (null != oformat)
-    {
       m_outputFormat.copyFrom(oformat);
+    }
+    else {
+      // if oformat is null JAXP says that any props previously set are removed
+      // and we are to revert back to those in the templates object (i.e. Stylesheet).
+      m_outputFormat = null;
     }
   }
 

@@ -930,17 +930,18 @@ public class TransformerImpl extends Transformer
           m_outputFormat = new OutputProperties(method);
         else if(m_outputFormat==null)
           m_outputFormat = new OutputProperties();
-      }
 
-      if (null != oformat)
-      {
         m_outputFormat.copyFrom(oformat);
+        // copyFrom does not set properties that have been already set, so 
+        // this must be called after, which is a bit in the reverse from 
+        // what one might think.
+        m_outputFormat.copyFrom(m_stylesheetRoot.getOutputProperties());
       }
-
-      // copyFrom does not set properties that have been already set, so 
-      // this must be called after, which is a bit in the reverse from 
-      // what one might think.
-      m_outputFormat.copyFrom(m_stylesheetRoot.getOutputProperties());
+      else {
+        // if oformat is null JAXP says that any props previously set are removed
+        // and we are to revert back to those in the templates object (i.e. Stylesheet).
+        m_outputFormat = null;
+      }
     }
   }
 
