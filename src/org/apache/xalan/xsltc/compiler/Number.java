@@ -77,7 +77,7 @@ final class Number extends Instruction {
     private static final int LEVEL_ANY      = 2;
 
     private Pattern _from = null;
-    private Expression _count = null;
+    private Pattern _count = null;
     private Expression _value = null;
 
     private AttributeValueTemplate _lang = null;
@@ -112,7 +112,7 @@ final class Number extends Instruction {
 		_value = parser.parseExpression(this, name, null);
 	    }
 	    else if (name.equals("count")) {
-		_count = parser.parseExpression(this, name, null);
+		_count = parser.parsePattern(this, name, null);
 	    }
 	    else if (name.equals("from")) {
 		_from = parser.parsePattern(this, name, null);
