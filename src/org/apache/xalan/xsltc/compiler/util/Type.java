@@ -72,6 +72,7 @@ import org.apache.xalan.xsltc.compiler.Constants;
 
 public abstract class Type implements Constants {
     public static final Type Int        = new IntType();
+    public static final Type Lng        = new LongType(); //GTM,bug 3592
     public static final Type Real       = new RealType();
     public static final Type Boolean    = new BooleanType();
     public static final Type NodeSet    = new NodeSetType();
