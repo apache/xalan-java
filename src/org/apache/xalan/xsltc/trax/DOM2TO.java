@@ -64,7 +64,6 @@ package org.apache.xalan.xsltc.trax;
 
 import java.io.IOException;
 
-
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.apache.xml.serializer.SerializationHandler;
@@ -78,6 +77,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
+import org.apache.xml.serializer.NamespaceMappings;
 
 public class DOM2TO implements XMLReader, Locator {
 
@@ -176,11 +176,13 @@ public class DOM2TO implements XMLReader, Locator {
 	    // Generate SAX event to start element
 	    final String qname = node.getNodeName();
 	    _handler.startElement(null, null, qname);
+
 	    String prefix;
 	    final NamedNodeMap map = node.getAttributes();
 	    final int length = map.getLength();
 
 	    // Process all other attributes
+            NamespaceMappings nm = new NamespaceMappings();
 	    for (int i = 0; i < length; i++) {
 		int colon;
 		final Node attr = map.item(i);
@@ -198,23 +200,43 @@ public class DOM2TO implements XMLReader, Locator {
 		    // Uri may be implicitly declared
 		    if (uriAttr != null && !uriAttr.equals(EMPTYSTRING) ) {	
 			colon = qnameAttr.lastIndexOf(':');
+                           
+                        // Fix for bug 26319
+                        // For attributes not given an prefix explictly
+                        // but having a namespace uri we need
+                        // to explicitly generate the prefix
+                        String newPrefix = nm.lookupPrefix(uriAttr);
+                        if (newPrefix == null) 
+                            newPrefix = nm.generateNextPrefix();
 			prefix = (colon > 0) ? qnameAttr.substring(0, colon) 
-			    : EMPTYSTRING;
+			    : newPrefix;
 			_handler.namespaceAfterStartElement(prefix, uriAttr);
+		        _handler.addAttribute((prefix + ":" + qnameAttr)
+                            , attr.getNodeValue());
 		    }
-		    _handler.addAttribute(qnameAttr, attr.getNodeValue());
-		}
+                }
 	    }
 
 	    // Now element namespace and children
 	    final String uri = node.getNamespaceURI();
+            final String localName = node.getLocalName();
 
 	    // Uri may be implicitly declared
 	    if (uri != null) {	
 		final int colon = qname.lastIndexOf(':');
 		prefix = (colon > 0) ? qname.substring(0, colon) : EMPTYSTRING;
 		_handler.namespaceAfterStartElement(prefix, uri);
-	    }
+	    }else {
+                  // Fix for bug 26319
+                  // If an element foo is created using
+                  // createElementNS(null,locName)
+                  // then the  element should be serialized
+                  // <foo xmlns=" "/> 
+                  if (uri == null  && localName != null) {
+ 		     prefix = EMPTYSTRING;
+		     _handler.namespaceAfterStartElement(prefix, EMPTYSTRING);
+                 }
+            }
 
 	    // Traverse all child nodes of the element (if any)
 	    next = node.getFirstChild();
