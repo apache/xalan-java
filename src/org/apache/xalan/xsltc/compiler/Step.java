@@ -215,9 +215,12 @@ final class Step extends RelativeLocationPath {
 	// combinations of steps and patterns than can be optimised
 	_hadPredicates = hasPredicates();
 
-	// Special case for '.' 
+	// Special case for '.'
+ 	//   in the case where '.' has a context such as book/. 
+	//   or .[false()] we can not optimize the nodeset to a single node. 
 	if (isAbbreviatedDot()) {
-	    _type =  (hasParentPattern()) ? Type.NodeSet : Type.Node;
+	    _type =  (hasParentPattern() || hasPredicates() ) ? 
+		Type.NodeSet : Type.Node;
 	}
 	else {
 	    _type = Type.NodeSet;
