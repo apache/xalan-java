@@ -1273,8 +1273,6 @@ public class XSLTAttributeDef
       String prefix = tokenizer.nextToken();
       String url = handler.getNamespaceForPrefix(prefix);
 
-      strings.addElement(url);
-      
       if (url != null)
         strings.addElement(url);
       else
