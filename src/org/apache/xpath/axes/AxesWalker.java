@@ -195,20 +195,11 @@ public abstract class AxesWalker extends NodeTest
                        this.m_proximityPositions.length);
     }
 
-    m_testedForNTF = false;
+    clone.setCurrentNode(clone.m_root);
+
+    clone.m_isFresh = true;
 
     return clone;
-  }
-
-  /**
-   * Reset the Walker.
-   */
-  public void reset()
-  {
-
-    setCurrentNode(m_root);
-
-    m_isFresh = true;
   }
 
   /**
@@ -1333,11 +1324,6 @@ public abstract class AxesWalker extends NodeTest
 
   /** NEEDSDOC Field m_isDone          */
   boolean m_isDone = false;
-
-  // See note where this is used about this variable.
-
-  /** NEEDSDOC Field m_testedForNTF          */
-  protected boolean m_testedForNTF = false;
 
   /**
    * Get the next node in document order on the axes.

@@ -412,6 +412,7 @@ public class UnionPathIterator extends Expression
 
     // super.reset();
     m_foundLast = false;
+    m_next = 0;
 
     int n = m_iterators.length;
 

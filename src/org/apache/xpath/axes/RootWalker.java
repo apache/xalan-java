@@ -85,6 +85,23 @@ public class RootWalker extends AxesWalker
   }
 
   /**
+   * Get a cloned RootWalker.
+   *
+   * @return a new RootWalker ready to be used.
+   *
+   * @throws CloneNotSupportedException
+   */
+  public Object clone() throws CloneNotSupportedException
+  {
+
+    RootWalker clone = (RootWalker) super.clone();
+
+    clone.m_processedRoot = false;
+
+    return clone;
+  }
+
+  /**
    *  Moves the <code>TreeWalker</code> to the first visible child of the
    * current node, and returns the new node. If the current node has no
    * visible children, returns <code>null</code> , and retains the current

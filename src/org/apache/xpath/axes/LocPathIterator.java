@@ -542,6 +542,7 @@ public class LocPathIterator extends Expression
     // super.reset();
     m_foundLast = false;
     m_lastFetched = null;
+    m_next = 0;
 
     if (null != m_firstWalker)
     {
