@@ -9,4 +9,6 @@
 <!ENTITY xslt4c "Xalan-C++">
 <!ENTITY xml4c "Xerces-C++">
 <!ENTITY download "The &xslt4j-current; download from xml.apache.org includes xerces.jar from &xml4j-used;.">
+<!ENTITY traxsamplenote "To run the trax sample, you must be using an XML parser (such as Xerces 1.2.3 or Crimson 1.1) 
+                         that fully implements the JAXP 1.1 javax.xml.parsers interface.">
 
