@@ -96,12 +96,12 @@ org.apache.trax.Transformer transformer = templates.newTransformer();
 //&nbsp;&nbsp;&nbsp;&nbsp;source and send the output to a Result object.
 transformer.transform
       ( new org.xml.sax.InputSource("foo.xml"), 
-        new org.apache.trax.Result(new java.io.FileWriter("foo.out")) );</source>
+        new org.apache.trax.Result(new java.io.FileOutputStream("foo.out")) );</source>
   <note>For a working example of this model at its simplest, see SimpleTransform.java in the java/samples/SimpleTransform subdirectory.</note>
   </s2><anchor name="processor"/>
   <s2 title="1. Instantiate a stylesheet Processor">
   <p>The org.apache.trax.Processor static newInstance() method with "xslt" as its argument instantiates the processor designated by the org.apache.trax.processor.xslt system property.</p>
-  <p>If this system property has not already been set, org.apache.trax.Processor sets it from org/apache/trax/trax.properties (in xalan.jar).</p>
+  <p>If this system property has not already been set (from the command line or in your application), org.apache.trax.Processor sets it from org/apache/trax/trax.properties (in xalan.jar).</p>
   <p>For &xslt4j;, this system property should be set to org.apache.xalan.processor.StylesheetProcessor.</p>
 </s2><anchor name="process"/>
   <s2 title="2. Process the stylesheet, producing a Templates object">
