@@ -30,6 +30,7 @@ import org.apache.xml.serializer.SerializationHandler;
 
 import javax.xml.transform.Source;
 import java.util.Vector;
+import org.apache.xml.utils.IntStack;
 import org.xml.sax.*;
 
 /**
@@ -3198,7 +3199,6 @@ public class SAX2DTM2 extends SAX2DTM
       
         if (uri.length() == 0) {
             handler.startElement(name);
-            copyNS(nodeID,handler);
             return name;           
         }
         else {
@@ -3206,7 +3206,6 @@ public class SAX2DTM2 extends SAX2DTM
     
             if (qnameIndex == 0) {
                 handler.startElement(name);
-                copyNS(nodeID,handler);
                 handler.namespaceAfterStartElement(EMPTY_STR, uri);
                 return name;
             }
@@ -3226,49 +3225,48 @@ public class SAX2DTM2 extends SAX2DTM
             else {
                 prefix = null;
             }
-            copyNS(nodeID,handler);
             handler.namespaceAfterStartElement(prefix, uri);
             return qName;           
         }        
              
     }
     
-    /**
+     /**
      * Copy  namespace nodes.
      *
      * @param nodeID The Element node identity
      * @param handler The SerializationHandler
+     * @param inScope  true if all namespaces in scope should be copied,
+     *  false if only the namespace declarations should be copied.
      */
 
-   public void copyNS(final int nodeID, SerializationHandler handler)
-        throws SAXException
-    {
-      int current =  DTM.NULL; 
-      int eType = DTM.NULL;
-      int type = DTM.NULL;
-      try{
-        for (int elementID = nodeID; elementID != DTM.ROOT_NODE; elementID = _parent2(elementID)){
-              current =  elementID;    
-              while (true){
-                  current++;
-                  eType = _exptype2(current);
-                  type = _exptype2Type(eType);
-             
-                  if (type == DTM.ATTRIBUTE_NODE) {
-                     continue;
-                  }
-                  else if (type == DTM.NAMESPACE_NODE) {
-                      handler.startPrefixMapping(getNodeNameX(makeNodeHandle(current)), getNodeValue(makeNodeHandle(current)), false);                       
-                  }
-                  else
-                      break;
-                  }
-              }
-        }catch (Exception e) {
-            throw new SAXException(e);
-        }
+  protected final void copyNS(final int nodeID, SerializationHandler handler, boolean inScope)
+        throws SAXException{
+       final int node = makeNodeHandle(nodeID);
+       for(int current = getFirstNamespaceNode(node, inScope); current != DTM.NULL; 
+           current = getNextNamespaceNode(node, current, inScope)){               
+                handler.namespaceAfterStartElement(getNodeNameX(current), getNodeValue(current));                             
+       }
+      
+    }
+   
+    /**
+     * Copy  attribute nodes from an element .
+     *
+     * @param nodeID The Element node identity
+     * @param handler The SerializationHandler
+     */
+protected final void copyAttributes(final int nodeID, SerializationHandler handler)
+        throws SAXException{      
+       
+       for(int current = getFirstAttributeIdentity(nodeID); current != DTM.NULL; current = getNextAttributeIdentity(current)){               
+            int eType = _exptype2(current);
+            copyAttribute(current, eType, handler);
+       }     
     }
 
+ 
+  
     /**
      * Copy an Attribute node to a SerializationHandler
      *

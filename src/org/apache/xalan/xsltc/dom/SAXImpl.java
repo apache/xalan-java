@@ -1306,7 +1306,14 @@ public final class SAXImpl extends SAX2DTM2
     public void copy(final int node, SerializationHandler handler)
         throws TransletException
     {
-        int nodeID = makeNodeIdentity(node);
+        copy(node, handler, false );
+    }
+
+
+ private final void copy(final int node, SerializationHandler handler, boolean isChild)
+        throws TransletException
+    {
+     int nodeID = makeNodeIdentity(node);
         int eType = _exptype2(nodeID);
         int type = _exptype2Type(eType);
 
@@ -1316,7 +1323,7 @@ public final class SAXImpl extends SAX2DTM2
                 case DTM.ROOT_NODE:
                 case DTM.DOCUMENT_NODE:
                     for(int c = _firstch2(nodeID); c != DTM.NULL; c = _nextsib2(c)) {
-                        copy(makeNodeHandle(c), handler);
+                        copy(makeNodeHandle(c), handler, true);
                     }
                     break;
                 case DTM.PROCESSING_INSTRUCTION_NODE:
@@ -1353,29 +1360,13 @@ public final class SAXImpl extends SAX2DTM2
                     {
                         // Start element definition
                         final String name = copyElement(nodeID, eType, handler);
-          
-                        // %OPT% Increase the element ID by 1 to iterate through all
-                        // attribute and namespace nodes.
-                        int current = nodeID;
-                        while (true)
-                        {
-                            current++;
-                            eType = _exptype2(current);
-                            type = _exptype2Type(eType);
-            
-                            if (type == DTM.ATTRIBUTE_NODE) {
-                                copyAttribute(current, eType, handler);
-                            }
-                            else if (type == DTM.NAMESPACE_NODE) {
-                                handler.namespaceAfterStartElement(getNodeNameX(makeNodeHandle(current)), getNodeValue(makeNodeHandle(current)));            
-                            }
-                            else
-                                break;
-                        }
-
+                        //if(isChild) => not to copy any namespaces  from parents
+                        // else copy all namespaces in scope
+                        copyNS(nodeID, handler,!isChild);
+                        copyAttributes(nodeID, handler);
                         // Copy element children
                         for (int c = _firstch2(nodeID); c != DTM.NULL; c = _nextsib2(c)) {
-                            copy(makeNodeHandle(c), handler);
+                            copy(makeNodeHandle(c), handler, true);
                         }
           
                         // Close element definition
@@ -1396,8 +1387,8 @@ public final class SAXImpl extends SAX2DTM2
         catch (Exception e) {
             throw new TransletException(e);
         }
+    
     }
-
     /**
      * Copies a processing instruction node to an output handler
      */
@@ -1428,7 +1419,9 @@ public final class SAXImpl extends SAX2DTM2
             switch(type)
             {
                 case DTM.ELEMENT_NODE:
-                    return(copyElement(nodeID, exptype, handler));
+                    final String name = copyElement(nodeID, exptype, handler);
+                    copyNS(nodeID, handler, true);
+                    return name;
                 case DTM.ROOT_NODE:
                 case DTM.DOCUMENT_NODE:
                     return EMPTYSTRING;
