@@ -853,8 +853,25 @@ public class ResultTreeHandler extends QueuedEvents
     {
       if (null != m_name)
       {
-        m_contentHandler.startElement(m_url, m_localName, m_name,
+        try
+        {
+          m_contentHandler.startElement(m_url, m_localName, m_name,
                                       m_attributes);
+        }
+        catch(Exception re)
+        {
+          // If we don't do this, and the exception is a RuntimeException, 
+          // good line numbers of where the exception occured in the stylesheet
+          // won't get reported.  I tried just catching RuntimeException, but 
+          // for whatever reason it didn't seem to catch.
+          // Fix for Christina's DOMException error problem.
+          throw new SAXParseException(re.getMessage(), 
+          m_transformer.getCurrentElement().getPublicId(), 
+          m_transformer.getCurrentElement().getSystemId(), 
+          m_transformer.getCurrentElement().getLineNumber(), 
+          m_transformer.getCurrentElement().getColumnNumber(), 
+          re);
+        }
         
         if(null != m_tracer)
         {
