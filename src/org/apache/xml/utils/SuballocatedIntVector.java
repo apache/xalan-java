@@ -68,15 +68,18 @@ package org.apache.xml.utils;
  * long vectors are being built up.
  * 
  * Known issues:
+ *
+ * Current chunking is based on /%. Shift/mask _should_ be faster, if
+ * power-of-two chunksizes are acceptable. (Would be in a real language,
+ * anyway...)
  * 
  * Some methods are private because they haven't yet been tested properly.
- * 
- * If an element has not been set (because we skipped it), its value will
- * initially be 0. Shortening the vector does not clear old storage; if you
- * then skip values and setElementAt a higher index again, you may see old data
- * reappear in the truncated-and-restored section. Doing anything else would
- * have performance costs.
- */
+ *
+ * Retrieval performance is critical, since this is used at the core
+ * of the DTM model. (Construction performance is almost as
+ * important.) That's pushing me toward just letting reads of unset
+ * indices throw exceptions or return stale data; safer behavior would
+ * have performance costs. */
 public class SuballocatedIntVector
 {
   /** Size of blocks to allocate          */
@@ -301,18 +304,10 @@ public class SuballocatedIntVector
   }
 
   /**
-   * Wipe it out. Old version set everytying to Integer.MIN_VALUE.
-   * Do we really need that here?
+   * Wipe it out. Currently defined as equivalent to setSize(0).
    */
   public void removeAllElements()
   {
-    // for(int index=m_map.length;index>=0;--index)
-    //{
-    //  int[] block=m_map[index];
-    //  if(null!=block)
-    //  for(int offset=m_blocksize;offset>=0;--offset)
-    //    block[offset] = java.lang.Integer.MIN_VALUE;
-    //}
     m_firstFree = 0;
   }
 
@@ -415,26 +410,34 @@ public class SuballocatedIntVector
   }
 
   /**
-   * Get the nth element.
+   * Get the nth element. This is often at the innermost loop of an
+   * application, so performance is critical.
    *
-   * @param i index of object to get
+   * @param i index of value to get
    *
-   * @return object at given index
+   * @return value at given index. If that value wasn't previously set,
+   * the result is undefined for performance reasons. It may throw an
+   * exception (see below), may return zero, or (if setSize has previously
+   * been used) may return stale data.
+   *
+   * @throw ArrayIndexOutOfBoundsException if the index was _clearly_
+   * unreasonable (negative, or past the highest block).
+   *
+   * @throw NullPointerException if the index points to a block that could
+   * have existed (based on the highest index used) but has never had anything
+   * set into it.
+   * %REVIEW% Could add a catch to create the block in that case, or return 0.
+   * Try/Catch is _supposed_ to be nearly free when not thrown to. Do we
+   * believe that? Should we have a separate safeElementAt?
    */
   public int elementAt(int i)
   {
-    if(i<m_blocksize)
-      return m_map0[i];
-	if(i>=m_firstFree)
-		return Integer.MIN_VALUE; // %REVIEW% Does anyone _care_?
-    
-    int index=i/m_blocksize;
-    int offset=i%m_blocksize;
+    // %OPT% Does this really buy us anything? Test versus division for small,
+    // test _plus_ division for big docs.
+    //if(i<m_blocksize)
+    //  return m_map0[i];
 
-    int[] block=m_map[index];
-    if(null==block)
-      return Integer.MIN_VALUE; // %REVIEW% Does anyone _care_?
-    return block[offset];
+    return m_map[i/m_blocksize][i%m_blocksize];
   }
 
   /**
