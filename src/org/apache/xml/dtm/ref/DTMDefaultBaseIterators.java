@@ -1145,7 +1145,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
     }
 
     /**
-     * Returns a deep copy of this iterator.
+     * Returns a deep copy of this iterator.   The cloned iterator is not reset.
      *
      * @return a deep copy of this iterator.
      */
@@ -1164,7 +1164,8 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
 
         clone._stack = stackCopy;
 
-        return clone.reset();
+        // return clone.reset();
+        return clone;
       }
       catch (CloneNotSupportedException e)
       {
@@ -1428,13 +1429,12 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
     }
 
     /**
-     * Returns a deep copy of this iterator.
+     * Returns a deep copy of this iterator.  The cloned iterator is not reset.
      *
      * @return a deep copy of this iterator.
      */
     public DTMAxisIterator cloneIterator()
     {
-
       _isRestartable = false;  // must set to false for any clone
 
       try
@@ -1443,7 +1443,8 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
 
         clone._startNode = _startNode;
 
-        return clone.reset();
+        // return clone.reset();
+        return clone;
       }
       catch (CloneNotSupportedException e)
       {
@@ -1495,6 +1496,8 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
     {
 
       _currentNode = getDocument();
+            
+      m_ancestorsPos = m_ancestors.size()-1;
 
       return resetPosition();
     }

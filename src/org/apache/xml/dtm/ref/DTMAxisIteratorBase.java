@@ -203,9 +203,10 @@ public abstract class DTMAxisIteratorBase implements DTMAxisIterator
     {
       final DTMAxisIteratorBase clone = (DTMAxisIteratorBase) super.clone();
 
-      clone._isRestartable = false;
+      // clone._isRestartable = false;
 
-      return clone.reset();
+      // return clone.reset();
+      return clone;
     }
     catch (CloneNotSupportedException e)
     {

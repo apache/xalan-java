@@ -117,8 +117,8 @@ public interface DTMAxisIterator extends Cloneable
   public boolean isReverse();
 
   /**
-   * @return a deep copy of this iterator. The clone and/or the original
-   * may become non-restartable as a side effect of this operation.
+   * @return a deep copy of this iterator. The clone should not be reset 
+   * from its current position.
    */
   public DTMAxisIterator cloneIterator();
 }

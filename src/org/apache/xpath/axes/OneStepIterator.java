@@ -239,4 +239,16 @@ public class OneStepIterator extends ChildTestIterator
     // System.out.println("pos (ReverseAxesWalker): "+count);
     return count;
   }
+  
+  /**
+   * Reset the iterator.
+   */
+  public void reset()
+  {
+
+    super.reset();
+    if(null != m_iterator)
+      m_iterator.reset();
+  }
+
 }
