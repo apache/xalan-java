@@ -53,7 +53,7 @@
 
   <resource id="trax" 
             title="TRaX (Transformations for XML)" 
-            location="apidocs/org/apache/xalan/trax/package-summary.html#package_description"/>
+            location="apidocs/org/apache/trax/package-summary.html#package_description"/>
   <resource id="dom" 
             title="DOM" 
             location="http://www.w3.org/DOM"/>
