@@ -154,21 +154,6 @@ public class XMLErrorResources extends ListResourceBundle
   public static final String ER_ARG_PREFIX_INVALID = "ER_ARG_PREFIX_INVALID";  
   public static final String ER_NAME_CANT_START_WITH_COLON = "ER_NAME_CANT_START_WITH_COLON";
 
-  // Message keys used by the serializer
-  public static final String ER_RESOURCE_COULD_NOT_FIND = "ER_RESOURCE_COULD_NOT_FIND";
-  public static final String ER_RESOURCE_COULD_NOT_LOAD = "ER_RESOURCE_COULD_NOT_LOAD";
-  public static final String ER_BUFFER_SIZE_LESSTHAN_ZERO = "ER_BUFFER_SIZE_LESSTHAN_ZERO";
-  public static final String ER_INVALID_UTF16_SURROGATE = "ER_INVALID_UTF16_SURROGATE";
-  public static final String ER_OIERROR = "ER_OIERROR";
-  public static final String ER_NAMESPACE_PREFIX = "ER_NAMESPACE_PREFIX";
-  public static final String ER_STRAY_ATTRIBUTE = "ER_STRAY_ATTIRBUTE";
-  public static final String ER_STRAY_NAMESPACE = "ER_STRAY_NAMESPACE";
-  public static final String ER_COULD_NOT_LOAD_RESOURCE = "ER_COULD_NOT_LOAD_RESOURCE";
-  public static final String ER_COULD_NOT_LOAD_METHOD_PROPERTY = "ER_COULD_NOT_LOAD_METHOD_PROPERTY";
-  public static final String ER_SERIALIZER_NOT_CONTENTHANDLER = "ER_SERIALIZER_NOT_CONTENTHANDLER";
-  public static final String ER_ILLEGAL_ATTRIBUTE_POSITION = "ER_ILLEGAL_ATTRIBUTE_POSITION";
-  public static final String ER_ILLEGAL_CHARACTER = "ER_ILLEGAL_CHARACTER";
-
   /*
    * Now fill in the message text.
    * Then fill in the message text for that message code in the
@@ -384,64 +369,8 @@ public class XMLErrorResources extends ListResourceBundle
     { "BAD_CODE", "Parameter to createMessage was out of bounds"},
     { "FORMAT_FAILED", "Exception thrown during messageFormat call"},
     { "line", "Line #"},
-    { "column","Column #"},
-    
-    {ER_SERIALIZER_NOT_CONTENTHANDLER,
-      "The serializer class ''{0}'' does not implement org.xml.sax.ContentHandler."},
-    
-    {ER_RESOURCE_COULD_NOT_FIND,
-      "The resource [ {0} ] could not be found.\n {1}" },
-    
-    {ER_RESOURCE_COULD_NOT_LOAD,
-      "The resource [ {0} ] could not load: {1} \n {2} \t {3}" },
-    
-    {ER_BUFFER_SIZE_LESSTHAN_ZERO,
-      "Buffer size <=0" },
-    
-    {ER_INVALID_UTF16_SURROGATE,
-      "Invalid UTF-16 surrogate detected: {0} ?" },
-    
-    {ER_OIERROR,
-      "IO error" },
-    
-    {ER_ILLEGAL_ATTRIBUTE_POSITION,
-      "Cannot add attribute {0} after child nodes or before an element is produced.  Attribute will be ignored."},
-
-      /*
-       * Note to translators:  The stylesheet contained a reference to a
-       * namespace prefix that was undefined.  The value of the substitution
-       * text is the name of the prefix.
-       */
-    {ER_NAMESPACE_PREFIX,
-      "Namespace for prefix ''{0}'' has not been declared." },
-      /*
-       * Note to translators:  This message is reported if the stylesheet
-       * being processed attempted to construct an XML document with an
-       * attribute in a place other than on an element.  The substitution text
-       * specifies the name of the attribute.
-       */
-    {ER_STRAY_ATTRIBUTE,
-      "Attribute ''{0}'' outside of element." },
-
-      /*
-       * Note to translators:  As with the preceding message, a namespace
-       * declaration has the form of an attribute and is only permitted to
-       * appear on an element.  The substitution text {0} is the namespace
-       * prefix and {1} is the URI that was being used in the erroneous
-       * namespace declaration.
-       */
-    {ER_STRAY_NAMESPACE,
-      "Namespace declaration ''{0}''=''{1}'' outside of element." },
-
-    {ER_COULD_NOT_LOAD_RESOURCE,
-      "Could not load ''{0}'' (check CLASSPATH), now using just the defaults"},
-
-    { ER_ILLEGAL_CHARACTER,
-       "Attempt to output character of integral value {0} that is not represented in specified output encoding of {1}."},
-    
-    {ER_COULD_NOT_LOAD_METHOD_PROPERTY,
-      "Could not load the propery file ''{0}'' for output method ''{1}'' (check CLASSPATH)" }
-    
+    { "column","Column #"}
+  
   
   };
   }
