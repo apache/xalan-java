@@ -246,6 +246,15 @@ public class UnImplNode implements Node, Element, NodeList, Document
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getAttribute not supported!");
     return null;
   }
+  
+  /**
+   * Introduced in DOM Level 2.
+   */
+  public boolean hasAttributes() 
+  {
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"hasAttributes not supported!");
+    return false;
+  }
 
   /** Unimplemented. */
   public NodeList           getElementsByTagNameNS(String namespaceURI,
@@ -323,6 +332,40 @@ public class UnImplNode implements Node, Element, NodeList, Document
     throws DOMException
   {
     error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"setNodeValue not supported!");
+  }
+  
+  /** Unimplemented. */
+  // public String getValue ()
+  // {      
+  //  error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getValue not supported!");
+  //  return null;
+  // } 
+  
+  /** Unimplemented. */
+  public void setValue (String value) throws DOMException
+  {      
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"setValue not supported!");
+  }
+  
+  /**
+   *  Returns the name of this attribute. 
+   */
+  // public String getName()
+  // {
+  //  return this.getNodeName();
+  // }
+  
+  public Element getOwnerElement()
+  {
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"getOwnerElement not supported!");
+    return null;
+  }
+  
+  /** Unimplemented. */
+  public boolean getSpecified()
+  {
+    error(XSLTErrorResources.ER_FUNCTION_NOT_SUPPORTED); //"setValue not supported!");
+    return false;
   }
 
   /** Unimplemented. */
