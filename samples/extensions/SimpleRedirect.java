@@ -56,50 +56,42 @@
  */
 
 // Imported TraX classes
-import org.apache.trax.Processor; 
-import org.apache.trax.Templates;
-import org.apache.trax.Transformer; 
-import org.apache.trax.Result;
-import org.apache.trax.ProcessorException; 
-import org.apache.trax.ProcessorFactoryException;
-import org.apache.trax.TransformException; 
-
-
-// Imported SAX classes
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerConfigurationException;
 
 // Imported java.io classes
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.FileOutputStream;
+import java.io.FileNotFoundException;
 
 /**
  *  Use the TraX interface to perform a transformation in the simplest manner possible
- *  (4 statements).
+ *  (3 statements).
  */
 public class SimpleRedirect
 {
 	public static void main(String[] args)
-    throws ProcessorException, ProcessorFactoryException, 
-           TransformException, SAXException, IOException
+    throws TransformerException, TransformerConfigurationException, FileNotFoundException
   {  
-    // Instantiate a stylesheet processor.
-	Processor processor = Processor.newInstance("xslt");
+    // Instantiate a TransformerFactory.
+  	TransformerFactory tFactory = TransformerFactory.newInstance();
 	
-	// Use the stylesheet processor to process the stylesheet (foo.xsl) and
-	// return a Templates object.
-    Templates templates = processor.process(new InputSource("1-redir.xsl"));
-	
-	// Use the Templates object to generate a Transformer object.
-	Transformer transformer = templates.newTransformer();
+	  // Use the TransformerFactory to instantiate a Transformer that will work with  
+	  // the stylesheet you specify. This method call also processes the stylesheet
+    // into a compiled Templates object.
+	  Transformer transformer = tFactory.newTransformer(new StreamSource("foo.xsl"));
 
-	// Use the transformer to apply the Templates object to an XML document
-	// (foo.xml). The output that is not redirected by the stylesheet is
-	// written to foo.out. The redirected output is written to the file
-	// designated in the stylesheet.
-	transformer.transform(new InputSource("1-redir.xml"), new Result(new FileWriter("1-nonredir.out")));
-	System.out.println("");
-	System.out.println("***** The results are in 1-nonredir.out and the ****");
-	System.out.println("**** 'redirect' file designated in 1-redir.xsl. ****");
+	  // Use the transformer to apply the Templates object to an XML document
+	  // (foo.xml). The output that is not redirected by the stylesheet is
+	  // written to foo.out. The redirected output is written to the file
+	  // designated in the stylesheet.    
+	  transformer.transform(new StreamSource("1-redir.xml"), 
+                          new StreamResult(new FileOutputStream("1-nonredir.out")));
+	  System.out.println("");
+	  System.out.println("***** The results are in 1-nonredir.out and the ****");
+	  System.out.println("**** 'redirect' file designated in 1-redir.xsl. ****");
   }
 }
