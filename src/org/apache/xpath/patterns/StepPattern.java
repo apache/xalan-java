@@ -47,7 +47,20 @@ public class StepPattern extends NodeTest implements SubContextList
   public void setPredicates(Expression[] predicates)
   {
     m_predicates = predicates;
+    calcScore();
   }
+  
+  /**
+   * Static calc of match score.
+   */
+  protected final void calcScore()
+  {
+    if(getPredicateCount() > 0)
+      m_score = SCORE_OTHER;
+    else
+      super.calcScore();
+  }
+
   
   public XObject executeStep(XPathContext xctxt)
     throws org.xml.sax.SAXException

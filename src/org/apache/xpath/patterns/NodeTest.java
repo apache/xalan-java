@@ -104,7 +104,7 @@ public class NodeTest extends Expression
   /**
    * Static calc of match score.
    */
-  private final void calcScore()
+  protected void calcScore()
   {
     if((m_namespace == null) && (m_name == null))
       m_score = SCORE_NODETEST;
@@ -212,7 +212,7 @@ public class NodeTest extends Expression
         if(0 == isNamespace)
         {
           if(!dh.isNamespaceNode(context))
-            return ((m_name == WILD) || 
+            return (( m_namespace == null && m_name == WILD) ||
                     (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) 
                     && subPartMatch(dh.getLocalNameOfNode(context), m_name))) ?
                    m_score : SCORE_NONE;
@@ -235,7 +235,7 @@ public class NodeTest extends Expression
     case NodeFilter.SHOW_ELEMENT:
       {
         DOMHelper dh = xctxt.getDOMHelper();
-        return ((m_name == WILD) ||
+        return (( m_namespace == null && m_name == WILD) ||
                 (subPartMatch(dh.getNamespaceOfNode(context), m_namespace) 
                 && subPartMatch(dh.getLocalNameOfNode(context), m_name))) ?
                m_score : SCORE_NONE;
