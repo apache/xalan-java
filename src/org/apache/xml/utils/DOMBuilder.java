@@ -325,15 +325,15 @@ public class DOMBuilder
   
           String attrNS = atts.getURI(i);
           
-          if("".equals(attrNS))
-            attrNS = null; // DOM represents no-namespace as null
-  
-          // System.out.println("attrNS: "+attrNS+", localName: "+atts.getQName(i)
-          //                   +", qname: "+atts.getQName(i)+", value: "+atts.getValue(i));
-          // Crimson won't let us set an xmlns: attribute on the DOM.
           String attrQName = atts.getQName(i);
-          // ALWAYS use the DOM Level 2 call!
-          elem.setAttributeNS(attrNS,attrQName, atts.getValue(i));
+          if((attrQName.equals("xmlns") || attrQName.startsWith("xmlns:")) )
+          {
+            elem.setAttributeNS("http://www.w3.org/2000/xmlns/",attrQName, atts.getValue(i));
+          }
+          else
+          {
+             elem.setAttributeNS(atts.getURI(i),attrQName, atts.getValue(i));
+          }
         }
       }
       
@@ -423,11 +423,18 @@ public class DOMBuilder
 
       return;
     }
-
+    
     String s = new String(ch, start, length);
-    Text text = m_doc.createTextNode(s);
+    Node childNode = m_currentNode.getLastChild();
 
-    append(text);
+    if( childNode != null && childNode.getNodeType() == Node.TEXT_NODE ){
+      ((Text)childNode).appendData(s);
+    }
+    else
+    {
+      Text text = m_doc.createTextNode(s);
+      append(text);
+    }
   }
 
   /**
@@ -585,6 +592,7 @@ public class DOMBuilder
   public void startCDATA() throws org.xml.sax.SAXException
   {
     m_inCData = true;
+    append(m_doc.createCDATASection(""));
   }
 
   /**
@@ -627,8 +635,9 @@ public class DOMBuilder
       return;  // avoid DOM006 Hierarchy request error
 
     String s = new String(ch, start, length);
-
-    append(m_doc.createCDATASection(s));
+    
+    CDATASection section  =(CDATASection) m_currentNode.getLastChild();
+    section.appendData(s);
   }
 
   /**

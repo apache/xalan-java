@@ -1,4 +1,5 @@
 /*
+ * @(#)XResources_fr.java	1.4 01/12/03
  * The Apache Software License, Version 1.1
  *
  *
@@ -61,14 +62,14 @@ import org.apache.xml.utils.res.XResourceBundle;
 import java.util.*;
 
 //
-//  LangResources_en.properties
+//  LangResources_fr.properties
 //
 
 /**
  * <meta name="usage" content="internal"/>
- * The Chinese resource bundle.
+ * The French resource bundle.
  */
-public class XResources_zh_CN extends XResourceBundle
+public class XResources_fr extends XResourceBundle
 {
 
   /**
@@ -81,41 +82,36 @@ public class XResources_zh_CN extends XResourceBundle
     return contents;
   }
 
-  /** The association list.          */
+  /** The association list.         */
   static final Object[][] contents =
   {
-    { "ui_language", "zh" }, { "help_language", "zh" }, { "language", "zh" },
+    { "ui_language", "fr" }, { "help_language", "fr" }, { "language", "fr" },
     { "alphabet",
-      new char[]{ 0xff21, 0xff22, 0xff23, 0xff24, 0xff25, 0xff26, 0xff27,
-                  0xff28, 0xff29, 0xff2a, 0xff2b, 0xff2c, 0xff2d, 0xff2e,
-                  0xff2f, 0xff30, 0xff31, 0xff32, 0xff33, 0xff34, 0xff35,
-                  0xff36, 0xff37, 0xff38, 0xff39, 0xff3a } },
+      new char[]{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+                  'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
+                  'Y', 'Z' } },
     { "tradAlphabet",
       new char[]{ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
                   'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
                   'Y', 'Z' } },
 
-    //language orientation 
+    //language orientation
     { "orientation", "LeftToRight" },
 
     //language numbering   
-    { "numbering", "multiplicative-additive" },
-    { "multiplierOrder", "follows" },
+    { "numbering", "additive" },
 
     // largest numerical value
-    //{"MaxNumericalValue", new Integer(100000000)},
+    //{"MaxNumericalValue", new Integer()},
     //These would not be used for EN. Only used for traditional numbering   
-    { "numberGroups", new int[]{ 1 } },
-
-    // simplified chinese  
-    { "zero", new char[]{ 0x96f6 } },
-
+    //{"numberGroups", new int[]{10,1}},
     //These only used for mutiplicative-additive numbering
-    { "multiplier", new long[]{ 100000000, 10000, 1000, 100, 10 } },
-    { "multiplierChar",
-      new char[]{ 0x4ebf, 0x4e07, 0x5343, 0x767e, 0x5341 } },
-    { "digits",
-      new char[]{ 0x4e00, 0x4e8c, 0x4e09, 0x56db, 0x4e94, 0x516d, 0x4e03,
-                  0x516b, 0x4e5d } }, { "tables", new String[]{ "digits" } }
+    //{"multiplier", "10"},
+    //{"multiplierChar", "M"}, 
+    //{"digits", new char[]{'a','b','c','d','e','f','g','h','i'}},
+    //{"digits", new char[]{0x10D0,0x10D1,0x10D2,0x10D3,0x10D4,0x10D5,0x10D6,0x10D7,0x10D8}},
+    //{"tens", new char[]{0x10D9,0x10DA,0x10DB,0x10DC,0x10DD,0x10DE,0x10DF,0x10E0,0x10E1}},  
+    //hundreds, etc...
+    //{"tables", new String[]{"tens", "digits"}}
   };
 }

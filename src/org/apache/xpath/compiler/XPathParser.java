@@ -578,7 +578,7 @@ public class XPathParser
   /**
    * Warn the user of a problem.
    *
-   * @param msg An error number that corresponds to one of the numbers found 
+   * @param msg An error msgkey that corresponds to one of the constants found 
    *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
    *            a key for a format string.
    * @param args An array of arguments represented in the format string, which 
@@ -587,7 +587,7 @@ public class XPathParser
    * @throws TransformerException if the current ErrorListoner determines to 
    *                              throw an exception.
    */
-  void warn(int msg, Object[] args) throws TransformerException
+  void warn(String msg, Object[] args) throws TransformerException
   {
 
     String fmsg = XSLMessages.createXPATHWarning(msg, args);
@@ -631,7 +631,7 @@ public class XPathParser
    * Notify the user of an error, and probably throw an
    * exception.
    *
-   * @param msg An error number that corresponds to one of the numbers found 
+   * @param msg An error msgkey that corresponds to one of the constants found 
    *            in {@link org.apache.xpath.res.XPATHErrorResources}, which is 
    *            a key for a format string.
    * @param args An array of arguments represented in the format string, which 
@@ -640,7 +640,7 @@ public class XPathParser
    * @throws TransformerException if the current ErrorListoner determines to 
    *                              throw an exception.
    */
-  void error(int msg, Object[] args) throws TransformerException
+  void error(String msg, Object[] args) throws TransformerException
   {
 
     String fmsg = XSLMessages.createXPATHMessage(msg, args);
