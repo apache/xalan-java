@@ -7,8 +7,6 @@ import org.apache.xalan.utils.StringToStringTable;
 import org.apache.xalan.utils.StringVector;
 import org.apache.xalan.extensions.ExtensionHandler;
 import org.apache.xalan.extensions.ExtensionHandlerGeneral;
-import org.apache.xalan.extensions.ExtensionHandlerJavaClass;
-import org.apache.xalan.extensions.ExtensionHandlerJavaPackage;
 import org.apache.xalan.extensions.ExtensionsTable;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.xml.sax.SAXException;
@@ -135,7 +133,7 @@ public class ElemExtensionDecl extends ElemTemplateElement
     if(null == lang)
       lang = "javaclass";
 
-    if ( ("javaclass" == lang) && (scriptSrc != null) )
+    if ( lang.equals("javaclass") && (scriptSrc != null) )
       throw new SAXException("Element content not allowed for lang=javaclass " + scriptSrc);
 
     XPathContext liaison = ((XPathContext)transformer.getXPathContext());
