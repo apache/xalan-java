@@ -750,9 +750,9 @@ public class StylesheetRoot extends StylesheetComposed
    * well as this stylesheet.
    * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
    *
-   * NEEDSDOC @param qname
+   * @param qname Qualified name of template to get
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return ElemTemplate matching the given name 
    */
   public ElemTemplate getTemplateComposed(QName qname)
   {
@@ -780,9 +780,9 @@ public class StylesheetRoot extends StylesheetComposed
    * Get an "xsl:variable" property.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
    *
-   * NEEDSDOC @param qname
+   * @param qname Qualified name of variable or param
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The ElemVariable with the given qualified name
    */
   public ElemVariable getVariableOrParamComposed(QName qname)
   {
@@ -805,7 +805,7 @@ public class StylesheetRoot extends StylesheetComposed
    * Get all global "xsl:variable" properties in scope for this stylesheet.
    * @see <a href="http://www.w3.org/TR/xslt#top-level-variables">top-level-variables in XSLT Specification</a>
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Vector of all variables and params in scope
    */
   public Vector getVariablesAndParamsComposed()
   {
@@ -835,7 +835,8 @@ public class StylesheetRoot extends StylesheetComposed
    * Check to see if the caller should bother with check for
    * whitespace nodes.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return Whether the caller should bother with check for
+   * whitespace nodes.
    */
   public boolean shouldCheckWhitespace()
   {
@@ -846,10 +847,10 @@ public class StylesheetRoot extends StylesheetComposed
    * Get information about whether or not an element should strip whitespace.
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
    *
-   * NEEDSDOC @param support
-   * NEEDSDOC @param targetElement
+   * @param support The XPath runtime state.
+   * @param targetElement Element to check
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return WhiteSpaceInfo for the given element
    *
    * @throws TransformerException
    */
@@ -876,7 +877,7 @@ public class StylesheetRoot extends StylesheetComposed
    * <meta name="usage" content="advanced"/>
    * Get the default template for text.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the default template for text.
    */
   public final ElemTemplate getDefaultTextRule()
   {
@@ -895,7 +896,7 @@ public class StylesheetRoot extends StylesheetComposed
    * <meta name="usage" content="advanced"/>
    * Get the default template for elements.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the default template for elements.
    */
   public final ElemTemplate getDefaultRule()
   {
@@ -919,7 +920,7 @@ public class StylesheetRoot extends StylesheetComposed
    * <meta name="usage" content="advanced"/>
    * Get the default template for a root node.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return The default template for a root node.
    */
   public final ElemTemplate getDefaultRootRule()
   {
@@ -998,13 +999,10 @@ public class StylesheetRoot extends StylesheetComposed
    * left and highest index or right.  The first time you call
    * this function it will be with the parameters 0, a.length - 1.
    *
-   * @param a       an integer array
-   * @param lo0     left boundary of array partition
-   * @param hi0     right boundary of array partition
+   * @param v       a vector of Recomposable elements 
+   * @param lo0     left boundary of partition
+   * @param hi0     right boundary of partition
    *
-   * NEEDSDOC @param v
-   * NEEDSDOC @param i
-   * NEEDSDOC @param j
    */
 
   private void QuickSort2(Vector v, int lo0, int hi0)
