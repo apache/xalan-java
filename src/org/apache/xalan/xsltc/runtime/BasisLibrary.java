@@ -135,7 +135,7 @@ public final class BasisLibrary implements Operators {
 	    double result = 0.0;
 	    int node;
 	    while ((node = iterator.next()) != DTMAxisIterator.END) {
-		result += Double.parseDouble(dom.getNodeValue(node));
+		result += Double.parseDouble(dom.getStringValueX(node));
 	    }
 	    return result;
 	}
@@ -148,7 +148,7 @@ public final class BasisLibrary implements Operators {
      * XSLT Standard function string()
      */
     public static String stringF(int node, DOM dom) {
-	return dom.getNodeValue(node);
+	return dom.getStringValueX(node);
     }
 
     /**
@@ -156,10 +156,10 @@ public final class BasisLibrary implements Operators {
      */
     public static String stringF(Object obj, DOM dom) {
 	if (obj instanceof DTMAxisIterator) {
-	    return dom.getNodeValue(((DTMAxisIterator)obj).reset().next());
+	    return dom.getStringValueX(((DTMAxisIterator)obj).reset().next());
 	}
 	else if (obj instanceof Node) {
-	    return dom.getNodeValue(((Node)obj).node);
+	    return dom.getStringValueX(((Node)obj).node);
 	}
 	else if (obj instanceof DOM) {
 	    return ((DOM)obj).getStringValue();
@@ -174,15 +174,15 @@ public final class BasisLibrary implements Operators {
      */
     public static String stringF(Object obj, int node, DOM dom) {
 	if (obj instanceof DTMAxisIterator) {
-	    return dom.getNodeValue(((DTMAxisIterator)obj).reset().next());
+	    return dom.getStringValueX(((DTMAxisIterator)obj).reset().next());
 	}
 	else if (obj instanceof Node) {
-	    return dom.getNodeValue(((Node)obj).node);
+	    return dom.getStringValueX(((Node)obj).node);
 	}
 	else if (obj instanceof DOM) {
 	    // When the first argument is a DOM we want the whole fecking
 	    // DOM and not just a single node - that would not make sense.
-	    //return ((DOM)obj).getNodeValue(node);
+	    //return ((DOM)obj).getStringValueX(node);
 	    return ((DOM)obj).getStringValue();
 	}
 	else if (obj instanceof Double) {
@@ -207,7 +207,7 @@ public final class BasisLibrary implements Operators {
      * XSLT Standard function number()
      */
     public static double numberF(int node, DOM dom) {
-	return stringToReal(dom.getNodeValue(node));
+	return stringToReal(dom.getStringValueX(node));
     }
 
     /**
@@ -228,10 +228,10 @@ public final class BasisLibrary implements Operators {
 	}
 	else if (obj instanceof DTMAxisIterator) {
 	    DTMAxisIterator iter = (DTMAxisIterator) obj;
-	    return stringToReal(dom.getNodeValue(iter.reset().next()));
+	    return stringToReal(dom.getStringValueX(iter.reset().next()));
 	}
 	else if (obj instanceof Node) {
-	    return stringToReal(dom.getNodeValue(((Node) obj).node));
+	    return stringToReal(dom.getStringValueX(((Node) obj).node));
 	}
 	else if (obj instanceof DOM) {
 	    return stringToReal(((DOM) obj).getStringValue());
@@ -379,7 +379,7 @@ public final class BasisLibrary implements Operators {
      * XSLT Standard function normalize-space(). 
      */
     public static String normalize_spaceF(int node, DOM dom) {
-	return normalize_spaceF(dom.getNodeValue(node));
+	return normalize_spaceF(dom.getStringValueX(node));
     }
 
     /**
@@ -558,12 +558,12 @@ public final class BasisLibrary implements Operators {
 	left.reset();
 	
 	while ((lnode = left.next()) != DTMAxisIterator.END) {
-	    final String lvalue = dom.getNodeValue(lnode);
+	    final String lvalue = dom.getStringValueX(lnode);
 	    
 	    int rnode;
 	    right.reset();
 	    while ((rnode = right.next()) != DTMAxisIterator.END) {
-		if (compareStrings(lvalue, dom.getNodeValue(rnode), op, dom)) {
+		if (compareStrings(lvalue, dom.getStringValueX(rnode), op, dom)) {
 		    return true;
 		}
 	    }
@@ -580,15 +580,15 @@ public final class BasisLibrary implements Operators {
 
 	switch(op) {
 	case EQ:
-	    value = dom.getNodeValue(node);
+	    value = dom.getStringValueX(node);
 	    while ((rnode = iterator.next()) != DTMAxisIterator.END) {
-		if (value.equals(dom.getNodeValue(rnode))) return true;
+		if (value.equals(dom.getStringValueX(rnode))) return true;
 	    }
 	    break;
 	case NE:
-	    value = dom.getNodeValue(node);
+	    value = dom.getStringValueX(node);
 	    while ((rnode = iterator.next()) != DTMAxisIterator.END) {
-		if (!value.equals(dom.getNodeValue(rnode))) return true;
+		if (!value.equals(dom.getStringValueX(rnode))) return true;
 	    }
 	    break;
 	case LT:
@@ -618,42 +618,42 @@ public final class BasisLibrary implements Operators {
 	switch (op) {
 	case EQ:
 	    while ((node = left.next()) != DTMAxisIterator.END) {
-		if (numberF(dom.getNodeValue(node), dom) == rnumber)
+		if (numberF(dom.getStringValueX(node), dom) == rnumber)
 		    return true;
 	    }
 	    break;
 
 	case NE:
 	    while ((node = left.next()) != DTMAxisIterator.END) {
-		if (numberF(dom.getNodeValue(node), dom) != rnumber)
+		if (numberF(dom.getStringValueX(node), dom) != rnumber)
 		    return true;
 	    }
 	    break;
 
 	case GT:
 	    while ((node = left.next()) != DTMAxisIterator.END) {
-		if (numberF(dom.getNodeValue(node), dom) > rnumber)
+		if (numberF(dom.getStringValueX(node), dom) > rnumber)
 		    return true;
 	    }
 	    break;
 
 	case LT:
 	    while ((node = left.next()) != DTMAxisIterator.END) {
-		if (numberF(dom.getNodeValue(node), dom) < rnumber)
+		if (numberF(dom.getStringValueX(node), dom) < rnumber)
 		    return true;
 	    }
 	    break;
 
 	case GE:
 	    while ((node = left.next()) != DTMAxisIterator.END) {
-		if (numberF(dom.getNodeValue(node), dom) >= rnumber)
+		if (numberF(dom.getStringValueX(node), dom) >= rnumber)
 		    return true;
 	    }
 	    break;
 
 	case LE:
 	    while ((node = left.next()) != DTMAxisIterator.END) {
-		if (numberF(dom.getNodeValue(node), dom) <= rnumber)
+		if (numberF(dom.getStringValueX(node), dom) <= rnumber)
 		    return true;
 	    }
 	    break;
@@ -673,7 +673,7 @@ public final class BasisLibrary implements Operators {
 	int node;
 	//left.reset();
 	while ((node = left.next()) != DTMAxisIterator.END) {
-	    if (compareStrings(dom.getNodeValue(node), rstring, op, dom)) {
+	    if (compareStrings(dom.getStringValueX(node), rstring, op, dom)) {
 		return true;
 	    }
 	}
@@ -1159,7 +1159,7 @@ public final class BasisLibrary implements Operators {
 	           org.apache.xpath.objects.XMLStringFactoryImpl.getFactory());
 
 	DOMImpl idom = (DOMImpl)dtmManager.getDTM(new DOMSource(doc), false,
-                                                  null, true, true);
+                                                  null, true, false);
 
 	if (dom instanceof MultiDOM) {
             final MultiDOM multiDOM = (MultiDOM) dom;

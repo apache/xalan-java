@@ -171,7 +171,7 @@ public final class LoadDocument {
                                                .getDOMImpl()).m_mgr;
             newdom = (SAXImpl)dtmManager.getDTM(
                                  new SAXSource(reader, new InputSource(uri)),
-                                 false, null, true, true);
+                                 false, null, true, false);
 
             translet.prepassDocument(newdom);
 
@@ -241,7 +241,7 @@ public final class LoadDocument {
 		int node;
 
 		while ((node = iterator.next()) != DTM.NULL) {
-		    String uri = dom.getNodeValue(node);
+		    String uri = dom.getStringValueX(node);
 		    // Get the URI from this node if no xml URI base is set
 		    if ((xmlURI == null) || xmlURI.equals("")) {
 			xmlURI = dom.getDocumentURI(node);
