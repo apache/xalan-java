@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="US-ASCII"?>
 <!DOCTYPE resources [
-  <!ENTITY % externalEntity SYSTEM "sbk:/sources/entities.ent">
+  <!ENTITY % externalEntity SYSTEM "../entities.ent">
   %externalEntity;
   <!ELEMENT resources (resource|human-resource)+>
   <!ELEMENT resource EMPTY>
@@ -80,4 +80,4 @@
   <human-resource id="xalandev" 
                   name="Xalan Development Mailing List" 
                   mailto="xalan-dev@xml.apache.org"/>
-</resources>         
+</resources>

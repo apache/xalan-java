@@ -1,5 +1,5 @@
 <?xml version="1.0" standalone="no"?> 
-<!DOCTYPE s1 SYSTEM "sbk:/style/dtd/document.dtd"[
+<!DOCTYPE s1 SYSTEM "../../style/dtd/document.dtd"[
 <!ENTITY done-j SYSTEM "DONE">
 <!ENTITY status-j SYSTEM "STATUS">
 <!ENTITY bugs-j SYSTEM "BUGS">
@@ -105,8 +105,7 @@
      </ul>
      </s3><anchor name="bugs"/>
      <s3 title="Open bugs and bug reporting">
-     <!--&bugs-j;-->
-     <p>Currently, there are no open bugs in &xslt4j;.</p>
+     &bugs-j;
      <p>Xerces bug in &xml4j-used;:</p>
      <ul>
        <li>&xml4j; 1.2.3 does not process namespaces in SAX events when parsing UTF-16 documents, which causes &xslt4j; to fail with UTF-16

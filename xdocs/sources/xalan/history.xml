@@ -1,3 +1,20 @@
+<s3 title="Changes for &xslt4j; version 2.0.D06">
+<p>We have fixed the bugs reported in &xslt4j; 2.0.D05. Along with several other enhancements, 
+we have also fixed a number of bugs found by testing and our users:</p>
+<ul>
+<li>Fixed some threading problems and improved support for handling Exceptions thrown in a secondary thread.<br/><br/>
+Note: To support incremental output, &xslt4j; performs the transformation in a second thread while building the source tree in the main thread.<br/><br/></li>
+<li>Fixed problems encountered in piping (utilizing transformation output as input for another transformation).<br/><br/></li>
+<li>Fixed problems handling attributes and adding attributes to result tree.<br/><br/></li>
+<li>Added defensive checking for null entities, null namespaces, and empty strings passed in for URIs and local names.<br/><br/></li>
+<li>We now conform to the SAX convention of representing null namespaces with empty strings.<br/><br/></li>
+<li>Fixed a bug encountered evaluating a variable in a predicate expression applied to child nodes.<br/><br/></li>
+<li>Changed names of serializers from FormatterTo<ref>Xxx</ref> to SerializerTo<ref>Xxx</ref>. See 
+<jump href="apidocs/org/apache/xalan/serialize/package-summary.html">Package org.apache.xalan.serialize</jump>.<br/><br/></li>
+<li>Improved debugging support in a number of areas.</li>
+</ul>
+<p>For a list of tasks in the &xslt4j2; To-Do list that have been completed, see <jump href="todo.html#release-date-completed">Tasks completed</jump>.</p>
+</s3>
 <s3 title="Changes for &xslt4j; version 2.0.D05">
 <p>All of the bugs reported in &xslt4j; 2.0.D01 have been fixed. The remainder of this section discusses two changes that we believe are of particular importance:</p>
 <p><em>TrAX</em></p>

@@ -4,7 +4,7 @@
  *	This software is provided without a warranty of any kind.
  *
 -->
-<!DOCTYPE s1 SYSTEM "sbk:/style/dtd/document.dtd">
+<!DOCTYPE s1 SYSTEM "../../style/dtd/document.dtd">
 
 <s1 title="&xslt4j; Extensions">
 <ul>
