@@ -187,20 +187,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
    */
   private static XSLMessages m_XSLMessages = new XSLMessages();
   
-  /**
-   * Construct an XSLT processor 
-   * @see XSLTProcessorFactory
-   * @see XSLTProcessor
-   *
-  protected XSLTEngineImpl(Processor p)
-    throws org.xml.sax.SAXException
-  {
-    //m_processor = p;
-    m_tfactory = TransformerFactory.newInstance();
-    m_transformerImpl = m_tfactory.newTransformer(); 
-    //m_transformerImpl = (TransformerImpl)t;
-  } */ 
-  
+    
  /**
    * Construct an XSLT processor that uses the default DTM (Document Table Model) liaison
    * and XML parser. As a general rule, you should use XSLTProcessorFactory to create an
@@ -213,28 +200,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
     throws org.xml.sax.SAXException
   {    
     m_tfactory = TransformerFactory.newInstance();
-    /*
-    try{
-      m_transformerImpl = (TransformerImpl)m_tfactory.newTransformer();
-    }
-    catch (TransformerConfigurationException tce)
-    {
-      throw new SAXException(tce);
-    }*/
-                                             
-  /*  try
-    {
-      String parserLiaisonClassName = Constants.LIAISON_CLASS;
-      Class parserLiaisonClass = Class.forName(parserLiaisonClassName);
-      Constructor parserLiaisonCtor = parserLiaisonClass.getConstructor(null);
-      m_parserLiaison
-        = (XMLParserLiaison)parserLiaisonCtor.newInstance(null);
-      m_parserLiaison.setEnvSupport(this);
-    }
-    catch(Exception e)
-    {
-      throw new XSLProcessorException(e);
-    }*/
+    m_problemListener = new ProblemListenerDefault();    
   }
 
   /**
@@ -249,28 +215,14 @@ public class XSLTEngineImpl implements  XSLTProcessor
     throws SAXException 
   {   
     TransformerFactory m_tfactory = TransformerFactory.newInstance();
-    /*
-    try{
-      m_transformerImpl = (TransformerImpl)m_tfactory.newTransformer();
-    }
-    catch (TransformerConfigurationException tce)
-    {
-      throw new SAXException(tce);
-    }*/
-   // }
-   /* catch (ProcessorFactoryException pfe)
-    {
-      throw new TransformerException("Could not create Processor", pfe);
-    }
-   */ 
+    m_problemListener = new ProblemListenerDefault();
+    
     try 
       {
         m_liaison =  (DOM2Helper)(Class.forName(liaisonClassName).newInstance());
         org.apache.xpath.XPathContext xctxt = this.getTransformer().getXPathContext();
 
-        xctxt.setDOMHelper(m_liaison);
-        //getXPathContext().setDOMHelper(liaison);
-        
+        xctxt.setDOMHelper(m_liaison);        
       } 
       catch (ClassNotFoundException e1) 
       {
@@ -312,25 +264,13 @@ public class XSLTEngineImpl implements  XSLTProcessor
   public XSLTEngineImpl(XMLParserLiaison parserLiaison)
     throws org.xml.sax.SAXException
   {
-     TransformerFactory m_tfactory = TransformerFactory.newInstance();
-      /*
-      try{
-      m_transformerImpl = (TransformerImpl)m_tfactory.newTransformer();
-    }
-    catch (TransformerConfigurationException tce)
-    {
-      throw new SAXException(tce);
-    }*/
-   // }
-  /*  catch (ProcessorFactoryException pfe)
-    {
-      //throw new TransformException("Could not create Processor", pfe);
-    }*/
+    TransformerFactory m_tfactory = TransformerFactory.newInstance();
+    m_problemListener = new ProblemListenerDefault();
+    
     m_liaison =  (DOM2Helper)parserLiaison;
     org.apache.xpath.XPathContext xctxt = this.getTransformer().getXPathContext();
 
-    xctxt.setDOMHelper(m_liaison);
-    //getXPathContext().setDOMHelper(liaison);
+    xctxt.setDOMHelper(m_liaison);    
   }
 
   /**
@@ -346,25 +286,13 @@ public class XSLTEngineImpl implements  XSLTProcessor
   XSLTEngineImpl(XMLParserLiaison parserLiaison, XPathFactory xpathFactory)    
     throws SAXException
   {   
-      m_tfactory = TransformerFactory.newInstance();
-      /*
-     try{
-      m_transformerImpl = (TransformerImpl)m_tfactory.newTransformer();
-    }
-    catch (TransformerConfigurationException tce)
-    {
-      throw new SAXException(tce);
-    }*/
-   // }  
-   // catch (ProcessorFactoryException pfe)
-    //{
-      //throw new TransformException("Could not create Processor", pfe);
-   // }
+    m_tfactory = TransformerFactory.newInstance();
+    m_problemListener = new ProblemListenerDefault();
+    
     m_liaison =  (DOM2Helper)parserLiaison;
     org.apache.xpath.XPathContext xctxt = this.getTransformer().getXPathContext();
 
-    xctxt.setDOMHelper(m_liaison);
-    //getXPathContext().setDOMHelper(liaison);
+    xctxt.setDOMHelper(m_liaison);    
   }
  
   /**
@@ -2441,7 +2369,10 @@ public class XSLTEngineImpl implements  XSLTProcessor
    */
   public ProblemListener getProblemListener()
   {
-    return m_problemListener.getProblemListener();
+    if (m_problemListener.getProblemListener() != null)
+      return m_problemListener.getProblemListener();
+    else
+      return m_problemListener;
   }
   
   public TransformerImpl getTransformer()
