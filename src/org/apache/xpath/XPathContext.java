@@ -626,16 +626,18 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   private void assertion(boolean b, String msg) throws javax.xml.transform.TransformerException
   {
-
-    ErrorListener errorHandler = getErrorListener();
-
-    if (errorHandler != null)
+    if (!b) 
     {
-      errorHandler.fatalError(
-        new TransformerException(
-          XSLMessages.createMessage(
-            XPATHErrorResources.ER_INCORRECT_PROGRAMMER_ASSERTION,
-            new Object[]{ msg }), (SAXSourceLocator)this.getSAXLocator()));
+      ErrorListener errorHandler = getErrorListener();
+
+      if (errorHandler != null)
+      {
+        errorHandler.fatalError(
+          new TransformerException(
+            XSLMessages.createMessage(
+              XPATHErrorResources.ER_INCORRECT_PROGRAMMER_ASSERTION,
+              new Object[]{ msg }), (SAXSourceLocator)this.getSAXLocator()));
+      }
     }
   }
 
