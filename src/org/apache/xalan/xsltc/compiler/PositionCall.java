@@ -67,6 +67,7 @@ package org.apache.xalan.xsltc.compiler;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.DOM;
 
 final class PositionCall extends FunctionCall {
 
@@ -91,6 +92,7 @@ final class PositionCall extends FunctionCall {
 	    if (getParent().getParent() instanceof Predicate) {
 		Predicate pred = (Predicate)getParent().getParent();
 		_type = pred.getPosType();
+		if ((_type==DOM.ELEMENT) || (_type==DOM.ATTRIBUTE)) _type = -1;
 	    }
 	}
 

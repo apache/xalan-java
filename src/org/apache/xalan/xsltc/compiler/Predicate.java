@@ -187,13 +187,13 @@ final class Predicate extends Expression {
 	    if ((_exp instanceof LastCall) ||
 		(getParent() instanceof Pattern) ||
 		(getParent() instanceof FilterExpr)) {
+
 		final QName position = getParser().getQName("position");
-		final PositionCall positionCall;
-		positionCall = new PositionCall(position, -1);
+		final PositionCall positionCall = new PositionCall(position);
 		positionCall.setParser(getParser());
 		positionCall.setParent(this);
-		_exp = new EqualityExpr(EqualityExpr.EQ, positionCall, _exp);
 
+		_exp = new EqualityExpr(EqualityExpr.EQ, positionCall, _exp);
 		if (_exp.typeCheck(stable) != Type.Boolean) {
 		    _exp = new CastExpr(_exp, Type.Boolean);
 		}
@@ -220,7 +220,6 @@ final class Predicate extends Expression {
 	else if (texp instanceof BooleanType == false) {
 	    _exp = new CastExpr(_exp, Type.Boolean);
 	}
-
 	_nthPositionFilter = false;
 
 	return _type = Type.Boolean;

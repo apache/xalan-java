@@ -95,6 +95,7 @@ final class LastCall extends FunctionCall {
 	    if (getParent().getParent() instanceof Predicate) {
 		Predicate pred = (Predicate)getParent().getParent();
 		_type = pred.getPosType();
+		if ((_type==DOM.ELEMENT) || (_type==DOM.ATTRIBUTE)) _type = -1;
 	    }
 	}
 
@@ -102,6 +103,7 @@ final class LastCall extends FunctionCall {
 	// current node's children and not the last in the current iterator.
 	if (getParent() instanceof Predicate) {
 	    _type = ((Predicate)getParent()).getPosType();
+	    if ((_type==DOM.ELEMENT) || (_type==DOM.ATTRIBUTE)) _type = -1;
 	    if (getParent().getParent() instanceof Step) {
 		lastChild = true;
 	    }

@@ -97,7 +97,7 @@ class VariableRefBase extends Expression {
      * @return Variable reference description
      */
     public String toString() {
-	return "variable-ref(" + _variable.getName() + ')';
+	return "variable-ref("+_variable.getName()+'/'+_variable.getType()+')';
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {

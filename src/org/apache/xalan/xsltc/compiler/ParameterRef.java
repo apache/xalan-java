@@ -110,5 +110,13 @@ final class ParameterRef extends VariableRefBase {
 	    }
 	    il.append(new GETFIELD(cpg.addFieldref(className,name,signature)));
 	}
+
+	if (_variable.getType() instanceof NodeSetType) {
+	    final int reset = cpg.addInterfaceMethodref(NODE_ITERATOR,
+							"reset",
+							"()"+NODE_ITERATOR_SIG);
+	    il.append(new INVOKEINTERFACE(reset,1));	    
+	}
+
     }
 }
