@@ -103,9 +103,10 @@ public final class IntegerArray {
     }
 
     /**
-     * Merge two sorted arrays and eliminate duplicates. 
+     * Merge two sorted arrays and eliminate duplicates.
+     * Elements of the other IntegerArray must not be changed. 
      */
-    public void merge(IntegerArray other) {
+    public void merge(final IntegerArray other) {
 	final int newSize = _free + other._free;
 // System.out.println("IntegerArray.merge() begin newSize = " + newSize);
 	int[] newArray = new int[newSize];
