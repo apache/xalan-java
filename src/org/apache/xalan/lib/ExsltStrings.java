@@ -78,7 +78,8 @@ import java.util.StringTokenizer;
 public class ExsltStrings extends ExsltBase
 {
   // Reuse the Document object to reduce memory usage.
-  private static Document lDoc = null;
+  private static Document m_doc = null;
+  private static ExsltStrings m_instance = new ExsltStrings();
 
   /**
    * The str:align function aligns a string within another string. 
@@ -231,8 +232,15 @@ public class ExsltStrings extends ExsltBase
   {
     try
     {
-      if (lDoc == null)
-        lDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+      // Lock the instance to ensure thread safety
+      if (m_doc == null)
+      {
+        synchronized (m_instance)
+        {
+          if (m_doc == null)
+            m_doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        }
+      }
     }
     catch(ParserConfigurationException pce)
     {
@@ -252,19 +260,22 @@ public class ExsltStrings extends ExsltBase
       matchIndex = str.indexOf(pattern, fromIndex);
       if (matchIndex >= 0)
       {
-	    token = str.substring(fromIndex, matchIndex);
-	    fromIndex = matchIndex + pattern.length();
-	  }
+	token = str.substring(fromIndex, matchIndex);
+	fromIndex = matchIndex + pattern.length();
+      }
       else
       {
         done = true;
         token = str.substring(fromIndex);
       }
         
-      Element element = lDoc.createElement("token");
-      Text text = lDoc.createTextNode(token);
-      element.appendChild(text);
-      resultSet.addNode(element);      
+      synchronized (m_doc)
+      {
+        Element element = m_doc.createElement("token");
+        Text text = m_doc.createTextNode(token);
+        element.appendChild(text);
+        resultSet.addNode(element);      
+      }
     }
     
     return resultSet;
@@ -315,8 +326,15 @@ public class ExsltStrings extends ExsltBase
   {
     try
     {
-      if (lDoc == null)
-        lDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+      // Lock the instance to ensure thread safety
+      if (m_doc == null)
+      {
+        synchronized (m_instance)
+        {
+          if (m_doc == null)
+            m_doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+        }
+      }
     }
     catch(ParserConfigurationException pce)
     {
@@ -329,22 +347,28 @@ public class ExsltStrings extends ExsltBase
     {
       StringTokenizer lTokenizer = new StringTokenizer(toTokenize, delims);
 
-      while (lTokenizer.hasMoreTokens())
+      synchronized (m_doc)
       {
-        Element element = lDoc.createElement("token");
-        element.appendChild(lDoc.createTextNode(lTokenizer.nextToken()));
-        resultSet.addNode(element);      
+        while (lTokenizer.hasMoreTokens())
+        {
+          Element element = m_doc.createElement("token");
+          element.appendChild(m_doc.createTextNode(lTokenizer.nextToken()));
+          resultSet.addNode(element);      
+        }
       }
     }
     // If the delimiter is an empty string, create one token Element for 
     // every single character.
     else
     {
-      for (int i = 0; i < toTokenize.length(); i++)
+      synchronized (m_doc)
       {
-        Element element = lDoc.createElement("token");
-        element.appendChild(lDoc.createTextNode(toTokenize.substring(i, i+1)));
-        resultSet.addNode(element);              
+        for (int i = 0; i < toTokenize.length(); i++)
+        {
+          Element element = m_doc.createElement("token");
+          element.appendChild(m_doc.createTextNode(toTokenize.substring(i, i+1)));
+          resultSet.addNode(element);              
+        }
       }
     }
 
