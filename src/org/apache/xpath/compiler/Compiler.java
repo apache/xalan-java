@@ -146,7 +146,7 @@ public class Compiler extends OpMap
   public Expression compile(int opPos) throws TransformerException
   {
 
-    int op = m_opMap[opPos];
+    int op = getOp(opPos);
 
     Expression expr = null;
     // System.out.println(getPatternString()+"op: "+op);
@@ -220,7 +220,7 @@ public class Compiler extends OpMap
       break;
     default :
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE,
-            new Object[]{ Integer.toString(m_opMap[opPos]) });  //"ERROR! Unknown op code: "+m_opMap[opPos]);
+            new Object[]{ Integer.toString(getOp(opPos)) });  //"ERROR! Unknown op code: "+m_opMap[opPos]);
     }
 //    if(null != expr)
 //      expr.setSourceLocator(m_locator);
@@ -537,7 +537,7 @@ public class Compiler extends OpMap
 
     opPos = getFirstChildPos(opPos);
 
-    return (XString) m_tokenQueue[m_opMap[opPos]];
+    return (XString) getTokenQueue().elementAt(getOp(opPos));
   }
 
   /**
@@ -554,7 +554,7 @@ public class Compiler extends OpMap
 
     opPos = getFirstChildPos(opPos);
 
-    return (XNumber) m_tokenQueue[m_opMap[opPos]];
+    return (XNumber) getTokenQueue().elementAt(getOp(opPos));
   }
 
   /**
@@ -573,12 +573,12 @@ public class Compiler extends OpMap
 
     opPos = getFirstChildPos(opPos);
 
-    int nsPos = m_opMap[opPos];
+    int nsPos = getOp(opPos);
     java.lang.String namespace 
       = (OpCodes.EMPTY == nsPos) ? null 
-                                   : (java.lang.String) m_tokenQueue[nsPos];
+                                   : (java.lang.String) getTokenQueue().elementAt(nsPos);
     java.lang.String localname 
-      = (java.lang.String) m_tokenQueue[m_opMap[opPos+1]];
+      = (java.lang.String) getTokenQueue().elementAt(getOp(opPos+1));
     QName qname = new QName(namespace, localname);
 
     var.setQName(qname);
@@ -708,7 +708,7 @@ public class Compiler extends OpMap
       int nextOpPos = opPos;
       int i;
 
-      for (i = 0; m_opMap[nextOpPos] == OpCodes.OP_LOCATIONPATHPATTERN; i++)
+      for (i = 0; getOp(nextOpPos) == OpCodes.OP_LOCATIONPATHPATTERN; i++)
       {
         nextOpPos = getNextOpPos(nextOpPos);
       }
@@ -719,7 +719,7 @@ public class Compiler extends OpMap
       UnionPattern up = new UnionPattern();
       StepPattern[] patterns = new StepPattern[i];
 
-      for (i = 0; m_opMap[opPos] == OpCodes.OP_LOCATIONPATHPATTERN; i++)
+      for (i = 0; getOp(opPos) == OpCodes.OP_LOCATIONPATHPATTERN; i++)
       {
         nextOpPos = getNextOpPos(opPos);
         patterns[i] = (StepPattern) compile(opPos);
@@ -848,7 +848,7 @@ private static final boolean DEBUG = false;
   {
 
     int startOpPos = opPos;
-    int stepType = getOpMap()[opPos];
+    int stepType = getOp(opPos);
 
     if (OpCodes.ENDOP == stepType)
     {
@@ -871,7 +871,7 @@ private static final boolean DEBUG = false;
       if(DEBUG)
         System.out.println("MATCH_FUNCTION: "+m_currentPattern); 
       addMagicSelf = false;
-      argLen = m_opMap[opPos + OpMap.MAPINDEX_LENGTH];
+      argLen = getOp(opPos + OpMap.MAPINDEX_LENGTH);
       pattern = new FunctionPattern(compileFunction(opPos), Axis.PARENT, Axis.CHILD);
       break;
     case OpCodes.FROM_ROOT :
@@ -1042,11 +1042,11 @@ private static final boolean DEBUG = false;
   Expression compileFunction(int opPos) throws TransformerException
   {
 
-    int endFunc = opPos + m_opMap[opPos + 1] - 1;
+    int endFunc = opPos + getOp(opPos + 1) - 1;
 
     opPos = getFirstChildPos(opPos);
 
-    int funcID = m_opMap[opPos];
+    int funcID = getOp(opPos);
 
     opPos++;
 
@@ -1103,16 +1103,16 @@ private static final boolean DEBUG = false;
           throws TransformerException
   {
 
-    int endExtFunc = opPos + m_opMap[opPos + 1] - 1;
+    int endExtFunc = opPos + getOp(opPos + 1) - 1;
 
     opPos = getFirstChildPos(opPos);
 
-    java.lang.String ns = (java.lang.String) m_tokenQueue[m_opMap[opPos]];
+    java.lang.String ns = (java.lang.String) getTokenQueue().elementAt(getOp(opPos));
 
     opPos++;
 
     java.lang.String funcName =
-      (java.lang.String) m_tokenQueue[m_opMap[opPos]];
+      (java.lang.String) getTokenQueue().elementAt(getOp(opPos));
 
     opPos++;
 

@@ -120,12 +120,101 @@ public final class IntegerArray {
 	_array[_free++] = value;
     }
   
-    /** adds new int at the end if not already present */
+    /** 
+     * Adds new int at the end if not already present.
+     */
     public void addNew(int value) {
 	for (int i = 0; i < _free; i++) {
 	    if (_array[i] == value) return;  // already in array
 	}
 	add(value);
+    }
+
+    public void reverse() {
+	int left = 0; 
+	int right = _free - 1;
+
+	while (left < right) {
+	    int temp = _array[left];
+	    _array[left++] = _array[right];
+	    _array[right--] = temp;
+	}
+    }
+
+    /**
+     * Merge two sorted arrays and eliminate duplicates. 
+     */
+    public void merge(IntegerArray other) {
+	final int newSize = _free + other._free;
+// System.out.println("IntegerArray.merge() begin newSize = " + newSize);
+	int[] newArray = new int[newSize];
+
+	// Merge the two arrays
+	int i = 0, j = 0, k;
+	for (k = 0; i < _free && j < other._free; k++) {
+	    int x = _array[i];
+	    int y = other._array[j];
+
+	    if (x < y) {
+		newArray[k] = x;
+		i++;
+	    }
+	    else if (x > y) {
+		newArray[k] = y;
+		j++;
+	    }
+	    else {
+		newArray[k] = x;
+		i++; j++;
+	    }
+	}
+
+	// Copy the rest if of different lengths
+	if (i >= _free) {
+	    while (j < other._free) {
+		newArray[k++] = other._array[j++];
+	    }
+	}
+	else {
+	    while (i < _free) {
+		newArray[k++] = _array[i++];
+	    }
+	}
+
+	// Update reference to this array
+	_array = newArray;
+	_free = _size = newSize;
+// System.out.println("IntegerArray.merge() end");
+    }
+
+    public void sort() {
+	quicksort(_array, 0, _free - 1);
+    }
+
+    private static void quicksort(int[] array, int p, int r) {
+	if (p < r) {
+	    final int q = partition(array, p, r);
+	    quicksort(array, p, q);
+	    quicksort(array, q + 1, r);
+	}
+    }
+    
+    private static int partition(int[] array, int p, int r) {
+	final int x = array[p];
+	int i = p - 1; int j = r + 1;
+
+	while (true) {
+	    while (x < array[--j]);
+	    while (x > array[++i]);
+	    if (i < j) {
+		int temp = array[i];
+		array[i] = array[j];
+		array[j] = temp;
+	    }
+	    else {
+		return j;
+	    }
+	}
     }
 
     private void growArray(int size) {

@@ -103,6 +103,12 @@ final class ApplyTemplates extends Instruction {
 	
 	if (select.length() > 0) {
 	    _select = parser.parseExpression(this, "select", null);
+
+	    // Wrap _select in a ForwardPositionExpr
+	    final Expression fpe = new ForwardPositionExpr(_select);
+	    _select.setParent(fpe);
+	    fpe.setParser(_select.getParser());
+	    _select = fpe;
 	}
 	
 	if (mode.length() > 0) {

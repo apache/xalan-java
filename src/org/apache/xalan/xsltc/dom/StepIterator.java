@@ -68,41 +68,58 @@ package org.apache.xalan.xsltc.dom;
 import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
-
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 
+/**
+ * A step iterator is used to evaluate expressions like "BOOK/TITLE". 
+ * A better name for this iterator would have been ParentIterator since 
+ * both "BOOK" and "TITLE" are steps in XPath lingo. Step iterators are 
+ * constructed from two other iterators which we are going to refer to 
+ * as "outer" and "inner". Every node from the outer iterator (the one 
+ * for BOOK in our example) is used to initialize the inner iterator. 
+ * After this initialization, every node from the inner iterator is 
+ * returned (in essence, implementing a "nested loop").
+ */
 public class StepIterator extends DTMAxisIteratorBase {
 
-    private int _pos = -1;
+    /**
+     * A reference to the "outer" iterator.
+     */
     protected DTMAxisIterator _source;
+
+    /**
+     * A reference to the "inner" iterator.
+     */
     protected DTMAxisIterator _iterator;
+
+    /**
+     * Temp variable to store a marked position.
+     */
+    private int _pos = -1;
 
     public StepIterator(DTMAxisIterator source, DTMAxisIterator iterator) {
 	_source = source;
 	_iterator = iterator;
+// System.out.println("SI source = " + source + " this = " + this);
+// System.out.println("SI iterator = " + iterator + " this = " + this);
     }
 
 
     public void setRestartable(boolean isRestartable) {
 	_isRestartable = isRestartable;
 	_source.setRestartable(isRestartable);
-	_iterator.setRestartable(true); // must _always_ be restartable
+	_iterator.setRestartable(true); 	// must be restartable
     }
 
     public DTMAxisIterator cloneIterator() {
 	_isRestartable = false;
 	try {
-	    final StepIterator clone = (StepIterator)super.clone();
+	    final StepIterator clone = (StepIterator) super.clone();
 	    clone._source = _source.cloneIterator();
 	    clone._iterator = _iterator.cloneIterator();
-
-	    // Special case -> _iterator must be restartable
-	//    if (clone._iterator instanceof DTMAxisIteratorBase) {
-	//	((DTMAxisIteratorBase)(clone._iterator))._isRestartable = true;
-	//    }
-
-	    clone.setRestartable(false);
+	    clone._iterator.setRestartable(true); 	// must be restartable
+	    clone._isRestartable = false;
 	    return clone.reset();
 	}
 	catch (CloneNotSupportedException e) {

@@ -75,6 +75,7 @@ import org.apache.xpath.objects.XObject;
 import java.util.Vector;
 
 import org.apache.xml.utils.QName;
+import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
@@ -393,14 +394,11 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 
       xctxt.pushCurrentNode(DTM.NULL);
 
-      int[] currentNodes = xctxt.getCurrentNodeStack();
-      int currentNodePos = xctxt.getCurrentNodeFirstFree() - 1;
+      IntStack currentNodes = xctxt.getCurrentNodeStack();
 
       xctxt.pushCurrentExpressionNode(DTM.NULL);
 
-      int[] currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
-      int currentExpressionNodePos =
-              xctxt.getCurrentExpressionNodesFirstFree() - 1;
+      IntStack currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
 
       xctxt.pushSAXLocatorNull();
       xctxt.pushContextNodeList(sourceNodes);
@@ -414,8 +412,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 
       while (DTM.NULL != (child = sourceNodes.nextNode()))
       {
-        currentNodes[currentNodePos] = child;
-        currentExpressionNodes[currentExpressionNodePos] = child;
+        currentNodes.setTop(child);
+        currentExpressionNodes.setTop(child);
 
         if ((child & DTMManager.IDENT_DTM_DEFAULT) != docID)
         {

@@ -88,6 +88,16 @@ public class IntStack extends IntVector
   {
     super(blocksize);
   }
+  
+  /**
+   * Copy constructor for IntStack
+   * 
+   * @param v IntStack to copy
+   */
+  public IntStack (IntStack v)
+  {
+  	super(v);
+  }
 
   /**
    * Pushes an item onto the top of this stack.
@@ -222,5 +232,16 @@ public class IntStack extends IntVector
     }
 
     return -1;
+  }
+  
+  /**
+   * Returns clone of current IntStack
+   * 
+   * @return clone of current IntStack
+   */
+  public Object clone()
+    throws CloneNotSupportedException
+  {
+  	return (IntStack) super.clone();
   }
 }

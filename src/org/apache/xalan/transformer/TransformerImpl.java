@@ -110,6 +110,7 @@ import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.DOMBuilder;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xml.utils.ObjectPool;
+import org.apache.xml.utils.ObjectStack;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.WrappedRuntimeException;
@@ -238,11 +239,11 @@ public class TransformerImpl extends Transformer
    * so a tool can discover the calling template. Note the use of an array 
    * for this limits the recursion depth to 4K.
    */
-  ElemTemplateElement[] m_currentTemplateElements 
-      = new ElemTemplateElement[XPathContext.RECURSIONLIMIT];
+  ObjectStack m_currentTemplateElements 
+      = new ObjectStack(XPathContext.RECURSIONLIMIT);
   
   /** The top of the currentTemplateElements stack. */
-  int m_currentTemplateElementsTop = 0;
+  //int m_currentTemplateElementsTop = 0;
 
   /**
    * A node vector used as a stack to track the current
@@ -496,13 +497,7 @@ public class TransformerImpl extends Transformer
       resetUserParameters();
       
 
-      int n = m_currentTemplateElements.length;
-      for (int i = 0; i < n; i++) 
-      {
-        m_currentTemplateElements[i] = null;
-      }
-      m_currentTemplateElementsTop = 0;
-      
+      m_currentTemplateElements.removeAllElements();     
       m_currentMatchTemplates.removeAllElements();
       m_currentMatchedNodes.removeAllElements();
       
@@ -2021,11 +2016,12 @@ public class TransformerImpl extends Transformer
     DTM dtm = m_xcontext.getDTM(child);
     short nodeType = dtm.getNodeType(child);
     boolean isDefaultTextRule = false;
+    boolean isApplyImports = false;    
 
     if (null == template)
     {
       int maxImportLevel, endImportLevel=0;
-      boolean isApplyImports = ((xslInstruction == null)
+      isApplyImports = ((xslInstruction == null)
                                 ? false
                                 : xslInstruction.getXSLToken()
                                   == Constants.ELEMNAME_APPLY_IMPORTS);
@@ -2115,8 +2111,10 @@ public class TransformerImpl extends Transformer
       pushPairCurrentMatched(template, child);
       
       // Fix copy copy29 test.
-      DTMIterator cnl = new org.apache.xpath.NodeSetDTM(child, m_xcontext.getDTMManager());
-      m_xcontext.pushContextNodeList(cnl);
+      if (!isApplyImports) {
+          DTMIterator cnl = new org.apache.xpath.NodeSetDTM(child, m_xcontext.getDTMManager());
+          m_xcontext.pushContextNodeList(cnl);
+      }
 
       if (isDefaultTextRule)
       {
@@ -2165,8 +2163,10 @@ public class TransformerImpl extends Transformer
     {
       m_xcontext.getVarStack().unlink();
       m_xcontext.popCurrentNode();
-      m_xcontext.popContextNodeList();
-      popCurrentMatched();
+      if (!isApplyImports) {
+          m_xcontext.popContextNodeList();
+          popCurrentMatched();
+      }
       popElemTemplateElement();
     }
 
@@ -2313,8 +2313,8 @@ public class TransformerImpl extends Transformer
 
     XPathContext xctxt = m_xcontext;
     xctxt.pushSAXLocatorNull();
-    int currentTemplateElementsTop = m_currentTemplateElementsTop;
-    m_currentTemplateElementsTop++;
+    int currentTemplateElementsTop = m_currentTemplateElements.size();
+    m_currentTemplateElements.push(null);
 
     try
     {
@@ -2327,7 +2327,7 @@ public class TransformerImpl extends Transformer
           continue;
 
         xctxt.setSAXLocator(t);
-        m_currentTemplateElements[currentTemplateElementsTop] = t;
+        m_currentTemplateElements.setElementAt(t,currentTemplateElementsTop);
         t.execute(this);
       }
     }
@@ -2339,7 +2339,7 @@ public class TransformerImpl extends Transformer
     }
     finally
     {
-      m_currentTemplateElementsTop--;
+      m_currentTemplateElements.pop();
       xctxt.popSAXLocator();
     }
 
@@ -2459,10 +2459,10 @@ public class TransformerImpl extends Transformer
   public Vector getElementCallstack()
   {
   	Vector elems = new Vector();
-  	int nStackSize = m_currentTemplateElementsTop;
+  	int nStackSize = m_currentTemplateElements.size();
   	for(int i = 0; i < nStackSize; i++)
   	{
-  		ElemTemplateElement elem = m_currentTemplateElements[i];
+  		ElemTemplateElement elem = (ElemTemplateElement) m_currentTemplateElements.elementAt(i);
   		if(null != elem)
   		{
   			elems.addElement(elem);
@@ -2479,7 +2479,7 @@ public class TransformerImpl extends Transformer
    */
   public int getCurrentTemplateElementsCount()
   {
-  	return m_currentTemplateElementsTop;
+  	return m_currentTemplateElements.size();
   }
   
   
@@ -2489,7 +2489,7 @@ public class TransformerImpl extends Transformer
    * @return The number of active elements on 
    * the currentTemplateElements stack.
    */
-  public ElemTemplateElement[] getCurrentTemplateElements()
+  public ObjectStack getCurrentTemplateElements()
   {
   	return m_currentTemplateElements;
   }
@@ -2502,7 +2502,7 @@ public class TransformerImpl extends Transformer
    */
   public void pushElemTemplateElement(ElemTemplateElement elem)
   {
-    m_currentTemplateElements[m_currentTemplateElementsTop++] = elem;
+    m_currentTemplateElements.push(elem);
   }
 
   /**
@@ -2510,7 +2510,7 @@ public class TransformerImpl extends Transformer
    */
   public void popElemTemplateElement()
   {
-    m_currentTemplateElementsTop--;
+    m_currentTemplateElements.pop();
   }
 
   /**
@@ -2522,7 +2522,7 @@ public class TransformerImpl extends Transformer
    */
   public void setCurrentElement(ElemTemplateElement e)
   {
-    m_currentTemplateElements[m_currentTemplateElementsTop-1] = e;
+    m_currentTemplateElements.setTop(e);
   }
 
   /**
@@ -2534,8 +2534,8 @@ public class TransformerImpl extends Transformer
    */
   public ElemTemplateElement getCurrentElement()
   {
-    return (m_currentTemplateElementsTop > 0) ? 
-        m_currentTemplateElements[m_currentTemplateElementsTop-1] : null;
+    return (m_currentTemplateElements.size() > 0) ? 
+        (ElemTemplateElement) m_currentTemplateElements.peek() : null;
   }
 
   /**
@@ -2559,10 +2559,10 @@ public class TransformerImpl extends Transformer
   public Vector getTemplateCallstack()
   {
   	Vector elems = new Vector();
-  	int nStackSize = m_currentTemplateElementsTop;
+  	int nStackSize = m_currentTemplateElements.size();
   	for(int i = 0; i < nStackSize; i++)
   	{
-  		ElemTemplateElement elem = m_currentTemplateElements[i];
+  		ElemTemplateElement elem = (ElemTemplateElement) m_currentTemplateElements.elementAt(i);
   		if(null != elem && (elem.getXSLToken() != Constants.ELEMNAME_TEMPLATE))
   		{
   			elems.addElement(elem);

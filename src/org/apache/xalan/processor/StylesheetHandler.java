@@ -216,7 +216,10 @@ public class StylesheetHandler extends DefaultHandler
           throws javax.xml.transform.TransformerException
   {
     ErrorListener handler = m_stylesheetProcessor.getErrorListener();
-    return new XPath(str, owningTemplate, this, XPath.MATCH, handler);
+    XPath xpath = new XPath(str, owningTemplate, this, XPath.MATCH, handler);
+    // Visit the expression, registering namespaces for any extension functions it includes.
+    xpath.callVisitors(xpath, new ExpressionVisitor(getStylesheetRoot()));
+    return xpath;    
   }
 
   /**

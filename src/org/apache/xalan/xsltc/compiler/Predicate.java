@@ -250,7 +250,7 @@ final class Predicate extends Expression implements Closure {
 		(parent instanceof Pattern) ||
 		(parent instanceof FilterExpr)) {
 
-		if (parent instanceof Pattern) {
+		if (parent instanceof Pattern && !(_exp instanceof LastCall)) {
  		    _nthPositionFilter = _canOptimize;
 		}
 		else if (parent instanceof FilterExpr) {

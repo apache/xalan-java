@@ -151,10 +151,12 @@ final class Step extends RelativeLocationPath {
      * Returns the vector containing all predicates for this step.
      */
     public void addPredicates(Vector predicates) {
-	if (_predicates == null)
+	if (_predicates == null) {
 	    _predicates = predicates;
-	else
+	}
+	else {
 	    _predicates.addAll(predicates);
+	}
     }
 
     /**
@@ -215,9 +217,12 @@ final class Step extends RelativeLocationPath {
 	// combinations of steps and patterns than can be optimised
 	_hadPredicates = hasPredicates();
 
-	// Special case for '.' 
+	// Special case for '.'
+ 	//   in the case where '.' has a context such as book/. 
+	//   or .[false()] we can not optimize the nodeset to a single node. 
 	if (isAbbreviatedDot()) {
-	    _type =  (hasParentPattern()) ? Type.NodeSet : Type.Node;
+	    _type =  (hasParentPattern() || hasPredicates() ) ? 
+		Type.NodeSet : Type.Node;
 	}
 	else {
 	    _type = Type.NodeSet;
@@ -237,46 +242,6 @@ final class Step extends RelativeLocationPath {
     }
 
     /**
-     * This method is used to determine whether the node-set produced by
-     * this step must be reversed before returned to the parent element.
-     * <xsl:apply-templates> should always return nodes in document order,
-     * while others, such as <xsl:value-of> and <xsl:for-each> should return
-     * nodes in the order of the axis in use.
-     */
-    private boolean reverseNodeSet() {
-        // Check if axis returned nodes in reverse document order
-        // The sense of the following might appear to be reversed, but in
-        // fact, the DTM ancestor and preceding iterators return nodes in
-        // document order, rather than reverse document order.  In
-        // cases where we want the nodes returned in document order from
-        // those iterators, this method must return false.
-        if ((_axis == Axis.ANCESTOR)  || (_axis == Axis.ANCESTORORSELF) ||
-            (_axis == Axis.PRECEDING) || (_axis == Axis.PRECEDINGSIBLING)) {
-
-            // If there were any predicates, put nodes in reverse document order
-            if (hasPredicates()) return true;
-            if (_hadPredicates) return true;
-            
-            // Order node set if it's a descendant of any of following:
-            for (SyntaxTreeNode parent = this.getParent();
-                 parent != null;
-                 parent = parent.getParent()) {
-                if (parent instanceof ApplyImports
-                     || parent instanceof ApplyTemplates
-                     || parent instanceof ForEach
-                     || parent instanceof FilterExpr
-                     || parent instanceof FilterParentPath
-                     || parent instanceof WithParam
-                     || parent instanceof ValueOf) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Translate a step by pushing the appropriate iterator onto the stack.
      * The abbreviated steps '.' and '@attr' do not create new iterators
      * if they are not part of a LocationPath and have no filters.
@@ -289,9 +254,6 @@ final class Step extends RelativeLocationPath {
 
 	if (hasPredicates()) {
 	    translatePredicates(classGen, methodGen);
-
-	    // If needed, create a reverse iterator after compiling preds
-	    orderIterator(classGen, methodGen);
 	}
 	else {
 	    // If it is an attribute but not '@*' or '@attr' with a parent
@@ -388,9 +350,6 @@ final class Step extends RelativeLocationPath {
 
 		break;
 	    }
-
-	    // If needed, create a reverse iterator
-	    orderIterator(classGen, methodGen);
 	}
     }
 
@@ -496,28 +455,6 @@ final class Step extends RelativeLocationPath {
 	    }
 	}
     }
-
-
-    /**
-     * This method tests if this step needs to have its axis reversed,
-     * and wraps its iterator inside a ReverseIterator to return the node-set
-     * in document order.
-     */
-    public void orderIterator(ClassGenerator classGen,
-			      MethodGenerator methodGen) {
-	// First test if nodes are in reverse document order
-	if (!reverseNodeSet()) return;
-
-	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final InstructionList il = methodGen.getInstructionList();
-	final int init = cpg.addMethodref(REVERSE_ITERATOR, "<init>",
-					  "("+NODE_ITERATOR_SIG+")V");
-	il.append(new NEW(cpg.addClass(REVERSE_ITERATOR)));
-	il.append(DUP_X1);
-	il.append(SWAP);
-	il.append(new INVOKESPECIAL(init));
-    }
-
 
     /**
      * Returns a string representation of this step.

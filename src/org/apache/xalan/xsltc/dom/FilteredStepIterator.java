@@ -70,64 +70,29 @@ import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 
+/**
+ * Extends a StepIterator by adding the ability to filter nodes. It 
+ * uses filters similar to those of a FilterIterator.
+ */
 public final class FilteredStepIterator extends StepIterator {
-    //private DTMAxisIterator _source;
-   // private DTMAxisIterator _iterator;
+
     private Filter _filter;
 
-	
     public FilteredStepIterator(DTMAxisIterator source,
 				DTMAxisIterator iterator,
 				Filter filter) {
-	//_source = source;
-	//_iterator = iterator;
 	super(source, iterator);
 	_filter = filter;
     }
 
-    public DTMAxisIterator cloneIterator() {
-	try {
-	    final FilteredStepIterator clone =
-		(FilteredStepIterator)super.clone();
-	    clone._source = _source.cloneIterator();
-	    clone._iterator = _iterator.cloneIterator();
-	    clone._filter = _filter;
-	    clone._isRestartable = false;
-	    return clone.reset();
-	}
-	catch (CloneNotSupportedException e) {
-	    BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
-				      e.toString());
-	    return null;
-	}
-    }
-
-    
-    public DTMAxisIterator setStartNode(int node) {
-	if (_isRestartable) {
-	    // iterator is not a clone
-	    _source.setStartNode(_startNode = node);
-	    _iterator.setStartNode(_source.next());
-	    return resetPosition();
-	}
-	return this;
-    }
-
-
-    public DTMAxisIterator reset() {
-	_source.reset();
-	_iterator.setStartNode(_source.next());
-	return resetPosition();
-    }
-    
-
     public int next() {
 	int node;
 	while ((node = super.next()) != END) {
-	    if (_filter.test(node))
+	    if (_filter.test(node)) {
 		return returnNode(node);
+	    }
 	}
-	return(node);
+	return node;
     }
 
 }

@@ -154,6 +154,8 @@ public class Parser implements Constants, ContentHandler {
     public void setOutput(Output output) {
 	if (_output != null) {
 	    if (_output.getImportPrecedence() <= output.getImportPrecedence()) {
+		String cdata = _output.getCdata();
+		output.mergeCdata(cdata);
 		_output.disable();
 		_output = output;
 	    }
@@ -1103,6 +1105,7 @@ public class Parser implements Constants, ContentHandler {
 		    node.setParser(this);
 		    node.setParent(parent);
 		    node.setLineNumber(line);
+// System.out.println("e = " + text + " " + node);
 		    return node;
 		}
 	    } 

@@ -75,6 +75,7 @@ import org.apache.bcel.generic.*;
 import org.apache.bcel.classfile.JavaClass;
 
 import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.runtime.output.StreamOutput;
 
 final class Output extends TopLevelElement {
 
@@ -92,6 +93,7 @@ final class Output extends TopLevelElement {
     private String  _cdata;
     private boolean _indent = false;
     private String  _mediaType;
+    private String  _cdataToMerge;
 
     // Disables this output element (when other element has higher precedence)
     private boolean _disabled = false;
@@ -120,6 +122,14 @@ final class Output extends TopLevelElement {
 
     public boolean enabled() {
 	return !_disabled;
+    }
+
+    public String getCdata() {
+	return _cdata;
+    }
+
+    public void mergeCdata(String cdata) {
+	_cdataToMerge = cdata;
     }
 
     /**
@@ -162,8 +172,10 @@ final class Output extends TopLevelElement {
 	}
 	else {
 	    try {
+		// Create a write to verify encoding support
 		OutputStreamWriter writer =
-		    new OutputStreamWriter(System.out, _encoding);
+		    new OutputStreamWriter(System.out, 
+		       StreamOutput.getCanonicalEncoding(_encoding));
 	    }
 	    catch (java.io.UnsupportedEncodingException e) {
 		ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_ENCODING,
@@ -220,12 +232,15 @@ final class Output extends TopLevelElement {
 
 	    // Make sure to store names in expanded form
 	    while (tokens.hasMoreTokens()) {
-		expandedNames.append(parser.getQName(tokens.nextToken()).toString())
-			     .append(' ');
+		expandedNames.append(
+		   parser.getQName(tokens.nextToken()).toString()).append(' ');
 	    }
 	    _cdata = expandedNames.toString();
-
-	    outputProperties.setProperty(OutputKeys.CDATA_SECTION_ELEMENTS, _cdata);
+	    if (_cdataToMerge != null) {
+		_cdata = _cdata + _cdataToMerge;
+	    }
+	    outputProperties.setProperty(OutputKeys.CDATA_SECTION_ELEMENTS, 
+		_cdata);
 	}
 
 	// Get the indent setting - only has effect for xml and html output

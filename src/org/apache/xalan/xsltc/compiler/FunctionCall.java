@@ -310,34 +310,28 @@ class FunctionCall extends Expression {
     }
 
     public String getClassNameFromUri(String uri) 
-    {
-    
+    {   
         String className = (String)_extensionNamespaceTable.get(uri);
     
         if (className != null)
-          return className;
-        else
-        {
-          if (uri.startsWith(JAVA_EXT_XSLTC))
-          {
-      	    int length = JAVA_EXT_XSLTC.length() + 1;
-            return (uri.length() > length) ? uri.substring(length) : EMPTYSTRING;
-          }
-          else if (uri.startsWith(JAVA_EXT_XALAN))
-          {
-      	    int length = JAVA_EXT_XALAN.length() + 1;
-            return (uri.length() > length) ? uri.substring(length) : EMPTYSTRING;
-          }
-          else if (uri.startsWith(JAVA_EXT_XALAN_OLD))
-          {
-      	    int length = JAVA_EXT_XALAN_OLD.length() + 1;
-            return (uri.length() > length) ? uri.substring(length) : EMPTYSTRING;
-          }
-          else
-          {
-      	    int index = uri.lastIndexOf('/');
-      	    return (index > 0) ? uri.substring(index+1) : uri;
-          }      
+            return className;
+        else {
+            if (uri.startsWith(JAVA_EXT_XSLTC)) {
+      	    	int length = JAVA_EXT_XSLTC.length() + 1;
+            	return (uri.length() > length) ? uri.substring(length) : EMPTYSTRING;
+            }
+            else if (uri.startsWith(JAVA_EXT_XALAN)) {
+      	    	int length = JAVA_EXT_XALAN.length() + 1;
+            	return (uri.length() > length) ? uri.substring(length) : EMPTYSTRING;
+            }
+            else if (uri.startsWith(JAVA_EXT_XALAN_OLD)) {
+      	    	int length = JAVA_EXT_XALAN_OLD.length() + 1;
+            	return (uri.length() > length) ? uri.substring(length) : EMPTYSTRING;
+            }
+            else {
+      	    	int index = uri.lastIndexOf('/');
+      	    	return (index > 0) ? uri.substring(index+1) : uri;
+            }      
         }
     }
 
@@ -348,85 +342,74 @@ class FunctionCall extends Expression {
     public Type typeCheck(SymbolTable stable) 
 	throws TypeCheckError 
     {
-	  if (_type != null) return _type;
+        if (_type != null) return _type;
 
-	  final String namespace = _fname.getNamespace();
-	  String local = _fname.getLocalPart();
+	final String namespace = _fname.getNamespace();
+	String local = _fname.getLocalPart();
 
-	  if (isExtension()) {
+	if (isExtension()) {
 	    _fname = new QName(null, null, local);
 	    return typeCheckStandard(stable);
-	  }
-	  else if (isStandard()) {
+	}
+	else if (isStandard()) {
 	    return typeCheckStandard(stable);
-	  }
-	  // Handle extension functions (they all have a namespace)
-	  else 
-	  {
-	    try 
-            {
-	        _className = getClassNameFromUri(namespace);
+	}
+	// Handle extension functions (they all have a namespace)
+	else {
+	    try {
+	    	_className = getClassNameFromUri(namespace);
 		  
                 final int pos = local.lastIndexOf('.');
-		if (pos > 0) 
-                {
-		  _isStatic = true;
-		  if (_className != null && _className.length() > 0)
-		  {
-		     _namespace_format = NAMESPACE_FORMAT_PACKAGE;
-		     _className = _className + "." + local.substring(0, pos);
-		  }
-		  else
-		  {
-		     _namespace_format = NAMESPACE_FORMAT_JAVA;
-		     _className = local.substring(0, pos);
-		  }
+		if (pos > 0) {
+		    _isStatic = true;
+		    if (_className != null && _className.length() > 0) {
+		    	_namespace_format = NAMESPACE_FORMAT_PACKAGE;
+		     	_className = _className + "." + local.substring(0, pos);
+		    }
+		    else {
+		     	_namespace_format = NAMESPACE_FORMAT_JAVA;
+		     	_className = local.substring(0, pos);
+		    }
 			  
-		  _fname = new QName(namespace, null, local.substring(pos + 1));
+		    _fname = new QName(namespace, null, local.substring(pos + 1));
 		}
-		else 
-		{
-		  if (_className != null && _className.length() > 0)
-		  {
-		    try 
-                    {			  	
-		      TransletLoader loader = new TransletLoader();
-		      _clazz = loader.loadClass(_className);			  	
-		      _namespace_format = NAMESPACE_FORMAT_CLASS;
+		else {
+		    if (_className != null && _className.length() > 0) {
+		    	try {			  	
+		      	    TransletLoader loader = new TransletLoader();
+		            _clazz = loader.loadClass(_className);			  	
+		            _namespace_format = NAMESPACE_FORMAT_CLASS;
+		    	}
+		    	catch (ClassNotFoundException e) {
+		      	    _namespace_format = NAMESPACE_FORMAT_PACKAGE;	
+		        }
 		    }
-		    catch (ClassNotFoundException e)
-		    {
-		      _namespace_format = NAMESPACE_FORMAT_PACKAGE;	
-		    }
-		  }
-		  else
-	            _namespace_format = NAMESPACE_FORMAT_JAVA;
+		    else
+	            	_namespace_format = NAMESPACE_FORMAT_JAVA;
 			
-		  if (local.indexOf('-') > 0)
-		  {
-		    local = replaceDash(local);
-		  }
+		    if (local.indexOf('-') > 0) {
+		        local = replaceDash(local);
+		    }
 		    
-		  String extFunction = (String)_extensionFunctionTable.get(namespace + ":" + local);
-		  if (extFunction != null) {
-		     _fname = new QName(null, null, extFunction);
-		     return typeCheckStandard(stable);
-		  }
-		  else
-		     _fname = new QName(namespace, null, local);
+		    String extFunction = (String)_extensionFunctionTable.get(namespace + ":" + local);
+		    if (extFunction != null) {
+		      	_fname = new QName(null, null, extFunction);
+		      	return typeCheckStandard(stable);
+		    }
+		    else
+		      	_fname = new QName(namespace, null, local);
 		}
 		  
 		return typeCheckExternal(stable);
 	    } 
-	    catch (TypeCheckError e) 
-	    {
-		  ErrorMsg errorMsg = e.getErrorMsg();
-		  if (errorMsg == null) {
+	    catch (TypeCheckError e) {
+		ErrorMsg errorMsg = e.getErrorMsg();
+		if (errorMsg == null) {
 		    final String name = _fname.getLocalPart();
 		    errorMsg = new ErrorMsg(ErrorMsg.METHOD_NOT_FOUND_ERR, name);
-		  }
-		  getParser().reportError(ERROR, errorMsg);
-		  return _type = Type.Void;
+		}
+		getParser().reportError(ERROR, errorMsg);
+		return _type = Type.Void;
 	    }
 	  }
     }
@@ -541,40 +524,37 @@ class FunctionCall extends Expression {
 	    return typeCheckConstructor(stable);
 	}
 	// check if we are calling an instance method
-	else
-	{
-	  boolean hasThisArgument = false;
+	else {
+	    boolean hasThisArgument = false;
 	  
-	  if (nArgs == 0)
-	    _isStatic = true;
+	    if (nArgs == 0)
+	        _isStatic = true;
 	  
-	  if (!_isStatic)
-	  {
-	  	if (_namespace_format == NAMESPACE_FORMAT_JAVA ||
-	  	    _namespace_format == NAMESPACE_FORMAT_PACKAGE)
-	  	  hasThisArgument = true;
+	    if (!_isStatic) {
+	        if (_namespace_format == NAMESPACE_FORMAT_JAVA
+	  	    || _namespace_format == NAMESPACE_FORMAT_PACKAGE)
+	   	    hasThisArgument = true;
 	  	  
 	  	Expression firstArg = (Expression)_arguments.elementAt(0);
 	  	Type firstArgType = (Type)firstArg.typeCheck(stable);
 	  	
-	  	if (_namespace_format == NAMESPACE_FORMAT_CLASS &&
-	  	    firstArgType instanceof ObjectType && 
-	  	    ((ObjectType)firstArgType).getJavaClassName().equals(_className))
-	  	  hasThisArgument = true;
+	  	if (_namespace_format == NAMESPACE_FORMAT_CLASS
+	  	    && firstArgType instanceof ObjectType
+	  	    && _clazz != null
+	  	    && _clazz.isAssignableFrom(((ObjectType)firstArgType).getJavaClass()))
+	  	    hasThisArgument = true;
 	  	
-	  	if (hasThisArgument)
-	  	{
-	  	  _thisArgument = (Expression) _arguments.elementAt(0);
-	  	  _arguments.remove(0); nArgs--;
-		  if (firstArgType instanceof ObjectType) {
-		    _className = ((ObjectType) firstArgType).getJavaClassName();
-		  }
-		  else
-		   throw new TypeCheckError(ErrorMsg.NO_JAVA_FUNCT_THIS_REF, name);  	  	
+	  	if (hasThisArgument) {
+	  	    _thisArgument = (Expression) _arguments.elementAt(0);
+	  	    _arguments.remove(0); nArgs--;
+		    if (firstArgType instanceof ObjectType) {
+		    	_className = ((ObjectType) firstArgType).getJavaClassName();
+		    }
+		    else
+		    	throw new TypeCheckError(ErrorMsg.NO_JAVA_FUNCT_THIS_REF, name);  	  	
 	  	}
-	  }
-	  else if (_className.length() == 0)
-	  {
+	    }
+	    else if (_className.length() == 0) {
 		/*
 		 * Warn user if external function could not be resolved.
 		 * Warning will _NOT_ be issued is the call is properly
@@ -588,7 +568,7 @@ class FunctionCall extends Expression {
 		}
 		unresolvedExternal = true;
 		return _type = Type.Int;	// use "Int" as "unknown"
-	  }
+	    }
 	}
 	
 	final Vector methods = findMethods();
@@ -618,28 +598,24 @@ class FunctionCall extends Expression {
 		final Type intType = (Type)argsType.elementAt(j);
 		Object match = _internal2Java.maps(intType, extType);
 		if (match != null) {
-		   currMethodDistance += 
-			((JavaType)match).distance; 
+		    currMethodDistance += ((JavaType)match).distance; 
 		}
 		else {
 		    // no mapping available
-		    if (intType instanceof ObjectType)
-		    {
-		      ObjectType object = (ObjectType)intType;
-		      if (extType.getName().equals(object.getJavaClassName()))
-		        currMethodDistance += 0;
-		      else if (extType.isAssignableFrom(object.getJavaClass()))
-		        currMethodDistance += 1;
-		      else
-		      {
-		      	currMethodDistance = Integer.MAX_VALUE;
-		      	break;
-		      }
+		    if (intType instanceof ObjectType) {
+		        ObjectType object = (ObjectType)intType;
+		        if (extType.getName().equals(object.getJavaClassName()))
+		            currMethodDistance += 0;
+		      	else if (extType.isAssignableFrom(object.getJavaClass()))
+		            currMethodDistance += 1;
+		      	else {
+		      	    currMethodDistance = Integer.MAX_VALUE;
+		      	    break;
+		        }
 		    }
-		    else
-		    {
-		      currMethodDistance = Integer.MAX_VALUE;
-		      break;
+		    else {
+		        currMethodDistance = Integer.MAX_VALUE;
+		        break;
 		    }
 		}
 	    }
@@ -650,13 +626,13 @@ class FunctionCall extends Expression {
 		
 		  _type = (Type) _java2Internal.get(extType);
 		  if (_type == null) {
-		    _type = new ObjectType(extType);
+		      _type = new ObjectType(extType);
 		  }		
 
 		  // Use this method if all parameters & return type match
 		  if (_type != null && currMethodDistance < bestMethodDistance) {
-		    _chosenMethod = method;
-		    bestMethodDistance = currMethodDistance;
+		      _chosenMethod = method;
+		      bestMethodDistance = currMethodDistance;
 		  }
 	    }
 	}
@@ -665,14 +641,14 @@ class FunctionCall extends Expression {
 	// have a this argument.
 	if (_chosenMethod != null && _thisArgument == null &&
 	    !Modifier.isStatic(_chosenMethod.getModifiers())) {
-	  throw new TypeCheckError(ErrorMsg.NO_JAVA_FUNCT_THIS_REF, getMethodSignature(argsType));
+	    throw new TypeCheckError(ErrorMsg.NO_JAVA_FUNCT_THIS_REF, getMethodSignature(argsType));
 	}
 
 	if (_type != null) {
-	  if (_type == Type.NodeSet) {
-           getXSLTC().setMultiDocument(true);
-          }
-	  return _type;
+	    if (_type == Type.NodeSet) {
+            	getXSLTC().setMultiDocument(true);
+            }
+	    return _type;
 	}
 
 	throw new TypeCheckError(ErrorMsg.ARGUMENT_CONVERSION_ERR, getMethodSignature(argsType));
@@ -1046,9 +1022,9 @@ class FunctionCall extends Expression {
 	  
 	int nArgs = argsType.size();	    
 	for (int i = 0; i < nArgs; i++) {
-	  final Type intType = (Type)argsType.elementAt(i);
-	  buf.append(intType.toString());
-	  if (i < nArgs - 1) buf.append(", ");
+	    final Type intType = (Type)argsType.elementAt(i);
+	    buf.append(intType.toString());
+	    if (i < nArgs - 1) buf.append(", ");
 	}
 	  
 	buf.append(')');
@@ -1062,16 +1038,15 @@ class FunctionCall extends Expression {
      */
     protected static String replaceDash(String name)
     {
-      char dash = '-';
-      StringBuffer buff = new StringBuffer("");
-      for (int i = 0; i < name.length(); i++)
-      {
+        char dash = '-';
+        StringBuffer buff = new StringBuffer("");
+        for (int i = 0; i < name.length(); i++) {
         if (i > 0 && name.charAt(i-1) == dash)
-          buff.append(Character.toUpperCase(name.charAt(i)));
+            buff.append(Character.toUpperCase(name.charAt(i)));
         else if (name.charAt(i) != dash)
-          buff.append(name.charAt(i));
-      }
-      return buff.toString();
+            buff.append(name.charAt(i));
+        }
+        return buff.toString();
     }
  	 
 }

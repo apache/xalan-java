@@ -92,9 +92,8 @@ public class DescendantIterator extends LocPathIterator
 
     super(compiler, opPos, analysis, false);
 
-    int ops[] = compiler.getOpMap();
     int firstStepPos = compiler.getFirstChildPos(opPos);
-    int stepType = ops[firstStepPos];
+    int stepType = compiler.getOp(firstStepPos);
 
     boolean orSelf = (OpCodes.FROM_DESCENDANTS_OR_SELF == stepType);
     boolean fromRoot = false;
@@ -108,7 +107,7 @@ public class DescendantIterator extends LocPathIterator
       fromRoot = true;
       // Ugly code... will go away when AST work is done.
       int nextStepPos = compiler.getNextStepPos(firstStepPos);
-      if(ops[nextStepPos] == OpCodes.FROM_DESCENDANTS_OR_SELF)
+      if(compiler.getOp(nextStepPos) == OpCodes.FROM_DESCENDANTS_OR_SELF)
         orSelf = true;
       // firstStepPos += 8;
     }

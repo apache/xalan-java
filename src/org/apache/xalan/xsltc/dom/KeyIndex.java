@@ -57,74 +57,78 @@
  * <http://www.apache.org/>.
  *
  * @author Morten Jorgensen
+ * @author Santiago Pericas-Geertsen
  *
  */
 
 package org.apache.xalan.xsltc.dom;
 
 import java.util.Vector;
+import java.util.Enumeration;
 import java.util.StringTokenizer;
 
 import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.NodeIterator;
 import org.apache.xalan.xsltc.runtime.Hashtable;
+import org.apache.xalan.xsltc.util.IntegerArray;
+
 import org.apache.xml.dtm.DTM;
-
 import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 
-public class KeyIndex implements DTMAxisIterator {
+public class KeyIndex extends DTMAxisIteratorBase {
 
+    /**
+     * A mapping between values and nodesets.
+     */
     private Hashtable _index = new Hashtable();
-    private BitArray  _nodes = null;
-    private int       _pos = 0;
-    private int       _mark = 0;
-    private int       _save = 0;
-    private int       _start = 0;
-    private int       _arraySize = 0;
-    private int       _node = -1;
+
+    /**
+     * The node set associated to the current value passed
+     * to lookupKey();
+     */
+    private IntegerArray _nodes = null;
+
+    /**
+     * The XSLTC DOM object if this KeyIndex is being used to implement the
+     * id() function.
+     */
     private DOM        _dom;
 
     /**
-     * Creates an index for a key defined by xsl:key
+     * Store position after call to setMark()
      */
-    public KeyIndex(int size) {
-	_arraySize = size;
+    private int _markedPosition = 0;
+
+    public KeyIndex(int dummy) {
     }
 
     public void setRestartable(boolean flag) {
-	    
     }
- 
+
     /**
-     * Adds a node to the node list for a given value.
-     * The BitArray object makes sure duplicate nodes are eliminated.
+     * Adds a node to the node list for a given value. Nodes will
+     * always be added in document order.
      */
     public void add(Object value, int node) {
-	if ((_nodes = (BitArray)_index.get(value)) == null) {
-	    _nodes = new BitArray(_arraySize);
-	    _nodes.setMask(node & 0xff000000);
-	    _index.put(value,_nodes);
+	IntegerArray nodes;
+	if ((nodes = (IntegerArray) _index.get(value)) == null) {
+	    _index.put(value, nodes = new IntegerArray());
 	}
-	_nodes.setBit(node & 0x00ffffff);
-
-	/*
-	 * TODO: A bit array can currently only hold nodes from one DOM.
-	 * An index will therefore only return nodes from a single document.
-	 */
+	nodes.add(node);
     }
 
     /**
-     * Merge this node set with nodes from another index
+     * Merge the current value's nodeset set by lookupKey() with _nodes.
      */
     public void merge(KeyIndex other) {
-	// Only merge if other node set is not empty
-	if (other != null) {
-	    if (other._nodes != null) {
-		// Create new Vector for nodes if this set is empty
-		if (_nodes == null)
-		    _nodes = other._nodes;
-		else
-		    _nodes = _nodes.merge(other._nodes);
+	if (other == null) return;
+
+	if (other._nodes != null) {
+	    if (_nodes == null) {
+		_nodes = other._nodes;
+	    }
+	    else {
+		_nodes.merge(other._nodes);
 	    }
 	}
     }
@@ -137,58 +141,45 @@ public class KeyIndex implements DTMAxisIterator {
      * key() function.
      */
     public void lookupId(Object value) {
-        _nodes = null;
-        if (value instanceof String) {
-            boolean firstTime = true;
-            final String string = (String)value;
+	// Clear _nodes array
+	_nodes = null;
 
-            if (string.indexOf(' ') > -1) {
-                StringTokenizer values = new StringTokenizer(string);
-                while (values.hasMoreElements()) {
-                    String token = (String)values.nextElement();
-                    BitArray nodes = (BitArray)_index.get(token);
-                    if (nodes == null && _dom instanceof DOMImpl) {
-                    	nodes = getDOMNodeById(token);
-                    }
-                    
-                    if (nodes != null) {
-                        if (firstTime) {
-                            _nodes = nodes;
-                            firstTime = false;
-                        } else {
-                            _nodes = _nodes.merge(nodes);
-                        }
-                    }
-                }
+	final StringTokenizer values = new StringTokenizer((String) value);
+	while (values.hasMoreElements()) {
+            final String token = (String) values.nextElement();
+	    IntegerArray nodes = (IntegerArray) _index.get(token);
+
+            if (nodes == null && _dom instanceof DOMImpl) {
+                nodes = getDOMNodeById(token);
             }
-            else {
-            	_nodes = (BitArray)_index.get(value);
-        	if (_nodes == null && _dom instanceof DOMImpl) {
-            	    _nodes = getDOMNodeById(string);
-        	}
-            }  
-        }
-        else    
-            _nodes = (BitArray)_index.get(value);
+
+	    if (nodes == null) continue;
+
+	    if (_nodes == null) {
+		_nodes = nodes;
+	    }
+	    else {
+		_nodes.merge(nodes);
+	    }
+	}
     }
 
     /**
-     * Return a BitArray for the DOM Node which has the given id.
+     * Return an IntegerArray for the DOM Node which has the given id.
      * 
      * @param id The id
-     * @return A BitArray representing the Node whose id is the given value.
+     * @return A IntegerArray representing the Node whose id is the given value.
      */
-    public BitArray getDOMNodeById(String id) {
-        BitArray nodes = null;
+    public IntegerArray getDOMNodeById(String id) {
+        IntegerArray nodes = null;
         if (_dom instanceof DOMImpl) {
             DOMImpl domImpl = (DOMImpl)_dom;
             int node = domImpl.getElementById(id);
             int ident = domImpl.getNodeIdent(node);
             if (ident != DTM.NULL) {
-	        nodes = new BitArray(_arraySize);
-	   	nodes.setMask(ident & 0xff000000);
+	        nodes = new IntegerArray();
 	    	_index.put(id, nodes);
-		nodes.setBit(ident & 0x00ffffff);
+		nodes.add(ident);
             }
         }
         return nodes; 	
@@ -199,101 +190,86 @@ public class KeyIndex implements DTMAxisIterator {
      * prior to returning the node iterator.
      */
     public void lookupKey(Object value) {
-	_nodes = (BitArray)_index.get(value);
+	_nodes = (IntegerArray) _index.get(value);
+	_position = 0;
     }
 
     /** 
      * Callers should not call next() after it returns END.
      */
     public int next() {
-	if (_nodes == null) return(END);
-	if ((_node = _nodes.getNextBit(++_node)) == END) return(END);
-	_pos++;
-	return _dom.getNodeHandle(_node | _nodes.getMask());
+	if (_nodes == null) return DTMAxisIterator.END;
+
+	return (_position < _nodes.cardinality()) ? 
+	    _dom.getNodeHandle(_nodes.at(_position++)) : DTMAxisIterator.END;
     }
 
     public int containsID(int node, Object value) { 
-	if (value instanceof String) {
-	    final String string = (String)value;
-	    if (string.indexOf(' ') > -1) {
-		StringTokenizer values = new StringTokenizer(string);
-		while (values.hasMoreElements()) {
-		    String token = (String)values.nextElement();
-		    BitArray nodes = (BitArray)_index.get(token);
-		    if (nodes == null && _dom instanceof DOMImpl) {
-		        nodes = getDOMNodeById(token);	
-		    }
-		    if ((nodes != null) && (nodes.getBit(node))) return(1);
+	final String string = (String)value;
+	if (string.indexOf(' ') > -1) {
+	    final StringTokenizer values = new StringTokenizer(string);
+
+	    while (values.hasMoreElements()) {
+                final String token = (String) values.nextElement();
+		IntegerArray nodes = (IntegerArray) _index.get(token);
+
+		if (nodes == null && _dom instanceof DOMImpl) {
+		    nodes = getDOMNodeById(token);	
 		}
-		return(0);
+		if (nodes != null && nodes.indexOf(node) >= 0) {
+		    return 1;
+		}
 	    }
-            else {
-            	BitArray nodes = (BitArray)_index.get(value);
-        	if (nodes == null && _dom instanceof DOMImpl) {
-            	    nodes = getDOMNodeById(string);
-        	}
-        	
-        	if ((nodes != null) && (nodes.getBit(node)))
-        	    return(1);
-        	else
-        	    return(0);
-            }  
+	    return 0;
 	}
 	else {
-	    BitArray nodes = (BitArray)_index.get(value);
-	    if ((nodes != null) && (nodes.getBit(node)))
-	    	return(1);
-	    else
-	    	return(0);
+	    IntegerArray nodes = (IntegerArray) _index.get(value);
+            if (nodes == null && _dom instanceof DOMImpl) {
+                nodes = getDOMNodeById(string);
+            }
+	    return (nodes != null && nodes.indexOf(node) >= 0) ? 1 : 0;
 	}
     }
 
     public int containsKey(int node, Object value) { 
-	BitArray nodes = (BitArray)_index.get(value);
-	if ((nodes != null) && (nodes.getBit(node))) return(1);
-	return(0);
+	final IntegerArray nodes = (IntegerArray) _index.get(value);
+	return (nodes != null && nodes.indexOf(node) >= 0) ? 1 : 0;
     }
 
     /**
      * Resets the iterator to the last start node.
      */
     public DTMAxisIterator reset() {
-	_pos = _start;
-	_node = _start - 1;
-	return(this);
+	_position = 0;
+	return this;
     }
 
     /**
      * Returns the number of elements in this iterator.
      */
     public int getLast() {
-	if (_nodes == null)
-	    return(0);
-	else
-	    return(_nodes.size()); // TODO: count actual nodes
+	return (_nodes == null) ? 0 : _nodes.cardinality();
     }
 
     /**
      * Returns the position of the current node in the set.
      */
     public int getPosition() {
-	return(_pos);
+	return _position;
     }
 
     /**
      * Remembers the current node for the next call to gotoMark().
      */
     public void setMark() {
-	_mark = _pos;
-	_save = _node;
+	_markedPosition = _position;
     }
 
     /**
      * Restores the current node remembered by setMark().
      */
     public void gotoMark() {
-	_pos = _mark;
-	_node = _save;
+	_position = _markedPosition;
     }
 
     /** 
@@ -301,25 +277,21 @@ public class KeyIndex implements DTMAxisIterator {
      * i.e. subsequent call to next() should return END.
      */
     public DTMAxisIterator setStartNode(int start) {
-	if (start == END) {
+	if (start == DTMAxisIterator.END) {
 	    _nodes = null;
 	}
 	else if (_nodes != null) {
-	    // Node count starts with 1, while bit arrays count from 0. Must
-	    // subtract one from 'start' to initialize bit array correctly.
-	    _start = _nodes.getBitNumber(start);
-	    _node = _start;
+	    _position = 0;
 	}
-	return((DTMAxisIterator)this);
+	return (DTMAxisIterator) this;
     }
     
     /** 
      * Get start to END should 'close' the iterator, 
      * i.e. subsequent call to next() should return END.
      */
-    public int getStartNode() 
-    {      
-      return _start;
+    public int getStartNode() {      
+        return 0;
     }
 
     /**
@@ -333,20 +305,14 @@ public class KeyIndex implements DTMAxisIterator {
      * Returns a deep copy of this iterator.
      */
     public DTMAxisIterator cloneIterator() {
-	KeyIndex other = new KeyIndex(_arraySize);
-
+	KeyIndex other = new KeyIndex(0);
 	other._index = _index;
-	other._nodes = _nodes.cloneArray();
-	other._pos   = _pos;
-	other._start = _start;
-	other._node  = _node;
-
-	return(other);
+	other._nodes = _nodes;
+	other._position = _position;
+	return (DTMAxisIterator) other;
     }
     
-    public void setDom(DOM dom)
-    {
+    public void setDom(DOM dom) {
     	_dom = dom;
     }
-
 }

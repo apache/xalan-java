@@ -372,7 +372,7 @@ public class UnionPathIterator extends LocPathIterator
   {
 
     // TODO: Handle unwrapped FilterExpr
-    int steptype = compiler.getOpMap()[opPos];
+    int steptype = compiler.getOp(opPos);
 
     if (steptype == OpCodes.OP_LOCATIONPATH)
     {

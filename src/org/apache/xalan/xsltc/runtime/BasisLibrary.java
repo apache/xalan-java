@@ -119,6 +119,15 @@ public final class BasisLibrary implements Operators {
     }
 
     /**
+     * Standard function position()
+     */
+    public static int positionF(DTMAxisIterator iterator) {
+	return iterator.isReverse()
+                     ? iterator.getLast() - iterator.getPosition() + 1
+                     : iterator.getPosition();
+    }
+
+    /**
      * XSLT Standard function sum(node-set). 
      * stringToDouble is inlined
      */
@@ -1165,7 +1174,49 @@ public final class BasisLibrary implements Operators {
 	    runTimeError(RUN_TIME_COPY_ERR);
 	}
     }
-    
+
+    /**
+     * Utility function for the implementation of xsl:element.
+     */
+    public static String startXslElement(String qname, String namespace,
+	TransletOutputHandler handler, DOM dom, int node)
+    {
+	try {
+	    // Get prefix from qname
+	    String prefix;
+	    final int index = qname.indexOf(':');
+
+	    if (index > 0) {
+		prefix = qname.substring(0, index);
+
+		// Handle case when prefix is not known at compile time
+		if (namespace == null || namespace.length() == 0) {
+		    namespace = dom.lookupNamespace(node, prefix);
+		}
+
+		handler.startElement(qname);
+		handler.namespace(prefix, namespace); 
+	    }
+	    else {
+		// Need to generate a prefix?
+		if (namespace != null && namespace.length() > 0) {
+		    prefix = generatePrefix();
+		    qname = prefix + ':' + qname;   
+		    handler.startElement(qname);   
+		    handler.namespace(prefix, namespace);
+		}
+		else {
+		    handler.startElement(qname);   
+		}
+	    }
+	}
+	catch (TransletException e) {
+	    throw new RuntimeException(e.getMessage());
+	}
+
+	return qname;
+    }
+
     /**
      * This function is used in the execution of xsl:element
      */
@@ -1177,16 +1228,9 @@ public final class BasisLibrary implements Operators {
     /**
      * This function is used in the execution of xsl:element
      */
-    private static int prefixIndex = 0;
+    private static int prefixIndex = 0;		// not thread safe!!
     public static String generatePrefix() {
 	return ("ns" + prefixIndex++);
-    }
-
-    /**
-     * This function is used in the execution of xsl:element
-     */
-    public static String makeQName(String localName, String prefix) {
-	return (new StringBuffer(prefix).append(':').append(localName).toString());
     }
 
     public static final int RUN_TIME_INTERNAL_ERR   = 0;

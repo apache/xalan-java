@@ -69,11 +69,36 @@ import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 
+/**
+ * This is a special kind of iterator that takes a source iterator and a 
+ * node N. If initialized with a node M (the parent of N) it computes the 
+ * position of N amongst the children of M. This position can be obtained 
+ * by calling getPosition().
+ * It is an iterator even though next() will never be called. It is used to
+ * match patterns with a single predicate like:
+ *
+ *    BOOK[position() = last()]
+ *
+ * In this example, the source iterator will return elements of type BOOK, 
+ * a call to position() will return the position of N. Notice that because 
+ * of the way the pattern matching is implemented, N will always be a node 
+ * in the source since (i) it is a BOOK or the test sequence would not be 
+ * considered and (ii) the source iterator is initialized with M which is 
+ * the parent of N. Also, and still in this example, a call to last() will 
+ * return the number of elements in the source (i.e. the number of BOOKs).
+ */
 public final class MatchingIterator extends DTMAxisIteratorBase {
+
+    /**
+     * A reference to a source iterator.
+     */
     private DTMAxisIterator _source;
-    private final int    _match;
-    private int          _matchPos, _matchLast = -1;
-	
+
+    /**
+     * The node to match.
+     */
+    private final int _match;
+
     public MatchingIterator(int match, DTMAxisIterator source) {
 	_source = source;
 	_match = match;
@@ -88,10 +113,10 @@ public final class MatchingIterator extends DTMAxisIteratorBase {
     public DTMAxisIterator cloneIterator() {
 
 	try {
-	    final MatchingIterator clone = (MatchingIterator)super.clone();
+	    final MatchingIterator clone = (MatchingIterator) super.clone();
 	    clone._source = _source.cloneIterator();
-	    clone.setRestartable(false);
-	    return clone;
+	    clone._isRestartable = false;
+	    return clone.reset();
 	}
 	catch (CloneNotSupportedException e) {
 	    BasisLibrary.runTimeError(BasisLibrary.ITERATOR_CLONE_ERR,
@@ -106,17 +131,17 @@ public final class MatchingIterator extends DTMAxisIteratorBase {
 	    _source.setStartNode(node);
 
 	    // Calculate the position of the node in the set
-	    _matchPos = 1;
-	    _matchLast = -1;
-	    while ( ((node = _source.next()) != END) && (node != _match) )
-		_matchPos++;
+	    _position = 1;
+	    while ((node = _source.next()) != END && node != _match) {
+		_position++;
+	    }
 	}
 	return this;
     }
 
     public DTMAxisIterator reset() {
 	_source.reset();
-	return this;
+	return resetPosition();
     }
     
     public int next() {
@@ -124,13 +149,14 @@ public final class MatchingIterator extends DTMAxisIteratorBase {
     }
 	
     public int getLast() {
-	if (_matchLast == -1)
-	    _matchLast = _source.getLast();
-	return _matchLast;
+        if (_last == -1) {
+            _last = _source.getLast();
+        }
+        return _last;
     }
 
     public int getPosition() {
-	return _matchPos;
+	return _position;
     }
 
     public void setMark() {

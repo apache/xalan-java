@@ -84,7 +84,7 @@ public final class UnionIterator extends DTMAxisIteratorBase {
 
     private final static class LookAheadIterator {
 	public int node, markedNode;
-	public final DTMAxisIterator iterator;
+	public DTMAxisIterator iterator;
 		
 	public LookAheadIterator(DTMAxisIterator iterator) {
 	    this.iterator = iterator;
@@ -93,6 +93,14 @@ public final class UnionIterator extends DTMAxisIteratorBase {
 	public int step() {
 	    node = iterator.next();
 	    return node;
+	}
+
+	public LookAheadIterator cloneIterator() {
+	    final LookAheadIterator clone = 
+		 new LookAheadIterator(iterator.cloneIterator());
+	    clone.node = node;
+	    clone.markedNode = node;
+	    return clone;
 	}
 
 	public void setMark() {
@@ -129,7 +137,9 @@ public final class UnionIterator extends DTMAxisIteratorBase {
 	    new LookAheadIterator[_heap.length];
 	try {
 	    final UnionIterator clone = (UnionIterator)super.clone();
-	    System.arraycopy(_heap, 0, heapCopy, 0, _heap.length);
+            for (int i = 0; i < _free; i++) {
+                heapCopy[i] = _heap[i].cloneIterator();
+            }
 	    clone.setRestartable(false);
 	    clone._heap = heapCopy;
 	    return clone.reset();

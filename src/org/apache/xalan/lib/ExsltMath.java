@@ -106,7 +106,7 @@ public class ExsltMath extends ExsltBase
     if (nl == null || nl.getLength() == 0)
       return Double.NaN;
       
-    double m = Double.MIN_VALUE;
+    double m = - Double.MAX_VALUE;
     for (int i = 0; i < nl.getLength(); i++)
     {
       Node n = nl.item(i);

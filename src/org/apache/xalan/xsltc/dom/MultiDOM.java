@@ -427,14 +427,6 @@ public final class MultiDOM implements DOM {
         return _adapters[getDTMId(node)].getParent(node & CLR) | node&SET;
     }
     
-    public int getTypedPosition(int type, int node) {
-        return _adapters[getDTMId(node)].getTypedPosition(type, node&CLR);
-    }
-
-    public int getTypedLast(int type, int node) {
-        return _adapters[getDTMId(node)].getTypedLast(type, node&CLR);
-    }
-
     public int getAttributeNode(final int type, final int el) {
         if (el == DTM.NULL) {
             return DTM.NULL;
@@ -620,7 +612,7 @@ public final class MultiDOM implements DOM {
     public String lookupNamespace(int node, String prefix) 
         throws TransletException
     {
-        return _adapters[node>>>24].lookupNamespace(node, prefix);
+        return _adapters[node>>>24].lookupNamespace(node & CLR, prefix);
     }
 
     // %HZ% Does this method make any sense here???
