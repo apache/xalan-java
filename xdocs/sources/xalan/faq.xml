@@ -218,6 +218,7 @@
 <source>javax.xml.parsers.SAXParserFactory spFactory =
   javax.xml.parsers.SAXParserFactory.newInstance();
 spFactory.setNamespaceAware(true);</source>
+<note>For more information about setting the namespaceAware property, and SAX2 vs. JAXP default settings, see <jump href="http://xml.apache.org/~edwingo/jaxp-faq.html#nsDefaults">JAXP FAQ: Warning about namespace processing defaults</jump>.</note>
 </a>
 </faq>
 </faqs>
