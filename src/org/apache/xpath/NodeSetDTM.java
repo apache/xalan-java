@@ -211,8 +211,9 @@ public class NodeSetDTM extends NodeVector
     {
       Node node = nodeList.item(i);
       int handle = xctxt.getDTMHandleFromNode(node);
-      addNodeInDocOrder(handle, xctxt);
-    }
+      // Do not reorder or strip duplicate nodes from the given DOM nodelist
+      addNode(handle); // addNodeInDocOrder(handle, xctxt);  
+    } 
   }
 
 
