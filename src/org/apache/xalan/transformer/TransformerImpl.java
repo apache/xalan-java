@@ -488,6 +488,7 @@ public class TransformerImpl extends Transformer
       m_xmlSource = null;
       m_doc = DTM.NULL;
       m_isTransformDone = false;
+      m_transformThread = null;
 
       // m_inputContentHandler = null;
       // For now, reset the document cache each time.
@@ -615,9 +616,14 @@ public class TransformerImpl extends Transformer
       if(null == base)
       {
         String currentDir = System.getProperty("user.dir");
-
-        base = "file:///" + currentDir + java.io.File.separatorChar
-                 + source.getClass().getName();
+        
+        if (currentDir.startsWith(java.io.File.separator))
+          base = "file://" + currentDir;
+        else
+          base = "file:///" + currentDir;
+        
+        base = base + java.io.File.separatorChar
+               + source.getClass().getName();
       }
       setBaseURLOfSource(base);
       DTMManager mgr = m_xcontext.getDTMManager();
@@ -633,8 +639,8 @@ public class TransformerImpl extends Transformer
       }
       finally
       {
-                                if (shouldRelease)
-                                        mgr.release(dtm, hardDelete);
+        if (shouldRelease)
+          mgr.release(dtm, hardDelete);
       }
 
       // Kick off the parse.  When the ContentHandler gets 
@@ -3127,7 +3133,10 @@ public class TransformerImpl extends Transformer
         // e.printStackTrace();
 
         // Strange that the other catch won't catch this...
-        postExceptionFromThread(e);
+        if (null != m_transformThread)
+          postExceptionFromThread(e);   // Assume we're on the main thread
+        else 
+          throw new RuntimeException(e.getMessage());
       }
       finally
       {
@@ -3148,7 +3157,10 @@ public class TransformerImpl extends Transformer
     {
 
       // e.printStackTrace();
-      postExceptionFromThread(e);
+      if (null != m_transformThread)
+        postExceptionFromThread(e);
+      else 
+        throw new RuntimeException(e.getMessage());         // Assume we're on the main thread.
     }
   }
 
