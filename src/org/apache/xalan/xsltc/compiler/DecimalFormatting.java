@@ -129,7 +129,26 @@ final class DecimalFormatting extends TopLevelElement {
 	il.append(new NEW(cpg.addClass(DFS_CLASS)));
 	il.append(DUP);
 	il.append(new INVOKESPECIAL(init));
-	
+
+	String tmp = getAttribute("NaN");
+	if ((tmp == null) || (tmp.equals(EMPTYSTRING))) {
+	    int nan = cpg.addMethodref(DFS_CLASS,
+				       "setNaN", "(Ljava/lang/String;)V");
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, "NaN"));
+	    il.append(new INVOKEVIRTUAL(nan));
+	}
+
+	tmp = getAttribute("infinity");
+	if ((tmp == null) || (tmp.equals(EMPTYSTRING))) {
+	    int inf = cpg.addMethodref(DFS_CLASS,
+				       "setInfinity",
+				       "(Ljava/lang/String;)V");
+	    il.append(DUP);
+	    il.append(new PUSH(cpg, "Infinity"));
+	    il.append(new INVOKEVIRTUAL(inf));
+	}
+	    
 	final int nAttributes = _attributes.getLength();
 	for (int i = 0; i < nAttributes; i++) {
 	    final String name = _attributes.getQName(i);
@@ -229,6 +248,19 @@ final class DecimalFormatting extends TopLevelElement {
 	il.append(new NEW(cpg.addClass(DFS_CLASS)));
 	il.append(DUP);
 	il.append(new INVOKESPECIAL(init));
+
+	int nan = cpg.addMethodref(DFS_CLASS,
+				   "setNaN", "(Ljava/lang/String;)V");
+	il.append(DUP);
+	il.append(new PUSH(cpg, "NaN"));
+	il.append(new INVOKEVIRTUAL(nan));
+
+	int inf = cpg.addMethodref(DFS_CLASS,
+				   "setInfinity",
+				   "(Ljava/lang/String;)V");
+	il.append(DUP);
+	il.append(new PUSH(cpg, "Infinity"));
+	il.append(new INVOKEVIRTUAL(inf));
 
 	final int put = cpg.addMethodref(TRANSLET_CLASS,
 					 "addDecimalFormat",
