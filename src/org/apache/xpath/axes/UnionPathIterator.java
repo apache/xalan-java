@@ -363,6 +363,7 @@ public class UnionPathIterator extends Expression
         loadLocationPaths(compiler, compiler.getNextOpPos(opPos), count+1);
         LocPathIterator iter = new LocPathIterator(compiler.getNamespaceContext());
         iter.m_firstWalker = new org.apache.xpath.axes.FilterExprWalker(iter);
+        iter.m_firstWalker.init(compiler, opPos, steptype);
         m_iterators[count] = iter;
         break;
       default:
