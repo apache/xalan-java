@@ -190,11 +190,11 @@ final class Predicate extends Expression {
 			(parent instanceof AbsoluteLocationPath)) {
 			// TODO: Special case for "//*[n]" pattern....
 			_nthDescendant = true;
-			return _type = Type.NodeSetDTM;
+			return _type = Type.NodeSet;
 		    }
 		}
 		_nthPositionFilter = true;
-		return _type = Type.NodeSetDTM;
+		return _type = Type.NodeSet;
 	    }
 	}
 	else if (texp instanceof BooleanType == false) {

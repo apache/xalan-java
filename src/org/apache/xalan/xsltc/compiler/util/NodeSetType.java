@@ -68,8 +68,8 @@ import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.FlowList;
 
-public final class NodeSetDTMType extends Type {
-    protected NodeSetDTMType() {}
+public final class NodeSetType extends Type {
+    protected NodeSetType() {}
 
     public String toString() {
 	return "node-set";

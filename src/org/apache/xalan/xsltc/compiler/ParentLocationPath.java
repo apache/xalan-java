@@ -110,7 +110,7 @@ final class ParentLocationPath extends RelativeLocationPath {
 	if (descendantAxis() && _path.descendantAxis())
 	    _orderNodes = true;
 
-	return _type = Type.NodeSetDTM;	
+	return _type = Type.NodeSet;	
     }
 
     public boolean descendantAxis() {

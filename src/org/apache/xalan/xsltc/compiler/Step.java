@@ -202,7 +202,7 @@ final class Step extends RelativeLocationPath {
 	    _type = Type.Node;
 	}
 	else if (isAbbreviatedDDot()) {
-	    _type = Type.NodeSetDTM;
+	    _type = Type.NodeSet;
 	}
 	else {
 	    // Special case for '@attr' with no parent or predicates
@@ -213,7 +213,7 @@ final class Step extends RelativeLocationPath {
 		_type = Type.Node;
 	    }
 	    else {
-		_type = Type.NodeSetDTM;
+		_type = Type.NodeSet;
 	    }
 	}
 	if (_predicates != null) {
@@ -254,7 +254,7 @@ final class Step extends RelativeLocationPath {
 		il.append(new INVOKEVIRTUAL(gattr));
 
 		// If it is the case '@attr[P_1]...[P_k]'
-		if (_type instanceof NodeSetDTMType) {
+		if (_type instanceof NodeSetType) {
 		    Type.Node.translateTo(classGen, methodGen, _type);
 		}
 		return;

@@ -105,8 +105,8 @@ public final class ReferenceType extends Type {
 	else if (type == Type.Boolean) {
 	    translateTo(classGen, methodGen, (BooleanType) type);
 	}
-	else if (type == Type.NodeSetDTM) {
-	    translateTo(classGen, methodGen, (NodeSetDTMType) type);
+	else if (type == Type.NodeSet) {
+	    translateTo(classGen, methodGen, (NodeSetType) type);
 	}
 	else {
 	    classGen.getParser().internalError();		// undefined
@@ -178,10 +178,10 @@ public final class ReferenceType extends Type {
      * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
-			    NodeSetDTMType type) {
+			    NodeSetType type) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "referenceToNodeSetDTM", 
+	int index = cpg.addMethodref(BASIS_LIBRARY_CLASS, "referenceToNodeSet", 
 				     "("
 				     + OBJECT_SIG
 				     + ")"

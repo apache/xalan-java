@@ -116,21 +116,21 @@ final class DocumentCall extends FunctionCall {
 	}
 
 	_uriType = _uri.typeCheck(stable);
-	if ((_uriType != Type.NodeSetDTM) && (_uriType != Type.String)) {
+	if ((_uriType != Type.NodeSet) && (_uriType != Type.String)) {
 	    _uri = new CastExpr(_uri, Type.String);
 	}
 
 	// Parse the second argument - the document URI base
 	if (ac == 2) {
 	    _base = argument(1);
-	    if (!_base.typeCheck(stable).identicalTo(Type.NodeSetDTM)) {
+	    if (!_base.typeCheck(stable).identicalTo(Type.NodeSet)) {
 		ErrorMsg msg = new ErrorMsg("Second argument to document() "+
 					    "function must be a node-set.");
 		throw new TypeCheckError(msg);
 	    }
 	}
 
-	return _type = Type.NodeSetDTM;
+	return _type = Type.NodeSet;
     }
 	
     /**
@@ -157,7 +157,7 @@ final class DocumentCall extends FunctionCall {
 
 	// The URI can be either a node-set or something else cast to a string
 	_uri.translate(classGen, methodGen);
-	if (_uriType == Type.NodeSetDTM)
+	if (_uriType == Type.NodeSet)
 	    _uri.startResetIterator(classGen, methodGen);
 
 	// The base of the URI may be given as a second argument (a node-set)

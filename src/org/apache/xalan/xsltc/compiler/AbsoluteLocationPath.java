@@ -101,10 +101,10 @@ final class AbsoluteLocationPath extends Expression {
 	if (_path != null) {
 	    final Type ptype = _path.typeCheck(stable);
 	    if (ptype instanceof NodeType) {		// promote to node-set
-		_path = new CastExpr(_path, Type.NodeSetDTM);
+		_path = new CastExpr(_path, Type.NodeSet);
 	    }
 	}
-	return _type = Type.NodeSetDTM;	
+	return _type = Type.NodeSet;	
     }
 	
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {

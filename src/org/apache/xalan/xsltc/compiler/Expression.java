@@ -155,7 +155,7 @@ abstract class Expression extends SyntaxTreeNode {
 	}
 	_startReset = true;
 
-	if (_type instanceof NodeSetDTMType == false) {
+	if (_type instanceof NodeSetType == false) {
 	    return;		// nothing to do
 	}
 

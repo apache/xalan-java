@@ -106,9 +106,9 @@ class FilterExpr extends Expression {
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	Type ptype = _primary.typeCheck(stable);
 
-	if (ptype instanceof NodeSetDTMType == false) {
+	if (ptype instanceof NodeSetType == false) {
 	    if (ptype instanceof ReferenceType)  {
-		_primary = new CastExpr(_primary, Type.NodeSetDTM);
+		_primary = new CastExpr(_primary, Type.NodeSet);
 	    }
 	    else {
 		throw new TypeCheckError(this);
@@ -120,7 +120,7 @@ class FilterExpr extends Expression {
 	    Expression pred = (Expression)_predicates.elementAt(i);
 	    pred.typeCheck(stable);
 	}
-	return _type = Type.NodeSetDTM;	
+	return _type = Type.NodeSet;	
     }
 	
     /**

@@ -818,7 +818,7 @@ public final class BasisLibrary implements Operators {
      * Utility function: used to convert references to node-sets. If the
      * obj is an instanceof Node then create a singleton iterator.
      */
-    public static NodeIterator referenceToNodeSetDTM(Object obj) {
+    public static NodeIterator referenceToNodeSet(Object obj) {
 	try {
 	    return (obj instanceof Node == false)
 		? (NodeIterator) obj 

@@ -584,25 +584,25 @@ public final class Parser implements Constants, ContentHandler {
 	MethodType I_V  = new MethodType(Type.Int, Type.Void);
 	MethodType I_R  = new MethodType(Type.Int, Type.Real);
 	MethodType I_S  = new MethodType(Type.Int, Type.String);
-	MethodType I_D  = new MethodType(Type.Int, Type.NodeSetDTM);
+	MethodType I_D  = new MethodType(Type.Int, Type.NodeSet);
 	MethodType R_I  = new MethodType(Type.Real, Type.Int);
 	MethodType R_V  = new MethodType(Type.Real, Type.Void);
 	MethodType R_R  = new MethodType(Type.Real, Type.Real);
-	MethodType R_D  = new MethodType(Type.Real, Type.NodeSetDTM);
+	MethodType R_D  = new MethodType(Type.Real, Type.NodeSet);
 	MethodType R_O  = new MethodType(Type.Real, Type.Reference);
 	MethodType I_I  = new MethodType(Type.Int, Type.Int);
-	MethodType D_O  = new MethodType(Type.NodeSetDTM, Type.Reference);
-	MethodType D_SS = new MethodType(Type.NodeSetDTM,
+	MethodType D_O  = new MethodType(Type.NodeSet, Type.Reference);
+	MethodType D_SS = new MethodType(Type.NodeSet,
 					 Type.String, Type.String);
-	MethodType D_SD = new MethodType(Type.NodeSetDTM,
-					 Type.String, Type.NodeSetDTM);
-	MethodType D_S  = new MethodType(Type.NodeSetDTM, Type.String);
-	MethodType D_D  = new MethodType(Type.NodeSetDTM, Type.NodeSetDTM);
+	MethodType D_SD = new MethodType(Type.NodeSet,
+					 Type.String, Type.NodeSet);
+	MethodType D_S  = new MethodType(Type.NodeSet, Type.String);
+	MethodType D_D  = new MethodType(Type.NodeSet, Type.NodeSet);
 	MethodType A_V  = new MethodType(Type.Node, Type.Void);
 	MethodType S_V  = new MethodType(Type.String, Type.Void);
 	MethodType S_S  = new MethodType(Type.String, Type.String);
 	MethodType S_A  = new MethodType(Type.String, Type.Node);
-	MethodType S_D  = new MethodType(Type.String, Type.NodeSetDTM);
+	MethodType S_D  = new MethodType(Type.String, Type.NodeSet);
 	MethodType S_O  = new MethodType(Type.String, Type.Reference);
 	MethodType B_O  = new MethodType(Type.Boolean, Type.Reference);
 	MethodType B_V  = new MethodType(Type.Boolean, Type.Void);
@@ -619,7 +619,7 @@ public final class Parser implements Constants, ContentHandler {
 	MethodType S_SS = new MethodType(Type.String, Type.String,
 					 Type.String);
 	MethodType S_SD = new MethodType(Type.String, Type.String,
-					 Type.NodeSetDTM);
+					 Type.NodeSet);
 	MethodType S_DS  = new MethodType(Type.String, Type.Real, Type.String);
 	MethodType S_DSS = new MethodType(Type.String, Type.Real, Type.String,
 					  Type.String);

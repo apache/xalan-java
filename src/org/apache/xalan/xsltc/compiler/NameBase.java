@@ -107,7 +107,7 @@ class NameBase extends FunctionCall {
 	    throw new TypeCheckError(this);
 	}
 
-	if ((_type != Type.NodeSetDTM) && (_type != Type.Node))
+	if ((_type != Type.NodeSet) && (_type != Type.Node))
 	    throw new TypeCheckError(this);
 
 	return Type.String;

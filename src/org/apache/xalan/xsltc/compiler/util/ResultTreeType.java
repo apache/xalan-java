@@ -123,8 +123,8 @@ public final class ResultTreeType extends Type {
 	else if (type == Type.Real) {
 	    translateTo(classGen, methodGen, (RealType)type);
 	}
-	else if (type == Type.NodeSetDTM) {
-	    translateTo(classGen, methodGen, (NodeSetDTMType)type);
+	else if (type == Type.NodeSet) {
+	    translateTo(classGen, methodGen, (NodeSetType)type);
 	}
 	else if (type == Type.Reference) {
 	    translateTo(classGen, methodGen, (ReferenceType)type);
@@ -312,7 +312,7 @@ public final class ResultTreeType extends Type {
      * @see	org.apache.xalan.xsltc.compiler.util.Type#translateTo
      */
     public void translateTo(ClassGenerator classGen, MethodGenerator methodGen, 
-			    NodeSetDTMType type) {
+			    NodeSetType type) {
 	classGen.getParser().notYetImplemented("result-tree -> node-set conversion");
     }
 
@@ -343,8 +343,8 @@ public final class ResultTreeType extends Type {
 	final String className = clazz.getName();
 	if (className.equals("org.w3c.dom.Node") ||
 	    className.equals("org.w3c.dom.NodeList")) {
-	    translateTo(classGen, methodGen, Type.NodeSetDTM);
-	    Type.NodeSetDTM.translateTo(classGen, methodGen, clazz);
+	    translateTo(classGen, methodGen, Type.NodeSet);
+	    Type.NodeSet.translateTo(classGen, methodGen, clazz);
 	}
 	else {
 	    classGen.getParser().internalError(); // undefined

@@ -84,7 +84,7 @@ abstract class IdKeyPattern extends LocationPathPattern {
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	return Type.NodeSetDTM;
+	return Type.NodeSet;
     }
     
     public boolean isWildcard() {

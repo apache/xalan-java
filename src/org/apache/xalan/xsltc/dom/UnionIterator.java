@@ -69,7 +69,7 @@ import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
 /**
  * UnionIterator takes a set of NodeIterators and produces
- * a merged NodeSetDTM in document order with duplicates removed
+ * a merged NodeSet in document order with duplicates removed
  * The individual iterators are supposed to generate nodes
  * in document order
  */

@@ -128,8 +128,8 @@ class FunctionCall extends Expression {
 	    InternalToJava.put(Type.Node, nodeClass);
 	    InternalToJava.put(Type.Node, nodeListClass);
 
-	    InternalToJava.put(Type.NodeSetDTM, nodeClass);
-	    InternalToJava.put(Type.NodeSetDTM, nodeListClass);
+	    InternalToJava.put(Type.NodeSet, nodeClass);
+	    InternalToJava.put(Type.NodeSet, nodeListClass);
 
 	    InternalToJava.put(Type.ResultTree, nodeClass);
 	    InternalToJava.put(Type.ResultTree, nodeListClass);

@@ -94,12 +94,12 @@ final class FilterParentPath extends Expression {
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	final Type ftype = _filterExpr.typeCheck(stable);
-	if (ftype instanceof NodeSetDTMType == false) {
+	if (ftype instanceof NodeSetType == false) {
 	    if (ftype instanceof ReferenceType)  {
-		_filterExpr = new CastExpr(_filterExpr, Type.NodeSetDTM);
+		_filterExpr = new CastExpr(_filterExpr, Type.NodeSet);
 	    }
 	    else if (ftype instanceof NodeType)  {
-		_filterExpr = new CastExpr(_filterExpr, Type.NodeSetDTM);
+		_filterExpr = new CastExpr(_filterExpr, Type.NodeSet);
 	    }
 	    else {
 		throw new TypeCheckError(this);
@@ -108,11 +108,11 @@ final class FilterParentPath extends Expression {
 
 	// Wrap single node path in a node set
 	final Type ptype = _path.typeCheck(stable);
-	if (!(ptype instanceof NodeSetDTMType)) {
-	    _path = new CastExpr(_path, Type.NodeSetDTM);
+	if (!(ptype instanceof NodeSetType)) {
+	    _path = new CastExpr(_path, Type.NodeSet);
 	}
 
-	return _type = Type.NodeSetDTM;	
+	return _type = Type.NodeSet;	
     }
 	
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {

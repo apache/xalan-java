@@ -120,10 +120,10 @@ final class ApplyImports extends Instruction {
 	    Type tselect = _select.typeCheck(stable);
 	    if (tselect instanceof NodeType ||
 		tselect instanceof ReferenceType) {
-		_select = new CastExpr(_select, Type.NodeSetDTM);
-		tselect = Type.NodeSetDTM;
+		_select = new CastExpr(_select, Type.NodeSet);
+		tselect = Type.NodeSet;
 	    }
-	    if (tselect instanceof NodeSetDTMType) {
+	    if (tselect instanceof NodeSetType) {
 		typeCheckContents(stable);		// with-params
 		return Type.Void;
 	    } 
