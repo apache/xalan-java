@@ -154,6 +154,28 @@ public abstract class LocPathIterator extends PredicatedNodeTest
   }
   
   /**
+   * Read the object from a serialization stream.
+   *
+   * @param stream Input stream to read from
+   *
+   * @throws java.io.IOException
+   * @throws javax.xml.transform.TransformerException
+   */
+  private void readObject(java.io.ObjectInputStream stream)
+          throws java.io.IOException, javax.xml.transform.TransformerException
+  {
+    try
+    {
+      stream.defaultReadObject();
+      m_clones =  new IteratorPool(this);
+    }
+    catch (ClassNotFoundException cnfe)
+    {
+      throw new javax.xml.transform.TransformerException(cnfe);
+    }
+  }
+  
+  /**
    * Set the environment in which this iterator operates, which should provide:
    * a node (the context node... same value as "root" defined below) 
    * a pair of non-zero positive integers (the context position and the context size) 
@@ -962,7 +984,7 @@ public abstract class LocPathIterator extends PredicatedNodeTest
    * because the hold running state, and thus the original iterator
    * expression from the stylesheet pool can not be used.          
    */
-  protected IteratorPool m_clones = new IteratorPool(this);
+  transient protected IteratorPool m_clones = new IteratorPool(this);
   
   /** 
    * The dtm of the context node.  Careful about using this... it may not 

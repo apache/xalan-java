@@ -195,7 +195,7 @@ public class UnionPathIterator extends Expression
   }
 
   /** Pool of UnionPathIterators.  (The need for this has to be re-evaluated.  -sb) */
-  protected IteratorPool m_clones = new IteratorPool(this);
+  transient protected IteratorPool m_clones = new IteratorPool(this);
 
   /**
    * Execute this iterator, meaning create a clone that can  
@@ -417,6 +417,28 @@ public class UnionPathIterator extends Expression
     opPos = compiler.getFirstChildPos(opPos);
 
     loadLocationPaths(compiler, opPos, 0);
+  }
+  
+  /**
+   * Read the object from a serialization stream.
+   *
+   * @param stream Input stream to read from
+   *
+   * @throws java.io.IOException
+   * @throws javax.xml.transform.TransformerException
+   */
+  private void readObject(java.io.ObjectInputStream stream)
+          throws java.io.IOException, javax.xml.transform.TransformerException
+  {
+    try
+    {
+      stream.defaultReadObject();
+      m_clones =  new IteratorPool(this);
+    }
+    catch (ClassNotFoundException cnfe)
+    {
+      throw new javax.xml.transform.TransformerException(cnfe);
+    }
   }
 
   /**

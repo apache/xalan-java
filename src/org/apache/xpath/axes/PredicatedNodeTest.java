@@ -37,6 +37,29 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
   }
   
   /**
+   * Read the object from a serialization stream.
+   *
+   * @param stream Input stream to read from
+   *
+   * @throws java.io.IOException
+   * @throws javax.xml.transform.TransformerException
+   */
+  private void readObject(java.io.ObjectInputStream stream)
+          throws java.io.IOException, javax.xml.transform.TransformerException
+  {
+    try
+    {
+      stream.defaultReadObject();
+      m_predicateIndex = -1;
+      resetProximityPositions();
+    }
+    catch (ClassNotFoundException cnfe)
+    {
+      throw new javax.xml.transform.TransformerException(cnfe);
+    }
+  }
+  
+  /**
    * Get a cloned PrdicatedNodeTest.
    *
    * @return A new PredicatedNodeTest that can be used without mutating this one.
@@ -473,7 +496,8 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
   
   /** The list of predicate expressions. Is static and does not need 
    *  to be deep cloned.
-   *  @serial */
+   *  @serial 
+   */
   private Expression[] m_predicates;
 
   /**
