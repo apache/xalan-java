@@ -193,6 +193,7 @@ public class ClonerToResultTree
           }
         }
         break;
+      case Node.DOCUMENT_FRAGMENT_NODE :
       case Node.DOCUMENT_NODE :
 
         // Can't clone a document, but refrain from throwing an error
@@ -239,12 +240,6 @@ public class ClonerToResultTree
       case Node.COMMENT_NODE :
         {
           m_rth.comment(((Comment) node).getData());
-        }
-        break;
-      case Node.DOCUMENT_FRAGMENT_NODE :
-        {
-          m_transformer.getMsgMgr().error(
-                                          null, node, XSLTErrorResources.ER_NO_CLONE_OF_DOCUMENT_FRAG);  //"No clone of a document fragment!");
         }
         break;
       case Node.ENTITY_REFERENCE_NODE :
