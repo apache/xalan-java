@@ -81,11 +81,27 @@ public class AncestorWalker extends ReverseAxesWalker
   {
     super(locPathIterator);
   }
+  
+  /**
+   * Get a cloned AncestorWalker.
+   *
+   * @return A new AncestorWalker that can be used without mutating this one.
+   *
+   * @throws CloneNotSupportedException
+   */
+  public Object clone() throws CloneNotSupportedException
+  {
+
+    AncestorWalker clone = (AncestorWalker) super.clone();
+    // if(null != clone.m_ancestors)
+    //  clone.m_ancestorsPos = clone.m_ancestors.size() - 1;
+    return clone;
+  }
 
   /**
    * Push the ancestor nodes.
    *
-   * NEEDSDOC @param n
+   * @param n
    */
   protected void pushAncestors(Node n)
   {
@@ -100,6 +116,7 @@ public class AncestorWalker extends ReverseAxesWalker
     }
 
     m_nextLevelAmount = m_ancestors.isEmpty() ? 0 : 1;
+    m_ancestorsPos = m_ancestors.size() - 1;
   }
 
   /**
@@ -124,15 +141,18 @@ public class AncestorWalker extends ReverseAxesWalker
   public Node firstChild()
   {
 
-    Node next = m_ancestors.isEmpty() ? null : (Node) m_ancestors.pop();
+    Node next = (m_ancestorsPos < 0) ? null : (Node) m_ancestors.elementAt(m_ancestorsPos--);
 
-    m_nextLevelAmount = m_ancestors.isEmpty() ? 0 : 1;
+    m_nextLevelAmount = (m_ancestorsPos < 0) ? 0 : 1;
 
     return setCurrentIfNotNull(next);
   }
 
   /** NEEDSDOC Field m_ancestors          */
   protected Stack m_ancestors;
+  
+  /** The position within the stack */
+  protected int m_ancestorsPos;
 
   /**
    * Tell what's the maximum level this axes can descend to.

@@ -102,6 +102,7 @@ public class AncestorOrSelfWalker extends AncestorWalker
     }
 
     m_nextLevelAmount = m_ancestors.isEmpty() ? 0 : 1;
+    m_ancestorsPos = m_ancestors.size() - 1;
   }
 
   /**
