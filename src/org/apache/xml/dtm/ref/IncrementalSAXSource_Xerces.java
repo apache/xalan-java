@@ -65,6 +65,8 @@ import org.xml.sax.XMLReader;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 
 /** <p>IncrementalSAXSource_Xerces takes advantage of the fact that Xerces1
@@ -79,14 +81,22 @@ public class IncrementalSAXSource_Xerces
   implements IncrementalSAXSource
 {
 	//
-	// Reflection. To allow this to compile with Xerces2, which doesn't support
-	// the old parseSome() incremental API, we need to avoid static references 
-	// to those. Until Xerces2 is pervasive and we're willing to make it a
-	// prerequisite, we will support it only via the filtering solution.
+	// Reflection. To allow this to compile with both Xerces1 and Xerces2, which
+	// require very different methods and objects, we need to avoid static 
+	// references to those APIs. So until Xerces2 is pervasive and we're willing 
+	// to make it a prerequisite, we will rely upon relection.
 	//
-	java.lang.reflect.Method fParseSomeSetup=null;
-	java.lang.reflect.Method fParseSome=null;
-
+	Method fParseSomeSetup=null; // Xerces1 method
+	Method fParseSome=null; // Xerces1 method
+	Object fPullParserConfig=null; // Xerces2 pull control object
+	Method fConfigSetInput=null; // Xerces2 method
+	Method fConfigParse=null; // Xerces2 method
+	Method fSetInputSource=null; // Xerces2 pull control method
+	Constructor fConfigInputSourceCtor=null; // Xerces2 initialization method
+	Method fConfigSetByteStream=null; // Xerces2 initialization method
+	Method fConfigSetCharStream=null; // Xerces2 initialization method
+	Method fConfigSetEncoding=null; // Xerces2 initialization method
+		
   //
   // Data
   //
@@ -97,34 +107,102 @@ public class IncrementalSAXSource_Xerces
   // Constructors
   //
 
-  /** Create a IncrementalSAXSource_Xerces, and create a SAXParsre
-   * to go with it
+  /** Create a IncrementalSAXSource_Xerces, and create a SAXParser
+   * to go with it. Xerces2 incremental parsing is only supported if
+   * this constructor is used, due to limitations in the Xerces2 API (as of
+   * Beta 3). If you don't like that restriction, tell the Xerces folks that
+   * there should be a simpler way to request incremental SAX parsing.
    * */
   public IncrementalSAXSource_Xerces() 
 		throws NoSuchMethodException
 	{
-		this(new SAXParser());
+		try
+		{
+			// Xerces-2 incremental parsing support (as of Beta 3)
+			// ContentHandlers still get set on fIncrementalParser (to get
+			// conversion from XNI events to SAX events), but
+			// _control_ for incremental parsing must be exercised via the config.
+			// 
+			// At this time there's no way to read the existing config, only 
+			// to assert a new one... and only when creating a brand-new parser.
+			//
+			// Reflection is used to allow us to continue to compile against
+			// Xerces1. If/when we can abandon the older versions of the parser,
+			// this will simplify significantly.
+			Class me=this.getClass();
+			
+			// If we can't get the magic constructor, no need to look further.
+			Class xniConfigClass=me.forName("org.apache.xerces.xni.parser.XMLParserConfiguration");
+			Class[] args1={xniConfigClass};
+			Constructor ctor=SAXParser.class.getConstructor(args1);
+			
+			// Build the parser configuration object. StandardParserConfiguration
+			// happens to implement XMLPullParserConfiguration, which is the API
+			// we're going to want to use.
+			Class xniStdConfigClass=me.forName("org.apache.xerces.parsers.StandardParserConfiguration");
+			fPullParserConfig=xniStdConfigClass.newInstance();
+			Object[] args2={fPullParserConfig};
+			fIncrementalParser = (SAXParser)ctor.newInstance(args2);
+			
+			// Preload all the needed the configuration methods... I want to know they're
+			// all here before we commit to trying to use them, just in case the
+			// API changes again.
+			Class fXniInputSourceClass=me.forName("org.apache.xerces.xni.parser.XMLInputSource");
+			Class[] args3={fXniInputSourceClass};
+			fConfigSetInput=xniStdConfigClass.getMethod("setInputSource",args3);
+
+			Class[] args4={String.class,String.class,String.class};
+			fConfigInputSourceCtor=fXniInputSourceClass.getConstructor(args4);
+			Class[] args5={java.io.InputStream.class};
+			fConfigSetByteStream=fXniInputSourceClass.getMethod("setByteStream",args5);
+			Class[] args6={java.io.Reader.class};
+			fConfigSetCharStream=fXniInputSourceClass.getMethod("setCharacterStream",args6);
+			Class[] args7={String.class};
+			fConfigSetEncoding=fXniInputSourceClass.getMethod("setEncoding",args7);
+															
+			Class[] argsb={Boolean.TYPE};
+			fConfigParse=xniStdConfigClass.getMethod("parse",argsb);			
+		}
+		catch(Exception e)
+		{
+	    // Fallback if this fails (implemented in createIncrementalSAXSource) is
+			// to attempt Xerces-1 incremental setup. Can't do tail-call in
+			// constructor, so create new, copy Xerces-1 initialization, 
+			// then throw it away... Ugh.
+			IncrementalSAXSource_Xerces dummy=new IncrementalSAXSource_Xerces(new SAXParser());
+			this.fParseSomeSetup=dummy.fParseSomeSetup;
+			this.fParseSome=dummy.fParseSome;
+			this.fIncrementalParser=dummy.fIncrementalParser;
+		}
   }
 
   /** Create a IncrementalSAXSource_Xerces wrapped around
    * an existing SAXParser. Currently this works only for recent
-   * releases of Xerces-1. At some point we expect to cut over
-   * and make it work only for Xerces-2, but that involves some
-   * compile-time inheritance dependencies which we aren't yet
-   * ready to buy into.
+   * releases of Xerces-1.  Xerces-2 incremental is currently possible
+   * only if we are allowed to create the parser instance, due to
+   * limitations in the API exposed by Xerces-2 Beta 3; see the
+   * no-args constructor for that code.
    * 
    * @exception if the SAXParser class doesn't support the Xerces
    * incremental parse operations. In that case, caller should
    * fall back upon the IncrementalSAXSource_Filter approach.
    * */
   public IncrementalSAXSource_Xerces(SAXParser parser) 
-		throws NoSuchMethodException  
-	{
+    throws NoSuchMethodException  
+  {
+		// Reflection is used to allow us to compile against
+		// Xerces2. If/when we can abandon the older versions of the parser,
+		// this constructor will simply have to fail until/unless the
+		// Xerces2 incremental support is made available on previously
+		// constructed SAXParser instances.
     fIncrementalParser=parser;
-		Class[] parms={InputSource.class};
-		fParseSomeSetup=parser.getClass().getMethod("parseSomeSetup",parms);
-		parms=new Class[0];
-		fParseSome=parser.getClass().getMethod("parseSome",parms);
+		Class me=parser.getClass();
+    Class[] parms={InputSource.class};
+    fParseSomeSetup=me.getMethod("parseSomeSetup",parms);
+    parms=new Class[0];
+    fParseSome=me.getMethod("parseSome",parms);
+    // Fallback if this fails (implemented in createIncrementalSAXSource) is
+    // to use IncrementalSAXSource_Filter rather than Xerces-specific code.
   }
 
   //
@@ -132,7 +210,18 @@ public class IncrementalSAXSource_Xerces
   //
   static public IncrementalSAXSource createIncrementalSAXSource() 
 	{
-			return createIncrementalSAXSource(new SAXParser());
+		try
+		{
+			return new IncrementalSAXSource_Xerces();
+		}
+		catch(NoSuchMethodException e)
+		{
+			// Xerces version mismatch; neither Xerces1 nor Xerces2 succeeded.
+			// Fall back on filtering solution.
+			IncrementalSAXSource_Filter iss=new IncrementalSAXSource_Filter();
+			iss.setXMLReader(new SAXParser());
+			return iss;
+		}
   }
 	
   static public IncrementalSAXSource
@@ -143,7 +232,8 @@ public class IncrementalSAXSource_Xerces
 		}
 		catch(NoSuchMethodException e)
 		{
-			// Xerces version mismatch. Fall back on the filtering solution
+			// Xerces version mismatch; neither Xerces1 nor Xerces2 succeeded.
+			// Fall back on filtering solution.
 			IncrementalSAXSource_Filter iss=new IncrementalSAXSource_Filter();
 			iss.setXMLReader(parser);
 			return iss;
@@ -251,19 +341,52 @@ public class IncrementalSAXSource_Xerces
 	// Private methods -- conveniences to hide the reflection details
 	private boolean parseSomeSetup(InputSource source) 
 		throws SAXException, IOException, IllegalAccessException, 
-					 java.lang.reflect.InvocationTargetException
+					 java.lang.reflect.InvocationTargetException,
+					 java.lang.InstantiationException
 	{
-		Object[] parm={source};
-		Object ret=fParseSomeSetup.invoke(fIncrementalParser,parm);
-		return ((Boolean)ret).booleanValue();
+		if(fConfigSetInput!=null)
+		{
+			// Obtain input from SAX inputSource object, construct XNI version of
+			// that object. Logic adapted from Xerces2.
+			Object[] parms1={source.getPublicId(),source.getSystemId(),null};
+			Object xmlsource=fConfigInputSourceCtor.newInstance(parms1);
+			Object[] parmsa={source.getByteStream()};
+			fConfigSetByteStream.invoke(xmlsource,parmsa);
+			parmsa[0]=source.getCharacterStream();
+			fConfigSetCharStream.invoke(xmlsource,parmsa);
+			parmsa[0]=source.getEncoding();
+			fConfigSetEncoding.invoke(xmlsource,parmsa);
+			parmsa[0]=xmlsource;
+			fConfigSetInput.invoke(fPullParserConfig,parmsa);
+			
+			// %REVIEW% Do first pull. Should we instead just return true?
+			return parseSome();
+		}
+		else
+		{
+			Object[] parm={source};
+			Object ret=fParseSomeSetup.invoke(fIncrementalParser,parm);
+			return ((Boolean)ret).booleanValue();
+		}
 	}
+	
 	static final Object[] noparms=new Object[0]; // Would null work???
+	static final Object[] parmsfalse={Boolean.FALSE};
 	private boolean parseSome()
 		throws SAXException, IOException, IllegalAccessException,
 					 java.lang.reflect.InvocationTargetException
 	{
-		Object ret=fParseSome.invoke(fIncrementalParser,noparms);
-		return ((Boolean)ret).booleanValue();
+		// Take next parsing step, return false iff parsing complete:
+		if(fConfigSetInput!=null)
+		{
+			Object ret=(Boolean)(fConfigParse.invoke(fPullParserConfig,parmsfalse));
+			return ((Boolean)ret).booleanValue();
+		}
+		else
+		{
+			Object ret=fParseSome.invoke(fIncrementalParser,noparms);
+			return ((Boolean)ret).booleanValue();
+		}
 	}
 	
 

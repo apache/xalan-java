@@ -254,18 +254,10 @@ public class DTMManagerDefault extends DTMManager
         boolean haveXercesParser =
           (null != reader)
           && (reader.getClass().getName().equals("org.apache.xerces.parsers.SAXParser") );
-
+	
         if (haveXercesParser)
           incremental = true;  // No matter what.  %REVIEW%
-
-				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
-				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
-				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
-				//m_incremental=true;			
-				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
-				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
-				//*********** JJK DEBUGGING KLUGE -- GONK GONK GONK
-				
+	
         // If the reader is null, but they still requested an incremental build,
         // then we still want to set up the IncrementalSAXSource stuff.
         if (this.m_incremental && incremental /* || ((null == reader) && incremental) */)
