@@ -257,6 +257,8 @@ transformer.transform(new javax.xml.transform.dom.DOMSource(inDoc)
                       domResult;
 // Now you can get the output Node from the DOMResult.
 org.w3c.dom.Node node = domResult.getNode();</source>
+<note>Create a new DOMResult object or use DOMResult.setNode() to assign a new container each time you want to perform a transformation 
+and place the output in a DOMResult object.</note>
 <p>The <link idref="samples" anchor="dom2dom">DOM2DOM</link> illustrates both procedures, and serializes the DOMResult to System.out.</p>
 </s2><anchor name="xpath"/>
 <s2 title="Working with XPath expressions">
