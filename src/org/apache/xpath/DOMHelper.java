@@ -38,6 +38,11 @@ public class DOMHelper
     return false;
   }
   
+  public String getUniqueID(Node node)
+  {
+    return "N"+Integer.toHexString(node.hashCode());
+  }
+  
   /**
    * Figure out if node2 should be placed after node1 in 
    * document order (returns node1 &lt;= node2).

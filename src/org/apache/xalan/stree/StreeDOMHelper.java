@@ -13,6 +13,12 @@ public class StreeDOMHelper extends DOM2Helper
   {
     return new DocumentImpl();
   }
+  
+  public String getUniqueID(Node node)
+  {
+    int index = ((Child)node).getUid();
+    return "N"+Integer.toHexString(index);
+  }
 
   /**
    * Figure out if node2 should be placed after node1 when 

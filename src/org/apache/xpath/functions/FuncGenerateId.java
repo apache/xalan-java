@@ -81,7 +81,9 @@ public class FuncGenerateId extends FunctionDef1Arg
   {    
     Node which = getArg0AsNode(xctxt);
     
-    // TODO: DOM Helper should have a function for this.
-    return new XString("N"+Integer.toString(which.hashCode()));
+    if(null != which)
+      return new XString(xctxt.getDOMHelper().getUniqueID(which));
+    else
+     return XString.EMPTYSTRING; 
   }
 }

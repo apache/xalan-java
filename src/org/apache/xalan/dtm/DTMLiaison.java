@@ -115,6 +115,12 @@ public class DTMLiaison extends DOM2Helper
   public DTMLiaison()
   {
   }
+  
+  public String getUniqueID(Node node)
+  {
+    return "N"+Integer.toHexString(((DTMProxy)node).getDTMNodeNumber())
+      +Integer.toHexString(((DTMProxy)node).getDTM().hashCode());
+  }
 
   /**
    * Check node to see if it matches this liaison.
