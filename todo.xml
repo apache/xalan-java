@@ -7,11 +7,23 @@
   <person name="Scott Boag" email="scott_boag@lotus.com" id="SB" expertise="code">
     Xalan architect, lead developer on Xalan-J 2.x.
   </person>
+  <person name="Shane Curcuru" email="Shane_Curcuru@lotus.com" id="SC" expertise="test">
+    Lead tester for API issues, automation framework.
+  </person>
+  <person name="Paul Dick" email="Paul_Dick@lotus.com" id="PD" expertise="test">
+    XSLT Conformance stylesheet issues and Xalan-C testing.
+  </person>
   <person name="Joseph Kesselman" email="Joseph_Kesselman@lotus.com" id="JK" expertise="code">
     Xalan-J 2.x developer, compiling/compiled stylesheets experiments.
   </person>
+  <person name="Donald Leslie" email="donald_leslie@lotus.com" id="DL" expertise="doc">
+    Xalan-J and -C documentation, servlets and samples.
+  </person>
   <person name="Costin Manolache" email="cmanolache@yahoo.com" id="CM">
     Xalan-J 2.x developer.
+  </person>
+  <person name="David Marston" email="David_Marston@lotus.com" id="DM" expertise="test">
+    Lead tester for XSLT Conformance stylesheet issues.
   </person>
   <person name="Myriam Midy" email="myriam_midy@lotus.com" id="MM" expertise="code">
     Xalan-J 1.x and 2.x developer.
@@ -20,18 +32,6 @@
     Xalan-J 1.x and 2.x developer, especially extension mechanisim.
   </person>
 
-  <person name="Shane Curcuru" email="Shane_Curcuru@lotus.com" id="SC" expertise="test">
-    Lead tester for API issues, automation framework.
-  </person>
-  <person name="David Marston" email="David_Marston@lotus.com" id="DM" expertise="test">
-    Lead tester for XSLT Conformance stylesheet issues.
-  </person>
-  <person name="Paul Dick" email="Paul_Dick@lotus.com" id="PD" expertise="test">
-    XSLT Conformance stylesheet issues and Xalan-C testing.
-  </person>
-  <person name="Donald Leslie" email="donald_leslie@lotus.com" id="DL" expertise="doc">
-    Xalan-J and -C documentation, servlets and samples.
-  </person>
  </devs>
 
  <actions>
@@ -56,11 +56,6 @@
     Check relative URL resolution with notations and unparsed entities.
     Not sure if there is a bug here.  See note from Thomal Maesing on
     10/24/2000, titled "Antwort: Re:".
-  </action>
-
-  <action context="test" who="SC" category="minitest" priority="medium">
-    Create Minitest automated test for developers to run before checkin; 
-    verifies basic functionality of TRAX interface and Xalan processor.
   </action>
 
   <action context="test" category="feature" priority="high">
@@ -124,6 +119,9 @@
     We need more real-life examples of how people are using stylesheets, along 
     with expected outputs (in contrib-gold) - we can then run our test driver 
     over the whole set of them easily to get more test points.
+    Note: please feel free to contribute tests here - the committers 
+    will review and move tests into conformance, product, etc. test 
+    areas as needed, but we can always just run ContribTest on any tests.
   </action>
 
   <action context="test" category="tests" priority="high">
@@ -179,6 +177,12 @@
  <completed>
   <!-- Move action sections to here when completed, and date them. -->
   
+  <action context="test" who="SC" category="minitest" priority="medium" completed="12/08/00">
+    Create Minitest automated test for developers to run before checkin; 
+    verifies basic functionality of TRAX interface and Xalan processor. 
+    (Still todo, minor: get xalan-dev list to vote to use this)
+  </action>
+
   <action context="code" category="architecture" priority="high" who="SB" completed="12/10/00">
     Fix remaining axes tests.
   </action>
