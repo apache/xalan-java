@@ -62,11 +62,16 @@
 
 package org.apache.xalan.xsltc.dom;
 
+import java.io.Externalizable;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.IOException;
+
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.NodeIterator;
 
 
-public class BitArray {
+public class BitArray implements Externalizable {
 
     private int[] _bits;
     private int   _bitSize;
@@ -75,7 +80,7 @@ public class BitArray {
 
     // This table is used to prevent expensive shift operations
     // (These operations are inexpensive on CPUs but very expensive on JVMs.)
-    private final int[] _masks = {
+    private final static int[] _masks = {
 	0x80000000, 0x40000000, 0x20000000, 0x10000000,
 	0x08000000, 0x04000000, 0x02000000, 0x01000000,
 	0x00800000, 0x00400000, 0x00200000, 0x00100000,
@@ -257,6 +262,25 @@ public class BitArray {
     public BitArray cloneArray() {
 	return(new BitArray(_intSize, _bits));
     }
+
+    public void writeExternal(ObjectOutput out) throws IOException {
+	out.writeInt(_bitSize);
+	out.writeInt(_mask);
+	out.writeObject(_bits);
+	out.flush();
+    }
+
+    /**
+     * Read the whole tree from a file (serialized)
+     */
+    public void readExternal(ObjectInput in)
+	throws IOException, ClassNotFoundException {
+	_bitSize = in.readInt();
+	_intSize = (_bitSize >>> 5) + 1;
+	_mask    = in.readInt();
+	_bits    = (int[])in.readObject();
+    }
+
 }
 
 
