@@ -302,7 +302,7 @@ public class ResultTreeHandler extends QueuedEvents
     {
       GenerateEvent ge = new GenerateEvent(m_transformer,
                                            GenerateEvent.EVENTTYPE_ENDELEMENT,
-                                           name);
+                                           name, (Attributes)null);
 
       m_tracer.fireGenerateEvent(ge);
     }
@@ -847,7 +847,8 @@ public class ResultTreeHandler extends QueuedEvents
         {
           GenerateEvent ge =
             new GenerateEvent(m_transformer,
-                              GenerateEvent.EVENTTYPE_STARTELEMENT);
+                              GenerateEvent.EVENTTYPE_STARTELEMENT, m_name,
+                                      m_attributes);
   
           m_tracer.fireGenerateEvent(ge);
         }
