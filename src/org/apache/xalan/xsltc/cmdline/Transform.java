@@ -89,6 +89,10 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 
+import org.apache.xalan.xsltc.StripFilter;
+import org.apache.xml.dtm.DTMWSFilter;
+import org.apache.xalan.xsltc.dom.DOMWSFilter;
+
 final public class Transform {
 
     private SerializationHandler _handler;
@@ -150,9 +154,16 @@ final public class Transform {
 	    // Set the DOM's DOM builder as the XMLReader's SAX2 content handler
             XSLTCDTMManager dtmManager = XSLTCDTMManager.newInstance();
 
+	    DTMWSFilter wsfilter;
+	    if (translet != null && translet instanceof StripFilter) {
+	        wsfilter = new DOMWSFilter(translet);
+            } else {
+	        wsfilter = null;
+            }
+
             final SAXImpl dom = (SAXImpl)dtmManager.getDTM(
                              new SAXSource(reader, new InputSource(_fileName)),
-                             false, null, true, false, translet.hasIdCall());
+                             false, wsfilter, true, false, translet.hasIdCall());
 
 	    dom.setDocumentURI(_fileName);
             translet.prepassDocument(dom);
