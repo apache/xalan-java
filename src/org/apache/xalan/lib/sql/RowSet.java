@@ -116,9 +116,10 @@ public class RowSet extends StreamableNode
 
     try
     {
-      if (this.getNodeTest().getNamespace() == null)
+      org.apache.xpath.patterns.NodeTest nt = this.getNodeTest();
+      if ((null == nt) || nt.getNamespace() == null)
       {
-        if (this.getNodeTest().getLocalName().equals(
+        if ((null == nt) || nt.getLocalName().equals(
                 XStatement.S_COLUMNHEADERNAME))
         {
           if (null == m_columnHeaders)
@@ -141,7 +142,7 @@ public class RowSet extends StreamableNode
           else
             return m_columnHeaders[0];
         }
-        else if (this.getNodeTest().getLocalName().equals(
+        else if (nt.getLocalName().equals(
                 XStatement.S_ROWNAME))
         {
           if (null == m_firstrow)
@@ -164,6 +165,7 @@ public class RowSet extends StreamableNode
       return null;
     }
   }
+
 
   /**
    * getNextSibling - This always returns null.

@@ -141,9 +141,10 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
 
     // try
     {
-      if (this.getNodeTest().getNamespace() == null)
+      org.apache.xpath.patterns.NodeTest nt = this.getNodeTest();
+      if ((null == nt) || nt.getNamespace() == null)
       {
-        if (this.getNodeTest().getLocalName().equals(
+        if ((null == nt) || nt.getLocalName().equals(
                 XStatement.S_COLUMNHEADERNAME))
         {
           int nextIndex = m_columnIndex + 1;
@@ -156,6 +157,10 @@ public class ColumnHeader extends StreamableNode implements NamedNodeMap
                                  m_metaData);
 
             return m_parent.m_columnHeaders[nextIndex];
+          }
+          else if(nt == null)
+          {
+            return new Row(getXStatement(), m_parent);
           }
           else
             return null;

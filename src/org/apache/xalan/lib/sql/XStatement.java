@@ -385,8 +385,9 @@ public class XStatement extends StreamableNode
 
     try
     {
-      if ((this.getNodeTest().getNamespace() == null)
-              && (this.getNodeTest().getLocalName().equals(S_DOCELEMENTNAME)))
+      org.apache.xpath.patterns.NodeTest nt = this.getNodeTest();
+      if ((nt == null) || ((nt.getNamespace() == null)
+              && (nt.getLocalName().equals(S_DOCELEMENTNAME))))
         return m_rowset;
       else
         return null;
