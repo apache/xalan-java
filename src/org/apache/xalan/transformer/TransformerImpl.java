@@ -2562,7 +2562,7 @@ public class TransformerImpl extends Transformer
   }
 
   /**
-   * Get the recursion limit.
+   * Set the recursion limit.
    * Used for infinite loop check. If the value is -1, do not
    * check for infinite loops. Anyone who wants to enable that
    * check should change the value of this variable to be the
