@@ -91,6 +91,8 @@
      additional argument. Several samples in extensions use the &xslt4j; 
      <link idref="commandline">command-line utility</link>, so they take arguments for the XML source
      file and the XSL stylesheet.</p>
+     <note>A number of simple examples are also available for your examination in 
+     <jump href="apidocs/org/apache/trax/Examples.html">org.apache.trax.Examples.html</jump>.</note>
   	</s2><anchor name="simpletransform"/>
     <s2 title="SimpleTransform">
     <p>What it does: The SimpleTransform class uses the foo.xsl stylesheet to transform foo.xml, and prints the
