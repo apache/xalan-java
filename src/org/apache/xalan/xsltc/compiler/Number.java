@@ -63,8 +63,6 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import org.w3c.dom.*;
-
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import de.fub.bytecode.classfile.JavaClass;
@@ -92,9 +90,9 @@ final class Number extends Instruction {
     private boolean _formatNeeded = false;
 
     static final private String[] ClassNames = { 
-	"org.apache.xalan.xsltc.dom.SingleNodeCounter",	   // LEVEL_SINGLE
-	"org.apache.xalan.xsltc.dom.MultipleNodeCounter",	   // LEVEL_MULTIPLE
-	"org.apache.xalan.xsltc.dom.AnyNodeCounter"	   // LEVEL_ANY
+	"org.apache.xalan.xsltc.dom.SingleNodeCounter",	  // LEVEL_SINGLE
+	"org.apache.xalan.xsltc.dom.MultipleNodeCounter", // LEVEL_MULTIPLE
+	"org.apache.xalan.xsltc.dom.AnyNodeCounter"	  // LEVEL_ANY
     };
 
     static final private String[] FieldNames = { 
@@ -103,23 +101,21 @@ final class Number extends Instruction {
 	"___any_node_counter"			   // LEVEL_ANY
     };
 
-    public void parseContents(Element element, Parser parser) {
-	NamedNodeMap attributes = element.getAttributes();
-	final int nAttributes = attributes.getLength();
+    public void parseContents(Parser parser) {
+	final int count = _attributes.getLength();
 
-	for (int i = 0; i < nAttributes; i++) {
-	    final Attr attribute = (Attr) attributes.item(i);
-	    final String name = attribute.getName();
-	    final String value = attribute.getValue();
+	for (int i = 0; i < count; i++) {
+	    final String name = _attributes.getQName(i);
+	    final String value = _attributes.getValue(i);
 
 	    if (name.equals("value")) {
-		_value = parser.parseExpression(this, element, name);
+		_value = parser.parseExpression(this, name, null);
 	    }
 	    else if (name.equals("count")) {
-		_count = parser.parsePattern(this, element, name);
+		_count = parser.parsePattern(this, name, null);
 	    }
 	    else if (name.equals("from")) {
-		_from = parser.parsePattern(this, element, name);
+		_from = parser.parsePattern(this, name, null);
 	    }
 	    else if (name.equals("level")) {
 		if (value.equals("single")) {
@@ -514,14 +510,14 @@ final class Number extends Instruction {
 		_letterValue.translate(classGen, methodGen);
 	    }
 	    else {
-		il.append(new PUSH(cpg, ""));
+		il.append(new PUSH(cpg, Constants.EMPTYSTRING));
 	    }
 
 	    if (_groupingSeparator != null) {
 		_groupingSeparator.translate(classGen, methodGen);
 	    }
 	    else {
-		il.append(new PUSH(cpg, ""));
+		il.append(new PUSH(cpg, Constants.EMPTYSTRING));
 	    }
 
 	    if (_groupingSize != null) {

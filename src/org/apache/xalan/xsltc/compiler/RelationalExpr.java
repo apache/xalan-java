@@ -101,6 +101,7 @@ final class RelationalExpr extends Expression implements Operators {
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+
 	Type tleft = _left.typeCheck(stable); 
 	Type tright = _right.typeCheck(stable);
 
@@ -150,8 +151,7 @@ final class RelationalExpr extends Expression implements Operators {
 	}
 
 	// Lookup the table of primops to find the best match
-	final QName opName = getParser().getQName(Operators.names[_op]);
-	MethodType ptype = lookupPrimop(stable, opName,
+	MethodType ptype = lookupPrimop(stable, Operators.names[_op],
 					new MethodType(Type.Void, 
 						       tleft, tright)); 
 
@@ -242,7 +242,7 @@ final class RelationalExpr extends Expression implements Operators {
 		break;
 		
 	    default:
-		getParser().internalError();
+		getParser().addFatalError("Unknown operator for relational expression");
 	    }
 
 	    _falseList.add(il.append(bi));		// must be backpatched

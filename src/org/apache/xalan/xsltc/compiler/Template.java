@@ -68,8 +68,6 @@ import java.util.Vector;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import org.w3c.dom.*;
-
 import org.apache.xalan.xsltc.compiler.util.Type;
 
 import de.fub.bytecode.generic.*;
@@ -207,12 +205,12 @@ public final class Template extends TopLevelElement {
 	return _stylesheet;
     }
 
-    public void parseContents(Element element, Parser parser) {
+    public void parseContents(Parser parser) {
 
-	final String name     = element.getAttribute("name");
-	final String mode     = element.getAttribute("mode");
-	final String match    = element.getAttribute("match");
-	final String priority = element.getAttribute("priority");
+	final String name     = getAttribute("name");
+	final String mode     = getAttribute("mode");
+	final String match    = getAttribute("match");
+	final String priority = getAttribute("priority");
 
 	_stylesheet = super.getStylesheet();
 
@@ -225,7 +223,7 @@ public final class Template extends TopLevelElement {
 	}
 	
 	if (match.length() > 0) {
-	    _pattern = parser.parsePattern(this, element, "match");
+	    _pattern = parser.parsePattern(this, "match", null);
 	}
 
 	if (priority.length() > 0) {
@@ -242,31 +240,48 @@ public final class Template extends TopLevelElement {
 	if (_name != null) {
 	    Template other = parser.getSymbolTable().addTemplate(this);
 	    if (!resolveNamedTemplates(other, parser)) {
-		parser.addError(new ErrorMsg(ErrorMsg.TMPREDEF_ERR,
-					     _name, this));
+		parser.addError(new ErrorMsg(ErrorMsg.TMPREDEF_ERR,_name,this));
 	    }
 	}
 
 	parser.setTemplate(this);	// set current template
-	parseChildren(element, parser);
+	parseChildren(parser);
 	parser.setTemplate(null);	// clear template
     }
 
-    public void parseSimplified(Element element, Parser parser) {
+    /**
+     * When the parser realises that it is dealign with a simplified stylesheet
+     * it will create an empty Stylesheet object with the root element of the
+     * stylesheet (a LiteralElement object) as its only child. The Stylesheet
+     * object will then create this Template object and invoke this method to
+     * force some specific behaviour. What we need to do is:
+     *  o) create a pattern matching on the root node
+     *  o) add the LRE root node (the only child of the Stylesheet) as our
+     *     only child node
+     *  o) set the empty Stylesheet as our parent
+     *  o) set this template as the Stylesheet's only child
+     */
+    public void parseSimplified(Stylesheet stylesheet, Parser parser) {
 
-	_stylesheet = super.getStylesheet();
+	_stylesheet = stylesheet;
+	setParent(stylesheet);
 
 	_name = null;
 	_mode = null;
 	_priority = Double.NaN;
 	_pattern = parser.parsePattern(this, "/");
 
-	parser.setTemplate(this);	// set current template
-	LiteralElement lre = new LiteralElement();
-	addElement(lre);
-	lre.setParent(this);
-	lre.parseContents(element, parser);
-	parser.setTemplate(null);	// clear template
+	final Vector contents = _stylesheet.getContents();
+	final SyntaxTreeNode root = (SyntaxTreeNode)contents.elementAt(0);
+
+	if (root instanceof LiteralElement) {
+	    addElement(root);
+	    root.setParent(this);
+	    contents.set(0, this);
+	    parser.setTemplate(this);
+	    root.parseContents(parser);
+	    parser.setTemplate(null);
+	}
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {

@@ -59,6 +59,7 @@
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author G. Todd Miller
+ * @author Morten Jorensen
  *
  */
 
@@ -66,49 +67,144 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
 import java.util.Enumeration;
+import java.util.Hashtable;
 
 import javax.xml.parsers.*;
 
-import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.compiler.util.*;
 
 public abstract class SyntaxTreeNode implements Constants {
+
+    // Reference to the AST parser
     private Parser _parser;
-    private final int _line;			// line number in input
-    private final Vector _contents = new Vector(2);
 
-    private static final int NSpaces = 64;
-    private static final char[] Spaces = new char[NSpaces];
-    protected static final int IndentIncrement = 4;
-    public static final SyntaxTreeNode Dummy = new AbsolutePathPattern(null);
+    // This node's line number in the input file (not obtainable!!!!)
+    private final int _line;
 
-    /**
-     * A vector of references to all the parameters defined in
-     * this node.
-     */
+    // Reference to this node's parent node
+    private SyntaxTreeNode _parent;
+    // Contains all child nodes of this node
+    private final Vector   _contents = new Vector(2);
+
+    // All parameters defined in this AST node
     private Vector _params;
-
-    /**
-     * A vector of references to all the local variables defined
-     * in this node.
-     */
+    // All variables defined in this AST node
     private Vector _vars;
 
-    private SyntaxTreeNode _parent;
+    // The QName of this element (contains uri, prefix and localname)
+    protected QName      _qname;
+    // The attributes (if any) of this element
+    protected Attributes _attributes = null;
+    // The namespace declarations (if any) of this element
+    private   Hashtable _prefixMapping = null;
 
-    static {
-	for (int i = 0; i < NSpaces; i++)
-	    Spaces[i] = ' ';
-    }
+    // Sentinel
+    public static final SyntaxTreeNode Dummy = new AbsolutePathPattern(null);
+
+    // These two are used for indenting nodes in the AST (debug output)
+    private static final char[] _spaces = 
+	"                                                       ".toCharArray();
+    protected static final int IndentIncrement = 4;
 
     public SyntaxTreeNode() {
 	_line = 0;
+	_qname = null;
     }
 
     public SyntaxTreeNode(int line) {
 	_line = line;
+	_qname = null;
+    }
+
+    public SyntaxTreeNode(String uri, String prefix, String localname) {
+	_line = 0;
+	setQName(uri, prefix, localname);
+    }
+
+    public void setQName(QName qname) {
+	_qname = qname;
+    }
+
+    public void setQName(String uri, String prefix, String localname) {
+	_qname = new QName(uri, prefix, localname);
+    }
+
+    public QName getQName() {
+	return(_qname);
+    }
+
+    public void setAttributes(Attributes attributes) {
+	_attributes = attributes;
+    }
+
+    public String getAttribute(String qname) {
+	if (_attributes == null)
+	    return(Constants.EMPTYSTRING);
+	final String value = _attributes.getValue(qname);
+	if (value == null)
+	    return(Constants.EMPTYSTRING);
+	else
+	    return(value);
+    }
+
+    public Attributes getAttributes() {
+	return(_attributes);
+    }
+
+    public void setPrefixMapping(Hashtable mapping) {
+	_prefixMapping = mapping;
+    }
+
+    public Hashtable getPrefixMapping() {
+	return _prefixMapping;
+    }
+
+    public void addPrefixMapping(String prefix, String uri) {
+	if (_prefixMapping == null)
+	    _prefixMapping = new Hashtable();
+	_prefixMapping.put(prefix, uri);
+    }
+
+    public String lookupNamespace(String prefix) {
+	// Initialise the output (default is 'null' for undefined)
+	String uri = null;
+
+	// First look up the prefix/uri mapping in our own hashtable...
+	if (_prefixMapping != null)
+	    uri = (String)_prefixMapping.get(prefix);
+	// ... but if we can't find it there we ask our parent for the mapping
+	if ((uri == null) && (_parent != null)) {
+	    uri = _parent.lookupNamespace(prefix);
+	    if ((prefix == Constants.EMPTYSTRING) && (uri == null))
+		uri = Constants.EMPTYSTRING;
+	}
+	// ... and then we return whatever URI we've got.
+	return(uri);
+    }
+
+    public String lookupPrefix(String uri) {
+	// Initialise the output (default is 'null' for undefined)
+	String prefix = null;
+
+	// First look up the prefix/uri mapping in our own hashtable...
+	if ((_prefixMapping != null) &&
+	    (_prefixMapping.contains(uri))) {
+	    Enumeration prefixes = _prefixMapping.keys();
+	    while (prefixes.hasMoreElements()) {
+		prefix = (String)prefixes.nextElement();
+		String mapsTo = (String)_prefixMapping.get(prefix);
+		if (mapsTo.equals(uri)) return(prefix);
+	    }
+	}
+	// ... but if we can't find it there we ask our parent for the mapping
+	else if (_parent != null) {
+	    prefix = _parent.lookupPrefix(uri);
+	    if ((uri == Constants.EMPTYSTRING) && (prefix == null))
+		prefix = Constants.EMPTYSTRING;
+	}
+	return(prefix);
     }
 
     public void setParser(Parser parser) {
@@ -183,54 +279,35 @@ public abstract class SyntaxTreeNode implements Constants {
      * This method is normally overriden by subclasses.
      * By default, it parses all the children of <tt>element</tt>.
      */
-    public void parseContents(Element element, Parser parser) {
-	parseChildren(element, parser);
+    public void parseContents(Parser parser) {
+	parseChildren(parser);
     }
 
     /**
      * Parse all the children of <tt>element</tt>.
      * XSLT commands are recognized by the XSLT namespace
      */
-    public final void parseChildren(Element element, Parser parser) {
-	final NodeList nl = element.getChildNodes();
-	final int n = nl != null ? nl.getLength() : 0;
+    public final void parseChildren(Parser parser) {
+
 	Vector locals = null;	// only create when needed
-
-	for (int i = 0; i < n; i++) {
-	    final Node node = nl.item(i);
-	    switch (node.getNodeType()) {
-	    case Node.ELEMENT_NODE:
-		
-		final Element child = (Element)node;
-		// Add namespace declarations to symbol table
-		parser.pushNamespaces(child);
-		final SyntaxTreeNode instance = parser.makeInstance(child);
-		addElement(instance);
-		if (!(instance instanceof Fallback))
-		    instance.parseContents(child, parser);
-
-		// if variable or parameter, add it to scope
-		final QName varOrParamName = updateScope(parser, instance);
-		if (varOrParamName != null) {
-		    if (locals == null) {
-			locals = new Vector(2);
-		    }
-		    locals.addElement(varOrParamName);
+	
+	final int count = _contents.size();
+	for (int i=0; i<count; i++) {
+	    SyntaxTreeNode child = (SyntaxTreeNode)_contents.elementAt(i);
+	    parser.getSymbolTable().setCurrentNode(child);
+	    child.parseContents(parser);
+	    // if variable or parameter, add it to scope
+	    final QName varOrParamName = updateScope(parser, child);
+	    if (varOrParamName != null) {
+		if (locals == null) {
+		    locals = new Vector(2);
 		}
-		// Remove namespace declarations from symbol table
-		parser.popNamespaces(child);
-		break;
-		
-	    case Node.TEXT_NODE:
-		// !!! need to take a look at whitespace stripping
-		final String temp = node.getNodeValue();
-		if (temp.trim().length() > 0) {
-		    addElement(new Text(temp));
-		}
-		break;
+		locals.addElement(varOrParamName);
 	    }
 	}
-	
+
+	parser.getSymbolTable().setCurrentNode(this);
+
 	// after the last element, remove any locals from scope
 	if (locals != null) {
 	    final int nLocals = locals.size();
@@ -240,9 +317,10 @@ public abstract class SyntaxTreeNode implements Constants {
 	}
     }
    
-    /** if node represents a variable or a parameter,
-	add it to the current scope and return name of the var/par
-    */
+    /**
+     * Add a node to the current scope and return name of a variable or
+     * parameter if the node represents a variable or a parameter.
+     */
     protected QName updateScope(Parser parser, SyntaxTreeNode node) {
 	if (node instanceof Variable) {
 	    final Variable var = (Variable)node;
@@ -363,26 +441,23 @@ public abstract class SyntaxTreeNode implements Constants {
     }
 
     protected final void indent(int indent) {
-	System.out.print(new String(Spaces, 0, indent));
+	System.out.print(new String(_spaces, 0, indent));
     }
 
     public final int getLineNumber() {
 	return _line;
     }
 
-    protected static void reportError(Element element, Parser parser,
-				      int errorCode, String errMsg) {
-	//final int lineNumber = ((Integer)element.getUserObject()).intValue();
-	final ErrorMsg error = new ErrorMsg(errorCode, -1 /*lineNumber*/, errMsg);
+    protected static void reportError(SyntaxTreeNode element, Parser parser,
+				      int errorCode, String msg) {
+	final ErrorMsg error = new ErrorMsg(errorCode, 0 /*lineNumber*/, msg);
         parser.addError(error);
     }
 
-    protected static void reportWarning(Element element, Parser parser,
-				      int errorCode, String errMsg) {
-	//final int lineNumber = ((Integer)element.getUserObject()).intValue();
-	final ErrorMsg error = new ErrorMsg(errorCode, -1 /*lineNumber*/, errMsg);
+    protected static void reportWarning(SyntaxTreeNode element, Parser parser,
+					int errorCode, String msg) {
+	final ErrorMsg error = new ErrorMsg(errorCode, 0 /*lineNumber*/, msg);
         parser.addWarning(error);
     }
-
 
 }

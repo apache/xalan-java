@@ -79,16 +79,16 @@ final class FunctionAvailableCall extends FunctionCall {
 	AvailableFunctions.add("contains");
 	AvailableFunctions.add("count");
 	AvailableFunctions.add("current");
-	// AvailableFunctions.add("document");
+	AvailableFunctions.add("document");
 	AvailableFunctions.add("element-available");
 	AvailableFunctions.add("false");
 	AvailableFunctions.add("floor");
 	AvailableFunctions.add("format-number");
 	AvailableFunctions.add("function-available");
 	AvailableFunctions.add("generate-id");
-	// AvailableFunctions.add("id");
-	// AvailableFunctions.add("key");
-	// AvailableFunctions.add("lang");
+	AvailableFunctions.add("id");
+	AvailableFunctions.add("key");
+	AvailableFunctions.add("lang");
 	AvailableFunctions.add("last");
 	AvailableFunctions.add("local-name");
 	AvailableFunctions.add("name");
@@ -108,7 +108,7 @@ final class FunctionAvailableCall extends FunctionCall {
 	AvailableFunctions.add("system-property");
 	AvailableFunctions.add("translate");
 	AvailableFunctions.add("true");
-	// AvailableFunctions.add("unparsed-entity-uri");
+	AvailableFunctions.add("unparsed-entity-uri");
     }
 
     public FunctionAvailableCall(QName fname, Vector arguments) {
@@ -136,6 +136,7 @@ final class FunctionAvailableCall extends FunctionCall {
 	final LiteralExpr arg = (LiteralExpr)argument();
 	final String namespace = arg.getNamespace();
 	boolean result = false;
+
 	if (namespace == null) {
 	    result = AvailableFunctions.contains(arg.getValue());
 	}

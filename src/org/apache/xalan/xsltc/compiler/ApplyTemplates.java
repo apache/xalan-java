@@ -68,7 +68,6 @@ import java.util.Enumeration;
 
 import javax.xml.parsers.*;
 
-import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
@@ -97,12 +96,12 @@ final class ApplyTemplates extends Instruction {
 	return hasContents();
     }
 
-    public void parseContents(Element element, Parser parser) {
-	final String select = element.getAttribute("select");
-	final String mode   = element.getAttribute("mode");
+    public void parseContents(Parser parser) {
+	final String select = getAttribute("select");
+	final String mode   = getAttribute("mode");
 	
 	if (select.length() > 0) {
-	    _select = parser.parseExpression(this, element, "select");
+	    _select = parser.parseExpression(this, "select", null);
 	}
 	
 	if (mode.length() > 0) {
@@ -112,7 +111,7 @@ final class ApplyTemplates extends Instruction {
 	// instantiate Mode if needed, cache (apply temp) function name
 	_functionName =
 	    parser.getTopLevelStylesheet().getMode(_modeName).functionName();
-	parseChildren(element, parser);	// with-params
+	parseChildren(parser);// with-params
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {

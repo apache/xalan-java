@@ -124,29 +124,10 @@ parser code {:
     final SyntaxTreeNode lookupName(QName name) {
         // Is it a local var or param ?
         final SyntaxTreeNode result = _parser.lookupVariable(name);
-	return result != null ? result : _symbolTable.lookupName(name);
-
-	/*
-        // Is it a global var or param ?
-        if (result == null) {
-           result = _symbolTable.lookupName(name);
-        }
-	else {
-	   System.out.println("looked up " + name);
-	   result.display(0);
-	}
-	*/
-
-	/*
-	if (result != null) {
-	   System.out.println("looked up " + name);
-	   result.display(0);
-        }
-	else {
-	   System.out.println("looked up failure");
-	}
-        return result;
-	*/
+	if (result != null)
+            return(result);
+        else
+	    return(_symbolTable.lookupName(name));
     }
 
     public final void addError(ErrorMsg error) {
@@ -600,7 +581,7 @@ PrimaryExpr ::= VariableReference:vr
 	final int index = string.indexOf(':');
 	final String prefix = index >= 0
                                      ? string.substring(0, index)
-                                     : "";
+                                     : Constants.EMPTYSTRING;
 	String namespace = parser._symbolTable.lookupNamespace(prefix);
 	RESULT = namespace == null
                          ? new LiteralExpr(string)
@@ -636,7 +617,7 @@ VariableReference ::= DOLLAR QName:varName
                     RESULT = new ParameterRef((Param)node);
                 } 
                 else {
-                    node.getParser().internalError();
+                    node.getParser().addFatalError("Cannot resolve variable or parameter feference to "+varName);
                 }
             }
             else {
@@ -782,8 +763,8 @@ NonemptyArgumentList ::= Argument:arg
 
 FunctionName ::= QName:fname
         {:
-             fname.clearDefaultNamespace();
-             RESULT = fname; 
+            fname.clearDefaultNamespace();
+            RESULT = fname; 
         :};
 
 Argument ::=    Expr:ex

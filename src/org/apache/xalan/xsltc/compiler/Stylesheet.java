@@ -72,7 +72,6 @@ import java.net.URL;
 
 import javax.xml.parsers.*;
 
-import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
@@ -90,7 +89,6 @@ import org.apache.xalan.xsltc.DOM;
 
 public final class Stylesheet extends SyntaxTreeNode {
     private String       _version;
-    private NamedNodeMap _stylesheetAttributes;
 
     private QName        _name;
     private URL          _url;
@@ -242,7 +240,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    StringTokenizer tokens = new StringTokenizer(prefixes);
 	    while (tokens.hasMoreTokens()) {
 		final String prefix = tokens.nextToken();
-		final String uri = stable.lookupNamespace(prefix);
+		final String uri = lookupNamespace(prefix);
 		if (uri != null) {
 		    _extensions.put(uri, prefix);
 		}
@@ -254,27 +252,27 @@ public final class Stylesheet extends SyntaxTreeNode {
 	return (_extensions.get(uri) != null);
     }
 
+    public void excludeExtensionPrefixes(Parser parser) {
+	final SymbolTable stable = parser.getSymbolTable();
+    	final String excludePrefixes = getAttribute("exclude-result-prefixes");
+	final String extensionPrefixes = 
+	    getAttribute("extension-element-prefixes");
+	stable.excludeNamespaces(excludePrefixes);
+	stable.excludeNamespaces(extensionPrefixes);
+	extensionURI(extensionPrefixes, stable);
+    }
+
     /**
      * Parse the version and uri fields of the stylesheet and add an
      * entry to the symbol table mapping the name <tt>%stylesheet%</tt>
      * to an instance of this class.
      */
-    public void parseContents(Element element, Parser parser) {
+    public void parseContents(Parser parser) {
 	final SymbolTable stable = parser.getSymbolTable();
 
-	// Add namespace declarations to symbol table
-	parser.pushNamespaces(element);
+	_version = getAttribute("version");
 
-	_version = element.getAttribute("version");
-	_stylesheetAttributes = element.getAttributes();
-
-	final String excludePrefixes =
-	    element.getAttribute("exclude-result-prefixes");
-	final String extensionPrefixes =
-	    element.getAttribute("extension-element-prefixes");
-	stable.excludeNamespaces(excludePrefixes);
-	stable.excludeNamespaces(extensionPrefixes);
-	extensionURI(extensionPrefixes, stable);
+	addPrefixMapping("xml", "xml"); // Make sure 'xml' maps to 'xml'
 
 	// Report and error if more than one stylesheet defined
 	final Stylesheet sheet = stable.addStylesheet(_name, this);
@@ -292,101 +290,46 @@ public final class Stylesheet extends SyntaxTreeNode {
 	if (_simplified) {
 	    stable.excludeURI(XSLT_URI);
 	    Template template = new Template();
-	    addElement(template);
-	    template.setParent(this);
-	    template.parseSimplified(element, parser);
+	    template.parseSimplified(this, parser);
 	}
 	// Parse the children of this node
 	else {
-	    parseOwnChildren(element, parser);
+	    parseOwnChildren(parser);
 	}
-
-	// Remove namespaces from symbol table
-	parser.popNamespaces(element);
     }
 
     /**
      * Parse all the children of <tt>element</tt>.
      * XSLT commands are recognized by the XSLT namespace
      */
-    public final void parseOwnChildren(Element element, Parser parser) {
-	final NodeList nl = element.getChildNodes();
-	final int n = nl != null ? nl.getLength() : 0;
-	Vector locals = null;	// only create when needed
+    public final void parseOwnChildren(Parser parser) {
+
+	final Vector contents = getContents();
+	final int count = contents.size();
 
 	// We have to scan the stylesheet element's top-level elements for
 	// variables and/or parameters before we parse the other elements...
-	for (int i = 0; i < n; i++) {
-	    final Node node = nl.item(i);
-	    if (node.getNodeType() == Node.ELEMENT_NODE) {
-		final Element child = (Element)node;
-		final String uri = child.getNamespaceURI();
-		final String tag = child.getLocalName();
-		if (uri.equals(XSLT_URI)) {
-		    if (tag.equals("param") || tag.equals("variable")) {
-			parser.pushNamespaces(child);
-			SyntaxTreeNode instance = parser.makeInstance(child);
-			addElement(instance);
-			instance.parseContents(child, parser);
-			QName varOrParamName = updateScope(parser, instance);
-			if (varOrParamName != null) {
-			    if (locals == null) {
-				locals = new Vector(2);
-			    }
-			    locals.addElement(varOrParamName);
-			}
-			parser.popNamespaces(child);
-		    }
-		}
+	for (int i=0; i<count; i++) {
+	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
+	    if ((child instanceof Param) || (child instanceof Variable)) {
+		parser.getSymbolTable().setCurrentNode(child);
+		child.parseContents(parser);
 	    }
 	}
 
 	// Now go through all the other top-level elements...
-	for (int i = 0; i < n; i++) {
-	    final Node node = nl.item(i);
-	    switch (node.getNodeType()) {
-	    case Node.ELEMENT_NODE:
-		
-		final Element child = (Element)node;
-		final String uri = child.getNamespaceURI();
-		final String tag = child.getLocalName();
-		// Skip if this is a variable/parameter
-		if (uri.equals(XSLT_URI)) {
-		    if (tag.equals("param") || tag.equals("variable")) break;
-		}
-
-		// Add namespace declarations to symbol table
-		parser.pushNamespaces(child);
-		final SyntaxTreeNode instance = parser.makeInstance(child);
-		addElement(instance);
-		if (!(instance instanceof Fallback))
-		    instance.parseContents(child, parser);
-		// Remove namespace declarations from symbol table
-		parser.popNamespaces(child);
-		break;
-		
-	    case Node.TEXT_NODE:
-		// !!! need to take a look at whitespace stripping
-		final String temp = node.getNodeValue();
-		if (temp.trim().length() > 0) {
-		    addElement(new Text(temp));
-		}
-		break;
-	    }
-	}
-	
-	// after the last element, remove any locals from scope
-	if (locals != null) {
-	    final int nLocals = locals.size();
-	    for (int i = 0; i < nLocals; i++) {
-		parser.removeVariable((QName)locals.elementAt(i));
+	for (int i=0; i<count; i++) {
+	    SyntaxTreeNode child = (SyntaxTreeNode)contents.elementAt(i);
+	    if (!((child instanceof Param) || (child instanceof Variable))) {
+		parser.getSymbolTable().setCurrentNode(child);
+		child.parseContents(parser);
 	    }
 	}
     }
 
     public void processModes() {
 	if (_defaultMode == null)
-	    _defaultMode = new Mode(null, this, "");
+	    _defaultMode = new Mode(null, this, Constants.EMPTYSTRING);
 	_defaultMode.processPatterns(_keys);
 	final Enumeration modes = _modes.elements();
 	while (modes.hasMoreElements()) {
@@ -407,7 +350,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     public Mode getMode(QName modeName) {
 	if (modeName == null) {
 	    if (_defaultMode == null) {
-		_defaultMode = new Mode(null, this, "");
+		_defaultMode = new Mode(null, this, Constants.EMPTYSTRING);
 	    }
 	    return _defaultMode;
 	}
@@ -456,8 +399,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	final ClassGenerator classGen =
 	    new ClassGenerator(_className,
 			       TRANSLET_CLASS,
-			       //getXSLTC().getFileName(), 
-			       "",
+			       Constants.EMPTYSTRING,
 			       ACC_PUBLIC | ACC_SUPER,
 			       null, this);
 	
@@ -917,24 +859,15 @@ public final class Stylesheet extends SyntaxTreeNode {
 	return _globals.size() - 1;
     }
 
-    // overridden from SyntaxTreeNode
-    protected final QName updateScope(Parser parser, SyntaxTreeNode node) {
-	return null;
-    }
-    
     public void display(int indent) {
 	indent(indent);
 	Util.println("Stylesheet");
 	displayContents(indent + IndentIncrement);
     }
 
+    // do we need this wrapper ?????
     public String getNamespace(String prefix) {
-	/* WRONG - WRONG - WRONG - namespace delcarations are not passed
-	   as attributes.
-	final Node attr = _stylesheetAttributes.getNamedItem("xmlns:" + prefix);
-	return attr != null ? attr.getNodeValue() : null;
-	*/
-	return getParser().getSymbolTable().lookupNamespace(prefix);
+	return lookupNamespace(prefix);
     }
 
     public String getClassName() {

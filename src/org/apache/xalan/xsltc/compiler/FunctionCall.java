@@ -182,7 +182,13 @@ class FunctionCall extends Expression {
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	final String namespace = _fname.getNamespace();
-	if (namespace != null) {
+
+	// XPath functions have no namespace
+	if (isStandard()) {
+	    return typeCheckStandard(stable);
+	}
+	// Handle extension functions (they all have a namespace)
+	else {
 	    final int len = ExtPrefix.length();
 	    if (namespace.length() >= len &&
 		namespace.substring(0, len).equals(ExtPrefix)) {
@@ -193,9 +199,6 @@ class FunctionCall extends Expression {
 	    }
 	    return typeCheckExternal(stable);
 	}
-	else {
-	    return typeCheckStandard(stable);
-	}
     }
 
     /**
@@ -204,10 +207,14 @@ class FunctionCall extends Expression {
      * thrown, then catch it and re-throw it with a new "this".
      */
     public Type typeCheckStandard(SymbolTable stable) throws TypeCheckError {
+
+	_fname.clearNamespace(); // HACK!!!
+
 	final int n = _arguments.size();
 	final Vector argsType = typeCheckArgs(stable);
+	final MethodType args = new MethodType(Type.Void, argsType);
 	final MethodType ptype =
-	    lookupPrimop(stable, _fname, new MethodType(Type.Void, argsType));
+	    lookupPrimop(stable, _fname.getLocalPart(), args);
 
 	if (ptype != null) {
 	    for (int i = 0; i < n; i++) {
@@ -325,7 +332,7 @@ class FunctionCall extends Expression {
 
 	    // append "F" to the function's name
 	    final String name = _fname.toString().replace('-', '_') + "F";
-	    String args = "";
+	    String args = Constants.EMPTYSTRING;
 
 	    // Special precautions for some method calls
 	    if (name.equals("sumF")) {
@@ -383,7 +390,11 @@ class FunctionCall extends Expression {
     }
 
     public boolean isStandard() {
-	return _fname.getNamespace() == null;
+	final String namespace = _fname.getNamespace();
+	if ((namespace == null) || (namespace.equals(Constants.EMPTYSTRING)))
+	    return true;
+	else
+	    return false;
     }
 
     /**

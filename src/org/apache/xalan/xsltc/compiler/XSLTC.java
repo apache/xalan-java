@@ -79,12 +79,10 @@ import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.jar.*;
 
-import javax.xml.parsers.*;
-
-import javax.xml.transform.ErrorListener;
-
-import org.w3c.dom.Element;
 import org.xml.sax.*;
+
+import javax.xml.parsers.*;
+import javax.xml.transform.ErrorListener;
 
 import org.apache.xalan.xsltc.compiler.util.*;
 import org.apache.xalan.xsltc.util.getopt.*;
@@ -185,41 +183,34 @@ public final class XSLTC {
      * is successful. - 'false' otherwise. ErrorListener arg (may be null)
      * added to support TrAX API.
      */
-    public boolean compile(URL stylesheet, ErrorListener elistener) {
+    public boolean compile(URL url, ErrorListener elistener) {
 	if (elistener != null) {
 	    _parser.setErrorListener(elistener);
 	}
 	try {
 	    reset();
-	    final String name = stylesheet.getFile();
+	    final String name = url.getFile();
 	    if (_className == null) {
 		final String baseName = Util.baseName(name);
 		setClassName(Util.toJavaName(Util.noExtName(baseName)));
 	    }
 	    
-	    final Element stylesheetElement = _parser.parse(stylesheet);
+	    // Get the root node of the abstract syntax tree
+	    final SyntaxTreeNode element = _parser.parse(url);
+	    // Process any error and/or warning messages
+	    _parser.printWarnings();
 	    if (_parser.errorsFound()) {
 		_parser.printErrors();
 		return false;
 	    }
-	
-	    _parser.printWarnings();
 
-	    /* REMOVED: The first element is not necessarily in the XSL
-	                namespace if we're compiling a simplified stylesheet
-	    final String namespace = stylesheetElement.getNamespace();
-	    // Does it start with an element of the xsl namespace ?
-	    if (namespace != null && !namespace.equals(Constants.XSLT_URI)) {
-	    	_parser.addError(new ErrorMsg(ErrorMsg.STYORTRA_ERR));
-	    }
-	    */
-	    if ((!_parser.errorsFound()) && (stylesheetElement != null)) {
-		_stylesheet = _parser.makeStylesheet(stylesheetElement);
-		_stylesheet.setURL(stylesheet);
+	    if ((!_parser.errorsFound()) && (element != null)) {
+		_stylesheet = _parser.makeStylesheet(element);
+		_stylesheet.setURL(url);
 		// This is the top level stylesheet - it has no parent
 		_stylesheet.setParentStylesheet(null);
 		_parser.setCurrentStylesheet(_stylesheet);
-		_parser.createAST(stylesheetElement, _stylesheet);
+		_parser.createAST(_stylesheet);
 		if (_stylesheet != null && _parser.errorsFound() == false) {
 		    _stylesheet.setMultiDocument(_multiDocument);
 		    _stylesheet.translate();
@@ -235,6 +226,7 @@ public final class XSLTC {
 	    return !_parser.errorsFound();
 	}
 	catch (CompilerException e) {
+	    e.printStackTrace();
 	    _parser.addError(new ErrorMsg(e.getMessage()));
 	    _parser.printErrors();
 	    return false;	    
@@ -280,6 +272,11 @@ public final class XSLTC {
     private void setDebug(boolean debug) {
 	_debug = debug;
     }
+
+
+    public boolean debug() {
+	return _debug;
+    }
     
     private void setDestDirectory(String dstDirName) throws CompilerException {
 	final File dir = new File(dstDirName);
@@ -305,6 +302,11 @@ public final class XSLTC {
 	return _stylesheet;
     }
 
+    public void setStylesheet(Stylesheet stylesheet) {
+	if (_stylesheet == null)
+	    _stylesheet = stylesheet;
+    }
+
     private File getOutputFile(String className) {
 	return new File(_dumpDir != null ? _dumpDir : _destDir,
 			classFileName(className));
@@ -312,10 +314,6 @@ public final class XSLTC {
    
     private String classFileName(final String className) {
 	return className.replace('.', File.separatorChar) + ".class";
-    }
-
-    public boolean debug() {
-	return _debug;
     }
 
     public Vector getNamesIndex() {
@@ -334,7 +332,6 @@ public final class XSLTC {
 	Integer code = (Integer)_attributes.get(name);
 	if (code == null) {
 	    _attributes.put(name, code = new Integer(_nextGType++));
-	    //_namesIndex.addElement("@" + name.toString());
 	    final String uri = name.getNamespace();
 	    final String local = "@"+name.getLocalPart();
 	    if ((uri != null) && (!uri.equals("")))
@@ -380,22 +377,11 @@ public final class XSLTC {
     }
     
     /**
-     *	Aborts the execution of the compiler as a result of an 
-     *  unrecoverable error.
-     */
-    public void internalError() {
-	System.err.println("Internal error");
-	if (debug()) {
-	    _parser.errorsFound(); // print stack
-	}
-	doSystemExit(1); throw new RuntimeException("System.exit(1) here!");
-    }
-
-    /**
      * Aborts the execution of the compiler if something found in the source 
      * file can't be compiled. It also prints which feature is not implemented 
      * if specified.
      */
+    /*
     public void notYetImplemented(String feature) {
 	System.err.println("'"+feature+"' is not supported by XSLTC.");
 	if (debug()) {
@@ -403,12 +389,14 @@ public final class XSLTC {
 	}
 	doSystemExit(1); throw new RuntimeException("System.exit(1) here!");
     }
+    */
 
     /**
      * Aborts the execution of the compiler if something found in the source 
      * file can't be compiled. It also prints which feature is not implemented 
      * if specified.
      */
+    /*
     public void extensionNotSupported(String feature) {
 	System.err.println("Extension element '"+feature+
 			   "' is not supported by XSLTC.");
@@ -417,6 +405,7 @@ public final class XSLTC {
 	}
 	doSystemExit(1); throw new RuntimeException("System.exit(1) here!");
     }
+    */
 
     public int nextVariableSerial() {
 	return _variableSerial++;

@@ -65,8 +65,6 @@ package org.apache.xalan.xsltc.compiler;
 import java.util.Vector;
 import java.util.StringTokenizer;
 
-import org.w3c.dom.*;
-
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 
@@ -118,7 +116,7 @@ final class Whitespace extends TopLevelElement {
 		_element = element.substring(colon+1,element.length());
 	    }
 	    else {
-		_namespace = "";
+		_namespace = Constants.EMPTYSTRING;
 		_element = element;
 	    }
 
@@ -127,7 +125,7 @@ final class Whitespace extends TopLevelElement {
 
 	    // Get the strip/preserve type; either "NS:EL", "NS:*" or "*"
 	    if (_element.equals("*")) {
-		if (_namespace.equals("")) {
+		if (_namespace == Constants.EMPTYSTRING) {
 		    _type = RULE_ALL;       // Strip/preserve _all_ elements
 		    _priority += 2;         // Lowest priority
 		}
@@ -161,24 +159,24 @@ final class Whitespace extends TopLevelElement {
      * Parse the attributes of the xsl:strip/preserve-space element.
      * The element should have not contents (ignored if any).
      */
-    public void parseContents(Element element, Parser parser) {
+    public void parseContents(Parser parser) {
 	// Determine if this is an xsl:strip- or preserve-space element
-	_action = element.getTagName().endsWith("strip-space") 
+	_action = _qname.getLocalPart().endsWith("strip-space") 
 	    ? STRIP_SPACE : PRESERVE_SPACE;
 
 	// Determine the import precedence
 	_importPrecedence = parser.getCurrentImportPrecedence();
 
 	// Get the list of elements to strip/preserve
-	_elementList = element.getAttribute("elements");
+	_elementList = getAttribute("elements");
 	if (_elementList == null || _elementList.length() == 0) {
-	    reportError(element, parser, ErrorMsg.NREQATTR_ERR, "elements");
+	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "elements");
 	    return;
 	}
 
 	final SymbolTable stable = parser.getSymbolTable();
 	StringTokenizer list = new StringTokenizer(_elementList);
-	StringBuffer elements = new StringBuffer("");
+	StringBuffer elements = new StringBuffer(Constants.EMPTYSTRING);
 
 	while (list.hasMoreElements()) {
 	    String token = list.nextToken();
@@ -190,10 +188,10 @@ final class Whitespace extends TopLevelElement {
 		prefix  = token.substring(0,col);
 	    }
 	    else {
-		prefix = "";
+		prefix = Constants.EMPTYSTRING;
 	    }
 
-	    namespace = stable.lookupNamespace(prefix);
+	    namespace = lookupNamespace(prefix);
 	    if (namespace != null)
 		elements.append(namespace+":"+
 				token.substring(col+1,token.length()));
@@ -432,7 +430,7 @@ final class Whitespace extends TopLevelElement {
 		// Create the QName for the element
 		final Parser parser = classGen.getParser();
 		QName qname;
-		if (rule.getNamespace() != "" )
+		if (rule.getNamespace() != Constants.EMPTYSTRING )
 		    qname = parser.getQName(rule.getNamespace(), null,
 					    rule.getElement());
 		else

@@ -63,8 +63,6 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import org.w3c.dom.*;
-
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class When extends Instruction {
@@ -83,21 +81,21 @@ final class When extends Instruction {
 	return _test;
     }
 
-    public void parseContents(Element element, Parser parser) {
+    public void parseContents(Parser parser) {
 	boolean ignore = false;
-	_test = parser.parseExpression(this, element, "test");
+	_test = parser.parseExpression(this, "test", null);
 	if (_test instanceof ElementAvailableCall) {
 	    ElementAvailableCall call = (ElementAvailableCall)_test;
 	    ignore = !call.getResult();
 	}
 
 	if (!ignore) {
-	    parseChildren(element, parser);
+	    parseChildren(parser);
 	}
 
 	// make sure required attribute(s) have been set
 	if (_test.isDummy()) {
-	    reportError(element, parser, ErrorMsg.NREQATTR_ERR, "test");
+	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "test");
 	    return;
 	}
     }

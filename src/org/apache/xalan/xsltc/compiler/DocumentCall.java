@@ -103,14 +103,15 @@ final class DocumentCall extends FunctionCall {
 	_uri = argument(0);
 	if (_uri instanceof LiteralExpr) {
 	    LiteralExpr expr = (LiteralExpr)_uri;
-	    if (expr.getValue().equals("")) {
+	    if (expr.getValue().equals(Constants.EMPTYSTRING)) {
 		Stylesheet stylesheet = getStylesheet();
 		if (stylesheet == null) {
 		    ErrorMsg msg = new ErrorMsg("Illegal argument "+
 						"to document() function");
 		    throw new TypeCheckError(msg);
 		}
-		_uri = new LiteralExpr(stylesheet.getURL().toString(),"");
+		_uri = new LiteralExpr(stylesheet.getURL().toString(),
+				       Constants.EMPTYSTRING);
 	    }
 	}
 

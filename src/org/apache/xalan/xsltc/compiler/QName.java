@@ -65,8 +65,8 @@
 package org.apache.xalan.xsltc.compiler;
 
 final class QName {
-    private final String _prefix;
     private final String _localname;
+    private String _prefix;
     private String _namespace;
     private String _stringRep;
     private int    _hashCode;
@@ -75,7 +75,13 @@ final class QName {
 	_namespace = namespace;
 	_prefix    = prefix;
 	_localname = localname;
-	_stringRep = namespace != null ? namespace+':'+localname : localname;
+	if ((namespace != null) && (!namespace.equals(Constants.EMPTYSTRING))) {
+	    _stringRep = namespace+':'+localname;
+	}
+	else {
+	    _stringRep = localname;
+	}
+
 	_hashCode  = _stringRep.hashCode() + 19; // cached for speed
     }
 
@@ -85,6 +91,10 @@ final class QName {
 	    _stringRep = _localname;
 	    _hashCode  = _stringRep.hashCode() + 19; // cached for speed
 	}
+    }
+
+    public void clearNamespace() {
+	_namespace = Constants.EMPTYSTRING;
     }
 
     public String toString() {
@@ -113,5 +123,9 @@ final class QName {
 
     public int hashCode() {
 	return _hashCode;
+    }
+
+    public String dump() {
+	return(new String("QName: "+_namespace+"("+_prefix+"):"+_localname));
     }
 }

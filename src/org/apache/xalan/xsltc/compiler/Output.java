@@ -68,8 +68,6 @@ import java.util.Vector;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 
-import org.w3c.dom.*;
-
 import de.fub.bytecode.generic.*;
 import de.fub.bytecode.classfile.JavaClass;
 
@@ -112,24 +110,22 @@ final class Output extends TopLevelElement {
      */
     private String generateXmlHeader() {
         // No header if user doesn't want one.
-        if (_omitXmlDeclaration)  {
-	    return("");
-	}
+        if (_omitXmlDeclaration) return(Constants.EMPTYSTRING);
 
 	// Start off XML header
         final StringBuffer hdr = new StringBuffer("<?xml ");
 	
-	if ((_version != null) && (!_version.equals("")))
+	if ((_version != null) && (_version !=Constants.EMPTYSTRING))
 	    hdr.append("version=\"" + _version + "\" ");
 	else
 	    hdr.append("version=\"1.0\" ");
 
-	if ((_encoding != null) && (!_encoding.equals("")))
+	if ((_encoding != null) && (_encoding !=Constants.EMPTYSTRING))
 	    hdr.append("encoding=\"" + _encoding + "\" ");
 	else
 	    hdr.append("encoding=\"utf-8\" ");
 
-	if ((_standalone != null) && (!_standalone.equals("")))
+	if ((_standalone != null) && (_standalone != Constants.EMPTYSTRING))
 	    hdr.append("standalone=\"" + _standalone + "\" ");
 
 	// Finish off XML header and return string.
@@ -140,26 +136,26 @@ final class Output extends TopLevelElement {
     /**
      * Scans the attribute list for the xsl:output instruction
      */
-    public void parseContents(Element element, Parser parser) {
+    public void parseContents(Parser parser) {
 
-	_method        = element.getAttribute("method");
-	_version       = element.getAttribute("version");
-	_encoding      = element.getAttribute("encoding");
-	_doctypeSystem = element.getAttribute("doctype-system");
-	_doctypePublic = element.getAttribute("doctype-public");
-	_cdataElements = element.getAttribute("cdata-section-elements");
-	_mediaType     = element.getAttribute("media-type");
-	_standalone    = element.getAttribute("standalone");
+	_method        = getAttribute("method");
+	_version       = getAttribute("version");
+	_encoding      = getAttribute("encoding");
+	_doctypeSystem = getAttribute("doctype-system");
+	_doctypePublic = getAttribute("doctype-public");
+	_cdataElements = getAttribute("cdata-section-elements");
+	_mediaType     = getAttribute("media-type");
+	_standalone    = getAttribute("standalone");
 
-	if ((_method == null) || (_method.equals("")))
+	if ((_method == null) || (_method == Constants.EMPTYSTRING))
 	    _method = "xml";
 
-	String attrib = element.getAttribute("omit-xml-declaration");
+	String attrib = getAttribute("omit-xml-declaration");
 	if ((attrib != null) && (attrib.equals("yes")))
 	    _omitXmlDeclaration = true;
 
 	if (_method.equals("xml") || _method.equals("html")) {
-	    attrib = element.getAttribute("indent");
+	    attrib = getAttribute("indent");
 	    if ((attrib != null) && (attrib.equals("yes")))
 	        _indent = true;
 	}
@@ -169,7 +165,7 @@ final class Output extends TopLevelElement {
 	else
 	    _header = null;
 
-	parseChildren(element, parser);
+	parseChildren(parser);
 
 	parser.setOutput(this);
     }
@@ -200,12 +196,13 @@ final class Output extends TopLevelElement {
 						   "setType", "(I)V");
 	il.append(methodGen.loadHandler());
 	if (_method.equals("text")) {
-  	    il.append(new PUSH(cpg, org.apache.xalan.xsltc.runtime.TextOutput.TEXT));
+  	    il.append(new PUSH(cpg, TextOutput.TEXT));
 	}
 	else if (_method.equals("xml")) {
 	    // Handle any XML elements that should be turned into
 	    // CDATA elements in the XML output document.
-	    if ((_cdataElements != null) && (_cdataElements != "")) {
+	    if ((_cdataElements != null) && 
+		(_cdataElements != Constants.EMPTYSTRING)) {
 	        StringTokenizer st = new StringTokenizer(_cdataElements,",");
 		final int cdata = cpg.addInterfaceMethodref(OUTPUT_HANDLER,
 						   "insertCdataElement",
@@ -216,13 +213,13 @@ final class Output extends TopLevelElement {
 		    il.append(new INVOKEINTERFACE(cdata,2));
 		}
 	    }
-	    il.append(new PUSH(cpg,org.apache.xalan.xsltc.runtime.TextOutput.XML));
+	    il.append(new PUSH(cpg, TextOutput.XML));
 	}
 	else if (_method.equals("html")) {
-	    il.append(new PUSH(cpg,org.apache.xalan.xsltc.runtime.TextOutput.HTML));
+	    il.append(new PUSH(cpg, TextOutput.HTML));
 	}
 	else {
-	    il.append(new PUSH(cpg, org.apache.xalan.xsltc.runtime.TextOutput.QNAME));
+	    il.append(new PUSH(cpg, TextOutput.QNAME));
 	}
 	il.append(new INVOKEINTERFACE(type,2));
 

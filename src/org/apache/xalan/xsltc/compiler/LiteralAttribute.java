@@ -65,14 +65,12 @@
 package org.apache.xalan.xsltc.compiler;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
-import org.w3c.dom.*;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class LiteralAttribute extends Instruction {
     private final String  _name;
     private final AttributeValue _value;
-    //    private final String  _namespace;
 
     public LiteralAttribute(String name, String value, Parser parser) {
 	_name = name;
@@ -89,7 +87,7 @@ final class LiteralAttribute extends Instruction {
 	typeCheckContents(stable);
 	return Type.Void;
     }
-	
+
     public boolean contextDependent() {
 	return _value.contextDependent();
     }

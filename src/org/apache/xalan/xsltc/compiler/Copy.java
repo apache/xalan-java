@@ -69,7 +69,6 @@ import java.util.StringTokenizer;
 
 import javax.xml.parsers.*;
 
-import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
@@ -79,12 +78,12 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class Copy extends Instruction {
     private UseAttributeSets _useSets;
     
-    public void parseContents(Element element, Parser parser) {
-	final String useSets = element.getAttribute("use-attribute-sets");
+    public void parseContents(Parser parser) {
+	final String useSets = getAttribute("use-attribute-sets");
 	if (useSets.length() > 0) {
 	    _useSets = new UseAttributeSets(useSets, parser);
 	}
-	parseChildren(element, parser);
+	parseChildren(parser);
     }
     
     public void display(int indent) {

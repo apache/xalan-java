@@ -63,24 +63,23 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import org.w3c.dom.*;
-
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class ProcessingInstruction extends Instruction {
+
     private AttributeValue _name; // name treated as AVT (7.1.3)
     
-    public void parseContents(Element element, Parser parser) {
-	final String name  =element.getAttribute("name");
+    public void parseContents(Parser parser) {
+	final String name  = getAttribute("name");
 	_name = AttributeValue.create(this, name, parser);
 	if (name.equals("xml")) {
-	    reportError(element, parser, ErrorMsg.ILLEG_PI_ERR, "xml");
+	    reportError(this, parser, ErrorMsg.ILLEG_PI_ERR, "xml");
 	}
-	parseChildren(element, parser);
+	parseChildren(parser);
     }
-    
+
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	_name.typeCheck(stable);
 	typeCheckContents(stable);

@@ -100,24 +100,29 @@ final class SymbolTable {
     }
 
     public Variable addVariable(Variable variable) {
-	return (Variable)_variables.put(variable.getName(), variable);
+	final String name = variable.getName().getStringRep();
+	return (Variable)_variables.put(name, variable);
     }
 	
-    public Variable lookupVariable(QName name) {
+    public Param addParam(Param parameter) {
+	final String name = parameter.getName().getStringRep();
+	return (Param)_variables.put(name, parameter);
+    }
+	
+    public Variable lookupVariable(QName qname) {
+	final String name = qname.getStringRep();
 	final Object obj = _variables.get(name);
 	return obj instanceof Variable ? (Variable)obj : null;
     }
 
-    public Param addParam(Param parameter) {
-	return (Param)_variables.put(parameter.getName(), parameter);
-    }
-	
-    public Param lookupParam(QName name) {
+    public Param lookupParam(QName qname) {
+	final String name = qname.getStringRep();
 	final Object obj = _variables.get(name);
 	return obj instanceof Param ? (Param)obj : null;
     }
 	
-    public SyntaxTreeNode lookupName(QName name) {
+    public SyntaxTreeNode lookupName(QName qname) {
+	final String name = qname.getStringRep();
 	return (SyntaxTreeNode)_variables.get(name);
     }
 
@@ -134,7 +139,7 @@ final class SymbolTable {
      * name clashes with user-defined names, the prefix <tt>PrimopPrefix</tt>
      * is prepended.
      */
-    public void addPrimop(QName name, MethodType mtype) {
+    public void addPrimop(String name, MethodType mtype) {
 	Vector methods = (Vector)_primops.get(name);
 	if (methods == null) {
 	    _primops.put(name, methods = new Vector());
@@ -146,43 +151,8 @@ final class SymbolTable {
      * Lookup a primitive operator or function in the symbol table by
      * prepending the prefix <tt>PrimopPrefix</tt>.
      */
-    public Vector lookupPrimop(QName name) {
+    public Vector lookupPrimop(String name) {
 	return (Vector)_primops.get(name);
-    }
-
-    /**
-     * Insert a namespace declaration into the symbol table. To avoid name
-     * clashes with user-defined names, the prefix <tt>NameSpacePrefix</tt>
-     * is prepened.
-     */
-    public void pushNamespace(String prefix, String uri) {
-	StringStack stack;
-
-	if ((stack = (StringStack)_namespaces.get(prefix)) == null) {
-	    stack = new StringStack();
-	    _namespaces.put(prefix, stack);
-	}
-	stack.pushString(uri);
-
-	if ((stack = (StringStack)_prefixes.get(uri)) == null) {
-	    stack = new StringStack();
-	    _prefixes.put(uri, stack);
-	}
-	stack.pushString(prefix);	
-    }
-
-    /**
-     * Remove a namespace declaration from the symbol table when its scope
-     * has ended.
-     */
-    public void popNamespace(String prefix) {
-	StringStack stack;
-	if ((stack = (StringStack)_namespaces.get(prefix)) != null) {
-	    final String uri = stack.popString();
-	    if ((stack = (StringStack)_prefixes.get(uri)) != null) {
-		stack.popString();
-	    }
-	}
     }
 
     /**
@@ -197,18 +167,16 @@ final class SymbolTable {
     /**
      * Use a namespace prefix to lookup a namespace URI
      */
-    public String lookupNamespace(String prefix) {
-	if (prefix == null) return null;
-	final StringStack stack = (StringStack)_namespaces.get(prefix);
-	return stack != null && !stack.isEmpty() ? stack.peekString() : null;
+    private SyntaxTreeNode _current = null;
+    public void setCurrentNode(SyntaxTreeNode node) {
+	_current = node;
     }
 
-    /**
-     * Use a namespace URI to lookup a namespace prefix
-     */
-    public String lookupPrefix(String uri) {
-	final StringStack stack = (StringStack)_prefixes.get(uri);
-	return stack != null && !stack.isEmpty() ? stack.peekString() : null;
+    public String lookupNamespace(String prefix) {
+	if (_current != null)
+	    return(_current.lookupNamespace(prefix));
+	else
+	    return(Constants.EMPTYSTRING);
     }
 
     /**
@@ -223,14 +191,6 @@ final class SymbolTable {
      */ 
     public String lookupPrefixAlias(String prefix) {
 	return (String)_aliases.get(prefix);
-    }
-
-    /**
-     * Returns a list of the prefixes of all namespaces that are currently
-     * in scope (used when outputting literal result elements).
-     */
-    public Enumeration getInScopeNamespaces() {
-	return(Enumeration)_namespaces.keys();
     }
 
     /**
@@ -256,7 +216,7 @@ final class SymbolTable {
 		final String prefix = tokens.nextToken();
 		final String uri;
 		if (prefix.equals("#default"))
-		    uri = lookupNamespace("");
+		    uri = lookupNamespace(Constants.EMPTYSTRING);
 		else
 		    uri = lookupNamespace(prefix);
 		if (uri != null) excludeURI(uri);
@@ -285,7 +245,7 @@ final class SymbolTable {
 		final String prefix = tokens.nextToken();
 		final String uri;
 		if (prefix.equals("#default"))
-		    uri = lookupNamespace("");
+		    uri = lookupNamespace(Constants.EMPTYSTRING);
 		else
 		    uri = lookupNamespace(prefix);
 		Integer refcnt = (Integer)_excludedURI.get(uri);

@@ -1,3 +1,4 @@
+
 /*
  * @(#)$Id$
  *
@@ -78,7 +79,10 @@ final class LiteralExpr extends Expression {
 
     public LiteralExpr(String value, String namespace) {
 	_value = value;
-	_namespace = namespace;
+	if (namespace.equals(Constants.EMPTYSTRING))
+	    _namespace = null;
+	else
+	    _namespace = namespace;
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {

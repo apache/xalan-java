@@ -63,8 +63,6 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import org.w3c.dom.*;
-
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -77,10 +75,9 @@ final class TransletOutput extends Instruction {
 	Util.println("TransletOutput " + _port);
     }
 		
-    public void parseContents(Element element, Parser parser) {
-	_port = AttributeValue.create(this,
-				      element.getAttribute("port"), parser);
-	parseChildren(element, parser);
+    public void parseContents(Parser parser) {
+	_port = AttributeValue.create(this, getAttribute("port"), parser);
+	parseChildren(parser);
     }
     
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {

@@ -66,12 +66,32 @@ package org.apache.xalan.xsltc.compiler;
 import de.fub.bytecode.generic.InstructionConstants;
 
 public interface Constants extends InstructionConstants {
+
+    // Error categories used to report errors to Parser.reportError()
+
+    // Unexpected internal errors, such as null-ptr exceptions, etc.
+    // Immediately terminates compilation, no translet produced
+    public final int INTERNAL        = 0;
+    // XSLT elements that are not implemented and unsupported ext.
+    // Immediately terminates compilation, no translet produced
+    public final int UNSUPPORTED     = 1;
+    // Fatal error in the stylesheet input (parsing or content)
+    // Immediately terminates compilation, no translet produced
+    public final int FATAL           = 2;
+    // Other error in the stylesheet input (parsing or content)
+    // Does not terminate compilation, no translet produced
+    public final int ERROR           = 3;
+    // Other error in the stylesheet input (content errors only)
+    // Does not terminate compilation, a translet is produced
+    public final int WARNING         = 4;
+
+    public static final String EMPTYSTRING = "";
+
     public static final String TRANSLET_INTF
 	= "org.apache.xalan.xsltc.Translet";
     public static final String TRANSLET_INTF_SIG        
 	= "Lorg/apache/xalan/xsltc/Translet;";
     
-    // -- deprecated
     public static final String ATTRIBUTES_SIG 
 	= "Lorg/apache/xalan/xsltc/runtime/Attributes;";
     public static final String NODE_ITERATOR_SIG
@@ -93,7 +113,6 @@ public interface Constants extends InstructionConstants {
 
     public static final String STRING    
 	= "java.lang.String";
-    // -- deprecated
 
     public static final int ACC_PUBLIC    
 	= de.fub.bytecode.Constants.ACC_PUBLIC;
@@ -310,14 +329,7 @@ public interface Constants extends InstructionConstants {
 	= "setStartNode";
     public static final String RESET     	    
 	= "reset";
-    /*
-      public static final String APPLY_TEMPLATES_SIG 
-      = "(" 
-      + DOM_CLASS_SIG 
-      + NODE_ITERATOR_SIG
-      + TRANSLET_OUTPUT_SIG
-      + ")V"; 
-    */
+
     public static final String GET_NODE_NAME_SIG   
 	= "(" + NODE_SIG + ")" + STRING_SIG;
     public static final String CHARACTERSW_SIG     
@@ -350,26 +362,11 @@ public interface Constants extends InstructionConstants {
     public static final String NAMESPACE_INDEX_SIG
 	= "[" + STRING_SIG;
 
-    /*
-    public static final String MAP_FIELD		 
-	= "mapping";
-    public static final String REV_MAP_FIELD           
-	= "reverseMapping";
-    public static final String TYPE_FIELD		 
-	= "type";
-    */
     public static final String DOM_FIELD
 	= "_dom";
     public static final String FORMAT_SYMBOLS_FIELD	 
 	= "format_symbols";
-    /*
-    public static final String MAP_FIELD_SIG	         
-	= "[S";
-    public static final String TYPE_FIELD_SIG		 
-	= "[S";
-    public static final String REV_MAP_FIELD_SIG       
-	= "[S";
-    */
+
     public static final String ITERATOR_FIELD_SIG      
 	= NODE_ITERATOR_SIG;
     public static final String NODE_FIELD		 

@@ -63,8 +63,6 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import org.w3c.dom.*;
-
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import de.fub.bytecode.generic.*;
@@ -84,21 +82,21 @@ final class WithParam extends Instruction {
 	displayContents(indent + IndentIncrement);
     }
 
-    public void parseContents(Element element, Parser parser) {
-	final String name = element.getAttribute("name");
+    public void parseContents(Parser parser) {
+	final String name = getAttribute("name");
 	if (name.length() > 0) {
 	    _name = parser.getQName(name);
 	}
         else {
-	    reportError(element, parser, ErrorMsg.NREQATTR_ERR, "name");
+	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "name");
         }
 	
-	final String select = element.getAttribute("select");
+	final String select = getAttribute("select");
 	if (select.length() > 0) {
-	    _select = parser.parseExpression(this, element, "select");
+	    _select = parser.parseExpression(this, "select", null);
 	}
 	
-	parseChildren(element, parser);
+	parseChildren(parser);
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {

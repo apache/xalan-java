@@ -64,8 +64,6 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import org.w3c.dom.*;
-
 import org.apache.xalan.xsltc.compiler.util.Type;
 
 import de.fub.bytecode.generic.*;
@@ -76,12 +74,12 @@ import org.apache.xalan.xsltc.compiler.util.*;
 final class Message extends Instruction {
     private boolean _terminate = false;
 	
-    public void parseContents(Element element, Parser parser) {
-	String termstr = element.getAttribute("terminate");
+    public void parseContents(Parser parser) {
+	String termstr = getAttribute("terminate");
 	if (termstr != null) {
             _terminate = termstr.equals("yes");
 	}
-	parseChildren(element, parser);
+	parseChildren(parser);
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {

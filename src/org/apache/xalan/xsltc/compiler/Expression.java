@@ -208,10 +208,10 @@ abstract class Expression extends SyntaxTreeNode {
      * first entry in the vector of primops that has the right arity is 
      * considered to be the default one.
      */
-    public MethodType lookupPrimop(SymbolTable stable, QName op,
+    public MethodType lookupPrimop(SymbolTable stable, String op,
 				   MethodType ctype) {
 	MethodType result = null;
-	final Vector primop = stable.lookupPrimop(op);		
+	final Vector primop = stable.lookupPrimop(op);
 	if (primop != null) {
 	    final int n = primop.size();
 	    int minDistance = Integer.MAX_VALUE;

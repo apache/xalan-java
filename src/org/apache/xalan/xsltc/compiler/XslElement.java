@@ -68,8 +68,6 @@ import java.util.Vector;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
 
-import org.w3c.dom.*;
-
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -100,22 +98,23 @@ final class XslElement extends Instruction {
      * around the problem by treating the namaspace attribute as a constant.
      *          (Yes, I know this is a hack, bad, bad, bad.)
      */
-    public void parseContents(Element element, Parser parser) {
+    public void parseContents(Parser parser) {
 
 	final SymbolTable stable = parser.getSymbolTable();
 
 	// First try to get namespace from the namespace attribute
-	String namespace = element.getAttribute("namespace");
+	String namespace = getAttribute("namespace");
 
 	// If that is undefied we use the prefix in the supplied QName
-	String name = element.getAttribute("name");
+	String name = getAttribute("name");
 	QName qname = parser.getQNameSafe(name);
 	final String prefix = qname.getPrefix();
-	if ((namespace == null || namespace == "") && (prefix != null)) {
-	    namespace = stable.lookupNamespace(prefix); 
+	if ((namespace == null || namespace == Constants.EMPTYSTRING) && 
+	    (prefix != null)) {
+	    namespace = lookupNamespace(prefix); 
 	    if (namespace == null) {
 		parser.addWarning(new ErrorMsg(ErrorMsg.NSPUNDEF_ERR, prefix));
-		parseChildren(element, parser);
+		parseChildren(parser);
 		_ignore = true; // Ignore the element if prefix is undeclared
 		return;
 	    }
@@ -125,24 +124,23 @@ final class XslElement extends Instruction {
 	if (qname.getLocalPart().indexOf(' ') > -1) {
 	    parser.addWarning(new ErrorMsg("You can't call an element \""+
 					   qname.getLocalPart()+"\""));
-	    parseChildren(element, parser);
+	    parseChildren(parser);
 	    _ignore = true; // Ignore the element if the local part is invalid
 	    return;
 	}
 
 	// Check if this element belongs in a specific namespace
-	if (namespace != "") {
+	if (namespace != Constants.EMPTYSTRING) {
 	    // Get the namespace requested by the xsl:element
-	    _namespace = new AttributeValueTemplate(namespace,parser);
+	    _namespace = new AttributeValueTemplate(namespace, parser);
 	    // Get the current prefix for that namespace (if any)
-	    _namespacePrefix = stable.lookupPrefix(namespace);
+	    _namespacePrefix = lookupPrefix(namespace);
 	    // Is it the default namespace?
-	    if ((_namespacePrefix = prefix) == null) _namespacePrefix = "";
-	    // Make this prefix-namespace mapping in scope (in symbol table)
-	    stable.pushNamespace(_namespacePrefix,namespace);
+	    if ((_namespacePrefix = prefix) == null)
+		_namespacePrefix = Constants.EMPTYSTRING;
 
 	    // Construct final element QName
-	    if (_namespacePrefix.equals(""))
+	    if (_namespacePrefix == Constants.EMPTYSTRING)
 		name = qname.getLocalPart();
 	    else
 		name = _namespacePrefix+":"+qname.getLocalPart();
@@ -151,15 +149,12 @@ final class XslElement extends Instruction {
 	_name = AttributeValue.create(this, name, parser);
 
 	// Handle the 'use-attribute-sets' attribute
-	final String useSets = element.getAttribute("use-attribute-sets");
+	final String useSets = getAttribute("use-attribute-sets");
 	if (useSets.length() > 0) {
 	    addElement(new UseAttributeSets(useSets, parser));
 	}
 
-	parseChildren(element, parser);
-
-	// Make any prefix-namespace mapping out-of-scope
-	if (_namespace != null) stable.popNamespace(_namespacePrefix);
+	parseChildren(parser);
     }
 
     /**

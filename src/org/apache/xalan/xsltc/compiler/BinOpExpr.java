@@ -96,8 +96,7 @@ final class BinOpExpr extends Expression {
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	final Type tleft = _left.typeCheck(stable); 
 	final Type tright = _right.typeCheck(stable);
-	final MethodType ptype = lookupPrimop(stable,
-					      getParser().getQName(Ops[_op]),
+	final MethodType ptype = lookupPrimop(stable, Ops[_op],
 					      new MethodType(Type.Void,
 							     tleft, tright)); 
 	if (ptype != null) {
@@ -137,7 +136,7 @@ final class BinOpExpr extends Expression {
 	    il.append(_type.REM());
 	    break;
 	default:
-	    getParser().internalError();
+	    getParser().addFatalError("Unknown operator for binary expression");
 	}
     }
 

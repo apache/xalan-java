@@ -109,7 +109,7 @@ final class AttributeValueTemplate extends AttributeValue {
 	    if (close > open + 1) {
 		str = text.substring(open + 1, close);
 		str = removeDuplicateBraces(text.substring(open+1,close));
-		addElement(parser.parseExpression(this,str));
+		addElement(parser.parseExpression(this, str));
 	    }
 	    // Parse rest of string
 	    parseAVTemplate(close + 1, text, parser);
@@ -148,7 +148,7 @@ final class AttributeValueTemplate extends AttributeValue {
 		contents.setElementAt(new CastExpr(exp, Type.String), i);
 	    }
 	}
-	return _type = Type.Void;
+	return _type = Type.String;
     }
 
     public String toString() {
@@ -162,7 +162,6 @@ final class AttributeValueTemplate extends AttributeValue {
 	return buffer.append(']').toString();
     }
 		
-    // return (new StringBuffer()).append("A").append("B").toString();
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	if (elementCount() == 1) {
 	    final Expression exp = (Expression)elementAt(0);

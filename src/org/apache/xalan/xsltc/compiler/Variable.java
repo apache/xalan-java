@@ -66,8 +66,6 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
 
-import org.w3c.dom.*;
-
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.Instruction;
 import de.fub.bytecode.generic.*;
@@ -181,14 +179,14 @@ final class Variable extends TopLevelElement {
 	return _stackIndex;
     }
 
-    public void parseContents(Element element, Parser parser) {
+    public void parseContents(Parser parser) {
 	// parse attributes name and select (if present)
-	final String name = element.getAttribute("name");
+	final String name = getAttribute("name");
 	if (name.length() > 0) {
 	    _name = parser.getQName(name);
 	}
         else {
-	    reportError(element, parser, ErrorMsg.NREQATTR_ERR, "name");
+	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "name");
 	}
 
 	// check whether variable/param of the same name is already in scope
@@ -197,13 +195,13 @@ final class Variable extends TopLevelElement {
 	    parser.addError(error);
 	}
 
-	final String select = element.getAttribute("select");
+	final String select = getAttribute("select");
 	if (select.length() > 0) {
-	    _select = parser.parseExpression(this, element, "select");
+	    _select = parser.parseExpression(this, "select", null);
 	}
 
 	// Children must be parsed first -> static scoping
-	parseChildren(element, parser);
+	parseChildren(parser);
 
 	// Add a ref to this var to its enclosing construct
 	SyntaxTreeNode parent = getParent();
@@ -218,7 +216,7 @@ final class Variable extends TopLevelElement {
 		final int them = var.getImportPrecedence();
 		// It is an error if the two have the same import precedence
 		if (us == them) {
-		    ErrorMsg error =
+		    ErrorMsg error = 
 			new ErrorMsg(ErrorMsg.VARREDEF_ERR, _name, this);
 		    parser.addError(error);
 		}
@@ -381,7 +379,7 @@ final class Variable extends TopLevelElement {
 		}
 		else {
 		    // If no select and no contents push the empty string
-		    il.append(new PUSH(cpg, ""));
+		    il.append(new PUSH(cpg, Constants.EMPTYSTRING));
 		}
 	    }
 	    else {
@@ -443,7 +441,7 @@ final class Variable extends TopLevelElement {
 		    }
 		    else {
 			// If no select and no contents push the empty string
-			il.append(new PUSH(cpg, ""));
+			il.append(new PUSH(cpg, Constants.EMPTYSTRING));
 		    }
 		}
 		else {

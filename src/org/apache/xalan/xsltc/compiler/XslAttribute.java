@@ -66,8 +66,6 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
 
-import org.w3c.dom.*;
-
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -97,17 +95,17 @@ final class XslAttribute extends Instruction {
     /**
      * Parses the attribute's contents. Special care taken for namespaces.
      */
-    public void parseContents(Element element, Parser parser) {
+    public void parseContents(Parser parser) {
 
 	final SymbolTable stable = parser.getSymbolTable();
-	String namespace = element.getAttribute("namespace");
-	String name = element.getAttribute("name");
+	String namespace = getAttribute("namespace");
+	String name = getAttribute("name");
 	QName qname = parser.getQName(name);
 	final String prefix = qname.getPrefix();
 	boolean generated = false;
 
 	if ((prefix != null) && (prefix.equals("xmlns"))) {
-	    reportError(element, parser, ErrorMsg.ILL_ATTR_ERR, name);
+	    reportError(this, parser, ErrorMsg.ILL_ATTR_ERR, name);
 	    return;
 	}
 
@@ -121,21 +119,21 @@ final class XslAttribute extends Instruction {
 		!(item instanceof UseAttributeSets) &&
 		!(item instanceof LiteralAttribute)) {
 		_ignore = true;
-		reportWarning(element, parser, ErrorMsg.ATTROUTS_ERR, name);
+		reportWarning(this, parser, ErrorMsg.ATTROUTS_ERR, name);
 		return;
 	    }
 	}
 
 	// Get namespace from namespace attribute?
-	if (namespace != "") {
+	if ((namespace != null) && (namespace != Constants.EMPTYSTRING)) {
 	    // Prefix could be in symbol table
-	    _prefix = stable.lookupPrefix(namespace);
+	    //_prefix = stable.lookupPrefix(namespace);
 	    _namespace = new AttributeValueTemplate(namespace, parser);
 	}
 	// Get namespace from prefix in name attribute?
-	else if (prefix != "") {
+	else if ((prefix != null) && (prefix != Constants.EMPTYSTRING)) {
 	    _prefix = prefix;
-	    namespace = stable.lookupNamespace(prefix);
+	    namespace = lookupNamespace(prefix);
 	    if (namespace != null)
 		_namespace = new AttributeValueTemplate(namespace, parser);
 	}
@@ -154,7 +152,7 @@ final class XslAttribute extends Instruction {
 		}
 	    }
 
-	    if (_prefix.equals("")) {
+	    if (_prefix == Constants.EMPTYSTRING) {
 		name = qname.getLocalPart();
 	    }
 	    else {
@@ -173,7 +171,7 @@ final class XslAttribute extends Instruction {
 
 
 	_name = AttributeValue.create(this, name, parser);
-	parseChildren(element, parser);
+	parseChildren(parser);
     }
 	
     /**

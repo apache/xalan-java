@@ -93,7 +93,7 @@ final class ConcatCall extends FunctionCall {
 	
 	switch (nArgs) {
 	case 0:
-	    il.append(new PUSH(cpg, ""));
+	    il.append(new PUSH(cpg, Constants.EMPTYSTRING));
 	    break;
 	    
 	case 1:

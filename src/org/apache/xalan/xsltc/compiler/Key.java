@@ -64,7 +64,6 @@ package org.apache.xalan.xsltc.compiler;
 
 import javax.xml.parsers.*;
 
-import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import de.fub.bytecode.generic.*;
@@ -80,19 +79,19 @@ final class Key extends TopLevelElement {
     private Expression _use;
     private Type       _useType;
 
-    public void parseContents(Element element, Parser parser) {
+    public void parseContents(Parser parser) {
 	// make sure values are provided
-	_name = parser.getQName(element.getAttribute("name"));
-	_match = parser.parsePattern(this, element, "match");
-	_use = parser.parseExpression(this, element, "use");
+	_name = parser.getQName(getAttribute("name"));
+	_match = parser.parsePattern(this, "match", null);
+	_use = parser.parseExpression(this, "use", null);
 
         // make sure required attribute(s) have been set
         if (_match.isDummy()) {
-	    reportError(element, parser, ErrorMsg.NREQATTR_ERR, "match");
+	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "match");
 	    return;
         }
         if (_use.isDummy()) {
-	    reportError(element, parser, ErrorMsg.NREQATTR_ERR, "use");
+	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "use");
 	    return;
         }
     }

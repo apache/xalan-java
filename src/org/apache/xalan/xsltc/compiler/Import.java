@@ -69,7 +69,6 @@ import java.util.Enumeration;
 
 import javax.xml.parsers.*;
 
-import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
@@ -85,17 +84,17 @@ final class Import extends TopLevelElement {
 	return(_imported);
     }
 
-    public void parseContents(Element element, final Parser parser) {
+    public void parseContents(final Parser parser) {
 	try {
 	    final Stylesheet context = parser.getCurrentStylesheet();
-	    final String href = element.getAttribute("href");
+	    final String href = getAttribute("href");
 	    final URL toImport = new URL(context.getURL(), href);
 	    if (context.checkForLoop(toImport))
 		throw new Exception(toImport.toString() + " already loaded");
 
-	    final Element stylesheetEl = parser.parse(toImport);
-	    if (stylesheetEl == null) return;
-	    final Stylesheet _imported = parser.makeStylesheet(stylesheetEl);
+	    final SyntaxTreeNode root = parser.parse(toImport);
+	    if (root == null) return;
+	    final Stylesheet _imported = parser.makeStylesheet(root);
 	    if (_imported == null) return;
 
 	    _imported.setURL(toImport);
@@ -106,9 +105,8 @@ final class Import extends TopLevelElement {
 	    final int nextPrecedence = parser.getNextImportPrecedence();
 	    _imported.setImportPrecedence(currPrecedence);
 	    context.setImportPrecedence(nextPrecedence);
-
 	    parser.setCurrentStylesheet(_imported);
-	    _imported.parseContents(stylesheetEl, parser);
+	    _imported.parseContents(parser);
 
 	    final Enumeration elements = _imported.elements();
 	    final Stylesheet topStylesheet = parser.getTopLevelStylesheet();

@@ -66,7 +66,6 @@ package org.apache.xalan.xsltc.compiler;
 
 import javax.xml.parsers.*;
 
-import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
@@ -82,18 +81,8 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class DecimalFormatting extends TopLevelElement {
 
-    private AttributeList _attributes = new AttributeList();
     private static final String DFS_CLASS = "java.text.DecimalFormatSymbols";
     private static final String DFS_SIG   = "Ljava/text/DecimalFormatSymbols;";
-
-    public void parseContents(Element element, Parser parser) {
-	NamedNodeMap attributes = element.getAttributes();
-	final int nAttributes = attributes.getLength();
-	for (int i = 0; i < nAttributes; i++) {
-	    final Attr attr = (Attr)attributes.item(i);
-	    _attributes.add(attr.getName(), attr.getValue());
-	}
-    }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
 	return Type.Void;
@@ -113,7 +102,7 @@ final class DecimalFormatting extends TopLevelElement {
 
 	// Push the format name on the stack for call to addDecimalFormat()
 	il.append(classGen.loadTranslet());
-	il.append(new PUSH(cpg, _attributes.getValue("name")));
+	il.append(new PUSH(cpg, getAttribute("name")));
 
 	// Manufacture a DecimalFormatSymbols on the stack
 	// for call to addDecimalFormat()
@@ -213,7 +202,7 @@ final class DecimalFormatting extends TopLevelElement {
 	// Push the format name, which is empty, on the stack
 	// for call to addDecimalFormat()
 	il.append(classGen.loadTranslet());
-	il.append(new PUSH(cpg, ""));
+	il.append(new PUSH(cpg, Constants.EMPTYSTRING));
 
 	// Manufacture a DecimalFormatSymbols on the stack
 	// for call to addDecimalFormat()

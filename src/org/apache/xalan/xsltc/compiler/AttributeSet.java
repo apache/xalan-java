@@ -69,7 +69,6 @@ import java.util.StringTokenizer;
 
 import javax.xml.parsers.*;
 
-import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
@@ -83,14 +82,14 @@ final class AttributeSet extends TopLevelElement {
     private UseAttributeSets _useSets;
     private String           _methodName;
     
-    public void parseContents(Element element, Parser parser) {
-	_name = parser.getQName(element.getAttribute("name"));
-	final String useSets = element.getAttribute("use-attribute-sets");
+    public void parseContents(Parser parser) {
+	_name = parser.getQName(getAttribute("name"));
+	final String useSets = getAttribute("use-attribute-sets");
 	if (useSets.length() > 0) {
 	    _useSets = new UseAttributeSets(useSets, parser);
 	}
 	//!!! add check whether children are XslAttributes
-	parseChildren(element, parser);
+	parseChildren(parser);
     }
     
     public QName getName() {

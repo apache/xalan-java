@@ -65,8 +65,6 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
 
-import org.w3c.dom.*;
-
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 
@@ -99,6 +97,10 @@ final class Param extends TopLevelElement {
 	    System.out.println("select " + _select.toString());
 	}
 	displayContents(indent + IndentIncrement);
+    }
+
+    public String toString() {
+	return("param("+_name+")");
     }
 
     public void addReference(ParameterRef pref) {
@@ -137,15 +139,15 @@ final class Param extends TopLevelElement {
 	return _name;
     }
 
-    public void parseContents(Element element, Parser parser) {
+    public void parseContents(Parser parser) {
 	// Parse attributes name and select (if present)
-	final String name = element.getAttribute("name");
+	final String name = getAttribute("name");
 
 	if (name.length() > 0) {
 	    _name = parser.getQName(name);
 	}
         else {
-	    reportError(element, parser, ErrorMsg.NREQATTR_ERR, "name");
+	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "name");
         }
 
 	// check whether variable/param of the same name is already in scope
@@ -154,13 +156,13 @@ final class Param extends TopLevelElement {
 	    parser.addError(error);
 	}
 	
-	final String select = element.getAttribute("select");
+	final String select = getAttribute("select");
 	if (select.length() > 0) {
-	    _select = parser.parseExpression(this, element, "select");
+	    _select = parser.parseExpression(this, "select", null);
 	}
 
 	// Children must be parsed first -> static scoping
-	parseChildren(element, parser);
+	parseChildren(parser);
 
 	// Add a ref to this param to its enclosing construct
 	final SyntaxTreeNode parent = getParent();
@@ -247,7 +249,7 @@ final class Param extends TopLevelElement {
 		}
 		else {
 		    // If no select and no contents push the empty string
-		    il.append(new PUSH(cpg, ""));
+		    il.append(new PUSH(cpg, Constants.EMPTYSTRING));
 		}
 	    }
 	    else {
@@ -289,7 +291,7 @@ final class Param extends TopLevelElement {
 		}
 		else {
 		    // If no select and no contents push the empty string
-		    il.append(new PUSH(cpg, ""));
+		    il.append(new PUSH(cpg, Constants.EMPTYSTRING));
 		}
 	    }
 	    else {

@@ -63,8 +63,6 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import org.w3c.dom.*;
-
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class Attribute extends Instruction {
@@ -76,10 +74,9 @@ final class Attribute extends Instruction {
 	displayContents(indent + IndentIncrement);
     }
 		
-    public void parseContents(Element element, Parser parser) {
-	_name = parser.getQName(element.getAttribute("name"));
-	parseChildren(element, parser);
-
+    public void parseContents(Parser parser) {
+	_name = parser.getQName(getAttribute("name"));
+	parseChildren(parser);
 	//!!! add text nodes
 	//!!! take care of value templates
     }

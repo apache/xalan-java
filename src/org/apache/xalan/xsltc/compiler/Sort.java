@@ -69,8 +69,6 @@ import java.util.StringTokenizer;
 import java.util.NoSuchElementException;
 import java.text.Collator;
 
-import org.w3c.dom.*;
-
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 
@@ -83,6 +81,7 @@ import de.fub.bytecode.Constants;
 import org.apache.xalan.xsltc.dom.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
+
 final class Sort extends Instruction {
     private Expression     _select;
     private AttributeValue _order;
@@ -92,30 +91,33 @@ final class Sort extends Instruction {
     public  String         _lang;
     public  String         _country;
 
+    private final static String EMPTYSTRING = 
+	org.apache.xalan.xsltc.compiler.Constants.EMPTYSTRING;
+
     /**
      * Parse the attributes of the xsl:sort element
      */
-    public void parseContents(Element element, Parser parser) {
+    public void parseContents(Parser parser) {
 	// Parse the select expression (node string value if no expression)
-	_select = parser.parseExpression(this, element, "select", "string(.)");
+	_select = parser.parseExpression(this, "select", "string(.)");
 
 	// Get the sort order; default is 'ascending'
-	String val = element.getAttribute("order");
+	String val = getAttribute("order");
 	_order = AttributeValue
 	    .create(this, val.length() > 0 ? val : "ascending", parser);
 
 	// Get the case order; default is language dependant
-	val = element.getAttribute("case-order");
+	val = getAttribute("case-order");
 	_caseOrder = AttributeValue
 	    .create(this, val.length() > 0 ? val : "upper-first", parser);
 
 	// Get the sort data type; default is text
-	val = element.getAttribute("data-type");
+	val = getAttribute("data-type");
 	_dataType = AttributeValue
 	    .create(this, val.length() > 0 ? val : "text", parser);
 
 	// Get the language whose sort rules we will use; default is env.dep.
-	if ((val = element.getAttribute("lang")) != null) {
+	if ((val = getAttribute("lang")) != null) {
 	    try {
 		StringTokenizer st = new StringTokenizer(val,"-",false);
 		_lang = st.nextToken();
@@ -401,7 +403,7 @@ final class Sort extends Instruction {
 	    il.append(new NEW(cpg.addClass("java/util/Locale")));
 	    il.append(DUP);
 	    il.append(new PUSH(cpg, language));
-	    il.append(new PUSH(cpg, country != null ? country : ""));
+	    il.append(new PUSH(cpg, (country != null ? country : EMPTYSTRING)));
 	    il.append(new INVOKESPECIAL(initLocale));
 	    
 	    // Use that Locale object to get the required Collator object
@@ -486,7 +488,8 @@ final class Sort extends Instruction {
 	// Compile def. target for switch statement if key has multiple levels
 	if (levels > 1) {
 	    // Append the default target - it will _NEVER_ be reached
-	    InstructionHandle defaultTarget = il.append(new PUSH(cpg,""));
+	    InstructionHandle defaultTarget =
+		il.append(new PUSH(cpg, EMPTYSTRING));
 	    il.insert(tblswitch,new TABLESWITCH(match, target, defaultTarget));
 	    il.append(ARETURN);
 	}

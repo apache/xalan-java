@@ -106,7 +106,19 @@ public final class MethodType extends Type {
     }
 
     public String toString() {
-	return "method-type";
+	StringBuffer result = new StringBuffer("method{");
+	if (_argsType != null) {
+	    final int count = _argsType.size();
+	    for (int i=0; i<count; i++) {
+		result.append(_argsType.elementAt(i));
+		if (i != (count-1)) result.append(',');
+	    }
+	}
+	else {
+	    result.append("void");
+	}
+	result.append('}');
+	return result.toString();
     }
 
     public String toSignature() {

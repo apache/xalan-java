@@ -68,7 +68,6 @@ import java.util.StringTokenizer;
 
 import javax.xml.parsers.*;
 
-import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
@@ -83,8 +82,12 @@ final class Fallback extends Instruction {
      * This element never produces any data on the stack
      */
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
-	typeCheckContents(stable);
-	return Type.Void;
+	if (_active) {
+	    return(typeCheckContents(stable));
+	}
+	else {
+	    return Type.Void;
+	}
     }
 
     /**
@@ -102,10 +105,8 @@ final class Fallback extends Instruction {
      * Parse contents only if this fallback element is put in place of
      * some unsupported element or non-XSLTC extension element
      */
-    public void parseContents(Element element, Parser parser) {
-	if (_active) {
-	    parseChildren(element, parser);
-	}
+    public void parseContents(Parser parser) {
+	if (_active) parseChildren(parser);
     }
 
     /**
@@ -116,8 +117,6 @@ final class Fallback extends Instruction {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
-	if (_active) {
-	    translateContents(classGen, methodGen);
-	}
+	if (_active) translateContents(classGen, methodGen);
     }
 }

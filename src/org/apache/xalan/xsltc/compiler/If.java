@@ -65,7 +65,6 @@ package org.apache.xalan.xsltc.compiler;
 
 import javax.xml.parsers.*;
 
-import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
@@ -84,13 +83,13 @@ final class If extends Instruction {
 	displayContents(indent + IndentIncrement);
     }
 		
-    public void parseContents(Element element, Parser parser) {
-	_test = parser.parseExpression(this, element, "test");
-	parseChildren(element, parser);
+    public void parseContents(Parser parser) {
+	_test = parser.parseExpression(this, "test", null);
+	parseChildren(parser);
 
         // make sure required attribute(s) have been set
         if (_test.isDummy()) {
-	    reportError(element, parser, ErrorMsg.NREQATTR_ERR, "test");
+	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "test");
 	    return;
         }
     }

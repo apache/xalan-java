@@ -69,7 +69,6 @@ import java.util.Enumeration;
 
 import javax.xml.parsers.*;
 
-import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
@@ -85,17 +84,17 @@ final class Include extends TopLevelElement {
 	return(_included);
     }
 
-    public void parseContents(Element element, final Parser parser) {
+    public void parseContents(final Parser parser) {
 	try {
 	    final Stylesheet context = parser.getCurrentStylesheet();
-	    final String href = element.getAttribute("href");
+	    final String href = getAttribute("href");
 	    final URL toInclude = new URL(context.getURL(), href);
 	    if (context.checkForLoop(toInclude))
 		throw new Exception(toInclude.toString() + " already loaded");
 
-	    final Element stylesheetEl = parser.parse(toInclude);
-	    if (stylesheetEl == null) return;
-	    final Stylesheet _included = parser.makeStylesheet(stylesheetEl);
+	    final SyntaxTreeNode root = parser.parse(toInclude);
+	    if (root == null) return;
+	    final Stylesheet _included = parser.makeStylesheet(root);
 	    if (_included == null) return;
 
 	    _included.setURL(toInclude);
@@ -107,7 +106,7 @@ final class Include extends TopLevelElement {
 	    _included.setImportPrecedence(precedence);
 
 	    parser.setCurrentStylesheet(_included);
-	    _included.parseContents(stylesheetEl, parser);
+	    _included.parseContents(parser);
 
 	    final Enumeration elements = _included.elements();
 	    final Stylesheet topStylesheet = parser.getTopLevelStylesheet();

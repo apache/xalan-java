@@ -72,6 +72,7 @@ import java.util.Hashtable;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
+import java.util.Stack;
 import java.net.MalformedURLException;
 
 import javax.xml.parsers.*;
@@ -85,8 +86,9 @@ import org.xml.sax.*;
 import java_cup.runtime.Symbol;
 
 import org.apache.xalan.xsltc.compiler.util.*;
+import org.apache.xalan.xsltc.runtime.AttributeList;
 
-public final class Parser implements Constants {
+public final class Parser implements Constants, ContentHandler {
 
     private static final String XSL = "xsl";            // standard prefix
     private static final String TRANSLET = "translet"; // extension prefix
@@ -95,6 +97,8 @@ public final class Parser implements Constants {
     private XPathParser _xpathParser; // Reference to the XPath parser.
     private Vector _errors;           // Contains all compilation errors
     private Vector _warnings;        // Contains all compilation errors
+
+    private ErrorListener _errorListener = null;
 
     private Hashtable   _instructionClasses; // Maps instructions to classes
     private Hashtable   _qNames;
@@ -108,23 +112,29 @@ public final class Parser implements Constants {
     private Output      _output = null;
     private Template    _template;    // Reference to the template being parsed.
 
+    private SyntaxTreeNode _root = null;
+
+    private String _target;
+
     private int _currentImportPrecedence = 1;
 
-    private ErrorListener _errorListener = null;
-
-    public void setErrorListener(ErrorListener listener) {
-	_errorListener = listener;
-    } 
+    private final static String CLASS_NOT_FOUND =
+	"Internal XSLTC class not in classpath: ";
+    private final static String INTERNAL_ERROR =
+	"Unrecoverable XSLTC compilation error: ";
+    private final static String UNSUPPORTED_XSL_ERROR =
+	"Unsupported XSL element: ";
+    private final static String INVALID_EXT_ERROR =
+	"Invalid XSLTC extension: ";
+    private final static String UNSUPPORTED_EXT_ERROR =
+	"Unsupported XSLT extension: ";
+    private final static String TEXT_NODE_ERROR =
+	"Text data outside of top-level <xsl:stylesheet> element.";
+    private final static String MISSING_HREF_ERROR =
+	"Processing instruction <?xml-stylesheet ... ?> is missing href data.";
 
     public Parser(XSLTC xsltc) {
 	_xsltc = xsltc;
-    }
-
-    public void setOutput(Output output) {
-	if (_output == null)
-	    _output = output;
-	else
-	    output.disable();
     }
 
     public void init() {
@@ -144,12 +154,24 @@ public final class Parser implements Constants {
 	initExtClasses();
 	initSymbolTable();
 	
-	_useAttributeSets = getQName(XSLT_URI, XSL, "use-attribute-sets");
-	_excludeResultPrefixes
-	    = getQName(XSLT_URI, XSL, "exclude-result-prefixes");
-	_extensionElementPrefixes
-	    = getQName(XSLT_URI, XSL, "extension-element-prefixes");
+	_useAttributeSets =
+	    getQName(XSLT_URI, XSL, "use-attribute-sets");
+	_excludeResultPrefixes =
+	    getQName(XSLT_URI, XSL, "exclude-result-prefixes");
+	_extensionElementPrefixes =
+	    getQName(XSLT_URI, XSL, "extension-element-prefixes");
     }
+
+    public void setOutput(Output output) {
+	if (_output == null)
+	    _output = output;
+	else
+	    output.disable();
+    }
+
+    public void setErrorListener(ErrorListener listener) {
+	_errorListener = listener;
+    } 
     
     public void addVariable(Variable var) {
 	_variableScope.put(var.getName(), var);
@@ -202,12 +224,12 @@ public final class Parser implements Constants {
 	    // Get the namespace uri from the symbol table
 	    if (prefix.equals("xmlns") == false) {
 		namespace = _symbolTable.lookupNamespace(prefix);
-		if (namespace == null) namespace = "";
+		if (namespace == null) namespace = Constants.EMPTYSTRING;
 	    }
 	    return getQName(namespace, prefix, localname);
 	}
 	else {
-	    return getQName(_symbolTable.lookupNamespace(""), null, stringRep);
+	    return getQName(_symbolTable.lookupNamespace(Constants.EMPTYSTRING), null, stringRep);
 	}
     }
     
@@ -224,12 +246,14 @@ public final class Parser implements Constants {
 		namespace = _symbolTable.lookupNamespace(prefix);
 		if (namespace == null) {
 		    addError(new ErrorMsg(ErrorMsg.NSPUNDEF_ERR, prefix));
+		    Exception e = new Exception();
+		    e.printStackTrace();
 		}
 	    }
 	    return getQName(namespace, prefix, localname);
 	}
 	else {
-	    return getQName(_symbolTable.lookupNamespace(""), null, stringRep);
+	    return getQName(_symbolTable.lookupNamespace(Constants.EMPTYSTRING), null, stringRep);
 	}
     }
 
@@ -286,34 +310,20 @@ public final class Parser implements Constants {
      * and then parse, typecheck and compile the instance.
      * Must be called after <code>parse()</code>.
      */
-    public Stylesheet makeStylesheet(Element element) 
+    public Stylesheet makeStylesheet(SyntaxTreeNode element) 
 	throws CompilerException {
 	try {
 	    Stylesheet stylesheet;
 
-	    // Push any namespaces declared in the root element
-	    pushNamespaces(element);
-
-	    // Get the name of this element and try to map it to a class
-	    final QName qName = getQName(element.getTagName());
-	    final String namespace = element.getNamespaceURI();
-	    final String classname = (String)_instructionClasses.get(qName);
-
-	    // Make a Stylesheet object from the root node if it is an
-	    // xsl:stylesheet element
-	    if (classname != null) {
-		stylesheet = (Stylesheet)makeInstance(element);
+	    if (element instanceof Stylesheet) {
+		stylesheet = (Stylesheet)element;
 	    }
-	    // Otherwise we create an empty Stylesheet object, and tag it
-	    // as a simplified stylesheet (a simplified stylesheet will have
-	    // to insert a <xsl:template match="/"/> as its only child).
 	    else {
 		stylesheet = new Stylesheet();
 		stylesheet.setSimplified();
+		stylesheet.addElement(element);
 	    }
-
 	    stylesheet.setParser(this);
-	    popNamespaces(element);
 	    return stylesheet;
 	}
 	catch (ClassCastException e) {
@@ -323,67 +333,18 @@ public final class Parser implements Constants {
     }
     
     /**
-     * Update the symbol table with the namespace declarations defined in
-     * <tt>element</tt>.
+     * Instanciates a SAX2 parser and generate the AST from the input.
      */
-    public void pushNamespaces(Element element) {
-	pushPopNamespaces(element, true);
-    }
-
-    /**
-     * Update the symbol table with the namespace declarations defined in
-     * <tt>element</tt>.
-     */
-    public void popNamespaces(Element element) {
-	pushPopNamespaces(element, false);
-    }
-
-    /**
-     * Update the symbol table with the namespace declarations defined in
-     * <tt>element</tt>. The declarations are added or removed form the
-     * symbol table depending on the value of <tt>push</tt>.
-     */
-    private void pushPopNamespaces(Element element, boolean push) {
-	final NamedNodeMap map = element.getAttributes();
-	final int n = map.getLength();
-	for (int i = 0; i < n; i++) {
-	    final Node node = map.item(i);
-	    final String name = node.getNodeName();
-	    String prefix;
-
-	    if (name.equals("xmlns")) {
-		prefix = "";		// default namespace
-	    }
-	    else {
-		final int index = name.indexOf(':');
-		if (index >= 0 && name.substring(0, index).equals("xmlns")) {
-		    prefix = name.substring(index + 1);
-		}
-		else {
-		    continue;
-		}
-	    }
-
-	    if (push)
-		_symbolTable.pushNamespace(prefix, node.getNodeValue());
-	    else
-		_symbolTable.popNamespace(prefix);
-	}
-    }
-
-    public void createAST(Element element, Stylesheet stylesheet) {
+    public void createAST(Stylesheet stylesheet) {
 	try {
 	    if (stylesheet != null) {
-		stylesheet.parseContents(element, this);
+		stylesheet.parseContents(this);
 		final int precedence = stylesheet.getImportPrecedence();
 		final Enumeration elements = stylesheet.elements();
 		while (elements.hasMoreElements()) {
 		    Object child = elements.nextElement();
-		    // GTM: fixed bug # 4415344 
-		    if (child instanceof Text){
-			throw new TypeCheckError(new ErrorMsg(
-			    "character data '" + ((Text)child).getText() +
-			    "' found outside top level stylesheet element."));
+		    if (child instanceof Text) {
+			addError(new ErrorMsg(TEXT_NODE_ERROR));
 		    }
 		}
 		if (!errorsFound()) {
@@ -392,42 +353,50 @@ public final class Parser implements Constants {
 	    }
 	}
 	catch (TypeCheckError e) {
-	    //e.printStackTrace();
-	    addError(new ErrorMsg(e.toString())); // TODO
+	    addError(new ErrorMsg(e.toString()));
 	}
     }
 
-    public Element parse(URL url) {
-	return(parse(url.toString()));
+    /**
+     * Instanciates a SAX2 parser and generate the AST from the input.
+     */
+    public SyntaxTreeNode parse(URL url) {
+	return(parse(url.toString(), true));
     }
 
-    public Element parse(String stylesheetURL) {
+    /**
+     * Instanciates a SAX2 parser and generate the AST from the input.
+     */
+    public SyntaxTreeNode parse(String location, boolean isURL) {
 	try {
-	    // Get an instance of the document builder factory
-	    final DocumentBuilderFactory factory =
-		DocumentBuilderFactory.newInstance();
-	    factory.setNamespaceAware(true);
+	    // Create a SAX parser and get the XMLReader object it uses
+	    final SAXParserFactory factory = SAXParserFactory.newInstance();
+	    final SAXParser parser = factory.newSAXParser();
+	    final XMLReader reader = parser.getXMLReader();
 
-	    // Then make an instance of the actual document builder
-	    final DocumentBuilder builder = factory.newDocumentBuilder();
-	    if (!builder.isNamespaceAware()) { // Must be namespace aware
-		addError(new ErrorMsg("SAX parser is not namespace aware"));
-	    }
+	    // Parse the input document and build the abstract syntax tree
+	    reader.setContentHandler(this);
+	    if (isURL)
+		reader.parse(location);
+	    else
+		reader.parse("file:"+(new File(location).getAbsolutePath()));
 
-	    // Parse the stylesheet document and return the root element
-	    Document document = builder.parse(stylesheetURL);
-	    return document.getDocumentElement();
+	    // Find the start of the stylesheet within the tree
+	    return (SyntaxTreeNode)getStylesheet(_root);
 	}
 	catch (ParserConfigurationException e) {
 	    addError(new ErrorMsg("JAXP parser not configured correctly"));
 	}
 	catch (IOException e) {
-	    addError(new ErrorMsg(ErrorMsg.FILECANT_ERR, stylesheetURL));
+	    addError(new ErrorMsg(ErrorMsg.FILECANT_ERR, location));
 	}
 	catch (SAXParseException e){
 	    addError(new ErrorMsg(e.getMessage(),e.getLineNumber()));
 	}
 	catch (SAXException e) {
+	    addError(new ErrorMsg(e.getMessage()));
+	}
+	catch (CompilerException e) {
 	    addError(new ErrorMsg(e.getMessage()));
 	}
 	return null;
@@ -442,154 +411,66 @@ public final class Parser implements Constants {
      * as the 'href' data of the P.I. The extracted DOM representing the
      * stylesheet is returned as an Element object.
      */
-    private Element getStylesheet(Document doc) throws CompilerException {
+    private SyntaxTreeNode getStylesheet(SyntaxTreeNode root)
+	throws CompilerException {
 
-	// Get the xml-stylesheet processing instruction (P.I.)
-	org.w3c.dom.ProcessingInstruction stylesheetPI = getStylesheetPI(doc);
-	// If there is none we assume this is a pure XSL file and return root.
-	if (stylesheetPI == null ) return (Element)doc.getDocumentElement();
+	// Assume that this is a pure XSL stylesheet if there is not
+	// <?xml-stylesheet ....?> processing instruction
+	if (_target == null) return(root);
 
-	// Get href value from P.I. to identify the correct stylesheet
-	String href = getXmlStylesheetPIHrefValue(stylesheetPI);
-	if (href == null) {
-	    throw new CompilerException(
-		"Processing instruction <?xml-stylesheet ... ?> is " +
-		"missing the href data.");
+	// Find the xsl:stylesheet or xsl:transform with this reference
+	if (_target.charAt(0) == '#') {
+	    SyntaxTreeNode element = findStylesheet(root, _target.substring(1));
+	    return(element);
 	}
+	else {
+	    return(loadExternalStylesheet(_target));
+	}
+    }
 
-	// Create list of all xsl:stylesheet (or alt. xsl:transform) elements
-	NodeList elements = doc.getElementsByTagName("xsl:stylesheet");
-	if (elements.getLength() == 0)
-	    elements = doc.getElementsByTagName("xsl:transform");
+    /**
+     * Find a Stylesheet element with a specific ID attribute value.
+     * This method is used to find a Stylesheet node that is referred
+     * in a <?xml-stylesheet ... ?> processing instruction.
+     */
+    private SyntaxTreeNode findStylesheet(SyntaxTreeNode root, String href) {
 
-	// Scan all elements to find the one that matches the href in the PI
-	for(int i=0; i<elements.getLength(); i++) {
-	    Node curr = elements.item(i);
-	    NamedNodeMap map = curr.getAttributes();
-	    if (map.getLength() != 0) {
-		Node attr = map.getNamedItem("id");
-		String attrValue = attr.getNodeValue();
-		if ((href == null) || (href.equals(attrValue))) {
-		    return (Element)curr;
-		}
+	if (root == null) return null;
+
+	if (root instanceof Stylesheet) {
+	    String id = root.getAttribute("id");
+	    if (id.equals(href)) return root;
+	}
+	Vector children = root.getContents();
+	if (children != null) {
+	    final int count = children.size();
+	    for (int i = 0; i < count; i++) {
+		SyntaxTreeNode child = (SyntaxTreeNode)children.elementAt(i);
+		SyntaxTreeNode node = findStylesheet(child, href);
+		if (node != null) return node;
 	    }
 	}
-
-	// If there is none we assume this is a pure XSL file and return root.
-	// GTM Note: removed this line because it was causing failures
-	//   in test suite, the presence of a xml-stylesheet P.I. AND
-	//   the absence of an href should be an error. See 'href == null'
-	//   above.... we will remove this comment and associated line
-	//   after test suite confirms it has not damaged anything else. 
-	// if (href == null) return (Element)doc.getDocumentElement();
-
-	// If we did not find the references stylesheet in the current XML
-	// file we assume it is an external file and load that...
-	return(loadExternalStylesheet(doc, href));
+	return null;	
     }
 
     /**
      * For embedded stylesheets: Load an external file with stylesheet
      */
-    private Element loadExternalStylesheet(Document doc, String url)
+    private SyntaxTreeNode loadExternalStylesheet(String url)
 	throws CompilerException {
-	try {
-	    // Check if the URL is a local file
-	    if ((new File(url)).exists()) url = "file:"+url;
 
-	    // Get an instance of the document builder factory
-	    final DocumentBuilderFactory factory =
-		DocumentBuilderFactory.newInstance();
-	    factory.setNamespaceAware(true);
+	// Check if the URL is a local file
+	if ((new File(url)).exists()) url = "file:"+url;
 
-	    // Then make an instance of the actual document builder
-	    final DocumentBuilder builder = factory.newDocumentBuilder();
-	    if (!builder.isNamespaceAware()) { // Must be namespace aware
-		addError(new ErrorMsg("SAX parser is not namespace aware"));
-	    }
+	SyntaxTreeNode external = (SyntaxTreeNode)parse(url, true);
 
-	    // Parse the stylesheet document and return the root element
-	    Document document = builder.parse(url);
-	    return document.getDocumentElement();
-	}
-	catch (ParserConfigurationException e) {
-	    throw new CompilerException("JAXP parser not configured "+
-					"correctly");
-	}
-	catch (IOException e) {
-	    throw new CompilerException("Could not find stylesheet - '"+url+
-					"' is not a named element in the "+
-					"current file nor a local file.");
-	}
-	catch (SAXException e) {
-	    throw new CompilerException("Could not parse stylesheet with id='"+
-					url+"' (referenced in stylesheet PI)");
-	}
+	return(external);
     }
 
     /**
-     * Returns the first xml-stylesheet processing instruction found in the DOM.
+     * Initialize the _instructionClasses Hashtable, which maps XSL element
+     * names to Java classes in this package.
      */
-    private org.w3c.dom.ProcessingInstruction getStylesheetPI(Document doc) {
-
-        Node node = doc;
-
-	while (node != null) {
-	    switch (node.getNodeType ()) {
-	    case Node.PROCESSING_INSTRUCTION_NODE:
-		org.w3c.dom.ProcessingInstruction pi =
-		    (org.w3c.dom.ProcessingInstruction)node;
-		if (pi.getTarget().equals("xml-stylesheet")) return pi;
-		// FALLTHROUGH
-	    case Node.DOCUMENT_FRAGMENT_NODE:
-	    case Node.DOCUMENT_NODE:
-	    case Node.ELEMENT_NODE:
-		// First try to traverse any children of the node
-		Node child = node.getFirstChild();
-		if (child != null) {
-		    node = child;
-		    break;
-		}
-		// FALLTHROUGH
-	    default:
-		// Then try the siblings
-		Node next = node.getNextSibling();
-		if (next == null) {
-		    // Then step up to the parent node
-		    Node parent = node.getParentNode();
-		    if ((parent == null) || (node == doc)) return null;
-		    node = parent;
-		}
-		else {
-		    node = next;
-		}
-	    }
-	}
-	return null;
-    }
-
-    /**
-     * Extracts the value of the 'href' in an xml-stylesheet processing
-     * instruction. The value of the P.I. href is prefixed with the '#'
-     * character, this method removes the prefix before returning it to 
-     * caller. Returns: String (without '#' prefix) or null if none found.
-     */
-    private String getXmlStylesheetPIHrefValue(
-        org.w3c.dom.ProcessingInstruction pi)
-    {
-	String data = pi.getData();
-	int start = -1;
-	if ((start = data.indexOf("href")) < 0) {
-	    return null;
-	}
-	String hrefportion = data.substring(start);
-	StringTokenizer tok = new StringTokenizer(hrefportion, "\"");
-	tok.nextToken();  	// throw away 'href='
-	String retval = tok.nextToken();
-	return (retval.startsWith("#")) ? retval.substring(1):retval; 
-    }
-    
-
     private void initStdClasses() {
 	initStdClass("template", "Template");
 	initStdClass("stylesheet", "Stylesheet");
@@ -701,93 +582,93 @@ public final class Parser implements Constants {
 	 */
 
 	// The following functions are inlined
-	_symbolTable.addPrimop(getQName("current"), A_V);
-	_symbolTable.addPrimop(getQName("last"), I_V);
-	_symbolTable.addPrimop(getQName("position"), I_V);
-	_symbolTable.addPrimop(getQName("true"), B_V);
-	_symbolTable.addPrimop(getQName("false"), B_V);
-	_symbolTable.addPrimop(getQName("not"), B_B);
-	_symbolTable.addPrimop(getQName("name"), S_V);
-	_symbolTable.addPrimop(getQName("name"), S_A);
-	_symbolTable.addPrimop(getQName("generate-id"), S_V);
-	_symbolTable.addPrimop(getQName("generate-id"), S_A);
-	_symbolTable.addPrimop(getQName("ceiling"), R_R);
-	_symbolTable.addPrimop(getQName("floor"), R_R);
-	_symbolTable.addPrimop(getQName("round"), I_R);
-	_symbolTable.addPrimop(getQName("contains"), B_SS);
-	_symbolTable.addPrimop(getQName("number"), R_O);
-	_symbolTable.addPrimop(getQName("number"), R_V);
-	_symbolTable.addPrimop(getQName("boolean"), B_O);
-	_symbolTable.addPrimop(getQName("string"), S_O);
-	_symbolTable.addPrimop(getQName("string"), S_V);
-	_symbolTable.addPrimop(getQName("translate"), S_SSS);
-	_symbolTable.addPrimop(getQName("string-length"), I_V);
-	_symbolTable.addPrimop(getQName("string-length"), I_S);
-	_symbolTable.addPrimop(getQName("starts-with"), B_SS);
-	_symbolTable.addPrimop(getQName("format-number"), S_DS);
-	_symbolTable.addPrimop(getQName("format-number"), S_DSS);
-	_symbolTable.addPrimop(getQName("unparsed-entity-uri"), S_S);
-	_symbolTable.addPrimop(getQName("key"), D_SS);
-	_symbolTable.addPrimop(getQName("key"), D_SD);
-	_symbolTable.addPrimop(getQName("id"), D_S);
-	_symbolTable.addPrimop(getQName("id"), D_D);
-	_symbolTable.addPrimop(getQName("namespace-uri"), S_V);
+
+	_symbolTable.addPrimop("current", A_V);
+	_symbolTable.addPrimop("last", I_V);
+	_symbolTable.addPrimop("position", I_V);
+	_symbolTable.addPrimop("true", B_V);
+	_symbolTable.addPrimop("false", B_V);
+	_symbolTable.addPrimop("not", B_B);
+	_symbolTable.addPrimop("name", S_V);
+	_symbolTable.addPrimop("name", S_A);
+	_symbolTable.addPrimop("generate-id", S_V);
+	_symbolTable.addPrimop("generate-id", S_A);
+	_symbolTable.addPrimop("ceiling", R_R);
+	_symbolTable.addPrimop("floor", R_R);
+	_symbolTable.addPrimop("round", I_R);
+	_symbolTable.addPrimop("contains", B_SS);
+	_symbolTable.addPrimop("number", R_O);
+	_symbolTable.addPrimop("number", R_V);
+	_symbolTable.addPrimop("boolean", B_O);
+	_symbolTable.addPrimop("string", S_O);
+	_symbolTable.addPrimop("string", S_V);
+	_symbolTable.addPrimop("translate", S_SSS);
+	_symbolTable.addPrimop("string-length", I_V);
+	_symbolTable.addPrimop("string-length", I_S);
+	_symbolTable.addPrimop("starts-with", B_SS);
+	_symbolTable.addPrimop("format-number", S_DS);
+	_symbolTable.addPrimop("format-number", S_DSS);
+	_symbolTable.addPrimop("unparsed-entity-uri", S_S);
+	_symbolTable.addPrimop("key", D_SS);
+	_symbolTable.addPrimop("key", D_SD);
+	_symbolTable.addPrimop("id", D_S);
+	_symbolTable.addPrimop("id", D_D);
+	_symbolTable.addPrimop("namespace-uri", S_V);
 
 	// The following functions are implemented in the basis library
-	_symbolTable.addPrimop(getQName("count"), I_D);
-	_symbolTable.addPrimop(getQName("sum"), R_D);
-	_symbolTable.addPrimop(getQName("local-name"), S_V);
-	_symbolTable.addPrimop(getQName("local-name"), S_D);
-	_symbolTable.addPrimop(getQName("namespace-uri"), S_V);
-	_symbolTable.addPrimop(getQName("namespace-uri"), S_D);
-	_symbolTable.addPrimop(getQName("substring"), S_SR);
-	_symbolTable.addPrimop(getQName("substring"), S_SRR);
-	_symbolTable.addPrimop(getQName("substring-after"), S_SS);
-	_symbolTable.addPrimop(getQName("substring-before"), S_SS);
-	_symbolTable.addPrimop(getQName("normalize-space"), S_V);
-	_symbolTable.addPrimop(getQName("normalize-space"), S_S);
-	_symbolTable.addPrimop(getQName("function-available"), B_S);
-	_symbolTable.addPrimop(getQName("system-property"), S_S);
+	_symbolTable.addPrimop("count", I_D);
+	_symbolTable.addPrimop("sum", R_D);
+	_symbolTable.addPrimop("local-name", S_V);
+	_symbolTable.addPrimop("local-name", S_D);
+	_symbolTable.addPrimop("namespace-uri", S_V);
+	_symbolTable.addPrimop("namespace-uri", S_D);
+	_symbolTable.addPrimop("substring", S_SR);
+	_symbolTable.addPrimop("substring", S_SRR);
+	_symbolTable.addPrimop("substring-after", S_SS);
+	_symbolTable.addPrimop("substring-before", S_SS);
+	_symbolTable.addPrimop("normalize-space", S_V);
+	_symbolTable.addPrimop("normalize-space", S_S);
+	_symbolTable.addPrimop("function-available", B_S);
+	_symbolTable.addPrimop("system-property", S_S);
 
 	// Operators +, -, *, /, % defined on real types.
-	_symbolTable.addPrimop(getQName("+"), R_RR);	
-	_symbolTable.addPrimop(getQName("-"), R_RR);	
-	_symbolTable.addPrimop(getQName("*"), R_RR);	
-	_symbolTable.addPrimop(getQName("/"), R_RR);	
-	_symbolTable.addPrimop(getQName("%"), R_RR);	
+	_symbolTable.addPrimop("+", R_RR);	
+	_symbolTable.addPrimop("-", R_RR);	
+	_symbolTable.addPrimop("*", R_RR);	
+	_symbolTable.addPrimop("/", R_RR);	
+	_symbolTable.addPrimop("%", R_RR);	
 
 	// Operators +, -, * defined on integer types.
 	// Operators / and % are not  defined on integers (may cause exception)
-	_symbolTable.addPrimop(getQName("+"), I_II);	
-	_symbolTable.addPrimop(getQName("-"), I_II);	
-	_symbolTable.addPrimop(getQName("*"), I_II);	
+	_symbolTable.addPrimop("+", I_II);	
+	_symbolTable.addPrimop("-", I_II);	
+	_symbolTable.addPrimop("*", I_II);	
 
 	 // Operators <, <= >, >= defined on real types.
-	_symbolTable.addPrimop(getQName("<"),  B_RR);	
-	_symbolTable.addPrimop(getQName("<="), B_RR);	
-	_symbolTable.addPrimop(getQName(">"),  B_RR);	
-	_symbolTable.addPrimop(getQName(">="), B_RR);	
+	_symbolTable.addPrimop("<",  B_RR);	
+	_symbolTable.addPrimop("<=", B_RR);	
+	_symbolTable.addPrimop(">",  B_RR);	
+	_symbolTable.addPrimop(">=", B_RR);	
 
 	// Operators <, <= >, >= defined on int types.
-	_symbolTable.addPrimop(getQName("<"),  B_II);	
-	_symbolTable.addPrimop(getQName("<="), B_II);	
-	_symbolTable.addPrimop(getQName(">"),  B_II);	
-	_symbolTable.addPrimop(getQName(">="), B_II);	
+	_symbolTable.addPrimop("<",  B_II);	
+	_symbolTable.addPrimop("<=", B_II);	
+	_symbolTable.addPrimop(">",  B_II);	
+	_symbolTable.addPrimop(">=", B_II);	
 
 	// Operators <, <= >, >= defined on boolean types.
-	_symbolTable.addPrimop(getQName("<"),  B_BB);	
-	_symbolTable.addPrimop(getQName("<="), B_BB);	
-	_symbolTable.addPrimop(getQName(">"),  B_BB);	
-	_symbolTable.addPrimop(getQName(">="), B_BB);	
+	_symbolTable.addPrimop("<",  B_BB);	
+	_symbolTable.addPrimop("<=", B_BB);	
+	_symbolTable.addPrimop(">",  B_BB);	
+	_symbolTable.addPrimop(">=", B_BB);	
 
 	// Operators 'and' and 'or'.
-	_symbolTable.addPrimop(getQName("or"), B_BB);	
-	_symbolTable.addPrimop(getQName("and"), B_BB);	
+	_symbolTable.addPrimop("or", B_BB);	
+	_symbolTable.addPrimop("and", B_BB);	
 
 	// Unary minus.
-	_symbolTable.addPrimop(getQName("u-"), R_R);	
-	_symbolTable.addPrimop(getQName("u-"), I_I);	
-	_symbolTable.pushNamespace("xml", "xml");
+	_symbolTable.addPrimop("u-", R_R);	
+	_symbolTable.addPrimop("u-", I_I);	
     }
 
     public SymbolTable getSymbolTable() {
@@ -798,173 +679,150 @@ public final class Parser implements Constants {
 	return _template;
     }
 
-    int _templateIndex = 0;
-
-    public int getTemplateIndex() {
-	return(_templateIndex++);
-    }
-
-    //!!! temporarily here
-    public void internalError() {
-	_xsltc.internalError();
-    }
-    
-    public void notYetImplemented(String feature) {
-	_xsltc.notYetImplemented(feature);
-    }
-    
     public void setTemplate(Template template) {
 	_template = template;
     }
 
-    private Element findFallback(Element root) {
-	final NodeList nodes = root.getChildNodes();
-	final int length = (nodes != null) ? nodes.getLength() : 0;
-
-	for (int i = 0; i < length; i++) {
-	    Node node = nodes.item(i);
-	    if (node.getNodeType() == Node.ELEMENT_NODE) {
-		Element child = (Element)node;
-		String namespace = child.getNamespaceURI();
-		String localname = child.getLocalName();
-		if (namespace.equals(XSLT_URI) &&
-		    localname.equals("fallback")) {
-		    return child;
-		}
-		else {
-		    Element result = findFallback(child);
-		    if (result != null) return result;
-		}
-	    }
-	}
-	return null;
+    /*
+    private int _templateIndex = 0;
+    public int getTemplateIndex() {
+	return(_templateIndex++);
     }
-
-    public Fallback makeFallback(Element root) {
-	Element element = findFallback(root);
-	if (element != null) {
-	    Fallback fallback = (Fallback)makeInstance(FALLBACK_CLASS, element);
-	    fallback.activate();
-	    fallback.parseContents(element, this);
-	    return(fallback);
-	}
-	else {
-	    return(null);
-	}
-    }
+    */
 
     /**
-     * Creates an object that is of a sub-class of SyntaxTreeNode 
-     * from the node in the DOM (if possible).
+     * Creates a new node in the abstract syntax tree. This node can be
+     *  o) a supported XSLT 1.0 element
+     *  o) an unsupported XSLT element (post 1.0)
+     *  o) a supported XSLT extension
+     *  o) an unsupported XSLT extension
+     *  o) a literal result element (not an XSLT element and not an extension)
+     * Unsupported elements do not directly generate an error. We have to wait
+     * until we have received all child elements of an unsupported element to
+     * see if any <xsl:fallback> elements exist.
      */
-    public SyntaxTreeNode makeInstance(Element element) {
-	QName qName = getQName(element.getTagName());
-	String className = (String)_instructionClasses.get(qName);
-	if (className != null) {
-	    return makeInstance(className, element);
-	}
-	else {
-	    final String namespace = element.getNamespaceURI();
-	    if (namespace != null) {
-		// Check if the element belongs in our namespace
-		if (namespace.equals(XSLT_URI)) {
-		    Fallback fallback = makeFallback(element);
-		    if (fallback == null)
-			_xsltc.notYetImplemented(element.getTagName());
-		    return(fallback);
-		}
-		// Check if this is an XSLTC extension element
-		else if (namespace.equals(TRANSLET_URI)) {
-		    Fallback fallback = makeFallback(element);
-		    if (fallback == null)
-			_xsltc.extensionNotSupported(element.getTagName());
-		    return(fallback);
-		}
-		// Check if this is an extension of some other XSLT processor
-		else if (_xsltc.getStylesheet().isExtension(namespace)) {
-		    Fallback fallback = makeFallback(element);
-		    if (fallback == null)
-			_xsltc.extensionNotSupported(element.getTagName());
-		    return(fallback);
-		}
-	    }
-	    return new LiteralElement();
-	}
-    }
-	
-    private SyntaxTreeNode makeInstance(String className, Element element) {
+    public SyntaxTreeNode makeInstance(String uri, String prefix, String local){
+	QName  qname = getQName(uri, prefix, local);
+	String className = (String)_instructionClasses.get(qname);
+	SyntaxTreeNode node = null;
+
 	if (className != null) {
 	    try {
 		final Class clazz = Class.forName(className);
-		SyntaxTreeNode node = (SyntaxTreeNode)clazz.newInstance();
+		node = (SyntaxTreeNode)clazz.newInstance();
+		node.setQName(qname);
 		node.setParser(this);
-		return node;
+		if (node instanceof Stylesheet) {
+		    _xsltc.setStylesheet((Stylesheet)node);
+		}
 	    }
 	    catch (ClassNotFoundException e) {
-		e.printStackTrace();
+                addError(new ErrorMsg(CLASS_NOT_FOUND+className));
 	    }
 	    catch (Exception e) {
-		e.printStackTrace();
-		_xsltc.internalError();
+		addError(new ErrorMsg(INTERNAL_ERROR+e.getMessage()));
 	    }
 	}
 	else {
-	    _xsltc.notYetImplemented(element.getTagName());
+	    if (uri != null) {
+		// Check if the element belongs in our namespace
+		if (uri.equals(XSLT_URI)) {
+		    node = new UnsupportedElement(uri, prefix, local);
+		    UnsupportedElement element = (UnsupportedElement)node;
+		    element.setErrorMessage(UNSUPPORTED_XSL_ERROR+local);
+		}
+		// Check if this is an XSLTC extension element
+		else if (uri.equals(TRANSLET_URI)) {
+		    node = new UnsupportedElement(uri, prefix, local);
+		    UnsupportedElement element = (UnsupportedElement)node;
+		    element.setErrorMessage(INVALID_EXT_ERROR+local);
+		}
+		// Check if this is an extension of some other XSLT processor
+		else if ((_xsltc.getStylesheet() != null) &&
+			 (_xsltc.getStylesheet().isExtension(uri))) {
+		    node = new UnsupportedElement(uri, prefix, local);
+		    UnsupportedElement element = (UnsupportedElement)node;
+		    element.setErrorMessage(UNSUPPORTED_EXT_ERROR+
+					    prefix+":"+local);
+		}
+	    }
+	    if (node == null) node = new LiteralElement();
 	}
-	return null;
+	if ((node != null) && (node instanceof LiteralElement)) {
+	    ((LiteralElement)node).setQName(qname);
+	}
+	return(node);
     }
 
+    /**
+     * Parse an XPath expression:
+     *  @parent - XSL element where the expression occured
+     *  @exp    - textual representation of the expression
+     */
+    public Expression parseExpression(SyntaxTreeNode parent, String exp) {
+	return (Expression)parseTopLevel(parent, "<EXPRESSION>"+exp, 0, null);
+    }
+
+    /**
+     * Parse an XPath expression:
+     *  @parent - XSL element where the expression occured
+     *  @attr   - name of this element's attribute to get expression from
+     *  @def    - default expression (if the attribute was not found)
+     */
     public Expression parseExpression(SyntaxTreeNode parent,
-				      String expression) {
-	return (Expression)parseTopLevel(parent, "<EXPRESSION>"+expression,
-					 0, null);
+				      String attr, String def) {
+	// Get the textual representation of the expression (if any)
+        String exp = parent.getAttribute(attr);
+	// Use the default expression if none was found
+        if ((exp.length() == 0) && (def != null)) exp = def;
+	// Invoke the XPath parser
+        return (Expression)parseTopLevel(parent, "<EXPRESSION>"+exp, 0, exp);
     }
 
-    public Expression parseExpression(SyntaxTreeNode parent,
-				      Element element, String attrName) {
-	return parseExpression(parent, element, attrName, null);
-    }
-
-    public Expression parseExpression(SyntaxTreeNode parent,
-				      Element element, String attrName,
-				      String defaultValue) {
-        String expression = element.getAttribute(attrName);
-        if (expression.length() == 0 && defaultValue != null) {
-            expression = defaultValue;
-        }
-        //final int line = ((Integer)element.getUserObject()).intValue();
-        return (Expression)parseTopLevel(parent, "<EXPRESSION>" + expression, 
-					 -1 /*line*/, expression);
-    }
-
+    /**
+     * Parse an XPath pattern:
+     *  @parent - XSL element where the pattern occured
+     *  @exp    - textual representation of the pattern
+     */
     public Pattern parsePattern(SyntaxTreeNode parent, String pattern) {
 	return (Pattern)parseTopLevel(parent, "<PATTERN>"+pattern, 0, pattern);
     }
 
+    /**
+     * Parse an XPath pattern:
+     *  @parent - XSL element where the pattern occured
+     *  @attr   - name of this element's attribute to get pattern from
+     *  @def    - default pattern (if the attribute was not found)
+     */
     public Pattern parsePattern(SyntaxTreeNode parent,
-				Element element, String attrName) {
-        final String pattern = element.getAttribute(attrName);
-        //final int line = ((Integer)element.getUserObject()).intValue();
-        return (Pattern)parseTopLevel(parent, "<PATTERN>" + pattern, 
-				      -1 /*line*/, pattern);
+				String attr, String def) {
+	// Get the textual representation of the pattern (if any)
+        String pattern = parent.getAttribute(attr);
+	// Use the default pattern if none was found
+	if ((pattern.length() == 0) && (def != null)) pattern = def;
+	// Invoke the XPath parser
+        return (Pattern)parseTopLevel(parent, "<PATTERN>"+pattern, 0, pattern);
     }
 
+    /**
+     * Parse an XPath expression or pattern using the generated XPathParser
+     * The method will return a Dummy node if the XPath parser fails.
+     */
     private SyntaxTreeNode parseTopLevel(SyntaxTreeNode parent,
-					 String text, int lineNumber,
+					 String text, int line,
 					 String expression) {
 	try {
 	    _xpathParser.setScanner(new XPathLexer(new StringReader(text)));
-	    Symbol result = _xpathParser.parse(lineNumber);
+	    Symbol result = _xpathParser.parse(line);
 	    if (result != null) {
 		final SyntaxTreeNode node = (SyntaxTreeNode)result.value;
-		node.setParser(this);
-		node.setParent(parent);
-		return node;
+		if (node != null) {
+		    node.setParser(this);
+		    node.setParent(parent);
+		    return node;
+		}
 	    } 
-            else {
-                addError(new ErrorMsg(ErrorMsg.XPATHPAR_ERR,
-				      lineNumber, expression));
-            }
+	    addError(new ErrorMsg(ErrorMsg.XPATHPAR_ERR, line, expression));
 	}
 	catch (Exception e) {
 	    if (_xsltc.debug()) {
@@ -984,18 +842,18 @@ public final class Parser implements Constants {
 	return _errors.size() > 0;
     }
 
-    public boolean warnings() {
-	return _warnings.size() > 0;
-    }
-
     /**
      * Adds an error to the vector containing compile-time errors.
      */
     public void addError(ErrorMsg error) {
 	_errors.addElement(error);
+    }
+
+    public void addFatalError(String message) {
+	_errors.addElement(new ErrorMsg(message));
 	// support for TrAX Error Listener
   	if (_errorListener != null ) {  
-	    postErrorToListener(error.toString());
+	    postErrorToListener(message);
 	}
     }
 
@@ -1016,9 +874,21 @@ public final class Parser implements Constants {
      */
     public void addWarning(ErrorMsg msg) {
 	_warnings.addElement(msg);
+    }
+
+    public void internalError() {
+	Exception e = new Exception();
+	e.printStackTrace();
+	addFatalError("Internal compiler error.\n"+
+		      "Please report to xalan-dev@xml.apache.org\n"+
+		      "(include stack trace)");
+    }
+
+    public void notYetImplemented(String message) {
+	addWarning(new ErrorMsg("Unsupported: "+message));
 	// support for TrAX Error Listener
   	if (_errorListener != null ) {
-	    postWarningToListener(msg.toString());
+	    postWarningToListener(message);
 	}
     }
 
@@ -1046,6 +916,9 @@ public final class Parser implements Constants {
 	}
     }
 
+    /**
+     * Prints all compile-time warnings
+     */
     public void printWarnings() {
 	if (_errorListener != null) return;  //support for TrAX Error Listener 
 	if (_warnings.size() > 0) {
@@ -1056,4 +929,196 @@ public final class Parser implements Constants {
 	    }
 	}
     }
+
+    /**
+     * Suggested common error handler - not in use yet!!!
+     */
+    public void reportError(final int category, final ErrorMsg error) {
+	try {
+	    switch (category) {
+		// Unexpected internal errors, such as null-ptr exceptions, etc.
+		// Immediately terminates compilation, no translet produced
+	    case Constants.INTERNAL:
+		// XSLT elements that are not implemented and unsupported ext.
+		// Immediately terminates compilation, no translet produced
+	    case Constants.UNSUPPORTED:
+		// Fatal error in the stylesheet input (parsing or content)
+		// Immediately terminates compilation, no translet produced
+	    case Constants.FATAL:
+		// Other error in the stylesheet input (parsing or content)
+		// Does not terminate compilation, no translet produced
+	    case Constants.ERROR:
+		// Other error in the stylesheet input (content errors only)
+		// Does not terminate compilation, a translet is produced
+		_errors.addElement(error);
+		if (_errorListener != null) {
+		    final String msg = error.toString();
+		    _errorListener.error(new TransformerException(msg));
+		}
+	    case Constants.WARNING:
+		_warnings.addElement(error);
+		if (_errorListener != null) {
+		    final String msg = error.toString();
+		    _errorListener.warning(new TransformerException(msg));
+		}
+		break;
+	    }
+	}
+	catch (TransformerException e) {
+	    // If the error listener does not handle the exception then
+	    // we're certainly not doing anything about it....
+	}
+    }
+
+    /************************ SAX2 ContentHandler INTERFACE *****************/
+
+    private Stack _parentStack = null;
+    private Hashtable _prefixMapping = null;
+
+    /**
+     * SAX2: Receive notification of the beginning of a document.
+     */
+    public void startDocument() {
+	_root = null;
+	_target = null;
+	_prefixMapping = null;
+	_parentStack = new Stack();
+    }
+
+    /**
+     * SAX2: Receive notification of the end of a document.
+     */
+    public void endDocument() { }
+
+
+    /**
+     * SAX2: Begin the scope of a prefix-URI Namespace mapping.
+     *       This has to be passed on to the symbol table!
+     */
+    public void startPrefixMapping(String prefix, String uri) {
+	if (_prefixMapping == null) _prefixMapping = new Hashtable();
+	_prefixMapping.put(prefix, uri);
+	//System.err.println("starting mapping for "+prefix+"="+uri);
+    }
+
+    /**
+     * SAX2: End the scope of a prefix-URI Namespace mapping.
+     *       This has to be passed on to the symbol table!
+     */
+    public void endPrefixMapping(String prefix) {
+	//System.err.println("ending mapping for "+prefix);
+    }
+
+    /**
+     * SAX2: Receive notification of the beginning of an element.
+     *       The parser may re-use the attribute list that we're passed so
+     *       we clone the attributes in our own Attributes implementation
+     */
+    public void startElement(String uri, String localname,
+			     String qname, Attributes attributes) 
+	throws SAXException {
+
+	final int col = qname.lastIndexOf(':');
+	final String prefix;
+	if (col == -1)
+	    prefix = null;
+	else
+	    prefix = qname.substring(0, col);
+
+	SyntaxTreeNode element = makeInstance(uri, prefix, localname);
+	if (element == null) {
+	    throw new SAXException("Error while parsing stylesheet.");
+	}
+
+	if (_root == null) {
+	    _root = element;
+	}
+	else {
+	    SyntaxTreeNode parent = (SyntaxTreeNode)_parentStack.peek();
+	    parent.addElement(element);
+	    element.setParent(parent);
+	}
+	element.setAttributes((Attributes)new AttributeList(attributes));
+	element.setPrefixMapping(_prefixMapping);
+	
+	if (element instanceof Stylesheet) {
+	    // Extension elements and excluded elements have to be
+	    // handled at this point in order to correctly generate
+	    // Fallback elements from <xsl:fallback>s.
+	    getSymbolTable().setCurrentNode(element);
+	    ((Stylesheet)element).excludeExtensionPrefixes(this);
+	}
+
+	_prefixMapping = null;
+	_parentStack.push(element);
+    }
+
+    /**
+     * SAX2: Receive notification of the end of an element.
+     */
+    public void endElement(String uri, String localname, String qname) {
+	_parentStack.pop();
+    }
+
+    /**
+     * SAX2: Receive notification of character data.
+     */
+    public void characters(char[] ch, int start, int length) {
+	String string = new String(ch, start, length);
+	SyntaxTreeNode parent = (SyntaxTreeNode)_parentStack.peek();
+
+	// If this text occurs within an <xsl:text> element we append it
+	// as-is to the existing text element
+	if (parent instanceof Text) {
+	    if (string.length() > 0) {
+		((Text)parent).setText(string);
+	    }
+	}
+	// Ignore text nodes that occur directly under <xsl:stylesheet>
+	else if (parent instanceof Stylesheet) {
+
+	}
+	// Add it as a regular text node otherwise
+	else {
+	    if (string.trim().length() > 0) {
+		parent.addElement(new Text(string));
+	    }
+	}
+    }
+
+    /**
+     * SAX2: Receive notification of a processing instruction.
+     *       These require special handling for stylesheet PIs.
+     */
+    public void processingInstruction(String name, String value) {
+	if ((_target == null) && (name.equals("xml-stylesheet"))) {
+	    StringTokenizer tokens = new StringTokenizer(value);
+	    while (tokens.hasMoreElements()) {
+		String token = (String)tokens.nextElement();
+		if (token.startsWith("href=")) {
+		    _target = token.substring(5);
+		    final int start = _target.indexOf('"');
+		    final int stop = _target.lastIndexOf('"');
+		    _target = _target.substring(start+1,stop);
+		    return;
+		}
+	    }
+	}
+    }
+
+    /**
+     * IGNORED - all ignorable whitespace is ignored
+     */
+    public void ignorableWhitespace(char[] ch, int start, int length) { }
+
+    /**
+     * IGNORED - we do not have to do anything with skipped entities
+     */
+    public void skippedEntity(String name) { }
+
+    /**
+     * IGNORED - we already know what the origin of the document is
+     */
+    public void setDocumentLocator(Locator locator) { }
+
 }

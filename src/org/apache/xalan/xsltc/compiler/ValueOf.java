@@ -64,8 +64,6 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import org.w3c.dom.*;
-
 import de.fub.bytecode.generic.*;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
@@ -83,19 +81,17 @@ final class ValueOf extends Instruction {
 	Util.println("select " + _select.toString());
     }
 		
-    public void parseContents(Element element, Parser parser) {
-	_select = parser.parseExpression(this, element, "select");
+    public void parseContents(Parser parser) {
+	_select = parser.parseExpression(this, "select", null);
 
         // make sure required attribute(s) have been set
         if (_select.isDummy()) {
-	    reportError(element, parser, ErrorMsg.NREQATTR_ERR, "select");
+	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "select");
 	    return;
         }
 
-        final String str = element.getAttribute("disable-output-escaping");
-	if ((str != null) && (str.equals("yes"))) {
-	    _escaping = false;
-	}
+        final String str = getAttribute("disable-output-escaping");
+	if ((str != null) && (str.equals("yes"))) _escaping = false;
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {

@@ -102,8 +102,7 @@ final class LogicalExpr extends Expression {
 	Type tleft = _left.typeCheck(stable); 
 	Type tright = _right.typeCheck(stable);
 
-	MethodType ptype = lookupPrimop(stable,
-					getParser().getQName(Ops[_op]),
+	MethodType ptype = lookupPrimop(stable, Ops[_op],
 					new MethodType(Type.Void,
 						       tleft, tright)); 
 

@@ -65,7 +65,6 @@ package org.apache.xalan.xsltc.compiler;
 
 import javax.xml.parsers.*;
 
-import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
@@ -83,11 +82,11 @@ final class CopyOf extends Instruction {
 	Util.println("select " + _select.toString());
     }
 
-    public void parseContents(Element element, Parser parser) {
-	_select = parser.parseExpression(this, element, "select");
+    public void parseContents(Parser parser) {
+	_select = parser.parseExpression(this, "select", null);
         // make sure required attribute(s) have been set
         if (_select.isDummy()) {
-	    reportError(element, parser, ErrorMsg.NREQATTR_ERR, "select");
+	    reportError(this, parser, ErrorMsg.NREQATTR_ERR, "select");
 	    return;
         }
     }

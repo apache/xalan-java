@@ -70,20 +70,19 @@ import java.util.Vector;
 
 import javax.xml.parsers.*;
 
-import org.w3c.dom.*;
 import org.xml.sax.*;
 
+import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class LiteralElement extends Instruction {
     private String _name;
-    private QName _qname;
     private Hashtable _accessedPrefixes = null;
     private LiteralElement _parent;
+    private Vector _attributeElements = null;
 
     private final static String XMLNS_STRING = "xmlns";
-    private final static String EMPTY_STRING = "";
 
     /**
      * Returns the QName for this literal element
@@ -104,7 +103,7 @@ final class LiteralElement extends Instruction {
     /**
      * Returns the namespace URI for which a prefix is pointing to
      */
-    public String lookupNamespace(String prefix) {
+    public String accessedNamespace(String prefix) {
 	if (_accessedPrefixes == null)
 	    return(null);
 	else
@@ -121,9 +120,9 @@ final class LiteralElement extends Instruction {
 
 	// Check if the parent has a declaration for this namespace
 	if (_parent != null) {
-	    final String parentUri = _parent.lookupNamespace(prefix);
+	    final String parentUri = _parent.accessedNamespace(prefix);
 	    if (parentUri == null) {
-		_parent.registerNamespace(prefix,uri,stable,declared);
+		_parent.registerNamespace(prefix, uri, stable, declared);
 		return;
 	    }
 	    if (parentUri.equals(uri)) return;
@@ -136,17 +135,19 @@ final class LiteralElement extends Instruction {
 	else {
 	    if (!declared) {
 		// Check if this node has a declaration for this namespace
-		final String ourUri = (String)_accessedPrefixes.get(prefix);
-		if ((ourUri != null) && (ourUri.equals(uri))) {
-		    return;
-		}
-		else {
-		    prefix = stable.generateNamespacePrefix();
+		final String old = (String)_accessedPrefixes.get(prefix);
+		if (old != null) {
+		    if (old.equals(uri))
+			return;
+		    else
+			prefix = stable.generateNamespacePrefix();
 		}
 	    }
 	}
-	if (!prefix.equals("xml"))
+
+	if (!prefix.equals("xml")) {
 	    _accessedPrefixes.put(prefix,uri);
+	}
     }
 
     /**
@@ -161,7 +162,7 @@ final class LiteralElement extends Instruction {
 
 	// Treat default namespace as "" and not null
 	if (prefix == null)
-	    prefix = EMPTY_STRING;
+	    prefix = Constants.EMPTYSTRING;
 	else if (prefix.equals(XMLNS_STRING))
 	    return(XMLNS_STRING);
 	
@@ -173,25 +174,76 @@ final class LiteralElement extends Instruction {
 	}
 
 	// Get the namespace this prefix refers to
-	String uri = stable.lookupNamespace(prefix);
+	String uri = lookupNamespace(prefix);
 	if (uri == null) return(localname);
 
 	// Register the namespace as accessed
-	registerNamespace(prefix,uri,stable,false);
+	registerNamespace(prefix, uri, stable, false);
 
 	// Construct the new name for the element (may be unchanged)
-	if (!prefix.equals(EMPTY_STRING))
+	if (prefix != Constants.EMPTYSTRING)
 	    return(prefix+":"+localname);
 	else
 	    return(localname);
     }
 
     /**
+     *
+     */
+    private void addAttribute(SyntaxTreeNode attribute) {
+	if (_attributeElements == null) {
+	    _attributeElements = new Vector(2);
+	}
+	_attributeElements.add(attribute);
+    }
+
+
+    public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+	// Type-check all attributes
+	if (_attributeElements != null) {
+	    final int count = _attributeElements.size();
+	    for (int i = 0; i < count; i++) {
+		SyntaxTreeNode node = 
+		    (SyntaxTreeNode)_attributeElements.elementAt(i);
+		node.typeCheck(stable);
+	    }
+	}
+	typeCheckContents(stable);
+	return Type.Void;
+    }
+
+    /**
+     * This method starts at a given node, traverses all namespace mappings,
+     * and assembles a list of all prefixes that (for the given node) maps
+     * to _ANY_ namespace URI. Used by literal result elements to determine
+     */
+    public Enumeration getNamespaceScope(SyntaxTreeNode node) {
+	Hashtable all = new Hashtable();
+	
+	while (node != null) {
+	    Hashtable mapping = node.getPrefixMapping();
+	    if (mapping != null) {
+		Enumeration prefixes = mapping.keys();
+		while (prefixes.hasMoreElements()) {
+		    String prefix = (String)prefixes.nextElement();
+		    if (!all.containsKey(prefix)) {
+			all.put(prefix, mapping.get(prefix));
+		    }
+		}
+	    }
+	    node = node.getParent();
+	}
+	return(all.keys());
+    }
+
+    /**
      * Determines the final QName for the element and its attributes.
      * Registers all namespaces that are used by the element/attributes
      */
-    public void parseContents(Element element, Parser parser) {
+    public void parseContents(Parser parser) {
+
 	final SymbolTable stable = parser.getSymbolTable();
+	stable.setCurrentNode(this);
 
 	// Find the closest literal element ancestor (if there is one)
 	SyntaxTreeNode _parent = getParent();
@@ -200,20 +252,18 @@ final class LiteralElement extends Instruction {
 	if (!(_parent instanceof LiteralElement))
 	    _parent = null;
 
-	_qname = parser.getQName(element.getTagName());
-	_name = translateQName(_qname,stable);
+	_name = translateQName(_qname, stable);
 
 	// Process all attributes and register all namespaces they use
-	final NamedNodeMap attributes = element.getAttributes();
-	for (int i = 0; i < attributes.getLength(); i++) {
+	final int count = _attributes.getLength();
+	for (int i = 0; i < count; i++) {
 
-	    final Attr attribute = (Attr)attributes.item(i);
-	    final QName qname = parser.getQName(attribute.getName());
-	    final String val = attribute.getValue();
+	    final QName qname = parser.getQName(_attributes.getQName(i));
+	    final String val = _attributes.getValue(i);
 
 	    // Handle xsl:use-attribute-sets
 	    if (qname == parser.getUseAttributeSets()) {
-		addElement(new UseAttributeSets(val, parser));
+		addAttribute(new UseAttributeSets(val, parser));
 	    }
 	    // Handle xsl:extension-element-prefixes
 	    else if (qname == parser.getExtensionElementPrefixes()) {
@@ -229,20 +279,21 @@ final class LiteralElement extends Instruction {
 	    }
 	    // Handle literal attributes (attributes not in XSL namespace)
 	    else {
-		// Namespace declarations are handled separately !!!
-		final String name = translateQName(qname,stable);
-		if (name != XMLNS_STRING)
-		    addElement(new LiteralAttribute(name, val, parser));
+		final String name = translateQName(qname, stable);
+		LiteralAttribute attr = new LiteralAttribute(name, val, parser);
+		addAttribute(attr);
+		attr.setParent(this);
+		attr.parseContents(parser);
 	    }
 	}
 
 	// Register all namespaces that are in scope, except for those that
 	// are listed in the xsl:stylesheet element's *-prefixes attributes
-	final Enumeration include = stable.getInScopeNamespaces();
+	final Enumeration include = getNamespaceScope(this);
 	while (include.hasMoreElements()) {
 	    final String prefix = (String)include.nextElement();
 	    if (!prefix.equals("xml")) {
-		final String uri = stable.lookupNamespace(prefix);
+		final String uri = lookupNamespace(prefix);
 		if ((uri != null) && (!uri.equals(XSLT_URI))) {
 		    if (!stable.isExcludedNamespace(uri))
 			registerNamespace(prefix,uri,stable,true);
@@ -250,13 +301,13 @@ final class LiteralElement extends Instruction {
 	    }
 	}
 
-	parseChildren(element, parser);
+	parseChildren(parser);
 
 	// Process all attributes and register all namespaces they use
-	for (int i = 0; i < attributes.getLength(); i++) {
-	    final Attr attribute = (Attr)attributes.item(i);
-	    final QName qname = parser.getQName(attribute.getName());
-	    final String val = attribute.getValue();
+	for (int i = 0; i < count; i++) {
+
+	    final QName qname = parser.getQName(_attributes.getQName(i));
+	    final String val = _attributes.getValue(i);
 
 	    // Handle xsl:extension-element-prefixes
 	    if (qname == parser.getExtensionElementPrefixes()) {
@@ -282,6 +333,7 @@ final class LiteralElement extends Instruction {
      * then the element contents, and then the element end tag.
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
+
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
@@ -291,19 +343,32 @@ final class LiteralElement extends Instruction {
 	il.append(DUP2); // duplicate these 2 args for endElement
 	il.append(methodGen.startElement());
 
+	// Output all attributes
+	if (_attributeElements != null) {
+	    final int count = _attributeElements.size();
+	    for (int i = 0; i < count; i++) {
+		SyntaxTreeNode node = 
+		    (SyntaxTreeNode)_attributeElements.elementAt(i);
+		node.translate(classGen, methodGen);
+	    }
+	}
+
 	// Compile code to emit namespace attributes
 	if (_accessedPrefixes != null) {
 	    Enumeration e = _accessedPrefixes.keys();
 	    while (e.hasMoreElements()) {
 		final String prefix = (String)e.nextElement();
 		final String uri = (String)_accessedPrefixes.get(prefix);
-		il.append(methodGen.loadHandler());
-		il.append(new PUSH(cpg,prefix));
-		il.append(new PUSH(cpg,uri));
-		il.append(methodGen.namespace());
+		if ((uri != Constants.EMPTYSTRING) ||
+		    (prefix != Constants.EMPTYSTRING)) {
+		    il.append(methodGen.loadHandler());
+		    il.append(new PUSH(cpg,prefix));
+		    il.append(new PUSH(cpg,uri));
+		    il.append(methodGen.namespace());
+		}
 	    }
 	}
-
+	
 	// Compile code to emit attributes and child elements
 	translateContents(classGen, methodGen);
 

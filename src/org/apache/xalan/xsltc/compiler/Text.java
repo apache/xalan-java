@@ -58,12 +58,13 @@
  *
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
+ * @author Morten Jorgensen
  *
  */
 
 package org.apache.xalan.xsltc.compiler;
 
-import org.w3c.dom.*;
+import java.util.Vector;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 import de.fub.bytecode.generic.*;
@@ -83,6 +84,13 @@ final class Text extends Instruction {
 	return _text;
     }
 
+    public void setText(String text) {
+	if (_text == null)
+	    _text = text;
+	else
+	    _text = _text + text; // compliation phase, so OK (well, maybe not)
+    }
+
     public void display(int indent) {
 	indent(indent);
 	Util.println("Text");
@@ -90,17 +98,10 @@ final class Text extends Instruction {
 	Util.println(_text);
     }
 		
-    public void parseContents(Element element, Parser parser) {
-        final String str = element.getAttribute("disable-output-escaping");
+    public void parseContents(Parser parser) {
+        final String str = getAttribute("disable-output-escaping");
 	if ((str != null) && (str.equals("yes"))) {
 	    _escaping = false;
-	}
-	final NodeList nl = element.getChildNodes();
-	for (int i = 0; i < nl.getLength(); i++) {
-	    final Node node = nl.item(i);
-	    if (node.getNodeType() == Node.TEXT_NODE) {
-		_text = node.getNodeValue();
-	    }
 	}
     }
 	
@@ -141,6 +142,6 @@ final class Text extends Instruction {
 	    il.append(new INVOKEINTERFACE(esc, 2));
 	    il.append(POP);
 	}
-
+	translateContents(classGen, methodGen);
     }
 }
