@@ -470,15 +470,16 @@ public class AVT implements java.io.Serializable, XSLTVisitable
             throws javax.xml.transform.TransformerException
   {
 
-    FastStringBuffer buf = StringBufferPool.get();
-
+    if (null != m_simpleString)
+    {
+            return m_simpleString;
+    }
+    
+    FastStringBuffer buf = null;
     try
     {
-      if (null != m_simpleString)
-      {
-        return m_simpleString;
-      }
-      else if (null != m_parts)
+      buf = StringBufferPool.get();
+      if (null != m_parts)
       {
         buf.setLength(0);
 
@@ -497,10 +498,10 @@ public class AVT implements java.io.Serializable, XSLTVisitable
       {
         return "";
       }
-    }
-    finally
-    {
-      StringBufferPool.free(buf);
+    }finally{
+      if(buf != null){
+        StringBufferPool.free(buf);
+      }      
     }
   }
 
