@@ -87,9 +87,27 @@ public class FuncNamespace extends FunctionDef1Arg
   {
 
     Node context = getArg0AsNode(xctxt);
-
-    return new XString((context != null)
-                       ? xctxt.getDOMHelper().getNamespaceOfNode(context)
-                       : "");
+    
+    String s;
+    if(context != null)
+    {
+      int t = context.getNodeType();
+      if(t == Node.ELEMENT_NODE)
+      {
+        s = xctxt.getDOMHelper().getNamespaceOfNode(context);
+      }
+      else if(t == Node.ATTRIBUTE_NODE)
+      {
+        s = xctxt.getDOMHelper().getNamespaceOfNode(context);
+        if(s.startsWith("xmlns:") || s.equals("xmlns"))
+          return XString.EMPTYSTRING;
+      }
+      else
+        return XString.EMPTYSTRING;
+    }
+    else 
+      return XString.EMPTYSTRING;
+    
+    return new XString(s);
   }
 }

@@ -438,7 +438,7 @@ public class XSLTSchema extends XSLTElementDef
     XSLTElementDef xslMessage =
       new XSLTElementDef(Constants.S_XSLNAMESPACEURL, "message",
                          null /*alias */, templateElements /* elements */,  // %template;>
-                                  new XSLTAttributeDef[]{},
+                                  new XSLTAttributeDef[]{terminateAttr},
                                   new ProcessorTemplateElem(),
                                   ElemMessage.class /* class object */);
     XSLTElementDef xslFallback =

@@ -87,9 +87,13 @@ public class FuncLocalPart extends FunctionDef1Arg
   {
 
     Node context = getArg0AsNode(xctxt);
-
-    return new XString((context != null)
+    
+    String s = (context != null)
                        ? xctxt.getDOMHelper().getLocalNameOfNode(context)
-                       : "");
+                       : "";
+    if(s.startsWith("#"))
+      s = "";
+
+    return new XString(s);
   }
 }

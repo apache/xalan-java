@@ -182,7 +182,8 @@ public class FuncSystemProperty extends FunctionOneArg
     {
       try
       {
-        return new XNumber(new Double(result).doubleValue());
+        // Needs to return the version number of the spec we conform to.
+        return new XNumber(1.0);
       }
       catch (Exception ex)
       {

@@ -182,7 +182,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
   {
     printLocation(exception);
 
-    System.out.println("Parser warning: " + exception.getMessage());
+    System.out.println(exception.getMessage());
   }
 
   /**
