@@ -139,6 +139,9 @@ public final class TransformerImpl extends Transformer implements DOMCache {
     private static final String OUTPUT_RESULT_EMPTY =
 	"The Result object passed to transform() is invalid.";
 
+    private final static String LEXICAL_HANDLER_PROPERTY =
+	"http://xml.org/sax/properties/lexical-handler";
+
     /**
      * Implements JAXP's Transformer constructor
      * Our Transformer objects always need a translet to do the actual work
@@ -283,13 +286,8 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 		return(dom);
 	    }
 
-	    // Create an internal DOM (not W3C) and get SAX2 input handler
-	    final DOMImpl dom = new DOMImpl();
-	    DOMBuilder builder = dom.getBuilder();
-	    String prop = "http://xml.org/sax/properties/lexical-handler";
-
-	    // Create a DTDMonitor that will trace all unparsed entity URIs
-	    final DTDMonitor dtdMonitor = new DTDMonitor();
+	    DOMImpl dom = null;
+	    DTDMonitor dtd = null;
 
 	    // Handle SAXSource input
 	    if (source instanceof SAXSource) {
@@ -298,14 +296,24 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 		final XMLReader   reader = sax.getXMLReader();
 		final InputSource input  = sax.getInputSource();
 		final String      systemId = sax.getSystemId();
-		dtdMonitor.handleDTD(reader);
+
+		// Create a DTD monitor to trap all DTD/declarative events
+		dtd = new DTDMonitor();
+		dtd.handleDTD(reader);
+
+		// Create a new internal DOM and set up its builder to trap
+		// all content/lexical events
+		dom = new DOMImpl();
+		final DOMBuilder builder = dom.getBuilder();
 		reader.setContentHandler(builder);
 		try {
-		    reader.setProperty(prop, builder);
+		    reader.setProperty(LEXICAL_HANDLER_PROPERTY, builder);
 		}
 		catch (SAXException e) {
 		    // quitely ignored
 		}
+
+		// Parse the input and build the internal DOM
 		reader.parse(input);
 		dom.setDocumentURI(systemId);
 	    }
@@ -316,32 +324,50 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 		final DOM2SAX     dom2sax = new DOM2SAX(tree);
 		final InputSource input = null; 
 		final String      systemId = domsrc.getSystemId(); 
-		dtdMonitor.handleDTD(dom2sax);
+
+		// Create a DTD monitor to trap all DTD/declarative events
+		dtd = new DTDMonitor();
+		dtd.handleDTD(dom2sax);
+
+		// Create a new internal DOM and set up its builder to trap
+		// all content/lexical events
+		dom = new DOMImpl();
+		final DOMBuilder builder = dom.getBuilder();
 		dom2sax.setContentHandler(builder);
+
+		// Parse the input and build the internal DOM
 		dom2sax.parse(input); // need this parameter?
 		dom.setDocumentURI(systemId);
 	    }
 	    // Handle StreamSource input
 	    else if (source instanceof StreamSource) {
-		// With a StreamSource we need to create our own parser
-		final SAXParserFactory factory = SAXParserFactory.newInstance();
-		final SAXParser parser = factory.newSAXParser();
-		final XMLReader reader = parser.getXMLReader();
-		dtdMonitor.handleDTD(reader);
-
 		// Get all info from the input StreamSource object
 		final StreamSource stream = (StreamSource)source;
 		final InputStream  streamInput = stream.getInputStream();
 		final Reader streamReader = stream.getReader();
 		final String systemId = stream.getSystemId();
 
+		// With a StreamSource we need to create our own parser
+		final SAXParserFactory factory = SAXParserFactory.newInstance();
+		final SAXParser parser = factory.newSAXParser();
+		final XMLReader reader = parser.getXMLReader();
+
+		// Create a DTD monitor to trap all DTD/declarative events
+		dtd = new DTDMonitor();
+		dtd.handleDTD(reader);
+
+		// Create a new internal DOM and set up its builder to trap
+		// all content/lexical events
+		dom = new DOMImpl();
+		final DOMBuilder builder = dom.getBuilder();
 		reader.setContentHandler(builder);
 		try {
-		    reader.setProperty(prop, builder);
+		    reader.setProperty(LEXICAL_HANDLER_PROPERTY, builder);
 		}
 		catch (SAXException e) {
 		    // quitely ignored
 		}
+
 		InputSource input;
 		if (streamInput != null)
 		    input = new InputSource(streamInput);
@@ -351,20 +377,27 @@ public final class TransformerImpl extends Transformer implements DOMCache {
 		    input = new InputSource(systemId);
 		else
 		    throw new TransformerException(INPUT_SOURCE_EMPTY);
+
+		// Parse the input and build the internal DOM
 		reader.parse(input);
 		dom.setDocumentURI(systemId);
+	    }
+	    // Handle XSLTC-internal Source input
+	    else if (source instanceof XSLTCSource) {
+		final XSLTCSource xsltcsrc = (XSLTCSource)source;
+		dtd = xsltcsrc.getDTD();
+		dom = xsltcsrc.getDOM();
 	    }
 	    else {
 		return null;
 	    }
-            builder = null;
 
 	    // Set size of key/id indices
 	    _translet.setIndexSize(dom.getSize());
 	    // If there are any elements with ID attributes, build an index
-	    dtdMonitor.buildIdIndex(dom, mask, _translet);
+	    dtd.buildIdIndex(dom, mask, _translet);
 	    // Pass unparsed entity URIs to the translet
-	    _translet.setDTDMonitor(dtdMonitor);
+	    _translet.setDTDMonitor(dtd);
 	    return dom;
 	}
 	catch (FileNotFoundException e) {
