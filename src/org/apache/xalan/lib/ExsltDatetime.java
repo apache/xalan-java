@@ -74,7 +74,7 @@ import org.apache.xpath.objects.XObject;
  * This class contains EXSLT dates and times extension functions.
  * It is accessed by specifying a namespace URI as follows:
  * <pre>
- *    xmlns:math="http://exslt.org/dates-and-times"
+ *    xmlns:datetime="http://exslt.org/dates-and-times"
  * </pre>
  * 
  * The documentation for each function has been copied from the relevant
