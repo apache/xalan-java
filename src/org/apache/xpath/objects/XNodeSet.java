@@ -60,6 +60,7 @@ package org.apache.xpath.objects;
 //import org.w3c.dom.Text;
 //import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.traversal.NodeIterator;
+import org.w3c.dom.NodeList;
 
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
@@ -205,6 +206,29 @@ public class XNodeSet extends XObject
   }
   
   /**
+   * Directly call the
+   * characters method on the passed ContentHandler for the
+   * string-value. Multiple calls to the
+   * ContentHandler's characters methods may well occur for a single call to
+   * this method.
+   *
+   * @param ch A non-null reference to a ContentHandler.
+   *
+   * @throws org.xml.sax.SAXException
+   */
+  public void dispatchCharactersEvents(org.xml.sax.ContentHandler ch)
+          throws org.xml.sax.SAXException
+  {
+    DTMIterator nl = iter();
+    int node = nl.nextNode();
+
+    if(node != DTM.NULL)
+    {
+      m_dtmMgr.getDTM(node).dispatchCharactersEvents(node, ch, false);
+    }
+  }
+  
+  /**
    * Cast result object to an XMLString.
    *
    * @return The document fragment node data or the empty string. 
@@ -312,6 +336,19 @@ public class XNodeSet extends XObject
   {
     return new org.apache.xml.dtm.ref.DTMNodeIterator(iter());
   }
+  
+  /**
+   * Cast result object to a nodelist. Always issues an error.
+   *
+   * @return null
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public NodeList nodelist() throws javax.xml.transform.TransformerException
+  {
+    return new org.apache.xml.dtm.ref.DTMNodeList(iter());
+  }
+
   
 //  /**
 //   * Return a java object that's closest to the representation

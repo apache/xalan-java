@@ -266,7 +266,7 @@ public class ElemValueOf extends ElemTemplateElement
         transformer.getTraceManager().fireTraceEvent(this);
 
       // Optimize for "."
-      if (m_isDot &&!TransformerImpl.S_DEBUG)
+      if (false && m_isDot &&!TransformerImpl.S_DEBUG)
       {
         int child = xctxt.getCurrentNode();
         DTM dtm = xctxt.getDTM(child);
@@ -312,7 +312,6 @@ public class ElemValueOf extends ElemTemplateElement
 
             transformer.getTraceManager().fireSelectedEvent(current, this,
                     "select", m_selectExpression, obj);
-
             obj.dispatchCharactersEvents(rth);
           }
           else

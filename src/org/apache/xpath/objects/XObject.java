@@ -59,6 +59,7 @@ package org.apache.xpath.objects;
 import org.w3c.dom.DocumentFragment;
 //import org.w3c.dom.Text;
 //import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
@@ -456,6 +457,23 @@ public class XObject extends Expression implements Serializable, Cloneable
 
     return null;
   }
+  
+  /**
+   * Cast result object to a nodelist. Always issues an error.
+   *
+   * @return null
+   *
+   * @throws javax.xml.transform.TransformerException
+   */
+  public NodeList nodelist() throws javax.xml.transform.TransformerException
+  {
+
+    error(XPATHErrorResources.ER_CANT_CONVERT_TO_NODELIST,
+          new Object[]{ getTypeString() });  //"Can not convert "+getTypeString()+" to a NodeList!");
+
+    return null;
+  }
+
 
   /**
    * Cast result object to a nodelist. Always issues an error.

@@ -805,13 +805,13 @@ public class MethodResolver
           if ( (javaClass == NodeIterator.class) ||
                (javaClass == java.lang.Object.class) )
           {
-            return xobj.iter();
+            return xobj.nodeset();
           }
           // Same comment as above
           // else if(NodeList.class.isAssignableFrom(javaClass))
           else if(javaClass == NodeList.class)
           {
-            return xobj.mutableNodeset();
+            return xobj.nodelist();
           }
           // Same comment as above
           // else if(Node.class.isAssignableFrom(javaClass))

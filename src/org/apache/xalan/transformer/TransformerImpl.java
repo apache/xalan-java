@@ -1816,7 +1816,7 @@ public class TransformerImpl extends Transformer
     ElemTemplateElement firstChild = elem.getFirstChildElem();
     if(null == firstChild)
       return "";
-    if(elem.hasTextLitOnly())
+    if(elem.hasTextLitOnly() && org.apache.xalan.processor.TransformerFactoryImpl.m_optimize)
     {
       return ((ElemTextLiteral)firstChild).getNodeValue();
     }
@@ -2164,7 +2164,7 @@ public class TransformerImpl extends Transformer
     if (null == t)
       return;
       
-    if(elem.hasTextLitOnly())
+    if(elem.hasTextLitOnly() && org.apache.xalan.processor.TransformerFactoryImpl.m_optimize)
     {
       char[] chars = ((ElemTextLiteral)t).getChars();
       try
