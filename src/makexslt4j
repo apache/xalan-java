@@ -64,6 +64,7 @@ SRCS = \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorTemplateElem.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)ProcessorText.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)StylesheetHandler.java \
+  org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)StylesheetPIHandler.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)StylesheetProcessor.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)TemplateElementFactory.java \
   org$(PATHSEP)apache$(PATHSEP)xalan$(PATHSEP)processor$(PATHSEP)XSLProcessorVersion.java \
