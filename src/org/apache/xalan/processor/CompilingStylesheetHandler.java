@@ -657,7 +657,7 @@ public class CompilingStylesheetHandler
                 +"try\n{\n"
                 +"org.apache.xml.org.apache.xalan.serialize.SerializerFactory "+sfactory+"=org.apache.xml.org.apache.xalan.serialize.SerializerFactory.getSerializerFactory(\"text\");\n"
                 +sw+"=new java.io.StringWriter();\n"
-                +"org.apache.xml.org.apache.xalan.serialize.OutputFormat "+format+"=new org.apache.xml.org.apache.xalan.serialize.OutputFormat();\n"
+                +"org.apache.xalan.templates.OutputProperties "+format+"=new org.apache.xalan.templates.OutputProperties();\n"
                 +format+".setPreserveSpace(true);\n"
                 +"org.apache.xml.org.apache.xalan.serialize.Serializer "+serializer+"="+sfactory+".makeSerializer("+sw+","+format+");\n"
                 +shandler+"="+serializer+".asContentHandler();\n"
