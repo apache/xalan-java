@@ -143,7 +143,7 @@ public abstract class TransformerFactory {
         TransformerFactory factoryImpl;
 
         try {
-            Class clazz = Class.forName(classname);
+            Class clazz = getClassForName(classname);
 
             factoryImpl = (TransformerFactory) clazz.newInstance();
         } catch (ClassNotFoundException cnfe) {
@@ -157,6 +157,42 @@ public abstract class TransformerFactory {
         return factoryImpl;
     }
 
+
+    
+    /** a zero length Object array used in getClassForName() */
+    private static final Object NO_OBJS[] = new Object[0];
+    /** the Method object for getContextClassLoader */
+    private static java.lang.reflect.Method getCCL;
+    
+    static {
+	try { 
+	    getCCL = Thread.class.getMethod("getContextClassLoader",
+					    new Class[0]);
+	} catch (Exception e) {
+	    getCCL = null;
+	}
+    }
+    
+    private static Class getClassForName(String className )
+        throws ClassNotFoundException
+    {
+	if (getCCL != null) {
+	    try {
+		ClassLoader contextClassLoader =
+		    (ClassLoader) getCCL.invoke(Thread.currentThread(),
+						NO_OBJS);
+		return contextClassLoader.loadClass(className);
+	    } catch (ClassNotFoundException cnfe) {
+		// nothing, try again with Class.forName 
+	    } catch (Exception e) {
+		getCCL = null; // don't try again
+		// fallback
+	    }
+	}
+	
+	return Class.forName(className);
+    }
+  
     /**
      * Process the Source into a Transformer object.  Care must
      * be given not to use this object in multiple threads running concurrently.

@@ -144,7 +144,7 @@ public abstract class SAXParserFactory {
 
         SAXParserFactory factoryImpl = null;
         try {
-            Class clazz = Class.forName(factoryImplName);
+            Class clazz = getClassForName(factoryImplName);
             factoryImpl = (SAXParserFactory)clazz.newInstance();
         } catch  (ClassNotFoundException cnfe) {
             throw new FactoryConfigurationError(cnfe);
@@ -155,7 +155,42 @@ public abstract class SAXParserFactory {
         }
         return factoryImpl;
     }
+
+    /** a zero length Object array used in getClassForName() */
+    private static final Object NO_OBJS[] = new Object[0];
+    /** the Method object for getContextClassLoader */
+    private static java.lang.reflect.Method getCCL;
     
+    static {
+	try { 
+	    getCCL = Thread.class.getMethod("getContextClassLoader",
+					    new Class[0]);
+	} catch (Exception e) {
+	    getCCL = null;
+	}
+    }
+    
+    private static Class getClassForName(String className )
+        throws ClassNotFoundException
+    {
+	if (getCCL != null) {
+	    try {
+		ClassLoader contextClassLoader =
+		    (ClassLoader) getCCL.invoke(Thread.currentThread(),
+						NO_OBJS);
+		return contextClassLoader.loadClass(className);
+	    } catch (ClassNotFoundException cnfe) {
+		// nothing, try again with Class.forName 
+	    } catch (Exception e) {
+		getCCL = null; // don't try again
+		// fallback
+	    }
+	}
+	
+	return Class.forName(className);
+    }
+
+  
     /**
      * Creates a new instance of a SAXParser using the currently
      * configured factory parameters.
