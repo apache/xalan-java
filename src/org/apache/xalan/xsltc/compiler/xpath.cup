@@ -736,14 +736,12 @@ VariableReference ::= DOLLAR VariableName:varName
                     RESULT = new ParameterRef((Param)node);
                 } 
                 else {
-                    node = null;
+                    RESULT = new UnresolvedRef(varName);
                 }
             }
 
             if (node == null) {
-                RESULT = parser.DummyVarRef;
-                parser.addError(new ErrorMsg(ErrorMsg.VARUNDEF_ERR,
-		    parser.getLineNumber(), varName));
+                RESULT = new UnresolvedRef(varName);
             }
 
         :};

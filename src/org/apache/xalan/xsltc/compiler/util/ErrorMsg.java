@@ -101,6 +101,17 @@ public final class ErrorMsg {
     public static final int CIRCULAR_INC = 21;
     public static final int TREESORT_ERR = 22;
     public static final int DFSREDEF_ERR = 23;
+    public static final int UNSUPVER_ERR = 24;
+    public static final int CIRCULAR_ERR = 25;
+    public static final int ILLBINOP_ERR = 26;
+    public static final int ILLEGARG_ERR = 27;
+    public static final int DOCUMARG_ERR = 28;
+
+    public static final int MISSING_WHEN_ERR       = 29;
+    public static final int MULTIPLE_OTHERWISE_ERR = 30;
+    public static final int STRAY_OTHERWISE_ERR    = 31;
+    public static final int STRAY_WHEN_ERR         = 32;
+    public static final int WHEN_ELEMENT_ERR       = 33;
 
     static final String messages_d[] = { 
 	"More than one stylesheet defined in the same file.",
@@ -128,7 +139,17 @@ public final class ErrorMsg {
 	"Applying <xsl:sort> to a result tree is not supported (<xsl:sort> "+
 	"elements are ignored). You can, and should, sort the nodes when "+
 	"creating the result tree.",
-	"Decimal formatting ''{0}'' is already defined."
+	"Decimal formatting ''{0}'' is already defined.",
+	"XSL version ''{0}'' is not supported by XSLTC.",
+	"Circular variable/parameter references: ''{0}''.",
+	"Unknown operator for binary expression.",
+	"Illegal argument(s) for function call.",
+	"Second argument to document() function must be a node-set.",
+	"At least one <xsl:when> element required in <xsl:choose>.",
+	"Only one <xsl:otherwise> element allowed in <xsl:choose>.",
+	"<xsl:otherwise> can only be used within <xsl:choose>.",
+	"<xsl:whe> can only be used within <xsl:choose>.",
+	"Only <xsl:when> and <xsl:otherwise> elements allowed in <xsl:choose>."
     };
 
     public ErrorMsg(int code) {

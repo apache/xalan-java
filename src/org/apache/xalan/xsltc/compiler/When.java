@@ -68,9 +68,6 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class When extends Instruction {
 
-    private static final String NO_CHOOSE_ERROR =
-	"Instruction 'when' must be used within a 'choose'.";
-	
     private Expression _test;
     private boolean _ignore = false;
 
@@ -135,7 +132,7 @@ final class When extends Instruction {
      * translate the "test" expression and and contents of this element.
      */
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
-	final ErrorMsg msg = new ErrorMsg(NO_CHOOSE_ERROR, getLineNumber());
+	final ErrorMsg msg = new ErrorMsg(ErrorMsg.STRAY_WHEN_ERR, this);
 	getParser().reportError(Constants.ERROR, msg);
     }
 }

@@ -101,11 +101,9 @@ final class VariableRef extends VariableRefBase {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-		
-	if (_type.implementedAsMethod()) {
-	    // Fall-through for variables that are implemented as methods
-	    return;
-	}
+
+	// Fall-through for variables that are implemented as methods
+	if (_type.implementedAsMethod()) return;
 
 	final String name = _variable.getVariable();
 

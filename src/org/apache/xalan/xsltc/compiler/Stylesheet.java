@@ -95,7 +95,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     private Stylesheet   _parentStylesheet;
 	
     // Contains global variables and parameters defined in the stylesheet
-    private final Vector _globals = new Vector();
+    private Vector _globals = new Vector();
 
     // Used to cache the result returned by <code>hasLocalParams()</code>.
     private Boolean _hasLocalParams = null;
@@ -126,6 +126,12 @@ public final class Stylesheet extends SyntaxTreeNode {
     private SourceLoader _loader = null;
 
     private boolean _compileTemplatesAsMethods;
+
+    private boolean _forwardReference = false;
+
+    public void setForwardReference() {
+	_forwardReference = true;
+    }
 
     public void compileTemplatesAsMethods() {
 	_compileTemplatesAsMethods = true;
@@ -304,17 +310,27 @@ public final class Stylesheet extends SyntaxTreeNode {
     public void parseContents(Parser parser) {
 	final SymbolTable stable = parser.getSymbolTable();
 
+	// Make sure the XSL version set in this stylesheet
 	_version = getAttribute("version");
+	if ((_version == null) || (_version.equals(EMPTYSTRING))) {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.NREQATTR_ERR, "version", this);
+	    parser.reportError(Constants.ERROR, err);
+	}
+	// Verify that the version is 1.0 and nothing else
+	else if (!_version.equals("1.0")) {
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.UNSUPVER_ERR, _version, this);
+	    parser.reportError(Constants.ERROR, err);
+	}
 
-	//addPrefixMapping("xml", "xml"); // Make sure 'xml' maps to 'xml'
+	// Add the implicit mapping of 'xml' to the XML namespace URI
 	addPrefixMapping("xml", "http://www.w3.org/XML/1998/namespace");
 
 	// Report and error if more than one stylesheet defined
 	final Stylesheet sheet = stable.addStylesheet(_name, this);
 	if (sheet != null) {
 	    // Error: more that one stylesheet defined
-	    final ErrorMsg msg = new ErrorMsg(ErrorMsg.STLREDEF_ERR, this);
-	    parser.reportError(Constants.ERROR, msg);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.STLREDEF_ERR, this);
+	    parser.reportError(Constants.ERROR, err);
 	}
 
 	// If this is a simplified stylesheet we must create a template that
@@ -334,8 +350,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     /**
-     * Parse all the children of <tt>element</tt>.
-     * XSLT commands are recognized by the XSLT namespace
+     * Parse all direct children of the <xsl:stylesheet/> element.
      */
     public final void parseOwnChildren(Parser parser) {
 
@@ -370,6 +385,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 		parser.getSymbolTable().setCurrentNode(child);
 		child.parseContents(parser);
 	    }
+	    // All template code should be compiled as methods if the
+	    // <xsl:apply-imports/> element was ever used in this stylesheet
 	    if (_compileTemplatesAsMethods && (child instanceof Template)) {
 		Template template = (Template)child;
 		String name = "template$dot$"+template.getPosition();
@@ -487,7 +504,6 @@ public final class Stylesheet extends SyntaxTreeNode {
 
 	processModes();
 	compileModes(classGen);
-
 	compileConstructor(classGen, lastOutputElement);
 
 	if (!getParser().errorsFound()) {
@@ -611,30 +627,18 @@ public final class Stylesheet extends SyntaxTreeNode {
 	il.append(new PUSH(cpg, DOM.ROOTNODE));
 	il.append(new ISTORE(current.getIndex()));
 
-	// Initialize global variables and parameterns
-	final int m = _globals.size();
-	for (int i = 0; i < m; i++) {
-	    TopLevelElement elem = (TopLevelElement)_globals.elementAt(i);
-	    elem.translate(classGen, toplevel);
+	// Resolve any forward referenes and translate global variables/params
+	_globals = resolveReferences(_globals);
+	final int count = _globals.size();
+	for (int i = 0; i < count; i++) {
+	    final VariableBase var = (VariableBase)_globals.elementAt(i);
+	    var.translate(classGen,toplevel);
 	}
 
-	Vector whitespaceRules = new Vector();
-
 	// Compile code for other top-level elements
+	Vector whitespaceRules = new Vector();
 	while (elements.hasMoreElements()) {
 	    final Object element = elements.nextElement();
-	    /*
-	    // xsl:output
-	    if (element instanceof Output) {
-		((Output)element).translate(classGen, toplevel);
-	    }
-	    // xsl:key
-	    else if (element instanceof Key) {
-		final Key key = (Key)element;
-		key.translate(classGen, toplevel);
-		_keys.put(key.getName(),key);
-	    }
-	    */
 	    // xsl:decimal-format
 	    if (element instanceof DecimalFormatting) {
 		((DecimalFormatting)element).translate(classGen,toplevel);
@@ -643,12 +647,9 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    else if (element instanceof Whitespace) {
 		whitespaceRules.addAll(((Whitespace)element).getRules());
 	    }
-	    // xsl:variable or xsl:param
-	    else if (element instanceof VariableBase) {
-		((VariableBase)element).translate(classGen,toplevel);
-	    }
 	}
 
+	// Translate all whitespace strip/preserve rules
 	if (whitespaceRules.size() > 0) {
 	    Whitespace.translateRules(whitespaceRules,classGen);
 	}
@@ -672,6 +673,39 @@ public final class Stylesheet extends SyntaxTreeNode {
 	return("("+DOM_INTF_SIG+NODE_ITERATOR_SIG+TRANSLET_OUTPUT_SIG+")V");
     }
 
+
+    private Vector resolveReferences(Vector input) {
+	Vector result = new Vector();
+
+	while (input.size() > 0) {
+	    boolean changed = false;
+	    for (int i = 0; i < input.size(); ) {
+		final VariableBase var = (VariableBase)input.elementAt(i);
+		final Vector dep = var.getDependencies();
+		if (dep == null) {
+		    result.insertElementAt(var, 0);
+		    input.remove(i);
+		    changed = true;
+		}
+		else if (result.containsAll(dep)) {
+		    result.addElement(var);
+		    input.remove(i);
+		    changed = true;
+		}
+		else {
+		    i++;
+		}
+	    }
+	    // If nothing was changed in this pass then we have a circular ref
+	    if (!changed) {
+		final String refs = input.toString();
+		ErrorMsg err = new ErrorMsg(ErrorMsg.CIRCULAR_ERR, refs, this);
+		getParser().reportError(Constants.ERROR, err);
+		return(result);
+	    }
+	}
+	return(result);
+    }
 
     /**
      * Compile a buildKeys() method into the output class. This method is 

@@ -73,13 +73,6 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class Choose extends Instruction {
 
-    private final static String MISSING_WHEN_ERROR =
-	"At least one When element required in Choose";
-    private final static String ILLEGAL_ELEMENT_ERROR =
-	"Only When|Otherwise elements allowed in Choose";
-    private final static String MULTIPLE_OTHERWISE_ERROR =
-	"Only one Otherwise element allowed in Choose";
-
     /**
      * Display the element contents (a lot of when's and an otherwise)
      */
@@ -116,20 +109,20 @@ final class Choose extends Instruction {
 		    otherwise = (Otherwise)element;
 		}
 		else {
-		    error = new ErrorMsg(MULTIPLE_OTHERWISE_ERROR, line);
+		    error = new ErrorMsg(ErrorMsg.MULTIPLE_OTHERWISE_ERR, this);
 		    getParser().reportError(Constants.ERROR, error);
 		}
 	    }
 	    // It is an error if we find some other element here
 	    else {
-		error = new ErrorMsg(ILLEGAL_ELEMENT_ERROR, line);
+		error = new ErrorMsg(ErrorMsg.WHEN_ELEMENT_ERR, this);
 		getParser().reportError(Constants.ERROR, error);
 	    }
 	}
 
 	// Make sure that there is at least one <xsl:when> element
 	if (whenElements.size() == 0) {
-	    error = new ErrorMsg(MISSING_WHEN_ERROR, getLineNumber());
+	    error = new ErrorMsg(ErrorMsg.MISSING_WHEN_ERR, this);
 	    getParser().reportError(Constants.ERROR, error);
 	    return;
 	}

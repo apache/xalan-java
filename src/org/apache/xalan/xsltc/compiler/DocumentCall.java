@@ -94,8 +94,7 @@ final class DocumentCall extends FunctionCall {
 	// At least one argument - two at most
 	final int ac = argumentCount();
 	if ((ac < 1) || (ac > 2)) {
-	    ErrorMsg msg = new ErrorMsg("Illegal number of arguments "+
-					"to document() function");
+	    ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGARG_ERR, this);
 	    throw new TypeCheckError(msg);
 	}
 
@@ -106,8 +105,7 @@ final class DocumentCall extends FunctionCall {
 	    if (expr.getValue().equals(Constants.EMPTYSTRING)) {
 		Stylesheet stylesheet = getStylesheet();
 		if (stylesheet == null) {
-		    ErrorMsg msg = new ErrorMsg("Illegal argument "+
-						"to document() function");
+		    ErrorMsg msg = new ErrorMsg(ErrorMsg.ILLEGARG_ERR, this);
 		    throw new TypeCheckError(msg);
 		}
 		_uri = new LiteralExpr(stylesheet.getSystemId(),
@@ -124,8 +122,7 @@ final class DocumentCall extends FunctionCall {
 	if (ac == 2) {
 	    _base = argument(1);
 	    if (!_base.typeCheck(stable).identicalTo(Type.NodeSet)) {
-		ErrorMsg msg = new ErrorMsg("Second argument to document() "+
-					    "function must be a node-set.");
+		ErrorMsg msg = new ErrorMsg(ErrorMsg.DOCUMARG_ERR, this);
 		throw new TypeCheckError(msg);
 	    }
 	}

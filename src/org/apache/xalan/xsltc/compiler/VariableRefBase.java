@@ -83,6 +83,10 @@ class VariableRefBase extends Expression {
 	variable.addReference(this);
     }
 
+    public VariableRefBase() {
+	_variable = null;
+    }
+
     /**
      * Returns a reference to the associated variable
      * @return The referenced variable
@@ -90,6 +94,18 @@ class VariableRefBase extends Expression {
     public VariableBase getVariable() {
 	return(_variable);
     }
+
+    /**
+     * Returns a reference to any parent variable
+     * @return Parent variable (or null if none)
+     */
+    public VariableBase findParentVariable() {
+	SyntaxTreeNode node = this;
+	while ((node != null) && (!(node instanceof VariableBase)))
+	    node = node.getParent();
+	return (VariableBase)node;
+    }
+
 
     /**
      * Returns a string representation of this variable reference on the
@@ -101,6 +117,10 @@ class VariableRefBase extends Expression {
     }
 
     public Type typeCheck(SymbolTable stable) throws TypeCheckError {
+
+	// Insert a dependency link from one variable to another
+	VariableBase parent = findParentVariable();
+	if (parent != null) parent.addDependency(_variable);
 
         // Attempt to get the cached variable type
         _type = _variable.getType();

@@ -324,6 +324,10 @@ public final class XSLTC {
 	    if (_debug) e.printStackTrace();
 	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
 	}
+	catch (Error e) {
+	    if (_debug) e.printStackTrace();
+	    _parser.reportError(Constants.FATAL, new ErrorMsg(e.getMessage()));
+	}
 	finally {
 	    _reader = null; // reset this here to be sure it is not re-used
 	    return !_parser.errorsFound();

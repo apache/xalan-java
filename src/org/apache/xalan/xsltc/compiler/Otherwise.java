@@ -82,9 +82,7 @@ final class Otherwise extends Instruction {
 
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final Parser parser = getParser();
-	final ErrorMsg msg = 
-	    new ErrorMsg("'otherwise' must be used within a 'choose'.", 
-			 getLineNumber());
-	parser.reportError(Constants.ERROR, msg);
+	final ErrorMsg err = new ErrorMsg(ErrorMsg.STRAY_OTHERWISE_ERR, this);
+	parser.reportError(Constants.ERROR, err);
     }
 }
