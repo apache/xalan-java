@@ -121,13 +121,18 @@ public class NodeVector implements Serializable, Cloneable
       m_map = new Node[m_blocksize];
       m_mapSize = m_blocksize;
     }
-    else if((m_firstFree+1) >= m_mapSize)
-    {
-      m_mapSize+=m_blocksize;
-      Node newMap[] = new Node[m_mapSize];
-      System.arraycopy(m_map, 0, newMap, 0, m_firstFree+1);
-      m_map = newMap;
-    }
+    else 
+    {  
+      if((m_firstFree+1) >= m_mapSize)
+      {
+        m_mapSize+=m_blocksize;
+        Node newMap[] = new Node[m_mapSize];
+        System.arraycopy(m_map, 0, newMap, 0, m_firstFree+1);
+        m_map = newMap;
+      }
+      if (contains(value))
+        return;
+    }  
     m_map[m_firstFree] = value;
     m_firstFree++;
   }
