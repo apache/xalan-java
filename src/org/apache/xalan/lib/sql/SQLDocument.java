@@ -965,7 +965,7 @@ public class SQLDocument extends DTMDocument
    * be in a errored state.
    *
    */
-  public void close( )
+  public void close(boolean flushConnPool )
   {
     try
     {
@@ -1004,6 +1004,7 @@ public class SQLDocument extends DTMDocument
       {
         if (m_HasErrors)  m_ConnectionPool.releaseConnectionOnError(conn);
         else m_ConnectionPool.releaseConnection(conn);
+//        if (flushConnPool)  m_ConnectionPool.freeUnused();
       }
     }
     catch(Exception e) {}

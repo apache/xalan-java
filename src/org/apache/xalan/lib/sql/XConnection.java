@@ -34,11 +34,10 @@ import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMManagerDefault;
 import org.apache.xml.dtm.ref.DTMNodeIterator;
+import org.apache.xml.dtm.ref.DTMNodeProxy;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.axes.OneStepIterator;
 import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XNodeSet;
-import org.apache.xpath.objects.XNumber;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -673,7 +672,7 @@ public class XConnection
           setError(e, doc, doc.checkWarnings());
         }
 
-        doc.close();
+        doc.close(m_IsDefaultPool);
         doc = null;
       }
     }
@@ -763,7 +762,9 @@ public class XConnection
           setError(e, doc, doc.checkWarnings());
         }
 
-        doc.close();
+        // If we are using the Default Connection Pool, then
+        // force the connection pool to flush unused connections.
+        doc.close(m_IsDefaultPool);
         doc = null;
       }
     }
@@ -791,7 +792,7 @@ public class XConnection
     SQLDocument sqldoc = null;
     DTMNodeIterator nodei = null;
       
-    sqldoc = locateSQLDocument(o);
+    sqldoc = locateSQLDocument( exprContext, o);
     if (sqldoc != null) sqldoc.skip(value);
   }
 
@@ -1073,7 +1074,9 @@ public class XConnection
       SQLDocument d = (SQLDocument) m_OpenSQLDocuments.elementAt(0);
       try
       {
-        d.close();
+        // If we are using the Default Connection Pool, then
+        // force the connection pool to flush unused connections.
+        d.close(m_IsDefaultPool);
       }
       catch (Exception se ) {}
 
@@ -1098,13 +1101,19 @@ public class XConnection
    * @throws SQLException
    */
 
-  public void close(Object doc) throws SQLException 
+  public void close(ExpressionContext exprContext, Object doc) throws SQLException 
   {
     if (DEBUG)
         System.out.println("Entering XConnection.close(" + doc + ")");
 
-    SQLDocument sqlDoc = locateSQLDocument(doc);
-    if (sqlDoc != null)   sqlDoc.close();
+    SQLDocument sqlDoc = locateSQLDocument(exprContext, doc);
+    if (sqlDoc != null)
+    {
+      // If we are using the Default Connection Pool, then
+      // force the connection pool to flush unused connections.
+      sqlDoc.close(m_IsDefaultPool);
+      m_OpenSQLDocuments.remove(sqlDoc);
+    } 
   }
 
 
@@ -1118,22 +1127,39 @@ public class XConnection
    * @param doc
    * @return
    */
-  private SQLDocument locateSQLDocument(Object doc)
+  private SQLDocument locateSQLDocument(ExpressionContext exprContext, Object doc)
   {
     try
     {
-      DTMNodeIterator dtmIter = (DTMNodeIterator)doc;
+      if (doc instanceof DTMNodeIterator)
+      {
+        DTMNodeIterator dtmIter = (DTMNodeIterator)doc;
+        try
+        {
+          DTMNodeProxy root = (DTMNodeProxy)dtmIter.getRoot();
+          return (SQLDocument) root.getDTM();
+        }
+        catch (Exception e)
+        {
+          XNodeSet xNS = (XNodeSet)dtmIter.getDTMIterator();
+          DTMIterator iter = (DTMIterator)xNS.getContainedIter();
+          DTM dtm = iter.getDTM(xNS.nextNode());
+          return (SQLDocument)dtm;
+        }
+      }
 
+/*
       XNodeSet xNS = (XNodeSet)dtmIter.getDTMIterator();
-  
       OneStepIterator iter = (OneStepIterator)xNS.getContainedIter();
-  
       DTMManager aDTMManager = (DTMManager)iter.getDTMManager();
-  
       return (SQLDocument)aDTMManager.getDTM(xNS.nextNode());
+*/
+      setError(new Exception("SQL Extension:close - Can Not Identify SQLDocument"), exprContext);    
+      return null;  
     }
     catch(Exception e)
     {
+      setError(e, exprContext);
       return null;
     }
   }
@@ -1197,6 +1223,7 @@ public class XConnection
       ErrorListener listen = expr.getErrorListener();
       if ( listen != null && excp != null )
       {
+        
         listen.warning(
           new TransformerException(excp.toString(),
           expr.getXPathContext().getSAXLocator(), excp));

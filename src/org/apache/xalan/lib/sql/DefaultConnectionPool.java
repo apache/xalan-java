@@ -24,6 +24,7 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -123,22 +124,22 @@ public class DefaultConnectionPool implements ConnectionPool
   {
     // Iterate over the entire pool closing the
     // JDBC Connections.
-    for ( int x = 0; x < m_pool.size(); x++ )
+    Iterator i = m_pool.iterator();
+    while(i.hasNext())
     {
-
-
       PooledConnection pcon =
-        (PooledConnection) m_pool.elementAt(x);
+        (PooledConnection) i.next();
 
       // If the PooledConnection is not in use, close it
       if ( pcon.inUse() == false )
       {
         if (DEBUG)
         {
-          System.err.println("Closing JDBC Connection " + x);
+          System.err.println("Closing JDBC Connection ");
         }
-
+        
         pcon.close();
+        m_pool.remove(pcon);
       }
     }
 
