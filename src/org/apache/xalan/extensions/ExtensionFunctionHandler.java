@@ -573,7 +573,7 @@ public class ExtensionFunctionHandler
           {
             // ?? -sb
             cname = scriptSrcURL;
-            isClass = true;
+            // isClass = true;
           }
           classObject = Class.forName (cname);
           // System.out.println("classObject: "+classObject);
