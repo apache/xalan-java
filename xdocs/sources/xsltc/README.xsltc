@@ -85,7 +85,6 @@ CODE
 
         CLASSPATH=.:${JAR}:${XER}:${XML}:${JCPR}:${BCEL}:${JCP}:${JLEX}:${REGEXP}
         java -cp ${CLASSPATH} org.apache.xalan.xsltc.cmdline.Compile "$@"
-~
 	
 
 EXAMPLES

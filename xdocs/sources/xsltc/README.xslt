@@ -1,14 +1,16 @@
 NAME
-	xslt - Apache/Xalan XSLT runtime processor. 
+	xslt - optional command wrapper for Apache/Xalan XSLTC runtime processor. 
 
 SYNOPSIS
-	xslt [-j <jarfile>] [-xhs] {-u <document_url> | <document>} <class>
+	xslt [-j <jarfile>] [-xhs] 
+	     {-u <document_url> | <document>}  <class>
              [<name1>=<value1> ...]
 
 
 DESCRIPTION
 	This command-line tool is a wrapper for the Java class
-	org.apache.xalan.xsltc.cmdline.Transform
+	org.apache.xalan.xsltc.cmdline.Transform. See CODE section
+	below.
 
 	The Sun XSLT runtime processor is a Java-based tool for 
 	transforming XML document files using a translet (compiled 
@@ -52,6 +54,37 @@ OPERANDS
 				pairs. A name-value pair uses the format
 				<name>=<value>.
 
+CODE
+	Here is an example script to implement this command. You will have
+	to define INSTALLDIR to be the directory where you install XalanJ.
+
+	#!/bin/sh
+	# apxslt - Apache XSLT run script.
+	#
+	# if a -j <jarfile> option is set, find it and save off the <jarfile>
+	# argument.
+	#
+	jOptionSeen="0";
+	jarfile="";
+	for arg in $*
+	do
+	   if [ $arg = "-j" ] ; then
+		jOptionSeen="1";
+	   elif [ $jOptionSeen = "1" ] ; then
+		jarfile=$arg
+		jOptionSeen="0";
+	   fi
+	done
+
+	#
+	XSLTC=${INSTALLDIR}/java/bin/xsltc.jar
+	XERCES=${INSTALLDIR}/java/bin/xercesImpl.jar
+	XML=${INSTALLDIR}/java/bin/xml-apis.jar
+	CLASSPATH=.:${XSLTC}:${XERCES}:${XML}:$jarfile
+
+	java -cp ${CLASSPATH} org.apache.xalan.xsltc.cmdline.Transform "$@"
+
+	
 EXAMPLES
 	Example 1:  Processing an XML document.
 
