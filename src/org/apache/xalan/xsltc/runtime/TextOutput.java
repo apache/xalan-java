@@ -109,18 +109,20 @@ public final class TextOutput implements TransletOutputHandler {
     private static final char[] QUOTE    = "&quot;".toCharArray();
     private static final char[] NBSP     = "&nbsp;".toCharArray();
 
+    private static final char[] BEGCDATA = "<![CDATA[".toCharArray();
+    private static final char[] ENDCDATA = "]]>".toCharArray();
+    private static final char[] CNTCDATA = "]]]]><![CDATA[>".toCharArray();
+    private static final char[] BEGCOMM  = "<!--".toCharArray();
+    private static final char[] ENDCOMM  = "-->".toCharArray();
+
     private static final int AMP_length   = AMP.length;
     private static final int LT_length    = LT.length;
     private static final int GT_length    = GT.length;
     private static final int CRLF_length  = CRLF.length;
     private static final int QUOTE_length = QUOTE.length;
     private static final int NBSP_length  = NBSP.length;
-
-    private static final char[] BEGCDATA = "<![CDATA[".toCharArray();
-    private static final char[] ENDCDATA = "]]>".toCharArray();
-    private static final char[] CNTCDATA = "]]]]><![CDATA[>".toCharArray();
-    private static final char[] BEGCOMM  = "<!--".toCharArray();
-    private static final char[] ENDCOMM  = "-->\n".toCharArray();
+    private static final int BEGCOMM_length = BEGCOMM.length;
+    private static final int ENDCOMM_length = ENDCOMM.length;
 
     private static final String EMPTYSTRING = "";
 
@@ -729,9 +731,9 @@ public final class TextOutput implements TransletOutputHandler {
             if (_outputType == UNKNOWN) setTypeInternal(XML);
 
             // ...and then output the comment.
-            characters(BEGCOMM);
+            _saxHandler.characters(BEGCOMM, 0, BEGCOMM_length);
             characters(comment);
-            characters(ENDCOMM);
+            _saxHandler.characters(ENDCOMM, 0, ENDCOMM_length);
 	}
 	catch (SAXException e) {
 	    throw new TransletException(e);
