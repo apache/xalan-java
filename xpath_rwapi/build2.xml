@@ -30,6 +30,7 @@ Copyright:
 ==================================================================== -->
 
 <project name="XPathAPI" default="javacc" basedir=".">
+  <property name="year" value="2003"/>
 
   <property name="build.dir" value="../build"/>
   <property name="build.classes" value="${build.dir}/classes"/>
@@ -51,6 +52,9 @@ Copyright:
   <property name="test.class" value="org.apache.xpath.test.TestAST"/>
   <property name="test.expr" value=""/>
   
+  <property name="docs.dir" value="build/docs"/>
+ 
+  
   <path id="classpath">
     <!-- This should include all .jars needed to compile, including 
          a checked-in copy of xalan.jar and the JavaCC.zip file -->
@@ -61,6 +65,11 @@ Copyright:
   <path id="test.classpath">
     <path refid="classpath" />
     <fileset dir="${build.dir}" includes="*.jar"/>
+  </path>
+  
+  <path id="docs.class.path">  
+	   <pathelement location="${build.dir}/${jarfilename}" />
+	   <pathelement path="${classpath}" />
   </path>
 
   <target name="clean"
@@ -148,6 +157,24 @@ Copyright:
       <classpath refid="test.classpath" />
       <arg line="${test.expr}"/>
     </java>
+  </target>
+  
+  <!-- ==== Documentation targets ==== -->
+  
+  <target name="apidocs" depends="jar" description="[6]Build API documentation">
+    <mkdir dir="${docs.dir}"/>
+  	<javadoc sourcepath="${src.dir}" destdir="${docs.dir}"
+  	 		 public="true"                  	 
+         	 packagenames="org.apache.xml,org.apache.xpath,org.apache.xpath.expression"
+         	 author="true"
+         	 version="true"
+         	 use="true"
+         	 windowtitle="XPath API" 
+         	 doctitle="XPath API 2"
+         	 bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
+         	  <classpath refid="docs.class.path" />
+         	  <group title="XPath API" packages="org.apache.xml:org.apache.xpath:org.apache.xpath.expression"/>
+    </javadoc>
   </target>
 
 </project>
