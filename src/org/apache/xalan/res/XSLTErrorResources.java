@@ -1211,6 +1211,9 @@ public class XSLTErrorResources extends PropertyResourceBundle
   /** WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME          */
   public static final int WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME = 28;  
   
+  /** WG_ILLEGAL_ATTRIBUTE_POSITION         */
+  public static final int WG_ILLEGAL_ATTRIBUTE_POSITION = 29;
+  
   
   //The following warning codes are shared with the error codes ... 
   // Illegal value: {1} used for CHAR attribute: {0}.  An attribute of type CHAR must be only 1 character!

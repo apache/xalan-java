@@ -134,7 +134,7 @@ public class ElemAttribute extends ElemElement
       int sourceNode = xctxt.getCurrentNode();
       String attrName = m_name_avt.evaluate(xctxt, sourceNode, this);
       transformer.getMsgMgr().warn(this,
-                                   XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE,
+                                   XSLTErrorResources.WG_ILLEGAL_ATTRIBUTE_POSITION,
                                    new Object[]{ attrName });
 
       if (TransformerImpl.S_DEBUG)
