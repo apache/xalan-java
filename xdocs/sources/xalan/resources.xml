@@ -39,12 +39,12 @@
   <resource id="ApacheLicense" 
             title="The Apache Software License, Version 1.1" 
             location="http://xml.apache.org/dist/LICENSE.txt"/>
-  <resource id="bugzilla"
-            title="Bugzilla (the Apache bug database)"
-            location="http://nagoya.apache.org/bugzilla/"/>
+  <resource id="jira"
+            title="JIRA (the Apache issue tracker)"
+            location="http://issues.apache.org/jira/"/>
   <resource id="buglist"
             title="XalanJ2 open bugs"         
-            location="http://nagoya.apache.org/bugzilla/buglist.cgi?bug_status=NEW&amp;bug_status=ASSIGNED&amp;bug_status=REOPENED&amp;email1=&amp;emailtype1=substring&amp;emailassigned_to1=1&amp;email2=&amp;emailtype2=substring&amp;emailreporter2=1&amp;bugidtype=include&amp;bug_id=&amp;changedin=&amp;votes=&amp;chfieldfrom=&amp;chfieldto=Now&amp;chfieldvalue=&amp;product=XalanJ2&amp;short_desc=&amp;short_desc_type=substring&amp;long_desc=&amp;long_desc_type=substring&amp;bug_file_loc=&amp;bug_file_loc_type=substring&amp;keywords=&amp;keywords_type=anywords&amp;field0-0-0=noop&amp;type0-0-0=noop&amp;value0-0-0=&amp;cmdtype=doit&amp;order=%27Importance%27"/>
+            location="http://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&amp;mode=hide&amp;pid=10584&amp;resolutionIds=-1&amp;sorter/field=issuekey&amp;sorter/order=DESC"/>
   <resource id="bsf"
             title="Bean Scripting Framework (BSF)"
             location="http://jakarta.apache.org/bsf/index.html"/>

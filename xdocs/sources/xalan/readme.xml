@@ -506,12 +506,14 @@
      </ul>
      </s3><anchor name="bugs"/>
      <s3 title="Bugs">
-     <p>All known &xslt4j; bugs are listed in <resource-ref idref="bugzilla"/>. For a list of open bugs with links to each bug
-      report, see <resource-ref idref="buglist"/>. If you find a new bug, please enter a XalanJ2 bug report in this
-      database.</p>
-     <note>Before you can enter your first bug report, you must submit your email address to Bugzilla and receive a password.</note> 
-     <p>We strongly encourage you write patches for problems you find and submit them to
-      xalan-dev@xml.apache.org. We review the patches we receive to make sure they do not break something else, and (assuming they 
+     <p>&xslt4j; bugs were on bugzilla, but are now listed in <resource-ref idref="jira"/>.  After clicking on the XalanJ2
+     project on the JIRA home page you can view Xalan-Java bugs and issues.  If you find a new bug, please open a new XalanJ2
+     issue in this database.</p>
+     <note>Before you can enter your first bug report you must sign up for a JIRA account. If you had a bugzilla account 
+     previously, and had used it with Xalan bugzilla bugs, your account should be migrated to JIRA.  In this case, do not 
+     create a new account, but use the same e-mail account name and click on "Forgot Password" on the JIRA home page.</note> 
+     <p>We strongly encourage you write patches for problems you find and attach those patches to the JIRA issues. We review the 
+     patches we receive to make sure they do not break something else, and (assuming they 
      do not) include them in our next release. In the interest of fixing bugs, adding enhancements, and addressing outstanding design
      issues, we sincerely want (and need!) your active participation in the ongoing development of &xslt;.</p>
      </s3>     

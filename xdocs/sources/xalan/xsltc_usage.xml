@@ -599,12 +599,9 @@ tfac.setAttribute(&quot;enable-inlining&quot;, Boolean.TRUE);</source><br/></li>
 <p>To check on the open bugs in the current Apache xml-xalan/java repository, 
   follow the instructions below:</p>
 <ol>
-  <li>Go to <jump href="http://nagoya.apache.org/bugzilla">http://nagoya.apache.org/bugzilla</jump>.</li>
-  <li>Select <em>Query Existing Bug Reports</em>.</li>
-  <li>Choose:<br/>
-    Program: <em>XalanJ2</em><br/>
-    Component: <em>org.apache.xalan.xsltc</em> (and) <em>Xalan-Xsltc</em></li>
-  <li>Submit the query.</li>
+  <li>Go to <jump href="http://issues.apache.org/jira">http://issues.apache.org/jira</jump>.</li>
+  <li>Select project <em>XalanJ2</em>.</li>
+  <li>Select <em>XSLTC</em> from the Components list.</li> 
 </ol>
 </s2>
 </s1>

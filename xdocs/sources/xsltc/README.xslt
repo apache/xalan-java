@@ -126,7 +126,7 @@ SEE ALSO
 	xsltc, jar.
 
 BUGS
-	See the Bugzilla bug database: http://nagoya.apache.org/bugzilla
+	See the Apache JIRA issue tracker: http://issues.apache.org/jira
 
 AUTHORS
 	Morten Jorgensen		   morten.jorgensen@ireland.sun.com
