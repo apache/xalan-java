@@ -807,7 +807,9 @@ public class DOMHelper
    */
   public Node getRootNode(Node n)
   {
-    return (Node.DOCUMENT_NODE == n.getNodeType()) ? n : n.getOwnerDocument();
+    int nt = n.getNodeType();
+    return ( (Node.DOCUMENT_NODE == nt) || (Node.DOCUMENT_FRAGMENT_NODE == nt) ) 
+           ? n : n.getOwnerDocument();
   }
 
   /**
