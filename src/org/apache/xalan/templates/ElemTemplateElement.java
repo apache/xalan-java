@@ -588,11 +588,12 @@ public class ElemTemplateElement extends UnImplNode
    * @see <a href="http://www.w3.org/TR/xslt#strip">strip in XSLT Specification</a>
    * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Text">section-Creating-Text in XSLT Specification</a>
    *
-   * NEEDSDOC @param v
+   * @param v  Enumerated value, either Constants.ATTRVAL_PRESERVE 
+   * or Constants.ATTRVAL_STRIP.
    */
-  public void setXmlSpace(boolean v)
+  public void setXmlSpace(int v)
   {
-    m_defaultSpace = v;
+    m_defaultSpace = ((Constants.ATTRVAL_STRIP == v) ? true : false);;
   }
 
   /**
