@@ -167,6 +167,11 @@ public class TransformerHandlerImpl implements TransformerHandler, DeclHandler {
     public void setResult(Result result) throws IllegalArgumentException {
 	_result = result;
 
+    if (null == result) {
+       ErrorMsg err = new ErrorMsg(ErrorMsg.ER_RESULT_NULL);
+       throw new IllegalArgumentException(err.toString()); //"result should not be null");
+    }    
+       
 	if (_isIdentity) {
 	    try {
 		// Connect this object with output system directly

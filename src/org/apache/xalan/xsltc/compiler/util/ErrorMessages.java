@@ -682,6 +682,9 @@ public class ErrorMessages extends ListResourceBundle {
          */
         {ErrorMsg.XSLTC_SOURCE_ERR,
         "XSLTCSource.build() called without systemId being set."},
+        
+        { ErrorMsg.ER_RESULT_NULL,
+            "Result should not be null"},
 
 
         {ErrorMsg.COMPILE_STDIN_ERR,
