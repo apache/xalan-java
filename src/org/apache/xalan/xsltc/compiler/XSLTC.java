@@ -326,12 +326,17 @@ public final class XSLTC {
 
 	    // Set the translet class name if not already set
 	    if (_className == null) {
-		if (name != null)
+		if (name != null) {
 		    setClassName(name);
-		else if ((systemId != null) && (!systemId.equals("")))
+                }
+		else if (systemId != null && !systemId.equals("")) {
 		    setClassName(Util.baseName(systemId));
-		else
+                }
+                
+                // Ensure we have a non-empty class name at this point
+                if (_className == null || _className.length() == 0) {
 		    setClassName("GregorSamsa"); // default translet name
+                }
 	    }
 
 	    // Get the root node of the abstract syntax tree
