@@ -616,6 +616,10 @@ public class XSLTSchema extends XSLTElementDef
          new ProcessorNamespaceAlias(), 
          null /* class object */ )
          };
+    
+     XSLTAttributeDef excludeResultPrefixesAttr
+      = new XSLTAttributeDef(null, "exclude-result-prefixes", 
+                             XSLTAttributeDef.T_STRINGLIST, false);
 
      XSLTAttributeDef extensionElementPrefixesAttr
       = new XSLTAttributeDef(null, "extension-element-prefixes", 
@@ -635,7 +639,7 @@ public class XSLTSchema extends XSLTElementDef
                            "transform", 
                            topLevelElements,
                            new XSLTAttributeDef[] {
-                           extensionElementPrefixesAttr, idAttr,
+                           extensionElementPrefixesAttr, excludeResultPrefixesAttr,
                            idAttr, versionAttrRequired, spaceAttr
                            }, 
                            new ProcessorStylesheetElement(), /* ContentHandler */

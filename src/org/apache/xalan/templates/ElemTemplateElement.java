@@ -567,7 +567,7 @@ public class ElemTemplateElement extends UnImplNode
    * and all parent elements, screened for excluded prefixes.
    * @serial
    */
-  private Vector m_prefixTable;
+  Vector m_prefixTable;
 
   /**
    * Return a table that contains all prefixes available 
