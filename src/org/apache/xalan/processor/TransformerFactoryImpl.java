@@ -128,6 +128,12 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     loadPropertyFileToSystem(XSLT_PROPERTIES);
   }
 
+  /** a zero length Class array used in loadPropertyFileToSystem() */
+  private static final Class[] NO_CLASSES = new Class[0];
+
+  /** a zero length Object array used in loadPropertyFileToSystem() */
+  private static final Object[] NO_OBJS = new Object[0];
+
   /**
    * Retrieve a propery bundle from a specified file and load it
    * int the System properties.
@@ -141,13 +147,24 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     {
       try
       {
-        InputStream is;
+        InputStream is = null;
 
         try
         {
           Properties props = new Properties();
 
-          is = TransformerFactoryImpl.class.getResourceAsStream(file);
+          try {
+            java.lang.reflect.Method getCCL = Thread.class.getMethod("getContextClassLoader", NO_CLASSES);
+            if (getCCL != null) {
+              ClassLoader contextClassLoader = (ClassLoader) getCCL.invoke(Thread.currentThread(), NO_OBJS);
+              is = contextClassLoader.getResourceAsStream("org/apache/xalan/processor/" + file);
+            }
+          }
+          catch (Exception e) {}
+
+          if (is == null) {
+            is = TransformerFactoryImpl.class.getResourceAsStream(file);
+          }
 
           // get a buffered version
           BufferedInputStream bis = new BufferedInputStream(is);

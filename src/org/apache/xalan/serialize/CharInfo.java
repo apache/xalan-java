@@ -101,6 +101,13 @@ public class CharInfo
   /** The carriage return character, which the parser should always normalize. */
   public static char S_CARRIAGERETURN = 0x0D;
 
+  /** a zero length Class array used in the constructor */
+  private static final Class[] NO_CLASSES = new Class[0];
+
+  /** a zero length Object array used in the constructor */
+  private static final Object[] NO_OBJS = new Object[0];
+
+
   /**
    * Constructor that reads in a resource file that describes the mapping of
    * characters to entity references.
@@ -121,7 +128,18 @@ public class CharInfo
 
     try
     {
-      is = CharInfo.class.getResourceAsStream(entitiesResource);
+
+      try {
+        java.lang.reflect.Method getCCL = Thread.class.getMethod("getContextClassLoader", NO_CLASSES);
+        if (getCCL != null) {
+          ClassLoader contextClassLoader = (ClassLoader) getCCL.invoke(Thread.currentThread(), NO_OBJS);
+          is = contextClassLoader.getResourceAsStream("org/apache/xalan/serialize/" + entitiesResource);
+        }
+      }
+      catch (Exception e) {}
+
+      if (is == null)
+        is = CharInfo.class.getResourceAsStream(entitiesResource);
 
       if (is == null)
       {

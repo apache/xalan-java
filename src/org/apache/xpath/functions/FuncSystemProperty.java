@@ -86,6 +86,13 @@ public class FuncSystemProperty extends FunctionOneArg
   /** The name of the property file where the name will be stored.  */
   static String XSLT_PROPERTIES = "/org/apache/xalan/res/XSLTInfo.properties";
 
+  /** a zero length Class array used in loadPropertyFile() */
+  private static final Class[] NO_CLASSES = new Class[0];
+
+  /** a zero length Object array used in loadPropertyFile() */
+  private static final Object[] NO_OBJS = new Object[0];
+
+
   /**
    * Execute the function.  The function must return
    * a valid object.
@@ -205,11 +212,21 @@ public class FuncSystemProperty extends FunctionOneArg
   public void loadPropertyFile(String file, Properties target)
   {
 
-    InputStream is;
+    InputStream is = null;
 
     try
     {
-      is = getClass().getResourceAsStream(file);
+      try {
+        java.lang.reflect.Method getCCL = Thread.class.getMethod("getContextClassLoader", NO_CLASSES);
+        if (getCCL != null) {
+          ClassLoader contextClassLoader = (ClassLoader) getCCL.invoke(Thread.currentThread(), NO_OBJS);
+          is = contextClassLoader.getResourceAsStream("org/apache/xpath/functions/" + file);
+        }
+      }
+      catch (Exception e) {}
+
+      if (is == null);
+        is = FuncSystemProperty.class.getResourceAsStream(file);
 
       // get a buffered version
       BufferedInputStream bis = new BufferedInputStream(is);
