@@ -59,6 +59,7 @@
 <s1 title="Extensions library">
 <ul>
 <li><link anchor="intro">Introduction</link></li>
+<li><link anchor="exslt">EXSLT extensions</link></li>
 <li><link anchor="xalanns">&xslt; namespace</link></li>
 <li><link anchor="redirect">Redirect</link></li>
 <li><link anchor="nodeset">nodeset</link></li>
@@ -84,7 +85,21 @@
 for extending and simplifying what you can do with an XLST processor like
 &xslt;. With input and contributions from the XML open-source developer community, we are working on placing the most useful
 extensions in an extensions library distributed with &xslt4j;. If you have ideas and/or contributions you would like to make, please email us at the <human-resource-ref idref="xalandev"/>.</p>
-</s2><anchor name="xalanns"/>
+</s2><anchor name="exslt"/>
+<s2 title="EXSLT extensions">
+ <p>&xslt4j; supports the <jump href="http://exslt.org/">EXSLT</jump> initiative to provide a set of
+standard extension functions and elements to XSLT users. &xslt4j; 2.3.2 includes implementations for 12 EXSLT
+functions (some are calls to extension already in the Xalan namespace). For the details, see:</p>
+<ul>
+<li><jump href="apidocs/org/apache/xalan/lib/ExsltCommon.html">EXSLT common functions</jump></li>
+<li><jump href="apidocs/org/apache/xalan/lib/ExsltMath.html">EXSLT math functions</jump></li>
+<li><jump href="apidocs/org/apache/xalan/lib/ExsltSets.html">EXSLT set function</jump></li>
+</ul>
+<p>Work is currently underway on <jump href="http://www.exslt.org/date/index.html">EXSLT date and time functions</jump> 
+and <jump href="http://www.exslt.org/func/index.html">and user defined EXSLT functions (with the function and result 
+elements)</jump>. Anyone who would like to help by implementating other EXSLT extensions is more than welcome. Please email us at the <human-resource-ref idref="xalandev"/>.</p>
+</s2>
+<anchor name="xalanns"/>
 <s2 title="&xslt; namespace">
 <p>Where it makes sense, we are placing the new &xslt; extensions in the org.apache.xalan.lib.Extensions class and we have defined a namespace for this class:</p>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>http://xml.apache.org/xalan</code></p>
