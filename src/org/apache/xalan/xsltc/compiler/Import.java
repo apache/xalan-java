@@ -106,6 +106,8 @@ final class Import extends TopLevelElement {
 	    if (loader != null) {
 		final XSLTC xsltc = parser.getXSLTC();
 		input = loader.loadSource(docToLoad, currLoadedDoc, xsltc);
+        if (input != null)
+            docToLoad = input.getSystemId();
 		reader = xsltc.getXMLReader();
 	    }
 	    else {
