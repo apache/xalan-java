@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<si title="s1 foo">
+<s1 title="s1 foo">
   <s2 title="Foo">
     <p>Hello</p>
   </s2>
-</si>
+</s1>
