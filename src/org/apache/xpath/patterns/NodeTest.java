@@ -137,11 +137,11 @@ public class NodeTest extends Expression
   /**
    * Return the local namespace to be tested.
    *
-   * @return the local namespace to be tested, or {@link #WILD}, or null.
+   * @return the local namespace to be tested, or {@link #WILD}, or an empty string.
    */
   public String getLocalName()
   {
-    return m_name;
+    return (null == m_name) ? "" : m_name;
   }
 
   /** Statically calculated score for this test.  One of
