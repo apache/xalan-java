@@ -87,7 +87,7 @@ import javax.xml.parsers.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 import org.apache.xalan.xsltc.cmdline.getopt.*;
 import org.apache.xalan.xsltc.DOM;
-import de.fub.bytecode.classfile.JavaClass;
+import org.apache.bcel.classfile.JavaClass;
 
 public final class XSLTC {
 

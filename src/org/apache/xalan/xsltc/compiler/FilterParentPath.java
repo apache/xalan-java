@@ -66,7 +66,7 @@ package org.apache.xalan.xsltc.compiler;
 import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class FilterParentPath extends Expression {

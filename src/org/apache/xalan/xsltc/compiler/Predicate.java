@@ -66,10 +66,10 @@ package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
 
-import de.fub.bytecode.classfile.JavaClass;
+import org.apache.bcel.classfile.JavaClass;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class Predicate extends Expression {
@@ -277,12 +277,12 @@ final class Predicate extends Expression {
 	final ConstantPoolGen cpg = filterGen.getConstantPool();
 
 	testGen = new TestGenerator(ACC_PUBLIC | ACC_FINAL,
-				    de.fub.bytecode.generic.Type.BOOLEAN, 
-				    new de.fub.bytecode.generic.Type[] {
-					de.fub.bytecode.generic.Type.INT,
-					de.fub.bytecode.generic.Type.INT,
-					de.fub.bytecode.generic.Type.INT,
-					de.fub.bytecode.generic.Type.INT,
+				    org.apache.bcel.generic.Type.BOOLEAN, 
+				    new org.apache.bcel.generic.Type[] {
+					org.apache.bcel.generic.Type.INT,
+					org.apache.bcel.generic.Type.INT,
+					org.apache.bcel.generic.Type.INT,
+					org.apache.bcel.generic.Type.INT,
 					Util.getJCRefType(TRANSLET_SIG),
 					Util.getJCRefType(NODE_ITERATOR_SIG)
 				    },

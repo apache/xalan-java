@@ -70,7 +70,7 @@ import java.util.Hashtable;
 import java.util.Dictionary;
 import java.util.Enumeration;
 
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class TestSeq {

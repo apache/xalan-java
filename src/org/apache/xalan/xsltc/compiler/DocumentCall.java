@@ -68,8 +68,8 @@ import java.util.Enumeration;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
-import de.fub.bytecode.generic.Instruction;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.Instruction;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class DocumentCall extends FunctionCall {

@@ -64,7 +64,7 @@
 package org.apache.xalan.xsltc.compiler;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class ParentPattern extends RelativePathPattern {
@@ -107,9 +107,9 @@ final class ParentPattern extends RelativePathPattern {
 					Util.getJCRefType(NODE_SIG),
 					il.getEnd());
 	
-	final de.fub.bytecode.generic.Instruction loadLocal =
+	final org.apache.bcel.generic.Instruction loadLocal =
 	    new ILOAD(local.getIndex());
-	final de.fub.bytecode.generic.Instruction storeLocal =
+	final org.apache.bcel.generic.Instruction storeLocal =
 	    new ISTORE(local.getIndex());
 
 	if (_right.isWildcard()) {

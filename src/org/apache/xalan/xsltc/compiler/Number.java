@@ -65,9 +65,9 @@ package org.apache.xalan.xsltc.compiler;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
-import de.fub.bytecode.classfile.JavaClass;
-import de.fub.bytecode.generic.*;
-import de.fub.bytecode.classfile.Field;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.generic.*;
+import org.apache.bcel.classfile.Field;
 
 import org.apache.xalan.xsltc.compiler.util.*;
 
@@ -264,8 +264,8 @@ final class Number extends Instruction {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 
 	cons = new MethodGenerator(ACC_PUBLIC,
-				   de.fub.bytecode.generic.Type.VOID, 
-				   new de.fub.bytecode.generic.Type[] {
+				   org.apache.bcel.generic.Type.VOID, 
+				   new org.apache.bcel.generic.Type[] {
 				       Util.getJCRefType(TRANSLET_INTF_SIG),
 				       Util.getJCRefType(DOM_INTF_SIG),
 				       Util.getJCRefType(NODE_ITERATOR_SIG)
@@ -375,9 +375,9 @@ final class Number extends Instruction {
 	    il = new InstructionList();
 	    matchGen =
 		new MatchGenerator(ACC_PUBLIC | ACC_FINAL,
-				   de.fub.bytecode.generic.Type.BOOLEAN, 
-				   new de.fub.bytecode.generic.Type[] {
-				       de.fub.bytecode.generic.Type.INT,
+				   org.apache.bcel.generic.Type.BOOLEAN, 
+				   new org.apache.bcel.generic.Type[] {
+				       org.apache.bcel.generic.Type.INT,
 				   },
 				   new String[] {
 				       "node",
@@ -405,9 +405,9 @@ final class Number extends Instruction {
 	if (_count != null) {
 	    il = new InstructionList();
 	    matchGen = new MatchGenerator(ACC_PUBLIC | ACC_FINAL,
-					  de.fub.bytecode.generic.Type.BOOLEAN, 
-					  new de.fub.bytecode.generic.Type[] {
-					      de.fub.bytecode.generic.Type.INT,
+					  org.apache.bcel.generic.Type.BOOLEAN, 
+					  new org.apache.bcel.generic.Type[] {
+					      org.apache.bcel.generic.Type.INT,
 					  },
 					  new String[] {
 					      "node",

@@ -64,7 +64,7 @@
 package org.apache.xalan.xsltc.compiler;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class AlternativePattern extends Pattern {

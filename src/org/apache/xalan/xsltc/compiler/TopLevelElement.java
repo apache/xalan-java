@@ -64,7 +64,7 @@ import java.util.Enumeration;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 class TopLevelElement extends SyntaxTreeNode {

@@ -65,7 +65,7 @@ package org.apache.xalan.xsltc.compiler;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.*;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 
 final class SimpleAttributeValue extends AttributeValue {
 

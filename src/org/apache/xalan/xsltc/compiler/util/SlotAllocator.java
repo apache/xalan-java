@@ -62,8 +62,8 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
-import de.fub.bytecode.generic.Type;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.Type;
+import org.apache.bcel.generic.*;
 
 final class SlotAllocator {
 

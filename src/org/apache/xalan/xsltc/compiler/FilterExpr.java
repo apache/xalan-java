@@ -68,7 +68,7 @@ import java.util.Vector;
 import java.util.Enumeration;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 class FilterExpr extends Expression {

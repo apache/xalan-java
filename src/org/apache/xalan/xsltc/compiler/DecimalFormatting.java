@@ -70,7 +70,7 @@ import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;

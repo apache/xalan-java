@@ -68,7 +68,7 @@ package org.apache.xalan.xsltc.compiler;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import org.apache.xalan.xsltc.runtime.Operators;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class EqualityExpr extends Expression implements Operators {

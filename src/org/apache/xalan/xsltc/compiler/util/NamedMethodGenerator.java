@@ -64,8 +64,8 @@
 package org.apache.xalan.xsltc.compiler.util;
 
 import java.util.Vector;
-import de.fub.bytecode.generic.Type;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.Type;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.Template;
 

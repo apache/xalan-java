@@ -64,7 +64,7 @@
 package org.apache.xalan.xsltc.compiler.util;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.FlowList;
 import org.apache.xalan.xsltc.compiler.Constants;
@@ -84,8 +84,8 @@ public final class RealType extends NumberType {
 	return "D";
     }
 
-    public de.fub.bytecode.generic.Type toJCType() {
-	return de.fub.bytecode.generic.Type.DOUBLE;
+    public org.apache.bcel.generic.Type toJCType() {
+	return org.apache.bcel.generic.Type.DOUBLE;
     }
 
     /**
@@ -192,7 +192,7 @@ public final class RealType extends NumberType {
 	// Store real into a local variable
 	il.append(DUP2);
 	local = methodGen.addLocalVariable("real_to_boolean_tmp", 
-					   de.fub.bytecode.generic.Type.DOUBLE,
+					   org.apache.bcel.generic.Type.DOUBLE,
 					   il.getEnd(), null);
 	il.append(new DSTORE(local.getIndex()));
 

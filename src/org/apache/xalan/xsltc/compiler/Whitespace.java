@@ -68,10 +68,10 @@ import java.util.StringTokenizer;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 
-import de.fub.bytecode.classfile.JavaClass;
-import de.fub.bytecode.classfile.Field;
-import de.fub.bytecode.classfile.Method;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.Field;
+import org.apache.bcel.classfile.Method;
+import org.apache.bcel.generic.*;
 
 import org.apache.xalan.xsltc.dom.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -375,11 +375,11 @@ final class Whitespace extends TopLevelElement {
 	// private boolean Translet.stripSpace(int type) - cannot be static
 	final MethodGenerator stripSpace =
 	    new MethodGenerator(ACC_PUBLIC | ACC_FINAL ,
-			de.fub.bytecode.generic.Type.BOOLEAN, 
-			new de.fub.bytecode.generic.Type[] {
+			org.apache.bcel.generic.Type.BOOLEAN, 
+			new org.apache.bcel.generic.Type[] {
 			    Util.getJCRefType(DOM_INTF_SIG),
-			    de.fub.bytecode.generic.Type.INT,
-			    de.fub.bytecode.generic.Type.INT
+			    org.apache.bcel.generic.Type.INT,
+			    org.apache.bcel.generic.Type.INT
 			},
 			new String[] { "dom","node","type" },
 			"stripSpace",classGen.getClassName(),il,cpg);
@@ -478,11 +478,11 @@ final class Whitespace extends TopLevelElement {
 	// private boolean Translet.stripSpace(int type) - cannot be static
 	final MethodGenerator stripSpace =
 	    new MethodGenerator(ACC_PUBLIC | ACC_FINAL ,
-			de.fub.bytecode.generic.Type.BOOLEAN, 
-			new de.fub.bytecode.generic.Type[] {
+			org.apache.bcel.generic.Type.BOOLEAN, 
+			new org.apache.bcel.generic.Type[] {
 			    Util.getJCRefType(DOM_INTF_SIG),
-			    de.fub.bytecode.generic.Type.INT,
-			    de.fub.bytecode.generic.Type.INT
+			    org.apache.bcel.generic.Type.INT,
+			    org.apache.bcel.generic.Type.INT
 			},
 			new String[] { "dom","node","type" },
 			"stripSpace",classGen.getClassName(),il,cpg);

@@ -69,7 +69,7 @@ import java.util.Enumeration;
 import java.util.StringTokenizer;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class XslElement extends Instruction {

@@ -68,6 +68,7 @@ import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Enumeration;
 import java.util.StringTokenizer;
+import java.util.Iterator;
 import java.net.URL;
 
 import javax.xml.parsers.*;
@@ -76,8 +77,9 @@ import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 
-import de.fub.bytecode.generic.*;
-import de.fub.bytecode.classfile.JavaClass;
+import org.apache.bcel.generic.*;
+import org.apache.bcel.util.*;
+import org.apache.bcel.classfile.JavaClass;
 
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
@@ -538,7 +540,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 
 	final MethodGenerator constructor =
 	    new MethodGenerator(ACC_PUBLIC,
-				de.fub.bytecode.generic.Type.VOID, 
+				org.apache.bcel.generic.Type.VOID, 
 				null, null, "<init>", 
 				_className, il, cpg);
 
@@ -610,7 +612,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 
-	final de.fub.bytecode.generic.Type[] argTypes = {
+	final org.apache.bcel.generic.Type[] argTypes = {
 	    Util.getJCRefType(DOM_INTF_SIG),
 	    Util.getJCRefType(NODE_ITERATOR_SIG),
 	    Util.getJCRefType(TRANSLET_OUTPUT_SIG)
@@ -624,7 +626,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 
 	final MethodGenerator toplevel =
 	    new MethodGenerator(ACC_PUBLIC,
-				de.fub.bytecode.generic.Type.VOID,
+				org.apache.bcel.generic.Type.VOID,
 				argTypes, argNames,
 				"topLevel", _className, il,
 				classGen.getConstantPool());
@@ -634,7 +636,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	// Define and initialize 'current' variable with the root node
 	final LocalVariableGen current = 
 	    toplevel.addLocalVariable("current",
-				    de.fub.bytecode.generic.Type.INT,
+				    org.apache.bcel.generic.Type.INT,
 				    il.getEnd(), null);
 
 	final int setFilter = cpg.addInterfaceMethodref(DOM_INTF,
@@ -734,11 +736,11 @@ public final class Stylesheet extends SyntaxTreeNode {
 
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 
-	final de.fub.bytecode.generic.Type[] argTypes = {
+	final org.apache.bcel.generic.Type[] argTypes = {
 	    Util.getJCRefType(DOM_INTF_SIG),
 	    Util.getJCRefType(NODE_ITERATOR_SIG),
 	    Util.getJCRefType(TRANSLET_OUTPUT_SIG),
-	    de.fub.bytecode.generic.Type.INT
+	    org.apache.bcel.generic.Type.INT
 	};
 
 	final String[] argNames = {
@@ -749,7 +751,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 
 	final MethodGenerator buildKeys =
 	    new MethodGenerator(ACC_PUBLIC,
-				de.fub.bytecode.generic.Type.VOID,
+				org.apache.bcel.generic.Type.VOID,
 				argTypes, argNames,
 				"buildKeys", _className, il,
 				classGen.getConstantPool());
@@ -801,8 +803,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 	 * Define the the method transform with the following signature:
 	 * void transform(DOM, NodeIterator, HandlerBase)
 	 */
-	final de.fub.bytecode.generic.Type[] argTypes = 
-	    new de.fub.bytecode.generic.Type[3];
+	final org.apache.bcel.generic.Type[] argTypes = 
+	    new org.apache.bcel.generic.Type[3];
 	argTypes[0] = Util.getJCRefType(DOM_INTF_SIG);
 	argTypes[1] = Util.getJCRefType(NODE_ITERATOR_SIG);
 	argTypes[2] = Util.getJCRefType(TRANSLET_OUTPUT_SIG);
@@ -815,7 +817,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	final InstructionList il = new InstructionList();
 	final MethodGenerator transf =
 	    new MethodGenerator(ACC_PUBLIC,
-				de.fub.bytecode.generic.Type.VOID,
+				org.apache.bcel.generic.Type.VOID,
 				argTypes, argNames,
 				"transform",
 				_className,
@@ -826,7 +828,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	// Define and initialize current with the root node
 	final LocalVariableGen current = 
 	    transf.addLocalVariable("current",
-				    de.fub.bytecode.generic.Type.INT,
+				    org.apache.bcel.generic.Type.INT,
 				    il.getEnd(), null);
 	final String applyTemplatesSig = classGen.getApplyTemplatesSig();
 	final int applyTemplates = cpg.addMethodref(getClassName(),
@@ -937,20 +939,17 @@ public final class Stylesheet extends SyntaxTreeNode {
      * Peephole optimization: Remove sequences of [ALOAD, POP].
      */
     private void peepHoleOptimization(MethodGenerator methodGen) {
-	final String pat = "`ALOAD'`POP'`Instruction'";
+	final String pattern = "`ALOAD'`POP'`Instruction'";
 	final InstructionList il = methodGen.getInstructionList();
-	final FindPattern find = new FindPattern(il);
-
-	InstructionHandle ih = find.search(pat);
-	while (ih != null) {
-	    InstructionHandle[] match = find.getMatch();
+	final InstructionFinder find = new InstructionFinder(il);
+	for(Iterator iter=find.search(pattern); iter.hasNext(); ) {
+	    InstructionHandle[] match = (InstructionHandle[])iter.next();
 	    try {
 		il.delete(match[0], match[1]);
-	    }
+	    } 
 	    catch (TargetLostException e) {
-				// TODO: move target down into the list
-	    }
-	    ih = find.search(pat, match[2]);
+            	// TODO: move target down into the list
+            }
 	}
     }
 

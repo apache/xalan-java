@@ -71,7 +71,7 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 import java.util.Vector;
 
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 
 abstract class Expression extends SyntaxTreeNode {
     /**

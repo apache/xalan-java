@@ -71,7 +71,7 @@ import javax.xml.parsers.*;
 import org.xml.sax.*;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class Fallback extends Instruction {

@@ -69,9 +69,9 @@ package org.apache.xalan.xsltc.compiler;
 import java.util.Vector;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
-import de.fub.bytecode.generic.Instruction;
-import de.fub.bytecode.generic.*;
-import de.fub.bytecode.classfile.Field;
+import org.apache.bcel.generic.Instruction;
+import org.apache.bcel.generic.*;
+import org.apache.bcel.classfile.Field;
 import org.apache.xalan.xsltc.compiler.util.*;
 import org.apache.xalan.xsltc.dom.Axis;
 
@@ -143,7 +143,7 @@ class VariableBase extends TopLevelElement {
         if (_local == null) {
             final InstructionList il = methodGen.getInstructionList();
 	    final String name = _name.getLocalPart(); // TODO: namespace ?
-	    final de.fub.bytecode.generic.Type varType = _type.toJCType();
+	    final org.apache.bcel.generic.Type varType = _type.toJCType();
             _local = methodGen.addLocalVariable2(name, varType, il.getEnd());
         }
     }

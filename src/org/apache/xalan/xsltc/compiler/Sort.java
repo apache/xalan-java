@@ -72,11 +72,11 @@ import java.text.Collator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 
-import de.fub.bytecode.classfile.JavaClass;
-import de.fub.bytecode.classfile.Field;
-import de.fub.bytecode.classfile.Method;
-import de.fub.bytecode.generic.*;
-import de.fub.bytecode.Constants;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.Field;
+import org.apache.bcel.classfile.Method;
+import org.apache.bcel.generic.*;
+import org.apache.bcel.Constants;
 
 import org.apache.xalan.xsltc.dom.*;
 import org.apache.xalan.xsltc.compiler.util.*;
@@ -350,8 +350,8 @@ final class Sort extends Instruction {
 	final InstructionList il = new InstructionList();
 	final CompareGenerator classInit =
 	    new CompareGenerator(ACC_PUBLIC | ACC_FINAL,
-				 de.fub.bytecode.generic.Type.VOID, 
-				 new de.fub.bytecode.generic.Type[] { },
+				 org.apache.bcel.generic.Type.VOID, 
+				 new org.apache.bcel.generic.Type[] { },
 				 new String[] { },
 				 "<clinit>", className, il, cpg);
 
@@ -432,13 +432,13 @@ final class Sort extends Instruction {
 	// String NodeSortRecord.extractValueFromDOM(dom,node,level);
 	final CompareGenerator extractMethod =
 	    new CompareGenerator(ACC_PUBLIC | ACC_FINAL,
-				 de.fub.bytecode.generic.Type.STRING, 
-				 new de.fub.bytecode.generic.Type[] {
+				 org.apache.bcel.generic.Type.STRING, 
+				 new org.apache.bcel.generic.Type[] {
 		                     Util.getJCRefType(DOM_INTF_SIG),
-				     de.fub.bytecode.generic.Type.INT,
-				     de.fub.bytecode.generic.Type.INT,
+				     org.apache.bcel.generic.Type.INT,
+				     org.apache.bcel.generic.Type.INT,
 				     Util.getJCRefType(TRANSLET_SIG),
-				     de.fub.bytecode.generic.Type.INT
+				     org.apache.bcel.generic.Type.INT
 				 },
 				 new String[] { "dom",
 						"current",
@@ -501,7 +501,7 @@ final class Sort extends Instruction {
 	final MethodGenerator getCollator =
 	    new MethodGenerator(ACC_PUBLIC | ACC_FINAL,
 				Util.getJCRefType(COLLATOR_SIG),
-				new de.fub.bytecode.generic.Type[] {},
+				new org.apache.bcel.generic.Type[] {},
 				new String[] { },
 				"getCollator", className, il, cpg);
 

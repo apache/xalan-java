@@ -66,8 +66,8 @@ package org.apache.xalan.xsltc.compiler;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
 
-import de.fub.bytecode.generic.*;
-import de.fub.bytecode.classfile.JavaClass;
+import org.apache.bcel.generic.*;
+import org.apache.bcel.classfile.JavaClass;
 
 import org.apache.xalan.xsltc.compiler.util.*;
 

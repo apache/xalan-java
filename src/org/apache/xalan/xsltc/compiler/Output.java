@@ -69,8 +69,8 @@ import java.util.Enumeration;
 import java.util.StringTokenizer;
 import java.io.OutputStreamWriter;
 
-import de.fub.bytecode.generic.*;
-import de.fub.bytecode.classfile.JavaClass;
+import org.apache.bcel.generic.*;
+import org.apache.bcel.classfile.JavaClass;
 
 import org.apache.xalan.xsltc.compiler.util.*;
 import org.apache.xalan.xsltc.runtime.TextOutput;

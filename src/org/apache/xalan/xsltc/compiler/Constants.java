@@ -63,7 +63,7 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import de.fub.bytecode.generic.InstructionConstants;
+import org.apache.bcel.generic.InstructionConstants;
 
 public interface Constants extends InstructionConstants {
 
@@ -118,15 +118,15 @@ public interface Constants extends InstructionConstants {
 	= "java.lang.String";
 
     public static final int ACC_PUBLIC    
-	= de.fub.bytecode.Constants.ACC_PUBLIC;
+	= org.apache.bcel.Constants.ACC_PUBLIC;
     public static final int ACC_SUPER     
-	= de.fub.bytecode.Constants.ACC_SUPER;
+	= org.apache.bcel.Constants.ACC_SUPER;
     public static final int ACC_FINAL     
-	= de.fub.bytecode.Constants.ACC_FINAL;
+	= org.apache.bcel.Constants.ACC_FINAL;
     public static final int ACC_PRIVATE   
-	= de.fub.bytecode.Constants.ACC_PRIVATE;
+	= org.apache.bcel.Constants.ACC_PRIVATE;
     public static final int ACC_PROTECTED 
-	= de.fub.bytecode.Constants.ACC_PROTECTED;
+	= org.apache.bcel.Constants.ACC_PROTECTED;
 
     public static final String STRING_SIG         
 	= "Ljava/lang/String;";

@@ -67,7 +67,7 @@ package org.apache.xalan.xsltc.compiler.util;
 import org.apache.xalan.xsltc.DOM;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.FlowList;
 import org.apache.xalan.xsltc.compiler.Constants;
@@ -95,7 +95,7 @@ public final class ResultTreeType extends Type {
 	return DOM_INTF_SIG;
     }
 
-    public de.fub.bytecode.generic.Type toJCType() {
+    public org.apache.bcel.generic.Type toJCType() {
 	return Util.getJCRefType(toSignature());
     }
 

@@ -64,7 +64,7 @@
 package org.apache.xalan.xsltc.compiler;
 
 import java.util.Vector;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 
 final class CeilingCall extends FunctionCall {

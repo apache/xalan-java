@@ -60,7 +60,7 @@
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
  * @author Erwin Bolwidt <ejb@klomp.org>
- *
+ * @author G. Todd Miller
  */
 
 package org.apache.xalan.xsltc.compiler;
@@ -71,7 +71,8 @@ import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Enumeration;
 import org.apache.xalan.xsltc.compiler.util.Type;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
+import org.apache.bcel.util.*;
 import org.apache.xalan.xsltc.compiler.util.*;
 import org.apache.xalan.xsltc.DOM;
 
@@ -359,12 +360,12 @@ final class Mode implements Constants {
 
 	final NamedMethodGenerator methodGen =
 	    new NamedMethodGenerator(ACC_PUBLIC,
-				     de.fub.bytecode.generic.Type.VOID,
-				     new de.fub.bytecode.generic.Type[] {
+				     org.apache.bcel.generic.Type.VOID,
+				     new org.apache.bcel.generic.Type[] {
 					 Util.getJCRefType(DOM_INTF_SIG),
 					 Util.getJCRefType(NODE_ITERATOR_SIG),
 					 Util.getJCRefType(TRANSLET_OUTPUT_SIG),
-					 de.fub.bytecode.generic.Type.INT
+					 org.apache.bcel.generic.Type.INT
 				     },
 				     new String[] {
 					 DOCUMENT_PNAME,
@@ -590,8 +591,8 @@ final class Mode implements Constants {
 	final Vector names      = xsltc.getNamesIndex();
 
 	// (*) Create the applyTemplates() method
-	final de.fub.bytecode.generic.Type[] argTypes =
-	    new de.fub.bytecode.generic.Type[3];
+	final org.apache.bcel.generic.Type[] argTypes =
+	    new org.apache.bcel.generic.Type[3];
 	argTypes[0] = Util.getJCRefType(DOM_INTF_SIG);
 	argTypes[1] = Util.getJCRefType(NODE_ITERATOR_SIG);
 	argTypes[2] = Util.getJCRefType(TRANSLET_OUTPUT_SIG);
@@ -604,7 +605,7 @@ final class Mode implements Constants {
 	final InstructionList mainIL = new InstructionList();
 	final MethodGenerator methodGen =
 	    new MethodGenerator(ACC_PUBLIC | ACC_FINAL, 
-				de.fub.bytecode.generic.Type.VOID,
+				org.apache.bcel.generic.Type.VOID,
 				argTypes, argNames, functionName(),
 				getClassName(), mainIL,
 				classGen.getConstantPool());
@@ -613,7 +614,7 @@ final class Mode implements Constants {
 	// (*) Create the local variablea
 	final LocalVariableGen current;
 	current = methodGen.addLocalVariable2("current",
-					      de.fub.bytecode.generic.Type.INT,
+					      org.apache.bcel.generic.Type.INT,
 					      mainIL.getEnd());
 	_currentIndex = current.getIndex();
 
@@ -902,8 +903,8 @@ final class Mode implements Constants {
 	processPatterns(_keys);
 
 	// (*) Create the applyTemplates() method
-	final de.fub.bytecode.generic.Type[] argTypes =
-	    new de.fub.bytecode.generic.Type[3];
+	final org.apache.bcel.generic.Type[] argTypes =
+	    new org.apache.bcel.generic.Type[3];
 	argTypes[0] = Util.getJCRefType(DOM_INTF_SIG);
 	argTypes[1] = Util.getJCRefType(NODE_ITERATOR_SIG);
 	argTypes[2] = Util.getJCRefType(TRANSLET_OUTPUT_SIG);
@@ -916,7 +917,7 @@ final class Mode implements Constants {
 	final InstructionList mainIL = new InstructionList();
 	final MethodGenerator methodGen =
 	    new MethodGenerator(ACC_PUBLIC | ACC_FINAL, 
-				de.fub.bytecode.generic.Type.VOID,
+				org.apache.bcel.generic.Type.VOID,
 				argTypes, argNames, functionName()+'_'+max,
 				getClassName(), mainIL,
 				classGen.getConstantPool());
@@ -938,7 +939,7 @@ final class Mode implements Constants {
 	// (*) Create the local variablea
 	final LocalVariableGen current;
 	current = methodGen.addLocalVariable2("current",
-					      de.fub.bytecode.generic.Type.INT,
+					      org.apache.bcel.generic.Type.INT,
 					      mainIL.getEnd());
 	_currentIndex = current.getIndex();
 
@@ -1159,95 +1160,62 @@ final class Mode implements Constants {
      */
     private void peepHoleOptimization(MethodGenerator methodGen) {
 	InstructionList il = methodGen.getInstructionList();
-	FindPattern find = new FindPattern(il);
+	InstructionFinder find = new InstructionFinder(il);
 	InstructionHandle ih;
 	String pattern;
 
-	// Remove sequences of ALOAD, POP
+	// Remove seqences of ALOAD, POP (GTM)
 	pattern = "`ALOAD'`POP'`Instruction'";
-	ih = find.search(pattern);
-	while (ih != null) {
-	    final InstructionHandle[] match = find.getMatch();
+	for(Iterator iter=find.search(pattern); iter.hasNext();){
+	    InstructionHandle[] match = (InstructionHandle[])iter.next();
 	    try {
 		if ((!match[0].hasTargeters()) && (!match[1].hasTargeters())) {
-		    il.delete(match[0], match[1]);
-		}
+                    il.delete(match[0], match[1]);
+                }
 	    }
 	    catch (TargetLostException e) {
-		// TODO: move target down into the list
-	    }
-	    ih = find.search(pattern, match[2]);
+                // TODO: move target down into the list
+            }
 	}
-
 	// Replace sequences of ILOAD_?, ALOAD_?, SWAP with ALOAD_?, ILOAD_?
-	pattern = "`ILOAD__'`ALOAD__'`SWAP'`Instruction'";
-	ih = find.search(pattern);
-	while (ih != null) {
-	    final InstructionHandle[] match = find.getMatch();
-	    try {
-		de.fub.bytecode.generic.Instruction iload;
-		de.fub.bytecode.generic.Instruction aload;
-		if ((!match[0].hasTargeters()) &&
-		    (!match[1].hasTargeters()) &&
-		    (!match[2].hasTargeters())) {
-		    iload = match[0].getInstruction();
-		    aload = match[1].getInstruction();
-		    il.insert(match[0], aload);
-		    il.insert(match[0], iload);
-		    il.delete(match[0], match[2]);
-		}
-	    }
-	    catch (TargetLostException e) {
-		// TODO: move target down into the list
-	    }
-	    ih = find.search(pattern, match[3]);
-	}
+	pattern = "`ILOAD'`ALOAD'`SWAP'`Instruction'";
+	for(Iterator iter=find.search(pattern); iter.hasNext();){
+            InstructionHandle[] match = (InstructionHandle[])iter.next();
+            try {
+                org.apache.bcel.generic.Instruction iload;
+                org.apache.bcel.generic.Instruction aload;
+                if ((!match[0].hasTargeters()) &&
+                    (!match[1].hasTargeters()) &&
+                    (!match[2].hasTargeters())) {
+                    iload = match[0].getInstruction();
+                    aload = match[1].getInstruction();
+                    il.insert(match[0], aload);
+                    il.insert(match[0], iload);
+                    il.delete(match[0], match[2]);
+                }
+            }
+            catch (TargetLostException e) {
+                // TODO: move target down into the list
+            }
+        }
 
-	// Replaces sequences of ALOAD_1, ALOAD_1 with ALOAD_1, DUP
+        // Replace sequences of ALOAD_1, ALOAD_1 with ALOAD_1, DUP 
 	pattern = "`ALOAD_1'`ALOAD_1'`Instruction'";
-	ih = find.search(pattern);
-	while (ih != null) {
-	    final InstructionHandle[] match = find.getMatch();
-	    try {
-		de.fub.bytecode.generic.Instruction iload;
-		de.fub.bytecode.generic.Instruction aload;
-		if ((!match[0].hasTargeters()) && (!match[1].hasTargeters())) {
-		    il.insert(match[1], new DUP());
-		    il.delete(match[1]);
-		}
-	    }
-	    catch (TargetLostException e) {
-		// TODO: move target down into the list
-	    }
-	    ih = find.search(pattern, match[2]);
-	}
+        for(Iterator iter=find.search(pattern); iter.hasNext();){
+            InstructionHandle[] match = (InstructionHandle[])iter.next();
+            try {
+	        org.apache.bcel.generic.Instruction iload;
+                org.apache.bcel.generic.Instruction aload;
+                if ((!match[0].hasTargeters()) && (!match[1].hasTargeters())) {
+                    il.insert(match[1], new DUP());
+                    il.delete(match[1]);
+                }
+            }
+            catch (TargetLostException e) {
+                // TODO: move target down into the list
+            }
+        }
 
-	// Removes uncessecary GOTOs
-	/*
-	pattern = "`GOTO'`GOTO'`Instruction'";
-	ih = find.search(pattern);
-	while (ih != null) {
-	    final InstructionHandle[] match = find.getMatch();
-	    try {
-		de.fub.bytecode.generic.Instruction iload;
-		de.fub.bytecode.generic.Instruction aload;
-		InstructionTargeter tgtrs[] = match[1].getTargeters();
-		if (tgtrs != null) {
-		    InstructionHandle newTarget =
-			((BranchHandle)match[1]).getTarget();
-		    for (int i=0; i<tgtrs.length; i++)
-			tgtrs[i].updateTarget(match[1],newTarget);
-		}
-		il.delete(match[1]);
-	    }
-	    catch (TargetLostException e) {
-		// TODO: move target down into the list
-	    }
-	    ih = find.search(pattern, match[2]);
-	}
-	*/
-	
-	
     }
 
     public InstructionHandle getTemplateInstructionHandle(Template template) {

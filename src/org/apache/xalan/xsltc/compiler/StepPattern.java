@@ -68,8 +68,8 @@ import java.util.Vector;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.dom.Axis;
 import org.apache.xalan.xsltc.compiler.util.Type;
-import de.fub.bytecode.generic.*;
-import de.fub.bytecode.classfile.Field;
+import org.apache.bcel.generic.*;
+import org.apache.bcel.classfile.Field;
 
 import org.apache.xalan.xsltc.compiler.util.*;
 

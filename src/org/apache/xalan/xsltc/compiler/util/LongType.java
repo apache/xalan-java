@@ -63,7 +63,7 @@
 package org.apache.xalan.xsltc.compiler.util;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.FlowList;
 import org.apache.xalan.xsltc.compiler.Constants;
@@ -83,8 +83,8 @@ public final class LongType extends NumberType {
 	return "J";
     }
 
-    public de.fub.bytecode.generic.Type toJCType() {
-	return de.fub.bytecode.generic.Type.LONG;
+    public org.apache.bcel.generic.Type toJCType() {
+	return org.apache.bcel.generic.Type.LONG;
     }
 
     /**

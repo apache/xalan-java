@@ -64,7 +64,7 @@
 package org.apache.xalan.xsltc.compiler.util;
 
 import org.apache.xalan.xsltc.compiler.util.Type;
-import de.fub.bytecode.generic.*;
+import org.apache.bcel.generic.*;
 import org.apache.xalan.xsltc.compiler.Parser;
 import org.apache.xalan.xsltc.compiler.FlowList;
 import org.apache.xalan.xsltc.compiler.Constants;
@@ -84,8 +84,8 @@ public final class NodeSetType extends Type {
 	return NODE_ITERATOR_SIG;
     }
 
-    public de.fub.bytecode.generic.Type toJCType() {
-	return new de.fub.bytecode.generic.ObjectType(NODE_ITERATOR);
+    public org.apache.bcel.generic.Type toJCType() {
+	return new org.apache.bcel.generic.ObjectType(NODE_ITERATOR);
     }
 
     /**
