@@ -1300,6 +1300,12 @@ public class TransformerImpl extends XMLFilterImpl
                                         sourceNodeContext, 
                                         xslInstruction, 
                                         new StringBuffer());
+        if (dataTypeString.indexOf(":") >= 0 )
+          System.out.println("TODO: Need to write the hooks for QNAME sort data type");        
+        else if (!(dataTypeString.equalsIgnoreCase(Constants.ATTRVAL_DATATYPE_TEXT)) && 
+			      !(dataTypeString.equalsIgnoreCase(Constants.ATTRVAL_DATATYPE_NUMBER)) )
+			      xslInstruction.error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE, new Object[] {Constants.ATTRNAME_DATATYPE, dataTypeString});   
+			
         boolean treatAsNumbers 
           = ((null != dataTypeString)&& 
              dataTypeString.equals(Constants.ATTRVAL_DATATYPE_NUMBER)) ? 
@@ -1308,6 +1314,10 @@ public class TransformerImpl extends XMLFilterImpl
           = sort.getOrder().evaluate(xctxt, sourceNodeContext, 
                                      xslInstruction, 
                                      new StringBuffer());
+        if (!(orderString.equalsIgnoreCase(Constants.ATTRVAL_ORDER_ASCENDING)) && 
+			      !(orderString.equalsIgnoreCase(Constants.ATTRVAL_ORDER_DESCENDING)))
+			      xslInstruction.error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE, new Object[] {Constants.ATTRNAME_ORDER, orderString});   
+			
         boolean descending = ((null != orderString) &&  
                               orderString.equals(Constants.ATTRVAL_ORDER_DESCENDING))? 
                              true : false;
@@ -1321,6 +1331,10 @@ public class TransformerImpl extends XMLFilterImpl
                                  sourceNodeContext, 
                                  xslInstruction, 
                                  new StringBuffer());
+          if (!(caseOrderString.equalsIgnoreCase(Constants.ATTRVAL_CASEORDER_UPPER)) && 
+			      !(caseOrderString.equalsIgnoreCase(Constants.ATTRVAL_CASEORDER_LOWER)))
+			      xslInstruction.error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE, new Object[] {Constants.ATTRNAME_CASEORDER, caseOrderString});   
+			
           caseOrderUpper = ((null != caseOrderString)&& 
                             caseOrderString.equals(Constants.ATTRVAL_CASEORDER_UPPER)) ? 
                            true : false;
