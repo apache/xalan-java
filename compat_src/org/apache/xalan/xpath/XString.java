@@ -180,8 +180,8 @@ public class XString extends XObject
   public DocumentFragment rtree(XPathSupport support)
   {  
     org.apache.xpath.XPathContext context = (org.apache.xpath.XPathContext)support;
-    int result = m_xstring.rtree(context);
-    return (DocumentFragment)context.getDTMManager().getDTM(result).getNode(result);    
+    return m_xstring.rtree(context);
+    //return (DocumentFragment)context.getDTMManager().getDTM(result).getNode(result);    
   }
   
   
@@ -195,8 +195,8 @@ public class XString extends XObject
   public DocumentFragment rtree(XPathContext support)
   {
     org.apache.xpath.XPathContext context = (org.apache.xpath.XPathContext)support;
-    int result = m_xstring.rtree(context);
-    return (DocumentFragment)context.getDTMManager().getDTM(result).getNode(result);    
+    return m_xstring.rtree(context);
+    //return (DocumentFragment)context.getDTMManager().getDTM(result).getNode(result);    
   } 
   
   

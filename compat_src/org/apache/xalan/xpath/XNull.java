@@ -138,8 +138,8 @@ public class XNull extends XObject
   public DocumentFragment rtree(XPathContext support)
   {
     org.apache.xpath.XPathContext context = (org.apache.xpath.XPathContext)support;
-    int result = m_xnull.rtree(context);
-    return (DocumentFragment)context.getDTMManager().getDTM(result).getNode(result);    
+    return m_xnull.rtree(context);
+    //return (DocumentFragment)context.getDTMManager().getDTM(result).getNode(result);    
   } 
 
   /**

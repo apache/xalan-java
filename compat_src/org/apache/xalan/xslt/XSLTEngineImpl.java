@@ -857,7 +857,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
       parser.initXPath(compiler, "id("+fragID+")", nsNode);
       org.apache.xpath.objects.XObject xobj = xpath.execute(xpathContext, fragBase, nsNode);
 
-      nl = new org.apache.xml.dtm.ref.DTMNodeIterator(xobj.nodeset());
+      nl = new org.apache.xml.dtm.ref.DTMNodeIterator(xobj.iter());
       if(nl.nextNode() == null)
       {
         // xobj = Stylesheet.evalXPathStr(getExecContext(), "//*[@id='"+fragID+"']", fragBase, nsNode);
@@ -868,7 +868,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
         parser.initXPath(compiler, "//*[@id='"+fragID+"']", nsNode);
         xobj = xpath.execute(xpathContext, fragBase, nsNode);
 
-        nl = new org.apache.xml.dtm.ref.DTMNodeIterator(xobj.nodeset());
+        nl = new org.apache.xml.dtm.ref.DTMNodeIterator(xobj.iter());
         if(nl.nextNode() == null)
         {
           // xobj = Stylesheet.evalXPathStr(getExecContext(), "//*[@name='"+fragID+"']", fragBase, nsNode);
@@ -878,7 +878,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
           // Parse the xpath
           parser.initXPath(compiler, "//*[@name='"+fragID+"']", nsNode);
           xobj = xpath.execute(xpathContext, fragBase, nsNode);
-          nl = new org.apache.xml.dtm.ref.DTMNodeIterator(xobj.nodeset());
+          nl = new org.apache.xml.dtm.ref.DTMNodeIterator(xobj.iter());
           if(nl.nextNode() == null)
           {
             // Well, hell, maybe it's an XPath...
@@ -890,7 +890,7 @@ public class XSLTEngineImpl implements  XSLTProcessor
             // Parse the xpath
             parser.initXPath(compiler, fragID, nsNode);
             xobj = xpath.execute(xpathContext, fragBase, nsNode);
-            nl = new org.apache.xml.dtm.ref.DTMNodeIterator(xobj.nodeset());
+            nl = new org.apache.xml.dtm.ref.DTMNodeIterator(xobj.iter());
           }
         }
       }

@@ -126,8 +126,8 @@ public class XRTreeFrag extends XObject
    */
   public DocumentFragment rtree()
   {
-    int result = m_xrtreefrag.rtree(context);
-    return  (DocumentFragment)context.getDTMManager().getDTM(result).getNode(result);    
+    return m_xrtreefrag.rtree(context);
+    //return  (DocumentFragment)context.getDTMManager().getDTM(result).getNode(result);    
   }  
   
   /**

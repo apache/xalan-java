@@ -144,8 +144,8 @@ public class XObject extends Object implements Serializable
   public DocumentFragment rtree(XPathSupport support)
   {
     org.apache.xpath.XPathContext context = (org.apache.xpath.XPathContext)support;
-    int result = m_xObject.rtree(context);
-    return  (DocumentFragment)context.getDTMManager().getDTM(result).getNode(result);         
+    return m_xObject.rtree(context);
+    //return  (DocumentFragment)context.getDTMManager().getDTM(result).getNode(result);         
   }
   
   /**

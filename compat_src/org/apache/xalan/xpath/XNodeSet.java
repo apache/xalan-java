@@ -201,16 +201,16 @@ public class XNodeSet extends XObject
   public DocumentFragment rtree(XPathContext support)
   {
     org.apache.xpath.XPathContext context = (org.apache.xpath.XPathContext)support;
-    int result = m_xnodeset.rtree(context);
-    return (DocumentFragment)context.getDTMManager().getDTM(result).getNode(result);    
+    return m_xnodeset.rtree(context);
+    //return (DocumentFragment)context.getDTMManager().getDTM(result).getNode(result);    
   }
 
   /**
    * Cast result object to a nodelist.
    */
-  public NodeList nodeset()
+  public NodeList nodeset() throws javax.xml.transform.TransformerException
   {
-    return new DTMNodeList(m_xnodeset.nodeset());
+    return new DTMNodeList(m_xnodeset.iter());
   }  
 
   /**
