@@ -166,7 +166,7 @@ transformer.transform
               encoding="UTF-8"
               indent="yes" 
               xalan:indent-amount="2"/&gt;</source>
-  <p>If you want to change the property settings globally, edit the values in the property files in src/org/apache/xalan/templates, 
+  <p>If you want to change the property settings globally, edit the values in the property files in src/org/apache/xml/serializer, 
   and use Ant to <link idref="readme" anchor="jar">rebuild xalan.jar</link>.</p>
 <p>The properties files define the following properties:</p>
 <p><ref>output_xml.properties</ref>:</p>
