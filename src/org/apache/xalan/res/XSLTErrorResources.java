@@ -78,25 +78,25 @@ import org.apache.xalan.res.XSLResourceBundle;
 public class XSLTErrorResources extends XSLResourceBundle
 {
 
-  /** NEEDSDOC Field ERROR_SUFFIX          */
+  /** The error suffix for construction error property keys.   */
   public static final String ERROR_SUFFIX = "ER";
 
-  /** NEEDSDOC Field WARNING_SUFFIX          */
+  /** The warning suffix for construction error property keys.   */
   public static final String WARNING_SUFFIX = "WR";
 
-  /** NEEDSDOC Field MAX_CODE          */
-  public static final int MAX_CODE = 107;  // this is needed to keep track of the number of messages          
+  /** Maximum error messages, this is needed to keep track of the number of messages.    */
+  public static final int MAX_CODE = 107;          
 
-  /** NEEDSDOC Field MAX_WARNING          */
-  public static final int MAX_WARNING = 26;  // this is needed to keep track of the number of warnings
+  /** Maximum warnings, this is needed to keep track of the number of warnings.          */
+  public static final int MAX_WARNING = 26;
 
-  /** NEEDSDOC Field MAX_OTHERS          */
+  /** Maximum misc strings.   */
   public static final int MAX_OTHERS = 41;
 
-  /** NEEDSDOC Field MAX_MESSAGES          */
+  /** Maximum total warnings and error messages.          */
   public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
 
-  /** NEEDSDOC Field contents          */
+  /** The lookup table for error messages.   */
   static final Object[][] contents =
     new Object[MAX_MESSAGES + MAX_OTHERS + 1][2];
 
@@ -130,7 +130,7 @@ public class XSLTErrorResources extends XSLResourceBundle
 
   // Error messages...
 
-  /** NEEDSDOC Field ERROR0000          */
+  /** Error message ID that has a null message, but takes in a single object.    */
   public static final int ERROR0000 = 0;
 
   static
@@ -138,7 +138,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ERROR0000][1] = "{0}";
   }
 
-  /** NEEDSDOC Field ER_NO_CURLYBRACE          */
+  /** ER_NO_CURLYBRACE          */
   public static final int ER_NO_CURLYBRACE = 1;
 
   static
@@ -147,7 +147,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Error: Can not have '{' within expression";
   }
 
-  /** NEEDSDOC Field ER_ILLEGAL_ATTRIBUTE          */
+  /** ER_ILLEGAL_ATTRIBUTE          */
   public static final int ER_ILLEGAL_ATTRIBUTE = 2;
 
   static
@@ -155,7 +155,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_ILLEGAL_ATTRIBUTE][1] = "{0} has an illegal attribute: {1}";
   }
 
-  /** NEEDSDOC Field ER_NULL_SOURCENODE_APPLYIMPORTS          */
+  /** ER_NULL_SOURCENODE_APPLYIMPORTS          */
   public static final int ER_NULL_SOURCENODE_APPLYIMPORTS = 3;
 
   static
@@ -164,7 +164,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "sourceNode is null in xsl:apply-imports!";
   }
 
-  /** NEEDSDOC Field ER_CANNOT_ADD          */
+  /** ER_CANNOT_ADD          */
   public static final int ER_CANNOT_ADD = 4;
 
   static
@@ -172,7 +172,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_CANNOT_ADD][1] = "Can not add {0} to {1}";
   }
 
-  /** NEEDSDOC Field ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES          */
+  /** ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES          */
   public static final int ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES = 5;
 
   static
@@ -181,7 +181,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "sourceNode is null in handleApplyTemplatesInstruction!";
   }
 
-  /** NEEDSDOC Field ER_NO_NAME_ATTRIB          */
+  /** ER_NO_NAME_ATTRIB          */
   public static final int ER_NO_NAME_ATTRIB = 6;
 
   static
@@ -189,7 +189,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_NO_NAME_ATTRIB][1] = "{0} must have a name attribute.";
   }
 
-  /** NEEDSDOC Field ER_TEMPLATE_NOT_FOUND          */
+  /** ER_TEMPLATE_NOT_FOUND          */
   public static final int ER_TEMPLATE_NOT_FOUND = 7;
 
   static
@@ -197,7 +197,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_TEMPLATE_NOT_FOUND][1] = "Could not find template named: {0}";
   }
 
-  /** NEEDSDOC Field ER_CANT_RESOLVE_NAME_AVT          */
+  /** ER_CANT_RESOLVE_NAME_AVT          */
   public static final int ER_CANT_RESOLVE_NAME_AVT = 8;
 
   static
@@ -206,7 +206,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Could not resolve name AVT in xsl:call-template.";
   }
 
-  /** NEEDSDOC Field ER_REQUIRES_ATTRIB          */
+  /** ER_REQUIRES_ATTRIB          */
   public static final int ER_REQUIRES_ATTRIB = 9;
 
   static
@@ -214,7 +214,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_REQUIRES_ATTRIB][1] = "{0} requires attribute: {1}";
   }
 
-  /** NEEDSDOC Field ER_MUST_HAVE_TEST_ATTRIB          */
+  /** ER_MUST_HAVE_TEST_ATTRIB          */
   public static final int ER_MUST_HAVE_TEST_ATTRIB = 10;
 
   static
@@ -223,7 +223,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "{0} must have a 'test' attribute.";
   }
 
-  /** NEEDSDOC Field ER_BAD_VAL_ON_LEVEL_ATTRIB          */
+  /** ER_BAD_VAL_ON_LEVEL_ATTRIB          */
   public static final int ER_BAD_VAL_ON_LEVEL_ATTRIB = 11;
 
   static
@@ -232,7 +232,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Bad value on level attribute: {0}";
   }
 
-  /** NEEDSDOC Field ER_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML          */
+  /** ER_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML          */
   public static final int ER_PROCESSINGINSTRUCTION_NAME_CANT_BE_XML = 12;
 
   static
@@ -241,7 +241,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "processing-instruction name can not be 'xml'";
   }
 
-  /** NEEDSDOC Field ER_PROCESSINGINSTRUCTION_NOTVALID_NCNAME          */
+  /** ER_PROCESSINGINSTRUCTION_NOTVALID_NCNAME          */
   public static final int ER_PROCESSINGINSTRUCTION_NOTVALID_NCNAME = 13;
 
   static
@@ -250,7 +250,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "processing-instruction name must be a valid NCName: {0}";
   }
 
-  /** NEEDSDOC Field ER_NEED_MATCH_ATTRIB          */
+  /** ER_NEED_MATCH_ATTRIB          */
   public static final int ER_NEED_MATCH_ATTRIB = 14;
 
   static
@@ -259,7 +259,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "{0} must have a match attribute if it has a mode.";
   }
 
-  /** NEEDSDOC Field ER_NEED_NAME_OR_MATCH_ATTRIB          */
+  /** ER_NEED_NAME_OR_MATCH_ATTRIB          */
   public static final int ER_NEED_NAME_OR_MATCH_ATTRIB = 15;
 
   static
@@ -268,7 +268,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "{0} requires either a name or a match attribute.";
   }
 
-  /** NEEDSDOC Field ER_CANT_RESOLVE_NSPREFIX          */
+  /** ER_CANT_RESOLVE_NSPREFIX          */
   public static final int ER_CANT_RESOLVE_NSPREFIX = 16;
 
   static
@@ -277,7 +277,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Can not resolve namespace prefix: {0}";
   }
 
-  /** NEEDSDOC Field ER_ILLEGAL_VALUE          */
+  /** ER_ILLEGAL_VALUE          */
   public static final int ER_ILLEGAL_VALUE = 17;
 
   static
@@ -285,7 +285,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_ILLEGAL_VALUE][1] = "xml:space has an illegal value: {0}";
   }
 
-  /** NEEDSDOC Field ER_NO_OWNERDOC          */
+  /** ER_NO_OWNERDOC          */
   public static final int ER_NO_OWNERDOC = 18;
 
   static
@@ -294,7 +294,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Child node does not have an owner document!";
   }
 
-  /** NEEDSDOC Field ER_ELEMTEMPLATEELEM_ERR          */
+  /** ER_ELEMTEMPLATEELEM_ERR          */
   public static final int ER_ELEMTEMPLATEELEM_ERR = 19;
 
   static
@@ -302,7 +302,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_ELEMTEMPLATEELEM_ERR][1] = "ElemTemplateElement error: {0}";
   }
 
-  /** NEEDSDOC Field ER_NULL_CHILD          */
+  /** ER_NULL_CHILD          */
   public static final int ER_NULL_CHILD = 20;
 
   static
@@ -310,7 +310,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_NULL_CHILD][1] = "Trying to add a null child!";
   }
 
-  /** NEEDSDOC Field ER_NEED_SELECT_ATTRIB          */
+  /** ER_NEED_SELECT_ATTRIB          */
   public static final int ER_NEED_SELECT_ATTRIB = 21;
 
   static
@@ -318,7 +318,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_NEED_SELECT_ATTRIB][1] = "{0} requires a select attribute.";
   }
 
-  /** NEEDSDOC Field ER_NEED_TEST_ATTRIB          */
+  /** ER_NEED_TEST_ATTRIB          */
   public static final int ER_NEED_TEST_ATTRIB = 22;
 
   static
@@ -327,7 +327,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "xsl:when must have a 'test' attribute.";
   }
 
-  /** NEEDSDOC Field ER_NEED_NAME_ATTRIB          */
+  /** ER_NEED_NAME_ATTRIB          */
   public static final int ER_NEED_NAME_ATTRIB = 23;
 
   static
@@ -336,7 +336,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "xsl:with-param must have a 'name' attribute.";
   }
 
-  /** NEEDSDOC Field ER_NO_CONTEXT_OWNERDOC          */
+  /** ER_NO_CONTEXT_OWNERDOC          */
   public static final int ER_NO_CONTEXT_OWNERDOC = 24;
 
   static
@@ -345,7 +345,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "context does not have an owner document!";
   }
 
-  /** NEEDSDOC Field ER_COULD_NOT_CREATE_XML_PROC_LIAISON          */
+  /** ER_COULD_NOT_CREATE_XML_PROC_LIAISON          */
   public static final int ER_COULD_NOT_CREATE_XML_PROC_LIAISON = 25;
 
   static
@@ -354,7 +354,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Could not create XML TransformerFactory Liaison: {0}";
   }
 
-  /** NEEDSDOC Field ER_PROCESS_NOT_SUCCESSFUL          */
+  /** ER_PROCESS_NOT_SUCCESSFUL          */
   public static final int ER_PROCESS_NOT_SUCCESSFUL = 26;
 
   static
@@ -363,7 +363,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Xalan: Process was not successful.";
   }
 
-  /** NEEDSDOC Field ER_NOT_SUCCESSFUL          */
+  /** ER_NOT_SUCCESSFUL          */
   public static final int ER_NOT_SUCCESSFUL = 27;
 
   static
@@ -371,7 +371,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_NOT_SUCCESSFUL][1] = "Xalan: was not successful.";
   }
 
-  /** NEEDSDOC Field ER_ENCODING_NOT_SUPPORTED          */
+  /** ER_ENCODING_NOT_SUPPORTED          */
   public static final int ER_ENCODING_NOT_SUPPORTED = 28;
 
   static
@@ -379,7 +379,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_ENCODING_NOT_SUPPORTED][1] = "Encoding not supported: {0}";
   }
 
-  /** NEEDSDOC Field ER_COULD_NOT_CREATE_TRACELISTENER          */
+  /** ER_COULD_NOT_CREATE_TRACELISTENER          */
   public static final int ER_COULD_NOT_CREATE_TRACELISTENER = 29;
 
   static
@@ -388,7 +388,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Could not create TraceListener: {0}";
   }
 
-  /** NEEDSDOC Field ER_KEY_REQUIRES_NAME_ATTRIB          */
+  /** ER_KEY_REQUIRES_NAME_ATTRIB          */
   public static final int ER_KEY_REQUIRES_NAME_ATTRIB = 30;
 
   static
@@ -397,7 +397,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "xsl:key requires a 'name' attribute!";
   }
 
-  /** NEEDSDOC Field ER_KEY_REQUIRES_MATCH_ATTRIB          */
+  /** ER_KEY_REQUIRES_MATCH_ATTRIB          */
   public static final int ER_KEY_REQUIRES_MATCH_ATTRIB = 31;
 
   static
@@ -406,7 +406,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "xsl:key requires a 'match' attribute!";
   }
 
-  /** NEEDSDOC Field ER_KEY_REQUIRES_USE_ATTRIB          */
+  /** ER_KEY_REQUIRES_USE_ATTRIB          */
   public static final int ER_KEY_REQUIRES_USE_ATTRIB = 32;
 
   static
@@ -415,7 +415,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "xsl:key requires a 'use' attribute!";
   }
 
-  /** NEEDSDOC Field ER_REQUIRES_ELEMENTS_ATTRIB          */
+  /** ER_REQUIRES_ELEMENTS_ATTRIB          */
   public static final int ER_REQUIRES_ELEMENTS_ATTRIB = 33;
 
   static
@@ -424,7 +424,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) {0} requires an 'elements' attribute!";
   }
 
-  /** NEEDSDOC Field ER_MISSING_PREFIX_ATTRIB          */
+  /** ER_MISSING_PREFIX_ATTRIB          */
   public static final int ER_MISSING_PREFIX_ATTRIB = 34;
 
   static
@@ -433,7 +433,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) {0} attribute 'prefix' is missing";
   }
 
-  /** NEEDSDOC Field ER_BAD_STYLESHEET_URL          */
+  /** ER_BAD_STYLESHEET_URL          */
   public static final int ER_BAD_STYLESHEET_URL = 35;
 
   static
@@ -441,7 +441,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_BAD_STYLESHEET_URL][1] = "Stylesheet URL is bad: {0}";
   }
 
-  /** NEEDSDOC Field ER_FILE_NOT_FOUND          */
+  /** ER_FILE_NOT_FOUND          */
   public static final int ER_FILE_NOT_FOUND = 36;
 
   static
@@ -449,7 +449,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_FILE_NOT_FOUND][1] = "Stylesheet file was not found: {0}";
   }
 
-  /** NEEDSDOC Field ER_IOEXCEPTION          */
+  /** ER_IOEXCEPTION          */
   public static final int ER_IOEXCEPTION = 37;
 
   static
@@ -458,7 +458,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Had IO Exception with stylesheet file: {0}";
   }
 
-  /** NEEDSDOC Field ER_NO_HREF_ATTRIB          */
+  /** ER_NO_HREF_ATTRIB          */
   public static final int ER_NO_HREF_ATTRIB = 38;
 
   static
@@ -467,7 +467,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) Could not find href attribute for {0}";
   }
 
-  /** NEEDSDOC Field ER_STYLESHEET_INCLUDES_ITSELF          */
+  /** ER_STYLESHEET_INCLUDES_ITSELF          */
   public static final int ER_STYLESHEET_INCLUDES_ITSELF = 39;
 
   static
@@ -476,7 +476,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) {0} is directly or indirectly including itself!";
   }
 
-  /** NEEDSDOC Field ER_PROCESSINCLUDE_ERROR          */
+  /** ER_PROCESSINCLUDE_ERROR          */
   public static final int ER_PROCESSINCLUDE_ERROR = 40;
 
   static
@@ -485,7 +485,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "StylesheetHandler.processInclude error, {0}";
   }
 
-  /** NEEDSDOC Field ER_MISSING_LANG_ATTRIB          */
+  /** ER_MISSING_LANG_ATTRIB          */
   public static final int ER_MISSING_LANG_ATTRIB = 41;
 
   static
@@ -494,7 +494,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) {0} attribute 'lang' is missing";
   }
 
-  /** NEEDSDOC Field ER_MISSING_CONTAINER_ELEMENT_COMPONENT          */
+  /** ER_MISSING_CONTAINER_ELEMENT_COMPONENT          */
   public static final int ER_MISSING_CONTAINER_ELEMENT_COMPONENT = 42;
 
   static
@@ -503,7 +503,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) misplaced {0} element?? Missing container element 'component'";
   }
 
-  /** NEEDSDOC Field ER_CAN_ONLY_OUTPUT_TO_ELEMENT          */
+  /** ER_CAN_ONLY_OUTPUT_TO_ELEMENT          */
   public static final int ER_CAN_ONLY_OUTPUT_TO_ELEMENT = 43;
 
   static
@@ -512,7 +512,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Can only output to an Element, DocumentFragment, Document, or PrintWriter.";
   }
 
-  /** NEEDSDOC Field ER_PROCESS_ERROR          */
+  /** ER_PROCESS_ERROR          */
   public static final int ER_PROCESS_ERROR = 44;
 
   static
@@ -520,7 +520,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_PROCESS_ERROR][1] = "StylesheetRoot.process error";
   }
 
-  /** NEEDSDOC Field ER_UNIMPLNODE_ERROR          */
+  /** ER_UNIMPLNODE_ERROR          */
   public static final int ER_UNIMPLNODE_ERROR = 45;
 
   static
@@ -528,7 +528,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_UNIMPLNODE_ERROR][1] = "UnImplNode error: {0}";
   }
 
-  /** NEEDSDOC Field ER_NO_SELECT_EXPRESSION          */
+  /** ER_NO_SELECT_EXPRESSION          */
   public static final int ER_NO_SELECT_EXPRESSION = 46;
 
   static
@@ -537,7 +537,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Error! Did not find xpath select expression (-select).";
   }
 
-  /** NEEDSDOC Field ER_CANNOT_SERIALIZE_XSLPROCESSOR          */
+  /** ER_CANNOT_SERIALIZE_XSLPROCESSOR          */
   public static final int ER_CANNOT_SERIALIZE_XSLPROCESSOR = 47;
 
   static
@@ -546,7 +546,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Can not serialize an XSLProcessor!";
   }
 
-  /** NEEDSDOC Field ER_NO_INPUT_STYLESHEET          */
+  /** ER_NO_INPUT_STYLESHEET          */
   public static final int ER_NO_INPUT_STYLESHEET = 48;
 
   static
@@ -555,7 +555,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Stylesheet input was not specified!";
   }
 
-  /** NEEDSDOC Field ER_FAILED_PROCESS_STYLESHEET          */
+  /** ER_FAILED_PROCESS_STYLESHEET          */
   public static final int ER_FAILED_PROCESS_STYLESHEET = 49;
 
   static
@@ -564,7 +564,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Failed to process stylesheet!";
   }
 
-  /** NEEDSDOC Field ER_COULDNT_PARSE_DOC          */
+  /** ER_COULDNT_PARSE_DOC          */
   public static final int ER_COULDNT_PARSE_DOC = 50;
 
   static
@@ -572,7 +572,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_COULDNT_PARSE_DOC][1] = "Could not parse {0} document!";
   }
 
-  /** NEEDSDOC Field ER_COULDNT_FIND_FRAGMENT          */
+  /** ER_COULDNT_FIND_FRAGMENT          */
   public static final int ER_COULDNT_FIND_FRAGMENT = 51;
 
   static
@@ -580,7 +580,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_COULDNT_FIND_FRAGMENT][1] = "Could not find fragment: {0}";
   }
 
-  /** NEEDSDOC Field ER_NODE_NOT_ELEMENT          */
+  /** ER_NODE_NOT_ELEMENT          */
   public static final int ER_NODE_NOT_ELEMENT = 52;
 
   static
@@ -589,7 +589,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Node pointed to by fragment identifier was not an element: {0}";
   }
 
-  /** NEEDSDOC Field ER_FOREACH_NEED_MATCH_OR_NAME_ATTRIB          */
+  /** ER_FOREACH_NEED_MATCH_OR_NAME_ATTRIB          */
   public static final int ER_FOREACH_NEED_MATCH_OR_NAME_ATTRIB = 53;
 
   static
@@ -598,7 +598,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "for-each must have either a match or name attribute";
   }
 
-  /** NEEDSDOC Field ER_TEMPLATES_NEED_MATCH_OR_NAME_ATTRIB          */
+  /** ER_TEMPLATES_NEED_MATCH_OR_NAME_ATTRIB          */
   public static final int ER_TEMPLATES_NEED_MATCH_OR_NAME_ATTRIB = 54;
 
   static
@@ -607,7 +607,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "templates must have either a match or name attribute";
   }
 
-  /** NEEDSDOC Field ER_NO_CLONE_OF_DOCUMENT_FRAG          */
+  /** ER_NO_CLONE_OF_DOCUMENT_FRAG          */
   public static final int ER_NO_CLONE_OF_DOCUMENT_FRAG = 55;
 
   static
@@ -616,7 +616,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "No clone of a document fragment!";
   }
 
-  /** NEEDSDOC Field ER_CANT_CREATE_ITEM          */
+  /** ER_CANT_CREATE_ITEM          */
   public static final int ER_CANT_CREATE_ITEM = 56;
 
   static
@@ -625,7 +625,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Can not create item in result tree: {0}";
   }
 
-  /** NEEDSDOC Field ER_XMLSPACE_ILLEGAL_VALUE          */
+  /** ER_XMLSPACE_ILLEGAL_VALUE          */
   public static final int ER_XMLSPACE_ILLEGAL_VALUE = 57;
 
   static
@@ -634,7 +634,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "xml:space in the source XML has an illegal value: {0}";
   }
 
-  /** NEEDSDOC Field ER_NO_XSLKEY_DECLARATION          */
+  /** ER_NO_XSLKEY_DECLARATION          */
   public static final int ER_NO_XSLKEY_DECLARATION = 58;
 
   static
@@ -643,7 +643,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "There is no xsl:key declaration for {0}!";
   }
 
-  /** NEEDSDOC Field ER_CANT_CREATE_URL          */
+  /** ER_CANT_CREATE_URL          */
   public static final int ER_CANT_CREATE_URL = 59;
 
   static
@@ -651,7 +651,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_CANT_CREATE_URL][1] = "Error! Cannot create url for: {0}";
   }
 
-  /** NEEDSDOC Field ER_XSLFUNCTIONS_UNSUPPORTED          */
+  /** ER_XSLFUNCTIONS_UNSUPPORTED          */
   public static final int ER_XSLFUNCTIONS_UNSUPPORTED = 60;
 
   static
@@ -659,7 +659,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_XSLFUNCTIONS_UNSUPPORTED][1] = "xsl:functions is unsupported";
   }
 
-  /** NEEDSDOC Field ER_PROCESSOR_ERROR          */
+  /** ER_PROCESSOR_ERROR          */
   public static final int ER_PROCESSOR_ERROR = 61;
 
   static
@@ -667,7 +667,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_PROCESSOR_ERROR][1] = "XSLT TransformerFactory Error";
   }
 
-  /** NEEDSDOC Field ER_NOT_ALLOWED_INSIDE_STYLESHEET          */
+  /** ER_NOT_ALLOWED_INSIDE_STYLESHEET          */
   public static final int ER_NOT_ALLOWED_INSIDE_STYLESHEET = 62;
 
   static
@@ -676,7 +676,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) {0} not allowed inside a stylesheet!";
   }
 
-  /** NEEDSDOC Field ER_RESULTNS_NOT_SUPPORTED          */
+  /** ER_RESULTNS_NOT_SUPPORTED          */
   public static final int ER_RESULTNS_NOT_SUPPORTED = 63;
 
   static
@@ -685,7 +685,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "result-ns no longer supported!  Use xsl:output instead.";
   }
 
-  /** NEEDSDOC Field ER_DEFAULTSPACE_NOT_SUPPORTED          */
+  /** ER_DEFAULTSPACE_NOT_SUPPORTED          */
   public static final int ER_DEFAULTSPACE_NOT_SUPPORTED = 64;
 
   static
@@ -694,7 +694,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "default-space no longer supported!  Use xsl:strip-space or xsl:preserve-space instead.";
   }
 
-  /** NEEDSDOC Field ER_INDENTRESULT_NOT_SUPPORTED          */
+  /** ER_INDENTRESULT_NOT_SUPPORTED          */
   public static final int ER_INDENTRESULT_NOT_SUPPORTED = 65;
 
   static
@@ -703,7 +703,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "indent-result no longer supported!  Use xsl:output instead.";
   }
 
-  /** NEEDSDOC Field ER_ILLEGAL_ATTRIB          */
+  /** ER_ILLEGAL_ATTRIB          */
   public static final int ER_ILLEGAL_ATTRIB = 66;
 
   static
@@ -712,7 +712,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) {0} has an illegal attribute: {1}";
   }
 
-  /** NEEDSDOC Field ER_UNKNOWN_XSL_ELEM          */
+  /** ER_UNKNOWN_XSL_ELEM          */
   public static final int ER_UNKNOWN_XSL_ELEM = 67;
 
   static
@@ -720,7 +720,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_UNKNOWN_XSL_ELEM][1] = "Unknown XSL element: {0}";
   }
 
-  /** NEEDSDOC Field ER_BAD_XSLSORT_USE          */
+  /** ER_BAD_XSLSORT_USE          */
   public static final int ER_BAD_XSLSORT_USE = 68;
 
   static
@@ -729,7 +729,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) xsl:sort can only be used with xsl:apply-templates or xsl:for-each.";
   }
 
-  /** NEEDSDOC Field ER_MISPLACED_XSLWHEN          */
+  /** ER_MISPLACED_XSLWHEN          */
   public static final int ER_MISPLACED_XSLWHEN = 69;
 
   static
@@ -738,7 +738,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) misplaced xsl:when!";
   }
 
-  /** NEEDSDOC Field ER_XSLWHEN_NOT_PARENTED_BY_XSLCHOOSE          */
+  /** ER_XSLWHEN_NOT_PARENTED_BY_XSLCHOOSE          */
   public static final int ER_XSLWHEN_NOT_PARENTED_BY_XSLCHOOSE = 70;
 
   static
@@ -747,7 +747,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) xsl:when not parented by xsl:choose!";
   }
 
-  /** NEEDSDOC Field ER_MISPLACED_XSLOTHERWISE          */
+  /** ER_MISPLACED_XSLOTHERWISE          */
   public static final int ER_MISPLACED_XSLOTHERWISE = 71;
 
   static
@@ -756,7 +756,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) misplaced xsl:otherwise!";
   }
 
-  /** NEEDSDOC Field ER_XSLOTHERWISE_NOT_PARENTED_BY_XSLCHOOSE          */
+  /** ER_XSLOTHERWISE_NOT_PARENTED_BY_XSLCHOOSE          */
   public static final int ER_XSLOTHERWISE_NOT_PARENTED_BY_XSLCHOOSE = 72;
 
   static
@@ -765,7 +765,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) xsl:otherwise not parented by xsl:choose!";
   }
 
-  /** NEEDSDOC Field ER_NOT_ALLOWED_INSIDE_TEMPLATE          */
+  /** ER_NOT_ALLOWED_INSIDE_TEMPLATE          */
   public static final int ER_NOT_ALLOWED_INSIDE_TEMPLATE = 73;
 
   static
@@ -774,7 +774,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) {0} is not allowed inside a template!";
   }
 
-  /** NEEDSDOC Field ER_UNKNOWN_EXT_NS_PREFIX          */
+  /** ER_UNKNOWN_EXT_NS_PREFIX          */
   public static final int ER_UNKNOWN_EXT_NS_PREFIX = 74;
 
   static
@@ -783,7 +783,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) {0} extension namespace prefix {1} unknown";
   }
 
-  /** NEEDSDOC Field ER_IMPORTS_AS_FIRST_ELEM          */
+  /** ER_IMPORTS_AS_FIRST_ELEM          */
   public static final int ER_IMPORTS_AS_FIRST_ELEM = 75;
 
   static
@@ -792,7 +792,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) Imports can only occur as the first elements in the stylesheet!";
   }
 
-  /** NEEDSDOC Field ER_IMPORTING_ITSELF          */
+  /** ER_IMPORTING_ITSELF          */
   public static final int ER_IMPORTING_ITSELF = 76;
 
   static
@@ -801,7 +801,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) {0} is directly or indirectly importing itself!";
   }
 
-  /** NEEDSDOC Field ER_XMLSPACE_ILLEGAL_VAL          */
+  /** ER_XMLSPACE_ILLEGAL_VAL          */
   public static final int ER_XMLSPACE_ILLEGAL_VAL = 77;
 
   static
@@ -810,7 +810,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "(StylesheetHandler) " + "xml:space has an illegal value: {0}";
   }
 
-  /** NEEDSDOC Field ER_PROCESSSTYLESHEET_NOT_SUCCESSFUL          */
+  /** ER_PROCESSSTYLESHEET_NOT_SUCCESSFUL          */
   public static final int ER_PROCESSSTYLESHEET_NOT_SUCCESSFUL = 78;
 
   static
@@ -819,7 +819,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "processStylesheet not succesfull!";
   }
 
-  /** NEEDSDOC Field ER_SAX_EXCEPTION          */
+  /** ER_SAX_EXCEPTION          */
   public static final int ER_SAX_EXCEPTION = 79;
 
   static
@@ -827,7 +827,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_SAX_EXCEPTION][1] = "SAX Exception";
   }
 
-  /** NEEDSDOC Field ER_FUNCTION_NOT_SUPPORTED          */
+  /** ER_FUNCTION_NOT_SUPPORTED          */
   public static final int ER_FUNCTION_NOT_SUPPORTED = 80;
 
   static
@@ -835,7 +835,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_FUNCTION_NOT_SUPPORTED][1] = "Function not supported!";
   }
 
-  /** NEEDSDOC Field ER_XSLT_ERROR          */
+  /** ER_XSLT_ERROR          */
   public static final int ER_XSLT_ERROR = 81;
 
   static
@@ -843,7 +843,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_XSLT_ERROR][1] = "XSLT Error";
   }
 
-  /** NEEDSDOC Field ER_CURRENCY_SIGN_ILLEGAL          */
+  /** ER_CURRENCY_SIGN_ILLEGAL          */
   public static final int ER_CURRENCY_SIGN_ILLEGAL = 82;
 
   static
@@ -852,7 +852,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "currency sign is not allowed in format pattern string";
   }
 
-  /** NEEDSDOC Field ER_DOCUMENT_FUNCTION_INVALID_IN_STYLESHEET_DOM          */
+  /** ER_DOCUMENT_FUNCTION_INVALID_IN_STYLESHEET_DOM          */
   public static final int ER_DOCUMENT_FUNCTION_INVALID_IN_STYLESHEET_DOM = 83;
 
   static
@@ -861,7 +861,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Document function not supported in Stylesheet DOM!";
   }
 
-  /** NEEDSDOC Field ER_CANT_RESOLVE_PREFIX_OF_NON_PREFIX_RESOLVER          */
+  /** ER_CANT_RESOLVE_PREFIX_OF_NON_PREFIX_RESOLVER          */
   public static final int ER_CANT_RESOLVE_PREFIX_OF_NON_PREFIX_RESOLVER = 84;
 
   static
@@ -870,7 +870,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Can't resolve prefix of non-Prefix resolver!";
   }
 
-  /** NEEDSDOC Field ER_REDIRECT_COULDNT_GET_FILENAME          */
+  /** ER_REDIRECT_COULDNT_GET_FILENAME          */
   public static final int ER_REDIRECT_COULDNT_GET_FILENAME = 85;
 
   static
@@ -879,7 +879,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Redirect extension: Could not get filename - file or select attribute must return vald string.";
   }
 
-  /** NEEDSDOC Field ER_CANNOT_BUILD_FORMATTERLISTENER_IN_REDIRECT          */
+  /** ER_CANNOT_BUILD_FORMATTERLISTENER_IN_REDIRECT          */
   public static final int ER_CANNOT_BUILD_FORMATTERLISTENER_IN_REDIRECT = 86;
 
   static
@@ -888,7 +888,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Can not build FormatterListener in Redirect extension!";
   }
 
-  /** NEEDSDOC Field ER_INVALID_PREFIX_IN_EXCLUDERESULTPREFIX          */
+  /** ER_INVALID_PREFIX_IN_EXCLUDERESULTPREFIX          */
   public static final int ER_INVALID_PREFIX_IN_EXCLUDERESULTPREFIX = 87;
 
   static
@@ -897,7 +897,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Prefix in exclude-result-prefixes is not valid: {0}";
   }
 
-  /** NEEDSDOC Field ER_MISSING_NS_URI          */
+  /** ER_MISSING_NS_URI          */
   public static final int ER_MISSING_NS_URI = 88;
 
   static
@@ -906,7 +906,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Missing namespace URI for specified prefix";
   }
 
-  /** NEEDSDOC Field ER_MISSING_ARG_FOR_OPTION          */
+  /** ER_MISSING_ARG_FOR_OPTION          */
   public static final int ER_MISSING_ARG_FOR_OPTION = 89;
 
   static
@@ -915,7 +915,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Missing argument for option: {0}";
   }
 
-  /** NEEDSDOC Field ER_INVALID_OPTION          */
+  /** ER_INVALID_OPTION          */
   public static final int ER_INVALID_OPTION = 90;
 
   static
@@ -923,7 +923,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_INVALID_OPTION][1] = "Invalid option: {0}";
   }
 
-  /** NEEDSDOC Field ER_MALFORMED_FORMAT_STRING          */
+  /** ER_MALFORMED_FORMAT_STRING          */
   public static final int ER_MALFORMED_FORMAT_STRING = 91;
 
   static
@@ -931,7 +931,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_MALFORMED_FORMAT_STRING][1] = "Malformed format string: {0}";
   }
 
-  /** NEEDSDOC Field ER_STYLESHEET_REQUIRES_VERSION_ATTRIB          */
+  /** ER_STYLESHEET_REQUIRES_VERSION_ATTRIB          */
   public static final int ER_STYLESHEET_REQUIRES_VERSION_ATTRIB = 92;
 
   static
@@ -940,7 +940,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "xsl:stylesheet requires a 'version' attribute!";
   }
 
-  /** NEEDSDOC Field ER_ILLEGAL_ATTRIBUTE_VALUE          */
+  /** ER_ILLEGAL_ATTRIBUTE_VALUE          */
   public static final int ER_ILLEGAL_ATTRIBUTE_VALUE = 93;
 
   static
@@ -949,7 +949,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Attribute: {0} has an illegal value: {1}";
   }
 
-  /** NEEDSDOC Field ER_CHOOSE_REQUIRES_WHEN          */
+  /** ER_CHOOSE_REQUIRES_WHEN          */
   public static final int ER_CHOOSE_REQUIRES_WHEN = 94;
 
   static
@@ -957,7 +957,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[ER_CHOOSE_REQUIRES_WHEN][1] = "xsl:choose requires an xsl:when";
   }
 
-  /** NEEDSDOC Field ER_NO_APPLY_IMPORT_IN_FOR_EACH          */
+  /** ER_NO_APPLY_IMPORT_IN_FOR_EACH          */
   public static final int ER_NO_APPLY_IMPORT_IN_FOR_EACH = 95;
 
   static
@@ -966,7 +966,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "xsl:apply-imports not allowed in a xsl:for-each";
   }
 
-  /** NEEDSDOC Field ER_CANT_USE_DTM_FOR_OUTPUT          */
+  /** ER_CANT_USE_DTM_FOR_OUTPUT          */
   public static final int ER_CANT_USE_DTM_FOR_OUTPUT = 96;
 
   static
@@ -975,7 +975,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Cannot use a DTMLiaison for an output DOM node... pass a org.apache.xpath.DOM2Helper instead!";
   }
 
-  /** NEEDSDOC Field ER_CANT_USE_DTM_FOR_INPUT          */
+  /** ER_CANT_USE_DTM_FOR_INPUT          */
   public static final int ER_CANT_USE_DTM_FOR_INPUT = 97;
 
   static
@@ -984,7 +984,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Cannot use a DTMLiaison for a input DOM node... pass a org.apache.xpath.DOM2Helper instead!";
   }
 
-  /** NEEDSDOC Field ER_CALL_TO_EXT_FAILED          */
+  /** ER_CALL_TO_EXT_FAILED          */
   public static final int ER_CALL_TO_EXT_FAILED = 98;
 
   static
@@ -993,7 +993,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Call to extension element failed: {0}";
   }
 
-  /** NEEDSDOC Field ER_PREFIX_MUST_RESOLVE          */
+  /** ER_PREFIX_MUST_RESOLVE          */
   public static final int ER_PREFIX_MUST_RESOLVE = 99;
 
   static
@@ -1002,7 +1002,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Prefix must resolve to a namespace: {0}";
   }
 
-  /** NEEDSDOC Field ER_INVALID_UTF16_SURROGATE          */
+  /** ER_INVALID_UTF16_SURROGATE          */
   public static final int ER_INVALID_UTF16_SURROGATE = 100;
 
   static
@@ -1011,7 +1011,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Invalid UTF-16 surrogate detected: {0} ?";
   }
 
-  /** NEEDSDOC Field ER_XSLATTRSET_USED_ITSELF          */
+  /** ER_XSLATTRSET_USED_ITSELF          */
   public static final int ER_XSLATTRSET_USED_ITSELF = 101;
 
   static
@@ -1020,7 +1020,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "xsl:attribute-set {0} used itself, which will cause an infinite loop.";
   }
 
-  /** NEEDSDOC Field ER_CANNOT_MIX_XERCESDOM          */
+  /** ER_CANNOT_MIX_XERCESDOM          */
   public static final int ER_CANNOT_MIX_XERCESDOM = 102;
 
   static
@@ -1029,7 +1029,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Can not mix non Xerces-DOM input with Xerces-DOM output!";
   }
 
-  /** NEEDSDOC Field ER_TOO_MANY_LISTENERS          */
+  /** ER_TOO_MANY_LISTENERS          */
   public static final int ER_TOO_MANY_LISTENERS = 103;
 
   static
@@ -1038,7 +1038,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "addTraceListenersToStylesheet - TooManyListenersException";
   }
 
-  /** NEEDSDOC Field ER_IN_ELEMTEMPLATEELEM_READOBJECT          */
+  /** ER_IN_ELEMTEMPLATEELEM_READOBJECT          */
   public static final int ER_IN_ELEMTEMPLATEELEM_READOBJECT = 104;
 
   static
@@ -1047,7 +1047,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "In ElemTemplateElement.readObject: {0}";
   }
 
-  /** NEEDSDOC Field ER_DUPLICATE_NAMED_TEMPLATE          */
+  /** ER_DUPLICATE_NAMED_TEMPLATE          */
   public static final int ER_DUPLICATE_NAMED_TEMPLATE = 105;
 
   static
@@ -1056,7 +1056,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Found more than one template named: {0}";
   }
 
-  /** NEEDSDOC Field ER_INVALID_KEY_CALL          */
+  /** ER_INVALID_KEY_CALL          */
   public static final int ER_INVALID_KEY_CALL = 106;
 
   static
@@ -1076,7 +1076,7 @@ public class XSLTErrorResources extends XSLResourceBundle
 
   // Warnings...
 
-  /** NEEDSDOC Field WG_FOUND_CURLYBRACE          */
+  /** WG_FOUND_CURLYBRACE          */
   public static final int WG_FOUND_CURLYBRACE = 1;
 
   static
@@ -1085,7 +1085,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Found '}' but no attribute template open!";
   }
 
-  /** NEEDSDOC Field WG_COUNT_ATTRIB_MATCHES_NO_ANCESTOR          */
+  /** WG_COUNT_ATTRIB_MATCHES_NO_ANCESTOR          */
   public static final int WG_COUNT_ATTRIB_MATCHES_NO_ANCESTOR = 2;
 
   static
@@ -1094,7 +1094,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Warning: count attribute does not match an ancestor in xsl:number! Target = {0}";
   }
 
-  /** NEEDSDOC Field WG_EXPR_ATTRIB_CHANGED_TO_SELECT          */
+  /** WG_EXPR_ATTRIB_CHANGED_TO_SELECT          */
   public static final int WG_EXPR_ATTRIB_CHANGED_TO_SELECT = 3;
 
   static
@@ -1103,7 +1103,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Old syntax: The name of the 'expr' attribute has been changed to 'select'.";
   }
 
-  /** NEEDSDOC Field WG_NO_LOCALE_IN_FORMATNUMBER          */
+  /** WG_NO_LOCALE_IN_FORMATNUMBER          */
   public static final int WG_NO_LOCALE_IN_FORMATNUMBER = 4;
 
   static
@@ -1112,7 +1112,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Xalan doesn't yet handle the locale name in the format-number function.";
   }
 
-  /** NEEDSDOC Field WG_LOCALE_NOT_FOUND          */
+  /** WG_LOCALE_NOT_FOUND          */
   public static final int WG_LOCALE_NOT_FOUND = 5;
 
   static
@@ -1121,7 +1121,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Warning: Could not find locale for xml:lang={0}";
   }
 
-  /** NEEDSDOC Field WG_CANNOT_MAKE_URL_FROM          */
+  /** WG_CANNOT_MAKE_URL_FROM          */
   public static final int WG_CANNOT_MAKE_URL_FROM = 6;
 
   static
@@ -1130,7 +1130,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Can not make URL from: {0}";
   }
 
-  /** NEEDSDOC Field WG_CANNOT_LOAD_REQUESTED_DOC          */
+  /** WG_CANNOT_LOAD_REQUESTED_DOC          */
   public static final int WG_CANNOT_LOAD_REQUESTED_DOC = 7;
 
   static
@@ -1139,7 +1139,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Can not load requested doc: {0}";
   }
 
-  /** NEEDSDOC Field WG_CANNOT_FIND_COLLATOR          */
+  /** WG_CANNOT_FIND_COLLATOR          */
   public static final int WG_CANNOT_FIND_COLLATOR = 8;
 
   static
@@ -1148,7 +1148,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Could not find Collator for <sort xml:lang={0}";
   }
 
-  /** NEEDSDOC Field WG_FUNCTIONS_SHOULD_USE_URL          */
+  /** WG_FUNCTIONS_SHOULD_USE_URL          */
   public static final int WG_FUNCTIONS_SHOULD_USE_URL = 9;
 
   static
@@ -1157,7 +1157,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Old syntax: the functions instruction should use a url of {0}";
   }
 
-  /** NEEDSDOC Field WG_ENCODING_NOT_SUPPORTED_USING_UTF8          */
+  /** WG_ENCODING_NOT_SUPPORTED_USING_UTF8          */
   public static final int WG_ENCODING_NOT_SUPPORTED_USING_UTF8 = 10;
 
   static
@@ -1166,7 +1166,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "encoding not supported: {0}, using UTF-8";
   }
 
-  /** NEEDSDOC Field WG_ENCODING_NOT_SUPPORTED_USING_JAVA          */
+  /** WG_ENCODING_NOT_SUPPORTED_USING_JAVA          */
   public static final int WG_ENCODING_NOT_SUPPORTED_USING_JAVA = 11;
 
   static
@@ -1175,7 +1175,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "encoding not supported: {0}, using Java {1}";
   }
 
-  /** NEEDSDOC Field WG_SPECIFICITY_CONFLICTS          */
+  /** WG_SPECIFICITY_CONFLICTS          */
   public static final int WG_SPECIFICITY_CONFLICTS = 12;
 
   static
@@ -1184,7 +1184,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Specificity conflicts found: {0} Last found in stylesheet will be used.";
   }
 
-  /** NEEDSDOC Field WG_PARSING_AND_PREPARING          */
+  /** WG_PARSING_AND_PREPARING          */
   public static final int WG_PARSING_AND_PREPARING = 13;
 
   static
@@ -1193,7 +1193,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "========= Parsing and preparing {0} ==========";
   }
 
-  /** NEEDSDOC Field WG_ATTR_TEMPLATE          */
+  /** WG_ATTR_TEMPLATE          */
   public static final int WG_ATTR_TEMPLATE = 14;
 
   static
@@ -1201,7 +1201,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[WG_ATTR_TEMPLATE + MAX_CODE][1] = "Attr Template, {0}";
   }
 
-  /** NEEDSDOC Field WG_CONFLICT_BETWEEN_XSLSTRIPSPACE_AND_XSLPRESERVESPACE          */
+  /** WG_CONFLICT_BETWEEN_XSLSTRIPSPACE_AND_XSLPRESERVESPACE          */
   public static final int WG_CONFLICT_BETWEEN_XSLSTRIPSPACE_AND_XSLPRESERVESPACE =
     15;
 
@@ -1211,7 +1211,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Match conflict between xsl:strip-space and xsl:preserve-space";
   }
 
-  /** NEEDSDOC Field WG_ATTRIB_NOT_HANDLED          */
+  /** WG_ATTRIB_NOT_HANDLED          */
   public static final int WG_ATTRIB_NOT_HANDLED = 16;
 
   static
@@ -1220,7 +1220,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Xalan does not yet handle the {0} attribute!";
   }
 
-  /** NEEDSDOC Field WG_NO_DECIMALFORMAT_DECLARATION          */
+  /** WG_NO_DECIMALFORMAT_DECLARATION          */
   public static final int WG_NO_DECIMALFORMAT_DECLARATION = 17;
 
   static
@@ -1229,7 +1229,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "No declaration found for decimal format: {0}";
   }
 
-  /** NEEDSDOC Field WG_OLD_XSLT_NS          */
+  /** WG_OLD_XSLT_NS          */
   public static final int WG_OLD_XSLT_NS = 18;
 
   static
@@ -1237,7 +1237,7 @@ public class XSLTErrorResources extends XSLResourceBundle
     contents[WG_OLD_XSLT_NS + MAX_CODE][1] = "Old XSLT Namespace: {0}";
   }
 
-  /** NEEDSDOC Field WG_ONE_DEFAULT_XSLDECIMALFORMAT_ALLOWED          */
+  /** WG_ONE_DEFAULT_XSLDECIMALFORMAT_ALLOWED          */
   public static final int WG_ONE_DEFAULT_XSLDECIMALFORMAT_ALLOWED = 19;
 
   static
@@ -1246,7 +1246,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Only one default xsl:decimal-format declaration is allowed. The last one will be used.";
   }
 
-  /** NEEDSDOC Field WG_XSLDECIMALFORMAT_NAMES_MUST_BE_UNIQUE          */
+  /** WG_XSLDECIMALFORMAT_NAMES_MUST_BE_UNIQUE          */
   public static final int WG_XSLDECIMALFORMAT_NAMES_MUST_BE_UNIQUE = 20;
 
   static
@@ -1255,7 +1255,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "xsl:decimal-format names must be unique. The last one will be used.";
   }
 
-  /** NEEDSDOC Field WG_ILLEGAL_ATTRIBUTE          */
+  /** WG_ILLEGAL_ATTRIBUTE          */
   public static final int WG_ILLEGAL_ATTRIBUTE = 21;
 
   static
@@ -1264,7 +1264,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "{0} has an illegal attribute: {1}";
   }
 
-  /** NEEDSDOC Field WG_COULD_NOT_RESOLVE_PREFIX          */
+  /** WG_COULD_NOT_RESOLVE_PREFIX          */
   public static final int WG_COULD_NOT_RESOLVE_PREFIX = 22;
 
   static
@@ -1273,7 +1273,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Could not resolve namespace prefix: {0}. The attribute will be ignored.";
   }
 
-  /** NEEDSDOC Field WG_STYLESHEET_REQUIRES_VERSION_ATTRIB          */
+  /** WG_STYLESHEET_REQUIRES_VERSION_ATTRIB          */
   public static final int WG_STYLESHEET_REQUIRES_VERSION_ATTRIB = 23;
 
   static
@@ -1282,7 +1282,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "xsl:stylesheet requires a 'version' attribute!";
   }
 
-  /** NEEDSDOC Field WG_ILLEGAL_ATTRIBUTE_NAME          */
+  /** WG_ILLEGAL_ATTRIBUTE_NAME          */
   public static final int WG_ILLEGAL_ATTRIBUTE_NAME = 24;
 
   static
@@ -1291,7 +1291,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Illegal attribute name: {0}";
   }
 
-  /** NEEDSDOC Field WG_ILLEGAL_ATTRIBUTE_VALUE          */
+  /** WG_ILLEGAL_ATTRIBUTE_VALUE          */
   public static final int WG_ILLEGAL_ATTRIBUTE_VALUE = 25;
 
   static
@@ -1300,7 +1300,7 @@ public class XSLTErrorResources extends XSLResourceBundle
       "Illegal value used for attribute {0}: {1}";
   }
 
-  /** NEEDSDOC Field WG_EMPTY_SECOND_ARG          */
+  /** WG_EMPTY_SECOND_ARG          */
   public static final int WG_EMPTY_SECOND_ARG = 26;
 
   static
@@ -1421,35 +1421,35 @@ public class XSLTErrorResources extends XSLResourceBundle
 
   // ================= INFRASTRUCTURE ======================
 
-  /** NEEDSDOC Field BAD_CODE          */
+  /** String for use when a bad error code was encountered.    */
   public static final String BAD_CODE = "BAD_CODE";
 
-  /** NEEDSDOC Field FORMAT_FAILED          */
+  /** String for use when formatting of the error string failed.   */
   public static final String FORMAT_FAILED = "FORMAT_FAILED";
 
-  /** NEEDSDOC Field ERROR_STRING          */
+  /** General error string.   */
   public static final String ERROR_STRING = "#error";
 
-  /** NEEDSDOC Field ERROR_HEADER          */
+  /** String to prepend to error messages.  */
   public static final String ERROR_HEADER = "Error: ";
 
-  /** NEEDSDOC Field WARNING_HEADER          */
+  /** String to prepend to warning messages.    */
   public static final String WARNING_HEADER = "Warning: ";
 
-  /** NEEDSDOC Field XSL_HEADER          */
-  public static final String XSL_HEADER = "XSL ";
+  /** String to specify the XSLT module.  */
+  public static final String XSL_HEADER = "XSLT ";
 
-  /** NEEDSDOC Field XML_HEADER          */
+  /** String to specify the XML parser module.  */
   public static final String XML_HEADER = "XML ";
 
-  /** NEEDSDOC Field QUERY_HEADER          */
+  /** I don't think this is used any more.
+   * @deprecated  */
   public static final String QUERY_HEADER = "PATTERN ";
 
   /**
-   * NEEDSDOC Method getContents 
+   * Get the lookup table. 
    *
-   *
-   * NEEDSDOC (getContents) @return
+   * @return The int to message lookup table.
    */
   public Object[][] getContents()
   {
@@ -1460,10 +1460,7 @@ public class XSLTErrorResources extends XSLResourceBundle
    *   Return a named ResourceBundle for a particular locale.  This method mimics the behavior
    *   of ResourceBundle.getBundle().
    *  
-   *   @param res the name of the resource to load.
-   *   @param locale the locale to prefer when searching for the bundle
-   *
-   * NEEDSDOC @param className
+   *   @param className the name of the class that implements the resource bundle.
    *   @return the ResourceBundle
    *   @throws MissingResourceException
    */
@@ -1523,11 +1520,12 @@ public class XSLTErrorResources extends XSLResourceBundle
   }
 
   /**
-   * Get the error string associated with the error code
+   * Get a string representation of the error code.
    *
-   * NEEDSDOC @param errorCode
+   * @param errorCode Should be a valid error code less than {@link MAX_CODE}.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A string representation of the error code, or null if code is 
+   * greater than MAX_CODE.
    */
   public String getMessageKey(int errorCode)
   {
@@ -1543,11 +1541,12 @@ public class XSLTErrorResources extends XSLResourceBundle
   }
 
   /**
-   * Get the error string associated with the error code
+   * Get a string representation of the warning code.
    *
-   * NEEDSDOC @param errorCode
+   * @param errorCode Should be a valid warning code less than {@link MAX_WARNING}.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A string representation of the warning code, or null if code is 
+   * greater than MAX_WARNING.
    */
   public String getWarningKey(int errorCode)
   {
@@ -1563,15 +1562,15 @@ public class XSLTErrorResources extends XSLResourceBundle
   }
 
   /**
-   * Get the error string associated with the error code
+   * Get a string representation of the message code. (same as getMessageKey).
    *
-   * NEEDSDOC @param errorCode
+   * @param errorCode Should be a valid error code less than {@link MAX_CODE}.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A string representation of the error code, or null if code is 
+   * greater than MAX_CODE.
    */
   public static String getMKey(int errorCode)
   {
-
     if (errorCode > MAX_CODE)
       return null;
     else
@@ -1583,11 +1582,12 @@ public class XSLTErrorResources extends XSLResourceBundle
   }
 
   /**
-   * Get the error string associated with the error code
+   * Get a string representation of the warning code.
    *
-   * NEEDSDOC @param errorCode
+   * @param errorCode Should be a valid warning code less than {@link MAX_WARNING}.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return A string representation of the warning code, or null if code is 
+   * greater than MAX_WARNING.
    */
   public static String getWKey(int errorCode)
   {
