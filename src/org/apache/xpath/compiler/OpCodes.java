@@ -460,8 +460,8 @@ public class OpCodes
    *  XNodeSet
    */
   public static final int OP_LOCATIONPATH = 28;
-  public static final int LOCATIONPATHEX_MASK = 0x0000FFFF;
-  public static final int LOCATIONPATHEX_ISSIMPLE = 0x00010000;
+  // public static final int LOCATIONPATHEX_MASK = 0x0000FFFF;
+  // public static final int LOCATIONPATHEX_ISSIMPLE = 0x00010000;
   // public static final int OP_LOCATIONPATH_EX = (28 | 0x00010000);
     
 
