@@ -251,10 +251,20 @@ public class PipeDocument
     Transformer trans = tHLast.getTransformer();
     Properties outputProps = trans.getOutputProperties();
     Serializer serializer = SerializerFactory.getSerializer(outputProps);
-    serializer.setOutputStream(new FileOutputStream(target));
-    tHLast.setResult(new SAXResult(serializer.asContentHandler()));
     
-    reader.parse(source);
+    FileOutputStream out = new FileOutputStream(target);
+    try 
+    {
+      serializer.setOutputStream(out);
+      tHLast.setResult(new SAXResult(serializer.asContentHandler()));
+      reader.parse(source);
+    }
+    finally 
+    {
+      // Always clean up the FileOutputStream,
+      // even if an exception was thrown in the try block
+      if (out != null)
+        out.close();
+    }    
   }
- 
 }
