@@ -143,6 +143,7 @@ Copyright:
   <property name="site.dir" value="${site.root}/target/xalan-j"/>
   <property name="site.book" value="${xdocs.dir}/sources/xalan-jsite.xml"/>
   <property name="xdocs.DONE.file" value="${xdocs.dir}/sources/xalan/DONE"/>
+    <property name="xdocs.XSLTCDONE.file" value="${xdocs.dir}/sources/xalan/XSLTCDONE"/>
   <path id="docs.class.path">
     <pathelement location="${bsf.jar}" />
     <pathelement location="${stylebook.jar}" />
@@ -220,7 +221,7 @@ Copyright:
     <echo message="Transform commits.xml and put the result in ${xdocs.dir}"/>
     <java fork="yes" classname="${xalan.cmdline.class}" >
       <classpath refid="docs.class.path" />
-      <arg line="-in commits.xml -xsl ${xdocs.style}/stylesheets/done.xsl -out ${xdocs.DONE.file}"/>
+      <arg line="-in commits.xml -xsl ${xdocs.style}/stylesheets/done.xsl -out ${xdocs.DONE.file} -param xsltcdone ${xdocs.XSLTCDONE.file}"/>
     </java>
     <echo message="Generate Xalan-J 2.x design document"/>
     <java fork="yes" classname="${doc.generator}" >
