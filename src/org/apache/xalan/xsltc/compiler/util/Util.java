@@ -108,17 +108,20 @@ public final class Util {
      * Replace all illegal Java chars by '_'.
      */
     public static String toJavaName(String name) {
-	final StringBuffer result = new StringBuffer();
+	if (name.length() > 0) {
+	    final StringBuffer result = new StringBuffer();
 
-	char ch = name.charAt(0);
-	result.append(Character.isJavaIdentifierStart(ch) ? ch : '_');
+	    char ch = name.charAt(0);
+	    result.append(Character.isJavaIdentifierStart(ch) ? ch : '_');
 
-	final int n = name.length();
-	for (int i = 1; i < n; i++) {
-	    ch = name.charAt(i);
-	    result.append(Character.isJavaIdentifierPart(ch)  ? ch : '_');
+	    final int n = name.length();
+	    for (int i = 1; i < n; i++) {
+		ch = name.charAt(i);
+		result.append(Character.isJavaIdentifierPart(ch)  ? ch : '_');
+	    }
+	    return result.toString();
 	}
-	return result.toString();
+	return name;
     }
 
     public static Type getJCRefType(String signature) {
@@ -130,15 +133,11 @@ public final class Util {
     }
 
     public static void println(String s) {
-	if (false) {
-	    System.out.println(s);
-	}
+	System.out.println(s);
     }
 
     public static void println(char ch) {
-	if (false) {
-	    System.out.println(ch);
-	}
+	System.out.println(ch);
     }
 
     public static void TRACE1() {

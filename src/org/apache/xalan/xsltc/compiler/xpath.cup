@@ -119,6 +119,10 @@ parser code {:
           _xsltc.setMultiDocument(flag);
     }
 
+    public void setCallsNodeset(boolean flag) {
+          _xsltc.setCallsNodeset(flag);
+    }
+
     public int findNodeType(int axis, Object test) {
 
 	if (test == null) {  // *
@@ -894,6 +898,11 @@ FunctionCall ::= FunctionName:fname LPAREN RPAREN
 	  }
           else if (fname == parser.getQName("namespace-uri")) {
             RESULT = new NamespaceUriCall(fname, argl);
+	  }
+	  // Special case for extension function nodeset()
+          else if (fname.getLocalPart().equals("nodeset")) {
+	    parser.setCallsNodeset(true);  // implies MultiDOM
+            RESULT = new FunctionCall(fname, argl);
 	  }
           else {
             RESULT = new FunctionCall(fname, argl);

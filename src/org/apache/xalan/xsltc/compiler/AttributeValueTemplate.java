@@ -72,10 +72,14 @@ import org.apache.xalan.xsltc.compiler.util.*;
 
 final class AttributeValueTemplate extends AttributeValue {
 
-    public AttributeValueTemplate(String value, Parser parser) {
+    public AttributeValueTemplate(String value, Parser parser, 
+	SyntaxTreeNode parent) 
+    {
+	setParent(parent);
 	setParser(parser);
-	if (check(value, parser))
+	if (check(value, parser)) {
 	    parseAVTemplate(0, value, parser);
+	}
     }
 
     private void parseAVTemplate(final int start, String text, Parser parser) {
