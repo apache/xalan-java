@@ -392,15 +392,14 @@ public class XSLTAttributeDef
 
         return m_setterString;
       }
-      else if ( m_name.equals("space")
-                && m_namespace.equals(Constants.S_XMLNAMESPACEURI) )
-      {
-        m_setterString = "setXmlSpace";
-      }
 
       StringBuffer outBuf = new StringBuffer();
-
       outBuf.append("set");
+
+      if ((m_namespace != null) && m_namespace.equals(Constants.S_XMLNAMESPACEURI))
+      {
+        outBuf.append("Xml");
+      }
 
       int n = m_name.length();
 
