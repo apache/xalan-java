@@ -56,6 +56,8 @@
  */
 package org.apache.xalan.templates;
 
+import org.apache.xml.utils.res.XResourceBundle;
+
 /**
  * <meta name="usage" content="advanced"/>
  * Primary constants used in the TransformerImpl classes.
@@ -416,18 +418,4 @@ public class Constants
 
   /** NEEDSDOC Field ATTRNAME_XXXX          */
   public static final String ATTRNAME_XXXX = "XXXX";
-
-  /** NEEDSDOC Field ERROR_RESOURCES, XSLT_RESOURCE, LANG_BUNDLE_NAME, MULT_ORDER, MULT_PRECEDES, MULT_FOLLOWS, LANG_ORIENTATION, LANG_RIGHTTOLEFT, LANG_LEFTTORIGHT, LANG_NUMBERING, LANG_ADDITIVE, LANG_MULT_ADD, LANG_MULTIPLIER, LANG_MULTIPLIER_CHAR, LANG_NUMBERGROUPS, LANG_NUM_TABLES, LANG_ALPHABET, LANG_TRAD_ALPHABET          */
-  public static final String ERROR_RESOURCES =
-    "org.apache.xalan.res.XSLTErrorResources", XSLT_RESOURCE =
-    "org.apache.xalan.res.XSLTResourceBundle", LANG_BUNDLE_NAME =
-    "org.apache.xalan.res.XSLTResources", MULT_ORDER =
-    "multiplierOrder", MULT_PRECEDES = "precedes", MULT_FOLLOWS =
-    "follows", LANG_ORIENTATION = "orientation", LANG_RIGHTTOLEFT =
-    "rightToLeft", LANG_LEFTTORIGHT = "leftToRight", LANG_NUMBERING =
-    "numbering", LANG_ADDITIVE = "additive", LANG_MULT_ADD =
-    "multiplicative-additive", LANG_MULTIPLIER =
-    "multiplier", LANG_MULTIPLIER_CHAR =
-    "multiplierChar", LANG_NUMBERGROUPS = "numberGroups", LANG_NUM_TABLES =
-    "tables", LANG_ALPHABET = "alphabet", LANG_TRAD_ALPHABET = "tradAlphabet";
 }

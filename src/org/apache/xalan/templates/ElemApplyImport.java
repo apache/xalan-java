@@ -63,7 +63,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 
 /**
  * <meta name="usage" content="advanced"/>

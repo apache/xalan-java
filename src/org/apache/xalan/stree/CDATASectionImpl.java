@@ -63,7 +63,7 @@ import org.xml.sax.ContentHandler;
 import javax.xml.transform.TransformerException;
 import org.xml.sax.ext.LexicalHandler;
 
-import org.apache.xalan.utils.FastStringBuffer;
+import org.apache.xml.utils.FastStringBuffer;
 
 /**
  * <meta name="usage" content="internal"/>

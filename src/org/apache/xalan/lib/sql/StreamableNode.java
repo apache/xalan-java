@@ -61,7 +61,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.DOMException;
 
-import org.apache.xalan.utils.UnImplNode;
+import org.apache.xml.utils.UnImplNode;
 import org.apache.xpath.patterns.NodeTestFilter;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xalan.res.XSLTErrorResources;

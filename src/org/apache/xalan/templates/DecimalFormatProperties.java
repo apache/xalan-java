@@ -68,7 +68,7 @@ import java.text.NumberFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 import org.apache.xalan.res.*;
 import org.apache.xalan.transformer.TransformerImpl;
 

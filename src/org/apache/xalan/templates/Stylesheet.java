@@ -68,9 +68,9 @@ import java.util.Stack;
 import java.util.Vector;
 
 // Xalan imports
-import org.apache.xalan.utils.SystemIDResolver;
-import org.apache.xalan.utils.QName;
-import org.apache.xalan.utils.StringVector;
+import org.apache.xml.utils.SystemIDResolver;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.StringVector;
 import org.apache.xpath.XPath;
 
 // DOM Imports

@@ -80,7 +80,7 @@ import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.functions.Function;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolver;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
@@ -92,7 +92,7 @@ import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
 
 // Java Compiler support.
-import org.apache.xalan.utils.synthetic.JavaUtils;
+import org.apache.xml.utils.synthetic.JavaUtils;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -227,7 +227,7 @@ public class CompilingStylesheetHandler
     
     Other nodes simply have their .evaluate() invoked
     TODO: Their children really should be walked for further compilation opportunities.
-    TODO: ***** OPTIMIZATION: We should preload/cache the org.apache.xalan.utils.synthetic.Class
+    TODO: ***** OPTIMIZATION: We should preload/cache the org.apache.xml.utils.synthetic.Class
      objects rather than doing forName/forClass lookups every time.
     */
   ElemTemplate compileTemplate(ElemTemplate source)
@@ -240,15 +240,15 @@ public class CompilingStylesheetHandler
     {
         // public class ACompiledTemplate000... 
                 // extends CompiledTemplate (partly abstract superclass)
-        org.apache.xalan.utils.synthetic.Class tClass=
-            org.apache.xalan.utils.synthetic.Class.declareClass(className);
+        org.apache.xml.utils.synthetic.Class tClass=
+            org.apache.xml.utils.synthetic.Class.declareClass(className);
         tClass.setModifiers(java.lang.reflect.Modifier.PUBLIC);
         tClass.setSuperClass(tClass.forName("org.apache.xalan.processor.CompiledTemplate"));
 
         // public constructor: Copy values from original
         // template object, pick up "uncompiled children"
         // array from compilation/instantiation process.
-        org.apache.xalan.utils.synthetic.reflection.Constructor ctor=
+        org.apache.xml.utils.synthetic.reflection.Constructor ctor=
             tClass.declareConstructor();
         ctor.setModifiers(java.lang.reflect.Modifier.PUBLIC);
         ctor.addParameter(tClass.forClass(ElemTemplate.class),"original");
@@ -270,7 +270,7 @@ public class CompilingStylesheetHandler
         
         //   public void execute(TransformerImpl transformer, 
         //      Node sourceNode, QName mode)
-        org.apache.xalan.utils.synthetic.reflection.Method exec=
+        org.apache.xml.utils.synthetic.reflection.Method exec=
             tClass.declareMethod("execute");
         exec.setModifiers(java.lang.reflect.Modifier.PUBLIC);
         exec.addParameter(
@@ -279,7 +279,7 @@ public class CompilingStylesheetHandler
         exec.addParameter(
             tClass.forClass(org.w3c.dom.Node.class),"sourceNode");
         exec.addParameter(
-            tClass.forClass(org.apache.xalan.utils.QName.class),"mode");
+            tClass.forClass(org.apache.xml.utils.QName.class),"mode");
         exec.addExceptionType(
             tClass.forClass(javax.xml.transform.TransformerException.class));
 
@@ -348,12 +348,12 @@ public class CompilingStylesheetHandler
         interpretVector.copyInto(eteParms);
         // Instantiate -- note that this will be a singleton,
         // as each template is probably unique
-        org.apache.xalan.utils.synthetic.reflection.Constructor c=
+        org.apache.xml.utils.synthetic.reflection.Constructor c=
             tClass.getConstructor(ctor.getParameterTypes());    
         Object[] parms={source,eteParms};
         instance=(ElemTemplate)c.newInstance(parms);
     }
-    catch(org.apache.xalan.utils.synthetic.SynthesisException e)
+    catch(org.apache.xml.utils.synthetic.SynthesisException e)
     {
         System.out.println("CompilingStylesheetHandler class synthesis error");
         e.printStackTrace();
@@ -542,14 +542,14 @@ public class CompilingStylesheetHandler
     // expand ElemUse.applyAttrSets(transformer, getStylesheetComposed(),
     //               ele.getUseAttributeSets(), sourceNode, mode);
     // ***** DOES THIS CAST NEED TO BE CHECKED?
-    org.apache.xalan.utils.QName[] attributeSetsNames=((org.apache.xalan.templates.ElemUse)ete).getUseAttributeSets();
+    org.apache.xml.utils.QName[] attributeSetsNames=((org.apache.xalan.templates.ElemUse)ete).getUseAttributeSets();
     if(null != attributeSetsNames)
     {
         org.apache.xalan.templates.StylesheetComposed stylesheet=ete.getStylesheetComposed();
         int nNames = attributeSetsNames.length;
         for(int i = 0; i < nNames; i++)
         {
-            org.apache.xalan.utils.QName qname = attributeSetsNames[i];
+            org.apache.xml.utils.QName qname = attributeSetsNames[i];
             Vector attrSets = stylesheet.getAttributeSetComposed(qname);
             int nSets = attrSets.size();
             for(int k = 0; k < nSets; k++)
@@ -753,7 +753,7 @@ public class CompilingStylesheetHandler
             +"    "+prefix+"=rhandler.getNewUniqueNSPrefix();\n"
             +"    rhandler.startPrefixMapping("+prefix+","+attrNameSpace+");\n"                    
             +"  }\n"
-            +"  "+attrName+"=("+prefix+"+\':'+org.apache.xalan.utils.QName.getLocalPart("+attrName+"));\n"
+            +"  "+attrName+"=("+prefix+"+\':'+org.apache.xml.utils.QName.getLocalPart("+attrName+"));\n"
             +"}\n"
             );
     }
@@ -762,9 +762,9 @@ public class CompilingStylesheetHandler
     // compile-time decision above? Shouldn't really need to since the
     // qname test ought to cover it, but....
     body.append(
-        "if(org.apache.xalan.utils.QName.isXMLNSDecl("+origAttrName+"))\n"
+        "if(org.apache.xml.utils.QName.isXMLNSDecl("+origAttrName+"))\n"
         +"{ // Just declare namespace prefix \n"
-        +"  String "+prefix+"=org.apache.xalan.utils.QName.getPrefixFromXMLNSDecl("+origAttrName+");\n"
+        +"  String "+prefix+"=org.apache.xml.utils.QName.getPrefixFromXMLNSDecl("+origAttrName+");\n"
         +"  String "+ns+"=rhandler.getURI("+prefix+");\n"
         +"  if(null=="+ns+")\n"
         +"    rhandler.startPrefixMapping("+prefix+","+val+");\n"
@@ -776,7 +776,7 @@ public class CompilingStylesheetHandler
     body.append("  "+attributeHandled+"=true;\n");
     body.append("}\n"
                 +"else\n{\n"
-                +"  String "+nsprefix+"=org.apache.xalan.utils.QName.getPrefixPart("+origAttrName+");\n"
+                +"  String "+nsprefix+"=org.apache.xml.utils.QName.getPrefixPart("+origAttrName+");\n"
                 +"  if(null=="+nsprefix+") "+nsprefix+"=\"\";\n"
                 
                 //  attrNameSpace = getNamespaceForPrefix(nsprefix);
@@ -788,7 +788,7 @@ public class CompilingStylesheetHandler
                 
                 // The if here substitutes for early returns in original code
                 +"if(!"+attributeHandled+")\n{\n"
-                +"String "+localName+"=org.apache.xalan.utils.QName.getLocalPart("+attrName+");\n"
+                +"String "+localName+"=org.apache.xml.utils.QName.getLocalPart("+attrName+");\n"
                 +"rhandler.addAttribute("+attrNameSpace+","+localName+","+attrName+",\"CDATA\","+val+");\n"
                 +"} //end attributeHandled\n"
                 +"} //end else\n"
@@ -862,10 +862,10 @@ public class CompilingStylesheetHandler
    * name and output is written to the directory that file
    * would be found in (possibly relative). However, "."
    * is treated as being found in itself rather than in "..".
-   * TODO: ***** A more elegant version of this should be moved into org.apache.xalan.utils.synthetic.Class?
+   * TODO: ***** A more elegant version of this should be moved into org.apache.xml.utils.synthetic.Class?
    * TODO: Should we use a classloader rather than std. classpath?
    */
-  Class compileSyntheticClass(org.apache.xalan.utils.synthetic.Class tClass, String classLocation)
+  Class compileSyntheticClass(org.apache.xml.utils.synthetic.Class tClass, String classLocation)
   {
     Class resolved=null;
     // Write class relative to specified starting location
@@ -946,7 +946,7 @@ public class CompilingStylesheetHandler
                 tClass.getName());
             e.printStackTrace();
         }
-        catch(org.apache.xalan.utils.synthetic.SynthesisException e)
+        catch(org.apache.xml.utils.synthetic.SynthesisException e)
         {
             System.err.println("ERR: synthesized Template class realization failed for "+
                 tClass.getName());

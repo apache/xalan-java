@@ -61,7 +61,7 @@ import java.util.TooManyListenersException;
 
 import org.w3c.dom.Node;
 
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.objects.XObject;

@@ -59,8 +59,8 @@ package org.apache.xalan.transformer;
 import java.util.Vector;
 
 import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xalan.utils.PrefixResolver;
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.QName;
 import org.apache.xalan.templates.KeyDeclaration;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.DescendantOrSelfWalker;

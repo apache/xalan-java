@@ -56,7 +56,7 @@
  */
 package org.apache.xpath;
 
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.objects.XObject;
 
 /**

@@ -70,7 +70,7 @@ import org.w3c.dom.DOMException;
 
 import java.util.Hashtable;
 
-import org.apache.xalan.utils.FastStringBuffer;
+import org.apache.xml.utils.FastStringBuffer;
 
 /**
  * <meta name="usage" content="internal"/>

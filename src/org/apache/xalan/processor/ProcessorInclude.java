@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.processor;
 
-import org.apache.xalan.utils.TreeWalker;
+import org.apache.xml.utils.TreeWalker;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
@@ -83,7 +83,7 @@ import javax.xml.transform.TransformerException;
 
 import org.w3c.dom.Node;
 
-import org.apache.xalan.utils.SystemIDResolver;
+import org.apache.xml.utils.SystemIDResolver;
 
 /**
  * TransformerFactory class for xsl:include markup.

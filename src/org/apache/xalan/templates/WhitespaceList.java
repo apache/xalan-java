@@ -57,7 +57,7 @@
 package org.apache.xalan.templates;
 
 import org.apache.xpath.XPathContext;
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 
 import org.w3c.dom.Node;
 import org.w3c.dom.Element;

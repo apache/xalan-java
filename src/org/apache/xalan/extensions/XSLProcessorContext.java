@@ -63,7 +63,7 @@ import org.w3c.dom.traversal.NodeIterator;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
 import org.apache.xalan.templates.Stylesheet;
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 
 import javax.xml.transform.TransformerException;
 

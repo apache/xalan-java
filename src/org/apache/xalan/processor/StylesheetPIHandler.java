@@ -67,7 +67,7 @@ import java.util.StringTokenizer;
 import javax.xml.transform.Source;
 import javax.xml.transform.sax.SAXSource;
 
-import org.apache.xalan.utils.SystemIDResolver;
+import org.apache.xml.utils.SystemIDResolver;
 
 /**
  * Search for the xml-stylesheet processing instructions in an XML document.

@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.processor;
 
-import org.apache.xalan.utils.TreeWalker;
+import org.apache.xml.utils.TreeWalker;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetComposed;
 import org.apache.xalan.res.XSLMessages;

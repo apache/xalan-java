@@ -56,7 +56,7 @@
  */
 package org.apache.xpath.compiler;
 
-import org.apache.xalan.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolver;
 
 import java.util.Vector;
 

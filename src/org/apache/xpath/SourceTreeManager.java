@@ -79,8 +79,8 @@ import org.xml.sax.EntityResolver;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.stree.SourceTreeHandler;
-import org.apache.xalan.utils.SystemIDResolver;
-import org.apache.xalan.utils.SAXSourceLocator;
+import org.apache.xml.utils.SystemIDResolver;
+import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.res.XPATHErrorResources;
 
 import javax.xml.transform.SourceLocator;
@@ -250,7 +250,7 @@ public class SourceTreeManager
     }
     catch (TransformerException te)
     {
-      throw new org.apache.xalan.utils.WrappedRuntimeException(te);
+      throw new org.apache.xml.utils.WrappedRuntimeException(te);
     }
   }
 

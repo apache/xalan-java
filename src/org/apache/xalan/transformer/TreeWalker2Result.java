@@ -60,8 +60,8 @@ import org.w3c.dom.*;
 
 import org.xml.sax.*;
 
-import org.apache.xalan.utils.TreeWalker;
-import org.apache.xalan.utils.MutableAttrListImpl;
+import org.apache.xml.utils.TreeWalker;
+import org.apache.xml.utils.MutableAttrListImpl;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xpath.DOMHelper;
 

@@ -65,7 +65,7 @@ import org.apache.xpath.*;
 import org.apache.xpath.objects.XObject;
 import org.apache.xalan.trace.SelectionEvent;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 import org.apache.xalan.transformer.TreeWalker2Result;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
@@ -183,7 +183,7 @@ public class ElemCopyOf extends ElemTemplateElement
           NodeIterator nl = value.nodeset();
 
           // Copy the tree.
-          org.apache.xalan.utils.TreeWalker tw =
+          org.apache.xml.utils.TreeWalker tw =
                                                 new TreeWalker2Result(transformer, handler);
           Node pos;
 

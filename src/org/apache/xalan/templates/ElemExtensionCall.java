@@ -67,11 +67,11 @@ import org.xml.sax.helpers.*;
 
 import java.util.StringTokenizer;
 
-import org.apache.xalan.utils.QName;
-import org.apache.xalan.utils.NameSpace;
-import org.apache.xalan.utils.StringToStringTable;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.NameSpace;
+import org.apache.xml.utils.StringToStringTable;
 import org.apache.xpath.XPathContext;
-import org.apache.xalan.utils.MutableAttrListImpl;
+import org.apache.xml.utils.MutableAttrListImpl;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.res.XSLTErrorResources;

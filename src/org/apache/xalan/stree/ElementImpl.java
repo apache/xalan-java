@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.stree;
 
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 
 import org.w3c.dom.Node;
 

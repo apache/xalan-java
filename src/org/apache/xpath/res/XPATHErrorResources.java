@@ -56,7 +56,8 @@
  */
 package org.apache.xpath.res;
 
-import org.apache.xalan.res.XSLResourceBundle;
+import org.apache.xml.utils.res.XResourceBundleBase;
+
 
 import java.util.*;
 
@@ -73,7 +74,7 @@ import java.text.DecimalFormat;
  * fill in the actual message string. Follow the instructions
  * below.
  */
-public class XPATHErrorResources extends XSLResourceBundle
+public class XPATHErrorResources extends XResourceBundleBase
 {
 
   /** NEEDSDOC Field ERROR_SUFFIX          */

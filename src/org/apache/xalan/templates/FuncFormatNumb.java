@@ -58,7 +58,7 @@ package org.apache.xalan.templates;
 
 import java.util.Vector;
 
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.Function3Args;
 import org.apache.xpath.XPathContext;
@@ -74,7 +74,7 @@ import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.ErrorListener;
-import org.apache.xalan.utils.SAXSourceLocator;
+import org.apache.xml.utils.SAXSourceLocator;
 
 /**
  * <meta name="usage" content="advanced"/>

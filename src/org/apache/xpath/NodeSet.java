@@ -63,7 +63,7 @@ import org.w3c.dom.traversal.NodeIterator;
 import org.w3c.dom.traversal.NodeFilter;
 import org.w3c.dom.DOMException;
 
-import org.apache.xalan.utils.NodeVector;
+import org.apache.xml.utils.NodeVector;
 import org.apache.xpath.axes.ContextNodeList;
 
 /**

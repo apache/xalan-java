@@ -56,7 +56,7 @@
  */
 package org.apache.xpath.functions;
 
-import org.apache.xalan.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolver;
 import org.apache.xalan.extensions.ExtensionsTable;
 
 import org.w3c.dom.Node;

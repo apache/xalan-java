@@ -88,12 +88,12 @@ import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.TemplateList;
 import org.apache.xalan.templates.XUnresolvedVariable;
 import org.apache.xalan.trace.TraceManager;
-import org.apache.xalan.utils.DOMBuilder;
-import org.apache.xalan.utils.NodeVector;
-import org.apache.xalan.utils.BoolStack;
-import org.apache.xalan.utils.QName;
-import org.apache.xalan.utils.PrefixResolver;
-import org.apache.xalan.utils.ObjectPool;
+import org.apache.xml.utils.DOMBuilder;
+import org.apache.xml.utils.NodeVector;
+import org.apache.xml.utils.BoolStack;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.ObjectPool;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XObject;
@@ -328,7 +328,7 @@ public class TransformerImpl extends Transformer
   /**
    * The SAX error handler, where errors and warnings are sent.
    */
-  private ErrorListener m_errorHandler = new org.apache.xalan.utils.DefaultErrorHandler();
+  private ErrorListener m_errorHandler = new org.apache.xml.utils.DefaultErrorHandler();
 
   /**
    * The trace manager.
@@ -591,9 +591,9 @@ public class TransformerImpl extends Transformer
       {
         if (e instanceof javax.xml.transform.TransformerException)
           throw (javax.xml.transform.TransformerException) e;
-        else if (e instanceof org.apache.xalan.utils.WrappedRuntimeException)
+        else if (e instanceof org.apache.xml.utils.WrappedRuntimeException)
           throw new javax.xml.transform.TransformerException(
-            ((org.apache.xalan.utils.WrappedRuntimeException) e).getException());
+            ((org.apache.xml.utils.WrappedRuntimeException) e).getException());
         else
         {
           throw new javax.xml.transform.TransformerException(e);
@@ -604,15 +604,15 @@ public class TransformerImpl extends Transformer
         m_resultTreeHandler.endDocument();
       }
     }
-    catch (org.apache.xalan.utils.WrappedRuntimeException wre)
+    catch (org.apache.xml.utils.WrappedRuntimeException wre)
     {
       Throwable throwable = wre.getException();
 
       while (throwable
-             instanceof org.apache.xalan.utils.WrappedRuntimeException)
+             instanceof org.apache.xml.utils.WrappedRuntimeException)
       {
         throwable =
-          ((org.apache.xalan.utils.WrappedRuntimeException) throwable).getException();
+          ((org.apache.xml.utils.WrappedRuntimeException) throwable).getException();
       }
 
       throw new TransformerException(wre.getException());
@@ -2825,7 +2825,7 @@ public class TransformerImpl extends Transformer
         e.printStackTrace();
       }
 
-      // throw new org.apache.xalan.utils.WrappedRuntimeException(e);
+      // throw new org.apache.xml.utils.WrappedRuntimeException(e);
     }
   }
 

@@ -67,8 +67,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.XPathContext;
-import org.apache.xalan.utils.PrefixResolverDefault;
-import org.apache.xalan.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolverDefault;
+import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.objects.XObject;
 
 /**

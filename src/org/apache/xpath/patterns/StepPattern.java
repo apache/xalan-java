@@ -59,7 +59,7 @@ package org.apache.xpath.patterns;
 import org.apache.xpath.Expression;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPathContext;
-import org.apache.xalan.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.axes.SubContextList;
 import org.apache.xpath.compiler.PsuedoNames;
 

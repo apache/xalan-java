@@ -68,7 +68,7 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.*;
 
 import org.apache.xalan.serialize.*;
-import org.apache.xalan.utils.*;
+import org.apache.xml.utils.*;
 import org.apache.xpath.*;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xalan.trace.*;

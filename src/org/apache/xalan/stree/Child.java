@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.stree;
 
-import org.apache.xalan.utils.UnImplNode;
+import org.apache.xml.utils.UnImplNode;
 import org.apache.xpath.DOMOrder;
 
 import org.w3c.dom.Node;
@@ -168,7 +168,7 @@ public class Child extends UnImplNode implements DOMOrder
    */
   protected void throwParseError(Exception e)
   {
-    throw new org.apache.xalan.utils.WrappedRuntimeException(e);
+    throw new org.apache.xml.utils.WrappedRuntimeException(e);
   }
 
   /**

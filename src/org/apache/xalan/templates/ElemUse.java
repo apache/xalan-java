@@ -63,7 +63,7 @@ import org.w3c.dom.Node;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.*;
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 
 import java.util.StringTokenizer;
 

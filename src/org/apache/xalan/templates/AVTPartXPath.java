@@ -60,7 +60,7 @@ import org.apache.xpath.*;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.XPathParser;
-import org.apache.xalan.utils.FastStringBuffer;
+import org.apache.xml.utils.FastStringBuffer;
 
 import org.w3c.dom.*;
 
@@ -98,7 +98,7 @@ public class AVTPartXPath extends AVTPart
    * @throws javax.xml.transform.TransformerException
    */
   public AVTPartXPath(
-          String val, org.apache.xalan.utils.PrefixResolver nsNode, XPathParser xpathProcessor, XPathFactory factory, XPathContext liaison)
+          String val, org.apache.xml.utils.PrefixResolver nsNode, XPathParser xpathProcessor, XPathFactory factory, XPathContext liaison)
             throws javax.xml.transform.TransformerException
   {
     m_xpath = new XPath(val, null, nsNode, XPath.SELECT);
@@ -126,7 +126,7 @@ public class AVTPartXPath extends AVTPart
    * @throws javax.xml.transform.TransformerException
    */
   public void evaluate(
-          XPathContext xctxt, FastStringBuffer buf, Node context, org.apache.xalan.utils.PrefixResolver nsNode)
+          XPathContext xctxt, FastStringBuffer buf, Node context, org.apache.xml.utils.PrefixResolver nsNode)
             throws javax.xml.transform.TransformerException
   {
 

@@ -64,11 +64,11 @@ import java.util.Enumeration;
 import java.util.Vector;
 
 // Xalan imports
-import org.apache.xalan.utils.UnImplNode;
-import org.apache.xalan.utils.NameSpace;
-import org.apache.xalan.utils.PrefixResolver;
-import org.apache.xalan.utils.QName;
-import org.apache.xalan.utils.StringToStringTable;
+import org.apache.xml.utils.UnImplNode;
+import org.apache.xml.utils.NameSpace;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.StringToStringTable;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.transformer.TransformerImpl;

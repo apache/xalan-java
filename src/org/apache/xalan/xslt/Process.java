@@ -178,7 +178,7 @@ public class Process
     java.io.PrintWriter dumpWriter = diagnosticsWriter;
     XSLTErrorResources resbundle =
       (XSLTErrorResources) (XSLMessages.loadResourceBundle(
-        Constants.ERROR_RESOURCES));
+        org.apache.xml.utils.res.XResourceBundle.ERROR_RESOURCES));
 
     // loadPropertyFileToSystem(XSLT_PROPERTIES);
     if (argv.length < 1)
@@ -519,10 +519,10 @@ public class Process
       catch (Throwable throwable)
       {
         while (throwable
-               instanceof org.apache.xalan.utils.WrappedRuntimeException)
+               instanceof org.apache.xml.utils.WrappedRuntimeException)
         {
           throwable =
-            ((org.apache.xalan.utils.WrappedRuntimeException) throwable).getException();
+            ((org.apache.xml.utils.WrappedRuntimeException) throwable).getException();
         }
 
         if ((throwable instanceof NullPointerException)

@@ -61,15 +61,15 @@ import org.w3c.dom.Node;
 import java.util.Vector;
 import java.util.StringTokenizer;
 
-import org.apache.xalan.utils.StringBufferPool;
-import org.apache.xalan.utils.FastStringBuffer;
+import org.apache.xml.utils.StringBufferPool;
+import org.apache.xml.utils.FastStringBuffer;
 
 import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPath;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xalan.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolver;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.processor.StylesheetHandler;
 import javax.xml.transform.ErrorListener;
@@ -463,7 +463,7 @@ public class AVT implements java.io.Serializable
    * @throws javax.xml.transform.TransformerException
    */
   public String evaluate(
-          XPathContext xctxt, Node context, org.apache.xalan.utils.PrefixResolver nsNode)
+          XPathContext xctxt, Node context, org.apache.xml.utils.PrefixResolver nsNode)
             throws javax.xml.transform.TransformerException
   {
 

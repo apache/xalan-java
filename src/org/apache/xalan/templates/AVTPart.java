@@ -59,7 +59,7 @@ package org.apache.xalan.templates;
 import org.w3c.dom.*;
 
 import org.apache.xpath.XPathContext;
-import org.apache.xalan.utils.FastStringBuffer;
+import org.apache.xml.utils.FastStringBuffer;
 
 /**
  * <meta name="usage" content="internal"/>
@@ -95,7 +95,7 @@ public abstract class AVTPart implements java.io.Serializable
    */
   public abstract void evaluate(
     XPathContext xctxt, FastStringBuffer buf, Node context,
-      org.apache.xalan.utils.PrefixResolver nsNode)
+      org.apache.xml.utils.PrefixResolver nsNode)
         throws javax.xml.transform.TransformerException;
 
   /**

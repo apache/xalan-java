@@ -67,7 +67,7 @@ import org.apache.xpath.NodeSet;
 import org.apache.xpath.XPathContext;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.utils.UnImplNode;
+import org.apache.xml.utils.UnImplNode;
 import org.apache.xalan.stree.DocumentFragmentImpl;
 
 /**

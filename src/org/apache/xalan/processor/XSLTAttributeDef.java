@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.processor;
 
-import org.apache.xalan.utils.StringToIntTable;
+import org.apache.xml.utils.StringToIntTable;
 
 import java.lang.IllegalAccessException;
 import java.lang.IndexOutOfBoundsException;
@@ -72,9 +72,9 @@ import java.util.Vector;
 import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Constants;
-import org.apache.xalan.utils.QName;
-import org.apache.xalan.utils.SystemIDResolver;
-import org.apache.xalan.utils.StringVector;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.SystemIDResolver;
+import org.apache.xml.utils.StringVector;
 import org.apache.xpath.XPath;
 
 import javax.xml.transform.TransformerException;

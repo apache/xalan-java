@@ -70,10 +70,10 @@ import org.apache.xalan.transformer.TransformerImpl;
  * This event responds to and is modeled on the SAX events that are sent to the
  * formatter listener FormatterToXXX)classes.
  *
- * @see org.apache.xalan.utils.DOMBuilder
- * @see org.apache.xalan.utils.FormatterToHTML
- * @see org.apache.xalan.utils.FormatterToText
- * @see org.apache.xalan.utils.FormatterToXML
+ * @see org.apache.xml.utils.DOMBuilder
+ * @see org.apache.xml.utils.FormatterToHTML
+ * @see org.apache.xml.utils.FormatterToText
+ * @see org.apache.xml.utils.FormatterToXML
  *
  */
 public class GenerateEvent implements java.util.EventListener

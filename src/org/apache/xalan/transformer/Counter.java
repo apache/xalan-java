@@ -58,7 +58,7 @@ package org.apache.xalan.transformer;
 
 import org.w3c.dom.Node;
 
-import org.apache.xalan.utils.NodeVector;
+import org.apache.xml.utils.NodeVector;
 import org.apache.xpath.NodeSet;  // for isNodeAfter support
 import org.apache.xpath.XPathContext;
 

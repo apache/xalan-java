@@ -62,9 +62,9 @@ import org.w3c.dom.Node;
 
 import org.xml.sax.ContentHandler;
 
-import org.apache.xalan.utils.DOMBuilder;
-import org.apache.xalan.utils.XMLCharacterRecognizer;
-import org.apache.xalan.utils.BoolStack;
+import org.apache.xml.utils.DOMBuilder;
+import org.apache.xml.utils.XMLCharacterRecognizer;
+import org.apache.xml.utils.BoolStack;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.SourceTreeManager;
 import org.apache.xalan.transformer.TransformerImpl;

@@ -66,7 +66,7 @@ import org.w3c.dom.Node;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.compiler.PsuedoNames;
 import org.apache.xpath.patterns.NodeTest;

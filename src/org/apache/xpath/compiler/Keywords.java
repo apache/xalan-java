@@ -58,7 +58,7 @@ package org.apache.xpath.compiler;
 
 import java.util.Hashtable;
 
-import org.apache.xalan.utils.StringKey;
+import org.apache.xml.utils.StringKey;
 
 /**
  * <meta name="usage" content="internal"/>

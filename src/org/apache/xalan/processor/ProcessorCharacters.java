@@ -64,7 +64,7 @@ import org.apache.xalan.templates.ElemText;
 import org.apache.xalan.templates.ElemTextLiteral;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Constants;
-import org.apache.xalan.utils.XMLCharacterRecognizer;
+import org.apache.xml.utils.XMLCharacterRecognizer;
 
 /**
  * This class processes character events for a XSLT template element.

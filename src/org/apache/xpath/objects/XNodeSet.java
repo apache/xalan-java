@@ -65,7 +65,7 @@ import org.apache.xpath.DOMHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.axes.ContextNodeList;
-import org.apache.xalan.utils.StringVector;
+import org.apache.xml.utils.StringVector;
 
 /**
  * <meta name="usage" content="general"/>

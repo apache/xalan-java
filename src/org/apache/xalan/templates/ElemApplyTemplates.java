@@ -66,7 +66,7 @@ import org.apache.xpath.objects.XObject;
 import java.util.Vector;
 
 import org.apache.xalan.trace.TracerEvent;
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xpath.VariableStack;
 import org.apache.xalan.transformer.TransformerImpl;

@@ -73,7 +73,7 @@ import org.apache.xpath.DOMHelper;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.compiler.Compiler;
-import org.apache.xalan.utils.ObjectPool;
+import org.apache.xml.utils.ObjectPool;
 
 /**
  * <meta name="usage" content="advanced"/>

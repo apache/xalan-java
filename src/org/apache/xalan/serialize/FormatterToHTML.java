@@ -66,14 +66,14 @@ import java.util.Vector;
 
 import org.xml.sax.*;
 
-import org.apache.xalan.utils.BoolStack;
-import org.apache.xalan.utils.Trie;
+import org.apache.xml.utils.BoolStack;
+import org.apache.xml.utils.Trie;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.serialize.Method;
 import org.apache.xalan.serialize.helpers.HTMLOutputFormat;
-import org.apache.xalan.utils.StringToIntTable;
+import org.apache.xml.utils.StringToIntTable;
 
 
 /**

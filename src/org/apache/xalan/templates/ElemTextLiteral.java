@@ -60,7 +60,7 @@ import org.w3c.dom.*;
 
 import org.xml.sax.*;
 
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;
 

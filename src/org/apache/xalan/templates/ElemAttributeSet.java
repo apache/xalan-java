@@ -61,7 +61,7 @@ import org.w3c.dom.DOMException;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;
 

@@ -56,7 +56,7 @@
  */
 package org.apache.xalan.stree;
 
-import org.apache.xalan.utils.DOMBuilder;
+import org.apache.xml.utils.DOMBuilder;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
@@ -145,7 +145,7 @@ public class StreeDOMBuilder extends DOMBuilder
    * @param localName local part of qualified name of the element 
    * @param name The element type name.
    * @param atts The attributes attached to the element, if any.
-   * @see org.apache.xalan.utils.DOMBuilder.startElement()
+   * @see org.apache.xml.utils.DOMBuilder.startElement()
    */
   public void startElement(
           String ns, String localName, String name, Attributes atts)

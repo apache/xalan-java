@@ -79,9 +79,9 @@ import org.apache.xalan.serialize.OutputFormat;
 import org.apache.xalan.serialize.DOMSerializer;
 import org.apache.xalan.serialize.QName;
 
-import org.apache.xalan.utils.BoolStack;
-import org.apache.xalan.utils.TreeWalker;
-import org.apache.xalan.utils.WrappedRuntimeException;
+import org.apache.xml.utils.BoolStack;
+import org.apache.xml.utils.TreeWalker;
+import org.apache.xml.utils.WrappedRuntimeException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.res.XSLMessages;

@@ -210,7 +210,7 @@ public class DOM2Helper extends DOMHelper
       */
 
       parser.setErrorHandler(
-        new org.apache.xalan.utils.DefaultErrorHandler());
+        new org.apache.xml.utils.DefaultErrorHandler());
 
       // if(null != m_entityResolver)
       // {

@@ -59,8 +59,8 @@ package org.apache.xpath;
 import java.util.Stack;
 import java.util.Vector;
 
-import org.apache.xalan.utils.QName;
-import org.apache.xalan.utils.IntStack;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.IntStack;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;

@@ -56,6 +56,8 @@
  */
 package org.apache.xalan.res;
 
+import org.apache.xml.utils.res.XResourceBundleBase;
+
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.ListResourceBundle;
@@ -75,10 +77,10 @@ public class XSLMessages
   private Locale fLocale = Locale.getDefault();
 
   /** NEEDSDOC Field XSLTBundle          */
-  private static XSLResourceBundle XSLTBundle = null;
+  private static XResourceBundleBase XSLTBundle = null;
 
   /** NEEDSDOC Field XPATHBundle          */
-  private static XSLResourceBundle XPATHBundle = null;
+  private static XResourceBundleBase XPATHBundle = null;
 
   /** NEEDSDOC Field XSLT_ERROR_RESOURCES          */
   private static final String XSLT_ERROR_RESOURCES =
@@ -129,9 +131,9 @@ public class XSLMessages
 
     if (XPATHBundle == null)
       XPATHBundle =
-        (XSLResourceBundle) loadResourceBundle(XPATH_ERROR_RESOURCES);
+        (XResourceBundleBase) loadResourceBundle(XPATH_ERROR_RESOURCES);
 
-    XSLResourceBundle fResourceBundle = XPATHBundle;
+    XResourceBundleBase fResourceBundle = XPATHBundle;
 
     if (fResourceBundle != null)
     {
@@ -158,9 +160,9 @@ public class XSLMessages
 
     if (XPATHBundle == null)
       XPATHBundle =
-        (XSLResourceBundle) loadResourceBundle(XPATH_ERROR_RESOURCES);
+        (XResourceBundleBase) loadResourceBundle(XPATH_ERROR_RESOURCES);
 
-    XSLResourceBundle fResourceBundle = XPATHBundle;
+    XResourceBundleBase fResourceBundle = XPATHBundle;
 
     if (fResourceBundle != null)
     {
@@ -185,7 +187,7 @@ public class XSLMessages
    *
    * NEEDSDOC ($objectName$) @return
    */
-  public static final String createXPATHMsg(XSLResourceBundle fResourceBundle,
+  public static final String createXPATHMsg(XResourceBundleBase fResourceBundle,
                                             String msgKey, Object args[])  //throws Exception 
   {
 
@@ -252,9 +254,9 @@ public class XSLMessages
 
     if (XSLTBundle == null)
       XSLTBundle =
-        (XSLResourceBundle) loadResourceBundle(XSLT_ERROR_RESOURCES);
+        (XResourceBundleBase) loadResourceBundle(XSLT_ERROR_RESOURCES);
 
-    XSLResourceBundle fResourceBundle = XSLTBundle;
+    XResourceBundleBase fResourceBundle = XSLTBundle;
 
     if (fResourceBundle != null)
     {
@@ -281,9 +283,9 @@ public class XSLMessages
 
     if (XSLTBundle == null)
       XSLTBundle =
-        (XSLResourceBundle) loadResourceBundle(XSLT_ERROR_RESOURCES);
+        (XResourceBundleBase) loadResourceBundle(XSLT_ERROR_RESOURCES);
 
-    XSLResourceBundle fResourceBundle = XSLTBundle;
+    XResourceBundleBase fResourceBundle = XSLTBundle;
 
     if (fResourceBundle != null)
     {
@@ -308,7 +310,7 @@ public class XSLMessages
    *
    * NEEDSDOC ($objectName$) @return
    */
-  public static final String createMsg(XSLResourceBundle fResourceBundle,
+  public static final String createMsg(XResourceBundleBase fResourceBundle,
                                        String msgKey, Object args[])  //throws Exception 
   {
 
@@ -382,9 +384,9 @@ public class XSLMessages
     int majorCode;
     int minorCode;
     String fmsg = null;
-    XSLResourceBundle aResourceBundle = null;
+    XResourceBundleBase aResourceBundle = null;
 
-    aResourceBundle = (XSLResourceBundle) loadResourceBundle(bundleName);
+    aResourceBundle = (XResourceBundleBase) loadResourceBundle(bundleName);
 
     String msgKey = aResourceBundle.getMessageKey(errorCode);
     String msg = null;

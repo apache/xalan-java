@@ -56,6 +56,8 @@
  */
 package org.apache.xalan.templates;
 
+import org.apache.xml.utils.res.XResourceBundle;
+
 import org.w3c.dom.*;
 import org.w3c.dom.traversal.NodeIterator;
 
@@ -69,14 +71,14 @@ import java.text.DecimalFormat;
 import org.apache.xpath.*;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.compiler.XPathParser;
-import org.apache.xalan.utils.QName;
-import org.apache.xalan.utils.StringBufferPool;
-import org.apache.xalan.utils.FastStringBuffer;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.StringBufferPool;
+import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xalan.res.*;
 import org.apache.xalan.transformer.DecimalToRoman;
 import org.apache.xalan.transformer.CountersTable;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.utils.NodeVector;
+import org.apache.xml.utils.NodeVector;
 
 import javax.xml.transform.TransformerException;
 
@@ -444,7 +446,7 @@ public class ElemNumber extends ElemTemplateElement
    * Shouldn't this be in the transformer?  Big worries about threads...
    */
 
-  // private XSLTResourceBundle thisBundle;
+  // private XResourceBundle thisBundle;
 
   /**
    * Table to help in converting decimals to roman numerals.
@@ -1238,15 +1240,15 @@ public class ElemNumber extends ElemTemplateElement
     case 'A' :
       if (m_alphaCountTable == null)
       {
-        XSLTResourceBundle thisBundle;
+        XResourceBundle thisBundle;
 
         thisBundle =
-          (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
-            Constants.LANG_BUNDLE_NAME, getLocale(transformer, contextNode));
+          (XResourceBundle) XResourceBundle.loadResourceBundle(
+            org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, getLocale(transformer, contextNode));
 
         char[] alphabet;
 
-        alphabet = (char[]) thisBundle.getObject(Constants.LANG_ALPHABET);
+        alphabet = (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET);
         m_alphaCountTable = alphabet;
       }
 
@@ -1255,15 +1257,15 @@ public class ElemNumber extends ElemTemplateElement
     case 'a' :
       if (m_alphaCountTable == null)
       {
-        XSLTResourceBundle thisBundle;
+        XResourceBundle thisBundle;
 
         thisBundle =
-          (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
-            Constants.LANG_BUNDLE_NAME, getLocale(transformer, contextNode));
+          (XResourceBundle) XResourceBundle.loadResourceBundle(
+            org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, getLocale(transformer, contextNode));
 
         char[] alphabet;
 
-        alphabet = (char[]) thisBundle.getObject(Constants.LANG_ALPHABET);
+        alphabet = (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET);
         m_alphaCountTable = alphabet;
       }
 
@@ -1291,10 +1293,10 @@ public class ElemNumber extends ElemTemplateElement
       break;
     case 0x3042 :
     {
-      XSLTResourceBundle thisBundle;
+      XResourceBundle thisBundle;
 
-      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
-        Constants.LANG_BUNDLE_NAME, new Locale("ja", "JP", "HA"));
+      thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
+        org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("ja", "JP", "HA"));
 
       if (letterVal != null
               && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
@@ -1303,16 +1305,16 @@ public class ElemNumber extends ElemTemplateElement
         formattedNumber.append(
           int2singlealphaCount(
             listElement,
-            (char[]) thisBundle.getObject(Constants.LANG_ALPHABET)));
+            (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET)));
 
       break;
     }
     case 0x3044 :
     {
-      XSLTResourceBundle thisBundle;
+      XResourceBundle thisBundle;
 
-      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
-        Constants.LANG_BUNDLE_NAME, new Locale("ja", "JP", "HI"));
+      thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
+        org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("ja", "JP", "HI"));
 
       if ((letterVal != null)
               && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
@@ -1321,16 +1323,16 @@ public class ElemNumber extends ElemTemplateElement
         formattedNumber.append(
           int2singlealphaCount(
             listElement,
-            (char[]) thisBundle.getObject(Constants.LANG_ALPHABET)));
+            (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET)));
 
       break;
     }
     case 0x30A2 :
     {
-      XSLTResourceBundle thisBundle;
+      XResourceBundle thisBundle;
 
-      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
-        Constants.LANG_BUNDLE_NAME, new Locale("ja", "JP", "A"));
+      thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
+        org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("ja", "JP", "A"));
 
       if (letterVal != null
               && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
@@ -1339,16 +1341,16 @@ public class ElemNumber extends ElemTemplateElement
         formattedNumber.append(
           int2singlealphaCount(
             listElement,
-            (char[]) thisBundle.getObject(Constants.LANG_ALPHABET)));
+            (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET)));
 
       break;
     }
     case 0x30A4 :
     {
-      XSLTResourceBundle thisBundle;
+      XResourceBundle thisBundle;
 
-      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
-        Constants.LANG_BUNDLE_NAME, new Locale("ja", "JP", "I"));
+      thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
+        org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("ja", "JP", "I"));
 
       if (letterVal != null
               && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
@@ -1357,16 +1359,16 @@ public class ElemNumber extends ElemTemplateElement
         formattedNumber.append(
           int2singlealphaCount(
             listElement,
-            (char[]) thisBundle.getObject(Constants.LANG_ALPHABET)));
+            (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET)));
 
       break;
     }
     case 0x4E00 :
     {
-      XSLTResourceBundle thisBundle;
+      XResourceBundle thisBundle;
 
-      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
-        Constants.LANG_BUNDLE_NAME, new Locale("zh", "CN"));
+      thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
+        org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("zh", "CN"));
 
       if (letterVal != null
               && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
@@ -1375,109 +1377,109 @@ public class ElemNumber extends ElemTemplateElement
       }
       else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
         int2alphaCount(listElement,
-                       (char[]) thisBundle.getObject(Constants.LANG_ALPHABET),
+                       (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
                        formattedNumber);
 
       break;
     }
     case 0x58F9 :
     {
-      XSLTResourceBundle thisBundle;
+      XResourceBundle thisBundle;
 
-      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
-        Constants.LANG_BUNDLE_NAME, new Locale("zh", "TW"));
+      thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
+        org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("zh", "TW"));
 
       if (letterVal != null
               && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
         formattedNumber.append(tradAlphaCount(listElement, thisBundle));
       else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
         int2alphaCount(listElement,
-                       (char[]) thisBundle.getObject(Constants.LANG_ALPHABET),
+                       (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
                        formattedNumber);
 
       break;
     }
     case 0x0E51 :
     {
-      XSLTResourceBundle thisBundle;
+      XResourceBundle thisBundle;
 
-      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
-        Constants.LANG_BUNDLE_NAME, new Locale("th", ""));
+      thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
+        org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("th", ""));
 
       if (letterVal != null
               && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
         formattedNumber.append(tradAlphaCount(listElement, thisBundle));
       else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
         int2alphaCount(listElement,
-                       (char[]) thisBundle.getObject(Constants.LANG_ALPHABET),
+                       (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
                        formattedNumber);
 
       break;
     }
     case 0x05D0 :
     {
-      XSLTResourceBundle thisBundle;
+      XResourceBundle thisBundle;
 
-      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
-        Constants.LANG_BUNDLE_NAME, new Locale("he", ""));
+      thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
+        org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("he", ""));
 
       if (letterVal != null
               && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
         formattedNumber.append(tradAlphaCount(listElement, thisBundle));
       else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
         int2alphaCount(listElement,
-                       (char[]) thisBundle.getObject(Constants.LANG_ALPHABET),
+                       (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
                        formattedNumber);
 
       break;
     }
     case 0x10D0 :
     {
-      XSLTResourceBundle thisBundle;
+      XResourceBundle thisBundle;
 
-      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
-        Constants.LANG_BUNDLE_NAME, new Locale("ka", ""));
+      thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
+        org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("ka", ""));
 
       if (letterVal != null
               && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
         formattedNumber.append(tradAlphaCount(listElement, thisBundle));
       else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
         int2alphaCount(listElement,
-                       (char[]) thisBundle.getObject(Constants.LANG_ALPHABET),
+                       (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
                        formattedNumber);
 
       break;
     }
     case 0x03B1 :
     {
-      XSLTResourceBundle thisBundle;
+      XResourceBundle thisBundle;
 
-      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
-        Constants.LANG_BUNDLE_NAME, new Locale("el", ""));
+      thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
+        org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("el", ""));
 
       if (letterVal != null
               && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
         formattedNumber.append(tradAlphaCount(listElement, thisBundle));
       else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
         int2alphaCount(listElement,
-                       (char[]) thisBundle.getObject(Constants.LANG_ALPHABET),
+                       (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
                        formattedNumber);
 
       break;
     }
     case 0x0430 :
     {
-      XSLTResourceBundle thisBundle;
+      XResourceBundle thisBundle;
 
-      thisBundle = (XSLTResourceBundle) XSLTResourceBundle.loadResourceBundle(
-        Constants.LANG_BUNDLE_NAME, new Locale("cy", ""));
+      thisBundle = (XResourceBundle) XResourceBundle.loadResourceBundle(
+        org.apache.xml.utils.res.XResourceBundle.LANG_BUNDLE_NAME, new Locale("cy", ""));
 
       if (letterVal != null
               && letterVal.equals(Constants.ATTRVAL_TRADITIONAL))
         formattedNumber.append(tradAlphaCount(listElement, thisBundle));
       else  //if (m_lettervalue_avt != null && m_lettervalue_avt.equals(Constants.ATTRVAL_ALPHABETIC))
         int2alphaCount(listElement,
-                       (char[]) thisBundle.getObject(Constants.LANG_ALPHABET),
+                       (char[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_ALPHABET),
                        formattedNumber);
 
       break;
@@ -1555,7 +1557,7 @@ public class ElemNumber extends ElemTemplateElement
 
     //some languages go left to right(ie. english), right to left (ie. Hebrew),
     //top to bottom (ie.Japanese), etc... Handle them differently
-    //String orientation = thisBundle.getString(Constants.LANG_ORIENTATION);
+    //String orientation = thisBundle.getString(org.apache.xml.utils.res.XResourceBundle.LANG_ORIENTATION);
     // next character to set in the buffer
     int charPos;
 
@@ -1631,7 +1633,7 @@ public class ElemNumber extends ElemTemplateElement
    * Note that the radix of the conversion is inferred from the size
    * of the table.
    */
-  protected String tradAlphaCount(int val, XSLTResourceBundle thisBundle)
+  protected String tradAlphaCount(int val, XResourceBundle thisBundle)
   {
 
     // if this number is larger than the largest number we can represent, error!
@@ -1649,29 +1651,29 @@ public class ElemNumber extends ElemTemplateElement
 
     //some languages go left to right(ie. english), right to left (ie. Hebrew),
     //top to bottom (ie.Japanese), etc... Handle them differently
-    //String orientation = thisBundle.getString(Constants.LANG_ORIENTATION);
+    //String orientation = thisBundle.getString(org.apache.xml.utils.res.XResourceBundle.LANG_ORIENTATION);
     // next character to set in the buffer
     int charPos;
 
     charPos = 0;  //start at 0
 
     // array of number groups: ie.1000, 100, 10, 1
-    int[] groups = (int[]) thisBundle.getObject(Constants.LANG_NUMBERGROUPS);
+    int[] groups = (int[]) thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_NUMBERGROUPS);
 
     // array of tables of hundreds, tens, digits...
     String[] tables =
-      (String[]) (thisBundle.getObject(Constants.LANG_NUM_TABLES));
+      (String[]) (thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_NUM_TABLES));
 
     //some languages have additive alphabetical notation,
     //some multiplicative-additive, etc... Handle them differently.
-    String numbering = thisBundle.getString(Constants.LANG_NUMBERING);
+    String numbering = thisBundle.getString(org.apache.xml.utils.res.XResourceBundle.LANG_NUMBERING);
 
     // do multiplicative part first
-    if (numbering.equals(Constants.LANG_MULT_ADD))
+    if (numbering.equals(org.apache.xml.utils.res.XResourceBundle.LANG_MULT_ADD))
     {
-      String mult_order = thisBundle.getString(Constants.MULT_ORDER);
+      String mult_order = thisBundle.getString(org.apache.xml.utils.res.XResourceBundle.MULT_ORDER);
       int[] multiplier =
-        (int[]) (thisBundle.getObject(Constants.LANG_MULTIPLIER));
+        (int[]) (thisBundle.getObject(org.apache.xml.utils.res.XResourceBundle.LANG_MULTIPLIER));
       char[] zeroChar = (char[]) thisBundle.getObject("zero");
       int i = 0;
 
@@ -1742,12 +1744,12 @@ public class ElemNumber extends ElemTemplateElement
                 break;
 
               char multiplierChar = ((char[]) (thisBundle.getObject(
-                Constants.LANG_MULTIPLIER_CHAR)))[i];
+                org.apache.xml.utils.res.XResourceBundle.LANG_MULTIPLIER_CHAR)))[i];
 
               // put out the next character of output   
               if (lookupIndex < table.length)
               {
-                if (mult_order.equals(Constants.MULT_PRECEDES))
+                if (mult_order.equals(org.apache.xml.utils.res.XResourceBundle.MULT_PRECEDES))
                 {
                   buf[charPos++] = multiplierChar;
                   buf[charPos++] = table[lookupIndex];

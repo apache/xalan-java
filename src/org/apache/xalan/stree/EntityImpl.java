@@ -5,7 +5,7 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.Entity;
 
 
-public class EntityImpl extends org.apache.xalan.utils.UnImplNode implements Entity
+public class EntityImpl extends org.apache.xml.utils.UnImplNode implements Entity
 {
   String m_publicId;
   String m_systemId;

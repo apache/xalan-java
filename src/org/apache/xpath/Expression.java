@@ -66,7 +66,7 @@ import org.xml.sax.XMLReader;
 
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
-import org.apache.xalan.utils.SAXSourceLocator;
+import org.apache.xml.utils.SAXSourceLocator;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.ErrorListener;
 

@@ -58,7 +58,7 @@ package org.apache.xpath;
 
 // import org.xml.sax.Locator;
 
-import org.apache.xalan.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolver;
 
 import javax.xml.transform.SourceLocator;
 

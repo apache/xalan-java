@@ -310,7 +310,7 @@ public class Parent extends Child
     }
     catch (Exception e)
     {
-      throw new org.apache.xalan.utils.WrappedRuntimeException(e);
+      throw new org.apache.xml.utils.WrappedRuntimeException(e);
     }
   }
 

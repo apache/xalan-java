@@ -62,7 +62,7 @@ import org.w3c.dom.Text;
 import org.xml.sax.ContentHandler;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.utils.FastStringBuffer;
+import org.apache.xml.utils.FastStringBuffer;
 
 /**
  * <meta name="usage" content="internal"/>

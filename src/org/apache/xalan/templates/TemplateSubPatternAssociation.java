@@ -65,7 +65,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.patterns.StepPattern;
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 
 /**
  * A class to contain a match pattern and it's corresponding template.

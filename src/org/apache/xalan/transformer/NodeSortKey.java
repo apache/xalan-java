@@ -90,7 +90,7 @@ class NodeSortKey
   Locale m_locale;
 
   /** NEEDSDOC Field m_namespaceContext          */
-  org.apache.xalan.utils.PrefixResolver m_namespaceContext;
+  org.apache.xml.utils.PrefixResolver m_namespaceContext;
 
   /** NEEDSDOC Field m_processor          */
   TransformerImpl m_processor;  // needed for error reporting.
@@ -110,7 +110,7 @@ class NodeSortKey
    * @throws javax.xml.transform.TransformerException
    */
   NodeSortKey(
-          TransformerImpl transformer, XPath selectPat, boolean treatAsNumbers, boolean descending, String langValue, boolean caseOrderUpper, org.apache.xalan.utils.PrefixResolver namespaceContext)
+          TransformerImpl transformer, XPath selectPat, boolean treatAsNumbers, boolean descending, String langValue, boolean caseOrderUpper, org.apache.xml.utils.PrefixResolver namespaceContext)
             throws javax.xml.transform.TransformerException
   {
 

@@ -60,7 +60,7 @@ import org.w3c.dom.*;
 
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 
 /**
  * <meta name="usage" content="advanced"/>

@@ -62,7 +62,7 @@ import java.util.Vector;
 
 import org.w3c.dom.Document;
 
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 
 /**
  * This class extends OutputFormat to act as a bean that

@@ -70,7 +70,7 @@ import org.apache.xpath.DOMHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.patterns.NodeTestFilter;
-import org.apache.xalan.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolver;
 
 // DOM2 imports
 import org.w3c.dom.Node;

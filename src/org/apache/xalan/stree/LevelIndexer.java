@@ -64,7 +64,7 @@ import java.io.*;
 
 import java.lang.Object;
 
-import org.apache.xalan.utils.IntVector;
+import org.apache.xml.utils.IntVector;
 
 /**
  * <meta name="usage" content="general"/>

@@ -152,7 +152,7 @@ public class ChildTestIterator extends LocPathIterator
         }
         catch(TransformerException te)
         {
-          throw new org.apache.xalan.utils.WrappedRuntimeException(te);
+          throw new org.apache.xml.utils.WrappedRuntimeException(te);
         }
       }
       else

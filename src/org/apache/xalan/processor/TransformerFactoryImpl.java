@@ -66,9 +66,9 @@ import org.xml.sax.XMLFilter;
 
 import org.w3c.dom.Node;
 
-import org.apache.xalan.utils.TreeWalker;
-import org.apache.xalan.utils.SystemIDResolver;
-import org.apache.xalan.utils.DefaultErrorHandler;
+import org.apache.xml.utils.TreeWalker;
+import org.apache.xml.utils.SystemIDResolver;
+import org.apache.xml.utils.DefaultErrorHandler;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.TrAXFilter;
 

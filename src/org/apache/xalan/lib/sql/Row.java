@@ -60,7 +60,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.Document;
 import org.w3c.dom.DOMException;
 
-import org.apache.xalan.utils.UnImplNode;
+import org.apache.xml.utils.UnImplNode;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;

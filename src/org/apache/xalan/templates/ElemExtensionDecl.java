@@ -58,10 +58,10 @@ package org.apache.xalan.templates;
 
 import java.util.Vector;
 
-import org.apache.xalan.utils.QName;
-import org.apache.xalan.utils.NameSpace;
-import org.apache.xalan.utils.StringToStringTable;
-import org.apache.xalan.utils.StringVector;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.NameSpace;
+import org.apache.xml.utils.StringToStringTable;
+import org.apache.xml.utils.StringVector;
 import org.apache.xalan.extensions.ExtensionHandler;
 import org.apache.xalan.extensions.ExtensionHandlerGeneral;
 import org.apache.xalan.extensions.ExtensionsTable;

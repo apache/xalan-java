@@ -62,8 +62,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xalan.utils.QName;
-import org.apache.xalan.utils.PrefixResolver;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 

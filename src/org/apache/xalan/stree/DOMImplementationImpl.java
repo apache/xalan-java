@@ -61,7 +61,7 @@ import org.w3c.dom.DocumentType;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.DOMException;
 
-import org.apache.xalan.utils.UnImplNode;
+import org.apache.xml.utils.UnImplNode;
 
 /**
  * <meta name="usage" content="internal"/>

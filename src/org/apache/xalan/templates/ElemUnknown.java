@@ -63,12 +63,12 @@ import org.xml.sax.helpers.*;
 
 import java.util.StringTokenizer;
 
-import org.apache.xalan.utils.QName;
-import org.apache.xalan.utils.NameSpace;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.NameSpace;
 import org.apache.xpath.XPathContext;
-import org.apache.xalan.utils.StringToStringTable;
-import org.apache.xalan.utils.NameSpace;
-import org.apache.xalan.utils.StringVector;
+import org.apache.xml.utils.StringToStringTable;
+import org.apache.xml.utils.NameSpace;
+import org.apache.xml.utils.StringVector;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;

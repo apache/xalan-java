@@ -68,7 +68,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.templates.Stylesheet;
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 
 import org.apache.xpath.objects.XObject;
 import javax.xml.transform.TransformerException;

@@ -69,7 +69,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
-import org.apache.xalan.utils.NodeVector;
+import org.apache.xml.utils.NodeVector;
 
 import javax.xml.transform.TransformerException;
 

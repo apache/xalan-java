@@ -73,7 +73,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XNodeSet;
-import org.apache.xalan.utils.StringVector;
+import org.apache.xml.utils.StringVector;
 
 /**
  * <meta name="usage" content="advanced"/>

@@ -84,11 +84,11 @@ import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.*;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.utils.QName;
-import org.apache.xalan.utils.PrefixResolver;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.PrefixResolver;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.SourceLocator;
-import org.apache.xalan.utils.SAXSourceLocator;
+import org.apache.xml.utils.SAXSourceLocator;
 
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;

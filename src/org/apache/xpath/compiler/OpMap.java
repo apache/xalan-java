@@ -58,7 +58,7 @@ package org.apache.xpath.compiler;
 
 import java.util.Vector;
 
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.patterns.NodeTest;
 
 /**

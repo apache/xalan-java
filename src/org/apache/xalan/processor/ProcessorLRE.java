@@ -71,7 +71,7 @@ import org.xml.sax.Locator;
 import org.xml.sax.helpers.AttributesImpl;
 
 import javax.xml.transform.TransformerConfigurationException;
-import org.apache.xalan.utils.SAXSourceLocator;
+import org.apache.xml.utils.SAXSourceLocator;
 
 /**
  * <meta name="usage" content="internal"/>

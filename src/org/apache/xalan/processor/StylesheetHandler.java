@@ -73,9 +73,9 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemUnknown;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.Stylesheet;
-import org.apache.xalan.utils.NodeConsumer;
-import org.apache.xalan.utils.PrefixResolver;
-import org.apache.xalan.utils.XMLCharacterRecognizer;
+import org.apache.xml.utils.NodeConsumer;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.XMLCharacterRecognizer;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.functions.Function;
@@ -97,7 +97,7 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.utils.SAXSourceLocator;
+import org.apache.xml.utils.SAXSourceLocator;
 
 /**
  * <meta name="usage" content="advanced"/>
@@ -223,7 +223,7 @@ public class StylesheetHandler extends DefaultHandler
 
   /**
    * Given a namespace, get the corrisponding prefix.  This is here only
-   * to support the {@link org.apache.xalan.utils.PrefixResolver} interface,
+   * to support the {@link org.apache.xml.utils.PrefixResolver} interface,
    * and will throw an error if invoked on this object.
    *
    * @param prefix The prefix to look up, which may be an empty string ("") for the default Namespace.
@@ -1464,7 +1464,7 @@ public class StylesheetHandler extends DefaultHandler
   /**
    * The originating node if the current stylesheet is being created
    *  from a DOM.
-   *  @see org.apache.xalan.utils.NodeConsumer
+   *  @see org.apache.xml.utils.NodeConsumer
    */
   private Node m_originatingNode;
 
@@ -1472,7 +1472,7 @@ public class StylesheetHandler extends DefaultHandler
    * Set the node that is originating the SAX event.
    *
    * @param n Reference to node that originated the current event.
-   * @see org.apache.xalan.utils.NodeConsumer
+   * @see org.apache.xml.utils.NodeConsumer
    */
   public void setOriginatingNode(Node n)
   {
@@ -1483,7 +1483,7 @@ public class StylesheetHandler extends DefaultHandler
    * Set the node that is originating the SAX event.
    *
    * @return Reference to node that originated the current event.
-   * @see org.apache.xalan.utils.NodeConsumer
+   * @see org.apache.xml.utils.NodeConsumer
    */
   public Node getOriginatingNode()
   {

@@ -59,13 +59,13 @@ package org.apache.xpath.compiler;
 import java.util.Vector;
 import java.util.Hashtable;
 
-import org.apache.xalan.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.utils.StringKey;
+import org.apache.xml.utils.StringKey;
 
 import javax.xml.transform.TransformerException;
 import org.xml.sax.Locator;

@@ -62,9 +62,9 @@ import org.xml.sax.ContentHandler;
 import javax.xml.transform.TransformerException;
 import org.xml.sax.Attributes;
 
-import org.apache.xalan.utils.MutableAttrListImpl;
+import org.apache.xml.utils.MutableAttrListImpl;
 import org.apache.xalan.trace.GenerateEvent;
-import org.apache.xalan.utils.NameSpace;
+import org.apache.xml.utils.NameSpace;
 
 /**
  * Tracks the state of a queued element event.

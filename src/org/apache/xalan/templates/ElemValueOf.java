@@ -64,7 +64,7 @@ import org.apache.xpath.*;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XObject;
 import org.apache.xalan.trace.SelectionEvent;
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.ResultTreeHandler;

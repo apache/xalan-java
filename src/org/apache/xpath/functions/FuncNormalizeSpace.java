@@ -67,7 +67,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.objects.XNodeSet;
-import org.apache.xalan.utils.XMLCharacterRecognizer;
+import org.apache.xml.utils.XMLCharacterRecognizer;
 
 /**
  * <meta name="usage" content="internal"/>

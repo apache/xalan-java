@@ -63,10 +63,10 @@ import org.w3c.dom.*;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.utils.NSInfo;
-import org.apache.xalan.utils.QName;
-import org.apache.xalan.utils.StringBufferPool;
-import org.apache.xalan.utils.FastStringBuffer;
+import org.apache.xml.utils.NSInfo;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.StringBufferPool;
+import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
 

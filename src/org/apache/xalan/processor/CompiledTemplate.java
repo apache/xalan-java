@@ -64,7 +64,7 @@ package org.apache.xalan.processor;
 import org.apache.xalan.templates.ElemTemplate;
 
 import javax.xml.transform.SourceLocator;
-import org.apache.xalan.utils.SAXSourceLocator;
+import org.apache.xml.utils.SAXSourceLocator;
 
 public abstract class CompiledTemplate
 extends ElemTemplate 
@@ -173,7 +173,7 @@ implements java.io.Serializable
   public abstract void execute(
                           org.apache.xalan.transformer.TransformerImpl transformer,
                       org.w3c.dom.Node sourceNode,
-                      org.apache.xalan.utils.QName mode)
+                      org.apache.xml.utils.QName mode)
        throws javax.xml.transform.TransformerException;
   
   /** During deserialization, reinstantiate the transient thread-table

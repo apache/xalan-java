@@ -68,7 +68,7 @@ import org.apache.xpath.DOMHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.UnionPathIterator;
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.QName;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.KeyManager;
 import org.apache.xpath.res.XPATHErrorResources;

@@ -63,7 +63,7 @@ import java.io.InputStream;
 
 import java.lang.ClassLoader;
 
-import org.apache.xalan.utils.PrefixResolver;
+import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.res.XPATHErrorResources;
 
 import org.w3c.dom.Node;
@@ -225,7 +225,7 @@ public class FuncSystemProperty extends FunctionOneArg
     catch (Exception ex)
     {
       // ex.printStackTrace();
-      throw new org.apache.xalan.utils.WrappedRuntimeException(ex);
+      throw new org.apache.xml.utils.WrappedRuntimeException(ex);
     }
   }
 }

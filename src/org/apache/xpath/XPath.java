@@ -67,8 +67,8 @@ import java.io.Serializable;
 import java.io.ObjectInputStream;
 import java.io.IOException;
 
-import org.apache.xalan.utils.PrefixResolver;
-import org.apache.xalan.utils.QName;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.functions.Function;
 
@@ -86,7 +86,7 @@ import org.apache.xpath.objects.*;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.ErrorListener;
-import org.apache.xalan.utils.SAXSourceLocator;
+import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.patterns.NodeTest;
 
 /**
@@ -264,9 +264,9 @@ public class XPath implements Serializable
       }
       else
       {
-        while (e instanceof org.apache.xalan.utils.WrappedRuntimeException)
+        while (e instanceof org.apache.xml.utils.WrappedRuntimeException)
         {
-          e = ((org.apache.xalan.utils.WrappedRuntimeException) e).getException();
+          e = ((org.apache.xml.utils.WrappedRuntimeException) e).getException();
         }
 
 

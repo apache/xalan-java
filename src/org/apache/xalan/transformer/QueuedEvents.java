@@ -58,7 +58,7 @@ package org.apache.xalan.transformer;
 
 import java.util.Stack;
 
-import org.apache.xalan.utils.ObjectPool;
+import org.apache.xml.utils.ObjectPool;
 
 import org.xml.sax.Attributes;
 

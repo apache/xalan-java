@@ -89,7 +89,7 @@ import org.xml.sax.Locator;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.ErrorListener;
-import org.apache.xalan.utils.SAXSourceLocator;
+import org.apache.xml.utils.SAXSourceLocator;
 import javax.xml.transform.Source;
 
 /**
@@ -297,16 +297,16 @@ public class FuncDocument extends Function2Args
 
       // path.warn(XSLTErrorResources.WG_ENCODING_NOT_SUPPORTED_USING_JAVA, new Object[]{((base == null) ? "" : base )+uri}); //"Can not load requested doc: "+((base == null) ? "" : base )+uri);
       while (throwable
-             instanceof org.apache.xalan.utils.WrappedRuntimeException)
+             instanceof org.apache.xml.utils.WrappedRuntimeException)
       {
         throwable =
-          ((org.apache.xalan.utils.WrappedRuntimeException) throwable).getException();
+          ((org.apache.xml.utils.WrappedRuntimeException) throwable).getException();
       }
 
       if ((throwable instanceof NullPointerException)
               || (throwable instanceof ClassCastException))
       {
-        throw new org.apache.xalan.utils.WrappedRuntimeException(
+        throw new org.apache.xml.utils.WrappedRuntimeException(
           (Exception) throwable);
       }
 
@@ -341,8 +341,8 @@ public class FuncDocument extends Function2Args
 
               e = spe2.getException();
 
-              if (e instanceof org.apache.xalan.utils.WrappedRuntimeException)
-                e = ((org.apache.xalan.utils.WrappedRuntimeException) e).getException();
+              if (e instanceof org.apache.xml.utils.WrappedRuntimeException)
+                e = ((org.apache.xml.utils.WrappedRuntimeException) e).getException();
             }
             else
               e = null;

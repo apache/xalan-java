@@ -56,6 +56,8 @@
  */
 package org.apache.xalan.res;
 
+import org.apache.xml.utils.res.XResourceBundleBase;
+
 import java.util.MissingResourceException;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -63,7 +65,6 @@ import java.util.ResourceBundle;
 import java.text.DecimalFormat;
 
 import org.apache.xalan.templates.Constants;
-import org.apache.xalan.res.XSLResourceBundle;
 
 /**
  * Set up error messages.
@@ -75,7 +76,7 @@ import org.apache.xalan.res.XSLResourceBundle;
  * fill in the actual message string. Follow the instructions
  * below.
  */
-public class XSLTErrorResources extends XSLResourceBundle
+public class XSLTErrorResources extends XResourceBundleBase
 {
 
   /** The error suffix for construction error property keys.   */

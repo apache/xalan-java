@@ -63,11 +63,11 @@ import java.io.IOException;
 import java.util.Stack;
 
 // Xalan imports
-import org.apache.xalan.utils.IntStack;
-import org.apache.xalan.utils.NSInfo;
-import org.apache.xalan.utils.PrefixResolver;
-import org.apache.xalan.utils.QName;
-import org.apache.xalan.utils.NodeVector;
+import org.apache.xml.utils.IntStack;
+import org.apache.xml.utils.NSInfo;
+import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.QName;
+import org.apache.xml.utils.NodeVector;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.axes.ContextNodeList;
@@ -90,7 +90,7 @@ import org.xml.sax.XMLReader;
 // TRaX imports
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.TransformerException;
-import org.apache.xalan.utils.SAXSourceLocator;
+import org.apache.xml.utils.SAXSourceLocator;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.dom.DOMSource;
 
