@@ -107,6 +107,9 @@ public final class DupFilterIterator extends NodeIteratorBase {
      * @return A reference to this node iterator
      */
     public NodeIterator setStartNode(int node) {
+
+	int i, j; // loop variables declared first for speed - don't move!!!
+
 	// KeyIndex iterators are always relative to the root node, so there
 	// is never any point in re-reading the iterator (and we SHOULD NOT).
 	if ((_source instanceof KeyIndex) && (_data != null)) return this;
@@ -127,28 +130,27 @@ public final class DupFilterIterator extends NodeIteratorBase {
 		    System.arraycopy(_data, 0, newArray, 0, _last);
 		    _data = newArray;
 		}
-		if (!isDup(node)) _data[_last++] = node;
+
+		// Go through all nodes in turn
+		for (i=0; i<_last; i++) {
+		    // Is this a duplicate of the new node
+		    if (_data[i] == node) {
+			break;
+		    }
+		    // Should the new node be inserted at this position?
+		    else if (_data[i] > node) {
+			for (j = _last++; j>i; j--)
+			    _data[j] = _data[j-1];
+			_data[i] = node;
+			break;
+		    }
+		}
+		if (i == _last) _data[_last++] = node;
 	    }
 	}
 
 	_current = 0;  // set to beginning 
 	return this;
-    }
-
-    /**
-     * Check if a node is already in the _data array. The nodes should be in
-     * document order or reverse document order, so we may be able to use
-     * binary search here.
-     */
-    private boolean isDup(int node) {
-	boolean retval = false;
-	int size = _data.length;
-	for (int i=0; i<size; i++) {
-	    if (_data[i] == node) {
-		retval = true; break;
-	    }
-	}
-	return retval;
     }
 
     /**
