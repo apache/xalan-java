@@ -140,12 +140,6 @@ transformer.transform
 </ul>
 <p>Be sure the XMLReader is on the classpath. The &xml4j; XMLReader -- org.apache.xerces.parsers.SAXParser -- is in xerces.jar.</p>
 <note>Other system properties: The default serializer system property settings are in org/apache/serialize/serializer.properties. The default XSLT stylesheet system property setting is in  org/apache/trax/trax.properties. These properties files are in xalan.jar.</note>
-</s2><anchor name="params"/>
-<s2 title="Setting stylesheet parameters">
-<p>An XSLT stylesheet may include parameters that are set at run time each time a transformation takes place. To set a stylesheet parameter, use the org.apache.trax.Transformer <jump href="apidocs/org/apache/trax/Transformer.html#setParameter(java.lang.String,java.lang.String,java.lang.Object)">setParameter(String name, String namespace, Object value)</jump> method. If the parameter QName only includes a local name (as is often the case), the namespace argument is null. For a working example, see UseStylesheetParam.java in the  java/samples/UseStylesheetParam subdirectory.</p>
-<p>You can also set a parameter with the command-line utility by including the -param flag. For example:</p>
-<p><code>java org.apache.xalan.xslt.Process -in foo.xml -xsl foo.xsl -param param1 foobar</code></p>
-<p>where <code>param</code> is the parameter name and <code>foobar</code> is the parameter value. The parameter namespace is null.</p>
 </s2><anchor name="embed"/>
 <s2 title="Working with embedded stylesheets">
 <p>An XML source document may include an <jump href="http://www.w3.org/TR/xml-stylesheet/">xml-stylesheet processing instruction</jump> which identifies the stylesheet to be used to process the document. As indicated by the processing instruction <ref>href</ref> attribute, the stylesheet itself may be embedded in the XML document or located elsewhere.</p>
@@ -161,7 +155,8 @@ org.apache.trax.Processor processor =
 //     more than one xml-stylesheet processing instruction).
 String media = null , title = null, charset = null;
 org.xml.sax.InputSource[] stylesheet = processor.getAssociatedStylesheets
-                      (new InputSource("foo.xml"), media, title, charset);
+         ( new InputSource("file:///xalan/samples/UseStylesheetPI/foo.xml"),
+           media, title, charset );
 // 2b. Process the stylesheet(s), producing a Templates object.
 org.apache.trax.Templates templates = processor.processMultiple(stylesheet);
 
@@ -173,6 +168,18 @@ org.apache.trax.Transformer transformer = templates.newTransformer();
 transformer.transform
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(new org.xml.sax.InputSource("foo.xml"), 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new org.apache.trax.Result(new java.io.FileWriter("foo.out")));</source>
+<p>You can also instruct the <link idref="commandline">command-line utility</link> to use stylesheet processing
+instructions:</p>
+<ol>
+  <li>Include the -IN flag with an XML source that contains a stylesheet processing instruction.<br/><br/></li>
+  <li>Do not include the -XSL flag.</li>
+</ol>
+</s2><anchor name="params"/>
+<s2 title="Setting stylesheet parameters">
+<p>An XSLT stylesheet may include parameters that are set at run time each time a transformation takes place. To set a stylesheet parameter, use the org.apache.trax.Transformer <jump href="apidocs/org/apache/trax/Transformer.html#setParameter(java.lang.String,java.lang.String,java.lang.Object)">setParameter(String name, String namespace, Object value)</jump> method. If the parameter QName only includes a local name (as is often the case), the namespace argument is null. For a working example, see UseStylesheetParam.java in the  java/samples/UseStylesheetParam subdirectory.</p>
+<p>You can also set a parameter with the command-line utility by including the -param flag. For example:</p>
+<p><code>java org.apache.xalan.xslt.Process -in foo.xml -xsl foo.xsl -param param1 foobar</code></p>
+<p>where <code>param</code> is the parameter name and <code>foobar</code> is the parameter value. The parameter namespace is null.</p>
 </s2><anchor name="sax"/>
 <s2 title="Explicitly working with SAX">
   <p>&xslt4j; uses the SAX event model to process stylesheets, to parse XML input documents, and to produce output. For each of these operations, an XMLReader reads input, firing parse events, and a ContentHandler listens to the XMLReader and performs parse event methods.</p>
