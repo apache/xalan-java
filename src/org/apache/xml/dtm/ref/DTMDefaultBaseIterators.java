@@ -1121,7 +1121,7 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
   {
 
     /** The max ancestors, but it can grow... */
-    private final int _maxAncestors = 8;
+    static private final int _maxAncestors = 8;
 
     /**
      * The stack of start node + ancestors up to ROOTNODE,
@@ -1151,15 +1151,12 @@ public abstract class DTMDefaultBaseIterators extends DTMDefaultBaseTraversers
      */
     public DTMAxisIterator cloneIterator()
     {
-
       _isRestartable = false;
-
-      final int[] stackCopy = new int[_maxAncestors];
 
       try
       {
         final PrecedingIterator clone = (PrecedingIterator) super.clone();
-
+        final int[] stackCopy = new int[_stack.length];
         System.arraycopy(_stack, 0, stackCopy, 0, _stack.length);
 
         clone._stack = stackCopy;
