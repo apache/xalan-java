@@ -295,7 +295,7 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
       <li><link anchor="ext3">3-java-namespace</link></li>
       <li><link anchor="ext4">4-numlistJava</link></li>
       <li><link anchor="ext5">5-numlistJScript</link></li>
-      <li><link anchor="ext6">6-sqllib-instantdb</link></li>
+      <li><link anchor="sql">SQL library extensions</link></li>
     </ul>
     <p>The extensions subdirectory contains six samples with &xslt4j; extensions. Two of the samples use
      extensions implemented in JavaScript, and four of the samples use extensions implemented in Java.</p>
@@ -350,22 +350,105 @@ with a catalog of supply chain DTDs residing at the XML.ORG DTD repository.</ite
     <p>Run this sample from the extensions subdirectory with</p>
       <p><code> java org.apache.xalan.xslt.Process -in numlist.xml</code>
         <br/>&nbsp;&nbsp;<code>-xsl 5-numlistJscript.xsl</code></p>
-      </s3><anchor name="ext6"/>
-      <s3 title="6-sqllib-instantdb">
-      <p>What it does: Uses <link idref="extensionslib" anchor="sql">SQL library XConnection
-      extension</link> to connect to an InstantDB sample database, perform a query, and display the
-      query result in an HTML table.</p>
-      <note>You must include idb.jar on the classpath. We have placed a copy of idb.jar from
+      </s3>
+      </s2><anchor name="sql"/>
+      <s2 title="SQL Library extensions">
+      <p>The SQL Library extension samples use <link idref="extensionslib" anchor="sql">SQL library XConnection
+      extension</link>to connect to an InstantDB datasource, perform queries, and return query result sets.</p>
+      <note>To run these samples, you must include idb.jar on the classpath. We have placed a copy of idb.jar from
       InstantDB version 3.25 in samples/extensions/instantdb. For information about InstantDB, see
       <jump href="http://instantdb.enhydra.org/software/documentation/index.html">InstantDB</jump>
       and the <jump href="http://instantdb.enhydra.org/software/license/index.html">Enydra Public
-      License</jump>.</note>
-      <p>Run this sample from the extensions subdirectory with (adjust the Windows classpath setting 
-      below for your operating environment):</p>
-      <p><code>java -cp instantdb/idb.jar;%classpath%</code> 
-      <br/>&nbsp;&nbsp;org.apache.xalan.xslt.Process<code></code>
+      License</jump>.</note>      
+      <ul>
+      <li><link anchor="ext6">6-sqllib-instantdb</link></li>
+      <li><link anchor="basic-conn">Basic Connections</link></li>      
+      <li><link anchor="ext-conn">ExternalConnection</link></li>      
+      <li><link anchor="pquery">Parameterized query</link></li>
+      <li><link anchor="streamable">Streamable</link></li>
+      <li><link anchor="showerror">Show-error</link></li>
+      </ul>
+      <note>Except for 6-sqllib-instantdb, all these samples have been created by John Gentilin 
+      (johnglinux@eyecatching.com) to take illustrate the rich feature set he has contributed to the SQL Library. 
+      To run each of these samples, be sure  you are in the appropriate extensions/sql subdirectory.</note>
+     <anchor name="ext6"/>
+      <s3 title="6-sqllib-instantdb">
+      <p>What it does: Uses the SQL library XConnection extension to connect to the InstantDB sample database, 
+      performs a query, and returns the query result in an HTML table.</p>
+      <p>Add idb.jar to the classpath, and run this sample from the extensions subdirectory:</p>
+      <p><code>java org.apache.xalan.xslt.Process</code>
       <br/>&nbsp;&nbsp;<code>-xsl 6-sqllib-instantdb.xsl -out import1.html</code></p>
-      </s3>
+      </s3><anchor name="basic-conn"/>
+      <s3 title="Basic-Connection">
+      <p><em>Contributed by John Gentilin (johnglinux@eyecatching.com).</em></p>
+      <p>What it does: illustrates two strategies for connecting to a database, executing a static query, and returning 
+      the query result.</p>
+      <p>The first strategy is to get connection information along with the static query from the stylesheet (dbtest.xsl)\
+      in the form of stylesheet parameters.</p>      
+      <p>The second strategy is to get connection information from a nodeset in an XML source document (dbInfo.xml).</p>
+      
+      <p>Add extensions/instantdb/idb.jar to the classpath, and run this sample from the extensions/sql/basic-connection 
+       directory.</p>
+       <p>1. To get connection information from the stylesheet:</p>
+      <p><code>java org.apache.xalan.xslt.Process</code>
+      <br/>&nbsp;&nbsp;<code>-xsl dbtest.xsl -out import1.html</code></p>
+      <p>2. To get connection information in the form of a nodeset from the XML source document:</p>      
+      <p><code>java org.apache.xalan.xslt.Process</code>
+      <br/>&nbsp;&nbsp;<code>-in dbinfo.xml -xsl dbtest-cinfo.xsl</code> 
+      <br/>&nbsp;&nbsp;<code>-out import1.html</code></p>
+      <p>3. To get connection information from the stylesheet and dump the raw result set to an XML file:</p>
+      <p><code>java org.apache.xalan.xslt.Process</code>
+      <br/>&nbsp;&nbsp;<code>-xsl DumpSQL.xsl -out import1.xml</code></p>
+    </s3> <anchor name="ext-conn"/>
+    <s3 title="ExternalConnection">
+    <p><em>Contributed by John Gentilin (johnglinux@eyecatching.com).</em></p>
+    <p>What it does: The ExternalConnection classes uses the default implementation of the ConnectionPool interface 
+    to create a pool of connections. A stylesheet in turn uses a connection from this pool to instantiate an 
+    XConnection object and connect to a datasouce.</p>
+    <p>The stylesheet uses this named connection pool to instantiate an XConnection object and connect to the datasource.</p>
+    <p>The ExternalConnection class is in xalansamples.jar. Be sure xalansamples.jar and idb.jar are on the classpath, and 
+    run this sample from the extensions/sql/ext-connection directory:</p>
+    <p><code>java ExternalConnection</code></p>
+    <p>ExternalConnection creates the ConnectionPool, and performs a transformation wiht dbtest.xsl, which draws 
+    from the pool to instantiate an XConnection object, connect to the datasource, execute a static query, and return the
+    query result.</p>
+    </s3><anchor name="pquery"/>
+    <s3 title="Parameterized query">
+    <p><em>Contributed by John Gentilin (johnglinux@eyecatching.com).</em></p>
+    <p>What it does: connect to a datasource, execute a parameterized query, and return the result. The XML source document
+    provides the parameter value as well as the connection information. The parameter value is in a node in the XML source.</p>
+    <p>The stylesheet gets the required connection and parameter information from the XML source, sets up and executes the
+    parameterized query, and retuns the query result set.</p>
+    <p>Be sure idb.jar is on the classpath, and run this sample from the sql/pquery subdirectory:</p>
+    <p><code>java org.apache.xalan.xslt.Process -in dbInfo.xml</code>
+    <br/><code>-xsl dbTest.xsl -out dbTest.html</code></p>    
+    </s3><anchor name="streamable"/>
+    <s3 title="Streamable">
+    <p><em>Contributed by John Gentilin (johnglinux@eyecatching.com).</em></p>    
+    <p>What it does: Illustrates enabling and disabling of caching the streamable result set returned by a query.</p>
+    <p>The stylesheets use the XConnection enableCacheNodes() and disableCacheNodes() methods.</p>
+    <p>Be sure idb.jar is on the classpath, and run these samples from the sql/streamable subdirectory.</p>
+    <p>1. To turn caching on:</p>
+    <p><code>java org.apache.xalan.xslt.Process</code>
+    <br/><code>-xsl cachedNodes.xsl</code></p>
+    <p>1. To turn caching off:</p>
+    <p><code>java org.apache.xalan.xslt.Process</code>
+    <br/><code>-xsl streamNodes.xsl</code></p>
+    <p>3. <ref>To be added</ref></p>
+    </s3><anchor name="showerror"/>
+    <s3 title="Show-error">
+    <p><em>Contributed by John Gentilin (johnglinux@eyecatching.com).</em></p>
+    <p>What it does: use the SQL library ExtensionError class to return an error message in the output stream. The stylesheet
+    (dbtest.xsl) calls a template with a select statement that only returns a nodeset if an error has occured:</p>
+    <source>&lt;xsl:variable name="table" select='sql:query($db, $query)'/&gt;
+  &lt;xsl:apply-templates select="$table/row-set" /&gt;	
+  &lt;xsl:apply-templates select="$table/ext-error"/&gt;</source>
+  <p>Since the query contains an incorrect table name, this example does return an error message. Correct the table name (change 
+  'import1X' to 'import1') and the example returns a standard result set.</p>
+  <p>With idb.jar on the classpath, run this sample from the extensions/sql/show-error subdirectory:</p>
+  <p><code>java org.apache.xalan.xslt.Process</code>
+  <br/><code> -in dbtest.xsl -out dbtestout.html</code></p>
+    </s3>
     </s2><anchor name="trace"/>
     <s2 title="Trace">
       <p>What it does: Trace uses the TraceListener and TraceManager classes to log transformation events.</p>

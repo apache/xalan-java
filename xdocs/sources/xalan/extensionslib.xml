@@ -66,7 +66,7 @@
 <li><link anchor="difference">difference</link></li>
 <li><link anchor="distinct">distinct</link></li>
 <li><link anchor="hassamenodes">hasSameNodes</link></li>
-<li><link anchor="sql">SQL extensions</link></li>
+<li><link anchor="sql">SQL library</link></li>
 <li><link anchor="evaluate">evaluate</link></li>
 <li><link anchor="tokenize">tokenize</link></li>
 <li><link anchor="groupitem">group and item</link> <ref>(to be done)</ref></li>
@@ -213,29 +213,108 @@ extensions in an extensions library distributed with &xslt4j;. If you have ideas
 <code>hasSameNodes(node-set1, node-set2)</code> returns true if both node-set1 and node-set2 contain exactly the same set of nodes.</p>
 </s2><anchor name="sql"/>
 <s2 title= "SQL library">
+<ul>
+<li><link anchor="sqlconn">Setting up a connection</link></li>
+<li><link anchor="sqlparam">Parameterized queries</link></li>
+<li><link anchor="ex-sql">SQL library example</link></li>
+<li><link idref="samples" anchor="sql">SQL library sample applications</link></li>
+</ul>
 <p><em>**Experimental**</em> Provides extension functions for connecting to a JDBC data source, executing a query,
 and working incrementally through "streamable" result set.</p>
+<note>Many features of the SQL library, including support for connection pools, parameterized queries, caching streamable 
+result sets, and added support for extracting connection information and query parameters from XML source documents exist
+thanks to John Gentilin (johnglinux@eyecatching.com), who has also added a number of SQL library samples.</note>
 <p><em>The SQL extension use of a single row-set node to incrementally return a query result set is experimental. Keep in mind that you
 can only access row elements one at a time moving forward through the result set. The use of XPath expressions in your stylesheet, for
 example, that attempt to return nodes from the result set in any other manner may produce unpredictable results.</em></p>
-<p><jump href="apidocs/org/apache/xalan/lib/sql/XConnection.html">org.apache.xalan.lib.sql.XConnection</jump> provides three extension functions that you can use in your stylesheet.</p>
+<p><jump href="apidocs/org/apache/xalan/lib/sql/XConnection.html">org.apache.xalan.lib.sql.XConnection</jump> provides a number 
+of extension functions that you can use in your stylesheet.</p>
     <ol>
       <li>new() -- Use one of the XConnection constructors to connect to a data source, and return an XConnection
-       object.<br/><br/></li>
+       object. You can use one of the constructors creates a connection pool from which stylesheets can obtain connections 
+       to a datasource. To support connction pools, SQL library includes a ConnectionPool interface and a implementation:
+       DefaultConnectionPool. You can also provide your own ConnectionPool implementation.<br/><br/></li>
       <li>query() -- Use the XConnection object query() method to return a "streamable" result set in the form of a row-set
        node. Work your way through the row-set one row at a time. The same row element is used over and over again, so you can
        begin "transforming" the row-set before the entire result set has been returned.<br/><br/></li>
+       <li>pquery(), addParameter(), addParameterFromElement(), clearParameters() -- Use the XConnection pquery() method in 
+       conjunction with these other methods to set up and execute parameterized queries.<br/><br/></li>
+       <li>enableCacheNodes(), disableCacheNodes() -- Use these XConnection methods to manage the caching of the streamable 
+       nodes returned by queries.<br/><br/></li>
       <li>close() -- Use the XConnection object close() method to terminate the connection.</li>      
     </ol>
-    <p>The query() extension function returns a Document node that contains (as needed) an array of column-header elements, 
+    <p>The query() and pquery() extension functions return a Document node that contains (as needed) an array of column-header elements, 
     a single row element that is used repeatedly, and an array of col elements. Each column-header element (one per column in
     the row-set) contains an attribute (ColumnAttribute) for each of the column descriptors in the ResultSetMetaData object. 
     Each col element contains a text node with a textual representation of the value for that column in the current row.</p>
-    <anchor name="ex-sql"/> 
+    <anchor name="sqlconn"/>
+    <s3 title="Setting up a connection">
+    <p>You can place connection information (JDBC driver, datasource URL, and usually user ID and password) in stylesheets or
+     in XML source documents.</p> 
+     <p>The following stylesheet fragment uses stylesheet parameters to designate a JDBC driver and datasource. The default
+     parameter values can be overridden with runtime parameter values.</p>
+     <source>&lt;xsl:param name="driver" select="'org.enhydra.instantdb.jdbc.idbDriver'"/&gt;
+&lt;xsl:param name="datasource" select="'jdbc:idb:../../instantdb/sample.prp'"/&gt;
+&lt;xsl:param name="query" select="'SELECT * FROM import1'"/&gt;</source>
+      <p>You can also obtain connection information from the XML source document that you use for the transformationl. Suppose 
+      you have the following DBINFO nodeset in an XML document:</p>
+      <source>&lt;DBINFO&gt;
+  &lt;dbdriver&gt;org.enhydra.instantdb.jdbc.idbDriver&lt;/dbdriver&gt;
+  &lt;dburl&gt;jdbc:idb:../../instantdb/sample.prp&lt;/dburl&gt;
+  &lt;user&gt;jbloe&lt;/user&gt;
+  &lt;password&gt;geron07moe&lt;/password&gt;
+&lt;/DBINFO&gt;</source>
+       <p>In the stylesheet, you can extract this information as follows:</p>
+       <source>&lt;xsl:stylesheet version 1.0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;xmlns:sql="org.apache.xalan.lib.sql.XConnection"
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;extension-element-prefixes="sql"&gt;
+&nbsp;&nbsp;&lt;xsl:param name="cinfo" select="//DBINFO"/&gt;
+&nbsp;&nbsp;&lt;xsl:variable name="db" select="sql:new($cinfo)"/&gt;
+....</source> 
+      <p>For an example of both approaches, see <link idref="samples" anchor="basic-conn">Basic Connection</link> samples.</p>
+      <p>You can also create a named connection pool that is maintained external to &xslt4j;.</p>
+      <source>import org.apache.xalan.lib.sql.DefaultConnectionPool;
+import org.apache.xalan.lib.sql.XConnectionPoolManager;
+...
+DefaultConnectionPool cp = new DefaultConnectionPool();
+cp.setDriver("org.enhydra.instantdb.jdbc.idbDriver");
+cp.setURL("jdbc:idb:../../instantdb/sample.prp");
+cp.setUser("jbloe");
+cp.setPassword("geron07moe");
+// Start with 10 connections.
+cp.setMinConnections(10);
+cp.enablePool();
+// Register the connection pool so stylesheets can use it.
+XConnectionPoolManager pm = new XConnectionPoolManager();
+pm.registerPool("extpool", cp);</source>
+      <p>A stylesheet can use this connection pool as follows:</p>
+      <source>&lt;xsl:stylesheet version 1.0
+     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+     xmlns:sql="org.apache.xalan.lib.sql.XConnection"
+     extension-element-prefixes="sql"&gt;
+...
+  &lt;xsl:variable name="db" select="sql:new($driver, 'extpool')"/&gt;</source>
+      <p>For an example, see the <link idref="samples" anchor="ext-conn">ExternalConnection</link> sample.</p>
+    </s3><anchor name="sqlparam"/>
+    <s3 title="Parameterized queries">
+      <p>To define a parameterized query, use a SQL query string with a question mark (?) for each parameter. You can provide 
+      the parameter values at runtime with stylesheet parameters or with nodes in the XML source document. For each parameter, 
+      you should also designate the SQL data type.</p>
+      <p>XConnection provides a number of addParameter() methods and an addParameterFromElement() method that you can use 
+      as extension functions to pull in the parameter values (in the order the parameters appear in the query). To
+      execute the query and return the result set, call the pquery() method as an extension function. There are two variations 
+      of the pquery() method. The one you should ordinarily use includes as arguments the SQL query string and a string list 
+      (delimited by the space, tab, or line feeds) of parameter types. For example:</p>
+      <source>&lt;xsl:variable name="resultset" 
+        select=sql:pquery($XConnectionObj, 
+                          'select * from X where Y = ? and Z = ?',
+                          'int string')"/&gt;</source>
+      <p>For a complete example, see the <link idref="samples" anchor="pquery">Parameterized query</link> sample.</p>
+  </s3><anchor name="ex-sql"/> 
     <s3 title="Example with SQL library">
     <p>This example displays the result set from a table in a sample InstantDB database. It is also
-    available as a sample application; see 
-    <link idref="samples" anchor="ext6">6-sqllib-instantdb</link>.</p>
+    available as a sample application; see <link idref="samples" anchor="ext6">6-sqllib-instantdb</link>.</p>
 <source>&lt;?xml version="1.0"?&gt;
 &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="1.0"
@@ -287,9 +366,10 @@ example, that attempt to return nodes from the result set in any other manner ma
 &lt;/xsl:stylesheet&gt;
 </source>
 </s3>
-</s2><anchor name="evaluate"/>
-<s2 title= "evaluate">
-<p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,<br/>
+  
+  </s2><anchor name="evaluate"/>
+  <s2 title= "evaluate">
+  <p>Implemented in <jump href="apidocs/org/apache/xalan/lib/Extensions.html">org.apache.xalan.lib.Extensions</jump>,<br/>
 <code>evaluate (xpath-expression)</code> function returns the result of evaluating the xpath-expression in the current 
 XPath expression context (automatically passed in by the extension mechanism).</p>
 <p>Use the evaluation extension function when the value of the expression is not known until run time.</p>
