@@ -871,4 +871,12 @@ Copyright:
     </java>	 
  </target>
  
+   <!-- pack all doc for transfer to website -->
+ <target name="pack.docs">
+    <tar tarfile="./build/xalan-j-docs.tar" basedir="./build/docs" includes="**"/>
+    <gzip src="./build/xalan-j-docs.tar" zipfile="./build/xalan-j-docs.tar.gz"/>
+    <!--zip zipfile="./build/xalan-j-docs.zip" basedir="./build/docs" includes="**"/-->
+  </target>
+
+ 
 </project>
