@@ -95,7 +95,7 @@ public interface Literal extends Expr {
     short DOUBLE_LITERAL = 3;
 
     /**
-     * Gets the literal
+     * Gets the literal type
      * @return short One of the four following literal type: <code>INTEGER_LITERAL</code>,
      * <code>DECIMAL_LITERAL</code>, <code>STRING_LITERAL</code>, <code>DOUBLE_LITERAL</code>.
      */

@@ -796,6 +796,32 @@
 		</ast>
 	</expr>
 	
+	<!-- Conditionnal expr -->
+	
+	<expr value="if (a) then b else c">
+		<ast>
+			<node name="ExprSequence">
+				<node name="IfExpr">
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>	
+						</node>
+					</node>
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>	
+						</node>
+					</node>					
+					<node name="PathExpr">
+						<node name="StepExpr">
+							<node name="NameTest"/>	
+						</node>
+					</node>					
+				</node>
+			</node>			
+		</ast>
+	</expr>
+	
 	
 	<!-- For expr -->
 	
@@ -870,11 +896,13 @@
 		</ast>
 	</expr>
 
-	<!-- Semantically invalid expression (parser should return an error) -->
+	<!-- Semantically invalid expression (parser should return an error) -->	
 	<expr value="9876543210" valid="false"/>
 	
 	<expr value="toto/(45+23)" valid="false"/>
 	<expr value="a/(b,c)/d" valid="false"/>
+	
+	<expr value="if (a) then b" valid="false"/>
 	
 	<!-- Expressions for which no common AST has been decided yet -->
 	

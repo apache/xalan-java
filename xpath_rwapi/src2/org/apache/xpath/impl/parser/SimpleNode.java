@@ -355,9 +355,6 @@ public class SimpleNode implements Node
             case XPathTreeConstants.JJTEVERY:
             case XPathTreeConstants.JJTIN:
             case XPathTreeConstants.JJTSATISFIES:
-            case XPathTreeConstants.JJTIFLPAR:
-            case XPathTreeConstants.JJTTHEN:
-            case XPathTreeConstants.JJTELSE:
             case XPathTreeConstants.JJTINSTANCEOF: //31;
             case XPathTreeConstants.JJTINTERSECTEXCEPTEXPR: //37;           
             case XPathTreeConstants.JJTVALIDATEEXPR: //44;

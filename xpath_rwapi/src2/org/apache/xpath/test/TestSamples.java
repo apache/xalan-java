@@ -69,110 +69,268 @@ import org.apache.xpath.expression.StepExpr;
 import org.apache.xpath.expression.Variable;
 import org.apache.xpath.expression.Visitor;
 import org.apache.xpath.impl.ExprContextImpl;
+import org.apache.xpath.impl.parser.ParseException;
 import org.apache.xpath.impl.parser.SimpleNode;
 import org.apache.xpath.impl.parser.XPath;
 import org.apache.xpath.impl.parser.XPathTreeConstants;
-
 import org.apache.xpath.objects.XObject;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
 import org.xml.sax.InputSource;
+
 import java.io.StringReader;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+
 /**
  * Simple unit test for various samples; adhoc.
  */
-public class TestSamples {
-
+public class TestSamples
+{
     public static String TEST_SAMPLES_XML = "src2/org/apache/xpath/test/TestSamples.xml";
-    
-    public static boolean testNode(Node node, int testid) 
-            throws Exception {
+
+    public TestSamples(String[] args)
+    {
+        try
+        {
+            final boolean dumpTree = ((args.length == 1)
+                && args[0].equals("-dump")) ? true : false;
+
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new InputSource(TEST_SAMPLES_XML));
+            doc.normalize();
+
+            Element tests = doc.getDocumentElement();
+            NodeList testElems = tests.getChildNodes();
+            int nChildren = testElems.getLength();
+            int testid = 0;
+            boolean testSuccess = true;
+
+            for (int i = 0; i < nChildren; i++)
+            {
+                org.w3c.dom.Node node = testElems.item(i);
+
+                if (org.w3c.dom.Node.ELEMENT_NODE == node.getNodeType())
+                {
+                    testid++;
+                    testSuccess &= testNode(node, testid);
+                }
+            }
+
+            if (testSuccess)
+            {
+                System.out.println("Parsing Test successful.");
+            }
+            else
+            {
+                System.out.println("Parsing Test fails!");
+            }
+
+            // Test adhoc manual creation
+            ExpressionFactory exprFct = XPathFactory.newInstance()
+                                                    .newExpressionFactory();
+
+            Expr expr = exprFct.createExpr("child::tutu[10]");
+            System.out.println("tutu[10] =? " + expr.getString(true));
+
+            PathExpr pathExpr = exprFct.createPathExpr(true);
+            System.out.println("/ =? " + pathExpr.getString(true));
+
+            NodeTest nt = exprFct.createNameTest(null, "toto");
+            pathExpr.addOperand(exprFct.createStepExpr(StepExpr.AXIS_CHILD, nt));
+            System.out.println("/toto =? " + pathExpr.getString(true));
+            System.out.println("/child::toto =? " + pathExpr.getString(false));
+
+            nt = exprFct.createNameTest(null, "titi");
+            pathExpr.addOperand(exprFct.createStepExpr(
+                    StepExpr.AXIS_DESCENDANT, nt));
+
+            System.out.println("/toto/descendant::titi =? "
+                + pathExpr.getString(true));
+            System.out.println("/child::toto/descendant::titi =? "
+                + pathExpr.getString(false));
+
+            StepExpr se = (StepExpr) pathExpr.getOperand(0); // first step
+            se.appendPredicate(exprFct.createIntegerLiteralExpr(50));
+            System.out.println("/toto[50]/descendant::titi =? "
+                + pathExpr.getString(true));
+            System.out.println("/child::toto[50]/descendant::titi =? "
+                + pathExpr.getString(false));
+
+            // Test visitor - anonymous class used
+            pathExpr.visit(new Visitor()
+                {
+                    public boolean visitPath(PathExpr path)
+                    {
+                        System.out.println("visit path "
+                            + path.getString(false));
+
+                        return true;
+                    }
+
+                    public boolean visitStep(StepExpr step)
+                    {
+                        System.out.println("visit step "
+                            + step.getString(false));
+
+                        return true;
+                    }
+
+                    public boolean visitLiteral(Literal primary)
+                    {
+                        System.out.println(primary.getString(false));
+
+                        return true;
+                    }
+
+                    public boolean visitOperator(OperatorExpr arithmetic)
+                    {
+                        System.out.println(arithmetic.getString(false));
+
+                        return true;
+                    }
+
+                    public boolean visitConditional(ConditionalExpr condition)
+                    {
+                        System.out.println(condition.getString(false));
+
+                        return true;
+                    }
+
+                    public boolean visitForOrQuantifiedExpr(
+                        ForAndQuantifiedExpr expr)
+                    {
+                        System.out.println(expr.getString(false));
+
+                        return true;
+                    }
+
+                    public boolean visitVariable(Variable var)
+                    {
+                        return false;
+                    }
+                });
+
+            // Simple Evaluation check
+            //Evaluator eval = XPathFactory.newInstance().newEvaluatorFactory()
+            //                             .createEvaluator();
+            XalanEvaluator eval = new XalanEvaluator();
+
+            ExprContextImpl ctx = eval.createExprContext();
+
+            //ctx.getDynamicContext().setContextItem(doc.getDocumentElement());
+            ctx.setContextItem(doc.getDocumentElement());
+
+            // exprs
+            Expr e = exprFct.createExpr("expr[2]/@value");
+            Object res = eval.evaluate(ctx, e);
+
+            System.out.println("-5 ?= " + ((XObject) res).str());
+        }
+        catch (Exception e)
+        {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean testNode(Node node, int testid)
+        throws Exception
+    {
         boolean testOK = true;
         String xpathString = ((Element) node).getAttribute("value");
-        System.out.println(
-            "TestSamples[" + testid + "]: " + xpathString);
+        System.out.println("TestSamples[" + testid + "]: " + xpathString);
 
         SimpleNode tree;
         XPath parser;
-        try {
+
+        try
+        {
             parser = new XPath(new StringReader(xpathString));
-            tree = parser.XPath2();
 
-            if (SimpleNode.PRODUCE_RAW_TREE) {
-                //  if (dumpTree)
-                //{
-                tree.dump("|");
+            try
+            {
+                tree = parser.XPath2();
 
-                //   }
-            }
-            else {
-                Expr expr = (Expr) tree.jjtGetChild(0);
+                if (SimpleNode.PRODUCE_RAW_TREE)
+                {
+                    //  if (dumpTree)
+                    //{
+                    tree.dump("|");
 
-                // Gets the reference AST to compare with
-                NodeList astNodes =
-                    ((Element) node).getElementsByTagName("ast");
+                    //   }
+                }
+                else
+                {
+                    Expr expr = (Expr) tree.jjtGetChild(0);
 
-                if ((astNodes != null)
-                    && (astNodes.getLength() >= 1)) {
-                    Node astNode = astNodes.item(0);
+                    // Gets the reference AST to compare with
+                    NodeList astNodes = ((Element) node).getElementsByTagName(
+                            "ast");
 
-                    if (!checkAST((SimpleNode) expr,
-                        (Element)
-                            (
-                                (
-                                    Element) astNode)
-                                        .getElementsByTagName(
-                            "node").item(
-                            0))) {
-                        System.err.println(
-                            "Generated AST doesn't match the reference one");
+                    if ((astNodes != null) && (astNodes.getLength() >= 1))
+                    {
+                        Node astNode = astNodes.item(0);
 
-                        tree.dump("|");
+                        if (!checkAST((SimpleNode) expr,
+                                    (Element) ((Element) astNode).getElementsByTagName(
+                                        "node").item(0)))
+                        {
+                            System.err.println(
+                                "Generated AST doesn't match the reference one");
 
-                        // Produce the raw tree
-                        System.err.println("Raw tree is");
+                            tree.dump("|");
 
-                        SimpleNode.PRODUCE_RAW_TREE = true;
+                            // Produce the raw tree
+                            System.err.println("Raw tree is");
 
-                        parser =
-                            new XPath(
-                                new StringReader(xpathString));
-                        tree = parser.XPath2();
-                        tree.dump("|");
+                            SimpleNode.PRODUCE_RAW_TREE = true;
 
-                        SimpleNode.PRODUCE_RAW_TREE = false;
+                            parser = new XPath(new StringReader(xpathString));
+                            tree = parser.XPath2();
+                            tree.dump("|");
+
+                            SimpleNode.PRODUCE_RAW_TREE = false;
+                        }
+                    }
+                    else
+                    {
+                        System.err.println("No reference AST provided");
+                    }
+
+                    String ab = expr.getString(true);
+
+                    String norm = ((Element) node).getAttribute(
+                            "normalized-round-trip");
+
+                    if ("".equals(norm))
+                    {
+                        norm = xpathString;
+                    }
+
+                    if (!ab.equals(norm))
+                    {
+                        System.err.print(
+                            "Bad external or internal representation: ");
+                        System.err.println(ab + "  !=  " + xpathString);
+                        testOK = false;
                     }
                 }
-                else {
-                    System.err.println("No reference AST provided");
-                }
-
-                String ab = expr.getString(true);
-
-                String norm =
-                    ((Element) node).getAttribute(
-                        "normalized-round-trip");
-
-                if ("".equals(norm)) {
-                    norm = xpathString;
-                }
-
-                if (!ab.equals(norm)) {
-                    System.err.print(
-                        "Bad external or internal representation: ");
-                    System.err.println(ab + "  !=  " + xpathString);
-                    testOK = false;
-                }
+            }
+            catch (ParseException e)
+            {
+                System.err.println("Parsing error occurs: " + e.getMessage());
             }
         }
-        catch (RuntimeException e) {
+        catch (RuntimeException e)
+        {
             e.printStackTrace(System.err);
 
             System.err.println("Raw tree is");
@@ -185,155 +343,36 @@ public class TestSamples {
             SimpleNode.PRODUCE_RAW_TREE = false;
             testOK = false;
         }
+
         return testOK;
-    }
-    
-    
-    public TestSamples(String[] args) {
-        try {
-            final boolean dumpTree =
-                ((args.length == 1) && args[0].equals("-dump")) ? true : false;
-
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            Document doc =
-                db.parse(new InputSource(TEST_SAMPLES_XML));
-            doc.normalize();
-
-            Element tests = doc.getDocumentElement();
-            NodeList testElems = tests.getChildNodes();
-            int nChildren = testElems.getLength();
-            int testid = 0;
-            boolean testSuccess = true;
-
-            for (int i = 0; i < nChildren; i++) {
-                org.w3c.dom.Node node = testElems.item(i);
-
-                if (org.w3c.dom.Node.ELEMENT_NODE == node.getNodeType()) {
-                    testid++;
-                    testSuccess &= testNode(node, testid);
-                }
-            }
-
-            if (testSuccess) {
-                System.out.println("Parsing Test successful!!!");
-            }
-            else {
-                System.out.println("Parsing Test fails!!!!!!!!!");
-            }
-
-            // Test adhoc manual creation
-            ExpressionFactory exprFct =
-                XPathFactory.newInstance().newExpressionFactory();
-
-            Expr expr = exprFct.createExpr("child::tutu[10]");
-            System.out.println("tutu[10] =? " + expr.getString(true));
-
-            PathExpr pathExpr = exprFct.createPathExpr(true);
-            System.out.println("/ =? " + pathExpr.getString(true));
-
-            NodeTest nt = exprFct.createNameTest(null, "toto");
-            pathExpr.addOperand(
-                exprFct.createStepExpr(StepExpr.AXIS_CHILD, nt));
-            System.out.println("/toto =? " + pathExpr.getString(true));
-            System.out.println("/child::toto =? " + pathExpr.getString(false));
-
-            nt = exprFct.createNameTest(null, "titi");
-            pathExpr.addOperand(
-                exprFct.createStepExpr(StepExpr.AXIS_DESCENDANT, nt));
-
-            System.out.println(
-                "/toto/descendant::titi =? " + pathExpr.getString(true));
-            System.out.println(
-                "/child::toto/descendant::titi =? "
-                    + pathExpr.getString(false));
-
-            StepExpr se = (StepExpr) pathExpr.getOperand(0); // first step
-            se.appendPredicate(exprFct.createIntegerLiteralExpr(50));
-            System.out.println(
-                "/toto[50]/descendant::titi =? " + pathExpr.getString(true));
-            System.out.println(
-                "/child::toto[50]/descendant::titi =? "
-                    + pathExpr.getString(false));
-
-            // Test visitor - anonymous class used
-            pathExpr.visit(new Visitor() {
-                public boolean visitPath(PathExpr path) {
-                    System.out.println("visit path " + path.getString(false));
-                    return true;
-                }
-
-                public boolean visitStep(StepExpr step) {
-                    System.out.println("visit step " + step.getString(false));
-                    return true;
-                }
-
-                public boolean visitLiteral(Literal primary) {
-                    System.out.println(primary.getString(false));
-                    return true;
-                }
-
-                public boolean visitOperator(OperatorExpr arithmetic) {
-                    System.out.println(arithmetic.getString(false));
-                    return true;
-                }
-
-                public boolean visitConditional(ConditionalExpr condition) {
-                    System.out.println(condition.getString(false));
-                    return true;
-                }
-
-                public boolean visitForOrQuantifiedExpr(ForAndQuantifiedExpr expr) {
-                    System.out.println(expr.getString(false));
-                    return true;
-                }
-
-                public boolean visitVariable(Variable var) {
-                    return false;
-                }
-            });
-
-            // Simple Evaluation check
-            //Evaluator eval = XPathFactory.newInstance().newEvaluatorFactory()
-            //                             .createEvaluator();
-            XalanEvaluator eval = new XalanEvaluator();
-
-            ExprContextImpl ctx = eval.createExprContext();
-            //ctx.getDynamicContext().setContextItem(doc.getDocumentElement());
-            ctx.setContextItem(doc.getDocumentElement());
-
-            // exprs
-            Expr e = exprFct.createExpr("expr[2]/@value");
-            Object res = eval.evaluate(ctx, e);
-
-            System.out.println("-5 ?= " + ((XObject) res).str());
-        }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     /**
      * Check that the given internal representation of expr match the reference
      * AST
+     *
      * @param expr
      * @param refAST
+     *
      * @return boolean
      */
-    public static boolean checkAST(SimpleNode expr, Element refAST) {
-        String nodeName =
-            refAST.getAttributes().getNamedItem("name").getNodeValue();
+    public static boolean checkAST(SimpleNode expr, Element refAST)
+    {
+        String nodeName = refAST.getAttributes().getNamedItem("name")
+                                .getNodeValue();
 
-        if (XPathTreeConstants.jjtNodeName[expr.getId()].equals(nodeName)) {
+        if (XPathTreeConstants.jjtNodeName[expr.getId()].equals(nodeName))
+        {
             int i = 0;
 
-            for (Node rac = refAST.getFirstChild();
-                rac != null;
-                rac = rac.getNextSibling()) {
-                if ("node".equals(rac.getNodeName())) {
+            for (Node rac = refAST.getFirstChild(); rac != null;
+                    rac = rac.getNextSibling())
+            {
+                if ("node".equals(rac.getNodeName()))
+                {
                     if (!checkAST((SimpleNode) expr.jjtGetChild(i),
-                        (Element) rac)) {
+                                (Element) rac))
+                    {
                         return false;
                     }
 
@@ -341,7 +380,8 @@ public class TestSamples {
                 }
             }
 
-            if (i < expr.jjtGetNumChildren()) {
+            if (i < expr.jjtGetNumChildren())
+            {
                 return false;
             }
 
@@ -351,7 +391,8 @@ public class TestSamples {
         return false;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         new TestSamples(args);
     }
 }

@@ -1088,47 +1088,11 @@ public class XPath/*@bgen(jjtree)*/implements XPathTreeConstants, XPathConstants
           break label_7;
         }
         jj_consume_token(IfLpar);
-             SimpleNode jjtn001 = (SimpleNode)SimpleNode.jjtCreate(this, JJTIFLPAR);
-             boolean jjtc001 = true;
-             jjtree.openNodeScope(jjtn001);
-        try {
-             jjtree.closeNodeScope(jjtn001,  true);
-             jjtc001 = false;
-            jjtn001.processToken(token);
-        } finally {
-             if (jjtc001) {
-               jjtree.closeNodeScope(jjtn001,  true);
-             }
-        }
         Expr();
         jj_consume_token(Rpar);
         jj_consume_token(Then);
-                                                                              SimpleNode jjtn002 = (SimpleNode)SimpleNode.jjtCreate(this, JJTTHEN);
-                                                                              boolean jjtc002 = true;
-                                                                              jjtree.openNodeScope(jjtn002);
-        try {
-                                                                              jjtree.closeNodeScope(jjtn002,  true);
-                                                                              jjtc002 = false;
-                                                               jjtn002.processToken(token);
-        } finally {
-                                                                              if (jjtc002) {
-                                                                                jjtree.closeNodeScope(jjtn002,  true);
-                                                                              }
-        }
         Expr();
         jj_consume_token(Else);
-                                                                                                                                      SimpleNode jjtn003 = (SimpleNode)SimpleNode.jjtCreate(this, JJTELSE);
-                                                                                                                                      boolean jjtc003 = true;
-                                                                                                                                      jjtree.openNodeScope(jjtn003);
-        try {
-                                                                                                                                      jjtree.closeNodeScope(jjtn003,  true);
-                                                                                                                                      jjtc003 = false;
-                                                                                                           jjtn003.processToken(token);
-        } finally {
-                                                                                                                                      if (jjtc003) {
-                                                                                                                                        jjtree.closeNodeScope(jjtn003,  true);
-                                                                                                                                      }
-        }
       }
       InstanceofExpr();
     } catch (Throwable jjte000) {

@@ -1133,7 +1133,7 @@ void QuantifiedExpr() #QuantifiedExpr(> 1) :
 void IfExpr() #IfExpr(> 1) :
 {}
 {
-  (<IfLpar>{jjtThis.processToken(token);} #IfLpar(true) Expr() <Rpar> <Then>{jjtThis.processToken(token);} #Then(true) Expr() <Else>{jjtThis.processToken(token);} #Else(true))* InstanceofExpr()
+  (<IfLpar> Expr() <Rpar> <Then> Expr() <Else>)* InstanceofExpr()
 }
 
 void InstanceofExpr() #InstanceofExpr(> 1) :

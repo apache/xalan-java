@@ -1,7 +1,7 @@
 /*
  * The Apache Software License, Version 1.1
  *
- * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights 
+ * Copyright (c) 2002-2003 The Apache Software Foundation.  All rights
  * reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -9,7 +9,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -17,7 +17,7 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution,
- *    if any, must include the following acknowledgment:  
+ *    if any, must include the following acknowledgment:
  *       "This product includes software developed by the
  *        Apache Software Foundation (http://www.apache.org/)."
  *    Alternately, this acknowledgment may appear in the software itself,
@@ -25,7 +25,7 @@
  *
  * 4. The names "Xalan" and "Apache Software Foundation" must
  *    not be used to endorse or promote products derived from this
- *    software without prior written permission. For written 
+ *    software without prior written permission. For written
  *    permission, please contact apache@apache.org.
  *
  * 5. Products derived from this software may not be called "Apache",
@@ -62,94 +62,144 @@ import org.apache.xpath.impl.parser.Node;
 import org.apache.xpath.impl.parser.SimpleNode;
 import org.apache.xpath.impl.parser.XPath;
 
+
 /**
- *
+ * Implementation of if-then-else expression.
  */
-public class ConditionalExprImpl extends SimpleNode implements ConditionalExpr {
+public class ConditionalExprImpl extends ExprImpl implements ConditionalExpr
+{
+    /**
+     * Constructor for ConditionalExprImpl.
+     *
+     * @param i
+     */
+    public ConditionalExprImpl(int i)
+    {
+        super(i);
+        children = new Node[3];
+    }
 
-	/**
-	 * Constructor for ConditionalExprImpl.
-	 * @param i
-	 */
-	public ConditionalExprImpl(int i) {
-		super(i);
-	}
-
-	/**
-	 * Constructor for ConditionalExprImpl.
-	 * @param p
-	 * @param i
-	 */
-	public ConditionalExprImpl(XPath p, int i) {
-		super(p, i);
-	}
-
-	/**
-	 * @see org.apache.xpath.expression.ConditionalExpr#getElseExpr()
-	 */
-	public Expr getElseExpr() {
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.expression.ConditionalExpr#getTestExpr()
-	 */
-	public Expr getTestExpr() {
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.expression.ConditionalExpr#getThenExpr()
-	 */
-	public Expr getThenExpr() {
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.expression.Expr#cloneExpression()
-	 */
-	public Expr cloneExpression() {
-		return null;
-	}
-
-	/**
-	 * @see org.apache.xpath.expression.Expr#getExprType()
-	 */
-	public short getExprType() {
-		return CONDITIONAL_EXPR;
-	}
-
-	/**
-	 * @see org.apache.xpath.expression.Expr#getString(boolean)
-	 */
-	public String getString(boolean abbreviate) {
-		return null;
-	}
+    /**
+     * Constructor for ConditionalExprImpl.
+     *
+     * @param p
+     * @param i
+     */
+    public ConditionalExprImpl(XPath p, int i)
+    {
+        super(p, i);
+        children = new Node[3];
+    }
     
+	/**
+	 * Constructor for ConditionalExprImpl.
+	 *
+	 * @param i
+	 */
+	private ConditionalExprImpl(ConditionalExprImpl expr)
+	{
+		super(expr.id);
+		children = new Node[3];
+		System.arraycopy(expr.children, 0, children, 0, 3);
+	}
+
+    /**
+     * @see org.apache.xpath.expression.ConditionalExpr#getElseExpr()
+     */
+    public Expr getElseExpr()
+    {
+        return (Expr) children[2];
+    }
+
+    /**
+     * @see org.apache.xpath.expression.ConditionalExpr#getTestExpr()
+     */
+    public Expr getTestExpr()
+    {
+        return (Expr) children[0];
+    }
+
+    /**
+     * @see org.apache.xpath.expression.ConditionalExpr#getThenExpr()
+     */
+    public Expr getThenExpr()
+    {
+        return (Expr) children[1];
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.xpath.expression.ConditionalExpr#setElseExpr(org.apache.xpath.expression.Expr)
+     */
+    public void setElseExpr(Expr expr)
+    {
+        children[2] = (Node) expr;
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.xpath.expression.ConditionalExpr#setTestExpr(org.apache.xpath.expression.Expr)
+     */
+    public void setTestExpr(Expr expr)
+    {
+        children[0] = (Node) expr;
+    }
+
+    /* (non-Javadoc)
+     * @see org.apache.xpath.expression.ConditionalExpr#setThenExpr(org.apache.xpath.expression.Expr)
+     */
+    public void setThenExpr(Expr expr)
+    {
+        children[1] = (Node) expr;
+    }
+
+    /**
+     * @see org.apache.xpath.expression.Expr#cloneExpression()
+     */
+    public Expr cloneExpression()
+    {        
+        return new ConditionalExprImpl(this);
+    }
+
+    /**
+     * @see org.apache.xpath.expression.Expr#getExprType()
+     */
+    public short getExprType()
+    {
+        return CONDITIONAL_EXPR;
+    }
+
     /**
      * @see org.apache.xpath.expression.Visitable#visit(Visitor)
      */
-    public void visit(Visitor visitor) {
-        // TODO:
+    public void visit(Visitor visitor)
+    {
+       visitor.visitConditional(this);
     }
-
 
     /**
      * @see org.apache.xpath.impl.parser.Node#jjtAddChild(Node, int)
      */
-    public void jjtAddChild(Node n, int i) {
-       if (((SimpleNode) n).canBeReduced()) {
+    public void jjtAddChild(Node n, int i)
+    {
+        if (((SimpleNode) n).canBeReduced())
+        {
             super.jjtAddChild(n.jjtGetChild(0), i);
-        } else {
-             super.jjtAddChild(n, i);
+        }
+        else
+        {
+            super.jjtAddChild(n, i);
         }
     }
-    
-    /**
-     * @see org.apache.xpath.impl.parser.SimpleNode#canBeReduced()
-     */
-    public boolean canBeReduced() {
-        return children.length == 1; // means that there is no (at least) then expr (pos=1)
-    }
 
+    /* (non-Javadoc)
+     * @see org.apache.xpath.impl.parser.SimpleNode#getString(java.lang.StringBuffer, boolean)
+     */
+    public void getString(StringBuffer expr, boolean abbreviate)
+    {
+        expr.append("if (");
+        ((ExprImpl) getTestExpr()).getString(expr, abbreviate);
+        expr.append(") then ");
+        ((ExprImpl) getThenExpr()).getString(expr, abbreviate);
+        expr.append(" else ");
+        ((ExprImpl) getElseExpr()).getString(expr, abbreviate);
+    }
 }
