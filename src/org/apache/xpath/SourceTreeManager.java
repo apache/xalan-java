@@ -98,6 +98,20 @@ import javax.xml.transform.TransformerException;
 public class SourceTreeManager
 {
 
+  /** XPathContext that created this SourceTreeManager. */
+
+  private XPathContext m_xctxt;
+
+  /**
+   * Construct the instance and save a reference to the creating XPathContext
+   *
+   */
+
+  public SourceTreeManager(XPathContext xctxt) {
+    super();
+    m_xctxt = xctxt;
+  }
+
   /** Vector of SourceTree objects that this manager manages. */
   private Vector m_sourceTree = new Vector();
 
@@ -483,6 +497,19 @@ public class SourceTreeManager
 
         // What can we do?
         // TODO: User diagnostics.
+      }
+
+      if (reader == null)
+        return null;
+
+      XMLReader primaryReader = m_xctxt.getPrimaryReader();
+      if (primaryReader != null)
+      {
+        EntityResolver primaryResolver = primaryReader.getEntityResolver();
+        if (primaryResolver != null)
+        {
+          reader.setEntityResolver(primaryResolver);
+        }
       }
 
       return reader;

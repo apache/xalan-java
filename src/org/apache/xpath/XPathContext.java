@@ -290,7 +290,7 @@ public class XPathContext implements ExpressionContext
 
   /** The source tree manager, which associates Source objects to source 
    *  tree nodes. */
-  private SourceTreeManager m_sourceTreeManager = new SourceTreeManager();
+  private SourceTreeManager m_sourceTreeManager = new SourceTreeManager(this);
 
   /**
    * Get the SourceTreeManager associated with this execution context.
