@@ -73,15 +73,29 @@
   <p>You can get the JDK or JRE from <jump href="http://www.ibm.com/java/jdk">ibm.com/java/jdk/</jump> 
      or <jump href="http://www.java.sun.com">java.sun.com</jump>.</p> 
      
-  <p>To get the &xslt4j; binary distribution (all you need to use and develop applications with &xslt4j;), 
-     download and unzip either of the following from the <resource-ref idref="xslt4j-distdir"/>:</p>
+  <p>There are 2 binary distributions available; you only need to choose one of them. The first 
+     binary distribution contains the Xalan Interpretive processor and the Xalan Compiled processor 
+     (XSLTC) and the runtime support packages into a single jar, called xalan.jar.  The second binary 
+     distribution contains the Xalan Interpretive processor in xalan.jar and the Xalan Compiled 
+     processor (XSLTC) and the runtime support packages in xsltc.jar.  The runtime support packages
+     required by XSLTC are: java_cup runtime version 0.10j, bcel version 5.0, and regexp version 1.2.
+     Both binary distributions contain xml-apis.jar (the JAXP 1.2 implementation) and 
+     &xml4j-jar; from <resource-ref idref="xml4j-used"/>.</p>
+     
+  <p>To get the first &xslt4j; binary distribution, download and unzip either of the following from 
+     the <resource-ref idref="xslt4j-distdir"/>:</p>
     <ul>
       <li><resource-ref idref="xslt4j-dist-bin-zip"/></li>
       <li><resource-ref idref="xslt4j-dist-bin-targz"/></li>
     </ul>
-  <p>The binary distribution contains &xslt4j-current; (xalan.jar and xml-apis.jar) and 
-     &xml4j-jar; from <resource-ref idref="xml4j-used"/>.</p>
-     
+    
+  <p>To get the second &xslt4j; binary distribution, download and unzip either of the following from 
+     the <resource-ref idref="xslt4j-distdir"/>:</p>
+    <ul>
+      <li><resource-ref idref="xslt4j-dist-bin-2jars-zip"/></li>
+      <li><resource-ref idref="xslt4j-dist-bin-2jars-targz"/></li>
+    </ul>    
+
   <p>To get the &xslt4j; source distribution (with which you can do your own &xslt4j; build; see 
      <link idref="readme" anchor="build">Build notes</link>), download and unzip either of the 
      following from the <resource-ref idref="xslt4j-distdir"/>:</p>

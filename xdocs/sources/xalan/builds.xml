@@ -134,7 +134,7 @@ build smoketest
 <anchor name="builds"/>
 <s2 title="Running Product Builds - Overview">
 <p>Official builds of &xslt4j; require a few more steps than simply doing 
-'build dist smoketest'.  This is a quick checklist of the steps; if you are 
+'build fulldist'.  This is a quick checklist of the steps; if you are 
 not comfortable following this list, then please seek help on xalan-dev.</p> 
 
 <s3 title="Release Types">
@@ -165,7 +165,9 @@ releases are much less stringent than other releases.<br/><br/></li>
 <li>Verify any doc updates for code changes are in.<br/><br/></li>
 <li>Update build numbers in doc, code, and build scripts.<br/><br/></li>
 <li>Do a clean checkout and tag the sources.<br/><br/></li>
-<li>build dist smoketest -logfile ..\dist.log<br/><br/></li>
+<li>build fulldist -logfile ..\fulldist.log<br/><br/></li>
+<li>build fulldist-separatejars -logfile ..\fulldist-separatejars.log<br/><br/></li>
+<li>Run the smoketest for Xalan Interpretive and XSLTC.<br/><br/></li>
 <li>Verify smoketest passed; check docs built with new build numbers.<br/><br/></li>
 <li>PGP/GPG sign all .zip/.tar.gz distribution files (distros).<br/><br/></li>
 <li>Copy distros up to the website.<br/><br/></li>
@@ -240,8 +242,9 @@ Update the following lines for each version field:<br/>
 &lt;property name="version.DEVELOPER" value="D"/>&lt;!-- Set this to "D" if a developer release; blank "" if maintenance point release -->
 &lt;property name="version.MINOR" value="1"/>&lt;!-- EITHER the developer release number, or a maintenance point release number -->
 <br/><br/></li>
+<!--
 <li>src/org/apache/xalan/res/XSLTInfo.properties:<br/>
-Update the version number.<br/><br/></li>
+Update the version number.<br/><br/></li> -->
 
 <li>xml-xalan/java/xdocs/sources/entities.ent (xslt4j-current, xslt4j-dist) documentation updates.  The xsl4j-dist is used to construct links to the actual distribution units, and must be coordinated with whatever xml-xalan/java/build.xml uses for ${version}.<br/><br/></li>
 
@@ -273,22 +276,53 @@ to see the exact format of previous builds.</p>
 
 
 <ul>
-<li>build dist site smoketest -logfile ..\dist.log</li>
+<li>build fulldist site -logfile ..\fulldist.log</li>
 </ul>
-<p>The above command will build the 'dist' or distribution .zip/.tar.gz 
-files, as well as building the full product plus all documentation.  It will then 
-run the smoketest, and saves all of it's output in ..\dist.log.  Note that this 
-will take up a moderate amount of space, especially when building the .tar.gz files, 
-so ensure you have plenty of disk space first.</p>
+<p>The above command will build the binary and source distribution .zip/.tar.gz 
+files, in which the Xalan Interpretive and Xalan Compiled (XSLTC) processors
+are combined into the xalan.jar file.  All the samples and the documentation
+are built as well. The log of the build is saved in ..\fulldist.log.  Note 
+that this will take up a moderate amount of space, especially when building 
+the .tar.gz files, so ensure you have plenty of disk space first.</p>
+<p>Review the fulldist.log file quickly to ensure there were no build errors.   
+Note that you can ignore any 'warnings' from the javadoc target; however any 
+'error's in the documentation must be fixed.</p>
+
+<ul>
+<li>build fulldist-separatejars site -logfile ..\fulldist-separatejars.log</li>
+</ul>
+<p>Before running this command, rename the generated <strong>./build</strong> directory from 
+the 'fulldist' command above to another name, for example, build-combinedjar.  The 
+'fulldist-separatejars' command will build the binary and source distribution 
+.zip/.tar.gz files, in which the Xalan Interpretive and Xalan Compiled (XSLTC) processors
+are built into separate jars; xalan.jar and xsltc.jar respectively.  All the samples and 
+the documentation are built as well.  The log of the build is saved in ..\fulldist-separatejars.log.
+Note that this will take up a moderate amount of space, especially when building the .tar.gz 
+files, so ensure you have plenty of disk space first.</p>
+<p>Review the fulldist-separatejars.log file quickly to ensure there were no build errors.   
+Note that you can ignore any 'warnings' from the javadoc target; however any 
+'error's in the documentation must be fixed.</p>
+<p>The results of the build will be
+placed in the ./build directory.  Rename the xalan-j_2_x_x-bin.zip and xalan-j_2_x_x-bin.tar.gz
+files to xalan-j_2_x_x-bin-2jars.zip and xalan-j_2_x_x-bin-2jars.tar.gz respectively so that 
+this binary distribution can be distinguished from the binary distributions created by the
+'fulldist' target.  The source distributions, xalan-j_2_x_x-src.zip and xalan-j_2_x_x-src.tar.gz
+are duplicates of those created by the 'fulldist' target.</p>
+
+<ul>
+<li>Run the smoketest for Xalan Interpretive and XSLTC.</li>
+</ul>
+<p>Change to the xml-xalan\test directory and build the test harness by entering
+"build jar -logfile jar.log".  Run the smoketest for the Xalan Interpretive processor by
+entering "build smoketest -logfile smoketest.log". Run the smoketest for the XSLTC by
+entering "build smoketest.xsltc -logfile smoketest.xsltc.log". 
+</p>
 
 <ul>
 <li>Verify smoketest passed; check docs built with new build numbers.</li>
 </ul>
-<p>Review the dist.log quickly to ensure there were no build errors.  
-Note that you can ignore any 'warnings' from the javadoc target; however any 
-'error's in the documentation must be fixed.</p>
-<p>The logfile should also report the Smoketest results at the end; if it does 
-not say that the Smoketest passed, then you must fix the test results before 
+<p>Review the smoketest.log and smoketest.xsltc.log files.  If they do not say
+that the Smoketest passed, then you must fix the test results before 
 posting the build.  Even for developer's builds, we must ensure that at least 
 the Smoketest passes.  For major or minor releases, we should also perform more 
 testing to ensure stability.  More detailed log files for the Smoketest can 
@@ -309,6 +343,10 @@ and re-start this process!</p>
 ensure the integrity of their public distributions.  This is most commonly done 
 by signing the actual .zip/.tar.gz files with your personal PGP or GPG key. 
 Note that you must sign the files before copying them up to the website.</p>
+<p>The Xalan Java distributions consist of: the source distribution files 
+(xalan-j_x_x_x-src.zip and xalan-j_x_x_x-src.tar.gz) and the two binary distributions 
+files (xalan-j_x_x_x-bin.zip and xalan-j_x_x_x-bin.tar.gz, and xalan-j_x_x_x-bin-2jars.zip 
+and xalan-j_x_x_x-bin-2jars.tar.gz).</p>
 <p>Two prerequisites to signing the distribution are: 1) you must have a 
 personal PGP or GPG key, and 2) the public half of your key must be in the 
 appropriate KEYS file before you begin a build.  If you hadn't previously checked 

@@ -722,8 +722,22 @@ public class EnvironmentCheck
               Hashtable h = new Hashtable(2);
               // Note "-" char is looked for in appendFoundJars
               h.put(jars[i] + "-path", f.getAbsolutePath());
-              h.put(jars[i] + "-apparent.version",
+             
+              // We won't bother reporting on the xalan.jar on the
+              // foundclasses.java.class.path since this requires
+              // knowing the size of the xalan.jar and putting that 
+              // value in the hashtable below before we build the
+              // jar. Once we do that and perform a build, the 
+              // xalan.jar size changes!.  If we find a better way
+              // to do this, we can reable this function.  The user
+              // will still be given information on the xalan.jar
+              // found on the java.class.path.
+              // For other jars, eg. xml-apis.jar and xercesImpl.jar, we 
+              // report the apparent version of the file we've found
+              if (!("xalan.jar".equalsIgnoreCase(jars[i]))) {              
+                h.put(jars[i] + "-apparent.version",
                     getApparentVersion(jars[i], f.length()));
+              }                    
               v.addElement(h);
             }
             catch (Exception e)
@@ -780,8 +794,8 @@ public class EnvironmentCheck
     else
     {
       if ("xerces.jar".equalsIgnoreCase(jarName)
-              || "xercesImpl.jar".equalsIgnoreCase(jarName)
-              || "xalan.jar".equalsIgnoreCase(jarName))
+              || "xercesImpl.jar".equalsIgnoreCase(jarName))
+//              || "xalan.jar".equalsIgnoreCase(jarName))
       {
 
         // For xalan.jar and xerces.jar/xercesImpl.jar, which we ship together:
@@ -826,7 +840,7 @@ public class EnvironmentCheck
       Method method = clazz.getMethod(JAXP11_METHOD, noArgs);
 
       // If we succeeded, we at least have JAXP 1.1 available
-      h.put(VERSION + "JAXP", "1.1");
+      h.put(VERSION + "JAXP", "1.1 or higher");
     }
     catch (Exception e)
     {

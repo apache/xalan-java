@@ -41,6 +41,12 @@
   <resource id="xslt4j-dist-bin-targz" 
             title="&xslt4j-dist-bin;.tar.gz" 
             location="&xslt4j-distdir;&xslt4j-dist-bin;.tar.gz"/>
+  <resource id="xslt4j-dist-bin-2jars-zip" 
+            title="&xslt4j-dist-bin;-2jars.zip" 
+            location="&xslt4j-distdir;&xslt4j-dist-bin;-2jars.zip"/>
+  <resource id="xslt4j-dist-bin-2jars-targz" 
+            title="&xslt4j-dist-bin;-2jars.tar.gz" 
+            location="&xslt4j-distdir;&xslt4j-dist-bin;-2jars.tar.gz"/>            
   <resource id="xslt4j-dist-src-zip" 
             title="&xslt4j-dist-src;.zip" 
             location="&xslt4j-distdir;&xslt4j-dist-src;.zip"/>
