@@ -228,6 +228,11 @@ and their corresponding Process command line options:</p>
     <td>false</td>
   </tr>
   <tr>
+    <td>use-classpath</td>
+    <td></td>
+    <td>false</td>
+  </tr>
+  <tr>
     <td>enable-inlining</td>
     <td>-XN</td>
     <td>false</td>
@@ -248,6 +253,12 @@ the default after the call.</p>
 implied when the <code>-XO</code> or <code>-XJ</code> option is used. The purpose is to make the command line
 usage syntax a little bit simpler. Setting the <code>generate-attribute</code> attribute to true from TrAX is 
 equivalent to using the <code>-XO</code> option without the optional translet name from the Process command line.</p>
+
+<p>If the <code>use-classpath</code> attribute is set to <code>true</code>, the translet will be loaded
+from the <code>CLASSPATH</code>. This attribute is typically used in a case when the translets are packaged in a 
+prebuilt jar file which is included in the <code>CLASSPATH</code>. You can set the <code>translet-name</code> attribute 
+to indicate which translet to use. If this attribute is not set, the name of the translet is taken from 
+the base name of the stylesheet. The <code>jar-name</code> attribute is not used in this situation.</p>
 
 <p>The following example shows you how to do the same thing from TrAX for the question 2 in the FAQ.</p>
 
