@@ -803,7 +803,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
   {
     if (DEBUG) System.out.println("getFirstAttribute("+ (parm1&NODEIDENTITYBITS)+")");
     int nodeIdx = parm1 & NODEIDENTITYBITS;
-    if (nodeIdx != DTM.NULL) return m_attribute.elementAt(nodeIdx);
+    if (nodeIdx != DTM.NULL) return m_attribute.elementAt(nodeIdx) | m_dtmIdent;
     else return DTM.NULL;
   }
 
@@ -865,7 +865,7 @@ public class SQLDocument extends DTMDefaultBaseIterators
   {
     if (DEBUG) System.out.println("getNextAttribute(" + parm1 + ")");
     int nodeIdx = parm1 & NODEIDENTITYBITS;
-    if (nodeIdx != DTM.NULL) return m_nextsib.elementAt(nodeIdx);
+    if (nodeIdx != DTM.NULL) return m_nextsib.elementAt(nodeIdx) | m_dtmIdent;
     else return DTM.NULL;
   }
 
