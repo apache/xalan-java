@@ -150,8 +150,12 @@ public class TemplateList implements java.io.Serializable
             //((MatchPattern2)newMatchPat).setNext(matchPat);
             //m_patternTable.put(target, newMatchPat);
             //*
+            // Sort by priority first, then by document order.
+            double priority = ((MatchPattern2)newMatchPat).getTemplate().getPriority();
             MatchPattern2 next;
-            while((next = matchPat.getNext()) != null)
+            while( ((next = matchPat.getNext()) != null) &&
+                   (matchPat.getTemplate().getPriority() >= priority) )
+                  
             {
             matchPat = next;
             }
