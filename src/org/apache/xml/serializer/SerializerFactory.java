@@ -63,7 +63,7 @@ import javax.xml.transform.OutputKeys;
 
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
-import org.apache.xml.utils.ObjectFactory;
+
 import org.xml.sax.ContentHandler;
 
 /**

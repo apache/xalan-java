@@ -81,14 +81,17 @@ import java.io.InputStreamReader;
  *
  * @version $Id:  $
  */
-public class ObjectFactory {
+class ObjectFactory {
 
     //
     // Constants
     //
 
     // name of default properties file to look for in JDK's jre/lib directory
-    private static final String DEFAULT_PROPERTIES_FILENAME = "xalan.properties";
+    private static final String DEFAULT_PROPERTIES_FILENAME =
+                                                     "xalan.properties";
+
+    private static final String SERVICES_PATH = "META-INF/services";
 
     /** Set to true for debugging */
     private static final boolean DEBUG = false;
@@ -534,7 +537,7 @@ public class ObjectFactory {
     private static String findJarServiceProviderName(String factoryId)
     {
         SecuritySupport ss = SecuritySupport.getInstance();
-        String serviceId = "META-INF/services/" + factoryId;
+        String serviceId = SERVICES_PATH + factoryId;
         InputStream is = null;
 
         // First try the Context ClassLoader

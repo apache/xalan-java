@@ -76,7 +76,7 @@ import java.util.Properties;
  */
 class SecuritySupport12 extends SecuritySupport {
 
-    public ClassLoader getContextClassLoader() {
+    ClassLoader getContextClassLoader() {
         return (ClassLoader)
                 AccessController.doPrivileged(new PrivilegedAction() {
             public Object run() {
@@ -89,7 +89,7 @@ class SecuritySupport12 extends SecuritySupport {
         });
     }
 
-    public ClassLoader getSystemClassLoader() {
+    ClassLoader getSystemClassLoader() {
         return (ClassLoader)
             AccessController.doPrivileged(new PrivilegedAction() {
                 public Object run() {
@@ -102,7 +102,7 @@ class SecuritySupport12 extends SecuritySupport {
             });
     }
 
-    public ClassLoader getParentClassLoader(final ClassLoader cl) {
+    ClassLoader getParentClassLoader(final ClassLoader cl) {
         return (ClassLoader)
             AccessController.doPrivileged(new PrivilegedAction() {
                 public Object run() {
@@ -118,7 +118,7 @@ class SecuritySupport12 extends SecuritySupport {
             });
     }
 
-    public String getSystemProperty(final String propName) {
+    String getSystemProperty(final String propName) {
         return (String)
             AccessController.doPrivileged(new PrivilegedAction() {
                 public Object run() {
@@ -127,7 +127,7 @@ class SecuritySupport12 extends SecuritySupport {
             });
     }
 
-    public FileInputStream getFileInputStream(final File file)
+    FileInputStream getFileInputStream(final File file)
         throws FileNotFoundException
     {
         try {
@@ -142,7 +142,7 @@ class SecuritySupport12 extends SecuritySupport {
         }
     }
 
-    public InputStream getResourceAsStream(final ClassLoader cl,
+    InputStream getResourceAsStream(final ClassLoader cl,
                                            final String name)
     {
         return (InputStream)
@@ -159,7 +159,7 @@ class SecuritySupport12 extends SecuritySupport {
             });
     }
     
-    public boolean getFileExists(final File f) {
+    boolean getFileExists(final File f) {
     return ((Boolean)
             AccessController.doPrivileged(new PrivilegedAction() {
                 public Object run() {
@@ -168,7 +168,7 @@ class SecuritySupport12 extends SecuritySupport {
             })).booleanValue();
     }
     
-    public long getLastModified(final File f) {
+    long getLastModified(final File f) {
     return ((Long)
             AccessController.doPrivileged(new PrivilegedAction() {
                 public Object run() {

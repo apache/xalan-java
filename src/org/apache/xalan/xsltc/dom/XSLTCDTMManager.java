@@ -68,7 +68,7 @@ import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.dtm.ref.DTMManagerDefault;
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
-import org.apache.xml.utils.ObjectFactory;
+
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xalan.xsltc.trax.DOM2SAX;
 

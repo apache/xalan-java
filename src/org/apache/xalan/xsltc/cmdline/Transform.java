@@ -80,7 +80,7 @@ import org.apache.xalan.xsltc.DOMEnhancedForDTM;
 import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.Constants;
-import org.apache.xml.utils.ObjectFactory;
+
 import org.apache.xalan.xsltc.runtime.Parameter;
 import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
 import org.apache.xml.serializer.SerializationHandler;
