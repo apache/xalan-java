@@ -62,18 +62,23 @@ import org.apache.xpath.objects.XObject;
 /**
  * <meta name="usage" content="internal"/>
  * This class holds an instance of an argument on
- * the stack.
+ * the stack. The value of the argument can be either an
+ * XObject or a String containing an expression.
  */
 public class Arg
 {
 
-  /** NEEDSDOC Field m_qname          */
+  /** Field m_qname: The name of this argument, expressed as a QName
+   * (Qualified Name) object.
+   * @see getQName
+   * @see setQName
+   *  */
   private QName m_qname;
 
   /**
    * Get the qualified name for this argument.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return QName object containing the qualified name
    */
   public QName getQName()
   {
@@ -83,20 +88,24 @@ public class Arg
   /**
    * Set the qualified name for this argument.
    *
-   * NEEDSDOC @param name
+   * @param name QName object representing the new Qualified Name.
    */
   public void setQName(QName name)
   {
     m_qname = name;
   }
 
-  /** NEEDSDOC Field m_val          */
+  /** Field m_val: Stored XObject value of this argument
+   * @see getVal()
+   * @see setVal()
+   */
   private XObject m_val;
 
   /**
    * Get the value for this argument.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return the argument's stored XObject value.
+   * @see setVal()
    */
   public XObject getVal()
   {
@@ -104,22 +113,28 @@ public class Arg
   }
 
   /**
-   * Set the value for this argument.
+   * Set the value of this argument.
    *
-   * NEEDSDOC @param val
+   * @param val an XObject representing the arguments's value.
+   * @see getVal()
    */
   public void setVal(XObject val)
   {
     m_val = val;
   }
 
-  /** NEEDSDOC Field m_expression          */
+  /** Field m_expression: Stored expression value of this argument.
+   * @see setExpression
+   * @see getExpression
+   * */
   private String m_expression;
 
   /**
    * Get the value expression for this argument.
    *
-   * NEEDSDOC ($objectName$) @return
+   * @return String containing the expression previously stored into this
+   * argument
+   * @see setExpression
    */
   public String getExpression()
   {
@@ -129,18 +144,24 @@ public class Arg
   /**
    * Set the value expression for this argument.
    *
-   * NEEDSDOC @param expr
+   * @param expr String containing the expression to be stored as this
+   * argument's value.
+   * @see getExpression
    */
   public void setExpression(String expr)
   {
     m_expression = expr;
   }
 
-  /** NEEDSDOC Field m_isParamVar          */
+  /** NEEDSDOC Field m_isParamVar
+   * Set at the time the object is constructed.
+   * */
   private boolean m_isParamVar;
 
   /**
-   * Construct a dummy parameter argument.
+   * Construct a dummy parameter argument, with no QName and no
+   * value (either expression string or value XObject). isParameterVar
+   * defaults to false.
    */
   public Arg()
   {
@@ -153,10 +174,10 @@ public class Arg
   }
 
   /**
-   * Construct a parameter argument.
+   * Construct a parameter argument that contains an expression.
    *
-   * NEEDSDOC @param qname
-   * NEEDSDOC @param expression
+   * @param qname Name of the argument, expressed as a QName object.
+   * @param expression String to be stored as this argument's value expression.
    * NEEDSDOC @param isParamVar
    */
   public Arg(QName qname, String expression, boolean isParamVar)
@@ -169,10 +190,11 @@ public class Arg
   }
 
   /**
-   * Construct a parameter argument.
+   * Construct a parameter argument which has an XObject value.
+   * isParamVar defaults to false.
    *
-   * NEEDSDOC @param qname
-   * NEEDSDOC @param val
+   * @param qname Name of the argument, expressed as a QName object.
+   * @param val Value of the argument, expressed as an XObject
    */
   public Arg(QName qname, XObject val)
   {
@@ -186,8 +208,8 @@ public class Arg
   /**
    * Construct a parameter argument.
    *
-   * NEEDSDOC @param qname
-   * NEEDSDOC @param val
+   * @param qname Name of the argument, expressed as a QName object.
+   * @param val Value of the argument, expressed as an XObject
    * NEEDSDOC @param isParamVar
    */
   public Arg(QName qname, XObject val, boolean isParamVar)
@@ -201,12 +223,24 @@ public class Arg
 
   /**
    * Override equals and agree that we're equal if
-   * the passed object is a string and it matches
+   * the passed object is a QName which matches
    * the name of the arg.
+   * <P>
+   * TODO: Should we accept strings too, as QName.equals can?
+   * <p>
+   * NEEDSDOC: Why doesn't this invoke QName.equals?
+   * Why doesn't it hand off to this.equals((QName)Obj)?
+   * <P>
+   * TODO: Does this work as currently written? 
+   * It starts with m_qname.equals(qname.getLocalPart()), which looks
+   * like it will always return false. Note that this does not match
+   * the behavior of the version which explicitly accepts a QName parameter.
+   * I suspect this is both erroneous and dead code.
    *
-   * NEEDSDOC @param obj
-   *
-   * NEEDSDOC ($objectName$) @return
+   * @param obj Object to be compared against.
+   * @return True if obj is a QName with the same value as our QName,
+   * false if it's a QName with a different value.
+   * @exception ClassCastException if the object is not a QName.
    */
   public boolean equals(Object obj)
   {
@@ -216,10 +250,11 @@ public class Arg
       if (m_qname != null)
       {
         QName qname = (QName) obj;
-
-        return m_qname.equals(qname.getLocalPart()) && ((null != m_qname.getNamespace()) && (null != qname.getNamespace()))
-               ? m_qname.getNamespace().equals(qname.getNamespace())
-               : ((null == m_qname.getNamespace()) && (null == qname.getNamespace()));
+		
+        return m_qname.equals(qname.getLocalPart()) && 
+			   ((null != m_qname.getNamespace()) && (null != qname.getNamespace()))
+                 ? m_qname.getNamespace().equals(qname.getNamespace())
+                 : ((null == m_qname.getNamespace()) && (null == qname.getNamespace()));
       }
     }
     catch (ClassCastException cce){}
@@ -229,12 +264,17 @@ public class Arg
 
   /**
    * Override equals and agree that we're equal if
-   * the passed object is a QName and it matches
-   * the name of the arg.
+   * the passed object is a QName which matches
+   * the name of the arg. This makes searching for the
+   * desired parameter a bit more elegant. 
+   * <P>
+   * TODO: Why doesn't this invoke QName.equals?
+   * <P>
+   * TODO: Should we accept strings too, as QName.equals can?
    *
-   * NEEDSDOC @param qname
-   *
-   * NEEDSDOC ($objectName$) @return
+   * @param qname QName to be compared against.
+   * @return True if obj is a QName with the same value as our QName,
+   * false if it's a QName with a different value.
    */
   public boolean equals(QName qname)
   {
