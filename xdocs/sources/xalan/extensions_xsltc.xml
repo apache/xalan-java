@@ -217,14 +217,15 @@ with multiple XSLT processors.</note>
    xmlns:xsl=&quot;http://www.w3.org/1999/XSL/Transform&quot;
    xmlns:xsltc=&quot;http://xml.apache.org/xalan/xsltc&quot;
    xmlns:redirect=&quot;http://xml.apache.org/xalan/redirect&quot;
-   xsl:version=&quot;1.0&quot;&gt;
+   extension-element-prefixes=&quot;xsltc redirect&quot;
+   version=&quot;1.0&quot;&gt;
    &lt;xsl:template match=&quot;/&quot;&gt;
      &lt;xsl:text&gt;This goes to standard output&lt;/xsl:text&gt;
      &lt;xsltc:output file=&quot;blob.xml&quot;&gt;
        &lt;xsl:text&gt;This ends up in the file 'blob.xml'&lt;/xsl:text&gt;
      &lt;/xsltc:output&gt;
-     &lt;redirect:write file=&quot;blob.xml&quot; append=&quot;true&quot;&gt;
-       &lt;xsl:text&gt;This is appended to the file 'blob.xml'&lt;/xsl:text&gt;
+     &lt;redirect:write file=&quot;blob2.xml&quot;&gt;
+       &lt;xsl:text&gt;This ends up in the file 'blob2.xml'&lt;/xsl:text&gt;
      &lt;/redirect:write&gt;
    &lt;/xsl:template&gt;
 &lt;/xsl:stylesheet&gt;</source>  
