@@ -144,6 +144,8 @@ public final class TransformerImpl extends Transformer
 
     private final static String LEXICAL_HANDLER_PROPERTY =
 	"http://xml.org/sax/properties/lexical-handler";
+    private static final String NAMESPACE_FEATURE =
+	"http://xml.org/sax/features/namespaces";
 
     /**
      * Implements JAXP's Transformer constructor
@@ -309,13 +311,13 @@ public final class TransformerImpl extends Transformer
 		// all content/lexical events
 		dom = new DOMImpl();
 		final DOMBuilder builder = dom.getBuilder();
-		reader.setContentHandler(builder);
 		try {
 		    reader.setProperty(LEXICAL_HANDLER_PROPERTY, builder);
 		}
 		catch (SAXException e) {
 		    // quitely ignored
 		}
+		reader.setContentHandler(builder);
 
 		// Parse the input and build the internal DOM
 		reader.parse(input);
@@ -353,6 +355,13 @@ public final class TransformerImpl extends Transformer
 
 		// With a StreamSource we need to create our own parser
 		final SAXParserFactory factory = SAXParserFactory.newInstance();
+		try {
+		    factory.setFeature(NAMESPACE_FEATURE,true);
+		}
+		catch (Exception e) {
+		    factory.setNamespaceAware(true);
+		}
+
 		final SAXParser parser = factory.newSAXParser();
 		final XMLReader reader = parser.getXMLReader();
 
@@ -364,13 +373,13 @@ public final class TransformerImpl extends Transformer
 		// all content/lexical events
 		dom = new DOMImpl();
 		final DOMBuilder builder = dom.getBuilder();
-		reader.setContentHandler(builder);
 		try {
 		    reader.setProperty(LEXICAL_HANDLER_PROPERTY, builder);
 		}
 		catch (SAXException e) {
 		    // quitely ignored
 		}
+		reader.setContentHandler(builder);
 
 		InputSource input;
 		if (streamInput != null)
