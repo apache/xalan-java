@@ -123,6 +123,8 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     // Node-to-type, type-to-name, and name-to-type mappings
     private int[] _types;
     private String[]  _namesArray;
+    private Hashtable _names;
+    private int       _namesCount = 0;
 
     // Tree navigation arrays
     private int[]     _offsetOrChild; // Serves two purposes !!!
@@ -135,7 +137,9 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     private String[]  _uriArray;
     private Hashtable _prefixArray;
     private short[]   _namespace;
+    private Hashtable _namespaceHash;
     private Hashtable _nsIndex = new Hashtable();
+    private int       _URICount = 0;
 
     // Tracks which textnodes are whitespaces and which are not
     private BitArray  _whitespace; // takes xml:space into acc.
@@ -156,13 +160,110 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     private final static String XML_LANG_ATTRIBUTE =
 	"http://www.w3.org/XML/1998/namespace:@lang";
 
+    private static final String XML_PREFIX   = "xml";
+
+    /**
+     * %HZ% %REVISIT% Need javadoc
+     */
+    public void createMappings() {
+        DTMAxisIterator rootIterator = getIterator();
+        DTMAxisIterator docIter =
+                 new org.apache.xml.dtm.ref.DTMDefaultBaseIterators
+                                            .DescendantIterator();
+        docIter.setStartNode(rootIterator.next());
+
+        _names = new Hashtable();
+        _namespaceHash = new Hashtable();
+        _prefixArray = new Hashtable();
+
+
+        for (int node = docIter.next();
+             node != DTM.NULL;
+             node = docIter.next()) {
+            if (getNodeType(node) == DTM.ELEMENT_NODE) {
+                addNodeToMappings(node, false);
+
+                for (int anode = getFirstAttribute(node);
+                     anode != DTM.NULL;
+                     anode = getNextAttribute(anode)) {
+                    addNodeToMappings(anode, true);
+                }
+            }
+        }
+
+        String [] URIArray = new String[_URICount];
+        String [] namesArray = new String[_namesCount];
+        short [] namespace = new short[_namesCount];
+
+        Enumeration names = _names.keys();
+        while (names.hasMoreElements()) {
+            final String name = (String)names.nextElement();
+            final Integer Idx = (Integer)_names.get(name);
+            final String uri = (String)_namespaceHash.get(Idx);
+            final int idx = Idx.intValue();
+
+            namesArray[idx] = name;
+            if (uri != null) {
+                final String prefix = (String)_prefixArray.get(uri);
+                final Integer eType =
+                             new Integer(getExpandedTypeID(uri, prefix,
+                                                           DTM.NAMESPACE_NODE));
+                final short URIIdx = ((Integer)_nsIndex.get(eType))
+                                                       .shortValue();
+                namespace[idx] = URIIdx;
+                URIArray[URIIdx] = uri;
+            }
+        }
+        _namespace = namespace;
+        _namesArray = namesArray;
+        _uriArray = URIArray;
+
+        _names = null;
+        _namespaceHash = null;
+
+        _types = setupMapping(namesArray);
+    }
+
+
+    /**
+     * %HZ% %REVISIT% Need javadoc
+     */
+    private void addNodeToMappings(int node, boolean isAttrNode) {
+        String name = getLocalName(node);
+        final String prefix = getPrefix(node);
+        final String uri = getNamespaceName(node);
+        name = (uri.length() == 0) ? (isAttrNode ? ('@' + name) : name)
+                                   : (isAttrNode ? (uri + ":@" + name)
+                                                 : (uri + ':' + name));
+
+        final boolean hasNamespace = (uri.length() != 0 &&
+                                      !prefix.equals(XML_PREFIX));
+        if (hasNamespace) {
+            Integer eType = new Integer (getExpandedTypeID(uri, prefix,
+                                                           DTM.NAMESPACE_NODE));
+            if ((Integer)_nsIndex.get(eType) == null) {
+                _prefixArray.put(uri, prefix);
+                _nsIndex.put(eType, new Integer(_URICount++));
+            }
+        }
+
+        if (_names.get(name) == null) {
+            final Integer nameIdx = new Integer(_namesCount++);
+            _names.put(name, nameIdx);
+
+            if (hasNamespace) {
+                _namespaceHash.put(nameIdx, uri);
+            }
+        }
+    }
+
     /**
      * Define the origin of the document from which the tree was built
      */
     public void setDocumentURI(String uri) 
     {
-      setDocumentBaseURI(uri);
-	    _documentURI = uri;
+        setDocumentBaseURI(uri);
+        _documentURI = uri;
     }
 
     /**
@@ -202,9 +303,12 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
 
 	ancestors.setStartNode(node);
 	while ((anode = ancestors.next()) != DTM.NULL) {
-	    final org.apache.xml.dtm.ref.DTMDefaultBaseIterators.NamespaceIterator namespaces = 
-                new org.apache.xml.dtm.ref.DTMDefaultBaseIterators.NamespaceIterator();
+            final org.apache.xml.dtm.ref.DTMDefaultBaseIterators
+                     .NamespaceIterator namespaces =
+                             new org.apache.xml.dtm.ref.DTMDefaultBaseIterators
+                                                       .NamespaceIterator();
 
+            namespaces.setStartNode(anode);
 	    while ((nsnode = namespaces.next()) != DTM.NULL) {
 		if (getPrefix(nsnode).equals(prefix)) {
 		    return getNodeValue(nsnode);
@@ -924,29 +1028,27 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
      * Get mapping from DOM element/attribute types to external types
      */
     public short[] getMapping(String[] names) {
-      int i;
-      final int namesLength = names.length;
-      final int mappingLength = _namesArray.length + NTYPES;
-      final int exLength = m_expandedNameTable.getSize();
-      final short[] result = new short[exLength];
+        int i;
+        final int namesLength = names.length;
+        final int exLength = m_expandedNameTable.getSize();
+        final short[] result = new short[exLength];
 
-      // primitive types map to themselves
-      for (i = 0; i < DTM.NTYPES; i++)
-        result[i] = (short)i;
+        // primitive types map to themselves
+        for (i = 0; i < DTM.NTYPES; i++)
+            result[i] = (short)i;
         
-      for (i = NTYPES; i < exLength; i++) 
-      	result[i] = m_expandedNameTable.getType(i); 
+        for (i = NTYPES; i < exLength; i++) 
+            result[i] = m_expandedNameTable.getType(i); 
       	
-      // actual mapping of caller requested names
-      for (i = 0; i < namesLength; i++) {
-          int genType = getGeneralizedType(names[i]);
-          if (genType < _types.length && genType == _types[genType])
-          {
-          result[genType] = (short)(i + DTM.NTYPES);
-          }
-      }
+        // actual mapping of caller requested names
+        for (i = 0; i < namesLength; i++) {
+            int genType = getGeneralizedType(names[i]);
+            if (genType < _types.length && genType == _types[genType]) {
+                result[genType] = (short)(i + DTM.NTYPES);
+            }
+        }
 
-      return result;
+        return result;
     }
 
     /**
@@ -1091,33 +1193,53 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     }
 
     /**
-     * Constructor - defaults to 32K nodes
+     * Construct a DOMImpl object from a DOM node.
+     *
+     * @param mgr The DTMManager who owns this DTM.
+     * @param domSource the DOM source that this DTM will wrap.
+     * @param dtmIdentity The DTM identity ID for this DTM.
+     * @param whiteSpaceFilter The white space filter for this DTM, which may
+     *                         be null.
+     * @param xstringFactory XMLString factory for creating character content.
+     * @param doIndexing true if the caller considers it worth it to use
+     *                   indexing schemes.
      */
-    
     public DOMImpl(DTMManager mgr, DOMSource domSource, 
-                 int dtmIdentity, DTMWSFilter whiteSpaceFilter,
-                 XMLStringFactory xstringfactory,
-                 boolean doIndexing)
+                   int dtmIdentity, DTMWSFilter whiteSpaceFilter,
+                   XMLStringFactory xstringfactory,
+                   boolean doIndexing)
     {
-      super(mgr, domSource, 
-                 dtmIdentity, whiteSpaceFilter,
-                 xstringfactory,
-                 doIndexing);
-      initSize(8*1024);
+        super(mgr, domSource, dtmIdentity, whiteSpaceFilter, xstringfactory,
+              doIndexing);
+        initSize(8*1024);
     }
     
+    /**
+     * Construct a DOMImpl object from a DOM node.
+     *
+     * @param mgr The DTMManager who owns this DTM.
+     * @param domSource the DOM source that this DTM will wrap.
+     * @param dtmIdentity The DTM identity ID for this DTM.
+     * @param whiteSpaceFilter The white space filter for this DTM, which may
+     *                         be null.
+     * @param xstringFactory XMLString factory for creating character content.
+     * @param doIndexing true if the caller considers it worth it to use
+     *                   indexing schemes.
+     * @param size The number of nodes required for the tree.
+     */
     public DOMImpl(DTMManager mgr, DOMSource domSource, 
                  int dtmIdentity, DTMWSFilter whiteSpaceFilter,
                  XMLStringFactory xstringfactory,
                  boolean doIndexing, int size)
     {
-      super(mgr, domSource, 
-                 dtmIdentity, whiteSpaceFilter,
-                 xstringfactory,
-                 doIndexing);
-      initSize(size);
+        super(mgr, domSource, dtmIdentity, whiteSpaceFilter, xstringfactory,
+              doIndexing);
+        initSize(size);
     }
     
+    /**
+     * Constructor - defaults to 32K nodes
+     */
   /*  public DOMImpl() 
     {
       //this(32*1024);
@@ -1129,15 +1251,10 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
      */
     public void initSize(int size) 
     {
-      //_type          = new short[size];
-      //_parent        = new int[size];
-      //_nextSibling   = new int[size];
       _offsetOrChild = new int[size];
       _lengthOrAttr  = new int[size];
       _text          = new char[size * 10];
       _whitespace    = new BitArray(size);
-    //  _prefix        = new short[size];
-      // _namesArray[] and _uriArray[] are allocated in endDocument
     }
 
     /**
@@ -1836,7 +1953,8 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
      */
     public DOMBuilder getBuilder() 
     {
-	return new DOMBuilderImpl();
+       //return new DOMBuilderImpl();
+       return null;
     }
 
     /**
@@ -1848,7 +1966,8 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     {
       //DOMBuilder builder = getBuilder();
      // return new SAXAdapter(builder, builder);
-      return new SAXAdapter(new DOMBuilderImpl());
+     // %HZ% %REVISIT%:  return new SAXAdapter(new DOMBuilderImpl());
+      return null;
     }
     
     /**
@@ -1858,6 +1977,13 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
     {
     	return ((SAXImpl)m_mgr.getDTM(null, true, m_wsfilter, false, false));
 
+    }
+
+    /**
+     * %HZ% Need Javadoc
+     */
+    public Hashtable getElementsWithIDs() {
+        return null;
     }
 
     /**
@@ -2493,6 +2619,28 @@ public final class DOMImpl extends DOM2DTM implements DOM, Externalizable
 	public void endDTD() {}
 	public void startEntity(String name) {}
 	public void endEntity(String name) {}
+        public void notationDecl(String name, String publicId,
+                                 String systemId) {}
+
+
+        // %HZ%:  Need Javadoc
+        public void unparsedEntityDecl(String name, String publicId,
+                                       String systemId, String notationName) {}
+
+        // %HZ%:  Need Javadoc
+        public void elementDecl(String name, String model) {}
+
+        // %HZ%:  Need Javadoc
+        public void attributeDecl(String eName, String aName, String type,
+                                  String valueDefault, String value) {}
+
+        // %HZ%:  Need Javadoc
+        public void externalEntityDecl(String name, String publicId,
+                                       String systemId) {}
+
+        // %HZ%:  Need Javadoc
+        public void internalEntityDecl(String name, String value) {}
+
 
 	/**
 	 * Similar to the SAX2 method character(char[], int, int), but this
