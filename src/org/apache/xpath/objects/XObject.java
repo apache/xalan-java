@@ -80,7 +80,8 @@ import org.apache.xpath.Expression;
 public class XObject extends Expression implements Serializable
 {
 
-  /** The java object which this object wraps.  */
+  /** The java object which this object wraps.
+   *  @serial  */
   protected Object m_obj;  // This may be NULL!!!
 
   /**

@@ -100,7 +100,8 @@ public class FunctionPattern extends StepPattern
       calcTargetString();
   }
 
-  /** Should be a {@link org.apache.xpath.functions.Function expression}.   */
+  /** Should be a {@link org.apache.xpath.functions.Function expression}.
+   *  @serial   */
   Expression m_functionExpr;
 
   /**
@@ -108,11 +109,11 @@ public class FunctionPattern extends StepPattern
    *
    * @param xctxt XPath runtime context.
    *
-   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
+   * @return {@link org.apache.xpath.patterns.NodeTest#SCORE_NODETEST}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NONE}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NSWILD}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */

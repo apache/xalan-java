@@ -107,8 +107,6 @@ public class PrecedingWalker extends ReverseAxesWalker
 
   /**
    * Reset the proximity positions counts.
-   *
-   * @throws javax.xml.transform.TransformerException
    */
   public void resetProximityPositions(){}
 

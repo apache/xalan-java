@@ -152,11 +152,11 @@ public class AttributeWalker extends AxesWalker
   /** The attribute list for the given context.    */
   transient NamedNodeMap m_attributeList;
 
-  /** The position within the attribute list.   */
-  int m_attrListPos;
+  /** The position within the attribute list.  */
+  transient int m_attrListPos;
 
   /** The number of attributes within the list.  */
-  int m_nAttrs;
+  transient int m_nAttrs;
 
   /**
    * Tell what's the maximum level this axes can descend to.

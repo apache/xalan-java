@@ -330,7 +330,7 @@ public class XRTreeFrag extends XObject
      * to nextNode() returns the first node in the set.
      * @return  The next <code>Node</code> in the set being iterated over, or
      *   <code>null</code> if there are no more members in that set.
-     * @exception DOMException
+     * @throws DOMException
      *    INVALID_STATE_ERR: Raised if this method is called after the
      *   <code>detach</code> method was invoked.
      */
@@ -352,7 +352,7 @@ public class XRTreeFrag extends XObject
      * iterator backwards in the set.
      * @return  The previous <code>Node</code> in the set being iterated over,
      *   or<code>null</code> if there are no more members in that set.
-     * @exception DOMException
+     * @throws DOMException
      *    INVALID_STATE_ERR: Raised if this method is called after the
      *   <code>detach</code> method was invoked.
      */

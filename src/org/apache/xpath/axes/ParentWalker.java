@@ -120,7 +120,7 @@ public class ParentWalker extends AxesWalker
   }
 
   /** True if we already obtained the parent node.  */
-  boolean m_gotParent;
+  transient boolean m_gotParent;
 
   /**
    * Tell what's the maximum level this axes can descend to.

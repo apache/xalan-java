@@ -67,13 +67,16 @@ import java.io.Serializable;
 public class NameSpace implements Serializable
 {
 
-  /** Next NameSpace element on the stack             */
+  /** Next NameSpace element on the stack.
+   *  @serial             */
   public NameSpace m_next = null;
 
-  /** Prefix of this NameSpace element          */
+  /** Prefix of this NameSpace element.
+   *  @serial          */
   public String m_prefix;
 
-  /** Namespace URI of this NameSpace element           */
+  /** Namespace URI of this NameSpace element.
+   *  @serial           */
   public String m_uri;  // if null, then Element namespace is empty.
 
   /**

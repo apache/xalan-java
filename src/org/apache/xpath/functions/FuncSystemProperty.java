@@ -83,10 +83,6 @@ import org.apache.xpath.objects.XString;
 public class FuncSystemProperty extends FunctionOneArg
 {
 
-  /** List of properties where the name of the property argument is 
-   *  to be looked for.  */
-  Properties xsltInfo = new Properties();
-
   /** The name of the property file where the name will be stored.  */
   static String XSLT_PROPERTIES = "/org/apache/xalan/res/XSLTInfo.properties";
 
@@ -105,6 +101,10 @@ public class FuncSystemProperty extends FunctionOneArg
     int indexOfNSSep = fullName.indexOf(':');
     String result;
     String propName = "";
+    
+    /* List of properties where the name of the property argument is 
+     *  to be looked for. */
+    Properties xsltInfo = new Properties();
 
     loadPropertyFile(XSLT_PROPERTIES, xsltInfo);
 

@@ -66,7 +66,8 @@ import org.w3c.dom.*;
 public class XNumber extends XObject
 {
 
-  /** Value of the XNumber object         */
+  /** Value of the XNumber object.
+   *  @serial         */
   double m_val;
 
   /**

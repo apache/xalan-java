@@ -150,11 +150,12 @@ public class AncestorWalker extends ReverseAxesWalker
 
   /** Stack of ancestors.  We have to do this instead of 
    *  just using getParent on the fly, because we have to walk the ancestors 
-   *  in document order.   */
-  protected Stack m_ancestors;
+   *  in document order. */
+  transient protected Stack m_ancestors;
   
-  /** The position within the stack */
-  protected int m_ancestorsPos;
+  /** The position within the stack.
+   *  @serial */
+  transient protected int m_ancestorsPos;
 
   /**
    * Tell what's the maximum level this axes can descend to.

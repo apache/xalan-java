@@ -76,7 +76,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 /**
- * <meta name="usage" content="internal"/>
+ * <meta name="usage" content="advanced"/>
  * This class provides a front-end to DOM implementations, providing
  * a number of utility functions that either aren't yet standardized
  * by the DOM spec or that are defined in optional DOM modules and
@@ -830,7 +830,7 @@ public class DOMHelper
    *
    * @return String in the form "namespaceURI:localname" if the node
    * belongs to a namespace, or simply "localname" if it doesn't.
-   * @see getExpandedAttributeName
+   * @see #getExpandedAttributeName
    */
   public String getExpandedElementName(Element elem)
   {
@@ -852,7 +852,7 @@ public class DOMHelper
    *
    * @return String in the form "namespaceURI:localname" if the node
    * belongs to a namespace, or simply "localname" if it doesn't.
-   * @see getExpandedElementName
+   * @see #getExpandedElementName
    */
   public String getExpandedAttributeName(Attr attr)
   {

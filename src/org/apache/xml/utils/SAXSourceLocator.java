@@ -71,6 +71,9 @@ import java.io.Serializable;
 public class SAXSourceLocator extends LocatorImpl
         implements SourceLocator, Serializable
 {
+  /** The SAX Locator object.
+   *  @serial
+   */
   Locator m_locator;
 
   /**

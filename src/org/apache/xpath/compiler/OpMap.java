@@ -156,7 +156,7 @@ public class OpMap
    * I use an array instead of a full parse tree in order to cut down
    * on the number of objects created.
    *
-   * @return
+   * @return An array of integers that is the opcode list that describes the XPath operations.
    */
   public int[] getOpMap()
   {

@@ -78,7 +78,8 @@ public class XBoolean extends XObject
    */
   public static XBoolean S_FALSE = new XBooleanStatic(false);
 
-  /** Value of the object          */
+  /** Value of the object.
+   *  @serial         */
   boolean m_val;
 
   /**

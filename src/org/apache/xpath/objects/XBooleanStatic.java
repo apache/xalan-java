@@ -69,7 +69,8 @@ import org.apache.xalan.res.XSLMessages;
 public class XBooleanStatic extends XBoolean
 {
 
-  /** The value of the object          */
+  /** The value of the object.
+   *  @serial          */
   boolean m_val;
 
   /**

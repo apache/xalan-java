@@ -142,28 +142,35 @@ public class URI implements Serializable
    */
   private static final String USERINFO_CHARACTERS = ";:&=+$,";
 
-  /** Stores the scheme (usually the protocol) for this URI. */
+  /** Stores the scheme (usually the protocol) for this URI.
+   *  @serial */
   private String m_scheme = null;
 
-  /** If specified, stores the userinfo for this URI; otherwise null */
+  /** If specified, stores the userinfo for this URI; otherwise null.
+   *  @serial */
   private String m_userinfo = null;
 
-  /** If specified, stores the host for this URI; otherwise null */
+  /** If specified, stores the host for this URI; otherwise null.
+   *  @serial */
   private String m_host = null;
 
-  /** If specified, stores the port for this URI; otherwise -1 */
+  /** If specified, stores the port for this URI; otherwise -1.
+   *  @serial */
   private int m_port = -1;
 
-  /** If specified, stores the path for this URI; otherwise null */
+  /** If specified, stores the path for this URI; otherwise null.
+   *  @serial */
   private String m_path = null;
 
   /**
    * If specified, stores the query string for this URI; otherwise
-   *   null.  
+   *   null. 
+   * @serial 
    */
   private String m_queryString = null;
 
-  /** If specified, stores the fragment for this URI; otherwise null */
+  /** If specified, stores the fragment for this URI; otherwise null.
+   *  @serial */
   private String m_fragment = null;
 
   /** Indicate whether in DEBUG mode          */
@@ -197,7 +204,7 @@ public class URI implements Serializable
    * @param p_uriSpec the URI specification string (cannot be null or
    *                  empty)
    *
-   * @exception MalformedURIException if p_uriSpec violates any syntax
+   * @throws MalformedURIException if p_uriSpec violates any syntax
    *                                   rules
    */
   public URI(String p_uriSpec) throws MalformedURIException
@@ -214,7 +221,7 @@ public class URI implements Serializable
    * @param p_uriSpec the URI specification string (cannot be null or
    *                  empty if p_base is null)
    *
-   * @exception MalformedURIException if p_uriSpec violates any syntax
+   * @throws MalformedURIException if p_uriSpec violates any syntax
    *                                  rules
    */
   public URI(URI p_base, String p_uriSpec) throws MalformedURIException
@@ -231,7 +238,7 @@ public class URI implements Serializable
    * @param p_schemeSpecificPart the scheme-specific part (cannot be
    *                             null or empty)
    *
-   * @exception MalformedURIException if p_scheme violates any
+   * @throws MalformedURIException if p_scheme violates any
    *                                  syntax rules
    */
   public URI(String p_scheme, String p_schemeSpecificPart)
@@ -273,7 +280,7 @@ public class URI implements Serializable
    * @param p_fragment the URI fragment (cannot be specified if path
    *                   is null)
    *
-   * @exception MalformedURIException if any of the parameters violates
+   * @throws MalformedURIException if any of the parameters violates
    *                                  syntax rules or semantic rules
    */
   public URI(String p_scheme, String p_host, String p_path, String p_queryString, String p_fragment)
@@ -304,7 +311,7 @@ public class URI implements Serializable
    * @param p_fragment the URI fragment (cannot be specified if path
    *                   is null)
    *
-   * @exception MalformedURIException if any of the parameters violates
+   * @throws MalformedURIException if any of the parameters violates
    *                                  syntax rules or semantic rules
    */
   public URI(String p_scheme, String p_userinfo, String p_host, int p_port, String p_path, String p_queryString, String p_fragment)
@@ -384,7 +391,7 @@ public class URI implements Serializable
    *                  relative URI (can only be null/empty if p_base
    *                  is not null)
    *
-   * @exception MalformedURIException if p_base is null and p_uriSpec
+   * @throws MalformedURIException if p_base is null and p_uriSpec
    *                                  is not an absolute URI or if
    *                                  p_uriSpec violates syntax rules
    */
@@ -601,7 +608,7 @@ public class URI implements Serializable
    *
    * @param p_uriSpec the URI specification (cannot be null)
    *
-   * @exception MalformedURIException if URI does not have a conformant
+   * @throws MalformedURIException if URI does not have a conformant
    *                                  scheme
    */
   private void initializeScheme(String p_uriSpec) throws MalformedURIException
@@ -643,7 +650,7 @@ public class URI implements Serializable
    *
    * @param p_uriSpec the URI specification (cannot be null)
    *
-   * @exception MalformedURIException if p_uriSpec violates syntax rules
+   * @throws MalformedURIException if p_uriSpec violates syntax rules
    */
   private void initializeAuthority(String p_uriSpec)
           throws MalformedURIException
@@ -747,7 +754,7 @@ public class URI implements Serializable
    *
    * @param p_uriSpec the URI specification (cannot be null)
    *
-   * @exception MalformedURIException if p_uriSpec violates syntax rules
+   * @throws MalformedURIException if p_uriSpec violates syntax rules
    */
   private void initializePath(String p_uriSpec) throws MalformedURIException
   {
@@ -1037,7 +1044,7 @@ public class URI implements Serializable
    *
    * @param p_scheme the scheme for this URI (cannot be null)
    *
-   * @exception MalformedURIException if p_scheme is not a conformant
+   * @throws MalformedURIException if p_scheme is not a conformant
    *                                  scheme name
    */
   public void setScheme(String p_scheme) throws MalformedURIException
@@ -1062,7 +1069,7 @@ public class URI implements Serializable
    *
    * @param p_userinfo the userinfo for this URI
    *
-   * @exception MalformedURIException if p_userinfo contains invalid
+   * @throws MalformedURIException if p_userinfo contains invalid
    *                                  characters
    */
   public void setUserinfo(String p_userinfo) throws MalformedURIException
@@ -1119,7 +1126,7 @@ public class URI implements Serializable
    *
    * @param p_host the host for this URI
    *
-   * @exception MalformedURIException if p_host is not a valid IP
+   * @throws MalformedURIException if p_host is not a valid IP
    *                                  address or DNS hostname.
    */
   public void setHost(String p_host) throws MalformedURIException
@@ -1147,7 +1154,7 @@ public class URI implements Serializable
    *
    * @param p_port the port number for this URI
    *
-   * @exception MalformedURIException if p_port is not -1 and not a
+   * @throws MalformedURIException if p_port is not -1 and not a
    *                                  valid port number
    */
   public void setPort(int p_port) throws MalformedURIException
@@ -1180,7 +1187,7 @@ public class URI implements Serializable
    *
    * @param p_path the path for this URI (may be null)
    *
-   * @exception MalformedURIException if p_path contains invalid
+   * @throws MalformedURIException if p_path contains invalid
    *                                  characters
    */
   public void setPath(String p_path) throws MalformedURIException
@@ -1208,7 +1215,7 @@ public class URI implements Serializable
    *
    * @param p_addToPath the new segment to be added to the current path
    *
-   * @exception MalformedURIException if p_addToPath contains syntax
+   * @throws MalformedURIException if p_addToPath contains syntax
    *                                  errors
    */
   public void appendPath(String p_addToPath) throws MalformedURIException
@@ -1266,7 +1273,7 @@ public class URI implements Serializable
    *
    * @param p_queryString the query string for this URI
    *
-   * @exception MalformedURIException if p_queryString is not null and this
+   * @throws MalformedURIException if p_queryString is not null and this
    *                                  URI does not conform to the generic
    *                                  URI syntax or if the path is null
    */
@@ -1306,7 +1313,7 @@ public class URI implements Serializable
    *
    * @param p_fragment the fragment for this URI
    *
-   * @exception MalformedURIException if p_fragment is not null and this
+   * @throws MalformedURIException if p_fragment is not null and this
    *                                  URI does not conform to the generic
    *                                  URI syntax or if the path is null
    */

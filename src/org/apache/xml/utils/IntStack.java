@@ -136,7 +136,7 @@ public class IntStack extends IntVector
    * from the stack.
    *
    * @return     the object at the top of this stack.
-   * @exception  EmptyStackException  if this stack is empty.
+   * @throws  EmptyStackException  if this stack is empty.
    */
   public int peek()
   {
@@ -148,7 +148,7 @@ public class IntStack extends IntVector
    *
    *
    * @param val object to set at the top
-   * @exception  EmptyStackException  if this stack is empty.
+   * @throws  EmptyStackException  if this stack is empty.
    */
   public void setTop(int val)
   {

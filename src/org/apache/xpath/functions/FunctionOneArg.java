@@ -65,7 +65,8 @@ import org.apache.xpath.Expression;
 public class FunctionOneArg extends Function
 {
 
-  /** The first argument passed to the function (at index 0).  */
+  /** The first argument passed to the function (at index 0).
+   *  @serial  */
   Expression m_arg0;
 
   /**

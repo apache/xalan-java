@@ -65,10 +65,12 @@ import java.util.*;
 public class ObjectPool implements java.io.Serializable
 {
 
-  /** Type of objects in this pool          */
+  /** Type of objects in this pool.
+   *  @serial          */
   private final Class objectType;
 
-  /** Vector of given objects this points to          */
+  /** Vector of given objects this points to.
+   *  @serial          */
   private final Vector freeStack;
 
   /**

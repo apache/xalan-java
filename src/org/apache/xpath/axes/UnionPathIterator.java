@@ -192,7 +192,7 @@ public class UnionPathIterator extends Expression
   /** The index of the next node to be fetched.  Useful if this 
    * is a cached iterator, and is being used as random access 
    * NodeList.   */
-  protected int m_next = 0;
+  transient protected int m_next = 0;
 
   /**
    * If setShouldCacheNodes(true) is called, then nodes will
@@ -256,7 +256,7 @@ public class UnionPathIterator extends Expression
    * iterator backwards in the set.
    * @return  The previous <code>Node</code> in the set being iterated over,
    *   or<code>null</code> if there are no more members in that set.
-   * @exception DOMException
+   * @throws DOMException
    *    INVALID_STATE_ERR: Raised if this method is called after the
    *   <code>detach</code> method was invoked.
    */
@@ -516,7 +516,7 @@ public class UnionPathIterator extends Expression
    * to nextNode() returns the first node in the set.
    * @return  The next <code>Node</code> in the set being iterated over, or
    *   <code>null</code> if there are no more members in that set.
-   * @exception DOMException
+   * @throws DOMException
    *    INVALID_STATE_ERR: Raised if this method is called after the
    *   <code>detach</code> method was invoked.
    */
@@ -644,7 +644,7 @@ public class UnionPathIterator extends Expression
   /**
    * Tells if we've found the last node yet.
    */
-  protected boolean m_foundLast = false;
+  transient protected boolean m_foundLast = false;
 
   /**
    * The execution context for the expression.
@@ -677,16 +677,26 @@ public class UnionPathIterator extends Expression
    * The location path iterators, one for each
    * <a href="http://www.w3.org/TR/xpath#NT-LocationPath">location
    * path</a> contained in the union expression.
+   * @serial
    */
   protected LocPathIterator[] m_iterators;
   
-  private int m_last = 0;
+  /**
+   * The last index in the list.
+   */
+  transient private int m_last = 0;
   
+  /**
+   * Get the index of the last node in the itteration.
+   */
   public int getLast()
   {
     return m_last;
   }
   
+  /**
+   * Set the index of the last node in the itteration.
+   */
   public void setLast(int last)
   {
     m_last = last;

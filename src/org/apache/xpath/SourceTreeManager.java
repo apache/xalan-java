@@ -237,8 +237,6 @@ public class SourceTreeManager
    * @param source The Source object to act as the key.
    *
    * @return The node that is associated with the Source, or null if not found.
-   *
-   * @throws TransformerException
    */
   public Node getNode(Source source)
   {

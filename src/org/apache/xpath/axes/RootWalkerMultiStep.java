@@ -139,5 +139,5 @@ public class RootWalkerMultiStep extends ChildWalkerMultiStep
   }
 
   /** True if the root node has been processed. */
-  boolean m_processedRoot = false;
+  transient boolean m_processedRoot = false;
 }

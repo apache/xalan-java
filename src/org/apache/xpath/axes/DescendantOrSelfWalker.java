@@ -115,5 +115,5 @@ public class DescendantOrSelfWalker extends DescendantWalker
   }
 
   /** True if the self (root, context node) has been returned. */
-  boolean m_processedSelf;
+  transient boolean m_processedSelf;
 }

@@ -179,8 +179,6 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
 
   /**
    * Reset the proximity positions counts.
-   *
-   * @throws javax.xml.transform.TransformerException
    */
   public void resetProximityPositions()
   {
@@ -456,23 +454,25 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
     return false;
    }
     
-  /** The owning location path iterator. */
+  /** The owning location path iterator.
+   *  @serial */
   protected LocPathIterator m_lpi;
   
   /**
    * Which predicate we are executing.
    */
-  int m_predicateIndex = -1;
+  transient int m_predicateIndex = -1;
   
   /** The list of predicate expressions. Is static and does not need 
-   *  to be deep cloned. */
+   *  to be deep cloned.
+   *  @serial */
   private Expression[] m_predicates;
 
   /**
    * An array of counts that correspond to the number
    * of predicates the step contains.
    */
-  protected int[] m_proximityPositions;
+  transient protected int[] m_proximityPositions;
 
   /** If true, diagnostic messages about predicate execution will be posted.  */
   static final boolean DEBUG_PREDICATECOUNTING = false;

@@ -67,16 +67,20 @@ import org.w3c.dom.Node;
 public class NodeVector implements Serializable, Cloneable
 {
 
-  /** Size of blocks to allocate          */
+  /** Size of blocks to allocate.
+   *  @serial          */
   private int m_blocksize;
 
-  /** Array of nodes this points to          */
+  /** Array of nodes this points to.
+   *  @serial          */
   private Node m_map[];
 
-  /** Number of nodes in this NodeVector          */
+  /** Number of nodes in this NodeVector.
+   *  @serial          */
   protected int m_firstFree = 0;
 
-  /** Size of the array this points to           */
+  /** Size of the array this points to.
+   *  @serial           */
   private int m_mapSize;  // lazy initialization
 
   /**

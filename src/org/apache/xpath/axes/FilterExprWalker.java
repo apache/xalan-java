@@ -287,7 +287,8 @@ public class FilterExprWalker extends AxesWalker
     return setCurrentIfNotNull(next);
   }
 
-  /** The contained expression. Should be non-null.   */
+  /** The contained expression. Should be non-null.
+   *  @serial   */
   private Expression m_expr;
 
   /** The result of executing m_expr.  Needs to be deep cloned on clone op.  */

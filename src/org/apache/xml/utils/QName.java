@@ -82,16 +82,19 @@ public class QName implements java.io.Serializable
 
   /**
    * The local name.
+   * @serial
    */
   protected String _localName;
 
   /**
    * The namespace URI.
+   * @serial
    */
   protected String _namespaceURI;
 
   /**
    * The namespace prefix.
+   * @serial
    */
   protected String _prefix;
 
@@ -103,6 +106,7 @@ public class QName implements java.io.Serializable
 
   /**
    * The cached hashcode, which is calculated at construction time.
+   * @serial
    */
   private int m_hashCode;
 

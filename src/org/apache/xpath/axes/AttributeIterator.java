@@ -175,7 +175,7 @@ public class AttributeIterator extends LocPathIterator
    * @return  The next <code>Node</code> in the set being iterated over, or
    *   <code>null</code> if there are no more members in that set.
    *
-   * @exception DOMException
+   * @throws DOMException
    *    INVALID_STATE_ERR: Raised if this method is called after the
    *   <code>detach</code> method was invoked.
    */
@@ -287,8 +287,8 @@ public class AttributeIterator extends LocPathIterator
   transient private NamedNodeMap m_attributeList;
 
   /** The position within the attribute list. */
-  private int m_attrListPos = 0;
+  transient private int m_attrListPos = 0;
 
   /** The number of attributes within the list. */
-  private int m_nAttrs = 0;
+  transient private int m_nAttrs = 0;
 }

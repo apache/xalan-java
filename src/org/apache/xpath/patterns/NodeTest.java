@@ -83,32 +83,34 @@ public class NodeTest extends Expression
 
   /**
    * This attribute determines which node types are accepted.
+   * @serial
    */
   protected int m_whatToShow;
 
   /** This bit specifies a namespace, and extends the SHOW_XXX stuff 
-   *  in {@link org.w3c.dom.NodeFilter}. */
+   *  in {@link org.w3c.dom.traversal.NodeFilter}. */
   public static final int SHOW_NAMESPACE = 0x00001000;
 
   /**
    * Special bitmap for match patterns starting with a function.
-   * Make sure this does not conflict with {@link org.w3c.dom.NodeFilter}.
+   * Make sure this does not conflict with {@link org.w3c.dom.traversal.NodeFilter}.
    */
   public static final int SHOW_BYFUNCTION = 0x00010000;
 
   /**
    * This attribute determines which node types are accepted.
-   * These constants are defined in the {@link org.w3c.dom.NodeFilter}
+   * These constants are defined in the {@link org.w3c.dom.traversal.NodeFilter}
    * interface.
    *
-   * @return bitset mainly defined in {@link org.w3c.dom.NodeFilter}.
+   * @return bitset mainly defined in {@link org.w3c.dom.traversal.NodeFilter}.
    */
   public int getWhatToShow()
   {
     return m_whatToShow;
   }
 
-  /** The namespace to be tested for, which may be null. */
+  /** The namespace to be tested for, which may be null.
+   *  @serial */
   String m_namespace;
 
   /**
@@ -121,7 +123,8 @@ public class NodeTest extends Expression
     return m_namespace;
   }
 
-  /** The local name to be tested for. */
+  /** The local name to be tested for.
+   *  @serial */
   String m_name;
 
   /**
@@ -140,40 +143,36 @@ public class NodeTest extends Expression
    *  {@link #SCORE_NSWILD}, 
    *  {@link #SCORE_QNAME}, or
    *  {@link #SCORE_OTHER}.
+   *  @serial
    */
   XNumber m_score;
 
   /** 
    * The match score if the pattern consists of just a NodeTest.
-   *  @see XSLT Specification -  
-   *  <a href="http://www.w3.org/TR/xslt#conflict">5.5 Conflict Resolution for Template Rules</a> */
-  static final XNumber SCORE_NODETEST =
+   *  @see <a href="http://www.w3.org/TR/xslt#conflict">XSLT Specification - 5.5 Conflict Resolution for Template Rules</a> */
+  public static final XNumber SCORE_NODETEST =
     new XNumber(XPath.MATCH_SCORE_NODETEST);
 
   /** 
    * The match score if the pattern pattern has the form NCName:*.
-   *  @see XSLT Specification - 
-   *  <a href="http://www.w3.org/TR/xslt#conflict">5.5 Conflict Resolution for Template Rules</a> */
-  static final XNumber SCORE_NSWILD = new XNumber(XPath.MATCH_SCORE_NSWILD);
+   *  @see <a href="http://www.w3.org/TR/xslt#conflict">XSLT Specification - 5.5 Conflict Resolution for Template Rules</a> */
+  public static final XNumber SCORE_NSWILD = new XNumber(XPath.MATCH_SCORE_NSWILD);
 
   /** 
    * The match score if the pattern has the form
    * of a QName optionally preceded by an @ character.
-   *  @see XSLT Specification - 
-   *  <a href="http://www.w3.org/TR/xslt#conflict">5.5 Conflict Resolution for Template Rules</a> */
-  static final XNumber SCORE_QNAME = new XNumber(XPath.MATCH_SCORE_QNAME);
+   *  @see <a href="http://www.w3.org/TR/xslt#conflict">XSLT Specification - 5.5 Conflict Resolution for Template Rules</a> */
+  public static final XNumber SCORE_QNAME = new XNumber(XPath.MATCH_SCORE_QNAME);
 
   /** 
    * The match score if the pattern consists of something
    * other than just a NodeTest or just a qname.
-   *  @see XSLT Specification - 
-   *  <a href="http://www.w3.org/TR/xslt#conflict">5.5 Conflict Resolution for Template Rules</a> */
-  static final XNumber SCORE_OTHER = new XNumber(XPath.MATCH_SCORE_OTHER);
+   *  @see <a href="http://www.w3.org/TR/xslt#conflict">XSLT Specification - 5.5 Conflict Resolution for Template Rules</a> */
+  public static final XNumber SCORE_OTHER = new XNumber(XPath.MATCH_SCORE_OTHER);
 
   /** 
    * The match score if no match is made.
-   *  @see XSLT Specification - 
-   *  <a href="http://www.w3.org/TR/xslt#conflict">5.5 Conflict Resolution for Template Rules</a> */
+   *  @see <a href="http://www.w3.org/TR/xslt#conflict">XSLT Specification - 5.5 Conflict Resolution for Template Rules</a> */
   public static final XNumber SCORE_NONE =
     new XNumber(XPath.MATCH_SCORE_NONE);
 
@@ -181,7 +180,7 @@ public class NodeTest extends Expression
    * Construct an NodeTest that tests for namespaces and node names.
    *
    *
-   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
    * @param namespace The namespace to be tested.
    * @param name The local name to be tested.
    */
@@ -194,7 +193,7 @@ public class NodeTest extends Expression
    * Construct an NodeTest that doesn't test for node names.
    *
    *
-   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
    */
   public NodeTest(int whatToShow)
   {
@@ -211,7 +210,7 @@ public class NodeTest extends Expression
    * calculating the score that this test will return if a test succeeds.
    *
    *
-   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
    */
   public void initNodeTest(int whatToShow)
   {
@@ -227,7 +226,7 @@ public class NodeTest extends Expression
    * calculating the score that this test will return if a test succeeds.
    *
    *
-   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
    * @param namespace The namespace to be tested.
    * @param name The local name to be tested.
    */
@@ -241,7 +240,8 @@ public class NodeTest extends Expression
     calcScore();
   }
 
-  /** True if this test has a null namespace and a local name of {@link #WILD}. */
+  /** True if this test has a null namespace and a local name of {@link #WILD}.
+   *  @serial */
   private boolean m_isTotallyWild;
 
   /**
@@ -278,7 +278,7 @@ public class NodeTest extends Expression
    * Do a diagnostics dump of a whatToShow bit set.
    *
    *
-   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
    */
   public static void debugWhatToShow(int whatToShow)
   {
@@ -362,11 +362,11 @@ public class NodeTest extends Expression
    * @param xctxt XPath runtime context.
    * @param context The node being tested.
    *
-   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
+   * @return {@link org.apache.xpath.patterns.NodeTest#SCORE_NODETEST}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NONE}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NSWILD}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -450,11 +450,11 @@ public class NodeTest extends Expression
    *
    * @param xctxt XPath runtime context.
    *
-   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST},
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE},
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD},
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
+   * @return {@link org.apache.xpath.patterns.NodeTest#SCORE_NODETEST},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NONE},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NSWILD},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */

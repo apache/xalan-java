@@ -87,6 +87,7 @@ public abstract class Expression implements java.io.Serializable
   /**
    * The location where this expression was built from.  Need for diagnostic
    *  messages. May be null.
+   *  @serial
    */
   protected SourceLocator m_slocator;
   

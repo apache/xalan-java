@@ -97,7 +97,8 @@ import org.apache.xpath.patterns.NodeTest;
 public class XPath implements Serializable
 {
 
-  /** The top of the expression tree.  */
+  /** The top of the expression tree. 
+   *  @serial */
   private Expression m_mainExp;
 
   /**
@@ -146,7 +147,8 @@ public class XPath implements Serializable
     m_mainExp.setSourceLocator(l);
   }
 
-  /** The pattern string, mainly kept around for diagnostic purposes.  */
+  /** The pattern string, mainly kept around for diagnostic purposes.
+   *  @serial  */
   String m_patternString;
 
   /**
@@ -213,14 +215,14 @@ public class XPath implements Serializable
    * @param contextNode The node that "." expresses.
    * @param namespaceContext The context in which namespaces in the
    * XPath are supposed to be expanded.
-   * @exception TransformerException thrown if the active ProblemListener decides
+   * @throws TransformerException thrown if the active ProblemListener decides
    * the error condition is severe enough to halt processing.
    * @param callback Interface that implements the processLocatedNode method.
    * @param callbackInfo Object that will be passed to the processLocatedNode method.
    * @param stopAtFirst True if the search should stop once the first node in document
    * order is found.
    * @return The result of the XPath or null if callbacks are used.
-   * @exception TransformerException thrown if
+   * @throws TransformerException thrown if
    * the error condition is severe enough to halt processing.
    *
    * @throws javax.xml.transform.TransformerException

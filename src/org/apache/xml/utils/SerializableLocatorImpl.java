@@ -107,10 +107,10 @@ implements org.xml.sax.Locator, java.io.Serializable
      */
     public SerializableLocatorImpl (org.xml.sax.Locator locator)
     {
-	setPublicId(locator.getPublicId());
-	setSystemId(locator.getSystemId());
-	setLineNumber(locator.getLineNumber());
-	setColumnNumber(locator.getColumnNumber());
+        setPublicId(locator.getPublicId());
+        setSystemId(locator.getSystemId());
+        setLineNumber(locator.getLineNumber());
+        setColumnNumber(locator.getColumnNumber());
     }
     
     
@@ -129,7 +129,7 @@ implements org.xml.sax.Locator, java.io.Serializable
      */
     public String getPublicId ()
     {
-	return publicId;
+        return publicId;
     }
     
     
@@ -143,7 +143,7 @@ implements org.xml.sax.Locator, java.io.Serializable
      */
     public String getSystemId ()
     {
-	return systemId;
+        return systemId;
     }
     
     
@@ -156,7 +156,7 @@ implements org.xml.sax.Locator, java.io.Serializable
      */
     public int getLineNumber ()
     {
-	return lineNumber;
+        return lineNumber;
     }
     
     
@@ -169,7 +169,7 @@ implements org.xml.sax.Locator, java.io.Serializable
      */
     public int getColumnNumber ()
     {
-	return columnNumber;
+        return columnNumber;
     }
     
     
@@ -187,7 +187,7 @@ implements org.xml.sax.Locator, java.io.Serializable
      */
     public void setPublicId (String publicId)
     {
-	this.publicId = publicId;
+        this.publicId = publicId;
     }
     
     
@@ -200,7 +200,7 @@ implements org.xml.sax.Locator, java.io.Serializable
      */
     public void setSystemId (String systemId)
     {
-	this.systemId = systemId;
+        this.systemId = systemId;
     }
     
     
@@ -212,7 +212,7 @@ implements org.xml.sax.Locator, java.io.Serializable
      */
     public void setLineNumber (int lineNumber)
     {
-	this.lineNumber = lineNumber;
+        this.lineNumber = lineNumber;
     }
     
     
@@ -224,7 +224,7 @@ implements org.xml.sax.Locator, java.io.Serializable
      */
     public void setColumnNumber (int columnNumber)
     {
-	this.columnNumber = columnNumber;
+        this.columnNumber = columnNumber;
     }
     
     
@@ -232,9 +232,28 @@ implements org.xml.sax.Locator, java.io.Serializable
     // Internal state.
     ////////////////////////////////////////////////////////////////////
     
+    /**
+     * The public ID.
+     * @serial
+     */
     private String publicId;
+    
+    /**
+     * The system ID.
+     * @serial
+     */
     private String systemId;
+    
+    /**
+     * The line number.
+     * @serial
+     */
     private int lineNumber;
+    
+    /**
+     * The column number.
+     * @serial
+     */
     private int columnNumber;
     
 }

@@ -72,7 +72,8 @@ import javax.xml.transform.TransformerException;
 public class XPathException extends TransformerException
 {
 
-  /** The home of the expression that caused the error.  */
+  /** The home of the expression that caused the error.
+   *  @serial  */
   Object m_styleNode = null;
 
   /**
@@ -84,7 +85,8 @@ public class XPathException extends TransformerException
     return m_styleNode;
   }
 
-  /** A nested exception.   */
+  /** A nested exception.
+   *  @serial   */
   protected Exception m_exception;
 
   /**

@@ -153,7 +153,7 @@ public class DescendantIterator extends LocPathIterator
    * @return  The next <code>Node</code> in the set being iterated over, or
    *   <code>null</code> if there are no more members in that set.
    *
-   * @exception DOMException
+   * @throws DOMException
    *    INVALID_STATE_ERR: Raised if this method is called after the
    *   <code>detach</code> method was invoked.
    */
@@ -302,9 +302,11 @@ public class DescendantIterator extends LocPathIterator
   /** The top of the subtree, may not be the same as m_context if "//foo" pattern. */ 
   transient private Node m_startContext;
 
-  /** True if this is a descendants-or-self axes. */
+  /** True if this is a descendants-or-self axes.
+   *  @serial */
   private boolean m_orSelf;
   
-  /** True if this is a descendants-or-self axes. */
+  /** True if this is a descendants-or-self axes.
+   *  @serial */
   private boolean m_fromRoot;
 }

@@ -122,7 +122,7 @@ public class RootWalker extends AxesWalker
   }
 
   /** True if the root node has been processed.   */
-  boolean m_processedRoot = false;
+  transient boolean m_processedRoot = false;
 
   /**
    * Tell what's the maximum level this axes can descend to.

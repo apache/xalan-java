@@ -118,7 +118,7 @@ public class XPathContext implements ExpressionContext
   /**
    * Create an XPathContext instance.
    * @param owner Value that can be retrieved via the getOwnerObject() method.
-   * @see getOwnerObject
+   * @see #getOwnerObject
    */
   public XPathContext(Object owner)
   {

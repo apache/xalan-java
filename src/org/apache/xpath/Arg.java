@@ -105,7 +105,7 @@ public class Arg
    * Get the value for this argument.
    *
    * @return the argument's stored XObject value.
-   * @see #setVal()
+   * @see #setVal(XObject)
    */
   public XObject getVal()
   {

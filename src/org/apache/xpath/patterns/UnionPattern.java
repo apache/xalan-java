@@ -68,7 +68,8 @@ import org.apache.xpath.objects.XObject;
 public class UnionPattern extends Expression
 {
 
-  /** Array of the contained step patterns to be tested.  */
+  /** Array of the contained step patterns to be tested.
+   *  @serial  */
   private StepPattern[] m_patterns;
   
   /**
@@ -118,11 +119,11 @@ public class UnionPattern extends Expression
    *
    * @param xctxt XPath runtime context.
    *
-   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST},
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE},
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD},
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
+   * @return {@link org.apache.xpath.patterns.NodeTest#SCORE_NODETEST},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NONE},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NSWILD},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */

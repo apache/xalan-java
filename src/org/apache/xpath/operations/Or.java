@@ -76,8 +76,8 @@ public class Or extends Operation
    *
    * @param xctxt The runtime execution context.
    *
-   * @return {@link org.apache.xpath.objects.XBoolean.S_TRUE} or 
-   * {@link org.apache.xpath.objects.XBoolean.S_FALSE}.
+   * @return {@link org.apache.xpath.objects.XBoolean#S_TRUE} or 
+   * {@link org.apache.xpath.objects.XBoolean#S_FALSE}.
    *
    * @throws javax.xml.transform.TransformerException
    */

@@ -65,7 +65,8 @@ import org.apache.xpath.Expression;
 public class Function2Args extends FunctionOneArg
 {
 
-  /** The second argument passed to the function (at index 1).  */
+  /** The second argument passed to the function (at index 1).
+   *  @serial  */
   Expression m_arg1;
 
   /**

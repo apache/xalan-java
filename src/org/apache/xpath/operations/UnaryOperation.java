@@ -69,7 +69,8 @@ import org.w3c.dom.Node;
 public abstract class UnaryOperation extends Expression
 {
 
-  /** The operand for the operation. */
+  /** The operand for the operation.
+   *  @serial */
   protected Expression m_right;
   
   /**

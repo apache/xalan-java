@@ -119,7 +119,7 @@ public class SelfWalker extends AxesWalker
   }
 
   /** True if the self node has been processed.   */
-  boolean m_processedSelf;
+  transient boolean m_processedSelf;
 
   /**
    * Tell what's the maximum level this axes can descend to.

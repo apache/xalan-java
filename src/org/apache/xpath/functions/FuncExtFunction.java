@@ -77,18 +77,22 @@ public class FuncExtFunction extends Function
 {
 
   /** The namespace for the extension function, which should not normally 
-   *  be null or empty.    */
+   *  be null or empty.
+   *  @serial    */
   String m_namespace;
 
-  /** The local name of the extension.   */
+  /** The local name of the extension.
+   *  @serial   */
   String m_extensionName;
 
   /** Unique method key, which is passed to ExtensionsTable#extFunction in 
-   *  order to allow caching of the method.  */
+   *  order to allow caching of the method. 
+   *  @serial */
   Object m_methodKey;
 
   /** Array of static expressions which represent the parameters to the 
-   *  function.   */
+   *  function.
+   *  @serial   */
   Vector m_argVec = new Vector();
 
   /**

@@ -69,10 +69,12 @@ import org.w3c.dom.Node;
 public class Operation extends Expression
 {
 
-  /** The left operand expression. */
+  /** The left operand expression.
+   *  @serial */
   protected Expression m_left;
 
-  /** The right operand expression. */
+  /** The right operand expression.
+   *  @serial */
   protected Expression m_right;
 
   /**

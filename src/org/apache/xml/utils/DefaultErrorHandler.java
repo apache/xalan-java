@@ -88,11 +88,8 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    *
    * @param exception The warning information encapsulated in a
    *                  SAX parse exception.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
+   * @throws SAXException Any SAX exception, possibly
    *            wrapping another exception.
-   * @see javax.xml.transform.TransformerException
-   *
-   * @throws TransformerException
    */
   public void warning(SAXParseException exception) throws SAXException
   {
@@ -118,11 +115,8 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    *
    * @param exception The error information encapsulated in a
    *                  SAX parse exception.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
+   * @throws SAXException Any SAX exception, possibly
    *            wrapping another exception.
-   * @see javax.xml.transform.TransformerException
-   *
-   * @throws TransformerException
    */
   public void error(SAXParseException exception) throws SAXException
   {
@@ -146,11 +140,8 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    *
    * @param exception The error information encapsulated in a
    *                  SAX parse exception.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
+   * @throws SAXException Any SAX exception, possibly
    *            wrapping another exception.
-   * @see javax.xml.transform.TransformerException
-   *
-   * @throws TransformerException
    */
   public void fatalError(SAXParseException exception) throws SAXException
   {
@@ -172,11 +163,9 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    *
    * @param exception The warning information encapsulated in a
    *                  SAX parse exception.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
+   * @throws javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @see javax.xml.transform.TransformerException
-   *
-   * @throws TransformerException
    */
   public void warning(TransformerException exception) throws TransformerException
   {
@@ -203,11 +192,9 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    *
    * @param exception The error information encapsulated in a
    *                  SAX parse exception.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
+   * @throws javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @see javax.xml.transform.TransformerException
-   *
-   * @throws TransformerException
    */
   public void error(TransformerException exception) throws TransformerException
   {
@@ -232,11 +219,9 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    *
    * @param exception The error information encapsulated in a
    *                  SAX parse exception.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
+   * @throws javax.xml.transform.TransformerException Any SAX exception, possibly
    *            wrapping another exception.
    * @see javax.xml.transform.TransformerException
-   *
-   * @throws TransformerException
    */
   public void fatalError(TransformerException exception) throws TransformerException
   {

@@ -74,10 +74,10 @@ public class AttributeWalkerOneStep extends AxesWalker
   transient NamedNodeMap m_attributeList;
 
   /** The current index into m_attributeList.  -1 to start. */
-  int m_attrListPos;
+  transient int m_attrListPos;
 
   /** The number of attributes in m_attributeList, or -2 if no attributes. */
-  int m_nAttrs;
+  transient int m_nAttrs;
 
   /**
    *  The root node of the TreeWalker.

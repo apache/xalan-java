@@ -106,7 +106,7 @@ public class SystemIDResolver
    * @param base Base URI to use to resolve the given systemID
    *
    * @return The resolved absolute URI
-   * @exception TransformerException thrown if the string can't be turned into a URL.
+   * @throws TransformerException thrown if the string can't be turned into a URL.
    */
   public static String getAbsoluteURI(String urlString, String base)
           throws TransformerException

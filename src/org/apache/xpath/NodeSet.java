@@ -286,7 +286,7 @@ public class NodeSet extends NodeVector
    * to nextNode() returns the first node in the set.
    * @return  The next <code>Node</code> in the set being iterated over, or
    *   <code>null</code> if there are no more members in that set.
-   * @exception DOMException
+   * @throws DOMException
    *    INVALID_STATE_ERR: Raised if this method is called after the
    *   <code>detach</code> method was invoked.
    */
@@ -310,10 +310,10 @@ public class NodeSet extends NodeVector
    * iterator backwards in the set.
    * @return  The previous <code>Node</code> in the set being iterated over,
    *   or<code>null</code> if there are no more members in that set.
-   * @exception DOMException
+   * @throws DOMException
    *    INVALID_STATE_ERR: Raised if this method is called after the
    *   <code>detach</code> method was invoked.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a cached type, and hence doesn't know what the previous node was.
    */
   public Node previousNode() throws DOMException
@@ -368,7 +368,7 @@ public class NodeSet extends NodeVector
    * @param index Position to advance (or retreat) to, with
    * 0 requesting the reset ("fresh") position and -1 (or indeed
    * any out-of-bounds value) requesting the final position.
-   * @exception RuntimeException thrown if this NodeSet is not
+   * @throws RuntimeException thrown if this NodeSet is not
    * one of the types which supports indexing/counting.
    */
   public void runTo(int index)
@@ -425,7 +425,7 @@ public class NodeSet extends NodeVector
    * operation
    *
    * @param n Node to be added
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   public void addNode(Node n)
@@ -443,7 +443,7 @@ public class NodeSet extends NodeVector
    * @param n Node to be added
    * @param pos Offset at which the node is to be inserted,
    * with 0 being the first position.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   public void insertNode(Node n, int pos)
@@ -459,7 +459,7 @@ public class NodeSet extends NodeVector
    * Remove a node.
    *
    * @param n Node to be added
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   public void removeNode(Node n)
@@ -477,7 +477,7 @@ public class NodeSet extends NodeVector
    *
    * @param nodelist List of nodes which should now be referenced by
    * this NodeSet.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   public void addNodes(NodeList nodelist)
@@ -517,7 +517,7 @@ public class NodeSet extends NodeVector
    * ambiguity.)</p>
    *
    * @param ns NodeSet whose members should be merged into this NodeSet.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   public void addNodes(NodeSet ns)
@@ -534,7 +534,7 @@ public class NodeSet extends NodeVector
    * document order.  Null references are not added.
    *
    * @param iterator NodeIterator which yields the nodes to be added.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   public void addNodes(NodeIterator iterator)
@@ -562,7 +562,7 @@ public class NodeSet extends NodeVector
    *
    * @param nodelist List of nodes to be added
    * @param support The XPath runtime context.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   public void addNodesInDocOrder(NodeList nodelist, XPathContext support)
@@ -590,7 +590,7 @@ public class NodeSet extends NodeVector
    *
    * @param iterator NodeIterator which yields the nodes to be added.
    * @param support The XPath runtime context.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   public void addNodesInDocOrder(NodeIterator iterator, XPathContext support)
@@ -617,7 +617,7 @@ public class NodeSet extends NodeVector
    * @param support The XPath runtime context.
    *
    * @return false always.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   private boolean addNodesInDocOrder(int start, int end, int testIndex,
@@ -681,7 +681,7 @@ public class NodeSet extends NodeVector
    * @param test true if we should test for doc order
    * @param support The XPath runtime context.
    * @return insertIndex.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   public int addNodeInDocOrder(Node node, boolean test, XPathContext support)
@@ -758,7 +758,7 @@ public class NodeSet extends NodeVector
    * @param support The XPath runtime context.
    *
    * @return The index where it was inserted.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   public int addNodeInDocOrder(Node node, XPathContext support)
@@ -784,7 +784,7 @@ public class NodeSet extends NodeVector
    * Append a Node onto the vector.
    *
    * @param value The node to be added.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   public void addElement(Node value)
@@ -804,7 +804,7 @@ public class NodeSet extends NodeVector
    *
    * @param value The node to be inserted.
    * @param at The index where the insert should occur.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   public void insertElementAt(Node value, int at)
@@ -820,7 +820,7 @@ public class NodeSet extends NodeVector
    * Append the nodes to the list.
    *
    * @param nodes The nodes to be appended to this node set.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   public void appendNodes(NodeVector nodes)
@@ -837,7 +837,7 @@ public class NodeSet extends NodeVector
    * Each component in this vector with an index greater or equal to
    * the specified index is shifted upward to have an index one greater
    * than the value it had previously.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   public void removeAllElements()
@@ -859,7 +859,7 @@ public class NodeSet extends NodeVector
    * @param s The node to be removed.
    *
    * @return True if the node was successfully removed
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   public boolean removeElement(Node s)
@@ -878,7 +878,7 @@ public class NodeSet extends NodeVector
    * the value it had previously.
    *
    * @param i The index of the node to be removed.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   public void removeElementAt(int i)
@@ -899,7 +899,7 @@ public class NodeSet extends NodeVector
    *
    * @param node  The node to be set.
    * @param index The index of the node to be replaced.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a mutable type.
    */
   public void setElementAt(Node node, int index)
@@ -980,7 +980,7 @@ public class NodeSet extends NodeVector
 
   /** If this node is being used as an iterator, the next index that nextNode()
    *  will return.  */
-  protected int m_next = 0;
+  transient protected int m_next = 0;
 
   /**
    * Get the current position, which is one less than
@@ -998,7 +998,7 @@ public class NodeSet extends NodeVector
   /**
    * Set the current position in the node set.
    * @param i Must be a valid index.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a cached type, and thus doesn't permit indexed access.
    */
   public void setCurrentPos(int i)
@@ -1015,7 +1015,7 @@ public class NodeSet extends NodeVector
    * Return the last fetched node.  Needed to support the UnionPathIterator.
    *
    * @return the last fetched node.
-   * @exception RuntimeException thrown if this NodeSet is not of 
+   * @throws RuntimeException thrown if this NodeSet is not of 
    * a cached type, and thus doesn't permit indexed access.
    */
   public Node getCurrentNode()
@@ -1032,10 +1032,11 @@ public class NodeSet extends NodeVector
   }
 
   /** True if this list can be mutated.  */
-  protected boolean m_mutable = true;
+  transient protected boolean m_mutable = true;
 
-  /** True if this list is cached.  */
-  protected boolean m_cacheNodes = true;
+  /** True if this list is cached.
+   *  @serial  */
+  transient protected boolean m_cacheNodes = true;
 
   /**
    * Get whether or not this is a cached node set.
@@ -1055,7 +1056,7 @@ public class NodeSet extends NodeVector
    * that all nodes are cached.
    *
    * @param b true if this node set should be cached.
-   * @exception RuntimeException thrown if an attempt is made to
+   * @throws RuntimeException thrown if an attempt is made to
    * request caching after we've already begun stepping through the
    * nodes in this set.
   */
@@ -1071,7 +1072,7 @@ public class NodeSet extends NodeVector
   }
   
   
-  private int m_last = 0;
+  transient private int m_last = 0;
   
   public int getLast()
   {

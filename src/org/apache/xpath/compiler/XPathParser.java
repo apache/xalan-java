@@ -85,23 +85,25 @@ public class XPathParser implements java.io.Serializable
 
   /**
    * The XPath to be processed.
+   * @serial
    */
   private OpMap m_ops;
 
   /**
    * The next token in the pattern.
    */
-  String m_token;
+  transient String m_token;
 
   /**
    * The first char in m_token, the theory being that this
    * is an optimization because we won't have to do charAt(0) as
    * often.
    */
-  char m_tokenChar = 0;
+  transient char m_tokenChar = 0;
 
   /**
    * The position in the token queue is tracked by m_queueMark.
+   * @serial
    */
   int m_queueMark = 0;
 
@@ -112,6 +114,7 @@ public class XPathParser implements java.io.Serializable
 
   /**
    * The prefix resolver to map prefixes to namespaces in the OpMap.
+   * @serial
    */
   PrefixResolver m_namespaceContext;
 
@@ -220,7 +223,8 @@ public class XPathParser implements java.io.Serializable
     m_ops.shrink();
   }
 
-  /** The error listener where syntax errors are to be sent.  */
+  /** The error listener where syntax errors are to be sent.
+   *  @serial  */
   private ErrorListener m_errorListener;
 
   /**
@@ -1198,7 +1202,7 @@ public class XPathParser implements java.io.Serializable
    * | FilterExpr '/' RelativeLocationPath
    * | FilterExpr '//' RelativeLocationPath
    *
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws javax.xml.transform.TransformerException
@@ -1233,7 +1237,7 @@ public class XPathParser implements java.io.Serializable
    * FilterExpr  ::=  PrimaryExpr
    * | FilterExpr Predicate
    *
-   * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide
+   * @throws XSLProcessorException thrown if the active ProblemListener and XPathContext decide
    * the error condition is severe enough to halt processing.
    *
    * @throws javax.xml.transform.TransformerException

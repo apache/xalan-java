@@ -457,8 +457,8 @@ public class DOMBuilder
    * @param name The name of the entity.  If it is a parameter
    *        entity, the name will begin with '%'.
    * @see #endEntity
-   * @see org.xml.sax.misc.DeclHandler#internalEntityDecl
-   * @see org.xml.sax.misc.DeclHandler#externalEntityDecl
+   * @see org.xml.sax.ext.DeclHandler#internalEntityDecl
+   * @see org.xml.sax.ext.DeclHandler#externalEntityDecl
    */
   public void startEntity(String name) throws org.xml.sax.SAXException
   {

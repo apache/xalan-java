@@ -64,7 +64,8 @@ package org.apache.xml.utils;
 public class WrappedRuntimeException extends RuntimeException
 {
 
-  /** Primary checked exception          */
+  /** Primary checked exception.
+   *  @serial          */
   private Exception m_exception;
 
   /**

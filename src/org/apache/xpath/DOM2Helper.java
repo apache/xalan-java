@@ -77,12 +77,9 @@ import javax.xml.parsers.*;
 import javax.xml.transform.TransformerException;
 
 /**
- * <meta name="usage" content="general"/>
- * Provides XSLTProcessor an interface to the Xerces XML parser.  This
- * liaison should be used if Xerces DOM nodes are being processed as
- * the source tree or as the result tree.
- * @see org.apache.xalan.xslt.XSLTProcessor
- * @see org.apache.xml.parsers
+ * <meta name="usage" content="advanced"/>
+ * This class provides a DOM level 2 "helper", which provides services currently 
+ * not provided be the DOM standard.
  */
 public class DOM2Helper extends DOMHelper
 {
@@ -126,8 +123,8 @@ public class DOM2Helper extends DOMHelper
 
   /** Field m_doc: Document Node for the document this helper is currently
    * accessing or building
-   * @see setDocument
-   * @see getDocument
+   * @see #setDocument
+   * @see #getDocument
    *  */
   private Document m_doc;
 
@@ -135,7 +132,7 @@ public class DOM2Helper extends DOMHelper
    * Specify which document this helper is currently operating on.
    * 	
    * @param doc The DOM Document node for this document.
-   * @see getDocument
+   * @see #getDocument
    */
   public void setDocument(Document doc)
   {
@@ -146,7 +143,7 @@ public class DOM2Helper extends DOMHelper
    * Query which document this helper is currently operating on.
    * 	
    * @return The DOM Document node for this document.
-   * @see setDocument
+   * @see #setDocument
    */
   public Document getDocument()
   {
@@ -172,16 +169,8 @@ public class DOM2Helper extends DOMHelper
    *
    * @param source The input source for the top-level of the
    *        XML document.
-   * @exception javax.xml.transform.TransformerException Any SAX exception, possibly
-   *            wrapping another exception.
-   * @exception java.io.IOException An IO exception from the parser,
-   *            possibly from a byte stream or character stream
-   *            supplied by the application.
-   * @see org.xml.sax.InputSource
-   * @see org.xml.sax.XMLReader#setContentHandler
-   * @see org.xml.sax.XMLReader#setErrorHandler
    *
-   * @throws TransformerException
+   * @throws TransformerException if any checked exception is thrown.
    */
   public void parse(InputSource source) throws TransformerException
   {
@@ -314,10 +303,10 @@ public class DOM2Helper extends DOMHelper
    */
   public Node getParentOfNode(Node node)
   {
-	  Node parent=node.getParentNode();
-	  if(parent==null && (Node.ATTRIBUTE_NODE == node.getNodeType()) )
+          Node parent=node.getParentNode();
+          if(parent==null && (Node.ATTRIBUTE_NODE == node.getNodeType()) )
            parent=((Attr) node).getOwnerElement();
-	  return parent;
+          return parent;
   }
 
   /**

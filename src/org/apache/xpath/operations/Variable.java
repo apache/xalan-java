@@ -73,7 +73,8 @@ import org.apache.xpath.res.XPATHErrorResources;
 public class Variable extends Expression
 {
 
-  /** The qualified name of the variable.   */
+  /** The qualified name of the variable.
+   *  @serial   */
   protected QName m_qname;
 
   /**

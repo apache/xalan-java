@@ -78,12 +78,13 @@ public class StepPattern extends NodeTest implements SubContextList
    * Construct a StepPattern that tests for namespaces and node names.
    *
    *
-   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
    * @param namespace The namespace to be tested.
    * @param name The local name to be tested.
    */
   public StepPattern(int whatToShow, String namespace, String name)
   {
+    
     super(whatToShow, namespace, name);
   }
 
@@ -91,21 +92,22 @@ public class StepPattern extends NodeTest implements SubContextList
    * Construct a StepPattern that doesn't test for node names.
    *
    *
-   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
    */
   public StepPattern(int whatToShow)
   {
     super(whatToShow);
   }
 
-  /** The target local name or psuedo name, for hash table lookup optimization.  */
+  /** The target local name or psuedo name, for hash table lookup optimization.
+   *  @serial  */
   String m_targetString;  // only calculate on head
 
   /**
    * Calculate the local name or psuedo name of the node that this pattern will test, 
    * for hash table lookup optimization.
    *
-   * @see {@link org.apache.xpath.compiler.PsuedoNames}.
+   * @see org.apache.xpath.compiler.PsuedoNames
    */
   public void calcTargetString()
   {
@@ -145,7 +147,7 @@ public class StepPattern extends NodeTest implements SubContextList
    *
    *
    * @return local name or psuedo name of the node.
-   * @see {@link org.apache.xpath.compiler.PsuedoNames}.
+   * @see org.apache.xpath.compiler.PsuedoNames
    */
   public String getTargetString()
   {
@@ -155,6 +157,7 @@ public class StepPattern extends NodeTest implements SubContextList
   /**
    * Reference to nodetest and predicate for
    * parent or ancestor.
+   * @serial
    */
   StepPattern m_relativePathPattern;
 
@@ -173,7 +176,8 @@ public class StepPattern extends NodeTest implements SubContextList
     calcScore();
   }
 
-  /** The list of predicate expressions for this pattern step.   */
+  /** The list of predicate expressions for this pattern step.
+   *  @serial   */
   Expression[] m_predicates;
   
   /**
@@ -257,11 +261,11 @@ public class StepPattern extends NodeTest implements SubContextList
    *
    * @param xctxt XPath runtime context.
    *
-   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
+   * @return {@link org.apache.xpath.patterns.NodeTest#SCORE_NODETEST}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NONE}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NSWILD}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -450,11 +454,11 @@ public class StepPattern extends NodeTest implements SubContextList
    *
    * @param xctxt The XPath runtime context.
    *
-   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
+   * @return {@link org.apache.xpath.patterns.NodeTest#SCORE_NODETEST}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NONE}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NSWILD}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -495,11 +499,11 @@ public class StepPattern extends NodeTest implements SubContextList
    *
    * @param xctxt XPath runtime context.
    *
-   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST},
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE},
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD},
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
+   * @return {@link org.apache.xpath.patterns.NodeTest#SCORE_NODETEST},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NONE},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NSWILD},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -528,11 +532,11 @@ public class StepPattern extends NodeTest implements SubContextList
    * @param xctxt The XPath runtime context.
    * @param context The node to be tested.
    *
-   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST},
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE},
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD},
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
+   * @return {@link org.apache.xpath.patterns.NodeTest#SCORE_NODETEST},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NONE},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NSWILD},
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */

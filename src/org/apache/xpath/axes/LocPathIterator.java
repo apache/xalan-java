@@ -431,7 +431,7 @@ public class LocPathIterator extends PredicatedNodeTest
    * iterator backwards in the set.
    * @return  The previous <code>Node</code> in the set being iterated over,
    *   or<code>null</code> if there are no more members in that set.
-   * @exception DOMException
+   * @throws DOMException
    *    INVALID_STATE_ERR: Raised if this method is called after the
    *   <code>detach</code> method was invoked.
    */
@@ -616,7 +616,7 @@ public class LocPathIterator extends PredicatedNodeTest
    * to nextNode() returns the first node in the set.
    * @return  The next <code>Node</code> in the set being iterated over, or
    *   <code>null</code> if there are no more members in that set.
-   * @exception DOMException
+   * @throws DOMException
    *    INVALID_STATE_ERR: Raised if this method is called after the
    *   <code>detach</code> method was invoked.
    */
@@ -995,31 +995,32 @@ public class LocPathIterator extends PredicatedNodeTest
   //============= State Data =============
   
   /** The starting point in m_waiting where the waiting step walkers are. */
-  int m_waitingBottom = 0;
+  transient int m_waitingBottom = 0;
 
   /**
    * An index to the point in the variable stack where we should
    * begin variable searches for this iterator.
    * This is -1 if m_isTopLevel is false.
    */
-  int m_varStackPos = -1;
+  transient int m_varStackPos = -1;
 
   /**
    * An index into the variable stack where the variable context
    * ends, i.e. at the point we should terminate the search and
    * go looking for global variables.
    */
-  int m_varStackContext;
+  transient int m_varStackContext;
 
   /**
    * Value determined at compile time, indicates that this is an
    * iterator at the top level of the expression, rather than inside
    * a predicate.
+   * @serial
    */
   private boolean m_isTopLevel = false;
 
   /** The index of the last node in the iteration. */
-  private int m_last = 0;
+  transient private int m_last = 0;
   
   /* The pool for cloned iterators.  Iterators need to be cloned
    * because the hold running state, and thus the original iterator
@@ -1036,14 +1037,16 @@ public class LocPathIterator extends PredicatedNodeTest
    */
   transient NodeSet m_cachedNodes;
 
-  /** The last used step walker in the walker list. */
+  /** The last used step walker in the walker list.
+   *  @serial */
   protected AxesWalker m_lastUsedWalker;
 
-  /** The head of the step walker list. */
+  /** The head of the step walker list.
+   *  @serial */
   protected AxesWalker m_firstWalker;
 
   /** This is true if nextNode returns null. */
-  protected boolean m_foundLast = false;
+  transient protected boolean m_foundLast = false;
 
   /**
    * Quicker access to the DOM helper than going through the
@@ -1068,6 +1071,7 @@ public class LocPathIterator extends PredicatedNodeTest
   /**
    * Fast access to the current prefix resolver.  It isn't really
    * clear that this is needed.
+   * @serial
    */
   protected PrefixResolver m_prefixResolver;
 
@@ -1082,18 +1086,19 @@ public class LocPathIterator extends PredicatedNodeTest
    * is a cached iterator, and is being used as random access
    * NodeList.
    */
-  protected int m_next = 0;
+  transient protected int m_next = 0;
 
   /**
    * The list of "waiting" step walkers.
    * @see org.apache.xpath.axes.AxesWalker
    */
-  private Vector m_waiting = null;
+  transient private Vector m_waiting = null;
   
   /**
    * The analysis pattern built by the WalkerFactory.
    * TODO: Move to LocPathIterator.
    * @see org.apache.xpath.axes.WalkerFactory
+   * @serial
    */
   protected int m_analysis = 0x00000000;
 }

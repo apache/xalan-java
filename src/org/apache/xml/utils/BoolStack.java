@@ -127,7 +127,7 @@ public final class BoolStack
    * object as the value of this function.
    *
    * @return     The object at the top of this stack.
-   * @exception  EmptyStackException  if this stack is empty.
+   * @throws  EmptyStackException  if this stack is empty.
    */
   public final boolean pop()
   {
@@ -165,7 +165,7 @@ public final class BoolStack
    * from the stack.
    *
    * @return     the object at the top of this stack.
-   * @exception  EmptyStackException  if this stack is empty.
+   * @throws  EmptyStackException  if this stack is empty.
    */
   public final boolean peek()
   {

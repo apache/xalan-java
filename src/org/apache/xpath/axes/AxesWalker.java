@@ -335,7 +335,7 @@ public abstract class AxesWalker extends PredicatedNodeTest
    *
    * @return The node at which the TreeWalker is currently positioned, only null 
    * if setRoot has not yet been called.
-   * @exception DOMException
+   * @throws DOMException
    *    NOT_SUPPORTED_ERR: Raised if the specified <code>currentNode</code>
    *   is<code>null</code> .
    */
@@ -1317,11 +1317,11 @@ public abstract class AxesWalker extends PredicatedNodeTest
 
   // These are useful to enable if you want to turn diagnostics messages 
   // on or off temporarily from another module.
-  //  public static boolean DEBUG = true;
-  //  public static boolean DEBUG_WAITING = true;
-  //  public static boolean DEBUG_TRAVERSAL = true;
-  //  public static boolean DEBUG_LOCATED = true;
-  //  public static boolean DEBUG_PREDICATECOUNTING = false;
+//  public static boolean DEBUG = false;
+//  public static boolean DEBUG_WAITING = false;
+//  public static boolean DEBUG_TRAVERSAL = false;
+//  public static boolean DEBUG_LOCATED = false;
+//  public static boolean DEBUG_PREDICATECOUNTING = false;
   
   /** General static debug flag.  Setting this to false will suppress some 
    *  of the output messages caused by the other debug categories.  */
@@ -1330,15 +1330,15 @@ public abstract class AxesWalker extends PredicatedNodeTest
   /** If true, diagnostic messages about the waiting queue will be posted.  */
   static final boolean DEBUG_WAITING = false;
 
-  /** For diagnostic purposes, tells if we already did a subtree dump.  */
-  static boolean m_didDumpAll = false;
-
   /** If true, diagnostic messages about the tree traversal will be posted.  */
   static final boolean DEBUG_TRAVERSAL = false;
 
   /** If true, diagnostic messages about the nodes that have 
    *  been 'located' will be posted.  */
   static final boolean DEBUG_LOCATED = false;
+
+  /** For diagnostic purposes, tells if we already did a subtree dump.  */
+  static boolean m_didDumpAll = false;
 
   /** String passed to {@link org.w3c.dom.Node#isSupported} to see if it implements 
    *  a {@link org.apache.xpath.patterns.NodeTestFilter} interface. */
@@ -1362,31 +1362,35 @@ public abstract class AxesWalker extends PredicatedNodeTest
   /**
    * The arg length of the XPath step. Does not change after the constructor.
    * TODO: Can this be removed since it is only valuable at compile time?
+   * @serial
    */
   private int m_argLen;
   
   /**
    * The step type of the XPath step. Does not change after the constructor.
+   * @serial
    */
   private int m_stepType;
     
   /** Fairly short lived flag to tell if we switched to a waiting walker.  */
-  private boolean m_didSwitch = false;
+  transient private boolean m_didSwitch = false;
 
   /** True if this walker has found it's last node.  */
-  boolean m_isDone = false;
+  transient boolean m_isDone = false;
 
   /** True if an itteration has not begun.  */
-  boolean m_isFresh;
+  transient boolean m_isFresh;
 
   /** An estimation of the next level that this walker will traverse to.  Not 
    *  always accurate.  */
-  protected int m_nextLevelAmount;
+  transient protected int m_nextLevelAmount;
 
-  /** The next walker in the location step chain.  */
+  /** The next walker in the location step chain.
+   *  @serial  */
   protected AxesWalker m_nextWalker;
   
-  /** The previous walker in the location step chain, or null.   */
+  /** The previous walker in the location step chain, or null.
+   *  @serial   */
   AxesWalker m_prevWalker;
     
 }

@@ -66,7 +66,8 @@ import org.apache.xpath.Expression;
 public class FunctionMultiArgs extends Function3Args
 {
 
-  /** Argument expressions that are at index 3 or greater. */
+  /** Argument expressions that are at index 3 or greater.
+   *  @serial */
   Expression[] m_args;
 
   /**

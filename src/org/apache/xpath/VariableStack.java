@@ -486,6 +486,7 @@ public class VariableStack extends Stack
   
   /**
    * Hold the position of the start of the current element frame.
+   * @serial
    */
   private IntStack m_elemFramePos = new IntStack();
   
@@ -494,12 +495,14 @@ public class VariableStack extends Stack
    */
   private static final Stack m_emptyStackFrame = new Stack();
 
-  /** The top of the globals space.     */
+  /** The top of the globals space.
+   *  @serial     */
   private int m_globalStackFrameIndex = -1;
   
   /** Where to start the current search for a variable.
    * If this is -1, the search should start at the top 
-   * of the stack. */
+   * of the stack.
+   * @serial */
   private int m_searchStart = -1;
 
 }  // end XSLArgStack

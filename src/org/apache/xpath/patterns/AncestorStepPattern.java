@@ -76,7 +76,7 @@ public class AncestorStepPattern extends StepPattern
    * Construct an AncestorStepPattern that tests for namespaces and node names.
    *
    *
-   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
    * @param namespace The namespace to be tested.
    * @param name The local name to be tested.
    */
@@ -89,7 +89,7 @@ public class AncestorStepPattern extends StepPattern
    * Construct an AncestorStepPattern that doesn't test for node names.
    *
    *
-   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.NodeFilter}.
+   * @param whatToShow Bit set defined mainly by {@link org.w3c.dom.traversal.NodeFilter}.
    */
   public AncestorStepPattern(int whatToShow)
   {
@@ -114,11 +114,11 @@ public class AncestorStepPattern extends StepPattern
    *
    * @param xctxt XPath runtime context.
    *
-   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
+   * @return {@link org.apache.xpath.patterns.NodeTest#SCORE_NODETEST}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NONE}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NSWILD}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -148,11 +148,11 @@ public class AncestorStepPattern extends StepPattern
    *
    * @param xctxt The XPath runtime context.
    *
-   * @return {@link org.apache.xpath.patterns.NodeTest.SCORE_NODETEST}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NONE}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_NSWILD}, 
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_QNAME}, or
-   *         {@link org.apache.xpath.patterns.NodeTest.SCORE_OTHER}.
+   * @return {@link org.apache.xpath.patterns.NodeTest#SCORE_NODETEST}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NONE}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_NSWILD}, 
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_QNAME}, or
+   *         {@link org.apache.xpath.patterns.NodeTest#SCORE_OTHER}.
    *
    * @throws javax.xml.transform.TransformerException
    */
