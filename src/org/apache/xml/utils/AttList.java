@@ -244,7 +244,8 @@ public class AttList implements Attributes
    */
   public String getValue(String uri, String localName)
   {
-    return ((Attr) m_attrs.getNamedItem(localName)).getValue();
+		Node a=m_attrs.getNamedItemNS(uri,localName);
+		return (a==null) ? null : a.getNodeValue();
   }
 
   /**
