@@ -289,16 +289,16 @@ Copyright:
           <doclet name="xalanjdoc.Standard" path="${bin.dir}/xalanjdoc.jar">
             <param name="-d" value="${build.apidocs}"/>
           </doclet>
-          <group title="TrAX" packages="javax.xml.transform*"/>  
-          <group title="Xalan_Core"
+          <group title="Transformations API for XML (TrAX)" packages="javax.xml.transform*"/>
+          <group title="Java API for XML Parsing" packages="javax.xml.parsers"/>
+          <group title="Xalan Core"
                  packages="org.apache.xalan.processor:org.apache.xalan.templates:org.apache.xalan.transformer"/>
           <group title="XPath" packages="org.apache.xpath*"/>
-          <group title="Xalan_Other" packages="org.apache.xalan.client:org:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.utils*:org.apache.xalan.xslt"/>
-          <group title="Xalan_Extensions" packages="org.apache.xalan.lib*"/>
+          <group title="Xalan Other" packages="org.apache.xalan.client:org:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.utils*:org.apache.xalan.xslt"/>
+          <group title="Xalan Extensions" packages="org.apache.xalan.lib*"/>
           <group title="Serializers" packages="org.apache.serialize*:org.apache.xalan.serialize"/>
-          <group title="SAX_2" packages="org.xml.sax*"/>
-          <group title="DOM_2" packages="org.w3c.dom*"/>
-          <group title="XML_Parsing" packages="javax.xml.parsers"/>
+          <group title="SAX 2" packages="org.xml.sax*"/>
+          <group title="DOM 2" packages="org.w3c.dom*"/>
     </javadoc>
     <!-- generate patterns.html, a TRaX "patterns design" document -->
     <java fork="yes" classname="org.apache.xalan.xslt.Process" classpath="${java.class.path}:${build.dir}/${xalan.jar}">
