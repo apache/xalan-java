@@ -89,12 +89,11 @@ public final class MultiDOM implements DOM {
     private Hashtable _documents = new Hashtable();
 
     private final class AxisIterator implements NodeIterator {
-	// constitutive data
 	private final int _axis;
 	private final int _type;
-	// implementation mechanism
-	private NodeIterator _source;
+
 	private int _mask;
+	private NodeIterator _source = null;
 	
 	public AxisIterator(final int axis, final int type) {
 	    _axis = axis;
@@ -116,16 +115,19 @@ public final class MultiDOM implements DOM {
 	    _mask = node & SET;
 	    int dom = node >>> 24;
 
-	    // consider caching these
-	    if (_type == NO_TYPE) {
-		_source = _adapters[dom].getAxisIterator(_axis);
+	    // Get a new source for the first time only
+	    if (_source == null) {
+		if (_type == NO_TYPE) {
+		    _source = _adapters[dom].getAxisIterator(_axis);
+		}
+		else if (_axis == Axis.CHILD && _type != ELEMENT) {
+		    _source = _adapters[dom].getTypedChildren(_type);
+		}
+		else {
+		    _source = _adapters[dom].getTypedAxisIterator(_axis, _type);
+		}
 	    }
-	    else if (_axis == Axis.CHILD && _type != ELEMENT) {
-		_source = _adapters[dom].getTypedChildren(_type);
-	    }
-	    else {
-		_source = _adapters[dom].getTypedAxisIterator(_axis, _type);
-	    }
+
 	    _source.setStartNode(node & CLR);
 	    return this;
 	}
@@ -144,10 +146,7 @@ public final class MultiDOM implements DOM {
 	}
     
 	public boolean isReverse() {
-	    if (_source == null)
-		return(false);
-	    else
-		return _source.isReverse();
+	    return (_source == null) ? false : _source.isReverse();
 	}
     
 	public void setMark() {
