@@ -86,11 +86,20 @@ public final class Util {
      * files.
      */
     public static String baseName(String name) {
-	int index = name.lastIndexOf('/');
+	int index = name.lastIndexOf('\\');
 	if (index < 0) {
-	    index = name.lastIndexOf('\\');
+	    index = name.lastIndexOf('/');
 	}
-	return name.substring(index + 1);
+	
+	if (index >= 0)
+	    return name.substring(index + 1);
+	else {
+	    int lastColonIndex = name.lastIndexOf(':');
+	    if (lastColonIndex > 0)
+	    	return name.substring(lastColonIndex + 1);
+	    else
+	    	return name;
+	}
     }
 
     /**
