@@ -1964,11 +1964,13 @@ public class SAX2DTM extends DTMDefaultBaseIterators
 
     // If no one noticed, startPrefixMapping is a drag.
     // Pop the context for the last child (the one pushed by startElement)
-    m_prefixMappings.setSize(m_contextIndexes.pop());
+    m_contextIndexes.quickPop(1);
 
     // Do it again for this one (the one pushed by the last endElement).
-    m_prefixMappings.setSize(m_contextIndexes.pop());
-    m_contextIndexes.push(m_prefixMappings.size());  // for the next element.
+    int topContextIndex = m_contextIndexes.peek();
+    if (topContextIndex != m_prefixMappings.size()) {
+      m_prefixMappings.setSize(topContextIndex);
+    }
 
     int lastNode = m_previous;
 
