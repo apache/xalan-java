@@ -124,7 +124,7 @@ public abstract class SerializerFactory
               + OutputPropertiesFactory.S_KEY_CONTENT_HANDLER + "' property!");
           }
 
-          cls = Class.forName(className);
+          cls = Utils.ClassForName(className);
 
           // _serializers.put(method, cls);
 
@@ -153,7 +153,7 @@ public abstract class SerializerFactory
                    * SAX ContentHandler events to the users handler.
                    */
                   className = SerializerConstants.DEFAULT_SAX_SERIALIZER;
-                  cls = Class.forName(className);
+                  cls = Utils.ClassForName(className);
                   SerializationHandler sh =
                       (SerializationHandler) cls.newInstance();
                   sh.setContentHandler( (ContentHandler) obj);

@@ -162,7 +162,7 @@ public class Encodings extends Object
         try
         {
             charToByteConverterClass =
-                Class.forName("sun.io.CharToByteConverter");
+                Utils.ClassForName("sun.io.CharToByteConverter");
             Class argTypes[] = new Class[1];
             argTypes[0] = String.class;
             getConverterMethod =

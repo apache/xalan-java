@@ -303,7 +303,7 @@ public class OutputPropertiesFactory
                     // and trusted for having access to resources.
 
                     accessControllerClass =
-                        Class.forName("java.security.AccessController");
+                        Utils.ClassForName("java.security.AccessController");
 
                     // If we are here means user is using JDK >= 1.2.
                     // Using doPrivileged to be able to read property file without opening
