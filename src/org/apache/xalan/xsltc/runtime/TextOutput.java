@@ -271,6 +271,7 @@ public final class TextOutput implements TransletOutputHandler {
 						prefix+" has not been "+
 						"declared.");
 		}
+		if (uri.equals(EMPTYSTRING)) _elementName = localname;
 		_saxHandler.startElement(uri, localname,
 					 _elementName, _attributes);
 	    }
@@ -581,7 +582,7 @@ public final class TextOutput implements TransletOutputHandler {
      * Put an attribute and its value in the start tag of an element.
      * Signal an exception if this is attempted done outside a start tag.
      */
-    public void attribute(final String name, final String value)
+    public void attribute(String name, final String value)
 	throws TransletException {
 	
 	// Do not output attributes if output mode is 'text'
@@ -596,6 +597,18 @@ public final class TextOutput implements TransletOutputHandler {
 		    namespace(name.substring(6),value);
 	    }
 	    else {
+		final int col = name.lastIndexOf(':');
+		if (col > 0) {
+		    final String prefix = name.substring(0,col);
+		    final String localname = name.substring(col+1);
+		    final String uri = lookupNamespace(prefix);
+		    if (uri == null) {
+			throw new TransletException("Namespace for prefix "+
+						    prefix+" has not been "+
+						    "declared.");
+		    }
+		    if (uri.equals(EMPTYSTRING)) name = localname;
+		}
 		if (_outputType == HTML)
 		    _attributes.add(name,value);
 		else
@@ -701,8 +714,6 @@ public final class TextOutput implements TransletOutputHandler {
 
 	if (prefix.equals(XML_PREFIX)) return;
 
-	if ((!prefix.equals(EMPTYSTRING)) && (uri.equals(EMPTYSTRING))) return;
-
 	Stack stack;
 	// Get the stack that contains URIs for the specified prefix
 	if ((stack = (Stack)_namespaces.get(prefix)) == null) {
@@ -716,6 +727,8 @@ public final class TextOutput implements TransletOutputHandler {
 
 	_prefixStack.push(prefix);
 	_nodeStack.push(new Integer(_depth));
+
+	if ((!prefix.equals(EMPTYSTRING)) && (uri.equals(EMPTYSTRING))) return;
 	_saxHandler.startPrefixMapping(prefix, uri);
     }
 

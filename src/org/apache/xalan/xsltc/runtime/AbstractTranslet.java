@@ -152,7 +152,7 @@ public abstract class AbstractTranslet implements Translet {
 	    // bug fix #3424, John Howard.
 	    // remove objects that are in the stack since objects are	
 	    // added with insertElementAt(int) and will cause memory retention
-	    for (int i=top; i>=bot; i--){
+	    for (int i=top; i>=bot; i--) {
 		paramsStack.removeElementAt(i);
 	    }
 	}
@@ -235,7 +235,7 @@ public abstract class AbstractTranslet implements Translet {
 	    // bug fix 3424, John Howard
 	    // remove objects that are in the stack since objects are	
 	    // added with insertElementAt(int) and will cause memory retention
-	    for (int i=top; i>=bot; i--){
+	    for (int i=top; i>=bot; i--) {
 		varsStack.removeElementAt(i);
 	    }
 	}
