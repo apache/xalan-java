@@ -652,6 +652,11 @@ Copyright:
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${build.debug}" bootclasspathref="xslt.boot.class.path" >
       <classpath refid="samples.class.path" />
+    </javac> 
+    <javac srcdir="${samples.dir}/TransformThread"  
+           destdir="${build.samples}" excludes="${exclude}" 
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" >
+      <classpath refid="samples.class.path" />
     </javac>           
     <jar jarfile="${build.samples.jar}" basedir="${build.samples}"
          includes="*.class"/>
