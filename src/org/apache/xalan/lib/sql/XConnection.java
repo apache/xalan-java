@@ -62,6 +62,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -82,9 +83,12 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.xml.transform.ErrorListener;
+import javax.xml.transform.TransformerException;
+
 /**
  * An XSLT extension that allows a stylesheet to
- * access JDBC data. 
+ * access JDBC data.
  *
  * It is accessed by specifying a namespace URI as follows:
  * <pre>
@@ -115,6 +119,13 @@ public class XConnection
    * represent one query at a time, prior to doing some type of query.
    */
   private ConnectionPool m_ConnectionPool = null;
+
+  /**
+   * The DBMS Connection used to produce this SQL Document.
+   * Will be used to clear free up the database resources on
+   * close.
+   */
+  private Connection m_Connection = null;
 
   /**
    * If a default Connection Pool is used. i.e. A connection Pool
@@ -160,7 +171,31 @@ public class XConnection
    * getError() method.
    * %REVIEW% This functionality will probably be buried inside the SQLDocument.
    */
-  private SQLErrorDocument m_Error = null;
+  private Exception m_Error = null;
+
+  /**
+   * When the Stylesheet wants to review the errors from a paticular
+   * document, it asks the XConnection. We need to track what document
+   * in the list of managed documents caused the last error. As SetError
+   * is called, it will record the document that had the error.
+   */
+  private SQLDocument     m_LastSQLDocumentWithError = null;
+
+  /**
+   * If true then full information should be returned about errors and warnings
+   * in getError(). This includes chained errors and warnings.
+   * If false (the default) then getError() returns just the first SQLException.
+   */
+  private boolean m_FullErrors = false;
+
+
+
+  /**
+   * One a per XConnection basis there is a master QueryParser that is responsible
+   * for generating Query Parsers. This will allow us to cache previous instances
+   * so the inline parser execution time is minimized.
+   */
+  private SQLQueryParser m_QueryParser = new SQLQueryParser();
 
   /**
    */
@@ -173,6 +208,26 @@ public class XConnection
    * once since the Row data will be reused for every Row in the Query.
    */
   private boolean m_IsStreamingEnabled = true;
+
+  /**
+   *
+   */
+   private boolean m_InlineVariables = false;
+
+  /**
+   * This flag will be used to indicate if multiple result sets are
+   * supported from the database. If they are, then the metadata element is
+   * moved to insude the row-set element and multiple row-set elements may
+   * be included under the sql root element.
+   */
+  private boolean m_IsMultipleResultsEnabled = false;
+
+  /**
+   * This flag will be used to indicate if database preparedstatements
+   * should be cached. This also controls if the Java statement object
+   * should be cached.
+   */
+  private boolean m_IsStatementCachingEnabled = false;
 
   /**
    */
@@ -256,7 +311,7 @@ public class XConnection
     }
     catch (Exception e)
     {
-      buildErrorDocument(exprContext, e);
+      setError(e, exprContext);
       return new XBooleanStatic(false);
     }
 
@@ -278,12 +333,12 @@ public class XConnection
     }
     catch(SQLException e)
     {
-      buildErrorDocument(exprContext, e);
+      setError(e,exprContext);
       return new XBooleanStatic(false);
     }
     catch (Exception e)
     {
-      buildErrorDocument(exprContext, e);
+      setError(e,exprContext);
       return new XBooleanStatic(false);
     }
   }
@@ -302,12 +357,12 @@ public class XConnection
     }
     catch(SQLException e)
     {
-      buildErrorDocument(exprContext, e);
+      setError(e,exprContext);
       return new XBooleanStatic(false);
     }
     catch (Exception e)
     {
-      buildErrorDocument(exprContext, e);
+      setError(e,exprContext);
       return new XBooleanStatic(false);
     }
   }
@@ -326,12 +381,12 @@ public class XConnection
     }
     catch(SQLException e)
     {
-      buildErrorDocument(exprContext, e);
+      setError(e, exprContext);
       return new XBooleanStatic(false);
     }
     catch (Exception e)
     {
-      buildErrorDocument(exprContext, e);
+      setError(e,exprContext);
       return new XBooleanStatic(false);
     }
   }
@@ -359,12 +414,12 @@ public class XConnection
     }
     catch(SQLException e)
     {
-      buildErrorDocument(exprContext, e);
+      setError(e,exprContext);
       return new XBooleanStatic(false);
     }
     catch (Exception e)
     {
-      buildErrorDocument(exprContext, e);
+      setError(e,exprContext);
       return new XBooleanStatic(false);
     }
   }
@@ -398,12 +453,12 @@ public class XConnection
     }
     catch(SQLException e)
     {
-      buildErrorDocument(exprContext, e);
+      setError(e,exprContext);
       return new XBooleanStatic(false);
     }
     catch (Exception e)
     {
-      buildErrorDocument(exprContext, e);
+      setError(e, exprContext);
       return new XBooleanStatic(false);
     }
   }
@@ -599,8 +654,17 @@ public class XConnection
     }
     finally
     {
-      m_ConnectionPool.releaseConnection(con);
+      if ( con != null ) m_ConnectionPool.releaseConnection(con);
     }
+  }
+
+  /**
+   * Allow the SQL Document to retrive a connection to be used
+   * to build the SQL Statement.
+   */
+  public ConnectionPool getConnectionPool()
+  {
+    return m_ConnectionPool;
   }
 
 
@@ -618,100 +682,50 @@ public class XConnection
    */
   public DTM query( ExpressionContext exprContext, String queryString )
   {
-    Connection con = null;
-    Statement stmt = null;
-    ResultSet rs = null;
-
-    DTMManagerDefault mgrDefault = null;
     SQLDocument doc = null;
 
     try
     {
-      if (DEBUG) System.out.println("query()");
-      if (null == m_ConnectionPool)
-      {
-        // Build an Error Document, NOT Connected
-        return null;
-      }
+      if (DEBUG) System.out.println("pquery()");
 
-      try
-      {
-        con = m_ConnectionPool.getConnection();
-        stmt = con.createStatement();
-        rs = stmt.executeQuery(queryString);
-      }
-      catch(SQLException e)
-      {
-        // We have not created a document yet, so lets close the
-        // connection ourselves then let the process deal with the
-        // error.
-        //
-        try  { if (null != rs) rs.close(); }
-        catch(Exception e1) {}
-        try  { if (null != stmt) stmt.close(); }
-        catch(Exception e1) { }
-        try  {
-          if (null != con) m_ConnectionPool.releaseConnectionOnError(con);
-        } catch(Exception e1) { }
+      // Build an Error Document, NOT Connected.
+      if ( null == m_ConnectionPool ) return null;
 
-        buildErrorDocument(exprContext, e);
-        return null;
-      }
+      SQLQueryParser query =
+          m_QueryParser.parse
+            (this, queryString, SQLQueryParser.NO_INLINE_PARSER);
 
-      if (DEBUG) System.out.println("..creatingSQLDocument");
+      doc = SQLDocument.getNewDocument(exprContext);
+      doc.execute(this, query);
 
-      DTMManager mgr =
-        ((XPathContext.XPathExpressionContext)exprContext).getDTMManager();
-      mgrDefault = (DTMManagerDefault) mgr;
-      int dtmIdent = mgrDefault.getFirstFreeDTMID();
-
-      doc =
-        new SQLDocument(
-          mgr, dtmIdent << DTMManager.IDENT_DTM_NODE_BITS ,
-          m_ConnectionPool, con, stmt, rs, m_IsStreamingEnabled);
-
-      if (null != doc)
-      {
-        if (DEBUG) System.out.println("..returning Document");
-
-        // Register our document
-        mgrDefault.addDTM(doc, dtmIdent);
-
-        // also keep a local reference
-        m_OpenSQLDocuments.addElement(doc);
-        return doc;
-      }
-      else
-      {
-        return null;
-      }
-    }
-    catch(SQLException e)
-    {
-      if ((doc != null) && (mgrDefault != null))
-      {
-        doc.closeOnError();
-        mgrDefault.release(doc, true);
-      }
-      buildErrorDocument(exprContext, e);
-      return null;
+      // also keep a local reference
+      m_OpenSQLDocuments.addElement(doc);
     }
     catch (Exception e)
     {
-      if ((doc != null) && (mgrDefault != null))
-      {
-        doc.closeOnError();
-        mgrDefault.release(doc, true);
-      }
+      // OK We had an error building the document, let try and grab the
+      // error information and clean up our connections.
 
       if (DEBUG) System.out.println("exception in query()");
-      buildErrorDocument(exprContext, e);
-      return null;
+
+      if (doc != null)
+      {
+        if (doc.hasErrors())
+        {
+          setError(e, doc, doc.checkWarnings());
+        }
+
+        doc.close();
+        doc = null;
+      }
     }
     finally
     {
       if (DEBUG) System.out.println("leaving query()");
     }
+
+    // Doc will be null if there was an error
+    return doc;
   }
 
   /**
@@ -728,110 +742,8 @@ public class XConnection
    */
   public DTM pquery( ExpressionContext exprContext, String queryString )
   {
-    Connection con = null;
-    PreparedStatement stmt = null;
-    ResultSet rs = null;
-
-    try
-    {
-      int indx;
-
-      try
-      {
-        con = m_ConnectionPool.getConnection();
-        stmt = con.prepareStatement(queryString);
-      }
-      catch(SQLException e)
-      {
-        // We have not created a document yet, so lets close the
-        // connection ourselves then let the process deal with the
-        // error.
-        //
-        try { if (null != stmt) stmt.close(); }
-        catch(Exception e1) { }
-        try {
-          if (null != con) m_ConnectionPool.releaseConnectionOnError(con);
-        }  catch(Exception e1) {}
-
-        // Re throw the error so the process can handle the error
-        // normally
-        throw e;
-      }
-
-      if (DEBUG) System.out.println("..building Prepared Statement");
-
-      try
-      {
-        Enumeration enum = m_ParameterList.elements();
-        indx = 1;
-        while (enum.hasMoreElements())
-        {
-          QueryParameter qp = (QueryParameter) enum.nextElement();
-          setParameter(indx, stmt, qp);
-          indx++;
-        }
-
-        rs = stmt.executeQuery();
-      }
-      catch(SQLException e)
-      {
-        // We have not created a document yet, so lets close the
-        // connection ourselves then let the process deal with the
-        // error.
-        //
-        try { if (null != rs) rs.close();  }
-        catch(Exception e1) {  }
-        try { if (null != stmt) stmt.close(); }
-        catch(Exception e1) {  }
-        try  {
-          if (null != con) m_ConnectionPool.releaseConnectionOnError(con);
-        } catch(Exception e1) { }
-
-        // Re throw the error so the process can handle the error
-        // normally
-        throw e;
-      }
-
-      if (DEBUG) System.out.println("..creatingSQLDocument");
-
-      DTMManager mgr =
-        ((XPathContext.XPathExpressionContext)exprContext).getDTMManager();
-      DTMManagerDefault mgrDefault = (DTMManagerDefault) mgr;
-      int dtmIdent = mgrDefault.getFirstFreeDTMID();
-
-      SQLDocument doc =
-        new SQLDocument(mgr, dtmIdent << DTMManager.IDENT_DTM_NODE_BITS,
-        m_ConnectionPool, con, stmt, rs, m_IsStreamingEnabled);
-
-      if (null != doc)
-      {
-        if (DEBUG) System.out.println("..returning Document");
-
-        // Register our document
-        mgrDefault.addDTM(doc, dtmIdent);
-
-        // also keep a local reference
-        m_OpenSQLDocuments.addElement(doc);
-        return doc;
-      }
-      else
-      {
-        // Build Error Doc, BAD Result Set
-        return null;
-      }
-    }
-    catch(SQLException e)
-    {
-      buildErrorDocument(exprContext, e);
-      return null;
-    }
-    catch (Exception e)
-    {
-      buildErrorDocument(exprContext, e);
-      return null;
-    }
+    return(pquery(exprContext, queryString, null));
   }
-
 
   /**
    * Execute a parameterized query statement by instantiating an
@@ -850,134 +762,89 @@ public class XConnection
    * the parameter types will be used to overload the current types
    * in the current parameter list.
    */
-  public DTM pquery( ExpressionContext exprContext, String queryString, String typeInfo )
+  public DTM pquery( ExpressionContext exprContext, String queryString, String typeInfo)
   {
-    Connection con = null;
-    PreparedStatement stmt = null;
-    ResultSet rs = null;
+    SQLDocument doc = null;
 
     try
     {
-      int indx;
+      if (DEBUG) System.out.println("pquery()");
 
-      // Parse up the parameter types that were defined
-      // with the query
-      StringTokenizer plist = new StringTokenizer(typeInfo);
+      // Build an Error Document, NOT Connected.
+      if ( null == m_ConnectionPool ) return null;
 
-      // Override the existing type that is stored in the
-      // parameter list. If there are more types than parameters
-      // ignore for now, a more meaningfull error should occur
-      // when the actual query is executed.
-      indx = 0;
-      while (plist.hasMoreTokens())
+      SQLQueryParser query =
+          m_QueryParser.parse
+            (this, queryString, SQLQueryParser.NO_OVERRIDE);
+
+      // If we are not using the inline parser, then let add the data
+      // to the parser so it can populate the SQL Statement.
+      if ( !m_InlineVariables )
       {
-        String value = plist.nextToken();
-        QueryParameter qp = (QueryParameter) m_ParameterList.elementAt(indx);
-        if ( null != qp )
-        {
-          qp.setType(value);
-        }
-
-        indx++;
+        addTypeToData(typeInfo);
+        query.setParameters(m_ParameterList);
       }
 
-      try
-      {
-        con = m_ConnectionPool.getConnection();
-        stmt = con.prepareStatement(queryString);
-      }
-      catch(SQLException e)
-      {
-        // We have not created a document yet, so lets close the
-        // connection ourselves then let the process deal with the
-        // error.
-        //
-        try { if (null != stmt) stmt.close(); }
-        catch(Exception e1) { }
-        try {
-          if (null != con) m_ConnectionPool.releaseConnectionOnError(con);
-        } catch(Exception e1) { }
+      doc = SQLDocument.getNewDocument(exprContext);
+      doc.execute(this, query);
 
-        // Re throw the error so the process can handle the error
-        // normally
-        throw e;
-      }
-
-
-
-      if (DEBUG) System.out.println("..building Prepared Statement");
-
-      try
-      {
-        Enumeration enum = m_ParameterList.elements();
-        indx = 1;
-        while (enum.hasMoreElements())
-        {
-          QueryParameter qp = (QueryParameter) enum.nextElement();
-          setParameter(indx, stmt, qp);
-          indx++;
-        }
-
-        rs = stmt.executeQuery();
-      }
-      catch(SQLException e)
-      {
-        // We have not created a document yet, so lets close the
-        // connection ourselves then let the process deal with the
-        // error.
-        //
-        try { if (null != rs) rs.close(); }
-        catch(Exception e1) { /* Empty */ }
-        try { if (null != stmt) stmt.close(); }
-        catch(Exception e1) { /* Empty */  }
-        try {
-          if (null != con) m_ConnectionPool.releaseConnectionOnError(con);
-        } catch(Exception e1) { /* Empty */ }
-
-        // Re throw the error so the process can handle the error
-        // normally
-        throw e;
-      }
-
-
-      if (DEBUG) System.out.println("..creatingSQLDocument");
-
-      DTMManager mgr =
-        ((XPathContext.XPathExpressionContext)exprContext).getDTMManager();
-      DTMManagerDefault mgrDefault = (DTMManagerDefault) mgr;
-      int dtmIdent = mgrDefault.getFirstFreeDTMID();
-
-      SQLDocument doc =
-        new SQLDocument(mgr, dtmIdent << DTMManager.IDENT_DTM_NODE_BITS ,
-        m_ConnectionPool, con, stmt, rs, m_IsStreamingEnabled);
-
-      if (null != doc)
-      {
-        if (DEBUG) System.out.println("..returning Document");
-
-        // Register our document
-        mgrDefault.addDTM(doc, dtmIdent);
-
-        // also keep a local reference
-        m_OpenSQLDocuments.addElement(doc);
-        return doc;
-      }
-      else
-      {
-        // Build Error Doc, BAD Result Set
-        return null;
-      }
-    }
-    catch(SQLException e)
-    {
-      buildErrorDocument(exprContext, e);
-      return null;
+      // also keep a local reference
+      m_OpenSQLDocuments.addElement(doc);
     }
     catch (Exception e)
     {
-      buildErrorDocument(exprContext, e);
-      return null;
+      // OK We had an error building the document, let try and grab the
+      // error information and clean up our connections.
+
+      if (DEBUG) System.out.println("exception in query()");
+
+      if (doc != null)
+      {
+        if (doc.hasErrors())
+        {
+          setError(e, doc, doc.checkWarnings());
+        }
+
+        doc.close();
+        doc = null;
+      }
     }
+    finally
+    {
+      if (DEBUG) System.out.println("leaving query()");
+    }
+
+    // Doc will be null if there was an error
+    return doc;
+  }
+
+  private void addTypeToData(String typeInfo)
+  {
+      int indx;
+
+      if ( typeInfo != null && m_ParameterList != null )
+      {
+          // Parse up the parameter types that were defined
+          // with the query
+          StringTokenizer plist = new StringTokenizer(typeInfo);
+
+          // Override the existing type that is stored in the
+          // parameter list. If there are more types than parameters
+          // ignore for now, a more meaningfull error should occur
+          // when the actual query is executed.
+          indx = 0;
+          while (plist.hasMoreTokens())
+          {
+            String value = plist.nextToken();
+            QueryParameter qp = (QueryParameter) m_ParameterList.elementAt(indx);
+            if ( null != qp )
+            {
+              qp.setTypeName(value);
+            }
+
+            indx++;
+          }
+      }
   }
 
   /**
@@ -1117,6 +984,7 @@ public class XConnection
    * The connection pool can even be disabled which will close all
    * outstanding connections.
    * @return
+   * @deprecated Use setFeature("default-pool-enabled", "true");
    */
   public void enableDefaultConnectionPool( )
   {
@@ -1136,6 +1004,7 @@ public class XConnection
   /**
    * See enableDefaultConnectionPool
    * @return
+   * @deprecated Use setFeature("default-pool-enabled", "false");
    */
   public void disableDefaultConnectionPool( )
   {
@@ -1157,6 +1026,7 @@ public class XConnection
    * of unlimited size but it will not let you traverse the data
    * more than once.
    * @return
+   * @deprecated Use setFeature("streaming", "true");
    */
   public void enableStreamingMode( )
   {
@@ -1173,6 +1043,7 @@ public class XConnection
    * of unlimited size but it will not let you traverse the data
    * more than once.
    * @return
+   * @deprecated Use setFeature("streaming", "false");
    */
   public void disableStreamingMode( )
   {
@@ -1190,7 +1061,17 @@ public class XConnection
    */
   public DTM getError( )
   {
-    return m_Error;
+    if ( m_FullErrors )
+    {
+      for ( int idx = 0 ; idx < m_OpenSQLDocuments.size() ; idx++ )
+      {
+        SQLDocument doc = (SQLDocument)m_OpenSQLDocuments.elementAt(idx);
+        SQLWarning warn = doc.checkWarnings();
+        if ( warn != null ) setError(null, doc, warn);
+      }
+    }
+
+    return(buildErrorDocument());
   }
 
   /**
@@ -1200,24 +1081,34 @@ public class XConnection
    */
   public void close( )throws SQLException
   {
-
     if (DEBUG)
-      System.out.println("Entering XConnection.close");
+      System.out.println("Entering XConnection.close()");
 
     //
     // This function is included just for Legacy support
     // If it is really called then we must me using a single
     // document interface, so close all open documents.
+
     while(m_OpenSQLDocuments.size() != 0)
     {
       SQLDocument d = (SQLDocument) m_OpenSQLDocuments.elementAt(0);
-      d.close();
+      try
+      {
+        d.close();
+      }
+      catch (Exception se ) {}
+
       m_OpenSQLDocuments.removeElementAt(0);
+    }
+
+    if ( null != m_Connection )
+    {
+      m_ConnectionPool.releaseConnection(m_Connection);
+      m_Connection = null;
     }
 
     if (DEBUG)
       System.out.println("Exiting XConnection.close");
-
   }
 
   /**
@@ -1230,7 +1121,7 @@ public class XConnection
   public void close( SQLDocument sqldoc )throws SQLException
   {
     if (DEBUG)
-      System.out.println("Entering XConnection.close");
+      System.out.println("Entering XConnection.close(" + sqldoc + ")");
 
     int size = m_OpenSQLDocuments.size();
 
@@ -1245,132 +1136,202 @@ public class XConnection
     }
   }
 
-  /**
-   * Set the parameter for a Prepared Statement
-   * @param pos
-   * @param stmt
-   * @param p
-   * @return
-   * @throws SQLException
-   */
-  public void setParameter( int pos, PreparedStatement stmt, QueryParameter p )throws SQLException
-  {
-    String type = p.getType();
-    if (type.equalsIgnoreCase("string"))
-    {
-      stmt.setString(pos, p.getValue());
-    }
-
-    if (type.equalsIgnoreCase("bigdecimal"))
-    {
-      stmt.setBigDecimal(pos, new BigDecimal(p.getValue()));
-    }
-
-    if (type.equalsIgnoreCase("boolean"))
-    {
-      Integer i = new Integer( p.getValue() );
-      boolean b = ((i.intValue() != 0) ? false : true);
-      stmt.setBoolean(pos, b);
-    }
-
-    if (type.equalsIgnoreCase("bytes"))
-    {
-      stmt.setBytes(pos, p.getValue().getBytes());
-    }
-
-    if (type.equalsIgnoreCase("date"))
-    {
-      stmt.setDate(pos, Date.valueOf(p.getValue()));
-    }
-
-    if (type.equalsIgnoreCase("double"))
-    {
-      Double d = new Double(p.getValue());
-      stmt.setDouble(pos, d.doubleValue() );
-    }
-
-    if (type.equalsIgnoreCase("float"))
-    {
-      Float f = new Float(p.getValue());
-      stmt.setFloat(pos, f.floatValue());
-    }
-
-    if (type.equalsIgnoreCase("long"))
-    {
-      Long l = new Long(p.getValue());
-      stmt.setLong(pos, l.longValue());
-    }
-
-    if (type.equalsIgnoreCase("short"))
-    {
-      Short s = new Short(p.getValue());
-      stmt.setShort(pos, s.shortValue());
-    }
-
-    if (type.equalsIgnoreCase("time"))
-    {
-      stmt.setTime(pos, Time.valueOf(p.getValue()) );
-    }
-
-    if (type.equalsIgnoreCase("timestamp"))
-    {
-
-      stmt.setTimestamp(pos, Timestamp.valueOf(p.getValue()) );
-    }
-
-  }
 
   /**
    * @param exprContext
    * @param excp
    * @return
    */
-  private void buildErrorDocument( ExpressionContext exprContext, SQLException excp )
+  private SQLErrorDocument buildErrorDocument()
+  {
+    SQLErrorDocument eDoc = null;
+
+    if ( m_LastSQLDocumentWithError != null)
+    {
+      // @todo
+      // Do we need to do something with this ??
+      //    m_Error != null || (m_FullErrors && m_Warning != null) )
+
+      ExpressionContext ctx = m_LastSQLDocumentWithError.getExpressionContext();
+      SQLWarning        warn = m_LastSQLDocumentWithError.checkWarnings();
+
+
+      try
+      {
+        DTMManager mgr =
+          ((XPathContext.XPathExpressionContext)ctx).getDTMManager();
+        DTMManagerDefault mgrDefault = (DTMManagerDefault) mgr;
+        int dtmIdent = mgrDefault.getFirstFreeDTMID();
+
+        eDoc = new SQLErrorDocument(
+            mgr, dtmIdent<<DTMManager.IDENT_DTM_NODE_BITS,
+            m_Error, warn, m_FullErrors);
+
+        // Register our document
+        mgrDefault.addDTM(eDoc, dtmIdent);
+
+        // Clear the error and warning.
+        m_Error = null;
+        m_LastSQLDocumentWithError = null;
+      }
+      catch(Exception e)
+      {
+        eDoc = null;
+      }
+    }
+
+    return(eDoc);
+  }
+
+
+  /**
+   * This is an internal version of Set Error that is called withen
+   * XConnection where there is no SQLDocument created yet. As in the
+   * Connect statement or creation of the ConnectionPool.
+   */
+  public void setError(Exception excp,ExpressionContext expr)
   {
     try
     {
-      DTMManager mgr =
-        ((XPathContext.XPathExpressionContext)exprContext).getDTMManager();
-      DTMManagerDefault mgrDefault = (DTMManagerDefault) mgr;
-      int dtmIdent = mgrDefault.getFirstFreeDTMID();
+      ErrorListener listen = expr.getErrorListener();
+      if ( listen != null && excp != null )
+      {
+        listen.warning(
+          new TransformerException(excp.toString(),
+          expr.getXPathContext().getSAXLocator(), excp));
+      }
+    }
+    catch(Exception e) {}
+  }
 
-      m_Error = new SQLErrorDocument(mgr, dtmIdent << DTMManager.IDENT_DTM_NODE_BITS, excp);
+  /**
+   * Set an error and/or warning on this connection.
+   * @param feature The name of the feature being set, currently supports (streaming, inline-variables, multiple-results, cache-statements, default-pool-enabled).
+   * @param setting The new setting for the specified feature, currently "true" is true and anything else is false.
+   * @return
+   */
+  public void setError(Exception excp, SQLDocument doc, SQLWarning warn)
+  {
 
-      // Register our document
-      mgrDefault.addDTM(m_Error, dtmIdent);
+    ExpressionContext cont = doc.getExpressionContext();
+    m_LastSQLDocumentWithError = doc;
 
+    try
+    {
+      ErrorListener listen = cont.getErrorListener();
+      if ( listen != null && excp != null )
+      listen.warning(
+        new TransformerException(excp.toString(),
+        cont.getXPathContext().getSAXLocator(), excp));
+
+      if ( listen != null && warn != null )
+      {
+        listen.warning(new TransformerException(
+          warn.toString(), cont.getXPathContext().getSAXLocator(), warn));
+      }
+
+      // Assume there will be just one error, but perhaps multiple warnings.
+      if ( excp != null )  m_Error = excp;
+
+      if ( warn != null )
+      {
+        // Because the log may not have processed the previous warning yet
+        // we need to make a new one.
+        SQLWarning tw =
+          new SQLWarning(warn.getMessage(), warn.getSQLState(),
+            warn.getErrorCode());
+        SQLWarning nw = warn.getNextWarning();
+        while ( nw != null )
+        {
+          tw.setNextWarning(new SQLWarning(nw.getMessage(),
+            nw.getSQLState(), nw.getErrorCode()));
+
+          nw = nw.getNextWarning();
+        }
+
+        tw.setNextWarning(
+          new SQLWarning(warn.getMessage(), warn.getSQLState(),
+            warn.getErrorCode()));
+
+//        m_Warning = tw;
+
+      }
     }
     catch(Exception e)
     {
-      m_Error = null;
+      //m_Error = null;
     }
   }
 
   /**
-   * @param exprContext
-   * @param excp
+   * Set feature options for this XConnection.
+   * @param feature The name of the feature being set, currently supports (streaming, inline-variables, multiple-results, cache-statements, default-pool-enabled).
+   * @param setting The new setting for the specified feature, currently "true" is true and anything else is false.
    * @return
    */
-  private void buildErrorDocument( ExpressionContext exprContext, Exception excp )
+  public void setFeature(String feature, String setting)
   {
-    try
+    boolean value = false;
+
+    if ( "true".equalsIgnoreCase(setting) ) value = true;
+
+    if ( "streaming".equalsIgnoreCase(feature) )
     {
-      DTMManager mgr =
-        ((XPathContext.XPathExpressionContext)exprContext).getDTMManager();
-      DTMManagerDefault mgrDefault = (DTMManagerDefault) mgr;
-      int dtmIdent = mgrDefault.getFirstFreeDTMID();
-
-      m_Error = new SQLErrorDocument(mgr, dtmIdent<<DTMManager.IDENT_DTM_NODE_BITS, excp);
-
-      // Register our document
-      mgrDefault.addDTM(m_Error, dtmIdent);
-
+      m_IsStreamingEnabled = value;
     }
-    catch(Exception e)
+    else if ( "inline-variables".equalsIgnoreCase(feature) )
     {
-      m_Error = null;
+      m_InlineVariables = value;
+    }
+    else if ( "multiple-results".equalsIgnoreCase(feature) )
+    {
+      m_IsMultipleResultsEnabled = value;
+    }
+    else if ( "cache-statements".equalsIgnoreCase(feature) )
+    {
+      m_IsStatementCachingEnabled = value;
+    }
+    else if ( "default-pool-enabled".equalsIgnoreCase(feature) )
+    {
+      m_DefaultPoolingEnabled = value;
+
+      if (m_ConnectionPool == null) return;
+      if (m_IsDefaultPool) return;
+
+      m_ConnectionPool.setPoolEnabled(value);
+    }
+    else if ( "full-errors".equalsIgnoreCase(feature) )
+    {
+      m_FullErrors = value;
     }
   }
+
+  /**
+   * Get feature options for this XConnection.
+   * @param feature The name of the feature to get the setting for.
+   * @return The setting of the specified feature. Will be "true" or "false" (null if the feature is not known)
+   */
+  public String getFeature(String feature)
+  {
+    String value = null;
+
+    if ( "streaming".equalsIgnoreCase(feature) )
+      value = m_IsStreamingEnabled ? "true" : "false";
+    else if ( "inline-variables".equalsIgnoreCase(feature) )
+      value = m_InlineVariables ? "true" : "false";
+    else if ( "multiple-results".equalsIgnoreCase(feature) )
+      value = m_IsMultipleResultsEnabled ? "true" : "false";
+    else if ( "cache-statements".equalsIgnoreCase(feature) )
+      value = m_IsStatementCachingEnabled ? "true" : "false";
+    else if ( "default-pool-enabled".equalsIgnoreCase(feature) )
+      value = m_DefaultPoolingEnabled ? "true" : "false";
+    else if ( "full-errors".equalsIgnoreCase(feature) )
+      value = m_FullErrors ? "true" : "false";
+
+    return(value);
+  }
+
+
 
   /**
    * @return
