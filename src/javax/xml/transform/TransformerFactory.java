@@ -314,8 +314,12 @@ public abstract class TransformerFactory {
     /**
      * Temp debug code - this will be removed after we test everything
      */
-    private static final boolean debug = System.getProperty("jaxp.debug")
-                                         != null;
+    private static boolean debug;
+    static {
+	try {
+	    debug = System.getProperty("jaxp.debug") != null;
+	} catch( SecurityException ex ) {}
+    }
 
     /**
      * Private implementation method - will find the implementation
@@ -332,7 +336,10 @@ public abstract class TransformerFactory {
 
         // Use the system property first
         try {
-            String systemProp = System.getProperty(factoryId);
+	    String systemProp = null;
+	    try {
+		systemProp = System.getProperty(factoryId);
+	    } catch( SecurityException se ) {}
 
             if (systemProp != null) {
                 if (debug) {
