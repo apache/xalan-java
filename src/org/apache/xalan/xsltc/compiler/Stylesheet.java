@@ -85,6 +85,7 @@ import org.apache.bcel.generic.LocalVariableGen;
 import org.apache.bcel.generic.NEW;
 import org.apache.bcel.generic.PUSH;
 import org.apache.bcel.generic.PUTFIELD;
+import org.apache.bcel.generic.PUTSTATIC;
 import org.apache.bcel.generic.TargetLostException;
 import org.apache.bcel.util.InstructionFinder;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
@@ -559,6 +560,20 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     /**
+     * Add a static field
+     */
+    private void addStaticField(ClassGenerator classGen, String type,
+                                String name)
+    {
+        final FieldGen fgen = new FieldGen(ACC_PROTECTED|ACC_STATIC,
+                                           Util.getJCRefType(type),
+                                           name,
+                                           classGen.getConstantPool());
+        classGen.addField(fgen.getField());
+
+    }
+
+    /**
      * Translate the stylesheet into JVM bytecodes. 
      */
     public void translate() {
@@ -608,6 +623,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	checkOutputMethod();
 	processModes();
 	compileModes(classGen);
+        compileStaticInitializer(classGen);
 	compileConstructor(classGen, _lastOutputElement);
 
 	if (!getParser().errorsFound()) {
@@ -615,6 +631,46 @@ public final class Stylesheet extends SyntaxTreeNode {
 	}
     }
 
+    /**
+     * Create a static initializer for the translet which will contain
+     * read-only that can be shared by all translet instances.
+     */
+    private void compileStaticInitializer(ClassGenerator classGen) {
+        final ConstantPoolGen cpg = classGen.getConstantPool();
+        final InstructionList il = new InstructionList();
+
+        final MethodGenerator staticConst =
+            new MethodGenerator(ACC_PUBLIC|ACC_STATIC,
+                                org.apache.bcel.generic.Type.VOID,
+                                null, null, "<clinit>",
+                                _className, il, cpg);
+
+        // Create fields of type char[] that will contain literal text from
+        // the stylesheet.
+        final int charDataFieldCount = getXSLTC().getCharacterDataCount();
+        for (int i = 0; i < charDataFieldCount; i++) {
+            addStaticField(classGen, STATIC_CHAR_DATA_FIELD_SIG,
+                           STATIC_CHAR_DATA_FIELD+i);
+        }
+
+        // Grab all the literal text in the stylesheet and put it in a char[]
+        final int charDataCount = getXSLTC().getCharacterDataCount();
+        final int toCharArray = cpg.addMethodref(STRING, "toCharArray", "()[C");
+        for (int i = 0; i < charDataCount; i++) {
+            il.append(new PUSH(cpg, getXSLTC().getCharacterData(i)));
+            il.append(new INVOKEVIRTUAL(toCharArray));
+            il.append(new PUTSTATIC(cpg.addFieldref(_className,
+                                               STATIC_CHAR_DATA_FIELD+i,
+                                               STATIC_CHAR_DATA_FIELD_SIG)));
+        }
+
+        il.append(RETURN);
+
+        staticConst.stripAttributes(true);
+        staticConst.setMaxLocals();
+        staticConst.setMaxStack();
+        classGen.addMethod(staticConst.getMethod());
+    }
     /**
      * Compile the translet's constructor
      */
