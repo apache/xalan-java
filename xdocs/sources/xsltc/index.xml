@@ -61,7 +61,9 @@
     - updated 06.03.2001</ref></p>
 <ul>
   <li><link anchor="compiler">Compiler design</link></li>
-  <li><link anchor="runtime">Runtime library/DOM design</link></li>  
+  <li><link anchor="runtime">Runtime library/DOM design</link></li>
+  <li><link idref="xsltc_trax">Integration of the Translet API and TrAX</link> (by G Todd Miller)</li> 
+   
 </ul>
 <p>See also <jump href="../xsltc_usage.html">Using XSLTC</jump>.</p>
 <anchor name="compiler"/>

@@ -12,6 +12,7 @@
     <chapter id="samples"><xsl:copy-of select="document('xalan/samples.xml')"/></chapter>
     <chapter id="commandline"><xsl:copy-of select="document('xalan/commandline.xml')"/></chapter>
     <chapter id="usagepatterns"><xsl:copy-of select="document('xalan/usagepatterns.xml')"/></chapter>
+    <chapter id="trax"><xsl:copy-of select="document('xalan/trax.xml')"/></chapter>
     <chapter id="extensions"><xsl:copy-of select="document('xalan/extensions.xml')"/></chapter>
     <chapter id="extensionslib"><xsl:copy-of select="document('xalan/extensionslib.xml')"/></chapter>
     <chapter id="readme"><xsl:copy-of select="document('xalan/readme.xml')"/></chapter>

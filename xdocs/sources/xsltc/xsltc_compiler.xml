@@ -79,7 +79,7 @@
     <ul>
       <li><code>com.sun.xslt.compiler.XPathParser</code></li>
     </ul>
-    <p>Both parsers are encapsulates in XSLTC's parser class:</p>
+    <p>Both parsers are encapsulated in XSLTC's parser class:</p>
     <ul>
       <li><code>com.sun.xslt.compiler.Parser</code></li>
     </ul>
@@ -147,10 +147,10 @@
     </s3>
      <s3 title="Creating the Abstract Syntax Tree from the DOM">
     <p>What we have to do next is to create a tree that also holds the XSL
-    specific elements; XPath expressions and patters (with possible filters)
+    specific elements; XPath expressions and patterns (with possible filters)
     and calls to XSL functions. This is done by parsing the DOM and creating an
     instance of a subclass of 'SyntaxTreeNode' for each node in the DOM. A node
-    in the DOM containing an XSL instruction (ex. "xsl:template") results in an
+    in the DOM containing an XSL instruction (for example, "xsl:template") results in an
     instance of the correspoding class derived from the HashTable created by
     the parser (in this case in instance of the 'Template' class).</p>
 
@@ -179,7 +179,7 @@
     expression. This is done by calling 'typeCheck()' on the root-node in the
     XSL tree. Each SyntaxTree node is responsible for its own type checking
     (ie. the <code>typeCheck()</code> method must be overridden). Let us say that
-    out pattern was:</p>
+    our pattern was:</p>
     <p><code>&lt;xsl:value-of select=&quot;1+2.73&quot;/&gt;</code></p>
     <p><img src="typecast.gif" alt="typecast.gif"/></p>
     <p><ref>Figure 3: XPath expression type conflict</ref></p>
@@ -202,7 +202,7 @@
       <li><link anchor="instrfunc">Compiling XSL instructions and functions</link></li>            
     </ul>
     <p>A general rule is that all classes that represent elements in the XSL
-    tree/document, i.e. classes that inherit from SyntaxTreeNode output
+    tree/document, i.e., classes that inherit from SyntaxTreeNode, output
     bytecode in the 'translate()' method.</p>
     <anchor name="toplevelelem"/>
     <s3 title="Compiling top-level elements">

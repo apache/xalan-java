@@ -64,7 +64,7 @@
   <li><link anchor="classpath">Setting the system classpath for XSLTC</link></li>
   <li><link anchor="compile">Compiling translets from the command line</link></li>
   <li><link anchor="run">Running translets from the command line</link></li>
-  <li><link anchor="api">Using the XSLTC API</link></li>
+  <li><link anchor="api">Calling XSLTC with the TrAX/JAXP API</link></li>
   <li><link anchor="constraints">XSLTC usage constraints</link></li>  
 </ul>
 <p>See also: <jump href="xsltc/index.html">XSLTC Design</jump></p>
@@ -293,8 +293,9 @@ Arguments wirhout flags:
     the flag (-u) is optional.</p>
 </s3>
 </s2><anchor name="api"/>
-<s2 title="Using the translet API">
-<p></p>
+<s2 title="Calling XSLTC with the TrAX/JAXP API">
+<p>G. Todd Miller has begun integrating the translet with the TrAX/JAXP API. Accordingly, it is now possible to set a system property and use a TransformerFactory to generate a Transformer that performs a transformation by compiling and running a translet. He plans to add support soon for wrapping a translet with the Templates interface, which may then be used for repeated transformations.</p>
+<p><ref>Details coming soon!</ref></p>
 </s2><anchor name="constraints"/>
 &xsltc_constraints;
 </s1>

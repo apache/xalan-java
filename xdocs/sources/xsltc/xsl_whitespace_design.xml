@@ -108,7 +108,7 @@
     }
 </source>
 
-  <p>The characters are checked in proable order.</p>
+  <p>The characters are checked in probable order.</p>
 
   <p> The DOM has a bit-array that is used to  tag text-nodes as strippable
   whitespace nodes:</p>
@@ -128,7 +128,7 @@
   works in a way as a stack, where you "push" a new strip/preserve setting
   together with the node in which this setting was determined. This means that
   for every time the DOM builder encounters an <code>xml:space</code> attribute
-  it will invoke a method on an instance of teh WhitespaceHandler class to
+  it will invoke a method on an instance of the WhitespaceHandler class to
   signal that a new preserve/strip setting has been encountered. This is done
   in the <code>makeAttributeNode()</code> method. The whitespace handler stores the
   new setting and pushes the current element node on its stack. When the
@@ -243,7 +243,7 @@
     <li>
       The translet can, prior to starting to traverse the DOM, send a reference
       to the tables containing information on which nodes we want stripped to
-      the DOM interface. The DOM interface is the responsible for hiding all
+      the DOM interface. The DOM interface is then responsible for hiding all
       stripped whitespace nodes from the iterators and the translet. A problem
       with this approach is that we want to omit the DOM interface layer if
       the translet is only accessing a single DOM. The DOM interface layer will

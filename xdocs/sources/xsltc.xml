@@ -59,6 +59,10 @@
             
  <separator/>
  
+   <document id="xsltc_trax"
+             label="Translet &amp; TrAX"
+             source="xsltc/xsltc_trax.xml"/>
+ <separator/>
  <external href="todo.html" label="To-do list"/>
             
 </book>
