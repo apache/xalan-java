@@ -139,7 +139,8 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
 
     int pos = compiler.getFirstPredicateOpPos(opPos);
 
-    m_predicates = compiler.getCompiledPredicates(pos);
+    if(pos > 0)
+      m_predicates = compiler.getCompiledPredicates(pos);
   }
 
   /**

@@ -321,6 +321,10 @@ public class OpMap
     {
       return opPos + m_opMap[opPos + 1];
     }
+    else if(-2 == stepType)
+    {
+      return -2;
+    }
     else
     {
       error(org.apache.xpath.res.XPATHErrorResources.ER_UNKNOWN_OPCODE,
