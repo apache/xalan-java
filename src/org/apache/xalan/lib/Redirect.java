@@ -367,12 +367,11 @@ public class Redirect
       // TransformerImpl.setOutputTarget() to set the desired Result base.
   //      String base = urlToFileName(elem.getStylesheet().getSystemId());
 
-  // %REVIEW% This breaks FOP codegen. -sb
-//      Result outputTarget = transformer.getOutputTarget();
-//      if ( (null != outputTarget) && ((base = outputTarget.getSystemId()) != null) ) {
-//        base = urlToFileName(base);
-//      }
-//      else
+      Result outputTarget = transformer.getOutputTarget();
+      if ( (null != outputTarget) && ((base = outputTarget.getSystemId()) != null) ) {
+        base = urlToFileName(base);
+      }
+      else
       {
         base = urlToFileName(transformer.getBaseURLOfSource());
       }
