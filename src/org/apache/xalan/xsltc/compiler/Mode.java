@@ -1126,15 +1126,17 @@ for (int i = 0; i < _templates.size(); i++) {
 
 	// Create the applyTemplates() method
 	final org.apache.bcel.generic.Type[] argTypes =
-	    new org.apache.bcel.generic.Type[3];
+	    new org.apache.bcel.generic.Type[4];
 	argTypes[0] = Util.getJCRefType(DOM_INTF_SIG);
 	argTypes[1] = Util.getJCRefType(NODE_ITERATOR_SIG);
 	argTypes[2] = Util.getJCRefType(TRANSLET_OUTPUT_SIG);
+	argTypes[3] = org.apache.bcel.generic.Type.INT;
 
-	final String[] argNames = new String[3];
+	final String[] argNames = new String[4];
 	argNames[0] = DOCUMENT_PNAME;
 	argNames[1] = ITERATOR_PNAME;
 	argNames[2] = TRANSLET_OUTPUT_PNAME;
+	argNames[3] = NODE_PNAME;
 
 	final InstructionList mainIL = new InstructionList();
 	final MethodGenerator methodGen =
@@ -1152,6 +1154,9 @@ for (int i = 0; i < _templates.size(); i++) {
 					      mainIL.getEnd());
 	_currentIndex = current.getIndex();
 
+    mainIL.append(new ILOAD(methodGen.getLocalIndex(NODE_PNAME)));
+    mainIL.append(new ISTORE(_currentIndex));
+    
 	// Create the "body" instruction list that will eventually hold the
 	// code for the entire method (other ILs will be appended).
 	final InstructionList body = new InstructionList();
@@ -1160,16 +1165,7 @@ for (int i = 0; i < _templates.size(); i++) {
 	// Create an instruction list that contains the default next-node
 	// iteration
 	final InstructionList ilLoop = new InstructionList();
-	ilLoop.append(methodGen.loadIterator());
-	ilLoop.append(methodGen.nextNode());
-	ilLoop.append(DUP);
-	ilLoop.append(new ISTORE(_currentIndex));
-
-	// The body of this code can get very large - large than can be handled
-	// by a single IFNE(body.getStart()) instruction - need workaround:
-        final BranchHandle ifeq = ilLoop.append(new IFLT(null));
-	final BranchHandle loop = ilLoop.append(new GOTO_W(null));
-	ifeq.setTarget(ilLoop.append(RETURN)); // applyTemplates() ends here!
+    ilLoop.append(RETURN);
 	final InstructionHandle ihLoop = ilLoop.getStart();
 
 	// Compile default handling of elements (traverse children)
@@ -1216,11 +1212,7 @@ for (int i = 0; i < _templates.size(); i++) {
 	// Do tests for id() and key() patterns first
 	InstructionList ilKey = null;
 	if (_idxTestSeq != null) {
-	    loop.setTarget(_idxTestSeq.compile(classGen, methodGen, body.getStart()));
 	    ilKey = _idxTestSeq.getInstructionList();
-	}
-	else {
-	    loop.setTarget(body.getStart());
 	}
 
 	// If there is a match on node() we need to replace ihElem
@@ -1412,7 +1404,6 @@ for (int i = 0; i < _templates.size(); i++) {
 	body.append(ilText);
 
 	// putting together constituent instruction lists
-	mainIL.append(new GOTO_W(ihLoop));
 	mainIL.append(body);
 	// fall through to ilLoop
 	mainIL.append(ilLoop);

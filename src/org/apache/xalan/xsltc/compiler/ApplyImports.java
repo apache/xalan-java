@@ -112,15 +112,9 @@ final class ApplyImports extends Instruction {
 	// Push the arguments that are passed to applyTemplates()
 	il.append(classGen.loadTranslet());
 	il.append(methodGen.loadDOM());
-	// Wrap the current node inside an iterator
-	int init = cpg.addMethodref(SINGLETON_ITERATOR,
-				    "<init>", "("+NODE_SIG+")V");
-	il.append(new NEW(cpg.addClass(SINGLETON_ITERATOR)));
-	il.append(DUP);
-	il.append(methodGen.loadCurrentNode());
-	il.append(new INVOKESPECIAL(init));
-
+    il.append(methodGen.loadIterator());
 	il.append(methodGen.loadHandler());
+    il.append(methodGen.loadCurrentNode());
 
         // Push a new parameter frame in case imported template might expect
         // parameters.  The apply-imports has nothing that it can pass.
@@ -144,7 +138,7 @@ final class ApplyImports extends Instruction {
 
 	// Construct the translet class-name and the signature of the method
 	final String className = classGen.getStylesheet().getClassName();
-	final String signature = classGen.getApplyTemplatesSig();
+	final String signature = classGen.getApplyTemplatesSigForImport();
 	final int applyTemplates = cpg.addMethodref(className,
 						    functionName,
 						    signature);
