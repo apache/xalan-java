@@ -11,6 +11,7 @@ and new support for the TrAX API.</p>
   <li><link anchor="xsltcnew">Changes and New Features</link></li>
   <li><link anchor="xsltcconf">Conformance</link></li>
   <li><link anchor="xsltcknownproblems">Known Problems</link></li>
+  <li><link anchor="xsltcsmart">Smart Transformer Switch</link></li>
   <li><link anchor="xsltcdemos">Running Demos</link></li>  
   <li><link idref="xsltc_history">History of XSLTC software changes</link></li>
 </ul>
@@ -20,20 +21,28 @@ and new support for the TrAX API.</p>
 </s2>
 <anchor name="xsltcconf"/>
 <s2 title="XSLT 1.0 Conformance and Extensions">
-<p>XSLTC does not yet support the following feature of the <resource-ref idref="xslt"/>:</p>
+<p>XSLTC does not yet support the following features of the <resource-ref idref="xslt"/>:</p>
 <ul>
   <li>Explicitly set template priorities are ignored (bugzilla 2886)</li>
-   <li>The case-order option to the sort element is not supported, because XSLTC relies on the underlying Java
+  <li>The case-order option to the sort element is not supported, because XSLTC relies on the underlying Java
    sorting classes (bugzilla 1396).
   </li>
 </ul>
-<p>XSLTC does not support a number of features that are not required by the XSLT 1.0 specification,
+<p>XSLTC supports a number of features that are not required by the XSLT 1.0 specification,
 but which are supported by a number of other XSLT processors:</p>
 <ul>
-  <li>Incomplete support for extension elements and external Java functions. Currently you can set up an extension function
-    to call a static Java function. For the extension namespace, use<br/>
-    &nbsp;&nbsp;&nbsp;&nbsp;http://xml.apache.org/xalan/xsltc/java/&lt;class&gt;<br/>
-    where &lt;class&gt; identifies the class with the static method.
+  <li>Support for extension elements and external Java functions is incomplete. 
+    Currently you can set up an extension function
+    to call a static Java method. For the extension namespace, use<br/>
+    &nbsp;&nbsp;&nbsp;&nbsp;http://xml.apache.org/xslt/java<br/>
+    and then within the xsl reference the static method with <code>java:SomeClass.Method()</code>.
+  </li>
+  <li>Result Tree Fragments (RTFs) can be captured as the template content of a variable or parameter
+  and then the variable can be passed to a for-each or an apply-templates as a node set.
+  </li>
+  <li>Output can be redirected to a file using the &lt;xsltc:output&gt; element. It takes a file 
+  attribute to specify the output file. Attribute value templates can be used within the &quot;file&quot;
+  attribute to construct the name. 
   </li>
 </ul>
 </s2>
@@ -47,12 +56,41 @@ but which are supported by a number of other XSLT processors:</p>
   to a string in the following apply-templates, entry nodes whose &lt;country&gt; elements
   contain a string matching the global $country parameter are NOT selected.<br/><br/>
 &nbsp;&nbsp;&nbsp;&nbsp;<code>&lt;xsl:apply-templates select="entry[country=string($country)]"/&gt;</code></li>
-  <li>XSLTC does not produce the correct output on the XSLTMark Performance Benchmark tests called alphabetize 
-  (bugzilla 5573), and trend (bugzilla 5577).
+  <li>XSLTC does not produce the correct output on the XSLTMark Performance Benchmark tests called 'alphabetize' 
+  (bugzilla 5573), and 'trend' (bugzilla 5577).
+  </li>
+  <li>XLSTC throws a ClassCastException in method setImportPrecedence(int) of class 
+Stylesheet when 'elements' does not contain only TopLevelElements, thus causing compilation to fail (bugzilla 5964).
+  </li>
+  <li>XSLTC compiler can generate classes with methods longer than 65535 bytes. As a results the 
+  compiled translet cannot be run (bugzilla 4516)</li>
+  <li>Using the 'select' attribute versus the template content to assign a value to a variable can lead to 
+  inconistent results. For example, you get different results when 
+  select=&quot;preceding-sibling::*[position() =1]/@x&quot; is used as the attribute  
+  of the &lt;xsl:variable&gt; element versus when it is used as the attribute of an &lt;xsl:value-of&gt; element 
+  contained within the &lt;xsl:variable&gt; element (bugzilla 6072).
+  </li>
+  <li>Setting the output type to XHTML and including the xmlns=&quot;http://www.w3.org/1999/xhtml&quot; attribute in
+   the &lt;html&gt; Literal Result Element, causes XSLTC to disregard the mode attribute within apply-templates
+   (bugzilla 6074).
+  </li>
+  <li>After the first transformation, using a cached template object, the ouput is prematurely terminated 
+  after an xsl:comment element. This has been reported to happen only when the stylesheet also includes
+  an xsl:for-each element (bugzilla 6109). 
   </li>
 </ul>
 </s2>
-<anchor name="xsltcdemos"/>
+<anchor name="xsltcsmart"/>
+<s2 title="Smart Transformer Switch">
+<p>As part of the TrAX API, a &quot;Smart Transformer Switch&quot; enables automatic switching between Xalan and XSLTC 
+processors within your application. It uses Xalan to create your 
+ <code>Transformer</code> objects, and uses XSLTC to create your <code>Templates</code> objects.</p>
+<p>To use the switch, you set the TrAX system property,
+<code>javax.xml.transform.TransformerFactory</code>, to <code>org.apache.xalan.xsltc.trax.SmartTransformerImpl</code>. 
+For one-time transformations or transformations that require extensions supported by Xalan, and not XSLTC,
+you would use Transformer objects. For a repeated transformation where performance is critical, you would 
+use Templates objects.</p> 
+</s2>
 <s2 title="Running Demos">
 <p>XSLTC provides demos for using XSLTC as a servlet and as a handler for 
 Brazil (a new and powerful Web techology from Sun labs). To run these demos,
