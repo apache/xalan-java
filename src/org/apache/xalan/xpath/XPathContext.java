@@ -60,9 +60,6 @@ package org.apache.xalan.xpath;
 import java.io.File;
 import java.io.IOException;
 
-import java.net.URL;
-import java.net.MalformedURLException;
-
 import java.util.Stack;
 
 // Xalan imports
@@ -322,7 +319,7 @@ public class XPathContext
    * @exception XSLProcessorException thrown if the active ProblemListener and XPathContext decide 
    * the error condition is severe enough to halt processing.
    */
-  public URL getURLFromString(String urlString, String base)
+  public String getAbsoluteURI(String urlString, String base)
     throws SAXException 
   {
     InputSource inputSource;
@@ -336,14 +333,7 @@ public class XPathContext
       throw new SAXException(ioe);
     }
     // System.out.println("url: "+url.toString());
-    try
-    {
-      return new URL(inputSource.getSystemId());
-    }
-    catch(MalformedURLException mue)
-    {
-      throw new SAXException(mue);
-    }
+    return inputSource.getSystemId();
   }
   
   private static XSLMessages m_XSLMessages = new XSLMessages();

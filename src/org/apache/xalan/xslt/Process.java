@@ -69,9 +69,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import java.lang.reflect.Constructor;
 
 import java.util.TooManyListenersException;
