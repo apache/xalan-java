@@ -273,6 +273,8 @@ public abstract class NodeCounter implements Axis {
      * lang="en".
      */
     private void formatValue(int value, String format, StringBuffer buffer) {
+	if (value <= 0) return;
+
         char c = format.charAt(0);
         if (Character.isDigit(c)) {
             char zero = (char)(c - Character.getNumericValue(c));
