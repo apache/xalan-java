@@ -222,14 +222,19 @@ public class PrintTraceListener implements TraceListenerEx2
     {
       ElemTemplateElement ete = (ElemTemplateElement) ev.m_styleNode;
       Node sourceNode = ev.m_sourceNode;
-      int nodeHandler = ((DTMNodeProxy)sourceNode).getDTMNodeNumber();
       
-      SourceLocator locator = ((DTMNodeProxy)sourceNode).getDTM()
-        .getSourceLocatorFor(nodeHandler);
+      SourceLocator locator = null;
+      if (sourceNode instanceof DTMNodeProxy)
+      {
+        int nodeHandler = ((DTMNodeProxy)sourceNode).getDTMNodeNumber();      
+        locator = ((DTMNodeProxy)sourceNode).getDTM().getSourceLocatorFor(nodeHandler);
+      }
 
       if (locator != null)      
         m_pw.println("Selected source node '" + sourceNode.getNodeName()
                  + "', at " + locator);
+      else
+        m_pw.println("Selected source node '" + sourceNode.getNodeName() +"'");
 
       if (ev.m_styleNode.getLineNumber() == 0)
       {
