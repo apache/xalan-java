@@ -594,7 +594,7 @@ public abstract class DOM2DTM2Traversers extends DOM2DTM2Base
       int currentNodeIdent=makeNodeIdentity(current);
       Node n=m_resolver.findNode(currentNodeIdent);
       n=walkNextSkipEntRef(n,subtreeRootNode,true);
-      return makeNodeHandle(m_resolver.findID(n));
+      return makeNodeHandle(m_resolver.findID(n,false)); // never non-first Text node
     }
 
     /**
@@ -629,7 +629,7 @@ public abstract class DOM2DTM2Traversers extends DOM2DTM2Base
       do
       {
 	      n=walkNextSkipEntRef(n,subtreeRootNode,true);
-	      newid=m_resolver.findID(n);
+	      newid=m_resolver.findID(n,false); // never non-first text node
       } while(n!=null && expandedTypeID != _exptype(newid));      			
       			
       return makeNodeHandle(newid);
@@ -897,7 +897,7 @@ public abstract class DOM2DTM2Traversers extends DOM2DTM2Base
     	// since first() dealt with that.
     	Node n=getNode(current);
     	n=walkNextSkipEntRef(n,null,true);
-    	return makeNodeHandle(m_resolver.findID(n));
+    	return makeNodeHandle(m_resolver.findID(n,false)); // never non-first Text node
     }
 
     /**
@@ -915,12 +915,14 @@ public abstract class DOM2DTM2Traversers extends DOM2DTM2Base
     	// We know it isn't an attr or a namespace,
     	// since first() dealt with that.
     	Node n=getNode(current);
+    	int nid;
     	do
     	{
 	    	n=walkNextSkipEntRef(n,null,true);
+	    	nid=m_resolver.findID(n,false);// never non-first text node 
     	}
-    	while(n!=null && expandedTypeID!=_exptype(m_resolver.findID(n)));
-    	return makeNodeHandle(m_resolver.findID(n));
+    	while(n!=null && expandedTypeID!=_exptype(nid));
+    	return makeNodeHandle(nid);// never non-first text node
     }
   }
 
@@ -1206,7 +1208,7 @@ public abstract class DOM2DTM2Traversers extends DOM2DTM2Base
       {
 	      n=walkPreviousSkipEntRef(n,within);
       } while(n!=null && isAncestor(subtreeRootNode,n));
-      return makeNodeHandle(m_resolver.findID(n));
+      return makeNodeHandle(m_resolver.findID(n,true));  // may be non-first Text node
     }
 
     /**
@@ -1233,7 +1235,7 @@ public abstract class DOM2DTM2Traversers extends DOM2DTM2Base
 	      n=walkPreviousSkipEntRef(n,within);
       }
       while(n!=null && isAncestor(subtreeRootNode,n) && !walkIsExpandedTypeID(n,expandedTypeID));
-      return makeNodeHandle(m_resolver.findID(n));
+      return makeNodeHandle(m_resolver.findID(n,true)); // may be non-first Text node
     }
   }
 
@@ -1260,7 +1262,7 @@ public abstract class DOM2DTM2Traversers extends DOM2DTM2Base
       Node within=m_resolver.findNode(doc);     
       Node n=m_resolver.findNode(makeNodeIdentity(current));
       n=walkPreviousSkipEntRef(n,within);
-      return makeNodeHandle(m_resolver.findID(n));
+      return makeNodeHandle(m_resolver.findID(n,true));  // may be non-first Text node
     }
 
     /**
@@ -1286,7 +1288,7 @@ public abstract class DOM2DTM2Traversers extends DOM2DTM2Base
 	      n=walkPreviousSkipEntRef(n,within);
       }
       while(n!=null && walkIsExpandedTypeID(n,expandedTypeID));
-      return makeNodeHandle(m_resolver.findID(n));
+      return makeNodeHandle(m_resolver.findID(n,true)); // may be non-first Text node
     }
   }
 

@@ -396,7 +396,7 @@ public abstract class DOM2DTM2Base implements DTM
 	        {
 	        	if(p.getNodeType()==Node.ELEMENT_NODE)
 	    	    	shouldstrip=m_wsfilter.getShouldStripSpace(
-	    	    		makeNodeHandle(m_resolver.findID(p)),
+	    	    		makeNodeHandle(m_resolver.findID(p,false)), //never a text node
 	    	    		this);
         	}
         }
@@ -463,7 +463,7 @@ public abstract class DOM2DTM2Base implements DTM
 	        {
 	        	if(p.getNodeType()==Node.ELEMENT_NODE)
 	    	    	shouldstrip=m_wsfilter.getShouldStripSpace(
-	    	    		makeNodeHandle(m_resolver.findID(p)),
+	    	    		makeNodeHandle(m_resolver.findID(p,false)),  // never a text node
 	    	    		this);
         	}
         }
@@ -794,7 +794,7 @@ public abstract class DOM2DTM2Base implements DTM
   	if(n.getNodeType()==Node.ATTRIBUTE_NODE)
 	 	return NULL;
 	  
-  	return m_resolver.findID(walkFirstChildSkipEntRef(n));
+  	return m_resolver.findID(walkFirstChildSkipEntRef(n),false);  // should never be non-first text 
   }
 
   /**
@@ -839,7 +839,7 @@ public abstract class DOM2DTM2Base implements DTM
 	  			NAMESPACE_URI_XMLNS.equals(n.getNamespaceURI()) &&
   				("xmlns".equals(n.getPrefix()) || "xmlns".equals(n.getNodeName()))
   				))
-		  	return m_resolver.findID(n);
+		  	return m_resolver.findID(n,false);
 		}
 	 	return NULL;
   	}
@@ -857,7 +857,7 @@ public abstract class DOM2DTM2Base implements DTM
 				||ntype==Node.CDATA_SECTION_NODE));
 	}
 	  
-  	return m_resolver.findID(n);
+  	return m_resolver.findID(n,false); // should never be non-first text 
   }
 
   /**
@@ -899,7 +899,7 @@ public abstract class DOM2DTM2Base implements DTM
 	  			NAMESPACE_URI_XMLNS.equals(n.getNamespaceURI()) &&
   				("xmlns".equals(n.getPrefix()) || "xmlns".equals(n.getNodeName()))
   				))
-		  	return m_resolver.findID(n);
+		  	return m_resolver.findID(n,true); // might be text but not first-text
 		}
 	 	return NULL;
   	}
@@ -931,7 +931,7 @@ public abstract class DOM2DTM2Base implements DTM
 		}
 	}
 	  
-  	return m_resolver.findID(n);
+  	return m_resolver.findID(n,true);  // may be non-first text 
   }
 
   /**
@@ -945,7 +945,7 @@ public abstract class DOM2DTM2Base implements DTM
   {
   	Node n=m_resolver.findNode(identity);
   	n=walkParentSkipEntRef(n);
-  	return m_resolver.findID(n);
+  	return m_resolver.findID(n,false); // Parent will never be text node!
   }
 
   /**
@@ -1315,7 +1315,8 @@ public abstract class DOM2DTM2Base implements DTM
   	if(n.getNodeType()==Node.ATTRIBUTE_NODE)
 	 	return NULL;
 	  
-  	return makeNodeHandle(m_resolver.findID(walkLastChildSkipEntRef(n)));
+	// may be text but not first-text
+  	return makeNodeHandle(m_resolver.findID(walkLastChildSkipEntRef(n),true));
   }
 
   /**
@@ -1340,7 +1341,8 @@ public abstract class DOM2DTM2Base implements DTM
   		return NULL;
 	  
   	return makeNodeHandle(m_resolver.findID(
-  		((Element)n).getAttributeNodeNS(namespaceURI,name)
+  		((Element)n).getAttributeNodeNS(namespaceURI,name),
+  		false // never a text node
   		));
   }
 
@@ -1364,7 +1366,7 @@ public abstract class DOM2DTM2Base implements DTM
 		n=nnm.item(++i))
 		if(! NAMESPACE_URI_XMLNS.equals(
 			nnm.item(i).getNamespaceURI()) )
-			return makeNodeHandle(m_resolver.findID(n));
+			return makeNodeHandle(m_resolver.findID(n,false)); // never a text node
 
 	return NULL; 	// No non-NS attr found
   }
@@ -1456,14 +1458,14 @@ public abstract class DOM2DTM2Base implements DTM
 		if(nsnodes==null)
 			return NULL;
 		n=(Node)nsnodes.elementAt(0);
-		return makeNodeHandle(m_resolver.findID( n ));
+		return makeNodeHandle(m_resolver.findID( n,false )); // never a text node
     }
 	else
 	{
 		// Just do local scan?
 		// %REVIEW%
 		n=nextNSAttr(n);
-		return makeNodeHandle(m_resolver.findID( n ));		
+		return makeNodeHandle(m_resolver.findID( n,false )); // never a text node
 	}
   }
 
@@ -1503,7 +1505,7 @@ public abstract class DOM2DTM2Base implements DTM
 		for(i=0;i<s;++i)
 		{
 			if(m_resolver.isSameNode(start,(Node)nsnodes.elementAt(i)))
-				return makeNodeHandle(m_resolver.findID((Node)nsnodes.elementAt(i+1)));
+				return makeNodeHandle(m_resolver.findID((Node)nsnodes.elementAt(i+1),false)); // never a text node
 		}
 		return NULL; // Off end of list
 	  }
@@ -2337,7 +2339,8 @@ public abstract class DOM2DTM2Base implements DTM
 	return (doc==null) 
 		? NULL
 		: makeNodeHandle(m_resolver.findID(
-			doc.getElementById( elementId)
+			doc.getElementById( elementId),
+			false // never a text node
 			));
   }
   

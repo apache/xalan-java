@@ -80,7 +80,7 @@ public class NodeDTMIDResolver_xerces implements NodeDTMIDResolver
 			resolver=new NodeDTMIDResolver_xerces();
 			// Make sure the Document node will be node 0, just for
 			// clarity/consistancy/simplicity of retrofit.
-			resolver.findID(doc);
+			resolver.findID(doc,false); // never a text node
 			
 			((NodeImpl)doc).setUserData(KEY_BOUND_RESOLVER,resolver,null);
 			return resolver;
@@ -104,7 +104,7 @@ public class NodeDTMIDResolver_xerces implements NodeDTMIDResolver
 	 * Xerces-specific classes, and do the node-to-ID binding via
 	 * userData. Reverse binding is done via a vector.
 	 * 
-	 * %REVEIW%
+	 * %REVIEW%
 	 * NOTE: Xerces nodes are claimed to be hashable, since that's what they
 	 * use for their internal implementation of userData. We could bypass
 	 * their system and use that. The code here generalizes to be
@@ -113,8 +113,16 @@ public class NodeDTMIDResolver_xerces implements NodeDTMIDResolver
 	 * */
 	public int findID(Node n)
 	{
-		if(true) /*****************/
-		{
+		return findID(n,true);
+	}
+	
+	/** PACKAGE-INTERNAL node-to-ID lookup, used within DOM2DTM2. If we're scanning
+	 * forward (and thus know that any text nodes encountered will be the
+	 * first in their logically-adjacent text block) we don't need to spend
+	 * cycles calling the (expensive) findContainingXPathNode.
+	 * */
+	public int findID(Node n,boolean fixupTextNodes)	
+	{
 	  	// %REVIEW% Should we have stored which doc we're applying to,
   		// and enforce membership? Probably good idea since we're
 	  	// relying on implementation characteristics.
@@ -128,10 +136,8 @@ public class NodeDTMIDResolver_xerces implements NodeDTMIDResolver
 			((DOM2DTMdefaultNamespaceDeclarationNode)n).getIDOfNode();
 		}
 
-
 		int ntype=n.getNodeType();
 		Integer id;
-		
 
 		NodeImpl n3=(NodeImpl)n; 
 		id=(Integer)n3.getUserData(KEY_ID);
@@ -147,11 +153,15 @@ public class NodeDTMIDResolver_xerces implements NodeDTMIDResolver
 		    // as the first node in their Logically
 		    // Consecutive Text block.
 		    //
-		    // %REVEIW% Should this lookup be recursive, so IDs are
+		    // %REVIEW% Should this lookup be recursive, so IDs are
 		    // set on all the intermediates as a side effect?
 		    //
 		    // Get the "containing" node; it may be same as n.
-		    NodeImpl root=(NodeImpl)findContainingXPathNode(n);
+		    NodeImpl root;
+		    root=(fixupTextNodes)
+		    	? (NodeImpl)findContainingXPathNode(n)
+				: (NodeImpl)n;
+				
 		    id=(Integer)root.getUserData(KEY_ID); 
 		    if(id==null)
 		    {
@@ -176,48 +186,7 @@ public class NodeDTMIDResolver_xerces implements NodeDTMIDResolver
 		
 		// If this throws NPE, something above is Broken
 		return id.intValue();		
-			
-		} /***********************/
 		
-	  	// %REVIEW% Should we have stored which doc we're applying to,
-  		// and enforce membership? Probably good idea since we're
-	  	// relying on implementation characteristics.
-	  	
-		if(n==null) return DTM.NULL;
-		
-		Integer id;
-		
-		// If it's a Text node, we should find the first Text node
-		// in sequence (backward depth-first walk through EntRefs).
-		// If it's an EntRef, we should find the first non-EntRef
-		// preceeding it.
-		n=findContainingXPathNode(n);
-		if(n==null) return org.apache.xml.dtm.DTM.NULL;
-		
-		if(n instanceof DOM2DTMdefaultNamespaceDeclarationNode)
-		{
-			// PROBLEM: Want the ID, not the Handle!
-			return
-				((DOM2DTMdefaultNamespaceDeclarationNode)n).getIDOfNode()
-				;
-			
-		}
-		else
-		{
-			NodeImpl n3=(NodeImpl)n; 
-			id=(Integer)n3.getUserData(KEY_ID);
-			if(id==null)
-			{
-				// Note sequence; first is added at 0.
-				id=new Integer(m_map.size());
-				n3.setUserData(KEY_ID,id,null);
-				m_map.addElement(n); 
-			}
-		}
-		
-		
-		// If this throws NPE, something is Broken
-		return id.intValue();		
 	}
 
 	/** Given unique-within-Document ID number, return its Node

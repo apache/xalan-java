@@ -78,8 +78,12 @@ import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
 // EXPERIMENTAL 3/22/02
 import org.apache.xml.dtm.ref.xni2dtm.XNI2DTM;
 import org.apache.xml.dtm.ref.xni2dtm.XNISource;
-// EXPERIMENTAL 9/18/02
-// import org.apache.xml.dtm.dom2dtm2.DOM2DTM2;
+
+// EXPERIMENTAL 9/18/02 DO NOT COMMMENT THIS OUT; IT'S IN USE!
+// IF YOU MUST DISABLE IT, SET THE STATIC BOOLEAN TO FALSE.
+// IF YOU MUST COMPILE WITHOUT IT, TALK TO JOE ABOUT MAKING IT
+// REFLECTION-BASED.
+import org.apache.xml.dtm.dom2dtm2.DOM2DTM2;
 /**************************************************************/
 
 // W3C DOM
@@ -126,8 +130,11 @@ public class DTMManagerDefault extends DTMManager
   // Set true to attempt loading DOMs via our experimental
   // DOM2DTM2 wrapper. If false, or if that fails, we fall
   // back on standard DOM2DTM.
+  // EXPERIMENTAL 9/18/02 DO NOT COMMMENT THIS OUT; IT'S IN USE!
+  // IF YOU MUST DISABLE IT, SET THE STATIC BOOLEAN TO FALSE.
+  // IF YOU MUST COMPILE WITHOUT IT, TALK TO JOE ABOUT MAKING IT
+  // REFLECTION-BASED.
   private static final boolean ATTEMPT_DOM2DTM2=false;//true;
-	
 	
   /** Set this to true if you want a dump of the DTM after creation. */
   private static final boolean DUMPTREE = false;
@@ -296,23 +303,28 @@ public class DTMManagerDefault extends DTMManager
       // Simplest case: Wrap a DTM around an existing DOM.
       if(ATTEMPT_DOM2DTM2)
       {
-		DTM dtm;      	
-//      	try
-//      	{
-//	      dtm = new DOM2DTM2(this, source, documentID,
-//                                whiteSpaceFilter, xstringFactory, doIndexing);
-//      	} catch(ClassCastException e)
+	// EXPERIMENTAL 9/18/02 DO NOT COMMMENT THIS OUT; IT'S IN USE!
+	// IF YOU MUST DISABLE IT, SET THE STATIC BOOLEAN TO FALSE.
+	// IF YOU MUST COMPILE WITHOUT IT, TALK TO JOE ABOUT MAKING IT
+	// REFLECTION-BASED.
+	DTM dtm;      	
+      	try
       	{
-	      dtm = new DOM2DTM(this, (DOMSource) source, documentID,
-                                whiteSpaceFilter, xstringFactory, doIndexing);
-      	}
-	    addDTM(dtm, dtmPos, 0);
-        return dtm;
+	  dtm = new DOM2DTM2(this, source, documentID,
+			     whiteSpaceFilter, xstringFactory, doIndexing);
+      	} catch(ClassCastException e)
+	{
+	  dtm = null;
+	  
+	}
+	if(dtm!=null)
+	{
+	  addDTM(dtm, dtmPos, 0);
+	  return dtm;
+	}
       }
-
-
       DOM2DTM dtm = new DOM2DTM(this, (DOMSource) source, documentID,
-                                whiteSpaceFilter, xstringFactory, doIndexing);
+				whiteSpaceFilter, xstringFactory, doIndexing);
       addDTM(dtm, dtmPos, 0);
       return dtm;
     }

@@ -26,8 +26,11 @@ public interface NodeDTMIDResolver
 	 * */
 	
 	/** Given a DOM node, return its unique-within-Document ID number.
-	 * This is implemented uniquely in each concrete resolver class.
 	 * 
+	 * This version  is safe under all conditions -- equivalent to
+	 * findID(n,true), which see.
+	 * 
+	 * This is implemented uniquely in each concrete resolver class.
 	 * Approaches may range from using the DOM Level 3 userData hooks
 	 * to leveraging a particular implementation's custom features to
 	 * (possibly extremely painful!) isSameNode table searches.
@@ -37,7 +40,29 @@ public interface NodeDTMIDResolver
 	 * and seek to the first of a logically-adjacent set of Text nodes.
 	 * */
 	public int findID(Node n);
-	
+
+	/** Given a DOM node, return its unique-within-Document ID number.
+	 * 
+	 * This version is used within DOM2DTM2, as an optimization; if fixupTextNodes
+	 * is false, the caller is asserting that the node will never be a Text
+	 * node which "logically follows" another Text node, and thus that we don't
+	 * have to spend cycles walking backward to test that case. If you hand us a text
+	 * node which does not meet those constraints and do not set fixupTextNodes
+	 * to true, erroneous results are the best you can expect; if in doubt,
+	 * burn the cycles and do the fixup.
+	 * 
+	 * This is implemented uniquely in each concrete resolver class.
+	 * Approaches may range from using the DOM Level 3 userData hooks
+	 * to leveraging a particular implementation's custom features to
+	 * (possibly extremely painful!) isSameNode table searches.
+	 * 
+	 * Note that some mapping from DOM to XPath should be performed
+	 * -- specifically, findID should "skip" EntityReference nodes,
+	 * and (if fixupTextNodes is true) seek to the first of a 
+	 * logically-adjacent set of Text nodes.
+	 * */
+	public int findID(Node n,boolean fixupTextNodes);
+
 	/** Given unique-within-Document ID number, return its Node
 	 * This is implemented uniquely in each concrete resolver class,
 	 * most commonly via some form of reverse table/vector.
@@ -46,6 +71,7 @@ public interface NodeDTMIDResolver
 	 * */
 	public Node findNode(int id);	
 	
+
 	/** Given two node objects, report whether they are the same DOM node.
 	 * This is implemented uniquely in each concrete resolver class,
 	 * most portably via DOM3 isSameNode() but some DOMs require/permit
