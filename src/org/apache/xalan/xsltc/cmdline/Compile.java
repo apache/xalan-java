@@ -79,6 +79,12 @@ import org.apache.xalan.xsltc.cmdline.getopt.*;
 
 public final class Compile {
 
+    // This variable should be set to false to prevent any methods in this 
+    // class from calling System.exit(). As this is a command-line tool,
+    // calling System.exit() is normally OK, but we also want to allow for
+    // this class being used in other ways as well.
+    private static boolean _allowExit = true;
+
     private final static String USAGE_STRING =
 	"Usage:\n" + 
 	"   xsltc [-o <output>] [-d <directory>] [-j <jarfile>]\n"+
@@ -95,7 +101,7 @@ public final class Compile {
     
     public static void printUsage() {
 	System.err.println(USAGE_STRING);
-	System.exit(-1);
+	if (_allowExit) System.exit(-1);
     }
 
     /** 
@@ -136,6 +142,9 @@ public final class Compile {
 		case 'u':
 		    inputIsURL = true;
 		    break;
+		case 's':
+		    _allowExit = false;
+		    break;
 		case 'h':
 		default:
 		    printUsage();
@@ -160,12 +169,12 @@ public final class Compile {
 	    if (xsltc.compile(stylesheetVector)) {
 		xsltc.printWarnings();
 		if (xsltc.getJarFileName() != null) xsltc.outputToJar();
-		System.exit(0);
+		if (_allowExit) System.exit(0);
 	    }
 	    else {
 		xsltc.printWarnings();
 		xsltc.printErrors();
-		System.exit(-1);
+		if (_allowExit) System.exit(-1);
 	    }
 	}
 	catch (GetOptsException ex) {
@@ -174,7 +183,7 @@ public final class Compile {
 	}
 	catch (Exception e) {
 	    e.printStackTrace();
-	    System.exit(-1);
+	    if (_allowExit) System.exit(-1);
 	}
     }
 
