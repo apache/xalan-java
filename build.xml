@@ -8,50 +8,39 @@ Setup instructions:
    
      - set the JAVA_HOME environment variable to the JDK root directory
      - To build 'servlet' sample: Include Servlet SDK in your classpath
-     - To build docs/javadocs: use JDK 1.2.x or higher
-     
+     - To build docs/javadocs/xsltc: use JDK 1.2.x or higher
    
 Build Instructions:   
-   To build, run
-     build.bat (win32) or build.sh (unix) - optionally with a target arg as indicated below -
-   in the directory where this file is located.
+  To build, run
+    build.bat (win32) or build.sh (unix) [antoptions] [targets]
+  in the directory where this file is located.
    
-   The batch/shell file sets up your classpath and calls java org.apache.tools.ant.Main
+  build -projecthelp  will show a list of supported targets.
    
-Build targets
-    This build file supports the following targets:
-    - compile  compiles Xalan-J in ./build/classes.
-    - jar      creates ./build/xalan.jar [the default target]
-    - samples  compiles samples and puts classes in ./build/xalanxamples.jar
-    - servlet compiles sample servlets and puts classes in ./build/xalanservlet.jar
-    - docs     generates the human-written documentation in ./build/docs
-    - javadocs [or apidocs] generates the API documentation in ./build/docs/apidocs
-    - compat.jar compiles compatibility tree and creates ./build/xalanj1compat.jar
-    - compat.apidocs generates javadoc for the compatibility jar
-    - xsltc.jar creates just the xsltc.jar
-    - xsltc.docs creates the XSLTC design documentation.
-    - clean    purges the build tree.
-    - dist     creates a complete distribution in ./xalan-j_x_x_x
-    - auto*    targets used by automated build programs, without dependencies
-    - minitest compiles and runs the minitest in xml-xalan\test
-    - conftest compiles and runs the conftest in xml-xalan\test
-    - smoketest runs a pre-checkin smoketest (5 to 10 minutes).
-    - print.docs creates PDF documentation (requires fop.jar and w3c.jar).
+  Developers: include a description="" attribute in all user-callable targets.
         
-If you build a target that depends on other targets, those other targets are created in 
-the correct order.
+  If you build a target that depends on other targets, those other 
+  targets are *usually* created in the correct order; however a 
+  few of the larger targets like dist do not list all dependencies.
 
+Other Important Notes:
+- 'dist' produces a .tar file that works with GNU compatible tar 
+  programs, because that's what Ant does when it finds a path that's 
+  longer than 100 characters (like in our docs).  Sorry!
+  
+- External build maintainers: look for GUMP: comments; developers 
+  please use great caution when changing these lines!
+
+- Unusual build items: the docs and xsltc.compile targets leave 
+  cruft in the source areas; various clean targets get most of this.
+  
 Authors:
   Shane Curcuru <shane_curcuru@lotus.com>
   Don Leslie <donald_leslie@lotus.com>
 
 Copyright:
-  Copyright (c) 1999-2000 The Apache Software Foundation.
-  
-  - Much of this file stolen from Stefano's xml-xerces build.xml  
-  
+  Copyright (c) 1999-2001 The Apache Software Foundation.
    $Id$
-   
 ==================================================================== -->
 
 <project name="Xalan" default="jar" basedir=".">
@@ -61,7 +50,11 @@ Copyright:
   <!-- We keep checked-in known-good .jars here -->
   <property name="bin.dir" value="./bin"/>
 
-  <!-- Allows external users/GUMP/Alexandria systems to replace .jars as needed -->
+  <!-- GUMP: Allows external build systems to replace .jars Xalan 
+       is dependent on as needed.  Most have separate name and 
+       location properties to make it simpler to reset these values; 
+       please provide feedback if this is useful. 
+  -->
   <property name="parser.jar.name" value="xerces.jar"/>
   <property name="parser.jar" value="${bin.dir}/${parser.jar.name}"/>
   <property name="bsf.jar.name" value="bsf.jar"/>
@@ -71,10 +64,10 @@ Copyright:
   <property name="doclet.jar.name" value="xalan2jdoc.jar"/>
   <property name="doclet.jar" value="${bin.dir}/${doclet.jar.name}"/>
 
-  <!-- Currently 18-Apr-01 used only for org.apache.xalan.xsltc -->
+  <!-- GUMP: Currently 18-Apr-01 used only for xsltc.compile -->
   <property name="BCEL.jar.name" value="BCEL.jar"/>
   <property name="BCEL.jar" value="${bin.dir}/${BCEL.jar.name}"/>
-  <property name="crimson.jar.name" value="crimson.jar"/>
+  <property name="crimson.jar.name" value="crimson.jar"/><!-- Why is this here? 10-Sep-01 -sc -->
   <property name="crimson.jar" value="${bin.dir}/${crimson.jar.name}"/>
   <property name="java_cup.jar.name" value="java_cup.jar"/>
   <property name="java_cup.jar" value="${bin.dir}/${java_cup.jar.name}"/>
@@ -86,9 +79,8 @@ Copyright:
   <property name="xml.jar" value="${bin.dir}/${xml.jar.name}"/>
 
   <!-- Defines general variables used by the other targets; name controls output xalan.jar  -->
-  <property name="version" value="2_2_D10"/>
-  <property name="name" value="xalan"/>
-  <property name="Name" value="Xalan-Java"/>
+  <property name="version" value="2_2_D10"/><!-- GUMP: version # of dist file -->
+  <property name="name" value="xalan"/><!-- GUMP: base name of jar target's file -->
   <property name="year" value="2001"/>
   <property name="build.compiler" value="classic"/>
   <property name="debug" value="off"/>
@@ -107,14 +99,14 @@ Copyright:
   <property name="w3c.reldir" value="org/w3c"/>    
 
   <!-- Build and distribution output areas -->
-  <property name="build.dir" value="./build"/>
-  <property name="build.xalan.jar" value="${build.dir}/${name}.jar"/>
+  <property name="build.dir" value="./build"/><!-- GUMP: root of all normal builds output -->
+  <property name="build.xalan.jar" value="${build.dir}/${name}.jar"/><!-- GUMP: actual path/name of jar target output -->
   <property name="build.xsltc.jar" value="${build.dir}/xsltc.jar"/>
   <property name="build.classes" value="${build.dir}/classes"/>
   <property name="build.docs" value="${build.dir}/docs"/>
   <property name="build.samples" value="${build.dir}/samples"/>
   <property name="build.apidocs" value="${build.docs}/apidocs"/>
-  <property name="dist.file" value="${name}-j_${version}"/>
+  <property name="dist.file" value="${name}-j_${version}"/><!-- GUMP: actual path/name of dist target .tar.gz/.zip-->
   <property name="dist.dir" value="${build.dir}/${dist.file}"/>
   
   <!-- Xalan-J1 compatability stuff.  -->
@@ -125,8 +117,11 @@ Copyright:
   <property name="build.compat.apidocs" value="${build.docs}/compat_apidocs"/>        
 
   <!-- Documentation and samples information  -->
+  <property name="Name" value="Xalan-Java"/>
   <property name="version.file" value="${xalan.reldir}/processor/XSLProcessorVersion.java"/>
   <property name="samples.dir" value="./samples"/>
+  <property name="build.samples.jar" value="${build.dir}/xalansamples.jar"/>
+  <property name="build.servlet.jar" value="${build.dir}/xalanservlet.jar"/>
   <property name="xdocs.dir" value="./xdocs"/>
   <property name="xdocs.book" value="${xdocs.dir}/sources/xalan-jlocal.xml"/>
   <property name="xdocs.style" value="${xdocs.dir}/style"/>
@@ -139,6 +134,7 @@ Copyright:
   <property name="site.root" value="./xml-site"/>
   <property name="site.dir" value="${site.root}/target/xalan-j"/>
   <property name="site.book" value="${xdocs.dir}/sources/xalan-jsite.xml"/>
+  <property name="xdocs.DONE.file" value="${xdocs.dir}/sources/xalan/DONE"/>
   <path id="docs.class.path">
     <pathelement location="${bsf.jar}" />
     <pathelement location="${stylebook.jar}" />
@@ -151,6 +147,7 @@ Copyright:
   <!-- Creates output build directories and doc prerequistes               -->
   <!-- =================================================================== -->
   <target name="prepare">
+    <echo message="Project:${Name} version:${version} build.xml $Revision$"/>
     <mkdir dir="${build.dir}"/>
     <mkdir dir="${build.classes}"/>
     <!-- Note that all testing-related targets *must* depend on 
@@ -182,7 +179,7 @@ Copyright:
     <echo message="Transform commits.xml and put the result in ${xdocs.dir}"/>
     <java fork="yes" classname="${xalan.cmdline.class}" >
       <classpath refid="docs.class.path" />
-      <arg line="-in commits.xml -xsl ${xdocs.style}/stylesheets/done.xsl -out xdocs/sources/xalan/DONE"/>
+      <arg line="-in commits.xml -xsl ${xdocs.style}/stylesheets/done.xsl -out ${xdocs.DONE.file}"/>
     </java>
     <echo message="Generate Xalan-J 2.x design document"/>
     <java fork="yes" classname="${doc.generator}" >
@@ -328,6 +325,13 @@ Copyright:
   </target>
   
   <!-- =================================================================== -->
+  <!-- Default all target simply Creates the xalan JAR                     -->
+  <!-- =================================================================== -->
+  <target name="all" depends="jar"><!-- 'Standardizing build.xml files' <bloritsch@apache.org> -->
+    <echo message="Redirect to jar target; please provide input on desired functionality of this target"/>
+  </target>
+  
+  <!-- =================================================================== -->
   <!-- Creates the Xalan-J1 compatability JAR                              -->
   <!-- =================================================================== -->
   <target name="compat.jar" depends="jar"
@@ -359,8 +363,8 @@ Copyright:
          version="true"
          use="true"
          destdir="${build.compat.apidocs}"
-         windowtitle="Xalan-Java 1 Compatability" 
-         doctitle="Xalan-Java 1 Compatability"
+         windowtitle="${Name} 1 Compatability" 
+         doctitle="${Name} 1 Compatability"
          bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
       <classpath refid="docs.class.path" />
     </javadoc>
@@ -411,7 +415,7 @@ Copyright:
    <javac srcdir="${samples.dir}/Validate" classpath="${java.class.path}:${build.xalan.jar}" 
           destdir="${build.samples}" excludes="${exclude}" 
           debug="${debug}"/>               
-    <jar jarfile="${build.dir}/xalansamples.jar" basedir="${build.samples}"
+    <jar jarfile="${build.samples.jar}" basedir="${build.samples}"
          includes="*.class"/>                   
   </target>
    
@@ -431,7 +435,7 @@ Copyright:
           <fileset dir="${samples.dir}/servlet" 
                 includes="media.properties,default.xsl,default2.xsl"/>
         </copy>  		         
-    <jar jarfile="${build.dir}/xalanservlet.jar" 
+    <jar jarfile="${build.servlet.jar}" 
          basedir="${build.samples}" 
          includes="servlet/**"/>
  </target>
@@ -493,7 +497,7 @@ Copyright:
          doctitle="${Name} 2"
          bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
           <classpath refid="docs.class.path" />
-          <doclet name="xalanjdoc.Standard" path="${bin.dir}/xalan2jdoc.jar">
+          <doclet name="xalanjdoc.Standard" path="${doclet.jar.name}">
             <param name="-d" value="${build.apidocs}"/>
           </doclet>
           <group title="Transformations API for XML (TrAX)" packages="javax.xml.transform*"/>
@@ -515,36 +519,44 @@ Copyright:
   </target>
 
   <!-- =================================================================== -->
-  <!-- Cleans everything: build tree, site tree, style docs in             -->
-  <!--         - build tree                                                -->
-  <!--         - distribution tree                                         -->
-  <!--         - site tree                                                 -->
-  <!--         - style docs expanded from xml-site-style.tar.gz.           -->
-  <!--           (MUST update contents of ${xalanonly-styledocs}           -->
-  <!--            if change contents of xml-site-style.tar.gz)             -->
-  <!--         - Javadoc overview and packqage-level html docs placed      -->
-  <!--           in the source tree                                        -->
+  <!-- Various targets to clean the build tree                             -->
   <!-- =================================================================== -->
+  <target name="distclean" depends="clean"
+    description="Clean everything, including dist/jar/docs/xsltc.*" >
+    <delete dir="${dist.dir}"/>
+  </target>
+
   <target name="clean" depends="xsltc.clean"
-    description="Clean up the build tree and any outputs" >
+    description="Clean the ${build.dir} tree and doc outputs" >
     <delete dir="${build.dir}"/>
     <delete dir="${site.root}"/>
     <delete>
       <fileset dir="${xdocs.style}" excludes="${xalanonly-styledocs}"/>
     </delete>
+    <delete file="${xdocs.DONE.file}"/>
   </target>
  
-  <!-- Cleans just the generated sources from xsltc.compile -->
   <target name="xsltc.clean"
-    description="Clean up the XSLTC generated sources" >
+    description="Clean miscellaneous generated sources from xsltc.compile" >
     <delete file="${src.dir}/${xsltc.reldir}/compiler/XPathParser.java" />
     <delete file="${src.dir}/${xsltc.reldir}/compiler/sym.java" />
     <delete file="${src.dir}/${xsltc.reldir}/compiler/XPathLexer.java" />
   </target>
+
+  <!-- =================================================================== -->
+  <!-- Install/Uninstall targets - not currently applicable                -->
+  <!-- =================================================================== -->
+  <target name="install"><!-- 'Standardizing build.xml files' <bloritsch@apache.org> -->
+    <echo message="install target currently not supported in ${Name}; try jar or dist instead"/>
+  </target>
+  <target name="uninstall"><!-- 'Standardizing build.xml files' <bloritsch@apache.org> -->
+    <echo message="uninstall target currently not supported in ${Name}; try distclean instead"/>
+  </target>
+
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
-  <target name="dist" depends="jar,docs,javadocs,samples,servlet,compat.jar,compat.javadocs,xsltc.jar,xsltc.docs,autodist"
+  <target name="dist" depends="jar,docs,javadocs,samples,servlet,compat.jar,compat.javadocs,xsltc.jar,xsltc.docs,autodist,todo"
     description="Create a .zip/.tar.gz distribution module" >
     <echo message="dist is human-useable target for distribution, with all dependencies"/>
   </target>
@@ -580,13 +592,6 @@ Copyright:
     <copy todir="${dist.dir}/docs">
       <fileset dir="${build.docs}"/>
     </copy>  
-    <!-- HACK! delete 3 files longer than 100 chars to get around 
-         tar problems with long filenames -sc 23-May-01
-    -->
-    <delete file="${dist.dir}/docs/apidocs/org/apache/xalan/transformer/class-use/TransformerImpl.ThreadControler.html"/>
-    <delete file="${dist.dir}/docs/apidocs/org/apache/xalan/xsltc/compiler/util/class-use/AttributeSetMethodGenerator.html"/>
-    <delete file="${dist.dir}/docs/apidocs/org/apache/xalan/xsltc/compiler/util/class-use/NodeSortRecordGenerator.html"/>
-
     <copy todir="${dist.dir}/samples">
       <fileset dir="${samples.dir}"/>
     </copy>   
@@ -663,12 +668,16 @@ Copyright:
   </target>
 
   <target name="smoketest" depends="prepare,smoketest-run,tests-not-available" 
-    description="Run the Smoketest (Minitest, conf, harness) from xml-xalan/test" >
+    description="Run Smoketests (Minitest, conf, harness) from xml-xalan/test" >
   </target>
   <target name="smoketest-run" if="tests-available" depends="jar" >
     <echo message=" [minitest] Calling ${test.relpath}/build.xml to run the Smoketest" />
-    <ant dir="${test.relpath}" antfile="build.xml" target="smoketest.gump" >
+    <ant dir="${test.relpath}" antfile="build.xml" target="smoketest.dev" >
     </ant>
+  </target>
+
+  <target name="check" depends="smoketest"><!-- 'Standardizing build.xml files' <bloritsch@apache.org> -->
+    <echo message="Redirect to smoketest target"/>
   </target>
 
   <!-- Called from various testing targets if the test dir doesn't exist. -->
@@ -707,10 +716,9 @@ Copyright:
   <!-- Note: fop.jar and xml.jar (from xml-fop) must be on classpath       -->
   <!-- This is VERY preliminary, not yet for inclusion in distribution     -->
   <!-- =================================================================== -->
-
   <!--Collate the xml sources into a single xml source with a litle extra structure -->
-  <target name="print.docs" depends="prepare.docs">
-    <echo message="fop.jar and xml.jar must be on the classpath"/>
+  <target name="printerdocs" depends="prepare.docs">
+    <echo message="NOTICE: requires fop.jar and xml.jar on the classpath"/>
     <java fork="yes" 
           classname="${xalan.cmdline.class}"
           classpathref="docs.class.path" >
