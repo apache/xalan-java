@@ -128,12 +128,15 @@ public class XMLCharacterRecognizer
   public static boolean isWhiteSpace(String s)
   {
 
-    int n = s.length();
-
-    for (int i = 0; i < n; i++)
+    if(null != s)
     {
-      if (!isWhiteSpace(s.charAt(i)))
-        return false;
+      int n = s.length();
+  
+      for (int i = 0; i < n; i++)
+      {
+        if (!isWhiteSpace(s.charAt(i)))
+          return false;
+      }
     }
 
     return true;
