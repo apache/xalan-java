@@ -321,21 +321,75 @@
     </s3>
 
     <s3 title="Iterators for Filtering/Predicates">
+
+    <p>The <code>org.apache.xalan.xsltc.dom</code> package contains a few
+    iterators that are used to implement predicates and filters. Such iterators
+    are normally placed on top of another iterator, and return only those nodes
+    that match a specific node value, position, etc.
+    These iterators include:</p>
+
     <ul>
+      <li>NthIterator</li>
       <li>NodeValueIterator</li>
       <li>FilteredStepIterator</li>
       <li>CurrentNodeListIterator</li>
-      <li>NthIterator</li>
     </ul>
+
+    <p>The last one is the most interesting. This iterator is used to implement
+    chained predicates, such as:</p><source>
+    &lt;xsl:value-of select="foo[@blob='boo'][2]"></source>
+
+    <p>The first predicate reduces the node set from containing all
+    <code>&lt;foo&gt;</code> elements, to containing only those elements that
+    have a <i>&quot;blob&quot;</i> attribute with the value 'boo'. The
+    <code>CurrentNodeListIterator</code> is used to contain this reduced
+    node-set. The iterator is constructed by passing it a source iterator (in
+    this case an iterator that contains all <code>&lt;foo&gt;</code> elements)
+    and a filter that implements the predicate (<code>@blob = 'boo'</code>).</p>
+
     </s3>
 
-    <s3 title="SortingIterator"></s3>
+    <s3 title="SortingIterator">
+
+    <p>The sorting iterator is one of the main functional components behind the
+    implementation of the <code>&lt;xsl:sort&gt;</code> element. This element,
+    including the sorting iterator, is described in detail in the
+    <code>&lt;xsl:sort&gt;</code>
+    <link idref="xsl_sort_design">design document</link>.</p>
+
+    </s3>
 
     <s3 title="SingletonIterator"></s3>
 
-    <s3 title="UnionIterator"></s3>
+    <p>The singleton iterator is a wrapper for a single node. The node passed
+    in to the <code>setStartNode()</code> method is the only node that will be
+    returned by the <code>next()</code> method. The singleton iterator is used
+    mainly for node to node-set type conversions.</p>
 
-    <s3 title="KeyIndex"></s3>
+    <s3 title="UnionIterator">
+
+    <p>The union iterator is used to contain unions of node-sets contained in
+    other iterators. Some of the methods in this iterator are unnecessary
+    comlicated. The <code>next()</code> method contains an algorithm for
+    ensuring that the union node-set is returned in document order. We might be
+    better off by simply wrapping the union iterator inside a duplicate filter
+    iterator, but there could be some performance implications. Worth checking.
+    </p>
+
+    </s3>
+
+    <s3 title="KeyIndex">
+
+    <p>This is not just an node iterator. An index used for keys and ids will
+    return a set of nodes that are contained within the named index and that
+    share a certain property. The <code>KeyIndex</code> implements the node
+    iterator interface, so that these nodes can be returned and handled just
+    like any other node set. See the
+    <link idref="xsl_key_design">design document</link> for 
+    <code>&lt;xsl:key&gt;</code>, <code>key()</code> and <code>id()</code>
+    for further details.</p>
+
+    </s3>
 
   </s2>
 
