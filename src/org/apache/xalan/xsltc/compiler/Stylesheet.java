@@ -878,6 +878,18 @@ public final class Stylesheet extends SyntaxTreeNode {
 					   "("+OUTPUT_HANDLER_SIG+")V");
 	il.append(new INVOKEVIRTUAL(index));
 
+	// Compile buildKeys -- TODO: omit if not needed
+	final String keySig = compileBuildKeys(classGen);
+	final int    keyIdx = cpg.addMethodref(getClassName(),
+					       "buildKeys", keySig);
+	il.append(classGen.loadTranslet());     // The 'this' pointer
+	il.append(classGen.loadTranslet());
+	il.append(new GETFIELD(domField));      // The DOM reference
+	il.append(transf.loadIterator());       // Not really used, but...
+	il.append(transf.loadHandler());        // The output handler
+	il.append(new PUSH(cpg, DOM.ROOTNODE)); // Start with the root node
+	il.append(new INVOKEVIRTUAL(keyIdx));
+
 	// Look for top-level elements that need handling
 	final Enumeration toplevel = elements();
 	if ((_globals.size() > 0) || (toplevel.hasMoreElements())) {
@@ -896,17 +908,6 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    il.append(new INVOKEVIRTUAL(topLevelIdx));
 	}
 	
-	final String keySig = compileBuildKeys(classGen);
-	final int    keyIdx = cpg.addMethodref(getClassName(),
-					       "buildKeys", keySig);
-	il.append(classGen.loadTranslet());     // The 'this' pointer
-	il.append(classGen.loadTranslet());
-	il.append(new GETFIELD(domField));      // The DOM reference
-	il.append(transf.loadIterator());       // Not really used, but...
-	il.append(transf.loadHandler());        // The output handler
-	il.append(new PUSH(cpg, DOM.ROOTNODE)); // Start with the root node
-	il.append(new INVOKEVIRTUAL(keyIdx));
-
 	// start document
 	il.append(transf.loadHandler());
 	il.append(transf.startDocument());
