@@ -567,7 +567,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
         else
           return "xmlns:" + name;
       }
-      else if (name == null)
+      else if (0 == m_expandedNameTable.getLocalNameID(expandedTypeID))
       {
         return m_fixednames[type];
       }
@@ -808,8 +808,8 @@ public class SAX2DTM extends DTMDefaultBaseIterators
    */
   protected void ensureSize(int index)
   {
-	// dataOrQName is an SuballocatedIntVector and hence self-sizing.
-	// But DTMDefaultBase may need fixup.
+        // dataOrQName is an SuballocatedIntVector and hence self-sizing.
+        // But DTMDefaultBase may need fixup.
       super.ensureSize(index);
   }
 
