@@ -71,7 +71,7 @@ import org.apache.xalan.xsltc.runtime.BasisLibrary;
 
 public final class CurrentNodeListIterator extends NodeIteratorBase {
     private NodeIterator _source;
-    private final boolean _docOrder;
+    private boolean _docOrder;
     private final CurrentNodeListFilter _filter;
     private IntegerArray _nodes = new IntegerArray();
 	
@@ -98,7 +98,12 @@ public final class CurrentNodeListIterator extends NodeIteratorBase {
 	_docOrder = docOrder;
 	_currentNode = currentNode;
     }
-    
+
+    public NodeIterator forceNaturalOrder() {
+	_docOrder = true;
+	return this;
+    }
+
     public boolean isReverse() {
 	return !_docOrder;
     }

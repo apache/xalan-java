@@ -1319,13 +1319,19 @@ public final class DOMImpl implements DOM, Externalizable {
     private class AncestorIterator extends NodeIteratorBase {
 
 	protected int _index;
+	protected int _last = -1;
 
 	public final boolean isReverse() {
 	    return true;
 	}
 
 	public int getLast() {
-	    return(ROOT);
+	    if (_last > -1) return _last;
+	    int count = 1;
+	    int node = _startNode;
+	    while ((node = _parent[node]) != ROOT) count++;
+	    _last = count;
+	    return(count);
 	}
          
 	public NodeIterator cloneIterator() {
@@ -1344,6 +1350,7 @@ public final class DOMImpl implements DOM, Externalizable {
                   
 	public NodeIterator setStartNode(int node) {
 	    if (_isRestartable) {
+		_last = -1;
 		if (node >= _firstAttributeNode)
 		    _startNode = node = _parent[node];
 		else if (_includeSelf)
@@ -1404,19 +1411,14 @@ public final class DOMImpl implements DOM, Externalizable {
 	}
 
 	public int getLast() {
-	    int last = _index;
-	    int curr = _index;
-
-	    while (curr >= 0) {
-		if (curr == 0)
-		    curr = -1;
-		else {
-		    curr = _parent[curr];
-		    if (_type[curr] == _nodeType)
-			last = curr;
-		}
-	    }
-	    return(last);
+	    if (_last > -1) return _last;
+	    int count = 1;
+	    int node = _startNode;
+	    do {
+		if (_type[node] == _nodeType) count++;
+	    } while ((node = _parent[node]) != ROOT);
+	    _last = count;
+	    return(count);
 	}
 
     } // end of TypedAncestorIterator

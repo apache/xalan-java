@@ -467,26 +467,6 @@ final class Step extends RelativeLocationPath {
 	    }
 	    // Handle 'elem[n]' expression
 	    else if (predicate.isNthPositionFilter()) {
-		// Special case for typed descendant / decendant-or-self axis
-		/* Crap piece of code right here, I added it, and I am
-		   taking it away as well. Very wrong ideed. Morten
-		if (((_axis == Axis.DESCENDANT) ||
-		     (_axis == Axis.DESCENDANTORSELF)) &&
-		    (_nodeType > DOM.ATTRIBUTE)) {
-		    il.append(methodGen.loadDOM());
-		    il.append(new PUSH(cpg, _nodeType));
-		    predicate.translate(classGen, methodGen);
-		    if (_axis == Axis.DESCENDANT)
-			il.append(new ICONST(0));
-		    else
-			il.append(new ICONST(1));
-		    idx = cpg.addInterfaceMethodref(DOM_INTF,
-						    "getNthDescendant",
-						    "(IIZ)"+NODE_ITERATOR_SIG);
-		    il.append(new INVOKEINTERFACE(idx, 4));
-		}
-		else {
-		*/
 		idx = cpg.addMethodref(NTH_ITERATOR_CLASS,
 				       "<init>",
 				       "("+NODE_ITERATOR_SIG+"I)V");
@@ -518,6 +498,21 @@ final class Step extends RelativeLocationPath {
 		    il.append(new CHECKCAST(cpg.addClass(className)));
 		}
 		il.append(new INVOKESPECIAL(idx));
+
+		// Determine if the node set should be generated using the
+		// natural order of the node set or document order.
+		// See CurrentNodeListIterator's constructor(s) for details.
+		SyntaxTreeNode parent = getParent();
+		while (!(parent instanceof Template)) {
+		    if (parent instanceof ApplyTemplates) {
+			idx = cpg.addMethodref(CURRENT_NODE_LIST_ITERATOR,
+					       "forceNaturalOrder",
+					       "()"+NODE_ITERATOR_SIG);
+			il.append(new INVOKEVIRTUAL(idx));
+			break;
+		    }
+		    parent = parent.getParent();
+		}
 	    }
 	}
     }
