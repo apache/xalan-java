@@ -247,7 +247,7 @@ class DOM2SAX implements XMLReader, Locator {
 
 		// Ignore NS declarations here
 		if (!qnameAttr.startsWith(XMLNS_PREFIX)) {
-		    final String uriAttr = node.getNamespaceURI();
+		    final String uriAttr = attr.getNamespaceURI();
 		    final String localNameAttr = getLocalName(attr);
 
 		    // Uri may be implicitly declared
