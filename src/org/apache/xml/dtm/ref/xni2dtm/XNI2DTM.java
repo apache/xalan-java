@@ -104,9 +104,8 @@ import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
  * 
  * Please note that it this is a PROTOTYPE, since the Xerces post-schema 
  * validation infoset (PSVI) APIs it is using are themselves prototypes and
- * subject to change without warning. Also note that currently Xerces only
- * implements a subset of the "light weight" PSVI, whereas the official
- * XPath2 data model requires the heavyweight version. 
+ * subject to change without warning. The most recent such change was from
+ * "lightweight" to "heavyweight" schema models.
  * 
  * This version is derived from SAX2DTM for ease of implementation and
  * support, but deliberately blocks external access to
@@ -1783,6 +1782,10 @@ public class XNI2DTM
   	 * */
   	public boolean equals(XPath2Type other)
   	{
+		// Could cache hashCode()'s result and use that to accelerate
+		// doesn't-equal testing at the cost of some storage and
+		// slowing down does-equal tests. Not convinced it's useful here.
+		// %REVIEW%
   		return (m_xniType==other.m_xniType ||
   			m_xniType!=null && m_xniType.equals(other.m_xniType)) &&
   			// These two won't be null
@@ -1795,6 +1798,8 @@ public class XNI2DTM
   	 * */
   	public int hashCode()
   	{
+  		// Could cache hashCode(). See discussion in equals().
+  		// %REVIEW%
   		return m_namespace.hashCode()+m_localName.hashCode()+
   			(m_xniType==null ? 0 : m_xniType.hashCode());
   	}
@@ -1888,7 +1893,8 @@ public class XNI2DTM
    * */  
   protected void heavyResolveTypeName(ItemPSVI psvi, boolean attr)
   {
-  /*
+  	/* Not compatable with old light-weight schema APIs
+
   	// NAME OF THIS CONSTANT IS IN FLUX
   	//int VALID=ItemPSVI.VALIDITY_VALID;
   	int VALID=ItemPSVI.VALID_VALIDITY;
@@ -1926,7 +1932,7 @@ public class XNI2DTM
         m_namespace = "http://www.w3.org/2001/XMLSchema";
         m_localName = attr ? "anySimpleType" : "anyType";
         return;
-  */ throw new java.lang.UnsupportedOperationException("Xerces Heavyweight not yet available");
+  */ throw new java.lang.UnsupportedOperationException("Xerces Heavyweight PSVI not yet avaialble"); /**/       
   }
   
   /** Modification of the XPath2 type-name resolution algorithm
@@ -1943,7 +1949,8 @@ public class XNI2DTM
    * */  
   protected void proposedHeavyResolveTypeName(ItemPSVI psvi, boolean attr)
   {
-  /*
+  	/* Not compatable with old light-weight schema APIs
+
   	// NAME OF THIS CONSTANT IS IN FLUX
   	//int VALID=ItemPSVI.VALIDITY_VALID;
   	int VALID=ItemPSVI.VALID_VALIDITY;
@@ -1980,7 +1987,7 @@ public class XNI2DTM
         m_namespace = "http://www.w3.org/2001/XMLSchema";
         m_localName = attr ? "anySimpleType" : "anyType";
         return;
-  */ throw new java.lang.UnsupportedOperationException("Xerces Heavyweight not yet available");
+  */ throw new java.lang.UnsupportedOperationException("Xerces Heavyweight PSVI not yet avaialble"); /**/       
   }
   
   /** Attempt to write a simplified version of the type resolution
@@ -1999,8 +2006,9 @@ public class XNI2DTM
    * */  
   protected void lightResolveTypeName(ItemPSVI psvi, boolean attr)
   {
-  	// NAME OF THIS CONSTANT IS IN FLUX
-  	//int VALID=ItemPSVI.VALIDITY_VALID;
+  	/* Not compatable with new heavy-weight schema APIs
+  	*/
+  	
   	int VALID=ItemPSVI.VALID_VALIDITY;
   	
         // check whether the node is valid
@@ -2033,6 +2041,7 @@ public class XNI2DTM
         m_namespace = "http://www.w3.org/2001/XMLSchema";
         m_localName = attr ? "anySimpleType" : "anyType";
         return;
+  // throw new java.lang.UnsupportedOperationException("Xerces Lightweight PSVI phased out"); /**/
   }
   } // XPath2Type
 } // XNI2DTM

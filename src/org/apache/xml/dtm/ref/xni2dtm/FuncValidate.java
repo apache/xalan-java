@@ -30,11 +30,19 @@ public class FuncValidate {
 		DTM sourceDTM=proxy.getDTM();
 		int sourceHandle=proxy.getDTMNodeNumber();
 		DTMManager dtmmgr=((DTMDefaultBase)sourceDTM).getManager();
-		
-		DTM2XNI d2x=new DTM2XNI(sourceDTM,sourceHandle);
-		XNISource xsrc=new XNISource(d2x,null);
+
+		// Set up an XNI scanner to read from the source DTM,
+		// run that through validation (operates as a filter?),
+		// and pass that into Xalan to produce a new document
 		// %REVIEW% system ID???
-			
+		DTM2XNI d2x=new DTM2XNI(sourceDTM,sourceHandle);
+		
+		// VALIDATION GOES HERE!
+		// Sandy Gao recommends "create a customized parser configuration,
+		// which contains an XNI event source, a validator, and (optionally)
+		// a document handler." See "pipelines" in the XNI docs.
+		
+		XNISource xsrc=new XNISource(d2x,null);
 		DTM newDTM=dtmmgr.getDTM(xsrc,
 			true, // unique
 			null, // whitespace filter

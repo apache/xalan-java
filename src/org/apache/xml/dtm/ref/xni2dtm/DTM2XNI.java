@@ -385,8 +385,10 @@ implements org.apache.xerces.xni.parser.XMLDocumentScanner
       org.apache.xerces.xni.XMLAttributes attrs = 
                             new org.apache.xerces.util.XMLAttributesImpl();
 
-      for (int nsn = m_dtm.getFirstNamespaceNode(node, true); DTM.NULL != nsn;
-           nsn = m_dtm.getNextNamespaceNode(node, nsn, true))
+	  // Note that this needs to scan the namespaces declared ON THIS NODE,
+	  // *not* the ones inherited.
+      for (int nsn = m_dtm.getFirstNamespaceNode(node, false); DTM.NULL != nsn;
+           nsn = m_dtm.getNextNamespaceNode(node, nsn, false))
       {
         String nsprefix = m_dtm.getLocalName(nsn); //xmlns:whatever
         	
@@ -522,8 +524,8 @@ implements org.apache.xerces.xni.parser.XMLDocumentScanner
 				m_dtm.getNodeName(node),ns);
       m_XMLDocumentHandler.endElement(qq,null);
 
-      for (int nsn = m_dtm.getFirstNamespaceNode(node, true); DTM.NULL != nsn;
-           nsn = m_dtm.getNextNamespaceNode(node, nsn, true))
+      for (int nsn = m_dtm.getFirstNamespaceNode(node, false); DTM.NULL != nsn;
+           nsn = m_dtm.getNextNamespaceNode(node, nsn, false))
       {
         // String prefix = m_dtm.getPrefix(nsn);
         String prefix = m_dtm.getNodeNameX(nsn);
