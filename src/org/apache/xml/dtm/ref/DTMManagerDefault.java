@@ -455,7 +455,8 @@ public class DTMManagerDefault extends DTMManager
       // Fallback: Not found in one we know how to search.
       // Current solution: Generate a new DOM2DTM.
       // %REVIEW% Maybe the best I can do??     
-      Node root = node.getOwnerDocument();
+      Node root = (Node.DOCUMENT_FRAGMENT_NODE == node.getNodeType()) ?
+                  node : node.getOwnerDocument();
       if(null == root)
         root =  node;   
       DTM dtm = getDTM(new javax.xml.transform.dom.DOMSource(root), false,
