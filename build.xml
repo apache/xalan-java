@@ -81,9 +81,9 @@ Copyright:
 
   <!-- Defines general variables used by the other targets; name controls output xalan.jar  -->
   <property name="version.VERSION" value="2"/>
-  <property name="version.RELEASE" value="2"/>
-  <property name="version.DEVELOPER" value=""/><!-- Set this to 'D' if a developer release; blank "" if maintenance release -->
-  <property name="version.MINOR" value="0"/><!-- EITHER the developer release number, or a maintenance release number -->
+  <property name="version.RELEASE" value="3"/>
+  <property name="version.DEVELOPER" value="D"/><!-- Set this to 'D' if a developer release; blank "" if maintenance release -->
+  <property name="version.MINOR" value="1"/><!-- EITHER the developer release number, or a maintenance release number -->
   <property name="version" value="${version.VERSION}_${version.RELEASE}_${version.DEVELOPER}${version.MINOR}"/><!-- GUMP: version # of dist file -->
   <property name="impl.version" value="${version.VERSION}.${version.RELEASE}.${version.DEVELOPER}${version.MINOR}"/><!-- Used in jar task for filtering MANIFEST.MF file -->
   <property name="name" value="xalan"/><!-- GUMP: base name of jar target's file -->
@@ -219,7 +219,7 @@ Copyright:
   </target>
 
   <!-- =================================================================== -->
-  <!-- Compile entire source tree - except Xalan-J 1 compatability classes -->
+  <!-- Compile entire source tree                                          -->
   <!-- =================================================================== -->
   <target name="compile" depends="prepare"
     description="Compile Xalan-J 2.x (skips 1.x compat and XSLTC)" >
@@ -446,12 +446,12 @@ Copyright:
   </target>
   
   <!-- =================================================================== -->
-  <!-- Creates the Xalan-J1 compatability JAR                              -->
+  <!-- Creates the Xalan-J1 compatability JAR: being removed               -->
   <!-- =================================================================== -->
   <target name="compat.jar" depends="jar"
-    description="DEPRECATED:Compile and jar Xalan-J 1.x backwards compat classes" 
+    description="UNSUPPORTED:Compile and jar Xalan-J 1.x backwards compat classes" 
     unless="skipcompat" >
-    <echo message="DEPRECATED:Compile and jar just the Xalan-J 1 compability API"/>
+    <echo message="UNSUPPORTED:Compile and jar just the Xalan-J 1 compability API"/>
     <mkdir dir="${build.compat.classes}"/>
     <javac srcdir="${compat.src.dir}" 
            destdir="${build.compat.classes}"
@@ -467,10 +467,10 @@ Copyright:
   </target>
   
   <!-- =================================================================== -->
-  <!-- Creates the Xalan-J1 compatability javadoc                          -->
+  <!-- Creates the Xalan-J1 compatability javadoc: being removed           -->
   <!-- =================================================================== -->
   <target name="compat.javadocs" depends="jar"
-    description="Build javadocs for Xalan-J 1.x backwards compat classes" 
+    description="UNSUPPORTED:Build javadocs for Xalan-J 1.x backwards compat classes" 
     unless="skipcompat" >
     <mkdir dir="${build.compat.apidocs}"/>
     <javadoc
@@ -711,7 +711,7 @@ Copyright:
   <!-- =================================================================== -->
   <!-- Creates the distribution                                            -->
   <!-- =================================================================== -->
-  <target name="dist" depends="jar,docs,javadocs,samples,servlet,compat.jar,compat.javadocs,xsltc.jar,xsltc.docs,autodist"
+  <target name="dist" depends="jar,docs,javadocs,samples,servlet,xsltc.jar,xsltc.docs,autodist"
     description="Create a .zip/.tar.gz distribution module" >
     <echo message="dist is human-useable target for distribution, with all dependencies"/>
   </target>
@@ -720,25 +720,21 @@ Copyright:
     <mkdir dir="${dist.dir}"/>
     <mkdir dir="${dist.dir}/bin"/>    
     <mkdir dir="${dist.dir}/src"/>
-    <mkdir dir="${dist.dir}/compat_src"/>    
     <mkdir dir="${dist.dir}/xdocs"/>
     <mkdir dir="${dist.dir}/docs"/>
     <mkdir dir="${dist.dir}/docs/apidocs"/>
-    <mkdir dir="${dist.dir}/docs/compat_apidocs"/>    
     <mkdir dir="${dist.dir}/samples"/>
         
     <!-- Copy bin directory, which includes preexisting checked-in .jar files -->
     <copy todir="${dist.dir}/bin">
-          <fileset dir="${bin.dir}"/>
+      <!-- But skip copying old xerces.jar, which will be removed soon -->
+      <fileset dir="${bin.dir}" excludes="xerces.jar" />
     </copy>  
 
     <!-- Copy sources and source documentation -->
     <copy todir="${dist.dir}/src">
       <fileset dir="${src.dir}"/>
     </copy>
-    <copy todir="${dist.dir}/compat_src">
-      <fileset dir="${compat.src.dir}"/>
-    </copy>    
     <copy todir="${dist.dir}/xdocs">
       <fileset dir="${xdocs.dir}"/>
     </copy>
@@ -760,11 +756,6 @@ Copyright:
          *-bin.zip/tar.gz and *-src.zip/tar.gz files.
     -->
     <copy file="${build.xalan.jar}" todir="${dist.dir}/bin" />
-    <copy todir="${dist.dir}/bin">
-      <fileset dir=".">
-        <include name="${build.compat.jar}" unless="skipcompat" />
-      </fileset>
-    </copy>
     <copy file="${build.xsltc.jar}" todir="${dist.dir}/bin"/>
 
     <copy todir="${dist.dir}">
@@ -800,7 +791,6 @@ Copyright:
       <include name="${dist.file}/samples/"/>
       <include name="${dist.file}/src/"/>
       <include name="${dist.file}/xdocs/"/>
-      <include name="${dist.file}/compat_src/"/>
     </patternset>
     <!-- For convenience, list the assorted XSLTC engine dependency
          .jar files separately, since they go in both -bin and -src.
@@ -967,50 +957,6 @@ Copyright:
     </java>
   </target>
 
-  <!-- =================================================================== -->  
-   <!-- for developers only; compiles xalan-j1 samples with compat jar and xalan-j2 xalan.jar-->
-   <target name="compat.samples" depends="jar,compat.jar" 
-    description="DEPRECATED:Compile and jar Xalan-J 1.x backwards compat samples" >
-     <property name="exclude" value="*.xml,*.xsl,*.txt,*.html.*.properties"/>
-     <property name="samplesj1.dir" value="/xml-xalan/samples"/>
-     <property name="build.compat.samples" value="./build/compat_samples"/>
-     <property name="build.compat.class.path" value="${build.compat.jar}:${build.xalan.jar}:${xmlapis.jar}:${java.class.path}"/>
-     
-     <mkdir dir="${build.compat.samples}"/>     
-
-    <!--need to use the XalanJ2 XPathAPI, so cannot compile ApplyXPath as is -->   
-    <javac srcdir="${samplesj1.dir}/Pipe" classpath="${build.compat.class.path}" 
-           destdir="${build.compat.samples}"  excludes="${exclude}"
-           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
-    <javac srcdir="${samplesj1.dir}/SimpleTransform" classpath="${build.compat.class.path}" 
-           destdir="${build.compat.samples}"  excludes="${exclude}"
-           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
-    <javac srcdir="${samplesj1.dir}/TransformToDom" classpath="${build.compat.class.path}" 
-           destdir="${build.compat.samples}"  excludes="${exclude}"
-           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
-    <javac srcdir="${samplesj1.dir}/PureSAX" classpath="${build.compat.class.path}" 
-           destdir="${build.compat.samples}"  excludes="${exclude}"
-           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
-    <javac srcdir="${samplesj1.dir}/UseStylesheetParam" classpath="${build.compat.class.path}" 
-           destdir="${build.compat.samples}"  excludes="${exclude}"
-           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
-    <javac srcdir="${samplesj1.dir}/Servlet" classpath="${build.compat.class.path}" 
-           destdir="${build.compat.samples}" excludes="${exclude}"
-           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" />
-    <jar   jarfile="${build.compat.samples}/xalanjcompatsamples.jar" basedir="${build.compat.samples}"
-            includes="*.class"/> 
-     <!--put the servlet in a separate jar -->
-     <javac srcdir="${samplesj1.dir}/Servlet" classpath="${build.compat.class.path}" 
-           destdir="${build.compat.samples}"
-           debug="${build.debug}"
-           bootclasspathref="xslt.boot.class.path" />
-      <copy todir="${build.compat.samples}/servlet">
-        <fileset dir="${samplesj1.dir}/Servlet" 
-          includes="media.properties,default.xsl,default2.xsl"/>
-      </copy>  		         
-    <jar jarfile="${build.compat.samples}/xalancompatservlet.jar" basedir="${build.compat.samples}"
-         includes="servlet/**"/>
- </target>
  
   <!-- =================================================================== -->
   <!-- Build XSLTC design documentation. Eventually intend to incorporate -->
