@@ -655,14 +655,13 @@ public final class DOMImpl implements DOM, Externalizable {
 		if (node >= _firstAttributeNode) node = NULL;
 		if (node != _startNode) _last = -1;
 		_startNode = node;
+
 		if (_includeSelf) {
 		    _currentChild = -1;
 		}
 		else {
-		    if (hasChildren(node))
-			_currentChild = _offsetOrChild[node];
-		    else
-			_currentChild = END;
+		    _currentChild = hasChildren(node) ? _offsetOrChild[node] 
+			: END;
 		}
 		return resetPosition();
 	    }
@@ -674,10 +673,9 @@ public final class DOMImpl implements DOM, Externalizable {
 	    if (_includeSelf) {
 		if (node == -1) {
 		    node = _startNode;
-		    if (hasChildren(node))
-			_currentChild = _offsetOrChild[node];
-		    else
-			_currentChild = END;
+		    _currentChild = hasChildren(node) ? _offsetOrChild[node] 
+			: END;
+
 		    // IMPORTANT: The start node (parent of all children) is
 		    // returned, but the node position counter (_position)
 		    // should not be increased, so returnNode() is not called
@@ -698,11 +696,16 @@ public final class DOMImpl implements DOM, Externalizable {
 
 	public int getLast() {
 	    if (_last == -1) {
-		_last = 1;
-		int node = _offsetOrChild[_startNode];
-		while ((node = _nextSibling[node]) != END) _last++;
+		_last = 0;
+
+		int node;
+		if ((node = _offsetOrChild[_startNode]) != END) {
+		    do {
+			_last++;
+		    } while ((node = _nextSibling[node]) != END);
+		}
 	    }
-	    return(_last);
+	    return _last;
 	}
 
     } // end of ChildrenIterator
