@@ -55,7 +55,7 @@ javax.xml.transform.TransformerFactory tFactory =
 // 2. Use the TransformerFactory to process the stylesheet Source and
 //    generate a Transformer.
 javax.xml.transform.Transformer transformer = tFactory.newTransformer
-                (new javax.xml.transform.stream.StreamSource("foo.xsl");
+                (new javax.xml.transform.stream.StreamSource("foo.xsl"));
 
 // 3. Use the Transformer to transform an XML Source and send the
 //    output to a Result object.
@@ -263,7 +263,7 @@ if (tFactory.getFeature(javax.xml.transform.sax.SAXSource.FEATURE) &amp;&amp;
   { 
     // Cast the TransformerFactory to SAXTransformerFactory.
     javax.xml.transform.sax.SAXTransformerFactory saxTFactory = 
-                   ((javax.xml.transform.SAXTransformerFactory) tFactory);
+                   ((javax.xml.transform.sax.SAXTransformerFactory) tFactory);
     // Create a Templates ContentHandler to handle parsing of the 
     // stylesheet.
     javax.xml.transform.sax.TemplatesHandler templatesHandler = 
@@ -296,7 +296,7 @@ if (tFactory.getFeature(javax.xml.transform.sax.SAXSource.FEATURE) &amp;&amp;
     // Set up a Serializer to serialize the Result to a file.
     org.apache.xml.serializer.Serializer serializer = 
     org.apache.xml.serializer.SerializerFactory.getSerializer
-    (org.apache.xalan.templates.OutputProperties.getDefaultMethodProperties
+    (org.apache.xml.serializer.OutputPropertiesFactory.getDefaultMethodProperties
                                                                    ("xml"));
     serializer.setOutputStream(new java.io.FileOutputStream("foo.out"));
     // The Serializer functions as a SAX ContentHandler.
@@ -329,17 +329,17 @@ javax.xml.parsers.DocumentBuilderFactory dfactory =
 // Use the DocumentBuilderFactory to provide access to a DocumentBuilder.
 javax.xml.parsers.DocumentBuilder dBuilder = dfactory.newDocumentBuilder();
 // Use the DocumentBuilder to parse the XML input.
-org.w3c.dom.Document inDoc = dBuilder.Parse("foo.xml");</source>
+org.w3c.dom.Document inDoc = dBuilder.parse("foo.xml");</source>
 <p>To produce DOM output, simply use a Transformer to transform to a DOMResult object.</p>
 <source>// Generate a Transformer.
 javax.xml.transform.Transformer transformer = tFactory.newTransformer
-                  (new javax.xml.transform.Stream.StreamSource("foo.xsl"));
+                  (new javax.xml.transform.stream.StreamSource("foo.xsl"));
 // Create an empy DOMResult object for the output.
 javax.xml.transform.dom.DOMResult domResult =
                                    new javax.xml.transform.dom.DOMResult();
 // Perform the transformation.
-transformer.transform(new javax.xml.transform.dom.DOMSource(inDoc)
-                      domResult;
+transformer.transform(new javax.xml.transform.dom.DOMSource(inDoc),
+                      domResult);
 // Now you can get the output Node from the DOMResult.
 org.w3c.dom.Node node = domResult.getNode();</source>
 <note>Create a new DOMResult object or use DOMResult.setNode() to assign a new container each time you want to perform a transformation 
@@ -395,7 +395,7 @@ public class SampleXSLTServlet extends javax.servlet.http.HttpServlet {
     // Set content type for HTML.
     response.setContentType("text/html; charset=UTF-8");    
     // Output goes to the response PrintWriter.
-    java.io.PrintWriter out = response.getWriter());
+    java.io.PrintWriter out = response.getWriter();
     try
     {	
       javax.xml.transform.TransformerFactory tFactory = 
