@@ -184,13 +184,47 @@ public final class Encodings extends Object
     {
         EncodingInfo ei;
 
-        String normalizedEncoding = encoding.toUpperCase();
+        String normalizedEncoding = toUpperCaseFast(encoding);
         ei = (EncodingInfo) _encodingTableKeyJava.get(normalizedEncoding);
         if (ei == null)
             ei = (EncodingInfo) _encodingTableKeyMime.get(normalizedEncoding);
         if (ei != null)
             return ei.lastPrintable;
         return m_defaultLastPrintable;
+    }
+ 
+    /**
+     * A fast and cheap way to uppercase a String that is
+     * only made of printable ASCII characters.
+     * @param s a String of ASCII characters
+     * @return an uppercased version of the input String,
+     * possibly the same String.
+     */
+    static private String toUpperCaseFast(final String s) {
+
+    	boolean different = false;
+    	final int mx = s.length();
+		char[] chars = new char[mx];
+    	for (int i=0; i < mx; i++) {
+    		char ch = s.charAt(i);
+            // is the character a lower case ASCII one?
+    		if ('a' <= ch && ch <= 'z') {
+                // a cheap and fast way to uppercase that is good enough
+    			ch = (char) (ch + ('A' - 'a'));
+    			different = true; // the uppercased String is different
+    		}
+    		chars[i] = ch;
+    	}
+    	
+    	// A little optimization, don't call String.valueOf() if
+    	// the uppercased string is the same as the input string.
+    	final String upper;
+    	if (different) 
+    		upper = String.valueOf(chars);
+    	else
+    		upper = s;
+    		
+    	return upper;
     }
 
     /**
@@ -285,7 +319,7 @@ public final class Encodings extends Object
     private static String convertJava2MimeEncoding(String encoding)
     {
         EncodingInfo enc =
-            (EncodingInfo) _encodingTableKeyJava.get(encoding.toUpperCase());
+            (EncodingInfo) _encodingTableKeyJava.get(toUpperCaseFast(encoding));
         if (null != enc)
             return enc.name;
         return encoding;
