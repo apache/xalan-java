@@ -78,10 +78,10 @@ import org.xml.sax.ContentHandler;
  * 
  * This interface is a public API.
  * 
- * @see org.apache.xml.serializer.Method
- * @see org.apache.xml.serializer.OutputPropertiesFactory
- * @see org.apache.xml.serializer.SerializerFactory
- * @see org.apache.xml.serializer.DOMSerializer
+ * @see Method
+ * @see OutputPropertiesFactory
+ * @see SerializerFactory
+ * @see DOMSerializer
  * @see ContentHandler
  * 
  * @xsl.usage general

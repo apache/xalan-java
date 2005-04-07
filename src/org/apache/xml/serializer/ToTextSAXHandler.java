@@ -31,18 +31,18 @@ import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 
 /**
- * This class receives notification of SAX-like events, and with gathered
- * information over these calls it will convert them to the equivalent SAX methods
- * on a handler, the ultimate xsl:output method is known to be "text".
+ * This class converts SAX-like event to SAX events for
+ * xsl:output method "text". 
  * 
- * This class is not a public API, it is only public because it is used by Xalan.
+ * This class is only to be used internally. This class is not a public API.
+ * 
  * @xsl.usage internal
  */
 public final class ToTextSAXHandler extends ToSAXHandler 
 {
     /**
      * From XSLTC
-     * @see org.apache.xml.serializer.ExtendedContentHandler#endElement(String)
+     * @see ExtendedContentHandler#endElement(String)
      */
     public void endElement(String elemName) throws SAXException
     {
@@ -92,7 +92,7 @@ public final class ToTextSAXHandler extends ToSAXHandler
     }
 
     /**
-     * @see org.apache.xml.serializer.Serializer#getOutputFormat()
+     * @see Serializer#getOutputFormat()
      */
     public Properties getOutputFormat()
     {
@@ -100,7 +100,7 @@ public final class ToTextSAXHandler extends ToSAXHandler
     }
 
     /**
-     * @see org.apache.xml.serializer.Serializer#getOutputStream()
+     * @see Serializer#getOutputStream()
      */
     public OutputStream getOutputStream()
     {
@@ -108,7 +108,7 @@ public final class ToTextSAXHandler extends ToSAXHandler
     }
 
     /**
-     * @see org.apache.xml.serializer.Serializer#getWriter()
+     * @see Serializer#getWriter()
      */
     public Writer getWriter()
     {
@@ -125,7 +125,7 @@ public final class ToTextSAXHandler extends ToSAXHandler
     }
 
     /**
-     * @see org.apache.xml.serializer.Serializer#reset()
+     * @see Serializer#reset()
      */
     public boolean reset()
     {
@@ -133,14 +133,14 @@ public final class ToTextSAXHandler extends ToSAXHandler
     }
 
     /**
-     * @see org.apache.xml.serializer.DOMSerializer#serialize(Node)
+     * @see DOMSerializer#serialize(Node)
      */
     public void serialize(Node node) throws IOException
     {
     }
 
     /**
-     * @see org.apache.xml.serializer.SerializationHandler#setEscaping(boolean)
+     * @see SerializationHandler#setEscaping(boolean)
      */
     public boolean setEscaping(boolean escape)
     {
@@ -148,35 +148,35 @@ public final class ToTextSAXHandler extends ToSAXHandler
     }
 
     /**
-     * @see org.apache.xml.serializer.SerializationHandler#setIndent(boolean)
+     * @see SerializationHandler#setIndent(boolean)
      */
     public void setIndent(boolean indent)
     {
     }
 
     /**
-     * @see org.apache.xml.serializer.Serializer#setOutputFormat(Properties)
+     * @see Serializer#setOutputFormat(Properties)
      */
     public void setOutputFormat(Properties format)
     {
     }
 
     /**
-     * @see org.apache.xml.serializer.Serializer#setOutputStream(OutputStream)
+     * @see Serializer#setOutputStream(OutputStream)
      */
     public void setOutputStream(OutputStream output)
     {
     }
 
     /**
-     * @see org.apache.xml.serializer.Serializer#setWriter(Writer)
+     * @see Serializer#setWriter(Writer)
      */
     public void setWriter(Writer writer)
     {
     }
 
     /**
-     * @see org.apache.xml.serializer.ExtendedContentHandler#addAttribute(String, String, String, String, String)
+     * @see ExtendedContentHandler#addAttribute(String, String, String, String, String)
      */
     public void addAttribute(
         String uri,
@@ -310,7 +310,7 @@ public final class ToTextSAXHandler extends ToSAXHandler
 
     /**
      * From XSLTC
-     * @see org.apache.xml.serializer.ExtendedContentHandler#startElement(String)
+     * @see ExtendedContentHandler#startElement(String)
      */
     public void startElement(
     String elementNamespaceURI,
@@ -342,7 +342,7 @@ public final class ToTextSAXHandler extends ToSAXHandler
  
     /**
 	 *	
-     * @see org.apache.xml.serializer.ExtendedContentHandler#characters(String)
+     * @see ExtendedContentHandler#characters(String)
      */
     public void characters(String characters) 
     throws SAXException 

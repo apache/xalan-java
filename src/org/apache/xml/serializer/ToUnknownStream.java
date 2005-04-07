@@ -140,7 +140,7 @@ public final class ToUnknownStream extends SerializerBase
     }
 
     /**
-     * @see org.apache.xml.serializer.Serializer#asContentHandler()
+     * @see Serializer#asContentHandler()
      * @return the wrapped XML or HTML handler
      */
     public ContentHandler asContentHandler() throws IOException
@@ -154,7 +154,7 @@ public final class ToUnknownStream extends SerializerBase
     }
 
     /**
-     * @see org.apache.xml.serializer.SerializationHandler#close()
+     * @see SerializationHandler#close()
      */
     public void close()
     {
@@ -162,7 +162,7 @@ public final class ToUnknownStream extends SerializerBase
     }
 
     /**
-     * @see org.apache.xml.serializer.Serializer#getOutputFormat()
+     * @see Serializer#getOutputFormat()
      * @return the properties of the underlying handler
      */
     public Properties getOutputFormat()
@@ -171,7 +171,7 @@ public final class ToUnknownStream extends SerializerBase
     }
 
     /**
-     * @see org.apache.xml.serializer.Serializer#getOutputStream()
+     * @see Serializer#getOutputStream()
      * @return the OutputStream of the underlying XML or HTML handler
      */
     public OutputStream getOutputStream()
@@ -180,7 +180,7 @@ public final class ToUnknownStream extends SerializerBase
     }
 
     /**
-     * @see org.apache.xml.serializer.Serializer#getWriter()
+     * @see Serializer#getWriter()
      * @return the Writer of the underlying XML or HTML handler
      */
     public Writer getWriter()
@@ -190,7 +190,7 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * passes the call on to the underlying HTML or XML handler
-     * @see org.apache.xml.serializer.Serializer#reset()
+     * @see Serializer#reset()
      * @return ???
      */
     public boolean reset()
@@ -201,7 +201,7 @@ public final class ToUnknownStream extends SerializerBase
     /**
      * Converts the DOM node to output
      * @param node the DOM node to transform to output
-     * @see org.apache.xml.serializer.DOMSerializer#serialize(Node)
+     * @see DOMSerializer#serialize(Node)
      *
      */
     public void serialize(Node node) throws IOException
@@ -214,7 +214,7 @@ public final class ToUnknownStream extends SerializerBase
     }
 
     /**
-     * @see org.apache.xml.serializer.SerializationHandler#setEscaping(boolean)
+     * @see SerializationHandler#setEscaping(boolean)
      */
     public boolean setEscaping(boolean escape) throws SAXException
     {
@@ -224,7 +224,7 @@ public final class ToUnknownStream extends SerializerBase
     /**
      * Set the properties of the handler
      * @param format the output properties to set
-     * @see org.apache.xml.serializer.Serializer#setOutputFormat(Properties)
+     * @see Serializer#setOutputFormat(Properties)
      */
     public void setOutputFormat(Properties format)
     {
@@ -234,7 +234,7 @@ public final class ToUnknownStream extends SerializerBase
     /**
      * Sets the output stream to write to
      * @param output the OutputStream to write to
-     * @see org.apache.xml.serializer.Serializer#setOutputStream(OutputStream)
+     * @see Serializer#setOutputStream(OutputStream)
      */
     public void setOutputStream(OutputStream output)
     {
@@ -244,7 +244,7 @@ public final class ToUnknownStream extends SerializerBase
     /**
      * Sets the writer to write to
      * @param writer the writer to write to
-     * @see org.apache.xml.serializer.Serializer#setWriter(Writer)
+     * @see Serializer#setWriter(Writer)
      */
     public void setWriter(Writer writer)
     {
@@ -259,7 +259,7 @@ public final class ToUnknownStream extends SerializerBase
      * @param type the type of the attribute, typically "CDATA"
      * @param value the value of the parameter
      * @param XSLAttribute true if this attribute is coming from an xsl:attribute element
-     * @see org.apache.xml.serializer.ExtendedContentHandler#addAttribute(String, String, String, String, String)
+     * @see ExtendedContentHandler#addAttribute(String, String, String, String, String)
      */
     public void addAttribute(
         String uri,
@@ -280,7 +280,7 @@ public final class ToUnknownStream extends SerializerBase
      * Adds an attribute to the currenly open tag
      * @param rawName the attribute name, with prefix (if any)
      * @param value the value of the parameter
-     * @see org.apache.xml.serializer.ExtendedContentHandler#addAttribute(String, String)
+     * @see ExtendedContentHandler#addAttribute(String, String)
      */
     public void addAttribute(String rawName, String value)
     {
@@ -310,7 +310,7 @@ public final class ToUnknownStream extends SerializerBase
      * Converts the String to a character array and calls the SAX method 
      * characters(char[],int,int);
      * 
-     * @see org.apache.xml.serializer.ExtendedContentHandler#characters(String)
+     * @see ExtendedContentHandler#characters(String)
      */
     public void characters(String chars) throws SAXException
     {
@@ -325,7 +325,7 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
-     * @see org.apache.xml.serializer.ExtendedContentHandler#endElement(String)
+     * @see ExtendedContentHandler#endElement(String)
      */
     public void endElement(String elementName) throws SAXException
     {
@@ -356,7 +356,7 @@ public final class ToUnknownStream extends SerializerBase
      * @param uri the URI of the namespace
      * @param prefix the prefix associated with the given URI.
      *
-     * @see org.apache.xml.serializer.ExtendedContentHandler#namespaceAfterStartElement(String, String)
+     * @see ExtendedContentHandler#namespaceAfterStartElement(String, String)
      */    
     public void namespaceAfterStartElement(String prefix, String uri)
         throws SAXException 
@@ -520,7 +520,7 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
-     * @see org.apache.xml.serializer.ExtendedLexicalHandler#comment(String)
+     * @see ExtendedLexicalHandler#comment(String)
      */
     public void comment(String comment) throws SAXException
     {
@@ -539,7 +539,7 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
-     * @see org.apache.xml.serializer.XSLOutputAttributes#getDoctypePublic()
+     * @see XSLOutputAttributes#getDoctypePublic()
      */
     public String getDoctypePublic()
     {
@@ -549,7 +549,7 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
-     * @see org.apache.xml.serializer.XSLOutputAttributes#getDoctypeSystem()
+     * @see XSLOutputAttributes#getDoctypeSystem()
      */
     public String getDoctypeSystem()
     {
@@ -558,7 +558,7 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
-     * @see org.apache.xml.serializer.XSLOutputAttributes#getEncoding()
+     * @see XSLOutputAttributes#getEncoding()
      */
     public String getEncoding()
     {
@@ -567,7 +567,7 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
-     * @see org.apache.xml.serializer.XSLOutputAttributes#getIndent()
+     * @see XSLOutputAttributes#getIndent()
      */
     public boolean getIndent()
     {
@@ -576,7 +576,7 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
-     * @see org.apache.xml.serializer.XSLOutputAttributes#getIndentAmount()
+     * @see XSLOutputAttributes#getIndentAmount()
      */
     public int getIndentAmount()
     {
@@ -585,7 +585,7 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
-     * @see org.apache.xml.serializer.XSLOutputAttributes#getMediaType()
+     * @see XSLOutputAttributes#getMediaType()
      */
     public String getMediaType()
     {
@@ -594,7 +594,7 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
-     * @see org.apache.xml.serializer.XSLOutputAttributes#getOmitXMLDeclaration()
+     * @see XSLOutputAttributes#getOmitXMLDeclaration()
      */
     public boolean getOmitXMLDeclaration()
     {
@@ -603,7 +603,7 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
-     * @see org.apache.xml.serializer.XSLOutputAttributes#getStandalone()
+     * @see XSLOutputAttributes#getStandalone()
      */
     public String getStandalone()
     {
@@ -612,7 +612,7 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
-     * @see org.apache.xml.serializer.XSLOutputAttributes#getVersion()
+     * @see XSLOutputAttributes#getVersion()
      */
     public String getVersion()
     {
@@ -620,7 +620,7 @@ public final class ToUnknownStream extends SerializerBase
     }
 
     /**
-     * @see org.apache.xml.serializer.XSLOutputAttributes#setDoctype(String, String)
+     * @see XSLOutputAttributes#setDoctype(String, String)
      */
     public void setDoctype(String system, String pub)
     {
@@ -632,7 +632,7 @@ public final class ToUnknownStream extends SerializerBase
      * Set the doctype in the underlying XML handler. Remember that this method
      * was called, just in case we need to transfer this doctype to an HTML handler
      * @param doctype the public doctype to set
-     * @see org.apache.xml.serializer.XSLOutputAttributes#setDoctypePublic(String)
+     * @see XSLOutputAttributes#setDoctypePublic(String)
      */
     public void setDoctypePublic(String doctype)
     {
@@ -644,7 +644,7 @@ public final class ToUnknownStream extends SerializerBase
      * Set the doctype in the underlying XML handler. Remember that this method
      * was called, just in case we need to transfer this doctype to an HTML handler
      * @param doctype the system doctype to set
-     * @see org.apache.xml.serializer.XSLOutputAttributes#setDoctypeSystem(String)
+     * @see XSLOutputAttributes#setDoctypeSystem(String)
      */
     public void setDoctypeSystem(String doctype)
     {
@@ -654,7 +654,7 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
-     * @see org.apache.xml.serializer.XSLOutputAttributes#setEncoding(String)
+     * @see XSLOutputAttributes#setEncoding(String)
      */
     public void setEncoding(String encoding)
     {
@@ -663,7 +663,7 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
-     * @see org.apache.xml.serializer.XSLOutputAttributes#setIndent(boolean)
+     * @see XSLOutputAttributes#setIndent(boolean)
      */
     public void setIndent(boolean indent)
     {
@@ -679,7 +679,7 @@ public final class ToUnknownStream extends SerializerBase
     }
 
     /**
-     * @see org.apache.xml.serializer.XSLOutputAttributes#setMediaType(String)
+     * @see XSLOutputAttributes#setMediaType(String)
      */
     public void setMediaType(String mediaType)
     {
@@ -689,7 +689,7 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
-     * @see org.apache.xml.serializer.XSLOutputAttributes#setOmitXMLDeclaration(boolean)
+     * @see XSLOutputAttributes#setOmitXMLDeclaration(boolean)
      */
     public void setOmitXMLDeclaration(boolean b)
     {
@@ -698,7 +698,7 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * Pass the call on to the underlying handler
-     * @see org.apache.xml.serializer.XSLOutputAttributes#setStandalone(String)
+     * @see XSLOutputAttributes#setStandalone(String)
      */
     public void setStandalone(String standalone)
     {
@@ -706,7 +706,7 @@ public final class ToUnknownStream extends SerializerBase
     }
 
     /**
-     * @see org.apache.xml.serializer.XSLOutputAttributes#setVersion(String)
+     * @see XSLOutputAttributes#setVersion(String)
      */
 
     /**
@@ -1150,7 +1150,7 @@ public final class ToUnknownStream extends SerializerBase
         return isHTML;
     }
     /**
-     * @see org.apache.xml.serializer.Serializer#asDOMSerializer()
+     * @see Serializer#asDOMSerializer()
      */
     public DOMSerializer asDOMSerializer() throws IOException
     {
@@ -1159,15 +1159,15 @@ public final class ToUnknownStream extends SerializerBase
 
     /**
      * @param URI_and_localNames Vector a list of pairs of URI/localName
-     * specified in the cdata-section-elements attribute
-     * @see org.apache.xml.serializer.SerializationHandler#setCdataSectionElements(java.util.Vector)
+     * specified in the cdata-section-elements attribute.
+     * @see SerializationHandler#setCdataSectionElements(java.util.Vector)
      */
     public void setCdataSectionElements(Vector URI_and_localNames)
     {
         m_handler.setCdataSectionElements(URI_and_localNames);
     }
     /**
-     * @see org.apache.xml.serializer.ExtendedContentHandler#addAttributes(org.xml.sax.Attributes)
+     * @see ExtendedContentHandler#addAttributes(org.xml.sax.Attributes)
      */
     public void addAttributes(Attributes atts) throws SAXException
     {
@@ -1177,7 +1177,7 @@ public final class ToUnknownStream extends SerializerBase
     /**
      * Get the current namespace mappings.
      * Simply returns the mappings of the wrapped handler.
-     * @see org.apache.xml.serializer.ExtendedContentHandler#getNamespaceMappings()
+     * @see ExtendedContentHandler#getNamespaceMappings()
      */
     public NamespaceMappings getNamespaceMappings()
     {
@@ -1189,7 +1189,7 @@ public final class ToUnknownStream extends SerializerBase
         return mappings;
     }
     /**
-     * @see org.apache.xml.serializer.SerializationHandler#flushPending()
+     * @see SerializationHandler#flushPending()
      */
     public void flushPending() throws SAXException
     {
@@ -1222,14 +1222,14 @@ public final class ToUnknownStream extends SerializerBase
     }
 
     /**
-     * @see org.apache.xml.serializer.ExtendedContentHandler#getPrefix
+     * @see ExtendedContentHandler#getPrefix
      */
     public String getPrefix(String namespaceURI)
     {
         return m_handler.getPrefix(namespaceURI);
     }
     /**
-     * @see org.apache.xml.serializer.ExtendedContentHandler#entityReference(java.lang.String)
+     * @see ExtendedContentHandler#entityReference(java.lang.String)
      */
     public void entityReference(String entityName) throws SAXException
     {
@@ -1237,7 +1237,7 @@ public final class ToUnknownStream extends SerializerBase
     }
 
     /**
-     * @see org.apache.xml.serializer.ExtendedContentHandler#getNamespaceURI(java.lang.String, boolean)
+     * @see ExtendedContentHandler#getNamespaceURI(java.lang.String, boolean)
      */
     public String getNamespaceURI(String qname, boolean isElement)
     {
@@ -1265,7 +1265,7 @@ public final class ToUnknownStream extends SerializerBase
     }
 
     /**
-     * @see org.apache.xml.serializer.SerializationHandler#setContentHandler(org.xml.sax.ContentHandler)
+     * @see SerializationHandler#setContentHandler(org.xml.sax.ContentHandler)
      */
     public void setContentHandler(ContentHandler ch)
     {
@@ -1276,7 +1276,7 @@ public final class ToUnknownStream extends SerializerBase
      * generated an error message.
      * @param locator the source locator
      *
-     * @see org.apache.xml.serializer.ExtendedContentHandler#setSourceLocator(javax.xml.transform.SourceLocator)
+     * @see ExtendedContentHandler#setSourceLocator(javax.xml.transform.SourceLocator)
      */    
     public void setSourceLocator(SourceLocator locator)
     {

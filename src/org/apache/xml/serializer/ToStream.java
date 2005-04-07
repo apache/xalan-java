@@ -415,6 +415,8 @@ abstract public class ToStream extends SerializerBase
     /**
      * Initialize the serializer with the specified writer and output format.
      * Must be called before calling any of the serialize methods.
+     * This method can be called multiple times and the xsl:output properties
+     * passed in the 'format' parameter are accumulated across calls.
      *
      * @param writer The writer to use
      * @param format The output format
@@ -702,7 +704,7 @@ abstract public class ToStream extends SerializerBase
     }
 
     /**
-     * @see org.apache.xml.serializer.SerializationHandler#setEscaping(boolean)
+     * @see SerializationHandler#setEscaping(boolean)
      */
     public boolean setEscaping(boolean escape)
     {
@@ -1050,11 +1052,11 @@ abstract public class ToStream extends SerializerBase
             // or if this is a character from attribute value and a special one of those
             if ((fromTextNode && m_charInfo.isSpecialTextChar(ch)) || (!fromTextNode && m_charInfo.isSpecialAttrChar(ch)))
             {
-                String entityRef = m_charInfo.getOutputStringForChar(ch);
+                String outputStringForChar = m_charInfo.getOutputStringForChar(ch);
 
-                if (null != entityRef)
+                if (null != outputStringForChar)
                 {
-                    writer.write(entityRef);
+                    writer.write(outputStringForChar);
                 }
                 else
                     return i;
@@ -2111,7 +2113,7 @@ abstract public class ToStream extends SerializerBase
      * that is soon to follow. Need to close any open start tag to make
      * sure than any name space attributes due to this event are associated wih
      * the up comming element, not the current one.
-     * @see org.apache.xml.serializer.ExtendedContentHandler#startPrefixMapping
+     * @see ExtendedContentHandler#startPrefixMapping
      *
      * @param prefix The Namespace prefix being declared.
      * @param uri The Namespace URI the prefix is mapped to.
@@ -2832,7 +2834,7 @@ abstract public class ToStream extends SerializerBase
                      * is the prefix for it (foo) already mapped at the current depth?
                      */
                     if (existing_mapping != null 
-                    && existing_mapping.m_delarationDepth == m_elemContext.m_currentElemDepth
+                    && existing_mapping.m_declarationDepth == m_elemContext.m_currentElemDepth
                     && !existing_mapping.m_uri.equals(uri))
                     {
                         /*
@@ -2989,7 +2991,7 @@ abstract public class ToStream extends SerializerBase
     }
 
     /**
-     * @see org.apache.xml.serializer.SerializationHandler#setTransformer(Transformer)
+     * @see SerializationHandler#setTransformer(Transformer)
      */
     public void setTransformer(Transformer transformer) {
         super.setTransformer(transformer);

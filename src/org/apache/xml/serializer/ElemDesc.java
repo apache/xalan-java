@@ -50,7 +50,7 @@ public final class ElemDesc
     /** Bit position if this element type is a block form. */
     static final int BLOCKFORM = (1 << 4);
 
-    /** Bit position if this element type is a block form field set (?? -sb). */
+    /** Bit position if this element type is a block form field set. */
     static final int BLOCKFORMFIELDSET = (1 << 5);
 
     /** Bit position if this element type is CDATA. */
@@ -65,7 +65,7 @@ public final class ElemDesc
     /** Bit position if this element type should be inlined. */
     private static final int INLINE = (1 << 9);
 
-    /** Bit position if this element type is INLINEA (?? -sb). */
+    /** Bit position if this element type is INLINEA. */
     private static final int INLINEA = (1 << 10);
 
     /** Bit position if this element type is an inline label. */

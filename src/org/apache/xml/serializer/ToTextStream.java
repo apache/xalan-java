@@ -26,8 +26,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 /**
- * This class is not a public API, it is only public because it is used
- * by Xalan.
+ * This class is not a public API.
+ * It is only public because it is used in other packages. 
+ * This class converts SAX or SAX-like calls to a 
+ * serialized document for xsl:output method of "text".
  * @xsl.usage internal
  */
 public final class ToTextStream extends ToStream 
@@ -576,7 +578,7 @@ void writeNormalizedChars(
   }
   
     /**
-     * @see org.apache.xml.serializer.ExtendedContentHandler#addAttribute(String, String, String, String, String)
+     * @see ExtendedContentHandler#addAttribute(String, String, String, String, String)
      */
     public void addAttribute(
         String uri,
@@ -598,7 +600,7 @@ void writeNormalizedChars(
     }
 
     /**
-     * @see org.apache.xml.serializer.ExtendedContentHandler#endElement(String)
+     * @see ExtendedContentHandler#endElement(String)
      */
     public void endElement(String elemName) throws SAXException
     {

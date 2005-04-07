@@ -52,9 +52,9 @@ import org.xml.sax.ContentHandler;
    * <p>
    * The non-standard property keys supported are defined in {@link OutputPropertiesFactory}.
    *
-   * @see org.apache.xml.serializer.OutputPropertiesFactory
-   * @see org.apache.xml.serializer.Method
-   * @see org.apache.xml.serializer.Serializer
+   * @see OutputPropertiesFactory
+   * @see Method
+   * @see Serializer
    */
 public final class SerializerFactory
 {

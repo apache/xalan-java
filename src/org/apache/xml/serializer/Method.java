@@ -29,8 +29,8 @@ package org.apache.xml.serializer;
  * 
  * This class is a public API.
  * 
- * @see org.apache.xml.serializer.OutputPropertiesFactory
- * @see org.apache.xml.serializer.Serializer
+ * @see OutputPropertiesFactory
+ * @see Serializer
  * 
  * @xsl.usage general
  */

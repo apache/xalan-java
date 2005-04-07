@@ -34,11 +34,11 @@ import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 
 /**
- * This class receives notification of SAX-like events, and with gathered
- * information over these calls it will convert them to the equivalent SAX methods
- * on a handler, the ultimate xsl:output method is known to be "html".
+ * This class accepts SAX-like calls, then sends true SAX calls to a
+ * wrapped SAX handler.  There is optimization done knowing that the ultimate
+ * output is HTML.
  * 
- * This class is not a public API, it is only public because it is used by Xalan.
+ * This class is not a public API.
  * 
  * @xsl.usage internal
  */
@@ -57,7 +57,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
     /**
      * Returns null.
      * @return null
-     * @see org.apache.xml.serializer.Serializer#getOutputFormat()
+     * @see Serializer#getOutputFormat()
      */
     public Properties getOutputFormat()
     {
@@ -67,7 +67,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
     /**
      * Reurns null
      * @return null
-     * @see org.apache.xml.serializer.Serializer#getOutputStream()
+     * @see Serializer#getOutputStream()
      */
     public OutputStream getOutputStream()
     {
@@ -77,7 +77,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
     /**
      * Returns null
      * @return null
-     * @see org.apache.xml.serializer.Serializer#getWriter()
+     * @see Serializer#getWriter()
      */
     public Writer getWriter()
     {
@@ -94,7 +94,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
 
     /**
      * Does nothing.
-     * @see org.apache.xml.serializer.DOMSerializer#serialize(Node)
+     * @see DOMSerializer#serialize(Node)
      */
     public void serialize(Node node) throws IOException
     {
@@ -107,7 +107,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      *
      * @param escape true if escaping is to be set on.
      *
-     * @see org.apache.xml.serializer.SerializationHandler#setEscaping(boolean)
+     * @see SerializationHandler#setEscaping(boolean)
      */
     public boolean setEscaping(boolean escape) throws SAXException
     {
@@ -127,7 +127,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * Does nothing
      * @param indent the number of spaces to indent per indentation level
      * (ignored)
-     * @see org.apache.xml.serializer.SerializationHandler#setIndent(boolean)
+     * @see SerializationHandler#setIndent(boolean)
      */
     public void setIndent(boolean indent)
     {
@@ -136,7 +136,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
     /**
      * Does nothing.
      * @param format this parameter is not used
-     * @see org.apache.xml.serializer.Serializer#setOutputFormat(Properties)
+     * @see Serializer#setOutputFormat(Properties)
      */
     public void setOutputFormat(Properties format)
     {
@@ -145,7 +145,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
     /**
      * Does nothing.
      * @param output this parameter is ignored
-     * @see org.apache.xml.serializer.Serializer#setOutputStream(OutputStream)
+     * @see Serializer#setOutputStream(OutputStream)
      */
     public void setOutputStream(OutputStream output)
     {
@@ -155,7 +155,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
     /**
      * Does nothing.
      * @param writer this parameter is ignored.
-     * @see org.apache.xml.serializer.Serializer#setWriter(Writer)
+     * @see Serializer#setWriter(Writer)
      */
     public void setWriter(Writer writer)
     {
@@ -274,19 +274,25 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * section 2.8) or a text declaration (XML 1.0, section 4.3.1)
      * using this method.</p>
      *
+     * @param target The processing instruction target.
+     * @param data The processing instruction data, or null if
+     *        none was supplied.
+     * @throws org.xml.sax.SAXException Any SAX exception, possibly
+     *            wrapping another exception.
+     *
      * @throws org.xml.sax.SAXException
      * @see org.xml.sax.ContentHandler#processingInstruction(String, String)
      */
-    public void processingInstruction(String arg0, String arg1)
+    public void processingInstruction(String target, String data)
         throws SAXException
     {
         flushPending();
-        m_saxHandler.processingInstruction(arg0,arg1);
+        m_saxHandler.processingInstruction(target,data);
 
 		// time to fire off processing instruction event
 		
         if (m_tracer != null)		
-		    super.fireEscapingEvent(arg0,arg1);        
+		    super.fireEscapingEvent(target,data);        
     }
 
     /**
@@ -445,7 +451,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
 
     /**
      * Do nothing.
-     * @see org.apache.xml.serializer.SerializationHandler#close()
+     * @see SerializationHandler#close()
      */
     public void close()
     {
@@ -459,7 +465,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      *
      * @throws org.xml.sax.SAXException
      *
-     * @see org.apache.xml.serializer.ExtendedContentHandler#characters(String)
+     * @see ExtendedContentHandler#characters(String)
      */
     public void characters(final String chars) throws SAXException
     {
@@ -505,7 +511,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * (optional)
      * @param elementName the element name, with prefix, if any (required)
      *
-     * @see org.apache.xml.serializer.ExtendedContentHandler#startElement(String)
+     * @see ExtendedContentHandler#startElement(String)
      */
     public void startElement(
         String elementNamespaceURI,
@@ -536,7 +542,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      *
      * @param elementName the element name, with prefix, if any
      *
-     * @see org.apache.xml.serializer.ExtendedContentHandler#startElement(String)
+     * @see ExtendedContentHandler#startElement(String)
      */
     public void startElement(String elementName) throws SAXException
     {
@@ -549,7 +555,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * @throws org.xml.sax.SAXException Any SAX exception, possibly
      *     wrapping another exception.
      *
-     * @see org.apache.xml.serializer.ExtendedContentHandler#endElement(String)
+     * @see ExtendedContentHandler#endElement(String)
      */
     public void endElement(String elementName) throws SAXException
     {
@@ -624,7 +630,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * that is soon to follow. Need to close any open start tag to make
      * sure than any name space attributes due to this event are associated wih
      * the up comming element, not the current one.
-     * @see org.apache.xml.serializer.ExtendedContentHandler#startPrefixMapping
+     * @see ExtendedContentHandler#startPrefixMapping
      *
      * @param prefix The Namespace prefix being declared.
      * @param uri The Namespace URI the prefix is mapped to.
@@ -681,7 +687,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * @param prefix the prefix associated with the given URI.
      * @param uri the URI of the namespace
      *
-     * @see org.apache.xml.serializer.ExtendedContentHandler#namespaceAfterStartElement(String, String)
+     * @see ExtendedContentHandler#namespaceAfterStartElement(String, String)
      */
     public void namespaceAfterStartElement(
         final String prefix,
@@ -710,7 +716,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * (mostly for performance reasons).
      * 
      * @return true if the class was successfuly reset.
-     * @see org.apache.xml.serializer.Serializer#reset()
+     * @see Serializer#reset()
      */
     public boolean reset()
     {

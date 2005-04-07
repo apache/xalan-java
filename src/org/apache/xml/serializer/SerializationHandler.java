@@ -33,7 +33,8 @@ import org.xml.sax.ext.DeclHandler;
  * other interfaces, such as ExtendedContentHandler, ExtendedLexicalHandler etc.
  * In addition there are other methods, such as reset().
  * 
- * This class is public only because it isused by Xalan, it is not a public API.
+ * This class is public only because it is used in another package,
+ * it is not a public API.
  * 
  * @xsl.usage internal
  */
@@ -52,8 +53,8 @@ public interface SerializationHandler
      * Set the SAX Content handler that the serializer sends its output to. This
      * method only applies to a ToSAXHandler, not to a ToStream serializer.
      * 
-     * @see org.apache.xml.serializer.Serializer#asContentHandler()
-     * @see org.apache.xml.serializer.ToSAXHandler
+     * @see Serializer#asContentHandler()
+     * @see ToSAXHandler
      */
     public void setContentHandler(ContentHandler ch);
     

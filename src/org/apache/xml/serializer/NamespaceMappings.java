@@ -70,6 +70,11 @@ public class NamespaceMappings
 
     /**
      * Each entry (prefix) in this hashtable points to a Stack of URIs
+     * This table maps a prefix (String) to a Stack of prefix mappings.
+     * All mappings in that retrieved stack have the same prefix,
+     * though possibly different URI's or depths. Such a stack must have
+     * mappings at deeper depths push later on such a stack.  Mappings pushed
+     * earlier on the stack will have smaller values for MappingRecord.m_declarationDepth.
      */
     private Hashtable m_namespaces = new Hashtable();
 
@@ -202,7 +207,7 @@ public class NamespaceMappings
     }
 
     /**
-     * Declare a prefix to point to a namespace URI
+     * Declare a mapping of a prefix to namespace URI at the given element depth.
      * @param prefix a String with the prefix for a qualified name
      * @param uri a String with the uri to which the prefix is to map
      * @param elemDepth the depth of current declaration
@@ -247,7 +252,7 @@ public class NamespaceMappings
             if (m_nodeStack.isEmpty())
                 return;
             MappingRecord map = (MappingRecord)(m_nodeStack.peek());
-            int depth = map.m_delarationDepth;
+            int depth = map.m_declarationDepth;
             if (depth < elemDepth)
                 return;
             /* the depth of the declared mapping is elemDepth or deeper
@@ -308,11 +313,11 @@ public class NamespaceMappings
         final String m_prefix;  // the prefix
         final String m_uri;     // the uri
         // the depth of the element where declartion was made
-        final int m_delarationDepth;
+        final int m_declarationDepth;
         MappingRecord(String prefix, String uri, int depth) {
             m_prefix = prefix;
             m_uri = uri;
-            m_delarationDepth = depth;
+            m_declarationDepth = depth;
             
         }
     }

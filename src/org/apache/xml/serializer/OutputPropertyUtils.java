@@ -24,7 +24,8 @@ import java.util.Properties;
  * This class contains some static methods that act as helpers when parsing a
  * Java Property object.
  * 
- * This class is not a public API. It is only public because it is used by Xalan.
+ * This class is not a public API. 
+ * It is only public because it is used outside of this package.
  * 
  * @see java.util.Properties
  * @xsl.usage internal

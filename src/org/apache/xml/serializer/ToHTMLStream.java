@@ -36,7 +36,7 @@ import org.xml.sax.SAXException;
  * to the given stream.
  * 
  * This class is not a public API, it is public
- * because it is used internally in Xalan.
+ * because it is used from another package.
  * 
  * @xsl.usage internal
  */

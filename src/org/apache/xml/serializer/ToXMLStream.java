@@ -492,7 +492,7 @@ public final class ToXMLStream extends ToStream
     }
 
     /**
-     * @see org.apache.xml.serializer.ExtendedContentHandler#endElement(String)
+     * @see ExtendedContentHandler#endElement(String)
      */
     public void endElement(String elemName) throws SAXException
     {

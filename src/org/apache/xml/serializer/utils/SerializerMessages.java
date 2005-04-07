@@ -42,7 +42,7 @@ import java.util.ResourceBundle;
 public class SerializerMessages extends ListResourceBundle {
 
     /*
-     * This file contains error and warning messages related to Xalan
+     * This file contains error and warning messages related to
      * Serializer Error Handling.
      *
      *  General notes to translators:

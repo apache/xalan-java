@@ -56,7 +56,7 @@ public final class ToXMLSAXHandler extends ToSAXHandler
     }
 
     /**
-     * @see org.apache.xml.serializer.Serializer#getOutputFormat()
+     * @see Serializer#getOutputFormat()
      */
     public Properties getOutputFormat()
     {
@@ -64,7 +64,7 @@ public final class ToXMLSAXHandler extends ToSAXHandler
     }
 
     /**
-     * @see org.apache.xml.serializer.Serializer#getOutputStream()
+     * @see Serializer#getOutputStream()
      */
     public OutputStream getOutputStream()
     {
@@ -72,7 +72,7 @@ public final class ToXMLSAXHandler extends ToSAXHandler
     }
 
     /**
-     * @see org.apache.xml.serializer.Serializer#getWriter()
+     * @see Serializer#getWriter()
      */
     public Writer getWriter()
     {
@@ -88,14 +88,14 @@ public final class ToXMLSAXHandler extends ToSAXHandler
 
 
     /**
-     * @see org.apache.xml.serializer.DOMSerializer#serialize(Node)
+     * @see DOMSerializer#serialize(Node)
      */
     public void serialize(Node node) throws IOException
     {
     }
 
     /**
-     * @see org.apache.xml.serializer.SerializationHandler#setEscaping(boolean)
+     * @see SerializationHandler#setEscaping(boolean)
      */
     public boolean setEscaping(boolean escape) throws SAXException
     {
@@ -112,21 +112,21 @@ public final class ToXMLSAXHandler extends ToSAXHandler
     }
 
     /**
-     * @see org.apache.xml.serializer.Serializer#setOutputFormat(Properties)
+     * @see Serializer#setOutputFormat(Properties)
      */
     public void setOutputFormat(Properties format)
     {
     }
 
     /**
-     * @see org.apache.xml.serializer.Serializer#setOutputStream(OutputStream)
+     * @see Serializer#setOutputStream(OutputStream)
      */
     public void setOutputStream(OutputStream output)
     {
     }
 
     /**
-     * @see org.apache.xml.serializer.Serializer#setWriter(Writer)
+     * @see Serializer#setWriter(Writer)
      */
     public void setWriter(Writer writer)
     {
@@ -453,7 +453,7 @@ public final class ToXMLSAXHandler extends ToSAXHandler
     }
 
     /**
-     * @see org.apache.xml.serializer.ExtendedContentHandler#characters(String)
+     * @see ExtendedContentHandler#characters(String)
      */
     public void characters(String chars) throws SAXException
     {
@@ -547,7 +547,7 @@ public final class ToXMLSAXHandler extends ToSAXHandler
     
 
     /**
-     * @see org.apache.xml.serializer.ExtendedContentHandler#endElement(String)
+     * @see ExtendedContentHandler#endElement(String)
      */
     public void endElement(String elemName) throws SAXException
     {
@@ -723,7 +723,7 @@ public final class ToXMLSAXHandler extends ToSAXHandler
      * @param type the type of the attribute (probably CDATA)
      * @param value the value of the attribute
      * @param XSLAttribute true if this attribute is coming from an xsl:attribute element
-     * @see org.apache.xml.serializer.ExtendedContentHandler#addAttribute(String, String, String, String, String)
+     * @see ExtendedContentHandler#addAttribute(String, String, String, String, String)
      */
     public void addAttribute(
         String uri,
@@ -748,7 +748,7 @@ public final class ToXMLSAXHandler extends ToSAXHandler
      * (mostly for performance reasons).
      * 
      * @return true if the class was successfuly reset.
-     * @see org.apache.xml.serializer.Serializer#reset()
+     * @see Serializer#reset()
      */
     public boolean reset()
     {

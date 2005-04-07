@@ -31,7 +31,7 @@ import org.xml.sax.ext.LexicalHandler;
  * This class is used to provide a base behavior to be inherited
  * by other To...SAXHandler serializers.
  * 
- * This class is not a public API, it is only public because it is used by Xalan.
+ * This class is not a public API.
  * 
  * @xsl.usage internal
  */
@@ -113,7 +113,7 @@ public abstract class ToSAXHandler extends SerializerBase
      *
      * @throws org.xml.sax.SAXException
      *
-     * @see org.apache.xml.serializer.ExtendedContentHandler#characters(String)
+     * @see ExtendedContentHandler#characters(String)
      */
     public void characters(String characters) throws SAXException
     {
@@ -129,7 +129,7 @@ public abstract class ToSAXHandler extends SerializerBase
     /**
      * Receive notification of a comment.
      *
-     * @see org.apache.xml.serializer.ExtendedLexicalHandler#comment(String)
+     * @see ExtendedLexicalHandler#comment(String)
      */
     public void comment(String comment) throws SAXException
     {
@@ -230,7 +230,7 @@ public abstract class ToSAXHandler extends SerializerBase
     /**
      * Does nothing. The setting of CDATA section elements has an impact on
      * stream serializers.
-     * @see org.apache.xml.serializer.SerializationHandler#setCdataSectionElements(java.util.Vector)
+     * @see SerializationHandler#setCdataSectionElements(java.util.Vector)
      */
     public void setCdataSectionElements(Vector URI_and_localNames)
     {
@@ -306,7 +306,7 @@ public abstract class ToSAXHandler extends SerializerBase
      * @param localName the element name, but without prefix (optional)
      * @param qName the element name, with prefix, if any (required)
      *
-     * @see org.apache.xml.serializer.ExtendedContentHandler#startElement(String, String, String)
+     * @see ExtendedContentHandler#startElement(String, String, String)
      */
     public void startElement(String uri, String localName, String qName)
         throws SAXException {
@@ -325,7 +325,7 @@ public abstract class ToSAXHandler extends SerializerBase
      *
      * @param qName the element name, with prefix (if any).
 
-     * @see org.apache.xml.serializer.ExtendedContentHandler#startElement(String)
+     * @see ExtendedContentHandler#startElement(String)
      */
     public void startElement(String qName) throws SAXException {
         if (m_state != null) {
@@ -400,7 +400,7 @@ public abstract class ToSAXHandler extends SerializerBase
      * (mostly for performance reasons).
      * 
      * @return true if the class was successfuly reset.
-     * @see org.apache.xml.serializer.Serializer#reset()
+     * @see Serializer#reset()
      */
     public boolean reset()
     {
