@@ -320,6 +320,14 @@ final class CharInfo
             isSpecialTextASCII[ch] = true;     
         }       
         
+
+
+        onlyQuotAmpLtGt = noExtraEntities;
+
+        // initialize the array with a cache of the BitSet values
+        for (int i=0; i<ASCII_MAX; i++)
+            isSpecialAttrASCII[i] = get(i);   
+            
         /* Now that we've used get(ch) just above to initialize the
          * two arrays we will change by adding a tab to the set of 
          * special chars for XML (but not HTML!).
@@ -331,16 +339,8 @@ final class CharInfo
          */
         if (Method.XML.equals(method)) 
         {
-            set(S_HORIZONAL_TAB);
+            isSpecialAttrASCII[S_HORIZONAL_TAB] = true;
         }
-        
-
-        onlyQuotAmpLtGt = noExtraEntities;
-
-        // initialize the array with a cache of the BitSet values
-        for (int i=0; i<ASCII_MAX; i++)
-            isSpecialAttrASCII[i] = get(i);    
-
     }
 
     /**
