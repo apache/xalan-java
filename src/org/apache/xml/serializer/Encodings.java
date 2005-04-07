@@ -68,8 +68,10 @@ public final class Encodings extends Object
         SUN_CHAR2BYTE_CONVERTER_METHOD = findCharToByteConverterMethod();
 
     private static Method findCharToByteConverterMethod() {
+        Method method = null;
         try
         {
+            method = (Method)
             AccessController.doPrivileged(new PrivilegedAction() {
                 public Object run() {
                     try {
@@ -87,9 +89,10 @@ public final class Encodings extends Object
         {
             System.err.println(
                 "Warning: Could not get charToByteConverterClass!");
+            method = null;
         }
 
-        return null;
+        return method;
     }
 
     /**
