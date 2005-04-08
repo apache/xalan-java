@@ -148,6 +148,7 @@ public final class Util {
 		final StreamSource stream = (StreamSource)source;
 		final InputStream istream = stream.getInputStream();
 		final Reader reader = stream.getReader();
+                xsltc.setXMLReader(null);     // Clear old XML reader
 
 		// Create InputSource from Reader or InputStream in Source
 		if (istream != null) {
