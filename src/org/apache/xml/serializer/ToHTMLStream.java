@@ -1317,7 +1317,7 @@ public final class ToHTMLStream extends ToStream
                     writer.write(chars,cleanStart,cleanLength);
                     cleanLength = 0;
                 }
-                int pos = accumDefaultEntity(writer, ch, i, chars, end, false, false);
+                int pos = accumDefaultEntity(writer, ch, i, chars, end, false, true);
 
                 if (i != pos)
                 {
