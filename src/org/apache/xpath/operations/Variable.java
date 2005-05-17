@@ -201,17 +201,21 @@ public class Variable extends Expression implements PathComponent
    */
   public XObject execute(XPathContext xctxt, boolean destructiveOK) throws javax.xml.transform.TransformerException
   {
-  	org.apache.xml.utils.PrefixResolver xprefixResolver = xctxt.getNamespaceContext();
+    org.apache.xml.utils.PrefixResolver xprefixResolver = xctxt.getNamespaceContext();
 
+    XObject result;
     // Is the variable fetched always the same?
     // XObject result = xctxt.getVariable(m_qname);
     if(m_fixUpWasCalled)
     {    
-      XObject result;
       if(m_isGlobal)
         result = xctxt.getVarStack().getGlobalVariable(xctxt, m_index, destructiveOK);
       else
         result = xctxt.getVarStack().getLocalVariable(xctxt, m_index, destructiveOK);
+    } 
+    else {  
+    	result = xctxt.getVarStack().getVariableOrParam(xctxt,m_qname);
+    }
   
       if (null == result)
       {
@@ -226,24 +230,24 @@ public class Variable extends Expression implements PathComponent
       }
   
       return result;
-    }
-    else
-    {
-      // Hack city... big time.  This is needed to evaluate xpaths from extensions, 
-      // pending some bright light going off in my head.  Some sort of callback?
-      synchronized(this)
-      {
-      	org.apache.xalan.templates.ElemVariable vvar= getElemVariable();
-      	if(null != vvar)
-      	{
-          m_index = vvar.getIndex();
-          m_isGlobal = vvar.getIsTopLevel();
-          m_fixUpWasCalled = true;
-          return execute(xctxt);
-      	}
-      }
-      throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_VAR_NOT_RESOLVABLE, new Object[]{m_qname.toString()})); //"Variable not resolvable: "+m_qname);
-    }
+//    }
+//    else
+//    {
+//      // Hack city... big time.  This is needed to evaluate xpaths from extensions, 
+//      // pending some bright light going off in my head.  Some sort of callback?
+//      synchronized(this)
+//      {
+//      	org.apache.xalan.templates.ElemVariable vvar= getElemVariable();
+//      	if(null != vvar)
+//      	{
+//          m_index = vvar.getIndex();
+//          m_isGlobal = vvar.getIsTopLevel();
+//          m_fixUpWasCalled = true;
+//          return execute(xctxt);
+//      	}
+//      }
+//      throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_VAR_NOT_RESOLVABLE, new Object[]{m_qname.toString()})); //"Variable not resolvable: "+m_qname);
+//    }
   }
   
   /**

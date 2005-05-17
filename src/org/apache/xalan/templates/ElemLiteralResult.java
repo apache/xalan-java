@@ -38,6 +38,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.TypeInfo;
+import org.w3c.dom.UserDataHandler;
 
 /**
  * Implement a Literal Result Element.
@@ -1079,6 +1081,62 @@ public class ElemLiteralResult extends ElemUse
             throwDOMException(DOMException.NO_MODIFICATION_ALLOWED_ERR, 
                 XSLTErrorResources.NO_MODIFICATION_ALLOWED_ERR); 
           }
+
+ 	  public TypeInfo getSchemaTypeInfo() { return null; }
+    
+  	  public boolean isId( ) { return false; }
+
+  	  public Object setUserData(String key,
+                                    Object data,
+                                    UserDataHandler handler) {
+        	return getOwnerDocument().setUserData( key, data, handler);
+  	  }
+
+  	  public Object getUserData(String key) {
+        	return getOwnerDocument().getUserData( key);
+  	  } 
+
+  	  public Object getFeature(String feature, String version) {
+        	return isSupported(feature, version) ? this : null;
+   	  }
+          
+          public boolean isEqualNode(Node arg) {
+          	return arg == this;
+          }
+          
+          public String lookupNamespaceURI(String specifiedPrefix) {
+             	return null;
+          }
+          
+          public boolean isDefaultNamespace(String namespaceURI) {
+            	return false;
+          }
+
+	  public String lookupPrefix(String namespaceURI) {
+	    	return null;
+	  }
+	  
+  	  public boolean isSameNode(Node other) {
+        	// we do not use any wrapper so the answer is obvious
+        	return this == other;
+  	  }
+          
+  	  public void setTextContent(String textContent)
+        	throws DOMException {
+        	setNodeValue(textContent);
+  	  }
+
+  	  public String getTextContent() throws DOMException {
+            	return getNodeValue();  // overriden in some subclasses
+   	  }
+
+    	  public short compareDocumentPosition(Node other) throws DOMException {
+            	return 0;
+    	  }
+
+          public String getBaseURI() {
+            	return null;
+    	  }
   }        
   
   /**

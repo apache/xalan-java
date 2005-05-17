@@ -20,6 +20,7 @@
 
 package org.apache.xalan.xsltc.trax;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
@@ -48,12 +49,21 @@ import org.xml.sax.XMLFilter;
  */
 public class SmartTransformerFactoryImpl extends SAXTransformerFactory 
 {
+    /**
+     * <p>Name of class as a constant to use for debugging.</p>
+     */
+    private static final String CLASS_NAME = "SmartTransformerFactoryImpl";
 
     private SAXTransformerFactory _xsltcFactory = null;
     private SAXTransformerFactory _xalanFactory = null;
     private SAXTransformerFactory _currFactory = null;
     private ErrorListener      _errorlistener = null;
     private URIResolver        _uriresolver = null;
+    
+    /**
+     * <p>State of secure processing feature.</p>
+     */
+    private boolean featureSecureProcessing = false;
 
     /**
      * implementation of the SmartTransformerFactory. This factory
@@ -140,6 +150,52 @@ public class SmartTransformerFactoryImpl extends SAXTransformerFactory
     }
 
     /**
+     * <p>Set a feature for this <code>SmartTransformerFactory</code> and <code>Transformer</code>s
+     * or <code>Template</code>s created by this factory.</p>
+     * 
+     * <p>
+     * Feature names are fully qualified {@link java.net.URI}s.
+     * Implementations may define their own features.
+     * An {@link TransformerConfigurationException} is thrown if this <code>TransformerFactory</code> or the
+     * <code>Transformer</code>s or <code>Template</code>s it creates cannot support the feature.
+     * It is possible for an <code>TransformerFactory</code> to expose a feature value but be unable to change its state.
+     * </p>
+     * 
+     * <p>See {@link javax.xml.transform.TransformerFactory} for full documentation of specific features.</p>
+     * 
+     * @param name Feature name.
+     * @param value Is feature state <code>true</code> or <code>false</code>.
+     *  
+     * @throws TransformerConfigurationException if this <code>TransformerFactory</code>
+     *   or the <code>Transformer</code>s or <code>Template</code>s it creates cannot support this feature.
+     * @throws NullPointerException If the <code>name</code> parameter is null.
+     */
+    public void setFeature(String name, boolean value)
+        throws TransformerConfigurationException {
+
+	// feature name cannot be null
+	if (name == null) {
+	    throw new NullPointerException(
+		"Trying to set a feature with a null name: "
+		+ CLASS_NAME + "#setFeature(null, " + value + ")"
+		);
+	}
+		
+	// secure processing?
+	if (name.equals(XMLConstants.FEATURE_SECURE_PROCESSING)) {
+	    featureSecureProcessing = value;		
+	    // all done processing feature
+	    return;
+	}
+		
+	// unknown feature
+	throw new TransformerConfigurationException(
+		"Trying to set the unknown feature \"" + name + "\": "
+		+ CLASS_NAME + "#setFeature(" + name + ", " + value + ")"
+		);			
+    }
+
+    /**
      * javax.xml.transform.sax.TransformerFactory implementation.
      * Look up the value of a feature (to see if it is supported).
      * This method must be updated as the various methods and features of this
@@ -158,13 +214,27 @@ public class SmartTransformerFactoryImpl extends SAXTransformerFactory
             StreamSource.FEATURE,
             StreamResult.FEATURE
         };
-
-        // Inefficient, but it really does not matter in a function like this
-        for (int i=0; i<features.length; i++) {
-            if (name.equals(features[i])) return true;
+		
+	// feature name cannot be null
+	if (name == null) {
+	    throw new NullPointerException(
+		"Trying to get a feature with a null name: "
+		+ CLASS_NAME
+		+ "#getFeature(null)");
 	}
 
-        // Feature not supported
+	// Inefficient, but it really does not matter in a function like this
+	for (int i = 0; i < features.length; i++) {
+	    if (name.equals(features[i]))
+		return true;
+	}
+
+	// secure processing?
+	if (name.equals(XMLConstants.FEATURE_SECURE_PROCESSING)) {
+	    return featureSecureProcessing;
+	}
+
+	// unknown feature
         return false;
     }
 

@@ -29,6 +29,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.xpath.XPathNamespace;
 
+import org.w3c.dom.UserDataHandler;
+
 /**
  * 
  * 
@@ -264,4 +266,55 @@ class XPathNamespaceImpl implements XPathNamespace {
         return m_attributeNode.hasAttributes();
     }
 
+    public String getBaseURI ( ) {
+        return null;
+    }
+
+    public short compareDocumentPosition(Node other) throws DOMException {
+        return 0;
+    }
+
+    private String textContent;
+    
+    public String getTextContent() throws DOMException {
+        return textContent;
+    }
+    
+    public void setTextContent(String textContent) throws DOMException {
+        this.textContent = textContent;
+    }
+    
+    public boolean isSameNode(Node other) {
+        return false;
+    }
+
+    public String lookupPrefix(String namespaceURI) {
+        return ""; //PENDING
+    }
+
+    public boolean isDefaultNamespace(String namespaceURI) {
+        return false;
+    }
+
+    public String lookupNamespaceURI(String prefix) {
+        return null;
+    }
+
+    public boolean isEqualNode(Node arg) {
+        return false;
+    }
+
+    public Object getFeature(String feature, String version) {
+        return null; //PENDING
+    }
+
+    public Object setUserData(String key, 
+                              Object data, 
+                              UserDataHandler handler) {
+        return null; //PENDING
+    }
+
+    public Object getUserData(String key) {
+        return null;
+    } 
 }

@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Properties;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
@@ -70,6 +71,11 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class TransformerFactoryImpl extends SAXTransformerFactory
 {
 
+  /**
+   * <p>Name of class as a constant to use for debugging.</p>
+   */
+  private static final String CLASS_NAME = "TransformerFactoryImpl";
+
   /** 
    * The path/filename of the property file: XSLTInfo.properties  
    * Maintenance note: see also
@@ -77,6 +83,11 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    */
   public static final String XSLT_PROPERTIES =
     "org/apache/xalan/res/XSLTInfo.properties";
+
+  /**
+   * <p>State of secure processing feature.</p>
+   */
+  private boolean featureSecureProcessing = false;
 
   /**
    * Constructor TransformerFactoryImpl
@@ -350,8 +361,53 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   }
 
   /**
+   * <p>Set a feature for this <code>TransformerFactory</code> and <code>Transformer</code>s
+   * or <code>Template</code>s created by this factory.</p>
+   * 
+   * <p>
+   * Feature names are fully qualified {@link java.net.URI}s.
+   * Implementations may define their own features.
+   * An {@link TransformerConfigurationException} is thrown if this <code>TransformerFactory</code> or the
+   * <code>Transformer</code>s or <code>Template</code>s it creates cannot support the feature.
+   * It is possible for an <code>TransformerFactory</code> to expose a feature value but be unable to change its state.
+   * </p>
+   * 
+   * <p>See {@link javax.xml.transform.TransformerFactory} for full documentation of specific features.</p>
+   * 
+   * @param name Feature name.
+   * @param value Is feature state <code>true</code> or <code>false</code>.
+   *  
+   * @throws TransformerConfigurationException if this <code>TransformerFactory</code>
+   *   or the <code>Transformer</code>s or <code>Template</code>s it creates cannot support this feature.
+   * @throws NullPointerException If the <code>name</code> parameter is null.
+   */
+  public void setFeature(String name, boolean value)
+	  throws TransformerConfigurationException {
+
+	// feature name cannot be null
+	if (name == null) {
+		throw new NullPointerException(
+			"Trying to set a feature with a null name: "
+			+ CLASS_NAME + "#setFeature(null, " + value + ")"
+			);
+	}
+		
+	// secure processing?
+	if (name.equals(XMLConstants.FEATURE_SECURE_PROCESSING)) {
+		featureSecureProcessing = value;			
+		// all done processing feature
+		return;
+	}
+	
+	// unknown feature
+	throw new TransformerConfigurationException(
+		"Trying to set the unknown feature \"" + name + "\": "
+		+ CLASS_NAME + "#setFeature(" + name + ", " + value + ")"
+		);			
+  }
+
+  /**
    * Look up the value of a feature.
-   *
    * <p>The feature name is any fully-qualified URI.  It is
    * possible for an TransformerFactory to recognize a feature name but
    * to be unable to return its value; this is especially true
@@ -362,9 +418,16 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    * @param name The feature name, which is a fully-qualified URI.
    * @return The current state of the feature (true or false).
    */
-  public boolean getFeature(String name)
-  {
-
+  public boolean getFeature(String name) {
+  	
+    // feature name cannot be null
+    if (name == null) {
+	throw new NullPointerException(
+		"Trying to get a feature with a null name: "
+		+ CLASS_NAME
+		+ "#getFeature(null)");
+    }
+	  	
     // Try first with identity comparison, which 
     // will be faster.
     if ((DOMResult.FEATURE == name) || (DOMSource.FEATURE == name)
@@ -382,8 +445,12 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
              || (StreamSource.FEATURE.equals(name))
              || (SAXTransformerFactory.FEATURE.equals(name))
              || (SAXTransformerFactory.FEATURE_XMLFILTER.equals(name)))
-      return true;
-    else
+      return true;	      
+    // secure processing?
+    else if (name.equals(XMLConstants.FEATURE_SECURE_PROCESSING))
+      return featureSecureProcessing;
+    else      
+      // unknown feature
       return false;
   }
   

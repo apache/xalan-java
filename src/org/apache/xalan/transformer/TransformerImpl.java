@@ -1139,6 +1139,13 @@ public class TransformerImpl extends Transformer
               else
                 fileURL = fileURL.substring(7);
             }
+            else if (fileURL.startsWith("file:/"))
+            {
+                if (fileURL.substring(6).indexOf(":") >0)
+                    fileURL = fileURL.substring(6);
+                  else
+                    fileURL = fileURL.substring(5);            	
+            }
 
             m_outputStream = new java.io.FileOutputStream(fileURL);
 
