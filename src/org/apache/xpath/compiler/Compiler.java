@@ -33,6 +33,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.axes.WalkerFactory;
 import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xpath.functions.FuncExtFunctionAvailable;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XNumber;
@@ -618,6 +619,14 @@ public class Compiler extends OpMap
   }
 
   /**
+   * Get the function table  
+   */
+  FunctionTable getFunctionTable()
+  {
+    return m_functionTable;
+  }
+
+  /**
    * Compile a location path.  The LocPathIterator itself may create
    * {@link org.apache.xpath.axes.AxesWalker} children.
    * 
@@ -1018,6 +1027,14 @@ private static final boolean DEBUG = false;
     if (-1 != funcID)
     {
       Function func = m_functionTable.getFunction(funcID);
+      
+      /**
+       * It is a trick for function-available. Since the function table is an
+       * instance field, insert this table at compilation time for later usage
+       */
+      
+      if (func instanceof FuncExtFunctionAvailable)
+          ((FuncExtFunctionAvailable) func).setFunctionTable(m_functionTable);
 
       func.postCompileStep(this);
       

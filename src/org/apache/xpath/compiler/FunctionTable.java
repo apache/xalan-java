@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ package org.apache.xpath.compiler;
 
 import org.apache.xpath.Expression;
 import org.apache.xpath.functions.Function;
+import java.util.HashMap;
+import javax.xml.transform.TransformerException;
 
 /**
  * The function table for XPath.
@@ -137,13 +139,21 @@ public class FunctionTable
   /**
    * The function table.
    */
-  private static FuncLoader m_functions[];
-  
-  /**
-   * The function table contains functions defined in XSLT
-   */
-  private FuncLoader m_functions_xslt[] = new FuncLoader[NUM_ALLOWABLE_ADDINS];
+  private static Class m_functions[];
 
+  /** Table of function name to function ID associations. */
+  private static HashMap m_functionID = new HashMap();
+    
+  /**
+   * The function table contains customized functions
+   */
+  private Class m_functions_customer[] = new Class[NUM_ALLOWABLE_ADDINS];
+
+  /**
+   * Table of function name to function ID associations for customized functions
+   */
+  private HashMap m_functionID_customer = new HashMap();
+  
   /**
    * Number of built in functions.  Be sure to update this as
    * built-in functions are added.
@@ -162,66 +172,133 @@ public class FunctionTable
   
   static
   {
-    m_functions = new FuncLoader[NUM_BUILT_IN_FUNCS];
-    m_functions[FUNC_CURRENT] = new FuncLoader("FuncCurrent", FUNC_CURRENT);
-    m_functions[FUNC_LAST] = new FuncLoader("FuncLast", FUNC_LAST);
-    m_functions[FUNC_POSITION] = new FuncLoader("FuncPosition",
-                                                FUNC_POSITION);
-    m_functions[FUNC_COUNT] = new FuncLoader("FuncCount", FUNC_COUNT);
-    m_functions[FUNC_ID] = new FuncLoader("FuncId", FUNC_ID);
+    m_functions = new Class[NUM_BUILT_IN_FUNCS];
+    m_functions[FUNC_CURRENT] = org.apache.xpath.functions.FuncCurrent.class;
+    m_functions[FUNC_LAST] = org.apache.xpath.functions.FuncLast.class;
+    m_functions[FUNC_POSITION] = org.apache.xpath.functions.FuncPosition.class;
+    m_functions[FUNC_COUNT] = org.apache.xpath.functions.FuncCount.class;
+    m_functions[FUNC_ID] = org.apache.xpath.functions.FuncId.class;
     m_functions[FUNC_KEY] =
-      new FuncLoader("org.apache.xalan.templates.FuncKey", FUNC_KEY);
-
-    // m_functions[FUNC_DOC] = new FuncDoc();
-    m_functions[FUNC_LOCAL_PART] = new FuncLoader("FuncLocalPart",
-            FUNC_LOCAL_PART);
-    m_functions[FUNC_NAMESPACE] = new FuncLoader("FuncNamespace",
-            FUNC_NAMESPACE);
-    m_functions[FUNC_QNAME] = new FuncLoader("FuncQname", FUNC_QNAME);
-    m_functions[FUNC_GENERATE_ID] = new FuncLoader("FuncGenerateId",
-            FUNC_GENERATE_ID);
-    m_functions[FUNC_NOT] = new FuncLoader("FuncNot", FUNC_NOT);
-    m_functions[FUNC_TRUE] = new FuncLoader("FuncTrue", FUNC_TRUE);
-    m_functions[FUNC_FALSE] = new FuncLoader("FuncFalse", FUNC_FALSE);
-    m_functions[FUNC_BOOLEAN] = new FuncLoader("FuncBoolean", FUNC_BOOLEAN);
-    m_functions[FUNC_LANG] = new FuncLoader("FuncLang", FUNC_LANG);
-    m_functions[FUNC_NUMBER] = new FuncLoader("FuncNumber", FUNC_NUMBER);
-    m_functions[FUNC_FLOOR] = new FuncLoader("FuncFloor", FUNC_FLOOR);
-    m_functions[FUNC_CEILING] = new FuncLoader("FuncCeiling", FUNC_CEILING);
-    m_functions[FUNC_ROUND] = new FuncLoader("FuncRound", FUNC_ROUND);
-    m_functions[FUNC_SUM] = new FuncLoader("FuncSum", FUNC_SUM);
-    m_functions[FUNC_STRING] = new FuncLoader("FuncString", FUNC_STRING);
-    m_functions[FUNC_STARTS_WITH] = new FuncLoader("FuncStartsWith",
-            FUNC_STARTS_WITH);
-    m_functions[FUNC_CONTAINS] = new FuncLoader("FuncContains",
-                                                FUNC_CONTAINS);
-    m_functions[FUNC_SUBSTRING_BEFORE] = new FuncLoader("FuncSubstringBefore",
-            FUNC_SUBSTRING_BEFORE);
-    m_functions[FUNC_SUBSTRING_AFTER] = new FuncLoader("FuncSubstringAfter",
-            FUNC_SUBSTRING_AFTER);
-    m_functions[FUNC_NORMALIZE_SPACE] = new FuncLoader("FuncNormalizeSpace",
-            FUNC_NORMALIZE_SPACE);
-    m_functions[FUNC_TRANSLATE] = new FuncLoader("FuncTranslate",
-            FUNC_TRANSLATE);
-    m_functions[FUNC_CONCAT] = new FuncLoader("FuncConcat", FUNC_CONCAT);
-
-    //m_functions[FUNC_FORMAT_NUMBER] = new FuncFormatNumber();
-    m_functions[FUNC_SYSTEM_PROPERTY] = new FuncLoader("FuncSystemProperty",
-            FUNC_SYSTEM_PROPERTY);
+      org.apache.xalan.templates.FuncKey.class;
+    m_functions[FUNC_LOCAL_PART] = 
+      org.apache.xpath.functions.FuncLocalPart.class;
+    m_functions[FUNC_NAMESPACE] = 
+      org.apache.xpath.functions.FuncNamespace.class;
+    m_functions[FUNC_QNAME] = org.apache.xpath.functions.FuncQname.class;
+    m_functions[FUNC_GENERATE_ID] = 
+      org.apache.xpath.functions.FuncGenerateId.class;
+    m_functions[FUNC_NOT] = org.apache.xpath.functions.FuncNot.class;
+    m_functions[FUNC_TRUE] = org.apache.xpath.functions.FuncTrue.class;
+    m_functions[FUNC_FALSE] = org.apache.xpath.functions.FuncFalse.class;
+    m_functions[FUNC_BOOLEAN] = org.apache.xpath.functions.FuncBoolean.class;
+    m_functions[FUNC_LANG] = org.apache.xpath.functions.FuncLang.class;
+    m_functions[FUNC_NUMBER] = org.apache.xpath.functions.FuncNumber.class;
+    m_functions[FUNC_FLOOR] = org.apache.xpath.functions.FuncFloor.class;
+    m_functions[FUNC_CEILING] = org.apache.xpath.functions.FuncCeiling.class;
+    m_functions[FUNC_ROUND] = org.apache.xpath.functions.FuncRound.class;
+    m_functions[FUNC_SUM] = org.apache.xpath.functions.FuncSum.class;
+    m_functions[FUNC_STRING] = org.apache.xpath.functions.FuncString.class;
+    m_functions[FUNC_STARTS_WITH] = 
+      org.apache.xpath.functions.FuncStartsWith.class;
+    m_functions[FUNC_CONTAINS] = org.apache.xpath.functions.FuncContains.class;
+    m_functions[FUNC_SUBSTRING_BEFORE] = 
+      org.apache.xpath.functions.FuncSubstringBefore.class;
+    m_functions[FUNC_SUBSTRING_AFTER] = 
+      org.apache.xpath.functions.FuncSubstringAfter.class;
+    m_functions[FUNC_NORMALIZE_SPACE] = 
+      org.apache.xpath.functions.FuncNormalizeSpace.class;
+    m_functions[FUNC_TRANSLATE] = 
+      org.apache.xpath.functions.FuncTranslate.class;
+    m_functions[FUNC_CONCAT] = org.apache.xpath.functions.FuncConcat.class;
+    m_functions[FUNC_SYSTEM_PROPERTY] = 
+      org.apache.xpath.functions.FuncSystemProperty.class;
     m_functions[FUNC_EXT_FUNCTION_AVAILABLE] =
-      new FuncLoader("FuncExtFunctionAvailable", FUNC_EXT_FUNCTION_AVAILABLE);
+      org.apache.xpath.functions.FuncExtFunctionAvailable.class;
     m_functions[FUNC_EXT_ELEM_AVAILABLE] =
-      new FuncLoader("FuncExtElementAvailable", FUNC_EXT_ELEM_AVAILABLE);
-    m_functions[FUNC_SUBSTRING] = new FuncLoader("FuncSubstring",
-            FUNC_SUBSTRING);
-    m_functions[FUNC_STRING_LENGTH] = new FuncLoader("FuncStringLength",
-            FUNC_STRING_LENGTH);
-    m_functions[FUNC_DOCLOCATION] = new FuncLoader("FuncDoclocation",
-            FUNC_DOCLOCATION);
+      org.apache.xpath.functions.FuncExtElementAvailable.class;
+    m_functions[FUNC_SUBSTRING] = 
+      org.apache.xpath.functions.FuncSubstring.class;
+    m_functions[FUNC_STRING_LENGTH] = 
+      org.apache.xpath.functions.FuncStringLength.class;
+    m_functions[FUNC_DOCLOCATION] = 
+      org.apache.xpath.functions.FuncDoclocation.class;
     m_functions[FUNC_UNPARSED_ENTITY_URI] =
-      new FuncLoader("FuncUnparsedEntityURI", FUNC_UNPARSED_ENTITY_URI);
+      org.apache.xpath.functions.FuncUnparsedEntityURI.class;
   }
 
+  static{
+          m_functionID.put(Keywords.FUNC_CURRENT_STRING,
+                          new Integer(FunctionTable.FUNC_CURRENT));
+          m_functionID.put(Keywords.FUNC_LAST_STRING,
+                          new Integer(FunctionTable.FUNC_LAST));
+          m_functionID.put(Keywords.FUNC_POSITION_STRING,
+                          new Integer(FunctionTable.FUNC_POSITION));
+          m_functionID.put(Keywords.FUNC_COUNT_STRING,
+                          new Integer(FunctionTable.FUNC_COUNT));
+          m_functionID.put(Keywords.FUNC_ID_STRING,
+                          new Integer(FunctionTable.FUNC_ID));
+          m_functionID.put(Keywords.FUNC_KEY_STRING,
+                          new Integer(FunctionTable.FUNC_KEY));
+          m_functionID.put(Keywords.FUNC_LOCAL_PART_STRING,
+                          new Integer(FunctionTable.FUNC_LOCAL_PART));
+          m_functionID.put(Keywords.FUNC_NAMESPACE_STRING,
+                          new Integer(FunctionTable.FUNC_NAMESPACE));
+          m_functionID.put(Keywords.FUNC_NAME_STRING,
+                          new Integer(FunctionTable.FUNC_QNAME));
+          m_functionID.put(Keywords.FUNC_GENERATE_ID_STRING,
+                          new Integer(FunctionTable.FUNC_GENERATE_ID));
+          m_functionID.put(Keywords.FUNC_NOT_STRING,
+                          new Integer(FunctionTable.FUNC_NOT));
+          m_functionID.put(Keywords.FUNC_TRUE_STRING,
+                          new Integer(FunctionTable.FUNC_TRUE));
+          m_functionID.put(Keywords.FUNC_FALSE_STRING,
+                          new Integer(FunctionTable.FUNC_FALSE));
+          m_functionID.put(Keywords.FUNC_BOOLEAN_STRING,
+                          new Integer(FunctionTable.FUNC_BOOLEAN));
+          m_functionID.put(Keywords.FUNC_LANG_STRING,
+                          new Integer(FunctionTable.FUNC_LANG));
+          m_functionID.put(Keywords.FUNC_NUMBER_STRING,
+                          new Integer(FunctionTable.FUNC_NUMBER));
+          m_functionID.put(Keywords.FUNC_FLOOR_STRING,
+                          new Integer(FunctionTable.FUNC_FLOOR));
+          m_functionID.put(Keywords.FUNC_CEILING_STRING,
+                          new Integer(FunctionTable.FUNC_CEILING));
+          m_functionID.put(Keywords.FUNC_ROUND_STRING,
+                          new Integer(FunctionTable.FUNC_ROUND));
+          m_functionID.put(Keywords.FUNC_SUM_STRING,
+                          new Integer(FunctionTable.FUNC_SUM));
+          m_functionID.put(Keywords.FUNC_STRING_STRING,
+                          new Integer(FunctionTable.FUNC_STRING));
+          m_functionID.put(Keywords.FUNC_STARTS_WITH_STRING,
+                          new Integer(FunctionTable.FUNC_STARTS_WITH));
+          m_functionID.put(Keywords.FUNC_CONTAINS_STRING,
+                          new Integer(FunctionTable.FUNC_CONTAINS));
+          m_functionID.put(Keywords.FUNC_SUBSTRING_BEFORE_STRING,
+                          new Integer(FunctionTable.FUNC_SUBSTRING_BEFORE));
+          m_functionID.put(Keywords.FUNC_SUBSTRING_AFTER_STRING,
+                          new Integer(FunctionTable.FUNC_SUBSTRING_AFTER));
+          m_functionID.put(Keywords.FUNC_NORMALIZE_SPACE_STRING,
+                          new Integer(FunctionTable.FUNC_NORMALIZE_SPACE));
+          m_functionID.put(Keywords.FUNC_TRANSLATE_STRING,
+                          new Integer(FunctionTable.FUNC_TRANSLATE));
+          m_functionID.put(Keywords.FUNC_CONCAT_STRING,
+                          new Integer(FunctionTable.FUNC_CONCAT));
+          m_functionID.put(Keywords.FUNC_SYSTEM_PROPERTY_STRING,
+                          new Integer(FunctionTable.FUNC_SYSTEM_PROPERTY));
+          m_functionID.put(Keywords.FUNC_EXT_FUNCTION_AVAILABLE_STRING,
+                        new Integer(FunctionTable.FUNC_EXT_FUNCTION_AVAILABLE));
+          m_functionID.put(Keywords.FUNC_EXT_ELEM_AVAILABLE_STRING,
+                          new Integer(FunctionTable.FUNC_EXT_ELEM_AVAILABLE));
+          m_functionID.put(Keywords.FUNC_SUBSTRING_STRING,
+                          new Integer(FunctionTable.FUNC_SUBSTRING));
+          m_functionID.put(Keywords.FUNC_STRING_LENGTH_STRING,
+                          new Integer(FunctionTable.FUNC_STRING_LENGTH));
+          m_functionID.put(Keywords.FUNC_UNPARSED_ENTITY_URI_STRING,
+                          new Integer(FunctionTable.FUNC_UNPARSED_ENTITY_URI));
+          m_functionID.put(Keywords.FUNC_DOCLOCATION_STRING,
+                          new Integer(FunctionTable.FUNC_DOCLOCATION));          
+  }
+  
   public FunctionTable(){
   }
   
@@ -231,7 +308,7 @@ public class FunctionTable
    */
   String getFunctionName(int funcID) {
       if (funcID < NUM_BUILT_IN_FUNCS) return m_functions[funcID].getName();
-      else return m_functions_xslt[funcID - NUM_BUILT_IN_FUNCS].getName();
+      else return m_functions_customer[funcID - NUM_BUILT_IN_FUNCS].getName();
   }
 
   /**
@@ -249,39 +326,80 @@ public class FunctionTable
   Function getFunction(int which)
           throws javax.xml.transform.TransformerException
   {
-      if (which < NUM_BUILT_IN_FUNCS) return m_functions[which].getFunction();
-      else return  m_functions_xslt[which - NUM_BUILT_IN_FUNCS].getFunction();
+          try{
+              if (which < NUM_BUILT_IN_FUNCS) 
+                  return (Function) m_functions[which].newInstance();
+              else 
+                  return (Function) m_functions_customer[
+                      which-NUM_BUILT_IN_FUNCS].newInstance();                  
+          }catch (IllegalAccessException ex){
+                  throw new TransformerException(ex.getMessage());
+          }catch (InstantiationException ex){
+                  throw new TransformerException(ex.getMessage());
+          }
   }
+  
+  /**
+   * Obtain a function ID from a given function name
+   * @param key the function name in a java.lang.String format.
+   * @return a function ID, which may correspond to one of the FUNC_XXX values
+   * found in {@link org.apache.xpath.compiler.FunctionTable}, but may be a 
+   * value installed by an external module.
+   */
+  Object getFunctionID(String key){
+          Object id = m_functionID_customer.get(key);
+          if (null == id) id = m_functionID.get(key);
+          return id;
+  }
+  
   /**
    * Install a built-in function.
-   * @param name The unqualified name of the function.
+   * @param name The unqualified name of the function, must not be null
    * @param func A Implementation of an XPath Function object.
    * @return the position of the function in the internal index.
    */
-  public int installFunction(String name, Expression func)
+  public int installFunction(String name, Class func)
   {
 
     int funcIndex;
-    Object funcIndexObj = Keywords.getFunction(name);
+    Object funcIndexObj = getFunctionID(name);
 
     if (null != funcIndexObj)
     {
       funcIndex = ((Integer) funcIndexObj).intValue();
+      
+      if (funcIndex < NUM_BUILT_IN_FUNCS){
+              funcIndex = m_funcNextFreeIndex++;
+              m_functionID_customer.put(name, new Integer(funcIndex)); 
+      }
+      m_functions_customer[funcIndex - NUM_BUILT_IN_FUNCS] = func;          
     }
     else
     {
-      funcIndex = m_funcNextFreeIndex;
-
-      m_funcNextFreeIndex++;
-
-      Keywords.putFunction(name, new Integer(funcIndex));
+            funcIndex = m_funcNextFreeIndex++;
+                          
+            m_functions_customer[funcIndex-NUM_BUILT_IN_FUNCS] = func;
+                    
+            m_functionID_customer.put(name, 
+                new Integer(funcIndex));   
     }
-
-    FuncLoader loader = new FuncLoader(func.getClass().getName(), funcIndex);
-
-    m_functions_xslt[funcIndex - NUM_BUILT_IN_FUNCS] = loader;
-
     return funcIndex;
   }
 
+  /**
+   * Tell if a built-in, non-namespaced function is available.
+   *
+   * @param methName The local name of the function.
+   *
+   * @return True if the function can be executed.
+   */
+  public boolean functionAvailable(String methName)
+  {
+      Object tblEntry = m_functionID.get(methName);
+      if (null != tblEntry) return true;
+      else{
+              tblEntry = m_functionID_customer.get(methName);
+              return (null != tblEntry)? true : false;
+      }
+  }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ package org.apache.xpath.functions;
 import org.apache.xalan.templates.Constants;
 import org.apache.xpath.ExtensionsProvider;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.compiler.Keywords;
+import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 
@@ -32,6 +32,8 @@ import org.apache.xpath.objects.XObject;
 public class FuncExtFunctionAvailable extends FunctionOneArg
 {
     static final long serialVersionUID = 5118814314918592241L;
+    
+    transient private FunctionTable m_functionTable = null;
 
   /**
    * Execute the function.  The function must return
@@ -70,7 +72,8 @@ public class FuncExtFunctionAvailable extends FunctionOneArg
     {
       try
       {
-        return Keywords.functionAvailable(methName) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+        if (null == m_functionTable) m_functionTable = new FunctionTable();
+        return m_functionTable.functionAvailable(methName) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
       }
       catch (Exception e)
       {
@@ -84,5 +87,16 @@ public class FuncExtFunctionAvailable extends FunctionOneArg
       return extProvider.functionAvailable(namespace, methName)
              ? XBoolean.S_TRUE : XBoolean.S_FALSE;
     }
+  }
+  
+  /**
+   * The function table is an instance field. In order to access this instance 
+   * field during evaluation, this method is called at compilation time to
+   * insert function table information for later usage. It should only be used
+   * during compiling of XPath expressions.
+   * @param aTable an instance of the function table
+   */
+  public void setFunctionTable(FunctionTable aTable){
+          m_functionTable = aTable;
   }
 }

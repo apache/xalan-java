@@ -97,12 +97,12 @@ public class StylesheetHandler extends DefaultHandler
   public StylesheetHandler(TransformerFactoryImpl processor)
           throws TransformerConfigurationException
   {
-    Function func = new org.apache.xalan.templates.FuncDocument();
+    Class func = org.apache.xalan.templates.FuncDocument.class;
     m_funcTable.installFunction("document", func);
 
     // func = new org.apache.xalan.templates.FuncKey();
     // FunctionTable.installFunction("key", func);
-    func = new org.apache.xalan.templates.FuncFormatNumb();
+    func = org.apache.xalan.templates.FuncFormatNumb.class;
 
     m_funcTable.installFunction("format-number", func);
 

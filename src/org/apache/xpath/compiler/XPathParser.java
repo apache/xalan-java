@@ -103,6 +103,7 @@ public class XPathParser
 
     m_ops = compiler;
     m_namespaceContext = namespaceContext;
+    m_functionTable = compiler.getFunctionTable();
 
     Lexer lexer = new Lexer(compiler, namespaceContext, this);
 
@@ -178,6 +179,7 @@ public class XPathParser
 
     m_ops = compiler;
     m_namespaceContext = namespaceContext;
+    m_functionTable = compiler.getFunctionTable();
 
     Lexer lexer = new Lexer(compiler, namespaceContext, this);
 
@@ -220,6 +222,9 @@ public class XPathParser
   
   /** The source location of the XPath. */
   javax.xml.transform.SourceLocator m_sourceLocator;
+  
+  /** The table contains build-in functions and customized functions */
+  private FunctionTable m_functionTable;
 
   /**
    * Allow an application to register an error event handler, where syntax 
@@ -704,10 +709,16 @@ public class XPathParser
   {
 
     int tok;
+    
+    Object id;
 
     try
     {
-      tok = ((Integer) (Keywords.getFunction(key))).intValue();
+      // These are nodetests, xpathparser treats them as functions when parsing
+      // a FilterExpr. 
+      id = Keywords.lookupNodeTest(key);
+      if (null == id) id = m_functionTable.getFunctionID(key);
+      tok = ((Integer) id).intValue();
     }
     catch (NullPointerException npe)
     {
