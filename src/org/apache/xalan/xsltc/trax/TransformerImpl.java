@@ -1237,4 +1237,23 @@ public final class TransformerImpl extends Transformer
         }
     }
 
+    /**
+     * This method resets  the Transformer to its original configuration
+     * Transformer code is reset to the same state it was when it was
+     * created
+     * @since 1.5
+     */
+    public void reset() {
+
+        _method = null;
+        _encoding = null;
+        _sourceSystemId = null;
+        _errorListener = this;
+        _uriResolver = null;
+        _dom = null;
+        _parameters = null;
+        _indentNumber = 0;
+        setOutputProperties (null);
+
+    }
 }
