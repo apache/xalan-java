@@ -132,6 +132,26 @@ public class TransformerIdentityImpl extends Transformer
   }
 
   /**
+   * Reset the status of the transformer.
+   */
+  public void reset()
+  {
+    m_flushedStartDoc = false;
+    m_foundFirstElement = false;
+    m_outputStream = null;
+    m_params.clear();
+    m_result = null;
+    m_resultContentHandler = null;
+    m_resultDeclHandler = null;
+    m_resultDTDHandler = null;
+    m_resultLexicalHandler = null;
+    m_serializer = null;
+    m_systemID = null;
+    m_URIResolver = null;
+    m_outputFormat = new OutputProperties(Method.XML);
+  }
+
+  /**
    * Create a result ContentHandler from a Result object, based
    * on the current OutputProperties.
    *
@@ -165,6 +185,7 @@ public class TransformerIdentityImpl extends Transformer
     {
       DOMResult domResult = (DOMResult) outputTarget;
       Node outputNode = domResult.getNode();
+      Node nextSibling = domResult.getNextSibling();
       Document doc;
       short type;
 
@@ -197,11 +218,16 @@ public class TransformerIdentityImpl extends Transformer
         ((DOMResult) outputTarget).setNode(outputNode);
       }
 
-      m_resultContentHandler =
+      DOMBuilder domBuilder =
         (Node.DOCUMENT_FRAGMENT_NODE == type)
         ? new DOMBuilder(doc, (DocumentFragment) outputNode)
         : new DOMBuilder(doc, outputNode);
-      m_resultLexicalHandler = (LexicalHandler) m_resultContentHandler;
+      
+      if (nextSibling != null)
+        domBuilder.setNextSibling(nextSibling);
+      
+      m_resultContentHandler = domBuilder;
+      m_resultLexicalHandler = domBuilder;
     }
     else if (outputTarget instanceof StreamResult)
     {

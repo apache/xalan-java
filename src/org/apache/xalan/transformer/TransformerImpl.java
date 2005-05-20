@@ -1037,6 +1037,7 @@ public class TransformerImpl extends Transformer
       if (outputTarget instanceof DOMResult)
       {
         outputNode = ((DOMResult) outputTarget).getNode();
+        org.w3c.dom.Node nextSibling = ((DOMResult)outputTarget).getNextSibling();
 
         org.w3c.dom.Document doc;
         short type;
@@ -1057,10 +1058,14 @@ public class TransformerImpl extends Transformer
           ((DOMResult) outputTarget).setNode(outputNode);
         }
 
-        ContentHandler handler =
+        DOMBuilder handler =
           (org.w3c.dom.Node.DOCUMENT_FRAGMENT_NODE == type)
           ? new DOMBuilder(doc, (org.w3c.dom.DocumentFragment) outputNode)
           : new DOMBuilder(doc, outputNode);
+        
+        if (nextSibling != null)
+          handler.setNextSibling(nextSibling);
+        
           String encoding = format.getProperty(OutputKeys.ENCODING);          
           xoh = new ToXMLSAXHandler(handler, (LexicalHandler)handler, encoding);
       }
