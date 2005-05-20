@@ -336,6 +336,7 @@ public final class TransformerImpl extends Transformer
             }
 	    else if (result instanceof DOMResult) {
 		_tohFactory.setNode(((DOMResult) result).getNode());
+		_tohFactory.setNextSibling(((DOMResult) result).getNextSibling());
 		_tohFactory.setOutputType(TransletOutputHandlerFactory.DOM);
 		return _tohFactory.getSerializationHandler();
             }

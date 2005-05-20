@@ -54,6 +54,7 @@ public class TransletOutputHandlerFactory {
     private OutputStream _ostream  = System.out;
     private Writer _writer         = null;
     private Node           _node   = null;
+    private Node   _nextSibling    = null;
     private int _indentNumber      = -1;
     private ContentHandler _handler    = null;
     private LexicalHandler _lexHandler = null;
@@ -99,6 +100,10 @@ public class TransletOutputHandlerFactory {
     public Node getNode() {
 	return (_handler instanceof SAX2DOM) ? ((SAX2DOM)_handler).getDOM() 
 	   : null;
+    }
+    
+    public void setNextSibling(Node nextSibling) {
+        _nextSibling = nextSibling;
     }
 
     public void setIndentNumber(int value) {
@@ -154,7 +159,7 @@ public class TransletOutputHandlerFactory {
                 return result;
 
             case DOM :
-                _handler = (_node != null) ? new SAX2DOM(_node) : new SAX2DOM();
+                _handler = (_node != null) ? new SAX2DOM(_node, _nextSibling) : new SAX2DOM();
                 _lexHandler = (LexicalHandler) _handler;
                 // falls through
             case SAX :

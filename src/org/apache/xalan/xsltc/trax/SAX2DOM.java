@@ -48,6 +48,7 @@ public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
 
     private Node _root = null;
     private Document _document = null;
+    private Node _nextSibling = null;
     private Stack _nodeStk = new Stack();
     private Vector _namespaceDecls = null;
     private Node _lastSibling = null;
@@ -59,7 +60,7 @@ public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
 	_root = _document;
     }
 
-    public SAX2DOM(Node root) throws ParserConfigurationException {
+    public SAX2DOM(Node root, Node nextSibling) throws ParserConfigurationException {
 	_root = root;
 	if (root instanceof Document) {
 	  _document = (Document)root;
@@ -73,6 +74,12 @@ public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
 	  _document = factory.newDocumentBuilder().newDocument();
 	  _root = _document;
 	}
+	
+	_nextSibling = nextSibling;
+    }
+    
+    public SAX2DOM(Node root) throws ParserConfigurationException {
+        this(root, null);
     }
 
     public Node getDOM() {
@@ -88,9 +95,13 @@ public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
             if( _lastSibling != null && _lastSibling.getNodeType() == Node.TEXT_NODE ){
                   ((Text)_lastSibling).appendData(text);
             }
-            else{
+            else if (last == _root && _nextSibling != null) {
+                _lastSibling = last.insertBefore(_document.createTextNode(text), _nextSibling);
+            }
+            else {
                 _lastSibling = last.appendChild(_document.createTextNode(text));
             }
+            
         }
     }
 
@@ -139,7 +150,13 @@ public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
 
 	// Append this new node onto current stack node
 	Node last = (Node)_nodeStk.peek();
-	last.appendChild(tmp);
+	
+	// If the SAX2DOM is created with a non-null next sibling node,
+	// insert the result nodes before the next sibling under the root.
+	if (last == _root && _nextSibling != null)
+	    last.insertBefore(tmp, _nextSibling);
+	else
+	    last.appendChild(tmp);
 
 	// Push this node onto stack
 	_nodeStk.push(tmp);
@@ -178,7 +195,11 @@ public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
 	ProcessingInstruction pi = _document.createProcessingInstruction(
 		target, data);
 	if (pi != null){
-          last.appendChild(pi);
+          if (last == _root && _nextSibling != null)
+              last.insertBefore(pi, _nextSibling);
+          else
+              last.appendChild(pi);
+          
           _lastSibling = pi;
         }
     }
@@ -205,7 +226,11 @@ public class SAX2DOM implements ContentHandler, LexicalHandler, Constants {
 	final Node last = (Node)_nodeStk.peek();
 	Comment comment = _document.createComment(new String(ch,start,length));
 	if (comment != null){
-          last.appendChild(comment);
+          if (last == _root && _nextSibling != null)
+              last.insertBefore(comment, _nextSibling);
+          else
+              last.appendChild(comment);
+          
           _lastSibling = comment;
         }
     }
