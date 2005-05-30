@@ -386,6 +386,14 @@ public class XSLTErrorResources extends ListResourceBundle
 	 "ER_NOT_ALLOWED_IN_POSITION";
   public static final String ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION = 
 	 "ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION";
+  public static final String ER_NAMESPACE_CONTEXT_NULL_NAMESPACE =
+  	 "ER_NAMESPACE_CONTEXT_NULL_NAMESPACE";
+  public static final String ER_NAMESPACE_CONTEXT_NULL_PREFIX =
+ 	 "ER_NAMESPACE_CONTEXT_NULL_PREFIX";
+  public static final String ER_XPATH_RESOLVER_NULL_QNAME =
+	 "ER_XPATH_RESOLVER_NULL_QNAME";
+  public static final String ER_XPATH_RESOLVER_NEGATIVE_ARITY =
+	 "ER_XPATH_RESOLVER_NEGATIVE_ARITY";
   public static final String INVALID_TCHAR = "INVALID_TCHAR";
   public static final String INVALID_QNAME = "INVALID_QNAME";
   public static final String INVALID_ENUM = "INVALID_ENUM";
@@ -2148,6 +2156,17 @@ public class XSLTErrorResources extends ListResourceBundle
     { ER_INVALID_NAMESPACE_URI_VALUE_FOR_RESULT_PREFIX,
       "The result-prefix attribute of an xsl:namespace-alias element has the value ''{0}'', but there is no namespace declaration for the prefix ''{0}'' in scope for the element."},
 
+    { ER_NAMESPACE_CONTEXT_NULL_NAMESPACE, 		
+      "Cannot get the prefix for a null namespace uri."},
+
+    { ER_NAMESPACE_CONTEXT_NULL_PREFIX, 		
+      "Cannot get the namespace uri for null prefix."},
+
+    { ER_XPATH_RESOLVER_NULL_QNAME, 		
+      "The function name cannot be null."},
+
+    { ER_XPATH_RESOLVER_NEGATIVE_ARITY, 		
+      "The arity cannot be negative."},
   // Warnings...
 
   /** WG_FOUND_CURLYBRACE          */
