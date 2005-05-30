@@ -191,8 +191,8 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
 
     try
     {
-      TransformerImpl trans = 
-          (TransformerImpl)exprContext.getXPathContext().getOwnerObject();
+      TransformerImpl trans = (exprContext != null) ?
+          (TransformerImpl)exprContext.getXPathContext().getOwnerObject() : null;
       if (funcName.equals("new")) {                   // Handle constructor call
 
         methodArgs = new Object[args.size()];
@@ -201,7 +201,10 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
         {
           methodArgs[i] = args.elementAt(i);
         }
-        Constructor c = (Constructor) getFromCache(methodKey, null, methodArgs);
+        Constructor c = null;
+        if (methodKey != null)
+          c = (Constructor) getFromCache(methodKey, null, methodArgs);
+        
         if (c != null && !trans.getDebug())
         {
           try
@@ -224,8 +227,10 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
                                           methodArgs,
                                           convertedArgs,
                                           exprContext);
-        putToCache(methodKey, null, methodArgs, c);
-        if (trans.getDebug()) {            
+        if (methodKey != null)
+          putToCache(methodKey, null, methodArgs, c);
+        
+        if (trans != null && trans.getDebug()) {            
             trans.getTraceManager().fireExtensionEvent(new 
                     ExtensionEvent(trans, c, convertedArgs[0]));
             Object result;
@@ -253,7 +258,10 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
         {
           methodArgs[i] = args.elementAt(i);
         }
-        Method m = (Method) getFromCache(methodKey, null, methodArgs);
+        Method m = null;
+        if (methodKey != null)
+          m = (Method) getFromCache(methodKey, null, methodArgs);
+        
         if (m != null && !trans.getDebug())
         {
           try
@@ -317,10 +325,11 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
                                      convertedArgs,
                                      exprContext,
                                      resolveType);
-        putToCache(methodKey, null, methodArgs, m);
+        if (methodKey != null)
+          putToCache(methodKey, null, methodArgs, m);
 
         if (MethodResolver.DYNAMIC == resolveType) {         // First argument was object type
-          if (trans.getDebug()) {
+          if (trans != null && trans.getDebug()) {
             trans.getTraceManager().fireExtensionEvent(m, targetObject, 
                         convertedArgs[0]);
             Object result;
@@ -339,7 +348,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
         else                                  // First arg was not object.  See if we need the implied object.
         {
           if (Modifier.isStatic(m.getModifiers())) {
-            if (trans.getDebug()) {
+            if (trans != null && trans.getDebug()) {
               trans.getTraceManager().fireExtensionEvent(m, null, 
                         convertedArgs[0]);
               Object result;
@@ -359,7 +368,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
           {
             if (null == m_defaultInstance)
             {
-              if (trans.getDebug()) {
+              if (trans != null && trans.getDebug()) {
                 trans.getTraceManager().fireExtensionEvent(new 
                         ExtensionEvent(trans, m_classObj));
                 try {
@@ -373,7 +382,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
               }    else
                   m_defaultInstance = m_classObj.newInstance();
             }
-            if (trans.getDebug()) {
+            if (trans != null && trans.getDebug()) {
               trans.getTraceManager().fireExtensionEvent(m, m_defaultInstance, 
                     convertedArgs[0]);
               Object result;
