@@ -375,9 +375,10 @@ public final class ToHTMLStream extends ToStream
         elemDesc.setAttr("COMPACT", ElemDesc.ATTREMPTY);
            
         // ----------------------------------------------
-        // Netscape 4 extension
+        
         elemDesc = (ElemDesc) m_elementFlags.get("DIV");
-        elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
+        elemDesc.setAttr("SRC", ElemDesc.ATTRURL); // Netscape 4 extension
+        elemDesc.setAttr("NOWRAP", ElemDesc.ATTREMPTY); // Internet-Explorer extension
    
         // ----------------------------------------------        
         elemDesc = (ElemDesc) m_elementFlags.get("DL");
@@ -483,6 +484,10 @@ public final class ToHTMLStream extends ToStream
         elemDesc.setAttr("DISABLED", ElemDesc.ATTREMPTY);
         elemDesc.setAttr("MULTIPLE", ElemDesc.ATTREMPTY);
 
+        // ----------------------------------------------
+        elemDesc = (ElemDesc) m_elementFlags.get("TABLE");
+        elemDesc.setAttr("NOWRAP", ElemDesc.ATTREMPTY); // Internet-Explorer extension
+        
         // ----------------------------------------------        
         elemDesc = (ElemDesc) m_elementFlags.get("TD");
         elemDesc.setAttr("NOWRAP", ElemDesc.ATTREMPTY);
@@ -494,6 +499,12 @@ public final class ToHTMLStream extends ToStream
        
         // ----------------------------------------------                
         elemDesc = (ElemDesc) m_elementFlags.get("TH");
+        elemDesc.setAttr("NOWRAP", ElemDesc.ATTREMPTY);
+        
+        // ----------------------------------------------
+        // The nowrap attribute of a tr element is both
+        // a Netscape and Internet-Explorer extension                
+        elemDesc = (ElemDesc) m_elementFlags.get("TR");
         elemDesc.setAttr("NOWRAP", ElemDesc.ATTREMPTY);
         
         // ----------------------------------------------        
