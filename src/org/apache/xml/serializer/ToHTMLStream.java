@@ -62,6 +62,9 @@ public final class ToHTMLStream extends ToStream
     static final Trie m_elementFlags = new Trie();
 
     static {
+        initTagReference(m_elementFlags);
+    }
+    static void initTagReference(Trie m_elementFlags) {
 
         // HTML 4.0 loose DTD
         m_elementFlags.put("BASEFONT", new ElemDesc(0 | ElemDesc.EMPTY));
@@ -1967,7 +1970,7 @@ public final class ToHTMLStream extends ToStream
         m_specialEscapeURLs = true;     
     }
     
-    private static class Trie
+    static class Trie
     {
         /**
          * A digital search trie for 7-bit ASCII text
