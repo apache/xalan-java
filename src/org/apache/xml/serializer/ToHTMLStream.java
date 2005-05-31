@@ -318,7 +318,8 @@ public final class ToHTMLStream extends ToStream
                     | ElemDesc.BLOCK
                     | ElemDesc.BLOCKFORM
                     | ElemDesc.BLOCKFORMFIELDSET));
-        // NS4 extensions
+                    
+        // Netscape 4 extension
         m_elementFlags.put(
             "LAYER",
             new ElemDesc(
@@ -326,6 +327,7 @@ public final class ToHTMLStream extends ToStream
                     | ElemDesc.BLOCK
                     | ElemDesc.BLOCKFORM
                     | ElemDesc.BLOCKFORMFIELDSET));
+        // Netscape 4 extension                    
         m_elementFlags.put(
             "ILAYER",
             new ElemDesc(
@@ -334,127 +336,166 @@ public final class ToHTMLStream extends ToStream
                     | ElemDesc.BLOCKFORM
                     | ElemDesc.BLOCKFORMFIELDSET));
 
+
+        // NOW FOR ATTRIBUTE INFORMATION . . .
         ElemDesc elemDesc;
 
-        elemDesc = (ElemDesc) m_elementFlags.get("AREA");
 
+        // ----------------------------------------------
+        elemDesc = (ElemDesc) m_elementFlags.get("A");
+        elemDesc.setAttr("HREF", ElemDesc.ATTRURL);
+        elemDesc.setAttr("NAME", ElemDesc.ATTRURL);
+        
+        // ----------------------------------------------
+        elemDesc = (ElemDesc) m_elementFlags.get("AREA");
         elemDesc.setAttr("HREF", ElemDesc.ATTRURL);
         elemDesc.setAttr("NOHREF", ElemDesc.ATTREMPTY);
 
+        // ----------------------------------------------
         elemDesc = (ElemDesc) m_elementFlags.get("BASE");
-
         elemDesc.setAttr("HREF", ElemDesc.ATTRURL);
 
+        // ----------------------------------------------
+        elemDesc = (ElemDesc) m_elementFlags.get("BUTTON");
+        elemDesc.setAttr("DISABLED", ElemDesc.ATTREMPTY);
+
+        // ----------------------------------------------
         elemDesc = (ElemDesc) m_elementFlags.get("BLOCKQUOTE");
-
         elemDesc.setAttr("CITE", ElemDesc.ATTRURL);
 
-        elemDesc = (ElemDesc) m_elementFlags.get("Q");
-
-        elemDesc.setAttr("CITE", ElemDesc.ATTRURL);
-
-        elemDesc = (ElemDesc) m_elementFlags.get("INS");
-
-        elemDesc.setAttr("CITE", ElemDesc.ATTRURL);
-
+        // ----------------------------------------------
         elemDesc = (ElemDesc) m_elementFlags.get("DEL");
-
         elemDesc.setAttr("CITE", ElemDesc.ATTRURL);
+     
+        // ----------------------------------------------
+        elemDesc = (ElemDesc) m_elementFlags.get("DIR");
+        elemDesc.setAttr("COMPACT", ElemDesc.ATTREMPTY);
+           
+        // ----------------------------------------------
+        // Netscape 4 extension
+        elemDesc = (ElemDesc) m_elementFlags.get("DIV");
+        elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
+   
+        // ----------------------------------------------        
+        elemDesc = (ElemDesc) m_elementFlags.get("DL");
+        elemDesc.setAttr("COMPACT", ElemDesc.ATTREMPTY);
+           
+        // ----------------------------------------------
+        elemDesc = (ElemDesc) m_elementFlags.get("FORM");
+        elemDesc.setAttr("ACTION", ElemDesc.ATTRURL);
 
-        elemDesc = (ElemDesc) m_elementFlags.get("A");
+        // ----------------------------------------------
+        // Attribution to: "Voytenko, Dimitry" <DVoytenko@SECTORBASE.COM>
+        elemDesc = (ElemDesc) m_elementFlags.get("FRAME");
+        elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
+        elemDesc.setAttr("LONGDESC", ElemDesc.ATTRURL);
+        elemDesc.setAttr("NORESIZE",ElemDesc.ATTREMPTY);
 
-        elemDesc.setAttr("HREF", ElemDesc.ATTRURL);
-        elemDesc.setAttr("NAME", ElemDesc.ATTRURL);
+        // ----------------------------------------------
+        elemDesc = (ElemDesc) m_elementFlags.get("HEAD");
+        elemDesc.setAttr("PROFILE", ElemDesc.ATTRURL);
 
-        elemDesc = (ElemDesc) m_elementFlags.get("LINK");
-        elemDesc.setAttr("HREF", ElemDesc.ATTRURL);
+        // ----------------------------------------------        
+        elemDesc = (ElemDesc) m_elementFlags.get("HR");
+        elemDesc.setAttr("NOSHADE", ElemDesc.ATTREMPTY);
+        
+        // ----------------------------------------------
+        // HTML 4.0, section 16.5
+        elemDesc = (ElemDesc) m_elementFlags.get("IFRAME");
+        elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
+        elemDesc.setAttr("LONGDESC", ElemDesc.ATTRURL);
 
+        // ----------------------------------------------
+        // Netscape 4 extension
+        elemDesc = (ElemDesc) m_elementFlags.get("ILAYER");
+        elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
+
+        // ----------------------------------------------
+        elemDesc = (ElemDesc) m_elementFlags.get("IMG");
+        elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
+        elemDesc.setAttr("LONGDESC", ElemDesc.ATTRURL);
+        elemDesc.setAttr("USEMAP", ElemDesc.ATTRURL);
+        elemDesc.setAttr("ISMAP", ElemDesc.ATTREMPTY);
+
+        // ----------------------------------------------
         elemDesc = (ElemDesc) m_elementFlags.get("INPUT");
-
         elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
         elemDesc.setAttr("USEMAP", ElemDesc.ATTRURL);
         elemDesc.setAttr("CHECKED", ElemDesc.ATTREMPTY);
         elemDesc.setAttr("DISABLED", ElemDesc.ATTREMPTY);
         elemDesc.setAttr("ISMAP", ElemDesc.ATTREMPTY);
         elemDesc.setAttr("READONLY", ElemDesc.ATTREMPTY);
+        
+        // ----------------------------------------------
+        elemDesc = (ElemDesc) m_elementFlags.get("INS");
+        elemDesc.setAttr("CITE", ElemDesc.ATTRURL);
 
-        elemDesc = (ElemDesc) m_elementFlags.get("SELECT");
-
-        elemDesc.setAttr("DISABLED", ElemDesc.ATTREMPTY);
-        elemDesc.setAttr("MULTIPLE", ElemDesc.ATTREMPTY);
-
-        elemDesc = (ElemDesc) m_elementFlags.get("OPTGROUP");
-
-        elemDesc.setAttr("DISABLED", ElemDesc.ATTREMPTY);
-
-        elemDesc = (ElemDesc) m_elementFlags.get("OPTION");
-
-        elemDesc.setAttr("SELECTED", ElemDesc.ATTREMPTY);
-        elemDesc.setAttr("DISABLED", ElemDesc.ATTREMPTY);
-
-        elemDesc = (ElemDesc) m_elementFlags.get("TEXTAREA");
-
-        elemDesc.setAttr("DISABLED", ElemDesc.ATTREMPTY);
-        elemDesc.setAttr("READONLY", ElemDesc.ATTREMPTY);
-
-        elemDesc = (ElemDesc) m_elementFlags.get("BUTTON");
-
-        elemDesc.setAttr("DISABLED", ElemDesc.ATTREMPTY);
-
-        elemDesc = (ElemDesc) m_elementFlags.get("SCRIPT");
-
+        // ----------------------------------------------
+        // Netscape 4 extension
+        elemDesc = (ElemDesc) m_elementFlags.get("LAYER");
         elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
-        elemDesc.setAttr("FOR", ElemDesc.ATTRURL);
-        elemDesc.setAttr("DEFER", ElemDesc.ATTREMPTY);
 
-        elemDesc = (ElemDesc) m_elementFlags.get("IMG");
-
-        elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
-        elemDesc.setAttr("LONGDESC", ElemDesc.ATTRURL);
-        elemDesc.setAttr("USEMAP", ElemDesc.ATTRURL);
-        elemDesc.setAttr("ISMAP", ElemDesc.ATTREMPTY);
-
+        // ----------------------------------------------
+        elemDesc = (ElemDesc) m_elementFlags.get("LINK");
+        elemDesc.setAttr("HREF", ElemDesc.ATTRURL);
+       
+        // ----------------------------------------------       
+        elemDesc = (ElemDesc) m_elementFlags.get("MENU");
+        elemDesc.setAttr("COMPACT", ElemDesc.ATTREMPTY);
+        
+        // ----------------------------------------------
         elemDesc = (ElemDesc) m_elementFlags.get("OBJECT");
-
         elemDesc.setAttr("CLASSID", ElemDesc.ATTRURL);
         elemDesc.setAttr("CODEBASE", ElemDesc.ATTRURL);
         elemDesc.setAttr("DATA", ElemDesc.ATTRURL);
         elemDesc.setAttr("ARCHIVE", ElemDesc.ATTRURL);
         elemDesc.setAttr("USEMAP", ElemDesc.ATTRURL);
         elemDesc.setAttr("DECLARE", ElemDesc.ATTREMPTY);
+        
+        // ----------------------------------------------        
+        elemDesc = (ElemDesc) m_elementFlags.get("OL");
+        elemDesc.setAttr("COMPACT", ElemDesc.ATTREMPTY);
+        
+        // ----------------------------------------------
+        elemDesc = (ElemDesc) m_elementFlags.get("OPTGROUP");
+        elemDesc.setAttr("DISABLED", ElemDesc.ATTREMPTY);
 
-        elemDesc = (ElemDesc) m_elementFlags.get("FORM");
+        // ----------------------------------------------
+        elemDesc = (ElemDesc) m_elementFlags.get("OPTION");
+        elemDesc.setAttr("SELECTED", ElemDesc.ATTREMPTY);
+        elemDesc.setAttr("DISABLED", ElemDesc.ATTREMPTY);
+        
+        // ----------------------------------------------
+        elemDesc = (ElemDesc) m_elementFlags.get("Q");
+        elemDesc.setAttr("CITE", ElemDesc.ATTRURL);
 
-        elemDesc.setAttr("ACTION", ElemDesc.ATTRURL);
-
-        elemDesc = (ElemDesc) m_elementFlags.get("HEAD");
-
-        elemDesc.setAttr("PROFILE", ElemDesc.ATTRURL);
-
-        // Attribution to: "Voytenko, Dimitry" <DVoytenko@SECTORBASE.COM>
-        elemDesc = (ElemDesc) m_elementFlags.get("FRAME");
-
+        // ----------------------------------------------
+        elemDesc = (ElemDesc) m_elementFlags.get("SCRIPT");
         elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
-        elemDesc.setAttr("LONGDESC", ElemDesc.ATTRURL);
+        elemDesc.setAttr("FOR", ElemDesc.ATTRURL);
+        elemDesc.setAttr("DEFER", ElemDesc.ATTREMPTY);
 
-        // HTML 4.0, section 16.5
-        elemDesc = (ElemDesc) m_elementFlags.get("IFRAME");
+        // ----------------------------------------------
+        elemDesc = (ElemDesc) m_elementFlags.get("SELECT");
+        elemDesc.setAttr("DISABLED", ElemDesc.ATTREMPTY);
+        elemDesc.setAttr("MULTIPLE", ElemDesc.ATTREMPTY);
 
-        elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
-        elemDesc.setAttr("LONGDESC", ElemDesc.ATTRURL);
+        // ----------------------------------------------        
+        elemDesc = (ElemDesc) m_elementFlags.get("TD");
+        elemDesc.setAttr("NOWRAP", ElemDesc.ATTREMPTY);
 
-        // NS4 extensions
-        elemDesc = (ElemDesc) m_elementFlags.get("LAYER");
-
-        elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
-
-        elemDesc = (ElemDesc) m_elementFlags.get("ILAYER");
-
-        elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
-
-        elemDesc = (ElemDesc) m_elementFlags.get("DIV");
-
-        elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
+        // ----------------------------------------------
+        elemDesc = (ElemDesc) m_elementFlags.get("TEXTAREA");
+        elemDesc.setAttr("DISABLED", ElemDesc.ATTREMPTY);
+        elemDesc.setAttr("READONLY", ElemDesc.ATTREMPTY);
+       
+        // ----------------------------------------------                
+        elemDesc = (ElemDesc) m_elementFlags.get("TH");
+        elemDesc.setAttr("NOWRAP", ElemDesc.ATTREMPTY);
+        
+        // ----------------------------------------------        
+        elemDesc = (ElemDesc) m_elementFlags.get("UL");
+        elemDesc.setAttr("COMPACT", ElemDesc.ATTREMPTY);
     }
 
     /**
