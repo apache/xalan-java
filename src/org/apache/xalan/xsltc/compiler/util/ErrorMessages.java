@@ -931,8 +931,17 @@ public class ErrorMessages extends ListResourceBundle {
          * attribute.
          */
         {ErrorMsg.INVALID_METHOD_IN_OUTPUT,
-        "The method attribute of an <xsl:output> element had the value ''{0}''.  The value must be one of 'xml', 'html', 'text', or qname-but-not-ncname"}
+        "The method attribute of an <xsl:output> element had the value ''{0}''.  The value must be one of 'xml', 'html', 'text', or qname-but-not-ncname"},
+        
+        {ErrorMsg.JAXP_GET_FEATURE_NULL_NAME,
+        "The feature name cannot be null in TransformerFactory.getFeature(String name)."},
+        
+        {ErrorMsg.JAXP_SET_FEATURE_NULL_NAME,
+        "The feature name cannot be null in TransformerFactory.setFeature(String name, boolean value)."},
+
+        {ErrorMsg.JAXP_UNSUPPORTED_FEATURE,
+        "Cannot set the feature ''{0}'' on this TransformerFactory."}
+
     };
     }
-
 }

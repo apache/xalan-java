@@ -38,6 +38,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.xml.sax.XMLFilter;
 
 /**
@@ -175,24 +176,20 @@ public class SmartTransformerFactoryImpl extends SAXTransformerFactory
 
 	// feature name cannot be null
 	if (name == null) {
-	    throw new NullPointerException(
-		"Trying to set a feature with a null name: "
-		+ CLASS_NAME + "#setFeature(null, " + value + ")"
-		);
+            ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_SET_FEATURE_NULL_NAME);
+    	    throw new NullPointerException(err.toString());
 	}
-		
 	// secure processing?
-	if (name.equals(XMLConstants.FEATURE_SECURE_PROCESSING)) {
+	else if (name.equals(XMLConstants.FEATURE_SECURE_PROCESSING)) {
 	    featureSecureProcessing = value;		
 	    // all done processing feature
 	    return;
 	}
-		
-	// unknown feature
-	throw new TransformerConfigurationException(
-		"Trying to set the unknown feature \"" + name + "\": "
-		+ CLASS_NAME + "#setFeature(" + name + ", " + value + ")"
-		);			
+	else {	
+	    // unknown feature
+            ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_UNSUPPORTED_FEATURE, name);
+            throw new TransformerConfigurationException(err.toString());
+        }
     }
 
     /**
@@ -217,10 +214,8 @@ public class SmartTransformerFactoryImpl extends SAXTransformerFactory
 		
 	// feature name cannot be null
 	if (name == null) {
-	    throw new NullPointerException(
-		"Trying to get a feature with a null name: "
-		+ CLASS_NAME
-		+ "#getFeature(null)");
+    	    ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_GET_FEATURE_NULL_NAME);
+    	    throw new NullPointerException(err.toString());
 	}
 
 	// Inefficient, but it really does not matter in a function like this

@@ -117,6 +117,9 @@ public final class ErrorMsg {
     public static final String XSLTC_SOURCE_ERR = "XSLTC_SOURCE_ERR";
     public static final String ER_RESULT_NULL = "ER_RESULT_NULL";
     public static final String JAXP_INVALID_SET_PARAM_VALUE = "JAXP_INVALID_SET_PARAM_VALUE";        
+    public static final String JAXP_SET_FEATURE_NULL_NAME = "JAXP_SET_FEATURE_NULL_NAME";
+    public static final String JAXP_GET_FEATURE_NULL_NAME = "JAXP_GET_FEATURE_NULL_NAME";
+    public static final String JAXP_UNSUPPORTED_FEATURE = "JAXP_UNSUPPORTED_FEATURE";
 
     // Command-line error messages
     public static final String COMPILE_STDIN_ERR = "COMPILE_STDIN_ERR";

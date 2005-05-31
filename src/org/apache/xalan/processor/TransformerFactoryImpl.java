@@ -386,10 +386,9 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
 
 	// feature name cannot be null
 	if (name == null) {
-		throw new NullPointerException(
-			"Trying to set a feature with a null name: "
-			+ CLASS_NAME + "#setFeature(null, " + value + ")"
-			);
+	    throw new NullPointerException(
+                XSLMessages.createMessage(
+                    XSLTErrorResources.ER_SET_FEATURE_NULL_NAME, null));    
 	}
 		
 	// secure processing?
@@ -400,10 +399,10 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
 	}
 	
 	// unknown feature
-	throw new TransformerConfigurationException(
-		"Trying to set the unknown feature \"" + name + "\": "
-		+ CLASS_NAME + "#setFeature(" + name + ", " + value + ")"
-		);			
+        throw new TransformerConfigurationException(
+            XSLMessages.createMessage(
+              XSLTErrorResources.ER_UNSUPPORTED_FEATURE, 
+              new Object[] {name}));
   }
 
   /**
@@ -423,9 +422,8 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
     // feature name cannot be null
     if (name == null) {
 	throw new NullPointerException(
-		"Trying to get a feature with a null name: "
-		+ CLASS_NAME
-		+ "#getFeature(null)");
+            XSLMessages.createMessage(
+                XSLTErrorResources.ER_GET_FEATURE_NULL_NAME, null));    
     }
 	  	
     // Try first with identity comparison, which 

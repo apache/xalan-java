@@ -412,6 +412,12 @@ public class XSLTErrorResources extends ListResourceBundle
   public static final String ER_CANT_HAVE_CONTENT_AND_SELECT = 
      "ER_CANT_HAVE_CONTENT_AND_SELECT";
   public static final String ER_INVALID_SET_PARAM_VALUE = "ER_INVALID_SET_PARAM_VALUE";    
+  public static final String ER_SET_FEATURE_NULL_NAME =
+  	"ER_SET_FEATURE_NULL_NAME";
+  public static final String ER_GET_FEATURE_NULL_NAME =
+  	"ER_GET_FEATURE_NULL_NAME";
+  public static final String ER_UNSUPPORTED_FEATURE =
+  	"ER_UNSUPPORTED_FEATURE";
      
   public static final String WG_FOUND_CURLYBRACE = "WG_FOUND_CURLYBRACE";
   public static final String WG_COUNT_ATTRIB_MATCHES_NO_ANCESTOR = 
@@ -2156,6 +2162,15 @@ public class XSLTErrorResources extends ListResourceBundle
     { ER_INVALID_NAMESPACE_URI_VALUE_FOR_RESULT_PREFIX,
       "The result-prefix attribute of an xsl:namespace-alias element has the value ''{0}'', but there is no namespace declaration for the prefix ''{0}'' in scope for the element."},
 
+    { ER_SET_FEATURE_NULL_NAME,
+      "The feature name cannot be null in TransformerFactory.setFeature(String name, boolean value)."},
+    
+    { ER_GET_FEATURE_NULL_NAME,
+      "The feature name cannot be null in TransformerFactory.getFeature(String name)."},
+    
+    { ER_UNSUPPORTED_FEATURE,
+      "Cannot set the feature ''{0}'' on this TransformerFactory."},
+    
     { ER_NAMESPACE_CONTEXT_NULL_NAMESPACE, 		
       "Cannot get the prefix for a null namespace uri."},
 
