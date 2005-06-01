@@ -109,8 +109,11 @@ abstract public class ToStream extends SerializerBase
 
     /**
      * The system line separator for writing out line breaks.
+     * The default value is from the system property,
+     * but this value can be set through the xsl:output
+     * extension attribute xalan:line-separator.
      */
-    protected final char[] m_lineSep =
+    protected char[] m_lineSep =
         System.getProperty("line.separator").toCharArray();
         
     /**
@@ -122,7 +125,7 @@ abstract public class ToStream extends SerializerBase
      * The length of the line seperator, since the write is done
      * one character at a time.
      */
-    protected final int m_lineSepLen = m_lineSep.length;
+    protected int m_lineSepLen = m_lineSep.length;
 
     /**
      * Map that tells which characters should have special treatment, and it
@@ -454,6 +457,15 @@ abstract public class ToStream extends SerializerBase
                 format));
         setIndent(
             OutputPropertyUtils.getBooleanProperty(OutputKeys.INDENT, format));
+            
+        {
+            String sep = 
+                    format.getProperty(OutputPropertiesFactory.S_KEY_LINE_SEPARATOR);
+            if (sep != null) {
+                m_lineSep = sep.toCharArray();
+                m_lineSepLen = sep.length();
+            }
+        }
 
         boolean shouldNotWriteXMLHeader =
             OutputPropertyUtils.getBooleanProperty(

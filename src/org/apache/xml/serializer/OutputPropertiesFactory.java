@@ -118,6 +118,14 @@ public final class OutputPropertiesFactory
      */
     public static final String S_KEY_INDENT_AMOUNT =
         S_BUILTIN_EXTENSIONS_UNIVERSAL + "indent-amount";
+        
+    /** 
+     * The non-standard property key to use to set the
+     * number of whitepaces to indent by, per indentation level,
+     * if indent="yes".
+     */
+    public static final String S_KEY_LINE_SEPARATOR =
+        S_BUILTIN_EXTENSIONS_UNIVERSAL + "line-separator";        
 
     /** This non-standard property key is used to set the name of the fully qualified 
      * Java class that implements the ContentHandler interface. 
