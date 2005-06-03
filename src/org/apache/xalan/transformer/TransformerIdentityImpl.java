@@ -1432,7 +1432,7 @@ public class TransformerIdentityImpl extends Transformer
 
   /** The error listener for TrAX errors and warnings. */
   private ErrorListener m_errorListener =
-    new org.apache.xml.utils.DefaultErrorHandler();
+    new org.apache.xml.utils.DefaultErrorHandler(false);
 
   /**
    * The URIResolver, which is unused, but must be returned to fullfill the

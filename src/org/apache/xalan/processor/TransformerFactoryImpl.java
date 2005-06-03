@@ -930,7 +930,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   }
 
   /** The error listener.   */
-  private ErrorListener m_errorListener = new DefaultErrorHandler();
+  private ErrorListener m_errorListener = new org.apache.xml.utils.DefaultErrorHandler(false);
 
   /**
    * Get the error listener in effect for the TransformerFactory.

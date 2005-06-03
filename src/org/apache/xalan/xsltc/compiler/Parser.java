@@ -1010,6 +1010,8 @@ public class Parser implements Constants, ContentHandler {
 	            final ErrorMsg err = 
 		        new ErrorMsg(ErrorMsg.ILLEGAL_ATTRIBUTE_ERR, 
 				attrQName, node);
+		    // Workaround for the TCK failure ErrorListener.errorTests.error001..
+	            err.setWarningError(true);
 		    reportError(WARNING, err);
 	        }
 	    }

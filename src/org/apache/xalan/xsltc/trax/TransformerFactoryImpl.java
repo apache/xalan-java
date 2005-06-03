@@ -623,9 +623,14 @@ public class TransformerFactoryImpl
 	// Pass messages to listener, one by one
 	final int count = messages.size();
 	for (int pos = 0; pos < count; pos++) {
-	    String message = messages.elementAt(pos).toString();
-	    _errorListener.error(
-		new TransformerConfigurationException(message));
+	    ErrorMsg msg = (ErrorMsg)messages.elementAt(pos);
+	    // Workaround for the TCK failure ErrorListener.errorTests.error001.
+	    if (msg.isWarningError())
+	        _errorListener.error(
+		    new TransformerConfigurationException(msg.toString()));
+	    else
+	    	_errorListener.warning(
+		    new TransformerConfigurationException(msg.toString()));
 	}
     }
 

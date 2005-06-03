@@ -40,6 +40,7 @@ public final class ErrorMsg {
     private String _message = null;
     private String _url = null;
     Object[] _params = null;
+    private boolean _isWarningError;
 
     // Compiler error messages
     public static final String MULTIPLE_STYLESHEET_ERR = "MULTIPLE_STYLESHEET_ERR";
@@ -284,6 +285,18 @@ public final class ErrorMsg {
      */    
     private String getErrorMessage() {
       return _bundle.getString(_code);
+    }
+    
+    // If the _isWarningError flag is true, the error is treated as
+    // a warning by the compiler, but should be reported as an error
+    // to the ErrorListener. This is a workaround for the TCK failure 
+    // ErrorListener.errorTests.error001.
+    public void setWarningError(boolean flag) {
+    	_isWarningError = flag;
+}
+
+    public boolean isWarningError() {
+        return _isWarningError;
     }
 }
 

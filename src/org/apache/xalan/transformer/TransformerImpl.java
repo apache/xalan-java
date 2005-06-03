@@ -321,7 +321,7 @@ public class TransformerImpl extends Transformer
    * The SAX error handler, where errors and warnings are sent.
    */
   private ErrorListener m_errorHandler =
-    new org.apache.xml.utils.DefaultErrorHandler();
+    new org.apache.xml.utils.DefaultErrorHandler(false);
 
   /**
    * The trace manager.
