@@ -66,6 +66,11 @@ public class StylesheetRoot extends StylesheetComposed
      */  
     private boolean m_source_location = false;
 
+    /**
+     * State of the secure processing feature.
+     */
+    private boolean m_isSecureProcessing = false;
+
   /**
    * Uses an XSL stylesheet document.
    * @throws TransformerConfigurationException if the baseIdentifier can not be resolved to a URL.
@@ -117,6 +122,22 @@ public class StylesheetRoot extends StylesheetComposed
   public boolean isRoot()
   {
     return true;
+  }
+
+  /**
+   * Set the state of the secure processing feature.
+   */
+  public void setSecureProcessing(boolean flag)
+  {
+    m_isSecureProcessing = flag;
+  }
+  
+  /**
+   * Return the state of the secure processing feature.
+   */
+  public boolean isSecureProcessing()
+  {
+    return m_isSecureProcessing;
   }
 
   /**

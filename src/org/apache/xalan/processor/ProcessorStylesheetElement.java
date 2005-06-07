@@ -117,8 +117,12 @@ public class ProcessorStylesheetElement extends XSLTElementProcessor
    */
   protected Stylesheet getStylesheetRoot(StylesheetHandler handler) throws TransformerConfigurationException
   {
-    Stylesheet stylesheet;
+    StylesheetRoot stylesheet;
     stylesheet = new StylesheetRoot(handler.getSchema(), handler.getStylesheetProcessor().getErrorListener());
+    
+    if (handler.getStylesheetProcessor().isSecureProcessing())
+      stylesheet.setSecureProcessing(true);
+    
     return stylesheet;
   }
 

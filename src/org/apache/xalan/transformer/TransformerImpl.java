@@ -399,6 +399,10 @@ public class TransformerImpl extends Transformer
     xPath.getDTMManager().setIncremental(m_incremental);
     xPath.setSource_location(m_source_location);
     xPath.getDTMManager().setSource_location(m_source_location);
+    
+    if (stylesheet.isSecureProcessing())
+      xPath.setSecureProcessing(true);
+    
     setXPathContext(xPath);
     getXPathContext().setNamespaceContext(stylesheet);
     m_stackGuard = new StackGuard(this);    
@@ -1051,7 +1055,8 @@ public class TransformerImpl extends Transformer
         }
         else
         {
-          doc = org.apache.xml.utils.DOMHelper.createDocument();
+          boolean isSecureProcessing = m_stylesheetRoot.isSecureProcessing();
+          doc = org.apache.xml.utils.DOMHelper.createDocument(isSecureProcessing);
           outputNode = doc;
           type = outputNode.getNodeType();
 

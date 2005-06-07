@@ -87,6 +87,10 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   private HashMap m_DTMXRTreeFrags = null;
   
+  /**
+   * state of the secure processing feature.
+   */
+  private boolean m_isSecureProcessing = false;
 	
   /**
    * Though XPathContext context extends 
@@ -106,6 +110,22 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    {
      return m_dtmManager;
    }
+  
+  /**
+   * Set the state of the secure processing feature
+   */
+  public void setSecureProcessing(boolean flag)
+  {
+    m_isSecureProcessing = flag;
+  }
+  
+  /**
+   * Return the state of the secure processing feature
+   */
+  public boolean isSecureProcessing()
+  {
+    return m_isSecureProcessing;
+  }
   
   /**
    * Get an instance of a DTM, loaded with the content from the

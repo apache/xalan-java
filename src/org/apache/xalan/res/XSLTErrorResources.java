@@ -418,6 +418,8 @@ public class XSLTErrorResources extends ListResourceBundle
   	"ER_GET_FEATURE_NULL_NAME";
   public static final String ER_UNSUPPORTED_FEATURE =
   	"ER_UNSUPPORTED_FEATURE";
+  public static final String ER_EXTENSION_ELEMENT_NOT_ALLOWED_IN_SECURE_PROCESSING =
+  	"ER_EXTENSION_ELEMENT_NOT_ALLOWED_IN_SECURE_PROCESSING";
      
   public static final String WG_FOUND_CURLYBRACE = "WG_FOUND_CURLYBRACE";
   public static final String WG_COUNT_ATTRIB_MATCHES_NO_ANCESTOR = 
@@ -2171,6 +2173,9 @@ public class XSLTErrorResources extends ListResourceBundle
     { ER_UNSUPPORTED_FEATURE,
       "Cannot set the feature ''{0}'' on this TransformerFactory."},
     
+    { ER_EXTENSION_ELEMENT_NOT_ALLOWED_IN_SECURE_PROCESSING,
+  	  "Use of the extension element ''{0}'' is not allowed when the secure processing feature is set to true."},
+    
     { ER_NAMESPACE_CONTEXT_NULL_NAMESPACE, 		
       "Cannot get the prefix for a null namespace uri."},
 
@@ -2442,6 +2447,7 @@ public class XSLTErrorResources extends ListResourceBundle
   { "optionENTITYRESOLVER",  "   [-ENTITYRESOLVER full class name (EntityResolver to be used to resolve entities)]"},
   { "optionCONTENTHANDLER",  "   [-CONTENTHANDLER full class name (ContentHandler to be used to serialize output)]"},
   {  "optionLINENUMBERS",  "   [-L use line numbers for source document]"},
+  { "optionSECUREPROCESSING", "   [-SECURE (set the secure processing feature to true.)]"},
 
     // Following are the new options added in XSLTErrorResources.properties files after Jdk 1.4 (Xalan 2.2-D11)
 

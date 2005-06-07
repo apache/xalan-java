@@ -196,7 +196,12 @@ public class ElemExtensionCall extends ElemLiteralResult
   public void execute(TransformerImpl transformer)
             throws TransformerException
   {
-
+    if (transformer.getStylesheet().isSecureProcessing())
+      throw new TransformerException(
+        XSLMessages.createMessage(
+          XSLTErrorResources.ER_EXTENSION_ELEMENT_NOT_ALLOWED_IN_SECURE_PROCESSING,
+          new Object[] {getRawName()}));
+          
     if (transformer.getDebug())
 		transformer.getTraceManager().fireTraceEvent(this);
     try

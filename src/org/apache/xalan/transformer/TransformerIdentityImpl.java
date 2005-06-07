@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Properties;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -80,9 +81,19 @@ public class TransformerIdentityImpl extends Transformer
    * Constructor TransformerIdentityImpl creates an identity transform.
    *
    */
-  public TransformerIdentityImpl()
+  public TransformerIdentityImpl(boolean isSecureProcessing)
   {
     m_outputFormat = new OutputProperties(Method.XML);
+    m_isSecureProcessing = isSecureProcessing;
+  }
+
+  /**
+   * Constructor TransformerIdentityImpl creates an identity transform.
+   *
+   */
+  public TransformerIdentityImpl()
+  {
+    this(false);
   }
 
   /**
@@ -202,6 +213,15 @@ public class TransformerIdentityImpl extends Transformer
           DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
           dbf.setNamespaceAware(true);
+
+          if (m_isSecureProcessing)
+          {
+            try
+            {
+              dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            }
+            catch (ParserConfigurationException pce) {}
+          }
 
           DocumentBuilder db = dbf.newDocumentBuilder();
 
@@ -1446,4 +1466,9 @@ public class TransformerIdentityImpl extends Transformer
   /** Flag to set if we've found the first element, so we can tell if we have 
    *  to check to see if we should create an HTML serializer.      */
   boolean m_foundFirstElement;
+  
+  /**
+   * State of the secure processing feature.
+   */
+  private boolean m_isSecureProcessing = false;
 }

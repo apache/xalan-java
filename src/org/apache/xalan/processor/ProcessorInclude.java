@@ -20,6 +20,7 @@ package org.apache.xalan.processor;
 
 import java.io.IOException;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
@@ -246,6 +247,16 @@ public class ProcessorInclude extends XSLTElementProcessor
           javax.xml.parsers.SAXParserFactory factory=
                                                      javax.xml.parsers.SAXParserFactory.newInstance();
           factory.setNamespaceAware( true );
+          
+          if (handler.getStylesheetProcessor().isSecureProcessing())
+          {
+            try
+            {
+              factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            }
+            catch (org.xml.sax.SAXException se) {}
+          }
+          
           javax.xml.parsers.SAXParser jaxpParser=
                                                  factory.newSAXParser();
           reader=jaxpParser.getXMLReader();

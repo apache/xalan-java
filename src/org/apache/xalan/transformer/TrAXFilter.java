@@ -20,6 +20,7 @@ package org.apache.xalan.transformer;
 
 import java.io.IOException;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerConfigurationException;
@@ -114,6 +115,14 @@ public class TrAXFilter extends XMLFilterImpl
           javax.xml.parsers.SAXParserFactory factory=
               javax.xml.parsers.SAXParserFactory.newInstance();
           factory.setNamespaceAware( true );
+          
+          if (m_transformer.getStylesheet().isSecureProcessing()) {
+              try {
+                  factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+              }
+              catch (org.xml.sax.SAXException se) {}
+          }
+          
           javax.xml.parsers.SAXParser jaxpParser=
               factory.newSAXParser();
           reader=jaxpParser.getXMLReader();

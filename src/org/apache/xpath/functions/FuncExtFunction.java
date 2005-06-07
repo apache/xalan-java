@@ -30,6 +30,7 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XNull;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xpath.res.XPATHMessages;
 
 /**
  * An object of this class represents an extension call expression.  When
@@ -179,7 +180,12 @@ public class FuncExtFunction extends Function
   public XObject execute(XPathContext xctxt)
           throws javax.xml.transform.TransformerException
   {
-
+    if (xctxt.isSecureProcessing())
+      throw new javax.xml.transform.TransformerException(
+        XPATHMessages.createXPATHMessage(
+          XPATHErrorResources.ER_EXTENSION_FUNCTION_CANNOT_BE_INVOKED,
+          new Object[] {toString()}));
+      
     XObject result;
     Vector argVec = new Vector();
     int nArgs = m_argVec.size();
@@ -318,4 +324,15 @@ public class FuncExtFunction extends Function
 
     throw new RuntimeException(fMsg);
   }
+  
+  /**
+   * Return the name of the extesion function in string format
+   */
+  public String toString()
+  {
+    if (m_namespace != null && m_namespace.length() > 0)
+      return "{" + m_namespace + "}" + m_extensionName;
+    else
+      return m_extensionName;
+  }  
 }

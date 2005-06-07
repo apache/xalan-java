@@ -1190,7 +1190,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   /** Field ER_EXTENSION_FUNCTION_CANNOT_BE_INVOKED                       */
 
   { ER_EXTENSION_FUNCTION_CANNOT_BE_INVOKED,
-       "Extension function: {0} can not be invoked when XPathConstants.FEATURE_SECURE_PROCESSING feature is set to true"},
+       "Extension function: ''{0}'' can not be invoked when the XMLConstants.FEATURE_SECURE_PROCESSING feature is set to true."},
 
   /** Field ER_RESOLVE_VARIABLE_RETURNS_NULL                       */
 

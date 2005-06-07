@@ -70,12 +70,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class TransformerFactoryImpl extends SAXTransformerFactory
 {
-
-  /**
-   * <p>Name of class as a constant to use for debugging.</p>
-   */
-  private static final String CLASS_NAME = "TransformerFactoryImpl";
-
   /** 
    * The path/filename of the property file: XSLTInfo.properties  
    * Maintenance note: see also
@@ -87,7 +81,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   /**
    * <p>State of secure processing feature.</p>
    */
-  private boolean featureSecureProcessing = false;
+  private boolean m_isSecureProcessing = false;
 
   /**
    * Constructor TransformerFactoryImpl
@@ -299,6 +293,15 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
 
           factory.setNamespaceAware(true);
 
+          if (m_isSecureProcessing)
+          {
+            try
+            {
+              factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            }
+            catch (org.xml.sax.SAXException e) {}
+          }
+
           javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
 
           reader = jaxpParser.getXMLReader();
@@ -393,16 +396,15 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
 		
 	// secure processing?
 	if (name.equals(XMLConstants.FEATURE_SECURE_PROCESSING)) {
-		featureSecureProcessing = value;			
-		// all done processing feature
-		return;
+	    m_isSecureProcessing = value;			
 	}
-	
-	// unknown feature
-        throw new TransformerConfigurationException(
-            XSLMessages.createMessage(
-              XSLTErrorResources.ER_UNSUPPORTED_FEATURE, 
-              new Object[] {name}));
+	// This implementation does not support the setting of a feature other than
+	// the secure processing feature.
+	else
+            throw new TransformerConfigurationException(
+                XSLMessages.createMessage(
+                  XSLTErrorResources.ER_UNSUPPORTED_FEATURE, 
+                  new Object[] {name}));
   }
 
   /**
@@ -446,7 +448,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
       return true;	      
     // secure processing?
     else if (name.equals(XMLConstants.FEATURE_SECURE_PROCESSING))
-      return featureSecureProcessing;
+      return m_isSecureProcessing;
     else      
       // unknown feature
       return false;
@@ -712,7 +714,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   public TransformerHandler newTransformerHandler()
           throws TransformerConfigurationException
   {
-    return new TransformerIdentityImpl();
+    return new TransformerIdentityImpl(m_isSecureProcessing);
   }
 
   /**
@@ -769,7 +771,7 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    */
   public Transformer newTransformer() throws TransformerConfigurationException
   {
-      return new TransformerIdentityImpl();
+      return new TransformerIdentityImpl(m_isSecureProcessing);
   }
 
   /**
@@ -835,6 +837,15 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
             javax.xml.parsers.SAXParserFactory.newInstance();
 
           factory.setNamespaceAware(true);
+
+          if (m_isSecureProcessing)
+          {
+            try
+            {
+              factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+            }
+            catch (org.xml.sax.SAXException se) {}
+          }
 
           javax.xml.parsers.SAXParser jaxpParser = factory.newSAXParser();
 
@@ -958,5 +969,15 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
       // "ErrorListener");
 
     m_errorListener = listener;
+  }
+  
+  /**
+   * Return the state of the secure processing feature.
+   * 
+   * @return state of the secure processing feature.
+   */
+  public boolean isSecureProcessing()
+  {
+    return m_isSecureProcessing;
   }
 }

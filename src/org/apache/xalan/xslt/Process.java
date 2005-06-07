@@ -26,12 +26,15 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.TransformerFactoryConfigurationError;
@@ -99,6 +102,7 @@ public class Process
     System.out.println(resbundle.getString("optionENTITYRESOLVER"));  //"   [-ENTITYRESOLVER full class name (EntityResolver to be used to resolve entities)]");
     waitForReturnKey(resbundle);
     System.out.println(resbundle.getString("optionCONTENTHANDLER"));  //"   [-CONTENTHANDLER full class name (ContentHandler to be used to serialize output)]");
+    System.out.println(resbundle.getString("optionSECUREPROCESSING")); //"   [-SECURE (set the secure processing feature to true)]");
     
     System.out.println("\n\t\t\t" + resbundle.getString("xslProc_xalan_options") + "\n");
     
@@ -117,8 +121,8 @@ public class Process
         
     System.out.println("\n\t\t\t" + resbundle.getString("xslProc_xsltc_options") + "\n");
     System.out.println(resbundle.getString("optionXO"));
-    System.out.println(resbundle.getString("optionXD"));
     waitForReturnKey(resbundle);    
+    System.out.println(resbundle.getString("optionXD"));
     System.out.println(resbundle.getString("optionXJ"));
     System.out.println(resbundle.getString("optionXP"));
     System.out.println(resbundle.getString("optionXN"));
@@ -149,6 +153,7 @@ public class Process
     boolean setQuietMode = false;
     boolean doDiag = false;
     String msg = null;
+    boolean isSecureProcessing = false;
 
     // Runtime.getRuntime().traceMethodCalls(false);
     // Runtime.getRuntime().traceInstructions(false);
@@ -191,6 +196,7 @@ public class Process
       try
       {
         tfactory = TransformerFactory.newInstance();
+        tfactory.setErrorListener(new DefaultErrorHandler());
       }
       catch (TransformerFactoryConfigurationError pfe)
       {
@@ -676,6 +682,15 @@ public class Process
           else
             printInvalidXalanOption("-XT");        
         }
+        else if ("-SECURE".equalsIgnoreCase(argv[i]))
+        {
+          isSecureProcessing = true;
+          try
+          {
+            tfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+          }
+          catch (TransformerConfigurationException e) {}
+        }
         else
           System.err.println(
             XSLMessages.createMessage(
@@ -713,6 +728,15 @@ public class Process
               DocumentBuilderFactory.newInstance();
 
             dfactory.setNamespaceAware(true);
+
+            if (isSecureProcessing)
+            {
+              try
+              {
+                dfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+              }
+              catch (ParserConfigurationException pce) {}
+            }
 
             DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
             Node xslDOM = docBuilder.parse(new InputSource(xslFileName));
@@ -780,6 +804,7 @@ public class Process
         if (null != stylesheet)
         {
           Transformer transformer = flavor.equals("th") ? null : stylesheet.newTransformer();
+          transformer.setErrorListener(new DefaultErrorHandler());
 
           // Override the output format?
           if (null != outputType)
@@ -831,6 +856,15 @@ public class Process
               dfactory.setCoalescing(true);
               dfactory.setNamespaceAware(true);
 
+              if (isSecureProcessing)
+              {
+                try
+                {
+                  dfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+                }
+                catch (ParserConfigurationException pce) {}
+              }
+
               DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
 
               if (entityResolver != null)
@@ -846,6 +880,8 @@ public class Process
 
               // Now serialize output to disk with identity transformer
               Transformer serializer = stf.newTransformer();
+              serializer.setErrorListener(new DefaultErrorHandler());
+              
               Properties serializationProps =
                 stylesheet.getOutputProperties();
 
@@ -876,6 +912,15 @@ public class Process
                   javax.xml.parsers.SAXParserFactory.newInstance();
 
                 factory.setNamespaceAware(true);
+
+                if (isSecureProcessing)
+                {
+                  try
+                  {
+                    factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+                  }
+                  catch (org.xml.sax.SAXException se) {}
+                }
 
                 javax.xml.parsers.SAXParser jaxpParser =
                   factory.newSAXParser();
@@ -941,6 +986,15 @@ public class Process
                     javax.xml.parsers.SAXParserFactory.newInstance();
 
                   factory.setNamespaceAware(true);
+
+                  if (isSecureProcessing)
+                  {
+                    try
+                    {
+                      factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+                    }
+                    catch (org.xml.sax.SAXException se) {}
+                  }
 
                   javax.xml.parsers.SAXParser jaxpParser =
                     factory.newSAXParser();

@@ -316,8 +316,11 @@ public class ProcessorLRE extends ProcessorTemplateElem
    */
   protected Stylesheet getStylesheetRoot(StylesheetHandler handler) throws TransformerConfigurationException
   {
-    Stylesheet stylesheet;
+    StylesheetRoot stylesheet;
     stylesheet = new StylesheetRoot(handler.getSchema(), handler.getStylesheetProcessor().getErrorListener());
+    if (handler.getStylesheetProcessor().isSecureProcessing())
+      stylesheet.setSecureProcessing(true);
+    
     return stylesheet;
   }
   
