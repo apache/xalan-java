@@ -70,12 +70,12 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * always be added in document order.
      */
     public void add(Object value, int node) {
-		IntegerArray nodes = (IntegerArray) _index.get(value);
-		if (nodes == null) {
-			 nodes = new IntegerArray();
-		    _index.put(value, nodes);
-		}
-		nodes.add(node);
+        IntegerArray nodes = (IntegerArray) _index.get(value);
+        if (nodes == null) {
+             nodes = new IntegerArray();
+            _index.put(value, nodes);
+        }
+        nodes.add(node);
     }
 
     /**
@@ -86,7 +86,7 @@ public class KeyIndex extends DTMAxisIteratorBase {
 
 	if (other._nodes != null) {
 	    if (_nodes == null) {
-		_nodes = other._nodes;
+		_nodes = (IntegerArray)other._nodes.clone();
 	    }
 	    else {
 		_nodes.merge(other._nodes);
@@ -151,8 +151,9 @@ public class KeyIndex extends DTMAxisIteratorBase {
      * prior to returning the node iterator.
      */
     public void lookupKey(Object value) {
-	_nodes = (IntegerArray) _index.get(value);
-	_position = 0;
+        IntegerArray nodes = (IntegerArray) _index.get(value);
+        _nodes = (nodes != null) ? (IntegerArray) nodes.clone() : null;
+        _position = 0;
     }
 
     /** 
