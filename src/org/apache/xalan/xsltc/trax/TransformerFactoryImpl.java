@@ -79,11 +79,6 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class TransformerFactoryImpl
     extends SAXTransformerFactory implements SourceLoader, ErrorListener 
 {
-	/**
-	 * <p>Name of class as a constant to use for debugging.</p>
-	 */
-	private static final String CLASS_NAME = "TransformerFactoryImpl";
-
     // Public constants for attributes supported by the XSLTC TransformerFactory.
     public final static String TRANSLET_NAME = "translet-name";
     public final static String DESTINATION_DIRECTORY = "destination-directory";
@@ -203,10 +198,10 @@ public class TransformerFactoryImpl
      */
     private Class m_DTMManagerClass;
 
-	/**
-	 * <p>State of secure processing feature.</p>
-	 */
-	private boolean featureSecureProcessing = false;
+    /**
+     * <p>State of secure processing feature.</p>
+     */
+    private boolean _isSecureProcessing = false;
 
     /**
      * javax.xml.transform.sax.TransformerFactory implementation.
@@ -404,7 +399,7 @@ public class TransformerFactoryImpl
 	}		
 	// secure processing?
 	else if (name.equals(XMLConstants.FEATURE_SECURE_PROCESSING)) {
-	    featureSecureProcessing = value;		
+	    _isSecureProcessing = value;		
 	    // all done processing feature
 	    return;
 	}
@@ -451,7 +446,7 @@ public class TransformerFactoryImpl
 	}
 	// secure processing?
 	if (name.equals(XMLConstants.FEATURE_SECURE_PROCESSING)) {
-		return featureSecureProcessing;
+		return _isSecureProcessing;
 	}
 
 	// Feature not supported
@@ -531,6 +526,14 @@ public class TransformerFactoryImpl
 
                 SAXParserFactory factory = SAXParserFactory.newInstance();
                 factory.setNamespaceAware(true);
+                
+                if (_isSecureProcessing) {
+                    try {
+                        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+                    }
+                    catch (org.xml.sax.SAXException e) {}
+                }
+                
                 SAXParser jaxpParser = factory.newSAXParser();
 
                 reader = jaxpParser.getXMLReader();
@@ -586,6 +589,10 @@ public class TransformerFactoryImpl
 	    _indentNumber, this);
 	if (_uriResolver != null) {
 	    result.setURIResolver(_uriResolver);
+	}
+	
+	if (_isSecureProcessing) {
+	    result.setSecureProcessing(true);
 	}
 	return result;
     }
@@ -730,6 +737,7 @@ public class TransformerFactoryImpl
 	final XSLTC xsltc = new XSLTC();
 	if (_debug) xsltc.setDebug(true);
 	if (_enableInlining) xsltc.setTemplateInlining(true);
+	if (_isSecureProcessing) xsltc.setSecureProcessing(true);
 	xsltc.init();
 
 	// Set a document loader (for xsl:include/import) if defined

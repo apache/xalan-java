@@ -271,6 +271,12 @@ public class ErrorMessages extends ListResourceBundle {
          */
         {BasisLibrary.INVALID_NCNAME_ERR,
         "An attribute whose value must be an NCName had the value ''{0}''"},
+        
+        {BasisLibrary.UNALLOWED_EXTENSION_FUNCTION_ERR,
+        "Use of the extension function ''{0}'' is not allowed when the secure processing feature is set to true."},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_ELEMENT_ERR,
+        "Use of the extension element ''{0}'' is not allowed when the secure processing feature is set to true."},
     };
     }
 

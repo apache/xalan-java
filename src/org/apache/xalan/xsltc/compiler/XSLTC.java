@@ -123,10 +123,29 @@ public final class XSLTC {
     private boolean _templateInlining = false;
 
     /**
+     * State of the secure processing feature.
+     */
+    private boolean _isSecureProcessing = false;
+
+    /**
      * XSLTC compiler constructor
      */
     public XSLTC() {
 	_parser = new Parser(this);
+    }
+    
+    /**
+     * Set the state of the secure processing feature.
+     */
+    public void setSecureProcessing(boolean flag) {
+        _isSecureProcessing = flag;
+    }
+    
+    /**
+     * Return the state of the secure processing feature.
+     */
+    public boolean isSecureProcessing() {
+        return _isSecureProcessing;
     }
 
     /**

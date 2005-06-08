@@ -19,6 +19,7 @@
 
 package org.apache.xalan.xsltc.trax;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerException;
@@ -90,7 +91,11 @@ public class TemplatesHandlerImpl
 	_tfactory = tfactory;
 
         // Instantiate XSLTC and get reference to parser object
-        _parser = new XSLTC().getParser();
+        XSLTC xsltc = new XSLTC();
+        if (tfactory.getFeature(XMLConstants.FEATURE_SECURE_PROCESSING))
+            xsltc.setSecureProcessing(true);
+       
+        _parser = xsltc.getParser();
     }
 
     /**

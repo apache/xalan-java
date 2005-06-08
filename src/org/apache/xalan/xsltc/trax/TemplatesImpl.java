@@ -27,6 +27,7 @@ import java.util.Properties;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -368,6 +369,10 @@ public final class TemplatesImpl implements Templates, Serializable {
 	
 	if (_uriResolver != null) {
 	    transformer.setURIResolver(_uriResolver);
+	}
+	
+	if (_tfactory.getFeature(XMLConstants.FEATURE_SECURE_PROCESSING)) {
+	    transformer.setSecureProcessing(true);
 	}
 	return transformer;
     }

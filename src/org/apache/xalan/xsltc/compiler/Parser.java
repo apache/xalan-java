@@ -31,6 +31,7 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 
 import java_cup.runtime.Symbol;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -445,6 +446,14 @@ public class Parser implements Constants, ContentHandler {
 	try {
 	    // Create a SAX parser and get the XMLReader object it uses
 	    final SAXParserFactory factory = SAXParserFactory.newInstance();
+	    
+	    if (_xsltc.isSecureProcessing()) {
+	        try {
+	            factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+	        }
+	        catch (SAXException e) {}
+	    }
+	    
 	    try {
 		factory.setFeature(Constants.NAMESPACE_FEATURE,true);
 	    }

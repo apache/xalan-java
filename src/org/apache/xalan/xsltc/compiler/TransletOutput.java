@@ -20,6 +20,7 @@
 package org.apache.xalan.xsltc.compiler;
 
 import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.INVOKESTATIC;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.PUSH;
@@ -96,6 +97,17 @@ final class TransletOutput extends Instruction {
     public void translate(ClassGenerator classGen, MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
+	final boolean isSecureProcessing = classGen.getParser().getXSLTC()
+	                                   .isSecureProcessing();
+
+	if (isSecureProcessing) {
+	    int index = cpg.addMethodref(BASIS_LIBRARY_CLASS,
+				         "unallowed_extension_elementF",
+				         "(Ljava/lang/String;)V");
+	    il.append(new PUSH(cpg, "redirect"));
+	    il.append(new INVOKESTATIC(index));
+	    return; 	
+	}
 
 	// Save the current output handler on the stack
 	il.append(methodGen.loadHandler());

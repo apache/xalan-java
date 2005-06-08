@@ -400,6 +400,22 @@ public final class BasisLibrary {
     }
 
     /**
+     * Utility function to throw a runtime error on the use of an extension 
+     * function when the secure processing feature is set to true.
+     */
+    public static void unallowed_extension_functionF(String name) {
+        runTimeError(UNALLOWED_EXTENSION_FUNCTION_ERR, name);
+    }
+
+    /**
+     * Utility function to throw a runtime error on the use of an extension 
+     * element when the secure processing feature is set to true.
+     */
+    public static void unallowed_extension_elementF(String name) {
+        runTimeError(UNALLOWED_EXTENSION_ELEMENT_ERR, name);
+    }
+
+    /**
      * Utility function to throw a runtime error for an unsupported element.
      * 
      * This is only used in forward-compatibility mode, when the control flow
@@ -1441,6 +1457,8 @@ public final class BasisLibrary {
                                            "UNKNOWN_TRANSLET_VERSION_ERR";
     public static final String INVALID_QNAME_ERR = "INVALID_QNAME_ERR";                                           
     public static final String INVALID_NCNAME_ERR = "INVALID_NCNAME_ERR";
+    public static final String UNALLOWED_EXTENSION_FUNCTION_ERR = "UNALLOWED_EXTENSION_FUNCTION_ERR";
+    public static final String UNALLOWED_EXTENSION_ELEMENT_ERR = "UNALLOWED_EXTENSION_ELEMENT_ERR";
 
     // All error messages are localized and are stored in resource bundles.
     private static ResourceBundle m_bundle;

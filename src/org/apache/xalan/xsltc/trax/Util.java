@@ -22,6 +22,7 @@ package org.apache.xalan.xsltc.trax;
 import java.io.InputStream;
 import java.io.Reader;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -102,6 +103,15 @@ public final class Util {
                                SAXParserFactory parserFactory = 
                                       SAXParserFactory.newInstance();
                                parserFactory.setNamespaceAware(true);
+                               
+                               if (xsltc.isSecureProcessing()) {
+                                  try {
+                                      parserFactory.setFeature(
+                                          XMLConstants.FEATURE_SECURE_PROCESSING, true);
+                                  }
+                                  catch (org.xml.sax.SAXException se) {}
+                               }
+                               
                                reader = parserFactory.newSAXParser()
                                      .getXMLReader();
 

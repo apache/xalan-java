@@ -22,6 +22,7 @@ package org.apache.xalan.xsltc.trax;
 
 import java.io.IOException;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -68,6 +69,14 @@ public class TrAXFilter extends XMLFilterImpl {
         try {
             SAXParserFactory pfactory = SAXParserFactory.newInstance();
             pfactory.setNamespaceAware(true);
+            
+            if (_transformer.isSecureProcessing()) {
+                try {
+                    pfactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+                }
+                catch (SAXException e) {}
+            }
+            
             SAXParser saxparser = pfactory.newSAXParser();
             parent = saxparser.getXMLReader();
         }

@@ -180,6 +180,11 @@ public final class TransformerImpl extends Transformer
     private boolean _isIdentity = false;
 
     /**
+     * State of the secure processing feature.
+     */
+    private boolean _isSecureProcessing = false;
+
+    /**
      * A hashtable to store parameters for the identity transform. These
      * are not needed during the transformation, but we must keep track of 
      * them to be fully complaint with the JAXP API.
@@ -231,6 +236,20 @@ public final class TransformerImpl extends Transformer
 	_indentNumber = indentNumber;
 	_tfactory = tfactory;
 	//_isIncremental = tfactory._incremental;
+    }
+
+    /**
+     * Return the state of the secure processing feature.
+     */
+    public boolean isSecureProcessing() {
+        return _isSecureProcessing;
+    }
+    
+    /**
+     * Set the state of the secure processing feature.
+     */
+    public void setSecureProcessing(boolean flag) {
+        _isSecureProcessing = flag;
     }
 
     /**
