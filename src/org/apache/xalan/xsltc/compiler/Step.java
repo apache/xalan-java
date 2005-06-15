@@ -250,6 +250,7 @@ final class Step extends RelativeLocationPath {
 		return;
 	    }
 
+	    SyntaxTreeNode parent = getParent();
 	    // Special case for '.'
 	    if (isAbbreviatedDot()) {
 		if (_type == Type.Node) {
@@ -257,19 +258,29 @@ final class Step extends RelativeLocationPath {
 		    il.append(methodGen.loadContextNode());
 		}
 		else {
-		    // Wrap the context node in a singleton iterator if not.
-		    int init = cpg.addMethodref(SINGLETON_ITERATOR,
-						"<init>", "("+NODE_SIG+")V");
-		    il.append(new NEW(cpg.addClass(SINGLETON_ITERATOR)));
-		    il.append(DUP);
-		    il.append(methodGen.loadContextNode());
-		    il.append(new INVOKESPECIAL(init));
+		    if (parent instanceof ParentLocationPath){
+			// Wrap the context node in a singleton iterator if not.
+			int init = cpg.addMethodref(SINGLETON_ITERATOR,
+						    "<init>",
+						    "("+NODE_SIG+")V");
+			il.append(new NEW(cpg.addClass(SINGLETON_ITERATOR)));
+			il.append(DUP);
+			il.append(methodGen.loadContextNode());
+			il.append(new INVOKESPECIAL(init));
+		    } else {
+			// DOM.getAxisIterator(int axis);
+			int git = cpg.addInterfaceMethodref(DOM_INTF,
+						"getAxisIterator",
+						"(I)"+NODE_ITERATOR_SIG);
+			il.append(methodGen.loadDOM());
+			il.append(new PUSH(cpg, _axis));
+			il.append(new INVOKEINTERFACE(git, 2));
+		    }
 		}
 		return;
 	    }
 
 	    // Special case for /foo/*/bar
-	    SyntaxTreeNode parent = getParent();
 	    if ((parent instanceof ParentLocationPath) &&
 		(parent.getParent() instanceof ParentLocationPath)) {
 		if ((_nodeType == NodeTest.ELEMENT) && (!_hadPredicates)) {
