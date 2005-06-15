@@ -29,6 +29,9 @@
 <li><link anchor="usexmlfilters">UseXMLFilters</link></li>
 <li><link anchor="applyxpath">ApplyXPath</link></li>
 <li><link anchor="applyxpathdom">ApplyXPathDOM</link></li>
+<li><link anchor="applyxpathjaxp">ApplyXPathJAXP</link></li>
+<li><link anchor="xpathresolver">XPathResolver</link></li>
+<li><link anchor="extensionresolver">ExtensionFunctionResolver</link></li>
 <li><link anchor="appletxmltohtml">AppletXMLtoHTML</link></li>
 <li><link anchor="extensions">Extensions</link></li>
 <li><link anchor="trace">Trace</link></li>
@@ -187,7 +190,43 @@
     <p>and</p>
     <p><code>java ApplyXPathDOM foo.xml /doc/name/@first</code></p>
     <p>For more information, see <link idref="usagepatterns" anchor="xpath">Working with XPath expressions</link>.</p>
-    </s2><anchor name="appletxmltohtml"/>
+    </s2>
+     <anchor name="applyxpathjaxp"/>
+     <s2 title="ApplyXPathJAXP">
+     <p>What it does: ApplyXPathJAXP is similar to the <link anchor="applyxpath">ApplyXPath</link> sample, but it uses the XPath API in &jaxp13-short;
+     to evaluate an XPath expression against an XML document and return the evaluation result in the specified type.</p>
+     <p>Run this sample from the XPathAPI subdirectory with</p>
+     <p><code>java ApplyXPathJAXP <ref>XMLFile XPathExpression ReturnType</ref></code></p>
+     <p>where <ref>XMLFile</ref> is an XML source file, <ref>XPathExpression</ref> is an XPath expression to 
+     apply to that file, and <ref>ReturnType</ref> is one of the strings from the list {"num", "bool", "str", "node", "nodeset"}
+     designating the return type of the evaluation. The XPathAPI subdirectory contains an XML file named 
+     foo.xml. So you can try command lines like</p>
+     <p><code>java ApplyXPathJAXP foo.xml /doc/name[1]/@last str</code></p>
+     <p>and</p>
+     <p><code>java ApplyXPathJAXP foo.xml /doc/name nodeset</code></p>
+     </s2>
+
+     <anchor name="xpathresolver"/>
+     <s2 title="XPathResolver">
+     <p>What it does: XPathResolver provides sample implementations of the NamespaceContext, XPathFunctionResolver 
+     and XPathVariableResolver interfaces described in the <link idref="xpath_apis">
+     JAXP 1.3 XPath API</link>. 
+     The sample demonstrates how these implementations can be used to to evaluate XPath expressions that contain 
+     extension functions and references to variables.</p>
+     <p>Run this sample from the XPathAPI subdirectory with</p>
+     <p><code>java XPathResolver</code></p>
+     </s2>
+
+     <anchor name="extensionresolver"/>
+     <s2 title="ExtensionFunctionResolver">
+     <p>What it does: ExtensionFunctionResolver demonstrates how to use the sample implementation of XPathFunctionResolver to 
+     evaluate XPath expressions containing Java or EXSLT extension functions.</p>
+     <p>To run this sample from the XPathAPI subdirectory, you need to compile ExtensionTest.java first and put
+     the XPathAPI directory on your classpath. Run the sample using</p>
+     <p><code>java ExtensionFunctionResolver</code></p>
+     </s2>
+    
+    <anchor name="appletxmltohtml"/>
     <s2 title="AppletXMLtoHTML">
     <p>This applet uses a stylesheet to transform an XML document into HTML. It displays the XML document, the
      stylesheet, and the HTML output.</p>

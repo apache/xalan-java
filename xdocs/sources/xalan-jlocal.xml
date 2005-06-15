@@ -39,6 +39,7 @@
   <document id="features" label="Features" source="xalan/features.xml"/>
   <separator/>
   <document id="trax" label="TrAX" source="xalan/trax.xml"/>
+  <document id="xpath_apis" label="XPath API" source="xalan/xpath_apis.xml"/>
   <document id="dtm" label="DTM" source="xalan/dtm.xml"/>  
   <document id="public_apis" label="Public API's"
             source="xalan/public_apis.xml"/>  

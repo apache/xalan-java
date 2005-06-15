@@ -19,6 +19,8 @@
 <!ENTITY xml4j-jar "xercesImpl.jar">
 <!ENTITY xslt4c "Xalan-C++">
 <!ENTITY xml4c "Xerces-C++">
+<!ENTITY jaxp13-short "JAXP 1.3">
+<!ENTITY jaxp13-long  "Java API for XML Processing (JAXP) 1.3">
 <!ENTITY download "The &xslt4j-current; download includes &xml4j-jar; from &xml4j-used; and xml-apis.jar. 
 For version information about the contents of xml-apis.jar, see the JAR manifest.">
 
