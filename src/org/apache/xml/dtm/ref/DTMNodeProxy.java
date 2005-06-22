@@ -1334,9 +1334,9 @@ public class DTMNodeProxy
   }
 
   /**
-   * <p>EXPERIMENTAL! Based on the <a
-   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
-   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>Based on the <a
+   * href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>Document
+   * Object Model (DOM) Level 3 Core Specification of 07 April 2004.</a>.
    * <p>
    * An attribute specifying, as part of the XML declaration, the encoding
    * of this document. This is <code>null</code> when unspecified.
@@ -1351,58 +1351,9 @@ public class DTMNodeProxy
   }
 
   /**
-   * <p>EXPERIMENTAL! Based on the <a
-   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
-   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
-   * <p>
-   * An attribute specifying, as part of the XML declaration, the encoding
-   * of this document. This is <code>null</code> when unspecified.
-   * @since DOM Level 3
-   *
-   * NEEDSDOC @param encoding
-   */
-  public void setEncoding(String encoding)
-  {
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
-  }
-
-  /**
-   * <p>EXPERIMENTAL! Based on the <a
-   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
-   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
-   * <p>
-   * An attribute specifying, as part of the XML declaration, whether this
-   * document is standalone.
-   * @since DOM Level 3
-   *
-   *
-   */
-  public boolean getStandalone()
-  {
-
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
-  }
-
-  /**
-   * <p>EXPERIMENTAL! Based on the <a
-   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
-   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
-   * <p>
-   * An attribute specifying, as part of the XML declaration, whether this
-   * document is standalone.
-   * @since DOM Level 3
-   *
-   * NEEDSDOC @param standalone
-   */
-  public void setStandalone(boolean standalone)
-  {
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
-  }
-
-  /**
-   * <p>EXPERIMENTAL! Based on the <a
-   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
-   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>Based on the <a
+   * href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>Document
+   * Object Model (DOM) Level 3 Core Specification of 07 April 2004.</a>.
    * <p>
    * An attribute specifying whether errors checking is enforced or not.
    * When set to <code>false</code>, the implementation is free to not
@@ -1421,9 +1372,9 @@ public class DTMNodeProxy
   }
 
   /**
-   * <p>EXPERIMENTAL! Based on the <a
-   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
-   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>Based on the <a
+   * href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>Document
+   * Object Model (DOM) Level 3 Core Specification of 07 April 2004.</a>.
    * <p>
    * An attribute specifying whether errors checking is enforced or not.
    * When set to <code>false</code>, the implementation is free to not
@@ -1438,41 +1389,7 @@ public class DTMNodeProxy
   public void setStrictErrorChecking(boolean strictErrorChecking)
   {
     throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
-  }
-
-  /**
-   * <p>EXPERIMENTAL! Based on the <a
-   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
-   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
-   * <p>
-   * An attribute specifying, as part of the XML declaration, the version
-   * number of this document. This is <code>null</code> when unspecified.
-   * @since DOM Level 3
-   *
-   *
-   */
-  public String getVersion()
-  {
-
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
-  }
-
-  /**
-   * <p>EXPERIMENTAL! Based on the <a
-   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
-   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
-   * <p>
-   * An attribute specifying, as part of the XML declaration, the version
-   * number of this document. This is <code>null</code> when unspecified.
-   * @since DOM Level 3
-   *
-   * NEEDSDOC @param version
-   */
-  public void setVersion(String version)
-  {
-    throw new DTMDOMException(DOMException.NOT_SUPPORTED_ERR);
-  }
-        
+  }        
         
   /** Inner class to support getDOMImplementation.
    */
@@ -1693,7 +1610,7 @@ public class DTMNodeProxy
     }
 
     /**
-     * DOM Level 3 - Experimental:
+     * DOM Level 3:
      * Look up the namespace URI associated to the given prefix, starting from this node.
      * Use lookupNamespaceURI(null) to lookup the default namespace
      *
@@ -1780,7 +1697,7 @@ public class DTMNodeProxy
     }
     
     /**
-     *  DOM Level 3: Experimental
+     *  DOM Level 3:
      *  This method checks if the specified <code>namespaceURI</code> is the
      *  default namespace or not.
      *  @param namespaceURI The namespace URI to look for.
@@ -1853,7 +1770,7 @@ public class DTMNodeProxy
     }
 
     /**
-     * DOM Level 3 - Experimental:
+     * DOM Level 3:
      * Look up the prefix associated to the given namespace URI, starting from this node.
      *
      * @param namespaceURI
@@ -2065,7 +1982,7 @@ public class DTMNodeProxy
     }
 
     /**
-     * DOM Level 3 WD - Experimental.
+     * DOM Level 3
      * Renaming node
      */
     public Node renameNode(Node n,
@@ -2076,7 +1993,7 @@ public class DTMNodeProxy
     }
     
     /**
-     *  DOM Level 3 WD - Experimental
+     *  DOM Level 3
      *  Normalize document.
      */
     public void normalizeDocument(){   
@@ -2092,11 +2009,11 @@ public class DTMNodeProxy
        return null;
     }
     
-    /** Experimental DOM Level 3 feature: documentURI */
+    /** DOM Level 3 feature: documentURI */
     protected String fDocumentURI;
 
     /**
-     * DOM Level 3 WD - Experimental.
+     * DOM Level 3
      */
     public void setDocumentURI(String documentURI){
         
@@ -2104,7 +2021,7 @@ public class DTMNodeProxy
     }
 
     /**
-     * DOM Level 3 WD - Experimental.
+     * DOM Level 3
      * The location of the document or <code>null</code> if undefined.
      * <br>Beware that when the <code>Document</code> supports the feature
      * "HTML" , the href attribute of the HTML BASE element takes precedence
@@ -2115,11 +2032,11 @@ public class DTMNodeProxy
         return fDocumentURI;
     }
 
-    /** Experimental DOM Level 3 feature: Document actualEncoding */
+    /** DOM Level 3 feature: Document actualEncoding */
     protected String actualEncoding;
 
     /**
-     * DOM Level 3 WD - Experimental.
+     * DOM Level 3
      * An attribute specifying the actual encoding of this document. This is
      * <code>null</code> otherwise.
      * <br> This attribute represents the property [character encoding scheme]
@@ -2131,7 +2048,7 @@ public class DTMNodeProxy
     }
 
     /**
-     * DOM Level 3 WD - Experimental.
+     * DOM Level 3
      * An attribute specifying the actual encoding of this document. This is
      * <code>null</code> otherwise.
      * <br> This attribute represents the property [character encoding scheme]
@@ -2143,7 +2060,7 @@ public class DTMNodeProxy
     }
 
    /**
-    * DOM Level 3 WD - Experimental.
+    * DOM Level 3
     */
     public Text replaceWholeText(String content)
                                  throws DOMException{
@@ -2193,7 +2110,7 @@ public class DTMNodeProxy
     }
 
     /**
-     * DOM Level 3 WD - Experimental.
+     * DOM Level 3
      * Returns all text of <code>Text</code> nodes logically-adjacent text
      * nodes to this node, concatenated in document order.
      * @since DOM Level 3
@@ -2218,7 +2135,7 @@ public class DTMNodeProxy
     }
 
     /**
-     * DOM Level 3 WD - Experimental.
+     * DOM Level 3
      * Returns whether this text node contains whitespace in element content,
      * often abusively called "ignorable whitespace".
      */
