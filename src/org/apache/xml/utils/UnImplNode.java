@@ -1128,9 +1128,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * <p>EXPERIMENTAL! Based on the <a
-   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
-   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>Based on the <a
+   * href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>Document
+   * Object Model (DOM) Level 3 Core Specification of 07 April 2004.</a>.
    * <p>
    * An attribute specifying, as part of the XML declaration, the encoding
    * of this document. This is <code>null</code> when unspecified.
@@ -1147,9 +1147,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * <p>EXPERIMENTAL! Based on the <a
-   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
-   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>Based on the <a
+   * href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>Document
+   * Object Model (DOM) Level 3 Core Specification of 07 April 2004.</a>.
    * <p>
    * An attribute specifying, as part of the XML declaration, the encoding
    * of this document. This is <code>null</code> when unspecified.
@@ -1163,44 +1163,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * <p>EXPERIMENTAL! Based on the <a
-   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
-   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
-   * <p>
-   * An attribute specifying, as part of the XML declaration, whether this
-   * document is standalone.
-   * @since DOM Level 3
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public boolean getStandalone()
-  {
-
-    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
-
-    return false;
-  }
-
-  /**
-   * <p>EXPERIMENTAL! Based on the <a
-   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
-   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
-   * <p>
-   * An attribute specifying, as part of the XML declaration, whether this
-   * document is standalone.
-   * @since DOM Level 3
-   *
-   * NEEDSDOC @param standalone
-   */
-  public void setStandalone(boolean standalone)
-  {
-    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
-  }
-
-  /**
-   * <p>EXPERIMENTAL! Based on the <a
-   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
-   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>Based on the <a
+   * href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>Document
+   * Object Model (DOM) Level 3 Core Specification of 07 April 2004.</a>.
    * <p>
    * An attribute specifying whether errors checking is enforced or not.
    * When set to <code>false</code>, the implementation is free to not
@@ -1221,9 +1186,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
   }
 
   /**
-   * <p>EXPERIMENTAL! Based on the <a
-   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
-   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
+   * <p>Based on the <a
+   * href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>Document
+   * Object Model (DOM) Level 3 Core Specification of 07 April 2004.</a>.
    * <p>
    * An attribute specifying whether errors checking is enforced or not.
    * When set to <code>false</code>, the implementation is free to not
@@ -1240,47 +1205,12 @@ public class UnImplNode implements Node, Element, NodeList, Document
     error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
   }
 
-  /**
-   * <p>EXPERIMENTAL! Based on the <a
-   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
-   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
-   * <p>
-   * An attribute specifying, as part of the XML declaration, the version
-   * number of this document. This is <code>null</code> when unspecified.
-   * @since DOM Level 3
-   *
-   * NEEDSDOC ($objectName$) @return
-   */
-  public String getVersion()
-  {
-
-    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
-
-    return null;
-  }
-
-  /**
-   * <p>EXPERIMENTAL! Based on the <a
-   * href='http://www.w3.org/TR/2001/WD-DOM-Level-3-Core-20010605'>Document
-   * Object Model (DOM) Level 3 Core Working Draft of 5 June 2001.</a>.
-   * <p>
-   * An attribute specifying, as part of the XML declaration, the version
-   * number of this document. This is <code>null</code> when unspecified.
-   * @since DOM Level 3
-   *
-   * NEEDSDOC @param version
-   */
-  public void setVersion(String version)
-  {
-    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);
-  }
-//RAMESH : Pending proper implementation of DOM Level 3
-    
+    // RAMESH : Pending proper implementation of DOM Level 3    
     public Object setUserData(String key,
                               Object data,
                               UserDataHandler handler) {
         return getOwnerDocument().setUserData( key, data, handler);
-}
+    }
 
     /**
      * Retrieves the object associated to a key on a this node. The object
@@ -1430,8 +1360,8 @@ public class UnImplNode implements Node, Element, NodeList, Document
              return true;
     }
 
-      /**
-     * DOM Level 3 - Experimental:
+    /**
+     * DOM Level 3:
      * Look up the namespace URI associated to the given prefix, starting from this node.
      * Use lookupNamespaceURI(null) to lookup the default namespace
      *
@@ -1520,10 +1450,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
 
         }
     }
-
     
     /**
-     *  DOM Level 3: Experimental
+     *  DOM Level 3:
      *  This method checks if the specified <code>namespaceURI</code> is the
      *  default namespace or not.
      *  @param namespaceURI The namespace URI to look for.
@@ -1597,9 +1526,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
 
     }
 
-      /**
+    /**
      *
-     * DOM Level 3 - Experimental:
+     * DOM Level 3:
      * Look up the prefix associated to the given namespace URI, starting from this node.
      *
      * @param namespaceURI
@@ -1652,7 +1581,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
          }
     }
 
-     /**
+    /**
      * Returns whether this node is the same node as the given one.
      * <br>This method provides a way to determine whether two
      * <code>Node</code> references returned by the implementation reference
@@ -1671,7 +1600,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
         return this == other;
     }
 
-      /**
+    /**
      * This attribute returns the text content of this node and its
      * descendants. When it is defined to be null, setting it has no effect.
      * When set, any possible children this node may have are removed and
@@ -1714,12 +1643,13 @@ public class UnImplNode implements Node, Element, NodeList, Document
      *   DOMSTRING_SIZE_ERR: Raised when it would return more characters than
      *   fit in a <code>DOMString</code> variable on the implementation
      *   platform.
-       * @since DOM Level 3
+     * @since DOM Level 3
      */
     public void setTextContent(String textContent)
         throws DOMException {
         setNodeValue(textContent);
     }
+    
     /**
      * This attribute returns the text content of this node and its
      * descendants. When it is defined to be null, setting it has no effect.
@@ -1769,7 +1699,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
         return getNodeValue();  // overriden in some subclasses
     }
 
-     /**
+    /**
      * Compares a node with this node with regard to their position in the
      * document.
      * @param other The node to compare against this node.
@@ -1781,7 +1711,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
         return 0;
     }
 
-     /**
+    /**
      * The absolute base URI of this node or <code>null</code> if undefined.
      * This value is computed according to . However, when the
      * <code>Document</code> supports the feature "HTML" , the base URI is
@@ -1809,8 +1739,8 @@ public class UnImplNode implements Node, Element, NodeList, Document
         return null;
     }
 
-        /**
-     * DOM Level 3 WD - Experimental.
+    /**
+     * DOM Level 3
      * Renaming node
      */
     public Node renameNode(Node n,
@@ -1819,15 +1749,15 @@ public class UnImplNode implements Node, Element, NodeList, Document
                            throws DOMException{
         return n;
     }
-
     
     /**
-     *  DOM Level 3 WD - Experimental
+     *  DOM Level 3
      *  Normalize document.
      */
     public void normalizeDocument(){   
 
     }
+    
     /**
      *  The configuration used when <code>Document.normalizeDocument</code> is
      * invoked.
@@ -1838,19 +1768,19 @@ public class UnImplNode implements Node, Element, NodeList, Document
     }
 
     
-    /**Experimental DOM Level 3 feature: documentURI */
+    /** DOM Level 3 feature: documentURI */
     protected String fDocumentURI;
 
     /**
-     * DOM Level 3 WD - Experimental.
+     * DOM Level 3
      */
     public void setDocumentURI(String documentURI){
         
         fDocumentURI= documentURI;
     }
 
-        /**
-     * DOM Level 3 WD - Experimental.
+    /**
+     * DOM Level 3
      * The location of the document or <code>null</code> if undefined.
      * <br>Beware that when the <code>Document</code> supports the feature
      * "HTML" , the href attribute of the HTML BASE element takes precedence
@@ -1861,11 +1791,11 @@ public class UnImplNode implements Node, Element, NodeList, Document
         return fDocumentURI;
     }
 
-        /**Experimental DOM Level 3 feature: Document actualEncoding */
+    /** DOM Level 3 feature: Document actualEncoding */
     protected String actualEncoding;
 
-     /**
-     * DOM Level 3 WD - Experimental.
+    /**
+     * DOM Level 3
      * An attribute specifying the actual encoding of this document. This is
      * <code>null</code> otherwise.
      * <br> This attribute represents the property [character encoding scheme]
@@ -1877,7 +1807,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
     }
 
     /**
-     * DOM Level 3 WD - Experimental.
+     * DOM Level 3
      * An attribute specifying the actual encoding of this document. This is
      * <code>null</code> otherwise.
      * <br> This attribute represents the property [character encoding scheme]
@@ -1888,9 +1818,9 @@ public class UnImplNode implements Node, Element, NodeList, Document
         actualEncoding = value;
     }
 
-     /**
-    * DOM Level 3 WD - Experimental.
-    */
+    /**
+     * DOM Level 3
+     */
     public Text replaceWholeText(String content)
                                  throws DOMException{
 /*
@@ -1938,8 +1868,8 @@ public class UnImplNode implements Node, Element, NodeList, Document
         return null; //Pending
     }
 
-     /**
-     * DOM Level 3 WD - Experimental.
+    /**
+     * DOM Level 3
      * Returns all text of <code>Text</code> nodes logically-adjacent text
      * nodes to this node, concatenated in document order.
      * @since DOM Level 3
@@ -1964,8 +1894,8 @@ public class UnImplNode implements Node, Element, NodeList, Document
 
     }
 
-      /**
-    * DOM Level 3 WD - Experimental.
+    /**
+     * DOM Level 3
      * Returns whether this text node contains whitespace in element content,
      * often abusively called "ignorable whitespace".
      */
@@ -1973,10 +1903,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
         return false;
     }
 
-
-
-
-     /**
+    /**
      * NON-DOM: set the type of this attribute to be ID type.
      *
      * @param id
@@ -1985,13 +1912,12 @@ public class UnImplNode implements Node, Element, NodeList, Document
         //PENDING
     }
 
-     /**
+    /**
      * DOM Level 3: register the given attribute node as an ID attribute
      */
     public void setIdAttribute(String name, boolean makeId) {
         //PENDING
     }
-
        
     /**
      * DOM Level 3: register the given attribute node as an ID attribute
@@ -2007,12 +1933,13 @@ public class UnImplNode implements Node, Element, NodeList, Document
                                     boolean makeId) {
         //PENDING
     }
-         /**
-         * Method getSchemaTypeInfo.
-         * @return TypeInfo
-         */
+    
+    /**
+     * Method getSchemaTypeInfo.
+     * @return TypeInfo
+     */
     public TypeInfo getSchemaTypeInfo(){
-      return null; //PENDING
+        return null; //PENDING
     }
 
     public boolean isId() {
@@ -2044,6 +1971,5 @@ public class UnImplNode implements Node, Element, NodeList, Document
     public void setXmlVersion(String xmlVersion) throws DOMException {
         this.xmlVersion = xmlVersion;
     }
-
 
 }

@@ -1644,7 +1644,7 @@ public class StylesheetHandler extends DefaultHandler
     while ((version == -1 || version == Constants.XSLTVERSUPPORTED) && elem != null)
     {
       try{
-      version = Double.valueOf(elem.getVersion()).doubleValue();
+      version = Double.valueOf(elem.getXmlVersion()).doubleValue();
       }
       catch (Exception ex)
       {
