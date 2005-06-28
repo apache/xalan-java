@@ -264,7 +264,7 @@ public class ExsltDatetime
     }
     
     /**
-     * The date:year function returns the month of a date as a number. If no argument 
+     * The date:month-in-year function returns the month of a date as a number. If no argument 
      * is given, then the current local date/time, as returned by date:date-time is used 
      * as a default argument. 
      * The date/time string specified as the first argument is a left or right-truncated 
@@ -288,7 +288,7 @@ public class ExsltDatetime
         return Double.NaN;      
       
       String[] formats = {dt, d, gym, gm, gmd};
-      return getNumber(datetime, formats, Calendar.MONTH);
+      return getNumber(datetime, formats, Calendar.MONTH) + 1;
     }
     
     /**
@@ -297,7 +297,7 @@ public class ExsltDatetime
     public static double monthInYear()
     {      
       Calendar cal = Calendar.getInstance();
-      return cal.get(Calendar.MONTH);
+      return cal.get(Calendar.MONTH) + 1;
    }
     
     /**
