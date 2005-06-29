@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,19 +74,6 @@ public class XMLErrorResources extends ListResourceBundle
  *     instance of that notation is referred to as an XPath expression.
  *
  */
-
-  /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 61;
-
-  /** Maximum warnings, this is needed to keep track of the number of warnings.          */
-  public static final int MAX_WARNING = 0;
-
-  /** Maximum misc strings.   */
-  public static final int MAX_OTHERS = 4;
-
-  /** Maximum total warnings and error messages.          */
-  public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
-
 
   /* 
    * Message keys
