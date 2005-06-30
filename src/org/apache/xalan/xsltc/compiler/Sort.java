@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import org.apache.bcel.classfile.Field;
 import org.apache.bcel.classfile.Method;
 import org.apache.bcel.generic.ALOAD;
 import org.apache.bcel.generic.ANEWARRAY;
+import org.apache.bcel.generic.ASTORE;
 import org.apache.bcel.generic.CHECKCAST;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.GETFIELD;
@@ -40,6 +41,7 @@ import org.apache.bcel.generic.INVOKESTATIC;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.LocalVariableGen;
 import org.apache.bcel.generic.NEW;
 import org.apache.bcel.generic.NOP;
 import org.apache.bcel.generic.PUSH;
@@ -252,8 +254,24 @@ final class Sort extends Instruction implements Closure {
 					  + NODE_SORT_FACTORY_SIG
 					  + ")V");	
 
-	il.append(new NEW(cpg.addClass(SORT_ITERATOR)));
-	il.append(DUP);
+        // Backwards branches are prohibited if an uninitialized object is
+        // on the stack by section 4.9.4 of the JVM Specification, 2nd Ed.
+        // We don't know whether this code might contain backwards branches
+        // so we mustn't create the new object until after we've created
+        // the suspect arguments to its constructor.  Instead we calculate
+        // the values of the arguments to the constructor first, store them
+        // in temporary variables, create the object and reload the
+        // arguments from the temporaries to avoid the problem.
+
+        LocalVariableGen nodesTemp =
+            methodGen.addLocalVariable("sort_tmp1",
+                                       Util.getJCRefType(NODE_ITERATOR_SIG),
+                                       il.getEnd(), null);
+
+        LocalVariableGen sortRecordFactoryTemp =
+            methodGen.addLocalVariable("sort_tmp2",
+                                      Util.getJCRefType(NODE_SORT_FACTORY_SIG),
+                                      il.getEnd(), null);
 
 	// Get the current node iterator
 	if (nodeSet == null) {	// apply-templates default
@@ -268,10 +286,18 @@ final class Sort extends Instruction implements Closure {
 	else {
 	    nodeSet.translate(classGen, methodGen);
 	}
+
+        il.append(new ASTORE(nodesTemp.getIndex()));
 	
 	// Compile the code for the NodeSortRecord producing class and pass
 	// that as the last argument to the SortingIterator constructor.
 	compileSortRecordFactory(sortObjects, classGen, methodGen);
+        il.append(new ASTORE(sortRecordFactoryTemp.getIndex()));
+
+	il.append(new NEW(cpg.addClass(SORT_ITERATOR)));
+	il.append(DUP);
+        il.append(new ALOAD(nodesTemp.getIndex()));
+        il.append(new ALOAD(sortRecordFactoryTemp.getIndex()));
 	il.append(new INVOKESPECIAL(init));
     }
 
@@ -302,14 +328,21 @@ final class Sort extends Instruction implements Closure {
 
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-	
-	il.append(new NEW(cpg.addClass(sortRecordFactoryClass)));
-	il.append(DUP);
-	il.append(methodGen.loadDOM());
-	il.append(new PUSH(cpg, sortRecordClass));
-	il.append(classGen.loadTranslet());
+
+        // Backwards branches are prohibited if an uninitialized object is
+        // on the stack by section 4.9.4 of the JVM Specification, 2nd Ed.
+        // We don't know whether this code might contain backwards branches
+        // so we mustn't create the new object until after we've created
+        // the suspect arguments to its constructor.  Instead we calculate
+        // the values of the arguments to the constructor first, store them
+        // in temporary variables, create the object and reload the
+        // arguments from the temporaries to avoid the problem.
 
 	// Compile code that initializes the static _sortOrder
+        LocalVariableGen sortOrderTemp
+                 = methodGen.addLocalVariable("sort_order_tmp",
+                                      Util.getJCRefType("[" + STRING_SIG),
+                                      il.getEnd(), null);
 	il.append(new PUSH(cpg, nsorts));
 	il.append(new ANEWARRAY(cpg.addClass(STRING)));
 	for (int level = 0; level < nsorts; level++) {
@@ -319,7 +352,12 @@ final class Sort extends Instruction implements Closure {
 	    sort.translateSortOrder(classGen, methodGen);
 	    il.append(AASTORE);
 	}
+        il.append(new ASTORE(sortOrderTemp.getIndex()));
 
+        LocalVariableGen sortTypeTemp
+                 = methodGen.addLocalVariable("sort_type_tmp",
+                                      Util.getJCRefType("[" + STRING_SIG),
+                                      il.getEnd(), null);
 	il.append(new PUSH(cpg, nsorts));
 	il.append(new ANEWARRAY(cpg.addClass(STRING)));
 	for (int level = 0; level < nsorts; level++) {
@@ -329,26 +367,48 @@ final class Sort extends Instruction implements Closure {
 	    sort.translateSortType(classGen, methodGen);
 	    il.append(AASTORE);
 	}
-  
-  il.append(new PUSH(cpg, nsorts));
-  il.append(new ANEWARRAY(cpg.addClass(STRING)));
-  for (int level = 0; level < nsorts; level++) {
-        final Sort sort = (Sort)sortObjects.elementAt(level);
-        il.append(DUP);
-        il.append(new PUSH(cpg, level));
-        sort.translateLang(classGen, methodGen);
-        il.append(AASTORE);
-   }
- 
-   il.append(new PUSH(cpg, nsorts));
-   il.append(new ANEWARRAY(cpg.addClass(STRING)));
-   for (int level = 0; level < nsorts; level++) {
-        final Sort sort = (Sort)sortObjects.elementAt(level);
-        il.append(DUP);
-        il.append(new PUSH(cpg, level));
-        sort.translateCaseOrder(classGen, methodGen);
-        il.append(AASTORE);
-  }
+        il.append(new ASTORE(sortTypeTemp.getIndex()));
+
+        LocalVariableGen sortLangTemp
+                 = methodGen.addLocalVariable("sort_lang_tmp",
+                                      Util.getJCRefType("[" + STRING_SIG),
+                                      il.getEnd(), null);
+        il.append(new PUSH(cpg, nsorts));
+        il.append(new ANEWARRAY(cpg.addClass(STRING)));
+        for (int level = 0; level < nsorts; level++) {
+              final Sort sort = (Sort)sortObjects.elementAt(level);
+              il.append(DUP);
+              il.append(new PUSH(cpg, level));
+              sort.translateLang(classGen, methodGen);
+              il.append(AASTORE);
+        }
+        il.append(new ASTORE(sortLangTemp.getIndex()));
+
+        LocalVariableGen sortCaseOrderTemp
+                 = methodGen.addLocalVariable("sort_case_order_tmp",
+                                      Util.getJCRefType("[" + STRING_SIG),
+                                      il.getEnd(), null);
+        il.append(new PUSH(cpg, nsorts));
+        il.append(new ANEWARRAY(cpg.addClass(STRING)));
+        for (int level = 0; level < nsorts; level++) {
+            final Sort sort = (Sort)sortObjects.elementAt(level);
+            il.append(DUP);
+            il.append(new PUSH(cpg, level));
+            sort.translateCaseOrder(classGen, methodGen);
+            il.append(AASTORE);
+        }
+        il.append(new ASTORE(sortCaseOrderTemp.getIndex()));
+	
+	il.append(new NEW(cpg.addClass(sortRecordFactoryClass)));
+	il.append(DUP);
+	il.append(methodGen.loadDOM());
+	il.append(new PUSH(cpg, sortRecordClass));
+	il.append(classGen.loadTranslet());
+
+        il.append(new ALOAD(sortOrderTemp.getIndex()));
+        il.append(new ALOAD(sortTypeTemp.getIndex()));
+        il.append(new ALOAD(sortLangTemp.getIndex()));
+        il.append(new ALOAD(sortCaseOrderTemp.getIndex()));
 
 	il.append(new INVOKESPECIAL(
 	    cpg.addMethodref(sortRecordFactoryClass, "<init>", 
@@ -356,8 +416,8 @@ final class Sort extends Instruction implements Closure {
 		    + STRING_SIG
 		    + TRANSLET_INTF_SIG
 		    + "[" + STRING_SIG
-        + "[" + STRING_SIG
-        + "[" + STRING_SIG
+                    + "[" + STRING_SIG
+                    + "[" + STRING_SIG
 		    + "[" + STRING_SIG + ")V")));
 
 	// Initialize closure variables in sortRecordFactory

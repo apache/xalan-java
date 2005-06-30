@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,20 @@
 
 package org.apache.xalan.xsltc.compiler;
 
+import org.apache.bcel.generic.ALOAD;
+import org.apache.bcel.generic.ASTORE;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.INVOKEINTERFACE;
 import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.LocalVariableGen;
 import org.apache.bcel.generic.NEW;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
+import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 
@@ -162,6 +166,30 @@ final class ParentLocationPath extends RelativeLocationPath {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
 
+        // Backwards branches are prohibited if an uninitialized object is
+        // on the stack by section 4.9.4 of the JVM Specification, 2nd Ed.
+        // We don't know whether this code might contain backwards branches
+        // so we mustn't create the new object until after we've created
+        // the suspect arguments to its constructor.  Instead we calculate
+        // the values of the arguments to the constructor first, store them
+        // in temporary variables, create the object and reload the
+        // arguments from the temporaries to avoid the problem.
+
+	// Compile path iterator
+	_path.translate(classGen, methodGen); // iterator on stack....
+        LocalVariableGen pathTemp
+                = methodGen.addLocalVariable("parent_location_path_tmp1",
+                                         Util.getJCRefType(NODE_ITERATOR_SIG),
+                                         il.getEnd(), null);
+        il.append(new ASTORE(pathTemp.getIndex()));
+
+	_step.translate(classGen, methodGen);
+        LocalVariableGen stepTemp
+                = methodGen.addLocalVariable("parent_location_path_tmp2",
+                                         Util.getJCRefType(NODE_ITERATOR_SIG),
+                                         il.getEnd(), null);
+        il.append(new ASTORE(stepTemp.getIndex()));
+
 	// Create new StepIterator
 	final int initSI = cpg.addMethodref(STEP_ITERATOR_CLASS,
 					    "<init>",
@@ -172,9 +200,8 @@ final class ParentLocationPath extends RelativeLocationPath {
 	il.append(new NEW(cpg.addClass(STEP_ITERATOR_CLASS)));
 	il.append(DUP);
 
-	// Compile path iterator
-	_path.translate(classGen, methodGen); // iterator on stack....
-	_step.translate(classGen, methodGen);
+        il.append(new ALOAD(pathTemp.getIndex()));
+        il.append(new ALOAD(stepTemp.getIndex()));
 
 	// Initialize StepIterator with iterators from the stack
 	il.append(new INVOKESPECIAL(initSI));

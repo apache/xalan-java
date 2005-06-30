@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,20 @@
 
 package org.apache.xalan.xsltc.compiler;
 
+import org.apache.bcel.generic.ALOAD;
+import org.apache.bcel.generic.ASTORE;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.INVOKEINTERFACE;
 import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.LocalVariableGen;
 import org.apache.bcel.generic.NEW;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.NodeType;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
+import org.apache.xalan.xsltc.compiler.util.Util;
 
 /**
  * @author Jacek Ambroziak
@@ -83,12 +87,28 @@ final class AbsoluteLocationPath extends Expression {
 						"("
 						+ NODE_ITERATOR_SIG
 						+ ")V");
+
+	    // Compile relative path iterator(s)
+            //
+            // Backwards branches are prohibited if an uninitialized object is
+            // on the stack by section 4.9.4 of the JVM Specification, 2nd Ed.
+            // We don't know whether this code might contain backwards branches,
+            // so we mustn't create the new object until after we've created
+            // this argument to its constructor.  Instead we calculate the
+            // value of the argument to the constructor first, store it in
+            // a temporary variable, create the object and reload the argument
+            // from the temporary to avoid the problem.
+	    _path.translate(classGen, methodGen);
+            LocalVariableGen relPathIterator
+                    = methodGen.addLocalVariable("abs_location_path_tmp",
+                                       Util.getJCRefType(NODE_ITERATOR_SIG),
+                                       il.getEnd(), null);
+            il.append(new ASTORE(relPathIterator.getIndex()));
+
 	    // Create new AbsoluteIterator
 	    il.append(new NEW(cpg.addClass(ABSOLUTE_ITERATOR)));
 	    il.append(DUP);
-
-	    // Compile relative path iterator(s)
-	    _path.translate(classGen, methodGen);
+            il.append(new ALOAD(relPathIterator.getIndex()));
 
 	    // Initialize AbsoluteIterator with iterator from the stack
 	    il.append(new INVOKESPECIAL(initAI));

@@ -340,10 +340,27 @@ class StepPattern extends RelativePathPattern {
 	// Create a new matching iterator using the matching node
 	index = cpg.addMethodref(MATCHING_ITERATOR, "<init>", 
 				 "(I" + NODE_ITERATOR_SIG + ")V");
+
+        // Backwards branches are prohibited if an uninitialized object is
+        // on the stack by section 4.9.4 of the JVM Specification, 2nd Ed.
+        // We don't know whether this code might contain backwards branches,
+        // so we mustn't create the new object until after we've created
+        // the suspect arguments to its constructor.  Instead we calculate
+        // the values of the arguments to the constructor first, store them
+        // in temporary variables, create the object and reload the
+        // arguments from the temporaries to avoid the problem.
+
+	_step.translate(classGen, methodGen);
+        LocalVariableGen stepIteratorTemp =
+                methodGen.addLocalVariable("step_pattern_tmp2",
+                                           Util.getJCRefType(NODE_ITERATOR_SIG),
+                                           il.getEnd(), null);
+        il.append(new ASTORE(stepIteratorTemp.getIndex()));
+
 	il.append(new NEW(cpg.addClass(MATCHING_ITERATOR)));
 	il.append(DUP);
 	il.append(new ILOAD(match.getIndex()));
-	_step.translate(classGen, methodGen);
+        il.append(new ALOAD(stepIteratorTemp.getIndex()));
 	il.append(new INVOKESPECIAL(index));
 
 	// Get the parent of the matching node

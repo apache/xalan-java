@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -164,21 +164,35 @@ final class KeyCall extends FunctionCall {
 	final int dupInit = cpg.addMethodref(DUP_FILTERED_ITERATOR,
 					     "<init>",
 					     "("+NODE_ITERATOR_SIG+")V");
-					     
+
+
+        // Backwards branches are prohibited if an uninitialized object is
+        // on the stack by section 4.9.4 of the JVM Specification, 2nd Ed.
+        // We don't know whether this code might contain backwards branches
+        // so we mustn't create the new object until after we've created
+        // the suspect arguments to its constructor.  Instead we calculate
+        // the values of the arguments to the constructor first, store them
+        // in temporary variables, create the object and reload the
+        // arguments from the temporaries to avoid the problem.
+
+	LocalVariableGen keyIterator = translateCall(classGen, methodGen);
+
 	il.append(new NEW(cpg.addClass(DUP_FILTERED_ITERATOR)));	
 	il.append(DUP);
-	translateCall(classGen, methodGen);
+        il.append(new ALOAD(keyIterator.getIndex()));
 	il.append(new INVOKESPECIAL(dupInit));
-	
     }
 
     /**
-     * Translate the actual index lookup - leaves KeyIndex (iterator) on stack
+     * Translate the actual index lookup - leaves KeyIndex (iterator) stored
+     * in a temporary that the caller will need to load.
      * @param classGen The Java class generator
      * @param methodGen The method generator
+     * @return A <code>org.apache.bcel.generic.LocalVariableGen</code>
+     *         object that will contain the iterator for the key call.
      */
-    private void translateCall(ClassGenerator classGen,
-			      MethodGenerator methodGen) {
+    private LocalVariableGen translateCall(ClassGenerator classGen,
+			                   MethodGenerator methodGen) {
 
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
@@ -304,9 +318,6 @@ final class KeyCall extends FunctionCall {
 	    // Restore current node and current iterator from the stack
 	    il.append(methodGen.storeIterator());
 	    il.append(methodGen.storeCurrentNode());
-
-	    // Return with the an iterator for all resulting nodes
-	    il.append(new ALOAD(returnIndex.getIndex()));
 	}
 	// If the second parameter is a single value we just lookup the named
 	// index and initialise the iterator to return nodes with this value.
@@ -337,6 +348,10 @@ final class KeyCall extends FunctionCall {
 	    else {
 		il.append(new INVOKEVIRTUAL(lookupKey));
 	    }
+
+	    il.append(new ASTORE(returnIndex.getIndex()));
 	}
+
+        return returnIndex;
     }
 }

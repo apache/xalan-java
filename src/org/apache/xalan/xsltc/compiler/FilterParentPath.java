@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,14 @@
 
 package org.apache.xalan.xsltc.compiler;
 
+import org.apache.bcel.generic.ALOAD;
+import org.apache.bcel.generic.ASTORE;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.INVOKEINTERFACE;
 import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.InstructionList;
+import org.apache.bcel.generic.LocalVariableGen;
 import org.apache.bcel.generic.NEW;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
@@ -32,6 +35,7 @@ import org.apache.xalan.xsltc.compiler.util.NodeType;
 import org.apache.xalan.xsltc.compiler.util.ReferenceType;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
+import org.apache.xalan.xsltc.compiler.util.Util;
 
 /**
  * @author Jacek Ambroziak
@@ -105,12 +109,35 @@ final class FilterParentPath extends Expression {
 					    +NODE_ITERATOR_SIG
 					    +NODE_ITERATOR_SIG
 					    +")V");
-	il.append(new NEW(cpg.addClass(STEP_ITERATOR_CLASS)));
-	il.append(DUP);
+
+        // Backwards branches are prohibited if an uninitialized object is
+        // on the stack by section 4.9.4 of the JVM Specification, 2nd Ed.
+        // We don't know whether this code might contain backwards branches,
+        // so we mustn't create the new object until after we've created
+        // the suspect arguments to its constructor.  Instead we calculate
+        // the values of the arguments to the constructor first, store them
+        // in temporary variables, create the object and reload the
+        // arguments from the temporaries to avoid the problem.
 
 	// Recursively compile 2 iterators
 	_filterExpr.translate(classGen, methodGen);
+        LocalVariableGen filterTemp =
+                methodGen.addLocalVariable("filter_parent_path_tmp1",
+                                           Util.getJCRefType(NODE_ITERATOR_SIG),
+                                           il.getEnd(), null);
+        il.append(new ASTORE(filterTemp.getIndex()));
+
 	_path.translate(classGen, methodGen);
+        LocalVariableGen pathTemp =
+                methodGen.addLocalVariable("filter_parent_path_tmp2",
+                                           Util.getJCRefType(NODE_ITERATOR_SIG),
+                                           il.getEnd(), null);
+        il.append(new ASTORE(pathTemp.getIndex()));
+
+	il.append(new NEW(cpg.addClass(STEP_ITERATOR_CLASS)));
+	il.append(DUP);
+        il.append(new ALOAD(filterTemp.getIndex()));
+        il.append(new ALOAD(pathTemp.getIndex()));
 
 	// Initialize StepIterator with iterators from the stack
 	il.append(new INVOKESPECIAL(initSI));

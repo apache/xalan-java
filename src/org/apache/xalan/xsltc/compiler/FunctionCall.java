@@ -35,6 +35,7 @@ import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.InstructionConstants;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.InvokeInstruction;
+import org.apache.bcel.generic.LocalVariableGen;
 import org.apache.bcel.generic.NEW;
 import org.apache.bcel.generic.PUSH;
 import org.apache.xalan.xsltc.compiler.util.BooleanType;
@@ -749,17 +750,38 @@ class FunctionCall extends Expression {
 	    final String clazz = 
 		_chosenConstructor.getDeclaringClass().getName();
 	    Class[] paramTypes = _chosenConstructor.getParameterTypes();
-	    
-	    il.append(new NEW(cpg.addClass(_className)));
-	    il.append(InstructionConstants.DUP);
+            LocalVariableGen[] paramTemp = new LocalVariableGen[n];
+
+            // Backwards branches are prohibited if an uninitialized object is
+            // on the stack by section 4.9.4 of the JVM Specification, 2nd Ed.
+            // We don't know whether this code might contain backwards branches
+            // so we mustn't create the new object until after we've created
+            // the suspect arguments to its constructor.  Instead we calculate
+            // the values of the arguments to the constructor first, store them
+            // in temporary variables, create the object and reload the
+            // arguments from the temporaries to avoid the problem.
 
 	    for (int i = 0; i < n; i++) {
 		final Expression exp = argument(i);
+                Type expType = exp.getType();
 		exp.translate(classGen, methodGen);
 		// Convert the argument to its Java type
 		exp.startIterator(classGen, methodGen);
-		exp.getType().translateTo(classGen, methodGen, paramTypes[i]);
+		expType.translateTo(classGen, methodGen, paramTypes[i]);
+                paramTemp[i] =
+                    methodGen.addLocalVariable("function_call_tmp"+i,
+                                               expType.toJCType(),
+                                               il.getEnd(), null);
+                il.append(expType.STORE(paramTemp[i].getIndex()));
 	    }
+
+	    il.append(new NEW(cpg.addClass(_className)));
+	    il.append(InstructionConstants.DUP);
+
+            for (int i = 0; i < n; i++) {
+                final Expression arg = argument(i);
+                il.append(arg.getType().LOAD(paramTemp[i].getIndex()));
+            }
 
 	    final StringBuffer buffer = new StringBuffer();
 	    buffer.append('(');
