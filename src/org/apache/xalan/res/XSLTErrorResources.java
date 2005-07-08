@@ -1301,7 +1301,7 @@ public class XSLTErrorResources extends ListResourceBundle
     // and must not be translated.  "NCName" is an XML data-type and must not be
     // translated.
     { WG_PROCESSINGINSTRUCTION_NOTVALID_NCNAME,
-      "The value of the 'name' attribute of xsl:processing-instruction must be a valid NCName: {0}"},
+      "The value of the ''name'' attribute of xsl:processing-instruction must be a valid NCName: {0}"},
 
     // Note to translators:  This message is reported if the stylesheet that is
     // being processed attempted to construct an XML document with an attribute in a
