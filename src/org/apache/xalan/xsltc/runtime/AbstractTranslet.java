@@ -589,7 +589,11 @@ public abstract class AbstractTranslet implements Translet {
      */
     public final void transform(DOM document, SerializationHandler handler) 
 	throws TransletException {
-	transform(document, document.getIterator(), handler);
+        try {
+            transform(document, document.getIterator(), handler);
+        } finally {
+            _keyIndexes = null;
+        }
     }
 	
     /**
