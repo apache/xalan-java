@@ -229,7 +229,7 @@ public final class BasisLibrary {
 	}
 	else {
 	    final String className = obj.getClass().getName();
-	    runTimeError(INVALID_ARGUMENT_ERR, className, "number()");
+	    runTimeError(INVALID_ARGUMENT_ERR, className, "boolean()");
 	}
 	return false;
     }
