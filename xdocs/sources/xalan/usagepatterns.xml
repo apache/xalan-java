@@ -112,7 +112,7 @@ transformer.transform
 <p>Output properties for XML, HTML, and Text transformation output are defined in property files in the org.apache.xml.serializer package.</p>
 <p>You can change these settings as follows:</p>
 <ol>
-  <li>Declare the xalan namespace in your stylesheet element (xmlns:xalan="http://xml.apache.org/xslt").<br/><br/></li>
+  <li>Declare the xalan namespace in your stylesheet element (xmlns:xalan="http://xml.apache.org/xalan").<br/><br/></li>
   <li>Use the namespace prefix you assign (for example, "xalan") to redefine properties of interest in the stylesheet xsl:output
       element (for example, xalan:indent-amount="5").</li>
 </ol>
@@ -120,7 +120,7 @@ transformer.transform
 <source>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;xsl:stylesheet version="1.0" 
                 xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:xalan="http://xml.apache.org/xslt"&gt;
+                xmlns:xalan="http://xml.apache.org/xalan"&gt;
                 
   &lt;xsl:output method="xml" 
               encoding="UTF-8"
@@ -348,7 +348,7 @@ and place the output in a DOMResult object.</note>
 </s2><anchor name="xpath"/>
 <s2 title="Working with XPath expressions">
 <p>XSLT stylesheets use XPath expressions to select nodes, specify conditions, and generate text for the result tree. XPath provides an API that you can call directly. For example, you may want to select nodes programmatically and do your own processing without a stylesheet.</p>
-<p>XPath is an independent entity, with clients other than XSLT processors (such as XPointer). Accordingly, &xslt4j2; has packaged XPath as a separate module (org.apache.xpath and its subpackages), although concurrently this module does use some utility classes packaged in org.apache.xalan.utils. The org.apache.xpath.XPathAPI class contains convenience methods that you can use to return single DOM Nodes, NodeIterators, and XObjects. Apart from their own functionality, these methods also provide a path into the lower-level XPath API that you may find useful.</p>
+<p>XPath is an independent entity, with clients other than XSLT processors (such as XPointer). Accordingly, &xslt4j2; has packaged XPath as a separate module (org.apache.xpath and its subpackages), although currently this module does use some utility classes packaged in org.apache.xalan.utils. The org.apache.xpath.XPathAPI class contains convenience methods that you can use to return single DOM Nodes, NodeIterators, and XObjects. Apart from their own functionality, these methods also provide a path into the lower-level XPath API that you may find useful.</p>
 <p>For an example that uses the XPathAPI convenience methods to execute XPath expressions against XML source files, see <link idref="samples" anchor="applyxpath">ApplyXPath</link>.</p>
 </s2><anchor name="applet"/>
 <s2 title="Using the &xslt4j; applet wrapper">
