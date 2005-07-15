@@ -674,7 +674,7 @@ public final class ToHTMLStream extends ToStream
                 final java.io.Writer writer = m_writer;
                 try
                 {
-                writer.write("<!DOCTYPE HTML");
+                writer.write("<!DOCTYPE html");
 
                 if (null != doctypePublic)
                 {
