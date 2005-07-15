@@ -273,7 +273,7 @@ public class Parser implements Constants, ContentHandler {
 	    if (prefix.equals(XMLNS_PREFIX) == false) {
 		namespace = _symbolTable.lookupNamespace(prefix);
 		if (namespace == null && reportError) {
-		    final int line = _locator.getLineNumber();
+		    final int line = getLineNumber();
 		    ErrorMsg err = new ErrorMsg(ErrorMsg.NAMESPACE_UNDEF_ERR,
 						line, prefix);
 		    reportError(ERROR, err);
@@ -384,7 +384,7 @@ public class Parser implements Constants, ContentHandler {
 		while (elements.hasMoreElements()) {
 		    Object child = elements.nextElement();
 		    if (child instanceof Text) {
-			final int l = _locator.getLineNumber();
+			final int l = getLineNumber();
 			ErrorMsg err =
 			    new ErrorMsg(ErrorMsg.ILLEGAL_TEXT_NODE_ERR,l,null);
 			reportError(ERROR, err);
@@ -920,7 +920,7 @@ public class Parser implements Constants, ContentHandler {
 		node.setQName(qname);
 		node.setParser(this);
 		if (_locator != null) {
-		    node.setLineNumber(_locator.getLineNumber());
+		    node.setLineNumber(getLineNumber());
 		}
 		if (node instanceof Stylesheet) {
 		    _xsltc.setStylesheet((Stylesheet)node);
@@ -944,7 +944,7 @@ public class Parser implements Constants, ContentHandler {
 		    node = new UnsupportedElement(uri, prefix, local, false);
 		    UnsupportedElement element = (UnsupportedElement)node;
 		    ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_XSL_ERR,
-						_locator.getLineNumber(),local);
+						getLineNumber(),local);
 		    element.setErrorMessage(msg);
 		    if (versionIsOne) {
 		    	reportError(UNSUPPORTED,msg);
@@ -955,7 +955,7 @@ public class Parser implements Constants, ContentHandler {
 		    node = new UnsupportedElement(uri, prefix, local, true);
 		    UnsupportedElement element = (UnsupportedElement)node;
 		    ErrorMsg msg = new ErrorMsg(ErrorMsg.UNSUPPORTED_EXT_ERR,
-						_locator.getLineNumber(),local);
+						getLineNumber(),local);
 		    element.setErrorMessage(msg);
 		}
 		// Check if this is an extension of some other XSLT processor
@@ -967,7 +967,7 @@ public class Parser implements Constants, ContentHandler {
 			    UnsupportedElement elem = (UnsupportedElement)node;
 			    ErrorMsg msg =
 				new ErrorMsg(ErrorMsg.UNSUPPORTED_EXT_ERR,
-					     _locator.getLineNumber(),
+					     getLineNumber(),
 					     prefix+":"+local);
 			    elem.setErrorMessage(msg);
 			}
@@ -976,7 +976,7 @@ public class Parser implements Constants, ContentHandler {
 	    }
 	    if (node == null) {
                 node = new LiteralElement();
-                node.setLineNumber(_locator.getLineNumber());
+                node.setLineNumber(getLineNumber());
             }
 	}
 	if ((node != null) && (node instanceof LiteralElement)) {
@@ -1084,8 +1084,7 @@ public class Parser implements Constants, ContentHandler {
      */
     private SyntaxTreeNode parseTopLevel(SyntaxTreeNode parent, String text,
 					 String expression) {
-	int line = 0;
-	if (_locator != null) line = _locator.getLineNumber();
+	int line = getLineNumber();
 
 	try {
 	    _xpathParser.setScanner(new XPathLexer(new StringReader(text)));
@@ -1377,6 +1376,17 @@ public class Parser implements Constants, ContentHandler {
      */
     public void setDocumentLocator(Locator locator) {
 	_locator = locator;
+    }
+    
+    /**
+     * Get the line number, or zero
+     * if there is no _locator.
+     */
+    private int getLineNumber() {
+    	int line = 0;
+    	if (_locator != null)
+    		line = _locator.getLineNumber();
+    	return line;
     }
 
 }
