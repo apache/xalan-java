@@ -894,13 +894,61 @@ public class TransformerImpl extends Transformer
   }
 
   /**
-   * Set the value of a property.  Recognized properties are:
+   * This method is used to set or override the value
+   * of the effective xsl:output attribute values
+   * specified in the stylesheet.
+   * <p>
+   * The recognized standard output properties are:
+   * <ul>
+   * <li>cdata-section-elements
+   * <li>doctype-system
+   * <li>doctype-public
+   * <li>indent
+   * <li>media-type
+   * <li>method
+   * <li>omit-xml-declaration
+   * <li>standalone
+   * <li>version
+   * </ul>
+   * <p>
+   * For example:
+   * <pre>
+   *   tran.setOutputProperty("standalone", "yes");
+   * </pre>
+   * <p>
+   * In the case of the cdata-section-elements property,
+   * the value should be a whitespace separated list of
+   * element names.  The element name is the local name
+   * of the element, if it is in no namespace, or, the URI
+   * in braces followed immediately by the local name
+   * if the element is in that namespace. For example: 
+   * <pre>
+   * tran.setOutputProperty(
+   *   "cdata-section-elements", 
+   *   "elem1 {http://example.uri}elem2 elem3");
+   * </pre>
+   * <p>
+   * The recognized Xalan extension elements are: 
+   * <ul>
+   * <li>content-handler
+   * <li>entities
+   * <li>indent-amount
+   * <li>line-separator
+   * <li>omit-meta-tag
+   * <li>use-url-escaping
+   * </ul>
+   * <p>
+   * These must be in the extension namespace of
+   * "http://xml.apache.org/xalan".  This is accomplished
+   * by putting the namespace URI in braces before the 
+   * property name, for example:
+   * <pre>
+   *   tran.setOutputProperty(
+   *     "{http://xml.apache.org/xalan}line-separator" ,
+   *     "\n");
+   * </pre> 
    *
-   * <p>"http://xml.apache.org/xslt/sourcebase" - the base URL for the
-   * source, which is needed when pure SAX ContentHandler transformation
-   * is to be done.</p>
-   *
-   * @param name The property name, which is a fully-qualified URI.
+   * @param name The property name.
    * @param value The requested value for the property.
    * @throws IllegalArgumentException if the property name is not legal.
    */
