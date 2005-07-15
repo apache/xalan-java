@@ -362,7 +362,8 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
     public void comment(char[] ch, int start, int length) throws SAXException
     {
         flushPending();
-        m_lexHandler.comment(ch, start, length);
+        if (m_lexHandler != null)
+            m_lexHandler.comment(ch, start, length);
 
         // time to fire off comment event
         if (m_tracer != null)
@@ -528,11 +529,13 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
         {
             String doctypeSystem = getDoctypeSystem();
             String doctypePublic = getDoctypePublic();
-            if ((doctypeSystem != null) || (doctypePublic != null))
-                m_lexHandler.startDTD(
-                    elementName,
-                    doctypePublic,
-                    doctypeSystem);
+            if ((doctypeSystem != null) || (doctypePublic != null)) {
+                if (m_lexHandler != null)
+                    m_lexHandler.startDTD(
+                        elementName,
+                        doctypePublic,
+                        doctypeSystem);
+            }
 			m_dtdHandled = true;
         }
         m_elemContext = m_elemContext.push(elementNamespaceURI, elementLocalName, elementName);
