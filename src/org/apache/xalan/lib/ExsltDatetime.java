@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 import org.apache.xpath.objects.XBoolean;
@@ -891,7 +892,7 @@ public class ExsltDatetime
       {
         try
         {
-          SimpleDateFormat dateFormat = new SimpleDateFormat(formatsIn[i]);
+          SimpleDateFormat dateFormat = new SimpleDateFormat(formatsIn[i], Locale.ENGLISH);
           dateFormat.setLenient(false);
           Date dt = dateFormat.parse(in);          
           dateFormat.applyPattern(formatOut);
@@ -910,7 +911,7 @@ public class ExsltDatetime
     private static String getNameOrAbbrev(String format)
     {
       Calendar cal = Calendar.getInstance();
-      SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+      SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.ENGLISH);
       return dateFormat.format(cal.getTime());
     }
 
