@@ -59,132 +59,141 @@ $Id$
 ==================================================================== -->
 
 <project name="Xalan" default="jar" basedir=".">
-  <!-- =================================================================== -->
-  <!-- Defines paths/names of prerequisite jar files we compile against    -->
-  <!-- =================================================================== -->
-  <!-- We keep checked-in known-good .jars here -->
-  <property name="bin.dir" value="./bin"/>
 
-  <!-- GUMP: Allows external build systems to replace .jars Xalan 
-       is dependent on as needed.  Most have separate name and 
-       location properties to make it simpler to reset these values; 
-       please provide feedback if this is useful. 
-  -->
-  <property name="xmlapis.jar.name" value="xml-apis.jar"/>
-  <property name="xmlapis.jar" value="${bin.dir}/${xmlapis.jar.name}"/>
-  <property name="parser.jar.name" value="xercesImpl.jar"/>
-  <property name="parser.jar" value="${bin.dir}/${parser.jar.name}"/>
-  <property name="stylebook.jar.name" value="stylebook-1.0-b3_xalan-2.jar"/>
-  <property name="stylebook.jar" value="${bin.dir}/${stylebook.jar.name}"/>
-  <property name="doclet.jar.name" value="xalan2jdoc.jar"/>
-  <property name="doclet.jar" value="${bin.dir}/${doclet.jar.name}"/>
-  <property name="taglet.jar.name" value="xalan2jtaglet.jar"/>
-  <property name="taglet.jar" value="${bin.dir}/${taglet.jar.name}"/>
+  <property name="name"                   value="xalan"/>
+  <property name="year"                   value="2005"/>
+  <property name="build.debug"            value="on"/>
 
-  <!-- GUMP: Currently 18-Apr-01 used only for xsltc.compile -->
-  <property name="bcel.jar.name" value="BCEL.jar"/>
-  <property name="bcel.jar" value="${bin.dir}/${bcel.jar.name}"/>
-  <property name="java_cup.jar.name" value="java_cup.jar"/>
-  <property name="java_cup.jar" value="${bin.dir}/${java_cup.jar.name}"/>
-  <property name="jlex.jar.name" value="JLex.jar"/>
-  <property name="jlex.jar" value="${bin.dir}/${jlex.jar.name}"/>
-  <property name="runtime.jar.name" value="runtime.jar"/>
-  <property name="runtime.jar" value="${bin.dir}/${runtime.jar.name}"/>
-  <property name="regexp.jar.name" value="regexp.jar"/>
-  <property name="regexp.jar" value="${bin.dir}/${regexp.jar.name}"/>
+  <!-- Xalan Java version information -->
+  <property name="version.VERSION"        value="2"/>
+  <property name="version.RELEASE"        value="7"/>
+  <property name="version.DEVELOPER"      value=""/><!-- Set this to 'D' if a developer release; blank "" if maintenance release -->
+  <property name="version.MINOR"          value="0"/><!-- EITHER the developer release number, or a maintenance release number -->
+  <property name="version"                value="${version.VERSION}_${version.RELEASE}_${version.DEVELOPER}${version.MINOR}"/><!-- GUMP: version # of dist file -->
+  <property name="impl.version"           value="${version.VERSION}.${version.RELEASE}.${version.DEVELOPER}${version.MINOR}"/><!-- Used in jar task for filtering MANIFEST.MF file -->
+  
+  <!-- Xerces Java version information -->
+  <property name="parser.version.VERSION" value="2"/>
+  <property name="parser.version.RELEASE" value="7"/>
+  <property name="parser.version.MINOR"   value="0"/> 
+  
+  <!-- Xalan Java directories -->  
+<!--  <property name="bin.dir"                value="./bin"/> -->
+  <property name="build.dir"              value="./build"/> 
+  <property name="lib.dir"                value="./lib"/>   
+  <property name="licenses.dir"           value="./licenses"/> 
+  <property name="samples.dir"            value="./samples"/>   
+  <property name="src.dir"                value="./src"/>  
+  <property name="tools.dir"              value="./tools"/> 
+  <property name="xdocs.dir"              value="./xdocs"/>
+    
+  <property name="apachexml.reldir"       value="org/apache/xml"/>
+  <property name="serializer.reldir"      value="org/apache/xml/serializer"/>
+  <property name="xpath.reldir"           value="org/apache/xpath"/>
+  <property name="xalan.reldir"           value="org/apache/xalan"/>
+  <property name="domxpath.reldir"        value="org/w3c/dom/xpath"/>
+  <property name="xsltc.reldir"           value="${xalan.reldir}/xsltc"/>  
+
+  <!-- Jars needed to run Xalan Java (Interpretive, Compiled, or both) -->
+  <property name="xmlapis.jar.name"       value="xml-apis.jar"/>
+  <property name="xmlapis.jar"            value="${lib.dir}/${xmlapis.jar.name}"/>
+  <property name="parser.jar.name"        value="xercesImpl.jar"/>
+  <property name="parser.jar"             value="${lib.dir}/${parser.jar.name}"/>
+  <property name="bcel.jar.name"          value="BCEL.jar"/>
+  <property name="bcel.jar"               value="${lib.dir}/${bcel.jar.name}"/>
+  <property name="runtime.jar.name"       value="runtime.jar"/>
+  <property name="runtime.jar"            value="${lib.dir}/${runtime.jar.name}"/>
+  <property name="regexp.jar.name"        value="regexp.jar"/>
+  <property name="regexp.jar"             value="${lib.dir}/${regexp.jar.name}"/>
+  
+  <!-- Jars need to build Xalan Java (Interpretive, Compiled, or both) or build the docs -->
+  <property name="java_cup.jar.name"      value="java_cup.jar"/>
+  <property name="java_cup.jar"           value="${tools.dir}/${java_cup.jar.name}"/>
+  <property name="jlex.jar.name"          value="JLex.jar"/>
+  <property name="jlex.jar"               value="${tools.dir}/${jlex.jar.name}"/>  
+  <property name="stylebook.jar.name"     value="stylebook-1.0-b3_xalan-2.jar"/>
+  <property name="stylebook.jar"          value="${tools.dir}/${stylebook.jar.name}"/>
+  <property name="doclet.jar.name"        value="xalan2jdoc.jar"/>
+  <property name="doclet.jar"             value="${tools.dir}/${doclet.jar.name}"/>
+  <property name="taglet.jar.name"        value="xalan2jtaglet.jar"/>
+  <property name="taglet.jar"             value="${tools.dir}/${taglet.jar.name}"/>
+
     <!-- We don't need to package JLex in the xalan.jar, therefore the 
          JLex license and readme files are not part of xsltc.deps.license -->
-  <property name="xsltc.deps.license" value="BCEL.LICENSE.txt,BCEL.README.txt,java_cup.LICENSE.txt,java_cup.README.txt,runtime.LICENSE.txt,runtime.README.txt,regexp.LICENSE.txt,regexp.README.txt"/>
+  <property name="xsltc.deps.license"     value="BCEL.LICENSE.txt,BCEL.README.txt,runtime.LICENSE.txt,runtime.README.txt,regexp.LICENSE.txt,regexp.README.txt"/>
   
-  <!-- Defines general variables used by the other targets; name controls output xalan.jar  -->
-  <property name="version.VERSION" value="2"/>
-  <property name="version.RELEASE" value="6"/>
-  <property name="version.DEVELOPER" value=""/><!-- Set this to 'D' if a developer release; blank "" if maintenance release -->
-  <property name="version.MINOR" value="0"/><!-- EITHER the developer release number, or a maintenance release number -->
-  <property name="version" value="${version.VERSION}_${version.RELEASE}_${version.DEVELOPER}${version.MINOR}"/><!-- GUMP: version # of dist file -->
-  <property name="impl.version" value="${version.VERSION}.${version.RELEASE}.${version.DEVELOPER}${version.MINOR}"/><!-- Used in jar task for filtering MANIFEST.MF file -->
-  <property name="name" value="xalan"/><!-- GUMP: base name of jar target's file -->
-  <property name="year" value="2004"/>
-  <property name="build.debug" value="on"/>
-
   <!-- Relative locations of source directories -->
-  <property name="manifest.mf" value="./src/MANIFEST.MF"/>
-  <property name="manifest.xsltc.mf" value="./src/manifest.xsltc"/>
+  <property name="manifest.mf"            value="./src/MANIFEST.MF"/>
+  <property name="manifest.xsltc.mf"      value="./src/manifest.xsltc"/>
   <property name="manifest.xalan-interpretive.mf" value="./src/manifest.xalan-interpretive"/>  
-  <property name="XSLTInfo.props" value="./src/org/apache/xalan/res/XSLTInfo.properties"/>  
-  <property name="src.dir" value="./src"/>
-  <property name="apachexml.reldir" value="org/apache/xml"/>
-  <property name="serializer.reldir" value="org/apache/xml/serializer"/>
-  <property name="xpath.reldir" value="org/apache/xpath"/>
-  <property name="xalan.reldir" value="org/apache/xalan"/>
-  <property name="domxpath.reldir" value="org/w3c/dom/xpath"/>
-  <property name="xsltc.reldir" value="${xalan.reldir}/xsltc"/>
-  <property name="generated.xpathparser" value="${src.dir}/${xsltc.reldir}/compiler/XPathParser.java"/>
-  <property name="generated.xpathlexer" value="${src.dir}/${xsltc.reldir}/compiler/XPathLexer.java"/>
-  <property name="generated.xpathsym" value="${src.dir}/${xsltc.reldir}/compiler/sym.java"/>
+  <property name="XSLTInfo.props"         value="./src/org/apache/xalan/res/XSLTInfo.properties"/>  
+  <property name="generated.xpathparser"  value="${src.dir}/${xsltc.reldir}/compiler/XPathParser.java"/>
+  <property name="generated.xpathlexer"   value="${src.dir}/${xsltc.reldir}/compiler/XPathLexer.java"/>
+  <property name="generated.xpathsym"     value="${src.dir}/${xsltc.reldir}/compiler/sym.java"/>
   
   <!-- Build and distribution output areas -->
-  <property name="build.dir" value="./build"/><!-- GUMP: root of all normal builds output -->
-  <property name="build.xalan.jar" value="${build.dir}/${name}.jar"/><!-- GUMP: actual path/name of jar target output -->
-  <property name="build.xalan-unbundled.jar" value="${build.dir}/${name}-unbundled.jar"/>
+  <property name="build.xalan.jar"              value="${build.dir}/${name}.jar"/><!-- GUMP: actual path/name of jar target output -->
+  <property name="build.xalan-unbundled.jar"    value="${build.dir}/${name}-unbundled.jar"/>
   <property name="build.xalan-interpretive.jar" value="${build.dir}/${name}.jar"/>
-  <property name="build.xsltc.jar" value="${build.dir}/xsltc.jar"/>
-  <property name="build.classes" value="${build.dir}/classes"/>
-  <property name="build.docs" value="${build.dir}/docs"/>
-  <property name="build.samples" value="${build.dir}/samples"/>
-  <property name="build.servlet" value="${build.samples}/servlet"/>
-  <property name="build.apidocs" value="${build.docs}/apidocs"/>
-  <property name="dist.file" value="${name}-j_${version}"/><!-- GUMP: actual path/name of dist target .tar.gz/.zip-->
-  <property name="dist.dir" value="${build.dir}/${dist.file}"/>
+  <property name="build.xsltc.jar"              value="${build.dir}/xsltc.jar"/>
+  <property name="build.classes"                value="${build.dir}/classes"/>
+  <property name="build.docs"                   value="${build.dir}/docs"/>
+  <property name="build.samples"                value="${build.dir}/samples"/>
+  <property name="build.servlet"                value="${build.samples}/servlet"/>
+  <property name="build.apidocs"                value="${build.docs}/apidocs"/>
+  <property name="dist.pkg"                     value="${name}-j_${version}"/><!-- GUMP: actual path/name of dist target .tar.gz/.zip-->
+  <property name="dist.file"                    value="${dist.pkg}"/>
+  <property name="dist.dir"                     value="${build.dir}/${dist.pkg}"/>
   
   <!-- xml-commons sources (for Javadoc) -->                                                                        
-  <property name="xml-commons-srcs.tar.gz" value="${src.dir}/xml-commons-external-1.3.01-src.tar.gz"/>
-  <property name="xml-commons-srcs.tar" value="${build.dir}/xml-commons-external-1.3.01-src.tar"/>
+  <property name="xml-commons-srcs.tar.gz"      value="${src.dir}/xml-commons-external-1.3.01-src.tar.gz"/>
+  <property name="xml-commons-srcs.tar"         value="${build.dir}/xml-commons-external-1.3.01-src.tar"/>
  
   <!-- Documentation and samples information  -->
-  <property name="Name-in-docs" value="Xalan-Java"/>
-  <property name="version.file" value="${xalan.reldir}/processor/XSLProcessorVersion.java"/>
-  <property name="samples.dir" value="./samples"/>
-  <property name="build.samples.jar" value="${build.dir}/xalansamples.jar"/>
-  <property name="build.servlet.war" value="${build.dir}/xalanservlet.war"/>
-  <property name="build.xsltc.applet.jar" value="${build.dir}/xsltcapplet.jar"/>
-  <property name="build.xsltc.brazil.jar" value="${build.dir}/xsltcbrazil.jar"/>
-  <property name="build.xsltc.ejb.jar" value="${build.dir}/xsltcejb.jar"/>
-  <property name="build.xsltc.servlet.jar"
-            value="${build.dir}/xsltcservlet.jar"/>
-  <property name="xdocs.dir" value="./xdocs"/>
-  <property name="xdocs.book" value="${xdocs.dir}/sources/xalan-jlocal.xml"/>
-  <property name="xdocs.style" value="${xdocs.dir}/style"/>
+  <property name="Name-in-docs"                 value="Xalan-Java"/>
+  <property name="version.file"                 value="${xalan.reldir}/processor/XSLProcessorVersion.java"/>
+  
+  <property name="build.samples.jar"            value="${build.dir}/xalansamples.jar"/>
+  <property name="build.servlet.war"            value="${build.dir}/xalanservlet.war"/>
+  <property name="build.xsltc.applet.jar"       value="${build.dir}/xsltcapplet.jar"/>
+  <property name="build.xsltc.brazil.jar"       value="${build.dir}/xsltcbrazil.jar"/>
+  <property name="build.xsltc.ejb.jar"          value="${build.dir}/xsltcejb.jar"/>
+  <property name="build.xsltc.servlet.jar"      value="${build.dir}/xsltcservlet.jar"/>
+  
+  <property name="xdocs.book"                   value="${xdocs.dir}/sources/xalan-jlocal.xml"/>
+  <property name="xdocs.style"                  value="${xdocs.dir}/style"/>
   <property name="xalanonly-styledocs"
             value="dtd/xsl-html40s.dtd,dtd/spec.dtd,stylesheets/patterns.xsl,stylesheets/notice.xsl,stylesheets/spec.xsl,stylesheets/done.xsl,loaderdesign.xml,stylesheets/design2project.xsl,stylesheets/designdoc2html.xsl,stylesheets/xml2fo.xsl"/>
-  <property name="xalan.cmdline.class" value="org.apache.xalan.xslt.Process"/>
-  <property name="doc.generator" value="org.apache.stylebook.StyleBook"/>
-  <property name="doc.generator.styletargz" value="${xdocs.dir}/xml-site-style.tar.gz"/>
-  <property name="doc.generator.styletar" value="${xdocs.dir}/xml-site-style.tar"/>
-  <property name="site.root" value="./xml-site"/>
-  <property name="site.dir" value="${site.root}/target/xalan-j"/>
-  <property name="site.book" value="${xdocs.dir}/sources/xalan-jsite.xml"/>
-  <property name="xdocs.DONE.file" value="${xdocs.dir}/sources/xalan/DONE"/>
-  <property name="xdocs.XSLTCDONE.file" value="XSLTCDONE"/>
-  <property name="xdocs.XSLTCDONE.location" value="${xdocs.dir}/sources/xalan/${xdocs.XSLTCDONE.file}"/>
+  <property name="xalan.cmdline.class"          value="org.apache.xalan.xslt.Process"/>
+  <property name="doc.generator"                value="org.apache.stylebook.StyleBook"/>
+  <property name="doc.generator.styletargz"     value="${xdocs.dir}/xml-site-style.tar.gz"/>
+  <property name="doc.generator.styletar"       value="${xdocs.dir}/xml-site-style.tar"/>
+  
+  <property name="site.root"                    value="./xml-site"/>
+  <property name="site.dir"                     value="${site.root}/target/xalan-j"/>
+  <property name="site.book"                    value="${xdocs.dir}/sources/xalan-jsite.xml"/>
+  <property name="xdocs.DONE.file"              value="${xdocs.dir}/sources/xalan/DONE"/>
+  <property name="xdocs.XSLTCDONE.file"         value="XSLTCDONE"/>
+  <property name="xdocs.XSLTCDONE.location"     value="${xdocs.dir}/sources/xalan/${xdocs.XSLTCDONE.file}"/>
 
       
   <!-- PROPERTIES TO COMPILE THE SERIALIZER  ======================================= -->  
-  <property name="serializer.src.dir"       value="./src"                     />
-  <property name="serializer.build.dir"     value="./build"                   /> 
-  <property name="serializer.build.classes" value="${serializer.build.dir}/serializer"/> 
+  <property name="serializer.src.dir"           value="./src"/>
+  <property name="serializer.build.dir"         value="./build"/> 
+  <property name="serializer.build.classes"     value="${serializer.build.dir}/serializer"/> 
   
   <!-- PROPERTIES TO MAKE THE SERIALIZER JAR ======================================= -->
-  <property name="serializer.notice"        value="NOTICE"                    />
-  <property name="serializer.license"       value="LICENSE"                   />  
-  <property name="serializer.manifest.basename" value="MANIFEST.SERIALIZER"   /> 
-  <property name="serializer.manifest"      value="${serializer.src.dir}/${serializer.manifest.basename}" />
-  <property name="serializer.impl.version"  value="${impl.version}"           />
-  <property name="serializer.java.version"  value="${java.version}"           />
-  <property name="serializer.java.vendor"   value="${java.vendor}"            />
-  <property name="serializer.jar"           value="${serializer.build.dir}/serializer.jar"/> 
-  <!-- a copy of the value above, but for clarity of what it is used for -->
-  <property name="build.serializer.jar"     value="${serializer.jar}"/> 
+  <property name="serializer.notice"            value="serializer.NOTICE.txt"/>
+  <property name="serializer.license"           value="serializer.LICENSE.txt"/>  
+  <property name="serializer.readme"            value="serializer.README.txt"/>   
+  <property name="serializer.manifest.basename" value="MANIFEST.SERIALIZER"/> 
+  <property name="serializer.manifest"          value="${serializer.src.dir}/${serializer.manifest.basename}"/>
+  <property name="serializer.impl.version"      value="${impl.version}"/>
+  <property name="serializer.java.version"      value="${java.version}"/>
+  <property name="serializer.java.vendor"       value="${java.vendor}"/>
+  <property name="serializer.jar.name"          value="serializer.jar"/>   
+  <property name="build.serializer.jar"         value="${serializer.build.dir}/${serializer.jar.name}"/> 
+  <property name="lib.serializer.jar"           value="./lib/${serializer.jar.name}"/>   
  
   <!-- Class paths used in various targets -->
   <path id="docs.class.path">
@@ -195,13 +204,13 @@ $Id$
     <pathelement location="${stylebook.jar}" />
     <pathelement location="${doclet.jar}" />
     <pathelement location="${taglet.jar}" />
-    <pathelement location="${serializer.jar}" />
+    <pathelement location="${lib.serializer.jar}" />
     <pathelement location="${build.xalan.jar}" />
     <pathelement path="${java.class.path}" />
   </path>
   <path id="samples.class.path">
     <pathelement location="${xmlapis.jar}" />
-    <pathelement location="${serializer.jar}" />    
+    <pathelement location="${lib.serializer.jar}" />    
     <pathelement location="${parser.jar}" />  
     <pathelement location="${build.xalan.jar}" />
     <pathelement path="${java.class.path}" />
@@ -209,8 +218,9 @@ $Id$
   <path id="compile.class.path">
     <!-- Ensure the selected parser.jar file is used to compile against -->
     <pathelement location="${build.classes}" />
-    <pathelement location="${serializer.jar}" />
+    <pathelement location="${serializer.build.classes}" />    
     <pathelement location="${xmlapis.jar}" />
+    <pathelement location="${lib.serializer.jar}" />
     <pathelement location="${parser.jar}" />
     <pathelement path="${java.class.path}" />
   </path>
@@ -222,6 +232,8 @@ $Id$
     <pathelement location="${build.classes}" />
     <pathelement location="${serializer.build.classes}" />
     <pathelement location="${xmlapis.jar}" />
+    <pathelement location="${lib.serializer.jar}" />    
+    <pathelement location="${parser.jar}" />   
     <pathelement path="${build.boot.class.path}" />
     <pathelement path="${sun.boot.class.path}" />
   </path>
@@ -232,56 +244,96 @@ $Id$
   <!-- patternsets for source and binary distribution packages -->
   <patternset id="bin-distro" >
     <include name="${dist.file}/readme.html"/>
-    <include name="${dist.file}/LICENSE"/>
-    <include name="${dist.file}/NOTICE"/>      
-    <include name="${dist.file}/KEYS"/>
-    <include name="${dist.file}/bin/${name}.jar"/>
+    <include name="${dist.file}/licenses/LICENSE.DOM-documentation.html"/>
+    <include name="${dist.file}/licenses/LICENSE.DOM-software.html"/>
+    <include name="${dist.file}/licenses/LICENSE-SAX.html"/>
+    <include name="${dist.file}/licenses/xalan.LICENSE.txt"/>
+    <include name="${dist.file}/licenses/xalan.NOTICE.txt"/>
+    <include name="${dist.file}/xalan.README.txt"/>    
+    <include name="${dist.file}/licenses/serializer.LICENSE.txt"/>
+    <include name="${dist.file}/licenses/serializer.NOTICE.txt"/>
+    <include name="${dist.file}/serializer.README.txt"/>
+    <include name="${dist.file}/licenses/xercesImpl.LICENSE.txt"/>
+    <include name="${dist.file}/licenses/xercesImpl.NOTICE.txt"/>    
+    <include name="${dist.file}/xercesImpl.README.txt"/>
+    <include name="${dist.file}/licenses/xml-apis.LICENSE.txt"/>
+    <include name="${dist.file}/licenses/xml-apis.NOTICE.txt"/>    
+    <include name="${dist.file}/xml-apis.README.txt"/>
+    <include name="${dist.file}/licenses/BCEL.LICENSE.txt"/>
+    <include name="${dist.file}/BCEL.README.txt"/>
+    <include name="${dist.file}/licenses/regexp.LICENSE.txt"/>
+    <include name="${dist.file}/regexp.README.txt"/>
+    <include name="${dist.file}/licenses/runtime.LICENSE.txt"/>
+    <include name="${dist.file}/runtime.README.txt"/>    
+    <include name="${dist.file}/xalan.jar"/>
     <!-- xsltc.jar will only be picked up if it has been built -->
-    <include name="${dist.file}/bin/xsltc.jar"/>      
-    <include name="${dist.file}/bin/${xmlapis.jar.name}"/>
-    <include name="${dist.file}/bin/${parser.jar.name}"/>
-    <include name="${dist.file}/bin/serializer.jar"/>
-    <include name="${dist.file}/bin/xalansamples.jar"/>
-    <include name="${dist.file}/bin/xalanservlet.war"/>
-    <include name="${dist.file}/bin/xsltcapplet.jar"/>
-    <include name="${dist.file}/bin/xsltcbrazil.jar"/>
-    <include name="${dist.file}/bin/xsltcejb.jar"/>
-    <include name="${dist.file}/bin/xsltcservlet.jar"/>
-    <include name="${dist.file}/samples/"/>
+    <include name="${dist.file}/xsltc.jar"/>     
+    <include name="${dist.file}/${xmlapis.jar.name}"/>
+    <include name="${dist.file}/${parser.jar.name}"/>
+    <include name="${dist.file}/${serializer.jar.name}"/>
+    <include name="${dist.file}/samples/"/>    
+    <include name="${dist.file}/samples/xalansamples.jar"/>
+    <include name="${dist.file}/samples/xalanservlet.war"/>
+    <include name="${dist.file}/samples/xsltcapplet.jar"/>
+    <include name="${dist.file}/samples/xsltcbrazil.jar"/>
+    <include name="${dist.file}/samples/xsltcejb.jar"/>
+    <include name="${dist.file}/samples/xsltcservlet.jar"/>
     <include name="${dist.file}/docs/"/>
   </patternset>
   <patternset id="bin-distro-nodocs" >
     <include name="${dist.file}/readme.html"/>
-    <include name="${dist.file}/LICENSE"/>
-    <include name="${dist.file}/NOTICE"/>      
-    <include name="${dist.file}/KEYS"/>
-    <include name="${dist.file}/bin/${name}.jar"/>
+    <include name="${dist.file}/licenses/LICENSE.DOM-documentation.html"/>
+    <include name="${dist.file}/licenses/LICENSE.DOM-software.html"/>
+    <include name="${dist.file}/licenses/LICENSE-SAX.html"/>
+    <include name="${dist.file}/licenses/xalan.LICENSE.txt"/>
+    <include name="${dist.file}/licenses/xalan.NOTICE.txt"/>
+    <include name="${dist.file}/xalan.README.txt"/>    
+    <include name="${dist.file}/licenses/serializer.LICENSE.txt"/>
+    <include name="${dist.file}/licenses/serializer.NOTICE.txt"/>
+    <include name="${dist.file}/serializer.README.txt"/>
+    <include name="${dist.file}/licenses/xercesImpl.LICENSE.txt"/>
+    <include name="${dist.file}/licenses/xercesImpl.NOTICE.txt"/>    
+    <include name="${dist.file}/xercesImpl.README.txt"/>
+    <include name="${dist.file}/licenses/xml-apis.LICENSE.txt"/>
+    <include name="${dist.file}/licenses/xml-apis.NOTICE.txt"/>    
+    <include name="${dist.file}/xml-apis.README.txt"/>
+    <include name="${dist.file}/licenses/BCEL.LICENSE.txt"/>
+    <include name="${dist.file}/BCEL.README.txt"/>
+    <include name="${dist.file}/licenses/regexp.LICENSE.txt"/>
+    <include name="${dist.file}/regexp.README.txt"/>
+    <include name="${dist.file}/licenses/runtime.LICENSE.txt"/>
+    <include name="${dist.file}/runtime.README.txt"/>      
+    <include name="${dist.file}/xalan.jar"/>
     <!-- xsltc.jar will only be picked up if it has been built -->
-    <include name="${dist.file}/bin/xsltc.jar"/>      
-    <include name="${dist.file}/bin/${xmlapis.jar.name}"/>
-    <include name="${dist.file}/bin/${parser.jar.name}"/>
-    <include name="${dist.file}/bin/serializer.jar"/>
-    <include name="${dist.file}/bin/xalansamples.jar"/>
-    <include name="${dist.file}/bin/xalanservlet.war"/>
-    <include name="${dist.file}/bin/xsltcapplet.jar"/>
-    <include name="${dist.file}/bin/xsltcbrazil.jar"/>
-    <include name="${dist.file}/bin/xsltcejb.jar"/>
-    <include name="${dist.file}/bin/xsltcservlet.jar"/>
-    <include name="${dist.file}/samples/"/>
+    <include name="${dist.file}/xsltc.jar"/>    
+    <include name="${dist.file}/${xmlapis.jar.name}"/>
+    <include name="${dist.file}/${parser.jar.name}"/>
+    <include name="${dist.file}/${serializer.jar.name}"/>
+    <include name="${dist.file}/samples/"/>        
+    <include name="${dist.file}/samples/xalansamples.jar"/>
+    <include name="${dist.file}/samples/xalanservlet.war"/>
+    <include name="${dist.file}/samples/xsltcapplet.jar"/>
+    <include name="${dist.file}/samples/xsltcbrazil.jar"/>
+    <include name="${dist.file}/samples/xsltcejb.jar"/>
+    <include name="${dist.file}/samples/xsltcservlet.jar"/>
   </patternset>
   <patternset id="src-distro" >
-    <include name="${dist.file}/*"/>
-    <include name="${dist.file}/LICENSE"/>
-    <include name="${dist.file}/NOTICE"/>      
-    <include name="${dist.file}/bin/ant.jar"/>
-    <include name="${dist.file}/bin/${parser.jar.name}"/>
-    <include name="${dist.file}/bin/${xmlapis.jar.name}"/>
-    <include name="${dist.file}/bin/${stylebook.jar.name}"/>
-    <include name="${dist.file}/bin/${doclet.jar.name}"/>
-    <include name="${dist.file}/bin/${taglet.jar.name}"/>
-    <include name="${dist.file}/bin/*.LICENSE.txt"/>
-    <include name="${dist.file}/bin/*.README.txt"/>
+    <include name="${dist.file}/build.*"/>
+    <include name="${dist.file}/commits.xml"/>
+    <include name="${dist.file}/KEYS"/>
+    <include name="${dist.file}/readme.html"/>
+    <include name="${dist.file}/xalan.README.txt"/>
+    <include name="${dist.file}/serializer.README.txt"/>        
+    <include name="${dist.file}/lib/"/>
+    <include name="${dist.file}/tools/"/>
+    <include name="${dist.file}/licenses/"/>
     <include name="${dist.file}/samples/"/>
+    <exclude name="${dist.file}/samples/xalansamples.jar"/>
+    <exclude name="${dist.file}/samples/xalanservlet.war"/>
+    <exclude name="${dist.file}/samples/xsltcapplet.jar"/>
+    <exclude name="${dist.file}/samples/xsltcbrazil.jar"/>
+    <exclude name="${dist.file}/samples/xsltcejb.jar"/>
+    <exclude name="${dist.file}/samples/xsltcservlet.jar"/>    
     <include name="${dist.file}/src/"/>
     <include name="${dist.file}/xdocs/"/>
   </patternset>
@@ -289,8 +341,8 @@ $Id$
   <!-- XSLTC engine dependency .jar files -->    
   <patternset id="xsltc-deps-jars" >
     <include name="${dist.file}/bin/${bcel.jar.name}"/>
-    <include name="${dist.file}/bin/${java_cup.jar.name}"/>
-    <include name="${dist.file}/bin/${jlex.jar.name}"/>
+    <include name="${dist.file}/tools/${java_cup.jar.name}"/>
+    <include name="${dist.file}/tools/${jlex.jar.name}"/>
     <include name="${dist.file}/bin/${runtime.jar.name}"/>
     <include name="${dist.file}/bin/${regexp.jar.name}"/>
   </patternset>
@@ -313,17 +365,20 @@ $Id$
     <!-- Update version information.  This copies the Version.src
          file into Version.java, while replacing the following tokens
     -->
-    <filter token="version.VERSION" value="${version.VERSION}"/>  
-    <filter token="version.RELEASE" value="${version.RELEASE}"/>
-    <filter token="version.MINOR" value="${version.MINOR}"/>
-    <filter token="version.DEVELOPER" value="${version.DEVELOPER}"/>
+    <filter token="version.VERSION"          value="${version.VERSION}"/>  
+    <filter token="version.RELEASE"          value="${version.RELEASE}"/>
+    <filter token="version.MINOR"            value="${version.MINOR}"/>
+    <filter token="version.DEVELOPER"        value="${version.DEVELOPER}"/> 
+    <filter token="parser.version.VERSION"   value="${version.VERSION}"/>  
+    <filter token="parser.version.RELEASE"   value="${version.RELEASE}"/>
+    <filter token="parser.version.MINOR"     value="${version.MINOR}"/>    
     <copy tofile="${src.dir}/${xalan.reldir}/Version.java" file="${src.dir}/${xalan.reldir}/Version.src" filtering="true"/>
+    <copy tofile="${src.dir}/${serializer.reldir}/Version.java" file="${src.dir}/${serializer.reldir}/Version.src" filtering="true"/>
+    <copy tofile="${xdocs.dir}/sources/entities.ent" file="${xdocs.dir}/sources/entities.src" filtering="true"/>
   </target>
 
   <!-- Must depend on jar since we use Xalan to process xml files -->
-  <target name="prepare.docs" depends="jar,prepare.docs.build"/>
-  
-  <target name="prepare.docs.build">  
+  <target name="prepare.docs" depends="jar">
     <mkdir dir="${build.docs}"/> 
     <mkdir dir="${build.apidocs}"/>
 
@@ -331,9 +386,9 @@ $Id$
     <untar src="${doc.generator.styletar}" dest="${xdocs.dir}"/>
     <delete file="${doc.generator.styletar}"/>
 
-    <!-- We use a Notes agent to periodically extract Xalan-Java 2 commits from our team database into commits.xml.  The following operation 
-    transforms commits.xml (just including source code commits) and puts the result in xdocs/sources/xalan for inclusion in the 
-    readme.xml -->      
+    <!-- We use a sed script to extract Xalan-Java 2 commits from the repository into commits.xml
+         The following operation transforms commits.xml (just including source code commits) and 
+         puts the result in xdocs/sources/xalan for inclusion in the readme.xml -->      
     <echo message="Transform commits.xml and put the result in ${xdocs.dir}"/>
     <java fork="yes" classname="${xalan.cmdline.class}" >
       <classpath refid="docs.class.path" />
@@ -354,8 +409,7 @@ $Id$
     <echo message="Compiling DTM implementation and utilities" />
     <javac srcdir="${src.dir}"
            destdir="${build.classes}"
-           debug="${build.debug}"
-           target="1.1" >
+           debug="${build.debug}" >
       <include name="${apachexml.reldir}/**/*.java" />
       <!-- exclude the serializer -->
       <exclude name="${serializer.reldir}/**/*.java" />      
@@ -382,8 +436,7 @@ $Id$
     <echo message="Compiling Xalan interpretive classes" />
     <javac srcdir="${src.dir}" 
            destdir="${build.classes}"
-           debug="${build.debug}" 
-           target="1.1" >
+           debug="${build.debug}" >
       <include name="${xpath.reldir}/**/*.java" />
       <include name="${domxpath.reldir}/**/*.java" />
       <include name="${xalan.reldir}/**/*.java" />
@@ -410,7 +463,7 @@ $Id$
   <!-- =================================================================== -->
   <path id="xsltc.class.path">
     <pathelement location="${xmlapis.jar}" />
-    <pathelement location="${serializer.jar}" />
+    <pathelement location="${lib.serializer.jar}" />
     <pathelement location="${bcel.jar}" />
     <pathelement location="${jlex.jar}" />
     <pathelement location="${java_cup.jar}" />
@@ -446,11 +499,11 @@ $Id$
     </uptodate> 
     
     <!-- Determine whether the support jars are already expanded -->
-    <available file="${build.classes}/org/apache/bcel" type="dir" property="xsltc.bcel_jar.not_needed" />
-    <available file="${build.classes}/JLex" type="dir" property="xsltc.jlex_jar.not_needed" />
+    <available file="${build.classes}/org/apache/bcel"     type="dir" property="xsltc.bcel_jar.not_needed" />
+    <available file="${build.classes}/JLex"                type="dir" property="xsltc.jlex_jar.not_needed" />
     <available file="${build.classes}/java_cup/Main.class" type="file" property="xsltc.java_cup_jar.not_needed" />
-    <available file="${build.classes}/java_cup/runtime" type="dir" property="xsltc.runtime_jar.not_needed" />
-    <available file="${build.classes}/org/apache/regexp" type="dir" property="xsltc.regexp_jar.not_needed" />
+    <available file="${build.classes}/java_cup/runtime"    type="dir" property="xsltc.runtime_jar.not_needed" />
+    <available file="${build.classes}/org/apache/regexp"   type="dir" property="xsltc.regexp_jar.not_needed" />
   </target>
 
   <!-- Generate the XPath parser sources for xsltc if needed -->
@@ -530,16 +583,17 @@ $Id$
 
   <!-- Copy license and readme files for XSLTC support jars -->
   <target name="xsltc.copy-licenses" depends="xsltc.prepare">
+<!--  
     <echo message="Copying license files for XSLTC support jars"/>
     <copy todir="${build.classes}">
-      <fileset dir="${bin.dir}" casesensitive="no" includes="${xsltc.deps.license}"/>
-    </copy>
+      <fileset dir="${lib.dir}" casesensitive="no" includes="${xsltc.deps.license}"/>
+    </copy> -->
   </target>
 
   <!-- A parametrized target which is used to copy and expand a XSLTC support jar -->
   <target name="xsltc.copy-deps-jar" unless="${param_unless}">
     <!-- copy the jar file to the build/classes directory -->
-    <copy todir="${build.classes}" file="${bin.dir}/${param_jar_name}"/>
+    <copy todir="${build.classes}" file="${lib.dir}/${param_jar_name}"/>
     
     <!-- unjar the jar file -->
     <unjar src="${build.classes}/${param_jar_name}" dest="${build.classes}" />
@@ -689,22 +743,20 @@ $Id$
          <exclude name="${serializer.reldir}/**/*" />
        </patternset>
     </jar>  
-  
+ 
   </target>
   
   <!-- =================================================================== -->
   <!-- Default all target simply Creates the xalan JAR                     -->
   <!-- =================================================================== -->
-  <target name="all" depends="jar"><!-- 'Standardizing build.xml files' <bloritsch@apache.org> -->
+  <target name="all" depends="serializer.jar,jar"><!-- 'Standardizing build.xml files' <bloritsch@apache.org> -->
     <echo message="Redirect to jar target; please provide input on desired functionality of this target"/>
   </target>
   
   <!-- =================================================================== -->
   <!-- Compiles the samples (servlet excluded) and jars the class files    -->  
   <!-- =================================================================== -->
-  <target name="samples" depends="jar,samples.compile,xsltc.samples"/>
-  
-  <target name="samples.compile" depends="xsltc.samples.compile"
+  <target name="samples" depends="jar,xsltc.samples"
     description="Compile and jar the samples (except servlet)" >
     <property name="exclude" value="*.xml,*.xsl,*.txt,*.html,*.properties,*.out"/>
     <mkdir dir="${build.samples}"/>
@@ -778,7 +830,12 @@ $Id$
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${build.debug}" bootclasspathref="xslt.boot.class.path" >
       <classpath refid="samples.class.path" />
-    </javac>           
+    </javac>
+    <javac srcdir="${samples.dir}/XPathAPI"  
+           destdir="${build.samples}" excludes="${exclude}" 
+           debug="${build.debug}" bootclasspathref="xslt.boot.class.path" >
+      <classpath refid="samples.class.path" />
+    </javac>               
     <jar jarfile="${build.samples.jar}" basedir="${build.samples}"
          includes="*.class"/>
   </target>
@@ -790,9 +847,9 @@ $Id$
   <target name="extra.std.samples"
           depends="servlet,xsltc.applet,xsltc.ejb,xsltc.servlet"/>
           
-  <target name="extra.std.samples.compile"
+<!--  <target name="extra.std.samples.compile"
           depends="servlet.compile,xsltc.applet.compile,
-                   xsltc.ejb.compile,xsltc.servlet.compile"/>          
+                   xsltc.ejb.compile,xsltc.servlet.compile"/>          -->
 
   <!-- =================================================================== -->
   <!-- Compiles all samples that require extra non-standard components in  -->
@@ -800,16 +857,14 @@ $Id$
   <!-- =================================================================== -->
   <target name="extra.nonstd.samples" depends="xsltc.brazil"/>
   
-  <target name="extra.nonstd.samples.compile" depends="xsltc.brazil.compile"/>
+<!--  <target name="extra.nonstd.samples.compile" depends="xsltc.brazil.compile"/> -->
 
   <!-- =================================================================== -->
   <!-- Compiles the sample servlet and jars the class files.               --> 
   <!-- The javax.servlet and javax.servlet.http packages                   -->
   <!-- must be on the classpath                                            -->
   <!-- =================================================================== -->
- <target name="servlet" depends="jar,servlet.compile"/>
- 
- <target name="servlet.compile" 
+  <target name="servlet" depends="jar"
     description="Compile and jar the servlet samples in xalanservlet.war" >
      <echo message="To compile the sample servlets, javax.servlet and javax.servlet.http must be on the classpath"/>   
      <mkdir dir="${build.servlet}"/>
@@ -833,13 +888,13 @@ $Id$
         		booklist2.xsl, catalog.xml, fooparam.xml, fooparam.xsl, jspSample.jsp"/>
       </copy>
       <copy todir="${build.servlet}/WEB-INF/lib">
-      	<fileset dir="${bin.dir}" includes="${parser.jar.name}, ${xmlapis.jar.name}"/>
+      	<fileset dir="${lib.dir}" includes="${parser.jar.name}, ${xmlapis.jar.name}"/>
       </copy>
       <copy file="${build.xalan.jar}" todir="${build.servlet}/WEB-INF/lib" />
     <jar jarfile="${build.servlet.war}" 
          basedir="${build.servlet}" 
          includes="**"/>
- </target>
+  </target>
  
   <!-- =================================================================== -->
   <!-- Compiles (does not jar) the translet samples.                       -->
@@ -851,9 +906,7 @@ $Id$
   <!-- add samples in CompiledApplet, CompiledBrazil, CompiledEJB and      -->
   <!-- CompiledServlet.                                                    -->
   <!-- =================================================================== -->
-  <target name="xsltc.samples" depends="jar,xsltc.samples.compile"/>
-  
-  <target name="xsltc.samples.compile">  
+  <target name="xsltc.samples" depends="jar">
     <mkdir dir="${build.samples}"/>
     <javac srcdir="${samples.dir}/translets"
            classpath="${java.class.path}:${build.xalan.jar}" 
@@ -867,9 +920,7 @@ $Id$
   <!-- =================================================================== -->
   <!-- Compiles the XSLTC applet example and jars the class files.         --> 
   <!-- =================================================================== -->
-  <target name="xsltc.applet" depends="jar,xsltc.applet.compile"/>
-  
-  <target name="xsltc.applet.compile">
+  <target name="xsltc.applet" depends="jar">
     <mkdir dir="${build.samples}/CompiledApplet"/>
     <javac srcdir="${samples.dir}/CompiledApplet"
            destdir="${build.samples}/CompiledApplet" excludes="${exclude}"
@@ -882,9 +933,7 @@ $Id$
   <!-- =================================================================== -->
   <!-- Compiles the XSLTC brazil example and jars the class files.         --> 
   <!-- =================================================================== -->
-  <target name="xsltc.brazil" depends="jar,xsltc.brazil.compile"/>
-  
-  <target name="xsltc.brazil.compile">
+  <target name="xsltc.brazil" depends="jar">
     <mkdir dir="${build.samples}/CompiledBrazil"/>
     <javac srcdir="${samples.dir}/CompiledBrazil"
            destdir="${build.samples}/CompiledBrazil" excludes="${exclude}"
@@ -899,9 +948,7 @@ $Id$
   <!-- ejb.jar must be on the classpath to compile this sample.            -->
   <!-- EJB 2.0 can be found at http://java.sun.com/products/ejb/docs.html  -->
   <!-- =================================================================== -->
-  <target name="xsltc.ejb" depends="jar,xsltc.ejb.compile"/>
-  
-  <target name="xsltc.ejb.compile">  
+  <target name="xsltc.ejb" depends="jar">
     <mkdir dir="${build.samples}/CompiledEJB"/>
     <javac srcdir="${samples.dir}/CompiledEJB"
            destdir="${build.samples}/CompiledEJB" excludes="${exclude}"
@@ -914,9 +961,7 @@ $Id$
   <!-- =================================================================== -->
   <!-- Compiles the XSLTC servlet example and jars the class files.        --> 
   <!-- =================================================================== -->
-  <target name="xsltc.servlet" depends="jar,xsltc.servlet.compile" />
-  
-  <target name="xsltc.servlet.compile">  
+  <target name="xsltc.servlet" depends="jar">
     <mkdir dir="${build.samples}/CompiledServlet"/>
     <javac srcdir="${samples.dir}/CompiledServlet"
            destdir="${build.samples}/CompiledServlet" excludes="${exclude}"
@@ -930,9 +975,7 @@ $Id$
   <!-- =================================================================== -->
   <!-- Generate HTML docs                                                  -->
   <!-- =================================================================== -->
-  <target name="docs" depends="jar,docs.build,xsltc.docs"/>
-  
-  <target name="docs.build" depends="prepare.docs.build,autodocs"
+  <target name="docs" depends="prepare.docs,autodocs,xsltc.docs"
     description="Build the documentation (overview, readme, etc.)" >
     <echo message="docs is human-usable target with dependencies"/>  
   </target>
@@ -949,20 +992,41 @@ $Id$
   <!-- =================================================================== -->
   <!-- Creates the API documentation                                       -->
   <!-- =================================================================== -->
-  <target name="javadocs" depends="jar,javadocs.build"/>
-  
-  <target name="javadocs.build" depends="prepare.docs.build,autojavadocs"
-    description="Build the Javadocs for Xalan 2.x and xml-commons sources" >
-    <echo message="javadocs is human-usable target with dependencies"/>  
+  <target name="javadocs" depends="prepare.docs"
+    description="Build the Javadocs for Xalan 2.x and jaxp sources" >
+    <echo message="javadocs is human-usable target with dependencies"/> 
+    
+    <!-- Expand jaxp sources (JAXP 1.1, DOM 2, and SAX 2) into source tree for 
+         inclusion in the Javadoc. -->           
+    <!-- Note this is into the src area.-->                                          
+    <gunzip src="${xml-commons-srcs.tar.gz}" dest="${build.dir}" />                                                                         
+    <untar src="${xml-commons-srcs.tar}" 
+           dest="${src.dir}">
+       <patternset>
+         <include name="**.java"/>
+       </patternset>
+    </untar>
+           
+    <delete file="${xml-commons-srcs.tar}"/>
+         
+    <antcall target="autojavadocs"/>
+     
+    <!-- remove the jaxp sources -->
+    <delete dir="${src.dir}/javax" />
+    <delete dir="${src.dir}/org/w3c" />
+    <delete dir="${src.dir}/org/xml" />
+    <delete dir="${src.dir}/org/apache/xmlcommons" />
+    <delete file="${src.dir}/manifest.commons" />
+         
   </target>
 
   <target name="autojavadocs" 
-          depends="autojavadocs-1.4-if,autojavadocs-non1.4-if">
+          depends="autojavadocs-1.4-or-higher-if,autojavadocs-non1.4-or-higher-if">
     <echo message="autojavadocs is for automated build process, without dependencies"/>
   </target>
 
-  <target name="check-using-java-1.4">
-    <condition property="using-java-1.4">
+  <target name="check-using-java-1.4-or-higher">
+    <condition property="using-java-1.4-or-higher">
       <not>
           <or>
             <equals arg1="${ant.java.version}" arg2="1.1"/>
@@ -973,24 +1037,18 @@ $Id$
     </condition>
   </target>
 
-  <target name="autojavadocs-1.4-if" if="using-java-1.4" 
-          depends="check-using-java-1.4">
-    <antcall target="autojavadocs-1.4"/>
+  <target name="autojavadocs-1.4-or-higher-if" if="using-java-1.4-or-higher" 
+          depends="check-using-java-1.4-or-higher">
+    <antcall target="autojavadocs-1.4-or-higher"/>
   </target>
 
-  <target name="autojavadocs-non1.4-if" unless="using-java-1.4" 
-          depends="check-using-java-1.4">
-    <antcall target="autojavadocs-non1.4"/>
+  <target name="autojavadocs-non1.4-or-higher-if" unless="using-java-1.4-or-higher" 
+          depends="check-using-java-1.4-or-higher">
+    <antcall target="autojavadocs-non1.4-or-higher"/>
   </target>
 
-  <target name="autojavadocs-1.4">
+  <target name="autojavadocs-1.4-or-higher">
     
-      <!-- Expand xml-commons sources (JAXP 1.1, DOM 2, and SAX 2) into source tree for 
-           inclusion in the Javadoc. -->                                            
-     <gunzip src="${xml-commons-srcs.tar.gz}" dest="${build.dir}" />                                                                         
-     <untar src="${xml-commons-srcs.tar}" dest="${src.dir}" /><!-- Note this is into the src area.-->                                                                         
-     <delete file="${xml-commons-srcs.tar}"/>
-      
     <!-- Ant ignores destdir arg if doclet is set, so must send to doclet in doclet subelement-->
     <javadoc
          additionalparam="-breakiterator"
@@ -1016,31 +1074,15 @@ $Id$
           <group title="Utilities" packages="org.apache.xml.utils*"/>
           <group title="Xalan Other" packages="org.apache.xalan.client:org:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.xslt"/>
           <group title="Xalan Extensions" packages="org.apache.xalan.lib*"/>
-          <group title="Serializers" packages="org.apache.xalan.serialize"/>
+          <group title="Serializers" packages="org.apache.xml.serialize*, org.apache.xalan.serialize"/>
           <group title="SAX 2" packages="org.xml.sax*"/>
           <group title="DOM 2" packages="org.w3c.dom*"/>
           <group title="XSLTC Core"
                  packages="org.apache.xalan.xsltc*"/>
     </javadoc>
-    
-    <!-- remove the xml-commons sources -->
-    <delete dir="${src.dir}/javax" />
-    <delete includeEmptyDirs="true" quiet="true">
-      <fileset dir="${src.dir}/org/w3c">
-        <exclude name="dom/xpath/**"/>
-      </fileset>
-    </delete>    
-    <delete dir="${src.dir}/org/xml" />
-    <delete dir="${src.dir}/org/apache/xmlcommons" />
-    <delete file="${src.dir}/manifest.commons" />
   </target>
-  <target name="autojavadocs-non1.4">
-    
-      <!-- Expand xml-commons sources (JAXP 1.1, DOM 2, and SAX 2) into source tree for 
-           inclusion in the Javadoc. -->                                            
-     <gunzip src="${xml-commons-srcs.tar.gz}" dest="${build.dir}" />                                                                         
-     <untar src="${xml-commons-srcs.tar}" dest="${src.dir}" /><!-- Note this is into the src area.-->                                                                         
-     <delete file="${xml-commons-srcs.tar}"/>
+
+  <target name="autojavadocs-non1.4-or-higher">
       
     <!-- Ant ignores destdir arg if doclet is set, so must send to doclet in doclet subelement-->
     <javadoc
@@ -1067,24 +1109,14 @@ $Id$
           <group title="Utilities" packages="org.apache.xml.utils*"/>
           <group title="Xalan Other" packages="org.apache.xalan.client:org:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.xslt"/>
           <group title="Xalan Extensions" packages="org.apache.xalan.lib*"/>
-          <group title="Serializers" packages="org.apache.xalan.serialize"/>
+          <group title="Serializers" packages="org.apache.xml.serialize*, org.apache.xalan.serialize"/>
           <group title="SAX 2" packages="org.xml.sax*"/>
           <group title="DOM 2" packages="org.w3c.dom*"/>
           <group title="XSLTC Core"
                  packages="org.apache.xalan.xsltc*"/>
     </javadoc>
-    
-    <!-- remove the xml-commons sources -->
-    <delete dir="${src.dir}/javax" />
-    <delete includeEmptyDirs="true" quiet="true">
-      <fileset dir="${src.dir}/org/w3c">
-        <exclude name="dom/xpath/**"/>
-      </fileset>
-    </delete>    
-    <delete dir="${src.dir}/org/xml" />
-    <delete dir="${src.dir}/org/apache/xmlcommons" />
-    <delete file="${src.dir}/manifest.commons" />
   </target>
+
   <!-- =================================================================== -->
   <!-- Various targets to clean the build tree                             -->
   <!-- =================================================================== -->
@@ -1103,14 +1135,14 @@ $Id$
     <delete file="${xdocs.DONE.file}"/>
     <delete file="${xdocs.XSLTCDONE.location}"/>
     <delete file="${src.dir}/${xalan.reldir}/Version.java"/>
+    <delete file="${src.dir}/${serializer.reldir}/Version.java"/>
+    <delete file="${xdocs.dir}/sources/entities.ent"/>       
     <!-- Also delete files expanded from ${xml-commons-srcs.tar.gz}-->
     <delete dir="${src.dir}/javax" includeEmptyDirs="true" quiet="true"/>
     <delete dir="${src.dir}/org/xml" includeEmptyDirs="true" quiet="true"/>
-    <delete includeEmptyDirs="true" quiet="true">
-      <fileset dir="${src.dir}/org/w3c">
-        <exclude name="dom/xpath/**"/>
-      </fileset>
-    </delete>
+    <delete dir="${src.dir}/org/w3c" includeEmptyDirs="true" quiet="true"/>
+    <delete dir="${src.dir}/xdocs/style/graphics" includeEmptyDirs="true" quiet="true"/>
+    <delete dir="${src.dir}/xdocs/style/resources" includeEmptyDirs="true" quiet="true"/>            
   </target>
  
   <target name="xsltc.clean"
@@ -1210,26 +1242,28 @@ $Id$
           
   <target name="build.std-separatejars.parts"
           depends="xalan-interpretive.jar,xsltc.jar,
-                   docs.build,javadocs.build,
-                   samples.compile,extra.std.samples.compile,
+                   docs,javadocs,
+                   samples,extra.std.samples,
                    xsltc.docs"/>
                     
   <target name="build.std-separatejars.parts-nodocs"
           depends="xalan-interpretive.jar,xsltc.jar,
-                   samples.compile,extra.std.samples.compile"/>                            
+                   samples,extra.std.samples"/>                            
           
   <target name="build.nonstd.parts" depends="extra.nonstd.samples"/>
-  <target name="build.nonstd-separatejars.parts" depends="extra.nonstd.samples.compile"/>
+  <target name="build.nonstd-separatejars.parts" depends="extra.nonstd.samples"/>
 
   <!-- =================================================================== -->
   <!-- Autodist targets.  Used by the distribution targets.                -->
   <!-- =================================================================== -->  
   <target name="autodist-mkdirs">
     <mkdir dir="${dist.dir}"/>
-    <mkdir dir="${dist.dir}/bin"/>
+    <mkdir dir="${dist.dir}/lib"/>    
+    <mkdir dir="${dist.dir}/licenses"/> 
+    <mkdir dir="${dist.dir}/samples"/>       
     <mkdir dir="${dist.dir}/src"/>
+    <mkdir dir="${dist.dir}/tools"/>     
     <mkdir dir="${dist.dir}/xdocs"/>
-    <mkdir dir="${dist.dir}/samples"/>
   </target>
 
   <target name="autodist-mkdirs-docs">
@@ -1238,41 +1272,66 @@ $Id$
   </target>
 
   <target name="autodist-copy-files">
-    <!-- Copy bin directory, which includes preexisting checked-in .jar files -->
-    <copy todir="${dist.dir}/bin">
-      <fileset dir="${bin.dir}" />
-    </copy> 
+
+    <!-- Copy license files from license to distribution root -->
+    <copy todir="${dist.dir}/licenses">
+      <fileset dir="${licenses.dir}">
+        <include name="*.*"/>
+      </fileset>
+    </copy>
 
     <!-- Copy sources and source documentation -->
     <copy todir="${dist.dir}/src">
-      <fileset dir="${src.dir}"/>
+      <fileset dir="${src.dir}" excludes="javax/**,org/xml/**,org/w3c/**"/><!-- exclude jaxp, sax, dom -->
     </copy>
     <copy todir="${dist.dir}/xdocs">
       <fileset dir="${xdocs.dir}"/>
     </copy>
-    
+
     <!-- Copy samples -->
     <copy todir="${dist.dir}/samples">
       <fileset dir="${samples.dir}"/>
     </copy>
+    
+    <!-- Copy tools; used for source distribution -->    
+    <copy todir="${dist.dir}/tools">
+      <fileset dir="${tools.dir}">
+        <include name="*.*"/>
+      </fileset>
+    </copy>
+
+    <!-- Copy runtime libs; used for source distribution -->    
+    <copy todir="${dist.dir}/lib">
+      <fileset dir="${lib.dir}">
+        <include name="*.*"/>
+      </fileset>
+    </copy>    
 
     <!-- Copy built jars -->
-    <copy file="${build.dir}/xalansamples.jar" todir="${dist.dir}/bin"/>
-    <copy file="${build.dir}/xalanservlet.war" todir="${dist.dir}/bin"/>
-    <copy file="${build.dir}/xsltcapplet.jar"  todir="${dist.dir}/bin"/>
-    <copy file="${build.dir}/xsltcbrazil.jar"  todir="${dist.dir}/bin"
+    <copy file="${build.dir}/xalansamples.jar" todir="${dist.dir}/samples"/>
+    <copy file="${build.dir}/xalanservlet.war" todir="${dist.dir}/samples"/>
+    <copy file="${build.dir}/xsltcapplet.jar"  todir="${dist.dir}/samples"/>
+    <copy file="${build.dir}/xsltcbrazil.jar"  todir="${dist.dir}/samples"
           failonerror="${has.nonstd.parts}"/>
-    <copy file="${build.dir}/xsltcejb.jar"     todir="${dist.dir}/bin"/>
-    <copy file="${build.dir}/xsltcservlet.jar" todir="${dist.dir}/bin"/>
-    <copy file="${build.xalan.jar}" todir="${dist.dir}/bin" />
+    <copy file="${build.dir}/xsltcejb.jar"     todir="${dist.dir}/samples"/>
+    <copy file="${build.dir}/xsltcservlet.jar" todir="${dist.dir}/samples"/>
+    
+    <copy file="${build.xalan.jar}" todir="${dist.dir}" />
+    
     <!-- only copy the xsltc.jar file if it has been built -->
-    <copy todir="${dist.dir}/bin">
+    <copy todir="${dist.dir}">
       <fileset dir="${build.dir}" includes="xsltc.jar"/>
     </copy>
-    <copy file="${build.serializer.jar}" todir="${dist.dir}/bin" />
+    <copy file="${build.serializer.jar}" todir="${dist.dir}" />
+    
+    <copy file="${xmlapis.jar}" todir="${dist.dir}" /> 
+    <copy file="${lib.dir}/xml-apis.README.txt" todir="${dist.dir}" />    
+    <copy file="${parser.jar}" todir="${dist.dir}" />        
+    <copy file="${lib.dir}/xercesImpl.README.txt" todir="${dist.dir}" />     
 
     <copy todir="${dist.dir}">
-      <fileset dir="." includes="readme.html,KEYS,LICENSE,NOTICE,build.xml,build.sh,build.bat,xsltc_todo.xml,todo.xsl,commits.xml"/>
+      <fileset dir="." includes="readme.html,KEYS,build.xml,build.sh,build.bat,commits.xml,
+                                 xalan.README.txt,serializer.README.txt"/>      
     </copy>
   </target>
 
@@ -1284,45 +1343,46 @@ $Id$
   </target>
 
   <target name="autodist-create-bin-packages">
-    <tar tarfile="${build.dir}/${dist.file}-bin.tar" >
+    <tar tarfile="${build.dir}/${dist.pkg}-bin.tar" >
       <tarfileset dir="${build.dir}">
         <patternset refid="bin-distro"/>
       </tarfileset>
     </tar>
-    <gzip src="${build.dir}/${dist.file}-bin.tar" zipfile="${build.dir}/${dist.file}-bin.tar.gz"/>
-    <delete file="${build.dir}/${dist.file}-bin.tar" />
+    <gzip src="${build.dir}/${dist.pkg}-bin.tar" zipfile="${build.dir}/${dist.pkg}-bin.tar.gz"/>
+    <delete file="${build.dir}/${dist.pkg}-bin.tar" />
 
-    <zip zipfile="${build.dir}/${dist.file}-bin.zip" >
+    <zip zipfile="${build.dir}/${dist.pkg}-bin.zip" >
       <fileset dir="${build.dir}">
         <patternset refid="bin-distro"/>
       </fileset>
     </zip>
   </target>
   <target name="autodist-create-bin-packages-nodocs">
-    <tar tarfile="${build.dir}/${dist.file}-bin-nodocs.tar" >
+    <tar tarfile="${build.dir}/${dist.pkg}-bin-nodocs.tar" >
       <tarfileset dir="${build.dir}">
         <patternset refid="bin-distro-nodocs"/>
       </tarfileset>
     </tar>
-    <gzip src="${build.dir}/${dist.file}-bin-nodocs.tar" zipfile="${build.dir}/${dist.file}-bin-nodocs.tar.gz"/>
-    <delete file="${build.dir}/${dist.file}-bin-nodocs.tar" />
+    <gzip src="${build.dir}/${dist.pkg}-bin-nodocs.tar" zipfile="${build.dir}/${dist.pkg}-bin-nodocs.tar.gz"/>
+    <delete file="${build.dir}/${dist.pkg}-bin-nodocs.tar" />
 
-    <zip zipfile="${build.dir}/${dist.file}-bin-nodocs.zip" >
+    <zip zipfile="${build.dir}/${dist.pkg}-bin-nodocs.zip" >
       <fileset dir="${build.dir}">
         <patternset refid="bin-distro-nodocs"/>
       </fileset>
     </zip>
   </target>
   <target name="autodist-create-src-packages">
-    <tar tarfile="${build.dir}/${dist.file}-src.tar" >
+    <tar tarfile="${build.dir}/${dist.pkg}-src.tar" >
       <tarfileset dir="${build.dir}">
         <patternset refid="src-distro"/>
         <patternset refid="xsltc-deps-jars"/>
       </tarfileset>
     </tar>
-    <gzip src="${build.dir}/${dist.file}-src.tar" zipfile="${build.dir}/${dist.file}-src.tar.gz"/>
-    <delete file="${build.dir}/${dist.file}-src.tar" />
-    <zip zipfile="${build.dir}/${dist.file}-src.zip" >
+    <gzip src="${build.dir}/${dist.pkg}-src.tar" zipfile="${build.dir}/${dist.pkg}-src.tar.gz"/>
+    <delete file="${build.dir}/${dist.pkg}-src.tar" />
+
+    <zip zipfile="${build.dir}/${dist.pkg}-src.zip" >
       <fileset dir="${build.dir}">
         <patternset refid="src-distro"/>
         <patternset refid="xsltc-deps-jars"/>
@@ -1337,21 +1397,21 @@ $Id$
     <antcall target="autodist-copy-files"/>
     <antcall target="autodist-copy-files-docs"/>
     <antcall target="autodist-create-bin-packages"/>
-    <antcall target="autodist-create-src-packages"/>    
+    <antcall target="autodist-create-src-packages"/>
   </target>
 
   <target name="autodist-nodocs">
-    <echo message="autodist is for automated build processes, without dependencies"/>
+    <echo message="autodist-nodocs is for automated build processes, without dependencies"/>
     <antcall target="autodist-mkdirs"/>
     <antcall target="autodist-copy-files"/>
     <antcall target="autodist-create-bin-packages-nodocs"/>
-    <antcall target="autodist-create-src-packages"/>    
+    <antcall target="autodist-create-src-packages"/>
   </target>
   
   <!-- =================================================================== -->
   <!-- Creates the documentation tree for the org.apache.xml website       -->
   <!-- =================================================================== -->
-  <target name="site" depends="prepare.docs.build, xsltc.docs"
+  <target name="site" depends="prepare.docs,javadocs,xsltc.docs"
     description="Build documentation for posting to the website" >
  
     <mkdir dir="${site.dir}/apidocs"/>
@@ -1436,7 +1496,7 @@ $Id$
   <!-- This is VERY preliminary, not yet for inclusion in distribution     -->
   <!-- =================================================================== -->
   <!--Collate the xml sources into a single xml source with a litle extra structure -->
-  <target name="printerdocs" depends="prepare.docs.build">
+  <target name="printerdocs" depends="prepare.docs">
     <echo message="NOTICE: requires fop.jar and xml.jar on the classpath"/>
     <java fork="yes" 
           classname="${xalan.cmdline.class}"
@@ -1472,13 +1532,14 @@ $Id$
   <!-- =================================================================== -->
 
 
-  <target name="xsltc.prepare.docs" depends="prepare.docs.build">
-      <echo message="Transform xsltc_todo.xml and put the result in ${build.docs}/xsltc"/>
+  <target name="xsltc.prepare.docs" depends="prepare.docs">
    <mkdir dir="${build.docs}/xsltc"/>
-    <java fork="yes" classname="${xalan.cmdline.class}">
+   <!--   
+   <echo message="Transform xsltc_todo.xml and put the result in ${build.docs}/xsltc"/>
+   <java fork="yes" classname="${xalan.cmdline.class}">
       <classpath refid="docs.class.path" />
       <arg line="-in xsltc_todo.xml -xsl todo.xsl -out build/docs/xsltc/todo.html"/>
-    </java>
+   </java>  -->
   </target>  
  
  <target name="xsltc.docs" depends="xsltc.prepare.docs">
@@ -1512,115 +1573,185 @@ $Id$
   <property name="serializer.build.debug"   value="${build.debug}"            />
  
   
-  <!-- PROPERTIES TO MAKE THE SOURCE DISTRIBUTION ========================== --> 
+  <!-- PROPERTIES TO MAKE THE SOURCE DISTRIBUTION ========================== -->
   <property name="serializer.name"          value="serializer"                />
   <property name="serializer.version"       value="${version}"                />
-  <property name="serializer.bin.dir"       value="./bin"                     />  
-  <property name="serializer.dist.file"     value="${serializer.name}-j_${serializer.version}"/>  
+  <property name="serializer.dist.file"     value="${serializer.name}-j_${serializer.version}"/>
   <property name="serializer.dist.dir"      value="${serializer.build.dir}/${serializer.dist.file}"/>
 
   <!-- patternset for source distribution packages -->
   <patternset id="serializer-src-distro" >
     <!-- some license and legal stuff -->
-    <include name="${serializer.dist.file}/${serializer.license}"/>
-    <include name="${serializer.dist.file}/${serializer.notice}"/>  
+    <include name="${serializer.dist.file}/licenses/${serializer.license}"/>
+    <include name="${serializer.dist.file}/licenses/${serializer.notice}"/>
+    <include name="${serializer.dist.file}/${serializer.readme}"/>    
     <include name="${serializer.dist.file}/KEYS"/>  
-    
+
     <!-- The build stuff that uses Ant and this file itself, build.xml
          this is getting into a strange loop but the source distribution
          needs to build, and it uses this file, build.xml to do so ... -->
     <include name="${serializer.dist.file}/build.bat"/>
     <include name="${serializer.dist.file}/build.sh"/>
     <include name="${serializer.dist.file}/build.xml"/>
-    
+
     <!-- The source code that the source distribution would build -->
     <include name="${serializer.dist.file}/src/${serializer.reldir}/**/*.java" />
     <include name="${serializer.dist.file}/src/${serializer.reldir}/**/*.properties" />
     <include name="${serializer.dist.file}/src/${serializer.manifest.basename}" />
-        
+
     <!-- We need Ant in order to run build.xml in the source distribution -->
-    <include name="${serializer.dist.file}/bin/ant.jar"/>
-    <include name="${serializer.dist.file}/bin/ant.LICENSE.txt"/>
-    <include name="${serializer.dist.file}/bin/ant.README.txt"/>
-    <include name="${serializer.dist.file}/bin/antRun"/>
-    <include name="${serializer.dist.file}/bin/antRun.bat"/>
-    
+    <include name="${serializer.dist.file}/tools/ant.jar"/>
+    <include name="${serializer.dist.file}/tools/ant.LICENSE.txt"/>
+    <include name="${serializer.dist.file}/tools/ant.README.txt"/>
+    <include name="${serializer.dist.file}/tools/antRun"/>
+    <include name="${serializer.dist.file}/tools/antRun.bat"/>
+
     <!-- The serializer needs this jar in order to build -->
-    <include name="${serializer.dist.file}/bin/xml-apis.jar"/>
-    <include name="${serializer.dist.file}/bin/xml-apis.LICENSE.txt"/>
-    <include name="${serializer.dist.file}/bin/xml-apis.README.txt"/>
+    <include name="${serializer.dist.file}/xml-apis.jar"/>
+    <include name="${serializer.dist.file}/licenses/xml-apis.LICENSE.txt"/>
+    <include name="${serializer.dist.file}/licenses/xml-apis.NOTICE.txt"/>
+    <include name="${serializer.dist.file}/licenses/LICENSE.DOM-documentation.html"/>
+    <include name="${serializer.dist.file}/licenses/LICENSE.DOM-software.html"/>
+    <include name="${serializer.dist.file}/licenses/LICENSE-SAX.html"/>
+    <include name="${serializer.dist.file}/licenses/LICENSE.DOM-software.html"/>
+    
+    <include name="${serializer.dist.file}/xml-apis.README.txt"/>
     
     <!-- Ant needs an XML parser in order to read in the build.xml, so it
          can even do the build ... this is a strange loop ... -->
-    <include name="${serializer.dist.file}/bin/xercesImpl.jar"/>
-    <include name="${serializer.dist.file}/bin/xercesImpl.LICENSE.txt"/>
-    <include name="${serializer.dist.file}/bin/xercesImpl.README.txt"/>    
-  </patternset> 
-  
+    <include name="${serializer.dist.file}/xercesImpl.jar"/>
+    <include name="${serializer.dist.file}/licenses/xercesImpl.LICENSE.txt"/>
+    <include name="${serializer.dist.file}/licenses/xercesImpl.NOTICE.txt"/>
+    <include name="${serializer.dist.file}/xercesImpl.README.txt"/>
+  </patternset>
+
   <!-- patternset for  binary distribution packages ... if needed
   <patternset id="serializer-bin-distro" >
-    <include name="${serializer.dist.file}/readme.html"/>
-    <include name="${serializer.dist.file}/LICENSE"/>
-    <include name="${serializer.dist.file}/NOTICE"/>      
+    <include name="${serializer.dist.file}/licenses/serializer.LICENSE.txt"/>
+    <include name="${serializer.dist.file}/licenses/serializer.NOTICE.txt"/>
     <include name="${serializer.dist.file}/KEYS"/>
-    <include name="${serializer.dist.file}/bin/${serializer.name}.jar"/>
-    <include name="${serializer.dist.file}/bin/${xmlapis.jar.name}"/>
+    <include name="${serializer.dist.file}/${serializer.name}.jar"/>
+    <include name="${serializer.dist.file}/${xmlapis.jar.name}"/>
+    <include name="${serializer.dist.file}/${parser.jar.name}"/>    
   </patternset>
   -->
- 
-
- 
- 
   
   <!-- =================================================================== -->
   <!-- Creates the Serializer jar                                          -->
-  <!-- =================================================================== -->  
+  <!-- =================================================================== -->
   <target name="serializer.jar"
     depends="serializer.prepare,serializer.compile"
     description="Build the serializer and created serializer.jar" >
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${serializer.impl.version}"/>
     <filter token="java.version" value="${serializer.java.version}"/>
-    <filter token="java.vendor" value="${serializer.java.vendor}"/>   
+    <filter token="java.vendor"  value="${serializer.java.vendor}"/>
     <copy todir="${serializer.build.dir}" file="${serializer.manifest}" filtering="true"/>
 
-
-    <jar jarfile="${serializer.jar}" 
-      manifest="${serializer.build.dir}/${serializer.manifest.basename}" 
+    <jar jarfile="${build.serializer.jar}"
+      manifest="${serializer.build.dir}/${serializer.manifest.basename}"
       basedir="${serializer.build.classes}" >
       <patternset><!-- relative to jar/@basedir -->
         <include name="${serializer.reldir}/**/*" />
-        <include name="${serializer.notice}" />
-        <include name="${serializer.license}" />
       </patternset>
     </jar>
-  </target>  
+  </target>
 
   <target name="serializer.prepare">
     <mkdir dir="${serializer.build.dir}"/>
     <mkdir dir="${serializer.build.classes}"/>
-  </target>  
-  
+  </target>
 
   <target name="serializer.compile">
     <echo message="Compiling the Serializer" />
     <javac srcdir="${serializer.src.dir}"
            destdir="${serializer.build.classes}"
-           debug="${serializer.build.debug}"
-           target="1.1" >
+           debug="${serializer.build.debug}" >
       <include name="${serializer.reldir}/**/*.java" />
-      <!-- But exclude unused synthetic* files; should be obsoleted from CVS -->
       <classpath refid="compile.class.path" />
       <bootclasspath refid="xslt.boot.class.path" />
     </javac>
     <!-- Copy needed properties, resource, etc. files to be put into .jar file -->
     <copy todir="${serializer.build.classes}">
       <fileset dir="${serializer.src.dir}" includes="${serializer.reldir}/**/*.properties"/>
-    </copy>  
-        
+    </copy>
+
+<!-- Not sure why we want to include this in the jar when we
+     don't have this in xml-apis.jar, xercesImpl.jar, or xalan.jar
     <copy todir="${serializer.build.classes}" file="${serializer.license}" />
     <copy todir="${serializer.build.classes}" file="${serializer.notice}" />
-  </target> 
+    <copy todir="${serializer.build.classes}" file="${serializer.readme}" />    -->
+  </target>
+
+
+  <!-- =================================================================== -->
+  <!-- Creates the API documentation                                       -->
+  <!-- =================================================================== -->
+  <target name="serializer.javadocs"
+    description="Build the Javadocs for the Serializer" >
+    <echo message="javadocs is human-usable target with dependencies"/>  
+    
+    <mkdir dir="${build.docs}"/> 
+    <mkdir dir="${build.apidocs}"/>
+    <antcall target="serializer.autojavadocs"/>
+  </target>
+
+  <target name="serializer.autojavadocs" 
+          depends="serializer.autojavadocs-1.4-or-higher-if,serializer.autojavadocs-non1.4-or-higher-if">
+    <echo message="serializer.autojavadocs is for automated build process, without dependencies"/>
+  </target>
+
+  <target name="serializer.autojavadocs-1.4-or-higher-if" if="using-java-1.4-or-higher" 
+          depends="check-using-java-1.4-or-higher">
+    <antcall target="serializer.autojavadocs-1.4-or-higher"/>
+  </target>
+
+  <target name="serializer.autojavadocs-non1.4-or-higher-if" unless="using-java-1.4-or-higher" 
+          depends="check-using-java-1.4-or-higher">
+    <antcall target="serializer.autojavadocs-non1.4-or-higher"/>
+  </target>
+
+  <target name="serializer.autojavadocs-1.4-or-higher">
+    
+    <!-- Ant ignores destdir arg if doclet is set, so must send to doclet in doclet subelement-->
+    <javadoc
+         additionalparam="-breakiterator"
+         destdir="${build.apidocs}"
+         public="true"
+         sourcepath="${src.dir}"
+         packagenames="org.apache.*"
+         author="true"
+         version="true"
+         use="true"
+         windowtitle="${Name-in-docs} Serializer ${impl.version}" 
+         doctitle="${Name-in-docs} Serializer ${impl.version}"
+         bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
+          <classpath refid="docs.class.path" />
+          <taglet name="xalan2jtaglet.XSLUsageTag" path="${taglet.jar}"/>
+          <group title="Serializer" packages="org.apache.xml.serialize*"/>
+    </javadoc>
+  </target>
+
+  <target name="serializer.autojavadocs-non1.4-or-higher">
+    <!-- Ant ignores destdir arg if doclet is set, so must send to doclet in doclet subelement-->
+    <javadoc
+         public="true"
+         sourcepath="${src.dir}"
+         packagenames="org.apache.*"
+         author="true"
+         version="true"
+         use="true"
+         windowtitle="${Name-in-docs} Serializer ${impl.version}" 
+         doctitle="${Name-in-docs} Serializer ${impl.version}"
+         bottom="Copyright &#169; ${year} Apache XML Project. All Rights Reserved.">
+          <classpath refid="docs.class.path" />
+          <doclet name="xalanjdoc.Standard" path="${doclet.jar}">
+            <param name="-d" value="${build.apidocs}"/>
+          </doclet>
+          <group title="Serializer" packages="org.apache.xml.serialize*"/>
+    </javadoc>
+  </target>
+
 
   <!-- =================================================================== -->
   <!-- Create the serializer source distribution                           -->
@@ -1631,21 +1762,22 @@ $Id$
     <antcall target="serializer-autodist-mkdirs"/>
     <antcall target="serializer-autodist-copy-files"/>
       <!-- <antcall target="serializer-autodist-create-bin-packages"/> -->
-    <antcall target="serializer-autodist-create-src-packages"/>    
-  </target>  
-  
+    <antcall target="serializer-autodist-create-src-packages"/>
+  </target>
+
   <target name="serializer-autodist-mkdirs">
     <echo message="Serializer: making distribution directories" />
     <mkdir dir="${serializer.dist.dir}"/>
-    <mkdir dir="${serializer.dist.dir}/bin"/>
+    <mkdir dir="${serializer.dist.dir}/licenses"/>    
     <mkdir dir="${serializer.dist.dir}/src"/>
+    <mkdir dir="${serializer.dist.dir}/tools"/>      
   </target>
-  
+
   <target name="serializer-autodist-copy-files">
     <!-- Copy bin directory, which includes preexisting checked-in .jar files -->
-    <copy todir="${serializer.dist.dir}/bin">
+<!--    <copy todir="${serializer.dist.dir}/bin">
       <fileset dir="${serializer.bin.dir}" />
-    </copy> 
+    </copy> -->
 
     <echo message="Serializer: copy source files to ${serializer.dist.dir}/src" />
     <echo message="            ... from ${serializer.src.dir}/${serializer.reldir}" />
@@ -1658,15 +1790,30 @@ $Id$
           todir="${serializer.dist.dir}/src" />
 
     <!-- Copy built jars -->
-    <copy file="${serializer.jar}" todir="${serializer.dist.dir}/bin" />
+    <copy file="${build.serializer.jar}" todir="${serializer.dist.dir}" />
+    
+    <!-- Copy runtime jars -->    
+    <copy file="${lib.dir}/${xmlapis.jar.name}" todir="${serializer.dist.dir}" />
+    <copy file="${lib.dir}/${parser.jar.name}" todir="${serializer.dist.dir}" />
+    <copy file="${lib.dir}/xml-apis.README.txt" todir="${serializer.dist.dir}" />
+    <copy file="${lib.dir}/xercesImpl.README.txt" todir="${serializer.dist.dir}" />        
 
+    <!-- Copy licenses -->
+    <copy todir="${serializer.dist.dir}/licenses">
+      <fileset dir="./licenses" 
+               includes="serializer.*.txt,xml-apis.*.txt,xercesImpl.*.txt,LICENSE.DOM*,LICENSE-SAX*"/>
+    </copy>
+
+    <!-- Copy tools -->
+    <copy todir="${serializer.dist.dir}/tools">
+      <fileset dir="./tools" includes="ant*"/>
+    </copy>    
 
     <copy todir="${serializer.dist.dir}">
-      <fileset dir="." includes="readme.html,KEYS,LICENSE,NOTICE,build.xml,build.sh,build.bat,xsltc_todo.xml,todo.xsl,commits.xml"/>
+      <fileset dir="." includes="KEYS,serializer.README.txt,build.xml,build.sh,build.bat"/>
     </copy>
   </target>
-  
-  
+
   <target name="serializer-autodist-create-bin-packages">
     <tar tarfile="${serializer.build.dir}/${serializer.dist.file}-bin.tar" >
       <tarfileset dir="${serializer.build.dir}">
@@ -1675,7 +1822,7 @@ $Id$
     </tar>
     <gzip src="${serializer.build.dir}/${serializer.dist.file}-bin.tar" 
       zipfile="${serializer.build.dir}/${serializer.dist.file}-bin.tar.gz"/>
-      
+
     <!--  
     <delete file="${serializer.build.dir}/${serializer.dist.file}-bin.tar" />
       -->
@@ -1686,7 +1833,7 @@ $Id$
       </fileset>
     </zip>
   </target>
-  
+
   <target name="serializer-autodist-create-src-packages">
     <tar tarfile="${serializer.build.dir}/${serializer.dist.file}-src.tar" >
       <tarfileset dir="${serializer.build.dir}">
@@ -1694,19 +1841,17 @@ $Id$
       </tarfileset>
     </tar>
     <gzip src="${serializer.build.dir}/${serializer.dist.file}-src.tar" zipfile="${serializer.build.dir}/${serializer.dist.file}-src.tar.gz"/>
-    
-    
+
     <delete file="${serializer.build.dir}/${serializer.dist.file}-src.tar" />
-    
-    
+
     <zip zipfile="${serializer.build.dir}/${serializer.dist.file}-src.zip" >
       <fileset dir="${serializer.build.dir}">
         <patternset refid="serializer-src-distro"/>
       </fileset>
-    </zip>    
-  </target>  
+    </zip>
+  </target>
 <!-- ##################################################
      # END OF SECTION TO BUILD STAND-ALONE SERIALIZER #
      ################################################## -->
- 
+
 </project>

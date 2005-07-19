@@ -35,14 +35,14 @@ if [ "$ANT_HOME" = "" ] ; then
     ANT_HOME=.
 fi
 if [ "$ANT_JAR" = "" ] ; then
-    ANT_JAR=./bin/ant.jar
+    ANT_JAR=./tools/ant.jar
 fi
 if [ "$PARSER_JAR" = "" ] ; then
-    PARSER_JAR=./bin/xercesImpl.jar
+    PARSER_JAR=./lib/xercesImpl.jar
 fi
 
 if [ "$XML_APIS_JAR" = "" ] ; then
-    XML_APIS_JAR=./bin/xml-apis.jar
+    XML_APIS_JAR=./lib/xml-apis.jar
 fi
 
 # Use _underscore prefix to not conflict with user's settings
