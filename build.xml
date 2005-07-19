@@ -373,6 +373,7 @@ $Id$
     <filter token="parser.version.RELEASE"   value="${version.RELEASE}"/>
     <filter token="parser.version.MINOR"     value="${version.MINOR}"/>    
     <copy tofile="${src.dir}/${xalan.reldir}/Version.java" file="${src.dir}/${xalan.reldir}/Version.src" filtering="true"/>
+    <copy tofile="${src.dir}/${xalan.reldir}/processor/XSLProcessorVersion.java" file="${src.dir}/${xalan.reldir}/processor/XSLProcessorVersion.src" filtering="true"/>    
     <copy tofile="${src.dir}/${serializer.reldir}/Version.java" file="${src.dir}/${serializer.reldir}/Version.src" filtering="true"/>
     <copy tofile="${xdocs.dir}/sources/entities.ent" file="${xdocs.dir}/sources/entities.src" filtering="true"/>
   </target>
