@@ -28,19 +28,21 @@ the &xslt4j; Interpretive processor. See <link idref="xsltc_usage">Getting Start
 </link> for information on using the &xslt4j; Compiling processor.</note><br></br>
 <anchor name="classpath"/>
 <s2 title="Setting up the system classpath">
-  <p>At the very minimum, you must include xalan.jar, xml-apis.jar, and &xml4j-jar; -- or another 
-     conformant XML parser -- see <link idref="usagepatterns" anchor="plug">Plugging in a Transformer 
-     and XML parser</link>) on the system classpath. To run the &xslt4ji; processor sample 
-     applications, include xalansamples.jar (all samples other than the servlet) and xalanservlet.jar. 
-     To run Javascript extensions, include bsf.jar. All these JAR files are distributed with &xslt4j;. For 
-     extensions implemented in other scripting language, see <link idref="extensions" 
-     anchor="supported-lang"> extensions language requirements</link> to identify any additional JAR 
-     files you must place on the classpath and where you can get them.</p>
+  <p>At the very minimum, you must include xalan.jar, serializer.jar, xml-apis.jar, 
+     and &xml4j-jar; -- or another conformant XML parser -- see <link idref="usagepatterns" 
+     anchor="plug">Plugging in a Transformer and XML parser</link>) on the system classpath. 
+     To run the &xslt4ji; processor sample applications, include xalansamples.jar 
+     (all samples other than the servlet) and xalanservlet.jar. All these JAR files are 
+     distributed with &xslt4j;. To run Javascript extensions, include bsf.jar, which can
+     be obtained from the <jump href="http://jakarta.apache.org/bsf/index.html">Apache Jakarta
+     BSF project</jump>. For extensions implemented in other scripting language, see 
+     <link idref="extensions" anchor="supported-lang"> extensions language requirements</link> 
+     to identify any additional JAR files you must place on the classpath and where you can 
+     get them.</p>
      
-  <p>If you are using <link idref="xsltc_usage">XSLTC</link>, see <link idref="xsltc_usage">
-     Getting Starting with XSLTC</link>.</p>
+  <p>If you are using XSLTC, see <link idref="xsltc_usage">Getting Starting with XSLTC</link>.</p>
      
-  <p>If you are using JDK or JRE 1.2.2, 1.3.x or 1.4.x, include tools.jar on the classpath.  If you
+  <p>If you are using JDK or JRE 1.3.x or 1.4.x, include tools.jar on the classpath.  If you
      are using JDK or JRE 1.1.8 (supported for runtime only), then include classes.zip on the 
      classpath.</p>
 </s2>
@@ -71,8 +73,8 @@ the &xslt4j; Interpretive processor. See <link idref="xsltc_usage">Getting Start
 
 <anchor name="commandline"/>
 <s2 title="Performing your own transformations from the command line">
-  <p>java.org.apache.xalan.xslt.Process provides a basic utility for performing transformations from 
-     the command line. You use this utility, for example, to run several of the extensions samples. 
+  <p>org.apache.xalan.xslt.Process provides a basic utility for performing transformations from 
+     the command line. You can use this utility, for example, to run several of the extensions samples. 
      The command line for most standard transformations is as follows:</p>
   <p><code>java org.apache.xalan.xslt.Process -in <ref>xmlSource</ref></code><br/>
      <code>&nbsp;&nbsp;&nbsp;&nbsp;-xsl <ref>stylesheet</ref> -out <ref>outputfile</ref></code></p>
@@ -89,7 +91,7 @@ the &xslt4j; Interpretive processor. See <link idref="xsltc_usage">Getting Start
 <s2 title="Setting up your own Java applications">
   <p>You can start by using your own XML source files and XSL stylesheets with the sample applications, 
      which illustrate a number of the <link idref="usagepatterns">basic usage patterns</link>.</p>
-  <p>Here is the basic TrAX procedure to keep in mind when you set up a transformation:</p>
+  <p>Here is the basic procedure to keep in mind when you set up a transformation:</p>
   <ol>
     <li>Use the <jump href="apidocs/javax/xml/transform/TransformerFactory.html">TransformerFactory</jump> static newInstance() method to instantiate a TransformerFactory.<br/><br/></li>
     <li>Use the TransformerFactory newTransformer(Source stylesheet) method to process the 

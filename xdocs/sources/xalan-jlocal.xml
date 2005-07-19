@@ -18,12 +18,10 @@
 -->
 <!-- $Id$ -->
 
-<book title="Xalan XSL Transformer User's Guide" copyright="2004 The Apache Software Foundation">
+<book title="Xalan XSL Transformer User's Guide" copyright="2005 The Apache Software Foundation">
   <resources source="sbk:/sources/xalan/resources.xml"/>
-<!--  Commenting this out for now.  We have info in the Release Notes that discusses 
-      changes in the release.
   <document id="whatsnew" label="What's New" source="xalan/whatsnew.xml"/>
-  <separator/> -->
+  <separator/>
   <document id="overview" label="Overview" source="xalan/overview.xml"/>
   <document id="downloads" label="Downloads" source="xalan/downloads.xml"/>  
   <document id="getstarted" label="Getting Started" source="xalan/getstarted.xml"/>
@@ -35,23 +33,22 @@
   <document id="commandline" label="Command Line" source="xalan/commandline.xml"/>
   <hidden   id="commandline_xsltc" source="xalan/commandline_xsltc.xml"/>  
   <separator/>
-  <document id="usagepatterns" label="Usage Patterns" source="xalan/usagepatterns.xml"/>
   <document id="features" label="Features" source="xalan/features.xml"/>
-  <separator/>
-  <document id="trax" label="TrAX" source="xalan/trax.xml"/>
+  <document id="trax" label="Transform API" source="xalan/trax.xml"/>
   <document id="xpath_apis" label="XPath API" source="xalan/xpath_apis.xml"/>
+  <document id="usagepatterns" label="Usage Patterns" source="xalan/usagepatterns.xml"/>
+  <separator/>
+  <external href="apidocs/index.html" label="Xalan-J API"/>    
+  <document id="public_apis" label="Public APIs" source="xalan/public_apis.xml"/>
   <document id="dtm" label="DTM" source="xalan/dtm.xml"/>  
-  <document id="public_apis" label="Public API's"
-            source="xalan/public_apis.xml"/>  
-  <external href="apidocs/index.html" label="API (Javadoc)"/>
   <separator/>
   <document id="extensions" label="Extensions" source="xalan/extensions.xml"/>
   <document id="extensionslib" label="Extensions Library" source="xalan/extensionslib.xml"/>
   <document id="extensions_xsltc" label="XSLTC Exts" source="xalan/extensions_xsltc.xml"/>
   <separator/>
   <document id="readme" label="Release Notes" source="xalan/readme.xml"/>
-  <hidden id="history" source="xalan/history.xml"/>
-  <hidden id="xsltc_history" source="xalan/xsltc_history.xml"/>
+  <hidden   id="history" source="xalan/history.xml"/>
+  <hidden   id="xsltc_history" source="xalan/xsltc_history.xml"/>
   <separator/>
   <external href="design/design2_0_0.html" label="Xalan 2 Design"/>
   <external href="xsltc/index.html" label="XSLTC Design"/>
@@ -59,8 +56,4 @@
   <external href="readme.html#bugs" label="Bugs"/>
   <external href="http://xml.apache.org/xalan-j/test/overview.html" label="Testing"/>
   <document id="builds" label="Builds" source="xalan/builds.xml"/>
-<!-- Temporarily commenting this section out.  We need to overhaul the list.
-  <separator/>
-  <external href="readme.html#developer-list" label="Credits"/>
-  <external href="xsltc/todo.html#developer-list" label="XSLTC Credits"/>  -->
 </book>

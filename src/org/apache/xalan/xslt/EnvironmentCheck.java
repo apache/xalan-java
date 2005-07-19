@@ -324,6 +324,7 @@ public class EnvironmentCheck
   public String[] jarNames =
   {
     "xalan.jar", "xalansamples.jar", "xalanj1compat.jar", "xalanservlet.jar",
+    "serializer.jar",   // Serializer (shared between Xalan & Xerces)
     "xerces.jar",       // Xerces-J 1.x
     "xercesImpl.jar",   // Xerces-J 2.x
     "testxsl.jar", 
@@ -1225,6 +1226,7 @@ public class EnvironmentCheck
     jarVersions.put(new Long(113749), "xml-apis.jar from xalan-j_2_4_1 from factoryfinder-build of xml-commons RIVERCOURT1");
     jarVersions.put(new Long(124704), "xml-apis.jar from tck-jaxp-1_2_0 branch of xml-commons");
     jarVersions.put(new Long(124724), "xml-apis.jar from tck-jaxp-1_2_0 branch of xml-commons, tag: xml-commons-external_1_2_01");
+    jarVersions.put(new Long(194208), "xml-apis.jar from head branch of xml-commons, tag: xml-commons-external_1_3_01");
 
     // If the below were more common I would update it to report 
     //  errors better; but this is so old hardly anyone has it
@@ -1249,7 +1251,8 @@ public class EnvironmentCheck
     jarVersions.put(new Long(831587), "xercesImpl.jar from xalan-j_2_4_1 from xerces-2_2"); 
     jarVersions.put(new Long(891817), "xercesImpl.jar from xalan-j_2_5_D1 from xerces-2_3");  
     jarVersions.put(new Long(895924), "xercesImpl.jar from xerces-2_4");
-    jarVersions.put(new Long(1010806), "xercesImpl.jar from Xerces-J-bin.2.6.2");                        
+    jarVersions.put(new Long(1010806), "xercesImpl.jar from Xerces-J-bin.2.6.2"); 
+    jarVersions.put(new Long(1203318), "xercesImpl.jar from Xerces-J-bin.2.7.0");                           
 
     jarVersions.put(new Long(37485), "xalanj1compat.jar from xalan-j_2_0_0");
     jarVersions.put(new Long(38100), "xalanj1compat.jar from xalan-j_2_0_1");

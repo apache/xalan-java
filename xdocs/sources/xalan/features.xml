@@ -24,8 +24,7 @@
 </ul>
 <anchor name="factoryfeature"/>
 <s2 title="Standard TransformerFactory features">
-<p>The JAXP 1.3 Transformation API for XML (<link idref="trax">TrAX</link>) defines objects and 
-methods for processing input and producing 
+<p><resource-ref idref="jaxp13-longname-withacronym"/> defines objects and methods for processing input and producing 
 output in a variety of formats, including character streams, SAX event streams, and DOM Documents.</p>
 <p>&jaxp13-short; defines the following features:</p>
 <ul>

@@ -38,13 +38,15 @@
      latest standard specifications.</p>
   <p>The public interfaces of &xslt4j2; are:</p>
   <ul>
-    <li><jump href="http://java.sun.com/xml/jaxp/">JAXP 1.2</jump>
+    <li><jump href="http://java.sun.com/xml/jaxp/">JAXP 1.3</jump>
         interfaces found in the
         <jump href="apidocs/javax/xml/parsers/package-summary.html">
-           <code>javax.xml.parsers</code></jump> and
+           <code>javax.xml.parsers</code></jump>,
         <jump href="apidocs/javax/xml/transform/package-summary.html">
-           <code>javax.xml.transform</code></jump> packages. </li>
-    <li>The XPath API, defined by the classes
+           <code>javax.xml.transform</code></jump> and
+        <jump href="apidocs/javax/xml/xpath/package-summary.html">
+           <code>javax.xml.xpath</code></jump> packages. </li>
+    <li>The &xslt4j2; specific XPath API, defined by the classes
       <ul>
         <li><jump href="apidocs/org/apache/xpath/XPathAPI.html">
           <code>org.apache.xpath.XPathAPI</code></jump></li>
@@ -92,17 +94,18 @@
      specification.</p>
   <p>If and when the specification upon which the API is based reaches its
      final published form, the API could become a Public interface in
-     a subsequent release of &xslt4j2;.  The &xslt4j2; team could also
-     decide to simply withdraw the API, if it felt that making the API
+     a subsequent release of &xslt4j2;, although the &xslt4j2; team could
+     decide to simply withdraw the API, if it decided that making the API
      a public interface would not be appropriate.</p>
   <p>As the name suggests, experimental interfaces are provided in order to
      give users the opportunity to experiment with new features so that they
      can provide feed-back on those features.  They should not be used in
-     production-level code.</p>
+     production-level code.  The &xslt4j2; team may fix severe bugs in
+     experimental interfaces.</p>
   <p>The experimental interfaces of &xslt4j2; are:</p>
   <ul>
     <li>The
-        <jump href="http://www.w3.org/TR/2003/CR-DOM-Level-3-XPath-20030331">
+        <jump href="http://www.w3.org/TR/2004/NOTE-DOM-Level-3-XPath-20040226">
            DOM Level 3 XPath API</jump> found in the
         <jump href="apidocs/org/apache/xpath/domapi/package-summary.html">
            <code>org.apache.xpath.domapi</code></jump> package.</li>

@@ -25,38 +25,38 @@
 <s2 title="Downloading what you need">
 <p>To use &xslt4j;, you need the following:</p> 
   <ul>
-    <li>The JDK or JRE 1.2.2, 1.3.x, or 1.4.x</li>
-    <p>You can get the JDK or JRE from <jump href="http://www.ibm.com/java/jdk">ibm.com/java/jdk/</jump> 
-     or <jump href="http://www.java.sun.com">java.sun.com</jump>.</p> 
-    <li>xml-apis.jar (JAXP 1.2 implementation) and &xml4j-jar; from <resource-ref idref="xml4j-used"/> (or another <link idref="usagepatterns" anchor="plug">XML Parser</link>)</li>
-    <p>These jars are packaged in the Xalan Java binary distributions.</p>
+    <li>The JDK or JRE 1.3.x, 1.4.x, or 5.x</li>
+    <p>You can get the JDK or JRE from <jump href="http://www-128.ibm.com/developerworks/java/jdk/index.html">
+       IBM developerWorks</jump> or <jump href="http://www.java.sun.com">java.sun.com</jump>.</p> 
+    <li>xml-apis.jar (JAXP APIs)</li>
+    <li>&xml4j-jar; (or another <link idref="usagepatterns" anchor="plug">XML Parser</link>)</li>
     <li>xalan.jar or xsltc.jar</li>
-     <p>There are 2 binary distributions available; you only need to choose one of them.  
-     Both binary distributions contain xml-apis.jar (the JAXP 1.2 implementation) and 
-     &xml4j-jar; from <resource-ref idref="xml4j-used"/>.</p>
-      <ul>
-      <li>The first binary distribution, &xslt4j-dist-bin;.zip or &xslt4j-dist-bin;.tar.gz, 
+    <li>serializer.jar</li>
+    <li>(Optional) Xalan Java source code</li>    
+    <li>(Optional) Packages to support extension functions and elements</li>    
+  </ul>    
+  <p>There are 2 binary distributions available; you only need to choose one of them.  
+     Both binary distributions contain xml-apis.jar and &xml4j-jar; from <resource-ref idref="xml4j-used"/>.</p>
+  <ul>
+    <li>The first binary distribution, &xslt4j-dist-bin;.zip or &xslt4j-dist-bin;.tar.gz, 
       contains the Xalan Interpretive processor, the Xalan Compiled processor (XSLTC) and the 
       runtime support packages in a single jar, called xalan.jar.  </li><br/><br/>
-      <li>The second binary distribution, &xslt4j-dist-bin;-2jars.zip or &xslt4j-dist-bin;-2jars.tar.gz
+    <li>The second binary distribution, &xslt4j-dist-bin;-2jars.zip or &xslt4j-dist-bin;-2jars.tar.gz
       contains the Xalan Interpretive processor in xalan.jar, and the Xalan Compiled 
       processor (XSLTC) and the runtime support packages in xsltc.jar.  </li>
-      </ul>
-      <p>The binary distributions can be downloaded from the <resource-ref idref="xslt4j-distdir"/>.</p>
-     <li>(Optional) Xalan Java source code</li>
-     <p>There is an optional source distribution available for doing your own &xslt4j; builds; see 
+  </ul>
+  <p>The binary distributions can be downloaded from the <resource-ref idref="xslt4j-distdir"/>.</p>
+  <p>There is an optional source distribution available for doing your own &xslt4j; builds; see 
      <link idref="readme" anchor="build">Build notes</link>. You can download the source distribution from 
      the <resource-ref idref="xslt4j-distdir"/>.</p>     
-     <li>(Optional) Packages to support extension functions and elements</li>
-     <p>If you plan to run <link idref="extensions">XSLT extensions</link> implemented in languages
-     other than Java, then you will need bsf.jar, which is included in both the &xslt4j; binary 
-     and source distributions. if you plan to run XSLT extensions implemented in scripting 
+  <p>If you plan to run <link idref="extensions">XSLT extensions</link> implemented in languages
+     other than Java, then you will need an implementation of the Bean Scripting Framework (BSF).
+     An open source implementation is available for download from Apache.  See the 
+     <jump href="http://jakarta.apache.org/bsf/index.html">Apache Jakarta
+     BSF project</jump>. If you plan to run XSLT extensions implemented in scripting 
      languages, you will need bsf.jar and one or more additional files as indicated in 
-     <link idref="extensions" anchor="supported-lang">extensions language requirements</link>.</p>
-  </ul>
-  
+     <link idref="extensions" anchor="supported-lang">extensions language requirements</link>.</p>     
   <p>To access previous releases, see the <resource-ref idref="xslt4j-distdir-previous"/>.</p>
-  
 </s2>
 <anchor name="whereis_xml4j"/>
 <s2 title="Where do I get &xml4j;?">

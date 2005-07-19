@@ -78,9 +78,10 @@ more information.</note><br></br>
    downloaded from <jump href="http://jakarta.apache.org/bsf/index.html">the Apache Jakarta BSF project 
    web site</jump>. It is required only if you have extensions written in languages other than Java. 
    The additional JAR files or DLLs required to support extensions written in other languages are 
-   listed at Jakarta BSF web site as <jump href="http://jakarta.apache.org/bsf/projects.html"> 
+   listed at the Jakarta BSF web site as <jump href="http://jakarta.apache.org/bsf/projects.html"> 
    Related Projects </jump> . These files are available from the sources indicated and are not shipped 
    with &xslt4j;. </p>
+<anchor name="BSFManager"/>
 <p>By default Xalan-Java assumes BSF support is provided by the Jakarta BSF implementation. There are three 
    ways of specifying the class that provides the BSF Manager service:.</p>
 <ul><li>Set the system property org.apache.xalan.extensions.bsf.BSFManager;</li>

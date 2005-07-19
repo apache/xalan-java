@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 The Apache Software Foundation.
+ * Copyright 2002-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import org.w3c.dom.xpath.XPathNSResolver;
 /**
  *
  * The class provides an implementation of XPathEvaluator according 
- * to the DOM L3 XPath Specification, Working Draft 28, March 2002.
+ * to the DOM L3 XPath Specification, Working Group Note 26 February 2004.
  *
  * <p>See also the <a href='http://www.w3.org/TR/2004/NOTE-DOM-Level-3-XPath-20040226'>Document Object Model (DOM) Level 3 XPath Specification</a>.</p>
  * 

@@ -28,7 +28,7 @@
 </ul>
 <anchor name="intro"/>
 <s2 title="Introduction">
-<p>&xslt4j; (named after a rare musical instrument) fully implements <resource-ref idref="xslt"/> 
+<p>&xslt4j; fully implements <resource-ref idref="xslt"/> 
    and the <resource-ref idref="xpath"/>. XSLT is the first part of the XSL stylesheet language for 
    XML. It includes the XSL Transformation vocabulary and XPath, a language for addressing parts of 
    XML documents. For links to background materials, discussion groups, frequently asked questions, 
@@ -37,7 +37,8 @@
       For more information, see <resource-ref idref="xsl"/> and the <jump
       href="http://xml.apache.org/fop">Apache XML FOP (Formatting Objects Project)</jump>.</note>
 <p>XSL stylesheets are written in the XSLT language. An XSL stylesheet contains instructions 
-   for transforming XML documents into XML, HTML, XHTML or plain text. In structural terms, an XSL stylesheet specifies the transformation of one tree of 
+   for transforming XML documents into XML, HTML, XHTML or plain text. In structural terms, an XSL
+   stylesheet specifies the transformation of one tree of 
    nodes (the XML input) into another tree of nodes (the output or transformation result).</p>
 <note>The XSL stylesheet may generate and refer to cascading style sheets (<jump
       href="http://www.w3.org/Style/CSS/">CSS</jump>) as part of its output.</note> 
@@ -70,12 +71,12 @@
       a Compiling processor (XSLTC) for use in a high performance runtime environment.<br/><br/></li>
   <li>Implements the relevant W3C specifications: <resource-ref idref="xslt"/> and 
       <resource-ref idref="xpath"/>.<br/><br/></li>
-  <li>Implements <link idref="trax">TrAX (Transformation API for XML)</link>, now part of 
-      <resource-ref idref="jaxp12"/>, and builds on <resource-ref idref="sax2"/> and 
-      <resource-ref idref="dom2"/>.<br/><br/></li>
+  <li>Implements <resource-ref idref="jaxp13-longname-withacronym"/>, and builds on 
+      <resource-ref idref="sax2"/> and <resource-ref idref="dom3"/>.<br/><br/></li>
+  <li>Implements the XPath API in <resource-ref idref="jaxp13"/>.<br/><br/></li>
   <li>May be configured to work with any XML parser, such as
       <jump href="http://xml.apache.org/xerces-j/index.html">&xml4j;</jump>, that implements 
-      <resource-ref idref="jaxp12"/> (see <link idref="usagepatterns" anchor="plug">Plugging in an XML
+      <resource-ref idref="jaxp13"/> (see <link idref="usagepatterns" anchor="plug">Plugging in an XML
       parser</link>).<br/><br/></li>
   <li>Can process Stream, SAX or DOM input, and output to a Stream, SAX or DOM.<br/><br/></li>
   <li>Transformations may be chained (the output of one transformation may be the input for
@@ -118,10 +119,11 @@
       and XPath: A Guide to Transformations</jump>, Prentice-Hall, 2001<br/><br/></li>                 
   <li>Michael Kay's <jump href="http://www.wrox.com/books/0764543814.shtml">XSLT 
       Programmer's Reference</jump>, 2nd ed., Wrox Press, 2001<br/><br/></li>               
+<!--      
   <li>Neil Bradley's <jump href="http://www.awlonline.com/product/0,2627,0201674874,00.html">XSL 
       Companion</jump>, Addison-Wesley, 2000<br/><br/></li>                 
   <li>Khun Yee Fung's <jump href="http://www.awlonline.com/product/0,2627,0201711036,00.html">XSLT: 
-      Working with XML and HTML</jump>, Addison-Wesley, 2001<br/><br/></li>                 
+      Working with XML and HTML</jump>, Addison-Wesley, 2001<br/><br/></li>  -->
   <li>Dave Pawson's <resource-ref idref="dpawsonxslfaq"/> to search out particular answers and 
       techniques<br/><br/></li>
   <li>Miloslav Nic's <jump href="http://zvon.vscht.cz/HTMLonly/XSLTutorial/Books/Book1/index.html">XSL 

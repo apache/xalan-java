@@ -30,13 +30,16 @@
 <s2 title="What is it?">
     <p>&xslt4j; is an XSLT processor for transforming XML documents into 
        HTML, text, or other XML document types. It implements <resource-ref idref="xslt"/> and 
-       <resource-ref idref="xpath"/>.  It can be used from the command line, in an applet or a 
+       <resource-ref idref="xpath"/> and can be used from the command line, in an applet or a 
        servlet, or as a module in other program.</p>
-    <p>&xslt4j; recasts &xslt; as an implementation of the <link idref="trax">
-       Transformation API for XML (TrAX)</link> interfaces, part of the <resource-ref idref="jaxp12"/>. 
-       TrAX provides a  modular framework and a standard API for performing XML transformations, and
-       it utilizes system properties to determine which Transformer and which XML parser to use.</p>
-    <p>&xslt4j; also builds on <resource-ref idref="sax2"/> and <resource-ref idref="dom2"/>.</p>
+    <p>&xslt4j; implements the javax.xml.transform interface in 
+       <resource-ref idref="jaxp13-longname-withacronym"/>.  This interface provides a modular
+       framework and a standard API for performing XML transformations, and utilizes system 
+       properties to determine which Transformer and which XML parser to use.</p>
+    <p>&xslt4j; also implements the javax.xml.xpath interface in &jaxp13-short;, which provides an 
+       object-model neutral API for evaluation of XPath expressions and access to the evaluation 
+       environment.</p>
+    <p>&xslt4j; also builds on <resource-ref idref="sax2"/> and <resource-ref idref="dom3"/>.</p>
   
     <p>For more information, see <link idref="readme">the release notes</link>.</p>
     <note>&xslt4j; version 1 is no longer supported and no longer available from xml.apache.org.</note>
@@ -44,12 +47,13 @@
 
 <anchor name="current"/>
 <s2 title="How about this release?">
+  <p>This release includes new features as well as a number of bug fixes. See the 
+  <link idref="whatsnew" anchor="done">What's New</link> and <link idref="readme" anchor="done">Release 
+  Notes</link> for more details.</p>
   <p>&xslt4j-current; works with &xml4j;, and the distribution includes xercesImpl.jar from &xml4j-used;.</p>
-  <p>The &xslt4j; implementation is in xalan.jar. The SAX, DOM, and JAVAX interfaces are in xml-apis.jar. 
-     These interfaces are shared by a number of tools (&xslt4j;, &xml4j;, etc.), so placing them in a 
-     separate JAR simplifies coordination and reduces risk of duplication. 
-  <em>Be sure to put both JAR files (and xercesImpl.jar or another JAXP 1.2-compliant XML parser) on your classpath!</em></p>
-</s2> 
+  <p>The &xslt4j; implementation is in xalan.jar and serializer.jar. 
+  The SAX, DOM, and &jaxp13-short; interfaces are in xml-apis.jar.</p>
+</s2>
 
 <anchor name="moreinfo"/>  
 <s2 title="For more information...">

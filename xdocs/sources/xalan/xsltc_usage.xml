@@ -19,11 +19,11 @@
 <s1 title="Getting Started with &xslt4jc-short;">
 
 <ul>
-<li><link anchor="intro">Introduction</link></li>
+  <li><link anchor="intro">Introduction</link></li>
   <li><link anchor="classpath">Setting the system classpath for &xslt4jc-short;</link></li>
   <li><link anchor="compile">Compiling translets from the command line</link></li>
   <li><link anchor="run">Running translets from the command line</link></li>
-  <li><link anchor="api">Calling &xslt4jc-short; with the TrAX/JAXP API</link></li>
+  <li><link anchor="api">Calling &xslt4jc-short; with the JAXP API</link></li>
   <li><link anchor="xsltcsmart">Smart Transformer Switch</link></li>
   <li><link anchor="native_api">Calling &xslt4jc-short; with the native API</link></li>
   <li><link anchor="constraints">Usage constraints</link></li>
@@ -34,29 +34,24 @@
 <note>Unless otherwise specified, the usage discussed in this section refers to 
 the &xslt4j; Compiling processor, XSLTC. See <link idref="usagepatterns">Basic Usage 
 Patterns</link> for information on using the &xslt4j; Interpretive processor.</note><br></br>
+
 <anchor name="intro"/>
 <s2 title="Introduction">
 <p>&xslt4jc-short; provides a compiler and a runtime processor. 
 Use the compiler to compile an XSL stylesheet into a translet (i.e., a set of
 Java classes). Use the runtime processor to apply the translet to an XML
 document and perform a transformation.</p>
-<note>To compile and run translets, you must have a JDK or a JRE 1.2 or
-higher.</note>
-</s2><anchor name="classpath"/>
-<s2 title="Setting the system classpath for &xslt4jc-short;">
+</s2>
 
-<p>
-The jar file structure of the &xslt4jc-short; component has changed again.  In the
-original structure, the xsltc.jar file contained only &xslt4jc-short; classes, so 
-other support jar files needed to be added to the classpath.
-In a subsequent model, all of the support classes were bundled with the &xslt4jc-short;
-classes into one xsltc.jar file. 
-Now, a single xalan.jar contains the code for both &xslt4j; processors.  You
+<anchor name="classpath"/>
+<s2 title="Setting the system classpath for &xslt4jc-short;">
+<p>The xalan.jar contains support for both &xslt4j; processors.  You
 can use the JAXP <code>javax.xml.transform.TransformerFactory</code> property
-(see <link anchor="api">"Calling &xslt4jc-short; with the TrAX/JAXP API"</link> below) to
+(see <link anchor="api">"Calling &xslt4jc-short; with the JAXP API"</link> below) to
 select which processor to use:  the Interpretive or the Compiling processor.</p>
-<p>Refer to the subsection 'Bundled System Classpath' below to learn more about
-the new bundling.</p>
+<p>To use XSLTC, simply put xalan.jar, serializer.jar, xml-apis.jar, and xercesImpl.jar on
+your classpath.</p>
+<note>To compile and run translets, you must use JDK (or JRE) 1.3.1 or higher.</note>
 <note>Although the &xslt4jc-short; developers make every effort to avoid changes that
 affect binary compatibility, we cannot guarantee that a translet will work with
 any version of the run-time processor other than the one that corresponds to
@@ -65,21 +60,20 @@ the version of the &xslt4jc-short; compiler that was used to create the translet
 
 <s3 title="Bundled System Classpath">
 <p>
-To use this newer approach, simply put xalan.jar, xml-apis.jar and xercesImpl.jar
-in your classpath.  There is no need to include xsltc.jar, BCEL.jar, JLex.jar,
+To use this newer approach, simply put xalan.jar, serializer.jar, xml-apis.jar and 
+xercesImpl.jar in your classpath.  There is no need to include xsltc.jar, BCEL.jar, JLex.jar,
 regexp.jar, java_cup.jar or runtime.jar as required in previous releases.
 </p>
-<note>In order to compile and run translets you must have a JAXP 1.2 compliant XML
+<note>In order to compile and run translets you must have a JAXP 1.3 compliant XML
 parser installed. Our distribution includes <resource-ref idref='xml4j-used' />.
-Include xercesImpl.jar and xml-apis.jar in your class path.
-</note>
+Include xercesImpl.jar and xml-apis.jar in your class path.</note>
 </s3>
 
 <s3 title="Unbundled System Classpath">
 <p>The binary distribution contains &xslt4jc-short; and all its support classes bundled 
 into xalan.jar. To use the unbundled approach, rebuild 
 the xsltc.jar file using the xsltc.unbundledjar target. The support jars that 
-you'll need to add to your classpath are available in the Xalan Java bin 
+you'll need to add to your classpath are available in the Xalan Java lib 
 directory.</p>
 <p>To compile translets, run translets, and use the &xslt4jc-short; API, using
 the unbundled jar approach, put the following on the system classpath:</p>
@@ -130,10 +124,10 @@ the unbundled jar approach, put the following on the system classpath:</p>
   <td>required</td>
 </tr>
 </table>
-<p>The JAR files listed above are installed in the &xslt4j; bin directory. 
-The translet is the set of class files or the JAR file that you generate with
+<p>The translet is the set of class files or the JAR file that you generate with
 the compiler; see <link anchor="compile">Compiling translets</link>.</p>
 </s3>
+
 <anchor name="compile"/>
 <s2 title="Compiling translets from the command line">
     <ul>
@@ -153,15 +147,17 @@ the compiler; see <link anchor="compile">Compiling translets</link>.</p>
     <note>You can also use the
     <jump href="commandline.html">&xslt4j; command-line utility</jump>, to
           compile or run &xslt4jc-short; translets.</note>
-    <anchor name="comp-synopsis"/>
+
+<anchor name="comp-synopsis"/>
 <s3 title="Synopsis">
 <p>
 <code>java org.apache.xalan.xsltc.cmdline.Compile</code><br/>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;[-o &lt;output&gt;] [-d &lt;directory&gt;] [-j &lt;jarfile&gt;]</code><br/>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;[-p &lt;package name&gt;] [-n] [-x] [-v] [-u] [-h]<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;{&lt;stylesheet&gt; | -i }</code></p> 
+</s3>
 
-</s3><anchor name="comp-args"/>
+<anchor name="comp-args"/>
 <s3 title="Flags and arguments">
     <p>The following flags and arguments are supported:</p>
 
@@ -213,7 +209,9 @@ option is <code>my-stylesheet</code>, or if the URL of the stylesheet is
 <code>http://example.org/my-stylesheet.xsl</code>, the translet will actually
 be named <code>my_stylesheet</code>.
 </note>
-</s3><anchor name="comp-examples"/>
+</s3>
+
+<anchor name="comp-examples"/>
 <s3 title="Examples">
     <p>The following examples assume that you have already set the
            classpath to include the translet and the required JAR
@@ -250,7 +248,9 @@ be named <code>my_stylesheet</code>.
     <p>Example 5 produces a set of class files such as com/mycompany/translets/hamlet.class,
     com/mycompany/translets/hamlet$0.class', etc.</p>
 </s3>
-</s2><anchor name="run"/>
+</s2>
+
+<anchor name="run"/>
 <s2 title="Running translets from the command line">
     <ul>
       <li><link anchor="run-synopsis">Synopsis</link></li>
@@ -275,13 +275,15 @@ be named <code>my_stylesheet</code>.
     <note>You can also use the
     <jump href="commandline.html">&xslt4j; Command-line Utility</jump>, to
           compile or run &xslt4jc-short; translets.</note>
+
 <anchor name="run-synopsis"/>
 <s3 title="Synopsis">
 <p><code>java org.apache.xalan.xsltc.cmdline.Transform</code><br/>
-<code>&nbsp;&nbsp;&nbsp;&nbsp; [-j &lt;jarfile&gt;] [-x] [-s] {-u &lt;document_url&gt; | &lt;document&gt;} &lt;class&gt;</code><br/>
+<code>&nbsp;&nbsp;&nbsp;&nbsp; [-j &lt;jarfile&gt;] [-x] {-u &lt;document_url&gt; | &lt;document&gt;} &lt;class&gt;</code><br/>
 <code>&nbsp;&nbsp;&nbsp;&nbsp; [&lt;name1&gt;=&lt;value1&gt; ...]</code></p>
+</s3>
 
-</s3><anchor name="run-args"/>
+<anchor name="run-args"/>
 <s3 title="Flags and arguments">
 
     <p>The following flags and arguments are supported:</p>
@@ -310,7 +312,9 @@ Arguments without flags:
    may take a set of stylesheet parameters specified as
    name-value pairs. The format for a name-value pair is
    &lt;name&gt;=&lt;value&gt;.</source>
-</s3><anchor name="run-examples"/>
+</s3>
+
+<anchor name="run-examples"/>
 <s3 title="Examples">
 
     <p>The following examples assume that you have already set the classpath to include the translet and the required JAR
@@ -348,15 +352,19 @@ Arguments without flags:
     <p>Example 3 applies the translet (hamlet) to the XML input document (http://zarya.east/test.xml hamlet). Inclusion of
     the flag (-u) is optional.</p>
 </s3>
-</s2><anchor name="api"/>
-<s2 title="Calling &xslt4jc-short; with the TrAX/JAXP API">
+</s2>
+
+<anchor name="api"/>
+<s2 title="Calling &xslt4jc-short; with the JAXP API">
 <ul>
 <li><link anchor="api-attributes">&xslt4jc-short; TransformerFactory attributes</link></li>
 <li><link anchor="api-examples">Examples</link></li>
 </ul>
-<p>&xslt4jc-short; translets are integrated with the TrAX/JAXP 1.2 API. See <jump href="xsltc/xsltc_trax.html">The Translet API &amp; TrAX</jump>. Accordingly, it is now possible to set a system property and use a TransformerFactory to generate a Transformer that performs a transformation by compiling and running a translet.</p>
+<p>&xslt4jc-short; translets are integrated with the &jaxp13-short; API. Accordingly, it is now possible to set a 
+system property and use a TransformerFactory to generate a Transformer that performs a transformation by compiling 
+and running a translet.</p>
 
-<p>When you use the JAXP 1.2 API to run &xslt4j;, the
+<p>When you use the &jaxp13-short; API to run &xslt4j;, the
 <code>javax.xml.transform.TransformerFactory</code> system property is set to
 <code>org.apache.xalan.processor.TransformerFactoryImpl</code>. As it currently
 stands, this &xslt4j; implementation of TransformerFactory always uses the &xslt4j;
@@ -368,7 +376,7 @@ parsers and XSL transformers, see
 <link idref="usagepatterns" anchor="plug">Plugging in a Transformer and XML
 parser</link>.</p>
 
-<p>To use the JAXP 1.2 API to perform transformations with translets do the
+<p>To use the &jaxp13-short; API to perform transformations with translets do the
    following:</p>
 <ol>
   <li>Set the <code>javax.xml.transform.TransformerFactory</code> system
@@ -399,9 +407,12 @@ parser</link>.</p>
 <p>&xslt4jc-short; also defines a set of attributes that you can set on the
 <code>TransformerFactory</code> in order to save and subsequently use those
 translets by way of the JAXP Transform API - without having to recompile the
-stylesheet each time.</p><anchor name="api-attributes"/>
+stylesheet each time.</p>
+
+<anchor name="api-attributes"/>
 <s3 title="&xslt4jc-short; TransformerFactory attributes">
-The JAXP Transform API defines a <code><jump href="apidocs/javax/xml/transform/TransformerFactory.html#setAttribute(java.lang.String, java.lang.Object)">TransformerFactory.setAttribute</jump>
+The JAXP Transform API defines a <code>
+<jump href="apidocs/javax/xml/transform/TransformerFactory.html#setAttribute(java.lang.String, java.lang.Object)">TransformerFactory.setAttribute</jump>
 </code> method that you can use to set implementation-defined attributes.
 <table>
 <tr>
@@ -475,7 +486,9 @@ permitted in a Java class name, any such character will be replaced with an
 underscore.  For example, if the translet name specified was
 <code>my-stylesheet</code>, the translet will actually be named
 <code>my_stylesheet</code>.</note>
-</s3><anchor name="api-examples"/>
+</s3>
+
+<anchor name="api-examples"/>
 <s3 title="Examples">
 <p><em>Example 1:</em> Using a translet/Templates object for multiple
 concurrent transformations</p>
@@ -550,13 +563,14 @@ transformer.transform(new StreamSource(xmlInURI2),
 <p>For a working sample that illustrates this usage pattern, see <link idref="samples" anchor="xsltc2">JAXPTransletMultipleTransformations</link>.</p>
 </s3>
 </s2>
+
 <anchor name="xsltcsmart"/>
 <s2 title="Smart Transformer Switch">
-<p>As part of the TrAX API, a &quot;Smart Transformer Switch&quot; enables automatic switching 
+<p>As part of the JAXP API, a &quot;Smart Transformer Switch&quot; enables automatic switching 
 between &xslt4ji; and &xslt4jc-short; processors within your application. It uses &xslt4ji; 
 processor to create your <code>Transformer</code> objects, and uses &xslt4jc-short; to create your 
 <code>Templates</code> objects.</p>
-<p>To use the switch, you set the TrAX system property,
+<p>To use the switch, you set the JAXP system property,
 <code>javax.xml.transform.TransformerFactory</code>, to
 <code>org.apache.xalan.xsltc.trax.SmartTransformerFactoryImpl</code>. 
 For one-time transformations or transformations that require extensions
@@ -566,11 +580,13 @@ objects. For a repeated transformation where performance is critical, you would
 create a <code>Templates</code> object from which you would create your
 <code>Transformer</code> objects.</p> 
 </s2>
+
 <anchor name="native_api"/>
 <s2 title="Calling &xslt4jc-short; with the native API">
 <p>The &xslt4jc-short; Native API is no longer supported.  Instead, you should always
 use &xslt4jc-short; with the JAXP Transform API.</p>
 </s2>
+
 <anchor name="constraints"/>
 <s2 title="Usage constraints">
 <ul>
@@ -583,7 +599,7 @@ use &xslt4jc-short; with the JAXP Transform API.</p>
     methods for each template. Inlining was thought to improve performance, 
     but with recent hotspot technology in the Java 1.4.x JVM, performance is better with 
     inlining off. From the command line, you would use <code>&quot;-n&quot;</code> 
-    to turn on inlining, or with TrAX set the &quot;enable-inlining&quot; attribute to the TransformerFactory. 
+    to turn on inlining, or with JAXP set the &quot;enable-inlining&quot; attribute to the TransformerFactory. 
     For example, 
       <source>TransformerFactory tfac = new TransformerFactory(); 
 tfac.setAttribute(&quot;enable-inlining&quot;, Boolean.TRUE);</source><br/></li>

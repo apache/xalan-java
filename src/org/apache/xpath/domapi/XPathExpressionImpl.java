@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 The Apache Software Foundation.
+ * Copyright 2002-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,10 +37,10 @@ import org.w3c.dom.xpath.XPathNamespace;
 /**
  * 
  * The class provides an implementation of XPathExpression according 
- * to the DOM L3 XPath Specification, Working Draft 28, March 2002.
+ * to the DOM L3 XPath Specification, Working Group Note 26 February 2004.
  *
  * <p>See also the <a href='http://www.w3.org/TR/2004/NOTE-DOM-Level-3-XPath-20040226'>Document Object Model (DOM) Level 3 XPath Specification</a>.</p>
-
+ *
  * <p>The <code>XPathExpression</code> interface represents a parsed and resolved 
  * XPath expression.</p>
  * 
@@ -76,9 +76,9 @@ class XPathExpressionImpl implements XPathExpression {
     /**
      *
      * This method provides an implementation XPathResult.evaluate according 
-     * to the DOM L3 XPath Specification, Working Draft 28, March 2002.
+     * to the DOM L3 XPath Specification, Working Group Note 26 February 2004.
      *
-     * <p>See also the <a href='http://www.w3.org/TR/2002/WD-DOM-Level-3-XPath-20020328'>Document Object Model (DOM) Level 3 XPath Specification</a>.</p>
+     * <p>See also the <a href='http://www.w3.org/TR/2004/NOTE-DOM-Level-3-XPath-20040226'>Document Object Model (DOM) Level 3 XPath Specification</a>.</p>
      * 
      * <p>Evaluates this XPath expression and returns a result.</p>
      * @param contextNode The <code>context</code> is context node for the 

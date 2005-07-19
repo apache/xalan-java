@@ -74,14 +74,14 @@ CODE
         have installed XalanJ, for example, '/usr/local/xml-xalan'.
 
 	#!/bin/sh
-	JAR=${INSTALLDIR}/java/bin/xsltc.jar
-	XER=${INSTALLDIR}/java/bin/xercesImpl.jar
-	XML=${INSTALLDIR}/java/bin/xml-apis.jar
-	JCPR=${INSTALLDIR}/java/bin/runtime.jar
-	BCEL=${INSTALLDIR}/java/bin/BCEL.jar
-	JCP=${INSTALLDIR}/java/bin/java_cup.jar
-	JLEX=${INSTALLDIR}/java/bin/JLex.jar
-	REGEXP=${INSTALLDIR}/java/bin/regexp.jar
+	JAR=${INSTALLDIR}/java/lib/xsltc.jar
+	XER=${INSTALLDIR}/java/lib/xercesImpl.jar
+	XML=${INSTALLDIR}/java/lib/xml-apis.jar
+	JCPR=${INSTALLDIR}/java/lib/runtime.jar
+	BCEL=${INSTALLDIR}/java/lib/BCEL.jar
+	JCP=${INSTALLDIR}/java/tools/java_cup.jar
+	JLEX=${INSTALLDIR}/java/tools/JLex.jar
+	REGEXP=${INSTALLDIR}/java/lib/regexp.jar
 
         CLASSPATH=.:${JAR}:${XER}:${XML}:${JCPR}:${BCEL}:${JCP}:${JLEX}:${REGEXP}
         java -cp ${CLASSPATH} org.apache.xalan.xsltc.cmdline.Compile "$@"

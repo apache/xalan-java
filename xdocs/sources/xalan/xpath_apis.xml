@@ -259,7 +259,7 @@
               if (prefix.equals("ext"))
                   return "http://ext.com";
               else
-                  return XMLConstants.NULL_NS_URI;
+                  return null;
           }
           
           public String getPrefix(String namespace)

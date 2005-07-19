@@ -47,7 +47,7 @@ import org.xml.sax.InputSource;
  *     java ApplyXPathDOM foo.xml /
  *     java ApplyXPathDOM foo.xml /doc/name[1]/@last
  *
- *<p>See also the <a href='http://www.w3.org/TR/2002/WD-DOM-Level-3-XPath-20020328'>Document Object Model (DOM) Level 3 XPath Specification</a>.</p>
+ *<p>See also the <a href='http://www.w3.org/TR/2004/NOTE-DOM-Level-3-XPath-20040226'>Document Object Model (DOM) Level 3 XPath Specification</a>.</p>
  * @see XPathEvaluator
  * 
  */

@@ -17,65 +17,83 @@
 -->
 <!-- $Id$ -->
 <s1 title="What's new in &xslt4j2;">
-<p>&xslt4j; 2.5 contains the following new features:</p>
-<ul>
-  <li><link anchor="XSLTC-DTM">Integration of DTM into the Xalan Compiled processor (XSLTC)</link></li>
-  <li><link anchor="common_serializer">Integration of Xalan Interpretive and Xalan Compiled Serializers</link></li>
-</ul>
 
-<p>These new features have been driven by the need to have a closer integration 
-and better code reuse between the Xalan Interpretive and the Xalan Compiled (XSLTC) 
-processors. Prior to this release, the processors did not share much code and they 
-had different underlying models for the input xml document. Xalan Interpretive used
-the <link idref="dtm">Document Table Model (DTM)</link> to model the input xml, while 
-XSLTC used its own DOMImpl implementation. The serializers used by the processors were 
-also different.  As the project matures sharing more components between the processors 
-becomes increasingly important. This will make the code more maintainable in the future and 
-also eliminate some subtle behavioral differences between the Interpretive and the 
-Compiled processors.</p>
+  <s2 title="What's new in &xslt4j-current;">  
+<p> &nbsp; </p>  
+  <s3 title="Support for JAXP 1.3">
+  <p>Support for JAXP 1.3 has been introduced in this release of &xslt4j;. JAXP 1.3
+  includes a new javax.xml.xpath package, which provides an object-model neutral
+  API for the evaluation of XPath expressions and access to the evaluation environment. 
+  Please refer to <link idref="xpath_apis">Using the JAXP 1.3 XPath API</link> for details on how to 
+  use the new XPath API. You can also look at the code in the samples 
+  <link idref="samples" anchor="applyxpathjaxp">ApplyXPathJAXP</link> , 
+  <link idref="samples" anchor="xpathresolver">XPathResolver</link> and 
+  <link idref="samples" anchor="extensionresolver">ExtensionFunctionResolver</link>.</p>
+  
+  <p>There are also a few new transformer features
+  in JAXP 1.3, as described in the following list:<br/><br/>
+    <li>A new method 
+    <jump href="apidocs/javax/xml/transform/TransformerFactory.html#setFeature(java.lang.String, boolean)">
+    TransformerFactory.setFeature(String name, boolean value)</jump></li>
+    <li>A new method <jump href="apidocs/javax/xml/transform/Transformer.html#reset()">
+    Transformer.reset()</jump></li>
+    <li>A new nextSibling attribute is introduced for 
+    <jump href="apidocs/javax/xml/transform/dom/DOMResult.html">DOMResult</jump>, accessible 
+    by the constructors, getter and setter methods.</li>
+    <li>Support for the <link idref="features" anchor="secureprocessing">secure processing feature</link></li></p>
+  </s3>
+  <s3 title="New default error handling behavior">
+  The behavior of the default <jump href="apidocs/javax/xml/transform/ErrorListener.html">ErrorListener</jump>
+  was changed in this release of &xslt4j;, 
+  in order to conform with a clarification of the required behavior described by JAXP 1.3. 
+  If an application does not register its own ErrorListener, the default ErrorListener is 
+  used which reports all warnings and errors to System.err and does not throw any Exceptions. Applications 
+  are strongly encouraged to register and use ErrorListeners that insure proper behavior for warnings and errors. 
+  The default ErrorListener of the old &xslt4ji; processor throws exceptions on errors and fatal errors. If your
+  code expects exceptions to be thrown on errors and fatal errors, you have to set a customized ErrorListener on
+  TransformerFactory and/or Transformer. You can use 
+  <jump href="apidocs/org/apache/xml/utils/DefaultErrorHandler.html">org.apache.xml.utils.DefaultErrorHandler</jump>
+  as a sample ErrorListener implementation.
+  </s3>
+  <s3 title="Support for XML 1.1">
+  <p>This release of &xslt4j; adds support for Namespaces in XML 1.1 and XML 1.1 output documents.
+     The processors: <br/><br/>
+      <li> support C0 control characters </li>
+      <li> handle C1 control characters in a way that is consistent with the requirements of XML 1.1 </li>
+      <li> treat NEL (U+0085) and LSEP (U+2028) as end-of-line markers </li> 
+      <li> support <jump href="http://www.ietf.org/rfc/rfc3987.txt">Internationalized Resource Identifiers (IRIs)</jump> </li>
+      <li> support the additional characters in NCNames and QNames permitted by XML 1.1 and Namespaces in XML 1.1 </li></p>
 
-<p>In addition to these design benefits, the integration of DTM with XSLTC and the common
-serializer provide conformance and performance improvements to our users. In a practical 
-environment, the performance improvement for most stylesheets in XSLTC is likely to be 
-in the range of 10-20%. Stylesheets that use a lot of small result tree fragments (RTF) can 
-be a few times faster because of the new light-weight RTF model. Although the performance 
-improvement work focused mainly on the XSLTC side, the enhancements introduced also 
-contributed to performance benefits for the Xalan Interpretive processor.  As a result, the
-Interpretive processor is roughly 5-10% faster in this release.</p>
-
-<anchor name="XSLTC-DTM"/>
-<s2 title="Integration of DTM into the Xalan Compiled processor (XSLTC)">
-<p>As of the &xslt4j; 2.5 release, both the Xalan Interpretive and Xalan Compiled (XSLTC) 
-processors use the same <link idref="dtm">Document Table Model (DTM)</link>.  XSLTC's 
-underlying document model, DOMImpl, was replaced with DTM and the original DTM was extended 
-so that it could be used more efficiently with XSLTC.  Many of the DOM-related classes in 
-XSLTC were adapted to work with the new DTM model and only a few changes were made in the 
-compiler-related classes. However, because of the changes in the core component, the 
-translets generated by the XSLTC in this release are not binary compatible with the 
-translets generated by previous releases of XSLTC (up to and including Xalan Java 2.5.D1). 
-You'll need to recompile your stylesheets when you switch to this new release.</p> 
-</s2>
-
-<anchor name="common_serializer"/>
-<s2 title="Integration of Xalan Interpretive and Xalan Compiled Serializers">
-<p>As of the &xslt4j; 2.5 release, a common serializer is shared between the
-Xalan Interpretive and Xalan Compiled (XSLTC) processors. The common serializer 
-code resides in the org.apache.xml.serializer package. The new serializer is 
-designed to take the benefits of the old serialization mechanisms from both sides. 
-By using the common serializer, many of the output differences between the 
-Interpretive and the Compiled processor go away, and maintenance effort is
-reduced.</p>
-<p>During the merge of the Xalan Interpretive and XSLTC serializers, an
-effort was made to use the best performing features from each serializer.
-The new class hierarchy is similar to the one used by XSLTC.  At the highest
-level the serializer classes split based on the output handler type
-("Stream" or "SAX"). At the next level, the hierarchy branches are based on
-the output type (XML, HTML or TEXT).  This allows each flavor of serializer
-to do optimizations based on the output type and whether that output is going 
-to a "Stream" or a "SAX" handler.</p>
-<p>From a functional point of view, the new serializer's output matches the
-behavior of the Interpretive processor's old serializer, such as the choice of
-which HTML entities to write out, and how to escape attribute values in
-documents written to a stream. </p>
-</s2>
+  <p>The processors do not undeclare namespaces other than the default namespace in serialized documents  Also, Full 
+     normalization is not supported.</p>
+  <p>An input document can be either XML 1.0 or XML 1.1.  Also, a stylesheet document can be either XML 1.0 or XML 1.1.  
+     A stylesheet document must conform to the XSLT 1.0 specifications.</p>
+  <p>Note that it is possible for a stylesheet module that is an XML 1.1 document to use constructs that cannot be 
+     serialized as part of a valid XML 1.0 document, and for a stylesheet module that is an XML 1.0 document to use 
+     constructs that cannot be serialized as part of a valid XML 1.1 document. For example, a stylesheet module that 
+     is an XML 1.1 document might contain a literal result element whose name contains characters that are not permitted 
+     as part of a QName in a document that conforms to Namespaces for XML 1.0. The user needs to ensure that the nodes 
+     created by the stylesheet can be serialized as part of a well-formed document of the required version of XML.</p>  
+  </s3>
+  <s3 title="Support for Alternative BSF Implementations">
+  <p>Extensions written in Java are directly supported by &xslt4j;. For extensions written in languages other than 
+     Java, &xslt4j; uses the Bean Scripting Framework (BSF), an architecture for incorporating scripting into Java 
+     applications and applets, and an implementation of BSF must be available on the classpath.  In previous
+     releases, IBM's BSF implementation (bsf.jar from 2001) has been included in the &xslt4j; distribution.  
+     Some time ago IBM donated their BSF implementation to the <jump href="http://jakarta.apache.org/bsf/index.html">
+     Apache Jakarta BSF</jump> project. As of this release, 
+     the IBM bsf.jar is no longer included in the &xslt4j; distribution.  To use extensions written in 
+     languages other than Java, please download a version of Jakarta BSF and put it on your classpath. To use
+     a different BSF implementation, please refer to <link idref="extensions" 
+     anchor="BSFManager">setting the BSFManager</link>.</p>
+  </s3>
+  <s3 title="New serializer.jar">
+  <p>In this release of &xslt4j; the code related to serialization of output result trees has been pulled out of 
+     xalan.jar and moved into a new jar file, named serializer.jar.</p>
+  <p>The code in serializer.jar has been modified to have no build or runtime dependencies on the rest of the 
+     code in &xslt4j;, therefore, serializer.jar can be used in a stand-alone fashion through its public APIs. 
+     Although the code has been modified to create a stand-alone jar, the serializer public APIs have not changed
+     and the package names and classnames are the same as they were last release.</p>
+  </s3>      
+  </s2>
 </s1>

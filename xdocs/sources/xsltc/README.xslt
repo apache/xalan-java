@@ -77,9 +77,9 @@ CODE
 	done
 
 	#
-	XSLTC=${INSTALLDIR}/java/bin/xsltc.jar
-	XERCES=${INSTALLDIR}/java/bin/xercesImpl.jar
-	XML=${INSTALLDIR}/java/bin/xml-apis.jar
+	XSLTC=${INSTALLDIR}/java/lib/xsltc.jar
+	XERCES=${INSTALLDIR}/java/lib/xercesImpl.jar
+	XML=${INSTALLDIR}/java/lib/xml-apis.jar
 	CLASSPATH=.:${XSLTC}:${XERCES}:${XML}:$jarfile
 
 	java -cp ${CLASSPATH} org.apache.xalan.xsltc.cmdline.Transform "$@"

@@ -16,7 +16,7 @@
  * limitations under the License.
 -->
 <!-- $Id$ -->
-<s1 title="Transformation API For XML">
+<s1 title="Using the JAXP Transform APIs">
 <ul>
  <li><link anchor="intro">Introduction</link></li>
  <li><link anchor="terminology">General Terminology</link></li>
@@ -130,9 +130,8 @@
 
 
 <label>DOM</label>
-<item>Document Object Model, specifically referring to the
-			 <jump href="http://www.w3.org/TR/DOM-Level-2/">Document Object Model
-			 (DOM) Level 2 Specification</jump>.</item>
+<item>Document Object Model, specifically referring to the <resource-ref idref='dom3' />
+                         Specification.</item>
 			 
 
 <label>SAX</label>

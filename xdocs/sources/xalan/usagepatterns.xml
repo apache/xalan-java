@@ -20,7 +20,7 @@
 <ul>
 <li><link anchor="basic">Basic steps</link></li>
 <li><link anchor="plug">Plugging in the Transformer and XML parser</link></li>
-<li><link anchor="outputprops">Setting output properties in your stylesheets</link></li>
+<li><link anchor="outputprops">Configuring serialization output properties</link></li>
 <li><link anchor="outputencoding">Caution: setting output encoding in the stylesheet</link></li>
 <li><link anchor="incremental">Performing incremental transformations</link></li>
 <li><link anchor="embed">Working with embedded stylesheets</link></li>
@@ -108,9 +108,10 @@ transformer.transform
 <p>For more information about the mechanism used to determine system property values and how you can plug other implementations into your applications, see "Section 3: Plugability Layer" in the <ref>Java API for XML Processing</ref> at 
 <jump href="http://java.sun.com/aboutJava/communityprocess/review/jsr063/index.html">JSR-000063 1.1</jump>.</p> 
 </s2><anchor name="outputprops"/>
-<s2 title="Setting output properties in your stylesheets">
-<p>Output properties for XML, HTML, and Text transformation output are defined in property files in the org.apache.xml.serializer package.</p>
-<p>You can change these settings as follows:</p>
+<s2 title="Configuring serialization output properties">
+<p>Output properties for XML, HTML, and text transformation output are defined in property files in the org.apache.xml.serializer package.</p>
+<p>You can override the default value of these properties in your stylesheet by using the attributes of an xsl:output element. 
+You can override the Xalan specific default settings as follows:</p>
 <ol>
   <li>Declare the xalan namespace in your stylesheet element (xmlns:xalan="http://xml.apache.org/xalan").<br/><br/></li>
   <li>Use the namespace prefix you assign (for example, "xalan") to redefine properties of interest in the stylesheet xsl:output
@@ -127,7 +128,9 @@ transformer.transform
               indent="yes" 
               xalan:indent-amount="2"/&gt;</source>
   <p>If you want to change the property settings globally, edit the values in the property files in src/org/apache/xml/serializer, 
-  and use Ant to <link idref="readme" anchor="jar">rebuild xalan.jar</link>.</p>
+  and use Ant to <link idref="readme" anchor="jar">rebuild serializer.jar</link>. Be aware that if you change the default value
+  of a standard property, such as the default encoding value, this may be in conflict with the default value specified by the XSLT 1.0 
+  recommendation.</p>
 <p>The properties files define the following properties:</p>
 <p><ref>output_xml.properties</ref>:</p>
 <table>
@@ -135,6 +138,30 @@ transformer.transform
     <th>Property</th>
     <th>Default value</th>
   </tr>  
+  <tr>
+    <td>version</td>
+    <td>1.0</td>
+  </tr>  
+  <tr>
+    <td>encoding</td>
+    <td>UTF-8</td>
+  </tr>  
+  <tr>
+    <td>indent</td>
+    <td>no</td>
+  </tr>  
+  <tr>
+    <td>omit-xml-declaration</td>
+    <td>no</td>
+  </tr> 
+  <tr>
+    <td>standalone</td>
+    <td>no</td>
+  </tr>
+  <tr>
+    <td>media-type</td>
+    <td>text/xml</td>
+  </tr>     
   <tr>
     <td>xalan:indent-amount</td>
     <td>0</td>
@@ -145,18 +172,34 @@ transformer.transform
   </tr>
   <tr>
     <td>xalan:entities</td>
-    <td>XMLEntities</td>
+    <td>org/apache/xml/serializer/XMLEntities</td>
   </tr>
 </table>
+<note>The xalan:content-handler property specifies the default name of the Java class that implements the 
+<jump href="apidocs/org/xml/sax/ContentHandler.html">org.xml.sax.ContentHandler</jump>
+interface and recieves calls during result tree serialization. If you specify an 
+alternate Java class it must implement the ContentHandler interface.</note>
 <note>You can also create your own XML entity file (mapping characters to
 entities) or edit src/org/apache/xml/serializer/XMLEntities.properties and
-rebuild xalan.jar.</note>
+rebuild serializer.jar.</note>
 <p><ref>output_html.properties</ref>:</p>
 <table>
   <tr>
     <th>Property</th>
     <th>Default value</th>
   </tr>  
+  <tr>
+    <td>version</td>
+    <td>4.0</td>
+  </tr> 
+  <tr>
+    <td>indent</td>
+    <td>yes</td>
+  </tr>   
+  <tr>
+    <td>media-type</td>
+    <td>text/html</td>
+  </tr>   
   <tr>
     <td>xalan:indent-amount</td>
     <td>0</td>
@@ -167,7 +210,7 @@ rebuild xalan.jar.</note>
   </tr>
   <tr>
     <td>xalan:entities</td>
-    <td>HTMLEntities</td>
+    <td>org/apache/xml/serializer/HTMLEntities</td>
   </tr>
   <tr>
     <td>xalan:use-url-escaping</td>
@@ -178,8 +221,12 @@ rebuild xalan.jar.</note>
     <td>no</td>
   </tr>
 </table>
+<note>The xalan:content-handler property specifies the default name of the Java class that implements the 
+<jump href="apidocs/org/xml/sax/ContentHandler.html">org.xml.sax.ContentHandler</jump>
+interface and recieves calls during result tree serialization. If you specify an 
+alternate Java class it must implement the ContentHandler interface.</note>
 <note>You can also create your own HTML entity file (mapping characters to entities) 
-or edit src/org/apache/xml/serializer/HTMLEntities.properties and rebuild xalan.jar.</note>
+or edit src/org/apache/xml/serializer/HTMLEntities.properties and rebuild serializer.jar.</note>
 <p><ref>output_text.properties</ref>:</p>
 <table>  
   <tr>
@@ -187,10 +234,18 @@ or edit src/org/apache/xml/serializer/HTMLEntities.properties and rebuild xalan.
     <th>Default value</th>
   </tr>
   <tr>
+    <td>media-type</td>
+    <td>text/plain</td>
+  </tr>    
+  <tr>
     <td>xalan:content-handler</td>
     <td>org.apache.xml.serializer.ToTextStream</td>
   </tr>
 </table>
+<note>The xalan:content-handler property specifies the default name of the Java class that implements the 
+<jump href="apidocs/org/xml/sax/ContentHandler.html">org.xml.sax.ContentHandler</jump>
+interface and recieves calls during result tree serialization. If you specify an 
+alternate Java class it must implement the ContentHandler interface.</note>
 </s2><anchor name="outputencoding"/>
 <s2 title="Caution: setting output encoding in the stylesheet">
 <p>When you use the &lt;xsl:output&gt; encoding attribute to set output character encoding, you should not 
@@ -237,7 +292,11 @@ instructions:</p>
 </ol>
 </s2><anchor name="serialize"/>
 <s2 title="Serializing output">
-<p>In some cases, you may want to "transform" a DOM tree into a stream, which the XML community calls serialization. <link idref="trax">TrAX (Transformation API for XML)</link> and the &xslt4j; Transformer implementation provide direct support for this operation. Simply use the TransformerFactory newTransformer() method (no arguments) to create a Transformer that you can use to "copy" a DOMSource to a StreamResult. For examples, see Examples.exampleDOM2DOM(), Examples.exampleSerializeNode(), and Examples.exampleAsSerializer() in the <link idref="samples" anchor="trax">trax sample</link>.</p>
+<p>In some cases, you may want to "transform" a DOM tree into a stream, which the XML community calls serialization. 
+<resource-ref idref="jaxp13"/> and the &xslt4j; Transformer implementation provide direct 
+support for this operation. Simply use the TransformerFactory newTransformer() method (no arguments) to create a Transformer 
+that you can use to "copy" a DOMSource to a StreamResult. For examples, see Examples.exampleDOM2DOM(), 
+Examples.exampleSerializeNode(), and Examples.exampleAsSerializer() in the <link idref="samples" anchor="trax">trax (JAXP transform) sample</link>.</p>
 </s2><anchor name="params"/>
 <s2 title="Setting stylesheet parameters">
 <p>An XSLT stylesheet may include parameters that are set at run time each time a transformation is performed. To set a stylesheet parameter, use the Transformer 
@@ -347,9 +406,14 @@ and place the output in a DOMResult object.</note>
 <p>The <link idref="samples" anchor="dom2dom">DOM2DOM</link> illustrates both procedures, and serializes the DOMResult to System.out.</p>
 </s2><anchor name="xpath"/>
 <s2 title="Working with XPath expressions">
-<p>XSLT stylesheets use XPath expressions to select nodes, specify conditions, and generate text for the result tree. XPath provides an API that you can call directly. For example, you may want to select nodes programmatically and do your own processing without a stylesheet.</p>
-<p>XPath is an independent entity, with clients other than XSLT processors (such as XPointer). Accordingly, &xslt4j2; has packaged XPath as a separate module (org.apache.xpath and its subpackages), although currently this module does use some utility classes packaged in org.apache.xalan.utils. The org.apache.xpath.XPathAPI class contains convenience methods that you can use to return single DOM Nodes, NodeIterators, and XObjects. Apart from their own functionality, these methods also provide a path into the lower-level XPath API that you may find useful.</p>
-<p>For an example that uses the XPathAPI convenience methods to execute XPath expressions against XML source files, see <link idref="samples" anchor="applyxpath">ApplyXPath</link>.</p>
+<p>XSLT stylesheets use XPath expressions to select nodes, specify conditions, and generate text for the result tree. XPath provides an API that you can call directly. For example, you may want to evaluate an XPath expression programmatically and do your own processing without a stylesheet.</p>
+<p>XPath is an independent entity, with clients other than XSLT processors (such as XPointer). Accordingly, &xslt4j2; has packaged XPath as a separate module (org.apache.xpath and its subpackages). The org.apache.xpath.XPathAPI class contains convenience methods that you can use to return single DOM Nodes, NodeIterators, and XObjects. Apart from their own functionality, these methods also provide a path into the lower-level XPath API that you may find useful.</p>
+<p>&jaxp13-short; also provides an API for xpath expression evaluation in the javax.xml.xpath package. Users are 
+ recommended to use the new JAXP 1.3 XPath API rather than the old &xslt4j2; specific XPath API.</p>
+<p>For an example that uses the &xslt4j2; specific XPathAPI to execute XPath expressions against XML source files, 
+see <link idref="samples" anchor="applyxpath">ApplyXPath</link>. For examples on how to use the new JAXP 1.3 XPath
+API, see <link idref="samples" anchor="applyxpathjaxp">ApplyXPathJAXP</link> and 
+<link idref="samples" anchor="xpathresolver">XPathResolver</link>.</p>
 </s2><anchor name="applet"/>
 <s2 title="Using the &xslt4j; applet wrapper">
 <ol> 
@@ -362,7 +426,7 @@ You can use the DocumentURL and StyleURL PARAM tags or the <jump href="apidocs/o
 <source>&lt;applet  
     name="xslControl"
     code="org.apache.xalan.client.XSLTProcessorApplet.class"
-    archive="../../bin/xalan.jar,../../bin/xml-apis.jar,../../bin/xercesImpl.jar"
+    archive="../../xalan.jar,../../build/xalan.jar,../../serializer.jar,../../build/serializer.jar,../../lib/xml-apis.jar,../../lib/xercesImpl.jar"
     height="0"
     width"0">
     &lt;param name="documentURL" value="xalanApplets.xml"/&gt;
@@ -462,8 +526,8 @@ anchor="usestylesheetparamservlet">UseStylesheetParamServlet</link> and <link id
       tree.<br/><br/></li>
       <li><jump href="apidocs/org/apache/xalan/trace/SelectionEvent.html">SelectionEvent</jump> is an event triggered by the
        selection of a stylesheet node.</li>
-		  <li><jump href="apidocs/org/apache/xalan/trace/ExtensionEvent.html">ExtensionEvent</jump> is an event that is 
-		  passed to the TraceListener.extension() function. It is called before an extension call is made.<br/><br/></li>
+      <li><jump href="apidocs/org/apache/xalan/trace/ExtensionEvent.html">ExtensionEvent</jump> is an event that is
+       passed to the TraceListener.extension() function.  It is called before an extension call is made.<br/><br/></li>
 		</ul>
     <p>The <link idref="commandline">command-line utility</link> uses the debugger interface when you include one or more of the
      following switches: <code>-TT</code>, <code>-TG</code>, <code>-TS</code>, <code>-TTC</code>.</p>

@@ -24,7 +24,7 @@
 <li><link anchor="options">Options</link></li>
 <li><link anchor="examples">Examples</link></li>
 <li><link anchor="faq">Simple FAQs</link></li>
-<li><link anchor="trax">Using the new options from TrAX</link></li>
+<li><link anchor="trax">Using options from the JAXP transform APIs</link></li>
 </ul>
    
 <anchor name="options"/>
@@ -145,16 +145,16 @@ message like "Tranform using translet ..." or "Tranform using translet ... from 
 using the <code>-XO</code> option because there is no default translet name in this situation.</p>
 
 <p><em>Q:</em> I only want to compile the stylesheet. I don't want to do a transformation.</p>
-<p><em>A:</em> TrAX has no notion of compiling a stylesheet. However, you can achieve the same effect by 
+<p><em>A:</em> JAXP has no notion of compiling a stylesheet. However, you can achieve the same effect by 
 running a dummy transformation and tell &xslt4jc-short; to save the translet class. Example:</p>
 <p>&gt; <code>java org.apache.xalan.xslt.Process -xsl test.xsl -xsltc <br/>-xo</code></p>
 <p>This command runs a transformation on an empty input and generates the translet <code>test.class</code>.</p>
 </s2>
 
 <anchor name="trax"/>
-<s2 title="Using the new options from TrAX">
-<p>You can use some of the new attributes in the <code>TransformerFactoryImpl</code> class of &xslt4jc-short; to 
-customize the translet behaviors from TrAX.</p>
+<s2 title="Using options from the JAXP transform APIs">
+<p>You can use some of the attributes in the <code>TransformerFactoryImpl</code> class of &xslt4jc-short; to 
+customize the translet behaviors from JAXP.</p>
 
 <p>Here is the list of attributes in <code>org.apache.xalan.xsltc.trax.TransformerFactoryImpl</code> 
 and their corresponding Process command line options:</p>
@@ -212,14 +212,14 @@ and their corresponding Process command line options:</p>
   </tr>
 </table>
 
-<p>You can set the attributes using the TrAX interface <code>TransformerFactory.setAttribute(String name, Object value)</code>. 
+<p>You can set the attributes using the JAXP interface <code>TransformerFactory.setAttribute(String name, Object value)</code>. 
 The four attributes <code>translet-name, destination-directory, package-name and jar-name</code> are transient. 
 They only apply to the next <code>newTemplates()</code> or <code>newTransformer()</code> call. Their values are reset to 
 the default after the call.</p>
 
 <p>The <code>generate-translet</code> attribute does not have a corresponding command line option. This attribute is
 implied when the <code>-XO</code> or <code>-XJ</code> option is used. The purpose is to make the command line
-usage syntax a little bit simpler. Setting the <code>generate-attribute</code> attribute to true from TrAX is 
+usage syntax a little bit simpler. Setting the <code>generate-attribute</code> attribute to true from JAXP is 
 equivalent to using the <code>-XO</code> option without the optional translet name from the Process command line.</p>
 
 <p>If the <code>use-classpath</code> attribute is set to <code>true</code>, the translet will be loaded
@@ -228,7 +228,7 @@ prebuilt jar file which is included in the <code>CLASSPATH</code>. You can set t
 to indicate which translet to use. If this attribute is not set, the name of the translet is taken from 
 the base name of the stylesheet. The <code>jar-name</code> attribute is not used in this situation.</p>
 
-<p>The following example shows you how to do the same thing from TrAX for the question 2 in the FAQ.</p>
+<p>The following example shows you how to do the same thing from JAXP for the question 2 in the FAQ.</p>
 
 <source>
 // set the system property javax.xml.transform.TransformerFactory in order to use &xslt4jc-short;

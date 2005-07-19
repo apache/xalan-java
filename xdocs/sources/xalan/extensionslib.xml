@@ -85,7 +85,7 @@ extension function</link>.</p>
 <s2 title= "Redirect">
 <p>A standard XSL transformation involves an XSL stylesheet, an XML source tree, and the transformation
 result tree. The transformation sends the entire result to a single 
-<jump href="apidocs/org/apache/trax/Result.html">org.apache.trax.Result</jump> object.</p> 
+<jump href="apidocs/javax/xml/transform/Result.html">javax.xml.transform.Result</jump> object.</p> 
 <p>The namespace for the <jump href="apidocs/org/apache/xalan/lib/Redirect.html">Redirect</jump> 
 extension is:</p>
 <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<code>http://xml.apache.org/xalan/redirect</code></p>
@@ -268,9 +268,9 @@ number in the source document for the first node in the node-set.</p>
 Document).</note>
 </s3></s2><anchor name="sql"/>
 <s2 title= "SQL library">
-<note>For UML Diagrams of the SQL Library, see 
+<!--<note>For UML Diagrams of the SQL Library, see 
 <jump href="http://xml.apache.org/xalan-j/Xalan-SQL-Extension/DiagramIndex.html">SQL Library 
-UML Diagrams</jump>.</note>
+UML Diagrams</jump>.</note> -->
 <ul>
 <li><link anchor="sqlconn">Setting up a connection</link></li>
 <li><link anchor="sqlparam">Parameterized queries</link></li>

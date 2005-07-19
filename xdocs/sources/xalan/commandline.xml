@@ -32,7 +32,7 @@
     do the following:</p>
  		<ol>
     <li>Download &xslt4j;.<br/><br/></li> 
-    <li><link idref="getstarted" anchor="classpath">Set the Java classpath</link> to include xalan.jar, xml-apis.jar, and
+    <li><link idref="getstarted" anchor="classpath">Set the Java classpath</link> to include xalan.jar, serializer.jar, xml-apis.jar, and
     &xml4j-jar; -- or another conformant XML Parser -- (see <link idref="usagepatterns" anchor="plug">Plugging in 
     the Transformer and XML parser</link>).<br/><br/></li>
     <li>Call java and the Process class with the appropriate flags and
@@ -61,6 +61,7 @@
 -URIRESOLVER full class name (URIResolver to be used to resolve URIs)
 -ENTITYRESOLVER full class name (EntityResolver to be used to resolve entities)
 -CONTENTHANDLER full class name (ContentHandler to be used to serialize output)
+-SECURE (set the secure processing feature to true)
 
                       Options for &xslt4ji;
 
@@ -104,12 +105,15 @@
       of nodes in the source document. For more information, see <link idref="extensionslib" anchor="nodeinfo">NodeInfo extension functions</link>
       and <link idref="features" anchor="source_location">source_location</link>.</p>
       <p>Use <code>-URIRESOLVER</code> with a fully qualified class name to utilize a custom implementation of the
-      <jump href="apidocs/javax/xml/transform/URIResolver.html">URIResolver</jump> TrAX interface to resolve URIs for
+      <jump href="apidocs/javax/xml/transform/URIResolver.html">URIResolver</jump> JAXP interface to resolve URIs for
        xsl:include, xsl:import, and the document() function.</p>
        <p>Use <code>-ENTITYRESOLVER</code> with a fully qualified class name to utilize a custom implementation of the
        <jump href="apidocs/org/xml/sax/EntityResolver.html">EntityResolver</jump> SAX interface to handle external entity references.</p>
        <p>Use <code>-CONTENTHANDLER</code> with a fully qualified class name to utilize a custom implementation of the 
-       <jump href="apidocs/org/xml/sax/ContentHandler.html">ContentHandler</jump> SAX interface to serialize output.</p>
-       <note>If you want to validate an XML document (verify that it adheres to its DOCTYPE declaration), you can use the <link idref="samples" anchor="validateutility">Validate utility</link> shipped with &xslt4j-current;.</note>
+       <jump href="apidocs/org/xml/sax/ContentHandler.html">ContentHandler</jump> SAX interface to serialize output.
+       If this same class implements the <jump href="apidocs/org/xml/sax/ext/LexicalHandler.html">org.xml.sax.ext.LexicalHandler</jump>
+       interface and the output method is "xml", it will also receive lexical information about the XML document during serialization.</p>
+       <note>If you want to validate an XML document (verify that it adheres to its DOCTYPE declaration), you can use the 
+       <link idref="samples" anchor="validateutility">Validate utility</link> shipped with &xslt4j-current;.</note>
    </s2>
 </s1>

@@ -79,6 +79,9 @@
   <resource id="dom2" 
             title="DOM level 2" 
             location="http://www.w3.org/TR/DOM-Level-2/"/>
+  <resource id="dom3" 
+            title="DOM level 3" 
+            location="http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407/"/>
 
   <resource id="sax" 
             title="SAX" 
@@ -95,6 +98,12 @@
   <resource id="jaxp12" 
             title="Java API for XML Processing 1.2" 
             location="http://java.sun.com/xml/jaxp/index.html"/>            
+  <resource id="jaxp13-longname-withacronym"
+            title="&jaxp13-long;" 
+            location="http://java.sun.com/xml/jaxp/index.html"/>            
+  <resource id="jaxp13"
+            title="&jaxp13-short;"
+            location="http://java.sun.com/xml/jaxp/index.html"/>
   <resource id="jsr063"
             title="Java Specification Request 63"
             location="http://java.sun.com/aboutJava/communityprocess/review/jsr063"/>

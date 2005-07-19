@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2004 The Apache Software Foundation.
+ * Copyright 2002-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,15 +26,15 @@ import org.w3c.dom.xpath.XPathNSResolver;
 /**
  *
  * The class provides an implementation XPathNSResolver according 
- * to the DOM L3 XPath API Specification, Working Draft 28, March 2002.
- * 
+ * to the DOM L3 XPath Specification, Working Group Note 26 February 2004.
+ *
+ * <p>See also the <a href='http://www.w3.org/TR/2004/NOTE-DOM-Level-3-XPath-20040226'>Document Object Model (DOM) Level 3 XPath Specification</a>.</p>
  * 
  * <p>The <code>XPathNSResolver</code> interface permit <code>prefix</code> 
  * strings in the expression to be properly bound to 
  * <code>namespaceURI</code> strings. <code>XPathEvaluator</code> can 
  * construct an implementation of <code>XPathNSResolver</code> from a node, 
  * or the interface may be implemented by any application.</p>
- * <p>See also the <a href='http://www.w3.org/TR/2002/WD-DOM-Level-3-XPath-20020328'>Document Object Model (DOM) Level 3 XPath Specification</a>.</p>
  * 
  * @see org.w3c.dom.xpath.XPathNSResolver
  * @xsl.usage internal
