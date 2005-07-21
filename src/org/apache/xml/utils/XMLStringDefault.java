@@ -713,7 +713,7 @@ public class XMLStringDefault implements XMLString
    * this <code>String</code> object. <p>
    * Examples:
    * <blockquote><pre>
-   * "Fahrvergnügen".toUpperCase() returns "FAHRVERGNÜGEN"
+   * "Fahrvergn&uuml;gen".toUpperCase() returns "FAHRVERGN&Uuml;GEN"
    * "Visit Ljubinje!".toUpperCase() returns "VISIT LJUBINJE!"
    * </pre></blockquote>
    *
