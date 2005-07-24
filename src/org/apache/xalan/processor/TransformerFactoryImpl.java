@@ -126,6 +126,10 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         {
           m_errorListener.fatalError(new TransformerException(se));
         }
+        catch (TransformerConfigurationException ex)
+        {
+          throw ex;
+        }
         catch (TransformerException ex)
         {
           throw new TransformerConfigurationException(ex);
@@ -134,12 +138,14 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         return null;
       }
       else
+      {
 
         // Should remove this later... but right now diagnostics from 
         // TransformerConfigurationException are not good.
         // se.printStackTrace();
-        throw new TransformerConfigurationException(XSLMessages.createMessage(XSLTErrorResources.ER_PROCESSFROMNODE_FAILED, null), se); //"processFromNode failed",
-                                                    //se);
+        throw new TransformerConfigurationException(XSLMessages.createMessage(XSLTErrorResources.ER_PROCESSFROMNODE_FAILED, null), se); 
+        //"processFromNode failed", se);
+      }
     }
     catch (TransformerConfigurationException tce)
     {
@@ -159,6 +165,10 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         {
           m_errorListener.fatalError(new TransformerException(e));
         }
+        catch (TransformerConfigurationException ex)
+        {
+          throw ex;
+        }
         catch (TransformerException ex)
         {
           throw new TransformerConfigurationException(ex);
@@ -167,12 +177,13 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         return null;
       }
       else
-
+      {
         // Should remove this later... but right now diagnostics from 
         // TransformerConfigurationException are not good.
         // se.printStackTrace();
         throw new TransformerConfigurationException(XSLMessages.createMessage(XSLTErrorResources.ER_PROCESSFROMNODE_FAILED, null), e); //"processFromNode failed",
                                                     //e);
+      }
     }
   }
 
@@ -386,25 +397,27 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
    */
   public void setFeature(String name, boolean value)
 	  throws TransformerConfigurationException {
-
-	// feature name cannot be null
-	if (name == null) {
-	    throw new NullPointerException(
-                XSLMessages.createMessage(
-                    XSLTErrorResources.ER_SET_FEATURE_NULL_NAME, null));    
-	}
-		
-	// secure processing?
-	if (name.equals(XMLConstants.FEATURE_SECURE_PROCESSING)) {
-	    m_isSecureProcessing = value;			
-	}
-	// This implementation does not support the setting of a feature other than
-	// the secure processing feature.
-	else
-            throw new TransformerConfigurationException(
-                XSLMessages.createMessage(
-                  XSLTErrorResources.ER_UNSUPPORTED_FEATURE, 
-                  new Object[] {name}));
+  
+  	// feature name cannot be null
+  	if (name == null) {
+  	    throw new NullPointerException(
+                  XSLMessages.createMessage(
+                      XSLTErrorResources.ER_SET_FEATURE_NULL_NAME, null));    
+  	}
+  		
+  	// secure processing?
+  	if (name.equals(XMLConstants.FEATURE_SECURE_PROCESSING)) {
+  	    m_isSecureProcessing = value;			
+  	}
+  	// This implementation does not support the setting of a feature other than
+  	// the secure processing feature.
+  	else
+    {
+      throw new TransformerConfigurationException(
+          XSLMessages.createMessage(
+            XSLTErrorResources.ER_UNSUPPORTED_FEATURE, 
+            new Object[] {name}));
+    }
   }
 
   /**
@@ -422,10 +435,11 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   public boolean getFeature(String name) {
   	
     // feature name cannot be null
-    if (name == null) {
-	throw new NullPointerException(
+    if (name == null) 
+    {
+    	throw new NullPointerException(
             XSLMessages.createMessage(
-                XSLTErrorResources.ER_GET_FEATURE_NULL_NAME, null));    
+            XSLTErrorResources.ER_GET_FEATURE_NULL_NAME, null));    
     }
 	  	
     // Try first with identity comparison, which 
@@ -622,15 +636,26 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   public XMLFilter newXMLFilter(Templates templates)
           throws TransformerConfigurationException
   {
-    try {
+    try 
+    {
       return new TrAXFilter(templates);
-    } catch( TransformerConfigurationException ex ) {
-      if( m_errorListener != null) {
-        try {
+    } 
+    catch( TransformerConfigurationException ex ) 
+    {
+      if( m_errorListener != null) 
+      {
+        try 
+        {
           m_errorListener.fatalError( ex );
           return null;
-        } catch( TransformerException ex1 ) {
-          new TransformerConfigurationException(ex1);
+        } 
+        catch( TransformerConfigurationException ex1 ) 
+        {
+          throw ex1;
+        }
+        catch( TransformerException ex1 ) 
+        {
+          throw new TransformerConfigurationException(ex1);
         }
       }
       throw ex;
@@ -678,15 +703,26 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         (TransformerHandler) transformer.getInputContentHandler(true);
 
       return th;
-    } catch( TransformerConfigurationException ex ) {
-      if( m_errorListener != null ) {
-        try {
+    } 
+    catch( TransformerConfigurationException ex ) 
+    {
+      if( m_errorListener != null ) 
+      {
+        try 
+        {
           m_errorListener.fatalError( ex );
           return null;
-        } catch (TransformerException ex1 ) {
-          ex=new TransformerConfigurationException(ex1);
+        } 
+        catch (TransformerConfigurationException ex1 ) 
+        {
+          throw ex1;
+        }
+        catch (TransformerException ex1 ) 
+        {
+          throw new TransformerConfigurationException(ex1);
         }
       }
+      
       throw ex;
     }
     
@@ -733,7 +769,8 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   public Transformer newTransformer(Source source)
           throws TransformerConfigurationException
   {
-    try {
+    try 
+    {
       Templates tmpl=newTemplates( source );
       /* this can happen if an ErrorListener is present and it doesn't
          throw any exception in fatalError. 
@@ -745,13 +782,23 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
       Transformer transformer = tmpl.newTransformer();
       transformer.setURIResolver(m_uriResolver);
       return transformer;
-    } catch( TransformerConfigurationException ex ) {
-      if( m_errorListener != null ) {
-        try {
+    } 
+    catch( TransformerConfigurationException ex ) 
+    {
+      if( m_errorListener != null ) 
+      {
+        try 
+        {
           m_errorListener.fatalError( ex );
           return null;
-        } catch( TransformerException ex1 ) {
-          ex=new TransformerConfigurationException( ex1 );
+        } 
+        catch( TransformerConfigurationException ex1 ) 
+        {
+          throw ex1;
+        }
+        catch( TransformerException ex1 ) 
+        {
+          throw new TransformerConfigurationException( ex1 );
         }
       }
       throw ex;
@@ -880,13 +927,19 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         {
           m_errorListener.fatalError(new TransformerException(se));
         }
+        catch (TransformerConfigurationException ex1)
+        {
+          throw ex1;
+        }
         catch (TransformerException ex1)
         {
           throw new TransformerConfigurationException(ex1);
         }
       }
       else
+      {
         throw new TransformerConfigurationException(se.getMessage(), se);
+      }
     }
     catch (Exception e)
     {
@@ -895,8 +948,11 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         try
         {
           m_errorListener.fatalError(new TransformerException(e));
-
           return null;
+        }
+        catch (TransformerConfigurationException ex1)
+        {
+          throw ex1;
         }
         catch (TransformerException ex1)
         {
@@ -904,7 +960,9 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
         }
       }
       else
+      {
         throw new TransformerConfigurationException(e.getMessage(), e);
+      }
     }
 
     return builder.getTemplates();
