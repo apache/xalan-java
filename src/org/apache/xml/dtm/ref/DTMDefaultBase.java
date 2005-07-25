@@ -2114,7 +2114,7 @@ public abstract class DTMDefaultBase implements DTM
     int index1 = makeNodeIdentity(nodeHandle1);
     int index2 = makeNodeIdentity(nodeHandle2);
 
-    return index1!=NULL & index2!=NULL & index1 <= index2;
+    return index1!=NULL && index2!=NULL && index1 <= index2;
   }
 
   /**
