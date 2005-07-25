@@ -122,7 +122,7 @@ public class XString extends XObject implements XMLString
 	for (int i = 0; i < s.length(); i++)
 	{
 		char c = s.charAt(i);
-		if (c != '-' & c != '.' & ( c < 0X30 | c > 0x39)) {
+    if (c != '-' && c != '.' && ( c < 0X30 || c > 0x39)) {
             // The character is not a '-' or a '.' or a digit
             // then return NaN because something is wrong.
 			return result;
