@@ -141,7 +141,7 @@ public class FuncSystemProperty extends FunctionOneArg
       try
       {
         // Needs to return the version number of the spec we conform to.
-        return new XNumber(1.0);
+        return new XString("1.0");
       }
       catch (Exception ex)
       {
