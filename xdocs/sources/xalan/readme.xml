@@ -29,13 +29,154 @@
  </ul><anchor name="status0"/>
   <s2 title="Status">
    <ul>
-    <li><link anchor="done">Changes since version 2.5.2</link></li>
+    <li><link anchor="done">Changes since version 2.6.0</link></li>
     <li><link anchor="other">Other points of interest</link></li>
-    <li><link anchor="bugs">Bugs</link></li>
     <li><link anchor="status">Version of &xml4j; to use</link></li>
 <!-- <li><link anchor="developer-list">&xslt4j; developers</link></li> -->
    </ul>
      <anchor name="done"/>
+   <s3 title="Changes since &xslt4j; 2.6.0">
+     <p>&xslt4j; 2.6.0 contains the following functional enhancements, performance enhancements and 
+        bug fixes:</p>
+     <ul>
+     <li>Support for JAXP 1.3, including new default error handling behaviour.</li>
+     <li>Support for XML 1.1 and Namespaces in XML 1.1.</li>
+     <li>Support for alternate BSF implementations.</li>
+     <li>New serializer.jar containing the Serializer component of &xslt4j;.</li>
+     <li>Various performance fixes.</li>
+     <li>Various memory leak fixes.</li>
+     <li>Upgrade to Xerces-J (2.7.1) and a new version of xml-commons (xml-commons-external-1.3.02).</li>
+
+     <li>Bugzilla fixes:
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=15333">15333</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=27417">27417</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=27516">27516</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=27522">27522</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=27539">27539</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=27932">27932</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=28082">28082</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=28435">28435</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=28622">28622</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=28796">28796</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=28879">28879</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=29120">29120</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=29234">29234</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=29372">29372</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=29411">29411</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=29655">29655</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=29706">29706</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=30056">30056</jump>,      
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=30142">30142</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=30262">30262</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=30301">30301</jump>,
+      <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=30658">30658</jump>
+     </li>
+     <li>XALANJ Jira bug fixes:
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-936">936</jump>,     
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1186">1186</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1368">1368</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1417">1417</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1427">1427</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1431">1431</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1478">1478</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1526">1526</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1550">1550</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1556">1556</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1592">1592</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1640">1640</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1662">1662</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1705">1705</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1708">1708</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1761">1761</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1810">1810</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1811">1811</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1812">1812</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1822">1822</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1824">1824</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1852">1852</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1853">1853</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1886">1886</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1887">1887</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1888">1888</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1891">1891</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1908">1908</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1912">1912</jump>,      
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1924">1924</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1925">1925</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1937">1937</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1938">1938</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1942">1942</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1955">1955</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1966">1966</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1967">1967</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1977">1977</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1978">1978</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1979">1979</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1985">1985</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1990">1990</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1994">1994</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1999">1999</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2003">2003</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2008">2008</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2013">2013</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2015">2015</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2021">2021</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2023">2023</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2026">2026</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2037">2037</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2051">2051</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2054">2054</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2058">2058</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2059">2059</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2068">2068</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2070">2070</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2074">2074</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2076">2076</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2077">2077</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2079">2079</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2081">2081</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2085">2085</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2086">2086</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2087">2087</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2089">2089</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2093">2093</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2095">2095</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2097">2097</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2099">2099</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2103">2103</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2105">2105</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2109">2109</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2113">2113</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2114">2114</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2116">2116</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2121">2121</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2123">2123</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2124">2124</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2126">2126</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2133">2133</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2134">2134</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2136">2136</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2137">2137</jump>,      
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2140">2140</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2142">2142</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2143">2143</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2144">2144</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2146">2146</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2154">2154</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2161">2161</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2167">2167</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2170">2170</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2176">2176</jump>
+     </li>
+     <li>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
+      <jump href="http://nagoya.apache.org/eyebrowse/index.html">Apache mailing list archive index</jump>.
+     </li>
+     <li>For more details on the new features of this release, please see the <link idref="whatsnew">What's New</link>  
+         page.</li>     
+     </ul>
+   </s3>
+     
+     
    <s3 title="Changes since &xslt4j; 2.5.2">
      <p>&xslt4j; 2.6.0 contains the following functional enhancements, performance enhancements and 
         bug fixes:</p>
@@ -504,19 +645,7 @@
      setTransformState event until after the startDocument event. This could present a problem for tools developers, and we do intend to fix this 
      bug.</li> 
      </ul>
-     </s3><anchor name="bugs"/>
-     <s3 title="Bugs">
-     <p>&xslt4j; bugs were on bugzilla, but are now listed in <resource-ref idref="jira"/>.  After clicking on the XalanJ2
-     project on the JIRA home page you can view Xalan-Java bugs and issues.  If you find a new bug, please open a new XalanJ2
-     issue in this database.</p>
-     <note>Before you can enter your first bug report you must sign up for a JIRA account. If you had a bugzilla account 
-     previously, and had used it with Xalan bugzilla bugs, your account should be migrated to JIRA.  In this case, do not 
-     create a new account, but use the same e-mail account name and click on "Forgot Password" on the JIRA home page.</note> 
-     <p>We strongly encourage you write patches for problems you find and attach those patches to the JIRA issues. We review the 
-     patches we receive to make sure they do not break something else, and (assuming they 
-     do not) include them in our next release. In the interest of fixing bugs, adding enhancements, and addressing outstanding design
-     issues, we sincerely want (and need!) your active participation in the ongoing development of &xslt;.</p>
-     </s3>     
+     </s3>
      <anchor name="status"/>
      <s3 title="Version of Xerces to use"> 
        <p>The &xslt4j-current; has been tested with &xml4j-used;. &download; For information about including &xml4j-jar; and xml-apis.jar on the system class path, see <link idref="getstarted" anchor="classpath">Setting up the system class path</link>.</p>
@@ -529,26 +658,26 @@
   <s2 title="Build Notes">
   <p>We provide two distributions: a binary distribution, and a source distribution. See <link idref="getstarted" anchor="download">Downloading
   what you need</link>. If you have downloaded the binary distribution, you already have a build. If you downloaded the source
-  distribution, you can use Ant to build &xslt4j;, including xalan.jar, xalansamples.jar, xalanservlet.war, the
+  distribution, you can use Ant to build &xslt4j;, including xalan.jar, serializer.jar, xalansamples.jar, xalanservlet.war, the
   user documentation, and the Javadoc API documentation. You need the source distribution to do builds. Keep in mind that if you have also
   downloaded the binary distribution, any builds you run will overwrite that binary distribution.</p>
 <ul>
 <li><link anchor="ant">Using Ant</link></li>
-<li><link anchor="jar">Building xalan.jar</link></li>
+<li><link anchor="jar">Building xalan.jar and serializer.jar</link></li>
 <li><link anchor="samples">Building sample applications</link></li>
 <li><link anchor="doc">Building the &xslt4j; documentation</link></li>
 </ul>
 <anchor name="ant"/>
    <s3 title="Using Ant">
      <p>Apache <resource-ref idref="ant"/> is a flexible, powerful, and easy-to-use Java build tool that we include with the
-     &xslt4j; distribution. The Ant JAR file is in the bin directory, and the cross-platform XML build file (build.xml) is in 
+     &xslt4j; distribution. The Ant JAR file is in the tools directory, and the cross-platform XML build file (build.xml) is in 
      the root directory along with a Windows32 batch file (build.bat) and a UNIX shell file (build.sh). The build file defines 
      the "targets" that you can use Ant to build. The batch and shell files set up the classpath and launch Ant with the target 
      (and any other arguments) you provide.</p>
      <p><em>Instructions for using Ant</em></p>
      <ol>
        <li>Set the JAVA_HOME environment variable to the JDK root directory.<br/><br/>
-       JDK 1.2.2 or higher is required to build &xslt4j;. You must put tools.jar from the JDK
+       JDK 1.3.1 or higher is required to build &xslt4j;. You must put tools.jar from the JDK
        bin directory on the classpath.<br/><br/></li>
        <li>Depending on your environment, run the batch file (build.bat) or shell file (build.sh) 
        from the &xslt4j; root directory, optionally with arguments (see the table of targets below).<br/><br/>
@@ -563,23 +692,24 @@
      <table>
        <tr><td><em>Target</em></td><td><em>What Ant does</em></td></tr>
        <tr><td>compile</td><td>compiles &xslt4j; in build/classes.</td></tr>
-       <tr><td>jar (the default)</td><td>creates xalan.jar in the build directory</td></tr>
+       <tr><td>jar (the default)</td><td>creates xalan.jar and serializer.jar in the build directory</td></tr>
        <tr><td>samples</td><td>compiles and jars the sample apps in build/xalansamples.jar</td></tr>
        <tr><td>servlet</td><td>compiles and jars the sample servlet in build/xalanservlet.jar</td></tr>
        <tr><td>docs</td><td>creates the HTML User's Guide in build/docs</td></tr>
        <tr><td>javadocs</td><td>generates the API documentation in ./build/docs/apidocs</td></tr>
-       <tr><td>dist</td><td>generates a complete distribution tree with zip and tar.gz distribution files in build</td></tr>
+       <tr><td>fulldist</td><td>generates a complete distribution tree with zip and tar.gz distribution files in build</td></tr>
        <tr><td>clean</td><td>purges the build and distribution</td></tr> 
   </table>
   <p>If you build a target that depends on other targets, Ant creates those other targets in the correct order.</p>
    </s3><anchor name="jar"/> 
    <s3 title="Building &xslt4j;">
-     <p>The &xslt4j; build is in xalan.jar. The &xslt4j; source code tree is in the src directory.</p>
+     <p>The &xslt4j; build is in xalan.jar.  The serializer classes of &xslt4j; are in serializer.jar. The &xslt4j; 
+     source code tree is in the src directory.</p>
      <p>If you are using Ant, the target is jar (the default). For more information, see <link anchor="ant">Using
      Ant</link>.</p>
      <p>If you want to do the build without Ant, keep the following in mind:</p>
      <ul>
-     <li>Set the classpath to include the src directory, &xml4j-jar;, and bsf.jar.</li>
+     <li>Set the classpath to include the src directory, &xml4j-jar;, and xml-apis.jar.</li>
      <li>Use a Java compiler (such as the IBM Just-In-Time compiler or the Sun javac) to compile all the .java files in the src
      tree. </li>
      <li>Use the Sun jar utility to store the resulting .class files in xalan.jar</li>
@@ -587,7 +717,7 @@
    </s3><anchor name="samples"/>
    <s3 title="Rebuilding a sample application">
    <p>If you modify a sample and want to recompile it, you can run the Java compiler in the directory containing the
-   example. Be sure xalan.jar, xml-apis.jar, and &xml4j-jar; are on the classpath. </p>
+   example. Be sure xalan.jar, serializer.jar, xml-apis.jar, and &xml4j-jar; are on the classpath. </p>
    <p>To recompile and run the class files in the servlet subdirectory, the javax.servlet and 
    javax.servlet.http packages must also be on the classpath. These packages are available via
    the servlet.jar file found in Apache Tomcat ( see <resource-ref idref="tomcat"/> ).</p>
@@ -608,64 +738,7 @@
        below.</p>
       <p>You can use Ant with the docs target to regenerate the User's Guide and with the javadocs target to regenerate the
       Javadoc API documentation. For more information, see <link anchor="ant">Using Ant</link>.</p>
-      <p>If you want to rebuild the documentation without using Ant, keep the following in mind:</p>
-       <ul>
-       <li>Unzip xml-site-style.tar.gz into the xdocs directory (the operation places files in a number of subdirectories).
-       <br/><br/></li>
-       <li>Be sure stylebook-1.0-b2.jar, xalan2jdoc.jar, xalan.jar, bsf.jar, bsfengines.jar, and &xml4j-jar; are on the class
-       path.<br/><br/></li>
-       <li>To build doc in a build/docs subdirectory, run StyleBook from the xdocs directory as follows:<br/><br/>
-       <code>java org.apache.stylebook.StyleBook "targetDirectory=../build/docs/" sources/xalanLocal.xml style</code>
-       <br/><br/></li>
-       <li>To build the HTML source files that javadoc needs for the TrAX top-level and package-level documentation, add
-       a build/docs/apdidocs/javax/xml/transform directory and run the Xalan command-line utility from the xdocs directory 
-       as follows (all one line):<br/><br/>
-<code>
-java org.apache.xalan.xslt.Process 
-  -in sources/trax/trax.xml
-  -param package-root '../../../src/'
-  -xsl style/stylesheets/spec.xsl 
-  -out build/docs/apidocs/javax/xml/transform/trax.html</code><br/><br/></li>
-        <li>Before you run javadoc, make sure the following directory structure exists under the Xalan root
-         directory: build/docs/apidocs.<br/><br/></li>
-       <li>To build the API documentation, run the JDK 1.2.2 javadoc tool from the xdocs directory (all one line):<br/><br/>
-<code>
-javadoc -doclet xalanjdoc.Standard 
- -docletpath ../bin/xalanjdoc.jar 
- -private
- -overview ../src/javadocOverview.html -sourcepath ../src 
- -group TrAX "javax.xml.transform*" 
- -group Xalan_Core "org.apache.xalan.processor:
-        org.apache.xalan.templates:
- org.apache.xalan.transformer"
- -group XPath "org.apache.xpath*"
- -group Utilities "org.apache.xml.utils*"
- -group Xalan_Other "org.apache.xalan.client:
-        org.apache.xalan.dtm:
- org.apache.xalan.extensions:org.apache.xalan.res:
- org.apache.xalan.stree:org.apache.xalan.trace:
- org.apache.xalan.xslt" 
- -group Xalan_Extensions "org.apache.xalan.lib*" 
- -group Serializers "org.apache.xml.serializer" 
- org.apache.xalan.client org.apache.xalan.dtm 
- org.apache.xalan.extensions org.apache.xalan.lib 
- org.apache.xalan.lib.sql org.apache.xalan.processor 
- org.apache.xalan.res org.apache.xalan.stree 
- org.apache.xalan.templates org.apache.xalan.trace 
- org.apache.xalan.transformer org.apache.xalan.xslt 
- org.apache.xpath org.apache.xpath.axes 
- org.apache.xpath.compiler org.apache.xpath.functions 
- org.apache.xpath.objects org.apache.xpath.operations 
- org.apache.xpath.patterns org.apache.xpath.res
- org.apache.xml.serializer javax.xml.transform  
- javax.xml.transform.dom javax.xml.transform.sax 
- javax.xml.transform.stream javax.xml.parsers
- -d ../build/docs/apidocs -windowtitle "&xslt4j; 2" 
- -doctitle "xslt4j; 2" -bottom "Copyright &#169; 
-  2000 Apache XML Project. All Rights Reserved."
-</code></li>
-</ul>
-  </s3>    
+   </s3>    
  </s2><anchor name="contact"/>
  <s2 title="Getting in Touch">
   <p>Your feedback is more than welcome. Offers of help are even more so! Perhaps you would like to 
