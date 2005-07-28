@@ -192,17 +192,20 @@ public class XConnection
   {
   }
 
-  // The original constructors will be kept around for backwards
-  // compatibility. Future Stylesheets should use the approaite
-  // connect method to receive full error information.
-  //
   /**
-   * @param exprContext
-   * @param ConnPoolName
+   * Constructs a new XConnection and attempts to connect to a datasource as
+   * defined in the
+   * <code>connect(ExpressionContext exprContext, String connPoolName)</code>
+   * method.
+   * <code>org.apache.xalan.lib.sql.ConnectionPool</code> or a JNDI datasource.
+   *
+   * @param exprContext Context automatically passed from the XSLT sheet.
+   * @param name The name of the ConnectionPool or the JNDI DataSource path.
+   *
    */
-  public XConnection( ExpressionContext exprContext, String ConnPoolName )
+  public XConnection( ExpressionContext exprContext, String connPoolName )
   {
-    connect(exprContext, ConnPoolName);
+    connect(exprContext, connPoolName);
   }
 
   /**
@@ -247,32 +250,63 @@ public class XConnection
     connect(exprContext, driver, dbURL, protocolElem);
   }
 
-
   /**
-   * Create an XConnection using the name of an existing Connection Pool
-   * @param exprContext
-   * @param ConnPoolName
-   *
-   */
-  public XBooleanStatic connect( ExpressionContext exprContext, String ConnPoolName )
-  {
-    try
-    {
-      m_ConnectionPool = m_PoolMgr.getPool(ConnPoolName);
+    * Returns an XConnection from either a user created
+    * <code>org.apache.xalan.lib.sql.ConnectionPool</code> or a JNDI datasource.
 
-      if (m_ConnectionPool == null)
-        throw new java.lang.IllegalArgumentException("Invalid Pool Name");
+    * 
+    * This method first tries to resolve the passed name against
+    * <code>ConnectionPool</code>s registered with
+    * <code>ConnectionPoolManager</code>.
+    * If that fails, it attempts to find the name as a JNDI DataSource path.
+    *
+    * @param exprContext Context automatically passed from the XSLT sheet.
+    * @param name The name of the ConnectionPool or the JNDI DataSource path.
+    *
+    */
+   public XBooleanStatic connect( ExpressionContext exprContext, String name )
+   {
+     try
+     {
+       m_ConnectionPool = m_PoolMgr.getPool(name);
 
-      m_IsDefaultPool = false;
-      return new XBooleanStatic(true);
-    }
-    catch (Exception e)
-    {
-      setError(e, exprContext);
-      return new XBooleanStatic(false);
-    }
+       if (m_ConnectionPool == null)
+       {
+         //Try to create a jndi source with the passed name
+         ConnectionPool pool = new JNDIConnectionPool(name);
+        
+         if (pool.testConnection())
+         {
+          
+           //JNDIConnectionPool seems good, so register it with the pool manager.
+           //Once registered, it will show up like other named ConnectionPool's,
+           //so the m_PoolMgr.getPool(name) method (above) will find it.
+           m_PoolMgr.registerPool(name, pool);
+           m_ConnectionPool = pool;
+          
+           m_IsDefaultPool = false;
+           return new XBooleanStatic(true);
+         }
+         else
+         {
+           throw new IllegalArgumentException(
+               "Invalid ConnectionPool name or JNDI Datasource path: " + name);
+         }
+       }
+       else
+       {
+         m_IsDefaultPool = false;
+         return new XBooleanStatic(true);
+       }
+     }
+     catch (Exception e)
+     {
+       setError(e, exprContext);
+       return new XBooleanStatic(false);
+     }
 
-  }
+   }
+
 
   /**
    * Create an XConnection object with just a driver and database URL.
