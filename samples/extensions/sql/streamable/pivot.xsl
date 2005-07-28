@@ -14,9 +14,9 @@
 
 
 
-<xsl:param name="driver" select="'com.lutris.instantdb.jdbc.idbDriver'"/>
+<xsl:param name="driver" select="'org.apache.derby.jdbc.EmbeddedDriver'"/>
 
-<xsl:param name="datasource" select="'jdbc:idb:../../instantdb/sample.prp'"/>
+<xsl:param name="datasource" select="'jdbc:derby:sampleDB'"/>
 
 <xsl:param name="query" select="'SELECT * FROM import1'"/>
 
@@ -30,9 +30,9 @@
 
     <!-- Connect to the database with minimal error detection -->
 
-		<xsl:if test="not(sql:connect($db, $driver, $datasource))" >
+    <xsl:if test="not(sql:connect($db, $driver, $datasource))" >
 
-    	<xsl:message>Error Connecting to the Database</xsl:message>
+      <xsl:message>Error Connecting to the Database</xsl:message>
 
       <xsl:copy-of select="sql:getError($db)/ext-error" />
 
@@ -56,7 +56,7 @@
 
       <!-- Turn off Streaming -->
 
-      <xsl:value-of select="sql:disableStreamingMode()" />
+      <xsl:value-of select="sql:setFeature($db, 'streaming', 'false')" />
 
       
 
@@ -66,7 +66,7 @@
 
       <!-- 
 
-        	Let's include Error Checking, the error is actually stored 
+         Let's include Error Checking, the error is actually stored 
 
           in the connection since $table will be either data or null
 
@@ -100,7 +100,7 @@
 
           </TR>
 
-          <xsl:apply-templates select="$table/sql/row-set/row"/>
+          <xsl:apply-templates select="$table/sql/row-set"/>
 
         </TABLE>
 
@@ -110,7 +110,7 @@
 
 
 
-        <xsl:for-each select="$table/row-set/column-header">
+        <xsl:for-each select="$table/sql/metadata/column-header">
 
         <xsl:variable name="column" select="@column-label" />
 
@@ -122,7 +122,7 @@
 
             	<xsl:apply-templates
 
-               	select="$table/row-set/row/col[@column-label=$column]" />
+               	select="$table/sql/row-set/row/col[@column-label=$column]" />
 
           </TR>
 

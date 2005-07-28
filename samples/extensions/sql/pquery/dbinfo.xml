@@ -5,8 +5,8 @@
  </QUERY>
   
  <DBINFO>
-   <dbdriver>com.lutris.instantdb.jdbc.idbDriver</dbdriver>
-   <dburl>jdbc:idb:../../instantdb/sample.prp</dburl>
+   <dbdriver>org.apache.derby.jdbc.EmbeddedDriver</dbdriver>
+   <dburl>jdbc:derby:sampleDB</dburl>
    <user/>
    <password/>
  </DBINFO>

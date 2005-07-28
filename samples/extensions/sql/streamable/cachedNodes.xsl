@@ -14,9 +14,9 @@
 
 
 
-<xsl:param name="driver" select="'com.lutris.instantdb.jdbc.idbDriver'"/>
+<xsl:param name="driver" select="'org.apache.derby.jdbc.EmbeddedDriver'"/>
 
-<xsl:param name="datasource" select="'jdbc:idb:../../instantdb/sample.prp'"/>
+<xsl:param name="datasource" select="'jdbc:derby:sampleDB'"/>
 
 <xsl:param name="query" select="'SELECT * FROM import1'"/>
 
@@ -30,9 +30,9 @@
 
     <!-- Connect to the database with minimal error detection -->
 
-		<xsl:if test="not(sql:connect($db, $driver, $datasource))" >
+    <xsl:if test="not(sql:connect($db, $driver, $datasource))" >
 
-    	<xsl:message>Error Connecting to the Database</xsl:message>
+      <xsl:message>Error Connecting to the Database</xsl:message>
 
       <xsl:copy-of select="sql:getError($db)/ext-error" />
 
@@ -54,7 +54,8 @@
 
         <TABLE border="1">
 
-        	<xsl:value-of select="sql:disableStreamingMode($db)" />
+          <xsl:value-of select="sql:setFeature($db, 'streaming', 'false')" />
+
 
           <xsl:variable name="table" select='sql:query($db, $query)'/>
 
@@ -82,7 +83,7 @@
 
           <TR>
 
-             <xsl:for-each select="$table/row-set/metadata/column-header">
+             <xsl:for-each select="$table/sql/metadata/column-header">
 
                <TH><xsl:value-of select="@column-label"/></TH>
 
@@ -90,7 +91,7 @@
 
           </TR>
 
-          <xsl:apply-templates select="$table/sql/row-set/row"/>
+          <xsl:apply-templates select="$table/sql/row-set"/>
 
         </TABLE>
 

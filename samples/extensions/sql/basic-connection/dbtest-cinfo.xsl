@@ -12,12 +12,16 @@
 <xsl:template match="/">
     <xsl:variable name="db" select="sql:new()"/>
 
+	
     <!-- Connect to the database with minimal error detection -->
-		<xsl:if test="not(sql:connect($db, $cinfo))" >
+      <xsl:if test="not(sql:connect($db, $cinfo))" >
     	<xsl:message>Error Connecting to the Database</xsl:message>
       <xsl:copy-of select="sql:getError($db)/ext-error" />
     </xsl:if>
-    
+
+    <CINFO>
+ 	<xsl:copy-of select="//DBINFO"/>
+    </CINFO>    
 
     <HTML>
       <HEAD>
@@ -43,7 +47,7 @@
                <TH><xsl:value-of select="@column-label"/></TH>
              </xsl:for-each>
           </TR>
-          <xsl:apply-templates select="$table/sql/row-set/row"/>
+          <xsl:apply-templates select="$table/sql/row-set"/>
         </TABLE>
       </BODY>
     </HTML>

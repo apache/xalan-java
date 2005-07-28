@@ -6,8 +6,10 @@
 
 <xsl:output method="html" indent="yes"/>
 
-<xsl:param name="driver" select="'com.lutris.instantdb.jdbc.idbDriver'"/>
-<xsl:param name="datasource" select="'jdbc:idb:../../instantdb/sample.prp'"/>
+<xsl:param name="driver" select="'org.apache.derby.jdbc.EmbeddedDriver'"/>
+
+<xsl:param name="datasource" select="'jdbc:derby:sampleDB'"/>
+
 <xsl:param name="query" select="'SELECT * FROM import1'"/>
 
 <xsl:template match="/">
@@ -26,18 +28,22 @@
       </HEAD>
       <BODY>
         <TABLE border="1">
-        	<xsl:value-of select="sql:enableStreamingMode($db)" />
+          
+          <xsl:value-of select="sql:setFeature($db, 'streaming', 'true')" />
+
           <xsl:variable name="table" select='sql:query($db, $query)'/>
+
           <TR>
-             <xsl:for-each select="$table/row-set/column-header">
+             <xsl:for-each select="$table/sql/metadata/column-header">
                <TH><xsl:value-of select="@column-label"/></TH>
              </xsl:for-each>
           </TR>
-          <xsl:apply-templates select="$table/row-set/row"/>
+          <xsl:apply-templates select="$table/sql/row-set"/>
         </TABLE>
       </BODY>
     </HTML>
     <xsl:value-of select="sql:close($db)"/>
+
 </xsl:template>
 
 <xsl:template match="row">

@@ -12,23 +12,18 @@
 
 <xsl:output method="html" indent="yes"/>
 
-<!-- parameter setting to connect to DB2
-<xsl:param name="driver" select="'COM.ibm.db2.jdbc.app.DB2Driver'"/>
 
-<xsl:param name="datasource" select="'jdbc:db2:sample'"/>
--->
+<!-- parameter setting to connect to Database -->
 
-<!-- parameter setting to connect to MySQL -->
+<xsl:param name="driver" select="'org.apache.derby.jdbc.EmbeddedDriver'"/>
 
-<xsl:param name="driver" select="'com.mysql.jdbc.Driver'"/>
+<xsl:param name="datasource" select="'jdbc:derby:sampleDB'"/>
 
-<xsl:param name="datasource" select="'jdbc:mySQL://localhost/sample'"/>
+<xsl:param name="query" select="'SELECT * FROM import1'"/>
 
-<xsl:param name="query" select="'SELECT * FROM sample'"/>
+<xsl:param name="username" select="''"/>
 
-<xsl:param name="username" select="'***'"/>
-
-<xsl:param name="passwd" select="'***'"/>
+<xsl:param name="passwd" select="''"/>
 
 <xsl:template match="/">
 
@@ -96,7 +91,7 @@
 
           </TR>
 
-          <xsl:apply-templates select="$table/sql/row-set/row"/>
+          <xsl:apply-templates select="$table/sql/row-set"/>
 
         </TABLE>
 

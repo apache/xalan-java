@@ -48,8 +48,8 @@ public class ExternalConnection
   // Create a connection to the database server
   // Up the connection pool count for testing
   DefaultConnectionPool cp = new DefaultConnectionPool();
-  cp.setDriver("org.enhydra.instantdb.jdbc.idbDriver");
-  cp.setURL("jdbc:idb:../../instantdb/sample.prp");
+  cp.setDriver("org.apache.derby.jdbc.EmbeddedDriver");
+  cp.setURL("jdbc:derby:sampleDB");
   //cp.setUser("sa");
   //cp.setPassword("");
   cp.setMinConnections(10);

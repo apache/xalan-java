@@ -2,25 +2,10 @@
  <description>This file contains information required to make a connection to the DBMS</description>
 
  <DBINFO>
-   <dbdriver>com.lutris.instantdb.jdbc.idbDriver</dbdriver>
-   <dburl>jdbc:idb:../../instantdb/sample.prp</dburl>
+   <dbdriver>org.apache.derby.jdbc.EmbeddedDriver</dbdriver>
+   <dburl>jdbc:derby:sampleDB</dburl>
    <user />
    <password/>
  </DBINFO>
- <!-- an example setting for using DB2, sample is the database name
-  <DBINFO>
-   <dbdriver>COM.ibm.db2.jdbc.app.DB2Driver</dbdriver>
-   <dburl>jdbc:db2:sample</dburl>
-   <user />
-   <password/>
- </DBINFO>
--->
- <!-- an example setting for using mySQL, sample is the database name
-  <DBINFO>
-   <dbdriver>com.mysql.jdbc.Driver</dbdriver>
-   <dburl>jdbc:mySQL://localhost/sample</dburl>
-   <user />
-   <password/>
- </DBINFO>
--->
+
 </dbtest>

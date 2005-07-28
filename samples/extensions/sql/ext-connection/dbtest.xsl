@@ -41,7 +41,7 @@
                <TH><xsl:value-of select="@column-label"/></TH>
              </xsl:for-each>
           </TR>
-          <xsl:apply-templates select="$table/sql/row-set/row"/>
+          <xsl:apply-templates select="$table/sql/row-set"/>
         </TABLE>
       </BODY>
     </HTML>
