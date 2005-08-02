@@ -22,7 +22,7 @@ rem     Setup:
 rem         - you should set JAVA_HOME
 rem         - you can set DERBY_HOME to point to both derby.jar and derbytools.jar
 rem         - JAVA_OPTS is added to the java command line
-rem         - PARSER_JAR may be set to use alternate parser (default:..\..\..\bin\xercesImpl.jar)
+rem         - PARSER_JAR may be set to use alternate parser (default:..\..\..\lib\xercesImpl.jar)
 rem	    - DERBY_JAR_DIR, default is the current directory
 echo.
 
@@ -46,9 +46,9 @@ if "%DERBY_JAR_DIR%" == "" set DERBY_JAR_DIR=.
 set _DERBY_JAR=%DERBY_JAR_DIR%\derby.jar;%DERBY_JAR_DIR%\derbytools.jar
 
 set _PARSER_JAR=%PARSER_JAR%
-if "%_PARSER_JAR%" == "" set _PARSER_JAR=..\..\..\bin\xercesImpl.jar
+if "%_PARSER_JAR%" == "" set _PARSER_JAR=..\..\..\lib\xercesImpl.jar
 set _XML-APIS_JAR=%XML-APIS_JAR%
-if "%_XML-APIS_JAR%" == "" set _XML-APIS_JAR=..\..\..\bin\xml-apis.jar
+if "%_XML-APIS_JAR%" == "" set _XML-APIS_JAR=..\..\..\lib\xml-apis.jar
 
 set _XALAN_JAR_DIR=%XALAN_JAR_DIR%
 if "%_XALAN_JAR_DIR%" == "" set _XALAN_JAR_DIR=..\..\..\build
