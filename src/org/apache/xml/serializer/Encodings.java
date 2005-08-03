@@ -35,9 +35,7 @@ import java.util.StringTokenizer;
 
 /**
  * Provides information about encodings. Depends on the Java runtime
- * to provides writers for the different encodings, but can be used
- * to override encoding names and provide the last printable character
- * for each encoding.
+ * to provides writers for the different encodings.
  * 
  * This class is only for internal use within Xalan. However, it is used directly
  * by org.apache.xalan.xsltc.compiler.Output.
@@ -47,12 +45,6 @@ import java.util.StringTokenizer;
 
 public final class Encodings extends Object
 {
-
-    /**
-     * The last printable character for unknown encodings.
-     */
-    private static final int m_defaultLastPrintable = 0x7F;
-
     /**
      * Standard filename for properties file with encodings data.
      */
@@ -63,47 +55,17 @@ public final class Encodings extends Object
      */
     private static final String ENCODINGS_PROP = "org.apache.xalan.serialize.encodings";
 
-    /** SUN JVM internal ByteToChar converter method */
-    private static final Method
-        SUN_CHAR2BYTE_CONVERTER_METHOD = findCharToByteConverterMethod();
-
-    private static Method findCharToByteConverterMethod() {
-        Method method = null;
-        try
-        {
-            method = (Method)
-            AccessController.doPrivileged(new PrivilegedAction() {
-                public Object run() {
-                    try {
-                        Class charToByteConverterClass = (Class) 
-                            Class.forName("sun.io.CharToByteConverter");
-                        Class argTypes[] = {String.class};
-                        return charToByteConverterClass.getMethod("getConverter", argTypes);
-                    }
-                    catch (Exception e) {
-                        throw new RuntimeException(e.toString());
-                    }
-                }});
-        }
-        catch (Exception e)
-        {
-            System.err.println(
-                "Warning: Could not get charToByteConverterClass!");
-            method = null;
-        }
-
-        return method;
-    }
-
     /**
      * Returns a writer for the specified encoding based on
      * an output stream.
-     *
+     * <p>
+     * This is not a public API.
      * @param output The output stream
      * @param encoding The encoding
      * @return A suitable writer
      * @throws UnsupportedEncodingException There is no convertor
      *  to support this encoding
+     * @xsl.usage internal
      */
     static Writer getWriter(OutputStream output, String encoding)
         throws UnsupportedEncodingException
@@ -142,48 +104,17 @@ public final class Encodings extends Object
     }
 
     /**
-     * Returns an opaque CharToByte converter for the specified encoding.
-     *
-     * @param encoding The encoding
-     * @return An object which should be a sun.io.CharToByteConverter, or null.
-     */
-    static Object getCharToByteConverter(String encoding)
-    {
-        if (SUN_CHAR2BYTE_CONVERTER_METHOD == null) {
-            return null;
-        }
-
-        Object args[] = new Object[1];
-        for (int i = 0; i < _encodings.length; ++i)
-        {
-            if (_encodings[i].name.equalsIgnoreCase(encoding))
-            {
-                try
-                {
-                    args[0] = _encodings[i].javaName;
-                    Object converter =
-                        SUN_CHAR2BYTE_CONVERTER_METHOD.invoke(null, args);
-                    if (null != converter) 
-                        return converter;
-                }
-                catch (Exception iae)
-                {
-                    // keep trying
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Returns the last printable character for the specified
+     * Returns the EncodingInfo object for the specified
      * encoding.
+     * <p>
+     * This is not a public API.
      *
      * @param encoding The encoding
-     * @return The last printable character
+     * @return The object that is used to determine if 
+     * characters are in the given encoding.
+     * @xsl.usage internal
      */
-    static int getLastPrintable(String encoding)
+    static EncodingInfo getEncodingInfo(String encoding)
     {
         EncodingInfo ei;
 
@@ -191,17 +122,23 @@ public final class Encodings extends Object
         ei = (EncodingInfo) _encodingTableKeyJava.get(normalizedEncoding);
         if (ei == null)
             ei = (EncodingInfo) _encodingTableKeyMime.get(normalizedEncoding);
-        if (ei != null)
-            return ei.lastPrintable;
-        return m_defaultLastPrintable;
+        if (ei == null) {
+            // We shouldn't have to do this, but just in case.
+            ei = new EncodingInfo(null,null);
+        }
+
+        return ei;
     }
  
     /**
      * A fast and cheap way to uppercase a String that is
      * only made of printable ASCII characters.
+     * <p>
+     * This is not a public API.
      * @param s a String of ASCII characters
      * @return an uppercased version of the input String,
      * possibly the same String.
+     * @xsl.usage internal
      */
     static private String toUpperCaseFast(final String s) {
 
@@ -230,17 +167,6 @@ public final class Encodings extends Object
     	return upper;
     }
 
-    /**
-     * Returns the last printable character for an unspecified
-     * encoding.
-     *
-     * @return the default size
-     */
-    static int getLastPrintable()
-    {
-        return m_defaultLastPrintable;
-    }
-
     /** The default encoding, ISO style, ISO style.   */
     static final String DEFAULT_MIME_ENCODING = "UTF-8";
 
@@ -254,11 +180,14 @@ public final class Encodings extends Object
      * whose name does not match the EncName production of the XML Recommendation
      * [XML]. If no encoding attribute is specified, then the XSLT processor should
      * use either UTF-8 or UTF-16."
+     * <p>
+     * This is not a public API.
      *
      * @param encoding Reference to java-style encoding string, which may be null,
      * in which case a default will be found.
      *
      * @return The ISO-style encoding string, or null if failure.
+     * @xsl.usage internal
      */
     static String getMimeEncoding(String encoding)
     {
@@ -314,10 +243,12 @@ public final class Encodings extends Object
 
     /**
      * Try the best we can to convert a Java encoding to a XML-style encoding.
-     *
+     * <p>
+     * This is not a public API.
      * @param encoding non-null reference to encoding string, java style.
      *
      * @return ISO-style encoding string.
+     * @xsl.usage internal
      */
     private static String convertJava2MimeEncoding(String encoding)
     {
@@ -330,10 +261,14 @@ public final class Encodings extends Object
 
     /**
      * Try the best we can to convert a Java encoding to a XML-style encoding.
+     * <p>
+     * This is not a public API.
      *
      * @param encoding non-null reference to encoding string, java style.
      *
      * @return ISO-style encoding string.
+     *
+     * @xsl.usage internal
      */
     public static String convertMime2JavaEncoding(String encoding)
     {
@@ -355,6 +290,7 @@ public final class Encodings extends Object
      * System property "encodings" formatted using URL syntax may define an
      * external encodings list. Thanks to Sergey Ushakov for the code
      * contribution!
+     * @xsl.usage internal
      */
     private static EncodingInfo[] loadEncodingInfo()
     {
@@ -418,19 +354,19 @@ public final class Encodings extends Object
                 String val = props.getProperty(javaName);
                 int pos = val.indexOf(' ');
                 String mimeName;
-                int lastPrintable;
+                //int lastPrintable;
                 if (pos < 0)
                 {
                     // Maybe report/log this problem?
                     //  "Last printable character not defined for encoding " +
                     //  mimeName + " (" + val + ")" ...
                     mimeName = val;
-                    lastPrintable = 0x00FF;
+                   // lastPrintable = 0x00FF;
                 }
                 else
                 {
-                    lastPrintable =
-                        Integer.decode(val.substring(pos).trim()).intValue();
+//                    lastPrintable =
+//                        Integer.decode(val.substring(pos).trim()).intValue();
                     StringTokenizer st =
                         new StringTokenizer(val.substring(0, pos), ",");
                     for (boolean first = true;
@@ -439,7 +375,7 @@ public final class Encodings extends Object
                     {
                         mimeName = st.nextToken();
                         ret[j] =
-                            new EncodingInfo(mimeName, javaName, lastPrintable);
+                            new EncodingInfo(mimeName, javaName);
                         _encodingTableKeyMime.put(
                             mimeName.toUpperCase(),
                             ret[j]);
@@ -461,6 +397,55 @@ public final class Encodings extends Object
         {
             throw new org.apache.xml.serializer.utils.WrappedRuntimeException(ioe);
         }
+    }
+
+    /**
+     * Return true if the character is the high member of a surrogate pair.
+     * <p>
+     * This is not a public API.
+     * @param ch the character to test
+     * @xsl.usage internal
+     */
+    static boolean isHighUTF16Surrogate(char ch) {
+        return ('\uD800' <= ch && ch <= '\uDBFF');
+    }
+    /**
+     * Return true if the character is the low member of a surrogate pair.
+     * <p>
+     * This is not a public API.
+     * @param ch the character to test
+     * @xsl.usage internal
+     */
+    static boolean isLowUTF16Surrogate(char ch) {
+        return ('\uDC00' <= ch && ch <= '\uDFFF');
+    }
+    /**
+     * Return the unicode code point represented by the high/low surrogate pair.
+     * <p>
+     * This is not a public API.
+     * @param highSurrogate the high char of the high/low pair
+     * @param lowSurrogate the low char of the high/low pair
+     * @xsl.usage internal
+     */
+    static int toCodePoint(char highSurrogate, char lowSurrogate) {
+        int codePoint =
+            ((highSurrogate - 0xd800) << 10)
+                + (lowSurrogate - 0xdc00)
+                + 0x10000;
+        return codePoint;
+    }
+    /**
+     * Return the unicode code point represented by the char.
+     * A bit of a dummy method, since all it does is return the char,
+     * but as an int value.
+     * <p>
+     * This is not a public API.
+     * @param ch the char.
+     * @xsl.usage internal
+     */
+    static int toCodePoint(char ch) {
+        int codePoint = ch;
+        return codePoint;
     }
 
     private static final Hashtable _encodingTableKeyJava = new Hashtable();

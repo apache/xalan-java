@@ -54,22 +54,20 @@ abstract public class ToStream extends SerializerBase
     /** Stack to keep track of disabling output escaping. */
     protected BoolStack m_disableOutputEscapingStates = new BoolStack();
 
-    /**
-     * Boolean that tells if we already tried to get the converter.
-     */
-    boolean m_triedToGetConverter = false;
-    /**
-     * Method reference to the sun.io.CharToByteConverter#canConvert method 
-     * for this encoding.  Invalid if m_charToByteConverter is null.
-     */
-    java.lang.reflect.Method m_canConvertMeth;
 
     /**
-     * Opaque reference to the sun.io.CharToByteConverter for this 
-     * encoding.
+     * The encoding information associated with this serializer.
+     * Although initially there is no encoding,
+     * there is a dummy EncodingInfo object that will say
+     * that every character is in the encoding. This is useful
+     * for a serializer that is in temporary output state and has
+     * no associated encoding. A serializer in final output state
+     * will have an encoding, and will worry about whether 
+     * single chars or surrogate pairs of high/low chars form
+     * characters in the output encoding. 
      */
-    Object m_charToByteConverter = null;
-
+    EncodingInfo m_encodingInfo = new EncodingInfo(null,null);
+    
     /**
      * Stack to keep track of whether or not we need to
      * preserve whitespace.
@@ -101,11 +99,6 @@ abstract public class ToStream extends SerializerBase
      */
     protected boolean m_isprevtext = false;
 
-    /**
-     * The maximum character size before we have to resort
-     * to escaping.
-     */
-    protected int m_maxCharacter = Encodings.getLastPrintable();
 
     /**
      * The system line separator for writing out line breaks.
@@ -221,18 +214,6 @@ abstract public class ToStream extends SerializerBase
         {
             throw new WrappedRuntimeException(se);
         }
-    }
-
-    /**
-     * Return true if the character is the high member of a surrogate pair.
-     *
-     * NEEDSDOC @param c
-     *
-     * NEEDSDOC ($objectName$) @return
-     */
-    static final boolean isUTF16Surrogate(char c)
-    {
-        return (c & 0xFC00) == 0xD800;
     }
 
     /**
@@ -515,7 +496,6 @@ abstract public class ToStream extends SerializerBase
         }
 
         m_isUTF8 = encoding.equals(Encodings.DEFAULT_MIME_ENCODING);
-        m_maxCharacter = Encodings.getLastPrintable(encoding);
 
         // Access this only from the Hashtable level... we don't want to 
         // get default properties.
@@ -628,8 +608,6 @@ abstract public class ToStream extends SerializerBase
                 setEncoding(encoding);
                 osw = Encodings.getWriter(output, encoding);
             }
-
-            m_maxCharacter = Encodings.getLastPrintable(encoding);
 
             init(osw, format, defaultProperties, true);
         }
@@ -891,140 +869,102 @@ abstract public class ToStream extends SerializerBase
      */
     protected boolean escapingNotNeeded(char ch)
     {
+        final boolean ret;
         if (ch < 127)
         {
+            // This is the old/fast code here, but is this 
+            // correct for all encodings?
             if (ch >= 0x20 || (0x0A == ch || 0x0D == ch || 0x09 == ch))
-                return true;
+                ret= true;
             else
-                return false;
+                ret = false;
         }
-
-        if (null == m_charToByteConverter && false == m_triedToGetConverter)
-        {
-            m_triedToGetConverter = true;
-            try
-            {
-                m_charToByteConverter =
-                    Encodings.getCharToByteConverter(getEncoding());
-                if (null != m_charToByteConverter)
-                {
-                    Class argsTypes[] = new Class[1];
-                    argsTypes[0] = Character.TYPE;
-                    Class convClass = m_charToByteConverter.getClass();
-                    m_canConvertMeth =
-                        convClass.getMethod("canConvert", argsTypes);
-                }
-            }
-            catch (Exception e)
-            {
-                // This is just an assert: no action at the moment.
-                System.err.println("Warning: " + e.getMessage());
-            }
+        else {            
+            ret = m_encodingInfo.isInEncoding(ch);
         }
-        if (null != m_charToByteConverter)
-        {
-            try
-            {
-                Object args[] = new Object[1];
-                args[0] = new Character(ch);
-                Boolean bool =
-                    (Boolean) m_canConvertMeth.invoke(
-                        m_charToByteConverter,
-                        args);
-                return bool.booleanValue()
-                    ? !Character.isISOControl(ch)
-                    : false;
-            }
-            catch (java.lang.reflect.InvocationTargetException ite)
-            {
-                // This is just an assert: no action at the moment.
-                System.err.println(
-                    "Warning: InvocationTargetException in canConvert!");
-            }
-            catch (java.lang.IllegalAccessException iae)
-            {
-                // This is just an assert: no action at the moment.
-                System.err.println(
-                    "Warning: IllegalAccessException in canConvert!");
-            }
-        }
-        // fallback!
-        return (ch <= m_maxCharacter);
+        return ret;
     }
 
     /**
      * Once a surrogate has been detected, write out the pair of
-     * characters as a single character reference.
+     * characters if it is in the encoding, or if there is no
+     * encoding, otherwise write out an entity reference
+     * of the value of the unicode code point of the character
+     * represented by the high/low surrogate pair.
+     * <p>
+     * An exception is thrown if there is no low surrogate in the pair,
+     * because the array ends unexpectely, or if the low char is there
+     * but its value is such that it is not a low surrogate.
      *
-     * @param c the first part of the surrogate.
+     * @param c the first (high) part of the surrogate, which
+     * must be confirmed before calling this method.
      * @param ch Character array.
      * @param i position Where the surrogate was detected.
      * @param end The end index of the significant characters.
+     * @return 0 if the pair of characters was written out as-is,
+     * the unicode code point of the character represented by
+     * the surrogate pair if an entity reference with that value
+     * was written out. 
+     * 
      * @throws IOException
      * @throws org.xml.sax.SAXException if invalid UTF-16 surrogate detected.
      */
-    protected void writeUTF16Surrogate(char c, char ch[], int i, int end)
+    protected int writeUTF16Surrogate(char c, char ch[], int i, int end)
         throws IOException
     {
-
-        // UTF-16 surrogate
-        int surrogateValue = getURF16SurrogateValue(c, ch, i, end);
-
-        final java.io.Writer writer = m_writer;
-        writer.write('&');
-        writer.write('#');
-
-        // writer.write('x');
-        writer.write(Integer.toString(surrogateValue));
-        writer.write(';');
-    }
-
-    /**
-     * Once a surrogate has been detected, get the pair as a single integer
-     * value.
-     *
-     * @param c the first part of the surrogate.
-     * @param ch Character array.
-     * @param i position Where the surrogate was detected.
-     * @param end The end index of the significant characters.
-     * @return the integer value of the UTF-16 surrogate.
-     * @throws org.xml.sax.SAXException if invalid UTF-16 surrogate detected.
-     */
-    int getURF16SurrogateValue(char c, char ch[], int i, int end)
-        throws IOException
-    {
-
-        int next;
-
+        int codePoint = 0;
         if (i + 1 >= end)
         {
             throw new IOException(
                 Utils.messages.createMessage(
                     MsgKey.ER_INVALID_UTF16_SURROGATE,
                     new Object[] { Integer.toHexString((int) c)}));
-            //"Invalid UTF-16 surrogate detected: "
-
-            //+Integer.toHexString((int)c)+ " ?");
         }
-        else
-        {
-            next = ch[++i];
-
-            if (!(0xdc00 <= next && next < 0xe000))
-                throw new IOException(
-                    Utils.messages.createMessage(
-                        MsgKey.ER_INVALID_UTF16_SURROGATE,
-                        new Object[] {
-                            Integer.toHexString((int) c)
-                                + " "
-                                + Integer.toHexString(next)}));
-            //"Invalid UTF-16 surrogate detected: "
-
-            //+Integer.toHexString((int)c)+" "+Integer.toHexString(next));
-            next = ((c - 0xd800) << 10) + next - 0xdc00 + 0x00010000;
+        
+        final char high = c;
+        final char low = ch[i+1];
+        if (!Encodings.isLowUTF16Surrogate(low)) {
+            throw new IOException(
+                Utils.messages.createMessage(
+                    MsgKey.ER_INVALID_UTF16_SURROGATE,
+                    new Object[] {
+                        Integer.toHexString((int) c)
+                            + " "
+                            + Integer.toHexString(low)}));
         }
 
-        return next;
+        final java.io.Writer writer = m_writer;
+                
+        // If we make it to here we have a valid high, low surrogate pair
+        if (m_encodingInfo.isInEncoding(c,low)) {
+            // If the character formed by the surrogate pair
+            // is in the encoding, so just write it out
+            writer.write(ch,i,2);
+        }
+        else {
+            // Don't know what to do with this char, it is
+            // not in the encoding and not a high char in
+            // a surrogate pair, so write out as an entity ref
+            final String encoding = getEncoding();
+            if (encoding != null) {
+                /* The output encoding is known, 
+                 * so somthing is wrong.
+                  */
+                codePoint = Encodings.toCodePoint(high, low);
+                // not in the encoding, so write out a character reference
+                writer.write('&');
+                writer.write('#');
+                writer.write(Integer.toString(codePoint));
+                writer.write(';');
+            } else {
+                /* The output encoding is not known,
+                 * so just write it out as-is.
+                 */
+                writer.write(ch, i, 2);
+            }
+        }
+        // non-zero only if character reference was written out.
+        return codePoint;
     }
 
     /**
@@ -1119,7 +1059,7 @@ abstract public class ToStream extends SerializerBase
                     closeCDATA();
 
                 // This needs to go into a function... 
-                if (isUTF16Surrogate(c))
+                if (Encodings.isHighUTF16Surrogate(c))
                 {
                     writeUTF16Surrogate(c, ch, i, end);
                     i++ ; // process two input characters
@@ -1165,7 +1105,7 @@ abstract public class ToStream extends SerializerBase
                 }
 
                 // This needs to go into a function... 
-                else if (isUTF16Surrogate(c))
+                else if (Encodings.isHighUTF16Surrogate(c))
                 {
                     if (m_cdataTagOpen)
                         closeCDATA();
@@ -1664,11 +1604,13 @@ abstract public class ToStream extends SerializerBase
 
         if (i == pos)
         {
-            if (0xd800 <= ch && ch < 0xdc00)
+            if (Encodings.isHighUTF16Surrogate(ch))
             {
 
-                // UTF-16 surrogate
-                int next;
+                // Should be the UTF-16 low surrogate of the hig/low pair.
+                char next;
+                // Unicode code point formed from the high/low pair.
+                int codePoint = 0;
 
                 if (i + 1 >= len)
                 {
@@ -1684,7 +1626,7 @@ abstract public class ToStream extends SerializerBase
                 {
                     next = chars[++i];
 
-                    if (!(0xdc00 <= next && next < 0xe000))
+                    if (!(Encodings.isLowUTF16Surrogate(next)))
                         throw new IOException(
                             Utils.messages.createMessage(
                                 MsgKey
@@ -1696,11 +1638,11 @@ abstract public class ToStream extends SerializerBase
                     //"Invalid UTF-16 surrogate detected: "
 
                     //+Integer.toHexString(ch)+" "+Integer.toHexString(next));
-                    next = ((ch - 0xd800) << 10) + next - 0xdc00 + 0x00010000;
+                    codePoint = Encodings.toCodePoint(ch,next);
                 }
 
                 writer.write("&#");
-                writer.write(Integer.toString(next));
+                writer.write(Integer.toString(codePoint));
                 writer.write(';');
                 pos += 2; // count the two characters that went into writing out this entity
             }
@@ -3037,7 +2979,6 @@ abstract public class ToStream extends SerializerBase
      */
     private void resetToStream()
     {
-         this.m_canConvertMeth = null;
          this.m_cdataStartCalled = false;
          /* The stream is being reset. It is one of
           * ToXMLStream, ToHTMLStream ... and this type can't be changed
@@ -3046,7 +2987,7 @@ abstract public class ToStream extends SerializerBase
           * 
           */
          // this.m_charInfo = null; // don't set to null 
-         this.m_charToByteConverter = null;
+
          this.m_disableOutputEscapingStates.clear();
          
          this.m_escaping = true;
@@ -3057,12 +2998,10 @@ abstract public class ToStream extends SerializerBase
          this.m_ispreserve = false;
          this.m_isprevtext = false;
          this.m_isUTF8 = false; //  ?? used anywhere ??
-         this.m_maxCharacter = Encodings.getLastPrintable();
          this.m_preserves.clear();
          this.m_shouldFlush = true;
          this.m_spaceBeforeClose = false;
          this.m_startNewLine = false;
-         this.m_triedToGetConverter = false;
          this.m_lineSepUse = true;
          // DON'T SET THE WRITER TO NULL, IT MAY BE REUSED !!
          // this.m_writer = null;  
@@ -3076,8 +3015,12 @@ abstract public class ToStream extends SerializerBase
       */
      public void setEncoding(String encoding)
      {
-         super.setEncoding(encoding);         
-         m_maxCharacter = Encodings.getLastPrintable(encoding);
+         String old = getEncoding();
+         super.setEncoding(encoding); 
+         if (old == null || !old.equals(encoding)) {        
+            // If we have changed the setting of the 
+            m_encodingInfo = Encodings.getEncodingInfo(encoding);
+         }
          return;
      }
      

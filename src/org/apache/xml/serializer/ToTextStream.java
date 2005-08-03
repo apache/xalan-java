@@ -214,7 +214,7 @@ public final class ToTextStream extends ToStream
         }
         else {
             // In final output state we do process the characters!
-            writeNormalizedChars(ch, start, length, false, m_lineSepUse);
+            writeNormalizedChars(ch, start, length, m_lineSepUse);
         }
             
         if (m_tracer != null)
@@ -243,7 +243,7 @@ public final class ToTextStream extends ToStream
 
     try
     {
-      writeNormalizedChars(ch, start, length, false, m_lineSepUse);
+      writeNormalizedChars(ch, start, length, m_lineSepUse);
     }
     catch(IOException ioe)
     {
@@ -251,168 +251,101 @@ public final class ToTextStream extends ToStream
     }
   }
   
-/**
- * Normalize the characters, but don't escape.  Different from 
- * SerializerToXML#writeNormalizedChars because it does not attempt to do 
- * XML escaping at all.
- *
- * @param ch The characters from the XML document.
- * @param start The start position in the array.
- * @param length The number of characters to read from the array.
- * @param isCData true if a CDATA block should be built around the characters.
- * @param useLineSep true if the operating systems 
- * end-of-line separator should be output rather than a new-line character.
- * 
- * @throws IOException
- * @throws org.xml.sax.SAXException
- */
-void writeNormalizedChars(
-    final char ch[],
-    final int start,
-    final int length,
-    final boolean isCData,
-    final boolean useLineSep)
-    throws IOException, org.xml.sax.SAXException
-{
-    final java.io.Writer writer = m_writer;
-    final int end = start + length;
-
-    /* copy a few "constants" before the loop for performance */
-    final char S_LINEFEED = CharInfo.S_LINEFEED;
-    final int M_MAXCHARACTER = this.m_maxCharacter;
-
-    if (isCData)
+    /**
+     * Normalize the characters, but don't escape.  Different from 
+     * SerializerToXML#writeNormalizedChars because it does not attempt to do 
+     * XML escaping at all.
+     *
+     * @param ch The characters from the XML document.
+     * @param start The start position in the array.
+     * @param length The number of characters to read from the array.
+     * @param useLineSep true if the operating systems 
+     * end-of-line separator should be output rather than a new-line character.
+     * 
+     * @throws IOException
+     * @throws org.xml.sax.SAXException
+     */
+    void writeNormalizedChars(
+        final char ch[],
+            final int start,
+            final int length,
+            final boolean useLineSep)
+            throws IOException, org.xml.sax.SAXException 
     {
+        final String encoding = getEncoding();
+        final java.io.Writer writer = m_writer;
+        final int end = start + length;
+
+        /* copy a few "constants" before the loop for performance */
+        final char S_LINEFEED = CharInfo.S_LINEFEED;
+
         // This for() loop always increments i by one at the end
         // of the loop.  Additional increments of i adjust for when
-        // two input characters are processed.
-        for (int i = start; i < end; i++)
-        {
+        // two input characters (a high/low UTF16 surrogate pair)
+        // are processed.
+        for (int i = start; i < end; i++) {
             final char c = ch[i];
 
-            if (S_LINEFEED == c && useLineSep)
-            {
+            if (S_LINEFEED == c && useLineSep) {
                 writer.write(m_lineSep, 0, m_lineSepLen);
-            }
-            else if (c > M_MAXCHARACTER)
-            {
-                if (i != 0)
-                    closeCDATA();
-
-                // This needs to go into a function...
-                if (isUTF16Surrogate(c))
-                {
-                    writeUTF16Surrogate(c, ch, i, end);
-                    i++; // two input characters processed
-                }
-                else
-                {
-                    writer.write(c);
-                }
-
-                if ((i != 0) && (i < (end - 1)))
-                {
-                    writer.write(CDATA_DELIMITER_OPEN);
-                    m_cdataTagOpen = true;
-                }
-            }
-            else if (
-                ((i < (end - 2))
-                    && (']' == c)
-                    && (']' == ch[i + 1])
-                    && ('>' == ch[i + 2])))
-            {
-                writer.write(CDATA_CONTINUE);
-                i += 2;
-            }
-            else
-            {
-                if (c <= M_MAXCHARACTER)
-                {
-                    writer.write(c);
-                }
-
-                else if (isUTF16Surrogate(c))
-                {
-                    writeUTF16Surrogate(c, ch, i, end);
-                    i++; // two input characters processed
-                }
-                else
-                {
-                    /* The character is greater than the allowed 
-                     * maximum value and it is not part of a UTF-16
-                     * pair that would be put out as a character reference.
-                     */
-                    String encoding = getEncoding();
-                    if (encoding != null)
-                    {
-                        /* The output encoding is known, 
-                         * so somthing is wrong.
-                         */ 
-                        String integralValue = Integer.toString(c);
-                        throw new SAXException(Utils.messages.createMessage(
-                            MsgKey.ER_ILLEGAL_CHARACTER,
-                            new Object[]{ integralValue, encoding}));
-                    }
-                    else 
-                    {
-                        /* The output encoding is not known,
-                         * so just write it out as-is.
-                         */                        
-                        writer.write(c);
-                    }
-                }
-            }
-        }
-    }
-    else
-    {
-        // not in CDATA section
-        for (int i = start; i < end; i++)
-        {
-            final char c = ch[i];
-
-            if (S_LINEFEED == c && useLineSep)
-            {
-                writer.write(m_lineSep, 0, m_lineSepLen);
-            }
-            else if (c <= M_MAXCHARACTER)
-            {
+                // one input char processed
+            } else if (m_encodingInfo.isInEncoding(c)) {
                 writer.write(c);
-            }
-            else if (isUTF16Surrogate(c))
-            {
-                writeUTF16Surrogate(c, ch, i, end);
-                i++; // two input characters processed
-            }
-            else
-            {
-                /* The character is greater than the allowed 
-                 * maximum value and it is not part of a UTF-16
-                 * pair that would be put out as a character reference.
-                 */
-                String encoding = getEncoding();
-                if (encoding != null) 
-                {
+                // one input char processed    
+            } else if (Encodings.isHighUTF16Surrogate(c)) {
+                final int codePoint = writeUTF16Surrogate(c, ch, i, end);
+                if (codePoint != 0) {
+                    // I think we can just emit the message,
+                    // not crash and burn.
+                    final String integralValue = Integer.toString(codePoint);
+                    final String msg = Utils.messages.createMessage(
+                        MsgKey.ER_ILLEGAL_CHARACTER,
+                        new Object[] { integralValue, encoding });
+                      
+                    //Older behavior was to throw the message,
+                    //but newer gentler behavior is to write a message to System.err
+                    //throw new SAXException(msg);
+                    System.err.println(msg);                            
+
+                }
+                i++; // two input chars processed               
+            } else {
+                // Don't know what to do with this char, it is
+                // not in the encoding and not a high char in
+                // a surrogate pair, so write out as an entity ref
+                if (encoding != null) {
                     /* The output encoding is known, 
                      * so somthing is wrong.
-                     */ 
-                    String integralValue = Integer.toString(c);
-                    throw new SAXException(Utils.messages.createMessage(
+                     */
+
+                    // not in the encoding, so write out a character reference
+                    writer.write('&');
+                    writer.write('#');
+                    writer.write(Integer.toString(c));
+                    writer.write(';');
+
+                    // I think we can just emit the message,
+                    // not crash and burn.
+                    final String integralValue = Integer.toString(c);
+                    final String msg = Utils.messages.createMessage(
                         MsgKey.ER_ILLEGAL_CHARACTER,
-                        new Object[]{ integralValue, encoding}));
-                }
-                else 
-                {
+                        new Object[] { integralValue, encoding });
+                      
+                    //Older behavior was to throw the message,
+                    //but newer gentler behavior is to write a message to System.err
+                    //throw new SAXException(msg);
+                    System.err.println(msg); 
+                } else {
                     /* The output encoding is not known,
                      * so just write it out as-is.
-                     */                        
+                     */
                     writer.write(c);
-                }                
+                }
+
+                // one input char was processed
             }
         }
     }
-}
 
   /**
    * Receive notification of cdata.
@@ -444,7 +377,7 @@ void writeNormalizedChars(
   {
     try
     {
-        writeNormalizedChars(ch, start, length, false, m_lineSepUse);
+        writeNormalizedChars(ch, start, length, m_lineSepUse);
         if (m_tracer != null)
             super.fireCDATAEvent(ch, start, length);              
     }
@@ -486,7 +419,7 @@ void writeNormalizedChars(
 
     try
     {
-      writeNormalizedChars(ch, start, length, false, m_lineSepUse);
+      writeNormalizedChars(ch, start, length, m_lineSepUse);
     }
     catch(IOException ioe)
     {

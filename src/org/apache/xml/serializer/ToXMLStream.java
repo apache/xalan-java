@@ -97,7 +97,7 @@ public final class ToXMLStream extends ToStream
         setDoctypePublic(xmlListener.getDoctypePublic());        
         setStandalone(xmlListener.getStandalone());
         setMediaType(xmlListener.getMediaType());
-        m_maxCharacter = xmlListener.m_maxCharacter;
+        m_encodingInfo = xmlListener.m_encodingInfo;
         m_spaceBeforeClose = xmlListener.m_spaceBeforeClose;
         m_cdataStartCalled = xmlListener.m_cdataStartCalled;
 

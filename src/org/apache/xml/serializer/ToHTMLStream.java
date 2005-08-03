@@ -1173,7 +1173,7 @@ public final class ToHTMLStream extends ToStream
                         writer.write('%');
                         writer.write(makeHHString(low));
                     }
-                    else if (isUTF16Surrogate(ch)) // high surrogate
+                    else if (Encodings.isHighUTF16Surrogate(ch)) // high surrogate
                     {
                         // I'm sure this can be done in 3 instructions, but I choose 
                         // to try and do it exactly like it is done in the book, at least 
@@ -1380,7 +1380,7 @@ public final class ToHTMLStream extends ToStream
                 }
                 else
                 {
-                    if (isUTF16Surrogate(ch))
+                    if (Encodings.isHighUTF16Surrogate(ch))
                     {
  
                             writeUTF16Surrogate(ch, chars, i, end);
