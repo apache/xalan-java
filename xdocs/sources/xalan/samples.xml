@@ -427,6 +427,74 @@
     <p>The Dump SQL example is used to show what data is available to the XSLT process.</p>
     <p>To run the DumpSQL Example, execute the following command<br/>
          <code>runXalan.bat -XSL basic-connection/DumpSQL.xsl</code></p>
+    <p>Dump SQL should produce the following output:</p>
+    <source>
+    &lt;sql&gt;
+      &lt;metadata&gt;
+        &lt;column-header searchable="true" writable="false" signed="true" 
+    nullable="true" definitely-writable="false" case-sensitive="false" 
+    table-name="IMPORT1" schema-name="" scale="0" precision="10" 
+    column-typename="INTEGER" column-type="4" column-display-size="11" 
+    catalogue-name="" column-label="PRODUCTID" column-name="PRODUCTID"&gt;&lt;/column-header&gt;
+        &lt;column-header searchable="true" writable="false" signed="false" 
+    nullable="true" definitely-writable="false" case-sensitive="true" 
+    table-name="IMPORT1" schema-name="" scale="0" precision="40" 
+    column-typename="VARCHAR" column-type="12" column-display-size="40" 
+    catalogue-name="" column-label="NAME" column-name="NAME"&gt;&lt;/column-header&gt;
+      &lt;/metadata&gt;
+      &lt;row-set&gt;
+       &lt;row&gt;
+        &lt;col searchable="true" writable="false" signed="true" 
+    nullable="true" definitely-writable="false" case-sensitive="false" 
+    table-name="IMPORT1" schema-name="" scale="0" precision="10" 
+    column-typename="INTEGER" column-type="4" column-display-size="11" 
+    catalogue-name="" column-label="PRODUCTID" column-name="PRODUCTID"&gt;1&lt;/col&gt;
+        &lt;col searchable="true" writable="false" signed="false" 
+    nullable="true" definitely-writable="false" case-sensitive="true" 
+    table-name="IMPORT1" schema-name="" scale="0" precision="40" 
+    column-typename="VARCHAR" column-type="12" column-display-size="40" 
+    catalogue-name="" column-label="NAME" column-name="NAME">toothpaste&lt;/col&gt;
+       &lt;/row&gt;
+       &lt;row&gt;
+        &lt;col searchable="true" writable="false" signed="true" 
+    nullable="true" definitely-writable="false" case-sensitive="false" 
+    table-name="IMPORT1" schema-name="" scale="0" precision="10" 
+    column-typename="INTEGER" column-type="4" column-display-size="11" 
+    catalogue-name="" column-label="PRODUCTID" column-name="PRODUCTID"&gt;2&lt;/col&gt;
+        &lt;col searchable="true" writable="false" signed="false" 
+    nullable="true" definitely-writable="false" case-sensitive="true" 
+    table-name="IMPORT1" schema-name="" scale="0" precision="40" 
+    column-typename="VARCHAR" column-type="12" column-display-size="40" 
+    catalogue-name="" column-label="NAME" column-name="NAME"&gt;milk&lt;/col&gt;
+       &lt;/row&gt;
+       &lt;row&gt;
+        &lt;col searchable="true" writable="false" signed="true" 
+    nullable="true" definitely-writable="false" case-sensitive="false" 
+    table-name="IMPORT1" schema-name="" scale="0" precision="10" 
+    column-typename="INTEGER" column-type="4" column-display-size="11" 
+    catalogue-name="" column-label="PRODUCTID" column-name="PRODUCTID"&gt;3&lt;/col&gt;
+        &lt;col searchable="true" writable="false" signed="false" 
+    nullable="true" definitely-writable="false" case-sensitive="true" 
+    table-name="IMPORT1" schema-name="" scale="0" precision="40" 
+    column-typename="VARCHAR" column-type="12" column-display-size="40" 
+    catalogue-name="" column-label="NAME" column-name="NAME"&gt;bread&lt;/col&gt;
+       &lt;/row&gt;
+       &lt;row&gt;
+        &lt;col searchable="true" writable="false" signed="true" 
+    nullable="true" definitely-writable="false" case-sensitive="false" 
+    table-name="IMPORT1" schema-name="" scale="0" precision="10" 
+    column-typename="INTEGER" column-type="4" column-display-size="11" 
+    catalogue-name="" column-label="PRODUCTID" column-name="PRODUCTID"&gt;4&lt;/col&gt;
+        &lt;col searchable="true" writable="false" signed="false" 
+    nullable="true" definitely-writable="false" case-sensitive="true" 
+    table-name="IMPORT1" schema-name="" scale="0" precision="40" 
+    column-typename="VARCHAR" column-type="12" column-display-size="40" 
+    catalogue-name="" column-label="NAME" column-name="NAME"&gt;cereal&lt;/col&gt;
+       &lt;/row&gt;
+      &lt;/row-set&gt;
+    &lt;/sql&gt;
+    </source>
+    
     </s3>
     
     <anchor name="basic-conn"/>
