@@ -262,13 +262,13 @@
       and the Apache Infrastructure project for the following:</p>
    <p>a) Issue Database -- This is a system with issue-records,
       for tracking bugs, issues, features and requests.</p>
-   <p>b) Repository -- The xalan.org.apache project has its set
+   <p>b) Repository -- The xalan.apache.org project has its set
       of parts that make up the software, and these parts are
       managed in a repository. Committers make changes to the source code,
       documentation and other associated parts that are stored in
       the repository. Any subproject will have its set of committers
       for its repository.</p>
-   <p>c) Website -- The website <jump href="http://xml.apache.org">xml.apache.org</jump> 
+   <p>c) Website -- The website <jump href="http://xalan.apache.org">xalan.apache.org</jump> 
       will contain information about the Apache Xalan project and its subprojects,
       including documentation, downloads of releases, and this charter.</p>
    <p>d) Mailing Lists -- appropriate mailing lists will be created
