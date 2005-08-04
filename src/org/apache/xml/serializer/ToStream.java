@@ -26,8 +26,10 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import javax.xml.transform.ErrorListener;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xml.serializer.utils.MsgKey;
 import org.apache.xml.serializer.utils.Utils;
@@ -3020,6 +3022,30 @@ abstract public class ToStream extends SerializerBase
          if (old == null || !old.equals(encoding)) {        
             // If we have changed the setting of the 
             m_encodingInfo = Encodings.getEncodingInfo(encoding);
+            
+            if (encoding != null && m_encodingInfo.name == null) {
+            	// We tried to get an EncodingInfo for Object for the given
+            	// encoding, but it came back with an internall null name
+            	// so the encoding is not supported by the JDK, issue a message.
+            	String msg = Utils.messages.createMessage(
+            			MsgKey.ER_ENCODING_NOT_SUPPORTED,new Object[]{ encoding });
+            	try 
+            	{
+            		// Prepare to issue the warning message
+            		Transformer tran = super.getTransformer();
+            		if (tran != null) {
+            			ErrorListener errHandler = tran.getErrorListener();
+            			// Issue the warning message
+            			if (null != errHandler && m_sourceLocator != null)
+            				errHandler.warning(new TransformerException(msg, m_sourceLocator));
+            			else
+            				System.out.println(msg);
+            	    }
+            		else
+            			System.out.println(msg);
+            	}
+            	catch (Exception e){}
+            }
          }
          return;
      }

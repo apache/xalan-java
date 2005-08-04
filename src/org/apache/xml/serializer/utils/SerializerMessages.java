@@ -193,6 +193,10 @@ public class SerializerMessages extends ListResourceBundle {
             {   MsgKey.ER_FACTORY_PROPERTY_MISSING,
                 "The Properties object passed to the SerializerFactory does not have a ''{0}'' property." },
 
+            {   MsgKey.ER_ENCODING_NOT_SUPPORTED,
+                "Warning:  The encoding ''{0}'' is not supported by the Java runtime." },
+                
+
         };
 
         return contents;

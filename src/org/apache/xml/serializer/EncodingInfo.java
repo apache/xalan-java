@@ -411,6 +411,12 @@ public final class EncodingInfo extends Object
 
         } catch (Exception e) {
             isInEncoding = false;
+            
+            // If for some reason the encoding is null, e.g.
+            // for a temporary result tree, we should just
+            // say that every character is in the encoding.
+            if (encoding == null)
+            	isInEncoding = true;
         }
         return isInEncoding;
     }

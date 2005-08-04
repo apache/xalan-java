@@ -93,4 +93,6 @@ public class MsgKey {
     public static final String ER_SCHEME_REQUIRED = "ER_SCHEME_REQUIRED";
     public static final String ER_XML_VERSION_NOT_SUPPORTED = "ER_XML_VERSION_NOT_SUPPORTED";
     public static final String ER_FACTORY_PROPERTY_MISSING = "ER_FACTORY_PROPERTY_MISSING";
+    public static final String ER_ENCODING_NOT_SUPPORTED = "ER_ENCODING_NOT_SUPPORTED";
+    
 }
