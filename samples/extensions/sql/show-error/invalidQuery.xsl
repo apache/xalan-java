@@ -6,18 +6,15 @@
 
 <xsl:output method="html" indent="yes"/>
 
-<xsl:param name="driver" select="'com.lutris.instantdb.jdbc.idbDriver'"/>
-
-
-<xsl:param name="datasource" select="'jdbc:idb:../../instantdb/sample.prp'"/>
+<xsl:param name="driver" select="'org.apache.derby.jdbc.EmbeddedDriver'"/>
+<xsl:param name="datasource" select="'jdbc:derby:sampleDB'"/>
 
 <!-- 
 ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR
-              We will specify a table that does not exist
-              in our Database, causing the Query to Fail
-ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR
+             We will specify a table that does not exist
+             in our Database, causing the Query to Fail
+ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR 
 -->
-
 
 <xsl:param name="query" select="'SELECT * FROM TableNotDefined'"/>
 
@@ -26,8 +23,8 @@ ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR
     <xsl:variable name="db" select="sql:new()"/>
     
     <!-- Connect to the database with minimal error detection -->
-		<xsl:if test="not(sql:connect($db, $driver, $datasource))" >
-    	<xsl:message>Error Connecting to the Database</xsl:message>
+    <xsl:if test="not(sql:connect($db, $driver, $datasource))" >
+      <xsl:message>Error Connecting to the Database</xsl:message>
       <xsl:copy-of select="sql:getError($db)/ext-error" />
     </xsl:if>
     
@@ -39,13 +36,11 @@ ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR ERROR
         <TABLE border="1">
           <xsl:variable name="table" select='sql:query($db, $query)'/>
           
-          <!-- 
-          	Let's include Error Checking, the error is actually stored 
-            in the connection since $table will be either data or null
-          -->
+          <!-- Let's include Error Checking, the error is actually stored
+               in the connection since $table will be either data or null -->
              
           <xsl:if test="not($table)" >
-          	<xsl:message>Error in Query</xsl:message>
+            <xsl:message>Error in Query</xsl:message>
             <xsl:copy-of select="sql:getError($db)/ext-error" />
           </xsl:if>
           
