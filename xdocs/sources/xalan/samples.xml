@@ -302,177 +302,213 @@
     </ul>
     <p>The extensions subdirectory contains six samples with &xslt4j; Interpretive extensions. Two of the samples use
      extensions implemented in JavaScript, and four of the samples use extensions implemented in Java.</p>
-     <p>To run these examples, you must place bsf.jar and js.jar (version 1.5, available from 
+    <p>To run these examples, you must place bsf.jar and js.jar (version 1.5, available from 
      <jump href="http://www.mozilla.org/rhino">http://www.mozilla.org/rhino</jump>) on the classpath. 
      You do not need js.jar on the classpath for the samples that use Java extensions. <link idref="faq">
      Problems related to JDK 1.4 or higher</link>.</p>
-     <p>Use java.org.apache.xalan.xslt.Process, the &xslt4j; command-line utility, to run most of these samples from
+    <p>Use java.org.apache.xalan.xslt.Process, the &xslt4j; command-line utility, to run most of these samples from
      the <link idref="commandline">command line</link>. The command line must include an -in flag with the 
      XML source and an -xsl flag with the XSL stylesheet. If you want the output to be written to a file, rather
      than to the screen, add an -out flag with the output file name.</p>
-     <p>Run these samples from the extensions directory as follows (each of the following is a single command
-      line):</p> 
+    <p>Run these samples from the extensions directory as follows (each of the following is a single command
+     line):</p> 
 
     <anchor name="ext1"/>
     <s3 title="1-redir">
     <p>What it does: Uses the Redirect extension elements shipped with &xslt4j; to direct output to two output
-      files.</p>
+     files.</p>
     <p>Run this sample from the extensions subdirectory with</p> 
-       <p><code>java org.apache.xalan.xslt.Process -in 1-redir.xml</code><br/>
-       &nbsp;&nbsp;<code>-xsl 1-redir.xsl</code></p>
+    <p><code>java org.apache.xalan.xslt.Process -in 1-redir.xml</code><br/>
+     &nbsp;&nbsp;<code>-xsl 1-redir.xsl</code></p>
     <p>The standard (non-redirected) output is written to the screen. The redirected output is written to 1-redir-out, or
-      whatever filename you assign to the doc/foo @file attribute in 1-redir.xml. The stylesheet gets the file name for
-      redirected output from the XML input file.</p>
-    </s3><anchor name="ext2"/>
+     whatever filename you assign to the doc/foo @file attribute in 1-redir.xml. The stylesheet gets the file name for
+     redirected output from the XML input file.</p>
+    </s3>
+    
+    <anchor name="ext2"/>
     <s3 title="2-basicJscript">
     <p>What it does: Uses an extension element and extension function implemented in JavaScript to compute a
       deadline for responding to a customer inquiry.</p>
      <note>js.jar must be on the classpath.</note>
     <p>Run this sample from the extensions subdirectory with</p>
     <p><code>java org.apache.xalan.xslt.Process -in 2-basicJscript.xml</code>
-       <br/>&nbsp;&nbsp;<code>-xsl 2-basicJscript.xsl</code></p>     
-    </s3><anchor name="ext3"/>
+     <br/>&nbsp;&nbsp;<code>-xsl 2-basicJscript.xsl</code></p>     
+    </s3>
+    
+    <anchor name="ext3"/>
     <s3 title="3-java-namespace">
     <p>What it does: Uses extension functions to format dates. This sample illustrates use of the predefined java
-    extension namespace to provide ready access to extensions implemented in Java.</p>
+     extension namespace to provide ready access to extensions implemented in Java.</p>
     <p>Run this sample from the extensions subdirectory with</p> 
     <p><code>java org.apache.xalan.xslt.Process -in 3-java-namespace.xml</code>
-    <br/>&nbsp;&nbsp;<code>-xsl 3-java-namespace.xsl</code></p>    
-    </s3><anchor name="ext4"/>
+     <br/>&nbsp;&nbsp;<code>-xsl 3-java-namespace.xsl</code></p>    
+    </s3>
+    
+    <anchor name="ext4"/>
     <s3 title="4-numlistJava">
     <p>What it does: Uses a Java extension to transform a set of name elements into a numbered and alphabetized
-    list.</p>
+     list.</p>
     <p>Run this sample from the extensions subdirectory with</p> 
     <p><code>java org.apache.xalan.xslt.Process -in numlist.xml</code> 
-    <br/>&nbsp;&nbsp;<code>-xsl 4-numlistJava.xsl</code></p>    
-    </s3><anchor name="ext5"/>
+     <br/>&nbsp;&nbsp;<code>-xsl 4-numlistJava.xsl</code></p>    
+    </s3>
+    
+    <anchor name="ext5"/>
     <s3 title="5-numlistJscript">
     <p>What it does: Uses a JavaScript  extension to transform a set of name elements into a numbered and
-    alphabetized list. This sample performs the same operations as the preceding Java extension.</p>
-    <note>js.jar must be on the classpath.</note>
+     alphabetized list. This sample performs the same operations as the preceding Java extension.</p>
+     <note>js.jar must be on the classpath.</note>
     <p>Run this sample from the extensions subdirectory with</p>
     <p><code> java org.apache.xalan.xslt.Process -in numlist.xml</code>
-    <br/>&nbsp;&nbsp;<code>-xsl 5-numlistJscript.xsl</code></p>
+     <br/>&nbsp;&nbsp;<code>-xsl 5-numlistJscript.xsl</code></p>
     </s3>
     </s2>
    
     <anchor name="sql"/>
     <s2 title="SQL library extensions">
-    <p>The <link idref="extensionslib" anchor="sql">SQL library </link> extension enables you to execute SQL queries from within a stylesheet, 
-    and to incorporate query result sets in the XML output. To use the SQL library, you need
-    a JDBC driver, the underlying DBMS, and a database. Our samples use Lutris&reg; InstantDB. 
-    You can also customize the stylesheets for your own database implementations.</p>
+    <p>The <link idref="extensionslib" anchor="sql">SQL library </link> 
+     extension enables you to execute SQL queries from within a stylesheet, 
+     and to incorporate query result sets in the XML output. 
+     To use the SQL library, you need a JDBC driver, the underlying DBMS, 
+     and a database.</p>
+    <p>Our samples use Apache Derby DBMS, but the SQL Extensions and sample code
+     can be configured to query data from any DBMS that can be accessed through
+     JDBC.</p>
+
     <anchor name="dbsetup"/>
-    <s3 title="Setting up the SQL extension samples">
+    <s3 title="Setting up the SQL extension samples">   
     <p>To run the SQL library extension samples, do the following:</p>
+    <p>The SQL Extension examples require the Apache Derby jars.
+     The Derby jars are available from <jump href="http://incubator.apache.org/derby/">
+     http://incubator.apache.org/derby/</jump>.</p>
+    <p>The sample batch/script files are configured to look for the 
+     derby jars in the xml-xalan/java/samples/extensions/sql directory by default.</p>
+    <p>If you already have derby installed and want to use that implementation.
+      You can do one of the following.</p>
     <ol>
-    <li>InstantDB is no longer freely available. If you still have a copy of it, 
-    you can follow the instructions Lutris provides for installing InstantDB and generating the sample database.</li>
-    <li>For other database implementations, you have to customize the stylesheets by modifying the SQL query, the JDBC driver name and the database url:
-      <ul>
-        <li>Modify the SQL query to your own needs. The SQL query is defined in a parameter like
-        <code>&lt;xsl:param name="query" select="'SELECT * FROM import1'"/&gt;</code>.</li>
-        <li>Modify the JDBC driver name and the database url. They are specified in the stylesheets as parameters for some
-        examples. For other examples the parameters are defined in the basic-connection/dbinfo.xml and basic-connection/dbtest.xsl.</li>
-      </ul>
-    </li>
-    <li>Add the JDBC driver jar to the system class path.</li>
-    <li>Create the database you want to work with if it does not already exist.</li>
+      <li>set the environment variable DERBY_JAR_DIR to point to the location of derby.jar and derbytools.jar</li>
+      <li>have the derby.jar and derbytools.jar in your classpath.</li>
     </ol>
-    </s3>
-    <s3 title="SQL Library samples">    
-    <ul>
-      <li><link anchor="ext6">6-sqllib-instantdb</link></li>
-      <li><link anchor="basic-conn">Basic Connections</link></li>      
-      <li><link anchor="ext-conn">ExternalConnection</link></li>      
-      <li><link anchor="pquery">Parameterized query</link></li>
-      <li><link anchor="streamable">Streamable</link></li>
-      <li><link anchor="showerror">Show-error</link></li>
+    <p>First create the sample database using Derby.  To do this, </p>
+    <ul><li>on Windows, execute the command<br/> <code>runDerby.bat createdb.sql</code></li>
+        <li>on Unix, execute the command<br/> <code>sh runDerby.sh createdb.sql</code></li>
     </ul>
-    <note>Except for 6-sqllib-instantdb, all these samples have been created by John Gentilin 
-    (johnglinux@eyecatching.com) to illustrate the rich feature set he has contributed to the SQL Library. 
-    To run each of these samples, be sure  you are in the appropriate extensions/sql subdirectory.</note>
-    </s3><anchor name="ext6"/>
-    <s3 title="6-sqllib-instantdb">
-    <p>What it does: Uses the SQL library XConnection extension to connect to the InstantDB sample database, 
-    performs a query, and returns the query result in an HTML table.</p>
-    <p><link anchor="dbsetup">Set up the database</link>, and run this sample from the extensions subdirectory:</p>
-    <p><code>java org.apache.xalan.xslt.Process</code>
-    <br/>&nbsp;&nbsp;<code>-xsl 6-sqllib-instantdb.xsl -out import1.html</code></p>
-    </s3><anchor name="basic-conn"/>
+    <p>You can use the Derby tools to examine the raw database. To do this, </p>
+      <ul>
+      <li>on Windows execute the command<br/>
+      <code>runDerby.bat</code><br/>
+      At the lj> prompt type the following commands:<br/>
+      <code>lj> connect 'sampleDB';</code><br/>
+      <code>lj> select * from import1;</code><br/><br/>
+      <code>To quit the lj session type</code><br/>
+      <code>lj> quit;</code><br/>
+      <br/></li>
+      <li>To Start lj on Unix type<br/>
+      <code>sh runDerby.sh</code><br/><br/></li>
+      </ul>
+    <p>Once the sample database has been created, you can run the sample
+      stylesheets using the runXalan script.</p>
+    </s3>
+
+
+    <s3 title="SQL Library samples">   
+    <ul>
+    <li><link anchor="Dump-SQL">The Details - Dump SQL</link></li>
+    <li><link anchor="basic-conn">Basic Connections</link></li>
+    <li><link anchor="ext-conn">ExternalConnection</link></li>
+    <li><link anchor="pquery">Parameterized query</link></li>
+    <li><link anchor="streamable">Streamable</link></li>
+    <li><link anchor="showerror">Show-error</link></li>
+    </ul>
+    </s3>
+
+    <anchor name="Dump-SQL"/>
+    <s3 title="Dump-SQL">
+    <p>The Dump SQL example is used to show what data is available to the XSLT process.</p>
+    <p>To run the DumpSQL Example, execute the following command<br/>
+         <code>runXalan.bat -XSL basic-connection/DumpSQL.xsl</code></p>
+    </s3>
+    
+    <anchor name="basic-conn"/>
     <s3 title="Basic-Connection">
     <p><em>Contributed by John Gentilin (johnglinux@eyecatching.com).</em></p>
-    <p>What it does: illustrates two strategies for connecting to a database, executing a static query, and returning 
-    the query result.</p>
-    <p>The first strategy is to get connection information along with the static query from the stylesheet (dbtest.xsl)\
-    in the form of stylesheet parameters.</p>      
-    <p>The second strategy is to get connection information from a nodeset in an XML source document (dbInfo.xml).</p>
-      
-    <p><link anchor="dbsetup">Set up the database</link>, and run this sample from the extensions/sql/basic-connection 
-    directory.</p>
+    <p>What it does: illustrates two strategies for connecting to a database, executing a 
+      static query, and returning the query result.</p>
+    <p>The first strategy is to get connection information along with the static query from 
+      the stylesheet (dbtest.xsl)\ in the form of stylesheet parameters.</p>
+    <p>The second strategy is to get connection information from a nodeset in an XML source 
+      document (dbInfo.xml).</p>
+    <p><link anchor="dbsetup">Set up the database</link>, and run this sample from the 
+      extensions/sql/ directory.</p>
     <p>1. To get connection information from the stylesheet:</p>
-    <p><code>java org.apache.xalan.xslt.Process</code>
-    <br/>&nbsp;&nbsp;<code>-xsl dbtest.xsl -out import1.html</code></p>
-    <p>2. To get connection information in the form of a nodeset from the XML source document:</p>      
-    <p><code>java org.apache.xalan.xslt.Process</code>
-    <br/>&nbsp;&nbsp;<code>-in dbinfo.xml -xsl dbtest-cinfo.xsl</code> 
-    <br/>&nbsp;&nbsp;<code>-out import1.html</code></p>
-    <p>3. To get connection information from the stylesheet and dump the raw result set to an XML file:</p>
-    <p><code>java org.apache.xalan.xslt.Process</code>
-    <br/>&nbsp;&nbsp;<code>-xsl DumpSQL.xsl -out import1.xml</code></p>
-    </s3> <anchor name="ext-conn"/>
+     <code>runXalan -xsl basic-connection/dbtest.xsl -out import1.html</code>
+    <p>2. To get connection information in the form of a nodeset from the XML source document:</p>
+     <code>runXalan -in dbinfo.xml -xsl dbtest-cinfo.xsl -out import1.html</code>
+    </s3>
+    
+    <anchor name="ext-conn"/>
     <s3 title="ExternalConnection">
     <p><em>Contributed by John Gentilin (johnglinux@eyecatching.com).</em></p>
-    <p>What it does: The ExternalConnection classes uses the default implementation of the ConnectionPool interface 
-    to create a pool of connections. A stylesheet in turn uses a connection from this pool to instantiate an 
-    XConnection object and connect to a datasource.</p>
-    <p>The stylesheet uses this named connection pool to instantiate an XConnection object and connect to the datasource. 
-    The ExternalConnection class is in xalansamples.jar.</p>
-    <p><link anchor="dbsetup">Set up the database</link>, be sure xalanxamples.jar is on the class path, and run this 
-    sample from the extensions/sql/ext-connection directory:</p>
+    <p>What it does: The ExternalConnection classes uses the default implementation of the 
+     ConnectionPool interface to create a pool of connections. A stylesheet in turn uses a 
+     connection from this pool to instantiate an XConnection object and connect to a datasource.</p>
+    <p>The stylesheet uses this named connection pool to instantiate an XConnection object and 
+     connect to the datasource. The ExternalConnection class is in xalansamples.jar.</p>
+    <p><link anchor="dbsetup">Set up the database</link>, be sure xalanxamples.jar is on the 
+     class path, and run this sample from the extensions/sql/ext-connection directory:</p>
     <p><code>java ExternalConnection</code></p>
-    <p>ExternalConnection creates the ConnectionPool, and performs a transformation with dbtest.xsl, which draws 
-    from the pool to instantiate an XConnection object, connect to the datasource, execute a static query, and return the
-    query result.</p>
-    </s3><anchor name="pquery"/>
+    <p>ExternalConnection creates the ConnectionPool, and performs a transformation with dbtest.xsl, 
+     which draws from the pool to instantiate an XConnection object, connect to the datasource, 
+     execute a static query, and return the query result.</p>
+    </s3>
+  
+    <anchor name="pquery"/>
     <s3 title="Parameterized query">
     <p><em>Contributed by John Gentilin (johnglinux@eyecatching.com).</em></p>
-    <p>What it does: connects to a datasource, executes a parameterized query, and returns the result. The XML source document
-    provides the parameter value as well as the connection information. The parameter value is in a node in the XML source.</p>
-    <p>The stylesheet gets the required connection and parameter information from the XML source, sets up and executes the
-    parameterized query, and retuns the query result set.</p>
-    <p><link anchor="dbsetup">Set up the database</link>, and run this sample from the sql/pquery subdirectory:</p>
-    <p><code>java org.apache.xalan.xslt.Process -in dbInfo.xml</code>
-    <br/><code>-xsl dbTest.xsl -out dbTest.html</code></p>    
-    </s3><anchor name="streamable"/>
+    <p>What it does: connects to a datasource, executes a parameterized query, and returns 
+     the result. The XML source document provides the parameter value as well as the connection 
+     information. The parameter value is in a node in the XML source.</p>
+    <p>The stylesheet gets the required connection and parameter information from the XML source, 
+     sets up and executes the parameterized query, and retuns the query result set.</p>
+    <p><link anchor="dbsetup">Set up the database</link>, and run this sample from the sql subdirectory:</p>
+     <code>runXalan -in pquery/dbinfo.xml -xsl pquery/dbtest.xsl -out import1.html</code>
+    </s3>
+  
+    <anchor name="streamable"/>
     <s3 title="Streamable">
-    <p><em>Contributed by John Gentilin (johnglinux@eyecatching.com).</em></p>    
-    <p>What it does: Illustrates enabling and disabling of caching the streamable result set returned by a query.</p>
-    <p>The stylesheets use the XConnection enableCacheNodes() and disableCacheNodes() methods.</p>
-    <p><link anchor="dbsetup">Set up the database</link>, and run these samples from the sql/streamable subdirectory.</p>
-    <p>1. To turn caching on:</p>
-    <p><code>java org.apache.xalan.xslt.Process</code>
-    <br/><code>-xsl cachedNodes.xsl</code></p>
-    <p>2. To turn caching off:</p>
-    <p><code>java org.apache.xalan.xslt.Process</code>
-    <br/><code>-xsl streamNodes.xsl</code></p>
-    <p>3. <ref>To be added</ref></p>
-    </s3><anchor name="showerror"/>
+    <p><em>Contributed by John Gentilin (johnglinux@eyecatching.com).</em></p>
+    <p>What it does: Illustrates enabling and disabling of a streamable result set returned by a query.</p>
+    <p>With a streamable result set, you can create a query that will return many rows but the
+     result will only consume the amount of memory to represent a single row. As a benefit,
+     you can perform transformations on large amounts of data while maintaining a low memory profile. 
+     On the down side, when you use streaming, you can NOT, visit previous nodes because the SQL
+     extension only supports unidirectional cursors. If you requires that the whole query be available
+     so that you can apply templates to previous rows, just disable caching.</p>
+    <p><link anchor="dbsetup">Set up the database</link>, and run these samples from the sql subdirectory.</p>
+    <p>1. An example where streaming is disabled:</p>
+     <code>runXalan -in streamable/dbinfo.xml -xsl streamable/cachedNodes.xsl -out import1.html</code>
+    <p>2. An example where streaming is enabled</p>
+     <code>runXalan -in streamable/dbinfo.xml -xsl streamable/streamNodes.xsl -out import1.html</code>
+    <p>3. This example performs a pivor function swaping rows and columns, streaming is 
+     required to be disabled here.</p>
+     <code>runXalan -in streamable/dbinfo.xml -xsl streamable/pivot.xsl -out import1.html</code>
+    </s3>
+ 
+    <anchor name="showerror"/>
     <s3 title="Show-error">
     <p><em>Contributed by John Gentilin (johnglinux@eyecatching.com).</em></p>
-    <p>What it does: use the SQL library ExtensionError class to return an error message in the output stream. The stylesheet
-    calls a template with a select statement that returns a nodeset when an error occurs.</p>
-    <source>&lt;xsl:variable name="table" select='sql:query($db, $query)'/&gt;
-    &lt;xsl:apply-templates select="$table/row-set" /&gt;	
-    &lt;xsl:apply-templates select="$table/ext-error"/&gt;</source>
-    <p><link anchor="dbsetup">Set up the database</link>, and run this sample from the extensions/sql/show-error subdirectory:</p>
-    <p><code>java org.apache.xalan.xslt.Process</code>
-    <br/><code> -xsl <ref>invalidSomething.xsl</ref> -out dbtestout.html</code></p>
-    <p>where <ref>invalidSomething.xsl</ref> is <code>invalidConn.xsl</code> (specifies a database that does not exist), 
-    <code>invalidQuery.xsl</code> (specifies a table that does not exist), or <code>invalidPQuery.xsl</code> (includes
-    too many parameters for the parameterized query).</p>
+    <p>What it does: use the SQL library ExtensionError class to return an error message 
+     in the output stream. The stylesheet calls a template with a select statement that 
+     returns a nodeset when an error occurs.</p>
+    <p><link anchor="dbsetup">Set up the database</link>, and run this sample from the extensions/sql subdirectory:</p>
+    <p>1. An example where we specify invalid connection information:</p>
+     <code>runXalan -in show-error/dbinfo.xml -xsl show-error/invalidConn.xsl -out import1.html</code>
+    <p>2. An example where we specify invalid parameters to a parameterized query:</p>
+     <code>runXalan -in show-error/dbinfo.xml -xsl show-error/invalidPQuery.xsl -out import1.html</code>
+    <p>3. An example where we specify an invlaid query:</p>
+     <code>runXalan -in show-error/dbinfo.xml -xsl show-error/invalidQuery.xsl -out import1.html</code>
     </s3>
-    </s2>
+    </s2>    
     
     <anchor name="trace"/>
     <s2 title="Trace">
