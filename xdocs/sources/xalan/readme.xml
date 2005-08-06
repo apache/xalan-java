@@ -42,7 +42,10 @@
      <li>Support for JAXP 1.3, including new default error handling behaviour.</li>
      <li>Support for XML 1.1 and Namespaces in XML 1.1.</li>
      <li>Support for alternate BSF implementations.</li>
+     <li>Updates to the SQL extension and SQL samples to support the Apache Derby database.</li>
      <li>New serializer.jar containing the Serializer component of &xslt4j;.</li>
+     <li>Minor restructuring of the source and binary distributions.</li>
+     <li>
      <li>Various performance fixes.</li>
      <li>Various memory leak fixes.</li>
      <li>Upgrade to Xerces-J (2.7.1) and a new version of xml-commons (xml-commons-external-1.3.02).</li>
@@ -164,7 +167,8 @@
       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2161">2161</jump>,
       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2167">2167</jump>,
       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2170">2170</jump>,
-      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2176">2176</jump>
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2176">2176</jump>,
+      <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2176">2183</jump>      
      </li>
      <li>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
       <jump href="http://nagoya.apache.org/eyebrowse/index.html">Apache mailing list archive index</jump>.
