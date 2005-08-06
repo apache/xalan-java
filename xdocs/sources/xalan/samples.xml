@@ -523,8 +523,8 @@
     <p>The stylesheet uses this named connection pool to instantiate an XConnection object and 
      connect to the datasource. The ExternalConnection class is in xalansamples.jar.</p>
     <p><link anchor="dbsetup">Set up the database</link>, be sure xalanxamples.jar is on the 
-     class path, and run this sample from the extensions/sql/ext-connection directory:</p>
-    <p><code>java ExternalConnection</code></p>
+     class path, and run this sample from the extensions/sql directory:</p>
+    <code>runExtConnection ext-connection/dbtest.xsl</code>
     <p>ExternalConnection creates the ConnectionPool, and performs a transformation with dbtest.xsl, 
      which draws from the pool to instantiate an XConnection object, connect to the datasource, 
      execute a static query, and return the query result.</p>
