@@ -67,11 +67,21 @@ public class ExternalConnection
   // org.apache.xalan.transformer.TransformerImpl.
 	TransformerFactory tFactory = TransformerFactory.newInstance();
 
+  // Grab the Name of the Stylesheet from the commad line
+  if (args.length == 0)
+  {
+    System.out.println("You must provide the path and name to a stylesheet to process");
+    System.exit(0);
+  }
+  
+  String stylesheet = args[0];
+  System.out.println("Transforming Stylesheet " + stylesheet);
+  
 	// Use the TransformerFactory to instantiate a Transformer that will work with
 	// the stylesheet you specify. This method call also processes the stylesheet
   // into a compiled Templates object.
 	Transformer transformer = tFactory.newTransformer(
-        new StreamSource("dbtest.xsl"));
+        new StreamSource(stylesheet));
 
 	// For this transformation, all the required information is in the stylesheet, so generate 
   // a minimal XML source document for the input.
