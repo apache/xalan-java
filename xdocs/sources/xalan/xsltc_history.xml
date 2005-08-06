@@ -431,6 +431,14 @@ trax.xml usagepatterns.xml whatsnew.xml xpath_apis.xml xsltc_usage.xml xml-xalan
 <ref>Committer's log entry: </ref>
 Doc changes for Xalan Java 2.7.0 release.
 This change was reviewed and approved in XALANJ-2170 by Christine Li.<br/><br/></li>
+
+<li><ref>Committed by </ref>mcnamara@apache.org<ref> on </ref>2005/07/13<br/>
+<ref>Modified: </ref> java/src/org/apache/xalan/xsltc/compiler xpath.lex<br/>
+<ref>Committer's log entry: </ref>
+Patch for XALANJ-1912.<br/>
+Provided by Santiago Pericas-Geertsen<br/>
+Reviewed by Yash Talwar.<br/><br/></li>
+
 </ul>
 </s2>
 

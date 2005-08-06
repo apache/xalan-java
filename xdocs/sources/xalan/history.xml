@@ -1350,6 +1350,60 @@ Reviewed by:		 Henry Zongaro<br/><br/></li>
 <ref>Committer's log entry: </ref>
 Patch for XALANJ-936. Reviewed by Yash Talwar.<br/><br/></li>
 
+<li><ref>Committed by </ref>mcnamara@apache.org<ref> on </ref>2005/07/27<br/>
+<ref>Modified: </ref> xml-xalan/java/bin xml-apis.jar<br/>
+<ref>Committer's log entry: </ref>
+Update xml-apis.jar to xml-commons-external-1.3.02 version.<br/><br/></li>
+
+<li><ref>Committed by </ref>johng@apache.org<ref> on </ref>2005/07/27<br/>
+<ref>Modified: </ref> java/src/org/apache/xalan/lib/sql JNDIConnectionPool.java<br/>
+java/samples/extensions/sql/basic-connection dbinfo.xml dbtest.xsl DumpSQL.xsl dbtest-cinfo.xsl<br/>
+java/samples/extensions/sql/ext-connection dbtest.xsl ExternalConnection.java<br/>
+java/samples/extensions/sql/pquery dbinfo.xml<br/>
+java/samples/extensions/sql/streamable cachedNodes.xsl streamNodes.xsl pivot.xsl<br/>
+java/samples/extensions/sql GETTING_STARTED.txt runDerby.bat runXalan.sh createdb.sql runDerby.sh runXalan.bat<br/>
+<ref>Committer's log entry: </ref>
+PR: XALANJ-2172<br/>
+Obtained from: Eric Everman<br/>
+Submitted by: Eric Everman / John Gentilin<br/>
+Reviewed by: Yash Talwar<br/><br/></li>
+
+<li><ref>Committed by </ref>mcnamara@apache.org<ref> on </ref>2005/07/29<br/>
+<ref>Modified: </ref> xml-xalan/java/bin xercesImpl.jar<br/>
+<ref>Committer's log entry: </ref>
+New xercesImpl.jar from the official Xerces-J 2.7.1 release.<br/><br/></li>
+
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2005/08/03<br/>
+<ref>Modified: </ref> java/src/org/apache/xml/serializer ToTextStream.java Encodings.properties ToHTMLStream.java
+ToStream.java EncodingInfo.java ToXMLStream.java Encodings.java<br/>
+<ref>Committer's log entry: </ref>
+Committing patch for XALANJ-2087. This is a fix for correctly deciding if a character is in an encoding or not,
+so we write it as is, or as an entity.<br/>
+The old code had a concept of a maximum character in the encoding, and assumed that all characters less
+than that unicode value were in the encoding.  New code uses the underlying Java libarary, but caches results 
+for performance.<br/>
+Patch was reviewed/approved by Yash Talwar (see XALANJ-2087).<br/><br/></li>
+
+<li><ref>Committed by </ref>mcnamara@apache.org<ref> on </ref>2005/08/04<br/>
+<ref>Modified: </ref> java/samples/extensions/sql/show-error invalidQuery.xsl invalidPQuery.xsl invalidConn.xsl<br/>
+<ref>Committer's log entry: </ref>
+Updates for the SQL samples (part of the fix for XALANJ-2172). Patch provided by John Gentilin and reviewed by Sarah McNamara.<br/><br/></li>
+ 
+<li><ref>Committed by </ref>minchau@apache.org<ref> on </ref>2005/08/04<br/>
+<ref>Modified: </ref> java/src/org/apache/xml/serializer ToStream.java EncodingInfo.java<br/>
+java/src/org/apache/xml/serializer/utils SerializerMessages.java MsgKey.java<br/>
+<ref>Committer's log entry: </ref>
+Committing XALANJ-2181. When the requested encoding is not supported by the JDK no
+warning is given,... this fix adds an error message.<br/><br/></li>
+
+<li><ref>Committed by </ref>johng@apache.org<ref> on </ref>2005/08/05<br/>
+<ref>Modified: </ref> java/samples/extensions/sql/ext-connection ExternalConnection.java<br/>
+java/xdocs/sources/xalan samples.xml<br/>
+java/samples/extensions/sql runDerby.bat runXalan.sh runDerby.sh runXalan.bat runExtConnection.bat runExtConnection.sh<br/>
+java/src/org/apache/xalan/lib/sql DefaultConnectionPool.java<br/>
+<ref>Committer's log entry: </ref>
+PR: XALANJ-2183.<br/><br/></li>
+
 </ul>
 </s2>
 
