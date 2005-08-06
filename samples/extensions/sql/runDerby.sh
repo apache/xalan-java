@@ -29,18 +29,6 @@ if [ "$JAVA_HOME" = "" ] ; then
     _JAVACMD=java
 fi
 
-if [ "$PARSER_JAR" = "" ] ; then
-    PARSER_JAR=$_JAR_DIR/xercesImpl.jar
-fi
-
-if [ "$XML_APIS_JAR" = "" ] ; then
-    XML_APIS_JAR=$_JAR_DIR/xml-apis.jar
-fi
-
-if [ "$XALAN_JAR" = "" ] ; then
-    XALAN_JAR=$_BUILD_DIR/xalan.jar
-fi
-
 
 # Use _underscore prefix to not conflict with user's settings
 # Default to UNIX-style pathing
@@ -48,7 +36,7 @@ CLPATHSEP=:
 # if we're on a Windows box make it ;
 uname | grep WIN && CLPATHSEP=\;
 
-_CLASSPATH="$XALAN_JAR${CLPATHSEP}$XML_APIS_JAR${CLPATHSEP}$PARSER_JAR${CLPATHSEP}$XALAN_JAR${CLPATHSEP}$DERBYJAR_DIR/derby.jar${CLPATHSEP}$DERBYJAR_DIR/derbytools.jar${CLPATHSEP}$CLASSPATH"
+_CLASSPATH="$DERBYJAR_DIR/derby.jar${CLPATHSEP}$DERBYJAR_DIR/derbytools.jar${CLPATHSEP}$CLASSPATH"
 
 # Attempt to automatically add system classes to _CLASSPATH
 if [ -f $JAVA_HOME/lib/tools.jar ] ; then

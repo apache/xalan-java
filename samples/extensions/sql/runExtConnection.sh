@@ -15,7 +15,7 @@ fi
 
 
 _JAVACMD=$JAVA_HOME/bin/java
-
+_JAVACCMD=$JAVA_HOME/bin/javac
 
 if [ "$JAVA_HOME" = "" ] ; then
     echo "Warning: JAVA_HOME environment variable is not set."
@@ -35,6 +35,7 @@ fi
 
 if [ -f ../../../build/xalan.jar ] ; then
 echo "Configuring Xalan for a Source build"
+echo .
 _XALAN_DIR=../../../build/
 else
 echo "Configuring Xalan for a Release build"
@@ -42,7 +43,6 @@ _XALAN_DIR=../../../
 fi
 
 if [ -f ../../../lib/xercesImpl.jar ] ; then
-
 _JAR_DIR=../../../lib/
 else
 _JAR_DIR=../../../
@@ -62,6 +62,8 @@ if [ "$XALAN_JAR" = "" ] ; then
     SERIALIZER_JAR=$_XALAN_DIR/serializer.jar 
 fi
 
+echo "Using Xalan JARS from: " $_XALAN_DIR
+echo .
 
 
 # Use _underscore prefix to not conflict with user's settings
@@ -83,10 +85,19 @@ fi
 
 _ENDORSED_DIR=${_XALAN_DIR}${CLPATHSEP}${_JAR_DIR}
 
-echo "Running Xalan: $@"
+_CLASSPATH=${_CLASSPATH}${CLPATHSEP}./ext-connection
+
+echo Compiling the External connection Class
+echo $_JAVACCMD -d ./ext-connection -classpath "$_CLASSPATH" ./ext-connection/ExternalConnection.java
+$_JAVACCMD -d ./ext-connection -classpath "$_CLASSPATH" ./ext-connection/ExternalConnection.java
+echo .
+echo .
+
+echo "Running External Connection Example Code: $@"
 echo "...with classpath: $_CLASSPATH"
 
-"$_JAVACMD" $JAVA_OPTS -Djava.endorsed.dirs=$_ENDORSED_DIR -classpath "$_CLASSPATH" -Dij.protocol=jdbc:derby: org.apache.xalan.xslt.Process $@
+
+"$_JAVACMD" $JAVA_OPTS -Djava.endorsed.dirs=$_ENDORSED_DIR -classpath "$_CLASSPATH" -Dij.protocol=jdbc:derby: ExternalConnection $@
 
 
 
