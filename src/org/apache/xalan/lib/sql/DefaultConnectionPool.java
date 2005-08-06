@@ -139,7 +139,7 @@ public class DefaultConnectionPool implements ConnectionPool
         }
         
         pcon.close();
-        m_pool.remove(pcon);
+        i.remove();        
       }
     }
 
