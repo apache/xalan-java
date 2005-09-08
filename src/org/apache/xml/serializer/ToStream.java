@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -445,8 +445,7 @@ abstract public class ToStream extends SerializerBase
             String sep = 
                     format.getProperty(OutputPropertiesFactory.S_KEY_LINE_SEPARATOR);
             if (sep != null) {
-                m_lineSep = sep.toCharArray();
-                m_lineSepLen = sep.length();
+            	this.setNewLine(sep.toCharArray());
             }
         }
 
@@ -3318,5 +3317,14 @@ abstract public class ToStream extends SerializerBase
      */
     public void setDTDEntityExpansion(boolean expand) { 
         m_expandDTDEntities = expand;     
+    }
+        
+    /**
+     * Sets the end of line characters to be used during serialization
+     * @param eolChars A character array corresponding to the characters to be used.
+     */    
+    public void setNewLine (char[] eolChars) {
+        m_lineSep = eolChars;
+        m_lineSepLen = eolChars.length;
     }
 }
