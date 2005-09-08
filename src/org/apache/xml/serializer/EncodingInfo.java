@@ -18,7 +18,6 @@
  */
 package org.apache.xml.serializer;
 
-import java.io.UnsupportedEncodingException;
 
 /**
  * Holds information about a given encoding, which is the Java name for the
