@@ -128,8 +128,11 @@ public class ProcessorInclude extends XSLTElementProcessor
 
     try
     {
-      String hrefUrl = SystemIDResolver.getAbsoluteURI(getHref(),
-                           handler.getBaseIdentifier());    
+
+      // Get the Source from the user's URIResolver (if any).
+      Source sourceFromURIResolver = getSourceFromUriResolver(handler);
+      // Get the system ID of the included/imported stylesheet module
+      String hrefUrl = getBaseURIOfIncludedStylesheet(handler, sourceFromURIResolver);
 
       if (handler.importStackContains(hrefUrl))
       {
@@ -138,7 +141,10 @@ public class ProcessorInclude extends XSLTElementProcessor
           getStylesheetInclErr(), new Object[]{ hrefUrl }));  //"(StylesheetHandler) "+hrefUrl+" is directly or indirectly importing itself!");
       }
 
+      // Push the system ID and corresponding Source
+      // on some stacks for later retrieval during parse() time.
       handler.pushImportURL(hrefUrl);
+      handler.pushImportSource(sourceFromURIResolver);
 
       int savedStylesheetType = handler.getStylesheetType();
 
@@ -153,6 +159,7 @@ public class ProcessorInclude extends XSLTElementProcessor
       {
         handler.setStylesheetType(savedStylesheetType);
         handler.popImportURL();
+        handler.popImportSource();
         handler.popNamespaceSupport();
       }
     }
@@ -190,20 +197,23 @@ public class ProcessorInclude extends XSLTElementProcessor
 
       if (null != uriresolver)
       {
-        source = uriresolver.resolve(getHref(),
-                                     handler.getBaseIdentifier());
+        // There is a user provided URI resolver.
+        // At the startElement() call we would
+        // have tried to obtain a Source from it
+        // which we now retrieve
+        source = handler.peekSourceFromURIResolver();
 
         if (null != source && source instanceof DOMSource)
         {
           Node node = ((DOMSource)source).getNode();
           
-          String systemId = source.getSystemId();
-          if (systemId == null)
-          {
-            systemId = SystemIDResolver.getAbsoluteURI(getHref(),
-                         handler.getBaseIdentifier());
-            
-          }
+          // There is a user provided URI resolver.
+          // At the startElement() call we would
+          // have already pushed the system ID, obtained
+          // from either the source.getSystemId(), if non-null
+          // or from SystemIDResolver.getAbsoluteURI() as a backup
+          // which we now retrieve.
+          String systemId = handler.peekImportURL();
           
           TreeWalker walker = new TreeWalker(handler, new org.apache.xml.utils.DOM2Helper(), systemId);
 
@@ -311,4 +321,58 @@ public class ProcessorInclude extends XSLTElementProcessor
   {
       return source;
   }
+  
+  /**
+   * Get the Source object for the included or imported stylesheet module
+   * obtained from the user's URIResolver, if there is no user provided 
+   * URIResolver null is returned.
+   */
+  private Source getSourceFromUriResolver(StylesheetHandler handler)
+            throws TransformerException {
+        Source s = null;
+            TransformerFactoryImpl processor = handler.getStylesheetProcessor();
+            URIResolver uriresolver = processor.getURIResolver();
+            if (uriresolver != null) {
+                String href = getHref();
+                String base = handler.getBaseIdentifier();
+                s = uriresolver.resolve(href,base);
+            }
+
+        return s;
+    }
+
+    /**
+     * Get the base URI of the included or imported stylesheet,
+     * if the user provided a URIResolver, then get the Source
+     * object for the stylsheet from it, and get the systemId 
+     * from that Source object, otherwise try to recover by
+     * using the SysteIDResolver to figure out the base URI.
+     * @param handler The handler that processes the stylesheet as SAX events,
+     * and maintains state
+     * @param s The Source object from a URIResolver, for the included stylesheet module,
+     * so this will be null if there is no URIResolver set.
+     */
+    private String getBaseURIOfIncludedStylesheet(StylesheetHandler handler, Source s)
+            throws TransformerException {
+        
+
+        
+        String baseURI;
+        String idFromUriResolverSource;
+        if (s != null && (idFromUriResolverSource = s.getSystemId()) != null) {
+            // We have a Source obtained from a users's URIResolver,
+            // and the system ID is set on it, so return that as the base URI
+            baseURI = idFromUriResolverSource;
+        } else {
+            // The user did not provide a URIResolver, or it did not 
+            // return a Source for the included stylesheet module, or
+            // the Source has no system ID set, so we fall back to using
+            // the system ID Resolver to take the href and base
+            // to generate the baseURI of the included stylesheet.
+            baseURI = SystemIDResolver.getAbsoluteURI(getHref(), handler
+                    .getBaseIdentifier());
+        }
+
+        return baseURI;
+    }
 }

@@ -21,6 +21,7 @@ package org.apache.xalan.processor;
 import java.util.Stack;
 
 import javax.xml.transform.ErrorListener;
+import javax.xml.transform.Source;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerConfigurationException;
@@ -1461,6 +1462,13 @@ public class StylesheetHandler extends DefaultHandler
    * used to diagnose circular imports.
    */
   private Stack m_importStack = new Stack();
+  
+  /**
+   * A stack of Source objects obtained from a URIResolver,
+   * for each element in this stack there is a 1-1 correspondence
+   * with an element in the m_importStack.
+   */
+  private Stack m_importSourceStack = new Stack();
 
   /**
    * Push an import href onto the stylesheet stack.
@@ -1471,6 +1479,16 @@ public class StylesheetHandler extends DefaultHandler
   void pushImportURL(String hrefUrl)
   {
     m_importStack.push(hrefUrl);
+  }
+  
+  /**
+   * Push the Source of an import href onto the stylesheet stack,
+   * obtained from a URIResolver, null if there is no URIResolver,
+   * or if that resolver returned null.
+   */
+  void pushImportSource(Source sourceFromURIResolver)
+  {
+    m_importSourceStack.push(sourceFromURIResolver);
   }
 
   /**
@@ -1494,6 +1512,25 @@ public class StylesheetHandler extends DefaultHandler
   String popImportURL()
   {
     return (String) m_importStack.pop();
+  }
+  
+  String peekImportURL()
+  {
+    return (String) m_importStack.peek();
+  }
+  
+  Source peekSourceFromURIResolver()
+  {
+    return (Source) m_importSourceStack.peek();
+  }
+  
+  /**
+   * Pop a Source from a user provided URIResolver, corresponding
+   * to the URL popped from the m_importStack.
+   */
+  Source popImportSource()
+  {
+    return (Source) m_importSourceStack.pop();
   }
 
   /**
