@@ -268,7 +268,7 @@ public class FuncDocument extends Function2Args
 
     try
     {
-      if ((null != uri) && (uri.toString().length() > 0))
+      if ((null != uri) && (uri.length() > 0))
       {
         newDoc = treeMgr.getSourceTree(source, xctxt.getSAXLocator(), xctxt);
 

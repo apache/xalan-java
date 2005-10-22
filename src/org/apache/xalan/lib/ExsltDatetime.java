@@ -160,7 +160,7 @@ public class ExsltDatetime
      */
     public static String date()
     {
-      String datetime = dateTime().toString();
+      String datetime = dateTime();
       String date = datetime.substring(0, datetime.indexOf("T"));
       String zone = datetime.substring(getZoneStart(datetime));
       return (date + zone);
@@ -211,7 +211,7 @@ public class ExsltDatetime
      */
     public static String time()
     {
-      String datetime = dateTime().toString();
+      String datetime = dateTime();
       String time = datetime.substring(datetime.indexOf("T")+1);
       
 	  // The datetime() function returns the zone on the datetime string.  If we

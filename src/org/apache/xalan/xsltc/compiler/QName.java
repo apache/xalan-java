@@ -76,7 +76,6 @@ final class QName {
     }
 
     public String dump() {
-	return new String("QName: " + _namespace + "(" + _prefix + "):" 
-	    + _localname);
+	return "QName: " + _namespace + "(" + _prefix + "):" + _localname;
     }
 }
