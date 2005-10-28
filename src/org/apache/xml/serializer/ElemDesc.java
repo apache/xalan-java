@@ -22,8 +22,9 @@ import org.apache.xml.serializer.utils.StringToIntTable;
 
 /**
  * This class has a series of flags (bit values) that describe an HTML element
- * 
- * This class is public because XSLTC uses it, it is not a public API.
+ * <p>
+ * This class is not a public API.
+ * It is public because it is used outside of this package.
  * 
  * @xsl.usage internal
  */
@@ -105,7 +106,7 @@ public final class ElemDesc
     static final int HEADELEM = (1 << 22);
     
     /** Bit position if this element is the "HTML" element */
-    private static final int HTMLELEM = (1 << 23);
+    static final int HTMLELEM = (1 << 23);
 
     /** Bit position if this attribute type is a URL. */
     public static final int ATTRURL = (1 << 1);
