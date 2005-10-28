@@ -121,8 +121,8 @@ public final class OutputPropertiesFactory
         
     /** 
      * The non-standard property key to use to set the
-     * number of whitepaces to indent by, per indentation level,
-     * if indent="yes".
+     * characters to write out as at the end of a line,
+     * rather than the default ones from the runtime.
      */
     public static final String S_KEY_LINE_SEPARATOR =
         S_BUILTIN_EXTENSIONS_UNIVERSAL + "line-separator";        
