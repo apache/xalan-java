@@ -54,8 +54,9 @@ public final class Method
   public static final String HTML = "html";
 
   /**
-   * The output method for XHTML documents,
-   * this method type is not currently supported: <tt>xhtml</tt>.
+   * The output method for XHTML documents: <tt>xhtml</tt>.
+   * <p>
+   * This method type is not currently supported.
    */
   public static final String XHTML = "xhtml";
 
