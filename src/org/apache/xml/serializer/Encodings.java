@@ -36,10 +36,10 @@ import java.util.StringTokenizer;
 /**
  * Provides information about encodings. Depends on the Java runtime
  * to provides writers for the different encodings.
+ * <p>
+ * This class is not a public API. It is only public because it
+ * is used outside of this package.
  * 
- * This class is only for internal use within Xalan. However, it is used directly
- * by org.apache.xalan.xsltc.compiler.Output.
- *
  * @xsl.usage internal
  */
 
