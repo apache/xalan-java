@@ -664,7 +664,7 @@ final class CharInfo
         }
     }
     
-    private void defineChar2StringMapping(String outputString, char inputChar) 
+    void defineChar2StringMapping(String outputString, char inputChar) 
     {
         CharKey character = new CharKey(inputChar);
         m_charToString.put(character, outputString);
