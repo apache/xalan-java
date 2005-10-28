@@ -42,7 +42,7 @@ import org.xml.sax.SAXException;
  * </pre>
  * @xsl.usage internal
  */
-abstract interface ExtendedContentHandler extends org.xml.sax.ContentHandler
+public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
 {
     /**
      * Add at attribute to the current element
