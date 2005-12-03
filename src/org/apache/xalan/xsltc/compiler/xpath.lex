@@ -86,7 +86,7 @@ import java_cup.runtime.Symbol;
             case sym.OR:
             case sym.MOD:
             case sym.DIV:
-            case sym.STAR:
+            case sym.MULT:
             case sym.SLASH:
             case sym.DSLASH:
             case sym.VBAR:
@@ -101,6 +101,40 @@ import java_cup.runtime.Symbol;
                 return newSymbol(sym.QNAME, yytext());
             }
             return newSymbol(ss);
+        }
+
+        /**
+         * If symbol is first token or if it follows any of the operators
+         * listed in http://www.w3.org/TR/xpath#exprlex then treat as a
+         * wildcard instead of a multiplication operator
+         */
+        Symbol disambiguateStar() throws Exception {
+            switch (last) {
+            case -1:    // first token
+            case sym.ATSIGN:
+            case sym.DCOLON:
+            case sym.LPAREN:
+            case sym.LBRACK:
+            case sym.COMMA:
+            case sym.AND:
+            case sym.OR:
+            case sym.MOD:
+            case sym.DIV:
+            case sym.MULT:
+            case sym.SLASH:
+            case sym.DSLASH:
+            case sym.VBAR:
+            case sym.PLUS:
+            case sym.MINUS:
+            case sym.EQ:
+            case sym.NE:
+            case sym.LT:
+            case sym.LE:
+            case sym.GT:
+            case sym.GE:
+                return newSymbol(sym.STAR);
+            }
+            return newSymbol(sym.MULT);
         }
 
         Symbol newSymbol(int ss) {
@@ -156,7 +190,7 @@ LowSurrogate=[\uDC00-\uDFFF]
 
 %%
 
-"*"                      { return newSymbol(sym.STAR); }
+"*"                      { return disambiguateStar(); }
 "/"                      { return newSymbol(sym.SLASH); } 
 "+"                      { return newSymbol(sym.PLUS); }
 "-"                      { return newSymbol(sym.MINUS); }

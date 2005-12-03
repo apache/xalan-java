@@ -297,7 +297,7 @@ terminal DOLLAR, ATSIGN;
 terminal DDOT, DCOLON, DSLASH;
 terminal EQ, NE;
 terminal LT, GT, LE, GE;
-terminal PLUS, MINUS, DIV, MOD;
+terminal PLUS, MINUS, DIV, MOD, MULT;
 terminal String Literal;
 terminal String QNAME;
 terminal ID, KEY, TEXT, NODE, OR, AND, COMMENT, PI, PIPARAM, PRECEDINGSIBLING;
@@ -341,7 +341,7 @@ precedence nonassoc EQ, NE;
 precedence left LT, GT, LE, GE;
     
 precedence left PLUS, MINUS;
-precedence left DIV, MOD, STAR;
+precedence left DIV, MOD, MULT;
 precedence left DOLLAR;
 precedence left ATSIGN;
 precedence right DCOLON;
@@ -540,7 +540,7 @@ AdditiveExpr ::= MultiplicativeExpr:me
 MultiplicativeExpr ::= UnaryExpr:ue
         {: RESULT = ue; :}
 
-        | MultiplicativeExpr:me STAR UnaryExpr:ue
+        | MultiplicativeExpr:me MULT UnaryExpr:ue
         {: RESULT = new BinOpExpr(BinOpExpr.TIMES, me, ue); :}
 
         | MultiplicativeExpr:me DIV UnaryExpr:ue
