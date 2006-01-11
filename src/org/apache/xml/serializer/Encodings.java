@@ -48,12 +48,7 @@ public final class Encodings extends Object
     /**
      * Standard filename for properties file with encodings data.
      */
-    private static final String ENCODINGS_FILE = "org/apache/xml/serializer/Encodings.properties";
-
-    /**
-     * Standard filename for properties file with encodings data.
-     */
-    private static final String ENCODINGS_PROP = "org.apache.xalan.serialize.encodings";
+    private static final String ENCODINGS_FILE = SerializerBase.PKG_PATH+"/Encodings.properties";
 
     /**
      * Returns a writer for the specified encoding based on
@@ -294,30 +289,13 @@ public final class Encodings extends Object
      */
     private static EncodingInfo[] loadEncodingInfo()
     {
-        URL url = null;
         try
         {
-            String urlString = null;
-            InputStream is = null;
-
-            try
-            {
-                urlString = System.getProperty(ENCODINGS_PROP, "");
-            }
-            catch (SecurityException e)
-            {
-            }
-
-            if (urlString != null && urlString.length() > 0) {
-                url = new URL(urlString);
-                is = url.openStream();
-            }
-
-            if (is == null) {
-                SecuritySupport ss = SecuritySupport.getInstance();
-                is = ss.getResourceAsStream(ObjectFactory.findClassLoader(),
+            final InputStream is; 
+                
+            SecuritySupport ss = SecuritySupport.getInstance();
+            is = ss.getResourceAsStream(ObjectFactory.findClassLoader(),
                                             ENCODINGS_FILE);
-            }
 
             Properties props = new Properties();
             if (is != null) {

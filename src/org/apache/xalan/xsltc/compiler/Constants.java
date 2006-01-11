@@ -20,6 +20,7 @@
 package org.apache.xalan.xsltc.compiler;
 
 import org.apache.bcel.generic.InstructionConstants;
+import org.apache.xml.serializer.SerializerBase;
 
 /**
  * @author Jacek Ambroziak
@@ -136,9 +137,9 @@ public interface Constants extends InstructionConstants {
     public static final String STRING_VALUE_HANDLER_SIG 
 	= "Lorg/apache/xalan/xsltc/runtime/StringValueHandler;";
     public static final String OUTPUT_HANDLER
-	= "org/apache/xml/serializer/SerializationHandler";
+	= SerializerBase.PKG_PATH+"/SerializationHandler";
     public static final String OUTPUT_HANDLER_SIG
-	= "Lorg/apache/xml/serializer/SerializationHandler;";
+	= "L"+SerializerBase.PKG_PATH+"/SerializationHandler;";
     public static final String FILTER_INTERFACE   
 	= "org.apache.xalan.xsltc.dom.Filter";
     public static final String FILTER_INTERFACE_SIG   
@@ -212,7 +213,7 @@ public interface Constants extends InstructionConstants {
     public static final String UNION_ITERATOR_SIG  
 	= "Lorg/apache/xalan/xsltc/dom/UnionIterator;";
     public static final String TRANSLET_OUTPUT_SIG    
-	= "Lorg/apache/xml/serializer/SerializationHandler;";
+	= "L"+SerializerBase.PKG_PATH+"/SerializationHandler;";
     public static final String MAKE_NODE_SIG       
 	= "(I)Lorg/w3c/dom/Node;";
     public static final String MAKE_NODE_SIG2      
@@ -223,10 +224,10 @@ public interface Constants extends InstructionConstants {
 	= "(" + NODE_ITERATOR_SIG + ")Lorg/w3c/dom/NodeList;";
     
     public static final String STREAM_XML_OUTPUT
-    = "org.apache.xml.serializer.ToXMLStream";
+    = SerializerBase.PKG_NAME+".ToXMLStream";
     
     public static final String OUTPUT_BASE
-    = "org.apache.xml.serializer.SerializerBase";
+    = SerializerBase.PKG_NAME+".SerializerBase";
     
     public static final String LOAD_DOCUMENT_CLASS
 	= "org.apache.xalan.xsltc.dom.LoadDocument";
@@ -259,7 +260,7 @@ public interface Constants extends InstructionConstants {
 	= "org.apache.xalan.xsltc.TransletOutputBase";
     // output interface
     public static final String TRANSLET_OUTPUT_INTERFACE
-	= "org.apache.xml.serializer.SerializationHandler";
+	= SerializerBase.PKG_NAME+".SerializationHandler";
     public static final String BASIS_LIBRARY_CLASS 
 	= "org.apache.xalan.xsltc.runtime.BasisLibrary";
     public static final String ATTRIBUTE_LIST_IMPL_CLASS 

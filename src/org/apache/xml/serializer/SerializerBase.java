@@ -44,6 +44,42 @@ public abstract class SerializerBase
     implements SerializationHandler, SerializerConstants
 {
     
+    /**
+     * The name of the package that this class is in.
+     * <p>
+     * Not a public API.
+     */
+    public static final String PKG_NAME;
+
+    /**
+     * The same as the name of the package that this class is in
+     * except that '.' are replaced with '/'.
+     * <p>
+     * Not a public API.
+     */
+    public static final String PKG_PATH;
+
+    static {
+        String fullyQualifiedName = SerializerBase.class.getName();
+        int lastDot = fullyQualifiedName.lastIndexOf('.');
+        if (lastDot < 0) {
+            PKG_NAME = "";
+        } else {
+            PKG_NAME = fullyQualifiedName.substring(0, lastDot);
+        }
+
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < PKG_NAME.length(); i++) {
+            char ch = PKG_NAME.charAt(i);
+            if (ch == '.')
+                sb.append('/');
+            else
+                sb.append(ch);
+        }
+        PKG_PATH = sb.toString();
+    }
+
+    
 
     /**
      * To fire off the end element trace event

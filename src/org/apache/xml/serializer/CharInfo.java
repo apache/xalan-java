@@ -57,14 +57,14 @@ final class CharInfo
      * If specified, the file will be resource loaded with the default class loader.
      */
     public static final String HTML_ENTITIES_RESOURCE = 
-                "org.apache.xml.serializer.HTMLEntities";
+                SerializerBase.PKG_NAME+".HTMLEntities";
 
     /**
      * The name of the XML entities file.
      * If specified, the file will be resource loaded with the default class loader.
      */
     public static final String XML_ENTITIES_RESOURCE = 
-                "org.apache.xml.serializer.XMLEntities";
+                SerializerBase.PKG_NAME+".XMLEntities";
 
     /** The horizontal tab character, which the parser should always normalize. */
     public static final char S_HORIZONAL_TAB = 0x09;

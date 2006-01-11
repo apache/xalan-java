@@ -184,7 +184,7 @@ public final class OutputPropertiesFactory
     private static Integer m_synch_object = new Integer(1);
 
     /** the directory in which the various method property files are located */
-    private static final String PROP_DIR = "org/apache/xml/serializer/";
+    private static final String PROP_DIR = SerializerBase.PKG_PATH+'/';
     /** property file for default XML properties */
     private static final String PROP_FILE_XML = "output_xml.properties";
     /** property file for default TEXT properties */

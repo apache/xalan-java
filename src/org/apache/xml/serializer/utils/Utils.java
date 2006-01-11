@@ -19,6 +19,7 @@
 package org.apache.xml.serializer.utils;
 
 import java.util.Hashtable;
+import org.apache.xml.serializer.SerializerBase;
 
 /**
  * This class contains utilities used by the serializer.
@@ -37,5 +38,5 @@ public final class Utils
      */
     public static final org.apache.xml.serializer.utils.Messages messages= 
         new org.apache.xml.serializer.utils.Messages(
-            "org.apache.xml.serializer.utils.SerializerMessages");
+            SerializerBase.PKG_NAME+".utils.SerializerMessages");
 }
