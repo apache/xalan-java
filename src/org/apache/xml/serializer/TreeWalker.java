@@ -20,8 +20,6 @@ package org.apache.xml.serializer;
 
 import java.io.File;
 
-import org.apache.xml.serializer.utils.AttList;
-import org.apache.xml.serializer.utils.DOM2Helper;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Element;
 import org.w3c.dom.EntityReference;
@@ -29,11 +27,13 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
-
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.LocatorImpl;
+
+import org.apache.xml.serializer.utils.AttList;
+import org.apache.xml.serializer.utils.DOM2Helper;
 
 /**
  * This class does a pre-order walk of the DOM tree, calling a ContentHandler
