@@ -39,7 +39,7 @@ import org.xml.sax.SAXException;
  * 
  * @xsl.usage internal
  */
-public final class ToXMLStream extends ToStream
+public class ToXMLStream extends ToStream
 {
 
     /**
