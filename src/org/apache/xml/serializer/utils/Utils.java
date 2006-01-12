@@ -18,14 +18,11 @@
  */
 package org.apache.xml.serializer.utils;
 
-import java.util.Hashtable;
-import org.apache.xml.serializer.SerializerBase;
-
 /**
  * This class contains utilities used by the serializer.
  * 
  * This class is not a public API, it is only public because it is
- * used by org.apache.xml.serializer.
+ * used by the serializer.
  * 
  * @xsl.usage internal
  */
@@ -36,7 +33,6 @@ public final class Utils
      * given resource bundle just once, it is
      * used by multiple transformations as long as the JVM stays up.
      */
-    public static final org.apache.xml.serializer.utils.Messages messages= 
-        new org.apache.xml.serializer.utils.Messages(
-            SerializerBase.PKG_NAME+".utils.SerializerMessages");
+    public static final Messages messages= 
+        new Messages(SerializerMessages.class.getName());
 }
