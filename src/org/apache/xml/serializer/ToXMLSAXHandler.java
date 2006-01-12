@@ -37,7 +37,7 @@ import org.xml.sax.ext.LexicalHandler;
  * information over these calls it will invoke the equivalent SAX methods
  * on a handler, the ultimate xsl:output method is known to be "xml".
  * 
- * This class is not a public API, it is only public because it is used by Xalan.
+ * This class is not a public API.
  * @xsl.usage internal
  */
 public final class ToXMLSAXHandler extends ToSAXHandler
@@ -363,7 +363,7 @@ public final class ToXMLSAXHandler extends ToSAXHandler
             if (getShouldOutputNSAttr()) 
             {
 
-	              /* Brian M.: don't know if we really needto do this. The
+	              /* I don't know if we really needto do this. The
 	               * callers of this object should have injected both
 	               * startPrefixMapping and the attributes.  We are
 	               * just covering our butt here.
@@ -376,7 +376,7 @@ public final class ToXMLSAXHandler extends ToSAXHandler
   	            }
   	            else 
                 {
-  	                if (!EMPTYSTRING.equals(uri)) // hack for XSLTC attribset16 test
+  	                if (!EMPTYSTRING.equals(uri)) // hack for attribset16 test
   	                {                             // that maps ns1 prefix to "" URI 
   	                    name = "xmlns:" + prefix;
   	
@@ -466,7 +466,6 @@ public final class ToXMLSAXHandler extends ToSAXHandler
         this.characters(m_charsBuff, 0, length); 
     }
 
-    /////////////////// from XSLTC //////////////
     public ToXMLSAXHandler(ContentHandler handler, String encoding)
     {
         super(handler, encoding);
