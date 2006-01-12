@@ -23,7 +23,7 @@ package org.apache.xml.serializer;
  * the Serializer release.
  * <P>This class implements the upcoming standard of having
  * org.apache.project-name.Version.getVersion() be a standard way 
- * to get version information.</P> 
+ * to get version information.</P>
  * @xsl.usage general
  */
 public final class Version
