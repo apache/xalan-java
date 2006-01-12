@@ -332,19 +332,15 @@ public final class Encodings extends Object
                 String val = props.getProperty(javaName);
                 int pos = val.indexOf(' ');
                 String mimeName;
-                //int lastPrintable;
                 if (pos < 0)
                 {
                     // Maybe report/log this problem?
                     //  "Last printable character not defined for encoding " +
                     //  mimeName + " (" + val + ")" ...
                     mimeName = val;
-                   // lastPrintable = 0x00FF;
                 }
                 else
                 {
-//                    lastPrintable =
-//                        Integer.decode(val.substring(pos).trim()).intValue();
                     StringTokenizer st =
                         new StringTokenizer(val.substring(0, pos), ",");
                     for (boolean first = true;
