@@ -35,7 +35,7 @@ import java.util.ResourceBundle;
  * translated. 
  * 
  * This class is not a public API, it is only public because it is 
- * used in org.apache.xml.serializer.
+ * used in the serializer.
  * 
  * @xsl.usage internal
  */
