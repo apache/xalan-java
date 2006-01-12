@@ -77,7 +77,7 @@ public final class ToXMLStream extends ToStream
     public void CopyFrom(ToXMLStream xmlListener)
     {
 
-        m_writer = xmlListener.m_writer;
+        setWriter(xmlListener.m_writer);
 
 
         // m_outputStream = xmlListener.m_outputStream;
