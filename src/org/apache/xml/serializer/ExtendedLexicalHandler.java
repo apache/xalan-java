@@ -25,7 +25,7 @@ import org.xml.sax.SAXException;
  * This interface is intended to be used by a serializer.
  * @xsl.usage internal
  */
-abstract interface ExtendedLexicalHandler extends org.xml.sax.ext.LexicalHandler
+public interface ExtendedLexicalHandler extends org.xml.sax.ext.LexicalHandler
 {
     /**
      * This method is used to notify of a comment
