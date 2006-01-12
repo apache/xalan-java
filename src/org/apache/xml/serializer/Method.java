@@ -22,7 +22,12 @@ package org.apache.xml.serializer;
  * This class defines the constants which are the names of the four default
  * output methods.
  * <p>
- * Three default output methods are defined: XML, HTML, and TEXT. 
+ * The default output methods defined are:
+ * <ul>
+ * <li>XML
+ * <li>TEXT
+ * <li>HTML
+ * </ul>
  * These constants can be used as an argument to the
  * OutputPropertiesFactory.getDefaultMethodProperties() method to get
  * the properties to create a serializer.
