@@ -298,7 +298,7 @@ public final class OutputPropertiesFactory
 
                 defaultProperties = m_text_properties;
             }
-            else if (method.equals(org.apache.xml.serializer.Method.UNKNOWN))
+            else if (method.equals(Method.UNKNOWN))
             {
                 if (null == m_unknown_properties) // double check
                 {
