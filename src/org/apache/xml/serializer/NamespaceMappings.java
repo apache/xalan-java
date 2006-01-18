@@ -20,7 +20,8 @@ package org.apache.xml.serializer;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Stack;
+
+import javax.naming.NameParser;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
@@ -55,9 +56,9 @@ import org.xml.sax.SAXException;
  * processed.  At any given moment of processing the currently visible prefixes
  * are on the stack and a prefix can be found given a uri, or a uri can be found
  * given a prefix.
- * 
- * This class is public only because it is used by Xalan. It is not a public API
- * 
+ *
+ * This class is intended for internal use only.  However, it is made public because
+ * other packages require it. 
  * @xsl.usage internal
  */
 public class NamespaceMappings
@@ -70,8 +71,8 @@ public class NamespaceMappings
 
     /**
      * Each entry (prefix) in this hashtable points to a Stack of URIs
-     * This table maps a prefix (String) to a Stack of prefix mappings.
-     * All mappings in that retrieved stack have the same prefix,
+     * This table maps a prefix (String) to a Stack of NamespaceNodes.
+     * All Namespace nodes in that retrieved stack have the same prefix,
      * though possibly different URI's or depths. Such a stack must have
      * mappings at deeper depths push later on such a stack.  Mappings pushed
      * earlier on the stack will have smaller values for MappingRecord.m_declarationDepth.
@@ -79,16 +80,17 @@ public class NamespaceMappings
     private Hashtable m_namespaces = new Hashtable();
 
     /** 
-     * The top of this stack contains the MapRecord
-     * of the last declared a namespace.
-     * Used to know how many prefix mappings to pop when leaving
-     * the current element depth.
-     * For every prefix mapping the current element depth is 
-     * pushed on this stack.
-     * That way all prefixes pushed at the current depth can be 
-     * removed at the same time.
-     * Used to ensure prefix/uri map scopes are closed correctly
-     *
+     * This stack is used as a convenience.
+     * It contains the pushed NamespaceNodes (shallowest
+     * to deepest) and is used to delete NamespaceNodes 
+     * when leaving the current element depth 
+     * to returning to the parent. The mappings of the deepest
+     * depth can be popped of the top and the same node
+     * can be removed from the appropriate prefix stack.
+     * 
+     * All prefixes pushed at the current depth can be 
+     * removed at the same time by using this stack to
+     * ensure prefix/uri map scopes are closed correctly.
      */
     private Stack m_nodeStack = new Stack();
 
@@ -110,33 +112,41 @@ public class NamespaceMappings
      */
     private void initNamespaces()
     {
- 
-
+        // The initial prefix mappings will never be deleted because they are at element depth -1 
+        // (a kludge)
+        
         // Define the default namespace (initially maps to "" uri)
         Stack stack;
-        m_namespaces.put(EMPTYSTRING, stack = new Stack());
-        stack.push(new MappingRecord(EMPTYSTRING,EMPTYSTRING,0));
+        MappingRecord nn;
+        nn = new MappingRecord(EMPTYSTRING, EMPTYSTRING, -1);
+        stack = createPrefixStack(EMPTYSTRING);
+        stack.push(nn);
 
-        m_namespaces.put(XML_PREFIX, stack = new Stack());
-        stack.push(new MappingRecord( XML_PREFIX,
-            "http://www.w3.org/XML/1998/namespace",0));
-
-        m_nodeStack.push(new MappingRecord(null,null,-1));
-
+        // define "xml" namespace
+        nn = new MappingRecord(XML_PREFIX, "http://www.w3.org/XML/1998/namespace", -1);
+        stack = createPrefixStack(XML_PREFIX);
+        stack.push(nn);
     }
 
     /**
      * Use a namespace prefix to lookup a namespace URI.
      * 
      * @param prefix String the prefix of the namespace
-     * @return the URI corresponding to the prefix
+     * @return the URI corresponding to the prefix, returns ""
+     * if there is no visible mapping.
      */
     public String lookupNamespace(String prefix)
     {
-        final Stack stack = (Stack) m_namespaces.get(prefix);
-        return stack != null && !stack.isEmpty() ? 
-            ((MappingRecord) stack.peek()).m_uri : null;
+        String uri = null;
+        final Stack stack = getPrefixStack(prefix);
+        if (stack != null && !stack.isEmpty()) {
+            uri = ((MappingRecord) stack.peek()).m_uri;
+        }
+        if (uri == null)
+            uri = EMPTYSTRING;
+        return uri;
     }
+  
     
     MappingRecord getMappingFromPrefix(String prefix) {
         final Stack stack = (Stack) m_namespaces.get(prefix);
@@ -198,7 +208,7 @@ public class NamespaceMappings
         }
 
         Stack stack;
-        if ((stack = (Stack) m_namespaces.get(prefix)) != null)
+        if ((stack = getPrefixStack(prefix)) != null)
         {
             stack.pop();
             return true;
@@ -212,29 +222,94 @@ public class NamespaceMappings
      * @param uri a String with the uri to which the prefix is to map
      * @param elemDepth the depth of current declaration
      */
-    boolean pushNamespace(String prefix, String uri, int elemDepth)
+    public boolean pushNamespace(String prefix, String uri, int elemDepth)
     {
+        boolean pushed;
         // Prefixes "xml" and "xmlns" cannot be redefined
-        if (prefix.startsWith(XML_PREFIX))
+        if (!prefix.startsWith(XML_PREFIX))
         {
-            return false;
-        }
 
-        Stack stack;
-        // Get the stack that contains URIs for the specified prefix
-        if ((stack = (Stack) m_namespaces.get(prefix)) == null)
-        {
-            m_namespaces.put(prefix, stack = new Stack());
-        }
+            Stack stack;
+            // Get the stack that contains URIs for the specified prefix
+            if ((stack = getPrefixStack(prefix)) == null)
+                stack = createPrefixStack(prefix);
 
-        if (!stack.empty() && uri.equals(((MappingRecord)stack.peek()).m_uri))
-        {
-            return false;
+            switch (stack.top)
+            {
+                case -1 :
+                    pushed = true;  // stack is empty, so push the new one on the stack
+                    break;
+                case 0 :
+                    {
+                        // only one thing on the stack, if the new one is the
+                        // same prefix/uri mapping as the old one don't push, 
+                        // but if the uri's differ push it on the stack.
+                        MappingRecord pm = (MappingRecord) stack.peek();
+                        if (uri.equals(pm.m_uri))
+                            pushed = false;
+                        else
+                            pushed = true;
+                    }
+                    break;
+                default : // 2 or more things on the stack
+                    {
+                        MappingRecord pm = (MappingRecord) stack.peek();
+                        if (null == pm.m_uri
+                            && !uri.equals(EMPTYSTRING)
+                            && pm.m_declarationDepth == elemDepth)
+                        {
+                            // The top of the stack masks shallower mappings and
+                            // the new mapping is at the same depth as the masking
+                            // and the masked mapping is the same as the new one
+                            
+                            MappingRecord pm2 =
+                                (MappingRecord) stack.peek(stack.top - 1);
+                            if (uri.equals(pm2.m_uri))
+                            {
+                                // The masked mapping is the same as the new one
+                                // so don't push this mapping, but delete the masking
+                                // one by popping it off the top
+                                // This is an optimization to re-use the ancestors mapping.
+                                pushed = false;
+                                stack.pop();
+                            }
+                            else
+                                pushed = true;
+                            // the ancestors mapping differs, so push it
+                        }
+                        else
+                        {
+                            // The mapping at the top of the stack is not a masking
+                            // or is shallower than the new one or the new mapping is
+                            // itself not a masking
+                            if (uri.equals(pm.m_uri))
+                            {
+                                pushed = false;
+                                // old and new URI's are the same, don't push
+                                // this is an optimization to re-use the ancestors mapping
+                            }
+                            else
+                                pushed = true;
+                                // old and new URI's differ, so push                      
+                        }
+                    }
+                break;
+            }
+            if (pushed)
+            {
+
+                MappingRecord namespaceNode =
+                    new MappingRecord(prefix, uri, elemDepth);
+                stack.push(namespaceNode);
+                //        m_nodeStack.push(new Integer(elemDepth));
+                m_nodeStack.push(namespaceNode);
+            }
+
         }
-        MappingRecord map = new MappingRecord(prefix,uri,elemDepth);
-        stack.push(map);
-        m_nodeStack.push(map);
-        return true;
+        else
+            pushed = false;
+
+        return pushed;
     }
 
     /**
@@ -251,29 +326,49 @@ public class NamespaceMappings
         {
             if (m_nodeStack.isEmpty())
                 return;
-            MappingRecord map = (MappingRecord)(m_nodeStack.peek());
+            MappingRecord map = (MappingRecord) (m_nodeStack.peek());
             int depth = map.m_declarationDepth;
-            if (depth < elemDepth)
-                return;
+            if (elemDepth < 1 || map.m_declarationDepth < elemDepth)
+                break;
             /* the depth of the declared mapping is elemDepth or deeper
              * so get rid of it
              */
 
-            map = (MappingRecord) m_nodeStack.pop();
-            final String prefix = map.m_prefix; 
-            popNamespace(prefix);
-            if (saxHandler != null)
+            MappingRecord nm1 = (MappingRecord) m_nodeStack.pop();
+            // pop the node from the stack
+            String prefix = map.m_prefix;
+
+            Stack prefixStack = getPrefixStack(prefix);
+            MappingRecord nm2 = (MappingRecord) prefixStack.peek();
+            if (nm1 == nm2)
             {
-                try
+                // It would be nice to always pop() but we
+                // need to check that the prefix stack still has
+                // the node we want to get rid of. This is because
+                // the optimization of essentially this situation:
+                // <a xmlns:x="abc"><b xmlns:x="" xmlns:x="abc" /></a>
+                // will remove both mappings in <b> because the
+                // new mapping is the same as the masked one and we get
+                // <a xmlns:x="abc"><b/></a>
+                // So we are only removing xmlns:x="" or
+                // xmlns:x="abc" from the depth of element <b>
+                // when going back to <a> if in fact they have
+                // not been optimized away.
+                // 
+                prefixStack.pop();
+                if (saxHandler != null)
                 {
-                    saxHandler.endPrefixMapping(prefix);
-                }
-                catch (SAXException e)
-                {
-                    // not much we can do if they aren't willing to listen
+                    try
+                    {
+                        saxHandler.endPrefixMapping(prefix);
+                    }
+                    catch (SAXException e)
+                    {
+                        // not much we can do if they aren't willing to listen
+                    }
                 }
             }
-               
+
         }
     }
 
@@ -293,7 +388,8 @@ public class NamespaceMappings
      */
     public Object clone() throws CloneNotSupportedException {
         NamespaceMappings clone = new NamespaceMappings();
-        clone.m_nodeStack = (Stack) m_nodeStack.clone();
+        clone.m_nodeStack = (NamespaceMappings.Stack) m_nodeStack.clone();        
+        clone.count = this.count;
         clone.m_namespaces = (Hashtable) m_namespaces.clone();
         
         clone.count = count;
@@ -306,20 +402,131 @@ public class NamespaceMappings
         this.count = 0;
         this.m_namespaces.clear();
         this.m_nodeStack.clear();        
+        
         initNamespaces();
     }
     
+    /**
+     * Just a little class that ties the 3 fields together
+     * into one object, and this simplifies the pushing
+     * and popping of namespaces to one push or one pop on
+     * one stack rather than on 3 separate stacks.
+     */
     class MappingRecord {
         final String m_prefix;  // the prefix
-        final String m_uri;     // the uri
+        final String m_uri;     // the uri, possibly "" but never null
         // the depth of the element where declartion was made
         final int m_declarationDepth;
         MappingRecord(String prefix, String uri, int depth) {
             m_prefix = prefix;
-            m_uri = uri;
+            m_uri = (uri==null)? EMPTYSTRING : uri;
             m_declarationDepth = depth;
-            
         }
+    }    
+    
+    /**
+     * Rather than using java.util.Stack, this private class
+     * provides a minimal subset of methods and is faster
+     * because it is not thread-safe.
+     */
+    private class Stack {
+        private int top = -1;
+        private int max = 20;
+        Object[] m_stack = new Object[max];
+        
+        public Object clone() throws CloneNotSupportedException {
+            NamespaceMappings.Stack clone = new NamespaceMappings.Stack();  
+            clone.max = this.max;
+            clone.top = this.top;
+            clone.m_stack = new Object[clone.max];
+            for (int i=0; i <= top; i++) {
+            	// We are just copying references to immutable MappingRecord objects here
+            	// so it is OK if the clone has references to these.
+            	clone.m_stack[i] = this.m_stack[i];
+            }
+            return clone;            
+        }
+        
+        public Stack()
+        {
+        }
+        
+        public Object push(Object o) {
+            top++;
+            if (max <= top) {
+                int newMax = 2*max + 1;
+                Object[] newArray = new Object[newMax];
+                System.arraycopy(m_stack,0, newArray, 0, max);
+                max = newMax;
+                m_stack = newArray;
+            }
+            m_stack[top] = o;
+            return o;
+        }
+        
+        public Object pop() {
+            Object o;
+            if (0 <= top) {
+                o = m_stack[top];
+                // m_stack[top] = null;  do we really care?
+                top--;
+            }
+            else
+                o = null;
+            return o;
+        }
+        
+        public Object peek() {
+            Object o;
+            if (0 <= top) {
+                o = m_stack[top];
+            }
+            else
+                o = null;
+            return o;
+        }
+        
+        public Object peek(int idx) {
+            return m_stack[idx];
+        }
+        
+        public boolean isEmpty() {
+            return (top < 0);
+        }
+        public boolean empty() {
+            return (top < 0);
+        }
+        
+        public void clear() {
+            for (int i=0; i<= top; i++)
+                m_stack[i] = null;
+            top = -1;
+        }  
+        
+        public Object getElement(int index) {
+            return m_stack[index];      
+        }
+    }
+    /**
+     * A more type-safe way to get a stack of prefix mappings
+     * from the Hashtable m_namespaces
+     * (this is the only method that does the type cast).
+     */
+
+    private Stack getPrefixStack(String prefix) {
+        Stack fs = (Stack) m_namespaces.get(prefix);
+        return fs;
+    }
+    
+    /**
+     * A more type-safe way of saving stacks under the
+     * m_namespaces Hashtable.
+     */
+    private Stack createPrefixStack(String prefix)
+    {
+        Stack fs = new Stack();
+        m_namespaces.put(prefix, fs);
+        return fs;
     }
 
 }
