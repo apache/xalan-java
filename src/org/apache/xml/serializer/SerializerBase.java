@@ -252,6 +252,8 @@ public abstract class SerializerBase
      */
     public void comment(String data) throws SAXException
     {
+        m_docIsEmpty = false;
+        
         final int length = data.length();
         if (length > m_charsBuff.length)
         {
@@ -1434,11 +1436,31 @@ public abstract class SerializerBase
         
     }
     
+    
     /**
-     * Push a boolean state based on if the name of the current element
-     * is found in the list of qnames.  A state is only pushed if
-     * there were some cdata-section-names were specified.
+     * Return true if nothing has been sent to this result tree yet.
      * <p>
+     * This is not a public API.
+     * 
+     * @xsl.usage internal
+     */
+    public boolean documentIsEmpty() {
+        // If we haven't called startDocument() yet, then this document is empty
+        return m_docIsEmpty && (m_elemContext.m_currentElemDepth == 0);
+    }    
+    
+    /**
+     * Return true if the current element in m_elemContext
+     * is a CDATA section.
+     * CDATA sections are specified in the <xsl:output> attribute
+     * cdata-section-names or in the JAXP equivalent property.
+     * In any case the format of the value of such a property is:
+     * <pre>
+     * "{uri1}localName1 {uri2}localName2 . . . "
+     * </pre>
+     * 
+     * <p>
+     * This method is not a public API, but is only used internally by the serializer.
      */
     protected boolean isCdataSection()
     {

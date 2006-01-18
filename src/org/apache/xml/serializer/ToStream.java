@@ -276,8 +276,7 @@ abstract public class ToStream extends SerializerBase
             return ((WriterToUTF8Buffered) m_writer).getOutputStream();
         if (m_writer instanceof WriterToASCI)
             return ((WriterToASCI) m_writer).getOutputStream();
-        else
-            return null;
+        return null;
     }
 
     // Implement DeclHandler
@@ -447,9 +446,13 @@ abstract public class ToStream extends SerializerBase
             OutputPropertyUtils.getIntProperty(
                 OutputPropertiesFactory.S_KEY_INDENT_AMOUNT,
                 format));
-        setIndent(
-            OutputPropertyUtils.getBooleanProperty(OutputKeys.INDENT, format));
-            
+
+        String vall = format.getProperty(OutputKeys.INDENT);
+        if (vall != null) {
+            setIndent(
+                OutputPropertyUtils.getBooleanProperty(OutputKeys.INDENT, format));
+        }
+
         {
             String sep = 
                     format.getProperty(OutputPropertiesFactory.S_KEY_LINE_SEPARATOR);
@@ -521,6 +524,21 @@ abstract public class ToStream extends SerializerBase
             m_charInfo = CharInfo.getCharInfo(entitiesFileName, method);
         }
 
+        // if we are tracing events we need to trace what
+        // characters are written to the output writer.
+        if (m_tracer != null) {
+            boolean noTracerYet = true;
+            Writer w2 = m_writer;
+            while (w2 instanceof WriterChain) {
+                if (w2 instanceof SerializerTraceWriter) {
+                    noTracerYet = false;
+                    break;
+                }
+                w2 = ((WriterChain)w2).getWriter();
+            }
+            if (noTracerYet)
+                m_writer = new SerializerTraceWriter(m_writer, m_tracer);
+        }
     }
 
     /**
@@ -566,20 +584,6 @@ abstract public class ToStream extends SerializerBase
         if (encoding.equalsIgnoreCase("UTF-8"))
         {
             m_isUTF8 = true;
-            //            if (output instanceof java.io.BufferedOutputStream)
-            //            {
-            //                init(new WriterToUTF8(output), format, defaultProperties, true);
-            //            }
-            //            else if (output instanceof java.io.FileOutputStream)
-            //            {
-            //                init(new WriterToUTF8Buffered(output), format, defaultProperties, true);
-            //            }
-            //            else
-            //            {
-            //                // Not sure what to do in this case.  I'm going to be conservative 
-            //                // and not buffer.
-            //                init(new WriterToUTF8(output), format, defaultProperties, true);
-            //            }
          
 
                 init(
@@ -1341,6 +1345,9 @@ abstract public class ToStream extends SerializerBase
         // is created if string is empty.	
         if (length == 0 || (m_inEntityRef && !m_expandDTDEntities))
             return;
+            
+        m_docIsEmpty = false;
+        
         if (m_elemContext.m_startTagOpen)
         {
             closeStartTag();
@@ -1726,6 +1733,7 @@ abstract public class ToStream extends SerializerBase
         {
             startDocumentInternal();
             m_needToCallStartDocument = false;
+            m_docIsEmpty = false;
         }
         else if (m_cdataTagOpen)
             closeCDATA();
