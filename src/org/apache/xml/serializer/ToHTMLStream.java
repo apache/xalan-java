@@ -296,7 +296,7 @@ public final class ToHTMLStream extends ToStream
                     | ElemDesc.BLOCK
                     | ElemDesc.BLOCKFORM
                     | ElemDesc.BLOCKFORMFIELDSET));
-        m_elementFlags.put("HTML", new ElemDesc(0 | ElemDesc.BLOCK));
+        m_elementFlags.put("HTML", new ElemDesc(0 | ElemDesc.BLOCK | ElemDesc.HTMLELEM));
 
         // From "John Ky" <hand@syd.speednet.com.au
         // Transitional Document Type Definition ()
@@ -339,7 +339,6 @@ public final class ToHTMLStream extends ToStream
                     | ElemDesc.BLOCKFORM
                     | ElemDesc.BLOCKFORMFIELDSET));
 
-
         // NOW FOR ATTRIBUTE INFORMATION . . .
         ElemDesc elemDesc;
 
@@ -351,11 +350,13 @@ public final class ToHTMLStream extends ToStream
         
         // ----------------------------------------------
         elemDesc = (ElemDesc) m_elementFlags.get("AREA");
+
         elemDesc.setAttr("HREF", ElemDesc.ATTRURL);
         elemDesc.setAttr("NOHREF", ElemDesc.ATTREMPTY);
 
         // ----------------------------------------------
         elemDesc = (ElemDesc) m_elementFlags.get("BASE");
+
         elemDesc.setAttr("HREF", ElemDesc.ATTRURL);
 
         // ----------------------------------------------
@@ -364,12 +365,13 @@ public final class ToHTMLStream extends ToStream
 
         // ----------------------------------------------
         elemDesc = (ElemDesc) m_elementFlags.get("BLOCKQUOTE");
+
         elemDesc.setAttr("CITE", ElemDesc.ATTRURL);
 
         // ----------------------------------------------
         elemDesc = (ElemDesc) m_elementFlags.get("DEL");
         elemDesc.setAttr("CITE", ElemDesc.ATTRURL);
-     
+
         // ----------------------------------------------
         elemDesc = (ElemDesc) m_elementFlags.get("DIR");
         elemDesc.setAttr("COMPACT", ElemDesc.ATTREMPTY);
@@ -423,6 +425,7 @@ public final class ToHTMLStream extends ToStream
 
         // ----------------------------------------------
         elemDesc = (ElemDesc) m_elementFlags.get("INPUT");
+
         elemDesc.setAttr("SRC", ElemDesc.ATTRURL);
         elemDesc.setAttr("USEMAP", ElemDesc.ATTRURL);
         elemDesc.setAttr("CHECKED", ElemDesc.ATTREMPTY);
@@ -449,6 +452,7 @@ public final class ToHTMLStream extends ToStream
         
         // ----------------------------------------------
         elemDesc = (ElemDesc) m_elementFlags.get("OBJECT");
+
         elemDesc.setAttr("CLASSID", ElemDesc.ATTRURL);
         elemDesc.setAttr("CODEBASE", ElemDesc.ATTRURL);
         elemDesc.setAttr("DATA", ElemDesc.ATTRURL);
@@ -561,16 +565,32 @@ public final class ToHTMLStream extends ToStream
      */
     public void setOutputFormat(Properties format)
     {
- 
-        m_specialEscapeURLs =
-            OutputPropertyUtils.getBooleanProperty(
-                OutputPropertiesFactory.S_USE_URL_ESCAPING,
-                format);
+        /*
+         * If "format" does not contain the property
+         * S_USE_URL_ESCAPING, then don't set this value at all,
+         * just leave as-is rather than explicitly setting it.
+         */
+        String value; 
+        value = format.getProperty(OutputPropertiesFactory.S_USE_URL_ESCAPING);
+        if (value != null) {
+            m_specialEscapeURLs =
+                OutputPropertyUtils.getBooleanProperty(
+                    OutputPropertiesFactory.S_USE_URL_ESCAPING,
+                    format);
+        }
 
-        m_omitMetaTag =
-            OutputPropertyUtils.getBooleanProperty(
-                OutputPropertiesFactory.S_OMIT_META_TAG,
-                format);
+        /*
+         * If "format" does not contain the property
+         * S_OMIT_META_TAG, then don't set this value at all,
+         * just leave as-is rather than explicitly setting it.
+         */
+        value = format.getProperty(OutputPropertiesFactory.S_OMIT_META_TAG);
+        if (value != null) {
+           m_omitMetaTag =
+                OutputPropertyUtils.getBooleanProperty(
+                    OutputPropertiesFactory.S_OMIT_META_TAG,
+                    format);
+        }
 
         super.setOutputFormat(format);
     }
@@ -614,6 +634,7 @@ public final class ToHTMLStream extends ToStream
         return m_dummy;
     }
     
+    
     /**
      * A Trie that is just a copy of the "static" one.
      * We need this one to be able to use the faster, but not thread-safe
@@ -639,6 +660,10 @@ public final class ToHTMLStream extends ToStream
     {
 
         super();
+        // we are just constructing this thing, no output properties
+        // have been used, so we will set the right default for
+        // indenting anyways
+        m_doIndent = true; 
         m_charInfo = m_htmlcharInfo;
         // initialize namespaces
         m_prefixMap = new NamespaceMappings();
@@ -1718,7 +1743,8 @@ public final class ToHTMLStream extends ToStream
 
     /**
      * For the enclosing elements starting tag write out out any attributes
-     * followed by ">"
+     * followed by ">". At this point we also mark if this element is
+     * a cdata-section-element.
      *
      *@throws org.xml.sax.SAXException
      */
@@ -1741,11 +1767,11 @@ public final class ToHTMLStream extends ToStream
 
             m_writer.write('>');
 
-            /* whether Xalan or XSLTC, we have the prefix mappings now, so
+            /* At this point we have the prefix mappings now, so
              * lets determine if the current element is specified in the cdata-
              * section-elements list.
              */
-            if (m_cdataSectionElements != null) 
+            if (m_CdataElems != null) // if there are any cdata sections
                 m_elemContext.m_isCdataSection = isCdataSection();
             if (m_doIndent)
             {

@@ -198,13 +198,6 @@ public abstract class SerializerBase
      */
     private Transformer m_transformer;
 
-    /** 
-     * Pairs of local names and corresponding URIs of CDATA sections. This list
-     * comes from the cdata-section-elements attribute. Every second one is a
-     * local name, and every other second one is the URI for the local name. 
-     */
-    protected Vector m_cdataSectionElements = null;
-
     /**
      * Namespace support, that keeps track of currently defined 
      * prefix/uri mappings. As processed elements come and go, so do
@@ -801,59 +794,6 @@ public abstract class SerializerBase
     }
 
     /**
-     * Push a boolean state based on if the name of the current element
-     * is found in the list of qnames.  A state is only pushed if
-     * there were some cdata-section-names were specified.
-     * <p>
-     * Hidden parameters are the vector of qualified elements specified in
-     * cdata-section-names attribute, and the m_cdataSectionStates stack
-     * onto which whether the current element is in the list is pushed (true or
-     * false). Other hidden parameters are the current elements namespaceURI,
-     * localName and qName
-     */
-    protected boolean isCdataSection()
-    {
-
-        boolean b = false;
-
-        if (null != m_cdataSectionElements)
-        {
-            if (m_elemContext.m_elementLocalName == null)
-                m_elemContext.m_elementLocalName = 
-                    getLocalName(m_elemContext.m_elementName);
-            if (m_elemContext.m_elementURI == null)
-            {
-                String prefix = getPrefixPart(m_elemContext.m_elementName);
-                if (prefix != null)
-                    m_elemContext.m_elementURI = 
-                        m_prefixMap.lookupNamespace(prefix);
-
-            }
-
-            if ((null != m_elemContext.m_elementURI) 
-                && m_elemContext.m_elementURI.length() == 0)
-                m_elemContext.m_elementURI = null;
-
-            int nElems = m_cdataSectionElements.size();
-
-            // loop through 2 at a time, as these are pairs of URI and localName
-            for (int i = 0; i < nElems; i += 2)
-            {
-                String uri = (String) m_cdataSectionElements.elementAt(i);
-                String loc = (String) m_cdataSectionElements.elementAt(i + 1);
-                if (loc.equals(m_elemContext.m_elementLocalName)
-                    && subPartMatch(m_elemContext.m_elementURI, uri))
-                {
-                    b = true;
-
-                    break;
-                }
-            }
-        }
-        return b;
-    }
-
-    /**
      * Tell if two strings are equal, without worry if the first string is null.
      *
      * @param p String reference, which may be null.
@@ -1308,7 +1248,7 @@ public abstract class SerializerBase
     private void resetSerializerBase()
     {
     	this.m_attributes.clear();
-    	this.m_cdataSectionElements = null;
+        this.m_StringOfCDATASections = null;
         this.m_elemContext = new ElemContext();
     	this.m_doctypePublic = null;
     	this.m_doctypeSystem = null;
@@ -1394,5 +1334,159 @@ public abstract class SerializerBase
         // This method just provides a definition to satisfy the interface
         // A particular sub-class of SerializerBase provides the implementation (if desired)        
     }
+ 
 
+    /** 
+     * The CDATA section names stored in a whitespace separateed list with
+     * each element being a word of the form "{uri}localName" This list
+     * comes from the cdata-section-elements attribute.
+     * 
+     * This field replaces m_cdataSectionElements Vector.
+     */
+    protected String m_StringOfCDATASections = null; 
+    
+    boolean m_docIsEmpty = true;
+    void initCdataElems(String s)
+    {
+        if (s != null)
+        {            
+            int max = s.length();
+
+            // true if we are in the middle of a pair of curly braces that delimit a URI
+            boolean inCurly = false;
+
+            // true if we found a URI but haven't yet processed the local name 
+            boolean foundURI = false;
+
+            StringBuffer buf = new StringBuffer();
+            String uri = null;
+            String localName = null;
+
+            // parse through string, breaking on whitespaces.  I do this instead
+            // of a tokenizer so I can track whitespace inside of curly brackets,
+            // which theoretically shouldn't happen if they contain legal URLs.
+
+
+            for (int i = 0; i < max; i++)
+            {
+
+                char c = s.charAt(i);
+
+                if (Character.isWhitespace(c))
+                {
+                    if (!inCurly)
+                    {
+                        if (buf.length() > 0)
+                        {
+                            localName = buf.toString();
+                            if (!foundURI)
+                                uri = "";
+                            addCDATAElement(uri,localName);
+                            buf.setLength(0);
+                            foundURI = false;
+                        }
+                        continue;
+                    }
+                    else
+                        buf.append(c); // add whitespace to the URI
+                }
+                else if ('{' == c) // starting a URI
+                    inCurly = true;
+                else if ('}' == c)
+                {
+                    // we just ended a URI, add the URI to the vector
+                    foundURI = true;
+                    uri = buf.toString();
+                    buf.setLength(0);
+                    inCurly = false;
+                }
+                else
+                {
+                    // append non-whitespace, non-curly to current URI or localName being gathered.                    
+                    buf.append(c);
+                }
+
+            }
+
+            if (buf.length() > 0)
+            {
+                // We have one last localName to process.
+                localName = buf.toString();
+                if (!foundURI)
+                    uri = "";
+                addCDATAElement(uri,localName);
+            }
+        }
+    }
+    protected java.util.Hashtable m_CdataElems = null;
+    private void addCDATAElement(String uri, String localName) 
+    {
+        if (m_CdataElems == null) {
+            m_CdataElems = new java.util.Hashtable();
+        }
+        
+        java.util.Hashtable h = (java.util.Hashtable) m_CdataElems.get(localName);
+        if (h == null) {
+            h = new java.util.Hashtable();
+            m_CdataElems.put(localName,h);
+        }
+        h.put(uri,uri);
+        
+    }
+    
+    /**
+     * Push a boolean state based on if the name of the current element
+     * is found in the list of qnames.  A state is only pushed if
+     * there were some cdata-section-names were specified.
+     * <p>
+     */
+    protected boolean isCdataSection()
+    {
+
+        boolean b = false;
+
+        if (null != m_StringOfCDATASections)
+        {
+            String localName = m_elemContext.m_elementLocalName;
+            if (localName == null) 
+            {
+                localName =  getLocalName(m_elemContext.m_elementName); 
+                m_elemContext.m_elementLocalName = localName;                   
+            }
+            
+            String uri = m_elemContext.m_elementURI; 
+            if ( uri == null)
+            {
+                String prefix = getPrefixPart(m_elemContext.m_elementName);
+                if (prefix != null) {
+                    uri = m_prefixMap.lookupNamespace(prefix);
+                    if (uri != null) 
+                        m_elemContext.m_elementURI = uri;
+                    else
+                        uri = "";                        
+                }
+                else {
+                    // no prefix so lookup the URI of the default namespace
+                    uri = m_prefixMap.lookupNamespace("");
+                    if (uri == null)  // If no URI then the empty string also means no URI
+                        uri = "";
+                }
+            }
+            else {
+                if (m_elemContext.m_elementURI.length() == 0)
+                m_elemContext.m_elementURI = null;
+            }             
+
+            java.util.Hashtable h = (java.util.Hashtable) m_CdataElems.get(m_elemContext.m_elementLocalName);
+            if (h != null) 
+            {
+                Object obj = h.get(uri);
+                if (obj != null)
+                    b = true; 
+            }
+
+        }
+        return b;
+    }
 }
+

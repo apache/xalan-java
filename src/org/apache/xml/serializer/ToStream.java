@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -221,7 +222,7 @@ abstract public class ToStream extends SerializerBase
     /**
      * Taken from XSLTC 
      */
-    private boolean m_escaping = true;
+    protected boolean m_escaping = true;
 
     /**
      * Flush the formatter's result stream.
@@ -426,13 +427,21 @@ abstract public class ToStream extends SerializerBase
         else
             m_writer = writer;        
         
+        if (m_format == null)
+            m_format = new java.util.Properties();
+        if (format != null)
+        {
+            Enumeration propNames = format.propertyNames();
+            while (propNames.hasMoreElements())
+            {
+                String key = (String) propNames.nextElement();
+                String value = format.getProperty(key);
+                m_format.setProperty(key, value);
+            } 
+        }
 
-        m_format = format;
-        //        m_cdataSectionNames =
-        //            OutputProperties.getQNameProperties(
-        //                OutputKeys.CDATA_SECTION_ELEMENTS,
-        //                format);
-        setCdataSectionElements(OutputKeys.CDATA_SECTION_ELEMENTS, format);
+        String cdataSectionNames = format.getProperty(OutputKeys.CDATA_SECTION_ELEMENTS);
+        addCdataSectionElements(cdataSectionNames);
 
         setIndentAmount(
             OutputPropertyUtils.getIntProperty(
@@ -1851,17 +1860,6 @@ abstract public class ToStream extends SerializerBase
                 else
                     writer.write('\"');
             }
-            boolean dothis = false;
-            if (dothis)
-            {
-                // at one point this code seemed right,
-                // but not anymore - Brian M.
-                if (closeDecl)
-                {
-                    writer.write('>');
-                    writer.write(m_lineSep, 0, m_lineSepLen);
-                }
-            }
         }
         catch (IOException e)
         {
@@ -1934,15 +1932,7 @@ abstract public class ToStream extends SerializerBase
                 writer.write(ch);
             }
             else
-            { // I guess the parser doesn't normalize cr/lf in attributes. -sb
-//                if ((CharInfo.S_CARRIAGERETURN == ch)
-//                    && ((i + 1) < len)
-//                    && (CharInfo.S_LINEFEED == stringChars[i + 1]))
-//                {
-//                    i++;
-//                    ch = CharInfo.S_LINEFEED;
-//                }
-
+            {
                 accumDefaultEscape(writer, ch, i, stringChars, len, false, true);
             }
         }
@@ -2389,7 +2379,7 @@ abstract public class ToStream extends SerializerBase
              * lets determine if the current element is specified in the cdata-
              * section-elements list.
              */
-            if (m_cdataSectionElements != null)
+            if (m_CdataElems != null)
                 m_elemContext.m_isCdataSection = isCdataSection();
 
             if (m_doIndent)
@@ -2562,7 +2552,34 @@ abstract public class ToStream extends SerializerBase
      */
     public void setCdataSectionElements(Vector URI_and_localNames)
     {
-        m_cdataSectionElements = URI_and_localNames;
+        // convert to the new way.
+        if (URI_and_localNames != null)
+        {
+            final int len = URI_and_localNames.size() - 1;
+            if (len > 0)
+            {
+                final StringBuffer sb = new StringBuffer();
+                for (int i = 0; i < len; i += 2)
+                {
+                    // whitspace separated "{uri1}local1 {uri2}local2 ..."
+                    if (i != 0)
+                        sb.append(' ');
+                    final String uri = (String) URI_and_localNames.elementAt(i);
+                    final String localName =
+                        (String) URI_and_localNames.elementAt(i + 1);
+                    if (uri != null)
+                    {
+                        // If there is no URI don't put this in, just the localName then.
+                        sb.append('{');
+                        sb.append(uri);
+                        sb.append('}');
+                    }
+                    sb.append(localName);
+                }
+                m_StringOfCDATASections = sb.toString();
+            }
+        }
+        initCdataElems(m_StringOfCDATASections);
     }
 
     /**
@@ -3326,5 +3343,25 @@ abstract public class ToStream extends SerializerBase
     public void setNewLine (char[] eolChars) {
         m_lineSep = eolChars;
         m_lineSepLen = eolChars.length;
+    }
+
+    /**
+     * Remembers the cdata sections specified in the cdata-section-elements by appending the given
+     * cdata section elements to the list. This method can be called multiple times, but once an
+     * element is put in the list of cdata section elements it can not be removed.
+     * This method should be used by both Xalan and XSLTC.
+     * 
+     * @param URI_and_localNames a whitespace separated list of element names, each element
+     * is a URI in curly braces (optional) and a local name. An example of such a parameter is:
+     * "{http://company.com}price {myURI2}book chapter"
+     */
+    public void addCdataSectionElements(String URI_and_localNames)
+    {
+        if (URI_and_localNames != null)
+            initCdataElems(URI_and_localNames);
+        if (m_StringOfCDATASections == null)
+            m_StringOfCDATASections = URI_and_localNames;
+        else
+            m_StringOfCDATASections += (" " + URI_and_localNames);
     }
 }
