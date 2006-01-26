@@ -72,6 +72,9 @@ final class ElemContext
 
     /**
      * The URI of the element.
+     * If this value is null it means that the URI is not yet determined
+     * for the element. Valid values are the empty string "", meaning
+     * that it is in no namespace, or a string of non-zero length.
      */
     String m_elementURI = null;
 
