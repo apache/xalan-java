@@ -51,11 +51,27 @@ package org.apache.xml.serializer;
  * <p>
  * This Class is not a public API, and should only be used internally within
  * the serializer.
- * 
+ * <p>
+ * This class is not a public API.
  * @xsl.usage internal
  */
 public final class EncodingInfo extends Object
 {
+
+    /**
+     * Not all characters in an encoding are in on contiguous group,
+     * however there is a lowest contiguous group starting at '\u0001'
+     * and working up to m_highCharInContiguousGroup.
+     * <p>
+     * This is the char for which chars at or below this value are 
+     * definately in the encoding, although for chars
+     * above this point they might be in the encoding.
+     * This exists for performance, especially for ASCII characters
+     * because for ASCII all chars in the range '\u0001' to '\u007F' 
+     * are in the encoding.
+     * 
+     */
+    private final char m_highCharInContiguousGroup;
 
     /**
      * The ISO encoding name.
@@ -79,6 +95,8 @@ public final class EncodingInfo extends Object
      * This is not a public API. It returns true if the
      * char in question is in the encoding.
      * @param ch the char in question.
+     * <p>
+     * This method is not a public API.
      * @xsl.usage internal
      */
     public boolean isInEncoding(char ch) {
@@ -98,6 +116,8 @@ public final class EncodingInfo extends Object
      * character formed by the high/low pair is in the encoding.
      * @param high a char that the a high char of a high/low surrogate pair.
      * @param low a char that is the low char of a high/low surrogate pair.
+     * <p>
+     * This method is not a public API.
      * @xsl.usage internal
      */
     public boolean isInEncoding(char high, char low) {
@@ -120,12 +140,16 @@ public final class EncodingInfo extends Object
      *
      * @param name reference to the ISO name.
      * @param javaName reference to the Java encoding name.
+     * @param highChar The char for which characters at or below this value are 
+     * definately in the
+     * encoding, although for characters above this point they might be in the encoding.
      */
-    public EncodingInfo(String name, String javaName)
+    public EncodingInfo(String name, String javaName, char highChar)
     {
 
         this.name = name;
         this.javaName = javaName;
+        this.m_highCharInContiguousGroup = highChar;
     }
     
     
@@ -502,6 +526,35 @@ public final class EncodingInfo extends Object
             }
         }
         return isInEncoding;
+    }
+    
+    /**
+     * This method exists for performance reasons.
+     * <p>
+     * Except for '\u0000', if a char is less than or equal to the value
+     * returned by this method then it in the encoding.
+     * <p>
+     * The characters in an encoding are not contiguous, however
+     * there is a lowest group of chars starting at '\u0001' upto and
+     * including the char returned by this method that are all in the encoding.
+     * So the char returned by this method essentially defines the lowest
+     * contiguous group.
+     * <p>
+     * chars above the value returned might be in the encoding, but 
+     * chars at or below the value returned are definately in the encoding.
+     * <p>
+     * In any case however, the isInEncoding(char) method can be used
+     * regardless of the value of the char returned by this method.
+     * <p>
+     * If the value returned is '\u0000' it means that every character must be tested
+     * with an isInEncoding method {@link #isInEncoding(char)} or {@link #isInEncoding(char, char)} 
+     * for surrogate pairs.
+     * <p>
+     * This method is not a public API.
+     * @xsl.usage internal
+     */
+    public final char getHighChar() {
+        return m_highCharInContiguousGroup;
     }
 
 }

@@ -19,7 +19,6 @@
 package org.apache.xml.serializer;
 
 import java.io.IOException;
-import java.util.Vector;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.Transformer;
@@ -156,7 +155,7 @@ public abstract class SerializerBase
      * The character encoding.  Must match the encoding used for the
      * printWriter.
      */
-    private String m_encoding = null;
+    String m_encoding = null;
 
     /**
      * Tells if we should write the XML declaration.
@@ -564,9 +563,9 @@ public abstract class SerializerBase
      * Sets the character encoding coming from the xsl:output encoding stylesheet attribute.
      * @param m_encoding the character encoding
      */
-    public void setEncoding(String m_encoding)
+    public void setEncoding(String encoding)
     {
-        this.m_encoding = m_encoding;
+        this.m_encoding = encoding;
     }
 
     /**
@@ -1469,40 +1468,20 @@ public abstract class SerializerBase
 
         if (null != m_StringOfCDATASections)
         {
-            String localName = m_elemContext.m_elementLocalName;
-            if (localName == null) 
+            if (m_elemContext.m_elementLocalName == null) 
             {
-                localName =  getLocalName(m_elemContext.m_elementName); 
+                String localName =  getLocalName(m_elemContext.m_elementName); 
                 m_elemContext.m_elementLocalName = localName;                   
             }
             
-            String uri = m_elemContext.m_elementURI; 
-            if ( uri == null)
-            {
-                String prefix = getPrefixPart(m_elemContext.m_elementName);
-                if (prefix != null) {
-                    uri = m_prefixMap.lookupNamespace(prefix);
-                    if (uri != null) 
-                        m_elemContext.m_elementURI = uri;
-                    else
-                        uri = "";                        
-                }
-                else {
-                    // no prefix so lookup the URI of the default namespace
-                    uri = m_prefixMap.lookupNamespace("");
-                    if (uri == null)  // If no URI then the empty string also means no URI
-                        uri = "";
-                }
-            }
-            else {
-                if (m_elemContext.m_elementURI.length() == 0)
-                m_elemContext.m_elementURI = null;
-            }             
+            if (m_elemContext.m_elementURI == null)
+                m_elemContext.m_elementURI = getElementURI();
+                
 
             java.util.Hashtable h = (java.util.Hashtable) m_CdataElems.get(m_elemContext.m_elementLocalName);
             if (h != null) 
             {
-                Object obj = h.get(uri);
+                Object obj = h.get(m_elemContext.m_elementURI);
                 if (obj != null)
                     b = true; 
             }
@@ -1510,5 +1489,39 @@ public abstract class SerializerBase
         }
         return b;
     }
-}
+    
+    /**
+     * Before this call m_elementContext.m_elementURI is null,
+     * which means it is not yet known. After this call it
+     * is non-null, but possibly "" meaning that it is in the
+     * default namespace.
+     * 
+     * @return The URI of the element, never null, but possibly "".
+     */
+    private String getElementURI() {
+        String uri = null;
+        // At this point in processing we have received all the
+        // namespace mappings
+        // As we still don't know the elements namespace,
+        // we now figure it out.
 
+        String prefix = getPrefixPart(m_elemContext.m_elementName);
+
+        if (prefix == null) {
+            // no prefix so lookup the URI of the default namespace
+            uri = m_prefixMap.lookupNamespace("");
+        } else {
+            uri = m_prefixMap.lookupNamespace(prefix);
+        }
+        if (uri == null) {
+            // We didn't find the namespace for the
+            // prefix ... ouch, that shouldn't happen.
+            // This is a hack, we really don't know
+            // the namespace
+            uri = EMPTYSTRING;
+        }
+
+        return uri;
+    }
+}
+    

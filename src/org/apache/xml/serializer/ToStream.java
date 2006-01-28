@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.EmptyStackException;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.StringTokenizer;
@@ -39,8 +40,6 @@ import org.w3c.dom.Node;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
-
-//import com.sun.media.sound.IESecurity;
 
 /**
  * This abstract class is a base class for other stream 
@@ -69,7 +68,7 @@ abstract public class ToStream extends SerializerBase
      * single chars or surrogate pairs of high/low chars form
      * characters in the output encoding. 
      */
-    EncodingInfo m_encodingInfo = new EncodingInfo(null,null);
+    EncodingInfo m_encodingInfo = new EncodingInfo(null,null, '\u0000');
     
     /**
      * Stack to keep track of whether or not we need to
@@ -422,9 +421,9 @@ abstract public class ToStream extends SerializerBase
         // characters are written to the output writer.
         if (m_tracer != null
          && !(writer instanceof SerializerTraceWriter)  )
-            m_writer = new SerializerTraceWriter(writer, m_tracer);
+            setWriterInternal(new SerializerTraceWriter(writer, m_tracer), false);
         else
-            m_writer = writer;        
+            setWriterInternal(writer, false);        
         
         if (m_format == null)
             m_format = new java.util.Properties();
@@ -499,16 +498,16 @@ abstract public class ToStream extends SerializerBase
         }
 
         // initCharsMap();
-        String encoding = getEncoding();
-        if (null == encoding)
-        {
-            encoding =
-                Encodings.getMimeEncoding(
-                    format.getProperty(OutputKeys.ENCODING));
-            setEncoding(encoding);
+        String previous_encoding = getEncoding();
+        String possible_encoding =  
+            Encodings.getMimeEncoding(format.getProperty(OutputKeys.ENCODING));
+        if (previous_encoding == null || defaultProperties == false) {
+        	// Only set the encoding if there was no previous encoding, or if we are
+        	// setting a value that is not a default value, because we don't
+        	// want to stomp on a previously set non-default one with the default one.
+        	setEncoding(possible_encoding);
         }
 
-        m_isUTF8 = encoding.equals(Encodings.DEFAULT_MIME_ENCODING);
 
         // Access this only from the Hashtable level... we don't want to 
         // get default properties.
@@ -537,7 +536,7 @@ abstract public class ToStream extends SerializerBase
                 w2 = ((WriterChain)w2).getWriter();
             }
             if (noTracerYet)
-                m_writer = new SerializerTraceWriter(m_writer, m_tracer);
+                setWriterInternal(new SerializerTraceWriter(m_writer, m_tracer), false);
         }
     }
 
@@ -571,21 +570,24 @@ abstract public class ToStream extends SerializerBase
         throws UnsupportedEncodingException
     {
 
-        String encoding = getEncoding();
-        if (encoding == null)
-        {
-            // if not already set then get it from the properties
-            encoding =
-                Encodings.getMimeEncoding(
-                    format.getProperty(OutputKeys.ENCODING));
-            setEncoding(encoding);
+        // Get the encoding in the format Properties, or UTF-8 if none in the format
+    	String previous_encoding = getEncoding();
+        String possible_encoding = Encodings.getMimeEncoding(format.getProperty(OutputKeys.ENCODING));
+        if (previous_encoding == null || defaultProperties == false ) {
+        	// Lets not stomp on an encoding that was already set, with one that is only coming from
+        	// a default set of properties.  So only do this setting of the encoding if either there
+        	// was no previously set encoding, or if this is not a default value for the encoding
+        	setEncoding(possible_encoding);
         }
-
-        if (encoding.equalsIgnoreCase("UTF-8"))
+        
+        // When all is said and done encoding may be possible_encoding, or
+        // if there was a problem with that one the encoding will be unchanged, so
+        // just get what it is.
+        String encoding = getEncoding();
+        	
+        
+        if (Encodings.DEFAULT_MIME_ENCODING.equalsIgnoreCase(encoding))
         {
-            m_isUTF8 = true;
-         
-
                 init(
                     new WriterToUTF8Buffered(output),
                     format,
@@ -595,22 +597,30 @@ abstract public class ToStream extends SerializerBase
 
         }
         else if (
-            encoding.equals("WINDOWS-1250")
-                || encoding.equals("US-ASCII")
-                || encoding.equals("ASCII"))
+        		"WINDOWS-1250".equals(encoding)
+                || "US-ASCII".equals(encoding)
+                || "ASCII".equals(encoding))
         {
             init(new WriterToASCI(output), format, defaultProperties, true);
         }
         else
         {
-            Writer osw;
+            Writer osw = null;
 
-            try
-            {
-                osw = Encodings.getWriter(output, encoding);
+            if (encoding == null)
+            	encoding = possible_encoding;
+            else {
+            	try
+            	{
+            		osw = Encodings.getWriter(output, encoding);
+            	}
+            	catch (UnsupportedEncodingException uee)
+            	{
+            		osw = null;
+            	}
             }
-            catch (UnsupportedEncodingException uee)
-            {
+            
+            if (osw == null) {
                 System.out.println(
                     "Warning: encoding \""
                         + encoding
@@ -651,9 +661,16 @@ abstract public class ToStream extends SerializerBase
         // characters are written to the output writer.
         if (m_tracer != null
          && !(writer instanceof SerializerTraceWriter)  )
-            m_writer = new SerializerTraceWriter(writer, m_tracer);
+            setWriterInternal(new SerializerTraceWriter(writer, m_tracer), true);
         else
-            m_writer = writer;
+            setWriterInternal(writer, true);
+    }
+    
+    private boolean m_writer_set_by_user;
+    private void setWriterInternal(Writer writer, boolean setByUser) {
+        if (setByUser)
+            m_writer_set_by_user = true;
+        m_writer = writer;
     }
     
     /**
@@ -2977,7 +2994,7 @@ abstract public class ToStream extends SerializerBase
         super.setTransformer(transformer);
         if (m_tracer != null
          && !(m_writer instanceof SerializerTraceWriter)  )
-            m_writer = new SerializerTraceWriter(m_writer, m_tracer);        
+            setWriterInternal(new SerializerTraceWriter(m_writer, m_tracer), false);        
         
         
     }
@@ -3031,7 +3048,8 @@ abstract public class ToStream extends SerializerBase
          this.m_lineSepUse = true;
          // DON'T SET THE WRITER TO NULL, IT MAY BE REUSED !!
          // this.m_writer = null;  
-         this.m_expandDTDEntities = true;      
+         this.m_expandDTDEntities = true;     
+         this.m_writer_set_by_user = false;
  
     }        
     
@@ -3041,34 +3059,58 @@ abstract public class ToStream extends SerializerBase
       */
      public void setEncoding(String encoding)
      {
-         String old = getEncoding();
-         super.setEncoding(encoding); 
+         final String old = getEncoding();
          if (old == null || !old.equals(encoding)) {        
-            // If we have changed the setting of the 
-            m_encodingInfo = Encodings.getEncodingInfo(encoding);
+            // We are trying to change the setting of the encoding to a different value
+            // from what it was
             
-            if (encoding != null && m_encodingInfo.name == null) {
+            EncodingInfo encodingInfo = Encodings.getEncodingInfo(encoding);
+            if (encoding != null && encodingInfo.name == null) {
             	// We tried to get an EncodingInfo for Object for the given
             	// encoding, but it came back with an internall null name
             	// so the encoding is not supported by the JDK, issue a message.
-            	String msg = Utils.messages.createMessage(
+            	final String msg = Utils.messages.createMessage(
             			MsgKey.ER_ENCODING_NOT_SUPPORTED,new Object[]{ encoding });
+            	
+            	final String msg2 = 
+            		"Warning: encoding \"" + encoding + "\" not supported, using "
+                        + Encodings.DEFAULT_MIME_ENCODING;
             	try 
             	{
             		// Prepare to issue the warning message
-            		Transformer tran = super.getTransformer();
+            		final Transformer tran = super.getTransformer();
             		if (tran != null) {
-            			ErrorListener errHandler = tran.getErrorListener();
+            			final ErrorListener errHandler = tran.getErrorListener();
             			// Issue the warning message
-            			if (null != errHandler && m_sourceLocator != null)
+            			if (null != errHandler && m_sourceLocator != null) {
             				errHandler.warning(new TransformerException(msg, m_sourceLocator));
-            			else
+            				errHandler.warning(new TransformerException(msg2, m_sourceLocator));
+            			}
+            			else {
             				System.out.println(msg);
+            				System.out.println(msg2);
+            			}
             	    }
-            		else
+            		else {
             			System.out.println(msg);
+            			System.out.println(msg2);
+            		}
             	}
             	catch (Exception e){}
+            	
+            	// We said we are using UTF-8, so use it
+            	encoding = Encodings.DEFAULT_MIME_ENCODING;
+            	encodingInfo = Encodings.getEncodingInfo(encoding);
+            	//if (m_format != null) 
+            	//	m_format.setProperty(OutputKeys.ENCODING,Encodings.DEFAULT_MIME_ENCODING);
+            } else {
+
+            // Either the encoding was good, or it was forced into UTF-8. 
+            // In any case we remember it for later.
+            m_encodingInfo = encodingInfo;
+            this.m_encoding = encoding;                
+            if (encoding != null)
+            	m_isUTF8 = encoding.equals(Encodings.DEFAULT_MIME_ENCODING);
             }
          }
          return;

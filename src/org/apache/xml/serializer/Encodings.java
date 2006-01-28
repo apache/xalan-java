@@ -23,14 +23,11 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
 
 /**
@@ -56,7 +53,7 @@ public final class Encodings extends Object
      * <p>
      * This is not a public API.
      * @param output The output stream
-     * @param encoding The encoding
+     * @param encoding The encoding MIME name, not a Java name for the encoding.
      * @return A suitable writer
      * @throws UnsupportedEncodingException There is no convertor
      *  to support this encoding
@@ -72,9 +69,8 @@ public final class Encodings extends Object
             {
                 try
                 {
-                    return new OutputStreamWriter(
-                        output,
-                        _encodings[i].javaName);
+                	OutputStreamWriter osw = new OutputStreamWriter(output,_encodings[i].javaName);
+                    return osw; 
                 }
                 catch (java.lang.IllegalArgumentException iae) // java 1.1.8
                 {
@@ -100,7 +96,9 @@ public final class Encodings extends Object
 
     /**
      * Returns the EncodingInfo object for the specified
-     * encoding.
+     * encoding, never null, although the encoding name 
+     * inside the returned EncodingInfo object will be if
+     * we can't find a "real" EncodingInfo for the encoding.
      * <p>
      * This is not a public API.
      *
@@ -119,7 +117,7 @@ public final class Encodings extends Object
             ei = (EncodingInfo) _encodingTableKeyMime.get(normalizedEncoding);
         if (ei == null) {
             // We shouldn't have to do this, but just in case.
-            ei = new EncodingInfo(null,null);
+            ei = new EncodingInfo(null,null, '\u0000');
         }
 
         return ei;
@@ -262,7 +260,8 @@ public final class Encodings extends Object
      * @param encoding non-null reference to encoding string, java style.
      *
      * @return ISO-style encoding string.
-     *
+     * <p>
+     * This method is not a public API.
      * @xsl.usage internal
      */
     public static String convertMime2JavaEncoding(String encoding)
@@ -311,57 +310,54 @@ public final class Encodings extends Object
             }
 
             int totalEntries = props.size();
-            int totalMimeNames = 0;
+
+            Vector encodingInfo_list = new Vector();
             Enumeration keys = props.keys();
             for (int i = 0; i < totalEntries; ++i)
             {
                 String javaName = (String) keys.nextElement();
                 String val = props.getProperty(javaName);
-                totalMimeNames++;
-                int pos = val.indexOf(' ');
-                for (int j = 0; j < pos; ++j)
-                    if (val.charAt(j) == ',')
-                        totalMimeNames++;
-            }
-            EncodingInfo[] ret = new EncodingInfo[totalMimeNames];
-            int j = 0;
-            keys = props.keys();
-            for (int i = 0; i < totalEntries; ++i)
-            {
-                String javaName = (String) keys.nextElement();
-                String val = props.getProperty(javaName);
-                int pos = val.indexOf(' ');
+                int len = lengthOfMimeNames(val);
+
                 String mimeName;
-                if (pos < 0)
+                char highChar;
+                if (len == 0)
                 {
-                    // Maybe report/log this problem?
-                    //  "Last printable character not defined for encoding " +
-                    //  mimeName + " (" + val + ")" ...
-                    mimeName = val;
+                    // There is no property value, only the javaName, so try and recover
+                    mimeName = javaName;
+                    highChar = '\u0000'; // don't know the high code point, will need to test every character
                 }
                 else
                 {
+                    try {
+                        // Get the substring after the Mime names
+                        final String highVal = val.substring(len).trim();
+                        highChar = (char) Integer.decode(highVal).intValue();
+                    }
+                    catch( NumberFormatException e) {
+                        highChar = 0;
+                    }
+                    String mimeNames = val.substring(0, len);
                     StringTokenizer st =
-                        new StringTokenizer(val.substring(0, pos), ",");
+                        new StringTokenizer(mimeNames, ",");
                     for (boolean first = true;
                         st.hasMoreTokens();
                         first = false)
                     {
                         mimeName = st.nextToken();
-                        ret[j] =
-                            new EncodingInfo(mimeName, javaName);
-                        _encodingTableKeyMime.put(
-                            mimeName.toUpperCase(),
-                            ret[j]);
+                        EncodingInfo ei = new EncodingInfo(mimeName, javaName, highChar);
+                        encodingInfo_list.add(ei);
+                        _encodingTableKeyMime.put(mimeName.toUpperCase(), ei);
                         if (first)
-                            _encodingTableKeyJava.put(
-                                javaName.toUpperCase(),
-                                ret[j]);
-                        j++;
+                            _encodingTableKeyJava.put(javaName.toUpperCase(), ei);
                     }
                 }
             }
-            return ret;
+            // Convert the Vector of EncodingInfo objects into an array of them,
+            // as that is the kind of thing this method returns.
+            EncodingInfo[] ret_ei = new EncodingInfo[encodingInfo_list.size()];
+            encodingInfo_list.toArray(ret_ei);
+            return ret_ei;
         }
         catch (java.net.MalformedURLException mue)
         {
@@ -371,6 +367,24 @@ public final class Encodings extends Object
         {
             throw new org.apache.xml.serializer.utils.WrappedRuntimeException(ioe);
         }
+    }
+    
+    /**
+     * Get the length of the Mime names within the property value
+     * @param val The value of the property, which should contain a comma
+     * separated list of Mime names, followed optionally by a space and the
+     * high char value
+     * @return
+     */
+    private static int lengthOfMimeNames(String val) {
+        // look for the space preceding the optional high char
+        int len = val.indexOf(' ');
+        // If len is zero it means the optional part is not there, so
+        // the value must be all Mime names, so set the length appropriately
+        if (len < 0)  
+            len = val.length();
+        
+        return len;
     }
 
     /**
@@ -420,6 +434,37 @@ public final class Encodings extends Object
     static int toCodePoint(char ch) {
         int codePoint = ch;
         return codePoint;
+    }
+    
+    /**
+     * Characters with values at or below the high code point are
+     * in the encoding. Code point values above this one may or may
+     * not be in the encoding, but lower ones certainly are.
+     * <p>
+     * This is for performance.
+     *
+     * @param encoding The encoding
+     * @return The code point for which characters at or below this code point
+     * are in the encoding. Characters with higher code point may or may not be
+     * in the encoding. A value of zero is returned if the high code point is unknown.
+     * <p>
+     * This method is not a public API.
+     * @xsl.usage internal
+     */
+    static public char getHighChar(String encoding)
+    {
+        final char highCodePoint;
+        EncodingInfo ei;
+
+        String normalizedEncoding = toUpperCaseFast(encoding);
+        ei = (EncodingInfo) _encodingTableKeyJava.get(normalizedEncoding);
+        if (ei == null)
+            ei = (EncodingInfo) _encodingTableKeyMime.get(normalizedEncoding);
+        if (ei != null)
+            highCodePoint =  ei.getHighChar();
+        else
+            highCodePoint = 0;
+        return highCodePoint;
     }
 
     private static final Hashtable _encodingTableKeyJava = new Hashtable();
