@@ -42,6 +42,9 @@ import org.xml.sax.SAXParseException;
 public abstract class SerializerBase
     implements SerializationHandler, SerializerConstants
 {
+    SerializerBase() {
+        return;
+    }
     
     /**
      * The name of the package that this class is in.
