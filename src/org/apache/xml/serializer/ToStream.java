@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2005 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -905,7 +905,8 @@ abstract public class ToStream extends SerializerBase
         {
             // This is the old/fast code here, but is this 
             // correct for all encodings?
-            if (ch >= 0x20 || (0x0A == ch || 0x0D == ch || 0x09 == ch))
+            if (ch >= CharInfo.S_SPACE || (CharInfo.S_LINEFEED == ch || 
+                    CharInfo.S_CARRIAGERETURN == ch || CharInfo.S_HORIZONAL_TAB == ch))
                 ret= true;
             else
                 ret = false;
@@ -1014,7 +1015,7 @@ abstract public class ToStream extends SerializerBase
      *
      * @throws java.io.IOException
      */
-    protected int accumDefaultEntity(
+    int accumDefaultEntity(
         java.io.Writer writer,
         char ch,
         int i,
@@ -1033,7 +1034,7 @@ abstract public class ToStream extends SerializerBase
         {
             // if this is text node character and a special one of those,
             // or if this is a character from attribute value and a special one of those
-            if ((fromTextNode && m_charInfo.isSpecialTextChar(ch)) || (!fromTextNode && m_charInfo.isSpecialAttrChar(ch)))
+            if ((fromTextNode && m_charInfo.shouldMapTextChar(ch)) || (!fromTextNode && m_charInfo.shouldMapAttrChar(ch)))
             {
                 String outputStringForChar = m_charInfo.getOutputStringForChar(ch);
 
@@ -1387,8 +1388,7 @@ abstract public class ToStream extends SerializerBase
 
         if (m_cdataTagOpen)
             closeCDATA();
-        // the check with _escaping is a bit of a hack for XLSTC
-
+        
         if (m_disableOutputEscapingStates.peekOrFalse() || (!m_escaping))
         {
             charactersRaw(chars, start, length);
@@ -1410,82 +1410,175 @@ abstract public class ToStream extends SerializerBase
         try
         {
             int i;
-            char ch1;
             int startClean;
             
             // skip any leading whitspace 
             // don't go off the end and use a hand inlined version
             // of isWhitespace(ch)
             final int end = start + length;
-            int lastDirty = start - 1; // last character that needed processing
-            for (i = start;
-                ((i < end)                
-                    && ((ch1 = chars[i]) == 0x20
-                        || (ch1 == 0xA && m_lineSepUse)
-                        || ch1 == 0xD
-                        || ch1 == 0x09));
-                i++)
-            {
-                /*
-                 * We are processing leading whitespace, but are doing the same
-                 * processing for dirty characters here as for non-whitespace.
-                 * 
-                 */
-                if (!m_charInfo.isTextASCIIClean(ch1))
-                {
-                    lastDirty = processDirty(chars,end, i,ch1, lastDirty, true);
-                    i = lastDirty;
+            int lastDirtyCharProcessed = start - 1; // last non-clean character that was processed
+													// that was processed
+            final Writer writer = m_writer;
+            boolean isAllWhitespace = true;
+
+            // process any leading whitspace
+            i = start;
+            while (i < end && isAllWhitespace) {
+                char ch1 = chars[i];
+
+                if (m_charInfo.shouldMapTextChar(ch1)) {
+                    // The character is supposed to be replaced by a String
+                    // so write out the clean whitespace characters accumulated
+                    // so far
+                    // then the String.
+                    writeOutCleanChars(chars, i, lastDirtyCharProcessed);
+                    String outputStringForChar = m_charInfo
+                            .getOutputStringForChar(ch1);
+                    writer.write(outputStringForChar);
+                    // We can't say that everything we are writing out is
+                    // all whitespace, we just wrote out a String.
+                    isAllWhitespace = false;
+                    lastDirtyCharProcessed = i; // mark the last non-clean
+                    // character processed
+                    i++;
+                } else {
+                    // The character is clean, but is it a whitespace ?
+                    switch (ch1) {
+                    // TODO: Any other whitespace to consider?
+                    case CharInfo.S_SPACE:
+                        // Just accumulate the clean whitespace
+                        i++;
+                        break;
+                    case CharInfo.S_LINEFEED:
+                        lastDirtyCharProcessed = processLineFeed(chars, i,
+                                lastDirtyCharProcessed, writer);
+                        i++;
+                        break;
+                    case CharInfo.S_CARRIAGERETURN:
+                        writeOutCleanChars(chars, i, lastDirtyCharProcessed);
+                        writer.write("&#13;");
+                        lastDirtyCharProcessed = i;
+                        i++;
+                        break;
+                    case CharInfo.S_HORIZONAL_TAB:
+                        // Just accumulate the clean whitespace
+                        i++;
+                        break;
+                    default:
+                        // The character was clean, but not a whitespace
+                        // so break the loop to continue with this character
+                        // (we don't increment index i !!)
+                        isAllWhitespace = false;
+                        break;
+                    }
                 }
             }
+
             /* If there is some non-whitespace, mark that we may need
              * to preserve this. This is only important if we have indentation on.
              */            
-            if (i < end) 
+            if (i < end || !isAllWhitespace) 
                 m_ispreserve = true;
-                
-
-//            int lengthClean;    // number of clean characters in a row
-//            final boolean[] isAsciiClean = m_charInfo.getASCIIClean();
             
-            final boolean isXML10 = XMLVERSION10.equals(getVersion());
-            // we've skipped the leading whitespace, now deal with the rest
+            
             for (; i < end; i++)
-            {                      
-                {
-                    // A tight loop to skip over common clean chars
-                    // This tight loop makes it easier for the JIT
-                    // to optimize.
-                    char ch2;
-                    while (i<end 
-                            && ((ch2 = chars[i])<127)
-                            && m_charInfo.isTextASCIIClean(ch2))
-                            i++;
-                    if (i == end)
-                        break;
-                }  
-                   
-                final char ch = chars[i];
-                /*  The check for isCharacterInC0orC1Ranger and 
-                 *  isNELorLSEPCharacter has been added
-                 *  to support Control Characters in XML 1.1
-                 */     
-                if (!isCharacterInC0orC1Range(ch) && 
-                    (isXML10 || !isNELorLSEPCharacter(ch)) &&
-                    (escapingNotNeeded(ch) && (!m_charInfo.isSpecialTextChar(ch)))
-                        || ('"' == ch))
-                {
-                    ; // a character needing no special processing
+            {
+                char ch = chars[i];
+                
+                if (m_charInfo.shouldMapTextChar(ch)) {
+                    // The character is supposed to be replaced by a String
+                    // e.g.   '&'  -->  "&amp;"
+                    // e.g.   '<'  -->  "&lt;"
+                    writeOutCleanChars(chars, i, lastDirtyCharProcessed);
+                    String outputStringForChar = m_charInfo.getOutputStringForChar(ch);
+                    writer.write(outputStringForChar);
+                    lastDirtyCharProcessed = i;
                 }
-                else
-                {
-                    lastDirty = processDirty(chars,end, i, ch, lastDirty, true);
-                    i = lastDirty;
+                else {
+                    if (ch <= 0x1F) {
+                        // Range 0x00 through 0x1F inclusive
+                        //
+                        // This covers the non-whitespace control characters
+                        // in the range 0x1 to 0x1F inclusive.
+                        // It also covers the whitespace control characters in the same way:
+                        // 0x9   TAB
+                        // 0xA   NEW LINE
+                        // 0xD   CARRIAGE RETURN
+                        //
+                        // We also cover 0x0 ... It isn't valid
+                        // but we will output "&#0;" 
+                        
+                        // The default will handle this just fine, but this
+                        // is a little performance boost to handle the more
+                        // common TAB, NEW-LINE, CARRIAGE-RETURN
+                        switch (ch) {
+
+                        case CharInfo.S_HORIZONAL_TAB:
+                            // Leave whitespace TAB as a real character
+                            break;
+                        case CharInfo.S_LINEFEED:
+                            lastDirtyCharProcessed = processLineFeed(chars, i, lastDirtyCharProcessed, writer);
+                            break;
+                        case CharInfo.S_CARRIAGERETURN:
+                        	writeOutCleanChars(chars, i, lastDirtyCharProcessed);
+                        	writer.write("&#13;");
+                        	lastDirtyCharProcessed = i;
+                            // Leave whitespace carriage return as a real character
+                            break;
+                        default:
+                            writeOutCleanChars(chars, i, lastDirtyCharProcessed);
+                            writer.write("&#");
+                            writer.write(Integer.toString(ch));
+                            writer.write(';');
+                            lastDirtyCharProcessed = i;
+                            break;
+
+                        }
+                    }
+                    else if (ch < 0x7F) {  
+                        // Range 0x20 through 0x7E inclusive
+                        // Normal ASCII chars, do nothing, just add it to
+                        // the clean characters
+                            
+                    }
+                    else if (ch <= 0x9F){
+                        // Range 0x7F through 0x9F inclusive
+                        // More control characters, including NEL (0x85)
+                        writeOutCleanChars(chars, i, lastDirtyCharProcessed);
+                        writer.write("&#");
+                        writer.write(Integer.toString(ch));
+                        writer.write(';');
+                        lastDirtyCharProcessed = i;
+                    }
+                    else if (ch == CharInfo.S_LINE_SEPARATOR) {
+                        // LINE SEPARATOR
+                        writeOutCleanChars(chars, i, lastDirtyCharProcessed);
+                        writer.write("&#8232;");
+                        lastDirtyCharProcessed = i;
+                    }
+                    else if (m_encodingInfo.isInEncoding(ch)) {
+                        // If the character is in the encoding, and
+                        // not in the normal ASCII range, we also
+                        // just leave it get added on to the clean characters
+                        
+                    }
+                    else {
+                        // This is a fallback plan, we should never get here
+                        // but if the character wasn't previously handled
+                        // (i.e. isn't in the encoding, etc.) then what
+                        // should we do?  We choose to write out an entity
+                        writeOutCleanChars(chars, i, lastDirtyCharProcessed);
+                        writer.write("&#");
+                        writer.write(Integer.toString(ch));
+                        writer.write(';');
+                        lastDirtyCharProcessed = i;
+                    }
                 }
             }
             
             // we've reached the end. Any clean characters at the
             // end of the array than need to be written out?
-            startClean = lastDirty + 1;
+            startClean = lastDirtyCharProcessed + 1;
             if (i > startClean)
             {
                 int lengthClean = i - startClean;
@@ -1503,6 +1596,31 @@ abstract public class ToStream extends SerializerBase
         // time to fire off characters generation event
         if (m_tracer != null)
             super.fireCharEvent(chars, start, length);
+    }
+
+	private int processLineFeed(final char[] chars, int i, int lastProcessed, final Writer writer) throws IOException {
+		if (!m_lineSepUse 
+		|| (m_lineSepLen ==1 && m_lineSep[0] == CharInfo.S_LINEFEED)){
+		    // We are leaving the new-line alone, and it is just
+		    // being added to the 'clean' characters,
+			// so the last dirty character processed remains unchanged
+		}
+		else {
+		    writeOutCleanChars(chars, i, lastProcessed);
+		    writer.write(m_lineSep, 0, m_lineSepLen);
+		    lastProcessed = i;
+		}
+		return lastProcessed;
+	}
+
+    private void writeOutCleanChars(final char[] chars, int i, int lastProcessed) throws IOException {
+        int startClean;
+        startClean = lastProcessed + 1;
+        if (startClean < i)
+        {
+            int lengthClean = i - startClean;
+            m_writer.write(chars, startClean, lengthClean);
+        }
     }     
     /**
      * This method checks if a given character is between C0 or C1 range
@@ -1623,7 +1741,7 @@ abstract public class ToStream extends SerializerBase
      *
      * @throws org.xml.sax.SAXException
      */
-    protected int accumDefaultEscape(
+    private int accumDefaultEscape(
         Writer writer,
         char ch,
         int i,
@@ -1687,16 +1805,15 @@ abstract public class ToStream extends SerializerBase
                  *  to write it out as Numeric Character Reference(NCR) regardless of XML Version
                  *  being used for output document.
                  */ 
-                if (isCharacterInC0orC1Range(ch) || 
-                        (XMLVERSION11.equals(getVersion()) && isNELorLSEPCharacter(ch)))
+                if (isCharacterInC0orC1Range(ch) || isNELorLSEPCharacter(ch))
                 {
                     writer.write("&#");
                     writer.write(Integer.toString(ch));
                     writer.write(';');
                 }
                 else if ((!escapingNotNeeded(ch) || 
-                    (  (fromTextNode && m_charInfo.isSpecialTextChar(ch))
-                     || (!fromTextNode && m_charInfo.isSpecialAttrChar(ch)))) 
+                    (  (fromTextNode && m_charInfo.shouldMapTextChar(ch))
+                     || (!fromTextNode && m_charInfo.shouldMapAttrChar(ch)))) 
                 && m_elemContext.m_currentElemDepth > 0)
                 {
                     writer.write("&#");
@@ -1952,16 +2069,82 @@ abstract public class ToStream extends SerializerBase
         for (int i = 0; i < len; i++)
         {
             char ch = stringChars[i];
-            if (escapingNotNeeded(ch) && (!m_charInfo.isSpecialAttrChar(ch)))
-            {
-                writer.write(ch);
-            }
-            else
-            {
+            
+            if (m_charInfo.shouldMapAttrChar(ch)) {
+                // The character is supposed to be replaced by a String
+                // e.g.   '&'  -->  "&amp;"
+                // e.g.   '<'  -->  "&lt;"
                 accumDefaultEscape(writer, ch, i, stringChars, len, false, true);
             }
-        }
+            else {
+                if (0x0 <= ch && ch <= 0x1F) {
+                    // Range 0x00 through 0x1F inclusive
+                    // This covers the non-whitespace control characters
+                    // in the range 0x1 to 0x1F inclusive.
+                    // It also covers the whitespace control characters in the same way:
+                    // 0x9   TAB
+                    // 0xA   NEW LINE
+                    // 0xD   CARRIAGE RETURN
+                    //
+                    // We also cover 0x0 ... It isn't valid
+                    // but we will output "&#0;" 
+                    
+                    // The default will handle this just fine, but this
+                    // is a little performance boost to handle the more
+                    // common TAB, NEW-LINE, CARRIAGE-RETURN
+                    switch (ch) {
 
+                    case CharInfo.S_HORIZONAL_TAB:
+                        writer.write("&#9;");
+                        break;
+                    case CharInfo.S_LINEFEED:
+                        writer.write("&#10;");
+                        break;
+                    case CharInfo.S_CARRIAGERETURN:
+                        writer.write("&#13;");
+                        break;
+                    default:
+                        writer.write("&#");
+                        writer.write(Integer.toString(ch));
+                        writer.write(';');
+                        break;
+
+                    }
+                }
+                else if (ch < 0x7F) {   
+                    // Range 0x20 through 0x7E inclusive
+                    // Normal ASCII chars
+                        writer.write(ch);
+                }
+                else if (ch <= 0x9F){
+                    // Range 0x7F through 0x9F inclusive
+                    // More control characters
+                    writer.write("&#");
+                    writer.write(Integer.toString(ch));
+                    writer.write(';');
+                }
+                else if (ch == CharInfo.S_LINE_SEPARATOR) {
+                    // LINE SEPARATOR
+                    writer.write("&#8232;");
+                }
+                else if (m_encodingInfo.isInEncoding(ch)) {
+                    // If the character is in the encoding, and
+                    // not in the normal ASCII range, we also
+                    // just write it out
+                    writer.write(ch);
+                }
+                else {
+                    // This is a fallback plan, we should never get here
+                    // but if the character wasn't previously handled
+                    // (i.e. isn't in the encoding, etc.) then what
+                    // should we do?  We choose to write out a character ref
+                    writer.write("&#");
+                    writer.write(Integer.toString(ch));
+                    writer.write(';');
+                }
+                    
+            }
+        }
     }
 
     /**
@@ -2738,6 +2921,14 @@ abstract public class ToStream extends SerializerBase
             {
                 closeCDATA();
                 m_cdataTagOpen = false;
+            }
+            if (m_writer != null) {
+                try {
+                    m_writer.flush();
+                }
+                catch(IOException e) {
+                    // what? me worry?
+                }
             }
     }
 

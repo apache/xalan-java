@@ -52,7 +52,7 @@ public class ToXMLStream extends ToStream
      * Map that tells which XML characters should have special treatment, and it
      *  provides character to entity name lookup.
      */
-    private static CharInfo m_xmlcharInfo =
+    private CharInfo m_xmlcharInfo =
 //      new CharInfo(CharInfo.XML_ENTITIES_RESOURCE);
         CharInfo.getCharInfo(CharInfo.XML_ENTITIES_RESOURCE, Method.XML);
 
