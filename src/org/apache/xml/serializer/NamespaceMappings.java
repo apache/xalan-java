@@ -21,8 +21,6 @@ package org.apache.xml.serializer;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import javax.naming.NameParser;
-
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
