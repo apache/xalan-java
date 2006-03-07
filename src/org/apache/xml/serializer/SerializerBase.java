@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,10 @@
 package org.apache.xml.serializer;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Set;
 
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.Transformer;
 
@@ -141,12 +144,12 @@ public abstract class SerializerBase
     /**
      * The System ID for the doc type.
      */
-    private String m_doctypeSystem;
+    protected String m_doctypeSystem;
 
     /**
      * The public ID for the doc type.
      */
-    private String m_doctypePublic;
+    protected String m_doctypePublic;
 
     /**
      * Flag to tell that we need to add the doctype decl, which we can't do
@@ -155,15 +158,9 @@ public abstract class SerializerBase
     boolean m_needToOutputDocTypeDecl = true;
 
     /**
-     * The character encoding.  Must match the encoding used for the
-     * printWriter.
-     */
-    String m_encoding = null;
-
-    /**
      * Tells if we should write the XML declaration.
      */
-    private boolean m_shouldNotWriteXMLHeader = false;
+    protected boolean m_shouldNotWriteXMLHeader = false;
 
     /**
      * The standalone value for the doctype.
@@ -187,12 +184,12 @@ public abstract class SerializerBase
     /**
      * Tells the XML version, for writing out to the XML decl.
      */
-    private String m_version = null;
+    protected String m_version = null;
 
     /**
      * The mediatype.  Not used right now.
      */
-    private String m_mediatype;
+    protected String m_mediatype;
 
     /**
      * The transformer that was around when this output handler was created (if
@@ -559,7 +556,7 @@ public abstract class SerializerBase
      */
     public String getEncoding()
     {
-        return m_encoding;
+        return getOutputProperty(OutputKeys.ENCODING);
     }
 
    /**
@@ -568,7 +565,7 @@ public abstract class SerializerBase
      */
     public void setEncoding(String encoding)
     {
-        this.m_encoding = encoding;
+        setOutputProperty(OutputKeys.ENCODING,encoding);
     }
 
     /**
@@ -578,7 +575,8 @@ public abstract class SerializerBase
      */
     public void setOmitXMLDeclaration(boolean b)
     {
-        this.m_shouldNotWriteXMLHeader = b;
+        String val = b ? "yes":"no";
+        setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,val);
     }
 
 
@@ -609,7 +607,7 @@ public abstract class SerializerBase
       */
     public void setDoctypePublic(String doctypePublic)
     {
-        this.m_doctypePublic = doctypePublic;
+        setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, doctypePublic);
     }
 
 
@@ -631,7 +629,7 @@ public abstract class SerializerBase
       */
     public void setDoctypeSystem(String doctypeSystem)
     {
-        this.m_doctypeSystem = doctypeSystem;
+        setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctypeSystem);
     }
 
     /** Set the value coming from the xsl:output doctype-public and doctype-system stylesheet properties
@@ -642,8 +640,8 @@ public abstract class SerializerBase
      */
     public void setDoctype(String doctypeSystem, String doctypePublic)
     {
-        this.m_doctypeSystem = doctypeSystem;
-        this.m_doctypePublic = doctypePublic;
+        setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, doctypeSystem);
+        setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, doctypePublic);
     }
 
     /**
@@ -655,11 +653,7 @@ public abstract class SerializerBase
      */
     public void setStandalone(String standalone)
     {
-        if (standalone != null)
-        {
-            m_standaloneWasSpecified = true;
-            setStandaloneInternal(standalone);
-        }
+        setOutputProperty(OutputKeys.STANDALONE, standalone);
     }
     /**
      * Sets the XSL standalone attribute, but does not remember if this is a
@@ -721,7 +715,7 @@ public abstract class SerializerBase
      */
     public void setVersion(String version)
     {
-        m_version = version;
+        setOutputProperty(OutputKeys.VERSION, version);
     }
 
     /**
@@ -733,7 +727,7 @@ public abstract class SerializerBase
      */
     public void setMediaType(String mediaType)
     {
-        m_mediatype = mediaType;
+        setOutputProperty(OutputKeys.MEDIA_TYPE,mediaType);
     }
 
     /**
@@ -762,7 +756,8 @@ public abstract class SerializerBase
      */
     public void setIndent(boolean doIndent)
     {
-        m_doIndent = doIndent;
+        String val = doIndent ? "yes":"no";
+        setOutputProperty(OutputKeys.INDENT,val);
     }
 
     /**
@@ -1257,7 +1252,6 @@ public abstract class SerializerBase
     	this.m_doctypePublic = null;
     	this.m_doctypeSystem = null;
     	this.m_doIndent = false;
-    	this.m_encoding = null;
     	this.m_indentAmount = 0;
     	this.m_inEntityRef = false;
     	this.m_inExternalDTD = false;
@@ -1477,9 +1471,21 @@ public abstract class SerializerBase
                 m_elemContext.m_elementLocalName = localName;                   
             }
             
-            if (m_elemContext.m_elementURI == null)
-                m_elemContext.m_elementURI = getElementURI();
+            if ( m_elemContext.m_elementURI == null) {
                 
+                m_elemContext.m_elementURI = getElementURI();
+            }
+            else if ( m_elemContext.m_elementURI.length() == 0) {
+                if ( m_elemContext.m_elementName == null) {
+                    m_elemContext.m_elementName = m_elemContext.m_elementLocalName;    
+                    // leave URI as "", meaning in no namespace
+                }
+                else if (m_elemContext.m_elementLocalName.length() < m_elemContext.m_elementName.length()){
+                    // We were told the URI was "", yet the name has a prefix since the name is longer than the localname.
+                    // So we will fix that incorrect information here.
+                    m_elemContext.m_elementURI = getElementURI();  
+                }
+            }
 
             java.util.Hashtable h = (java.util.Hashtable) m_CdataElems.get(m_elemContext.m_elementLocalName);
             if (h != null) 
@@ -1526,5 +1532,145 @@ public abstract class SerializerBase
 
         return uri;
     }
+    
+
+    /**
+     * Get the value of an output property,
+     * the explicit value, if any, otherwise the
+     * default value, if any, otherwise null.
+     */
+    public String getOutputProperty(String name) {
+        String val = getOutputPropertyNonDefault(name);
+        // If no explicit value, try to get the default value
+        if (val == null)
+            val = getOutputPropertyDefault(name);
+        return val;
+        
+    }
+    /**
+     * Get the value of an output property, 
+     * not the default value. If there is a default
+     * value, but no non-default value this method
+     * will return null.
+     * <p>
+     * 
+     */
+    public String getOutputPropertyNonDefault(String name )
+    {
+        return getProp(name,false);
+    }
+    
+    /**
+     * Get the default value of an xsl:output property,
+     * which would be null only if no default value exists
+     * for the property.
+     */
+    public String getOutputPropertyDefault(String name) {
+        return getProp(name, true);
+    } 
+    
+    /**
+     * Set the value for the output property, typically from
+     * an xsl:output element, but this does not change what
+     * the default value is.
+     */
+    public void   setOutputProperty(String name, String val) {
+        setProp(name,val,false);
+        
+    }
+    
+    /**
+     * Set the default value for an output property, but this does
+     * not impact any explicitly set value.
+     */
+    public void   setOutputPropertyDefault(String name, String val) {
+        setProp(name,val,true);
+        
+    }
+    
+    /**
+     * A mapping of keys to explicitly set values, for example if 
+     * and <xsl:output/> has an "encoding" attribute, this
+     * map will have what that attribute maps to.
+     */
+    private HashMap m_OutputProps;
+    /**
+     * A mapping of keys to default values, for example if
+     * the default value of the encoding is "UTF-8" then this
+     * map will have that "encoding" maps to "UTF-8".
+     */
+    private HashMap m_OutputPropsDefault;
+    
+    Set getOutputPropDefaultKeys() {
+        return m_OutputPropsDefault.keySet();
+    }
+    Set getOutputPropKeys() {
+        return m_OutputProps.keySet();
+    }
+    
+    private String getProp(String name, boolean defaultVal) {
+        if (m_OutputProps == null) {
+            m_OutputProps = new HashMap();
+            m_OutputPropsDefault = new HashMap();
+        }
+        
+        String val;
+        if (defaultVal)
+            val = (String) m_OutputPropsDefault.get(name);
+        else
+            val = (String) m_OutputProps.get(name);
+        
+        return val;
+        
+    }
+    /**
+     * 
+     * @param name The name of the property, e.g. "{http://myprop}indent-tabs" or "indent".
+     * @param val The value of the property, e.g. "4"
+     * @param defaultVal true if this is a default value being set for the property as 
+     * opposed to a user define on, set say explicitly in the stylesheet or via JAXP
+     */
+    void setProp(String name, String val, boolean defaultVal) {
+        if (m_OutputProps == null) {
+            m_OutputProps = new HashMap();
+            m_OutputPropsDefault = new HashMap();
+        }
+        
+        if (defaultVal)
+            m_OutputPropsDefault.put(name,val);
+        else {
+            if (OutputKeys.CDATA_SECTION_ELEMENTS.equals(name) && val != null) {
+                initCdataElems(val);
+                String oldVal = (String) m_OutputProps.get(name);
+                String newVal;
+                if (oldVal == null)
+                    newVal = oldVal + ' ' + val;
+                else
+                    newVal = val;
+                m_OutputProps.put(name,newVal);
+            }
+            else {
+                m_OutputProps.put(name,val);
+            }
+        }
+        
+
+    }
+
+    /**
+     * Get the first char of the local name
+     * @param name Either a local name, or a local name
+     * preceeded by a uri enclosed in curly braces.
+     */
+    static char getFirstCharLocName(String name) {
+        final char first;
+        int i = name.indexOf('}');
+        if (i < 0)
+            first = name.charAt(0);
+        else
+            first = name.charAt(i+1);
+        return first;
+    }
 }
     
+

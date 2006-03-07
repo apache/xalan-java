@@ -1,5 +1,5 @@
 /*
- * Copyright 2003-2004 The Apache Software Foundation.
+ * Copyright 2003-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -177,4 +177,58 @@ interface XSLOutputAttributes
      */
     public void setVersion(String version);
 
+    /**
+     * Get the value for a property that affects seraialization,
+     * if a property was set return that value, otherwise return
+     * the default value, otherwise return null.
+     * @param name The name of the property, which is just the local name
+     * if it is in no namespace, but is the URI in curly braces followed by
+     * the local name if it is in a namespace, for example:
+     * <ul>
+     * <li> "encoding"
+     * <li> "method"
+     * <li> "{http://xml.apache.org/xalan}indent-amount"
+     * <li> "{http://xml.apache.org/xalan}line-separator"
+     * </ul>
+     * @return The value of the parameter
+     */
+    public String getOutputProperty(String name);
+    /**
+     * Get the default value for a property that affects seraialization,
+     * or null if there is none. It is possible that a non-default value
+     * was set for the property, however the value returned by this method
+     * is unaffected by any non-default settings.
+     * @param name The name of the property.
+     * @return The default value of the parameter, or null if there is no default value.
+     */    
+    public String getOutputPropertyDefault(String name);
+    /**
+     * Set the non-default value for a property that affects seraialization.
+     * @param name The name of the property, which is just the local name
+     * if it is in no namespace, but is the URI in curly braces followed by
+     * the local name if it is in a namespace, for example:
+     * <ul>
+     * <li> "encoding"
+     * <li> "method"
+     * <li> "{http://xml.apache.org/xalan}indent-amount"
+     * <li> "{http://xml.apache.org/xalan}line-separator"
+     * </ul>
+     * @val The non-default value of the parameter
+     */    
+    public void   setOutputProperty(String name, String val);
+    
+    /**
+     * Set the default value for a property that affects seraialization.
+     * @param name The name of the property, which is just the local name
+     * if it is in no namespace, but is the URI in curly braces followed by
+     * the local name if it is in a namespace, for example:
+     * <ul>
+     * <li> "encoding"
+     * <li> "method"
+     * <li> "{http://xml.apache.org/xalan}indent-amount"
+     * <li> "{http://xml.apache.org/xalan}line-separator"
+     * </ul>
+     * @val The default value of the parameter
+     */ 
+    public void   setOutputPropertyDefault(String name, String val);
 }

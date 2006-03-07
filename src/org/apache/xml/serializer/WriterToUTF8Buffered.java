@@ -77,7 +77,6 @@ final class WriterToUTF8Buffered extends Writer implements WriterChain
    * @throws UnsupportedEncodingException
    */
   public WriterToUTF8Buffered(OutputStream out)
-          throws UnsupportedEncodingException
   {
       m_os = out;
       // get 3 extra bytes to make buffer overflow checking simpler and faster
