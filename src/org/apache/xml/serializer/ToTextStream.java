@@ -32,7 +32,7 @@ import org.xml.sax.SAXException;
  * serialized document for xsl:output method of "text".
  * @xsl.usage internal
  */
-public final class ToTextStream extends ToStream 
+public class ToTextStream extends ToStream 
 { 
 
        

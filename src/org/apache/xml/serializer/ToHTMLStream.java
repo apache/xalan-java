@@ -38,7 +38,7 @@ import org.xml.sax.SAXException;
  * 
  * @xsl.usage internal
  */
-public final class ToHTMLStream extends ToStream 
+public class ToHTMLStream extends ToStream 
 {
 
     /** This flag is set while receiving events from the DTD */
