@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,19 +41,11 @@ import org.xml.sax.SAXException;
  */
 public class ToXMLStream extends ToStream
 {
-
-    /**
-     * remembers if we need to write out "]]>" to close the CDATA
-     */
-    boolean m_cdataTagOpen = false;
-
-
     /**
      * Map that tells which XML characters should have special treatment, and it
      *  provides character to entity name lookup.
      */
     private CharInfo m_xmlcharInfo =
-//      new CharInfo(CharInfo.XML_ENTITIES_RESOURCE);
         CharInfo.getCharInfo(CharInfo.XML_ENTITIES_RESOURCE, Method.XML);
 
     /**
@@ -564,7 +556,9 @@ public class ToXMLStream extends ToStream
         boolean wasReset = false;
         if (super.reset())
         {
-            resetToXMLStream();
+            // Make this call when resetToXMLStream does
+            // something.
+            // resetToXMLStream();
             wasReset = true;
         }
         return wasReset;
@@ -576,8 +570,10 @@ public class ToXMLStream extends ToStream
      */
     private void resetToXMLStream()
     {
-        this.m_cdataTagOpen = false;
-
+        // This is an empty method, but is kept for future use
+        // as a place holder for a location to reset fields
+        // defined within this class
+        return;
     }  
 
     /**
