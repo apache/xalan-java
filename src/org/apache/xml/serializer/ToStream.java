@@ -1905,13 +1905,12 @@ abstract public class ToStream extends SerializerBase
             closeCDATA();
         try
         {
-            if ((true == m_needToOutputDocTypeDecl)
-                && (null != getDoctypeSystem()))
-            {
-                outputDocTypeDecl(name, true);
+            if (m_needToOutputDocTypeDecl) {
+                if(null != getDoctypeSystem()) {
+                    outputDocTypeDecl(name, true);
+                }
+                m_needToOutputDocTypeDecl = false;
             }
-
-            m_needToOutputDocTypeDecl = false;
         
             /* before we over-write the current elementLocalName etc.
              * lets close out the old one (if we still need to)

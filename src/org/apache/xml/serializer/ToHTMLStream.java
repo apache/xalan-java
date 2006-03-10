@@ -687,7 +687,15 @@ public class ToHTMLStream extends ToStream
         m_needToOutputDocTypeDecl = true;
         m_startNewLine = false;
         setOmitXMLDeclaration(true);
+    }
 
+    /**
+     * This method should only get called once.
+     * If a DOCTYPE declaration needs to get written out, it will
+     * be written out. If it doesn't need to be written out, then
+     * the call to this method has no effect.
+     */
+    private void outputDocTypeDecl(String name) throws SAXException {
         if (true == m_needToOutputDocTypeDecl)
         {
             String doctypeSystem = getDoctypeSystem();
@@ -697,7 +705,8 @@ public class ToHTMLStream extends ToStream
                 final java.io.Writer writer = m_writer;
                 try
                 {
-                writer.write("<!DOCTYPE html");
+                writer.write("<!DOCTYPE ");
+                writer.write(name);
 
                 if (null != doctypePublic)
                 {
@@ -797,6 +806,16 @@ public class ToHTMLStream extends ToStream
         {
             startDocumentInternal();
             m_needToCallStartDocument = false;
+        }
+        
+        if (m_needToOutputDocTypeDecl) {            
+            String n = name;
+            if (n == null || n.length() == 0) {
+                // If the lexical QName is not given
+                // use the localName in the DOCTYPE
+                n = localName;
+            }
+            outputDocTypeDecl(n);
         }
 
 
@@ -1511,6 +1530,14 @@ public class ToHTMLStream extends ToStream
 
         if (m_elemContext.m_isRaw)
         {
+            
+            // Clean up some pending issues.
+            if (m_elemContext.m_startTagOpen)
+            {
+                closeStartTag();
+                m_elemContext.m_startTagOpen = false;
+            }
+            
             try
             {
                 if (m_elemContext.m_startTagOpen)
@@ -1652,14 +1679,32 @@ public class ToHTMLStream extends ToStream
         {
             try
             {
-            if (m_elemContext.m_startTagOpen)
-            {
-                closeStartTag();
-                m_elemContext.m_startTagOpen = false;
-            }
-            else if (m_needToCallStartDocument)
-                startDocumentInternal();
+                // clean up any pending things first
+                if (m_elemContext.m_startTagOpen)
+                {
+                    closeStartTag();
+                    m_elemContext.m_startTagOpen = false;
+                }
+                else if (m_cdataTagOpen)
+                {
+                    closeCDATA();
+                }
+                else if (m_needToCallStartDocument)
+                {
+                    startDocumentInternal();
+                }
+            
 
+            /*
+             * Perhaps processing instructions can be written out in HTML before
+             * the DOCTYPE, in which case this could be emitted with the
+             * startElement call, that knows the name of the document element
+             * doing it right.
+             */
+            if (true == m_needToOutputDocTypeDecl)
+                outputDocTypeDecl("html"); // best guess for the upcoming element
+
+ 
             if (shouldIndent())
                 indent();
 
@@ -1951,6 +1996,33 @@ public class ToHTMLStream extends ToStream
         // The internal DTD subset is not serialized by the ToHTMLStream serializer
         if (m_inDTD)
             return;
+        
+        // Clean up some pending issues, just in case
+        // this call is coming right after a startElement()
+        // or we are in the middle of writing out CDATA
+        // or if a startDocument() call was not received
+        if (m_elemContext.m_startTagOpen)
+        {
+            closeStartTag();
+            m_elemContext.m_startTagOpen = false;
+        }
+        else if (m_cdataTagOpen)
+        {
+            closeCDATA();
+        }
+        else if (m_needToCallStartDocument)
+        {
+            startDocumentInternal();
+        }
+
+        /*
+         * Perhaps comments can be written out in HTML before the DOCTYPE.
+         * In this case we might delete this call to writeOutDOCTYPE, and
+         * it would be handled within the startElement() call.
+         */
+        if (m_needToOutputDocTypeDecl)
+            outputDocTypeDecl("html"); // best guess for the upcoming element
+
         super.comment(ch, start, length);
     }
     
