@@ -2402,13 +2402,14 @@ abstract public class ToStream extends SerializerBase
 
         try
         {
-            if (shouldIndent())
-                indent();
-
             final int limit = start + length;
             boolean wasDash = false;
             if (m_cdataTagOpen)
                 closeCDATA();
+            
+            if (shouldIndent())
+                indent();
+            
             final java.io.Writer writer = m_writer;    
             writer.write(COMMENT_BEGIN);
             // Detect occurrences of two consecutive dashes, handle as necessary.
@@ -2441,6 +2442,15 @@ abstract public class ToStream extends SerializerBase
             throw new SAXException(e);
         }
 
+        /*
+         * Don't write out any indentation whitespace now,
+         * because there may be non-whitespace text after this.
+         * 
+         * Simply mark that at this point if we do decide
+         * to indent that we should 
+         * add a newline on the end of the current line before
+         * the indentation at the start of the next line.
+         */ 
         m_startNewLine = true;
         // time to generate comment event
         if (m_tracer != null)
@@ -2684,7 +2694,7 @@ abstract public class ToStream extends SerializerBase
      */
     protected boolean shouldIndent()
     {
-        return m_doIndent && (!m_ispreserve && !m_isprevtext);
+        return m_doIndent && (!m_ispreserve && !m_isprevtext) && m_elemContext.m_currentElemDepth > 0;
     }
 
     /**
