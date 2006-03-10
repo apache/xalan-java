@@ -46,7 +46,7 @@ public final class ToXMLSAXHandler extends ToSAXHandler
     /**
      * Keeps track of whether output escaping is currently enabled
      */
-    protected boolean m_escapeSetting = false;
+    protected boolean m_escapeSetting = true;
 
     public ToXMLSAXHandler()
     {
@@ -766,7 +766,7 @@ public final class ToXMLSAXHandler extends ToSAXHandler
      */
     private void resetToXMLSAXHandler()
     {
-        this.m_escapeSetting = false;
+        this.m_escapeSetting = true;
     }  
 
 }
