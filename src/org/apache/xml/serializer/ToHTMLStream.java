@@ -1529,34 +1529,19 @@ public class ToHTMLStream extends ToStream
     {
 
         if (m_elemContext.m_isRaw)
-        {
-            
-            // Clean up some pending issues.
-            if (m_elemContext.m_startTagOpen)
-            {
-                closeStartTag();
-                m_elemContext.m_startTagOpen = false;
-            }
-            
+        { 
             try
             {
+                // Clean up some pending issues.
                 if (m_elemContext.m_startTagOpen)
                 {
                     closeStartTag();
                     m_elemContext.m_startTagOpen = false;
                 }
+                
                 m_ispreserve = true;
                 
-//              With m_ispreserve just set true it looks like shouldIndent()
-//              will always return false, so drop any possible indentation.
-//              if (shouldIndent())
-//                  indent();
-
-                // writer.write("<![CDATA[");
-                // writer.write(chars, start, length);
                 writeNormalizedChars(chars, start, length, false, m_lineSepUse);
-
-                // writer.write("]]>");
                 
                 // time to generate characters event
                 if (m_tracer != null)
@@ -1567,11 +1552,7 @@ public class ToHTMLStream extends ToStream
             catch (IOException ioe)
             {
                 throw new org.xml.sax.SAXException(
-                    Utils.messages.createMessage(
-                        MsgKey.ER_OIERROR,
-                        null),
-                    ioe);
-                //"IO error", ioe);
+                    Utils.messages.createMessage(MsgKey.ER_OIERROR,null),ioe);
             }
         }
         else
