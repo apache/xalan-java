@@ -526,5 +526,31 @@ public class NamespaceMappings
         m_namespaces.put(prefix, fs);
         return fs;
     }
-
+    
+    /**
+     * Given a namespace uri, get all prefixes bound to the Namespace URI in the current scope. 
+     * 
+     * @param uri the namespace URI to be search for
+     * @return An array of Strings which are
+     * all prefixes bound to the namespace URI in the current scope.
+     * An array of zero elements is returned if no prefixes map to the given
+     * namespace URI.
+     */
+    public String[] lookupAllPrefixes(String uri)
+    {
+        java.util.ArrayList foundPrefixes = new java.util.ArrayList();
+        Enumeration prefixes = m_namespaces.keys();
+        while (prefixes.hasMoreElements())
+        {
+            String prefix = (String) prefixes.nextElement();
+            String uri2 = lookupNamespace(prefix);
+            if (uri2 != null && uri2.equals(uri))
+            {
+                foundPrefixes.add(prefix);
+            }
+        }
+        String[] prefixArray = new String[foundPrefixes.size()];
+        foundPrefixes.toArray(prefixArray);
+        return prefixArray;
+    }
 }
