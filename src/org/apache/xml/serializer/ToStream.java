@@ -105,14 +105,16 @@ abstract public class ToStream extends SerializerBase
     protected boolean m_isprevtext = false;
 
         
+    private static final char[] s_systemLineSep = 
+        System.getProperty("line.separator").toCharArray();
     /**
      * The system line separator for writing out line breaks.
      * The default value is from the system property,
      * but this value can be set through the xsl:output
      * extension attribute xalan:line-separator.
      */
-    protected char[] m_lineSep =
-        System.getProperty("line.separator").toCharArray();
+    protected char[] m_lineSep = s_systemLineSep;
+        
         
     /**
      * True if the the system line separator is to be used.
@@ -3262,27 +3264,26 @@ abstract public class ToStream extends SerializerBase
           * 
           */
          // this.m_charInfo = null; // don't set to null 
-
          this.m_disableOutputEscapingStates.clear();
+         // this.m_encodingInfo = null; // don't set to null
          
          this.m_escaping = true;
          // Leave m_format alone for now - Brian M.
          // this.m_format = null;
+         this.m_expandDTDEntities = true; 
          this.m_inDoctype = false;
-         this.m_ispreserve = false;
          this.m_ispreserve = false;
          this.m_isprevtext = false;
          this.m_isUTF8 = false; //  ?? used anywhere ??
+         this.m_lineSep = s_systemLineSep;
+         this.m_lineSepLen = s_systemLineSep.length;
+         this.m_lineSepUse = true;
+         // this.m_outputStream = null; // Don't reset it may be re-used
          this.m_preserves.clear();
          this.m_shouldFlush = true;
          this.m_spaceBeforeClose = false;
          this.m_startNewLine = false;
-         this.m_lineSepUse = true;
-         // DON'T SET THE WRITER TO NULL, IT MAY BE REUSED !!
-         // this.m_writer = null;  
-         this.m_expandDTDEntities = true;     
          this.m_writer_set_by_user = false;
- 
     }        
     
     /**

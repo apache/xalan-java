@@ -738,6 +738,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      */
     private void resetToHTMLSAXHandler()
     {
+        this.m_dtdHandled = false;
         this.m_escapeSetting = false;
     }  
 }

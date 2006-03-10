@@ -2012,16 +2012,16 @@ public class ToHTMLStream extends ToStream
         boolean ret = super.reset();
         if (!ret)
             return false;
-        initToHTMLStream();
+        resetToHTMLStream();
         return true;        
     }
     
-    private void initToHTMLStream()
+    private void resetToHTMLStream()
     {
-//        m_elementDesc = null;
+        // m_htmlcharInfo remains unchanged
+        // m_htmlInfo = null;  // Don't reset
         m_inBlockElem = false;
         m_inDTD = false;
-//        m_isRawStack.clear();
         m_omitMetaTag = false;
         m_specialEscapeURLs = true;     
     }

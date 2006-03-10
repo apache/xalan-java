@@ -1247,23 +1247,30 @@ public abstract class SerializerBase
     private void resetSerializerBase()
     {
     	this.m_attributes.clear();
-        this.m_StringOfCDATASections = null;
-        this.m_elemContext = new ElemContext();
+        this.m_CdataElems = null;
+        this.m_cdataTagOpen = false;
+        this.m_docIsEmpty = true;
     	this.m_doctypePublic = null;
     	this.m_doctypeSystem = null;
     	this.m_doIndent = false;
+        this.m_elemContext = new ElemContext();
     	this.m_indentAmount = 0;
     	this.m_inEntityRef = false;
     	this.m_inExternalDTD = false;
     	this.m_mediatype = null;
     	this.m_needToCallStartDocument = true;
     	this.m_needToOutputDocTypeDecl = false;
+        if (m_OutputProps != null)
+            this.m_OutputProps.clear();
+        if (m_OutputPropsDefault != null)
+            this.m_OutputPropsDefault.clear();
         if (this.m_prefixMap != null)
     	    this.m_prefixMap.reset();
     	this.m_shouldNotWriteXMLHeader = false;
     	this.m_sourceLocator = null;
     	this.m_standalone = null;
     	this.m_standaloneWasSpecified = false;
+        this.m_StringOfCDATASections = null;
     	this.m_tracer = null;
     	this.m_transformer = null;
     	this.m_version = null;
