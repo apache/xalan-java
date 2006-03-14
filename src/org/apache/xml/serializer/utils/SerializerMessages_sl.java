@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2006 The Apache Software Foundation.
+ * Copyright 2004-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /*
- * $Id$
+ * $Id: SerializerMessages_sl.java,v 1.7 2005/03/07 20:34:36 minchau Exp $
  */
 
 package org.apache.xml.serializer.utils;
@@ -40,7 +40,7 @@ import java.util.ResourceBundle;
  *
  * @xsl.usage internal
  */
-public class SerializerMessages_it extends ListResourceBundle {
+public class SerializerMessages_sl extends ListResourceBundle {
 
     /*
      * This file contains error and warning messages related to
@@ -70,31 +70,31 @@ public class SerializerMessages_it extends ListResourceBundle {
     public Object[][] getContents() {
         Object[][] contents = new Object[][] {
             {   MsgKey.BAD_MSGKEY,
-                "La chiave messaggio ''{0}'' non si trova nella classe del messaggio ''{1}''" },
+                "Klju\u010d sporo\u010dila ''{0}'' ni v rezredu sporo\u010dila ''{1}''" },
 
             {   MsgKey.BAD_MSGFORMAT,
-                "Il formato del messaggio ''{0}'' nella classe del messaggio ''{1}'' non \u00e8 riuscito." },
+                "Format sporo\u010dila ''{0}'' v razredu sporo\u010dila ''{1}'' je spodletel." },
 
             {   MsgKey.ER_SERIALIZER_NOT_CONTENTHANDLER,
-                "La classe del serializzatore ''{0}'' non implementa org.xml.sax.ContentHandler." },
+                "Razred serializerja ''{0}'' ne izvede org.xml.sax.ContentHandler." },
 
             {   MsgKey.ER_RESOURCE_COULD_NOT_FIND,
-                    "Risorsa [ {0} ] non trovata.\n {1}" },
+                    "Vira [ {0} ] ni mogo\u010de najti.\n {1}" },
 
             {   MsgKey.ER_RESOURCE_COULD_NOT_LOAD,
-                    "Impossibile caricare la risorsa [ {0} ]: {1} \n {2} \t {3}" },
+                    "Sredstva [ {0} ] ni bilo mogo\u010de nalo\u017eiti: {1} \n {2} \t {3}" },
 
             {   MsgKey.ER_BUFFER_SIZE_LESSTHAN_ZERO,
-                    "Dimensione buffer <=0" },
+                    "Velikost medpomnilnika <=0" },
 
             {   MsgKey.ER_INVALID_UTF16_SURROGATE,
-                    "Rilevato surrogato UTF-16 non valido: {0} ?" },
+                    "Zaznan neveljaven nadomestek UTF-16: {0} ?" },
 
             {   MsgKey.ER_OIERROR,
-                "Errore IO" },
+                "Napaka V/I" },
 
             {   MsgKey.ER_ILLEGAL_ATTRIBUTE_POSITION,
-                "Impossibile aggiungere l''''attributo {0} dopo i nodi secondari o prima che sia prodotto un elemento.  L''''attributo verr\u00e0 ignorato." },
+                "Atributa {0} ne morem dodati za podrejenimi vozli\u0161\u010di ali pred izdelavo elementa.  Atribut bo prezrt." },
 
             /*
              * Note to translators:  The stylesheet contained a reference to a
@@ -102,7 +102,7 @@ public class SerializerMessages_it extends ListResourceBundle {
              * text is the name of the prefix.
              */
             {   MsgKey.ER_NAMESPACE_PREFIX,
-                "Lo spazio nomi per il prefisso ''{0}'' non \u00e8 stato dichiarato." },
+                "Imenski prostor za predpono ''{0}'' ni bil naveden." },
 
             /*
              * Note to translators:  This message is reported if the stylesheet
@@ -111,7 +111,7 @@ public class SerializerMessages_it extends ListResourceBundle {
              * specifies the name of the attribute.
              */
             {   MsgKey.ER_STRAY_ATTRIBUTE,
-                "L''''attributo ''{0}'' al di fuori dell''''elemento." },
+                "Atribut ''{0}'' je zunaj elementa." },
 
             /*
              * Note to translators:  As with the preceding message, a namespace
@@ -121,69 +121,69 @@ public class SerializerMessages_it extends ListResourceBundle {
              * namespace declaration.
              */
             {   MsgKey.ER_STRAY_NAMESPACE,
-                "Dichiarazione dello spazio nome ''{0}''=''{1}'' al di fuori dell''''elemento." },
+                "Deklaracija imenskega prostora ''{0}''=''{1}'' je zunaj elementa." },
 
             {   MsgKey.ER_COULD_NOT_LOAD_RESOURCE,
-                "Impossibile caricare ''{0}'' (verificare CLASSPATH), verranno utilizzati i valori predefiniti" },
+                "Ni bilo mogo\u010de nalo\u017eiti ''{0}'' (preverite CLASSPATH), trenutno se uporabljajo samo privzete vrednosti" },
 
             {   MsgKey.ER_ILLEGAL_CHARACTER,
-                "Tentare di generare l''''output del carattere di valor integrale {0} che non \u00e8 rappresentato nella codifica di output specificata di {1}." },
+                "Poskus izpisa znaka integralne vrednosti {0}, ki v navedenem izhodnem kodiranju {1} ni zastopan." },
 
             {   MsgKey.ER_COULD_NOT_LOAD_METHOD_PROPERTY,
-                "Impossibile caricare il file delle propriet\u00e0 ''{0}'' per il metodo di emissione ''{1}'' (verificare CLASSPATH)" },
+                "Datoteke z lastnostmi ''{0}'' ni bilo mogo\u010de nalo\u017eiti za izhodno metodo ''{1}'' (preverite CLASSPATH)" },
 
             {   MsgKey.ER_INVALID_PORT,
-                "Numero di porta non valido" },
+                "Neveljavna \u0161tevilka vrat" },
 
             {   MsgKey.ER_PORT_WHEN_HOST_NULL,
-                "La porta non pu\u00f2 essere impostata se l'host \u00e8 nullo" },
+                "Ko je gostitelj NULL, nastavitev vrat ni mogo\u010da" },
 
             {   MsgKey.ER_HOST_ADDRESS_NOT_WELLFORMED,
-                "Host non \u00e8 un'indirizzo corretto" },
+                "Naslov gostitelja ni pravilno oblikovan" },
 
             {   MsgKey.ER_SCHEME_NOT_CONFORMANT,
-                "Lo schema non \u00e8 conforme." },
+                "Shema ni skladna." },
 
             {   MsgKey.ER_SCHEME_FROM_NULL_STRING,
-                "Impossibile impostare lo schema da una stringa nulla" },
+                "Ni mogo\u010de nastaviti sheme iz niza NULL" },
 
             {   MsgKey.ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
-                "Il percorso contiene sequenza di escape non valida" },
+                "Pot vsebuje neveljavno zaporedje za izhod" },
 
             {   MsgKey.ER_PATH_INVALID_CHAR,
-                "Il percorso contiene un carattere non valido: {0}" },
+                "Pot vsebuje neveljaven znak: {0}" },
 
             {   MsgKey.ER_FRAG_INVALID_CHAR,
-                "Il frammento contiene un carattere non valido" },
+                "Fragment vsebuje neveljaven znak" },
 
             {   MsgKey.ER_FRAG_WHEN_PATH_NULL,
-                "Il frammento non pu\u00f2 essere impostato se il percorso \u00e8 nullo" },
+                "Ko je pot NULL, nastavitev fragmenta ni mogo\u010da" },
 
             {   MsgKey.ER_FRAG_FOR_GENERIC_URI,
-                "Il frammento pu\u00f2 essere impostato solo per un URI generico" },
+                "Fragment je lahko nastavljen samo za splo\u0161ni URI" },
 
             {   MsgKey.ER_NO_SCHEME_IN_URI,
-                "Non \u00e8 stato trovato alcuno schema nell'URI" },
+                "Ne najdem sheme v URI" },
 
             {   MsgKey.ER_CANNOT_INIT_URI_EMPTY_PARMS,
-                "Impossibile inizializzare l'URI con i parametri vuoti" },
+                "Ni mogo\u010de inicializirati URI-ja s praznimi parametri" },
 
             {   MsgKey.ER_NO_FRAGMENT_STRING_IN_PATH,
-                "Il frammento non pu\u00f2 essere specificato sia nel percorso che nel frammento" },
+                "Fragment ne more biti hkrati naveden v poti in v fragmentu" },
 
             {   MsgKey.ER_NO_QUERY_STRING_IN_PATH,
-                "La stringa di interrogazione non pu\u00f2 essere specificata nella stringa di interrogazione e percorso." },
+                "Poizvedbeni niz ne more biti naveden v nizu poti in poizvedbenem nizu" },
 
             {   MsgKey.ER_NO_PORT_IF_NO_HOST,
-                "La porta non pu\u00f2 essere specificata se l'host non S specificato" },
+                "Vrata ne morejo biti navedena, \u010de ni naveden gostitelj" },
 
             {   MsgKey.ER_NO_USERINFO_IF_NO_HOST,
-                "Userinfo non pu\u00f2 essere specificato se l'host non S specificato" },
+                "Informacije o uporabniku ne morejo biti navedene, \u010de ni naveden gostitelj" },
             {   MsgKey.ER_XML_VERSION_NOT_SUPPORTED,
-                "Attenzione:  La versione del documento di emissione \u00e8 obbligatorio che sia ''{0}''.  Questa versione di XML non \u00e8 supportata.  La versione del documento di emissione sar\u00e0 ''1.0''." },
+                "Opozorilo: Zahtevana razli\u010dica izhodnega dokumenta je ''{0}''.  Ta razli\u010dica XML ni podprta.  Razli\u010dica izhodnega dokumenta bo ''1.0''." },
 
             {   MsgKey.ER_SCHEME_REQUIRED,
-                "Lo schema \u00e8 obbligatorio." },
+                "Zahtevana je shema!" },
 
             /*
              * Note to translators:  The words 'Properties' and
@@ -191,10 +191,10 @@ public class SerializerMessages_it extends ListResourceBundle {
              * and should not be translated.
              */
             {   MsgKey.ER_FACTORY_PROPERTY_MISSING,
-                "L''''oggetto Properties passato al SerializerFactory non ha una propriet\u00e0 ''{0}''." },
+                "Predmet Properties (lastnosti), ki je prene\u0161en v SerializerFactory, nima lastnosti ''{0}''." },
 
             {   MsgKey.ER_ENCODING_NOT_SUPPORTED,
-                "Avvertenza:  La codifica ''{0}'' non \u00e8 supportata da Java runtime." },
+                "Opozorilo:  Izvajalno okolje Java ne podpira kodiranja ''{0}''." },
 
 
         };

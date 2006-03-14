@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2006 The Apache Software Foundation.
+ * Copyright 2004-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 /*
- * $Id$
+ * $Id: SerializerMessages_zh.java,v 1.7 2005/03/07 20:34:36 minchau Exp $
  */
+
 
 package org.apache.xml.serializer.utils;
 
@@ -40,7 +41,7 @@ import java.util.ResourceBundle;
  *
  * @xsl.usage internal
  */
-public class SerializerMessages_it extends ListResourceBundle {
+public class SerializerMessages_zh extends ListResourceBundle {
 
     /*
      * This file contains error and warning messages related to
@@ -70,31 +71,31 @@ public class SerializerMessages_it extends ListResourceBundle {
     public Object[][] getContents() {
         Object[][] contents = new Object[][] {
             {   MsgKey.BAD_MSGKEY,
-                "La chiave messaggio ''{0}'' non si trova nella classe del messaggio ''{1}''" },
+                "\u6d88\u606f\u5bc6\u94a5\u201c{0}\u201d\u4e0d\u5728\u6d88\u606f\u7c7b\u201c{1}\u201d\u4e2d" },
 
             {   MsgKey.BAD_MSGFORMAT,
-                "Il formato del messaggio ''{0}'' nella classe del messaggio ''{1}'' non \u00e8 riuscito." },
+                "\u6d88\u606f\u7c7b\u201c{1}\u201d\u4e2d\u7684\u6d88\u606f\u201c{0}\u201d\u7684\u683c\u5f0f\u65e0\u6548\u3002" },
 
             {   MsgKey.ER_SERIALIZER_NOT_CONTENTHANDLER,
-                "La classe del serializzatore ''{0}'' non implementa org.xml.sax.ContentHandler." },
+                "\u4e32\u884c\u5668\u7c7b\u201c{0}\u201d\u4e0d\u80fd\u5b9e\u73b0 org.xml.sax.ContentHandler\u3002" },
 
             {   MsgKey.ER_RESOURCE_COULD_NOT_FIND,
-                    "Risorsa [ {0} ] non trovata.\n {1}" },
+                    "\u627e\u4e0d\u5230\u8d44\u6e90 [ {0} ]\u3002\n {1}" },
 
             {   MsgKey.ER_RESOURCE_COULD_NOT_LOAD,
-                    "Impossibile caricare la risorsa [ {0} ]: {1} \n {2} \t {3}" },
+                    "\u8d44\u6e90 [ {0} ] \u65e0\u6cd5\u88c5\u5165\uff1a{1} \n {2} \t {3}" },
 
             {   MsgKey.ER_BUFFER_SIZE_LESSTHAN_ZERO,
-                    "Dimensione buffer <=0" },
+                    "\u7f13\u51b2\u533a\u5927\u5c0f <=0" },
 
             {   MsgKey.ER_INVALID_UTF16_SURROGATE,
-                    "Rilevato surrogato UTF-16 non valido: {0} ?" },
+                    "\u68c0\u6d4b\u5230\u65e0\u6548\u7684 UTF-16 \u8d85\u5927\u5b57\u7b26\u96c6\uff1a{0}\uff1f" },
 
             {   MsgKey.ER_OIERROR,
-                "Errore IO" },
+                "IO \u9519\u8bef" },
 
             {   MsgKey.ER_ILLEGAL_ATTRIBUTE_POSITION,
-                "Impossibile aggiungere l''''attributo {0} dopo i nodi secondari o prima che sia prodotto un elemento.  L''''attributo verr\u00e0 ignorato." },
+                "\u5728\u751f\u6210\u5b50\u8282\u70b9\u4e4b\u540e\u6216\u5728\u751f\u6210\u5143\u7d20\u4e4b\u524d\u65e0\u6cd5\u6dfb\u52a0\u5c5e\u6027 {0}\u3002\u5c06\u5ffd\u7565\u5c5e\u6027\u3002" },
 
             /*
              * Note to translators:  The stylesheet contained a reference to a
@@ -102,7 +103,7 @@ public class SerializerMessages_it extends ListResourceBundle {
              * text is the name of the prefix.
              */
             {   MsgKey.ER_NAMESPACE_PREFIX,
-                "Lo spazio nomi per il prefisso ''{0}'' non \u00e8 stato dichiarato." },
+                "\u5c1a\u672a\u58f0\u660e\u524d\u7f00\u201c{0}\u201d\u7684\u540d\u79f0\u7a7a\u95f4\u3002" },
 
             /*
              * Note to translators:  This message is reported if the stylesheet
@@ -111,7 +112,7 @@ public class SerializerMessages_it extends ListResourceBundle {
              * specifies the name of the attribute.
              */
             {   MsgKey.ER_STRAY_ATTRIBUTE,
-                "L''''attributo ''{0}'' al di fuori dell''''elemento." },
+                "\u5c5e\u6027\u201c{0}\u201d\u5728\u5143\u7d20\u5916\u3002" },
 
             /*
              * Note to translators:  As with the preceding message, a namespace
@@ -121,69 +122,69 @@ public class SerializerMessages_it extends ListResourceBundle {
              * namespace declaration.
              */
             {   MsgKey.ER_STRAY_NAMESPACE,
-                "Dichiarazione dello spazio nome ''{0}''=''{1}'' al di fuori dell''''elemento." },
+                "\u540d\u79f0\u7a7a\u95f4\u58f0\u660e\u201c{0}\u201d=\u201c{1}\u201d\u5728\u5143\u7d20\u5916\u3002" },
 
             {   MsgKey.ER_COULD_NOT_LOAD_RESOURCE,
-                "Impossibile caricare ''{0}'' (verificare CLASSPATH), verranno utilizzati i valori predefiniti" },
+                "\u65e0\u6cd5\u88c5\u5165\u201c{0}\u201d\uff08\u68c0\u67e5 CLASSPATH\uff09\uff0c\u73b0\u5728\u53ea\u4f7f\u7528\u7f3a\u7701\u503c" },
 
             {   MsgKey.ER_ILLEGAL_CHARACTER,
-                "Tentare di generare l''''output del carattere di valor integrale {0} che non \u00e8 rappresentato nella codifica di output specificata di {1}." },
+                "\u5c1d\u8bd5\u8f93\u51fa\u6574\u6570\u503c {0}\uff08\u5b83\u4e0d\u662f\u4ee5\u6307\u5b9a\u7684 {1} \u8f93\u51fa\u7f16\u7801\u8868\u793a\uff09\u7684\u5b57\u7b26\u3002" },
 
             {   MsgKey.ER_COULD_NOT_LOAD_METHOD_PROPERTY,
-                "Impossibile caricare il file delle propriet\u00e0 ''{0}'' per il metodo di emissione ''{1}'' (verificare CLASSPATH)" },
+                "\u65e0\u6cd5\u4e3a\u8f93\u51fa\u65b9\u6cd5\u201c{1}\u201d\u88c5\u5165\u5c5e\u6027\u6587\u4ef6\u201c{0}\u201d\uff08\u68c0\u67e5 CLASSPATH\uff09" },
 
             {   MsgKey.ER_INVALID_PORT,
-                "Numero di porta non valido" },
+                "\u7aef\u53e3\u53f7\u65e0\u6548" },
 
             {   MsgKey.ER_PORT_WHEN_HOST_NULL,
-                "La porta non pu\u00f2 essere impostata se l'host \u00e8 nullo" },
+                "\u4e3b\u673a\u4e3a\u7a7a\u65f6\uff0c\u65e0\u6cd5\u8bbe\u7f6e\u7aef\u53e3" },
 
             {   MsgKey.ER_HOST_ADDRESS_NOT_WELLFORMED,
-                "Host non \u00e8 un'indirizzo corretto" },
+                "\u4e3b\u673a\u4e0d\u662f\u683c\u5f0f\u6b63\u786e\u7684\u5730\u5740" },
 
             {   MsgKey.ER_SCHEME_NOT_CONFORMANT,
-                "Lo schema non \u00e8 conforme." },
+                "\u6a21\u5f0f\u4e0d\u4e00\u81f4\u3002" },
 
             {   MsgKey.ER_SCHEME_FROM_NULL_STRING,
-                "Impossibile impostare lo schema da una stringa nulla" },
+                "\u65e0\u6cd5\u4ece\u7a7a\u5b57\u7b26\u4e32\u8bbe\u7f6e\u6a21\u5f0f" },
 
             {   MsgKey.ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
-                "Il percorso contiene sequenza di escape non valida" },
+                "\u8def\u5f84\u5305\u542b\u65e0\u6548\u7684\u8f6c\u4e49\u5e8f\u5217" },
 
             {   MsgKey.ER_PATH_INVALID_CHAR,
-                "Il percorso contiene un carattere non valido: {0}" },
+                "\u8def\u5f84\u5305\u542b\u65e0\u6548\u7684\u5b57\u7b26\uff1a{0}" },
 
             {   MsgKey.ER_FRAG_INVALID_CHAR,
-                "Il frammento contiene un carattere non valido" },
+                "\u7247\u6bb5\u5305\u542b\u65e0\u6548\u7684\u5b57\u7b26" },
 
             {   MsgKey.ER_FRAG_WHEN_PATH_NULL,
-                "Il frammento non pu\u00f2 essere impostato se il percorso \u00e8 nullo" },
+                "\u8def\u5f84\u4e3a\u7a7a\u65f6\uff0c\u65e0\u6cd5\u8bbe\u7f6e\u7247\u6bb5" },
 
             {   MsgKey.ER_FRAG_FOR_GENERIC_URI,
-                "Il frammento pu\u00f2 essere impostato solo per un URI generico" },
+                "\u53ea\u80fd\u4e3a\u7c7b\u5c5e URI \u8bbe\u7f6e\u7247\u6bb5" },
 
             {   MsgKey.ER_NO_SCHEME_IN_URI,
-                "Non \u00e8 stato trovato alcuno schema nell'URI" },
+                "URI \u4e2d\u627e\u4e0d\u5230\u4efb\u4f55\u6a21\u5f0f" },
 
             {   MsgKey.ER_CANNOT_INIT_URI_EMPTY_PARMS,
-                "Impossibile inizializzare l'URI con i parametri vuoti" },
+                "\u4e0d\u80fd\u4ee5\u7a7a\u53c2\u6570\u521d\u59cb\u5316 URI" },
 
             {   MsgKey.ER_NO_FRAGMENT_STRING_IN_PATH,
-                "Il frammento non pu\u00f2 essere specificato sia nel percorso che nel frammento" },
+                "\u8def\u5f84\u548c\u7247\u6bb5\u4e2d\u90fd\u4e0d\u80fd\u6307\u5b9a\u7247\u6bb5" },
 
             {   MsgKey.ER_NO_QUERY_STRING_IN_PATH,
-                "La stringa di interrogazione non pu\u00f2 essere specificata nella stringa di interrogazione e percorso." },
+                "\u8def\u5f84\u548c\u67e5\u8be2\u5b57\u7b26\u4e32\u4e2d\u4e0d\u80fd\u6307\u5b9a\u67e5\u8be2\u5b57\u7b26\u4e32" },
 
             {   MsgKey.ER_NO_PORT_IF_NO_HOST,
-                "La porta non pu\u00f2 essere specificata se l'host non S specificato" },
+                "\u5982\u679c\u6ca1\u6709\u6307\u5b9a\u4e3b\u673a\uff0c\u5219\u4e0d\u53ef\u4ee5\u6307\u5b9a\u7aef\u53e3" },
 
             {   MsgKey.ER_NO_USERINFO_IF_NO_HOST,
-                "Userinfo non pu\u00f2 essere specificato se l'host non S specificato" },
+                "\u5982\u679c\u6ca1\u6709\u6307\u5b9a\u4e3b\u673a\uff0c\u5219\u4e0d\u53ef\u4ee5\u6307\u5b9a\u7528\u6237\u4fe1\u606f" },
             {   MsgKey.ER_XML_VERSION_NOT_SUPPORTED,
-                "Attenzione:  La versione del documento di emissione \u00e8 obbligatorio che sia ''{0}''.  Questa versione di XML non \u00e8 supportata.  La versione del documento di emissione sar\u00e0 ''1.0''." },
+                "\u8b66\u544a\uff1a\u8981\u6c42\u8f93\u51fa\u6587\u6863\u7684\u7248\u672c\u662f\u201c{0}\u201d\u3002\u4e0d\u652f\u6301\u6b64 XML \u7248\u672c\u3002\u8f93\u51fa\u6587\u6863\u7684\u7248\u672c\u5c06\u4f1a\u662f\u201c1.0\u201d\u3002" },
 
             {   MsgKey.ER_SCHEME_REQUIRED,
-                "Lo schema \u00e8 obbligatorio." },
+                "\u6a21\u5f0f\u662f\u5fc5\u9700\u7684\uff01" },
 
             /*
              * Note to translators:  The words 'Properties' and
@@ -191,10 +192,7 @@ public class SerializerMessages_it extends ListResourceBundle {
              * and should not be translated.
              */
             {   MsgKey.ER_FACTORY_PROPERTY_MISSING,
-                "L''''oggetto Properties passato al SerializerFactory non ha una propriet\u00e0 ''{0}''." },
-
-            {   MsgKey.ER_ENCODING_NOT_SUPPORTED,
-                "Avvertenza:  La codifica ''{0}'' non \u00e8 supportata da Java runtime." },
+                "\u4f20\u9012\u7ed9 SerializerFactory \u7684 Properties \u5bf9\u8c61\u4e0d\u5177\u6709\u5c5e\u6027\u201c{0}\u201d\u3002" },
 
 
         };

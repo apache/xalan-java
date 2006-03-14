@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2006 The Apache Software Foundation.
+ * Copyright 2004-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 /*
- * $Id$
+ * $Id: SerializerMessages_sk.java,v 1.7 2005/03/07 20:34:36 minchau Exp $
  */
 
 package org.apache.xml.serializer.utils;
@@ -40,7 +40,7 @@ import java.util.ResourceBundle;
  *
  * @xsl.usage internal
  */
-public class SerializerMessages_it extends ListResourceBundle {
+public class SerializerMessages_sk extends ListResourceBundle {
 
     /*
      * This file contains error and warning messages related to
@@ -70,31 +70,31 @@ public class SerializerMessages_it extends ListResourceBundle {
     public Object[][] getContents() {
         Object[][] contents = new Object[][] {
             {   MsgKey.BAD_MSGKEY,
-                "La chiave messaggio ''{0}'' non si trova nella classe del messaggio ''{1}''" },
+                "K\u013e\u00fa\u010d spr\u00e1vy ''{0}'' sa nenach\u00e1dza v triede spr\u00e1v ''{1}''" },
 
             {   MsgKey.BAD_MSGFORMAT,
-                "Il formato del messaggio ''{0}'' nella classe del messaggio ''{1}'' non \u00e8 riuscito." },
+                "Zlyhal form\u00e1t spr\u00e1vy ''{0}'' v triede spr\u00e1v ''{1}''." },
 
             {   MsgKey.ER_SERIALIZER_NOT_CONTENTHANDLER,
-                "La classe del serializzatore ''{0}'' non implementa org.xml.sax.ContentHandler." },
+                "Trieda serializ\u00e1tora ''{0}'' neimplementuje org.xml.sax.ContentHandler." },
 
             {   MsgKey.ER_RESOURCE_COULD_NOT_FIND,
-                    "Risorsa [ {0} ] non trovata.\n {1}" },
+                    "Prostriedok [ {0} ] nemohol by\u0165 n\u00e1jden\u00fd.\n {1}" },
 
             {   MsgKey.ER_RESOURCE_COULD_NOT_LOAD,
-                    "Impossibile caricare la risorsa [ {0} ]: {1} \n {2} \t {3}" },
+                    "Prostriedok [ {0} ] sa nedal na\u010d\u00edta\u0165: {1} \n {2} \t {3}" },
 
             {   MsgKey.ER_BUFFER_SIZE_LESSTHAN_ZERO,
-                    "Dimensione buffer <=0" },
+                    "Ve\u013ekos\u0165 vyrovn\u00e1vacej pam\u00e4te <=0" },
 
             {   MsgKey.ER_INVALID_UTF16_SURROGATE,
-                    "Rilevato surrogato UTF-16 non valido: {0} ?" },
+                    "Bolo zisten\u00e9 neplatn\u00e9 nahradenie UTF-16: {0} ?" },
 
             {   MsgKey.ER_OIERROR,
-                "Errore IO" },
+                "chyba IO" },
 
             {   MsgKey.ER_ILLEGAL_ATTRIBUTE_POSITION,
-                "Impossibile aggiungere l''''attributo {0} dopo i nodi secondari o prima che sia prodotto un elemento.  L''''attributo verr\u00e0 ignorato." },
+                "Nie je mo\u017en\u00e9 prida\u0165 atrib\u00fat {0} po uzloch potomka alebo pred vytvoren\u00edm elementu.  Atrib\u00fat bude ignorovan\u00fd." },
 
             /*
              * Note to translators:  The stylesheet contained a reference to a
@@ -102,7 +102,7 @@ public class SerializerMessages_it extends ListResourceBundle {
              * text is the name of the prefix.
              */
             {   MsgKey.ER_NAMESPACE_PREFIX,
-                "Lo spazio nomi per il prefisso ''{0}'' non \u00e8 stato dichiarato." },
+                "N\u00e1zvov\u00fd priestor pre predponu ''{0}'' nebol deklarovan\u00fd." },
 
             /*
              * Note to translators:  This message is reported if the stylesheet
@@ -111,7 +111,7 @@ public class SerializerMessages_it extends ListResourceBundle {
              * specifies the name of the attribute.
              */
             {   MsgKey.ER_STRAY_ATTRIBUTE,
-                "L''''attributo ''{0}'' al di fuori dell''''elemento." },
+                "Atrib\u00fat ''{0}'' je mimo prvku." },
 
             /*
              * Note to translators:  As with the preceding message, a namespace
@@ -121,69 +121,69 @@ public class SerializerMessages_it extends ListResourceBundle {
              * namespace declaration.
              */
             {   MsgKey.ER_STRAY_NAMESPACE,
-                "Dichiarazione dello spazio nome ''{0}''=''{1}'' al di fuori dell''''elemento." },
+                "Deklar\u00e1cia n\u00e1zvov\u00e9ho priestoru ''{0}''=''{1}'' je mimo prvku." },
 
             {   MsgKey.ER_COULD_NOT_LOAD_RESOURCE,
-                "Impossibile caricare ''{0}'' (verificare CLASSPATH), verranno utilizzati i valori predefiniti" },
+                "Nebolo mo\u017en\u00e9 zavies\u0165 ''{0}'' (skontrolujte CLASSPATH), teraz sa pou\u017e\u00edvaj\u00fa iba \u0161tandardn\u00e9 nastavenia" },
 
             {   MsgKey.ER_ILLEGAL_CHARACTER,
-                "Tentare di generare l''''output del carattere di valor integrale {0} che non \u00e8 rappresentato nella codifica di output specificata di {1}." },
+                "Pokus o v\u00fdstup znaku integr\u00e1lnej hodnoty {0}, ktor\u00e1 nie je reprezentovan\u00e1 v zadanom v\u00fdstupnom k\u00f3dovan\u00ed {1}." },
 
             {   MsgKey.ER_COULD_NOT_LOAD_METHOD_PROPERTY,
-                "Impossibile caricare il file delle propriet\u00e0 ''{0}'' per il metodo di emissione ''{1}'' (verificare CLASSPATH)" },
+                "Nebolo mo\u017en\u00e9 zavies\u0165 s\u00fabor vlastnost\u00ed ''{0}'' pre v\u00fdstupn\u00fa met\u00f3du ''{1}'' (skontrolujte CLASSPATH)" },
 
             {   MsgKey.ER_INVALID_PORT,
-                "Numero di porta non valido" },
+                "Neplatn\u00e9 \u010d\u00edslo portu" },
 
             {   MsgKey.ER_PORT_WHEN_HOST_NULL,
-                "La porta non pu\u00f2 essere impostata se l'host \u00e8 nullo" },
+                "Nem\u00f4\u017ee by\u0165 stanoven\u00fd port, ak je hostite\u013e nulov\u00fd" },
 
             {   MsgKey.ER_HOST_ADDRESS_NOT_WELLFORMED,
-                "Host non \u00e8 un'indirizzo corretto" },
+                "Hostite\u013e nie je spr\u00e1vne form\u00e1tovan\u00e1 adresa" },
 
             {   MsgKey.ER_SCHEME_NOT_CONFORMANT,
-                "Lo schema non \u00e8 conforme." },
+                "Nezhodn\u00e1 sch\u00e9ma." },
 
             {   MsgKey.ER_SCHEME_FROM_NULL_STRING,
-                "Impossibile impostare lo schema da una stringa nulla" },
+                "Nie je mo\u017en\u00e9 stanovi\u0165 sch\u00e9mu z nulov\u00e9ho re\u0165azca" },
 
             {   MsgKey.ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
-                "Il percorso contiene sequenza di escape non valida" },
+                "Cesta obsahuje neplatn\u00fa \u00fanikov\u00fa sekvenciu" },
 
             {   MsgKey.ER_PATH_INVALID_CHAR,
-                "Il percorso contiene un carattere non valido: {0}" },
+                "Cesta obsahuje neplatn\u00fd znak: {0}" },
 
             {   MsgKey.ER_FRAG_INVALID_CHAR,
-                "Il frammento contiene un carattere non valido" },
+                "Fragment obsahuje neplatn\u00fd znak" },
 
             {   MsgKey.ER_FRAG_WHEN_PATH_NULL,
-                "Il frammento non pu\u00f2 essere impostato se il percorso \u00e8 nullo" },
+                "Ak je cesta nulov\u00e1, nem\u00f4\u017ee by\u0165 stanoven\u00fd fragment" },
 
             {   MsgKey.ER_FRAG_FOR_GENERIC_URI,
-                "Il frammento pu\u00f2 essere impostato solo per un URI generico" },
+                "Fragment m\u00f4\u017ee by\u0165 stanoven\u00fd len pre v\u0161eobecn\u00e9 URI" },
 
             {   MsgKey.ER_NO_SCHEME_IN_URI,
-                "Non \u00e8 stato trovato alcuno schema nell'URI" },
+                "V URI nebola n\u00e1jden\u00e1 \u017eiadna sch\u00e9ma" },
 
             {   MsgKey.ER_CANNOT_INIT_URI_EMPTY_PARMS,
-                "Impossibile inizializzare l'URI con i parametri vuoti" },
+                "Nie je mo\u017en\u00e9 inicializova\u0165 URI s pr\u00e1zdnymi parametrami" },
 
             {   MsgKey.ER_NO_FRAGMENT_STRING_IN_PATH,
-                "Il frammento non pu\u00f2 essere specificato sia nel percorso che nel frammento" },
+                "Fragment nem\u00f4\u017ee by\u0165 zadan\u00fd v ceste, ani vo fragmente" },
 
             {   MsgKey.ER_NO_QUERY_STRING_IN_PATH,
-                "La stringa di interrogazione non pu\u00f2 essere specificata nella stringa di interrogazione e percorso." },
+                "Re\u0165azec dotazu nem\u00f4\u017ee by\u0165 zadan\u00fd v ceste a re\u0165azci dotazu" },
 
             {   MsgKey.ER_NO_PORT_IF_NO_HOST,
-                "La porta non pu\u00f2 essere specificata se l'host non S specificato" },
+                "Ak nebol zadan\u00fd hostite\u013e, mo\u017eno nebol zadan\u00fd port" },
 
             {   MsgKey.ER_NO_USERINFO_IF_NO_HOST,
-                "Userinfo non pu\u00f2 essere specificato se l'host non S specificato" },
+                "Ak nebol zadan\u00fd hostite\u013e, mo\u017eno nebolo zadan\u00e9 userinfo" },
             {   MsgKey.ER_XML_VERSION_NOT_SUPPORTED,
-                "Attenzione:  La versione del documento di emissione \u00e8 obbligatorio che sia ''{0}''.  Questa versione di XML non \u00e8 supportata.  La versione del documento di emissione sar\u00e0 ''1.0''." },
+                "Varovanie:  Verzia v\u00fdstupn\u00e9ho dokumentu mus\u00ed by\u0165 povinne ''{0}''.  T\u00e1to verzia XML nie je podporovan\u00e1.  Verzia v\u00fdstupn\u00e9ho dokumentu bude ''1.0''." },
 
             {   MsgKey.ER_SCHEME_REQUIRED,
-                "Lo schema \u00e8 obbligatorio." },
+                "Je po\u017eadovan\u00e1 sch\u00e9ma!" },
 
             /*
              * Note to translators:  The words 'Properties' and
@@ -191,10 +191,10 @@ public class SerializerMessages_it extends ListResourceBundle {
              * and should not be translated.
              */
             {   MsgKey.ER_FACTORY_PROPERTY_MISSING,
-                "L''''oggetto Properties passato al SerializerFactory non ha una propriet\u00e0 ''{0}''." },
+                "Objekt Properties, ktor\u00fd pre\u0161iel do SerializerFactory, nem\u00e1 vlastnos\u0165 ''{0}''." },
 
             {   MsgKey.ER_ENCODING_NOT_SUPPORTED,
-                "Avvertenza:  La codifica ''{0}'' non \u00e8 supportata da Java runtime." },
+                "Varovanie:  Java runtime nepodporuje k\u00f3dovanie ''{0}''." },
 
 
         };
