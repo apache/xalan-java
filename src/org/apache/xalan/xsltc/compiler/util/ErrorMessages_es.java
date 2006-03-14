@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ public class ErrorMessages_es extends ListResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -195,7 +195,7 @@ public class ErrorMessages_es extends ListResourceBundle {
          * not be found.
          */
         {ErrorMsg.FUNCTION_RESOLVE_ERR,
-        "Imposible resolver la llamada a la funci\u00f3n ''{0}''."},
+        "No se puede resolver la llamada a la funci\u00f3n ''{0}''."},
 
         /*
          * Note to translators:  The substitution text is the name of a
@@ -556,7 +556,7 @@ public class ErrorMessages_es extends ListResourceBundle {
          * substitution text with "null" Java value.
          */
         {ErrorMsg.ERROR_LISTENER_NULL_ERR,
-        "Intento de establecer ErrorListener para ''{0}'' como nulo"},
+        "Intento de establecer ErrorListener para ''{0}'' en null"},
 
         /*
          * Note to translators:  StreamSource, SAXSource and DOMSource are Java
@@ -647,6 +647,16 @@ public class ErrorMessages_es extends ListResourceBundle {
         {ErrorMsg.XSLTC_SOURCE_ERR,
         "XSLTCSource.build() llamado sin establecer systemId."},
 
+        { ErrorMsg.ER_RESULT_NULL,
+            "El resultado no deber\u00eda ser nulo"},
+
+        /*
+         * Note to translators:  This message indicates that the value argument
+         * of setParameter must be a valid Java Object.
+         */
+        {ErrorMsg.JAXP_INVALID_SET_PARAM_VALUE,
+        "El valor del par\u00e1metro {0} debe ser un objeto Java v\u00e1lido"},
+
 
         {ErrorMsg.COMPILE_STDIN_ERR,
         "La opci\u00f3n -i debe utilizarse con la opci\u00f3n -o."},
@@ -662,7 +672,7 @@ public class ErrorMessages_es extends ListResourceBundle {
          * documentation.
          */
         {ErrorMsg.COMPILE_USAGE_STR,
-        "SINOPSIS\n   java org.apache.xalan.xsltc.cmdline.Compile [-o <salida>]\n      [-d <directorio>] [-j <archivojar>] [-p <paquete>]\n      [-n] [-x] [-s] [-u] [-v] [-h] { <hojaestilos> | -i }\n\nOPCIONES\n   -o <salida>    asigna el nombre <salida> al translet\n                  generado. Por omisi\u00f3n, el nombre del translet\n                  se toma del nombre de la <hojaestilos>. Esta opci\u00f3n\n                  se ignora si se compilan varias hojas de estilos.\n   -d <directorio> especificar un directorio de destino para el translet\n   -j <archivojar>   empaqueta las clases translet en el archivo jar del\n                  nombre especificado por <archivojar>\n   -p <paquete>   especifica un prefijo de nombre de paquete para todas las\n                  clases translet generadas.\n   -n             habilita la inclusi\u00f3n en l\u00ednea de plantillas (comportamiento por omisi\u00f3n\n                  mejor seg\u00fan promedio).\n   -x             activa la salida de mensajes de depuraci\u00f3n adicionales\n   -s             inhabilita la llamada a System.exit\n   -u             interpreta los argumentos <hojaestilos> como URL\n   -i             fuerza al compilador a que lea la hoja de estilos de stdin\n   -v             imprime la versi\u00f3n del compilador\n   -h             imprime esta sentencia de uso\n"},
+        "SINOPSIS\n   java org.apache.xalan.xsltc.cmdline.Compile [-o <salida>]\n      [-d <directory>] [-j <archivojar>] [-p <paquete>]\n      [-n] [-x] [-u] [-v] [-h] { <stylesheet> | -i }\n\nOPCIONES\n   -o <salida>    asigna el nombre <salida> al translet\n                  generado.  De forma predeterminada, el nombre del translet\n                  se deriva del nombre de la <hojaestilos>. Esta opci\u00f3n\n                  se ignora si se compilan varias hojas de estilos.\n   -d <directorio> especificar un directorio de destino para el translet\n   -j <archivojar>   empaqueta las clases translet en el archivo jar del\n                  nombre especificado por <archivojar>\n   -p <paquete>   especifica un prefijo de nombre de paquete para todas las\n                  clases translet generadas.\n   -n             habilita la inclusi\u00f3n en l\u00ednea de plantillas (comportamiento predeterminado\n                  mejor seg\u00fan promedio).\n   -x             activa la salida de mensajes de depuraci\u00f3n adicionales\n   -u             interpreta los argumentos <stylesheet>  como URL\n   -i             fuerza que el compilador lea la hoja de estilos de stdin\n   -v             imprime la versi\u00f3n del compilador\n   -h             imprime esta sentencia de uso\n"},
 
         /*
          * Note to translators:  This message contains usage information for a
@@ -674,7 +684,7 @@ public class ErrorMessages_es extends ListResourceBundle {
          * documentation.
          */
         {ErrorMsg.TRANSFORM_USAGE_STR,
-        "SINOPSIS \n   java org.apache.xalan.xsltc.cmdline.Transform [-j <archivojar>]\n      [-x] [-s] [-n <iteraciones>] {-u <url_documento> | <documento>}\n      <clase> [<par\u00e1m1>=<valor1> ...]\n\n   utiliza la <clase> translet para transformar un documento XML \n   especificado como <documento>. La <clase> translet est\u00e1 en\n   la CLASSPATH del usuario o en el <archivojar> especificado opcionalmente.\nOPCIONES\n   -j <archivojar>    especifica un archivo jar desde el que se cargar\u00e1 translet\n   -x              activa la salida de mensajes de depuraci\u00f3n adicionales\n   -s              inhabilita la llamada a System.exit\n   -n <iteraciones> ejecuta la transformaci\u00f3n <iteraciones> veces y\n                   muestra informaci\u00f3n de perfiles\n   -u <url_documento> especifica el documento de entrada XML como un URL\n"},
+        "SINOPSIS \n   java org.apache.xalan.xsltc.cmdline.Transform [-j <archivojar>]\n      [-x] [-n <iteraciones>] {-u <url_documento | <documento>}\n      <clase> [<param1>=<valor1> ...]\n\n   utiliza la <clase> translet para transformar  un documento XML \n   especificado como <documento>. La <clase> translet est\u00e1 en\n   la CLASSPATH del usuario o en el <archivojar> especificado opcionalmente.\nOPCIONES\n   -j <archivojar>    especifica un archivo jar desde el que se va a cargar el translet\n   -x           activa la salida de mensajes de depuraci\u00f3n adicionales\n   -n <iteraciones> ejecuta la transformaci\u00f3n <iteraciones> veces y\n       muestra informaci\u00f3n de perfiles\n   -u <url_documento> especifica el documento de entrada XML como un URL\n"},
 
 
 
@@ -802,14 +812,14 @@ public class ErrorMessages_es extends ListResourceBundle {
          * Note to translators:  The substitution text is the name of a class.
          */
         {ErrorMsg.TRANSFORM_WITH_TRANSLET_STR,
-        "Transformaci\u00f3n utilizando translet ''{0}'' "},
+        "Transformaci\u00f3n con translet ''{0}'' "},
 
         /*
          * Note to translators:  The first substitution is the name of a class,
          * while the second substitution is the name of a jar file.
          */
         {ErrorMsg.TRANSFORM_WITH_JAR_STR,
-        "Transformaci\u00f3n utilizando translet ''{0}'' del archivo jar ''{1}''"},
+        "Transformaci\u00f3n con translet ''{0}'' del archivo jar ''{1}''"},
 
         /*
          * Note to translators:  "TransformerFactory" is the name of a Java
@@ -818,6 +828,16 @@ public class ErrorMessages_es extends ListResourceBundle {
          */
         {ErrorMsg.COULD_NOT_CREATE_TRANS_FACT,
         "No se ha podido crear una instancia de la clase TransformerFactory ''{0}''."},
+
+        /*
+         * Note to translators:  This message is produced when the user
+         * specified a name for the translet class that contains characters
+         * that are not permitted in a Java class name.  The substitution
+         * text "{0}" specifies the name the user requested, while "{1}"
+         * specifies the name the processor used instead.
+         */
+        {ErrorMsg.TRANSLET_NAME_JAVA_CONFLICT,
+         "No se ha podido utilizar el nombre ''{0}'' como nombre de la clase translet porque contiene caracteres que no est\u00e1n permitidos en los nombres de clases Java. Se utiliza el nombre ''{1}'' en su lugar."},
 
         /*
          * Note to translators:  The following message is used as a header.
@@ -843,7 +863,49 @@ public class ErrorMessages_es extends ListResourceBundle {
          * stylesheet (see above).
          */
         {ErrorMsg.RUNTIME_ERROR_KEY,
-        "Errores de translet:"}
+        "Errores de translet:"},
+
+        /*
+         * Note to translators:  An attribute whose value is constrained to
+         * be a "QName" or a list of "QNames" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {ErrorMsg.INVALID_QNAME_ERR,
+        "Un atributo cuyo valor debe ser un QName o una lista de QNames separados por espacios tiene el valor ''{0}''"},
+
+        /*
+         * Note to translators:  An attribute whose value is required to
+         * be an "NCName".
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {ErrorMsg.INVALID_NCNAME_ERR,
+        "Un atributo cuyo valor debe ser un NCName tiene el valor ''{0}''"},
+
+        /*
+         * Note to translators:  An attribute with an incorrect value was
+         * encountered.  The permitted value is one of the literal values
+         * "xml", "html" or "text"; it is also permitted to have the form of
+         * a QName that is not also an NCName.  The terms "method",
+         * "xsl:output", "xml", "html" and "text" are keywords that must not
+         * be translated.  The term "qname-but-not-ncname" is an XML syntactic
+         * term.  The substitution text contains the actual value of the
+         * attribute.
+         */
+        {ErrorMsg.INVALID_METHOD_IN_OUTPUT,
+        "El atributo method de un elemento <xsl:output> tiene el valor ''{0}''. El valor debe ser ''xml'', ''html'', ''text'' o qname-but-not-ncname"},
+
+        {ErrorMsg.JAXP_GET_FEATURE_NULL_NAME,
+        "El nombre de caracter\u00edstica no puede ser null en TransformerFactory.getFeature(nombre de tipo String)."},
+
+        {ErrorMsg.JAXP_SET_FEATURE_NULL_NAME,
+        "El nombre de caracter\u00edstica no puede ser null en TransformerFactory.setFeature(nombre de tipo String, valor booleano)."},
+
+        {ErrorMsg.JAXP_UNSUPPORTED_FEATURE,
+        "No se puede establecer la caracter\u00edstica ''{0}'' en esta TransformerFactory."}
+
     };
     }
+
 }

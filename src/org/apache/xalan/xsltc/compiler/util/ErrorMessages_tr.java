@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ public class ErrorMessages_tr extends ListResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -426,7 +426,7 @@ public class ErrorMessages_tr extends ListResourceBundle {
          * gives the extension name.
          */
         {ErrorMsg.UNSUPPORTED_EXT_ERR,
-        "XSLTC uzant\u0131s\u0131 ''{0}'' tan\u0131nm\u0131yor."},
+        "XSLTC eklentisi ''{0}'' tan\u0131nm\u0131yor."},
 
         /*
          * Note to translators:  The XML document given to XSLTC as a stylesheet
@@ -451,7 +451,7 @@ public class ErrorMessages_tr extends ListResourceBundle {
          * that is missing some functionality.
          */
         {ErrorMsg.NOT_IMPLEMENTED_ERR,
-        "Uygulanmad\u0131: ''{0}''."},
+        "Ger\u00e7ekle\u015ftirilmedi: ''{0}''."},
 
         /*
          * Note to translators:  The XML document given to XSLTC as a stylesheet
@@ -630,7 +630,7 @@ public class ErrorMessages_tr extends ListResourceBundle {
          * would be best to translate the term "property".
          */
         {ErrorMsg.JAXP_UNKNOWN_PROP_ERR,
-        "Ge\u00e7ersiz ''{0}'' Transformer \u00f6zelli\u011fine eri\u015fme giri\u015fimi."},
+        "Ge\u00e7ersiz ''{0}'' Transformer \u00f6zelli\u011fine (property) eri\u015fme giri\u015fimi."},
 
         /*
          * Note to translators:  SAX2DOM is the name of a Java class that should
@@ -647,6 +647,16 @@ public class ErrorMessages_tr extends ListResourceBundle {
         {ErrorMsg.XSLTC_SOURCE_ERR,
         "XSLTCSource.build() y\u00f6ntemi systemId tan\u0131mlanmadan \u00e7a\u011fr\u0131ld\u0131."},
 
+        { ErrorMsg.ER_RESULT_NULL,
+            "Sonu\u00e7 bo\u015f de\u011ferli olmamal\u0131"},
+
+        /*
+         * Note to translators:  This message indicates that the value argument
+         * of setParameter must be a valid Java Object.
+         */
+        {ErrorMsg.JAXP_INVALID_SET_PARAM_VALUE,
+        "{0} de\u011fi\u015ftirgesinin de\u011feri ge\u00e7erli bir Java nesnesi olmal\u0131d\u0131r"},
+
 
         {ErrorMsg.COMPILE_STDIN_ERR,
         "-i se\u00e7ene\u011fi -o se\u00e7ene\u011fiyle birlikte kullan\u0131lmal\u0131d\u0131r."},
@@ -662,7 +672,7 @@ public class ErrorMessages_tr extends ListResourceBundle {
          * documentation.
          */
         {ErrorMsg.COMPILE_USAGE_STR,
-        "\u00d6ZET\n   java org.apache.xalan.xsltc.cmdline.Compile [-o <\u00e7\u0131k\u0131\u015f>]\n      [-d <dizin>] [-j <jardosyas\u0131>] [-p <paket>]\n      [-n] [-x] [-s] [-u] [-v] [-h] { <bi\u00e7emyapra\u011f\u0131> | -i }\n\nSE\u00c7ENEKLER\n   -o <\u00e7\u0131k\u0131\u015f>    derleme sonucu s\u0131n\u0131f dosyas\u0131na <\u00e7\u0131k\u0131\u015f>\n                  ad\u0131n\u0131 atar. Varsay\u0131lan olarak, derleme sonucu s\u0131n\u0131f dosyas\u0131\n                  ad\u0131 <bi\u00e7emyapra\u011f\u0131> ad\u0131ndan al\u0131n\u0131r. Birden \u00e7ok bi\u00e7em yapra\u011f\u0131 derleniyorsa\n                  bu se\u00e7enek dikkate al\u0131nmaz.\n   -d <dizin> derleme sonucu s\u0131n\u0131f dosyas\u0131 i\u00e7in hedef dizini belirtir.\n   -j <jardosyas\u0131>   derleme sonucu s\u0131n\u0131f dosyalar\u0131n\u0131\n                  <jardosyas\u0131> dosyas\u0131nda paketler.\n   -p <paket>   derleme sonucu \u00fcretilen t\u00fcm s\u0131n\u0131f dosyalar\u0131 i\u00e7in\n                  bir paket ad\u0131 \u00f6neki belirtir.\n   -n             \u015fablona do\u011frudan yerle\u015ftirmeyi etkinle\u015ftirir (ortalama olarak\n                  daha y\u00fcksek ba\u015far\u0131m sa\u011flar).\n   -x             ek hata ay\u0131klama iletisi \u00e7\u0131k\u0131\u015f\u0131n\u0131 etkinle\u015ftirir.\n   -s             System.exit \u00e7a\u011fr\u0131s\u0131n\u0131 ge\u00e7ersiz k\u0131lar.\n   -u             <bi\u00e7emyapra\u011f\u0131> ba\u011f\u0131ms\u0131z de\u011fi\u015fkenlerini URL olarak yorumlar.\n   -i             derleyiciyi stdin'den bi\u00e7em yapra\u011f\u0131n\u0131 okumaya zorlar.\n   -v             derleyici s\u00fcr\u00fcm\u00fcn\u00fc yazd\u0131r\u0131r.\n   -h             bu kullan\u0131m bilgilerini yazd\u0131r\u0131r.\n"},
+        "\u00d6ZET\n   java org.apache.xalan.xsltc.cmdline.Compile [-o <\u00e7\u0131k\u0131\u015f>]\n      [-d <dizin>] [-j <jardosyas\u0131>] [-p <paket>]\n      [-n] [-x] [-u] [-v] [-h] { <bi\u00e7emyapra\u011f\u0131> | -i }\n\nSE\u00c7ENEKLER\n   -o <\u00e7\u0131k\u0131\u015f>    derleme sonucu s\u0131n\u0131f dosyas\u0131na <\u00e7\u0131k\u0131\u015f>\n                  ad\u0131n\u0131 atar. Varsay\u0131lan olarak, derleme sonucu s\u0131n\u0131f dosyas\u0131\n                  ad\u0131 <bi\u00e7emyapra\u011f\u0131> ad\u0131ndan al\u0131n\u0131r.  Birden \u00e7ok bi\u00e7em yapra\u011f\u0131 derleniyorsa\n                  bu se\u00e7enek dikkate al\u0131nmaz.\n   -d <dizin> derleme sonucu s\u0131n\u0131f dosyas\u0131 i\u00e7in hedef dizini belirtir.\n   -j <jardosyas\u0131>   derleme sonucu s\u0131n\u0131f dosyalar\u0131n\u0131\n                  <jardosyas\u0131> dosyas\u0131nda paketler.\n   -p <paket>   derleme sonucu \u00fcretilen t\u00fcm s\u0131n\u0131f dosyalar\u0131 i\u00e7in\n                  bir paket ad\u0131 \u00f6neki belirtir.\n   -n             \u015fablona do\u011frudan yerle\u015ftirmeyi etkinle\u015ftirir (ortalama olarak\n                  daha y\u00fcksek ba\u015far\u0131m sa\u011flar).\n   -x             ek hata ay\u0131klama iletisi \u00e7\u0131k\u0131\u015f\u0131n\u0131 etkinle\u015ftirir\n   -u             <bi\u00e7emyapra\u011f\u0131> ba\u011f\u0131ms\u0131z de\u011fi\u015fkenlerini URL olarak yorumlars\n   -i             derleyiciyi stdin'den bi\u00e7em yapra\u011f\u0131n\u0131 okumaya zorlar\n   -v             derleyici s\u00fcr\u00fcm\u00fcn\u00fc yazd\u0131r\u0131r.\n   -h             bu kullan\u0131m bilgilerini yazd\u0131r\u0131r\n"},
 
         /*
          * Note to translators:  This message contains usage information for a
@@ -674,7 +684,7 @@ public class ErrorMessages_tr extends ListResourceBundle {
          * documentation.
          */
         {ErrorMsg.TRANSFORM_USAGE_STR,
-        "S\u00d6ZD\u0130Z\u0130M\u0130 \n   java org.apache.xalan.xsltc.cmdline.Transform [-j <jardosyas\u0131>]\n      [-x] [-s] [-n <yineleme say\u0131s\u0131>] {-u <belge_url> | <belge>}\n      <s\u0131n\u0131f> [<de\u011fi\u015ftirge1>=<de\u011fer1> ...]\n\n   <belge> ile belirtilen XML belgesini d\u00f6n\u00fc\u015ft\u00fcrmek i\u00e7in <s\u0131n\u0131f> \n   s\u0131n\u0131f dosyas\u0131n\u0131 kullan\u0131r. <s\u0131n\u0131f> s\u0131n\u0131f dosyas\u0131\n   kullan\u0131c\u0131n\u0131n CLASSPATH de\u011fi\u015fkeninde ya da iste\u011fe ba\u011fl\u0131 olarak belirtilen <jardosyas\u0131> dosyas\u0131ndad\u0131r.\nSE\u00c7ENEKLER\n   -j <jardosyas\u0131>    derleme sonucu s\u0131n\u0131f dosyas\u0131n\u0131n hangi jar dosyas\u0131ndan y\u00fcklenece\u011fini belirtir.\n   -x              ek hata ay\u0131klama iletisi \u00e7\u0131k\u0131\u015f\u0131n\u0131 etkinle\u015ftirir.\n   -s              System.exit \u00e7a\u011fr\u0131s\u0131n\u0131 ge\u00e7ersiz k\u0131lar.\n   -n <yineleme say\u0131s\u0131> d\u00f6n\u00fc\u015ft\u00fcrmeyi <yineleme say\u0131s\u0131> ile belirtilen say\u0131 kadar \u00e7al\u0131\u015ft\u0131r\u0131r ve\n                   yakalama bilgilerini g\u00f6r\u00fcnt\u00fcler.\n   -u <belge_url> XML giri\u015f belgesini URL olarak belirtir.\n"},
+        "\u00d6ZET \n   java org.apache.xalan.xsltc.cmdline.Transform [-j <jardosyas\u0131>]\n      [-x] [-n <yinelemesay\u0131s\u0131>] {-u <belge_url> | <belge>}\n      <s\u0131n\u0131f> [<de\u011fi\u015ftirge1>=<de\u011fer1> ...]\n\n   <belge> ile belirtilen XML belgesini d\u00f6n\u00fc\u015ft\u00fcrmek i\u00e7in <s\u0131n\u0131f>\n   s\u0131n\u0131f dosyas\u0131n\u0131 kullan\u0131r. <s\u0131n\u0131f> s\u0131n\u0131f dosyas\u0131\n   kullan\u0131c\u0131n\u0131n CLASSPATH de\u011fi\u015fkeninde ya da iste\u011fe ba\u011fl\u0131 olarak belirtilen <jardosyas\u0131> dosyas\u0131ndad\u0131r.\nSE\u00c7ENEKLER\n   -j <jardosyas\u0131>    derleme sonucu s\u0131n\u0131f dosyas\u0131n\u0131n hangi jar dosyas\u0131ndan y\u00fcklenece\u011fini belirtir\n   -x              ek hata ay\u0131klama iletisi \u00e7\u0131k\u0131\u015f\u0131n\u0131 etkinle\u015ftirir\n   -n <yinelemesay\u0131s\u0131> d\u00f6n\u00fc\u015ft\u00fcrmeyi <yineleme say\u0131s\u0131> ile belirtilen say\u0131 kadar \u00e7al\u0131\u015ft\u0131r\u0131r\n                   ve yakalama bilgilerini g\u00f6r\u00fcnt\u00fcler\n   -u <belge_url> XML giri\u015f belgesini URL olarak belirtir\n"},
 
 
 
@@ -718,7 +728,7 @@ public class ErrorMessages_tr extends ListResourceBundle {
          * is not of the required type.
          */
         {ErrorMsg.NO_JAVA_FUNCT_THIS_REF,
-        "Dura\u011fan (static) olmayan ''{0}'' Java i\u015flevine ili\u015fkin ilk ba\u011f\u0131ms\u0131z de\u011fi\u015fken ge\u00e7erli bir nesne ba\u015fvurusu de\u011fil. "},
+        "Dura\u011fan (static) olmayan ''{0}'' Java i\u015flevine ili\u015fkin ilk ba\u011f\u0131ms\u0131z de\u011fi\u015fken ge\u00e7erli bir nesne ba\u015fvurusu de\u011fil."},
 
         /*
          * Note to translators:  An XPath expression was not of the type
@@ -802,14 +812,14 @@ public class ErrorMessages_tr extends ListResourceBundle {
          * Note to translators:  The substitution text is the name of a class.
          */
         {ErrorMsg.TRANSFORM_WITH_TRANSLET_STR,
-        "''{0}'' s\u0131n\u0131f\u0131n\u0131 kullanarak d\u00f6n\u00fc\u015ft\u00fcr"},
+        "''{0}'' s\u0131n\u0131f\u0131n\u0131 kullanarak d\u00f6n\u00fc\u015ft\u00fcr "},
 
         /*
          * Note to translators:  The first substitution is the name of a class,
          * while the second substitution is the name of a jar file.
          */
         {ErrorMsg.TRANSFORM_WITH_JAR_STR,
-        "''{1}'' jar dosyas\u0131ndan ''{0}'' s\u0131n\u0131f\u0131n\u0131 kullanarak d\u00f6n\u00fc\u015ft\u00fcr"},
+        "''{1}'' jar dosyas\u0131ndan ''{0}'' derleme sonucu s\u0131n\u0131f dosyas\u0131n\u0131 kullanarak d\u00f6n\u00fc\u015ft\u00fcr"},
 
         /*
          * Note to translators:  "TransformerFactory" is the name of a Java
@@ -817,7 +827,17 @@ public class ErrorMessages_tr extends ListResourceBundle {
          * the name of the class that could not be instantiated.
          */
         {ErrorMsg.COULD_NOT_CREATE_TRANS_FACT,
-        "''{0}'' TransformerFactory s\u0131n\u0131f\u0131n\u0131n somut kopyas\u0131 yarat\u0131lamad\u0131."},
+        "''{0}'' TransformerFactory s\u0131n\u0131f\u0131n\u0131n somut \u00f6rne\u011fi yarat\u0131lamad\u0131."},
+
+        /*
+         * Note to translators:  This message is produced when the user
+         * specified a name for the translet class that contains characters
+         * that are not permitted in a Java class name.  The substitution
+         * text "{0}" specifies the name the user requested, while "{1}"
+         * specifies the name the processor used instead.
+         */
+        {ErrorMsg.TRANSLET_NAME_JAVA_CONFLICT,
+         "''{0}'' ad\u0131, derleme sonucu s\u0131n\u0131f dosyas\u0131 ad\u0131 olarak kullan\u0131lamad\u0131; bir Java s\u0131n\u0131f\u0131nda kullan\u0131lmas\u0131na izin verilmeyen karakterler i\u00e7eriyor.  Onun yerine ''{1}'' ad\u0131 kullan\u0131ld\u0131."},
 
         /*
          * Note to translators:  The following message is used as a header.
@@ -843,7 +863,49 @@ public class ErrorMessages_tr extends ListResourceBundle {
          * stylesheet (see above).
          */
         {ErrorMsg.RUNTIME_ERROR_KEY,
-        "Derleme sonusu s\u0131n\u0131f dosyas\u0131 hatalar\u0131:"}
+        "Derleme sonusu s\u0131n\u0131f dosyas\u0131 hatalar\u0131:"},
+
+        /*
+         * Note to translators:  An attribute whose value is constrained to
+         * be a "QName" or a list of "QNames" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {ErrorMsg.INVALID_QNAME_ERR,
+        "De\u011ferinin bir QName ya da beyaz alanla ayr\u0131lm\u0131\u015f QName listesi olmas\u0131 gereken bir \u00f6zniteli\u011fin de\u011feri ''{0}''"},
+
+        /*
+         * Note to translators:  An attribute whose value is required to
+         * be an "NCName".
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {ErrorMsg.INVALID_NCNAME_ERR,
+        "De\u011ferinin bir NCName olmas\u0131 gereken \u00f6zniteli\u011fin de\u011feri ''{0}''"},
+
+        /*
+         * Note to translators:  An attribute with an incorrect value was
+         * encountered.  The permitted value is one of the literal values
+         * "xml", "html" or "text"; it is also permitted to have the form of
+         * a QName that is not also an NCName.  The terms "method",
+         * "xsl:output", "xml", "html" and "text" are keywords that must not
+         * be translated.  The term "qname-but-not-ncname" is an XML syntactic
+         * term.  The substitution text contains the actual value of the
+         * attribute.
+         */
+        {ErrorMsg.INVALID_METHOD_IN_OUTPUT,
+        "Bir <xsl:output> \u00f6\u011fesinin y\u00f6ntem \u00f6zniteli\u011finin de\u011feri ''{0}''.  De\u011fer ''xml'', ''html'', ''text'' ya da ncname olmayan bir qname olmal\u0131d\u0131r"},
+
+        {ErrorMsg.JAXP_GET_FEATURE_NULL_NAME,
+        "TransformerFactory.getFeature(dizgi ad\u0131) i\u00e7inde \u00f6zellik (feature) ad\u0131 bo\u015f de\u011ferli olamaz."},
+
+        {ErrorMsg.JAXP_SET_FEATURE_NULL_NAME,
+        "TransformerFactory.setFeature(dizgi ad\u0131, boole de\u011fer) i\u00e7inde \u00f6zellik (feature) ad\u0131 bo\u015f de\u011ferli olamaz."},
+
+        {ErrorMsg.JAXP_UNSUPPORTED_FEATURE,
+        "Bu TransformerFactory \u00fczerinde ''{0}'' \u00f6zelli\u011fi tan\u0131mlanamaz."}
+
     };
     }
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -102,7 +102,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * same stylesheet.
          */
         {ErrorMsg.TEMPLATE_REDEF_ERR,
-        "\u0160ablona ''{0}'' je ji\u017e v t\u00e9to p\u0159edloze stylu definov\u00e1na."},
+        "\u0160ablona ''{0}'' je ji\u017e v t\u00e9to p\u0159edloze stylu definov\u00e1na. "},
 
 
         /*
@@ -159,21 +159,21 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * is missing.
          */
         {ErrorMsg.FILE_NOT_FOUND_ERR,
-        "Soubor nebo URI ''{0}'' nebyl nalezen."},
+        "Soubor nebo identifik\u00e1tor URI ''{0}'' nebyl nalezen."},
 
         /*
          * Note to translators:  This message is displayed when the URI
          * mentioned in the substitution text is not well-formed syntactically.
          */
         {ErrorMsg.INVALID_URI_ERR,
-        "Neplatn\u00e9 URI ''{0}''."},
+        "Neplatn\u00fd identifik\u00e1tor URI ''{0}''."},
 
         /*
          * Note to translators:  The file or URI named in the substitution text
          * exists but could not be opened.
          */
         {ErrorMsg.FILE_ACCESS_ERR,
-        "Nelze otev\u0159\u00edt soubor nebo URI ''{0}''."},
+        "Nelze otev\u0159\u00edt soubor nebo identifik\u00e1tor URI ''{0}''."},
 
         /*
          * Note to translators: <xsl:stylesheet> and <xsl:transform> are
@@ -202,7 +202,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * function.  A literal string here means a constant string value.
          */
         {ErrorMsg.NEED_LITERAL_ERR,
-        "Argument pro ''{0}'' mus\u00ed b\u00fdt \u0159et\u011bzcem liter\u00e1lu."},
+        "Argumentem funkce ''{0}'' mus\u00ed b\u00fdt \u0159et\u011bzcov\u00fd liter\u00e1l."},
 
         /*
          * Note to translators:  This message indicates there was a syntactic
@@ -235,7 +235,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * text is the name.
          */
         {ErrorMsg.ILLEGAL_PI_ERR,
-        "Neplatn\u00fd n\u00e1zev ''{0}'' pro zpracov\u00e1n\u00ed instrukce."},
+        "Neplatn\u00fd n\u00e1zev ''{0}'' pro instrukci zpracov\u00e1n\u00ed. "},
 
         /*
          * Note to translators:  This message is reported if the stylesheet
@@ -244,7 +244,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * specifies the name of the attribute.
          */
         {ErrorMsg.STRAY_ATTRIBUTE_ERR,
-        "Atribut ''{0}'' je vn\u011b prvku."},
+        "Atribut ''{0}'' se nach\u00e1z\u00ed vn\u011b prvku."},
 
         /*
          * Note to translators:  An attribute that wasn't recognized was
@@ -292,7 +292,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * parameters depend on one another.
          */
         {ErrorMsg.CIRCULAR_VARIABLE_ERR,
-        "Cyklick\u00fd odkaz na prom\u011bnnou/parametr v ''{0}''."},
+        "Cyklick\u00fd odkaz na prom\u011bnnou/parametr ve funkci ''{0}''."},
 
         /*
          * Note to translators:  The operator in an expresion with two operands was
@@ -409,7 +409,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * encountered.
          */
         {ErrorMsg.INTERNAL_ERR,
-        "Neopraviteln\u00e1 chyba XSLTC-internal: ''{0}''"},
+        "Neopraviteln\u00e1 intern\u00ed chyba XSLTC: ''{0}''"},
 
         /*
          * Note to translators:  The stylesheet contained an element that was
@@ -515,7 +515,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * Note to translators:  ???
          */
         {ErrorMsg.UNKNOWN_SIG_TYPE_ERR,
-        "Nezn\u00e1m\u00fd datov\u00fd typ prom\u011bnn\u00e9 signature pro t\u0159\u00eddu ''{0}''."},
+        "Nezn\u00e1m\u00fd datov\u00fd typ v podpisu pro t\u0159\u00eddu ''{0}''. "},
 
         /*
          * Note to translators:  The substitution text refers to data types.
@@ -538,13 +538,13 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * not be translated.
          */
         {ErrorMsg.NO_MAIN_TRANSLET_ERR,
-        "Tato \u0161ablona neobsahuje t\u0159\u00eddu se jm\u00e9nem ''{0}''."},
+        "Tato \u0161ablona neobsahuje t\u0159\u00eddu s n\u00e1zvem ''{0}''. "},
 
         /*
          * Note to translators:  The substitution text is the name of a class.
          */
         {ErrorMsg.TRANSLET_CLASS_ERR,
-        "Nelze zav\u00e9st t\u0159\u00eddu translet ''{0}''."},
+        "Nelze zav\u00e9st t\u0159\u00eddu translet ''{0}''. "},
 
         {ErrorMsg.TRANSLET_OBJECT_ERR,
         "T\u0159\u00edda translet byla zavedena, av\u0161ak nelze vytvo\u0159it instanci translet."},
@@ -556,7 +556,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * substitution text with "null" Java value.
          */
         {ErrorMsg.ERROR_LISTENER_NULL_ERR,
-        "Pokus nastavit objekt ErrorListener pro ''{0}'' na hodnotu null"},
+        "Pokus nastavit objekt ErrorListener pro t\u0159\u00eddu ''{0}'' na hodnotu Null"},
 
         /*
          * Note to translators:  StreamSource, SAXSource and DOMSource are Java
@@ -570,7 +570,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * be translated.  The substitution text is the name of Java method.
          */
         {ErrorMsg.JAXP_NO_SOURCE_ERR,
-        "Zdrojov\u00fd objekt p\u0159edan\u00fd ''{0}'' nem\u00e1 \u017e\u00e1dn\u00fd obsah."},
+        "Zdrojov\u00fd objekt p\u0159edan\u00fd metod\u011b ''{0}'' nem\u00e1 \u017e\u00e1dn\u00fd obsah."},
 
         /*
          * Note to translators:  The message indicates that XSLTC failed to
@@ -588,7 +588,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * translate the term "attribute".
          */
         {ErrorMsg.JAXP_INVALID_ATTR_ERR,
-        "T\u0159\u00edda TransformerFactory nerozpoznala atribut ''{0}''."},
+        "T\u0159\u00edda TransformerFactory nerozpoznala atribut ''{0}''. "},
 
         /*
          * Note to translators:  "setResult()" and "startDocument()" are Java
@@ -620,7 +620,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * context.  The substitution text is a method name.
          */
         {ErrorMsg.JAXP_NO_RESULT_ERR,
-        "V\u00fdsledn\u00fd objekt p\u0159edan\u00fd ''{0}'' je neplatn\u00fd."},
+        "V\u00fdsledn\u00fd objekt p\u0159edan\u00fd metod\u011b ''{0}'' je neplatn\u00fd."},
 
         /*
          * Note to translators:  "Transformer" is a Java interface name.  The
@@ -630,7 +630,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * would be best to translate the term "property".
          */
         {ErrorMsg.JAXP_UNKNOWN_PROP_ERR,
-        "Pokus o p\u0159\u00edstup k neplatn\u00e9 vlastnosti objektu Transformer: ''{0}''."},
+        "Pokus o p\u0159\u00edstup k neplatn\u00e9 vlastnosti objektu Transformer: ''{0}''. "},
 
         /*
          * Note to translators:  SAX2DOM is the name of a Java class that should
@@ -638,7 +638,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * DOM object and converts it to something that uses the SAX API.
          */
         {ErrorMsg.SAX2DOM_ADAPTER_ERR,
-        "Nelze vytvo\u0159it adapt\u00e9r SAX2DOM: ''{0}''."},
+        "Nelze vytvo\u0159it adapt\u00e9r SAX2DOM: ''{0}''. "},
 
         /*
          * Note to translators:  "XSLTCSource.build()" is a Java method name.
@@ -646,6 +646,16 @@ public class ErrorMessages_cs extends ListResourceBundle {
          */
         {ErrorMsg.XSLTC_SOURCE_ERR,
         "Byla vol\u00e1na metoda XSLTCSource.build(), ani\u017e by byla nastavena hodnota systemId."},
+
+        { ErrorMsg.ER_RESULT_NULL,
+            "V\u00fdsledek by nem\u011bl m\u00edt hodnotu null"},
+
+        /*
+         * Note to translators:  This message indicates that the value argument
+         * of setParameter must be a valid Java Object.
+         */
+        {ErrorMsg.JAXP_INVALID_SET_PARAM_VALUE,
+        "Hodnota parametru {0} mus\u00ed b\u00fdt platn\u00fdm objektem technologie Java."},
 
 
         {ErrorMsg.COMPILE_STDIN_ERR,
@@ -662,7 +672,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * documentation.
          */
         {ErrorMsg.COMPILE_USAGE_STR,
-        "SYNOPSIS\n   java org.apache.xalan.xsltc.cmdline.Compile [-o <output>]\n      [-d <directory>] [-j <jarfile>] [-p <package>]\n      [-n] [-x] [-s] [-u] [-v] [-h] { <stylesheet> | -i }\n\nVOLBY\n   -o <output>    p\u0159i\u0159azuje n\u00e1zev <output> generovan\u00e9mu\n                  transletu. Standardn\u011b je n\u00e1zev transletu\n                  p\u0159evzat z n\u00e1zvu <stylesheet>. Tato volba\n                   se ignoruje, pokud se kompiluj\u00ed n\u00e1sobn\u00e9 p\u0159edlohy styl\u016f.\n   -d <directory> ur\u010duje v\u00fdchoz\u00ed adres\u00e1\u0159 pro translet\n   -j <jarfile>   zabal\u00ed t\u0159\u00eddu transletu do souboru jar\n     pojmenovan\u00e9ho jako <jarfile>\n   -p <package>   ur\u010duje p\u0159edponu n\u00e1zvu bal\u00ed\u010dku pro v\u0161echny generovan\u00e9 \n t\u0159\u00eddy transletu.\n   -n             povoluje zarovn\u00e1n\u00ed \u0161ablony (v\u00fdchoz\u00ed chov\u00e1n\u00ed je v pr\u016fm\u011bru lep\u0161\u00ed\n                  .\n   -x             zapne dal\u0161\u00ed v\u00fdstup zpr\u00e1vy lad\u011bn\u00ed\n   -s             zak\u00e1\u017ee vol\u00e1n\u00ed System.exit\n   -u             interpretuje <stylesheet> argumenty jako URL\n   -i             vynut\u00ed kompil\u00e1tor \u010d\u00edst p\u0159edlohu styl\u016f ze stdin\n   -v             tiskne verzi kompil\u00e1toru \n   -h             tiskne v\u00fdpis tohoto pou\u017eit\u00ed \n"},
+        "SYNOPSE\n   java org.apache.xalan.xsltc.cmdline.Compile [-o <v\u00fdstup>]\n      [-d <adres\u00e1\u0159>] [-j <soubor_jar>] [-p <bal\u00edk>]\n      [-n] [-x] [-u] [-v] [-h] { <p\u0159edloha_stylu> | -i }\n\nVOLBY\n   -o <v\u00fdstup>    p\u0159i\u0159ad\u00ed k vygenerovan\u00e9mu transletu n\u00e1zev <v\u00fdstup>. \n                  Podle v\u00fdchoz\u00edho nastaven\u00ed je jm\u00e9no transletu\n                  odvozeno z n\u00e1zvu <p\u0159edloha_stylu>. Tato volba\n                  se ignoruje, pokud se kompiluj\u00ed n\u00e1sobn\u00e9 p\u0159edlohy styl\u016f.\n   -d <adres\u00e1\u0159>  ur\u010duje v\u00fdchoz\u00ed adres\u00e1\u0159 pro translet\n   -j <soubor_jar> zabal\u00ed t\u0159\u00eddu transletu do souboru jar\n                  pojmenovan\u00e9ho jako <soubor_jar>\n   -p <bal\u00edk>     ur\u010duje p\u0159edponu n\u00e1zvu bal\u00ed\u010dku pro v\u0161echny generovan\u00e9 \n                  t\u0159\u00eddy transletu.\n   -n             povoluje zarovn\u00e1n\u00ed \u0161ablony (v\u00fdchoz\u00ed chov\u00e1n\u00ed je v pr\u016fm\u011bru lep\u0161\u00ed)\n   -x             zapne dal\u0161\u00ed v\u00fdstup zpr\u00e1vy lad\u011bn\u00ed\n   -u             interpretuje  argumenty <p\u0159edloha_stylu> jako URL \n   -i             vynut\u00ed \u010dten\u00ed p\u0159edlohy styl\u016f kompil\u00e1torem ze vstupu stdin\n   -v             tiskne verzi kompil\u00e1toru\n   -h             tiskne tyto pokyny k pou\u017eit\u00ed\n"},
 
         /*
          * Note to translators:  This message contains usage information for a
@@ -674,7 +684,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * documentation.
          */
         {ErrorMsg.TRANSFORM_USAGE_STR,
-        "SYNOPSIS \n   java org.apache.xalan.xsltc.cmdline.Transform [-j <jarfile>]\n      [-x] [-s] [-n <iterations>] {-u <document_url> | <document>}\n      <class> [<param1>=<value1> ...]\n\n   pou\u017eije translet <class> k transformaci dokumentu XML \n ur\u010den\u00e9ho jako <document>. Translet <class> je bu\u010f v\n   v u\u017eivatelsk\u00e9 cest\u011b CLASSPATH nebo ve voliteln\u011b ur\u010den\u00e9m souboru <jarfile>.\nVOLBY\n     -j <jarfile>    ur\u010duje soubor jarfile, ze kter\u00e9ho se zavede translet\n   -x      p\u0159evede dal\u0161\u00ed v\u00fdstup zpr\u00e1vy lad\u011bn\u00ed\n   -s              vypne vol\u00e1n\u00ed System.exit\n   -n <iterations> spust\u00ed transformaci <iterations> kr\u00e1t a\n                   zobraz\u00ed informaci  o profilu\n   -u <document_url> ur\u010d\u00ed vstupn\u00ed dokument XML jako URL\n"},
+        "SYNOPSE\n   java org.apache.xalan.xsltc.cmdline.Transform [-j <soubor_jar>]\n      [-x] [-n <iterace>] {-u <URL_dokumentu> | <dokument>}\n         <t\u0159\u00edda> [<param1>=<hodn1>...]\n\n   Pou\u017e\u00edv\u00e1 translet <t\u0159\u00edda> k transformaci dokumentu XML \n   ur\u010den\u00e9ho parametrem <dokument>. Translet <t\u0159\u00edda> je bu\u010f\n   v u\u017eivatelsk\u00e9 cest\u011b CLASSPATH, nebo ve voliteln\u011b ur\u010den\u00e9m souboru <soubor_jar>.\nVOLBY\n   -j <soubor_jar>    ur\u010duje soubor jar, z n\u011bj\u017e m\u00e1 b\u00fdt translet na\u010dten\n   -x                 zap\u00edn\u00e1 v\u00fdstup dal\u0161\u00edch ladic\u00edch zpr\u00e1v\n   -n <iterace>       spou\u0161t\u00ed transformaci opakovan\u011b, parametr <iterace> ur\u010duje po\u010det opakov\u00e1n\u00ed,\n                      a zobraz\u00ed informace o profilu\n   -u <URL_dokumentu> ur\u010duje adresu URL vstupn\u00edho dokumentu XML\n"},
 
 
 
@@ -701,7 +711,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * named in the substitution text was not well formed syntactically.
          */
         {ErrorMsg.SYNTAX_ERR,
-        "Chyba syntaxe v ''{0}''."},
+        "Chyba syntaxe ve v\u00fdrazu ''{0}''."},
 
         /*
          * Note to translators:  The substitution text is the name of a Java
@@ -710,7 +720,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * class.
          */
         {ErrorMsg.CONSTRUCTOR_NOT_FOUND,
-        "Nelze naj\u00edt vn\u011bj\u0161\u00ed konstruktor ''{0}''."},
+        "Nelze naj\u00edt extern\u00ed konstruktor ''{0}''."},
 
         /*
          * Note to translators:  "static" is the Java keyword.  The substitution
@@ -726,7 +736,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * expression that was in error.
          */
         {ErrorMsg.TYPE_CHECK_ERR,
-        "Chyba p\u0159i kontrole typu v\u00fdrazu ''{0}''."},
+        "Chyba p\u0159i kontrole typu v\u00fdrazu ''{0}''. "},
 
         /*
          * Note to translators:  An XPath expression was not of the type
@@ -748,7 +758,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * line option.
          */
         {ErrorMsg.CMDLINE_OPT_MISSING_ARG_ERR,
-        "Volb\u011b p\u0159\u00edkazov\u00e9ho \u0159\u00e1dku ''{0}'' chyb\u00ed po\u017eadovan\u00fd argument."},
+        "Ve volb\u011b p\u0159\u00edkazov\u00e9ho \u0159\u00e1dku ''{0}'' chyb\u00ed po\u017eadovan\u00fd argument."},
 
         /*
          * Note to translators:  This message is used to indicate the severity
@@ -757,7 +767,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * it the same amount as the first in English.
          */
         {ErrorMsg.WARNING_PLUS_WRAPPED_MSG,
-        "VAROV\u00c1N\u00cd: ''{0}''\n        :{1}"},
+        "VAROV\u00c1N\u00cd: ''{0}''\n       :{1}"},
 
         /*
          * Note to translators:  This message is used to indicate the severity
@@ -773,14 +783,14 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * it the same amount as the first in English.
          */
         {ErrorMsg.FATAL_ERR_PLUS_WRAPPED_MSG,
-        "Z\u00c1VA\u017dN\u00c1 CHYBA: ''{0}''\n             :{1}"},
+        "Z\u00c1VA\u017dN\u00c1 CHYBA:''{0}''\n           :{1}"},
 
         /*
          * Note to translators:  This message is used to indicate the severity
          * of another message.  The substitution text is an error message.
          */
         {ErrorMsg.FATAL_ERR_MSG,
-        "Z\u00c1VA\u017dN\u00c1 CHYBA: ''{0}''"},
+        "Z\u00c1VA\u017dN\u00c1 CHYBA:''{0}''"},
 
         /*
          * Note to translators:  This message is used to indicate the severity
@@ -789,27 +799,27 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * it the same amount as the first in English.
          */
         {ErrorMsg.ERROR_PLUS_WRAPPED_MSG,
-        "CHYBA: ''{0}''\n     :{1}"},
+        "CHYBA:  ''{0}''\n     :{1}"},
 
         /*
          * Note to translators:  This message is used to indicate the severity
          * of another message.  The substitution text is an error message.
          */
         {ErrorMsg.ERROR_MSG,
-        "CHYBA: ''{0}''"},
+        "CHYBA:  ''{0}''"},
 
         /*
          * Note to translators:  The substitution text is the name of a class.
          */
         {ErrorMsg.TRANSFORM_WITH_TRANSLET_STR,
-        "Transformace pou\u017eit\u00edm transletu ''{0}'' "},
+        "Transformace s pou\u017eit\u00edm transletu ''{0}'' "},
 
         /*
          * Note to translators:  The first substitution is the name of a class,
          * while the second substitution is the name of a jar file.
          */
         {ErrorMsg.TRANSFORM_WITH_JAR_STR,
-        "Transformace pou\u017eit\u00edm transletu ''{0}'' ze souboru jar ''{1}''"},
+        "Transformace s pou\u017eit\u00edm transletu ''{0}'' ze souboru JAR ''{1}'' "},
 
         /*
          * Note to translators:  "TransformerFactory" is the name of a Java
@@ -818,6 +828,16 @@ public class ErrorMessages_cs extends ListResourceBundle {
          */
         {ErrorMsg.COULD_NOT_CREATE_TRANS_FACT,
         "Nelze vytvo\u0159it instanci t\u0159\u00eddy TransformerFactory ''{0}''."},
+
+        /*
+         * Note to translators:  This message is produced when the user
+         * specified a name for the translet class that contains characters
+         * that are not permitted in a Java class name.  The substitution
+         * text "{0}" specifies the name the user requested, while "{1}"
+         * specifies the name the processor used instead.
+         */
+        {ErrorMsg.TRANSLET_NAME_JAVA_CONFLICT,
+         "Jm\u00e9no ''{0}'' nelze pou\u017e\u00edt jako jm\u00e9no t\u0159\u00eddy translet\u016f, proto\u017ee obsahuje znaky, kter\u00e9 nejsou ve jm\u00e9nu t\u0159\u00eddy jazyka Java povoleny. Pou\u017eito bylo jm\u00e9no ''{1}''."},
 
         /*
          * Note to translators:  The following message is used as a header.
@@ -843,7 +863,49 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * stylesheet (see above).
          */
         {ErrorMsg.RUNTIME_ERROR_KEY,
-        "Chyby transletu:"}
+        "Chyby transletu:"},
+
+        /*
+         * Note to translators:  An attribute whose value is constrained to
+         * be a "QName" or a list of "QNames" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {ErrorMsg.INVALID_QNAME_ERR,
+        "Atribut, jeho\u017e hodnota mus\u00ed b\u00fdt jm\u00e9no QName nebo seznam jmen QName odd\u011blen\u00fdch mezerami, m\u00e1 hodnotu ''{0}''. "},
+
+        /*
+         * Note to translators:  An attribute whose value is required to
+         * be an "NCName".
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {ErrorMsg.INVALID_NCNAME_ERR,
+        "Atribut, jeho\u017e hodnota mus\u00ed b\u00fdt jm\u00e9no NCName, m\u00e1 hodnotu ''{0}''. "},
+
+        /*
+         * Note to translators:  An attribute with an incorrect value was
+         * encountered.  The permitted value is one of the literal values
+         * "xml", "html" or "text"; it is also permitted to have the form of
+         * a QName that is not also an NCName.  The terms "method",
+         * "xsl:output", "xml", "html" and "text" are keywords that must not
+         * be translated.  The term "qname-but-not-ncname" is an XML syntactic
+         * term.  The substitution text contains the actual value of the
+         * attribute.
+         */
+        {ErrorMsg.INVALID_METHOD_IN_OUTPUT,
+        "Atribut metody prvku <xsl:output> m\u00e1 hodnotu ''{0}''. Hodnotou mus\u00ed b\u00fdt \u0159et\u011bzec ''xml'', ''html'', ''text'' nebo jm\u00e9no QName, kter\u00e9 nen\u00ed jm\u00e9nem NCName."},
+
+        {ErrorMsg.JAXP_GET_FEATURE_NULL_NAME,
+        "N\u00e1zev funkce pou\u017eit\u00fd ve vol\u00e1n\u00ed TransformerFactory.getFeature(\u0159et\u011bzec n\u00e1zvu) nesm\u00ed m\u00edt hodnotu Null. "},
+
+        {ErrorMsg.JAXP_SET_FEATURE_NULL_NAME,
+        "N\u00e1zev funkce pou\u017eit\u00fd ve vol\u00e1n\u00ed TransformerFactory.setFeature(\u0159et\u011bzec n\u00e1zvu, booleovsk\u00e1 hodnota) nesm\u00ed m\u00edt hodnotu Null. "},
+
+        {ErrorMsg.JAXP_UNSUPPORTED_FEATURE,
+        "Nelze nastavit funkci ''{0}'' pro tuto t\u0159\u00eddu TransformerFactory. "}
+
     };
     }
+
 }

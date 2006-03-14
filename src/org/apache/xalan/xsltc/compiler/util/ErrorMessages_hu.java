@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -94,7 +94,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
     {
       return new Object[][] {
         {ErrorMsg.MULTIPLE_STYLESHEET_ERR,
-        "Egyn\u00e9l t\u00f6bb st\u00edluslap van defini\u00e1lva ugyanabban a f\u00e1jlban."},
+        "Egyn\u00e9l t\u00f6bb st\u00edluslap van meghat\u00e1rozva ugyanabban a f\u00e1jlban."},
 
         /*
          * Note to translators:  The substitution text is the name of a
@@ -102,7 +102,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * same stylesheet.
          */
         {ErrorMsg.TEMPLATE_REDEF_ERR,
-        "A(z) ''{0}'' sablon m\u00e1r defini\u00e1lt ebben a st\u00edluslapban."},
+        "A(z) ''{0}'' sablon m\u00e1r meg van hat\u00e1rozva ebben a st\u00edluslapban."},
 
 
         /*
@@ -111,14 +111,14 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * template is undefined.
          */
         {ErrorMsg.TEMPLATE_UNDEF_ERR,
-        "A(z) ''{0}'' sablon nem defini\u00e1lt ebben a st\u00edluslapban."},
+        "A(z) ''{0}'' sablon nincs meghat\u00e1rozva ebben a st\u00edluslapban."},
 
         /*
          * Note to translators:  The substitution text is the name of a variable
          * that was defined more than once.
          */
         {ErrorMsg.VARIABLE_REDEF_ERR,
-        "A(z) ''{0}'' v\u00e1ltoz\u00f3 t\u00f6bbsz\u00f6r defini\u00e1lt ugyanabban a hat\u00f3k\u00f6rben."},
+        "A(z) ''{0}'' v\u00e1ltoz\u00f3 t\u00f6bbsz\u00f6r van meghat\u00e1rozva ugyanabban a hat\u00f3k\u00f6rben."},
 
         /*
          * Note to translators:  The substitution text is the name of a variable
@@ -126,7 +126,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * but it was never defined.
          */
         {ErrorMsg.VARIABLE_UNDEF_ERR,
-        "A(z) ''{0}'' v\u00e1ltoz\u00f3 vagy param\u00e9ter nem defini\u00e1lt."},
+        "A(z) ''{0}'' v\u00e1ltoz\u00f3 vagy param\u00e9ter nincs meghat\u00e1rozva."},
 
         /*
          * Note to translators:  The word "class" here refers to a Java class.
@@ -134,7 +134,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * not be found.  The substitution text is the name of the class.
          */
         {ErrorMsg.CLASS_NOT_FOUND_ERR,
-        "Nem tal\u00e1lhat\u00f3 a(z) ''{0}'' oszt\u00e1ly."},
+        "A(z) ''{0}'' oszt\u00e1ly nem tal\u00e1lhat\u00f3."},
 
         /*
          * Note to translators:  The word "method" here refers to a Java method.
@@ -143,7 +143,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * Java keyword.
          */
         {ErrorMsg.METHOD_NOT_FOUND_ERR,
-        "Nem tal\u00e1lhat\u00f3 a(z) ''{0}'' k\u00fcls\u0151 met\u00f3dus (public-nak kellene lenni)."},
+        "Nem tal\u00e1lhat\u00f3 a(z) ''{0}'' k\u00fcls\u0151 met\u00f3dus (nyilv\u00e1nosnak kell lennie)."},
 
         /*
          * Note to translators:  The word "method" here refers to a Java method.
@@ -152,7 +152,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * arguments or return type could be found.
          */
         {ErrorMsg.ARGUMENT_CONVERSION_ERR,
-        "Nem lehet konvert\u00e1lni az argumentum/visszat\u00e9r\u00e9si k\u00f3d t\u00edpus\u00e1t a(z) ''{0}'' met\u00f3dus h\u00edv\u00e1s\u00e1ban."},
+        "Nem lehet \u00e1talak\u00edtani az argumentum/visszat\u00e9r\u00e9si t\u00edpust a(z) ''{0}'' met\u00f3dus h\u00edv\u00e1s\u00e1ban."},
 
         /*
          * Note to translators:  The file or URI named in the substitution text
@@ -173,7 +173,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * exists but could not be opened.
          */
         {ErrorMsg.FILE_ACCESS_ERR,
-        "Nem lehet megnyitni a(z) ''{0}'' f\u00e1jlt vagy URI-t."},
+        "A(z) ''{0}'' f\u00e1jlt vagy URI nem nyithat\u00f3 meg. "},
 
         /*
          * Note to translators: <xsl:stylesheet> and <xsl:transform> are
@@ -188,7 +188,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * text is the name of the prefix.
          */
         {ErrorMsg.NAMESPACE_UNDEF_ERR,
-        "A(z) ''{0}'' n\u00e9vt\u00e9r-prefix nincs deklar\u00e1lva."},
+        "A(z) ''{0}'' n\u00e9vt\u00e9r el\u0151tag nincs deklar\u00e1lva."},
 
         /*
          * Note to translators:  The Java function named in the stylesheet could
@@ -202,7 +202,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * function.  A literal string here means a constant string value.
          */
         {ErrorMsg.NEED_LITERAL_ERR,
-        "A(z) ''{0}'' argumentuma egy liter\u00e1l kell legyen."},
+        "A(z) ''{0}'' argumentum\u00e1nak egy liter\u00e1l karaktersorozatnak kell lennie."},
 
         /*
          * Note to translators:  This message indicates there was a syntactic
@@ -210,7 +210,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * the expression.
          */
         {ErrorMsg.XPATH_PARSER_ERR,
-        "Hiba t\u00f6rt\u00e9nt a(z) ''{0}'' XPath kifejez\u00e9s elemz\u00e9sekor."},
+        "Hiba t\u00f6rt\u00e9nt a(z) ''{0}'' XPath kifejez\u00e9s \u00e9rtelmez\u00e9sekor."},
 
         /*
          * Note to translators:  An element in the stylesheet requires a
@@ -235,7 +235,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * text is the name.
          */
         {ErrorMsg.ILLEGAL_PI_ERR,
-        "Nem megengedett n\u00e9v (''{0}'') szerepelt a feldolgoz\u00e1si utas\u00edt\u00e1sokban."},
+        "Nem megengedett n\u00e9v (''{0}'') szerepel a feldolgoz\u00e1si utas\u00edt\u00e1sban."},
 
         /*
          * Note to translators:  This message is reported if the stylesheet
@@ -253,7 +253,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * text.
          */
         {ErrorMsg.ILLEGAL_ATTRIBUTE_ERR,
-        "Nem megengedett attrib\u00fatum: ''{0}''."},
+        "Illeg\u00e1lis attrib\u00fatum: ''{0}''."},
 
         /*
          * Note to translators:  "import" and "include" are keywords that should
@@ -262,7 +262,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * directly or indirectly.
          */
         {ErrorMsg.CIRCULAR_INCLUDE_ERR,
-        "K\u00f6rk\u00f6r\u00f6s import/include. A(z) ''{0}'' st\u00edluslap m\u00e1r be van t\u00f6ltve."},
+        "K\u00f6rk\u00f6r\u00f6s import\u00e1l\u00e1s/tartalmaz\u00e1s. A(z) ''{0}'' st\u00edluslap m\u00e1r be van t\u00f6ltve."},
 
         /*
          * Note to translators:  A result-tree fragment is a portion of a
@@ -292,7 +292,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * parameters depend on one another.
          */
         {ErrorMsg.CIRCULAR_VARIABLE_ERR,
-        "K\u00f6rk\u00f6r\u00f6s v\u00e1ltoz\u00f3/param\u00e9ter-hivatkoz\u00e1s; helye: ''{0}''."},
+        "K\u00f6rk\u00f6r\u00f6s v\u00e1ltoz\u00f3/param\u00e9ter hivatkoz\u00e1s a(z) ''{0}'' helyen."},
 
         /*
          * Note to translators:  The operator in an expresion with two operands was
@@ -376,7 +376,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * the name.
          */
         {ErrorMsg.ILLEGAL_ELEM_NAME_ERR,
-        "Nem h\u00edvhat ''{0}''-nek elemet."},
+        "Az elem neve nem lehet ''{0}''."},
 
         /*
          * Note to translators:  The stylesheet tried to create an attribute
@@ -384,7 +384,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * contains the name.
          */
         {ErrorMsg.ILLEGAL_ATTR_NAME_ERR,
-        "Nem h\u00edvhat ''{0}''-nek attrib\u00fatumot."},
+        "Az attrib\u00fatum neve nem lehet ''{0}''."},
 
         /*
          * Note to translators:  The children of the outermost element of a
@@ -402,14 +402,14 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * XSLTC to process the XML input document had a configuration problem.
          */
         {ErrorMsg.SAX_PARSER_CONFIG_ERR,
-        "Nincs megfelel\u0151en konfigur\u00e1lva a JAXP elemz\u0151."},
+        "Nincs megfelel\u0151en konfigur\u00e1lva a JAXP \u00e9rtelmez\u0151."},
 
         /*
          * Note to translators:  The substitution text names the internal error
          * encountered.
          */
         {ErrorMsg.INTERNAL_ERR,
-        "Helyrehozhatatlan XSLTC-bels\u0151 hiba t\u00f6rt\u00e9nt: ''{0}''"},
+        "Helyrehozhatatlan bels\u0151 XSLTC hiba t\u00f6rt\u00e9nt: ''{0}''  "},
 
         /*
          * Note to translators:  The stylesheet contained an element that was
@@ -443,7 +443,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * with the name specified by the substitution text.
          */
         {ErrorMsg.MISSING_XSLT_TARGET_ERR,
-        "Nem tal\u00e1lhat\u00f3 a(z) ''{0}'' st\u00edluslap-c\u00e9lban."},
+        "A(z) ''{0}'' st\u00edluslap c\u00e9l nem tal\u00e1lhat\u00f3."},
 
         /*
          * Note to translators:  This message represents an internal error in
@@ -465,7 +465,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * encountered in the stylesheet but is not recognized.
          */
         {ErrorMsg.ELEMENT_PARSE_ERR,
-        "Nem lehet elemezni a(z) ''{0}'' elemet."},
+        "A(z) ''{0}'' elem nem \u00e9rtelmezhet\u0151. "},
 
         /*
          * Note to translators:  "use", "<key>", "node", "node-set", "string"
@@ -509,7 +509,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * contains the expression that was in error.
          */
         {ErrorMsg.ATTR_VAL_TEMPLATE_ERR,
-        "Nem lehet elemezni a(z) ''{0}'' attrib\u00fatum\u00e9rt\u00e9k-sablont."},
+        "Nem lehet \u00e9rtelmezni a(z) ''{0}'' attrib\u00fatum\u00e9rt\u00e9k-sablont."},
 
         /*
          * Note to translators:  ???
@@ -531,14 +531,14 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * not be translated.
          */
         {ErrorMsg.NO_TRANSLET_CLASS_ERR,
-        "Ez a sablon nem tartalmaz \u00e9rv\u00e9nyes translet oszt\u00e1lydefin\u00edci\u00f3t."},
+        "Ez a Templates oszt\u00e1ly nem tartalmaz \u00e9rv\u00e9nyes translet oszt\u00e1lymeghat\u00e1roz\u00e1st."},
 
         /*
          * Note to translators:  "Templates" is a Java class name that should
          * not be translated.
          */
         {ErrorMsg.NO_MAIN_TRANSLET_ERR,
-        "Ez a sablon nem tartalmaz ''{0}'' nev\u0171 oszt\u00e1lyt."},
+        "Ez a Templates oszt\u00e1ly nem tartalmaz ''{0}'' nev\u0171 oszt\u00e1lyt."},
 
         /*
          * Note to translators:  The substitution text is the name of a class.
@@ -556,7 +556,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * substitution text with "null" Java value.
          */
         {ErrorMsg.ERROR_LISTENER_NULL_ERR,
-        "Megpr\u00f3b\u00e1lta null-ra \u00e1ll\u00edtani ''{0}'' ErrorListener objektum\u00e1t."},
+        "Megpr\u00f3b\u00e1lta null\u00e9rt\u00e9kre \u00e1ll\u00edtani a(z) ''{0}'' objektum ErrorListener fel\u00fclet\u00e9t."},
 
         /*
          * Note to translators:  StreamSource, SAXSource and DOMSource are Java
@@ -570,7 +570,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * be translated.  The substitution text is the name of Java method.
          */
         {ErrorMsg.JAXP_NO_SOURCE_ERR,
-        "A(z) ''{0}'' met\u00f3dusnak \u00e1tadott source objektum nem tartalmaz semmit."},
+        "A(z) ''{0}''  met\u00f3dusnak \u00e1tadott source objektumnak nincs tartalma."},
 
         /*
          * Note to translators:  The message indicates that XSLTC failed to
@@ -588,7 +588,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * translate the term "attribute".
          */
         {ErrorMsg.JAXP_INVALID_ATTR_ERR,
-        "A TransformerFactory objektum nem ismer ''{0}'' attrib\u00fatumot."},
+        "A TransformerFactory oszt\u00e1ly nem simeri fel a(z) ''{0}'' attrib\u00fatumot."},
 
         /*
          * Note to translators:  "setResult()" and "startDocument()" are Java
@@ -647,6 +647,16 @@ public class ErrorMessages_hu extends ListResourceBundle {
         {ErrorMsg.XSLTC_SOURCE_ERR,
         "XSLTCSource.build() h\u00edv\u00e1sa systemId be\u00e1ll\u00edt\u00e1sa n\u00e9lk\u00fcl t\u00f6rt\u00e9nt."},
 
+        { ErrorMsg.ER_RESULT_NULL,
+            "Az eredm\u00e9ny nem lehet null"},
+
+        /*
+         * Note to translators:  This message indicates that the value argument
+         * of setParameter must be a valid Java Object.
+         */
+        {ErrorMsg.JAXP_INVALID_SET_PARAM_VALUE,
+        "A(z) {0} param\u00e9ter \u00e9rt\u00e9ke egy \u00e9rv\u00e9nyes J\u00e1va objektum kell legyen"},
+
 
         {ErrorMsg.COMPILE_STDIN_ERR,
         "A -i kapcsol\u00f3t a -o kapcsol\u00f3val egy\u00fctt kell haszn\u00e1lni."},
@@ -662,7 +672,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * documentation.
          */
         {ErrorMsg.COMPILE_USAGE_STR,
-        "Haszn\u00e1lat:\n   java org.apache.xalan.xsltc.cmdline.Compile [-o <kimenet>]\n      [-d <alk\u00f6nyvt\u00e1r>] [-j <jarf\u00e1jl>] [-p <csomag>]\n      [-n] [-x] [-s] [-u] [-v] [-h] { <st\u00edluslap> | -i }\n\nOPCI\u00d3K\n   -o <kimenet>    \u00f6sszerendeli a <kimenetet> a l\u00e9trehozott\n                  translet-tel. Alap\u00e9rtelmez\u00e9s szerint a translet neve\n                  a <st\u00edluslap> nev\u00e9b\u0151l j\u00f6n. Ez az opci\u00f3\n                  figyelmen k\u00edv\u00f3l marad, ha t\u00f6bb st\u00edluslapot ford\u00edt.\n   -d <alk\u00f6nyvt\u00e1r> meghat\u00e1rozza a translet c\u00e9l-alk\u00f6nyvt\u00e1r\u00e1t\n   -j <jarf\u00e1jl>   a translet oszt\u00e1lyokat egy jar f\u00e1jlba csomagolja,\n                  aminek a nev\u00e9t a <jarf\u00e1jl> attrib\u00fatum adja meg\n   -p <csomag>    meghat\u00e1rozza az \u00f6sszes gener\u00e1lt translet oszt\u00e1ly\n                  prefixnev\u00e9t.\n   -n             enged\u00e9lyezi a template inlining optimaliz\u00e1l\u00e1st\n                  (az alap\u00e9rtelmezett viselked\u00e9s \u00e1ltal\u00e1ban jobb).\n   -x             bekapcsolja a tov\u00e1bbi hibakeres\u00e9si \u00fczenet-kimenetet\n   -s             letiltja a System.exit h\u00edv\u00e1s\u00e1t\n   -u             a <st\u00edluslap> argumentumokat URL-k\u00e9nt \u00e9rtelmezi\n   -i             k\u00e9nyszer\u00edti a ford\u00edt\u00f3t, hogy a st\u00edluslapokat az stdin-r\u0151l olvassa\n   -v             ki\u00edrja a ford\u00edt\u00f3  verzi\u00f3j\u00e1t\n   -h             ki\u00edrja ezt a haszn\u00e1lati \u00fczenetet\n"},
+        "Haszn\u00e1lat:\n   java org.apache.xalan.xsltc.cmdline.Compile [-o <kimenet>]\n      [-d <k\u00f6nyvt\u00e1r>] [-j <jar_f\u00e1jl>] [-p <csomag>]\n      [-n] [-x] [-u] [-v] [-h] { <st\u00edluslap> | -i }\n\nBE\u00c1LL\u00cdT\u00c1SOK\n   -o <kimenet>   hozz\u00e1rendeli a <kimenet> nevet az el\u0151\u00e1ll\u00edtott\n                  translethez. Alap\u00e9rtelmez\u00e9s szerint\n                  a translet neve a <st\u00edluslap>\n                  nev\u00e9b\u0151l sz\u00e1rmazik. Ez a be\u00e1ll\u00edt\u00e1s figyelmen\n                  k\u00edv\u00fcl marad, ha t\u00f6bb st\u00edluslapot ford\u00edt.\n   -d <k\u00f6nyvt\u00e1r>  meghat\u00e1rozza a translet c\u00e9lk\u00f6nyvt\u00e1r\u00e1t\n   -j <jar_f\u00e1jl>  a translet oszt\u00e1lyokat egy jar f\u00e1jlba csomagolja,\n                  aminek a nev\u00e9t a <jar_f\u00e1jl> attrib\u00fatum adja meg\n   -p <csomag>    meghat\u00e1rozza az \u00f6sszes el\u0151\u00e1ll\u00edtott translet oszt\u00e1ly\n                  csomagn\u00e9v el\u0151tagj\u00e1t.\n   -n             enged\u00e9lyezi a sablonbeemel\u00e9st\n                  (az alap\u00e9rtelmezett viselked\u00e9s \u00e1ltal\u00e1ban jobb).\n   -x             bekapcsolja a tov\u00e1bbi hibakeres\u00e9si \u00fczeneteket\n   -u             \u00e9rtelmezi a <st\u00edluslap> argumentumokat \u00e9s URL c\u00edmeket\n   -i             k\u00e9nyszer\u00edti a ford\u00edt\u00f3t, hogy a st\u00edluslapot az stdin\n                  bemenetr\u0151l olvassa\n   -v             megjelen\u00edti a ford\u00edt\u00f3 verzi\u00f3sz\u00e1m\u00e1t\n   -h             megjelen\u00edti ezt a haszn\u00e1lati utas\u00edt\u00e1st\n"},
 
         /*
          * Note to translators:  This message contains usage information for a
@@ -674,7 +684,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * documentation.
          */
         {ErrorMsg.TRANSFORM_USAGE_STR,
-        "Haszn\u00e1lat \n   java org.apache.xalan.xsltc.cmdline.Transform [-j <jarf\u00e1jl>]\n      [-x] [-s] [-n <iter\u00e1ci\u00f3k>] {-u <dokumentum_url> | <dokumentum>}\n      <oszt\u00e1ly> [<param1>=<\u00e9rt\u00e9k1> ...]\n\n   a translet <oszt\u00e1lyt> haszn\u00e1lja a <dokumentum> \n   attrib\u00fatumban megadott XML dokumentum ford\u00edt\u00e1s\u00e1ra. A translet <osz\u00e1ly> vagy a\n   felhaszn\u00e1l\u00f3 CLASSPATH v\u00e1ltoz\u00f3ja alapj\u00e1n vagy a megadott <jarf\u00e1jl>-ban tal\u00e1lhat\u00f3 meg.\nOpci\u00f3k:\n   -j <jarf\u00e1jl>      megadja azt a jarf\u00e1jlt, amib\u0151l a translet-et be kell t\u00f6lteni\n   -x                bekapcsolja a tov\u00e1bbi hibakeres\u00e9si \u00fczeneteket\n   -s                letiltja a System.exit h\u00edv\u00e1s\u00e1t\n   -n <iter\u00e1ci\u00f3k>    az \u00e1talak\u00edt\u00e1st <iter\u00e1ci\u00f3k> alkalommal v\u00e9gzi el\n                     \u00e9s megjelen\u00edti a  teljes\u00edtm\u00e9ny-inform\u00e1ci\u00f3kat\n   -u <dokumentum_url> a bemeneti XML dokumentumot URL-k\u00e9nt adja meg\n"},
+        "HASZN\u00c1LAT:\n   java org.apache.xalan.xsltc.cmdline.Transform [-j <jar_f\u00e1jl>]\n      [-x] [-n <ism\u00e9tl\u00e9s>] {-u <dokumentum_url_c\u00edme> | <dokumentum>}\n      <oszt\u00e1ly> [<param1>=<\u00e9rt\u00e9k1> ...]\n\n   a translet <oszt\u00e1ly> seg\u00edts\u00e9g\u00e9vel \u00e1talak\u00edtja a\n   <dokumentum> param\u00e9terben megadott dokumentumot. A translet\n   <oszt\u00e1ly> vagy a felhaszn\u00e1l\u00f3 CLASSPATH v\u00e1ltoz\u00f3ja\n   alapj\u00e1n, vagy a megadott <jar_f\u00e1jl>-ban tal\u00e1lhat\u00f3 meg.\nBE\u00c1LL\u00cdT\u00c1SOK\n   -j <jar_f\u00e1jl>   megadja a jar f\u00e1jlt a translet bet\u00f6lt\u00e9s\u00e9hez\n   -x              bekapcsolja a tov\u00e1bbi hibakeres\u00e9si \u00fczeneteket\n   -n <ism\u00e9tl\u00e9s>   az \u00e1talak\u00edt\u00e1st az <ism\u00e9tl\u00e9s> param\u00e9terben megadott\n                   alkalommal futtatja le, \u00e9s megjelen\u00edti a profiloz\u00e1si\n                   inform\u00e1ci\u00f3kat\n   -u <dokumentum_url_c\u00edme> megadja a bemeneti XML dokumentum URL c\u00edm\u00e9t\n"},
 
 
 
@@ -701,7 +711,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * named in the substitution text was not well formed syntactically.
          */
         {ErrorMsg.SYNTAX_ERR,
-        "Szintaktikai hiba t\u00f6rt\u00e9nt ''{0}''-ben."},
+        "Szintaktikai hiba a(z) ''{0}'' kifejez\u00e9sben."},
 
         /*
          * Note to translators:  The substitution text is the name of a Java
@@ -710,7 +720,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * class.
          */
         {ErrorMsg.CONSTRUCTOR_NOT_FOUND,
-        "Nem tal\u00e1lhat\u00f3 a(z) ''{0}'' k\u00fcls\u0151 konstruktor."},
+        "A(z) ''{0}'' k\u00fcls\u0151 konstruktor nem tal\u00e1lhat\u00f3."},
 
         /*
          * Note to translators:  "static" is the Java keyword.  The substitution
@@ -718,7 +728,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * is not of the required type.
          */
         {ErrorMsg.NO_JAVA_FUNCT_THIS_REF,
-        "A(z ''{0}'' nem statikus J\u00e1va f\u00fcggv\u00e9ny els\u0151 argumentuma nem egy \u00e9rv\u00e9nyes objektum-hivatkoz\u00e1s."},
+        "A(z) ''{0}'' nem statikus Java f\u00fcggv\u00e9ny els\u0151 argumentuma nem \u00e9rv\u00e9nyes objektumhivatkoz\u00e1s."},
 
         /*
          * Note to translators:  An XPath expression was not of the type
@@ -741,14 +751,14 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * line option that was not recognized.
          */
         {ErrorMsg.ILLEGAL_CMDLINE_OPTION_ERR,
-        "A(z) ''{0}'' parancssori opci\u00f3 \u00e9rv\u00e9nytelen."},
+        "A(z) ''{0}'' parancssori param\u00e9ter \u00e9rv\u00e9nytelen."},
 
         /*
          * Note to translators:  The substitution text is the name of a command-
          * line option.
          */
         {ErrorMsg.CMDLINE_OPT_MISSING_ARG_ERR,
-        "A(z) ''{0}'' parancssori opci\u00f3hoz hi\u00e1nyzik egy k\u00f6telez\u0151 argumentum."},
+        "A(z) ''{0}'' parancssori param\u00e9terhez hi\u00e1nyzik egy k\u00f6telez\u0151 argumentum."},
 
         /*
          * Note to translators:  This message is used to indicate the severity
@@ -757,14 +767,14 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * it the same amount as the first in English.
          */
         {ErrorMsg.WARNING_PLUS_WRAPPED_MSG,
-        "FIGYELEM:  ''{0}''\n       :{1}"},
+        "FIGYELMEZTET\u00c9S:  ''{0}''\n       :{1}"},
 
         /*
          * Note to translators:  This message is used to indicate the severity
          * of another message.  The substitution text is an error message.
          */
         {ErrorMsg.WARNING_MSG,
-        "FIGYELEM:  ''{0}''"},
+        "FIGYELMEZTET\u00c9S:  ''{0}''"},
 
         /*
          * Note to translators:  This message is used to indicate the severity
@@ -773,14 +783,14 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * it the same amount as the first in English.
          */
         {ErrorMsg.FATAL_ERR_PLUS_WRAPPED_MSG,
-        "V\u00c9GZETES HIBA:  ''{0}''\n           :{1}"},
+        "S\u00daLYOS HIBA:  ''{0}''\n           :{1}"},
 
         /*
          * Note to translators:  This message is used to indicate the severity
          * of another message.  The substitution text is an error message.
          */
         {ErrorMsg.FATAL_ERR_MSG,
-        "V\u00c9GZETES HIBA:  ''{0}''"},
+        "S\u00daLYOS HIBA:  ''{0}''"},
 
         /*
          * Note to translators:  This message is used to indicate the severity
@@ -789,14 +799,14 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * it the same amount as the first in English.
          */
         {ErrorMsg.ERROR_PLUS_WRAPPED_MSG,
-        "HIBA:  ''{0}''\n     :{1}"},
+        "HIBA:   ''{0}''\n     :{1}"},
 
         /*
          * Note to translators:  This message is used to indicate the severity
          * of another message.  The substitution text is an error message.
          */
         {ErrorMsg.ERROR_MSG,
-        "HIBA:  ''{0}''"},
+        "HIBA:   ''{0}''"},
 
         /*
          * Note to translators:  The substitution text is the name of a class.
@@ -809,7 +819,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * while the second substitution is the name of a jar file.
          */
         {ErrorMsg.TRANSFORM_WITH_JAR_STR,
-        "\u00c1talak\u00edt\u00e1s a(z) ''{1}'' jar f\u00e1jlb\u00f3l a(z) ''{0}'' translet seg\u00edts\u00e9g\u00e9vel."},
+        "\u00c1talak\u00edt\u00e1s a(z) ''{0}'' translet haszn\u00e1lat\u00e1val a(z) ''{1}'' jar f\u00e1jlb\u00f3l. "},
 
         /*
          * Note to translators:  "TransformerFactory" is the name of a Java
@@ -818,6 +828,16 @@ public class ErrorMessages_hu extends ListResourceBundle {
          */
         {ErrorMsg.COULD_NOT_CREATE_TRANS_FACT,
         "Nem lehet l\u00e9trehozni a(z) ''{0}'' TransformerFactory oszt\u00e1ly p\u00e9ld\u00e1ny\u00e1t."},
+
+        /*
+         * Note to translators:  This message is produced when the user
+         * specified a name for the translet class that contains characters
+         * that are not permitted in a Java class name.  The substitution
+         * text "{0}" specifies the name the user requested, while "{1}"
+         * specifies the name the processor used instead.
+         */
+        {ErrorMsg.TRANSLET_NAME_JAVA_CONFLICT,
+         "A(z) ''{0}'' n\u00e9v nem haszn\u00e1lhat\u00f3 a translet oszt\u00e1ly nevek\u00e9nt, mivel olyan karaktereket tartalmaz, amelyek nem megengedettek Java oszt\u00e1lyok nev\u00e9ben. A rendszer a(z) ''{1}'' nevet haszn\u00e1lta helyette. "},
 
         /*
          * Note to translators:  The following message is used as a header.
@@ -843,7 +863,49 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * stylesheet (see above).
          */
         {ErrorMsg.RUNTIME_ERROR_KEY,
-        "Translet hib\u00e1k:"}
+        "Translet hib\u00e1k:"},
+
+        /*
+         * Note to translators:  An attribute whose value is constrained to
+         * be a "QName" or a list of "QNames" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {ErrorMsg.INVALID_QNAME_ERR,
+        "Egy olyan attrib\u00fatum, amelynek az \u00e9rt\u00e9ke csak QName vagy QName \u00e9rt\u00e9kek sz\u00f3k\u00f6zzel elv\u00e1lasztott list\u00e1ja lehet, ''{0}'' \u00e9rt\u00e9kkel rendelkezett."},
+
+        /*
+         * Note to translators:  An attribute whose value is required to
+         * be an "NCName".
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {ErrorMsg.INVALID_NCNAME_ERR,
+        "Egy olyan attrib\u00fatum, amelynek \u00e9rt\u00e9ke csak NCName lehet, ''{0}'' \u00e9rt\u00e9kkel rendelkezett."},
+
+        /*
+         * Note to translators:  An attribute with an incorrect value was
+         * encountered.  The permitted value is one of the literal values
+         * "xml", "html" or "text"; it is also permitted to have the form of
+         * a QName that is not also an NCName.  The terms "method",
+         * "xsl:output", "xml", "html" and "text" are keywords that must not
+         * be translated.  The term "qname-but-not-ncname" is an XML syntactic
+         * term.  The substitution text contains the actual value of the
+         * attribute.
+         */
+        {ErrorMsg.INVALID_METHOD_IN_OUTPUT,
+        "Egy <xsl:output> elem met\u00f3dus attrib\u00fatum\u00e1nak \u00e9rt\u00e9ke ''{0}'' volt. Az \u00e9rt\u00e9k csak ''xml'', ''html'', ''text'' vagy qname-but-not-ncname lehet."},
+
+        {ErrorMsg.JAXP_GET_FEATURE_NULL_NAME,
+        "A szolg\u00e1ltat\u00e1s neve nem lehet null a TransformerFactory.getFeature(String name) met\u00f3dusban."},
+
+        {ErrorMsg.JAXP_SET_FEATURE_NULL_NAME,
+        "A szolg\u00e1ltat\u00e1s neve nem lehet null a TransformerFactory.setFeature(String name, boolean value) met\u00f3dusban."},
+
+        {ErrorMsg.JAXP_UNSUPPORTED_FEATURE,
+        "A(z) ''{0}'' szolg\u00e1ltat\u00e1s nem \u00e1ll\u00edthat\u00f3 be ehhez a TransformerFactory oszt\u00e1lyhoz."}
+
     };
     }
+
 }

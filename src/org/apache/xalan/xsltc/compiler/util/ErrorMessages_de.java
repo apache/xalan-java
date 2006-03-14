@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ public class ErrorMessages_de extends ListResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -143,7 +143,7 @@ public class ErrorMessages_de extends ListResourceBundle {
          * Java keyword.
          */
         {ErrorMsg.METHOD_NOT_FOUND_ERR,
-        "Die externe Methode ''{0}'' wurde nicht gefunden (muss 'public' sein)."},
+        "Die externe Methode ''{0}'' wurde nicht gefunden (muss ''public'' sein)."},
 
         /*
          * Note to translators:  The word "method" here refers to a Java method.
@@ -262,7 +262,7 @@ public class ErrorMessages_de extends ListResourceBundle {
          * directly or indirectly.
          */
         {ErrorMsg.CIRCULAR_INCLUDE_ERR,
-        "Schleife bei 'import'/'include'. Formatvorlage ''{0}'' ist bereits geladen."},
+        "Schleife bei ''import''/''include''. Formatvorlage ''{0}'' ist bereits geladen."},
 
         /*
          * Note to translators:  A result-tree fragment is a portion of a
@@ -292,7 +292,7 @@ public class ErrorMessages_de extends ListResourceBundle {
          * parameters depend on one another.
          */
         {ErrorMsg.CIRCULAR_VARIABLE_ERR,
-        "R\u00fcckbez\u00fcglicher Variablen-/Parameterverweis in ''{0}''."},
+        "R\u00fcckwirkender Variablen-/Parameterverweis in ''{0}''."},
 
         /*
          * Note to translators:  The operator in an expresion with two operands was
@@ -409,7 +409,7 @@ public class ErrorMessages_de extends ListResourceBundle {
          * encountered.
          */
         {ErrorMsg.INTERNAL_ERR,
-        "Nicht behebbarer XSLTC-interner Fehler: ''{0}''"},
+        "Nicht behebbarer XSLTC-interner Fehler: ''{0}'' "},
 
         /*
          * Note to translators:  The stylesheet contained an element that was
@@ -509,7 +509,7 @@ public class ErrorMessages_de extends ListResourceBundle {
          * contains the expression that was in error.
          */
         {ErrorMsg.ATTR_VAL_TEMPLATE_ERR,
-        "Die Attributwertvorlage {0} kann nicht syntaktisch analysiert werden."},
+        "Die Attributwertvorlage ''{0}'' kann nicht syntaktisch analysiert werden."},
 
         /*
          * Note to translators:  ???
@@ -538,16 +538,16 @@ public class ErrorMessages_de extends ListResourceBundle {
          * not be translated.
          */
         {ErrorMsg.NO_MAIN_TRANSLET_ERR,
-        "Diese Klasse 'Templates' enth\u00e4lt keine Klasse mit dem Namen ''{0}''."},
+        "Diese Klasse ''Templates'' enth\u00e4lt keine Klasse mit dem Namen ''{0}''."},
 
         /*
          * Note to translators:  The substitution text is the name of a class.
          */
         {ErrorMsg.TRANSLET_CLASS_ERR,
-        "Die Translet-Klasse ''{0}'' konnte nicht geladen werden."},
+        "Die Transletklasse ''{0}'' konnte nicht geladen werden."},
 
         {ErrorMsg.TRANSLET_OBJECT_ERR,
-        "Die Translet-Klasse wurde geladen, es kann jedoch kein Translet-Exemplar erstellt werden."},
+        "Die Translet-Klasse wurde geladen, es kann jedoch keine Translet-Instanz erstellt werden."},
 
         /*
          * Note to translators:  "ErrorListener" is a Java interface name that
@@ -556,7 +556,7 @@ public class ErrorMessages_de extends ListResourceBundle {
          * substitution text with "null" Java value.
          */
         {ErrorMsg.ERROR_LISTENER_NULL_ERR,
-        "Es wird versucht, ErrorListener f\u00fcr ''{0}'' auf Null zu setzen."},
+        "Es wird versucht, ErrorListener f\u00fcr ''{0}'' auf null zu setzen."},
 
         /*
          * Note to translators:  StreamSource, SAXSource and DOMSource are Java
@@ -647,6 +647,16 @@ public class ErrorMessages_de extends ListResourceBundle {
         {ErrorMsg.XSLTC_SOURCE_ERR,
         "XSLTCSource.build() wurde aufgerufen, ohne dass die System-ID gesetzt war."},
 
+        { ErrorMsg.ER_RESULT_NULL,
+            "Das Ergebnis darf nicht Null sein."},
+
+        /*
+         * Note to translators:  This message indicates that the value argument
+         * of setParameter must be a valid Java Object.
+         */
+        {ErrorMsg.JAXP_INVALID_SET_PARAM_VALUE,
+        "Der Wert f\u00fcr Parameter {0} muss ein g\u00fcltiges Java-Objekt sein."},
+
 
         {ErrorMsg.COMPILE_STDIN_ERR,
         "Die Option -i muss mit der Option -o verwendet werden."},
@@ -662,7 +672,7 @@ public class ErrorMessages_de extends ListResourceBundle {
          * documentation.
          */
         {ErrorMsg.COMPILE_USAGE_STR,
-        "SYNTAX\n   java org.apache.xalan.xsltc.cmdline.Compile [-o <ausgabe>]\n      [-d <verzeichnis>] [-j <jardatei>]  [-p <paket>]\n      [-n] [-x] [-s] [-u] [-v] [-h] { <formatvorlage> | -i }\n\nOPTIONEN\n   -o <ausgabe>    Ordnet dem generierten Translet den Namen \n                  <ausgabe> zu. Der Translet-Name wird standardm\u00e4\u00dfig\n                  dem Namen von <formatvorlage> entnommen. Diese Option\n                  wird ignoriert, wenn mehrere Formatvorlagen kompiliert werden. \n      -d <verzeichnis> Gibt ein Zielverzeichnis f\u00fcr Translet an.\n   -j <jardatei>   Packt Translet-Klassen in eine jar-Datei mit dem\n                  Namen, der f\u00fcr <jardatei> angegeben wurde.\n   -p <paket>   Gibt ein Paketnamenpr\u00e4fix f\u00fcr alle\n                   generierten Translet-Klassen an.\n   -n             Aktiviert Inline-Anordnung von Vorlagen (Standardverhalten \n                  durchschnittlich besser).\n   -x          Aktiviert zus\u00e4tzliche Debugnachrichtenausgabe. \n   -s             Inaktiviert den Aufruf von System.exit.\n   -u          Interpretiert Argumente von <formatvorlage> als URLs.\n   -i             Erzwingt, dass der Compiler die Formatvorlage aus der Standardeingabe liest.\n   -v             Gibt die Version des Compilers aus.\n   -h             Gibt diese Syntaxanweisung aus. \n"},
+        "SYNOPSIS\n   java org.apache.xalan.xsltc.cmdline.Compile [-o <Ausgabe>]\n      [-d <Verzeichnis>] [-j <jarDatei>] [-p <Paket>]\n      [-n] [-x] [-u] [-v] [-h] { <Formatvorlage> | -i }\n\nOPTIONEN\n   -o <Ausgabe>    Ordnet dem generierten Translet den Namen <Ausgabe> zu.\n Der Translet-Name wird standardm\u00e4\u00dfig\n                 von dem Namen von <formatvorlage> abgeleitet. Diese Option\n                  wird ignoriert, wenn mehrere Formatvorlagen kompiliert werden. \n      -d <verzeichnis> Gibt ein Zielverzeichnis f\u00fcr Translet an.\n   -j <jardatei>   Packt Translet-Klassen in eine jar-Datei mit dem\n                  Namen, der f\u00fcr <jardatei> angegeben wurde.\n   -p <paket>   Gibt ein Paketnamenpr\u00e4fix f\u00fcr alle\n                   generierten Translet-Klassen an.\n   -n             Aktiviert Inline-Anordnung von Vorlagen (Standardverhalten \n                  durchschnittlich besser).\n   -x             Aktiviert zus\u00e4tzliche Debugnachrichtenausgabe.\n   -u             Interpretiert Argumente <Formatvorlage> als URLs.\n   -i             Erzwingt, dass der Compiler die Formatvorlage aus der Standardeingabe liest.\n   -v             Gibt die Version des Compilers aus.\n   -h             Gibt diese Syntaxanweisung aus.\n"},
 
         /*
          * Note to translators:  This message contains usage information for a
@@ -674,7 +684,7 @@ public class ErrorMessages_de extends ListResourceBundle {
          * documentation.
          */
         {ErrorMsg.TRANSFORM_USAGE_STR,
-        "SYNTAX \n   java org.apache.xalan.xsltc.cmdline.Transform [-j <jardatei>]\n      [-x] [-s] [-n <iterationen>] {-u <dokument_url> | <dokument>}\n      <klasse> [<param1>=<wert1> ...]\n\n   Verwendet die <klasse> von Translet, um ein XML-Dokument umzusetzen, \n   das als <dokument> angegeben wurde. Die <klasse> von Translet befindet sich entweder in\n   der CLASSPATH-Angabe des Benutzers oder in der optional angegebenen <jardatei>.\nOPTIONEN\n   -j <jardatei>    Gibt eine jar-Datei an, aus der das Translet geladen wird. \n   -x              Aktiviert zus\u00e4tzliche Debugnachrichtenausgabe.\n   -s              Inaktiviert den Aufruf von System.exit\n   -n <iterationen> F\u00fchrt die Umsetzung <iterationen> Mal aus und\n                   zeigt Profilinformationen an.\n   -u <dokument_url> Gibt das XML-Eingabedokument als URL an.\n"},
+        "SYNTAX \n   java org.apache.xalan.xsltc.cmdline.Transform [-j <JAR-Datei>]\n      [-x] [-n <Iterationen>] {-u <Dokument-URL> | <Dokument>}\n      <Klasse> [<Param1>=<Wert1> ...]\n\n   Verwendet die <Klasse> von Translet, um ein  XML-Dokument umzusetzen,\n   das als <Dokument> angegeben wurde. Die <klasse> von Translet befindet sich entweder in\n   der CLASSPATH-Angabe des Benutzers oder in der optional angegebenen <jardatei>.\nOPTIONEN\n   -j <JAR-Datei>    Gibt eine JAR-Datei an, aus der das Translet geladen wird.\n   -x              Aktiviert zus\u00e4tzliche Debugnachrichtenausgabe.\n   -n <Iterationen> F\u00fchrt die Umsetzung <Iterationen> Mal aus und \n                   zeigt Profilinformationen an.\n   -u <Dokument-URL> Gibt das XML-Eingabedokument als URL an.\n"},
 
 
 
@@ -809,7 +819,7 @@ public class ErrorMessages_de extends ListResourceBundle {
          * while the second substitution is the name of a jar file.
          */
         {ErrorMsg.TRANSFORM_WITH_JAR_STR,
-        "Umsetzung mit Translet ''{0}'' aus jar-Datei ''{1}''"},
+        "Umwandlung mit Translet ''{0}'' aus JAR-Datei ''{1}''"},
 
         /*
          * Note to translators:  "TransformerFactory" is the name of a Java
@@ -817,7 +827,17 @@ public class ErrorMessages_de extends ListResourceBundle {
          * the name of the class that could not be instantiated.
          */
         {ErrorMsg.COULD_NOT_CREATE_TRANS_FACT,
-        "Es konnte kein Exemplar der TransformerFactory-Klasse ''{0}'' erstellt werden."},
+        "Es konnte keine Instanz der TransformerFactory-Klasse ''{0}'' erstellt werden."},
+
+        /*
+         * Note to translators:  This message is produced when the user
+         * specified a name for the translet class that contains characters
+         * that are not permitted in a Java class name.  The substitution
+         * text "{0}" specifies the name the user requested, while "{1}"
+         * specifies the name the processor used instead.
+         */
+        {ErrorMsg.TRANSLET_NAME_JAVA_CONFLICT,
+         "Der Name ''{0}'' konnte nicht als Name der Transletklasse verwendet werden, da er Zeichen enth\u00e4lt, die im Namen einer Java-Klasse nicht zul\u00e4ssig sind. Stattdessen wurde der Name ''{1}'' verwendet."},
 
         /*
          * Note to translators:  The following message is used as a header.
@@ -843,7 +863,49 @@ public class ErrorMessages_de extends ListResourceBundle {
          * stylesheet (see above).
          */
         {ErrorMsg.RUNTIME_ERROR_KEY,
-        "Translet-Fehler:"}
+        "Translet-Fehler:"},
+
+        /*
+         * Note to translators:  An attribute whose value is constrained to
+         * be a "QName" or a list of "QNames" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {ErrorMsg.INVALID_QNAME_ERR,
+        "Ein Attribut, dessen Wert ein QName oder eine durch Leerzeichen getrennte Liste von QNamen sein muss, hatte den Wert ''{0}''."},
+
+        /*
+         * Note to translators:  An attribute whose value is required to
+         * be an "NCName".
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {ErrorMsg.INVALID_NCNAME_ERR,
+        "Ein Attribut, dessen Wert ein NCName sein muss, hatte den Wert ''{0}''."},
+
+        /*
+         * Note to translators:  An attribute with an incorrect value was
+         * encountered.  The permitted value is one of the literal values
+         * "xml", "html" or "text"; it is also permitted to have the form of
+         * a QName that is not also an NCName.  The terms "method",
+         * "xsl:output", "xml", "html" and "text" are keywords that must not
+         * be translated.  The term "qname-but-not-ncname" is an XML syntactic
+         * term.  The substitution text contains the actual value of the
+         * attribute.
+         */
+        {ErrorMsg.INVALID_METHOD_IN_OUTPUT,
+        "Das Methodenattribut eines <xsl:output>-Elements hatte den Wert ''{0}''. Als Wert muss ''xml'', ''html'', ''text'' oder ''qname-but-not-ncname'' verwendet werden."},
+
+        {ErrorMsg.JAXP_GET_FEATURE_NULL_NAME,
+        "Der Funktionsname darf in TransformerFactory.getFeature(Name der Zeichenfolge) nicht den Wert Null haben."},
+
+        {ErrorMsg.JAXP_SET_FEATURE_NULL_NAME,
+        "Der Funktionsname darf in TransformerFactory.setFeature(Name der Zeichenfolge, Boolescher Wert) nicht den Wert Null haben."},
+
+        {ErrorMsg.JAXP_UNSUPPORTED_FEATURE,
+        "Die Funktion ''{0}'' kann in dieser TransformerFactory nicht festgelegt werden."}
+
     };
     }
+
 }

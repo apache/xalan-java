@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -102,7 +102,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * same stylesheet.
          */
         {ErrorMsg.TEMPLATE_REDEF_ERR,
-        "O gabarito ''{0}'' j\u00e1 est\u00e1 definido nesta p\u00e1gina de estilo."},
+        "O template ''{0}'' j\u00e1 est\u00e1 definido nesta folha de estilo."},
 
 
         /*
@@ -111,7 +111,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * template is undefined.
          */
         {ErrorMsg.TEMPLATE_UNDEF_ERR,
-        "O gabarito ''{0}'' n\u00e3o est\u00e1 definido nesta p\u00e1gina de estilo. "},
+        "O template ''{0}'' n\u00e3o est\u00e1 definido nesta folha de estilo."},
 
         /*
          * Note to translators:  The substitution text is the name of a variable
@@ -126,7 +126,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * but it was never defined.
          */
         {ErrorMsg.VARIABLE_UNDEF_ERR,
-        "A vari\u00e1vel ou par\u00e2metro ''{0}'' n\u00e3o est\u00e1 definido. "},
+        "A vari\u00e1vel ou o par\u00e2metro ''{0}'' n\u00e3o est\u00e1 definido. "},
 
         /*
          * Note to translators:  The word "class" here refers to a Java class.
@@ -134,7 +134,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * not be found.  The substitution text is the name of the class.
          */
         {ErrorMsg.CLASS_NOT_FOUND_ERR,
-        "Imposs\u00edvel localizar a classe ''{0}''."},
+        "N\u00e3o \u00e9 poss\u00edvel localizar a classe ''{0}''."},
 
         /*
          * Note to translators:  The word "method" here refers to a Java method.
@@ -143,7 +143,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * Java keyword.
          */
         {ErrorMsg.METHOD_NOT_FOUND_ERR,
-        "Imposs\u00edvel localizar m\u00e9todo externo ''{0}'' (deve ser p\u00fablico)."},
+        "N\u00e3o \u00e9 poss\u00edvel localizar o m\u00e9todo externo ''{0}'' (deve ser p\u00fablico)."},
 
         /*
          * Note to translators:  The word "method" here refers to a Java method.
@@ -152,14 +152,14 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * arguments or return type could be found.
          */
         {ErrorMsg.ARGUMENT_CONVERSION_ERR,
-        "Imposs\u00edvel converter tipo de argumento/retorno na chamada do m\u00e9todo para o m\u00e9todo ''{0}''"},
+        "N\u00e3o \u00e9 poss\u00edvel converter o tipo de argumento/retorno na chamada para o m\u00e9todo ''{0}''"},
 
         /*
          * Note to translators:  The file or URI named in the substitution text
          * is missing.
          */
         {ErrorMsg.FILE_NOT_FOUND_ERR,
-        "Arquivo ou URI ''{0}'' n\u00e3o encontrado."},
+        "Arquivo ou URI ''{0}'' n\u00e3o localizado."},
 
         /*
          * Note to translators:  This message is displayed when the URI
@@ -173,7 +173,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * exists but could not be opened.
          */
         {ErrorMsg.FILE_ACCESS_ERR,
-        "Imposs\u00edvel abrir arquivo ou URI ''{0}''."},
+        "N\u00e3o \u00e9 poss\u00edvel abrir o arquivo ou URI ''{0}''."},
 
         /*
          * Note to translators: <xsl:stylesheet> and <xsl:transform> are
@@ -188,14 +188,14 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * text is the name of the prefix.
          */
         {ErrorMsg.NAMESPACE_UNDEF_ERR,
-        "Prefixo de namespace ''{0}'' n\u00e3o foi declarado."},
+        "O prefixo de espa\u00e7o de nomes ''{0}'' n\u00e3o foi declarado."},
 
         /*
          * Note to translators:  The Java function named in the stylesheet could
          * not be found.
          */
         {ErrorMsg.FUNCTION_RESOLVE_ERR,
-        "Imposs\u00edvel resolver chamada para a fun\u00e7\u00e3o ''{0}''."},
+        "Imposs\u00edvel resolver a chamada para a fun\u00e7\u00e3o ''{0}''."},
 
         /*
          * Note to translators:  The substitution text is the name of a
@@ -235,7 +235,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * text is the name.
          */
         {ErrorMsg.ILLEGAL_PI_ERR,
-        "Atributo inv\u00e1lido ''{0}'' para instru\u00e7\u00e3o de processamento. "},
+        "Nome inv\u00e1lido ''{0}'' para instru\u00e7\u00e3o de processamento. "},
 
         /*
          * Note to translators:  This message is reported if the stylesheet
@@ -262,7 +262,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * directly or indirectly.
          */
         {ErrorMsg.CIRCULAR_INCLUDE_ERR,
-        "Import/include circular. A p\u00e1gina de estilo ''{0}'' j\u00e1 foi carregada. "},
+        "Import/include circular. A folha de estilo ''{0}'' j\u00e1 foi carregada. "},
 
         /*
          * Note to translators:  A result-tree fragment is a portion of a
@@ -376,7 +376,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * the name.
          */
         {ErrorMsg.ILLEGAL_ELEM_NAME_ERR,
-        "Imposs\u00edvel chamar um elemento ''{0}''"},
+        "Voc\u00ea n\u00e3o pode chamar um elemento ''{0}''"},
 
         /*
          * Note to translators:  The stylesheet tried to create an attribute
@@ -384,7 +384,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * contains the name.
          */
         {ErrorMsg.ILLEGAL_ATTR_NAME_ERR,
-        "Imposs\u00edvel chamar um atributo ''{0}''"},
+        "Voc\u00ea n\u00e3o pode chamar um atributo ''{0}''"},
 
         /*
          * Note to translators:  The children of the outermost element of a
@@ -436,14 +436,14 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * for that namespace was seen.
          */
         {ErrorMsg.MISSING_XSLT_URI_ERR,
-        "O documento de entrada n\u00e3o \u00e9 uma p\u00e1gina de estilo (o namespace XSL n\u00e3o est\u00e1 declarado no elemento root)."},
+        "O documento de entrada n\u00e3o \u00e9 uma p\u00e1gina de estilo (o espa\u00e7o de nomes XSL n\u00e3o est\u00e1 declarado no elemento root)."},
 
         /*
          * Note to translators:  XSLTC could not find the stylesheet document
          * with the name specified by the substitution text.
          */
         {ErrorMsg.MISSING_XSLT_TARGET_ERR,
-        "N\u00e3o foi poss\u00edvel localizar o destino da p\u00e1gina de estilo ''{0}''."},
+        "N\u00e3o foi poss\u00edvel localizar o destino da folha de estilo ''{0}''."},
 
         /*
          * Note to translators:  This message represents an internal error in
@@ -509,13 +509,13 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * contains the expression that was in error.
          */
         {ErrorMsg.ATTR_VAL_TEMPLATE_ERR,
-        "Imposs\u00edvel analisar gabarito de valor de atributo ''{0}''."},
+        "N\u00e3o \u00e9 poss\u00edvel analisar o template de valor de atributo ''{0}''."},
 
         /*
          * Note to translators:  ???
          */
         {ErrorMsg.UNKNOWN_SIG_TYPE_ERR,
-        "Tipo de dados desconhecido na assinatura para a classe ''{0}''."},
+        "Tipo de dados desconhecido na assinatura da classe ''{0}''."},
 
         /*
          * Note to translators:  The substitution text refers to data types.
@@ -524,21 +524,21 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * type {0}.
          */
         {ErrorMsg.DATA_CONVERSION_ERR,
-        "Imposs\u00edvel converter tipo de dados ''{0}'' em ''{1}''."},
+        "N\u00e3o \u00e9 poss\u00edvel converter o tipo de dados ''{0}'' em ''{1}''."},
 
         /*
          * Note to translators:  "Templates" is a Java class name that should
          * not be translated.
          */
         {ErrorMsg.NO_TRANSLET_CLASS_ERR,
-        "Este Gabarito n\u00e3o cont\u00e9m uma defini\u00e7\u00e3o de classe translet v\u00e1lida. "},
+        "Este template n\u00e3o cont\u00e9m uma defini\u00e7\u00e3o de classe translet v\u00e1lida. "},
 
         /*
          * Note to translators:  "Templates" is a Java class name that should
          * not be translated.
          */
         {ErrorMsg.NO_MAIN_TRANSLET_ERR,
-        "Este Gabarito n\u00e3o cont\u00e9m uma classe com o nome ''{0}''."},
+        "Estes Templates n\u00e3o cont\u00eam uma classe com o nome ''{0}''."},
 
         /*
          * Note to translators:  The substitution text is the name of a class.
@@ -556,7 +556,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * substitution text with "null" Java value.
          */
         {ErrorMsg.ERROR_LISTENER_NULL_ERR,
-        "Tentando definir ErrorListener para ''{0}'' como nulo "},
+        "Tentando definir ErrorListener de ''{0}'' como nulo "},
 
         /*
          * Note to translators:  StreamSource, SAXSource and DOMSource are Java
@@ -570,7 +570,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * be translated.  The substitution text is the name of Java method.
          */
         {ErrorMsg.JAXP_NO_SOURCE_ERR,
-        "O objeto Source passado para ''{0}'' n\u00e3o possui conte\u00fado. "},
+        "O objeto Source transmitido para ''{0}'' n\u00e3o possui conte\u00fado. "},
 
         /*
          * Note to translators:  The message indicates that XSLTC failed to
@@ -620,7 +620,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * context.  The substitution text is a method name.
          */
         {ErrorMsg.JAXP_NO_RESULT_ERR,
-        "O objeto Result passado para ''{0}'' \u00e9 inv\u00e1lido. "},
+        "O objeto Result transmitido para ''{0}'' \u00e9 inv\u00e1lido. "},
 
         /*
          * Note to translators:  "Transformer" is a Java interface name.  The
@@ -647,6 +647,16 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
         {ErrorMsg.XSLTC_SOURCE_ERR,
         "XSLTCSource.build() foi chamado sem systemId estar definido. "},
 
+        { ErrorMsg.ER_RESULT_NULL,
+            "O resultado n\u00e3o deve ser nulo"},
+
+        /*
+         * Note to translators:  This message indicates that the value argument
+         * of setParameter must be a valid Java Object.
+         */
+        {ErrorMsg.JAXP_INVALID_SET_PARAM_VALUE,
+        "O valor do par\u00e2metro {0} deve ser um Objeto Java v\u00e1lido"},
+
 
         {ErrorMsg.COMPILE_STDIN_ERR,
         "A op\u00e7\u00e3o -i deve ser utilizada com a op\u00e7\u00e3o -o."},
@@ -662,7 +672,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * documentation.
          */
         {ErrorMsg.COMPILE_USAGE_STR,
-        "RESUMO\n   java org.apache.xalan.xsltc.cmdline.Compile [-o <sa\u00edda>]\n      [-d <diret\u00f3rio>] [-j <arquivojar>] [-p <pacote>]\n      [-n] [-x] [-s] [-u] [-v] [-h] { <folha de estilo> | -i }\n\nOP\u00c7\u00d5ES\n   -o <sa\u00edda> atribui o nome <sa\u00edda> ao translet\n gerado. Por padr\u00e3o, o nome do translet\n\u00e9 obtido do nome <folha de estilo>. Esta op\u00e7\u00e3o\nser\u00e1 ignorada se estiverem sendo compiladas v\u00e1rias p\u00e1ginas de estilo.\n   -d <diret\u00f3rio> especifica um diret\u00f3rio de destino para translet\n   -j <arquivo jar>   empacota classes translet em um arquivo jar do\nnome especificado como <arquivo jar>\n   -p <pacote>  especifica um prefixo de nome de pacote para todas as\nclasses translet geradas.\n   -n ativa a seq\u00fc\u00eancia de gabaritos (melhor comportamento padr\u00e3o\nna m\u00e9dia).\n   -x ativa a sa\u00edda de mensagem de depura\u00e7\u00e3o adicional\n  -s desativa a chamada de System.exit\n   -u interpreta argumentos <stylesheet> como URLs\n   -i for\u00e7a o compilador a ler a p\u00e1gina de estilo de stdin\n   -v imprime a vers\u00e3o do compilador\n   -h imprime esta instru\u00e7\u00e3o de uso\n"},
+        "SYNOPSIS\n   java org.apache.xalan.xsltc.cmdline.Compile [-o <sa\u00edda>]\n      [-d <directory>] [-j <arquivo_jar>] [-p <pacote>]\n      [-n] [-x] [-u] [-v] [-h] { <stylesheet> | -i }\n\nOPTIONS\n   -o <sa\u00edda>    atribui o nome <sa\u00edda> para o\n                  translet gerado.  Por padr\u00e3o, o nome convertido \u00e9\n                  derivado do nome de <folha_de_estilo>. Esta op\u00e7\u00e3o\nser\u00e1 ignorada se estiverem sendo compiladas v\u00e1rias p\u00e1ginas de estilo.\n   -d <diret\u00f3rio> especifica um diret\u00f3rio de destino para translet\n   -j <arquivo_jar>   empacota classes translet em um arquivo jar do\nnome especificado como <arquivo_jar>\n   -p <pacote>  especifica um prefixo de nome de pacote para todas as\nclasses translet geradas.\n   -n ativa a seq\u00fc\u00eancia de templates (melhor comportamento padr\u00e3o\nna m\u00e9dia).\n   -x ativa a sa\u00edda de mensagem de depura\u00e7\u00e3o adicional\n  -u interpreta argumentos <stylesheet> como URLs\n   -i for\u00e7a o compilador a ler a folha de estilo de stdin\n   -v imprime a vers\u00e3o do compilador\n   -h imprime esta instru\u00e7\u00e3o de uso\n"},
 
         /*
          * Note to translators:  This message contains usage information for a
@@ -674,7 +684,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * documentation.
          */
         {ErrorMsg.TRANSFORM_USAGE_STR,
-        "RESUMO \n   java org.apache.xalan.xsltc.cmdline.Transform [-j <arquivo jar>]\n      [-x] [-s] [-n <itera\u00e7\u00f5es>] {-u <document_url> | <document>}\n      <classe> [<param1>=<valor1> ...]\n\n   utiliza a <classe> translet para transformar um documento XML \n  especificado como <documento>. A <classe> translet no\n  CLASSPATH do usu\u00e1rio ou no <arquivo jar> opcionalmente especificado.\nOP\u00c7\u00d5ES\n   -j <arquivo jar> especifica um arquivo jar file a partir do qual ser\u00e1 carregado o translet\n   -x ativa a sa\u00edda de mensagem de depura\u00e7\u00e3o adicional\n   -s desativa a chamada de System.exit\n   -n <itera\u00e7\u00f5es> executa os hor\u00e1rios de transforma\u00e7\u00e3o <itera\u00e7\u00f5es> e\n exibe informa\u00e7\u00f5es sobre cria\u00e7\u00e3o de perfil\n   -u <url_de_documento> especifica o documento XML de entrada como uma URL\n"},
+        "SYNOPSIS \n   java org.apache.xalan.xsltc.cmdline.Transform [-j <arquivo_jar>]\n      [-x] [-n <itera\u00e7\u00f5es>] {-u <url_de_documento> | <documento>}\n      <classe> [<param1>=<valor1> ...]\n\n   utiliza o translet <classe> para transformar um documento XML \n   especificado como <documento>. A <classe> translet no\n  CLASSPATH do usu\u00e1rio ou no <arquivo_jar> opcionalmente especificado.\nOPTIONS\n   -j <arquivo_jar> especifica um arquivo jar a partir do qual ser\u00e1 carregado o translet\n   -x ativa a sa\u00edda de mensagem de depura\u00e7\u00e3o adicional\n  -n <itera\u00e7\u00f5es> executa os hor\u00e1rios de transforma\u00e7\u00e3o <itera\u00e7\u00f5es> e\n exibe informa\u00e7\u00f5es sobre tra\u00e7ado de perfil\n   -u <url_de_documento> especifica o documento XML de entrada como uma URL\n"},
 
 
 
@@ -710,7 +720,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * class.
          */
         {ErrorMsg.CONSTRUCTOR_NOT_FOUND,
-        "Imposs\u00edvel localizar o construtor externo ''{0}''."},
+        "N\u00e3o \u00e9 poss\u00edvel localizar o construtor externo ''{0}''."},
 
         /*
          * Note to translators:  "static" is the Java keyword.  The substitution
@@ -741,14 +751,14 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * line option that was not recognized.
          */
         {ErrorMsg.ILLEGAL_CMDLINE_OPTION_ERR,
-        "A op\u00e7\u00e3o da linha de comando ''{0}'' n\u00e3o \u00e9 v\u00e1lida. "},
+        "A op\u00e7\u00e3o da linha de comandos ''{0}'' n\u00e3o \u00e9 v\u00e1lida. "},
 
         /*
          * Note to translators:  The substitution text is the name of a command-
          * line option.
          */
         {ErrorMsg.CMDLINE_OPT_MISSING_ARG_ERR,
-        "A op\u00e7\u00e3o da linha de comando ''{0}'' n\u00e3o cont\u00e9m um argumento requerido. "},
+        "A op\u00e7\u00e3o da linha de comandos ''{0}'' n\u00e3o cont\u00e9m um argumento requerido. "},
 
         /*
          * Note to translators:  This message is used to indicate the severity
@@ -809,7 +819,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * while the second substitution is the name of a jar file.
          */
         {ErrorMsg.TRANSFORM_WITH_JAR_STR,
-        "Transformar utilizando translet ''{0}'' de arquivo jar ''{1}''"},
+        "Transformar utilizando translet ''{0}'' do arquivo jar ''{1}'' "},
 
         /*
          * Note to translators:  "TransformerFactory" is the name of a Java
@@ -818,6 +828,16 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          */
         {ErrorMsg.COULD_NOT_CREATE_TRANS_FACT,
         "N\u00e3o foi poss\u00edvel criar uma inst\u00e2ncia da classe TransformerFactory ''{0}''."},
+
+        /*
+         * Note to translators:  This message is produced when the user
+         * specified a name for the translet class that contains characters
+         * that are not permitted in a Java class name.  The substitution
+         * text "{0}" specifies the name the user requested, while "{1}"
+         * specifies the name the processor used instead.
+         */
+        {ErrorMsg.TRANSLET_NAME_JAVA_CONFLICT,
+         "N\u00e3o foi poss\u00edvel utilizar o nome ''{0}'' como o nome da classe translet porque ele cont\u00e9m caracteres n\u00e3o permitidos no nome da classe Java. O nome ''{1}'' foi utilizado como alternativa."},
 
         /*
          * Note to translators:  The following message is used as a header.
@@ -843,7 +863,49 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * stylesheet (see above).
          */
         {ErrorMsg.RUNTIME_ERROR_KEY,
-        "Erros de translet:"}
+        "Erros de translet:"},
+
+        /*
+         * Note to translators:  An attribute whose value is constrained to
+         * be a "QName" or a list of "QNames" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {ErrorMsg.INVALID_QNAME_ERR,
+        "Um atributo cujo valor deve ser um QName ou uma lista de QNames separados por espa\u00e7os em branco apresentou o valor ''{0}''"},
+
+        /*
+         * Note to translators:  An attribute whose value is required to
+         * be an "NCName".
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {ErrorMsg.INVALID_NCNAME_ERR,
+        "Um atributo cujo valor deve ser um NCName apresentou o valor ''{0}''"},
+
+        /*
+         * Note to translators:  An attribute with an incorrect value was
+         * encountered.  The permitted value is one of the literal values
+         * "xml", "html" or "text"; it is also permitted to have the form of
+         * a QName that is not also an NCName.  The terms "method",
+         * "xsl:output", "xml", "html" and "text" are keywords that must not
+         * be translated.  The term "qname-but-not-ncname" is an XML syntactic
+         * term.  The substitution text contains the actual value of the
+         * attribute.
+         */
+        {ErrorMsg.INVALID_METHOD_IN_OUTPUT,
+        "O atributo de m\u00e9todo de um elemento <xsl:output> apresentou o valor ''{0}''. O valor deve ser do tipo ''xml'', ''html'', ''text'' ou qname-but-not-ncname"},
+
+        {ErrorMsg.JAXP_GET_FEATURE_NULL_NAME,
+        "O nome do recurso n\u00e3o pode ser nulo em TransformerFactory.getFeature(String name)."},
+
+        {ErrorMsg.JAXP_SET_FEATURE_NULL_NAME,
+        "O nome do recurso n\u00e3o pode ser nulo em TransformerFactory.setFeature(String name, boolean value)."},
+
+        {ErrorMsg.JAXP_UNSUPPORTED_FEATURE,
+        "N\u00e3o \u00e9 poss\u00edvel definir o recurso ''{0}'' neste TransformerFactory."}
+
     };
     }
+
 }
