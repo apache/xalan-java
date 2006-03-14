@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,12 @@ public class ErrorMessages_sk extends ListResourceBundle {
  *      grammar for an XML file, the names and types of elements, attributes,
  *      etc.
  *
+ *   9) Translet is an invented term that refers to the class file that contains
+ *      the compiled form of a stylesheet.
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -88,7 +90,7 @@ public class ErrorMessages_sk extends ListResourceBundle {
          * is a class name.  Used for internal errors in the processor.
          */
         {BasisLibrary.RUN_TIME_INTERNAL_ERR,
-        "Intern\u00e1 chyba \u010dasu spustenia v ''{0}''"},
+        "V ''{0}'' sa vyskytla intern\u00e1 runtime chyba"},
 
         /*
          * Note to translators:  <xsl:copy> is a keyword that should not be
@@ -104,7 +106,7 @@ public class ErrorMessages_sk extends ListResourceBundle {
          * {0}.
          */
         {BasisLibrary.DATA_CONVERSION_ERR,
-        "Neplatn\u00e1 konverzia z ''{0}'' na ''{1}''."},
+        "Konverzia z ''{0}'' na ''{1}'' je neplatn\u00e1."},
 
         /*
          * Note to translators:  This message is displayed if the function named
@@ -112,7 +114,7 @@ public class ErrorMessages_sk extends ListResourceBundle {
          * is the acronym naming the product.
          */
         {BasisLibrary.EXTERNAL_FUNC_ERR,
-        "XSLTC nepodporuje extern\u00fa funkciu ''{0}''."},
+        "XLTC nepodporuje extern\u00fa funkciu ''{0}''."},
 
         /*
          * Note to translators:  This message is displayed if two values are
@@ -129,7 +131,7 @@ public class ErrorMessages_sk extends ListResourceBundle {
          * permitted for a call to this function.
          */
         {BasisLibrary.INVALID_ARGUMENT_ERR,
-        "Neplatn\u00fd typ argumentu ''{0}'' vo volan\u00ed do ''{1}''"},
+        "Vo volan\u00ed do ''{1}'' je neplatn\u00fd typ argumentu ''{0}'' "},
 
         /*
          * Note to translators:  There is way of specifying a format for a
@@ -137,7 +139,7 @@ public class ErrorMessages_sk extends ListResourceBundle {
          * particular value using the specified pattern.
          */
         {BasisLibrary.FORMAT_NUMBER_ERR,
-        "Pokus o form\u00e1tovanie \u010d\u00edsla ''{0}'' pomocou vzoru ''{1}''."},
+        "Prebieha pokus o form\u00e1tovanie \u010d\u00edsla ''{0}'' pomocou vzoru ''{1}''."},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -145,7 +147,7 @@ public class ErrorMessages_sk extends ListResourceBundle {
          * iterator.  (See definition of iterator above.)
          */
         {BasisLibrary.ITERATOR_CLONE_ERR,
-        "Nie je mo\u017en\u00e9 klonova\u0165 iter\u00e1tor ''{0}''."},
+        "Iter\u00e1tor ''{0}'' sa ned\u00e1 klonova\u0165."},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -163,7 +165,7 @@ public class ErrorMessages_sk extends ListResourceBundle {
          * support.
          */
         {BasisLibrary.TYPED_AXIS_SUPPORT_ERR,
-        "Iter\u00e1tor pre nap\u00edsan\u00fa os ''{0}'' nie je podporovan\u00fd."},
+        "Iter\u00e1tor pre zadan\u00fa os ''{0}'' nie je podporovan\u00fd."},
 
         /*
          * Note to translators:  This message is reported if the stylesheet
@@ -172,7 +174,7 @@ public class ErrorMessages_sk extends ListResourceBundle {
          * specifies the name of the attribute.
          */
         {BasisLibrary.STRAY_ATTRIBUTE_ERR,
-        "Atrib\u00fat ''{0}'' je mimo elementu."},
+        "Atrib\u00fat ''{0}'' je mimo prvku."},
 
         /*
          * Note to translators:  As with the preceding message, a namespace
@@ -182,7 +184,7 @@ public class ErrorMessages_sk extends ListResourceBundle {
          * namespace declaration.
          */
         {BasisLibrary.STRAY_NAMESPACE_ERR,
-        "Deklar\u00e1cia n\u00e1zvov\u00e9ho priestoru ''{0}''=''{1}'' je mimo elementu."},
+        "Deklar\u00e1cia n\u00e1zvov\u00e9ho priestoru ''{0}''=''{1}'' je mimo prvku."},
 
         /*
          * Note to translators:  The stylesheet contained a reference to a
@@ -222,7 +224,59 @@ public class ErrorMessages_sk extends ListResourceBundle {
          * error.
          */
         {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
-        "Nebolo mo\u017en\u00e9 rozl\u00ed\u0161i\u0165 referenciu URI ''{0}''."}
+        "Nebolo mo\u017en\u00e9 rozl\u00ed\u0161i\u0165 odkaz na URI ''{0}''."},
+
+         /*
+         * Note to translators:  The stylesheet contained an element that was
+         * not recognized as part of the XSL syntax.  The substitution text
+         * gives the element name.
+         */
+        {BasisLibrary.UNSUPPORTED_XSL_ERR,
+        "XSL prvok ''{0}'' nie je podporovan\u00fd"},
+
+        /*
+         * Note to translators:  The stylesheet referred to an extension to the
+         * XSL syntax and indicated that it was defined by XSLTC, but XSLTC does
+         * not recognize the particular extension named.  The substitution text
+         * gives the extension name.
+         */
+        {BasisLibrary.UNSUPPORTED_EXT_ERR,
+        "XSLTC pr\u00edpona ''{0}'' nebola rozpoznan\u00e1"},
+
+
+        /*
+         * Note to translators:  This error message is produced if the translet
+         * class was compiled using a newer version of XSLTC and deployed for
+         * execution with an older version of XSLTC.  The substitution text is
+         * the name of the translet class.
+         */
+        {BasisLibrary.UNKNOWN_TRANSLET_VERSION_ERR,
+        "\u0160pecifikovan\u00fd translet ''{0}'' bol vytvoren\u00fd pomocou verzie XSLTC, ktor\u00e1 je nov\u0161ia ako verzia XSLTC runtime, ktor\u00fd sa pou\u017e\u00edva.  Mus\u00edte prekompilova\u0165 defin\u00edcie \u0161t\u00fdlov (objekt stylesheet) alebo pou\u017ei\u0165 na spustenie tohto transletu nov\u0161iu verziu n\u00e1stroja XSLTC."},
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "QName" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_QNAME_ERR,
+        "Atrib\u00fat, ktor\u00fd mus\u00ed ma\u0165 hodnotu QName, mal hodnotu ''{0}''"},
+
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "NCName" had a value that was incorrect.
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_NCNAME_ERR,
+        "Atrib\u00fat, ktor\u00fd mus\u00ed ma\u0165 hodnotu NCName, mal hodnotu ''{0}''"},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_FUNCTION_ERR,
+        "Pou\u017e\u00edvanie funkcie roz\u0161\u00edrenia ''{0}'' nie je povolen\u00e9, ke\u010f je funkcia bezpe\u010dn\u00e9ho spracovania nastaven\u00e1 na hodnotu true."},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_ELEMENT_ERR,
+        "Pou\u017e\u00edvanie prvku roz\u0161\u00edrenia ''{0}'' nie je povolen\u00e9, ke\u010f je funkcia bezpe\u010dn\u00e9ho spracovania nastaven\u00e1 na hodnotu true."},
     };
     }
 

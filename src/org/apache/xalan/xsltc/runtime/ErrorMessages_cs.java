@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,12 @@ public class ErrorMessages_cs extends ListResourceBundle {
  *      grammar for an XML file, the names and types of elements, attributes,
  *      etc.
  *
+ *   9) Translet is an invented term that refers to the class file that contains
+ *      the compiled form of a stylesheet.
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -88,7 +90,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * is a class name.  Used for internal errors in the processor.
          */
         {BasisLibrary.RUN_TIME_INTERNAL_ERR,
-        "Vnit\u0159n\u00ed b\u011bhov\u00e1 chyba v ''{0}''"},
+        "Vnit\u0159n\u00ed b\u011bhov\u00e1 chyba ve t\u0159\u00edd\u011b ''{0}''"},
 
         /*
          * Note to translators:  <xsl:copy> is a keyword that should not be
@@ -104,7 +106,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * {0}.
          */
         {BasisLibrary.DATA_CONVERSION_ERR,
-        "Neplatn\u00e1 konverze z ''{0}'' do ''{1}''."},
+        "Neplatn\u00e1 konverze z typu ''{0}'' na typ ''{1}''. "},
 
         /*
          * Note to translators:  This message is displayed if the function named
@@ -112,7 +114,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * is the acronym naming the product.
          */
         {BasisLibrary.EXTERNAL_FUNC_ERR,
-        "Extern\u00ed funkce ''{0}'' nen\u00ed podporov\u00e1na produktem SLTC."},
+        "Extern\u00ed funkce ''{0}'' nen\u00ed produktem XSLTC podporov\u00e1na. "},
 
         /*
          * Note to translators:  This message is displayed if two values are
@@ -129,7 +131,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * permitted for a call to this function.
          */
         {BasisLibrary.INVALID_ARGUMENT_ERR,
-        "Neplatn\u00fd typ argumentu ''{0}'' p\u0159i vol\u00e1n\u00ed ''{1}''"},
+        "Neplatn\u00fd argument typu ''{0}'' ve vol\u00e1n\u00ed funkce ''{1}''"},
 
         /*
          * Note to translators:  There is way of specifying a format for a
@@ -137,7 +139,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * particular value using the specified pattern.
          */
         {BasisLibrary.FORMAT_NUMBER_ERR,
-        "Pokus form\u00e1tovat \u010d\u00edslo ''{0}'' pou\u017eit\u00edm vzorku ''{1}''."},
+        "Pokus o zform\u00e1tov\u00e1n\u00ed \u010d\u00edsla ''{0}'' s pou\u017eit\u00edm vzorku ''{1}''."},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -172,7 +174,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * specifies the name of the attribute.
          */
         {BasisLibrary.STRAY_ATTRIBUTE_ERR,
-        "Atribut ''{0}'' je vn\u011b prvku."},
+        "Atribut ''{0}'' se nach\u00e1z\u00ed vn\u011b prvku."},
 
         /*
          * Note to translators:  As with the preceding message, a namespace
@@ -182,7 +184,7 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * namespace declaration.
          */
         {BasisLibrary.STRAY_NAMESPACE_ERR,
-        "Deklarace oboru n\u00e1zv\u016f ''{0}''=''{1}'' je vn\u011b prvku."},
+        "Deklarace oboru n\u00e1zv\u016f ''{0}''=''{1}'' se nach\u00e1z\u00ed vn\u011b prvku."},
 
         /*
          * Note to translators:  The stylesheet contained a reference to a
@@ -222,7 +224,59 @@ public class ErrorMessages_cs extends ListResourceBundle {
          * error.
          */
         {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
-        "Nelze p\u0159elo\u017eit odkazy URI ''{0}''."}
+        "Nelze p\u0159elo\u017eit odkaz na URI ''{0}''."},
+
+         /*
+         * Note to translators:  The stylesheet contained an element that was
+         * not recognized as part of the XSL syntax.  The substitution text
+         * gives the element name.
+         */
+        {BasisLibrary.UNSUPPORTED_XSL_ERR,
+        "Nepodporovan\u00fd prvek XSL ''{0}''"},
+
+        /*
+         * Note to translators:  The stylesheet referred to an extension to the
+         * XSL syntax and indicated that it was defined by XSLTC, but XSLTC does
+         * not recognize the particular extension named.  The substitution text
+         * gives the extension name.
+         */
+        {BasisLibrary.UNSUPPORTED_EXT_ERR,
+        "Nerozpoznan\u00e1 p\u0159\u00edpona XSLTC ''{0}''"},
+
+
+        /*
+         * Note to translators:  This error message is produced if the translet
+         * class was compiled using a newer version of XSLTC and deployed for
+         * execution with an older version of XSLTC.  The substitution text is
+         * the name of the translet class.
+         */
+        {BasisLibrary.UNKNOWN_TRANSLET_VERSION_ERR,
+        "Ur\u010den\u00fd translet ''{0}'' byl vytvo\u0159en pomoc\u00ed verze prost\u0159ed\u00ed XSLTC, kter\u00e1 je nov\u011bj\u0161\u00ed ne\u017e verze pou\u017e\u00edvan\u00e9ho b\u011bhov\u00e9ho prost\u0159ed\u00ed XSLTC. P\u0159edlohu se styly je t\u0159eba znovu zkompilovat nebo tento translet spustit v nov\u011bj\u0161\u00ed verzi prost\u0159ed\u00ed XSLTC."},
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "QName" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_QNAME_ERR,
+        "Atribut, jeho\u017e hodnotou mus\u00ed b\u00fdt jm\u00e9no QName, m\u00e1 hodnotu ''{0}''. "},
+
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "NCName" had a value that was incorrect.
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_NCNAME_ERR,
+        "Atribut, jeho\u017e hodnotou mus\u00ed b\u00fdt jm\u00e9no NCName, m\u00e1 hodnotu ''{0}''. "},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_FUNCTION_ERR,
+        "Je-li funkce zabezpe\u010den\u00e9ho zpracov\u00e1n\u00ed nastavena na hodnotu true, nen\u00ed povoleno pou\u017eit\u00ed roz\u0161i\u0159uj\u00edc\u00ed funkce ''{0}''. "},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_ELEMENT_ERR,
+        "Je-li funkce zabezpe\u010den\u00e9ho zpracov\u00e1n\u00ed nastavena na hodnotu true, nen\u00ed povoleno pou\u017eit\u00ed roz\u0161i\u0159uj\u00edc\u00edho prvku ''{0}''. "},
     };
     }
 

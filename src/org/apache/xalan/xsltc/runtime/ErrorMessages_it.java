@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,12 @@ public class ErrorMessages_it extends ListResourceBundle {
  *      grammar for an XML file, the names and types of elements, attributes,
  *      etc.
  *
+ *   9) Translet is an invented term that refers to the class file that contains
+ *      the compiled form of a stylesheet.
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -120,7 +122,7 @@ public class ErrorMessages_it extends ListResourceBundle {
          * unknown.
          */
         {BasisLibrary.EQUALITY_EXPR_ERR,
-        "Tipo di argomento sconosciuto nell'espressione di uguaglianza. "},
+        "Tipo di argomento sconosciuto nell'espressione di uguaglianza."},
 
         /*
          * Note to translators:  The substitution text for {0} will be a data
@@ -129,7 +131,7 @@ public class ErrorMessages_it extends ListResourceBundle {
          * permitted for a call to this function.
          */
         {BasisLibrary.INVALID_ARGUMENT_ERR,
-        "Tipo di argomento ''{0}'' non valido nella chiamata a ''{1}''"},
+        "Tipo argomento non valido ''{0}'' nella chiamata a ''{1}''"},
 
         /*
          * Note to translators:  There is way of specifying a format for a
@@ -137,7 +139,7 @@ public class ErrorMessages_it extends ListResourceBundle {
          * particular value using the specified pattern.
          */
         {BasisLibrary.FORMAT_NUMBER_ERR,
-        "Tentativo di formattazione del numero ''{0}'' utilizzando il modello ''{1}''."},
+        "Tentativo di formattare il numero ''{0}'' utilizzando il modello ''{1}''."},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -145,7 +147,7 @@ public class ErrorMessages_it extends ListResourceBundle {
          * iterator.  (See definition of iterator above.)
          */
         {BasisLibrary.ITERATOR_CLONE_ERR,
-        "Impossibile clonare l''iteratore ''{0}''."},
+        "Impossibile clonare l''''iteratore ''{0}''."},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -154,7 +156,7 @@ public class ErrorMessages_it extends ListResourceBundle {
          * support.
          */
         {BasisLibrary.AXIS_SUPPORT_ERR,
-        "Iteratore per l''asse ''{0}'' non supportato. "},
+        "Iteratore per asse ''{0}'' non supportato."},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -163,7 +165,7 @@ public class ErrorMessages_it extends ListResourceBundle {
          * support.
          */
         {BasisLibrary.TYPED_AXIS_SUPPORT_ERR,
-        "Iteratore per l''asse immesso ''{0}'' non supportato. "},
+        "Iteratore per l''''asse immesso ''{0}'' non sopportato."},
 
         /*
          * Note to translators:  This message is reported if the stylesheet
@@ -172,7 +174,7 @@ public class ErrorMessages_it extends ListResourceBundle {
          * specifies the name of the attribute.
          */
         {BasisLibrary.STRAY_ATTRIBUTE_ERR,
-        "Attributo ''{0}'' al di fuori dell''elemento. "},
+        "L''''attributo ''{0}'' al di fuori dell''''elemento."},
 
         /*
          * Note to translators:  As with the preceding message, a namespace
@@ -182,7 +184,7 @@ public class ErrorMessages_it extends ListResourceBundle {
          * namespace declaration.
          */
         {BasisLibrary.STRAY_NAMESPACE_ERR,
-        "Dichiarazione dello spazio nome ''{0}''=''{1}'' al di fuori dell''elemento. "},
+        "Dichiarazione dello spazio nome ''{0}''=''{1}'' al di fuori dell''''elemento."},
 
         /*
          * Note to translators:  The stylesheet contained a reference to a
@@ -206,7 +208,7 @@ public class ErrorMessages_it extends ListResourceBundle {
          * DTD.
          */
         {BasisLibrary.PARSER_DTD_SUPPORT_ERR,
-        "Il parser SAX utilizzato non gestisce gli eventi di dichiarazione DTD. "},
+        "Il parser SAX utilizzato non gestisce gli eventi di dichiarazione DTD."},
 
         /*
          * Note to translators:  The following message indicates that the XML
@@ -215,14 +217,66 @@ public class ErrorMessages_it extends ListResourceBundle {
          * declarations.
          */
         {BasisLibrary.NAMESPACES_SUPPORT_ERR,
-        "Il parser SAX utilizzato non dispone del supporto per gli spazi nome XML. "},
+        "Il parser SAX utilizzato non dispone del supporto per gli spazi nome XML."},
 
         /*
          * Note to translators:  The substitution text is the URI that was in
          * error.
          */
         {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
-        "Impossibile risolvere il riferimento URI ''{0}''."}
+        "Impossibile risolvere il riferimento URI ''{0}''."},
+
+         /*
+         * Note to translators:  The stylesheet contained an element that was
+         * not recognized as part of the XSL syntax.  The substitution text
+         * gives the element name.
+         */
+        {BasisLibrary.UNSUPPORTED_XSL_ERR,
+        "Elemento XSL non supportato ''{0}''"},
+
+        /*
+         * Note to translators:  The stylesheet referred to an extension to the
+         * XSL syntax and indicated that it was defined by XSLTC, but XSLTC does
+         * not recognize the particular extension named.  The substitution text
+         * gives the extension name.
+         */
+        {BasisLibrary.UNSUPPORTED_EXT_ERR,
+        "Estensione XSLTC non riconosciuta ''{0}''"},
+
+
+        /*
+         * Note to translators:  This error message is produced if the translet
+         * class was compiled using a newer version of XSLTC and deployed for
+         * execution with an older version of XSLTC.  The substitution text is
+         * the name of the translet class.
+         */
+        {BasisLibrary.UNKNOWN_TRANSLET_VERSION_ERR,
+        "Il translet specificato, ''{0}'', \u00e8 stato creato utilizzando una versione di XSLTC pi\u00f9 recente della versione del run-time XSLTC che \u00e8 in uso. \u00c8 necessario ricompilare il foglio di lavoro oppure utilizzare una versione pi\u00f9 recente di XSLTC per eseguire questo translet."},
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "QName" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_QNAME_ERR,
+        "Un attributo il cui valore deve essere un QName aveva il valore ''{0}''"},
+
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "NCName" had a value that was incorrect.
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_NCNAME_ERR,
+        "Un attributo il cui valore deve essere un NCName aveva il valore ''{0}''"},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_FUNCTION_ERR,
+        "L''''utilizzo di una funzione di estensione ''{0}'' non \u00e8 consentito quando la funzione di elaborazione sicura \u00e8 impostata su true."},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_ELEMENT_ERR,
+        "L''''utilizzo di un elemento di estensione ''{0}'' non \u00e8 consentito quando la funzione di elaborazione sicura \u00e8 impostata su true."},
     };
     }
 

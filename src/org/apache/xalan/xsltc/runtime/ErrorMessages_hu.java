@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,12 @@ public class ErrorMessages_hu extends ListResourceBundle {
  *      grammar for an XML file, the names and types of elements, attributes,
  *      etc.
  *
+ *   9) Translet is an invented term that refers to the class file that contains
+ *      the compiled form of a stylesheet.
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -88,14 +90,14 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * is a class name.  Used for internal errors in the processor.
          */
         {BasisLibrary.RUN_TIME_INTERNAL_ERR,
-        "Fut\u00e1sidej\u0171 bels\u0151 hiba; helye: ''{0}''"},
+        "Fut\u00e1s k\u00f6zbeni bels\u0151 hiba a(z) ''{0}'' oszt\u00e1lyban. "},
 
         /*
          * Note to translators:  <xsl:copy> is a keyword that should not be
          * translated.
          */
         {BasisLibrary.RUN_TIME_COPY_ERR,
-        "Fut\u00e1sidej\u0171 bels\u0151 hiba <xsl:copy> v\u00e9grehajt\u00e1sakor."},
+        "Fut\u00e1s k\u00f6zbeni bels\u0151 hiba az <xsl:copy> v\u00e9grehajt\u00e1sakor."},
 
         /*
          * Note to translators:  The substitution text refers to data types.
@@ -104,7 +106,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * {0}.
          */
         {BasisLibrary.DATA_CONVERSION_ERR,
-        "\u00c9rv\u00e9nytelen konverzi\u00f3: ''{0}'' t\u00edpusr\u00f3l ''{1}'' t\u00edpusra."},
+        "\u00c9rv\u00e9nytelen \u00e1talak\u00edt\u00e1s ''{0}'' t\u00edpusr\u00f3l ''{1}'' t\u00edpusra."},
 
         /*
          * Note to translators:  This message is displayed if the function named
@@ -112,7 +114,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * is the acronym naming the product.
          */
         {BasisLibrary.EXTERNAL_FUNC_ERR,
-        "A(z) ''{0}'' k\u00fcls\u0151 f\u00fcggv\u00e9nyt nem t\u00e1mogatja az XSLTC."},
+        "A(z) ''{0}'' k\u00fcls\u0151 f\u00fcggv\u00e9nyt az XSLTC nem t\u00e1mogatja."},
 
         /*
          * Note to translators:  This message is displayed if two values are
@@ -129,7 +131,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * permitted for a call to this function.
          */
         {BasisLibrary.INVALID_ARGUMENT_ERR,
-        "\u00c9rv\u00e9nytelen argumentumt\u00edpust (''{0}'') haszn\u00e1lt ''{1}'' h\u00edv\u00e1s\u00e1ban."},
+        "A(z) ''{0}'' \u00e9rv\u00e9nytelen argumentumt\u00edpus a(z) ''{1}'' h\u00edv\u00e1s\u00e1hoz "},
 
         /*
          * Note to translators:  There is way of specifying a format for a
@@ -137,7 +139,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * particular value using the specified pattern.
          */
         {BasisLibrary.FORMAT_NUMBER_ERR,
-        "A(z) ''{0}'' sz\u00e1mot ''{1}'' minta alapj\u00e1n akarta form\u00e1zni."},
+        "K\u00eds\u00e9rlet a(z) ''{0}'' form\u00e1z\u00e1s\u00e1ra a(z) ''{1}'' mint\u00e1val."},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -145,7 +147,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * iterator.  (See definition of iterator above.)
          */
         {BasisLibrary.ITERATOR_CLONE_ERR,
-        "Nem lehet kl\u00f3nozni a(z) ''{0}'' iter\u00e1tort."},
+        "A(z) ''{0}'' iter\u00e1tor nem kl\u00f3nozhat\u00f3."},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -154,7 +156,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * support.
          */
         {BasisLibrary.AXIS_SUPPORT_ERR,
-        "A(z) ''{0}'' tengely iter\u00e1tora nem t\u00e1mogatott."},
+        "A(z) ''{0}'' tengelyre az iter\u00e1tor nem t\u00e1mogatott."},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -163,7 +165,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * support.
          */
         {BasisLibrary.TYPED_AXIS_SUPPORT_ERR,
-        "A tipiz\u00e1lt ''{0}'' tengelyre iter\u00e1tor nem t\u00e1mogatott."},
+        "A tipiz\u00e1lt ''{0}'' tengelyre az iter\u00e1tor nem t\u00e1mogatott."},
 
         /*
          * Note to translators:  This message is reported if the stylesheet
@@ -172,7 +174,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * specifies the name of the attribute.
          */
         {BasisLibrary.STRAY_ATTRIBUTE_ERR,
-        "A(z) ''{0}'' attrib\u00fatum k\u00edv\u00fcl van az elemen."},
+        "A(z) ''{0}'' attrib\u00fatum k\u00edv\u00fcl esik az elemen."},
 
         /*
          * Note to translators:  As with the preceding message, a namespace
@@ -182,7 +184,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * namespace declaration.
          */
         {BasisLibrary.STRAY_NAMESPACE_ERR,
-        "A(z) ''{0}''=''{1}'' n\u00e9vt\u00e9r-deklar\u00e1ci\u00f3 k\u00edv\u00fcl esik az elemen."},
+        "A(z) ''{0}''=''{1}'' n\u00e9vt\u00e9rdeklar\u00e1ci\u00f3 k\u00edv\u00fcl esik az elemen."},
 
         /*
          * Note to translators:  The stylesheet contained a reference to a
@@ -190,7 +192,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * text is the name of the prefix.
          */
         {BasisLibrary.NAMESPACE_PREFIX_ERR,
-        "A(z) ''{0}'' el\u0151tag n\u00e9vtere nem defini\u00e1lt."},
+        "A(z) ''{0}'' el\u0151tag n\u00e9vtere nincs deklar\u00e1lva."},
 
         /*
          * Note to translators:  The following represents an internal error.
@@ -206,7 +208,7 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * DTD.
          */
         {BasisLibrary.PARSER_DTD_SUPPORT_ERR,
-        "Az \u00d6n \u00e1ltal haszn\u00e1lt SAX elemz\u0151 nem kezeli a DTD-deklar\u00e1ci\u00f3s esem\u00e9nyeket."},
+        "A haszn\u00e1lt SAX \u00e9rtelmez\u0151 nem kezeli a DTD deklar\u00e1ci\u00f3s esem\u00e9nyeket."},
 
         /*
          * Note to translators:  The following message indicates that the XML
@@ -215,14 +217,66 @@ public class ErrorMessages_hu extends ListResourceBundle {
          * declarations.
          */
         {BasisLibrary.NAMESPACES_SUPPORT_ERR,
-        "Az \u00d6n \u00e1ltal haszn\u00e1lt SAX elemz\u0151 nem t\u00e1mogatja az XML n\u00e9vtereket."},
+        "A haszn\u00e1lt SAX \u00e9rtelmez\u0151 nem t\u00e1mogatja az XML n\u00e9vtereket."},
 
         /*
          * Note to translators:  The substitution text is the URI that was in
          * error.
          */
         {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
-        "Nem lehet feloldani a(z) ''{0}'' URI hivatkoz\u00e1st."}
+        "Nem lehet feloldani a(z) ''{0}'' URI hivatkoz\u00e1st."},
+
+         /*
+         * Note to translators:  The stylesheet contained an element that was
+         * not recognized as part of the XSL syntax.  The substitution text
+         * gives the element name.
+         */
+        {BasisLibrary.UNSUPPORTED_XSL_ERR,
+        "Nem t\u00e1mogatott XSL elem: ''{0}''"},
+
+        /*
+         * Note to translators:  The stylesheet referred to an extension to the
+         * XSL syntax and indicated that it was defined by XSLTC, but XSLTC does
+         * not recognize the particular extension named.  The substitution text
+         * gives the extension name.
+         */
+        {BasisLibrary.UNSUPPORTED_EXT_ERR,
+        "Ismeretlen XSLTC kiterjeszt\u00e9s: ''{0}''"},
+
+
+        /*
+         * Note to translators:  This error message is produced if the translet
+         * class was compiled using a newer version of XSLTC and deployed for
+         * execution with an older version of XSLTC.  The substitution text is
+         * the name of the translet class.
+         */
+        {BasisLibrary.UNKNOWN_TRANSLET_VERSION_ERR,
+        "A megadott ''{0}'' translet az XSLTC egy \u00fajabb verzi\u00f3j\u00e1val k\u00e9sz\u00fclt, mint a haszn\u00e1latban l\u00e9v\u0151 XSLTC verzi\u00f3. \u00dajra kell ford\u00edtania a st\u00edluslapot, vagy a translet futtat\u00e1s\u00e1hoz az XSLTC \u00fajabb verzi\u00f3j\u00e1t kell haszn\u00e1lnia."},
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "QName" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_QNAME_ERR,
+        "Egy olyan attrib\u00fatum, aminek az \u00e9rt\u00e9ke csak QName lehet, ''{0}'' \u00e9rt\u00e9kkel rendelkezett."},
+
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "NCName" had a value that was incorrect.
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_NCNAME_ERR,
+        "Egy olyan attrib\u00fatum, amelynek \u00e9rt\u00e9ke csak NCName lehet, ''{0}'' \u00e9rt\u00e9kkel rendelkezett."},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_FUNCTION_ERR,
+        "A(z) ''{0}'' kiterjeszt\u00e9si f\u00fcggv\u00e9ny haszn\u00e1lata nem megengedett, ha biztons\u00e1gos feldolgoz\u00e1s be van kapcsolva. "},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_ELEMENT_ERR,
+        "A(z) ''{0}'' kiterjeszt\u00e9si elem haszn\u00e1lata nem megengedett, ha biztons\u00e1gos feldolgoz\u00e1s be van kapcsolva. "},
     };
     }
 

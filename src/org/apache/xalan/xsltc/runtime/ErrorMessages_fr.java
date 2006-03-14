@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,12 @@ public class ErrorMessages_fr extends ListResourceBundle {
  *      grammar for an XML file, the names and types of elements, attributes,
  *      etc.
  *
+ *   9) Translet is an invented term that refers to the class file that contains
+ *      the compiled form of a stylesheet.
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -104,7 +106,7 @@ public class ErrorMessages_fr extends ListResourceBundle {
          * {0}.
          */
         {BasisLibrary.DATA_CONVERSION_ERR,
-        "Conversion incorrecte de ''{0}'' en ''{1}''."},
+        "Conversion non valide de ''{0}'' en ''{1}''."},
 
         /*
          * Note to translators:  This message is displayed if the function named
@@ -129,7 +131,7 @@ public class ErrorMessages_fr extends ListResourceBundle {
          * permitted for a call to this function.
          */
         {BasisLibrary.INVALID_ARGUMENT_ERR,
-        "Type d''argument inconnu ''{0}'' dans l''appel \u00e0 ''{1}''"},
+        "Type d''argument non valide ''{0}'' lors de l''appel de ''{1}''"},
 
         /*
          * Note to translators:  There is way of specifying a format for a
@@ -137,7 +139,7 @@ public class ErrorMessages_fr extends ListResourceBundle {
          * particular value using the specified pattern.
          */
         {BasisLibrary.FORMAT_NUMBER_ERR,
-        "Tentative de formatage du nombre ''{0}'' avec le mod\u00e8le ''{1}''."},
+        "Tentative de formatage du nombre ''{0}'' \u00e0 l''aide du motif ''{1}''."},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -154,7 +156,7 @@ public class ErrorMessages_fr extends ListResourceBundle {
          * support.
          */
         {BasisLibrary.AXIS_SUPPORT_ERR,
-        "It\u00e9rateur non pris en charge pour l''axe ''{0}''."},
+        "It\u00e9rateur de l''axe ''{0}'' non pris en charge."},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -163,7 +165,7 @@ public class ErrorMessages_fr extends ListResourceBundle {
          * support.
          */
         {BasisLibrary.TYPED_AXIS_SUPPORT_ERR,
-        "It\u00e9rateur non pris en charge pour l''axe indiqu\u00e9 ''{0}''."},
+        "It\u00e9rateur de l''axe indiqu\u00e9 ''{0}'' non pris en charge."},
 
         /*
          * Note to translators:  This message is reported if the stylesheet
@@ -206,7 +208,7 @@ public class ErrorMessages_fr extends ListResourceBundle {
          * DTD.
          */
         {BasisLibrary.PARSER_DTD_SUPPORT_ERR,
-        "L''analyseur SAX que vous utilisez ne traite pas les \u00e9v\u00e9nements de d\u00e9claration DTD."},
+        "L'analyseur SAX que vous utilisez ne traite pas les \u00e9v\u00e9nements de d\u00e9claration DTD."},
 
         /*
          * Note to translators:  The following message indicates that the XML
@@ -222,7 +224,59 @@ public class ErrorMessages_fr extends ListResourceBundle {
          * error.
          */
         {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
-        "R\u00e9solution impossible de la r\u00e9f\u00e9rence \u00e0 l''URI ''{0}''."}
+        "R\u00e9solution impossible de la r\u00e9f\u00e9rence de l''URI ''{0}''."},
+
+         /*
+         * Note to translators:  The stylesheet contained an element that was
+         * not recognized as part of the XSL syntax.  The substitution text
+         * gives the element name.
+         */
+        {BasisLibrary.UNSUPPORTED_XSL_ERR,
+        "El\u00e9ment XSL non pris en charge ''{0}''"},
+
+        /*
+         * Note to translators:  The stylesheet referred to an extension to the
+         * XSL syntax and indicated that it was defined by XSLTC, but XSLTC does
+         * not recognize the particular extension named.  The substitution text
+         * gives the extension name.
+         */
+        {BasisLibrary.UNSUPPORTED_EXT_ERR,
+        "Extension XSLTC non reconnue ''{0}''"},
+
+
+        /*
+         * Note to translators:  This error message is produced if the translet
+         * class was compiled using a newer version of XSLTC and deployed for
+         * execution with an older version of XSLTC.  The substitution text is
+         * the name of the translet class.
+         */
+        {BasisLibrary.UNKNOWN_TRANSLET_VERSION_ERR,
+        "La classe translet indiqu\u00e9e, ''{0}'', a \u00e9t\u00e9 cr\u00e9\u00e9e \u00e0 l''aide d''une version de XSLTC plus r\u00e9cente que la version de l''ex\u00e9cutable XSLTC utilis\u00e9e. Vous devez compiler \u00e0 nouveau la feuille de style ou utiliser une version plus r\u00e9cente pour ex\u00e9cuter la classe translet."},
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "QName" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_QNAME_ERR,
+        "Un attribut dont la valeur doit \u00eatre un QName poss\u00e8de la valeur ''{0}''"},
+
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "NCName" had a value that was incorrect.
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_NCNAME_ERR,
+        "Un attribut dont la valeur doit \u00eatre un NCName poss\u00e8de la valeur ''{0}''"},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_FUNCTION_ERR,
+        "L''utilisation de la fonction d''extension ''{0}'' n''est pas admise lorsque la fonction de traitement s\u00e9curis\u00e9e a la valeur true."},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_ELEMENT_ERR,
+        "L''utilisation de l''\u00e9l\u00e9ment d''extension ''{0}'' n''est pas admise lorsque la fonction de traitement s\u00e9curis\u00e9e a la valeur true."},
     };
     }
 

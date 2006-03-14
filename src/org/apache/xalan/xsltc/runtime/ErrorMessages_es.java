@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,12 @@ public class ErrorMessages_es extends ListResourceBundle {
  *      grammar for an XML file, the names and types of elements, attributes,
  *      etc.
  *
+ *   9) Translet is an invented term that refers to the class file that contains
+ *      the compiled form of a stylesheet.
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -129,7 +131,7 @@ public class ErrorMessages_es extends ListResourceBundle {
          * permitted for a call to this function.
          */
         {BasisLibrary.INVALID_ARGUMENT_ERR,
-        "Tipo de argumento ''{0}'' no v\u00e1lido en llamada a ''{1}''"},
+        "Tipo de argumento ''{0}'' no v\u00e1lido en la llamada a ''{1}''"},
 
         /*
          * Note to translators:  There is way of specifying a format for a
@@ -137,7 +139,7 @@ public class ErrorMessages_es extends ListResourceBundle {
          * particular value using the specified pattern.
          */
         {BasisLibrary.FORMAT_NUMBER_ERR,
-        "Intento de formatear el n\u00famero ''{0}'' utilizando el patr\u00f3n ''{1}''."},
+        "Se intenta dar formato al n\u00famero ''{0}'' con el patr\u00f3n ''{1}''."},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -222,7 +224,59 @@ public class ErrorMessages_es extends ListResourceBundle {
          * error.
          */
         {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
-        "No se ha podido resolver la referencia de URI ''{0}''."}
+        "No se ha podido resolver la referencia de URI ''{0}''."},
+
+         /*
+         * Note to translators:  The stylesheet contained an element that was
+         * not recognized as part of the XSL syntax.  The substitution text
+         * gives the element name.
+         */
+        {BasisLibrary.UNSUPPORTED_XSL_ERR,
+        "Elemento XSL ''{0}'' no soportado."},
+
+        /*
+         * Note to translators:  The stylesheet referred to an extension to the
+         * XSL syntax and indicated that it was defined by XSLTC, but XSLTC does
+         * not recognize the particular extension named.  The substitution text
+         * gives the extension name.
+         */
+        {BasisLibrary.UNSUPPORTED_EXT_ERR,
+        "Extensi\u00f3n XSLTC ''{0}'' no reconocida."},
+
+
+        /*
+         * Note to translators:  This error message is produced if the translet
+         * class was compiled using a newer version of XSLTC and deployed for
+         * execution with an older version of XSLTC.  The substitution text is
+         * the name of the translet class.
+         */
+        {BasisLibrary.UNKNOWN_TRANSLET_VERSION_ERR,
+        "El translet especificado, ''{0}'', se ha creado utilizando una versi\u00f3n de XSLTC m\u00e1s reciente que la versi\u00f3n de ejecuci\u00f3n de XSLTC que est\u00e1 en uso. Debe recompilar la hoja de estilos o utilizar una versi\u00f3n m\u00e1s reciente de XSLTC para ejecutar este translet."},
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "QName" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_QNAME_ERR,
+        "Un atributo cuyo valor debe ser un QName tiene el valor ''{0}''"},
+
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "NCName" had a value that was incorrect.
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_NCNAME_ERR,
+        "Un atributo cuyo valor debe ser un NCName tiene el valor ''{0}''"},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_FUNCTION_ERR,
+        "No se permite el uso de la funci\u00f3n de extensi\u00f3n ''{0}'' cuando la caracter\u00edstica de proceso seguro est\u00e1 establecida en true."},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_ELEMENT_ERR,
+        "No se permite el uso del elemento de extensi\u00f3n ''{0}'' cuando la caracter\u00edstica de proceso seguro est\u00e1 establecida en true."},
     };
     }
 

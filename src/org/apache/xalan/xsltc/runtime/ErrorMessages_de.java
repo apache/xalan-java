@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,12 @@ public class ErrorMessages_de extends ListResourceBundle {
  *      grammar for an XML file, the names and types of elements, attributes,
  *      etc.
  *
+ *   9) Translet is an invented term that refers to the class file that contains
+ *      the compiled form of a stylesheet.
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -104,7 +106,7 @@ public class ErrorMessages_de extends ListResourceBundle {
          * {0}.
          */
         {BasisLibrary.DATA_CONVERSION_ERR,
-        "Ung\u00fcltige Konvertierung von ''{0}'' nach ''{1}''."},
+        "Ung\u00fcltige Konvertierung von ''{0}'' in ''{1}''."},
 
         /*
          * Note to translators:  This message is displayed if the function named
@@ -137,7 +139,7 @@ public class ErrorMessages_de extends ListResourceBundle {
          * particular value using the specified pattern.
          */
         {BasisLibrary.FORMAT_NUMBER_ERR,
-        "Es wird versucht, die Zahl ''{0}'' mit Muster ''{1}'' zu formatieren."},
+        "Es wird versucht, Nummer ''{0}'' mit Muster ''{1}'' zu formatieren."},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -182,7 +184,7 @@ public class ErrorMessages_de extends ListResourceBundle {
          * namespace declaration.
          */
         {BasisLibrary.STRAY_NAMESPACE_ERR,
-        "Namensbereichsdeklaration ''{0}''=''{1}'' befindet sich nicht in einem Element."},
+        "Namensbereichdeklaration ''{0}''=''{1}'' befindet sich nicht in einem Element."},
 
         /*
          * Note to translators:  The stylesheet contained a reference to a
@@ -222,7 +224,59 @@ public class ErrorMessages_de extends ListResourceBundle {
          * error.
          */
         {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
-        "Der URI-Verweis ''{0}'' konnte nicht aufgel\u00f6st werden."}
+        "Der URI-Verweis ''{0}'' konnte nicht aufgel\u00f6st werden."},
+
+         /*
+         * Note to translators:  The stylesheet contained an element that was
+         * not recognized as part of the XSL syntax.  The substitution text
+         * gives the element name.
+         */
+        {BasisLibrary.UNSUPPORTED_XSL_ERR,
+        "Nicht unterst\u00fctztes XSL-Element ''{0}''"},
+
+        /*
+         * Note to translators:  The stylesheet referred to an extension to the
+         * XSL syntax and indicated that it was defined by XSLTC, but XSLTC does
+         * not recognize the particular extension named.  The substitution text
+         * gives the extension name.
+         */
+        {BasisLibrary.UNSUPPORTED_EXT_ERR,
+        "Nicht erkannte XSLTC-Erweiterung ''{0}''"},
+
+
+        /*
+         * Note to translators:  This error message is produced if the translet
+         * class was compiled using a newer version of XSLTC and deployed for
+         * execution with an older version of XSLTC.  The substitution text is
+         * the name of the translet class.
+         */
+        {BasisLibrary.UNKNOWN_TRANSLET_VERSION_ERR,
+        "Das angegebene Translet ''{0}'' wurde mit einer neueren XSLTC-Version erstellt als die verwendete Version der XSLTC-Laufzeitsoftware. Sie m\u00fcssen die Formatvorlage erneut kompilieren oder eine neuere XSLTC-Version zum Ausf\u00fchren dieses Translets verwenden."},
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "QName" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_QNAME_ERR,
+        "Ein Attribut, dessen Wert ein QName sein muss, hatte den Wert ''{0}''."},
+
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "NCName" had a value that was incorrect.
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_NCNAME_ERR,
+        "Ein Attribut, dessen Wert ein NCName sein muss, hatte den Wert ''{0}''."},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_FUNCTION_ERR,
+        "Die Verwendung der Erweiterungsfunktion ''{0}'' ist nicht zul\u00e4ssig, wenn f\u00fcr die Funktion zur sicheren Verarbeitung der Wert ''true'' festgelegt wurde."},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_ELEMENT_ERR,
+        "Die Verwendung des Erweiterungselements ''{0}'' ist nicht zul\u00e4ssig, wenn f\u00fcr die Funktion zur sicheren Verarbeitung der Wert ''true'' festgelegt wurde."},
     };
     }
 

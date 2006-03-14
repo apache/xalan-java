@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,12 @@ public class ErrorMessages_pl extends ListResourceBundle {
  *      grammar for an XML file, the names and types of elements, attributes,
  *      etc.
  *
+ *   9) Translet is an invented term that refers to the class file that contains
+ *      the compiled form of a stylesheet.
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -88,14 +90,14 @@ public class ErrorMessages_pl extends ListResourceBundle {
          * is a class name.  Used for internal errors in the processor.
          */
         {BasisLibrary.RUN_TIME_INTERNAL_ERR,
-        "Wewn\u0119trzny b\u0142\u0105d czasu wykonania w ''{0}''"},
+        "B\u0142\u0105d wewn\u0119trzny czasu wykonywania w klasie ''{0}''"},
 
         /*
          * Note to translators:  <xsl:copy> is a keyword that should not be
          * translated.
          */
         {BasisLibrary.RUN_TIME_COPY_ERR,
-        "B\u0142\u0105d czasu wykonania podczas wykonywania <xsl:copy>."},
+        "B\u0142\u0105d czasu wykonywania podczas wykonywania <xsl:copy>."},
 
         /*
          * Note to translators:  The substitution text refers to data types.
@@ -104,7 +106,7 @@ public class ErrorMessages_pl extends ListResourceBundle {
          * {0}.
          */
         {BasisLibrary.DATA_CONVERSION_ERR,
-        "Niepoprawna konwersja z ''{0}'' do ''{1}''."},
+        "Niepoprawna konwersja z ''{0}'' na ''{1}''."},
 
         /*
          * Note to translators:  This message is displayed if the function named
@@ -112,7 +114,7 @@ public class ErrorMessages_pl extends ListResourceBundle {
          * is the acronym naming the product.
          */
         {BasisLibrary.EXTERNAL_FUNC_ERR,
-        "Funkcja zewn\u0119trzna ''{0}'' nieobs\u0142ugiwana przez XSLTC."},
+        "Funkcja zewn\u0119trzna ''{0}'' jest nieobs\u0142ugiwana przez XSLTC."},
 
         /*
          * Note to translators:  This message is displayed if two values are
@@ -129,7 +131,7 @@ public class ErrorMessages_pl extends ListResourceBundle {
          * permitted for a call to this function.
          */
         {BasisLibrary.INVALID_ARGUMENT_ERR,
-        "Niepoprawny typ argumentu ''{0}'' w wywo\u0142aniu ''{1}''"},
+        "Niepoprawny typ argumentu ''{0}'' w wywo\u0142aniu funkcji ''{1}''"},
 
         /*
          * Note to translators:  There is way of specifying a format for a
@@ -154,7 +156,7 @@ public class ErrorMessages_pl extends ListResourceBundle {
          * support.
          */
         {BasisLibrary.AXIS_SUPPORT_ERR,
-        "Iterator osi ''{0}'' nie jest obs\u0142ugiwany."},
+        "Iterator dla osi ''{0}'' jest nieobs\u0142ugiwany."},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -163,7 +165,7 @@ public class ErrorMessages_pl extends ListResourceBundle {
          * support.
          */
         {BasisLibrary.TYPED_AXIS_SUPPORT_ERR,
-        "Iterator osi ''{0}'' okre\u015blonego typu nie jest obs\u0142ugiwany."},
+        "Iterator dla osi ''{0}'' okre\u015blonego typu jest nieobs\u0142ugiwany."},
 
         /*
          * Note to translators:  This message is reported if the stylesheet
@@ -172,7 +174,7 @@ public class ErrorMessages_pl extends ListResourceBundle {
          * specifies the name of the attribute.
          */
         {BasisLibrary.STRAY_ATTRIBUTE_ERR,
-        "Atrybut ''{0}'' poza elementem."},
+        "Atrybut ''{0}'' znajduje si\u0119 poza elementem."},
 
         /*
          * Note to translators:  As with the preceding message, a namespace
@@ -182,7 +184,7 @@ public class ErrorMessages_pl extends ListResourceBundle {
          * namespace declaration.
          */
         {BasisLibrary.STRAY_NAMESPACE_ERR,
-        "Deklaracja przestrzeni nazw ''{0}''=''{1}'' poza elementem."},
+        "Deklaracja przestrzeni nazw ''{0}''=''{1}'' znajduje si\u0119 poza elementem."},
 
         /*
          * Note to translators:  The stylesheet contained a reference to a
@@ -222,7 +224,59 @@ public class ErrorMessages_pl extends ListResourceBundle {
          * error.
          */
         {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
-        "Nie mo\u017cna przet\u0142umaczy\u0107 odniesienia do URI ''{0}''."}
+        "Nie mo\u017cna rozstrzygn\u0105\u0107 odwo\u0142ania do identyfikatora URI ''{0}''."},
+
+         /*
+         * Note to translators:  The stylesheet contained an element that was
+         * not recognized as part of the XSL syntax.  The substitution text
+         * gives the element name.
+         */
+        {BasisLibrary.UNSUPPORTED_XSL_ERR,
+        "Nieobs\u0142ugiwany element XSL ''{0}''"},
+
+        /*
+         * Note to translators:  The stylesheet referred to an extension to the
+         * XSL syntax and indicated that it was defined by XSLTC, but XSLTC does
+         * not recognize the particular extension named.  The substitution text
+         * gives the extension name.
+         */
+        {BasisLibrary.UNSUPPORTED_EXT_ERR,
+        "Nierozpoznane rozszerzenie XSLTC ''{0}''."},
+
+
+        /*
+         * Note to translators:  This error message is produced if the translet
+         * class was compiled using a newer version of XSLTC and deployed for
+         * execution with an older version of XSLTC.  The substitution text is
+         * the name of the translet class.
+         */
+        {BasisLibrary.UNKNOWN_TRANSLET_VERSION_ERR,
+        "Podany translet ''{0}'' zosta\u0142 utworzony za pomoc\u0105 wersji XSLTC, kt\u00f3ra jest nowsza od u\u017cywanego obecnie modu\u0142u wykonawczego XSLTC.  Trzeba zrekompilowa\u0107 arkusz styl\u00f3w lub uruchomi\u0107 ten translet za pomoc\u0105 nowszej wersji XSLTC."},
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "QName" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_QNAME_ERR,
+        "Atrybut, kt\u00f3rego warto\u015bci\u0105 musi by\u0107 nazwa QName, mia\u0142 warto\u015b\u0107 ''{0}''"},
+
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "NCName" had a value that was incorrect.
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_NCNAME_ERR,
+        "Atrybut, kt\u00f3rego warto\u015bci\u0105 musi by\u0107 nazwa NCName, mia\u0142 warto\u015b\u0107 ''{0}''"},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_FUNCTION_ERR,
+        "U\u017cycie funkcji rozszerzenia ''{0}'' jest niedozwolone, gdy opcja przetwarzania bezpiecznego jest ustawiona na warto\u015b\u0107 true."},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_ELEMENT_ERR,
+        "U\u017cycie elementu rozszerzenia ''{0}'' jest niedozwolone, gdy opcja przetwarzania bezpiecznego jest ustawiona na warto\u015b\u0107 true."},
     };
     }
 

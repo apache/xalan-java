@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,12 @@ public class ErrorMessages_zh_TW extends ListResourceBundle {
  *      grammar for an XML file, the names and types of elements, attributes,
  *      etc.
  *
+ *   9) Translet is an invented term that refers to the class file that contains
+ *      the compiled form of a stylesheet.
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -104,7 +106,7 @@ public class ErrorMessages_zh_TW extends ListResourceBundle {
          * {0}.
          */
         {BasisLibrary.DATA_CONVERSION_ERR,
-        "\u7121\u6cd5\u5c07 ''{0}'' \u8f49\u63db\u70ba ''{1}''\u3002"},
+        "\u5f9e ''{0}'' \u6210\u70ba ''{1}'' \u7684\u8f49\u63db\u7121\u6548\u3002"},
 
         /*
          * Note to translators:  This message is displayed if the function named
@@ -129,7 +131,7 @@ public class ErrorMessages_zh_TW extends ListResourceBundle {
          * permitted for a call to this function.
          */
         {BasisLibrary.INVALID_ARGUMENT_ERR,
-        "\u5728\u547c\u53eb ''{1}'' \u4e2d\u7684\u5f15\u6578\u985e\u578b ''{0}'' \u7121\u6548"},
+        "\u547c\u53eb ''{1}'' \u6240\u4f7f\u7528\u7684\u5f15\u6578\u985e\u578b ''{0}'' \u7121\u6548\u3002"},
 
         /*
          * Note to translators:  There is way of specifying a format for a
@@ -154,7 +156,7 @@ public class ErrorMessages_zh_TW extends ListResourceBundle {
          * support.
          */
         {BasisLibrary.AXIS_SUPPORT_ERR,
-        "\u8ef8 ''{0}'' \u7684\u91cd\u8907\u9805\u76ee\u672a\u53d7\u652f\u63f4\u3002"},
+        "\u4e0d\u652f\u63f4\u8ef8 ''{0}'' \u7684\u91cd\u8907\u9805\u76ee\u3002"},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -163,7 +165,7 @@ public class ErrorMessages_zh_TW extends ListResourceBundle {
          * support.
          */
         {BasisLibrary.TYPED_AXIS_SUPPORT_ERR,
-        "\u8f38\u5165\u8ef8 ''{0}'' \u7684\u91cd\u8907\u9805\u76ee\u672a\u53d7\u652f\u63f4\u3002"},
+        "\u4e0d\u652f\u63f4\u6240\u9375\u5165\u8ef8 ''{0}'' \u7684\u91cd\u8907\u9805\u76ee\u3002"},
 
         /*
          * Note to translators:  This message is reported if the stylesheet
@@ -222,7 +224,59 @@ public class ErrorMessages_zh_TW extends ListResourceBundle {
          * error.
          */
         {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
-        "\u7121\u6cd5\u89e3\u6790 URI \u53c3\u7167 ''{0}''\u3002"}
+        "\u7121\u6cd5\u89e3\u6790 URI \u53c3\u7167 ''{0}''\u3002"},
+
+         /*
+         * Note to translators:  The stylesheet contained an element that was
+         * not recognized as part of the XSL syntax.  The substitution text
+         * gives the element name.
+         */
+        {BasisLibrary.UNSUPPORTED_XSL_ERR,
+        "XSL \u5143\u7d20 ''{0}'' \u4e0d\u53d7\u652f\u63f4"},
+
+        /*
+         * Note to translators:  The stylesheet referred to an extension to the
+         * XSL syntax and indicated that it was defined by XSLTC, but XSLTC does
+         * not recognize the particular extension named.  The substitution text
+         * gives the extension name.
+         */
+        {BasisLibrary.UNSUPPORTED_EXT_ERR,
+        "XSLTC \u5ef6\u4f38\u9805\u76ee ''{0}'' \u7121\u6cd5\u8fa8\u8b58"},
+
+
+        /*
+         * Note to translators:  This error message is produced if the translet
+         * class was compiled using a newer version of XSLTC and deployed for
+         * execution with an older version of XSLTC.  The substitution text is
+         * the name of the translet class.
+         */
+        {BasisLibrary.UNKNOWN_TRANSLET_VERSION_ERR,
+        "\u6307\u5b9a\u7684 translet ''{0}'' \u662f\u4ee5\u6bd4\u4f7f\u7528\u4e2d XSLTC \u57f7\u884c\u6642\u671f\u7248\u672c\u66f4\u65b0\u7684 XSLTC \u7248\u672c\u6240\u5efa\u7acb\u3002\u60a8\u5fc5\u9808\u91cd\u65b0\u7de8\u8b6f\u6a23\u5f0f\u8868\u6216\u4f7f\u7528\u66f4\u65b0\u7684 XSLTC \u7248\u672c\u4f86\u57f7\u884c\u6b64 translet\u3002"},
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "QName" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_QNAME_ERR,
+        "\u4e00\u500b\u503c\u5fc5\u9808\u662f QName \u7684\u5c6c\u6027\uff0c\u5177\u6709\u503c ''{0}''"},
+
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "NCName" had a value that was incorrect.
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_NCNAME_ERR,
+        "\u4e00\u500b\u503c\u5fc5\u9808\u662f NCName \u7684\u5c6c\u6027\uff0c\u5177\u6709\u503c ''{0}''"},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_FUNCTION_ERR,
+        "\u7576\u5b89\u5168\u8655\u7406\u7279\u6027\u8a2d\u70ba true \u6642\uff0c\u4e0d\u63a5\u53d7\u4f7f\u7528\u5ef6\u4f38\u51fd\u6578 ''{0}''\u3002"},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_ELEMENT_ERR,
+        "\u7576\u5b89\u5168\u8655\u7406\u7279\u6027\u8a2d\u70ba true \u6642\uff0c\u4e0d\u63a5\u53d7\u4f7f\u7528\u5ef6\u4f38\u5143\u7d20 ''{0}''\u3002"},
     };
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,12 @@ public class ErrorMessages_ca extends ListResourceBundle {
  *      grammar for an XML file, the names and types of elements, attributes,
  *      etc.
  *
+ *   9) Translet is an invented term that refers to the class file that contains
+ *      the compiled form of a stylesheet.
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -104,7 +106,7 @@ public class ErrorMessages_ca extends ListResourceBundle {
          * {0}.
          */
         {BasisLibrary.DATA_CONVERSION_ERR,
-        "La conversi\u00f3 de ''{0}'' a ''{1}'' no \u00e9s v\u00e0lida."},
+        "Conversi\u00f3 no v\u00e0lida de ''{0}'' a ''{1}''."},
 
         /*
          * Note to translators:  This message is displayed if the function named
@@ -112,7 +114,7 @@ public class ErrorMessages_ca extends ListResourceBundle {
          * is the acronym naming the product.
          */
         {BasisLibrary.EXTERNAL_FUNC_ERR,
-        "XSLTC no d\u00f3na suport a la funci\u00f3 externa ''{0}''."},
+        "XSLTC no d\u00f3na suport a la funci\u00f3 externa ''{0}''. "},
 
         /*
          * Note to translators:  This message is displayed if two values are
@@ -129,7 +131,7 @@ public class ErrorMessages_ca extends ListResourceBundle {
          * permitted for a call to this function.
          */
         {BasisLibrary.INVALID_ARGUMENT_ERR,
-        "La crida a ''{1}'' cont\u00e9 un tipus d''argument ''{0}'' no v\u00e0lid."},
+        "El tipus d''argument ''{0}'' a la crida de ''{1}'' no \u00e9s v\u00e0lid "},
 
         /*
          * Note to translators:  There is way of specifying a format for a
@@ -137,7 +139,7 @@ public class ErrorMessages_ca extends ListResourceBundle {
          * particular value using the specified pattern.
          */
         {BasisLibrary.FORMAT_NUMBER_ERR,
-        "S''ha intentat donar format al n\u00famero ''{0}'' mitjan\u00e7ant el patr\u00f3 ''{1}''."},
+        "S''ha intentat formatar el n\u00famero ''{0}'' fent servir el patr\u00f3 ''{1}''."},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -154,7 +156,7 @@ public class ErrorMessages_ca extends ListResourceBundle {
          * support.
          */
         {BasisLibrary.AXIS_SUPPORT_ERR,
-        "L''iterador de l''eix ''{0}'' no t\u00e9 suport."},
+        "No est\u00e0 suportat l''iterador de l''eix ''{0}''. "},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -163,7 +165,7 @@ public class ErrorMessages_ca extends ListResourceBundle {
          * support.
          */
         {BasisLibrary.TYPED_AXIS_SUPPORT_ERR,
-        "L''iterador de l''eix escrit ''{0}'' no t\u00e9 suport."},
+        "No est\u00e0 suportat l''iterador de l''eix escrit ''{0}''. "},
 
         /*
          * Note to translators:  This message is reported if the stylesheet
@@ -172,7 +174,7 @@ public class ErrorMessages_ca extends ListResourceBundle {
          * specifies the name of the attribute.
          */
         {BasisLibrary.STRAY_ATTRIBUTE_ERR,
-        "L''atribut ''{0}'' es troba fora de l''element."},
+        "L''atribut ''{0}'' es troba fora de l''element. "},
 
         /*
          * Note to translators:  As with the preceding message, a namespace
@@ -182,7 +184,7 @@ public class ErrorMessages_ca extends ListResourceBundle {
          * namespace declaration.
          */
         {BasisLibrary.STRAY_NAMESPACE_ERR,
-        "La declaraci\u00f3 d''espai de noms ''{0}''=''{1}'' es troba fora de l''element."},
+        "La declaraci\u00f3 de l''espai de noms ''{0}''=''{1}'' es troba fora de l''element. "},
 
         /*
          * Note to translators:  The stylesheet contained a reference to a
@@ -190,7 +192,7 @@ public class ErrorMessages_ca extends ListResourceBundle {
          * text is the name of the prefix.
          */
         {BasisLibrary.NAMESPACE_PREFIX_ERR,
-        "L''espai de noms del prefix ''{0}'' no s''ha declarat."},
+        "L''espai de noms del prefix ''{0}'' no s''ha declarat. "},
 
         /*
          * Note to translators:  The following represents an internal error.
@@ -222,7 +224,59 @@ public class ErrorMessages_ca extends ListResourceBundle {
          * error.
          */
         {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
-        "No s''ha pogut resoldre la refer\u00e8ncia d''URI ''{0}''."}
+        "No s''ha pogut resoldre la refer\u00e8ncia d''URI ''{0}''."},
+
+         /*
+         * Note to translators:  The stylesheet contained an element that was
+         * not recognized as part of the XSL syntax.  The substitution text
+         * gives the element name.
+         */
+        {BasisLibrary.UNSUPPORTED_XSL_ERR,
+        "L''element XSL ''{0}'' no t\u00e9 suport "},
+
+        /*
+         * Note to translators:  The stylesheet referred to an extension to the
+         * XSL syntax and indicated that it was defined by XSLTC, but XSLTC does
+         * not recognize the particular extension named.  The substitution text
+         * gives the extension name.
+         */
+        {BasisLibrary.UNSUPPORTED_EXT_ERR,
+        "No es reconeix l''extensi\u00f3 XSLTC ''{0}''"},
+
+
+        /*
+         * Note to translators:  This error message is produced if the translet
+         * class was compiled using a newer version of XSLTC and deployed for
+         * execution with an older version of XSLTC.  The substitution text is
+         * the name of the translet class.
+         */
+        {BasisLibrary.UNKNOWN_TRANSLET_VERSION_ERR,
+        "La classe translet especificada, ''{0}'', es va crear fent servir una versi\u00f3 d''XSLTC m\u00e9s recent que la versi\u00f3 del temps d''execuci\u00f3 d''XSLTC que ja s''est\u00e0 utilitzant. Heu de recompilar el full d''estil o fer servir una versi\u00f3 m\u00e9s recent d''XSLTC per executar aquesta classe translet."},
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "QName" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_QNAME_ERR,
+        "Un atribut, que ha de tenir el valor QName, tenia el valor ''{0}''"},
+
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "NCName" had a value that was incorrect.
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_NCNAME_ERR,
+        "Un atribut, que ha de tenir el valor NCName, tenia el valor ''{0}''"},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_FUNCTION_ERR,
+        "L''\u00fas de la funci\u00f3 d''extensi\u00f3 ''{0}'' no est\u00e0 perm\u00e8s, si la caracter\u00edstica de proc\u00e9s segur s''ha establert en true."},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_ELEMENT_ERR,
+        "L''\u00fas de l''element d''extensi\u00f3 ''{0}'' no est\u00e0 perm\u00e8s, si la caracter\u00edstica de proc\u00e9s segur s''ha establert en true."},
     };
     }
 

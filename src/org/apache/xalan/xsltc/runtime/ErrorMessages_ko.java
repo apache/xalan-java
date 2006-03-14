@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,12 @@ public class ErrorMessages_ko extends ListResourceBundle {
  *      grammar for an XML file, the names and types of elements, attributes,
  *      etc.
  *
+ *   9) Translet is an invented term that refers to the class file that contains
+ *      the compiled form of a stylesheet.
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -88,7 +90,7 @@ public class ErrorMessages_ko extends ListResourceBundle {
          * is a class name.  Used for internal errors in the processor.
          */
         {BasisLibrary.RUN_TIME_INTERNAL_ERR,
-        "''{0}''\uc758 \ub7f0\ud0c0\uc784 \ub0b4\ubd80 \uc624\ub958"},
+        "''{0}''\uc5d0 \ub7f0\ud0c0\uc784 \ub0b4\ubd80 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4."},
 
         /*
          * Note to translators:  <xsl:copy> is a keyword that should not be
@@ -104,7 +106,7 @@ public class ErrorMessages_ko extends ListResourceBundle {
          * {0}.
          */
         {BasisLibrary.DATA_CONVERSION_ERR,
-        "''{0}''\uc5d0\uc11c ''{1}''\uc758 \ubcc0\ud658\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."},
+        "''{0}''\uc5d0\uc11c ''{1}''(\uc73c)\ub85c\uc758 \ubcc0\ud658\uc740 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."},
 
         /*
          * Note to translators:  This message is displayed if the function named
@@ -129,7 +131,7 @@ public class ErrorMessages_ko extends ListResourceBundle {
          * permitted for a call to this function.
          */
         {BasisLibrary.INVALID_ARGUMENT_ERR,
-        "''{1}''\uc5d0 \ub300\ud55c \ud638\ucd9c\uc5d0\uc11c \uc798\ubabb\ub41c \uc778\uc218 \uc720\ud615 ''{0}''"},
+        "''{1}''\uc5d0 \ub300\ud55c \ud638\ucd9c\uc5d0\uc11c ''{0}'' \uc778\uc218 \uc720\ud615\uc774 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."},
 
         /*
          * Note to translators:  There is way of specifying a format for a
@@ -137,7 +139,7 @@ public class ErrorMessages_ko extends ListResourceBundle {
          * particular value using the specified pattern.
          */
         {BasisLibrary.FORMAT_NUMBER_ERR,
-        "''{1}'' \ud328\ud134\uc744 \uc0ac\uc6a9\ud558\uc5ec ''{0}'' \uc22b\uc790 \ud3ec\ub9f7\uc744 \uc2dc\ub3c4 \uc911\uc785\ub2c8\ub2e4."},
+        "''{1}'' \ud328\ud134\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc22b\uc790 ''{0}''\uc744(\ub97c) \ud3ec\ub9f7\ud558\ub824\uace0 \uc2dc\ub3c4\ud588\uc2b5\ub2c8\ub2e4."},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -163,7 +165,7 @@ public class ErrorMessages_ko extends ListResourceBundle {
          * support.
          */
         {BasisLibrary.TYPED_AXIS_SUPPORT_ERR,
-        "''{0}'' \uc720\ud615\ud654\ub41c \ucd95\uc5d0 \ub300\ud55c \ubc18\ubcf5\uae30\uac00 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."},
+        "\uc720\ud615\uc774 \uc9c0\uc815\ub41c \ucd95 ''{0}''\uc5d0 \ub300\ud574 \ubc18\ubcf5\uae30\uac00 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."},
 
         /*
          * Note to translators:  This message is reported if the stylesheet
@@ -197,7 +199,7 @@ public class ErrorMessages_ko extends ListResourceBundle {
          * DOMAdapter is a Java class in XSLTC.
          */
         {BasisLibrary.DOM_ADAPTER_INIT_ERR,
-        "Source DOM\uc758 \uc798\ubabb\ub41c \uc720\ud615\uc744 \uc0ac\uc6a9\ud558\uc5ec DOMAdapter\uac00 \uc791\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4."},
+        "\uc18c\uc2a4 DOM\uc758 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc740 \uc720\ud615\uc744 \uc0ac\uc6a9\ud558\uc5ec DOMAdapter\uac00 \uc791\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4."},
 
         /*
          * Note to translators:  The following message indicates that the XML
@@ -222,7 +224,59 @@ public class ErrorMessages_ko extends ListResourceBundle {
          * error.
          */
         {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
-        "''{0}'' URI \ucc38\uc870\ub97c \ubd84\uc11d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."}
+        "''{0}'' URI \ucc38\uc870\ub97c \ubd84\uc11d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."},
+
+         /*
+         * Note to translators:  The stylesheet contained an element that was
+         * not recognized as part of the XSL syntax.  The substitution text
+         * gives the element name.
+         */
+        {BasisLibrary.UNSUPPORTED_XSL_ERR,
+        "''{0}'' XSL \uc694\uc18c\uac00 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4."},
+
+        /*
+         * Note to translators:  The stylesheet referred to an extension to the
+         * XSL syntax and indicated that it was defined by XSLTC, but XSLTC does
+         * not recognize the particular extension named.  The substitution text
+         * gives the extension name.
+         */
+        {BasisLibrary.UNSUPPORTED_EXT_ERR,
+        "''{0}'' XSLTC \ud655\uc7a5\uc790\ub97c \uc778\uc2dd\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."},
+
+
+        /*
+         * Note to translators:  This error message is produced if the translet
+         * class was compiled using a newer version of XSLTC and deployed for
+         * execution with an older version of XSLTC.  The substitution text is
+         * the name of the translet class.
+         */
+        {BasisLibrary.UNKNOWN_TRANSLET_VERSION_ERR,
+        "\uc0ac\uc6a9 \uc911\uc778 XSLTC \ub7f0\ud0c0\uc784 \ubc84\uc804\ubcf4\ub2e4 \ub354 \ucd5c\uc2e0\uc758 XSLTC \ubc84\uc804\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc9c0\uc815\ub41c ''{0}'' Translet\uc744 \uc791\uc131\ud588\uc2b5\ub2c8\ub2e4. \uc774 Translet\uc744 \uc2e4\ud589\ud558\ub824\uba74 \uc2a4\ud0c0\uc77c\uc2dc\ud2b8\ub97c \ub2e4\uc2dc \ucef4\ud30c\uc77c\ud558\uac70\ub098 \ub354 \ucd5c\uc2e0\uc758 XSLTC \ubc84\uc804\uc744 \uc0ac\uc6a9\ud574\uc57c \ud569\ub2c8\ub2e4. "},
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "QName" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_QNAME_ERR,
+        "\uac12\uc774 QName\uc774\uc5b4\uc57c \ud558\ub294 \uc18d\uc131\uc5d0 ''{0}'' \uac12\uc774 \uc788\uc2b5\ub2c8\ub2e4."},
+
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "NCName" had a value that was incorrect.
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_NCNAME_ERR,
+        "\uac12\uc774 NCName\uc774\uc5b4\uc57c \ud558\ub294 \uc18d\uc131\uc5d0 ''{0}'' \uac12\uc774 \uc788\uc2b5\ub2c8\ub2e4."},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_FUNCTION_ERR,
+        "\ubcf4\uc548 \ucc98\ub9ac \uae30\ub2a5\uc774 true\ub85c \uc124\uc815\ub41c \uacbd\uc6b0\uc5d0\ub294 ''{0}'' \ud655\uc7a5 \ud568\uc218\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_ELEMENT_ERR,
+        "\ubcf4\uc548 \ucc98\ub9ac \uae30\ub2a5\uc774 true\ub85c \uc124\uc815\ub41c \uacbd\uc6b0\uc5d0\ub294 ''{0}'' \ud655\uc7a5 \uc694\uc18c\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4."},
     };
     }
 

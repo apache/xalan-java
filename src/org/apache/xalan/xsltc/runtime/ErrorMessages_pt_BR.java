@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,12 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
  *      grammar for an XML file, the names and types of elements, attributes,
  *      etc.
  *
+ *   9) Translet is an invented term that refers to the class file that contains
+ *      the compiled form of a stylesheet.
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -145,7 +147,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * iterator.  (See definition of iterator above.)
          */
         {BasisLibrary.ITERATOR_CLONE_ERR,
-        "Imposs\u00edvel clonar iterador ''{0}''."},
+        "N\u00e3o \u00e9 poss\u00edvel clonar o iterador ''{0}''."},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -154,7 +156,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * support.
          */
         {BasisLibrary.AXIS_SUPPORT_ERR,
-        "Iterador para eixo ''{0}'' n\u00e3o suportado. "},
+        "O iterador do eixo ''{0}'' n\u00e3o \u00e9 suportado. "},
 
         /*
          * Note to translators:  The following represents an internal error
@@ -163,7 +165,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * support.
          */
         {BasisLibrary.TYPED_AXIS_SUPPORT_ERR,
-        "Iterador para eixo digitado ''{0}'' n\u00e3o suportado. "},
+        "O iterador do eixo digitado ''{0}'' n\u00e3o \u00e9 suportado. "},
 
         /*
          * Note to translators:  This message is reported if the stylesheet
@@ -182,7 +184,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * namespace declaration.
          */
         {BasisLibrary.STRAY_NAMESPACE_ERR,
-        "Declara\u00e7\u00e3o de namespace ''{0}''=''{1}'' fora do elemento. "},
+        "Declara\u00e7\u00e3o de espa\u00e7o de nomes ''{0}''=''{1}'' fora do elemento. "},
 
         /*
          * Note to translators:  The stylesheet contained a reference to a
@@ -190,7 +192,7 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * text is the name of the prefix.
          */
         {BasisLibrary.NAMESPACE_PREFIX_ERR,
-        "Namespace para prefixo ''{0}'' n\u00e3o foi declarado. "},
+        "O espa\u00e7o de nomes do prefixo ''{0}'' n\u00e3o foi declarado. "},
 
         /*
          * Note to translators:  The following represents an internal error.
@@ -222,7 +224,59 @@ public class ErrorMessages_pt_BR extends ListResourceBundle {
          * error.
          */
         {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
-        "Imposs\u00edvel resolver a refer\u00eancia de URI ''{0}''."}
+        "N\u00e3o foi poss\u00edvel resolver a refer\u00eancia de URI ''{0}''."},
+
+         /*
+         * Note to translators:  The stylesheet contained an element that was
+         * not recognized as part of the XSL syntax.  The substitution text
+         * gives the element name.
+         */
+        {BasisLibrary.UNSUPPORTED_XSL_ERR,
+        "Elemento XSL n\u00e3o suportado ''{0}''"},
+
+        /*
+         * Note to translators:  The stylesheet referred to an extension to the
+         * XSL syntax and indicated that it was defined by XSLTC, but XSLTC does
+         * not recognize the particular extension named.  The substitution text
+         * gives the extension name.
+         */
+        {BasisLibrary.UNSUPPORTED_EXT_ERR,
+        "Extens\u00e3o XSLTC n\u00e3o reconhecida ''{0}''"},
+
+
+        /*
+         * Note to translators:  This error message is produced if the translet
+         * class was compiled using a newer version of XSLTC and deployed for
+         * execution with an older version of XSLTC.  The substitution text is
+         * the name of the translet class.
+         */
+        {BasisLibrary.UNKNOWN_TRANSLET_VERSION_ERR,
+        "O translet especificado, ''{0}'', foi criado com o uso de uma vers\u00e3o do XSLTC mais recente que a vers\u00e3o do tempo de execu\u00e7\u00e3o XSLTC atualmente em uso. \u00c9 necess\u00e1rio recompilar a folha de estilo ou utilizar uma vers\u00e3o mais recente do XSLTC para executar esse translet."},
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "QName" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_QNAME_ERR,
+        "Um atributo cujo valor deve ser um QName apresentou o valor ''{0}''"},
+
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "NCName" had a value that was incorrect.
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_NCNAME_ERR,
+        "Um atributo cujo valor deve ser um NCName apresentou o valor ''{0}''"},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_FUNCTION_ERR,
+        "O uso da fun\u00e7\u00e3o de extens\u00e3o ''{0}'' n\u00e3o \u00e9 permitido quando o recurso de processamento seguro \u00e9 definido como true."},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_ELEMENT_ERR,
+        "O uso do elemento de extens\u00e3o ''{0}'' n\u00e3o \u00e9 permitido quando o recurso de processamento seguro \u00e9 definido como true."},
     };
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,12 @@ public class ErrorMessages_tr extends ListResourceBundle {
  *      grammar for an XML file, the names and types of elements, attributes,
  *      etc.
  *
+ *   9) Translet is an invented term that refers to the class file that contains
+ *      the compiled form of a stylesheet.
  */
 
     // These message should be read from a locale-specific resource bundle
-    /** Get the lookup table for error messages.   
+    /** Get the lookup table for error messages.
      *
      * @return The message lookup table.
      */
@@ -88,14 +90,14 @@ public class ErrorMessages_tr extends ListResourceBundle {
          * is a class name.  Used for internal errors in the processor.
          */
         {BasisLibrary.RUN_TIME_INTERNAL_ERR,
-        "''{0}'' s\u0131n\u0131f\u0131nda \u00e7al\u0131\u015fma zaman\u0131 i\u00e7 hatas\u0131 "},
+        "''{0}'' i\u00e7inde y\u00fcr\u00fctme zaman\u0131 i\u00e7 hatas\u0131"},
 
         /*
          * Note to translators:  <xsl:copy> is a keyword that should not be
          * translated.
          */
         {BasisLibrary.RUN_TIME_COPY_ERR,
-        "<xsl:copy> y\u00fcr\u00fct\u00fcl\u00fcrken \u00e7al\u0131\u015fma zaman\u0131 hatas\u0131."},
+        "<xsl:copy> y\u00fcr\u00fct\u00fcl\u00fcrken y\u00fcr\u00fctme zaman\u0131 hatas\u0131."},
 
         /*
          * Note to translators:  The substitution text refers to data types.
@@ -129,7 +131,7 @@ public class ErrorMessages_tr extends ListResourceBundle {
          * permitted for a call to this function.
          */
         {BasisLibrary.INVALID_ARGUMENT_ERR,
-        "''{1}'' i\u015flevi \u00e7a\u011fr\u0131s\u0131nda ''{0}'' ba\u011f\u0131ms\u0131z de\u011fi\u015fken tipi ge\u00e7ersiz "},
+        "''{1}'' i\u015flevi \u00e7a\u011fr\u0131s\u0131nda ba\u011f\u0131ms\u0131z de\u011fi\u015fken tipi ''{0}'' ge\u00e7ersiz."},
 
         /*
          * Note to translators:  There is way of specifying a format for a
@@ -222,7 +224,59 @@ public class ErrorMessages_tr extends ListResourceBundle {
          * error.
          */
         {BasisLibrary.CANT_RESOLVE_RELATIVE_URI_ERR,
-        "''{0}'' URI ba\u015fvurusu \u00e7\u00f6z\u00fclemedi."}
+        "''{0}'' URI ba\u015fvurusu \u00e7\u00f6z\u00fclemedi."},
+
+         /*
+         * Note to translators:  The stylesheet contained an element that was
+         * not recognized as part of the XSL syntax.  The substitution text
+         * gives the element name.
+         */
+        {BasisLibrary.UNSUPPORTED_XSL_ERR,
+        "XSL \u00f6\u011fesi ''{0}'' desteklenmiyor"},
+
+        /*
+         * Note to translators:  The stylesheet referred to an extension to the
+         * XSL syntax and indicated that it was defined by XSLTC, but XSLTC does
+         * not recognize the particular extension named.  The substitution text
+         * gives the extension name.
+         */
+        {BasisLibrary.UNSUPPORTED_EXT_ERR,
+        "XSLTC uzant\u0131s\u0131 ''{0}'' tan\u0131nm\u0131yor"},
+
+
+        /*
+         * Note to translators:  This error message is produced if the translet
+         * class was compiled using a newer version of XSLTC and deployed for
+         * execution with an older version of XSLTC.  The substitution text is
+         * the name of the translet class.
+         */
+        {BasisLibrary.UNKNOWN_TRANSLET_VERSION_ERR,
+        "Belirtilen derleme sonucu s\u0131n\u0131f dosyas\u0131 ''{0}'', kullan\u0131lmakta olan XSLTC s\u00fcr\u00fcm\u00fcnden daha yeni bir XSLTC s\u00fcr\u00fcm\u00fcyle yarat\u0131lm\u0131\u015f.  Bi\u00e7em yapra\u011f\u0131n\u0131 yeniden derlemeli ya da bu derleme sonucu s\u0131n\u0131f dosyas\u0131n\u0131 \u00e7al\u0131\u015ft\u0131rmak i\u00e7in daha yeni bir XSLTC s\u00fcr\u00fcm\u00fcn\u00fc kullanmal\u0131s\u0131n\u0131z."},
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "QName" had a value that was incorrect.
+         * 'QName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_QNAME_ERR,
+        "De\u011ferinin bir QName olmas\u0131 gereken \u00f6zniteli\u011fin de\u011feri ''{0}''"},
+
+
+        /*
+         * Note to translators:  An attribute whose effective value is required
+         * to be a "NCName" had a value that was incorrect.
+         * 'NCName' is an XML syntactic term that must not be translated.  The
+         * substitution text contains the actual value of the attribute.
+         */
+        {BasisLibrary.INVALID_NCNAME_ERR,
+        "De\u011ferinin bir NCName olmas\u0131 gereken \u00f6zniteli\u011fin de\u011feri ''{0}''"},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_FUNCTION_ERR,
+        "G\u00fcvenli i\u015fleme \u00f6zelli\u011fi true de\u011ferine ayarland\u0131\u011f\u0131nda ''{0}'' eklenti i\u015flevinin kullan\u0131lmas\u0131na izin verilmez."},
+
+        {BasisLibrary.UNALLOWED_EXTENSION_ELEMENT_ERR,
+        "G\u00fcvenli i\u015fleme \u00f6zelli\u011fi true de\u011ferine ayarland\u0131\u011f\u0131nda ''{0}'' eklenti \u00f6\u011fesinin kullan\u0131lmas\u0131na izin verilmez."},
     };
     }
 
