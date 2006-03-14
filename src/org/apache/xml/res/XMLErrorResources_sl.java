@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 /*
- * $Id$
+ * $Id: XMLErrorResources_sl.java,v 1.9 2004/12/16 19:29:01 minchau Exp $
  */
+
 package org.apache.xml.res;
 
 
@@ -34,7 +35,7 @@ import java.util.ResourceBundle;
  * and MAX_WARNING for warnings ( Needed for only information
  * purpose )
  */
-public class XMLErrorResources_es extends ListResourceBundle
+public class XMLErrorResources_sl extends ListResourceBundle
 {
 
 /*
@@ -162,201 +163,201 @@ public class XMLErrorResources_es extends ListResourceBundle
     {"ER0000" , "{0}" },
 
     { ER_FUNCTION_NOT_SUPPORTED,
-      "\u00a1Funci\u00f3n no soportada!"},
+      "Funkcija ni podprta!"},
 
     { ER_CANNOT_OVERWRITE_CAUSE,
-      "No se puede escribir encima de la causa"},
+      "Vzroka ni mogo\u010de prepisati"},
 
     { ER_NO_DEFAULT_IMPL,
-      "No se ha encontrado una implementaci\u00f3n predeterminada "},
+      "Privzete implementacije ni mogo\u010de najti "},
 
     { ER_CHUNKEDINTARRAY_NOT_SUPPORTED,
-      "ChunkedIntArray({0}) no soportada actualmente"},
+      "ChunkedIntArray({0}) trenutno ni podprt"},
 
     { ER_OFFSET_BIGGER_THAN_SLOT,
-      "El desplazamiento es mayor que el espacio"},
+      "Odmik ve\u010dji od re\u017ee"},
 
     { ER_COROUTINE_NOT_AVAIL,
-      "Corrutina no disponible, id={0}"},
+      "Sorutina ni na voljo, id={0}"},
 
     { ER_COROUTINE_CO_EXIT,
-      "CoroutineManager ha recibido una petici\u00f3n co_exit()"},
+      "CoroutineManager je prejel zahtevo co_exit()"},
 
     { ER_COJOINROUTINESET_FAILED,
-      "Anomal\u00eda de co_joinCoroutineSet()"},
+      "co_joinCoroutineSet() je spodletela"},
 
     { ER_COROUTINE_PARAM,
-      "Error del par\u00e1metro de corrutina ({0})"},
+      "Napaka parametra sorutine ({0})"},
 
     { ER_PARSER_DOTERMINATE_ANSWERS,
-      "\nINESPERADO: Respuestas doTerminate del analizador {0}"},
+      "\nNEPRI\u010cAKOVANO: Odgovor raz\u010dlenjevalnika doTerminate je {0}"},
 
     { ER_NO_PARSE_CALL_WHILE_PARSING,
-      "No se puede llamar a parse mientras se est\u00e1 analizando"},
+      "med raz\u010dlenjevanjem klic raz\u010dlenitve ni mo\u017een"},
 
     { ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED,
-      "Error: El iterador escrito para el eje {0} no est\u00e1 implementado"},
+      "Napaka: dolo\u010den iterator za os {0} ni implementiran"},
 
     { ER_ITERATOR_AXIS_NOT_IMPLEMENTED,
-      "Error: El iterador para el eje {0} no est\u00e1 implementado "},
+      "Napaka: iterator za os {0} ni implementiran "},
 
     { ER_ITERATOR_CLONE_NOT_SUPPORTED,
-      "La r\u00e9plica del iterador no est\u00e1 soportada"},
+      "Klon iteratorja ni podprt"},
 
     { ER_UNKNOWN_AXIS_TYPE,
-      "Tipo de cruce de eje desconocido: {0}"},
+      "Neznan pre\u010dni tip osi: {0}"},
 
     { ER_AXIS_NOT_SUPPORTED,
-      "Cruzador de eje no soportado: {0}"},
+      "Pre\u010dnik osi ni podprt: {0}"},
 
     { ER_NO_DTMIDS_AVAIL,
-      "No hay m\u00e1s ID de DTM disponibles"},
+      "Na voljo ni ve\u010d DTM ID-jev"},
 
     { ER_NOT_SUPPORTED,
-      "No soportado: {0}"},
+      "Ni podprto: {0}"},
 
     { ER_NODE_NON_NULL,
-      "El nodo no debe ser nulo para getDTMHandleFromNode"},
+      "Vozli\u0161\u010de ne sme biti NULL za getDTMHandleFromNode"},
 
     { ER_COULD_NOT_RESOLVE_NODE,
-      "No se puede resolver el nodo como un manejador"},
+      "Ne morem razre\u0161iti vozli\u0161\u010da v obravnavo"},
 
     { ER_STARTPARSE_WHILE_PARSING,
-       "No se puede llamar a startParse mientras se est\u00e1 analizando"},
+       "Med raz\u010dlenjevanjem klic startParse ni mogo\u010d"},
 
     { ER_STARTPARSE_NEEDS_SAXPARSER,
-       "startParse necesita un SAXParser no nulo"},
+       "startParse potrebuje ne-NULL SAXParser"},
 
     { ER_COULD_NOT_INIT_PARSER,
-       "No se ha podido inicializar el analizador con"},
+       "parserja ni mogo\u010de inicializirati z"},
 
     { ER_EXCEPTION_CREATING_POOL,
-       "Se ha producido una excepci\u00f3n al crear la nueva instancia de la agrupaci\u00f3n"},
+       "izjema pri ustvarjanju novega primerka za zalogo"},
 
     { ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
-       "La v\u00eda de acceso contiene una secuencia de escape no v\u00e1lida"},
+       "Pot vsebuje neveljavno zaporedje za izhod"},
 
     { ER_SCHEME_REQUIRED,
-       "\u00a1Se necesita un esquema!"},
+       "Zahtevana je shema!"},
 
     { ER_NO_SCHEME_IN_URI,
-       "No se ha encontrado un esquema en el URI: {0}"},
+       "Ne najdem sheme v URI: {0}"},
 
     { ER_NO_SCHEME_INURI,
-       "No se ha encontrado un esquema en el URI"},
+       "Ne najdem sheme v URI"},
 
     { ER_PATH_INVALID_CHAR,
-       "La v\u00eda de acceso contiene un car\u00e1cter no v\u00e1lido: {0}"},
+       "Pot vsebuje neveljaven znak: {0}"},
 
     { ER_SCHEME_FROM_NULL_STRING,
-       "No se puede establecer un esquema de una serie nula"},
+       "Ne morem nastaviti sheme iz niza NULL"},
 
     { ER_SCHEME_NOT_CONFORMANT,
-       "El esquema no es compatible."},
+       "Shema ni skladna."},
 
     { ER_HOST_ADDRESS_NOT_WELLFORMED,
-       "El sistema principal no es una direcci\u00f3n bien formada"},
+       "Naslov gostitelja ni pravilno oblikovan"},
 
     { ER_PORT_WHEN_HOST_NULL,
-       "No se puede establecer el puerto si el sistema principal es nulo"},
+       "Ko je gostitelj NULL, nastavitev vrat ni mogo\u010da"},
 
     { ER_INVALID_PORT,
-       "N\u00famero de puerto no v\u00e1lido"},
+       "Neveljavna \u0161tevilka vrat"},
 
     { ER_FRAG_FOR_GENERIC_URI,
-       "S\u00f3lo se puede establecer el fragmento para un URI gen\u00e9rico"},
+       "Fragment je lahko nastavljen samo za splo\u0161ni URI"},
 
     { ER_FRAG_WHEN_PATH_NULL,
-       "No se puede establecer el fragmento si la v\u00eda de acceso es nula"},
+       "Ko je pot NULL, nastavitev fragmenta ni mogo\u010da"},
 
     { ER_FRAG_INVALID_CHAR,
-       "El fragmento contiene un car\u00e1cter no v\u00e1lido"},
+       "Fragment vsebuje neveljaven znak"},
 
     { ER_PARSER_IN_USE,
-      "El analizador ya est\u00e1 en uso"},
+      "Raz\u010dlenjevalnik je \u017ee v uporabi"},
 
     { ER_CANNOT_CHANGE_WHILE_PARSING,
-      "No se puede cambiar {0} {1} mientras se analiza"},
+      "Med raz\u010dlenjevanjem ni mogo\u010de spremeniti {0} {1}"},
 
     { ER_SELF_CAUSATION_NOT_PERMITTED,
-      "Autocausalidad no permitida"},
+      "Samopovzro\u010ditev ni dovoljena"},
 
     { ER_NO_USERINFO_IF_NO_HOST,
-      "No se puede especificar la informaci\u00f3n de usuario si no se ha especificado el sistema principal"},
+      "Informacije o uporabniku ne morejo biti navedene, \u010de ni naveden gostitelj"},
 
     { ER_NO_PORT_IF_NO_HOST,
-      "No se puede especificar el puerto si no se ha especificado el sistema principal"},
+      "Vrata ne morejo biti navedena, \u010de ni naveden gostitelj"},
 
     { ER_NO_QUERY_STRING_IN_PATH,
-      "No se puede especificar la serie de consulta en la v\u00eda de acceso y en la serie de consulta"},
+      "Poizvedbeni niz ne more biti naveden v nizu poti in poizvedbenem nizu"},
 
     { ER_NO_FRAGMENT_STRING_IN_PATH,
-      "No se puede especificar el fragmento en la v\u00eda de acceso y en el fragmento"},
+      "Fragment ne more biti hkrati naveden v poti in v fragmentu"},
 
     { ER_CANNOT_INIT_URI_EMPTY_PARMS,
-      "No se puede inicializar el URI con par\u00e1metros vac\u00edos"},
+      "Ne morem inicializirat URI-ja s praznimi parametri"},
 
     { ER_METHOD_NOT_SUPPORTED,
-      "El m\u00e9todo no est\u00e1 a\u00fan soportado "},
+      "Metoda ni ve\u010d podprta "},
 
     { ER_INCRSAXSRCFILTER_NOT_RESTARTABLE,
-      "IncrementalSAXSource_Filter no es actualmente reiniciable"},
+      "IncrementalSAXSource_Filter v tem trenutku ni mogo\u010de ponovno zagnati"},
 
     { ER_XMLRDR_NOT_BEFORE_STARTPARSE,
-      "XMLReader no debe ir antes que la petici\u00f3n startParse"},
+      "XMLReader ne pred zahtevo za startParse"},
 
     { ER_AXIS_TRAVERSER_NOT_SUPPORTED,
-      "Cruzador de eje no soportado: {0}"},
+      "Pre\u010dnik osi ni podprt: {0}"},
 
     { ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER,
-      "\u00a1Se ha creado ListingErrorHandler con PrintWriter nulo!"},
+      "ListingErrorHandler ustvarjen s PrintWriter NULL!"},
 
     { ER_SYSTEMID_UNKNOWN,
-      "SystemId desconocido"},
+      "Neznan sistemski ID"},
 
     { ER_LOCATION_UNKNOWN,
-      "Ubicaci\u00f3n del error desconocida"},
+      "Mesto napake neznano"},
 
     { ER_PREFIX_MUST_RESOLVE,
-      "El prefijo debe resolverse como un espacio de nombres: {0}"},
+      "Predpona se mora razre\u0161iti v imenski prostor: {0}"},
 
     { ER_CREATEDOCUMENT_NOT_SUPPORTED,
-      "\u00a1createDocument() no soportada en XPathContext!"},
+      "createDocument() ni podprt v XPathContext!"},
 
     { ER_CHILD_HAS_NO_OWNER_DOCUMENT,
-      "\u00a1El hijo atributo no tiene un documento propietario!"},
+      "Podrejeni predmet atributa nima lastni\u0161kega dokumenta!"},
 
     { ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT,
-      "\u00a1El hijo atributo no tiene un elemento documento propietario!"},
+      "Podrejeni predmet atributa nima elementa lastni\u0161kega dokumenta!"},
 
     { ER_CANT_OUTPUT_TEXT_BEFORE_DOC,
-      "\u00a1Aviso: no puede haber salida de texto antes del elemento documento!  Ignorando..."},
+      "Opozorilo: besedila ne morem prikazati pred elementom dokumenta!  Ignoriram..."},
 
     { ER_CANT_HAVE_MORE_THAN_ONE_ROOT,
-      "\u00a1No puede haber m\u00e1s de una ra\u00edz en DOM!"},
+      "Na DOM-u ne more biti ve\u010d kot en koren!"},
 
     { ER_ARG_LOCALNAME_NULL,
-       "El argumento 'localName' es nulo"},
+       "Argument 'lokalno ime' je NULL"},
 
     // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
     // The localname is the portion after the optional colon; the message indicates
     // that there is a problem with that part of the QNAME.
     { ER_ARG_LOCALNAME_INVALID,
-       "Localname en QNAME debe ser un NCName v\u00e1lido"},
+       "Lokalno ime v QNAME bi moralo biti veljavno NCIme"},
 
     // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
     // The prefix is the portion before the optional colon; the message indicates
     // that there is a problem with that part of the QNAME.
     { ER_ARG_PREFIX_INVALID,
-       "El prefijo en QNAME debe ser un NCName v\u00e1lido"},
+       "Predpona v QNAME bi morala biti valjavno NCIme"},
 
     { ER_NAME_CANT_START_WITH_COLON,
-      "El nombre no puede empezar con dos puntos"},
+      "Ime se ne more za\u010deti z dvopi\u010djem"},
 
-    { "BAD_CODE", "El par\u00e1metro para createMessage estaba fuera de los l\u00edmites"},
-    { "FORMAT_FAILED", "Se ha generado una excepci\u00f3n durante la llamada messageFormat"},
-    { "line", "L\u00ednea n\u00fam."},
-    { "column","Columna n\u00fam."}
+    { "BAD_CODE", "Parameter za ustvariSporo\u010dilo presega meje"},
+    { "FORMAT_FAILED", "Med klicem messageFormat naletel na izjemo"},
+    { "line", "Vrstica #"},
+    { "column","Stolpec #"}
 
 
   };
@@ -392,7 +393,7 @@ public class XMLErrorResources_es extends ListResourceBundle
         // Since we can't find the localized property file,
         // fall back to en_US.
         return (XMLErrorResources) ResourceBundle.getBundle(className,
-                new Locale("es", "ES"));
+                new Locale("sl", "SL"));
       }
       catch (MissingResourceException e2)
       {

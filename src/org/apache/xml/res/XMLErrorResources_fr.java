@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,19 +75,6 @@ public class XMLErrorResources_fr extends ListResourceBundle
  *
  */
 
-  /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 61;
-
-  /** Maximum warnings, this is needed to keep track of the number of warnings.          */
-  public static final int MAX_WARNING = 0;
-
-  /** Maximum misc strings.   */
-  public static final int MAX_OTHERS = 4;
-
-  /** Maximum total warnings and error messages.          */
-  public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
-
-
   /*
    * Message keys
    */
@@ -152,20 +139,7 @@ public class XMLErrorResources_fr extends ListResourceBundle
   public static final String ER_ARG_LOCALNAME_NULL = "ER_ARG_LOCALNAME_NULL";
   public static final String ER_ARG_LOCALNAME_INVALID = "ER_ARG_LOCALNAME_INVALID";
   public static final String ER_ARG_PREFIX_INVALID = "ER_ARG_PREFIX_INVALID";
-
-  // Message keys used by the serializer
-  public static final String ER_RESOURCE_COULD_NOT_FIND = "ER_RESOURCE_COULD_NOT_FIND";
-  public static final String ER_RESOURCE_COULD_NOT_LOAD = "ER_RESOURCE_COULD_NOT_LOAD";
-  public static final String ER_BUFFER_SIZE_LESSTHAN_ZERO = "ER_BUFFER_SIZE_LESSTHAN_ZERO";
-  public static final String ER_INVALID_UTF16_SURROGATE = "ER_INVALID_UTF16_SURROGATE";
-  public static final String ER_OIERROR = "ER_OIERROR";
-  public static final String ER_NAMESPACE_PREFIX = "ER_NAMESPACE_PREFIX";
-  public static final String ER_STRAY_ATTRIBUTE = "ER_STRAY_ATTIRBUTE";
-  public static final String ER_STRAY_NAMESPACE = "ER_STRAY_NAMESPACE";
-  public static final String ER_COULD_NOT_LOAD_RESOURCE = "ER_COULD_NOT_LOAD_RESOURCE";
-  public static final String ER_COULD_NOT_LOAD_METHOD_PROPERTY = "ER_COULD_NOT_LOAD_METHOD_PROPERTY";
-  public static final String ER_SERIALIZER_NOT_CONTENTHANDLER = "ER_SERIALIZER_NOT_CONTENTHANDLER";
-  public static final String ER_ILLEGAL_ATTRIBUTE_POSITION = "ER_ILLEGAL_ATTRIBUTE_POSITION";
+  public static final String ER_NAME_CANT_START_WITH_COLON = "ER_NAME_CANT_START_WITH_COLON";
 
   /*
    * Now fill in the message text.
@@ -362,7 +336,7 @@ public class XMLErrorResources_fr extends ListResourceBundle
       "Un DOM ne peut poss\u00e9der plusieurs racines !"},
 
     { ER_ARG_LOCALNAME_NULL,
-       "L'argument ''localName'' est vide"},
+       "L'argument 'localName' est vide"},
 
     // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
     // The localname is the portion after the optional colon; the message indicates
@@ -376,63 +350,13 @@ public class XMLErrorResources_fr extends ListResourceBundle
     { ER_ARG_PREFIX_INVALID,
        "Dans QNAME, le pr\u00e9fixe doit \u00eatre un nom NCName valide"},
 
+    { ER_NAME_CANT_START_WITH_COLON,
+      "Un nom ne peut commencer par le signe deux-points"},
+
     { "BAD_CODE", "Le param\u00e8tre de createMessage se trouve hors limites"},
     { "FORMAT_FAILED", "Exception soulev\u00e9e lors de l'appel de messageFormat"},
     { "line", "Ligne #"},
-    { "column","Colonne #"},
-
-    {ER_SERIALIZER_NOT_CONTENTHANDLER,
-      "La classe de la m\u00e9thode de s\u00e9rialisation ''{0}'' n''impl\u00e9mente pas org.xml.sax.ContentHandler."},
-
-    {ER_RESOURCE_COULD_NOT_FIND,
-      "La ressource [ {0} ] est introuvable.\n {1}" },
-
-    {ER_RESOURCE_COULD_NOT_LOAD,
-      "La ressource [ {0} ] n''a pas pu charger : {1} \n {2} \t {3}" },
-
-    {ER_BUFFER_SIZE_LESSTHAN_ZERO,
-      "Taille du tampon <=0" },
-
-    {ER_INVALID_UTF16_SURROGATE,
-      "Substitut UTF-16 non valide d\u00e9tect\u00e9 : {0} ?" },
-
-    {ER_OIERROR,
-      "Erreur d''E-S" },
-
-    {ER_ILLEGAL_ATTRIBUTE_POSITION,
-      "Ajout impossible de l''attribut {0} apr\u00e8s des noeuds enfants ou avant la production d''un \u00e9l\u00e9ment.  L''attribut est ignor\u00e9."},
-
-      /*
-       * Note to translators:  The stylesheet contained a reference to a
-       * namespace prefix that was undefined.  The value of the substitution
-       * text is the name of the prefix.
-       */
-    {ER_NAMESPACE_PREFIX,
-      "L''espace de noms du pr\u00e9fixe ''{0}'' n''a pas \u00e9t\u00e9 d\u00e9clar\u00e9." },
-      /*
-       * Note to translators:  This message is reported if the stylesheet
-       * being processed attempted to construct an XML document with an
-       * attribute in a place other than on an element.  The substitution text
-       * specifies the name of the attribute.
-       */
-    {ER_STRAY_ATTRIBUTE,
-      "L''attribut ''{0}'' est \u00e0 l''ext\u00e9rieur de l''\u00e9l\u00e9ment." },
-
-      /*
-       * Note to translators:  As with the preceding message, a namespace
-       * declaration has the form of an attribute and is only permitted to
-       * appear on an element.  The substitution text {0} is the namespace
-       * prefix and {1} is the URI that was being used in the erroneous
-       * namespace declaration.
-       */
-    {ER_STRAY_NAMESPACE,
-      "La d\u00e9claration d''espace de noms ''{0}''=''{1}'' est \u00e0 l''ext\u00e9rieur de l''\u00e9l\u00e9ment." },
-
-    {ER_COULD_NOT_LOAD_RESOURCE,
-      "Impossible de charger ''{0}'' (v\u00e9rifier CLASSPATH), les valeurs par d\u00e9faut sont donc employ\u00e9es "},
-
-    {ER_COULD_NOT_LOAD_METHOD_PROPERTY,
-      "Impossible de charger le fichier de propri\u00e9t\u00e9s ''{0}'' pour la m\u00e9thode de sortie ''{1}'' (v\u00e9rifier CLASSPATH)" }
+    { "column","Colonne #"}
 
 
   };

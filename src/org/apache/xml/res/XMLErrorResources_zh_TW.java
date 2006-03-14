@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,19 +75,6 @@ public class XMLErrorResources_zh_TW extends ListResourceBundle
  *
  */
 
-  /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 61;
-
-  /** Maximum warnings, this is needed to keep track of the number of warnings.          */
-  public static final int MAX_WARNING = 0;
-
-  /** Maximum misc strings.   */
-  public static final int MAX_OTHERS = 4;
-
-  /** Maximum total warnings and error messages.          */
-  public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
-
-
   /*
    * Message keys
    */
@@ -152,20 +139,7 @@ public class XMLErrorResources_zh_TW extends ListResourceBundle
   public static final String ER_ARG_LOCALNAME_NULL = "ER_ARG_LOCALNAME_NULL";
   public static final String ER_ARG_LOCALNAME_INVALID = "ER_ARG_LOCALNAME_INVALID";
   public static final String ER_ARG_PREFIX_INVALID = "ER_ARG_PREFIX_INVALID";
-
-  // Message keys used by the serializer
-  public static final String ER_RESOURCE_COULD_NOT_FIND = "ER_RESOURCE_COULD_NOT_FIND";
-  public static final String ER_RESOURCE_COULD_NOT_LOAD = "ER_RESOURCE_COULD_NOT_LOAD";
-  public static final String ER_BUFFER_SIZE_LESSTHAN_ZERO = "ER_BUFFER_SIZE_LESSTHAN_ZERO";
-  public static final String ER_INVALID_UTF16_SURROGATE = "ER_INVALID_UTF16_SURROGATE";
-  public static final String ER_OIERROR = "ER_OIERROR";
-  public static final String ER_NAMESPACE_PREFIX = "ER_NAMESPACE_PREFIX";
-  public static final String ER_STRAY_ATTRIBUTE = "ER_STRAY_ATTIRBUTE";
-  public static final String ER_STRAY_NAMESPACE = "ER_STRAY_NAMESPACE";
-  public static final String ER_COULD_NOT_LOAD_RESOURCE = "ER_COULD_NOT_LOAD_RESOURCE";
-  public static final String ER_COULD_NOT_LOAD_METHOD_PROPERTY = "ER_COULD_NOT_LOAD_METHOD_PROPERTY";
-  public static final String ER_SERIALIZER_NOT_CONTENTHANDLER = "ER_SERIALIZER_NOT_CONTENTHANDLER";
-  public static final String ER_ILLEGAL_ATTRIBUTE_POSITION = "ER_ILLEGAL_ATTRIBUTE_POSITION";
+  public static final String ER_NAME_CANT_START_WITH_COLON = "ER_NAME_CANT_START_WITH_COLON";
 
   /*
    * Now fill in the message text.
@@ -376,63 +350,13 @@ public class XMLErrorResources_zh_TW extends ListResourceBundle
     { ER_ARG_PREFIX_INVALID,
        "QNAME \u4e2d\u7684\u5b57\u9996\u61c9\u8a72\u662f\u6709\u6548\u7684 NCName"},
 
+    { ER_NAME_CANT_START_WITH_COLON,
+      "\u540d\u7a31\u7684\u958b\u982d\u4e0d\u53ef\u70ba\u5192\u865f"},
+
     { "BAD_CODE", "createMessage \u7684\u53c3\u6578\u8d85\u51fa\u754c\u9650"},
     { "FORMAT_FAILED", "\u5728 messageFormat \u547c\u53eb\u671f\u9593\u64f2\u51fa\u7570\u5e38"},
     { "line", "\u884c\u865f"},
-    { "column","\u6b04\u865f"},
-
-    {ER_SERIALIZER_NOT_CONTENTHANDLER,
-      "serializer \u985e\u5225 ''{0}'' \u4e0d\u5be6\u4f5c org.xml.sax.ContentHandler\u3002"},
-
-    {ER_RESOURCE_COULD_NOT_FIND,
-      "\u627e\u4e0d\u5230\u8cc7\u6e90 [ {0} ]\u3002\n{1}" },
-
-    {ER_RESOURCE_COULD_NOT_LOAD,
-      "\u7121\u6cd5\u8f09\u5165\u8cc7\u6e90 [ {0} ]\uff1a{1} \n {2} \t {3}" },
-
-    {ER_BUFFER_SIZE_LESSTHAN_ZERO,
-      "\u7de9\u885d\u5340\u5927\u5c0f <=0" },
-
-    {ER_INVALID_UTF16_SURROGATE,
-      "\u5075\u6e2c\u5230\u7121\u6548\u7684 UTF-16 \u4ee3\u7406\uff1a{0}?" },
-
-    {ER_OIERROR,
-      "IO \u932f\u8aa4" },
-
-    {ER_ILLEGAL_ATTRIBUTE_POSITION,
-      "\u5728\u7522\u751f\u5b50\u9805\u7bc0\u9ede\u4e4b\u5f8c\uff0c\u6216\u5728\u7522\u751f\u5143\u7d20\u4e4b\u524d\uff0c\u4e0d\u53ef\u65b0\u589e\u5c6c\u6027 {0}\u3002\u5c6c\u6027\u6703\u88ab\u5ffd\u7565\u3002"},
-
-      /*
-       * Note to translators:  The stylesheet contained a reference to a
-       * namespace prefix that was undefined.  The value of the substitution
-       * text is the name of the prefix.
-       */
-    {ER_NAMESPACE_PREFIX,
-      "\u5b57\u9996 ''{0}'' \u7684\u540d\u7a31\u7a7a\u9593\u5c1a\u672a\u5ba3\u544a\u3002" },
-      /*
-       * Note to translators:  This message is reported if the stylesheet
-       * being processed attempted to construct an XML document with an
-       * attribute in a place other than on an element.  The substitution text
-       * specifies the name of the attribute.
-       */
-    {ER_STRAY_ATTRIBUTE,
-      "\u5c6c\u6027 ''{0}'' \u8d85\u51fa\u5143\u7d20\u5916\u3002" },
-
-      /*
-       * Note to translators:  As with the preceding message, a namespace
-       * declaration has the form of an attribute and is only permitted to
-       * appear on an element.  The substitution text {0} is the namespace
-       * prefix and {1} is the URI that was being used in the erroneous
-       * namespace declaration.
-       */
-    {ER_STRAY_NAMESPACE,
-      "\u540d\u7a31\u7a7a\u9593\u5ba3\u544a ''{0}''=''{1}'' \u8d85\u51fa\u5143\u7d20\u5916\u3002" },
-
-    {ER_COULD_NOT_LOAD_RESOURCE,
-      "\u7121\u6cd5\u8f09\u5165 ''{0}''\uff08\u6aa2\u67e5 CLASSPATH\uff09\uff0c\u76ee\u524d\u53ea\u4f7f\u7528\u9810\u8a2d\u503c"},
-
-    {ER_COULD_NOT_LOAD_METHOD_PROPERTY,
-      "\u7121\u6cd5\u8f09\u5165\u8f38\u51fa\u65b9\u6cd5 ''{1}'' \u7684\u5167\u5bb9\u6a94 ''{0}''\uff08\u6aa2\u67e5 CLASSPATH\uff09" }
+    { "column","\u6b04\u865f"}
 
 
   };

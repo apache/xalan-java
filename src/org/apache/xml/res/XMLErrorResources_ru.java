@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,19 +75,6 @@ public class XMLErrorResources_ru extends ListResourceBundle
  *
  */
 
-  /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 61;
-
-  /** Maximum warnings, this is needed to keep track of the number of warnings.          */
-  public static final int MAX_WARNING = 0;
-
-  /** Maximum misc strings.   */
-  public static final int MAX_OTHERS = 4;
-
-  /** Maximum total warnings and error messages.          */
-  public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
-
-
   /*
    * Message keys
    */
@@ -152,20 +139,7 @@ public class XMLErrorResources_ru extends ListResourceBundle
   public static final String ER_ARG_LOCALNAME_NULL = "ER_ARG_LOCALNAME_NULL";
   public static final String ER_ARG_LOCALNAME_INVALID = "ER_ARG_LOCALNAME_INVALID";
   public static final String ER_ARG_PREFIX_INVALID = "ER_ARG_PREFIX_INVALID";
-
-  // Message keys used by the serializer
-  public static final String ER_RESOURCE_COULD_NOT_FIND = "ER_RESOURCE_COULD_NOT_FIND";
-  public static final String ER_RESOURCE_COULD_NOT_LOAD = "ER_RESOURCE_COULD_NOT_LOAD";
-  public static final String ER_BUFFER_SIZE_LESSTHAN_ZERO = "ER_BUFFER_SIZE_LESSTHAN_ZERO";
-  public static final String ER_INVALID_UTF16_SURROGATE = "ER_INVALID_UTF16_SURROGATE";
-  public static final String ER_OIERROR = "ER_OIERROR";
-  public static final String ER_NAMESPACE_PREFIX = "ER_NAMESPACE_PREFIX";
-  public static final String ER_STRAY_ATTRIBUTE = "ER_STRAY_ATTIRBUTE";
-  public static final String ER_STRAY_NAMESPACE = "ER_STRAY_NAMESPACE";
-  public static final String ER_COULD_NOT_LOAD_RESOURCE = "ER_COULD_NOT_LOAD_RESOURCE";
-  public static final String ER_COULD_NOT_LOAD_METHOD_PROPERTY = "ER_COULD_NOT_LOAD_METHOD_PROPERTY";
-  public static final String ER_SERIALIZER_NOT_CONTENTHANDLER = "ER_SERIALIZER_NOT_CONTENTHANDLER";
-  public static final String ER_ILLEGAL_ATTRIBUTE_POSITION = "ER_ILLEGAL_ATTRIBUTE_POSITION";
+  public static final String ER_NAME_CANT_START_WITH_COLON = "ER_NAME_CANT_START_WITH_COLON";
 
   /*
    * Now fill in the message text.
@@ -194,7 +168,7 @@ public class XMLErrorResources_ru extends ListResourceBundle
       "\u041d\u0435\u0432\u043e\u0437\u043c\u043e\u0436\u043d\u043e \u043f\u0435\u0440\u0435\u0437\u0430\u043f\u0438\u0441\u0430\u0442\u044c \u043f\u0440\u0438\u0447\u0438\u043d\u0443"},
 
     { ER_NO_DEFAULT_IMPL,
-      "\u041d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u0430 \u0440\u0435\u0430\u043b\u0438\u0437\u0430\u0446\u0438\u044f \u043f\u043e \u0443\u043c\u043e\u043b\u0447\u0430\u043d\u0438\u044e"},
+      "\u0420\u0435\u0430\u043b\u0438\u0437\u0430\u0446\u0438\u044f \u043f\u043e \u0443\u043c\u043e\u043b\u0447\u0430\u043d\u0438\u044e \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d\u0430 "},
 
     { ER_CHUNKEDINTARRAY_NOT_SUPPORTED,
       "ChunkedIntArray({0}) \u0432 \u043d\u0430\u0441\u0442\u043e\u044f\u0449\u0435\u0435 \u0432\u0440\u0435\u043c\u044f \u043d\u0435 \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u0442\u0441\u044f"},
@@ -224,7 +198,7 @@ public class XMLErrorResources_ru extends ListResourceBundle
       "\u041e\u0448\u0438\u0431\u043a\u0430: \u0442\u0438\u043f\u0438\u0437\u0438\u0440\u043e\u0432\u0430\u043d\u043d\u044b\u0439 \u0438\u0442\u0435\u0440\u0430\u0442\u043e\u0440 \u0434\u043b\u044f \u043e\u0441\u0438 {0} \u043d\u0435 \u0440\u0435\u0430\u043b\u0438\u0437\u043e\u0432\u0430\u043d"},
 
     { ER_ITERATOR_AXIS_NOT_IMPLEMENTED,
-      "\u041e\u0448\u0438\u0431\u043a\u0430: \u0438\u0442\u0435\u0440\u0430\u0442\u043e\u0440 \u0434\u043b\u044f \u043e\u0441\u0438 {0} \u043d\u0435 \u0440\u0435\u0430\u043b\u0438\u0437\u043e\u0432\u0430\u043d"},
+      "\u041e\u0448\u0438\u0431\u043a\u0430: \u043d\u0435 \u0440\u0435\u0430\u043b\u0438\u0437\u043e\u0432\u0430\u043d \u0441\u0447\u0435\u0442\u0447\u0438\u043a \u0434\u043b\u044f \u043e\u0441\u0438 {0} "},
 
     { ER_ITERATOR_CLONE_NOT_SUPPORTED,
       "\u041a\u043e\u043f\u0438\u044f \u0438\u0442\u0435\u0440\u0430\u0442\u043e\u0440\u0430 \u043d\u0435 \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u0442\u0441\u044f"},
@@ -323,7 +297,7 @@ public class XMLErrorResources_ru extends ListResourceBundle
       "\u041d\u0435\u0432\u043e\u0437\u043c\u043e\u0436\u043d\u043e \u0438\u043d\u0438\u0446\u0438\u0430\u043b\u0438\u0437\u0438\u0440\u043e\u0432\u0430\u0442\u044c URI \u0441 \u043f\u0443\u0441\u0442\u044b\u043c\u0438 \u043f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u0430\u043c\u0438"},
 
     { ER_METHOD_NOT_SUPPORTED,
-      "\u041c\u0435\u0442\u043e\u0434 \u0435\u0449\u0435 \u043d\u0435 \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u0442\u0441\u044f"},
+      "\u041c\u0435\u0442\u043e\u0434 \u043f\u043e\u043a\u0430 \u043d\u0435 \u043f\u043e\u0434\u0434\u0435\u0440\u0436\u0438\u0432\u0430\u0435\u0442\u0441\u044f "},
 
     { ER_INCRSAXSRCFILTER_NOT_RESTARTABLE,
       "\u041f\u0435\u0440\u0435\u0437\u0430\u043f\u0443\u0441\u043a IncrementalSAXSource_Filter \u0432 \u043d\u0430\u0441\u0442\u043e\u044f\u0449\u0435\u0435 \u0432\u0440\u0435\u043c\u044f \u043d\u0435\u0432\u043e\u0437\u043c\u043e\u0436\u0435\u043d"},
@@ -356,7 +330,7 @@ public class XMLErrorResources_ru extends ListResourceBundle
       "\u0423 \u0430\u0442\u0440\u0438\u0431\u0443\u0442\u0430 child \u043d\u0435\u0442 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u0430 \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u0430-\u0432\u043b\u0430\u0434\u0435\u043b\u044c\u0446\u0430!"},
 
     { ER_CANT_OUTPUT_TEXT_BEFORE_DOC,
-      "\u041f\u0440\u0435\u0434\u0443\u043f\u0440\u0435\u0436\u0434\u0435\u043d\u0438\u0435: \u041d\u0435\u0432\u043e\u0437\u043c\u043e\u0436\u043d\u043e \u0432\u044b\u0432\u0435\u0441\u0442\u0438 \u0442\u0435\u043a\u0441\u0442 \u043f\u0435\u0440\u0435\u0434 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u043e\u043c \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u0430! \u041f\u0440\u043e\u0438\u0433\u043d\u043e\u0440\u0438\u0440\u043e\u0432\u0430\u043d..."},
+      "\u041f\u0440\u0435\u0434\u0443\u043f\u0440\u0435\u0436\u0434\u0435\u043d\u0438\u0435: \u041d\u0435\u0432\u043e\u0437\u043c\u043e\u0436\u043d\u043e \u0432\u044b\u0432\u0435\u0441\u0442\u0438 \u0442\u0435\u043a\u0441\u0442 \u043f\u0435\u0440\u0435\u0434 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u043e\u043c \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u0430!  \u041f\u0440\u043e\u0438\u0433\u043d\u043e\u0440\u0438\u0440\u043e\u0432\u0430\u043d..."},
 
     { ER_CANT_HAVE_MORE_THAN_ONE_ROOT,
       "\u0412 DOM \u043c\u043e\u0436\u0435\u0442 \u0431\u044b\u0442\u044c \u0442\u043e\u043b\u044c\u043a\u043e \u043e\u0434\u0438\u043d \u043a\u043e\u0440\u043d\u0435\u0432\u043e\u0439 \u044d\u043b\u0435\u043c\u0435\u043d\u0442!"},
@@ -376,63 +350,13 @@ public class XMLErrorResources_ru extends ListResourceBundle
     { ER_ARG_PREFIX_INVALID,
        "\u041f\u0440\u0435\u0444\u0438\u043a\u0441 \u0432 QNAME \u0434\u043e\u043b\u0436\u0435\u043d \u0431\u044b\u0442\u044c \u0434\u043e\u043f\u0443\u0441\u0442\u0438\u043c\u044b\u043c \u0438\u043c\u0435\u043d\u0435\u043c NCName"},
 
+    { ER_NAME_CANT_START_WITH_COLON,
+      "\u0418\u043c\u044f \u043d\u0435 \u043c\u043e\u0436\u0435\u0442 \u043d\u0430\u0447\u0438\u043d\u0430\u0442\u044c\u0441\u044f \u0441 \u0434\u0432\u043e\u0435\u0442\u043e\u0447\u0438\u044f"},
+
     { "BAD_CODE", "\u041f\u0430\u0440\u0430\u043c\u0435\u0442\u0440 createMessage \u043b\u0435\u0436\u0438\u0442 \u0432\u043d\u0435 \u0434\u043e\u043f\u0443\u0441\u0442\u0438\u043c\u043e\u0433\u043e \u0434\u0438\u0430\u043f\u0430\u0437\u043e\u043d\u0430"},
     { "FORMAT_FAILED", "\u0418\u0441\u043a\u043b\u044e\u0447\u0438\u0442\u0435\u043b\u044c\u043d\u0430\u044f \u0441\u0438\u0442\u0443\u0430\u0446\u0438\u044f \u043f\u0440\u0438 \u0432\u044b\u0437\u043e\u0432\u0435 messageFormat"},
-    { "line", "\u041d\u043e\u043c\u0435\u0440 \u0441\u0442\u0440\u043e\u043a\u0438"},
-    { "column","\u041d\u043e\u043c\u0435\u0440 \u0441\u0442\u043e\u043b\u0431\u0446\u0430"},
-
-    {ER_SERIALIZER_NOT_CONTENTHANDLER,
-      "\u041a\u043b\u0430\u0441\u0441 \u0441\u0435\u0440\u0438\u0430\u043b\u0438\u0437\u0430\u0442\u043e\u0440\u0430 ''{0}'' \u043d\u0435 \u0440\u0435\u0430\u043b\u0438\u0437\u0443\u0435\u0442 org.xml.sax.ContentHandler."},
-
-    {ER_RESOURCE_COULD_NOT_FIND,
-      "\u0420\u0435\u0441\u0443\u0440\u0441 [ {0} ] \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d.\n{1}" },
-
-    {ER_RESOURCE_COULD_NOT_LOAD,
-      "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c \u0440\u0435\u0441\u0443\u0440\u0441 [ {0} ]: {1} \n {2} \t {3}" },
-
-    {ER_BUFFER_SIZE_LESSTHAN_ZERO,
-      "\u0420\u0430\u0437\u043c\u0435\u0440 \u0431\u0443\u0444\u0435\u0440\u0430 <=0" },
-
-    {ER_INVALID_UTF16_SURROGATE,
-      "\u041e\u0431\u043d\u0430\u0440\u0443\u0436\u0435\u043d\u043e \u043d\u0435\u0434\u043e\u043f\u0443\u0441\u0442\u0438\u043c\u043e\u0435 \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0435 UTF-16: {0} ?" },
-
-    {ER_OIERROR,
-      "\u041e\u0448\u0438\u0431\u043a\u0430 \u0432\u0432\u043e\u0434\u0430-\u0432\u044b\u0432\u043e\u0434\u0430" },
-
-    {ER_ILLEGAL_ATTRIBUTE_POSITION,
-      "\u041d\u0435\u0432\u043e\u0437\u043c\u043e\u0436\u043d\u043e \u0434\u043e\u0431\u0430\u0432\u0438\u0442\u044c \u0430\u0442\u0440\u0438\u0431\u0443\u0442 {0} \u043f\u043e\u0441\u043b\u0435 \u0434\u043e\u0447\u0435\u0440\u043d\u0438\u0445 \u0443\u0437\u043b\u043e\u0432 \u0438\u043b\u0438 \u043f\u0435\u0440\u0435\u0434 \u0441\u043e\u0437\u0434\u0430\u043d\u0438\u0435\u043c \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u0430. \u0410\u0442\u0440\u0438\u0431\u0443\u0442 \u0431\u0443\u0434\u0435\u0442 \u043f\u0440\u043e\u0438\u0433\u043d\u043e\u0440\u0438\u0440\u043e\u0432\u0430\u043d. "},
-
-      /*
-       * Note to translators:  The stylesheet contained a reference to a
-       * namespace prefix that was undefined.  The value of the substitution
-       * text is the name of the prefix.
-       */
-    {ER_NAMESPACE_PREFIX,
-      "\u041f\u0440\u043e\u0441\u0442\u0440\u0430\u043d\u0441\u0442\u0432\u043e \u0438\u043c\u0435\u043d \u0434\u043b\u044f \u043f\u0440\u0435\u0444\u0438\u043a\u0441\u0430 ''{0}'' \u043d\u0435 \u043e\u0431\u044a\u044f\u0432\u043b\u0435\u043d\u043e." },
-      /*
-       * Note to translators:  This message is reported if the stylesheet
-       * being processed attempted to construct an XML document with an
-       * attribute in a place other than on an element.  The substitution text
-       * specifies the name of the attribute.
-       */
-    {ER_STRAY_ATTRIBUTE,
-      "\u0410\u0442\u0440\u0438\u0431\u0443\u0442 ''{0}'' \u0432\u043d\u0435 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u0430." },
-
-      /*
-       * Note to translators:  As with the preceding message, a namespace
-       * declaration has the form of an attribute and is only permitted to
-       * appear on an element.  The substitution text {0} is the namespace
-       * prefix and {1} is the URI that was being used in the erroneous
-       * namespace declaration.
-       */
-    {ER_STRAY_NAMESPACE,
-      "\u041e\u0431\u044a\u044f\u0432\u043b\u0435\u043d\u0438\u0435 \u043f\u0440\u043e\u0441\u0442\u0440\u0430\u043d\u0441\u0442\u0432\u0430 \u0438\u043c\u0435\u043d ''{0}''=''{1}'' \u0432\u043d\u0435 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u0430." },
-
-    {ER_COULD_NOT_LOAD_RESOURCE,
-      "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c ''{0}'' (\u043f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 CLASSPATH), \u043f\u0440\u0438\u043c\u0435\u043d\u044f\u044e\u0442\u0441\u044f \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u044f \u043f\u043e \u0443\u043c\u043e\u043b\u0447\u0430\u043d\u0438\u044e"},
-
-    {ER_COULD_NOT_LOAD_METHOD_PROPERTY,
-      "\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c \u0444\u0430\u0439\u043b \u0441\u0432\u043e\u0439\u0441\u0442\u0432 ''{0}'' \u0434\u043b\u044f \u043c\u0435\u0442\u043e\u0434\u0430 \u0432\u044b\u0432\u043e\u0434\u0430 ''{1}'' (\u043f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 CLASSPATH)" }
+    { "line", "\u041d\u043e\u043c\u0435\u0440 \u0441\u0442\u0440\u043e\u043a\u0438 "},
+    { "column","\u041d\u043e\u043c\u0435\u0440 \u0441\u0442\u043e\u043b\u0431\u0446\u0430 "}
 
 
   };

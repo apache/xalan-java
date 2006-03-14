@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,19 +75,6 @@ public class XMLErrorResources_pl extends ListResourceBundle
  *
  */
 
-  /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 61;
-
-  /** Maximum warnings, this is needed to keep track of the number of warnings.          */
-  public static final int MAX_WARNING = 0;
-
-  /** Maximum misc strings.   */
-  public static final int MAX_OTHERS = 4;
-
-  /** Maximum total warnings and error messages.          */
-  public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
-
-
   /*
    * Message keys
    */
@@ -152,20 +139,7 @@ public class XMLErrorResources_pl extends ListResourceBundle
   public static final String ER_ARG_LOCALNAME_NULL = "ER_ARG_LOCALNAME_NULL";
   public static final String ER_ARG_LOCALNAME_INVALID = "ER_ARG_LOCALNAME_INVALID";
   public static final String ER_ARG_PREFIX_INVALID = "ER_ARG_PREFIX_INVALID";
-
-  // Message keys used by the serializer
-  public static final String ER_RESOURCE_COULD_NOT_FIND = "ER_RESOURCE_COULD_NOT_FIND";
-  public static final String ER_RESOURCE_COULD_NOT_LOAD = "ER_RESOURCE_COULD_NOT_LOAD";
-  public static final String ER_BUFFER_SIZE_LESSTHAN_ZERO = "ER_BUFFER_SIZE_LESSTHAN_ZERO";
-  public static final String ER_INVALID_UTF16_SURROGATE = "ER_INVALID_UTF16_SURROGATE";
-  public static final String ER_OIERROR = "ER_OIERROR";
-  public static final String ER_NAMESPACE_PREFIX = "ER_NAMESPACE_PREFIX";
-  public static final String ER_STRAY_ATTRIBUTE = "ER_STRAY_ATTIRBUTE";
-  public static final String ER_STRAY_NAMESPACE = "ER_STRAY_NAMESPACE";
-  public static final String ER_COULD_NOT_LOAD_RESOURCE = "ER_COULD_NOT_LOAD_RESOURCE";
-  public static final String ER_COULD_NOT_LOAD_METHOD_PROPERTY = "ER_COULD_NOT_LOAD_METHOD_PROPERTY";
-  public static final String ER_SERIALIZER_NOT_CONTENTHANDLER = "ER_SERIALIZER_NOT_CONTENTHANDLER";
-  public static final String ER_ILLEGAL_ATTRIBUTE_POSITION = "ER_ILLEGAL_ATTRIBUTE_POSITION";
+  public static final String ER_NAME_CANT_START_WITH_COLON = "ER_NAME_CANT_START_WITH_COLON";
 
   /*
    * Now fill in the message text.
@@ -221,10 +195,10 @@ public class XMLErrorResources_pl extends ListResourceBundle
       "Nie mo\u017cna wywo\u0142a\u0107 parse podczas analizowania"},
 
     { ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED,
-      "B\u0142\u0105d: iterator okre\u015blonego typu dla osi {0} nie jest zaimplementowany"},
+      "B\u0142\u0105d: Iterator okre\u015blonego typu dla osi {0} nie jest zaimplementowany"},
 
     { ER_ITERATOR_AXIS_NOT_IMPLEMENTED,
-      "B\u0142\u0105d: iterator dla osi {0} nie jest zaimplementowany"},
+      "B\u0142\u0105d: Iterator dla osi {0} nie jest zaimplementowany"},
 
     { ER_ITERATOR_CLONE_NOT_SUPPORTED,
       "Kopia iteratora nie jest obs\u0142ugiwana"},
@@ -260,7 +234,7 @@ public class XMLErrorResources_pl extends ListResourceBundle
        "wyj\u0105tek podczas tworzenia nowej instancji dla puli"},
 
     { ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
-       "\u015acie\u017cka zawiera niepoprawn\u0105 sekwencj\u0119 o zmienionym znaczeniu"},
+       "\u015acie\u017cka zawiera nieznan\u0105 sekwencj\u0119 o zmienionym znaczeniu"},
 
     { ER_SCHEME_REQUIRED,
        "Schemat jest wymagany!"},
@@ -305,7 +279,7 @@ public class XMLErrorResources_pl extends ListResourceBundle
       "Nie mo\u017cna zmieni\u0107 {0} {1} podczas analizowania"},
 
     { ER_SELF_CAUSATION_NOT_PERMITTED,
-      "Powodowanie siebie jest niedozwolone"},
+      "Bycie w\u0142asn\u0105 przyczyn\u0105 jest niedozwolone"},
 
     { ER_NO_USERINFO_IF_NO_HOST,
       "Nie mo\u017cna poda\u0107 informacji o u\u017cytkowniku, je\u015bli nie podano hosta"},
@@ -329,7 +303,7 @@ public class XMLErrorResources_pl extends ListResourceBundle
       "IncrementalSAXSource_Filter nie jest obecnie mo\u017cliwy do ponownego uruchomienia"},
 
     { ER_XMLRDR_NOT_BEFORE_STARTPARSE,
-      "XMLReader nie przed \u017c\u0105daniem startParse"},
+      "XMLReader nie mo\u017ce wyst\u0105pi\u0107 przed \u017c\u0105daniem startParse"},
 
     { ER_AXIS_TRAVERSER_NOT_SUPPORTED,
       "Nieobs\u0142ugiwane przej\u015bcie osi: {0}"},
@@ -350,13 +324,13 @@ public class XMLErrorResources_pl extends ListResourceBundle
       "Funkcja createDocument() nie jest obs\u0142ugiwana w XPathContext!"},
 
     { ER_CHILD_HAS_NO_OWNER_DOCUMENT,
-      "Potomek atrybutu nie ma dokumentu w\u0142a\u015bciciela!"},
+      "Bezpo\u015bredni element potomny atrybutu nie ma dokumentu w\u0142a\u015bciciela!"},
 
     { ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT,
-      "Potomek atrybutu nie ma elementu dokumentu w\u0142a\u015bciciela!"},
+      "Bezpo\u015bredni element potomny atrybutu nie ma elementu dokumentu w\u0142a\u015bciciela!"},
 
     { ER_CANT_OUTPUT_TEXT_BEFORE_DOC,
-      "Ostrze\u017cenie: nie mo\u017cna wyprowadzi\u0107 tekstu przed elementem dokumentu!  Ignoruj\u0119..."},
+      "Ostrze\u017cenie: Nie mo\u017cna wyprowadzi\u0107 tekstu przed elementem dokumentu!  Ignorowanie..."},
 
     { ER_CANT_HAVE_MORE_THAN_ONE_ROOT,
       "Nie mo\u017cna mie\u0107 wi\u0119cej ni\u017c jeden element g\u0142\u00f3wny w DOM!"},
@@ -376,63 +350,13 @@ public class XMLErrorResources_pl extends ListResourceBundle
     { ER_ARG_PREFIX_INVALID,
        "Przedrostek w QNAME powinien by\u0107 poprawn\u0105 nazw\u0105 NCName"},
 
+    { ER_NAME_CANT_START_WITH_COLON,
+      "Nazwa nie mo\u017ce rozpoczyna\u0107 si\u0119 od dwukropka"},
+
     { "BAD_CODE", "Parametr createMessage by\u0142 spoza zakresu"},
     { "FORMAT_FAILED", "Podczas wywo\u0142ania messageFormat zg\u0142oszony zosta\u0142 wyj\u0105tek"},
-    { "line", "Wiersz: "},
-    { "column","Kolumna "},
-
-    {ER_SERIALIZER_NOT_CONTENTHANDLER,
-      "Klasa szereguj\u0105ca ''{0}'' nie implementuje procedury obs\u0142ugi org.xml.sax.ContentHandler."},
-
-    {ER_RESOURCE_COULD_NOT_FIND,
-      "Nie mo\u017cna znale\u017a\u0107 zasobu [ {0} ].\n {1}" },
-
-    {ER_RESOURCE_COULD_NOT_LOAD,
-      "Zas\u00f3b [ {0} ] nie m\u00f3g\u0142 za\u0142adowa\u0107: {1} \n {2} \t {3}" },
-
-    {ER_BUFFER_SIZE_LESSTHAN_ZERO,
-      "Wielko\u015b\u0107 bufora <=0" },
-
-    {ER_INVALID_UTF16_SURROGATE,
-      "Wykryto niepoprawny surogat UTF-16: {0} ?" },
-
-    {ER_OIERROR,
-      "B\u0142\u0105d we/wy" },
-
-    {ER_ILLEGAL_ATTRIBUTE_POSITION,
-      "Nie mo\u017cna doda\u0107 atrybutu {0} po w\u0119z\u0142ach potomnych ani przed wyprodukowaniem elementu.  Atrybut zostanie zignorowany."},
-
-      /*
-       * Note to translators:  The stylesheet contained a reference to a
-       * namespace prefix that was undefined.  The value of the substitution
-       * text is the name of the prefix.
-       */
-    {ER_NAMESPACE_PREFIX,
-      "Nie zadeklarowano przestrzeni nazw dla przedrostka ''{0}''." },
-      /*
-       * Note to translators:  This message is reported if the stylesheet
-       * being processed attempted to construct an XML document with an
-       * attribute in a place other than on an element.  The substitution text
-       * specifies the name of the attribute.
-       */
-    {ER_STRAY_ATTRIBUTE,
-      "Atrybut ''{0}'' poza elementem." },
-
-      /*
-       * Note to translators:  As with the preceding message, a namespace
-       * declaration has the form of an attribute and is only permitted to
-       * appear on an element.  The substitution text {0} is the namespace
-       * prefix and {1} is the URI that was being used in the erroneous
-       * namespace declaration.
-       */
-    {ER_STRAY_NAMESPACE,
-      "Deklaracja przestrzeni nazw ''{0}''=''{1}'' poza elementem." },
-
-    {ER_COULD_NOT_LOAD_RESOURCE,
-      "Nie mo\u017cna za\u0142adowa\u0107 ''{0}'' (sprawd\u017a CLASSPATH), u\u017cywane s\u0105 teraz warto\u015bci domy\u015blne"},
-
-    {ER_COULD_NOT_LOAD_METHOD_PROPERTY,
-      "Nie mo\u017cna za\u0142adowa\u0107 pliku w\u0142a\u015bciwo\u015bci ''{0}'' dla metody wyj\u015bciowej ''{1}'' (sprawd\u017a CLASSPATH)" }
+    { "line", "Nr wiersza: "},
+    { "column","Nr kolumny: "}
 
 
   };

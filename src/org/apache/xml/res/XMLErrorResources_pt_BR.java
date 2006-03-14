@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,19 +75,6 @@ public class XMLErrorResources_pt_BR extends ListResourceBundle
  *
  */
 
-  /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 61;
-
-  /** Maximum warnings, this is needed to keep track of the number of warnings.          */
-  public static final int MAX_WARNING = 0;
-
-  /** Maximum misc strings.   */
-  public static final int MAX_OTHERS = 4;
-
-  /** Maximum total warnings and error messages.          */
-  public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
-
-
   /*
    * Message keys
    */
@@ -152,20 +139,7 @@ public class XMLErrorResources_pt_BR extends ListResourceBundle
   public static final String ER_ARG_LOCALNAME_NULL = "ER_ARG_LOCALNAME_NULL";
   public static final String ER_ARG_LOCALNAME_INVALID = "ER_ARG_LOCALNAME_INVALID";
   public static final String ER_ARG_PREFIX_INVALID = "ER_ARG_PREFIX_INVALID";
-
-  // Message keys used by the serializer
-  public static final String ER_RESOURCE_COULD_NOT_FIND = "ER_RESOURCE_COULD_NOT_FIND";
-  public static final String ER_RESOURCE_COULD_NOT_LOAD = "ER_RESOURCE_COULD_NOT_LOAD";
-  public static final String ER_BUFFER_SIZE_LESSTHAN_ZERO = "ER_BUFFER_SIZE_LESSTHAN_ZERO";
-  public static final String ER_INVALID_UTF16_SURROGATE = "ER_INVALID_UTF16_SURROGATE";
-  public static final String ER_OIERROR = "ER_OIERROR";
-  public static final String ER_NAMESPACE_PREFIX = "ER_NAMESPACE_PREFIX";
-  public static final String ER_STRAY_ATTRIBUTE = "ER_STRAY_ATTIRBUTE";
-  public static final String ER_STRAY_NAMESPACE = "ER_STRAY_NAMESPACE";
-  public static final String ER_COULD_NOT_LOAD_RESOURCE = "ER_COULD_NOT_LOAD_RESOURCE";
-  public static final String ER_COULD_NOT_LOAD_METHOD_PROPERTY = "ER_COULD_NOT_LOAD_METHOD_PROPERTY";
-  public static final String ER_SERIALIZER_NOT_CONTENTHANDLER = "ER_SERIALIZER_NOT_CONTENTHANDLER";
-  public static final String ER_ILLEGAL_ATTRIBUTE_POSITION = "ER_ILLEGAL_ATTRIBUTE_POSITION";
+  public static final String ER_NAME_CANT_START_WITH_COLON = "ER_NAME_CANT_START_WITH_COLON";
 
   /*
    * Now fill in the message text.
@@ -215,7 +189,7 @@ public class XMLErrorResources_pt_BR extends ListResourceBundle
       "Erro de par\u00e2metro coroutine ({0})"},
 
     { ER_PARSER_DOTERMINATE_ANSWERS,
-      "\nINESPERADO: doTerminate do analizador respondeu {0}"},
+      "\nINESPERADO: doTerminate do analisador respondeu {0}"},
 
     { ER_NO_PARSE_CALL_WHILE_PARSING,
       "parse n\u00e3o pode ser chamado durante an\u00e1lise"},
@@ -344,7 +318,7 @@ public class XMLErrorResources_pt_BR extends ListResourceBundle
       "Localiza\u00e7\u00e3o de erro desconhecido"},
 
     { ER_PREFIX_MUST_RESOLVE,
-      "O prefixo deve ser resolvido para um namespace: {0}"},
+      "O prefixo deve ser resolvido para um espa\u00e7o de nomes: {0}"},
 
     { ER_CREATEDOCUMENT_NOT_SUPPORTED,
       "createDocument() n\u00e3o suportado em XPathContext!"},
@@ -376,63 +350,13 @@ public class XMLErrorResources_pt_BR extends ListResourceBundle
     { ER_ARG_PREFIX_INVALID,
        "O prefixo em QNAME deve ser um NCName v\u00e1lido"},
 
+    { ER_NAME_CANT_START_WITH_COLON,
+      "O nome n\u00e3o pode come\u00e7ar com um caractere de dois pontos (:)"},
+
     { "BAD_CODE", "O par\u00e2metro para createMessage estava fora dos limites"},
     { "FORMAT_FAILED", "Exce\u00e7\u00e3o emitida durante chamada messageFormat"},
     { "line", "Linha n\u00b0"},
-    { "column","Coluna n\u00b0"},
-
-    {ER_SERIALIZER_NOT_CONTENTHANDLER,
-      "A classe de serializador ''{0}'' n\u00e3o implementa org.xml.sax.ContentHandler."},
-
-    {ER_RESOURCE_COULD_NOT_FIND,
-      "O recurso [ {0} ] n\u00e3o p\u00f4de ser encontrado.\n {1}" },
-
-    {ER_RESOURCE_COULD_NOT_LOAD,
-      "O recurso [ {0} ] n\u00e3o p\u00f4de carregar: {1} \n {2} \t {3}" },
-
-    {ER_BUFFER_SIZE_LESSTHAN_ZERO,
-      "Tamanho do buffer <=0" },
-
-    {ER_INVALID_UTF16_SURROGATE,
-      "Detectado substituto UTF-16 inv\u00e1lido: {0} ?" },
-
-    {ER_OIERROR,
-      "Erro de E/S" },
-
-    {ER_ILLEGAL_ATTRIBUTE_POSITION,
-      "Imposs\u00edvel incluir atributo {0} depois de n\u00f3s filhos ou antes da gera\u00e7\u00e3o de um elemento. O atributo ser\u00e1 ignorado."},
-
-      /*
-       * Note to translators:  The stylesheet contained a reference to a
-       * namespace prefix that was undefined.  The value of the substitution
-       * text is the name of the prefix.
-       */
-    {ER_NAMESPACE_PREFIX,
-      "Namespace para prefixo ''{0}'' n\u00e3o foi declarado. " },
-      /*
-       * Note to translators:  This message is reported if the stylesheet
-       * being processed attempted to construct an XML document with an
-       * attribute in a place other than on an element.  The substitution text
-       * specifies the name of the attribute.
-       */
-    {ER_STRAY_ATTRIBUTE,
-      "Atributo ''{0}'' fora do elemento. " },
-
-      /*
-       * Note to translators:  As with the preceding message, a namespace
-       * declaration has the form of an attribute and is only permitted to
-       * appear on an element.  The substitution text {0} is the namespace
-       * prefix and {1} is the URI that was being used in the erroneous
-       * namespace declaration.
-       */
-    {ER_STRAY_NAMESPACE,
-      "Declara\u00e7\u00e3o de namespace ''{0}''=''{1}'' fora do elemento. " },
-
-    {ER_COULD_NOT_LOAD_RESOURCE,
-      "N\u00e3o foi poss\u00edvel carregar ''{0}'' (verifique CLASSPATH), utilizando agora somente os padr\u00f5es"},
-
-    {ER_COULD_NOT_LOAD_METHOD_PROPERTY,
-      "N\u00e3o foi poss\u00edvel carregar o arquivo de propriedade ''{0}'' para o m\u00e9todo de sa\u00edda ''{1}'' (verifique CLASSPATH)" }
+    { "column","Coluna n\u00b0"}
 
 
   };

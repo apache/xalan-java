@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,19 +75,6 @@ public class XMLErrorResources_it extends ListResourceBundle
  *
  */
 
-  /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 61;
-
-  /** Maximum warnings, this is needed to keep track of the number of warnings.          */
-  public static final int MAX_WARNING = 0;
-
-  /** Maximum misc strings.   */
-  public static final int MAX_OTHERS = 4;
-
-  /** Maximum total warnings and error messages.          */
-  public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
-
-
   /*
    * Message keys
    */
@@ -152,20 +139,7 @@ public class XMLErrorResources_it extends ListResourceBundle
   public static final String ER_ARG_LOCALNAME_NULL = "ER_ARG_LOCALNAME_NULL";
   public static final String ER_ARG_LOCALNAME_INVALID = "ER_ARG_LOCALNAME_INVALID";
   public static final String ER_ARG_PREFIX_INVALID = "ER_ARG_PREFIX_INVALID";
-
-  // Message keys used by the serializer
-  public static final String ER_RESOURCE_COULD_NOT_FIND = "ER_RESOURCE_COULD_NOT_FIND";
-  public static final String ER_RESOURCE_COULD_NOT_LOAD = "ER_RESOURCE_COULD_NOT_LOAD";
-  public static final String ER_BUFFER_SIZE_LESSTHAN_ZERO = "ER_BUFFER_SIZE_LESSTHAN_ZERO";
-  public static final String ER_INVALID_UTF16_SURROGATE = "ER_INVALID_UTF16_SURROGATE";
-  public static final String ER_OIERROR = "ER_OIERROR";
-  public static final String ER_NAMESPACE_PREFIX = "ER_NAMESPACE_PREFIX";
-  public static final String ER_STRAY_ATTRIBUTE = "ER_STRAY_ATTIRBUTE";
-  public static final String ER_STRAY_NAMESPACE = "ER_STRAY_NAMESPACE";
-  public static final String ER_COULD_NOT_LOAD_RESOURCE = "ER_COULD_NOT_LOAD_RESOURCE";
-  public static final String ER_COULD_NOT_LOAD_METHOD_PROPERTY = "ER_COULD_NOT_LOAD_METHOD_PROPERTY";
-  public static final String ER_SERIALIZER_NOT_CONTENTHANDLER = "ER_SERIALIZER_NOT_CONTENTHANDLER";
-  public static final String ER_ILLEGAL_ATTRIBUTE_POSITION = "ER_ILLEGAL_ATTRIBUTE_POSITION";
+  public static final String ER_NAME_CANT_START_WITH_COLON = "ER_NAME_CANT_START_WITH_COLON";
 
   /*
    * Now fill in the message text.
@@ -218,13 +192,13 @@ public class XMLErrorResources_it extends ListResourceBundle
       "\nNON PREVISTO: Risposte doTerminate del parser {0}"},
 
     { ER_NO_PARSE_CALL_WHILE_PARSING,
-      "impossibile richiamare l'analisi durante l''analisi"},
+      "impossibile richiamare l'analisi durante l'analisi"},
 
     { ER_TYPED_ITERATOR_AXIS_NOT_IMPLEMENTED,
-      "Errore: iteratore immesso per l''asse {0} non implementato "},
+      "Errore: iteratore immesso per l''''asse {0} non implementato"},
 
     { ER_ITERATOR_AXIS_NOT_IMPLEMENTED,
-      "Errore: iteratore per l''asse {0} non implementato "},
+      "Errore: iteratore per l''''asse {0} non implementato "},
 
     { ER_ITERATOR_CLONE_NOT_SUPPORTED,
       "Clone iteratore non supportato"},
@@ -233,7 +207,7 @@ public class XMLErrorResources_it extends ListResourceBundle
       "Tipo trasversale di asse sconosciuto: {0}"},
 
     { ER_AXIS_NOT_SUPPORTED,
-      "Trasversale dell''asse non supportato: {0}"},
+      "Trasversale dell''''asse non supportato: {0}"},
 
     { ER_NO_DTMIDS_AVAIL,
       "Non vi sono ulteriori ID DTM disponibili"},
@@ -266,7 +240,7 @@ public class XMLErrorResources_it extends ListResourceBundle
        "Lo schema \u00e8 obbligatorio."},
 
     { ER_NO_SCHEME_IN_URI,
-       "Nessuno schema trovato nell''URI: {0}"},
+       "Nessuno schema trovato nell''''URI: {0}"},
 
     { ER_NO_SCHEME_INURI,
        "Non \u00e8 stato trovato alcuno schema nell'URI"},
@@ -302,7 +276,7 @@ public class XMLErrorResources_it extends ListResourceBundle
       "Parser gi\u00e0 in utilizzo"},
 
     { ER_CANNOT_CHANGE_WHILE_PARSING,
-      "Impossibile modificare {0} {1} durante l''analisi"},
+      "Impossibile modificare {0} {1} durante l''''analisi"},
 
     { ER_SELF_CAUSATION_NOT_PERMITTED,
       "Self-causation non consentito"},
@@ -332,7 +306,7 @@ public class XMLErrorResources_it extends ListResourceBundle
       "XMLReader non si trova prima della richiesta startParse"},
 
     { ER_AXIS_TRAVERSER_NOT_SUPPORTED,
-      "Trasversale dell''asse non supportato: {0}"},
+      "Trasversale dell''''asse non supportato: {0}"},
 
     { ER_ERRORHANDLER_CREATED_WITH_NULL_PRINTWRITER,
       "ListingErrorHandler creato con PrintWriter nullo."},
@@ -344,19 +318,19 @@ public class XMLErrorResources_it extends ListResourceBundle
       "Posizione di errore sconosciuta"},
 
     { ER_PREFIX_MUST_RESOLVE,
-      "Il prefisso deve risolvere in uno spazio nomi: {0}"},
+      "Il prefisso deve risolvere in uno namespace: {0}"},
 
     { ER_CREATEDOCUMENT_NOT_SUPPORTED,
       "createDocument() non supportato in XPathContext!"},
 
     { ER_CHILD_HAS_NO_OWNER_DOCUMENT,
-      "Il secondario dell'attributo non ha un documento proprietario."},
+      "Il child dell'attributo non ha un documento proprietario."},
 
     { ER_CHILD_HAS_NO_OWNER_DOCUMENT_ELEMENT,
-      "Il secondario dell'attributo non ha un elemento del documento proprietario."},
+      "Il child dell'attributo non ha un elemento del documento proprietario."},
 
     { ER_CANT_OUTPUT_TEXT_BEFORE_DOC,
-      "Attenzione: impossibile emettere testo prima dell'elemento del documento. Operazione ignorata..."},
+      "Attenzione: impossibile emettere testo prima dell'elemento del documento.  Operazione ignorata..."},
 
     { ER_CANT_HAVE_MORE_THAN_ONE_ROOT,
       "Impossibile avere pi\u00f9 di una root in un DOM!"},
@@ -368,71 +342,21 @@ public class XMLErrorResources_it extends ListResourceBundle
     // The localname is the portion after the optional colon; the message indicates
     // that there is a problem with that part of the QNAME.
     { ER_ARG_LOCALNAME_INVALID,
-       "Localname in QNAME deve essere un NCName valido "},
+       "Localname in QNAME deve essere un NCName valido"},
 
     // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
     // The prefix is the portion before the optional colon; the message indicates
     // that there is a problem with that part of the QNAME.
     { ER_ARG_PREFIX_INVALID,
-       "Prefix in QNAME deve essere un NCName valido "},
+       "Prefix in QNAME deve essere un NCName valido"},
+
+    { ER_NAME_CANT_START_WITH_COLON,
+      "Il nome non pu\u00f2 iniziare con un carattere di due punti"},
 
     { "BAD_CODE", "Il parametro per createMessage fuori limite"},
     { "FORMAT_FAILED", "Rilevata eccezione durante la chiamata messageFormat"},
     { "line", "Riga #"},
-    { "column","Colonna #"},
-
-    {ER_SERIALIZER_NOT_CONTENTHANDLER,
-      "La classe serializer ''{0}'' non implementa org.xml.sax.ContentHandler."},
-
-    {ER_RESOURCE_COULD_NOT_FIND,
-      "Risorsa [ {0} ] non trovata.\n {1}" },
-
-    {ER_RESOURCE_COULD_NOT_LOAD,
-      "Impossibile caricare la risorsa [ {0} ]: {1} \n {2} \t {3}" },
-
-    {ER_BUFFER_SIZE_LESSTHAN_ZERO,
-      "Dimensione buffer <=0" },
-
-    {ER_INVALID_UTF16_SURROGATE,
-      "Rilevato surrogato UTF-16 non valido: {0} ?" },
-
-    {ER_OIERROR,
-      "Errore IO" },
-
-    {ER_ILLEGAL_ATTRIBUTE_POSITION,
-      "Impossibile aggiungere l''attributo {0} dopo i nodi secondari o prima che sia prodotto un elemento. L''attributo verr\u00e0 ignorato. "},
-
-      /*
-       * Note to translators:  The stylesheet contained a reference to a
-       * namespace prefix that was undefined.  The value of the substitution
-       * text is the name of the prefix.
-       */
-    {ER_NAMESPACE_PREFIX,
-      "Lo spazio nomi per il prefisso ''{0}'' non \u00e8 stato dichiarato. " },
-      /*
-       * Note to translators:  This message is reported if the stylesheet
-       * being processed attempted to construct an XML document with an
-       * attribute in a place other than on an element.  The substitution text
-       * specifies the name of the attribute.
-       */
-    {ER_STRAY_ATTRIBUTE,
-      "Attributo ''{0}'' al di fuori dell''elemento. " },
-
-      /*
-       * Note to translators:  As with the preceding message, a namespace
-       * declaration has the form of an attribute and is only permitted to
-       * appear on an element.  The substitution text {0} is the namespace
-       * prefix and {1} is the URI that was being used in the erroneous
-       * namespace declaration.
-       */
-    {ER_STRAY_NAMESPACE,
-      "Dichiarazione dello spazio nome ''{0}''=''{1}'' al di fuori dell''elemento. " },
-
-    {ER_COULD_NOT_LOAD_RESOURCE,
-      "Impossibile caricare ''{0}'' (verificare CLASSPATH); verranno utilizzati i valori predefiniti "},
-
-    {ER_COULD_NOT_LOAD_METHOD_PROPERTY,
-      "Impossibile caricare il file delle propriet\u00e0 ''{0}'' per il metodo di emissione ''{1}'' (verificare CLASSPATH)" }
+    { "column","Colonna #"}
 
 
   };

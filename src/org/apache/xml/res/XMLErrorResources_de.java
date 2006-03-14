@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,19 +75,6 @@ public class XMLErrorResources_de extends ListResourceBundle
  *
  */
 
-  /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 61;
-
-  /** Maximum warnings, this is needed to keep track of the number of warnings.          */
-  public static final int MAX_WARNING = 0;
-
-  /** Maximum misc strings.   */
-  public static final int MAX_OTHERS = 4;
-
-  /** Maximum total warnings and error messages.          */
-  public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
-
-
   /*
    * Message keys
    */
@@ -152,20 +139,7 @@ public class XMLErrorResources_de extends ListResourceBundle
   public static final String ER_ARG_LOCALNAME_NULL = "ER_ARG_LOCALNAME_NULL";
   public static final String ER_ARG_LOCALNAME_INVALID = "ER_ARG_LOCALNAME_INVALID";
   public static final String ER_ARG_PREFIX_INVALID = "ER_ARG_PREFIX_INVALID";
-
-  // Message keys used by the serializer
-  public static final String ER_RESOURCE_COULD_NOT_FIND = "ER_RESOURCE_COULD_NOT_FIND";
-  public static final String ER_RESOURCE_COULD_NOT_LOAD = "ER_RESOURCE_COULD_NOT_LOAD";
-  public static final String ER_BUFFER_SIZE_LESSTHAN_ZERO = "ER_BUFFER_SIZE_LESSTHAN_ZERO";
-  public static final String ER_INVALID_UTF16_SURROGATE = "ER_INVALID_UTF16_SURROGATE";
-  public static final String ER_OIERROR = "ER_OIERROR";
-  public static final String ER_NAMESPACE_PREFIX = "ER_NAMESPACE_PREFIX";
-  public static final String ER_STRAY_ATTRIBUTE = "ER_STRAY_ATTIRBUTE";
-  public static final String ER_STRAY_NAMESPACE = "ER_STRAY_NAMESPACE";
-  public static final String ER_COULD_NOT_LOAD_RESOURCE = "ER_COULD_NOT_LOAD_RESOURCE";
-  public static final String ER_COULD_NOT_LOAD_METHOD_PROPERTY = "ER_COULD_NOT_LOAD_METHOD_PROPERTY";
-  public static final String ER_SERIALIZER_NOT_CONTENTHANDLER = "ER_SERIALIZER_NOT_CONTENTHANDLER";
-  public static final String ER_ILLEGAL_ATTRIBUTE_POSITION = "ER_ILLEGAL_ATTRIBUTE_POSITION";
+  public static final String ER_NAME_CANT_START_WITH_COLON = "ER_NAME_CANT_START_WITH_COLON";
 
   /*
    * Now fill in the message text.
@@ -188,7 +162,7 @@ public class XMLErrorResources_de extends ListResourceBundle
     {"ER0000" , "{0}" },
 
     { ER_FUNCTION_NOT_SUPPORTED,
-      "Funktion nicht unterst\u00fctzt!"},
+      "Funktion wird nicht unterst\u00fctzt!"},
 
     { ER_CANNOT_OVERWRITE_CAUSE,
       "cause kann nicht \u00fcberschrieben werden."},
@@ -197,10 +171,10 @@ public class XMLErrorResources_de extends ListResourceBundle
       "Keine Standardimplementierung gefunden. "},
 
     { ER_CHUNKEDINTARRAY_NOT_SUPPORTED,
-      "ChunkedIntArray({0}) momentan nicht unterst\u00fctzt."},
+      "ChunkedIntArray({0}) wird derzeit nicht unterst\u00fctzt."},
 
     { ER_OFFSET_BIGGER_THAN_SLOT,
-      "Offset ist gr\u00f6\u00dfer als Bereich."},
+      "Offset ist gr\u00f6\u00dfer als der Bereich."},
 
     { ER_COROUTINE_NOT_AVAIL,
       "Koroutine nicht verf\u00fcgbar, ID: {0}."},
@@ -227,13 +201,13 @@ public class XMLErrorResources_de extends ListResourceBundle
       "Fehler: Iterator f\u00fcr Achse {0} ist nicht implementiert. "},
 
     { ER_ITERATOR_CLONE_NOT_SUPPORTED,
-      "Iterator 'clone' ist nicht unterst\u00fctzt."},
+      "Iterator 'clone' wird nicht unterst\u00fctzt."},
 
     { ER_UNKNOWN_AXIS_TYPE,
       "Unbekannter Achsentraversiertyp: {0}"},
 
     { ER_AXIS_NOT_SUPPORTED,
-      "Achsentraversierer nicht unterst\u00fctzt: {0}"},
+      "Achsentraversierer wird nicht unterst\u00fctzt: {0}"},
 
     { ER_NO_DTMIDS_AVAIL,
       "Keine weiteren Dokumenttypmodell-IDs verf\u00fcgbar"},
@@ -257,7 +231,7 @@ public class XMLErrorResources_de extends ListResourceBundle
        "Konnte Parser nicht initialisieren mit"},
 
     { ER_EXCEPTION_CREATING_POOL,
-       "Ausnahmebedingung beim Erstellen eines neuen Exemplars f\u00fcr Pool."},
+       "Ausnahmebedingung beim Erstellen einer neuen Instanz f\u00fcr Pool."},
 
     { ER_PATH_CONTAINS_INVALID_ESCAPE_SEQUENCE,
        "Der Pfad enth\u00e4lt eine ung\u00fcltige Escapezeichenfolge."},
@@ -376,63 +350,13 @@ public class XMLErrorResources_de extends ListResourceBundle
     { ER_ARG_PREFIX_INVALID,
        "Das Pr\u00e4fix in QNAME muss ein g\u00fcltiger NCName sein."},
 
+    { ER_NAME_CANT_START_WITH_COLON,
+      "Name darf nicht mit einem Doppelpunkt beginnen."},
+
     { "BAD_CODE", "Der Parameter f\u00fcr createMessage lag au\u00dferhalb des g\u00fcltigen Bereichs"},
     { "FORMAT_FAILED", "W\u00e4hrend des Aufrufs von messageFormat wurde eine Ausnahmebedingung ausgel\u00f6st"},
     { "line", "Zeilennummer"},
-    { "column","Spaltennummer"},
-
-    {ER_SERIALIZER_NOT_CONTENTHANDLER,
-      "Die Parallel-Seriell-Umsetzerklasse ''{0}'' implementiert org.xml.sax.ContentHandler nicht."},
-
-    {ER_RESOURCE_COULD_NOT_FIND,
-      "Die Ressource [ {0} ] konnte nicht gefunden werden.\n {1}" },
-
-    {ER_RESOURCE_COULD_NOT_LOAD,
-      "Die Ressource [ {0} ] konnte nicht geladen werden: {1} \n {2} \t {3}" },
-
-    {ER_BUFFER_SIZE_LESSTHAN_ZERO,
-      "Puffergr\u00f6\u00dfe <=0" },
-
-    {ER_INVALID_UTF16_SURROGATE,
-      "Ung\u00fcltige UTF-16-Ersetzung festgestellt: {0} ?" },
-
-    {ER_OIERROR,
-      "E/A-Fehler" },
-
-    {ER_ILLEGAL_ATTRIBUTE_POSITION,
-      "Attribut {0} kann nicht nach Kindknoten oder vor dem Erstellen eines Elements hinzugef\u00fcgt werden.  Das Attribut wird ignoriert."},
-
-      /*
-       * Note to translators:  The stylesheet contained a reference to a
-       * namespace prefix that was undefined.  The value of the substitution
-       * text is the name of the prefix.
-       */
-    {ER_NAMESPACE_PREFIX,
-      "Der Namensbereich f\u00fcr Pr\u00e4fix ''{0}'' wurde nicht deklariert." },
-      /*
-       * Note to translators:  This message is reported if the stylesheet
-       * being processed attempted to construct an XML document with an
-       * attribute in a place other than on an element.  The substitution text
-       * specifies the name of the attribute.
-       */
-    {ER_STRAY_ATTRIBUTE,
-      "Attribut ''{0}'' befindet sich nicht in einem Element." },
-
-      /*
-       * Note to translators:  As with the preceding message, a namespace
-       * declaration has the form of an attribute and is only permitted to
-       * appear on an element.  The substitution text {0} is the namespace
-       * prefix and {1} is the URI that was being used in the erroneous
-       * namespace declaration.
-       */
-    {ER_STRAY_NAMESPACE,
-      "Namensbereichsdeklaration ''{0}''=''{1}'' befindet sich nicht in einem Element." },
-
-    {ER_COULD_NOT_LOAD_RESOURCE,
-      "''{0}'' konnte nicht geladen werden (CLASSPATH pr\u00fcfen); es werden die Standardwerte verwendet"},
-
-    {ER_COULD_NOT_LOAD_METHOD_PROPERTY,
-      "Merkmaldatei ''{0}'' konnte f\u00fcr Ausgabemethode ''{1}'' nicht geladen werden (CLASSPATH pr\u00fcfen)" }
+    { "column","Spaltennummer"}
 
 
   };

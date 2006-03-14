@@ -1,5 +1,5 @@
 /*
- * Copyright 1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,19 +75,6 @@ public class XMLErrorResources_sk extends ListResourceBundle
  *
  */
 
-  /** Maximum error messages, this is needed to keep track of the number of messages.    */
-  public static final int MAX_CODE = 61;
-
-  /** Maximum warnings, this is needed to keep track of the number of warnings.          */
-  public static final int MAX_WARNING = 0;
-
-  /** Maximum misc strings.   */
-  public static final int MAX_OTHERS = 4;
-
-  /** Maximum total warnings and error messages.          */
-  public static final int MAX_MESSAGES = MAX_CODE + MAX_WARNING + 1;
-
-
   /*
    * Message keys
    */
@@ -152,20 +139,7 @@ public class XMLErrorResources_sk extends ListResourceBundle
   public static final String ER_ARG_LOCALNAME_NULL = "ER_ARG_LOCALNAME_NULL";
   public static final String ER_ARG_LOCALNAME_INVALID = "ER_ARG_LOCALNAME_INVALID";
   public static final String ER_ARG_PREFIX_INVALID = "ER_ARG_PREFIX_INVALID";
-
-  // Message keys used by the serializer
-  public static final String ER_RESOURCE_COULD_NOT_FIND = "ER_RESOURCE_COULD_NOT_FIND";
-  public static final String ER_RESOURCE_COULD_NOT_LOAD = "ER_RESOURCE_COULD_NOT_LOAD";
-  public static final String ER_BUFFER_SIZE_LESSTHAN_ZERO = "ER_BUFFER_SIZE_LESSTHAN_ZERO";
-  public static final String ER_INVALID_UTF16_SURROGATE = "ER_INVALID_UTF16_SURROGATE";
-  public static final String ER_OIERROR = "ER_OIERROR";
-  public static final String ER_NAMESPACE_PREFIX = "ER_NAMESPACE_PREFIX";
-  public static final String ER_STRAY_ATTRIBUTE = "ER_STRAY_ATTIRBUTE";
-  public static final String ER_STRAY_NAMESPACE = "ER_STRAY_NAMESPACE";
-  public static final String ER_COULD_NOT_LOAD_RESOURCE = "ER_COULD_NOT_LOAD_RESOURCE";
-  public static final String ER_COULD_NOT_LOAD_METHOD_PROPERTY = "ER_COULD_NOT_LOAD_METHOD_PROPERTY";
-  public static final String ER_SERIALIZER_NOT_CONTENTHANDLER = "ER_SERIALIZER_NOT_CONTENTHANDLER";
-  public static final String ER_ILLEGAL_ATTRIBUTE_POSITION = "ER_ILLEGAL_ATTRIBUTE_POSITION";
+  public static final String ER_NAME_CANT_START_WITH_COLON = "ER_NAME_CANT_START_WITH_COLON";
 
   /*
    * Now fill in the message text.
@@ -203,7 +177,7 @@ public class XMLErrorResources_sk extends ListResourceBundle
       "Offset v\u00e4\u010d\u0161\u00ed, ne\u017e z\u00e1suvka"},
 
     { ER_COROUTINE_NOT_AVAIL,
-      "Korutina nie je dostupn\u00e1, id={0}"},
+      "Ko-rutina nie je dostupn\u00e1, id={0}"},
 
     { ER_COROUTINE_CO_EXIT,
       "CoroutineManager obdr\u017eal po\u017eiadavku co_exit()"},
@@ -254,7 +228,7 @@ public class XMLErrorResources_sk extends ListResourceBundle
        "startParse potrebuje nenulov\u00fd SAXParser"},
 
     { ER_COULD_NOT_INIT_PARSER,
-       "nebolo mo\u017en\u00e9 inicializova\u0165 syntaktick\u00fd analyz\u00e1tor pomocou"},
+       "Nebolo mo\u017en\u00e9 inicializova\u0165 syntaktick\u00fd analyz\u00e1tor pomocou"},
 
     { ER_EXCEPTION_CREATING_POOL,
        "v\u00fdnimka vytv\u00e1rania novej in\u0161tancie oblasti"},
@@ -284,7 +258,7 @@ public class XMLErrorResources_sk extends ListResourceBundle
        "Hostite\u013e nie je spr\u00e1vne form\u00e1tovan\u00e1 adresa"},
 
     { ER_PORT_WHEN_HOST_NULL,
-       "Nem\u00f4\u017ee by\u0165 stanoven\u00fd port, ak je hostite\u013e null"},
+       "Nem\u00f4\u017ee by\u0165 stanoven\u00fd port, ak je hostite\u013e nulov\u00fd"},
 
     { ER_INVALID_PORT,
        "Neplatn\u00e9 \u010d\u00edslo portu"},
@@ -362,7 +336,7 @@ public class XMLErrorResources_sk extends ListResourceBundle
       "Nie je mo\u017en\u00e9 ma\u0165 viac, ne\u017e jeden kore\u0148 DOM!"},
 
     { ER_ARG_LOCALNAME_NULL,
-       "Argument 'localName' je null"},
+       "Argument 'localName' je nulov\u00fd"},
 
     // Note to translators:  A QNAME has the syntactic form [NCName:]NCName
     // The localname is the portion after the optional colon; the message indicates
@@ -376,63 +350,13 @@ public class XMLErrorResources_sk extends ListResourceBundle
     { ER_ARG_PREFIX_INVALID,
        "Predpona v QNAME by mala by\u0165 platn\u00fdm NCName"},
 
+    { ER_NAME_CANT_START_WITH_COLON,
+      "N\u00e1zov sa nem\u00f4\u017ee za\u010d\u00edna\u0165 dvojbodkou."},
+
     { "BAD_CODE", "Parameter na createMessage bol mimo ohrani\u010denia"},
     { "FORMAT_FAILED", "V\u00fdnimka po\u010das volania messageFormat"},
     { "line", "Riadok #"},
-    { "column","St\u013apec #"},
-
-    {ER_SERIALIZER_NOT_CONTENTHANDLER,
-      "Trieda serializ\u00e1tora ''{0}'' neimplementuje org.xml.sax.ContentHandler."},
-
-    {ER_RESOURCE_COULD_NOT_FIND,
-      "Prostriedok [ {0} ] nemohol by\u0165 n\u00e1jden\u00fd.\n {1}" },
-
-    {ER_RESOURCE_COULD_NOT_LOAD,
-      "Prostriedok [ {0} ] sa nedal na\u010d\u00edta\u0165: {1} \n {2} \t {3}" },
-
-    {ER_BUFFER_SIZE_LESSTHAN_ZERO,
-      "Ve\u013ekos\u0165 vyrovn\u00e1vacej pam\u00e4te <=0" },
-
-    {ER_INVALID_UTF16_SURROGATE,
-      "Bolo zisten\u00e9 neplatn\u00e9 nahradenie UTF-16: {0} ?" },
-
-    {ER_OIERROR,
-      "chyba IO" },
-
-    {ER_ILLEGAL_ATTRIBUTE_POSITION,
-      "Nie je mo\u017en\u00e9 prida\u0165 atrib\u00fat {0} po uzloch potomka alebo pred vytvoren\u00edm elementu.  Atrib\u00fat bude ignorovan\u00fd."},
-
-      /*
-       * Note to translators:  The stylesheet contained a reference to a
-       * namespace prefix that was undefined.  The value of the substitution
-       * text is the name of the prefix.
-       */
-    {ER_NAMESPACE_PREFIX,
-      "N\u00e1zvov\u00fd priestor pre predponu ''{0}'' nebol deklarovan\u00fd." },
-      /*
-       * Note to translators:  This message is reported if the stylesheet
-       * being processed attempted to construct an XML document with an
-       * attribute in a place other than on an element.  The substitution text
-       * specifies the name of the attribute.
-       */
-    {ER_STRAY_ATTRIBUTE,
-      "Atrib\u00fat ''{0}'' je mimo elementu." },
-
-      /*
-       * Note to translators:  As with the preceding message, a namespace
-       * declaration has the form of an attribute and is only permitted to
-       * appear on an element.  The substitution text {0} is the namespace
-       * prefix and {1} is the URI that was being used in the erroneous
-       * namespace declaration.
-       */
-    {ER_STRAY_NAMESPACE,
-      "Deklar\u00e1cia n\u00e1zvov\u00e9ho priestoru ''{0}''=''{1}'' je mimo elementu." },
-
-    {ER_COULD_NOT_LOAD_RESOURCE,
-      "Nedalo sa na\u010d\u00edta\u0165 ''{0}'' (skontrolujte CLASSPATH), pou\u017e\u00edvaj\u00fa sa predvolen\u00e9 hodnoty"},
-
-    {ER_COULD_NOT_LOAD_METHOD_PROPERTY,
-      "Nedal sa na\u010d\u00edta\u0165 s\u00fabor vlastnost\u00ed ''{0}'' pre v\u00fdstupn\u00fa met\u00f3du ''{1}'' (skontrolujte CLASSPATH)" }
+    { "column","St\u013apec #"}
 
 
   };
