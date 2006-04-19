@@ -422,12 +422,7 @@ final class Whitespace extends TopLevelElement {
 	    compileStripSpace(strip, sCount, il);
 	}
 
-	stripSpace.stripAttributes(true);
-	stripSpace.setMaxLocals();
-	stripSpace.setMaxStack();
-	stripSpace.removeNOPs();
-
-	classGen.addMethod(stripSpace.getMethod());
+	classGen.addMethod(stripSpace);
     }
 
     /**
@@ -459,12 +454,7 @@ final class Whitespace extends TopLevelElement {
 	    il.append(ICONST_0);
 	il.append(IRETURN);
 
-	stripSpace.stripAttributes(true);
-	stripSpace.setMaxLocals();
-	stripSpace.setMaxStack();
-	stripSpace.removeNOPs();
-
-	classGen.addMethod(stripSpace.getMethod());
+	classGen.addMethod(stripSpace);
     }
 
 

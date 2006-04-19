@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -549,11 +549,7 @@ for (int i = 0; i < _templates.size(); i++) {
 	il.append(template.compile(classGen, methodGen));
 	il.append(RETURN);
 	
-	methodGen.stripAttributes(true);
-	methodGen.setMaxLocals();
-	methodGen.setMaxStack();
-	methodGen.removeNOPs();
-	classGen.addMethod(methodGen.getMethod());
+	classGen.addMethod(methodGen);
     }
 
     private void compileTemplates(ClassGenerator classGen,
@@ -754,6 +750,7 @@ for (int i = 0; i < _templates.size(); i++) {
 	argNames[2] = TRANSLET_OUTPUT_PNAME;
 
 	final InstructionList mainIL = new InstructionList();
+
 	final MethodGenerator methodGen =
 	    new MethodGenerator(ACC_PUBLIC | ACC_FINAL, 
 				org.apache.bcel.generic.Type.VOID,
@@ -762,17 +759,21 @@ for (int i = 0; i < _templates.size(); i++) {
 				classGen.getConstantPool());
 	methodGen.addException("org.apache.xalan.xsltc.TransletException");
 
-	// Create a local variable to hold the current node
+        // Insert an extra NOP just to keep "current" from appearing as if it
+        // has a value before the start of the loop.
+        mainIL.append(NOP);
+
+        // Create a local variable to hold the current node
 	final LocalVariableGen current;
 	current = methodGen.addLocalVariable2("current",
 					      org.apache.bcel.generic.Type.INT,
-					      mainIL.getEnd());
+					      null);
 	_currentIndex = current.getIndex();
 
 	// Create the "body" instruction list that will eventually hold the
 	// code for the entire method (other ILs will be appended).
 	final InstructionList body = new InstructionList();
-	body.append(NOP);
+        body.append(NOP);
 
 	// Create an instruction list that contains the default next-node
 	// iteration
@@ -788,6 +789,11 @@ for (int i = 0; i < _templates.size(); i++) {
 	final BranchHandle loop = ilLoop.append(new GOTO_W(null));
 	ifeq.setTarget(ilLoop.append(RETURN)); 	// applyTemplates() ends here!
 	final InstructionHandle ihLoop = ilLoop.getStart();
+
+        current.setStart(mainIL.append(new GOTO_W(ihLoop)));
+
+        // Live range of "current" ends at end of loop
+        current.setEnd(loop);
 
 	// Compile default handling of elements (traverse children)
 	InstructionList ilRecurse =
@@ -1025,18 +1031,13 @@ for (int i = 0; i < _templates.size(); i++) {
 	body.append(ilText);
 
 	// putting together constituent instruction lists
-	mainIL.append(new GOTO_W(ihLoop));
 	mainIL.append(body);
 	// fall through to ilLoop
 	mainIL.append(ilLoop);
 
 	peepHoleOptimization(methodGen);
-	methodGen.stripAttributes(true);
-	
-	methodGen.setMaxLocals();
-	methodGen.setMaxStack();
-	methodGen.removeNOPs();
-	classGen.addMethod(methodGen.getMethod());
+
+        classGen.addMethod(methodGen);
 
 	// Compile method(s) for <xsl:apply-imports/> for this mode
 	if (_importLevels != null) {
@@ -1127,11 +1128,11 @@ for (int i = 0; i < _templates.size(); i++) {
 	final LocalVariableGen current;
 	current = methodGen.addLocalVariable2("current",
 					      org.apache.bcel.generic.Type.INT,
-					      mainIL.getEnd());
+					      null);
 	_currentIndex = current.getIndex();
 
     mainIL.append(new ILOAD(methodGen.getLocalIndex(NODE_PNAME)));
-    mainIL.append(new ISTORE(_currentIndex));
+    current.setStart(mainIL.append(new ISTORE(_currentIndex)));
     
 	// Create the "body" instruction list that will eventually hold the
 	// code for the entire method (other ILs will be appended).
@@ -1381,18 +1382,18 @@ for (int i = 0; i < _templates.size(); i++) {
 
 	// putting together constituent instruction lists
 	mainIL.append(body);
-	// fall through to ilLoop
+
+        // Mark the end of the live range for the "current" variable 
+        current.setEnd(body.getEnd());
+
+        // fall through to ilLoop
 	mainIL.append(ilLoop);
 
 	peepHoleOptimization(methodGen);
-	methodGen.stripAttributes(true);
-	
-	methodGen.setMaxLocals();
-	methodGen.setMaxStack();
-	methodGen.removeNOPs();
-	classGen.addMethod(methodGen.getMethod());
 
-	// Restore original (complete) set of templates for this transformation
+        classGen.addMethod(methodGen);
+
+        // Restore original (complete) set of templates for this transformation
 	_templates = oldTemplates;
     }
 

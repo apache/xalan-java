@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
+import org.apache.bcel.classfile.Method;
 import org.apache.bcel.generic.ALOAD;
 import org.apache.bcel.generic.ClassGen;
 import org.apache.bcel.generic.Instruction;
@@ -128,5 +129,12 @@ public class ClassGenerator extends ClassGen {
      */
     public boolean isExternal() {
 	return false;
+    }
+
+    public void addMethod(MethodGenerator methodGen) {
+        Method[] methodsToAdd = methodGen.getGeneratedMethods(this);
+        for (int i = 0; i < methodsToAdd.length; i++) {
+            addMethod(methodsToAdd[i]);
+        }
     }
 }

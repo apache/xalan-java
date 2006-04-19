@@ -863,10 +863,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 
 	il.append(RETURN);
 
-	staticConst.stripAttributes(true);
-	staticConst.setMaxLocals();
-	staticConst.setMaxStack();
-	classGen.addMethod(staticConst.getMethod());
+	classGen.addMethod(staticConst);
     	
     }
 
@@ -948,10 +945,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 
 	il.append(RETURN);
 
-	constructor.stripAttributes(true);
-	constructor.setMaxLocals();
-	constructor.setMaxStack();
-	classGen.addMethod(constructor.getMethod());
+	classGen.addMethod(constructor);
     }
 
     /**
@@ -988,15 +982,15 @@ public final class Stylesheet extends SyntaxTreeNode {
 	// Define and initialize 'current' variable with the root node
 	final LocalVariableGen current = 
 	    toplevel.addLocalVariable("current",
-				    org.apache.bcel.generic.Type.INT,
-				    il.getEnd(), null);
+				      org.apache.bcel.generic.Type.INT,
+				      null, null);
 
 	final int setFilter = cpg.addInterfaceMethodref(DOM_INTF,
 			       "setFilter",
 			       "(Lorg/apache/xalan/xsltc/StripFilter;)V");
 
 	il.append(new PUSH(cpg, DTM.ROOT_NODE));
-	il.append(new ISTORE(current.getIndex()));
+	current.setStart(il.append(new ISTORE(current.getIndex())));
 
 	// Resolve any forward referenes and translate global variables/params
 	_globals = resolveReferences(_globals);
@@ -1034,12 +1028,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	il.append(RETURN);
 
 	// Compute max locals + stack and add method to class
-	toplevel.stripAttributes(true);
-	toplevel.setMaxLocals();
-	toplevel.setMaxStack();
-	toplevel.removeNOPs();
-
-	classGen.addMethod(toplevel.getMethod());
+	classGen.addMethod(toplevel);
 	
 	return("("+DOM_INTF_SIG+NODE_ITERATOR_SIG+TRANSLET_OUTPUT_SIG+")V");
     }
@@ -1156,13 +1145,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 	
 	il.append(RETURN);
 	
-	// Compute max locals + stack and add method to class
-	buildKeys.stripAttributes(true);
-	buildKeys.setMaxLocals();
-	buildKeys.setMaxStack();
-	buildKeys.removeNOPs();
-
-	classGen.addMethod(buildKeys.getMethod());
+	// Add method to class
+        classGen.addMethod(buildKeys);
 	
 	return("("+DOM_INTF_SIG+NODE_ITERATOR_SIG+TRANSLET_OUTPUT_SIG+"I)V");
     }
@@ -1205,7 +1189,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	final LocalVariableGen current = 
 	    transf.addLocalVariable("current",
 				    org.apache.bcel.generic.Type.INT,
-				    il.getEnd(), null);
+				    null, null);
 	final String applyTemplatesSig = classGen.getApplyTemplatesSig();
 	final int applyTemplates = cpg.addMethodref(getClassName(),
 						    "applyTemplates",
@@ -1244,7 +1228,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 
 	// continue with globals initialization
 	il.append(new PUSH(cpg, DTM.ROOT_NODE));
-	il.append(new ISTORE(current.getIndex()));
+	current.setStart(il.append(new ISTORE(current.getIndex())));
 
 	// Transfer the output settings to the output post-processor
 	il.append(classGen.loadTranslet());
@@ -1309,12 +1293,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	il.append(RETURN);
 
 	// Compute max locals + stack and add method to class
-	transf.stripAttributes(true);
-	transf.setMaxLocals();
-	transf.setMaxStack();
-	transf.removeNOPs();
-
-	classGen.addMethod(transf.getMethod());
+	classGen.addMethod(transf);
     }
 
     /**
