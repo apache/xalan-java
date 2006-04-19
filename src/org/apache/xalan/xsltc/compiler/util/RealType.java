@@ -166,8 +166,8 @@ public final class RealType extends NumberType {
 	il.append(DUP2);
 	local = methodGen.addLocalVariable("real_to_boolean_tmp", 
 					   org.apache.bcel.generic.Type.DOUBLE,
-					   il.getEnd(), null);
-	il.append(new DSTORE(local.getIndex()));
+					   null, null);
+	local.setStart(il.append(new DSTORE(local.getIndex())));
 
 	// Compare it to 0.0
 	il.append(DCONST_0);
@@ -177,7 +177,7 @@ public final class RealType extends NumberType {
 	//!!! call isNaN
 	// Compare it to itself to see if NaN
 	il.append(new DLOAD(local.getIndex()));
-	il.append(new DLOAD(local.getIndex()));
+	local.setEnd(il.append(new DLOAD(local.getIndex())));
 	il.append(DCMPG);
 	flowlist.add(il.append(new IFNE(null)));	// NaN != NaN
 	return flowlist;

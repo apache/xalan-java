@@ -170,24 +170,26 @@ class FilterExpr extends Expression {
             LocalVariableGen nodeIteratorTemp =
                 methodGen.addLocalVariable("filter_expr_tmp1",
                                            Util.getJCRefType(NODE_ITERATOR_SIG),
-                                           il.getEnd(), null);
-            il.append(new ASTORE(nodeIteratorTemp.getIndex()));
+                                           null, null);
+            nodeIteratorTemp.setStart(
+                    il.append(new ASTORE(nodeIteratorTemp.getIndex())));
 
             predicate.translate(classGen, methodGen);
             LocalVariableGen filterTemp =
                 methodGen.addLocalVariable("filter_expr_tmp2",
                               Util.getJCRefType(CURRENT_NODE_LIST_FILTER_SIG),
-                              il.getEnd(), null);
-            il.append(new ASTORE(filterTemp.getIndex()));
+                              null, null);
+            filterTemp.setStart(il.append(new ASTORE(filterTemp.getIndex())));
 
             // Create a CurrentNodeListIterator
             il.append(new NEW(cpg.addClass(CURRENT_NODE_LIST_ITERATOR)));
             il.append(DUP);
             
             // Initialize CurrentNodeListIterator
-            il.append(new ALOAD(nodeIteratorTemp.getIndex()));
+            nodeIteratorTemp.setEnd(
+                    il.append(new ALOAD(nodeIteratorTemp.getIndex())));
             il.append(ICONST_1);
-            il.append(new ALOAD(filterTemp.getIndex()));
+            filterTemp.setEnd(il.append(new ALOAD(filterTemp.getIndex())));
             il.append(methodGen.loadCurrentNode());
             il.append(classGen.loadTranslet());
             il.append(new INVOKESPECIAL(initCNLI));

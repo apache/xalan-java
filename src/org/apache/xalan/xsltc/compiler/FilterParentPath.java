@@ -124,20 +124,20 @@ final class FilterParentPath extends Expression {
         LocalVariableGen filterTemp =
                 methodGen.addLocalVariable("filter_parent_path_tmp1",
                                            Util.getJCRefType(NODE_ITERATOR_SIG),
-                                           il.getEnd(), null);
-        il.append(new ASTORE(filterTemp.getIndex()));
+                                           null, null);
+        filterTemp.setStart(il.append(new ASTORE(filterTemp.getIndex())));
 
 	_path.translate(classGen, methodGen);
         LocalVariableGen pathTemp =
                 methodGen.addLocalVariable("filter_parent_path_tmp2",
                                            Util.getJCRefType(NODE_ITERATOR_SIG),
-                                           il.getEnd(), null);
-        il.append(new ASTORE(pathTemp.getIndex()));
+                                           null, null);
+        pathTemp.setStart(il.append(new ASTORE(pathTemp.getIndex())));
 
 	il.append(new NEW(cpg.addClass(STEP_ITERATOR_CLASS)));
 	il.append(DUP);
-        il.append(new ALOAD(filterTemp.getIndex()));
-        il.append(new ALOAD(pathTemp.getIndex()));
+        filterTemp.setEnd(il.append(new ALOAD(filterTemp.getIndex())));
+        pathTemp.setEnd(il.append(new ALOAD(pathTemp.getIndex())));
 
 	// Initialize StepIterator with iterators from the stack
 	il.append(new INVOKESPECIAL(initSI));

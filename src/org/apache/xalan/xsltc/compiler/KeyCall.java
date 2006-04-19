@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2005 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -179,7 +179,8 @@ final class KeyCall extends FunctionCall {
 
 	il.append(new NEW(cpg.addClass(DUP_FILTERED_ITERATOR)));	
 	il.append(DUP);
-        il.append(new ALOAD(keyIterator.getIndex()));
+        // Mark the end of the live range of the keyIterator variable 
+        keyIterator.setEnd(il.append(new ALOAD(keyIterator.getIndex())));
 	il.append(new INVOKESPECIAL(dupInit));
     }
 
@@ -236,13 +237,7 @@ final class KeyCall extends FunctionCall {
 	final LocalVariableGen returnIndex =
 	    methodGen.addLocalVariable("returnIndex",
 				       Util.getJCRefType(KEY_INDEX_SIG),
-				       il.getEnd(), null);
-
-	// This local variable holds the index we're using for search
-	final LocalVariableGen searchIndex =
-	    methodGen.addLocalVariable("searchIndex",
-				       Util.getJCRefType(KEY_INDEX_SIG),
-				       il.getEnd(), null);
+				       null, null);
 
 	// If the second paramter is a node-set we need to go through each
 	// node in the set, convert each one to a string and do a look up in
@@ -263,7 +258,7 @@ final class KeyCall extends FunctionCall {
 	    il.append(DUP);
 	    il.append(methodGen.loadDOM());
 	    il.append(new INVOKEVIRTUAL(keyDom));
-	    il.append(new ASTORE(returnIndex.getIndex()));
+	    returnIndex.setStart(il.append(new ASTORE(returnIndex.getIndex())));
 
 	    // Initialise the index specified in the first parameter of key()
 	    il.append(classGen.loadTranslet());
@@ -278,7 +273,14 @@ final class KeyCall extends FunctionCall {
 	    }
 
 	    il.append(new INVOKEVIRTUAL(getKeyIndex));
-	    il.append(new ASTORE(searchIndex.getIndex()));
+
+            // This local variable holds the index we're using for search
+            final LocalVariableGen searchIndex =
+                    methodGen.addLocalVariable("searchIndex",
+                                               Util.getJCRefType(KEY_INDEX_SIG),
+                                               null, null);
+
+	    searchIndex.setStart(il.append(new ASTORE(searchIndex.getIndex())));
 
 	    // LOOP STARTS HERE
 
@@ -316,7 +318,7 @@ final class KeyCall extends FunctionCall {
 	    // LOOP ENDS HERE
 
 	    // Restore current node and current iterator from the stack
-	    il.append(methodGen.storeIterator());
+	    searchIndex.setEnd(il.append(methodGen.storeIterator()));
 	    il.append(methodGen.storeCurrentNode());
 	}
 	// If the second parameter is a single value we just lookup the named
@@ -349,7 +351,7 @@ final class KeyCall extends FunctionCall {
 		il.append(new INVOKEVIRTUAL(lookupKey));
 	    }
 
-	    il.append(new ASTORE(returnIndex.getIndex()));
+	    returnIndex.setStart(il.append(new ASTORE(returnIndex.getIndex())));
 	}
 
         return returnIndex;

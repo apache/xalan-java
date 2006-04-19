@@ -114,10 +114,9 @@ class VariableBase extends TopLevelElement {
      */
     public void mapRegister(MethodGenerator methodGen) {
         if (_local == null) {
-            final InstructionList il = methodGen.getInstructionList();
 	    final String name = getEscapedName(); // TODO: namespace ?
 	    final org.apache.bcel.generic.Type varType = _type.toJCType();
-            _local = methodGen.addLocalVariable2(name, varType, il.getEnd());
+            _local = methodGen.addLocalVariable2(name, varType, null);
         }
     }
 

@@ -771,8 +771,9 @@ class FunctionCall extends Expression {
                 paramTemp[i] =
                     methodGen.addLocalVariable("function_call_tmp"+i,
                                                expType.toJCType(),
-                                               il.getEnd(), null);
-                il.append(expType.STORE(paramTemp[i].getIndex()));
+                                               null, null);
+                paramTemp[i].setStart(
+                        il.append(expType.STORE(paramTemp[i].getIndex())));
 	    }
 
 	    il.append(new NEW(cpg.addClass(_className)));
@@ -780,7 +781,8 @@ class FunctionCall extends Expression {
 
             for (int i = 0; i < n; i++) {
                 final Expression arg = argument(i);
-                il.append(arg.getType().LOAD(paramTemp[i].getIndex()));
+                paramTemp[i].setEnd(
+                        il.append(arg.getType().LOAD(paramTemp[i].getIndex())));
             }
 
 	    final StringBuffer buffer = new StringBuffer();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import org.apache.bcel.generic.ACONST_NULL;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.DCONST;
 import org.apache.bcel.generic.ICONST;
+import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.PUTFIELD;
 import org.apache.xalan.xsltc.compiler.util.BooleanType;
@@ -122,7 +123,7 @@ final class Variable extends VariableBase {
 	    if (_local == null) {
 		_local = methodGen.addLocalVariable2(getEscapedName(),
 						     _type.toJCType(),
-						     il.getEnd());
+						     null);
 	    }
 	    // Push the default value on the JVM's stack
 	    if ((_type instanceof IntType) ||
@@ -133,7 +134,9 @@ final class Variable extends VariableBase {
 		il.append(new DCONST(0)); // 0.0 for floating point numbers
 	    else
 		il.append(new ACONST_NULL()); // and 'null' for anything else
-	    il.append(_type.STORE(_local.getIndex()));
+
+            // Mark the store as the start of the live range of the variable
+            _local.setStart(il.append(_type.STORE(_local.getIndex())));
 	}
     }
 
@@ -157,10 +160,20 @@ final class Variable extends VariableBase {
 	    translateValue(classGen, methodGen);
 
 	    // Add a new local variable and store value
-	    if (_local == null) {
+            boolean createLocal = _local == null;
+	    if (createLocal) {
                 mapRegister(methodGen);
             }
-	    il.append(_type.STORE(_local.getIndex()));
+	    InstructionHandle storeInst =
+                                  il.append(_type.STORE(_local.getIndex()));
+
+            // If the local is just being created, mark the store as the start
+            // of its live range.  Note that it might have been created by
+            // initializeVariables already, which would have set the start of
+            // the live range already.
+            if (createLocal) {
+                _local.setStart(storeInst);
+            }
 	}
 	else {
 	    String signature = _type.toSignature();

@@ -217,9 +217,9 @@ final class Param extends VariableBase {
 	    else {		// normal case
 		_local = methodGen.addLocalVariable2(name,
 						     _type.toJCType(),
-						     il.getEnd());
+						     null);
 		// Cache the result of addParameter() in a local variable
-		il.append(_type.STORE(_local.getIndex()));
+		_local.setStart(il.append(_type.STORE(_local.getIndex())));
 	    }
 	}
 	else {
