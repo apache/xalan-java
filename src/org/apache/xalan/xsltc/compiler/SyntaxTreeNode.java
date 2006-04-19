@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import org.apache.bcel.generic.ICONST;
 import org.apache.bcel.generic.INVOKEINTERFACE;
 import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
+import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.NEW;
 import org.apache.bcel.generic.NEWARRAY;
@@ -496,25 +497,28 @@ public abstract class SyntaxTreeNode implements Constants {
      * @param methodGen BCEL Java method generator
      */
     protected void translateContents(ClassGenerator classGen,
-				     MethodGenerator methodGen) {
-	// Call translate() on all child nodes
-	final int n = elementCount();
-	for (int i = 0; i < n; i++) {
-	    final SyntaxTreeNode item = (SyntaxTreeNode)_contents.elementAt(i);
-	    item.translate(classGen, methodGen);
-	}
+                                     MethodGenerator methodGen) {
+        // Call translate() on all child nodes
+        final int n = elementCount();
 
-	// After translation, unmap any registers for any variables/parameters
-	// that were declared in this scope. Performing this unmapping in the
-	// same AST scope as the declaration deals with the problems of
-	// references falling out-of-scope inside the for-each element.
-	// (the cause of which being 'lazy' register allocation for references)
-	for (int i = 0; i < n; i++) {
-	    if( _contents.elementAt(i) instanceof VariableBase) {
-		final VariableBase var = (VariableBase)_contents.elementAt(i);
-		var.unmapRegister(methodGen);
-	    }
-	}
+        for (int i = 0; i < n; i++) {
+            methodGen.markChunkStart();
+            final SyntaxTreeNode item = (SyntaxTreeNode)_contents.elementAt(i);
+            item.translate(classGen, methodGen);
+            methodGen.markChunkEnd();
+        }
+
+        // After translation, unmap any registers for any variables/parameters
+        // that were declared in this scope. Performing this unmapping in the
+        // same AST scope as the declaration deals with the problems of
+        // references falling out-of-scope inside the for-each element.
+        // (the cause of which being 'lazy' register allocation for references)
+        for (int i = 0; i < n; i++) {
+            if( _contents.elementAt(i) instanceof VariableBase) {
+                final VariableBase var = (VariableBase)_contents.elementAt(i);
+                var.unmapRegister(methodGen);
+            }
+        }
     }
     
     /**
