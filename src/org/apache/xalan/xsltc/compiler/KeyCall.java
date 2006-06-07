@@ -124,16 +124,20 @@ final class KeyCall extends FunctionCall {
 
 	// Run type check on the value for this key. This value can be of
 	// any data type, so this should never cause any type-check errors.
-	// If the value is not a node-set then it should be converted to a
-	// string before the lookup is done. If the value is a node-set then
-	// this process (convert to string, then do lookup) should be applied
-	// to every node in the set, and the result from all lookups should
-	// be added to the resulting node-set.
+        // If the value is a reference, then we have to defer the decision
+        // of how to process it until run-time.
+	// If the value is known not to be a node-set, then it should be
+        // converted to a string before the lookup is done. If the value is 
+        // known to be a node-set then this process (convert to string, then
+        // do lookup) should be applied to every node in the set, and the
+        // result from all lookups should be added to the resulting node-set.
 	_valueType = _value.typeCheck(stable);
 
-	if (_valueType != Type.NodeSet && _valueType != Type.String) 
-	{
+	if (_valueType != Type.NodeSet
+                && _valueType != Type.Reference
+                && _valueType != Type.String) {
 	    _value = new CastExpr(_value, Type.String);
+            _valueType = _value.typeCheck(stable);
 	}
 
 	return returnType;
@@ -142,11 +146,8 @@ final class KeyCall extends FunctionCall {
     /**
      * This method is called when the constructor is compiled in
      * Stylesheet.compileConstructor() and not as the syntax tree is traversed.
-     * This method is a wrapper for the real translation method, which is
-     * the private method translateCall() below. All this method does is to
-     * wrap the KeyIndex that this function returns inside a duplicate filter.
-     * The duplicate filter is used both to eliminate duplicates and to
-     * cache the nodes in the index.
+     * <p>This method will generate byte code that produces an iterator
+     * for the nodes in the node set for the key or id function call.
      * @param classGen The Java class generator
      * @param methodGen The method generator
      */
@@ -154,54 +155,6 @@ final class KeyCall extends FunctionCall {
 			  MethodGenerator methodGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 	final InstructionList il = methodGen.getInstructionList();
-						 
-	final int getNodeHandle = cpg.addInterfaceMethodref(DOM_INTF,
-							   "getNodeHandle",
-							   "(I)"+NODE_SIG);	
-
-	// Wrap the KeyIndex (iterator) inside a duplicate filter iterator
-	// to pre-read the indexed nodes and cache them.
-	final int dupInit = cpg.addMethodref(DUP_FILTERED_ITERATOR,
-					     "<init>",
-					     "("+NODE_ITERATOR_SIG+")V");
-
-
-        // Backwards branches are prohibited if an uninitialized object is
-        // on the stack by section 4.9.4 of the JVM Specification, 2nd Ed.
-        // We don't know whether this code might contain backwards branches
-        // so we mustn't create the new object until after we've created
-        // the suspect arguments to its constructor.  Instead we calculate
-        // the values of the arguments to the constructor first, store them
-        // in temporary variables, create the object and reload the
-        // arguments from the temporaries to avoid the problem.
-
-	LocalVariableGen keyIterator = translateCall(classGen, methodGen);
-
-	il.append(new NEW(cpg.addClass(DUP_FILTERED_ITERATOR)));	
-	il.append(DUP);
-        // Mark the end of the live range of the keyIterator variable 
-        keyIterator.setEnd(il.append(new ALOAD(keyIterator.getIndex())));
-	il.append(new INVOKESPECIAL(dupInit));
-    }
-
-    /**
-     * Translate the actual index lookup - leaves KeyIndex (iterator) stored
-     * in a temporary that the caller will need to load.
-     * @param classGen The Java class generator
-     * @param methodGen The method generator
-     * @return A <code>org.apache.bcel.generic.LocalVariableGen</code>
-     *         object that will contain the iterator for the key call.
-     */
-    private LocalVariableGen translateCall(ClassGenerator classGen,
-			                   MethodGenerator methodGen) {
-
-	final ConstantPoolGen cpg = classGen.getConstantPool();
-	final InstructionList il = methodGen.getInstructionList();
-
-	// Returns the string value for a node in the DOM
-	final int getNodeValue = cpg.addInterfaceMethodref(DOM_INTF,
-							   GET_NODE_VALUE,
-							   "(I)"+STRING_SIG);
 
 	// Returns the KeyIndex object of a given name
 	final int getKeyIndex = cpg.addMethodref(TRANSLET_CLASS,
@@ -209,151 +162,42 @@ final class KeyCall extends FunctionCall {
 						 "(Ljava/lang/String;)"+
 						 KEY_INDEX_SIG);
 
-	// Initialises a KeyIndex to return nodes with specific values
-	final int lookupId = cpg.addMethodref(KEY_INDEX_CLASS,
-					      "lookupId",
-					      "(Ljava/lang/Object;)V");
-	final int lookupKey = cpg.addMethodref(KEY_INDEX_CLASS,
-					       "lookupKey",
-					       "(Ljava/lang/Object;)V");
-
-	// Merges the nodes in two KeyIndex objects
-	final int merge = cpg.addMethodref(KEY_INDEX_CLASS,
-					   "merge",
-					   "("+KEY_INDEX_SIG+")V");
-
-	// Constructor for KeyIndex class
-	final int indexConstructor = cpg.addMethodref(TRANSLET_CLASS,
-						      "createKeyIndex",
-						      "()"+KEY_INDEX_SIG);
-						      
 	// KeyIndex.setDom(Dom) => void
-	final int keyDom = cpg.addMethodref(XSLT_PACKAGE + ".dom.KeyIndex",
-					 "setDom",
-					 "("+DOM_INTF_SIG+")V");				 
-						      
-	
-	// This local variable holds the index/iterator we will return
-	final LocalVariableGen returnIndex =
-	    methodGen.addLocalVariable("returnIndex",
-				       Util.getJCRefType(KEY_INDEX_SIG),
-				       null, null);
+	final int keyDom = cpg.addMethodref(KEY_INDEX_CLASS,
+					    "setDom",
+					    "("+DOM_INTF_SIG+")V");
 
-	// If the second paramter is a node-set we need to go through each
-	// node in the set, convert each one to a string and do a look up in
-	// the named index, and then merge all the resulting node sets.
-	if (_valueType == Type.NodeSet) {
-	    // Save current node and current iterator on the stack
-	    il.append(methodGen.loadCurrentNode());
-	    il.append(methodGen.loadIterator());
+	// Initialises a KeyIndex to return nodes with specific values
+	final int getKeyIterator =
+                        cpg.addMethodref(KEY_INDEX_CLASS,
+					 "getKeyIndexIterator",
+					 "(" + _valueType.toSignature() + "Z)"
+                                             + KEY_INDEX_ITERATOR_SIG);
 
-	    // Get new iterator from 2nd parameter node-set & store in variable
-	    _value.translate(classGen, methodGen);
-	    _value.startIterator(classGen, methodGen);
-	    il.append(methodGen.storeIterator());
+        // Initialise the index specified in the first parameter of key()
+        il.append(classGen.loadTranslet());
+        if (_name == null) {
+            il.append(new PUSH(cpg,"##id"));
+        } else if (_resolvedQName != null) {
+            il.append(new PUSH(cpg, _resolvedQName.toString()));
+        } else {
+            _name.translate(classGen, methodGen);
+        }
 
-	    // Create the KeyIndex object (the iterator) we'll return
-	    il.append(classGen.loadTranslet());
-	    il.append(new INVOKEVIRTUAL(indexConstructor));
-	    il.append(DUP);
-	    il.append(methodGen.loadDOM());
-	    il.append(new INVOKEVIRTUAL(keyDom));
-	    returnIndex.setStart(il.append(new ASTORE(returnIndex.getIndex())));
+        // Generate following byte code:
+        //
+        //   KeyIndex ki = translet.getKeyIndex(_name)
+        //   ki.setDom(translet.dom);
+        //   ki.getKeyIndexIterator(_value, true)  - for key()
+        //        OR
+        //   ki.getKeyIndexIterator(_value, false)  - for id()
+        il.append(new INVOKEVIRTUAL(getKeyIndex));
+        il.append(DUP);
+        il.append(methodGen.loadDOM());
+        il.append(new INVOKEVIRTUAL(keyDom));
 
-	    // Initialise the index specified in the first parameter of key()
-	    il.append(classGen.loadTranslet());
-	    if (_name == null) {
-		il.append(new PUSH(cpg,"##id"));
-	    }
-	    else if (_resolvedQName != null) {
-		il.append(new PUSH(cpg, _resolvedQName.toString()));
-	    }
-	    else {
-		_name.translate(classGen, methodGen);
-	    }
-
-	    il.append(new INVOKEVIRTUAL(getKeyIndex));
-
-            // This local variable holds the index we're using for search
-            final LocalVariableGen searchIndex =
-                    methodGen.addLocalVariable("searchIndex",
-                                               Util.getJCRefType(KEY_INDEX_SIG),
-                                               null, null);
-
-	    searchIndex.setStart(il.append(new ASTORE(searchIndex.getIndex())));
-
-	    // LOOP STARTS HERE
-
-	    // Now we're ready to start traversing the node-set given in
-	    // the key() function's second argument....
-	    final BranchHandle nextNode = il.append(new GOTO(null));
-	    final InstructionHandle loop = il.append(NOP);
-
-	    // Push returnIndex on stack to prepare for call to merge()
-	    il.append(new ALOAD(returnIndex.getIndex()));
-	    
-	    // Lookup index using the string value from the current node
-	    il.append(new ALOAD(searchIndex.getIndex()));
-	    il.append(DUP);
-	    il.append(methodGen.loadDOM());
-	    il.append(methodGen.loadCurrentNode());
-	    il.append(new INVOKEINTERFACE(getNodeValue, 2));
-	    if (_name == null) {
-		il.append(new INVOKEVIRTUAL(lookupId));
-	    }
-	    else {
-		il.append(new INVOKEVIRTUAL(lookupKey));
-	    }
-
-	    // Call to returnIndex.merge(searchIndex);
-	    il.append(new INVOKEVIRTUAL(merge));
-		
-	    // Go on with next node in the 2nd parameter node-set
-	    nextNode.setTarget(il.append(methodGen.loadIterator()));
-	    il.append(methodGen.nextNode());
-	    il.append(DUP);
-	    il.append(methodGen.storeCurrentNode());
-	    il.append(new IFGT(loop));
-
-	    // LOOP ENDS HERE
-
-	    // Restore current node and current iterator from the stack
-	    searchIndex.setEnd(il.append(methodGen.storeIterator()));
-	    il.append(methodGen.storeCurrentNode());
-	}
-	// If the second parameter is a single value we just lookup the named
-	// index and initialise the iterator to return nodes with this value.
-	else {
-	    // Call getKeyIndex in AbstractTranslet with the name of the key
-	    // to get the index for this key (which is also a node iterator).
-	    il.append(classGen.loadTranslet());
-	    if (_name == null) {
-		il.append(new PUSH(cpg,"##id"));
-	    }
-	    else if (_resolvedQName != null) {
-		il.append(new PUSH(cpg, _resolvedQName.toString()));
-	    }
-	    else {
-		_name.translate(classGen, methodGen);
-	    }
-	    il.append(new INVOKEVIRTUAL(getKeyIndex));
-
-	    // Now use the value in the second argument to determine what nodes
-	    // the iterator should return.
-	    il.append(DUP);
-
-	    _value.translate(classGen, methodGen);
-
-	    if (_name == null) {
-		il.append(new INVOKEVIRTUAL(lookupId));
-	    }
-	    else {
-		il.append(new INVOKEVIRTUAL(lookupKey));
-	    }
-
-	    returnIndex.setStart(il.append(new ASTORE(returnIndex.getIndex())));
-	}
-
-        return returnIndex;
+        _value.translate(classGen, methodGen);
+        il.append((_name != null) ? ICONST_1: ICONST_0);
+        il.append(new INVOKEVIRTUAL(getKeyIterator));
     }
 }
