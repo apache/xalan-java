@@ -236,6 +236,8 @@ public interface Constants extends InstructionConstants {
 	= "org/apache/xalan/xsltc/dom/KeyIndex";
     public static final String KEY_INDEX_SIG
 	= "Lorg/apache/xalan/xsltc/dom/KeyIndex;";
+    public static final String KEY_INDEX_ITERATOR_SIG
+	= "Lorg/apache/xalan/xsltc/dom/KeyIndex$KeyIndexIterator;";
 
     public static final String DOM_INTF
 	= "org.apache.xalan.xsltc.DOM";
