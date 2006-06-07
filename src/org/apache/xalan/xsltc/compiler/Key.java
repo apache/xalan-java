@@ -160,10 +160,6 @@ final class Key extends TopLevelElement {
 
 	// Get the 'parameter' from the stack and store it in a local var.
 	parentNode.setStart(il.append(new ISTORE(parentNode.getIndex())));	
-	il.append(methodGen.loadDOM());
-	il.append(new ILOAD(parentNode.getIndex()));	
-	il.append(new INVOKEINTERFACE(getNodeIdent, 2));
-	il.append(new ISTORE(parentNode.getIndex()));
 
 	// Save current node and current iterator on the stack
 	il.append(methodGen.loadCurrentNode());
@@ -272,11 +268,6 @@ final class Key extends TopLevelElement {
 	    il.append(DUP_X1);
 	    il.append(methodGen.loadCurrentNode());
 	    _use.translate(classGen, methodGen);
-	    il.append(SWAP);
-	    il.append(methodGen.loadDOM());
-	    il.append(SWAP);
-	    il.append(new INVOKEINTERFACE(getNodeIdent, 2));
-	    il.append(SWAP);
 	    il.append(new INVOKEVIRTUAL(key));
 	    
 	    il.append(methodGen.loadDOM());

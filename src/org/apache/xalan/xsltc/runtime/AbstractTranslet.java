@@ -123,6 +123,7 @@ public abstract class AbstractTranslet implements Translet {
      */
     public final DOMAdapter makeDOMAdapter(DOM dom)
 	throws TransletException {
+        setRootForKeys(dom.getDocument());
 	return new DOMAdapter(dom, namesArray, urisArray, typesArray, namespaceArray);
     }
 
@@ -309,7 +310,8 @@ public abstract class AbstractTranslet implements Translet {
      * The index contains the element node index (int) and Id value (String).
      */
     private final void buildIDIndex(DOM document) {
-        
+        setRootForKeys(document.getDocument());
+
         if (document instanceof DOMEnhancedForDTM) {
             DOMEnhancedForDTM enhancedDOM = (DOMEnhancedForDTM)document;
             
@@ -335,7 +337,10 @@ public abstract class AbstractTranslet implements Translet {
 
                 while (idValues.hasMoreElements()) {
             	    final Object idValue = idValues.nextElement();
-            	    final int element = ((Integer)elementsByID.get(idValue)).intValue();
+            	    final int element =
+                            document.getNodeHandle(
+                                        ((Integer)elementsByID.get(idValue))
+                                                .intValue());
 
             	    buildKeyIndex(ID_INDEX_NAME, element, idValue);
             	    hasIDValues = true;
@@ -408,6 +413,7 @@ public abstract class AbstractTranslet implements Translet {
     private Hashtable _keyIndexes = null;
     private KeyIndex  _emptyKeyIndex = null;
     private int       _indexSize = 0;
+    private int       _currentRootForKeys = 0;
 
     /**
      * This method is used to pass the largest DOM size to the translet.
@@ -427,7 +433,7 @@ public abstract class AbstractTranslet implements Translet {
     /**
      * Adds a value to a key/id index
      *   @param name is the name of the index (the key or ##id)
-     *   @param node is the node id of the node to insert
+     *   @param node is the node handle of the node to insert
      *   @param value is the value that will look up the node in the given index
      */
     public void buildKeyIndex(String name, int node, Object value) {
@@ -437,7 +443,7 @@ public abstract class AbstractTranslet implements Translet {
 	if (index == null) {
 	    _keyIndexes.put(name, index = new KeyIndex(_indexSize));
 	}
-	index.add(value, node);
+	index.add(value, node, _currentRootForKeys);
     }
 
     /**
@@ -478,6 +484,10 @@ public abstract class AbstractTranslet implements Translet {
 	}
 
 	return(index);
+    }
+
+    private void setRootForKeys(int root) {
+        _currentRootForKeys = root;
     }
 
     /**
