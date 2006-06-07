@@ -111,20 +111,10 @@ abstract class IdKeyPattern extends LocationPathPattern {
 	il.append(new PUSH(cpg,_value));
 	if (this instanceof IdPattern)
 	{
-		il.append(SWAP);
-		il.append(methodGen.loadDOM());
-		il.append(SWAP);
-	    il.append(new INVOKEINTERFACE(getNodeIdent, 2));
-	    il.append(SWAP);
 	    il.append(new INVOKEVIRTUAL(lookupId));
 	}
 	else
 	{
-		il.append(SWAP);
-		il.append(methodGen.loadDOM());
-		il.append(SWAP);
-	    il.append(new INVOKEINTERFACE(getNodeIdent, 2));
-	    il.append(SWAP);
 	    il.append(new INVOKEVIRTUAL(lookupKey));
 	}
 
