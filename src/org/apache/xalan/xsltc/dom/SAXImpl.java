@@ -458,11 +458,12 @@ public final class SAXImpl extends SAX2DTM2
 
     /**
      * Returns singleton iterator containg the document root
-     * Works for them main document (mark == 0)
+     * Works for them main document (mark == 0).  It cannot be made
+     * to point to any other node through setStartNode().
      */
     public DTMAxisIterator getIterator()
     {
-        return new SingletonIterator(getDocument());
+        return new SingletonIterator(getDocument(), true);
     }
 
      /**
@@ -1160,6 +1161,8 @@ public final class SAXImpl extends SAX2DTM2
                 return new PrecedingSiblingIterator();
             case Axis.NAMESPACE:
                 return new NamespaceIterator();
+            case Axis.ROOT:
+                return new RootIterator();
             default:
                 BasisLibrary.runTimeError(BasisLibrary.AXIS_SUPPORT_ERR, 
                         Axis.getNames(axis));
@@ -1210,6 +1213,8 @@ public final class SAXImpl extends SAX2DTM2
                 return new TypedPrecedingSiblingIterator(type);
             case Axis.NAMESPACE:
                 return  new TypedNamespaceIterator(type);
+            case Axis.ROOT:
+                return new TypedRootIterator(type);
             default:
                 BasisLibrary.runTimeError(BasisLibrary.TYPED_AXIS_SUPPORT_ERR, 
                         Axis.getNames(axis));
