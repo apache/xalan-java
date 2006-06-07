@@ -1608,7 +1608,7 @@ public abstract class DTMDefaultBase implements DTM
    */
   public int getDocumentRoot(int nodeHandle)
   {
-    return getDocument();
+    return getManager().getDTM(nodeHandle).getDocument();
   }
 
   /**
