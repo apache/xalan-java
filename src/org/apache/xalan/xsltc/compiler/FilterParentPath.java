@@ -150,8 +150,16 @@ final class FilterParentPath extends Expression {
 	    il.append(new INVOKEVIRTUAL(incl));
 	}
 
-	if (!(getParent() instanceof RelativeLocationPath) &&
-	    !(getParent() instanceof FilterParentPath)) {
+        SyntaxTreeNode parent = getParent();
+
+        boolean parentAlreadyOrdered = 
+            (parent instanceof RelativeLocationPath)
+                || (parent instanceof FilterParentPath)
+                || (parent instanceof KeyCall)
+                || (parent instanceof CurrentCall)
+                || (parent instanceof DocumentCall);
+
+	if (!parentAlreadyOrdered) {
 	    final int order = cpg.addInterfaceMethodref(DOM_INTF,
 							ORDER_ITERATOR,
 							ORDER_ITERATOR_SIG);
