@@ -2345,6 +2345,7 @@ abstract public class ToStream extends SerializerBase
 
         if (pushed)
         {
+            boolean was_added = false;
             /* Brian M.: don't know if we really needto do this. The
              * callers of this object should have injected both
              * startPrefixMapping and the attributes.  We are 
@@ -2354,7 +2355,7 @@ abstract public class ToStream extends SerializerBase
             if (EMPTYSTRING.equals(prefix))
             {
                 name = "xmlns";
-                addAttributeAlways(XMLNS_URI, name, name, "CDATA", uri, false);
+                was_added = addAttributeAlways(XMLNS_URI, name, name, "CDATA", uri, false);
             }
             else
             {
@@ -2367,8 +2368,23 @@ abstract public class ToStream extends SerializerBase
                      *  the      uri is the value, that is why we pass it in the
                      * value, or 5th slot of addAttributeAlways()
                      */
-                    addAttributeAlways(XMLNS_URI, prefix, name, "CDATA", uri, false);
+                    was_added = addAttributeAlways(XMLNS_URI, prefix, name, "CDATA", uri, false);
                 }
+            }
+            
+            if (was_added == false && shouldFlush == false) {
+                // We pushed this namespace onto the stack, and we
+                // tried to update the pseudo-attribute value, but that didn't work
+                // so we now pop the value from the namespace stack.
+                //
+                // We already had a pseudo attribute of the form
+                // xmlns='uri' or xmlsn:pfx='uri' on this element.
+                // We were trying to update the value of pseudo-attribute.
+                // was_added is false, so we didn't update the value, hence
+                // we are not even going to accept the mapping itself,
+                // the caller is in error.
+                m_prefixMap.popNamespace(prefix);
+                pushed = false;                
             }
         }
         return pushed;
@@ -3019,6 +3035,7 @@ abstract public class ToStream extends SerializerBase
 
         if (index >= 0)
         {
+            // Trying to update the value of an existing attribute
             String old_value = null;
             if (m_tracer != null)
             {
@@ -3031,7 +3048,20 @@ abstract public class ToStream extends SerializerBase
              * We may have a null uri or localName, but all we really
              * want to re-set is the value anyway.
              */
-            m_attributes.setValue(index, value);
+            if ("xmlns".equals(localName)) {
+                // Don't update pseudo-attributes of the form xmlns='uri'
+                ;
+            }
+            else if (rawName != null && rawName.startsWith("xmlns:")) {
+                // Don't update pseudo-attributes of the form xmlns:prf='uri'
+                ;
+            }
+            else {
+                // Update normal attributes, which is OK because this could
+                // be from an xsl:attribute element in the stylesheet.
+                m_attributes.setValue(index, value);
+            }
+            
             was_added = false;
             if (old_value != null)
                 firePseudoAttributes();
