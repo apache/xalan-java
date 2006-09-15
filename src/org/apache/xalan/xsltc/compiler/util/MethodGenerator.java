@@ -48,6 +48,7 @@ import org.apache.bcel.generic.ILOAD;
 import org.apache.bcel.generic.IndexedInstruction;
 import org.apache.bcel.generic.INVOKEINTERFACE;
 import org.apache.bcel.generic.INVOKESPECIAL;
+import org.apache.bcel.generic.INVOKESTATIC;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.ISTORE;
 import org.apache.bcel.generic.Instruction;
@@ -1010,28 +1011,36 @@ public class MethodGenerator extends MethodGen
         //   adjacencyRunStart[0] == 0; adjacencyRunLength[0] == 2
         //   adjacencyRunStart[1] == 2; adjacencyRunLength[1] == 4
         for (int i = 1; i < chunks.length; i++) {
-             if (!chunks[i-1].isAdjacentTo(chunks[i])) {
-                 int lengthOfRun = i - startOfCurrentRun;
+            if (!chunks[i-1].isAdjacentTo(chunks[i])) {
+                int lengthOfRun = i - startOfCurrentRun;
 
-                 // Track the longest run of chunks found
-                 if (maximumRunOfChunks < lengthOfRun) {
-                     maximumRunOfChunks = lengthOfRun;
-                 }
+                // Track the longest run of chunks found
+                if (maximumRunOfChunks < lengthOfRun) {
+                    maximumRunOfChunks = lengthOfRun;
+                }
 
-                 if (lengthOfRun > 1 ) {
-                     adjacencyRunLength[numAdjacentRuns] = lengthOfRun;
-                     adjacencyRunStart[numAdjacentRuns] = startOfCurrentRun;
-                     numAdjacentRuns++;
-                 }
+                if (lengthOfRun > 1 ) {
+                    adjacencyRunLength[numAdjacentRuns] = lengthOfRun;
+                    adjacencyRunStart[numAdjacentRuns] = startOfCurrentRun;
+                    numAdjacentRuns++;
+                }
 
-                 startOfCurrentRun = i;
-             }
+                startOfCurrentRun = i;
+            }
         }
 
         if (chunks.length - startOfCurrentRun > 1) {
+            int lengthOfRun = chunks.length - startOfCurrentRun;
+
+            // Track the longest run of chunks found
+            if (maximumRunOfChunks < lengthOfRun) {
+                maximumRunOfChunks = lengthOfRun;
+            }
+
             adjacencyRunLength[numAdjacentRuns] =
                         chunks.length - startOfCurrentRun;
-            adjacencyRunLength[numAdjacentRuns] = startOfCurrentRun;
+            adjacencyRunStart[numAdjacentRuns] = startOfCurrentRun;
+            numAdjacentRuns++;
         }
 
         // Try merging adjacent chunks to come up with better sized chunks for
@@ -1130,6 +1139,16 @@ public class MethodGenerator extends MethodGen
 
         int outlinedCount = 0;
         boolean moreMethodsOutlined;
+        String originalMethodName = getName();
+
+        // Special handling for initialization methods.  No other methods can
+        // include the less than and greater than characters in their names,
+        // so we munge the names here.
+        if (originalMethodName.equals("<init>")) {
+            originalMethodName = "$lt$init$gt$";
+        } else if (originalMethodName.equals("<clinit>")) {
+            originalMethodName = "$lt$clinit$gt$";
+        }
 
         // Loop until the original method comes in under the JVM limit or
         // the loop was unable to outline any more methods
@@ -1153,7 +1172,8 @@ public class MethodGenerator extends MethodGen
 
                 methodsOutlined.add(outline(chunkToOutline.getChunkStart(),
                                             chunkToOutline.getChunkEnd(),
-                                            getName()+"$outline$"+outlinedCount,
+                                            originalMethodName + "$outline$"
+                                                               + outlinedCount,
                                             classGen));
                 outlinedCount++;
                 moreMethodsOutlined = true;
@@ -1237,8 +1257,15 @@ public class MethodGenerator extends MethodGen
         final String argName = "copyLocals";
         final String[] argNames = new String[] {argName};
 
+        int methodAttributes = ACC_PRIVATE | ACC_FINAL;
+        final boolean isStaticMethod = (getAccessFlags() & ACC_STATIC) != 0;
+
+        if (isStaticMethod) {
+            methodAttributes = methodAttributes | ACC_STATIC;
+        }
+
         final MethodGenerator outlinedMethodGen =
-            new MethodGenerator(ACC_PRIVATE | ACC_FINAL,
+            new MethodGenerator(methodAttributes,
                                 org.apache.bcel.generic.Type.VOID,
                                 argTypes, argNames, outlinedMethodName,
                                 getClassName(), newIL, cpg);
@@ -1294,14 +1321,25 @@ public class MethodGenerator extends MethodGen
 
         // Generate code to invoke the new outlined method, and place the code
         // on oldMethCopyOutIL
-        oldMethCopyOutIL.append(InstructionConstants.THIS);
-        oldMethCopyOutIL.append(InstructionConstants.SWAP);
-        InstructionHandle outlinedMethodRef =
-            oldMethCopyOutIL.append(
+        InstructionHandle outlinedMethodRef;
+
+        if (isStaticMethod) {
+            outlinedMethodRef =
+                oldMethCopyOutIL.append(
+                    new INVOKESTATIC(cpg.addMethodref(
+                                          classGen.getClassName(),
+                                          outlinedMethodName,
+                                          outlinedMethodGen.getSignature())));
+        } else {
+            oldMethCopyOutIL.append(InstructionConstants.THIS);
+            oldMethCopyOutIL.append(InstructionConstants.SWAP);
+            outlinedMethodRef =
+                oldMethCopyOutIL.append(
                     new INVOKEVIRTUAL(cpg.addMethodref(
                                           classGen.getClassName(),
                                           outlinedMethodName,
                                           outlinedMethodGen.getSignature())));
+        }
 
         // Used to keep track of the first in a sequence of
         // OutlineableChunkStart instructions
