@@ -75,6 +75,12 @@ public abstract class SyntaxTreeNode implements Constants {
     protected AttributeList _attributes = null;   // Attributes of this element
     private   Hashtable _prefixMapping = null; // Namespace declarations
 
+    public static final int UNKNOWN_STYLESHEET_NODE_ID = -1;
+
+    // Records whether this node or any descendant needs to know the
+    // in-scope namespaces at transform-time
+    private int _nodeIDForStylesheetNSLookup = UNKNOWN_STYLESHEET_NODE_ID;
+
     // Sentinel - used to denote unrecognised syntaxt tree nodes.
     static final SyntaxTreeNode Dummy = new AbsolutePathPattern(null);
 
@@ -740,6 +746,35 @@ public abstract class SyntaxTreeNode implements Constants {
 	il.append(methodGen.storeHandler());
     }
 
+    /**
+     * Retrieve an ID to identify the namespaces in scope at this point in the
+     * stylesheet
+     * @return An <code>int</code> representing the node ID or <code>-1</code>
+     *         if no namespace declarations are in scope
+     */
+    protected final int getNodeIDForStylesheetNSLookup() {
+        if (_nodeIDForStylesheetNSLookup == UNKNOWN_STYLESHEET_NODE_ID) {
+            Hashtable prefixMapping = getPrefixMapping();
+            int parentNodeID =
+                    (_parent != null) ? _parent.getNodeIDForStylesheetNSLookup()
+                                      : UNKNOWN_STYLESHEET_NODE_ID; 
+
+            // If this node in the stylesheet has no namespace declarations of
+            // its own, use the ID of the nearest ancestor element that does 
+            // have namespace declarations.
+            if (prefixMapping == null) {
+                _nodeIDForStylesheetNSLookup = parentNodeID;
+            } else {
+                // Inform the XSLTC object that we'll need to know about this
+                // node's namespace declarations.
+                _nodeIDForStylesheetNSLookup =
+                    getXSLTC().registerStylesheetPrefixMappingForRuntime(
+                                       prefixMapping, parentNodeID);
+            }
+        }
+
+        return _nodeIDForStylesheetNSLookup;
+    }
     /**
      * Returns true if this expression/instruction depends on the context. By 
      * default, every expression/instruction depends on the context unless it 
