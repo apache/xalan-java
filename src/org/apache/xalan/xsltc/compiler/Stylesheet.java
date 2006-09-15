@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,6 +106,8 @@ public final class Stylesheet extends SyntaxTreeNode {
      * set in top-level stylesheets that include/import other stylesheets.
      */
     private Vector _allValidTemplates = null;
+
+    private Vector _elementsWithNamespacesUsedDynamically = null;
 
     /**
      * Counter to generate unique mode suffixes.
@@ -262,7 +264,7 @@ public final class Stylesheet extends SyntaxTreeNode {
     public void setHasIdCall(boolean flag) {
         _hasIdCall = flag;
     }
-    
+
     public void setOutputProperty(String key, String value) {
 	if (_outputProperties == null) {
 	    _outputProperties = new Properties();
@@ -732,10 +734,59 @@ public final class Stylesheet extends SyntaxTreeNode {
     }
 
     /**
-     * Compile the namesArray, urisArray and typesArray into
+     * <p>Compile the namesArray, urisArray, typesArray, namespaceArray,
+     * namespaceAncestorsArray, prefixURIsIdxArray and prefixURIPairsArray into
      * the static initializer. They are read-only from the
      * translet. All translet instances can share a single
-     * copy of this informtion.
+     * copy of this informtion.</p>
+     * <p>The <code>namespaceAncestorsArray</code>,
+     * <code>prefixURIsIdxArray</code> and <code>prefixURIPairsArray</code>
+     * contain namespace information accessible from the stylesheet:
+     * <dl>
+     * <dt><code>namespaceAncestorsArray</code></dt>
+     * <dd>Array indexed by integer stylesheet node IDs containing node IDs of
+     * the nearest ancestor node in the stylesheet with namespace
+     * declarations or <code>-1</code> if there is no such ancestor.  There
+     * can be more than one disjoint tree of nodes - one for each stylesheet
+     * module</dd>
+     * <dt><code>prefixURIsIdxArray</code></dt>
+     * <dd>Array indexed by integer stylesheet node IDs containing the index
+     * into <code>prefixURIPairsArray</code> of the first namespace prefix
+     * declared for the node.  The values are stored in ascending order, so
+     * the next value in this array (if any) can be used to find the last such
+     * prefix-URI pair</dd>
+     * <dt>prefixURIPairsArray</dt>
+     * <dd>Array of pairs of namespace prefixes and URIs.  A zero-length
+     * string represents the default namespace if it appears as a prefix and
+     * a namespace undeclaration if it appears as a URI.</dd>
+     * </dl>
+     * </p>
+     * <p>For this stylesheet
+     * <pre><code>
+     * &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"&gt;
+     *   &lt;xsl:template match="/"&gt;
+     *     &lt;xsl:for-each select="*" xmlns:foo="foouri"&gt;
+     *       &lt;xsl:element name="{n}" xmlns:foo="baruri"&gt;
+     *     &lt;/xsl:for-each&gt;
+     *     &lt;out xmlns="lumpit"/&gt;
+     *     &lt;xsl:element name="{n}" xmlns="foouri"/&gt;
+     *     &lt;xsl:element name="{n}" namespace="{ns}" xmlns="limpit"/gt;
+     *   &lt;/xsl:template&gt;
+     * &lt;/xsl:stylesheet&gt;
+     * </code></pre>
+     * there will be four stylesheet nodes whose namespace information is
+     * needed, and
+     * <ul>
+     * <li><code>namespaceAncestorsArray</code> will have the value
+     * <code>[-1,0,1,0]</code>;</li>
+     * <li><code>prefixURIsIdxArray</code> will have the value
+     * <code>[0,4,6,8]</code>; and</li>
+     * <li><code>prefixURIPairsArray</code> will have the value
+     * <code>["xml","http://www.w3.org/XML/1998/namespace",
+     *        "xsl","http://www.w3.org/1999/XSL/Transform"
+     *        "foo","foouri","foo","baruri","","foouri"].</code></li>
+     * </ul>
+     * </p>
      */
     private void compileStaticInitializer(ClassGenerator classGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
@@ -791,74 +842,172 @@ public final class Stylesheet extends SyntaxTreeNode {
 	        namesArray[i] = encodedName.substring(index);
 	    }	    
 	}
-	
+
+        staticConst.markChunkStart();
 	il.append(new PUSH(cpg, size));
 	il.append(new ANEWARRAY(cpg.addClass(STRING)));		
+        int namesArrayRef = cpg.addFieldref(_className,
+				            STATIC_NAMES_ARRAY_FIELD,
+					    NAMES_INDEX_SIG);
+	il.append(new PUTSTATIC(namesArrayRef));
+        staticConst.markChunkEnd();
 
 	for (int i = 0; i < size; i++) {
 	    final String name = namesArray[i];
-	    il.append(DUP);
+            staticConst.markChunkStart();
+	    il.append(new GETSTATIC(namesArrayRef));
 	    il.append(new PUSH(cpg, i));
 	    il.append(new PUSH(cpg, name));
 	    il.append(AASTORE);
+            staticConst.markChunkEnd();
 	}
-	il.append(new PUTSTATIC(cpg.addFieldref(_className,
-					       STATIC_NAMES_ARRAY_FIELD,
-					       NAMES_INDEX_SIG)));
 
+        staticConst.markChunkStart();
 	il.append(new PUSH(cpg, size));
 	il.append(new ANEWARRAY(cpg.addClass(STRING)));		
+        int urisArrayRef = cpg.addFieldref(_className,
+					   STATIC_URIS_ARRAY_FIELD,
+					   URIS_INDEX_SIG);
+	il.append(new PUTSTATIC(urisArrayRef));
+        staticConst.markChunkEnd();
 
 	for (int i = 0; i < size; i++) {
 	    final String uri = urisArray[i];
-	    il.append(DUP);
+            staticConst.markChunkStart();
+	    il.append(new GETSTATIC(urisArrayRef));
 	    il.append(new PUSH(cpg, i));
 	    il.append(new PUSH(cpg, uri));
 	    il.append(AASTORE);
+            staticConst.markChunkEnd();
 	}
-	il.append(new PUTSTATIC(cpg.addFieldref(_className,
-					       STATIC_URIS_ARRAY_FIELD,
-					       URIS_INDEX_SIG)));
 
+        staticConst.markChunkStart();
 	il.append(new PUSH(cpg, size));
 	il.append(new NEWARRAY(BasicType.INT));		
+        int typesArrayRef = cpg.addFieldref(_className,
+					    STATIC_TYPES_ARRAY_FIELD,
+					    TYPES_INDEX_SIG);
+	il.append(new PUTSTATIC(typesArrayRef));
+        staticConst.markChunkEnd();
 
 	for (int i = 0; i < size; i++) {
 	    final int nodeType = typesArray[i];
-	    il.append(DUP);
+            staticConst.markChunkStart();
+	    il.append(new GETSTATIC(typesArrayRef));
 	    il.append(new PUSH(cpg, i));
 	    il.append(new PUSH(cpg, nodeType));
 	    il.append(IASTORE);
+            staticConst.markChunkEnd();
 	}
-	il.append(new PUTSTATIC(cpg.addFieldref(_className,
-					       STATIC_TYPES_ARRAY_FIELD,
-					       TYPES_INDEX_SIG)));
 
 	// Put the namespace names array into the translet
 	final Vector namespaces = getXSLTC().getNamespaceIndex();
+        staticConst.markChunkStart();
 	il.append(new PUSH(cpg, namespaces.size()));
 	il.append(new ANEWARRAY(cpg.addClass(STRING)));		
+        int namespaceArrayRef = cpg.addFieldref(_className,
+					        STATIC_NAMESPACE_ARRAY_FIELD,
+					        NAMESPACE_INDEX_SIG);
+	il.append(new PUTSTATIC(namespaceArrayRef));
+        staticConst.markChunkEnd();
 
 	for (int i = 0; i < namespaces.size(); i++) {
 	    final String ns = (String)namespaces.elementAt(i);
-	    il.append(DUP);
+            staticConst.markChunkStart();
+	    il.append(new GETSTATIC(namespaceArrayRef));
 	    il.append(new PUSH(cpg, i));
 	    il.append(new PUSH(cpg, ns));
 	    il.append(AASTORE);
+            staticConst.markChunkEnd();
 	}
-	il.append(new PUTSTATIC(cpg.addFieldref(_className,
-					       STATIC_NAMESPACE_ARRAY_FIELD,
-					       NAMESPACE_INDEX_SIG)));
+
+        // Put the tree of stylesheet namespace declarations into the translet
+        final Vector namespaceAncestors = getXSLTC().getNSAncestorPointers();
+        if (namespaceAncestors != null && namespaceAncestors.size() != 0) {
+            addStaticField(classGen, NS_ANCESTORS_INDEX_SIG,
+                           STATIC_NS_ANCESTORS_ARRAY_FIELD);
+            staticConst.markChunkStart();
+            il.append(new PUSH(cpg, namespaceAncestors.size()));
+            il.append(new NEWARRAY(BasicType.INT));
+            int namespaceAncestorsArrayRef =
+                    cpg.addFieldref(_className, STATIC_NS_ANCESTORS_ARRAY_FIELD,
+                                    NS_ANCESTORS_INDEX_SIG);
+            il.append(new PUTSTATIC(namespaceAncestorsArrayRef));
+            staticConst.markChunkEnd();
+            for (int i = 0; i < namespaceAncestors.size(); i++) {
+                int ancestor = ((Integer) namespaceAncestors.get(i)).intValue();
+                staticConst.markChunkStart();
+                il.append(new GETSTATIC(namespaceAncestorsArrayRef));
+                il.append(new PUSH(cpg, i));
+                il.append(new PUSH(cpg, ancestor));
+                il.append(IASTORE);
+                staticConst.markChunkEnd();
+            }
+        }
+        // Put the array of indices into the namespace prefix/URI pairs array
+        // into the translet
+        final Vector prefixURIPairsIdx = getXSLTC().getPrefixURIPairsIdx();
+        if (prefixURIPairsIdx != null && prefixURIPairsIdx.size() != 0) {
+            addStaticField(classGen, PREFIX_URIS_IDX_SIG,
+                           STATIC_PREFIX_URIS_IDX_ARRAY_FIELD);
+            staticConst.markChunkStart();
+            il.append(new PUSH(cpg, prefixURIPairsIdx.size()));
+            il.append(new NEWARRAY(BasicType.INT));
+            int prefixURIPairsIdxArrayRef = 
+                        cpg.addFieldref(_className,
+                                        STATIC_PREFIX_URIS_IDX_ARRAY_FIELD,
+                                        PREFIX_URIS_IDX_SIG);
+            il.append(new PUTSTATIC(prefixURIPairsIdxArrayRef));
+            staticConst.markChunkEnd();
+            for (int i = 0; i < prefixURIPairsIdx.size(); i++) {
+                int idx = ((Integer) prefixURIPairsIdx.get(i)).intValue();
+                staticConst.markChunkStart();
+                il.append(new GETSTATIC(prefixURIPairsIdxArrayRef));
+                il.append(new PUSH(cpg, i));
+                il.append(new PUSH(cpg, idx));
+                il.append(IASTORE);
+                staticConst.markChunkEnd();
+            }
+        }
+
+        // Put the array of pairs of namespace prefixes and URIs into the
+        // translet
+        final Vector prefixURIPairs = getXSLTC().getPrefixURIPairs();
+        if (prefixURIPairs != null && prefixURIPairs.size() != 0) {
+            addStaticField(classGen, PREFIX_URIS_ARRAY_SIG,
+                    STATIC_PREFIX_URIS_ARRAY_FIELD);
+
+            staticConst.markChunkStart();
+            il.append(new PUSH(cpg, prefixURIPairs.size()));
+            il.append(new ANEWARRAY(cpg.addClass(STRING)));
+            int prefixURIPairsRef = 
+                        cpg.addFieldref(_className,
+                                        STATIC_PREFIX_URIS_ARRAY_FIELD,
+                                        PREFIX_URIS_ARRAY_SIG);
+            il.append(new PUTSTATIC(prefixURIPairsRef));
+            staticConst.markChunkEnd();
+            for (int i = 0; i < prefixURIPairs.size(); i++) {
+                String prefixOrURI = (String) prefixURIPairs.get(i);
+                staticConst.markChunkStart();
+                il.append(new GETSTATIC(prefixURIPairsRef));
+                il.append(new PUSH(cpg, i));
+                il.append(new PUSH(cpg, prefixOrURI));
+                il.append(AASTORE);
+                staticConst.markChunkEnd();
+            }
+        }
 
         // Grab all the literal text in the stylesheet and put it in a char[]
         final int charDataCount = getXSLTC().getCharacterDataCount();
         final int toCharArray = cpg.addMethodref(STRING, "toCharArray", "()[C");
         for (int i = 0; i < charDataCount; i++) {
+            staticConst.markChunkStart();
             il.append(new PUSH(cpg, getXSLTC().getCharacterData(i)));
             il.append(new INVOKEVIRTUAL(toCharArray));
             il.append(new PUTSTATIC(cpg.addFieldref(_className,
                                                STATIC_CHAR_DATA_FIELD+i,
                                                STATIC_CHAR_DATA_FIELD_SIG)));
+            staticConst.markChunkEnd();
         }
 
 	il.append(RETURN);
@@ -886,6 +1035,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	il.append(new INVOKESPECIAL(cpg.addMethodref(TRANSLET_CLASS,
 						     "<init>", "()V")));
 	
+        constructor.markChunkStart();
 	il.append(classGen.loadTranslet());
 	il.append(new GETSTATIC(cpg.addFieldref(_className,
 	                                        STATIC_NAMES_ARRAY_FIELD,
@@ -893,7 +1043,9 @@ public final class Stylesheet extends SyntaxTreeNode {
 	il.append(new PUTFIELD(cpg.addFieldref(TRANSLET_CLASS,
 	                                       NAMES_INDEX,
 	                                       NAMES_INDEX_SIG)));
+        constructor.markChunkEnd();
 	
+        constructor.markChunkStart();
 	il.append(classGen.loadTranslet());
 	il.append(new GETSTATIC(cpg.addFieldref(_className,
 	                                        STATIC_URIS_ARRAY_FIELD,
@@ -901,7 +1053,9 @@ public final class Stylesheet extends SyntaxTreeNode {
 	il.append(new PUTFIELD(cpg.addFieldref(TRANSLET_CLASS,
 	                                       URIS_INDEX,
 	                                       URIS_INDEX_SIG)));
+        constructor.markChunkEnd();
 
+        constructor.markChunkStart();
 	il.append(classGen.loadTranslet());
 	il.append(new GETSTATIC(cpg.addFieldref(_className,
 	                                        STATIC_TYPES_ARRAY_FIELD,
@@ -909,7 +1063,9 @@ public final class Stylesheet extends SyntaxTreeNode {
 	il.append(new PUTFIELD(cpg.addFieldref(TRANSLET_CLASS,
 	                                       TYPES_INDEX,
 	                                       TYPES_INDEX_SIG)));
+        constructor.markChunkEnd();
 
+        constructor.markChunkStart();
 	il.append(classGen.loadTranslet());
 	il.append(new GETSTATIC(cpg.addFieldref(_className,
 	                                        STATIC_NAMESPACE_ARRAY_FIELD,
@@ -917,31 +1073,41 @@ public final class Stylesheet extends SyntaxTreeNode {
 	il.append(new PUTFIELD(cpg.addFieldref(TRANSLET_CLASS,
 	                                       NAMESPACE_INDEX,
 	                                       NAMESPACE_INDEX_SIG)));
+        constructor.markChunkEnd();
 
+        constructor.markChunkStart();
 	il.append(classGen.loadTranslet());
         il.append(new PUSH(cpg, AbstractTranslet.CURRENT_TRANSLET_VERSION));
 	il.append(new PUTFIELD(cpg.addFieldref(TRANSLET_CLASS,
 	                                       TRANSLET_VERSION_INDEX,
 	                                       TRANSLET_VERSION_INDEX_SIG)));
+        constructor.markChunkEnd();
 	
 	if (_hasIdCall) {
+            constructor.markChunkStart();
 	    il.append(classGen.loadTranslet());
 	    il.append(new PUSH(cpg, Boolean.TRUE));
 	    il.append(new PUTFIELD(cpg.addFieldref(TRANSLET_CLASS,
 					           HASIDCALL_INDEX,
 					           HASIDCALL_INDEX_SIG)));
+            constructor.markChunkEnd();
 	}
 	
-	// Compile in code to set the output configuration from <xsl:output>
+        // Compile in code to set the output configuration from <xsl:output>
 	if (output != null) {
 	    // Set all the output settings files in the translet
+            constructor.markChunkStart();
 	    output.translate(classGen, constructor);
+            constructor.markChunkEnd();
 	}
 
 	// Compile default decimal formatting symbols.
 	// This is an implicit, nameless xsl:decimal-format top-level element.
-	if (_numberFormattingUsed)
+	if (_numberFormattingUsed) {
+            constructor.markChunkStart();
 	    DecimalFormatting.translateDefaultDFS(classGen, constructor);
+            constructor.markChunkEnd();
+        }
 
 	il.append(RETURN);
 
