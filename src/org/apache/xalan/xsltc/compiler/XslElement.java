@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ package org.apache.xalan.xsltc.compiler;
 import org.apache.bcel.generic.ALOAD;
 import org.apache.bcel.generic.ASTORE;
 import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.GETSTATIC;
 import org.apache.bcel.generic.ICONST;
 import org.apache.bcel.generic.INVOKESTATIC;
 import org.apache.bcel.generic.InstructionList;
@@ -136,7 +137,10 @@ final class XslElement extends Instruction {
 	    }
 	}
 	else {
-	    _namespace = (namespace == EMPTYSTRING) ? null :
+            // name attribute contains variable parts.  If there is no namespace
+            // attribute, the generated code needs to be prepared to look up
+            // any prefix in the stylesheet at run-time.
+            _namespace = (namespace == EMPTYSTRING) ? null :
 			 new AttributeValueTemplate(namespace, parser, this);
 	}
 
@@ -240,17 +244,44 @@ final class XslElement extends Instruction {
             // Push handler for call to endElement()
             il.append(methodGen.loadHandler());         
             
-            // load name value again    
-            nameValue.setEnd(il.append(new ALOAD(nameValue.getIndex())));  
+            // load name value again
+            nameValue.setEnd(il.append(new ALOAD(nameValue.getIndex())));
                     
 	    if (_namespace != null) {
 		_namespace.translate(classGen, methodGen);
 	    }
 	    else {
-		il.append(ACONST_NULL);
+                // If name is an AVT and namespace is not specified, need to
+                // look up any prefix in the stylesheet by calling
+                //   BasisLibrary.lookupStylesheetQNameNamespace(
+                //                name, stylesheetNode, ancestorsArray,
+                //                prefixURIsIndexArray, prefixURIPairsArray,
+                //                !ignoreDefaultNamespace)
+                String transletClassName = getXSLTC().getClassName();
+                il.append(DUP);
+                il.append(new PUSH(cpg, getNodeIDForStylesheetNSLookup()));
+                il.append(new GETSTATIC(cpg.addFieldref(
+                                             transletClassName,
+                                             STATIC_NS_ANCESTORS_ARRAY_FIELD,
+                                             NS_ANCESTORS_INDEX_SIG)));
+                il.append(new GETSTATIC(cpg.addFieldref(
+                                             transletClassName,
+                                             STATIC_PREFIX_URIS_IDX_ARRAY_FIELD,
+                                             PREFIX_URIS_IDX_SIG)));
+                il.append(new GETSTATIC(cpg.addFieldref(
+                                             transletClassName,
+                                             STATIC_PREFIX_URIS_ARRAY_FIELD,
+                                             PREFIX_URIS_ARRAY_SIG)));
+                // Default namespace is significant
+                il.append(ICONST_0);
+                il.append(
+                    new INVOKESTATIC(
+                        cpg.addMethodref(BASIS_LIBRARY_CLASS,
+                                           LOOKUP_STYLESHEET_QNAME_NS_REF,
+                                           LOOKUP_STYLESHEET_QNAME_NS_SIG)));
 	    }
 
-	    // Push additional arguments
+            // Push additional arguments
 	    il.append(methodGen.loadHandler());
 	    il.append(methodGen.loadDOM());
 	    il.append(methodGen.loadCurrentNode());
