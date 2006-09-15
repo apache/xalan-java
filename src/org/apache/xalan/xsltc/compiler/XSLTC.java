@@ -1,5 +1,5 @@
 /*
- * Copyright 2001-2004 The Apache Software Foundation.
+ * Copyright 2001-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import java.net.URL;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
@@ -113,6 +114,10 @@ public final class XSLTC {
     private boolean _callsNodeset = false;
     private boolean _multiDocument = false;
     private boolean _hasIdCall = false;
+
+    private Vector _stylesheetNSAncestorPointers;
+    private Vector _prefixURIPairs;
+    private Vector _prefixURIPairsIdx;
 
     /**
      * Set to true if template inlining is requested. Template
@@ -201,6 +206,9 @@ public final class XSLTC {
 	_attributeSetSerial = 0;
 	_multiDocument      = false;
 	_hasIdCall          = false;
+        _stylesheetNSAncestorPointers = null;
+        _prefixURIPairs     = null;
+        _prefixURIPairsIdx  = null;
 	_numberFieldIndexes = new int[] {
 	    -1, 	// LEVEL_SINGLE
 	    -1, 	// LEVEL_MULTIPLE
@@ -683,6 +691,20 @@ public final class XSLTC {
      * Registers a namespace and gives it a type so that it can be mapped to
      * DOM namespace types at run-time.
      */
+    public int registerNamespacePrefix(String name) {
+        Integer code = (Integer)_namespacePrefixes.get(name);
+        if (code == null) {   
+            code = new Integer(_nextGType++);
+            _namespacePrefixes.put(name, code);
+            _namesIndex.addElement("?"+name);
+        }
+        return code.intValue();
+    }
+
+    /**
+     * Registers a namespace and gives it a type so that it can be mapped to
+     * DOM namespace types at run-time.
+     */
     public int registerNamespace(String namespaceURI) {
 	Integer code = (Integer)_namespaces.get(namespaceURI);
 	if (code == null) {
@@ -691,6 +713,65 @@ public final class XSLTC {
 	    _namespaceIndex.addElement(namespaceURI);
 	}
 	return code.intValue();
+    }
+
+    /**
+     * Registers namespace declarations that the stylesheet might need to
+     * look up dynamically - for instance, if an <code>xsl:element</code> has a
+     * a <code>name</code> attribute with variable parts and has no
+     * <code>namespace</code> attribute.
+     * 
+     * @param prefixMap a <code>Hashtable</code> mapping namespace prefixes to
+     *                  URIs.  Must not be <code>null</code>.  The default
+     *                  namespace and namespace undeclarations are represented
+     *                  by a zero-length string.
+     * @param ancestorID The <code>int</code> node ID of the nearest ancestor in
+     *                 the stylesheet that declares namespaces, or a value less
+     *                 than zero if there is no such ancestor
+     * @return A new node ID for the stylesheet element 
+     */
+    public int registerStylesheetPrefixMappingForRuntime(Hashtable prefixMap,
+                                                         int ancestorID) {
+        if (_stylesheetNSAncestorPointers == null) {
+            _stylesheetNSAncestorPointers = new Vector();
+        }
+
+        if (_prefixURIPairs == null) {
+            _prefixURIPairs = new Vector();
+        }
+
+        if (_prefixURIPairsIdx == null) {
+            _prefixURIPairsIdx = new Vector();
+        }
+
+        int currentNodeID = _stylesheetNSAncestorPointers.size();
+        _stylesheetNSAncestorPointers.add(new Integer(ancestorID));
+
+        Iterator prefixMapIterator = prefixMap.entrySet().iterator();
+        int prefixNSPairStartIdx = _prefixURIPairs.size();
+        _prefixURIPairsIdx.add(new Integer(prefixNSPairStartIdx));
+
+        while (prefixMapIterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) prefixMapIterator.next();
+            String prefix = (String) entry.getKey();
+            String uri = (String) entry.getValue();
+            _prefixURIPairs.add(prefix);
+            _prefixURIPairs.add(uri);
+        }
+
+        return currentNodeID;
+    }
+
+    public Vector getNSAncestorPointers() {
+        return _stylesheetNSAncestorPointers;
+    }
+
+    public Vector getPrefixURIPairs() {
+        return _prefixURIPairs;
+    }
+
+    public Vector getPrefixURIPairsIdx() {
+        return _prefixURIPairsIdx;
     }
 
     public int nextModeSerial() {
