@@ -18,8 +18,6 @@
  */
 package org.apache.xalan.processor;
 
-import javax.xml.transform.SourceLocator;
-
 import org.apache.xalan.templates.ElemApplyImport;
 import org.apache.xalan.templates.ElemApplyTemplates;
 import org.apache.xalan.templates.ElemAttribute;
@@ -32,6 +30,7 @@ import org.apache.xalan.templates.ElemExsltFuncResult;
 import org.apache.xalan.templates.ElemExsltFunction;
 import org.apache.xalan.templates.ElemFallback;
 import org.apache.xalan.templates.ElemLiteralResult;
+import org.apache.xalan.templates.ElemMessage;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemPI;
 import org.apache.xalan.templates.ElemParam;
@@ -41,9 +40,7 @@ import org.apache.xalan.templates.ElemText;
 import org.apache.xalan.templates.ElemTextLiteral;
 import org.apache.xalan.templates.ElemValueOf;
 import org.apache.xalan.templates.ElemVariable;
-import org.apache.xalan.templates.ElemMessage;
 import org.apache.xalan.templates.Stylesheet;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -76,9 +73,9 @@ public class ProcessorExsltFunction extends ProcessorTemplateElem
     int indexOfColon = val.indexOf(":");
     if (indexOfColon > 0)
     {
-      String prefix = val.substring(0, indexOfColon);
-      String localVal = val.substring(indexOfColon + 1);
-      String ns = handler.getNamespaceSupport().getURI(prefix);
+      //String prefix = val.substring(0, indexOfColon);
+      //String localVal = val.substring(indexOfColon + 1);
+      //String ns = handler.getNamespaceSupport().getURI(prefix);
       //if (ns.length() > 0)
       //  System.out.println("fullfuncname " + ns + localVal);
     }
@@ -111,7 +108,6 @@ public class ProcessorExsltFunction extends ProcessorTemplateElem
             throws SAXException
   {
    ElemTemplateElement function = handler.getElemTemplateElement();
-   SourceLocator locator = handler.getLocator();
    validate(function, handler); // may throw exception
    super.endElement(handler, uri, localName, rawName);   
   }
