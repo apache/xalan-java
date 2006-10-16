@@ -346,11 +346,11 @@ $Id$
 
   <!-- XSLTC engine dependency .jar files -->    
   <patternset id="xsltc-deps-jars" >
-    <include name="${dist.file}/bin/${bcel.jar.name}"/>
+    <include name="${dist.file}/lib/${bcel.jar.name}"/>
     <include name="${dist.file}/tools/${java_cup.jar.name}"/>
     <include name="${dist.file}/tools/${jlex.jar.name}"/>
-    <include name="${dist.file}/bin/${runtime.jar.name}"/>
-    <include name="${dist.file}/bin/${regexp.jar.name}"/>
+    <include name="${dist.file}/lib/${runtime.jar.name}"/>
+    <include name="${dist.file}/lib/${regexp.jar.name}"/>
   </patternset>
 
   <!-- =================================================================== -->
@@ -385,7 +385,9 @@ $Id$
   </target>
 
   <!-- Must depend on jar since we use Xalan to process xml files -->
-  <target name="prepare.docs" depends="jar">
+  <target name="prepare.docs" depends="jar,prepare.docs.nojardepends"/>
+  
+  <target name="prepare.docs.nojardepends">  
     <mkdir dir="${build.docs}"/> 
     <mkdir dir="${build.apidocs}"/>
 
@@ -763,7 +765,9 @@ $Id$
   <!-- =================================================================== -->
   <!-- Compiles the samples (servlet excluded) and jars the class files    -->  
   <!-- =================================================================== -->
-  <target name="samples" depends="jar,xsltc.samples"
+  <target name="samples" depends="jar,samples.nojardepends,xsltc.samples"/>
+
+  <target name="samples.nojardepends" depends="xsltc.samples.nojardepends"
     description="Compile and jar the samples (except servlet)" >
     <property name="exclude" value="*.xml,*.xsl,*.txt,*.html,*.properties,*.out"/>
     <mkdir dir="${build.samples}"/>
@@ -854,9 +858,9 @@ $Id$
   <target name="extra.std.samples"
           depends="servlet,xsltc.applet,xsltc.ejb,xsltc.servlet"/>
           
-<!--  <target name="extra.std.samples.compile"
-          depends="servlet.compile,xsltc.applet.compile,
-                   xsltc.ejb.compile,xsltc.servlet.compile"/>          -->
+  <target name="extra.std.samples.nojardepends"
+          depends="servlet.nojardepends,xsltc.applet.nojardepends,
+                   xsltc.ejb.nojardepends,xsltc.servlet.nojardepends"/>
 
   <!-- =================================================================== -->
   <!-- Compiles all samples that require extra non-standard components in  -->
@@ -864,14 +868,16 @@ $Id$
   <!-- =================================================================== -->
   <target name="extra.nonstd.samples" depends="xsltc.brazil"/>
   
-<!--  <target name="extra.nonstd.samples.compile" depends="xsltc.brazil.compile"/> -->
+  <target name="extra.nonstd.samples.nojardepends" depends="xsltc.brazil.nojardepends"/>
 
   <!-- =================================================================== -->
   <!-- Compiles the sample servlet and jars the class files.               --> 
   <!-- The javax.servlet and javax.servlet.http packages                   -->
   <!-- must be on the classpath                                            -->
   <!-- =================================================================== -->
-  <target name="servlet" depends="jar"
+  <target name="servlet" depends="jar,servlet.nojardepends"/>
+
+  <target name="servlet.nojardepends"
     description="Compile and jar the servlet samples in xalanservlet.war" >
      <echo message="To compile the sample servlets, javax.servlet and javax.servlet.http must be on the classpath"/>   
      <mkdir dir="${build.servlet}"/>
@@ -913,7 +919,9 @@ $Id$
   <!-- add samples in CompiledApplet, CompiledBrazil, CompiledEJB and      -->
   <!-- CompiledServlet.                                                    -->
   <!-- =================================================================== -->
-  <target name="xsltc.samples" depends="jar">
+  <target name="xsltc.samples" depends="jar,xsltc.samples.nojardepends"/>
+
+  <target name="xsltc.samples.nojardepends">
     <mkdir dir="${build.samples}"/>
     <javac srcdir="${samples.dir}/translets"
            classpath="${java.class.path}:${build.xalan.jar}" 
@@ -927,7 +935,9 @@ $Id$
   <!-- =================================================================== -->
   <!-- Compiles the XSLTC applet example and jars the class files.         --> 
   <!-- =================================================================== -->
-  <target name="xsltc.applet" depends="jar">
+  <target name="xsltc.applet" depends="jar,xsltc.applet.nojardepends"/>
+
+  <target name="xsltc.applet.nojardepends">
     <mkdir dir="${build.samples}/CompiledApplet"/>
     <javac srcdir="${samples.dir}/CompiledApplet"
            destdir="${build.samples}/CompiledApplet" excludes="${exclude}"
@@ -940,7 +950,9 @@ $Id$
   <!-- =================================================================== -->
   <!-- Compiles the XSLTC brazil example and jars the class files.         --> 
   <!-- =================================================================== -->
-  <target name="xsltc.brazil" depends="jar">
+  <target name="xsltc.brazil" depends="jar,xsltc.brazil.nojardepends"/>
+
+  <target name="xsltc.brazil.nojardepends">
     <mkdir dir="${build.samples}/CompiledBrazil"/>
     <javac srcdir="${samples.dir}/CompiledBrazil"
            destdir="${build.samples}/CompiledBrazil" excludes="${exclude}"
@@ -955,7 +967,9 @@ $Id$
   <!-- ejb.jar must be on the classpath to compile this sample.            -->
   <!-- EJB 2.0 can be found at http://java.sun.com/products/ejb/docs.html  -->
   <!-- =================================================================== -->
-  <target name="xsltc.ejb" depends="jar">
+  <target name="xsltc.ejb" depends="jar,xsltc.ejb.nojardepends"/>
+
+  <target name="xsltc.ejb.nojardepends">
     <mkdir dir="${build.samples}/CompiledEJB"/>
     <javac srcdir="${samples.dir}/CompiledEJB"
            destdir="${build.samples}/CompiledEJB" excludes="${exclude}"
@@ -968,7 +982,9 @@ $Id$
   <!-- =================================================================== -->
   <!-- Compiles the XSLTC servlet example and jars the class files.        --> 
   <!-- =================================================================== -->
-  <target name="xsltc.servlet" depends="jar">
+  <target name="xsltc.servlet" depends="jar,xsltc.servlet.nojardepends" />
+
+  <target name="xsltc.servlet.nojardepends">
     <mkdir dir="${build.samples}/CompiledServlet"/>
     <javac srcdir="${samples.dir}/CompiledServlet"
            destdir="${build.samples}/CompiledServlet" excludes="${exclude}"
@@ -982,7 +998,9 @@ $Id$
   <!-- =================================================================== -->
   <!-- Generate HTML docs                                                  -->
   <!-- =================================================================== -->
-  <target name="docs" depends="prepare.docs,autodocs,xsltc.docs"
+  <target name="docs" depends="jar,docs.nojardepends,xsltc.docs"/>
+  
+  <target name="docs.nojardepends" depends="prepare.docs.nojardepends,autodocs"  
     description="Build the documentation (overview, readme, etc.)" >
     <echo message="docs is human-usable target with dependencies"/>  
   </target>
@@ -999,7 +1017,9 @@ $Id$
   <!-- =================================================================== -->
   <!-- Creates the API documentation                                       -->
   <!-- =================================================================== -->
-  <target name="javadocs" depends="prepare.docs"
+  <target name="javadocs" depends="jar,javadocs.nojardepends"/>
+  
+  <target name="javadocs.nojardepends" depends="prepare.docs.nojardepends,autojavadocs"
     description="Build the Javadocs for Xalan 2.x and jaxp sources" >
     <echo message="javadocs is human-usable target with dependencies"/> 
     
@@ -1250,16 +1270,16 @@ $Id$
           
   <target name="build.std-separatejars.parts"
           depends="xalan-interpretive.jar,xsltc.jar,
-                   docs,javadocs,
-                   samples,extra.std.samples,
+                   docs.nojardepends,javadocs.nojardepends,
+                   samples.nojardepends,extra.std.samples.nojardepends,
                    xsltc.docs"/>
                     
   <target name="build.std-separatejars.parts-nodocs"
           depends="xalan-interpretive.jar,xsltc.jar,
-                   samples,extra.std.samples"/>                            
+                   samples.nojardepends,extra.std.samples.nojardepends"/>                            
           
   <target name="build.nonstd.parts" depends="extra.nonstd.samples"/>
-  <target name="build.nonstd-separatejars.parts" depends="extra.nonstd.samples"/>
+  <target name="build.nonstd-separatejars.parts" depends="extra.nonstd.samples.nojardepends"/>
 
   <!-- =================================================================== -->
   <!-- Autodist targets.  Used by the distribution targets.                -->
@@ -1556,7 +1576,7 @@ $Id$
   <!-- =================================================================== -->
 
 
-  <target name="xsltc.prepare.docs" depends="prepare.docs">
+  <target name="xsltc.prepare.docs" depends="prepare.docs.nojardepends">
    <mkdir dir="${build.docs}/xsltc"/>
    <!--   
    <echo message="Transform xsltc_todo.xml and put the result in ${build.docs}/xsltc"/>
