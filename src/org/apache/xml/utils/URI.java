@@ -423,8 +423,7 @@ public class URI implements Serializable
     }
 
     // two slashes means generic URI syntax, so we get the authority
-    if (((index + 1) < uriSpecLen)
-            && (uriSpec.substring(index).startsWith("//")))
+    if (uriSpec.startsWith("//"))
     {
       index += 2;
 
