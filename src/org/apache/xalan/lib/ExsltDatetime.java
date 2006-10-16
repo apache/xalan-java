@@ -655,7 +655,6 @@ public class ExsltDatetime
      */
     public static String monthName()
     {
-      Calendar cal = Calendar.getInstance();
       String format = "MMMM";
       return getNameOrAbbrev(format);  
     }
