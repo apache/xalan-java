@@ -242,9 +242,9 @@ public class DTMDocument extends DTMDefaultBaseIterators
   protected int addAttributeToNode( Object o, int extendedType, int pnode )
   {
     int attrib = DTM.NULL;
-    int prevsib = DTM.NULL;
+    //int prevsib = DTM.NULL;
     int lastattrib = DTM.NULL;
-    int value = DTM.NULL;
+    // int value = DTM.NULL;
 
     try
     {
@@ -919,7 +919,6 @@ public class DTMDocument extends DTMDefaultBaseIterators
     }
     else
     {
-      int type = getNodeType(nodeHandle);
       Node node = getNode(nodeHandle);
       dispatchNodeData(node, ch, 0);
     }
