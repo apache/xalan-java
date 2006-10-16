@@ -613,19 +613,13 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = exsltFunction;
     templateElements[i++] = exsltResult;
 
-    int k;
-
-    for (k = 0; k < i; k++)
-    {
-      templateElementsAndParams[k] = templateElements[k];
-      templateElementsAndSort[k] = templateElements[k];
-      exsltFunctionElements[k]     = templateElements[k];
-
-    }
-
-    templateElementsAndParams[k] = xslParam;
-    templateElementsAndSort[k] = xslSort;
-    exsltFunctionElements[k]   = xslParam;
+    System.arraycopy(templateElements, 0, templateElementsAndParams, 0, i);
+    System.arraycopy(templateElements, 0, templateElementsAndSort, 0, i);
+    System.arraycopy(templateElements, 0, exsltFunctionElements, 0, i);
+    
+    templateElementsAndParams[i] = xslParam;
+    templateElementsAndSort[i] = xslSort;
+    exsltFunctionElements[i]   = xslParam;
 
     i = 0;
     charTemplateElements[i++] = charData;  // #PCDATA
