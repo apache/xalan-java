@@ -1,7 +1,9 @@
 /*
- * Copyright 2005 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the  "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -23,7 +25,7 @@ package org.apache.xml.serializer;
  * the Serializer release.
  * <P>This class implements the upcoming standard of having
  * org.apache.project-name.Version.getVersion() be a standard way 
- * to get version information.</P>
+ * to get version information.</P> 
  * @xsl.usage general
  */
 public final class Version
