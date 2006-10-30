@@ -254,7 +254,6 @@ public class TransformerIdentityImpl extends Transformer
     else if (outputTarget instanceof StreamResult)
     {
       StreamResult sresult = (StreamResult) outputTarget;
-      String method = m_outputFormat.getProperty(OutputKeys.METHOD);
 
       try
       {
