@@ -716,7 +716,7 @@ public class XSLTProcessorApplet extends Applet
     {
       while (true)
       {
-        m_trustedWorker.yield();
+        Thread.yield();
 
         if (m_getData)  // Perform a transformation or get a document.
         {
@@ -749,7 +749,7 @@ public class XSLTProcessorApplet extends Applet
         {
           try
           {
-            m_trustedWorker.sleep(50);
+            Thread.sleep(50);
           }
           catch (InterruptedException ie)
           {
