@@ -24,6 +24,7 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMFilter;
 import org.apache.xpath.Expression;
 import org.apache.xpath.compiler.Compiler;
+import org.apache.xpath.compiler.OpMap;
 
 /**
  * This class implements a general iterator for
@@ -52,7 +53,7 @@ public class OneStepIteratorForward extends ChildTestIterator
           throws javax.xml.transform.TransformerException
   {
     super(compiler, opPos, analysis);
-    int firstStepPos = compiler.getFirstChildPos(opPos);
+    int firstStepPos = OpMap.getFirstChildPos(opPos);
     
     m_axis = WalkerFactory.getAxisFromStep(compiler, firstStepPos);
     

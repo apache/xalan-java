@@ -25,6 +25,7 @@ import org.apache.xml.dtm.DTMFilter;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.compiler.Compiler;
+import org.apache.xpath.compiler.OpMap;
 
 /**
  * Base for iterators that handle predicates.  Does the basic next 
@@ -74,7 +75,7 @@ public abstract class BasicTestIterator extends LocPathIterator
   {
     super(compiler, opPos, analysis, false);
     
-    int firstStepPos = compiler.getFirstChildPos(opPos);
+    int firstStepPos = OpMap.getFirstChildPos(opPos);
     int whatToShow = compiler.getWhatToShow(firstStepPos);
 
     if ((0 == (whatToShow

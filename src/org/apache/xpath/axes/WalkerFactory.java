@@ -28,6 +28,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.OpCodes;
+import org.apache.xpath.compiler.OpMap;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.patterns.ContextMatchStepPattern;
 import org.apache.xpath.patterns.FunctionPattern;
@@ -160,7 +161,7 @@ public class WalkerFactory
             throws javax.xml.transform.TransformerException
   {
 
-    int firstStepPos = compiler.getFirstChildPos(opPos);
+    int firstStepPos = OpMap.getFirstChildPos(opPos);
     int analysis = analyze(compiler, firstStepPos, 0);
     boolean isOneStep = isOneStep(analysis);
     DTMIterator iter;
@@ -400,7 +401,7 @@ public class WalkerFactory
                                                       int opPos)
   {
     int endFunc = opPos + compiler.getOp(opPos + 1) - 1;
-    opPos = compiler.getFirstChildPos(opPos);
+    opPos = OpMap.getFirstChildPos(opPos);
     int funcID = compiler.getOp(opPos);
     //  System.out.println("funcID: "+funcID);
     //  System.out.println("opPos: "+opPos);
@@ -451,7 +452,7 @@ public class WalkerFactory
       case OpCodes.OP_LT:
       case OpCodes.OP_LTE:
       case OpCodes.OP_EQUALS:
-        int leftPos = compiler.getFirstChildPos(op);
+        int leftPos = OpMap.getFirstChildPos(op);
         int rightPos = compiler.getNextOpPos(leftPos);
         isProx = isProximateInnerExpr(compiler, leftPos);
         if(isProx)
@@ -519,7 +520,7 @@ public class WalkerFactory
         case OpCodes.OP_LT:
         case OpCodes.OP_LTE:
         case OpCodes.OP_EQUALS:
-          int leftPos = compiler.getFirstChildPos(innerExprOpPos);
+          int leftPos = OpMap.getFirstChildPos(innerExprOpPos);
           int rightPos = compiler.getNextOpPos(leftPos);
           isProx = isProximateInnerExpr(compiler, leftPos);
           if(isProx)
@@ -982,9 +983,7 @@ public class WalkerFactory
 
     int stepType = compiler.getOp(opPos);
     boolean simpleInit = false;
-    int totalNumberWalkers = (analysis & BITS_COUNT);
     boolean prevIsOneStepDown = true;
-    int firstStepPos = compiler.getFirstChildPos(opPos);
     
     int whatToShow = compiler.getWhatToShow(opPos);
     StepPattern ai = null;
