@@ -77,11 +77,11 @@ public class ElemAttribute extends ElemElement
    *
    * @throws TransformerException
    */
-  public void execute(
-          TransformerImpl transformer)
-            throws TransformerException
-  {
-    SerializationHandler rhandler = transformer.getSerializationHandler();
+//  public void execute(
+//          TransformerImpl transformer)
+//            throws TransformerException
+//  {
+    //SerializationHandler rhandler = transformer.getSerializationHandler();
 
     // If they are trying to add an attribute when there isn't an 
     // element pending, it is an error.
@@ -107,9 +107,9 @@ public class ElemAttribute extends ElemElement
 //      // warn(templateChild, sourceNode, "Trying to add attribute after element child has been added, ignoring...");
 //    }
     
-    super.execute(transformer);
+//    super.execute(transformer);
     
-  }
+//  }
   
   /**
    * Resolve the namespace into a prefix.  At this level, if no prefix exists, 
