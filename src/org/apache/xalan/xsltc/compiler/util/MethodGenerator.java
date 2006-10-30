@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -688,7 +687,6 @@ public class MethodGenerator extends MethodGen
 	
 	// Get the current number of local variable slots
 	int maxLocals = super.getMaxLocals();
-	int prevLocals = maxLocals;
 
 	// Get numer of actual variables
 	final LocalVariableGen[] localVars = super.getLocalVariables();
