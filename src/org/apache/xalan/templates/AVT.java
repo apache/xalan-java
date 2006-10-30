@@ -55,11 +55,6 @@ public class AVT implements java.io.Serializable, XSLTVisitable
   private final static int INIT_BUFFER_CHUNK_BITS = 8; 
   
   /**
-   * We are caching FastStringBuffer objects if if USE_OBJECT_POOL == false
-   */
-  private transient FastStringBuffer m_cachedBuf;
-  
-  /**
    * If the AVT is not complex, just hold the simple string.
    * @serial
    */
@@ -611,14 +606,9 @@ public class AVT implements java.io.Serializable, XSLTVisitable
   
   private final FastStringBuffer getBuffer(){
     if(USE_OBJECT_POOL){
-       return StringBufferPool.get();
-    }else if(m_cachedBuf == null){
-       m_cachedBuf = new FastStringBuffer(INIT_BUFFER_CHUNK_BITS);
-       return m_cachedBuf;
-    }else if(m_cachedBuf.length() != 0){
-      return new FastStringBuffer(INIT_BUFFER_CHUNK_BITS);
+      return StringBufferPool.get();
     }else{
-       return m_cachedBuf;
-     }
+      return new FastStringBuffer(INIT_BUFFER_CHUNK_BITS);
+    }
   }
 }
