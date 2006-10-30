@@ -736,7 +736,7 @@ public class TransformerIdentityImpl extends Transformer
           throws IllegalArgumentException
   {
 
-    if (!m_outputFormat.isLegalPropertyKey(name))
+    if (!OutputProperties.isLegalPropertyKey(name))
       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_OUTPUT_PROPERTY_NOT_RECOGNIZED, new Object[]{name})); //"output property not recognized: "
                                          //+ name);
 
@@ -769,7 +769,7 @@ public class TransformerIdentityImpl extends Transformer
 
     if (null == value)
     {
-      if (!props.isLegalPropertyKey(name))
+      if (!OutputProperties.isLegalPropertyKey(name))
         throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_OUTPUT_PROPERTY_NOT_RECOGNIZED, new Object[]{name})); //"output property not recognized: "
                                           // + name);
     }
