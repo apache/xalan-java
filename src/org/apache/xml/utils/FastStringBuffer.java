@@ -1134,8 +1134,6 @@ public class FastStringBuffer
      boolean processingLeadingWhitespace =
                        ((edgeTreatmentFlags & SUPPRESS_LEADING_WS) != 0);
      boolean seenWhitespace = ((edgeTreatmentFlags & CARRY_WS) != 0);
-     boolean suppressTrailingWhitespace =
-                       ((edgeTreatmentFlags & SUPPRESS_TRAILING_WS) != 0);
      int currPos = start;
      int limit = start+length;
 
