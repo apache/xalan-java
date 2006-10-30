@@ -1177,7 +1177,6 @@ public class TransformerImpl extends Transformer
       else if (outputTarget instanceof StreamResult)
       {
         StreamResult sresult = (StreamResult) outputTarget;
-        String method = format.getProperty(OutputKeys.METHOD);
 
         try
         {
