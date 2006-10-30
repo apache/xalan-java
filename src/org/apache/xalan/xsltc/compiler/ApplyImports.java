@@ -21,13 +21,9 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Enumeration;
-
 import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.InstructionList;
-import org.apache.bcel.generic.NEW;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
@@ -86,9 +82,6 @@ final class ApplyImports extends Instruction {
 	Template template = getTemplate();
 	_modeName = template.getModeName();
 	_precedence = template.getImportPrecedence();
-
-	// Get the method name for <xsl:apply-imports/> in this mode
-	stylesheet = parser.getTopLevelStylesheet();
 
 	parseChildren(parser);	// with-params
     }
