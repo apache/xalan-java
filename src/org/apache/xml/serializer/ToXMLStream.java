@@ -498,7 +498,15 @@ public class ToXMLStream extends ToStream
                 else
                   System.out.println(msg);
                 }
-            catch (Exception e){}             
+            catch (TransformerException e){
+                // A user defined error handler, errHandler, may throw
+                // a TransformerException if it chooses to, and if it does
+                // we will wrap it with a SAXException and re-throw.
+                // Of course if the handler throws another type of
+                // exception, like a RuntimeException, then that is OK too.
+                SAXException se = new SAXException(e);
+                throw se;                
+            }             
         }
     }
 
