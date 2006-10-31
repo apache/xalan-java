@@ -50,30 +50,76 @@ public class NodeSequence extends XObject
   protected int m_next = 0;
     
   /**
+   * A cache of a list of nodes obtained from the iterator so far.
+   * This list is appended to until the iterator is exhausted and
+   * the cache is complete.
+   * <p>
+   * Multiple NodeSequence objects may share the same cache.
+   */
+  private IteratorCache m_cache;
+  
+  /**
    * If this iterator needs to cache nodes that are fetched, they
    * are stored in the Vector in the generic object.
    */
-  protected NodeVector getVector()
-  {
-  	return (NodeVector)m_obj;
+  protected NodeVector getVector() {
+      NodeVector nv = (m_cache != null) ?  m_cache.getVector() : null;
+      return nv;
   }
   
   /**
-   * Set the vector where nodes will be stored.
+   * Get the cache (if any) of nodes obtained from
+   * the iterator so far. Note that the cache keeps
+   * growing until the iterator is walked to exhaustion,
+   * at which point the cache is "complete".
+   */
+  private IteratorCache getCache() {
+      return m_cache;
+  }
+  
+  /**
+   * Set the vector where nodes will be cached.
    */
   protected void SetVector(NodeVector v)
   {
-  	m_obj = v;
+  	setObject(v);
   }
 
   
   /**
-   * If this iterator needs to cache nodes that are fetched, they
-   * are stored here.
+   * If the iterator needs to cache nodes as they are fetched,
+   * then this method returns true. 
    */
   public boolean hasCache()
   {
-  	return (m_obj != null);
+    final NodeVector nv = getVector();
+  	return (nv != null);
+  }
+  
+  /**
+   * If this NodeSequence has a cache, and that cache is 
+   * fully populated then this method returns true, otherwise
+   * if there is no cache or it is not complete it returns false.
+   */
+  private boolean cacheComplete() {
+      final boolean complete;
+      if (m_cache != null) {
+          complete = m_cache.isComplete();
+      } else {
+          complete = false;
+      }
+      return complete;
+  }
+  
+  /**
+   * If this NodeSequence has a cache, mark that it is complete.
+   * This method should be called after the iterator is exhausted.
+   */
+  private void markCacheComplete() {
+      NodeVector nv = getVector();
+      if (nv != null) {
+          m_cache.setCacheComplete(true);
+      }      
   }
 
 
@@ -116,7 +162,7 @@ public class NodeSequence extends XObject
    * @param xctxt The execution context.
    * @param shouldCacheNodes True if this sequence can random access.
    */
-  public NodeSequence(DTMIterator iter, int context, XPathContext xctxt, boolean shouldCacheNodes)
+  private NodeSequence(DTMIterator iter, int context, XPathContext xctxt, boolean shouldCacheNodes)
   {
   	setIter(iter);
   	setRoot(context, xctxt);
@@ -131,6 +177,9 @@ public class NodeSequence extends XObject
   public NodeSequence(Object nodeVector)
   {
   	super(nodeVector);
+    if (nodeVector instanceof NodeVector) {
+        SetVector((NodeVector) nodeVector);
+    }
   	if(null != nodeVector)
   	{
   		assertion(nodeVector instanceof NodeVector, 
@@ -148,7 +197,7 @@ public class NodeSequence extends XObject
    * Construct an empty XNodeSet object.  This is used to create a mutable 
    * nodeset to which random nodes may be added.
    */
-  public NodeSequence(DTMManager dtmMgr)
+  private NodeSequence(DTMManager dtmMgr)
   {
     super(new NodeVector());
     m_last = 0;
@@ -161,6 +210,7 @@ public class NodeSequence extends XObject
    */
   public NodeSequence()
   {
+      return;
   }
 
 
@@ -264,13 +314,15 @@ public class NodeSequence extends XObject
     NodeVector vec = getVector();
     if (null != vec)
     {	
+        // There is a cache
     	if(m_next < vec.size())
     	{
+            // The node is in the cache, so just return it.
 			int next = vec.elementAt(m_next);
 	    	m_next++;
 	    	return next;
     	}
-    	else if((-1 != m_last) || (null == m_iter))
+    	else if(cacheComplete() || (-1 != m_last) || (null == m_iter))
     	{
     		m_next++;
     		return DTM.NULL;
@@ -302,6 +354,11 @@ public class NodeSequence extends XObject
     }
     else
     {
+        // We have exhausted the iterator, and if there is a cache
+        // it must have all nodes in it by now, so let the cache
+        // know that it is complete.
+        markCacheComplete();
+        
     	m_last = m_next;
     	m_next++;
     }
@@ -483,6 +540,40 @@ public class NodeSequence extends XObject
   	NodeVector vec = getVector();
   	if(null != vec)
   	{
+        int oldNode = vec.elementAt(index);
+        if (oldNode != node && m_cache.useCount() > 1) {
+            /* If we are going to set the node at the given index
+             * to a different value, and the cache is shared
+             * (has a use count greater than 1)
+             * then make a copy of the cache and use it
+             * so we don't overwrite the value for other
+             * users of the cache.
+             */
+            IteratorCache newCache = new IteratorCache();
+            final NodeVector nv;
+            try {
+                nv = (NodeVector) vec.clone();
+            } catch (CloneNotSupportedException e) {
+                // This should never happen
+                e.printStackTrace();
+                RuntimeException rte = new RuntimeException(e.getMessage()); 
+                throw rte;
+            }
+            newCache.setVector(nv);
+            newCache.setCacheComplete(true);
+            m_cache = newCache;
+            vec = nv;
+            
+            // Keep our superclass informed of the current NodeVector
+            super.setObject(nv); 
+            
+            /* When we get to here the new cache has
+             * a use count of 1 and when setting a
+             * bunch of values on the same NodeSequence,
+             * such as when sorting, we will keep setting
+             * values in that same copy which has a use count of 1.
+             */
+        }
   		vec.setElementAt(node, index);
   		m_last = vec.size();
   	}
@@ -495,8 +586,18 @@ public class NodeSequence extends XObject
    */
   public int getLength()
   {
-  	if(hasCache())
+    IteratorCache cache = getCache();
+    
+  	if(cache != null)
   	{
+        // Nodes from the iterator are cached
+        if (cache.isComplete()) {
+            // All of the nodes from the iterator are cached
+            // so just return the number of nodes in the cache
+            NodeVector nv = cache.getVector();
+            return nv.size();
+        }
+        
         // If this NodeSequence wraps a mutable nodeset, then
         // m_last will not reflect the size of the nodeset if
         // it has been mutated...
@@ -527,6 +628,15 @@ public class NodeSequence extends XObject
   {
   	NodeSequence seq = (NodeSequence)super.clone();
     seq.m_next = 0;
+    if (m_cache != null) {
+        // In making this clone of an iterator we are making
+        // another NodeSequence object it has a reference
+        // to the same IteratorCache object as the original
+        // so we need to remember that more than one
+        // NodeSequence object shares the cache.
+        m_cache.increaseUseCount();
+    }
+    
     return seq;
   }
   
@@ -543,6 +653,15 @@ public class NodeSequence extends XObject
   {
           NodeSequence clone = (NodeSequence) super.clone();
           if (null != m_iter) clone.m_iter = (DTMIterator) m_iter.clone();
+          if (m_cache != null) {
+              // In making this clone of an iterator we are making
+              // another NodeSequence object it has a reference
+              // to the same IteratorCache object as the original
+              // so we need to remember that more than one
+              // NodeSequence object shares the cache.
+              m_cache.increaseUseCount();
+          }
+          
           return clone;
   }
 
@@ -640,5 +759,195 @@ public class NodeSequence extends XObject
       // checkDups();
       return insertIndex;
     } // end addNodeInDocOrder(Vector v, Object obj)
+   
+   /**
+    * It used to be that many locations in the code simply
+    * did an assignment to this.m_obj directly, rather than
+    * calling the setObject(Object) method. The problem is
+    * that our super-class would be updated on what the 
+    * cache associated with this NodeSequence, but
+    * we wouldn't know ourselves.
+    * <p>
+    * All setting of m_obj is done through setObject() now,
+    * and this method over-rides the super-class method.
+    * So now we are in the loop have an opportunity
+    * to update some caching information.
+    *
+    */
+   protected void setObject(Object obj) {
+       if (obj instanceof NodeVector) {
+           // Keep our superclass informed of the current NodeVector
+           // ... if we don't the smoketest fails (don't know why).
+           super.setObject(obj);
+           
+           // A copy of the code of what SetVector() would do.
+           NodeVector v = (NodeVector)obj;
+           if (m_cache != null) {
+               m_cache.setVector(v);
+           } else if (v!=null) {
+               m_cache = new IteratorCache();
+               m_cache.setVector(v);
+           }
+       } else if (obj instanceof IteratorCache) {
+           IteratorCache cache = (IteratorCache) obj;
+           m_cache = cache;
+           m_cache.increaseUseCount();
+           
+           // Keep our superclass informed of the current NodeVector
+           super.setObject(cache.getVector());
+       } else {
+           super.setObject(obj);
+       }
+       
+   }
+
+   /**
+    * Each NodeSequence object has an iterator which is "walked".
+    * As an iterator is walked one obtains nodes from it.
+    * As those nodes are obtained they may be cached, making
+    * the next walking of a copy or clone of the iterator faster.
+    * This field (m_cache) is a reference to such a cache, 
+    * which is populated as the iterator is walked.
+    * <p>
+    * Note that multiple NodeSequence objects may hold a 
+    * reference to the same cache, and also 
+    * (and this is important) the same iterator.
+    * The iterator and its cache may be shared among 
+    * many NodeSequence objects.
+    * <p>
+    * If one of the NodeSequence objects walks ahead
+    * of the others it fills in the cache.
+    * As the others NodeSequence objects catch up they
+    * get their values from
+    * the cache rather than the iterator itself, so
+    * the iterator is only ever walked once and everyone
+    * benefits from the cache.
+    * <p>
+    * At some point the cache may be
+    * complete due to walking to the end of one of
+    * the copies of the iterator, and the cache is
+    * then marked as "complete".
+    * and the cache will have no more nodes added to it.
+    * <p>
+    * Its use-count is the number of NodeSequence objects that use it.
+    */
+   private final static class IteratorCache {
+       /**
+        * A list of nodes already obtained from the iterator.
+        * As the iterator is walked the nodes obtained from
+        * it are appended to this list.
+        * <p>
+        * Both an iterator and its corresponding cache can
+        * be shared by multiple NodeSequence objects.
+        * <p>
+        * For example, consider three NodeSequence objects
+        * ns1, ns2 and ns3 doing such sharing, and the
+        * nodes to be obtaind from the iterator being 
+        * the sequence { 33, 11, 44, 22, 55 }.
+        * <p>
+        * If ns3.nextNode() is called 3 times the the
+        * underlying iterator will have walked through
+        * 33, 11, 55 and these three nodes will have been put
+        * in the cache.
+        * <p>
+        * If ns2.nextNode() is called 2 times it will return
+        * 33 and 11 from the cache, leaving the iterator alone.
+        * <p>
+        * If ns1.nextNode() is called 6 times it will return
+        * 33 and 11 from the cache, then get 44, 22, 55 from
+        * the iterator, and appending 44, 22, 55 to the cache.
+        * On the sixth call it is found that the iterator is
+        * exhausted and the cache is marked complete.
+        * <p>
+        * Should ns2 or ns3 have nextNode() called they will
+        * know that the cache is complete, and they will
+        * obtain all subsequent nodes from the cache.
+        * <p>
+        * Note that the underlying iterator, though shared
+        * is only ever walked once. 
+        */
+        private NodeVector m_vec2;
+
+        /**
+         * true if the associated iterator is exhausted and
+         * all nodes obtained from it are in the cache.
+         */
+        private boolean m_isComplete2;
+
+        private int m_useCount2;
+
+        IteratorCache() {
+            m_vec2 = null;
+            m_isComplete2 = false;
+            m_useCount2 = 1;
+            return;
+        }
+
+        /**
+         * Returns count of how many NodeSequence objects share this
+         * IteratorCache object.
+         */
+        private int useCount() {
+            return m_useCount2;
+        }
+
+        /**
+         * This method is called when yet another
+         * NodeSequence object uses, or shares
+         * this same cache.
+         *
+         */
+        private void increaseUseCount() {
+            if (m_vec2 != null)
+                m_useCount2++;
+
+        }
+
+        /**
+         * Sets the NodeVector that holds the
+         * growing list of nodes as they are appended
+         * to the cached list.
+         */
+        private void setVector(NodeVector nv) {
+            m_vec2 = nv;
+            m_useCount2 = 1;
+        }
+
+        /**
+         * Get the cached list of nodes obtained from
+         * the iterator so far.
+         */
+        private NodeVector getVector() {
+            return m_vec2;
+        }
+
+        /**
+         * Call this method with 'true' if the
+         * iterator is exhausted and the cached list
+         * is complete, or no longer growing.
+         */
+        private void setCacheComplete(boolean b) {
+            m_isComplete2 = b;
+
+        }
+
+        /**
+         * Returns true if no cache is complete
+         * and immutable.
+         */
+        private boolean isComplete() {
+            return m_isComplete2;
+        }
+    }
+   
+    /**
+     * Get the cached list of nodes appended with
+     * values obtained from the iterator as
+     * a NodeSequence is walked when its
+     * nextNode() method is called.
+     */
+    protected IteratorCache getIteratorCache() {
+        return m_cache;
+    }
 }
 

@@ -147,7 +147,7 @@ public class FilterExprWalker extends AxesWalker
     FilterExprWalker clone = (FilterExprWalker) super.clone();
 
     if (null != m_exprObj)
-      clone.m_exprObj = (XNodeSet) m_exprObj.cloneWithReset();
+      clone.m_exprObj = (XNodeSet) m_exprObj.clone();
 
     return clone;
   }
