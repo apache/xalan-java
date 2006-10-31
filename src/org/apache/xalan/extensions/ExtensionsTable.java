@@ -62,7 +62,7 @@ public class ExtensionsTable
     for (int i = 0; i < extensions.size(); i++)
     {
       ExtensionNamespaceSupport extNamespaceSpt = 
-                 (ExtensionNamespaceSupport)extensions.elementAt(i);
+                 (ExtensionNamespaceSupport)extensions.get(i);
       ExtensionHandler extHandler = extNamespaceSpt.launch();
         if (extHandler != null)
           addExtensionNamespace(extNamespaceSpt.getNamespace(), extHandler);

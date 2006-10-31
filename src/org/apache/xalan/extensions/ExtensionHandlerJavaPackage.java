@@ -226,7 +226,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
         convertedArgs = new Object[1][];
         for (int i = 0; i < methodArgs.length; i++)
         {
-          methodArgs[i] = args.elementAt(i);
+          methodArgs[i] = args.get(i);
         }
         
         Constructor c = (methodKey != null) ?
@@ -286,7 +286,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
         convertedArgs = new Object[1][];
         for (int i = 0; i < methodArgs.length; i++)
         {
-          methodArgs[i] = args.elementAt(i);
+          methodArgs[i] = args.get(i);
         }
         Method m = (methodKey != null) ?
           (Method) getFromCache(methodKey, null, methodArgs) : null;
@@ -350,14 +350,14 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
           throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_INSTANCE_MTHD_CALL_REQUIRES, new Object[]{funcName })); //"Instance method call to method " + funcName
                                     //+ " requires an Object instance as first argument");
         }
-        targetObject = args.elementAt(0);
+        targetObject = args.get(0);
         if (targetObject instanceof XObject)          // Next level down for XObjects
           targetObject = ((XObject) targetObject).object();
         methodArgs = new Object[args.size() - 1];
         convertedArgs = new Object[1][];
         for (int i = 0; i < methodArgs.length; i++)
         {
-          methodArgs[i] = args.elementAt(i+1);
+          methodArgs[i] = args.get(i+1);
         }
         Method m = (methodKey != null) ?
           (Method) getFromCache(methodKey, targetObject, methodArgs) : null;

@@ -201,7 +201,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
         convertedArgs = new Object[1][];
         for (int i = 0; i < methodArgs.length; i++)
         {
-          methodArgs[i] = args.elementAt(i);
+          methodArgs[i] = args.get(i);
         }
         Constructor c = null;
         if (methodKey != null)
@@ -258,7 +258,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
         convertedArgs = new Object[1][];
         for (int i = 0; i < methodArgs.length; i++)
         {
-          methodArgs[i] = args.elementAt(i);
+          methodArgs[i] = args.get(i);
         }
         Method m = null;
         if (methodKey != null)

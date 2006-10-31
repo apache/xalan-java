@@ -284,7 +284,7 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
 
       for (int i = 0; i < argArray.length; i++)
       {
-        Object o = args.elementAt(i);
+        Object o = args.get(i);
 
         argArray[i] = (o instanceof XObject) ? ((XObject) o).object() : o;
         o = argArray[i];
@@ -376,8 +376,8 @@ public class ExtensionHandlerGeneral extends ExtensionHandler
     {
       Vector argv = new Vector(2);
 
-      argv.addElement(xpc);
-      argv.addElement(element);
+      argv.add(xpc);
+      argv.add(element);
 
       result = callFunction(localPart, argv, methodKey,
                             transformer.getXPathContext().getExpressionContext());

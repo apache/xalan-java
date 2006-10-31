@@ -196,7 +196,7 @@ public class ExtensionHandlerExsltFunction extends ExtensionHandler
     {
       for (int i = 0; i < methodArgs.length; i++)
       {
-        methodArgs[i] =  XObject.create(args.elementAt(i));
+        methodArgs[i] =  XObject.create(args.get(i));
       }
       
       ElemExsltFunction elemFunc = getFunction(extFunction.getFunctionName());
