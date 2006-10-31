@@ -68,7 +68,11 @@ public class XObject extends Expression implements Serializable, Cloneable
    */
   public XObject(Object obj)
   {
-    m_obj = obj;
+    setObject(obj);
+  }
+  
+  protected void setObject(Object obj) {
+      m_obj = obj;
   }
 
   /**
@@ -119,7 +123,7 @@ public class XObject extends Expression implements Serializable, Cloneable
       allowDetachToRelease(true);
       detach();
 
-      m_obj = null;
+      setObject(null);
     }
   }
   

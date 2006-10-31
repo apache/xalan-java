@@ -69,7 +69,7 @@ public class XBoolean extends XObject
     super();
 
     m_val = b.booleanValue();
-    m_obj = b;
+    setObject(b);
   }
 
 
@@ -133,7 +133,7 @@ public class XBoolean extends XObject
   public Object object()
   {
     if(null == m_obj)
-      m_obj = new Boolean(m_val);
+      setObject(new Boolean(m_val));
     return m_obj;
   }
 
