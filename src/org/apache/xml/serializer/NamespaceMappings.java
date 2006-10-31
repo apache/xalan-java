@@ -224,92 +224,34 @@ public class NamespaceMappings
      */
     public boolean pushNamespace(String prefix, String uri, int elemDepth)
     {
-        boolean pushed;
         // Prefixes "xml" and "xmlns" cannot be redefined
-        if (!prefix.startsWith(XML_PREFIX))
+        if (prefix.startsWith(XML_PREFIX))
         {
-
-            Stack stack;
-            // Get the stack that contains URIs for the specified prefix
-            if ((stack = getPrefixStack(prefix)) == null)
-                stack = createPrefixStack(prefix);
-
-            switch (stack.top)
-            {
-                case -1 :
-                    pushed = true;  // stack is empty, so push the new one on the stack
-                    break;
-                case 0 :
-                    {
-                        // only one thing on the stack, if the new one is the
-                        // same prefix/uri mapping as the old one don't push, 
-                        // but if the uri's differ push it on the stack.
-                        MappingRecord pm = (MappingRecord) stack.peek();
-                        if (uri.equals(pm.m_uri))
-                            pushed = false;
-                        else
-                            pushed = true;
-                    }
-                    break;
-                default : // 2 or more things on the stack
-                    {
-                        MappingRecord pm = (MappingRecord) stack.peek();
-                        if (null == pm.m_uri
-                            && !uri.equals(EMPTYSTRING)
-                            && pm.m_declarationDepth == elemDepth)
-                        {
-                            // The top of the stack masks shallower mappings and
-                            // the new mapping is at the same depth as the masking
-                            // and the masked mapping is the same as the new one
-                            
-                            MappingRecord pm2 =
-                                (MappingRecord) stack.peek(stack.top - 1);
-                            if (uri.equals(pm2.m_uri))
-                            {
-                                // The masked mapping is the same as the new one
-                                // so don't push this mapping, but delete the masking
-                                // one by popping it off the top
-                                // This is an optimization to re-use the ancestors mapping.
-                                pushed = false;
-                                stack.pop();
-                            }
-                            else
-                                pushed = true;
-                            // the ancestors mapping differs, so push it
-                        }
-                        else
-                        {
-                            // The mapping at the top of the stack is not a masking
-                            // or is shallower than the new one or the new mapping is
-                            // itself not a masking
-                            if (uri.equals(pm.m_uri))
-                            {
-                                pushed = false;
-                                // old and new URI's are the same, don't push
-                                // this is an optimization to re-use the ancestors mapping
-                            }
-                            else
-                                pushed = true;
-                                // old and new URI's differ, so push                      
-                        }
-                    }
-                break;
-            }
-            if (pushed)
-            {
-
-                MappingRecord namespaceNode =
-                    new MappingRecord(prefix, uri, elemDepth);
-                stack.push(namespaceNode);
-                //        m_nodeStack.push(new Integer(elemDepth));
-                m_nodeStack.push(namespaceNode);
-            }
-
+            return false;
         }
-        else
-            pushed = false;
 
-        return pushed;
+        Stack stack;
+        // Get the stack that contains URIs for the specified prefix
+        if ((stack = (Stack) m_namespaces.get(prefix)) == null)
+        {
+            m_namespaces.put(prefix, stack = new Stack());
+        }
+
+        if (!stack.empty())
+        {
+            MappingRecord mr = (MappingRecord)stack.peek();
+            if (uri.equals(mr.m_uri) || elemDepth == mr.m_declarationDepth) {
+                // If the same prefix/uri mapping is already on the stack
+                // don't push this one.
+                // Or if we have a mapping at the same depth
+                // don't replace by pushing this one. 
+                return false;
+            }
+        }
+        MappingRecord map = new MappingRecord(prefix,uri,elemDepth);
+        stack.push(map);
+        m_nodeStack.push(map);
+        return true;
     }
 
     /**
