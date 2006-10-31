@@ -29,18 +29,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.xml.XMLConstants;
-import javax.xml.parsers.SAXParserFactory;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.ParserConfigurationException;
-
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
@@ -58,15 +58,12 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xml.utils.StylesheetPIHandler;
-import org.apache.xml.utils.StopParseException;
-
 import org.apache.xalan.xsltc.compiler.SourceLoader;
 import org.apache.xalan.xsltc.compiler.XSLTC;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
-
-
+import org.apache.xml.utils.StopParseException;
+import org.apache.xml.utils.StylesheetPIHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLFilter;
 import org.xml.sax.XMLReader;
@@ -1139,7 +1136,7 @@ public class TransformerFactoryImpl
     	}
     	
     	// Load the translet into a bytecode array.
-    	Vector bytecodes = new Vector();
+    	List bytecodes = new ArrayList();
     	int fileLength = (int)transletFile.length();
     	if (fileLength > 0) {
     	    FileInputStream input = null;
@@ -1159,7 +1156,7 @@ public class TransformerFactoryImpl
     	    	return null;
     	    }
     	  
-    	    bytecodes.addElement(bytes);
+    	    bytecodes.add(bytes);
     	}
     	else
     	    return null;
@@ -1204,7 +1201,7 @@ public class TransformerFactoryImpl
     	      	    continue;
     	    	}
     	    
-    	    	bytecodes.addElement(bytes);   	    
+    	    	bytecodes.add(bytes);   	    
     	    }
     	}
     	
@@ -1213,7 +1210,7 @@ public class TransformerFactoryImpl
     	if ( count > 0) {
     	    final byte[][] result = new byte[count][1];
     	    for (int i = 0; i < count; i++) {
-    	    	result[i] = (byte[])bytecodes.elementAt(i);
+    	    	result[i] = (byte[])bytecodes.get(i);
     	    }
     	  
     	    return result;
@@ -1274,7 +1271,7 @@ public class TransformerFactoryImpl
       	String transletAuxPrefix = transletPath + "$";
       	String transletFullName = transletPath + ".class";
       
-      	Vector bytecodes = new Vector();      
+      	List bytecodes = new ArrayList();      
       
       	// Iterate through all entries in the jar file to find the 
       	// translet and auxiliary classes.
@@ -1294,7 +1291,7 @@ public class TransformerFactoryImpl
               	    byte[] bytes = new byte[size];
               	    readFromInputStream(bytes, input, size);
               	    input.close();
-              	    bytecodes.addElement(bytes);
+              	    bytecodes.add(bytes);
             	}
             	catch (IOException e) {
               	    return null;
@@ -1307,7 +1304,7 @@ public class TransformerFactoryImpl
     	if (count > 0) {
     	    final byte[][] result = new byte[count][1];
     	    for (int i = 0; i < count; i++) {
-    	    	result[i] = (byte[])bytecodes.elementAt(i);
+    	    	result[i] = (byte[])bytecodes.get(i);
     	    }
     	  
     	    return result;

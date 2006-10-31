@@ -20,12 +20,12 @@
  */
 package org.apache.xalan.processor;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.KeyDeclaration;
-
 import org.xml.sax.Attributes;
 
 /**
@@ -93,7 +93,7 @@ class ProcessorKey extends XSLTElementProcessor
 
     // Keep track of which XSLTAttributeDefs have been processed, so 
     // I can see which default values need to be set.
-    Vector processedDefs = new Vector();
+    List processedDefs = new ArrayList();
     int nAttrs = attributes.getLength();
 
     for (int i = 0; i < nAttrs; i++)
@@ -120,7 +120,7 @@ class ProcessorKey extends XSLTElementProcessor
             XSLMessages.createMessage(
             XSLTErrorResources.ER_INVALID_KEY_CALL, null), null);
 
-        processedDefs.addElement(attrDef);
+        processedDefs.add(attrDef);
         attrDef.setAttrValue(handler, attrUri, attrLocalName,
                              attributes.getQName(i), attributes.getValue(i),
                              target);

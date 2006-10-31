@@ -23,13 +23,14 @@
 package org.apache.xalan.xsltc.trax;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Stack;
-import java.util.Vector;
 
+import org.apache.xalan.xsltc.dom.SAXImpl;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;
@@ -42,7 +43,6 @@ import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.AttributesImpl;
-import org.apache.xalan.xsltc.dom.SAXImpl;
 
 /**
  * @author G. Todd Miller 
@@ -217,7 +217,7 @@ public class DOM2SAX implements XMLReader, Locator {
 
 	case Node.ELEMENT_NODE:
 	    String prefix;
-	    Vector pushedPrefixes = new Vector();
+	    List pushedPrefixes = new ArrayList();
 	    final AttributesImpl attrs = new AttributesImpl();
 	    final NamedNodeMap map = node.getAttributes();
 	    final int length = map.getLength();
@@ -233,7 +233,7 @@ public class DOM2SAX implements XMLReader, Locator {
 		    final int colon = qnameAttr.lastIndexOf(':');
 		    prefix = (colon > 0) ? qnameAttr.substring(colon + 1) : EMPTYSTRING;
 		    if (startPrefixMapping(prefix, uriAttr)) {
-			pushedPrefixes.addElement(prefix);
+			pushedPrefixes.add(prefix);
 		    }
 		}
 	    }
@@ -253,7 +253,7 @@ public class DOM2SAX implements XMLReader, Locator {
 			final int colon = qnameAttr.lastIndexOf(':');
 			prefix = (colon > 0) ? qnameAttr.substring(0, colon) : EMPTYSTRING;
 			if (startPrefixMapping(prefix, uriAttr)) {
-			    pushedPrefixes.addElement(prefix);
+			    pushedPrefixes.add(prefix);
 			}
 		    }
 
@@ -273,7 +273,7 @@ public class DOM2SAX implements XMLReader, Locator {
 		final int colon = qname.lastIndexOf(':');
 		prefix = (colon > 0) ? qname.substring(0, colon) : EMPTYSTRING;
 		if (startPrefixMapping(prefix, uri)) {
-		    pushedPrefixes.addElement(prefix);
+		    pushedPrefixes.add(prefix);
 		}
 	    }
 
@@ -298,7 +298,7 @@ public class DOM2SAX implements XMLReader, Locator {
 	    // Generate endPrefixMapping() for all pushed prefixes
 	    final int nPushedPrefixes = pushedPrefixes.size();
 	    for (int i = 0; i < nPushedPrefixes; i++) {
-		endPrefixMapping((String) pushedPrefixes.elementAt(i));
+		endPrefixMapping((String) pushedPrefixes.get(i));
 	    }
 	    break;
 

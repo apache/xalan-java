@@ -25,11 +25,12 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.Vector;
 
 
 /**
@@ -313,7 +314,7 @@ public final class Encodings extends Object
 
             int totalEntries = props.size();
 
-            Vector encodingInfo_list = new Vector();
+            List encodingInfo_list = new ArrayList();
             Enumeration keys = props.keys();
             for (int i = 0; i < totalEntries; ++i)
             {

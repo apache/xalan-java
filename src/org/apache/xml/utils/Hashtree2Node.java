@@ -21,9 +21,11 @@
 
 package org.apache.xml.utils;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Vector;
+import java.util.Iterator;
+import java.util.List;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -84,7 +86,7 @@ public abstract class Hashtree2Node
             container.appendChild(hashNode);
 
             Enumeration keys = hash.keys();
-            Vector v = new Vector();
+            List v = new ArrayList();
 
             while (keys.hasMoreElements())
             {
@@ -97,8 +99,8 @@ public abstract class Hashtree2Node
                     // Ensure a pre-order traversal; add this hashes 
                     //  items before recursing to child hashes
                     // Save name and hash in two steps
-                    v.addElement(keyStr);
-                    v.addElement((Hashtable) item);
+                    v.add(keyStr);
+                    v.add((Hashtable) item);
                 }
                 else
                 {
@@ -121,12 +123,12 @@ public abstract class Hashtree2Node
             }
 
             // Now go back and do the saved hashes
-            keys = v.elements();
-            while (keys.hasMoreElements())
+            Iterator it = v.iterator();
+            while (it.hasNext())
             {
                 // Retrieve name and hash in two steps
-                String n = (String) keys.nextElement();
-                Hashtable h = (Hashtable) keys.nextElement();
+                String n = (String) it.next();
+                Hashtable h = (Hashtable) it.next();
 
                 appendHashToNode(h, n, hashNode, factory);
             }

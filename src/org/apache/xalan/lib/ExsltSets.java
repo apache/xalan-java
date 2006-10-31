@@ -20,7 +20,8 @@
  */
 package org.apache.xalan.lib;
 
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.xml.utils.DOMHelper;
 import org.apache.xpath.NodeSet;
@@ -190,7 +191,7 @@ public class ExsltSets extends ExsltBase
     NodeSet dist = new NodeSet();
     dist.setShouldCacheNodes(true);
 
-    Hashtable stringTable = new Hashtable();
+    Map stringTable = new HashMap();
     
     for (int i = 0; i < nl.getLength(); i++)
     {

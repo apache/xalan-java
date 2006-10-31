@@ -20,13 +20,16 @@
  */
 package org.apache.xalan.processor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
+
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xml.utils.IntStack;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.AttributesImpl;
@@ -296,10 +299,10 @@ public class XSLTElementProcessor extends ElemTemplateElement
 
     // Keep track of which XSLTAttributeDefs have been processed, so 
     // I can see which default values need to be set.
-    Vector processedDefs = new Vector();
+    List processedDefs = new ArrayList();
 
     // Keep track of XSLTAttributeDefs that were invalid
-    Vector errorDefs = new Vector();    
+    List errorDefs = new ArrayList();    
     int nAttrs = attributes.getLength();
 
     for (int i = 0; i < nAttrs; i++)
@@ -343,9 +346,9 @@ public class XSLTElementProcessor extends ElemTemplateElement
                              
         // Now we only add the element if it passed a validation check
         if (success)
-            processedDefs.addElement(attrDef);
+            processedDefs.add(attrDef);
         else
-            errorDefs.addElement(attrDef);
+            errorDefs.add(attrDef);
       }
     }
 
