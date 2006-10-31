@@ -196,7 +196,13 @@ public class ProcessorInclude extends XSLTElementProcessor
     try
     {
       Source source = null;
-
+      
+      // The base identifier, an aboslute URI
+      // that is associated with the included/imported
+      // stylesheet module is known in this method,
+      // so this method does the pushing of the
+      // base ID onto the stack.
+     
       if (null != uriresolver)
       {
         // There is a user provided URI resolver.
@@ -217,6 +223,11 @@ public class ProcessorInclude extends XSLTElementProcessor
           // which we now retrieve.
           String systemId = handler.peekImportURL();
           
+          // Push the absolute URI of the included/imported
+          // stylesheet module onto the stack.
+          if (systemId != null)
+              handler.pushBaseIndentifier(systemId);
+        
           TreeWalker walker = new TreeWalker(handler, new org.apache.xml.utils.DOM2Helper(), systemId);
 
           try
@@ -227,6 +238,8 @@ public class ProcessorInclude extends XSLTElementProcessor
           {
             throw new TransformerException(se);
           }
+          if (systemId != null)
+            handler.popBaseIndentifier();
           return;
         }
       }
@@ -289,6 +302,9 @@ public class ProcessorInclude extends XSLTElementProcessor
       if (null != reader)
       {
         reader.setContentHandler(handler);
+        
+        // Push the absolute URI of the included/imported
+        // stylesheet module onto the stack.
         handler.pushBaseIndentifier(inputSource.getSystemId());
 
         try
