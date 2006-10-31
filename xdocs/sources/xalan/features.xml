@@ -191,7 +191,7 @@ attributes, you can cast the return value to a boolean. To set an attribute, use
 For the String argument, provide the static String variable or literal URI String as detailed below. For the Object argument, use 
 Boolean.TRUE or Boolean.FALSE (or the Strings "true" or "false").</p><anchor name="optimize"/>
 <s3 title="optimize attribute">
-<p><em>URI:</em> "http://apache.org/xalan/features/optimize"</p>
+<p><em>URI:</em> "http://xml.apache.org/xalan/features/optimize"</p>
 <p>Optimize stylesheet processing. By default, this attribute is set to true. You may need to set it to false for tooling applications. 
 For more information, see <link idref="dtm" anchor="optimize">DTM optimize</link>.</p>
 <p>To turn optimization off, you can use the TransformerFactoryImpl.FEATURE_OPTIMIZE static variable (equivalent to the URI String above) 
@@ -206,7 +206,7 @@ if (tFact instanceof TransformerFactoryImpl) {
 }</source>
 </s3><anchor name="incremental"/>
 <s3 title="incremental attribute">
-<p><em>URI:</em> "http://apache.org/xalan/features/incremental"</p>
+<p><em>URI:</em> "http://xml.apache.org/xalan/features/incremental"</p>
 <p>Produce output incrementally, rather than waiting to finish parsing the input before generating any output. By default this attribute is set
 to false. You can turn this attribute on to transform large documents where the stylesheet structure is optimized to execute individual templates 
 without having to parse the entire document. For more information, see <link idref="dtm" anchor="incremental">DTM incremental</link>.</p>
@@ -223,7 +223,7 @@ if (tFact instanceof TransformerFactoryImpl) {
 </s3>
 <anchor name="source_location"/>
 <s3 title="source_location attribute">
-<p><em>URI:</em> "http://apache.org/xalan/features/source_location"</p>
+<p><em>URI:</em> "http://xml.apache.org/xalan/properties/source-location"</p>
 <p>Provide a <jump href="apidocs/javax/xml/transform/SourceLocator.html">SourceLocator</jump> that can be used during a transformation
 to obtain the location of individual nodes in a source document (system ID, line number, and column number).</p>
 <p>By default, this attribute is set to false. Setting this attribute to true involves a substantial increase in storage cost per source 
