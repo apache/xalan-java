@@ -18,12 +18,6 @@
    * limitations under the License.
   -->
 
-<!-- 5630-A23, 5630-A22, (C) Copyright IBM Corporation, 1997, 2000 -->
-<!-- All rights reserved. Licensed Materials Property of IBM -->
-<!-- Note to US Government users: Documentation related to restricted rights -->
-<!-- Use, duplication or disclosure is subject to restrictions set forth in GSA ADP Schedule with IBM Corp. -->
-<!-- This page may contain other proprietary notices and copyright information, the terms of which must be observed and followed. -->
-
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.w3.org/TR/REC-html40">
 <xsl:output method="html" indent="no"/>
 
