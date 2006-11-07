@@ -198,6 +198,93 @@ public class SerializerMessages_hu extends ListResourceBundle {
             {   MsgKey.ER_ENCODING_NOT_SUPPORTED,
                 "Figyelmeztet\u00e9s: A(z) ''{0}'' k\u00f3dol\u00e1st nem t\u00e1mogatja a Java fut\u00e1si k\u00f6rnyezet." },
 
+             {MsgKey.ER_FEATURE_NOT_FOUND,
+             "A(z) ''{0}'' param\u00e9ter nem ismerhet\u0151 fel."},
+
+             {MsgKey.ER_FEATURE_NOT_SUPPORTED,
+             "A(z) ''{0}'' param\u00e9ter ismert, de a k\u00e9rt \u00e9rt\u00e9k nem \u00e1ll\u00edthat\u00f3 be."},
+
+             {MsgKey.ER_STRING_TOO_LONG,
+             "A l\u00e9trej\u00f6v\u0151 karaktersorozat t\u00fal hossz\u00fa, nem f\u00e9r el egy DOMString-ben: ''{0}''."},
+
+             {MsgKey.ER_TYPE_MISMATCH_ERR,
+             "A param\u00e9tern\u00e9v \u00e9rt\u00e9k\u00e9nek t\u00edpusa nem kompatibilis a v\u00e1rt t\u00edpussal."},
+
+             {MsgKey.ER_NO_OUTPUT_SPECIFIED,
+             "Az adatki\u00edr\u00e1s c\u00e9ljak\u00e9nt megadott \u00e9rt\u00e9k \u00fcres volt."},
+
+             {MsgKey.ER_UNSUPPORTED_ENCODING,
+             "Nem t\u00e1mogatott k\u00f3dol\u00e1s."},
+
+             {MsgKey.ER_UNABLE_TO_SERIALIZE_NODE,
+             "A csom\u00f3pont nem p\u00e9ld\u00e1nyos\u00edthat\u00f3."},
+
+             {MsgKey.ER_CDATA_SECTIONS_SPLIT,
+             "A CDATA szakasz legal\u00e1bb egy ']]>' lez\u00e1r\u00f3 jelz\u0151t tartalmaz."},
+
+             {MsgKey.ER_WARNING_WF_NOT_CHECKED,
+                 "A szab\u00e1lyos form\u00e1z\u00e1st ellen\u0151rz\u0151 p\u00e9ld\u00e1nyt nem siker\u00fclt l\u00e9trehozni.  A well-formed param\u00e9ter \u00e9rt\u00e9ke true, de a szab\u00e1lyos form\u00e1z\u00e1st nem lehet ellen\u0151rizni."
+             },
+
+             {MsgKey.ER_WF_INVALID_CHARACTER,
+                 "A(z) ''{0}'' csom\u00f3pont \u00e9rv\u00e9nytelen XML karaktereket tartalmaz."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_COMMENT,
+                 "\u00c9rv\u00e9nytelen XML karakter (Unicode: 0x{0}) szerepelt a megjegyz\u00e9sben."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_PI,
+                 "\u00c9rv\u00e9nytelen XML karakter (Unicode: 0x{0}) szerepelt a feldolgoz\u00e1si utas\u00edt\u00e1sadatokban."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_CDATA,
+                 "\u00c9rv\u00e9nytelen XML karakter (Unicode: 0x{0}) szerepelt a CDATASection tartalm\u00e1ban."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_TEXT,
+                 "\u00c9rv\u00e9nytelen XML karakter (Unicode: 0x{0}) szerepelt a csom\u00f3pont karakteradat tartalm\u00e1ban."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_NODE_NAME,
+                 "\u00c9rv\u00e9nytelen XML karakter tal\u00e1lhat\u00f3 a(z) ''{1}'' nev\u0171 {0} csom\u00f3pontban."
+             },
+
+             { MsgKey.ER_WF_DASH_IN_COMMENT,
+                 "A \"--\" karaktersorozat nem megengedett a megjegyz\u00e9sekben."
+             },
+
+             {MsgKey.ER_WF_LT_IN_ATTVAL,
+                 "A(z) \"{0}\" elemt\u00edpussal t\u00e1rs\u00edtott \"{1}\" attrib\u00fatum \u00e9rt\u00e9ke nem tartalmazhat ''<'' karaktert."
+             },
+
+             {MsgKey.ER_WF_REF_TO_UNPARSED_ENT,
+                 "Az \u00e9rtelmez\u00e9s n\u00e9lk\u00fcli \"&{0};\" entit\u00e1shivatkoz\u00e1s nem megengedett."
+             },
+
+             {MsgKey.ER_WF_REF_TO_EXTERNAL_ENT,
+                 "A(z) \"&{0};\" k\u00fcls\u0151 entit\u00e1shivatkoz\u00e1s nem megengedett egy attrib\u00fatum\u00e9rt\u00e9kben."
+             },
+
+             {MsgKey.ER_NS_PREFIX_CANNOT_BE_BOUND,
+                 "A(z) \"{0}\" el\u0151tag nem k\u00f6thet\u0151 a(z) \"{1}\" n\u00e9vt\u00e9rhez."
+             },
+
+             {MsgKey.ER_NULL_LOCAL_ELEMENT_NAME,
+                 "A(z) \"{0}\" elem helyi neve null."
+             },
+
+             {MsgKey.ER_NULL_LOCAL_ATTR_NAME,
+                 "A(z) \"{0}\" attrib\u00fatum helyi neve null."
+             },
+
+             { MsgKey.ER_ELEM_UNBOUND_PREFIX_IN_ENTREF,
+                 "A(z) \"{0}\" entit\u00e1scsom\u00f3pont helyettes\u00edt\u0151 sz\u00f6vege a(z) \"{1}\" elemcsom\u00f3pontot tartalmazza, amelynek nem k\u00f6t\u00f6tt el\u0151tagja \"{2}\"."
+             },
+
+             { MsgKey.ER_ATTR_UNBOUND_PREFIX_IN_ENTREF,
+                 "A(z) \"{0}\" entit\u00e1scsom\u00f3pont helyettes\u00edt\u0151 sz\u00f6vege a(z) \"{1}\" attrib\u00fatum-csom\u00f3pontot tartalmazza, amelynek nem k\u00f6t\u00f6tt el\u0151tagja \"{2}\"."
+             },
 
         };
 

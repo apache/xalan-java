@@ -198,6 +198,93 @@ public class SerializerMessages_pl extends ListResourceBundle {
             {   MsgKey.ER_ENCODING_NOT_SUPPORTED,
                 "Ostrze\u017cenie:  dekodowany ''{0}'' nie jest obs\u0142ugiwany przez \u015brodowisko wykonawcze Java." },
 
+             {MsgKey.ER_FEATURE_NOT_FOUND,
+             "Parametr ''{0}'' nie zosta\u0142 rozpoznany."},
+
+             {MsgKey.ER_FEATURE_NOT_SUPPORTED,
+             "Parametr ''{0}'' zosta\u0142 rozpoznany, ale nie mo\u017cna ustawi\u0107 \u017c\u0105danej warto\u015bci."},
+
+             {MsgKey.ER_STRING_TOO_LONG,
+             "Wynikowy \u0142a\u0144cuch jest zbyt d\u0142ugi, aby si\u0119 zmie\u015bci\u0107 w obiekcie DOMString: ''{0}''."},
+
+             {MsgKey.ER_TYPE_MISMATCH_ERR,
+             "Typ warto\u015bci parametru o tej nazwie jest niezgodny z oczekiwanym typem warto\u015bci. "},
+
+             {MsgKey.ER_NO_OUTPUT_SPECIFIED,
+             "Docelowe miejsce zapisu danych wyj\u015bciowych by\u0142o puste (null)."},
+
+             {MsgKey.ER_UNSUPPORTED_ENCODING,
+             "Napotkano nieobs\u0142ugiwane kodowanie."},
+
+             {MsgKey.ER_UNABLE_TO_SERIALIZE_NODE,
+             "Nie mo\u017cna przekszta\u0142ci\u0107 w\u0119z\u0142a do postaci szeregowej."},
+
+             {MsgKey.ER_CDATA_SECTIONS_SPLIT,
+             "Sekcja CDATA zawiera jeden lub kilka znacznik\u00f3w zako\u0144czenia ']]>'."},
+
+             {MsgKey.ER_WARNING_WF_NOT_CHECKED,
+                 "Nie mo\u017cna utworzy\u0107 instancji obiektu sprawdzaj\u0105cego Well-Formedness.  Parametr well-formed ustawiono na warto\u015b\u0107 true, ale nie mo\u017cna by\u0142o dokona\u0107 sprawdzenia poprawno\u015bci konstrukcji."
+             },
+
+             {MsgKey.ER_WF_INVALID_CHARACTER,
+                 "W\u0119ze\u0142 ''{0}'' zawiera niepoprawne znaki XML."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_COMMENT,
+                 "W komentarzu znaleziono niepoprawny znak XML (Unicode: 0x{0})."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_PI,
+                 "W danych instrukcji przetwarzania znaleziono niepoprawny znak XML (Unicode: 0x{0})."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_CDATA,
+                 "W sekcji CDATA znaleziono niepoprawny znak XML (Unicode: 0x{0})."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_TEXT,
+                 "W tre\u015bci danych znakowych w\u0119z\u0142a znaleziono niepoprawny znak XML (Unicode: 0x{0})."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_NODE_NAME,
+                 "W {0} o nazwie ''{1}'' znaleziono niepoprawne znaki XML."
+             },
+
+             { MsgKey.ER_WF_DASH_IN_COMMENT,
+                 "Ci\u0105g znak\u00f3w \"--\" jest niedozwolony w komentarzu."
+             },
+
+             {MsgKey.ER_WF_LT_IN_ATTVAL,
+                 "Warto\u015b\u0107 atrybutu \"{1}\" zwi\u0105zanego z typem elementu \"{0}\" nie mo\u017ce zawiera\u0107 znaku ''<''."
+             },
+
+             {MsgKey.ER_WF_REF_TO_UNPARSED_ENT,
+                 "Odwo\u0142anie do encji nieprzetwarzanej \"&{0};\" jest niedozwolone."
+             },
+
+             {MsgKey.ER_WF_REF_TO_EXTERNAL_ENT,
+                 "Odwo\u0142anie do zewn\u0119trznej encji \"&{0};\" jest niedozwolone w warto\u015bci atrybutu."
+             },
+
+             {MsgKey.ER_NS_PREFIX_CANNOT_BE_BOUND,
+                 "Nie mo\u017cna zwi\u0105za\u0107 przedrostka \"{0}\" z przestrzeni\u0105 nazw \"{1}\"."
+             },
+
+             {MsgKey.ER_NULL_LOCAL_ELEMENT_NAME,
+                 "Nazwa lokalna elementu \"{0}\" jest pusta (null)."
+             },
+
+             {MsgKey.ER_NULL_LOCAL_ATTR_NAME,
+                 "Nazwa lokalna atrybutu \"{0}\" jest pusta (null)."
+             },
+
+             { MsgKey.ER_ELEM_UNBOUND_PREFIX_IN_ENTREF,
+                 "Tekst zast\u0119puj\u0105cy w\u0119z\u0142a encji \"{0}\" zawiera w\u0119ze\u0142 elementu \"{1}\" o niezwi\u0105zanym przedrostku \"{2}\"."
+             },
+
+             { MsgKey.ER_ATTR_UNBOUND_PREFIX_IN_ENTREF,
+                 "Tekst zast\u0119puj\u0105cy w\u0119z\u0142a encji \"{0}\" zawiera w\u0119ze\u0142 atrybutu \"{1}\" o niezwi\u0105zanym przedrostku \"{2}\"."
+             },
 
         };
 

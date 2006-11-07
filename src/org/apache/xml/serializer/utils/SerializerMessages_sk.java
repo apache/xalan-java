@@ -198,6 +198,93 @@ public class SerializerMessages_sk extends ListResourceBundle {
             {   MsgKey.ER_ENCODING_NOT_SUPPORTED,
                 "Varovanie:  Java runtime nepodporuje k\u00f3dovanie ''{0}''." },
 
+             {MsgKey.ER_FEATURE_NOT_FOUND,
+             "Parameter ''{0}'' nebol rozpoznan\u00fd."},
+
+             {MsgKey.ER_FEATURE_NOT_SUPPORTED,
+             "Parameter ''{0}'' bol rozpoznan\u00fd, ale vy\u017eadovan\u00e1 hodnota sa ned\u00e1 nastavi\u0165."},
+
+             {MsgKey.ER_STRING_TOO_LONG,
+             "V\u00fdsledn\u00fd re\u0165azec je pr\u00edli\u0161 dlh\u00fd a nezmest\u00ed sa do DOMString: ''{0}''."},
+
+             {MsgKey.ER_TYPE_MISMATCH_ERR,
+             "Typ hodnoty pre tento n\u00e1zov parametra je nekompatibiln\u00fd s o\u010dak\u00e1van\u00fdm typom hodnoty."},
+
+             {MsgKey.ER_NO_OUTPUT_SPECIFIED,
+             "Cie\u013e v\u00fdstupu pre zap\u00edsanie \u00fadajov bol null."},
+
+             {MsgKey.ER_UNSUPPORTED_ENCODING,
+             "Bolo zaznamenan\u00e9 nepodporovan\u00e9 k\u00f3dovanie."},
+
+             {MsgKey.ER_UNABLE_TO_SERIALIZE_NODE,
+             "Uzol nebolo mo\u017en\u00e9 serializova\u0165."},
+
+             {MsgKey.ER_CDATA_SECTIONS_SPLIT,
+             "\u010cas\u0165 CDATA obsahuje jeden alebo viacer\u00e9 ozna\u010dova\u010de konca ']]>'."},
+
+             {MsgKey.ER_WARNING_WF_NOT_CHECKED,
+                 "Nebolo mo\u017en\u00e9 vytvori\u0165 in\u0161tanciu kontrol\u00f3ra Well-Formedness.  Parameter well-formed bol nastaven\u00fd na hodnotu true, ale kontrola well-formedness sa ned\u00e1 vykona\u0165."
+             },
+
+             {MsgKey.ER_WF_INVALID_CHARACTER,
+                 "Uzol ''{0}'' obsahuje neplatn\u00e9 znaky XML."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_COMMENT,
+                 "V koment\u00e1ri bol n\u00e1jden\u00fd neplatn\u00fd znak XML (Unicode: 0x{0})."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_PI,
+                 "Pri spracovan\u00ed d\u00e1t in\u0161trukci\u00ed sa na\u0161iel neplatn\u00fd znak XML (Unicode: 0x{0})."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_CDATA,
+                 "V obsahu CDATASection sa na\u0161iel neplatn\u00fd znak XML (Unicode: 0x{0})."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_TEXT,
+                 "V obsahu znakov\u00fdch d\u00e1t uzla sa na\u0161iel neplatn\u00fd znak XML (Unicode: 0x{0})."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_NODE_NAME,
+                 "V uzle {0} s n\u00e1zvom ''{1}'' sa na\u0161iel neplatn\u00fd znak XML."
+             },
+
+             { MsgKey.ER_WF_DASH_IN_COMMENT,
+                 "Re\u0165azec \"--\" nie je povolen\u00fd v r\u00e1mci koment\u00e1rov."
+             },
+
+             {MsgKey.ER_WF_LT_IN_ATTVAL,
+                 "Hodnota atrib\u00fatu \"{1}\", ktor\u00e1 je priraden\u00e1 k prvku typu \"{0}\", nesmie obsahova\u0165 znak ''<''."
+             },
+
+             {MsgKey.ER_WF_REF_TO_UNPARSED_ENT,
+                 "Neanalyzovan\u00fd odkaz na entitu \"&{0};\" nie je povolen\u00fd."
+             },
+
+             {MsgKey.ER_WF_REF_TO_EXTERNAL_ENT,
+                 "Odkaz na extern\u00fa entitu \"&{0};\" nie je povolen\u00fd v hodnote atrib\u00fatu."
+             },
+
+             {MsgKey.ER_NS_PREFIX_CANNOT_BE_BOUND,
+                 "Predpona \"{0}\" nem\u00f4\u017ee by\u0165 naviazan\u00e1 na n\u00e1zvov\u00fd priestor \"{1}\"."
+             },
+
+             {MsgKey.ER_NULL_LOCAL_ELEMENT_NAME,
+                 "Lok\u00e1lny n\u00e1zov prvku \"{0}\" je null."
+             },
+
+             {MsgKey.ER_NULL_LOCAL_ATTR_NAME,
+                 "Lok\u00e1lny n\u00e1zov atrib\u00fatu \"{0}\" je null."
+             },
+
+             { MsgKey.ER_ELEM_UNBOUND_PREFIX_IN_ENTREF,
+                 "N\u00e1hradn\u00fd text pre uzol entity \"{0}\" obsahuje uzol prvku \"{1}\" s nenaviazanou predponou \"{2}\"."
+             },
+
+             { MsgKey.ER_ATTR_UNBOUND_PREFIX_IN_ENTREF,
+                 "N\u00e1hradn\u00fd text uzla entity \"{0}\" obsahuje uzol atrib\u00fatu \"{1}\" s nenaviazanou predponou \"{2}\"."
+             },
 
         };
 

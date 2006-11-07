@@ -96,5 +96,36 @@ public class MsgKey {
     public static final String ER_XML_VERSION_NOT_SUPPORTED = "ER_XML_VERSION_NOT_SUPPORTED";
     public static final String ER_FACTORY_PROPERTY_MISSING = "ER_FACTORY_PROPERTY_MISSING";
     public static final String ER_ENCODING_NOT_SUPPORTED = "ER_ENCODING_NOT_SUPPORTED";
+    // DOM Exceptions
+    public static final String ER_FEATURE_NOT_FOUND = "FEATURE_NOT_FOUND";
+    public static final String ER_FEATURE_NOT_SUPPORTED = "FEATURE_NOT_SUPPORTED";
+    public static final String ER_STRING_TOO_LONG = "DOMSTRING_SIZE_ERR";
+    public static final String ER_TYPE_MISMATCH_ERR = "TYPE_MISMATCH_ERR";  
     
+    // DOM Level 3 load and save messages
+    public static final String ER_NO_OUTPUT_SPECIFIED = "no-output-specified";   
+    public static final String ER_UNSUPPORTED_ENCODING = "unsupported-encoding";
+    public static final String ER_ELEM_UNBOUND_PREFIX_IN_ENTREF = "unbound-prefix-in-entity-reference";
+    public static final String ER_ATTR_UNBOUND_PREFIX_IN_ENTREF = "unbound-prefix-in-entity-reference";
+    public static final String ER_CDATA_SECTIONS_SPLIT = "cdata-sections-splitted";
+    public static final String ER_WF_INVALID_CHARACTER = "wf-invalid-character";
+    public static final String ER_WF_INVALID_CHARACTER_IN_NODE_NAME = "wf-invalid-character-in-node-name";
+    
+    // DOM Level 3 Implementation specific Exceptions
+    public static final String ER_UNABLE_TO_SERIALIZE_NODE = "ER_UNABLE_TO_SERIALIZE_NODE";
+    public static final String ER_WARNING_WF_NOT_CHECKED = "ER_WARNING_WF_NOT_CHECKED";
+    
+    public static final String ER_WF_INVALID_CHARACTER_IN_COMMENT = "ER_WF_INVALID_CHARACTER_IN_COMMENT";
+    public static final String ER_WF_INVALID_CHARACTER_IN_PI = "ER_WF_INVALID_CHARACTER_IN_PI";
+    public static final String ER_WF_INVALID_CHARACTER_IN_CDATA = "ER_WF_INVALID_CHARACTER_IN_CDATA";
+    public static final String ER_WF_INVALID_CHARACTER_IN_TEXT = "ER_WF_INVALID_CHARACTER_IN_TEXT";
+    public static final String ER_WF_DASH_IN_COMMENT = "ER_WF_DASH_IN_COMMENT";
+    public static final String ER_WF_LT_IN_ATTVAL = "ER_WF_LT_IN_ATTVAL";
+    public static final String ER_WF_REF_TO_UNPARSED_ENT = "ER_WF_REF_TO_UNPARSED_ENT";
+    public static final String ER_WF_REF_TO_EXTERNAL_ENT =  "ER_WF_REF_TO_EXTERNAL_ENT";
+    public static final String ER_NS_PREFIX_CANNOT_BE_BOUND =  "ER_NS_PREFIX_CANNOT_BE_BOUND";
+    public static final String ER_NULL_LOCAL_ELEMENT_NAME = "ER_NULL_LOCAL_ELEMENT_NAME";
+    public static final String ER_NULL_LOCAL_ATTR_NAME = "ER_NULL_LOCAL_ATTR_NAME";
+    public static final String ER_WRITING_INTERNAL_SUBSET = "ER_WRITING_INTERNAL_SUBSET";
+
 }

@@ -198,6 +198,93 @@ public class SerializerMessages_tr extends ListResourceBundle {
             {   MsgKey.ER_ENCODING_NOT_SUPPORTED,
                 "Uyar\u0131: ''{0}'' kodlamas\u0131 Java Runtime taraf\u0131ndan desteklenmiyor." },
 
+             {MsgKey.ER_FEATURE_NOT_FOUND,
+             "''{0}'' de\u011fi\u015ftirgesi tan\u0131nm\u0131yor."},
+
+             {MsgKey.ER_FEATURE_NOT_SUPPORTED,
+             "''{0}'' de\u011fi\u015ftirgesi tan\u0131n\u0131yor, ancak istenen de\u011fer tan\u0131mlanam\u0131yor."},
+
+             {MsgKey.ER_STRING_TOO_LONG,
+             "Sonu\u00e7 dizgisi DOMString i\u00e7in \u00e7ok uzun: ''{0}''."},
+
+             {MsgKey.ER_TYPE_MISMATCH_ERR,
+             "Bu de\u011fi\u015ftirge ad\u0131na ili\u015fkin de\u011fer tipi, beklenen de\u011fer tipiyle uyumlu de\u011fil."},
+
+             {MsgKey.ER_NO_OUTPUT_SPECIFIED,
+             "Yaz\u0131lacak verilerin \u00e7\u0131k\u0131\u015f hedefi bo\u015f de\u011ferli."},
+
+             {MsgKey.ER_UNSUPPORTED_ENCODING,
+             "Desteklenmeyen bir kodlama saptand\u0131."},
+
+             {MsgKey.ER_UNABLE_TO_SERIALIZE_NODE,
+             "D\u00fc\u011f\u00fcm diziselle\u015ftirilemedi."},
+
+             {MsgKey.ER_CDATA_SECTIONS_SPLIT,
+             "CDATA k\u0131sm\u0131nda bir ya da daha \u00e7ok ']]>' sonland\u0131rma imleyicisi var."},
+
+             {MsgKey.ER_WARNING_WF_NOT_CHECKED,
+                 "Well-Formedness denet\u015feyicisinin somut \u00f6rne\u011fi yarat\u0131lamad\u0131.  well-formed de\u011fi\u015ftirgesi true de\u011ferine ayarland\u0131, ancak do\u011fru bi\u00e7im denetimi ger\u00e7ekle\u015ftirilemiyor."
+             },
+
+             {MsgKey.ER_WF_INVALID_CHARACTER,
+                 "''{0}'' d\u00fc\u011f\u00fcm\u00fc ge\u00e7ersiz XML karakterleri i\u00e7eriyor."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_COMMENT,
+                 "A\u00e7\u0131klamada ge\u00e7ersiz bir XML karakteri (Unicode: 0x{0}) saptand\u0131."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_PI,
+                 "\u0130\u015fleme y\u00f6nergesi verilerinde ge\u00e7ersiz bir XML karakteri (Unicode: 0x{0}) saptand\u0131."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_CDATA,
+                 "CDATASection i\u00e7eri\u011finde ge\u00e7ersiz bir XML karakteri (Unicode: 0x{0}) saptand\u0131."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_TEXT,
+                 "D\u00fc\u011f\u00fcm\u00fcn karakter verileri i\u00e7eri\u011finde ge\u00e7ersiz bir XML karakteri (Unicode: 0x{0}) saptand\u0131."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_NODE_NAME,
+                 "''{1}'' adl\u0131 {0} d\u00fc\u011f\u00fcm\u00fcnde ge\u00e7ersiz XML karakteri saptand\u0131."
+             },
+
+             { MsgKey.ER_WF_DASH_IN_COMMENT,
+                 "A\u00e7\u0131klamalar i\u00e7inde \"--\" dizgisine izin verilmez."
+             },
+
+             {MsgKey.ER_WF_LT_IN_ATTVAL,
+                 "\"{0}\" \u00f6\u011fe tipiyle ili\u015fkilendirilen \"{1}\" \u00f6zniteli\u011finin de\u011feri ''<'' karakteri i\u00e7ermemelidir."
+             },
+
+             {MsgKey.ER_WF_REF_TO_UNPARSED_ENT,
+                 "\"&{0};\" ayr\u0131\u015ft\u0131r\u0131lmam\u0131\u015f varl\u0131k ba\u015fvurusuna izin verilmez."
+             },
+
+             {MsgKey.ER_WF_REF_TO_EXTERNAL_ENT,
+                 "\u00d6znitelik de\u011ferinde \"&{0};\" d\u0131\u015f varl\u0131k ba\u015fvurusuna izin verilmez."
+             },
+
+             {MsgKey.ER_NS_PREFIX_CANNOT_BE_BOUND,
+                 "\"{0}\" \u00f6neki \"{1}\" ad alan\u0131na ba\u011flanam\u0131yor."
+             },
+
+             {MsgKey.ER_NULL_LOCAL_ELEMENT_NAME,
+                 "\"{0}\" \u00f6\u011fesinin yerel ad\u0131 bo\u015f de\u011ferli."
+             },
+
+             {MsgKey.ER_NULL_LOCAL_ATTR_NAME,
+                 "\"{0}\" \u00f6zniteli\u011finin yerel ad\u0131 bo\u015f de\u011ferli."
+             },
+
+             { MsgKey.ER_ELEM_UNBOUND_PREFIX_IN_ENTREF,
+                 "\"{0}\" varl\u0131k d\u00fc\u011f\u00fcm\u00fcn\u00fcn yerine koyma metninde, ba\u011flanmam\u0131\u015f \"{2}\" \u00f6neki bulunan bir \u00f6\u011fe d\u00fc\u011f\u00fcm\u00fc (\"{1}\") var."
+             },
+
+             { MsgKey.ER_ATTR_UNBOUND_PREFIX_IN_ENTREF,
+                 "\"{0}\" varl\u0131k d\u00fc\u011f\u00fcm\u00fcn\u00fcn yerine koyma metninde, ba\u011flanmam\u0131\u015f \"{2}\" \u00f6neki bulunan bir \u00f6znitelik d\u00fc\u011f\u00fcm\u00fc (\"{1}\") var."
+             },
 
         };
 

@@ -218,5 +218,21 @@ public interface Serializer {
      * @return True if serializer has been reset and can be reused
      */
     public boolean reset();
+
+    /**
+     * Return an Object into this serializer to be cast to a DOM3Serializer.
+     * Through the returned object the document to be serialized,
+     * a DOM (Level 3), can be provided to the serializer.
+     * If the serializer does not support casting to a {@link DOM3Serializer}
+     * interface, it should return null.
+     * <p>
+     * In principle only one of asDOM3Serializer() or asContentHander() 
+     * should be called.
+     *
+     * @return An Object to be cast to a DOM3Serializer interface into this serializer,
+     *  or null if the serializer is not DOM capable
+     * @throws IOException An I/O exception occured
+     */
+    public Object asDOM3Serializer() throws IOException;
 }
 

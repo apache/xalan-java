@@ -776,4 +776,12 @@ public class EmptySerializer implements SerializationHandler
         
     }
 
+    /**
+     * @see org.apache.xml.serializer.Serializer#asDOM3Serializer()
+     */
+    public Object asDOM3Serializer() throws IOException
+    {
+        couldThrowIOException();
+        return null;
+    }
 }

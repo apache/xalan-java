@@ -72,7 +72,8 @@ public final class Encodings extends Object
             {
                 try
                 {
-                	OutputStreamWriter osw = new OutputStreamWriter(output,_encodings[i].javaName);
+                    String javaName = _encodings[i].javaName;
+                	OutputStreamWriter osw = new OutputStreamWriter(output,javaName);
                     return osw; 
                 }
                 catch (java.lang.IllegalArgumentException iae) // java 1.1.8
@@ -126,6 +127,26 @@ public final class Encodings extends Object
         return ei;
     }
  
+    /**
+     * Determines if the encoding specified was recognized by the
+     * serializer or not.
+     *
+     * @param encoding The encoding
+     * @return boolean - true if the encoding was recognized else false
+     */
+    public static boolean isRecognizedEncoding(String encoding)
+    {
+        EncodingInfo ei;
+
+        String normalizedEncoding = encoding.toUpperCase();
+        ei = (EncodingInfo) _encodingTableKeyJava.get(normalizedEncoding);
+        if (ei == null)
+            ei = (EncodingInfo) _encodingTableKeyMime.get(normalizedEncoding);
+        if (ei != null)
+            return true;
+        return false;
+    }
+    
     /**
      * A fast and cheap way to uppercase a String that is
      * only made of printable ASCII characters.

@@ -198,6 +198,93 @@ public class SerializerMessages_sl extends ListResourceBundle {
             {   MsgKey.ER_ENCODING_NOT_SUPPORTED,
                 "Opozorilo:  Izvajalno okolje Java ne podpira kodiranja ''{0}''." },
 
+             {MsgKey.ER_FEATURE_NOT_FOUND,
+             "Parameter ''{0}'' ni prepoznan."},
+
+             {MsgKey.ER_FEATURE_NOT_SUPPORTED,
+             "Parameter ''{0}'' je prepoznan, vendar pa zahtevane vrednosti ni mogo\u010de nastaviti."},
+
+             {MsgKey.ER_STRING_TOO_LONG,
+             "Nastali niz je predolg za DOMString: ''{0}''."},
+
+             {MsgKey.ER_TYPE_MISMATCH_ERR,
+             "Tip vrednosti za to ime parametra je nezdru\u017eljiv s pri\u010dakovanim tipom vrednosti."},
+
+             {MsgKey.ER_NO_OUTPUT_SPECIFIED,
+             "Izhodno mesto za vpisovanje podatkov je bilo ni\u010d."},
+
+             {MsgKey.ER_UNSUPPORTED_ENCODING,
+             "Odkrito je nepodprto kodiranje."},
+
+             {MsgKey.ER_UNABLE_TO_SERIALIZE_NODE,
+             "Vozli\u0161\u010da ni mogo\u010de serializirati."},
+
+             {MsgKey.ER_CDATA_SECTIONS_SPLIT,
+             "Odsek CDATA vsebuje enega ali ve\u010d ozna\u010devalnikov prekinitve ']]>'."},
+
+             {MsgKey.ER_WARNING_WF_NOT_CHECKED,
+                 "Primerka preverjevalnika Well-Formedness ni bilo mogo\u010de ustvariti.  Parameter well-formed je bil nastavljen na True, ampak ni mogo\u010de preveriti well-formedness."
+             },
+
+             {MsgKey.ER_WF_INVALID_CHARACTER,
+                 "Vozli\u0161\u010de ''{0}'' vsebuje neveljavne znake XML."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_COMMENT,
+                 "V komentarju je bil najden neveljaven XML znak (Unicode: 0x{0})."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_PI,
+                 "V podatkih navodila za obdelavo je bil najden neveljaven znak XML (Unicode: 0x{0})."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_CDATA,
+                 "V vsebini odseka CDATASection je bil najden neveljaven znak XML (Unicode: 0x{0})."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_TEXT,
+                 "V podatkovni vsebini znaka vozli\u0161\u010da je bil najden neveljaven znak XML (Unicode: 0x{0})."
+             },
+
+             { MsgKey.ER_WF_INVALID_CHARACTER_IN_NODE_NAME,
+                 "V vozli\u0161\u010du {0} z imenom ''{1}'' je bil najden neveljaven znak XML."
+             },
+
+             { MsgKey.ER_WF_DASH_IN_COMMENT,
+                 "Niz \"--\" ni dovoljen v komentarjih."
+             },
+
+             {MsgKey.ER_WF_LT_IN_ATTVAL,
+                 "Vrednost atributa \"{1}\", ki je povezan s tipom elementa \"{0}\", ne sme vsebovati znaka ''<''."
+             },
+
+             {MsgKey.ER_WF_REF_TO_UNPARSED_ENT,
+                 "Neraz\u010dlenjeni sklic entitete \"&{0};\" ni dovoljen."
+             },
+
+             {MsgKey.ER_WF_REF_TO_EXTERNAL_ENT,
+                 "Zunanji sklic entitete \"&{0};\" ni dovoljen v vrednosti atributa."
+             },
+
+             {MsgKey.ER_NS_PREFIX_CANNOT_BE_BOUND,
+                 "Predpona \"{0}\" ne more biti povezana z imenskim prostorom \"{1}\"."
+             },
+
+             {MsgKey.ER_NULL_LOCAL_ELEMENT_NAME,
+                 "Lokalno ime elementa \"{0}\" je ni\u010d."
+             },
+
+             {MsgKey.ER_NULL_LOCAL_ATTR_NAME,
+                 "Lokalno ime atributa \"{0}\" je ni\u010d."
+             },
+
+             { MsgKey.ER_ELEM_UNBOUND_PREFIX_IN_ENTREF,
+                 "Besedilo za zamenjavo za vozli\u0161\u010de entitete \"{0}\" vsebuje vozli\u0161\u010de elementa \"{1}\" z nevezano predpono \"{2}\"."
+             },
+
+             { MsgKey.ER_ATTR_UNBOUND_PREFIX_IN_ENTREF,
+                 "Besedilo za zamenjavo za vozli\u0161\u010de entitete \"{0}\" vsebuje vozli\u0161\u010de atributa \"{1}\" z nevezano predpono \"{2}\"."
+             },
 
         };
 
