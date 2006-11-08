@@ -21,6 +21,7 @@
 package org.apache.xml.utils;
 
 import java.util.Stack;
+import java.util.Vector;
 
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
@@ -63,7 +64,10 @@ public class DOMBuilder
 
   /** Vector of element nodes          */
   protected Stack m_elemStack = new Stack();
-
+  
+  /** Namespace support */
+  protected Vector m_prefixMappings = new Vector();
+  
   /**
    * DOMBuilder instance constructor... it will add the DOM nodes
    * to the document fragment.
@@ -361,7 +365,28 @@ public class DOMBuilder
           elem.setAttributeNS(attrNS,attrQName, atts.getValue(i));
         }
       }
+      
+      /*
+       * Adding namespace nodes to the DOM tree;
+       */
+      int nDecls = m_prefixMappings.size();
+      
+      String prefix, declURL;
+      
+      for (int i = 0; i < nDecls; i += 2)
+      {
+        prefix = (String) m_prefixMappings.elementAt(i);
 
+        if (prefix == null)
+          continue;
+
+        declURL = (String) m_prefixMappings.elementAt(i + 1);
+
+        elem.setAttributeNS("http://www.w3.org/2000/xmlns/", prefix, declURL);
+      }
+      
+      m_prefixMappings.clear();
+    
       // append(elem);
 
       m_elemStack.push(elem);
@@ -730,29 +755,11 @@ public class DOMBuilder
   public void startPrefixMapping(String prefix, String uri)
           throws org.xml.sax.SAXException
   {
-
-    /*
-    // Not sure if this is needed or wanted
-    // Also, it fails in the stree.
-    if((null != m_currentNode)
-       && (m_currentNode.getNodeType() == Node.ELEMENT_NODE))
-    {
-      String qname;
-      if(((null != prefix) && (prefix.length() == 0))
-         || (null == prefix))
-        qname = "xmlns";
-      else
-        qname = "xmlns:"+prefix;
-
-      Element elem = (Element)m_currentNode;
-      String val = elem.getAttribute(qname); // Obsolete, should be DOM2...?
-      if(val == null)
-      {
-        elem.setAttributeNS("http://www.w3.org/XML/1998/namespace",
-                            qname, uri);
-      }
-    }
-    */
+	      if(null == prefix || prefix.equals(""))
+	        prefix = "xmlns";
+	      else prefix = "xmlns:"+prefix;
+	      m_prefixMappings.addElement(prefix);
+	      m_prefixMappings.addElement(uri); 
   }
 
   /**
