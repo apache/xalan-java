@@ -2140,7 +2140,7 @@ final class DOM3TreeWalker {
         // Set the newLine character to use
         if (fNewLine != null) {
             fSerializer.setOutputProperty(OutputPropertiesFactory.S_KEY_LINE_SEPARATOR,
-                    fNewLine.toString());
+                    String.valueOf(fNewLine));
         }
     }
 
