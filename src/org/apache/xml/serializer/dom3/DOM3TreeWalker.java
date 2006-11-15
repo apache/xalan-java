@@ -91,7 +91,7 @@ final class DOM3TreeWalker {
     private int fWhatToShowFilter;
 
     /** New Line character to use in serialization */
-    private char[] fNewLine = null;
+    private String fNewLine = null;
 
     /** DOMConfiguration Properties */
     private Properties fDOMConfigProperties = null;
@@ -205,7 +205,7 @@ final class DOM3TreeWalker {
         SerializationHandler serialHandler,
         DOMErrorHandler errHandler,
         LSSerializerFilter filter,
-        char[] newLine) {
+        String newLine) {
         fSerializer = serialHandler;
         //fErrorHandler = errHandler == null ? new DOMErrorHandlerImpl() : errHandler; // Should we be using the default?
         fErrorHandler = errHandler;
@@ -2139,8 +2139,7 @@ final class DOM3TreeWalker {
         }
         // Set the newLine character to use
         if (fNewLine != null) {
-            fSerializer.setOutputProperty(OutputPropertiesFactory.S_KEY_LINE_SEPARATOR,
-                    String.valueOf(fNewLine));
+            fSerializer.setOutputProperty(OutputPropertiesFactory.S_KEY_LINE_SEPARATOR, fNewLine);
         }
     }
 

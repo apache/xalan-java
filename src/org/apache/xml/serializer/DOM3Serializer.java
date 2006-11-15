@@ -256,8 +256,8 @@ public interface DOM3Serializer {
     public LSSerializerFilter getNodeFilter();
 
     /**
-     * Sets the new line character to be used during serialization
-     * @param newLine A character array corresponding to the new line character to be used.
+     * Sets the end-of-line sequence of characters to be used during serialization
+     * @param newLine The end-of-line sequence of characters to be used during serialization
      */
     public void setNewLine(char[] newLine);
 }

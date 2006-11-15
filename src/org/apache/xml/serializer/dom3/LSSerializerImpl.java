@@ -21,10 +21,8 @@
 
 package org.apache.xml.serializer.dom3;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
@@ -32,15 +30,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
+import java.util.StringTokenizer;
 
 import org.apache.xml.serializer.DOM3Serializer;
 import org.apache.xml.serializer.Encodings;
-import org.apache.xml.serializer.Serializer;
 import org.apache.xml.serializer.OutputPropertiesFactory;
+import org.apache.xml.serializer.Serializer;
 import org.apache.xml.serializer.SerializerFactory;
 import org.apache.xml.serializer.utils.MsgKey;
-import org.apache.xml.serializer.utils.Utils;
 import org.apache.xml.serializer.utils.SystemIDResolver;
+import org.apache.xml.serializer.utils.Utils;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.DOMError;
 import org.w3c.dom.DOMErrorHandler;
@@ -52,7 +51,6 @@ import org.w3c.dom.ls.LSException;
 import org.w3c.dom.ls.LSOutput;
 import org.w3c.dom.ls.LSSerializer;
 import org.w3c.dom.ls.LSSerializerFilter;
-
 
 /**
  * Implemenatation of DOM Level 3 org.w3c.ls.LSSerializer and 
@@ -69,6 +67,17 @@ import org.w3c.dom.ls.LSSerializerFilter;
  */
 final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
     
+    // The default end-of-line character sequence used in serialization.
+    private static final String DEFAULT_END_OF_LINE;
+    static {
+        String lineSeparator = System.getProperty("line.separator");
+        // The DOM Level 3 Load and Save specification requires that implementations choose a default
+        // sequence which matches one allowed by XML 1.0 (or XML 1.1). If the value of "line.separator" 
+        // isn't one of the XML 1.0 end-of-line sequences then we select "\n" as the default value.
+        DEFAULT_END_OF_LINE = lineSeparator != null && 
+            (lineSeparator.equals("\r\n") || lineSeparator.equals("\r")) ? lineSeparator : "\n";
+    }
+    
     /** private data members */
     private Serializer fXMLSerializer = null;
     
@@ -84,8 +93,8 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
     // Stores the nodeArg parameter to speed up multiple writes of the same node.
     private Node fVisitedNode = null;
     
-    // The end-of-line character sequence used in serialization.  "\n" is whats used on the web.
-    private String fEndOfLine = System.getProperty("line.separator") != null ? System.getProperty("line.separator"): "\n";
+    // The end-of-line character sequence used in serialization. "\n" is whats used on the web.
+    private String fEndOfLine = DEFAULT_END_OF_LINE;
     
     // The DOMErrorhandler.
     private DOMErrorHandler fDOMErrorHandler = null;
@@ -596,8 +605,15 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
             } else if (name.equalsIgnoreCase(DOMConstants.DOM_FORMAT_PRETTY_PRINT)) {
                 fFeatures = state ? fFeatures | PRETTY_PRINT : fFeatures
                         & ~PRETTY_PRINT;
-                fDOMConfigProperties.setProperty(DOMConstants.S_XSL_OUTPUT_INDENT,DOMConstants.DOM3_EXPLICIT_TRUE);
-                fDOMConfigProperties.setProperty(OutputPropertiesFactory.S_KEY_INDENT_AMOUNT, Integer.toString(3));                
+                // format-pretty-print
+                if (state) {
+                    fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
+                            + DOMConstants.DOM_FORMAT_PRETTY_PRINT, DOMConstants.DOM3_EXPLICIT_TRUE);
+                }
+                else {
+                    fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
+                            + DOMConstants.DOM_FORMAT_PRETTY_PRINT, DOMConstants.DOM3_EXPLICIT_FALSE);
+                }
             } else if (name.equalsIgnoreCase(DOMConstants.DOM_XMLDECL)) {
                 fFeatures = state ? fFeatures | XMLDECL : fFeatures
                         & ~XMLDECL;
@@ -793,7 +809,7 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
      * serialization.
      */
     public void setNewLine(String newLine) {
-        fEndOfLine = newLine !=null? newLine: fEndOfLine;
+        fEndOfLine = (newLine != null) ? newLine : DEFAULT_END_OF_LINE;
     }
     
     /** 
@@ -934,7 +950,7 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
                         if (protocol.equalsIgnoreCase("file") 
                                 && (host == null || host.length() == 0 || host.equals("localhost"))) {
                             // do we also need to check for host.equals(hostname)
-                            urlOutStream = new FileOutputStream(new File(url.getPath()));
+                            urlOutStream = new FileOutputStream(getPathWithoutEscapes(url.getPath()));
                            
                         } else {
                             // This should support URL's whose schemes are mentioned in 
@@ -954,11 +970,11 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
                             urlOutStream = urlCon.getOutputStream();
                         }
                         // set the OutputStream to that obtained from the systemId
-                        serializer.setWriter(new OutputStreamWriter(urlOutStream));
+                        serializer.setOutputStream(urlOutStream);
                     }
                 } else {
                     // 2.LSOutput.byteStream
-                    serializer.setWriter(new OutputStreamWriter(outputStream, fEncoding));                     
+                    serializer.setOutputStream(outputStream);     
                 }
             } else {
                 // 1.LSOutput.characterStream
@@ -1002,21 +1018,19 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
                         DOMError.SEVERITY_FATAL_ERROR, msg,
                         MsgKey.ER_UNSUPPORTED_ENCODING, ue));
             }
-            throw new LSException(LSException.SERIALIZE_ERR, ue.getMessage());
+            throw (LSException) createLSException(LSException.SERIALIZE_ERR, ue).fillInStackTrace();
         } catch (LSException lse) {
             // Rethrow LSException.
             throw lse;
         } catch (RuntimeException e) {
-            e.printStackTrace();
-            throw new LSException(LSException.SERIALIZE_ERR, e!=null?e.getMessage():"NULL Exception") ;
+            throw (LSException) createLSException(LSException.SERIALIZE_ERR, e).fillInStackTrace();
         }  catch (Exception e) {
             if (fDOMErrorHandler != null) {
                 fDOMErrorHandler.handleError(new DOMErrorImpl(
                         DOMError.SEVERITY_FATAL_ERROR, e.getMessage(),
                         null, e));
-            } 
-            e.printStackTrace();
-            throw new LSException(LSException.SERIALIZE_ERR, e.toString());
+            }
+            throw (LSException) createLSException(LSException.SERIALIZE_ERR, e).fillInStackTrace();
         }        
         return true;
     }
@@ -1105,16 +1119,14 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
             // Rethrow LSException.
             throw lse;
         } catch (RuntimeException e) {
-            e.printStackTrace();
-            throw new LSException(LSException.SERIALIZE_ERR, e.toString());
+            throw (LSException) createLSException(LSException.SERIALIZE_ERR, e).fillInStackTrace();
         }  catch (Exception e) {
             if (fDOMErrorHandler != null) {
                 fDOMErrorHandler.handleError(new DOMErrorImpl(
                         DOMError.SEVERITY_FATAL_ERROR, e.getMessage(),
                         null, e));
-            } 
-            e.printStackTrace();
-            throw new LSException(LSException.SERIALIZE_ERR, e.toString());
+            }
+            throw (LSException) createLSException(LSException.SERIALIZE_ERR, e).fillInStackTrace();
         }        
         
         // return the serialized string
@@ -1214,7 +1226,7 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
                         && (host == null || host.length() == 0 || host
                                 .equals("localhost"))) {
                     // do we also need to check for host.equals(hostname)
-                    urlOutStream = new FileOutputStream(new File(url.getPath()));
+                    urlOutStream = new FileOutputStream(getPathWithoutEscapes(url.getPath()));
                     
                 } else {
                     // This should support URL's whose schemes are mentioned in
@@ -1234,7 +1246,7 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
                     urlOutStream = urlCon.getOutputStream();
                 }
                 // set the OutputStream to that obtained from the systemId
-                serializer.setWriter(new OutputStreamWriter(urlOutStream, fEncoding));
+                serializer.setOutputStream(urlOutStream);
             }
             
             // Get a reference to the serializer then lets you serilize a DOM
@@ -1265,16 +1277,14 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
             // Rethrow LSException.
             throw lse;
         } catch (RuntimeException e) {
-            e.printStackTrace();
-            throw new LSException(LSException.SERIALIZE_ERR, e.toString());
+            throw (LSException) createLSException(LSException.SERIALIZE_ERR, e).fillInStackTrace();
         }  catch (Exception e) {
             if (fDOMErrorHandler != null) {
                 fDOMErrorHandler.handleError(new DOMErrorImpl(
                         DOMError.SEVERITY_FATAL_ERROR, e.getMessage(),
                         null, e));
-            } 
-            e.printStackTrace();
-            throw new LSException(LSException.SERIALIZE_ERR, e.toString());
+            }
+            throw (LSException) createLSException(LSException.SERIALIZE_ERR, e).fillInStackTrace();
         }        
         
         return true;
@@ -1387,4 +1397,80 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
         return fDOMErrorHandler;
     }
     
+    /**
+     * Replaces all escape sequences in the given path with their literal characters.
+     */
+    private static String getPathWithoutEscapes(String origPath) {
+        if (origPath != null && origPath.length() != 0 && origPath.indexOf('%') != -1) {
+            // Locate the escape characters
+            StringTokenizer tokenizer = new StringTokenizer(origPath, "%");
+            StringBuffer result = new StringBuffer(origPath.length());
+            int size = tokenizer.countTokens();
+            result.append(tokenizer.nextToken());
+            for(int i = 1; i < size; ++i) {
+                String token = tokenizer.nextToken();
+                if (token.length() >= 2 && isHexDigit(token.charAt(0)) && 
+                        isHexDigit(token.charAt(1))) {
+                    // Decode the 2 digit hexadecimal number following % in '%nn'
+                    result.append((char)Integer.valueOf(token.substring(0, 2), 16).intValue());
+                    token = token.substring(2);
+                }
+                result.append(token);
+            }
+            return result.toString();
+        }
+        return origPath;
+    }
+
+    /** 
+     * Returns true if the given character is a valid hex character.
+     */
+    private static boolean isHexDigit(char c) {
+        return (c >= '0' && c <= '9' || 
+                c >= 'a' && c <= 'f' || 
+                c >= 'A' && c <= 'F');
+    }
+    
+    /**
+     * Creates an LSException. On J2SE 1.4 and above the cause for the exception will be set.
+     */
+    private static LSException createLSException(short code, Throwable cause) {
+        LSException lse = new LSException(code, cause != null ? cause.getMessage() : null);
+        if (cause != null && ThrowableMethods.fgThrowableMethodsAvailable) {
+            try {
+                ThrowableMethods.fgThrowableInitCauseMethod.invoke(lse, new Object [] {cause});
+            }
+            // Something went wrong. There's not much we can do about it.
+            catch (Exception e) {}
+        }
+        return lse;
+    }
+    
+    /**
+     * Holder of methods from java.lang.Throwable.
+     */
+    static class ThrowableMethods {
+        
+        // Method: java.lang.Throwable.initCause(java.lang.Throwable)
+        private static java.lang.reflect.Method fgThrowableInitCauseMethod = null;
+        
+        // Flag indicating whether or not Throwable methods available.
+        private static boolean fgThrowableMethodsAvailable = false;
+        
+        private ThrowableMethods() {}
+        
+        // Attempt to get methods for java.lang.Throwable on class initialization.
+        static {
+            try {
+                fgThrowableInitCauseMethod = Throwable.class.getMethod("initCause", new Class [] {Throwable.class});
+                fgThrowableMethodsAvailable = true;
+            }
+            // ClassNotFoundException, NoSuchMethodException or SecurityException
+            // Whatever the case, we cannot use java.lang.Throwable.initCause(java.lang.Throwable).
+            catch (Exception exc) {
+                fgThrowableInitCauseMethod = null;
+                fgThrowableMethodsAvailable = false;
+            }
+        }
+    }
 }
