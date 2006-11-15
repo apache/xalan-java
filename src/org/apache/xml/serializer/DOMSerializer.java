@@ -28,24 +28,32 @@ import org.w3c.dom.Node;
  * Interface for a DOM serializer implementation.
  * <p>
  * The DOMSerializer is a facet of a serializer and is obtained from the
- * asDOMSerializer() method of the Serializer interface. 
+ * asDOMSerializer() method of the ({@link Serializer}) interface. 
  * A serializer may or may not support a DOM serializer, if it does not then the 
  * return value from asDOMSerializer() is null.
  * <p>
  * Example:
  * <pre>
- * Document     doc;
- * Serializer   ser;
- * OutputStream os;
+ * // Create a document to be serialized
+ * org.w3c.dom.Document doc = ...;
  * 
- * ser = ...;
- * os = ...;
+ * // Create a Serializer that will be used
+ * // to serialize the document  
+ * org.apache.xml.serializer.Serializer ser = ...;
  *
- * ser.setOutputStream( os );
+ * // Set the Writer to write output to, and 
+ * // serialize the DOM using that Serializer
+ * java.io.StringWriter sw = new java.io.StringWriter();
+ * ser.setWriter(sw);
  * DOMSerialzier dser = ser.asDOMSerializer();
  * dser.serialize(doc);
+ * 
+ * // Write out the serialized XML in the String.
+ * System.out.println(sw.toString());
  * </pre>
  * 
+ * @see OutputPropertiesFactory
+ * @see SerializerFactory
  * @see Serializer
  * 
  * @xsl.usage general
