@@ -20,7 +20,7 @@
  */
 package org.apache.xpath.axes;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.WrappedRuntimeException;
@@ -29,17 +29,19 @@ import org.apache.xml.utils.WrappedRuntimeException;
  * Pool of object of a given type to pick from to help memory usage
  * @xsl.usage internal
  */
-public class IteratorPool implements java.io.Serializable
+public final class IteratorPool implements java.io.Serializable
 {
     static final long serialVersionUID = -460927331149566998L;
 
-  /** Type of objects in this pool.
-   *  @serial          */
+  /** 
+   * Type of objects in this pool.
+   */
   private final DTMIterator m_orig;
 
-  /** Vector of given objects this points to.
-   *  @serial          */
-  private final Vector m_freeStack;
+  /** 
+   * Stack of given objects this points to.
+   */
+  private final ArrayList m_freeStack;
 
   /**
    * Constructor IteratorPool
@@ -49,7 +51,7 @@ public class IteratorPool implements java.io.Serializable
   public IteratorPool(DTMIterator original)
   {
     m_orig = original;
-    m_freeStack = new Vector();
+    m_freeStack = new ArrayList();
   }
   
   /**
@@ -70,10 +72,7 @@ public class IteratorPool implements java.io.Serializable
     else
     {
       // Remove object from end of free pool.
-      DTMIterator result = (DTMIterator)m_freeStack.lastElement();
-
-      m_freeStack.setSize(m_freeStack.size() - 1);
-
+      DTMIterator result = (DTMIterator)m_freeStack.remove(m_freeStack.size() - 1);
       return result;
     }
   }
@@ -102,10 +101,7 @@ public class IteratorPool implements java.io.Serializable
     else
     {
       // Remove object from end of free pool.
-      DTMIterator result = (DTMIterator)m_freeStack.lastElement();
-
-      m_freeStack.setSize(m_freeStack.size() - 1);
-
+      DTMIterator result = (DTMIterator)m_freeStack.remove(m_freeStack.size() - 1);
       return result;
     }
   }
@@ -118,6 +114,6 @@ public class IteratorPool implements java.io.Serializable
    */
   public synchronized void freeInstance(DTMIterator obj)
   {
-    m_freeStack.addElement(obj);
+    m_freeStack.add(obj);
   }
 }

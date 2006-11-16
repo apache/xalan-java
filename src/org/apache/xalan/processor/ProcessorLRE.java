@@ -20,7 +20,7 @@
  */
 package org.apache.xalan.processor;
 
-import java.util.Vector;
+import java.util.List;
 
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
@@ -355,12 +355,12 @@ public class ProcessorLRE extends ProcessorTemplateElem
 	
 	private boolean declaredXSLNS(Stylesheet stylesheet)
 	{
-		Vector declaredPrefixes = stylesheet.getDeclaredPrefixes();
+		List declaredPrefixes = stylesheet.getDeclaredPrefixes();
 		int n = declaredPrefixes.size();
 
 		for (int i = 0; i < n; i++)
 		{
-			XMLNSDecl decl = (XMLNSDecl) declaredPrefixes.elementAt(i);
+			XMLNSDecl decl = (XMLNSDecl) declaredPrefixes.get(i);
 			if(decl.getURI().equals(Constants.S_XSLNAMESPACEURL))
 				return true;
 		}

@@ -30,18 +30,17 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.StringVector;
-import org.apache.xml.utils.UnImplNode;
 import org.apache.xpath.XPathContext;
-import org.xml.sax.SAXException;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.DOMException;
 import org.w3c.dom.TypeInfo;
 import org.w3c.dom.UserDataHandler;
+import org.xml.sax.SAXException;
 
 /**
  * Implement a Literal Result Element.
@@ -399,7 +398,7 @@ public class ElemLiteralResult extends ElemUse
    */
   boolean needToCheckExclude()
   {
-    if (null == m_excludeResultPrefixes && null == m_prefixTable
+    if (null == m_excludeResultPrefixes && null == getPrefixTable()
                 && m_ExtensionElementURIs==null     // JJK Bugzilla 1133
                 )
       return false;
@@ -407,8 +406,8 @@ public class ElemLiteralResult extends ElemUse
     {
 
       // Create a new prefix table if one has not already been created.
-      if (null == m_prefixTable)
-        m_prefixTable = new Vector();
+      if (null == getPrefixTable())
+        setPrefixTable(new java.util.ArrayList());
 
       return true;
     }
