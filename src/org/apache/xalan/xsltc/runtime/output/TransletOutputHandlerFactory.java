@@ -28,9 +28,7 @@ import java.io.Writer;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xalan.xsltc.trax.SAX2DOM;
-import org.apache.xml.serializer.ToHTMLSAXHandler;
 import org.apache.xml.serializer.ToHTMLStream;
-import org.apache.xml.serializer.ToTextSAXHandler;
 import org.apache.xml.serializer.ToTextStream;
 import org.apache.xml.serializer.ToUnknownStream;
 import org.apache.xml.serializer.ToXMLSAXHandler;
@@ -170,57 +168,19 @@ public class TransletOutputHandlerFactory {
                     _method = "xml"; // default case
                 }
 
-                if (_method.equalsIgnoreCase("xml"))
+                if (_lexHandler == null)
                 {
-
-                    if (_lexHandler == null)
-                    {
-                        result = new ToXMLSAXHandler(_handler, _encoding);
-                    }
-                    else
-                    {
-                        result =
-                            new ToXMLSAXHandler(
-                                _handler,
-                                _lexHandler,
-                                _encoding);
-                    }
-
+                    result = new ToXMLSAXHandler(_handler, _encoding);
                 }
-                else if (_method.equalsIgnoreCase("html"))
+                else
                 {
-
-                    if (_lexHandler == null)
-                    {
-                        result = new ToHTMLSAXHandler(_handler, _encoding);
-                    }
-                    else
-                    {
-                        result =
-                            new ToHTMLSAXHandler(
-                                _handler,
-                                _lexHandler,
-                                _encoding);
-                    }
-
+                    result =
+                        new ToXMLSAXHandler(
+                            _handler,
+                            _lexHandler,
+                            _encoding);
                 }
-                else if (_method.equalsIgnoreCase("text"))
-                {
 
-                    if (_lexHandler == null)
-                    {
-                        result = new ToTextSAXHandler(_handler, _encoding);
-                    }
-                    else
-                    {
-                        result =
-                            new ToTextSAXHandler(
-                                _handler,
-                                _lexHandler,
-                                _encoding);
-                    }
-
-                }
                 return result;
         }
         return null;

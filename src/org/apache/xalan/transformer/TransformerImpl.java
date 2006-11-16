@@ -72,9 +72,7 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTMWSFilter;
-import org.apache.xml.serializer.ToHTMLSAXHandler;
 import org.apache.xml.serializer.ToSAXHandler;
-import org.apache.xml.serializer.ToTextSAXHandler;
 import org.apache.xml.serializer.ToTextStream;
 import org.apache.xml.serializer.ToXMLSAXHandler;
 import org.apache.xml.serializer.SerializationHandler;
@@ -1140,21 +1138,11 @@ public class TransformerImpl extends Transformer
             
         String encoding = format.getProperty(OutputKeys.ENCODING); 
         String method = format.getProperty(OutputKeys.METHOD);
-        if (org.apache.xml.serializer.Method.HTML.equals(method))
-        {
-            xoh = new ToHTMLSAXHandler(handler, lexHandler, encoding);
-        }
-        else if (org.apache.xml.serializer.Method.TEXT.equals(method))
-        {
-            xoh = new ToTextSAXHandler(handler, lexHandler, encoding);
-        } 
-        else 
-        {
-            ToXMLSAXHandler toXMLSAXHandler = new ToXMLSAXHandler(handler, lexHandler, encoding);
-            toXMLSAXHandler.setShouldOutputNSAttr(false);
-            xoh = toXMLSAXHandler;   
- 
-        } 
+
+        ToXMLSAXHandler toXMLSAXHandler = new ToXMLSAXHandler(handler, lexHandler, encoding);
+        toXMLSAXHandler.setShouldOutputNSAttr(false);
+        xoh = toXMLSAXHandler;   
+
 
         String publicID = format.getProperty(OutputKeys.DOCTYPE_PUBLIC); 
         String systemID = format.getProperty(OutputKeys.DOCTYPE_SYSTEM); 
