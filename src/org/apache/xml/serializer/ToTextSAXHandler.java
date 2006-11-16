@@ -38,6 +38,8 @@ import org.xml.sax.ext.LexicalHandler;
  * 
  * This class is only to be used internally. This class is not a public API.
  * 
+ * @deprecated As of Xalan 2.7.1, replaced by the use of {@link ToXMLSAXHandler}.
+ * 
  * @xsl.usage internal
  */
 public final class ToTextSAXHandler extends ToSAXHandler 
