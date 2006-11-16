@@ -726,7 +726,21 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
                 fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
                         + DOMConstants.DOM_DATATYPE_NORMALIZATION, DOMConstants.DOM3_EXPLICIT_FALSE);
             } else {
-                // Setting this to false has no effect
+                // If this is a non-boolean parameter a type mismatch should be thrown.
+                if (name.equalsIgnoreCase(DOMConstants.DOM_ERROR_HANDLER) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_SCHEMA_LOCATION) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_SCHEMA_TYPE)) {
+                    String msg = Utils.messages.createMessage(
+                            MsgKey.ER_TYPE_MISMATCH_ERR,
+                            new Object[] { name });
+                    throw new DOMException(DOMException.TYPE_MISMATCH_ERR, msg);
+                }
+                
+                // Parameter is not recognized
+                String msg = Utils.messages.createMessage(
+                        MsgKey.ER_FEATURE_NOT_FOUND,
+                        new Object[] { name });
+                throw new DOMException(DOMException.NOT_FOUND_ERR, msg);
             }
         } // If the parameter value is not a boolean 
         else if (name.equalsIgnoreCase(DOMConstants.DOM_ERROR_HANDLER)) {
@@ -740,13 +754,46 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
             }
         } else if (
                 name.equalsIgnoreCase(DOMConstants.DOM_SCHEMA_LOCATION)
-                || name.equalsIgnoreCase(DOMConstants.DOM_SCHEMA_TYPE)
-                && value != null) {
-            String msg = Utils.messages.createMessage(
-                    MsgKey.ER_FEATURE_NOT_SUPPORTED,
-                    new Object[] { name });
-            throw new DOMException(DOMException.NOT_SUPPORTED_ERR, msg);
+                || name.equalsIgnoreCase(DOMConstants.DOM_SCHEMA_TYPE)) {
+            if (value != null) {
+                if (!(value instanceof String)) {
+                    String msg = Utils.messages.createMessage(
+                            MsgKey.ER_TYPE_MISMATCH_ERR,
+                            new Object[] { name });
+                    throw new DOMException(DOMException.TYPE_MISMATCH_ERR, msg);
+                }
+                String msg = Utils.messages.createMessage(
+                        MsgKey.ER_FEATURE_NOT_SUPPORTED,
+                        new Object[] { name });
+                throw new DOMException(DOMException.NOT_SUPPORTED_ERR, msg);
+            }
         } else {
+            // If this is a boolean parameter a type mismatch should be thrown.
+            if (name.equalsIgnoreCase(DOMConstants.DOM_COMMENTS) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_CDATA_SECTIONS) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_ENTITIES) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_NAMESPACES) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_NAMESPACE_DECLARATIONS) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_SPLIT_CDATA) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_WELLFORMED) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_DISCARD_DEFAULT_CONTENT) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_FORMAT_PRETTY_PRINT) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_XMLDECL) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_ELEMENT_CONTENT_WHITESPACE) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_IGNORE_UNKNOWN_CHARACTER_DENORMALIZATIONS) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_CANONICAL_FORM) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_VALIDATE_IF_SCHEMA) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_VALIDATE) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_CHECK_CHAR_NORMALIZATION) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_DATATYPE_NORMALIZATION) ||
+                    name.equalsIgnoreCase(DOMConstants.DOM_INFOSET)) {
+                String msg = Utils.messages.createMessage(
+                        MsgKey.ER_TYPE_MISMATCH_ERR,
+                        new Object[] { name });
+                throw new DOMException(DOMException.TYPE_MISMATCH_ERR, msg);
+            }
+            
+            // Parameter is not recognized
             String msg = Utils.messages.createMessage(
                     MsgKey.ER_FEATURE_NOT_FOUND,
                     new Object[] { name });
