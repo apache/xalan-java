@@ -105,10 +105,13 @@ abstract public class ToStream extends SerializerBase
      * If m_doIndent is false this flag has no impact.
      */
     protected boolean m_isprevtext = false;
-
         
-    private static final char[] s_systemLineSep = 
-        System.getProperty("line.separator").toCharArray();
+    private static final char[] s_systemLineSep;
+    static {
+        SecuritySupport ss = SecuritySupport.getInstance();
+        s_systemLineSep = ss.getSystemProperty("line.separator").toCharArray();
+    }
+    
     /**
      * The system line separator for writing out line breaks.
      * The default value is from the system property,

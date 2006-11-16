@@ -29,6 +29,8 @@ import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
@@ -70,7 +72,15 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
     // The default end-of-line character sequence used in serialization.
     private static final String DEFAULT_END_OF_LINE;
     static {
-        String lineSeparator = System.getProperty("line.separator");
+        String lineSeparator = (String) AccessController.doPrivileged(new PrivilegedAction() {
+            public Object run() {
+                try {
+                    return System.getProperty("line.separator");
+                }
+                catch (SecurityException ex) {}
+                return null;
+            }
+        });
         // The DOM Level 3 Load and Save specification requires that implementations choose a default
         // sequence which matches one allowed by XML 1.0 (or XML 1.1). If the value of "line.separator" 
         // isn't one of the XML 1.0 end-of-line sequences then we select "\n" as the default value.
