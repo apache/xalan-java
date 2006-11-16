@@ -198,7 +198,7 @@ public class Process
       try
       {
         tfactory = TransformerFactory.newInstance();
-        tfactory.setErrorListener(new DefaultErrorHandler());
+        tfactory.setErrorListener(new DefaultErrorHandler(false));
       }
       catch (TransformerFactoryConfigurationError pfe)
       {
@@ -806,7 +806,7 @@ public class Process
         if (null != stylesheet)
         {
           Transformer transformer = flavor.equals("th") ? null : stylesheet.newTransformer();
-          transformer.setErrorListener(new DefaultErrorHandler());
+          transformer.setErrorListener(new DefaultErrorHandler(false));
 
           // Override the output format?
           if (null != outputType)
@@ -882,7 +882,7 @@ public class Process
 
               // Now serialize output to disk with identity transformer
               Transformer serializer = stf.newTransformer();
-              serializer.setErrorListener(new DefaultErrorHandler());
+              serializer.setErrorListener(new DefaultErrorHandler(false));
               
               Properties serializationProps =
                 stylesheet.getOutputProperties();
