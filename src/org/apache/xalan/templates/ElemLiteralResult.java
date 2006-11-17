@@ -20,8 +20,9 @@
  */
 package org.apache.xalan.templates;
 
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
@@ -105,7 +106,7 @@ public class ElemLiteralResult extends ElemUse
 
       for (int i = (nAttrs - 1); i >= 0; i--)
       {
-        AVT avt = (AVT) m_avts.elementAt(i);
+        AVT avt = (AVT) m_avts.get(i);
         avt.fixupVariables(vnames, cstate.getGlobalsSize());
       } 
     }   
@@ -117,11 +118,11 @@ public class ElemLiteralResult extends ElemUse
    * other than attributes with names in the XSLT namespace.
    * @serial
    */
-  private Vector m_avts = null;
+  private List m_avts = null;
 
   /** List of attributes with the XSLT namespace.
    *  @serial */
-  private Vector m_xslAttr = null;
+  private List m_xslAttr = null;
 
   /**
    * Set a literal result attribute (AVTs only).
@@ -132,9 +133,9 @@ public class ElemLiteralResult extends ElemUse
   {
 
     if (null == m_avts)
-      m_avts = new Vector();
+      m_avts = new ArrayList();
 
-    m_avts.addElement(avt);
+    m_avts.add(avt);
   }
 
   /**
@@ -146,9 +147,9 @@ public class ElemLiteralResult extends ElemUse
   {
 
     if (null == m_xslAttr)
-      m_xslAttr = new Vector();
+      m_xslAttr = new ArrayList();
 
-    m_xslAttr.addElement(att);
+    m_xslAttr.add(att);
   }
   
   /**
@@ -195,7 +196,7 @@ public class ElemLiteralResult extends ElemUse
 
       for (int i = (nAttrs - 1); i >= 0; i--)
       {
-        AVT avt = (AVT) m_avts.elementAt(i);
+        AVT avt = (AVT) m_avts.get(i);
 
         if (avt.getName().equals(localName) && 
                 avt.getURI().equals(namespaceURI))
@@ -247,7 +248,7 @@ public class ElemLiteralResult extends ElemUse
       String namespace = null;
       for (int i = (nAttrs - 1); i >= 0; i--)
       {
-        AVT avt = (AVT) m_avts.elementAt(i);
+        AVT avt = (AVT) m_avts.get(i);
         namespace = avt.getURI();
         
         if ((namespace != null && (!namespace.equals("")) && (namespace 
@@ -359,7 +360,7 @@ public class ElemLiteralResult extends ElemUse
 
       for (int i = 0; i < n; i++)
       {
-        AVT avt = (AVT) m_avts.elementAt(i);
+        AVT avt = (AVT) m_avts.get(i);
 
         // Should this stuff be a method on AVT?
         String ns = avt.getURI();
@@ -593,9 +594,9 @@ public class ElemLiteralResult extends ElemUse
                          localName = name.substring(index+1);
                 }
                 Node retNode = null;
-                Enumeration eum = m_avts.elements();
-                while (eum.hasMoreElements()){
-                        AVT avt = (AVT) eum.nextElement();
+                Iterator eum = m_avts.iterator();
+                while (eum.hasNext()){
+                        AVT avt = (AVT) eum.next();
                         if (localName.equals(avt.getName()))
                         {
                           String nsURI = avt.getURI(); 
@@ -623,10 +624,10 @@ public class ElemLiteralResult extends ElemUse
           {
                   if (getLength() == 0) return null;
                   Node retNode = null;
-                  Enumeration eum = m_avts.elements();
-                  while (eum.hasMoreElements())
+                  Iterator eum = m_avts.iterator();
+                  while (eum.hasNext())
                   {
-                    AVT avt = (AVT) eum.nextElement();      
+                    AVT avt = (AVT) eum.next();      
                     if (localName.equals(avt.getName()))
                     {
                       String nsURI = avt.getURI(); 
@@ -653,7 +654,7 @@ public class ElemLiteralResult extends ElemUse
           {
                 if (getLength() == 0 || i >= m_avts.size()) return null;
                 else return 
-                    new Attribute(((AVT)m_avts.elementAt(i)), 
+                    new Attribute(((AVT)m_avts.get(i)), 
                         ElemLiteralResult.this);
           }
           
@@ -1346,7 +1347,7 @@ public class ElemLiteralResult extends ElemUse
 
                 for (int i = (nAttrs - 1); i >= 0; i--)
                 {
-                    AVT avt = (AVT) m_avts.elementAt(i);
+                    AVT avt = (AVT) m_avts.get(i);
                     XPathContext xctxt = transformer.getXPathContext();
                     int sourceNode = xctxt.getCurrentNode();
                     String stringedValue =
@@ -1437,9 +1438,9 @@ public class ElemLiteralResult extends ElemUse
    * @return an Enumeration of the literal result attributes associated
    * with this element.
    */
-  public Enumeration enumerateLiteralResultAttributes()
+  public Iterator enumerateLiteralResultAttributes()
   {
-    return (null == m_avts) ? null : m_avts.elements();
+    return (null == m_avts) ? null : m_avts.iterator();
   }
   
     /**
@@ -1466,7 +1467,7 @@ public class ElemLiteralResult extends ElemUse
 
         for (int i = (nAttrs - 1); i >= 0; i--)
         {
-          AVT avt = (AVT) m_avts.elementAt(i);
+          AVT avt = (AVT) m_avts.get(i);
           avt.callVisitors(visitor);
         }
       }
