@@ -2037,7 +2037,7 @@ final class DOM3TreeWalker {
             DOMConstants.S_XERCES_PROPERTIES_NS + DOMConstants.S_XML_VERSION,
             "");
         s_propKeys.put(DOMConstants.S_XSL_OUTPUT_ENCODING, "");
-        s_propKeys.put(OutputPropertiesFactory.S_KEY_ENTITIES, "");
+        s_propKeys.put(DOMConstants.S_XERCES_PROPERTIES_NS + DOMConstants.DOM_ENTITIES, "");
     }
 
     /**
@@ -2125,11 +2125,14 @@ final class DOM3TreeWalker {
                         if (encoding != null) {
                             fSerializer.setEncoding(encoding);
                         }
-                    } else if ((OutputPropertiesFactory.S_KEY_ENTITIES).equals(key)) {
-                        // Retreive the value of the XML Encoding attribute
-                        String entities = properties.getProperty(key);
-                        if (DOMConstants.S_XSL_VALUE_ENTITIES.equals(entities)) {
+                    } else if ((DOMConstants.S_XERCES_PROPERTIES_NS
+                            + DOMConstants.DOM_ENTITIES).equals(key)) {
+                        // Preserve entity references in the document
+                        if ((properties.getProperty(key).endsWith("yes"))) {
                             fSerializer.setDTDEntityExpansion(false);
+                        }
+                        else {
+                            fSerializer.setDTDEntityExpansion(true);
                         }
                     } else {
                         // We shouldn't get here, ever, now what?

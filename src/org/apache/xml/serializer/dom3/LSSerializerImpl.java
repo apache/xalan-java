@@ -282,8 +282,8 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
         fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS
                 + DOMConstants.DOM_ENTITIES, DOMConstants.DOM3_DEFAULT_TRUE);
         // preserve entities
-        fDOMConfigProperties.setProperty(
-                OutputPropertiesFactory.S_KEY_ENTITIES, DOMConstants.S_XSL_VALUE_ENTITIES);
+        fDOMConfigProperties.setProperty(DOMConstants.S_XERCES_PROPERTIES_NS
+                + DOMConstants.DOM_ENTITIES, DOMConstants.DOM3_DEFAULT_TRUE);
 
         // error-handler
         // Should we set our default ErrorHandler
@@ -310,8 +310,8 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
             fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS
                     + DOMConstants.DOM_ENTITIES, DOMConstants.DOM3_DEFAULT_FALSE);
             // preserve entities
-            fDOMConfigProperties.setProperty(
-                    OutputPropertiesFactory.S_KEY_ENTITIES, "");
+            fDOMConfigProperties.setProperty(DOMConstants.S_XERCES_PROPERTIES_NS
+                    + DOMConstants.DOM_ENTITIES, DOMConstants.DOM3_DEFAULT_FALSE);
             fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS
                     + DOMConstants.DOM_CDATA_SECTIONS,
                     DOMConstants.DOM3_DEFAULT_FALSE);
@@ -550,9 +550,13 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
                     fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
                             + DOMConstants.DOM_ENTITIES, DOMConstants.DOM3_EXPLICIT_TRUE);
                     fDOMConfigProperties.setProperty(
-                            OutputPropertiesFactory.S_KEY_ENTITIES, DOMConstants.S_XSL_VALUE_ENTITIES);
+                            DOMConstants.S_XERCES_PROPERTIES_NS
+                            + DOMConstants.DOM_ENTITIES, DOMConstants.DOM3_EXPLICIT_TRUE);
                 } else {
                     fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
+                            + DOMConstants.DOM_ENTITIES, DOMConstants.DOM3_EXPLICIT_FALSE);
+                    fDOMConfigProperties.setProperty(
+                            DOMConstants.S_XERCES_PROPERTIES_NS
                             + DOMConstants.DOM_ENTITIES, DOMConstants.DOM3_EXPLICIT_FALSE);
                 }
             } else if (name.equalsIgnoreCase(DOMConstants.DOM_NAMESPACES)) {
@@ -690,6 +694,7 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
                     } */
                 }
             } else if (name.equalsIgnoreCase(DOMConstants.DOM_INFOSET)) {
+                // infoset
                 if (state) {
                     fFeatures &= ~ENTITIES;
                     fFeatures &= ~CDATA;
@@ -700,31 +705,30 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
                     fFeatures |= WELLFORMED;
                     fFeatures |= ELEM_CONTENT_WHITESPACE;
                     fFeatures |= COMMENTS;
+                    
+                    fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
+                            + DOMConstants.DOM_NAMESPACES, DOMConstants.DOM3_EXPLICIT_TRUE); 
+                    fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
+                            + DOMConstants.DOM_NAMESPACE_DECLARATIONS, DOMConstants.DOM3_EXPLICIT_TRUE);
+                    fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
+                            + DOMConstants.DOM_COMMENTS, DOMConstants.DOM3_EXPLICIT_TRUE);
+                    fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
+                            + DOMConstants.DOM_ELEMENT_CONTENT_WHITESPACE, DOMConstants.DOM3_EXPLICIT_TRUE);
+                    fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
+                            + DOMConstants.DOM_WELLFORMED, DOMConstants.DOM3_EXPLICIT_TRUE);
+                    
+                    fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
+                            + DOMConstants.DOM_ENTITIES, DOMConstants.DOM3_EXPLICIT_FALSE);
+                    fDOMConfigProperties.setProperty(DOMConstants.S_XERCES_PROPERTIES_NS
+                            + DOMConstants.DOM_ENTITIES, DOMConstants.DOM3_EXPLICIT_FALSE);
+                    
+                    fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
+                            + DOMConstants.DOM_CDATA_SECTIONS, DOMConstants.DOM3_EXPLICIT_FALSE);
+                    fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
+                            + DOMConstants.DOM_VALIDATE_IF_SCHEMA, DOMConstants.DOM3_EXPLICIT_FALSE);            
+                    fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
+                            + DOMConstants.DOM_DATATYPE_NORMALIZATION, DOMConstants.DOM3_EXPLICIT_FALSE);
                 }
-                
-                // infoset
-                fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
-                        + DOMConstants.DOM_NAMESPACES, DOMConstants.DOM3_EXPLICIT_TRUE); 
-                fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
-                        + DOMConstants.DOM_NAMESPACE_DECLARATIONS, DOMConstants.DOM3_EXPLICIT_TRUE);
-                fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
-                        + DOMConstants.DOM_COMMENTS, DOMConstants.DOM3_EXPLICIT_TRUE);
-                fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
-                        + DOMConstants.DOM_ELEMENT_CONTENT_WHITESPACE, DOMConstants.DOM3_EXPLICIT_TRUE);
-                fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
-                        + DOMConstants.DOM_WELLFORMED, DOMConstants.DOM3_EXPLICIT_TRUE);
-                
-                fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
-                        + DOMConstants.DOM_ENTITIES, DOMConstants.DOM3_EXPLICIT_FALSE);
-                fDOMConfigProperties.setProperty(
-                        OutputPropertiesFactory.S_KEY_ENTITIES, "");
-                
-                fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
-                        + DOMConstants.DOM_CDATA_SECTIONS, DOMConstants.DOM3_EXPLICIT_FALSE);
-                fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
-                        + DOMConstants.DOM_VALIDATE_IF_SCHEMA, DOMConstants.DOM3_EXPLICIT_FALSE);            
-                fDOMConfigProperties.setProperty(DOMConstants.S_DOM3_PROPERTIES_NS 
-                        + DOMConstants.DOM_DATATYPE_NORMALIZATION, DOMConstants.DOM3_EXPLICIT_FALSE);
             } else {
                 // If this is a non-boolean parameter a type mismatch should be thrown.
                 if (name.equalsIgnoreCase(DOMConstants.DOM_ERROR_HANDLER) ||
