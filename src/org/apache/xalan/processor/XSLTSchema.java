@@ -20,7 +20,7 @@
  */
 package org.apache.xalan.processor;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemApplyImport;
@@ -886,7 +886,7 @@ public class XSLTSchema extends XSLTElementDef
    * function.
    * TODO:  When we convert to Java2, this should be a Set.
    */
-  private Hashtable m_availElems = new Hashtable();
+  private HashMap m_availElems = new HashMap();
   
   /**
    * Get the table of available elements.
@@ -894,7 +894,7 @@ public class XSLTSchema extends XSLTElementDef
    * @return table of available elements, keyed by qualified names, and with 
    * values of the same qualified names.
    */
-  public Hashtable getElemsAvailable() 
+  public HashMap getElemsAvailable() 
   {
     return m_availElems;
   }

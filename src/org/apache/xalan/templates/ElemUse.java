@@ -149,7 +149,7 @@ public class ElemUse extends ElemTemplateElement
       for (int i = 0; i < nNames; i++)
       {
         QName qname = attributeSetsNames[i];
-        Vector attrSets = stylesheet.getAttributeSetComposed(qname);
+        java.util.List attrSets = stylesheet.getAttributeSetComposed(qname);
 
         if (null != attrSets)
         {
@@ -160,7 +160,7 @@ public class ElemUse extends ElemTemplateElement
           for (int k = nSets-1; k >= 0 ; k--)
           {
             ElemAttributeSet attrSet =
-              (ElemAttributeSet) attrSets.elementAt(k);
+              (ElemAttributeSet) attrSets.get(k);
 
             attrSet.execute(transformer);
           }

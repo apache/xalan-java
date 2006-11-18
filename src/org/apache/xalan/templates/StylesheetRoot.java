@@ -21,6 +21,8 @@
 package org.apache.xalan.templates;
 
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Properties;
 import java.util.Vector;
@@ -100,7 +102,7 @@ public class StylesheetRoot extends StylesheetComposed
    * The schema used when creating this StylesheetRoot
    * @serial
    */
-  private Hashtable m_availElems;
+  private HashMap m_availElems;
   
   /**
    * Creates a StylesheetRoot and retains a pointer to the schema used to create this
@@ -148,7 +150,7 @@ public class StylesheetRoot extends StylesheetComposed
    * @return table of available elements, keyed by qualified names, and with 
    * values of the same qualified names.
    */
-  public Hashtable getAvailableElements()
+  public HashMap getAvailableElements()
   {
     return m_availElems;
   }
@@ -286,7 +288,7 @@ public class StylesheetRoot extends StylesheetComposed
     m_outputProperties = new OutputProperties(org.apache.xml.serializer.Method.UNKNOWN);
 //  m_outputProperties = new OutputProperties(Method.XML);
     
-    m_attrSets = new Hashtable();
+    m_attrSets = new HashMap();
     m_decimalFormatSymbols = new Hashtable();
     m_keyDecls = new Vector();
     m_namespaceAliasComposed = new Hashtable();
@@ -539,7 +541,7 @@ public class StylesheetRoot extends StylesheetComposed
    * Each entry is a vector of ElemAttributeSet objects.
    * @serial
    */
-  private Hashtable m_attrSets;
+  private HashMap m_attrSets;
 
   /**
    * Recompose the attribute-set declarations.
@@ -548,16 +550,16 @@ public class StylesheetRoot extends StylesheetComposed
    */
   void recomposeAttributeSets(ElemAttributeSet attrSet)
   {
-    Vector attrSetList = (Vector) m_attrSets.get(attrSet.getName());
+    ArrayList attrSetList = (ArrayList) m_attrSets.get(attrSet.getName());
 
     if (null == attrSetList)
     {
-      attrSetList = new Vector();
+      attrSetList = new ArrayList();
 
       m_attrSets.put(attrSet.getName(), attrSetList);
     }
 
-    attrSetList.addElement(attrSet);
+    attrSetList.add(attrSet);
   }
 
   /**
@@ -570,10 +572,10 @@ public class StylesheetRoot extends StylesheetComposed
    *
    * @throws ArrayIndexOutOfBoundsException
    */
-  public Vector getAttributeSetComposed(QName name)
+  public ArrayList getAttributeSetComposed(QName name)
           throws ArrayIndexOutOfBoundsException
   {
-    return (Vector) m_attrSets.get(name);
+    return (ArrayList) m_attrSets.get(name);
   }
 
   /**
