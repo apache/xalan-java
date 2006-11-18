@@ -1118,12 +1118,17 @@ public final class Stylesheet extends SyntaxTreeNode {
 
     /**
      * Compile a topLevel() method into the output class. This method is 
-     * called from transform() to handle all non-template top-level elemtents.
+     * called from transform() to handle all non-template top-level elements.
      * Returns the signature of the topLevel() method.
+     *
+     * Global variables/params and keys are first sorted to resolve 
+     * dependencies between them. The XSLT 1.0 spec does not allow a key 
+     * to depend on a variable. However, for compatibility with Xalan
+     * interpretive, that type of dependency is allowed. Note also that
+     * the buildKeys() method is still generated as it is used by the 
+     * LoadDocument class, but it no longer called from transform().
      */
-    private String compileTopLevel(ClassGenerator classGen,
-				   Enumeration elements) {
-
+    private String compileTopLevel(ClassGenerator classGen) {
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 
 	final org.apache.bcel.generic.Type[] argTypes = {
@@ -1160,16 +1165,33 @@ public final class Stylesheet extends SyntaxTreeNode {
 	il.append(new PUSH(cpg, DTM.ROOT_NODE));
 	current.setStart(il.append(new ISTORE(current.getIndex())));
 
-	// Resolve any forward referenes and translate global variables/params
-	_globals = resolveReferences(_globals);
-	final int count = _globals.size();
-	for (int i = 0; i < count; i++) {
-	    final VariableBase var = (VariableBase)_globals.elementAt(i);
-	    var.translate(classGen,toplevel);
-	}
+    // Create a new list containing variables/params + keys
+    Vector varDepElements = new Vector(_globals);        
+    Enumeration elements = elements();
+    while (elements.hasMoreElements()) {
+        final Object element = elements.nextElement();
+        if (element instanceof Key) {
+            varDepElements.add(element);
+        }
+    }
+            
+    // Determine a partial order for the variables/params and keys
+    varDepElements = resolveDependencies(varDepElements);
+    
+    // Translate vars/params and keys in the right order
+    final int count = varDepElements.size();
+    for (int i = 0; i < count; i++) {
+        final TopLevelElement tle = (TopLevelElement) varDepElements.elementAt(i);            
+        tle.translate(classGen, toplevel);            
+        if (tle instanceof Key) {
+            final Key key = (Key) tle;
+            _keys.put(key.getName(), key);
+        }
+    }
 
-	// Compile code for other top-level elements
-	Vector whitespaceRules = new Vector();
+    // Compile code for other top-level elements
+    Vector whitespaceRules = new Vector();
+    elements = elements();
 	while (elements.hasMoreElements()) {
 	    final Object element = elements.nextElement();
 	    // xsl:decimal-format
@@ -1200,47 +1222,36 @@ public final class Stylesheet extends SyntaxTreeNode {
 	
 	return("("+DOM_INTF_SIG+NODE_ITERATOR_SIG+TRANSLET_OUTPUT_SIG+")V");
     }
-
+    
     /**
-     * This method returns a vector with variables in the order in 
-     * which they are to be compiled. The order is determined by the 
-     * dependencies between them and the order in which they were defined 
-     * in the stylesheet. The first step is to close the input vector under
-     * the dependence relation (this is usually needed when variables are
-     * defined inside other variables in a RTF).
+     * This method returns a vector with variables/params and keys in the 
+     * order in which they are to be compiled for initialization. The order
+     * is determined by analyzing the dependencies between them. The XSLT 1.0 
+     * spec does not allow a key to depend on a variable. However, for 
+     * compatibility with Xalan interpretive, that type of dependency is 
+     * allowed and, therefore, consider to determine the partial order.
      */
-    private Vector resolveReferences(Vector input) {
-
-	// Make sure that the vector 'input' is closed
+    private Vector resolveDependencies(Vector input) {
+	/* DEBUG CODE - INGORE 
 	for (int i = 0; i < input.size(); i++) {
-	    final VariableBase var = (VariableBase) input.elementAt(i);
-	    final Vector dep  = var.getDependencies();
-	    final int depSize = (dep != null) ? dep.size() : 0;
-
-	    for (int j = 0; j < depSize; j++) {
-		final VariableBase depVar = (VariableBase) dep.elementAt(j);
-		if (!input.contains(depVar)) {
-		    input.addElement(depVar);
-		}
-	    }
+	    final TopLevelElement e = (TopLevelElement) input.elementAt(i);
+	    System.out.println("e = " + e + " depends on:");
+            Vector dep = e.getDependencies();
+            for (int j = 0; j < (dep != null ? dep.size() : 0); j++) {
+                System.out.println("\t" + dep.elementAt(j));
+            }
 	}
-
-	/* DEBUG CODE - INGORE
-	for (int i = 0; i < input.size(); i++) {
-	    final VariableBase var = (VariableBase) input.elementAt(i);
-	    System.out.println("var = " + var);
-	}
-	System.out.println("=================================");
-	*/
+	System.out.println("=================================");	
+        */
 
 	Vector result = new Vector();
 	while (input.size() > 0) {
 	    boolean changed = false;
 	    for (int i = 0; i < input.size(); ) {
-		final VariableBase var = (VariableBase)input.elementAt(i);
-		final Vector dep = var.getDependencies();
+		final TopLevelElement vde = (TopLevelElement) input.elementAt(i);
+		final Vector dep = vde.getDependencies();
 		if (dep == null || result.containsAll(dep)) {
-		    result.addElement(var);
+		    result.addElement(vde);
 		    input.remove(i);
 		    changed = true;
 		}
@@ -1258,23 +1269,24 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    }
 	}
 
-	/* DEBUG CODE - INGORE
+	/* DEBUG CODE - INGORE 
 	System.out.println("=================================");
 	for (int i = 0; i < result.size(); i++) {
-	    final VariableBase var = (VariableBase) result.elementAt(i);
-	    System.out.println("var = " + var);
+	    final TopLevelElement e = (TopLevelElement) result.elementAt(i);
+	    System.out.println("e = " + e);
 	}
-	*/
+        */
 
 	return result;
     }
 
     /**
-     * Compile a buildKeys() method into the output class. This method is 
-     * called from transform() to handle build all indexes needed by key().
+     * Compile a buildKeys() method into the output class. Note that keys 
+     * for the input document are created in topLevel(), not in this method. 
+     * However, we still need this method to create keys for documents loaded
+     * via the XPath document() function. 
      */
     private String compileBuildKeys(ClassGenerator classGen) {
-
 	final ConstantPoolGen cpg = classGen.getConstantPool();
 
 	final org.apache.bcel.generic.Type[] argTypes = {
@@ -1300,7 +1312,6 @@ public final class Stylesheet extends SyntaxTreeNode {
 	buildKeys.addException("org.apache.xalan.xsltc.TransletException");
 	
 	final Enumeration elements = elements();
-	// Compile code for other top-level elements
 	while (elements.hasMoreElements()) {
 	    // xsl:key
 	    final Object element = elements.nextElement();
@@ -1406,25 +1417,21 @@ public final class Stylesheet extends SyntaxTreeNode {
 					   "("+OUTPUT_HANDLER_SIG+")V");
 	il.append(new INVOKEVIRTUAL(index));
 
-        // Compile buildKeys -- TODO: omit if not needed                
-        
+        /*
+         * Compile buildKeys() method. Note that this method is not 
+         * invoked here as keys for the input document are now created
+         * in topLevel(). However, this method is still needed by the
+         * LoadDocument class.
+         */        
         final String keySig = compileBuildKeys(classGen);
-        final int    keyIdx = cpg.addMethodref(getClassName(),
+        final int keyIdx = cpg.addMethodref(getClassName(),
                                                "buildKeys", keySig);
-        il.append(classGen.loadTranslet());     // The 'this' pointer
-        il.append(classGen.loadTranslet());
-        il.append(new GETFIELD(domField));      // The DOM reference
-        il.append(transf.loadIterator());       // Not really used, but...
-        il.append(transf.loadHandler());        // The output handler
-        il.append(new PUSH(cpg, DTM.ROOT_NODE)); // Start with the root node
-        il.append(new INVOKEVIRTUAL(keyIdx));
-
-
-    // Look for top-level elements that need handling
+                
+        // Look for top-level elements that need handling
 	final Enumeration toplevel = elements();
-	if ((_globals.size() > 0) || (toplevel.hasMoreElements())) {
+	if (_globals.size() > 0 || toplevel.hasMoreElements()) {
 	    // Compile method for handling top-level elements
-	    final String topLevelSig = compileTopLevel(classGen, toplevel);
+	    final String topLevelSig = compileTopLevel(classGen);
 	    // Get a reference to that method
 	    final int topLevelIdx = cpg.addMethodref(getClassName(),
 						     "topLevel",
@@ -1436,10 +1443,7 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    il.append(transf.loadIterator());
 	    il.append(transf.loadHandler());    // The output handler
 	    il.append(new INVOKEVIRTUAL(topLevelIdx));
-	}
-	
-
-
+	}	
 
 	// start document
 	il.append(transf.loadHandler());

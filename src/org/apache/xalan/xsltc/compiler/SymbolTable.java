@@ -45,6 +45,7 @@ final class SymbolTable {
     private Hashtable _aliases = null;
     private Hashtable _excludedURI = null;
     private Hashtable _decimalFormats = null;
+    private Hashtable _keys = null;
 
     public DecimalFormatting getDecimalFormatting(QName name) {
 	if (_decimalFormats == null) return null;
@@ -56,6 +57,16 @@ final class SymbolTable {
 	_decimalFormats.put(name, symbols);
     }
 
+    public Key getKey(QName name) {
+	if (_keys == null) return null;
+	return (Key) _keys.get(name);
+    }
+
+    public void addKey(QName name, Key key) {
+	if (_keys == null) _keys = new Hashtable();
+	_keys.put(name, key);
+    }
+    
     public Stylesheet addStylesheet(QName name, Stylesheet node) {
 	return (Stylesheet)_stylesheets.put(name, node);
     }

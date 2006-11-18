@@ -66,9 +66,6 @@ class VariableBase extends TopLevelElement {
     // Used to make sure parameter field is not added twice
     protected boolean    _ignore = false;
 
-    // Used to order top-level variables so that there are no forward references
-    protected int        _weight = 0;
-
     /**
      * Disable this variable/parameter
      */
@@ -90,25 +87,6 @@ class VariableBase extends TopLevelElement {
      */
     public void removeReference(VariableRefBase vref) {
 	_refs.remove(vref);
-    }
-
-    /**
-     *
-     */
-    public void addDependency(VariableBase other) {
-	if (_dependencies == null) {
-	    _dependencies = new Vector();
-	}
-	if (!_dependencies.contains(other)) {
-	    _dependencies.addElement(other);
-	}
-    }
-
-    /**
-     *
-     */
-    public Vector getDependencies() {
-	return _dependencies;
     }
 
     /**

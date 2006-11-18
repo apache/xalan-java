@@ -21,6 +21,8 @@
 
 package org.apache.xalan.xsltc.compiler;
 
+import java.util.Vector;
+
 import org.apache.bcel.generic.BranchHandle;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.GOTO;
@@ -71,7 +73,7 @@ final class Key extends TopLevelElement {
      * The type of the _use expression.
      */
     private Type _useType;
-
+        
     /**
      * Parse the <xsl:key> element and attributes
      * @param parser A reference to the stylesheet parser
@@ -84,7 +86,11 @@ final class Key extends TopLevelElement {
             ErrorMsg err = new ErrorMsg(ErrorMsg.INVALID_QNAME_ERR, name, this);
             parser.reportError(Constants.ERROR, err);           
         }
+        
+        // Parse key name and add to symbol table
         _name = parser.getQNameIgnoreDefaultNs(name);
+        getSymbolTable().addKey(_name, this);
+        
 	_match = parser.parsePattern(this, "match", null);
 	_use = parser.parseExpression(this, "use", null);
 
