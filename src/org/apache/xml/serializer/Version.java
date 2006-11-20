@@ -116,7 +116,7 @@ public final class Version
    */
   public static int getMaintenanceVersionNum()
   {
-    return 0;
+    return 1;
   }
 
   /**
