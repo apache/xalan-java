@@ -6,6 +6,9 @@
    Apache Xalan (Xalan serializer)
    Copyright 1999-2006 The Apache Software Foundation
 
+   This product includes software developed at
+   The Apache Software Foundation (http://www.apache.org/).
+
    Portions of this software was originally based on the following:
      - software copyright (c) 1999-2002, Lotus Development Corporation.,
        http://www.lotus.com.
