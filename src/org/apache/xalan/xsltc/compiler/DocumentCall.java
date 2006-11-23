@@ -145,7 +145,7 @@ final class DocumentCall extends FunctionCall {
             _arg2.startIterator(classGen, methodGen);       
         }
     
-        // Feck the rest of the parameters on the stack
+        // Process the rest of the parameters on the stack
         il.append(new PUSH(cpg, getStylesheet().getSystemId()));
         il.append(classGen.loadTranslet());
         il.append(DUP);
