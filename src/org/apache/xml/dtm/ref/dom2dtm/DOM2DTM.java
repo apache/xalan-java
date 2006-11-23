@@ -134,7 +134,8 @@ public class DOM2DTM extends DTMDefaultBaseIterators
     // add its attributes. Adapted from nextNode().
     // %REVIEW% Move this logic into addNode and recurse? Cleaner!
     //
-    // (If it's an EntityReference node, we're probably scrod. For now
+    // (If it's an EntityReference node, we're probably in 
+    // seriously bad trouble. For now
     // I'm just hoping nobody is ever quite that foolish... %REVIEW%)
 		//
 		// %ISSUE% What about inherited namespaces in this case?
