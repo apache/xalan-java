@@ -43,7 +43,11 @@
         <jump href="apidocs/javax/xml/parsers/package-summary.html">
            <code>javax.xml.parsers</code></jump>,
         <jump href="apidocs/javax/xml/transform/package-summary.html">
-           <code>javax.xml.transform</code></jump> and
+           <code>javax.xml.transform</code></jump>,
+        <jump href="apidocs/org/xml/sax/package-summary.html">
+           <code>org.xml.sax</code></jump>,
+        <jump href="apidocs/org/w3c/dom/package-summary.html">
+           <code>org.w3c.dom</code></jump> and
         <jump href="apidocs/javax/xml/xpath/package-summary.html">
            <code>javax.xml.xpath</code></jump> packages. </li>
     <li>The &xslt4j2; specific XPath API, defined by the classes
