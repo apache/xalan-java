@@ -186,7 +186,7 @@ final class Key extends TopLevelElement {
 	il.append(new PUSH(cpg, _name.toString()));
 	parentNode.setEnd(il.append(new ILOAD(parentNode.getIndex())));
 
-	// Now get the node value and feck it on the parameter stack
+	// Now get the node value and push it on the parameter stack
 	il.append(methodGen.loadDOM());
 	il.append(methodGen.loadCurrentNode());
 	il.append(new INVOKEINTERFACE(getNodeValue, 2));		
