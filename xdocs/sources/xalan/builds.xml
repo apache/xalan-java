@@ -49,7 +49,9 @@ suggestions to xalan-dev@xml.apache.org appreciated.</note>
   <p>The project's technical mailing list for all committers and developers 
   interested in the API and inner workings is 
   <jump href="mailto:xalan-dev@xml.apache.org">xalan-dev@xml.apache.org</jump>; 
-  it's a good idea to subscribe if you plan to work on &xslt4j;.  Logs of all CVS 
+  it's a good idea to 
+  <link idref="contact_us" anchor="dev-mailing-list">subscribe</link>
+  if you plan to work on &xslt4j;.  Logs of all Subversion 
   commits are automatically sent to <jump href="mailto:xalan-cvs@xml.apache.org">xalan-cvs@xml.apache.org</jump>, although 
   discussions should happen on xalan-dev.  You can read more <jump href="http://xml.apache.org/mail.html">about mailing lists.</jump></p>
   <p>&xslt4j; is a fairly mature project; one where most committers and many 

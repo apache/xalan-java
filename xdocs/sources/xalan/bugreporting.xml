@@ -26,8 +26,8 @@
   <li>To help eliminate duplicate or invalid bug reports, please take a quick look at
       bugs in JIRA to see whether the bug has been already reported and/or fixed. 
       You can also download the 
-      <jump href="http://vmgump.apache.org/gump/public-jars/xml-xalan2/">latest code</jump> 
-      in CVS and check if you can reproduce the bug.</li>
+      <link idref="downloads">latest code</link>
+      and check if you can reproduce the bug.</li>
   <li>Report bugs against the newest release.</li>
   <li>Read <jump href="http://issues.apache.org/jira">JIRA Notes</jump>.</li>
   </ul>
@@ -41,8 +41,20 @@
         but use the same e-mail account name and click on "Forgot Password" on the JIRA home page.</note>
   </s2>
   
+  <s2 title="Bugzilla is not used">
+    <p>
+      The old bug tracking system, bugzilla, is still available at
+      <resource idref="old-bugzilla"/> but please don't use bugzilla except to
+      look up old issues. Bugzilla has been replaced by JIRA.
+    </p>
+  </s2>
+  
   <s2 title="Report a bug">  
   <p>After reading the instructions above, click 
-     <jump href="http://issues.apache.org/jira/browse/XALANJ">here</jump> to submit a bug report.</p>
+     <jump href="http://issues.apache.org/jira/browse/XALANJ">here</jump> to submit a bug report using JIRA.</p>
+     Note that the functionality shown by the JIRA user interface changes depending on whether
+     you <em>Log In</em> or not. In particular, to have the <em>CREATE NEW ISSUE</em> link 
+     you will need to click the <em>Log In</em> in small font, in the top right corner
+     of the page.
   </s2>
 </s1>

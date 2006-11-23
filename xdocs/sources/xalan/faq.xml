@@ -104,6 +104,20 @@
 &lt;/xsl:stylesheet&gt;</source>
       </a>
     </faq>
+    <faq title='Determining the Serializer Version'>
+      <q>How do I see what version of the Serializer I'm running? </q>
+      <a>
+          <anchor name='serlializercheck' />          
+        <p>
+          Xalan's serialier is now shared with Xerces. It may be packaged in Xalan, or Xerces,
+          or in the JRE itself. You can run the serializer's <em>Version</em> utility from the command line as follows:
+        </p>
+        <p>
+          <code>java org.apache.xml.serializer.Version</code>
+        </p>
+        The output should indicate which serializer you are using.
+      </a>
+    </faq>
     <faq title='Which version of Xerces should I be using?'>
       <q>Which version of &xml4j; should I be using?</q>
       <a>
@@ -173,7 +187,7 @@
       <q>I got java.lang.IllegalAccessError running &xslt4j; on Tomcat with JDK 1.4.</q>
       <a>
         <p><anchor name='tomcat'/></p>
-        <p><jump href="http://jakarta.apache.org/tomcat/index.html">jakarta-tomcat 4.1.*</jump> is packed
+        <p><jump href="http://tomcat.apache.org/index.html">jakarta-tomcat 4.1.*</jump> is packed
            with an old version of xercesImpl.jar. Based on the <resource-ref idref='endorsed' />, you should
            replace it with the newer xercesImpl.jar. You should add a newer xalan.jar and serializer.jar 
            to Tomcat as well.  
@@ -221,7 +235,7 @@
         should be able to 'verify the signature' of the .sig file, which basically verifies that the 
         corresponding .zip or tar.gz file has not been changed since we signed it.</p>
         <p>The PGP key can be found in 
-        <jump href='http://cvs.apache.org/viewcvs.cgi/xml-xalan/java/KEYS'>CVS.</jump></p>
+        <jump href='http://svn.apache.org/viewvc/xalan/java/trunk/KEYS'>KEYS.</jump></p>
       </a>
     </faq>
   </group>
@@ -342,7 +356,7 @@
   javax.xml.parsers.SAXParserFactory.newInstance();
 spFactory.setNamespaceAware(true);</source>
         <note>For more information about setting the namespaceAware property, and SAX2 vs. JAXP default 
-              settings, see <jump href='http://xml.apache.org/~edwingo/jaxp-faq.html#nsDefaults'>JAXP FAQ: 
+              settings, see <jump href='http://people.apache.org/~edwingo/jaxp-faq.html#nsDefaults'>JAXP FAQ: 
               Warning about namespace processing defaults</jump>.
         </note>
       </a>
@@ -612,7 +626,14 @@ file:///
         <p>If you want to use the stylesheet output encoding, do not use StreamResult(java.io.Writer) 
            to instantiate the holder for the output. Alternatively, you can specify the encoding when 
            you create a Writer (java.io.OutputStreamWriter). Once the Writer exists, you cannot change 
-           its encoding.</p>
+           its encoding. If the transformation is run in a servlet, it is possible
+           that the Writer is coming from the ServletResponse object.
+        </p>
+        <p>
+          If the stylesheet is run using the JAXP APIs and the Transformer's setOutputProperty() 
+          method is invoked, it is possible to set the <em>"encoding"</em> property and
+          over-ride the value in the stylesheet.
+        </p>
       </a>
     </faq>
     <faq title='Getting line and column numbers for errors in XML input documents and XSL stylesheets'>

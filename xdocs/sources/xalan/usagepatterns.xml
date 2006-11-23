@@ -442,7 +442,7 @@ You can use the DocumentURL and StyleURL PARAM tags or the <jump href="apidocs/o
     provided that you avoid calls to the AppletContext showStatus() method. In other words, you can remove the showStatus() calls
     from org.apache.xalan.client.XSLTProcessorApplet, and run &xslt4j; applets from Netscape Communicator 6. This appears to be a
     Netscape bug, which hopefully will be fixed soon. For more information, see 
-    <jump href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=3231">Bugzilla bug 3231</jump>.</p>
+    <jump href="http://issues.apache.org/bugzilla/show_bug.cgi?id=3231">Bugzilla bug 3231</jump>.</p>
 </s3>    
 </s2><anchor name="servlet"/>
 <s2 title="Using &xslt4j; in a servlet">

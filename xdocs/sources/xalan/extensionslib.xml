@@ -236,8 +236,7 @@ document:</p>
 <note>If you want to use the NodeInfo extension elements, you MUST set the TransformerFactory 
 <link idref="features" anchor="source_location">source_location</link> attribute to true. 
 You can use the <link idref="commandline">command-line utility</link> -L flag or the 
-<jump href="apidocs/javax/xml/transform/TransformerFactory.html#setAttribute(java.lang.String, 
-java.lang.Object)">TransformerFactory.setAttribute()</jump> method to set this attribute.</note>
+<jump href="apidocs/javax/xml/transform/TransformerFactory.html#setAttribute(java.lang.String, java.lang.Object)">TransformerFactory.setAttribute()</jump> method to set this attribute.</note>
 
 <anchor name="systemid"/>
 <s3 title="systemId">

@@ -30,7 +30,7 @@
 
   <resource id="xml4j-used" 
             title="&xml4j-used;" 
-            location="http://xml.apache.org/xerces2-j/index.html"/>
+            location="http://xerces.apache.org/xerces2-j/index.html"/>
   <resource id="xml4j-distdir" 
             title="xerces-j distribution directory" 
             location="http://www.apache.org/dyn/closer.cgi/xml/xerces-j/"/>
@@ -41,7 +41,7 @@
             location="http://xml.apache.org/dist/LICENSE.txt"/>
   <resource id="jira"
             title="JIRA (the Apache issue tracker)"
-            location="http://issues.apache.org/jira/"/>
+            location="http://issues.apache.org/jira/browse/XALANJ"/>
   <resource id="buglist"
             title="XalanJ2 open bugs"         
             location="http://issues.apache.org/jira/secure/IssueNavigator.jspa?reset=true&amp;mode=hide&amp;pid=10584&amp;resolutionIds=-1&amp;sorter/field=issuekey&amp;sorter/order=DESC"/>
@@ -59,7 +59,7 @@
 
   <resource id="dpawsonxslfaq" 
             title="XSL Frequently Asked Questions" 
-            location="http://www.dpawson.co.uk/xsl/xslfaq.html"/>
+            location="http://www.dpawson.co.uk/xsl/"/>
 
   <resource id="xsl" 
             title="Extensible Stylesheet Language (XSL) Version 1.0"
@@ -88,37 +88,45 @@
             location="http://www.megginson.com/SAX/sax.html"/>
   <resource id="sax2" 
             title="SAX 2" 
-            location="http://sax.sourceforge.net"/>
+            location="http://sax.sourceforge.net/"/>
   <resource id="jaxp" 
             title="Java API for XML Parsing 1.0" 
-            location="http://java.sun.com/xml/docs/api/index.html"/>
+            location="http://java.sun.com/webservices/jaxp/dist/1.1/docs/api/index.html"/>
   <resource id="jaxp11" 
             title="Java API for XML Processing 1.1" 
-            location="http://java.sun.com/xml/jaxp/dist/1.1/jaxp-1_1-spec.pdf"/>
+            location="http://java.sun.com/webservices/jaxp/dist/1.1/jaxp-1_1-spec.pdf"/>
   <resource id="jaxp12" 
             title="Java API for XML Processing 1.2" 
-            location="http://java.sun.com/xml/jaxp/index.html"/>            
+            location="http://java.sun.com/webservices/jaxp/index.jsp"/>            
   <resource id="jaxp13-longname-withacronym"
             title="&jaxp13-long;" 
-            location="http://java.sun.com/xml/jaxp/index.html"/>            
+            location="http://java.sun.com/webservices/jaxp/index.jsp"/>            
   <resource id="jaxp13"
             title="&jaxp13-short;"
-            location="http://java.sun.com/xml/jaxp/index.html"/>
+            location="http://java.sun.com/webservices/jaxp/index.jsp"/>
   <resource id="jsr063"
             title="Java Specification Request 63"
-            location="http://java.sun.com/aboutJava/communityprocess/review/jsr063"/>
+            location="http://jcp.org/aboutJava/communityprocess/review/jsr063/"/>
 
   <resource id="tomcat" 
             title="The Jakarta Site - Apache Tomcat"
-            location="http://jakarta.apache.org/tomcat/"/>
+            location="http://tomcat.apache.org/"/>
 
   <resource id="xmlapirepository"
             title="xml-commons/java/external/src"
-            location="http://cvs.apache.org/viewcvs.cgi/xml-commons/java/external/src/"/>
+            location="http://svn.apache.org/viewvc/xml/commons/trunk/java/external/src/"/>
 
   <resource id="endorsed"
             title="Endorsed Standards Override Mechanism"
-            location="http://java.sun.com/j2se/1.4/docs/guide/standards/"/>
+            location="http://java.sun.com/j2se/1.4.2/docs/guide/standards/"/>
+            
+  <resource id="apache-mail-archives"
+            title="Apache mail archives"
+            location="http://mail-archives.apache.org/mod_mbox/"/>
+            
+  <resource id="old-bugzilla"
+            title="Apache bugzilla"
+            location="http://issues.apache.org/bugzilla/"/>
 
   <human-resource id="xalandev" 
                   name="Xalan Development Mailing List" 

@@ -186,9 +186,9 @@
     <p>For a general introduction, see <link idref="usagepatterns" anchor="servlet">Using &xslt4j; in a servlet</link>.</p>
     <p>The servlet subdirectory contains four sample servlets and one JSP that use &xslt4j; to perform transformations. The sample 
     code is compiled and packed in xalanservlet.war. To run these samples, you must place 
-    xalanservlet.war on a web server with a servlet engine. For example, using <jump href="http://jakarta.apache.org/tomcat/index.html">jakarta-tomcat 4.1.18</jump>. 
+    xalanservlet.war on a web server with a servlet engine. For example, using <jump href="http://tomcat.apache.org/index.html">jakarta-tomcat 4.1.*</jump>. 
     Copy the xalanservlet.war to %Tomcat_Home%/webapps. For more details about deploying
-    servlets on Tomcat, please refer to <jump href="http://jakarta.apache.org/tomcat/tomcat-4.1-doc/appdev/deployment.html">Deployment Organization</jump>.</p>
+    servlets on Tomcat, please refer to <jump href="http://tomcat.apache.org/tomcat-4.1-doc/appdev/deployment.html">Deployment Organization</jump>.</p>
     <note>Dependency on Tomcat version. If encountering "java.lang.VerifyError: Cannot inherit from final class" error, 
     replace xercesImpl.jar under %Tomcat_Home%/common/endorsed with the one included with &xslt4j; .</note>
     <p><link anchor="simplexsltservlet">servlet.SimpleXSLTServlet</link> applies a particular stylesheet to a particular 
@@ -379,8 +379,8 @@
     <s3 title="Setting up the SQL extension samples">   
     <p>To run the SQL library extension samples, do the following:</p>
     <p>The SQL Extension examples require the Apache Derby jars.
-     The Derby jars are available from <jump href="http://incubator.apache.org/derby/">
-     http://incubator.apache.org/derby/</jump>.</p>
+     The Derby jars are available from <jump href="http://db.apache.org/derby/">
+     http://db.apache.org/derby/</jump>.</p>
     <p>The sample batch/script files are configured to look for the 
      derby jars in the xml-xalan/java/samples/extensions/sql directory by default.</p>
     <p>If you already have derby installed and want to use that implementation.

@@ -48,7 +48,7 @@
 <anchor name="current"/>
 <s2 title="How about this release?">
   <p>This release includes new features as well as a number of bug fixes. See the 
-  <link idref="whatsnew" anchor="done">What's New</link> and <link idref="readme" anchor="done">Release 
+  <link idref="whatsnew">What's New</link> and <link idref="readme" anchor="done">Release 
   Notes</link> for more details.</p>
   <p>&xslt4j-current; works with &xml4j;, and the distribution includes xercesImpl.jar from &xml4j-used;.</p>
   <p>The &xslt4j; implementation is in xalan.jar and serializer.jar. 

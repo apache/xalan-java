@@ -5077,7 +5077,7 @@ rely
      anchor="classpath">Setting up the system class path</link>.</p>
      <p>Beginning with this release, we are shipping two distribution files; a binary
      distribution file, which includes everything needed to run &xslt4j; and build applications, and a source distribution. For
-     more information, see <link idref="getstarted" anchor="download">Downloading what you need</link>.</p>
+     more information, see <link idref="downloads">Downloading what you need</link>.</p>
      <p>This release also includes <link idref="samples" anchor="validatexmlinput">ValidateXMLInput</link>, a sample that illustrates 
      how you can verify that the XML input you are transforming adheres to its document type. It is in the samples/validate subdirectory
      along with a Validate utility that you can use to validate XML files without performing a transformation.</p>     
@@ -6077,7 +6077,7 @@ in front of xerces.jar the system class path.</em></p>
 
 <p>As a result of the changes in *internal* api, you may encounter problems with extensions. We have done some bug fixing in support
 for extensions since 2.2.D1.  John Gentilin is working on fixing the SQL library extension,which currently is broken. Please report 
-any problems you find (see <link anchor="bugs">bugs</link>).</p>
+any problems you find (see <link idref="jira">bugs</link>).</p>
 
 <p>The DTM and related work provides faster performance and less accumulation of garbage... though it is an
 ongoing battle.  Brief summary:</p>
@@ -6359,10 +6359,10 @@ reporting this bug.
 <s2 title="Changes for &xslt4j; 2.0.1">
 <p>This release includes a number of bug fixes to the &xslt4j; and TrAX core and Xalan-Java 1 compability API. We have also</p>
 <ul>
-  <li>Entered all known &xslt4j; 2 <link anchor="bugs">bugs</link> in the Apache Bugzilla database<br/><br/></li>
+  <li>Entered all known &xslt4j; 2 <link idref="jira">bugs</link> in the Apache Bugzilla database<br/><br/></li>
   <li>Added support for using custom URIResolver, EntityResolver, and ContentHandler implementations with the <link
       idref="commandline">command-line utility</link><br/><br/></li> 
-  <li>Upgraded from Ant 1.2 to Ant 1.3 for our <link anchor="build">builds</link> (the new ant.jar is in the bin directory).</li>
+  <li>Upgraded from Ant 1.2 to Ant 1.3 for our <link idref="builds">builds</link> (the new ant.jar is in the bin directory).</li>
 </ul>
 <p>Core source code updates:</p>
 <ul>
@@ -6699,7 +6699,7 @@ systemId
    <li>Fixed null pointer exception that could occur with getValue("xxx").<br/><br/></li>
    <li>Fixed bug reported by Tim Sean handling the xml:space attribute.</li>
 </ul>
-<p><em>Bug fixes in the <link idref="usagepatterns" anchor="compat">Xalan-Java 1 compatibility API</link>:</em></p>
+<p><em>Bug fixes in the Xalan-Java 1 compatibility API:</em></p>
 <ul>
   <li>Fixed ProblemListener (for processing error messages) to derive from &xslt4j; 2 ErrorHandler.<br/><br/></li>
   <li>Fixed evaluation of stylesheet string parameters to conform to &xslt4j; 1 behavior (expressions for &xslt4j; 1 vs. String objects 

@@ -89,7 +89,6 @@
         <li><link idref="xsl_variable_design">&lt;xsl:param&gt;</link></li>
         <li><link idref="xsl_include_design">&lt;xsl:include&gt;</link></li>
         <li><link idref="xsl_include_design">&lt;xsl:import&gt;</link></li>
-        <li><link idref="xsl_imports_design">&lt;xsl:apply-imports&gt;</link></li>
       </ul>
     </s4>
     <s4 title="XPath functions">

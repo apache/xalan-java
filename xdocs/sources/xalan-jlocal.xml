@@ -20,13 +20,13 @@
 
 <book title="Xalan XSL Transformer User's Guide" copyright="2005 The Apache Software Foundation">
   <resources source="sbk:/sources/xalan/resources.xml"/>
-  <document id="whatsnew" label="What's New" source="xalan/whatsnew.xml"/>
-  <document id="readme" label="Release Notes" source="xalan/readme.xml"/>  
+  <document id="whatsnew"    label="What's New"      source="xalan/whatsnew.xml"/>
+  <document id="readme"      label="Release Notes"   source="xalan/readme.xml"/>  
   <separator/>
-  <document id="overview" label="Overview" source="xalan/overview.xml"/>
-  <document id="downloads" label="Downloads" source="xalan/downloads.xml"/>  
-  <document id="getstarted" label="Getting Started" source="xalan/getstarted.xml"/>
-  <document id="xsltc_usage" label="Using XSLTC" source="xalan/xsltc_usage.xml"/>  
+  <document id="overview"    label="Overview"        source="xalan/overview.xml"/>
+  <document id="downloads"   label="Downloads/Code"       source="xalan/downloads.xml"/>  
+  <document id="getstarted"  label="Getting Started" source="xalan/getstarted.xml"/>
+  <document id="xsltc_usage" label="Using XSLTC"     source="xalan/xsltc_usage.xml"/>  
   <separator/>
   <faqs id="faq" label="FAQs" source="xalan/faq.xml"/>
   <separator/>
@@ -50,13 +50,12 @@
   <external href="design/design2_0_0.html" label="Xalan 2 Design"/>
   <external href="xsltc/index.html" label="XSLTC Design"/>
   <separator/>
-  <external href="http://cvs.apache.org/viewcvs.cgi/xml-xalan/java/" label="Source Repository"/>
   <document id="builds" label="Xalan-Java Builds" source="xalan/builds.xml"/>
   <external href="http://xml.apache.org/xalan-j/test/overview.html" label="Testing"/>
-  <external href="http://marc.theaimsgroup.com/?l=xalan-j-users" label="User Mail Archive"/>
-  <external href="http://marc.theaimsgroup.com/?l=xalan-dev " label="Dev Mail Archive"/>  
   <document id="bugreporting" label="Bug Reporting" source="xalan/bugreporting.xml"/>  
-  
+  <separator/>
+  <document id="contact_us"  label="Contact us"      source="xalan/contact_us.xml"/>  
   <hidden   id="history" source="xalan/history.xml"/>
   <hidden   id="xsltc_history" source="xalan/xsltc_history.xml"/>
+  
 </book>

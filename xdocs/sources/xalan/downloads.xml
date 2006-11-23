@@ -44,8 +44,7 @@
     <li>The second binary distribution, &xslt4j-dist-bin;-2jars.zip or &xslt4j-dist-bin;-2jars.tar.gz
       contains the Xalan Interpretive processor in xalan.jar, and the Xalan Compiled 
       processor (XSLTC) and the runtime support packages in xsltc.jar.  </li>
-  </ul>
-  <p>The binary distributions can be downloaded from the <resource-ref idref="xslt4j-distdir"/>.</p>
+  </ul>  
   <p>There is an optional source distribution available for doing your own &xslt4j; builds; see 
      <link idref="readme" anchor="build">Build notes</link>. You can download the source distribution from 
      the <resource-ref idref="xslt4j-distdir"/>.</p>     
@@ -55,18 +54,164 @@
      <jump href="http://jakarta.apache.org/bsf/index.html">Apache Jakarta
      BSF project</jump>. If you plan to run XSLT extensions implemented in scripting 
      languages, you will need bsf.jar and one or more additional files as indicated in 
-     <link idref="extensions" anchor="supported-lang">extensions language requirements</link>.</p>     
-  <p>To access previous releases, see the <resource-ref idref="xslt4j-distdir-previous"/>.</p>
+     <link idref="extensions" anchor="supported-lang">extensions language requirements</link>.
+  </p>
+</s2>
+<anchor name="previous-releases"/>
+<s2 title="Where do I download previous releases?">
+  <p>
+    To access previous releases, see the <resource-ref idref="xslt4j-distdir-previous"/>.
+  </p>
 </s2>
 <anchor name="whereis_xml4j"/>
 <s2 title="Where do I get &xml4j;?">
-<p>The &xslt4j; download includes &xml4j-jar; from &xml4j-used;. In conjunction with xml-apis.jar, 
-this is all you need to run &xslt4j; with the &xml4j; XML parser. You can, however, download the 
-complete &xml4j; binary or source distribution from the <resource-ref idref="xml4j-distdir"/>.
-If you cannot find &xml4j-used; at that location, have a look at the 
-<jump href="http://archive.apache.org/dist/xml/xerces-j/">Apache archive location for
-Xerces Java</jump>.</p>
+  <p>
+    The &xslt4j; download includes &xml4j-jar; from &xml4j-used;. In conjunction with xml-apis.jar, 
+    this is all you need to run &xslt4j; with the &xml4j; XML parser. You can, however, download the 
+    complete &xml4j; binary or source distribution from the <resource-ref idref="xml4j-distdir"/>.
+    If you cannot find &xml4j-used; at that location, have a look at the 
+    <jump href="http://archive.apache.org/dist/xml/xerces-j/">Apache archive location for
+    Xerces Java</jump>.
+  </p>
 <note>If you plan to use a different XML parser, see <link idref="usagepatterns" anchor="plug">Plugging 
 in a Transformer and XML parser</link>.</note> 
+</s2>
+
+<anchor name="gump"/>
+<s2 title="How do I download pre-built jars of the lastest code?">
+  <p>
+    If you want the latest development code but don't want to build it yourself, you can
+    download xalan.jar, serializer.jar, and xsltc.jar built from the latest development code at gump
+    from this link to the <jump href="http://vmgump.apache.org/gump/public-jars/xml-xalan/jars/">nightly gump builds</jump>.
+    You can download the lastest jars from the gump site
+    to check whether the problem still exists in the latest code. 
+    Note that the latest jars of interest at that site have the names with a time-stamp in the middle of their name.
+    These are nightly builds, use them an your own risk!  
+  </p>
+  
+  <p>
+    Gump is basically a meta-build system designed to do code extraction and Ant builds
+    of multiple projects simultaneously.  Luckily, Gump is a top-level project
+    that includes a complete set of
+    <jump href="http://gump.apache.org/">documentation</jump>.
+  </p> 
+  <p>
+    The Gump committers also provide a Gump service, which runs actual 
+    builds nightly of nearly all Apache's Java-based projects.  The 
+    <jump href="http://gump.apache.org/">results</jump> of nightly builds and
+    jar files for &xslt4j; (when the build succeeds) are posted daily.
+  </p>
+  <p>Note: nightly builds are just that - automated builds run nightly,
+     without human intervention.
+  </p>
+</s2>
+
+<anchor  name="viewcode"/>
+<s2 title="How do I view Xalan code in a browser?">
+  <p>
+    If you wish to view some of Xalan's files in a browser without downloading the
+    whole project you can view it at
+    <jump href="http://svn.apache.org/viewvc/xalan/">http://svn.apache.org/viewvc/xalan/</jump>
+    or at
+    <jump href="http://svn.apache.org/repos/asf/xalan/">http://svn.apache.org/repos/asf/xalan/</jump>.  
+    The link with "viewvc" in it is slightly prettier.
+  </p>
+  <p>
+    The java/trunk and test/trunk subdirectories are the ones with the latest development code.  
+  </p>
+</s2>
+
+<anchor name="buildmyself"/>
+<s2 title="How do I download the latest development code to build myself?">
+  <p>
+    If you wish to download Xalan and build it yourself, perhaps because you want to 
+    apply a patch and test it, you will need a subversion client and anonymous access
+    to the repository.
+    Don't worry, everyone has anonymous access.
+    You can find pre-built binaries of subversion clients for different
+    operating systems here:
+    <jump href="http://subversion.tigris.org/project_packages.html#binary-packages">
+    http://subversion.tigris.org/project_packages.html#binary-packages</jump>.
+    See 
+    <jump href="http://www.apache.org/dev/version-control.html">
+    http://www.apache.org/dev/version-control.html
+    </jump> for more information on Apache and subversion.    
+  </p>
+  <p>
+    Once the subverion client is installed on your local machine you
+    can use the command line client program <code>svn</code>
+    to get the latest Xalan-J using a command line something like this:
+    <source>
+    svn checkout http://svn.apache.org/repos/asf/xalan/java/trunk java    
+    </source>
+    where the argument after <code>checkout</code> is the Subversion repository location,
+    in this case the location of the latest development code, and the last argument,
+    in this case <code>java</code> is the location of the local directory that the repository is
+    copied to.   
+  </p>
+  <p>
+    Similarly for the test harness, you can download the latest test harness with a Subversion command
+    something like this:
+    <source>
+    svn checkout http://svn.apache.org/repos/asf/xalan/test/trunk test    
+    </source>  
+  </p>
+  <p>
+    Those two commands will put a copy of the latest parts in the local
+    directories <code>java</code> and <code>test</code>,
+    which are sibling directories.  If you
+    want to test your build with
+    the test harness provided with Xalan then it is easiest if you keep the
+    local directory names
+    as suggested. With your paths set up to compile Java code, go into the local <code>java</code>
+    directory and issue these two commands:
+    <source>
+  build clean
+  build  
+  </source>
+  Other useful targets may be <code>xsltc.jar</code> or <code>serializer.jar</code>.
+  If you want to test the jars you just built in the directory <code>java/build</code>, change to
+  directory <code>test</code> and issue this command:
+  <source>
+  build jar
+  build smoketest
+    </source>
+    The first target, <code>jar</code> builds the test harness and only needs to be done
+    once after the <code>test</code> repository is checked out. The second target, <code>smoketest</code>,
+    runs the Xalan-J intepretive smoketest. 
+    Running the <code>build smoketest</code> or other targets in the <code>test</code> directory
+    automatically looks for the jars in the directory <code>../java/build</code>
+    and that is why it is easiest to download the projects into suggested sibling
+    directories with the given names.
+  </p>
+  <p>
+    Towards the end of the console output you will see <em>two CONGRATULATIONS!</em> messages if all
+    goes well. The end of the console output should look like this:
+    <source>
+    .
+    .
+    .
+minitest-pass:
+     [echo]  [minitest] CONGRATULATIONS! The Minitest passed!
+     [echo]  [minitest] See details in smoketest/Minitest.xml
+
+smoketest-notpass:
+
+smoketest-pass:
+     [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
+     [echo]  [minitest] Details are in smoketest/results-conf.xml, smoketest/results-api.xml, smoketest/extensions/results-extensions.xml
+
+smoketest:
+
+BUILD SUCCESSFUL
+Total time: 2 minutes 4 seconds
+build completed! 
+    </source>
+  </p>
+  <p>
+    Don't be fooled by the <em>BUILD SUCCESSFUL</em> messages, look for the two CONGRATULATIONS!
+    messages. If you run the smoketest for XSLTC with <code>build smoketest.xsltc</code> you wil
+    only get one CONGRATULATIONS! message if all goes well.
+  </p>  
 </s2>
 </s1>
