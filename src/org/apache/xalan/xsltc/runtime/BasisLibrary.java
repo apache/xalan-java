@@ -130,7 +130,7 @@ public final class BasisLibrary {
 	    return dom.getStringValueX(((Node)obj).node);
 	}
 	else if (obj instanceof DOM) {
-	    // When the first argument is a DOM we want the whole fecking
+	    // When the first argument is a DOM we want the whole
 	    // DOM and not just a single node - that would not make sense.
 	    //return ((DOM)obj).getStringValueX(node);
 	    return ((DOM)obj).getStringValue();
