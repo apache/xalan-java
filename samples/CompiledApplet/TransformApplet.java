@@ -90,7 +90,7 @@ public final class TransformApplet extends Applet {
             add(center, BorderLayout.CENTER);
             add(bottom,BorderLayout.SOUTH);
 
-            // Show the fecking thing
+            // Show the whole thing
             setVisible(true);
         }
 
