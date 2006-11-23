@@ -35,15 +35,29 @@
     <li>(Optional) Xalan Java source code</li>    
     <li>(Optional) Packages to support extension functions and elements</li>    
   </ul>    
-  <p>There are 2 binary distributions available; you only need to choose one of them.  
-     Both binary distributions contain xml-apis.jar and &xml4j-jar; from <resource-ref idref="xml4j-used"/>.</p>
+  <p>Xalan-J has two processors, 
+  an interpretive one, Xalan Interpretive, and a compiled one, Xalan Compiled (XSLTC).
+  Your choice of which binary distribution to download depends on which
+  of the processors you want to use.
+  There are 2 binary distributions available; you only need to choose one of them.  
+  Both binary distributions contain xml-apis.jar and &xml4j-jar; from <resource-ref idref="xml4j-used"/>.</p>
   <ul>
     <li>The first binary distribution, &xslt4j-dist-bin;.zip or &xslt4j-dist-bin;.tar.gz, 
       contains the Xalan Interpretive processor, the Xalan Compiled processor (XSLTC) and the 
-      runtime support packages in a single jar, called xalan.jar.  </li><br/><br/>
+      runtime support packages in a single jar, called xalan.jar.
+      The reason to use this distribution would be that you don't know
+      which processor you are going to use, or might be using both.
+    </li><br/><br/>
     <li>The second binary distribution, &xslt4j-dist-bin;-2jars.zip or &xslt4j-dist-bin;-2jars.tar.gz
       contains the Xalan Interpretive processor in xalan.jar, and the Xalan Compiled 
-      processor (XSLTC) and the runtime support packages in xsltc.jar.  </li>
+      processor (XSLTC) and the runtime support packages in xsltc.jar.
+      The reason to using this distribution is that you want more control.
+      If you are using just XSLTC you can put xsltc.jar on the classpath
+      and not xalan.jar. If you are using just the interpretive processor
+      you can put xalan.jar on the classpath and not xsltc.jar. Of course
+      you can put both xalan.jar and xsltc.jar from this distribution
+      on your classpath if you want to use both.
+    </li>
   </ul>  
   <p>There is an optional source distribution available for doing your own &xslt4j; builds; see 
      <link idref="readme" anchor="build">Build notes</link>. You can download the source distribution from 
