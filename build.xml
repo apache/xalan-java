@@ -61,7 +61,7 @@ $Id$
 <project name="Xalan" default="jar" basedir=".">
 
   <property name="name"                   value="xalan"/>
-  <property name="year"                   value="2005"/>
+  <property name="year"                   value="2006"/>
   <property name="build.debug"            value="on"/>
 
   <!-- Xalan Java version information -->
@@ -74,8 +74,8 @@ $Id$
   
   <!-- Xerces Java version information -->
   <property name="parser.version.VERSION" value="2"/>
-  <property name="parser.version.RELEASE" value="7"/>
-  <property name="parser.version.MINOR"   value="1"/> 
+  <property name="parser.version.RELEASE" value="9"/>
+  <property name="parser.version.MINOR"   value="0"/> 
   
   <!-- Xalan Java directories -->  
 <!--  <property name="bin.dir"                value="./bin"/> -->
