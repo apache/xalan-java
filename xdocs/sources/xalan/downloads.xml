@@ -19,7 +19,10 @@
 <s1 title="Downloads &amp; Dependencies">
 <ul>
   <li><link anchor="download">Downloading what you need</link></li>
+  <li><link anchor="previous-releases">Where do I download previous releases?</link></li>
   <li><link anchor="whereis_xml4j">Where do I get &xml4j;? </link></li>
+  <li><link anchor="viewcode">How do I view Xalan code in a browser?</link></li>
+  <li><link anchor="buildmyself">How do I download the latest development code to build myself?</link></li>
 </ul>
 <anchor name="download"/>
 <s2 title="Downloading what you need">
@@ -91,36 +94,7 @@
 in a Transformer and XML parser</link>.</note> 
 </s2>
 
-<anchor name="gump"/>
-<s2 title="How do I download pre-built jars of the lastest code?">
-  <p>
-    If you want the latest development code but don't want to build it yourself, you can
-    download xalan.jar, serializer.jar, and xsltc.jar built from the latest development code at gump
-    from this link to the <jump href="http://vmgump.apache.org/gump/public-jars/xml-xalan/jars/">nightly gump builds</jump>.
-    You can download the lastest jars from the gump site
-    to check whether the problem still exists in the latest code. 
-    Note that the latest jars of interest at that site have the names with a time-stamp in the middle of their name.
-    These are nightly builds, use them an your own risk!  
-  </p>
-  
-  <p>
-    Gump is basically a meta-build system designed to do code extraction and Ant builds
-    of multiple projects simultaneously.  Luckily, Gump is a top-level project
-    that includes a complete set of
-    <jump href="http://gump.apache.org/">documentation</jump>.
-  </p> 
-  <p>
-    The Gump committers also provide a Gump service, which runs actual 
-    builds nightly of nearly all Apache's Java-based projects.  The 
-    <jump href="http://gump.apache.org/">results</jump> of nightly builds and
-    jar files for &xslt4j; (when the build succeeds) are posted daily.
-  </p>
-  <p>Note: nightly builds are just that - automated builds run nightly,
-     without human intervention.
-  </p>
-</s2>
-
-<anchor  name="viewcode"/>
+<anchor name="viewcode"/>
 <s2 title="How do I view Xalan code in a browser?">
   <p>
     If you wish to view some of Xalan's files in a browser without downloading the
