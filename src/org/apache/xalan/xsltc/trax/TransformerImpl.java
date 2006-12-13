@@ -892,13 +892,84 @@ public final class TransformerImpl extends Transformer
      */
     public void transferOutputProperties(SerializationHandler handler)
     {
-        if (_properties != null) {
-            // We don't need to parse the properties here and
-            // send them one at a time to the handler.
-            //
-            // This is already managed in the serializer so we delegate.
-            handler.setOutputFormat(_properties);
-        }        
+	// Return right now if no properties are set
+	if (_properties == null) return;
+
+	String doctypePublic = null;
+	String doctypeSystem = null;
+
+	// Get a list of all the defined properties
+	Enumeration names = _properties.propertyNames();
+	while (names.hasMoreElements()) {
+	    // Note the use of get() instead of getProperty()
+	    String name  = (String) names.nextElement();
+	    String value = (String) _properties.get(name);
+
+	    // Ignore default properties
+	    if (value == null) continue;
+
+	    // Pass property value to translet - override previous setting
+	    if (name.equals(OutputKeys.DOCTYPE_PUBLIC)) {
+		doctypePublic = value;
+	    }
+	    else if (name.equals(OutputKeys.DOCTYPE_SYSTEM)) {
+		doctypeSystem = value;
+	    }
+	    else if (name.equals(OutputKeys.MEDIA_TYPE)) {
+		handler.setMediaType(value);
+	    }
+	    else if (name.equals(OutputKeys.STANDALONE)) {
+		handler.setStandalone(value);
+	    }
+	    else if (name.equals(OutputKeys.VERSION)) {
+		handler.setVersion(value);
+	    }
+	    else if (name.equals(OutputKeys.OMIT_XML_DECLARATION)) {
+		handler.setOmitXMLDeclaration(
+		    value != null && value.toLowerCase().equals("yes"));
+	    }
+	    else if (name.equals(OutputKeys.INDENT)) {
+		handler.setIndent( 
+		    value != null && value.toLowerCase().equals("yes"));
+	    }
+	    else if (name.equals(OutputKeys.CDATA_SECTION_ELEMENTS)) {
+		if (value != null) {
+		    StringTokenizer e = new StringTokenizer(value);
+                    Vector uriAndLocalNames = null;
+		    while (e.hasMoreTokens()) {
+			final String token = e.nextToken();
+
+                        // look for the last colon, as the String may be
+                        // something like "http://abc.com:local"
+                        int lastcolon = token.lastIndexOf(':');
+                        String uri;
+                        String localName;
+                        if (lastcolon > 0) {
+                            uri = token.substring(0, lastcolon);
+                            localName = token.substring(lastcolon+1);
+                        } else {
+                            // no colon at all, lets hope this is the
+                            // local name itself then
+                            uri = null;
+                            localName = token;
+                        }
+
+                        if (uriAndLocalNames == null) {
+                            uriAndLocalNames = new Vector();
+                        }
+                        // add the uri/localName as a pair, in that order
+                        uriAndLocalNames.addElement(uri);
+                        uriAndLocalNames.addElement(localName);
+                    }
+                    handler.setCdataSectionElements(uriAndLocalNames);
+		}
+	    }
+	}
+
+	// Call setDoctype() if needed
+	if (doctypePublic != null || doctypeSystem != null) {
+	    handler.setDoctype(doctypeSystem, doctypePublic);
+	}
     }
 
     /**
