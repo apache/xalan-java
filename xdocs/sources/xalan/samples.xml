@@ -84,9 +84,9 @@
 </table>
 <p>With most of the samples, you can use the following procedure:</p>
  <ol>
-   <li>Be sure xalan.jar, serializer.jar, xml-apis.jar, the appropriate samples JAR file, 
-       and &xml4j-jar; are on the system class path. For the extension examples, bsf.jar 
-       and (for the JavaScript extensions) js.jar must also be on the class path.</li>
+   <li>Be sure <code>xalan.jar</code>, <code>serializer.jar</code>, <code>xml-apis.jar</code>, the appropriate samples JAR file, 
+       and <code>&xml4j-jar;</code> are on the system class path. For the extension examples, <code>bsf.jar</code> 
+       and (for the JavaScript extensions) <code>js.jar</code> must also be on the class path.</li>
    <li>Be sure the java executable is on your path.</li>
    <li>Go to the samples subdirectory containing the sample (use the DOS shell if you are running Windows).</li>
    <li>Run the sample from the command line (as indicated below).</li>
@@ -176,8 +176,8 @@
     <p>How to run it: Open appletXMLtoHTML.html in the Internet Explorer 5 browser.</p>
     <note>For information about running &xslt4j; applets in Netscape Communicator, see <link idref="usagepatterns" anchor="netscape">Problems
     with Netscape</link>.<br/><br/>
-    This applet looks for xalan.jar and serializer.jar in the build directory, or the top level directory, and xml-apis.jar and 
-    xercesImpl.jar in the lib subdirectory. If you have placed these JAR files elsewhere, adjust the applet archive setting in 
+    This applet looks for <code>xalan.jar</code> and <code>serializer.jar</code> in the build directory, or the top level directory, and <code>xml-apis.jar</code> and 
+    <code>xercesImpl.jar</code> in the lib subdirectory. If you have placed these JAR files elsewhere, adjust the applet archive setting in 
     client.html accordingly.</note>
     </s2>
 
@@ -190,7 +190,7 @@
     Copy the xalanservlet.war to %Tomcat_Home%/webapps. For more details about deploying
     servlets on Tomcat, please refer to <jump href="http://tomcat.apache.org/tomcat-4.1-doc/appdev/deployment.html">Deployment Organization</jump>.</p>
     <note>Dependency on Tomcat version. If encountering "java.lang.VerifyError: Cannot inherit from final class" error, 
-    replace xercesImpl.jar under %Tomcat_Home%/common/endorsed with the one included with &xslt4j; .</note>
+    replace <code>xercesImpl.jar</code> under %Tomcat_Home%/common/endorsed with the one included with &xslt4j; .</note>
     <p><link anchor="simplexsltservlet">servlet.SimpleXSLTServlet</link> applies a particular stylesheet to a particular 
     XML document.</p> 
     <p><link anchor="usestylesheetparamservlet">servlet.UseStylesheetParamServlet</link> sets a stylesheet parameter 
@@ -302,9 +302,9 @@
     </ul>
     <p>The extensions subdirectory contains six samples with &xslt4j; Interpretive extensions. Two of the samples use
      extensions implemented in JavaScript, and four of the samples use extensions implemented in Java.</p>
-    <p>To run these examples, you must place bsf.jar and js.jar (version 1.5, available from 
+    <p>To run these examples, you must place <code>bsf.jar</code> and <code>js.jar</code> (version 1.5, available from 
      <jump href="http://www.mozilla.org/rhino">http://www.mozilla.org/rhino</jump>) on the classpath. 
-     You do not need js.jar on the classpath for the samples that use Java extensions. <link idref="faq">
+     You do not need <code>js.jar</code> on the classpath for the samples that use Java extensions. <link idref="faq">
      Problems related to JDK 1.4 or higher</link>.</p>
     <p>Use java.org.apache.xalan.xslt.Process, the &xslt4j; command-line utility, to run most of these samples from
      the <link idref="commandline">command line</link>. The command line must include an -in flag with the 
@@ -329,7 +329,7 @@
     <s3 title="2-basicJscript">
     <p>What it does: Uses an extension element and extension function implemented in JavaScript to compute a
       deadline for responding to a customer inquiry.</p>
-     <note>js.jar must be on the classpath.</note>
+     <note><code>js.jar</code> must be on the classpath.</note>
     <p>Run this sample from the extensions subdirectory with</p>
     <p><code>java org.apache.xalan.xslt.Process -in 2-basicJscript.xml</code>
      <br/>&nbsp;&nbsp;<code>-xsl 2-basicJscript.xsl</code></p>     
@@ -357,7 +357,7 @@
     <s3 title="5-numlistJscript">
     <p>What it does: Uses a JavaScript  extension to transform a set of name elements into a numbered and
      alphabetized list. This sample performs the same operations as the preceding Java extension.</p>
-     <note>js.jar must be on the classpath.</note>
+     <note><code>js.jar</code> must be on the classpath.</note>
     <p>Run this sample from the extensions subdirectory with</p>
     <p><code> java org.apache.xalan.xslt.Process -in numlist.xml</code>
      <br/>&nbsp;&nbsp;<code>-xsl 5-numlistJscript.xsl</code></p>
@@ -386,8 +386,8 @@
     <p>If you already have derby installed and want to use that implementation.
       You can do one of the following.</p>
     <ol>
-      <li>set the environment variable DERBY_JAR_DIR to point to the location of derby.jar and derbytools.jar</li>
-      <li>have the derby.jar and derbytools.jar in your classpath.</li>
+      <li>set the environment variable DERBY_JAR_DIR to point to the location of <code>derby.jar</code> and <code>derbytools.jar</code></li>
+      <li>have the <code>derby.jar</code> and <code>derbytools.jar</code> in your classpath.</li>
     </ol>
     <p>First create the sample database using Derby.  To do this, </p>
     <ul><li>on Windows, execute the command<br/> <code>runDerby.bat createdb.sql</code></li>
@@ -521,8 +521,8 @@
      ConnectionPool interface to create a pool of connections. A stylesheet in turn uses a 
      connection from this pool to instantiate an XConnection object and connect to a datasource.</p>
     <p>The stylesheet uses this named connection pool to instantiate an XConnection object and 
-     connect to the datasource. The ExternalConnection class is in xalansamples.jar.</p>
-    <p><link anchor="dbsetup">Set up the database</link>, be sure xalanxamples.jar is on the 
+     connect to the datasource. The ExternalConnection class is in <code>xalansamples.jar</code>.</p>
+    <p><link anchor="dbsetup">Set up the database</link>, be sure <code>xalanxamples.jar</code> is on the 
      class path, and run this sample from the extensions/sql directory:</p>
     <code>runExtConnection ext-connection/dbtest.xsl</code>
     <p>ExternalConnection creates the ConnectionPool, and performs a transformation with dbtest.xsl, 

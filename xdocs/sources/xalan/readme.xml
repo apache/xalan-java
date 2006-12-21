@@ -19,33 +19,58 @@
 -->
 <!-- $Id$ -->
 <s1 title="Release Notes">
-<p>&xslt4j-current;</p>
-
  <ul>
-  <li><link anchor="status0">Status</link></li>
-  <li><link anchor="build">Build distributions and notes</link></li>
-  <li><link idref="contact_us">Getting in touch</link></li>
-  <li><link idref="history">History of software changes</link></li>
+  <li><link anchor="notes_latest">Release notes for  version 2.7.1</link></li>
+  <li><link anchor="notes_270">Release notes for version 2.7.0</link></li>
+  <li><link anchor="notes_260">Release notes for version 2.6.0</link></li>
+  <li><link anchor="notes_252">Release notes for version 2.5.2</link></li>
+  <li><link anchor="notes_251">Release notes for version 2.5.1</link></li>
+  <li><link anchor="notes_250">Release notes for version 2.5.0</link></li>
+  <li><link anchor="notes_25D1">Release notes for version 2.5.D1</link></li>
+  <li><link anchor="notes_241">Release notes for version 2.4.1</link></li>
+  <li><link anchor="notes_240">Release notes for version 2.4.0</link></li>
+  <li><link anchor="other">Other points of interest</link></li>
  </ul>
- 
-  <anchor name="status0"/>
-  <s2 title="Status">
-   <ul>
-    <li><link anchor="done">Changes in version 2.7.1</link></li>
-    <li><link anchor="other">Other points of interest</link></li>
-    <li><link anchor="status">Version of &xml4j; to use</link></li>
-<!-- <li><link anchor="developer-list">&xslt4j; developers</link></li> -->
-   </ul>
+  
+   <anchor name="notes_latest"/>
+   <s2 title="Release notes for &xslt4j; 2.7.1">
+     <p>&xslt4j; 2.7.1 was released in December 2006.
+     </p>
+      <p>
+      The serializer now has support for DOM Level 3 serialization
+      (<jump href="http://www.w3.org/TR/2004/REC-DOM-Level-3-LS-20040407/load-save.html#LS-LSSerializer">LSSerializer</jump>)
+      for an XML parser. These changes are seen in the new class
+      <jump href="apidocs/org/apache/xml/serializer/DOM3Serializer.html">
+      <code>org.apache.xml.serializer.DOM3Serializer</code></jump> 
+      and the new package
+      <code>org.apache.xml.serializer.dom3</code>
+      as well as a new method,       
+      <code>asDOM3Serializer()</code> on the older 
+      <jump href="apidocs/org/apache/xml/serializer/Serializer.html">
+      <code>org.apache.xml.serializer.Serializer</code></jump> interface.
+      </p>
+      <p>
+      More details are in the javadoc of those classes and interfaces.
+      </p>
+
+    <p>    
+    The distributions contain upgraded versions of <code>xercesImpl.jar</code> 
+    (Xerces-J 2.9.0) and  <code>xml-apis.jar</code> (XML Commons External 1.3.04).
+    The distributions were tested with these versions of Xerces-J
+    and XML Commons External and are the recommended versions to use with
+    the release.
+    </p>
+    <p>
+      <em>Important:</em> You may experience unpredictable anomalies
+      if your &xslt4j; and &xml4j; builds are not in synch.
+    </p>
+
    
-   <anchor name="done"/>
-   <s3 title="Changes in &xslt4j; 2.7.1">
      <p>
        &xslt4j; 2.7.1 contains the following functional enhancements, 
        performance enhancements and bug fixes since 2.7.0:
      </p>
      <ul>
-     <li>Support for DOM Level 3 APIs for store.</li>
-     <li>Upgrade to Xerces-J (2.9.0) and a new version of xml-commons (xml-commons-external-1.3.04).</li>
      <li>XALANJ Jira bug fixes:
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-611">611</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1324">1324</jump>,
@@ -114,19 +139,96 @@
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2343">2343</jump>
      </li>
      </ul>
-   </s3>
+   </s2>
    
-   <anchor name="270"/>
-   <s3 title="Changes in &xslt4j; 2.7.0">
-     <p>&xslt4j; 2.7.0 contains the following functional enhancements, performance enhancements and 
-        bug fixes since 2.6.0:
+   <anchor name="notes_270"/>
+   <s2 title="Release notes for &xslt4j; 2.7.0">
+     <p>&xslt4j; 2.7.0 was released on August 8, 2005.
      </p>
+     <p>&xslt4j; 2.7.0 contains the following functional enhancements, performance enhancements and 
+        bug fixes since 2.6.0.
+     </p>
+
+  <s4 title="Support for JAXP 1.3">
+  <p>Support for JAXP 1.3 has been introduced in this release of &xslt4j;. JAXP 1.3
+  includes a new javax.xml.xpath package, which provides an object-model neutral
+  API for the evaluation of XPath expressions and access to the evaluation environment. 
+  Please refer to <link idref="xpath_apis">Using the JAXP 1.3 XPath API</link> for details on how to 
+  use the new XPath API. You can also look at the code in the samples 
+  <link idref="samples" anchor="applyxpathjaxp">ApplyXPathJAXP</link> , 
+  <link idref="samples" anchor="xpathresolver">XPathResolver</link> and 
+  <link idref="samples" anchor="extensionresolver">ExtensionFunctionResolver</link>.</p>
+  
+  <p>There are also a few new transformer features
+  in JAXP 1.3, as described in the following list:<br/><br/>
+    <li>A new method 
+    <jump href="apidocs/javax/xml/transform/TransformerFactory.html#setFeature(java.lang.String, boolean)">
+    TransformerFactory.setFeature(String name, boolean value)</jump></li>
+    <li>A new method <jump href="apidocs/javax/xml/transform/Transformer.html#reset()">
+    Transformer.reset()</jump></li>
+    <li>A new nextSibling attribute is introduced for 
+    <jump href="apidocs/javax/xml/transform/dom/DOMResult.html">DOMResult</jump>, accessible 
+    by the constructors, getter and setter methods.</li>
+    <li>Support for the <link idref="features" anchor="secureprocessing">secure processing feature</link></li></p>
+  </s4>
+  <s4 title="New default error handling behavior">
+  The behavior of the default <jump href="apidocs/javax/xml/transform/ErrorListener.html">ErrorListener</jump>
+  was changed in this release of &xslt4j;, 
+  in order to conform with a clarification of the required behavior described by JAXP 1.3. 
+  If an application does not register its own ErrorListener, the default ErrorListener is 
+  used which reports all warnings and errors to System.err and does not throw any Exceptions. Applications 
+  are strongly encouraged to register and use ErrorListeners that insure proper behavior for warnings and errors. 
+  The default ErrorListener of the old &xslt4ji; processor throws exceptions on errors and fatal errors. If your
+  code expects exceptions to be thrown on errors and fatal errors, you have to set a customized ErrorListener on
+  TransformerFactory and/or Transformer. You can use 
+  <jump href="apidocs/org/apache/xml/utils/DefaultErrorHandler.html">org.apache.xml.utils.DefaultErrorHandler</jump>
+  as a sample ErrorListener implementation.
+  </s4>
+  <s4 title="Support for XML 1.1">
+  <p>This release of &xslt4j; adds support for Namespaces in XML 1.1 and XML 1.1 output documents.
+     The processors: <br/><br/>
+      <li> support C0 control characters </li>
+      <li> handle C1 control characters in a way that is consistent with the requirements of XML 1.1 </li>
+      <li> treat NEL (U+0085) and LSEP (U+2028) as end-of-line markers </li> 
+      <li> support <jump href="http://www.ietf.org/rfc/rfc3987.txt">Internationalized Resource Identifiers (IRIs)</jump> </li>
+      <li> support the additional characters in NCNames and QNames permitted by XML 1.1 and Namespaces in XML 1.1 </li></p>
+
+  <p>The processors do not undeclare namespaces other than the default namespace in serialized documents  Also, Full 
+     normalization is not supported.</p>
+  <p>An input document can be either XML 1.0 or XML 1.1.  Also, a stylesheet document can be either XML 1.0 or XML 1.1.  
+     A stylesheet document must conform to the XSLT 1.0 specifications.</p>
+  <p>Note that it is possible for a stylesheet module that is an XML 1.1 document to use constructs that cannot be 
+     serialized as part of a valid XML 1.0 document, and for a stylesheet module that is an XML 1.0 document to use 
+     constructs that cannot be serialized as part of a valid XML 1.1 document. For example, a stylesheet module that 
+     is an XML 1.1 document might contain a literal result element whose name contains characters that are not permitted 
+     as part of a QName in a document that conforms to Namespaces for XML 1.0. The user needs to ensure that the nodes 
+     created by the stylesheet can be serialized as part of a well-formed document of the required version of XML.</p>  
+  </s4>
+  <s4 title="Support for Alternative BSF Implementations">
+  <p>Extensions written in Java are directly supported by &xslt4j;. For extensions written in languages other than 
+     Java, &xslt4j; uses the Bean Scripting Framework (BSF), an architecture for incorporating scripting into Java 
+     applications and applets, and an implementation of BSF must be available on the classpath.  In previous
+     releases, IBM's BSF implementation (<code>bsf.jar</code> from 2001) has been included in the &xslt4j; distribution.  
+     Some time ago IBM donated their BSF implementation to the <jump href="http://jakarta.apache.org/bsf/index.html">
+     Apache Jakarta BSF</jump> project. As of this release, 
+     the IBM <code>bsf.jar</code> is no longer included in the &xslt4j; distribution.  To use extensions written in 
+     languages other than Java, please download a version of Jakarta BSF and put it on your classpath. To use
+     a different BSF implementation, please refer to <link idref="extensions" 
+     anchor="BSFManager">setting the BSFManager</link>.</p>
+  </s4>
+  <s4 title="New serializer.jar">
+  <p>In this release of &xslt4j; the code related to serialization of output result trees has been pulled out of 
+     <code>xalan.jar</code> and moved into a new jar file, named <code>serializer.jar</code>.</p>
+  <p>The code in <code>serializer.jar</code> has been modified to have no build or runtime dependencies on the rest of the 
+     code in &xslt4j;, therefore, <code>serializer.jar</code> can be used in a stand-alone fashion through its public APIs. 
+     Although the code has been modified to create a stand-alone jar, the serializer public APIs have not changed
+     and the package names and classnames are the same as they were last release.</p>
+  </s4> 
+
+   <p>Also the following:</p>
+
      <ul>
-     <li>Support for JAXP 1.3, including new default error handling behaviour.</li>
-     <li>Support for XML 1.1 and Namespaces in XML 1.1.</li>
-     <li>Support for alternate BSF implementations.</li>
      <li>Updates to the SQL extension and SQL samples to support the Apache Derby database.</li>
-     <li>New serializer.jar containing the Serializer component of &xslt4j;.</li>
      <li>Minor restructuring of the source and binary distributions.</li>
      <li>Various performance fixes.</li>
      <li>Various memory leak fixes.</li>
@@ -253,15 +355,15 @@
       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2183">2183</jump>
      </li>
      <li>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
-      <resource-ref idref="apache-mail-archive" />.
-     </li>
-     <li>For more details on the new features of this release, please see the <link idref="whatsnew">What's New</link>  
-         page.</li>     
+      <resource-ref idref="apache-mail-archives"/>.
+     </li>        
      </ul>
-   </s3>
+   </s2>
      
-     
-   <s3 title="Changes in &xslt4j; 2.6.0">
+   <anchor name="notes_260"/>
+   <s2 title="Release notes for &xslt4j; 2.6.0">
+     <p>&xslt4j; 2.6.0 was released on February 29, 2004 (a leap year!).
+     </p>
      <p>&xslt4j; 2.6.0 contains the following functional enhancements, performance enhancements and 
         bug fixes since 2.5.2:</p>
      <ul>
@@ -270,7 +372,7 @@
          detected by the XSLTC runtime is more recent than any supported by the
          XSLTC runtime, an error will be reported.</li>
      <li>Changes that allow XSLTC to use other DTM implementations.</li>
-     <li>Changes in the XML Serializer.  The serializer will no longer put a newline after
+     <li>Release notes for the XML Serializer.  The serializer will no longer put a newline after
          the xml header tag unless indent="yes". See bugzilla 
          <jump href="http://issues.apache.org/bugzilla/show_bug.cgi?id=24304">24304</jump>.</li>     
      <li>Rename of Xalan Java's xalan:doc-cache-off processing instruction to 
@@ -333,13 +435,15 @@
       <jump href="http://issues.apache.org/bugzilla/show_bug.cgi?id=26842">26842</jump>                                                                       
      </li>
      <li>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
-      <resource-ref idref="apache-mail-archive" />.
+      <resource-ref idref="apache-mail-archives" />.
      </li>         
      </ul>
-   </s3>   
+   </s2>   
    
-      
-   <s3 title="Changes in &xslt4j; 2.5.2">
+   <anchor name="notes_252"/>
+   <s2 title="Release notes for &xslt4j; 2.5.2">
+     <p>&xslt4j; 2.5.2 was released on October 30, 2003.
+     </p>
      <p>&xslt4j; 2.5.2 contains bug fixes and performance enhancements since 2.5.1.</p>
       <p>Fixes in this release include the following: </p>
      <ul>
@@ -432,11 +536,15 @@
       <jump href="http://issues.apache.org/bugzilla/show_bug.cgi?id=24025">24025</jump>      
      </li>
      <li>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
-      <resource-ref idref="apache-mail-archive" />.
+      <resource-ref idref="apache-mail-archives" />.
      </li>         
      </ul>
-   </s3>       
-   <s3 title="Changes in &xslt4j; 2.5.1">
+   </s2>  
+   
+   <anchor name="notes_251"/>     
+   <s2 title="Release notes for &xslt4j; 2.5.1">
+     <p>&xslt4j; 2.5.1 was released on June 3, 2003.
+     </p>
      <p>&xslt4j; 2.5.1 contains bug fixes and performance enhancements since 2.5.0.</p>
       <p>Fixes in this release include the following: </p>
      <ul>
@@ -456,11 +564,15 @@
       <jump href="http://issues.apache.org/bugzilla/show_bug.cgi?id=20273">20273</jump>
      </li>
      <li>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
-      <resource-ref idref="apache-mail-archive" />.
+      <resource-ref idref="apache-mail-archives" />.
      </li>         
      </ul>
-   </s3>
-     <s3 title="Changes in &xslt4j; 2.5.0">
+   </s2>
+   
+    <anchor name="notes_250"/>
+     <s2 title="Release notes for &xslt4j; 2.5.0">
+     <p>&xslt4j; 2.5.0 was released on April 16,2003.
+     </p>
      <p>&xslt4j; 2.5.0 contains a variety of features, bug fixes and 
         performance enhancements since 2.5.D1.</p>
      <p>New features in &xslt4j; 2.5.0 include:
@@ -476,8 +588,12 @@
      <p>Refer to <link idref="whatsnew">What's New</link> for a description of the new function 
         and <link idref="history">History of software changes</link> for a list of the various 
         bug fixes and other enhancements in this release.</p>
-     </s3>
-     <s3 title="Changes in &xslt4j; 2.5.D1">
+     </s2>
+     
+     <anchor name="notes_25D1"/>
+     <s2 title="Release notes for &xslt4j; 2.5.D1">
+     <p>&xslt4j; 2.5.D1 was released on March 3, 2003.
+     </p>
      <p>This developer's release, Xalan-Java 2.5.D1, has changes since 2.4.1 and
         is primarily for the purpose of releasing 
         various bug fixes to the community.  These will eventually be released officially in 
@@ -526,14 +642,18 @@
      <jump href="http://issues.apache.org/bugzilla/show_bug.cgi?id=17030">17030</jump>,
      <jump href="http://issues.apache.org/bugzilla/show_bug.cgi?id=17136">17136</jump></li>
      <li>Support for and bundling of Xerces Java 2.3.</li>     
-     <li>Support for and bundling of xml-apis.jar from the tck-jaxp-1_2_0 branch of xml-commons.
+     <li>Support for and bundling of <code>xml-apis.jar</code> from the tck-jaxp-1_2_0 branch of xml-commons.
          This version of the Java APIs for XML Processing successfully passes the JAXP 1.1 and 
          JAXP 1.2 TCKs.</li>     
      <li>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
-     <resource-ref idref="apache-mail-archive" />.</li>         
+     <resource-ref idref="apache-mail-archives" />.</li>         
      </ul>     
-     </s3>     
-     <s3 title="Changes since &xslt4j; 2.4.0">
+     </s2>  
+     
+     <anchor name="notes_241"/>   
+     <s2 title="Release notes for &xslt4j; 2.4.1">
+     <p>&xslt4j; 2.4.1 was released on October 31, 2002 (Halloween!).
+     </p>
      <ul>
       <li>Performance fixes and enhancements to address the degradation of performance between Xalan-Java
       version 2.3.1 and Xalan-Java 2.4.0.</li>
@@ -606,14 +726,18 @@
      <jump href="http://issues.apache.org/bugzilla/show_bug.cgi?id=13944">13944</jump>,
      <jump href="http://issues.apache.org/bugzilla/show_bug.cgi?id=14022">14022</jump></li> 
      <li>Support for and bundling of Xerces Java 2.2.</li>
-     <li>Support for and bundling of xml-apis.jar from the factoryfinder-build of the RIVERCOURT1 branch of xml-commons.  This version of the Java
+     <li>Support for and bundling of <code>xml-apis.jar</code> from the factoryfinder-build of the RIVERCOURT1 branch of xml-commons.  This version of the Java
      APIs for XML Processing successfully passes the JAXP 1.1 and JAXP 1.2 TCKs.</li>
      <li>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
-     <resource-ref idref="apache-mail-archive" />.</li>
+     <resource-ref idref="apache-mail-archives" />.</li>
      <li>Support building Xalan with JDK 1.4.</li>
      </ul>
-     </s3>
-     <s3 title="Changes since &xslt4j; 2.3.1">
+     </s2>
+     
+     <anchor name="notes_240"/>
+     <s2 title="Release notes for &xslt4j; 2.4.0">
+     <p>&xslt4j; 2.4.0 was released on September 3, 2002.
+     </p>
      <ul>
      <li>Fixes for the following bugzilla defects : 
      <jump href="http://issues.apache.org/bugzilla/show_bug.cgi?id=3238">3238</jump>,
@@ -680,14 +804,14 @@
      <li>Separation of source and messages.  Messages have been moved into property files for easier localization.</li>
      <li>XSLTC version upgraded from 1.0 to 1.2.</li>
      <li>Support for and bundling of Xerces Java 2.1.</li>
-     <li>Support for and bundling of xml-apis.jar from the RIVERCOURT1 branch of xml-commons.  This version of the Java
+     <li>Support for and bundling of <code>xml-apis.jar</code> from the RIVERCOURT1 branch of xml-commons.  This version of the Java
      APIs for XML Processing successfully passes the JAXP 1.1 and JAXP 1.2 TCKs.</li>
      <li>For a list of &xslt4j; commits, see xalan-cvs@xml.apache.org in the
-     <resource-ref idref="apache-mail-archive" />.</li>
+     <resource-ref idref="apache-mail-archives" />.</li>
      </ul>
-     </s3>
+     </s2>
      <anchor name="other"/>
-     <s3 title="Other points of interest">
+     <s2 title="Other points of interest">
      <ul>
      <li>Xalan Java 2 is integrated with release 2 of &xml4j;. &xslt4j-current; does not include support for the deprecated &xslt4j; 1 compatability API. 
      The &xslt4j; 1 compatability code does NOT compile with &xml4j2;.<br/><br/></li>
@@ -732,101 +856,9 @@
      setTransformState event until after the startDocument event. This could present a problem for tools developers, and we do intend to fix this 
      bug.</li> 
      </ul>
-     </s3>
-     <anchor name="status"/>
-     <s3 title="Version of Xerces to use"> 
-       <p>The &xslt4j-current; has been tested with &xml4j-used;. &download; For information about including &xml4j-jar; and xml-apis.jar on the system class path, see <link idref="getstarted" anchor="classpath">Setting up the system class path</link>.</p>
-       <p><em>Important</em> You may experience unpredictable anomalies if your &xslt4j; and &xml4j; builds are not in synch. If you download an update to &xslt4j;, check the release notes to determine which version of &xml4j; you should use.</p>
-       <note>You can use &xslt4j; with other XML parsers that implement the <resource-ref idref="jaxp12"/>. See 
-       <link idref="usagepatterns" anchor="plug">Plugging in the Transformer and XML parser</link>.</note>
-     </s3>
-  </s2>
-  <anchor name="build"/>  
-  <s2 title="Build Notes">
-  <p>We provide two distributions: a binary distribution, and a source distribution. See <link idref="getstarted" anchor="download">Downloading
-  what you need</link>. If you have downloaded the binary distribution, you already have a build. If you downloaded the source
-  distribution, you can use Ant to build &xslt4j;, including xalan.jar, serializer.jar, xalansamples.jar, xalanservlet.war, the
-  user documentation, and the Javadoc API documentation. You need the source distribution to do builds. Keep in mind that if you have also
-  downloaded the binary distribution, any builds you run will overwrite that binary distribution.</p>
-<ul>
-<li><link anchor="ant">Using Ant</link></li>
-<li><link anchor="jar">Building xalan.jar and serializer.jar</link></li>
-<li><link anchor="samples">Building sample applications</link></li>
-<li><link anchor="doc">Building the &xslt4j; documentation</link></li>
-</ul>
-<anchor name="ant"/>
-   <s3 title="Using Ant">
-     <p>Apache <resource-ref idref="ant"/> is a flexible, powerful, and easy-to-use Java build tool that we include with the
-     &xslt4j; distribution. The Ant JAR file is in the tools directory, and the cross-platform XML build file (build.xml) is in 
-     the root directory along with a Windows32 batch file (build.bat) and a UNIX shell file (build.sh). The build file defines 
-     the "targets" that you can use Ant to build. The batch and shell files set up the classpath and launch Ant with the target 
-     (and any other arguments) you provide.</p>
-     <p><em>Instructions for using Ant</em></p>
-     <ol>
-       <li>Set the JAVA_HOME environment variable to the JDK root directory.<br/><br/>
-       JDK 1.3.1 or higher is required to build &xslt4j;. You must put tools.jar from the JDK
-       bin directory on the classpath.<br/><br/></li>
-       <li>Depending on your environment, run the batch file (build.bat) or shell file (build.sh) 
-       from the &xslt4j; root directory, optionally with arguments (see the table of targets below).<br/><br/>
-       The batch/shell file adds several JAR files to the classpath and launches Ant with any arguments 
-       you provide. If you provide no target, Ant compiles the source files and rebuilds xalan.jar 
-       (the "jar" target).</li>
-     </ol>
-     <p>You can also set up your classpath manually (see build.bat or build.sh for the details), and 
-     then run Ant as follows:<br/><br/>
-     <code>java org.apache.tools.ant.Main <ref>target</ref></code><br/><br/>
-     where <ref>target</ref> is nothing (for the default target) or one of the following.</p>
-     <table>
-       <tr><td><em>Target</em></td><td><em>What Ant does</em></td></tr>
-       <tr><td>compile</td><td>compiles &xslt4j; in build/classes.</td></tr>
-       <tr><td>jar (the default)</td><td>creates xalan.jar and serializer.jar in the build directory</td></tr>
-       <tr><td>samples</td><td>compiles and jars the sample apps in build/xalansamples.jar</td></tr>
-       <tr><td>servlet</td><td>compiles and jars the sample servlet in build/xalanservlet.jar</td></tr>
-       <tr><td>docs</td><td>creates the HTML User's Guide in build/docs</td></tr>
-       <tr><td>javadocs</td><td>generates the API documentation in ./build/docs/apidocs</td></tr>
-       <tr><td>fulldist</td><td>generates a complete distribution tree with zip and tar.gz distribution files in build</td></tr>
-       <tr><td>clean</td><td>purges the build and distribution</td></tr> 
-  </table>
-  <p>If you build a target that depends on other targets, Ant creates those other targets in the correct order.</p>
-   </s3><anchor name="jar"/> 
-   <s3 title="Building &xslt4j;">
-     <p>The &xslt4j; build is in xalan.jar.  The serializer classes of &xslt4j; are in serializer.jar. The &xslt4j; 
-     source code tree is in the src directory.</p>
-     <p>If you are using Ant, the target is jar (the default). For more information, see <link anchor="ant">Using
-     Ant</link>.</p>
-     <p>If you want to do the build without Ant, keep the following in mind:</p>
-     <ul>
-     <li>Set the classpath to include the src directory, &xml4j-jar;, and xml-apis.jar.</li>
-     <li>Use a Java compiler (such as the IBM Just-In-Time compiler or the Sun javac) to compile all the .java files in the src
-     tree. </li>
-     <li>Use the Sun jar utility to store the resulting .class files in xalan.jar</li>
-     </ul>
-   </s3><anchor name="samples"/>
-   <s3 title="Rebuilding a sample application">
-   <p>If you modify a sample and want to recompile it, you can run the Java compiler in the directory containing the
-   example. Be sure xalan.jar, serializer.jar, xml-apis.jar, and &xml4j-jar; are on the classpath. </p>
-   <p>To recompile and run the class files in the servlet subdirectory, the javax.servlet and 
-   javax.servlet.http packages must also be on the classpath. These packages are available via
-   the servlet.jar file found in Apache Tomcat ( see <resource-ref idref="tomcat"/> ).</p>
-   <p>After recompiling a sample, you can use the Sun jar utility to place your new .class files in
-    xalansamples.jar.</p>
-    <p>You can use Ant with the samples target to recompile the samples and place the unpackaged class files in xalansamples.jar.
-     For more information, see <link anchor="ant">Using Ant</link>.</p>
-    <note>To rebuild (and to run) the sample servlet, the javax.servlet and javax.servlet.http packages must be on your
-    classpath.</note>
-   </s3><anchor name="doc"/>
-   <s3 title="Rebuilding the &xslt4j; documentation">
-     <p>&xslt4j; includes a number of XML source files, XSL stylesheets, document type definition (DTD)
-      files, entity relationship (ENT) files, graphics, and a JavaScript file that provide the input for the &xslt4j;
-      HTML User's Guide, and the overview and package-level documents used during the generation of Javadoc.</p>
-      <p>To rebuild the documentation, you must use the StyleBook tool and the JDK 1.2.2 java and javadoc
-      tools. StyleBook (which uses Xalan and Xerces) is in stylebook-1.0-b2.jar. Some of the document definition files,
-      stylesheets, and resources are stored in xml-site-style.tar.gz, and are unzipped when you run Ant as described
-       below.</p>
-      <p>You can use Ant with the docs target to regenerate the User's Guide and with the javadocs target to regenerate the
-      Javadoc API documentation. For more information, see <link anchor="ant">Using Ant</link>.</p>
-   </s3>    
- </s2>
+     </s2>
+
+
 
 <!-- We need to overhaul this list if we still want to publish it.  
      It should probably be broken out into active & past contributors.

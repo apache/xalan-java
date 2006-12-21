@@ -32,8 +32,8 @@
     do the following:</p>
  		<ol>
     <li>Download &xslt4j;.<br/><br/></li> 
-    <li><link idref="getstarted" anchor="classpath">Set the Java classpath</link> to include xalan.jar, serializer.jar, xml-apis.jar, and
-    &xml4j-jar; -- or another conformant XML Parser -- (see <link idref="usagepatterns" anchor="plug">Plugging in 
+    <li><link idref="getstarted" anchor="classpath">Set the Java classpath</link> to include <code>xalan.jar</code>, <code>serializer.jar</code>, <code>xml-apis.jar</code>, and
+    <code>&xml4j-jar;</code> -- or another conformant XML Parser -- (see <link idref="usagepatterns" anchor="plug">Plugging in 
     the Transformer and XML parser</link>).<br/><br/></li>
     <li>Call java and the Process class with the appropriate flags and
     arguments (described below). The following command line, for example, includes the -IN, -XSL,
