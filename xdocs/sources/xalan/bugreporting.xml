@@ -29,32 +29,40 @@
       <link idref="downloads">latest code</link>
       and check if you can reproduce the bug.</li>
   <li>Report bugs against the newest release.</li>
-  <li>Read <jump href="http://issues.apache.org/jira">JIRA Notes</jump>.</li>
   </ul>
   <p>We strongly encourage you to write patches for problems you find and attach
      them to your JIRA issue. Being specific in the description of your bug report, and 
      providing enough information to reproduce the bug will improve the likelihood that 
      bugs, adding enhancements, and addressing outstanding design issues, we need your 
-     active participation in the ongoing development of Xalan Java.</p>
-  <note>If you had a bugzilla account previously, and had used it with Xalan bugzilla bugs, 
-        your account should be migrated to JIRA. In this case, do not create a new account, 
-        but use the same e-mail account name and click on "Forgot Password" on the JIRA home page.</note>
+     active participation in the ongoing development of Xalan Java.</p>  
   </s2>
   
   <s2 title="Bugzilla is not used">
     <p>
-      The old bug tracking system, bugzilla, is still available at
-      <resource idref="old-bugzilla"/> but please don't use bugzilla except to
-      look up old issues. Bugzilla has been replaced by JIRA.
+      The old bug tracking system, 
+      <jump href="http://issues.apache.org/bugzilla/">bugzilla</jump>,
+      is still available but please only use it to look up old bugs.
+      Bugzilla has been replaced by <jump href="http://issues.apache.org/jira/browse/XALANJ">JIRA</jump>
+      and old bugzilla <em>bugs</em> have been migrated to JIRA as <em>issues</em>.
     </p>
   </s2>
   
-  <s2 title="Report a bug">  
+<s2 title="Report a bug">  
   <p>After reading the instructions above, click 
-     <jump href="http://issues.apache.org/jira/browse/XALANJ">here</jump> to submit a bug report using JIRA.</p>
+     <jump href="http://issues.apache.org/jira/browse/XALANJ">here</jump> to submit a bug report using JIRA.
+  </p>
+  <p>
      Note that the functionality shown by the JIRA user interface changes depending on whether
      you <em>Log In</em> or not. In particular, to have the <em>CREATE NEW ISSUE</em> link 
      you will need to click the <em>Log In</em> in small font, in the top right corner
-     of the page.
-  </s2>
+     of the page and log in.
+  </p>
+  <p>
+     <note>
+       If you had a bugzilla account previously, and had used it with Xalan bugzilla bugs, 
+       your account should be migrated to JIRA. In this case, do not create a new account, 
+       but use the same e-mail account name and click on "Forgot Password" on the JIRA home page.
+     </note>
+  </p>
+</s2>
 </s1>

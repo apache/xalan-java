@@ -19,24 +19,40 @@
  
 <!-- apologies in advance for the brief writing style! -sc -->
 
-<s1 title="&xslt4j; Builds">
+<s1 title="&xslt4j; Release builds">
 <ul>
 <li><link anchor="intro">Introduction</link></li>
 <li><link anchor="developers">Developer Guidelines</link></li>
 <li><link anchor="builds">Running Product Builds - Overview</link></li>
 <li><link anchor="builds2">Running Product Builds - Details</link></li>
 </ul>
-<note>The product build related sections of this document are still 
-quite thin - they're mainly bullet points almost in checklist style.  
-If you don't fully understand the procedures in this document, then 
-you probably should ask for help first!</note> 
 
 
 <anchor name="intro"/>
 <s2 title="Introduction">
-  <p>A selection of brief checklists for committers and developers 
-  about build procedures for the &xslt4j; community.  Community input 
-  is appreciated; if you have questions, please ask on xalan-dev.</p> 
+  <p>
+    This page is <em>not</em> for users
+    who want to download pre-built jars of &xslt4j; or download 
+    the source code for &xslt4j; and build from that.
+    Users who want to do that 
+    should see the <link idref="downloads">Download/Build</link> page.
+  </p>
+  <p>
+    This page is intended for Xalan committers and developers and is about the 
+    process to create a new release. It
+    provides a selection of brief checklists for committers and developers 
+    about build procedures for the &xslt4j; community.  Community input 
+    is appreciated; if you have questions, please ask on
+    <link idref="contact_us">xalan-dev</link>.
+  </p> 
+  <p>
+    <note>The product build related sections of this document are still 
+    quite thin - they're mainly bullet points almost in checklist style.  
+    If you don't fully understand the procedures in this document, then 
+    you probably should ask for help first!
+    </note> 
+  </p>
+  
 </s2>
 
 
@@ -145,7 +161,7 @@ other xml.apache.org projects know our plans, although this is not required.</p>
 checked in; make sure any open work by other committers is in a stable state. 
 You should also review any other projects we're dependent on and make sure 
 that (when possible) we've updated to the latest version of their .jar files: 
-like xercesImpl.jar, ant.jar, etc.  Note that occasionally we will have a specific 
+like <code>xercesImpl.jar</code>, <code>ant.jar</code>, etc.  Note that occasionally we will have a specific 
 development need to stay with a different version of these projects.</p>
 </s3>
 
@@ -181,7 +197,7 @@ Update the following lines for each version field:<br/>
 &lt;property name="parser.version.MINOR" value="1"/><br/>
 <br/></li>
 <li>xml-xalan/java/xdocs/sources/xalan-jsite (document id="index" label="Xalan-Java x.x")<br/><br/></li>
-<li>If you updated xercesImpl.jar or xml-apis.jar, add a new entry in
+<li>If you updated <code>xercesImpl.jar</code> or <code>xml-apis.jar</code>, add a new entry in
 xml-xalan/java/src/org/apache/xalan/xslt/EnvironmentCheck.java</li>
 </ul>
 <p>I did remind you to check in all your work, didn't I?</p>
@@ -211,7 +227,7 @@ to see the exact format of previous builds.</p>
 </ul>
 <p>The above command will build the binary and source distribution .zip/.tar.gz 
 files, in which the Xalan Interpretive and Xalan Compiled (XSLTC) processors
-are combined into the xalan.jar file.  All the samples and the documentation
+are combined into the <code>xalan.jar</code> file.  All the samples and the documentation
 are built as well. The log of the build is saved in ..\fulldist.log.  Note 
 that this will take up a moderate amount of space, especially when building 
 the .tar.gz files, so ensure you have plenty of disk space first.</p>
@@ -226,7 +242,7 @@ Note that you can ignore any 'warnings' from the javadoc target; however any
 the 'fulldist' command above to another name, for example, build-combinedjar.  The 
 'fulldist-separatejars' command will build the binary and source distribution 
 .zip/.tar.gz files, in which the Xalan Interpretive and Xalan Compiled (XSLTC) processors
-are built into separate jars; xalan.jar and xsltc.jar respectively.  All the samples and 
+are built into separate jars; <code>xalan.jar</code> and <code>xsltc.jar</code> respectively.  All the samples and 
 the documentation are built as well.  The log of the build is saved in ..\fulldist-separatejars.log.
 Note that this will take up a moderate amount of space, especially when building the .tar.gz 
 files, so ensure you have plenty of disk space first.</p>
@@ -307,6 +323,59 @@ to update the 'Latest Stable Build' and 'Latest Developers Build' lines
 as needed.  If you don't understand the format of this file, ask for help.</p>
 
 </s3>
+
+
+
+  <anchor name="doc"/>
+  <s3 title="Rebuilding the &xslt4j; documentation">
+    <p>&xslt4j; includes a number of XML source files, XSL stylesheets, document type definition (DTD)
+      files, entity relationship (ENT) files, graphics, and a JavaScript file that provide the input for the &xslt4j;
+      HTML User's Guide, and the overview and package-level documents used during the generation of Javadoc.
+    </p>
+    <p>
+      Before rebuilding the documentation there are probably a number of pages
+      that need to be updated, at a minimum consider these:
+      
+      <table>
+        <tr><td><em>XML source file</em></td><td><em>Description of contents</em></td></tr>
+        <tr><td>downloads.xml</td><td>how to download releases</td></tr>
+        <tr><td>readme.xml</td><td>has the release notes for each release (most recent to the oldest release)</td></tr>
+        <tr><td>whatsnew.xml</td><td>describes what is new in the latest release</td></tr>
+      </table>
+    <p>
+      For a new release it is quite likely that some information in the
+      <em>whatesnew.xml</em> page needs to be moved into the appropriate
+      section of the <em>readme.xml</em> or release notes page before 
+      updating both of these pages with the information for the new release.
+    </p>  
+    </p> 
+    <p>To rebuild the documentation, you must use the StyleBook tool and the JDK 1.2.2 java and javadoc
+      tools. StyleBook (which uses Xalan and Xerces) is in <code>stylebook-1.0-b2.jar</code>. Some of the document definition files,
+      stylesheets, and resources are stored in xml-site-style.tar.gz, and are unzipped when you run Ant as described
+       below.
+    </p>
+    <p>You can use Ant with the docs target to regenerate the User's Guide and with the javadocs target to regenerate the
+      Javadoc API documentation.
+    </p>
+    <p>
+      When building the Javadoc API documentation, or the HTML pages for
+      the website the following Ant Targets are of interest:
+    </p>
+    <table>
+       <tr><td><em>Ant Target</em></td><td><em>What Ant does</em></td></tr>
+       <tr><td>javadocs</td><td>creates the API documentation</td></tr>
+       <tr><td>serializer.javadocs</td><td>creates the API documetation for the serializer</td></tr>
+       <tr><td>site</td><td>creates the HTML pages for the site http://xml.apache.org/xalan-j</td></tr>
+       <tr><td>xalan.apache.org.site</td><td>creates the HTML pages for the site http://xalan.apache.org</td></tr>
+  </table>
+  </s3>  
+
+
+
+
+
+
+
 
 <s3 title="Post-Build Docs and Email">
 <p>Update the live website doc and let the community know you're done!</p>

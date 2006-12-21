@@ -28,12 +28,12 @@ the &xslt4j; Interpretive processor. See <link idref="xsltc_usage">Getting Start
 </link> for information on using the &xslt4j; Compiling processor.</note><br></br>
 <anchor name="classpath"/>
 <s2 title="Setting up the system classpath">
-  <p>At the very minimum, you must include xalan.jar, serializer.jar, xml-apis.jar, 
-     and &xml4j-jar; -- or another conformant XML parser -- see <link idref="usagepatterns" 
+  <p>At the very minimum, you must include <code>xalan.jar</code>, <code>serializer.jar</code>, <code>xml-apis.jar</code>, 
+     and <code>&xml4j-jar;</code> -- or another conformant XML parser -- see <link idref="usagepatterns" 
      anchor="plug">Plugging in a Transformer and XML parser</link>) on the system classpath. 
-     To run the &xslt4ji; processor sample applications, include xalansamples.jar 
-     (all samples other than the servlet) and xalanservlet.jar. All these JAR files are 
-     distributed with &xslt4j;. To run Javascript extensions, include bsf.jar, which can
+     To run the &xslt4ji; processor sample applications, include <code>xalansamples.jar</code> 
+     (all samples other than the servlet) and <code>xalanservlet.jar</code>. All these JAR files are 
+     distributed with &xslt4j;. To run Javascript extensions, include <code>bsf.jar</code>, which can
      be obtained from the <jump href="http://jakarta.apache.org/bsf/index.html">Apache Jakarta
      BSF project</jump>. For extensions implemented in other scripting language, see 
      <link idref="extensions" anchor="supported-lang"> extensions language requirements</link> 
@@ -42,8 +42,8 @@ the &xslt4j; Interpretive processor. See <link idref="xsltc_usage">Getting Start
      
   <p>If you are using XSLTC, see <link idref="xsltc_usage">Getting Starting with XSLTC</link>.</p>
      
-  <p>If you are using JDK or JRE 1.3.x or 1.4.x, include tools.jar on the classpath.  If you
-     are using JDK or JRE 1.1.8 (supported for runtime only), then include classes.zip on the 
+  <p>If you are using JDK or JRE 1.3.x or 1.4.x, include <code>tools.jar</code> on the classpath.  If you
+     are using JDK or JRE 1.1.8 (supported for runtime only), then include <code>classes.zip</code> on the 
      classpath.</p>
 </s2>
 
@@ -54,8 +54,8 @@ the &xslt4j; Interpretive processor. See <link idref="xsltc_usage">Getting Start
      work.</p>
   <p>To run the samples, do the following:</p>
   <ol>
-    <li>Set up your classpath (see above), including xalansamples.jar and (for the servlet) 
-        xalanservlet.jar.</li>
+    <li>Set up your classpath (see above), including <code>xalansamples.jar</code> and (for the servlet) 
+        <code>xalanservlet.jar</code>.</li>
     <li>Be sure the java executable is on your path.</li>
     <li>Go to the samples subdirectory containing the sample (use the DOS shell if you are running 
         Windows).</li>

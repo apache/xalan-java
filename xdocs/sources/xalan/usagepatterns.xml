@@ -81,7 +81,7 @@ transformer.transform
 </s2><anchor name="plug"/>
 <s2 title="Plugging in a Transformer and XML parser">
 <p>The Java API for XML Processing interfaces enable you to isolate your application from the internal implementation details of a given Transformer, SAX parser, or DOM parser. For each of these objects, there is an abstract Factory class with a static newInstance() method that instantiates a concrete Factory which wraps the underlying implementation. These newInstance() methods use system property settings to determine which implementation to instantiate.</p>
-<p>&xslt4j; is distributed with a system property setting for the &xslt4j; processor. This setting is in xalan.jar in META-INF/services (see src/META-INF/services).</p>
+<p>&xslt4j; is distributed with a system property setting for the &xslt4j; processor. This setting is in <code>xalan.jar</code> in META-INF/services (see src/META-INF/services).</p>
 <gloss>
   <label>System property</label>
     <item>Setting</item>
@@ -101,7 +101,7 @@ transformer.transform
 <ol>
   <li>Set the system property from the command line when you launch Java or from within your application.<br/><br/></li>
   <li>Set the system property in jaxp.properties in the JAVA_HOME/lib directory, where JAVA_HOME is the root of the JDK.<br/><br/></li>
-  <li>Revise the entry in src/META-INF/services and rebuild xalan.jar or &xml4j-jar;, depending on which entry you have changed.<br/><br/></li>
+  <li>Revise the entry in src/META-INF/services and rebuild <code>xalan.jar</code> or <code>&xml4j-jar;</code>, depending on which entry you have changed.<br/><br/></li>
 </ol>
 <p>For example, to use the Crimson XML parser in place of the Xerces XML parser, place Crimson on the class path and set the 
 <code>javax.xml.parsers.SAXParserFactory</code> system property to <code>org.apache.crimson.jaxp.SAXParserFactoryImpl</code>.</p>
@@ -128,7 +128,7 @@ You can override the Xalan specific default settings as follows:</p>
               indent="yes" 
               xalan:indent-amount="2"/&gt;</source>
   <p>If you want to change the property settings globally, edit the values in the property files in src/org/apache/xml/serializer, 
-  and use Ant to <link idref="readme" anchor="jar">rebuild serializer.jar</link>. Be aware that if you change the default value
+  and use Ant to <link idref="readme" anchor="jar">rebuild <code>serializer.jar</code></link>. Be aware that if you change the default value
   of a standard property, such as the default encoding value, this may be in conflict with the default value specified by the XSLT 1.0 
   recommendation.</p>
 <p>The properties files define the following properties:</p>
@@ -181,7 +181,7 @@ interface and recieves calls during result tree serialization. If you specify an
 alternate Java class it must implement the ContentHandler interface.</note>
 <note>You can also create your own XML entity file (mapping characters to
 entities) or edit src/org/apache/xml/serializer/XMLEntities.properties and
-rebuild serializer.jar.</note>
+rebuild <code>serializer.jar</code>.</note>
 <p><ref>output_html.properties</ref>:</p>
 <table>
   <tr>
@@ -226,7 +226,7 @@ rebuild serializer.jar.</note>
 interface and recieves calls during result tree serialization. If you specify an 
 alternate Java class it must implement the ContentHandler interface.</note>
 <note>You can also create your own HTML entity file (mapping characters to entities) 
-or edit src/org/apache/xml/serializer/HTMLEntities.properties and rebuild serializer.jar.</note>
+or edit src/org/apache/xml/serializer/HTMLEntities.properties and rebuild <code>serializer.jar</code>.</note>
 <p><ref>output_text.properties</ref>:</p>
 <table>  
   <tr>
