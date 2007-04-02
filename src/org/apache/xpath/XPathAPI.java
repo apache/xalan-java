@@ -220,7 +220,9 @@ public class XPathAPI
     // (Changed from: XPathContext xpathSupport = new XPathContext();
     //    because XPathContext is weak in a number of areas... perhaps
     //    XPathContext should be done away with.)
-    XPathContext xpathSupport = new XPathContext();
+    // Create an XPathContext that doesn't support pushing and popping of
+    // variable resolution scopes.  Sufficient for simple XPath 1.0 expressions.
+    XPathContext xpathSupport = new XPathContext(false);
 
     // Create an object to resolve namespace prefixes.
     // XPath namespaces are resolved from the input context node's document element
@@ -274,8 +276,11 @@ public class XPathAPI
     // Create the XPath object.
     XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
 
+    // Create an XPathContext that doesn't support pushing and popping of
+    // variable resolution scopes.  Sufficient for simple XPath 1.0 expressions.
+    XPathContext xpathSupport = new XPathContext(false);
+
     // Execute the XPath, and have it return the result
-    XPathContext xpathSupport = new XPathContext();
     int ctxtNode = xpathSupport.getDTMHandleFromNode(contextNode);
 
     return xpath.execute(xpathSupport, ctxtNode, prefixResolver);
