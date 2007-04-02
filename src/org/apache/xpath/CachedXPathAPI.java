@@ -72,7 +72,9 @@ public class CachedXPathAPI
    */
   public CachedXPathAPI()
   {
-    xpathSupport = new XPathContext();
+    // Create an XPathContext that doesn't support pushing and popping of
+    // variable resolution scopes.  Sufficient for simple XPath 1.0 expressions.
+    xpathSupport = new XPathContext(false);
   }
   
   /**
@@ -326,8 +328,11 @@ public class CachedXPathAPI
     // Create the XPath object.
     XPath xpath = new XPath(str, null, prefixResolver, XPath.SELECT, null);
 
+    // Create an XPathContext that doesn't support pushing and popping of
+    // variable resolution scopes.  Sufficient for simple XPath 1.0 expressions.
+    XPathContext xpathSupport = new XPathContext(false);
+
     // Execute the XPath, and have it return the result
-    XPathContext xpathSupport = new XPathContext();
     int ctxtNode = xpathSupport.getDTMHandleFromNode(contextNode);
 
     return xpath.execute(xpathSupport, ctxtNode, prefixResolver);
