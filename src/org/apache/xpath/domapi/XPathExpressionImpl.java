@@ -157,8 +157,11 @@ class XPathExpressionImpl implements XPathExpression {
             throw new XPathException(XPathException.TYPE_ERR,fmsg); // Invalid XPath type argument: {0}               
         }
         
-        // Cache xpath context?
-        XPathContext xpathSupport = new XPathContext();
+        // Create an XPathContext that doesn't support pushing and popping of
+        // variable resolution scopes.  Sufficient for simple XPath 1.0
+        // expressions.
+        //    Cache xpath context?
+        XPathContext xpathSupport = new XPathContext(false);
         
         // if m_document is not null, build the DTM from the document 
         if (null != m_doc) {
