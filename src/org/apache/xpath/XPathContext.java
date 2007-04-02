@@ -302,32 +302,56 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   }
 
   /**
-   * Create an XPathContext instance.
+   * Create an XPathContext instance.  This is equivalent to calling
+   * the {@link #XPathContext(boolean)} constructor with the value
+   * <code>true</code>.
    */
-  public XPathContext()
-  {
+  public XPathContext() {
+    this(true);
+  }
+
+  /**
+   * Create an XPathContext instance.
+   * @param recursiveVarContext A <code>boolean</code> value indicating whether
+   *             the XPath context needs to support pushing of scopes for
+   *             variable resolution
+   */
+  public XPathContext(boolean recursiveVarContext) {
     m_prefixResolvers.push(null);
     m_currentNodes.push(DTM.NULL);
     m_currentExpressionNodes.push(DTM.NULL);
     m_saxLocations.push(null);
+    m_variableStacks = recursiveVarContext ? new VariableStack()
+                                           : new VariableStack(1);
+  }
+
+  /**
+   * Create an XPathContext instance.  This is equivalent to calling the
+   * constructor {@link #XPathContext(java.lang.Object,boolean)} with the
+   * value of the second parameter set to <code>true</code>.
+   * @param owner Value that can be retrieved via the getOwnerObject() method.
+   * @see #getOwnerObject
+   */
+  public XPathContext(Object owner)
+  {
+    this(owner, true);
   }
 
   /**
    * Create an XPathContext instance.
    * @param owner Value that can be retrieved via the getOwnerObject() method.
    * @see #getOwnerObject
+   * @param recursiveVarContext A <code>boolean</code> value indicating whether
+   *             the XPath context needs to support pushing of scopes for
+   *             variable resolution
    */
-  public XPathContext(Object owner)
-  {
+  public XPathContext(Object owner, boolean recursiveVarContext) {
+    this(recursiveVarContext);
     m_owner = owner;
     try {
       m_ownerGetErrorListener = m_owner.getClass().getMethod("getErrorListener", new Class[] {});
     }
     catch (NoSuchMethodException nsme) {}
-    m_prefixResolvers.push(null);
-    m_currentNodes.push(DTM.NULL);
-    m_currentExpressionNodes.push(DTM.NULL);
-    m_saxLocations.push(null);
   }
 
   /**
@@ -447,7 +471,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * The stack of Variable stacks.  A VariableStack will be
    * pushed onto this stack for each template invocation.
    */
-  private VariableStack m_variableStacks = new VariableStack();
+  private VariableStack m_variableStacks;
 
   /**
    * Get the variable stack, which is in charge of variables and
