@@ -50,6 +50,17 @@ public class VariableStack implements Cloneable
   }
 
   /**
+   * Constructor for a variable stack.
+   * @param initStackSize The initial stack size.  Must be at least one.  The
+   *                      stack can grow if needed.
+   */
+  public VariableStack(int initStackSize)
+  {
+    // Allow for twice as many variables as stack link entries
+    reset(initStackSize, initStackSize*2);
+  }
+
+  /**
    * Returns a clone of this variable stack.
    *
    * @return  a clone of this variable stack.
@@ -72,7 +83,7 @@ public class VariableStack implements Cloneable
    * The stack frame where all variables and params will be kept.
    * @serial
    */
-  XObject[] _stackFrames = new XObject[XPathContext.RECURSIONLIMIT * 2];
+  XObject[] _stackFrames;
 
   /**
    * The top of the stack frame (<code>_stackFrames</code>).
@@ -92,7 +103,7 @@ public class VariableStack implements Cloneable
    * Motorola 68000 assembler</a> memories.  :-)
    * @serial
    */
-  int[] _links = new int[XPathContext.RECURSIONLIMIT];
+  int[] _links;
 
   /**
    * The top of the links stack.
@@ -123,20 +134,40 @@ public class VariableStack implements Cloneable
 
   /**
    * Reset the stack to a start position.
-   *
-   * @return the total size of the execution stack.
    */
   public void reset()
   {
+    // If the stack was previously allocated, assume that about the same
+    // amount of stack space will be needed again; otherwise, use a very
+    // large stack size.
+    int linksSize = (_links == null) ? XPathContext.RECURSIONLIMIT
+                                     : _links.length;
+    int varArraySize = (_stackFrames == null) ? XPathContext.RECURSIONLIMIT * 2
+                                              : _stackFrames.length;
+    reset(linksSize, varArraySize);
+  }
 
+  /**
+   * Reset the stack to a start position.
+   * @param linksSize Initial stack size to use
+   * @param varArraySize Initial variable array size to use
+   */
+  protected void reset(int linksSize, int varArraySize) {
     _frameTop = 0;
     _linksTop = 0;
+
+    // Don't bother reallocating _links array if it exists already
+    if (_links == null) {
+      _links = new int[linksSize];
+    }
 
     // Adding one here to the stack of frame positions will allow us always 
     // to look one under without having to check if we're at zero.
     // (As long as the caller doesn't screw up link/unlink.)
     _links[_linksTop++] = 0;
-    _stackFrames = new XObject[_stackFrames.length]; 
+
+    // Get a clean _stackFrames array and discard the old one.
+    _stackFrames = new XObject[varArraySize]; 
   }
 
   /**
