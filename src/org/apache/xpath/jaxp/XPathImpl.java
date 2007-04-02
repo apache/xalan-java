@@ -195,12 +195,16 @@ public class XPathImpl implements javax.xml.xpath.XPath {
         org.apache.xpath.XPath xpath = new org.apache.xpath.XPath( expression,
             null, prefixResolver, org.apache.xpath.XPath.SELECT ); 
         org.apache.xpath.XPathContext xpathSupport = null;
+
+        // Create an XPathContext that doesn't support pushing and popping of
+        // variable resolution scopes.  Sufficient for simple XPath 1.0
+        // expressions.
         if ( functionResolver != null ) {
             JAXPExtensionsProvider jep = new JAXPExtensionsProvider(
                     functionResolver, featureSecureProcessing );
-            xpathSupport = new org.apache.xpath.XPathContext( jep );
+            xpathSupport = new org.apache.xpath.XPathContext(jep, false);
         } else { 
-            xpathSupport = new org.apache.xpath.XPathContext();
+            xpathSupport = new org.apache.xpath.XPathContext(false);
         }
 
         XObject xobj = null;
