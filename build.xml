@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
- * Copyright 1999-2004 The Apache Software Foundation.
+ * Copyright 1999-2007 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,7 +81,6 @@ $Id$
 <!--  <property name="bin.dir"                value="./bin"/> -->
   <property name="build.dir"              value="./build"/> 
   <property name="lib.dir"                value="./lib"/>   
-  <property name="licenses.dir"           value="./licenses"/> 
   <property name="samples.dir"            value="./samples"/>   
   <property name="src.dir"                value="./src"/>  
   <property name="tools.dir"              value="./tools"/> 
@@ -118,10 +117,7 @@ $Id$
   <property name="taglet.jar.name"        value="xalan2jtaglet.jar"/>
   <property name="taglet.jar"             value="${tools.dir}/${taglet.jar.name}"/>
 
-    <!-- We don't need to package JLex in the xalan.jar, therefore the 
-         JLex license and readme files are not part of xsltc.deps.license -->
-  <property name="xsltc.deps.license"     value="BCEL.LICENSE.txt,BCEL.README.txt,runtime.LICENSE.txt,runtime.README.txt,regexp.LICENSE.txt,regexp.README.txt"/>
-  
+ 
   <!-- Relative locations of source directories -->
   <property name="manifest.mf"            value="./src/MANIFEST.MF"/>
   <property name="manifest.xsltc.mf"      value="./src/manifest.xsltc"/>
@@ -189,9 +185,6 @@ $Id$
   <property name="serializer.build.classes"     value="${serializer.build.dir}/serializer"/> 
   
   <!-- PROPERTIES TO MAKE THE SERIALIZER JAR ======================================= -->
-  <property name="serializer.notice"            value="serializer.NOTICE.txt"/>
-  <property name="serializer.license"           value="serializer.LICENSE.txt"/>  
-  <property name="serializer.readme"            value="serializer.README.txt"/>   
   <property name="serializer.manifest.basename" value="MANIFEST.SERIALIZER"/> 
   <property name="serializer.manifest"          value="${serializer.src.dir}/${serializer.manifest.basename}"/>
   <property name="serializer.impl.version"      value="${impl.version}"/>
@@ -249,28 +242,9 @@ $Id$
 
   <!-- patternsets for source and binary distribution packages -->
   <patternset id="bin-distro" >
+    <include name="${dist.file}/LICENSE.txt"/>
+    <include name="${dist.file}/NOTICE.txt"/>
     <include name="${dist.file}/readme.html"/>
-    <include name="${dist.file}/licenses/LICENSE.DOM-documentation.html"/>
-    <include name="${dist.file}/licenses/LICENSE.DOM-software.html"/>
-    <include name="${dist.file}/licenses/LICENSE-SAX.html"/>
-    <include name="${dist.file}/licenses/xalan.LICENSE.txt"/>
-    <include name="${dist.file}/licenses/xalan.NOTICE.txt"/>
-    <include name="${dist.file}/xalan.README.txt"/>    
-    <include name="${dist.file}/licenses/serializer.LICENSE.txt"/>
-    <include name="${dist.file}/licenses/serializer.NOTICE.txt"/>
-    <include name="${dist.file}/serializer.README.txt"/>
-    <include name="${dist.file}/licenses/xercesImpl.LICENSE.txt"/>
-    <include name="${dist.file}/licenses/xercesImpl.NOTICE.txt"/>    
-    <include name="${dist.file}/xercesImpl.README.txt"/>
-    <include name="${dist.file}/licenses/xml-apis.LICENSE.txt"/>
-    <include name="${dist.file}/licenses/xml-apis.NOTICE.txt"/>    
-    <include name="${dist.file}/xml-apis.README.txt"/>
-    <include name="${dist.file}/licenses/BCEL.LICENSE.txt"/>
-    <include name="${dist.file}/BCEL.README.txt"/>
-    <include name="${dist.file}/licenses/regexp.LICENSE.txt"/>
-    <include name="${dist.file}/regexp.README.txt"/>
-    <include name="${dist.file}/licenses/runtime.LICENSE.txt"/>
-    <include name="${dist.file}/runtime.README.txt"/>    
     <include name="${dist.file}/xalan.jar"/>
     <!-- xsltc.jar will only be picked up if it has been built -->
     <include name="${dist.file}/xsltc.jar"/>     
@@ -287,28 +261,9 @@ $Id$
     <include name="${dist.file}/docs/"/>
   </patternset>
   <patternset id="bin-distro-nodocs" >
+    <include name="${dist.file}/LICENSE.txt"/>
+    <include name="${dist.file}/NOTICE.txt"/>
     <include name="${dist.file}/readme.html"/>
-    <include name="${dist.file}/licenses/LICENSE.DOM-documentation.html"/>
-    <include name="${dist.file}/licenses/LICENSE.DOM-software.html"/>
-    <include name="${dist.file}/licenses/LICENSE-SAX.html"/>
-    <include name="${dist.file}/licenses/xalan.LICENSE.txt"/>
-    <include name="${dist.file}/licenses/xalan.NOTICE.txt"/>
-    <include name="${dist.file}/xalan.README.txt"/>    
-    <include name="${dist.file}/licenses/serializer.LICENSE.txt"/>
-    <include name="${dist.file}/licenses/serializer.NOTICE.txt"/>
-    <include name="${dist.file}/serializer.README.txt"/>
-    <include name="${dist.file}/licenses/xercesImpl.LICENSE.txt"/>
-    <include name="${dist.file}/licenses/xercesImpl.NOTICE.txt"/>    
-    <include name="${dist.file}/xercesImpl.README.txt"/>
-    <include name="${dist.file}/licenses/xml-apis.LICENSE.txt"/>
-    <include name="${dist.file}/licenses/xml-apis.NOTICE.txt"/>    
-    <include name="${dist.file}/xml-apis.README.txt"/>
-    <include name="${dist.file}/licenses/BCEL.LICENSE.txt"/>
-    <include name="${dist.file}/BCEL.README.txt"/>
-    <include name="${dist.file}/licenses/regexp.LICENSE.txt"/>
-    <include name="${dist.file}/regexp.README.txt"/>
-    <include name="${dist.file}/licenses/runtime.LICENSE.txt"/>
-    <include name="${dist.file}/runtime.README.txt"/>      
     <include name="${dist.file}/xalan.jar"/>
     <!-- xsltc.jar will only be picked up if it has been built -->
     <include name="${dist.file}/xsltc.jar"/>    
@@ -324,15 +279,14 @@ $Id$
     <include name="${dist.file}/samples/xsltcservlet.jar"/>
   </patternset>
   <patternset id="src-distro" >
+    <include name="${dist.file}/LICENSE.txt"/>
+    <include name="${dist.file}/NOTICE.txt"/>      
     <include name="${dist.file}/build.*"/>
     <include name="${dist.file}/commits.xml"/>
     <include name="${dist.file}/KEYS"/>
-    <include name="${dist.file}/readme.html"/>
-    <include name="${dist.file}/xalan.README.txt"/>
-    <include name="${dist.file}/serializer.README.txt"/>        
+    <include name="${dist.file}/readme.html"/>  
     <include name="${dist.file}/lib/"/>
     <include name="${dist.file}/tools/"/>
-    <include name="${dist.file}/licenses/"/>
     <include name="${dist.file}/samples/"/>
     <exclude name="${dist.file}/samples/xalansamples.jar"/>
     <exclude name="${dist.file}/samples/xalanservlet.war"/>
@@ -592,11 +546,6 @@ $Id$
 
   <!-- Copy license and readme files for XSLTC support jars -->
   <target name="xsltc.copy-licenses" depends="xsltc.prepare">
-<!--  
-    <echo message="Copying license files for XSLTC support jars"/>
-    <copy todir="${build.classes}">
-      <fileset dir="${lib.dir}" casesensitive="no" includes="${xsltc.deps.license}"/>
-    </copy> -->
   </target>
 
   <!-- A parametrized target which is used to copy and expand a XSLTC support jar -->
@@ -682,7 +631,6 @@ $Id$
       <fileset dir="${build.classes}" includes="JLex/**" />
       <fileset dir="${build.classes}" includes="java_cup/**" />
       <fileset dir="${build.classes}" includes="org/apache/regexp/**" />
-      <fileset dir="${build.classes}" includes="${xsltc.deps.license}" />
     </jar>
 
   </target>
@@ -1286,8 +1234,7 @@ $Id$
   <!-- =================================================================== -->  
   <target name="autodist-mkdirs">
     <mkdir dir="${dist.dir}"/>
-    <mkdir dir="${dist.dir}/lib"/>    
-    <mkdir dir="${dist.dir}/licenses"/> 
+    <mkdir dir="${dist.dir}/lib"/>   
     <mkdir dir="${dist.dir}/samples"/>       
     <mkdir dir="${dist.dir}/src"/>
     <mkdir dir="${dist.dir}/tools"/>     
@@ -1301,10 +1248,10 @@ $Id$
 
   <target name="autodist-copy-files">
 
-    <!-- Copy license files from license to distribution root -->
-    <copy todir="${dist.dir}/licenses">
-      <fileset dir="${licenses.dir}">
-        <include name="*.*"/>
+    <!-- Copy license files to distribution root -->
+    <copy todir="${dist.dir}">
+      <fileset dir=".">
+        <include name="LICENSE.txt,NOTICE.txt"/>
       </fileset>
     </copy>
 
@@ -1352,14 +1299,12 @@ $Id$
     </copy>
     <copy file="${build.serializer.jar}" todir="${dist.dir}" />
     
-    <copy file="${xmlapis.jar}" todir="${dist.dir}" /> 
-    <copy file="${lib.dir}/xml-apis.README.txt" todir="${dist.dir}" />    
+    <copy file="${xmlapis.jar}" todir="${dist.dir}" />  
     <copy file="${parser.jar}" todir="${dist.dir}" />        
-    <copy file="${lib.dir}/xercesImpl.README.txt" todir="${dist.dir}" />     
 
     <copy todir="${dist.dir}">
       <fileset dir="." includes="readme.html,KEYS,build.xml,build.sh,build.bat,commits.xml,
-                                 xalan.README.txt,serializer.README.txt"/>      
+                                 LICENSE.txt,NOTICE.txt"/>      
     </copy>
   </target>
 
@@ -1626,9 +1571,8 @@ $Id$
   <!-- patternset for source distribution packages -->
   <patternset id="serializer-src-distro" >
     <!-- some license and legal stuff -->
-    <include name="${serializer.dist.file}/licenses/${serializer.license}"/>
-    <include name="${serializer.dist.file}/licenses/${serializer.notice}"/>
-    <include name="${serializer.dist.file}/${serializer.readme}"/>    
+    <include name="${serializer.dist.file}/LICENSE.txt"/>
+    <include name="${serializer.dist.file}/NOTICE.txt"/> 
     <include name="${serializer.dist.file}/KEYS"/>  
 
     <!-- The build stuff that uses Ant and this file itself, build.xml
@@ -1645,34 +1589,21 @@ $Id$
 
     <!-- We need Ant in order to run build.xml in the source distribution -->
     <include name="${serializer.dist.file}/tools/ant.jar"/>
-    <include name="${serializer.dist.file}/tools/ant.LICENSE.txt"/>
-    <include name="${serializer.dist.file}/tools/ant.README.txt"/>
     <include name="${serializer.dist.file}/tools/antRun"/>
     <include name="${serializer.dist.file}/tools/antRun.bat"/>
 
     <!-- The serializer needs this jar in order to build -->
     <include name="${serializer.dist.file}/xml-apis.jar"/>
-    <include name="${serializer.dist.file}/licenses/xml-apis.LICENSE.txt"/>
-    <include name="${serializer.dist.file}/licenses/xml-apis.NOTICE.txt"/>
-    <include name="${serializer.dist.file}/licenses/LICENSE.DOM-documentation.html"/>
-    <include name="${serializer.dist.file}/licenses/LICENSE.DOM-software.html"/>
-    <include name="${serializer.dist.file}/licenses/LICENSE-SAX.html"/>
-    <include name="${serializer.dist.file}/licenses/LICENSE.DOM-software.html"/>
-    
-    <include name="${serializer.dist.file}/xml-apis.README.txt"/>
     
     <!-- Ant needs an XML parser in order to read in the build.xml, so it
          can even do the build ... this is a strange loop ... -->
     <include name="${serializer.dist.file}/xercesImpl.jar"/>
-    <include name="${serializer.dist.file}/licenses/xercesImpl.LICENSE.txt"/>
-    <include name="${serializer.dist.file}/licenses/xercesImpl.NOTICE.txt"/>
-    <include name="${serializer.dist.file}/xercesImpl.README.txt"/>
   </patternset>
 
   <!-- patternset for  binary distribution packages ... if needed
   <patternset id="serializer-bin-distro" >
-    <include name="${serializer.dist.file}/licenses/serializer.LICENSE.txt"/>
-    <include name="${serializer.dist.file}/licenses/serializer.NOTICE.txt"/>
+    <include name="${serializer.dist.file}/LICENSE.txt"/>
+    <include name="${serializer.dist.file}/NOTICE.txt"/>
     <include name="${serializer.dist.file}/KEYS"/>
     <include name="${serializer.dist.file}/${serializer.name}.jar"/>
     <include name="${serializer.dist.file}/${xmlapis.jar.name}"/>
@@ -1720,11 +1651,6 @@ $Id$
       <fileset dir="${serializer.src.dir}" includes="${serializer.reldir}/**/*.properties"/>
     </copy>
 
-<!-- Not sure why we want to include this in the jar when we
-     don't have this in xml-apis.jar, xercesImpl.jar, or xalan.jar
-    <copy todir="${serializer.build.classes}" file="${serializer.license}" />
-    <copy todir="${serializer.build.classes}" file="${serializer.notice}" />
-    <copy todir="${serializer.build.classes}" file="${serializer.readme}" />    -->
   </target>
 
 
@@ -1811,8 +1737,7 @@ $Id$
 
   <target name="serializer-autodist-mkdirs">
     <echo message="Serializer: making distribution directories" />
-    <mkdir dir="${serializer.dist.dir}"/>
-    <mkdir dir="${serializer.dist.dir}/licenses"/>    
+    <mkdir dir="${serializer.dist.dir}"/> 
     <mkdir dir="${serializer.dist.dir}/src"/>
     <mkdir dir="${serializer.dist.dir}/tools"/>      
   </target>
@@ -1839,13 +1764,11 @@ $Id$
     <!-- Copy runtime jars -->    
     <copy file="${lib.dir}/${xmlapis.jar.name}" todir="${serializer.dist.dir}" />
     <copy file="${lib.dir}/${parser.jar.name}" todir="${serializer.dist.dir}" />
-    <copy file="${lib.dir}/xml-apis.README.txt" todir="${serializer.dist.dir}" />
-    <copy file="${lib.dir}/xercesImpl.README.txt" todir="${serializer.dist.dir}" />        
 
     <!-- Copy licenses -->
-    <copy todir="${serializer.dist.dir}/licenses">
-      <fileset dir="./licenses" 
-               includes="serializer.*.txt,xml-apis.*.txt,xercesImpl.*.txt,LICENSE.DOM*,LICENSE-SAX*"/>
+    <copy todir="${serializer.dist.dir}">
+      <fileset dir="." 
+               includes="LICENSE.txt,NOTICE.txt"/>
     </copy>
 
     <!-- Copy tools -->
@@ -1854,7 +1777,7 @@ $Id$
     </copy>    
 
     <copy todir="${serializer.dist.dir}">
-      <fileset dir="." includes="KEYS,serializer.README.txt,build.xml,build.sh,build.bat"/>
+      <fileset dir="." includes="KEYS,build.xml,build.sh,build.bat"/>
     </copy>
   </target>
 
