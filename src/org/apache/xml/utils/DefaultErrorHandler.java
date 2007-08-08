@@ -79,10 +79,24 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    */
   public DefaultErrorHandler(boolean throwExceptionOnError)
   {
-    m_pw = new PrintWriter(System.err, true);
+    // Defer creation of a PrintWriter until it's actually needed
     m_throwExceptionOnError = throwExceptionOnError;
   }
 
+  /**
+   * Retrieve <code>java.io.PrintWriter</code> to which errors are being
+   * directed.
+   * @return The <code>PrintWriter</code> installed via the constructor
+   *         or the default <code>PrintWriter</code>
+   */
+  public PrintWriter getErrorWriter() {
+    // Defer creating the java.io.PrintWriter until an error needs to be
+    // reported.
+    if (m_pw == null) {
+      m_pw = new PrintWriter(System.err, true);
+    }
+    return m_pw;
+  }
 
   /**
    * Receive notification of a warning.
@@ -102,8 +116,10 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    */
   public void warning(SAXParseException exception) throws SAXException
   {
-    printLocation(m_pw, exception);
-    m_pw.println("Parser warning: " + exception.getMessage());
+    PrintWriter pw = getErrorWriter();
+
+    printLocation(pw, exception);
+    pw.println("Parser warning: " + exception.getMessage());
   }
 
   /**
@@ -130,7 +146,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
   public void error(SAXParseException exception) throws SAXException
   {
     //printLocation(exception);
-    // m_pw.println(exception.getMessage());
+    // getErrorWriter().println(exception.getMessage());
 
     throw exception;
   }
@@ -157,7 +173,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
   public void fatalError(SAXParseException exception) throws SAXException
   {
     // printLocation(exception);
-    // m_pw.println(exception.getMessage());
+    // getErrorWriter().println(exception.getMessage());
 
     throw exception;
   }
@@ -181,9 +197,10 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
    */
   public void warning(TransformerException exception) throws TransformerException
   {
-    printLocation(m_pw, exception);
+    PrintWriter pw = getErrorWriter();
 
-    m_pw.println(exception.getMessage());
+    printLocation(pw, exception);
+    pw.println(exception.getMessage());
   }
 
   /**
@@ -216,8 +233,10 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
       throw exception;
     else
     {
-      printLocation(m_pw, exception);
-      m_pw.println(exception.getMessage());
+      PrintWriter pw = getErrorWriter();
+
+      printLocation(pw, exception);
+      pw.println(exception.getMessage());
     }
   }
 
@@ -249,8 +268,10 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
       throw exception;
     else
     {
-      printLocation(m_pw, exception);
-      m_pw.println(exception.getMessage());
+      PrintWriter pw = getErrorWriter();
+
+      printLocation(pw, exception);
+      pw.println(exception.getMessage());
     }
   }
   
@@ -327,7 +348,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
         
     if(null != locator)
     {
-      // m_pw.println("Parser fatal error: "+exception.getMessage());
+      // getErrorWriter().println("Parser fatal error: "+exception.getMessage());
       String id = (null != locator.getPublicId() )
                   ? locator.getPublicId()
                     : (null != locator.getSystemId())

@@ -957,7 +957,7 @@ public final class BasisLibrary {
 	}
 	// Convert var/param -> node-set
 	else if (obj instanceof DTMAxisIterator) {
-	    return(((DTMAxisIterator)obj).cloneIterator());
+        return(((DTMAxisIterator)obj).cloneIterator().reset());
 	}
 	else {
 	    final String className = obj.getClass().getName();

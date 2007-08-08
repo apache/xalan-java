@@ -82,14 +82,6 @@ class VariableBase extends TopLevelElement {
     }
 
     /**
-     * Remove a reference to this variable. Called by VariableRef when this
-     * variable goes out of scope.
-     */
-    public void removeReference(VariableRefBase vref) {
-	_refs.remove(vref);
-    }
-
-    /**
      * Map this variable to a register
      */
     public void mapRegister(MethodGenerator methodGen) {
@@ -105,7 +97,7 @@ class VariableBase extends TopLevelElement {
      * Called when we leave the AST scope of the variable's declaration
      */
     public void unmapRegister(MethodGenerator methodGen) {
-	if (_refs.isEmpty() && (_local != null)) {
+	if (_local != null) {
 	    _local.setEnd(methodGen.getInstructionList().getEnd());
 	    methodGen.removeLocalVariable(_local);
 	    _refs = null;

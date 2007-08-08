@@ -202,7 +202,7 @@ public class ReverseAxesWalker extends AxesWalker
 
       clone.setRoot(this.getRoot());
 
-      clone.setPredicateCount(this.getPredicateCount() - 1);
+      clone.setPredicateCount(m_predicateIndex);
 
       clone.setPrevWalker(null);
       clone.setNextWalker(null);

@@ -103,12 +103,16 @@ public class XPathExpressionImpl  implements javax.xml.xpath.XPathExpression{
     private XObject eval ( Object contextItem )
             throws javax.xml.transform.TransformerException {
         org.apache.xpath.XPathContext xpathSupport = null;
+
+        // Create an XPathContext that doesn't support pushing and popping of
+        // variable resolution scopes.  Sufficient for simple XPath 1.0
+        // expressions.
         if ( functionResolver != null ) {
             JAXPExtensionsProvider jep = new JAXPExtensionsProvider(
                     functionResolver, featureSecureProcessing );
-            xpathSupport = new org.apache.xpath.XPathContext( jep );
+            xpathSupport = new org.apache.xpath.XPathContext(jep, false);
         } else {
-            xpathSupport = new org.apache.xpath.XPathContext();
+            xpathSupport = new org.apache.xpath.XPathContext(false);
         }
 
         xpathSupport.setVarStack(new JAXPVariableStack(variableResolver));

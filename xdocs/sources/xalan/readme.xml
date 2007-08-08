@@ -34,7 +34,7 @@
   
    <anchor name="notes_latest"/>
    <s2 title="Release notes for &xslt4j; 2.7.1">
-     <p>&xslt4j; 2.7.1 was released in December 2006.
+     <p>&xslt4j; 2.7.1 was released in August 2007.
      </p>
       <p>
       The serializer now has support for DOM Level 3 serialization
@@ -74,12 +74,14 @@
      <li>XALANJ Jira bug fixes:
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-611">611</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1324">1324</jump>,
+       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1434">1434</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1497">1497</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1706">1706</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1753">1753</jump>,
+       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1774">1774</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2061">2061</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2091">2091</jump>,
-       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2133">2133</jump>,
+       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2108">2108</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2159">2159</jump>,       
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2184">2184</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2196">2196</jump>,
@@ -134,9 +136,13 @@
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2329">2329</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2336">2336</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2337">2337</jump>,
+       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2339">2339</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2341">2341</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2342">2342</jump>,
-       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2343">2343</jump>
+       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2343">2343</jump>,
+       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2375">2375</jump>,
+       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2377">2377</jump>,
+       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2384">2384</jump>
      </li>
      </ul>
    </s2>

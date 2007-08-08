@@ -42,6 +42,7 @@ public class JAXPVariableStack extends VariableStack {
     private final XPathVariableResolver resolver;
 	
     public JAXPVariableStack(XPathVariableResolver resolver) {
+        super(2);
         this.resolver = resolver;
     }
 	

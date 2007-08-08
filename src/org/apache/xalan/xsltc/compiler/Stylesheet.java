@@ -1162,7 +1162,12 @@ public final class Stylesheet extends SyntaxTreeNode {
 			       "setFilter",
 			       "(Lorg/apache/xalan/xsltc/StripFilter;)V");
 
-	il.append(new PUSH(cpg, DTM.ROOT_NODE));
+	final int gitr = cpg.addInterfaceMethodref(DOM_INTF,
+							"getIterator",
+							"()"+NODE_ITERATOR_SIG);
+	il.append(toplevel.loadDOM());
+	il.append(new INVOKEINTERFACE(gitr, 1));
+        il.append(toplevel.nextNode());
 	current.setStart(il.append(new ISTORE(current.getIndex())));
 
     // Create a new list containing variables/params + keys
@@ -1406,7 +1411,12 @@ public final class Stylesheet extends SyntaxTreeNode {
 	il.append(new PUTFIELD(domField));
 
 	// continue with globals initialization
-	il.append(new PUSH(cpg, DTM.ROOT_NODE));
+	final int gitr = cpg.addInterfaceMethodref(DOM_INTF,
+							"getIterator",
+							"()"+NODE_ITERATOR_SIG);
+	il.append(transf.loadDOM());
+	il.append(new INVOKEINTERFACE(gitr, 1));
+        il.append(transf.nextNode());
 	current.setStart(il.append(new ISTORE(current.getIndex())));
 
 	// Transfer the output settings to the output post-processor
