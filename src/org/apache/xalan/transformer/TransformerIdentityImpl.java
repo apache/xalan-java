@@ -152,7 +152,7 @@ public class TransformerIdentityImpl extends Transformer
     m_flushedStartDoc = false;
     m_foundFirstElement = false;
     m_outputStream = null;
-    m_params.clear();
+    clearParameters();
     m_result = null;
     m_resultContentHandler = null;
     m_resultDeclHandler = null;
