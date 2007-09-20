@@ -238,6 +238,13 @@ public final class XSLTC {
     }
 
     /**
+     * Return the state of the template inlining feature.
+     */
+    public boolean getTemplateInlining() {
+        return _templateInlining;
+    }
+
+    /**
      * Set the parameters to use to locate the correct <?xml-stylesheet ...?>
      * processing instruction in the case where the input document to the
      * compiler (and parser) is an XML document.

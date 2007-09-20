@@ -260,6 +260,12 @@ public class TransformerFactoryImpl
 	else if (name.equals(AUTO_TRANSLET)) {
 	    return new Boolean(_autoTranslet);
 	}
+	else if (name.equals(ENABLE_INLINING)) {
+	    if (_enableInlining)
+	      return Boolean.TRUE;
+	    else
+	      return Boolean.FALSE;
+	}
 
 	// Throw an exception for all other attributes
 	ErrorMsg err = new ErrorMsg(ErrorMsg.JAXP_INVALID_ATTR_ERR, name);
@@ -735,7 +741,10 @@ public class TransformerFactoryImpl
 	// Create and initialize a stylesheet compiler
 	final XSLTC xsltc = new XSLTC();
 	if (_debug) xsltc.setDebug(true);
-	if (_enableInlining) xsltc.setTemplateInlining(true);
+	if (_enableInlining) 
+		xsltc.setTemplateInlining(true);
+	else
+		xsltc.setTemplateInlining(false);
 	if (_isSecureProcessing) xsltc.setSecureProcessing(true);
 	xsltc.init();
 
