@@ -73,6 +73,7 @@
      <ul>
      <li>XALANJ Jira bug fixes:
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-611">611</jump>,
+       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1243">1243</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1324">1324</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1434">1434</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-1497">1497</jump>,
@@ -142,7 +143,8 @@
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2343">2343</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2375">2375</jump>,
        <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2377">2377</jump>,
-       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2384">2384</jump>
+       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2384">2384</jump>,
+       <jump href="http://issues.apache.org/jira/secure/ViewIssue.jspa?key=XALANJ-2395">2395</jump>
      </li>
      </ul>
    </s2>
