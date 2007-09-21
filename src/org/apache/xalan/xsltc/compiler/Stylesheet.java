@@ -21,9 +21,6 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.net.URL;
-import java.net.MalformedURLException;
-
 import java.util.Vector;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -198,8 +195,9 @@ public final class Stylesheet extends SyntaxTreeNode {
     
     /**
      * Set to true to enable template inlining optimization.
+     * @see XSLTC#_templateInlining
      */
-    private boolean _templateInlining = true;
+    private boolean _templateInlining = false;
 
     /**
      * A reference to the last xsl:output object found in the styleshet.
@@ -462,11 +460,11 @@ public final class Stylesheet extends SyntaxTreeNode {
 	    for (int i = 0; i < n; i++) {
 		final Template template = (Template)templates.elementAt(i);
 		if (template.hasParams()) {
-		    _hasLocalParams = new Boolean(true);
+		    _hasLocalParams = Boolean.TRUE;
 		    return true;
 		}
 	    }
-	    _hasLocalParams = new Boolean(false);
+	    _hasLocalParams = Boolean.FALSE;
 	    return false;
 	}
 	else {

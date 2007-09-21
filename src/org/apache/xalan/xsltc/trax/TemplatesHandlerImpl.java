@@ -96,7 +96,12 @@ public class TemplatesHandlerImpl
         XSLTC xsltc = new XSLTC();
         if (tfactory.getFeature(XMLConstants.FEATURE_SECURE_PROCESSING))
             xsltc.setSecureProcessing(true);
-       
+
+        if ("true".equals(tfactory.getAttribute(TransformerFactoryImpl.ENABLE_INLINING)))
+            xsltc.setTemplateInlining(true);
+        else
+            xsltc.setTemplateInlining(false);
+
         _parser = xsltc.getParser();
     }
 
@@ -186,7 +191,7 @@ public class TemplatesHandlerImpl
             XSLTC xsltc = _parser.getXSLTC();
 
             // Set the translet class name if not already set
-            String transletName = null;
+            String transletName;
             if (_systemId != null) {
                 transletName = Util.baseName(_systemId);
             }
@@ -207,6 +212,11 @@ public class TemplatesHandlerImpl
                 stylesheet = _parser.makeStylesheet(root);
                 stylesheet.setSystemId(_systemId);
                 stylesheet.setParentStylesheet(null);
+
+                if (xsltc.getTemplateInlining())
+                   stylesheet.setTemplateInlining(true);
+                else
+                   stylesheet.setTemplateInlining(false);
 
                 // Set a document loader (for xsl:include/import) if defined
                 if (_uriResolver != null) {
