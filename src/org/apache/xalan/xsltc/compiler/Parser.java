@@ -980,6 +980,7 @@ public class Parser implements Constants, ContentHandler {
                 node = new LiteralElement();
                 node.setLineNumber(getLineNumber());
             }
+            node.setParser(this);
 	}
 	if ((node != null) && (node instanceof LiteralElement)) {
 	    ((LiteralElement)node).setQName(qname);
