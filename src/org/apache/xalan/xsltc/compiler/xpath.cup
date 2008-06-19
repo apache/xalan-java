@@ -871,43 +871,43 @@ VariableReference ::= DOLLAR VariableName:varName
 FunctionCall ::= FunctionName:fname LPAREN RPAREN
         {: 
 
-          if (fname == parser.getQNameIgnoreDefaultNs("current")) {
+          if (parser.getQNameIgnoreDefaultNs("current").equals(fname)) {
             RESULT = new CurrentCall(fname);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("number")) {
+          else if (parser.getQNameIgnoreDefaultNs("number").equals(fname)) {
             RESULT = new NumberCall(fname, parser.EmptyArgs);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("string")) {
+          else if (parser.getQNameIgnoreDefaultNs("string").equals(fname)) {
             RESULT = new StringCall(fname, parser.EmptyArgs);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("concat")) {
+          else if (parser.getQNameIgnoreDefaultNs("concat").equals(fname)) {
             RESULT = new ConcatCall(fname, parser.EmptyArgs);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("true")) {
+          else if (parser.getQNameIgnoreDefaultNs("true").equals(fname)) {
             RESULT = new BooleanExpr(true);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("false")) {
+          else if (parser.getQNameIgnoreDefaultNs("false").equals(fname)) {
             RESULT = new BooleanExpr(false);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("name")) {
+          else if (parser.getQNameIgnoreDefaultNs("name").equals(fname)) {
             RESULT = new NameCall(fname);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("generate-id")) {
+          else if (parser.getQNameIgnoreDefaultNs("generate-id").equals(fname)) {
             RESULT = new GenerateIdCall(fname, parser.EmptyArgs);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("string-length")) {
+          else if (parser.getQNameIgnoreDefaultNs("string-length").equals(fname)) {
             RESULT = new StringLengthCall(fname, parser.EmptyArgs);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("position")) {
+          else if (parser.getQNameIgnoreDefaultNs("position").equals(fname)) {
             RESULT = new PositionCall(fname);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("last")) {
+          else if (parser.getQNameIgnoreDefaultNs("last").equals(fname)) {
             RESULT = new LastCall(fname);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("local-name")) {
+          else if (parser.getQNameIgnoreDefaultNs("local-name").equals(fname)) {
             RESULT = new LocalNameCall(fname);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("namespace-uri")) {
+          else if (parser.getQNameIgnoreDefaultNs("namespace-uri").equals(fname)) {
             RESULT = new NamespaceUriCall(fname);
 	  }
           else {
@@ -917,78 +917,78 @@ FunctionCall ::= FunctionName:fname LPAREN RPAREN
 
         | FunctionName:fname LPAREN NonemptyArgumentList:argl RPAREN
         {:
-          if (fname == parser.getQNameIgnoreDefaultNs("concat")) {
+          if (parser.getQNameIgnoreDefaultNs("concat").equals(fname)) {
             RESULT = new ConcatCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("number")) {
+          else if (parser.getQNameIgnoreDefaultNs("number").equals(fname)) {
             RESULT = new NumberCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("document")) {
+          else if (parser.getQNameIgnoreDefaultNs("document").equals(fname)) {
 	    parser.setMultiDocument(true);
             RESULT = new DocumentCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("string")) {
+          else if (parser.getQNameIgnoreDefaultNs("string").equals(fname)) {
             RESULT = new StringCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("boolean")) {
+          else if (parser.getQNameIgnoreDefaultNs("boolean").equals(fname)) {
             RESULT = new BooleanCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("name")) {
+          else if (parser.getQNameIgnoreDefaultNs("name").equals(fname)) {
             RESULT = new NameCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("generate-id")) {
+          else if (parser.getQNameIgnoreDefaultNs("generate-id").equals(fname)) {
             RESULT = new GenerateIdCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("not")) {
+          else if (parser.getQNameIgnoreDefaultNs("not").equals(fname)) {
             RESULT = new NotCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("format-number")) {
+          else if (parser.getQNameIgnoreDefaultNs("format-number").equals(fname)) {
             RESULT = new FormatNumberCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("unparsed-entity-uri")) {
+          else if (parser.getQNameIgnoreDefaultNs("unparsed-entity-uri").equals(fname)) {
             RESULT = new UnparsedEntityUriCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("key")) {
+          else if (parser.getQNameIgnoreDefaultNs("key").equals(fname)) {
             RESULT = new KeyCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("id")) {
+          else if (parser.getQNameIgnoreDefaultNs("id").equals(fname)) {
             RESULT = new KeyCall(fname, argl);
             parser.setHasIdCall(true);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("ceiling")) {
+          else if (parser.getQNameIgnoreDefaultNs("ceiling").equals(fname)) {
             RESULT = new CeilingCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("round")) {
+          else if (parser.getQNameIgnoreDefaultNs("round").equals(fname)) {
             RESULT = new RoundCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("floor")) {
+          else if (parser.getQNameIgnoreDefaultNs("floor").equals(fname)) {
             RESULT = new FloorCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("contains")) {
+          else if (parser.getQNameIgnoreDefaultNs("contains").equals(fname)) {
             RESULT = new ContainsCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("string-length")) {
+          else if (parser.getQNameIgnoreDefaultNs("string-length").equals(fname)) {
             RESULT = new StringLengthCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("starts-with")) {
+          else if (parser.getQNameIgnoreDefaultNs("starts-with").equals(fname)) {
             RESULT = new StartsWithCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("function-available")) {
+          else if (parser.getQNameIgnoreDefaultNs("function-available").equals(fname)) {
             RESULT = new FunctionAvailableCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("element-available")) {
+          else if (parser.getQNameIgnoreDefaultNs("element-available").equals(fname)) {
             RESULT = new ElementAvailableCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("local-name")) {
+          else if (parser.getQNameIgnoreDefaultNs("local-name").equals(fname)) {
             RESULT = new LocalNameCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("lang")) {
+          else if (parser.getQNameIgnoreDefaultNs("lang").equals(fname)) {
             RESULT = new LangCall(fname, argl);
 	  }
-          else if (fname == parser.getQNameIgnoreDefaultNs("namespace-uri")) {
+          else if (parser.getQNameIgnoreDefaultNs("namespace-uri").equals(fname)) {
             RESULT = new NamespaceUriCall(fname, argl);
 	  }
-          else if (fname == parser.getQName(Constants.TRANSLET_URI, "xsltc", "cast")) {
+          else if (parser.getQName(Constants.TRANSLET_URI, "xsltc", "cast").equals(fname)) {
             RESULT = new CastCall(fname, argl);
 	  }
 	  // Special case for extension function nodeset()

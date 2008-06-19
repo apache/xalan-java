@@ -222,13 +222,13 @@ final class CallTemplate extends Instruction {
     	    	for (int k = 0; k < numParams; k++) {
     	    	    Object object = _parameters[k];
     	    	    if (object instanceof Param 
-    	    	        && ((Param)object).getName() == name) {
+    	    	        && ((Param)object).getName().equals(name)) {
     	    	        withParam.setDoParameterOptimization(true);
     	    	        _parameters[k] = withParam;
     	    	        break;
     	    	    }
     	    	    else if (object instanceof WithParam 
-    	    	        && ((WithParam)object).getName() == name) {
+    	    	        && ((WithParam)object).getName().equals(name)) {
     	    	        withParam.setDoParameterOptimization(true);
     	    	        _parameters[k] = withParam;    	    	        
     	    	        break;
