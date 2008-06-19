@@ -304,17 +304,23 @@ public class Parser implements Constants, ContentHandler {
 	}
 	else {
 	    Dictionary space = (Dictionary)_namespaces.get(namespace);
+	    String lexicalQName =
+                       (prefix == null || prefix.length() == 0)
+                            ? localname
+                            : (prefix + ':' + localname);
+
 	    if (space == null) {
 		final QName name = new QName(namespace, prefix, localname);
 		_namespaces.put(namespace, space = new Hashtable());
-		space.put(localname, name);
+		space.put(lexicalQName, name);
 		return name;
 	    }
 	    else {
-		QName name = (QName)space.get(localname);
-		if (name == null) {
+	        QName name = (QName)space.get(lexicalQName);
+
+	        if (name == null) {
 		    name = new QName(namespace, prefix, localname);
-		    space.put(localname, name);
+		    space.put(lexicalQName, name);
 		}
 		return name;
 	    }
@@ -1272,7 +1278,7 @@ public class Parser implements Constants, ContentHandler {
 	    // handled at this point in order to correctly generate
 	    // Fallback elements from <xsl:fallback>s.
 	    getSymbolTable().setCurrentNode(element);
-	    ((Stylesheet)element).excludeExtensionPrefixes(this);
+	    ((Stylesheet)element).declareExtensionPrefixes(this);
 	}
 
 	_prefixMapping = null;
