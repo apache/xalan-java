@@ -22,6 +22,7 @@
 package org.apache.xalan.xsltc.compiler;
 
 import java.util.Hashtable;
+import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -44,6 +45,7 @@ final class SymbolTable {
     private Hashtable _attributeSets = null;
     private Hashtable _aliases = null;
     private Hashtable _excludedURI = null;
+    private Stack     _excludedURIStack = null;
     private Hashtable _decimalFormats = null;
     private Hashtable _keys = null;
 
@@ -258,6 +260,35 @@ final class SymbolTable {
 		    _excludedURI.put(uri, new Integer(refcnt.intValue() - 1));
 	    }
 	}	
+    }
+
+    /**
+     * Exclusion of namespaces by a stylesheet does not extend to any stylesheet
+     * imported or included by the stylesheet.  Upon entering the context of a
+     * new stylesheet, a call to this method is needed to clear the current set
+     * of excluded namespaces temporarily.  Every call to this method requires
+     * a corresponding call to {@link #popExcludedNamespacesContext()}.
+     */
+    public void pushExcludedNamespacesContext() {
+        if (_excludedURIStack == null) {
+            _excludedURIStack = new Stack();
+        }
+        _excludedURIStack.push(_excludedURI);
+        _excludedURI = null;
+    }
+    
+    /**
+     * Exclusion of namespaces by a stylesheet does not extend to any stylesheet
+     * imported or included by the stylesheet.  Upon exiting the context of a
+     * stylesheet, a call to this method is needed to restore the set of
+     * excluded namespaces that was in effect prior to entering the context of
+     * the current stylesheet.
+     */
+    public void popExcludedNamespacesContext() {
+        _excludedURI = (Hashtable) _excludedURIStack.pop();
+        if (_excludedURIStack.isEmpty()) {
+            _excludedURIStack = null;
+        }
     }
 
 }

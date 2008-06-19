@@ -502,15 +502,9 @@ public final class Stylesheet extends SyntaxTreeNode {
 	return (_extensions.get(uri) != null);
     }
 
-    public void excludeExtensionPrefixes(Parser parser) {
+    public void declareExtensionPrefixes(Parser parser) {
 	final SymbolTable stable = parser.getSymbolTable();
-    	final String excludePrefixes = getAttribute("exclude-result-prefixes");
 	final String extensionPrefixes = getAttribute("extension-element-prefixes");
-	
-	// Exclude XSLT uri 
-	stable.excludeURI(Constants.XSLT_URI);
-	stable.excludeNamespaces(excludePrefixes);
-	stable.excludeNamespaces(extensionPrefixes);
 	extensionURI(extensionPrefixes, stable);
     }
 
@@ -564,6 +558,16 @@ public final class Stylesheet extends SyntaxTreeNode {
      * Parse all direct children of the <xsl:stylesheet/> element.
      */
     public final void parseOwnChildren(Parser parser) {
+        final SymbolTable stable = parser.getSymbolTable();
+        final String excludePrefixes = getAttribute("exclude-result-prefixes");
+        final String extensionPrefixes = getAttribute("extension-element-prefixes");
+        
+        // Exclude XSLT uri 
+        stable.pushExcludedNamespacesContext();
+        stable.excludeURI(Constants.XSLT_URI);
+        stable.excludeNamespaces(excludePrefixes);
+        stable.excludeNamespaces(extensionPrefixes);
+
 	final Vector contents = getContents();
 	final int count = contents.size();
 
@@ -595,6 +599,8 @@ public final class Stylesheet extends SyntaxTreeNode {
 		template.setName(parser.getQName(name));
 	    }
 	}
+
+	stable.popExcludedNamespacesContext();
     }
 
     public void processModes() {
