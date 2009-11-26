@@ -911,7 +911,7 @@ public class XSLTErrorResources_de extends ListResourceBundle
         "Elementinhalt nicht zul\u00e4ssig f\u00fcr lang=javaclass {0}."},
 
     { ER_STYLESHEET_DIRECTED_TERMINATION,
-        "Formatvorlage hat die Beendigung \u00fcbertragen."},
+        "Formatvorlage hat die Beendigung ausgel\u00f6st."},
 
     { ER_ONE_OR_TWO,
         "1 oder 2"},
@@ -1252,7 +1252,7 @@ public class XSLTErrorResources_de extends ListResourceBundle
       "URL konnte nicht erstellt werden aus: {0}"},
 
     { WG_CANNOT_LOAD_REQUESTED_DOC,
-      "Angeforderte Dokumentation kann nicht geladen werden: {0}"},
+      "Angefordertes Dokument kann nicht geladen werden: {0}"},
 
     { WG_CANNOT_FIND_COLLATOR,
       "Collator f\u00fcr <sort xml:lang={0} konnte nicht gefunden werden."},
