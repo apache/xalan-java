@@ -1940,7 +1940,7 @@ public class DTMNodeProxy
      * @since DOM Level 3
      */
     public String getTextContent() throws DOMException {
-        return getNodeValue();  // overriden in some subclasses
+        return dtm.getStringValue(node).toString();
     }
 
     /**
