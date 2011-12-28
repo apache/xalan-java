@@ -21,8 +21,6 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import java.net.URL;
-import java.net.MalformedURLException;
 import java.util.Enumeration;
 
 import javax.xml.transform.Source;
@@ -34,27 +32,26 @@ import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xalan.xsltc.runtime.Hashtable;
-import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.Axis;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.dtm.ref.DTMAxisIterNodeList;
 import org.apache.xml.dtm.ref.DTMDefaultBase;
-import org.apache.xml.dtm.ref.EmptyIterator;
 import org.apache.xml.dtm.ref.DTMNodeProxy;
+import org.apache.xml.dtm.ref.EmptyIterator;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM2;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.serializer.ToXMLSAXHandler;
-import org.apache.xml.utils.XMLStringFactory;
 import org.apache.xml.utils.SystemIDResolver;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.apache.xml.utils.XMLStringFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentType;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Entity;
-
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
