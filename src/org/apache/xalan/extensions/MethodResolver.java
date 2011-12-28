@@ -687,7 +687,7 @@ public class MethodResolver
           if(javaClass == java.lang.String.class)
             return xobj.str();
           else
-            return new Boolean(xobj.bool());
+            return xobj.bool() ? Boolean.TRUE : Boolean.FALSE;
         }
         // break; Unreachable
       case XObject.CLASS_NUMBER:
@@ -695,7 +695,7 @@ public class MethodResolver
           if(javaClass == java.lang.String.class)
             return xobj.str();
           else if(javaClass == Boolean.TYPE)
-            return new Boolean(xobj.bool());
+            return xobj.bool() ? Boolean.TRUE : Boolean.FALSE;
           else 
           {
             return convertDoubleToNumber(xobj.num(), javaClass);
@@ -717,7 +717,7 @@ public class MethodResolver
               return null; // ??
           }
           else if(javaClass == Boolean.TYPE)
-            return new Boolean(xobj.bool());
+            return xobj.bool() ? Boolean.TRUE : Boolean.FALSE;
           else 
           {
             return convertDoubleToNumber(xobj.num(), javaClass);
@@ -758,7 +758,7 @@ public class MethodResolver
           }
           else if(javaClass == Boolean.TYPE)
           {
-            return new Boolean(xobj.bool());
+            return xobj.bool() ? Boolean.TRUE : Boolean.FALSE;
           }
           else if(javaClass.isPrimitive())
           {
@@ -817,7 +817,7 @@ public class MethodResolver
           }
           else if(javaClass == Boolean.TYPE)
           {
-            return new Boolean(xobj.bool());
+            return xobj.bool() ? Boolean.TRUE : Boolean.FALSE;
           }
           else if(javaClass.isPrimitive())
           {
