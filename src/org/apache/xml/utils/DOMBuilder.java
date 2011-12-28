@@ -755,7 +755,7 @@ public class DOMBuilder
   public void startPrefixMapping(String prefix, String uri)
           throws org.xml.sax.SAXException
   {
-	      if(null == prefix || prefix.equals(""))
+	      if(null == prefix || prefix.length() == 0)
 	        prefix = "xmlns";
 	      else prefix = "xmlns:"+prefix;
 	      m_prefixMappings.addElement(prefix);
