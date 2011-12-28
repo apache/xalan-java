@@ -504,7 +504,7 @@ public class XObject extends Expression implements Serializable, Cloneable
       result = iter();
       break;
     case CLASS_BOOLEAN :
-      result = new Boolean(bool());
+      result = bool() ? Boolean.TRUE : Boolean.FALSE;
       break;
     case CLASS_UNKNOWN :
       result = m_obj;
