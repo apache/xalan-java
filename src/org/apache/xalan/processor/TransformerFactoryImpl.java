@@ -20,11 +20,7 @@
  */
 package org.apache.xalan.processor;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Enumeration;
-import java.util.Properties;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.ErrorListener;
@@ -50,16 +46,11 @@ import org.apache.xalan.transformer.TrAXFilter;
 import org.apache.xalan.transformer.TransformerIdentityImpl;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.XalanProperties;
-
-import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
-import org.apache.xml.utils.DefaultErrorHandler;
+import org.apache.xml.utils.StopParseException;
+import org.apache.xml.utils.StylesheetPIHandler;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.TreeWalker;
-import org.apache.xml.utils.StylesheetPIHandler;
-import org.apache.xml.utils.StopParseException;
-
 import org.w3c.dom.Node;
-
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLFilter;
 import org.xml.sax.XMLReader;
