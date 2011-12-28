@@ -322,7 +322,7 @@ public class XPathImpl implements javax.xml.xpath.XPath {
         }
         // XPathConstants.BOOLEAN
         if ( returnType.equals( XPathConstants.BOOLEAN ) ) { 
-            return new Boolean( resultObject.bool());
+            return resultObject.bool() ? Boolean.TRUE : Boolean.FALSE;
         }
         // XPathConstants.NODESET ---ORdered, UNOrdered???
         if ( returnType.equals( XPathConstants.NODESET ) ) { 
