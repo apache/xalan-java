@@ -255,10 +255,10 @@ public class TransformerFactoryImpl
 	    return _transletName;
 	}
 	else if (name.equals(GENERATE_TRANSLET)) {
-	    return new Boolean(_generateTranslet);
+	    return _generateTranslet ? Boolean.TRUE : Boolean.FALSE;
 	}
 	else if (name.equals(AUTO_TRANSLET)) {
-	    return new Boolean(_autoTranslet);
+	    return _autoTranslet ? Boolean.TRUE : Boolean.FALSE;
 	}
 	else if (name.equals(ENABLE_INLINING)) {
 	    if (_enableInlining)
