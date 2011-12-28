@@ -126,7 +126,7 @@ class SecuritySupport12 extends SecuritySupport {
     return ((Boolean)
             AccessController.doPrivileged(new PrivilegedAction() {
                 public Object run() {
-                    return new Boolean(f.exists());
+                    return f.exists() ? Boolean.TRUE : Boolean.FALSE;
                 }
             })).booleanValue();
     }
