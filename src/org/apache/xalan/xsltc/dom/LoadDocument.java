@@ -34,12 +34,8 @@ import org.apache.xalan.xsltc.trax.TemplatesImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.DTMManager;
-import org.apache.xml.dtm.ref.DTMDefaultBase;
 import org.apache.xml.dtm.ref.EmptyIterator;
 import org.apache.xml.utils.SystemIDResolver;
-
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
 
 /**
  * @author Morten Jorgensen
