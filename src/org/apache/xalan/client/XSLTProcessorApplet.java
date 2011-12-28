@@ -30,6 +30,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
@@ -662,13 +664,13 @@ public class XSLTProcessorApplet extends Applet
         StreamSource xslSource = new StreamSource(styleURL.toString());
 
         Transformer transformer = m_tfactory.newTransformer(xslSource);
-
         
-        Enumeration m_keys = m_parameters.keys();
-        while (m_keys.hasMoreElements()){
-          Object key = m_keys.nextElement();
-          Object expression = m_parameters.get(key);
-          transformer.setParameter((String) key, expression);
+        Iterator m_entries = m_parameters.entrySet().iterator();
+        while (m_entries.hasNext()) {
+            Map.Entry entry = (Map.Entry) m_entries.next();
+            Object key = entry.getKey();
+            Object expression = entry.getValue();
+            transformer.setParameter((String) key, expression);
         }
         transformer.transform(xmlSource, result);
       }
