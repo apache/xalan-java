@@ -19,29 +19,21 @@
 
 package org.apache.xpath.jaxp;
 
-import org.apache.xpath.*;
-import javax.xml.transform.TransformerException;
-
-import org.apache.xpath.objects.XObject;
-import org.apache.xml.utils.PrefixResolver;
-import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
-
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
-import javax.xml.xpath.XPathExpressionException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFunctionResolver;
 import javax.xml.xpath.XPathVariableResolver;
-import javax.xml.xpath.XPathConstants;
 
-import org.w3c.dom.Node;
-import org.w3c.dom.Document;
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.res.XPATHErrorResources;
 import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-
 import org.xml.sax.InputSource;
 
 /**
