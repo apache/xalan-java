@@ -25,13 +25,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-
-import java.util.Properties;
 
 /**
  * This class is duplicated for each Xalan-Java subpackage so keep it in sync.
