@@ -26,8 +26,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import java.util.Properties;
-
 /**
  * This class is duplicated for each Xalan-Java subpackage so keep it in sync.
  * It is package private and therefore is not exposed as part of the Xalan-Java
