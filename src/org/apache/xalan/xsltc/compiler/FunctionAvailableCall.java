@@ -109,7 +109,7 @@ final class FunctionAvailableCall extends FunctionCall {
 	  int lastDotIndex = functionName.lastIndexOf('.');
 	  if (lastDotIndex > 0) {
 	    methodName = functionName.substring(lastDotIndex+1);
-	    if (className != null && !className.equals(""))
+	    if (className != null && className.length() != 0)
 	      className = className + "." + functionName.substring(0, lastDotIndex);
 	    else
 	      className = functionName.substring(0, lastDotIndex);
