@@ -582,15 +582,15 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
   {
     if (name.equals(FEATURE_INCREMENTAL))
     {
-      return new Boolean(m_incremental);            
+      return m_incremental ? Boolean.TRUE : Boolean.FALSE;           
     }
     else if (name.equals(FEATURE_OPTIMIZE))
     {
-      return new Boolean(m_optimize);
+      return m_optimize ? Boolean.TRUE : Boolean.FALSE;
     }
     else if (name.equals(FEATURE_SOURCE_LOCATION))
     {
-      return new Boolean(m_source_location);
+      return m_source_location ? Boolean.TRUE : Boolean.FALSE;
     }
     else
       throw new IllegalArgumentException(XSLMessages.createMessage(XSLTErrorResources.ER_ATTRIB_VALUE_NOT_RECOGNIZED, new Object[]{name})); //name + " attribute not recognized");
