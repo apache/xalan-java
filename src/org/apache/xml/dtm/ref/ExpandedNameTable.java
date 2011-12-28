@@ -300,7 +300,7 @@ public class ExpandedNameTable
   public final int getLocalNameID(int ExpandedNameID)
   {
     // ExtendedType etype = m_extendedTypes[ExpandedNameID];
-    if (m_extendedTypes[ExpandedNameID].getLocalName().equals(""))
+    if (m_extendedTypes[ExpandedNameID].getLocalName().length() == 0)
       return 0;
     else
     return ExpandedNameID;
@@ -317,7 +317,7 @@ public class ExpandedNameTable
   public String getNamespace(int ExpandedNameID)
   {
     String namespace = m_extendedTypes[ExpandedNameID].getNamespace();
-    return (namespace.equals("") ? null : namespace);
+    return (namespace.length() == 0 ? null : namespace);
   }
 
   /**
@@ -329,7 +329,7 @@ public class ExpandedNameTable
   public final int getNamespaceID(int ExpandedNameID)
   {
     //ExtendedType etype = m_extendedTypes[ExpandedNameID];
-    if (m_extendedTypes[ExpandedNameID].getNamespace().equals(""))
+    if (m_extendedTypes[ExpandedNameID].getNamespace().length() == 0)
       return 0;
     else
     return ExpandedNameID;
