@@ -22,6 +22,8 @@
 package org.apache.xalan.xsltc.dom;
 
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
@@ -1843,17 +1845,16 @@ public final class SAXImpl extends SAX2DTM2
         }
 
         // Convert a java.util.Hashtable to an xsltc.runtime.Hashtable
-        Enumeration idValues = m_idAttributes.keys();
-        if (!idValues.hasMoreElements()) {
+        Iterator idEntries = m_idAttributes.entrySet().iterator();
+        if (!idEntries.hasNext()) {
             return null;
         }
 
         Hashtable idAttrsTable = new Hashtable();
-
-        while (idValues.hasMoreElements()) {
-            Object idValue = idValues.nextElement();
-
-            idAttrsTable.put(idValue, m_idAttributes.get(idValue));
+        
+        while (idEntries.hasNext()) {
+            Map.Entry entry = (Map.Entry) idEntries.next();
+            idAttrsTable.put(entry.getKey(), entry.getValue());
         }
 
         return idAttrsTable;
