@@ -34,7 +34,7 @@ import javax.xml.xpath.XPathVariableResolver;
  * @version $Revision$
  * @author  Ramesh Mandava
  */
-public  class XPathFactoryImpl extends XPathFactory {
+public class XPathFactoryImpl extends XPathFactory {
 	
 	/**
 	 * <p>Name of class as a constant to use for debugging.</p>
@@ -140,7 +140,7 @@ public  class XPathFactoryImpl extends XPathFactory {
             if (name == null) {
                 String fmsg = XSLMessages.createXPATHMessage(
                         XPATHErrorResources.ER_FEATURE_NAME_NULL,
-                        new Object[] { CLASS_NAME, new Boolean( value) } );
+                        new Object[] { CLASS_NAME, value ? Boolean.TRUE : Boolean.FALSE } );
                 throw new NullPointerException( fmsg );
              }
 		
@@ -156,7 +156,7 @@ public  class XPathFactoryImpl extends XPathFactory {
             // unknown feature
             String fmsg = XSLMessages.createXPATHMessage(
                     XPATHErrorResources.ER_FEATURE_UNKNOWN,
-                    new Object[] { name, CLASS_NAME, new Boolean(value) } );
+                    new Object[] { name, CLASS_NAME, value ? Boolean.TRUE : Boolean.FALSE } );
             throw new XPathFactoryConfigurationException( fmsg );
 	}
 
