@@ -53,16 +53,11 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.apache.xml.utils.SystemIDResolver;
-
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
-import org.apache.xalan.xsltc.DOMEnhancedForDTM;
 import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.TransletException;
-import org.apache.xml.serializer.OutputPropertiesFactory;
-import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.dom.DOMWSFilter;
 import org.apache.xalan.xsltc.dom.SAXImpl;
@@ -70,10 +65,11 @@ import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
-
 import org.apache.xml.dtm.DTMWSFilter;
+import org.apache.xml.serializer.OutputPropertiesFactory;
+import org.apache.xml.serializer.SerializationHandler;
+import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.XMLReaderManager;
-
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
