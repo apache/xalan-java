@@ -251,9 +251,9 @@ public class ElemLiteralResult extends ElemUse
         AVT avt = (AVT) m_avts.get(i);
         namespace = avt.getURI();
         
-        if ((namespace != null && (!namespace.equals("")) && (namespace 
+        if ((namespace != null && (namespace.length() != 0) && (namespace 
                 +":"+avt.getName()).equals(name))|| ((namespace == null || 
-                namespace.equals(""))&& avt.getRawName().equals(name)))
+                namespace.length() == 0)&& avt.getRawName().equals(name)))
         {
           return avt;
         }
@@ -836,7 +836,7 @@ public class ElemLiteralResult extends ElemUse
           public String getNamespaceURI()
           {
                   String uri = m_attribute.getURI();
-                  return (uri.equals(""))?null:uri;
+                  return (uri.length() == 0)?null:uri;
           }
 
           /**
@@ -858,7 +858,7 @@ public class ElemLiteralResult extends ElemUse
           {
                   String uri = m_attribute.getURI();
                   String localName = getLocalName();
-                  return (uri.equals(""))?localName:uri+":"+localName;
+                  return (uri.length() == 0)?localName:uri+":"+localName;
           }
           
           /**
@@ -913,7 +913,7 @@ public class ElemLiteralResult extends ElemUse
           {
                   String uri = m_attribute.getURI();
                   String rawName = m_attribute.getRawName();
-                  return (uri.equals(""))? 
+                  return (uri.length() == 0)? 
                         null:rawName.substring(0, rawName.indexOf(":"));
           }
 
