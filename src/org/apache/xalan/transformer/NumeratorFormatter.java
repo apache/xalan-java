@@ -187,16 +187,17 @@ class NumeratorFormatter
       return "#E(" + val + ")";
     }
 
-    String roman = "";
+    final String roman;
     int place = 0;
 
     if (val <= 3999L)
     {
+      StringBuffer romanBuffer = new StringBuffer();
       do
       {
         while (val >= m_romanConvertTable[place].m_postValue)
         {
-          roman += m_romanConvertTable[place].m_postLetter;
+          romanBuffer.append(m_romanConvertTable[place].m_postLetter);
           val -= m_romanConvertTable[place].m_postValue;
         }
 
@@ -204,7 +205,7 @@ class NumeratorFormatter
         {
           if (val >= m_romanConvertTable[place].m_preValue)
           {
-            roman += m_romanConvertTable[place].m_preLetter;
+            romanBuffer.append(m_romanConvertTable[place].m_preLetter);
             val -= m_romanConvertTable[place].m_preValue;
           }
         }
@@ -212,6 +213,7 @@ class NumeratorFormatter
         place++;
       }
       while (val > 0);
+      roman = romanBuffer.toString();
     }
     else
     {
