@@ -58,7 +58,7 @@ public class XPathFunctionResolverImpl implements XPathFunctionResolver
         }
         else if (!uri.equals(ExtensionNamespaceContext.JAVA_EXT_URI))
         {
-            int lastSlash = className.lastIndexOf("/");
+            int lastSlash = className.lastIndexOf('/');
             if (-1 != lastSlash)
                 className = className.substring(lastSlash + 1);
         }           
