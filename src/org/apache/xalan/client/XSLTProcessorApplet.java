@@ -29,7 +29,6 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 
