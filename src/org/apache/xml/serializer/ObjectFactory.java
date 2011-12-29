@@ -477,7 +477,7 @@ final class ObjectFactory {
         SecurityManager security = System.getSecurityManager();
         try{
                 if (security != null){
-                    final int lastDot = className.lastIndexOf(".");
+                    final int lastDot = className.lastIndexOf('.');
                     String packageName = className;
                     if (lastDot != -1) packageName = className.substring(0, lastDot);
                     security.checkPackageAccess(packageName);
