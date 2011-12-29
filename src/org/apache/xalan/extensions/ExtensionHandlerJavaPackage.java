@@ -97,7 +97,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
     try
     {
       String fullName = m_className + function;
-      int lastDot = fullName.lastIndexOf(".");
+      int lastDot = fullName.lastIndexOf('.');
       if (lastDot >= 0)
       {
         Class myClass = getClassForName(fullName.substring(0, lastDot));
@@ -130,7 +130,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
     try
     {
       String fullName = m_className + element;
-      int lastDot = fullName.lastIndexOf(".");
+      int lastDot = fullName.lastIndexOf('.');
       if (lastDot >= 0)
       {
         Class myClass = getClassForName(fullName.substring(0, lastDot));
@@ -211,7 +211,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
     String methodName;
     Class  classObj;
     Object targetObject;
-    int lastDot = funcName.lastIndexOf(".");
+    int lastDot = funcName.lastIndexOf('.');
     Object[] methodArgs;
     Object[][] convertedArgs;
     Class[] paramTypes;
@@ -471,7 +471,7 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
       try
       {
         String fullName = m_className + localPart;
-        int lastDot = fullName.lastIndexOf(".");
+        int lastDot = fullName.lastIndexOf('.');
         if (lastDot < 0)
           throw new TransformerException(XSLMessages.createMessage(XSLTErrorResources.ER_INVALID_ELEMENT_NAME, new Object[]{fullName })); //"Invalid element name specified " + fullName);
         try
