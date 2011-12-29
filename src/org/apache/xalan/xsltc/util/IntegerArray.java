@@ -24,7 +24,7 @@ package org.apache.xalan.xsltc.util;
 /**
  * @author Jacek Ambroziak
  */
-public final class IntegerArray {
+public final class IntegerArray implements Cloneable {
     private static final int InitialSize = 32;
     
     private int[] _array;
