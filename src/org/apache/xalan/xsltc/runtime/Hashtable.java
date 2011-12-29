@@ -303,7 +303,7 @@ public class Hashtable {
      * A hashtable enumerator class.  This class should remain opaque 
      * to the client. It will use the Enumeration interface.
      */
-    class HashtableEnumerator implements Enumeration {
+    static class HashtableEnumerator implements Enumeration {
 	boolean keys;
 	int index;
 	HashtableEntry table[];

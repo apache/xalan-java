@@ -721,7 +721,7 @@ public class MethodGenerator extends MethodGen
      * current method.  See {@link OutlineableChunkStart} and
      * {@link OutlineableChunkEnd} for more information.
      */
-    private class Chunk implements Comparable {
+    private static class Chunk implements Comparable {
         /**
          * {@link InstructionHandle} of the first instruction in the outlineable
          * chunk.

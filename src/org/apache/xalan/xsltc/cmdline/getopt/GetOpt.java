@@ -209,7 +209,7 @@ public class GetOpt{
     ///////////////////////////////////////////////////////////
 
     // inner class to model an option
-    class Option{
+    static class Option{
         private char theArgLetter;
         private String theArgument = null;
         public Option(char argLetter) { theArgLetter = argLetter; }
@@ -225,7 +225,7 @@ public class GetOpt{
     // inner class to query optString for a possible option match,
     // and whether or not a given legal option takes an argument. 
     //  
-    class OptionMatcher{
+    static class OptionMatcher{
         public OptionMatcher(String optString){
 	    theOptString = optString;	
         }
