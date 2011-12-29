@@ -46,7 +46,7 @@ import java.util.Properties;
  *
  * @xsl.usage internal
  */
-class ObjectFactory {
+final class ObjectFactory {
 
     //
     // Constants
