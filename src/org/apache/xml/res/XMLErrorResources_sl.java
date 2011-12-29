@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 /*
- * $Id: XMLErrorResources_sl.java,v 1.9 2004/12/16 19:29:01 minchau Exp $
+ * $Id$
  */
 
 package org.apache.xml.res;

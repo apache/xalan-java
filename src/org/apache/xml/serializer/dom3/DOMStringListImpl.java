@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 /*
- * $Id:  $
+ * $Id$
  */
 package org.apache.xml.serializer.dom3;
 

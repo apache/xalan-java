@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 /*
- * $Id: UnionIterator.java 337874 2004-02-16 23:06:53Z minchau $
+ * $Id$
  */
 
 package org.apache.xalan.xsltc.dom;

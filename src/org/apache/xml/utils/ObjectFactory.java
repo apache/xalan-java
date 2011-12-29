@@ -45,7 +45,7 @@ import java.io.InputStreamReader;
  * class and modified to be used as a general utility for creating objects 
  * dynamically.
  *
- * @version $Id:  $
+ * @version $Id$
  */
 class ObjectFactory {
 

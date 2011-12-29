@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 /*
- * $Id: XSLTErrorResources_sl.java 338081 2004-12-15 17:35:58Z jycli $
+ * $Id$
  */
 package org.apache.xalan.res;
 

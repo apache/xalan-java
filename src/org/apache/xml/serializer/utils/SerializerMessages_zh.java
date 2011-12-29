@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 /*
- * $Id: SerializerMessages_zh.java,v 1.7 2005/03/07 20:34:36 minchau Exp $
+ * $Id$
  */
 
 

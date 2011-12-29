@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 /*
- * $Id: ErrorMessages_sl.java,v 1.11 2004/12/15 17:35:45 jycli Exp $
+ * $Id$
  */
 
 package org.apache.xalan.xsltc.runtime;

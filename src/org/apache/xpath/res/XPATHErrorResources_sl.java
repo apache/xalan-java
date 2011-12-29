@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 /*
- * $Id: XPATHErrorResources_sl.java,v 1.29 2005/02/09 21:44:08 zongaro Exp $
+ * $Id$
  */
 
 package org.apache.xpath.res;

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 /*
- * $Id:  $
+ * $Id$
  */
 
 package org.apache.xml.serializer.dom3;
@@ -34,7 +34,7 @@ import java.util.NoSuchElementException;
  *
  * @author Andy Clark, IBM
  *
- * @version $Id: Exp $
+ * @version $Id$
  */
 public class NamespaceSupport {
 
