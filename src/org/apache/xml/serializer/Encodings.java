@@ -314,10 +314,8 @@ public final class Encodings extends Object
     {
         try
         {
-            final InputStream is; 
-                
-            SecuritySupport ss = SecuritySupport.getInstance();
-            is = ss.getResourceAsStream(ObjectFactory.findClassLoader(),
+            final InputStream is;
+            is = SecuritySupport.getResourceAsStream(ObjectFactory.findClassLoader(),
                                             ENCODINGS_FILE);
 
             Properties props = new Properties();

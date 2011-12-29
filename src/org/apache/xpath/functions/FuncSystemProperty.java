@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -165,10 +164,8 @@ public class FuncSystemProperty extends FunctionOneArg
   {
     try
     {
-      // Use SecuritySupport class to provide priveleged access to property file
-      SecuritySupport ss = SecuritySupport.getInstance();
-
-      InputStream is = ss.getResourceAsStream(ObjectFactory.findClassLoader(),
+      // Use SecuritySupport class to provide privileged access to property file
+      InputStream is = SecuritySupport.getResourceAsStream(ObjectFactory.findClassLoader(),
                                               file);
 
       // get a buffered version

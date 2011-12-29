@@ -108,8 +108,7 @@ abstract public class ToStream extends SerializerBase
         
     private static final char[] s_systemLineSep;
     static {
-        SecuritySupport ss = SecuritySupport.getInstance();
-        s_systemLineSep = ss.getSystemProperty("line.separator").toCharArray();
+        s_systemLineSep = SecuritySupport.getSystemProperty("line.separator").toCharArray();
     }
     
     /**
