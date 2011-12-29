@@ -537,7 +537,7 @@ final class DOM3TreeWalker {
                     dtd.append(fNewLine);
                     dtd.append(internalSubset);
                     dtd.append("]>");
-                    dtd.append(new String(fNewLine));
+                    dtd.append(fNewLine);
                     
                     writer.write(dtd.toString());
                     writer.flush();
