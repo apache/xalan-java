@@ -64,7 +64,7 @@ public final class XPathEvaluatorImpl implements XPathEvaluator {
 	 * requirement that if a null prefix resolver is used, an exception 
 	 * should only be thrown when an attempt is made to resolve a prefix.
 	 */
-	private class DummyPrefixResolver implements PrefixResolver {
+	private static class DummyPrefixResolver implements PrefixResolver {
 
 		/**
 		 * Constructor for DummyPrefixResolver.
