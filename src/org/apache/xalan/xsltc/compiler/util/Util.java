@@ -160,12 +160,12 @@ public final class Util {
     }
 
     public static String getLocalName(String qname) {
-	final int index = qname.lastIndexOf(":");
+	final int index = qname.lastIndexOf(':');
 	return (index > 0) ? qname.substring(index + 1) : qname;
     }
 
     public static String getPrefix(String qname) {
-	final int index = qname.lastIndexOf(":");
+	final int index = qname.lastIndexOf(':');
 	return (index > 0) ? qname.substring(0, index) : 
 	    Constants.EMPTYSTRING;
     } 
