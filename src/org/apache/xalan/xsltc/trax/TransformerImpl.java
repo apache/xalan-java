@@ -1147,7 +1147,7 @@ public final class TransformerImpl extends Transformer
 	try {        
             // Argument to document function was: document('');
             if (href.length() == 0) {
-                href = new String(baseURI);
+                href = baseURI;
             }    
 
             /*
