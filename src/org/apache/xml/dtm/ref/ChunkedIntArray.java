@@ -39,7 +39,7 @@ import org.apache.xml.res.XMLMessages;
  */
 final class ChunkedIntArray
 {
-  final int slotsize=4; // Locked, MUST be power of two in current code
+  static final int slotsize=4; // Locked, MUST be power of two in current code
   // Debugging tip: Cranking lowbits down to 4 or so is a good
   // way to pound on the array addressing code.
   static final int lowbits=10; // How many bits address within chunks
@@ -265,9 +265,9 @@ final class ChunkedIntArray
     }
   }
 
-  class ChunksVector
+  static class ChunksVector
   {
-    final int BLOCKSIZE = 64;
+    static final int BLOCKSIZE = 64;
     int[] m_map[] = new int[BLOCKSIZE][];
     int m_mapSize = BLOCKSIZE;
     int pos = 0;

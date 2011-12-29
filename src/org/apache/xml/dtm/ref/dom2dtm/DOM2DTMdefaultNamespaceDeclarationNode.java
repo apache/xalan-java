@@ -52,7 +52,7 @@ import org.w3c.dom.DOMException;
  * */
 public class DOM2DTMdefaultNamespaceDeclarationNode implements Attr,TypeInfo
 {
-  final String NOT_SUPPORTED_ERR="Unsupported operation on pseudonode";
+  static final String NOT_SUPPORTED_ERR="Unsupported operation on pseudonode";
   
   Element pseudoparent;
   String prefix,uri,nodename;

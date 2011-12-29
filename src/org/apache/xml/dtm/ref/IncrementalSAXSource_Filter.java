@@ -683,7 +683,7 @@ implements IncrementalSAXSource, ContentHandler, DTDHandler, LexicalHandler, Err
 
   /** Used to quickly terminate parse when running under a
       startParse() thread. Only its type is important. */
-  class StopException extends RuntimeException
+  static class StopException extends RuntimeException
   {
           static final long serialVersionUID = -1129245796185754956L;
   }

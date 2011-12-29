@@ -93,7 +93,7 @@ implements DTM, org.xml.sax.ContentHandler, org.xml.sax.ext.LexicalHandler
         private boolean done = false;
         boolean m_isError = false;
 
-        private final boolean DEBUG = false;
+        static private final boolean DEBUG = false;
 
         /** The document base URI. */
         protected String m_documentBaseURI;
