@@ -1219,7 +1219,7 @@ public class ElemNumber extends ElemTemplateElement
           // then append the formatToken.
           else if (formatTokenizer.isLetterOrDigitAhead())
           {
-            formatTokenString = formatToken;
+            final StringBuffer formatTokenStringBuffer = new StringBuffer(formatToken);
 
             // Append the formatToken string...
             // For instance [2][1][5] with a format value of "1--1. "
@@ -1227,8 +1227,9 @@ public class ElemNumber extends ElemTemplateElement
             while (formatTokenizer.nextIsSep())
             {
               formatToken = formatTokenizer.nextToken();
-              formatTokenString += formatToken;
+              formatTokenStringBuffer.append(formatToken);
             }
+            formatTokenString = formatTokenStringBuffer.toString();
 
             // Record this separator, so it can be used as the 
             // next separator, if the next is the last.
@@ -1943,16 +1944,17 @@ public class ElemNumber extends ElemTemplateElement
       return getZeroString();
     }
 
-    String roman = "";
+    final String roman;
     int place = 0;
 
     if (val <= 3999L)
     {
+      StringBuffer romanBuffer = new StringBuffer();
       do
       {
         while (val >= m_romanConvertTable[place].m_postValue)
         {
-          roman += m_romanConvertTable[place].m_postLetter;
+          romanBuffer.append(m_romanConvertTable[place].m_postLetter);
           val -= m_romanConvertTable[place].m_postValue;
         }
 
@@ -1960,7 +1962,7 @@ public class ElemNumber extends ElemTemplateElement
         {
           if (val >= m_romanConvertTable[place].m_preValue)
           {
-            roman += m_romanConvertTable[place].m_preLetter;
+            romanBuffer.append(m_romanConvertTable[place].m_preLetter);
             val -= m_romanConvertTable[place].m_preValue;
           }
         }
@@ -1968,6 +1970,7 @@ public class ElemNumber extends ElemTemplateElement
         place++;
       }
       while (val > 0);
+      roman = romanBuffer.toString();
     }
     else
     {
