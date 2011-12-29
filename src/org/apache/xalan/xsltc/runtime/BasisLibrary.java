@@ -33,27 +33,24 @@ import javax.xml.transform.dom.DOMSource;
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xalan.xsltc.dom.AbsoluteIterator;
-import org.apache.xml.dtm.Axis;
+import org.apache.xalan.xsltc.dom.ArrayNodeListIterator;
 import org.apache.xalan.xsltc.dom.DOMAdapter;
 import org.apache.xalan.xsltc.dom.MultiDOM;
 import org.apache.xalan.xsltc.dom.SingletonIterator;
 import org.apache.xalan.xsltc.dom.StepIterator;
-import org.apache.xalan.xsltc.dom.ArrayNodeListIterator;
+import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMDefaultBase;
 import org.apache.xml.dtm.ref.DTMNodeProxy;
-
-import org.w3c.dom.DOMException;
+import org.apache.xml.serializer.SerializationHandler;
+import org.apache.xml.utils.XML11Char;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import org.apache.xml.serializer.NamespaceMappings;
-import org.apache.xml.serializer.SerializationHandler;
-import org.apache.xml.utils.XML11Char;
 
 /**
  * Standard XSLT functions. All standard functions expect the current node 
