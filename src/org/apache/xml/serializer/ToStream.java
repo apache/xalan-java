@@ -3186,7 +3186,7 @@ abstract public class ToStream extends SerializerBase
      * In this manner trace events, and the real writing of attributes will use
      * the same code.
      */
-    private class WritertoStringBuffer extends java.io.Writer
+    private static class WritertoStringBuffer extends java.io.Writer
     {
         final private StringBuffer m_stringbuf;
         /**

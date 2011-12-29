@@ -2230,7 +2230,7 @@ public class ToHTMLStream extends ToStream
          * The node representation for the trie.
          * @xsl.usage internal
          */
-        private class Node
+        private static class Node
         {
 
             /**

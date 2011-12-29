@@ -354,7 +354,7 @@ public class NamespaceMappings
      * and popping of namespaces to one push or one pop on
      * one stack rather than on 3 separate stacks.
      */
-    class MappingRecord {
+    static class MappingRecord {
         final String m_prefix;  // the prefix
         final String m_uri;     // the uri, possibly "" but never null
         // the depth of the element where declartion was made
