@@ -521,7 +521,7 @@ public final class SAXImpl extends SAX2DTM2
         int code;
 
         // Is there a prefix?
-        if ((index = name.lastIndexOf(":"))> -1) {
+        if ((index = name.lastIndexOf(':'))> -1) {
             ns = name.substring(0, index);
         }
 
