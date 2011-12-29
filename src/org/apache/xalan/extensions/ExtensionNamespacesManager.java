@@ -168,7 +168,7 @@ public class ExtensionNamespacesManager
     if (className.startsWith("class:"))
       className = className.substring(6);
 
-    int lastSlash = className.lastIndexOf("/");
+    int lastSlash = className.lastIndexOf('/');
     if (-1 != lastSlash)
       className = className.substring(lastSlash + 1);
       
