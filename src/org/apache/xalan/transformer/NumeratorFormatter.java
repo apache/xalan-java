@@ -225,7 +225,7 @@ class NumeratorFormatter
    * This class returns tokens using non-alphanumberic
    * characters as delimiters.
    */
-  class NumberFormatStringTokenizer
+  static class NumberFormatStringTokenizer
   {
 
     /** Field holding the current position in the string      */
