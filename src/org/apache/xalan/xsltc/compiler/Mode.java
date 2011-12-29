@@ -875,7 +875,7 @@ for (int i = 0; i < _templates.size(); i++) {
 		textPrio = textTest.getPriority();
 		textPos  = textTest.getPosition();
 	    }
-	    if (textPrio == Double.NaN || textPrio < nodePrio ||
+	    if (Double.isNaN(textPrio) || textPrio < nodePrio ||
 	        (textPrio == nodePrio && textPos < nodePos)) 
 	    {
 		ihText = _childNodeTestSeq.compile(classGen, methodGen, ihLoop);
@@ -1224,7 +1224,7 @@ for (int i = 0; i < _templates.size(); i++) {
 		textPos  = textTest.getPosition();
 	    }
 
-	    if (textPrio == Double.NaN || textPrio < nodePrio ||
+	    if (Double.isNaN(textPrio) || textPrio < nodePrio ||
 	        (textPrio == nodePrio && textPos < nodePos)) 
 	    {
 		ihText = _childNodeTestSeq.compile(classGen, methodGen, ihLoop);
