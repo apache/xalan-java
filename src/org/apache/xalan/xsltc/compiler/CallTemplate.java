@@ -21,12 +21,11 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import org.apache.bcel.generic.ALOAD;
-import org.apache.bcel.generic.ASTORE;
+import java.util.Vector;
+
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.InstructionList;
-import org.apache.bcel.generic.LocalVariableGen;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
@@ -34,8 +33,6 @@ import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xml.utils.XML11Char;
-
-import java.util.Vector;
 
 /**
  * @author Jacek Ambroziak

@@ -21,18 +21,14 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.io.File;
-import java.net.URL;
-import java.net.MalformedURLException;
 import java.util.Enumeration;
 
-import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
-
+import org.apache.xml.utils.SystemIDResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
