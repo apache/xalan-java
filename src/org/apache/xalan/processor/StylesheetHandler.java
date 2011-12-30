@@ -46,10 +46,7 @@ import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.XMLCharacterRecognizer;
 import org.apache.xpath.XPath;
 import org.apache.xpath.compiler.FunctionTable;
-import org.apache.xpath.functions.Function;
-
 import org.w3c.dom.Node;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;

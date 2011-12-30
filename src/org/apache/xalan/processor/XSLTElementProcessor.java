@@ -22,7 +22,6 @@ package org.apache.xalan.processor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
 

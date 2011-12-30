@@ -20,8 +20,6 @@
  */
 package org.apache.xalan.processor;
 
-import org.xml.sax.Attributes;
-
 /**
  * This class processes an unknown template element.  It is used both 
  * for unknown top-level elements, and for elements in the 
