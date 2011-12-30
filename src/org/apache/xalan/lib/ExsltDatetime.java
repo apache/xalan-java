@@ -87,7 +87,7 @@ public class ExsltDatetime
       // If there is no offset, we have "Coordinated
       // Universal Time."
       if (offset == 0)
-        buff.append("Z");
+        buff.append('Z');
       else
       {
         // Convert milliseconds to hours and minutes
@@ -818,7 +818,7 @@ public class ExsltDatetime
      */
     private static int getZoneStart (String datetime)
     {
-      if (datetime.indexOf("Z") == datetime.length()-1)
+      if (datetime.indexOf('Z') == datetime.length()-1)
         return datetime.length()-1;
       else if (datetime.length() >=6 
       		&& datetime.charAt(datetime.length()-3) == ':'
@@ -1083,7 +1083,6 @@ public class ExsltDatetime
      */
     private static String strip(String symbols, String pattern)
     {
-        int quoteSemaphore = 0;
         int i = 0;
         StringBuffer result = new StringBuffer(pattern.length());
 
@@ -1092,7 +1091,7 @@ public class ExsltDatetime
             char ch = pattern.charAt(i);
             if (ch == '\'')
             {
-                // Assume it's an openening quote so simply copy the quoted 
+                // Assume it's an opening quote so simply copy the quoted 
                 // text to the result. There is nothing to strip here.
                 int endQuote = pattern.indexOf('\'', i + 1);
                 if (endQuote == -1)
