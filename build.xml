@@ -62,7 +62,7 @@ $Id$
 <project name="Xalan" default="jar" basedir=".">
 
   <property name="name"                   value="xalan"/>
-  <property name="year"                   value="2006"/>
+  <property name="year"                   value="2012"/>
   <property name="build.debug"            value="on"/>
 
   <!-- Xalan Java version information -->
