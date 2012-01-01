@@ -19,7 +19,7 @@
 -->
 <!-- $Id$ -->
 
-<book title="Xalan XSL Transformer User's Guide" copyright="2006 The Apache Software Foundation">
+<book title="Xalan XSL Transformer User's Guide" copyright="1999-2012 The Apache Software Foundation">
   <resources source="sbk:/sources/xalan/resources.xml"/>
   <document id="whatsnew"    label="What's New"      source="xalan/whatsnew.xml"/>
   <document id="readme"      label="Release Notes"   source="xalan/readme.xml"/>  

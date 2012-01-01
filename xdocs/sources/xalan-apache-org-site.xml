@@ -19,7 +19,7 @@
 -->
 <!-- $Id$ -->
 
-<book title="Apache Xalan Project " copyright="2006 The Apache Software Foundation">
+<book title="Apache Xalan Project " copyright="1999-2012 The Apache Software Foundation">
   <document id="index" label="Apache Xalan" source="xalan-apache-org/index.xml"/>
   <document id="charter" label="Charter" source="xalan/charter.xml"/>
   <separator/>  

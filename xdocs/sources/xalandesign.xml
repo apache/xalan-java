@@ -19,7 +19,7 @@
 -->
 <!-- $Id$ -->
 
-<book title="Xalan 2.0.0 Design" copyright="2000 The Apache Software Foundation">
+<book title="Xalan 2.0.0 Design" copyright="1999-2012 The Apache Software Foundation">
  
   <document id="design2_0_0"
             label="Xalan-J 2.0.0 Design"
