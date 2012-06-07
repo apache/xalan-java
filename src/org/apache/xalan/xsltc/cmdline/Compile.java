@@ -143,7 +143,7 @@ public final class Compile {
 	}
 	catch (GetOptsException ex) {
 	    System.err.println(ex);
-	    printUsage(); // exits with code '-1'
+	    printUsage();
 	}
 	catch (Exception e) {
 	    e.printStackTrace();
