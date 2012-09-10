@@ -26,7 +26,7 @@
 <!ENTITY xslt4j-dist-src "&xslt4j-dist;-src">
 <!ENTITY xslt4j-dist "xalan-j_@version.VERSION@_@version.RELEASE@_@version.MINOR@">
 <!ENTITY xslt4j-current "&xslt4j; Version @version.VERSION@.@version.RELEASE@.@version.MINOR@">
-<!ENTITY xslt4j-distdir "http://www.apache.org/dyn/closer.cgi/xml/xalan-j/">
+<!ENTITY xslt4j-distdir "http://www.apache.org/dyn/closer.cgi/xalan/xalan-j/">
 <!ENTITY xslt4j_longname "Apache Xalan Java">
 <!ENTITY xml4j "Xerces-Java">
 <!ENTITY xml4j1 "Xerces-Java 1">

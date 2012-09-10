@@ -68,14 +68,14 @@ $Id$
   <!-- Xalan Java version information -->
   <property name="version.VERSION"        value="2"/>
   <property name="version.RELEASE"        value="7"/>
-  <property name="version.DEVELOPER"      value=""/><!-- Set this to 'D' if a developer release; blank "" if maintenance release -->
-  <property name="version.MINOR"          value="1"/><!-- EITHER the developer release number, or a maintenance release number -->
+  <property name="version.DEVELOPER"      value="D"/><!-- Set this to 'D' if a developer release; blank "" if maintenance release -->
+  <property name="version.MINOR"          value="2"/><!-- EITHER the developer release number, or a maintenance release number -->
   <property name="version"                value="${version.VERSION}_${version.RELEASE}_${version.DEVELOPER}${version.MINOR}"/><!-- GUMP: version # of dist file -->
   <property name="impl.version"           value="${version.VERSION}.${version.RELEASE}.${version.DEVELOPER}${version.MINOR}"/><!-- Used in jar task for filtering MANIFEST.MF file -->
   
   <!-- Xerces Java version information -->
   <property name="parser.version.VERSION" value="2"/>
-  <property name="parser.version.RELEASE" value="9"/>
+  <property name="parser.version.RELEASE" value="11"/>
   <property name="parser.version.MINOR"   value="0"/> 
   
   <!-- Xalan Java directories -->  
