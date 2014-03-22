@@ -17,7 +17,7 @@
 -->
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/BCEL.jar"/>
 	<classpathentry kind="lib" path="lib/runtime.jar"/>
