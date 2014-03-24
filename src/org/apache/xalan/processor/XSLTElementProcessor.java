@@ -337,17 +337,31 @@ public class XSLTElementProcessor extends ElemTemplateElement
       }
       else
       {
-        // Can we switch the order here:
-
-        boolean success = attrDef.setAttrValue(handler, attrUri, attrLocalName,
-                             attributes.getQName(i), attributes.getValue(i),
-                             target);
-                             
-        // Now we only add the element if it passed a validation check
-        if (success)
-            processedDefs.add(attrDef);
+        //handle secure processing
+        if(handler.getStylesheetProcessor()==null)
+            System.out.println("stylesheet processor null");
+        if(attrDef.getName().compareTo("*")==0 && handler.getStylesheetProcessor().isSecureProcessing())
+        {
+            //foreign attributes are not allowed in secure processing mode
+            // Then barf, because this element does not allow this attribute.
+            handler.error(XSLTErrorResources.ER_ATTR_NOT_ALLOWED, new Object[]{attributes.getQName(i), rawName}, null);//"\""+attributes.getQName(i)+"\""
+            //+ " attribute is not allowed on the " + rawName
+            // + " element!", null);
+        }
         else
-            errorDefs.add(attrDef);
+        {
+
+
+            boolean success = attrDef.setAttrValue(handler, attrUri, attrLocalName,
+                                 attributes.getQName(i), attributes.getValue(i),
+                                 target);
+
+            // Now we only add the element if it passed a validation check
+            if (success)
+                processedDefs.add(attrDef);
+            else
+                errorDefs.add(attrDef);
+        }
       }
     }
 
