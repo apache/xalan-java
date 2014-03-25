@@ -83,7 +83,19 @@
       <p>XALANJ Jira bug fixes:
         <jump href="https://issues.apache.org/jira/browse/XALANJ-2435">2435</jump>,
         <jump href="https://issues.apache.org/jira/browse/XALANJ-2580">2580</jump>,
-        <jump href="https://issues.apache.org/jira/browse/XALANJ-2581">2581</jump>
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2546">2546</jump>,
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2581">2581</jump>,
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2581">2582</jump>,
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2581">2583</jump>,
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2473">2473</jump>,
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2495">2495</jump>,
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2493">2493</jump>,
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2424">2424</jump>,
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2446">2446</jump>,
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2447">2447</jump>
+      </p>
+      <p>You can also view the list in 
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2424?jql=project%20%3D%20XALANJ%20AND%20fixVersion%20%3D%202.7.2%20ORDER%20BY%20due%20ASC%2C%20priority%20DESC%2C%20created%20ASC">Jira</jump>
       </p>
      </s3>
         
