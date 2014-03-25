@@ -100,13 +100,12 @@ public class FuncSystemProperty extends FunctionOneArg
             //if secure procession is enabled only handle required properties do not not map any valid system property
             if(!xctxt.isSecureProcessing())
             {
-                result = System.getProperty(fullName);
+                result = System.getProperty(propName);
             }
             else
             {
                 warn(xctxt, XPATHErrorResources.WG_SECURITY_EXCEPTION,
                         new Object[]{ fullName });  //"SecurityException when trying to access XSL system property: "+fullName);
-                result = xsltInfo.getProperty(propName);
             }
             if (null == result)
             {
@@ -135,7 +134,6 @@ public class FuncSystemProperty extends FunctionOneArg
           {
               warn(xctxt, XPATHErrorResources.WG_SECURITY_EXCEPTION,
                       new Object[]{ fullName });  //"SecurityException when trying to access XSL system property: "+fullName);
-              result = xsltInfo.getProperty(propName);
           }
           if (null == result)
           {
