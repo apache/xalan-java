@@ -21,7 +21,8 @@
 <!-- $Id$ -->
 <s1 title="Release Notes">
  <ul>
-  <li><link anchor="notes_latest">Release notes for  version 2.7.1</link></li>
+  <li><link anchor="notes_latest">Release notes for  version 2.7.2</link></li>
+  <li><link anchor="notes_271">Release notes for version 2.7.1</link></li>
   <li><link anchor="notes_270">Release notes for version 2.7.0</link></li>
   <li><link anchor="notes_260">Release notes for version 2.6.0</link></li>
   <li><link anchor="notes_252">Release notes for version 2.5.2</link></li>
@@ -33,7 +34,62 @@
   <li><link anchor="other">Other points of interest</link></li>
  </ul>
   
-   <anchor name="notes_latest"/>
+  <anchor name="notes_latest"/>
+  <s2 title="Release notes for &xslt4j; 2.7.2">
+    <p>
+      &xslt4j; 2.7.2 was released in April 2014.
+    </p>
+     
+    <s3 title="Fix for CVE-2014-0107 insufficient secure processing">
+      <p>
+        When using FEATURE_SECURE_PROCESSING ("http://javax.xml.XMLConstants/feature/secure-processing") on a TransformerFactory, the output properties:
+      </p>
+      <ul>
+        <li>{http://xml.apache.org/xalan}content-handler</li>
+        <li>{http://xml.apache.org/xalan}entities</li>
+        <li>{http://xml.apache.org/xslt}content-handler</li>
+        <li>{http://xml.apache.org/xslt}entities</li>
+      </ul>
+      <p>
+        should be ignored (see http://xml.apache.org/xalan-j/usagepatterns.html#outputprops)
+      </p>
+      <p>
+        These properties can be used to load an arbitrary class or access an arbitrary URL/resource so are problematic when secure processing is desired.
+      </p>
+      <p>      
+        <code>  
+          &lt;xsl:output xalan:content-handler="org.example.BadClass" ...
+        </code>   
+      </p>
+      <p>      
+        <code>  
+          &lt;xsl:output xalan:entities="http://example.org/reallyLargeFile.bin" ...
+        </code>   
+      </p>
+      <p>
+        These features could be used to load a class that had undesirable side-effects or to load a large file and exhaust memory, etc. 
+      </p>
+      <p>
+        See <link anchor="https://issues.apache.org/jira/browse/XALANJ-2435">XALANJ-2435</link>. 
+      </p>
+    </s3>
+    
+    <s3 title="Upgrade to Xerces-J 2.11.0 and XML Commons External 1.4.01">
+      The distributions contain upgraded versions of <code>xercesImpl.jar</code>
+      (Xerces-J 2.11.0) and <code>xml-apis.jar</code> (XML Commons External 1.4.01).
+    </s3>
+    
+    <s3 title="XALANJ Jira bug fixes">
+      <p>XALANJ Jira bug fixes:
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2435">2435</jump>,
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2580">2580</jump>,
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2581">2581</jump>
+      </p>
+     </s3>
+        
+   </s2>   
+   
+   <anchor name="notes_271"/>
    <s2 title="Release notes for &xslt4j; 2.7.1">
      <p>&xslt4j; 2.7.1 was released in August 2007.
      </p>
