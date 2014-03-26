@@ -1113,13 +1113,14 @@ $Id$
     <delete file="${xdocs.XSLTCDONE.location}"/>
     <delete file="${src.dir}/${xalan.reldir}/Version.java"/>
     <delete file="${src.dir}/${serializer.reldir}/Version.java"/>
+    <delete file="${src.dir}/${xalan.reldir}/processor/XSLProcessorVersion.java"/>
     <delete file="${xdocs.dir}/sources/entities.ent"/>       
     <!-- Also delete files expanded from ${xml-commons-srcs.tar.gz}-->
     <delete dir="${src.dir}/javax" includeEmptyDirs="true" quiet="true"/>
     <delete dir="${src.dir}/org/xml" includeEmptyDirs="true" quiet="true"/>
     <delete dir="${src.dir}/org/w3c" includeEmptyDirs="true" quiet="true"/>
     <delete dir="${src.dir}/xdocs/style/graphics" includeEmptyDirs="true" quiet="true"/>
-    <delete dir="${src.dir}/xdocs/style/resources" includeEmptyDirs="true" quiet="true"/>            
+    <delete dir="${src.dir}/xdocs/style/resources" includeEmptyDirs="true" quiet="true"/>    
   </target>
  
   <target name="xsltc.clean"
