@@ -39,11 +39,11 @@ if [ "$ANT_JAR" = "" ] ; then
     ANT_JAR=./tools/ant.jar
 fi
 if [ "$PARSER_JAR" = "" ] ; then
-    PARSER_JAR=./lib/xercesImpl.jar
+    PARSER_JAR=./lib/endorsed/xercesImpl.jar
 fi
 
 if [ "$XML_APIS_JAR" = "" ] ; then
-    XML_APIS_JAR=./lib/xml-apis.jar
+    XML_APIS_JAR=./lib/endorsed/xml-apis.jar
 fi
 
 # Use _underscore prefix to not conflict with user's settings
