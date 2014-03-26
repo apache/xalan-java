@@ -84,6 +84,7 @@ $Id$
   <!--  <property name="bin.dir"                value="./bin"/> -->
   <property name="build.dir"              value="./build"/> 
   <property name="lib.dir"                value="./lib"/>   
+  <property name="endorsed.dir"           value="${lib.dir}/endorsed"/>   
   <property name="samples.dir"            value="./samples"/>   
   <property name="src.dir"                value="./src"/>  
   <property name="tools.dir"              value="./tools"/> 
@@ -98,9 +99,9 @@ $Id$
 
   <!-- Jars needed to run Xalan Java (Interpretive, Compiled, or both) -->
   <property name="xmlapis.jar.name"       value="xml-apis.jar"/>
-  <property name="xmlapis.jar"            value="${lib.dir}/${xmlapis.jar.name}"/>
+  <property name="xmlapis.jar"            value="${endorsed.dir}/${xmlapis.jar.name}"/>
   <property name="parser.jar.name"        value="xercesImpl.jar"/>
-  <property name="parser.jar"             value="${lib.dir}/${parser.jar.name}"/>
+  <property name="parser.jar"             value="${endorsed.dir}/${parser.jar.name}"/>
   <property name="bcel.jar.name"          value="BCEL.jar"/>
   <property name="bcel.jar"               value="${lib.dir}/${bcel.jar.name}"/>
   <property name="runtime.jar.name"       value="runtime.jar"/>
