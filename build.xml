@@ -97,7 +97,7 @@ $Id$
   <property name="domxpath.reldir"        value="org/w3c/dom/xpath"/>
   <property name="xsltc.reldir"           value="${xalan.reldir}/xsltc"/>  
 
-  <!-- Jars needed to run Xalan Java (Interpretive, Compiled, or both) -->
+  <!-- Jars to run Xalan Java (Interpretive, Compiled, or both) -->
   <property name="xmlapis.jar.name"       value="xml-apis.jar"/>
   <property name="xmlapis.jar"            value="${endorsed.dir}/${xmlapis.jar.name}"/>
   <property name="parser.jar.name"        value="xercesImpl.jar"/>
@@ -109,7 +109,7 @@ $Id$
   <property name="regexp.jar.name"        value="regexp.jar"/>
   <property name="regexp.jar"             value="${lib.dir}/${regexp.jar.name}"/>
   
-  <!-- Jars need to build Xalan Java (Interpretive, Compiled, or both) or build the docs -->
+  <!-- Jars to build Xalan Java (Interpretive, Compiled, or both) or build the docs -->
   <property name="java_cup.jar.name"      value="java_cup.jar"/>
   <property name="java_cup.jar"           value="${tools.dir}/${java_cup.jar.name}"/>
   <property name="jlex.jar.name"          value="JLex.jar"/>
@@ -121,6 +121,9 @@ $Id$
   <property name="taglet.jar.name"        value="xalan2jtaglet.jar"/>
   <property name="taglet.jar"             value="${tools.dir}/${taglet.jar.name}"/>
 
+  <!-- Jars to build Xalan Java samples -->
+  <property name="servlet-api.jar.name"   value="servlet-api-2.5.jar"/>
+  <property name="servlet-api.jar"        value="${lib.dir}/${servlet-api.jar.name}"/>
  
   <!-- Relative locations of source directories -->
   <property name="manifest.mf"            value="./src/MANIFEST.MF"/>
@@ -830,7 +833,7 @@ $Id$
           depends="servlet,xsltc.applet,xsltc.ejb,xsltc.servlet"/>
           
   <target name="extra.std.samples.nojardepends"
-          depends="servlet.nojardepends,xsltc.applet.nojardepends,
+          depends="servlet.jardepends,xsltc.applet.nojardepends,
                    xsltc.ejb.nojardepends,xsltc.servlet.nojardepends"/>
 
   <!-- =================================================================== -->
@@ -846,9 +849,9 @@ $Id$
   <!-- The javax.servlet and javax.servlet.http packages                   -->
   <!-- must be on the classpath                                            -->
   <!-- =================================================================== -->
-  <target name="servlet" depends="jar,servlet.nojardepends"/>
+  <target name="servlet" depends="jar,servlet.jardepends"/>
 
-  <target name="servlet.nojardepends"
+  <target name="servlet.jardepends"
     description="Compile and jar the servlet samples in xalanservlet.war" >
      <echo message="To compile the sample servlets, javax.servlet and javax.servlet.http must be on the classpath"/>   
      <mkdir dir="${build.servlet}"/>
@@ -859,7 +862,8 @@ $Id$
             debug="${build.debug}"
             bootclasspathref="xslt.boot.class.path" 
      	    target="${compiler.target}" source="${compiler.source}">
-       <classpath refid="samples.class.path" />
+        <classpath refid="samples.class.path" />
+        <classpath location="${servlet-api.jar}" />
      </javac>           
       <copy todir="${build.servlet}/WEB-INF/classes/servlet">
         <fileset dir="${samples.dir}/servlet" includes="media.properties"/>
