@@ -124,6 +124,8 @@ $Id$
   <!-- Jars to build Xalan Java samples -->
   <property name="servlet-api.jar.name"   value="servlet-api-2.5.jar"/>
   <property name="servlet-api.jar"        value="${lib.dir}/${servlet-api.jar.name}"/>
+  <property name="javaee-api.jar.name"    value="javaee-api-5.0-2.jar"/>
+  <property name="javaee-api.jar"         value="${lib.dir}/${javaee-api.jar.name}"/>
  
   <!-- Relative locations of source directories -->
   <property name="manifest.mf"            value="./src/MANIFEST.MF"/>
@@ -834,7 +836,7 @@ $Id$
           
   <target name="extra.std.samples.nojardepends"
           depends="servlet.jardepends,xsltc.applet.nojardepends,
-                   xsltc.ejb.nojardepends,xsltc.servlet.nojardepends"/>
+                   xsltc.ejb.jardepends,xsltc.servlet.nojardepends"/>
 
   <!-- =================================================================== -->
   <!-- Compiles all samples that require extra non-standard components in  -->
@@ -947,14 +949,16 @@ $Id$
   <!-- ejb.jar must be on the classpath to compile this sample.            -->
   <!-- EJB 2.0 can be found at http://java.sun.com/products/ejb/docs.html  -->
   <!-- =================================================================== -->
-  <target name="xsltc.ejb" depends="jar,xsltc.ejb.nojardepends"/>
+  <target name="xsltc.ejb" depends="jar,xsltc.ejb.jardepends"/>
 
-  <target name="xsltc.ejb.nojardepends">
+  <target name="xsltc.ejb.jardepends">
     <mkdir dir="${build.samples}/CompiledEJB"/>
     <javac srcdir="${samples.dir}/CompiledEJB"
            destdir="${build.samples}/CompiledEJB" excludes="${exclude}"
            debug="${build.debug}" bootclasspathref="xslt.boot.class.path" 
-    	   target="${compiler.target}" source="${compiler.source}"/>
+    	   target="${compiler.target}" source="${compiler.source}">
+    	<classpath location="${javaee-api.jar}"/>
+    </javac>
     <jar jarfile="${build.xsltc.ejb.jar}"
          basedir="${build.samples}/CompiledEJB"
          includes="*.class"/>
