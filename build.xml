@@ -836,7 +836,7 @@ $Id$
           
   <target name="extra.std.samples.nojardepends"
           depends="servlet.jardepends,xsltc.applet.nojardepends,
-                   xsltc.ejb.jardepends,xsltc.servlet.nojardepends"/>
+                   xsltc.ejb.jardepends,xsltc.servlet.jardepends"/>
 
   <!-- =================================================================== -->
   <!-- Compiles all samples that require extra non-standard components in  -->
@@ -967,14 +967,16 @@ $Id$
   <!-- =================================================================== -->
   <!-- Compiles the XSLTC servlet example and jars the class files.        --> 
   <!-- =================================================================== -->
-  <target name="xsltc.servlet" depends="jar,xsltc.servlet.nojardepends" />
+  <target name="xsltc.servlet" depends="jar,xsltc.servlet.jardepends" />
 
-  <target name="xsltc.servlet.nojardepends">
+  <target name="xsltc.servlet.jardepends">
     <mkdir dir="${build.samples}/CompiledServlet"/>
     <javac srcdir="${samples.dir}/CompiledServlet"
            destdir="${build.samples}/CompiledServlet" excludes="${exclude}"
            debug="${build.debug}" bootclasspathref="xslt.boot.class.path" 
-    	   target="${compiler.target}" source="${compiler.source}"/>
+    	   target="${compiler.target}" source="${compiler.source}">
+    	<classpath location="${servlet-api.jar}"/>
+    </javac>
     <jar jarfile="${build.xsltc.servlet.jar}"
          basedir="${build.samples}/CompiledServlet"
          includes="*.class"/>
