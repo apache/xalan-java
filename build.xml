@@ -126,6 +126,8 @@ $Id$
   <property name="servlet-api.jar"        value="${lib.dir}/${servlet-api.jar.name}"/>
   <property name="javaee-api.jar.name"    value="javaee-api-5.0-2.jar"/>
   <property name="javaee-api.jar"         value="${lib.dir}/${javaee-api.jar.name}"/>
+  <property name="brazil.jar.name"        value="brazil-2.1.jar"/>
+  <property name="brazil.jar"             value="${lib.dir}/${brazil.jar.name}"/>
  
   <!-- Relative locations of source directories -->
   <property name="manifest.mf"            value="./src/MANIFEST.MF"/>
@@ -844,7 +846,7 @@ $Id$
   <!-- =================================================================== -->
   <target name="extra.nonstd.samples" depends="xsltc.brazil"/>
   
-  <target name="extra.nonstd.samples.nojardepends" depends="xsltc.brazil.nojardepends"/>
+  <target name="extra.nonstd.samples.nojardepends" depends="xsltc.brazil.jardepends"/>
 
   <!-- =================================================================== -->
   <!-- Compiles the sample servlet and jars the class files.               --> 
@@ -931,14 +933,16 @@ $Id$
   <!-- =================================================================== -->
   <!-- Compiles the XSLTC brazil example and jars the class files.         --> 
   <!-- =================================================================== -->
-  <target name="xsltc.brazil" depends="jar,xsltc.brazil.nojardepends"/>
+  <target name="xsltc.brazil" depends="jar,xsltc.brazil.jardepends"/>
 
-  <target name="xsltc.brazil.nojardepends">
+  <target name="xsltc.brazil.jardepends">
     <mkdir dir="${build.samples}/CompiledBrazil"/>
     <javac srcdir="${samples.dir}/CompiledBrazil"
            destdir="${build.samples}/CompiledBrazil" excludes="${exclude}"
            debug="${build.debug}" bootclasspathref="xslt.boot.class.path" 
-    	   target="${compiler.target}" source="${compiler.source}"/>
+    	   target="${compiler.target}" source="${compiler.source}">
+    	<classpath location="${brazil.jar}"/>
+  	</javac>
     <jar jarfile="${build.xsltc.brazil.jar}"
          basedir="${build.samples}/CompiledBrazil"
          includes="*.class"/>
