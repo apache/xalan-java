@@ -31,14 +31,14 @@
 <resources> 	
   <resource id="xslt4j" 
             title="&xslt4j;" 
-            location="http://xalan.apache.org/old/xalan-j"/>
+            location="http://xml.apache.org/xalan-j"/>
   <resource id="xslt4j-current" 
             title="&xslt4j-current;" 
-            location="http://xalan.apache.org/old/xalan-j"/>
+            location="http://xml.apache.org/xalan-j"/>
 
   <resource id="xslt4j-distdir" 
             title="xalan-j distribution directory" 
-            location="http://www.apache.org/dyn/closer.cgi/xalan/xalan-j"/>
+            location="http://www.apache.org/dyn/closer.cgi/xml/xalan-j"/>
 
   <resource id="xslt4j-distdir-previous" 
             title="xalan-j archive directory" 
@@ -49,12 +49,12 @@
             location="http://xerces.apache.org/xerces2-j/index.html"/>
   <resource id="xml4j-distdir" 
             title="xerces-j distribution directory" 
-            location="http://archive.apache.org/dist/xml/xerces-j/"/>
+            location="http://www.apache.org/dyn/closer.cgi/xml/xerces-j/"/>
   <resource id="ant" title="Ant" 
             location="http://jakarta.apache.org/ant/index.html"/>
   <resource id="ApacheLicense" 
             title="The Apache Software License, Version 1.1" 
-            location="http://xalan.apache.org/dist/LICENSE.txt"/>
+            location="http://xml.apache.org/dist/LICENSE.txt"/>
   <resource id="jira"
             title="JIRA (the Apache issue tracker)"
             location="http://issues.apache.org/jira/browse/XALANJ"/>
@@ -146,7 +146,7 @@
 
   <human-resource id="xalandev" 
                   name="Xalan Development Mailing List" 
-                  mailto="dev@xalan.apache.org"/>
+                  mailto="xalan-dev@xml.apache.org"/>
 
   <human-resource id="sboag"
                   name="Scott Boag"

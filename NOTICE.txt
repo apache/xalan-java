@@ -4,7 +4,7 @@
    =========================================================================
 
    Apache Xalan (Xalan XSLT processor)
-   Copyright 1999-2012 The Apache Software Foundation
+   Copyright 1999-2014 The Apache Software Foundation
 
    Apache Xalan (Xalan serializer)
    Copyright 1999-2012 The Apache Software Foundation

@@ -438,7 +438,9 @@ public class TransformerImpl extends Transformer
     try
     {
       if (sroot.getExtensions() != null)
-        m_extensionsTable = new ExtensionsTable(sroot);
+        //only load extensions if secureProcessing is disabled
+        if(!sroot.isSecureProcessing())
+            m_extensionsTable = new ExtensionsTable(sroot);
     }
     catch (javax.xml.transform.TransformerException te)
     {te.printStackTrace();}

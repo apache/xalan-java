@@ -110,7 +110,7 @@ adding new functionality; these go from 2.3 to 2.3.1.  They should be done on a
 branch if the mainline development has already moved forward; the point is to 
 make critical bugfixes for existing customers who want to stay on the stable release.<br/><br/></li>
 <li>Developer releases are very ad hoc; they represent a chunk of progress along the 
-HEAD of our CVS tree towards a new major or minor release. The developer release 
+HEAD of our Subversion tree towards a new major or minor release. The developer release 
 versions would be going from 2.3 to a new 2.4.D1 - the developer release is somewhat 
 like a 'beta' towards a new 2.4 minor version release.  Quality standards for developer 
 releases are much less stringent than other releases.<br/><br/></li>
@@ -210,15 +210,15 @@ xml-xalan/java/src/org/apache/xalan/xslt/EnvironmentCheck.java</li>
 <ul>
 <li>Do a clean checkout and tag the sources.</li>
 </ul>
-<p>Of course, you checked in all your earlier work to the CVS repository, right?</p>
+<p>Of course, you checked in all your earlier work to the Subversion repository, right?</p>
 <p>The safest way to perform a build for distribution is to check out a fresh 
-new copy of the repository from CVS.  This avoids any potential problems with 
+new copy of the repository from Subversion.  This avoids any potential problems with 
 uncommitted changes or extra files on your local machine.</p>
 <p>Check out a new copy of both xml-xalan/java and xml-xalan/test repositories 
 to a blank directory on your local machine.  You then need to tag the files in 
 the repository with a marker noting that these versions are the actual ones 
 being used in the build (you could actually do this after running the build below). 
-Use the CVS tag command to add the tag to both repositories (/java and /test). 
+Use the Subversion tag command to add the tag to both repositories (/java and /test). 
 The tag name should be something like 'xalan-j_2_4'; look at the log of any file 
 to see the exact format of previous builds.</p>
 
@@ -317,7 +317,7 @@ either scp them or login to the apache machines and use scp or pftp from there
 outbound to some server that you've copied them to.</p>
 <p>(Subject to change as www.apache.org/dist gets ready for mirroring) 
 You'll need to log on to xml.apache.org (which is a separate machine 
-from cvs.apache.org) and upload the files to /www/xml.apache.org/xalan-j/dist</p>
+from svn.apache.org) and upload the files to /www/xml.apache.org/xalan-j/dist</p>
 <p>You should also update the distribution directory's html files 
 to note the new build numbers.  Carefully edit the .htaccess file 
 to update the 'Latest Stable Build' and 'Latest Developers Build' lines  

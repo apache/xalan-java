@@ -20,37 +20,54 @@
 <s1 title="What's new in &xslt4j2;">
 
   <s2 title="What's new in &xslt4j-current;">  
-<p> &nbsp; </p>  
+    <p>
+      Here's what new in &xslt4j-current;.
+    </p>
 
-    <s3 title="Support for DOM Level 3 serialization (LSSerializer)">
+    <s3 title="Fix for CVE-2014-0107 insufficient secure processing">
       <p>
-      The serializer now has support for DOM Level 3 serialization
-      (<jump href="http://www.w3.org/TR/2004/REC-DOM-Level-3-LS-20040407/load-save.html#LS-LSSerializer">LSSerializer</jump>)
-      for an XML parser. These changes are seen in the new class
-      <jump href="apidocs/org/apache/xml/serializer/DOM3Serializer.html">
-      <code>org.apache.xml.serializer.DOM3Serializer</code></jump> 
-      and the new package
-      <code>org.apache.xml.serializer.dom3</code>
-      as well as a new method,       
-      <code>asDOM3Serializer()</code> on the older 
-      <jump href="apidocs/org/apache/xml/serializer/Serializer.html">
-      <code>org.apache.xml.serializer.Serializer</code></jump> interface.
+        When using FEATURE_SECURE_PROCESSING ("http://javax.xml.XMLConstants/feature/secure-processing") on a TransformerFactory, the output properties:
+      </p>
+      <ul>
+        <li>{http://xml.apache.org/xalan}content-handler</li>
+        <li>{http://xml.apache.org/xalan}entities</li>
+        <li>{http://xml.apache.org/xslt}content-handler</li>
+        <li>{http://xml.apache.org/xslt}entities</li>
+      </ul>
+      <p>
+        should be ignored (see http://xml.apache.org/xalan-j/usagepatterns.html#outputprops)
       </p>
       <p>
-      More details are in the javadoc of those classes and interfaces
+        These properties can be used to load an arbitrary class or access an arbitrary URL/resource so are problematic when secure processing is desired.
+      </p>
+      <p>      
+        <code>  
+          &lt;xsl:output xalan:content-handler="org.example.BadClass" ...
+        </code>   
+      </p>
+      <p>      
+        <code>  
+          &lt;xsl:output xalan:entities="http://example.org/reallyLargeFile.bin" ...
+        </code>   
+      </p>
+      <p>
+        These features could be used to load a class that had undesirable side-effects or to load a large file and exhaust memory, etc. 
+      </p>
+      <p>
+        See <link anchor="https://issues.apache.org/jira/browse/XALANJ-2435">XALANJ-2435</link>. 
       </p>
     </s3>
     
-    <s3 title="Upgrade to Xerces-J 2.9.0 and XML Commons External 1.3.04.">
-    The distributions contain upgraded versions of <code>xml-apis.jar</code>
-    (Xerces-J 2.9.0) and <code>xml-apis.jar</code> (XML Commons External 1.3.04).
+    <s3 title="Upgrade to Xerces-J 2.11.0 and XML Commons External 1.4.01">
+      The distributions contain upgraded versions of <code>xercesImpl.jar</code>
+      (Xerces-J 2.11.0) and <code>xml-apis.jar</code> (XML Commons External 1.4.01).
     </s3>
     
     <s3 title="Bug fixes">
-    Of course the 2.7.1 release contains performance enhancements
-    and other bug fixes since 2.7.0 and a list of these can be found in
-    <link idref="readme" anchor="notes_latest">the release notes</link>.
+      &xslt4j-current; contains performance enhancements and other bug fixes since 2.7.1. You can find the list 
+      in <link idref="readme" anchor="notes_latest">the release notes</link>.
     </s3>
     
   </s2>
+
 </s1>

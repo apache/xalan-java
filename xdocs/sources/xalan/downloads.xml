@@ -86,7 +86,7 @@
     if you downloaded a source distribution, 
     you have the option to use Ant to build &xslt4j;, 
     including <code>xalan.jar</code>, <code>xsltc.jar</code>, <code>serializer.jar</code>
-    and other things, see <link anchor="using-ant">Using ant</link> for more
+    and other things, see <link anchor="using-ant">Using Ant</link> for more
     details.
   </p>  
     

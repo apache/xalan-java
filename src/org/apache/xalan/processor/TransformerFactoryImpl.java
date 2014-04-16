@@ -326,6 +326,10 @@ public class TransformerFactoryImpl extends SAXTransformerFactory
           reader = XMLReaderFactory.createXMLReader();
         }
 
+        if(m_isSecureProcessing)
+        {
+            reader.setFeature("http://xml.org/sax/features/external-general-entities",false);
+        }
         // Need to set options!
         reader.setContentHandler(handler);
         reader.parse(isource);

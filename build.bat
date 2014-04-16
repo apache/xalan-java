@@ -23,7 +23,7 @@ rem     Setup:
 rem         - you should set JAVA_HOME
 rem         - you can set ANT_HOME if you use your own Ant install
 rem         - JAVA_OPTS is added to the java command line
-rem         - PARSER_JAR may be set to use alternate parser (default:lib\xercesImpl.jar)
+rem         - PARSER_JAR may be set to use alternate parser (default:lib\endorsed\xercesImpl.jar)
 echo.
 echo Xalan-J 2.x Build
 echo -------------
@@ -52,9 +52,9 @@ rem Set our local vars to all start with _underscore
 set _ANT_JAR=%ANT_JAR%
 if "%_ANT_JAR%" == "" set _ANT_JAR=tools\ant.jar
 set _PARSER_JAR=%PARSER_JAR%
-if "%_PARSER_JAR%" == "" set _PARSER_JAR=lib\xercesImpl.jar
+if "%_PARSER_JAR%" == "" set _PARSER_JAR=lib\endorsed\xercesImpl.jar
 set _XML-APIS_JAR=%XML-APIS_JAR%
-if "%_XML-APIS_JAR%" == "" set _XML-APIS_JAR=lib\xml-apis.jar
+if "%_XML-APIS_JAR%" == "" set _XML-APIS_JAR=lib\endorsed\xml-apis.jar
 
 rem Attempt to automatically add system classes to _CLASSPATH
 rem Use _underscore prefix to not conflict with user's settings
