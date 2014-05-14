@@ -65,7 +65,7 @@ the &xslt4j; Interpretive processor. See <link idref="xsltc_usage">Getting Start
   </ol>
   <p>For example, go to the SimpleTransform subdirectory and issue the following command:</p>
   <p><code>java SimpleTransform</code></p>
-  <p>The sample writes the transformation result  to a file (birds.out). To see how the example works, 
+  <p>The sample writes the transformation result to a file (birds.out). To see how the example works, 
      examine the source files: birds.xml, birds.xsl, and SimpleTransform.java.</p>
   <p>The extensions examples require additional JAR files on the classpath, and the procedure for 
      running the sample applet and sample servlet is different. For more information about all the 
