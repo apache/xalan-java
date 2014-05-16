@@ -36,7 +36,7 @@
    and tutorials on XSLT, see <link anchor="uptospeed">Getting up to speed with XSLT</link>.</p> 
 <note>XSL also includes a vocabulary for formatting documents, which is not part of &xslt4j;. 
       For more information, see <resource-ref idref="xsl"/> and the <jump
-      href="http://xml.apache.org/fop">Apache XML FOP (Formatting Objects Project)</jump>.</note>
+      href="http://xmlgraphics.apache.org/fop">Apache XmlGraphics FOP (Formatting Objects Project)</jump>.</note>
 <p>XSL stylesheets are written in the XSLT language. An XSL stylesheet contains instructions 
    for transforming XML documents into XML, HTML, XHTML or plain text. In structural terms, an XSL
    stylesheet specifies the transformation of one tree of 
