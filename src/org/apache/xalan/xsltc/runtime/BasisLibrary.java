@@ -64,7 +64,7 @@ public final class BasisLibrary {
      * Standard function count(node-set)
      */
     public static int countF(DTMAxisIterator iterator) {
-	return(iterator.getLast());
+	return iterator.getLast();
     }
 
     /**
