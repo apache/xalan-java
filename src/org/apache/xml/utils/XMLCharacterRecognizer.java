@@ -69,6 +69,28 @@ public class XMLCharacterRecognizer
    * @param buf StringBuffer to check as XML whitespace.
    * @return True if characters in buffer are XML whitespace, false otherwise
    */
+  public static boolean isWhiteSpace(CharSequence buf)
+  {
+
+    int n = buf.length();
+
+    for (int i = 0; i < n; i++)
+    {
+      if (!isWhiteSpace(buf.charAt(i)))
+        return false;
+    }
+
+    return true;
+  }
+  
+  /**
+   * Detects if the string is whitespace.
+   *
+   * @param buf StringBuffer to check as XML whitespace.
+   * @return True if characters in buffer are XML whitespace, false otherwise
+   * @deprecated Will be replaced by {@link #isWhiteSpace(CharSequence)} in the next major release.
+   */
+  @Deprecated
   public static boolean isWhiteSpace(StringBuffer buf)
   {
 
@@ -88,7 +110,9 @@ public class XMLCharacterRecognizer
    *
    * @param s String to check as XML whitespace.
    * @return True if characters in buffer are XML whitespace, false otherwise
+   * @deprecated Will be replaced by {@link #isWhiteSpace(CharSequence)} in the next major release.
    */
+  @Deprecated
   public static boolean isWhiteSpace(String s)
   {
 
