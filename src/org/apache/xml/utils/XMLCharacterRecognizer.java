@@ -41,7 +41,7 @@ public class XMLCharacterRecognizer
   }
 
   /**
-   * Tell if the string is whitespace.
+   * Detects if the string is whitespace.
    *
    * @param ch Character array to check as XML whitespace.
    * @param start Start index of characters in the array
@@ -64,7 +64,7 @@ public class XMLCharacterRecognizer
   }
 
   /**
-   * Tell if the string is whitespace.
+   * Detects if the string is whitespace.
    *
    * @param buf StringBuffer to check as XML whitespace.
    * @return True if characters in buffer are XML whitespace, false otherwise
@@ -84,7 +84,7 @@ public class XMLCharacterRecognizer
   }
   
   /**
-   * Tell if the string is whitespace.
+   * Detects if the string is whitespace.
    *
    * @param s String to check as XML whitespace.
    * @return True if characters in buffer are XML whitespace, false otherwise
