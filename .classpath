@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/vcs/svn/apache/xalan-j/branches/xalan-j_2_7_1_maint/java/lib/endorsed/xml-apis.jar"/>
-	<classpathentry kind="lib" path="C:/vcs/svn/apache/xalan-j/branches/xalan-j_2_7_1_maint/java/lib/endorsed/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="E:/vcs/svn/apache/xalan-j/branches/xalan-j_2_7_1_maint/java/lib/endorsed/xml-apis.jar"/>
+	<classpathentry kind="lib" path="E:/vcs/svn/apache/xalan-j/branches/xalan-j_2_7_1_maint/java/lib/endorsed/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/BCEL.jar"/>
 	<classpathentry kind="lib" path="lib/runtime.jar"/>
 	<classpathentry kind="lib" path="lib/regexp.jar"/>
 	<classpathentry kind="lib" path="tools/java_cup.jar"/>
 	<classpathentry kind="lib" path="tools/JLex.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.3"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
