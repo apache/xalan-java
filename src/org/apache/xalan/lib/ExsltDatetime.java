@@ -251,7 +251,7 @@ public class ExsltDatetime
       
       String[] formats = {dt, d, gym, gy};
       double yr = getNumber(datetime, formats, Calendar.YEAR);
-      if (ad || yr == Double.NaN)
+      if (ad || Double.isNaN(yr))
         return yr;
       else
         return -yr;
@@ -604,7 +604,7 @@ public class ExsltDatetime
             
       String[] formats = {dt, d, gym, gy};
       double dbl = getNumber(datetime, formats, Calendar.YEAR);
-      if (dbl == Double.NaN) 
+      if (Double.isNaN(dbl)) 
         return new XNumber(Double.NaN);
       int yr = (int)dbl;
       return new XBoolean(yr % 400 == 0 || (yr % 100 != 0 && yr % 4 == 0));

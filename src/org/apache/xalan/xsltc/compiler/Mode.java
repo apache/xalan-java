@@ -860,7 +860,7 @@ for (int i = 0; i < _templates.size(); i++) {
 		elemPrio = elemTest.getPriority();
 		elemPos  = elemTest.getPosition();
 	    }
-	    if (elemPrio == Double.NaN || elemPrio < nodePrio || 
+	    if (Double.isNaN(elemPrio) || elemPrio < nodePrio || 
 		(elemPrio == nodePrio && elemPos < nodePos)) 
 	    {
 		ihElem = _childNodeTestSeq.compile(classGen, methodGen, ihLoop);
@@ -1208,7 +1208,7 @@ for (int i = 0; i < _templates.size(); i++) {
 		elemPos  = elemTest.getPosition();
 	    }
 
-	    if (elemPrio == Double.NaN || elemPrio < nodePrio || 
+	    if (Double.isNaN(elemPrio) || elemPrio < nodePrio || 
 		(elemPrio == nodePrio && elemPos < nodePos)) 
 	    {
 		ihElem = _childNodeTestSeq.compile(classGen, methodGen, ihLoop);
