@@ -21,8 +21,11 @@
 package org.apache.xalan.transformer;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -62,6 +65,8 @@ import org.xml.sax.DTDHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
@@ -425,6 +430,12 @@ public class TransformerIdentityImpl extends Transformer
   
       XMLReader reader = null;
       boolean managedReader = false;
+      
+      //cleanup
+      ContentHandler oldContentHandler = null;
+      DTDHandler oldDtdHandler = null;
+      boolean isDtdHandlerSet = false;
+      Map<String, Object> oldProperties = new HashMap<String, Object>();
   
       try
       {
@@ -451,34 +462,57 @@ public class TransformerIdentityImpl extends Transformer
         // Get the input content handler, which will handle the 
         // parse events and create the source tree. 
         ContentHandler inputHandler = this;
-  
+        oldContentHandler = reader.getContentHandler();
         reader.setContentHandler(inputHandler);
   
-        if (inputHandler instanceof org.xml.sax.DTDHandler)
+        if (inputHandler instanceof org.xml.sax.DTDHandler) {
+          isDtdHandlerSet = true;
+          oldDtdHandler = reader.getDTDHandler();
           reader.setDTDHandler((org.xml.sax.DTDHandler) inputHandler);
+        }
   
         try
         {
-          if (inputHandler instanceof org.xml.sax.ext.LexicalHandler)
+          if (inputHandler instanceof org.xml.sax.ext.LexicalHandler) {
+        	oldProperties.put(
+        			"http://xml.org/sax/properties/lexical-handler", 
+        			reader.getProperty("http://xml.org/sax/properties/lexical-handler"));
+        	
             reader.setProperty("http://xml.org/sax/properties/lexical-handler",
                                inputHandler);
+          }
   
-          if (inputHandler instanceof org.xml.sax.ext.DeclHandler)
+          if (inputHandler instanceof org.xml.sax.ext.DeclHandler) {
+        	oldProperties.put(
+        			"http://xml.org/sax/properties/declaration-handler", 
+        			reader.getProperty("http://xml.org/sax/properties/declaration-handler"));
+        	
             reader.setProperty(
               "http://xml.org/sax/properties/declaration-handler",
               inputHandler);
+          }
         }
         catch (org.xml.sax.SAXException se){}
   
         try
         {
-          if (inputHandler instanceof org.xml.sax.ext.LexicalHandler)
+          if (inputHandler instanceof org.xml.sax.ext.LexicalHandler) {
+        	oldProperties.put(
+        			"http://xml.org/sax/handlers/LexicalHandler", 
+        			reader.getProperty("http://xml.org/sax/handlers/LexicalHandler"));
+        	
             reader.setProperty("http://xml.org/sax/handlers/LexicalHandler",
                                inputHandler);
+          }
   
-          if (inputHandler instanceof org.xml.sax.ext.DeclHandler)
+          if (inputHandler instanceof org.xml.sax.ext.DeclHandler) {
+        	oldProperties.put(
+        			"http://xml.org/sax/handlers/DeclHandler", 
+        			reader.getProperty("http://xml.org/sax/handlers/DeclHandler"));
+        	
             reader.setProperty("http://xml.org/sax/handlers/DeclHandler",
                                inputHandler);
+          }
         }
         catch (org.xml.sax.SAXNotRecognizedException snre){}
   
@@ -505,6 +539,19 @@ public class TransformerIdentityImpl extends Transformer
       {
         throw new TransformerException(ioe);
       } finally {
+    	reader.setContentHandler(oldContentHandler);
+    	if (isDtdHandlerSet) {
+    		reader.setDTDHandler(oldDtdHandler);
+    	}
+    	
+    	for (Entry<String, Object> oldProperty: oldProperties.entrySet()) {
+    		try {
+				reader.setProperty(oldProperty.getKey(), oldProperty.getValue());
+			} catch (SAXNotRecognizedException e) {
+			} catch (SAXNotSupportedException e) {
+			}
+    	}
+    	
         if (managedReader) {
           XMLReaderManager.getInstance().releaseXMLReader(reader);
         }
