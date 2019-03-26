@@ -77,7 +77,7 @@ $Id$
   
   <!-- Xerces Java version information -->
   <property name="parser.version.VERSION" value="2"/>
-  <property name="parser.version.RELEASE" value="11"/>
+  <property name="parser.version.RELEASE" value="12"/>
   <property name="parser.version.MINOR"   value="0"/> 
   
   <!-- Xalan Java directories -->  
