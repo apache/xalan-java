@@ -112,9 +112,9 @@ public class ExsltDatetime
       try {
          GregorianCalendar cal = new GregorianCalendar();
          cal.setTime(new Date());
-         XMLGregorianCalendar xCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
-         xCal.setMillisecond(DatatypeConstants.FIELD_UNDEFINED);
-         resultStr = xCal.toXMLFormat();
+         XMLGregorianCalendar xmlGcal = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+         xmlGcal.setMillisecond(DatatypeConstants.FIELD_UNDEFINED);
+         resultStr = xmlGcal.toXMLFormat();
       }
       catch (DatatypeConfigurationException ex) {
          
