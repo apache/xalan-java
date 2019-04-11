@@ -22,12 +22,22 @@
 package org.apache.xalan.lib;
 
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.Duration;
+import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.namespace.QName;
 
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNumber;
@@ -75,7 +85,7 @@ public class ExsltDatetime
      */
     public static String dateTime()
     {
-      Calendar cal = Calendar.getInstance();
+      /*Calendar cal = Calendar.getInstance();
       Date datetime = cal.getTime();
       // Format for date and time.
       SimpleDateFormat dateFormat = new SimpleDateFormat(dt);
@@ -97,8 +107,21 @@ public class ExsltDatetime
         char posneg = hrs < 0? '-': '+';
         buff.append(posneg + formatDigits(hrs) + ':' + formatDigits(min));
       }
-      return buff.toString();
-    }
+      return buff.toString();*/      
+      String resultStr = "";
+      try {
+         GregorianCalendar cal = new GregorianCalendar();
+         cal.setTime(new Date());
+         XMLGregorianCalendar xCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+         xCal.setMillisecond(DatatypeConstants.FIELD_UNDEFINED);
+         resultStr = xCal.toXMLFormat();
+      }
+      catch (DatatypeConfigurationException ex) {
+         
+      }
+      
+      return resultStr;
+    }    
     
     /**
      * Represent the hours and minutes with two-digit strings.
