@@ -44,14 +44,14 @@ import org.apache.xpath.res.XPATHErrorResources;
  */
 public class XPath implements Serializable, ExpressionOwner
 {
-    static final long serialVersionUID = 3976493477939110553L;
+  static final long serialVersionUID = 3976493477939110553L;
 
   /** The top of the expression tree. 
    *  @serial */
   private Expression m_mainExp;
   
   /**
-   * The function table for xpath build-in functions
+   * The function table for xpath built-in functions
    */
   private transient FunctionTable m_funcTable = null;
 
