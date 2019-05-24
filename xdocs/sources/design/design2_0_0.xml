@@ -74,7 +74,7 @@
 		  expect that the code will be faster once this work is complete.</li> 
 	 </ol> 
 	 <p>How well we've achieved the goals will be measured by feedback from the
-		<jump href="http://archive.covalent.net/">Xalan-dev</jump> list, and by software metrics tools.</p> 
+		<jump href="http://marc.info/?l=xalan-dev">Xalan-dev</jump> list, and by software metrics tools.</p> 
 	 <p>Please note that the diagrams in this design document are meant to be
 		useful abstractions, and may not always be exact.</p> 
   </s2><anchor name="requirements"/> 
