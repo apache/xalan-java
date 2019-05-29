@@ -158,6 +158,7 @@ public class ExsltDatetime
     public static String date(String datetimeIn)
       throws ParseException
     {
+      if ("".equals(datetimeIn)) return EMPTY_STR;      
       String[] edz = getEraDatetimeZone(datetimeIn);
       String leader = edz[0];
       String datetime = edz[1];
