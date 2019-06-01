@@ -40,7 +40,7 @@ import org.w3c.dom.xpath.XPathResult;
 
 /**
  *
- * The class provides an implementation XPathResult according 
+ * This class provides an implementation of XPathResult according 
  * to the DOM L3 XPath Specification, Working Group Note 26 February 2004.
  *
  * <p>See also the <a href='http://www.w3.org/TR/2004/NOTE-DOM-Level-3-XPath-20040226'>Document Object Model (DOM) Level 3 XPath Specification</a>.</p>
