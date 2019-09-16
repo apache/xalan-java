@@ -63,9 +63,9 @@ $Id$
 
   <property name="name"                   value="xalan"/>
   <property name="year"                   value="2016"/>
-  <property name="build.debug"            value="on"/>
-  <property name="compiler.target"        value="1.5"/>
-  <property name="compiler.source"        value="1.5"/>
+  <property name="build.debug"            value="on"/>  
+  <property name="compiler.target"        value="1.7"/>
+  <property name="compiler.source"        value="1.7"/>
 
   <!-- Xalan Java version information -->
   <property name="version.VERSION"        value="2"/>
