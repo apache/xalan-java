@@ -979,7 +979,10 @@ $Id$
            destdir="${build.samples}/CompiledServlet" excludes="${exclude}"
            debug="${build.debug}" bootclasspathref="xslt.boot.class.path" 
     	   target="${compiler.target}" source="${compiler.source}">
-    	<classpath location="${servlet-api.jar}"/>
+        <classpath>
+          <pathelement location="${servlet-api.jar}"/>
+          <pathelement location="${build.xalan.jar}"/>
+        </classpath>
     </javac>
     <jar jarfile="${build.xsltc.servlet.jar}"
          basedir="${build.samples}/CompiledServlet"
