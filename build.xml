@@ -891,9 +891,9 @@ $Id$
   <!-- Compiles all samples that require extra non-standard components in  -->
   <!-- order to compile.                                                   -->
   <!-- =================================================================== -->
-  <target name="extra.nonstd.samples" depends="xsltc.brazil"/>
+  <target name="extra.nonstd.samples" depends=""/>
   
-  <target name="extra.nonstd.samples.nojardepends" depends="xsltc.brazil.jardepends"/>
+  <target name="extra.nonstd.samples.nojardepends" depends=""/>
 
   <!-- =================================================================== -->
   <!-- Compiles the sample servlet and jars the class files.               --> 
@@ -1381,8 +1381,8 @@ $Id$
     <copy file="${build.dir}/xalansamples.jar" todir="${dist.dir}/samples"/>
     <copy file="${build.dir}/xalanservlet.war" todir="${dist.dir}/samples"/>
     <copy file="${build.dir}/xsltcapplet.jar"  todir="${dist.dir}/samples"/>
-    <copy file="${build.dir}/xsltcbrazil.jar"  todir="${dist.dir}/samples"
-          failonerror="${has.nonstd.parts}"/>
+<!--    <copy file="${build.dir}/xsltcbrazil.jar"  todir="${dist.dir}/samples"-->
+<!--          failonerror="${has.nonstd.parts}"/>-->
     <copy file="${build.dir}/xsltcejb.jar"     todir="${dist.dir}/samples"/>
     <copy file="${build.dir}/xsltcservlet.jar" todir="${dist.dir}/samples"/>
     
