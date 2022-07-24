@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+permissions:
+  contents: read
+
+# https://help.github.com/en/actions/automating-your-workflow-with-github-actions/software-installed-on-github-hosted-runners
+# GitHub Actions does not support Docker, PostgreSQL server on Windows, macOS :(
+
+concurrency:
+  # On master/release, we don't want any jobs cancelled so the sha is used to name the group
+  # On PR branches, we cancel the job if new commits are pushed
+  # More info: https://stackoverflow.com/a/68422069/253468
+  group: ${{ github.ref == 'refs/heads/trunk' && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: 'Build, Java 8'
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Checkout xalan-java'
+      uses: actions/checkout@v3
+    - name: 'Set up JDK 8'
+      uses: actions/setup-java@v2
+      with:
+        distribution: zulu
+        java-version: 8
+    - id: build_artifacts
+      run: |
+        ant fulldist
