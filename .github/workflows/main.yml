@@ -33,6 +33,19 @@ jobs:
       with:
         distribution: zulu
         java-version: 8
+    - name: 'Build Xalan jars'
+      run: |
+        ant jar
+    - uses: actions/checkout@v3
+      name: 'Checkout xalan-test'
+      with:
+        repository: apache/xalan-test
+        path: xalan-test
+        ref: xalan-j_2_7_x
+    - name: 'Run xalan-test tests'
+      working-directory: xalan-test
+      run: |
+        ant alltest -Dxalan.relpath=../ -Dparserjar=../lib/endorsed/xercesImpl.jar -Dxml-apis.jar=../lib/endorsed/xml-apis.jar
     - id: build_artifacts
       run: |
         ant fulldist
