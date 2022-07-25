@@ -1,2 +1,33 @@
 /bin/
 /build/
+/classes/
+/.idea/
+*.iml
+.DS_Store
+
+# We download the dependencies if they are missing
+/lib/
+/tools/java_cup.jar
+/tmp/
+
+# Generated sources
+/src/org/apache/xalan/processor/XSLProcessorVersion.java
+/src/org/apache/xalan/xsltc/compiler/XPathLexer.java
+/src/org/apache/xalan/xsltc/compiler/XPathParser.java
+/src/org/apache/xalan/xsltc/compiler/sym.java
+/xdocs/sources/xalan/DONE
+/xdocs/sources/xalan/XSLTCDONE
+/xdocs/style/graphics/
+/xdocs/style/loader.xml
+/xdocs/style/resources/
+/xdocs/style/stylesheets/any2header.xsl
+/xdocs/style/stylesheets/any2project.xsl
+/xdocs/style/stylesheets/book2group.xsl
+/xdocs/style/stylesheets/book2project.xsl
+/xdocs/style/stylesheets/changes2document.xsl
+/xdocs/style/stylesheets/context2footer.xsl
+/xdocs/style/stylesheets/context2label.xsl
+/xdocs/style/stylesheets/directory2project.xsl
+/xdocs/style/stylesheets/document2html.xsl
+/xdocs/style/stylesheets/faqs2document.xsl
+/xdocs/style/stylesheets/group2document.xsl
