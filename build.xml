@@ -82,9 +82,11 @@ $Id$
   
   <!-- Xalan Java directories -->  
   <!--  <property name="bin.dir"                value="./bin"/> -->
+  <property name="maven.repository.url"   value="https://repo1.maven.org/maven2"/>
   <property name="build.dir"              value="./build"/> 
   <property name="lib.dir"                value="./lib"/>   
   <property name="endorsed.dir"           value="${lib.dir}/endorsed"/>   
+  <mkdir dir="${endorsed.dir}"/>
   <property name="samples.dir"            value="./samples"/>   
   <property name="src.dir"                value="./src"/>  
   <property name="tools.dir"              value="./tools"/> 
@@ -98,14 +100,18 @@ $Id$
   <property name="xsltc.reldir"           value="${xalan.reldir}/xsltc"/>  
 
   <!-- Jars to run Xalan Java (Interpretive, Compiled, or both) -->
+  <property name="xmlapis.jar.version"    value="1.4.01"/>
   <property name="xmlapis.jar.name"       value="xml-apis.jar"/>
   <property name="xmlapis.jar"            value="${endorsed.dir}/${xmlapis.jar.name}"/>
+  <property name="parser.jar.version"     value="2.12.2"/>
   <property name="parser.jar.name"        value="xercesImpl.jar"/>
   <property name="parser.jar"             value="${endorsed.dir}/${parser.jar.name}"/>
+  <property name="bcel.jar.version"       value="5.1"/>
   <property name="bcel.jar.name"          value="BCEL.jar"/>
   <property name="bcel.jar"               value="${lib.dir}/${bcel.jar.name}"/>
   <property name="runtime.jar.name"       value="runtime.jar"/>
   <property name="runtime.jar"            value="${lib.dir}/${runtime.jar.name}"/>
+  <property name="regexp.jar.version"     value="1.2"/>
   <property name="regexp.jar.name"        value="regexp.jar"/>
   <property name="regexp.jar"             value="${lib.dir}/${regexp.jar.name}"/>
   
@@ -122,8 +128,10 @@ $Id$
   <property name="taglet.jar"             value="${tools.dir}/${taglet.jar.name}"/>
 
   <!-- Jars to build Xalan Java samples -->
-  <property name="servlet-api.jar.name"   value="servlet-api-2.5.jar"/>
+  <property name="servlet-api.jar.version" value="2.5"/>
+  <property name="servlet-api.jar.name"   value="servlet-api-${servlet-api.jar.version}.jar"/>
   <property name="servlet-api.jar"        value="${lib.dir}/${servlet-api.jar.name}"/>
+  <property name="javaee-api.jar.version" value="5"/>
   <property name="javaee-api.jar.name"    value="javaee-api-5.0-2.jar"/>
   <property name="javaee-api.jar"         value="${lib.dir}/${javaee-api.jar.name}"/>
   <property name="brazil.jar.name"        value="brazil-2.1.jar"/>
@@ -225,6 +233,42 @@ $Id$
     <pathelement location="${build.xalan.jar}" />
     <pathelement path="${java.class.path}" />
   </path>
+  <macrodef name="get_from_maven">
+    <attribute name="groupId"/>
+    <attribute name="artifactId"/>
+    <attribute name="dstProperty"/>
+    <sequential>
+      <get src="${maven.repository.url}/@{groupId}/@{artifactId}/${@{dstProperty}.version}/@{artifactId}-${@{dstProperty}.version}.jar"
+           dest="${@{dstProperty}}"
+           skipexisting="true"
+      />
+    </sequential>
+  </macrodef>
+  <target name="thirdparty.jars.download">
+    <get_from_maven groupId="xml-apis" artifactId="xml-apis" dstProperty="xmlapis.jar"/>
+    <get_from_maven groupId="xerces" artifactId="xercesImpl" dstProperty="parser.jar"/>
+    <get_from_maven groupId="bcel" artifactId="bcel" dstProperty="bcel.jar"/>
+    <get_from_maven groupId="regexp" artifactId="regexp" dstProperty="regexp.jar"/>
+    <get_from_maven groupId="javaee" artifactId="javaee-api" dstProperty="javaee-api.jar"/>
+    <get_from_maven groupId="javax/servlet" artifactId="servlet-api" dstProperty="servlet-api.jar"/>
+
+    <!-- /build/ is included to the distribution, so we avoid placing more files there -->
+    <property name="tmp.dir" value="tmp"/>
+
+    <!--
+        See http://www2.cs.tum.edu/projects/cup/install.php
+    -->
+    <property name="java_cup.release" value="java-cup-bin-11b-20160615.tar.gz"/>
+    <mkdir dir="${tmp.dir}/java_cup/bin"/>
+    <mkdir dir="${tmp.dir}/java_cup/extracted"/>
+    <get src="http://www2.cs.tum.edu/projects/cup/releases/${java_cup.release}"
+         dest="${tmp.dir}/java_cup/bin"
+         skipexisting="true"
+    />
+    <untar src="${tmp.dir}/java_cup/bin/${java_cup.release}" dest="${tmp.dir}/java_cup/extracted" compression="gzip"/>
+    <copy tofile="${java_cup.jar}" file="${tmp.dir}/java_cup/extracted/java-cup-11b.jar"/>
+    <copy tofile="${runtime.jar}" file="${tmp.dir}/java_cup/extracted/java-cup-11b-runtime.jar"/>
+  </target>
   <path id="compile.class.path">
     <!-- Ensure the selected parser.jar file is used to compile against -->
     <pathelement location="${build.classes}" />
@@ -295,9 +339,10 @@ $Id$
     <include name="${dist.file}/build.*"/>
     <include name="${dist.file}/commits.xml"/>
     <include name="${dist.file}/KEYS"/>
-    <include name="${dist.file}/readme.html"/>  
-    <include name="${dist.file}/lib/"/>
-    <include name="${dist.file}/tools/"/>
+    <include name="${dist.file}/readme.html"/>
+    <include name="${dist.file}/tools/stylebook-1.0-b3_xalan-2.jar"/>
+    <include name="${dist.file}/tools/xalan2jdoc.jar"/>
+    <include name="${dist.file}/tools/xalan2jtaglet.jar"/>
     <include name="${dist.file}/samples/"/>
     <exclude name="${dist.file}/samples/xalansamples.jar"/>
     <exclude name="${dist.file}/samples/xalanservlet.war"/>
@@ -321,7 +366,7 @@ $Id$
   <!-- =================================================================== -->
   <!-- Creates output build directories and doc prerequistes               -->
   <!-- =================================================================== -->
-  <target name="prepare">
+  <target name="prepare" depends="thirdparty.jars.download">
     <echo message="Project:${Name-in-docs} version:${version} build.xml $Revision$"/>
     <mkdir dir="${build.dir}"/>
     <mkdir dir="${build.classes}"/>
@@ -502,7 +547,9 @@ $Id$
   </target>
   
   <!-- Generate the XPath lexer sources for xsltc if needed -->
-  <target name="xsltc.jlex" depends="xsltc.java_cup" unless="xsltc.jlex.not_needed">
+  <!-- The ASF rules forbid incuding binary files into the source distribution,
+       so we can't execute this step automatically. -->
+  <target name="xsltc.jlex" depends="xsltc.java_cup" unless="false"> <!-- xsltc.jlex.not_needed -->
     <!-- The third step generates XPathLexer.java. The lexiographical analyser
     has to be generated after sym.java, so order is important. -->
     <echo message="JLex preparsing"/>
@@ -901,7 +948,7 @@ $Id$
   <!-- =================================================================== -->
   <target name="xsltc.samples" depends="jar,xsltc.samples.nojardepends"/>
 
-  <target name="xsltc.samples.nojardepends">
+  <target name="xsltc.samples.nojardepends" depends="thirdparty.jars.download">
     <mkdir dir="${build.samples}"/>
     <javac srcdir="${samples.dir}/translets"
            classpath="${java.class.path}:${build.xalan.jar}" 
@@ -1397,7 +1444,6 @@ $Id$
     <tar tarfile="${build.dir}/${dist.pkg}-src.tar" >
       <tarfileset dir="${build.dir}">
         <patternset refid="src-distro"/>
-        <patternset refid="xsltc-deps-jars"/>
       </tarfileset>
     </tar>
     <gzip src="${build.dir}/${dist.pkg}-src.tar" zipfile="${build.dir}/${dist.pkg}-src.tar.gz"/>
@@ -1406,7 +1452,6 @@ $Id$
     <zip zipfile="${build.dir}/${dist.pkg}-src.zip" >
       <fileset dir="${build.dir}">
         <patternset refid="src-distro"/>
-        <patternset refid="xsltc-deps-jars"/>
       </fileset>
     </zip>
   </target>
@@ -1634,18 +1679,6 @@ $Id$
     <include name="${serializer.dist.file}/src/${serializer.reldir}/**/*.java" />
     <include name="${serializer.dist.file}/src/${serializer.reldir}/**/*.properties" />
     <include name="${serializer.dist.file}/src/${serializer.manifest.basename}" />
-
-    <!-- We need Ant in order to run build.xml in the source distribution -->
-    <include name="${serializer.dist.file}/tools/ant.jar"/>
-    <include name="${serializer.dist.file}/tools/antRun"/>
-    <include name="${serializer.dist.file}/tools/antRun.bat"/>
-
-    <!-- The serializer needs this jar in order to build -->
-    <include name="${serializer.dist.file}/xml-apis.jar"/>
-    
-    <!-- Ant needs an XML parser in order to read in the build.xml, so it
-         can even do the build ... this is a strange loop ... -->
-    <include name="${serializer.dist.file}/xercesImpl.jar"/>
   </patternset>
 
   <!-- patternset for  binary distribution packages ... if needed
