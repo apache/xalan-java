@@ -201,6 +201,12 @@ public class TransformerFactoryImpl
      * <p>State of secure processing feature.</p>
      */
     private boolean _isSecureProcessing = false;
+    
+    private File _currTransletFile = null;
+    
+    private File[] _currTransletAuxfiles = null;
+    
+    private File _currTransletJarfile = null;
 
     /**
      * javax.xml.transform.sax.TransformerFactory implementation.
@@ -734,7 +740,9 @@ public class TransformerFactoryImpl
 	    	// after each newTemplates() call.
 	    	resetTransientAttributes();
 	    
-	    	return new TemplatesImpl(bytecodes, transletClassName, null, _indentNumber, this);	    
+	    	return new TemplatesImpl(bytecodes, transletClassName, null, 
+	    	                         _indentNumber, this, _currTransletFile, 
+	    	                         _currTransletAuxfiles, _currTransletJarfile);	    
 	    }
 	}
 	
@@ -851,7 +859,7 @@ public class TransformerFactoryImpl
     }
 
 	return new TemplatesImpl(bytecodes, transletName, 
-	    xsltc.getOutputProperties(), _indentNumber, this);
+	    xsltc.getOutputProperties(), _indentNumber, this, null, null, null);
     }
 
     /**
@@ -1132,7 +1140,9 @@ public class TransformerFactoryImpl
     	File transletFile = new File(transletPath);
     	if (!transletFile.exists())
     	    return null;
-    	    	  
+    	    
+    	_currTransletFile = transletFile;
+    	
     	// Compare the timestamps of the translet and the xsl file.
     	// If the translet is older than the xsl file, return null 
     	// so that the xsl file is used for the transformation and
@@ -1213,6 +1223,8 @@ public class TransformerFactoryImpl
     	    	bytecodes.add(bytes);   	    
     	    }
     	}
+    	
+    	_currTransletAuxfiles = auxfiles;
     	
     	// Convert the Vector of byte[] to byte[][].
     	final int count = bytecodes.size();
@@ -1315,6 +1327,8 @@ public class TransformerFactoryImpl
     	    for (int i = 0; i < count; i++) {
     	    	result[i] = (byte[])bytecodes.get(i);
     	    }
+    	    
+    	    _currTransletJarfile = file;
     	  
     	    return result;
     	}

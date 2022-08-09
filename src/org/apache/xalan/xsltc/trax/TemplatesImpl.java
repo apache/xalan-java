@@ -21,6 +21,7 @@
 
 package org.apache.xalan.xsltc.trax;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -115,6 +116,12 @@ public final class TemplatesImpl implements Templates, Serializable {
      * object belongs to.
      */
     private transient TransformerFactoryImpl _tfactory = null;
+    
+    private File _currTransletFile;
+    
+    private File[] _currTransletAuxfiles;
+    
+    private File _currTransletJarfile;
 
     static final class TransletClassLoader extends ClassLoader {
 	TransletClassLoader(ClassLoader parent) {
@@ -137,13 +144,17 @@ public final class TemplatesImpl implements Templates, Serializable {
      */
     protected TemplatesImpl(byte[][] bytecodes, String transletName,
 	Properties outputProperties, int indentNumber,
-	TransformerFactoryImpl tfactory) 
+	TransformerFactoryImpl tfactory, File currTransletFile, File[] currTransletAuxfiles,
+	File currTransletJarfile) 
     {
 	_bytecodes = bytecodes;
 	_name      = transletName;
 	_outputProperties = outputProperties;
 	_indentNumber = indentNumber;
 	_tfactory = tfactory;
+	_currTransletFile = currTransletFile;
+	_currTransletAuxfiles = currTransletAuxfiles;
+	_currTransletJarfile = currTransletJarfile;
     }
     
     /**
@@ -314,7 +325,8 @@ public final class TemplatesImpl implements Templates, Serializable {
 	    }
 	}
 	catch (ClassFormatError e) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_CLASS_ERR, _name);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_CLASS_ERR, _name);	            	    
+	    deleteMalformedTransletClassFiles();	    
 	    throw new TransformerConfigurationException(err.toString());
 	}
 	catch (LinkageError e) {
@@ -347,13 +359,34 @@ public final class TemplatesImpl implements Templates, Serializable {
 	    return translet;
 	}
 	catch (InstantiationException e) {
-	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR, _name);
+	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR, _name);	    
+	    deleteMalformedTransletClassFiles();        
 	    throw new TransformerConfigurationException(err.toString());
 	}
 	catch (IllegalAccessException e) {
 	    ErrorMsg err = new ErrorMsg(ErrorMsg.TRANSLET_OBJECT_ERR, _name);
 	    throw new TransformerConfigurationException(err.toString());
 	}
+    }
+    
+    /*
+     * Delete, any malformed translet .class files from file system, that were 
+     * generated during XSLT transform. 
+     */
+    private void deleteMalformedTransletClassFiles() {
+        if (_currTransletFile != null) {
+           _currTransletFile.delete();   
+        }
+        
+        if (_currTransletAuxfiles != null && _currTransletAuxfiles.length > 0) {
+           for (int idx = 0; idx < _currTransletAuxfiles.length; idx++) {
+             _currTransletAuxfiles[idx].delete();  
+           }
+        }
+        
+        if (_currTransletJarfile != null) {
+           _currTransletJarfile.delete();  
+        }
     }
 
     /**
