@@ -249,8 +249,7 @@ public class TemplatesHandlerImpl
                 if (bytecodes != null) {
                     _templates =
                     new TemplatesImpl(xsltc.getBytecodes(), transletName,
-                        _parser.getOutputProperties(), _indentNumber, _tfactory, 
-                        null, null, null);
+                        _parser.getOutputProperties(), _indentNumber, _tfactory);
 
                     // Set URIResolver on templates object
                     if (_uriResolver != null) {
@@ -341,5 +340,4 @@ public class TemplatesHandlerImpl
         _parser.setDocumentLocator(locator);
     }
 }
-
 

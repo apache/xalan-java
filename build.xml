@@ -102,8 +102,7 @@ $Id$
   <property name="xmlapis.jar"            value="${endorsed.dir}/${xmlapis.jar.name}"/>
   <property name="parser.jar.name"        value="xercesImpl.jar"/>
   <property name="parser.jar"             value="${endorsed.dir}/${parser.jar.name}"/>
-  <!-- <property name="bcel.jar.name"     value="BCEL.jar"/> -->
-  <property name="bcel.jar.name"          value="bcel-6.5.0.jar"/>
+  <property name="bcel.jar.name"          value="BCEL.jar"/>
   <property name="bcel.jar"               value="${lib.dir}/${bcel.jar.name}"/>
   <property name="runtime.jar.name"       value="runtime.jar"/>
   <property name="runtime.jar"            value="${lib.dir}/${runtime.jar.name}"/>
@@ -1476,7 +1475,7 @@ $Id$
   <!-- =================================================================== -->
   <!-- Compiles and runs mini/smoketest from xml-xalan\test, if present    -->
   <!-- =================================================================== -->
-  <property name="test.relpath" value="../xalan-test"/>
+  <property name="test.relpath" value="../test"/>
 
   <target name="minitest" depends="prepare,minitest-run,tests-not-available" 
     description="Run the Minitest from xml-xalan/test" >
