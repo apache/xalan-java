@@ -856,9 +856,16 @@ public final class XSLTC {
 		clazz.dump(out);
 		_classes.addElement(out.toByteArray());
 
-		if (_outputType == BYTEARRAY_AND_FILE_OUTPUT)
+		if (_outputType == BYTEARRAY_AND_FILE_OUTPUT) {
+		  // check that the, class to be serialized to filesystem, is of the valid format
+		  // check with the native JVM class loader
+		  byte[] classByteArray = clazz.getBytes();
+		  ByteArrayClassLoader classLoader = new ByteArrayClassLoader(classByteArray);
+		  Class clz = classLoader.findClass(clazz.getClassName());
+		  
 		  clazz.dump(new BufferedOutputStream(
-			new FileOutputStream(getOutputFile(clazz.getClassName()))));
+			new FileOutputStream(getOutputFile(clazz.getClassName()))));		  
+		}
 		else if (_outputType == BYTEARRAY_AND_JAR_OUTPUT)
 		  _bcelClasses.addElement(clazz);
 
@@ -868,6 +875,20 @@ public final class XSLTC {
 	catch (Exception e) {
 	    e.printStackTrace();
 	}
+    }
+    
+    public class ByteArrayClassLoader extends ClassLoader {
+
+        byte[] ba;
+        
+        public ByteArrayClassLoader(byte[] bArray) {
+            ba = bArray;
+        }
+        
+        public Class findClass(String name) {            
+            return defineClass(name, ba, 0, ba.length);
+        }
+
     }
 
     /**
