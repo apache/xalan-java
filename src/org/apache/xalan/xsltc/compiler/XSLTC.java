@@ -377,7 +377,7 @@ public final class XSLTC {
 	    _parser.reportError(Constants.FATAL, new ErrorMsg(e));
 	}
 	catch (Error e) {
-	    if (_debug) e.printStackTrace();
+	    // if (_debug) e.printStackTrace();
 	    _parser.reportError(Constants.FATAL, new ErrorMsg(e));
 	}
 	finally {
@@ -825,56 +825,56 @@ public final class XSLTC {
 
     public void dumpClass(JavaClass clazz) {
 
-	if (_outputType == FILE_OUTPUT ||
-	    _outputType == BYTEARRAY_AND_FILE_OUTPUT)
-	{
-	    File outFile = getOutputFile(clazz.getClassName());
-	    String parentDir = outFile.getParent();
-	    if (parentDir != null) {
-	      	File parentFile = new File(parentDir);
-	      	if (!parentFile.exists())
-	            parentFile.mkdirs();
-	    }
-	}
-
-	try {
-	    switch (_outputType) {
-	    case FILE_OUTPUT:
-		clazz.dump(
-		    new BufferedOutputStream(
-			new FileOutputStream(
-			    getOutputFile(clazz.getClassName()))));
-		break;
-	    case JAR_OUTPUT:
-		_bcelClasses.addElement(clazz);
-		break;
-	    case BYTEARRAY_OUTPUT:
-	    case BYTEARRAY_AND_FILE_OUTPUT:
-	    case BYTEARRAY_AND_JAR_OUTPUT:
-	    case CLASSLOADER_OUTPUT:
-		ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
-		clazz.dump(out);
-		_classes.addElement(out.toByteArray());
-
-		if (_outputType == BYTEARRAY_AND_FILE_OUTPUT) {
-		  // check that the, class to be serialized to filesystem, is of the valid format
-		  // check with the native JVM class loader
-		  byte[] classByteArray = clazz.getBytes();
-		  ByteArrayClassLoader classLoader = new ByteArrayClassLoader(classByteArray);
-		  Class clz = classLoader.findClass(clazz.getClassName());
-		  
-		  clazz.dump(new BufferedOutputStream(
-			new FileOutputStream(getOutputFile(clazz.getClassName()))));		  
-		}
-		else if (_outputType == BYTEARRAY_AND_JAR_OUTPUT)
-		  _bcelClasses.addElement(clazz);
-
-		break;
-	    }
-	}
-	catch (Exception e) {
-	    e.printStackTrace();
-	}
+    	if (_outputType == FILE_OUTPUT ||
+    	    _outputType == BYTEARRAY_AND_FILE_OUTPUT)
+    	{
+    	    File outFile = getOutputFile(clazz.getClassName());
+    	    String parentDir = outFile.getParent();
+    	    if (parentDir != null) {
+    	      	File parentFile = new File(parentDir);
+    	      	if (!parentFile.exists())
+    	            parentFile.mkdirs();
+    	    }
+    	}
+    
+    	try {
+    	    switch (_outputType) {
+    	    case FILE_OUTPUT:
+    		clazz.dump(
+    		    new BufferedOutputStream(
+    			new FileOutputStream(
+    			    getOutputFile(clazz.getClassName()))));
+    		break;
+    	    case JAR_OUTPUT:
+    		_bcelClasses.addElement(clazz);
+    		break;
+    	    case BYTEARRAY_OUTPUT:
+    	    case BYTEARRAY_AND_FILE_OUTPUT:
+    	    case BYTEARRAY_AND_JAR_OUTPUT:
+    	    case CLASSLOADER_OUTPUT:
+    		ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
+    		clazz.dump(out);
+    		_classes.addElement(out.toByteArray());
+    
+    		if (_outputType == BYTEARRAY_AND_FILE_OUTPUT) {
+    		  // check that the, class to be serialized to filesystem, is of the valid format.
+    		  // check with the native JVM class loader
+    		  byte[] classByteArray = clazz.getBytes();
+    		  ByteArrayClassLoader classLoader = new ByteArrayClassLoader(classByteArray);
+    		  Class clz = classLoader.findClass(clazz.getClassName());
+    		  
+    		  clazz.dump(new BufferedOutputStream(
+    			new FileOutputStream(getOutputFile(clazz.getClassName()))));		  
+    		}
+    		else if (_outputType == BYTEARRAY_AND_JAR_OUTPUT)
+    		  _bcelClasses.addElement(clazz);
+    
+    		break;
+    	    }
+    	}
+    	catch (Exception e) {
+    	    e.printStackTrace();
+    	}
     }
     
     public class ByteArrayClassLoader extends ClassLoader {
