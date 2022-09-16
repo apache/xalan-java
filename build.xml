@@ -102,8 +102,6 @@ $Id$
   <property name="xmlapis.jar"            value="${endorsed.dir}/${xmlapis.jar.name}"/>
   <property name="parser.jar.name"        value="xercesImpl.jar"/>
   <property name="parser.jar"             value="${endorsed.dir}/${parser.jar.name}"/>
-  <property name="bcel.jar.name"          value="BCEL.jar"/>
-  <property name="bcel.jar"               value="${lib.dir}/${bcel.jar.name}"/>
   <property name="runtime.jar.name"       value="runtime.jar"/>
   <property name="runtime.jar"            value="${lib.dir}/${runtime.jar.name}"/>
   <property name="regexp.jar.name"        value="regexp.jar"/>
@@ -209,7 +207,6 @@ $Id$
   <path id="docs.class.path">
     <pathelement location="${xmlapis.jar}" />
     <pathelement location="${parser.jar}" />
-    <pathelement location="${bcel.jar}" />
     <pathelement location="${runtime.jar}" />
     <pathelement location="${stylebook.jar}" />
     <pathelement location="${doclet.jar}" />
@@ -310,8 +307,7 @@ $Id$
   </patternset>
 
   <!-- XSLTC engine dependency .jar files -->    
-  <patternset id="xsltc-deps-jars" >
-    <include name="${dist.file}/lib/${bcel.jar.name}"/>
+  <patternset id="xsltc-deps-jars">
     <include name="${dist.file}/tools/${java_cup.jar.name}"/>
     <include name="${dist.file}/tools/${jlex.jar.name}"/>
     <include name="${dist.file}/lib/${runtime.jar.name}"/>
@@ -440,7 +436,6 @@ $Id$
   <path id="xsltc.class.path">
     <pathelement location="${xmlapis.jar}" />
     <pathelement location="${build.serializer.jar}" />
-    <pathelement location="${bcel.jar}" />
     <pathelement location="${jlex.jar}" />
     <pathelement location="${java_cup.jar}" />
     <pathelement location="${runtime.jar}" />
@@ -475,8 +470,7 @@ $Id$
       <srcfiles dir="${src.dir}/${xsltc.reldir}/compiler" includes="xpath.lex" />
     </uptodate> 
     
-    <!-- Determine whether the support jars are already expanded -->
-    <available file="${build.classes}/org/apache/bcel"     type="dir" property="xsltc.bcel_jar.not_needed" />
+    <!-- Determine whether the support jars are already expanded -->    
     <available file="${build.classes}/JLex"                type="dir" property="xsltc.jlex_jar.not_needed" />
     <available file="${build.classes}/java_cup/Main.class" type="file" property="xsltc.java_cup_jar.not_needed" />
     <available file="${build.classes}/java_cup/runtime"    type="dir" property="xsltc.runtime_jar.not_needed" />
@@ -580,10 +574,10 @@ $Id$
   <target name="xsltc.copy-deps-jars" depends="xsltc.copy-licenses">
     <echo message="Copying XSLTC support jars" />
     <!-- copy the 3rd party support jar files -->
-    <antcall target="xsltc.copy-deps-jar">
+    <!--<antcall target="xsltc.copy-deps-jar">
       <param name="param_unless" value="xsltc.bcel_jar.not_needed" />
       <param name="param_jar_name" value="${bcel.jar.name}" />
-    </antcall>
+    </antcall>-->
 
 <!-- We don't need to package the JLex or java_cup jars in the xalan.jar.
      These are only required for building XSLTC, not for using XSLTC.
@@ -617,7 +611,7 @@ $Id$
   <!-- Creates the xsltc jar including all support jars                    -->
   <!-- =================================================================== -->
   <target name="xsltc.jar" depends="xsltc.compile,xsltc.copy-deps-jars"
-     description="Jar xsltc,xml,BCEL,JLex,java_cup,runtime and jakarta regexp">
+     description="Jar xsltc,xml,JLex,java_cup,runtime and jakarta regexp">
 
     <!-- create new META-INF dir w/ transformer factory default -->
     <!-- GTM: comment this out so that bundled xsltc.jar does not have
@@ -643,7 +637,6 @@ $Id$
       </fileset>
       <fileset dir="${build.classes}" includes="org/apache/xml/**" 
                                       excludes="${serializer.reldir}/**" />
-      <fileset dir="${build.classes}" includes="org/apache/bcel/**" />
       <fileset dir="${build.classes}" includes="JLex/**" />
       <fileset dir="${build.classes}" includes="java_cup/**" />
       <fileset dir="${build.classes}" includes="org/apache/regexp/**" />
@@ -892,7 +885,7 @@ $Id$
   <!-- =================================================================== -->
   <!-- Compiles (does not jar) the translet samples.                       -->
   <!-- For time being, classes are generated in place.                     -->
-  <!-- To run these samples, add xsltc.jar, runtime.jar, bcel.jar,         -->
+  <!-- To run these samples, add xsltc.jar, runtime.jar,                   -->
   <!-- and java_cup.jar (all in the bin directory) to the classpath        --> 
   <!--                                                                     -->
   <!-- When we have straightened out classpath issues,                     -->
