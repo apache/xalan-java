@@ -21,7 +21,8 @@
 <!-- $Id$ -->
 <s1 title="Release Notes">
  <ul>
-  <li><link anchor="notes_latest">Release notes for  version 2.7.2</link></li>
+  <li><link anchor="notes_latest">Release notes for version 2.7.3</link></li>
+  <li><link anchor="notes_272">Release notes for version 2.7.2</link></li>
   <li><link anchor="notes_271">Release notes for version 2.7.1</link></li>
   <li><link anchor="notes_270">Release notes for version 2.7.0</link></li>
   <li><link anchor="notes_260">Release notes for version 2.6.0</link></li>
@@ -35,6 +36,28 @@
  </ul>
   
   <anchor name="notes_latest"/>
+  <s2 title="Release notes for &xslt4j; 2.7.3">
+    <p>
+      &xslt4j; 2.7.3 was released in October 2022.
+    </p>    
+    <s3 title="Fix for CVE-2022-34169 An integer truncation issue when processing malicious XSLT stylesheets">  
+    </s3>    
+    <s3 title="Upgrade to Xerces-J 2.12.2">
+      The distributions contain upgraded versions of <code>xercesImpl.jar</code>
+      and <code>xml-apis.jar</code> (Xerces-J 2.12.2).
+    </s3>    
+    <s3 title="XALANJ Jira bug fixes">
+      <p>XALANJ Jira bug fixes:                
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2623">2623</jump>,
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2607">2607</jump>,
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2601">2601</jump>,
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2600">2600</jump>,        
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2584">2584</jump>,
+        <jump href="https://issues.apache.org/jira/browse/XALANJ-2346">2346</jump>                
+      </p>
+     </s3>        
+  </s2>  
+  <anchor name="notes_272"/>
   <s2 title="Release notes for &xslt4j; 2.7.2">
     <p>
       &xslt4j; 2.7.2 was released in April 2014.
