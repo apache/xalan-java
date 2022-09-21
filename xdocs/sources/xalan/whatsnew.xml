@@ -21,50 +21,19 @@
 
   <s2 title="What's new in &xslt4j-current;">  
     <p>
-      Here's what new in &xslt4j-current;.
+      Here's what's new in &xslt4j-current;.
     </p>
 
-    <s3 title="Fix for CVE-2014-0107 insufficient secure processing">
-      <p>
-        When using FEATURE_SECURE_PROCESSING ("http://javax.xml.XMLConstants/feature/secure-processing") on a TransformerFactory, the output properties:
-      </p>
-      <ul>
-        <li>{http://xml.apache.org/xalan}content-handler</li>
-        <li>{http://xml.apache.org/xalan}entities</li>
-        <li>{http://xml.apache.org/xslt}content-handler</li>
-        <li>{http://xml.apache.org/xslt}entities</li>
-      </ul>
-      <p>
-        should be ignored (see http://xml.apache.org/xalan-j/usagepatterns.html#outputprops)
-      </p>
-      <p>
-        These properties can be used to load an arbitrary class or access an arbitrary URL/resource so are problematic when secure processing is desired.
-      </p>
-      <p>      
-        <code>  
-          &lt;xsl:output xalan:content-handler="org.example.BadClass" ...
-        </code>   
-      </p>
-      <p>      
-        <code>  
-          &lt;xsl:output xalan:entities="http://example.org/reallyLargeFile.bin" ...
-        </code>   
-      </p>
-      <p>
-        These features could be used to load a class that had undesirable side-effects or to load a large file and exhaust memory, etc. 
-      </p>
-      <p>
-        See <link anchor="https://issues.apache.org/jira/browse/XALANJ-2435">XALANJ-2435</link>. 
-      </p>
+    <s3 title="Fix for CVE-2022-34169 An integer truncation issue when processing malicious XSLT stylesheets">
     </s3>
     
-    <s3 title="Upgrade to Xerces-J 2.11.0 and XML Commons External 1.4.01">
-      The distributions contain upgraded versions of <code>xercesImpl.jar</code>
-      (Xerces-J 2.11.0) and <code>xml-apis.jar</code> (XML Commons External 1.4.01).
+    <s3 title="Upgrade to Xerces-J 2.12.2">
+      The distributions contain upgraded versions of <code>xercesImpl.jar</code> and 
+      <code>xml-apis.jar</code> (Xerces-J 2.12.2).
     </s3>
     
     <s3 title="Bug fixes">
-      &xslt4j-current; contains performance enhancements and other bug fixes since 2.7.1. You can find the list 
+      &xslt4j-current; contains performance enhancements and other bug fixes since 2.7.2. You can find the list 
       in <link idref="readme" anchor="notes_latest">the release notes</link>.
     </s3>
     
