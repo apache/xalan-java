@@ -1,0 +1,73 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+This file primarily, contains instructions to the person(s) who shall be making a XalanJ release
+for distribution, along with the instructions about how to test the release before recommending
+the release for distribution.
+
+(1) Steps to build the XalanJ release
+
+1) Do a git clone, of the relevant XalanJ dev branch, as following :
+git clone --single-branch --branch xalan-j_2_7_1_maint https://gitbox.apache.org/repos/asf/xalan-java.git xalan-java.
+Assuming that, this clone goes into the folder xalan-java.
+
+2) Set JAVA_HOME environment variable
+
+3) Run the command, "build fulldist" from folder xalan-java. This
+shall produce the following jars, relevant for testing the XalanJ
+build : xalan.jar, serializer.jar. [1]
+
+(2) Steps to run the XalanJ tests, on this XalanJ release
+
+1) From the XalanJ tests repos
+https://gitbox.apache.org/repos/asf/xalan-test.git, clone the 'master'
+branch. Assuming that, this clone goes into the folder xalan-test.
+
+2) Set JAVA_HOME environment variable
+
+3) Run the command "build jar" from folder xalan-test. This produces
+the file testxsl.jar within folder xalan-test/java/build.
+
+4) Create a folder xalanjrelease_jardir somewhere on file system.
+Copy the jar testxsl.jar produced within the previous step, to the folder 
+xalanjrelease_jardir. Copy the jars xalan.jar, serializer.jar [1] to this 
+folder. From the folder xalan-java/lib/endorsed, copy jars xercesImpl.jar, 
+xml-apis.jar to the folder xalanjrelease_jardir. Copy the jar Tidy.jar 
+from folder xalan-test/tools to the folder xalanjrelease_jardir. Now 
+the folder xalanjrelease_jardir, has the XalanJ jar xalan.jar that 
+needs to be tested, and all the supporting jars.
+
+5) Set JARDIR environment variable, pointing to folder "xalanjrelease_jardir".
+
+6) Run the necessary XalanJ tests as follows,
+
+build smoketest
+
+build smoketest.xsltc
+
+build smoketest.dev
+
+The output of above commands, respectively should be,
+smoketest-pass:
+     [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
+
+smoketest.xsltc-pass:
+     [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
+
+smoketest-pass:
+     [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
+     
