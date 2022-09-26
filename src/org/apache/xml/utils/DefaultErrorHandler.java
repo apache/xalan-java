@@ -27,6 +27,7 @@ import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.xslt.util.XslTransformErrorLocatorHelper;
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
 
@@ -323,6 +324,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
     Throwable cause = exception;
     
     // Try to find the locator closest to the cause.
+    String xslSystemId = null;
     do
     {
       if(cause instanceof SAXParseException)
@@ -332,8 +334,12 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
       else if (cause instanceof TransformerException)
       {
         SourceLocator causeLocator = ((TransformerException)cause).getLocator();
-        if(null != causeLocator)
+        if(null != causeLocator) {
+          if (causeLocator.getSystemId() == null) {
+              xslSystemId = XslTransformErrorLocatorHelper.systemId;    
+          }
           locator = causeLocator;
+        }
       }
       if(cause instanceof TransformerException)
         cause = ((TransformerException)cause).getCause();
@@ -352,7 +358,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
       String id = (null != locator.getPublicId() )
                   ? locator.getPublicId()
                     : (null != locator.getSystemId())
-                      ? locator.getSystemId() : XMLMessages.createXMLMessage(XMLErrorResources.ER_SYSTEMID_UNKNOWN, null); //"SystemId Unknown";
+                      ? locator.getSystemId() : (null != xslSystemId) ? xslSystemId : XMLMessages.createXMLMessage(XMLErrorResources.ER_SYSTEMID_UNKNOWN, null); //"SystemId Unknown";
 
       pw.print(id + "; " +XMLMessages.createXMLMessage("line", null) + locator.getLineNumber()
                          + "; " +XMLMessages.createXMLMessage("column", null) + locator.getColumnNumber()+"; ");
