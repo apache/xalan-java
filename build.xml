@@ -102,7 +102,8 @@ $Id$
   <property name="xmlapis.jar"            value="${endorsed.dir}/${xmlapis.jar.name}"/>
   <property name="parser.jar.name"        value="xercesImpl.jar"/>
   <property name="parser.jar"             value="${endorsed.dir}/${parser.jar.name}"/>
-  <property name="bcel.jar.name"          value="bcel-6.6.0.jar"/>
+  <property name="bcel.version"           value="6.6.0"/>
+  <property name="bcel.jar.name"          value="bcel-${bcel-version}.jar"/>
   <property name="bcel.jar"               value="${lib.dir}/${bcel.jar.name}"/>
   <property name="runtime.jar.name"       value="runtime.jar"/>
   <property name="runtime.jar"            value="${lib.dir}/${runtime.jar.name}"/>
@@ -550,7 +551,8 @@ $Id$
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${impl.version}"/>
     <filter token="java.version" value="${java.version}"/>
-    <filter token="java.vendor" value="${java.vendor}"/>        
+    <filter token="java.vendor" value="${java.vendor}"/>
+    <filter token="bcel.version" value="${bcel.version}"/>
     <copy todir="${build.dir}" file="${manifest.xsltc.mf}" filtering="true"/>
     <jar jarfile="${build.xsltc.jar}" manifest="${build.dir}/manifest.xsltc" basedir="${build.classes}" >
       <patternset><!-- relative to jar/@basedir -->
@@ -633,7 +635,8 @@ $Id$
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${impl.version}"/>
     <filter token="java.version" value="${java.version}"/>
-    <filter token="java.vendor" value="${java.vendor}"/>     
+    <filter token="java.vendor" value="${java.vendor}"/>
+    <filter token="bcel.version" value="${bcel.version}"/>
     <copy todir="${build.dir}" file="${manifest.xsltc.mf}" filtering="true"/>
     
     <!-- make bundled jar named xsltc.jar -->
@@ -660,7 +663,7 @@ $Id$
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${impl.version}"/>
     <filter token="java.version" value="${java.version}"/>
-    <filter token="java.vendor" value="${java.vendor}"/>     
+    <filter token="java.vendor" value="${java.vendor}"/>
     <copy todir="${build.dir}" file="${manifest.xalan-interpretive.mf}" filtering="true"/>
     <jar jarfile="${build.xalan-interpretive.jar}" manifest="${build.dir}/manifest.xalan-interpretive" basedir="${build.classes}" >
       <patternset><!-- relative to jar/@basedir -->
@@ -683,7 +686,8 @@ $Id$
     description="Jar up Xalan and XSLTC, without the XSLTC dependencies" >
     <filter token="impl.version" value="${impl.version}"/>
     <filter token="java.version" value="${java.version}"/>
-    <filter token="java.vendor" value="${java.vendor}"/>     
+    <filter token="java.vendor" value="${java.vendor}"/>
+    <filter token="bcel.version" value="${bcel.version}"/>
     <copy todir="${build.dir}" file="${manifest.mf}" filtering="true"/>
     <jar jarfile="${build.xalan-unbundled.jar}" manifest="${build.dir}/MANIFEST.MF" basedir="${build.classes}" >
       <patternset>
@@ -706,7 +710,8 @@ $Id$
     <!-- Copy over the manifest, with filtering (for version number) -->
     <filter token="impl.version" value="${impl.version}"/>
     <filter token="java.version" value="${java.version}"/>
-    <filter token="java.vendor" value="${java.vendor}"/>     
+    <filter token="java.vendor" value="${java.vendor}"/>
+    <filter token="bcel.version" value="${bcel.version}"/>
     <copy todir="${build.dir}" file="${manifest.mf}" filtering="true"/>
     
     <!-- make bundled jar named xalan.jar -->

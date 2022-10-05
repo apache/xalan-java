@@ -51,12 +51,12 @@ Implementation-URL: http://www.cs.princeton.edu/~appel/modern/java/CUP/
 Name: org/apache/bcel/
 Comment: Byte Code Engineering Library 
 Specification-Title: Byte Code Engineering Library 
-Specification-Vendor: Markus Dahm 
-Specification-Version: 6.6.0
+Specification-Vendor: Apache Software Foundation
+Specification-Version: @bcel.version@
 Implementation-Title: org.apache.bcel
 Implementation-Version: @impl.version@
 Implementation-Vendor: Apache Software Foundation
-Implementation-URL: http://jakarta.apache.org/bcel
+Implementation-URL: https://commons.apache.org/proper/commons-bcel/
 
 Name: org/apache/regexp/
 Comment: Java Regular Expression package 
