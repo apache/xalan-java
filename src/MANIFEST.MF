@@ -52,7 +52,7 @@ Name: org/apache/bcel/
 Comment: Byte Code Engineering Library 
 Specification-Title: Byte Code Engineering Library 
 Specification-Vendor: Markus Dahm 
-Specification-Version: 5.0 rc1 
+Specification-Version: 6.6.0
 Implementation-Title: org.apache.bcel
 Implementation-Version: @impl.version@
 Implementation-Vendor: Apache Software Foundation
