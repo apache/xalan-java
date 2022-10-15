@@ -1279,7 +1279,8 @@ $Id$
   <!-- =================================================================== -->  
   <target name="autodist-mkdirs">
     <mkdir dir="${dist.dir}"/>
-    <mkdir dir="${dist.dir}/lib"/>   
+    <mkdir dir="${dist.dir}/lib"/>
+  	<mkdir dir="${dist.dir}/lib/endorsed"/>
     <mkdir dir="${dist.dir}/samples"/>       
     <mkdir dir="${dist.dir}/src"/>
     <mkdir dir="${dist.dir}/tools"/>     
@@ -1320,12 +1321,19 @@ $Id$
       </fileset>
     </copy>
 
-    <!-- Copy runtime libs; used for source distribution -->    
+    <!-- 1) Copy runtime libs; used for source distribution -->    
     <copy todir="${dist.dir}/lib">
       <fileset dir="${lib.dir}">
         <include name="*.*"/>
       </fileset>
-    </copy>    
+    </copy>
+  	
+  	<!-- 2) Copy runtime libs; used for source distribution -->
+  	<copy todir="${dist.dir}/lib/endorsed">
+  	  <fileset dir="${endorsed.dir}">
+  	     <include name="*.*"/>
+  	  </fileset>
+  	</copy>
 
     <!-- Copy built jars -->
     <copy file="${build.dir}/xalansamples.jar" todir="${dist.dir}/samples"/>
