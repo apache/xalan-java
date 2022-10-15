@@ -606,7 +606,7 @@ public class XPathParser
 
     String fmsg = XSLMessages.createXPATHMessage(msg, args);
     ErrorListener ehandler = this.getErrorListener();
-
+    
     TransformerException te = new TransformerException(fmsg, m_sourceLocator);
     if (null != ehandler)
     {
