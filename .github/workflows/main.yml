@@ -46,6 +46,8 @@ jobs:
       working-directory: xalan-test
       run: |
         ant alltest -Dxalan.relpath=../ -Dparserjar=../lib/endorsed/xercesImpl.jar -Dxml-apis.jar=../lib/endorsed/xml-apis.jar
+      env:
+        _JAVA_OPTIONS: -XX:+UnlockExperimentalVMOptions -XX:hashCode=2
     - id: build_artifacts
       run: |
         ant fulldist
