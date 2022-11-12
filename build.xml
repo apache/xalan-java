@@ -1481,14 +1481,15 @@ $Id$
   </target>  
    
   <!-- =================================================================== -->
-  <!-- Compiles and runs mini/smoketest from xml-xalan\test, if present    -->
+  <!-- Compiles and runs mini/smoketest from xml-xalan\xalan-test, if present. -->
+  <!-- xml-xalan is a representative folder, that can contain folders xalan-java and xalan-test -->
   <!-- =================================================================== -->
-  <property name="test.relpath" value="../test"/>
+  <property name="test.relpath" value="../xalan-test"/>
 
   <target name="minitest" depends="prepare,minitest-run,tests-not-available" 
-    description="Run the Minitest from xml-xalan/test" >
+    description="Run the Minitest from xml-xalan/xalan-test" >
     <!-- This target simply asks the minitest-run worker target to 
-         actually have the Minitest run (by the test/build.xml file);
+         actually have the Minitest run (by the xalan-test/build.xml file);
          we then also call the tests-not-available target in case 
          the user never checked out the tests.
     -->
@@ -1500,7 +1501,7 @@ $Id$
   </target>
 
   <target name="smoketest" depends="prepare,smoketest-run,tests-not-available" 
-    description="Run Smoketests (Minitest, conf, harness) from xml-xalan/test" >
+    description="Run Smoketests (Minitest, conf, harness) from xml-xalan/xalan-test" >
   </target>
   <target name="smoketest-run" if="tests-available" depends="jar" >
     <echo message=" [minitest] Calling ${test.relpath}/build.xml to run the Smoketest" />
