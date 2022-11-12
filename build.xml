@@ -306,6 +306,7 @@ $Id$
     <exclude name="${dist.file}/samples/xsltcejb.jar"/>
     <exclude name="${dist.file}/samples/xsltcservlet.jar"/>    
     <include name="${dist.file}/src/"/>
+  	<include name="${dist.file}/tests/"/>
     <include name="${dist.file}/xdocs/"/>
   </patternset>
 
@@ -1256,7 +1257,7 @@ $Id$
   </target>
 
   <target name="build.std.parts"
-          depends="jar,docs,javadocs,samples,extra.std.samples,xsltc.docs"/>
+          depends="jar,smoketest,docs,javadocs,samples,extra.std.samples,xsltc.docs"/>
           
   <target name="build.std.parts-nodocs"
           depends="jar,samples,extra.std.samples"/>          
@@ -1281,6 +1282,7 @@ $Id$
     <mkdir dir="${dist.dir}"/>
     <mkdir dir="${dist.dir}/lib"/>
   	<mkdir dir="${dist.dir}/lib/endorsed"/>
+  	<mkdir dir="${dist.dir}/tests"/>  	
     <mkdir dir="${dist.dir}/samples"/>       
     <mkdir dir="${dist.dir}/src"/>
     <mkdir dir="${dist.dir}/tools"/>     
@@ -1353,7 +1355,12 @@ $Id$
     <copy file="${build.serializer.jar}" todir="${dist.dir}" />
     
     <copy file="${xmlapis.jar}" todir="${dist.dir}" />  
-    <copy file="${parser.jar}" todir="${dist.dir}" />        
+    <copy file="${parser.jar}" todir="${dist.dir}" />
+  	
+  	<copy file="${test.relpath}/java/build/testxsl.jar" todir="${dist.dir}/lib" />
+  	<copy todir="${dist.dir}/tests">
+  	   <fileset dir="${test.relpath}/tests"/>
+  	</copy>
 
     <copy todir="${dist.dir}">
       <fileset dir="." includes="readme.html,KEYS,build.xml,build.sh,build.bat,commits.xml,
