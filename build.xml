@@ -1257,7 +1257,7 @@ $Id$
   </target>
 
   <target name="build.std.parts"
-          depends="jar,smoketest,docs,javadocs,samples,extra.std.samples,xsltc.docs"/>
+          depends="jar,smoketest,smoketest.xsltc,docs,javadocs,samples,extra.std.samples,xsltc.docs"/>
           
   <target name="build.std.parts-nodocs"
           depends="jar,samples,extra.std.samples"/>          
@@ -1501,19 +1501,28 @@ $Id$
          the user never checked out the tests.
     -->
   </target>
-  <target name="minitest-run" if="tests-available" depends="jar" >
+  <target name="minitest-run" if="tests-available" depends="jar">
     <echo message=" [minitest] Calling ${test.relpath}/build.xml to run the Minitest" />
     <ant dir="${test.relpath}" antfile="build.xml" target="minitest.gump" >
     </ant>
   </target>
 
   <target name="smoketest" depends="prepare,smoketest-run,tests-not-available" 
-    description="Run Smoketests (Minitest, conf, harness) from xml-xalan/xalan-test" >
+    description="Run Smoketests (Minitest, conf, harness) from xml-xalan/xalan-test">
   </target>
-  <target name="smoketest-run" if="tests-available" depends="jar" >
-    <echo message=" [minitest] Calling ${test.relpath}/build.xml to run the Smoketest" />
-    <ant dir="${test.relpath}" antfile="build.xml" target="smoketest.dev" >
+  <target name="smoketest-run" if="tests-available" depends="jar">
+    <echo message=" [minitest] Calling ${test.relpath}/build.xml to run the Smoketest"/>
+    <ant dir="${test.relpath}" antfile="build.xml" target="smoketest.dev">
     </ant>
+  </target>
+	
+  <target name="smoketest.xsltc" depends="prepare,smoketest.xsltc-run,tests-not-available" 
+	    description="Run smoketest.xsltc from xml-xalan/xalan-test">
+  </target>
+  <target name="smoketest.xsltc-run" if="tests-available" depends="jar">
+	 <echo message="Calling ${test.relpath}/build.xml to run the smoketest.xsltc" />
+	 <ant dir="${test.relpath}" antfile="build.xml" target="smoketest.xsltc">
+	 </ant>
   </target>
 
   <target name="check" depends="smoketest"><!-- 'Standardizing build.xml files' <bloritsch@apache.org> -->
