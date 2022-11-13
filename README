@@ -22,20 +22,20 @@ the release for distribution.
 (1) Steps to build the XalanJ release
 
 1) Do a git clone, of the relevant XalanJ dev branch, as following :
-git clone --single-branch --branch xalan-j_2_7_1_maint https://gitbox.apache.org/repos/asf/xalan-java.git xalan-java.
+
+git clone --single-branch --branch xalan-j_2_7_1_maint https://gitbox.apache.org/repos/asf/xalan-java.git xalan-java
+
 Assuming that, this clone goes into the folder xalan-java.
 
 2) Set JAVA_HOME environment variable
 
-3) Run the command, "build fulldist" from folder xalan-java. This
-shall produce the following jars, relevant for testing the XalanJ
-build : xalan.jar, serializer.jar. [1]
+3) Run the command, "build fulldist" from folder xalan-java. This shall produce the following jars, 
+relevant for testing the XalanJ build : xalan.jar, serializer.jar. [1]
 
 (2) Steps to run the XalanJ tests, on this XalanJ release
 
-1) From the XalanJ tests repos
-https://gitbox.apache.org/repos/asf/xalan-test.git, clone the 'master'
-branch. Assuming that, this clone goes into the folder xalan-test.
+1) From the XalanJ tests repos https://gitbox.apache.org/repos/asf/xalan-test.git, clone the 'master'
+branch. This clone should go into the folder xalan-test.
 
 2) Set JAVA_HOME environment variable
 
@@ -43,30 +43,49 @@ branch. Assuming that, this clone goes into the folder xalan-test.
 the file testxsl.jar within folder xalan-test/java/build.
 
 4) Create a folder xalanjrelease_jardir somewhere on file system.
-Copy the jar testxsl.jar produced within the previous step, to the folder 
+Copy the jar file testxsl.jar produced within the previous step, to the folder 
 xalanjrelease_jardir. Copy the jars xalan.jar, serializer.jar [1] to this 
 folder. From the folder xalan-java/lib/endorsed, copy jars xercesImpl.jar, 
 xml-apis.jar to the folder xalanjrelease_jardir. Copy the jar Tidy.jar 
 from folder xalan-test/tools to the folder xalanjrelease_jardir. Now 
 the folder xalanjrelease_jardir, has the XalanJ jar xalan.jar that 
-needs to be tested, and all the supporting jars.
+needs to be tested, and all the supporting jars needed for testing.
 
-5) Set JARDIR environment variable, pointing to folder "xalanjrelease_jardir".
+5) Set JARDIR environment variable, pointing to the folder "xalanjrelease_jardir".
 
-6) Run the necessary XalanJ tests as follows,
+6) Run the necessary XalanJ tests as follows, from folder xalan-test,
+
+6.1 Run the ant target "smoketest", using following two commands in sequence shown below
+
+build extensions
 
 build smoketest
 
-build smoketest.xsltc
+The output of the command "build smoketest" should be following, and without any other build errors,
 
-build smoketest.dev
-
-The output of above commands, respectively should be,
 smoketest-pass:
      [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
 
+6.2 Run the ant target "smoketest.xsltc", using following three commands in sequence shown below 
+
+build conf.xsltc
+
+build accept.xsltc
+
+build smoketest.xsltc
+
+The output of the command "build smoketest.xsltc" should be following, and without any other build errors,
+
 smoketest.xsltc-pass:
      [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
+
+6.3 Run the ant target "smoketest.dev", using following two commands in sequence shown below
+
+build extensions
+
+build smoketest.dev
+
+The output of the command "build smoketest.dev" should be following, and without any other build errors,
 
 smoketest-pass:
      [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
