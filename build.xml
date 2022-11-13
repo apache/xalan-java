@@ -1257,7 +1257,7 @@ $Id$
   </target>
 
   <target name="build.std.parts"
-          depends="jar,smoketest,smoketest.xsltc,docs,javadocs,samples,extra.std.samples,xsltc.docs"/>
+          depends="jar,docs,javadocs,samples,extra.std.samples,xsltc.docs"/>
           
   <target name="build.std.parts-nodocs"
           depends="jar,samples,extra.std.samples"/>          
