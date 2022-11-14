@@ -21,23 +21,24 @@ the release for distribution.
 
 (1) Steps to build the XalanJ release
 
-1) Do a git clone, of the relevant XalanJ dev branch, as following :
+1) Do a git clone, of the relevant XalanJ dev branch:
 
-git clone --single-branch --branch xalan-j_2_7_1_maint https://gitbox.apache.org/repos/asf/xalan-java.git xalan-java
+git clone --single-branch https://gitbox.apache.org/repos/asf/xalan-java.git -b xalan-j_2_7_1_maint
+git clone https://gitbox.apache.org/repos/asf/xalan-test.git
 
-Assuming that, this clone goes into the folder xalan-java.
+This creates two folders: xalan-java and xalan-test
 
-2) Set JAVA_HOME environment variable
+2) Set JAVA_HOME environment variable, for example:
+
+set JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-8.0.352.8-hotspot\
 
 3) Run the command, "build clean fulldist" from folder xalan-java. This shall produce the following jars, 
 relevant for testing the XalanJ build : xalan.jar, serializer.jar. [1]
 
 (2) Steps to run the XalanJ tests, on this XalanJ release
 
-1) From the XalanJ tests repos https://gitbox.apache.org/repos/asf/xalan-test.git, clone the 'master'
-branch. This clone should go into the folder xalan-test.
-
-2) Set JAVA_HOME environment variable
+1) Go to the XalanJ tests repos:
+cd ..\xalan-test
 
 3) Run the command "build clean jar" from folder xalan-test. This produces
 the file testxsl.jar within folder xalan-test/java/build.
@@ -50,6 +51,20 @@ xml-apis.jar to the folder xalanjrelease_jardir. Copy the jar Tidy.jar
 from folder xalan-test/tools to the folder xalanjrelease_jardir. Now 
 the folder xalanjrelease_jardir, has the XalanJ jar xalan.jar that 
 needs to be tested, and all the supporting jars needed for testing.
+
+For example, on Windows, from xalan-test:
+
+copy /Y java\build\testxsl.jar "%JARDIR%"
+copy /Y tools\Tidy.jar "%JARDIR%"
+
+copy /Y ..\xalan-java\build\xalan.jar "%JARDIR%"
+copy /Y ..\xalan-java\build\serializer.jar "%JARDIR%"
+copy /Y ..\xalan-java\lib\bsf.jar "%JARDIR%"
+copy /Y ..\xalan-java\lib\commons-logging-1.2.jar "%JARDIR%"
+copy /Y ..\xalan-java\lib\regexp.jar "%JARDIR%"
+copy /Y ..\xalan-java\lib\rhino-1.7.14.jar "%JARDIR%"
+copy /Y ..\xalan-java\lib\endorsed\xercesImpl.jar "%JARDIR%"
+copy /Y ..\xalan-java\lib\endorsed\xml-apis.jar "%JARDIR%"
 
 5) Set JARDIR environment variable, pointing to the folder "xalanjrelease_jardir".
 
