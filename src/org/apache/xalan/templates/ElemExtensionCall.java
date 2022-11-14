@@ -211,7 +211,7 @@ public class ElemExtensionCall extends ElemLiteralResult
       transformer.getResultTreeHandler().flushPending();
 
       ExtensionsTable etable = transformer.getExtensionsTable();
-      ExtensionHandler nsh = etable.get(m_extns);
+      ExtensionHandler nsh = etable != null ? etable.get(m_extns) : null;
 
       if (null == nsh)
       {
