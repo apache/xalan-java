@@ -29,7 +29,7 @@ Assuming that, this clone goes into the folder xalan-java.
 
 2) Set JAVA_HOME environment variable
 
-3) Run the command, "build fulldist" from folder xalan-java. This shall produce the following jars, 
+3) Run the command, "build clean fulldist" from folder xalan-java. This shall produce the following jars, 
 relevant for testing the XalanJ build : xalan.jar, serializer.jar. [1]
 
 (2) Steps to run the XalanJ tests, on this XalanJ release
@@ -39,7 +39,7 @@ branch. This clone should go into the folder xalan-test.
 
 2) Set JAVA_HOME environment variable
 
-3) Run the command "build jar" from folder xalan-test. This produces
+3) Run the command "build clean jar" from folder xalan-test. This produces
 the file testxsl.jar within folder xalan-test/java/build.
 
 4) Create a folder xalanjrelease_jardir somewhere on file system.
