@@ -42,7 +42,7 @@
     </p>    
     <s3 title="Fix for CVE-2022-34169 An integer truncation issue when processing malicious XSLT stylesheets">  
     </s3>    
-    <s3 title="Upgrade to Commons BCEL 6.6.0">
+    <s3 title="Upgrade to Commons BCEL 6.6.1">
        The distributions contain upgraded version of Commons BCEL.
     </s3>
     <s3 title="Upgrade to Xerces-J 2.12.2">

@@ -102,8 +102,8 @@ $Id$
   <property name="xmlapis.jar"            value="${endorsed.dir}/${xmlapis.jar.name}"/>
   <property name="parser.jar.name"        value="xercesImpl.jar"/>
   <property name="parser.jar"             value="${endorsed.dir}/${parser.jar.name}"/>
-  <property name="bcel.version"           value="6.6.0"/>
-  <property name="bcel.jar.name"          value="bcel-${bcel-version}.jar"/>
+  <property name="bcel.version"           value="6.6.1"/>
+  <property name="bcel.jar.name"          value="bcel-${bcel.version}.jar"/>
   <property name="bcel.jar"               value="${lib.dir}/${bcel.jar.name}"/>
   <property name="runtime.jar.name"       value="runtime.jar"/>
   <property name="runtime.jar"            value="${lib.dir}/${runtime.jar.name}"/>
