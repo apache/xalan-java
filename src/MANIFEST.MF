@@ -49,9 +49,9 @@ Implementation-Vendor: Princeton University
 Implementation-URL: http://www.cs.princeton.edu/~appel/modern/java/CUP/ 
 
 Name: org/apache/bcel/
-Comment: Byte Code Engineering Library 
-Specification-Title: Byte Code Engineering Library 
-Specification-Vendor: Markus Dahm 
+Comment: Apachec Commons Byte Code Engineering Library
+Specification-Title: Apache Commons BCEL
+Specification-Vendor: Apache Software Foundation
 Specification-Version: 6.6.0
 Implementation-Title: org.apache.bcel
 Implementation-Version: @impl.version@
