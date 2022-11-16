@@ -21,7 +21,7 @@ the release for distribution.
 
 (1) Steps to build the XalanJ release
 
-1) Do a git clone, of the relevant XalanJ dev branch:
+1) Do a git clone, of the relevant XalanJ branches:
 
 git clone --single-branch https://gitbox.apache.org/repos/asf/xalan-java.git -b xalan-j_2_7_1_maint
 git clone https://gitbox.apache.org/repos/asf/xalan-test.git
