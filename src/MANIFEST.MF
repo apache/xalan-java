@@ -52,7 +52,7 @@ Name: org/apache/bcel/
 Comment: Apache Commons Byte Code Engineering Library
 Specification-Title: Apache Commons BCEL
 Specification-Vendor: Apache Software Foundation
-Specification-Version: 6.6.0
+Specification-Version: 6.6.2-SNAPSHOT
 Implementation-Title: org.apache.bcel
 Implementation-Version: @impl.version@
 Implementation-Vendor: Apache Software Foundation

@@ -68,7 +68,9 @@ copy /Y ..\xalan-java\lib\endorsed\xml-apis.jar "%JARDIR%"
 
 5) Set JARDIR environment variable, pointing to the folder "xalanjrelease_jardir".
 
-6) Run the necessary XalanJ tests as follows, from folder xalan-test,
+6) Run the necessary XalanJ tests as follows,
+
+The tests described below within points 6.1, 6.2 and 6.3 need to be run from folder xalan-test. 
 
 6.1 Run the ant target "smoketest", using following two commands in sequence shown below
 
@@ -104,4 +106,8 @@ The output of the command "build smoketest.dev" should be following, and without
 
 smoketest-pass:
      [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
+     
+6.4 From folder xalan-test/tests/xsltc_integer_truncation, run the batch file 
+xsltc_int_truncation_test.bat (provided for Windows platform) to run test for, 
+testing "XalanJ integer truncation bug fix, when using XSLTC".    
      
