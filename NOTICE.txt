@@ -44,10 +44,13 @@
          - Bytecode Engineering Library - see LICENSE.txt
          - Regular Expression - see LICENSE.txt
          - Ant - see LICENSE.txt
-         - Stylebook doc tool - see LICENSE.txt    
+         - Stylebook doc tool - see LICENSE.txt   
        
      - Elliot Joel Berk and C. Scott Ananian 
          - Lexical Analyzer Generator (JLex) - see LICENSE.txt
+         
+     - Mozilla 
+         - Rhino: JavaScript implementation in Java - see LICENSE.txt         
 
    =========================================================================       
    Apache Xerces Java
