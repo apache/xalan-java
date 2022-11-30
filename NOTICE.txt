@@ -44,7 +44,9 @@
          - Bytecode Engineering Library - see LICENSE.txt
          - Regular Expression - see LICENSE.txt
          - Ant - see LICENSE.txt
-         - Stylebook doc tool - see LICENSE.txt   
+         - Stylebook doc tool - see LICENSE.txt
+         - Beans Scripting Framework (BSF) - see LICENSE.txt
+         - Commons Logging - see LICENSE.txt    
        
      - Elliot Joel Berk and C. Scott Ananian 
          - Lexical Analyzer Generator (JLex) - see LICENSE.txt
@@ -54,7 +56,7 @@
 
    =========================================================================       
    Apache Xerces Java
-   Copyright 1999-2006 The Apache Software Foundation
+   Copyright 1999-2022 The Apache Software Foundation
 
    This product includes software developed at
    The Apache Software Foundation (http://www.apache.org/).
