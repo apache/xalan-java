@@ -51,7 +51,7 @@
      - Elliot Joel Berk and C. Scott Ananian 
          - Lexical Analyzer Generator (JLex) - see LICENSE.txt
          
-     - Mozilla 
+     - Mozilla Foundation 
          - Rhino: JavaScript implementation in Java - see LICENSE.txt         
 
    =========================================================================       
