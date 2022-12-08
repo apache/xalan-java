@@ -60,16 +60,16 @@
 <anchor name="developers"/>
 <s2 title="Developer Guidelines">
 <note>This section is meant to become a set of guidelines for all &xslt4j;
-committers and developers who wish to submit patches.  It's still in progress; 
-suggestions to xalan-dev@xml.apache.org appreciated.</note> 
+committers and developers who wish to submit patches. It's still in progress; 
+suggestions to dev@xalan.apache.org appreciated.</note> 
   <p>The project's technical mailing list for all committers and developers 
   interested in the API and inner workings is 
-  <jump href="mailto:xalan-dev@xml.apache.org">xalan-dev@xml.apache.org</jump>; 
+  <jump href="mailto:dev@xalan.apache.org">dev@xalan.apache.org</jump>; 
   it's a good idea to 
   <link idref="contact_us" anchor="dev-mailing-list">subscribe</link>
-  if you plan to work on &xslt4j;.  Logs of all Subversion 
-  commits are automatically sent to <jump href="mailto:xalan-cvs@xml.apache.org">xalan-cvs@xml.apache.org</jump>, although 
-  discussions should happen on xalan-dev.  You can read more <jump href="http://xml.apache.org/mail.html">about mailing lists.</jump></p>
+  if you plan to work on &xslt4j;.  Logs of all git 
+  commits are automatically sent to <jump href="mailto:commits@xalan.apache.org">commits@xalan.apache.org</jump>, although 
+  discussions should happen on dev@xalan.apache.org. You can read more <jump href="http://xml.apache.org/mail.html">about mailing lists.</jump></p>
   <p>&xslt4j; is a fairly mature project; one where most committers and many 
   users expect that the daily build will be mostly functional.  Very risky changes 
   or major architecture updates should be discussed ahead of time or committed onto 
@@ -82,20 +82,16 @@ suggestions to xalan-dev@xml.apache.org appreciated.</note>
   tests that ensure basic functionality.  You can also read a full set of 
   <jump href="http://xml.apache.org/xalan-j/test/overview.html">documentation about the tests</jump>.</p>
   <p>
-  (Smoketest doc is TBD!)
-<source>cvs co xml-xalan/java xml-xalan/test
-cd xml-xalan/java
-build smoketest
-# Ant build will fail if smoketest fails.
-</source>
-</p>
+    XalanJ team is maintaining a build and tests process documentation, currently at the location : 
+    <jump href="https://gitbox.apache.org/repos/asf?p=xalan-java.git;a=blob_plain;f=README;hb=refs/heads/xalan-j_2_7_1_maint">XalanJ build and test process</jump>.
+  </p>
 </s2>
 
 <anchor name="builds"/>
 <s2 title="Running Product Builds - Overview">
 <p>Official builds of &xslt4j; require a few more steps than simply doing 
-'build fulldist'.  This is a quick checklist of the steps; if you are 
-not comfortable following this list, then please seek help on xalan-dev.</p> 
+'build fulldist'. This is a quick checklist of the steps; if you are 
+not comfortable following this list, then please seek help on dev@xalan.apache.org.</p> 
 
 <s3 title="Release Types">
 <p>Official builds come in several flavors:</p>
@@ -396,7 +392,7 @@ a couple of the highlights of the new build, and a link to the
 distribution area.</p>
 
 <p>Make the subject something like:  [ANN] Xalan-J 2.x Point/Developers/Whatever Release posted to xml.apache.org
-and send your email to:  general@xml.apache.org, xalan-dev@xml.apache.org, xalan-j-users@xml.apache.org.  Note 
+and send your email to:  general@xml.apache.org, dev@xalan.apache.org, xalan-j-users@apache.org. Note 
 that for developers releases, you can omit the general@xml.apache.org address if you 
 don't think it will be of interest to the larger audience.
 </p>
