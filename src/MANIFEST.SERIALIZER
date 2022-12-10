@@ -11,7 +11,7 @@ Specification-Version: 1.0
 Implementation-Title: org.apache.xml.serializer
 Implementation-Version: @impl.version@
 Implementation-Vendor: Apache Software Foundation
-Implementation-URL: http://xml.apache.org/xalan-j/usagepatterns.html
+Implementation-URL: https://xalan.apache.org/xalan-j/usagepatterns.html
 
 Name: org/apache/xml/serializer/utils/
 Comment: Utilities used internally by the Serializer. Not for external use.

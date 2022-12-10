@@ -109,5 +109,5 @@ smoketest-pass:
      
 5.4 From folder xalan-test/tests/xsltc_integer_truncation, run the batch file 
 xsltc_int_truncation_test.bat (provided for Windows platform) to run test for, 
-testing "XalanJ integer truncation bug fix, when using XSLTC".    
+"XalanJ integer truncation bug fix, when using XSLTC".    
      
