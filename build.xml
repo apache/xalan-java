@@ -1281,8 +1281,7 @@ $Id$
   <target name="autodist-mkdirs">
     <mkdir dir="${dist.dir}"/>
     <mkdir dir="${dist.dir}/lib"/>
-  	<mkdir dir="${dist.dir}/lib/endorsed"/>
-  	<mkdir dir="${dist.dir}/tests"/>  	
+  	<mkdir dir="${dist.dir}/lib/endorsed"/>	
     <mkdir dir="${dist.dir}/samples"/>       
     <mkdir dir="${dist.dir}/src"/>
     <mkdir dir="${dist.dir}/tools"/>     
@@ -1357,15 +1356,32 @@ $Id$
     <copy file="${xmlapis.jar}" todir="${dist.dir}" />  
     <copy file="${parser.jar}" todir="${dist.dir}" />
   	
-  	<copy file="${test.relpath}/java/build/testxsl.jar" todir="${dist.dir}/lib" />
-  	<copy todir="${dist.dir}/tests">
-  	   <fileset dir="${test.relpath}/tests"/>
-  	</copy>
+  	<antcall target="xalan.tests.testxsl.jar.copy"/>
+  	<antcall target="xalan.tests.folder.copy"/>
 
     <copy todir="${dist.dir}">
       <fileset dir="." includes="readme.html,KEYS,build.xml,build.sh,build.bat,commits.xml,
                                  LICENSE.txt,NOTICE.txt"/>      
     </copy>
+  </target>
+	
+  <target name="xalan.tests.testxsl.jar.copy" depends="check-testxsl.jar" if="testxsl.jar.present">
+  	<copy file="${test.relpath}/java/build/testxsl.jar" todir="${dist.dir}/lib" />	
+  </target>
+	
+  <target name="xalan.tests.folder.copy" depends="check-tests.folder" if="tests.folder.present">
+  	<mkdir dir="${dist.dir}/tests"/>
+	<copy todir="${dist.dir}/tests">
+	  <fileset dir="${test.relpath}/tests"/>
+	</copy>	
+  </target>
+	
+  <target name="check-testxsl.jar">
+	<available file="${test.relpath}/java/build/testxsl.jar" property="testxsl.jar.present"/>
+  </target>
+		
+  <target name="check-tests.folder">
+	 <available file="${test.relpath}/tests" type="dir" property="tests.folder.present"/>
   </target>
 
   <target name="autodist-copy-files-docs">
