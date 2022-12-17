@@ -72,13 +72,11 @@ copy /Y ..\xalan-java\lib\endorsed\xml-apis.jar "%JARDIR%"
 
 The tests described below within points 5.1, 5.2 and 5.3 need to be run from folder xalan-test. 
 
-5.1 Run the ant target "smoketest", using following two commands in sequence shown below
-
-build extensions
+5.1 Run the ant target "smoketest", using following command
 
 build smoketest
 
-The output of the command "build smoketest" should be following, and without any other build errors,
+The output of this should be following, and without any other build errors,
 
 smoketest-pass:
      [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
