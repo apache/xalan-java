@@ -55,6 +55,10 @@ Other Important Notes:
 Authors:
   Shane Curcuru <shane_curcuru@lotus.com>
   Don Leslie <donald_leslie@lotus.com>
+  
+This file has been written, to enable building XalanJ from XalanJ 
+source distribution. This file is largely, a copy of the file build.xml
+provided by XalanJ xalan-java git repos.   
 
 $Id$
 ==================================================================== -->
@@ -1510,7 +1514,7 @@ $Id$
   <!-- Compiles and runs mini/smoketest from xml-xalan\xalan-test, if present. -->
   <!-- xml-xalan is a representative folder, that can contain folders xalan-java and xalan-test -->
   <!-- =================================================================== -->
-  <property name="test.relpath" value="../xalan-test"/>
+  <property name="test.relpath" value="xalan-test"/>
 
   <target name="minitest" depends="prepare,minitest-run,tests-not-available" 
     description="Run the Minitest from xml-xalan/xalan-test" >
