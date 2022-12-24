@@ -51,6 +51,10 @@ relevant for testing the XalanJ build : xalan.jar, serializer.jar. [1]
 1) Go to the XalanJ tests repos's, local git clone folder:
 cd ..\xalan-test
 
+For XalanJ source distribution users, xalan-test folder, is located at the root of the XalanJ 
+source distribution folder (i.e, parallel to folders "src", "tools" etc) from where XalanJ 
+source distribution users may run XalanJ tests.
+
 2) Run the command "build clean jar" from folder xalan-test. This produces
 the file testxsl.jar within folder xalan-test/java/build.
 
