@@ -62,7 +62,7 @@ $Id$
 <project name="Xalan" default="jar" basedir=".">
 
   <property name="name"                   value="xalan"/>
-  <property name="year"                   value="2022"/>
+  <property name="year"                   value="2023"/>
   <property name="build.debug"            value="on"/>  
   <property name="compiler.target"        value="1.8"/>
   <property name="compiler.source"        value="1.8"/>
@@ -295,7 +295,8 @@ $Id$
     <include name="${dist.file}/build.*"/>
     <include name="${dist.file}/commits.xml"/>
     <include name="${dist.file}/KEYS"/>
-    <include name="${dist.file}/readme.html"/>  
+    <include name="${dist.file}/readme.html"/>
+  	<include name="${dist.file}/README"/>
     <include name="${dist.file}/lib/"/>
     <include name="${dist.file}/tools/"/>
     <include name="${dist.file}/samples/"/>
@@ -1371,6 +1372,8 @@ $Id$
   <target name="xalan-transform-build-file-for-src-distro">
   	<copy file="./build_srcdist_xalan.xml" todir="${dist.dir}"/>
   	<copy file="./build_srcdist_xalan.xml" tofile="${dist.dir}/build.xml"/>
+  	<!-- copy readme file as well -->
+  	<copy file="./README" todir="${dist.dir}"/>
   </target>
 	
   <target name="xalan-tests-create-for-src-distro">

@@ -15,15 +15,26 @@
  * limitations under the License.
 -->
 
-This file primarily, contains instructions to the person(s) who shall be making a XalanJ release
-for distribution, along with the instructions about how to test XalanJ release before recommending
-the release for distribution.
+Copyright 1999-2023 The Apache Software Foundation
+
+Authors:
+   Gary Gregory <ggregory@apache.org>
+   Mukul Gandhi <mukulg@apache.org>
+
+This file primarily, contains instructions to the person(s) who shall be making an Apache XalanJ 
+release for distribution, along with the instructions about how to test XalanJ release before 
+recommending the release for distribution.
+
+The details mentioned within this file, may also be used, by XalanJ source distribution users to 
+build and test XalanJ from the source distribution (except that, "git clone" steps as mentioned 
+within this file, shall not be required to be run by XalanJ source distribution users).
 
 (1) Steps to build the XalanJ release
 
 1) Do a git clone, of the relevant XalanJ branches:
 
 git clone --single-branch https://gitbox.apache.org/repos/asf/xalan-java.git -b xalan-j_2_7_1_maint
+
 git clone https://gitbox.apache.org/repos/asf/xalan-test.git
 
 This creates two folders: xalan-java and xalan-test
@@ -37,7 +48,7 @@ relevant for testing the XalanJ build : xalan.jar, serializer.jar. [1]
 
 (2) Steps to run the XalanJ tests, on XalanJ implementation
 
-1) Go to the XalanJ tests repos:
+1) Go to the XalanJ tests repos's, local git clone folder:
 cd ..\xalan-test
 
 2) Run the command "build clean jar" from folder xalan-test. This produces

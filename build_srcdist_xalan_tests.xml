@@ -64,7 +64,7 @@ file build.xml provided by XalanJ xalan-test git repos.
    -->
     <property environment="ENV" />
 
-    <property name="year" value="2000-2022"/>
+    <property name="year" value="2000-2023"/>
     <!-- Properties related to compiling the tests -->
     <property name="build.compiler" value="classic"/>
     <property name="compiler" value="${build.compiler}"/>
