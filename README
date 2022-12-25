@@ -27,7 +27,7 @@ recommending the release for distribution.
 
 The details mentioned within this file, may also be used, by XalanJ source distribution users to 
 build and test XalanJ from the source distribution (except that, "git clone" steps as mentioned 
-within this file, shall not be required to be run by XalanJ source distribution users).
+within this file, might not be required to be run by XalanJ source distribution users).
 
 (1) Steps to build the XalanJ release
 
@@ -61,11 +61,16 @@ the file testxsl.jar within folder xalan-test/java/build.
 3) Create a folder xalanjrelease_jardir somewhere on file system.
 Copy the jar file testxsl.jar produced within the previous step, to the folder 
 xalanjrelease_jardir. Copy the jars xalan.jar, serializer.jar [1] to this 
-folder. From the folder xalan-java/lib/endorsed, copy jars xercesImpl.jar, 
-xml-apis.jar to the folder xalanjrelease_jardir. Copy the jar Tidy.jar 
-from folder xalan-test/tools to the folder xalanjrelease_jardir. Now 
-the folder xalanjrelease_jardir, has the XalanJ jar xalan.jar that 
-needs to be tested, and all the supporting jars needed for testing.
+folder. From the folder xalan-java/lib/endorsed, copy jars xml-apis.jar and 
+xercesImpl.jar to the folder xalanjrelease_jardir. Copy the jar Tidy.jar from folder 
+xalan-test/tools to the folder xalanjrelease_jardir. From the folder xalan-java/lib 
+copy the jars bsf.jar, rhino-1.7.14.jar, commons-logging-1.2.jar, regexp.jar to the 
+folder xalanjrelease_jardir (XalanJ source distribution users may copy the jars bsf.jar, 
+rhino-1.7.14.jar, commons-logging-1.2.jar, regexp.jar from folder for e.g xalan-j_2_7_3/lib 
+within the source distribution).
+
+Now the folder xalanjrelease_jardir, has the XalanJ jar xalan.jar that needs 
+to be tested, and all the supporting jars needed for testing.
 
 For example, on Windows, from xalan-test:
 
@@ -87,11 +92,13 @@ copy /Y ..\xalan-java\lib\endorsed\xml-apis.jar "%JARDIR%"
 
 The tests described below within points 5.1, 5.2 and 5.3 need to be run from folder xalan-test. 
 
-5.1 Run the ant target "smoketest", using following command
+5.1 Run the ant target "smoketest", using following two commands in sequence shown below
+
+build extensions
 
 build smoketest
 
-The output of this should be following, and without any other build errors,
+The output of the command "build smoketest" should be following, and without any other build errors,
 
 smoketest-pass:
      [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
