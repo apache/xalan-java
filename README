@@ -39,9 +39,11 @@ git clone https://gitbox.apache.org/repos/asf/xalan-test.git
 
 This creates two folders: xalan-java and xalan-test
 
-2) Set JAVA_HOME environment variable, for example:
+2) Set JAVA_HOME and ANT_HOME environment variables, for example:
 
 set JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-8.0.352.8-hotspot\
+
+set ANT_HOME=C:\java\apache-ant-1.10.12
 
 3) Run the command, "build clean fulldist" from folder xalan-java. This shall produce the following jars, 
 relevant for testing the XalanJ build : xalan.jar, serializer.jar. [1]
@@ -55,10 +57,16 @@ For XalanJ source distribution users, xalan-test folder, is located at the root 
 source distribution folder (i.e, parallel to folders "src", "tools" etc) from where XalanJ 
 source distribution users may run XalanJ tests.
 
-2) Run the command "build clean jar" from folder xalan-test. This produces
+2) Set JAVA_HOME and ANT_HOME environment variables, for example:
+
+set JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-8.0.352.8-hotspot\
+
+set ANT_HOME=C:\java\apache-ant-1.10.12
+
+3) Run the command "build clean jar" from folder xalan-test. This produces
 the file testxsl.jar within folder xalan-test/java/build.
 
-3) Create a folder xalanjrelease_jardir somewhere on file system.
+4) Create a folder xalanjrelease_jardir somewhere on file system.
 Copy the jar file testxsl.jar produced within the previous step, to the folder 
 xalanjrelease_jardir. Copy the jars xalan.jar, serializer.jar [1] to this 
 folder. From the folder xalan-java/lib/endorsed, copy jars xml-apis.jar and 
@@ -86,13 +94,13 @@ copy /Y ..\xalan-java\lib\rhino-1.7.14.jar "%JARDIR%"
 copy /Y ..\xalan-java\lib\endorsed\xercesImpl.jar "%JARDIR%"
 copy /Y ..\xalan-java\lib\endorsed\xml-apis.jar "%JARDIR%"
 
-4) Set JARDIR environment variable, pointing to the folder "xalanjrelease_jardir".
+5) Set JARDIR environment variable, pointing to the folder "xalanjrelease_jardir".
 
-5) Run the necessary XalanJ tests as follows,
+6) Run the necessary XalanJ tests as follows,
 
 The tests described below within points 5.1, 5.2 and 5.3 need to be run from folder xalan-test. 
 
-5.1 Run the ant target "smoketest", using following two commands in sequence shown below
+6.1 Run the ant target "smoketest", using following two commands in sequence shown below
 
 build extensions
 
@@ -103,7 +111,7 @@ The output of the command "build smoketest" should be following, and without any
 smoketest-pass:
      [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
 
-5.2 Run the ant target "smoketest.xsltc", using following three commands in sequence shown below 
+6.2 Run the ant target "smoketest.xsltc", using following three commands in sequence shown below 
 
 build conf.xsltc
 
@@ -116,7 +124,7 @@ The output of the command "build smoketest.xsltc" should be following, and witho
 smoketest.xsltc-pass:
      [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
 
-5.3 Run the ant target "smoketest.dev", using following two commands in sequence shown below
+6.3 Run the ant target "smoketest.dev", using following two commands in sequence shown below
 
 build extensions
 
@@ -127,7 +135,7 @@ The output of the command "build smoketest.dev" should be following, and without
 smoketest-pass:
      [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
      
-5.4 From folder xalan-test/tests/xsltc_integer_truncation, run the batch file 
+6.4 From folder xalan-test/tests/xsltc_integer_truncation, run the batch file 
 xsltc_int_truncation_test.bat (provided for Windows platform) to run test for, 
 "XalanJ integer truncation bug fix, when using XSLTC".    
      

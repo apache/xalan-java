@@ -51,7 +51,7 @@
     </s3>
     <s3 title="Enhancements for, performing XalanJ build and running of XalanJ tests from source distribution">
        The XalanJ users, can now make XalanJ builds and perform XalanJ tests from the XalanJ source 
-       distribution [Gary Gregory, Mukul Gandhi, Joseph Kessselman].
+       distribution [Gary Gregory, Joseph Kessselman, Mukul Gandhi].
     </s3>
     <s3 title="Upgrade to Xerces-J 2.12.2">
        This XalanJ release, contains upgraded versions of <code>xercesImpl.jar</code>
