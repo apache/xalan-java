@@ -236,16 +236,12 @@ $Id$
   </path>
   <path id="xslt.boot.class.path">
     <!-- Put this version of xalan in front of the jdk's for JDK 1.4+ -->
-    <!-- Set build.boot.class.path to a JDK 1.1.x classes.zip file to check
-         compatibility with 1.1.x.  If you omit this property, compatability
-         with 1.1.x will not be checked even though javac specifies a target of 1.1 -->
     <pathelement location="${build.classes}" />
     <pathelement location="${serializer.build.classes}" />
     <pathelement location="${xmlapis.jar}" />
     <pathelement location="${build.serializer.jar}" />    
-    <pathelement location="${parser.jar}" />   
-    <pathelement path="${build.boot.class.path}" />
-    <pathelement path="${sun.boot.class.path}" />
+    <pathelement location="${parser.jar}" />
+  	<pathelement path="${sun.boot.class.path}" />
   </path>
   <path id="compile.source.path">
     <dirset dir="${src.dir}" includes="/org/apache/**" />
