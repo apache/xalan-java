@@ -216,14 +216,12 @@ $Id$
     <pathelement location="${taglet.jar}" />
     <pathelement location="${build.serializer.jar}" />
     <pathelement location="${build.xalan.jar}" />
-    <pathelement path="${java.class.path}" />
   </path>
   <path id="samples.class.path">
     <pathelement location="${xmlapis.jar}" />
     <pathelement location="${build.serializer.jar}" />    
     <pathelement location="${parser.jar}" />  
     <pathelement location="${build.xalan.jar}" />
-    <pathelement path="${java.class.path}" />
   </path>
   <path id="compile.class.path">
     <!-- Ensure the selected parser.jar file is used to compile against -->
@@ -232,12 +230,9 @@ $Id$
     <pathelement location="${xmlapis.jar}" />
     <pathelement location="${build.serializer.jar}" />
     <pathelement location="${parser.jar}" />
-    <pathelement path="${java.class.path}" />
   </path>
   <path id="xslt.boot.class.path">
     <!-- Put this version of xalan in front of the jdk's for JDK 1.4+ -->
-    <pathelement location="${build.classes}" />
-    <pathelement location="${serializer.build.classes}" />
     <pathelement location="${xmlapis.jar}" />
     <pathelement location="${build.serializer.jar}" />    
     <pathelement location="${parser.jar}" />
@@ -447,7 +442,6 @@ $Id$
     <!-- build.classes needed for 
          org.apache.xalan.xsltc.util.JavaCupRedirect -->
     <pathelement location="${build.classes}" />
-    <pathelement path="${java.class.path}" />
   </path>
 
   <!-- Attempt to determine dependency info for generated sources -->
@@ -904,7 +898,7 @@ $Id$
   <target name="xsltc.samples.nojardepends">
     <mkdir dir="${build.samples}"/>
     <javac srcdir="${samples.dir}/translets"
-           classpath="${java.class.path}:${build.xalan.jar}" 
+           classpath="${build.xalan.jar}" 
            destdir="${build.samples}" excludes="${exclude}" 
            debug="${build.debug}" bootclasspathref="xslt.boot.class.path" 
   	       target="${compiler.target}" source="${compiler.source}"/>
@@ -978,8 +972,8 @@ $Id$
     <javac srcdir="${samples.dir}/CompiledServlet"
            destdir="${build.samples}/CompiledServlet" excludes="${exclude}"
            debug="${build.debug}" bootclasspathref="xslt.boot.class.path" 
-    	   target="${compiler.target}" source="${compiler.source}">
-    	<classpath location="${servlet-api.jar}"/>
+    	   target="${compiler.target}" source="${compiler.source}" 
+    	   classpath="${build.xalan.jar}:${servlet-api.jar}">
     </javac>
     <jar jarfile="${build.xsltc.servlet.jar}"
          basedir="${build.samples}/CompiledServlet"
@@ -1597,7 +1591,7 @@ $Id$
     <!-- Use FOP to generate a pdf file (classpath may need updating! -sc 18-Apr-01)-->
     <java fork="yes" 
           classname="org.apache.fop.apps.CommandLine"
-      classpath="${java.class.path}:${build.xalan.jar}:${bin.dir}/fop.jar:${bin.dir}/w3c.jar">
+      classpath="${build.xalan.jar}:${bin.dir}/fop.jar:${bin.dir}/w3c.jar">
       <arg line="${build.docs}/xalan-collate.fo build/docs/xalan.pdf"/>
     </java>
   </target>
