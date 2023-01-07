@@ -17,7 +17,9 @@ rem = See the License for the specific language governing permissions and
 rem = limitations under the License.
 rem ==========================================================================
 rem
-rem     build.bat: Build Xalan-J 2.x using Ant 
+rem     build.bat: Build Xalan-J 2.x using Ant
+rem     Author: XalanJ team
+ 
 rem     Usage: build [ant-options] [targets]
 rem     Setup:
 rem         - you must set JAVA_HOME

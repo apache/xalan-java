@@ -66,7 +66,7 @@ $Id$
 <project name="Xalan" default="jar" basedir=".">
 
   <property name="name"                   value="xalan"/>
-  <property name="year"                   value="2022"/>
+  <property name="year"                   value="2023"/>
   <property name="build.debug"            value="on"/>  
   <property name="compiler.target"        value="1.8"/>
   <property name="compiler.source"        value="1.8"/>
@@ -238,19 +238,15 @@ $Id$
     <pathelement location="${parser.jar}" />
     <pathelement path="${java.class.path}" />
   </path>
+	
   <path id="xslt.boot.class.path">
-    <!-- Put this version of xalan in front of the jdk's for JDK 1.4+ -->
-    <!-- Set build.boot.class.path to a JDK 1.1.x classes.zip file to check
-         compatibility with 1.1.x.  If you omit this property, compatability
-         with 1.1.x will not be checked even though javac specifies a target of 1.1 -->
-    <pathelement location="${build.classes}" />
-    <pathelement location="${serializer.build.classes}" />
-    <pathelement location="${xmlapis.jar}" />
-    <pathelement location="${build.serializer.jar}" />    
-    <pathelement location="${parser.jar}" />   
-    <pathelement path="${build.boot.class.path}" />
-    <pathelement path="${sun.boot.class.path}" />
+	 <!-- Put this version of xalan in front of the jdk's for JDK 1.4+ -->
+	 <pathelement location="${xmlapis.jar}" />
+	 <pathelement location="${build.serializer.jar}" />    
+	 <pathelement location="${parser.jar}" />
+	 <pathelement path="${sun.boot.class.path}" />
   </path>
+	
   <path id="compile.source.path">
     <dirset dir="${src.dir}" includes="/org/apache/**" />
   </path>
@@ -986,8 +982,8 @@ $Id$
     <javac srcdir="${samples.dir}/CompiledServlet"
            destdir="${build.samples}/CompiledServlet" excludes="${exclude}"
            debug="${build.debug}" bootclasspathref="xslt.boot.class.path" 
-    	   target="${compiler.target}" source="${compiler.source}">
-    	<classpath location="${servlet-api.jar}"/>
+    	   target="${compiler.target}" source="${compiler.source}" 
+    	   classpath="${build.xalan.jar}:${servlet-api.jar}">
     </javac>
     <jar jarfile="${build.xsltc.servlet.jar}"
          basedir="${build.samples}/CompiledServlet"

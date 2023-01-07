@@ -15,7 +15,7 @@
  * limitations under the License.
 -->
 
-Copyright 1999-2022 The Apache Software Foundation
+Copyright 1999-2023 The Apache Software Foundation
 
 Authors:
    Gary Gregory <ggregory@apache.org>
@@ -51,9 +51,6 @@ For XalanJ source distribution users, this command needs to be run from, the roo
 of the XalanJ source distribution folder (i.e, from the source distribution folder, 
 which contains folders "src", "tools" etc).
 
-This shall produce the following jars, relevant for testing the XalanJ 
-build : xalan.jar, serializer.jar. [1]
-
 (2) Steps to run the XalanJ tests, on XalanJ implementation
 
 1) Go to the XalanJ tests repos's, local git clone folder:
@@ -71,45 +68,15 @@ set JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-8.0.352.8-hotspot\
 set ANT_HOME=C:\java\apache-ant-1.10.12
 
 3) Run the command "build clean jar" from folder xalan-test. This produces
-the file testxsl.jar within folder xalan-test/java/build.
+the file testxsl.jar that acts as main XalanJ test driver, within folder xalan-test/java/build.
 
-4) Create a folder xalanjrelease_jardir somewhere on file system.
-Copy the jar file testxsl.jar produced within the previous step, to the folder 
-xalanjrelease_jardir. Copy the jars xalan.jar, serializer.jar [1] to this 
-folder. From the folder xalan-java/lib/endorsed, copy jars xml-apis.jar and 
-xercesImpl.jar to the folder xalanjrelease_jardir. Copy the jar Tidy.jar from folder 
-xalan-test/tools to the folder xalanjrelease_jardir. From the folder xalan-java/lib 
-copy the jars bsf.jar, rhino-1.7.14.jar, commons-logging-1.2.jar, regexp.jar to the 
-folder xalanjrelease_jardir (XalanJ source distribution users may copy the jars bsf.jar, 
-rhino-1.7.14.jar, commons-logging-1.2.jar, regexp.jar from folder for e.g xalan-j_2_7_3/lib 
-within the source distribution. XalanJ source distribution users may also copy the 
-jars xml-apis.jar and xercesImpl.jar from folder for e.g xalan-j_2_7_3/lib/endorsed 
-to the folder xalanjrelease_jardir).
+4) Run the necessary XalanJ tests as follows,
 
-Now the folder xalanjrelease_jardir, has the XalanJ jar xalan.jar that needs 
-to be tested, and all the supporting jars needed for testing.
+The tests described below within points 4.1, 4.2 and 4.3 need to be run from folder xalan-test. 
 
-For example, on Windows, from xalan-test:
+4.1 Run the ant target "smoketest", using following three commands in sequence shown below
 
-copy /Y java\build\testxsl.jar "%JARDIR%"
-copy /Y tools\Tidy.jar "%JARDIR%"
-
-copy /Y ..\xalan-java\build\xalan.jar "%JARDIR%"
-copy /Y ..\xalan-java\build\serializer.jar "%JARDIR%"
-copy /Y ..\xalan-java\lib\bsf.jar "%JARDIR%"
-copy /Y ..\xalan-java\lib\commons-logging-1.2.jar "%JARDIR%"
-copy /Y ..\xalan-java\lib\regexp.jar "%JARDIR%"
-copy /Y ..\xalan-java\lib\rhino-1.7.14.jar "%JARDIR%"
-copy /Y ..\xalan-java\lib\endorsed\xercesImpl.jar "%JARDIR%"
-copy /Y ..\xalan-java\lib\endorsed\xml-apis.jar "%JARDIR%"
-
-5) Set JARDIR environment variable, pointing to the folder "xalanjrelease_jardir".
-
-6) Run the necessary XalanJ tests as follows,
-
-The tests described below within points 5.1, 5.2 and 5.3 need to be run from folder xalan-test. 
-
-6.1 Run the ant target "smoketest", using following two commands in sequence shown below
+build extensions.classes
 
 build extensions
 
@@ -120,7 +87,7 @@ The output of the command "build smoketest" should be following, and without any
 smoketest-pass:
      [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
 
-6.2 Run the ant target "smoketest.xsltc", using following three commands in sequence shown below 
+4.2 Run the ant target "smoketest.xsltc", using following three commands in sequence shown below 
 
 build conf.xsltc
 
@@ -133,9 +100,7 @@ The output of the command "build smoketest.xsltc" should be following, and witho
 smoketest.xsltc-pass:
      [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
 
-6.3 Run the ant target "smoketest.dev", using following two commands in sequence shown below
-
-build extensions
+4.3 Run the ant target "smoketest.dev", using following command
 
 build smoketest.dev
 
@@ -144,7 +109,7 @@ The output of the command "build smoketest.dev" should be following, and without
 smoketest-pass:
      [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
      
-6.4 From folder xalan-test/tests/xsltc_integer_truncation, run the batch file 
+4.4 From folder xalan-test/tests/xsltc_integer_truncation, run the batch file 
 xsltc_int_truncation_test.bat (provided for Windows platform) to run test for, 
 "XalanJ integer truncation bug fix, when using XSLTC".    
      
