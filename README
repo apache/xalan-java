@@ -37,7 +37,9 @@ git clone --single-branch https://gitbox.apache.org/repos/asf/xalan-java.git -b 
 
 git clone https://gitbox.apache.org/repos/asf/xalan-test.git
 
-This creates two folders: xalan-java and xalan-test
+This creates two folders: xalan-java and xalan-test. These folders need to be parallel to
+each other, to be able to follow the XalanJ build and tests steps as described in this document,
+for making a XalanJ release for distribution.
 
 2) Set JAVA_HOME and ANT_HOME environment variables, for example:
 
@@ -57,9 +59,9 @@ which contains folders "src", "tools" etc).
 cd ..\xalan-test
 
 For XalanJ source distribution users, xalan-test folder is located at the root of the XalanJ 
-source distribution folder (i.e, parallel to folders "src", "tools" etc), from where XalanJ 
-source distribution users may run XalanJ tests, by using the "build" script located at 
-this folder location.
+source distribution folder (i.e, parallel to folders "src", "tools" etc within the main XalanJ 
+codebase folder location), from where XalanJ source distribution users may run XalanJ 
+tests, by using the "build" script located at this folder location.
 
 2) Set JAVA_HOME and ANT_HOME environment variables, for example:
 
