@@ -55,6 +55,11 @@ which contains folders "src", "tools" etc).
 
 (2) Steps to run the XalanJ tests, on XalanJ implementation
 
+Note that, for XalanJ source distribution users, XalanJ implementation shall be 
+produced (that XalanJ source distribution users, might want to test) by running 
+the build command "build clean fulldist" from the root of the XalanJ source 
+distribution folder.
+
 1) Go to the XalanJ tests repos's, local git clone folder:
 cd ..\xalan-test
 
