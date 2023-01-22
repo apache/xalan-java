@@ -69,6 +69,7 @@ file build.xml provided by XalanJ xalan-test git repos.
     <property name="build.compiler" value="classic"/>
     <property name="compiler" value="${build.compiler}"/>
     <property name="debug" value="on"/>
+	<property name="compiler.nowarn" value="on"/>
 
     <!-- Specific locations related to building test code/docs -->
     <property name="test.src.dir" value="java/src"/>
@@ -1304,7 +1305,7 @@ file build.xml provided by XalanJ xalan-test git repos.
         <javac srcdir="${test.src.dir}" 
                destdir="${test.build.dir}" 
                includes="${test.root}*.java" 
-               debug="${debug}" />
+               debug="${debug}" nowarn="${compiler.nowarn}"/>
     </target>
 
 
@@ -1326,13 +1327,13 @@ file build.xml provided by XalanJ xalan-test git repos.
         <javac srcdir="${test.src.dir}" 
                destdir="${test.build.dir}" 
                includes="${test.root}xslwrapper/TransformWrapperHelper.java,${test.root}xslwrapper/TransformWrapper.java,${test.root}xslwrapper/TransformWrapperFactory.java"
-               debug="${debug}" />
+               debug="${debug}" nowarn="${compiler.nowarn}"/>
         <!-- This javac depends on JAXP, SAX, DOM; hence the specific classpathref -->
         <javac srcdir="${test.src.dir}" 
                destdir="${test.build.dir}" 
                includes="${test.root}xsl/*.java"
                debug="${debug}" 
-               classpathref="compiletest.class.path" />
+               classpathref="compiletest.class.path" nowarn="${compiler.nowarn}"/>
     </target>
 
     <target name="compile.trax.xslwrappers" depends="compile.xsl"
@@ -1342,7 +1343,7 @@ file build.xml provided by XalanJ xalan-test git repos.
                destdir="${test.build.dir}" 
                includes="${test.root}xslwrapper/Trax*Wrapper.java,${test.root}xslwrapper/TraxWrapperUtils.java,${test.root}xslwrapper/XalanProcessWrapper.java"
                debug="${debug}"
-               classpathref="compiletest.class.path" />
+               classpathref="compiletest.class.path" nowarn="${compiler.nowarn}"/>
     </target>
 
     <target name="compile.trax" depends="compile.xsl,compile.trax.xslwrappers"
@@ -1353,22 +1354,26 @@ file build.xml provided by XalanJ xalan-test git repos.
                destdir="${test.build.dir}" 
                includes="${test.root}trax/*.java"
                debug="${debug}"
-               classpathref="compiletest.class.path" />
+               classpathref="compiletest.class.path" 
+        	   nowarn="${compiler.nowarn}"/>
         <javac srcdir="${test.src.dir}" 
                destdir="${test.build.dir}" 
                includes="${test.root}trax/stream/*.java"
                debug="${debug}"
-               classpathref="compiletest.class.path" />
+               classpathref="compiletest.class.path" 
+        	   nowarn="${compiler.nowarn}"/>
         <javac srcdir="${test.src.dir}" 
                destdir="${test.build.dir}" 
                includes="${test.root}trax/dom/*.java"
                debug="${debug}"
-               classpathref="compiletest.class.path" />
+               classpathref="compiletest.class.path" 
+    	       nowarn="${compiler.nowarn}"/>
         <javac srcdir="${test.src.dir}" 
                destdir="${test.build.dir}" 
                includes="${test.root}trax/sax/*.java"
                debug="${debug}"
-               classpathref="compiletest.class.path" />
+               classpathref="compiletest.class.path" 
+    	       nowarn="${compiler.nowarn}"/>
     </target>
 
     <target name="compile" depends="compile.trax">
@@ -1378,7 +1383,8 @@ file build.xml provided by XalanJ xalan-test git repos.
                includes="${test.root}xalanj2/*.java,${test.root}dtm/*.java"
                excludes="${test.root}dtm/xsltcDocCode.java"
                debug="${debug}"
-               classpathref="compiletest.class.path" />
+               classpathref="compiletest.class.path" 
+        	   nowarn="${compiler.nowarn}"/>
     </target>
 
     <target name="compile.rwapi" depends="compile">
@@ -1387,7 +1393,8 @@ file build.xml provided by XalanJ xalan-test git repos.
                destdir="${test.build.dir}" 
                includes="${test.root}rwapi/*.*"
                debug="${debug}"
-               classpathref="rwapitest.class.path" />
+               classpathref="rwapitest.class.path" 
+    	       nowarn="${compiler.nowarn}"/>
     </target>
 
     <!-- Note that this target must *not* depend on any XSLTC tests, 
@@ -1409,7 +1416,8 @@ file build.xml provided by XalanJ xalan-test git repos.
                destdir="${tests.bugzilla.build.dir}" 
                debug="${debug}"
                excludes="Bugzilla1288.java"
-               classpathref="bugzilla.class.path" />
+               classpathref="bugzilla.class.path" 
+        	   nowarn="${compiler.nowarn}"/>
     </target>
 
     <target name="extensions.classes" depends="jar"
@@ -1418,7 +1426,8 @@ file build.xml provided by XalanJ xalan-test git repos.
         <javac srcdir="${tests.extensions.dir}" 
                destdir="${tests.extensions.build.dir}" 
                debug="${debug}"
-               classpathref="extensions.class.path" />
+               classpathref="extensions.class.path" 
+        	   nowarn="${compiler.nowarn}"/>
         <!-- Add more javac calls if we add more Java extensions dirs -->        
     </target>
 
