@@ -263,6 +263,16 @@ file build.xml provided by XalanJ xalan-test git repos.
             <pathelement location="${testxsl.jar}" />
         </classpath>
     </taskdef>
+	
+	<!-- This Ant task checks, the 'api' tests pass or fail status, by inspecting 
+	     content within test result XML documents. -->
+	<taskdef name="apiTestsResultTask" classname="org.apache.qetest.xsl.XSLApiTestsResultTask">
+	    <classpath>
+	       <pathelement location="${test.src.dir}" />
+	       <pathelement location="${test.build.dir}" />
+	       <pathelement location="${testxsl.jar}" />
+	    </classpath>
+	</taskdef>
 
     <!-- ================================================================== -->
     <!-- Base target for running tests with specified properties.  Actual   -->
@@ -400,15 +410,18 @@ file build.xml provided by XalanJ xalan-test git repos.
     <!-- Run tests: the normal StylesheetTestletDriver on the conf suite    -->
     <!-- ================================================================== -->
 	<target name="conf" description="Run TestletDriver over the conf tree"
-	        depends="init.test">
+	                    depends="init.test">
 	    <!-- Set the default conformance test driver, user may override -->
 	    <property name="testClass" value="org.apache.qetest.xsl.StylesheetTestletDriver" />
 	    <echo message="Executing Xalan conf test: ${testClass}" />
 	    <property name="testType" value="conf." />
+
 	    <mkdir dir="results-conf"/>
+
 	    <antcall target="run.xalantest">
-	       <param name="xalantest.classpathref" value="conf.class.path" />
+	            <param name="xalantest.classpathref" value="conf.class.path" />
 	    </antcall>
+
 	    <!--<property name="scan.outputDir" value="${conf.outputDir}"/>-->
 	    <property name="scan.outputDir" value="results-conf"/>
 	    <antcall target="scan"/>
@@ -483,13 +496,25 @@ file build.xml provided by XalanJ xalan-test git repos.
     <!-- ================================================================== -->
     <!-- Run tests: the normal StylesheetTestletDriver on the accept suite  -->
     <!-- ================================================================== -->
-    <target name="accept" description="Run TestletDriver over the accept tree">
-        <echo message="Executing Xalan accept test." />
-        <property name="qetest.summaryFile" value="Accept.xml" />
-        <property name="testType" value="accept." />
-        <property name="scan.outputDir" value="${accept.outputDir}"/>
-        <antcall target="conf"/>
-    </target>
+	<target name="accept" description="Run TestletDriver over the accept tree">
+	    <!--<echo message="Executing Xalan accept test." />-->
+	        
+	    <property name="testClass" value="org.apache.qetest.xsl.StylesheetTestletDriver" />
+	    <echo message="Executing Xalan conf test: ${testClass}" />
+
+	    <property name="qetest.summaryFile" value="Accept.xml" />
+	    <property name="testType" value="accept." />
+
+	    <mkdir dir="results-accept"/>
+
+	    <!--<antcall target="conf"/>-->
+	    <antcall target="run.xalantest">
+	       <param name="xalantest.classpathref" value="conf.class.path" />
+	    </antcall>
+
+	    <property name="scan.outputDir" value="results-accept"/>
+	    <antcall target="scan"/>
+	</target>
 
     <target name="accept.xsltc" description="Run TestletDriver over the accept tree">
         <property name="testType" value="accept.xsltc." />
@@ -592,59 +617,68 @@ file build.xml provided by XalanJ xalan-test git repos.
     <!-- ================================================================== -->
 	<target name="api" description="Run a specific API test"
 	        depends="init.test">
-	        <!-- Note no default is set; also testClass is not prefixed! -->
-	        <!--<echo message="Executing Xalan api test: ${testClass}" />-->
-	        <property name="testClass" value="org.apache.qetest.xsl.XSLTestHarness" />
-	        <property name="testType" value="api." />
-	        <mkdir dir="results-api"/>
-	        <antcall target="run.xalantest">
-	            <param name="xalantest.classpathref" value="api.class.path" />
-	        </antcall>
-	        <condition property="apitest-passed">
-	            <and>
-	               <available file="results-api/Pass-DOMResultAPITest.xml" />
-	               <available file="results-api/Pass-DOMSourceAPITest.xml" />
-	               <available file="results-api/Pass-DTMDumpTest.xml" />
-	               <available file="results-api/Pass-EmbeddedStylesheetTest.xml" />
-	               <available file="results-api/Pass-ErrorListenerAPITest.xml" />
-	               <available file="results-api/Pass-ErrorListenerTest.xml" />
-	               <available file="results-api/Pass-FactoryFeatureTest.xml" />
-	               <available file="results-api/Pass-OutputPropertiesTest.xml" />
-	               <available file="results-api/Pass-OutputSettingsTest.xml" />
-	               <available file="results-api/Pass-ParameterTest.xml" />
-	               <available file="results-api/Pass-PrefixResolverAPITest.xml" />
-	               <available file="results-api/Pass-ProgrammaticDOMTest.xml" />
-	               <available file="results-api/Pass-SAXResultAPITest.xml" />
-	               <available file="results-api/Pass-SAXSourceAPITest.xml" />
-	               <available file="results-api/Pass-SAXTransformerFactoryAPITest.xml" />
-	               <available file="results-api/Pass-SerializedStylesheetTest.xml" />
-	               <available file="results-api/Pass-StreamResultAPITest.xml" />
-	               <available file="results-api/Pass-StreamSourceAPITest.xml" />
-	               <available file="results-api/Pass-SystemIdImpInclTest.xml" />
-	               <available file="results-api/Pass-SystemIDResolverAPITest.xml" />
-	               <available file="results-api/Pass-SystemIdTest.xml" />
-	               <available file="results-api/Pass-TemplatesAPITest.xml" />
-	               <available file="results-api/Pass-TemplatesHandlerAPITest.xml" />
-	               <available file="results-api/Pass-TestDTM.xml" />
-	               <available file="results-api/Pass-TestDTMIter.xml" />
-	               <available file="results-api/Pass-TestDTMTrav.xml" />
-	               <available file="results-api/Pass-TestXPathAPI.xml" />
-	               <available file="results-api/Pass-TraceListenerTest.xml" />
-	               <available file="results-api/Pass-TransformerAPITest.xml" />
-	               <available file="results-api/Pass-TransformerFactoryAPITest.xml" />
-	               <available file="results-api/Pass-TransformerHandlerAPITest.xml" />
-	               <available file="results-api/Pass-TransformerHandlerTest.xml" />
-	               <available file="results-api/Pass-TransformStateAPITest.xml" />
-	               <available file="results-api/Pass-TransformStateTest.xml" />
-	               <available file="results-api/Pass-URIResolverTest.xml" />
-	            </and>
-	        </condition>       
-	        <antcall target="scan">
-	            <!--<param name="scan.outputDir" value="${api.outputDir}"/>-->
-	            <param name="scan.outputDir" value="results-api"/>
-	        </antcall>
-	        <antcall target="apitest-pass"/>
-	    </target>
+	    <!-- Note no default is set; also testClass is not prefixed! -->
+	    <!--<echo message="Executing Xalan api test: ${testClass}" />-->
+	    <property name="testClass" value="org.apache.qetest.xsl.XSLTestHarness" />
+	    <property name="testType" value="api." />
+	        
+	    <mkdir dir="results-api"/>
+	        
+	    <antcall target="run.xalantest">
+	       <param name="xalantest.classpathref" value="api.class.path" />
+	    </antcall>
+
+	    <condition property="apitest-file-check-passed">
+	       <and>
+	          <available file="results-api/Pass-DOMResultAPITest.xml" />
+	          <available file="results-api/Pass-DOMSourceAPITest.xml" />
+	          <available file="results-api/Pass-DTMDumpTest.xml" />
+	          <available file="results-api/Pass-EmbeddedStylesheetTest.xml" />
+	          <available file="results-api/Pass-ErrorListenerAPITest.xml" />
+	          <available file="results-api/Pass-ErrorListenerTest.xml" />
+	          <available file="results-api/Pass-FactoryFeatureTest.xml" />
+	          <available file="results-api/Pass-OutputPropertiesTest.xml" />
+	          <available file="results-api/Pass-OutputSettingsTest.xml" />
+	          <available file="results-api/Pass-ParameterTest.xml" />
+	          <available file="results-api/Pass-PrefixResolverAPITest.xml" />
+	          <available file="results-api/Pass-ProgrammaticDOMTest.xml" />
+	          <available file="results-api/Pass-SAXResultAPITest.xml" />
+	          <available file="results-api/Pass-SAXSourceAPITest.xml" />
+	          <available file="results-api/Pass-SAXTransformerFactoryAPITest.xml" />
+	          <available file="results-api/Pass-SerializedStylesheetTest.xml" />
+	          <available file="results-api/Pass-StreamResultAPITest.xml" />
+	          <available file="results-api/Pass-StreamSourceAPITest.xml" />
+	          <available file="results-api/Pass-SystemIdImpInclTest.xml" />
+	          <available file="results-api/Pass-SystemIDResolverAPITest.xml" />
+	          <available file="results-api/Pass-SystemIdTest.xml" />
+	          <available file="results-api/Pass-TemplatesAPITest.xml" />
+	          <available file="results-api/Pass-TemplatesHandlerAPITest.xml" />
+	          <available file="results-api/Pass-TestDTM.xml" />
+	          <available file="results-api/Pass-TestDTMIter.xml" />
+	          <available file="results-api/Pass-TestDTMTrav.xml" />
+	          <available file="results-api/Pass-TestXPathAPI.xml" />
+	          <available file="results-api/Pass-TraceListenerTest.xml" />
+	          <available file="results-api/Pass-TransformerAPITest.xml" />
+	          <available file="results-api/Pass-TransformerFactoryAPITest.xml" />
+	          <available file="results-api/Pass-TransformerHandlerAPITest.xml" />
+	          <available file="results-api/Pass-TransformerHandlerTest.xml" />
+	          <available file="results-api/Pass-TransformStateAPITest.xml" />
+	          <available file="results-api/Pass-TransformStateTest.xml" />
+	          <available file="results-api/Pass-URIResolverTest.xml" />
+	       </and>
+	    </condition>
+
+	    <antcall target="scan">
+	       <!--<param name="scan.outputDir" value="${api.outputDir}"/>-->
+	       <param name="scan.outputDir" value="results-api"/>
+	    </antcall>
+	        
+		<antcall target="apitest-pass-file-check"/>
+
+		<apiTestsResultTask resultDir="results-api" fileNamePrefix="Pass-"/>
+
+		<echo message=" [minitest] CONGRATULATIONS! The api tests passed!" />
+	</target>
 
     <!-- ================================================================== -->
     <!-- Run tests: Run all available API tests                             -->
@@ -679,24 +713,26 @@ file build.xml provided by XalanJ xalan-test git repos.
     <!-- ================================================================== -->
     <!-- Run tests: various extensions tests                                -->
     <!-- ================================================================== -->
-    <target name="extensions" 
-            description="Run extensions tests.  
-                         Non-Java extensions will use the Apache BSF implementation."
-            depends="init.test">
-        <echo message="Executing Xalan extensions tests. Non-Java extensions will use the Apache BSF implementation." />
-        <!-- Set the default conformance test driver, user may 
-             override; note test.properties:extensions.testlet= 
-        -->
-        <property name="testClass" value="org.apache.qetest.xsl.StylesheetTestletDriver" />
-        <property name="testType" value="extensions." />
-        <antcall target="run.xalan-extension-test">
-            <param name="xalantest.classpathref" value="extensions.class.path" />
-            <param name="sysprop.BSFManager" value="org.apache.bsf.BSFManager" />
-        </antcall>
-        <property name="scan.outputDir" value="${extensions.outputDir}"/>
-        <antcall target="scan"/>
-        <echo message="If you got ClassNotFound, did you 'build extensions.classes' first?" />
-    </target>
+	<target name="extensions" 
+	        description="Run extensions tests. Non-Java extensions will use the Apache BSF implementation."
+	        depends="init.test">
+	    <echo message="Executing Xalan extensions tests. Non-Java extensions will use the Apache BSF implementation." />
+	    <!-- Set the default conformance test driver, user may 
+	         override; note test.properties:extensions.testlet= 
+	    -->
+	    <property name="testClass" value="org.apache.qetest.xsl.StylesheetTestletDriver" />
+	    <property name="testType" value="extensions." />
+
+	    <mkdir dir="results-extensions"/>
+	        
+	    <antcall target="run.xalan-extension-test">
+	       <param name="xalantest.classpathref" value="extensions.class.path" />
+	       <param name="sysprop.BSFManager" value="org.apache.bsf.BSFManager" />
+	    </antcall>
+	    <property name="scan.outputDir" value="results-extensions"/>
+	    <antcall target="scan"/>
+	    <echo message="If you got ClassNotFound, did you 'build extensions.classes' first?" />
+	</target>
 
     <target name="extensions-with-ibm-bsf" 
             description="Run extensions tests. 
@@ -821,40 +857,33 @@ file build.xml provided by XalanJ xalan-test git repos.
             smoketest-notpass,smoketest-pass">
     </target>    
 
-    <target name="smoketest-execute">
-        <echo message="About to execute Conformance tests..." />
-        <antcall target="conf">
-            <param name="testType" value="smoketest.conf."/>
-        </antcall>
+	<target name="smoketest-execute">
+	    <echo message="About to execute XalanJ2 extensions tests..." />
+	    <antcall target="extensions">
+	       <param name="testType" value="smoketest.extensions."/>
+	    </antcall>
 
-        <!--<echo message="About to execute Accept tests..." />
-        <antcall target="accept">
-            <param name="testType" value="smoketest.accept."/>
-        </antcall>-->
+	    <echo message="About to execute Conformance tests..." />
+	    <antcall target="conf">
+	       <param name="testType" value="smoketest.conf."/>
+	    </antcall>
 
-    	<!--<echo message="About to execute other API tests..." />
-    	<antcall target="api">
-    	   <param name="testClass" value="org.apache.qetest.xsl.XSLTestHarness"/>
-    	   <param name="testType" value="smoketest.api."/>
-    	</antcall>-->
+	    <echo message="About to execute Accept tests..." />
+	    <antcall target="accept">
+	            <param name="testType" value="smoketest.accept."/>
+	    </antcall>
 
-        <!--<echo message="About to execute XalanJ2 extensions tests..." />
-        <antcall target="extensions">
-            <param name="testType" value="smoketest.extensions."/>
-        </antcall>-->
-
-        <condition property="smoketest-passed">
-            <and>
-                <available file="${smoketest.conf.passFile}" />
-                <!--<available file="${smoketest.accept.passFile}" />-->
-                <!--<available file="${smoketest.api.passFile}" />-->
-                <!--<available file="${smoketest.extensions.passFile}" />-->
-            </and>
-        </condition>
-        <antcall target="scan">
-            <param name="scan.outputDir" value="smoketest"/>
-        </antcall>
-    </target>
+	    <condition property="smoketest-passed">
+	       <and>
+	          <available file="${smoketest.extensions.passFile}" />
+	          <available file="${smoketest.conf.passFile}" />
+	          <available file="${smoketest.accept.passFile}" />              
+	       </and>
+	    </condition>
+	    <antcall target="scan">
+	       <param name="scan.outputDir" value="smoketest"/>
+	    </antcall>
+	</target>
 
     <target name="smoketest.xsltc-execute">
         <echo message="About to execute Conformance tests..." />
@@ -886,15 +915,17 @@ file build.xml provided by XalanJ xalan-test git repos.
         <echo message=" [minitest] Please fix any smoketest problems before checking in!" />
         <fail message="Please fix any smoketest problems before checking in!" />
     </target>
-    <target name="smoketest-pass" if="smoketest-passed">
-        <echo message=" [minitest] CONGRATULATIONS! The Smoketest passed!" />
-        <!--<echo message=" [minitest] Details are in ${smoketest.conf.logFile}, ${smoketest.api.logFile}, ${smoketest.extensions.logFile}" />
-        -->
-    	<echo message=" [minitest] Details are in ${smoketest.conf.logFile}" />
-    </target>
+	<target name="smoketest-pass" if="smoketest-passed">
+	    <echo message=" [minitest] CONGRATULATIONS! The Smoketest passed!" />
+	    <!-- below echo messages, TBD -->
+	    <!--<echo message=" [minitest] Details are in ${smoketest.conf.logFile}, ${smoketest.api.logFile}, ${smoketest.extensions.logFile}" />
+	    -->
+	    <!--<echo message=" [minitest] Details are in ${smoketest.conf.logFile}" />-->
+	</target>
 	
-	<target name="apitest-pass" if="apitest-passed">
-	    <echo message=" [minitest] CONGRATULATIONS! The api tests passed!" />
+	<target name="apitest-pass-file-check" unless="apitest-file-check-passed">
+	   <echo message=" [minitest] ERROR! The api tests failed!" />
+	   <fail message="Please fix any api tests problems before checking in!" />       
 	</target>
 
     <target name="smoketest.xsltc-notpass" unless="smoketest.xsltc-passed">

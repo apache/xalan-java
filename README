@@ -81,11 +81,9 @@ the file testxsl.jar that acts as main XalanJ test driver, within folder xalan-t
 
 The tests described below within points 4.1, 4.2, 4.3 and 4.4 need to be run from folder xalan-test. 
 
-4.1 Run the ant target "smoketest", using following three commands in sequence shown below
+4.1 Run the ant target "smoketest", using following two commands in sequence shown below
 
 build extensions.classes
-
-build extensions
 
 build smoketest
 
