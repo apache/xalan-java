@@ -613,9 +613,9 @@ file build.xml provided by XalanJ xalan-test git repos.
 
 
     <!-- ================================================================== -->
-    <!-- Run tests: a specific named API test                               -->
+    <!-- Run tests: specific named API tests                              -->
     <!-- ================================================================== -->
-	<target name="api" description="Run a specific API test"
+	<target name="api" description="Run specific API tests"
 	        depends="init.test">
 	    <!-- Note no default is set; also testClass is not prefixed! -->
 	    <!--<echo message="Executing Xalan api test: ${testClass}" />-->
@@ -915,12 +915,10 @@ file build.xml provided by XalanJ xalan-test git repos.
         <echo message=" [minitest] Please fix any smoketest problems before checking in!" />
         <fail message="Please fix any smoketest problems before checking in!" />
     </target>
+	
 	<target name="smoketest-pass" if="smoketest-passed">
-	    <echo message=" [minitest] CONGRATULATIONS! The Smoketest passed!" />
-	    <!-- below echo messages, TBD -->
-	    <!--<echo message=" [minitest] Details are in ${smoketest.conf.logFile}, ${smoketest.api.logFile}, ${smoketest.extensions.logFile}" />
-	    -->
-	    <!--<echo message=" [minitest] Details are in ${smoketest.conf.logFile}" />-->
+	    <echo message=" [minitest] CONGRATULATIONS! The Smoketest passed!" />        
+	    <echo message=" [minitest] Details are in ${smoketest.extensions.logFile}, ${smoketest.conf.logFile}, ${smoketest.accept.logFile}" />
 	</target>
 	
 	<target name="apitest-pass-file-check" unless="apitest-file-check-passed">
