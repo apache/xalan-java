@@ -194,13 +194,14 @@ file build.xml provided by XalanJ xalan-test git repos.
     </path>
 
 	<!-- Boot class path for JDK 1.4+ -->
-	<path id="boot.class.path">
-	   <pathelement location="${xalan.jar}" />
-	   <pathelement location="${xsltc.jar}" />  <!-- add this so we can test the
-	                                                      separate jar distribution -->  
-	   <pathelement location="${ser.jar}" />        
+	<path id="boot.class.path">                                  
 	   <pathelement location="${xml-apis.jar}" />
 	   <pathelement location="${parserjar}" />
+	   <pathelement location="${ser.jar}" />
+	   <pathelement location="${xalan.jar}" />
+	   <!--<pathelement location="${xsltc.jar}" />-->  <!-- add this so we can test the
+	                                                              separate jar distribution -->        
+	   <pathelement path="${sun.boot.class.path}" />
 	</path>
 
     <!-- Gump build xml-xalan2-smoketest should use xalan.unbundled.jar -->
@@ -265,13 +266,22 @@ file build.xml provided by XalanJ xalan-test git repos.
     </taskdef>
 	
 	<!-- This Ant task checks, the 'api' tests pass or fail status, by inspecting 
-	     content within test result XML documents. -->
+	     content within test result XML documents -->
 	<taskdef name="apiTestsResultTask" classname="org.apache.qetest.xsl.XSLApiTestsResultTask">
-	    <classpath>
-	       <pathelement location="${test.src.dir}" />
-	       <pathelement location="${test.build.dir}" />
-	       <pathelement location="${testxsl.jar}" />
-	    </classpath>
+	   <classpath>
+	     <pathelement location="${test.src.dir}" />
+	     <pathelement location="${test.build.dir}" />
+	     <pathelement location="${testxsl.jar}" />
+	   </classpath>
+	</taskdef>
+	
+	<!-- This Ant task, runs XalanJ xsltc tests -->
+	<taskdef name="xsltcTestsTask" classname="org.apache.qetest.xsl.XsltcTestsTask">
+	   <classpath>
+	      <pathelement location="${test.src.dir}" />
+	      <pathelement location="${test.build.dir}" />
+	      <pathelement location="${testxsl.jar}" />
+	   </classpath>
 	</taskdef>
 
     <!-- ================================================================== -->
@@ -516,13 +526,13 @@ file build.xml provided by XalanJ xalan-test git repos.
 	    <antcall target="scan"/>
 	</target>
 
-    <target name="accept.xsltc" description="Run TestletDriver over the accept tree">
+    <!--<target name="accept.xsltc" description="Run TestletDriver over the accept tree">
         <property name="testType" value="accept.xsltc." />
         <property name="qetest.summaryFile" value="Accept.xml" />
         <property name="scan.outputDir" value="${accept.xsltc.outputDir}"/>
 	    <property name="use-processor" value="${accept.xsltc.processor}"/>
         <antcall target="conf.xsltc" />
-    </target>
+    </target>-->
 
     <target name="accept.trace" description="Run TestletDriver over the accept tree">
         <property name="accept.trace" value="on"/>
@@ -822,15 +832,17 @@ file build.xml provided by XalanJ xalan-test git repos.
             description="Run the Xalan-J 2.x XSLTC Smoketest"
             depends="jar,smoketest.xsltc-execute,smoketest.xsltc-notpass,smoketest.xsltc-pass">
     </target>
+	
+	<!-- The following compiles the minimum to run the smoketests, runs them, 
+	     and creates distros just of the results and existing tree, 
+	     without actually running the docs - this is to ensure that 
+	     doc build errors in the tests won't affect GUMP runs.
+	-->
     <target name="smoketest.dev" 
             description="Run the Xalan-J 2.x Smoketest with dependencies"
             depends="jar,minitest-execute,extensions.classes,smoketest-execute,minitest-notpass,minitest-pass,smoketest-notpass,smoketest-pass">
-        <!-- This compiles the minimum to run the smoketests, runs them, 
-             and creates distros just of the results and existing tree, 
-             without actually running the docs - this is to ensure that 
-             doc build errors in the tests won't affect GUMP runs.
-        -->
     </target>
+	
     <target name="smoketest.gump" 
             description="Run the Xalan-J 2.x Smoketest in automated builds with dependencies">
        <antcall target="minitest.gump">
@@ -1682,24 +1694,37 @@ file build.xml provided by XalanJ xalan-test git repos.
         <pathelement location="." />
     </path>
 
-    <target name="conf.xsltc" description="Run TestletDriver over the conf tree using xsltc">
-        <!-- Set the default conformance test driver, user may override -->
-        <property name="testClass" value="org.apache.qetest.xsl.StylesheetTestletDriver" />
-        <echo message="Executing Xalan-xsltc conf test: ${testClass}" />
-        <!-- Special: allow explicit test.properties overrides for inputDir, etc for xsltc -->
-        <property name="testType" value="conf.xsltc." />
-	<!-- Set indent-number to 0 to match Xalan's default indentation -->
-	<property name="${testType}Processor.setAttribute.indent-number" value="0"/>
-        <antcall target="run.xalantest">
-            <param name="xalantest.classpathref"
-                   value="xsltc.runtime.class.path" />
-            <!-- Explicitly set TransformerFactory property to use xsltc -->
-            <param name="sysprop.transfact"
-                   value="org.apache.xalan.xsltc.trax.TransformerFactoryImpl" />
-        </antcall>
-        <property name="scan.outputDir" value="${conf.xsltc.outputDir}"/>
-        <antcall target="scan" />
-    </target>
+	<target name="conf.xsltc" description="Run TestletDriver over the conf tree using xsltc">
+	    <!-- Set the default conformance test driver, user may override -->
+	    <property name="testClass" value="org.apache.qetest.xsl.StylesheetTestletDriver" />
+	    <echo message="Executing Xalan-xsltc conf test: ${testClass}" />
+	    <!-- Special: allow explicit test.properties overrides for inputDir, etc for xsltc -->
+	    <property name="testType" value="conf.xsltc." />
+		<!-- Set indent-number to 0 to match Xalan's default indentation -->
+		<property name="${testType}Processor.setAttribute.indent-number" value="0"/>
+	    <antcall target="run.xalantest">
+	       <param name="xalantest.classpathref"
+	              value="xsltc.runtime.class.path" />
+	       <!-- Explicitly set TransformerFactory property to use xsltc -->
+	       <param name="sysprop.transfact"
+	              value="org.apache.xalan.xsltc.trax.TransformerFactoryImpl" />
+	    </antcall>
+	    <property name="scan.outputDir" value="${conf.xsltc.outputDir}"/>
+	    <antcall target="scan" />
+
+	    <echo message=" [minitest] COMPLETED, running the conf.xsltc tests (excluding the xsltc compile tests)" />
+	    <echo message=""/>
+
+		<mkdir dir="results-xsltc-compile-tests"/>
+	        
+	    <xsltcTestsTask inputDir="tests/xsltc/attribset" 
+	                    resultDir="results-xsltc-compile-tests" 
+	                    bootclasspathref="boot.class.path"/>
+
+	    <echo message=""/>
+	    <echo message=" [minitest] CONGRATULATIONS! The xsltc compile tests have passed!" />
+	    <echo message=" [minitest] See details of the xsltc compile tests results, at results-xsltc-compile-tests/actual_test_results.xml" />                        
+	</target>
 
     <target name="perf.xsltc" description="Run TestletDriver over the perf tree using xsltc">
         <!-- Set the default conformance test driver, user may override -->

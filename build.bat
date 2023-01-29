@@ -49,8 +49,10 @@ if exist "%_ANT_HOME%\tools\ant.jar" (
 
 set _CLASSPATH=%_CLASSPATH%;%_ANT_JARS%
 
+set XERCES_ENDORSED_DIR_PATH=lib\endorsed
+
 @echo on
-"%_JAVACMD%" -mx1024m -classpath "%_CLASSPATH%" org.apache.tools.ant.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
+"%_JAVACMD%" -mx1024m -Djava.endorsed.dirs=%XERCES_ENDORSED_DIR_PATH% -classpath "%_CLASSPATH%" org.apache.tools.ant.Main %1 %2 %3 %4 %5 %6 %7 %8 %9
 @echo off
 
 goto end

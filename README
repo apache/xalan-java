@@ -79,7 +79,7 @@ the file testxsl.jar that acts as main XalanJ test driver, within folder xalan-t
 
 4) Run the necessary XalanJ tests as follows,
 
-The tests described below within points 4.1, 4.2, 4.3 and 4.4 need to be run from folder xalan-test. 
+The tests described below within points 4.1, 4.2, 4.3 need to be run from folder xalan-test. 
 
 4.1 Run the ant target "smoketest", using following two commands in sequence shown below
 
@@ -101,29 +101,17 @@ The output of the command "build api" should be following, and without any other
 apitest-pass:
      [echo]  [minitest] CONGRATULATIONS! The api tests passed!     
 
-4.3 Run the ant target "smoketest.xsltc", using following three commands in sequence shown below 
+4.3 Run the ant target "conf.xsltc", using the following command 
 
 build conf.xsltc
 
-build accept.xsltc
+The output of the above command, should have following at the end of build results,
 
-build smoketest.xsltc
+[minitest] COMPLETED, running the conf.xsltc tests (excluding the xsltc compile tests)
 
-The output of the command "build smoketest.xsltc" should be following, and without any other build errors,
-
-smoketest.xsltc-pass:
-     [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
-
-4.4 Run the ant target "smoketest.dev", using following command
-
-build smoketest.dev
-
-The output of the command "build smoketest.dev" should be following, and without any other build errors,
-
-smoketest-pass:
-     [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
+[minitest] CONGRATULATIONS! The xsltc compile tests have passed!
      
-4.5 From folder xalan-test/tests/xsltc_integer_truncation, run the batch file 
+4.4 From folder xalan-test/tests/xsltc_integer_truncation, run the batch file 
 xsltc_int_truncation_test.bat (provided for Windows platform) to run test for, 
 "XalanJ integer truncation bug fix, when using XSLTC".    
      
