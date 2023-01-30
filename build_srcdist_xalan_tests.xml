@@ -109,7 +109,8 @@ file build.xml provided by XalanJ xalan-test git repos.
     <property name="parserjar" value="${xalan.lib.dir}/xercesImpl.jar"/>
 
     <!-- JTidy is used by the XSLTC comparator -->
-    <property name="jtidy.jar" value="${test.tools.dir}/Tidy.jar"/>
+	<!--<property name="jtidy.jar" value="${test.tools.dir}/Tidy.jar"/>-->
+	<property name="jtidy.jar" value="${test.tools.dir}/jtidy-r938.jar"/>
     
     <!-- The Mozilla Rhino jar is needed, to run Javascript extensions tests -->
     <property name="js.jar" value="${xalan.relpath}/lib/rhino-1.7.14.jar"/>
