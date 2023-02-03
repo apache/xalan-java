@@ -105,11 +105,9 @@ apitest-pass:
 
 build conf.xsltc
 
-The output of the above command, should have following at the end of build results,
+The output of the above command, should be following and without any other build errors,
 
-[minitest] COMPLETED, running the conf.xsltc tests (excluding the xsltc compile tests)
-
-[minitest] CONGRATULATIONS! The xsltc compile tests have passed!
+[echo]  [minitest] CONGRATULATIONS! The conf.xsltc tests passed!
      
 4.4 From folder xalan-test/tests/xsltc_integer_truncation, run the batch file 
 xsltc_int_truncation_test.bat (provided for Windows platform) to run test for, 
