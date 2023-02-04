@@ -623,13 +623,13 @@ file build.xml provided by XalanJ xalan-test git repos.
     </target>
 
 
-    <!-- ================================================================== -->
-    <!-- Run tests: specific named API tests                              -->
-    <!-- ================================================================== -->
-	<target name="api" description="Run specific API tests"
-	        depends="init.test">
-	    <!-- Note no default is set; also testClass is not prefixed! -->
-	    <!--<echo message="Executing Xalan api test: ${testClass}" />-->
+	<!-- Run specific named API tests.
+	    
+	     What tests this build target runs, are defined within test.properties file
+	     (please see the section, 'Various tests, that run for ant build.xml's "apitest" 
+	      target' within ./test.properties file).
+	-->
+	<target name="apitest" description="Run specific API tests" depends="init.test">
 	    <property name="testClass" value="org.apache.qetest.xsl.XSLTestHarness" />
 	    <property name="testType" value="api." />
 	        
@@ -639,45 +639,32 @@ file build.xml provided by XalanJ xalan-test git repos.
 	       <param name="xalantest.classpathref" value="api.class.path" />
 	    </antcall>
 
-	    <condition property="apitest-file-check-passed">
-	       <and>
-	          <available file="results-api/Pass-DOMResultAPITest.xml" />
-	          <available file="results-api/Pass-DOMSourceAPITest.xml" />
-	          <available file="results-api/Pass-DTMDumpTest.xml" />
-	          <available file="results-api/Pass-EmbeddedStylesheetTest.xml" />
-	          <available file="results-api/Pass-ErrorListenerAPITest.xml" />
-	          <available file="results-api/Pass-ErrorListenerTest.xml" />
-	          <available file="results-api/Pass-FactoryFeatureTest.xml" />
-	          <available file="results-api/Pass-OutputPropertiesTest.xml" />
-	          <available file="results-api/Pass-OutputSettingsTest.xml" />
-	          <available file="results-api/Pass-ParameterTest.xml" />
-	          <available file="results-api/Pass-PrefixResolverAPITest.xml" />
-	          <available file="results-api/Pass-ProgrammaticDOMTest.xml" />
-	          <available file="results-api/Pass-SAXResultAPITest.xml" />
-	          <available file="results-api/Pass-SAXSourceAPITest.xml" />
-	          <available file="results-api/Pass-SAXTransformerFactoryAPITest.xml" />
-	          <available file="results-api/Pass-SerializedStylesheetTest.xml" />
-	          <available file="results-api/Pass-StreamResultAPITest.xml" />
-	          <available file="results-api/Pass-StreamSourceAPITest.xml" />
-	          <available file="results-api/Pass-SystemIdImpInclTest.xml" />
-	          <available file="results-api/Pass-SystemIDResolverAPITest.xml" />
-	          <available file="results-api/Pass-SystemIdTest.xml" />
-	          <available file="results-api/Pass-TemplatesAPITest.xml" />
-	          <available file="results-api/Pass-TemplatesHandlerAPITest.xml" />
-	          <available file="results-api/Pass-TestDTM.xml" />
-	          <available file="results-api/Pass-TestDTMIter.xml" />
-	          <available file="results-api/Pass-TestDTMTrav.xml" />
-	          <available file="results-api/Pass-TestXPathAPI.xml" />
-	          <available file="results-api/Pass-TraceListenerTest.xml" />
-	          <available file="results-api/Pass-TransformerAPITest.xml" />
-	          <available file="results-api/Pass-TransformerFactoryAPITest.xml" />
-	          <available file="results-api/Pass-TransformerHandlerAPITest.xml" />
-	          <available file="results-api/Pass-TransformerHandlerTest.xml" />
-	          <available file="results-api/Pass-TransformStateAPITest.xml" />
-	          <available file="results-api/Pass-TransformStateTest.xml" />
-	          <available file="results-api/Pass-URIResolverTest.xml" />
-	       </and>
-	    </condition>
+		<condition property="apitest-file-check-passed">
+		    <and>
+		       <available file="results-api/Pass-DOMResultAPITest.xml" />
+		       <available file="results-api/Pass-DOMSourceAPITest.xml" />
+		       <available file="results-api/Pass-DTMDumpTest.xml" />
+		       <available file="results-api/Pass-EmbeddedStylesheetTest.xml" />
+		       <available file="results-api/Pass-ErrorListenerAPITest.xml" />
+		       <available file="results-api/Pass-ErrorListenerTest.xml" />               
+		       <available file="results-api/Pass-SAXResultAPITest.xml" />
+		       <available file="results-api/Pass-SAXSourceAPITest.xml" />
+		       <available file="results-api/Pass-SAXTransformerFactoryAPITest.xml" />
+		       <available file="results-api/Pass-SerializedStylesheetTest.xml" />                              
+		       <available file="results-api/Pass-SystemIDResolverAPITest.xml" />               
+		       <available file="results-api/Pass-TemplatesHandlerAPITest.xml" />
+		       <available file="results-api/Pass-TestDTM.xml" />
+		       <available file="results-api/Pass-TestDTMIter.xml" />
+		       <available file="results-api/Pass-TestDTMTrav.xml" />
+		       <available file="results-api/Pass-TestXPathAPI.xml" />
+		       <available file="results-api/Pass-TraceListenerTest.xml" />               
+		       <available file="results-api/Pass-TransformerFactoryAPITest.xml" />
+		       <available file="results-api/Pass-TransformerHandlerAPITest.xml" />
+		       <available file="results-api/Pass-TransformerHandlerTest.xml" />
+		       <available file="results-api/Pass-TransformStateAPITest.xml" />               
+		       <available file="results-api/Pass-URIResolverTest.xml" />
+		    </and>
+		</condition>
 
 	    <antcall target="scan">
 	       <!--<param name="scan.outputDir" value="${api.outputDir}"/>-->
@@ -1713,18 +1700,19 @@ file build.xml provided by XalanJ xalan-test git repos.
 	    <property name="scan.outputDir" value="${conf.xsltc.outputDir}"/>
 	    <antcall target="scan" />
 
-	    <echo message=" [minitest] COMPLETED, running the conf.xsltc tests (excluding the xsltc compile tests)" />
-	    <echo message=""/>
-
-		<mkdir dir="results-xsltc-compile-tests"/>
+		<mkdir dir="results-xsltc-compile-verification-tests"/>
 	        
 	    <xsltcTestsTask inputDir="tests/xsltc/attribset" 
-	                    resultDir="results-xsltc-compile-tests" 
+	    	            resultDir="results-xsltc-compile-verification-tests" 
 	                    bootclasspathref="boot.class.path"/>
 
 	    <echo message=""/>
-	    <echo message=" [minitest] CONGRATULATIONS! The xsltc compile tests have passed!" />
-	    <echo message=" [minitest] See details of the xsltc compile tests results, at results-xsltc-compile-tests/actual_test_results.xml" />                        
+		<echo message=" [minitest] Completed, running the 'xsltc compilation error verification' tests, and these have passed" />
+		<echo message=" [minitest] See details of the 'xsltc compilation error verification' test results, at results-xsltc-compile-verification-tests/actual_test_results.xml" />
+		
+	    <echo message=""/>
+		
+		<echo message=" [minitest] CONGRATULATIONS! The conf.xsltc tests passed!" />		
 	</target>
 
     <target name="perf.xsltc" description="Run TestletDriver over the perf tree using xsltc">

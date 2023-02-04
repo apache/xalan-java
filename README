@@ -87,25 +87,25 @@ build extensions.classes
 
 build smoketest
 
-The output of the command "build smoketest" should be following, and without any other build errors,
+The final result of the command "build smoketest" should be following,
 
 smoketest-pass:
      [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
      
-4.2 Run the ant target "api", using following command
+4.2 Run the ant target "apitest", using following command
 
-build api
+build apitest
 
-The output of the command "build api" should be following, and without any other build errors,
+The final result of the command "build apitest" should be following,
 
-apitest-pass:
+apitest-pass-file-check:
      [echo]  [minitest] CONGRATULATIONS! The api tests passed!     
 
 4.3 Run the ant target "conf.xsltc", using the following command 
 
 build conf.xsltc
 
-The output of the above command, should be following and without any other build errors,
+The final result of the command "build conf.xsltc" should be following,
 
 [echo]  [minitest] CONGRATULATIONS! The conf.xsltc tests passed!
      
