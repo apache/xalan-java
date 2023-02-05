@@ -38,7 +38,7 @@
   <anchor name="notes_latest"/>
   <s2 title="Release notes for &xslt4j; 2.7.3">
     <p>
-      &xslt4j; 2.7.3 was released in January 2023.
+      &xslt4j; 2.7.3 was released in February 2023.
     </p>
     <s3 title="Java 8 requirement">
        This XalanJ release, requires users to use Java minimum version 8 to use XalanJ.
