@@ -1,12 +1,11 @@
 #!/bin/sh
 #
 #=========================================================================
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
+# Copyright 2001-2023 The Apache Software Foundation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 #
 #     http://www.apache.org/licenses/LICENSE-2.0
 #
@@ -17,57 +16,75 @@
 # limitations under the License.
 #=========================================================================
 #
-#	Name:   build.sh Build Xalan-J 2.x using Ant
-#	Author: Shane Curcuru
+#	Name:   build.sh
+#	Author: Joe Kesselman
+#		Fresh port from Mukul Gandhi's revised build.bat.
+#		WARNING: This currently does not include the hooks needed
+#		to make the script compatable with cygwin (unix/Linux shell
+#		and commands ported to run under Windows). See 
+#		deprecated_build.sh to see how we handled the cygwin
+#		syntax differences back in 2001. These days, Windows users
+#		are more likely to use WSL, which simplifies matters.
 
-# Alternatively, you can just call "ant" 
+#	See:	build.xml
 
-echo "Xalan-J 2.x Build"
-echo "-------------"
+#	Setup:
+#          1) You must set JAVA_HOME, for example,
+#	      $ export JAVA_HOME=/etc/alternatives/java_sdk
 
-_JAVACMD=$JAVA_HOME/bin/java
-if [ "$JAVA_HOME" = "" ] ; then
-    echo "Warning: JAVA_HOME environment variable is not set."
-    _JAVACMD=java
+#          2) You can set ANT_HOME if you use your own Ant install, for example,
+#	      $ export ANT_HOME=/usr/share/ant
+
+echo
+echo Xalan-J test automation build
+echo -----------------------------
+
+if [ "$1" = "-h" ]; then 
+    echo build.sh - executes Xalan Java-based test automation
+    echo   Usage:   build [target] [-D options]
+    echo   Example: build api -DtestClass=TransformerAPITest -Dqetest.loggingLevel=30
+    echo
+    echo You MUST export the JAVA_HOME environment variable to point to the JDK
+    echo You CAN export ANT_HOME environment variable if you use your own Ant install
+
+    exit 1
 fi
 
-# Default locations of jars we depend on to run Ant on our build.xml file
-if [ "$ANT_HOME" = "" ] ; then
+if [ "$JAVA_HOME" = "" ]; then 
+    echo Warning: JAVA_HOME environment variable is not exported
+    echo You may have meant to set it to $(ls -l /etc/alternatives/java_sdk | sed -e 's/.* -> \(.*\)/\1/')
+    exit 1
+fi
+
+if [-f "$JAVA_HOME/lib/tools.jar" ]; then
+    CLASSPATH=$CLASSPATH:$JAVA_HOME/lib/tools.jar
+fi
+
+JAVACMD=$JAVA_HOME/bin/java
+
+CLASSPATH=$CLASSPATH:$JAVA_HOME/lib/tools.jar
+
+# Since Linux has scoped environments, we don't need explicit temporary vars.
+# Default is to use a copy of ant bundled with xalan-java.
+if [ "$ANT_HOME"=="" ]; then 
     ANT_HOME=.
 fi
-if [ "$ANT_JAR" = "" ] ; then
-    ANT_JAR=./tools/ant.jar
-fi
-if [ "$PARSER_JAR" = "" ] ; then
-    PARSER_JAR=./lib/endorsed/xercesImpl.jar
-fi
 
-if [ "$XML_APIS_JAR" = "" ] ; then
-    XML_APIS_JAR=./lib/endorsed/xml-apis.jar
+# Check user's ANT_HOME to make sure it actually has what we need
+if [ -f "$ANT_HOME/tools/ant.jar" ]; then
+    ANT_JARS=$ANT_HOME/tools/ant.jar
+else
+    ANT_JARS=$ANT_HOME/lib/ant.jar:$ANT_HOME/lib/ant-launcher.jar
 fi
 
-# Use _underscore prefix to not conflict with user's settings
-# Default to UNIX-style pathing
-CLPATHSEP=:
-# if we're on a Windows box make it ;
-uname | grep WIN && CLPATHSEP=\;
-_CLASSPATH="$ANT_JAR${CLPATHSEP}$XML_APIS_JAR${CLPATHSEP}$PARSER_JAR${CLPATHSEP}$CLASSPATH"
+CLASSPATH=$CLASSPATH:$ANT_JARS
 
-# Attempt to automatically add system classes to _CLASSPATH
-if [ -f $JAVA_HOME/lib/tools.jar ] ; then
-  _CLASSPATH=${_CLASSPATH}${CLPATHSEP}${JAVA_HOME}/lib/tools.jar
-fi
+XERCES_ENDORSED_DIR_PATH=lib/endorsed
 
-if [ -f $JAVA_HOME/lib/classes.zip ] ; then
-  _CLASSPATH=${_CLASSPATH}${CLPATHSEP}${JAVA_HOME}/lib/classes.zip
-fi
+XALAN_BUILD_DIR_PATH=../xalan-java/build:../build
 
+# Reminder: Note $* versus $@ distinction
+echo Running:$JAVACMD  -mx1024m -Djava.endorsed.dirs=$XERCES_ENDORSED_DIR_PATH -classpath "$CLASSPATH" org.apache.tools.ant.Main "$@"
+$JAVACMD  -mx1024m -Djava.endorsed.dirs=$XERCES_ENDORSED_DIR_PATH -classpath "$CLASSPATH" org.apache.tools.ant.Main "$@"
 
-echo "Starting Ant with targets: $@"
-echo "        ...with classpath: $_CLASSPATH"
-
-"$_JAVACMD" $JAVA_OPTS -Dant.home=$ANT_HOME -classpath "$_CLASSPATH" org.apache.tools.ant.Main $@
-
-
-
-
+echo "build.sh complete!"

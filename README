@@ -41,7 +41,7 @@ This creates two folders: xalan-java and xalan-test. These folders need to be pa
 each other, to be able to follow the XalanJ build and tests steps as described in this document,
 for making a XalanJ release for distribution.
 
-2) Set JAVA_HOME and ANT_HOME environment variables, for example:
+2) Set JAVA_HOME and ANT_HOME environment variables, for example on Windows:
 
 set JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-8.0.352.8-hotspot\
 

@@ -19,11 +19,13 @@ rem ==========================================================================
 rem
 rem     build.bat: Build Xalan-J 2.x using Ant
 rem     Author: XalanJ team
- 
+rem 
 rem     Usage: build [ant-options] [targets]
+rem
 rem     Setup:
-rem         - you must set JAVA_HOME
-rem         - you can set ANT_HOME if you use your own Ant install
+rem        1) You must set JAVA_HOME
+rem
+rem        2) You can set ANT_HOME if you use your own Ant install
 
 echo.
 echo Xalan-J 2.x Build
