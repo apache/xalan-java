@@ -38,22 +38,25 @@
   <anchor name="notes_latest"/>
   <s2 title="Release notes for &xslt4j; 2.7.3">
     <p>
-      &xslt4j; 2.7.3 was released in February 2023.
+      &xslt4j; 2.7.3 was released in April 2023.
     </p>
     <s3 title="Java 8 requirement">
-       This XalanJ release, requires users to use Java minimum version 8 to use XalanJ.
+       This XalanJ release, requires users to use Java minimum version 8 for using XalanJ's XSLT 1.0 and 
+       XPath 1.0 processors.
     </s3>    
     <s3 title="Fix for CVE-2022-34169 An integer truncation issue when processing malicious XSLT stylesheets">
        This issue was fixed within XalanJ's XSLTC processor. This XalanJ issue, when present causes following problems:
        Malicious XSLT stylesheets may be written, which could result in XalanJ invalid translet Java byte code to be produced 
-       by XalanJ XSLTC processor.
+       by XalanJ XSLTC processor. The XalanJ translet is a compiled representation, of an XSLT transformation.
     </s3>    
     <s3 title="Upgrade to Apache Commons BCEL 6.7.0">
        This XalanJ release, contains upgraded version of Apache Commons BCEL library [Gary Gregory].
     </s3>
     <s3 title="Enhancements for, performing XalanJ build and running of XalanJ tests from source distribution">
        The XalanJ users, can now make XalanJ builds and perform XalanJ tests from the XalanJ source 
-       distribution [Gary Gregory, Joseph Kessselman, Mukul Gandhi].
+       distribution. The XalanJ build scripts for the implementation and the tests, both for the Windows and 
+       Linux platforms, were enhanced to support building XalanJ with JDK 1.8. [Gary Gregory, Joseph Kessselman, 
+       Mukul Gandhi]
     </s3>
     <s3 title="Upgrade to Xerces-J 2.12.2">
        This XalanJ release, contains upgraded versions of <code>xercesImpl.jar</code>
