@@ -109,13 +109,17 @@ The final result of the command "build conf.xsltc" should be following,
 
 [echo]  [minitest] CONGRATULATIONS! The conf.xsltc tests passed!
 
-The XalanJ XSLTC processor is known to have certain issues, as summarized by the following jira tickets, 
-for the respective mentioned XalanJ test cases. These XSLT transformation issues, do not exist on the
-XalanJ interpretive processor,
+The XalanJ XSLTC processor, producing compiled translets, is known to have certain issues 
+as summarized by the following jira tickets, for the respective mentioned XalanJ conf.xsltc 
+test cases as mentioned below (users shall currently see, these xalanj test cases as failing, 
+within the test build conf.xsltc's output).
+
 1) output63         https://issues.apache.org/jira/browse/XALANJ-2642
 2) idkey49          https://issues.apache.org/jira/browse/XALANJ-2640
 3) math111          https://issues.apache.org/jira/browse/XALANJ-2641
 4) whitespace35     https://issues.apache.org/jira/browse/XALANJ-2643
+
+These XSLT transformation issues, do not exist with the XalanJ interpretive processor.
      
 4.4 From folder xalan-test/tests/xsltc_integer_truncation, run the batch file 
 xsltc_int_truncation_test.bat (provided for Windows platform) to run test for, 
