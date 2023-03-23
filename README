@@ -121,7 +121,7 @@ within the test build conf.xsltc's output).
 
 These XSLT transformation issues, do not exist with the XalanJ interpretive processor.
      
-4.4 From folder xalan-test/tests/2.7.3_release, run the batch file 2.7.3_release.bat.bat (provided for 
+4.4 From folder xalan-test/tests/2.7.3_release, run the batch file 2.7.3_release.bat (provided for 
 Windows platform) to run certain tests, specific to XalanJ 2.7.3 and higher versions.
 
 The final result for all these tests (point 4.4) to be considered pass, should be like following,
