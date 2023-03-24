@@ -129,4 +129,5 @@ Congratulations! The test passed!
 jira_xalanj_2623.out: 5 ms
 jira_xalanj_2623.out: 5 ms
 
-User may read the batch file 2.7.3_release.bat, to know more about these tests (i.e, point 4.4). 
+User may read information within the batch file 2.7.3_release.bat, to know more about these tests 
+(i.e, point 4.4). 

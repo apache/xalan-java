@@ -284,7 +284,7 @@ $Id$
   <patternset id="src-distro">
     <include name="${dist.file}/LICENSE.txt"/>
     <include name="${dist.file}/NOTICE.txt"/>      
-    <include name="${dist.file}/build.*"/>
+  	<include name="${dist.file}/*build.*"/>
     <include name="${dist.file}/commits.xml"/>
     <include name="${dist.file}/KEYS"/>
     <include name="${dist.file}/readme.html"/>
@@ -1382,8 +1382,8 @@ $Id$
   	<antcall target="xalan-tests-create-for-src-distro"/>
 
     <copy todir="${dist.dir}">
-      <fileset dir="." includes="readme.html,KEYS,build.xml,build.sh,build.bat,commits.xml,
-                                 LICENSE.txt,NOTICE.txt"/>      
+      <fileset dir="." includes="readme.html,KEYS,build.xml,build.sh,deprecated_build.sh,build.bat,
+      	                         commits.xml,LICENSE.txt,NOTICE.txt"/>      
     </copy>
   </target>
 	
