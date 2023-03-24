@@ -52,7 +52,7 @@ fi
 
 if [ "$JAVA_HOME" = "" ]; then 
     echo Warning: JAVA_HOME environment variable is not exported
-    echo You may have meant to set it to $(ls -l /etc/alternatives/java_sdk | sed -e 's/.* -> \(.*\)/\1/')
+    echo You may have meant to set it to /etc/alternatives/java_sdk
     exit 1
 fi
 
