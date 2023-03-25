@@ -121,13 +121,14 @@ within the test build conf.xsltc's output).
 
 These XSLT transformation issues, do not exist with the XalanJ interpretive processor.
      
-4.4 From folder xalan-test/tests/2.7.3_release, run the batch file 2.7.3_release.bat (provided for 
-Windows platform) to run certain tests, specific to XalanJ 2.7.3 and higher versions.
+4.4 From folder xalan-test/tests/2.7.3_release, run the batch file 2.7.3_release.bat (for Windows) or 
+shell script 2.7.3_release.sh (for Linux) to run certain tests, specific to XalanJ 2.7.3 and higher versions.
 
-The final result of running this tests batch file (point 4.4), for these test's success should be following,
+The final result of running this tests batch file/shell script (point 4.4), for these test's success should 
+be following,
 The xalanj integer truncation bug fix test passed!
 The test case passed [xalan_interpretive : jira_xalanj_2623]!
 The test case passed [xalan_xsltc : jira_xalanj_2623]!
 
-Users may read information within the batch file 2.7.3_release.bat, to know more about these tests 
-(i.e, point 4.4). 
+Users may read information within the batch file 2.7.3_release.bat or shell script 2.7.3_release.sh, to know 
+more about these tests (i.e, point 4.4). 
