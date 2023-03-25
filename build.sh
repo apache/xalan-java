@@ -56,7 +56,7 @@ if [ "$JAVA_HOME" = "" ]; then
     exit 1
 fi
 
-if [-f "$JAVA_HOME/lib/tools.jar" ]; then
+if [ -f "$JAVA_HOME/lib/tools.jar" ]; then
     CLASSPATH=$CLASSPATH:$JAVA_HOME/lib/tools.jar
 fi
 
@@ -66,7 +66,7 @@ CLASSPATH=$CLASSPATH:$JAVA_HOME/lib/tools.jar
 
 # Since Linux has scoped environments, we don't need explicit temporary vars.
 # Default is to use a copy of ant bundled with xalan-java.
-if [ "$ANT_HOME"=="" ]; then 
+if [ "$ANT_HOME" = "" ]; then 
     ANT_HOME=.
 fi
 
