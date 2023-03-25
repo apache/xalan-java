@@ -128,6 +128,8 @@ shell script 2.7.3_release.sh (for Linux) to run certain tests, specific to Xala
 The final result of running this tests batch file/shell script (point 4.4), for these test's success should 
 be following,
 The xalanj integer truncation bug fix test passed!
+The test case passed [xalan_interpretive : jira_xalanj_2584]!
+The test case passed [xalan_xsltc : jira_xalanj_2584]!
 The test case passed [xalan_interpretive : jira_xalanj_2623]!
 The test case passed [xalan_xsltc : jira_xalanj_2623]!
 
