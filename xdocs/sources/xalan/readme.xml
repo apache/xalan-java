@@ -46,7 +46,7 @@
     <s3 title="Fix for CVE-2022-34169 An integer truncation issue when processing malicious XSLT stylesheets">
        This issue was fixed within XalanJ's XSLTC processor. This XalanJ issue, when present causes following problems:
        Malicious XSLT stylesheets may be written, which could result in XalanJ invalid translet Java byte code to be 
-       produced by XalanJ XSLTC processor. The XalanJ translet is a compiled representation, of an XSLT 
+       produced by XalanJ XSLTC processor. The XalanJ translet is a Java byte code compiled representation, of an XSLT 
        transformation.
     </s3>    
     <s3 title="Upgrade to Apache Commons BCEL 6.7.0">
