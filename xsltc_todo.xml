@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+<todo project="DTM Support for XSLTC">
+  <devs>
+    <person name="Tom Amiro" email="Tom.Amiro@Sun.COM" id="TA"
+            expertise="testing">
+      Testing.
+    </person>
+    <person name="Gordon R. Chiu" email="grchiu@ca.ibm.com" id="GC"
+            expertise="code">
+      Developer on Interpretive Xalan and XSLTC
+    </person>
+    <person name="Igor Hersht" email="igorh@ca.ibm.com" id="IH"
+            expertise="code">
+      Developer on Interpretive Xalan and XSLTC
+    </person>
+    <person name="Morris Kwan" email="mkwan@ca.ibm.com" id="MK"
+            expertise="code">
+      Developer on Interpretive Xalan and XSLTC
+    </person>
+    <person name="G. Todd Miller" email="Glenn.Miller@Sun.COM" id="TM"
+            expertise="code">
+      Developer - key contributor on TrAX.
+    </person>
+    <person name="Santiago Pericas-Geertsen" email="santiago@cs.bu.edu" id="SP" 
+            expertise="code">
+      Developer - key contributor on compilation strategy.
+    </person>
+    <person name="Ilene Seelemann" email="ilene@ca.ibm.com" id="IS"
+            expertise="code">
+      Developer on Interpretive Xalan and XSLTC
+    </person>
+    <person name="Henry Zongaro" email="zongaro@ca.ibm.com" id="HZ"
+            expertise="code">
+      Developer on Interpretive Xalan and XSLTC
+    </person>
+    <person name="Your Name Here" email="you@example.org" id="unassigned"
+            expertise="code">
+      This could be you!
+    </person>
+    <person name="Jacek Ambroziak" email="jacek_ambroziak@yahoo.com" id="JA"
+           expertise="code" status='emeritus'>
+      Inventor, architect, former lead developer and evangelist.
+    </person>
+    <person name="Morten J&#216;rgensen" email="morten@xml.apache.org" id="MJ"
+            expertise="code, doc" status='emeritus'>
+      Former lead developer - key contributor on design documentation, ID/Keys,
+      performance, JAXP.
+   </person>
+  </devs>
+
+  <actions>
+    <action category="samples" who="HZ">
+       Change samples to no longer use the XSLTC Native API.
+    </action>
+    <action category="test" who="HZ">
+       Change test harness to no longer use XSLTC Native API with jar.xsltc
+       target.
+    </action>
+    <action category="performance" who="MK">
+       Investigate performance of SuballocatedIntVector
+    </action>
+    <action category="performance" who="MK">
+       Enable StepPattern[last()] optimization
+    </action>
+    <action category="packaging" who="MK">
+       Enable building stand-alone versions of XSLTC and interpretive Xalan.
+    </action>
+    <action category="clean-up" who="HZ">
+       Drop MultiDOM(?) class
+    </action>
+    <action category="clean-up" who="HZ">
+       Eliminate uses of DTM.ROOTNODE value; it was dropped on MAIN branch
+    </action>
+    <action category="clean-up" who="HZ">
+       Keep XSLTC_DTM up-to-date with changes in HEAD
+    </action>
+    <action category="documentation" who="HZ">
+       Update XSLTC design documentation
+    </action>
+  </actions>
+
+  <completed>
+    <action category="feature" who="MK">
+       Add support for incremental building of the DTM
+    </action>
+    <action category="feature" who="HZ">
+       Fix (or abandon?) DOMImpl and SAXImpl readExternal() and writeExternal()
+       methods
+    </action>
+    <action category="documentation" who="HZ">
+       Update documentation to remove references to XSLTC Native API
+    </action>
+    <action category="documentation" who="HZ">
+       Update documentation to describe new build procedures, how to select
+       right TransformerFactory, etc.
+    </action>
+    <action category="clean-up, performance" who="MK">
+       Reconcile DTM handling of whitespace with XSLTC DOM handling.
+       Might improve performance, as well as simplifying code.
+    </action>
+  </completed>
+</todo>

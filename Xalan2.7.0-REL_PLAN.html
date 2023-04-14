@@ -1,0 +1,180 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Xerces 2.7.0 plan</TITLE>
+<META http-equiv=Content-Type content="text/html; charset=iso-8859-1">
+<STYLE type=text/css>BODY {
+	MARGIN: 2em 1em 2em 70px; COLOR: black; FONT-FAMILY: New Times Roman, serif; BACKGROUND-COLOR: white
+}
+</STYLE>
+
+<META content="MSHTML 6.00.2800.1226" name=GENERATOR></HEAD>
+<BODY>
+<H1>Xalan 2.7.0 Plan</H1>
+<P><B>Features:</B> 
+<UL>
+  <LI>JAXP 1.3 support</LI>
+  <LI>XML 1.1 support for stylesheets that are XML 1.1 documents</LI>
+  <LI>XML 1.1 support for XML documents being transformed</LI>
+  <LI>Serializer API to set the end of line sequence.</LI>
+  <LI>Other misc. features and improvements (time permitting)</LI>
+</UL>
+
+<P>
+<B>Target DCUT (code complete) date: July 28th, 2005 </B>
+</P>
+<P>
+<B>Target release date: Aug 4th, 2005 </B>
+</P>
+
+<H3>Development line items </H3>
+<TABLE border=2>
+  <TBODY>
+  <TR>
+    <TH style="TEXT-ALIGN: left">Line item </TH>
+    <TH style="TEXT-ALIGN: left">Volunteer </TH>
+    <TH style="TEXT-ALIGN: left">Sizing </TH>
+    <TH style="TEXT-ALIGN: left">Timeframe </TH>
+    <TH style="TEXT-ALIGN: left">Status </TH>
+  </TR>
+
+  <TR>
+    <TD><B>JAXP 1.3 support</B></TD>
+    <TD></TD>
+    <TD></TD>
+    <TD></TD>
+    <TD></TD>
+  </TR>  
+    <TR>
+    <TD>DOMResult nextSibling support (XALANJ-2122)</TD>
+    <TD>Morris Kwan</TD>
+    <TD>.</TD>
+    <TD>May 19, 2005 to May 20, 2005</TD>
+    <TD>Review needed</TD>
+  </TR> 
+    <TR>
+    <TD>messages (XALANJ-2123)</TD>
+    <TD>Morris Kwan</TD>
+    <TD>.</TD>
+    <TD>May 19, 2005 to May 31, 2005</TD>
+    <TD>Review needed</TD>
+  </TR> 
+    <TR>
+    <TD>Documentation update (XALANJ-2124)</TD>
+    <TD>Morris Kwan</TD>
+    <TD>.</TD>
+    <TD>May 19, 2005 to June 15, 2005</TD>
+    <TD>Review needed</TD>
+  </TR> 
+    <TR>
+    <TD>XPath API samples (XALANJ-2125)</TD>
+    <TD>Morris Kwan</TD>
+    <TD>.</TD>
+    <TD>May 19, 2005 to May 24, 2005</TD>
+    <TD>Review needed</TD>
+  </TR>   
+    <TR>
+    <TD>XPathFunctionResolver sample (XALANJ-2126)</TD>
+    <TD>Morris Kwan</TD>
+    <TD>.</TD>
+    <TD>May 19, 2005 to May 30, 2005</TD>
+    <TD>Review needed</TD>
+  </TR>   
+    <TR>
+    <TD>ErrorListener behavior (XALANJ-2134)</TD>
+    <TD>Morris Kwan</TD>
+    <TD>.</TD>
+    <TD>May 19, 2005 to June 3, 2005</TD>
+    <TD>Review needed</TD>
+  </TR>  
+    <TR>
+    <TD>new API testcases (XALANJ-2135)</TD>
+    <TD>Morris Kwan</TD>
+    <TD>.</TD>
+    <TD>June 2, 2005 to June 6, 2005</TD>
+    <TD>Review needed</TD>
+  </TR>  
+    <TR>
+    <TD>new secure feature (XALANJ-2136)</TD>
+    <TD>Morris Kwan</TD>
+    <TD>.</TD>
+    <TD>June 2, 2005 to June 8, 2005</TD>
+    <TD>Review needed</TD>
+  </TR>    
+  <TR>
+    <TD>TransformerFactory.setFeature(String, boolean) security support</TD>
+    <TD>Morris Kwan</TD>
+    <TD>.</TD>
+    <TD>.</TD>
+    <TD>.</TD>
+  </TR> 
+  <TR>
+    <TD>Proper JDK/JRE build-time and run-time dendancies</TD>
+    <TD>Morris Kwan</TD>
+    <TD>.</TD>
+    <TD>.</TD>
+    <TD>.</TD>
+  </TR>
+  <TR>
+    <TD><B>XML 1.1 support</B></TD>
+    <TD></TD>
+    <TD></TD>
+    <TD></TD>
+    <TD></TD>
+  </TR>
+  <TR>
+    <TD>XML 1.1 stylesheets</TD>
+    <TD>Yash Talwar</TD>
+    <TD>.</TD>
+    <TD>.</TD>
+    <TD>Complete</TD>
+  </TR>
+  <TR>
+    <TD>XML 1.1 transform input docs</TD>
+    <TD>Yash Talwar</TD>
+    <TD>.</TD>
+    <TD>.</TD>
+    <TD>Complete</TD>
+  </TR>  
+  <TR>
+    <TD><B>Serializer API to set the end of line sequence</B></TD>
+    <TD></TD>
+    <TD></TD>
+    <TD></TD>
+    <TD></TD>
+  </TR>  
+  <TR>
+    <TD>API</TD>
+    <TD>Brian Minchau</TD>
+    <TD>1 pd</TD>
+    <TD>May 30, 2005</TD>
+    <TD>Complete</TD>
+  </TR>
+  <TR>
+    <TD><B>DCUT </B></TD>
+    <TD></TD>
+    <TD></TD>
+    <TD>July 28th, 2005 </TD>
+    <TD></TD>
+  </TR>
+  <TR>
+    <TD><B>Review and fix severe defects reported in Bugzilla/Jira </B></TD>
+    <TD>All</TD>
+    <TD>1 pw</TD>
+    <TD>Week of July 28th, 2005 - Aug 4, 2005 </TD>
+    <TD>.</TD>
+  </TR>
+  <TR>
+    <TD><B>Build and publish Xalan 2.7.0</B> </TD>
+    <TD></TD>
+    <TD></TD>
+    <TD>Aug 4th, 2005 </TD>
+    <TD></TD>
+  </TR> 
+</TBODY>
+</TABLE>
+<H3>Candidate features and cleanup items (if time permits) </H3>
+<UL> 
+  <LI>...
+  <LI>... </LI>
+</UL>
+</BODY>
+</HTML>

@@ -1,0 +1,137 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements. See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+Copyright 1999-2023 The Apache Software Foundation
+
+Authors:
+   Gary Gregory <ggregory@apache.org>
+   Joe Kesselman
+   Mukul Gandhi <mukulg@apache.org>
+
+This file primarily, contains instructions to the person(s) who shall be making an Apache XalanJ 
+release for distribution, along with the instructions about how to test XalanJ release before 
+recommending the release for distribution.
+
+The details mentioned within this file, may also be used, by XalanJ source distribution users to 
+build and test XalanJ from the source distribution (except that, "git clone" steps as mentioned 
+within this file, might not be required to be run by XalanJ source distribution users).
+
+(1) Steps to build the XalanJ release
+
+1) Do a git clone, of the relevant XalanJ branches:
+
+git clone --single-branch https://gitbox.apache.org/repos/asf/xalan-java.git -b xalan-j_2_7_1_maint
+
+git clone https://gitbox.apache.org/repos/asf/xalan-test.git
+
+This creates two folders: xalan-java and xalan-test. These folders need to be parallel to
+each other, to be able to follow the XalanJ build and tests steps as described in this document,
+for making a XalanJ release for distribution.
+
+2) Set JAVA_HOME and ANT_HOME environment variables, for example on Windows:
+
+set JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-8.0.352.8-hotspot\
+
+set ANT_HOME=C:\java\apache-ant-1.10.12
+
+3) Run the command, "build clean fulldist" from folder xalan-java.
+
+For XalanJ source distribution users, this command needs to be run from, the root 
+of the XalanJ source distribution folder (i.e, from the source distribution folder, 
+which contains folders "src", "tools" etc).
+
+(2) Steps to run the XalanJ tests, on XalanJ implementation
+
+Note that, for XalanJ source distribution users, XalanJ implementation shall be 
+produced (that XalanJ source distribution users, might want to test) by running 
+the build command "build clean fulldist" from the root of the XalanJ source 
+distribution folder.
+
+1) Go to the XalanJ tests repos's, local git clone folder:
+cd ..\xalan-test
+
+For XalanJ source distribution users, xalan-test folder is located at the root of the XalanJ 
+source distribution folder (i.e, parallel to folders "src", "tools" etc within the main XalanJ 
+codebase folder location), from where XalanJ source distribution users may run XalanJ 
+tests, by using the "build" script located at this folder location.
+
+2) Set JAVA_HOME and ANT_HOME environment variables, for example:
+
+set JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-8.0.352.8-hotspot\
+
+set ANT_HOME=C:\java\apache-ant-1.10.12
+
+3) Run the command "build clean jar" from folder xalan-test. This produces
+the file testxsl.jar that acts as main XalanJ test driver, within folder xalan-test/java/build.
+
+4) Run the necessary XalanJ tests as follows,
+
+The tests described below within points 4.1, 4.2, 4.3 need to be run from folder xalan-test. 
+
+4.1 Run the ant target "smoketest", using following two commands in sequence shown below
+
+build extensions.classes
+
+build smoketest
+
+The final result of the command "build smoketest" should be following,
+
+smoketest-pass:
+     [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
+     
+4.2 Run the ant target "apitest", using following command
+
+build apitest
+
+The final result of the command "build apitest" should be following,
+
+apitest-pass-file-check:
+     [echo]  [minitest] CONGRATULATIONS! The api tests passed!     
+
+4.3 Run the ant target "conf.xsltc", using the following command 
+
+build conf.xsltc
+
+The final result of the command "build conf.xsltc" should be following,
+
+[echo]  [minitest] CONGRATULATIONS! The conf.xsltc tests passed!
+
+The XalanJ XSLTC processor, producing compiled translets, is known to have certain issues 
+as summarized by the following jira tickets, for the respective mentioned XalanJ conf.xsltc 
+test cases as mentioned below (users shall currently see, these xalanj test cases as failing, 
+within the test build conf.xsltc's output).
+
+1) output63         https://issues.apache.org/jira/browse/XALANJ-2642
+2) idkey49          https://issues.apache.org/jira/browse/XALANJ-2640
+3) math111          https://issues.apache.org/jira/browse/XALANJ-2641
+4) whitespace35     https://issues.apache.org/jira/browse/XALANJ-2643
+
+These XSLT transformation issues, do not exist with the XalanJ interpretive processor.
+     
+4.4 From folder xalan-test/tests/2.7.3_release, run the batch file 2.7.3_release.bat (for Windows) or 
+shell script 2.7.3_release.sh (for Linux) to run certain tests, specific to XalanJ 2.7.3 and higher versions.
+
+The final result of running this tests batch file/shell script (point 4.4), for these test's success should 
+be following,
+The xalanj integer truncation bug fix test passed!
+The test case passed [xalan_interpretive : jira_xalanj_2584]!
+The test case passed [xalan_xsltc : jira_xalanj_2584]!
+The test case passed [xalan_interpretive : jira_xalanj_2623]!
+The test case passed [xalan_xsltc : jira_xalanj_2623]!
+
+Users may read information within the batch file 2.7.3_release.bat or shell script 2.7.3_release.sh, to know 
+more about these tests (i.e, point 4.4). 
