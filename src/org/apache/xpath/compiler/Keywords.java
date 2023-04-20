@@ -207,6 +207,12 @@ public class Keywords
   /** unparsed-entity-uri function string (XSLT). */
   public static final String FUNC_UNPARSED_ENTITY_URI_STRING =
     "unparsed-entity-uri";
+  
+  /** matches function string. */
+  public static final String FUNC_MATCHES_STRING = "matches";
+  
+  /** replace function string. */
+  public static final String FUNC_REPLACE_STRING = "replace";
 
   // Proprietary, built in functions
 

@@ -26,35 +26,35 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
 
 /**
- * Base class for functions that accept two arguments.
+ * Base class for functions that accept four arguments.
  * @xsl.usage advanced
  */
-public class Function2Args extends FunctionOneArg
+public class Function4Args extends Function3Args
 {
-    static final long serialVersionUID = 5574294996842710641L;
-
-  /** The second argument passed to the function (at index 1).
-   *  
+  private static final long serialVersionUID = 553916218361619933L;
+    
+  /** The third argument passed to the function (at index 3).
+   *
    */
-  Expression m_arg1;
+  Expression m_arg3;
 
   /**
-   * Return the second argument passed to the function (at index 1).
+   * Return the third argument passed to the function (at index 3).
    *
-   * @return An expression that represents the second argument passed to the 
+   * @return An expression that represents the fourth argument passed to the 
    *         function.
    */
-  public Expression getArg1()
+  public Expression getArg3()
   {
-    return m_arg1;
+    return m_arg3;
   }
   
   /**
    * This function is used to fixup variables from QNames to stack frame 
    * indexes at stylesheet build time.
-   * @param vars List of QNames that correspond to variables.  This list 
+   * @param vars List of QNames that correspond to variables. This list 
    * should be searched backwards for the first qualified name that 
-   * corresponds to the variable reference qname.  The position of the 
+   * corresponds to the variable reference qname. The position of the 
    * QName in the vector from the start of the vector will be its position 
    * in the stack frame (but variables above the globalsTop value will need 
    * to be offset to the current stack frame).
@@ -62,32 +62,31 @@ public class Function2Args extends FunctionOneArg
   public void fixupVariables(java.util.Vector vars, int globalsSize)
   {
     super.fixupVariables(vars, globalsSize);
-    if(null != m_arg1)
-      m_arg1.fixupVariables(vars, globalsSize);
+    if (null != m_arg3)
+       m_arg3.fixupVariables(vars, globalsSize);
   }
 
-
   /**
-   * Set an argument expression for a function.  This method is called by the 
+   * Set an argument expression for a function. This method is called by the 
    * XPath compiler.
    *
    * @param arg non-null expression that represents the argument.
    * @param argNum The argument number index.
    *
-   * @throws WrongNumberArgsException If the argNum parameter is greater than 1.
+   * @throws WrongNumberArgsException If the argNum parameter is greater than 3.
    */
   public void setArg(Expression arg, int argNum)
           throws WrongNumberArgsException
   {
-    if (argNum == 0)
+    if (argNum < 3)
       super.setArg(arg, argNum);
-    else if (1 == argNum)
+    else if (3 == argNum)
     {
-      m_arg1 = arg;
-      arg.exprSetParent(this);
+       m_arg3 = arg;
+       arg.exprSetParent(this);
     }
     else
-		  reportWrongNumberArgs();
+	   reportWrongNumberArgs();
   }
 
   /**
@@ -100,7 +99,7 @@ public class Function2Args extends FunctionOneArg
    */
   public void checkNumberArgs(int argNum) throws WrongNumberArgsException
   {
-    if (argNum != 2)
+    if (argNum != 4)
       reportWrongNumberArgs();
   }
 
@@ -111,7 +110,7 @@ public class Function2Args extends FunctionOneArg
    * @throws WrongNumberArgsException
    */
   protected void reportWrongNumberArgs() throws WrongNumberArgsException {
-      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("two", null));
+      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("four", null));
   }
   
   /**
@@ -123,17 +122,17 @@ public class Function2Args extends FunctionOneArg
    public boolean canTraverseOutsideSubtree()
    {
     return super.canTraverseOutsideSubtree() 
-    ? true : m_arg1.canTraverseOutsideSubtree();
+    ? true : m_arg3.canTraverseOutsideSubtree();
    }
    
-  class Arg1Owner implements ExpressionOwner
+  class Arg3Owner implements ExpressionOwner
   {
     /**
      * @see ExpressionOwner#getExpression()
      */
     public Expression getExpression()
     {
-      return m_arg1;
+      return m_arg3;
     }
 
 
@@ -142,8 +141,8 @@ public class Function2Args extends FunctionOneArg
      */
     public void setExpression(Expression exp)
     {
-    	exp.exprSetParent(Function2Args.this);
-    	m_arg1 = exp;
+    	exp.exprSetParent(Function4Args.this);
+    	m_arg3 = exp;
     }
   }
 
@@ -154,8 +153,8 @@ public class Function2Args extends FunctionOneArg
   public void callArgVisitors(XPathVisitor visitor)
   {
   	super.callArgVisitors(visitor);
-  	if(null != m_arg1)
-  		m_arg1.callVisitors(new Arg1Owner(), visitor);
+  	if(null != m_arg3)
+  		m_arg3.callVisitors(new Arg3Owner(), visitor);
   }
 
   /**
@@ -166,15 +165,15 @@ public class Function2Args extends FunctionOneArg
   	if(!super.deepEquals(expr))
   		return false;
   		
-  	if(null != m_arg1)
+  	if(null != m_arg3)
   	{
-  		if(null == ((Function2Args)expr).m_arg1)
+  		if(null == ((Function4Args)expr).m_arg3)
   			return false;
-  			
-  		if(!m_arg1.deepEquals(((Function2Args)expr).m_arg1))
+
+  		if(!m_arg3.deepEquals(((Function4Args)expr).m_arg3))
   			return false;
   	}
-  	else if(null != ((Function2Args)expr).m_arg1)
+  	else if (null != ((Function4Args)expr).m_arg3)
   		return false;
   		
   	return true;

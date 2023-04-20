@@ -34,7 +34,8 @@ public class FunctionOneArg extends Function implements ExpressionOwner
     static final long serialVersionUID = -5180174180765609758L;
 
   /** The first argument passed to the function (at index 0).
-   *  @serial  */
+   *
+   */
   Expression m_arg0;
 
   /**

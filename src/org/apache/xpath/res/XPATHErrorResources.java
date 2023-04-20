@@ -230,6 +230,8 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
 	 "ER_FASTSTRINGBUFFER_CANNOT_BE_NULL";
    /**  2 or 3   */
   public static final String ER_TWO_OR_THREE = "ER_TWO_OR_THREE";
+  /**  3 or 4   */
+  public static final String ER_THREE_OR_FOUR = "ER_THREE_OR_FOUR";
    /** Variable accessed before it is bound! */
   public static final String ER_VARIABLE_ACCESSED_BEFORE_BIND = 
 	 "ER_VARIABLE_ACCESSED_BEFORE_BIND";
@@ -354,6 +356,10 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   /**  str() not supported by XRTreeFragSelectWrapper   */
   public static final String ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER =
 	 "ER_STR_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER";
+  
+  public static final String ER_INVALID_REGEX_FLAGS = "ER_INVALID_REGEX_FLAGS";
+  
+  public static final String ER_INVALID_REGEX = "ER_INVALID_REGEX";
 
   // Error messages...
 
@@ -616,6 +622,9 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
 
   { ER_TWO_OR_THREE,
        "2 or 3"},
+  
+  { ER_THREE_OR_FOUR,
+       "3 or 4"},
 
   { ER_VARIABLE_ACCESSED_BEFORE_BIND,
        "Variable accessed before it is bound!"},
@@ -827,6 +836,12 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
 
   { ER_NULL_XPATH_VARIABLE_RESOLVER,
        "Attempting to set a null XPathVariableResolver:{0}#setXPathVariableResolver(null)"},
+  
+  { ER_INVALID_REGEX_FLAGS,
+       "FORX0001: Invalid regular expression flag(s) usage, with function call {0}."},
+  
+  { ER_INVALID_REGEX,
+       "FORX0002: Invalid regular expression syntax used, with function call {0}."},
 
   //END:  Definitions of error keys used  in exception messages of  JAXP 1.3 XPath API implementation
 

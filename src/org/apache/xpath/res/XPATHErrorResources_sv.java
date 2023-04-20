@@ -750,7 +750,10 @@ public static final int MAX_CODE = 108;  // this is needed to keep track of the 
   {
     ER_TWO_OR_THREE,
        "2 eller 3"},
-
+  
+  {
+    ER_THREE_OR_FOUR,
+       "3 eller 4"},
 
    /** Variable accessed before it is bound! */
   //public static final int ER_VARIABLE_ACCESSED_BEFORE_BIND = 85;

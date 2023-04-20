@@ -34,7 +34,8 @@ public class Function3Args extends Function2Args
     static final long serialVersionUID = 7915240747161506646L;
 
   /** The third argument passed to the function (at index 2).
-   *  @serial  */
+   *
+   */
   Expression m_arg2;
 
   /**
@@ -77,7 +78,6 @@ public class Function3Args extends Function2Args
   public void setArg(Expression arg, int argNum)
           throws WrongNumberArgsException
   {
-
     if (argNum < 2)
       super.setArg(arg, argNum);
     else if (2 == argNum)

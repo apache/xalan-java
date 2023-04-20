@@ -20,10 +20,9 @@
  */
 package org.apache.xpath.compiler;
 
-import org.apache.xpath.Expression;
-import org.apache.xpath.functions.Function;
 import java.util.HashMap;
 import javax.xml.transform.TransformerException;
+import org.apache.xpath.functions.Function;
 
 /**
  * The function table for XPath.
@@ -132,6 +131,12 @@ public class FunctionTable
 
   /** The 'unparsed-entity-uri()' id (XSLT). */
   public static final int FUNC_UNPARSED_ENTITY_URI = 36;
+  
+  /** The 'matches()' id. */
+  public static final int FUNC_MATCHES = 37;
+  
+  /** The 'replace()' id. */
+  public static final int FUNC_REPLACE = 38;
 
   // Proprietary
 
@@ -157,10 +162,10 @@ public class FunctionTable
   private HashMap m_functionID_customer = new HashMap();
   
   /**
-   * Number of built in functions.  Be sure to update this as
+   * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 37;
+  private static final int NUM_BUILT_IN_FUNCS = 39;
 
   /**
    * Number of built-in functions that may be added.
@@ -226,6 +231,10 @@ public class FunctionTable
       org.apache.xpath.functions.FuncDoclocation.class;
     m_functions[FUNC_UNPARSED_ENTITY_URI] =
       org.apache.xpath.functions.FuncUnparsedEntityURI.class;
+    m_functions[FUNC_MATCHES] = 
+      org.apache.xpath.functions.FuncMatches.class;
+    m_functions[FUNC_REPLACE] = 
+            org.apache.xpath.functions.FuncReplace.class;
   }
 
   static{
@@ -297,6 +306,10 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_STRING_LENGTH));
           m_functionID.put(Keywords.FUNC_UNPARSED_ENTITY_URI_STRING,
                           new Integer(FunctionTable.FUNC_UNPARSED_ENTITY_URI));
+          m_functionID.put(Keywords.FUNC_MATCHES_STRING,
+                          new Integer(FunctionTable.FUNC_MATCHES));
+          m_functionID.put(Keywords.FUNC_REPLACE_STRING,
+                          new Integer(FunctionTable.FUNC_REPLACE));
           m_functionID.put(Keywords.FUNC_DOCLOCATION_STRING,
                           new Integer(FunctionTable.FUNC_DOCLOCATION));          
   }
