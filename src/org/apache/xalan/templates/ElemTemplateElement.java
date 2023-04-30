@@ -62,6 +62,12 @@ public class ElemTemplateElement extends UnImplNode
                    WhitespaceStrippingElementMatcher, XSLTVisitable
 {
     static final long serialVersionUID = 4440018597841834447L;
+    
+    // xsl:for-each-group grouping key string value
+    private String fGroupingKey;
+    
+    // xsl:for-each-group "current group" contents
+    private List<Integer> fGroupNodesDtmHandles;
 
   /**
    * Construct a template element instance.
@@ -135,6 +141,16 @@ public class ElemTemplateElement extends UnImplNode
   public void execute(
           TransformerImpl transformer)
             throws TransformerException{}
+  
+  /*
+   * Method to support, xsl:for-each-group instruction.
+   */
+  public void setForEachGroupControlInformation(String groupingKey, 
+                                                List<Integer> groupNodesDtmHandles)
+                                                   throws TransformerException {
+      this.fGroupingKey = groupingKey;
+      this.fGroupNodesDtmHandles = groupNodesDtmHandles;
+  }
 
   /**
    * Get the owning "composed" stylesheet.  This looks up the

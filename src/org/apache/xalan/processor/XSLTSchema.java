@@ -38,6 +38,7 @@ import org.apache.xalan.templates.ElemExtensionDecl;
 import org.apache.xalan.templates.ElemExtensionScript;
 import org.apache.xalan.templates.ElemFallback;
 import org.apache.xalan.templates.ElemForEach;
+import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.ElemIf;
 import org.apache.xalan.templates.ElemLiteralResult;
 import org.apache.xalan.templates.ElemMessage;
@@ -192,10 +193,16 @@ public class XSLTSchema extends XSLTElementDef
       
       
     // Required.                                       
-    // xsl:value-of, xsl:for-each, xsl:copy-of                             
+    // xsl:value-of, xsl:for-each, xsl:copy-of, xsl:for-each-group                             
     XSLTAttributeDef selectAttrRequired = new XSLTAttributeDef(null,
                                             "select",
-                                            XSLTAttributeDef.T_EXPR, true, false,XSLTAttributeDef.ERROR);
+                                            XSLTAttributeDef.T_EXPR, true, false, XSLTAttributeDef.ERROR);
+    
+    // Optional.                                       
+    // xsl:for-each-group                             
+    XSLTAttributeDef groupByAttrOpt = new XSLTAttributeDef(null,
+                                            "group-by",
+                                            XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
 
     // Optional.                                          
     // xsl:variable, xsl:param, xsl:with-param                                       
@@ -343,13 +350,13 @@ public class XSLTSchema extends XSLTElementDef
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "*",
                            XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.WARNING);
                            
-    XSLTElementDef[] templateElements = new XSLTElementDef[23];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[24];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[24];
+    XSLTElementDef[] templateElements = new XSLTElementDef[24];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[25];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[25];
     //exslt
-    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[24];
+    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[25];
     
-    XSLTElementDef[] charTemplateElements = new XSLTElementDef[15];
+    XSLTElementDef[] charTemplateElements = new XSLTElementDef[16];
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
                                      null /*alias */,
                                      templateElements /* elements */,
@@ -445,6 +452,14 @@ public class XSLTSchema extends XSLTElementDef
                                                           spaceAttr }, 
                                                new ProcessorTemplateElem(),
                                   ElemForEach.class /* class object */, true, false, true, 20, true);
+    
+    XSLTElementDef xslForEachGroup = new XSLTElementDef(this,
+                                             Constants.S_XSLNAMESPACEURL, "for-each-group",
+                                             null /*alias */, templateElementsAndSort,
+                                             new XSLTAttributeDef[]{ selectAttrRequired, groupByAttrOpt, spaceAttr }, 
+                                             new ProcessorTemplateElem(),
+                                             ElemForEachGroup.class /* class object */, true, false, true, 20, true);
+    
     XSLTElementDef xslIf = new XSLTElementDef(this,
                                               Constants.S_XSLNAMESPACEURL,
                                               "if", null /*alias */,
@@ -594,6 +609,7 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = xslCallTemplate;
     templateElements[i++] = xslApplyImports;
     templateElements[i++] = xslForEach;
+    templateElements[i++] = xslForEachGroup;
     templateElements[i++] = xslValueOf;
     templateElements[i++] = xslCopyOf;
     templateElements[i++] = xslNumber;
@@ -631,6 +647,7 @@ public class XSLTSchema extends XSLTElementDef
     charTemplateElements[i++] = xslCallTemplate;
     charTemplateElements[i++] = xslApplyImports;
     charTemplateElements[i++] = xslForEach;
+    charTemplateElements[i++] = xslForEachGroup;
     charTemplateElements[i++] = xslValueOf;
     charTemplateElements[i++] = xslCopyOf;
     charTemplateElements[i++] = xslNumber;

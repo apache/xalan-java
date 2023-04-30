@@ -56,6 +56,7 @@ import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemAttributeSet;
 import org.apache.xalan.templates.ElemForEach;
+import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.ElemSort;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
@@ -2558,6 +2559,91 @@ public class TransformerImpl extends Transformer
       keys.addElement(new NodeSortKey(this, sort.getSelect(), treatAsNumbers,
                                       descending, langString, caseOrderUpper,
                                       foreach));
+      if (m_debug)
+        getTraceManager().fireTraceEndEvent(sort);
+     }
+
+    return keys;
+  }
+  
+  public Vector processSortKeysForEachGroup(ElemForEachGroup foreachgroup, int sourceNodeContext)
+          throws TransformerException
+  {
+
+    Vector keys = null;
+    XPathContext xctxt = m_xcontext;
+    int nElems = foreachgroup.getSortElemCount();
+
+    if (nElems > 0)
+      keys = new Vector();
+
+    // March backwards, collecting the sort keys.
+    for (int i = 0; i < nElems; i++)
+    {
+      ElemSort sort = foreachgroup.getSortElem(i);
+      
+      if (m_debug)
+        getTraceManager().fireTraceEvent(sort);
+     
+      String langString =
+        (null != sort.getLang())
+        ? sort.getLang().evaluate(xctxt, sourceNodeContext, foreachgroup) : null;
+      String dataTypeString = sort.getDataType().evaluate(xctxt,
+                                sourceNodeContext, foreachgroup);
+
+      if (dataTypeString.indexOf(":") >= 0)
+        System.out.println(
+          "TODO: Need to write the hooks for QNAME sort data type");
+      else if (!(dataTypeString.equalsIgnoreCase(Constants.ATTRVAL_DATATYPE_TEXT))
+               &&!(dataTypeString.equalsIgnoreCase(
+                 Constants.ATTRVAL_DATATYPE_NUMBER)))
+        foreachgroup.error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
+                      new Object[]{ Constants.ATTRNAME_DATATYPE,
+                                    dataTypeString });
+
+      boolean treatAsNumbers =
+        ((null != dataTypeString) && dataTypeString.equals(
+        Constants.ATTRVAL_DATATYPE_NUMBER)) ? true : false;
+      String orderString = sort.getOrder().evaluate(xctxt, sourceNodeContext,
+                             foreachgroup);
+
+      if (!(orderString.equalsIgnoreCase(Constants.ATTRVAL_ORDER_ASCENDING))
+              &&!(orderString.equalsIgnoreCase(
+                Constants.ATTRVAL_ORDER_DESCENDING)))
+        foreachgroup.error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
+                      new Object[]{ Constants.ATTRNAME_ORDER,
+                                    orderString });
+
+      boolean descending =
+        ((null != orderString) && orderString.equals(
+        Constants.ATTRVAL_ORDER_DESCENDING)) ? true : false;
+      AVT caseOrder = sort.getCaseOrder();
+      boolean caseOrderUpper;
+
+      if (null != caseOrder)
+      {
+        String caseOrderString = caseOrder.evaluate(xctxt, sourceNodeContext,
+                                                    foreachgroup);
+
+        if (!(caseOrderString.equalsIgnoreCase(Constants.ATTRVAL_CASEORDER_UPPER))
+                &&!(caseOrderString.equalsIgnoreCase(
+                  Constants.ATTRVAL_CASEORDER_LOWER)))
+          foreachgroup.error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
+                        new Object[]{ Constants.ATTRNAME_CASEORDER,
+                                      caseOrderString });
+
+        caseOrderUpper =
+          ((null != caseOrderString) && caseOrderString.equals(
+          Constants.ATTRVAL_CASEORDER_UPPER)) ? true : false;
+      }
+      else
+      {
+        caseOrderUpper = false;
+      }
+
+      keys.addElement(new NodeSortKey(this, sort.getSelect(), treatAsNumbers,
+                                      descending, langString, caseOrderUpper,
+                                      foreachgroup));
       if (m_debug)
         getTraceManager().fireTraceEndEvent(sort);
      }

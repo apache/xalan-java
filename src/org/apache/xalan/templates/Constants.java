@@ -32,10 +32,7 @@ public class Constants extends org.apache.xml.utils.Constants
    * IDs for XSL element types. These are associated
    * with the string literals in the TransformerImpl class.
    * Don't change the numbers. NOTE THAT THESE ARE NOT IN
-   * ALPHABETICAL ORDER!
-   * (It's a pity Java doesn't have a real Enumerated Mnemonic
-   * datatype... or a C-like preprocessor in lieu thereof which
-   * could be used to generate and maintain synch between these lists.)
+   * ALPHABETICAL ORDER.
    */
   public static final int ELEMNAME_UNDEFINED = -1, ELEMNAME_WITHPARAM = 2,
                           ELEMNAME_ADDATTRIBUTE = 4, ELEMNAME_ANCHOR = 22,
@@ -89,12 +86,14 @@ public class Constants extends org.apache.xml.utils.Constants
   ELEMNAME_LITERALRESULT = 77, ELEMNAME_TEXTLITERALRESULT = 78,
   ELEMNAME_EXTENSIONCALL = 79, ELEMNAME_EXTENSIONDECL = 85,
   ELEMNAME_EXTENSIONSCRIPT = 86, ELEMNAME_OUTPUT = 80,
-  ELEMNAME_COMPONENT = 81, ELEMNAME_SCRIPT = 82;
+  ELEMNAME_COMPONENT = 81, ELEMNAME_SCRIPT = 82,
+  
+  ELEMNAME_FOREACHGROUP = 90;
 
-  // Next free number: 90 (88 and 89 used for EXSLT elements);
+  // Next free number: 91
 
   /**
-   * Literals for XSL element names.  Note that there are more
+   * Literals for XSL element names. Note that there are more
    * names than IDs, because some names map to the same ID.
    */
   public static final String       
@@ -132,6 +131,7 @@ public class Constants extends org.apache.xml.utils.Constants
       ELEMNAME_EXTENSION_STRING = "functions",
       ELEMNAME_FALLBACK_STRING = "fallback",
       ELEMNAME_FOREACH_STRING = "for-each",
+      ELEMNAME_FOREACHGROUP_STRING = "for-each-group",
       ELEMNAME_IF_STRING = "if",
       ELEMNAME_IMPORT_STRING = "import",
       ELEMNAME_INCLUDE_STRING = "include",
