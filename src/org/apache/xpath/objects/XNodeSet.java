@@ -20,6 +20,9 @@
  */
 package org.apache.xpath.objects;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
@@ -115,6 +118,24 @@ public class XNodeSet extends NodeSequence
     }
     else
     	m_last = 0;
+  }
+  
+  /**
+   * Construct a XNodeSet object, for multiple nodes.
+   *
+   * @param nodesDtmList Nodes to add to the new XNodeSet object
+   */
+  public XNodeSet(List<Integer> nodesDtmList, DTMManager dtmMgr)
+  {
+      super(new NodeSetDTM(dtmMgr));
+      m_dtmMgr = dtmMgr;
+
+      for (Iterator<Integer> iter = nodesDtmList.iterator(); iter.hasNext(); ) {
+         int nodeDtmHandle = (iter.next()).intValue();
+         ((NodeSetDTM) m_obj).addNode(nodeDtmHandle);
+      }
+    
+      m_last = nodesDtmList.size();    
   }
 
   /**

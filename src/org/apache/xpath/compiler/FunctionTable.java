@@ -137,6 +137,12 @@ public class FunctionTable
   
   /** The 'replace()' id. */
   public static final int FUNC_REPLACE = 38;
+  
+  /** The 'current-grouping-key()' id (XSLT). */
+  public static final int FUNC_CURRENT_GROUPING_KEY = 39;
+  
+  /** The 'current-group()' id (XSLT). */
+  public static final int FUNC_CURRENT_GROUP = 40;
 
   // Proprietary
 
@@ -165,7 +171,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 39;
+  private static final int NUM_BUILT_IN_FUNCS = 41;
 
   /**
    * Number of built-in functions that may be added.
@@ -234,7 +240,11 @@ public class FunctionTable
     m_functions[FUNC_MATCHES] = 
       org.apache.xpath.functions.FuncMatches.class;
     m_functions[FUNC_REPLACE] = 
-            org.apache.xpath.functions.FuncReplace.class;
+      org.apache.xpath.functions.FuncReplace.class;
+    m_functions[FUNC_CURRENT_GROUPING_KEY] = 
+      org.apache.xalan.templates.FuncCurrentGroupingKey.class;
+    m_functions[FUNC_CURRENT_GROUP] = 
+      org.apache.xalan.templates.FuncCurrentGroup.class;
   }
 
   static{
@@ -312,6 +322,10 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_REPLACE));
           m_functionID.put(Keywords.FUNC_DOCLOCATION_STRING,
                           new Integer(FunctionTable.FUNC_DOCLOCATION));          
+          m_functionID.put(Keywords.FUNC_CURRENT_GROUPING_KEY,
+                          new Integer(FunctionTable.FUNC_CURRENT_GROUPING_KEY));
+          m_functionID.put(Keywords.FUNC_CURRENT_GROUP,
+                          new Integer(FunctionTable.FUNC_CURRENT_GROUP));
   }
   
   public FunctionTable(){

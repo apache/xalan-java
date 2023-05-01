@@ -55,6 +55,7 @@ import org.xml.sax.helpers.NamespaceSupport;
  * basic traversal of the tree.
  *
  * @see Stylesheet
+ * 
  * @xsl.usage advanced
  */
 public class ElemTemplateElement extends UnImplNode
@@ -63,10 +64,14 @@ public class ElemTemplateElement extends UnImplNode
 {
     static final long serialVersionUID = 4440018597841834447L;
     
-    // xsl:for-each-group grouping key string value
+    // To support, xsl:for-each-group's grouping key. 
+    // The instance of this class, stores this value for a specific xsl:for-each-group element 
+    // within the XSLT stylesheet.
     private String fGroupingKey;
     
-    // xsl:for-each-group "current group" contents
+    // To support, xsl:for-each-group's current-group contents. 
+    // The instance of this class, stores this value for a specific xsl:for-each-group element 
+    // within the XSLT stylesheet.
     private List<Integer> fGroupNodesDtmHandles;
 
   /**
@@ -141,16 +146,6 @@ public class ElemTemplateElement extends UnImplNode
   public void execute(
           TransformerImpl transformer)
             throws TransformerException{}
-  
-  /*
-   * Method to support, xsl:for-each-group instruction.
-   */
-  public void setForEachGroupControlInformation(String groupingKey, 
-                                                List<Integer> groupNodesDtmHandles)
-                                                   throws TransformerException {
-      this.fGroupingKey = groupingKey;
-      this.fGroupNodesDtmHandles = groupNodesDtmHandles;
-  }
 
   /**
    * Get the owning "composed" stylesheet.  This looks up the
@@ -1672,5 +1667,21 @@ public class ElemTemplateElement extends UnImplNode
 	public boolean handlesNullPrefixes() {
 		return false;
 	}
+
+    public String getGroupingKey() {
+        return fGroupingKey;
+    }
+
+    public void setGroupingKey(String groupingKey) {
+        this.fGroupingKey = groupingKey;
+    }
+
+    public List<Integer> getGroupNodesDtmHandles() {
+        return fGroupNodesDtmHandles;
+    }
+
+    public void setGroupNodesDtmHandles(List<Integer> groupNodesDtmHandles) {
+        this.fGroupNodesDtmHandles = groupNodesDtmHandles;
+    }
 
 }

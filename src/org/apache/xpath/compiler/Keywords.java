@@ -213,6 +213,12 @@ public class Keywords
   
   /** replace function string. */
   public static final String FUNC_REPLACE_STRING = "replace";
+  
+  /** current-grouping-key function string (XSLT). */
+  public static final String FUNC_CURRENT_GROUPING_KEY = "current-grouping-key";
+  
+  /** current-group function string (XSLT). */
+  public static final String FUNC_CURRENT_GROUP = "current-group";
 
   // Proprietary, built in functions
 
@@ -272,6 +278,9 @@ public class Keywords
                     new Integer(OpCodes.NODETYPE_PI));
     m_nodetests.put(NODETYPE_NODE_STRING,
                     new Integer(OpCodes.NODETYPE_NODE));
+    
+    m_keywords.put(FUNC_KEY_STRING,
+            new Integer(FunctionTable.FUNC_KEY));
   }
   
   static Object getAxisName(String key){

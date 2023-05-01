@@ -34,7 +34,6 @@ import org.apache.xalan.transformer.NodeSorter;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.utils.IntStack;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
@@ -44,7 +43,7 @@ import org.apache.xpath.objects.XObject;
 /**
  * Implementation of the xsl:for-each-group XSLT 3.0 instruction.
  * 
- * <xsl:for-each-group
+ *  <xsl:for-each-group
               select = expression
               group-by? = expression
               group-adjacent? = expression
@@ -66,7 +65,7 @@ import org.apache.xpath.objects.XObject;
         <!-- Content: sequence-constructor -->
      </xsl:sort>
      
-     XSLT 3.0 grouping functions,
+     There are following XSLT 3.0 grouping functions,
      1) fn:current-group()     
      2) fn:current-grouping-key()
  * 
@@ -80,7 +79,12 @@ import org.apache.xpath.objects.XObject;
 /*
   This implementation is WIP
   
-1) To make this more compliant to XSLT 3.0 spec
+1) To make this implementation more compliant to XSLT 3.0 spec.
+
+   Currently xsl:for-each-group's "group-by" attribute has been implemented.
+   The xsl:for-each-group's attributes "group-by", "group-adjacent", "group-starting-with", 
+   "group-ending-with" are mutually exclusive, i.e one of these is required and two or more 
+   of these is an error within the XSLT stylesheet.     
 2) We're still using XalanJ's implementation of XPath 1.0 data model
    for xsl:for-each-group's implementation. 
 */
@@ -103,7 +107,12 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
   /**
    * The "group-by" expression.
    */
-  protected Expression m_GroupByExpression = null; 
+  protected Expression m_GroupByExpression = null;
+  
+  /**
+   * Vector containing the xsl:sort elements associated with this element.
+   */
+  protected Vector m_sortElems = null;
 
   /**
    * Set the "select" attribute.
@@ -181,13 +190,8 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
   }
 
   /**
-   * Vector containing the xsl:sort elements associated with this element.
-   *  @serial
-   */
-  protected Vector m_sortElems = null;
-
-  /**
    * Get the count xsl:sort elements associated with this element.
+   * 
    * @return The number of xsl:sort elements.
    */
   public int getSortElemCount()
@@ -310,12 +314,13 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
   }
 
   /**
-   * Perform a query if needed, and call transformNode for each child.
+   * Perform the actual XSLT transformation logic, on run-time contents of 
+   * xsl:for-each-group element.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *
    * @throws TransformerException Thrown in a variety of circumstances.
-   * @throws CloneNotSupportedException 
+   * 
    * @xsl.usage advanced
    */
   public void transformSelectedNodes(TransformerImpl transformer)
@@ -327,7 +332,7 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
         // form groups from the 'sourceNodes' iterator
         
         // assuming string grouping keys for now.
-        // hashmap's key is the grouping key, and value is a list of dtm integer node handles        
+        // hashmap's key is the grouping key, and value is a list of nodes dtm integer handles        
         Map<String, List<Integer>> groups = new HashMap<String, List<Integer>>();
         
         int nextNode;
@@ -352,12 +357,7 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
         
          try {            
             xctxt.pushCurrentNode(DTM.NULL);
-            
-            IntStack currentNodes = xctxt.getCurrentNodeStack();
-      
             xctxt.pushCurrentExpressionNode(DTM.NULL);
-      
-            IntStack currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
       
             xctxt.pushSAXLocatorNull();
             xctxt.pushContextNodeList(sourceNodes);
@@ -365,17 +365,19 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
             
             Set<String> groupingKeys = groups.keySet();
             
-            // iterate through all the, groups formed by xsl:for-each-group instruction
+            // iterate through all the, groups formed by xsl:for-each-group instruction,
+            // and process the XSLT contents (as specified within xsl:for-each-group element) 
+            // for each group.
             for (Iterator<String> iter = groupingKeys.iterator(); iter.hasNext(); ) {
-               String groupingKey = iter.next();  // this is raw current-grouping-key() value
-               List<Integer> groupNodesDtmHandles = groups.get(groupingKey);  // this is raw dtm current-group() contents
+               String groupingKey = iter.next();  // current-grouping-key() value, for this group
+               List<Integer> groupNodesDtmHandles = groups.get(groupingKey);  // current-group() contents, for this group                              
                
                for (ElemTemplateElement templateElem = this.m_firstChild; templateElem != null; 
                                                 templateElem = templateElem.m_nextSibling) {
+                   templateElem.setGroupingKey(groupingKey);
+                   templateElem.setGroupNodesDtmHandles(groupNodesDtmHandles);
                    xctxt.setSAXLocator(templateElem);
-                   transformer.setCurrentElement(templateElem);
-                   templateElem.setForEachGroupControlInformation(groupingKey, 
-                                                                 groupNodesDtmHandles);
+                   transformer.setCurrentElement(templateElem);                   
                    templateElem.execute(transformer);
                }
             }
