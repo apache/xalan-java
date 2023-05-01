@@ -27,7 +27,7 @@ import org.apache.xpath.regex.Pattern;
  * This class provides supporting implementation, common to all
  * XPath 3.1 functions requiring regex functionality.
  * 
- * @author Mukul Gandhi
+ * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */

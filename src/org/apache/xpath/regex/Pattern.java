@@ -1426,7 +1426,7 @@ loop:   for(int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
                         node = new Dot();
                     }*/
                 	// changes for XPath 3.1 regex compliance
-                    node = new XPath2Dot();
+                    node = new XPath3Dot();
                 }
                 break;
             case '|':
@@ -1684,7 +1684,7 @@ loop:   for(int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
                                ? new Utype(UnicodeProp.WHITE_SPACE).complement()
                                : new Ctype(ASCII.SPACE).complement();*/
         	// changes for XPath 3.1 regex compliance
-            if (create) root = new XPath2Whitespace().complement();
+            if (create) root = new XPath3Whitespace().complement();
             return -1;
         case 'T':
         case 'U':
@@ -1777,7 +1777,7 @@ loop:   for(int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
                                ? new Utype(UnicodeProp.WHITE_SPACE)
                                : new Ctype(ASCII.SPACE);*/
         	// changes for XPath 3.1 regex compliance
-        	if (create) root = new XPath2Whitespace();
+        	if (create) root = new XPath3Whitespace();
             return -1;
         case 't':
             return '\t';
@@ -3531,14 +3531,14 @@ loop:   for(int x=0, offset=0; x<nCodePoints; x++, offset+=len) {
     }
     
     // changes for XPath 3.1 regex compliance
-    static final class XPath2Dot extends CharProperty {
+    static final class XPath3Dot extends CharProperty {
         boolean isSatisfiedBy(int ch) {
             return ch != '\n' && ch != '\r';
         }
     }
     
     // changes for XPath 3.1 regex compliance
-    static final class XPath2Whitespace extends CharProperty {
+    static final class XPath3Whitespace extends CharProperty {
         boolean isSatisfiedBy(int ch) {
             return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r';
         }

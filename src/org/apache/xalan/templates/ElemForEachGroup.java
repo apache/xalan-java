@@ -71,7 +71,7 @@ import org.apache.xpath.objects.XObject;
  * 
  * (xsl:for-each-group instruction was first introduced in XSLT 2.0 language)
  * 
- * @author Mukul Gandhi
+ * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */

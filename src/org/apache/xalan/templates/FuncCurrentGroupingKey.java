@@ -31,7 +31,7 @@ import org.apache.xpath.objects.XString;
 /**
  * Execute xsl:for-each-group's current-grouping-key() function.
  * 
- * @author Mukul Gandhi
+ * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */

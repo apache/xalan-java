@@ -32,7 +32,7 @@ import org.apache.xpath.objects.XObject;
 /**
  * Execute xsl:for-each-group's current-group() function.
  * 
- * @author Mukul Gandhi
+ * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */

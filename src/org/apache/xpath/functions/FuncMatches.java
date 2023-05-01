@@ -34,7 +34,7 @@ import org.apache.xpath.res.XPATHErrorResources;
 /**
  * Execute the matches() function.
  * 
- * @author Mukul Gandhi
+ * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
