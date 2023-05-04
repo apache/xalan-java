@@ -84,7 +84,7 @@ import org.apache.xpath.objects.XObject;
    Currently xsl:for-each-group's "group-by" attribute has been implemented.
    
    The xsl:for-each-group's attributes "group-by", "group-adjacent", "group-starting-with", 
-   "group-ending-with" are mutually exclusive, i.e one of these is required and two or more 
+   "group-ending-with" are mutually exclusive. i.e one of these is required and two or more 
    of these is an error within the XSLT stylesheet.
         
 2) We're still using XalanJ's implementation of XPath 1.0 data model for xsl:for-each-group's 
