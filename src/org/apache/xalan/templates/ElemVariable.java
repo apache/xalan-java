@@ -22,15 +22,17 @@ package org.apache.xalan.templates;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XRTreeFragSelectWrapper;
 import org.apache.xpath.objects.XString;
-import org.apache.xalan.res.XSLTErrorResources;
+import org.w3c.dom.NodeList;
 
 /**
  * Implement xsl:variable.
@@ -258,7 +260,7 @@ public class ElemVariable extends ElemTemplateElement
    * Get the XObject representation of the variable.
    *
    * @param transformer non-null reference to the the current transform-time state.
-   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   * @param sourceNode non-null reference to the current source node.
    *
    * @return the XObject representation of the variable.
    *
@@ -298,11 +300,6 @@ public class ElemVariable extends ElemTemplateElement
         // so they aren't popped off the stack on return from a template.
         int df;
 
-		// Bugzilla 7118: A variable set via an RTF may create local
-		// variables during that computation. To keep them from overwriting
-		// variables at this level, push a new variable stack.
-		////// PROBLEM: This is provoking a variable-used-before-set
-		////// problem in parameters. Needs more study.
 		try
 		{
 			//////////xctxt.getVarStack().link(0);
@@ -311,11 +308,19 @@ public class ElemVariable extends ElemTemplateElement
 			else
 				df = transformer.transformToRTF(this);
     	}
-		finally{ 
-			//////////////xctxt.getVarStack().unlink(); 
-			}
+		finally { 
+		   //////////////xctxt.getVarStack().unlink(); 
+	    }
 
-        var = new XRTreeFrag(df, xctxt, this);
+        // var = new XRTreeFrag(df, xctxt, this);
+		
+		// with XSLT 2.0 and 3.0, RTFs are treated as proper node sets
+		// (we still need to change to XPath 3.1's data model sequence of items concept)
+		
+		// but this codebase change can be good for now.
+		NodeList nodeList = (new XRTreeFrag(df, xctxt, this)).convertToNodeset();		
+		
+		var = new XNodeSetForDOM(nodeList, xctxt); 
       }
     }
     finally
