@@ -82,11 +82,13 @@ import org.apache.xpath.objects.XObject;
 1) To make this implementation more compliant to XSLT 3.0 spec.
 
    Currently xsl:for-each-group's "group-by" attribute has been implemented.
+   
    The xsl:for-each-group's attributes "group-by", "group-adjacent", "group-starting-with", 
    "group-ending-with" are mutually exclusive, i.e one of these is required and two or more 
-   of these is an error within the XSLT stylesheet.     
-2) We're still using XalanJ's implementation of XPath 1.0 data model
-   for xsl:for-each-group's implementation. 
+   of these is an error within the XSLT stylesheet.
+        
+2) We're still using XalanJ's implementation of XPath 1.0 data model for xsl:for-each-group's 
+   implementation. 
 */
 public class ElemForEachGroup extends ElemTemplateElement implements ExpressionOwner
 {
@@ -326,6 +328,9 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
   public void transformSelectedNodes(TransformerImpl transformer)
                                               throws TransformerException {
         final XPathContext xctxt = transformer.getXPathContext();
+        
+        int initialContextNodeDtmHandle = xctxt.getCurrentNode();
+        
         final int sourceNode = xctxt.getCurrentNode();
         DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
         
@@ -396,6 +401,8 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
               xctxt.popCurrentNode();
               sourceNodes.detach();
         }
+        
+        xctxt.pushCurrentNode(initialContextNodeDtmHandle);
   }
 
   /**
