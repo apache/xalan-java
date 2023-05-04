@@ -43,7 +43,7 @@ import org.w3c.dom.NodeList;
  *   select %expr; #IMPLIED
  * >
  * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#variables">variables in XSLT Specification</a>
+ *
  * @xsl.usage advanced
  */
 public class ElemVariable extends ElemTemplateElement
@@ -317,7 +317,7 @@ public class ElemVariable extends ElemTemplateElement
 		// with XSLT 2.0 and 3.0, RTFs are treated as proper node sets
 		// (we still need to change to XPath 3.1's data model sequence of items concept)
 		
-		// but this codebase change can be good for now.
+		// but this codebase change can be good for now
 		NodeList nodeList = (new XRTreeFrag(df, xctxt, this)).convertToNodeset();		
 		
 		var = new XNodeSetForDOM(nodeList, xctxt); 

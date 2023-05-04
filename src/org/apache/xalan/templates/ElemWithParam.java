@@ -27,9 +27,11 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XString;
+import org.w3c.dom.NodeList;
 
 /**
  * Implement xsl:with-param.  xsl:with-param is allowed within
@@ -41,7 +43,7 @@ import org.apache.xpath.objects.XString;
  *   select %expr; #IMPLIED
  * >
  * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#element-with-param">element-with-param in XSLT Specification</a>
+ * 
  * @xsl.usage advanced
  */
 public class ElemWithParam extends ElemTemplateElement
@@ -181,7 +183,7 @@ public class ElemWithParam extends ElemTemplateElement
    * Get the XObject representation of the variable.
    *
    * @param transformer non-null reference to the the current transform-time state.
-   * @param sourceNode non-null reference to the <a href="http://www.w3.org/TR/xslt#dt-current-node">current source node</a>.
+   * @param sourceNode non-null reference to the current source node.
    *
    * @return the XObject representation of the variable.
    *
@@ -214,11 +216,14 @@ public class ElemWithParam extends ElemTemplateElement
       }
       else
       {
+          // Use result tree fragment
+          int df = transformer.transformToRTF(this);
 
-        // Use result tree fragment
-        int df = transformer.transformToRTF(this);
-
-        var = new XRTreeFrag(df, xctxt, this);
+          var = new XRTreeFrag(df, xctxt, this);
+        
+          NodeList nodeList = (new XRTreeFrag(df, xctxt, this)).convertToNodeset();       
+        
+          var = new XNodeSetForDOM(nodeList, xctxt); 
       }
     }
     finally
