@@ -65,7 +65,7 @@ import org.apache.xpath.objects.XObject;
         <!-- Content: sequence-constructor -->
      </xsl:sort>
      
-     There are following XSLT 3.0 grouping functions,
+     There are following two XSLT 3.0 grouping functions,
      1) fn:current-group()     
      2) fn:current-grouping-key()
  * 
@@ -76,19 +76,15 @@ import org.apache.xpath.objects.XObject;
  * @xsl.usage advanced
  */
 
-/*
-  This implementation is WIP
-  
-1) To make this implementation more compliant to XSLT 3.0 spec.
+/* 
+   Notes: To make this implementation more compliant to XSLT 3.0 spec.
 
-   Currently xsl:for-each-group's "group-by" attribute has been implemented.
+   Currently xsl:for-each-group's "group-by" and "group-adjacent" attributes have 
+   been implemented.
    
    The xsl:for-each-group's attributes "group-by", "group-adjacent", "group-starting-with", 
    "group-ending-with" are mutually exclusive. i.e one of these is required and two or more 
-   of these is an error within the XSLT stylesheet.
-        
-2) We're still using XalanJ's implementation of XPath 1.0 data model for xsl:for-each-group's 
-   implementation. 
+   of these is an error within the XSLT stylesheet. 
 */
 public class ElemForEachGroup extends ElemTemplateElement implements ExpressionOwner
 {
@@ -110,6 +106,11 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
    * The "group-by" expression.
    */
   protected Expression m_GroupByExpression = null;
+  
+  /**
+   * The "group-adjacent" expression.
+   */
+  protected Expression m_GroupAdjacentExpression = null;
   
   /**
    * Vector containing the xsl:sort elements associated with this element.
@@ -144,6 +145,16 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
   public Expression getGroupBy()
   {
       return m_GroupByExpression;
+  }
+  
+  public void setGroupAdjacent(XPath xpath)
+  {
+      m_GroupAdjacentExpression = xpath.getExpression();   
+  }
+  
+  public Expression getGroupAdjacent()
+  {
+      return m_GroupAdjacentExpression;
   }
 
   /**
@@ -327,6 +338,17 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
    */
   public void transformSelectedNodes(TransformerImpl transformer)
                                               throws TransformerException {
+        
+        if (m_GroupByExpression == null && m_GroupAdjacentExpression == null) {
+            throw new TransformerException("None of the attributes 'group-by', 'group-adjacent', 'group-starting-with', "
+                                              + "'group-ending-with' is present on xsl:for-each-group element");     
+        }
+      
+        if (m_GroupByExpression != null && m_GroupAdjacentExpression != null) {
+           throw new TransformerException("Only one of the attributes 'group-by', 'group-adjacent', 'group-starting-with', "
+                                             + "'group-ending-with' is allowed on xsl:for-each-group element");     
+        }
+        
         final XPathContext xctxt = transformer.getXPathContext();
         
         int initialContextNodeDtmHandle = xctxt.getCurrentNode();
@@ -342,20 +364,53 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
         
         int nextNode;
         
-        while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
-            xctxt.pushCurrentNode(nextNode);
-                        
-            XObject xpathEvalResult = m_GroupByExpression.execute(xctxt);
-            
-            String grpByEvalResultStrValue = xpathEvalResult.toString();                            
-            if (groups.get(grpByEvalResultStrValue) != null) {
-                List<Integer> group = groups.get(grpByEvalResultStrValue);
-                group.add(nextNode);
-            } else {
-                List<Integer> group = new ArrayList<Integer>();
-                group.add(nextNode);
-                groups.put(grpByEvalResultStrValue, group);
-            }            
+        if (m_GroupByExpression != null) {
+            while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
+                xctxt.pushCurrentNode(nextNode);
+                            
+                XObject xpathEvalResult = m_GroupByExpression.execute(xctxt);
+                
+                String grpByEvalResultStrValue = xpathEvalResult.toString();                            
+                if (groups.get(grpByEvalResultStrValue) != null) {
+                    List<Integer> group = groups.get(grpByEvalResultStrValue);
+                    group.add(nextNode);
+                } else {
+                    List<Integer> group = new ArrayList<Integer>();
+                    group.add(nextNode);
+                    groups.put(grpByEvalResultStrValue, group);
+                }            
+             }
+         }
+         else if (m_GroupAdjacentExpression != null) {
+             String prevValue = null;
+             int idx = 0;
+             while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
+                 xctxt.pushCurrentNode(nextNode);
+                 
+                 XObject xpathEvalResult = m_GroupAdjacentExpression.execute(xctxt);
+                 String currValue = xpathEvalResult.toString();
+                 if (idx == 0) {
+                     List<Integer> group = new ArrayList<Integer>();
+                     group.add(nextNode);
+                     groups.put(currValue, group);
+                     prevValue = currValue; 
+                 }
+                 else {
+                    if (currValue.equals(prevValue)) {
+                        List<Integer> group = groups.get(prevValue);
+                        group.add(nextNode);
+                        prevValue = currValue;
+                    }
+                    else {
+                        List<Integer> group = new ArrayList<Integer>();
+                        group.add(nextNode);
+                        groups.put(currValue, group);
+                        prevValue = currValue;
+                    }
+                 }
+                 
+                 idx++;
+             }
          }
         
          // end, form groups from the 'sourceNodes' iterator

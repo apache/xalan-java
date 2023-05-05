@@ -203,6 +203,12 @@ public class XSLTSchema extends XSLTElementDef
     XSLTAttributeDef groupByAttrOpt = new XSLTAttributeDef(null,
                                             "group-by",
                                             XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
+    
+    // Optional.                                       
+    // xsl:for-each-group                             
+    XSLTAttributeDef groupAdjacentAttrOpt = new XSLTAttributeDef(null,
+                                                  "group-adjacent",
+                                                  XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
 
     // Optional.                                          
     // xsl:variable, xsl:param, xsl:with-param                                       
@@ -456,7 +462,7 @@ public class XSLTSchema extends XSLTElementDef
     XSLTElementDef xslForEachGroup = new XSLTElementDef(this,
                                              Constants.S_XSLNAMESPACEURL, "for-each-group",
                                              null /*alias */, templateElementsAndSort,
-                                             new XSLTAttributeDef[]{ selectAttrRequired, groupByAttrOpt, spaceAttr }, 
+                                             new XSLTAttributeDef[]{ selectAttrRequired, groupByAttrOpt, groupAdjacentAttrOpt, spaceAttr }, 
                                              new ProcessorTemplateElem(),
                                              ElemForEachGroup.class /* class object */, true, false, true, 20, true);
     
