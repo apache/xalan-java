@@ -80,8 +80,8 @@ import org.apache.xpath.objects.XString;
  */
 
 /* 
-   Currently xsl:for-each-group's "group-by" and "group-adjacent" attributes have 
-   been implemented.
+   Currently, xsl:for-each-group's attributes "group-by" and "group-adjacent" have been 
+   implemented.
    
    The xsl:for-each-group's attributes are as described below (and are further defined within
    XSLT 3.0 spec), 
