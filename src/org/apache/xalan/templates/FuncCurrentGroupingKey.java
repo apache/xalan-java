@@ -26,7 +26,6 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
 
 /**
  * Execute xsl:for-each-group's current-grouping-key() function.
@@ -53,13 +52,13 @@ public class FuncCurrentGroupingKey extends Function
         TransformerImpl transformer = (TransformerImpl) xctxt.getOwnerObject();                            
         ElemTemplateElement currElemTemplateElement = transformer.getCurrentElement();
         
-        String groupingKey = currElemTemplateElement.getGroupingKey();
+        Object groupingKey = currElemTemplateElement.getGroupingKey();
         while (groupingKey == null) {
             currElemTemplateElement = currElemTemplateElement.getParentElem();
             groupingKey = currElemTemplateElement.getGroupingKey();
         }
       
-        return new XString(groupingKey);
+        return XObject.create(groupingKey);
     }
 
     @Override

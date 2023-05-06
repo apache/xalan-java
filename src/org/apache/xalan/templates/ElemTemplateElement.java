@@ -36,12 +36,10 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.UnImplNode;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.WhitespaceStrippingElementMatcher;
-
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import org.xml.sax.helpers.NamespaceSupport;
 
 /**
@@ -67,7 +65,7 @@ public class ElemTemplateElement extends UnImplNode
     // To support, xsl:for-each-group's grouping key. 
     // The instance of this class, stores this value for a specific xsl:for-each-group element 
     // within the XSLT stylesheet.
-    private String fGroupingKey;
+    private Object fGroupingKey;
     
     // To support, xsl:for-each-group's current-group contents. 
     // The instance of this class, stores this value for a specific xsl:for-each-group element 
@@ -1668,11 +1666,11 @@ public class ElemTemplateElement extends UnImplNode
 		return false;
 	}
 
-    public String getGroupingKey() {
+    public Object getGroupingKey() {
         return fGroupingKey;
     }
 
-    public void setGroupingKey(String groupingKey) {
+    public void setGroupingKey(Object groupingKey) {
         this.fGroupingKey = groupingKey;
     }
 
