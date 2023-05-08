@@ -21,6 +21,7 @@
 package org.apache.xalan.templates;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -361,11 +362,15 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
         final int sourceNode = xctxt.getCurrentNode();
         DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
         
-        // form groups from the 'sourceNodes' iterator
+        // form xsl:for-each-group raw groups data from the 'sourceNodes' iterator
         
         // grouping keys, can have data types as defined by XPath data model.
-        // hashmap's key is the grouping key, and value is a list of nodes dtm integer handles        
-        Map<Object, List<Integer>> groups = new HashMap<Object, List<Integer>>();
+        
+        // groups data is formed, within a hashmap. 
+        // hashmap item's key is the grouping key, and value of that hashmap item 
+        // is a list of nodes dtm integer handles representing the group for that 
+        // grouping key.        
+        Map<Object, List<Integer>> xslForEachGroupMap = new HashMap<Object, List<Integer>>();
         
         int nextNode;
         
@@ -376,13 +381,13 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
                 XObject xpathEvalResult = m_GroupByExpression.execute(xctxt);                
                 Object xpathRawResult = getXPathEvaluationRawResult(xpathEvalResult);
                                             
-                if (groups.get(xpathRawResult) != null) {
-                    List<Integer> group = groups.get(xpathRawResult);
+                if (xslForEachGroupMap.get(xpathRawResult) != null) {
+                    List<Integer> group = xslForEachGroupMap.get(xpathRawResult);
                     group.add(nextNode);
                 } else {
                     List<Integer> group = new ArrayList<Integer>();
                     group.add(nextNode);
-                    groups.put(xpathRawResult, group);
+                    xslForEachGroupMap.put(xpathRawResult, group);
                 }            
              }
          }
@@ -397,22 +402,22 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
                  Object currValue = xpathRawResult;
                  
                  if (idx == 0) {
-                     // first node within the nodes been traversed
+                     // first node within the nodes been traversed, by this loop
                      List<Integer> group = new ArrayList<Integer>();
                      group.add(nextNode);
-                     groups.put(currValue, group);
+                     xslForEachGroupMap.put(currValue, group);
                      prevValue = currValue; 
                  }
                  else {
                     if (currValue.equals(prevValue)) {
-                        List<Integer> group = groups.get(prevValue);
+                        List<Integer> group = xslForEachGroupMap.get(prevValue);
                         group.add(nextNode);
                         prevValue = currValue;
                     }
                     else {
                         List<Integer> group = new ArrayList<Integer>();
                         group.add(nextNode);
-                        groups.put(currValue, group);
+                        xslForEachGroupMap.put(currValue, group);
                         prevValue = currValue;
                     }
                  }
@@ -421,7 +426,25 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
              }
          }
         
-         // end, form groups from the 'sourceNodes' iterator
+         // end, form xsl:for-each-group raw groups data from the 'sourceNodes' iterator
+        
+         // reorder xsl:for-each-group raw groups content known as 'order of first appearance' 
+         // as defined by XSLT 3.0 spec (this is the default XSLT transformation xsl:for-each-group 
+         // element's output order in absence of xsl:for-each-group's xsl:sort elements).            
+         List<GroupingKeyAndNodeHandlePair> groupingKeyAndNodeHandlePairList = new ArrayList
+                                                                   <GroupingKeyAndNodeHandlePair>();        
+         if (xslForEachGroupMap.size() > 0) {                                                                    
+            Set<Object> groupingKeys = xslForEachGroupMap.keySet();
+            for (Iterator<Object> groupingKeysIter = groupingKeys.iterator(); 
+                                                            groupingKeysIter.hasNext(); ) {
+                Object groupingKey = groupingKeysIter.next();
+                List<Integer> groupNodesDtmHandles = xslForEachGroupMap.get(groupingKey);
+                Integer groupContentsFirstItemNodeHandle =  groupNodesDtmHandles.get(0);
+                GroupingKeyAndNodeHandlePair groupingKeyNodeHandlePair = new GroupingKeyAndNodeHandlePair(
+                                                                groupingKey, groupContentsFirstItemNodeHandle);
+                groupingKeyAndNodeHandlePairList.add(groupingKeyNodeHandlePair);
+             }            
+         }
         
          try {            
             xctxt.pushCurrentNode(DTM.NULL);
@@ -430,14 +453,16 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
             xctxt.pushSAXLocatorNull();
             xctxt.pushContextNodeList(sourceNodes);
             transformer.pushElemTemplateElement(null);
+                        
+            Collections.sort(groupingKeyAndNodeHandlePairList);  // sort the xsl:for-each-group's groups
             
-            Set<Object> groupingKeys = groups.keySet();
-            
-            // iterate through all the, groups formed by xsl:for-each-group instruction,
-            // and process the XSLT contents for each group.
-            for (Iterator<Object> iter = groupingKeys.iterator(); iter.hasNext(); ) {
-               Object groupingKey = iter.next();  // current-grouping-key() value, for this group
-               List<Integer> groupNodesDtmHandles = groups.get(groupingKey);  // current-group() contents, for this group                              
+            // loop through all the, groups formed by xsl:for-each-group instruction,
+            // and process the XSLT contents of each group.
+            for (int idx = 0; idx < groupingKeyAndNodeHandlePairList.size(); idx++) {
+               GroupingKeyAndNodeHandlePair groupingKeyNodeLevelPair = groupingKeyAndNodeHandlePairList.get(idx);
+               
+               Object groupingKey = groupingKeyNodeLevelPair.getGroupingKey();  // current-grouping-key() value, for this group
+               List<Integer> groupNodesDtmHandles = xslForEachGroupMap.get(groupingKey);  // current-group() contents, for this group                              
                
                for (ElemTemplateElement templateElem = this.m_firstChild; templateElem != null; 
                                                 templateElem = templateElem.m_nextSibling) {
@@ -448,9 +473,9 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
                    templateElem.execute(transformer);
                }
             }
-        }
-        finally
-        {
+         }
+         finally
+         {
               if (transformer.getDebug()) {
                   transformer.getTraceManager().fireSelectedEndEvent(sourceNode, this,
                                    "select", new XPath(m_selectExpression),
@@ -463,9 +488,9 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
               xctxt.popCurrentExpressionNode();
               xctxt.popCurrentNode();
               sourceNodes.detach();
-        }
+         }
         
-        xctxt.pushCurrentNode(sourceNode);
+         xctxt.pushCurrentNode(sourceNode);
   }
 
   /**
@@ -554,6 +579,45 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
       }
       
       return xpathRawResult;
+  }
+  
+  /* 
+   * Class to support, reordering the xsl:for-each-group's groups as per definition of default 
+   * sorted order (i.e, order of first appearance) when xsl:sort elements are not present within 
+   * xsl:for-each-group.
+  */
+  class GroupingKeyAndNodeHandlePair implements Comparable<GroupingKeyAndNodeHandlePair> {
+     
+     private Object groupingKey;
+     
+     private Integer nodeHandle;
+     
+     public GroupingKeyAndNodeHandlePair(Object groupingKey, Integer nodeHandle) {
+        this.groupingKey = groupingKey;
+        this.nodeHandle = nodeHandle; 
+     }
+     
+     public Object getGroupingKey() {
+        return groupingKey;
+     }
+
+     public void setGroupingKey(Object groupingKey) {
+        this.groupingKey = groupingKey;
+     }
+
+     public Integer getNodeHandle() {
+        return nodeHandle;
+     }
+
+     public void setNodeHandle(Integer nodeHandle) {
+        this.nodeHandle = nodeHandle;
+     }
+
+     @Override
+     public int compareTo(GroupingKeyAndNodeHandlePair obj) {
+        return this.getNodeHandle().compareTo(obj.getNodeHandle());
+     }
+    
   }
 
 }
