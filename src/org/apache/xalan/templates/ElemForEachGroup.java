@@ -45,8 +45,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
 /**
- * Implementation of the xsl:for-each-group XSLT 3.0 instruction.
- * 
+ *  XSLT 3.0 for-each-group element.
+ *    
  *  <xsl:for-each-group
               select = expression
               group-by? = expression
@@ -71,9 +71,7 @@ import org.apache.xpath.objects.XString;
      
      There are following two XSLT 3.0 grouping functions,
      1) fn:current-group()     
-     2) fn:current-grouping-key()
- * 
- * (xsl:for-each-group instruction was first introduced in XSLT 2.0 language)
+     2) fn:current-grouping-key()     
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -81,18 +79,16 @@ import org.apache.xpath.objects.XString;
  */
 
 /* 
-   Currently, xsl:for-each-group's attributes "group-by" and "group-adjacent" have been 
-   implemented.
-   
+   Implementation of the XSLT 3.0 xsl:for-each-group instruction.
+ 
    The xsl:for-each-group's attributes are as described below (and are further defined within
    XSLT 3.0 spec), 
    The xsl:for-each-group's attributes "group-by", "group-adjacent", "group-starting-with", 
    "group-ending-with" are mutually exclusive. i.e one of these is required and two or more 
    of these is an error within the XSLT stylesheet.
-   
-   Notes: To make this implementation more compliant to XSLT 3.0 spec.
 */
-public class ElemForEachGroup extends ElemTemplateElement implements ExpressionOwner
+public class ElemForEachGroup extends ElemTemplateElement 
+                                                implements ExpressionOwner
 {
   
   private static final long serialVersionUID = -6682554013978812260L;
@@ -117,6 +113,16 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
    * The "group-adjacent" expression.
    */
   protected Expression m_GroupAdjacentExpression = null;
+  
+  /**
+   * The "group-starting-with" expression.
+   */
+  protected Expression m_GroupStartingWithExpression = null;
+  
+  /**
+   * The "group-ending-with" expression.
+   */
+  protected Expression m_GroupEndingWithExpression = null;
   
   /**
    * Vector containing the xsl:sort elements associated with this element.
@@ -162,6 +168,26 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
   {
       return m_GroupAdjacentExpression;
   }
+  
+  public void setGroupStartingWith(XPath xpath)
+  {
+      m_GroupStartingWithExpression = xpath.getExpression();   
+  }
+  
+  public Expression getGroupStartingWith()
+  {
+      return m_GroupStartingWithExpression;
+  }
+  
+  public void setGroupEndingWith(XPath xpath)
+  {
+      m_GroupEndingWithExpression = xpath.getExpression();   
+  }
+  
+  public Expression getGroupEndingWith()
+  {
+      return m_GroupEndingWithExpression;
+  }
 
   /**
    * This function is called after everything else has been
@@ -169,7 +195,7 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
    * values that may be based on some other property that
    * depends on recomposition.
    *
-   * NEEDSDOC @param sroot
+   * @param sroot
    *
    * @throws TransformerException
    */
@@ -347,16 +373,18 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
       
         XPathContext xctxt = transformer.getXPathContext();
         
-        if (m_GroupByExpression == null && m_GroupAdjacentExpression == null) {
+        int forEachGroupGroupingAttributesCount = getForEachGroupGroupingAttributesCount();
+        
+        if (forEachGroupGroupingAttributesCount == 0) {
             throw new TransformerException("XTSE1080 : None of the attributes 'group-by', 'group-adjacent', "
                                               + "'group-starting-with', 'group-ending-with' is present on "
                                               + "xsl:for-each-group element.", xctxt.getSAXLocator());     
         }
-      
-        if (m_GroupByExpression != null && m_GroupAdjacentExpression != null) {
+         
+        if (forEachGroupGroupingAttributesCount > 1) {
            throw new TransformerException("XTSE1080 : Only one of the attributes 'group-by', 'group-adjacent', "
-                                             + "'group-starting-with', 'group-ending-with' is allowed on "
-                                             + "xsl:for-each-group element.", xctxt.getSAXLocator());     
+                                             + "'group-starting-with', 'group-ending-with' is allowed to be "
+                                             + "present on xsl:for-each-group element.", xctxt.getSAXLocator());     
         }
         
         final int sourceNode = xctxt.getCurrentNode();
@@ -364,17 +392,22 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
         
         // form xsl:for-each-group raw groups data from the 'sourceNodes' iterator
         
-        // grouping keys, can have data types as defined by XPath data model.
+        // grouping keys (only available when attributes 'group-by' or 'group-adjacent' are used),
+        // can have data types as defined by XPath data model.
         
-        // groups data is formed, within a hashmap. 
+        // groups data is formed, within a hashmap (when attributes 'group-by' or 
+        // 'group-adjacent' are used). 
         // hashmap item's key is the grouping key, and value of that hashmap item 
         // is a list of nodes dtm integer handles representing the group for that 
         // grouping key.        
         Map<Object, List<Integer>> xslForEachGroupMap = new HashMap<Object, List<Integer>>();
         
-        int nextNode;
+        // List to store groups formed for, either 'group-starting-with' or 'group-ending-with'
+        List<List<Integer>> xslForEachGroupStartingWithEndingWith = new ArrayList<List<Integer>>();
         
         if (m_GroupByExpression != null) {
+            int nextNode;
+            
             while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
                 xctxt.pushCurrentNode(nextNode);
                             
@@ -394,6 +427,8 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
          else if (m_GroupAdjacentExpression != null) {
              Object prevValue = null;
              int idx = 0;
+             int nextNode;
+             
              while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
                  xctxt.pushCurrentNode(nextNode);
                  
@@ -425,12 +460,74 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
                  idx++;
              }
          }
+         else if (m_GroupStartingWithExpression != null) {
+             int nextNode;
+             
+             while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
+                xctxt.pushCurrentNode(nextNode);
+                
+                XObject xpathEvalResult = m_GroupStartingWithExpression.execute(xctxt);
+                boolean patternEvalResult = xpathEvalResult.bool();
+                if (patternEvalResult) {
+                    List<Integer> group = new ArrayList<Integer>();
+                    group.add(nextNode);
+                    xslForEachGroupStartingWithEndingWith.add(group);
+                }
+                else {
+                    int groupsCountSoFar = xslForEachGroupStartingWithEndingWith.size();
+                    if (groupsCountSoFar > 0) {
+                       List<Integer> group = xslForEachGroupStartingWithEndingWith.get(
+                                                                            groupsCountSoFar - 1);
+                       group.add(nextNode);
+                    }
+                }                
+             }
+         }
+         else if (m_GroupEndingWithExpression != null) {                          
+             int nextNode;
+             
+             List<Integer> nodesList = new ArrayList<Integer>();
+             while (DTM.NULL != (nextNode = sourceNodes.nextNode())) {
+                nodesList.add(Integer.valueOf(nextNode));   
+             }
+             
+             Collections.reverse(nodesList);
+             
+             for (int idx = 0; idx < nodesList.size(); idx++) {
+                 xctxt.pushCurrentNode((nodesList.get(idx)).intValue());
+                 
+                 XObject xpathEvalResult = m_GroupEndingWithExpression.execute(xctxt);
+                 boolean patternEvalResult = xpathEvalResult.bool();
+                 if (patternEvalResult) {
+                     List<Integer> group = new ArrayList<Integer>();
+                     group.add((nodesList.get(idx)).intValue());
+                     xslForEachGroupStartingWithEndingWith.add(group);
+                 }
+                 else {
+                     int groupsCountSoFar = xslForEachGroupStartingWithEndingWith.size();
+                     if (groupsCountSoFar > 0) {
+                        List<Integer> group = xslForEachGroupStartingWithEndingWith.get(
+                                                                             groupsCountSoFar - 1);
+                        group.add((nodesList.get(idx)).intValue());
+                     }
+                 }
+              }
+             
+              Collections.reverse(xslForEachGroupStartingWithEndingWith);
+              
+              for (int idx = 0; idx < xslForEachGroupStartingWithEndingWith.size(); idx++) {
+                  List<Integer> group = xslForEachGroupStartingWithEndingWith.get(idx);
+                  Collections.reverse(group);
+              }
+         }
         
          // end, form xsl:for-each-group raw groups data from the 'sourceNodes' iterator
         
-         // reorder xsl:for-each-group raw groups content known as 'order of first appearance' 
+         // Reorder xsl:for-each-group raw groups content known as 'order of first appearance' 
          // as defined by XSLT 3.0 spec (this is the default XSLT transformation xsl:for-each-group 
-         // element's output order in absence of xsl:for-each-group's xsl:sort elements).            
+         // element's output order in absence of xsl:for-each-group's xsl:sort elements).         
+         // The groups reordering logic performed below, is only applicable when attributes 
+         // 'group-by' or 'group-adjacent' are used.
          List<GroupingKeyAndNodeHandlePair> groupingKeyAndNodeHandlePairList = new ArrayList
                                                                    <GroupingKeyAndNodeHandlePair>();        
          if (xslForEachGroupMap.size() > 0) {                                                                    
@@ -457,7 +554,8 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
             Collections.sort(groupingKeyAndNodeHandlePairList);  // sort the xsl:for-each-group's groups
             
             // loop through all the, groups formed by xsl:for-each-group instruction,
-            // and process the XSLT contents of each group.
+            // and process the XSLT contents of each group. This is done when, 
+            // attributes 'group-by' or 'group-adjacent' are used.
             for (int idx = 0; idx < groupingKeyAndNodeHandlePairList.size(); idx++) {
                GroupingKeyAndNodeHandlePair groupingKeyNodeLevelPair = groupingKeyAndNodeHandlePairList.get(idx);
                
@@ -472,6 +570,26 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
                    transformer.setCurrentElement(templateElem);                   
                    templateElem.execute(transformer);
                }
+            }
+            
+            // loop through all the, groups formed by xsl:for-each-group instruction,
+            // and process the XSLT contents of each group.
+            // This is done when, attributes 'group-starting-with' or 'group-ending-with' 
+            // are used.
+            for (int idx = 0; idx < xslForEachGroupStartingWithEndingWith.size(); idx++) {
+               List<Integer> groupNodesDtmHandles = xslForEachGroupStartingWithEndingWith.get(idx);
+               for (ElemTemplateElement templateElem = this.m_firstChild; templateElem != null; 
+                                                                  templateElem = templateElem.m_nextSibling) {
+                   // grouping key is absent when, attributes 'group-starting-with' or 'group-ending-with' 
+                   // are used.
+                   // to handle this more correctly  TO DO
+                   templateElem.setGroupingKey(null);
+                   
+                   templateElem.setGroupNodesDtmHandles(groupNodesDtmHandles);
+                   xctxt.setSAXLocator(templateElem);
+                   transformer.setCurrentElement(templateElem);                   
+                   templateElem.execute(transformer);
+                }
             }
          }
          finally
@@ -554,6 +672,35 @@ public class ElemForEachGroup extends ElemTemplateElement implements ExpressionO
   {
       exp.exprSetParent(this);
       m_selectExpression = exp;
+  }
+  
+  /*
+   * Method to support, validating the presence and count of xsl:for-each-group
+   * attributes "group-by", "group-adjacent", "group-starting-with", 
+   * "group-ending-with". 
+   */
+  private int getForEachGroupGroupingAttributesCount() 
+                                          throws TransformerException {
+
+        int forEachGroupGroupingAttributesCount = 0;
+        
+        if (m_GroupByExpression != null) {
+           forEachGroupGroupingAttributesCount++;    
+        }
+        
+        if (m_GroupAdjacentExpression != null) {
+           forEachGroupGroupingAttributesCount++;    
+        }
+        
+        if (m_GroupStartingWithExpression != null) {
+           forEachGroupGroupingAttributesCount++;    
+        }
+        
+        if (m_GroupEndingWithExpression != null) {
+           forEachGroupGroupingAttributesCount++;    
+        }
+        
+        return forEachGroupGroupingAttributesCount;
   }
   
   /* 
