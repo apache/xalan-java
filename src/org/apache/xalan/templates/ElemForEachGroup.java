@@ -529,7 +529,7 @@ public class ElemForEachGroup extends ElemTemplateElement
         
          // Reorder xsl:for-each-group raw groups content known as 'order of first appearance' 
          // as defined by XSLT 3.0 spec (this is the default XSLT transformation xsl:for-each-group 
-         // element's output order in absence of xsl:for-each-group's xsl:sort elements).         
+         // element's sorted output order in absence of xsl:for-each-group's xsl:sort elements).         
          // The groups reordering logic performed below, is only applicable when attributes 
          // 'group-by' or 'group-adjacent' are used.
          List<GroupingKeyAndNodeHandlePair> groupingKeyAndNodeHandlePairList = new ArrayList
@@ -555,7 +555,7 @@ public class ElemForEachGroup extends ElemTemplateElement
             xctxt.pushContextNodeList(sourceNodes);
             transformer.pushElemTemplateElement(null);
                         
-            // sort the xsl:for-each-group's groups. This is applicable when, xsl:for-each-group 
+            // sort the xsl:for-each-group's groups. This is only applicable when, xsl:for-each-group 
             // attributes 'group-by' or 'group-adjacent' are used. 
             Collections.sort(groupingKeyAndNodeHandlePairList);
             
