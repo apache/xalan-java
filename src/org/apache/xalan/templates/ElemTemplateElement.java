@@ -60,17 +60,17 @@ public class ElemTemplateElement extends UnImplNode
         implements PrefixResolver, Serializable, ExpressionNode, 
                    WhitespaceStrippingElementMatcher, XSLTVisitable
 {
-    static final long serialVersionUID = 4440018597841834447L;
+   static final long serialVersionUID = 4440018597841834447L;
     
-    // To support, xsl:for-each-group's grouping key. 
-    // The instance of this class, stores this value for a specific xsl:for-each-group element 
-    // within the XSLT stylesheet.
-    private Object fGroupingKey;
+   // to support, xsl:for-each-group's grouping key. 
+   // the instance of this class, stores this value for a specific xsl:for-each-group element 
+   // within the XSLT stylesheet.
+   private Object fGroupingKey = null;
     
-    // To support, xsl:for-each-group's current-group contents. 
-    // The instance of this class, stores this value for a specific xsl:for-each-group element 
-    // within the XSLT stylesheet.
-    private List<Integer> fGroupNodesDtmHandles;
+   // to support, xsl:for-each-group's current-group contents. 
+   // the instance of this class, stores this value for a specific xsl:for-each-group element 
+   // within the XSLT stylesheet.
+   private List<Integer> fGroupNodesDtmHandles;
 
   /**
    * Construct a template element instance.

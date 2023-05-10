@@ -28,7 +28,20 @@ import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Execute xsl:for-each-group's current-grouping-key() function.
+ * Implementation of xsl:for-each-group's current-grouping-key() function.
+ * 
+ * This function is designed to be called from within, xsl:for-each-group instruction.
+ * 
+ * The following cases are applicable, when using this function from within XSLT stylesheets,
+ * 
+ * 1) With xsl:for-each-group instruction, when group-by and group-adjacent attributes
+ *    are present, call to this function within xsl:for-each-group element returns valid non null 
+ *    typed values. 
+ * 2) With xsl:for-each-group instruction, when group-starting-with and group-ending-with attributes
+ *    are present the grouping key is absent, and with these cases the call to this function within 
+ *    xsl:for-each-group element raises a dynamic error XTDE1071.
+ * 3) This function may also be called, within any XSLT element other than xsl:for-each-group element.
+ *    With these cases, the call to this function raises a dynamic error XTDE1071.    
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -53,9 +66,16 @@ public class FuncCurrentGroupingKey extends Function
         ElemTemplateElement currElemTemplateElement = transformer.getCurrentElement();
         
         Object groupingKey = currElemTemplateElement.getGroupingKey();
-        while (groupingKey == null) {
-            currElemTemplateElement = currElemTemplateElement.getParentElem();
-            groupingKey = currElemTemplateElement.getGroupingKey();
+        while (groupingKey == null && currElemTemplateElement != null) {            
+           currElemTemplateElement = currElemTemplateElement.getParentElem();
+           if (currElemTemplateElement != null) {
+               groupingKey = currElemTemplateElement.getGroupingKey();
+           }
+        }
+        
+        if (groupingKey == null) {
+            throw new javax.xml.transform.TransformerException("XTDE1071 : There is no current grouping key.", 
+                                                                                xctxt.getSAXLocator());    
         }
       
         return XObject.create(groupingKey);
