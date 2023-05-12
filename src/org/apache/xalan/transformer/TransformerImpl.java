@@ -49,14 +49,12 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.xalan.extensions.ExtensionsTable;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-import org.apache.xml.serializer.Method;
-import org.apache.xml.serializer.Serializer;
-import org.apache.xml.serializer.SerializerFactory;
 import org.apache.xalan.templates.AVT;
 import org.apache.xalan.templates.Constants;
 import org.apache.xalan.templates.ElemAttributeSet;
 import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.ElemForEachGroup;
+import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemSort;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemTemplateElement;
@@ -73,10 +71,13 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.DTMWSFilter;
+import org.apache.xml.serializer.Method;
+import org.apache.xml.serializer.SerializationHandler;
+import org.apache.xml.serializer.Serializer;
+import org.apache.xml.serializer.SerializerFactory;
 import org.apache.xml.serializer.ToSAXHandler;
 import org.apache.xml.serializer.ToTextStream;
 import org.apache.xml.serializer.ToXMLSAXHandler;
-import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.DOMBuilder;
 import org.apache.xml.utils.NodeVector;
@@ -2566,89 +2567,108 @@ public class TransformerImpl extends Transformer
     return keys;
   }
   
-  public Vector processSortKeysForEachGroup(ElemForEachGroup foreachgroup, int sourceNodeContext)
-          throws TransformerException
-  {
-
-    Vector keys = null;
-    XPathContext xctxt = m_xcontext;
-    int nElems = foreachgroup.getSortElemCount();
-
-    if (nElems > 0)
-      keys = new Vector();
-
-    // March backwards, collecting the sort keys.
-    for (int i = 0; i < nElems; i++)
-    {
-      ElemSort sort = foreachgroup.getSortElem(i);
-      
-      if (m_debug)
-        getTraceManager().fireTraceEvent(sort);
+  /**
+   * Construct sort keys for xsl:sort element(s) within xsl:for-each-group element. 
+   * Sort keys are the sorting criteria, according to which, xsl:for-each-group 
+   * groups shall be sorted.
+   * 
+   * The contents within any of these groups, shall not be sorted. Only the groups
+   * themselves shall be reordered within the XSLT transformation result, 
+   * after sorting of groups is completed.
+   * 
+   * Multiple xsl:sort elements within xsl:for-each-group are considered with
+   * major to minor order (i.e, from first to next and so on, in the XML 
+   * document instance document order).
+   * 
+   *
+   * @param forEachGroup        the current ElemForEachGroup object instance.
+   *                          
+   * @param sourceNodeContext   the current node context in the source tree.                          
+   *
+   * @return a Vector of NodeSortKey objects.
+   *
+   * @throws TransformerException
+   * 
+   * @xsl.usage advanced
+   */
+  public Vector processSortKeysForEachGroup(ElemForEachGroup forEachGroup, int sourceNodeContext)
+                                                                  throws TransformerException {
+        Vector sortKeys = null;
+        
+        XPathContext xctxt = m_xcontext;
+        int nElems = forEachGroup.getSortElemCount();
+    
+        if (nElems > 0) {
+           sortKeys = new Vector();
+        }
+    
+        // create a vector of sort keys. this vector is ordered, as per xsl:sort elements 
+        // document order with which this vector is been created. 
+        for (int idx = 0; idx < nElems; idx++) {
+              ElemSort sortElem = forEachGroup.getSortElem(idx);
+              
+              if (m_debug) {
+                 getTraceManager().fireTraceEvent(sortElem);
+              }
+             
+              String langString = (null != sortElem.getLang())
+                                             ? sortElem.getLang().evaluate(xctxt, 
+                                                          sourceNodeContext, forEachGroup) : null;
+              String dataTypeString = sortElem.getDataType().evaluate(xctxt,
+                                                                sourceNodeContext, forEachGroup);
+        
+              if (dataTypeString.indexOf(":") >= 0) {
+                 System.out.println("TODO: Need to handle XML qname sort data type");
+              }
+              else if (!(dataTypeString.equalsIgnoreCase(Constants.ATTRVAL_DATATYPE_TEXT))
+                                && !(dataTypeString.equalsIgnoreCase(Constants.ATTRVAL_DATATYPE_NUMBER))) {
+                     forEachGroup.error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
+                                              new Object[]{ Constants.ATTRNAME_DATATYPE, dataTypeString });
+              }
+              
+              boolean treatAsNumbers = ((null != dataTypeString) && dataTypeString.equals(
+                                                      Constants.ATTRVAL_DATATYPE_NUMBER)) ? true : false;
+              String orderString = (sortElem.getOrder()).evaluate(xctxt, sourceNodeContext, forEachGroup);
+        
+              if (!(orderString.equalsIgnoreCase(Constants.ATTRVAL_ORDER_ASCENDING))
+                                        && !(orderString.equalsIgnoreCase(Constants.ATTRVAL_ORDER_DESCENDING))) {
+                 forEachGroup.error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
+                                                        new Object[]{ Constants.ATTRNAME_ORDER, orderString });
+              }
+        
+              boolean descending = ((null != orderString) && orderString.equals(
+                                                 Constants.ATTRVAL_ORDER_DESCENDING)) ? true : false;
+              AVT caseOrder = sortElem.getCaseOrder();
+              boolean caseOrderUpper;
+        
+              if (caseOrder != null) {
+                String caseOrderString = caseOrder.evaluate(xctxt, sourceNodeContext, forEachGroup);
+        
+                if (!(caseOrderString.equalsIgnoreCase(Constants.ATTRVAL_CASEORDER_UPPER))
+                                                      && !(caseOrderString.equalsIgnoreCase(
+                                                                             Constants.ATTRVAL_CASEORDER_LOWER))) {
+                   forEachGroup.error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE, new Object[]{ 
+                                                             Constants.ATTRNAME_CASEORDER, caseOrderString });
+                }
+        
+                caseOrderUpper = ((null != caseOrderString) && caseOrderString.equals(
+                                                                  Constants.ATTRVAL_CASEORDER_UPPER)) ? true : false;
+              }
+              else
+              {
+                  caseOrderUpper = false;
+              }
+        
+              sortKeys.addElement(new NodeSortKey(this, sortElem.getSelect(), treatAsNumbers,
+                                                           descending, langString, caseOrderUpper,
+                                                           forEachGroup));
+              if (m_debug) {
+                 getTraceManager().fireTraceEndEvent(sortElem);
+              }          
+         }
+    
+         return sortKeys;
      
-      String langString =
-        (null != sort.getLang())
-        ? sort.getLang().evaluate(xctxt, sourceNodeContext, foreachgroup) : null;
-      String dataTypeString = sort.getDataType().evaluate(xctxt,
-                                sourceNodeContext, foreachgroup);
-
-      if (dataTypeString.indexOf(":") >= 0)
-        System.out.println(
-          "TODO: Need to write the hooks for QNAME sort data type");
-      else if (!(dataTypeString.equalsIgnoreCase(Constants.ATTRVAL_DATATYPE_TEXT))
-               &&!(dataTypeString.equalsIgnoreCase(
-                 Constants.ATTRVAL_DATATYPE_NUMBER)))
-        foreachgroup.error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
-                      new Object[]{ Constants.ATTRNAME_DATATYPE,
-                                    dataTypeString });
-
-      boolean treatAsNumbers =
-        ((null != dataTypeString) && dataTypeString.equals(
-        Constants.ATTRVAL_DATATYPE_NUMBER)) ? true : false;
-      String orderString = sort.getOrder().evaluate(xctxt, sourceNodeContext,
-                             foreachgroup);
-
-      if (!(orderString.equalsIgnoreCase(Constants.ATTRVAL_ORDER_ASCENDING))
-              &&!(orderString.equalsIgnoreCase(
-                Constants.ATTRVAL_ORDER_DESCENDING)))
-        foreachgroup.error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
-                      new Object[]{ Constants.ATTRNAME_ORDER,
-                                    orderString });
-
-      boolean descending =
-        ((null != orderString) && orderString.equals(
-        Constants.ATTRVAL_ORDER_DESCENDING)) ? true : false;
-      AVT caseOrder = sort.getCaseOrder();
-      boolean caseOrderUpper;
-
-      if (null != caseOrder)
-      {
-        String caseOrderString = caseOrder.evaluate(xctxt, sourceNodeContext,
-                                                    foreachgroup);
-
-        if (!(caseOrderString.equalsIgnoreCase(Constants.ATTRVAL_CASEORDER_UPPER))
-                &&!(caseOrderString.equalsIgnoreCase(
-                  Constants.ATTRVAL_CASEORDER_LOWER)))
-          foreachgroup.error(XSLTErrorResources.ER_ILLEGAL_ATTRIBUTE_VALUE,
-                        new Object[]{ Constants.ATTRNAME_CASEORDER,
-                                      caseOrderString });
-
-        caseOrderUpper =
-          ((null != caseOrderString) && caseOrderString.equals(
-          Constants.ATTRVAL_CASEORDER_UPPER)) ? true : false;
-      }
-      else
-      {
-        caseOrderUpper = false;
-      }
-
-      keys.addElement(new NodeSortKey(this, sort.getSelect(), treatAsNumbers,
-                                      descending, langString, caseOrderUpper,
-                                      foreachgroup));
-      if (m_debug)
-        getTraceManager().fireTraceEndEvent(sort);
-     }
-
-    return keys;
   }
 
   //==========================================================

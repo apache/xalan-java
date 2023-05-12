@@ -27,10 +27,12 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xpath.XPath;
 
 /**
- * Data structure for use by the NodeSorter class.
+ * Data structure for use by the NodeSorter and ForEachGroupXslSortSorter 
+ * classes.
+ * 
  * @xsl.usage internal
  */
-class NodeSortKey
+public class NodeSortKey
 {
 
   /** Select pattern for this sort key          */
