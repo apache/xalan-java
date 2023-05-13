@@ -219,6 +219,9 @@ public class Keywords
   
   /** current-group function string (XSLT). */
   public static final String FUNC_CURRENT_GROUP = "current-group";
+  
+  /** abs function string. */
+  public static final String FUNC_ABS = "abs";
 
   // Proprietary, built in functions
 

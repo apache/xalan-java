@@ -143,6 +143,9 @@ public class FunctionTable
   
   /** The 'current-group()' id (XSLT). */
   public static final int FUNC_CURRENT_GROUP = 40;
+  
+  /** The 'abs()' id. */
+  public static final int FUNC_ABS = 41;
 
   // Proprietary
 
@@ -171,7 +174,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 41;
+  private static final int NUM_BUILT_IN_FUNCS = 42;
 
   /**
    * Number of built-in functions that may be added.
@@ -245,6 +248,8 @@ public class FunctionTable
       org.apache.xalan.templates.FuncCurrentGroupingKey.class;
     m_functions[FUNC_CURRENT_GROUP] = 
       org.apache.xalan.templates.FuncCurrentGroup.class;
+    m_functions[FUNC_ABS] = 
+      org.apache.xpath.functions.FuncAbs.class;
   }
 
   static{
@@ -326,6 +331,8 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_CURRENT_GROUPING_KEY));
           m_functionID.put(Keywords.FUNC_CURRENT_GROUP,
                           new Integer(FunctionTable.FUNC_CURRENT_GROUP));
+          m_functionID.put(Keywords.FUNC_ABS,
+                  new Integer(FunctionTable.FUNC_ABS));
   }
   
   public FunctionTable(){
