@@ -283,11 +283,11 @@ public class ForEachGroupXslSortSorter
   /**
    * This method implements a standard mergesort algorithm.
    *
-   * @param   a First vector of nodes to compare
-   * @param   b Second vector of  nodes to compare 
-   * @param   l Left boundary of  partition
-   * @param   r Right boundary of  partition
-   * @param   xpathContext XPath context to use
+   * @param   a                  first vector of nodes to compare
+   * @param   b                  second vector of  nodes to compare 
+   * @param   l                  left boundary of  partition
+   * @param   r                  right boundary of  partition
+   * @param   xpathContext       XPath context to use
    *
    * @throws TransformerException
    */
@@ -343,7 +343,7 @@ public class ForEachGroupXslSortSorter
   }
 
   /**
-   * This class holds the value(s) produced by evaluating the given
+   * This class stores the value(s) produced by evaluating the given
    * xsl:for-each-group group with the sort key(s).
    *  
    * @xsl.usage internal
