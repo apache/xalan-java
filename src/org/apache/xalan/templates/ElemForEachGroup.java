@@ -92,8 +92,8 @@ import org.apache.xpath.objects.XString;
    The XSLT transformation output result order of the groups, can be explicitly affected by one 
    or more xsl:sort elements within the xsl:for-each-group element. If xsl:sort elements are not
    present within xsl:for-each-group element, then the XSLT transformation output result order of 
-   the groups, is according to the default sorted order (also known as order of first appearance), as
-   defined by XSLT 3.0 spec.    
+   the groups, is according to the default sorted order (also known as order of first appearance),
+   as defined by XSLT 3.0 spec.    
 */
 public class ElemForEachGroup extends ElemTemplateElement 
                                                 implements ExpressionOwner
@@ -782,7 +782,7 @@ public class ElemForEachGroup extends ElemTemplateElement
   /* 
    * For the purpose of, evaluating grouping key XPath expressions for xsl:for-each-group, 
    * the grouping keys are treated as of type string, number or boolean. Any other data 
-   * type for grouping key is converted to a String value.
+   * type for grouping key is converted to a string value.
    */
   private Object getXPathEvaluationRawResult(XObject xpathEvalResult) {
       Object xpathRawResult = null;
