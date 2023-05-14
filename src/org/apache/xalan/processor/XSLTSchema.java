@@ -223,7 +223,7 @@ public class XSLTSchema extends XSLTElementDef
                                                   XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
 
     // Optional.                                          
-    // xsl:variable, xsl:param, xsl:with-param                                       
+    // xsl:variable, xsl:param, xsl:with-param, xsl:attribute                                       
     XSLTAttributeDef selectAttrOpt = new XSLTAttributeDef(null, "select",
                                        XSLTAttributeDef.T_EXPR, false, false,XSLTAttributeDef.ERROR);
 
@@ -517,7 +517,7 @@ public class XSLTSchema extends XSLTElementDef
                                     charTemplateElements /* elements */,  // %char-template;>
                                     new XSLTAttributeDef[]{ nameAVTRequired,
                                                             namespaceAVTOpt,
-                                                            spaceAttr }, 
+                                                            spaceAttr, selectAttrOpt }, 
                                     new ProcessorTemplateElem(),
                                     ElemAttribute.class /* class object */, 20, true);
     XSLTElementDef xslCallTemplate =
