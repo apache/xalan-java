@@ -50,6 +50,10 @@ import org.xml.sax.SAXException;
 
  * @xsl.usage advanced
  */
+
+/* 
+   Implementation of the XSLT 3.0 xsl:attribute instruction.
+*/
 public class ElemAttribute extends ElemElement
 {
     static final long serialVersionUID = 8817220961566919187L;
