@@ -88,9 +88,15 @@ public class Constants extends org.apache.xml.utils.Constants
   ELEMNAME_EXTENSIONSCRIPT = 86, ELEMNAME_OUTPUT = 80,
   ELEMNAME_COMPONENT = 81, ELEMNAME_SCRIPT = 82,
   
-  ELEMNAME_FOREACHGROUP = 90;
+  ELEMNAME_FOREACHGROUP = 90,
 
-  // Next free number: 91
+  ELEMNAME_ANALYZESTRING = 91,
+  
+  ELEMNAME_MATCHING_SUBSTRING = 92,
+  
+  ELEMNAME_NON_MATCHING_SUBSTRING = 93;
+  
+  // next available number : 94
 
   /**
    * Literals for XSL element names. Note that there are more
@@ -132,6 +138,9 @@ public class Constants extends org.apache.xml.utils.Constants
       ELEMNAME_FALLBACK_STRING = "fallback",
       ELEMNAME_FOREACH_STRING = "for-each",
       ELEMNAME_FOREACHGROUP_STRING = "for-each-group",
+      ELEMNAME_ANALYZESTRING_STRING = "analyze-string",
+      ELEMNAME_MATCHINGSUBSTRING_STRING = "matching-substring",
+      ELEMNAME_NONMATCHINGSUBSTRING_STRING = "non-matching-substring",
       ELEMNAME_IF_STRING = "if",
       ELEMNAME_IMPORT_STRING = "import",
       ELEMNAME_INCLUDE_STRING = "include",

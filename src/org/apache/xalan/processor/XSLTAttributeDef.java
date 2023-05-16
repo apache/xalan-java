@@ -41,8 +41,8 @@ import org.apache.xpath.XPath;
  
 /**
  * This class defines an attribute for an element in a XSLT stylesheet,
- * is meant to reflect the structure defined in http://www.w3.org/TR/xslt#dtd, and the
- * mapping between Xalan classes and the markup attributes in the element.
+ * and is meant to reflect the structure defined at https://www.w3.org/TR/xslt-30/#xsd11-schema-for-xslt, 
+ * and the mapping between Xalan classes and the markup attributes in the element.
  */
 public class XSLTAttributeDef
 {
@@ -268,7 +268,10 @@ public class XSLTAttributeDef
   // Used for a list of white-space delimited strings.
   // strings are checked to make sure they are valid 
   // prefixes, and are not expanded when processed. 
-  T_PREFIXLIST = 20;
+  T_PREFIXLIST = 20,
+  
+  // Used for a string value.
+  T_STRING = 21;
 
   /** Representation for an attribute in a foreign namespace. */
   static final XSLTAttributeDef m_foreignAttr = new XSLTAttributeDef("*", "*",
@@ -1210,6 +1213,22 @@ public class XSLTAttributeDef
 
     return strings;
   }
+  
+  /**
+   * Process an attribute string of type T_STRING.
+   *
+   * @param handler        non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @param uri            The Namespace URI, or an empty string.
+   * @param name           The local name (without prefix), or empty string if not namespace processing.
+   * @param rawName        The qualified name (with prefix).
+   * @param value          String value.
+   *
+   * @return String value itself.
+   */
+  String processSTRING(StylesheetHandler handler, String uri, String name, 
+                                                  String rawName, String value) {
+     return value;
+  }
 
   /**
    * Process an attribute string of type T_URLLIST into
@@ -1434,6 +1453,9 @@ public class XSLTAttributeDef
       break;
     case T_STRINGLIST :
       processedValue = processSTRINGLIST(handler, uri, name, rawName, value);
+      break;
+    case T_STRING :
+      processedValue = processSTRING(handler, uri, name, rawName, value);
       break;
     case T_PREFIX_URLLIST :
       processedValue = processPREFIX_URLLIST(handler, uri, name, rawName,

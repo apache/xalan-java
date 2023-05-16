@@ -20,10 +20,17 @@
  */
 package org.apache.xml.dtm;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.dom.DOMSource;
+
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.XMLStringFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
 
 /**
  * A DTMManager instance can be used to create DTM and
@@ -208,6 +215,34 @@ public abstract class DTMManager
    * @return a non-null DTM reference.
    */
   public abstract DTM createDocumentFragment();
+  
+  /*
+   * This method has been defined, to construct a DTM object, representing an
+   * XML document that contains only 'one xml element with a text node child'.
+   * This method currently supports, evaluation of XSLT xsl:analyze-string 
+   * instruction.
+   */
+  public DTM createDTMForSimpleXMLDocument(String strVal) {    
+        try {
+          DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    
+          dbf.setNamespaceAware(true);
+    
+          DocumentBuilder db = dbf.newDocumentBuilder();
+          Document doc = db.newDocument();
+          // "temp" is an arbitrary name selected for an XML element,
+          // for this purpose.
+          Element elem = doc.createElement("temp");
+          Text textNode = doc.createTextNode(strVal);
+          elem.appendChild(textNode);
+          doc.appendChild(elem);
+    
+          return getDTM(new DOMSource(doc), true, null, false, false);
+        }
+        catch (Exception e) {
+            throw new DTMException(e);
+        }
+  }
 
   /**
    * Release a DTM either to a lru pool, or completely remove reference.

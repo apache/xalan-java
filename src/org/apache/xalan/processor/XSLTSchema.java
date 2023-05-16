@@ -23,6 +23,7 @@ package org.apache.xalan.processor;
 import java.util.HashMap;
 
 import org.apache.xalan.templates.Constants;
+import org.apache.xalan.templates.ElemAnalyzeString;
 import org.apache.xalan.templates.ElemApplyImport;
 import org.apache.xalan.templates.ElemApplyTemplates;
 import org.apache.xalan.templates.ElemAttribute;
@@ -41,7 +42,9 @@ import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.ElemIf;
 import org.apache.xalan.templates.ElemLiteralResult;
+import org.apache.xalan.templates.ElemMatchingSubstring;
 import org.apache.xalan.templates.ElemMessage;
+import org.apache.xalan.templates.ElemNonMatchingSubstring;
 import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
 import org.apache.xalan.templates.ElemPI;
@@ -58,9 +61,10 @@ import org.apache.xalan.templates.ElemWithParam;
 import org.apache.xml.utils.QName;
 
 /**
- * This class defines the allowed structure for a stylesheet, and the
+ * This class defines the allowed structure for an XSLT stylesheet, and the
  * mapping between Xalan classes and the markup elements in the stylesheet.
- * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
+ * 
+ * @see <a href="https://www.w3.org/TR/xslt-30/#xsd11-schema-for-xslt">XSD 1.1 Schema for XSLT Stylesheets</a>
  */
 public class XSLTSchema extends XSLTElementDef
 {
@@ -74,8 +78,8 @@ public class XSLTSchema extends XSLTElementDef
   }
 
   /**
-   * This method builds an XSLT "schema" according to http://www.w3.org/TR/xslt#dtd.  This
-   * schema provides instructions for building the Xalan Stylesheet (Templates) structure.
+   * This method builds an XSLT "schema" according to https://www.w3.org/TR/xslt-30/#xsd11-schema-for-xslt.
+   * This schema provides instructions for building the Xalan Stylesheet (Templates) structure.
    */
   void build()
   {
@@ -193,10 +197,22 @@ public class XSLTSchema extends XSLTElementDef
       
       
     // Required.                                       
-    // xsl:value-of, xsl:for-each, xsl:copy-of, xsl:for-each-group                             
+    // xsl:value-of, xsl:for-each, xsl:copy-of, xsl:for-each-group, xsl:analyze-string                             
     XSLTAttributeDef selectAttrRequired = new XSLTAttributeDef(null,
                                             "select",
                                             XSLTAttributeDef.T_EXPR, true, false, XSLTAttributeDef.ERROR);
+    
+    // Required.                                       
+    // xsl:analyze-string                             
+    XSLTAttributeDef regexAttrRequired = new XSLTAttributeDef(null,
+                                              "regex",
+                                              XSLTAttributeDef.T_STRING, true, false, XSLTAttributeDef.ERROR);
+    
+    // Optional.                                       
+    // xsl:analyze-string                              
+    XSLTAttributeDef flagsAttrOpt = new XSLTAttributeDef(null,
+                                             "flags",
+                                             XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
     
     // Optional.                                       
     // xsl:for-each-group                             
@@ -368,11 +384,11 @@ public class XSLTSchema extends XSLTElementDef
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "*",
                            XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.WARNING);
                            
-    XSLTElementDef[] templateElements = new XSLTElementDef[24];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[25];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[25];
+    XSLTElementDef[] templateElements = new XSLTElementDef[27];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[28];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[28];
     //exslt
-    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[25];
+    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[28];
     
     XSLTElementDef[] charTemplateElements = new XSLTElementDef[16];
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
@@ -478,6 +494,28 @@ public class XSLTSchema extends XSLTElementDef
                                                                      groupStartingWithAttrOpt, groupEndingWithAttrOpt, spaceAttr }, 
                                              new ProcessorTemplateElem(),
                                              ElemForEachGroup.class /* class object */, true, false, true, 20, true);
+    
+    XSLTElementDef xslAnalyzeString = new XSLTElementDef(this,
+                                                Constants.S_XSLNAMESPACEURL, "analyze-string",
+                                                null /*alias */, templateElements,
+                                                new XSLTAttributeDef[]{ selectAttrRequired, 
+                                                                        regexAttrRequired, flagsAttrOpt, spaceAttr }, 
+                                                new ProcessorTemplateElem(),
+                                                ElemAnalyzeString.class /* class object */, true, false, true, 20, true);
+    
+    XSLTElementDef xslMatchingSubstring = new XSLTElementDef(this,
+                                                Constants.S_XSLNAMESPACEURL, "matching-substring",
+                                                null /*alias */, templateElements,
+                                                new XSLTAttributeDef[] { }, 
+                                                new ProcessorTemplateElem(),
+                                                ElemMatchingSubstring.class /* class object */, true, false, true, 20, true);
+    
+    XSLTElementDef xslNonMatchingSubstring = new XSLTElementDef(this,
+                                                Constants.S_XSLNAMESPACEURL, "non-matching-substring",
+                                                null /*alias */, templateElements,
+                                                new XSLTAttributeDef[] { }, 
+                                                new ProcessorTemplateElem(),
+                                                ElemNonMatchingSubstring.class /* class object */, true, false, true, 20, true);
     
     XSLTElementDef xslIf = new XSLTElementDef(this,
                                               Constants.S_XSLNAMESPACEURL,
@@ -629,6 +667,9 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = xslApplyImports;
     templateElements[i++] = xslForEach;
     templateElements[i++] = xslForEachGroup;
+    templateElements[i++] = xslAnalyzeString;
+    templateElements[i++] = xslMatchingSubstring;
+    templateElements[i++] = xslNonMatchingSubstring;
     templateElements[i++] = xslValueOf;
     templateElements[i++] = xslCopyOf;
     templateElements[i++] = xslNumber;

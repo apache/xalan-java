@@ -75,7 +75,7 @@ public class RegExFunctionSupport {
        return flagStrValid; 
 	}
 	
-	private static Matcher compileAndExecute(String pattern, String flags, String src) {
+	public static Matcher compileAndExecute(String pattern, String flags, String src) {
 		int flag = Pattern.UNIX_LINES;
 		
 		if (flags != null) {			
