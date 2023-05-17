@@ -20,6 +20,9 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
@@ -65,7 +68,7 @@ import org.apache.xpath.regex.Matcher;
  * xsl:analyze-string.    // revisit
  * 
  * With xsl:analyze-string element, we're presently not implementing xsl:fallback 
- * elements. xsl:fallback elements don't have much useful use cases, within 
+ * elements. xsl:fallback elements don't seem to have much useful use cases within 
  * xsl:analyze-string element.   // revisit 
  * 
  */
@@ -267,7 +270,19 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
            }
        }
        
+       regexMatcher.reset();
+       
+       List<String> strToBeAnalyzedMatchingSubsequences = new ArrayList<String>();
+       
+       while (regexMatcher.find()) {
+           int idx1 = regexMatcher.start();
+           int idx2 = regexMatcher.end();
+           String str = strToBeAnalyzed.substring(idx1, idx2);
+           strToBeAnalyzedMatchingSubsequences.add(str);
+       }
+       
        String[] strParts = tempReplacedStr.split(tempReplStr);
+       int i2 = 0;
        for (int idx = 0; idx < strParts.length; idx++) {           
            if (templateElem2 != null) {
                ((ElemNonMatchingSubstring)templateElem2).setStrValue(strParts[idx]);               
@@ -275,11 +290,28 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
                transformer.setCurrentElement(templateElem2);                   
                templateElem2.execute(transformer);
            }
-           
-           // ((ElemMatchingSubstring)templateElem1).setStrValue("???");   // revisit
-           xctxt.setSAXLocator(templateElem1);
-           transformer.setCurrentElement(templateElem1);                   
-           templateElem1.execute(transformer);
+
+           if (templateElem1 != null) {
+               if (templateElem1 instanceof ElemNonMatchingSubstring) {
+                   ((ElemNonMatchingSubstring)templateElem1).setStrValue(strParts[idx]);               
+                   xctxt.setSAXLocator(templateElem1);
+                   transformer.setCurrentElement(templateElem1);                   
+                   templateElem1.execute(transformer);    
+               }
+               else {
+                   if ((idx < strParts.length - 1) || ((idx == strParts.length - 1) && 
+                                                                 tempReplacedStr.endsWith(tempReplStr))) {
+                      ((ElemMatchingSubstring)templateElem1).setStrValue(
+                                                                 strToBeAnalyzedMatchingSubsequences.get(i2));
+                      ((ElemMatchingSubstring)templateElem1).setRegex(m_regex);
+                      ((ElemMatchingSubstring)templateElem1).setFlags(m_flags);
+                      xctxt.setSAXLocator(templateElem1);
+                      transformer.setCurrentElement(templateElem1);                   
+                      templateElem1.execute(transformer);
+                      i2++;
+                   }
+               }
+           }
        }
        
   }

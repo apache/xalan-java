@@ -222,6 +222,9 @@ public class Keywords
   
   /** abs function string. */
   public static final String FUNC_ABS = "abs";
+  
+  /** regex-group function string (XSLT). */
+  public static final String FUNC_REGEX_GROUP = "regex-group";
 
   // Proprietary, built in functions
 

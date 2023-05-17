@@ -146,6 +146,9 @@ public class FunctionTable
   
   /** The 'abs()' id. */
   public static final int FUNC_ABS = 41;
+  
+  /** The 'regex-group()' id (XSLT). */
+  public static final int FUNC_REGEX_GROUP = 42;
 
   // Proprietary
 
@@ -174,7 +177,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 42;
+  private static final int NUM_BUILT_IN_FUNCS = 43;
 
   /**
    * Number of built-in functions that may be added.
@@ -250,6 +253,8 @@ public class FunctionTable
       org.apache.xalan.templates.FuncCurrentGroup.class;
     m_functions[FUNC_ABS] = 
       org.apache.xpath.functions.FuncAbs.class;
+    m_functions[FUNC_REGEX_GROUP] = 
+      org.apache.xalan.templates.FuncRegexGroup.class;
   }
 
   static{
@@ -333,6 +338,8 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_CURRENT_GROUP));
           m_functionID.put(Keywords.FUNC_ABS,
                   new Integer(FunctionTable.FUNC_ABS));
+          m_functionID.put(Keywords.FUNC_REGEX_GROUP,
+                  new Integer(FunctionTable.FUNC_REGEX_GROUP));
   }
   
   public FunctionTable(){

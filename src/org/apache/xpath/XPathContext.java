@@ -25,6 +25,7 @@ import java.util.Stack;
 import java.util.Vector;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
@@ -93,6 +94,12 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * state of the secure processing feature.
    */
   private boolean m_isSecureProcessing = false;
+  
+  /*
+   * This field, can be used to store custom data (represented as a map object) 
+   * within the current XPath evaluation context.
+   */
+  private Map<String, String> m_customDataMap = new HashMap<String, String>();
 	
   /**
    * Though XPathContext context extends 
@@ -1349,4 +1356,13 @@ public class XPathContext extends DTMManager // implements ExpressionContext
     }
     m_DTMXRTreeFrags = null;
  }
+
+ public Map<String, String> getCustomDataMap() {
+    return m_customDataMap;
+ }
+
+ public void setCustomDataMap(Map<String, String> customDataMap) {
+    this.m_customDataMap = customDataMap;
+ }
+  
 }

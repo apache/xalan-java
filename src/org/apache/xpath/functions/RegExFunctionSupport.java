@@ -25,7 +25,8 @@ import org.apache.xpath.regex.Pattern;
 
 /**
  * This class provides supporting implementation, common to all
- * XPath 3.1 functions requiring regex functionality.
+ * XPath 3.1 functions and the XSLT instruction xsl:analyze-string 
+ * that require regex functionality.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -75,30 +76,31 @@ public class RegExFunctionSupport {
        return flagStrValid; 
 	}
 	
-	public static Matcher compileAndExecute(String pattern, String flags, String src) {
+	public static Matcher compileAndExecute(String regexStr, String regexFlags, 
+	                                                                  String inputStr) {
 		int flag = Pattern.UNIX_LINES;
 		
-		if (flags != null) {			
-			if (flags.indexOf("s") >= 0) {
+		if (regexFlags != null) {			
+			if (regexFlags.indexOf("s") >= 0) {
 				flag = flag | Pattern.DOTALL;
 			}
-			if (flags.indexOf("m") >= 0) {
+			if (regexFlags.indexOf("m") >= 0) {
                 flag = flag | Pattern.MULTILINE;
             }
-			if (flags.indexOf("i") >= 0) {
+			if (regexFlags.indexOf("i") >= 0) {
 				flag = flag | Pattern.CASE_INSENSITIVE;
 			}			
-			if (flags.indexOf("x") >= 0) {
+			if (regexFlags.indexOf("x") >= 0) {
 				flag = flag | Pattern.IGNORE_WHITESPACE;
 			}
-			if (flags.indexOf("q") >= 0) {
+			if (regexFlags.indexOf("q") >= 0) {
                 flag = flag | Pattern.LITERAL;
             }
 		}
 		
-		Pattern p = Pattern.compile(pattern, flag);
+		Pattern pattern = Pattern.compile(regexStr, flag);
 		
-		return p.matcher(src);
+		return pattern.matcher(inputStr);
 	}
 
 }

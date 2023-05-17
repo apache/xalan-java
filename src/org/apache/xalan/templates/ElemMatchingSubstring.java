@@ -20,9 +20,14 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
@@ -50,6 +55,16 @@ public class ElemMatchingSubstring extends ElemTemplateElement implements Expres
   private static final long serialVersionUID = -5675647188821169056L;
   
   private String m_strValue = null;
+  
+  private String m_regex = null;
+  
+  private String m_flags = null;
+  
+  static final String STR_VALUE = "STR_VALUE";
+  
+  static final String REGEX = "REGEX";
+  
+  static final String REGEX_FLAGS = "REGEX_FLAGS";
 
   /**
    * Constructor of this class.
@@ -124,13 +139,33 @@ public class ElemMatchingSubstring extends ElemTemplateElement implements Expres
   public void transformSelectedNodes(TransformerImpl transformer) throws TransformerException {
 
       final XPathContext xctxt = transformer.getXPathContext();
+      
+      String strValueTobeEvaluated = getStrValue();
+      
+      Map<String, String> customDataMap = new HashMap<String, String>();
+      customDataMap.put(STR_VALUE, strValueTobeEvaluated);
+      customDataMap.put(REGEX, m_regex);
+      customDataMap.put(REGEX_FLAGS, m_flags);
+      
+      XPathContext xctxtNew = new XPathContext(false);
+
+      DTMManager dtmMgr = xctxtNew.getDTMManager();      
+      DTM docFragDtm = dtmMgr.createDTMForSimpleXMLDocument(strValueTobeEvaluated);
+      
+      int contextNode = docFragDtm.getFirstChild(docFragDtm.getDocument());
        
       for (ElemTemplateElement elem = this.m_firstChild; elem != null; 
-                                                    elem = elem.m_nextSibling) {
-          xctxt.setSAXLocator(elem);
+                                                    elem = elem.m_nextSibling) {          
+          xctxtNew.pushCurrentNode(contextNode);
+          xctxtNew.setSAXLocator(elem);
+          xctxtNew.setCustomDataMap(customDataMap);
+          transformer.setXPathContext(xctxtNew);          
           transformer.setCurrentElement(elem);
           elem.execute(transformer);
       }
+      
+      // restore the XPath context to where that was, before this method was called
+      transformer.setXPathContext(xctxt);
   }
 
   /**
@@ -166,8 +201,24 @@ public class ElemMatchingSubstring extends ElemTemplateElement implements Expres
       return m_strValue;
   }
 
-  public void setStrValue(String m_strValue) {
-      this.m_strValue = m_strValue;
+  public void setStrValue(String strValue) {
+      this.m_strValue = strValue;
+  }
+
+  public String getRegex() {
+      return m_regex;
+  }
+
+  public void setRegex(String regex) {
+      this.m_regex = regex;
+  }
+
+  public String getFlags() {
+      return m_flags;
+  }
+
+  public void setFlags(String flags) {
+      this.m_flags = flags;
   }
 
 }
