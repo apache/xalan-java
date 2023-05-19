@@ -203,10 +203,9 @@ public class XSLTSchema extends XSLTElementDef
                                             XSLTAttributeDef.T_EXPR, true, false, XSLTAttributeDef.ERROR);
     
     // Required.                                       
-    // xsl:analyze-string                             
-    XSLTAttributeDef regexAttrRequired = new XSLTAttributeDef(null,
-                                              "regex",
-                                              XSLTAttributeDef.T_STRING, true, false, XSLTAttributeDef.ERROR);
+    // xsl:analyze-string
+    XSLTAttributeDef regexAVTRequired = new XSLTAttributeDef(null, "regex",
+                                              XSLTAttributeDef.T_AVT, true, true, XSLTAttributeDef.ERROR);
     
     // Optional.                                       
     // xsl:analyze-string                              
@@ -498,8 +497,8 @@ public class XSLTSchema extends XSLTElementDef
     XSLTElementDef xslAnalyzeString = new XSLTElementDef(this,
                                                 Constants.S_XSLNAMESPACEURL, "analyze-string",
                                                 null /*alias */, templateElements,
-                                                new XSLTAttributeDef[]{ selectAttrRequired, 
-                                                                        regexAttrRequired, flagsAttrOpt, spaceAttr }, 
+                                                new XSLTAttributeDef[]{ regexAVTRequired, selectAttrRequired, 
+                                                                        flagsAttrOpt, spaceAttr }, 
                                                 new ProcessorTemplateElem(),
                                                 ElemAnalyzeString.class /* class object */, true, false, true, 20, true);
     

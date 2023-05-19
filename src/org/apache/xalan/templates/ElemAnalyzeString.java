@@ -30,7 +30,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.RegExFunctionSupport;
+import org.apache.xpath.functions.RegexEvaluationSupport;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.regex.Matcher;
 
@@ -64,8 +64,8 @@ import org.apache.xpath.regex.Matcher;
  * This XSLT instruction is intended to process, all the 'non overlapping' substrings 
  * of the input string that match the provided regular expression.
  * 
- * The XSLT function fn:regex-group may be used optionally along with XSLT instruction 
- * xsl:analyze-string.    // revisit
+ * The XSLT function fn:regex-group may be used optionally, along with XSLT instruction 
+ * xsl:analyze-string.
  * 
  * With xsl:analyze-string element, we're presently not implementing xsl:fallback 
  * elements. xsl:fallback elements don't seem to have much useful use cases within 
@@ -87,14 +87,14 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
   protected Expression m_selectExpression = null;
   
   /**
-   * The "regex" expression.
+   * The "regex" avt expression.
   */
-  protected String m_regex = null;
+  protected AVT m_regex = null;
   
   /**
-   * The regex "flags" expression.
+   * The regex "flags" string value.
   */
-  protected String m_flags = null;
+  protected String m_regex_flags = null;
 
   /**
    * Set the "select" attribute.
@@ -117,37 +117,37 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
   /**
    * Set the "regex" attribute.
    *
-   * @param regex The string value for the "regex" attribute.
+   * @param regex The avt value for the "regex" attribute.
    */
-  public void setRegex(String regex) {
+  public void setRegex(AVT regex) {
       m_regex = regex;   
   }
 
   /**
    * Get the "regex" attribute.
    *
-   * @return The string value for the "regex" attribute.
+   * @return The avt value for the "regex" attribute.
    */
-  public String getRegex() {
+  public AVT getRegex() {
       return m_regex;
   }
   
   /**
-   * Set the "flags" attribute.
+   * Set the regex "flags" attribute.
    *
    * @param regex The string value for the "flags" attribute.
    */
   public void setFlags(String flags) {
-      m_flags = flags;   
+      m_regex_flags = flags;   
   }
 
   /**
-   * Get the "flags" attribute.
+   * Get the regex "flags" attribute.
    *
    * @return The string value for the "flags" attribute.
    */
   public String getFlags() {
-      return m_flags;
+      return m_regex_flags;
   }
 
   /**
@@ -233,17 +233,20 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
        
        String strToBeAnalyzed = xpathEvalResult.str();
        
-       long currentTimeMills = System.currentTimeMillis();
-       String tempReplStr = (Long.valueOf(currentTimeMills)).toString();
-       
-       if (m_flags != null && !RegExFunctionSupport.isFlagStrValid(m_flags)) {
-           throw new javax.xml.transform.TransformerException("XTDE1145 : Invalid regular expression flags are present, with "
-                                                                                     + "xsl:analyze-string element.", xctxt.getSAXLocator());    
+       if (m_regex == null) {
+           throw new javax.xml.transform.TransformerException("XTSE0010 : xsl:analyze-string element must "
+                                                                                 + "have an 'regex' attribute.", xctxt.getSAXLocator());   
        }
        
-       Matcher regexMatcher = RegExFunctionSupport.compileAndExecute(RegExFunctionSupport.trfPatternStrForSubtraction(
-                                                                                             m_regex), m_flags, strToBeAnalyzed);       
-       String tempReplacedStr = regexMatcher.replaceAll(tempReplStr);
+       if (m_regex_flags != null && !RegexEvaluationSupport.isFlagStrValid(m_regex_flags)) {
+           throw new javax.xml.transform.TransformerException("XTDE1145 : Invalid regular expression flag(s) are present, with "
+                   + "xsl:analyze-string element.", xctxt.getSAXLocator());    
+       }
+
+       String effectiveRegexStrValue = m_regex.evaluate(xctxt, xctxt.getContextNode(), this);
+       
+       Matcher regexMatcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.trfPatternStrForSubtraction(
+                                                                                    effectiveRegexStrValue), m_regex_flags, strToBeAnalyzed);
        
        ElemTemplateElement templateElem1 = this.m_firstChild;
        ElemTemplateElement templateElem2 = null;
@@ -281,6 +284,12 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
            strToBeAnalyzedMatchingSubsequences.add(str);
        }
        
+       // we use a fairly random string like the string value of 'System.currentTimeMillis()',
+       // to help us pre-process the input string to be analyzed. 
+       long currentTimeMills = System.currentTimeMillis();
+       String tempReplStr = (Long.valueOf(currentTimeMills)).toString();
+       String tempReplacedStr = regexMatcher.replaceAll(tempReplStr);
+       
        String[] strParts = tempReplacedStr.split(tempReplStr);
        int i2 = 0;
        for (int idx = 0; idx < strParts.length; idx++) {           
@@ -303,8 +312,8 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
                                                                  tempReplacedStr.endsWith(tempReplStr))) {
                       ((ElemMatchingSubstring)templateElem1).setStrValue(
                                                                  strToBeAnalyzedMatchingSubsequences.get(i2));
-                      ((ElemMatchingSubstring)templateElem1).setRegex(m_regex);
-                      ((ElemMatchingSubstring)templateElem1).setFlags(m_flags);
+                      ((ElemMatchingSubstring)templateElem1).setRegex(effectiveRegexStrValue);
+                      ((ElemMatchingSubstring)templateElem1).setFlags(m_regex_flags);
                       xctxt.setSAXLocator(templateElem1);
                       transformer.setCurrentElement(templateElem1);                   
                       templateElem1.execute(transformer);

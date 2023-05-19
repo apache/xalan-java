@@ -25,7 +25,7 @@ import java.util.Map;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
-import org.apache.xpath.functions.RegExFunctionSupport;
+import org.apache.xpath.functions.RegexEvaluationSupport;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
@@ -90,7 +90,7 @@ public class FuncRegexGroup extends FunctionOneArg
         String regex = customDataMap.get(ElemMatchingSubstring.REGEX);
         String regexFlags = customDataMap.get(ElemMatchingSubstring.REGEX_FLAGS);
         
-        Matcher regexMatcher = RegExFunctionSupport.compileAndExecute(RegExFunctionSupport.trfPatternStrForSubtraction(
+        Matcher regexMatcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.trfPatternStrForSubtraction(
                                                                                    regex), regexFlags, strValue);
         String regexGrpStr = null;
         if (regexMatcher.matches()) {

@@ -64,7 +64,7 @@ public class FuncReplace extends Function4Args {
         
         if (m_arg3 != null) {
            flags = m_arg3.execute(xctxt).xstr();
-           if (!RegExFunctionSupport.isFlagStrValid(flags.toString())) {
+           if (!RegexEvaluationSupport.isFlagStrValid(flags.toString())) {
                throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
                                                                         ER_INVALID_REGEX_FLAGS, new Object[]{ FUNCTION_NAME }),
                                                                                srcLocator);     
@@ -74,7 +74,7 @@ public class FuncReplace extends Function4Args {
         String resultStr = null;
         
         try {
-            Matcher matcher = RegExFunctionSupport.regex(RegExFunctionSupport.trfPatternStrForSubtraction(pattern.toString()), 
+            Matcher matcher = RegexEvaluationSupport.regex(RegexEvaluationSupport.trfPatternStrForSubtraction(pattern.toString()), 
                                                            flags != null ? flags.toString() : null, inputStr.toString());
             resultStr = matcher.replaceAll(replacement.toString());
         }

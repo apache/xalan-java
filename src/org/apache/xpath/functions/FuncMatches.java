@@ -63,7 +63,7 @@ public class FuncMatches extends Function3Args {
         
         if (m_arg2 != null) {
            flags = m_arg2.execute(xctxt).xstr();
-           if (!RegExFunctionSupport.isFlagStrValid(flags.toString())) {               
+           if (!RegexEvaluationSupport.isFlagStrValid(flags.toString())) {               
               throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
                                                           ER_INVALID_REGEX_FLAGS, new Object[]{ FUNCTION_NAME }),
                                                                      srcLocator); 
@@ -73,7 +73,7 @@ public class FuncMatches extends Function3Args {
         boolean result = false;
         
         try {                
-            Matcher matcher = RegExFunctionSupport.regex(RegExFunctionSupport.trfPatternStrForSubtraction(pattern.toString()), 
+            Matcher matcher = RegexEvaluationSupport.regex(RegexEvaluationSupport.trfPatternStrForSubtraction(pattern.toString()), 
                                                             flags != null ? flags.toString() : null, inputStr.toString());
             while (matcher.find()) {
                result = true;

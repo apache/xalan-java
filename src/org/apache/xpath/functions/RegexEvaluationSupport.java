@@ -32,7 +32,7 @@ import org.apache.xpath.regex.Pattern;
  * 
  * @xsl.usage advanced
  */
-public class RegExFunctionSupport {
+public class RegexEvaluationSupport {
 	
     private static final String validRegexflags = "smixq";
 	
