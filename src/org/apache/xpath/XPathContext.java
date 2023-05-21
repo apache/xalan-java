@@ -58,7 +58,6 @@ import org.xml.sax.XMLReader;
 /**
  * Default class for the runtime execution context for XPath.
  * 
- * <p>This class extends DTMManager but does not directly implement it.</p>
  * @xsl.usage advanced
  */
 public class XPathContext extends DTMManager // implements ExpressionContext
@@ -94,6 +93,9 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * state of the secure processing feature.
    */
   private boolean m_isSecureProcessing = false;
+  
+  // supporting XPath 3.1 context item, to be saved within current XPath context
+  private XObject m_xpath3ContextItem = null;
   
   /*
    * This field, can be used to store custom data (represented as a map object) 
@@ -1363,6 +1365,14 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 
  public void setCustomDataMap(Map<String, String> customDataMap) {
     this.m_customDataMap = customDataMap;
+ }
+
+ public XObject getXPath3ContextItem() {
+     return m_xpath3ContextItem;
+ }
+
+ public void setXPath3ContextItem(XObject xpath3ContextItem) {
+     this.m_xpath3ContextItem = xpath3ContextItem;
  }
   
 }

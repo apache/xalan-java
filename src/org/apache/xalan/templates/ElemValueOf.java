@@ -42,6 +42,7 @@ import org.xml.sax.SAXException;
  * >
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#value-of">value-of in XSLT Specification</a>
+ * 
  * @xsl.usage advanced
  */
 public class ElemValueOf extends ElemTemplateElement
@@ -50,13 +51,11 @@ public class ElemValueOf extends ElemTemplateElement
 
   /**
    * The select expression to be executed.
-   * @serial
    */
   private XPath m_selectExpression = null;
 
   /**
    * True if the pattern is a simple ".".
-   * @serial
    */
   private boolean m_isDot = false;
 
@@ -271,7 +270,14 @@ public class ElemValueOf extends ElemTemplateElement
           }
           else
           {
-            expr.executeCharsToContentHandler(xctxt, rth);
+              XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+              if (m_isDot && xpath3ContextItem != null) {
+                  // this is currently, limited to work with xsl:for-each instruction
+                  xpath3ContextItem.dispatchCharactersEvents(rth);   
+              }
+              else {
+                  expr.executeCharsToContentHandler(xctxt, rth);
+              }
           }
         }
         finally

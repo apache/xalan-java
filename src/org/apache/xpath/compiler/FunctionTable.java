@@ -149,6 +149,9 @@ public class FunctionTable
   
   /** The 'regex-group()' id (XSLT). */
   public static final int FUNC_REGEX_GROUP = 42;
+  
+  /** The 'tokenize()' id. */
+  public static final int FUNC_TOKENIZE = 43;
 
   // Proprietary
 
@@ -177,7 +180,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 43;
+  private static final int NUM_BUILT_IN_FUNCS = 44;
 
   /**
    * Number of built-in functions that may be added.
@@ -255,6 +258,8 @@ public class FunctionTable
       org.apache.xpath.functions.FuncAbs.class;
     m_functions[FUNC_REGEX_GROUP] = 
       org.apache.xalan.templates.FuncRegexGroup.class;
+    m_functions[FUNC_TOKENIZE] = 
+      org.apache.xpath.functions.FuncTokenize.class;
   }
 
   static{
@@ -317,7 +322,7 @@ public class FunctionTable
           m_functionID.put(Keywords.FUNC_SYSTEM_PROPERTY_STRING,
                           new Integer(FunctionTable.FUNC_SYSTEM_PROPERTY));
           m_functionID.put(Keywords.FUNC_EXT_FUNCTION_AVAILABLE_STRING,
-                        new Integer(FunctionTable.FUNC_EXT_FUNCTION_AVAILABLE));
+                          new Integer(FunctionTable.FUNC_EXT_FUNCTION_AVAILABLE));
           m_functionID.put(Keywords.FUNC_EXT_ELEM_AVAILABLE_STRING,
                           new Integer(FunctionTable.FUNC_EXT_ELEM_AVAILABLE));
           m_functionID.put(Keywords.FUNC_SUBSTRING_STRING,
@@ -337,9 +342,11 @@ public class FunctionTable
           m_functionID.put(Keywords.FUNC_CURRENT_GROUP,
                           new Integer(FunctionTable.FUNC_CURRENT_GROUP));
           m_functionID.put(Keywords.FUNC_ABS,
-                  new Integer(FunctionTable.FUNC_ABS));
+                          new Integer(FunctionTable.FUNC_ABS));
           m_functionID.put(Keywords.FUNC_REGEX_GROUP,
-                  new Integer(FunctionTable.FUNC_REGEX_GROUP));
+                          new Integer(FunctionTable.FUNC_REGEX_GROUP));
+          m_functionID.put(Keywords.FUNC_TOKENIZE,
+                          new Integer(FunctionTable.FUNC_TOKENIZE));
   }
   
   public FunctionTable(){

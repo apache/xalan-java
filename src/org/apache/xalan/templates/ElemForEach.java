@@ -20,6 +20,7 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.List;
 import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
@@ -34,6 +35,9 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XObject;
 
 import java.io.ObjectInputStream;
 import java.io.IOException;
@@ -326,14 +330,36 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
    * @throws TransformerException Thrown in a variety of circumstances.
    * @xsl.usage advanced
    */
-  public void transformSelectedNodes(TransformerImpl transformer)
-          throws TransformerException
-  {
+  public void transformSelectedNodes(TransformerImpl transformer) throws 
+                                                             TransformerException {
 
-    final XPathContext xctxt = transformer.getXPathContext();
+    final XPathContext xctxtOriginal = transformer.getXPathContext();
+    
+    XPathContext xctxt = transformer.getXPathContext();
+    
+    if (m_selectExpression instanceof Function) {
+        XObject evalResult = ((Function)m_selectExpression).execute(xctxt);
+        if (evalResult instanceof ResultSequence) {
+            ResultSequence resultSeq = (ResultSequence)evalResult;
+            List<XObject> resultSeqItems = resultSeq.getResultSequenceItems();
+            for (int idx = 0; idx < resultSeqItems.size(); idx++) {
+                XObject resultSeqItem = resultSeqItems.get(idx);
+                xctxt.setXPath3ContextItem(resultSeqItem);
+                
+                for (ElemTemplateElement elemTemplateElem = this.m_firstChild; elemTemplateElem != null; 
+                                                               elemTemplateElem = elemTemplateElem.m_nextSibling) {
+                   xctxt.setSAXLocator(elemTemplateElem);
+                   transformer.setCurrentElement(elemTemplateElem);
+                   elemTemplateElem.execute(transformer);
+                }
+            }
+            
+            return;
+        }                
+    }
+    
     final int sourceNode = xctxt.getCurrentNode();
-    DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt,
-            sourceNode);
+    DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
 
     try
     {
@@ -471,6 +497,11 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
       xctxt.popCurrentNode();
       sourceNodes.detach();
     }
+    
+    // restoring the xpath context, to where it was before this 
+    // xsl:for-each instruction began an evaluation.
+    transformer.setXPathContext(xctxtOriginal);
+    
   }
 
   /**

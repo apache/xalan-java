@@ -230,6 +230,8 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
 	 "ER_FASTSTRINGBUFFER_CANNOT_BE_NULL";
    /**  2 or 3   */
   public static final String ER_TWO_OR_THREE = "ER_TWO_OR_THREE";
+  /**  1, 2 or 3   */
+  public static final String ER_ONE_TWO_OR_THREE = "ER_ONE_TWO_OR_THREE";
   /**  3 or 4   */
   public static final String ER_THREE_OR_FOUR = "ER_THREE_OR_FOUR";
    /** Variable accessed before it is bound! */
@@ -622,6 +624,9 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
 
   { ER_TWO_OR_THREE,
        "2 or 3"},
+  
+  { ER_ONE_TWO_OR_THREE,
+       "1, 2 or 3"},
   
   { ER_THREE_OR_FOUR,
        "3 or 4"},

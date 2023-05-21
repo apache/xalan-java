@@ -21,12 +21,15 @@
 package org.apache.xpath.functions;
 
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Execute the Count() function.
+ * Execute the count() function.
+ * 
  * @xsl.usage advanced
  */
 public class FuncCount extends FunctionOneArg
@@ -34,8 +37,8 @@ public class FuncCount extends FunctionOneArg
     static final long serialVersionUID = -7116225100474153751L;
 
   /**
-   * Execute the function.  The function must return
-   * a valid object.
+   * Execute the function. The function must return a valid object.
+   * 
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *
@@ -43,22 +46,21 @@ public class FuncCount extends FunctionOneArg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-
-//    DTMIterator nl = m_arg0.asIterator(xctxt, xctxt.getCurrentNode());
-
-//    // We should probably make a function on the iterator for this, 
-//    // as a given implementation could optimize.
-//    int i = 0;
-//
-//    while (DTM.NULL != nl.nextNode())
-//    {
-//      i++;
-//    }
-//    nl.detach();
-	DTMIterator nl = m_arg0.asIterator(xctxt, xctxt.getCurrentNode());
-	int i = nl.getLength();	
-	nl.detach();
-
-    return new XNumber((double) i);
+        int count = 0;
+        
+        if (m_arg0 instanceof Function) {
+            XObject evalResult = ((Function)m_arg0).execute(xctxt);
+            if (evalResult instanceof ResultSequence) {
+               count = ((ResultSequence)evalResult).size();
+            }
+        }
+        else if (m_arg0 instanceof Expression) {
+            DTMIterator nl = m_arg0.asIterator(xctxt, xctxt.getCurrentNode());
+            count = nl.getLength();	
+            nl.detach();
+        }
+    
+        return new XNumber((double)count);    
   }
+  
 }

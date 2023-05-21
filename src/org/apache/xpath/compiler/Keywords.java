@@ -225,6 +225,9 @@ public class Keywords
   
   /** regex-group function string (XSLT). */
   public static final String FUNC_REGEX_GROUP = "regex-group";
+  
+  /** tokenize function string. */
+  public static final String FUNC_TOKENIZE = "tokenize";
 
   // Proprietary, built in functions
 
@@ -286,7 +289,7 @@ public class Keywords
                     new Integer(OpCodes.NODETYPE_NODE));
     
     m_keywords.put(FUNC_KEY_STRING,
-            new Integer(FunctionTable.FUNC_KEY));
+                    new Integer(FunctionTable.FUNC_KEY));
   }
   
   static Object getAxisName(String key){
