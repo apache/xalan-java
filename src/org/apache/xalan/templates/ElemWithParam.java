@@ -61,6 +61,11 @@ public class ElemWithParam extends ElemTemplateElement
    * @serial
    */
   private XPath m_selectPattern = null;
+  
+  /**
+   * True if the pattern is a simple ".".
+   */
+  private boolean m_isDot = false;
 
   /**
    * Set the "select" attribute.
@@ -71,7 +76,13 @@ public class ElemWithParam extends ElemTemplateElement
    */
   public void setSelect(XPath v)
   {
-    m_selectPattern = v;
+      m_selectPattern = v;
+    
+      if (v != null) {
+          String s = v.getPatternString();
+
+          m_isDot = (null != s) && s.equals(".");
+      }
   }
 
   /**
@@ -202,7 +213,14 @@ public class ElemWithParam extends ElemTemplateElement
     {
       if (null != m_selectPattern)
       {
-        var = m_selectPattern.execute(xctxt, sourceNode, this);
+        XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+        
+        if (m_isDot && xpath3ContextItem != null) {
+           var = xpath3ContextItem;   
+        }
+        else {
+           var = m_selectPattern.execute(xctxt, sourceNode, this);
+        }
 
         var.allowDetachToRelease(false);
 

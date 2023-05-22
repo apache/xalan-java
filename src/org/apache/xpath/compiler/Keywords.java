@@ -228,6 +228,9 @@ public class Keywords
   
   /** tokenize function string. */
   public static final String FUNC_TOKENIZE = "tokenize";
+  
+  /** unparsed-text function string. */
+  public static final String FUNC_UNPARSED_TEXT = "unparsed-text";
 
   // Proprietary, built in functions
 

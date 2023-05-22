@@ -25,8 +25,11 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.QName;
+import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.Function;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
@@ -271,6 +274,9 @@ public class ElemVariable extends ElemTemplateElement
   {
 
     XObject var;
+    
+    final XPathContext xctxtOriginal = transformer.getXPathContext();
+    
     XPathContext xctxt = transformer.getXPathContext();
 
     xctxt.pushCurrentNode(sourceNode);
@@ -279,6 +285,15 @@ public class ElemVariable extends ElemTemplateElement
     {
       if (null != m_selectPattern)
       {
+        Expression selectExpression = m_selectPattern.getExpression();
+        if (selectExpression instanceof Function) {
+            XObject evalResult = ((Function)selectExpression).execute(xctxt);
+            if (evalResult instanceof ResultSequence) {
+                var = evalResult;
+                return var;
+            }
+        } 
+          
         var = m_selectPattern.execute(xctxt, sourceNode, this);
 
         var.allowDetachToRelease(false);
@@ -327,6 +342,9 @@ public class ElemVariable extends ElemTemplateElement
     {      
       xctxt.popCurrentNode();
     }
+    
+    // restoring the original xpath context, on the xslt transformer object.
+    transformer.setXPathContext(xctxtOriginal);
 
     return var;
   }

@@ -152,6 +152,9 @@ public class FunctionTable
   
   /** The 'tokenize()' id. */
   public static final int FUNC_TOKENIZE = 43;
+  
+  /** The 'unparsed-text()' id. */
+  public static final int FUNC_UNPARSED_TEXT = 44;
 
   // Proprietary
 
@@ -180,7 +183,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 44;
+  private static final int NUM_BUILT_IN_FUNCS = 45;
 
   /**
    * Number of built-in functions that may be added.
@@ -260,6 +263,8 @@ public class FunctionTable
       org.apache.xalan.templates.FuncRegexGroup.class;
     m_functions[FUNC_TOKENIZE] = 
       org.apache.xpath.functions.FuncTokenize.class;
+    m_functions[FUNC_UNPARSED_TEXT] = 
+      org.apache.xpath.functions.FuncUnparsedText.class;
   }
 
   static{
@@ -347,6 +352,8 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_REGEX_GROUP));
           m_functionID.put(Keywords.FUNC_TOKENIZE,
                           new Integer(FunctionTable.FUNC_TOKENIZE));
+          m_functionID.put(Keywords.FUNC_UNPARSED_TEXT,
+                          new Integer(FunctionTable.FUNC_UNPARSED_TEXT));
   }
   
   public FunctionTable(){

@@ -38,6 +38,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.operations.Variable;
 
 import java.io.ObjectInputStream;
 import java.io.IOException;
@@ -338,26 +339,29 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     XPathContext xctxt = transformer.getXPathContext();
     
     if (m_selectExpression instanceof Function) {
+        // evaluate an xslt/xpath function reference.
+        // for example,
+        // <xsl:for-each select="tokenize(..)"> ...
         XObject evalResult = ((Function)m_selectExpression).execute(xctxt);
         if (evalResult instanceof ResultSequence) {
-            ResultSequence resultSeq = (ResultSequence)evalResult;
-            List<XObject> resultSeqItems = resultSeq.getResultSequenceItems();
-            for (int idx = 0; idx < resultSeqItems.size(); idx++) {
-                XObject resultSeqItem = resultSeqItems.get(idx);
-                xctxt.setXPath3ContextItem(resultSeqItem);
-                
-                for (ElemTemplateElement elemTemplateElem = this.m_firstChild; elemTemplateElem != null; 
-                                                               elemTemplateElem = elemTemplateElem.m_nextSibling) {
-                   xctxt.setSAXLocator(elemTemplateElem);
-                   transformer.setCurrentElement(elemTemplateElem);
-                   elemTemplateElem.execute(transformer);
-                }
-            }
-            
+            processResultSequence(transformer, xctxt, evalResult);
             return;
         }                
     }
     
+    if (m_selectExpression instanceof Variable) {
+        // evaluate an xslt variable reference.
+        // for example,
+        // <xsl:variable name="tokens" select="tokenize(..)"/>
+        // <xsl:for-each select="$tokens"> ...
+        XObject evalResult = ((Variable)m_selectExpression).execute(xctxt);
+        if (evalResult instanceof ResultSequence) {
+            processResultSequence(transformer, xctxt, evalResult);
+            return;
+        }
+    }
+    
+    // process the node-set, with body of xsl:for-each element as usual 
     final int sourceNode = xctxt.getCurrentNode();
     DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
 
@@ -577,4 +581,29 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
            os.defaultReadObject();
            m_xpath = null;
    }
+   
+   /*
+    * Process each of the XDM items in order, stored within a 'ResultSequence' 
+    * object, with the body of xsl:for-each element.
+    */
+   private void processResultSequence(TransformerImpl transformer,
+                                      XPathContext xctxt, XObject evalResult) 
+                                                              throws TransformerException {
+       
+       ResultSequence resultSeq = (ResultSequence)evalResult;
+       List<XObject> resultSeqItems = resultSeq.getResultSequenceItems();
+       
+       for (int idx = 0; idx < resultSeqItems.size(); idx++) {
+           XObject resultSeqItem = resultSeqItems.get(idx);
+           xctxt.setXPath3ContextItem(resultSeqItem);
+           
+           for (ElemTemplateElement elemTemplateElem = this.m_firstChild; elemTemplateElem != null; 
+                                                          elemTemplateElem = elemTemplateElem.m_nextSibling) {
+              xctxt.setSAXLocator(elemTemplateElem);
+              transformer.setCurrentElement(elemTemplateElem);
+              elemTemplateElem.execute(transformer);
+           }
+       }
+   }
+   
 }

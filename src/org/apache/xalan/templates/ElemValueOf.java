@@ -265,14 +265,13 @@ public class ElemValueOf extends ElemTemplateElement
             XObject obj = expr.execute(xctxt);
 
             transformer.getTraceManager().fireSelectedEvent(current, this,
-                    "select", m_selectExpression, obj);
+                                                       "select", m_selectExpression, obj);
             obj.dispatchCharactersEvents(rth);
           }
           else
           {
               XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
               if (m_isDot && xpath3ContextItem != null) {
-                  // this is currently, limited to work with xsl:for-each instruction
                   xpath3ContextItem.dispatchCharactersEvents(rth);   
               }
               else {

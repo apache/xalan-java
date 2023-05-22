@@ -20,13 +20,18 @@
  */
 package org.apache.xpath.functions;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
 /**
- * Execute the Concat() function.
+ * Execute the concat() function.
+ * 
  * @xsl.usage advanced
  */
 public class FuncConcat extends FunctionMultiArgs
@@ -34,8 +39,9 @@ public class FuncConcat extends FunctionMultiArgs
     static final long serialVersionUID = 1737228885202314413L;
 
   /**
-   * Execute the function.  The function must return
+   * Execute the function. The function must return
    * a valid object.
+   * 
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *
@@ -44,21 +50,20 @@ public class FuncConcat extends FunctionMultiArgs
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
-    StringBuffer sb = new StringBuffer();
+    StringBuffer sb = new StringBuffer();        
 
     // Compiler says we must have at least two arguments.
-    sb.append(m_arg0.execute(xctxt).str());
-    sb.append(m_arg1.execute(xctxt).str());
+    sb.append(inspectSelfAxesExpression(m_arg0, xctxt));
+    sb.append(inspectSelfAxesExpression(m_arg1, xctxt));
 
-    if (null != m_arg2)
-      sb.append(m_arg2.execute(xctxt).str());
+    if (m_arg2 != null) {
+       sb.append(inspectSelfAxesExpression(m_arg2, xctxt));
+    }
 
-    if (null != m_args)
-    {
-      for (int i = 0; i < m_args.length; i++)
-      {
-        sb.append(m_args[i].execute(xctxt).str());
-      }
+    if (m_args != null) {
+       for (int i = 0; i < m_args.length; i++) {
+         sb.append(inspectSelfAxesExpression(m_args[i], xctxt));
+       }
     }
 
     return new XString(sb.toString());
@@ -86,5 +91,30 @@ public class FuncConcat extends FunctionMultiArgs
    */
   protected void reportWrongNumberArgs() throws WrongNumberArgsException {
       throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("gtone", null));
+  }
+  
+  /*
+   * If the expression's pattern string is ".", the evaluation result of expression,
+   * is the string value of XPath context item.
+   */
+  private String inspectSelfAxesExpression(Expression expr, XPathContext xctxt) 
+                                                                   throws TransformerException {
+      String resultStr = null;
+      
+      XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+      if (expr instanceof SelfIteratorNoPredicate) {
+          if (xpath3ContextItem != null) {
+              resultStr = xpath3ContextItem.str();
+          }
+          else {
+              resultStr = expr.execute(xctxt).str();   
+          }
+      }
+      else {
+          resultStr = expr.execute(xctxt).str(); 
+      }
+      
+      return resultStr;
+      
   }
 }
