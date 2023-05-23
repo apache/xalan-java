@@ -20,6 +20,8 @@
  */
 package org.apache.xalan.templates;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.Vector;
 
@@ -40,26 +42,19 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Variable;
 
-import java.io.ObjectInputStream;
-import java.io.IOException;
-
 /**
- * Implement xsl:for-each.
- * <pre>
- * <!ELEMENT xsl:for-each
- *  (#PCDATA
- *   %instructions;
- *   %result-elements;
- *   | xsl:sort)
- * >
- *
- * <!ATTLIST xsl:for-each
- *   select %expr; #REQUIRED
- *   %space-att;
- * >
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#for-each">for-each in XSLT Specification</a>
+ * XSLT 3.0 for-each element.
+ * 
+   <xsl:for-each 
+             select = expression>
+       <!-- Content: (xsl:sort*, sequence-constructor) -->
+   </xsl:for-each>
+ * 
  * @xsl.usage advanced
+ */
+
+/*
+ * Implementation of the XSLT 3.0 xsl:for-each instruction.
  */
 public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 {
@@ -324,11 +319,10 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   }
 
   /**
-   * Perform a query if needed, and call transformNode for each child.
-   *
    * @param transformer non-null reference to the the current transform-time state.
    *
    * @throws TransformerException Thrown in a variety of circumstances.
+   * 
    * @xsl.usage advanced
    */
   public void transformSelectedNodes(TransformerImpl transformer) throws 
@@ -374,37 +368,16 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 
       // Sort if we need to.
       if (null != keys)
-        sourceNodes = sortNodes(xctxt, keys, sourceNodes);
+         sourceNodes = sortNodes(xctxt, keys, sourceNodes);
 
-    if (transformer.getDebug())
-    {
-
-        // The original code, which is broken for bug#16889,
-        // which fails to get the original select expression in the select event. 
-        /*  transformer.getTraceManager().fireSelectedEvent(
-         *    sourceNode,
-         *            this,
-         *            "select",
-         *            new XPath(m_selectExpression),
-         *            new org.apache.xpath.objects.XNodeSet(sourceNodes));
-         */ 
-
-        // The following code fixes bug#16889
-        // Solution: Store away XPath in setSelect(Xath), and use it here.
-        // Pass m_xath, which the current node is associated with, onto the TraceManager.
-        
-        Expression expr = m_xpath.getExpression();
-        org.apache.xpath.objects.XObject xObject = expr.execute(xctxt);
-        int current = xctxt.getCurrentNode();
-        transformer.getTraceManager().fireSelectedEvent(
-            current,
-            this,
-            "select",
-            m_xpath,
-            xObject);
-    }
-
-
+      if (transformer.getDebug())
+      {                
+          Expression expr = m_xpath.getExpression();
+          org.apache.xpath.objects.XObject xObject = expr.execute(xctxt);
+          int current = xctxt.getCurrentNode();
+          transformer.getTraceManager().fireSelectedEvent(current, this, "select", 
+                                                              m_xpath, xObject);
+       }
 
       xctxt.pushCurrentNode(DTM.NULL);
 
@@ -502,7 +475,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
       sourceNodes.detach();
     }
     
-    // restoring the xpath context, to where it was before this 
+    // restore the xpath context, to where it was before this 
     // xsl:for-each instruction began an evaluation.
     transformer.setXPathContext(xctxtOriginal);
     

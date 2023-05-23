@@ -24,6 +24,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.xml.transform.SourceLocator;
@@ -38,8 +40,9 @@ import org.apache.xpath.res.XPATHErrorResources;
 /**
  * Execute the unparsed-text() function.
  * 
- * This function is designed, to read from an external resource (for example, a file) 
- * and returns a string representation of the resource.
+ * This function is designed, to read from an external resource 
+ * (for example, a file) and returns a string representation 
+ * of the resource.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -48,8 +51,6 @@ import org.apache.xpath.res.XPATHErrorResources;
 public class FuncUnparsedText extends Function2Args {
   
   private static final long serialVersionUID = 1760543978696171233L;
-    
-  private static final String FUNCTION_NAME = "unparsed-text()"; 
 
   /**
    * Execute the function. The function must return a valid object.
@@ -79,8 +80,30 @@ public class FuncUnparsedText extends Function2Args {
          }
       }
         
-      try {
-          String urlContents = readDataFromUrl(new URL(href.toString()), encodingStr);
+     try {                                                           
+          // if the first argument is a, relative uri reference, then 
+          // resolve that relative uri with base uri of the stylesheet
+          URL resolvedArg0Url = null;
+          
+          try {
+              URI arg0Uri = new URI(href.toString());
+              String stylesheetSystemId = srcLocator.getSystemId();  // base uri of stylesheet, if available
+              
+              if (!arg0Uri.isAbsolute() && stylesheetSystemId != null) {
+                  URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(href.toString());
+                  resolvedArg0Url = resolvedUriArg.toURL(); 
+              }
+          }
+          catch (URISyntaxException ex) {
+              throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator);    
+          }
+          
+          if (resolvedArg0Url == null) {
+              resolvedArg0Url = new URL(href.toString());   
+          }
+          
+          String urlContents = readDataFromUrl(resolvedArg0Url);
+          
           String resultStr = null;
           if (encodingStr != null) {
               resultStr = new String(urlContents.getBytes(), encodingStr.toUpperCase());              
@@ -92,7 +115,7 @@ public class FuncUnparsedText extends Function2Args {
           result = new XString(resultStr);
       }
       catch (IOException ex) {
-          throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator);  
+         throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator);  
       }
         
       return result;
@@ -129,9 +152,8 @@ public class FuncUnparsedText extends Function2Args {
   /*
    * Read the string contents from a url.
    */
-  private String readDataFromUrl(URL url, String encodingStr) throws IOException {
-      StringBuilder sb = new StringBuilder();
-      String inpLine;
+  private String readDataFromUrl(URL url) throws IOException {
+      StringBuilder strBuilder = new StringBuilder();
       
       InputStream inpStream = url.openStream();
       
@@ -139,13 +161,13 @@ public class FuncUnparsedText extends Function2Args {
           BufferedReader buffReader = new BufferedReader(new InputStreamReader(inpStream));
           int chr;
           while ((chr = buffReader.read()) != -1) {
-             sb.append((char)chr);
+             strBuilder.append((char)chr);
           }
       } finally {
           inpStream.close();
       }
    
-      return sb.toString();
+      return strBuilder.toString();
   }
   
 }

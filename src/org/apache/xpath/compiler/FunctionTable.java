@@ -155,6 +155,9 @@ public class FunctionTable
   
   /** The 'unparsed-text()' id. */
   public static final int FUNC_UNPARSED_TEXT = 44;
+  
+  /** The 'string-join()' id. */
+  public static final int FUNC_STRING_JOIN = 45;
 
   // Proprietary
 
@@ -183,7 +186,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 45;
+  private static final int NUM_BUILT_IN_FUNCS = 46;
 
   /**
    * Number of built-in functions that may be added.
@@ -265,6 +268,8 @@ public class FunctionTable
       org.apache.xpath.functions.FuncTokenize.class;
     m_functions[FUNC_UNPARSED_TEXT] = 
       org.apache.xpath.functions.FuncUnparsedText.class;
+    m_functions[FUNC_STRING_JOIN] = 
+      org.apache.xpath.functions.FuncStringJoin.class;
   }
 
   static{
@@ -354,6 +359,8 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_TOKENIZE));
           m_functionID.put(Keywords.FUNC_UNPARSED_TEXT,
                           new Integer(FunctionTable.FUNC_UNPARSED_TEXT));
+          m_functionID.put(Keywords.FUNC_STRING_JOIN,
+                          new Integer(FunctionTable.FUNC_STRING_JOIN));
   }
   
   public FunctionTable(){

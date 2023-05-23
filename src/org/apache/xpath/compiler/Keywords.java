@@ -231,6 +231,9 @@ public class Keywords
   
   /** unparsed-text function string. */
   public static final String FUNC_UNPARSED_TEXT = "unparsed-text";
+  
+  /** string-join function string. */
+  public static final String FUNC_STRING_JOIN = "string-join";
 
   // Proprietary, built in functions
 

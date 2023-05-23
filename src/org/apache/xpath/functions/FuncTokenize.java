@@ -40,6 +40,10 @@ import org.apache.xpath.res.XPATHErrorResources;
 /**
  * Execute the tokenize() function.
  * 
+ * This function returns a sequence of strings constructed by splitting 
+ * the input string wherever a separator is found. The separator is 
+ * any substring that matches a given regular expression.
+ * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
@@ -54,6 +58,7 @@ public class FuncTokenize extends Function3Args {
    * Execute the function. The function must return a valid object.
    * 
    * @param xctxt The current execution context.
+   * 
    * @return A valid XObject.
    *
    * @throws javax.xml.transform.TransformerException
@@ -135,8 +140,6 @@ public class FuncTokenize extends Function3Args {
         
         return resultSeq;
   }
-  
-  
 
   /**
    * Check that the number of arguments passed to this function is correct.

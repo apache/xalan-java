@@ -34,6 +34,9 @@ import org.apache.xpath.res.XPATHErrorResources;
 /**
  * Execute the matches() function.
  * 
+ * This function returns true, if the supplied string matches 
+ * a given regular expression.
+ * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced

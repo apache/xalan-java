@@ -34,6 +34,10 @@ import org.apache.xpath.res.XPATHErrorResources;
 /**
  * Execute the replace() function.
  * 
+ * This function returns a string, produced from the input string by 
+ * replacing any substrings that match a given regular expression, 
+ * with a supplied replacement string.
+ * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced

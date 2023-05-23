@@ -44,6 +44,10 @@ public class ResultSequence extends XObject
         rsList.add(item);    
     }
     
+    public XObject item(int idx) {
+        return rsList.get(idx);     
+    }
+    
     public int size() {
         return rsList.size();   
     }
