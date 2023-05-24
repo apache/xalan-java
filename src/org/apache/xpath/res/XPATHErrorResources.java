@@ -228,6 +228,8 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
    /**  The FastStringBuffer argument can not be null   */
  public static final String ER_FASTSTRINGBUFFER_CANNOT_BE_NULL = 
 	 "ER_FASTSTRINGBUFFER_CANNOT_BE_NULL";
+  /** 0 */
+  public static final String ER_ZERO = "ER_ZERO";
   /** 1 or 2 */
   public static final String ER_ONE_OR_TWO = "ER_ONE_OR_TWO";
    /**  2 or 3   */
@@ -624,6 +626,8 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   { ER_FASTSTRINGBUFFER_CANNOT_BE_NULL,
       "The FastStringBuffer argument can not be null"},
 
+  { ER_ZERO, "0"},
+  
   { ER_ONE_OR_TWO,
        "1 or 2"},
   

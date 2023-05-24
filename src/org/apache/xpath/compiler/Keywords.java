@@ -234,6 +234,15 @@ public class Keywords
   
   /** string-join function string. */
   public static final String FUNC_STRING_JOIN = "string-join";
+  
+  /** current-dateTime function string. */
+  public static final String FUNC_CURRENT_DATETIME = "current-dateTime";
+  
+  /** current-date function string. */
+  public static final String FUNC_CURRENT_DATE = "current-date";
+  
+  /** current-time function string. */
+  public static final String FUNC_CURRENT_TIME = "current-time";
 
   // Proprietary, built in functions
 

@@ -40,7 +40,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  * 
  * @xsl.usage advanced
  */
-public class FuncStringJoin extends FunctionMultiArgs {
+public class FuncStringJoin extends Function2Args {
 
    private static final long serialVersionUID = 4171534319684252331L;
 
@@ -79,7 +79,8 @@ public class FuncStringJoin extends FunctionMultiArgs {
     
     if (arg0ResultSeq == null) {
         throw new javax.xml.transform.TransformerException("The first argument of fn:string-join, "
-                                                              + "did not evaluate to a sequence.", srcLocator);    
+                                                              + "did not evaluate to a sequence.", 
+                                                                             srcLocator);    
     }
     
     String separator = null;
@@ -92,7 +93,8 @@ public class FuncStringJoin extends FunctionMultiArgs {
     }
     else {
        throw new javax.xml.transform.TransformerException("The second argument of fn:string-join must "
-                                                                 + "be absent, or it must be a string value.", srcLocator);
+                                                               + "be absent, or it must be a string value.", 
+                                                                                     srcLocator);
     }
     
     StringBuffer sb = new StringBuffer();

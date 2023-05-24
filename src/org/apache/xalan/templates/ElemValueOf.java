@@ -29,25 +29,32 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XString;
+import org.apache.xpath.operations.Variable;
+import org.apache.xpath.xs.types.XSAnyType;
+import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
 /**
- * Implement xsl:value-of.
- * <pre>
- * <!ELEMENT xsl:value-of EMPTY>
- * <!ATTLIST xsl:value-of
- *   select %expr; #REQUIRED
- *   disable-output-escaping (yes|no) "no"
- * >
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#value-of">value-of in XSLT Specification</a>
+ * Implementation of XSLT 3.0 xsl:value-of element.
+ * 
+    <xsl:value-of
+       select? = expression
+       separator? = { string }
+       [disable-output-escaping]? = boolean >
+          <!-- Content: sequence-constructor -->
+    </xsl:value-of>
+ * 
+ * Within a sequence constructor, the xsl:value-of instruction may be 
+ * used to generate text nodes.
  * 
  * @xsl.usage advanced
  */
-public class ElemValueOf extends ElemTemplateElement
-{
-    static final long serialVersionUID = 3490728458007586786L;
+public class ElemValueOf extends ElemTemplateElement {
+    
+  static final long serialVersionUID = 3490728458007586786L;
 
   /**
    * The select expression to be executed.
@@ -274,8 +281,32 @@ public class ElemValueOf extends ElemTemplateElement
               if (m_isDot && xpath3ContextItem != null) {
                   xpath3ContextItem.dispatchCharactersEvents(rth);   
               }
-              else {
-                  expr.executeCharsToContentHandler(xctxt, rth);
+              else {                  
+                  if (expr instanceof Function) {
+                      XObject evalResult = ((Function)expr).execute(xctxt);
+                      String strValue = null;
+                      if (evalResult instanceof XSAnyType) {
+                          strValue = ((XSAnyType)evalResult).stringValue();    
+                      }
+                      else {
+                          strValue = evalResult.str();  
+                      }
+                      (new XString(strValue)).dispatchCharactersEvents(rth);
+                  }
+                  else if (expr instanceof Variable) {
+                      XObject evalResult = ((Variable)expr).execute(xctxt);
+                      String strValue = null;
+                      if (evalResult instanceof XSAnyType) {
+                          strValue = ((XSAnyType)evalResult).stringValue();
+                      }
+                      else {
+                          strValue = evalResult.str();
+                      }
+                      (new XString(strValue)).dispatchCharactersEvents(rth);
+                  }
+                  else {
+                      expr.executeCharsToContentHandler(xctxt, rth);
+                  }
               }
           }
         }

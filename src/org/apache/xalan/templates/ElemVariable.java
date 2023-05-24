@@ -35,17 +35,23 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XRTreeFragSelectWrapper;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.xs.types.XSAnyType;
 import org.w3c.dom.NodeList;
 
 /**
- * Implement xsl:variable.
- * <pre>
- * <!ELEMENT xsl:variable %template;>
- * <!ATTLIST xsl:variable
- *   name %qname; #REQUIRED
- *   select %expr; #IMPLIED
- * >
- * </pre>
+ * Implementation of XSLT 3.0 xsl:variable element.
+ * 
+    <xsl:variable
+          name = eqname
+          select? = expression
+          as? = sequence-type
+          static? = boolean
+          visibility? = "public" | "private" | "final" | "abstract" >
+          <!-- Content: sequence-constructor -->
+    </xsl:variable>
+       
+    The value of an XSLT 3.0 variable, is calculated using an expression provided
+    within the "select" attribute or the contained sequence constructor.
  *
  * @xsl.usage advanced
  */
@@ -281,16 +287,15 @@ public class ElemVariable extends ElemTemplateElement
 
     xctxt.pushCurrentNode(sourceNode);
  
-    try
-    {
-      if (null != m_selectPattern)
-      {
+    try {        
+      if (m_selectPattern != null) {          
         Expression selectExpression = m_selectPattern.getExpression();
         if (selectExpression instanceof Function) {
-            XObject evalResult = ((Function)selectExpression).execute(xctxt);
-            if (evalResult instanceof ResultSequence) {
+            XObject evalResult = ((Function)selectExpression).execute(xctxt);            
+            if ((evalResult instanceof ResultSequence) || 
+                                            (evalResult instanceof XSAnyType)) {
                 var = evalResult;
-                return var;
+                return var; 
             }
         } 
           
@@ -302,12 +307,10 @@ public class ElemVariable extends ElemTemplateElement
           transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
                   "select", m_selectPattern, var);
       }
-      else if (null == getFirstChildElem())
-      {
-        var = XString.EMPTYSTRING;
+      else if (null == getFirstChildElem()) {
+         var = XString.EMPTYSTRING;
       }
-      else
-      {
+      else {
 
         // Use result tree fragment.
         // Global variables may be deferred (see XUnresolvedVariable) and hence
@@ -315,8 +318,7 @@ public class ElemVariable extends ElemTemplateElement
         // so they aren't popped off the stack on return from a template.
         int df;
 
-		try
-		{
+		try {
 			//////////xctxt.getVarStack().link(0);
 			if(m_parentNode instanceof Stylesheet) // Global variable
 				df = transformer.transformToGlobalRTF(this);
@@ -329,24 +331,21 @@ public class ElemVariable extends ElemTemplateElement
 
         // var = new XRTreeFrag(df, xctxt, this);
 		
-		// with XSLT 2.0 and 3.0, RTFs are treated as proper node sets
-		// (we still need to change to XPath 3.1's data model sequence of items concept)
-		
-		// but this codebase change can be good for now
+		// with XSLT 3.0, RTFs are treated as proper node sets
 		NodeList nodeList = (new XRTreeFrag(df, xctxt, this)).convertToNodeset();		
 		
 		var = new XNodeSetForDOM(nodeList, xctxt); 
       }
     }
-    finally
-    {      
-      xctxt.popCurrentNode();
+    finally {      
+       xctxt.popCurrentNode();
     }
     
-    // restoring the original xpath context, on the xslt transformer object.
+    // restore the original xpath context, on the xslt transformer object
     transformer.setXPathContext(xctxtOriginal);
 
     return var;
+    
   }
   
   

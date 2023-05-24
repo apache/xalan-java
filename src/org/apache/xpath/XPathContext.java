@@ -21,8 +21,12 @@
 package org.apache.xpath;
 
 import java.lang.reflect.Method;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Stack;
+import java.util.TimeZone;
 import java.util.Vector;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -52,7 +56,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.DTMXRTreeFrag;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
-
+import org.apache.xpath.xs.types.XSDayTimeDuration;
+import org.apache.xpath.xs.types.XSDuration;
 import org.xml.sax.XMLReader;
 
 /**
@@ -102,6 +107,10 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * within the current XPath evaluation context.
    */
   private Map<String, String> m_customDataMap = new HashMap<String, String>();
+  
+  private GregorianCalendar m_currentDateTime;
+  
+  private XSDuration m_timezone;
 	
   /**
    * Though XPathContext context extends 
@@ -1373,6 +1382,38 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 
  public void setXPath3ContextItem(XObject xpath3ContextItem) {
      this.m_xpath3ContextItem = xpath3ContextItem;
+ }
+
+ public GregorianCalendar getCurrentDateTime() {
+     if (m_currentDateTime == null) {
+         m_currentDateTime = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+     }
+     
+     return m_currentDateTime;
+ }
+
+ public void setCurrentDateTime(GregorianCalendar currentDateTime) {
+     this.m_currentDateTime = currentDateTime;
+ }
+
+ public XSDuration getTimezone() {
+     if (m_timezone == null) {
+        ZonedDateTime zonedDateTime = ZonedDateTime.now();
+        ZoneOffset zoneOffset = zonedDateTime.getOffset();
+        String zoneOffsetStr = zoneOffset.toString();
+        String[] zoneOffsetParts = zoneOffsetStr.split("\\+|\\-|:");
+        int zoneHrs = (new Integer(zoneOffsetParts[1])).intValue();
+        int zoneMinutes = (new Integer(zoneOffsetParts[2])).intValue();
+        
+        m_timezone = new XSDayTimeDuration(0, zoneHrs, zoneMinutes, 0, 
+                                                 zoneOffsetStr.startsWith("+") ? false : true);
+     }
+     
+     return m_timezone;
+ }
+
+ public void setTimezone(XSDuration timezone) {
+     this.m_timezone = timezone;
  }
   
 }

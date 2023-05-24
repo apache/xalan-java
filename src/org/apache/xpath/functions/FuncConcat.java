@@ -28,6 +28,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.xs.types.XSAnyType;
 
 /**
  * Execute the concat() function.
@@ -52,17 +53,17 @@ public class FuncConcat extends FunctionMultiArgs
 
     StringBuffer sb = new StringBuffer();        
 
-    // Compiler says we must have at least two arguments.
-    sb.append(inspectSelfAxesExpression(m_arg0, xctxt));
-    sb.append(inspectSelfAxesExpression(m_arg1, xctxt));
+    // Compiler says we must have at least two arguments
+    sb.append(inspectXPathSelfAxesExpression(m_arg0, xctxt));
+    sb.append(inspectXPathSelfAxesExpression(m_arg1, xctxt));
 
     if (m_arg2 != null) {
-       sb.append(inspectSelfAxesExpression(m_arg2, xctxt));
+       sb.append(inspectXPathSelfAxesExpression(m_arg2, xctxt));
     }
 
     if (m_args != null) {
        for (int i = 0; i < m_args.length; i++) {
-         sb.append(inspectSelfAxesExpression(m_args[i], xctxt));
+         sb.append(inspectXPathSelfAxesExpression(m_args[i], xctxt));
        }
     }
 
@@ -94,10 +95,13 @@ public class FuncConcat extends FunctionMultiArgs
   }
   
   /*
-   * If the expression's pattern string is ".", the evaluation result of expression,
-   * is the string value of XPath context item.
+   * If the XPath expression's pattern string is ".", the evaluation result of 
+   * XPath expression, is the string value of XPath context item.
+   * 
+   * Other than, handling an XPath expression that has a pattern string as ".", 
+   * this method does few of other things as well. 
    */
-  private String inspectSelfAxesExpression(Expression expr, XPathContext xctxt) 
+  private String inspectXPathSelfAxesExpression(Expression expr, XPathContext xctxt) 
                                                                    throws TransformerException {
       String resultStr = null;
       
@@ -110,11 +114,20 @@ public class FuncConcat extends FunctionMultiArgs
               resultStr = expr.execute(xctxt).str();   
           }
       }
+      else if (expr instanceof Function) {
+          XObject evalResult = ((Function)expr).execute(xctxt);
+          if (evalResult instanceof XSAnyType) {
+              resultStr = ((XSAnyType)evalResult).stringValue();    
+          }
+          else {
+              resultStr = evalResult.str();  
+          }
+      }
       else {
           resultStr = expr.execute(xctxt).str(); 
       }
       
-      return resultStr;
-      
+      return resultStr;      
   }
+  
 }

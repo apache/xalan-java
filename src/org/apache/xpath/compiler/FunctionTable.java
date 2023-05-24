@@ -158,6 +158,15 @@ public class FunctionTable
   
   /** The 'string-join()' id. */
   public static final int FUNC_STRING_JOIN = 45;
+  
+  /** The 'current-dateTime()' id. */
+  public static final int FUNC_CURRENT_DATETIME = 46;
+  
+  /** The 'current-date()' id. */
+  public static final int FUNC_CURRENT_DATE = 47;
+  
+  /** The 'current-time()' id. */
+  public static final int FUNC_CURRENT_TIME = 48;
 
   // Proprietary
 
@@ -186,7 +195,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 46;
+  private static final int NUM_BUILT_IN_FUNCS = 49;
 
   /**
    * Number of built-in functions that may be added.
@@ -270,6 +279,12 @@ public class FunctionTable
       org.apache.xpath.functions.FuncUnparsedText.class;
     m_functions[FUNC_STRING_JOIN] = 
       org.apache.xpath.functions.FuncStringJoin.class;
+    m_functions[FUNC_CURRENT_DATETIME] = 
+      org.apache.xpath.functions.FuncCurrentDateTime.class;
+    m_functions[FUNC_CURRENT_DATE] = 
+      org.apache.xpath.functions.FuncCurrentDate.class;
+    m_functions[FUNC_CURRENT_TIME] = 
+      org.apache.xpath.functions.FuncCurrentTime.class;
   }
 
   static{
@@ -361,6 +376,12 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_UNPARSED_TEXT));
           m_functionID.put(Keywords.FUNC_STRING_JOIN,
                           new Integer(FunctionTable.FUNC_STRING_JOIN));
+          m_functionID.put(Keywords.FUNC_CURRENT_DATETIME,
+                          new Integer(FunctionTable.FUNC_CURRENT_DATETIME));
+          m_functionID.put(Keywords.FUNC_CURRENT_DATE,
+                          new Integer(FunctionTable.FUNC_CURRENT_DATE));
+          m_functionID.put(Keywords.FUNC_CURRENT_TIME,
+                          new Integer(FunctionTable.FUNC_CURRENT_TIME));
   }
   
   public FunctionTable(){
@@ -466,4 +487,5 @@ public class FunctionTable
               return (null != tblEntry)? true : false;
       }
   }
+  
 }
