@@ -1350,10 +1350,9 @@ public class ElemLiteralResult extends ElemUse
                     AVT avt = (AVT) m_avts.get(i);
                     XPathContext xctxt = transformer.getXPathContext();
                     int sourceNode = xctxt.getCurrentNode();
-                    String stringedValue =
-                        avt.evaluate(xctxt, sourceNode, this);
+                    String stringedValue = avt.evaluate(xctxt, sourceNode, this);
 
-                    if (null != stringedValue)
+                    if (stringedValue != null)
                     {
 
                         // Important Note: I'm not going to check for excluded namespace 

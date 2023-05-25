@@ -48,4 +48,8 @@ public abstract class XSAnyType extends XObject {
 	 */
 	public abstract String stringValue();
 	
+	public void appendToFsb(org.apache.xml.utils.FastStringBuffer fsb) {
+	   fsb.append(stringValue());
+	} 
+	
 }

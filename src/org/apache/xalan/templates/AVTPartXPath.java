@@ -26,6 +26,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathFactory;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.xs.types.XSAnyType;
 
 /**
  * Simple string part of a complex AVT.
@@ -134,9 +135,13 @@ public class AVTPartXPath extends AVTPart
 
     XObject xobj = m_xpath.execute(xctxt, context, nsNode);
 
-    if (null != xobj)
-    {
-      xobj.appendToFsb(buf);
+    if (xobj != null) {
+        if (xobj instanceof XSAnyType) {
+           ((XSAnyType)xobj).appendToFsb(buf);
+        }
+        else {
+           xobj.appendToFsb(buf);
+        }
     }
   }
   
