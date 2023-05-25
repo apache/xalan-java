@@ -1401,12 +1401,15 @@ public class XPathContext extends DTMManager // implements ExpressionContext
         ZonedDateTime zonedDateTime = ZonedDateTime.now();
         ZoneOffset zoneOffset = zonedDateTime.getOffset();
         String zoneOffsetStr = zoneOffset.toString();
-        String[] zoneOffsetParts = zoneOffsetStr.split("\\+|\\-|:");
-        int zoneHrs = (new Integer(zoneOffsetParts[1])).intValue();
-        int zoneMinutes = (new Integer(zoneOffsetParts[2])).intValue();
-        
-        m_timezone = new XSDayTimeDuration(0, zoneHrs, zoneMinutes, 0, 
-                                                 zoneOffsetStr.startsWith("+") ? false : true);
+        String[] zoneOffsetStrParts = zoneOffsetStr.split("\\+|\\-|:");
+        int zoneHrs = 0;
+        int zoneMinutes = 0;
+        if (zoneOffsetStrParts.length > 1) {
+           zoneHrs = (new Integer(zoneOffsetStrParts[1])).intValue();
+           zoneMinutes = (new Integer(zoneOffsetStrParts[2])).intValue();
+        }
+        boolean isNegativeTimezone = !zoneOffsetStr.startsWith("+");
+        m_timezone = new XSDayTimeDuration(0, zoneHrs, zoneMinutes, 0, isNegativeTimezone);
      }
      
      return m_timezone;
