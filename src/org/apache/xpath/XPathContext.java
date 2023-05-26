@@ -1386,7 +1386,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 
  public GregorianCalendar getCurrentDateTime() {
      if (m_currentDateTime == null) {
-         m_currentDateTime = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+         m_currentDateTime = new GregorianCalendar(TimeZone.getDefault());
      }
      
      return m_currentDateTime;

@@ -257,19 +257,23 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
   {
 
     transformer.pushCurrentTemplateRuleIsNull(true);    
-    if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEvent(this);//trigger for-each element event
+    if (transformer.getDebug()) {
+        transformer.getTraceManager().fireTraceEvent(this);   // invoke xsl:for-each element event
+    }
 
     try
     {
-      transformSelectedNodes(transformer);
+        transformSelectedNodes(transformer);
     }
     finally
     {
-      if (transformer.getDebug())
-	    transformer.getTraceManager().fireTraceEndEvent(this); 
-      transformer.popCurrentTemplateRuleIsNull();
+        if (transformer.getDebug()) {
+	       transformer.getTraceManager().fireTraceEndEvent(this);
+        }
+        
+        transformer.popCurrentTemplateRuleIsNull();
     }
+    
   }
 
   /**
