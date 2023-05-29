@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><elem>
+  <token>hello</token>
+  <token>world</token>
+  <token>this</token>
+  <token>is</token>
+  <token>a</token>
+  <token>string</token>
+  <token>to</token>
+  <token>test</token>
+  <token>xslt</token>
+  <token>xsl:analyze-string</token>
+  <token>instruction</token>
+</elem>

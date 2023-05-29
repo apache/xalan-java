@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?><elem>
+  <aGrp pCount="6">
+    <pGrps>
+      <pGrp pVal="x">
+        <p>x</p>
+        <p>x</p>
+      </pGrp>
+      <pGrp pVal="y">
+        <p>y</p>
+        <p>y</p>
+        <p>y</p>
+        <p>y</p>
+      </pGrp>
+    </pGrps>
+  </aGrp>
+  <aGrp pCount="3">
+    <pGrps>
+      <pGrp pVal="m">
+        <p>m</p>
+        <p>m</p>
+      </pGrp>
+      <pGrp pVal="n">
+        <p>n</p>
+      </pGrp>
+    </pGrps>
+    <pGrps>
+      <pGrp pVal="a">
+        <p>a</p>
+        <p>a</p>
+      </pGrp>
+      <pGrp pVal="b">
+        <p>b</p>
+      </pGrp>
+    </pGrps>
+  </aGrp>
+</elem>

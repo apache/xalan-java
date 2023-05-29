@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><elem>
+  <token>1</token>
+  <delim>A</delim>
+  <token>2</token>
+  <delim>A</delim>
+  <token>3</token>
+  <delim>b</delim>
+  <token>4</token>
+  <delim>b</delim>
+  <token>5</token>
+  <delim>b</delim>
+  <token>6</token>
+  <delim>a</delim>
+  <token>7</token>
+  <delim>a</delim>
+  <token>8</token>
+  <delim>B</delim>
+  <token>9</token>
+  <delim>b</delim>
+  <token>0</token>
+  <delim>a</delim>
+  <token>1</token>
+</elem>

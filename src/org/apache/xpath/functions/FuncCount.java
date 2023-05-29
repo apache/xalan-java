@@ -24,6 +24,7 @@ import org.apache.xml.dtm.DTMIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
@@ -50,7 +51,10 @@ public class FuncCount extends FunctionOneArg
         
         if (m_arg0 instanceof Function) {
             XObject evalResult = ((Function)m_arg0).execute(xctxt);
-            if (evalResult instanceof ResultSequence) {
+            if (evalResult instanceof XNodeSet) {
+                count = ((XNodeSet)evalResult).getLength();   
+            }
+            else if (evalResult instanceof ResultSequence) {
                count = ((ResultSequence)evalResult).size();
             }
         }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <group grpKey="true">
+    <a>hello1</a>
+    <a>hi2</a>
+    <a>hello1</a>
+    <a>hi4</a>
+    <a>hello5</a>
+  </group>
+  <group grpKey="false">
+    <a>abc</a>
+  </group>
+</result>

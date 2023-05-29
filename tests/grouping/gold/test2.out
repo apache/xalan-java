@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <group grpKey="abc#pqr">
+    <a>
+    <p>abc</p>
+    <q>pqr</q>
+  </a>
+    <a>
+    <p>abc</p>
+    <q>pqr</q>
+  </a>
+  </group>
+  <group grpKey="hello#world">
+    <a>
+    <p>hello</p>
+    <q>world</q>
+  </a>
+    <a>
+    <p>hello</p>
+    <q>world</q>
+  </a>
+  </group>
+  <group grpKey="mno#xyz">
+    <a>
+    <p>mno</p>
+    <q>xyz</q>
+  </a>
+  </group>
+  <group grpKey="hi#hi1">
+    <a>
+    <p>hi</p>
+    <q>hi1</q>
+  </a>
+  </group>
+</result>
