@@ -20,6 +20,7 @@ import org.apache.xalan.xpath3.FnAbsTests;
 import org.apache.xalan.xpath3.FnStringJoinTests;
 import org.apache.xalan.xpath3.FnTokenizeTests;
 import org.apache.xalan.xpath3.FnUnparsedTextTests;
+import org.apache.xalan.xpath3.StringTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -40,7 +41,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ AnalyzeStringTests.class, AttributeTests.class, GroupingTests.class,
                 GroupingWithSortTests.class, RtfMigrationTests.class, 
                 FnUnparsedTextTests.class, FnTokenizeTests.class, FnStringJoinTests.class,
-                FnAbsTests.class })
+                FnAbsTests.class, StringTests.class })
 public class AllXsl3Tests {
 
 }

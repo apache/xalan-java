@@ -17,7 +17,7 @@
  
 <!-- Author: mukulg@apache.org --> 
  
-Currently, we don't have a unit tests automation for tests within this folder, 
-because these tests emit strings corresponding to XPath 3.1 functions 
+Currently, we don't have a unit tests automation for tests present within this
+folder, because these tests emit strings corresponding to XPath 3.1 functions 
 fn:current-dateTime(), fn:current-date(), fn:current-time(). Though, anyone
 may run these tests manually, and verify the results produced by these tests. 

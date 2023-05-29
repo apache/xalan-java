@@ -167,6 +167,12 @@ public class FunctionTable
   
   /** The 'current-time()' id. */
   public static final int FUNC_CURRENT_TIME = 48;
+  
+  /** The 'upper-case()' id. */
+  public static final int FUNC_UPPER_CASE = 49;
+  
+  /** The 'lower-case()' id. */
+  public static final int FUNC_LOWER_CASE = 50;
 
   // Proprietary
 
@@ -195,7 +201,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 49;
+  private static final int NUM_BUILT_IN_FUNCS = 51;
 
   /**
    * Number of built-in functions that may be added.
@@ -285,6 +291,10 @@ public class FunctionTable
       org.apache.xpath.functions.FuncCurrentDate.class;
     m_functions[FUNC_CURRENT_TIME] = 
       org.apache.xpath.functions.FuncCurrentTime.class;
+    m_functions[FUNC_UPPER_CASE] = 
+      org.apache.xpath.functions.FuncUpperCase.class;
+    m_functions[FUNC_LOWER_CASE] = 
+      org.apache.xpath.functions.FuncLowerCase.class;
   }
 
   static{
@@ -382,6 +392,10 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_CURRENT_DATE));
           m_functionID.put(Keywords.FUNC_CURRENT_TIME,
                           new Integer(FunctionTable.FUNC_CURRENT_TIME));
+          m_functionID.put(Keywords.FUNC_UPPER_CASE,
+                          new Integer(FunctionTable.FUNC_UPPER_CASE));
+          m_functionID.put(Keywords.FUNC_LOWER_CASE,
+                          new Integer(FunctionTable.FUNC_LOWER_CASE));
   }
   
   public FunctionTable(){

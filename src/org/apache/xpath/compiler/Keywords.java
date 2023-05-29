@@ -243,6 +243,12 @@ public class Keywords
   
   /** current-time function string. */
   public static final String FUNC_CURRENT_TIME = "current-time";
+  
+  /** upper-case function string. */
+  public static final String FUNC_UPPER_CASE = "upper-case";
+  
+  /** lower-case function string. */
+  public static final String FUNC_LOWER_CASE = "lower-case";
 
   // Proprietary, built in functions
 
@@ -293,7 +299,6 @@ public class Keywords
                    new Integer(FunctionTable.FUNC_ID));
     m_keywords.put(FUNC_KEY_STRING,
                    new Integer(FunctionTable.FUNC_KEY));
-
     m_nodetests.put(NODETYPE_COMMENT_STRING,
                     new Integer(OpCodes.NODETYPE_COMMENT));
     m_nodetests.put(NODETYPE_TEXT_STRING,
@@ -301,10 +306,9 @@ public class Keywords
     m_nodetests.put(NODETYPE_PI_STRING,
                     new Integer(OpCodes.NODETYPE_PI));
     m_nodetests.put(NODETYPE_NODE_STRING,
-                    new Integer(OpCodes.NODETYPE_NODE));
-    
-    m_keywords.put(FUNC_KEY_STRING,
-                    new Integer(FunctionTable.FUNC_KEY));
+                    new Integer(OpCodes.NODETYPE_NODE));    
+    /*m_keywords.put(FUNC_KEY_STRING,
+                     new Integer(FunctionTable.FUNC_KEY));*/
   }
   
   static Object getAxisName(String key){
