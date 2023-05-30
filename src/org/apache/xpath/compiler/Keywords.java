@@ -249,6 +249,9 @@ public class Keywords
   
   /** lower-case function string. */
   public static final String FUNC_LOWER_CASE = "lower-case";
+  
+  /** implicit-timezone function string. */
+  public static final String FUNC_IMPLICIT_TIMEZONE = "implicit-timezone";
 
   // Proprietary, built in functions
 
