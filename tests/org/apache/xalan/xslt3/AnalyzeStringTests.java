@@ -16,25 +16,10 @@
  */
 package org.apache.xalan.xslt3;
 
-import java.io.StringWriter;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
+import org.apache.xalan.util.XslTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
-
-import junit.framework.Assert;
 
 /**
  * XSLT xsl:analyze-string test cases.
@@ -43,287 +28,132 @@ import junit.framework.Assert;
  * 
  * @xsl.usage advanced
  */
-public class AnalyzeStringTests {     
+public class AnalyzeStringTests extends XslTransformTestsUtil {     
     
-    private static final String xslTransformInputDirPath = XSLConstants.XSL_TRANSFORM_INPUT_DIR_PATH_PREFIX + "analyze_string/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "analyze_string/";
     
-    private static final String xslTransformGoldDirPath = XSLConstants.XSL_TRANSFORM_GOLD_DIR_PATH_PREFIX + "analyze_string/gold/";       
-    
-    private static TransformerFactory tfactory = null;
-    
-    private static DocumentBuilderFactory dfactory = null;
-    
-    private static DocumentBuilder docBuilder = null;
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "analyze_string/gold/";
 
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        System.setProperty(XSLConstants.XERCES_DOCUMENT_BUILDER_FACTORY_KEY, XSLConstants.XERCES_DOCUMENT_BUILDER_FACTORY_VALUE);
-        System.setProperty(XSLConstants.XSLT_TRANSFORMER_FACTORY_KEY, XSLConstants.XSLT_TRANSFORMER_FACTORY_VALUE);
-        
-        tfactory = TransformerFactory.newInstance();
-        
-        dfactory = DocumentBuilderFactory.newInstance();
-        docBuilder = dfactory.newDocumentBuilder();
+    public static void setUpBeforeClass() throws Exception {        
+        // no op   
     }
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        tfactory = null;
-        dfactory = null;
-        docBuilder = null;
+        xmlDocumentBuilderFactory = null;
+        xmlDocumentBuilder = null;
+        xslTransformerFactory = null;
     }
 
     @Test
-    public void test1() {
-        String xmlFilePath = xslTransformInputDirPath + "test1_a.xml"; 
-        String xslFilePath = xslTransformInputDirPath + "test1.xsl";
+    public void xslAnalyzeStringTest1() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
-        String goldFilePath = xslTransformGoldDirPath + "test1.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";                
         
-        try {
-           Node xmlDomSource = docBuilder.parse(new InputSource(xmlFilePath));
-        
-           Transformer xslTransformer = tfactory.newTransformer(new StreamSource(xslFilePath));
-           StringWriter resultStrWriter = new StringWriter();
-           xslTransformer.transform(new DOMSource(xmlDomSource), new StreamResult(resultStrWriter));
-           
-           byte[] goldFileBytes = Files.readAllBytes(Paths.get(goldFilePath));
-           
-           Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());           
-        }
-        catch (Exception ex) {
-            Assert.fail();    
-        }
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
-    public void test2() {
-        String xmlFilePath = xslTransformInputDirPath + "test1_b.xml"; 
-        String xslFilePath = xslTransformInputDirPath + "test2.xsl";
+    public void xslAnalyzeStringTest2() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_b.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
         
-        String goldFilePath = xslTransformGoldDirPath + "test2.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";                
         
-        try {
-           Node xmlDomSource = docBuilder.parse(new InputSource(xmlFilePath));
-        
-           Transformer xslTransformer = tfactory.newTransformer(new StreamSource(xslFilePath));
-           StringWriter resultStrWriter = new StringWriter();
-           xslTransformer.transform(new DOMSource(xmlDomSource), new StreamResult(resultStrWriter));
-           
-           byte[] goldFileBytes = Files.readAllBytes(Paths.get(goldFilePath));
-           
-           Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());           
-        }
-        catch (Exception ex) {
-            Assert.fail();    
-        }   
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }
     
     @Test
-    public void test3() {
-        String xmlFilePath = xslTransformInputDirPath + "test1_c.xml"; 
-        String xslFilePath = xslTransformInputDirPath + "test3.xsl";
+    public void xslAnalyzeStringTest3() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
         
-        String goldFilePath = xslTransformGoldDirPath + "test3.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";                
         
-        try {
-           Node xmlDomSource = docBuilder.parse(new InputSource(xmlFilePath));
-        
-           Transformer xslTransformer = tfactory.newTransformer(new StreamSource(xslFilePath));
-           StringWriter resultStrWriter = new StringWriter();
-           xslTransformer.transform(new DOMSource(xmlDomSource), new StreamResult(resultStrWriter));
-           
-           byte[] goldFileBytes = Files.readAllBytes(Paths.get(goldFilePath));
-           
-           Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());           
-        }
-        catch (Exception ex) {
-            Assert.fail();    
-        }   
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }
     
     @Test
-    public void test4() {
-        String xmlFilePath = xslTransformInputDirPath + "test1_d.xml"; 
-        String xslFilePath = xslTransformInputDirPath + "test4.xsl";
+    public void xslAnalyzeStringTest4() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_d.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
         
-        String goldFilePath = xslTransformGoldDirPath + "test4.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test4.out";                
         
-        try {
-           Node xmlDomSource = docBuilder.parse(new InputSource(xmlFilePath));
-        
-           Transformer xslTransformer = tfactory.newTransformer(new StreamSource(xslFilePath));
-           StringWriter resultStrWriter = new StringWriter();
-           xslTransformer.transform(new DOMSource(xmlDomSource), new StreamResult(resultStrWriter));
-           
-           byte[] goldFileBytes = Files.readAllBytes(Paths.get(goldFilePath));
-           
-           Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());           
-        }
-        catch (Exception ex) {
-            Assert.fail();    
-        }      
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);     
     }
     
     @Test
-    public void test5() {
-        String xmlFilePath = xslTransformInputDirPath + "test1_d.xml"; 
-        String xslFilePath = xslTransformInputDirPath + "test5.xsl";
+    public void xslAnalyzeStringTest5() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_d.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
         
-        String goldFilePath = xslTransformGoldDirPath + "test5.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";                
         
-        try {
-           Node xmlDomSource = docBuilder.parse(new InputSource(xmlFilePath));
-        
-           Transformer xslTransformer = tfactory.newTransformer(new StreamSource(xslFilePath));
-           StringWriter resultStrWriter = new StringWriter();
-           xslTransformer.transform(new DOMSource(xmlDomSource), new StreamResult(resultStrWriter));
-           
-           byte[] goldFileBytes = Files.readAllBytes(Paths.get(goldFilePath));
-           
-           Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());           
-        }
-        catch (Exception ex) {
-            Assert.fail();    
-        }
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
-    public void test6() {
-        String xmlFilePath = xslTransformInputDirPath + "test1_d.xml"; 
-        String xslFilePath = xslTransformInputDirPath + "test6.xsl";
+    public void xslAnalyzeStringTest6() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_d.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
         
-        String goldFilePath = xslTransformGoldDirPath + "test6.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test6.out";                
         
-        try {
-           Node xmlDomSource = docBuilder.parse(new InputSource(xmlFilePath));
-        
-           Transformer xslTransformer = tfactory.newTransformer(new StreamSource(xslFilePath));
-           StringWriter resultStrWriter = new StringWriter();
-           xslTransformer.transform(new DOMSource(xmlDomSource), new StreamResult(resultStrWriter));
-           
-           byte[] goldFileBytes = Files.readAllBytes(Paths.get(goldFilePath));
-           
-           Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());           
-        }
-        catch (Exception ex) {
-            Assert.fail();    
-        }
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
-    public void test7() {
-        String xmlFilePath = xslTransformInputDirPath + "test1_e.xml"; 
-        String xslFilePath = xslTransformInputDirPath + "test7.xsl";
+    public void xslAnalyzeStringTest7() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_e.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl";
         
-        String goldFilePath = xslTransformGoldDirPath + "test7.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test7.out";                
         
-        try {
-           Node xmlDomSource = docBuilder.parse(new InputSource(xmlFilePath));
-        
-           Transformer xslTransformer = tfactory.newTransformer(new StreamSource(xslFilePath));
-           StringWriter resultStrWriter = new StringWriter();
-           xslTransformer.transform(new DOMSource(xmlDomSource), new StreamResult(resultStrWriter));
-           
-           byte[] goldFileBytes = Files.readAllBytes(Paths.get(goldFilePath));
-           
-           Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());           
-        }
-        catch (Exception ex) {
-            Assert.fail();    
-        }
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
-    public void test8() {
-        String xmlFilePath = xslTransformInputDirPath + "test1_e.xml"; 
-        String xslFilePath = xslTransformInputDirPath + "test8.xsl";
+    public void xslAnalyzeStringTest8() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_e.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test8.xsl";
         
-        String goldFilePath = xslTransformGoldDirPath + "test8.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test8.out";                
         
-        try {
-           Node xmlDomSource = docBuilder.parse(new InputSource(xmlFilePath));
-        
-           Transformer xslTransformer = tfactory.newTransformer(new StreamSource(xslFilePath));
-           StringWriter resultStrWriter = new StringWriter();
-           xslTransformer.transform(new DOMSource(xmlDomSource), new StreamResult(resultStrWriter));
-           
-           byte[] goldFileBytes = Files.readAllBytes(Paths.get(goldFilePath));
-           
-           Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());           
-        }
-        catch (Exception ex) {
-            Assert.fail();    
-        }
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
-    public void test9() {
-        String xmlFilePath = xslTransformInputDirPath + "test1_f.xml"; 
-        String xslFilePath = xslTransformInputDirPath + "test9.xsl";
+    public void xslAnalyzeStringTest9() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_f.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9.xsl";
         
-        String goldFilePath = xslTransformGoldDirPath + "test9.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test9.out";                
         
-        try {
-           Node xmlDomSource = docBuilder.parse(new InputSource(xmlFilePath));
-        
-           Transformer xslTransformer = tfactory.newTransformer(new StreamSource(xslFilePath));
-           StringWriter resultStrWriter = new StringWriter();
-           xslTransformer.transform(new DOMSource(xmlDomSource), new StreamResult(resultStrWriter));
-           
-           byte[] goldFileBytes = Files.readAllBytes(Paths.get(goldFilePath));
-           
-           Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());           
-        }
-        catch (Exception ex) {
-            Assert.fail();    
-        }
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
-    public void test10() {
-        String xmlFilePath = xslTransformInputDirPath + "test1_g.xml"; 
-        String xslFilePath = xslTransformInputDirPath + "test10.xsl";
+    public void xslAnalyzeStringTest10() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_g.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10.xsl";
         
-        String goldFilePath = xslTransformGoldDirPath + "test10.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test10.out";                
         
-        try {
-           Node xmlDomSource = docBuilder.parse(new InputSource(xmlFilePath));
-        
-           Transformer xslTransformer = tfactory.newTransformer(new StreamSource(xslFilePath));
-           StringWriter resultStrWriter = new StringWriter();
-           xslTransformer.transform(new DOMSource(xmlDomSource), new StreamResult(resultStrWriter));
-           
-           byte[] goldFileBytes = Files.readAllBytes(Paths.get(goldFilePath));
-           
-           Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());           
-        }
-        catch (Exception ex) {
-            Assert.fail();    
-        }
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
-    public void test11() {
-        String xmlFilePath = xslTransformInputDirPath + "test1_g.xml"; 
-        String xslFilePath = xslTransformInputDirPath + "test11.xsl";
+    public void xslAnalyzeStringTest11() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_g.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";
         
-        String goldFilePath = xslTransformGoldDirPath + "test11.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";                
         
-        try {
-           Node xmlDomSource = docBuilder.parse(new InputSource(xmlFilePath));
-        
-           Transformer xslTransformer = tfactory.newTransformer(new StreamSource(xslFilePath));
-           StringWriter resultStrWriter = new StringWriter();
-           xslTransformer.transform(new DOMSource(xmlDomSource), new StreamResult(resultStrWriter));
-           
-           byte[] goldFileBytes = Files.readAllBytes(Paths.get(goldFilePath));
-           
-           Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());           
-        }
-        catch (Exception ex) {
-            Assert.fail();    
-        }
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
 
 }

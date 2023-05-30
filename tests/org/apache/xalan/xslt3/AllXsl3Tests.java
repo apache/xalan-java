@@ -35,7 +35,7 @@ import org.junit.runners.Suite.SuiteClasses;
 /*
  *  For all the tests supported by this junit test suite, the XSLT transformation
  *  expected output files (i.e, the gold files) are sensitive to the whitespace
- *  contents contained within those files.
+ *  contents available within those files.
  */
 @RunWith(Suite.class)
 @SuiteClasses({ AnalyzeStringTests.class, AttributeTests.class, GroupingTests.class,

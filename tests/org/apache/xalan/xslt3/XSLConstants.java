@@ -36,8 +36,8 @@ public class XSLConstants {
     // the values of following, two variables are host specific where this test suite shall be run. the values of
     // following two variables may be modified, accordingly.
     
-    public static final String XSL_TRANSFORM_INPUT_DIR_PATH_PREFIX = "file:///d:/eclipseWorkspaces/xalanj/xalan-java/tests/";
+    public static final String XSL_TRANSFORM_INPUT_DIRPATH_PREFIX = "file:///d:/eclipseWorkspaces/xalanj/xalan-java/tests/";
     
-    public static final String XSL_TRANSFORM_GOLD_DIR_PATH_PREFIX = "d:/eclipseWorkspaces/xalanj/xalan-java/tests/";
+    public static final String XSL_TRANSFORM_GOLD_DIRPATH_PREFIX = "d:/eclipseWorkspaces/xalanj/xalan-java/tests/";
 
 }
