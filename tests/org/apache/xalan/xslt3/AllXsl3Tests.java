@@ -41,7 +41,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ AnalyzeStringTests.class, AttributeTests.class, GroupingTests.class,
                 GroupingWithSortTests.class, RtfMigrationTests.class, 
                 FnUnparsedTextTests.class, FnTokenizeTests.class, FnStringJoinTests.class,
-                FnAbsTests.class, StringTests.class })
+                FnAbsTests.class, StringTests.class, QuantifiedExprTests.class })
 public class AllXsl3Tests {
 
 }
