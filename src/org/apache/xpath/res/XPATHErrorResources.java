@@ -209,9 +209,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
  public static final String ER_NULL_ERROR_HANDLER = "ER_NULL_ERROR_HANDLER";
    /**  Programmer's assertion: unknown opcode  */
   public static final String ER_PROG_ASSERT_UNKNOWN_OPCODE = 
-	 "ER_PROG_ASSERT_UNKNOWN_OPCODE";
-   /**  0 or 1   */
-  public static final String ER_ZERO_OR_ONE = "ER_ZERO_OR_ONE";
+	 "ER_PROG_ASSERT_UNKNOWN_OPCODE";   
    /**  rtf() not supported by XRTreeFragSelectWrapper   */
   public static final String ER_RTF_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER = 
 	 "ER_RTF_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER";
@@ -228,8 +226,11 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
    /**  The FastStringBuffer argument can not be null   */
  public static final String ER_FASTSTRINGBUFFER_CANNOT_BE_NULL = 
 	 "ER_FASTSTRINGBUFFER_CANNOT_BE_NULL";
+  
   /** 0 */
   public static final String ER_ZERO = "ER_ZERO";
+  /**  0 or 1   */
+  public static final String ER_ZERO_OR_ONE = "ER_ZERO_OR_ONE";
   /** 1 or 2 */
   public static final String ER_ONE_OR_TWO = "ER_ONE_OR_TWO";
    /**  2 or 3   */
@@ -238,6 +239,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   public static final String ER_ONE_TWO_OR_THREE = "ER_ONE_TWO_OR_THREE";
   /**  3 or 4   */
   public static final String ER_THREE_OR_FOUR = "ER_THREE_OR_FOUR";
+  
    /** Variable accessed before it is bound! */
   public static final String ER_VARIABLE_ACCESSED_BEFORE_BIND = 
 	 "ER_VARIABLE_ACCESSED_BEFORE_BIND";
@@ -589,9 +591,6 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   { ER_PROG_ASSERT_UNKNOWN_OPCODE,
        "Programmer''s assertion: unknown opcode: {0}"},
 
-  { ER_ZERO_OR_ONE,
-       "0 or 1"},
-
   { ER_RTF_NOT_SUPPORTED_XRTREEFRAGSELECTWRAPPER,
        "rtf() not supported by XRTreeFragSelectWrapper"},
 
@@ -627,6 +626,9 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
       "The FastStringBuffer argument can not be null"},
 
   { ER_ZERO, "0"},
+  
+  { ER_ZERO_OR_ONE,
+       "0 or 1"},
   
   { ER_ONE_OR_TWO,
        "1 or 2"},

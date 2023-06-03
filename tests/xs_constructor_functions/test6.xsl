@@ -1,40 +1,24 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                exclude-result-prefixes="xs"
                 version="3.0">
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_a.xml -->
-   
-   <!-- test for the XPath 3.1 fn:abs() function -->
+   <!-- this stylesheet, tests XPath 3.1 constructor function xs:decimal(),
+        and use of arithmetic and logical operations on such values. -->                
 
    <xsl:output method="xml" indent="yes"/>
 
-   <xsl:template match="/elem">
-      <elem>
-         <item><xsl:value-of select="abs(5)"/></item>
-         <item><xsl:value-of select="abs(-5)"/></item>
-         <item><xsl:value-of select="abs(-2.7)"/></item>
-         <result1>
-           <xsl:for-each select="a">
-              <item><xsl:value-of select="abs(.)"/></item>
-           </xsl:for-each>
-         </result1>
-         <result2>
-	        <xsl:for-each select="a">
-	           <item><xsl:value-of select="abs()"/></item>
-	        </xsl:for-each>
-         </result2>
-         <result3>
-            <xsl:for-each select="/elem/a[abs() &gt; 7]">
-	           <item><xsl:value-of select="."/></item>
-	        </xsl:for-each>
-         </result3>
-         <extra_elem1><xsl:value-of select="a[2] &lt; 0"/></extra_elem1>
-         <extra_elem2><xsl:value-of select="a[2] &gt; 0"/></extra_elem2>
-         <extra_elem3><xsl:value-of select="abs(a[2]) &gt; 7"/></extra_elem3>
-         <extra_elem4><xsl:value-of select="abs(a[2]) &lt; 7"/></extra_elem4>
-      </elem>
+   <xsl:template match="/">
+      <xsl:variable name="decimal1" select="xs:decimal(12.23) + xs:decimal(12.2)"/>
+      <xsl:variable name="decimal2" select="xs:decimal(24.43)"/>
+      <result>
+         <one><xsl:value-of select="$decimal1"/></one>
+         <two><xsl:value-of select="$decimal2"/></two>
+         <three><xsl:value-of select="$decimal1 = $decimal2"/></three>
+      </result>
    </xsl:template>
    
    <!--

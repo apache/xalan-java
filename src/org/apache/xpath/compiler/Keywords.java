@@ -141,7 +141,10 @@ public class Keywords
   /** false function string. */
   public static final String FUNC_FALSE_STRING = "false";
 
-  /** boolean function string. */
+  /**
+   * boolean function string. we use this same configuration, 
+   * for XML Schema data type xs:boolean as well.
+   */
   public static final String FUNC_BOOLEAN_STRING = "boolean";
 
   /** lang function string. */
@@ -257,6 +260,11 @@ public class Keywords
 
   /** current function string (Proprietary). */
   public static final String FUNC_DOCLOCATION_STRING = "document-location";
+  
+  //XML Schema built-in types constructor functions, configurations
+  
+  /** xs:decimal data type string. */
+  public static final String FUNC_XS_DECIMAL = "decimal";
 
   static
   {

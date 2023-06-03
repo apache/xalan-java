@@ -21,6 +21,7 @@ import org.apache.xalan.xpath3.FnStringJoinTests;
 import org.apache.xalan.xpath3.FnTokenizeTests;
 import org.apache.xalan.xpath3.FnUnparsedTextTests;
 import org.apache.xalan.xpath3.StringTests;
+import org.apache.xalan.xpath3.XsConstructorFunctions;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -33,15 +34,15 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 /*
- *  For all the tests supported by this junit test suite, the XSLT transformation
- *  expected output files (i.e, the gold files) are sensitive to the whitespace
- *  contents available within those files.
+ *  For all the XSLT and XPath tests supported by this test suite, 
+ *  the XSLT transformation expected output files (i.e, the gold files) are 
+ *  sensitive to the whitespace contents available within those files.
  */
 @RunWith(Suite.class)
 @SuiteClasses({ AnalyzeStringTests.class, AttributeTests.class, GroupingTests.class,
-                GroupingWithSortTests.class, RtfMigrationTests.class, 
+                GroupingWithSortTests.class, RtfMigrationTests.class, QuantifiedExprTests.class, 
                 FnUnparsedTextTests.class, FnTokenizeTests.class, FnStringJoinTests.class,
-                FnAbsTests.class, StringTests.class, QuantifiedExprTests.class })
+                FnAbsTests.class, StringTests.class, XsConstructorFunctions.class })
 public class AllXsl3Tests {
 
 }

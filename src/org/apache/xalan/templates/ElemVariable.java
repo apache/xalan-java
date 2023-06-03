@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import javax.xml.transform.TransformerException;
@@ -28,6 +25,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSetForDOM;
@@ -35,8 +33,10 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XRTreeFragSelectWrapper;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.operations.Operation;
 import org.apache.xpath.xs.types.XSAnyType;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * Implementation of XSLT 3.0 xsl:variable element.
@@ -275,8 +275,8 @@ public class ElemVariable extends ElemTemplateElement
    *
    * @throws TransformerException
    */
-  public XObject getValue(TransformerImpl transformer, int sourceNode)
-          throws TransformerException
+  public XObject getValue(TransformerImpl transformer, int sourceNode) 
+                                                                 throws TransformerException
   {
 
     XObject var;
@@ -290,14 +290,29 @@ public class ElemVariable extends ElemTemplateElement
     try {        
       if (m_selectPattern != null) {          
         Expression selectExpression = m_selectPattern.getExpression();
-        if (selectExpression instanceof Function) {
+        if (selectExpression instanceof FuncExtFunction) {
+            XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, 
+                                                                                        selectExpression);
+            return evalResult;
+        }
+        else if (selectExpression instanceof Function) {
             XObject evalResult = ((Function)selectExpression).execute(xctxt);            
             if ((evalResult instanceof ResultSequence) || 
-                                            (evalResult instanceof XSAnyType)) {
+                                                (evalResult instanceof XSAnyType)) {
                 var = evalResult;
                 return var; 
             }
-        } 
+        }
+        else if (selectExpression instanceof Operation) {
+            Operation opn = (Operation)selectExpression;
+            XObject leftOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
+                                                                                         xctxt, opn.getLeftOperand());
+            XObject rightOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
+                                                                                         xctxt, opn.getRightOperand());
+            XObject evalResult = opn.operate(leftOperand, rightOperand);
+            
+            return evalResult;
+        }
           
         var = m_selectPattern.execute(xctxt, sourceNode, this);
 
@@ -336,6 +351,9 @@ public class ElemVariable extends ElemTemplateElement
 		
 		var = new XNodeSetForDOM(nodeList, xctxt); 
       }
+    }
+    catch (SAXException se) {
+        throw new TransformerException(se);
     }
     finally {      
        xctxt.popCurrentNode();
@@ -556,5 +574,40 @@ public class ElemVariable extends ElemTemplateElement
     }
     return super.appendChild(elem);
   }
+  
+  /*private XObject processFuncExtFunction(XPathContext xctxt, Expression expr)
+                                                                  throws TransformerException, SAXException {    
+      XObject evalResult = null;
+
+      FuncExtFunction funcExtFunction = (FuncExtFunction)expr;
+
+      if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcExtFunction.
+              getNamespace())) {                            
+          if ((Keywords.FUNC_XS_DECIMAL).equals(funcExtFunction.getFunctionName())) {                              
+              ResultSequence argSequence = new ResultSequence();
+              for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+                  XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+                  argSequence.add(new XSDecimal(argVal.str()));
+              }
+
+              ResultSequence rSeq = (new XSDecimal()).constructor(argSequence);
+              evalResult = rSeq.item(0);              
+          }
+          else if ((Keywords.FUNC_BOOLEAN_STRING).equals(funcExtFunction.getFunctionName())) {                              
+              ResultSequence argSequence = new ResultSequence();
+              for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+                  XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+                  Boolean boolVal = Boolean.valueOf("0".equals(argVal.str()) ? 
+                          "false" : "true");
+                  argSequence.add(new XSBoolean(boolVal));
+              }
+
+              ResultSequence rSeq = (new XSBoolean()).constructor(argSequence);
+              evalResult = rSeq.item(0);              
+          }
+      }
+
+      return evalResult;
+   }  */
 
 }

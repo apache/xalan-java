@@ -23,6 +23,7 @@ package org.apache.xpath.operations;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.xs.types.XSDecimal;
 
 /**
  * The '+' operation expression executer.
@@ -45,7 +46,28 @@ public class Plus extends Operation
   public XObject operate(XObject left, XObject right)
           throws javax.xml.transform.TransformerException
   {
-    return new XNumber(left.num() + right.num());
+      XObject result = null;
+      
+      double leftArg;
+      double rightArg;
+      
+      if (left instanceof XSDecimal) {
+          leftArg = ((XSDecimal)left).doubleValue();    
+      }
+      else {
+          leftArg = left.num();  
+      }
+      
+      if (right instanceof XSDecimal) {
+          rightArg = ((XSDecimal)right).doubleValue();    
+      }
+      else {
+          rightArg = right.num();  
+      }
+      
+      result = new XNumber(leftArg + rightArg);
+      
+      return result;
   }
   
   /**

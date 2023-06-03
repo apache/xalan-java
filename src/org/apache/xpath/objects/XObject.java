@@ -33,7 +33,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.res.XPATHErrorResources;
-
+import org.apache.xpath.xs.types.XSBoolean;
+import org.apache.xpath.xs.types.XSDecimal;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
@@ -633,6 +634,13 @@ public class XObject extends Expression implements Serializable, Cloneable
   public boolean equals(XObject obj2)
   {
 
+    if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
+       return ((XSDecimal)this).equals((XSDecimal)obj2);        
+    }
+    else if ((this instanceof XSBoolean) && (obj2 instanceof XSBoolean)) {
+       return ((XSBoolean)this).equals((XSBoolean)obj2);    
+    }
+    
     // In order to handle the 'all' semantics of 
     // nodeset comparisons, we always call the 
     // nodeset function.

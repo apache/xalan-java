@@ -17,40 +17,49 @@
  */
 package org.apache.xpath.xs.types;
 
-import org.apache.xml.utils.FastStringBuffer;
-import org.apache.xpath.objects.XObject;
+import java.math.BigInteger;
+
+import org.apache.xpath.objects.ResultSequence;
 
 /**
- * Base class for all the XML Schema types.
- * 
- * (please refer, https://www.w3.org/TR/xmlschema11-2/#built-in-datatypes
- *  that illustrates the XML Schema 1.1 built-in datatypes hierarchy)
+ * An XML Schema data type representation, of the xs:int datatype.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public abstract class XSAnyType extends XObject {
-	
-    private static final long serialVersionUID = -3385975335330221518L;
+public class XSInt extends XSLong {
 
-    /**
-	 * Get the datatype's name. For e.g "xs:boolean", "xs:decimal".
-	 * 
-	 * @return datatype's name
+    private static final long serialVersionUID = -6853519104620633955L;
+    
+    private static final String XS_INT = "xs:int";
+    
+	/*
+	 * Class constructor.
 	 */
-	public abstract String stringType();
-
-	/**
-	 * Get the string representation of the value stored.
-	 * 
-	 * @return get the string representation of the, value 
-	 *         stored adhering to this type.
-	 */
-	public abstract String stringValue();
+	public XSInt() {
+	  this(BigInteger.valueOf(0));
+	}
 	
-	public void appendToFsb(FastStringBuffer fsb) {
-	   fsb.append(stringValue());
-	} 
+	/*
+     * Class constructor.
+     */
+	public XSInt(BigInteger val) {
+		super(val);
+	}
+	
+	@Override
+    public ResultSequence constructor(ResultSequence arg) {
+       // to do
+       return null;
+    }
+	
+	public String stringType() {
+		return XS_INT;
+	}
+	
+	public String typeName() {
+		return "int";
+	}
 	
 }

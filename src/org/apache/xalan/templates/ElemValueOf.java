@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xalan.templates;
 
 import javax.xml.transform.TransformerException;
@@ -29,9 +26,11 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.xs.types.XSAnyType;
 import org.w3c.dom.DOMException;
@@ -281,8 +280,21 @@ public class ElemValueOf extends ElemTemplateElement {
               if (m_isDot && xpath3ContextItem != null) {
                   xpath3ContextItem.dispatchCharactersEvents(rth);   
               }
-              else {                  
-                  if (expr instanceof Function) {
+              else {
+                  if (expr instanceof FuncExtFunction) {                      
+                      XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, expr);
+                      String strValue = null;
+                      
+                      if (evalResult instanceof XSAnyType) {
+                          strValue = ((XSAnyType)evalResult).stringValue();    
+                      }
+                      else {
+                          strValue = evalResult.str();  
+                      }
+
+                      (new XString(strValue)).dispatchCharactersEvents(rth);
+                  }
+                  else if (expr instanceof Function) {
                       XObject evalResult = ((Function)expr).execute(xctxt);
                       String strValue = null;
                       if (evalResult instanceof XSAnyType) {
@@ -304,6 +316,23 @@ public class ElemValueOf extends ElemTemplateElement {
                       }
                       (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
+                  else if (expr instanceof Operation) {
+                     Operation opn = (Operation)expr;
+                     XObject leftOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
+                                                                                                xctxt, opn.getLeftOperand());
+                     XObject rightOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
+                                                                                                xctxt, opn.getRightOperand());
+                     XObject evalResult = opn.operate(leftOperand, rightOperand);
+                     
+                     String strValue = null;
+                     if (evalResult instanceof XSAnyType) {
+                         strValue = ((XSAnyType)evalResult).stringValue();
+                     }
+                     else {
+                         strValue = evalResult.str();
+                     }
+                     (new XString(strValue)).dispatchCharactersEvents(rth);
+                  }
                   else {
                       expr.executeCharsToContentHandler(xctxt, rth);
                   }
@@ -323,7 +352,7 @@ public class ElemValueOf extends ElemTemplateElement {
     }
     catch (SAXException se)
     {
-      throw new TransformerException(se);
+        throw new TransformerException(se);
     }
     catch (RuntimeException re) {
     	TransformerException te = new TransformerException(re);

@@ -23,6 +23,7 @@ package org.apache.xpath.objects;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.xs.types.XSDecimal;
 
 /**
  * This class represents an XPath number, and is capable of
@@ -392,10 +393,11 @@ public class XNumber extends XObject
    */
   public boolean equals(XObject obj2)
   {
-
-    // In order to handle the 'all' semantics of 
-    // nodeset comparisons, we always call the 
-    // nodeset function.
+    
+    if (obj2 instanceof XSDecimal) {
+       return m_val == ((XSDecimal)obj2).doubleValue();   
+    }
+    
     int t = obj2.getType();
     try
     {

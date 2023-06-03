@@ -4,37 +4,15 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_a.xml -->
-   
-   <!-- test for the XPath 3.1 fn:abs() function -->
+   <!-- use with test1_a.xml -->             
 
    <xsl:output method="xml" indent="yes"/>
 
    <xsl:template match="/elem">
-      <elem>
-         <item><xsl:value-of select="abs(5)"/></item>
-         <item><xsl:value-of select="abs(-5)"/></item>
-         <item><xsl:value-of select="abs(-2.7)"/></item>
-         <result1>
-           <xsl:for-each select="a">
-              <item><xsl:value-of select="abs(.)"/></item>
-           </xsl:for-each>
-         </result1>
-         <result2>
-	        <xsl:for-each select="a">
-	           <item><xsl:value-of select="abs()"/></item>
-	        </xsl:for-each>
-         </result2>
-         <result3>
-            <xsl:for-each select="/elem/a[abs() &gt; 7]">
-	           <item><xsl:value-of select="."/></item>
-	        </xsl:for-each>
-         </result3>
-         <extra_elem1><xsl:value-of select="a[2] &lt; 0"/></extra_elem1>
-         <extra_elem2><xsl:value-of select="a[2] &gt; 0"/></extra_elem2>
-         <extra_elem3><xsl:value-of select="abs(a[2]) &gt; 7"/></extra_elem3>
-         <extra_elem4><xsl:value-of select="abs(a[2]) &lt; 7"/></extra_elem4>
-      </elem>
+      <result>
+         <one><xsl:value-of select="a + b = c"/></one>
+         <two><xsl:value-of select="a + b = d"/></two>
+      </result>
    </xsl:template>
    
    <!--
