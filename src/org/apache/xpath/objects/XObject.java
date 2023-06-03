@@ -35,6 +35,8 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.xs.types.XSBoolean;
 import org.apache.xpath.xs.types.XSDecimal;
+import org.apache.xpath.xs.types.XSDouble;
+import org.apache.xpath.xs.types.XSFloat;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
@@ -636,6 +638,12 @@ public class XObject extends Expression implements Serializable, Cloneable
 
     if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
        return ((XSDecimal)this).equals((XSDecimal)obj2);        
+    }
+    else if ((this instanceof XSFloat) && (obj2 instanceof XSFloat)) {
+        return ((XSFloat)this).equals((XSFloat)obj2);        
+    }
+    else if ((this instanceof XSDouble) && (obj2 instanceof XSDouble)) {
+        return ((XSDouble)this).equals((XSDouble)obj2);        
     }
     else if ((this instanceof XSBoolean) && (obj2 instanceof XSBoolean)) {
        return ((XSBoolean)this).equals((XSBoolean)obj2);    

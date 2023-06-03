@@ -265,6 +265,12 @@ public class Keywords
   
   /** xs:decimal data type string. */
   public static final String FUNC_XS_DECIMAL = "decimal";
+  
+  /** xs:float data type string. */
+  public static final String FUNC_XS_FLOAT = "float";
+  
+  /** xs:double data type string. */
+  public static final String FUNC_XS_DOUBLE = "double";
 
   static
   {

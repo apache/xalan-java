@@ -96,8 +96,30 @@ public class XSDouble extends XSNumericType {
 	
 	@Override
     public ResultSequence constructor(ResultSequence arg) {
-        // to do
-        return null;
+        ResultSequence resultSeq = new ResultSequence();
+        
+        if (arg.size() == 0) {
+           return resultSeq;     
+        }
+        
+        XSAnyType xsAnyType = (XSAnyType)arg.item(0);
+        
+        XSDouble xsAnyTypeConvertedToDouble = null;
+        
+        if (xsAnyType instanceof XSBoolean) {
+            if (xsAnyType.stringValue().equals("true")) {
+                xsAnyTypeConvertedToDouble = new XSDouble(1.0E0);
+            } else {
+                xsAnyTypeConvertedToDouble = new XSDouble(0.0E0);
+            }
+        }
+        else {
+            xsAnyTypeConvertedToDouble = parseDouble(xsAnyType.stringValue());
+        }
+        
+        resultSeq.add(xsAnyTypeConvertedToDouble);
+        
+        return resultSeq;
     }
 
     @Override
@@ -165,6 +187,10 @@ public class XSDouble extends XSNumericType {
      */
     public boolean zero() {
         return (Double.compare(_value.doubleValue(), 0.0E0) == 0);
+    }
+    
+    public boolean equals(XSDouble xsDouble) {
+        return _value.equals(xsDouble.doubleValue()); 
     }
     
 }

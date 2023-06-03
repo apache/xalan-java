@@ -94,8 +94,41 @@ public class XSFloat extends XSNumericType {
 	
 	@Override
     public ResultSequence constructor(ResultSequence arg) {
-        // to do
-        return null;
+        ResultSequence resultSeq = new ResultSequence();
+        
+        if (arg.size() == 0) {
+           return resultSeq;     
+        }
+        
+        XSAnyType xsAnyType = (XSAnyType)arg.item(0);
+        
+        try {
+            Float floatVal = null;
+            
+            if ((xsAnyType.stringValue()).equals("INF")) {
+                floatVal = new Float(Float.POSITIVE_INFINITY);
+            } 
+            else if ((xsAnyType.stringValue()).equals("-INF")) {
+                floatVal = new Float(Float.NEGATIVE_INFINITY);
+            } 
+            else if (xsAnyType instanceof XSBoolean) {
+                if ((xsAnyType.stringValue()).equals("true")) {
+                    floatVal = new Float("1.0E0");
+                } else {
+                    floatVal = new Float("0.0E0");
+                }
+            } 
+            else {
+                floatVal = new Float(xsAnyType.stringValue());
+            }
+            
+            resultSeq.add(new XSFloat(floatVal.floatValue()));
+        } catch (NumberFormatException e) {
+            // to do
+            return null;
+        }
+        
+        return resultSeq;
     }
 
 	/**
@@ -148,6 +181,10 @@ public class XSFloat extends XSNumericType {
 	 */
 	public float floatValue() {
 		return _value.floatValue();
-	}	
+	}
+	
+	public boolean equals(XSFloat xsFloat) {
+        return _value.equals(xsFloat.floatValue()); 
+    }
 	
 }

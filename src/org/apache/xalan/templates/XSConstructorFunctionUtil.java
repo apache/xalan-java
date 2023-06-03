@@ -28,6 +28,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.xs.types.XSBoolean;
 import org.apache.xpath.xs.types.XSDecimal;
+import org.apache.xpath.xs.types.XSDouble;
+import org.apache.xpath.xs.types.XSFloat;
 import org.xml.sax.SAXException;
 
 /**
@@ -63,12 +65,31 @@ public class XSConstructorFunctionUtil {
                     ResultSequence rSeq = (new XSDecimal()).constructor(argSequence);
                     evalResult = rSeq.item(0);              
                 }
+                else if ((Keywords.FUNC_XS_FLOAT).equals(funcExtFunction.getFunctionName())) {                              
+                    ResultSequence argSequence = new ResultSequence();
+                    for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+                        XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+                        argSequence.add(new XSFloat(argVal.str()));
+                    }
+
+                    ResultSequence rSeq = (new XSFloat()).constructor(argSequence);
+                    evalResult = rSeq.item(0);              
+                }
+                else if ((Keywords.FUNC_XS_DOUBLE).equals(funcExtFunction.getFunctionName())) {                              
+                    ResultSequence argSequence = new ResultSequence();
+                    for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+                        XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+                        argSequence.add(new XSDouble(argVal.str()));
+                    }
+
+                    ResultSequence rSeq = (new XSDouble()).constructor(argSequence);
+                    evalResult = rSeq.item(0);              
+                }
                 else if ((Keywords.FUNC_BOOLEAN_STRING).equals(funcExtFunction.getFunctionName())) {                              
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                        Boolean boolVal = Boolean.valueOf("0".equals(argVal.str()) ? 
-                                "false" : "true");
+                        Boolean boolVal = Boolean.valueOf("0".equals(argVal.str()) ? "false" : "true");
                         argSequence.add(new XSBoolean(boolVal));
                     }
 

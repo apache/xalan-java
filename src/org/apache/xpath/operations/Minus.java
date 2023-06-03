@@ -24,6 +24,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.xs.types.XSDecimal;
+import org.apache.xpath.xs.types.XSFloat;
 
 /**
  * The binary '-' operation expression executer.
@@ -45,15 +46,24 @@ public class Minus extends Operation
    * @throws javax.xml.transform.TransformerException
    */
   public XObject operate(XObject left, XObject right)
-          throws javax.xml.transform.TransformerException
-  {
+                                           throws javax.xml.transform.TransformerException {
       XObject result = null;
       
-      double leftArg;
-      double rightArg;
+      double leftArg = 0.0;
+      double rightArg = 0.0;
+      
+      float lArg = (float)0.0;
+      float rArg = (float)0.0;
+      
+      boolean isFloatLarg = false;
+      boolean isFloatRarg = false;
       
       if (left instanceof XSDecimal) {
           leftArg = ((XSDecimal)left).doubleValue();    
+      }
+      else if (left instanceof XSFloat) {
+          isFloatLarg = true;
+          lArg = ((XSFloat)left).floatValue();    
       }
       else {
           leftArg = left.num();  
@@ -62,8 +72,19 @@ public class Minus extends Operation
       if (right instanceof XSDecimal) {
           rightArg = ((XSDecimal)right).doubleValue();    
       }
+      else if (right instanceof XSFloat) {
+          isFloatRarg = true;
+          rArg = ((XSFloat)right).floatValue();    
+      }
       else {
           rightArg = right.num();  
+      }
+      
+      if (isFloatLarg && isFloatRarg) {
+         // currently, supporting XSFloat typed result, when both 
+         // operands are of type XSFloat.  
+         result = new XSFloat(lArg - rArg);
+         return result;
       }
       
       // by default, format the double value upto two decimal places
