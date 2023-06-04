@@ -34,6 +34,10 @@ public class XSInt extends XSLong {
     
     private static final String XS_INT = "xs:int";
     
+    private static BigInteger MIN_INCLUSIVE = BigInteger.valueOf(-2147483648L);
+    
+    private static BigInteger MAX_INCLUSIVE = BigInteger.valueOf(2147483647L);
+    
 	/*
 	 * Class constructor.
 	 */
@@ -48,10 +52,38 @@ public class XSInt extends XSLong {
 		super(val);
 	}
 	
+	/*
+     * Class constructor.
+     */
+    public XSInt(String val) {
+        super(val);
+    }
+	
 	@Override
-    public ResultSequence constructor(ResultSequence arg) {
-       // to do
-       return null;
+    public ResultSequence constructor(ResultSequence arg) throws RuntimeException {
+        ResultSequence resultSeq = new ResultSequence();
+        
+        if (arg.size() == 0) {
+           return resultSeq;     
+        }
+        
+        XSAnyType xsAnyType = (XSAnyType)arg.item(0);
+
+        try {
+            BigInteger bigInt = new BigInteger(xsAnyType.stringValue());          
+
+            if (bigInt.compareTo(MIN_INCLUSIVE) == -1 || 
+                                            bigInt.compareTo(MAX_INCLUSIVE) == 1) {
+                throw new RuntimeException("An instance of type xs:int cannot be created. The numeric argument "
+                                                                           + "'" + xsAnyType.stringValue() + "' provided is out of range for type xs:int.");  
+            }
+            
+            resultSeq.add(new XSInt(bigInt));
+        } catch (NumberFormatException ex) {
+            throw new RuntimeException(ex.getMessage());
+        }
+        
+        return resultSeq;
     }
 	
 	public String stringType() {
@@ -61,5 +93,9 @@ public class XSInt extends XSLong {
 	public String typeName() {
 		return "int";
 	}
+	
+	public boolean equals(XSInt xsInt) {
+        return _value.equals(xsInt.intValue()); 
+    }
 	
 }

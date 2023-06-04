@@ -318,15 +318,15 @@ public class ElemVariable extends ElemTemplateElement
 
         var.allowDetachToRelease(false);
 
-        if (transformer.getDebug())
-          transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
-                  "select", m_selectPattern, var);
+        if (transformer.getDebug()) {
+            transformer.getTraceManager().fireSelectedEvent(sourceNode, this, "select", 
+                                                                    m_selectPattern, var);
+        }
       }
       else if (null == getFirstChildElem()) {
          var = XString.EMPTYSTRING;
       }
       else {
-
         // Use result tree fragment.
         // Global variables may be deferred (see XUnresolvedVariable) and hence
         // need to be assigned to a different set of DTMs than local variables

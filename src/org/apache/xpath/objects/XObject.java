@@ -37,6 +37,9 @@ import org.apache.xpath.xs.types.XSBoolean;
 import org.apache.xpath.xs.types.XSDecimal;
 import org.apache.xpath.xs.types.XSDouble;
 import org.apache.xpath.xs.types.XSFloat;
+import org.apache.xpath.xs.types.XSInt;
+import org.apache.xpath.xs.types.XSInteger;
+import org.apache.xpath.xs.types.XSLong;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
@@ -46,6 +49,7 @@ import org.w3c.dom.traversal.NodeIterator;
  * converting the object to various types, such as a string.
  * This class acts as the base class to other XPath type objects,
  * such as XString, and provides polymorphic casting capabilities.
+ * 
  * @xsl.usage general
  */
 public class XObject extends Expression implements Serializable, Cloneable
@@ -640,29 +644,34 @@ public class XObject extends Expression implements Serializable, Cloneable
        return ((XSDecimal)this).equals((XSDecimal)obj2);        
     }
     else if ((this instanceof XSFloat) && (obj2 instanceof XSFloat)) {
-        return ((XSFloat)this).equals((XSFloat)obj2);        
+       return ((XSFloat)this).equals((XSFloat)obj2);        
     }
     else if ((this instanceof XSDouble) && (obj2 instanceof XSDouble)) {
-        return ((XSDouble)this).equals((XSDouble)obj2);        
+       return ((XSDouble)this).equals((XSDouble)obj2);        
     }
     else if ((this instanceof XSBoolean) && (obj2 instanceof XSBoolean)) {
        return ((XSBoolean)this).equals((XSBoolean)obj2);    
     }
-    
-    // In order to handle the 'all' semantics of 
-    // nodeset comparisons, we always call the 
-    // nodeset function.
-    if (obj2.getType() == XObject.CLASS_NODESET)
-      return obj2.equals(this);
+    else if ((this instanceof XSInteger) && (obj2 instanceof XSInteger)) {
+       return ((XSInteger)this).equals((XSInteger)obj2);    
+    }
+    else if ((this instanceof XSLong) && (obj2 instanceof XSLong)) {
+       return ((XSLong)this).equals((XSLong)obj2);    
+    }
+    else if ((this instanceof XSInt) && (obj2 instanceof XSInt)) {
+       return ((XSInt)this).equals((XSInt)obj2);    
+    }
+        
+    if (obj2.getType() == XObject.CLASS_NODESET) {
+       return obj2.equals(this);
+    }
 
-    if (null != m_obj)
-    {
-      return m_obj.equals(obj2.m_obj);
+    if (m_obj != null) {
+       return m_obj.equals(obj2.m_obj);
     }
-    else
-    {
-      return obj2.m_obj == null;
-    }
+    else {
+       return obj2.m_obj == null;
+    }    
   }
 
   /**

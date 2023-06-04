@@ -34,7 +34,9 @@ public class XSInteger extends XSDecimal {
 
     private static final String XS_INTEGER = "xs:integer";
 	
-	private BigInteger _value;
+    // the underlying java.math.BigInteger value, representing 
+    // this XML Schema datatype value. 
+	protected BigInteger _value;
 
 	/*
 	 * Class constructor.
@@ -88,8 +90,23 @@ public class XSInteger extends XSDecimal {
 	}
 
 	public ResultSequence constructor(ResultSequence arg) {
-	    // to do
-        return null;
+        ResultSequence resultSeq = new ResultSequence();
+        
+        if (arg.size() == 0) {
+           return resultSeq;     
+        }
+        
+        XSAnyType xsAnyType = (XSAnyType)arg.item(0);
+        
+        try {
+            BigInteger bigInteger = castToInteger(xsAnyType);            
+            resultSeq.add(new XSInteger(bigInteger));            
+        } catch (NumberFormatException e) {
+            // to do
+            return null;
+        }
+        
+        return resultSeq;
 	}
 
 	/**
@@ -110,5 +127,34 @@ public class XSInteger extends XSDecimal {
 	public void setInt(BigInteger val) {
 		_value = val;
 	}
+	
+	/*
+	 * Do a datatype cast, of a generic typed XML Schema value,
+	 * to a java.math.BigInteger value. 
+	 */
+	private BigInteger castToInteger(XSAnyType xsAnyType) {
+	    
+        if (xsAnyType instanceof XSBoolean) {
+            if ((xsAnyType.stringValue()).equals("true")) {
+                return BigInteger.ONE;
+            } 
+            else {
+                return BigInteger.ZERO;
+            }
+        }
+        
+        if ((xsAnyType instanceof XSDecimal) || (xsAnyType instanceof XSFloat) ||
+                                                (xsAnyType instanceof XSDouble)) {
+           BigDecimal bigDecimal =  new BigDecimal(xsAnyType.stringValue());
+           
+           return bigDecimal.toBigInteger();
+        }
+        
+        return new BigInteger(xsAnyType.stringValue());
+    }
+	
+	public boolean equals(XSInteger xsInteger) {
+        return _value.equals(xsInteger.intValue()); 
+    }
 
 }

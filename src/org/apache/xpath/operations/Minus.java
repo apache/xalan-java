@@ -20,11 +20,16 @@
  */
 package org.apache.xpath.operations;
 
+import java.math.BigInteger;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.xs.types.XSDecimal;
 import org.apache.xpath.xs.types.XSFloat;
+import org.apache.xpath.xs.types.XSInt;
+import org.apache.xpath.xs.types.XSInteger;
+import org.apache.xpath.xs.types.XSLong;
 
 /**
  * The binary '-' operation expression executer.
@@ -48,6 +53,27 @@ public class Minus extends Operation
   public XObject operate(XObject left, XObject right)
                                            throws javax.xml.transform.TransformerException {
       XObject result = null;
+      
+      if ((left instanceof XSInteger) && (right instanceof XSInteger)) {
+         BigInteger bigIntLeft = ((XSInteger)left).intValue();
+         BigInteger bigIntRight = ((XSInteger)right).intValue();
+          
+         return new XSInteger(bigIntLeft.subtract(bigIntRight));    
+      }
+       
+      if ((left instanceof XSLong) && (right instanceof XSLong)) {
+          BigInteger bigIntLeft = ((XSLong)left).intValue();
+          BigInteger bigIntRight = ((XSLong)right).intValue();
+           
+          return new XSLong(bigIntLeft.subtract(bigIntRight));    
+      }
+       
+      if ((left instanceof XSInt) && (right instanceof XSInt)) {
+          BigInteger bigIntLeft = ((XSInt)left).intValue();
+          BigInteger bigIntRight = ((XSInt)right).intValue();
+           
+          return new XSInt(bigIntLeft.subtract(bigIntRight));    
+      }
       
       double leftArg = 0.0;
       double rightArg = 0.0;
@@ -81,8 +107,8 @@ public class Minus extends Operation
       }
       
       if (isFloatLarg && isFloatRarg) {
-         // currently, supporting XSFloat typed result, when both 
-         // operands are of type XSFloat.  
+         // currently, supporting XSFloat typed result, when both operands 
+         // are of type XSFloat.  
          result = new XSFloat(lArg - rArg);
          return result;
       }

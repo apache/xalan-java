@@ -271,6 +271,15 @@ public class Keywords
   
   /** xs:double data type string. */
   public static final String FUNC_XS_DOUBLE = "double";
+  
+  /** xs:integer data type string. */
+  public static final String FUNC_XS_INTEGER = "integer";
+  
+  /** xs:long data type string. */
+  public static final String FUNC_XS_LONG = "long";
+  
+  /** xs:int data type string. */
+  public static final String FUNC_XS_INT = "int";
 
   static
   {

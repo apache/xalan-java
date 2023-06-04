@@ -30,6 +30,9 @@ import org.apache.xpath.xs.types.XSBoolean;
 import org.apache.xpath.xs.types.XSDecimal;
 import org.apache.xpath.xs.types.XSDouble;
 import org.apache.xpath.xs.types.XSFloat;
+import org.apache.xpath.xs.types.XSInt;
+import org.apache.xpath.xs.types.XSInteger;
+import org.apache.xpath.xs.types.XSLong;
 import org.xml.sax.SAXException;
 
 /**
@@ -83,6 +86,36 @@ public class XSConstructorFunctionUtil {
                     }
 
                     ResultSequence rSeq = (new XSDouble()).constructor(argSequence);
+                    evalResult = rSeq.item(0);              
+                }
+                else if ((Keywords.FUNC_XS_INTEGER).equals(funcExtFunction.getFunctionName())) {                              
+                    ResultSequence argSequence = new ResultSequence();
+                    for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+                        XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+                        argSequence.add(new XSInteger(argVal.str()));
+                    }
+
+                    ResultSequence rSeq = (new XSInteger()).constructor(argSequence);
+                    evalResult = rSeq.item(0);              
+                }
+                else if ((Keywords.FUNC_XS_LONG).equals(funcExtFunction.getFunctionName())) {                              
+                    ResultSequence argSequence = new ResultSequence();
+                    for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+                        XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+                        argSequence.add(new XSLong(argVal.str()));
+                    }
+
+                    ResultSequence rSeq = (new XSLong()).constructor(argSequence);
+                    evalResult = rSeq.item(0);              
+                }
+                else if ((Keywords.FUNC_XS_INT).equals(funcExtFunction.getFunctionName())) {                              
+                    ResultSequence argSequence = new ResultSequence();
+                    for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+                        XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+                        argSequence.add(new XSInt(argVal.str()));
+                    }
+
+                    ResultSequence rSeq = (new XSInt()).constructor(argSequence);
                     evalResult = rSeq.item(0);              
                 }
                 else if ((Keywords.FUNC_BOOLEAN_STRING).equals(funcExtFunction.getFunctionName())) {                              

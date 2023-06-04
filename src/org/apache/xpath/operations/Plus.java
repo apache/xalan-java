@@ -20,11 +20,16 @@
  */
 package org.apache.xpath.operations;
 
+import java.math.BigInteger;
+
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.xs.types.XSDecimal;
 import org.apache.xpath.xs.types.XSFloat;
+import org.apache.xpath.xs.types.XSInt;
+import org.apache.xpath.xs.types.XSInteger;
+import org.apache.xpath.xs.types.XSLong;
 
 /**
  * The '+' operation expression executer.
@@ -47,6 +52,31 @@ public class Plus extends Operation
   public XObject operate(XObject left, XObject right)
                                            throws javax.xml.transform.TransformerException {
       XObject result = null;
+      
+      if ((left instanceof XSInteger) && (right instanceof XSInteger)) {
+         BigInteger bigintLeft = ((XSInteger)left).intValue();
+         BigInteger bigintRight = ((XSInteger)right).intValue();
+         
+         return new XSInteger(bigintLeft.add(bigintRight));    
+      }
+      
+      if ((left instanceof XSLong) && (right instanceof XSLong)) {
+          BigInteger bigintLeft = ((XSLong)left).intValue();
+          BigInteger bigintRight = ((XSLong)right).intValue();
+          
+          // its possible that, result after addition is, not within value space of xs:long.
+          // handle this error. revisit
+          return new XSLong(bigintLeft.add(bigintRight));    
+      }
+      
+      if ((left instanceof XSInt) && (right instanceof XSInt)) {
+          BigInteger bigintLeft = ((XSInt)left).intValue();
+          BigInteger bigintRight = ((XSInt)right).intValue();
+          
+          // its possible that, result after addition is, not within value space of xs:int.
+          // handle this error. revisit
+          return new XSInt(bigintLeft.add(bigintRight));    
+      }
       
       double leftArg = 0.0;
       double rightArg = 0.0;
@@ -80,9 +110,10 @@ public class Plus extends Operation
       }
       
       if (isFloatLarg && isFloatRarg) {
-         // currently, supporting XSFloat typed result, when both 
-         // operands are of type XSFloat.  
+         // currently, supporting XSFloat typed result, when both operands 
+         // are of type XSFloat.  
          result = new XSFloat(lArg + rArg);
+         
          return result;
       }
       

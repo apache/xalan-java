@@ -6,17 +6,21 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_a.xml -->
+   <!-- use with test1_b.xml -->
    
-     <!-- this stylesheet, does few XPath arithmetic operations, 
-          involving xs:float type. -->              
+     <!-- this stylesheet, does few XPath arithmetic and logical operations, 
+          involving xs:int type. -->              
 
    <xsl:output method="xml" indent="yes"/>
 
    <xsl:template match="/elem">
       <result>
-         <one><xsl:value-of select="xs:float(b) - xs:float(a)"/></one>
-         <two><xsl:value-of select="xs:float(a) + xs:float(b)"/></two>
+         <one><xsl:value-of select="xs:int(a) + xs:int(b)"/></one>
+         <two><xsl:value-of select="xs:int(d) - xs:int(a)"/></two>
+         <three><xsl:value-of select="(xs:int(d) - xs:int(a)) = 3"/></three>
+         <four><xsl:value-of select="not((xs:int(d) - xs:int(a)) = 3)"/></four>
+         <xsl:variable name="temp1" select="xs:int(a) + xs:int(b)"/>
+         <five><xsl:value-of select="$temp1"/></five>
       </result>
    </xsl:template>
    
