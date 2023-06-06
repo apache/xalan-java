@@ -503,7 +503,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   }
 
   /** 
-   * Get the variable stack, which is in charge of variables and
+   * Set the variable stack, which is in charge of variables and
    * parameters.
    *
    * @param varStack non-null reference to the variable stack.

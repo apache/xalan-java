@@ -27,6 +27,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.operations.Variable;
 
 /**
  * Execute the count() function.
@@ -57,6 +58,15 @@ public class FuncCount extends FunctionOneArg
             else if (evalResult instanceof ResultSequence) {
                count = ((ResultSequence)evalResult).size();
             }
+        }
+        else if (m_arg0 instanceof Variable) {
+           XObject evalResult = ((Variable)m_arg0).execute(xctxt);
+           if (evalResult instanceof XNodeSet) {
+               count = ((XNodeSet)evalResult).getLength();   
+           }
+           else if (evalResult instanceof ResultSequence) {
+              count = ((ResultSequence)evalResult).size();
+           }
         }
         else if (m_arg0 instanceof Expression) {
             DTMIterator nl = m_arg0.asIterator(xctxt, xctxt.getCurrentNode());

@@ -45,7 +45,6 @@ import org.apache.xpath.XPathContext;
  * Implementation of the XSLT 3.0 xsl:non-matching-substring instruction.
  * 
  * This XSLT element can only be used within the element xsl:analyze-string.
- * 
  */
 public class ElemNonMatchingSubstring extends ElemTemplateElement implements ExpressionOwner {
 
@@ -131,6 +130,8 @@ public class ElemNonMatchingSubstring extends ElemTemplateElement implements Exp
       String strValueTobeEvaluated = getStrValue();
       
       XPathContext xctxtNew = new XPathContext(false);
+      
+      xctxtNew.setVarStack(xctxt.getVarStack());
 
       DTMManager dtmMgr = xctxtNew.getDTMManager();      
       DTM docFragDtm = dtmMgr.createDTMForSimpleXMLDocument(strValueTobeEvaluated);

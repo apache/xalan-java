@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XPath function fn:abs test cases.
+ * XPath 3.1 function fn:abs test cases.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

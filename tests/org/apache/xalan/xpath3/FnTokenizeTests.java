@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XPath function fn:tokenize test cases.
+ * XPath 3.1 function fn:tokenize test cases.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -143,6 +143,26 @@ public class FnTokenizeTests extends XslTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test10.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
+    }
+    
+    @Test
+    public void xslFnTokenizeTest11() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
+    }
+    
+    @Test
+    public void xslFnTokenizeTest12() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }

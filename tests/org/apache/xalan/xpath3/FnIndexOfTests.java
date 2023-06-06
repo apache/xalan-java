@@ -23,17 +23,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XPath 3.1 function fn:string-join test cases.
+ * XPath 3.1 function fn:index-of test cases.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FnStringJoinTests extends XslTransformTestsUtil {
+public class FnIndexOfTests extends XslTransformTestsUtil {        
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "fn_string_join/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "fn_indexof/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "fn_string_join/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "fn_indexof/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -41,14 +41,14 @@ public class FnStringJoinTests extends XslTransformTestsUtil {
     }
 
     @AfterClass
-    public static void tearDownAfterClass() throws Exception {
+    public static void tearDownAfterClass() throws Exception {        
         xmlDocumentBuilderFactory = null;
         xmlDocumentBuilder = null;
         xslTransformerFactory = null;
     }
 
     @Test
-    public void xslFnStringJoinTest1() {
+    public void xslFnIndexOfTest1() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         

@@ -15,16 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.objects;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.xpath.xs.types.XSAnyType;
+
 /**
- * This class represents, an object for XPath 3.1 data model sequences.
+ * This class represents, the XPath 3.1 data model sequences.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -37,7 +36,9 @@ public class ResultSequence extends XObject
     // the underlying list object, storing items of this result sequence 
     private List<XObject> rsList = new ArrayList<XObject>();
     
-    // Class constructor.
+    /*
+     * Class constructor.
+     */
     public ResultSequence() {}
     
     public void add(XObject item) {
@@ -54,6 +55,42 @@ public class ResultSequence extends XObject
     
     public List<XObject> getResultSequenceItems() {
         return rsList;   
+    }
+    
+    /*
+     * Get the string value of this ResultSequence object.
+     * 
+     * This method, produces a default serialization of this
+     * string value, which is space separated string values 
+     * of the xdm items of this sequence.
+     */
+    public String str() {
+        String resultStr = null;
+        
+        StringBuffer strBuff = new StringBuffer();
+        for (int idx = 0; idx < rsList.size(); idx++) {
+           XObject item = rsList.get(idx);
+           if (idx < (rsList.size() - 1)) {
+              if (item instanceof XSAnyType) {
+                  strBuff.append(((XSAnyType)item).stringValue() + " ");    
+              }
+              else {
+                 strBuff.append((rsList.get(idx)).str() + " ");
+              }
+           }
+           else {
+              if (item instanceof XSAnyType) {
+                  strBuff.append(((XSAnyType)item).stringValue());     
+              }
+              else {
+                 strBuff.append((rsList.get(idx)).str());
+              }
+           }
+        }
+        
+        resultStr = strBuff.toString(); 
+        
+        return resultStr;
     }
 
 }

@@ -176,6 +176,9 @@ public class FunctionTable
   
   /** The 'implicit-timezone()' id. */
   public static final int FUNC_IMPLICIT_TIMEZONE = 51;
+  
+  /** The 'index-of()' id. */
+  public static final int FUNC_INDEX_OF = 52;
 
   // Proprietary
 
@@ -204,7 +207,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 52;
+  private static final int NUM_BUILT_IN_FUNCS = 53;
 
   /**
    * Number of built-in functions that may be added.
@@ -300,6 +303,8 @@ public class FunctionTable
       org.apache.xpath.functions.FuncLowerCase.class;
     m_functions[FUNC_IMPLICIT_TIMEZONE] = 
       org.apache.xpath.functions.FuncImplicitTimezone.class;
+    m_functions[FUNC_INDEX_OF] = 
+      org.apache.xpath.functions.FuncIndexOf.class;
   }
 
   static{
@@ -403,6 +408,8 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_LOWER_CASE));
           m_functionID.put(Keywords.FUNC_IMPLICIT_TIMEZONE,
                           new Integer(FunctionTable.FUNC_IMPLICIT_TIMEZONE));
+          m_functionID.put(Keywords.FUNC_INDEX_OF,
+                          new Integer(FunctionTable.FUNC_INDEX_OF));
   }
   
   public FunctionTable(){

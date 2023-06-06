@@ -49,8 +49,6 @@ import org.w3c.dom.Text;
  * <p>Note: this class is incomplete right now.  It will be pretty much
  * modeled after javax.xml.transform.TransformerFactory in terms of its
  * factory support.</p>
- *
- * <p>State: In progress!!</p>
  */
 public abstract class DTMManager
 {
@@ -217,30 +215,40 @@ public abstract class DTMManager
   public abstract DTM createDocumentFragment();
   
   /*
-   * This method has been defined, to construct a DTM object, representing an
-   * XML document that contains only 'one xml element with a text node child'.
-   * This method currently supports, evaluation of XSLT xsl:analyze-string 
-   * instruction.
+   * This method constructs a DTM object representing an XML document. 
+   * The DTM instance that is constructed by this method, contains only 
+   * 'one xml element with a text node child'. This method currently 
+   * supports, evaluation of XSLT xsl:analyze-string instruction.
+   * 
+   * @param strVal   string value of the text node, that shall be available
+   *                 within this constructed DTM object.
+   *                 
+   * @return         the DTM object, that is constructed by this method         
+   *    
    */
   public DTM createDTMForSimpleXMLDocument(String strVal) {    
         try {
-          DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+           DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     
-          dbf.setNamespaceAware(true);
+           dbf.setNamespaceAware(true);
     
-          DocumentBuilder db = dbf.newDocumentBuilder();
-          Document doc = db.newDocument();
-          // "temp" is an arbitrary name selected for an XML element,
-          // for this purpose.
-          Element elem = doc.createElement("temp");
-          Text textNode = doc.createTextNode(strVal);
-          elem.appendChild(textNode);
-          doc.appendChild(elem);
+           DocumentBuilder db = dbf.newDocumentBuilder();
+           Document doc = db.newDocument();
+           // we create a, temporary xml element name here. this xml 
+           // element name, is unlikely to be present within the xml 
+           // input document that is been transformed by an xslt 
+           // stylesheet.
+           long currentTimeMills = System.currentTimeMillis();
+           String elemNameSuffix = (Long.valueOf(currentTimeMills)).toString();
+           Element elem = doc.createElement("t0_" + elemNameSuffix);
+           Text textNode = doc.createTextNode(strVal);
+           elem.appendChild(textNode);
+           doc.appendChild(elem);
     
-          return getDTM(new DOMSource(doc), true, null, false, false);
+           return getDTM(new DOMSource(doc), true, null, false, false);
         }
-        catch (Exception e) {
-            throw new DTMException(e);
+        catch (Exception ex) {
+           throw new DTMException(ex);
         }
   }
 

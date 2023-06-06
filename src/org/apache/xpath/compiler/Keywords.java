@@ -24,6 +24,7 @@ import java.util.Hashtable;
 
 /**
  * Table of strings to operation code lookups.
+ * 
  * @xsl.usage internal
  */
 public class Keywords
@@ -255,6 +256,9 @@ public class Keywords
   
   /** implicit-timezone function string. */
   public static final String FUNC_IMPLICIT_TIMEZONE = "implicit-timezone";
+  
+  /** index-of function string. */
+  public static final String FUNC_INDEX_OF = "index-of";
 
   // Proprietary, built in functions
 

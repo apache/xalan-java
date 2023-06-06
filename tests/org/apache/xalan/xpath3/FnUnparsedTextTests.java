@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XPath function fn:unparsed-text test cases.
+ * XPath 3.1 function fn:unparsed-text test cases.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

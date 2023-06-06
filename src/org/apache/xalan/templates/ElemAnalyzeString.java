@@ -67,10 +67,9 @@ import org.apache.xpath.regex.Matcher;
  * The XSLT function fn:regex-group may be used optionally, along with XSLT instruction 
  * xsl:analyze-string.
  * 
- * With xsl:analyze-string element, we're presently not implementing xsl:fallback 
+ * With xsl:analyze-string element, we've presently not implemented xsl:fallback 
  * elements. xsl:fallback elements don't seem to have much useful use cases within 
- * xsl:analyze-string element.   // revisit 
- * 
+ * xsl:analyze-string element.   // revisit
  */
 public class ElemAnalyzeString extends ElemTemplateElement implements ExpressionOwner {
   
@@ -284,13 +283,30 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
            strToBeAnalyzedMatchingSubsequences.add(str);
        }
        
-       // we use a fairly random string like the string value of 'System.currentTimeMillis()',
-       // to help us pre-process the input string to be analyzed. 
+       // we use the string value of 'System.currentTimeMillis()' representing
+       // a fairly random string, to help us pre-process the input string 
+       // that is been analyzed by xsl:analyze-string instruction. 
        long currentTimeMills = System.currentTimeMillis();
-       String tempReplStr = (Long.valueOf(currentTimeMills)).toString();
-       String tempReplacedStr = regexMatcher.replaceAll(tempReplStr);
+       String str1 = (Long.valueOf(currentTimeMills)).toString();
+       String str1Replaced = regexMatcher.replaceAll(str1);
        
-       String[] strParts = tempReplacedStr.split(tempReplStr);
+       if (str1Replaced.equals(str1)) {
+          // handle the case, where xsl:analyze-string's regex matches 
+          // the whole of the input string. 
+          if ((templateElem1 != null) && (templateElem1 instanceof ElemMatchingSubstring)) {
+              ((ElemMatchingSubstring)templateElem1).setStrValue(strToBeAnalyzed);
+              ((ElemMatchingSubstring)templateElem1).setRegex(effectiveRegexStrValue);
+              ((ElemMatchingSubstring)templateElem1).setFlags(m_regex_flags);
+              xctxt.setSAXLocator(templateElem1);
+              transformer.setCurrentElement(templateElem1);                   
+              templateElem1.execute(transformer);   
+          }
+          
+          return;
+       }
+       
+       String[] strParts = str1Replaced.split(str1);
+       
        int i2 = 0;
        for (int idx = 0; idx < strParts.length; idx++) {           
            if (templateElem2 != null) {
@@ -309,7 +325,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
                }
                else {
                    if ((idx < strParts.length - 1) || ((idx == strParts.length - 1) && 
-                                                                 tempReplacedStr.endsWith(tempReplStr))) {
+                                                                 str1Replaced.endsWith(str1))) {
                       ((ElemMatchingSubstring)templateElem1).setStrValue(
                                                                  strToBeAnalyzedMatchingSubsequences.get(i2));
                       ((ElemMatchingSubstring)templateElem1).setRegex(effectiveRegexStrValue);
@@ -321,8 +337,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
                    }
                }
            }
-       }
-       
+       }       
   }
 
   /**
