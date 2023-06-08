@@ -1,0 +1,8 @@
+hello world
+this is a test file that
+
+we'll use with an xslt transformation
+
+hello
+
+hi there

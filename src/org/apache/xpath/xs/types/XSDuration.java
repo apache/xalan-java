@@ -153,7 +153,6 @@ public class XSDuration extends XSCtrType {
 			didSomething = true;
 		}
 
-		// do the "time" bit
 		int hours = hours();
 		int minutes = minutes();
 		double seconds = seconds();
@@ -168,9 +167,7 @@ public class XSDuration extends XSCtrType {
 		}
 		if (seconds != 0) {
 			String doubStr = (new Double(seconds).toString());
-			if (doubStr.endsWith(".0")) {
-				// string value of x.0 seconds is xS. e.g, 7.0S is converted to
-				// 7S.
+			if (doubStr.endsWith(".0")) {				
 				tret += doubStr.substring(0, doubStr.indexOf(".0")) + "S";
 			} else {
 				tret += seconds + "S";

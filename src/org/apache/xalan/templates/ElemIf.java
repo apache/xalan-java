@@ -23,20 +23,21 @@ package org.apache.xalan.templates;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implement xsl:if.
- * <pre>
- * <!ELEMENT xsl:if %template;>
- * <!ATTLIST xsl:if
- *   test %expr; #REQUIRED
- *   %space-att;
- * >
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#section-Conditional-Processing-with-xsl:if">XXX in XSLT Specification</a>
+ * The XSLT xsl:if element, is used to perform conditional processing,
+ * within an XSLT stylesheet.
+ * 
+ * <xsl:if
+        test = expression>
+       <!-- Content: sequence-constructor -->
+   </xsl:if>
+
  * @xsl.usage advanced
  */
 public class ElemIf extends ElemTemplateElement
@@ -157,9 +158,32 @@ public class ElemIf extends ElemTemplateElement
       //    transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
       //            "endTest", m_test, test);
     }
-    else if (m_test.bool(xctxt, sourceNode, this))
+    /*else if (m_test.bool(xctxt, sourceNode, this))
     {
       transformer.executeChildTemplates(this, true);
+    }*/
+    else {
+        XObject xpath3ContextItem = xctxt.getXPath3ContextItem();        
+        if (xpath3ContextItem != null) {
+            XPathContext xctxtNew = new XPathContext(false);            
+            xctxtNew.setVarStack(xctxt.getVarStack());
+            
+            xctxtNew.setXPath3ContextPosition(xctxt.getXPath3ContextPosition());
+            xctxtNew.setXPath3ContextSize(xctxt.getXPath3ContextSize());
+                              
+            DTMManager dtmMgr = xctxtNew.getDTMManager();            
+            DTM docFragDtm = dtmMgr.createDTMForSimpleXMLDocument(xpath3ContextItem.str());
+      
+            int contextNode = docFragDtm.getFirstChild(docFragDtm.getDocument());            
+            xctxtNew.pushCurrentNode(contextNode);
+            xctxtNew.setSAXLocator(this);
+            if (m_test.bool(xctxtNew, contextNode, this)) {
+                transformer.executeChildTemplates(this, true);    
+            }  
+        }        
+        else if (m_test.bool(xctxt, sourceNode, this)) {
+           transformer.executeChildTemplates(this, true);
+        }
     }
     
   }

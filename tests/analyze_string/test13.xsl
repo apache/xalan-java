@@ -7,8 +7,10 @@
    <!-- use with test1_h.xml -->
    
    <!-- XSLT stylesheet to transform, date with string format '23 March 2002' 
-        to the string format '2002-03-23'. This stylesheet, transforms sequence 
-        of xml 'date' elements. -->
+        to the string format '2002-03-23'.
+        Note the use of, double curly braces within xsl:analyze-string's regex,
+        because the regex attribute is an avt.
+        This stylesheet, transforms sequence of xml 'date' elements. -->
 
    <xsl:output method="xml" indent="yes"/>
      
@@ -18,7 +20,7 @@
       <result>
          <xsl:for-each select="date">
              <date>      
-                 <xsl:analyze-string select="." regex="([0-9]{{1,2}})\s([A-Z][a-z]+)\s([0-9]{{4}})">          
+                 <xsl:analyze-string select="normalize-space(.)" regex="([0-9]{{1,2}})\s([A-Z][a-z]+)\s([0-9]{{4}})">          
                      <xsl:matching-substring>              
                          <xsl:value-of select="regex-group(3)"/>
                          <xsl:text>-</xsl:text>

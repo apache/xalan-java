@@ -99,12 +99,28 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   private boolean m_isSecureProcessing = false;
   
-  // supporting XPath 3.1 context item, to be saved within current XPath context
+  /*
+   *  data value, representing the XPath 3.1's current 
+   *  evaluation context item.
+   */
   private XObject m_xpath3ContextItem = null;
   
   /*
-   * This field, can be used to store custom data (represented as a map object) 
-   * within the current XPath evaluation context.
+   *  data value, representing the XPath 3.1's current 
+   *  evaluation context position.
+   */
+  private int m_xpath3ContextPosition = -1;
+  
+  /*
+   *  data value, representing the XPath 3.1's current 
+   *  evaluation context size.
+   */
+  private int m_xpath3ContextSize = -1; 
+  
+  /*
+   * this data value, can be used to store custom data 
+   * (represented as a java.util.Map object) within the 
+   * current XPath evaluation context.
    */
   private Map<String, String> m_customDataMap = new HashMap<String, String>();
   
@@ -1382,6 +1398,22 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 
  public void setXPath3ContextItem(XObject xpath3ContextItem) {
      this.m_xpath3ContextItem = xpath3ContextItem;
+ }
+
+ public int getXPath3ContextPosition() {
+    return m_xpath3ContextPosition;
+ }
+
+ public void setXPath3ContextPosition(int xpath3ContextPosition) {
+    this.m_xpath3ContextPosition = xpath3ContextPosition;
+ }
+
+ public int getXPath3ContextSize() {
+    return m_xpath3ContextSize;
+ }
+
+ public void setXPath3ContextSize(int xpath3ContextSize) {
+    this.m_xpath3ContextSize = xpath3ContextSize;
  }
 
  public GregorianCalendar getCurrentDateTime() {

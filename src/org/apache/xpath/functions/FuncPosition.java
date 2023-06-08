@@ -29,12 +29,14 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Execute the Position() function.
+ * Execute the XPath 3.1 position() function.
+ * 
  * @xsl.usage advanced
  */
 public class FuncPosition extends Function
 {
-    static final long serialVersionUID = -9092846348197271582L;
+  static final long serialVersionUID = -9092846348197271582L;
+  
   private boolean m_isTopLevel;
   
   /**
@@ -51,12 +53,16 @@ public class FuncPosition extends Function
    *
    * @param xctxt Runtime XPath context.
    *
-   * @return The current position of the itteration in the context node list, 
+   * @return The current position of the iteration in the context node list, 
    *         or -1 if there is no active context node list.
    */
   public int getPositionInContextNodeList(XPathContext xctxt)
   {
-
+    
+    if (xctxt.getXPath3ContextPosition() != -1) {
+       return xctxt.getXPath3ContextPosition();
+    }
+    
     // System.out.println("FuncPosition- entry");
     // If we're in a predicate, then this will return non-null.
     SubContextList iter = m_isTopLevel ? null : xctxt.getSubContextList();

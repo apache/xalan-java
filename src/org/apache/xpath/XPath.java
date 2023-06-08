@@ -33,7 +33,6 @@ import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.XPathParser;
-import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 

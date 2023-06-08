@@ -5,7 +5,9 @@
    <!-- Author: mukulg@apache.org -->
    
    <!-- XSLT stylesheet to transform, date with string format '23 March 2002' 
-        to the string format '2002-03-23'. -->
+        to the string format '2002-03-23'.
+        Note the use of, double curly braces within xsl:analyze-string's regex,
+        because the regex attribute is an avt. -->
 
    <xsl:output method="text"/>
      
@@ -14,7 +16,7 @@
    <xsl:variable name="date1" select="'23 March 2002'"/>
 
    <xsl:template match="/">      
-      <xsl:analyze-string select="$date1" regex="([0-9]{{1,2}})\s([A-Z][a-z]+)\s([0-9]{{4}})">          
+      <xsl:analyze-string select="normalize-space($date1)" regex="([0-9]{{1,2}})\s([A-Z][a-z]+)\s([0-9]{{4}})">          
           <xsl:matching-substring>              
               <xsl:value-of select="regex-group(3)"/>
               <xsl:text>-</xsl:text>

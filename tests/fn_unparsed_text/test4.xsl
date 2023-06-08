@@ -3,30 +3,23 @@
                 version="3.0">
                 
    <!-- Author: mukulg@apache.org -->
-
-   <xsl:output method="html" indent="yes"/>
    
-   <xsl:variable name="fileContents" select="unparsed-text('test_1.txt')"/>
+   <!-- using XPath 3.1 function fn:unparsed-text to read a text file,
+        and producing an XSLT transformation output that doesn't contain 
+        whitespace only or empty lines. -->                
+
+   <xsl:output method="xml" indent="yes"/>
+   
+   <xsl:variable name="fileLines" select="tokenize(unparsed-text('file_a1.txt'),'\r?\n')"/>
 
    <xsl:template match="/">
-     <html>
-        <head>
-          <title/>
-        </head>
-        <body>
-           <xsl:for-each select="tokenize($fileContents, '\r?\n')">
-              <xsl:choose>
-	              <xsl:when test="position() &lt; last()">
-	                 <b><xsl:value-of select="."/></b>
-	                 <br/>
-	              </xsl:when>
-	              <xsl:otherwise>
-	                 <b><xsl:value-of select="."/></b>
-	              </xsl:otherwise>
-               </xsl:choose>
-           </xsl:for-each>
-        </body>
-      </html>
+      <result>
+         <xsl:for-each select="$fileLines">
+            <xsl:if test="not(normalize-space() = '')">
+              <line><xsl:value-of select="."/></line>
+            </xsl:if>
+         </xsl:for-each>
+      </result>
    </xsl:template>
    
    <!--

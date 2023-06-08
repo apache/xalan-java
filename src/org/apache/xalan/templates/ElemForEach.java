@@ -52,7 +52,6 @@ import org.apache.xpath.operations.Variable;
  * 
  * @xsl.usage advanced
  */
-
 /*
  * Implementation of the XSLT 3.0 xsl:for-each instruction.
  */
@@ -343,6 +342,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         XObject evalResult = ((Function)m_selectExpression).execute(xctxt);
         if (evalResult instanceof ResultSequence) {
             processResultSequence(transformer, xctxt, evalResult);
+            transformer.setXPathContext(xctxtOriginal);
             return;
         }                
     }
@@ -355,6 +355,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         XObject evalResult = ((Variable)m_selectExpression).execute(xctxt);
         if (evalResult instanceof ResultSequence) {
             processResultSequence(transformer, xctxt, evalResult);
+            transformer.setXPathContext(xctxtOriginal);
             return;
         }
     }
@@ -560,25 +561,28 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
    }
    
    /*
-    * Process each of the XDM items in order, stored within a 'ResultSequence' 
-    * object, with the body of xsl:for-each element.
+    * Process each of the XDM items stored within a 'ResultSequence', 
+    * in order, and apply each XDM item to all the XSLT instructions
+    * mentioned within body of current xsl:for-each element.
     */
    private void processResultSequence(TransformerImpl transformer,
                                       XPathContext xctxt, XObject evalResult) 
-                                                              throws TransformerException {
-       
+                                                              throws TransformerException {       
        ResultSequence resultSeq = (ResultSequence)evalResult;
        List<XObject> resultSeqItems = resultSeq.getResultSequenceItems();
+       
+       xctxt.setXPath3ContextSize(resultSeqItems.size());
        
        for (int idx = 0; idx < resultSeqItems.size(); idx++) {
            XObject resultSeqItem = resultSeqItems.get(idx);
            xctxt.setXPath3ContextItem(resultSeqItem);
+           xctxt.setXPath3ContextPosition(idx + 1);
            
            for (ElemTemplateElement elemTemplateElem = this.m_firstChild; elemTemplateElem != null; 
                                                           elemTemplateElem = elemTemplateElem.m_nextSibling) {
               xctxt.setSAXLocator(elemTemplateElem);
               transformer.setCurrentElement(elemTemplateElem);
-              elemTemplateElem.execute(transformer);
+              elemTemplateElem.execute(transformer);              
            }
        }
    }

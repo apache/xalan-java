@@ -2,40 +2,25 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="3.0">
                 
-   <!-- Author: mukulg@apache.org -->                
+   <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_b.xml -->
+   <!-- use with test1_a.xml -->
    
-   <!-- this XSLT stylesheet, tests emitting specific items
-        from an XDM sequence to XSLT transformation's 
-        output. -->
+   <!-- demonstrating, traversing an XDM sequence comprising of 
+        XPath 3.1 atomic values, using xsl:for-each instruction and 
+        using specific XDM items depending on their position within 
+        the sequence. -->
 
    <xsl:output method="xml" indent="yes"/>
 
    <xsl:template match="/elem">
-      <elem>        
-        <xsl:variable name="tokens" select="tokenize(str2, '\s+')"/>
-        <result1>
-            <xsl:for-each select="$tokens">
-               <xsl:if test="position() &lt; 5">
-                  <item><xsl:value-of select="."/></item>
-               </xsl:if>
-            </xsl:for-each>
-        </result1>
-        <result2>
-            <xsl:for-each select="$tokens">
-               <xsl:if test="(position() = 2) or (position() = 3)">
-                  <item><xsl:value-of select="."/></item>
-               </xsl:if>
-            </xsl:for-each>
-        </result2>
-        <result3>
-            <xsl:for-each select="$tokens">
-               <xsl:if test="(position() != 1) and (position() != last())">
-                  <item><xsl:value-of select="."/></item>
-               </xsl:if>
-            </xsl:for-each>
-        </result3>
+      <elem>
+        <xsl:variable name="tokens" select="tokenize(.,'\s+')"/>
+        <xsl:for-each select="$tokens">
+          <xsl:if test="position() &lt; 5">
+            <token><xsl:value-of select="."/></token>
+          </xsl:if>
+        </xsl:for-each>
       </elem>
    </xsl:template>
    
