@@ -40,6 +40,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Variable;
 
 /**
@@ -360,6 +361,15 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         }
     }
     
+    if (m_selectExpression instanceof Operation) {
+        XObject  evalResult = m_selectExpression.execute(xctxt);
+        if (evalResult instanceof ResultSequence) {
+            processResultSequence(transformer, xctxt, evalResult);
+            transformer.setXPathContext(xctxtOriginal);
+            return;
+        }
+    }
+    
     // process the node-set, with body of xsl:for-each element as usual 
     final int sourceNode = xctxt.getCurrentNode();
     DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
@@ -585,6 +595,11 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
               elemTemplateElem.execute(transformer);              
            }
        }
+
+       // reset the, XPath context's size, item and position variables
+       xctxt.setXPath3ContextSize(-1);
+       xctxt.setXPath3ContextItem(null);
+       xctxt.setXPath3ContextPosition(-1);
    }
    
 }

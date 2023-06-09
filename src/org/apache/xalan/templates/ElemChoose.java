@@ -24,17 +24,40 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.xs.types.XSAnyType;
 
-/**
- * Implement xsl:choose.
- * <pre>
- * <!ELEMENT xsl:choose (xsl:when+, xsl:otherwise?)>
- * <!ATTLIST xsl:choose %space-att;>
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#section-Conditional-Processing-with-xsl:choose">XXX in XSLT Specification</a>
+/** 
+ * XSLT 3.0 xsl:choose element.
+ * 
+   <xsl:choose>
+      <!-- Content: (xsl:when+, xsl:otherwise?) -->
+   </xsl:choose>
+
+   <xsl:when
+          test = expression>
+       <!-- Content: sequence-constructor -->
+   </xsl:when>
+
+   <xsl:otherwise>
+      <!-- Content: sequence-constructor -->
+   </xsl:otherwise>
+
  * @xsl.usage advanced
+ */
+/*
+ *  Implementation of the XSLT 3.0 xsl:choose instruction.
+ *  
+ *  An XSLT xsl:choose instruction is used, to perform conditional processing.
+ *  
+ *  The xsl:choose element selects one among a number of possible alternatives. 
+ *  It consists of a sequence of one or more xsl:when elements followed by an 
+ *  optional xsl:otherwise element. Each xsl:when element has a single attribute, 
+ *  test, which specifies an expression. The content of the xsl:when and 
+ *  xsl:otherwise elements is a sequence constructor.
  */
 public class ElemChoose extends ElemTemplateElement
 {
@@ -123,12 +146,44 @@ public class ElemChoose extends ElemTemplateElement
           }
 
         }
-        else if (when.getTest().bool(xctxt, sourceNode, when))
+        /*else if (when.getTest().bool(xctxt, sourceNode, when))
         {
           transformer.executeChildTemplates(when, true);
 
           return;
-        }
+        }*/
+        else {
+            XObject xpath3ContextItem = xctxt.getXPath3ContextItem();        
+            if (xpath3ContextItem != null) {
+                XPathContext xctxtNew = new XPathContext(false);            
+                xctxtNew.setVarStack(xctxt.getVarStack());
+                
+                xctxtNew.setXPath3ContextPosition(xctxt.getXPath3ContextPosition());
+                xctxtNew.setXPath3ContextSize(xctxt.getXPath3ContextSize());
+                                  
+                DTMManager dtmMgr = xctxtNew.getDTMManager();
+                String strVal = "";
+                if (xpath3ContextItem instanceof XSAnyType) {
+                    strVal = ((XSAnyType)xpath3ContextItem).stringValue();     
+                }
+                else {
+                    strVal = xpath3ContextItem.str(); 
+                }
+                DTM docFragDtm = dtmMgr.createDTMForSimpleXMLDocument(strVal);
+          
+                int contextNode = docFragDtm.getFirstChild(docFragDtm.getDocument());            
+                xctxtNew.pushCurrentNode(contextNode);
+                xctxtNew.setSAXLocator(this);
+                if ((when.getTest()).bool(xctxtNew, contextNode, this)) {
+                    transformer.executeChildTemplates(when, true);
+                    return;
+                }  
+            }        
+            else if ((when.getTest()).bool(xctxt, sourceNode, this)) {
+               transformer.executeChildTemplates(when, true);
+               return;
+            }  
+        }        
       }
       else if (Constants.ELEMNAME_OTHERWISE == type)
       {

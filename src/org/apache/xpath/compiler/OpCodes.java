@@ -626,6 +626,11 @@ public class OpCodes
 
   /** The end of the axes types.    */
   public static final int AXES_END_TYPES = 53;
+  
+  /*
+   * For XPath 3.1 "to" range expressions.
+   */
+  public static final int OP_TO = 54;
 
   /** The next free ID.  Please keep this up to date.  */
   private static final int NEXT_FREE_ID = 99;

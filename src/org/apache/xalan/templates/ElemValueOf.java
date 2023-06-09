@@ -277,12 +277,22 @@ public class ElemValueOf extends ElemTemplateElement {
           else
           {
               XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
-              if (m_isDot && xpath3ContextItem != null) {
-                  xpath3ContextItem.dispatchCharactersEvents(rth);   
+              if (m_isDot && xpath3ContextItem != null) {                  
+                  String strValue = null;
+                  
+                  if (xpath3ContextItem instanceof XSAnyType) {
+                      strValue = ((XSAnyType)xpath3ContextItem).stringValue();    
+                  }
+                  else {
+                      strValue = xpath3ContextItem.str();  
+                  }
+
+                  (new XString(strValue)).dispatchCharactersEvents(rth);
               }
               else {
                   if (expr instanceof FuncExtFunction) {                      
-                      XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, expr);
+                      XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn
+                                                                                              (xctxt, expr);
                       String strValue = null;
                       
                       if (evalResult instanceof XSAnyType) {
@@ -319,9 +329,9 @@ public class ElemValueOf extends ElemTemplateElement {
                   else if (expr instanceof Operation) {
                      Operation opn = (Operation)expr;
                      XObject leftOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                                                xctxt, opn.getLeftOperand());
+                                                                                         xctxt, opn.getLeftOperand());
                      XObject rightOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                                                xctxt, opn.getRightOperand());
+                                                                                         xctxt, opn.getRightOperand());
                      XObject evalResult = opn.operate(leftOperand, rightOperand);
                      
                      String strValue = null;

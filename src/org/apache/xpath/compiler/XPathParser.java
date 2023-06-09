@@ -861,7 +861,7 @@ public class XPathParser
    */
   protected int EqualityExpr(int addPos) throws javax.xml.transform.TransformerException
   {
-
+      
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     if (-1 == addPos)
@@ -911,7 +911,7 @@ public class XPathParser
    * | RelationalExpr '>' AdditiveExpr
    * | RelationalExpr '<=' AdditiveExpr
    * | RelationalExpr '>=' AdditiveExpr
-   *
+   * | RelationalExpr 'to' AdditiveExpr
    *
    * @param addPos Position where expression is to be added, or -1 for append.
    *
@@ -972,6 +972,21 @@ public class XPathParser
         m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
           m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
         addPos += 2;
+      }
+      else if (tokenIs("to"))
+      {
+          // support for XPath 3.1 range expressions
+          
+          nextToken();
+          
+          insertOp(addPos, 2, OpCodes.OP_TO);
+          
+          int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
+          
+          addPos = AdditiveExpr(addPos);
+          m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
+            m_ops.getOp(addPos + op1 + 1) + op1);
+          addPos += 2; 
       }
     }
 

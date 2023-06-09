@@ -28,6 +28,7 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.xs.types.XSAnyType;
 
 /**
  * The XSLT xsl:if element, is used to perform conditional processing,
@@ -171,8 +172,15 @@ public class ElemIf extends ElemTemplateElement
             xctxtNew.setXPath3ContextPosition(xctxt.getXPath3ContextPosition());
             xctxtNew.setXPath3ContextSize(xctxt.getXPath3ContextSize());
                               
-            DTMManager dtmMgr = xctxtNew.getDTMManager();            
-            DTM docFragDtm = dtmMgr.createDTMForSimpleXMLDocument(xpath3ContextItem.str());
+            DTMManager dtmMgr = xctxtNew.getDTMManager();
+            String strVal = "";
+            if (xpath3ContextItem instanceof XSAnyType) {
+                strVal = ((XSAnyType)xpath3ContextItem).stringValue();     
+            }
+            else {
+                strVal = xpath3ContextItem.str(); 
+            }
+            DTM docFragDtm = dtmMgr.createDTMForSimpleXMLDocument(strVal);
       
             int contextNode = docFragDtm.getFirstChild(docFragDtm.getDocument());            
             xctxtNew.pushCurrentNode(contextNode);

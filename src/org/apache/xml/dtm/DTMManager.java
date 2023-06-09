@@ -28,6 +28,9 @@ import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.XMLStringFactory;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.xs.types.XSAnyType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
@@ -231,23 +234,69 @@ public abstract class DTMManager
     
          dbf.setNamespaceAware(true);
     
-         DocumentBuilder db = dbf.newDocumentBuilder();
-         Document doc = db.newDocument();
+         DocumentBuilder dBuilder = dbf.newDocumentBuilder();
+         Document document = dBuilder.newDocument();
          // we create a, temporary xml element name here. this xml 
          // element name, is unlikely to be present within the xml 
          // input document that is been transformed by an xslt 
          // stylesheet.
          long currentTimeMills = System.currentTimeMillis();
          String elemNameSuffix = (Long.valueOf(currentTimeMills)).toString();
-         Element elem = doc.createElement("t0_" + elemNameSuffix);
-         Text textNode = doc.createTextNode(strVal);
-         elem.appendChild(textNode);
-         doc.appendChild(elem);
+         Element documentElem = document.createElement("t0_" + elemNameSuffix);
+         Text textNode = document.createTextNode(strVal);
+         documentElem.appendChild(textNode);
+         document.appendChild(documentElem);
     
-         return getDTM(new DOMSource(doc), true, null, false, false);
+         return getDTM(new DOMSource(document), true, null, false, false);
       }
       catch (Exception ex) {
          throw new DTMException(ex);
+      }
+  }
+  
+  /*
+   * This method constructs a DTM object representing an XML document.
+   * The DTM object instance that is constructed by this method, represents
+   * a sequence of XML elements sourced from a 'ResultSequence' input object.
+   * 
+   * Notes : currently, this method is unused within XalanJ's XSLT 3.0 
+   *         implementation, but could possibly/likely be useful for 
+   *         future XalanJ functional implementation.
+   */
+  public DTM createDTMFromResultSequence(ResultSequence resultSeq) {
+      try {
+          DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+          
+          dbf.setNamespaceAware(true);
+     
+          DocumentBuilder dBuilder = dbf.newDocumentBuilder();
+          Document document = dBuilder.newDocument();
+          
+          long currentTimeMills = System.currentTimeMillis();
+          String elemNameSuffix = (Long.valueOf(currentTimeMills)).toString();
+          Element documentElem = document.createElement("t0_" + elemNameSuffix);          
+          for (int idx = 0; idx < resultSeq.size(); idx++) {
+              XObject obj1 = resultSeq.item(idx);
+              String strVal = null;
+              if (obj1 instanceof XSAnyType) {
+                  strVal = ((XSAnyType)obj1).stringValue();     
+              }
+              else {
+                  strVal = obj1.str();    
+              }
+              
+              Text textNode = document.createTextNode(strVal);
+              Element nTempElem = document.createElement("n0");
+              nTempElem.appendChild(textNode);
+              documentElem.appendChild(nTempElem);
+          }
+          
+          document.appendChild(documentElem);
+          
+          return getDTM(new DOMSource(document), true, null, false, false);
+      }
+      catch (Exception ex) {
+          throw new DTMException(ex);   
       }
   }
 
