@@ -28,12 +28,16 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.xs.types.XSInteger;
 
 /**
- * The XPath 3.1 "to" range operation.
+ * The XPath 3.1 range "to" operation.
  * 
  * An XPath range expression can be used to construct a sequence of 
- * consecutive integers. Each of the operands of the to operator 
- * is converted as though it was an argument of a function with 
- * the expected parameter type xs:integer.
+ * consecutive integers. Each of the operands of the XPath range "to" 
+ * operator is converted as though it was an argument of a function 
+ * with the expected parameter type xs:integer.
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ * 
+ * @xsl.usage advanced
  */
 public class Range extends Operation
 {
