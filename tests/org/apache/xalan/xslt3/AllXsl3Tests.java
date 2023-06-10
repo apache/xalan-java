@@ -46,7 +46,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 GroupingWithSortTests.class, RtfMigrationTests.class, QuantifiedExprTests.class, 
                 FnUnparsedTextTests.class, FnTokenizeTests.class, FnStringJoinTests.class,
                 FnAbsTests.class, StringTests.class, XsConstructorFunctions.class, 
-                FnIndexOfTests.class, SequenceTests.class, RangeExprTests.class })
+                FnIndexOfTests.class, SequenceTests.class, RangeExprTests.class, 
+                XslIterateTests.class })
 public class AllXsl3Tests {
 
 }

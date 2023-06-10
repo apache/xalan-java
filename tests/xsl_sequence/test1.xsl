@@ -6,8 +6,9 @@
    
    <!-- use with test1_a.xml -->
    
-   <!-- demonstrating, traversing an XDM sequence comprising of 
-        XPath 3.1 atomic values, using xsl:for-each instruction. -->
+   <!-- An XSLT stylesheet demonstrating, traversing an XDM sequence 
+        comprising of XPath 3.1 atomic values, using xsl:for-each 
+        instruction. -->
 
    <xsl:output method="xml" indent="yes"/>
 

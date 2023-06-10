@@ -94,9 +94,15 @@ public class Constants extends org.apache.xml.utils.Constants
   
   ELEMNAME_MATCHING_SUBSTRING = 92,
   
-  ELEMNAME_NON_MATCHING_SUBSTRING = 93;
+  ELEMNAME_NON_MATCHING_SUBSTRING = 93,
   
-  // next available number : 94
+  ELEMNAME_ITERATE = 94,
+  
+  ELEMNAME_ITERATE_ONCOMPLETION = 95,
+  
+  ELEMNAME_ITERATE_NEXTITERATION = 96;
+  
+  // next available number : 97
 
   /**
    * Literals for XSL element names. Note that there are more
@@ -141,6 +147,9 @@ public class Constants extends org.apache.xml.utils.Constants
       ELEMNAME_ANALYZESTRING_STRING = "analyze-string",
       ELEMNAME_MATCHINGSUBSTRING_STRING = "matching-substring",
       ELEMNAME_NONMATCHINGSUBSTRING_STRING = "non-matching-substring",
+      ELEMNAME_ITERATE_STRING = "iterate",
+      ELEMNAME_ITERATE_ONCOMPLETION_STRING = "on-completion",
+      ELEMNAME_ITERATE_NEXTITERATION_STRING = "next-iteration",
       ELEMNAME_IF_STRING = "if",
       ELEMNAME_IMPORT_STRING = "import",
       ELEMNAME_INCLUDE_STRING = "include",

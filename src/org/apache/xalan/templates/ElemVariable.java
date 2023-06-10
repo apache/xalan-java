@@ -574,40 +574,5 @@ public class ElemVariable extends ElemTemplateElement
     }
     return super.appendChild(elem);
   }
-  
-  /*private XObject processFuncExtFunction(XPathContext xctxt, Expression expr)
-                                                                  throws TransformerException, SAXException {    
-      XObject evalResult = null;
-
-      FuncExtFunction funcExtFunction = (FuncExtFunction)expr;
-
-      if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcExtFunction.
-              getNamespace())) {                            
-          if ((Keywords.FUNC_XS_DECIMAL).equals(funcExtFunction.getFunctionName())) {                              
-              ResultSequence argSequence = new ResultSequence();
-              for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
-                  XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                  argSequence.add(new XSDecimal(argVal.str()));
-              }
-
-              ResultSequence rSeq = (new XSDecimal()).constructor(argSequence);
-              evalResult = rSeq.item(0);              
-          }
-          else if ((Keywords.FUNC_BOOLEAN_STRING).equals(funcExtFunction.getFunctionName())) {                              
-              ResultSequence argSequence = new ResultSequence();
-              for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
-                  XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                  Boolean boolVal = Boolean.valueOf("0".equals(argVal.str()) ? 
-                          "false" : "true");
-                  argSequence.add(new XSBoolean(boolVal));
-              }
-
-              ResultSequence rSeq = (new XSBoolean()).constructor(argSequence);
-              evalResult = rSeq.item(0);              
-          }
-      }
-
-      return evalResult;
-   }  */
 
 }
