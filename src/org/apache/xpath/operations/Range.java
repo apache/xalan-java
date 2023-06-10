@@ -30,7 +30,7 @@ import org.apache.xpath.xs.types.XSInteger;
 /**
  * The XPath 3.1 range "to" operation.
  * 
- * An XPath range expression can be used to construct a sequence of 
+ * An XPath range "to" expression can be used to construct a sequence of 
  * consecutive integers. Each of the operands of the XPath range "to" 
  * operator is converted as though it was an argument of a function 
  * with the expected parameter type xs:integer.
@@ -62,14 +62,27 @@ public class Range extends Operation
       
       XObject expr2 = m_right.execute(xctxt);
       
-      int fromIdx = (int)expr1.num();
-      int toIdx = (int)expr2.num();
+      double firstArg = expr1.num();
+      double secondArg = expr2.num();
       
-      for (int idx = fromIdx; idx <= toIdx; idx++) {
-         result.add(new XSInteger(BigInteger.valueOf((long)idx)));    
+      if (firstArg > (long)firstArg) {
+         throw new javax.xml.transform.TransformerException("XPTY0004 : The required item type of the first operand of "
+                                                     + "'to' is an xs:integer. The supplied value is of type xs:double.", xctxt.getSAXLocator());  
       }
       
-      return result;
+      if (secondArg > (long)secondArg) {
+         throw new javax.xml.transform.TransformerException("XPTY0004 : The required item type of the second operand of "
+                                                     + "'to' is an xs:integer. The supplied value is of type xs:double.", xctxt.getSAXLocator());  
+      }
+      
+      long fromIdx = (long)firstArg;
+      long toIdx = (long)secondArg;
+      
+      for (long idx = fromIdx; idx <= toIdx; idx++) {
+         result.add(new XSInteger(BigInteger.valueOf(idx)));    
+      }
+      
+      return result;      
     }
 
 }
