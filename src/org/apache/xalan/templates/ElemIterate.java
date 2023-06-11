@@ -23,6 +23,7 @@ import java.util.List;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformErrorLocatorHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
@@ -217,11 +218,21 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                    for (ElemTemplateElement elemTemplate = this.m_firstChild; 
                                                           elemTemplate != null; 
                                                           elemTemplate = elemTemplate.m_nextSibling) {
-                       xctxt.setSAXLocator(elemTemplate);
-                       transformer.setCurrentElement(elemTemplate);
-                       elemTemplate.execute(transformer);
-                   }	 	
-                }
+                       if (!((XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated).booleanValue())) {
+                          xctxt.setSAXLocator(elemTemplate);
+                          transformer.setCurrentElement(elemTemplate);
+                          elemTemplate.execute(transformer);
+                       }
+                       else {
+                          break;    
+                       }
+                   }
+                   
+                   if ((XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated).booleanValue()) {
+                       XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated = Boolean.FALSE;
+                       break;   
+                   }
+               }
            }
            finally {
               xctxt.popSAXLocator();
@@ -238,10 +249,10 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
       }
       
        /*
-        * The XSLT 3.0 spec specifies constraints, about what should be the order of elements xsl:param, 
-        * xsl:on-completion and xsl:next-iteration within the xsl:iterate element. This method ensures
-        * that, these XSLT 3.0 xsl:iterate element constraints are validated during an XSLT stylesheet 
-        * transformation.  
+        * The XSLT 3.0 spec specifies constraints, about what should be the order of XSLT elements 
+        * xsl:param, xsl:on-completion and xsl:next-iteration within the xsl:iterate element. This 
+        * method ensures that, these XSLT xsl:iterate element constraints are validated during 
+        * an XSLT document transformation.  
         */
       private void validateXslElemIterateChildElementsSequence(XPathContext xctxt) 
                                                                        throws TransformerException {
@@ -274,32 +285,38 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
               }
           }
           
-          if (xslElemNamesList.indexOf(Constants.ELEMNAME_PARAMVARIABLE_STRING) > 
-                                                    xslElemNamesList.indexOf(Constants.ELEMNAME_ITERATE_ONCOMPLETION_STRING)) {
+          // get index of specific item's first occurrence with the list object 'xslElemNamesList'.
+          // if a particular kind of item that is checked is not present within the list object 
+          // 'xslElemNamesList', its index is returned as -1.
+          int paramIdx = xslElemNamesList.indexOf(Constants.ELEMNAME_PARAMVARIABLE_STRING);
+          int onCompletionIdx = xslElemNamesList.indexOf(Constants.ELEMNAME_ITERATE_ONCOMPLETION_STRING);
+          int nextIterationIdx = xslElemNamesList.indexOf(Constants.ELEMNAME_ITERATE_NEXTITERATION_STRING);
+          int otherElemIdx = xslElemNamesList.indexOf(OTHER_ELEM);
+          
+          if ((paramIdx != -1) && (onCompletionIdx != -1) && (paramIdx > onCompletionIdx)) {
               throw new TransformerException("XTSE0010 : an xsl:param element must occur before xsl:on-completion "
-                                                                                                         + "element.", xctxt.getSAXLocator());    
+                                                                                            + "element.", xctxt.getSAXLocator());    
           }          
-          else if (xslElemNamesList.indexOf(Constants.ELEMNAME_PARAMVARIABLE_STRING) > 
-                                                    xslElemNamesList.indexOf(Constants.ELEMNAME_ITERATE_NEXTITERATION_STRING)) {
+          else if ((paramIdx != -1) && (nextIterationIdx != -1) && (paramIdx > nextIterationIdx)) {
               throw new TransformerException("XTSE0010 : an xsl:param element must occur before xsl:next-iteration "
-                                                                                                         + "element.", xctxt.getSAXLocator());
+                                                                                            + "element.", xctxt.getSAXLocator());
           }
-          else if (xslElemNamesList.indexOf(Constants.ELEMNAME_PARAMVARIABLE_STRING) > 
-                                                                         xslElemNamesList.indexOf(OTHER_ELEM)) {
+          else if ((paramIdx != -1) && (otherElemIdx != -1) && (paramIdx > otherElemIdx)) {
               throw new TransformerException("XTSE0010 : an xsl:param element must occur before any other element within "
-                                                                                                  + "xsl:iterate element.", xctxt.getSAXLocator());
+                                                                                     + "xsl:iterate element.", xctxt.getSAXLocator());
           }
-          else if ((xslElemNamesList.indexOf(Constants.ELEMNAME_PARAMVARIABLE_STRING) < 
-                                                                xslElemNamesList.indexOf(OTHER_ELEM)) && 
-                                                             (xslElemNamesList.indexOf(OTHER_ELEM) < xslElemNamesList.indexOf(Constants.
-                                                                                                         ELEMNAME_ITERATE_ONCOMPLETION_STRING))) {
+          else if ((paramIdx != -1) && (otherElemIdx != -1) && (onCompletionIdx != -1) && (paramIdx < otherElemIdx) && 
+                                                                                                 (otherElemIdx < onCompletionIdx)) {
               throw new TransformerException("XTSE0010 : an xsl:on-completion element must be the first child element of xsl:iterate "
-                                                                                        + "after the xsl:param elements.", xctxt.getSAXLocator());
+                                                                                 + "after the xsl:param elements.", xctxt.getSAXLocator());
           }
-          else if (xslElemNamesList.indexOf(Constants.ELEMNAME_ITERATE_ONCOMPLETION_STRING) > 
-                                                                      xslElemNamesList.indexOf(Constants.ELEMNAME_ITERATE_NEXTITERATION_STRING)) {
+          else if ((onCompletionIdx != -1) && (nextIterationIdx != -1) && (onCompletionIdx > nextIterationIdx)) {
               throw new TransformerException("XTSE0010 : an xsl:on-completion element must occur before xsl:next-iteration "
-                                                                                                              + "element.", xctxt.getSAXLocator());
+                                                                                                   + "element.", xctxt.getSAXLocator());
+          }
+          else if ((nextIterationIdx != -1) && (nextIterationIdx != (xslElemNamesList.size() - 1))) {
+              throw new TransformerException("XTSE3120 : an xsl:next-iteration element when present, must be the last instruction within "
+                                                                                         + "an xsl:iterate loop.", xctxt.getSAXLocator());
           }
       }
       

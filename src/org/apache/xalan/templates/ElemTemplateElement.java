@@ -1657,29 +1657,28 @@ public class ElemTemplateElement extends UnImplNode
   {
   	callChildVisitors(visitor, true);
   }
+  
+  /**
+   * @see PrefixResolver#handlesNullPrefixes()
+   */
+  public boolean handlesNullPrefixes() {
+      return false;
+  }
 
+  public Object getGroupingKey() {
+      return fGroupingKey;
+  }
 
-	/**
-	 * @see PrefixResolver#handlesNullPrefixes()
-	 */
-	public boolean handlesNullPrefixes() {
-		return false;
-	}
+  public void setGroupingKey(Object groupingKey) {
+      this.fGroupingKey = groupingKey;
+  }
 
-    public Object getGroupingKey() {
-        return fGroupingKey;
-    }
+  public List<Integer> getGroupNodesDtmHandles() {
+      return fGroupNodesDtmHandles;
+  }
 
-    public void setGroupingKey(Object groupingKey) {
-        this.fGroupingKey = groupingKey;
-    }
-
-    public List<Integer> getGroupNodesDtmHandles() {
-        return fGroupNodesDtmHandles;
-    }
-
-    public void setGroupNodesDtmHandles(List<Integer> groupNodesDtmHandles) {
-        this.fGroupNodesDtmHandles = groupNodesDtmHandles;
-    }
+  public void setGroupNodesDtmHandles(List<Integer> groupNodesDtmHandles) {
+      this.fGroupNodesDtmHandles = groupNodesDtmHandles;
+  }
 
 }

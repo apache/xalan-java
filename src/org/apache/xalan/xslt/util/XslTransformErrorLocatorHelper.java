@@ -22,8 +22,13 @@ package org.apache.xalan.xslt.util;
  * 
  * @xsl.usage advanced
  */
+/*
+ * This class, stores few XSLT document transformation wide variables.
+ */
 public class XslTransformErrorLocatorHelper {
     
     public static String systemId;
+    
+    public static Boolean isXslIterateBreakEvaluated = Boolean.FALSE;
 
 }

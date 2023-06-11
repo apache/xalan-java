@@ -21,11 +21,9 @@
 package org.apache.xalan.templates;
 
 import javax.xml.transform.TransformerException;
-import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.res.XSLTErrorResources;
+
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPathContext;
-
 
 /**
  * Implement an unknown element
@@ -115,7 +113,16 @@ public class ElemUnknown extends ElemLiteralResult
 		if (hasFallbackChildren()) {
 			executeFallbacks(transformer);
 		} else {
-			// do nothing
+		    // revisit.
+		    // there may be a better way to handle this condition
+		    String elemNsUri = getNamespace();		    		    
+		    if ((Constants.S_XSLNAMESPACEURL).equals(elemNsUri) && 
+		                                         !(Constants.ELEMNAME_PARAMVARIABLE_STRING).equals(getLocalName())) {
+		       XPathContext xctxt = transformer.getXPathContext();
+		       throw new TransformerException("XTSE0010 : an instruction " + getNodeName() + " is "
+		                                                          + "not known to the XSLT processor.", 
+		                                                                                       xctxt.getSAXLocator());
+		    }
 		}
 		
 	} catch (TransformerException e) {
@@ -123,6 +130,6 @@ public class ElemUnknown extends ElemLiteralResult
 	}
     if (transformer.getDebug())
 		transformer.getTraceManager().fireTraceEndEvent(this);
-  }
+    }
 
 }

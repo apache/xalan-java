@@ -28,13 +28,13 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class XslIterateTests extends XslTransformTestsUtil {
+public class W3c_xslt30_IterateTests extends XslTransformTestsUtil {
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + 
-                                                                                                          "xsl_iterate/";
+                                                                                                 "w3c_xslt30_testsuite/insn/iterate/";
     
     private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + 
-                                                                                                          "xsl_iterate/gold/";
+                                                                                                 "w3c_xslt30_testsuite/insn/iterate/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -50,30 +50,10 @@ public class XslIterateTests extends XslTransformTestsUtil {
 
     @Test
     public void xslIterateTest1() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "iterate001.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "iterate-001.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";                
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
-    
-    @Test
-    public void xslIterateTest2() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";                
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
-    
-    @Test
-    public void xslIterateTest3() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_b.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "iterate-001.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

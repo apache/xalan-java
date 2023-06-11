@@ -47,7 +47,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnUnparsedTextTests.class, FnTokenizeTests.class, FnStringJoinTests.class,
                 FnAbsTests.class, StringTests.class, XsConstructorFunctions.class, 
                 FnIndexOfTests.class, SequenceTests.class, RangeExprTests.class, 
-                XslIterateTests.class })
+                W3c_xslt30_IterateTests.class, XslIterateTests.class })
 public class AllXsl3Tests {
 
 }

@@ -100,9 +100,11 @@ public class Constants extends org.apache.xml.utils.Constants
   
   ELEMNAME_ITERATE_ONCOMPLETION = 95,
   
-  ELEMNAME_ITERATE_NEXTITERATION = 96;
+  ELEMNAME_ITERATE_NEXTITERATION = 96,
   
-  // next available number : 97
+  ELEMNAME_ITERATE_BREAK = 97;
+  
+  // next available number : 98
 
   /**
    * Literals for XSL element names. Note that there are more
@@ -150,6 +152,7 @@ public class Constants extends org.apache.xml.utils.Constants
       ELEMNAME_ITERATE_STRING = "iterate",
       ELEMNAME_ITERATE_ONCOMPLETION_STRING = "on-completion",
       ELEMNAME_ITERATE_NEXTITERATION_STRING = "next-iteration",
+      ELEMNAME_ITERATE_BREAK_STRING = "break",
       ELEMNAME_IF_STRING = "if",
       ELEMNAME_IMPORT_STRING = "import",
       ELEMNAME_INCLUDE_STRING = "include",
