@@ -157,8 +157,8 @@ public class ElemIterateBreak extends ElemTemplateElement implements ExpressionO
            if (this.m_nextSibling != null) {
               XPathContext xpathContext = transformer.getXPathContext();
               throw new TransformerException("XTSE3120 : an xsl:break instruction must not have any other "
-                                                                          + "stylesheet element as its sibling.", 
-                                                                                           xpathContext.getSAXLocator());    
+                                                                        + "stylesheet element as its following sibling.", 
+                                                                                         xpathContext.getSAXLocator());    
            }
            else {
               XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated = Boolean.TRUE;
