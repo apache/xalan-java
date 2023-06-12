@@ -30,5 +30,7 @@ public class XslTransformErrorLocatorHelper {
     public static String systemId;
     
     public static Boolean isXslIterateBreakEvaluated = Boolean.FALSE;
+    
+    public static Boolean isXslIterateOnCompletionActive = Boolean.FALSE;
 
 }

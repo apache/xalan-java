@@ -160,9 +160,9 @@ public class ElemIterateBreak extends ElemTemplateElement implements ExpressionO
                                                                         + "stylesheet element as its following sibling.", 
                                                                                          xpathContext.getSAXLocator());    
            }
-           else {
+           else {              
+              transformXslBreakInstruction(transformer);
               XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated = Boolean.TRUE;
-              transformSelectedNodes(transformer);
            }
        }
 
@@ -173,7 +173,7 @@ public class ElemIterateBreak extends ElemTemplateElement implements ExpressionO
        * 
        * @xsl.usage advanced
        */
-       public void transformSelectedNodes(TransformerImpl transformer) throws 
+       public void transformXslBreakInstruction(TransformerImpl transformer) throws 
                                                                  TransformerException {
            XPathContext xctxt = transformer.getXPathContext();
            

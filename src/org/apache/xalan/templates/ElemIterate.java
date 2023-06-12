@@ -205,7 +205,10 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                transformer.pushElemTemplateElement(null);                              
            
                int docID = sourceNode & DTMManager.IDENT_DTM_DEFAULT;
-               int child;               
+               int child;
+               
+               ElemIterateOnCompletion xslOnCompletionTemplate = null;
+               
                while ((child = sourceNodes.nextNode()) != DTM.NULL) {
                    currentNodes.setTop(child);
                    currentExpressionNodes.setTop(child);
@@ -218,6 +221,11 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                    for (ElemTemplateElement elemTemplate = this.m_firstChild; 
                                                           elemTemplate != null; 
                                                           elemTemplate = elemTemplate.m_nextSibling) {
+                       if ((elemTemplate instanceof ElemIterateOnCompletion) && 
+                                                                        (xslOnCompletionTemplate == null)) {
+                           xslOnCompletionTemplate = (ElemIterateOnCompletion)elemTemplate;     
+                       }
+                       
                        if (!((XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated).booleanValue())) {
                           xctxt.setSAXLocator(elemTemplate);
                           transformer.setCurrentElement(elemTemplate);
@@ -228,11 +236,21 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                        }
                    }
                    
-                   if ((XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated).booleanValue()) {
-                       XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated = Boolean.FALSE;
+                   if ((XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated).booleanValue()) {                       
                        break;   
                    }
                }
+               
+               if ((xslOnCompletionTemplate != null) && !(XslTransformErrorLocatorHelper.
+                                                                                isXslIterateBreakEvaluated).booleanValue()) {
+                  XslTransformErrorLocatorHelper.isXslIterateOnCompletionActive = Boolean.TRUE;
+                  xctxt.setSAXLocator(xslOnCompletionTemplate);
+                  transformer.setCurrentElement(xslOnCompletionTemplate);
+                  xslOnCompletionTemplate.execute(transformer);
+                  XslTransformErrorLocatorHelper.isXslIterateOnCompletionActive = Boolean.FALSE;
+               }
+               
+               XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated = Boolean.FALSE;
            }
            finally {
               xctxt.popSAXLocator();
@@ -266,7 +284,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                                                                                     equals(elemTemplate.getLocalName()))) {
                   // revisit.
                   // currently, 'elemTemplate instanceof ElemParam' is evaluated as false but 'elemTemplate 
-                  // instanceof ElemUnknown' is evaluated as true within this "if" condition.                  
+                  // instanceof ElemUnknown' is evaluated as true when this "if" condition was evaluated.                  
                   xslElemNamesList.add(Constants.ELEMNAME_PARAMVARIABLE_STRING);
                   
                   // ElemUnknown elemUnknown = (ElemUnknown)elemTemplate;
@@ -286,7 +304,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
           }
           
           // get index of specific item's first occurrence with the list object 'xslElemNamesList'.
-          // if a particular kind of item that is checked is not present within the list object 
+          // if a particular kind of xdm item that is checked is not present within the list object 
           // 'xslElemNamesList', its index is returned as -1.
           int paramIdx = xslElemNamesList.indexOf(Constants.ELEMNAME_PARAMVARIABLE_STRING);
           int onCompletionIdx = xslElemNamesList.indexOf(Constants.ELEMNAME_ITERATE_ONCOMPLETION_STRING);

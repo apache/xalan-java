@@ -20,9 +20,15 @@ package org.apache.xalan.templates;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformErrorLocatorHelper;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.xml.sax.SAXException;
+
+import com.sun.org.apache.xml.internal.dtm.DTM;
 
 /**
  * XSLT 3.0 xsl:on-completion element.
@@ -50,6 +56,8 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
       * Construct an element representing xsl:on-completion.
       */
      public ElemIterateOnCompletion() {}
+     
+     private String xpathSelectPatternStr;
 
      /**
       * The "select" expression.
@@ -58,7 +66,8 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
 
      public void setSelect(XPath xpath)
      {
-         m_selectExpression = xpath.getExpression();   
+         m_selectExpression = xpath.getExpression();
+         xpathSelectPatternStr = xpath.getPatternString();
      }
 
      /**
@@ -148,7 +157,7 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
        */
        public void execute(TransformerImpl transformer) throws TransformerException
        {
-           transformSelectedNodes(transformer);
+           transformXslOncompletionInstruction(transformer);
        }
 
        /**
@@ -158,9 +167,42 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
        * 
        * @xsl.usage advanced
        */
-       public void transformSelectedNodes(TransformerImpl transformer) throws 
-                                                                 TransformerException {
-           // TO DO         
+       public void transformXslOncompletionInstruction(TransformerImpl transformer) throws 
+                                                                               TransformerException {
+                                                                  
+           if ((XslTransformErrorLocatorHelper.isXslIterateOnCompletionActive).booleanValue()) {
+               final XPathContext originalXctxt = transformer.getXPathContext();
+               
+               XPathContext xctxt = transformer.getXPathContext();
+               
+               // during evaluation of xsl:on-completion, the context item is absent.
+               // we make following two changes to XPath context to ensure this.
+               xctxt.pushCurrentNode(DTM.NULL);
+               xctxt.pushCurrentExpressionNode(DTM.NULL);
+               
+               if (xpathSelectPatternStr != null) {
+                   SerializationHandler rth = transformer.getResultTreeHandler();
+                   
+                   try {
+                       m_selectExpression.executeCharsToContentHandler(xctxt, rth);
+                   } catch (TransformerException ex) {
+                       throw ex;
+                   } catch (SAXException ex) {
+                       throw new TransformerException(ex);
+                   }
+               }
+               else {
+                   for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
+                                                                        elemTemplate = elemTemplate.m_nextSibling) {
+                      xctxt.setSAXLocator(elemTemplate);
+                      transformer.setCurrentElement(elemTemplate);
+                      elemTemplate.execute(transformer);
+                   } 
+               }
+               
+               // restore the XPath original context, on current XSLT transformer object
+               transformer.setXPathContext(originalXctxt);
+           }                      
        }
       
 }

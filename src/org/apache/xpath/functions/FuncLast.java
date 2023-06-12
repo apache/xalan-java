@@ -20,6 +20,7 @@
  */
 package org.apache.xpath.functions;
 
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SubContextList;
@@ -62,6 +63,12 @@ public class FuncLast extends Function
       
     if (xctxt.getXPath3ContextSize() != -1) {
         return xctxt.getXPath3ContextSize();
+    }
+    
+    if (xctxt.getContextNode() == DTM.NULL) {
+        throw new javax.xml.transform.TransformerException("XPDY0002 : The context item is absent "
+                                                                 + "at this point, and therefore last() function "
+                                                                 + "cannot be called.", xctxt.getSAXLocator());       
     }
 
     // assert(null != m_contextNodeList, "m_contextNodeList must be non-null");

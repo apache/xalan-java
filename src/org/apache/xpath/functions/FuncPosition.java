@@ -20,6 +20,8 @@
  */
 package org.apache.xpath.functions;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xpath.XPathContext;
@@ -55,12 +57,19 @@ public class FuncPosition extends Function
    *
    * @return The current position of the iteration in the context node list, 
    *         or -1 if there is no active context node list.
+ * @throws TransformerException 
    */
-  public int getPositionInContextNodeList(XPathContext xctxt)
+  public int getPositionInContextNodeList(XPathContext xctxt) throws TransformerException
   {
     
     if (xctxt.getXPath3ContextPosition() != -1) {
        return xctxt.getXPath3ContextPosition();
+    }
+    
+    if (xctxt.getContextNode() == DTM.NULL) {
+        throw new javax.xml.transform.TransformerException("XPDY0002 : The context item is absent "
+                                                                  + "at this point, and therefore position() function "
+                                                                  + "cannot be called.", xctxt.getSAXLocator());       
     }
     
     // System.out.println("FuncPosition- entry");
@@ -124,7 +133,7 @@ public class FuncPosition extends Function
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
+  {    
     double pos = (double) getPositionInContextNodeList(xctxt);
     
     return new XNumber(pos);
