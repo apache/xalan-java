@@ -28,10 +28,15 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.IntStack;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * XSLT 3.0 xsl:iterate element.
@@ -58,6 +63,28 @@ import org.apache.xpath.XPathContext;
  */
 /*
  * Implementation of the XSLT 3.0 xsl:iterate instruction.
+ * 
+ * An xsl:iterate instruction, functions like a loop, with following main features,
+ * 1) To be able to process a sequence of items in order, similar to how xsl:for-each 
+ *    instruction shall do such processing.
+ * 2) An xsl:iterate instruction has ability to exit from the loop prior to the 
+ *    exhaustion of the input sequence when particular condition(s) become true,
+ *    using xsl:break instruction. xsl:break being the final instruction (if invoked) 
+ *    processed by xsl:iterate, can also specify particular XSLT evaluation to be 
+ *    done via xsl:break's "select" attribute or with XSLT contents within xsl:break. 
+ * 3) With xsl:iterate instruction, the stylesheet author could also specify, 
+ *    particular XSLT processing to be done via xsl:on-completion instruction,
+ *    after input sequence is exhausted. xsl:on-completion instruction is not
+ *    invoked, when xsl:iterate processing is exited via xsl:break instruction.
+ *    xsl:on-completion instruction can specify certain XSLT processing to be done,
+ *    via its "select" attribute or via XSLT contents within xsl:on-completion.
+ * 4) xsl:iterate can also have optional xsl:param elements, to allow passing 
+ *    certain values as arguments to body of xsl:iterate (upon initial invocation of 
+ *    xsl:iterate, or via xsl:next-iteration element just before a new iteration shall 
+ *    start).
+ * 5) The effect of xsl:iterate may also be achieved by XSLT 1.0 compatible named 
+ *    templates. But using xsl:iterate likely makes writing such XSLT processing 
+ *    simpler. 
  */
 public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
 {
@@ -65,6 +92,10 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
      private static final long serialVersionUID = -2692900882677332482L;
      
      private static final String OTHER_ELEM = "OTHER_ELEM";
+              
+     private List<ParamWithParmData> fParamList = new ArrayList<ParamWithParmData>();
+     
+     private List<ParamWithParmData> fWithParamList = new ArrayList<ParamWithParmData>();
 
      /**
       * Construct an element representing xsl:iterate.
@@ -78,7 +109,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
 
      public void setSelect(XPath xpath)
      {
-         m_selectExpression = xpath.getExpression();   
+         m_selectExpression = xpath.getExpression();
      }
 
      /**
@@ -121,6 +152,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
          java.util.Vector vnames = sroot.getComposeState().getVariableNames();
 
          if (m_selectExpression != null) {
+             
              m_selectExpression.fixupVariables(vnames, sroot.getComposeState().
                                                                   getGlobalsSize());
          }
@@ -178,8 +210,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
        * 
        * @xsl.usage advanced
        */
-       public void transformSelectedNodes(TransformerImpl transformer) throws 
-                                                                 TransformerException {
+       public void transformSelectedNodes(TransformerImpl transformer) throws TransformerException {
     
            final XPathContext xctxtOriginal = transformer.getXPathContext();
         
@@ -218,21 +249,32 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                        docID = child & DTMManager.IDENT_DTM_DEFAULT;
                    }                                  
                    
-                   for (ElemTemplateElement elemTemplate = this.m_firstChild; 
-                                                          elemTemplate != null; 
-                                                          elemTemplate = elemTemplate.m_nextSibling) {
+                   for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
+                                                                          elemTemplate = elemTemplate.m_nextSibling) {
                        if ((elemTemplate instanceof ElemIterateOnCompletion) && 
                                                                         (xslOnCompletionTemplate == null)) {
                            xslOnCompletionTemplate = (ElemIterateOnCompletion)elemTemplate;     
                        }
+                       else if (elemTemplate instanceof ElemIterateNextIteration) {
+                           VariableStack varStack = xctxt.getVarStack();
+                           for (int idx = 0; idx < fWithParamList.size(); idx++) {
+                               ParamWithParmData withParamData = fWithParamList.get(idx);
+                               XPath withParamSelectVal = withParamData.getSelectVal();                               
+                               XObject evalResult = withParamSelectVal.execute(xctxt, child, this);
+                               // update value of current xsl:next-iteration's current xsl:param 
+                               // 'parameter'. when xsl:iterate's new iteration is entered, this
+                               // parameter shall have this new value.
+                               varStack.setLocalVariable(idx, evalResult);
+                           }                           
+                       }
                        
                        if (!((XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated).booleanValue())) {
-                          xctxt.setSAXLocator(elemTemplate);
-                          transformer.setCurrentElement(elemTemplate);
-                          elemTemplate.execute(transformer);
+                           xctxt.setSAXLocator(elemTemplate);
+                           transformer.setCurrentElement(elemTemplate);
+                           elemTemplate.execute(transformer);
                        }
                        else {
-                          break;    
+                           break;    
                        }
                    }
                    
@@ -280,17 +322,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
           for (ElemTemplateElement elemTemplate = this.m_firstChild; 
                                                              elemTemplate != null; 
                                                              elemTemplate = elemTemplate.m_nextSibling) {
-              if ((elemTemplate instanceof ElemUnknown) && ((Constants.ELEMNAME_PARAMVARIABLE_STRING).
-                                                                                    equals(elemTemplate.getLocalName()))) {
-                  // revisit.
-                  // currently, 'elemTemplate instanceof ElemParam' is evaluated as false but 'elemTemplate 
-                  // instanceof ElemUnknown' is evaluated as true when this "if" condition was evaluated.                  
+              if (elemTemplate instanceof ElemParam) {                  
                   xslElemNamesList.add(Constants.ELEMNAME_PARAMVARIABLE_STRING);
-                  
-                  // ElemUnknown elemUnknown = (ElemUnknown)elemTemplate;
-                  // String nameVal = elemUnknown.getAttribute("name");
-                  // String selectVal = elemUnknown.getAttribute("select");
-                  // NodeList nodeList = elemUnknown.getChildNodes();
               }
               else if (elemTemplate instanceof ElemIterateOnCompletion) {
                   xslElemNamesList.add(Constants.ELEMNAME_ITERATE_ONCOMPLETION_STRING);   
@@ -336,6 +369,112 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
               throw new TransformerException("XTSE3120 : an xsl:next-iteration element when present, must be the last instruction within "
                                                                                          + "an xsl:iterate loop.", xctxt.getSAXLocator());
           }
+          
+          // Validate the, xsl:iterate->xsl:param* and xsl:next-iteration->xsl:with-param* names, as per following XSLT 3.0 
+          // spec requirements,
+          // 1) All the xsl:param names must be unique.
+          // 2) All the xsl:next-iteration->xsl:with-param names must be unique.  
+          // 3) Value of name attribute of xsl:param's must be pair-wise equal to value of name attribute of 
+          //    xsl:next-iteration->xsl:with-param.          
+          if (paramIdx != -1) {
+              for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
+                                                                                 elemTemplate = elemTemplate.m_nextSibling) {
+                  if (elemTemplate instanceof ElemParam) {
+                     ElemParam paramElem = (ElemParam)elemTemplate;
+                     QName paramNameVal = paramElem.getName();
+                     XPath paramSelectXPath = paramElem.getSelect();
+                     ParamWithParmData paramWithParmDataObj = new ParamWithParmData();
+                     paramWithParmDataObj.setNameVal(paramNameVal);
+                     paramWithParmDataObj.setSelectVal(paramSelectXPath);
+                     if (fParamList.contains(paramWithParmDataObj)) {
+                         throw new TransformerException("XTSE0580 : the name of the xsl:param parameter '" + paramNameVal + "' "
+                                                                                         + "is not unique.", xctxt.getSAXLocator());    
+                     }
+                     else {
+                         fParamList.add(paramWithParmDataObj);    
+                     }
+                  } 
+                  else if (elemTemplate instanceof ElemIterateNextIteration) {
+                      ElemIterateNextIteration elemIterateNextIteration = (ElemIterateNextIteration)elemTemplate;
+                      NodeList nextIterationChildNodes = elemIterateNextIteration.getChildNodes();
+                      for (int idx = 0; idx < nextIterationChildNodes.getLength(); idx++) {
+                          Node nextIterChild = nextIterationChildNodes.item(idx);
+                          if (nextIterChild instanceof ElemWithParam) {
+                              ElemWithParam withParamElem = (ElemWithParam)nextIterChild;
+                              QName withParamNameVal = withParamElem.getName();
+                              XPath withParamSelectXPath = withParamElem.getSelect();                              
+                              ParamWithParmData paramWithParmDataObj = new ParamWithParmData();
+                              paramWithParmDataObj.setNameVal(withParamNameVal);
+                              paramWithParmDataObj.setSelectVal(withParamSelectXPath);
+                              if (fWithParamList.contains(paramWithParmDataObj)) {
+                                 throw new TransformerException("XTSE0670 : duplicate xsl:with-param parameter name '" + withParamNameVal + 
+                                                                                                                      "'", xctxt.getSAXLocator());   
+                              }
+                              else {
+                                 fWithParamList.add(paramWithParmDataObj);  
+                              }
+                          }
+                      }
+                  }                  
+              }
+              
+              if (fParamList.size() != fWithParamList.size()) {
+                  throw new TransformerException("XTSE0580 : within xsl:iterate, the number of xsl:param elements are not equal to "
+                                                                 + "number of xsl:next-iteration's xsl:with-param elements.", xctxt.getSAXLocator());     
+              }
+              else {
+                 for (int idx = 0; idx < fParamList.size(); idx ++) {
+                     ParamWithParmData paramData = fParamList.get(idx);
+                     ParamWithParmData withParamData = fWithParamList.get(idx);
+                     if (!(paramData.getNameVal()).equals(withParamData.getNameVal())) {
+                         throw new TransformerException("XTSE3130 : within xsl:iterate, xsl:param and xsl:with-param names at position " + 
+                                                                                                (idx + 1) + " are not same.", xctxt.getSAXLocator());        
+                     }
+                 }
+              }
+          }
+          
+      }
+      
+      /*
+       * An object of this class, stores information about, one xsl:param 
+       * element or one xsl:next-iteration->xsl:with-param element, for a 
+       * particular xsl:iterate instruction. 
+       */
+      class ParamWithParmData {
+          
+          public QName nameVal;
+          
+          public XPath selectVal;
+
+          public QName getNameVal() {
+              return nameVal;
+          }
+
+          public void setNameVal(QName nameVal) {
+              this.nameVal = nameVal;
+          }
+
+          public XPath getSelectVal() {
+              return selectVal;
+          }
+
+          public void setSelectVal(XPath selectVal) {
+              this.selectVal = selectVal;
+          }
+          
+          @Override
+          public boolean equals(Object obj) {
+              if (this == obj) {
+                  return true;
+              }
+              if (obj == null || getClass() != obj.getClass()) {
+                  return false;
+              }
+              ParamWithParmData paramWithParmData = (ParamWithParmData)obj;
+              return nameVal.equals(paramWithParmData.getNameVal());
+          }
+          
       }
       
 }

@@ -521,7 +521,7 @@ public class XSLTSchema extends XSLTElementDef
                                                 ElemNonMatchingSubstring.class /* class object */, true, false, true, 20, true);
     
     XSLTElementDef xslIterate = new XSLTElementDef(this, Constants.S_XSLNAMESPACEURL, "iterate",
-                                                   null /*alias */, templateElements,
+                                                   null /*alias */, templateElementsAndParams,
                                                    new XSLTAttributeDef[]{ selectAttrRequired }, new ProcessorTemplateElem(),
                                                    ElemIterate.class /* class object */, true, false, true, 20, true);
     
@@ -532,7 +532,8 @@ public class XSLTSchema extends XSLTElementDef
                                                                true, 20, true);
     
     XSLTElementDef xslIterateNextIteration = new XSLTElementDef(this, Constants.S_XSLNAMESPACEURL, "next-iteration",
-                                                                null /*alias */, templateElements,
+                                                                null /*alias */, 
+                                                                new XSLTElementDef[]{ xslWithParam },
                                                                 new XSLTAttributeDef[] { }, new ProcessorTemplateElem(),
                                                                 ElemIterateNextIteration.class /* class object */, true, false, 
                                                                 true, 20, true);
