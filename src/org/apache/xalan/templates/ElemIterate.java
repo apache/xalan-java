@@ -93,9 +93,9 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
      
      private static final String OTHER_ELEM = "OTHER_ELEM";
               
-     private List<ParamWithParmData> fParamList = new ArrayList<ParamWithParmData>();
+     private List<ParamWithparamData> fParamList = new ArrayList<ParamWithparamData>();
      
-     private List<ParamWithParmData> fWithParamList = new ArrayList<ParamWithParmData>();
+     private List<ParamWithparamData> fWithparamList = new ArrayList<ParamWithparamData>();
 
      /**
       * Construct an element representing xsl:iterate.
@@ -257,8 +257,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                        }
                        else if (elemTemplate instanceof ElemIterateNextIteration) {
                            VariableStack varStack = xctxt.getVarStack();
-                           for (int idx = 0; idx < fWithParamList.size(); idx++) {
-                               ParamWithParmData withParamData = fWithParamList.get(idx);
+                           for (int idx = 0; idx < fWithparamList.size(); idx++) {
+                               ParamWithparamData withParamData = fWithparamList.get(idx);
                                XPath withParamSelectVal = withParamData.getSelectVal();                               
                                XObject evalResult = withParamSelectVal.execute(xctxt, child, this);
                                // update value of current xsl:next-iteration's current xsl:param 
@@ -383,7 +383,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                      ElemParam paramElem = (ElemParam)elemTemplate;
                      QName paramNameVal = paramElem.getName();
                      XPath paramSelectXPath = paramElem.getSelect();
-                     ParamWithParmData paramWithParmDataObj = new ParamWithParmData();
+                     ParamWithparamData paramWithParmDataObj = new ParamWithparamData();
                      paramWithParmDataObj.setNameVal(paramNameVal);
                      paramWithParmDataObj.setSelectVal(paramSelectXPath);
                      if (fParamList.contains(paramWithParmDataObj)) {
@@ -403,29 +403,29 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                               ElemWithParam withParamElem = (ElemWithParam)nextIterChild;
                               QName withParamNameVal = withParamElem.getName();
                               XPath withParamSelectXPath = withParamElem.getSelect();                              
-                              ParamWithParmData paramWithParmDataObj = new ParamWithParmData();
+                              ParamWithparamData paramWithParmDataObj = new ParamWithparamData();
                               paramWithParmDataObj.setNameVal(withParamNameVal);
                               paramWithParmDataObj.setSelectVal(withParamSelectXPath);
-                              if (fWithParamList.contains(paramWithParmDataObj)) {
+                              if (fWithparamList.contains(paramWithParmDataObj)) {
                                  throw new TransformerException("XTSE0670 : duplicate xsl:with-param parameter name '" + withParamNameVal + 
                                                                                                                       "'", xctxt.getSAXLocator());   
                               }
                               else {
-                                 fWithParamList.add(paramWithParmDataObj);  
+                                 fWithparamList.add(paramWithParmDataObj);  
                               }
                           }
                       }
                   }                  
               }
               
-              if (fParamList.size() != fWithParamList.size()) {
+              if (fParamList.size() != fWithparamList.size()) {
                   throw new TransformerException("XTSE0580 : within xsl:iterate, the number of xsl:param elements are not equal to "
                                                                  + "number of xsl:next-iteration's xsl:with-param elements.", xctxt.getSAXLocator());     
               }
               else {
                  for (int idx = 0; idx < fParamList.size(); idx ++) {
-                     ParamWithParmData paramData = fParamList.get(idx);
-                     ParamWithParmData withParamData = fWithParamList.get(idx);
+                     ParamWithparamData paramData = fParamList.get(idx);
+                     ParamWithparamData withParamData = fWithparamList.get(idx);
                      if (!(paramData.getNameVal()).equals(withParamData.getNameVal())) {
                          throw new TransformerException("XTSE3130 : within xsl:iterate, xsl:param and xsl:with-param names at position " + 
                                                                                                 (idx + 1) + " are not same.", xctxt.getSAXLocator());        
@@ -441,7 +441,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
        * element or one xsl:next-iteration->xsl:with-param element, for a 
        * particular xsl:iterate instruction. 
        */
-      class ParamWithParmData {
+      class ParamWithparamData {
           
           public QName nameVal;
           
@@ -471,8 +471,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
               if (obj == null || getClass() != obj.getClass()) {
                   return false;
               }
-              ParamWithParmData paramWithParmData = (ParamWithParmData)obj;
-              return nameVal.equals(paramWithParmData.getNameVal());
+              ParamWithparamData paramWithparamData = (ParamWithparamData)obj;
+              return nameVal.equals(paramWithparamData.getNameVal());
           }
           
       }
