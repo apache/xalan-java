@@ -118,11 +118,11 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
           super.endCompose(sroot);
       }
 
-      /**
-       * Get an int constant identifying the type of element.
-       * @see org.apache.xalan.templates.Constants
-       *
-       * @return The token ID for this element
+       /**
+         * Get an int constant identifying the type of element.
+         * @see org.apache.xalan.templates.Constants
+         *
+         * @return The token ID for this element
        */
        public int getXSLToken()
        {
@@ -148,7 +148,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
        */
        public void execute(TransformerImpl transformer) throws TransformerException
        {
-           transformSelectedNodes(transformer);
+            elemIterateNextIterationProcessing(transformer);
        }
        
        /**
@@ -158,9 +158,9 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
         * 
         * @xsl.usage advanced
         */
-        public void transformSelectedNodes(TransformerImpl transformer) throws 
-                                                                  TransformerException {
-            // TO DO         
+        public void elemIterateNextIterationProcessing(TransformerImpl transformer) throws 
+                                                                               TransformerException {
+            // no op         
         }
       
 }

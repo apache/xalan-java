@@ -383,15 +383,15 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                      ElemParam paramElem = (ElemParam)elemTemplate;
                      QName paramNameVal = paramElem.getName();
                      XPath paramSelectXPath = paramElem.getSelect();
-                     ParamWithparamData paramWithParmDataObj = new ParamWithparamData();
-                     paramWithParmDataObj.setNameVal(paramNameVal);
-                     paramWithParmDataObj.setSelectVal(paramSelectXPath);
-                     if (fParamList.contains(paramWithParmDataObj)) {
+                     ParamWithparamData paramWithparamDataObj = new ParamWithparamData();
+                     paramWithparamDataObj.setNameVal(paramNameVal);
+                     paramWithparamDataObj.setSelectVal(paramSelectXPath);
+                     if (fParamList.contains(paramWithparamDataObj)) {
                          throw new TransformerException("XTSE0580 : the name of the xsl:param parameter '" + paramNameVal + "' "
                                                                                          + "is not unique.", xctxt.getSAXLocator());    
                      }
                      else {
-                         fParamList.add(paramWithParmDataObj);    
+                         fParamList.add(paramWithparamDataObj);    
                      }
                   } 
                   else if (elemTemplate instanceof ElemIterateNextIteration) {
@@ -403,15 +403,15 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                               ElemWithParam withParamElem = (ElemWithParam)nextIterChild;
                               QName withParamNameVal = withParamElem.getName();
                               XPath withParamSelectXPath = withParamElem.getSelect();                              
-                              ParamWithparamData paramWithParmDataObj = new ParamWithparamData();
-                              paramWithParmDataObj.setNameVal(withParamNameVal);
-                              paramWithParmDataObj.setSelectVal(withParamSelectXPath);
-                              if (fWithparamList.contains(paramWithParmDataObj)) {
+                              ParamWithparamData paramWithparamDataObj = new ParamWithparamData();
+                              paramWithparamDataObj.setNameVal(withParamNameVal);
+                              paramWithparamDataObj.setSelectVal(withParamSelectXPath);
+                              if (fWithparamList.contains(paramWithparamDataObj)) {
                                  throw new TransformerException("XTSE0670 : duplicate xsl:with-param parameter name '" + withParamNameVal + 
                                                                                                                       "'", xctxt.getSAXLocator());   
                               }
                               else {
-                                 fWithparamList.add(paramWithParmDataObj);  
+                                 fWithparamList.add(paramWithparamDataObj);  
                               }
                           }
                       }
