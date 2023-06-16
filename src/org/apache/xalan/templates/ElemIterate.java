@@ -23,7 +23,7 @@ import java.util.List;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xslt.util.XslTransformErrorLocatorHelper;
+import org.apache.xalan.xslt.util.XslTransformationGlobalSharedDatastore;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.IntStack;
@@ -250,7 +250,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                            xslOnCompletionTemplate = (ElemIterateOnCompletion)elemTemplate;     
                        }
                        
-                       if (!(XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated).booleanValue()) {
+                       if (!(XslTransformationGlobalSharedDatastore.isXslIterateBreakEvaluated).booleanValue()) {
                            xctxt.setSAXLocator(elemTemplate);
                            transformer.setCurrentElement(elemTemplate);
                            elemTemplate.execute(transformer);
@@ -260,21 +260,21 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                        }                                              
                    }                                      
                    
-                   if ((XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated).booleanValue()) {                       
+                   if ((XslTransformationGlobalSharedDatastore.isXslIterateBreakEvaluated).booleanValue()) {                       
                        break;   
                    }
                }
                
-               if ((xslOnCompletionTemplate != null) && !(XslTransformErrorLocatorHelper.
+               if ((xslOnCompletionTemplate != null) && !(XslTransformationGlobalSharedDatastore.
                                                                                 isXslIterateBreakEvaluated).booleanValue()) {
-                    XslTransformErrorLocatorHelper.isXslIterateOnCompletionActive = Boolean.TRUE;
+                    XslTransformationGlobalSharedDatastore.isXslIterateOnCompletionActive = Boolean.TRUE;
                     xctxt.setSAXLocator(xslOnCompletionTemplate);
                     transformer.setCurrentElement(xslOnCompletionTemplate);
                     xslOnCompletionTemplate.execute(transformer);
-                    XslTransformErrorLocatorHelper.isXslIterateOnCompletionActive = Boolean.FALSE;
+                    XslTransformationGlobalSharedDatastore.isXslIterateOnCompletionActive = Boolean.FALSE;
                }
                
-               XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated = Boolean.FALSE; 
+               XslTransformationGlobalSharedDatastore.isXslIterateBreakEvaluated = Boolean.FALSE; 
            }
            finally {
               xctxt.popSAXLocator();

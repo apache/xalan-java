@@ -20,7 +20,7 @@ package org.apache.xalan.templates;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xslt.util.XslTransformErrorLocatorHelper;
+import org.apache.xalan.xslt.util.XslTransformationGlobalSharedDatastore;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -170,7 +170,7 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
        public void transformXslOncompletionInstruction(TransformerImpl transformer) throws 
                                                                                TransformerException {
                                                                   
-           if ((XslTransformErrorLocatorHelper.isXslIterateOnCompletionActive).booleanValue()) {
+           if ((XslTransformationGlobalSharedDatastore.isXslIterateOnCompletionActive).booleanValue()) {
                final XPathContext originalXctxt = transformer.getXPathContext();
                
                XPathContext xctxt = transformer.getXPathContext();
