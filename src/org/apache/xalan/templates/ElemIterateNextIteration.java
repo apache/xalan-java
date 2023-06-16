@@ -17,12 +17,21 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * XSLT 3.0 xsl:next-iteration element.
@@ -45,6 +54,11 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
 {
     
      private static final long serialVersionUID = -582877657433106548L;
+     
+     // revisit.
+     // can we have better way to maintain xsl:next-iteration->xsl:with-param* state, instead of having this with
+     // 'public static' visibility.
+     public static List<XslIterateParamWithparamData> fWithparamList = new ArrayList<XslIterateParamWithparamData>();
 
      /**
       * Construct an element representing xsl:next-iteration.
@@ -148,7 +162,28 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
        */
        public void execute(TransformerImpl transformer) throws TransformerException
        {
-            elemIterateNextIterationProcessing(transformer);
+           
+            XPathContext xpathContext = transformer.getXPathContext();
+  
+            boolean isXslNextIterationDescendantOfXslIterate = false;
+            
+            if (isXslNextIterationDescendantOfXslIterate(this)) {
+                isXslNextIterationDescendantOfXslIterate = true;       
+            }
+            else {
+                throw new TransformerException("XTSE3120 : an xsl:next-iteration instruction doesn't "
+                                                                + "have xsl:iterate instruction as ancestor.", 
+                                                                                       xpathContext.getSAXLocator());  
+            }
+            
+            if (isXslNextIterationDescendantOfXslIterate && isXslInstructionInTailPositionOfSequenceConstructor(this)) {
+                elemIterateNextIterationProcessing(transformer);
+            }
+            else {
+                throw new TransformerException("XTSE3120 : an xsl:next-iteration instruction is not in a "
+                                                                + "tail position within the sequence constructor of currently "
+                                                                + "active xsl:iterate instruction.", xpathContext.getSAXLocator());   
+            }
        }
        
        /**
@@ -160,7 +195,85 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
         */
         public void elemIterateNextIterationProcessing(TransformerImpl transformer) throws 
                                                                                TransformerException {
-            // no op         
+            
+            XPathContext xctxt = transformer.getXPathContext();
+            
+            int contextNode = xctxt.getContextNode();
+            
+            // clear the, xsl:next-iteration->xsl:with-param* list storage before
+            // evaluating this xsl:next-iteration element.
+            fWithparamList.clear();
+            
+            NodeList nextIterationChildNodes = this.getChildNodes();                        
+            
+            for (int idx = 0; idx < nextIterationChildNodes.getLength(); idx++) {
+                Node nextIterChild = nextIterationChildNodes.item(idx);
+                if (nextIterChild instanceof ElemWithParam) {
+                    ElemWithParam withParamElem = (ElemWithParam)nextIterChild;
+                    QName withParamNameVal = withParamElem.getName();
+                    XPath withParamSelectXPath = withParamElem.getSelect();                              
+                    XslIterateParamWithparamData paramWithparamDataObj = new XslIterateParamWithparamData();
+                    paramWithparamDataObj.setNameVal(withParamNameVal);
+                    paramWithparamDataObj.setSelectVal(withParamSelectXPath);
+                    if (fWithparamList.contains(paramWithparamDataObj)) {
+                        throw new TransformerException("XTSE0670 : duplicate xsl:with-param parameter name '" + withParamNameVal + 
+                                                                                                            "'", xctxt.getSAXLocator());   
+                    }
+                    else {
+                        fWithparamList.add(paramWithparamDataObj);  
+                    }
+                }
+            }
+            
+            if ((ElemIterate.fParamList).size() != fWithparamList.size()) {
+                throw new TransformerException("XTSE0580 : within xsl:iterate, the number of xsl:param elements are not equal to "
+                                                               + "number of xsl:next-iteration's xsl:with-param elements.", xctxt.getSAXLocator());     
+            }
+            else {
+               for (int idx = 0; idx < (ElemIterate.fParamList).size(); idx ++) {
+                   XslIterateParamWithparamData paramData = (ElemIterate.fParamList).get(idx);
+                   XslIterateParamWithparamData withParamData = fWithparamList.get(idx);
+                   if (!(paramData.getNameVal()).equals(withParamData.getNameVal())) {
+                       throw new TransformerException("XTSE3130 : within xsl:iterate, xsl:param and xsl:with-param names at position " + 
+                                                                                              (idx + 1) + " are not same.", xctxt.getSAXLocator());        
+                   }
+               }
+            }
+            
+            VariableStack varStack = xctxt.getVarStack();
+            for (int idx = 0; idx < fWithparamList.size(); idx++) {
+                XslIterateParamWithparamData withParamData = fWithparamList.get(idx);
+                XPath withParamSelectVal = withParamData.getSelectVal();                               
+                XObject evalResult = withParamSelectVal.execute(xctxt, contextNode, this);
+                // update value of current xsl:next-iteration's current xsl:param 
+                // 'parameter'. when xsl:iterate's new iteration is entered, this
+                // parameter shall have this new value.
+                varStack.setLocalVariable(idx, evalResult);
+            }
+        }
+        
+        /*
+         * Determine whether, an xsl:next-iteration instruction has xsl:iterate instruction 
+         * as ancestor. 
+         */
+        private boolean isXslNextIterationDescendantOfXslIterate(ElemIterateNextIteration 
+                                                                                    xslNextInstr) {
+            
+            boolean isXslNextIterationDescendantOfXslIterate = false;
+            
+            ElemTemplateElement xslParentElement = xslNextInstr.m_parentNode;
+            
+            while (xslParentElement != null) {
+               if (xslParentElement instanceof ElemIterate) {
+                   isXslNextIterationDescendantOfXslIterate = true;
+                   break;
+               }
+               else {
+                   xslParentElement = xslParentElement.m_parentNode;    
+               }
+            }
+            
+            return  isXslNextIterationDescendantOfXslIterate;   
         }
       
 }

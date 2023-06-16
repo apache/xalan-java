@@ -154,16 +154,28 @@ public class ElemIterateBreak extends ElemTemplateElement implements ExpressionO
        */
        public void execute(TransformerImpl transformer) throws TransformerException
        {
-           if (this.m_nextSibling != null) {
-              XPathContext xpathContext = transformer.getXPathContext();
-              throw new TransformerException("XTSE3120 : an xsl:break instruction must not have any other "
-                                                                        + "stylesheet element as its following sibling.", 
-                                                                                         xpathContext.getSAXLocator());    
-           }
-           else {              
-              transformXslBreakInstruction(transformer);
-              XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated = Boolean.TRUE;
-           }
+            XPathContext xpathContext = transformer.getXPathContext();
+            
+            boolean isXslBreakDescendantOfXslIterate = false;
+            
+            if (isXslBreakDescendantOfXslIterate(this)) {
+                isXslBreakDescendantOfXslIterate = true;    
+            }
+            else {
+                throw new TransformerException("XTSE3120 : an xsl:break instruction doesn't have "
+                                                                 + "xsl:iterate instruction as ancestor.", 
+                                                                                   xpathContext.getSAXLocator());   
+            }
+                      
+            if (isXslBreakDescendantOfXslIterate && isXslInstructionInTailPositionOfSequenceConstructor(this)) {              
+                transformXslBreakInstruction(transformer);
+                XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated = Boolean.TRUE;
+            }
+            else {
+                throw new TransformerException("XTSE3120 : an xsl:break instruction is not in a "
+                                                                + "tail position within the sequence constructor of currently "
+                                                                + "active xsl:iterate instruction.", xpathContext.getSAXLocator());    
+            }
        }
 
        /**
@@ -203,5 +215,28 @@ public class ElemIterateBreak extends ElemTemplateElement implements ExpressionO
               }
            }
        }
+       
+       /*
+        * Determine whether, an xsl:break instruction has xsl:iterate instruction 
+        * as ancestor. 
+        */
+       private boolean isXslBreakDescendantOfXslIterate(ElemIterateBreak xslNextInstr) {
+           
+           boolean isXslBreakDescendantOfXslIterate = false;
+           
+           ElemTemplateElement xslParentElement = xslNextInstr.m_parentNode;
+           
+           while (!isXslBreakDescendantOfXslIterate && (xslParentElement != null)) {
+              if (xslParentElement instanceof ElemIterate) {
+                  isXslBreakDescendantOfXslIterate = true;
+                  break;
+              }
+              else {
+                  xslParentElement = xslParentElement.m_parentNode; 
+              }
+           }
+           
+           return  isXslBreakDescendantOfXslIterate;   
+       }       
       
 }

@@ -26,17 +26,12 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformErrorLocatorHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
-import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
-import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XObject;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * XSLT 3.0 xsl:iterate element.
@@ -92,10 +87,11 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
      private static final long serialVersionUID = -2692900882677332482L;
      
      private static final String OTHER_ELEM = "OTHER_ELEM";
-              
-     private List<ParamWithparamData> fParamList = new ArrayList<ParamWithparamData>();
      
-     private List<ParamWithparamData> fWithparamList = new ArrayList<ParamWithparamData>();
+     // revisit.
+     // can we have better way to maintain xsl:iterate->xsl:param* state, instead of having this with
+     // 'public static' visibility.
+     public static List<XslIterateParamWithparamData> fParamList = new ArrayList<XslIterateParamWithparamData>();
 
      /**
       * Construct an element representing xsl:iterate.
@@ -218,6 +214,10 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
          
            final int sourceNode = xctxt.getCurrentNode();
            
+           // clear the, xsl:iterate->xsl:param* list storage before this xsl:iterate 
+           // instruction's evaluation.
+           fParamList.clear();
+           
            validateXslElemIterateChildElementsSequence(xctxt);
         
            DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
@@ -234,8 +234,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                xctxt.pushSAXLocatorNull();
                xctxt.pushContextNodeList(sourceNodes);
                transformer.pushElemTemplateElement(null);                              
-           
-               int docID = sourceNode & DTMManager.IDENT_DTM_DEFAULT;
+                          
                int child;
                
                ElemIterateOnCompletion xslOnCompletionTemplate = null;
@@ -243,40 +242,23 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                while ((child = sourceNodes.nextNode()) != DTM.NULL) {
                    currentNodes.setTop(child);
                    currentExpressionNodes.setTop(child);
-
-                   if ((child & DTMManager.IDENT_DTM_DEFAULT) != docID)
-                   {
-                       docID = child & DTMManager.IDENT_DTM_DEFAULT;
-                   }                                  
-                   
+                                                                        
                    for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
                                                                           elemTemplate = elemTemplate.m_nextSibling) {
                        if ((elemTemplate instanceof ElemIterateOnCompletion) && 
                                                                         (xslOnCompletionTemplate == null)) {
                            xslOnCompletionTemplate = (ElemIterateOnCompletion)elemTemplate;     
                        }
-                       else if (elemTemplate instanceof ElemIterateNextIteration) {
-                           VariableStack varStack = xctxt.getVarStack();
-                           for (int idx = 0; idx < fWithparamList.size(); idx++) {
-                               ParamWithparamData withParamData = fWithparamList.get(idx);
-                               XPath withParamSelectVal = withParamData.getSelectVal();                               
-                               XObject evalResult = withParamSelectVal.execute(xctxt, child, this);
-                               // update value of current xsl:next-iteration's current xsl:param 
-                               // 'parameter'. when xsl:iterate's new iteration is entered, this
-                               // parameter shall have this new value.
-                               varStack.setLocalVariable(idx, evalResult);
-                           }                           
-                       }
                        
-                       if (!((XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated).booleanValue())) {
+                       if (!(XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated).booleanValue()) {
                            xctxt.setSAXLocator(elemTemplate);
                            transformer.setCurrentElement(elemTemplate);
                            elemTemplate.execute(transformer);
                        }
                        else {
                            break;    
-                       }
-                   }
+                       }                                              
+                   }                                      
                    
                    if ((XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated).booleanValue()) {                       
                        break;   
@@ -285,14 +267,14 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                
                if ((xslOnCompletionTemplate != null) && !(XslTransformErrorLocatorHelper.
                                                                                 isXslIterateBreakEvaluated).booleanValue()) {
-                  XslTransformErrorLocatorHelper.isXslIterateOnCompletionActive = Boolean.TRUE;
-                  xctxt.setSAXLocator(xslOnCompletionTemplate);
-                  transformer.setCurrentElement(xslOnCompletionTemplate);
-                  xslOnCompletionTemplate.execute(transformer);
-                  XslTransformErrorLocatorHelper.isXslIterateOnCompletionActive = Boolean.FALSE;
+                    XslTransformErrorLocatorHelper.isXslIterateOnCompletionActive = Boolean.TRUE;
+                    xctxt.setSAXLocator(xslOnCompletionTemplate);
+                    transformer.setCurrentElement(xslOnCompletionTemplate);
+                    xslOnCompletionTemplate.execute(transformer);
+                    XslTransformErrorLocatorHelper.isXslIterateOnCompletionActive = Boolean.FALSE;
                }
                
-               XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated = Boolean.FALSE;
+               XslTransformErrorLocatorHelper.isXslIterateBreakEvaluated = Boolean.FALSE; 
            }
            finally {
               xctxt.popSAXLocator();
@@ -310,9 +292,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
       
        /*
         * The XSLT 3.0 spec specifies constraints, about what should be the order of XSLT elements 
-        * xsl:param, xsl:on-completion and xsl:next-iteration within the xsl:iterate element. This 
-        * method ensures that, these XSLT xsl:iterate element constraints are validated during 
-        * an XSLT document transformation.  
+        * xsl:param and xsl:on-completion within the xsl:iterate element. This method ensures that, 
+        * these XSLT element constraints are validated during an XSLT stylesheet transformation.  
         */
       private void validateXslElemIterateChildElementsSequence(XPathContext xctxt) 
                                                                        throws TransformerException {
@@ -327,31 +308,23 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
               }
               else if (elemTemplate instanceof ElemIterateOnCompletion) {
                   xslElemNamesList.add(Constants.ELEMNAME_ITERATE_ONCOMPLETION_STRING);   
-              }
-              else if (elemTemplate instanceof ElemIterateNextIteration) {
-                  xslElemNamesList.add(Constants.ELEMNAME_ITERATE_NEXTITERATION_STRING);   
-              }
+              }              
               else {
                   xslElemNamesList.add(OTHER_ELEM);
               }
           }
           
           // get index of specific item's first occurrence with the list object 'xslElemNamesList'.
-          // if a particular kind of xdm item that is checked is not present within the list object 
-          // 'xslElemNamesList', its index is returned as -1.
+          // if a particular kind of XSLT stylesheet item that is checked is not present within the 
+          // list object 'xslElemNamesList', its index is returned as -1.
           int paramIdx = xslElemNamesList.indexOf(Constants.ELEMNAME_PARAMVARIABLE_STRING);
-          int onCompletionIdx = xslElemNamesList.indexOf(Constants.ELEMNAME_ITERATE_ONCOMPLETION_STRING);
-          int nextIterationIdx = xslElemNamesList.indexOf(Constants.ELEMNAME_ITERATE_NEXTITERATION_STRING);
+          int onCompletionIdx = xslElemNamesList.indexOf(Constants.ELEMNAME_ITERATE_ONCOMPLETION_STRING);          
           int otherElemIdx = xslElemNamesList.indexOf(OTHER_ELEM);
           
           if ((paramIdx != -1) && (onCompletionIdx != -1) && (paramIdx > onCompletionIdx)) {
               throw new TransformerException("XTSE0010 : an xsl:param element must occur before xsl:on-completion "
                                                                                             + "element.", xctxt.getSAXLocator());    
-          }          
-          else if ((paramIdx != -1) && (nextIterationIdx != -1) && (paramIdx > nextIterationIdx)) {
-              throw new TransformerException("XTSE0010 : an xsl:param element must occur before xsl:next-iteration "
-                                                                                            + "element.", xctxt.getSAXLocator());
-          }
+          }                    
           else if ((paramIdx != -1) && (otherElemIdx != -1) && (paramIdx > otherElemIdx)) {
               throw new TransformerException("XTSE0010 : an xsl:param element must occur before any other element within "
                                                                                      + "xsl:iterate element.", xctxt.getSAXLocator());
@@ -360,22 +333,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                                                                                                  (otherElemIdx < onCompletionIdx)) {
               throw new TransformerException("XTSE0010 : an xsl:on-completion element must be the first child element of xsl:iterate "
                                                                                  + "after the xsl:param elements.", xctxt.getSAXLocator());
-          }
-          else if ((onCompletionIdx != -1) && (nextIterationIdx != -1) && (onCompletionIdx > nextIterationIdx)) {
-              throw new TransformerException("XTSE0010 : an xsl:on-completion element must occur before xsl:next-iteration "
-                                                                                                   + "element.", xctxt.getSAXLocator());
-          }
-          else if ((nextIterationIdx != -1) && (nextIterationIdx != (xslElemNamesList.size() - 1))) {
-              throw new TransformerException("XTSE3120 : an xsl:next-iteration element when present, must be the last instruction within "
-                                                                                         + "an xsl:iterate loop.", xctxt.getSAXLocator());
-          }
-          
-          // Validate the, xsl:iterate->xsl:param* and xsl:next-iteration->xsl:with-param* names, as per following XSLT 3.0 
-          // spec requirements,
-          // 1) All the xsl:param names must be unique.
-          // 2) All the xsl:next-iteration->xsl:with-param names must be unique.  
-          // 3) Value of name attribute of xsl:param's must be pair-wise equal to value of name attribute of 
-          //    xsl:next-iteration->xsl:with-param.          
+          }          
+                             
           if (paramIdx != -1) {
               for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
                                                                                  elemTemplate = elemTemplate.m_nextSibling) {
@@ -383,7 +342,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                      ElemParam paramElem = (ElemParam)elemTemplate;
                      QName paramNameVal = paramElem.getName();
                      XPath paramSelectXPath = paramElem.getSelect();
-                     ParamWithparamData paramWithparamDataObj = new ParamWithparamData();
+                     XslIterateParamWithparamData paramWithparamDataObj = new XslIterateParamWithparamData();
                      paramWithparamDataObj.setNameVal(paramNameVal);
                      paramWithparamDataObj.setSelectVal(paramSelectXPath);
                      if (fParamList.contains(paramWithparamDataObj)) {
@@ -393,86 +352,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                      else {
                          fParamList.add(paramWithparamDataObj);    
                      }
-                  } 
-                  else if (elemTemplate instanceof ElemIterateNextIteration) {
-                      ElemIterateNextIteration elemIterateNextIteration = (ElemIterateNextIteration)elemTemplate;
-                      NodeList nextIterationChildNodes = elemIterateNextIteration.getChildNodes();
-                      for (int idx = 0; idx < nextIterationChildNodes.getLength(); idx++) {
-                          Node nextIterChild = nextIterationChildNodes.item(idx);
-                          if (nextIterChild instanceof ElemWithParam) {
-                              ElemWithParam withParamElem = (ElemWithParam)nextIterChild;
-                              QName withParamNameVal = withParamElem.getName();
-                              XPath withParamSelectXPath = withParamElem.getSelect();                              
-                              ParamWithparamData paramWithparamDataObj = new ParamWithparamData();
-                              paramWithparamDataObj.setNameVal(withParamNameVal);
-                              paramWithparamDataObj.setSelectVal(withParamSelectXPath);
-                              if (fWithparamList.contains(paramWithparamDataObj)) {
-                                 throw new TransformerException("XTSE0670 : duplicate xsl:with-param parameter name '" + withParamNameVal + 
-                                                                                                                      "'", xctxt.getSAXLocator());   
-                              }
-                              else {
-                                 fWithparamList.add(paramWithparamDataObj);  
-                              }
-                          }
-                      }
-                  }                  
+                  }                                    
               }
-              
-              if (fParamList.size() != fWithparamList.size()) {
-                  throw new TransformerException("XTSE0580 : within xsl:iterate, the number of xsl:param elements are not equal to "
-                                                                 + "number of xsl:next-iteration's xsl:with-param elements.", xctxt.getSAXLocator());     
-              }
-              else {
-                 for (int idx = 0; idx < fParamList.size(); idx ++) {
-                     ParamWithparamData paramData = fParamList.get(idx);
-                     ParamWithparamData withParamData = fWithparamList.get(idx);
-                     if (!(paramData.getNameVal()).equals(withParamData.getNameVal())) {
-                         throw new TransformerException("XTSE3130 : within xsl:iterate, xsl:param and xsl:with-param names at position " + 
-                                                                                                (idx + 1) + " are not same.", xctxt.getSAXLocator());        
-                     }
-                 }
-              }
-          }
-          
-      }
-      
-      /*
-       * An object of this class, stores information about, one xsl:param 
-       * element or one xsl:next-iteration->xsl:with-param element, for a 
-       * particular xsl:iterate instruction. 
-       */
-      class ParamWithparamData {
-          
-          public QName nameVal;
-          
-          public XPath selectVal;
-
-          public QName getNameVal() {
-              return nameVal;
-          }
-
-          public void setNameVal(QName nameVal) {
-              this.nameVal = nameVal;
-          }
-
-          public XPath getSelectVal() {
-              return selectVal;
-          }
-
-          public void setSelectVal(XPath selectVal) {
-              this.selectVal = selectVal;
-          }
-          
-          @Override
-          public boolean equals(Object obj) {
-              if (this == obj) {
-                  return true;
-              }
-              if (obj == null || getClass() != obj.getClass()) {
-                  return false;
-              }
-              ParamWithparamData paramWithparamData = (ParamWithparamData)obj;
-              return nameVal.equals(paramWithparamData.getNameVal());
           }
           
       }

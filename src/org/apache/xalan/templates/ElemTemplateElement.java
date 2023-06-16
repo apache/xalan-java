@@ -1680,5 +1680,61 @@ public class ElemTemplateElement extends UnImplNode
   public void setGroupNodesDtmHandles(List<Integer> groupNodesDtmHandles) {
       this.fGroupNodesDtmHandles = groupNodesDtmHandles;
   }
+  
+  /*
+   * Method to determine whether, an XSLT instruction is in a sequence constructor's tail position.
+   * 
+   * The XSLT 3.0 spec, provides following definition to determine, whether an XSLT instruction
+   * is in the tail position within an XSLT sequence constructor,
+   * 
+   * An instruction J is in a tail position within a sequence constructor SC if it satisfies 
+   * one of the following conditions:
+     1) J is the last instruction in SC, ignoring any xsl:fallback instructions.
+     2) J is in a tail position within the sequence constructor that forms the body of an xsl:if instruction that 
+        is itself in a tail position within SC.
+     3) J is in a tail position within the sequence constructor that forms the body of an xsl:when or xsl:otherwise 
+        branch of an xsl:choose instruction that is itself in a tail position within SC.
+     4) J is in a tail position within the sequence constructor that forms the body of an xsl:try instruction that 
+        is itself in a tail position within SC (that is, it is immediately followed by an xsl:catch element, ignoring 
+        any xsl:fallback elements).
+     5) J is in a tail position within the sequence constructor that forms the body of an xsl:catch element within 
+        an xsl:try instruction that is itself in a tail position within SC.
+        
+     Notes : Presently, we check only points 1), 2) and 3) as mentioned within previous definition above (excluding 
+             checking the constraints, specified for xsl:fallback instruction).
+             
+     @param  xslInstr    the XSLT instruction for which we need to find, whether its in a tail position of an XSLT 
+                         sequence constructor.                         
+                          
+   */
+  protected boolean isXslInstructionInTailPositionOfSequenceConstructor(ElemTemplateElement xslInstr) {
+      
+      boolean isXslInstructionInTailPositionOfSequenceConstructor = true;
+      
+      ElemTemplateElement elemTemplateElementNextSubling = xslInstr.m_nextSibling;
+      
+      if (elemTemplateElementNextSubling == null) {
+         ElemTemplateElement xslInstrParentElement = xslInstr.m_parentNode;
+          
+         if (xslInstrParentElement instanceof ElemIf) {
+            isXslInstructionInTailPositionOfSequenceConstructor = isXslInstructionInTailPositionOfSequenceConstructor(
+                                                                                             xslInstrParentElement); 
+         }
+         else if ((xslInstrParentElement instanceof ElemWhen) || (xslInstrParentElement 
+                                                                                   instanceof ElemOtherwise)) {
+             xslInstrParentElement = xslInstrParentElement.m_parentNode;
+             isXslInstructionInTailPositionOfSequenceConstructor = isXslInstructionInTailPositionOfSequenceConstructor(
+                                                                                                      xslInstrParentElement);
+         }
+      }
+      else {
+          if (!((elemTemplateElementNextSubling instanceof ElemIterateNextIteration) && 
+                                                                      (elemTemplateElementNextSubling.m_nextSibling == null))) {
+              isXslInstructionInTailPositionOfSequenceConstructor = false;   
+          }
+      }
+      
+      return isXslInstructionInTailPositionOfSequenceConstructor;
+  }
 
 }

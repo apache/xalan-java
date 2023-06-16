@@ -29,7 +29,7 @@
           </xsl:otherwise>
         </xsl:choose>
         <xsl:next-iteration>
-	   <xsl:with-param name="basketCost" select="$basketCost + PRICE"/>
+	       <xsl:with-param name="basketCost" select="$basketCost + PRICE"/>
         </xsl:next-iteration>
       </xsl:iterate>
     </out>
