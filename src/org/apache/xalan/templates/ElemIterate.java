@@ -314,9 +314,9 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
               }
           }
           
-          // get index of specific item's first occurrence with the list object 'xslElemNamesList'.
-          // if a particular kind of XSLT stylesheet item that is checked is not present within the 
-          // list object 'xslElemNamesList', its index is returned as -1.
+          // get index of specific XSLT stylesheet elements first occurrence with the list object 
+          // 'xslElemNamesList'. if a particular kind of XSLT stylesheet element that is checked is 
+          // not present within the list object 'xslElemNamesList', its index is returned as -1.
           int paramIdx = xslElemNamesList.indexOf(Constants.ELEMNAME_PARAMVARIABLE_STRING);
           int onCompletionIdx = xslElemNamesList.indexOf(Constants.ELEMNAME_ITERATE_ONCOMPLETION_STRING);          
           int otherElemIdx = xslElemNamesList.indexOf(OTHER_ELEM);
