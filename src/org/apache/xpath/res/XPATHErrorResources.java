@@ -368,6 +368,8 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   public static final String ER_INVALID_REGEX_FLAGS = "ER_INVALID_REGEX_FLAGS";
   
   public static final String ER_INVALID_REGEX = "ER_INVALID_REGEX";
+  
+  public static final String ER_EQ_OPERAND_CARDINALITY_ERROR = "ER_EQ_OPERAND_CARDINALITY_ERROR";
 
   // Error messages...
 
@@ -858,8 +860,11 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   
   { ER_INVALID_REGEX,
        "FORX0002: Invalid regular expression syntax used, with function call {0}."},
+  
+  { ER_EQ_OPERAND_CARDINALITY_ERROR,
+       "XPTY0004 : none of the eq's operands can be a sequence with length greater than one."},
 
-  //END:  Definitions of error keys used  in exception messages of  JAXP 1.3 XPath API implementation
+  //END:  Definitions of error keys used  in exception messages of JAXP 1.3 XPath API implementation
 
   // Warnings...
 

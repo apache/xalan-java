@@ -627,11 +627,28 @@ public class OpCodes
   /** The end of the axes types.    */
   public static final int AXES_END_TYPES = 53;
   
-  /*
+  /**
    * For XPath 3.1 "to" range expressions.
+   * 
+   * @xsl.usage advanced
    */
   public static final int OP_TO = 54;
+  
+  /**
+   * For XPath 3.1 value comparison operator "eq".
+   * 
+   * @xsl.usage advanced
+   */
+  public static final int OP_VC_EQUALS = 55;
+  
+  /**
+   * For XPath 3.1 value comparison operator "ne".
+   * 
+   * @xsl.usage advanced
+   */
+  public static final int OP_VC_NOT_EQUALS = 56;
 
-  /** The next free ID.  Please keep this up to date.  */
-  private static final int NEXT_FREE_ID = 99;
+  /** The next free ID. Please keep this up to date. */
+  private static final int NEXT_FREE_ID = 57;
+  
 }

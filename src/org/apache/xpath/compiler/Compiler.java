@@ -58,6 +58,8 @@ import org.apache.xpath.operations.Plus;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.UnaryOperation;
 import org.apache.xpath.operations.Variable;
+import org.apache.xpath.operations.VcEquals;
+import org.apache.xpath.operations.VcNotEquals;
 import org.apache.xpath.patterns.FunctionPattern;
 import org.apache.xpath.patterns.NodeTest;
 import org.apache.xpath.patterns.StepPattern;
@@ -131,6 +133,10 @@ public class Compiler extends OpMap
       expr = notequals(opPos); break;
     case OpCodes.OP_EQUALS :
       expr = equals(opPos); break;
+    case OpCodes.OP_VC_EQUALS :
+      expr = vcEquals(opPos); break;
+    case OpCodes.OP_VC_NOT_EQUALS :
+      expr = vcNotEquals(opPos); break;
     case OpCodes.OP_LTE :
       expr = lte(opPos); break;
     case OpCodes.OP_LT :
@@ -296,6 +302,22 @@ public class Compiler extends OpMap
   protected Expression equals(int opPos) throws TransformerException
   {
     return compileOperation(new Equals(), opPos);
+  }
+  
+  /**
+   * Compile an 'eq' operation. 
+   */
+  protected Expression vcEquals(int opPos) throws TransformerException
+  {
+    return compileOperation(new VcEquals(), opPos);
+  }
+  
+  /**
+   * Compile an 'ne' operation. 
+   */
+  protected Expression vcNotEquals(int opPos) throws TransformerException
+  {
+    return compileOperation(new VcNotEquals(), opPos);
   }
 
   /**

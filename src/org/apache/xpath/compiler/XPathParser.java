@@ -896,6 +896,34 @@ public class XPathParser
           m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
         addPos += 2;
       }
+      else if (tokenIs("eq"))
+      {
+        // support for XPath 3.1 value comparison operator "eq"
+          
+        nextToken();
+        insertOp(addPos, 2, OpCodes.OP_VC_EQUALS);
+
+        int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
+
+        addPos = EqualityExpr(addPos);
+        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+          m_ops.getOp(addPos + op1 + 1) + op1);
+        addPos += 2;
+      }
+      else if (tokenIs("ne"))
+      {
+        // support for XPath 3.1 value comparison operator "ne"
+          
+        nextToken();
+        insertOp(addPos, 2, OpCodes.OP_VC_NOT_EQUALS);
+
+        int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
+
+        addPos = EqualityExpr(addPos);
+        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+          m_ops.getOp(addPos + op1 + 1) + op1);
+        addPos += 2;
+      }
     }
 
     return addPos;
