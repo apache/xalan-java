@@ -27,6 +27,7 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.XPathContext;
@@ -54,7 +55,8 @@ import org.w3c.dom.traversal.NodeIterator;
  */
 public class XObject extends Expression implements Serializable, Cloneable
 {
-    static final long serialVersionUID = -821887098985662951L;
+  
+  static final long serialVersionUID = -821887098985662951L;
 
   /**
    * The java object which this object wraps.
@@ -639,7 +641,6 @@ public class XObject extends Expression implements Serializable, Cloneable
    */
   public boolean equals(XObject obj2)
   {
-
     if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
        return ((XSDecimal)this).equals((XSDecimal)obj2);        
     }
@@ -672,6 +673,83 @@ public class XObject extends Expression implements Serializable, Cloneable
     else {
        return obj2.m_obj == null;
     }    
+  }
+  
+  /**
+   * Tell if two objects are functionally equal, using the rules 
+   * of value comparison operator "eq".
+   *
+   * @param obj2                Object to compare this to
+   * @param expressionOwner     this object is used, for error reporting 
+   *
+   * @return True if this object is equal to the given object
+   *
+   * @throws javax.xml.transform.TransformerException
+   * 
+   * Notes : Currently, we don't implement following XPath 3.1 spec definitions for
+   *         value comparison operator "eq",
+   *         1) XPath 3.1 spec, requires atomizing the operands of XPath operator "eq",
+   *            before applying operator "eq" to the operands.
+   *         2) If any of the operands of operator "eq", after atomization is an empty
+   *            sequence, the result of operation "eq" should be an empty sequence. 
+   *            Instead, we return the result as false for such cases.  
+   */
+  public boolean vcEquals(XObject obj2, ExpressionNode expressionOwner) 
+                                                               throws javax.xml.transform.TransformerException
+  {
+    if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
+       return ((XSDecimal)this).equals((XSDecimal)obj2);        
+    }
+    else if ((this instanceof XSFloat) && (obj2 instanceof XSFloat)) {
+       return ((XSFloat)this).equals((XSFloat)obj2);        
+    }
+    else if ((this instanceof XSDouble) && (obj2 instanceof XSDouble)) {
+       return ((XSDouble)this).equals((XSDouble)obj2);        
+    }
+    else if ((this instanceof XSBoolean) && (obj2 instanceof XSBoolean)) {
+       return ((XSBoolean)this).equals((XSBoolean)obj2);    
+    }
+    else if ((this instanceof XSInteger) && (obj2 instanceof XSInteger)) {
+       return ((XSInteger)this).equals((XSInteger)obj2);    
+    }
+    else if ((this instanceof XSLong) && (obj2 instanceof XSLong)) {
+       return ((XSLong)this).equals((XSLong)obj2);    
+    }
+    else if ((this instanceof XSInt) && (obj2 instanceof XSInt)) {
+       return ((XSInt)this).equals((XSInt)obj2);    
+    }
+    
+    boolean isOperandNodeSet1 = false;
+    boolean isOperandNodeSet2 = false;
+    
+    if (this.getType() == XObject.CLASS_NODESET) {       
+       isOperandNodeSet1 = true;
+       if ((((XNodeSet)this).getLength() > 1)) {
+           error(XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
+       }
+    }
+    
+    if (obj2.getType() == XObject.CLASS_NODESET) {
+       isOperandNodeSet2 = true; 
+       if ((((XNodeSet)obj2).getLength() > 1)) {
+           error(XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
+       }
+    }
+    
+    if (isOperandNodeSet1 || this instanceof XNumber) {
+        return this.equals(obj2);    
+    }    
+    else if (isOperandNodeSet2 || obj2 instanceof XNumber) {
+        return obj2.equals(this);    
+    }
+
+    if (m_obj != null) {
+        return m_obj.equals(obj2.m_obj);
+    }
+    else {
+        return obj2.m_obj == null;
+    }
+    
   }
 
   /**
@@ -733,6 +811,14 @@ public class XObject extends Expression implements Serializable, Cloneable
     {
       throw new XPathException(fmsg, this);
     }
+  }
+  
+  protected void error(String msg, Object[] args, ExpressionNode expressionOwner)
+          throws javax.xml.transform.TransformerException
+  {
+      String fmsg = XSLMessages.createXPATHMessage(msg, args);
+      
+      throw new XPathException(fmsg, expressionOwner);
   }
   
   
