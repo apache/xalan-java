@@ -190,5 +190,15 @@ public class XslIterateTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslIterateTest15() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }

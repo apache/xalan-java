@@ -59,6 +59,7 @@ import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.UnaryOperation;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.operations.VcEquals;
+import org.apache.xpath.operations.VcLt;
 import org.apache.xpath.operations.VcNotEquals;
 import org.apache.xpath.patterns.FunctionPattern;
 import org.apache.xpath.patterns.NodeTest;
@@ -137,6 +138,8 @@ public class Compiler extends OpMap
       expr = vcEquals(opPos); break;
     case OpCodes.OP_VC_NOT_EQUALS :
       expr = vcNotEquals(opPos); break;
+    case OpCodes.OP_VC_LT :
+      expr = vcLt(opPos); break;
     case OpCodes.OP_LTE :
       expr = lte(opPos); break;
     case OpCodes.OP_LT :
@@ -305,7 +308,7 @@ public class Compiler extends OpMap
   }
   
   /**
-   * Compile an 'eq' operation. 
+   * Compile an XPath 3.1 value comparison 'eq' operation. 
    */
   protected Expression vcEquals(int opPos) throws TransformerException
   {
@@ -313,7 +316,7 @@ public class Compiler extends OpMap
   }
   
   /**
-   * Compile an 'ne' operation. 
+   * Compile an XPath 3.1 value comparison 'ne' operation. 
    */
   protected Expression vcNotEquals(int opPos) throws TransformerException
   {
@@ -346,6 +349,15 @@ public class Compiler extends OpMap
   protected Expression lt(int opPos) throws TransformerException
   {
     return compileOperation(new Lt(), opPos);
+  }
+  
+  /**
+   * Compile an XPath 3.1 value comparison 'lt' operation.
+   *  
+   */
+  protected Expression vcLt(int opPos) throws TransformerException
+  {
+    return compileOperation(new VcLt(), opPos);
   }
 
   /**

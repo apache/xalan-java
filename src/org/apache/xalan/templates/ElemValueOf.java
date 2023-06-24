@@ -293,16 +293,21 @@ public class ElemValueOf extends ElemTemplateElement {
                   if (expr instanceof FuncExtFunction) {                      
                       XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn
                                                                                               (xctxt, expr);
-                      String strValue = null;
-                      
-                      if (evalResult instanceof XSAnyType) {
-                          strValue = ((XSAnyType)evalResult).stringValue();    
+                      if (evalResult != null) {
+                          String strValue = null;
+                          
+                          if (evalResult instanceof XSAnyType) {
+                              strValue = ((XSAnyType)evalResult).stringValue();    
+                          }
+                          else {
+                              strValue = evalResult.str();  
+                          }
+    
+                          (new XString(strValue)).dispatchCharactersEvents(rth);
                       }
                       else {
-                          strValue = evalResult.str();  
+                          expr.executeCharsToContentHandler(xctxt, rth);   
                       }
-
-                      (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
                   else if (expr instanceof Function) {
                       XObject evalResult = ((Function)expr).execute(xctxt);
@@ -364,8 +369,8 @@ public class ElemValueOf extends ElemTemplateElement {
     {
         throw new TransformerException(se);
     }
-    catch (RuntimeException re) {
-    	TransformerException te = new TransformerException(re);
+    catch (Exception ex) {
+    	TransformerException te = new TransformerException(ex);
     	te.setLocator(this);
     	throw te;
     }

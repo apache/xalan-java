@@ -851,6 +851,8 @@ public class XPathParser
    *
    * EqualityExpr  ::=  RelationalExpr
    * | EqualityExpr '=' RelationalExpr
+   * | EqualityExpr 'eq' RelationalExpr
+   * | EqualityExpr 'ne' RelationalExpr
    *
    *
    * @param addPos Position where expression is to be added, or -1 for append.
@@ -940,6 +942,10 @@ public class XPathParser
    * | RelationalExpr '<=' AdditiveExpr
    * | RelationalExpr '>=' AdditiveExpr
    * | RelationalExpr 'to' AdditiveExpr
+   * | RelationalExpr 'lt' AdditiveExpr
+   * | RelationalExpr 'le' AdditiveExpr
+   * | RelationalExpr 'gt' AdditiveExpr
+   * | RelationalExpr 'ge' AdditiveExpr
    *
    * @param addPos Position where expression is to be added, or -1 for append.
    *
@@ -1015,6 +1021,21 @@ public class XPathParser
           m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
             m_ops.getOp(addPos + op1 + 1) + op1);
           addPos += 2; 
+      }
+      else if (tokenIs("lt"))
+      {
+          // support for XPath 3.1 value comparison operator "lt"
+          
+          nextToken();
+        
+          insertOp(addPos, 2, OpCodes.OP_VC_LT);
+
+          int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
+
+          addPos = RelationalExpr(addPos);
+          m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+             m_ops.getOp(addPos + op1 + 1) + op1);
+          addPos += 2;
       }
     }
 

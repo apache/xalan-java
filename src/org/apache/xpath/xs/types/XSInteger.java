@@ -128,12 +128,24 @@ public class XSInteger extends XSDecimal {
 		_value = val;
 	}
 	
+	public boolean equals(XSInteger xsInteger) {
+        return _value.equals(xsInteger.intValue()); 
+    }
+	
+	public boolean lt(XSInteger xsInteger) {
+	    return (intValue()).compareTo(xsInteger.intValue()) < 0; 
+    }
+	
+	public boolean gt(XSInteger xsInteger) {
+	    return (intValue()).compareTo(xsInteger.intValue()) > 0; 
+    }
+	
 	/*
-	 * Do a datatype cast, of a generic typed XML Schema value,
-	 * to a java.math.BigInteger value. 
-	 */
-	private BigInteger castToInteger(XSAnyType xsAnyType) {
-	    
+     * Cast an object of type XSAnyType, to an object of type 
+     * java.math.BigInteger.  
+     */
+    private BigInteger castToInteger(XSAnyType xsAnyType) {
+        
         if (xsAnyType instanceof XSBoolean) {
             if ((xsAnyType.stringValue()).equals("true")) {
                 return BigInteger.ONE;
@@ -151,10 +163,6 @@ public class XSInteger extends XSDecimal {
         }
         
         return new BigInteger(xsAnyType.stringValue());
-    }
-	
-	public boolean equals(XSInteger xsInteger) {
-        return _value.equals(xsInteger.intValue()); 
     }
 
 }

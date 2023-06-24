@@ -103,6 +103,26 @@ public class XSBoolean extends XSCtrType {
         return _value == xsBoolean.value();  
     }
     
+    public boolean lt(XSBoolean xsBoolean) {
+        boolean resultVal = false;
+
+        if (!value() && xsBoolean.value()) {
+            resultVal = true;
+        }
+        
+        return resultVal;  
+    }
+    
+    public boolean gt(XSBoolean xsBoolean) {
+        boolean resultVal = false;
+
+        if (value() && !xsBoolean.value()) {
+            resultVal = true;
+        }
+        
+        return resultVal;  
+    }
+    
     /*
      * Check whether, a string value represents a boolean 
      * 'false' value.

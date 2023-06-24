@@ -22,8 +22,6 @@ package org.apache.xpath.functions;
 
 import java.util.Vector;
 
-import javax.xml.transform.SourceLocator;
-
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
@@ -54,7 +52,7 @@ public class FuncCurrentDateTime extends Function {
 
    private static final long serialVersionUID = -2032033071326423919L;
 
- /**
+   /**
    * Execute the function. The function must return a valid object.
    * 
    * @param xctxt The current execution context.
@@ -64,13 +62,10 @@ public class FuncCurrentDateTime extends Function {
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
-
-    SourceLocator srcLocator = xctxt.getSAXLocator();
     
-    XSDateTime currentDateTime = new XSDateTime(xctxt.getCurrentDateTime(), 
-                                                               xctxt.getTimezone());
+    XSDateTime xsDateTime = new XSDateTime(xctxt.getCurrentDateTime(), xctxt.getTimezone());
 
-    return (XObject)currentDateTime;
+    return (XObject)xsDateTime;
   }
 
   /**

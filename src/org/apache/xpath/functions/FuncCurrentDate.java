@@ -22,8 +22,6 @@ package org.apache.xpath.functions;
 
 import java.util.Vector;
 
-import javax.xml.transform.SourceLocator;
-
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
@@ -53,12 +51,11 @@ public class FuncCurrentDate extends Function {
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
-
-    SourceLocator srcLocator = xctxt.getSAXLocator();
     
-    XSDate currentDate = new XSDate(xctxt.getCurrentDateTime(), xctxt.getTimezone());
+    XSDate xsDate = new XSDate(xctxt.getCurrentDateTime(), xctxt.getTimezone());
+    xsDate.setPopulatedFromFnCurrentDate(true);
 
-    return (XObject)currentDate;
+    return (XObject)xsDate;
   }
 
   /**

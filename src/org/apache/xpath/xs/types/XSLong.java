@@ -96,5 +96,13 @@ public class XSLong extends XSInteger {
 	public boolean equals(XSLong xsLong) {
         return _value.equals(xsLong.intValue()); 
     }
+	
+	public boolean lt(XSLong xsLong) {
+	    return _value.compareTo(xsLong.intValue()) < 0; 
+    }
+	
+	public boolean gt(XSLong xsLong) {
+	    return _value.compareTo(xsLong.intValue()) > 0; 
+    }
 
 }

@@ -279,7 +279,7 @@ public class ElemVariable extends ElemTemplateElement
                                                                  throws TransformerException
   {
 
-    XObject var;
+    XObject var = null;
     
     final XPathContext xctxtOriginal = transformer.getXPathContext();
     
@@ -293,14 +293,18 @@ public class ElemVariable extends ElemTemplateElement
         if (selectExpression instanceof FuncExtFunction) {
             XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, 
                                                                                         selectExpression);
-            return evalResult;
+            if (evalResult != null) {
+                return evalResult;    
+            }
+            else {
+                var = m_selectPattern.execute(xctxt, sourceNode, this);    
+            }            
         }
         else if (selectExpression instanceof Function) {
             XObject evalResult = ((Function)selectExpression).execute(xctxt);            
             if ((evalResult instanceof ResultSequence) || 
-                                                (evalResult instanceof XSAnyType)) {
-                var = evalResult;
-                return var; 
+                                                (evalResult instanceof XSAnyType)) {                
+                return evalResult; 
             }
         }
         else if (selectExpression instanceof Operation) {
@@ -313,8 +317,10 @@ public class ElemVariable extends ElemTemplateElement
             
             return evalResult;
         }
-          
-        var = m_selectPattern.execute(xctxt, sourceNode, this);
+  
+        if (var == null) {
+           var = m_selectPattern.execute(xctxt, sourceNode, this);
+        }
 
         var.allowDetachToRelease(false);
 
