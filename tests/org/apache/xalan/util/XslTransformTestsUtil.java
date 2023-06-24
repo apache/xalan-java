@@ -19,6 +19,8 @@ package org.apache.xalan.util;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.OffsetDateTime;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -37,7 +39,7 @@ import org.xml.sax.InputSource;
 import junit.framework.Assert;
 
 /**
- * A class providing, common services to this junit test suite.
+ * A class providing, common services to this JUnit test suite.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -89,15 +91,41 @@ public class XslTransformTestsUtil {
                    // the test has passed
                    return;
                }
+               else {
+                   // the test has failed
+                   Assert.fail();  
+               }
            }
+           else {
+              byte[] goldFileBytes = Files.readAllBytes(Paths.get(goldFilePath));
            
-           byte[] goldFileBytes = Files.readAllBytes(Paths.get(goldFilePath));
-           
-           Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());          
+              Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
+           }
         }
         catch (Exception ex) {
             Assert.fail();    
         }
+     }
+    
+     public static Date getCurrentDate() {
+         Date currentDate = new Date();
+       
+         return currentDate;
+     }
+    
+     public static String getDefaultTimezoneOffsetStr() {
+         String timeZoneoffsetStr = null;
+        
+         String dateStr = (OffsetDateTime.now()).toString();
+         if (dateStr.endsWith("Z")) {
+             timeZoneoffsetStr = "Z";   
+         }
+         else {
+             int dateStrLength = dateStr.length();
+             timeZoneoffsetStr = dateStr.substring(dateStrLength - 6, dateStrLength); 
+         }
+        
+         return timeZoneoffsetStr;
      }
     
 }

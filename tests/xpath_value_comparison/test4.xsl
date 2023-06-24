@@ -4,7 +4,10 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_a.xml -->                 
+   <!-- use with test1_a.xml -->
+   
+   <!-- An XSLT stylesheet to test, implementation of XPath 3.1 value 
+        comparison operator 'ne'. -->                 
 
    <xsl:output method="xml" indent="yes"/>
 

@@ -36,16 +36,20 @@ public class XSTime extends XSCalendarType {
     private static final String XS_TIME = "xs:time";
     
     private Calendar _calendar;
+    
     private boolean _timezoned;
+    
     private XSDuration _tz;
     
     /**
      * Class constructor.
      * 
-     * Initializes this object, to the supplied time and timezone.
+     * Construct an XSTime object, with the provided time and timezone 
+     * values.
      * 
-     * @param cal   Calendar representation of the time to be stored
-     * @param tz    the timezone (possibly null) associated with this time
+     * @param cal   the java.util.Calendar representation of the time to be stored
+     * @param tz    the timezone (this could be possibly null) associated with this 
+     *              XSTime object.
      */
     public XSTime(Calendar cal, XSDuration tz) {
         _calendar = cal;
@@ -60,10 +64,12 @@ public class XSTime extends XSCalendarType {
     }
 
     /**
-     * Initialises to the current time
+     * Class constructor.
+     * 
+     * Construct an XSTime object, and initialize it to the current time.
      */
     public XSTime() {
-        this (new GregorianCalendar(TimeZone.getTimeZone("GMT")), null);
+        this (new GregorianCalendar(TimeZone.getDefault()), null);
     }
 
     @Override
@@ -75,7 +81,7 @@ public class XSTime extends XSCalendarType {
     /**
      * Get the datatype's name.
      * 
-     * @return   "time" which is the datatype's name
+     * @return   "time" which is this datatype's name
      */
     @Override
     public String typeName() {
@@ -85,7 +91,7 @@ public class XSTime extends XSCalendarType {
     /**
      * Get the datatype's full name.
      * 
-     * @return   "xs:time" which is the datatype's full name
+     * @return   "xs:time" which is this datatype's full name
      */
     @Override
     public String stringType() {
@@ -93,8 +99,8 @@ public class XSTime extends XSCalendarType {
     }
     
     /**
-     * Get a java.util.Calendar representation of time stored, 
-     * within this object.
+     * Get a java.util.Calendar representation of an time value stored, 
+     * within this XSTime object.
      * 
      * @return    Calendar representation of the time stored
      */
@@ -103,63 +109,59 @@ public class XSTime extends XSCalendarType {
     }
     
     /**
-     * Get the seconds stored as an integer, within this object.
+     * Get the seconds value as an integer stored within this 
+     * XSTime object.
      * 
-     * @return    the second stored
+     * @return    the seconds value stored
      */
     public double second() {
-        double s = _calendar.get(Calendar.SECOND);
-        double ms = _calendar.get(Calendar.MILLISECOND);
+        double secondVal = _calendar.get(Calendar.SECOND);
+        double millisecVal = _calendar.get(Calendar.MILLISECOND);
 
-        ms /= 1000;
-        s += ms;
+        millisecVal /= 1000;
+        secondVal += millisecVal;
         
-        return s;
+        return secondVal;
     }
     
     /**
-     * Check whether the time component stored within this object, 
-     * has a timezone associated with it.
+     * Check whether this XSTime object has an, timezone associated with it.
      * 
-     * @return    true if the time has a timezone associated. false otherwise.
+     * @return true    if there is a timezone associated with this XSTime object.
+     *                 false otherwise.
      */
-    public boolean timezoned() {
+    public boolean isXsTimeObjectTimezoned() {
         return _timezoned;
     }
 
-    /**
-     * Get a String representation of the time stored.
-     * 
-     * @return   String representation of the time stored
-     */
     @Override
     public String stringValue() {
         String returnVal = "";
         
-        Calendar adjustFortimezone = calendar();
-        returnVal += XSDateTime.pad_int(adjustFortimezone.get(Calendar.HOUR_OF_DAY), 2);
+        Calendar calendarVal = calendar();
+        returnVal += XSDateTime.padInt(calendarVal.get(Calendar.HOUR_OF_DAY), 2);
         
         returnVal += ":";
-        returnVal += XSDateTime.pad_int(adjustFortimezone.get(Calendar.MINUTE), 2);
+        returnVal += XSDateTime.padInt(calendarVal.get(Calendar.MINUTE), 2);
         
 
         returnVal += ":";
-        int isecond = (int) second();
-        double sec = second();
+        int intSec = (int) second();
+        double doubleSec = second();
 
-        if ((sec - (isecond)) == 0.0) {
-            returnVal += XSDateTime.pad_int(isecond, 2);
+        if ((doubleSec - intSec) == 0.0) {
+            returnVal += XSDateTime.padInt(intSec, 2);
         }
         else {
-            if (sec < 10.0) {
-               returnVal += "0" + sec;
+            if (doubleSec < 10.0) {
+               returnVal += "0" + doubleSec;
             }
             else {
-               returnVal += sec;
+               returnVal += doubleSec;
             }
         }
 
-        if (timezoned()) {
+        if (isXsTimeObjectTimezoned()) {
             int hrs = _tz.hours();
             int min = _tz.minutes();
             double secs = _tz.seconds();
@@ -167,18 +169,18 @@ public class XSTime extends XSCalendarType {
                returnVal += "Z";
             }
             else {
-               String tZoneStr = "";
+               String timezoneStr = "";
                if (_tz.negative()) {
-                  tZoneStr += "-";  
+                  timezoneStr += "-";  
                }
                else {
-                  tZoneStr += "+"; 
+                  timezoneStr += "+"; 
                }
-               tZoneStr += XSDateTime.pad_int(hrs, 2);  
-               tZoneStr += ":";
-               tZoneStr += XSDateTime.pad_int(min, 2);
+               timezoneStr += XSDateTime.padInt(hrs, 2);  
+               timezoneStr += ":";
+               timezoneStr += XSDateTime.padInt(min, 2);
               
-               returnVal += tZoneStr;
+               returnVal += timezoneStr;
             }
          }
 

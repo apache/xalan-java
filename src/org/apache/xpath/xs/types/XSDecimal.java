@@ -137,6 +137,14 @@ public class XSDecimal extends XSNumericType {
         return _value.equals(xsDecimal.getValue()); 
     }
     
+    public boolean lt(XSDecimal xsDecimal) {
+        return (_value.compareTo(xsDecimal.getValue()) == -1);
+    }
+    
+    public boolean gt(XSDecimal xsDecimal) {
+        return (_value.compareTo(xsDecimal.getValue()) == 1);
+    }
+    
     /*
      * Cast an object of type XSAnyType, to an object of type 
      * XSDecimal.  

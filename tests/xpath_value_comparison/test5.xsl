@@ -13,7 +13,11 @@
 
    <xsl:template match="/elem">
       <elem>
-        <result><xsl:value-of select="a[1] eq a"/></result>
+        <xsl:for-each select="*">
+           <xsl:if test="(position() mod 2) eq 0">
+              <item pos="{position()}"><xsl:copy-of select="."/></item>
+           </xsl:if>
+        </xsl:for-each>
       </elem>
    </xsl:template>
    

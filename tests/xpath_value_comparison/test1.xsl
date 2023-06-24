@@ -2,7 +2,10 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="3.0">
                 
-   <!-- Author: mukulg@apache.org -->                
+   <!-- Author: mukulg@apache.org -->
+   
+   <!-- An XSLT stylesheet to test, implementation of XPath 3.1 value 
+        comparison operator 'eq'. -->                
 
    <xsl:output method="xml" indent="yes"/>
 

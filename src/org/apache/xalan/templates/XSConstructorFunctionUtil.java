@@ -27,6 +27,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.xs.types.XSBoolean;
+import org.apache.xpath.xs.types.XSDate;
 import org.apache.xpath.xs.types.XSDecimal;
 import org.apache.xpath.xs.types.XSDouble;
 import org.apache.xpath.xs.types.XSFloat;
@@ -37,7 +38,8 @@ import org.xml.sax.SAXException;
 
 /**
  * An utility class, to support evaluations of XPath 3.1 constructor 
- * functions, and few other XPath expression evaluations.
+ * functions (ref, https://www.w3.org/TR/xpath-functions-31/#constructor-functions), 
+ * and few other XPath expression evaluations.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -58,6 +60,7 @@ public class XSConstructorFunctionUtil {
             if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcExtFunction.getNamespace())) {
                 // evaluate XPath 3.1 constructor function calls, corresponding to XML Schema 
                 // built-in types.
+                
                 if ((Keywords.FUNC_XS_DECIMAL).equals(funcExtFunction.getFunctionName())) {                              
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
@@ -127,6 +130,16 @@ public class XSConstructorFunctionUtil {
                     }
 
                     ResultSequence rSeq = (new XSBoolean()).constructor(argSequence);
+                    evalResult = rSeq.item(0);              
+                }
+                else if ((Keywords.FUNC_XS_DATE).equals(funcExtFunction.getFunctionName())) {                              
+                    ResultSequence argSequence = new ResultSequence();
+                    for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+                        XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+                        argSequence.add(XSDate.parseDate(argVal.str()));
+                    }
+
+                    ResultSequence rSeq = (new XSDate()).constructor(argSequence); 
                     evalResult = rSeq.item(0);              
                 }
             }

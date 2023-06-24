@@ -98,4 +98,12 @@ public class XSInt extends XSLong {
         return _value.equals(xsInt.intValue()); 
     }
 	
+	public boolean lt(XSInt xsInt) {
+	    return _value.compareTo(xsInt.intValue()) < 0; 
+    }
+	
+	public boolean gt(XSInt xsInt) {
+	    return _value.compareTo(xsInt.intValue()) > 0; 
+    }
+	
 }

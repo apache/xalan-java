@@ -40,14 +40,16 @@ public class XSDateTime extends XSCalendarType {
     private static final String XS_DATE_TIME = "xs:dateTime";
     
     private Calendar _calendar;
+    
     private boolean _timezoned;
+    
     private XSDuration _tz;
     
     /**
      * Class constructor.
      * 
-     * Creates a new 'XSDateTime' instance, corresponding to the supplied 
-     * date and time.
+     * Creates a new XSDateTime object instance, corresponding to the provided 
+     * date, time and timezone.
      * 
      * @param cal     the java.util.Calendar representation of the date and 
      *                time to be stored
@@ -92,6 +94,14 @@ public class XSDateTime extends XSCalendarType {
         // TO DO
         return null;
     }
+    
+    public Calendar getCalendar() {
+        return _calendar;
+    }
+    
+    public XSDuration getTimezone() {
+        return _tz;
+    }
 
     @Override
     public String typeName() {
@@ -99,13 +109,13 @@ public class XSDateTime extends XSCalendarType {
     }
     
     /**
-     * Check to see if a character is numeric.
+     * Method to check, whether the provided character is numeric.
      * 
-     * @param x    character to be tested
+     * @param x    the character for which, this check is done
      * 
      * @return     true if the character is numeric. false otherwise.
      */
-    public static boolean is_digit(char x) {
+    public static boolean isDigit(char x) {
         if ('0' <= x && x <= '9') {
            return true;
         }
@@ -117,27 +127,29 @@ public class XSDateTime extends XSCalendarType {
      * Parse a string representation of a date and time, and retrieve the year,
      * month and day components from this string.
      * 
-     * @param  str    the String representation of the date (with optional timezone)
+     * @param  strVal    the string representation of the date (with an optional  
+     *                   timezone value)
      * 
-     * @return        an integer array of size 3. first element is the year, second 
-     *                element is the month, and third element is the day.
+     * @return           an integer array of size 3. first element of this array is the year, 
+     *                   second element is the month, and third element is the day.
      */
-    public static int[] parse_date(String str) {
+    public static int[] parseDate(String strVal) {
+        
+        int[] returnVal = new int[3];
+        
         int state = 0;
 
-        int[] ret = new int[3];
-
-        for (int i = 0; i < ret.length; i++) {
-            ret[i] = 0;
+        for (int i = 0; i < returnVal.length; i++) {
+            returnVal[i] = 0;
         }
 
         String token = "";
-        for (int i = 0; i < str.length(); i++) {
-            char x = str.charAt(i);
+        for (int i = 0; i < strVal.length(); i++) {
+            char x = strVal.charAt(i);
 
             switch (state) {
             case 0:
-                if (is_digit(x)) {
+                if (isDigit(x)) {
                     token += x;
                 } else if (x == '-') {
                     token += x;
@@ -167,11 +179,11 @@ public class XSDateTime extends XSCalendarType {
                         return null;
                     }
 
-                    ret[0] = Integer.parseInt(token);
+                    returnVal[0] = Integer.parseInt(token);
                     token = "";
                     state = 2;
                 } 
-                else if (is_digit(x)) {
+                else if (isDigit(x)) {
                     token += x;
                 }
                 else {
@@ -184,10 +196,10 @@ public class XSDateTime extends XSCalendarType {
                         return null;
                     }
 
-                    ret[1] = Integer.parseInt(token);
+                    returnVal[1] = Integer.parseInt(token);
                     token = "";
                     state = 3;
-                } else if (is_digit(x)) {
+                } else if (isDigit(x)) {
                     token += x;
                 }
                 else {
@@ -195,7 +207,7 @@ public class XSDateTime extends XSCalendarType {
                 }
                 break;
             case 3:
-                if (is_digit(x)) {
+                if (isDigit(x)) {
                     token += x;
                 }
                 else {
@@ -203,7 +215,7 @@ public class XSDateTime extends XSCalendarType {
                 }
                 break;
             default:
-                return ret;
+                return returnVal;
             }
         }
         
@@ -215,29 +227,31 @@ public class XSDateTime extends XSCalendarType {
             return null;
         }
 
-        ret[2] = Integer.parseInt(token);
+        returnVal[2] = Integer.parseInt(token);
 
-        return ret;
+        return returnVal;
     }
     
     /**
      * Parse a string representation of a date and time, and retrieve the hour,
-     * minute and seconds components from this string.
+     * minute and second components from this string.
      * 
-     * @param   str    the String representation of the date (with optional timezone)
+     * @param   strVal    the string representation of the date (with an optional 
+     *                    timezone value)
      * 
-     * @return         an integer array of size 3. first element is the hour, second 
-     *                 element is the minute, and third element is the seconds.
+     * @return            an integer array of size 3. first element is the hour, second 
+     *                    element is the minute, and third element is the seconds.
      */
-    public static double[] parse_time(String str) {
-        int state = 0; 
-
-        double[] ret = new double[3];
+    public static double[] parseTime(String strVal) {
+        
+        double[] returnVal = new double[3];
+        
+        int state = 0;
 
         String token = "";
 
-        for (int i = 0; i < str.length(); i++) {
-            char x = str.charAt(i);
+        for (int i = 0; i < strVal.length(); i++) {
+            char x = strVal.charAt(i);
 
             switch (state) {
             case 0:
@@ -246,10 +260,10 @@ public class XSDateTime extends XSCalendarType {
                     if (token.length() != 2) {
                         return null;
                     }
-                    ret[state] = Integer.parseInt(token);
+                    returnVal[state] = Integer.parseInt(token);
                     state++;
                     token = "";
-                } else if (is_digit(x)) {
+                } else if (isDigit(x)) {
                     token += x;
                 }
                 else {
@@ -257,7 +271,7 @@ public class XSDateTime extends XSCalendarType {
                 }
                 break;
             case 2:
-                if (is_digit(x)) {
+                if (isDigit(x)) {
                     token += x;
                     if (token.length() > 2) {
                         return null;
@@ -270,7 +284,7 @@ public class XSDateTime extends XSCalendarType {
                 }
                 break;
             case 3:
-                if (is_digit(x)) {
+                if (isDigit(x)) {
                     token += x;
                 }
                 else {
@@ -290,172 +304,179 @@ public class XSDateTime extends XSCalendarType {
             return null;
         }
 
-        ret[2] = Double.parseDouble(token);
+        returnVal[2] = Double.parseDouble(token);
 
-        if (ret[0] == 24.0) {
-            ret[0] = 00.0;
+        if (returnVal[0] == 24.0) {
+            returnVal[0] = 00.0;
         }
 
-        return ret;
+        return returnVal;
     }
     
     /**
-     * Parse a String representation of a date and time, and retrieve the
+     * Parse a string representation of a date and time, and retrieve the
      * timezone component from this string.
      * 
-     * @param  str   the String representation of the date (with optional timezone)
+     * @param  strVal   the string representation of the date (with an optional 
+     *                  timezone value)
      * 
-     * @return       an integer array of size 3. first element represents whether the
-     *               timezone is ahead or behind GMT, second element is the hour
-     *               displacement, and third element is the minute displacement.
+     * @return          an integer array of size 3. first element represents whether the
+     *                  timezone is ahead or behind GMT, second element is the hour
+     *                  displacement, and third element is the minute displacement.
      */
-    public static int[] parse_timezone(String str) {
-        int[] ret = new int[3];
+    public static int[] parseTimezone(String strVal) {
+        
+        int[] returnVal = new int[3];
 
-        for (int i = 0; i < ret.length; i++) {
-            ret[i] = 0;
+        for (int i = 0; i < returnVal.length; i++) {
+            returnVal[i] = 0;
         }
         
-        ret[0] = 1;
+        returnVal[0] = 1;
 
-        if (str.equals("Z")) {
-            return ret;
+        if (strVal.equals("Z")) {
+            return returnVal;
         }
 
-        if (str.startsWith("+")) {
-            ret[0] = 1;
+        if (strVal.startsWith("+")) {
+            returnVal[0] = 1;
         }
-        else if (str.startsWith("-")) {
-            ret[0] = -1;
+        else if (strVal.startsWith("-")) {
+            returnVal[0] = -1;
         }
         else {
             return null;
         }
 
-        str = str.substring(1, str.length());
+        strVal = strVal.substring(1, strVal.length());
 
-        if (str.length() != (2 + 1 + 2)) {
+        if (strVal.length() != (2 + 1 + 2)) {
             return null;
         }
 
         try {
-            ret[1] = Integer.parseInt(str.substring(0, 2));
-            ret[2] = Integer.parseInt(str.substring(3, 5));
+            returnVal[1] = Integer.parseInt(strVal.substring(0, 2));
+            returnVal[2] = Integer.parseInt(strVal.substring(3, 5));
 
-            if (ret[1] > 14) {
+            if (returnVal[1] > 14) {
                 return null;
             }
             
-            if (ret[2] > 59) {
+            if (returnVal[2] > 59) {
                 return null;
             }
 
-            return ret;
+            return returnVal;
         } catch (NumberFormatException ex) {
             return null;
         }
     }
     
     /**
-     * Parse a String representation of a date and time, and construct a new
+     * Parse a string representation of a date and time, and construct a new
      * XSDateTime object using that information.
      * 
-     * @param str    the String representation of the date (with optional timezone)
+     * @param strVal    the string representation of the date (with an optional 
+     *                  timezone value)
      * 
-     * @return       the XSDateTime representation of the date and time (with optional
-     *               timezone)
+     * @return          the XSDateTime representation of the date and time (with an 
+     *                  optional timezone value)
      */
-    public static XSDateTime parseDateTime(String str) {
+    public static XSDateTime parseDateTime(String strVal) {
+        
+        XSDateTime xsDateTime = null;
 
-        int index = str.indexOf('T');
-        if (index == -1) {
+        int idx = strVal.indexOf('T');
+        if (idx == -1) {
             return null;
         }
 
-        String date = str.substring(0, index);
-        String time = str.substring(index + 1, str.length());
+        String date = strVal.substring(0, idx);
+        String time = strVal.substring(idx + 1, strVal.length());
         String timezone = null;
 
-        index = time.indexOf('+');
-        if (index == -1) {
-            index = time.indexOf('-');
+        idx = time.indexOf('+');
+        if (idx == -1) {
+            idx = time.indexOf('-');
         }
-        if (index == -1) {
-            index = time.indexOf('Z');
+        if (idx == -1) {
+            idx = time.indexOf('Z');
         }
-        if (index != -1) {
-            timezone = time.substring(index, time.length());
-            time = time.substring(0, index);
+        if (idx != -1) {
+            timezone = time.substring(idx, time.length());
+            time = time.substring(0, idx);
         }
 
-        int d[] = parse_date(date);
+        int d[] = parseDate(date);
         if (d == null) {
             return null;
         }
 
-        TimeZone UTC = TimeZone.getTimeZone("UTC");
-        GregorianCalendar cal = new GregorianCalendar(UTC);
+        TimeZone defaultTimezone = TimeZone.getDefault();
+        GregorianCalendar gregorianCalendarObj = new GregorianCalendar(
+                                                                 defaultTimezone);
 
         int year = d[0];
         if (year < 0) {
             year *= -1;
-            cal.set(Calendar.ERA, GregorianCalendar.BC);
+            gregorianCalendarObj.set(Calendar.ERA, GregorianCalendar.BC);
         } else {
-            cal.set(Calendar.ERA, GregorianCalendar.AD);
+            gregorianCalendarObj.set(Calendar.ERA, GregorianCalendar.AD);
         }
 
-        cal.set(Calendar.DAY_OF_MONTH, 2);
-        cal.set(Calendar.MONTH, 2);
+        gregorianCalendarObj.set(Calendar.DAY_OF_MONTH, 2);
+        gregorianCalendarObj.set(Calendar.MONTH, 2);
 
-        if (!set_item(cal, Calendar.YEAR, year)) {
+        if (!setItem(gregorianCalendarObj, Calendar.YEAR, year)) {
             return null;
         }
 
-        if (!set_item(cal, Calendar.MONTH, d[1] - 1)) {
+        if (!setItem(gregorianCalendarObj, Calendar.MONTH, d[1] - 1)) {
             return null;
         }
 
-        if (!set_item(cal, Calendar.DAY_OF_MONTH, d[2])) {
+        if (!setItem(gregorianCalendarObj, Calendar.DAY_OF_MONTH, d[2])) {
             return null;
         }
 
-        double t[] = parse_time(time);
+        double t[] = parseTime(time);
         if (t == null) {
             return null;
         }
 
-        if (!set_item(cal, Calendar.HOUR_OF_DAY, (int) t[0])) {
+        if (!setItem(gregorianCalendarObj, Calendar.HOUR_OF_DAY, (int) t[0])) {
             return null;
         }
 
-        if (!set_item(cal, Calendar.MINUTE, (int) t[1])) {
+        if (!setItem(gregorianCalendarObj, Calendar.MINUTE, (int) t[1])) {
             return null;
         }
 
-        if (!set_item(cal, Calendar.SECOND, (int) t[2])) {
+        if (!setItem(gregorianCalendarObj, Calendar.SECOND, (int) t[2])) {
             return null;
         }
 
         double ms = t[2] - ((int) t[2]);
         ms *= 1000;
-        if (!set_item(cal, Calendar.MILLISECOND, (int) ms)) {
+        if (!setItem(gregorianCalendarObj, Calendar.MILLISECOND, (int) ms)) {
             return null;
         }
 
         int tz[] = null;
-        XSDuration tzd = null;
+        XSDuration timezoneVal = null;
         if (timezone != null) {
-            tz = parse_timezone(timezone);
+            tz = parseTimezone(timezone);
 
             if (tz == null) {
                 return null;
             }
 
-            tzd = new XSDayTimeDuration(0, tz[1], tz[2], 0.0, tz[0] < 0);
-
+            timezoneVal = new XSDayTimeDuration(0, tz[1], tz[2], 0.0, tz[0] < 0);
         }
+        
+        xsDateTime = new XSDateTime(gregorianCalendarObj, timezoneVal); 
 
-        return new XSDateTime(cal, tzd);
+        return xsDateTime;
     }
 
     @Override
@@ -463,47 +484,53 @@ public class XSDateTime extends XSCalendarType {
         return XS_DATE_TIME;
     }
     
-    public Calendar calendar() {
-        return _calendar;
-    }
-    
-    public static String pad_int(int num, int len) {
-        String ret = "";
-        String snum = "" + num;
+    public static String padInt(int num, int len) {        
+        String returnVal = "";
+        
+        String numStr = "" + num;
 
-        int pad = len - snum.length();
+        int pad = len - numStr.length();
 
-        // sort out the negative
         if (num < 0) {
-            ret += "-";
-            snum = snum.substring(1, snum.length());
+            returnVal += "-";
+            numStr = numStr.substring(1, numStr.length());
             pad++;
         }
 
-        StringBuffer buf = new StringBuffer(ret);
+        StringBuffer strBuf = new StringBuffer(returnVal);
+        
         for (int i = 0; i < pad; i++) {
-            buf.append("0");
+            strBuf.append("0");
         }
-        buf.append(snum);
-        ret = buf.toString();
-        return ret;
+        
+        strBuf.append(numStr);
+        
+        returnVal = strBuf.toString();
+        
+        return returnVal;
     }
     
     public double second() {
-        double s = _calendar.get(Calendar.SECOND);
-        double ms = _calendar.get(Calendar.MILLISECOND);
+        double secondVal = _calendar.get(Calendar.SECOND);
+        double millisecVal = _calendar.get(Calendar.MILLISECOND);
 
-        ms /= 1000;
-        s += ms;
+        millisecVal /= 1000;
+        secondVal += millisecVal;
         
-        return s;
+        return secondVal;
     }
     
     public int month() {
         return _calendar.get(Calendar.MONTH) + 1;
     }
     
-    public boolean timezoned() {
+    /**
+     * Check whether this XSDateTime object has an, timezone associated with it.
+     * 
+     * @return true    if there is a timezone associated with this XSDateTime object.
+     *                 false otherwise.
+     */
+    public boolean isXsDateTimeObjectTimezoned() {
         return _timezoned;
     }
 
@@ -511,59 +538,61 @@ public class XSDateTime extends XSCalendarType {
     public String stringValue() {
         String returnVal = "";
 
-        Calendar adjustFortimezone = calendar();
+        Calendar calendarVal = getCalendar();
 
-        if (adjustFortimezone.get(Calendar.ERA) == GregorianCalendar.BC) {
+        if (calendarVal.get(Calendar.ERA) == GregorianCalendar.BC) {
             returnVal += "-";
         }
 
-        returnVal += pad_int(adjustFortimezone.get(Calendar.YEAR), 4);
+        returnVal += padInt(calendarVal.get(Calendar.YEAR), 4);
 
         returnVal += "-";
-        returnVal += pad_int(month(), 2);
+        returnVal += padInt(month(), 2);
 
         returnVal += "-";
-        returnVal += pad_int(adjustFortimezone.get(Calendar.DAY_OF_MONTH), 2);
+        returnVal += padInt(calendarVal.get(Calendar.DAY_OF_MONTH), 2);
 
-        // time
         returnVal += "T";
 
-        returnVal += pad_int(adjustFortimezone.get(Calendar.HOUR_OF_DAY), 2);
+        returnVal += padInt(calendarVal.get(Calendar.HOUR_OF_DAY), 2);
 
         returnVal += ":";
-        returnVal += pad_int(adjustFortimezone.get(Calendar.MINUTE), 2);
+        returnVal += padInt(calendarVal.get(Calendar.MINUTE), 2);
 
         returnVal += ":";
-        int isecond = (int) second();
-        double sec = second();
+        int intSec = (int)second();
+        double doubleSec = second();
 
-        if ((sec - (isecond)) == 0.0)
-            returnVal += pad_int(isecond, 2);
+        if ((doubleSec - intSec) == 0.0) {
+           returnVal += padInt(intSec, 2);
+        }
         else {
-            if (sec < 10.0)
-                returnVal += "0" + sec;
-            else
-                returnVal += sec;
+            if (doubleSec < 10.0) {
+               returnVal += "0" + doubleSec;
+            }
+            else {
+               returnVal += doubleSec;
+            }
         }
 
-        if (timezoned()) {
+        if (isXsDateTimeObjectTimezoned()) {
             int hrs = _tz.hours();
             int min = _tz.minutes();
             double secs = _tz.seconds();
-            if (hrs == 0 && min == 0 && secs == 0) {
+            if ((hrs == 0) && (min == 0) && (secs == 0)) {
                 returnVal += "Z";
             } else {
-                String tZoneStr = "";
+                String timezoneStr = "";
                 if (_tz.negative()) {
-                    tZoneStr += "-";
+                    timezoneStr += "-";
                 } else {
-                    tZoneStr += "+";
+                    timezoneStr += "+";
                 }
-                tZoneStr += pad_int(hrs, 2);
-                tZoneStr += ":";
-                tZoneStr += pad_int(min, 2);
+                timezoneStr += padInt(hrs, 2);
+                timezoneStr += ":";
+                timezoneStr += padInt(min, 2);
 
-                returnVal += tZoneStr;
+                returnVal += timezoneStr;
             }
         }
 
@@ -571,26 +600,26 @@ public class XSDateTime extends XSCalendarType {
     }
     
     /**
-     * Set a particular field within the Calendar.
+     * Set a particular field within an java.util.Calendar object.
      * 
-     * @param cal     the Calendar object to set the field in
-     * @param item    the field to set
-     * @param val     the value to set the field to
+     * @param cal           the Calendar object to set the field in
+     * @param fieldId       the field to set
+     * @param fieldval      the value to set the field to
      * 
-     * @return        true if successfully set. false otherwise
+     * @return              true if successfully set. false otherwise
      */
-    private static boolean set_item(Calendar cal, int item, int val) {
-        int min = cal.getActualMinimum(item);
+    private static boolean setItem(Calendar cal, int fieldId, int fieldval) {
 
-        if (val < min)
+        if (fieldval < cal.getActualMinimum(fieldId)) {
             return false;
+        }
 
-        int max = cal.getActualMaximum(item);
-
-        if (val > max)
+        if (fieldval > cal.getActualMaximum(fieldId)) {
             return false;
+        }
 
-        cal.set(item, val);
+        cal.set(fieldId, fieldval);
+        
         return true;
     }
 

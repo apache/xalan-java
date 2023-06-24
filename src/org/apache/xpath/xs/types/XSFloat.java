@@ -187,4 +187,12 @@ public class XSFloat extends XSNumericType {
         return _value.equals(xsFloat.floatValue()); 
     }
 	
+	public boolean lt(XSFloat xsFloat) {
+	    return floatValue() < xsFloat.floatValue(); 
+    }
+	
+	public boolean gt(XSFloat xsFloat) {
+	    return floatValue() > xsFloat.floatValue(); 
+    }
+	
 }

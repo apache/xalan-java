@@ -4,16 +4,21 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_a.xml -->
+   <!-- use with test1_b.xml -->
    
    <!-- An XSLT stylesheet to test, implementation of XPath 3.1 value 
-        comparison operator 'eq'. -->                 
+        comparison operator 'eq'. This stylesheet, also uses an
+        XSLT instruction xsl:for-each-group. -->                 
 
    <xsl:output method="xml" indent="yes"/>
 
    <xsl:template match="/elem">
       <elem>
-        <result><xsl:value-of select="a[1] eq a"/></result>
+        <xsl:for-each-group select="*" group-by="(. mod 2) eq 0">           
+           <group>
+              <xsl:copy-of select="current-group()"/>
+           </group> 
+        </xsl:for-each-group>
       </elem>
    </xsl:template>
    

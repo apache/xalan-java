@@ -193,4 +193,12 @@ public class XSDouble extends XSNumericType {
         return _value.equals(xsDouble.doubleValue()); 
     }
     
+    public boolean lt(XSDouble xsDouble) {
+        return doubleValue() < xsDouble.doubleValue(); 
+    }
+    
+    public boolean gt(XSDouble xsDouble) {
+        return doubleValue() > xsDouble.doubleValue(); 
+    }
+    
 }

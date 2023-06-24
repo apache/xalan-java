@@ -284,6 +284,9 @@ public class Keywords
   
   /** xs:int data type string. */
   public static final String FUNC_XS_INT = "int";
+  
+  /** xs:date data type string. */
+  public static final String FUNC_XS_DATE = "date";
 
   static
   {

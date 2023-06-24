@@ -35,6 +35,7 @@ import org.apache.xpath.XPathException;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.xs.types.XSBoolean;
+import org.apache.xpath.xs.types.XSDate;
 import org.apache.xpath.xs.types.XSDecimal;
 import org.apache.xpath.xs.types.XSDouble;
 import org.apache.xpath.xs.types.XSFloat;
@@ -557,6 +558,80 @@ public class XObject extends Expression implements Serializable, Cloneable
 
     return this.num() < obj2.num();
   }
+  
+  /**
+   * Tell if one object is less than an another one, using the rules 
+   * of value comparison operator "lt".
+   *
+   * @param obj2                Object to compare this to
+   * @param expressionOwner     this object is used, for error reporting 
+   *
+   * @return True if this object is less than the given object
+   *
+   * @throws javax.xml.transform.TransformerException
+   * 
+   * Notes : Currently, we don't implement following XPath 3.1 spec definitions for
+   *         value comparison operator "lt",
+   *         1) XPath 3.1 spec, requires atomizing the operands of XPath operator "lt",
+   *            before applying operator "lt" to the operands.
+   *         2) If any of the operands of operator "lt", after atomization is an empty
+   *            sequence, the result of operation "lt" should be an empty sequence.              
+   */
+  public boolean vcLessThan(XObject obj2, ExpressionNode expressionOwner) throws 
+                                                                    javax.xml.transform.TransformerException {
+       
+       if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
+          return ((XSDecimal)this).lt((XSDecimal)obj2);        
+       }
+       else if ((this instanceof XSFloat) && (obj2 instanceof XSFloat)) {
+          return ((XSFloat)this).lt((XSFloat)obj2);        
+       }
+       else if ((this instanceof XSDouble) && (obj2 instanceof XSDouble)) {
+          return ((XSDouble)this).lt((XSDouble)obj2);        
+       }
+       else if ((this instanceof XSBoolean) && (obj2 instanceof XSBoolean)) {
+          return ((XSBoolean)this).lt((XSBoolean)obj2);    
+       }
+       else if ((this instanceof XSInteger) && (obj2 instanceof XSInteger)) {
+          return ((XSInteger)this).lt((XSInteger)obj2);    
+       }
+       else if ((this instanceof XSLong) && (obj2 instanceof XSLong)) {
+          return ((XSLong)this).lt((XSLong)obj2);    
+       }
+       else if ((this instanceof XSInt) && (obj2 instanceof XSInt)) {
+          return ((XSInt)this).lt((XSInt)obj2);    
+       }
+       else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
+           return ((XSDate)this).lt((XSDate)obj2);    
+       }
+       
+       boolean isOperandNodeSet1 = false;
+       boolean isOperandNodeSet2 = false;
+       
+       if (this.getType() == XObject.CLASS_NODESET) {       
+          isOperandNodeSet1 = true;
+          if ((((XNodeSet)this).getLength() > 1)) {
+              error(XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
+          }
+       }
+       
+       if (obj2.getType() == XObject.CLASS_NODESET) {
+          isOperandNodeSet2 = true; 
+          if ((((XNodeSet)obj2).getLength() > 1)) {
+              error(XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
+          }
+       }
+       
+       if (isOperandNodeSet1 || this instanceof XNumber) {
+           return this.num() < obj2.num();    
+       }    
+       else if (isOperandNodeSet2 || obj2 instanceof XNumber) {
+           return obj2.num() < this.num();    
+       }
+       
+       // revisit
+       return true;
+  }
 
   /**
    * Tell if one object is less than or equal to the other.
@@ -662,6 +737,9 @@ public class XObject extends Expression implements Serializable, Cloneable
     else if ((this instanceof XSInt) && (obj2 instanceof XSInt)) {
        return ((XSInt)this).equals((XSInt)obj2);    
     }
+    else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
+       return ((XSDate)this).equals((XSDate)obj2);    
+    }
         
     if (obj2.getType() == XObject.CLASS_NODESET) {
        return obj2.equals(this);
@@ -717,6 +795,9 @@ public class XObject extends Expression implements Serializable, Cloneable
     }
     else if ((this instanceof XSInt) && (obj2 instanceof XSInt)) {
        return ((XSInt)this).equals((XSInt)obj2);    
+    }
+    else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
+        return ((XSDate)this).equals((XSDate)obj2);    
     }
     
     boolean isOperandNodeSet1 = false;

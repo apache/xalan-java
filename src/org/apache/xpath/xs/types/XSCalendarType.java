@@ -15,12 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.xs.types;
-
-import java.util.Calendar;
 
 /**
  * Base class for all calendar based classes.
@@ -31,22 +26,6 @@ import java.util.Calendar;
  */
 public abstract class XSCalendarType extends XSCtrType {
 
-	public Calendar normalizeCalendar(Calendar cal, XSDuration timezone) {
-		Calendar adjusted = (Calendar)cal.clone();
-		
-		if (timezone != null) {
-			int hours = timezone.hours();
-			int minutes = timezone.minutes();
-			if (!timezone.negative()) {
-				hours *= -1;
-				minutes *= -1;
-			}
-			adjusted.add(Calendar.HOUR_OF_DAY, hours);
-			adjusted.add(Calendar.MINUTE, minutes);
-		}
-		
-		return adjusted;
-		
-	}
+    private static final long serialVersionUID = -6546129697566314664L;
 	
 }
