@@ -370,6 +370,16 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   public static final String ER_INVALID_REGEX = "ER_INVALID_REGEX";
   
   public static final String ER_EQ_OPERAND_CARDINALITY_ERROR = "ER_EQ_OPERAND_CARDINALITY_ERROR";
+  
+  public static final String ER_NE_OPERAND_CARDINALITY_ERROR = "ER_NE_OPERAND_CARDINALITY_ERROR";
+  
+  public static final String ER_LT_OPERAND_CARDINALITY_ERROR = "ER_LT_OPERAND_CARDINALITY_ERROR";
+  
+  public static final String ER_GT_OPERAND_CARDINALITY_ERROR = "ER_GT_OPERAND_CARDINALITY_ERROR";
+  
+  public static final String ER_LE_OPERAND_CARDINALITY_ERROR = "ER_LE_OPERAND_CARDINALITY_ERROR";
+  
+  public static final String ER_GE_OPERAND_CARDINALITY_ERROR = "ER_GE_OPERAND_CARDINALITY_ERROR";
 
   // Error messages...
 
@@ -863,8 +873,23 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   
   { ER_EQ_OPERAND_CARDINALITY_ERROR,
        "XPTY0004 : none of the eq's operands can be a sequence with length greater than one."},
+  
+  { ER_NE_OPERAND_CARDINALITY_ERROR,
+       "XPTY0004 : none of the ne's operands can be a sequence with length greater than one."},
+  
+  { ER_LT_OPERAND_CARDINALITY_ERROR,
+       "XPTY0004 : none of the lt's operands can be a sequence with length greater than one."},
+  
+  { ER_GT_OPERAND_CARDINALITY_ERROR,
+       "XPTY0004 : none of the gt's operands can be a sequence with length greater than one."},
+  
+  { ER_LE_OPERAND_CARDINALITY_ERROR,
+       "XPTY0004 : none of the le's operands can be a sequence with length greater than one."},
+  
+  { ER_GE_OPERAND_CARDINALITY_ERROR,
+       "XPTY0004 : none of the ge's operands can be a sequence with length greater than one."},
 
-  //END:  Definitions of error keys used  in exception messages of JAXP 1.3 XPath API implementation
+  //END:  Definitions of error keys used in exception messages of JAXP 1.3 XPath API implementation
 
   // Warnings...
 

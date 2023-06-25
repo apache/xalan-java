@@ -46,7 +46,7 @@ public class VcEquals extends Operation
   public XObject operate(XObject left, XObject right) throws 
                                                   javax.xml.transform.TransformerException
   {    
-      return left.vcEquals(right, getExpressionOwner()) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+      return left.vcEquals(right, getExpressionOwner(), true) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
   }
 
 }

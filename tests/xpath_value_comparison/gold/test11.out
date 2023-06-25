@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <chk1>
+    <a>hello</a>
+    <a>hello</a>
+  </chk1>
+  <chk2>
+    <a>hi</a>
+    <a>hi</a>
+    <a>hi</a>
+  </chk2>
+  <chk3>
+    <a>there</a>
+  </chk3>
+</result>

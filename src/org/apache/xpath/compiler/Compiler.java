@@ -59,6 +59,9 @@ import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.UnaryOperation;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.operations.VcEquals;
+import org.apache.xpath.operations.VcGe;
+import org.apache.xpath.operations.VcGt;
+import org.apache.xpath.operations.VcLe;
 import org.apache.xpath.operations.VcLt;
 import org.apache.xpath.operations.VcNotEquals;
 import org.apache.xpath.patterns.FunctionPattern;
@@ -140,6 +143,12 @@ public class Compiler extends OpMap
       expr = vcNotEquals(opPos); break;
     case OpCodes.OP_VC_LT :
       expr = vcLt(opPos); break;
+    case OpCodes.OP_VC_GT :
+      expr = vcGt(opPos); break;
+    case OpCodes.OP_VC_LE :
+      expr = vcLe(opPos); break;
+    case OpCodes.OP_VC_GE :
+      expr = vcGe(opPos); break;
     case OpCodes.OP_LTE :
       expr = lte(opPos); break;
     case OpCodes.OP_LT :
@@ -358,6 +367,33 @@ public class Compiler extends OpMap
   protected Expression vcLt(int opPos) throws TransformerException
   {
     return compileOperation(new VcLt(), opPos);
+  }
+  
+  /**
+   * Compile an XPath 3.1 value comparison 'gt' operation.
+   *  
+   */
+  protected Expression vcGt(int opPos) throws TransformerException
+  {
+    return compileOperation(new VcGt(), opPos);
+  }
+  
+  /**
+   * Compile an XPath 3.1 value comparison 'le' operation.
+   *  
+   */
+  protected Expression vcLe(int opPos) throws TransformerException
+  {
+    return compileOperation(new VcLe(), opPos);
+  }
+  
+  /**
+   * Compile an XPath 3.1 value comparison 'ge' operation.
+   *  
+   */
+  protected Expression vcGe(int opPos) throws TransformerException
+  {
+    return compileOperation(new VcGe(), opPos);
   }
 
   /**

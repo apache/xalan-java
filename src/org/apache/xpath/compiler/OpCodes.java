@@ -654,8 +654,29 @@ public class OpCodes
    * @xsl.usage advanced
    */
   public static final int OP_VC_LT = 57;
+  
+  /**
+   * For XPath 3.1 value comparison operator "gt".
+   * 
+   * @xsl.usage advanced
+   */
+  public static final int OP_VC_GT = 58;
+  
+  /**
+   * For XPath 3.1 value comparison operator "le".
+   * 
+   * @xsl.usage advanced
+   */
+  public static final int OP_VC_LE = 59;
+  
+  /**
+   * For XPath 3.1 value comparison operator "ge".
+   * 
+   * @xsl.usage advanced
+   */
+  public static final int OP_VC_GE = 60;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 58;
+  private static final int NEXT_FREE_ID = 61;
   
 }
