@@ -565,19 +565,22 @@ public class XObject extends Expression implements Serializable, Cloneable
    *
    * @param obj2                Object to compare this to
    * @param expressionOwner     this object is used, for error reporting 
+   * @param isLtTest            is this method called, to check "lt" or "ge"
+   *                            operation. true, if that's "lt" check and false
+   *                            otherwise. 
    *
    * @return True if this object is less than the given object
    *
    * @throws javax.xml.transform.TransformerException
    * 
-   * Notes : Currently, we don't implement following XPath 3.1 spec definitions for
-   *         value comparison operator "lt",
-   *         1) XPath 3.1 spec, requires atomizing the operands of XPath operator "lt",
-   *            before applying operator "lt" to the operands.
-   *         2) If any of the operands of operator "lt", after atomization is an empty
-   *            sequence, the result of operation "lt" should be an empty sequence.              
+   * Notes : Currently, we haven't implemented following XPath 3.1 spec definitions for
+   *         value comparison operator "lt"/"ge",
+   *         1) XPath 3.1 spec, requires atomizing the operands of XPath operator "lt"/"ge",
+   *            before applying operator "lt"/"ge" to the operands.
+   *         2) If any of the operands of operator "lt"/"ge", after atomization is an empty
+   *            sequence, the result of operation "lt"/"ge" should be an empty sequence.              
    */
-  public boolean vcLessThan(XObject obj2, ExpressionNode expressionOwner) throws 
+  public boolean vcLessThan(XObject obj2, ExpressionNode expressionOwner, boolean isLtTest) throws 
                                                                     javax.xml.transform.TransformerException {
        
        if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
@@ -611,14 +614,16 @@ public class XObject extends Expression implements Serializable, Cloneable
        if (this.getType() == XObject.CLASS_NODESET) {       
           isOperandNodeSet1 = true;
           if ((((XNodeSet)this).getLength() > 1)) {
-              error(XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
+              error(isLtTest ? XPATHErrorResources.ER_LT_OPERAND_CARDINALITY_ERROR : 
+                                                              XPATHErrorResources.ER_GE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);
           }
        }
        
        if (obj2.getType() == XObject.CLASS_NODESET) {
           isOperandNodeSet2 = true; 
           if ((((XNodeSet)obj2).getLength() > 1)) {
-              error(XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
+              error(isLtTest ? XPATHErrorResources.ER_LT_OPERAND_CARDINALITY_ERROR : 
+                                                              XPATHErrorResources.ER_GE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
           }
        }
        
@@ -629,7 +634,84 @@ public class XObject extends Expression implements Serializable, Cloneable
            return obj2.num() < this.num();    
        }
        
-       // revisit
+       return true;
+  }
+  
+  /**
+   * Tell if one object is greater than an another one, using the rules 
+   * of value comparison operator "gt".
+   *
+   * @param obj2                Object to compare this to
+   * @param expressionOwner     this object is used, for error reporting 
+   * @param isGtTest            is this method called, to check "gt" or "le"
+   *                            operation. true, if that's "gt" check and false
+   *                            otherwise.
+   *
+   * @return True if this object is greater than the given object
+   *
+   * @throws javax.xml.transform.TransformerException
+   * 
+   * Notes : Currently, we haven't implemented following XPath 3.1 spec definitions for
+   *         value comparison operator "gt"/"le",
+   *         1) XPath 3.1 spec, requires atomizing the operands of XPath operator "gt"/"le",
+   *            before applying operator "gt"/"le" to the operands.
+   *         2) If any of the operands of operator "gt"/"le", after atomization is an empty
+   *            sequence, the result of operation "gt"/"le" should be an empty sequence.              
+   */
+  public boolean vcGreaterThan(XObject obj2, ExpressionNode expressionOwner, boolean isGtTest) throws 
+                                                                    javax.xml.transform.TransformerException {
+       
+       if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
+          return ((XSDecimal)this).gt((XSDecimal)obj2);        
+       }
+       else if ((this instanceof XSFloat) && (obj2 instanceof XSFloat)) {
+          return ((XSFloat)this).gt((XSFloat)obj2);        
+       }
+       else if ((this instanceof XSDouble) && (obj2 instanceof XSDouble)) {
+          return ((XSDouble)this).gt((XSDouble)obj2);        
+       }
+       else if ((this instanceof XSBoolean) && (obj2 instanceof XSBoolean)) {
+          return ((XSBoolean)this).gt((XSBoolean)obj2);    
+       }
+       else if ((this instanceof XSInteger) && (obj2 instanceof XSInteger)) {
+          return ((XSInteger)this).gt((XSInteger)obj2);    
+       }
+       else if ((this instanceof XSLong) && (obj2 instanceof XSLong)) {
+          return ((XSLong)this).gt((XSLong)obj2);    
+       }
+       else if ((this instanceof XSInt) && (obj2 instanceof XSInt)) {
+          return ((XSInt)this).gt((XSInt)obj2);    
+       }
+       else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
+           return ((XSDate)this).gt((XSDate)obj2);    
+       }
+       
+       boolean isOperandNodeSet1 = false;
+       boolean isOperandNodeSet2 = false;
+       
+       if (this.getType() == XObject.CLASS_NODESET) {       
+          isOperandNodeSet1 = true;
+          if ((((XNodeSet)this).getLength() > 1)) {
+              error(isGtTest ? XPATHErrorResources.ER_GT_OPERAND_CARDINALITY_ERROR : 
+                                                              XPATHErrorResources.ER_LE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);
+          }
+       }
+       
+       if (obj2.getType() == XObject.CLASS_NODESET) {
+          isOperandNodeSet2 = true; 
+          if ((((XNodeSet)obj2).getLength() > 1)) {
+              error(isGtTest ? XPATHErrorResources.ER_GT_OPERAND_CARDINALITY_ERROR : 
+                                                              XPATHErrorResources.ER_LE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
+          }
+       }
+       
+       if (isOperandNodeSet1 || this instanceof XNumber) {
+           return this.num() > obj2.num();    
+       }    
+       else if (isOperandNodeSet2 || obj2 instanceof XNumber) {
+           return obj2.num() > this.num();    
+       }
+       
        return true;
   }
 
@@ -759,20 +841,23 @@ public class XObject extends Expression implements Serializable, Cloneable
    *
    * @param obj2                Object to compare this to
    * @param expressionOwner     this object is used, for error reporting 
+   * @param isEqTest            is this method called, to check "eq" or "ne"
+   *                            operation. true, if that's "eq" check and false
+   *                            otherwise. 
    *
    * @return True if this object is equal to the given object
    *
    * @throws javax.xml.transform.TransformerException
    * 
-   * Notes : Currently, we don't implement following XPath 3.1 spec definitions for
-   *         value comparison operator "eq",
-   *         1) XPath 3.1 spec, requires atomizing the operands of XPath operator "eq",
-   *            before applying operator "eq" to the operands.
-   *         2) If any of the operands of operator "eq", after atomization is an empty
-   *            sequence, the result of operation "eq" should be an empty sequence. 
+   * Notes : Currently, we haven't implemented following XPath 3.1 spec definitions for
+   *         value comparison operator "eq"/"ne",
+   *         1) XPath 3.1 spec, requires atomizing the operands of XPath operator "eq"/"ne",
+   *            before applying operator "eq"/"ne" to the operands.
+   *         2) If any of the operands of operator "eq"/"ne", after atomization is an empty
+   *            sequence, the result of operation "eq"/"ne" should be an empty sequence. 
    *            Instead, we return the result as false for such cases.  
    */
-  public boolean vcEquals(XObject obj2, ExpressionNode expressionOwner) 
+  public boolean vcEquals(XObject obj2, ExpressionNode expressionOwner, boolean isEqTest) 
                                                                throws javax.xml.transform.TransformerException
   {
     if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
@@ -806,14 +891,16 @@ public class XObject extends Expression implements Serializable, Cloneable
     if (this.getType() == XObject.CLASS_NODESET) {       
        isOperandNodeSet1 = true;
        if ((((XNodeSet)this).getLength() > 1)) {
-           error(XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
+           error(isEqTest ? XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR : 
+                                                           XPATHErrorResources.ER_NE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
        }
     }
     
     if (obj2.getType() == XObject.CLASS_NODESET) {
        isOperandNodeSet2 = true; 
        if ((((XNodeSet)obj2).getLength() > 1)) {
-           error(XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
+           error(isEqTest ? XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR : 
+                                                           XPATHErrorResources.ER_NE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
        }
     }
     

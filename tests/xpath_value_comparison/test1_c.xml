@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<elem chk1="hello" chk2="hi" chk3="there">
+   <a>hello</a>
+   <a>hello</a>
+   <a>hi</a>
+   <a>hi</a>
+   <a>hi</a>
+   <a>there</a>
+</elem>

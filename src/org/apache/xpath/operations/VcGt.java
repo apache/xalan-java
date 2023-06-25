@@ -24,13 +24,13 @@ import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 
 /**
- * The XPath 3.1 value comparison "lt" operation.
+ * The XPath 3.1 value comparison "gt" operation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class VcLt extends Operation
+public class VcGt extends Operation
 {
 
    private static final long serialVersionUID = 3832212036565766741L;
@@ -49,6 +49,6 @@ public class VcLt extends Operation
   public XObject operate(XObject left, XObject right) 
                                                  throws javax.xml.transform.TransformerException
   {
-      return left.vcLessThan(right, getExpressionOwner(), true) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+      return left.vcGreaterThan(right, getExpressionOwner(), true) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
   }
 }

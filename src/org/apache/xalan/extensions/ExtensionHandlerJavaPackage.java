@@ -33,10 +33,12 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
+import org.apache.xalan.templates.XSConstructorFunctionUtil;
 import org.apache.xalan.trace.ExtensionEvent;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.XObject;
+import org.xml.sax.SAXException;
 
 /**
  * Represents an extension namespace for XPath that handles java packages
@@ -58,8 +60,6 @@ import org.apache.xpath.objects.XObject;
  *
  * @xsl.usage internal
  */
-
-
 public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
 {
 
@@ -434,11 +434,28 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
    */
   public Object callFunction(FuncExtFunction extFunction,
                              Vector args,
-                             ExpressionContext exprContext)
-      throws TransformerException
+                             ExpressionContext exprContext) throws TransformerException
   {
-    return callFunction(extFunction.getFunctionName(), args, 
-                        extFunction.getMethodKey(), exprContext);
+      
+      Object funcEvalResult = null;
+      
+      try {
+          XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn
+                                                                           (exprContext.getXPathContext(), extFunction);
+          if (evalResult != null) {
+             funcEvalResult = evalResult;
+          }
+          else {
+             funcEvalResult = callFunction(extFunction.getFunctionName(), args, extFunction.getMethodKey(), 
+                                                                                                     exprContext);    
+          }
+      }
+      catch (SAXException ex) {
+          throw new TransformerException(ex);   
+      }
+      
+      return funcEvalResult;
+      
   }
 
   /**
