@@ -477,7 +477,12 @@ public class ExsltDynamic extends ExsltBase
       }
       catch (TransformerException e)
       {
-        return new XNodeSet(xctxt.getDTMManager());
+	  // This had been silently returning an empty nodeset (ie,
+	  // failing to match).  It is more appropriate to report the
+	  // error. Specific case: trying to invoke an XSLT or Extension
+	  // function from within dyn:evaluate is not currently supported
+	  // and user should be advised of that.
+	  throw new SAXNotSupportedException("dyn:evaluate: "+e.getLocalizedMessage());
       }
     }
     else
