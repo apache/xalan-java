@@ -210,6 +210,9 @@ public class XObject extends Expression implements Serializable, Cloneable
 
   /** Constant for RESULT TREE FRAGMENT object type */
   public static final int CLASS_RTREEFRAG = 5;
+  
+  /** Constant for XPath 3.1 sequence object type */
+  public static final int CLASS_RESULT_SEQUENCE = 6;
 
   /** Represents an unresolved variable type as an integer. */
   public static final int CLASS_UNRESOLVEDVARIABLE = 600;

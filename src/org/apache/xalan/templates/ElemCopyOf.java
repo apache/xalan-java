@@ -32,15 +32,21 @@ import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
-/**
- * Implement xsl:copy-of.
- * <pre>
- * <!ELEMENT xsl:copy-of EMPTY>
- * <!ATTLIST xsl:copy-of select %expr; #REQUIRED>
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#copy-of">copy-of in XSLT Specification</a>
+/*
+ * Implementation of XSLT xsl:copy-of instruction.
+ * 
+ * XSLT 3.0 xsl:copy-of instruction definition,
+ *  
+ * <xsl:copy-of
+          select = expression
+          copy-accumulators? = boolean
+          copy-namespaces? = boolean
+          type? = eqname
+          validation? = "strict" | "lax" | "preserve" | "strip" />
+ * 
  * @xsl.usage advanced
  */
 public class ElemCopyOf extends ElemTemplateElement
@@ -191,6 +197,46 @@ public class ElemCopyOf extends ElemTemplateElement
         case XObject.CLASS_RTREEFRAG :
           SerializerUtils.outputResultTreeFragment(
             handler, value, transformer.getXPathContext());
+          break;
+        case XObject.CLASS_RESULT_SEQUENCE :
+          // added for XSLT 3.0
+          ResultSequence resultSequence = (ResultSequence)value;
+          for (int idx = 0; idx < resultSequence.size(); idx++) {
+             XObject sequenceItem = resultSequence.item(idx);
+             
+             if (sequenceItem.getType() == XObject.CLASS_STRING) {
+                 String str = sequenceItem.str();
+                 handler.characters(str.toCharArray(), 0, str.length());
+                 if (idx < (resultSequence.size() - 1)) {
+                     String strSpace = " ";
+                     handler.characters(strSpace.toCharArray(), 0, strSpace.length());
+                 }
+                 continue;
+             }
+             
+             DTMIterator dtmIter = sequenceItem.iter();
+
+             DTMTreeWalker dtmTreeWalker = new TreeWalker2Result(transformer, handler);
+             int nodePos;
+
+             while (DTM.NULL != (nodePos = dtmIter.nextNode())) {
+               DTM dtm = xctxt.getDTMManager().getDTM(nodePos);
+               short t = dtm.getNodeType(nodePos);
+
+               if (t == DTM.DOCUMENT_NODE) {
+                 for (int child = dtm.getFirstChild(nodePos); child != DTM.NULL; 
+                                                                 child = dtm.getNextSibling(child)) {
+                   dtmTreeWalker.traverse(child);
+                 }
+               }
+               else if (t == DTM.ATTRIBUTE_NODE) {
+                 SerializerUtils.addAttribute(handler, nodePos);
+               }
+               else {
+                 dtmTreeWalker.traverse(nodePos);
+               }
+             }
+          }
           break;
         default :
           

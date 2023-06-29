@@ -675,8 +675,10 @@ public class OpCodes
    * @xsl.usage advanced
    */
   public static final int OP_VC_GE = 60;
+  
+  public static final int OP_INLINE_FUNCTION = 61;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 61;
+  private static final int NEXT_FREE_ID = 62;
   
 }

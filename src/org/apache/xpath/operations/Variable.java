@@ -20,6 +20,8 @@
  */
 package org.apache.xpath.operations;
 
+import java.util.Map;
+
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
@@ -206,6 +208,17 @@ public class Variable extends Expression implements PathComponent
     org.apache.xml.utils.PrefixResolver xprefixResolver = xctxt.getNamespaceContext();
 
     XObject result;
+    
+    Map<QName, XObject> inlineFunctionVarMap = xctxt.getInlineFunctionVarMap();
+    XObject inlineFuncVarValue = inlineFunctionVarMap.get(m_qname);
+    
+    if (inlineFuncVarValue != null) {
+        // dereferencing, XPath 3.1 function item "inline function" 
+        // parameter references within "inline function" body. 
+        result = inlineFuncVarValue;
+        return result;
+    }
+    
     // Is the variable fetched always the same?
     // XObject result = xctxt.getVariable(m_qname);
     if(m_fixUpWasCalled)

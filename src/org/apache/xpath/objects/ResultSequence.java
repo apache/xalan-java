@@ -23,7 +23,7 @@ import java.util.List;
 import org.apache.xpath.xs.types.XSAnyType;
 
 /**
- * This class represents, the XPath 3.1 data model sequences.
+ * This class represents, the XPath 3.1 data model sequence.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -33,13 +33,18 @@ public class ResultSequence extends XObject
 {
     static final long serialVersionUID = -5736721866747906182L;
     
-    // the underlying list object, storing items of this result sequence 
+    // the underlying list object, to store items of this result sequence 
     private List<XObject> rsList = new ArrayList<XObject>();
     
     /*
      * Class constructor.
      */
     public ResultSequence() {}
+    
+    public int getType()
+    {
+        return CLASS_RESULT_SEQUENCE;
+    }
     
     public void add(XObject item) {
         rsList.add(item);    

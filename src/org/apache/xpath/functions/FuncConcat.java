@@ -124,7 +124,7 @@ public class FuncConcat extends FunctionMultiArgs
           }
       }
       else {
-          resultStr = expr.execute(xctxt).str(); 
+          resultStr = expr.execute(xctxt).str();
       }
       
       return resultStr;      

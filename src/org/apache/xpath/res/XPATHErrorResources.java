@@ -147,8 +147,14 @@ public class XPATHErrorResources extends ListResourceBundle
 	 "ER_BOOLEAN_ARG_NO_LONGER_OPTIONAL";
   public static final String ER_FOUND_COMMA_BUT_NO_PRECEDING_ARG = 
 	 "ER_FOUND_COMMA_BUT_NO_PRECEDING_ARG";
+  public static final String ER_FOUND_COMMA_BUT_NO_PRECEDING_PARAM = 
+     "ER_FOUND_COMMA_BUT_NO_PRECEDING_PARAM";
   public static final String ER_FOUND_COMMA_BUT_NO_FOLLOWING_ARG = 
 	 "ER_FOUND_COMMA_BUT_NO_FOLLOWING_ARG";
+  public static final String ER_FOUND_COMMA_BUT_NO_FOLLOWING_PARAM = 
+     "ER_FOUND_COMMA_BUT_NO_FOLLOWING_PARAM";
+  public static final String ER_INLINE_FUNCTION_PARAM_CARDINALITY = 
+     "ER_INLINE_FUNCTION_PARAM_CARDINALITY";
   public static final String ER_PREDICATE_ILLEGAL_SYNTAX = 
 	 "ER_PREDICATE_ILLEGAL_SYNTAX";
   public static final String ER_ILLEGAL_AXIS_NAME = "ER_ILLEGAL_AXIS_NAME";
@@ -230,9 +236,11 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   /** 0 */
   public static final String ER_ZERO = "ER_ZERO";
   /**  0 or 1   */
-  public static final String ER_ZERO_OR_ONE = "ER_ZERO_OR_ONE";
+  public static final String ER_ZERO_OR_ONE = "ER_ZERO_OR_ONE";  
   /** 1 or 2 */
   public static final String ER_ONE_OR_TWO = "ER_ONE_OR_TWO";
+  /** 2 */
+  public static final String ER_TWO = "ER_TWO";
    /**  2 or 3   */
   public static final String ER_TWO_OR_THREE = "ER_TWO_OR_THREE";
   /**  1, 2 or 3   */
@@ -488,9 +496,18 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
 
   { ER_FOUND_COMMA_BUT_NO_PRECEDING_ARG,
       "Found ',' but no preceding argument!"},
+  
+  { ER_FOUND_COMMA_BUT_NO_PRECEDING_PARAM,
+      "Found ',' but no preceding function parameter definition."},
 
   { ER_FOUND_COMMA_BUT_NO_FOLLOWING_ARG,
       "Found ',' but no following argument!"},
+  
+  { ER_FOUND_COMMA_BUT_NO_FOLLOWING_PARAM,
+      "Found ',' but no following function parameter definition."},
+  
+  { ER_INLINE_FUNCTION_PARAM_CARDINALITY,
+      "XPTY0004 : The inline function definition has {0} parameters. Expected 0 or 1."},
 
   { ER_PREDICATE_ILLEGAL_SYNTAX,
       "'..[predicate]' or '.[predicate]' is illegal syntax.  Use 'self::node()[predicate]' instead."},
@@ -644,6 +661,8 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   
   { ER_ONE_OR_TWO,
        "1 or 2"},
+  
+  { ER_TWO, "2"},
   
   { ER_TWO_OR_THREE,
        "2 or 3"},

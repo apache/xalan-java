@@ -20,6 +20,9 @@
  */
 package org.apache.xpath.compiler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
 
@@ -27,6 +30,7 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPathProcessorException;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
+import org.apache.xpath.objects.InlineFunction;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -71,6 +75,8 @@ public class XPathParser
   protected final static int FILTER_MATCH_FAILED     = 0;
   protected final static int FILTER_MATCH_PRIMARY    = 1;
   protected final static int FILTER_MATCH_PREDICATES = 2;
+  
+  static InlineFunction fInlineFunction = null;
 
   /**
    * The parser constructor.
@@ -1494,6 +1500,7 @@ public class XPathParser
    * | Literal
    * | Number
    * | FunctionCall
+   * | FunctionItemExpr
    *
    * @return true if this method successfully matched a PrimaryExpr
    *
@@ -1503,7 +1510,8 @@ public class XPathParser
   protected boolean PrimaryExpr() throws javax.xml.transform.TransformerException
   {
 
-    boolean matchFound;
+    boolean matchFound = false;
+    
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     if ((m_tokenChar == '\'') || (m_tokenChar == '"'))
@@ -1550,6 +1558,19 @@ public class XPathParser
 
       matchFound = true;
     }
+    else if (tokenIs("function") && lookahead('(', 1)) {
+      // support for XPath 3.1 function item "inline function" expressions
+      
+      appendOp(2, OpCodes.OP_INLINE_FUNCTION);
+      
+      fInlineFunction = InlineFunctionExpr();
+      
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+              m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+      
+      matchFound = true;
+         
+    }
     else if (lookahead('(', 1) || (lookahead(':', 1) && lookahead('(', 3)))
     {
       matchFound = FunctionCall();
@@ -1560,6 +1581,75 @@ public class XPathParser
     }
 
     return matchFound;
+  }
+  
+  protected InlineFunction InlineFunctionExpr() throws javax.xml.transform.TransformerException {
+      InlineFunction inlineFunction = new InlineFunction();
+      
+      List<String> funcParamNameList = new ArrayList<String>();      
+      String funcBodyXPathExprStr = null;
+      
+      nextToken();
+      
+      consumeExpected('(');
+
+      if (!tokenIs(')')) {
+          while (!tokenIs(')') && m_token != null)
+          {
+              if (tokenIs(','))
+              {
+                  error(XPATHErrorResources.ER_FOUND_COMMA_BUT_NO_PRECEDING_PARAM, null);
+              }
+    
+              if (m_tokenChar == '$')
+              {
+                  nextToken();
+                  funcParamNameList.add(m_token);
+                  nextToken();
+              }
+    
+              if (!tokenIs(')'))
+              {
+                  consumeExpected(',');
+    
+                  if (tokenIs(')'))
+                  {
+                      error(XPATHErrorResources.ER_FOUND_COMMA_BUT_NO_FOLLOWING_PARAM, null);                    
+                  }
+              }
+          }    
+      }
+      
+      if (funcParamNameList.size() > 1) {
+          error(XPATHErrorResources.ER_INLINE_FUNCTION_PARAM_CARDINALITY, new Object[] { 
+                                                                Integer.valueOf(funcParamNameList.size()) });   
+      }
+      
+      inlineFunction.setFuncParamNameList(funcParamNameList);
+      
+      consumeExpected(')');
+      
+      consumeExpected('{');
+      
+      StringBuffer funcBodyXPathExprStrBuff = new StringBuffer();
+      
+      if (tokenIs('}')) {
+          consumeExpected('}');    
+      }
+      else {
+         while (!tokenIs('}') && m_token != null)
+         {
+             funcBodyXPathExprStrBuff.append(m_token);
+             nextToken();
+         }         
+         consumeExpected('}');         
+      }
+      
+      funcBodyXPathExprStr = funcBodyXPathExprStrBuff.toString();
+      
+      inlineFunction.setFuncBodyXPathExprStr(funcBodyXPathExprStr);
+      
+      return inlineFunction;
   }
 
   /**
