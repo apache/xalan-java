@@ -179,6 +179,12 @@ public class FunctionTable
   
   /** The 'index-of()' id. */
   public static final int FUNC_INDEX_OF = 52;
+  
+  /** The 'for-each()' id. */
+  public static final int FUNC_FOR_EACH = 53;
+  
+  /** The 'filter()' id. */
+  public static final int FUNC_FILTER = 54;
 
   // Proprietary
 
@@ -207,7 +213,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 53;
+  private static final int NUM_BUILT_IN_FUNCS = 55;
 
   /**
    * Number of built-in functions that may be added.
@@ -305,6 +311,10 @@ public class FunctionTable
       org.apache.xpath.functions.FuncImplicitTimezone.class;
     m_functions[FUNC_INDEX_OF] = 
       org.apache.xpath.functions.FuncIndexOf.class;
+    m_functions[FUNC_FOR_EACH] = 
+      org.apache.xpath.functions.FuncForEach.class;
+    m_functions[FUNC_FILTER] = 
+      org.apache.xpath.functions.FuncFilter.class;
   }
 
   static{
@@ -410,6 +420,10 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_IMPLICIT_TIMEZONE));
           m_functionID.put(Keywords.FUNC_INDEX_OF,
                           new Integer(FunctionTable.FUNC_INDEX_OF));
+          m_functionID.put(Keywords.FUNC_FOR_EACH,
+                          new Integer(FunctionTable.FUNC_FOR_EACH));
+          m_functionID.put(Keywords.FUNC_FILTER,
+                          new Integer(FunctionTable.FUNC_FILTER));
   }
   
   public FunctionTable(){

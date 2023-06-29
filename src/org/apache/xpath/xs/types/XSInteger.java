@@ -140,6 +140,10 @@ public class XSInteger extends XSDecimal {
 	    return (intValue()).compareTo(xsInteger.intValue()) > 0; 
     }
 	
+	public XSInteger multiply(XSInteger xsInteger) {
+	    return new XSInteger((intValue()).multiply(xsInteger.intValue()));   
+	}
+	
 	/*
      * Cast an object of type XSAnyType, to an object of type 
      * java.math.BigInteger.  

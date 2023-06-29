@@ -259,13 +259,19 @@ public class Keywords
   
   /** index-of function string. */
   public static final String FUNC_INDEX_OF = "index-of";
+  
+  /** for-each function string. */
+  public static final String FUNC_FOR_EACH = "for-each";
+  
+  /** filter function string. */
+  public static final String FUNC_FILTER = "filter";
 
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
   public static final String FUNC_DOCLOCATION_STRING = "document-location";
   
-  //XML Schema built-in types constructor functions, configurations
+  // XML Schema built-in types constructor functions, configurations
   
   /** xs:decimal data type string. */
   public static final String FUNC_XS_DECIMAL = "decimal";

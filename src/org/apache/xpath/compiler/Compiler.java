@@ -195,6 +195,8 @@ public class Compiler extends OpMap
       expr = compileExtension(opPos); break;
     case OpCodes.OP_FUNCTION :
       expr = compileFunction(opPos); break;
+    case OpCodes.OP_INLINE_FUNCTION :
+      expr = compileInlineFunction(opPos); break;
     case OpCodes.OP_LOCATIONPATH :
       expr = locationPath(opPos); break;
     case OpCodes.OP_PREDICATE :
@@ -1155,6 +1157,11 @@ private static final boolean DEBUG = false;
 
       return null;
     }
+  }
+  
+  Expression compileInlineFunction(int opPos) throws TransformerException
+  {
+      return XPathParser.fInlineFunction;
   }
 
   // The current id for extension functions.

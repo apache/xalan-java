@@ -49,6 +49,7 @@ import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xml.utils.ObjectStack;
 import org.apache.xml.utils.PrefixResolver;
+import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.axes.SubContextList;
@@ -127,6 +128,11 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   private GregorianCalendar m_currentDateTime;
   
   private XSDuration m_timezone;
+  
+  // we use this java.util.Map object, to store for XPath 3.1 function item 
+  // "inline function" the parameter names and their values. we don't use,
+  // XalanJ XPath context's variable stack for this purpose. 
+  private Map<QName, XObject> inlineFunctionVarMap = new HashMap<QName, XObject>();
 	
   /**
    * Though XPathContext context extends 
@@ -1449,6 +1455,14 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 
  public void setTimezone(XSDuration timezone) {
      this.m_timezone = timezone;
+ }
+
+ public Map<QName, XObject> getInlineFunctionVarMap() {
+     return inlineFunctionVarMap;
+ }
+
+ public void setInlineFunctionVarMap(Map<QName, XObject> inlineFunctionVarMap) {
+     this.inlineFunctionVarMap = inlineFunctionVarMap;
  }
   
 }
