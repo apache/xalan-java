@@ -78,6 +78,8 @@ public class FuncForEach extends Function2Args {
       
         XObject funcEvaluationResult = null;
         
+        SourceLocator srcLocator = xctxt.getSAXLocator();
+        
         final int contextNode = xctxt.getCurrentNode();
         
         Expression arg0 = getArg0();
@@ -96,13 +98,17 @@ public class FuncForEach extends Function2Args {
         
         ResultSequence resultSeq = new ResultSequence();
                     
-        if (arg1 instanceof InlineFunction) {            
-            resultSeq = evaluateFnForEach(xctxt, arg0XsObject, arg0DtmIterator, (InlineFunction)arg1); 
+        if (arg1 instanceof InlineFunction) {
+            InlineFunction inlineFuncArg = (InlineFunction)arg1;
+            validateInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
+            resultSeq = evaluateFnForEach(xctxt, arg0XsObject, arg0DtmIterator, inlineFuncArg); 
         }
         else if (arg1 instanceof Variable) {
             XObject arg1VarValue = arg1.execute(xctxt);
             if (arg1VarValue instanceof InlineFunction) {
-                resultSeq = evaluateFnForEach(xctxt, arg0XsObject, arg0DtmIterator, (InlineFunction)arg1VarValue);   
+                InlineFunction inlineFuncArg = (InlineFunction)arg1VarValue;
+                validateInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
+                resultSeq = evaluateFnForEach(xctxt, arg0XsObject, arg0DtmIterator, inlineFuncArg);   
             }
             else {
                 throw new javax.xml.transform.TransformerException("FORG0006 : The second argument to function call for-each(), "
@@ -145,30 +151,38 @@ public class FuncForEach extends Function2Args {
   }
   
   /*
+   * Validate the, number of function parameters, that the inline function is allowed to have for fn:for-each.
+   */
+  private void validateInlineFunctionParamCardinality(InlineFunction inlineFuncArg, SourceLocator srcLocator) throws 
+                                                                                                javax.xml.transform.TransformerException {
+      List<String> funcParamNameList = inlineFuncArg.getFuncParamNameList();
+      if (funcParamNameList.size() != 1) {
+          throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied function fn:for-each's function item has " + 
+                                                                                   funcParamNameList.size() + " parameters. "
+                                                                                          + "Expected 1.", srcLocator);   
+      }
+  }
+  
+  /*
    * Evaluate the function call fn:for-each.
    */
   private ResultSequence evaluateFnForEach(XPathContext xctxt, XObject arg0XsObject, 
                                                DTMIterator arg0DtmIterator, InlineFunction arg1) 
                                                                                     throws TransformerException {
-
         ResultSequence resultSeq = new ResultSequence(); 
         
         List<String> funcParamNameList = arg1.getFuncParamNameList();
+        QName varQname = new QName(funcParamNameList.get(0));
+        
         String funcBodyXPathExprStr = arg1.getFuncBodyXPathExprStr();
         
         if (funcBodyXPathExprStr == null || "".equals(funcBodyXPathExprStr)) {
            return resultSeq;
-        }
-        
-        QName varQname = null;
-        
-        if (funcParamNameList.size() == 1) {
-           varQname = new QName(funcParamNameList.get(0));
-        }
+        }        
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        XPath xpathInlineFn = new XPath(funcBodyXPathExprStr, srcLocator, null, XPath.SELECT, null);
+        XPath inlineFnXpath = new XPath(funcBodyXPathExprStr, srcLocator, null, XPath.SELECT, null);
         
         if (arg0XsObject instanceof ResultSequence) {
            XPathContext xpathContextNew = new XPathContext(false);
@@ -181,7 +195,7 @@ public class FuncForEach extends Function2Args {
                   inlineFunctionVarMap.put(varQname, inpSeqItem);
                }
         
-               XObject resultObj = xpathInlineFn.execute(xpathContextNew, DTM.NULL, null);
+               XObject resultObj = inlineFnXpath.execute(xpathContextNew, DTM.NULL, null);
                resultSeq.add(resultObj);
            }
         
@@ -199,7 +213,7 @@ public class FuncForEach extends Function2Args {
                   inlineFunctionVarMap.put(varQname, xObject);
                }
         
-               XObject resultObj = xpathInlineFn.execute(xctxt, dtmNodeHandle, null);
+               XObject resultObj = inlineFnXpath.execute(xctxt, dtmNodeHandle, null);
                resultSeq.add(resultObj);
            }
         

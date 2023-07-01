@@ -36,10 +36,8 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XObjectFactory;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.w3c.dom.Node;
 
 /**
  * Execute the filter() function.
@@ -84,6 +82,8 @@ public class FuncFilter extends Function2Args {
       
         XObject funcEvaluationResult = null;
         
+        SourceLocator srcLocator = xctxt.getSAXLocator();
+        
         final int contextNode = xctxt.getCurrentNode();
         
         Expression arg0 = getArg0();
@@ -102,13 +102,17 @@ public class FuncFilter extends Function2Args {
         
         ResultSequence resultSeq = new ResultSequence();
                     
-        if (arg1 instanceof InlineFunction) {            
-            resultSeq = evaluateFnFilter(xctxt, arg0XsObject, arg0DtmIterator, (InlineFunction)arg1); 
+        if (arg1 instanceof InlineFunction) {
+            InlineFunction inlineFuncArg = (InlineFunction)arg1;
+            validateInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
+            resultSeq = evaluateFnFilter(xctxt, arg0XsObject, arg0DtmIterator, inlineFuncArg); 
         }
         else if (arg1 instanceof Variable) {
             XObject arg1VarValue = arg1.execute(xctxt);
             if (arg1VarValue instanceof InlineFunction) {
-                resultSeq = evaluateFnFilter(xctxt, arg0XsObject, arg0DtmIterator, (InlineFunction)arg1VarValue);   
+                InlineFunction inlineFuncArg = (InlineFunction)arg1VarValue;
+                validateInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
+                resultSeq = evaluateFnFilter(xctxt, arg0XsObject, arg0DtmIterator, inlineFuncArg);   
             }
             else {
                 throw new javax.xml.transform.TransformerException("FORG0006 : The second argument to function call filter(), "
@@ -151,30 +155,38 @@ public class FuncFilter extends Function2Args {
   }
   
   /*
+   * Validate the, number of function parameters, that the inline function is allowed to have for fn:filter.
+   */
+  private void validateInlineFunctionParamCardinality(InlineFunction inlineFuncArg, SourceLocator srcLocator) throws 
+                                                                                                javax.xml.transform.TransformerException {
+      List<String> funcParamNameList = inlineFuncArg.getFuncParamNameList();
+      if (funcParamNameList.size() != 1) {
+          throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied function fn:filter's function item has " + 
+                                                                                                      funcParamNameList.size() + " parameters. "
+                                                                                                      + "Expected 1.", srcLocator);   
+      }
+  }
+  
+  /*
    * Evaluate the function call fn:filter.
    */
   private ResultSequence evaluateFnFilter(XPathContext xctxt, XObject arg0XsObject, 
                                                DTMIterator arg0DtmIterator, InlineFunction arg1) 
                                                                                     throws TransformerException {
-
         ResultSequence resultSeq = new ResultSequence(); 
         
         List<String> funcParamNameList = arg1.getFuncParamNameList();
+        QName varQname = new QName(funcParamNameList.get(0));
+        
         String funcBodyXPathExprStr = arg1.getFuncBodyXPathExprStr();
         
         if (funcBodyXPathExprStr == null || "".equals(funcBodyXPathExprStr)) {
            return resultSeq;
-        }
-        
-        QName varQname = null;
-        
-        if (funcParamNameList.size() == 1) {
-           varQname = new QName(funcParamNameList.get(0));
-        }
+        }                
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        XPath xpathInlineFn = new XPath(funcBodyXPathExprStr, srcLocator, null, XPath.SELECT, null);
+        XPath inlineFnXpath = new XPath(funcBodyXPathExprStr, srcLocator, null, XPath.SELECT, null);
         
         if (arg0XsObject instanceof ResultSequence) {
            XPathContext xpathContextNew = new XPathContext(false);
@@ -187,7 +199,7 @@ public class FuncFilter extends Function2Args {
                   inlineFunctionVarMap.put(varQname, inpSeqItem);
                }
         
-               XObject resultObj = xpathInlineFn.execute(xpathContextNew, DTM.NULL, null);
+               XObject resultObj = inlineFnXpath.execute(xpathContextNew, DTM.NULL, null);
                if (resultObj instanceof XBoolean) {
                    if (((XBoolean)resultObj).bool()) {
                       resultSeq.add(inpSeqItem);
@@ -201,25 +213,23 @@ public class FuncFilter extends Function2Args {
         
            inlineFunctionVarMap.clear();
         }
-        else if (arg0DtmIterator != null) {                  
+        else if (arg0DtmIterator != null) {
            Map<QName, XObject> inlineFunctionVarMap = xctxt.getInlineFunctionVarMap();
         
+           final int contextNode = xctxt.getCurrentNode();           
+           
            int dtmNodeHandle;
            
            while (DTM.NULL != (dtmNodeHandle = arg0DtmIterator.nextNode())) {
-               DTM dtm = xctxt.getDTM(dtmNodeHandle);
-               Node node = dtm.getNode(dtmNodeHandle);
-               XObject inpSeqItem = XObjectFactory.create(node, xctxt);               
+               XNodeSet inpSeqItem = new XNodeSet(dtmNodeHandle, xctxt.getDTMManager());
                if (varQname != null) {
                   inlineFunctionVarMap.put(varQname, inpSeqItem);
                }
-        
-               xctxt.pushCurrentNode(dtmNodeHandle);
                
-               XObject resultObj = xpathInlineFn.execute(xctxt, dtmNodeHandle, null);
+               XObject resultObj = inlineFnXpath.execute(xctxt, contextNode, null);
                if (resultObj instanceof XBoolean) {
                    if (((XBoolean)resultObj).bool()) {                       
-                       resultSeq.add(new XNodeSet(dtmNodeHandle, xctxt));
+                       resultSeq.add(inpSeqItem);
                    }
                }
                else {

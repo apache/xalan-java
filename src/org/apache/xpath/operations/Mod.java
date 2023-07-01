@@ -23,6 +23,7 @@ package org.apache.xpath.operations;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.xs.types.XSInteger;
 
 /**
  * The 'mod' operation expression executer.
@@ -42,10 +43,31 @@ public class Mod extends Operation
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject operate(XObject left, XObject right)
-          throws javax.xml.transform.TransformerException
+  public XObject operate(XObject left, XObject right) throws javax.xml.transform.TransformerException
   {
-    return new XNumber(left.num() % right.num());
+      XObject result = null;
+      
+      if ((left instanceof XSInteger) && (right instanceof XSInteger)) {
+          result = ((XSInteger)left).multiply((XSInteger)right);
+          double lDouble = (((XSInteger)left).intValue()).doubleValue();
+          double rDouble = (((XSInteger)right).intValue()).doubleValue();
+          result = new XNumber(lDouble % rDouble); 
+      }
+      else if ((left instanceof XSInteger) && (right instanceof XNumber)) {
+          double lDouble = (((XSInteger)left).intValue()).doubleValue();
+          double rDouble = ((XNumber)right).num();
+          result = new XNumber(lDouble % rDouble);         
+      }
+      else if ((left instanceof XNumber) && (right instanceof XSInteger)) {          
+          double lDouble = ((XNumber)left).num();
+          double rDouble = (((XSInteger)right).intValue()).doubleValue();
+          result = new XNumber(lDouble % rDouble);          
+      }
+      else {
+          result = new XNumber(left.num() % right.num());
+      }
+      
+      return result;
   }
   
   /**
@@ -57,11 +79,9 @@ public class Mod extends Operation
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public double num(XPathContext xctxt)
-          throws javax.xml.transform.TransformerException
+  public double num(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-
-    return (m_left.num(xctxt) % m_right.num(xctxt));
+      return (m_left.num(xctxt) % m_right.num(xctxt));
   }
 
 }

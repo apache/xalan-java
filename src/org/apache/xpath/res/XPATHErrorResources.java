@@ -152,9 +152,7 @@ public class XPATHErrorResources extends ListResourceBundle
   public static final String ER_FOUND_COMMA_BUT_NO_FOLLOWING_ARG = 
 	 "ER_FOUND_COMMA_BUT_NO_FOLLOWING_ARG";
   public static final String ER_FOUND_COMMA_BUT_NO_FOLLOWING_PARAM = 
-     "ER_FOUND_COMMA_BUT_NO_FOLLOWING_PARAM";
-  public static final String ER_INLINE_FUNCTION_PARAM_CARDINALITY = 
-     "ER_INLINE_FUNCTION_PARAM_CARDINALITY";
+     "ER_FOUND_COMMA_BUT_NO_FOLLOWING_PARAM";  
   public static final String ER_PREDICATE_ILLEGAL_SYNTAX = 
 	 "ER_PREDICATE_ILLEGAL_SYNTAX";
   public static final String ER_ILLEGAL_AXIS_NAME = "ER_ILLEGAL_AXIS_NAME";
@@ -505,9 +503,6 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   
   { ER_FOUND_COMMA_BUT_NO_FOLLOWING_PARAM,
       "Found ',' but no following function parameter definition."},
-  
-  { ER_INLINE_FUNCTION_PARAM_CARDINALITY,
-      "XPTY0004 : The inline function definition has {0} parameters. Expected 0 or 1."},
 
   { ER_PREDICATE_ILLEGAL_SYNTAX,
       "'..[predicate]' or '.[predicate]' is illegal syntax.  Use 'self::node()[predicate]' instead."},

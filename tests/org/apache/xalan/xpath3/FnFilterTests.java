@@ -16,6 +16,7 @@
  */
 package org.apache.xalan.xpath3;
 
+import org.apache.xalan.util.XslTestsErrorHandler;
 import org.apache.xalan.util.XslTransformTestsUtil;
 import org.apache.xalan.xslt3.XSLConstants;
 import org.junit.AfterClass;
@@ -75,6 +76,38 @@ public class FnFilterTests extends XslTransformTestsUtil {
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFnFilterTest4() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test4.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFnFilterTest5() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, 
+                                                            new XslTestsErrorHandler());
+    }
+    
+    @Test
+    public void xslFnFilterTest6() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, 
+                                                            new XslTestsErrorHandler());
     }
 
 }

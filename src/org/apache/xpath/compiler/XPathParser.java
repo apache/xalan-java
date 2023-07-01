@@ -1620,18 +1620,13 @@ public class XPathParser
           }    
       }
       
-      if (funcParamNameList.size() > 1) {
-          error(XPATHErrorResources.ER_INLINE_FUNCTION_PARAM_CARDINALITY, new Object[] { 
-                                                                Integer.valueOf(funcParamNameList.size()) });   
-      }
-      
       inlineFunction.setFuncParamNameList(funcParamNameList);
       
       consumeExpected(')');
       
       consumeExpected('{');
       
-      StringBuffer funcBodyXPathExprStrBuff = new StringBuffer();
+      List<String> funcBodyXPathExprStrPartsList = new ArrayList<String>();
       
       if (tokenIs('}')) {
           consumeExpected('}');    
@@ -1639,15 +1634,37 @@ public class XPathParser
       else {
          while (!tokenIs('}') && m_token != null)
          {
-             funcBodyXPathExprStrBuff.append(m_token);
+             funcBodyXPathExprStrPartsList.add(m_token);
              nextToken();
          }         
          consumeExpected('}');         
       }
       
+      StringBuffer funcBodyXPathExprStrBuff = new StringBuffer();
+      
+      Object[] funcBodyXPathExprStrPartsArr = funcBodyXPathExprStrPartsList.toArray();
+      
+      for (int idx = 0; idx < funcBodyXPathExprStrPartsArr.length; idx++) {
+          String xpathExprStrPart = null;
+          
+          if ("$".equals(funcBodyXPathExprStrPartsArr[idx]) && (idx < 
+                                                                  (funcBodyXPathExprStrPartsArr.length - 1))) {
+              xpathExprStrPart = "$" + funcBodyXPathExprStrPartsArr[idx + 1];
+              idx += 1;
+          }
+          else {
+              xpathExprStrPart = (String)funcBodyXPathExprStrPartsArr[idx]; 
+          }
+          
+          funcBodyXPathExprStrBuff.append(xpathExprStrPart + " ");
+      }
+      
       funcBodyXPathExprStr = funcBodyXPathExprStrBuff.toString();
       
-      inlineFunction.setFuncBodyXPathExprStr(funcBodyXPathExprStr);
+      if (funcBodyXPathExprStr.length() > 0) {
+         funcBodyXPathExprStr = funcBodyXPathExprStr.substring(0, funcBodyXPathExprStr.length() - 1); 
+         inlineFunction.setFuncBodyXPathExprStr(funcBodyXPathExprStr);
+      }
       
       return inlineFunction;
   }

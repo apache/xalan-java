@@ -610,6 +610,9 @@ public class XObject extends Expression implements Serializable, Cloneable
        else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
            return ((XSDate)this).lt((XSDate)obj2);    
        }
+       else if ((this instanceof XNumber) && (obj2 instanceof XNumber)) {
+           return ((XNumber)this).num() < ((XNumber)obj2).num(); 
+       }
        
        boolean isOperandNodeSet1 = false;
        boolean isOperandNodeSet2 = false;
