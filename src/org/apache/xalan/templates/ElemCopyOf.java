@@ -201,15 +201,16 @@ public class ElemCopyOf extends ElemTemplateElement
         case XObject.CLASS_RESULT_SEQUENCE :
           // added for XSLT 3.0
           ResultSequence resultSequence = (ResultSequence)value;
+          char[] spaceCharArr = new char[1];
+          spaceCharArr[0] = ' ';
           for (int idx = 0; idx < resultSequence.size(); idx++) {
              XObject sequenceItem = resultSequence.item(idx);
              
              if (sequenceItem.getType() == XObject.CLASS_STRING) {
                  String str = sequenceItem.str();
                  handler.characters(str.toCharArray(), 0, str.length());
-                 if (idx < (resultSequence.size() - 1)) {
-                     String strSpace = " ";
-                     handler.characters(strSpace.toCharArray(), 0, strSpace.length());
+                 if (idx < (resultSequence.size() - 1)) {                     
+                     handler.characters(spaceCharArr, 0, 1);
                  }
                  continue;
              }

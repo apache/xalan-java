@@ -17,6 +17,7 @@
 package org.apache.xpath.xs.types;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.apache.xpath.objects.ResultSequence;
@@ -255,17 +256,14 @@ public class XSDate extends XSCalendarType {
         boolean isDateBefore = false;
         
         Calendar cal1 = getCalendar();
-        Calendar cal2 = xsDate.getCalendar();                
+        Calendar cal2 = xsDate.getCalendar();
         
-        int year1 = cal1.get(Calendar.YEAR);
-        int month1 = cal1.get(Calendar.MONTH);
-        int date1 = cal1.get(Calendar.DATE);
+        Date date1 = new Date(cal1.get(Calendar.YEAR), cal1.get(Calendar.MONTH), 
+                                                                     cal1.get(Calendar.DATE));
+        Date date2 = new Date(cal2.get(Calendar.YEAR), cal2.get(Calendar.MONTH), 
+                                                                     cal2.get(Calendar.DATE));
         
-        int year2 = cal2.get(Calendar.YEAR);
-        int month2 = cal2.get(Calendar.MONTH);
-        int date2 = cal2.get(Calendar.DATE);
-        
-        isDateBefore = ((year1 + month1 + date1) < (year2 + month2 + date2)); 
+        isDateBefore = date1.before(date2); 
         
         return isDateBefore;
     }
@@ -280,15 +278,12 @@ public class XSDate extends XSCalendarType {
         Calendar cal1 = getCalendar();
         Calendar cal2 = xsDate.getCalendar();                
         
-        int year1 = cal1.get(Calendar.YEAR);
-        int month1 = cal1.get(Calendar.MONTH);
-        int date1 = cal1.get(Calendar.DATE);
+        Date date1 = new Date(cal1.get(Calendar.YEAR), cal1.get(Calendar.MONTH), 
+                                                                      cal1.get(Calendar.DATE));
+        Date date2 = new Date(cal2.get(Calendar.YEAR), cal2.get(Calendar.MONTH), 
+                                                                      cal2.get(Calendar.DATE));
         
-        int year2 = cal2.get(Calendar.YEAR);
-        int month2 = cal2.get(Calendar.MONTH);
-        int date2 = cal2.get(Calendar.DATE);
-        
-        isDateAfter = ((year1 + month1 + date1) > (year2 + month2 + date2)); 
+        isDateAfter = date1.after(date2); 
         
         return isDateAfter; 
     }
