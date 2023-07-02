@@ -220,7 +220,7 @@ public class FuncFilter extends Function2Args {
            
            int dtmNodeHandle;
            
-           while (DTM.NULL != (dtmNodeHandle = arg0DtmIterator.nextNode())) {
+           while (DTM.NULL != (dtmNodeHandle = arg0DtmIterator.nextNode())) {               
                XNodeSet inpSeqItem = new XNodeSet(dtmNodeHandle, xctxt.getDTMManager());
                if (varQname != null) {
                   inlineFunctionVarMap.put(varQname, inpSeqItem);

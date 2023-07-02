@@ -21,6 +21,7 @@
 package org.apache.xpath.compiler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.transform.ErrorListener;
@@ -76,6 +77,16 @@ public class XPathParser
   protected final static int FILTER_MATCH_PRIMARY    = 1;
   protected final static int FILTER_MATCH_PREDICATES = 2;
   
+  /*
+   * While parsing XPath 3.1 "function item" inline function expressions, we use this 
+   * constant string array to make parse decisions. The elements of this array are certain 
+   * XPath operator names that need this support.
+   */
+  static final String[] XPATH_INLINE_FN_OP_ARR = new String[] {"div", "or", "and", "mod", "to", 
+                                                                   "eq", "ne", "lt", "gt", "le", "ge"};
+  
+  List<String> fXpathInlineFunctionOpTokensList = null;
+  
   static InlineFunction fInlineFunction = null;
 
   /**
@@ -85,6 +96,7 @@ public class XPathParser
   {
     m_errorListener = errorListener;
     m_sourceLocator = sourceLocator;
+    fXpathInlineFunctionOpTokensList = Arrays.asList(XPATH_INLINE_FN_OP_ARR);
   }
 
   /**
@@ -1626,6 +1638,15 @@ public class XPathParser
       
       consumeExpected('{');
       
+      // While parsing the XPath expression string that forms body of inline
+      // function expression, we only get this XPath expression's string value,
+      // as determined below and store that within an object of class 
+      // 'InlineFunction', which is later used during evaluation of XPath 3.1
+      // higher-order functions like fn:for-each, fn:filter.
+      // This seems to be unlike all other XPath expression parsing (i.e, not involving
+      // the function item inline function expressions) implemented by XalanJ's XPath 1.0
+      // processor that uses this XPathParser class.
+      
       List<String> funcBodyXPathExprStrPartsList = new ArrayList<String>();
       
       if (tokenIs('}')) {
@@ -1647,22 +1668,28 @@ public class XPathParser
       for (int idx = 0; idx < funcBodyXPathExprStrPartsArr.length; idx++) {
           String xpathExprStrPart = null;
           
+          boolean isXpathInlineFunctionOpToken = false;
+          
           if ("$".equals(funcBodyXPathExprStrPartsArr[idx]) && (idx < 
                                                                   (funcBodyXPathExprStrPartsArr.length - 1))) {
+              // this handles, variable references within XPath expression inline function's body
               xpathExprStrPart = "$" + funcBodyXPathExprStrPartsArr[idx + 1];
               idx += 1;
           }
-          else {
-              xpathExprStrPart = (String)funcBodyXPathExprStrPartsArr[idx]; 
+          else {              
+              xpathExprStrPart = (String)funcBodyXPathExprStrPartsArr[idx];
+              if (fXpathInlineFunctionOpTokensList.contains(xpathExprStrPart)) {
+                 isXpathInlineFunctionOpToken = true;   
+              }
           }
           
-          funcBodyXPathExprStrBuff.append(xpathExprStrPart + " ");
+          funcBodyXPathExprStrBuff.append(isXpathInlineFunctionOpToken ? " " + xpathExprStrPart + 
+                                                                                           " " : xpathExprStrPart);
       }
       
-      funcBodyXPathExprStr = funcBodyXPathExprStrBuff.toString();
+      funcBodyXPathExprStr = (funcBodyXPathExprStrBuff.toString()).trim();
       
       if (funcBodyXPathExprStr.length() > 0) {
-         funcBodyXPathExprStr = funcBodyXPathExprStr.substring(0, funcBodyXPathExprStr.length() - 1); 
          inlineFunction.setFuncBodyXPathExprStr(funcBodyXPathExprStr);
       }
       
