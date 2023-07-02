@@ -27,6 +27,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.Variable;
 
 /**
@@ -69,9 +70,15 @@ public class FuncCount extends FunctionOneArg
            }
         }
         else if (m_arg0 instanceof Expression) {
-            DTMIterator nl = m_arg0.asIterator(xctxt, xctxt.getCurrentNode());
-            count = nl.getLength();	
-            nl.detach();
+            if (m_arg0 instanceof Range) {
+                ResultSequence resultSeq = (ResultSequence)(((Range)m_arg0).execute(xctxt));
+                count = resultSeq.size();
+            }
+            else {
+               DTMIterator nl = m_arg0.asIterator(xctxt, xctxt.getCurrentNode());
+               count = nl.getLength();	
+               nl.detach();
+            }
         }
     
         return new XNumber((double)count);    
