@@ -33,11 +33,10 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.objects.InlineFunction;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XObjectFactory;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.w3c.dom.Node;
 
 /**
  * Execute the for-each() function.
@@ -203,17 +202,19 @@ public class FuncForEach extends Function2Args {
         }
         else if (arg0DtmIterator != null) {                  
            Map<QName, XObject> inlineFunctionVarMap = xctxt.getInlineFunctionVarMap();
-        
+            
+           final int contextNode = xctxt.getCurrentNode();           
+            
            int dtmNodeHandle;
+            
            while (DTM.NULL != (dtmNodeHandle = arg0DtmIterator.nextNode())) {
-               DTM dtm = xctxt.getDTM(dtmNodeHandle);
-               Node node = dtm.getNode(dtmNodeHandle);
-               XObject xObject = XObjectFactory.create(node, xctxt);
+               XNodeSet inpSeqItem = new XNodeSet(dtmNodeHandle, xctxt.getDTMManager());
                if (varQname != null) {
-                  inlineFunctionVarMap.put(varQname, xObject);
+                  inlineFunctionVarMap.put(varQname, inpSeqItem);
                }
-        
-               XObject resultObj = inlineFnXpath.execute(xctxt, dtmNodeHandle, null);
+               
+               XObject resultObj = inlineFnXpath.execute(xctxt, contextNode, null);
+               
                resultSeq.add(resultObj);
            }
         

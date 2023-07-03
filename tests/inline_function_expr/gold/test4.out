@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>2 3 4 5 6 7 8 9 10 11</one>
+  <two>4 5 6 7 8 9 10 11 12 13</two>
+  <three>
+    <idx>1</idx>
+    <idx>2</idx>
+    <idx>3</idx>
+    <idx>4</idx>
+    <idx>5</idx>
+  </three>
+  <four>
+    <idx>6</idx>
+    <idx>7</idx>
+    <idx>8</idx>
+    <idx>9</idx>
+    <idx>10</idx>
+  </four>
+  <five>4 8 12 16 20</five>
+  <six>4 8 12 16 20</six>
+  <seven>
+    <sub>2</sub>
+    <sub>2 4</sub>
+    <sub>2 4 6</sub>
+    <sub>2 4 6 8</sub>
+    <sub>2 4 6 8 10</sub>
+    <sub>2 4 6 8 10 12</sub>
+    <sub>2 4 6 8 10 12 14</sub>
+    <sub>2 4 6 8 10 12 14 16</sub>
+    <sub>2 4 6 8 10 12 14 16 18</sub>
+    <sub>2 4 6 8 10 12 14 16 18 20</sub>
+  </seven>
+</result>

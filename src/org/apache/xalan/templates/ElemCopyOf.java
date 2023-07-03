@@ -33,6 +33,7 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
 /*
@@ -52,7 +53,7 @@ import org.apache.xpath.objects.XObject;
  */
 public class ElemCopyOf extends ElemTemplateElement
 {
-   static final long serialVersionUID = -7433828829497411127L;
+  static final long serialVersionUID = -7433828829497411127L;
 
   /**
    * The required select attribute contains an expression.
@@ -208,6 +209,13 @@ public class ElemCopyOf extends ElemTemplateElement
              
              if (sequenceItem.getType() == XObject.CLASS_STRING) {
                  String str = sequenceItem.str();
+                 handler.characters(str.toCharArray(), 0, str.length());
+                 if (idx < (resultSequence.size() - 1)) {                     
+                    handler.characters(spaceCharArr, 0, 1);
+                 }
+             }
+             else if (sequenceItem.getType() == XObject.CLASS_NUMBER) {
+                 String str = ((XNumber)sequenceItem).str();
                  handler.characters(str.toCharArray(), 0, str.length());
                  if (idx < (resultSequence.size() - 1)) {                     
                     handler.characters(spaceCharArr, 0, 1);
