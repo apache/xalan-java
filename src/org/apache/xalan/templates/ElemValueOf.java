@@ -26,6 +26,7 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.DynamicFunctionCall;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.XObject;
@@ -348,8 +349,17 @@ public class ElemValueOf extends ElemTemplateElement {
                      }
                      (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
+                  else if (expr instanceof DynamicFunctionCall) {
+                     DynamicFunctionCall dfc = (DynamicFunctionCall)expr;
+                     
+                     XObject evalResult = dfc.execute(xctxt);
+                     
+                     String strValue = evalResult.str();
+                     
+                     (new XString(strValue)).dispatchCharactersEvents(rth);
+                  }
                   else {
-                      expr.executeCharsToContentHandler(xctxt, rth);
+                     expr.executeCharsToContentHandler(xctxt, rth);
                   }
               }
           }
