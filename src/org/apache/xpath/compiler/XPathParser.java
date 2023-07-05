@@ -84,10 +84,10 @@ public class XPathParser
    * decisions. The elements of this array are certain XPath operator names 
    * that need this support.
    */
-  static final String[] XPATH_OP_ARR = new String[] {"div", "or", "and", "mod", "to", 
-                                                         "eq", "ne", "lt", "gt", "le", "ge"};
+  private static final String[] XPATH_OP_ARR = new String[] {"div", "or", "and", "mod", "to", 
+                                                                "eq", "ne", "lt", "gt", "le", "ge"};
   
-  List<String> fXpathOpArrTokensList = null;
+  private List<String> fXpathOpArrTokensList = null;
   
   static InlineFunction fInlineFunction = null;
   
