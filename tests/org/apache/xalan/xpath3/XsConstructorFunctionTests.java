@@ -30,7 +30,7 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class XsConstructorFunctions extends XslTransformTestsUtil {        
+public class XsConstructorFunctionTests extends XslTransformTestsUtil {        
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xs_constructor_functions/";
     

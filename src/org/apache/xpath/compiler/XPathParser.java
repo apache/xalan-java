@@ -31,6 +31,7 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPathProcessorException;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
+import org.apache.xpath.functions.DynamicFunctionCall;
 import org.apache.xpath.objects.InlineFunction;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XString;
@@ -78,16 +79,19 @@ public class XPathParser
   protected final static int FILTER_MATCH_PREDICATES = 2;
   
   /*
-   * While parsing XPath 3.1 "function item" inline function expressions, we use this 
-   * constant string array to make parse decisions. The elements of this array are certain 
-   * XPath operator names that need this support.
+   * While parsing XPath 3.1 "function item" inline function expressions and, 
+   * dynamic function calls, we use this constant string array to make parse 
+   * decisions. The elements of this array are certain XPath operator names 
+   * that need this support.
    */
-  static final String[] XPATH_INLINE_FN_OP_ARR = new String[] {"div", "or", "and", "mod", "to", 
-                                                                   "eq", "ne", "lt", "gt", "le", "ge"};
+  static final String[] XPATH_OP_ARR = new String[] {"div", "or", "and", "mod", "to", 
+                                                         "eq", "ne", "lt", "gt", "le", "ge"};
   
-  List<String> fXpathInlineFunctionOpTokensList = null;
+  List<String> fXpathOpArrTokensList = null;
   
   static InlineFunction fInlineFunction = null;
+  
+  static DynamicFunctionCall fDynamicFunctionCall = null;
 
   /**
    * The parser constructor.
@@ -96,7 +100,7 @@ public class XPathParser
   {
     m_errorListener = errorListener;
     m_sourceLocator = sourceLocator;
-    fXpathInlineFunctionOpTokensList = Arrays.asList(XPATH_INLINE_FN_OP_ARR);
+    fXpathOpArrTokensList = Arrays.asList(XPATH_OP_ARR);
   }
 
   /**
@@ -582,6 +586,35 @@ public class XPathParser
       // Should never happen.
       System.err.println(fmsg);
     }
+  }
+  
+  private String getXPathStrFromComponentParts(List<String> xpathExprStrPartList) {
+      StringBuffer funcBodyXPathExprStrBuff = new StringBuffer();
+      Object[] funcBodyXPathExprStrPartsArr = xpathExprStrPartList.toArray();
+      
+      for (int idx = 0; idx < funcBodyXPathExprStrPartsArr.length; idx++) {
+          String xpathExprStrPart = null;
+          
+          boolean isXpathInlineFunctionOpToken = false;
+          
+          if ("$".equals(funcBodyXPathExprStrPartsArr[idx]) && (idx < 
+                                                                  (funcBodyXPathExprStrPartsArr.length - 1))) {
+              // this handles, variable references within XPath expression inline function's body
+              xpathExprStrPart = "$" + funcBodyXPathExprStrPartsArr[idx + 1];
+              idx += 1;
+          }
+          else {              
+              xpathExprStrPart = (String)funcBodyXPathExprStrPartsArr[idx];
+              if (fXpathOpArrTokensList.contains(xpathExprStrPart)) {
+                 isXpathInlineFunctionOpToken = true;   
+              }
+          }
+          
+          funcBodyXPathExprStrBuff.append(isXpathInlineFunctionOpToken ? " " + xpathExprStrPart + 
+                                                                                        " " : xpathExprStrPart);
+      }
+      
+      return (funcBodyXPathExprStrBuff.toString()).trim();
   }
 
   /**
@@ -1510,9 +1543,13 @@ public class XPathParser
    * PrimaryExpr  ::=  VariableReference
    * | '(' Expr ')'
    * | Literal
+   * | VarRef ArgumentList
    * | Number
    * | FunctionCall
    * | FunctionItemExpr
+   * 
+   * The XPath grammar option 'VarRef ArgumentList' shown above
+   * denotes, dynamic function call.
    *
    * @return true if this method successfully matched a PrimaryExpr
    *
@@ -1535,6 +1572,63 @@ public class XPathParser
         m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
 
       matchFound = true;
+    }
+    else if ((m_tokenChar == '$') && (lookahead('(', 2))) {
+       // support for XPath 3.1 dynamic function calls
+                     
+       appendOp(2, OpCodes.OP_DYNAMIC_FUNCTION_CALL);
+       
+       nextToken();  // consume '$'
+       
+       String funcRefVarName = m_token;       
+       nextToken();
+       consumeExpected('(');
+       
+       // While parsing the arguments detail of a dynamic function call,
+       // we use the code as specified below, and store the resulting
+       // information within an object of class 'DynamicFunctionCall'.
+       
+       List<String> argList = new ArrayList<>();
+       
+       List<String> argDetailsStrPartsList = new ArrayList<String>();
+       
+       while (!tokenIs(')') && m_token != null)
+       {
+          argDetailsStrPartsList.add(m_token);
+          nextToken();
+       }
+       
+       int startIdx = 0;
+       int idxComma;       
+       while (argDetailsStrPartsList.contains(",") && 
+                         (idxComma = argDetailsStrPartsList.indexOf(",")) != -1) {
+          List<String> lst1 = argDetailsStrPartsList.subList(startIdx, idxComma);
+          
+          String xpathStr = getXPathStrFromComponentParts(lst1);
+          
+          argList.add(xpathStr);
+          
+          List<String> lst2 = argDetailsStrPartsList.subList(idxComma + 1, 
+                                                                           argDetailsStrPartsList.size());
+          
+          argDetailsStrPartsList = lst2; 
+       }
+       
+       if (argDetailsStrPartsList.size() > 0) {
+           String xpathStr = getXPathStrFromComponentParts(argDetailsStrPartsList);
+           argList.add(xpathStr);
+       }
+
+       consumeExpected(')');
+       
+       fDynamicFunctionCall = new DynamicFunctionCall();
+       fDynamicFunctionCall.setFuncRefVarName(funcRefVarName);
+       fDynamicFunctionCall.setArgList(argList);
+       
+       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+       
+       matchFound = true;
     }
     else if (m_tokenChar == '$')
     {
@@ -1641,11 +1735,7 @@ public class XPathParser
       // While parsing the XPath expression string that forms body of inline
       // function expression, we only get this XPath expression's string value,
       // as determined below and store that within an object of class 
-      // 'InlineFunction', which is later used during evaluation of XPath 3.1
-      // higher-order functions like fn:for-each, fn:filter.
-      // This seems to be unlike all other XPath expression parsing (i.e, not involving
-      // the function item inline function expressions) implemented by XalanJ's XPath 1.0
-      // processor that uses this XPathParser class.
+      // 'InlineFunction'.
       
       List<String> funcBodyXPathExprStrPartsList = new ArrayList<String>();
       
@@ -1661,33 +1751,7 @@ public class XPathParser
          consumeExpected('}');         
       }
       
-      StringBuffer funcBodyXPathExprStrBuff = new StringBuffer();
-      
-      Object[] funcBodyXPathExprStrPartsArr = funcBodyXPathExprStrPartsList.toArray();
-      
-      for (int idx = 0; idx < funcBodyXPathExprStrPartsArr.length; idx++) {
-          String xpathExprStrPart = null;
-          
-          boolean isXpathInlineFunctionOpToken = false;
-          
-          if ("$".equals(funcBodyXPathExprStrPartsArr[idx]) && (idx < 
-                                                                  (funcBodyXPathExprStrPartsArr.length - 1))) {
-              // this handles, variable references within XPath expression inline function's body
-              xpathExprStrPart = "$" + funcBodyXPathExprStrPartsArr[idx + 1];
-              idx += 1;
-          }
-          else {              
-              xpathExprStrPart = (String)funcBodyXPathExprStrPartsArr[idx];
-              if (fXpathInlineFunctionOpTokensList.contains(xpathExprStrPart)) {
-                 isXpathInlineFunctionOpToken = true;   
-              }
-          }
-          
-          funcBodyXPathExprStrBuff.append(isXpathInlineFunctionOpToken ? " " + xpathExprStrPart + 
-                                                                                           " " : xpathExprStrPart);
-      }
-      
-      funcBodyXPathExprStr = (funcBodyXPathExprStrBuff.toString()).trim();
+      funcBodyXPathExprStr = getXPathStrFromComponentParts(funcBodyXPathExprStrPartsList);
       
       if (funcBodyXPathExprStr.length() > 0) {
          inlineFunction.setFuncBodyXPathExprStr(funcBodyXPathExprStr);
@@ -2641,4 +2705,5 @@ public class XPathParser
 
     return trailingSlashConsumed;
   }
+  
 }

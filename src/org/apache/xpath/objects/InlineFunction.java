@@ -23,9 +23,9 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
 
 /*
- * The XalanJ xpath parser, creates and populates this object,
- * as a representation of XPath 3.1 function item "inline function" 
- * definition within XPath expressions.
+ * The XalanJ xpath parser, creates and populates an object of this 
+ * class, as a representation of XPath 3.1 function item "inline 
+ * function" definition within XPath expressions.
  * 
  * The XPath 3.1 spec, defines function item "inline function" XPath 
  * expressions with following grammar,
@@ -43,7 +43,7 @@ import org.apache.xpath.XPathVisitor;
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *   
- * @xsl.usage advanced  
+ * @xsl.usage advanced 
  */
 public class InlineFunction extends XObject {
 

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <val length="1">h</val>
+  <val length="2">he</val>
+  <val length="3">hel</val>
+  <val length="4">hell</val>
+  <val length="5">hello</val>
+  <val length="6">hello </val>
+  <val length="7">hello w</val>
+  <val length="8">hello wo</val>
+  <val length="9">hello wor</val>
+  <val length="10">hello worl</val>
+</result>

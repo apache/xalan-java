@@ -214,7 +214,7 @@ public class Variable extends Expression implements PathComponent
     
     if (inlineFuncVarValue != null) {
         // dereferencing, XPath 3.1 function item "inline function" 
-        // parameter references within "inline function" body. 
+        // parameter reference within "inline function" body. 
         result = inlineFuncVarValue;
         return result;
     }
