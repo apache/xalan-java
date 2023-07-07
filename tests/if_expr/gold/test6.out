@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <part>
+    <name>part1</name>
+    <wholesale>
+       <price>5</price>
+    </wholesale>
+  </part>
+  <part>
+    <name>part2</name>
+    <retail>
+       <price>15</price>       
+    </retail>
+  </part>
+</result>

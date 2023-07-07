@@ -129,6 +129,8 @@ public class Compiler extends OpMap
     {
     case OpCodes.OP_XPATH :
       expr = compile(opPos + 2); break;
+    case OpCodes.OP_IF_EXPR :
+      expr = ifExpr(opPos); break;
     case OpCodes.OP_OR :
       expr = or(opPos); break;
     case OpCodes.OP_AND :
@@ -1169,6 +1171,11 @@ private static final boolean DEBUG = false;
   Expression compileDynamicFunctionCall(int opPos) throws TransformerException
   {
       return XPathParser.fDynamicFunctionCall;
+  }
+  
+  Expression ifExpr(int opPos) throws TransformerException
+  {
+      return XPathParser.fIfExpr;
   }
 
   // The current id for extension functions.
