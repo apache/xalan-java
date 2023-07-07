@@ -30,6 +30,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPathProcessorException;
+import org.apache.xpath.composite.IfExpr;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
 import org.apache.xpath.functions.DynamicFunctionCall;
 import org.apache.xpath.objects.InlineFunction;
@@ -79,19 +80,23 @@ public class XPathParser
   protected final static int FILTER_MATCH_PREDICATES = 2;
   
   /*
-   * While parsing XPath 3.1 "function item" inline function expressions and, 
-   * dynamic function calls, we use this constant string array to make parse 
-   * decisions. The elements of this array are certain XPath operator names 
-   * that need this support.
+   * While parsing certain XPath 3.1 expressions, we use this constant string 
+   * array to make parse decisions. The elements of this array are certain 
+   * XPath 'operator names' and 'key words' that need this support.
    */
   private static final String[] XPATH_OP_ARR = new String[] {"div", "or", "and", "mod", "to", 
-                                                                "eq", "ne", "lt", "gt", "le", "ge"};
+                                                              "eq", "ne", "lt", "gt", "le", "ge", 
+                                                              "if", "then", "else"};
   
   private List<String> fXpathOpArrTokensList = null;
   
   static InlineFunction fInlineFunction = null;
   
   static DynamicFunctionCall fDynamicFunctionCall = null;
+  
+  static IfExpr fIfExpr = null;
+  
+  private boolean fIsXpathPredicateParsingActive = false;
 
   /**
    * The parser constructor.
@@ -599,7 +604,8 @@ public class XPathParser
           
           if ("$".equals(funcBodyXPathExprStrPartsArr[idx]) && (idx < 
                                                                   (funcBodyXPathExprStrPartsArr.length - 1))) {
-              // this handles, variable references within XPath expression inline function's body
+              // this handles, variable references within XPath expression string
+              // that's been formed within this method.
               xpathExprStrPart = "$" + funcBodyXPathExprStrPartsArr[idx + 1];
               idx += 1;
           }
@@ -831,14 +837,86 @@ public class XPathParser
   /**
    *
    *
-   * Expr  ::=  OrExpr
-   *
+   * Expr  ::=  IfExpr 
+   *   | OrExpr
    *
    * @throws javax.xml.transform.TransformerException
    */
   protected void Expr() throws javax.xml.transform.TransformerException
   {
-    OrExpr();
+      if (tokenIs("if")) {         
+         fIfExpr = IfExpr();
+      }
+      else {
+         OrExpr();
+      }
+  }
+  
+  protected IfExpr IfExpr() throws javax.xml.transform.TransformerException
+  {
+      int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+      
+      nextToken();
+      
+      insertOp(opPos, 2, OpCodes.OP_IF_EXPR);
+      
+      IfExpr ifExpr = new IfExpr();            
+      
+      consumeExpected('(');
+      
+      List<String> conditionalExprXPathStrPartsList = new ArrayList<String>();
+      
+      while (!tokenIs("then") && m_token != null)
+      {
+          conditionalExprXPathStrPartsList.add(m_token);
+          nextToken();
+      }
+      
+      consumeExpected("then");
+      
+      conditionalExprXPathStrPartsList = conditionalExprXPathStrPartsList.subList(0, 
+                                                             conditionalExprXPathStrPartsList.size() - 1);
+      
+      String conditionalXPathExprStr = getXPathStrFromComponentParts(conditionalExprXPathStrPartsList);
+      
+      List<String> thenExprXPathStrPartsList = new ArrayList<String>();
+      
+      while (!tokenIs("else") && m_token != null)
+      {
+          thenExprXPathStrPartsList.add(m_token);
+          nextToken();
+      }
+      
+      consumeExpected("else");
+      
+      String thenXPathExprStr = getXPathStrFromComponentParts(thenExprXPathStrPartsList);            
+      
+      List<String> elseExprXPathStrPartsList = new ArrayList<String>();
+      
+      while (m_token != null)
+      {
+          if (fIsXpathPredicateParsingActive && lookahead(']', 1)) {
+             elseExprXPathStrPartsList.add(m_token);
+             elseExprXPathStrPartsList.subList(0, elseExprXPathStrPartsList.size() - 1);
+             nextToken();
+             break;
+          }
+          else {
+             elseExprXPathStrPartsList.add(m_token);
+             nextToken();
+          }          
+      }
+      
+      String elseXPathExprStr = getXPathStrFromComponentParts(elseExprXPathStrPartsList);
+      
+      ifExpr.setConditionalExprXPathStr(conditionalXPathExprStr);
+      ifExpr.setThenExprXPathStr(thenXPathExprStr);
+      ifExpr.setElseExprXPathStr(elseXPathExprStr);
+      
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                                    m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+      
+      return ifExpr;      
   }
 
   /**
@@ -1548,7 +1626,7 @@ public class XPathParser
    * | FunctionCall
    * | FunctionItemExpr
    * 
-   * The XPath grammar option 'VarRef ArgumentList' shown above
+   * The XPath grammar option 'VarRef ArgumentList' mentioned above
    * denotes, dynamic function call.
    *
    * @return true if this method successfully matched a PrimaryExpr
@@ -2239,9 +2317,12 @@ public class XPathParser
 
     if (tokenIs('['))
     {
+      fIsXpathPredicateParsingActive = true;
+      
       nextToken();
-      PredicateExpr();
-      consumeExpected(']');
+      PredicateExpr();      
+      fIsXpathPredicateParsingActive = false;      
+      consumeExpected(']');                  
     }
   }
 

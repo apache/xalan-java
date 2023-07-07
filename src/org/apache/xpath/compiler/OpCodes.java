@@ -679,8 +679,10 @@ public class OpCodes
   public static final int OP_INLINE_FUNCTION = 61;
   
   public static final int OP_DYNAMIC_FUNCTION_CALL = 62;
+  
+  public static final int OP_IF_EXPR = 63;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 63;
+  private static final int NEXT_FREE_ID = 64;
   
 }
