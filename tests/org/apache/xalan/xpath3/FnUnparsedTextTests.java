@@ -86,5 +86,15 @@ public class FnUnparsedTextTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }
+    
+    @Test
+    public void xslFnUnparsedTextTest5() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }

@@ -108,19 +108,25 @@ public class IfExpr extends Expression {
        
        XPath conditionlExprXpath = new XPath(conditionalExprXPathStr, srcLocator, null, 
                                                                             XPath.SELECT, null);
-       conditionlExprXpath.fixupVariables(fVars, fGlobalsSize);
+       if (fVars != null) {
+          conditionlExprXpath.fixupVariables(fVars, fGlobalsSize);
+       }
        
        XObject conditionalXpathExprResult = conditionlExprXpath.execute(xctxt, contextNode, null);
        
        if (conditionalXpathExprResult.bool()) {
            XPath thenExprXpath = new XPath(thenExprXPathStr, srcLocator, null, XPath.SELECT, null);
-           thenExprXpath.fixupVariables(fVars, fGlobalsSize);
+           if (fVars != null) {
+              thenExprXpath.fixupVariables(fVars, fGlobalsSize);
+           }
            
            evalResult = thenExprXpath.execute(xctxt, contextNode, null);
        }
        else {
            XPath elseExprXpath = new XPath(elseExprXPathStr, srcLocator, null, XPath.SELECT, null);
-           elseExprXpath.fixupVariables(fVars, fGlobalsSize);
+           if (fVars != null) {
+              elseExprXpath.fixupVariables(fVars, fGlobalsSize);
+           }
            
            evalResult = elseExprXpath.execute(xctxt, contextNode, null);
        }

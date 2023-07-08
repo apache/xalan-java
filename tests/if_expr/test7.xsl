@@ -4,28 +4,30 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_c.xml -->
+   <!-- use with test1_f.xml -->
    
-   <!-- An XSLT stylesheet, to test the XPath 3.1 "if" conditional 
-        expression, when used within xsl:for-each-group to transform
-        the current-grouping-key() value. -->                 
+   <!-- Test case description : This XSLT stylesheet, searches an XML input 
+        document's contents, for the keywords mentioned within an auxiliary 
+        text file srch_file.txt and produces the search results as output
+        of XSLT transformation. -->                 
 
    <xsl:output method="xml" indent="yes"/>
    
-   <xsl:variable name="gThan" select="function($x, $y) { $x gt $y }"/>
-
-   <xsl:template match="/elem">
-      <result>
-        <xsl:for-each-group select="item" group-by="$gThan(a, b)">
-           <xsl:variable name="grtOrLess" select="if (string(current-grouping-key()) eq 'true') 
-                                                                  then 'greater' 
-                                                                  else 'lessOrEqual'"/>
-           <xsl:element name="{$grtOrLess}">
-              <xsl:attribute name="count" select="count(current-group())"/>
-              <xsl:copy-of select="current-group()"/>
-           </xsl:element>
-        </xsl:for-each-group>
-      </result>
+   <xsl:variable name="scfFileContents" select="unparsed-text('srch_file.txt')"/>
+   
+   <xsl:variable name="filterCheck" select="function($str, $srch) { if (contains($str, $srch)) 
+                                                                           then true() 
+                                                                           else false() }"/>
+                                                                           
+   <xsl:template match="/">      
+      <xsl:variable name="srchInp" select="/list/word"/>
+      <xsl:variable name="srchKeyWords" select="tokenize($scfFileContents, ',')"/>
+      <xsl:for-each select="$srchKeyWords">
+        <xsl:variable name="keyWord" select="."/>
+        <srchResult> 
+          <xsl:copy-of select="$srchInp[$filterCheck(., $keyWord)]"/>
+        </srchResult>
+      </xsl:for-each>
    </xsl:template>
    
    <!--

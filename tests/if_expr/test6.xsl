@@ -4,27 +4,30 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_c.xml -->
+   <!-- use with test1_f.xml -->
    
    <!-- An XSLT stylesheet, to test the XPath 3.1 "if" conditional 
-        expression, when used within xsl:for-each-group to transform
-        the current-grouping-key() value. -->                 
+        expression. The XPath "if" conditional expression example 
+        illustrated within this stylesheet test, is written within 
+        body of an XPath function item expression. -->                
 
    <xsl:output method="xml" indent="yes"/>
    
-   <xsl:variable name="gThan" select="function($x, $y) { $x gt $y }"/>
+   <xsl:variable name="filterCheck" select="function($str, $srch) { if (contains($str, $srch)) 
+                                                                           then true() 
+                                                                           else false() }"/>
 
-   <xsl:template match="/elem">
+   <xsl:template match="/list">
       <result>
-        <xsl:for-each-group select="item" group-by="$gThan(a, b)">
-           <xsl:variable name="grtOrLess" select="if (string(current-grouping-key()) eq 'true') 
-                                                                  then 'greater' 
-                                                                  else 'lessOrEqual'"/>
-           <xsl:element name="{$grtOrLess}">
-              <xsl:attribute name="count" select="count(current-group())"/>
-              <xsl:copy-of select="current-group()"/>
-           </xsl:element>
-        </xsl:for-each-group>
+         <one> 
+            <xsl:copy-of select="word[$filterCheck(., 'l')]"/>
+         </one>
+         <two> 
+	        <xsl:copy-of select="word[$filterCheck(., 'is')]"/>
+         </two>
+         <three> 
+            <xsl:copy-of select="word[$filterCheck(., 'm')]"/>
+         </three>
       </result>
    </xsl:template>
    
