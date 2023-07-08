@@ -25,6 +25,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
@@ -316,6 +317,12 @@ public class ElemVariable extends ElemTemplateElement
             XObject evalResult = opn.operate(leftOperand, rightOperand);
             
             return evalResult;
+        }
+        else if (selectExpression instanceof SelfIteratorNoPredicate) {
+            XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+            if (xpath3ContextItem != null) {
+               return xpath3ContextItem;     
+            }
         }
   
         if (var == null) {
