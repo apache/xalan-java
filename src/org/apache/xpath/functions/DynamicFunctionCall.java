@@ -51,6 +51,12 @@ public class DynamicFunctionCall extends Expression {
     private String funcRefVarName;
     
     private List<String> argList;
+    
+    // the following two fields of this class, are used during 
+    // XPath.fixupVariables(..) action as performed within object of 
+    // this class.    
+    private Vector fVars;    
+    private int fGlobalsSize;
 
     public String getFuncRefVarName() {
         return funcRefVarName;
@@ -104,14 +110,12 @@ public class DynamicFunctionCall extends Expression {
               String funcParamName = funcParamNameList.get(idx);
               
               String argXPathStr = argList.get(idx);
-              XObject argValue = null;
-              if (argXPathStr.startsWith("$")) {
-                 argValue = exprContext.getVariableOrParam(new QName(argXPathStr.substring(1)));
+              
+              XPath argXpath = new XPath(argXPathStr, srcLocator, null, XPath.SELECT, null);
+              if (fVars != null) {
+                 argXpath.fixupVariables(fVars, fGlobalsSize);
               }
-              else {
-                 XPath argXpath = new XPath(argXPathStr, srcLocator, null, XPath.SELECT, null);
-                 argValue = argXpath.execute(xctxt, contextNode, null);
-              }
+              XObject argValue = argXpath.execute(xctxt, contextNode, null);
               
               inlineFunctionVarMap.put(new QName(funcParamName), argValue);
            }
@@ -127,7 +131,8 @@ public class DynamicFunctionCall extends Expression {
 
     @Override
     public void fixupVariables(Vector vars, int globalsSize) {
-       // no op
+        fVars = (Vector)(vars.clone());
+        fGlobalsSize = globalsSize; 
     }
 
     @Override

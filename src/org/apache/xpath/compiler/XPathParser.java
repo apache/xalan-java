@@ -90,14 +90,16 @@ public class XPathParser
   
   private List<String> fXpathOpArrTokensList = null;
   
+  private boolean fDynamicFunctionCallArgumentMarker = false;
+  
+  private boolean fIsXpathPredicateParsingActive = false;
+  
   static InlineFunction fInlineFunction = null;
   
   static DynamicFunctionCall fDynamicFunctionCall = null;
   
   static IfExpr fIfExpr = null;
   
-  private boolean fIsXpathPredicateParsingActive = false;
-
   /**
    * The parser constructor.
    */
@@ -621,6 +623,52 @@ public class XPathParser
       }
       
       return (funcBodyXPathExprStrBuff.toString()).trim();
+  }
+  
+  private boolean isXpathDynamicFuncCallParseAhead(List<String> argDetailsStrPartsList, 
+                                                                                  String delim) {
+      boolean isXpathDynamicFuncCallParseAhead = false;
+
+      if (lookahead('(', 1)) {
+         // handles the case, where the function call argument
+         // is itself another function call.
+         fDynamicFunctionCallArgumentMarker = true;
+         argDetailsStrPartsList.add(m_token);
+         nextToken();
+         isXpathDynamicFuncCallParseAhead = true;
+      }
+      else if (tokenIs(')') && lookahead(',', 1)) {
+         argDetailsStrPartsList.add(m_token);          
+         nextToken();
+         argDetailsStrPartsList.add(delim);
+         nextToken();
+         fDynamicFunctionCallArgumentMarker = false;
+         isXpathDynamicFuncCallParseAhead = true;
+      }
+      else if (lookahead(',', 1)) {
+         argDetailsStrPartsList.add(m_token);
+         nextToken();
+         if (!fDynamicFunctionCallArgumentMarker) {
+            argDetailsStrPartsList.add(delim);
+            nextToken();
+         }
+         else {
+            argDetailsStrPartsList.add(m_token);
+            nextToken();
+         }
+         isXpathDynamicFuncCallParseAhead = true; 
+      }
+      else if (!tokenIs(')')) {
+         argDetailsStrPartsList.add(m_token);
+         nextToken();
+         isXpathDynamicFuncCallParseAhead = true; 
+      }
+      else if (fDynamicFunctionCallArgumentMarker) {
+         argDetailsStrPartsList.add(m_token);
+         nextToken();
+      }
+
+      return isXpathDynamicFuncCallParseAhead; 
   }
 
   /**
@@ -1670,23 +1718,31 @@ public class XPathParser
        
        List<String> argDetailsStrPartsList = new ArrayList<String>();
        
-       while (!tokenIs(')') && m_token != null)
+       // we create here a temporary function call argument delimiter 
+       // string, for this processing.
+       long currentTimeMills = System.currentTimeMillis();
+       String delimSuffix = (Long.valueOf(currentTimeMills)).toString();
+       String delim = "t0_" + delimSuffix;
+       
+       while (m_token != null && isXpathDynamicFuncCallParseAhead(
+                                                      argDetailsStrPartsList, delim))
        {
-          argDetailsStrPartsList.add(m_token);
-          nextToken();
+          // no op here
        }
        
+       fDynamicFunctionCallArgumentMarker = false;
+       
        int startIdx = 0;
-       int idxComma;       
-       while (argDetailsStrPartsList.contains(",") && 
-                         (idxComma = argDetailsStrPartsList.indexOf(",")) != -1) {
-          List<String> lst1 = argDetailsStrPartsList.subList(startIdx, idxComma);
+       int idxDelim;       
+       while (argDetailsStrPartsList.contains(delim) && 
+                         (idxDelim = argDetailsStrPartsList.indexOf(delim)) != -1) {
+          List<String> lst1 = argDetailsStrPartsList.subList(startIdx, idxDelim);
           
           String xpathStr = getXPathStrFromComponentParts(lst1);
           
           argList.add(xpathStr);
           
-          List<String> lst2 = argDetailsStrPartsList.subList(idxComma + 1, 
+          List<String> lst2 = argDetailsStrPartsList.subList(idxDelim + 1, 
                                                                            argDetailsStrPartsList.size());
           
           argDetailsStrPartsList = lst2; 
