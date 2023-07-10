@@ -130,7 +130,7 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   private XSDuration m_timezone;
   
   // we use this java.util.Map object, to store for XPath 3.1 function item 
-  // "inline function" the parameter names and their values. we don't use,
+  // "inline function", the parameter names and their values. we don't use,
   // XalanJ XPath context's variable stack for this purpose. 
   private Map<QName, XObject> inlineFunctionVarMap = new HashMap<QName, XObject>();
 	

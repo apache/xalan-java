@@ -214,8 +214,14 @@ public class Variable extends Expression implements PathComponent
     
     if (inlineFuncVarValue != null) {
         // dereferencing, XPath 3.1 function item "inline function" 
-        // parameter reference within "inline function" body. 
-        result = inlineFuncVarValue;
+        // parameter reference within "inline function" body.
+        if (inlineFuncVarValue instanceof XNodeSet) {
+           result = ((XNodeSet)inlineFuncVarValue).getFresh();    
+        }
+        else {
+           result = inlineFuncVarValue;
+        }
+        
         return result;
     }
     
