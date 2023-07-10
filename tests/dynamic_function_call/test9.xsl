@@ -4,21 +4,20 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_a.xml -->
+   <!-- use with test1_c.xml -->
    
    <!-- An XSLT stylesheet, to test the XPath 3.1 dynamic function 
-        call. -->                
+        call. The argument passed with the dynamic function call within
+        this stylesheet example, is an XML element node with a sub 
+        structure.-->                
 
    <xsl:output method="xml" indent="yes"/>
    
-   <xsl:variable name="func1" select="function($x) { $x * $x }"/>
+   <xsl:variable name="isItemOk" select="function($item) { $item/a gt $item/b }"/>
 
    <xsl:template match="/list">
       <result>
-         <xsl:for-each select="idx">
-            <xsl:variable name="n1" select="number(.)"/>
-            <val><xsl:value-of select="$func1($n1) - 3"/></val>
-         </xsl:for-each>  
+         <xsl:copy-of select="item[$isItemOk(.)]"/> 
       </result>
    </xsl:template>
    

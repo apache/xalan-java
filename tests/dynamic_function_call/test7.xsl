@@ -7,7 +7,7 @@
    <!-- use with test1_c.xml -->
    
    <!-- An XSLT stylesheet, to test the XPath 3.1 dynamic function 
-        calls when used with xsl:for-each-group. -->                 
+        call when used with xsl:for-each-group. -->                 
 
    <xsl:output method="xml" indent="yes"/>
    

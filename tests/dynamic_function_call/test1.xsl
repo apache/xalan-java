@@ -5,7 +5,7 @@
    <!-- Author: mukulg@apache.org -->
    
    <!-- An XSLT stylesheet, to test the XPath 3.1 dynamic function 
-        calls. -->                
+        call. -->                
 
    <xsl:output method="xml" indent="yes"/>
    
