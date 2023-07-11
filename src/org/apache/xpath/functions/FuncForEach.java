@@ -19,6 +19,7 @@ package org.apache.xpath.functions;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
@@ -61,9 +62,15 @@ public class FuncForEach extends Function2Args {
 
    private static final long serialVersionUID = 2912594883291006421L;
    
-   private static final String FUNCTION_NAME = "for-each()"; 
+   private static final String FUNCTION_NAME = "for-each()";
+   
+   // the following two fields of this class, are used during 
+   // XPath.fixupVariables(..) action as performed within object of 
+   // this class.    
+   private Vector fVars;    
+   private int fGlobalsSize;
 
-  /**
+   /**
    * Execute the function. The function must return a valid object.
    * 
    * @param xctxt The current execution context.
@@ -87,11 +94,15 @@ public class FuncForEach extends Function2Args {
         DTMIterator arg0DtmIterator = null;
         
         XObject arg0XsObject = null;
+        
+        if (fVars != null) {
+           arg0.fixupVariables(fVars, fGlobalsSize);
+        }
                   
         if (arg0 instanceof LocPathIterator) {
             arg0DtmIterator = arg0.asIterator(xctxt, contextNode);               
         }
-        else {
+        else {            
             arg0XsObject = arg0.execute(xctxt, contextNode);
         }
         
@@ -103,6 +114,10 @@ public class FuncForEach extends Function2Args {
             resultSeq = evaluateFnForEach(xctxt, arg0XsObject, arg0DtmIterator, inlineFuncArg); 
         }
         else if (arg1 instanceof Variable) {
+            if (fVars != null) {
+               arg1.fixupVariables(fVars, fGlobalsSize);
+            }
+            
             XObject arg1VarValue = arg1.execute(xctxt);
             if (arg1VarValue instanceof InlineFunction) {
                 InlineFunction inlineFuncArg = (InlineFunction)arg1VarValue;
@@ -149,6 +164,12 @@ public class FuncForEach extends Function2Args {
                                               XPATHErrorResources.ER_TWO, null)); //"2"
   }
   
+  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  {
+      fVars = (Vector)(vars.clone());
+      fGlobalsSize = globalsSize; 
+  }
+  
   /*
    * Validate the, number of function parameters, that the inline function is allowed to have for fn:for-each.
    */
@@ -193,7 +214,7 @@ public class FuncForEach extends Function2Args {
                if (varQname != null) {
                   inlineFunctionVarMap.put(varQname, inpSeqItem);
                }
-        
+               
                XObject resultObj = inlineFnXpath.execute(xpathContextNew, DTM.NULL, null);
                resultSeq.add(resultObj);
            }
@@ -211,6 +232,15 @@ public class FuncForEach extends Function2Args {
                XNodeSet inpSeqItem = new XNodeSet(dtmNodeHandle, xctxt.getDTMManager());
                if (varQname != null) {
                   inlineFunctionVarMap.put(varQname, inpSeqItem);
+               }
+               
+               if (fVars != null) {
+                  // this is used so that, 'fixupVariables' action performed below
+                  // shall work fine for function item parameter references within 
+                  // XPath expression denoted by 'inlineFnXpath'.
+                  m_inlineFnVariableName = varQname;
+                  inlineFnXpath.fixupVariables(fVars, fGlobalsSize);               
+                  m_inlineFnVariableName = null;
                }
                
                XObject resultObj = inlineFnXpath.execute(xctxt, contextNode, null);
