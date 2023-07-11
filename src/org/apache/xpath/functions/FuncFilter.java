@@ -19,6 +19,7 @@ package org.apache.xpath.functions;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
@@ -66,9 +67,15 @@ public class FuncFilter extends Function2Args {
 
    private static final long serialVersionUID = 2912594883291006421L;
    
-   private static final String FUNCTION_NAME = "filter()"; 
+   private static final String FUNCTION_NAME = "filter()";
+   
+   // the following two fields of this class, are used during 
+   // XPath.fixupVariables(..) action as performed within object of 
+   // this class.    
+   private Vector fVars;    
+   private int fGlobalsSize;
 
-  /**
+   /**
    * Execute the function. The function must return a valid object.
    * 
    * @param xctxt The current execution context.
@@ -154,6 +161,12 @@ public class FuncFilter extends Function2Args {
                                               XPATHErrorResources.ER_TWO, null)); //"2"
   }
   
+  public void fixupVariables(java.util.Vector vars, int globalsSize)
+  {
+      fVars = (Vector)(vars.clone());
+      fGlobalsSize = globalsSize; 
+  }
+  
   /*
    * Validate the, number of function parameters, that the inline function is allowed to have for fn:filter.
    */
@@ -222,8 +235,18 @@ public class FuncFilter extends Function2Args {
            
            while (DTM.NULL != (dtmNodeHandle = arg0DtmIterator.nextNode())) {               
                XNodeSet inpSeqItem = new XNodeSet(dtmNodeHandle, xctxt.getDTMManager());
+               
                if (varQname != null) {
                   inlineFunctionVarMap.put(varQname, inpSeqItem);
+               }
+               
+               if (fVars != null) {
+                  // this is used so that, 'fixupVariables' action performed below
+                  // shall work fine for function item parameter references within 
+                  // XPath expression denoted by 'inlineFnXpath'.
+                  m_inlineFnVariableName = varQname;               
+                  inlineFnXpath.fixupVariables(fVars, fGlobalsSize);               
+                  m_inlineFnVariableName = null;
                }
                
                XObject resultObj = inlineFnXpath.execute(xctxt, contextNode, null);

@@ -26,11 +26,11 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
-
 import org.xml.sax.ContentHandler;
 
 /**
@@ -52,6 +52,10 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
    *  @serial
    */
   private ExpressionNode m_parent;
+  
+  // to support, XPath.fixupVariables(..) action when done for XPath
+  // function item "inline function" body's XPath expression.
+  protected static QName m_inlineFnVariableName = null;
 
   /**
    * Tell if this expression or it's subexpressions can traverse outside

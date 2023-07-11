@@ -43,9 +43,9 @@
 	        <xsl:copy-of select="for-each(filter(list/idx, $func5), function($x) { $x * 2 })"/>
 	     </six>
 	     <seven>
-	         <xsl:apply-templates select="list/idx">
-	            <xsl:with-param name="funcA" select="function($x) { $x * 2 }"/>
-	         </xsl:apply-templates>
+	        <xsl:apply-templates select="list/idx">
+	           <xsl:with-param name="funcA" select="function($x) { $x * 2 }"/>
+	        </xsl:apply-templates>
 	     </seven>
       </result>
    </xsl:template>
