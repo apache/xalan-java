@@ -100,28 +100,28 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    */
   private boolean m_isSecureProcessing = false;
   
-  /*
-   *  data value, representing the XPath 3.1's current 
-   *  evaluation context item.
+  /**
+   *  This data value, represents the XPath 3.1's current evaluation 
+   *  context item.
    */
   private XObject m_xpath3ContextItem = null;
   
-  /*
-   *  data value, representing the XPath 3.1's current 
-   *  evaluation context position.
+  /**
+   *  This data value, represents the XPath 3.1's current evaluation 
+   *  context position.
    */
   private int m_xpath3ContextPosition = -1;
   
-  /*
-   *  data value, representing the XPath 3.1's current 
-   *  evaluation context size.
+  /**
+   *  This data value, represents the XPath 3.1's current evaluation 
+   *  context size.
    */
   private int m_xpath3ContextSize = -1; 
   
-  /*
-   * this data value, can be used to store custom data 
-   * (represented as a java.util.Map object) within the 
-   * current XPath evaluation context.
+  /**
+   * This data value, represents certain custom data (represented 
+   * as a java.util.Map object) within the current XPath 3.1 evaluation 
+   * context.
    */
   private Map<String, String> m_customDataMap = new HashMap<String, String>();
   
@@ -129,10 +129,14 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   
   private XSDuration m_timezone;
   
-  // we use this java.util.Map object, to store for XPath 3.1 function item 
-  // "inline function", the parameter names and their values. we don't use,
-  // XalanJ XPath context's variable stack for this purpose. 
-  private Map<QName, XObject> inlineFunctionVarMap = new HashMap<QName, XObject>();
+  /**
+   * We use this java.util.Map object, to store XPath 3.1 variable binding
+   * information (i.e, a mapping from variable name to its run-time value). 
+   * These variable bindings, are used for XPath feature implementations 
+   * like function item, 'for' expression.
+   * We don't use, XalanJ XPath context's variable stack for this purpose.
+   */
+  private Map<QName, XObject> xpathVarMap = new HashMap<QName, XObject>();
 	
   /**
    * Though XPathContext context extends 
@@ -1457,12 +1461,12 @@ public class XPathContext extends DTMManager // implements ExpressionContext
      this.m_timezone = timezone;
  }
 
- public Map<QName, XObject> getInlineFunctionVarMap() {
-     return inlineFunctionVarMap;
+ public Map<QName, XObject> getXPathVarMap() {
+     return xpathVarMap;
  }
 
- public void setInlineFunctionVarMap(Map<QName, XObject> inlineFunctionVarMap) {
-     this.inlineFunctionVarMap = inlineFunctionVarMap;
+ public void setXPathVarMap(Map<QName, XObject> xpathVarMap) {
+     this.xpathVarMap = xpathVarMap;
  }
   
 }

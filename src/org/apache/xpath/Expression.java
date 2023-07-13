@@ -20,6 +20,9 @@
  */
 package org.apache.xpath;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
 
@@ -47,15 +50,19 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
   static final long serialVersionUID = 565665869777906902L;
   
   /**
-   * The location where this expression was built from.  Need for diagnostic
-   *  messages. May be null.
-   *  @serial
+   * The location where this expression was built from. Needed for diagnostic
+   * messages. May be null.
    */
   private ExpressionNode m_parent;
   
-  // to support, XPath.fixupVariables(..) action when done for XPath
-  // function item "inline function" body's XPath expression.
-  protected static QName m_inlineFnVariableName = null;
+  /** 
+   * XPath 3.1 support for, XPath.fixupVariables(..) action for
+   * feature implementations like XPath function item, "for" expression.
+   * 
+   * XPath variable references, within these XPath 3.1 features are not 
+   * stored within XPath context's variable stack.
+   */
+  protected static List<QName> m_xpathVarList = new ArrayList<QName>();
 
   /**
    * Tell if this expression or it's subexpressions can traverse outside

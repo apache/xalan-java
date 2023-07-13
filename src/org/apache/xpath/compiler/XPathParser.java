@@ -30,6 +30,8 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPathProcessorException;
+import org.apache.xpath.composite.ForExpr;
+import org.apache.xpath.composite.ForExprVarBinding;
 import org.apache.xpath.composite.IfExpr;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
 import org.apache.xpath.functions.DynamicFunctionCall;
@@ -82,13 +84,14 @@ public class XPathParser
   /*
    * While parsing certain XPath 3.1 expressions, we use this constant string 
    * array to make parse decisions. The elements of this array are certain 
-   * XPath 'operator names' and 'key words' that need this support.
+   * XPath 'operator names', 'key words' and symbols that need this support.
    */
   private static final String[] XPATH_OP_ARR = new String[] {"div", "or", "and", "mod", "to", 
                                                               "eq", "ne", "lt", "gt", "le", "ge", 
-                                                              "if", "then", "else"};
+                                                              "for", "in", "return", "if", "then", 
+                                                              "else", "-"};
   
-  private List<String> fXpathOpArrTokensList = null;
+  private static final List<String> fXpathOpArrTokensList = Arrays.asList(XPATH_OP_ARR);
   
   private boolean fDynamicFunctionCallArgumentMarker = false;
   
@@ -97,6 +100,8 @@ public class XPathParser
   static InlineFunction fInlineFunction = null;
   
   static DynamicFunctionCall fDynamicFunctionCall = null;
+  
+  static ForExpr fForExpr = null;
   
   static IfExpr fIfExpr = null;
   
@@ -107,7 +112,6 @@ public class XPathParser
   {
     m_errorListener = errorListener;
     m_sourceLocator = sourceLocator;
-    fXpathOpArrTokensList = Arrays.asList(XPATH_OP_ARR);
   }
 
   /**
@@ -885,19 +889,107 @@ public class XPathParser
   /**
    *
    *
-   * Expr  ::=  IfExpr 
+   * Expr  ::=  ForExpr
+   *   | IfExpr 
    *   | OrExpr
    *
    * @throws javax.xml.transform.TransformerException
    */
   protected void Expr() throws javax.xml.transform.TransformerException
   {
-      if (tokenIs("if")) {         
+      if (tokenIs("for")) {
+         // to check, whether xpath 'for' expression is a sub expression of another 
+         // xpath expression (for e.g, a 'for' expression could be a function 
+         // argument).
+         String prevTokenStr = getTokenRelative(-2);
+         
+         fForExpr = ForExpr(prevTokenStr);
+      }
+      else if (tokenIs("if")) {         
          fIfExpr = IfExpr();
       }
       else {
          OrExpr();
       }
+  }
+  
+  protected ForExpr ForExpr(String prevTokenStrBeforeFor) throws javax.xml.transform.TransformerException
+  {
+      int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+      
+      nextToken();
+      
+      insertOp(opPos, 2, OpCodes.OP_FOR_EXPR);
+      
+      ForExpr forExpr = new ForExpr();
+      
+      List<ForExprVarBinding> forExprVarBindingList = new  ArrayList<ForExprVarBinding>();
+      
+      while (!tokenIs("return") && m_token != null)
+      {
+          String bindingVarName = null;
+          
+          if (forExprVarBindingList.size() > 0 && tokenIs(',')) {
+             nextToken();    
+          }
+          
+          if (tokenIs('$')) {
+              nextToken();              
+              bindingVarName = m_token;              
+              nextToken();              
+              consumeExpected("in");                            
+          }
+          
+          List<String> bindingXPathExprStrPartsList = new ArrayList<String>();
+          
+          while (!(tokenIs(',') || tokenIs("return")) && m_token != null) {
+             bindingXPathExprStrPartsList.add(m_token);
+             nextToken();
+          }
+          
+          String varBindingXpathStr = getXPathStrFromComponentParts(
+                                                                bindingXPathExprStrPartsList);
+          
+          ForExprVarBinding forExprVarBinding = new ForExprVarBinding();
+          forExprVarBinding.setVarName(bindingVarName);
+          forExprVarBinding.setXpathExprStr(varBindingXpathStr);
+          
+          forExprVarBindingList.add(forExprVarBinding);
+          
+          if (tokenIs("return")) {
+             break; 
+          }
+      }      
+      
+      consumeExpected("return");
+      
+      List<String> xPathReturnExprStrPartsList = new ArrayList<String>();
+      
+      while (m_token != null) {
+         if (tokenIs(')')) {            
+            if ((getTokenRelative(0) == null) && "(".equals(prevTokenStrBeforeFor)) {
+               break;    
+            }
+            else {
+               xPathReturnExprStrPartsList.add(m_token);
+               nextToken();
+            }
+         }
+         else {
+            xPathReturnExprStrPartsList.add(m_token);
+            nextToken();
+         }
+      }
+      
+      String xPathReturnExprStr = getXPathStrFromComponentParts(xPathReturnExprStrPartsList);
+      
+      forExpr.setForExprVarBindingList(forExprVarBindingList);
+      forExpr.setReturnExprXPathStr(xPathReturnExprStr);
+      
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+      
+      return forExpr;
   }
   
   protected IfExpr IfExpr() throws javax.xml.transform.TransformerException
