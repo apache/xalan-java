@@ -142,12 +142,9 @@ public class Variable extends Expression implements PathComponent
       }
     }
     
-    if (m_qname.equals(m_inlineFnVariableName)) {
-       // the variable reference denoted by m_qname within XPath expression,
-       // when it refers to the function item's parameter name, is not stored
-       // within XPath context's variable stack, but this action still needs
-       // to be done so that, function item's parameter reference within XPath
-       // expression is not treated as unrecognized variable. 
+    if (m_xpathVarList.contains(m_qname)) {
+       // this takes care of, variable references within, XPath 3.1 feature implementations
+       // like function item, "for" expression.
        return;    
     }
     
@@ -218,17 +215,16 @@ public class Variable extends Expression implements PathComponent
 
     XObject result;
     
-    Map<QName, XObject> inlineFunctionVarMap = xctxt.getInlineFunctionVarMap();
-    XObject inlineFuncVarValue = inlineFunctionVarMap.get(m_qname);
+    Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
+    XObject varValue = xpathVarMap.get(m_qname);
     
-    if (inlineFuncVarValue != null) {
-        // dereference, XPath 3.1 function item "inline function" 
-        // parameter reference within "inline function" body.
-        if (inlineFuncVarValue instanceof XNodeSet) {
-           result = ((XNodeSet)inlineFuncVarValue).getFresh();    
+    if (varValue != null) {
+        // dereference, XPath 3.1 variable reference
+        if (varValue instanceof XNodeSet) {
+           result = ((XNodeSet)varValue).getFresh();    
         }
         else {
-           result = inlineFuncVarValue;
+           result = varValue;
         }
         
         return result;

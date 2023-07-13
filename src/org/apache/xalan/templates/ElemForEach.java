@@ -37,6 +37,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.ForExpr;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
@@ -46,10 +47,10 @@ import org.apache.xpath.operations.Variable;
 /**
  * XSLT 3.0 for-each element.
  * 
-   <xsl:for-each 
-             select = expression>
-       <!-- Content: (xsl:sort*, sequence-constructor) -->
-   </xsl:for-each>
+ * <xsl:for-each 
+ *           select = expression>
+ *     <!-- Content: (xsl:sort*, sequence-constructor) -->
+ * </xsl:for-each>
  * 
  * @xsl.usage advanced
  */
@@ -368,6 +369,14 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
             transformer.setXPathContext(xctxtOriginal);
             return;
         }
+    }
+    
+    if (m_selectExpression instanceof ForExpr) {
+        ForExpr forExpr = (ForExpr)m_selectExpression;
+        XObject  evalResult = forExpr.execute(xctxt);
+        processResultSequence(transformer, xctxt, evalResult);
+        transformer.setXPathContext(xctxtOriginal);
+        return;
     }
     
     // process the node-set, with body of xsl:for-each element as usual 

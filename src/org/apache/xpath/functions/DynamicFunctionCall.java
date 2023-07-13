@@ -104,7 +104,7 @@ public class DynamicFunctionCall extends Expression {
                                                        + "Number of arguments provided " + argList.size() + ".", xctxt.getSAXLocator());    
            }
            
-           Map<QName, XObject> inlineFunctionVarMap = xctxt.getInlineFunctionVarMap();
+           Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
            
            for (int idx = 0; idx < funcParamNameList.size(); idx++) {              
               String funcParamName = funcParamNameList.get(idx);
@@ -123,7 +123,7 @@ public class DynamicFunctionCall extends Expression {
            XPath inlineFnXpath = new XPath(inlineFnXpathStr, srcLocator, null, XPath.SELECT, null);
            evalResult = inlineFnXpath.execute(xctxt, contextNode, null);
            
-           inlineFunctionVarMap.clear();
+           inlineFunctionVarMap.clear();           
        }
         
        return evalResult;

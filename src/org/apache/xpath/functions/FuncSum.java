@@ -24,8 +24,13 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.ForExpr;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XString;
+import org.apache.xpath.operations.Variable;
+import org.apache.xpath.xs.types.XSAnyType;
 
 /**
  * Execute the Sum() function.
@@ -45,20 +50,57 @@ public class FuncSum extends FunctionOneArg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-
-    DTMIterator nodes = m_arg0.asIterator(xctxt, xctxt.getCurrentNode());
-    double sum = 0.0;
-    int pos;
-
-    while (DTM.NULL != (pos = nodes.nextNode()))
-    {
-      DTM dtm = nodes.getDTM(pos);
-      XMLString s = dtm.getStringValue(pos);
-
-      if (null != s)
-        sum += s.toDouble();
+    
+    double sum = 0.0;    
+    
+    if (m_arg0 instanceof Variable) {
+       Variable xslVariable = (Variable)m_arg0;
+       XObject resultObj = xslVariable.execute(xctxt);
+       if (resultObj instanceof ResultSequence) {
+          ResultSequence resultSeq = (ResultSequence)resultObj;
+          for (int idx = 0; idx < resultSeq.size(); idx++) {
+              XObject xObj = resultSeq.item(idx);
+              String str = xObj.str();
+              if (str != null) {
+                 XString xStr = new XString(str);
+                 sum +=  xStr.toDouble();
+              }
+          }
+       }
     }
-    nodes.detach();
+    else if (m_arg0 instanceof ForExpr) {
+       ForExpr forExpr = (ForExpr)m_arg0;
+       ResultSequence forExprResult = (ResultSequence)(forExpr.execute(xctxt));
+       for (int idx = 0; idx < forExprResult.size(); idx++) {
+          XObject xObj = forExprResult.item(idx);
+          String str = null;
+          if (xObj instanceof XSAnyType) {
+             str = ((XSAnyType)xObj).stringValue();     
+          }
+          else {
+             str = xObj.str();
+          }
+          if (str != null) {
+             XString xStr = new XString(str);
+             sum +=  xStr.toDouble();
+          }
+       }
+    }
+    else {
+       int pos;
+        
+       DTMIterator nodes = m_arg0.asIterator(xctxt, xctxt.getCurrentNode());
+
+       while (DTM.NULL != (pos = nodes.nextNode())) {
+          DTM dtm = nodes.getDTM(pos);
+          XMLString xmlStr = dtm.getStringValue(pos);
+
+          if (xmlStr != null) {
+             sum += xmlStr.toDouble();
+          }
+       }
+       nodes.detach();
+    }
 
     return new XNumber(sum);
   }

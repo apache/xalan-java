@@ -23,6 +23,7 @@ package org.apache.xpath.functions;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.ForExpr;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
@@ -74,10 +75,14 @@ public class FuncCount extends FunctionOneArg
                 ResultSequence resultSeq = (ResultSequence)(((Range)m_arg0).execute(xctxt));
                 count = resultSeq.size();
             }
+            else if (m_arg0 instanceof ForExpr) {
+                ResultSequence resultSeq = (ResultSequence)(((ForExpr)m_arg0).execute(xctxt));
+                count = resultSeq.size();   
+            }
             else {
-               DTMIterator nl = m_arg0.asIterator(xctxt, xctxt.getCurrentNode());
-               count = nl.getLength();	
-               nl.detach();
+                DTMIterator nl = m_arg0.asIterator(xctxt, xctxt.getCurrentNode());
+                count = nl.getLength();	
+                nl.detach();
             }
         }
     

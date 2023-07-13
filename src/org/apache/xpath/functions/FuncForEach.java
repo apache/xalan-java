@@ -206,7 +206,7 @@ public class FuncForEach extends Function2Args {
         
         if (arg0XsObject instanceof ResultSequence) {
            XPathContext xpathContextNew = new XPathContext(false);
-           Map<QName, XObject> inlineFunctionVarMap = xpathContextNew.getInlineFunctionVarMap();
+           Map<QName, XObject> inlineFunctionVarMap = xpathContextNew.getXPathVarMap();
         
            ResultSequence inpResultSeq = (ResultSequence)arg0XsObject;
            for (int idx = 0; idx < inpResultSeq.size(); idx++) {
@@ -222,7 +222,7 @@ public class FuncForEach extends Function2Args {
            inlineFunctionVarMap.clear();
         }
         else if (arg0DtmIterator != null) {                  
-           Map<QName, XObject> inlineFunctionVarMap = xctxt.getInlineFunctionVarMap();
+           Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
             
            final int contextNode = xctxt.getCurrentNode();           
             
@@ -234,13 +234,12 @@ public class FuncForEach extends Function2Args {
                   inlineFunctionVarMap.put(varQname, inpSeqItem);
                }
                
-               if (fVars != null) {
-                  // this is used so that, 'fixupVariables' action performed below
-                  // shall work fine for function item parameter references within 
-                  // XPath expression denoted by 'inlineFnXpath'.
-                  m_inlineFnVariableName = varQname;
-                  inlineFnXpath.fixupVariables(fVars, fGlobalsSize);               
-                  m_inlineFnVariableName = null;
+               if (fVars != null) {                  
+                  if (!m_xpathVarList.contains(varQname)) {
+                     m_xpathVarList.add(varQname);
+                  }
+                  inlineFnXpath.fixupVariables(fVars, fGlobalsSize);
+                  m_xpathVarList.remove(varQname);
                }
                
                XObject resultObj = inlineFnXpath.execute(xctxt, contextNode, null);

@@ -30,24 +30,13 @@ import org.apache.xpath.objects.XObject;
 
 /*
  * The XalanJ xpath parser, creates and populates an object of this class, 
- * as a representation of XPath 3.1 "if" conditional expressions.
+ * as a representation of XPath 3.1 "if" conditional expression.
  * 
- * XPath 3.1 spec, provides following definitions of conditional expressions.
+ * The XPath 3.1 spec, defines "if" expression with following grammar,
  * 
- * Grammar fragment,
  * IfExpr   ::=   "if" "(" Expr ")" "then" ExprSingle "else" ExprSingle
  * 
- * The expression following the if keyword is called the test expression, and 
- * the expressions following the then and else keywords are called the 
- * then-expression and else-expression, respectively.
- * 
- * The first step in processing a conditional expression is to find the 
- * effective boolean value of the test expression.
- * 
- * The value of a conditional expression is defined as follows: If the 
- * effective boolean value of the test expression is true, the value of 
- * the then-expression is returned. If the effective boolean value of the 
- * test expression is false, the value of the else-expression is returned.
+ * Ref : https://www.w3.org/TR/xpath-31/#id-conditionals
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
