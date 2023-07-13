@@ -6,7 +6,7 @@
                 
    <!-- use with test1_a.xml -->
    
-   <!-- This XSLT test, borrows an XPath "for" expression example
+   <!-- This XSLT stylesheet test, borrows an XPath "for" expression example
         from XPath 3.1 spec. -->
    
    <xsl:output method="xml" indent="yes"/>

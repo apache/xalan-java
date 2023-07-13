@@ -6,10 +6,10 @@
                 
    <!-- use with test1_a.xml -->
    
-   <!-- This XSLT test, borrows an XPath "for" expression example
-        from XPath 3.1 spec, and introduces a slight modification
-        (using an XSLT stylesheet global variable 'discount', that 
-        is also used within the XPath "for" expression). -->
+   <!-- This XSLT stylesheet test, borrows an XPath "for" expression example
+        from XPath 3.1 spec, and introduces a slight modification (using an 
+        XSLT stylesheet global variable 'discount', that is also used 
+        within the XPath "for" expression). -->
    
    <xsl:output method="xml" indent="yes"/>
    

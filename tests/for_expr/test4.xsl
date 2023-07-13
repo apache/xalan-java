@@ -4,7 +4,7 @@
 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- This XSLT test, illustrates an XPath 3.1 "for" expression
+   <!-- This XSLT stylesheet test, illustrates an XPath 3.1 "for" expression
         example using two "for" expression binding variables. -->
    
    <xsl:output method="xml" indent="yes"/>
