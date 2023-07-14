@@ -27,6 +27,7 @@ import org.apache.xalan.xpath3.FnUnparsedTextTests;
 import org.apache.xalan.xpath3.ForExprTests;
 import org.apache.xalan.xpath3.IfExprTests;
 import org.apache.xalan.xpath3.InlineFunctionItemExprTests;
+import org.apache.xalan.xpath3.QuantifiedExprTests;
 import org.apache.xalan.xpath3.RangeExprTests;
 import org.apache.xalan.xpath3.SequenceTests;
 import org.apache.xalan.xpath3.StringTests;

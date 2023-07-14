@@ -18,16 +18,17 @@ package org.apache.xpath.composite;
 
 /*
  * An object of this class, is used to store information about
- * XPath 3.1 "for" expression's single variable binding (i.e, run-time
- * information details related to the grammar fragment 
- * "$" VarName "in" ExprSingle for a particular XPath "for" expression
- * that's currently being evaluated). 
+ * XPath 3.1 "for" expression or "quantified expression" 
+ * (i.e, 'some', 'every')'s single variable binding (i.e, 
+ * run-time information details related to the grammar fragment 
+ * "$" VarName "in" ExprSingle for a particular XPath "for" or 
+ * "quantified expression" that's currently been evaluated). 
  *  
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class ForExprVarBinding {
+public class ForQuantifiedExprVarBinding {
     
     private String fVarName = null;
     

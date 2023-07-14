@@ -682,9 +682,11 @@ public class OpCodes
   
   public static final int OP_FOR_EXPR = 63;
   
-  public static final int OP_IF_EXPR = 64;
+  public static final int OP_QUANTIFIED_EXPR = 64;
+  
+  public static final int OP_IF_EXPR = 65;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 65;
+  private static final int NEXT_FREE_ID = 66;
   
 }
