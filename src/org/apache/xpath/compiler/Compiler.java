@@ -131,6 +131,8 @@ public class Compiler extends OpMap
       expr = compile(opPos + 2); break;
     case OpCodes.OP_FOR_EXPR :
       expr = forExpr(opPos); break;
+    case OpCodes.OP_QUANTIFIED_EXPR :
+      expr = quantifiedExpr(opPos); break;
     case OpCodes.OP_IF_EXPR :
       expr = ifExpr(opPos); break;
     case OpCodes.OP_OR :
@@ -1178,6 +1180,11 @@ private static final boolean DEBUG = false;
   Expression forExpr(int opPos) throws TransformerException
   {
       return XPathParser.fForExpr;
+  }
+  
+  Expression quantifiedExpr(int opPos) throws TransformerException
+  {
+      return XPathParser.fQuantifiedExpr;
   }
   
   Expression ifExpr(int opPos) throws TransformerException

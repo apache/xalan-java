@@ -31,8 +31,9 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPathProcessorException;
 import org.apache.xpath.composite.ForExpr;
-import org.apache.xpath.composite.ForExprVarBinding;
+import org.apache.xpath.composite.ForQuantifiedExprVarBinding;
 import org.apache.xpath.composite.IfExpr;
+import org.apache.xpath.composite.QuantifiedExpr;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
 import org.apache.xpath.functions.DynamicFunctionCall;
 import org.apache.xpath.objects.InlineFunction;
@@ -84,12 +85,13 @@ public class XPathParser
   /*
    * While parsing certain XPath 3.1 expressions, we use this constant string 
    * array to make parse decisions. The elements of this array are certain 
-   * XPath 'operator names', 'key words' and symbols that need this support.
+   * XPath language key words and symbols that need this support.
    */
-  private static final String[] XPATH_OP_ARR = new String[] {"div", "or", "and", "mod", "to", 
-                                                              "eq", "ne", "lt", "gt", "le", "ge", 
-                                                              "for", "in", "return", "if", "then", 
-                                                              "else", "-"};
+  private static final String[] XPATH_OP_ARR = new String[] 
+                                                     {"div", "or", "and", "mod", "to", 
+                                                      "eq", "ne", "lt", "gt", "le", "ge", 
+                                                      "for", "in", "return", "if", "then", 
+                                                      "else", "some", "every", "satisfies", "-"};
   
   private static final List<String> fXpathOpArrTokensList = Arrays.asList(XPATH_OP_ARR);
   
@@ -104,6 +106,8 @@ public class XPathParser
   static ForExpr fForExpr = null;
   
   static IfExpr fIfExpr = null;
+  
+  static QuantifiedExpr fQuantifiedExpr = null;
   
   /**
    * The parser constructor.
@@ -159,7 +163,7 @@ public class XPathParser
 	try {
 
       nextToken();
-      Expr();
+      ExprSingle();
 
       if (null != m_token)
       {
@@ -888,22 +892,40 @@ public class XPathParser
 
   /**
    *
-   *
-   * Expr  ::=  ForExpr
-   *   | IfExpr 
-   *   | OrExpr
+   * Expr   ::=  ExprSingle ("," ExprSingle)*
+   * 
+   * ExprSingle  ::=  ForExpr
+   *       | QuantifiedExpr
+   *       | IfExpr 
+   *       | OrExpr
    *
    * @throws javax.xml.transform.TransformerException
    */
-  protected void Expr() throws javax.xml.transform.TransformerException
+  protected void ExprSingle() throws javax.xml.transform.TransformerException
   {
       if (tokenIs("for")) {
-         // to check, whether xpath 'for' expression is a sub expression of another 
-         // xpath expression (for e.g, a 'for' expression could be a function 
+         // to check, whether XPath 'for' expression is a sub expression of another 
+         // XPath expression (for e.g, a 'for' expression could be a function 
          // argument).
          String prevTokenStr = getTokenRelative(-2);
          
          fForExpr = ForExpr(prevTokenStr);
+      }
+      else if (tokenIs("some")) {
+         // to check, whether XPath quantified 'some' expression is a sub expression 
+         // of another XPath expression (for e.g, the 'some' expression could be a 
+         // function argument, or may be written within an XPath predicate).
+         String prevTokenStr = getTokenRelative(-2);
+         
+         fQuantifiedExpr = QuantifiedExpr(prevTokenStr, QuantifiedExpr.SOME);
+      }
+      else if (tokenIs("every")) {
+         // to check, whether XPath quantified 'every' expression is a sub expression 
+         // of another XPath expression (for e.g, an 'every' expression could be a 
+         // function argument, or may be written within an XPath predicate).
+         String prevTokenStr = getTokenRelative(-2);
+         
+         fQuantifiedExpr = QuantifiedExpr(prevTokenStr, QuantifiedExpr.EVERY);
       }
       else if (tokenIs("if")) {         
          fIfExpr = IfExpr();
@@ -923,7 +945,8 @@ public class XPathParser
       
       ForExpr forExpr = new ForExpr();
       
-      List<ForExprVarBinding> forExprVarBindingList = new  ArrayList<ForExprVarBinding>();
+      List<ForQuantifiedExprVarBinding> forExprVarBindingList = new  
+                                                           ArrayList<ForQuantifiedExprVarBinding>();
       
       while (!tokenIs("return") && m_token != null)
       {
@@ -950,7 +973,7 @@ public class XPathParser
           String varBindingXpathStr = getXPathStrFromComponentParts(
                                                                 bindingXPathExprStrPartsList);
           
-          ForExprVarBinding forExprVarBinding = new ForExprVarBinding();
+          ForQuantifiedExprVarBinding forExprVarBinding = new ForQuantifiedExprVarBinding();
           forExprVarBinding.setVarName(bindingVarName);
           forExprVarBinding.setXpathExprStr(varBindingXpathStr);
           
@@ -990,6 +1013,91 @@ public class XPathParser
                                             m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
       
       return forExpr;
+  }
+  
+  protected QuantifiedExpr QuantifiedExpr(String prevTokenStrBeforeQuantifier, int quantifierExprType) 
+                                                              throws javax.xml.transform.TransformerException
+  {
+      int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+      
+      nextToken();
+      
+      insertOp(opPos, 2, OpCodes.OP_QUANTIFIED_EXPR);
+      
+      QuantifiedExpr quantifiedExpr = new QuantifiedExpr();
+      quantifiedExpr.setCurrentXPathQuantifier(quantifierExprType);
+      
+      List<ForQuantifiedExprVarBinding> quantifiedExprVarBindingList = new 
+                                                           ArrayList<ForQuantifiedExprVarBinding>();
+      
+      while (!tokenIs("satisfies") && m_token != null)
+      {
+          String bindingVarName = null;
+          
+          if (quantifiedExprVarBindingList.size() > 0 && tokenIs(',')) {
+             nextToken();    
+          }
+          
+          if (tokenIs('$')) {
+              nextToken();              
+              bindingVarName = m_token;              
+              nextToken();              
+              consumeExpected("in");                            
+          }
+          
+          List<String> bindingXPathExprStrPartsList = new ArrayList<String>();
+          
+          while (!(tokenIs(',') || tokenIs("satisfies")) && m_token != null) {
+             bindingXPathExprStrPartsList.add(m_token);
+             nextToken();
+          }
+          
+          String varBindingXpathStr = getXPathStrFromComponentParts(
+                                                                bindingXPathExprStrPartsList);
+          
+          ForQuantifiedExprVarBinding quantifiedExprVarBinding = new ForQuantifiedExprVarBinding();
+          quantifiedExprVarBinding.setVarName(bindingVarName);
+          quantifiedExprVarBinding.setXpathExprStr(varBindingXpathStr);
+          
+          quantifiedExprVarBindingList.add(quantifiedExprVarBinding);
+          
+          if (tokenIs("satisfies")) {
+             break; 
+          }
+      }      
+      
+      consumeExpected("satisfies");
+      
+      List<String> xPathTestExprStrPartsList = new ArrayList<String>();
+      
+      while (m_token != null) {
+         if (tokenIs(')')) {            
+            if ((getTokenRelative(0) == null) && "(".equals(prevTokenStrBeforeQuantifier)) {
+               break;    
+            }
+            else {
+               xPathTestExprStrPartsList.add(m_token);
+               nextToken();
+            }
+         }
+         else if (fIsXpathPredicateParsingActive && tokenIs(']')) {
+            break;    
+         }
+         else {
+            xPathTestExprStrPartsList.add(m_token);
+            nextToken();
+         }
+      }
+      
+      String xPathTestExprStr = getXPathStrFromComponentParts(xPathTestExprStrPartsList);
+      
+      quantifiedExpr.setQuantifiedExprVarBindingList(quantifiedExprVarBindingList);
+      quantifiedExpr.setQuantifierTestXPathStr(xPathTestExprStr);
+      
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+      
+      return quantifiedExpr;
   }
   
   protected IfExpr IfExpr() throws javax.xml.transform.TransformerException
@@ -1537,7 +1645,7 @@ public class XPathParser
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     appendOp(2, OpCodes.OP_STRING);
-    Expr();
+    ExprSingle();
 
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
       m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -1557,7 +1665,7 @@ public class XPathParser
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     appendOp(2, OpCodes.OP_BOOL);
-    Expr();
+    ExprSingle();
 
     int opLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos;
 
@@ -1583,7 +1691,7 @@ public class XPathParser
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     appendOp(2, OpCodes.OP_NUMBER);
-    Expr();
+    ExprSingle();
 
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
       m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -1871,7 +1979,7 @@ public class XPathParser
     {
       nextToken();
       appendOp(2, OpCodes.OP_GROUP);
-      Expr();
+      ExprSingle();
       consumeExpected(')');
 
       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
@@ -1999,7 +2107,7 @@ public class XPathParser
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     appendOp(2, OpCodes.OP_ARGUMENT);
-    Expr();
+    ExprSingle();
 
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
       m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -2465,12 +2573,11 @@ public class XPathParser
 
     if (tokenIs('['))
     {
-      fIsXpathPredicateParsingActive = true;
-      
+      fIsXpathPredicateParsingActive = true;      
       nextToken();
-      PredicateExpr();      
-      fIsXpathPredicateParsingActive = false;      
-      consumeExpected(']');                  
+      PredicateExpr();
+      consumeExpected(']');      
+      fIsXpathPredicateParsingActive = false;
     }
   }
 
@@ -2487,7 +2594,7 @@ public class XPathParser
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     appendOp(2, OpCodes.OP_PREDICATE);
-    Expr();
+    ExprSingle();
 
     // Terminate for safety.
     m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);

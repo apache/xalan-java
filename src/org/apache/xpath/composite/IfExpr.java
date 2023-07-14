@@ -29,12 +29,12 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XObject;
 
 /*
- * The XalanJ xpath parser, creates and populates an object of this class, 
+ * The XalanJ XPath parser, creates and populates an object of this class, 
  * as a representation of XPath 3.1 "if" conditional expression.
  * 
  * The XPath 3.1 spec, defines "if" expression with following grammar,
  * 
- * IfExpr   ::=   "if" "(" Expr ")" "then" ExprSingle "else" ExprSingle
+ *   IfExpr   ::=   "if" "(" Expr ")" "then" ExprSingle "else" ExprSingle
  * 
  * Ref : https://www.w3.org/TR/xpath-31/#id-conditionals
  * 

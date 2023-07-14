@@ -23,24 +23,24 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
 
 /*
- * The XalanJ xpath parser, creates and populates an object of this 
- * class, as a representation of XPath 3.1 function item "inline 
- * function" definition within XPath expressions.
+ * The XalanJ XPath parser, creates and populates an object of this class, 
+ * as a representation of XPath 3.1 function item "inline function" definition 
+ * within XPath expressions.
  * 
- * The XPath 3.1 spec, defines function item "inline function" XPath 
- * expressions with following grammar,
+ * The XPath 3.1 spec, defines function item "inline function" XPath expressions 
+ * with following grammar,
+ *
+ *   InlineFunctionExpr        ::=  "function" "(" ParamList? ")" ("as" SequenceType)? 
+ *                                                                             FunctionBody
 
-   InlineFunctionExpr        ::=  "function" "(" ParamList? ")" ("as" SequenceType)? FunctionBody
+ *   ParamList                 ::=   Param ("," Param)*
 
-   ParamList                 ::=   Param ("," Param)*
+ *   Param                     ::=   "$" EQName TypeDeclaration?
 
-   Param                     ::=   "$" EQName TypeDeclaration?
+ *   FunctionBody              ::=   EnclosedExpr
 
-   FunctionBody              ::=   EnclosedExpr
-
-   EnclosedExpr              ::=   "{" Expr? "}"
-   
- * 
+ *   EnclosedExpr              ::=   "{" Expr? "}"
+    
  * @author Mukul Gandhi <mukulg@apache.org>
  *   
  * @xsl.usage advanced 

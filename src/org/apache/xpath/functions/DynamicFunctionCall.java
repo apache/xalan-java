@@ -34,9 +34,8 @@ import org.apache.xpath.objects.InlineFunction;
 import org.apache.xpath.objects.XObject;
 
 /*
- * The XalanJ xpath parser, creates and populates an object of 
- * this class, as a representation of XPath 3.1 dynamic 
- * function call.
+ * The XalanJ XPath parser, creates and populates an object of this class, 
+ * as a representation of XPath 3.1 dynamic function call.
  * 
  * Ref : https://www.w3.org/TR/xpath-31/#id-dynamic-function-invocation
  * 

@@ -828,6 +828,16 @@ public class XObject extends Expression implements Serializable, Cloneable
     else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
        return ((XSDate)this).equals((XSDate)obj2);    
     }
+    else if ((this instanceof XSInteger) && (obj2 instanceof XNumber)) {
+       double lDouble = ((XSInteger)this).doubleValue();
+       double rDouble = ((XNumber)obj2).num();
+       return (lDouble == rDouble); 
+    }
+    else if ((this instanceof XNumber) && (obj2 instanceof XSInteger)) {
+       double lDouble = ((XNumber)this).num();
+       double rDouble = ((XSInteger)obj2).doubleValue();
+       return (lDouble == rDouble);      
+    }
         
     if (obj2.getType() == XObject.CLASS_NODESET) {
        return obj2.equals(this);

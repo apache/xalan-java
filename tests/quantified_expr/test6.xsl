@@ -4,30 +4,18 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_b.xml -->
+   <!-- use with test1_d.xml -->
    
-   <!-- This XSLT stylesheet does the work, what XPath 3.1 quantified expressions 
-        (i.e, as per the following XPath 3.1 grammar fragment. These XPath expressions 
-        evaluate to a boolean result) could do.
-   
-        QuantifiedExpr ::= ("some" | "every") "$" VarName "in" ExprSingle ("," "$" 
-                                        VarName "in" ExprSingle)* "satisfies" ExprSingle
-   -->
+   <!-- An XSLT stylesheet test case, to test the XPath 3.1 quantified 
+        expression 'every'.
+        
+        This XSLT stylesheet example, borrows an XPath quantified
+        expression example from XPath 3.1 spec. -->
 
    <xsl:output method="text"/>
 
-   <xsl:template match="/elem">      
-      <xsl:variable name="result">
-         <xsl:for-each select="(test1 | test2)/a">
-           <xsl:if test="e1">
-             <yes/>
-           </xsl:if>
-         </xsl:for-each>
-      </xsl:variable>
-      
-      <xsl:if test="count($result/yes) &gt; 0">
-         <xsl:text>at-least one xml element '(test1 | test2)/a' contains an xml element 'e1'</xsl:text>
-      </xsl:if>
+   <xsl:template match="/">      
+     <xsl:value-of select="every $part in /parts/part satisfies $part/@discounted"/>  
    </xsl:template>
    
    <!--

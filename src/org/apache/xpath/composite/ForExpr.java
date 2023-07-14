@@ -38,14 +38,14 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 
 /*
- * The XalanJ xpath parser, creates and populates an object of this class, 
+ * The XalanJ XPath parser, creates and populates an object of this class, 
  * as a representation of XPath 3.1 "for" expression.
  * 
  * The XPath 3.1 spec, defines "for" expression with following grammar,
  * 
- *  ForExpr               ::=      SimpleForClause "return" ExprSingle 
- *  SimpleForClause       ::=      "for" SimpleForBinding ("," SimpleForBinding)*  
- *  SimpleForBinding      ::=      "$" VarName "in" ExprSingle
+ *   ForExpr               ::=      SimpleForClause "return" ExprSingle 
+ *   SimpleForClause       ::=      "for" SimpleForBinding ("," SimpleForBinding)*  
+ *   SimpleForBinding      ::=      "$" VarName "in" ExprSingle
  *    
  *  Ref : https://www.w3.org/TR/xpath-31/#id-for-expressions
  * 
@@ -57,8 +57,8 @@ public class ForExpr extends Expression {
     
     private static final long serialVersionUID = -7289739978026057248L;
 
-    private List<ForExprVarBinding> fForExprVarBindingList = new 
-                                                    ArrayList<ForExprVarBinding>();
+    private List<ForQuantifiedExprVarBinding> fForExprVarBindingList = new 
+                                                    ArrayList<ForQuantifiedExprVarBinding>();
     
     private String fReturnExprXPathStr = null;
     
@@ -99,11 +99,11 @@ public class ForExpr extends Expression {
        return false;
     }
 
-    public List<ForExprVarBinding> getForExprVarBindingList() {
+    public List<ForQuantifiedExprVarBinding> getForExprVarBindingList() {
         return fForExprVarBindingList;
     }
 
-    public void setForExprVarBindingList(List<ForExprVarBinding> forExprVarBindingList) {
+    public void setForExprVarBindingList(List<ForQuantifiedExprVarBinding> forExprVarBindingList) {
         this.fForExprVarBindingList = forExprVarBindingList;
     }
 
@@ -131,7 +131,7 @@ public class ForExpr extends Expression {
         Map<QName, XObject> forExprVarBindingMap = xctxt.getXPathVarMap();
         
         if (listIter.hasNext()) {           
-           ForExprVarBinding forExprVarBinding = (ForExprVarBinding)listIter.next();            
+           ForQuantifiedExprVarBinding forExprVarBinding = (ForQuantifiedExprVarBinding)listIter.next();            
             
            // evaluate the current, variable binding xpath expression
            
@@ -197,7 +197,7 @@ public class ForExpr extends Expression {
         }
         else {
             // this else clause, actually evaluates the current XPath 'for' expression's 
-            // 'return' expression.
+            // 'return' expression clause.
             
             if (fVars != null) {              
                returnExprXpath.fixupVariables(fVars, fGlobalsSize);

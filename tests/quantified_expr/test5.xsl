@@ -7,15 +7,14 @@
    <!-- use with test1_c.xml -->
    
    <!-- This XSLT stylesheet does the work, what XPath 3.1 quantified expressions 
-        (i.e, as per the following XPath 3.1 grammar fragment. these XPath expressions 
+        (i.e, as per the following XPath 3.1 grammar fragment. These XPath expressions 
         evaluate to a boolean result) could do.
    
         QuantifiedExpr ::= ("some" | "every") "$" VarName "in" ExprSingle ("," "$" 
                                         VarName "in" ExprSingle)* "satisfies" ExprSingle
                                         
-        This stylesheet example, illustrates the ability of XSLT named template 
-        ("isXmlElementE1eXistsWithinAllElementsA" within this example) to function as a 
-        re-usable fragment of XSLT code.
+        This stylesheet example, uses an XSLT named template ("isXmlElementE1eXistsWithinAllElementsA" 
+        within this example) as a re-usable fragment of XSLT code.
    -->
 
    <xsl:output method="text"/>

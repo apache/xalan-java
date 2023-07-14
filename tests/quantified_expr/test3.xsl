@@ -6,8 +6,8 @@
    
    <!-- use with test1_c.xml -->
    
-   <!-- this XSLT stylesheet does the work, what XPath 3.1 quantified expressions 
-        (i.e, as per the following XPath 3.1 grammar fragment. these XPath expressions 
+   <!-- This XSLT stylesheet does the work, what XPath 3.1 quantified expressions 
+        (i.e, as per the following XPath 3.1 grammar fragment. These XPath expressions 
         evaluate to a boolean result) could do.
    
         QuantifiedExpr ::= ("some" | "every") "$" VarName "in" ExprSingle ("," "$" 
