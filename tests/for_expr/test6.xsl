@@ -1,28 +1,24 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="3.0">
-                
+
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_f.xml -->
+   <!-- use with test1_b.xml -->
    
-   <!-- An XSLT stylesheet test case, to test the XPath 3.1 quantified 
-        expressions 'some' and 'every'.
+   <!-- This XSLT stylesheet test, illustrates an XPath 3.1 "for" 
+        expression evaluation.
         
-        This XSLT stylesheet, borrows the XPath quantified expression 
-        examples from https://www.altova.com/. -->
-
+        This XSLT stylesheet, borrows an XPath "for" expression 
+        example from https://www.altova.com/. -->
+   
    <xsl:output method="xml" indent="yes"/>
 
    <xsl:template match="/">
-     <result>
-        <one>      
-           <xsl:value-of select="some $i in /company/office/employee satisfies $i/age lt 30"/>
-        </one>
-        <two>      
-           <xsl:value-of select="every $i in /company/office/employee satisfies $i/age gt 30"/>
-        </two>
-     </result>  
+      <xsl:variable name="names" select="for $i in company/office/employee return $i/first_name"/>
+      <emp count="{count($names)}">
+         <xsl:value-of select="$names"/>
+      </emp>
    </xsl:template>
    
    <!--
