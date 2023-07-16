@@ -24,8 +24,10 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.extensions.ExpressionContext;
+import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
@@ -87,11 +89,36 @@ public class DynamicFunctionCall extends Expression {
        
        int contextNode = xctxt.getContextNode();
        
-       ExpressionContext exprContext = xctxt.getExpressionContext();
+       Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
        
-       XObject functionRef = exprContext.getVariableOrParam(new QName(funcRefVarName));
+       // we get below reference of an XPath inline function, that this dynamic
+       // function call refers to.
        
-       if (functionRef instanceof InlineFunction) {
+       XObject functionRef = inlineFunctionVarMap.get(new QName(funcRefVarName));              
+       
+       if (functionRef == null) {
+          ExpressionContext exprContext = xctxt.getExpressionContext();
+          
+          try {
+             functionRef = exprContext.getVariableOrParam(new QName(funcRefVarName));
+          }
+          catch (TransformerException ex) {
+              // try to get an XPath inline function reference, within stylesheet's 
+              // global scope. 
+              ExpressionNode expressionNode = getExpressionOwner();
+              ExpressionNode stylesheetRootNode = null;
+              while (expressionNode != null) {
+                 stylesheetRootNode = expressionNode;
+                 expressionNode = expressionNode.exprGetParent();                     
+              }
+              StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
+              Map<QName, InlineFunction> globalInlineFunctionVarMap = stylesheetRoot.
+                                                                            getInlineFunctionVarMap();
+              functionRef = globalInlineFunctionVarMap.get(new QName(funcRefVarName)); 
+          }
+       }
+       
+       if ((functionRef != null) && (functionRef instanceof InlineFunction)) {
            InlineFunction inlineFunction = (InlineFunction)functionRef;
            
            String inlineFnXpathStr = inlineFunction.getFuncBodyXPathExprStr();
@@ -102,8 +129,6 @@ public class DynamicFunctionCall extends Expression {
                                                        + "dynamic call to function is " + funcParamNameList.size() + ". "
                                                        + "Number of arguments provided " + argList.size() + ".", xctxt.getSAXLocator());    
            }
-           
-           Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
            
            for (int idx = 0; idx < funcParamNameList.size(); idx++) {              
               String funcParamName = funcParamNameList.get(idx);
@@ -124,7 +149,12 @@ public class DynamicFunctionCall extends Expression {
            
            inlineFunctionVarMap.clear();           
        }
-        
+       else {
+           throw new javax.xml.transform.TransformerException("XPST0008 variable '" + funcRefVarName + "' has "
+                                                        + "not been declared (or its declaration is not in scope).", 
+                                                                                                      xctxt.getSAXLocator());    
+       }
+               
        return evalResult;
     }
 

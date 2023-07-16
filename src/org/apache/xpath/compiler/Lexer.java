@@ -629,39 +629,70 @@ class Lexer
     {
       uName = prefix;
     }
-
+    
+    // To handle XPath 3.1 "let" expression variable binding strings like
+    // $varName := val, otherwise the character ':' as part of symbol :=
+    // used for "let" expression variable binding shall be treated for 
+    // XML namespace processing.
+    boolean isLetExprNsCheckOk = false;
+    if (((m_compiler.getTokenQueue()).indexOf("let") != -1)) 
+    {
+       if (":=".equals(pat.substring(posOfNSSep, posOfNSSep + 2)))
+       {
+          isLetExprNsCheckOk = true;
+       }
+    }
+    
     if ((null != uName) && (uName.length() > 0))
     {
-      addToTokenQueue(uName);
-      addToTokenQueue(":");
-
-      String s = pat.substring(posOfNSSep + 1, posOfScan);
-
-      if (s.length() > 0)
-        addToTokenQueue(s);
+      if (!isLetExprNsCheckOk) 
+      {
+          addToTokenQueue(uName);
+          addToTokenQueue(":");
+    
+          String s = pat.substring(posOfNSSep + 1, posOfScan);
+    
+          if (s.length() > 0)
+            addToTokenQueue(s);
+      }
+      else 
+      {          
+          String xpathLetExprBindingVarNameStr = prefix; 
+          if ("".equals(xpathLetExprBindingVarNameStr)) 
+          {
+             // handles XPath "let" expression variable binding strings like $varName := val
+             addToTokenQueue(":");
+          }
+          else 
+          {
+             // handles XPath "let" expression variable binding strings like $varName:= val
+             addToTokenQueue(xpathLetExprBindingVarNameStr);
+             addToTokenQueue(":");    
+          }   
+      }
     }
     else
     {
-        // To older XPath code it doesn't matter if
-        // error() is called or errorForDOM3().
-		m_processor.errorForDOM3(XPATHErrorResources.ER_PREFIX_MUST_RESOLVE,
-						 new String[] {prefix});  //"Prefix must resolve to a namespace: {0}";
-
-/** old code commented out 17-Sep-2004
-// error("Could not locate namespace for prefix: "+prefix);
-//		  m_processor.error(XPATHErrorResources.ER_PREFIX_MUST_RESOLVE,
-//					 new String[] {prefix});  //"Prefix must resolve to a namespace: {0}";
-*/
-
-      /***  Old code commented out 10-Jan-2001
-      addToTokenQueue(prefix);
-      addToTokenQueue(":");
-
-      String s = pat.substring(posOfNSSep + 1, posOfScan);
-
-      if (s.length() > 0)
-        addToTokenQueue(s);
-      ***/
+        if (isLetExprNsCheckOk) 
+        {
+            String xpathLetExprBindingVarNameStr = prefix; 
+            if ("".equals(xpathLetExprBindingVarNameStr)) 
+            {
+               // handles XPath "let" expression variable binding strings like $varName := val
+               addToTokenQueue(":");
+            }
+            else 
+            {
+               // handles XPath "let" expression variable binding strings like $varName:= val
+               addToTokenQueue(xpathLetExprBindingVarNameStr);
+               addToTokenQueue(":");    
+            }    
+        }
+        else 
+        {
+		    m_processor.errorForDOM3(XPATHErrorResources.ER_PREFIX_MUST_RESOLVE,
+						                 new String[] {prefix});  //"Prefix must resolve to a namespace: {0}";
+        }		
     }
 
     return -1;
