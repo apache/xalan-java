@@ -33,6 +33,8 @@ import org.apache.xpath.XPathProcessorException;
 import org.apache.xpath.composite.ForExpr;
 import org.apache.xpath.composite.ForQuantifiedExprVarBinding;
 import org.apache.xpath.composite.IfExpr;
+import org.apache.xpath.composite.LetExpr;
+import org.apache.xpath.composite.LetExprVarBinding;
 import org.apache.xpath.composite.QuantifiedExpr;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
 import org.apache.xpath.functions.DynamicFunctionCall;
@@ -91,7 +93,8 @@ public class XPathParser
                                                      {"div", "or", "and", "mod", "to", 
                                                       "eq", "ne", "lt", "gt", "le", "ge", 
                                                       "for", "in", "return", "if", "then", 
-                                                      "else", "some", "every", "satisfies", "-"};
+                                                      "else", "some", "every", "satisfies", 
+                                                      "let", ":=", "-"};
   
   private static final List<String> fXpathOpArrTokensList = Arrays.asList(XPATH_OP_ARR);
   
@@ -105,9 +108,11 @@ public class XPathParser
   
   static ForExpr fForExpr = null;
   
-  static IfExpr fIfExpr = null;
+  static LetExpr fLetExpr = null;
   
   static QuantifiedExpr fQuantifiedExpr = null;
+  
+  static IfExpr fIfExpr = null;
   
   /**
    * The parser constructor.
@@ -895,6 +900,7 @@ public class XPathParser
    * Expr   ::=  ExprSingle ("," ExprSingle)*
    * 
    * ExprSingle  ::=  ForExpr
+   *       | LetExpr
    *       | QuantifiedExpr
    *       | IfExpr 
    *       | OrExpr
@@ -910,6 +916,14 @@ public class XPathParser
          String prevTokenStr = getTokenRelative(-2);
          
          fForExpr = ForExpr(prevTokenStr);
+      }
+      else if (tokenIs("let")) {
+         // to check, whether XPath 'let' expression is a sub expression of another 
+         // XPath expression (for e.g, a 'let' expression could be a function 
+         // argument).
+         String prevTokenStr = getTokenRelative(-2);
+          
+         fLetExpr = LetExpr(prevTokenStr);
       }
       else if (tokenIs("some")) {
          // to check, whether XPath quantified 'some' expression is a sub expression 
@@ -1013,6 +1027,85 @@ public class XPathParser
                                             m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
       
       return forExpr;
+  }
+  
+  protected LetExpr LetExpr(String prevTokenStrBeforeLet) throws javax.xml.transform.TransformerException
+  {
+      int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+      
+      nextToken();
+      
+      insertOp(opPos, 2, OpCodes.OP_LET_EXPR);
+      
+      LetExpr letExpr = new LetExpr();
+      
+      List<LetExprVarBinding> letExprVarBindingList = new ArrayList<LetExprVarBinding>();
+      
+      while (!tokenIs("return") && m_token != null)
+      {
+          String bindingVarName = null;
+          
+          if (letExprVarBindingList.size() > 0 && tokenIs(',')) {
+             nextToken();    
+          }
+          
+          if (tokenIs('$')) {
+              nextToken();              
+              bindingVarName = m_token;              
+              nextToken();              
+              consumeExpected(":");
+              consumeExpected("=");
+          }
+          
+          List<String> bindingXPathExprStrPartsList = new ArrayList<String>();
+          
+          while (!(tokenIs(',') || tokenIs("return")) && m_token != null) {
+             bindingXPathExprStrPartsList.add(m_token);
+             nextToken();
+          }
+          
+          String varBindingXpathStr = getXPathStrFromComponentParts(bindingXPathExprStrPartsList);
+
+          LetExprVarBinding letExprVarBinding = new LetExprVarBinding();
+          letExprVarBinding.setVarName(bindingVarName);
+          letExprVarBinding.setXpathExprStr(varBindingXpathStr);
+
+          letExprVarBindingList.add(letExprVarBinding);
+
+          if (tokenIs("return")) {
+             break; 
+          }          
+      }
+      
+      consumeExpected("return");
+      
+      List<String> xPathReturnExprStrPartsList = new ArrayList<String>();
+      
+      while (m_token != null) {
+         if (tokenIs(')')) {            
+            if ((getTokenRelative(0) == null) && "(".equals(prevTokenStrBeforeLet)) {
+               break;    
+            }
+            else {
+               xPathReturnExprStrPartsList.add(m_token);
+               nextToken();
+            }
+         }
+         else {
+            xPathReturnExprStrPartsList.add(m_token);
+            nextToken();
+         }
+      }
+      
+      String xPathReturnExprStr = getXPathStrFromComponentParts(xPathReturnExprStrPartsList);
+      
+      letExpr.setLetExprVarBindingList(letExprVarBindingList);
+      letExpr.setReturnExprXPathStr(xPathReturnExprStr);
+      
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+      
+      return letExpr;
   }
   
   protected QuantifiedExpr QuantifiedExpr(String prevTokenStrBeforeQuantifier, int quantifierExprType) 

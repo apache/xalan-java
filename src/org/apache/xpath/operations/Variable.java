@@ -144,7 +144,7 @@ public class Variable extends Expression implements PathComponent
     
     if (m_xpathVarList.contains(m_qname)) {
        // this takes care of, variable references within, XPath 3.1 feature implementations
-       // like function item, "for" expression.
+       // like function item, "for", "let", 'quantified' expressions.
        return;    
     }
     

@@ -24,6 +24,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -43,8 +44,10 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.ref.ExpandedNameTable;
 import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.QName;
+import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.InlineFunction;
 
 /**
  * This class represents the root object of the stylesheet tree.
@@ -74,7 +77,14 @@ public class StylesheetRoot extends StylesheetComposed
      * State of the secure processing feature.
      */
     private boolean m_isSecureProcessing = false;
-
+    
+    /**
+     * We store stylesheet global variable declarations that refer to
+     * XPath 3.1 inline functions, within this java.util.Map object.   
+     */
+    private Map<QName, InlineFunction> m_inlineFunctionVarMap = 
+                                                  new HashMap<QName, InlineFunction>();
+    
   /**
    * Uses an XSL stylesheet document.
    * @throws TransformerConfigurationException if the baseIdentifier can not be resolved to a URL.
@@ -832,6 +842,16 @@ public class StylesheetRoot extends StylesheetComposed
       elemVar.setIsTopLevel(true);        // Mark as a top-level variable or param
       elemVar.setIndex(m_variables.size());
       m_variables.addElement(elemVar);
+
+      XPath selectXPath = elemVar.getSelect();
+      if (selectXPath != null) {
+         Expression selectExpression = selectXPath.getExpression();
+         if (selectExpression instanceof InlineFunction) {
+             QName elemVarQname = elemVar.getName();
+             m_inlineFunctionVarMap.put(elemVarQname, (InlineFunction)
+                                                                selectExpression);
+         }
+      }
     }
   }
 
@@ -1400,6 +1420,15 @@ public class StylesheetRoot extends StylesheetComposed
      */
     public void setSource_location(boolean b) {
         m_source_location = b;
+    }
+
+    public Map<QName, InlineFunction> getInlineFunctionVarMap() {
+        return m_inlineFunctionVarMap;
+    }
+
+    public void setInlineFunctionVarMap(Map<QName, InlineFunction> 
+                                                             inlineFunctionVarMap) {
+        this.m_inlineFunctionVarMap = inlineFunctionVarMap;
     }
 
 }

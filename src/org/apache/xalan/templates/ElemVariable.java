@@ -17,6 +17,8 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.Map;
+
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
@@ -28,6 +30,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.objects.InlineFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
@@ -258,9 +261,16 @@ public class ElemVariable extends ElemTemplateElement
     int sourceNode = transformer.getXPathContext().getCurrentNode();
   
     XObject var = getValue(transformer, sourceNode);
-
-    // transformer.getXPathContext().getVarStack().pushVariable(m_qname, var);
-    transformer.getXPathContext().getVarStack().setLocalVariable(m_index, var);
+    
+    if (var instanceof InlineFunction) 
+    {
+        Map<QName, XObject> xpathVarMap = (transformer.getXPathContext()).getXPathVarMap();
+        xpathVarMap.put(m_qname, var);
+    }
+    else {
+        // transformer.getXPathContext().getVarStack().pushVariable(m_qname, var);
+        transformer.getXPathContext().getVarStack().setLocalVariable(m_index, var);
+    }
     
     if (transformer.getDebug())
 	  transformer.getTraceManager().fireTraceEndEvent(this);         

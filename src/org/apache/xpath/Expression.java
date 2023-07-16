@@ -56,11 +56,11 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
   private ExpressionNode m_parent;
   
   /** 
-   * XPath 3.1 support for, XPath.fixupVariables(..) action for
-   * feature implementations like XPath function item, "for" expression.
+   * XPath 3.1 support for, XPath.fixupVariables(..) action for feature 
+   * implementations like XPath function item, "for", "let", 'quantified' 
+   * expressions.
    * 
-   * XPath variable references, within these XPath 3.1 features are not 
-   * stored within XPath context's variable stack.
+   * We don't use, XalanJ XPath context's variable stack for this purpose.
    */
   protected static List<QName> m_xpathVarList = new ArrayList<QName>();
 

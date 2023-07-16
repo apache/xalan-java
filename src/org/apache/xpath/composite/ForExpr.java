@@ -178,7 +178,7 @@ public class ForExpr extends Expression {
            
            // for each xdm item within sequence object 'xsObjResultSeq' (which is the 
            // result of variable binding xpath expression's evaluation), bind the 'for' 
-           // expression range variable in turn to that item.
+           // expression's binding variable in turn to that item.
            for (int idx = 0; idx < xsObjResultSeq.size(); idx++) {
                XObject xdmItem = xsObjResultSeq.item(idx);
                              
