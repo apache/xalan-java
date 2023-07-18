@@ -99,9 +99,8 @@ public class FuncStringJoin extends Function2Args {
         int nextNodeDtmHandle;
         
         while ((nextNodeDtmHandle = arg0DtmIterator.nextNode()) != DTM.NULL) {
-            XNodeSet xNodeSet = new XNodeSet(nextNodeDtmHandle, xctxt.getDTMManager());
-            
-            String nodeStrValue = xNodeSet.str();
+            XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);            
+            String nodeStrValue = xNodeSetItem.str();
             
             DTM dtm = dtmMgr.getDTM(nextNodeDtmHandle);
             
