@@ -89,14 +89,13 @@ public class FuncIndexOf extends Function3Args {
         if (arg0 instanceof LocPathIterator) {
             arg0ResultSeq = new ResultSequence();
                                 
-            DTMIterator arg0DtmIterator = m_arg0.asIterator(xctxt, contextNode);        
+            DTMIterator arg0DtmIterator = arg0.asIterator(xctxt, contextNode);        
             
             int nextNodeDtmHandle;
             
             while ((nextNodeDtmHandle = arg0DtmIterator.nextNode()) != DTM.NULL) {
-                XNodeSet xNodeSet = new XNodeSet(nextNodeDtmHandle, xctxt.getDTMManager());
-                
-                String nodeStrValue = xNodeSet.str();
+                XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);                
+                String nodeStrValue = xNodeSetItem.str();
                 
                 DTM dtm = dtmMgr.getDTM(nextNodeDtmHandle);
                 

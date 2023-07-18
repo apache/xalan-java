@@ -81,14 +81,14 @@ public class FuncDistinctValues extends Function2Args {
         if (arg0Obj instanceof XNodeSet) {
            DTMManager dtmMgr = (DTMManager)xctxt;
            
-           int currentNode = xctxt.getCurrentNode();
-           DTMIterator sourceNodes = arg0.asIterator(xctxt, currentNode);
+           XNodeSet xNodeSet = (XNodeSet)arg0Obj;           
+           DTMIterator sourceNodes = xNodeSet.iter();
            
            int nextNodeDtmHandle;
            
            while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
-              XNodeSet xNodeSet = new XNodeSet(nextNodeDtmHandle, xctxt);
-              String nodeStrValue = xNodeSet.str();
+              XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);
+              String nodeStrValue = xNodeSetItem.str();
               
               DTM dtm = dtmMgr.getDTM(nextNodeDtmHandle);
               
@@ -121,7 +121,7 @@ public class FuncDistinctValues extends Function2Args {
         }
         else {
            // we're assuming here that, an input value is an 
-           // singleton xdm item.            
+           // xdm singleton item.            
            if (arg0Obj instanceof XSAnyType) {
               XSAnyType xsAnyType = (XSAnyType)arg0Obj;
               addItemToResultSequence(resultSeq, xsAnyType, false);
