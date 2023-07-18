@@ -4,17 +4,16 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- Test for the XPath 3.1 fn:string-join() function -->
+   <!-- use with test1_a.xml -->
+   
+   <!-- test for the XPath 3.1 fn:index-of() function -->                
 
    <xsl:output method="xml" indent="yes"/>
 
-   <xsl:template match="/">
-     <result>        
-        <xsl:variable name="str" select="tokenize('Now is the time ...', '\s+')"/>        
-        <one><xsl:value-of select="string-join(tokenize('Now is the time ...', '\s+'), ',')"/></one>
-        <two><xsl:value-of select="string-join($str, ',')"/></two>
-        <three><xsl:value-of select="string-join($str)"/></three>
-     </result>
+   <xsl:template match="/list">
+      <result>
+        <xsl:value-of select="index-of(name, 'Mukul')"/>
+      </result>
    </xsl:template>
    
    <!--

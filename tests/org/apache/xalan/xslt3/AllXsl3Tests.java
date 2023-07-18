@@ -18,6 +18,7 @@ package org.apache.xalan.xslt3;
 
 import org.apache.xalan.xpath3.DynamicFunctionCallTests;
 import org.apache.xalan.xpath3.FnAbsTests;
+import org.apache.xalan.xpath3.FnDistinctValuesTests;
 import org.apache.xalan.xpath3.FnFilterTests;
 import org.apache.xalan.xpath3.FnForEachTests;
 import org.apache.xalan.xpath3.FnIndexOfTests;
@@ -59,7 +60,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 W3c_xslt30_IterateTests.class, W3c_xslt30_AxesTests.class, XslIterateTests.class,
                 ValueComparisonTests.class, InlineFunctionItemExprTests.class, FnForEachTests.class, 
                 FnFilterTests.class, DynamicFunctionCallTests.class, IfExprTests.class, 
-                ForExprTests.class, LetExprTests.class })
+                ForExprTests.class, LetExprTests.class, FnDistinctValuesTests.class })
 public class AllXsl3Tests {
 
 }

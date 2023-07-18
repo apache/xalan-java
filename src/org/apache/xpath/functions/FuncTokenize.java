@@ -65,6 +65,9 @@ public class FuncTokenize extends Function3Args {
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {      
+        
+        ResultSequence resultSeq = new ResultSequence();
+      
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
         XMLString inputStr = m_arg0.execute(xctxt).xstr();
@@ -93,7 +96,6 @@ public class FuncTokenize extends Function3Args {
                 throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator); 
             }
             
-            ResultSequence resultSeq = new ResultSequence();
             for (int idx = 0; idx < tokenList.size(); idx++) {
                 resultSeq.add(new XString(tokenList.get(idx)));    
             }
@@ -132,8 +134,7 @@ public class FuncTokenize extends Function3Args {
         catch (Exception ex) {
            throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator);   
         }
-    
-        ResultSequence resultSeq = new ResultSequence();
+            
         for (int idx = 0; idx < tokenList.size(); idx++) {
             resultSeq.add(new XString(tokenList.get(idx)));    
         }

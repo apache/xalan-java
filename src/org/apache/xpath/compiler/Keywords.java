@@ -265,6 +265,9 @@ public class Keywords
   
   /** filter function string. */
   public static final String FUNC_FILTER = "filter";
+  
+  /** distinct-values function string. */
+  public static final String FUNC_DISTINCT_VALUES = "distinct-values";
 
   // Proprietary, built in functions
 

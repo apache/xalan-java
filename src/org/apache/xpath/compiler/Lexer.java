@@ -251,15 +251,17 @@ class Lexer
       case '[' :
       case ')' :
       case ']' :
+      case '{' :   // added for XPath 3.1
+      case '}' :   // added for XPath 3.1    
       case '|' :
       case '/' :
       case '*' :
       case '+' :
       case '=' :
-      case ',' :
+      case ',' :      
       case '\\' :  // Unused at the moment
-      case '^' :  // Unused at the moment
-      case '!' :  // Unused at the moment
+      case '^' :   // Unused at the moment
+      case '!' :   // Unused at the moment
       case '$' :
       case '<' :
       case '>' :

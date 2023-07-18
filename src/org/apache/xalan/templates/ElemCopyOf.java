@@ -35,6 +35,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.xs.types.XSUntyped;
+import org.apache.xpath.xs.types.XSUntypedAtomic;
 
 /*
  * Implementation of XSLT xsl:copy-of instruction.
@@ -220,6 +222,20 @@ public class ElemCopyOf extends ElemTemplateElement
                  if (idx < (resultSequence.size() - 1)) {                     
                     handler.characters(spaceCharArr, 0, 1);
                  }
+             }
+             else if (sequenceItem instanceof XSUntyped) {
+                 String str = ((XSUntyped)sequenceItem).stringValue();
+                 handler.characters(str.toCharArray(), 0, str.length());
+                 if (idx < (resultSequence.size() - 1)) {                     
+                    handler.characters(spaceCharArr, 0, 1);
+                 }
+             }
+             else if (sequenceItem instanceof XSUntypedAtomic) {
+                 String str = ((XSUntypedAtomic)sequenceItem).stringValue();
+                 handler.characters(str.toCharArray(), 0, str.length());
+                 if (idx < (resultSequence.size() - 1)) {                     
+                    handler.characters(spaceCharArr, 0, 1);
+                 } 
              }
              else if (sequenceItem.getType() == XObject.CLASS_NODESET) {
                  DTMIterator nl1 = sequenceItem.iter();

@@ -6,14 +6,14 @@
    
    <!-- An XSLT stylesheet test, for the XPath 3.1 "let" expression.
         
-        This XSLT stylesheet, borrows an XPath "let" expression example 
-        from https://www.altova.com/, with slight modifications.
-        
         Within this XSLT stylesheet, an XPath "let" expression binds two  
         literal values to the '$r' and '$pi' variables respectively. It also binds 
         a third variable '$area' to an inline function. The return expression calls 
         an inline function by using its variable reference '$area' and passing
-        the '$r' variable as an argument to it. -->
+        the '$r' variable as an argument to it.
+        
+        This XSLT stylesheet, borrows an XPath "let" expression example 
+        from https://www.altova.com/, with slight modifications. -->
         
    <xsl:output method="text"/>
                                             

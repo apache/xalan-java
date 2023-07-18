@@ -4,17 +4,19 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- Test for the XPath 3.1 fn:string-join() function -->
+   <!-- use with test1_b.xml -->
+   
+   <!-- Test for the XPath 3.1 fn:distinct-values() function. -->                
 
    <xsl:output method="xml" indent="yes"/>
 
-   <xsl:template match="/">
-     <result>        
-        <xsl:variable name="str" select="tokenize('Now is the time ...', '\s+')"/>        
-        <one><xsl:value-of select="string-join(tokenize('Now is the time ...', '\s+'), ',')"/></one>
-        <two><xsl:value-of select="string-join($str, ',')"/></two>
-        <three><xsl:value-of select="string-join($str)"/></three>
-     </result>
+   <xsl:template match="/list">
+      <xsl:variable name="distinctNames" select="distinct-values(name/@val)"/>
+      <result count="{count($distinctNames)}">
+	     <xsl:for-each select="$distinctNames">
+	        <name><xsl:value-of select="."/></name>
+	     </xsl:for-each>
+      </result>
    </xsl:template>
    
    <!--
