@@ -11,8 +11,8 @@
    <xsl:template match="/">
       <xsl:variable name="words" select="tokenize('a abc abc pqr mno pqr pqr','\s+')"/>
       <result>
-         <one><xsl:value-of select="index-of($words, 'abc')"/>. size : <xsl:value-of select="count(index-of($words, 'abc'))"/></one>
-         <two><xsl:value-of select="index-of($words, 'pqr')"/>. size : <xsl:value-of select="count(index-of($words, 'pqr'))"/></two>
+         <one><xsl:value-of select="index-of($words, 'abc')"/> :: size <xsl:value-of select="count(index-of($words, 'abc'))"/></one>
+         <two><xsl:value-of select="index-of($words, 'pqr')"/> :: size <xsl:value-of select="count(index-of($words, 'pqr'))"/></two>
       </result>
    </xsl:template>
    

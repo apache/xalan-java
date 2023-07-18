@@ -185,6 +185,9 @@ public class FunctionTable
   
   /** The 'filter()' id. */
   public static final int FUNC_FILTER = 54;
+  
+  /** The 'distinct-values()' id. */
+  public static final int FUNC_DISTINCT_VALUES = 55;
 
   // Proprietary
 
@@ -213,7 +216,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 55;
+  private static final int NUM_BUILT_IN_FUNCS = 56;
 
   /**
    * Number of built-in functions that may be added.
@@ -315,6 +318,8 @@ public class FunctionTable
       org.apache.xpath.functions.FuncForEach.class;
     m_functions[FUNC_FILTER] = 
       org.apache.xpath.functions.FuncFilter.class;
+    m_functions[FUNC_DISTINCT_VALUES] = 
+      org.apache.xpath.functions.FuncDistinctValues.class;
   }
 
   static{
@@ -424,6 +429,8 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_FOR_EACH));
           m_functionID.put(Keywords.FUNC_FILTER,
                           new Integer(FunctionTable.FUNC_FILTER));
+          m_functionID.put(Keywords.FUNC_DISTINCT_VALUES,
+                          new Integer(FunctionTable.FUNC_DISTINCT_VALUES));
   }
   
   public FunctionTable(){

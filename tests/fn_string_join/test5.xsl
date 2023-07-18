@@ -4,17 +4,21 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- Test for the XPath 3.1 fn:string-join() function -->
+   <!-- use with test1_b.xml -->
+   
+   <!-- Test for the XPath 3.1 fn:string-join() function.
+   
+        Within this XSLT stylesheet test, the fn:string-join() 
+        function takes as input, a combination of XML element and 
+        attribute nodes. -->
 
    <xsl:output method="xml" indent="yes"/>
 
-   <xsl:template match="/">
-     <result>        
-        <xsl:variable name="str" select="tokenize('Now is the time ...', '\s+')"/>        
-        <one><xsl:value-of select="string-join(tokenize('Now is the time ...', '\s+'), ',')"/></one>
-        <two><xsl:value-of select="string-join($str, ',')"/></two>
-        <three><xsl:value-of select="string-join($str)"/></three>
-     </result>
+   <xsl:template match="/list">
+      <result>
+         <one><xsl:value-of select="string-join(str/@val | val)"/></one>
+         <two><xsl:value-of select="string-join(str/@val | val, ', ')"/></two>
+      </result>
    </xsl:template>
    
    <!--

@@ -22,12 +22,20 @@ import java.math.BigInteger;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xpath.xs.types.XSAnyType;
 import org.apache.xpath.xs.types.XSInteger;
+import org.apache.xpath.xs.types.XSUntyped;
+import org.apache.xpath.xs.types.XSUntypedAtomic;
 
 /**
  * Execute the index-of() function.
@@ -69,22 +77,87 @@ public class FuncIndexOf extends Function3Args {
         
         ResultSequence resultSeq = new ResultSequence();
         
+        ResultSequence arg0ResultSeq = null;
+        
+        final int contextNode = xctxt.getCurrentNode();
+        
         Expression arg0 = getArg0();
         Expression arg1 = getArg1();
         
-        XObject arg0Obj = arg0.execute(xctxt);
+        DTMManager dtmMgr = (DTMManager)xctxt;
+        
+        if (arg0 instanceof LocPathIterator) {
+            arg0ResultSeq = new ResultSequence();
+                                
+            DTMIterator arg0DtmIterator = m_arg0.asIterator(xctxt, contextNode);        
+            
+            int nextNodeDtmHandle;
+            
+            while ((nextNodeDtmHandle = arg0DtmIterator.nextNode()) != DTM.NULL) {
+                XNodeSet xNodeSet = new XNodeSet(nextNodeDtmHandle, xctxt.getDTMManager());
+                
+                String nodeStrValue = xNodeSet.str();
+                
+                DTM dtm = dtmMgr.getDTM(nextNodeDtmHandle);
+                
+                if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
+                   XSUntyped xsUntyped = new XSUntyped(nodeStrValue);
+                   arg0ResultSeq.add(xsUntyped);
+                }
+                else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
+                   XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
+                   arg0ResultSeq.add(xsUntypedAtomic);
+                }
+                else {
+                   XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
+                   arg0ResultSeq.add(xsUntypedAtomic);
+                }                        
+            } 
+        }
+        else {
+            XObject arg0Obj = arg0.execute(xctxt);
+            if (arg0Obj instanceof ResultSequence) {
+               arg0ResultSeq = (ResultSequence)arg0Obj;     
+            }
+        }
 
-        if (!(arg0Obj instanceof ResultSequence)) {
-           throw new javax.xml.transform.TransformerException("The first argument of fn:index-of is "
-                                                                      + "not a sequence.", srcLocator);     
+        if (arg0ResultSeq == null) {
+           throw new javax.xml.transform.TransformerException("XPTY0004 : The first argument of fn:index-of didn't "
+                                                                                        + "evaluate to a sequence.", srcLocator);     
         }
         
         XObject arg1Obj = arg1.execute(xctxt);
         
-        ResultSequence arg0ResultSeq = (ResultSequence)arg0Obj;
+        if (arg1Obj instanceof XNodeSet) {
+           XNodeSet xNodeSet = (XNodeSet)arg1Obj;           
+           
+           if (xNodeSet.getLength() == 1) {
+              String nodeStrValue = xNodeSet.str();
+               
+              DTMIterator sourceNodes = arg0.asIterator(xctxt, contextNode);
+              int dtmNodeHandle = sourceNodes.nextNode();
+              
+              DTM dtm = dtmMgr.getDTM(dtmNodeHandle);
+               
+              if (dtm.getNodeType(dtmNodeHandle) == DTM.ELEMENT_NODE) {
+                 arg1Obj = new XSUntyped(nodeStrValue);
+              }
+              else if (dtm.getNodeType(dtmNodeHandle) == DTM.ATTRIBUTE_NODE) {
+                 arg1Obj = new XSUntypedAtomic(nodeStrValue);
+              }
+              else {
+                 arg1Obj = new XSUntypedAtomic(nodeStrValue);
+              }    
+           }
+           else {                            
+              throw new javax.xml.transform.TransformerException("XPTY0004 : the second argument of "
+                                                                                   + "fn:index-of needs to be a sequence of size one.", 
+                                                                                            srcLocator); 
+           }
+        }
         
         for (int idx = 0; idx < arg0ResultSeq.size(); idx++) {
-           if ((arg0ResultSeq.item(idx)).equals(arg1Obj)) {
+           if (equals(arg0ResultSeq.item(idx), arg1Obj)) {
               resultSeq.add(new XSInteger(BigInteger.valueOf(idx + 1)));    
            }
         }
@@ -115,6 +188,45 @@ public class FuncIndexOf extends Function3Args {
   protected void reportWrongNumberArgs() throws WrongNumberArgsException {
       throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
                                               XPATHErrorResources.ER_TWO_OR_THREE, null)); //"2 or 3"
+  }
+  
+  /**
+   * Check equality of two xdm items.
+   */
+  private boolean equals(XObject obj1, XObject obj2) {
+      
+      boolean isEquals = false;
+      
+      if ((obj1 instanceof XSUntyped) && (obj2 instanceof XSUntyped)) {
+         if (((XSUntyped)obj1).equals((XSUntyped)obj2)) {
+            isEquals = true;   
+         }
+      }
+      else if ((obj1 instanceof XSUntypedAtomic) && (obj2 instanceof XSUntypedAtomic)) {
+         if (((XSUntypedAtomic)obj1).equals((XSUntypedAtomic)obj2)) {
+            isEquals = true;   
+         }
+      }
+      else if ((obj1 instanceof XSUntyped) && (obj2 instanceof XSUntypedAtomic)) {
+         if (((XSUntyped)obj1).equals((XSUntypedAtomic)obj2)) {
+            isEquals = true;   
+         } 
+      }
+      else if ((obj1 instanceof XSUntypedAtomic) && (obj2 instanceof XSUntyped)) {
+         if (((XSUntypedAtomic)obj1).equals((XSUntyped)obj2)) {
+            isEquals = true; 
+         }
+      }
+      else if ((obj1 instanceof XSAnyType) && (obj2 instanceof XSAnyType)) {
+         if (((XSAnyType)obj1).equals((XSAnyType)obj2)) {
+            isEquals = true;  
+         }   
+      }
+      else if (obj1.equals(obj2)) {
+          isEquals = true;   
+      }
+      
+      return isEquals; 
   }
 
 }

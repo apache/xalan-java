@@ -4,17 +4,23 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- Test for the XPath 3.1 fn:string-join() function -->
+   <!-- use with test1_d.xml, test1_e.xml -->
+   
+   <!-- Test for the XPath 3.1 fn:distinct-values() function.
+   
+        Within this XSLT stylesheet test, the fn:distinct-values() 
+        function takes as input, a combination of XML element and 
+        attribute nodes. -->                 
 
    <xsl:output method="xml" indent="yes"/>
 
-   <xsl:template match="/">
-     <result>        
-        <xsl:variable name="str" select="tokenize('Now is the time ...', '\s+')"/>        
-        <one><xsl:value-of select="string-join(tokenize('Now is the time ...', '\s+'), ',')"/></one>
-        <two><xsl:value-of select="string-join($str, ',')"/></two>
-        <three><xsl:value-of select="string-join($str)"/></three>
-     </result>
+   <xsl:template match="/list">
+      <xsl:variable name="distinctVals" select="distinct-values(name | /list/@val)"/>
+      <result count="{count($distinctVals)}">
+   	     <xsl:for-each select="$distinctVals">
+   	        <val><xsl:value-of select="."/></val>
+   	     </xsl:for-each>
+      </result>
    </xsl:template>
    
    <!--

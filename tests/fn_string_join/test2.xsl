@@ -9,12 +9,10 @@
    <xsl:output method="xml" indent="yes"/>
 
    <xsl:template match="/">
-     <result>        
-        <xsl:variable name="str" select="tokenize('Now is the time ...', '\s+')"/>        
-        <one><xsl:value-of select="string-join(tokenize('Now is the time ...', '\s+'), ',')"/></one>
-        <two><xsl:value-of select="string-join($str, ',')"/></two>
-        <three><xsl:value-of select="string-join($str)"/></three>
-     </result>
+      <result>
+        <val><xsl:value-of select="string-join(1 to 9)"/></val>
+        <val><xsl:value-of select="string-join(1 to 5, ', ')"/></val>
+      </result>
    </xsl:template>
    
    <!--

@@ -4,17 +4,20 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- Test for the XPath 3.1 fn:string-join() function -->
+   <!-- An XSLT stylesheet to test, an XPath 3.1 inline function
+        expression, which has no whitespace between its body delimiter
+        characters '{' or '}' and the XPath expression contents of inline
+        function body. i.e, inline function body sub-structures like 
+        '{$a', '$b}' and also '{ $a', '$b }' should be acceptable. -->                
 
    <xsl:output method="xml" indent="yes"/>
+   
+   <xsl:variable name="func1" select="function ($a, $b) {$a + $b}"/>
 
    <xsl:template match="/">
-     <result>        
-        <xsl:variable name="str" select="tokenize('Now is the time ...', '\s+')"/>        
-        <one><xsl:value-of select="string-join(tokenize('Now is the time ...', '\s+'), ',')"/></one>
-        <two><xsl:value-of select="string-join($str, ',')"/></two>
-        <three><xsl:value-of select="string-join($str)"/></three>
-     </result>
+      <result>
+	     <xsl:value-of select="$func1(3, 2)"/>
+      </result>
    </xsl:template>
    
    <!--
