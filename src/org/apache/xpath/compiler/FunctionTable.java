@@ -20,7 +20,10 @@
  */
 package org.apache.xpath.compiler;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+
 import javax.xml.transform.TransformerException;
 import org.apache.xpath.functions.Function;
 
@@ -188,11 +191,82 @@ public class FunctionTable
   
   /** The 'distinct-values()' id. */
   public static final int FUNC_DISTINCT_VALUES = 55;
+  
+  /** The 'math:pi()' id. */
+  public static final int FUNC_MATH_PI = 56;
+  
+  /** The 'math:exp()' id. */
+  public static final int FUNC_MATH_EXP = 57;
+  
+  /** The 'math:exp10()' id. */
+  public static final int FUNC_MATH_EXP10 = 58;
+  
+  /** The 'math:log()' id. */
+  public static final int FUNC_MATH_LOG = 59;
+  
+  /** The 'math:log10()' id. */
+  public static final int FUNC_MATH_LOG10 = 60;
+  
+  /** The 'math:pow()' id. */
+  public static final int FUNC_MATH_POW = 61;
+  
+  /** The 'math:sqrt()' id. */
+  public static final int FUNC_MATH_SQRT = 62;
+  
+  /** The 'math:sin()' id. */
+  public static final int FUNC_MATH_SIN = 63;
+  
+  /** The 'math:cos()' id. */
+  public static final int FUNC_MATH_COS = 64;
+  
+  /** The 'math:tan()' id. */
+  public static final int FUNC_MATH_TAN = 65;
+  
+  /** The 'math:asin()' id. */
+  public static final int FUNC_MATH_ASIN = 66;
+  
+  /** The 'math:acos()' id. */
+  public static final int FUNC_MATH_ACOS = 67;
+  
+  /** The 'math:atan()' id. */
+  public static final int FUNC_MATH_ATAN = 68;
+  
+  /** The 'math:atan2()' id. */
+  public static final int FUNC_MATH_ATAN2 = 69;
 
   // Proprietary
 
   /** The 'document-location()' id (Proprietary). */
   public static final int FUNC_DOCLOCATION = 35;
+  
+  /**
+   * XPath 3.1 built-in functions namespace uri, for most of the functions
+   * available to XPath 3.1 language users. The XPath functions available within
+   * this namespace, may be used without binding the function name with an XML 
+   * namespace, or binding with a non-null XML namespace (the commonly used XML 
+   * namespace prefix for this namespace uri is "fn", as suggested by
+   * XPath 3.1 spec).
+   */
+  static final String XPATH_BUILT_IN_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions";
+  
+  /**
+   * XPath 3.1 built-in functions namespace uri, for maths trigonometric and exponential 
+   * functions. The XPath functions available within this namespace, must be used by 
+   * qualifying the function name with an XML namespace bound to this uri (the commonly 
+   * used XML namespace prefix for this namespace uri is "math", as suggested by 
+   * XPath 3.1 spec).
+   */
+  static final String XPATH_BUILT_IN_MATH_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions/math";
+  
+  static final Integer[] XPATH_MATH_FUNC_IDS = new Integer[] { new Integer(FUNC_MATH_PI), new Integer(FUNC_MATH_EXP),
+                                                               new Integer(FUNC_MATH_EXP10), new Integer(FUNC_MATH_LOG),
+                                                               new Integer(FUNC_MATH_LOG10), new Integer(FUNC_MATH_POW),
+                                                               new Integer(FUNC_MATH_SQRT), new Integer(FUNC_MATH_SIN),
+                                                               new Integer(FUNC_MATH_COS), new Integer(FUNC_MATH_TAN),
+                                                               new Integer(FUNC_MATH_ASIN), new Integer(FUNC_MATH_ACOS),
+                                                               new Integer(FUNC_MATH_ATAN), new Integer(FUNC_MATH_ATAN2) };
+  
+  static final List<Integer> XPATH_MATH_FUNC_IDS_ARR = Arrays.asList(XPATH_MATH_FUNC_IDS); 
 
   /**
    * The function table.
@@ -216,7 +290,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 56;
+  private static final int NUM_BUILT_IN_FUNCS = 70;
 
   /**
    * Number of built-in functions that may be added.
@@ -320,6 +394,37 @@ public class FunctionTable
       org.apache.xpath.functions.FuncFilter.class;
     m_functions[FUNC_DISTINCT_VALUES] = 
       org.apache.xpath.functions.FuncDistinctValues.class;
+    
+    // XPath 3.1 functions configurations for the namespace 
+    // http://www.w3.org/2005/xpath-functions/math.    
+    m_functions[FUNC_MATH_PI] = 
+      org.apache.xpath.functions.math.FuncMathPi.class;
+    m_functions[FUNC_MATH_EXP] = 
+      org.apache.xpath.functions.math.FuncMathExp.class;
+    m_functions[FUNC_MATH_EXP10] = 
+      org.apache.xpath.functions.math.FuncMathExp10.class;
+    m_functions[FUNC_MATH_LOG] = 
+      org.apache.xpath.functions.math.FuncMathLog.class;
+    m_functions[FUNC_MATH_LOG10] = 
+      org.apache.xpath.functions.math.FuncMathLog10.class;
+    m_functions[FUNC_MATH_POW] = 
+      org.apache.xpath.functions.math.FuncMathPow.class;
+    m_functions[FUNC_MATH_SQRT] = 
+      org.apache.xpath.functions.math.FuncMathSqrt.class;
+    m_functions[FUNC_MATH_SIN] = 
+      org.apache.xpath.functions.math.FuncMathSin.class;
+    m_functions[FUNC_MATH_COS] = 
+      org.apache.xpath.functions.math.FuncMathCos.class;
+    m_functions[FUNC_MATH_TAN] = 
+      org.apache.xpath.functions.math.FuncMathTan.class;
+    m_functions[FUNC_MATH_ASIN] = 
+      org.apache.xpath.functions.math.FuncMathAsin.class;
+    m_functions[FUNC_MATH_ACOS] = 
+      org.apache.xpath.functions.math.FuncMathAcos.class;
+    m_functions[FUNC_MATH_ATAN] = 
+      org.apache.xpath.functions.math.FuncMathAtan.class;
+    m_functions[FUNC_MATH_ATAN2] = 
+      org.apache.xpath.functions.math.FuncMathAtan2.class;
   }
 
   static{
@@ -431,6 +536,37 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_FILTER));
           m_functionID.put(Keywords.FUNC_DISTINCT_VALUES,
                           new Integer(FunctionTable.FUNC_DISTINCT_VALUES));
+          
+          // XPath 3.1 functions configurations for the namespace 
+          // http://www.w3.org/2005/xpath-functions/math.
+          m_functionID.put(Keywords.FUNC_MATH_PI,
+                          new Integer(FunctionTable.FUNC_MATH_PI));
+          m_functionID.put(Keywords.FUNC_MATH_EXP,
+                          new Integer(FunctionTable.FUNC_MATH_EXP));
+          m_functionID.put(Keywords.FUNC_MATH_EXP10,
+                          new Integer(FunctionTable.FUNC_MATH_EXP10));
+          m_functionID.put(Keywords.FUNC_MATH_LOG,
+                          new Integer(FunctionTable.FUNC_MATH_LOG));
+          m_functionID.put(Keywords.FUNC_MATH_LOG10,
+                          new Integer(FunctionTable.FUNC_MATH_LOG10));
+          m_functionID.put(Keywords.FUNC_MATH_POW,
+                          new Integer(FunctionTable.FUNC_MATH_POW));
+          m_functionID.put(Keywords.FUNC_MATH_SQRT,
+                          new Integer(FunctionTable.FUNC_MATH_SQRT));
+          m_functionID.put(Keywords.FUNC_MATH_SIN,
+                          new Integer(FunctionTable.FUNC_MATH_SIN));
+          m_functionID.put(Keywords.FUNC_MATH_COS,
+                          new Integer(FunctionTable.FUNC_MATH_COS));
+          m_functionID.put(Keywords.FUNC_MATH_TAN,
+                          new Integer(FunctionTable.FUNC_MATH_TAN));
+          m_functionID.put(Keywords.FUNC_MATH_ASIN,
+                          new Integer(FunctionTable.FUNC_MATH_ASIN));
+          m_functionID.put(Keywords.FUNC_MATH_ACOS,
+                         new Integer(FunctionTable.FUNC_MATH_ACOS));
+          m_functionID.put(Keywords.FUNC_MATH_ATAN,
+                         new Integer(FunctionTable.FUNC_MATH_ATAN));
+          m_functionID.put(Keywords.FUNC_MATH_ATAN2,
+                         new Integer(FunctionTable.FUNC_MATH_ATAN2));
   }
   
   public FunctionTable(){
