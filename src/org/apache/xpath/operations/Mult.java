@@ -23,6 +23,7 @@ package org.apache.xpath.operations;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.xs.types.XSDouble;
 import org.apache.xpath.xs.types.XSInteger;
 
 /**
@@ -44,7 +45,7 @@ public class Mult extends Operation
    * @throws javax.xml.transform.TransformerException
    */
   public XObject operate(XObject left, XObject right)
-          throws javax.xml.transform.TransformerException
+                                           throws javax.xml.transform.TransformerException
   {
       XObject result = null;
       
@@ -59,6 +60,21 @@ public class Mult extends Operation
       else if ((left instanceof XNumber) && (right instanceof XSInteger)) {          
           double lDouble = ((XNumber)left).num();
           double rDouble = (((XSInteger)right).intValue()).doubleValue();
+          result = new XNumber(lDouble * rDouble);          
+      }
+      else if ((left instanceof XSDouble) && (right instanceof XSDouble)) {          
+          double lDouble = ((XSDouble)left).doubleValue();
+          double rDouble = ((XSDouble)right).doubleValue();
+          result = new XNumber(lDouble * rDouble);          
+      }
+      else if ((left instanceof XNumber) && (right instanceof XSDouble)) {          
+          double lDouble = ((XNumber)left).num();
+          double rDouble = ((XSDouble)right).doubleValue();
+          result = new XNumber(lDouble * rDouble);          
+      }
+      else if ((left instanceof XSDouble) && (right instanceof XNumber)) {          
+          double lDouble = ((XSDouble)left).doubleValue();
+          double rDouble = ((XNumber)right).num();
           result = new XNumber(lDouble * rDouble);          
       }
       else {

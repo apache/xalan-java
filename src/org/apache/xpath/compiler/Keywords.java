@@ -268,6 +268,48 @@ public class Keywords
   
   /** distinct-values function string. */
   public static final String FUNC_DISTINCT_VALUES = "distinct-values";
+  
+  /** math:pi function string. */
+  public static final String FUNC_MATH_PI = "pi";
+  
+  /** math:exp function string. */
+  public static final String FUNC_MATH_EXP = "exp";
+  
+  /** math:exp10 function string. */
+  public static final String FUNC_MATH_EXP10 = "exp10";
+  
+  /** math:log function string. */
+  public static final String FUNC_MATH_LOG = "log";
+  
+  /** math:log10 function string. */
+  public static final String FUNC_MATH_LOG10 = "log10";
+  
+  /** math:pow function string. */
+  public static final String FUNC_MATH_POW = "pow";
+  
+  /** math:sqrt function string. */
+  public static final String FUNC_MATH_SQRT = "sqrt";
+  
+  /** math:sin function string. */
+  public static final String FUNC_MATH_SIN = "sin";
+  
+  /** math:cos function string. */
+  public static final String FUNC_MATH_COS = "cos";
+  
+  /** math:tan function string. */
+  public static final String FUNC_MATH_TAN = "tan";
+  
+  /** math:asin function string. */
+  public static final String FUNC_MATH_ASIN = "asin";
+  
+  /** math:acos function string. */
+  public static final String FUNC_MATH_ACOS = "acos";
+  
+  /** math:atan function string. */
+  public static final String FUNC_MATH_ATAN = "atan";
+  
+  /** math:atan2 function string. */
+  public static final String FUNC_MATH_ATAN2 = "atan2";
 
   // Proprietary, built in functions
 

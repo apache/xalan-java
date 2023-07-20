@@ -37,6 +37,8 @@ public class FunctionOneArg extends Function implements ExpressionOwner
    *
    */
   Expression m_arg0;
+  
+  private boolean fArgCountErr = false;
 
   /**
    * Return the first argument passed to the function (at index 0).
@@ -67,8 +69,10 @@ public class FunctionOneArg extends Function implements ExpressionOwner
       m_arg0 = arg;
       arg.exprSetParent(this);
     }
-    else
+    else {
+      fArgCountErr = true;
       reportWrongNumberArgs();
+    }
   }
 
   /**
@@ -93,6 +97,10 @@ public class FunctionOneArg extends Function implements ExpressionOwner
    */
   protected void reportWrongNumberArgs() throws WrongNumberArgsException {
       throw new WrongNumberArgsException(XSLMessages.createXPATHMessage("one", null));
+  }
+  
+  protected boolean isArgCountErr() {
+      return fArgCountErr;
   }
   
   /**
@@ -170,6 +178,5 @@ public class FunctionOneArg extends Function implements ExpressionOwner
 
   	return true;
   }
-
 
 }
