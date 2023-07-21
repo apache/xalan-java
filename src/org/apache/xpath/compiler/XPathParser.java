@@ -23,6 +23,7 @@ package org.apache.xpath.compiler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
 
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
@@ -36,6 +37,7 @@ import org.apache.xpath.composite.IfExpr;
 import org.apache.xpath.composite.LetExpr;
 import org.apache.xpath.composite.LetExprVarBinding;
 import org.apache.xpath.composite.QuantifiedExpr;
+import org.apache.xpath.composite.SimpleSequenceConstructor;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
 import org.apache.xpath.functions.DynamicFunctionCall;
 import org.apache.xpath.objects.InlineFunction;
@@ -102,6 +104,8 @@ public class XPathParser
   
   private boolean fIsXpathPredicateParsingActive = false;
   
+  private boolean fIsBeginParse = false;
+  
   static InlineFunction fInlineFunction = null;
   
   static DynamicFunctionCall fDynamicFunctionCall = null;
@@ -113,6 +117,8 @@ public class XPathParser
   static QuantifiedExpr fQuantifiedExpr = null;
   
   static IfExpr fIfExpr = null;
+  
+  static SimpleSequenceConstructor fSimpleSequenceConstructor = null;
   
   /**
    * The parser constructor.
@@ -168,7 +174,10 @@ public class XPathParser
 	try {
 
       nextToken();
-      ExprSingle();
+      
+      fIsBeginParse = true;
+      
+      Expr();
 
       if (null != m_token)
       {
@@ -638,7 +647,7 @@ public class XPathParser
       return (funcBodyXPathExprStrBuff.toString()).trim();
   }
   
-  private boolean isXpathDynamicFuncCallParseAhead(List<String> argDetailsStrPartsList, 
+  private boolean isXPathDynamicFuncCallParseAhead(List<String> argDetailsStrPartsList, 
                                                                                   String delim) {
       boolean isXpathDynamicFuncCallParseAhead = false;
 
@@ -682,6 +691,39 @@ public class XPathParser
       }
 
       return isXpathDynamicFuncCallParseAhead; 
+  }
+  
+  /**
+   * Check whether a, string has balanced parentheses pairs 
+   * '(' and ')'.
+   */
+  private boolean isStrHasBalancedParentheses(String str) {
+     
+     boolean isStrHasBalancedParentheses = true;
+     
+     Stack<Character> charStack = new Stack<Character>();
+     
+     int strLen = str.length();
+     
+     for(int idx = 0; idx < strLen; idx++) {
+         char ch = str.charAt(idx);
+         if (ch == '(') {
+            charStack.push(ch); 
+         }
+         else if (ch == ')'){
+            if (charStack.isEmpty() || (charStack.pop() != '(')) {
+               // unbalanced parentheses
+               isStrHasBalancedParentheses = false;
+               break;
+            }   
+         }
+     }
+     
+     if (!charStack.isEmpty()) {
+        isStrHasBalancedParentheses = false;
+     }
+     
+     return isStrHasBalancedParentheses; 
   }
 
   /**
@@ -894,11 +936,103 @@ public class XPathParser
   }
 
   // ============= EXPRESSIONS FUNCTIONS =================
+  
+  /**
+   * Expr   ::=   ExprSingle ("," ExprSingle)*
+   * 
+   * We follow within this method, the XPath parsing with two pass approach,
+   *   1) The first pass, determines whether XPath 3.1's sequence 
+   *      constructor parsing needs to be used (with sequence items delimited 
+   *      by ',' operator), or to use the XPath parser's usual process using
+   *      '(' OpCodes.OP_GROUP ')'.
+   *   2) The second pass, is XPath parsing as usual, using the result
+   *      determined during step 1) above.
+   * 
+   * @throws javax.xml.transform.TransformerException
+   */
+  protected void Expr() throws javax.xml.transform.TransformerException
+  {
+      if (fIsBeginParse && tokenIs("(")) {
+          nextToken();                  
+          
+          List<String> sequenceConstructorXPathParts = new ArrayList<String>();
+          
+          while (m_token != null)
+          {
+              List<String> seqItemXPathStrPartsList = new ArrayList<String>();
+              
+              while (!tokenIs(",") && m_token != null) {
+                 if (getTokenRelative(0) != null) {
+                    seqItemXPathStrPartsList.add(m_token);
+                 }
+                 nextToken();
+              }
+              
+              String seqItemXPathExprStr = getXPathStrFromComponentParts(seqItemXPathStrPartsList);              
+              if (seqItemXPathExprStr.endsWith(")")) {
+                  seqItemXPathExprStr = seqItemXPathExprStr.substring(0, 
+                                                                 seqItemXPathExprStr.length());    
+              }
+              
+              sequenceConstructorXPathParts.add(seqItemXPathExprStr);
+              
+              if (m_token != null) {
+                 nextToken();   
+              }
+          }
+          
+          boolean isXPathExprOkToProceed = true;
+          
+          // Check that each, string within the list 'sequenceConstructorXPathParts' 
+          // has balanced parentheses pairs '(' and ')'.
+          for (int idx = 0; idx < sequenceConstructorXPathParts.size(); idx++) {
+             String seqItemXPathExprStr = sequenceConstructorXPathParts.get(idx);
+             boolean isStrHasBalancedParentheses = isStrHasBalancedParentheses(seqItemXPathExprStr);
+             if (!isStrHasBalancedParentheses) {
+                isXPathExprOkToProceed = false;
+                break;
+             }
+          }
+          
+          // To check, whether an xdm sequence with at-least two items could be constructed.
+          if (!(isXPathExprOkToProceed && (sequenceConstructorXPathParts.size() > 1))) {
+             isXPathExprOkToProceed = false;    
+          }
+          
+          // Upto here within this method, we've only analyzed the XPath input
+          // string by traversing its sequence of tokens. Based on this result,
+          // we choose from one of the two options below to continue with this
+          // XPath expression parse.          
+          if (isXPathExprOkToProceed) {              
+              int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+              
+              nextToken();
+              
+              insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+              
+              fSimpleSequenceConstructor = new SimpleSequenceConstructor();              
+              fSimpleSequenceConstructor.setSequenceConstructorXPathParts(
+                                                             sequenceConstructorXPathParts);
+              
+              m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                                             m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+             
+          }
+          else {
+             // Reset the XPath parse position to beginning of XPath expression string,
+             // and start the XPath expression parse again.             
+             m_queueMark = 0;
+             nextToken();
+             ExprSingle();
+          }
+      }
+      else {
+         ExprSingle();    
+      }
+  }
 
   /**
    *
-   * Expr   ::=  ExprSingle ("," ExprSingle)*
-   * 
    * ExprSingle  ::=  ForExpr
    *       | LetExpr
    *       | QuantifiedExpr
@@ -909,6 +1043,8 @@ public class XPathParser
    */
   protected void ExprSingle() throws javax.xml.transform.TransformerException
   {
+      fIsBeginParse = false;
+      
       if (tokenIs("for")) {
          // to check, whether XPath 'for' expression is a sub expression of another 
          // XPath expression (for e.g, a 'for' expression could be a function 
@@ -1738,7 +1874,7 @@ public class XPathParser
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     appendOp(2, OpCodes.OP_STRING);
-    ExprSingle();
+    Expr();
 
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
       m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -1758,7 +1894,7 @@ public class XPathParser
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     appendOp(2, OpCodes.OP_BOOL);
-    ExprSingle();
+    Expr();
 
     int opLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos;
 
@@ -1784,7 +1920,7 @@ public class XPathParser
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     appendOp(2, OpCodes.OP_NUMBER);
-    ExprSingle();
+    Expr();
 
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
       m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -2017,7 +2153,7 @@ public class XPathParser
        String delimSuffix = (Long.valueOf(currentTimeMills)).toString();
        String delim = "t0_" + delimSuffix;
        
-       while (m_token != null && isXpathDynamicFuncCallParseAhead(
+       while (m_token != null && isXPathDynamicFuncCallParseAhead(
                                                       argDetailsStrPartsList, delim))
        {
           // no op here
@@ -2071,10 +2207,10 @@ public class XPathParser
     else if (m_tokenChar == '(')
     {
       nextToken();
-      appendOp(2, OpCodes.OP_GROUP);
-      ExprSingle();
-      consumeExpected(')');
-
+      appendOp(2, OpCodes.OP_GROUP);     
+      Expr();
+      consumeExpected(')');      
+      
       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
         m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
 
@@ -2200,7 +2336,7 @@ public class XPathParser
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     appendOp(2, OpCodes.OP_ARGUMENT);
-    ExprSingle();
+    Expr();
 
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
       m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -2762,7 +2898,7 @@ public class XPathParser
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
     appendOp(2, OpCodes.OP_PREDICATE);
-    ExprSingle();
+    Expr();
 
     // Terminate for safety.
     m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);

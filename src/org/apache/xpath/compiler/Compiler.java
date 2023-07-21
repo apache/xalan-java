@@ -137,6 +137,8 @@ public class Compiler extends OpMap
       expr = quantifiedExpr(opPos); break;
     case OpCodes.OP_IF_EXPR :
       expr = ifExpr(opPos); break;
+    case OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR :
+      expr = sequenceConstructorExpr(opPos); break;
     case OpCodes.OP_OR :
       expr = or(opPos); break;
     case OpCodes.OP_AND :
@@ -1197,6 +1199,11 @@ private static final boolean DEBUG = false;
   Expression ifExpr(int opPos) throws TransformerException
   {
       return XPathParser.fIfExpr;
+  }
+  
+  Expression sequenceConstructorExpr(int opPos) throws TransformerException
+  {
+      return XPathParser.fSimpleSequenceConstructor;
   }
 
   // The current id for extension functions.

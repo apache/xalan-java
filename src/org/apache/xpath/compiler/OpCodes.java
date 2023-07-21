@@ -687,8 +687,10 @@ public class OpCodes
   public static final int OP_QUANTIFIED_EXPR = 65;
   
   public static final int OP_IF_EXPR = 66;
+  
+  public static final int OP_SEQUENCE_CONSTRUCTOR_EXPR = 67;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 67;
+  private static final int NEXT_FREE_ID = 68;
   
 }

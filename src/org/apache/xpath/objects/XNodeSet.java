@@ -29,7 +29,7 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.axes.NodeSequence;
-
+import org.apache.xpath.xs.types.XSUntyped;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
 
@@ -560,6 +560,30 @@ public class XNodeSet extends NodeSequence
       list1.reset();
       list2.reset();
     }
+    else if (XObject.CLASS_RESULT_SEQUENCE == type) {        
+        ResultSequence rSeq = (ResultSequence)obj2;
+        
+        DTMIterator list1 = iterRaw();        
+        int node1;
+        while (DTM.NULL != (node1 = list1.nextNode()))
+        {
+            XMLString s1 = getStringFromNode(node1);
+            
+            for (int idx = 0; idx < rSeq.size(); idx++) {
+               XObject xObj = rSeq.item(idx);               
+               XMLString s2 = new XString(xObj.str());
+               if (comparator.compareStrings(s1, s2))
+               {
+                   result = true;
+                   break;
+               }
+            }
+            
+            if (result) {
+               break;  
+            }
+        }        
+    }
     else if (XObject.CLASS_BOOLEAN == type)
     {
 
@@ -583,21 +607,21 @@ public class XNodeSet extends NodeSequence
       // node in the node-set such that the result of performing the 
       // comparison on the number to be compared and on the result of 
       // converting the string-value of that node to a number using 
-      // the number function is true. 
+      // the number function is true.      
       DTMIterator list1 = iterRaw();
       double num2 = obj2.num();
       int node;
 
       while (DTM.NULL != (node = list1.nextNode()))
       {
-        double num1 = getNumberFromNode(node);
+          double num1 = getNumberFromNode(node);
 
-        if (comparator.compareNumbers(num1, num2))
-        {
-          result = true;
+          if (comparator.compareNumbers(num1, num2))
+          {
+              result = true;
 
-          break;
-        }
+              break;
+          }
       }
       list1.reset();
     }
@@ -644,6 +668,25 @@ public class XNodeSet extends NodeSequence
         }
       }
       list1.reset();
+    }
+    else if (obj2 instanceof XSUntyped) {
+       XSUntyped obj2Val = (XSUntyped)obj2;
+       
+       XMLString s2 = new XString(obj2Val.stringValue());
+       DTMIterator list1 = iterRaw();
+       int node;
+
+       while (DTM.NULL != (node = list1.nextNode()))
+       {
+         XMLString s1 = getStringFromNode(node);
+         if (comparator.compareStrings(s1, s2))
+         {
+           result = true;
+
+           break;
+         }
+       }
+       list1.reset();       
     }
     else
     {

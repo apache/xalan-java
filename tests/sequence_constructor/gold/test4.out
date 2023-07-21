@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <part id="2">
+    <name>B</name>
+    <price>3</price>
+  </part>
+  <part id="3">
+    <name>C</name>
+    <price>10</price>
+  </part>
+</result>

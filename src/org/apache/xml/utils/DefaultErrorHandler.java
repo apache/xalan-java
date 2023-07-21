@@ -27,7 +27,7 @@ import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.xslt.util.XslTransformationGlobalSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
 
@@ -336,7 +336,7 @@ public class DefaultErrorHandler implements ErrorHandler, ErrorListener
         SourceLocator causeLocator = ((TransformerException)cause).getLocator();
         if(null != causeLocator) {
           if (causeLocator.getSystemId() == null) {
-              xslSystemId = XslTransformationGlobalSharedDatastore.xslSystemId;    
+              xslSystemId = XslTransformSharedDatastore.xslSystemId;    
           }
           locator = causeLocator;
         }
