@@ -20,7 +20,7 @@ package org.apache.xalan.templates;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xslt.util.XslTransformationGlobalSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -169,7 +169,7 @@ public class ElemIterateBreak extends ElemTemplateElement implements ExpressionO
                       
             if (isXslBreakDescendantOfXslIterate && isXslInstructionInTailPositionOfSequenceConstructor(this)) {              
                 transformXslBreakInstruction(transformer);
-                XslTransformationGlobalSharedDatastore.isXslIterateBreakEvaluated = Boolean.TRUE;
+                XslTransformSharedDatastore.isXslIterateBreakEvaluated = Boolean.TRUE;
             }
             else {
                 throw new TransformerException("XTSE3120 : an xsl:break instruction is not in a "

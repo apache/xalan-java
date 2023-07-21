@@ -56,7 +56,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.trace.PrintTraceListener;
 import org.apache.xalan.trace.TraceManager;
 import org.apache.xalan.transformer.XalanProperties;
-import org.apache.xalan.xslt.util.XslTransformationGlobalSharedDatastore;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.utils.DefaultErrorHandler;
 import org.apache.xml.utils.SystemIDResolver;
 import org.w3c.dom.Document;
@@ -750,7 +750,7 @@ public class Process
           else
           {
             // System.out.println("Calling newTemplates: "+xslFileName);
-            XslTransformationGlobalSharedDatastore.xslSystemId = SystemIDResolver.
+            XslTransformSharedDatastore.xslSystemId = SystemIDResolver.
                                                                         getAbsoluteURI(xslFileName); 
             stylesheet = tfactory.newTemplates(new StreamSource(xslFileName));
             // System.out.println("Done calling newTemplates: "+xslFileName);

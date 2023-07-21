@@ -17,23 +17,21 @@
 package org.apache.xalan.xslt.util;
 
 /**
+ * This class, has few XalanJ, XSLT stylesheet transformation wide variables.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-/*
- * This class, stores few XSLT document transformation wide variables.
- */
-public class XslTransformationGlobalSharedDatastore {
+public class XslTransformSharedDatastore {
     
-    // XSLT document's uri used for error reporting
+    // XSLT document's uri, used for error reporting
     public static String xslSystemId;
     
-    // to support xsl:iterate instruction evaluation
+    // To support xsl:iterate instruction evaluation
     public static Boolean isXslIterateBreakEvaluated = Boolean.FALSE;
     
-    // to support xsl:iterate instruction evaluation
+    // To support xsl:iterate instruction evaluation
     public static Boolean isXslIterateOnCompletionActive = Boolean.FALSE;
 
 }

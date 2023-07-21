@@ -25,6 +25,7 @@ import java.util.Vector;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.xslt.util.XPathSequenceHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.QName;
@@ -75,17 +76,23 @@ public class ForExpr extends Expression {
     
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
-       ResultSequence resultSeq = new ResultSequence();
+       ResultSequence finalResultSeq = new ResultSequence();
        
        SourceLocator srcLocator = xctxt.getSAXLocator();
        
        XPath returnExprXpath = new XPath(fReturnExprXPathStr, srcLocator, null, XPath.SELECT, null);
        
-       resultSeq = getForExpressionEvalResult(fForExprVarBindingList.listIterator(), 
-                                                                            returnExprXpath, xctxt);
+       ResultSequence resultSeq = getForExpressionEvalResult(fForExprVarBindingList.listIterator(), 
+                                                                            returnExprXpath, xctxt);       
+       
+       // An xdm sequence object 'resultSeq', may have items that are themselves sequence 
+       // objects. We need to expand such nested sequence objects, to get a final sequence
+       // none of whose items are sequence with cardinality greater than one.   
+       XPathSequenceHelper.expandResultSequence(resultSeq, finalResultSeq);
+               
        m_xpathVarList.clear();
        
-       return resultSeq;
+       return finalResultSeq; 
     }
 
     @Override
@@ -161,8 +168,11 @@ public class ForExpr extends Expression {
                   xsObjResultSeq.add(singletonXPathNode);
                }
            }
-           else if (xsObj instanceof ResultSequence) {               
-               xsObjResultSeq = (ResultSequence)xsObj;
+           else if (xsObj instanceof ResultSequence) {
+               ResultSequence rSeq = (ResultSequence)xsObj;
+               for (int idx = 0; idx < rSeq.size(); idx++) {
+                   xsObjResultSeq.add(rSeq.item(idx)); 
+               }
            }
            else {
               // assuming here that, 'for' expression's variable binding XPath expression 
