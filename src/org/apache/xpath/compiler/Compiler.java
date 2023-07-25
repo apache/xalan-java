@@ -56,6 +56,7 @@ import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Or;
 import org.apache.xpath.operations.Plus;
 import org.apache.xpath.operations.Range;
+import org.apache.xpath.operations.StrConcat;
 import org.apache.xpath.operations.UnaryOperation;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.operations.VcEquals;
@@ -171,6 +172,8 @@ public class Compiler extends OpMap
       expr = plus(opPos); break;
     case OpCodes.OP_TO :
       expr = range(opPos); break;
+    case OpCodes.OP_STR_CONCAT :
+      expr = strConcat(opPos); break;
     case OpCodes.OP_MINUS :
       expr = minus(opPos); break;
     case OpCodes.OP_MULT :
@@ -460,6 +463,16 @@ public class Compiler extends OpMap
   protected Expression range(int opPos) throws TransformerException
   {
     return compileOperation(new Range(), opPos);   
+  }
+  
+  /*
+   * Compile an XPath 3.1 "||" operation.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   */
+  protected Expression strConcat(int opPos) throws TransformerException
+  {
+    return compileOperation(new StrConcat(), opPos);   
   }
 
   /**

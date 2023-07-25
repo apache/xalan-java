@@ -35,6 +35,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.xs.types.XSNumericType;
 import org.apache.xpath.xs.types.XSUntyped;
 import org.apache.xpath.xs.types.XSUntypedAtomic;
 
@@ -218,6 +219,13 @@ public class ElemCopyOf extends ElemTemplateElement
              }
              else if (sequenceItem.getType() == XObject.CLASS_NUMBER) {
                  String str = ((XNumber)sequenceItem).str();
+                 handler.characters(str.toCharArray(), 0, str.length());
+                 if (idx < (resultSequence.size() - 1)) {                     
+                    handler.characters(spaceCharArr, 0, 1);
+                 }
+             }
+             else if (sequenceItem instanceof XSNumericType) {
+                 String str = ((XSNumericType)sequenceItem).stringValue();
                  handler.characters(str.toCharArray(), 0, str.length());
                  if (idx < (resultSequence.size() - 1)) {                     
                     handler.characters(spaceCharArr, 0, 1);

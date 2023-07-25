@@ -254,6 +254,14 @@ class Lexer
       case '{' :   // added for XPath 3.1
       case '}' :   // added for XPath 3.1    
       case '|' :
+        if ((pat.length() > (i + 1)) && (pat.charAt(i + 1) == '|')) {
+          // added for XPath 3.1.
+          // to recognize the character sequence "||", as an XPath 
+          // language token.
+          addToTokenQueue(pat.substring(i, i + 2));
+          i += 1;
+          break;
+        }        
       case '/' :
       case '*' :
       case '+' :

@@ -22,16 +22,22 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.functions.DynamicFunctionCall;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Operation;
+import org.apache.xpath.operations.Range;
+import org.apache.xpath.operations.StrConcat;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.xs.types.XSAnyType;
 import org.w3c.dom.DOMException;
@@ -334,19 +340,48 @@ public class ElemValueOf extends ElemTemplateElement {
                   }
                   else if (expr instanceof Operation) {
                      Operation opn = (Operation)expr;
-                     XObject leftOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                                         xctxt, opn.getLeftOperand());
-                     XObject rightOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                                         xctxt, opn.getRightOperand());
-                     XObject evalResult = opn.operate(leftOperand, rightOperand);
+                     
+                     XObject evalResult = null;
+                     if ((opn instanceof Range) || (opn instanceof StrConcat)) {
+                        evalResult = opn.execute(xctxt);                        
+                     }
+                     else {
+                        XObject leftOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
+                                                                                           xctxt, opn.getLeftOperand());
+                        XObject rightOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
+                                                                                           xctxt, opn.getRightOperand());
+                        evalResult = opn.operate(leftOperand, rightOperand);
+                     }
                      
                      String strValue = null;
-                     if (evalResult instanceof XSAnyType) {
+                     
+                     if (evalResult instanceof ResultSequence) {
+                         ResultSequence rSeq = (ResultSequence)evalResult;
+                         
+                         StringBuffer strBuff = new StringBuffer();
+                         
+                         for (int idx = 0; idx < rSeq.size(); idx++) {
+                            XObject seqItem = rSeq.item(idx);
+                            String seqItemStrValue = (seqItem instanceof XSAnyType) ? 
+                                                                             ((XSAnyType)seqItem).stringValue() : 
+                                                                                                          seqItem.str(); 
+                            if (idx < (rSeq.size() - 1)) {
+                               strBuff.append(seqItemStrValue + " ");   
+                            }
+                            else {
+                               strBuff.append(seqItemStrValue); 
+                            }
+                         }
+                         
+                         strValue = strBuff.toString(); 
+                     }
+                     else if (evalResult instanceof XSAnyType) {
                          strValue = ((XSAnyType)evalResult).stringValue();
                      }
                      else {
                          strValue = evalResult.str();
                      }
+                     
                      (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
                   else if (expr instanceof DynamicFunctionCall) {
@@ -357,6 +392,26 @@ public class ElemValueOf extends ElemTemplateElement {
                      String strValue = evalResult.str();
                      
                      (new XString(strValue)).dispatchCharactersEvents(rth);
+                  }
+                  else if (expr instanceof LocPathIterator) {
+                     LocPathIterator locPathIterator = (LocPathIterator)expr;
+                     
+                     DTMIterator dtmIter = locPathIterator.asIterator(xctxt, current);
+                     int nextNode;
+                     StringBuffer strBuff = new StringBuffer();
+                     while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
+                     {
+                         XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+                         String nodeStrVal = singletonXPathNode.str();
+                         strBuff.append(nodeStrVal + " ");
+                     }
+                     
+                     String nodeSetStrValue = strBuff.toString();
+                     if (nodeSetStrValue.length() > 1) {
+                        nodeSetStrValue = nodeSetStrValue.substring(0, 
+                                                             nodeSetStrValue.length() - 1);
+                        (new XString(nodeSetStrValue)).dispatchCharactersEvents(rth);
+                     }
                   }
                   else {
                      expr.executeCharsToContentHandler(xctxt, rth);

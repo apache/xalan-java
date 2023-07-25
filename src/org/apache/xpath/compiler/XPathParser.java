@@ -96,7 +96,7 @@ public class XPathParser
                                                       "eq", "ne", "lt", "gt", "le", "ge", 
                                                       "for", "in", "return", "if", "then", 
                                                       "else", "some", "every", "satisfies", 
-                                                      "let", ":=", "-"};
+                                                      "let", ":=", "-", "||"};
   
   private static final List<String> fXpathOpArrTokensList = Arrays.asList(XPATH_OP_ARR);
   
@@ -1548,6 +1548,7 @@ public class XPathParser
    * | RelationalExpr '<=' AdditiveExpr
    * | RelationalExpr '>=' AdditiveExpr
    * | RelationalExpr 'to' AdditiveExpr
+   * | RelationalExpr '||' AdditiveExpr
    * | RelationalExpr 'lt' AdditiveExpr
    * | RelationalExpr 'le' AdditiveExpr
    * | RelationalExpr 'gt' AdditiveExpr
@@ -1624,6 +1625,21 @@ public class XPathParser
           int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
           
           addPos = AdditiveExpr(addPos);
+          m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
+            m_ops.getOp(addPos + op1 + 1) + op1);
+          addPos += 2; 
+      }
+      else if (tokenIs("||"))
+      {
+          // support for XPath 3.1 string concatenation operator, "||"
+          
+          nextToken();
+          
+          insertOp(addPos, 2, OpCodes.OP_STR_CONCAT);
+          
+          int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
+
+          addPos = RelationalExpr(addPos);
           m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
             m_ops.getOp(addPos + op1 + 1) + op1);
           addPos += 2; 
@@ -1950,7 +1966,7 @@ public class XPathParser
     {
       PathExpr();
 
-      if (tokenIs('|'))
+      if (tokenIs('|') && !tokenIs("||"))
       {
         if (false == foundUnion)
         {

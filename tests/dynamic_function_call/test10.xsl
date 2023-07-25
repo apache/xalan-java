@@ -1,20 +1,26 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="3.0">
-
+                
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_b.xml -->
+   <!-- use with test1_e.xml -->
    
-   <!-- An XSLT stylesheet demonstrating that, arguments of XPath 
-        range "to" operator should have data type xs:integer. -->
-        
-   <xsl:output method="xml" indent="yes"/>
+   <!-- An XSLT stylesheet, to test the XPath 3.1 dynamic function 
+        call.-->                  
 
-   <xsl:template match="/elem">
+   <xsl:output method="xml" indent="yes"/>
+   
+   <xsl:variable name="strTrimLastChar" select="function($str) { let $strLen := string-length($str) return 
+                                                                           substring($str, 1, $strLen - 1) }"/>
+
+   <xsl:template match="/temp">
       <result>
-        <xsl:for-each select="x to y">
-           <val><xsl:value-of select="."/></val>
+        <xsl:for-each select="a">
+          <detail origStr="{.}">
+             <derivedVal><xsl:value-of select="substring(., 1, string-length(.) - 1)"/></derivedVal>
+             <derivedSameVal><xsl:value-of select="$strTrimLastChar(string(.))"/></derivedSameVal>
+          </detail>
         </xsl:for-each>
       </result>
    </xsl:template>

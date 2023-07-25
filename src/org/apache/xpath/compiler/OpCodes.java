@@ -689,8 +689,15 @@ public class OpCodes
   public static final int OP_IF_EXPR = 66;
   
   public static final int OP_SEQUENCE_CONSTRUCTOR_EXPR = 67;
+  
+  /**
+   * For XPath 3.1 string concatenation operator "||".
+   * 
+   * @xsl.usage advanced
+   */
+  public static final int OP_STR_CONCAT = 68;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 68;
+  private static final int NEXT_FREE_ID = 69;
   
 }
