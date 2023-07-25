@@ -1,22 +1,21 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="3.0">
-
+                
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_b.xml -->
+   <!-- use with test1_a.xml -->
    
-   <!-- An XSLT stylesheet demonstrating that, arguments of XPath 
-        range "to" operator should have data type xs:integer. -->
+   <!-- An XSLT stylesheet test, to test XPath 3.1 string
+        concatenation operator "||".
         
-   <xsl:output method="xml" indent="yes"/>
+        This stylesheet, emits the string value of XML element 
+        "a", when the condition within the predicate is true. -->                
 
-   <xsl:template match="/elem">
-      <result>
-        <xsl:for-each select="x to y">
-           <val><xsl:value-of select="."/></val>
-        </xsl:for-each>
-      </result>
+   <xsl:output method="text"/>
+
+   <xsl:template match="/temp">      
+      <xsl:value-of select="a[(../@val || ' ' || ../b) eq '123 world']"/>
    </xsl:template>
    
    <!--

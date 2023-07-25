@@ -23,17 +23,18 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XPath 3.1 dynamic function call test cases.
+ * XPath 3.1 string concatenation operator, "||" test 
+ * cases.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class DynamicFunctionCallTests extends XslTransformTestsUtil {        
+public class StringConcatExprTests extends XslTransformTestsUtil {        
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "dynamic_function_call/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "stringConcatExpr/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "dynamic_function_call/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "stringConcatExpr/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -48,7 +49,7 @@ public class DynamicFunctionCallTests extends XslTransformTestsUtil {
     }
 
     @Test
-    public void xslDynamicFunctionCallTest1() {
+    public void xslStringConcatExprTest1() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
@@ -58,7 +59,7 @@ public class DynamicFunctionCallTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslDynamicFunctionCallTest2() {
+    public void xslStringConcatExprTest2() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
         
@@ -68,7 +69,7 @@ public class DynamicFunctionCallTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslDynamicFunctionCallTest3() {
+    public void xslStringConcatExprTest3() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
         
@@ -78,71 +79,21 @@ public class DynamicFunctionCallTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslDynamicFunctionCallTest4() {
+    public void xslStringConcatExprTest4() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test4.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
-    public void xslDynamicFunctionCallTest5() {
+    public void xslStringConcatExprTest5() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_b.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";                
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
-    
-    @Test
-    public void xslDynamicFunctionCallTest6() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test6.out";                
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
-    
-    @Test
-    public void xslDynamicFunctionCallTest7() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test7.out";                
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
-    
-    @Test
-    public void xslDynamicFunctionCallTest8() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_d.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test8.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test8.out";                
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
-    
-    @Test
-    public void xslDynamicFunctionCallTest9() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test9.out";                
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
-    
-    @Test
-    public void xslDynamicFunctionCallTest10() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_e.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test10.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
