@@ -24,7 +24,10 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.extensions.ExpressionContext;
+import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
@@ -130,22 +133,41 @@ public class DynamicFunctionCall extends Expression {
                                                        + "Number of arguments provided " + argList.size() + ".", xctxt.getSAXLocator());    
            }
            
+           ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+           List<XMLNSDecl> prefixTable = null;
+           if (elemTemplateElement != null) {
+               prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+           }
+           
            for (int idx = 0; idx < funcParamNameList.size(); idx++) {              
               String funcParamName = funcParamNameList.get(idx);
               
               String argXPathStr = argList.get(idx);
               
-              XPath argXpath = new XPath(argXPathStr, srcLocator, null, XPath.SELECT, null);
+              if (prefixTable != null) {
+                  argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, 
+                                                                                                      prefixTable);
+              }
+              
+              XPath argXpath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                        XPath.SELECT, null);
               if (fVars != null) {
                  argXpath.fixupVariables(fVars, fGlobalsSize);
               }
-              XObject argValue = argXpath.execute(xctxt, contextNode, null);
+              
+              XObject argValue = argXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
               
               inlineFunctionVarMap.put(new QName(funcParamName), argValue);
            }
            
-           XPath inlineFnXpath = new XPath(inlineFnXpathStr, srcLocator, null, XPath.SELECT, null);
-           evalResult = inlineFnXpath.execute(xctxt, contextNode, null);
+           if (prefixTable != null) {
+               inlineFnXpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(inlineFnXpathStr, 
+                                                                                                           prefixTable);
+           }
+           
+           XPath inlineFnXpath = new XPath(inlineFnXpathStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                       XPath.SELECT, null);
+           evalResult = inlineFnXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
            
            inlineFunctionVarMap.clear();           
        }

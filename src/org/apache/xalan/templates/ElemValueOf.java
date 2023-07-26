@@ -28,6 +28,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.composite.LetExpr;
 import org.apache.xpath.functions.DynamicFunctionCall;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.functions.Function;
@@ -412,6 +413,21 @@ public class ElemValueOf extends ElemTemplateElement {
                                                              nodeSetStrValue.length() - 1);
                         (new XString(nodeSetStrValue)).dispatchCharactersEvents(rth);
                      }
+                  }
+                  else if (expr instanceof LetExpr) {
+                     LetExpr letExpr = (LetExpr)expr;
+                      
+                     XObject evalResult = letExpr.execute(xctxt);
+                     
+                     String strValue = null;                     
+                     if (evalResult instanceof XSAnyType) {
+                        strValue = ((XSAnyType)evalResult).stringValue();
+                     }
+                     else {
+                        strValue = evalResult.str();
+                     }
+                     
+                     (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
                   else {
                      expr.executeCharsToContentHandler(xctxt, rth);

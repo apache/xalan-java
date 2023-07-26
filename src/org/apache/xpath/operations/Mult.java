@@ -77,6 +77,16 @@ public class Mult extends Operation
           double rDouble = ((XNumber)right).num();
           result = new XNumber(lDouble * rDouble);          
       }
+      else if ((left instanceof XSInteger) && (right instanceof XSDouble)) {
+          double lDouble = (((XSInteger)left).intValue()).doubleValue();
+          double rDouble = ((XSDouble)right).doubleValue();
+          result = new XNumber(lDouble * rDouble); 
+      }
+      else if ((left instanceof XSDouble) && (right instanceof XSInteger)) {
+          double lDouble = ((XSDouble)left).doubleValue();
+          double rDouble = (((XSInteger)right).intValue()).doubleValue();
+          result = new XNumber(lDouble * rDouble); 
+      }
       else {
           result = new XNumber(left.num() * right.num());
       }

@@ -24,6 +24,9 @@ import java.util.Vector;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -80,32 +83,48 @@ public class LetExpr extends Expression {
        
        Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
        
+       ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+       List<XMLNSDecl> prefixTable = null;
+       if (elemTemplateElement != null) {
+          prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+       }
+       
        for (int idx = 0; idx < fLetExprVarBindingList.size(); idx++) {
           LetExprVarBinding letExprVarBinding = fLetExprVarBindingList.get(idx);
           String varName = letExprVarBinding.getVarName();
           String fXpathExprStr = letExprVarBinding.getXpathExprStr();
           
-          XPath letExprVarBindingXpath = new XPath(fXpathExprStr, srcLocator, null, 
-                                                                        XPath.SELECT, null);
+          if (prefixTable != null) {
+             fXpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                  fXpathExprStr, prefixTable);
+          }
+          
+          XPath letExprVarBindingXpath = new XPath(fXpathExprStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                             XPath.SELECT, null);
           if (fVars != null) {
              letExprVarBindingXpath.fixupVariables(fVars, fGlobalsSize);
           }
           
           XObject varBindingEvalResult = letExprVarBindingXpath.execute(xctxt, contextNode, 
-                                                                                       null);
+                                                                                     xctxt.getNamespaceContext());
           
           m_xpathVarList.add(new QName(varName));
           xpathVarMap.put(new QName(varName), varBindingEvalResult);
        }
        
-       XPath returnExprXpath = new XPath(fReturnExprXPathStr, srcLocator, null, 
-                                                                            XPath.SELECT, null);
+       if (prefixTable != null) {
+          fReturnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                fReturnExprXPathStr, prefixTable);
+       }
+       
+       XPath returnExprXpath = new XPath(fReturnExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                             XPath.SELECT, null);
        
        if (fVars != null) {
           returnExprXpath.fixupVariables(fVars, fGlobalsSize);
        }
        
-       evalResult = returnExprXpath.execute(xctxt, contextNode, null);
+       evalResult = returnExprXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
        
        if (evalResult == null) {
           // return an empty sequence, here

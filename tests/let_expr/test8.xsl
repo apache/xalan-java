@@ -1,24 +1,26 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                xmlns:math="http://www.w3.org/2005/xpath-functions/math"
+                exclude-result-prefixes="xs"
                 version="3.0">
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_a.xml -->
-   
-   <!-- An XSLT stylesheet test, for the XPath 3.1 "let" expression.
-        
-        This XSLT stylesheet, borrows an XPath "let" expression example 
-        from https://www.altova.com/, with slight modifications. -->                
+   <!-- An XSLT stylesheet test, for the XPath 3.1 "let" expression. -->                
 
-   <xsl:output method="text"/>
-                                            
-   <xsl:template match="/company">                                                 
-      <xsl:variable name="officeDataInfo" select="let $x := office[@location = 'Boston'],
-                                                      $y := office[@location = 'Vienna']
-                                                                return concat('(a) Boston employee count : ', count($x/employee), 
-                                                                          ' (b) Vienna employee count : ', count($y/employee))"/>
-      <xsl:value-of select="$officeDataInfo"/>
+   <xsl:output method="xml" indent="yes"/>
+
+   <xsl:template match="/">
+      <result xmlns:math="http://www.w3.org/2005/xpath-functions/math" inpUnit="degree">
+         <xsl:for-each select="(20, 30, 45, 120, 180)">
+            <xsl:variable name="inpValDegree" select="."/>
+            <xsl:variable name="inpValRadian" select="$inpValDegree * (math:pi() div 180)"/>
+            <math:sin inp="{$inpValDegree}">
+               <xsl:value-of select="let $a := xs:double($inpValRadian) return math:sin($a)"/>
+            </math:sin>
+         </xsl:for-each>
+      </result>
    </xsl:template>
    
    <!--

@@ -32,6 +32,8 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.StringVector;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.xs.types.XSAnyType;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -45,7 +47,7 @@ import org.xml.sax.SAXException;
 
 /**
  * Implement a Literal Result Element.
- * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>
+ * @see <a href="https://www.w3.org/TR/xslt-30/#literal-result-element">literal-result-element within XSLT 3.0 Specification</a>
  * @xsl.usage advanced
  */
 public class ElemLiteralResult extends ElemUse
@@ -1350,8 +1352,21 @@ public class ElemLiteralResult extends ElemUse
                     AVT avt = (AVT) m_avts.get(i);
                     XPathContext xctxt = transformer.getXPathContext();
                     int sourceNode = xctxt.getCurrentNode();
-                    String stringedValue = avt.evaluate(xctxt, sourceNode, this);
-
+                    XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+                    String avtStr = avt.getSimpleString();
+                    String stringedValue = null;
+                    if ("{.}".equals(avtStr) && xpath3ContextItem != null) {
+                        if (xpath3ContextItem instanceof XSAnyType) {
+                           stringedValue = ((XSAnyType)xpath3ContextItem).stringValue();    
+                        }
+                        else {
+                           stringedValue = xpath3ContextItem.str();  
+                        } 
+                    }
+                    else {
+                       stringedValue = avt.evaluate(xctxt, sourceNode, this);
+                    }
+                    
                     if (stringedValue != null)
                     {
 

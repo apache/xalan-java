@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?><result xmlns:math="http://www.w3.org/2005/xpath-functions/math">
+  <math:sin inp="1">0.8414709848078965</math:sin>
+  <math:sin inp="2">0.9092974268256817</math:sin>
+  <math:sin inp="3">0.1411200080598672</math:sin>
+</result>

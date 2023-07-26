@@ -25,7 +25,9 @@ import java.util.Vector;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.xslt.util.XPathSequenceHelper;
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.QName;
@@ -80,7 +82,19 @@ public class ForExpr extends Expression {
        
        SourceLocator srcLocator = xctxt.getSAXLocator();
        
-       XPath returnExprXpath = new XPath(fReturnExprXPathStr, srcLocator, null, XPath.SELECT, null);
+       ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+       List<XMLNSDecl> prefixTable = null;
+       if (elemTemplateElement != null) {
+          prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+       }
+       
+       if (prefixTable != null) {
+          fReturnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                       fReturnExprXPathStr, prefixTable);
+       }
+       
+       XPath returnExprXpath = new XPath(fReturnExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                               XPath.SELECT, null);
        
        ResultSequence resultSeq = getForExpressionEvalResult(fForExprVarBindingList.listIterator(), 
                                                                             returnExprXpath, xctxt);       
@@ -88,7 +102,7 @@ public class ForExpr extends Expression {
        // An xdm sequence object 'resultSeq', may have items that are themselves sequence 
        // objects. We need to expand such nested sequence objects, to get a final sequence
        // none of whose items are sequence with cardinality greater than one.   
-       XPathSequenceHelper.expandResultSequence(resultSeq, finalResultSeq);
+       XslTransformEvaluationHelper.expandResultSequence(resultSeq, finalResultSeq);
                
        m_xpathVarList.clear();
        
@@ -145,7 +159,19 @@ public class ForExpr extends Expression {
            String varName = forExprVarBinding.getVarName();
            String varBindingXPathStr = forExprVarBinding.getXpathExprStr();
            
-           XPath varBindingXpath = new XPath(varBindingXPathStr, srcLocator, null, XPath.SELECT, null);
+           ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+           List<XMLNSDecl> prefixTable = null;
+           if (elemTemplateElement != null) {
+              prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+           }
+           
+           if (prefixTable != null) {
+              varBindingXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                            varBindingXPathStr, prefixTable);
+           }
+           
+           XPath varBindingXpath = new XPath(varBindingXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                                 XPath.SELECT, null);
            if (fVars != null) {
               if (!m_xpathVarList.contains(new QName(varName))) {
                  m_xpathVarList.add(new QName(varName));
@@ -153,7 +179,7 @@ public class ForExpr extends Expression {
               varBindingXpath.fixupVariables(fVars, fGlobalsSize);
            }
            
-           XObject xsObj = varBindingXpath.execute(xctxt, contextNode, null);
+           XObject xsObj = varBindingXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
            
            ResultSequence xsObjResultSeq = new ResultSequence(); 
            
@@ -213,7 +239,8 @@ public class ForExpr extends Expression {
                returnExprXpath.fixupVariables(fVars, fGlobalsSize);
             }
             
-            XObject retExprValue = returnExprXpath.execute(xctxt, contextNode, null);
+            XObject retExprValue = returnExprXpath.execute(xctxt, contextNode, 
+                                                                        xctxt.getNamespaceContext());
             resultSeq.add(retExprValue);
             
             return resultSeq; 

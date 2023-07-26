@@ -38,6 +38,7 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.ForExpr;
+import org.apache.xpath.composite.SimpleSequenceConstructor;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
@@ -344,7 +345,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         XObject evalResult = ((Function)m_selectExpression).execute(xctxt);
         if (evalResult instanceof ResultSequence) {
             processResultSequence(transformer, xctxt, evalResult);
-            transformer.setXPathContext(xctxtOriginal);
+            transformer.setXPathContext(xctxtOriginal);            
             return;
         }                
     }
@@ -357,7 +358,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         XObject evalResult = ((Variable)m_selectExpression).execute(xctxt);
         if (evalResult instanceof ResultSequence) {
             processResultSequence(transformer, xctxt, evalResult);
-            transformer.setXPathContext(xctxtOriginal);
+            transformer.setXPathContext(xctxtOriginal);            
             return;
         }
     }
@@ -374,6 +375,15 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     if (m_selectExpression instanceof ForExpr) {
         ForExpr forExpr = (ForExpr)m_selectExpression;
         XObject  evalResult = forExpr.execute(xctxt);
+        processResultSequence(transformer, xctxt, evalResult);
+        transformer.setXPathContext(xctxtOriginal);
+        return;
+    }
+    
+    if (m_selectExpression instanceof SimpleSequenceConstructor) {
+        SimpleSequenceConstructor seqCtrExpr = (SimpleSequenceConstructor)
+                                                                     m_selectExpression;
+        XObject  evalResult = seqCtrExpr.execute(xctxt);
         processResultSequence(transformer, xctxt, evalResult);
         transformer.setXPathContext(xctxtOriginal);
         return;

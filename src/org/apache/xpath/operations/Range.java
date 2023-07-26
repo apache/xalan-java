@@ -22,10 +22,16 @@ package org.apache.xpath.operations;
 
 import java.math.BigInteger;
 
+import javax.xml.XMLConstants;
+
+import org.apache.xalan.templates.XSConstructorFunctionUtil;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.xs.types.XSInteger;
+import org.apache.xpath.xs.types.XSNumericType;
+import org.xml.sax.SAXException;
 
 /**
  * The XPath 3.1 range "to" operation.
@@ -57,22 +63,57 @@ public class Range extends Operation
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
         
       ResultSequence result = new ResultSequence();
-  
-      XObject expr1 = m_left.execute(xctxt);
       
-      XObject expr2 = m_right.execute(xctxt);
+      XObject expr1 = null;
       
-      double firstArg = expr1.num();
-      double secondArg = expr2.num();
+      XObject expr2 = null;
       
+      try {
+          if (m_left instanceof FuncExtFunction) {
+             FuncExtFunction extFunction = (FuncExtFunction)m_left;
+             if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
+                 expr1 = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, m_left); 
+             }
+             else {
+                 expr1 = m_left.execute(xctxt, true);  
+             }
+          }
+          else {
+              expr1 = m_left.execute(xctxt, true); 
+          }
+          
+          if (m_right instanceof FuncExtFunction) {
+             FuncExtFunction extFunction = (FuncExtFunction)m_right;
+             if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
+                 expr2 = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, m_right); 
+             }
+             else {
+                 expr2 = m_right.execute(xctxt, true);  
+             }
+          }
+          else {
+              expr2 = m_right.execute(xctxt, true); 
+          }
+      }
+      catch (SAXException ex) {
+         throw new javax.xml.transform.TransformerException(ex.getMessage(), xctxt.getSAXLocator()); 
+      }
+      
+      double firstArg = (expr1 instanceof XSNumericType) ?  (Double.valueOf((
+                                                                       (XSNumericType)expr1).stringValue())).doubleValue() : expr1.num();  
+      double secondArg = (expr2 instanceof XSNumericType) ?  (Double.valueOf((
+                                                                       (XSNumericType)expr2).stringValue())).doubleValue() : expr2.num();
+              
       if (firstArg > (long)firstArg) {
          throw new javax.xml.transform.TransformerException("XPTY0004 : The required item type of the first operand of "
-                                                     + "'to' is an xs:integer. The supplied value is of type xs:double.", xctxt.getSAXLocator());  
+                                                     + "'to' is an xs:integer. The supplied value is of type xs:double.", 
+                                                                                                                   xctxt.getSAXLocator());  
       }
       
       if (secondArg > (long)secondArg) {
          throw new javax.xml.transform.TransformerException("XPTY0004 : The required item type of the second operand of "
-                                                     + "'to' is an xs:integer. The supplied value is of type xs:double.", xctxt.getSAXLocator());  
+                                                     + "'to' is an xs:integer. The supplied value is of type xs:double.", 
+                                                                                                                   xctxt.getSAXLocator());  
       }
       
       long fromIdx = (long)firstArg;

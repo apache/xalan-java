@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><result xmlns:math="http://www.w3.org/2005/xpath-functions/math" inpUnit="radian">
+  <math:sin inp="0.17453292519943295">0.1736481776669303</math:sin>
+  <math:sin inp="0.3490658503988659">0.3420201433256687</math:sin>
+  <math:sin inp="0.5235987755982988">0.4999999999999999</math:sin>
+  <math:sin inp="0.6981317007977318">0.6427876096865393</math:sin>
+  <math:sin inp="0.8726646259971648">0.766044443118978</math:sin>
+  <math:sin inp="1.0471975511965976">0.8660254037844386</math:sin>
+  <math:sin inp="1.2217304763960306">0.9396926207859083</math:sin>
+  <math:sin inp="1.3962634015954636">0.984807753012208</math:sin>
+</result>
