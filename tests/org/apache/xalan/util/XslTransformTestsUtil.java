@@ -61,6 +61,7 @@ public class XslTransformTestsUtil {
         System.setProperty(XSLConstants.XSLT_TRANSFORMER_FACTORY_KEY, XSLConstants.XSLT_TRANSFORMER_FACTORY_VALUE);                
         
         xmlDocumentBuilderFactory = DocumentBuilderFactory.newInstance();
+        xmlDocumentBuilderFactory.setNamespaceAware(true);
         
         try {
             xmlDocumentBuilder = xmlDocumentBuilderFactory.newDocumentBuilder();

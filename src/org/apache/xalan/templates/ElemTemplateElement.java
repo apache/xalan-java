@@ -967,7 +967,7 @@ public class ElemTemplateElement extends UnImplNode
    *
    * @return reference to vector of {@link XMLNSDecl}s, which may be null.
    */
-  List getPrefixTable()
+  public List getPrefixTable()
   {
     return m_prefixTable;
   }

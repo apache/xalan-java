@@ -19,15 +19,19 @@ package org.apache.xalan.xslt.util;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
+import java.util.List;
+
+import org.apache.xalan.templates.XMLNSDecl;
+
 /**
- * This class, has few utility methods, to help process the XPath 
- * data model sequences.
+ * This class, has few utility methods, to help with certain 
+ * XalanJ XSLT transformation implementation tasks.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPathSequenceHelper {
+public class XslTransformEvaluationHelper {
     
     /**
      * Given an XDM input sequence, expand that sequence to produce a new sequence
@@ -48,6 +52,25 @@ public class XPathSequenceHelper {
              finalResultSeq.add(xObject);
           }
        }
+    }
+    
+    /**
+     * Given an XPath expression string, replace XML namespace uri references within it,
+     * with the corresponding declared XML namespace prefixes, using information from
+     * the list object 'nsPrefixTable' passed to this method.
+     */
+    public static String replaceNsUrisWithPrefixesOnXPathStr(String xpathExprStr, 
+                                                                          List<XMLNSDecl> nsPrefixTable) {
+       String replacedXPathExprStr = xpathExprStr;
+       
+       for (int idx = 0; idx < nsPrefixTable.size(); idx++) {
+          XMLNSDecl xmlNSDecl = nsPrefixTable.get(idx);
+          String prefix = xmlNSDecl.getPrefix();
+          String uri = xmlNSDecl.getURI();
+          replacedXPathExprStr = replacedXPathExprStr.replace(uri + ":", prefix + ":");
+       }
+       
+       return replacedXPathExprStr; 
     }
 
 }

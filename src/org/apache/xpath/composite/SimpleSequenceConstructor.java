@@ -23,6 +23,9 @@ import java.util.Vector;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
@@ -77,6 +80,12 @@ public class SimpleSequenceConstructor extends Expression {
         
         int contextNode = xctxt.getContextNode();
         
+        ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+        List<XMLNSDecl> prefixTable = null;
+        if (elemTemplateElement != null) {
+            prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+        }
+        
         // We evaluate below all the, XPath expression parts within the list 
         // 'sequenceConstructorXPathParts', and concatenate the sequences resulting
         // from each of them, to get the final result sequence that is returned by
@@ -84,12 +93,17 @@ public class SimpleSequenceConstructor extends Expression {
         for (int idx = 0; idx < sequenceConstructorXPathParts.size(); idx++) {
            String xpathExprStr = sequenceConstructorXPathParts.get(idx);
            
-           XPath xpathObj = new XPath(xpathExprStr, srcLocator, null, XPath.SELECT, null);
+           if (prefixTable != null) {
+              xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, 
+                                                                                                     prefixTable);
+           }
+           
+           XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
            if (fVars != null) {
-               xpathObj.fixupVariables(fVars, fGlobalsSize);
+              xpathObj.fixupVariables(fVars, fGlobalsSize);
            }
 
-           XObject xPathExprPartResult = xpathObj.execute(xctxt, contextNode, null);
+           XObject xPathExprPartResult = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
            
            if (xPathExprPartResult instanceof XNodeSet) {
                DTMManager dtmMgr = (DTMManager)xctxt;

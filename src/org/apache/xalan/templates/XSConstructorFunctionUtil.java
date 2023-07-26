@@ -26,6 +26,7 @@ import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Operation;
+import org.apache.xpath.xs.types.XSAnyType;
 import org.apache.xpath.xs.types.XSBoolean;
 import org.apache.xpath.xs.types.XSDate;
 import org.apache.xpath.xs.types.XSDecimal;
@@ -37,7 +38,7 @@ import org.apache.xpath.xs.types.XSLong;
 import org.xml.sax.SAXException;
 
 /**
- * An utility class, to support evaluations of XPath 3.1 constructor 
+ * An utility class, to support evaluation of XPath 3.1 constructor 
  * functions (ref, https://www.w3.org/TR/xpath-functions-31/#constructor-functions), 
  * and few other XPath expression evaluations.
  * 
@@ -49,7 +50,10 @@ public class XSConstructorFunctionUtil {
     
     /*
      * Process an XPath expression of the type FuncExtFunction, XPath operation, 
-     * and also few default XPath expression processing. 
+     * and also few default XPath expression processing.
+     * 
+     * We use the XalanJ extension function evaluation mechanism, to evaluate
+     * XPath 3.1 constructor functions.
      */
     public static XObject processFuncExtFunctionOrXPathOpn(XPathContext xctxt, Expression expr)
                                                                     throws TransformerException, SAXException {        
@@ -65,7 +69,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                        argSequence.add(new XSDecimal(argVal.str()));
+                        argSequence.add(new XSDecimal(getSimpleStrVal(argVal)));
                     }
 
                     ResultSequence rSeq = (new XSDecimal()).constructor(argSequence);
@@ -75,7 +79,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                        argSequence.add(new XSFloat(argVal.str()));
+                        argSequence.add(new XSFloat(getSimpleStrVal(argVal)));
                     }
 
                     ResultSequence rSeq = (new XSFloat()).constructor(argSequence);
@@ -85,7 +89,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                        argSequence.add(new XSDouble(argVal.str()));
+                        argSequence.add(new XSDouble(getSimpleStrVal(argVal)));
                     }
 
                     ResultSequence rSeq = (new XSDouble()).constructor(argSequence);
@@ -95,7 +99,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                        argSequence.add(new XSInteger(argVal.str()));
+                        argSequence.add(new XSInteger(getSimpleStrVal(argVal)));
                     }
 
                     ResultSequence rSeq = (new XSInteger()).constructor(argSequence);
@@ -105,7 +109,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                        argSequence.add(new XSLong(argVal.str()));
+                        argSequence.add(new XSLong(getSimpleStrVal(argVal)));
                     }
 
                     ResultSequence rSeq = (new XSLong()).constructor(argSequence);
@@ -115,7 +119,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                        argSequence.add(new XSInt(argVal.str()));
+                        argSequence.add(new XSInt(getSimpleStrVal(argVal)));
                     }
 
                     ResultSequence rSeq = (new XSInt()).constructor(argSequence);
@@ -125,7 +129,8 @@ public class XSConstructorFunctionUtil {
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                        Boolean boolVal = Boolean.valueOf("0".equals(argVal.str()) ? "false" : "true");
+                        Boolean boolVal = Boolean.valueOf("0".equals(getSimpleStrVal(argVal)) ? 
+                                                                                 "false" : "true");
                         argSequence.add(new XSBoolean(boolVal));
                     }
 
@@ -136,7 +141,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                        argSequence.add(XSDate.parseDate(argVal.str()));
+                        argSequence.add(XSDate.parseDate(getSimpleStrVal(argVal)));
                     }
 
                     ResultSequence rSeq = (new XSDate()).constructor(argSequence); 
@@ -159,6 +164,23 @@ public class XSConstructorFunctionUtil {
 
         return evalResult;
         
+    }
+    
+    /*
+     * Given an XObject object reference, return the string value
+     * of this object. 
+     */
+    private static String getSimpleStrVal(XObject xObj) {
+       String strVal = null;
+       
+       if (xObj instanceof XSAnyType) {
+          strVal = ((XSAnyType)xObj).stringValue();    
+       }
+       else {
+          strVal = xObj.str();  
+       }
+       
+       return strVal;
     }
 
 }

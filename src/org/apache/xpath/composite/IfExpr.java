@@ -16,11 +16,15 @@
  */
 package org.apache.xpath.composite;
 
+import java.util.List;
 import java.util.Vector;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
@@ -95,29 +99,52 @@ public class IfExpr extends Expression {
        
        int contextNode = xctxt.getContextNode();
        
-       XPath conditionlExprXpath = new XPath(conditionalExprXPathStr, srcLocator, null, 
-                                                                            XPath.SELECT, null);
+       ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+       List<XMLNSDecl> prefixTable = null;
+       if (elemTemplateElement != null) {
+          prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+       }
+       
+       if (prefixTable != null) {
+          conditionalExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                    conditionalExprXPathStr, prefixTable);
+       }
+       
+       XPath conditionlExprXpath = new XPath(conditionalExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                                 XPath.SELECT, null);
        if (fVars != null) {
           conditionlExprXpath.fixupVariables(fVars, fGlobalsSize);
        }
        
-       XObject conditionalXpathExprResult = conditionlExprXpath.execute(xctxt, contextNode, null);
+       XObject conditionalXpathExprResult = conditionlExprXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
        
        if (conditionalXpathExprResult.bool()) {
-           XPath thenExprXpath = new XPath(thenExprXPathStr, srcLocator, null, XPath.SELECT, null);
+           if (prefixTable != null) {
+              thenExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                        thenExprXPathStr, prefixTable);
+           }
+           
+           XPath thenExprXpath = new XPath(thenExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                               XPath.SELECT, null);
            if (fVars != null) {
               thenExprXpath.fixupVariables(fVars, fGlobalsSize);
            }
            
-           evalResult = thenExprXpath.execute(xctxt, contextNode, null);
+           evalResult = thenExprXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
        }
        else {
-           XPath elseExprXpath = new XPath(elseExprXPathStr, srcLocator, null, XPath.SELECT, null);
+           if (prefixTable != null) {
+              elseExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(elseExprXPathStr, 
+                                                                                                          prefixTable);
+           }
+           
+           XPath elseExprXpath = new XPath(elseExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                              XPath.SELECT, null);
            if (fVars != null) {
               elseExprXpath.fixupVariables(fVars, fGlobalsSize);
            }
            
-           evalResult = elseExprXpath.execute(xctxt, contextNode, null);
+           evalResult = elseExprXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
        }
        
        return evalResult;

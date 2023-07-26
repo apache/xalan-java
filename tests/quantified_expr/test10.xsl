@@ -1,24 +1,27 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                xmlns:ns0="http://xalan.apache.org/xalan-j"
+                exclude-result-prefixes="xs ns0"
                 version="3.0">
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_a.xml -->
+   <!-- use with test1_g.xml -->
    
-   <!-- An XSLT stylesheet test, for the XPath 3.1 "let" expression.
-        
-        This XSLT stylesheet, borrows an XPath "let" expression example 
-        from https://www.altova.com/, with slight modifications. -->                
+   <!-- An XSLT stylesheet test case, to test the XPath 3.1 quantified 
+        expressions 'some' and 'every'. This stylesheet example, tests
+        using XML namespace references within the XPath quantified
+        expressions.
+   -->                
 
-   <xsl:output method="text"/>
-                                            
-   <xsl:template match="/company">                                                 
-      <xsl:variable name="officeDataInfo" select="let $x := office[@location = 'Boston'],
-                                                      $y := office[@location = 'Vienna']
-                                                                return concat('(a) Boston employee count : ', count($x/employee), 
-                                                                          ' (b) Vienna employee count : ', count($y/employee))"/>
-      <xsl:value-of select="$officeDataInfo"/>
+   <xsl:output method="xml" indent="yes"/>
+   
+   <xsl:template match="/ns0:temp">
+      <result>
+        <one><xsl:value-of select="some $a in ns0:val satisfies xs:integer($a) lt xs:integer(50)"/></one>
+        <two><xsl:value-of select="every $a in ns0:val satisfies xs:integer($a) lt xs:integer(50)"/></two>
+      </result>
    </xsl:template>
    
    <!--

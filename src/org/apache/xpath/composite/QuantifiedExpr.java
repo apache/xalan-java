@@ -25,6 +25,9 @@ import java.util.Vector;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.QName;
@@ -88,7 +91,19 @@ public class QuantifiedExpr extends Expression {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        XPath quantifiedExprXpath = new XPath(fQuantifierTestXPathStr, srcLocator, null, XPath.SELECT, null);
+        ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+        List<XMLNSDecl> prefixTable = null;
+        if (elemTemplateElement != null) {
+            prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+        }
+        
+        if (prefixTable != null) {
+            fQuantifierTestXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                          fQuantifierTestXPathStr, prefixTable);
+        }
+        
+        XPath quantifiedExprXpath = new XPath(fQuantifierTestXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                                        XPath.SELECT, null);
         
         ResultSequence resultSequence = getQuantifiedExpressionEvalResult(fQuantifiedExprVarBindingList.listIterator(), 
                                                                                                  quantifiedExprXpath, xctxt);
@@ -180,15 +195,27 @@ public class QuantifiedExpr extends Expression {
         
         Map<QName, XObject> quantifiedExprVarBindingMap = xctxt.getXPathVarMap();
         
+        ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+        List<XMLNSDecl> prefixTable = null;
+        if (elemTemplateElement != null) {
+            prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+        }
+        
         if (listIter.hasNext()) {           
            ForQuantifiedExprVarBinding quantifiedExprVarBinding = (ForQuantifiedExprVarBinding)listIter.next();            
             
            // evaluate the current, variable binding xpath expression
            
            String varName = quantifiedExprVarBinding.getVarName();
-           String varBindingXPathStr = quantifiedExprVarBinding.getXpathExprStr();
+           String varBindingXPathStr = quantifiedExprVarBinding.getXpathExprStr();                      
            
-           XPath varBindingXpath = new XPath(varBindingXPathStr, srcLocator, null, XPath.SELECT, null);
+           if (prefixTable != null) {
+               varBindingXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                        varBindingXPathStr, prefixTable);
+           }
+           
+           XPath varBindingXpath = new XPath(varBindingXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                                   XPath.SELECT, null);
            if (fVars != null) {
               if (!m_xpathVarList.contains(new QName(varName))) {
                  m_xpathVarList.add(new QName(varName));
@@ -196,7 +223,7 @@ public class QuantifiedExpr extends Expression {
               varBindingXpath.fixupVariables(fVars, fGlobalsSize);
            }
            
-           XObject xsObj = varBindingXpath.execute(xctxt, contextNode, null);
+           XObject xsObj = varBindingXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
            
            ResultSequence xsObjResultSeq = new ResultSequence(); 
            
@@ -253,7 +280,8 @@ public class QuantifiedExpr extends Expression {
                quantifiedExprXpath.fixupVariables(fVars, fGlobalsSize);
             }
             
-            XObject quantifiedTestExprValue = quantifiedExprXpath.execute(xctxt, contextNode, null);            
+            XObject quantifiedTestExprValue = quantifiedExprXpath.execute(xctxt, contextNode, 
+                                                                                     xctxt.getNamespaceContext());            
             
             resultSeq.add(new XSBoolean(quantifiedTestExprValue.bool()));
             

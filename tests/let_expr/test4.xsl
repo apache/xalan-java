@@ -1,24 +1,21 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:math="http://www.w3.org/2005/xpath-functions/math"
+                exclude-result-prefixes="math"
                 version="3.0">
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_a.xml -->
-   
-   <!-- An XSLT stylesheet test, for the XPath 3.1 "let" expression.
-        
-        This XSLT stylesheet, borrows an XPath "let" expression example 
-        from https://www.altova.com/, with slight modifications. -->                
+   <!-- This XSLT stylesheet test, illustrates an XPath 3.1 "let" 
+        expression evaluation, with XML namespace reference within
+        the XPath "let" expression's return expression. -->                 
 
-   <xsl:output method="text"/>
-                                            
-   <xsl:template match="/company">                                                 
-      <xsl:variable name="officeDataInfo" select="let $x := office[@location = 'Boston'],
-                                                      $y := office[@location = 'Vienna']
-                                                                return concat('(a) Boston employee count : ', count($x/employee), 
-                                                                          ' (b) Vienna employee count : ', count($y/employee))"/>
-      <xsl:value-of select="$officeDataInfo"/>
+   <xsl:output method="xml" indent="yes"/>
+
+   <xsl:template match="/">
+      <result>
+         <xsl:value-of select="let $a := 5 return math:sin($a)"/>
+      </result>
    </xsl:template>
    
    <!--

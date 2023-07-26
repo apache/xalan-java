@@ -152,4 +152,9 @@ public class AVTPartXPath extends AVTPart
   {
   	m_xpath.getExpression().callVisitors(m_xpath, visitor);
   }
+
+  public XPath getXPath() {
+    return m_xpath;
+  }
+
 }
