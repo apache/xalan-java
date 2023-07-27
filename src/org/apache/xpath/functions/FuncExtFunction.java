@@ -199,7 +199,7 @@ public class FuncExtFunction extends Function
        // An XPath 3.1 constructor function call, is syntactically similar
        // to XalanJ extension function call (both have, syntax like 
        // nsPrefix:functionName(..)). If the XML namespace of XPath function 
-       // call is http://www.w3.org/2001/XMLSchema, this class implements that
+       // name is http://www.w3.org/2001/XMLSchema, this class implements that
        // as an XPath 3.1 constructor function call within this section of code.
        try {
           result = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(

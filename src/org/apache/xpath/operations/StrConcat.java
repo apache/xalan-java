@@ -17,6 +17,7 @@
  */
 package org.apache.xpath.operations;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
@@ -51,11 +52,12 @@ public class StrConcat extends Operation
         
       XObject result = null;
       
-      XObject expr1 = m_left.execute(xctxt);
+      XObject left = m_left.execute(xctxt);
       
-      XObject expr2 = m_right.execute(xctxt);
+      XObject right = m_right.execute(xctxt);
       
-      result = new XString(expr1.str() + expr2.str());
+      result = new XString(XslTransformEvaluationHelper.getStrVal(left) + 
+                                                             XslTransformEvaluationHelper.getStrVal(right));
       
       return result;
     }
@@ -64,7 +66,8 @@ public class StrConcat extends Operation
      * Apply the operation to two operands, and return the result.
      */
     public XObject operate(XObject left, XObject right) {
-        XObject result =  new XString(left.str() + right.str());
+        XObject result =  new XString(XslTransformEvaluationHelper.getStrVal(left) + 
+                                                             XslTransformEvaluationHelper.getStrVal(right));
         
         return result;
     }

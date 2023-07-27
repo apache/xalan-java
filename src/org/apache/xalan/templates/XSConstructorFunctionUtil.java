@@ -19,6 +19,7 @@ package org.apache.xalan.templates;
 import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.Keywords;
@@ -26,7 +27,6 @@ import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Operation;
-import org.apache.xpath.xs.types.XSAnyType;
 import org.apache.xpath.xs.types.XSBoolean;
 import org.apache.xpath.xs.types.XSDate;
 import org.apache.xpath.xs.types.XSDecimal;
@@ -69,7 +69,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                        argSequence.add(new XSDecimal(getSimpleStrVal(argVal)));
+                        argSequence.add(new XSDecimal(XslTransformEvaluationHelper.getStrVal(argVal)));
                     }
 
                     ResultSequence rSeq = (new XSDecimal()).constructor(argSequence);
@@ -79,7 +79,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                        argSequence.add(new XSFloat(getSimpleStrVal(argVal)));
+                        argSequence.add(new XSFloat(XslTransformEvaluationHelper.getStrVal(argVal)));
                     }
 
                     ResultSequence rSeq = (new XSFloat()).constructor(argSequence);
@@ -89,7 +89,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                        argSequence.add(new XSDouble(getSimpleStrVal(argVal)));
+                        argSequence.add(new XSDouble(XslTransformEvaluationHelper.getStrVal(argVal)));
                     }
 
                     ResultSequence rSeq = (new XSDouble()).constructor(argSequence);
@@ -99,7 +99,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                        argSequence.add(new XSInteger(getSimpleStrVal(argVal)));
+                        argSequence.add(new XSInteger(XslTransformEvaluationHelper.getStrVal(argVal)));
                     }
 
                     ResultSequence rSeq = (new XSInteger()).constructor(argSequence);
@@ -109,7 +109,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                        argSequence.add(new XSLong(getSimpleStrVal(argVal)));
+                        argSequence.add(new XSLong(XslTransformEvaluationHelper.getStrVal(argVal)));
                     }
 
                     ResultSequence rSeq = (new XSLong()).constructor(argSequence);
@@ -119,7 +119,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                        argSequence.add(new XSInt(getSimpleStrVal(argVal)));
+                        argSequence.add(new XSInt(XslTransformEvaluationHelper.getStrVal(argVal)));
                     }
 
                     ResultSequence rSeq = (new XSInt()).constructor(argSequence);
@@ -129,7 +129,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                        Boolean boolVal = Boolean.valueOf("0".equals(getSimpleStrVal(argVal)) ? 
+                        Boolean boolVal = Boolean.valueOf("0".equals(XslTransformEvaluationHelper.getStrVal(argVal)) ? 
                                                                                  "false" : "true");
                         argSequence.add(new XSBoolean(boolVal));
                     }
@@ -141,7 +141,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                        argSequence.add(XSDate.parseDate(getSimpleStrVal(argVal)));
+                        argSequence.add(XSDate.parseDate(XslTransformEvaluationHelper.getStrVal(argVal)));
                     }
 
                     ResultSequence rSeq = (new XSDate()).constructor(argSequence); 
@@ -164,23 +164,6 @@ public class XSConstructorFunctionUtil {
 
         return evalResult;
         
-    }
-    
-    /*
-     * Given an XObject object reference, return the string value
-     * of this object. 
-     */
-    private static String getSimpleStrVal(XObject xObj) {
-       String strVal = null;
-       
-       if (xObj instanceof XSAnyType) {
-          strVal = ((XSAnyType)xObj).stringValue();    
-       }
-       else {
-          strVal = xObj.str();  
-       }
-       
-       return strVal;
     }
 
 }
