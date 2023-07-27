@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<temp>
+  <seq1>
+    <val>1</val>
+    <val>3</val>
+    <val>5</val>
+    <val>7</val>
+    <val>9</val>
+  </seq1>
+  <seq2>
+    <val>1</val>
+    <val>2</val>
+    <val>5</val>
+    <val>7</val>
+    <val>9</val>
+  </seq2>
+  <seq3>
+    <val>2</val>
+    <val>4</val>
+    <val>6</val>
+    <val>8</val>
+    <val>10</val>
+  </seq3>
+  <seq4>
+    <val>2</val>
+    <val>3</val>
+    <val>6</val>
+    <val>8</val>
+    <val>10</val>
+  </seq4>
+</temp>
+ 

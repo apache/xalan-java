@@ -18,6 +18,7 @@ package org.apache.xalan.xslt.util;
 
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.xs.types.XSAnyType;
 
 import java.util.List;
 
@@ -71,6 +72,23 @@ public class XslTransformEvaluationHelper {
        }
        
        return replacedXPathExprStr; 
+    }
+    
+    /**
+     * Given an XObject object reference, return the string value 
+     * of the object. 
+     */
+    public static String getStrVal(XObject xObj) {
+       String strVal = null;
+       
+       if (xObj instanceof XSAnyType) {
+          strVal = ((XSAnyType)xObj).stringValue();    
+       }
+       else {
+          strVal = xObj.str();  
+       }
+       
+       return strVal;
     }
 
 }

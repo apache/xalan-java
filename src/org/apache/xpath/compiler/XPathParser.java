@@ -102,7 +102,7 @@ public class XPathParser
   
   private boolean fDynamicFunctionCallArgumentMarker = false;
   
-  private boolean fIsXpathPredicateParsingActive = false;
+  private boolean fIsXPathPredicateParsingActive = false;
   
   private boolean fIsBeginParse = false;
   
@@ -1100,24 +1100,35 @@ public class XPathParser
       
       while (!tokenIs("return") && m_token != null)
       {
-          String bindingVarName = null;
+          String bindingVarName = null;                    
           
-          if (forExprVarBindingList.size() > 0 && tokenIs(',')) {
-             nextToken();    
+          if ((forExprVarBindingList.size() > 0) && tokenIs(',') && 
+                                                          lookahead('$', 1)) {
+             nextToken();
+             nextToken();              
+             bindingVarName = m_token;              
+             nextToken();              
+             consumeExpected("in");
           }
-          
-          if (tokenIs('$')) {
-              nextToken();              
-              bindingVarName = m_token;              
-              nextToken();              
-              consumeExpected("in");                            
+          else if (tokenIs('$')) {
+             nextToken();
+             bindingVarName = m_token;              
+             nextToken();              
+             consumeExpected("in");
           }
           
           List<String> bindingXPathExprStrPartsList = new ArrayList<String>();
           
-          while (!(tokenIs(',') || tokenIs("return")) && m_token != null) {
+          while (!((tokenIs('$') && lookahead("in", 2)) || tokenIs("return")) && 
+                                                                         m_token != null) {
              bindingXPathExprStrPartsList.add(m_token);
              nextToken();
+          }
+          
+          if (",".equals(bindingXPathExprStrPartsList.get(bindingXPathExprStrPartsList.
+                                                                                   size() - 1))) {
+             bindingXPathExprStrPartsList = bindingXPathExprStrPartsList.subList(0, 
+                                                                   bindingXPathExprStrPartsList.size() - 1); 
           }
           
           String varBindingXpathStr = getXPathStrFromComponentParts(
@@ -1181,23 +1192,35 @@ public class XPathParser
       {
           String bindingVarName = null;
           
-          if (letExprVarBindingList.size() > 0 && tokenIs(',')) {
-             nextToken();    
-          }
-          
-          if (tokenIs('$')) {
+          if ((letExprVarBindingList.size() > 0) && tokenIs(',') && 
+                                                         lookahead('$', 1)) {
+              nextToken();
               nextToken();              
               bindingVarName = m_token;              
               nextToken();              
-              consumeExpected(":");
-              consumeExpected("=");
+              consumeExpected(':');
+              consumeExpected('=');
+          }
+          else if (tokenIs('$')) {
+              nextToken();
+              bindingVarName = m_token;              
+              nextToken();              
+              consumeExpected(':');
+              consumeExpected('=');
           }
           
           List<String> bindingXPathExprStrPartsList = new ArrayList<String>();
           
-          while (!(tokenIs(',') || tokenIs("return")) && m_token != null) {
-             bindingXPathExprStrPartsList.add(m_token);
-             nextToken();
+          while (!((tokenIs('$') && lookahead(':', 2) && lookahead('=', 3)) || 
+                                                               tokenIs("return")) && m_token != null) {
+              bindingXPathExprStrPartsList.add(m_token);
+              nextToken();
+          }
+           
+          if (",".equals(bindingXPathExprStrPartsList.get(bindingXPathExprStrPartsList.
+                                                                                    size() - 1))) {
+              bindingXPathExprStrPartsList = bindingXPathExprStrPartsList.subList(0, 
+                                                                    bindingXPathExprStrPartsList.size() - 1); 
           }
           
           String varBindingXpathStr = getXPathStrFromComponentParts(bindingXPathExprStrPartsList);
@@ -1263,22 +1286,32 @@ public class XPathParser
       {
           String bindingVarName = null;
           
-          if (quantifiedExprVarBindingList.size() > 0 && tokenIs(',')) {
-             nextToken();    
+          if ((quantifiedExprVarBindingList.size() > 0) && tokenIs(',') && lookahead('$', 1)) {
+             nextToken();
+             nextToken();              
+             bindingVarName = m_token;              
+             nextToken();              
+             consumeExpected("in");
           }
-          
-          if (tokenIs('$')) {
-              nextToken();              
-              bindingVarName = m_token;              
-              nextToken();              
-              consumeExpected("in");                            
+          else if (tokenIs('$')) {
+             nextToken();
+             bindingVarName = m_token;              
+             nextToken();              
+             consumeExpected("in");
           }
           
           List<String> bindingXPathExprStrPartsList = new ArrayList<String>();
           
-          while (!(tokenIs(',') || tokenIs("satisfies")) && m_token != null) {
+          while (!((tokenIs('$') && lookahead("in", 2)) || tokenIs("satisfies")) && 
+                                                                          m_token != null) {
              bindingXPathExprStrPartsList.add(m_token);
              nextToken();
+          }
+          
+          if (",".equals(bindingXPathExprStrPartsList.get(bindingXPathExprStrPartsList.
+                                                                                   size() - 1))) {
+             bindingXPathExprStrPartsList = bindingXPathExprStrPartsList.subList(0, 
+                                                                   bindingXPathExprStrPartsList.size() - 1); 
           }
           
           String varBindingXpathStr = getXPathStrFromComponentParts(
@@ -1309,7 +1342,7 @@ public class XPathParser
                nextToken();
             }
          }
-         else if (fIsXpathPredicateParsingActive && tokenIs(']')) {
+         else if (fIsXPathPredicateParsingActive && tokenIs(']')) {
             break;    
          }
          else {
@@ -1372,7 +1405,7 @@ public class XPathParser
       
       while (m_token != null)
       {
-          if (fIsXpathPredicateParsingActive && lookahead(']', 1)) {
+          if (fIsXPathPredicateParsingActive && lookahead(']', 1)) {
              elseExprXPathStrPartsList.add(m_token);
              elseExprXPathStrPartsList.subList(0, elseExprXPathStrPartsList.size() - 1);
              nextToken();
@@ -2893,11 +2926,11 @@ public class XPathParser
 
     if (tokenIs('['))
     {
-      fIsXpathPredicateParsingActive = true;      
+      fIsXPathPredicateParsingActive = true;      
       nextToken();
       PredicateExpr();
       consumeExpected(']');      
-      fIsXpathPredicateParsingActive = false;
+      fIsXPathPredicateParsingActive = false;
     }
   }
 
