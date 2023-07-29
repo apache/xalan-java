@@ -69,9 +69,25 @@ public class XSDayTimeDuration extends XSDuration {
 		super(0, 0, 0, 0, 0, 0.0, false);
 	}
 
+	/**
+	 * A method to construct an xdm sequence comprising a
+	 * xs:dayTimeDuration value, given input data as argument
+	 * to this method.
+	 */
 	public ResultSequence constructor(ResultSequence arg) {
-	    // TO DO
-	    return null;	
+        ResultSequence resultSeq = new ResultSequence();
+        
+        if (arg.size() == 0) {
+           return resultSeq;     
+        }
+        
+        XSAnyType xsAnyType = (XSAnyType)arg.item(0);
+        
+        XSDuration xsDuration = castToDayTimeDuration(xsAnyType);
+        
+        resultSeq.add(xsDuration);
+
+        return resultSeq;	
 	}
 
 	
@@ -79,11 +95,12 @@ public class XSDayTimeDuration extends XSDuration {
 	 * Creates a new XSDuration object, by parsing the supplied String
 	 * representation of XSDuration.
 	 * 
-	 * @param str      String representation of XSDuration
+	 * @param    strVal      String representation of XSDuration value
 	 * 
-	 * @return         new XSDuration object, representing the supplied string
+	 * @return               new XSDuration object, representing the 
+	 *                       supplied string.
 	 */
-	public static XSDuration parseDTDuration(String str) {
+	public static XSDuration parseDayTimeDuration(String strVal) {
 		boolean negative = false;
 		int days = 0;
 		int hours = 0;
@@ -93,19 +110,19 @@ public class XSDayTimeDuration extends XSDuration {
 		String pstr = null;
 		String tstr = null;
 
-		if (str.startsWith("-P")) {
+		if (strVal.startsWith("-P")) {
 			negative = true;
-			pstr = str.substring(2, str.length());
-		} else if (str.startsWith("P")) {
+			pstr = strVal.substring(2, strVal.length());
+		} else if (strVal.startsWith("P")) {
 			negative = false;
-			pstr = str.substring(1, str.length());
+			pstr = strVal.substring(1, strVal.length());
 		} else {
 			return null;
 		}
 
 		try {
 			int index = pstr.indexOf('D');
-			boolean did_something = false;
+			boolean actionStatus = false;
 
 			if (index == -1) {
 				if (pstr.startsWith("T")) {
@@ -125,7 +142,7 @@ public class XSDayTimeDuration extends XSDuration {
 						return null;
 					}
 					tstr = "";
-					did_something = true;
+					actionStatus = true;
 				}
 			}
 
@@ -134,7 +151,7 @@ public class XSDayTimeDuration extends XSDuration {
 				String digit = tstr.substring(0, index);
 				hours = Integer.parseInt(digit);
 				tstr = tstr.substring(index + 1, tstr.length());
-				did_something = true;
+				actionStatus = true;
 			}
 
 			index = tstr.indexOf('M');
@@ -142,7 +159,7 @@ public class XSDayTimeDuration extends XSDuration {
 				String digit = tstr.substring(0, index);
 				minutes = Integer.parseInt(digit);
 				tstr = tstr.substring(index + 1, tstr.length());
-				did_something = true;
+				actionStatus = true;
 			}
 
 			index = tstr.indexOf('S');
@@ -150,9 +167,9 @@ public class XSDayTimeDuration extends XSDuration {
 				String digit = tstr.substring(0, index);
 				seconds = Double.parseDouble(digit);
 				tstr = tstr.substring(index + 1, tstr.length());
-				did_something = true;
+				actionStatus = true;
 			}
-			if (did_something) {
+			if (actionStatus) {
 				if (tstr.length() != 0) {
 					return null;
 				}
@@ -184,5 +201,22 @@ public class XSDayTimeDuration extends XSDuration {
 	public String stringType() {
 		return XS_DAY_TIME_DURATION;
 	}
+	
+	/**
+     * Do a data type cast, of a XSAnyType value to an XSDuration
+     * value. 
+     */
+	private XSDuration castToDayTimeDuration(XSAnyType xsAnyType) {
+        
+	    if (xsAnyType instanceof XSDuration) {
+            XSDuration xsDuration = (XSDuration) xsAnyType;
+            
+            return new XSDayTimeDuration(xsDuration.days(), xsDuration.hours(), 
+                                         xsDuration.minutes(), xsDuration.seconds(), 
+                                         xsDuration.negative());
+        }
+        
+        return parseDayTimeDuration(xsAnyType.stringValue());
+    }
 	
 }

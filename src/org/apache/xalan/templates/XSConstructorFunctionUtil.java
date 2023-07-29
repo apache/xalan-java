@@ -17,6 +17,7 @@
 package org.apache.xalan.templates;
 
 import javax.xml.XMLConstants;
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -29,12 +30,15 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.xs.types.XSBoolean;
 import org.apache.xpath.xs.types.XSDate;
+import org.apache.xpath.xs.types.XSDayTimeDuration;
 import org.apache.xpath.xs.types.XSDecimal;
 import org.apache.xpath.xs.types.XSDouble;
+import org.apache.xpath.xs.types.XSDuration;
 import org.apache.xpath.xs.types.XSFloat;
 import org.apache.xpath.xs.types.XSInt;
 import org.apache.xpath.xs.types.XSInteger;
 import org.apache.xpath.xs.types.XSLong;
+import org.apache.xpath.xs.types.XSYearMonthDuration;
 import org.xml.sax.SAXException;
 
 /**
@@ -58,6 +62,8 @@ public class XSConstructorFunctionUtil {
     public static XObject processFuncExtFunctionOrXPathOpn(XPathContext xctxt, Expression expr)
                                                                     throws TransformerException, SAXException {        
         XObject evalResult = null;
+        
+        SourceLocator srcLocator = xctxt.getSAXLocator();
 
         if (expr instanceof FuncExtFunction) {
             FuncExtFunction funcExtFunction = (FuncExtFunction)expr;
@@ -65,7 +71,7 @@ public class XSConstructorFunctionUtil {
                 // evaluate XPath 3.1 constructor function calls, corresponding to XML Schema 
                 // built-in types.
                 
-                if ((Keywords.FUNC_XS_DECIMAL).equals(funcExtFunction.getFunctionName())) {                              
+                if ((Keywords.XS_DECIMAL).equals(funcExtFunction.getFunctionName())) {                              
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
@@ -75,7 +81,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence rSeq = (new XSDecimal()).constructor(argSequence);
                     evalResult = rSeq.item(0);              
                 }
-                else if ((Keywords.FUNC_XS_FLOAT).equals(funcExtFunction.getFunctionName())) {                              
+                else if ((Keywords.XS_FLOAT).equals(funcExtFunction.getFunctionName())) {                              
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
@@ -85,7 +91,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence rSeq = (new XSFloat()).constructor(argSequence);
                     evalResult = rSeq.item(0);              
                 }
-                else if ((Keywords.FUNC_XS_DOUBLE).equals(funcExtFunction.getFunctionName())) {                              
+                else if ((Keywords.XS_DOUBLE).equals(funcExtFunction.getFunctionName())) {                              
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
@@ -95,7 +101,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence rSeq = (new XSDouble()).constructor(argSequence);
                     evalResult = rSeq.item(0);              
                 }
-                else if ((Keywords.FUNC_XS_INTEGER).equals(funcExtFunction.getFunctionName())) {                              
+                else if ((Keywords.XS_INTEGER).equals(funcExtFunction.getFunctionName())) {                              
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
@@ -105,7 +111,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence rSeq = (new XSInteger()).constructor(argSequence);
                     evalResult = rSeq.item(0);              
                 }
-                else if ((Keywords.FUNC_XS_LONG).equals(funcExtFunction.getFunctionName())) {                              
+                else if ((Keywords.XS_LONG).equals(funcExtFunction.getFunctionName())) {                              
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
@@ -115,7 +121,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence rSeq = (new XSLong()).constructor(argSequence);
                     evalResult = rSeq.item(0);              
                 }
-                else if ((Keywords.FUNC_XS_INT).equals(funcExtFunction.getFunctionName())) {                              
+                else if ((Keywords.XS_INT).equals(funcExtFunction.getFunctionName())) {                              
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
@@ -137,7 +143,7 @@ public class XSConstructorFunctionUtil {
                     ResultSequence rSeq = (new XSBoolean()).constructor(argSequence);
                     evalResult = rSeq.item(0);              
                 }
-                else if ((Keywords.FUNC_XS_DATE).equals(funcExtFunction.getFunctionName())) {                              
+                else if ((Keywords.XS_DATE).equals(funcExtFunction.getFunctionName())) {                              
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
@@ -146,6 +152,40 @@ public class XSConstructorFunctionUtil {
 
                     ResultSequence rSeq = (new XSDate()).constructor(argSequence); 
                     evalResult = rSeq.item(0);              
+                }
+                else if ((Keywords.XS_YEAR_MONTH_DURATION).equals(funcExtFunction.getFunctionName())) {                    
+                    for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+                        XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+                        String strVal = XslTransformEvaluationHelper.getStrVal(argVal);
+                        XSDuration xsDuration = XSYearMonthDuration.parseYearMonthDuration(strVal);
+                        if (xsDuration != null) {
+                           ResultSequence argSequence = new ResultSequence();
+                           argSequence.add(xsDuration);
+                           ResultSequence rSeq = (new XSYearMonthDuration()).constructor(argSequence); 
+                           evalResult = rSeq.item(0);
+                        }
+                        else {
+                           throw new TransformerException("FORG0001 : an invalid duration value '" + strVal + "' is "
+                                                                                               + "present in the input.", srcLocator); 
+                        }
+                    }                                  
+                }
+                else if ((Keywords.XS_DAY_TIME_DURATION).equals(funcExtFunction.getFunctionName())) {                    
+                    for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+                        XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+                        String strVal = XslTransformEvaluationHelper.getStrVal(argVal);
+                        XSDuration xsDuration = XSDayTimeDuration.parseDayTimeDuration(strVal);
+                        if (xsDuration != null) {
+                           ResultSequence argSequence = new ResultSequence();
+                           argSequence.add(xsDuration);
+                           ResultSequence rSeq = (new XSDayTimeDuration()).constructor(argSequence); 
+                           evalResult = rSeq.item(0);
+                        }
+                        else {
+                           throw new TransformerException("FORG0001 : an invalid duration value '" + strVal + "' is "
+                                                                                                + "present in the input.", srcLocator); 
+                        }                            
+                    }
                 }
             }
         }
