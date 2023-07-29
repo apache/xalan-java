@@ -233,6 +233,24 @@ public class FunctionTable
   
   /** The 'math:atan2()' id. */
   public static final int FUNC_MATH_ATAN2 = 69;
+  
+  /** The 'years-from-duration()' id. */
+  public static final int FUNC_YEARS_FROM_DURATION = 70;
+  
+  /** The 'months-from-duration()' id. */
+  public static final int FUNC_MONTHS_FROM_DURATION = 71;
+  
+  /** The 'days-from-duration()' id. */
+  public static final int FUNC_DAYS_FROM_DURATION = 72;
+  
+  /** The 'hours-from-duration()' id. */
+  public static final int FUNC_HOURS_FROM_DURATION = 73;
+  
+  /** The 'minutes-from-duration()' id. */
+  public static final int FUNC_MINUTES_FROM_DURATION = 74;
+  
+  /** The 'seconds-from-duration()' id. */
+  public static final int FUNC_SECONDS_FROM_DURATION = 75;
 
   // Proprietary
 
@@ -290,7 +308,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 70;
+  private static final int NUM_BUILT_IN_FUNCS = 76;
 
   /**
    * Number of built-in functions that may be added.
@@ -395,8 +413,8 @@ public class FunctionTable
     m_functions[FUNC_DISTINCT_VALUES] = 
       org.apache.xpath.functions.FuncDistinctValues.class;
     
-    // XPath 3.1 functions configurations for the namespace 
-    // http://www.w3.org/2005/xpath-functions/math.    
+    // XPath 3.1 functions configurations for the math functions 
+    // namespace http://www.w3.org/2005/xpath-functions/math.
     m_functions[FUNC_MATH_PI] = 
       org.apache.xpath.functions.math.FuncMathPi.class;
     m_functions[FUNC_MATH_EXP] = 
@@ -425,6 +443,21 @@ public class FunctionTable
       org.apache.xpath.functions.math.FuncMathAtan.class;
     m_functions[FUNC_MATH_ATAN2] = 
       org.apache.xpath.functions.math.FuncMathAtan2.class;
+    
+    // XPath 3.1 functions configurations for component 
+    // extraction functions on duration values.
+    m_functions[FUNC_YEARS_FROM_DURATION] = 
+      org.apache.xpath.functions.FuncYearsFromDuration.class;
+    m_functions[FUNC_MONTHS_FROM_DURATION] = 
+      org.apache.xpath.functions.FuncMonthsFromDuration.class;
+    m_functions[FUNC_DAYS_FROM_DURATION] = 
+      org.apache.xpath.functions.FuncDaysFromDuration.class;
+    m_functions[FUNC_HOURS_FROM_DURATION] = 
+      org.apache.xpath.functions.FuncHoursFromDuration.class;
+    m_functions[FUNC_MINUTES_FROM_DURATION] = 
+      org.apache.xpath.functions.FuncMinutesFromDuration.class;
+    m_functions[FUNC_SECONDS_FROM_DURATION] = 
+      org.apache.xpath.functions.FuncSecondsFromDuration.class;
   }
 
   static{
@@ -537,8 +570,8 @@ public class FunctionTable
           m_functionID.put(Keywords.FUNC_DISTINCT_VALUES,
                           new Integer(FunctionTable.FUNC_DISTINCT_VALUES));
           
-          // XPath 3.1 functions configurations for the namespace 
-          // http://www.w3.org/2005/xpath-functions/math.
+          // XPath 3.1 functions configurations for the math functions 
+          // namespace http://www.w3.org/2005/xpath-functions/math.
           m_functionID.put(Keywords.FUNC_MATH_PI,
                           new Integer(FunctionTable.FUNC_MATH_PI));
           m_functionID.put(Keywords.FUNC_MATH_EXP,
@@ -567,6 +600,21 @@ public class FunctionTable
                          new Integer(FunctionTable.FUNC_MATH_ATAN));
           m_functionID.put(Keywords.FUNC_MATH_ATAN2,
                          new Integer(FunctionTable.FUNC_MATH_ATAN2));
+          
+         // XPath 3.1 functions configurations for component 
+         // extraction functions on xdm duration values.
+         m_functionID.put(Keywords.FUNC_YEARS_FROM_DURATION,
+                         new Integer(FunctionTable.FUNC_YEARS_FROM_DURATION));
+         m_functionID.put(Keywords.FUNC_MONTHS_FROM_DURATION,
+                         new Integer(FunctionTable.FUNC_MONTHS_FROM_DURATION));
+         m_functionID.put(Keywords.FUNC_DAYS_FROM_DURATION,
+                         new Integer(FunctionTable.FUNC_DAYS_FROM_DURATION));
+         m_functionID.put(Keywords.FUNC_HOURS_FROM_DURATION,
+                         new Integer(FunctionTable.FUNC_HOURS_FROM_DURATION));
+         m_functionID.put(Keywords.FUNC_MINUTES_FROM_DURATION,
+                         new Integer(FunctionTable.FUNC_MINUTES_FROM_DURATION));
+         m_functionID.put(Keywords.FUNC_SECONDS_FROM_DURATION,
+                         new Integer(FunctionTable.FUNC_SECONDS_FROM_DURATION));
   }
   
   public FunctionTable(){

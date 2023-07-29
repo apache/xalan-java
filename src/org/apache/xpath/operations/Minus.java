@@ -30,6 +30,7 @@ import org.apache.xpath.xs.types.XSFloat;
 import org.apache.xpath.xs.types.XSInt;
 import org.apache.xpath.xs.types.XSInteger;
 import org.apache.xpath.xs.types.XSLong;
+import org.apache.xpath.xs.types.XSYearMonthDuration;
 
 /**
  * The binary '-' operation expression executer.
@@ -73,6 +74,11 @@ public class Minus extends Operation
           BigInteger bigIntRight = ((XSInt)right).intValue();
            
           return new XSInt(bigIntLeft.subtract(bigIntRight));    
+      }
+      
+      if ((left instanceof XSYearMonthDuration) && 
+                                           (right instanceof XSYearMonthDuration)) {
+          return ((XSYearMonthDuration)left).subtract((XSYearMonthDuration)right);  
       }
       
       double leftArg = 0.0;

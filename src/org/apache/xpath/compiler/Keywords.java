@@ -310,34 +310,58 @@ public class Keywords
   
   /** math:atan2 function string. */
   public static final String FUNC_MATH_ATAN2 = "atan2";
-
+  
+  /** years-from-duration function string. */
+  public static final String FUNC_YEARS_FROM_DURATION = "years-from-duration";
+  
+  /** months-from-duration function string. */
+  public static final String FUNC_MONTHS_FROM_DURATION = "months-from-duration";
+  
+  /** days-from-duration function string. */
+  public static final String FUNC_DAYS_FROM_DURATION = "days-from-duration";
+  
+  /** hours-from-duration function string. */
+  public static final String FUNC_HOURS_FROM_DURATION = "hours-from-duration";
+  
+  /** minutes-from-duration function string. */
+  public static final String FUNC_MINUTES_FROM_DURATION = "minutes-from-duration";
+  
+  /** seconds-from-duration function string. */
+  public static final String FUNC_SECONDS_FROM_DURATION = "seconds-from-duration";
+  
+  // XML Schema built-in data type name keywords
+  
+  /** xs:decimal data type string. */
+  public static final String XS_DECIMAL = "decimal";
+  
+  /** xs:float data type string. */
+  public static final String XS_FLOAT = "float";
+  
+  /** xs:double data type string. */
+  public static final String XS_DOUBLE = "double";
+  
+  /** xs:integer data type string. */
+  public static final String XS_INTEGER = "integer";
+  
+  /** xs:long data type string. */
+  public static final String XS_LONG = "long";
+  
+  /** xs:int data type string. */
+  public static final String XS_INT = "int";
+  
+  /** xs:date data type string. */
+  public static final String XS_DATE = "date";
+  
+  /** xs:yearMonthDuration data type string. */
+  public static final String XS_YEAR_MONTH_DURATION = "yearMonthDuration";
+  
+  /** xs:dayTimeDuration data type string. */
+  public static final String XS_DAY_TIME_DURATION = "dayTimeDuration";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
   public static final String FUNC_DOCLOCATION_STRING = "document-location";
-  
-  // XML Schema built-in types constructor functions, configurations
-  
-  /** xs:decimal data type string. */
-  public static final String FUNC_XS_DECIMAL = "decimal";
-  
-  /** xs:float data type string. */
-  public static final String FUNC_XS_FLOAT = "float";
-  
-  /** xs:double data type string. */
-  public static final String FUNC_XS_DOUBLE = "double";
-  
-  /** xs:integer data type string. */
-  public static final String FUNC_XS_INTEGER = "integer";
-  
-  /** xs:long data type string. */
-  public static final String FUNC_XS_LONG = "long";
-  
-  /** xs:int data type string. */
-  public static final String FUNC_XS_INT = "int";
-  
-  /** xs:date data type string. */
-  public static final String FUNC_XS_DATE = "date";
 
   static
   {
