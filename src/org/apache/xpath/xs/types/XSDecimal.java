@@ -92,7 +92,7 @@ public class XSDecimal extends XSNumericType {
         try {            
             XSDecimal xsDecimal = castToDecimal(xsAnyType);            
             resultSeq.add(xsDecimal);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException ex) {
             // to do
             return null;
         }        

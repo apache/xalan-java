@@ -6,8 +6,9 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- this stylesheet, tests XPath 3.1 constructor function xs:float(),
-        along with logical '=' operation evaluation on xs:float values. -->                
+   <!-- This XSLT stylesheet, tests XPath 3.1 constructor function
+        xs:float(), along with logical '=' operation evaluation on 
+        xs:float values. -->                
 
    <xsl:output method="xml" indent="yes"/>
 

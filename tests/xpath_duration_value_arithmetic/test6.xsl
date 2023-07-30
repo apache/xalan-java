@@ -6,19 +6,18 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_a.xml -->
-   
-   <!-- This XSLT stylesheet, tests few XPath arithmetic and 
-        logical operations, involving xs:decimal types. -->             
+   <!-- This XSLT stylesheet, tests XPath 3.1 arithmetic on
+        XML Schema duration typed values. -->                
 
    <xsl:output method="xml" indent="yes"/>
-
-   <xsl:template match="/elem">
+      
+   <xsl:template match="/">
       <result>
-         <one><xsl:value-of select="(xs:decimal(a) + xs:decimal(b)) = xs:decimal(c)"/></one>
-         <two><xsl:value-of select="(xs:decimal(a) + xs:decimal(b)) = xs:decimal(d)"/></two>
-         <three><xsl:value-of select="(xs:decimal(a) + b) = c"/></three>
-         <four><xsl:value-of select="(xs:decimal(a) + b) = d"/></four>
+         <one><xsl:value-of select="xs:yearMonthDuration('P2Y11M') div 1.5"/></one>
+         <two><xsl:value-of select="xs:yearMonthDuration('P2Y11M') div xs:integer(2)"/></two>
+         <three><xsl:value-of select="xs:yearMonthDuration('P2Y11M') div number(2.1)"/></three>
+         <four><xsl:value-of select="xs:yearMonthDuration('P2Y11M') div xs:float(3.1)"/></four>
+         <five><xsl:value-of select="xs:yearMonthDuration('P2Y11M') div xs:double(4.1)"/></five>
       </result>
    </xsl:template>
    

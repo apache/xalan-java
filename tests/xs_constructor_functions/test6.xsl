@@ -6,8 +6,9 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- this stylesheet, tests XPath 3.1 constructor function xs:decimal(),
-        and use of arithmetic and logical operations on such values. -->                
+   <!-- This XSLT stylesheet, tests XPath 3.1 constructor function
+        xs:decimal() and use of arithmetic and logical operations 
+        on such values. -->                
 
    <xsl:output method="xml" indent="yes"/>
 

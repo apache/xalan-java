@@ -7,7 +7,9 @@
    <!-- Author: mukulg@apache.org -->
    
    <!-- This XSLT stylesheet, tests XPath 3.1 arithmetic on
-        XML Schema duration typed values. -->                
+        XML Schema duration typed values. The XPath expression
+        examples, as mentioned within this test case are borrowed
+        from XPath 3.1 spec. -->                
 
    <xsl:output method="xml" indent="yes"/>
       
