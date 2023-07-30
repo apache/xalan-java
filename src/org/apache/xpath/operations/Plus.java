@@ -20,16 +20,11 @@
  */
 package org.apache.xpath.operations;
 
-import java.math.BigInteger;
-
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.xs.types.XSDecimal;
-import org.apache.xpath.xs.types.XSFloat;
-import org.apache.xpath.xs.types.XSInt;
-import org.apache.xpath.xs.types.XSInteger;
-import org.apache.xpath.xs.types.XSLong;
+import org.apache.xpath.xs.types.XSNumericType;
 import org.apache.xpath.xs.types.XSYearMonthDuration;
 
 /**
@@ -53,77 +48,145 @@ public class Plus extends Operation
   public XObject operate(XObject left, XObject right)
                                            throws javax.xml.transform.TransformerException {
       XObject result = null;
-      
-      if ((left instanceof XSInteger) && (right instanceof XSInteger)) {
-         BigInteger bigintLeft = ((XSInteger)left).intValue();
-         BigInteger bigintRight = ((XSInteger)right).intValue();
-         
-         return new XSInteger(bigintLeft.add(bigintRight));    
-      }      
-      
-      if ((left instanceof XSLong) && (right instanceof XSLong)) {
-          BigInteger bigintLeft = ((XSLong)left).intValue();
-          BigInteger bigintRight = ((XSLong)right).intValue();
+   
+      if ((left instanceof XNumber) && (right instanceof XSNumericType)) {
+          double lDouble = ((XNumber)left).num();
           
-          // its possible that, result after addition is, not within value space of xs:long.
-          // handle this error. revisit
-          return new XSLong(bigintLeft.add(bigintRight));    
-      }      
-      
-      if ((left instanceof XSInt) && (right instanceof XSInt)) {
-          BigInteger bigintLeft = ((XSInt)left).intValue();
-          BigInteger bigintRight = ((XSInt)right).intValue();
+          java.lang.String rStrVal = ((XSNumericType)right).stringValue();
+          double rDouble = (Double.valueOf(rStrVal)).doubleValue();
           
-          // its possible that, result after addition is, not within value space of xs:int.
-          // handle this error. revisit
-          return new XSInt(bigintLeft.add(bigintRight));    
+          result = new XNumber(lDouble + rDouble);
       }
-      
-      if ((left instanceof XSYearMonthDuration) && 
-                                         (right instanceof XSYearMonthDuration)) {
-          return ((XSYearMonthDuration)left).add((XSYearMonthDuration)right);  
+      else if ((left instanceof XSNumericType) && (right instanceof XNumber)) {
+          java.lang.String lStrVal = ((XSNumericType)left).stringValue();
+          double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+          
+          double rDouble = ((XNumber)right).num();
+          
+          result = new XNumber(lDouble + rDouble);
       }
-      
-      double leftArg = 0.0;
-      double rightArg = 0.0;
-      
-      float lArg = (float)0.0;
-      float rArg = (float)0.0;
-      
-      boolean isFloatLarg = false;
-      boolean isFloatRarg = false;
-      
-      if (left instanceof XSDecimal) {
-          leftArg = ((XSDecimal)left).doubleValue();    
+      else if ((left instanceof XNumber) && (right instanceof XNumber)) {
+          double lDouble = ((XNumber)left).num();
+          double rDouble = ((XNumber)right).num();
+          
+          result = new XNumber(lDouble + rDouble);
       }
-      else if (left instanceof XSFloat) {
-          isFloatLarg = true;
-          lArg = ((XSFloat)left).floatValue();    
+      else if ((left instanceof XSNumericType) && (right instanceof XSNumericType)) {
+          java.lang.String lStrVal = ((XSNumericType)left).stringValue();
+          double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+          
+          java.lang.String rStrVal = ((XSNumericType)right).stringValue();
+          double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+          
+          result = new XNumber(lDouble + rDouble);
+      }
+      else if ((left instanceof XNumber) && (right instanceof XNodeSet)) {
+          double lDouble = ((XNumber)left).num();
+          
+          XNodeSet rNodeSet = (XNodeSet)right;
+          if (rNodeSet.getLength() > 1) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the second "
+                                                                                   + "operand of addition operator '+'.");  
+          }
+          else {
+             java.lang.String rStrVal = rNodeSet.str();
+             double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+             
+             result = new XNumber(lDouble + rDouble);
+          }
+      }
+      else if ((left instanceof XNodeSet) && (right instanceof XNumber)) {
+          double rDouble = ((XNumber)right).num();
+          
+          XNodeSet lNodeSet = (XNodeSet)left;
+          if (lNodeSet.getLength() > 1) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the first "
+                                                                                   + "operand of addition operator '+'.");  
+          }
+          else {
+             java.lang.String lStrVal = lNodeSet.str();
+             double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+             
+             result = new XNumber(lDouble + rDouble);
+          }
+      }
+      else if ((left instanceof XSNumericType) && (right instanceof XNodeSet)) {
+          java.lang.String lStrVal = ((XSNumericType)left).stringValue();
+          double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+          
+          XNodeSet rNodeSet = (XNodeSet)right;
+          if (rNodeSet.getLength() > 1) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the second "
+                                                                                   + "operand of addition operator '+'.");  
+          }
+          else {
+             java.lang.String rStrVal = rNodeSet.str();
+             double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+             
+             result = new XNumber(lDouble + rDouble);
+          }
+      }
+      else if ((left instanceof XNodeSet) && (right instanceof XSNumericType)) {
+          java.lang.String rStrVal = ((XSNumericType)right).stringValue();
+          double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+          
+          XNodeSet lNodeSet = (XNodeSet)left;
+          if (lNodeSet.getLength() > 1) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the first "
+                                                                                   + "operand of addition operator '+'.");  
+          }
+          else {
+             java.lang.String lStrVal = lNodeSet.str();
+             double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+             
+             result = new XNumber(lDouble + rDouble);
+          }
+      }
+      else if ((left instanceof XNodeSet) && (right instanceof XNodeSet)) {
+          double lDouble = 0.0d;
+          double rDouble = 0.0d;
+          
+          XNodeSet lNodeSet = (XNodeSet)left;
+          if (lNodeSet.getLength() > 1) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the first "
+                                                                                   + "operand of addition operator '+'.");  
+          }
+          else {
+             java.lang.String lStrVal = lNodeSet.str();
+             lDouble = (Double.valueOf(lStrVal)).doubleValue();
+          }
+          
+          XNodeSet rNodeSet = (XNodeSet)right;
+          if (rNodeSet.getLength() > 1) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the second "
+                                                                                   + "operand of addition operator '+'.");  
+          }
+          else {
+             java.lang.String rStrVal = rNodeSet.str();
+             rDouble = (Double.valueOf(rStrVal)).doubleValue();
+          }
+          
+          result = new XNumber(lDouble + rDouble);
+      }
+      else if ((left instanceof XSYearMonthDuration) && (right instanceof XSYearMonthDuration)) {
+          result = ((XSYearMonthDuration)left).add((XSYearMonthDuration)right);  
       }
       else {
-          leftArg = left.num();  
+          try {
+             result = new XNumber(left.num() + right.num());
+          }
+          catch (Exception ex) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : could not apply the "
+                                                                                     + "addition operator '+', due to incorrectly "
+                                                                                     + "typed operand(s)."); 
+          }
       }
-      
-      if (right instanceof XSDecimal) {
-          rightArg = ((XSDecimal)right).doubleValue();    
-      }
-      else if (right instanceof XSFloat) {
-          isFloatRarg = true;
-          rArg = ((XSFloat)right).floatValue();    
-      }
-      else {
-          rightArg = right.num();  
-      }
-      
-      if (isFloatLarg && isFloatRarg) {
-         // currently, supporting XSFloat typed result, when both operands 
-         // are of type XSFloat.  
-         result = new XSFloat(lArg + rArg);
-         
-         return result;
-      }
-      
-      result = new XNumber(leftArg + rightArg);
       
       return result;
   }

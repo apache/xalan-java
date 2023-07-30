@@ -19,6 +19,7 @@
  */
 package org.apache.xpath.xs.types;
 
+import org.apache.xpath.XPathException;
 import org.apache.xpath.objects.ResultSequence;
 
 /**
@@ -261,13 +262,66 @@ public class XSYearMonthDuration extends XSDuration {
     }
     
     /**
-     * Subtract one XSYearMonthDuration value from another XSYearMonthDuration value,
+     * Subtract an XSYearMonthDuration value from another XSYearMonthDuration value,
      * and return the result as an XSYearMonthDuration value.
      */
     public XSYearMonthDuration subtract(XSYearMonthDuration arg) {
        XSYearMonthDuration result = new XSYearMonthDuration(monthValue() - 
                                                                 arg.monthValue());       
        return result; 
+    }
+    
+    /**
+     * Multiply an XSYearMonthDuration value by a numeric value, and return the 
+     * result as an XSYearMonthDuration value.
+     */
+    public XSYearMonthDuration mult(XSDouble arg) throws XPathException {
+       XSYearMonthDuration result = null;
+       
+       if (arg.nan()) {
+          throw new XPathException("FOCA0005 : NaN supplied as float/double value.");    
+       }
+       
+       if (arg.infinite()) {
+          throw new XPathException("FODT0001 : Overflow/underflow of value for the "
+                                                                         + "date/time operation.");
+       }
+       
+       int intVal = (int)Math.round(monthValue() * arg.doubleValue());
+       
+       result = new XSYearMonthDuration(intVal);
+       
+       return result; 
+    }
+    
+    /**
+     * Divide an XSYearMonthDuration value by a numeric value, and return the 
+     * result as an XSYearMonthDuration value.
+     */
+    public XSYearMonthDuration div(XSDouble arg) throws XPathException {
+        XSYearMonthDuration result = null;
+        
+        if (arg.nan()) {
+           throw new XPathException("FOCA0005 : NaN supplied as float/double value.");    
+        }
+        
+        if (arg.infinite()) {
+           result = new XSYearMonthDuration(0); 
+        }
+        else {
+           XSDouble xsDouble = (XSDouble)arg;
+
+           if (!arg.zero()) {
+              int intVal = (int)Math.round(monthValue() / xsDouble.doubleValue());
+              result = new XSYearMonthDuration(intVal); 
+           }
+           else {
+              throw new XPathException("FODT0001 : Overflow/underflow of value for the "
+                                                                                    + "date/time operation."); 
+           } 
+        }
+
+        return result;
     }
     
     /**

@@ -20,16 +20,11 @@
  */
 package org.apache.xpath.operations;
 
-import java.math.BigInteger;
-
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.xs.types.XSDecimal;
-import org.apache.xpath.xs.types.XSFloat;
-import org.apache.xpath.xs.types.XSInt;
-import org.apache.xpath.xs.types.XSInteger;
-import org.apache.xpath.xs.types.XSLong;
+import org.apache.xpath.xs.types.XSNumericType;
 import org.apache.xpath.xs.types.XSYearMonthDuration;
 
 /**
@@ -55,76 +50,146 @@ public class Minus extends Operation
                                            throws javax.xml.transform.TransformerException {
       XObject result = null;
       
-      if ((left instanceof XSInteger) && (right instanceof XSInteger)) {
-         BigInteger bigIntLeft = ((XSInteger)left).intValue();
-         BigInteger bigIntRight = ((XSInteger)right).intValue();
+      if ((left instanceof XNumber) && (right instanceof XSNumericType)) {
+          double lDouble = ((XNumber)left).num();
           
-         return new XSInteger(bigIntLeft.subtract(bigIntRight));    
+          java.lang.String rStrVal = ((XSNumericType)right).stringValue();
+          double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+          
+          result = new XNumber(lDouble - rDouble);
       }
-       
-      if ((left instanceof XSLong) && (right instanceof XSLong)) {
-          BigInteger bigIntLeft = ((XSLong)left).intValue();
-          BigInteger bigIntRight = ((XSLong)right).intValue();
-           
-          return new XSLong(bigIntLeft.subtract(bigIntRight));    
+      else if ((left instanceof XSNumericType) && (right instanceof XNumber)) {
+          java.lang.String lStrVal = ((XSNumericType)left).stringValue();
+          double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+          
+          double rDouble = ((XNumber)right).num();
+          
+          result = new XNumber(lDouble - rDouble);
       }
-       
-      if ((left instanceof XSInt) && (right instanceof XSInt)) {
-          BigInteger bigIntLeft = ((XSInt)left).intValue();
-          BigInteger bigIntRight = ((XSInt)right).intValue();
-           
-          return new XSInt(bigIntLeft.subtract(bigIntRight));    
+      else if ((left instanceof XNumber) && (right instanceof XNumber)) {
+          double lDouble = ((XNumber)left).num();
+          double rDouble = ((XNumber)right).num();
+          
+          result = new XNumber(lDouble - rDouble);
       }
-      
-      if ((left instanceof XSYearMonthDuration) && 
-                                           (right instanceof XSYearMonthDuration)) {
-          return ((XSYearMonthDuration)left).subtract((XSYearMonthDuration)right);  
+      else if ((left instanceof XSNumericType) && (right instanceof XSNumericType)) {
+          java.lang.String lStrVal = ((XSNumericType)left).stringValue();
+          double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+          
+          java.lang.String rStrVal = ((XSNumericType)right).stringValue();
+          double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+          
+          result = new XNumber(lDouble - rDouble);
       }
-      
-      double leftArg = 0.0;
-      double rightArg = 0.0;
-      
-      float lArg = (float)0.0;
-      float rArg = (float)0.0;
-      
-      boolean isFloatLarg = false;
-      boolean isFloatRarg = false;
-      
-      if (left instanceof XSDecimal) {
-          leftArg = ((XSDecimal)left).doubleValue();    
+      else if ((left instanceof XNumber) && (right instanceof XNodeSet)) {
+          double lDouble = ((XNumber)left).num();
+          
+          XNodeSet rNodeSet = (XNodeSet)right;
+          if (rNodeSet.getLength() > 1) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the second "
+                                                                                   + "operand of subtraction operator '-'.");  
+          }
+          else {
+             java.lang.String rStrVal = rNodeSet.str();
+             double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+             
+             result = new XNumber(lDouble - rDouble);
+          }
       }
-      else if (left instanceof XSFloat) {
-          isFloatLarg = true;
-          lArg = ((XSFloat)left).floatValue();    
+      else if ((left instanceof XNodeSet) && (right instanceof XNumber)) {
+          double rDouble = ((XNumber)right).num();
+          
+          XNodeSet lNodeSet = (XNodeSet)left;
+          if (lNodeSet.getLength() > 1) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the first "
+                                                                                   + "operand of subtraction operator '-'.");  
+          }
+          else {
+             java.lang.String lStrVal = lNodeSet.str();
+             double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+             
+             result = new XNumber(lDouble - rDouble);
+          }
       }
-      else {
-          leftArg = left.num();  
+      else if ((left instanceof XSNumericType) && (right instanceof XNodeSet)) {
+          java.lang.String lStrVal = ((XSNumericType)left).stringValue();
+          double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+          
+          XNodeSet rNodeSet = (XNodeSet)right;
+          if (rNodeSet.getLength() > 1) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the second "
+                                                                                   + "operand of subtraction operator '-'.");  
+          }
+          else {
+             java.lang.String rStrVal = rNodeSet.str();
+             double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+             
+             result = new XNumber(lDouble - rDouble);
+          }
       }
-      
-      if (right instanceof XSDecimal) {
-          rightArg = ((XSDecimal)right).doubleValue();    
+      else if ((left instanceof XNodeSet) && (right instanceof XSNumericType)) {
+          java.lang.String rStrVal = ((XSNumericType)right).stringValue();
+          double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+          
+          XNodeSet lNodeSet = (XNodeSet)left;
+          if (lNodeSet.getLength() > 1) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the first "
+                                                                                   + "operand of subtraction operator '-'.");  
+          }
+          else {
+             java.lang.String lStrVal = lNodeSet.str();
+             double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+             
+             result = new XNumber(lDouble - rDouble);
+          }
       }
-      else if (right instanceof XSFloat) {
-          isFloatRarg = true;
-          rArg = ((XSFloat)right).floatValue();    
+      else if ((left instanceof XNodeSet) && (right instanceof XNodeSet)) {
+          double lDouble = 0.0d;
+          double rDouble = 0.0d;
+          
+          XNodeSet lNodeSet = (XNodeSet)left;
+          if (lNodeSet.getLength() > 1) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the first "
+                                                                                   + "operand of subtraction operator '-'.");  
+          }
+          else {
+             java.lang.String lStrVal = lNodeSet.str();
+             lDouble = (Double.valueOf(lStrVal)).doubleValue();
+          }
+          
+          XNodeSet rNodeSet = (XNodeSet)right;
+          if (rNodeSet.getLength() > 1) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the second "
+                                                                                   + "operand of subtraction operator '-'.");  
+          }
+          else {
+             java.lang.String rStrVal = rNodeSet.str();
+             rDouble = (Double.valueOf(rStrVal)).doubleValue();
+          }
+          
+          result = new XNumber(lDouble - rDouble);
       }
-      else {
-          rightArg = right.num();  
+      else if ((left instanceof XSYearMonthDuration) && (right instanceof XSYearMonthDuration)) {
+          result = ((XSYearMonthDuration)left).subtract((XSYearMonthDuration)right);
+          
+          return result;
       }
-      
-      if (isFloatLarg && isFloatRarg) {
-         // currently, supporting XSFloat typed result, when both operands 
-         // are of type XSFloat.  
-         result = new XSFloat(lArg - rArg);
-         return result;
+      else {          
+          try {
+             result = new XNumber(left.num() - right.num());
+          }
+          catch (Exception ex) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : could not apply the "
+                                                                                    + "subtraction operator '-', due to incorrectly "
+                                                                                    + "typed operand(s)."); 
+          }
       }
-      
-      // by default, format the double value upto two decimal places
-      java.lang.String formattedDblStr = java.lang.String.format("%.2f", 
-                                                              leftArg - rightArg);
-      
-      
-      result = new XNumber((new Double(formattedDblStr)).doubleValue());
       
       return result;
   }

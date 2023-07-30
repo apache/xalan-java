@@ -6,8 +6,10 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- This XSLT stylesheet, tests XPath 3.1 duration values,
-        component extraction functions. -->                 
+   <!-- This XSLT stylesheet, tests XPath 3.1 duration value
+        component extraction functions. The XPath function
+        invocation examples, as mentioned within this
+        stylesheet test are borrowed from XPath 3.1 spec. -->                 
 
    <xsl:output method="xml" indent="yes"/>
       

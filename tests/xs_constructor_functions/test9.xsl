@@ -8,8 +8,8 @@
    
    <!-- use with test1_a.xml -->
    
-     <!-- this stylesheet, does few XPath arithmetic operations, 
-          involving xs:float type. -->              
+   <!-- This XSLT stylesheet, does few XPath arithmetic operations, 
+        involving xs:float typed values. -->              
 
    <xsl:output method="xml" indent="yes"/>
 

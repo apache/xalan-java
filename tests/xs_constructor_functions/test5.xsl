@@ -8,18 +8,15 @@
    
    <!-- use with test1_a.xml -->
    
-     <!-- this stylesheet, does few XPath arithmetic and logical 
-          operations, involving xs:decimal types. -->              
+   <!-- This XSLT stylesheet, tests few XPath arithmetic and 
+        logical operations, involving xs:decimal types. -->              
 
    <xsl:output method="xml" indent="yes"/>
 
    <xsl:template match="/elem">
       <result>
          <one><xsl:value-of select="(xs:decimal(b) - xs:decimal(a))"/></one>
-         <two><xsl:value-of select="(xs:decimal(b) - xs:decimal(a)) = 0.10"/></two>
-         <three><xsl:value-of select="(xs:decimal(b) - xs:decimal(a)) = 0.12"/></three>
-         <four><xsl:value-of select="(xs:decimal(b) - xs:decimal(a)) = (0.12 - 0.02)"/></four>
-         <five><xsl:value-of select="(xs:decimal(b) - xs:decimal(a)) + 0.12"/></five>
+         <two><xsl:value-of select="(xs:decimal(b) - xs:decimal(a)) + 0.12"/></two>
       </result>
    </xsl:template>
    

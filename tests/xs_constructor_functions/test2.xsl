@@ -6,8 +6,8 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- this stylesheet, tests XPath 3.1 constructor function xs:boolean(),
-        and use of logical operations on such values. -->                
+   <!-- This XSLT stylesheet, tests XPath 3.1 constructor function
+        xs:boolean() and use of logical operations on such values. -->                
 
    <xsl:output method="xml" indent="yes"/>
 

@@ -8,8 +8,8 @@
    
    <!-- use with test1_b.xml -->
    
-     <!-- this stylesheet, does few XPath arithmetic and logical operations, 
-          involving xs:long type. -->              
+   <!-- This XSLT stylesheet, does few XPath arithmetic and logical 
+        operations, involving xs:long typed values. -->              
 
    <xsl:output method="xml" indent="yes"/>
 

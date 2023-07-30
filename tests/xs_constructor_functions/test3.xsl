@@ -4,7 +4,10 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_a.xml -->             
+   <!-- use with test1_a.xml -->
+   
+   <!-- This XSLT stylesheet, tests few simple XPath arithmetic
+        expressions. -->             
 
    <xsl:output method="xml" indent="yes"/>
 
