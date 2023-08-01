@@ -1,32 +1,30 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                exclude-result-prefixes="xs"
                 version="3.0">
                 
-   <!-- Author: mukulg@apache.org -->                
-                
-   <!-- use with test1_a.xml -->
+   <!-- Author: mukulg@apache.org -->
+   
+   <!-- An XSLT stylesheet, to test XPath 3.1 sequences and
+        use of predicate/index operator (i.e, [..]) on them). 
+        -->                
 
    <xsl:output method="xml" indent="yes"/>
-   
-   <xsl:variable name="aList" select="/elem/a"/>
-
-   <xsl:template match="/elem">
-      <result>
-        <result1>
-           <xsl:for-each-group select="$aList" group-by=".">
-              <group grpKey="{current-grouping-key()}">
-                <xsl:copy-of select="current-group()"/>
-              </group>
-           </xsl:for-each-group>
-        </result1>
-        <!-- form the groups again similarly -->
-        <result2>
-           <xsl:for-each-group select="$aList" group-by=".">
-	         <group grpKey="{current-grouping-key()}">
-	            <xsl:copy-of select="current-group()"/>
-	         </group>
-           </xsl:for-each-group>
-        </result2>
+      
+   <xsl:template match="/">
+      <result>         
+         <xsl:variable name="seq" select="(1.1, 2.1, 3.1, 4.1, 5.1)"/>         
+         <xsl:variable name="val1" select="$seq[2]"/>
+         
+         <val><xsl:value-of select="($seq[2], $seq[3])"/></val>
+         <val><xsl:value-of select="$val1"/></val>                  
+         <val><xsl:value-of select="xs:double(103) + $val1"/></val>
+         <val><xsl:value-of select="$val1 * 11.5"/></val>
+         <val><xsl:value-of select="$val1 + xs:double(103)"/></val>
+         <val><xsl:value-of select="xs:double(103) - $val1"/></val>
+         <val><xsl:value-of select="xs:double(103) * $val1"/></val>
+         <val><xsl:value-of select="xs:double(103) div $val1"/></val>         
       </result>
    </xsl:template>
    

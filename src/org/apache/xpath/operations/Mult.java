@@ -20,8 +20,10 @@
  */
 package org.apache.xpath.operations;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -208,6 +210,95 @@ public class Mult extends Operation
              java.lang.String rStrVal = rNodeSet.str();
              result = ((XSYearMonthDuration)left).mult(new XSDouble(rStrVal));
           }
+      }
+      else if ((left instanceof ResultSequence) && (right instanceof XNumber)) {
+          ResultSequence rsLeft = (ResultSequence)left;          
+          if (rsLeft.size() > 1) {
+              throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the first "
+                                                                                   + "operand of multiplication operator '*'.");  
+          }
+          else {
+             java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(rsLeft.item(0));
+             double lDouble = (Double.valueOf(lStr)).doubleValue();
+             
+             double rDouble = ((XNumber)right).num();
+             
+             result = new XNumber(lDouble * rDouble);
+          }
+      }
+      else if ((left instanceof XNumber) && (right instanceof ResultSequence)) {
+          ResultSequence rsRight = (ResultSequence)right;          
+          if (rsRight.size() > 1) {
+              throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the second "
+                                                                                   + "operand of multiplication operator '*'.");  
+          }
+          else {             
+             double lDouble = ((XNumber)left).num();
+             
+             java.lang.String rStr = XslTransformEvaluationHelper.getStrVal(rsRight.item(0));
+             double rDouble = (Double.valueOf(rStr)).doubleValue();
+             
+             result = new XNumber(lDouble * rDouble);
+          }
+      }
+      else if ((left instanceof ResultSequence) && (right instanceof XSNumericType)) {
+          ResultSequence rsLeft = (ResultSequence)left;          
+          if (rsLeft.size() > 1) {
+              throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the first "
+                                                                                   + "operand of multiplication operator '*'.");  
+          }
+          else {
+             java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(rsLeft.item(0));
+             double lDouble = (Double.valueOf(lStr)).doubleValue();
+             
+             java.lang.String rStrVal = ((XSNumericType)right).stringValue();
+             double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+             
+             result = new XNumber(lDouble * rDouble);
+          } 
+      }
+      else if ((left instanceof XSNumericType) && (right instanceof ResultSequence)) {
+          ResultSequence rsRight = (ResultSequence)right;          
+          if (rsRight.size() > 1) {
+              throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the second "
+                                                                                   + "operand of multiplication operator '*'.");  
+          }
+          else {                          
+             java.lang.String lStrVal = ((XSNumericType)left).stringValue();
+             double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+             
+             java.lang.String rStr = XslTransformEvaluationHelper.getStrVal(rsRight.item(0));
+             double rDouble = (Double.valueOf(rStr)).doubleValue();
+             
+             result = new XNumber(lDouble * rDouble);
+          }
+      }
+      else if ((left instanceof ResultSequence) && (right instanceof ResultSequence)) {
+          ResultSequence rsLeft = (ResultSequence)left;          
+          if (rsLeft.size() > 1) {
+              throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the left "
+                                                                                   + "operand of multiplication operator '*'.");  
+          }
+          
+          ResultSequence rsRight = (ResultSequence)right;          
+          if (rsRight.size() > 1) {
+              throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+                                                                                   + "than one item is not allowed as the right "
+                                                                                   + "operand of multiplication operator '*'.");  
+          }
+          
+          java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(rsLeft.item(0));
+          double lDouble = (Double.valueOf(lStr)).doubleValue();
+          
+          java.lang.String rStr = XslTransformEvaluationHelper.getStrVal(rsRight.item(0));
+          double rDouble = (Double.valueOf(rStr)).doubleValue();
+          
+          result = new XNumber(lDouble * rDouble);
       }
       else {
           try {
