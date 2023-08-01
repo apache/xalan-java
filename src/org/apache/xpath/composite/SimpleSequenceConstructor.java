@@ -34,9 +34,12 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.xs.types.XSNumericType;
 
 /*
  * The XalanJ XPath parser, creates and populates an object of this class, 
@@ -98,38 +101,130 @@ public class SimpleSequenceConstructor extends Expression {
                                                                                                      prefixTable);
            }
            
-           XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+           XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                      XPath.SELECT, null);
            if (fVars != null) {
               xpathObj.fixupVariables(fVars, fGlobalsSize);
            }
-
-           XObject xPathExprPartResult = xpathObj.execute(xctxt, contextNode, xctxt.getNamespaceContext());
            
-           if (xPathExprPartResult instanceof XNodeSet) {
-               DTMManager dtmMgr = (DTMManager)xctxt;
+           Expression xpathExpr = xpathObj.getExpression();
+           
+           if (xpathExpr instanceof LocPathIterator) {
+               LocPathIterator locPathIterator = (LocPathIterator)xpathExpr;
                
-               XNodeSet xNodeSet = (XNodeSet)xPathExprPartResult;
-               DTMIterator sourceNodes = xNodeSet.iter();
-               
-               int nextNodeDtmHandle;
-               
-               while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
-                  XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);
-                  resultSeq.add(xNodeSetItem);
-               }               
-            }
-            else if (xPathExprPartResult instanceof ResultSequence) {
-               ResultSequence inpResultSeq = (ResultSequence)xPathExprPartResult; 
-               for (int idx1 = 0; idx1 < inpResultSeq.size(); idx1++) {
-                  XObject xObj = inpResultSeq.item(idx1);
-                  resultSeq.add(xObj);                 
+               DTMIterator dtmIter = null;                     
+               try {
+                   dtmIter = locPathIterator.asIterator(xctxt, contextNode);
                }
-            }
-            else {
-               // We're assuming here that, an input value is an xdm singleton 
-               // item.
-               resultSeq.add(xPathExprPartResult);               
-            }
+               catch (ClassCastException ex) {
+                   // no op
+               }
+               
+               if (dtmIter != null) {
+                  int nextNode;
+                  while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
+                  {
+                      XNodeSet xNodeSetItem = new XNodeSet(nextNode, xctxt);
+                      resultSeq.add(xNodeSetItem);
+                  }
+               }
+               else if (xpathExprStr.startsWith("$") && xpathExprStr.contains("[") && 
+                                                                           xpathExprStr.endsWith("]")) {
+                   String varRefXPathExprStr = "$" + xpathExprStr.substring(1, xpathExprStr.indexOf('['));
+                   String xpathIndexExprStr = xpathExprStr.substring(xpathExprStr.indexOf('[') + 1, 
+                                                                                       xpathExprStr.indexOf(']'));
+                   
+                   // evaluate the, variable reference XPath expression
+                   if (prefixTable != null) {
+                      varRefXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                               varRefXPathExprStr, prefixTable);
+                   }
+                   
+                   XPath varXPathObj = new XPath(varRefXPathExprStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                                      XPath.SELECT, null);
+                   XObject varEvalResult = varXPathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
+                   
+                   // evaluate the, xdm sequence index XPath expression
+                   if (prefixTable != null) {
+                      xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                                      xpathIndexExprStr, 
+                                                                                                      prefixTable);
+                   }
+                   
+                   XPath xpathIndexObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                                     XPath.SELECT, null);
+                   if (fVars != null) {
+                      xpathIndexObj.fixupVariables(fVars, fGlobalsSize);
+                   }
+                   
+                   XObject seqIndexEvalResult = xpathIndexObj.execute(xctxt, xctxt.getCurrentNode(), 
+                                                                                                xctxt.getNamespaceContext());
+                   
+                   if (varEvalResult instanceof ResultSequence) {
+                       ResultSequence varEvalResultSeq = (ResultSequence)varEvalResult; 
+                       
+                       if (seqIndexEvalResult instanceof XNumber) {
+                          double dValIndex = ((XNumber)seqIndexEvalResult).num();
+                          if (dValIndex == (int)dValIndex) {
+                             XObject evalResult = varEvalResultSeq.item((int)dValIndex - 1);
+                             resultSeq.add(evalResult);
+                          }
+                          else {
+                              throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
+                                                                                       + "sequence reference, is not an integer.", 
+                                                                                              srcLocator);  
+                          }
+                       }
+                       else if (seqIndexEvalResult instanceof XSNumericType) {
+                          String indexStrVal = ((XSNumericType)seqIndexEvalResult).stringValue();
+                          double dValIndex = (Double.valueOf(indexStrVal)).doubleValue();
+                          if (dValIndex == (int)dValIndex) {
+                             XObject evalResult = varEvalResultSeq.item((int)dValIndex - 1);
+                             resultSeq.add(evalResult);
+                          }
+                          else {
+                              throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
+                                                                                       + "sequence reference, is not an integer.", 
+                                                                                              srcLocator);  
+                          }
+                       }
+                       else {
+                           throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm sequence "
+                                                                                    + "reference, is not numeric.", srcLocator);  
+                       }
+                   }
+               }
+           }
+           else {
+               XObject xPathExprPartResult = xpathObj.execute(xctxt, contextNode, 
+                                                                              xctxt.getNamespaceContext());
+               
+               if (xPathExprPartResult instanceof XNodeSet) {
+                  DTMManager dtmMgr = (DTMManager)xctxt;
+                   
+                  XNodeSet xNodeSet = (XNodeSet)xPathExprPartResult;
+                  DTMIterator sourceNodes = xNodeSet.iter();
+                   
+                  int nextNodeDtmHandle;
+                   
+                  while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
+                     XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);
+                     resultSeq.add(xNodeSetItem);
+                  }               
+               }
+               else if (xPathExprPartResult instanceof ResultSequence) {
+                  ResultSequence inpResultSeq = (ResultSequence)xPathExprPartResult; 
+                  for (int idx1 = 0; idx1 < inpResultSeq.size(); idx1++) {
+                     XObject xObj = inpResultSeq.item(idx1);
+                     resultSeq.add(xObj);                 
+                  }
+               }
+               else {
+                  // We're assuming here that, an input value is an xdm sequence 
+                  // with cardinality one.
+                  resultSeq.add(xPathExprPartResult);               
+               }
+           }
         }
         
         return resultSeq;

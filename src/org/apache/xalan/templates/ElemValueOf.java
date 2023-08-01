@@ -17,10 +17,14 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.List;
+
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.serializer.SerializationHandler;
@@ -34,6 +38,7 @@ import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Operation;
@@ -41,6 +46,7 @@ import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.StrConcat;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.xs.types.XSAnyType;
+import org.apache.xpath.xs.types.XSNumericType;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
@@ -226,6 +232,9 @@ public class ElemValueOf extends ElemTemplateElement {
   {
 
     XPathContext xctxt = transformer.getXPathContext();
+    
+    SourceLocator srcLocator = xctxt.getSAXLocator();
+    
     SerializationHandler rth = transformer.getResultTreeHandler();
 
     if (transformer.getDebug())
@@ -397,35 +406,118 @@ public class ElemValueOf extends ElemTemplateElement {
                   else if (expr instanceof LocPathIterator) {
                      LocPathIterator locPathIterator = (LocPathIterator)expr;
                      
-                     DTMIterator dtmIter = locPathIterator.asIterator(xctxt, current);
-                     int nextNode;
-                     StringBuffer strBuff = new StringBuffer();
-                     while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
-                     {
-                         XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
-                         String nodeStrVal = singletonXPathNode.str();
-                         strBuff.append(nodeStrVal + " ");
+                     DTMIterator dtmIter = null;                     
+                     try {
+                        dtmIter = locPathIterator.asIterator(xctxt, current);
+                     }
+                     catch (ClassCastException ex) {
+                        // no op
                      }
                      
-                     String nodeSetStrValue = strBuff.toString();
-                     if (nodeSetStrValue.length() > 1) {
-                        nodeSetStrValue = nodeSetStrValue.substring(0, 
-                                                             nodeSetStrValue.length() - 1);
-                        (new XString(nodeSetStrValue)).dispatchCharactersEvents(rth);
+                     if (dtmIter != null) {
+                        int nextNode;
+                        StringBuffer strBuff = new StringBuffer();
+                        while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
+                        {
+                           XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+                           String nodeStrVal = singletonXPathNode.str();
+                           strBuff.append(nodeStrVal + " ");
+                        }
+                         
+                        String nodeSetStrValue = strBuff.toString();
+                        if (nodeSetStrValue.length() > 1) {
+                           nodeSetStrValue = nodeSetStrValue.substring(0, 
+                                                                 nodeSetStrValue.length() - 1);
+                           (new XString(nodeSetStrValue)).dispatchCharactersEvents(rth);
+                        }
+                     }
+                     else {
+                        String xpathPatternStr = m_selectExpression.getPatternString();
+                        
+                        if (xpathPatternStr.startsWith("$") && xpathPatternStr.contains("[") && 
+                                                                                    xpathPatternStr.endsWith("]")) {
+                           String varRefXPathExprStr = "$" + xpathPatternStr.substring(1, xpathPatternStr.indexOf('['));
+                           String xpathIndexExprStr = xpathPatternStr.substring(xpathPatternStr.indexOf('[') + 1, 
+                                                                                                 xpathPatternStr.indexOf(']'));
+                           
+                           ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+                           List<XMLNSDecl> prefixTable = null;
+                           if (elemTemplateElement != null) {
+                              prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+                           }
+                           
+                           // evaluate the, variable reference XPath expression
+                           if (prefixTable != null) {
+                              varRefXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                                             varRefXPathExprStr, 
+                                                                                                             prefixTable);
+                           }
+                           
+                           XPath xpathObj = new XPath(varRefXPathExprStr, srcLocator, 
+                                                                                 xctxt.getNamespaceContext(), XPath.SELECT, null);
+                           XObject varEvalResult = xpathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
+                           
+                           // evaluate the, xdm sequence index XPath expression
+                           if (prefixTable != null) {
+                              xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                                              xpathIndexExprStr, 
+                                                                                                              prefixTable);
+                           }
+                           
+                           // There may be a possibility, of a variable reference within the xpath expression 
+                           // string 'xpathIndexExprStr'. To try, resolve those variable references.
+                           // REVISIT 
+                           xpathObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+                           
+                           XObject seqIndexEvalResult = xpathObj.execute(xctxt, xctxt.getCurrentNode(), 
+                                                                                                  xctxt.getNamespaceContext());
+                           if (varEvalResult instanceof ResultSequence) {
+                              ResultSequence resultSeq = (ResultSequence)varEvalResult; 
+                              
+                              if (seqIndexEvalResult instanceof XNumber) {
+                                 double dValIndex = ((XNumber)seqIndexEvalResult).num();
+                                 if (dValIndex == (int)dValIndex) {
+                                    XObject evalResult = resultSeq.item((int)dValIndex - 1);
+                                    String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
+                                    (new XString(strValue)).dispatchCharactersEvents(rth);
+                                 }
+                                 else {
+                                    throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
+                                                                                                        + "sequence reference, is not an integer.", 
+                                                                                                             srcLocator); 
+                                 }
+                              }
+                              else if (seqIndexEvalResult instanceof XSNumericType) {
+                                 String indexStrVal = ((XSNumericType)seqIndexEvalResult).stringValue();
+                                 double dValIndex = (Double.valueOf(indexStrVal)).doubleValue();
+                                 if (dValIndex == (int)dValIndex) {
+                                    XObject evalResult = resultSeq.item((int)dValIndex - 1);
+                                    String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
+                                    (new XString(strValue)).dispatchCharactersEvents(rth);                                    
+                                 }
+                                 else {
+                                     throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
+                                                                                                        + "sequence reference, is not an integer.", 
+                                                                                                             srcLocator); 
+                                 }
+                              }
+                              else {
+                                 throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm sequence "
+                                                                                                       + "reference, is not numeric.", srcLocator);  
+                              }
+                           }                           
+                        }
+                        else {
+                           // The implementation behavior is not known here.
+                           // REVISIT
+                        }
                      }
                   }
                   else if (expr instanceof LetExpr) {
                      LetExpr letExpr = (LetExpr)expr;
                       
-                     XObject evalResult = letExpr.execute(xctxt);
-                     
-                     String strValue = null;                     
-                     if (evalResult instanceof XSAnyType) {
-                        strValue = ((XSAnyType)evalResult).stringValue();
-                     }
-                     else {
-                        strValue = evalResult.str();
-                     }
+                     XObject evalResult = letExpr.execute(xctxt);                     
+                     String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
                      
                      (new XString(strValue)).dispatchCharactersEvents(rth);
                   }

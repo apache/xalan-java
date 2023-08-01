@@ -17,28 +17,37 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.InlineFunction;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNodeSetForDOM;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XRTreeFragSelectWrapper;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.xs.types.XSAnyType;
+import org.apache.xpath.xs.types.XSNumericType;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -80,7 +89,12 @@ public class ElemVariable extends ElemTemplateElement
    * of variables that can be declared in the variable at one time.
    */
   int m_frameSize = -1;
-
+  
+  // the following two fields of this class, are used during 
+  // XPath.fixupVariables(..) action as performed within object of 
+  // this class.    
+  private Vector fVars;    
+  private int fGlobalsSize;
   
   /**
    * Sets the relative position of this variable within the stack frame (if local)
@@ -297,6 +311,8 @@ public class ElemVariable extends ElemTemplateElement
     XPathContext xctxt = transformer.getXPathContext();
 
     xctxt.pushCurrentNode(sourceNode);
+    
+    SourceLocator srcLocator = xctxt.getSAXLocator(); 
  
     try {        
       if (m_selectPattern != null) {          
@@ -334,11 +350,119 @@ public class ElemVariable extends ElemTemplateElement
                return xpath3ContextItem;     
             }
         }
+        else if (selectExpression instanceof LocPathIterator) {                        
+            int contextNode = xctxt.getContextNode();
+            
+            LocPathIterator locPathIterator = (LocPathIterator)selectExpression;
+            
+            DTMIterator dtmIter = null;                     
+            try {
+                dtmIter = locPathIterator.asIterator(xctxt, contextNode);
+            }
+            catch (ClassCastException ex) {
+                // no op
+            }
+            
+            if (dtmIter != null) {               
+               var = new XNodeSet(dtmIter);
+                
+               return var; 
+            }
+            else {
+               ResultSequence resultSeq = new ResultSequence();
+                
+               String xpathExprStr = m_selectPattern.getPatternString();
+               
+               if (xpathExprStr.startsWith("$") && xpathExprStr.contains("[") && 
+                                                                       xpathExprStr.endsWith("]")) {
+                   ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+                   List<XMLNSDecl> prefixTable = null;
+                   if (elemTemplateElement != null) {
+                       prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+                   }                                      
+                   
+                   String varRefXPathExprStr = "$" + xpathExprStr.substring(1, xpathExprStr.indexOf('['));
+                   String xpathIndexExprStr = xpathExprStr.substring(xpathExprStr.indexOf('[') + 1, 
+                                                                                        xpathExprStr.indexOf(']'));
+
+                   // evaluate the, variable reference XPath expression
+                   if (prefixTable != null) {
+                       varRefXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                                 varRefXPathExprStr, 
+                                                                                                 prefixTable);
+                   }                                      
+
+                   XPath varXPathObj = new XPath(varRefXPathExprStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                                    XPath.SELECT, null);
+                   if (fVars != null) {
+                      varXPathObj.fixupVariables(fVars, fGlobalsSize);  
+                   }
+                   
+                   XObject varEvalResult = varXPathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
+
+                   // evaluate the, xdm sequence index XPath expression
+                   if (prefixTable != null) {
+                       xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                                     xpathIndexExprStr, 
+                                                                                                     prefixTable);
+                   }
+
+                   XPath xpathIndexObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                                    XPath.SELECT, null);
+                   
+                   if (fVars != null) {
+                      xpathIndexObj.fixupVariables(fVars, fGlobalsSize);  
+                   }
+                   
+                   XObject seqIndexEvalResult = xpathIndexObj.execute(xctxt, xctxt.getCurrentNode(), 
+                                                                                             xctxt.getNamespaceContext());
+
+                   if (varEvalResult instanceof ResultSequence) {
+                       ResultSequence varEvalResultSeq = (ResultSequence)varEvalResult; 
+
+                       if (seqIndexEvalResult instanceof XNumber) {
+                           double dValIndex = ((XNumber)seqIndexEvalResult).num();
+                           if (dValIndex == (int)dValIndex) {
+                               XObject evalResult = varEvalResultSeq.item((int)dValIndex - 1);
+                               resultSeq.add(evalResult);
+                           }
+                           else {
+                               throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
+                                                                                       + "sequence reference, is not an integer.", 
+                                                                                                        srcLocator); 
+                           }
+                       }
+                       else if (seqIndexEvalResult instanceof XSNumericType) {
+                           String indexStrVal = ((XSNumericType)seqIndexEvalResult).stringValue();
+                           double dValIndex = (Double.valueOf(indexStrVal)).doubleValue();
+                           if (dValIndex == (int)dValIndex) {
+                               XObject evalResult = varEvalResultSeq.item((int)dValIndex - 1);
+                               resultSeq.add(evalResult);
+                           }
+                           else {
+                               throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
+                                                                                       + "sequence reference, is not an integer.", 
+                                                                                                        srcLocator);  
+                           }
+                       }
+                       else {
+                           throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm sequence "
+                                                                                                + "reference, is not numeric.", 
+                                                                                                        srcLocator);   
+                       }
+                   }
+               }
+               
+               var = resultSeq;
+               
+               return var;
+            }
+        }
   
         if (var == null) {
            var = m_selectPattern.execute(xctxt, sourceNode, this);
         }
-
+        
         var.allowDetachToRelease(false);
 
         if (transformer.getDebug()) {
@@ -412,6 +536,10 @@ public class ElemVariable extends ElemTemplateElement
     // This should be done before addVariableName, so we don't have visibility 
     // to the variable now being defined.
     java.util.Vector vnames = cstate.getVariableNames();
+    
+    fVars = (Vector)vnames.clone();
+    fGlobalsSize = cstate.getGlobalsSize();
+    
     if(null != m_selectPattern)
       m_selectPattern.fixupVariables(vnames, cstate.getGlobalsSize());
       
