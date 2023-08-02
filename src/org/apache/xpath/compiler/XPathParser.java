@@ -940,19 +940,20 @@ public class XPathParser
   /**
    * Expr   ::=   ExprSingle ("," ExprSingle)*
    * 
-   * We follow within this method, the XPath parsing with two pass approach,
-   *   1) The first pass, determines whether XPath 3.1's sequence 
-   *      constructor parsing needs to be used (with sequence items delimited 
-   *      by ',' operator), or to use the XPath parser's usual process using
-   *      '(' OpCodes.OP_GROUP ')'.
-   *   2) The second pass, is XPath parsing as usual, using the result
-   *      determined during step 1) above.
-   * 
    * @throws javax.xml.transform.TransformerException
    */
   protected void Expr() throws javax.xml.transform.TransformerException
   {
       if (fIsBeginParse && tokenIs("(")) {
+          // We implement within this 'if' branch, the XPath parsing with following 
+          // mentioned two pass approach,
+          // 1) The first pass, determines whether XPath 3.1's sequence (using comma
+          //    operator, to separate each of the sequence operands mentioned with 
+          //    this syntax) constructor parsing needs to be used, or to use this 
+          //    XPath parser's usual process using '(' OpCodes.OP_GROUP ')' to
+          //    parse an XPath expression delimited by braces '(' and ')'.
+          // 2) The second pass, is XPath parsing as usual, using the result
+          //    determined during step 1) as mentioned above.
           nextToken();                  
           
           List<String> sequenceConstructorXPathParts = new ArrayList<String>();
