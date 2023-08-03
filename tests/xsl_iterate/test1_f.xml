@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<temp>
+  <loop>
+    <from>3</from>
+    <to>10</to>
+  </loop>
+  <loop from="1" to="10"/>  
+</temp>
