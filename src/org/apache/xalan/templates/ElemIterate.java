@@ -32,6 +32,10 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.operations.Operation;
+import org.apache.xpath.operations.Variable;
 
 /**
  * XSLT 3.0 xsl:iterate element.
@@ -51,6 +55,8 @@ import org.apache.xpath.XPathContext;
    <xsl:on-completion select? = expression>
       <!-- Content: sequence-constructor -->
    </xsl:on-completion>
+   
+   Ref : https://www.w3.org/TR/xslt-30/#iterate
          
    @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -58,28 +64,6 @@ import org.apache.xpath.XPathContext;
  */
 /*
  * Implementation of the XSLT 3.0 xsl:iterate instruction.
- * 
- * An xsl:iterate instruction, functions like a loop, with following main features,
- * 1) To be able to process a sequence of items in order, similar to how xsl:for-each 
- *    instruction shall do such processing.
- * 2) An xsl:iterate instruction has ability to exit from the loop prior to the 
- *    exhaustion of the input sequence when particular condition(s) become true,
- *    using xsl:break instruction. xsl:break being the final instruction (if invoked) 
- *    processed by xsl:iterate, can also specify particular XSLT evaluation to be 
- *    done via xsl:break's "select" attribute or with XSLT contents within xsl:break. 
- * 3) With xsl:iterate instruction, the stylesheet author could also specify, 
- *    particular XSLT processing to be done via xsl:on-completion instruction,
- *    after input sequence is exhausted. xsl:on-completion instruction is not
- *    invoked, when xsl:iterate processing is exited via xsl:break instruction.
- *    xsl:on-completion instruction can specify certain XSLT processing to be done,
- *    via its "select" attribute or via XSLT contents within xsl:on-completion.
- * 4) xsl:iterate can also have optional xsl:param elements, to allow passing 
- *    certain values as arguments to body of xsl:iterate (upon initial invocation of 
- *    xsl:iterate, or via xsl:next-iteration element just before a new iteration shall 
- *    start).
- * 5) The effect of xsl:iterate may also be achieved by XSLT 1.0 compatible named 
- *    templates. But using xsl:iterate likely makes writing such XSLT processing 
- *    simpler. 
  */
 public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
 {
@@ -88,10 +72,11 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
      
      private static final String OTHER_ELEM = "OTHER_ELEM";
      
-     // revisit.
-     // can we have better way to maintain xsl:iterate->xsl:param* state, instead of having this with
-     // 'public static' visibility.
-     public static List<XslIterateParamWithparamData> fParamList = new ArrayList<XslIterateParamWithparamData>();
+     // Can we have better way to maintain XSLT transformation xsl:iterate->xsl:param*
+     // run-time reference, instead of having this with 'public static' visibility?
+     // REVISIT
+     public static List<XslIterateParamWithparamData> fParamList = new 
+                                                              ArrayList<XslIterateParamWithparamData>();
 
      /**
       * Construct an element representing xsl:iterate.
@@ -147,8 +132,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
 
          java.util.Vector vnames = sroot.getComposeState().getVariableNames();
 
-         if (m_selectExpression != null) {
-             
+         if (m_selectExpression != null) {             
              m_selectExpression.fixupVariables(vnames, sroot.getComposeState().
                                                                   getGlobalsSize());
          }
@@ -214,12 +198,75 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
          
            final int sourceNode = xctxt.getCurrentNode();
            
-           // clear the, xsl:iterate->xsl:param* list storage before this xsl:iterate 
+           // Clear the, xsl:iterate->xsl:param* list storage before this xsl:iterate 
            // instruction's evaluation.
            fParamList.clear();
            
            validateXslElemIterateChildElementsSequence(xctxt);
-        
+           
+           // Evaluate xsl:iterate instruction, when value of its "select" attribute evaluates 
+           // to a 'ResultSequence'. 
+           if ((m_selectExpression instanceof Variable) || 
+                                                  (m_selectExpression instanceof Operation)) {
+               XObject  evalResult = m_selectExpression.execute(xctxt);
+               if (evalResult instanceof ResultSequence) {
+                   ResultSequence resultSeq = (ResultSequence)evalResult;
+                   List<XObject> resultSeqItems = resultSeq.getResultSequenceItems();
+                   
+                   xctxt.setXPath3ContextSize(resultSeqItems.size());
+                   
+                   ElemIterateOnCompletion xslOnCompletionTemplate = null;
+                   
+                   for (int idx = 0; idx < resultSeqItems.size(); idx++) {
+                       XObject resultSeqItem = resultSeqItems.get(idx);
+                       xctxt.setXPath3ContextItem(resultSeqItem);
+                       xctxt.setXPath3ContextPosition(idx + 1);
+                       
+                       for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
+                                                                             elemTemplate = elemTemplate.m_nextSibling) {
+                           if ((elemTemplate instanceof ElemIterateOnCompletion) && (xslOnCompletionTemplate == null)) {
+                               xslOnCompletionTemplate = (ElemIterateOnCompletion)elemTemplate;     
+                           }
+                           
+                           if (!(XslTransformSharedDatastore.isXslIterateBreakEvaluated).booleanValue()) {
+                               xctxt.setSAXLocator(elemTemplate);
+                               transformer.setCurrentElement(elemTemplate);
+                               elemTemplate.execute(transformer);
+                           }
+                           else {
+                               break;    
+                           }
+                       }
+                       
+                       if ((XslTransformSharedDatastore.isXslIterateBreakEvaluated).booleanValue()) {                       
+                           break;   
+                       }
+                   }
+                   
+                   // Reset the, XPath context's size, item and position variables
+                   xctxt.setXPath3ContextSize(-1);
+                   xctxt.setXPath3ContextItem(null);
+                   xctxt.setXPath3ContextPosition(-1);                                      
+                   
+                   if ((xslOnCompletionTemplate != null) && !(XslTransformSharedDatastore.
+                                                                              isXslIterateBreakEvaluated).booleanValue()) {
+                        XslTransformSharedDatastore.isXslIterateOnCompletionActive = Boolean.TRUE;
+                        xctxt.setSAXLocator(xslOnCompletionTemplate);
+                        transformer.setCurrentElement(xslOnCompletionTemplate);
+                        xslOnCompletionTemplate.execute(transformer);
+                        XslTransformSharedDatastore.isXslIterateOnCompletionActive = Boolean.FALSE;
+                  }
+
+                  XslTransformSharedDatastore.isXslIterateBreakEvaluated = Boolean.FALSE;
+                  
+                  transformer.setXPathContext(xctxtOriginal);
+                
+                  return;  // return from this xsl:iterate instruction's evaluation
+               }
+           }
+           
+           // Evaluate xsl:iterate instruction, when value of its "select" attribute evaluates 
+           // to a node set. 
            DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
         
            try {               
@@ -235,13 +282,13 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                xctxt.pushContextNodeList(sourceNodes);
                transformer.pushElemTemplateElement(null);                              
                           
-               int child;
+               int nextNode;
                
                ElemIterateOnCompletion xslOnCompletionTemplate = null;
                
-               while ((child = sourceNodes.nextNode()) != DTM.NULL) {
-                   currentNodes.setTop(child);
-                   currentExpressionNodes.setTop(child);
+               while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
+                   currentNodes.setTop(nextNode);
+                   currentExpressionNodes.setTop(nextNode);
                                                                         
                    for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
                                                                           elemTemplate = elemTemplate.m_nextSibling) {
@@ -285,16 +332,16 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
               sourceNodes.detach();
            }
         
-           // restore the xpath context, to where it was before this xsl:iterate 
+           // Restore the xpath context, to where it was before this xsl:iterate 
            // instruction began an evaluation.
            transformer.setXPathContext(xctxtOriginal);        
       }
       
-       /*
-        * The XSLT 3.0 spec specifies constraints, about what should be the order of XSLT elements 
-        * xsl:param and xsl:on-completion within the xsl:iterate element. This method ensures that, 
-        * these XSLT element constraints are validated during an XSLT stylesheet transformation.  
-        */
+      /**
+       * The XSLT 3.0 spec specifies constraints, about what should be the order of XSLT elements 
+       * xsl:param and xsl:on-completion within the xsl:iterate element. This method ensures that, 
+       * these XSLT element constraints are validated during an XSLT stylesheet transformation.  
+       */
       private void validateXslElemIterateChildElementsSequence(XPathContext xctxt) 
                                                                        throws TransformerException {
           
@@ -314,8 +361,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
               }
           }
           
-          // get index of specific XSLT stylesheet elements first occurrence with the list object 
-          // 'xslElemNamesList'. if a particular kind of XSLT stylesheet element that is checked is 
+          // Get index of specific XSLT stylesheet elements first occurrence with the list object 
+          // 'xslElemNamesList'. If a particular kind of XSLT stylesheet element that is checked is 
           // not present within the list object 'xslElemNamesList', its index is returned as -1.
           int paramIdx = xslElemNamesList.indexOf(Constants.ELEMNAME_PARAMVARIABLE_STRING);
           int onCompletionIdx = xslElemNamesList.indexOf(Constants.ELEMNAME_ITERATE_ONCOMPLETION_STRING);          

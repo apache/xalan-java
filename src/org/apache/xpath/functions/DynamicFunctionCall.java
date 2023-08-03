@@ -94,19 +94,18 @@ public class DynamicFunctionCall extends Expression {
        
        Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
        
-       // we get below reference of an XPath inline function, that this dynamic
-       // function call refers to.
-       
-       XObject functionRef = inlineFunctionVarMap.get(new QName(funcRefVarName));              
+       // We find below, reference of an XPath inline function, that this dynamic
+       // function call refers to.       
+       XObject functionRef = inlineFunctionVarMap.get(new QName(funcRefVarName));
        
        if (functionRef == null) {
-          ExpressionContext exprContext = xctxt.getExpressionContext();
+           ExpressionContext exprContext = xctxt.getExpressionContext();
           
-          try {
-             functionRef = exprContext.getVariableOrParam(new QName(funcRefVarName));
-          }
-          catch (TransformerException ex) {
-              // try to get an XPath inline function reference, within stylesheet's 
+           try {
+              functionRef = exprContext.getVariableOrParam(new QName(funcRefVarName));
+           }
+           catch (TransformerException ex) {
+              // Try to get an XPath inline function reference, within stylesheet's 
               // global scope. 
               ExpressionNode expressionNode = getExpressionOwner();
               ExpressionNode stylesheetRootNode = null;
@@ -118,7 +117,7 @@ public class DynamicFunctionCall extends Expression {
               Map<QName, InlineFunction> globalInlineFunctionVarMap = stylesheetRoot.
                                                                             getInlineFunctionVarMap();
               functionRef = globalInlineFunctionVarMap.get(new QName(funcRefVarName)); 
-          }
+           }           
        }
        
        if ((functionRef != null) && (functionRef instanceof InlineFunction)) {
@@ -173,7 +172,7 @@ public class DynamicFunctionCall extends Expression {
        }
        else {
            throw new javax.xml.transform.TransformerException("XPST0008 variable '" + funcRefVarName + "' has "
-                                                        + "not been declared (or its declaration is not in scope).", 
+                                                        + "not been declared, or its declaration is not in scope.", 
                                                                                                       xctxt.getSAXLocator());    
        }
                
