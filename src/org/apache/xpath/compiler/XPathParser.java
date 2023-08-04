@@ -945,8 +945,8 @@ public class XPathParser
   protected void Expr() throws javax.xml.transform.TransformerException
   {
       if (fIsBeginParse && tokenIs("(")) {
-          // We implement within this 'if' branch, the XPath parsing with following 
-          // mentioned two pass approach,
+          // We implement within this 'if' branch, the XPath expression parse 
+          // with following mentioned two pass approach,
           // 1) The first pass, determines whether XPath 3.1's sequence (using comma
           //    operator, to separate each of the sequence operands mentioned with 
           //    this syntax) constructor parsing needs to be used, or to use this 
@@ -959,27 +959,62 @@ public class XPathParser
           List<String> sequenceConstructorXPathParts = new ArrayList<String>();
           
           while (m_token != null)
-          {
-              List<String> seqItemXPathStrPartsList = new ArrayList<String>();
-              
-              while (!tokenIs(",") && m_token != null) {
-                 if (getTokenRelative(0) != null) {
-                    seqItemXPathStrPartsList.add(m_token);
+          {                            
+              if (tokenIs("function")) {
+                 // XPath expression parse from here, till the token '}' shall get 
+                 // an 'inline function expression' string. The XPath expression
+                 // parse here, can use the token ',' as part of 'inline function 
+                 // expression' (for e.g, to specify more than one function parameter
+                 // for the function item).
+                 List<String> seqItemXPathStrPartsList = new ArrayList<String>();
+                 
+                 while (!tokenIs('}') && m_token != null) {
+                    if (getTokenRelative(0) != null) {
+                       seqItemXPathStrPartsList.add(m_token);
+                    }
+                    nextToken();
                  }
-                 nextToken();
+                 if (tokenIs('}')) {
+                    seqItemXPathStrPartsList.add(m_token);
+                    nextToken();
+                    if (tokenIs(',')) {
+                       nextToken();    
+                    }
+                 }
+                 
+                 if (seqItemXPathStrPartsList.size() > 0) {
+                    String seqItemXPathExprStr = getXPathStrFromComponentParts(
+                                                                       seqItemXPathStrPartsList);                 
+                    sequenceConstructorXPathParts.add(seqItemXPathExprStr);
+                 }
               }
-              
-              String seqItemXPathExprStr = getXPathStrFromComponentParts(seqItemXPathStrPartsList);              
-              if (seqItemXPathExprStr.endsWith(")")) {
-                  seqItemXPathExprStr = seqItemXPathExprStr.substring(0, 
-                                                                 seqItemXPathExprStr.length());    
-              }
-              
-              sequenceConstructorXPathParts.add(seqItemXPathExprStr);
-              
-              if (m_token != null) {
-                 nextToken();   
-              }
+              else {
+                 // XPath expression parse from here, till the token ',' (which we assume 
+                 // here, as an XPath sequence constructor's operand delimiter) shall get
+                 // an XPath sub-expression that represents anything else than an XPath
+                 // 'inline function expression'.
+                 List<String> seqItemXPathStrPartsList = new ArrayList<String>();
+                  
+                 while (!tokenIs(",") && m_token != null) {
+                    if (getTokenRelative(0) != null) {
+                       seqItemXPathStrPartsList.add(m_token);
+                    }
+                    nextToken();
+                 }
+                 
+                 if (seqItemXPathStrPartsList.size() > 0) {
+                    String seqItemXPathExprStr = getXPathStrFromComponentParts(seqItemXPathStrPartsList);
+                    if (seqItemXPathExprStr.endsWith(")")) {
+                        seqItemXPathExprStr = seqItemXPathExprStr.substring(0, 
+                                                                       seqItemXPathExprStr.length());    
+                    }
+                    sequenceConstructorXPathParts.add(seqItemXPathExprStr);
+                 }
+                 
+                 if (m_token != null) {
+                    nextToken();   
+                 }
+              }                            
           }
           
           boolean isXPathExprOkToProceed = true;

@@ -1,31 +1,38 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:math="http://www.w3.org/2005/xpath-functions/math"
+                exclude-result-prefixes="math"
                 version="3.0">
                 
    <!-- Author: mukulg@apache.org -->
-   
-   <!-- use with test1_f.xml -->
    
    <!-- An XSLT stylesheet, to test xsl:iterate instruction, when xsl:iterate's 
         select attribute evaluates to a sequence of atomic values. -->                
 
    <xsl:output method="xml" indent="yes"/>
-   
+
    <!-- A variable, referring to an XPath sequence constructor having various 
-        function item XPath expressions. -->
-   <xsl:variable name="fnItemsSeq" select="(function($a) { $a + 2 }, function($a) { $a - 3 }, 
-                                               function($a) { $a * 4 }, function($a) { $a div 4 })"/>
+        function item expressions and non-function item expression as well. --> 
+   <xsl:variable name="sequenceVar" select="(function($a, $b) { $a + $b }, math:pi(), function($a, $b) { $a - $b }, 
+                                               function($a, $b) { $a * $b }, function($a, $b) { $a div $b })"/>                                             
                                                
-   <xsl:variable name="num" select="7"/>                                               
+   <xsl:variable name="num1" select="7"/> 
+   
+   <xsl:variable name="num2" select="3"/>
       
    <xsl:template match="/">
       <result>
-         <xsl:iterate select="$fnItemsSeq">
-            <xsl:variable name="fnItem" select="."/>
-            <!-- Make a dynamic function call to respective function
-                 item, and pass an argument as well to function call. -->
-            <val><xsl:value-of select="$fnItem($num)"/></val>
-         </xsl:iterate>
+        <xsl:iterate select="$sequenceVar">        
+          <xsl:choose>
+             <xsl:when test="position() = 2">
+                <valPi><xsl:value-of select="."/></valPi>
+             </xsl:when>
+             <xsl:otherwise>
+                <xsl:variable name="fnItem" select="."/>
+                <val><xsl:value-of select="$fnItem($num1, $num2)"/></val>
+             </xsl:otherwise>
+          </xsl:choose>
+        </xsl:iterate>
       </result>
    </xsl:template>
    
