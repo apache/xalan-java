@@ -36,7 +36,7 @@ public class ResultSequence extends XObject
     // the underlying list object, to store items of this result sequence 
     private List<XObject> rsList = new ArrayList<XObject>();
     
-    /*
+    /**
      * Class constructor.
      */
     public ResultSequence() {}
@@ -62,7 +62,17 @@ public class ResultSequence extends XObject
         return rsList;   
     }
     
-    /*
+    /**
+     * Cast result object to a boolean.
+     *
+     * @return True if the size of this 'ResultSequence' object
+     * is greater than 0.
+     */
+    public boolean bool() {
+        return (rsList.size() > 0);       
+    }
+    
+    /**
      * Get the string value of this ResultSequence object.
      * 
      * This method, produces a default serialization of this
