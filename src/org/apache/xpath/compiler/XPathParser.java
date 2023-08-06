@@ -1082,7 +1082,7 @@ public class XPathParser
       fIsBeginParse = false;
       
       if (tokenIs("for")) {
-         // to check, whether XPath 'for' expression is a sub expression of another 
+         // To check, whether XPath 'for' expression is a sub expression of another 
          // XPath expression (for e.g, a 'for' expression could be a function 
          // argument).
          String prevTokenStr = getTokenRelative(-2);
@@ -1090,7 +1090,7 @@ public class XPathParser
          fForExpr = ForExpr(prevTokenStr);
       }
       else if (tokenIs("let")) {
-         // to check, whether XPath 'let' expression is a sub expression of another 
+         // To check, whether XPath 'let' expression is a sub expression of another 
          // XPath expression (for e.g, a 'let' expression could be a function 
          // argument).
          String prevTokenStr = getTokenRelative(-2);
@@ -1098,7 +1098,7 @@ public class XPathParser
          fLetExpr = LetExpr(prevTokenStr);
       }
       else if (tokenIs("some")) {
-         // to check, whether XPath quantified 'some' expression is a sub expression 
+         // To check, whether XPath quantified 'some' expression is a sub expression 
          // of another XPath expression (for e.g, the 'some' expression could be a 
          // function argument, or may be written within an XPath predicate).
          String prevTokenStr = getTokenRelative(-2);
@@ -1106,7 +1106,7 @@ public class XPathParser
          fQuantifiedExpr = QuantifiedExpr(prevTokenStr, QuantifiedExpr.SOME);
       }
       else if (tokenIs("every")) {
-         // to check, whether XPath quantified 'every' expression is a sub expression 
+         // To check, whether XPath quantified 'every' expression is a sub expression 
          // of another XPath expression (for e.g, an 'every' expression could be a 
          // function argument, or may be written within an XPath predicate).
          String prevTokenStr = getTokenRelative(-2);
@@ -1622,6 +1622,9 @@ public class XPathParser
    * | RelationalExpr 'le' AdditiveExpr
    * | RelationalExpr 'gt' AdditiveExpr
    * | RelationalExpr 'ge' AdditiveExpr
+   * | RelationalExpr 'is' AdditiveExpr
+   * | RelationalExpr '<<' AdditiveExpr
+   * | RelationalExpr '>>' AdditiveExpr
    *
    * @param addPos Position where expression is to be added, or -1 for append.
    *
@@ -1650,6 +1653,13 @@ public class XPathParser
           nextToken();
           insertOp(addPos, 2, OpCodes.OP_LTE);
         }
+        else if (tokenIs('<'))
+        {
+          // support for XPath 3.1 node comparison operator "<<"
+          
+          nextToken();
+          insertOp(addPos, 2, OpCodes.OP_NC_PRECEDE); 
+        }
         else
         {
           insertOp(addPos, 2, OpCodes.OP_LT);
@@ -1670,6 +1680,13 @@ public class XPathParser
         {
           nextToken();
           insertOp(addPos, 2, OpCodes.OP_GTE);
+        }
+        else if (tokenIs('>'))
+        {
+          // support for XPath 3.1 node comparison operator ">>"
+          
+          nextToken();
+          insertOp(addPos, 2, OpCodes.OP_NC_FOLLOWS);
         }
         else
         {
@@ -1765,6 +1782,21 @@ public class XPathParser
           nextToken();
         
           insertOp(addPos, 2, OpCodes.OP_VC_GE);
+
+          int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
+
+          addPos = RelationalExpr(addPos);
+          m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+             m_ops.getOp(addPos + op1 + 1) + op1);
+          addPos += 2;
+      }
+      else if (tokenIs("is"))
+      {
+          // support for XPath 3.1 node comparison operator "is"
+          
+          nextToken();
+        
+          insertOp(addPos, 2, OpCodes.OP_IS);
 
           int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 

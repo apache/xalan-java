@@ -51,6 +51,9 @@ import org.apache.xpath.operations.Minus;
 import org.apache.xpath.operations.Mod;
 import org.apache.xpath.operations.Mult;
 import org.apache.xpath.operations.Neg;
+import org.apache.xpath.operations.NodeComparisonFollows;
+import org.apache.xpath.operations.NodeComparisonIs;
+import org.apache.xpath.operations.NodeComparisonPrecede;
 import org.apache.xpath.operations.NotEquals;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Or;
@@ -160,6 +163,12 @@ public class Compiler extends OpMap
       expr = vcLe(opPos); break;
     case OpCodes.OP_VC_GE :
       expr = vcGe(opPos); break;
+    case OpCodes.OP_IS :
+      expr = nodeComparisonIs(opPos); break;
+    case OpCodes.OP_NC_PRECEDE :
+      expr = nodeComparisonPrecede(opPos); break;
+    case OpCodes.OP_NC_FOLLOWS :
+      expr = nodeComparisonFollows(opPos); break;
     case OpCodes.OP_LTE :
       expr = lte(opPos); break;
     case OpCodes.OP_LT :
@@ -411,6 +420,33 @@ public class Compiler extends OpMap
   protected Expression vcGe(int opPos) throws TransformerException
   {
     return compileOperation(new VcGe(), opPos);
+  }
+  
+  /**
+   * Compile an XPath 3.1 node comparison 'is' operation.
+   *  
+   */
+  protected Expression nodeComparisonIs(int opPos) throws TransformerException
+  {
+    return compileOperation(new NodeComparisonIs(), opPos);
+  }
+  
+  /**
+   * Compile an XPath 3.1 node comparison '<<' operation.
+   *  
+   */
+  protected Expression nodeComparisonPrecede(int opPos) throws TransformerException
+  {
+    return compileOperation(new NodeComparisonPrecede(), opPos);
+  }
+  
+  /**
+   * Compile an XPath 3.1 node comparison '>>' operation.
+   *  
+   */
+  protected Expression nodeComparisonFollows(int opPos) throws TransformerException
+  {
+    return compileOperation(new NodeComparisonFollows(), opPos);
   }
 
   /**
