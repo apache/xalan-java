@@ -1548,18 +1548,35 @@ public class XPathParser
 
     if (null != m_token)
     {
-      if (tokenIs('!') && lookahead('=', 1))
+      if (tokenIs('!'))
       {
-        nextToken();
-        nextToken();
-        insertOp(addPos, 2, OpCodes.OP_NOTEQUALS);
+        if (lookahead('=', 1)) 
+        {
+           nextToken();
+           nextToken();
+           insertOp(addPos, 2, OpCodes.OP_NOTEQUALS);
 
-        int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
+           int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
 
-        addPos = EqualityExpr(addPos);
-        m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
-          m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
-        addPos += 2;
+           addPos = EqualityExpr(addPos);
+           m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+             m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
+           addPos += 2;
+        }
+        else 
+        {
+           // support for XPath 3.1 simple map operator '!'
+            
+           nextToken();
+           insertOp(addPos, 2, OpCodes.OP_SIMPLE_MAP_OPERATOR);
+
+           int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
+
+           addPos = EqualityExpr(addPos);
+           m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
+              m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
+           addPos += 2;  
+        }
       }
       else if (tokenIs('='))
       {

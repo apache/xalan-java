@@ -4,19 +4,27 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_c.xml -->
+   <!-- use with test1_a.xml -->
    
-   <!-- An XSLT stylesheet to test, an XPath function item "inline function"
-        expression that does transformation of its argument's value and
-        produces XML complex content. -->                 
+   <!-- An XSLT stylesheet, to test XPath 3.1 simple map 
+        operator '!'.
+        
+        The XPath expression having simple map operator '!',
+        as used within this stylesheet example, is borrowed
+        from XPath 3.1 spec, with slight modifications.
+        
+        The XPath expression example illustrated within this stylesheet
+        using the simple map operator '!', returns an XPath path string 
+        containing the names of the XML document ancestor elements of 
+        the given XML element, separated by "/" characters.        
+   -->                
 
    <xsl:output method="xml" indent="yes"/>
-   
-   <xsl:variable name="fnItem1" select="function ($nodeSet) { for $a in $nodeSet return $a/p }"/>
       
    <xsl:template match="/temp">
-      <result>
-        <xsl:copy-of select="$fnItem1(*)"/>
+      <result>         
+        <xsl:variable name="var1" select="c/three/mesg"/>
+        <xsl:value-of select="string-join($var1/ancestor::*!name(), '/')"/>                  
       </result>
    </xsl:template>
    

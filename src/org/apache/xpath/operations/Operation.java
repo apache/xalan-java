@@ -27,6 +27,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.XObject;
 import org.xml.sax.SAXException;
@@ -129,6 +130,15 @@ public class Operation extends Expression implements ExpressionOwner
               left = m_left.execute(xctxt, true);  
            }
         }
+        else if (m_left instanceof SelfIteratorNoPredicate) {
+           XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+           if (xpath3ContextItem != null) {
+              left = xpath3ContextItem;     
+           }
+           else {
+              left = m_left.execute(xctxt, true);   
+           }
+        }
         else {
            left = m_left.execute(xctxt, true); 
         }
@@ -142,6 +152,15 @@ public class Operation extends Expression implements ExpressionOwner
            else {
               right = m_right.execute(xctxt, true);  
            }
+        }
+        else if (m_right instanceof SelfIteratorNoPredicate) {
+            XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+            if (xpath3ContextItem != null) {
+               right = xpath3ContextItem;     
+            }
+            else {
+               right = m_right.execute(xctxt, true);   
+            }
         }
         else {
            right = m_right.execute(xctxt, true); 

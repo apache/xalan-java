@@ -4,19 +4,25 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_c.xml -->
+   <!-- use with test1_d.xml -->
    
-   <!-- An XSLT stylesheet to test, an XPath function item "inline function"
-        expression that does transformation of its argument's value and
-        produces XML complex content. -->                 
+   <!-- An XSLT stylesheet, to test XPath 3.1 simple map 
+        operator '!'.       
+   -->                 
 
    <xsl:output method="xml" indent="yes"/>
    
-   <xsl:variable name="fnItem1" select="function ($nodeSet) { for $a in $nodeSet return $a/p }"/>
+   <xsl:variable name="smallCase" select="'abcdefghijklmnopqrstuvwxyz'"/>
+   <xsl:variable name="upperCase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
       
    <xsl:template match="/temp">
       <result>
-        <xsl:copy-of select="$fnItem1(*)"/>
+        <!-- using two XPath simple map operations ! in sequence, with the
+             second ! processing the output produced by the first !. -->
+        <xsl:variable name="values" select="mesg ! translate(., $smallCase, $upperCase) ! concat('xslt : ', .)"/>         
+        <xsl:for-each select="$values">
+          <mesg><xsl:value-of select="."/></mesg>
+        </xsl:for-each>
       </result>
    </xsl:template>
    
