@@ -717,8 +717,15 @@ public class OpCodes
    * @xsl.usage advanced
    */
   public static final int OP_NC_FOLLOWS = 71;
+  
+  /**
+   * For XPath 3.1 simple map operator '!'.
+   * 
+   * @xsl.usage advanced
+   */
+  public static final int OP_SIMPLE_MAP_OPERATOR = 72;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 72;
+  private static final int NEXT_FREE_ID = 73;
   
 }

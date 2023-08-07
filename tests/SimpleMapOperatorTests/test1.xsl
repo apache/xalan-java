@@ -4,19 +4,20 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_c.xml -->
+   <!-- use with company_2.xml -->
    
-   <!-- An XSLT stylesheet to test, an XPath function item "inline function"
-        expression that does transformation of its argument's value and
-        produces XML complex content. -->                 
+   <!-- An XSLT stylesheet, to test XPath 3.1 simple map 
+        operator '!'.
+        
+        This XSLT stylesheet, borrows an XPath '!' expression 
+        example from https://www.altova.com/, with slight
+        modifications. -->                 
 
    <xsl:output method="xml" indent="yes"/>
-   
-   <xsl:variable name="fnItem1" select="function ($nodeSet) { for $a in $nodeSet return $a/p }"/>
       
-   <xsl:template match="/temp">
-      <result>
-        <xsl:copy-of select="$fnItem1(*)"/>
+   <xsl:template match="/">
+      <result>         
+        <xsl:value-of select="/company/office/employee/first_name ! concat('Hi ', .)"/>                  
       </result>
    </xsl:template>
    

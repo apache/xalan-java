@@ -43,6 +43,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Range;
+import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.StrConcat;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.xs.types.XSAnyType;
@@ -352,7 +353,8 @@ public class ElemValueOf extends ElemTemplateElement {
                      Operation opn = (Operation)expr;
                      
                      XObject evalResult = null;
-                     if ((opn instanceof Range) || (opn instanceof StrConcat)) {
+                     if ((opn instanceof Range) || (opn instanceof StrConcat) || 
+                                                                       (opn instanceof SimpleMapOperator)) {
                         evalResult = opn.execute(xctxt);                        
                      }
                      else {

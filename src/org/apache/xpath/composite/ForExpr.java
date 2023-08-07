@@ -201,8 +201,8 @@ public class ForExpr extends Expression {
                }
            }
            else {
-              // assuming here that, 'for' expression's variable binding XPath expression 
-              // evaluation, returned a singleton value.
+              // we're assuming here that, 'for' expression's variable binding XPath 
+              // expression evaluation, returned a singleton value.
               xsObjResultSeq.add(xsObj);
            }
            

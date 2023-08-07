@@ -29,6 +29,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.xs.types.XSAnyType;
 
@@ -58,33 +59,19 @@ public class FuncSum extends FunctionOneArg
        XObject resultObj = xslVariable.execute(xctxt);
        if (resultObj instanceof ResultSequence) {
           ResultSequence resultSeq = (ResultSequence)resultObj;
-          for (int idx = 0; idx < resultSeq.size(); idx++) {
-              XObject xObj = resultSeq.item(idx);
-              String str = xObj.str();
-              if (str != null) {
-                 XString xStr = new XString(str);
-                 sum +=  xStr.toDouble();
-              }
-          }
-       }
+          sum = sumResultSequence(resultSeq);          
+       }       
     }
     else if (m_arg0 instanceof ForExpr) {
        ForExpr forExpr = (ForExpr)m_arg0;
        ResultSequence forExprResult = (ResultSequence)(forExpr.execute(xctxt));
-       for (int idx = 0; idx < forExprResult.size(); idx++) {
-          XObject xObj = forExprResult.item(idx);
-          String str = null;
-          if (xObj instanceof XSAnyType) {
-             str = ((XSAnyType)xObj).stringValue();     
-          }
-          else {
-             str = xObj.str();
-          }
-          if (str != null) {
-             XString xStr = new XString(str);
-             sum +=  xStr.toDouble();
-          }
-       }
+       sum = sumResultSequence(forExprResult);
+    }
+    else if (m_arg0 instanceof SimpleMapOperator) {
+       SimpleMapOperator simpleMapOperator = (SimpleMapOperator)m_arg0;
+       ResultSequence simpleMapOperatorResult = (ResultSequence)(simpleMapOperator.
+                                                                              execute(xctxt));
+       sum = sumResultSequence(simpleMapOperatorResult);
     }
     else {
        int pos;
@@ -103,5 +90,33 @@ public class FuncSum extends FunctionOneArg
     }
 
     return new XNumber(sum);
+  }
+  
+  /**
+   * Summation of the values of ResultSequence data items.
+   *  
+   * @param resultSeq  The ResultSequence object instance, whose items
+   *                   need to be added to produce a summation value. 
+   * @return           The summation value with data type double.
+   */
+  private double sumResultSequence(ResultSequence resultSeq) {
+     double sum = 0.0;
+     
+     for (int idx = 0; idx < resultSeq.size(); idx++) {
+        XObject xObj = resultSeq.item(idx);
+        String str = null;
+        if (xObj instanceof XSAnyType) {
+           str = ((XSAnyType)xObj).stringValue();     
+        }
+        else {
+           str = xObj.str();
+        }
+        if (str != null) {
+           XString xStr = new XString(str);
+           sum +=  xStr.toDouble();
+        }
+     }
+     
+     return sum;
   }
 }

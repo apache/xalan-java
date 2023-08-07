@@ -8,7 +8,7 @@
    
    <!-- An XSLT stylesheet to test, an XPath function item "inline function"
         expression that does transformation of its argument's value and
-        generates XML complex content. -->                   
+        produces XML complex content. -->                   
 
    <xsl:output method="xml" indent="yes"/>
    

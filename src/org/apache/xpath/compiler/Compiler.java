@@ -59,6 +59,7 @@ import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Or;
 import org.apache.xpath.operations.Plus;
 import org.apache.xpath.operations.Range;
+import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.StrConcat;
 import org.apache.xpath.operations.UnaryOperation;
 import org.apache.xpath.operations.Variable;
@@ -169,6 +170,8 @@ public class Compiler extends OpMap
       expr = nodeComparisonPrecede(opPos); break;
     case OpCodes.OP_NC_FOLLOWS :
       expr = nodeComparisonFollows(opPos); break;
+    case OpCodes.OP_SIMPLE_MAP_OPERATOR :
+      expr = simpleMapOperator(opPos); break;
     case OpCodes.OP_LTE :
       expr = lte(opPos); break;
     case OpCodes.OP_LT :
@@ -343,7 +346,13 @@ public class Compiler extends OpMap
   }
   
   /**
-   * Compile an XPath 3.1 value comparison 'eq' operation. 
+   * Compile an XPath 3.1 value comparison "eq" operation.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   * 
+   * @return reference to {@link org.apache.xpath.operations.VcEquals} instance.
+   * 
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression vcEquals(int opPos) throws TransformerException
   {
@@ -351,7 +360,13 @@ public class Compiler extends OpMap
   }
   
   /**
-   * Compile an XPath 3.1 value comparison 'ne' operation. 
+   * Compile an XPath 3.1 value comparison "ne" operation.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   * 
+   * @return reference to {@link org.apache.xpath.operations.VcNotEquals} instance.
+   * 
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression vcNotEquals(int opPos) throws TransformerException
   {
@@ -387,8 +402,13 @@ public class Compiler extends OpMap
   }
   
   /**
-   * Compile an XPath 3.1 value comparison 'lt' operation.
-   *  
+   * Compile an XPath 3.1 value comparison "lt" operation.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   * 
+   * @return reference to {@link org.apache.xpath.operations.VcLt} instance.
+   * 
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression vcLt(int opPos) throws TransformerException
   {
@@ -396,8 +416,13 @@ public class Compiler extends OpMap
   }
   
   /**
-   * Compile an XPath 3.1 value comparison 'gt' operation.
-   *  
+   * Compile an XPath 3.1 value comparison "gt" operation.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   * 
+   * @return reference to {@link org.apache.xpath.operations.VcGt} instance.
+   * 
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression vcGt(int opPos) throws TransformerException
   {
@@ -405,8 +430,13 @@ public class Compiler extends OpMap
   }
   
   /**
-   * Compile an XPath 3.1 value comparison 'le' operation.
-   *  
+   * Compile an XPath 3.1 value comparison "le" operation.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   * 
+   * @return reference to {@link org.apache.xpath.operations.VcLe} instance.
+   * 
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression vcLe(int opPos) throws TransformerException
   {
@@ -414,8 +444,13 @@ public class Compiler extends OpMap
   }
   
   /**
-   * Compile an XPath 3.1 value comparison 'ge' operation.
-   *  
+   * Compile an XPath 3.1 value comparison "ge" operation.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   * 
+   * @return reference to {@link org.apache.xpath.operations.VcGe} instance.
+   * 
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression vcGe(int opPos) throws TransformerException
   {
@@ -423,8 +458,13 @@ public class Compiler extends OpMap
   }
   
   /**
-   * Compile an XPath 3.1 node comparison 'is' operation.
-   *  
+   * Compile an XPath 3.1 node comparison "is" operation.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   * 
+   * @return reference to {@link org.apache.xpath.operations.NodeComparisonIs} instance.
+   * 
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression nodeComparisonIs(int opPos) throws TransformerException
   {
@@ -432,8 +472,13 @@ public class Compiler extends OpMap
   }
   
   /**
-   * Compile an XPath 3.1 node comparison '<<' operation.
-   *  
+   * Compile an XPath 3.1 node comparison "<<" operation.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   * 
+   * @return reference to {@link org.apache.xpath.operations.NodeComparisonPrecede} instance.
+   * 
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression nodeComparisonPrecede(int opPos) throws TransformerException
   {
@@ -441,12 +486,31 @@ public class Compiler extends OpMap
   }
   
   /**
-   * Compile an XPath 3.1 node comparison '>>' operation.
-   *  
+   * Compile an XPath 3.1 node comparison ">>" operation.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   * 
+   * @return reference to {@link org.apache.xpath.operations.NodeComparisonFollows} instance.
+   * 
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression nodeComparisonFollows(int opPos) throws TransformerException
   {
     return compileOperation(new NodeComparisonFollows(), opPos);
+  }
+  
+  /**
+   * Compile an XPath 3.1 simple map '!' operation.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   * 
+   * @return reference to {@link org.apache.xpath.operations.SimpleMapOperator} instance.
+   * 
+   * @throws TransformerException if a error occurs creating the Expression.
+   */
+  protected Expression simpleMapOperator(int opPos) throws TransformerException
+  {
+    return compileOperation(new SimpleMapOperator(), opPos);
   }
 
   /**
@@ -491,20 +555,28 @@ public class Compiler extends OpMap
     return compileOperation(new Plus(), opPos);
   }
   
-  /*
-   * Compile an XPath 3.1 "to" operation.
+  /**
+   * Compile an XPath 3.1 range "to" operation.
    * 
    * @param opPos The current position in the m_opMap array.
+   * 
+   * @return reference to {@link org.apache.xpath.operations.Range} instance.
+   * 
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression range(int opPos) throws TransformerException
   {
     return compileOperation(new Range(), opPos);   
   }
   
-  /*
-   * Compile an XPath 3.1 "||" operation.
+  /**
+   * Compile an XPath 3.1 string concatenation "||" operation.
    * 
    * @param opPos The current position in the m_opMap array.
+   * 
+   * @return reference to {@link org.apache.xpath.operations.StrConcat} instance.
+   * 
+   * @throws TransformerException if a error occurs creating the Expression.
    */
   protected Expression strConcat(int opPos) throws TransformerException
   {

@@ -4,19 +4,34 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_c.xml -->
-   
-   <!-- An XSLT stylesheet to test, an XPath function item "inline function"
-        expression that does transformation of its argument's value and
-        produces XML complex content. -->                 
+   <!-- An XSLT stylesheet, to test XPath 3.1 simple map 
+        operator '!'.
+        
+        The XPath expression having simple map operator '!',
+        as used within this stylesheet example, is borrowed
+        from XPath 3.1 spec.       
+   -->                
 
    <xsl:output method="xml" indent="yes"/>
    
-   <xsl:variable name="fnItem1" select="function ($nodeSet) { for $a in $nodeSet return $a/p }"/>
+   <xsl:variable name="n1" select="5"/>
       
-   <xsl:template match="/temp">
+   <xsl:template match="/">
+      <xsl:variable name="n2" select="7"/>
       <result>
-        <xsl:copy-of select="$fnItem1(*)"/>
+         <!-- returns a string containing 7 asterisks. -->
+         <val1><xsl:value-of select="string-join((1 to 7)!'*')"/></val1>
+         
+         <!-- returns a string containing $n1 asterisks. -->
+         <val2><xsl:value-of select="string-join((1 to $n1)!'*')"/></val2>
+         
+         <!-- returns a string containing $n2 asterisks. -->
+         <val3><xsl:value-of select="string-join((1 to $n2)!'*')"/></val3>
+         
+         <!-- store the result of, simple map operation '!' into a variable,
+              and use the variable's value subsequently. -->
+         <xsl:variable name="asteriskList" select="string-join((1 to $n2)!'*')"/>
+         <val4><xsl:value-of select="$asteriskList"/></val4>         
       </result>
    </xsl:template>
    

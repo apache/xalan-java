@@ -36,6 +36,7 @@ import org.apache.xalan.xpath3.QuantifiedExprTests;
 import org.apache.xalan.xpath3.RangeExprTests;
 import org.apache.xalan.xpath3.SequenceConstructorTests;
 import org.apache.xalan.xpath3.SequenceTests;
+import org.apache.xalan.xpath3.SimpleMapOperatorTests;
 import org.apache.xalan.xpath3.StringConcatExprTests;
 import org.apache.xalan.xpath3.StringTests;
 import org.apache.xalan.xpath3.TrignometricAndExponentialFunctionTests;
@@ -71,7 +72,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 TrignometricAndExponentialFunctionTests.class, BuiltinFunctionsNamespceTests.class,
                 SequenceConstructorTests.class, StringConcatExprTests.class, 
                 XsDurationComponentExtractionFunctionTests.class, XPathArithmeticOnDurationValuesTests.class,
-                NodeComparisonTests.class })
+                NodeComparisonTests.class, SimpleMapOperatorTests.class })
 public class AllXsl3Tests {
 
 }

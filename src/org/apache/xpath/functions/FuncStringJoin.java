@@ -32,6 +32,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -116,6 +117,17 @@ public class FuncStringJoin extends Function2Args {
                XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
                arg0ResultSeq.add(xsUntypedAtomic);
             }                        
+        }
+    }
+    else if (m_arg0 instanceof Operation) {
+        arg0ResultSeq = new ResultSequence();
+        
+        XObject evalResult = ((Operation)m_arg0).execute(xctxt);
+        if (evalResult instanceof ResultSequence) {
+           ResultSequence resultSeq = (ResultSequence)evalResult;
+           for (int idx = 0; idx < resultSeq.size(); idx++) {
+              arg0ResultSeq.add(resultSeq.item(idx));  
+           }
         }
     }
     

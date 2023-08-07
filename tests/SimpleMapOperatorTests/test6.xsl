@@ -4,19 +4,23 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_c.xml -->
+   <!-- use with test1_b.xml -->
    
-   <!-- An XSLT stylesheet to test, an XPath function item "inline function"
-        expression that does transformation of its argument's value and
-        produces XML complex content. -->                 
+   <!-- An XSLT stylesheet, to test XPath 3.1 simple map 
+        operator '!'.
+        
+        The XPath expression having simple map operator '!',
+        as used within this stylesheet example, is borrowed
+        from XPath 3.1 spec, with slight modifications.     
+   -->                
 
    <xsl:output method="xml" indent="yes"/>
-   
-   <xsl:variable name="fnItem1" select="function ($nodeSet) { for $a in $nodeSet return $a/p }"/>
       
    <xsl:template match="/temp">
       <result>
-        <xsl:copy-of select="$fnItem1(*)"/>
+         <xsl:variable name="values" select="a"/>
+         <!-- return the sum of the squares of a sequence of numbers. -->         
+         <xsl:value-of select="sum($values!(.*.))"/>
       </result>
    </xsl:template>
    
