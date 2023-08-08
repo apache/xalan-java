@@ -647,12 +647,19 @@ public class XPathParser
       return (funcBodyXPathExprStrBuff.toString()).trim();
   }
   
+  /**
+   * While traversing XPath expression's token list, we determine within this method,
+   * whether the parse of dynamic function call argument details should continue or
+   * not. We simultaneously accumulate function call argument details within a list 
+   * 'argDetailsStrPartsList' (that has been passed as an argument to this method) 
+   * whose contents are accessible to the caller of this method.
+   */
   private boolean isXPathDynamicFuncCallParseAhead(List<String> argDetailsStrPartsList, 
                                                                                   String delim) {
       boolean isXpathDynamicFuncCallParseAhead = false;
 
       if (lookahead('(', 1)) {
-         // handles the case, where the function call argument
+         // Handles the case, where the function call argument
          // is itself another function call.
          fDynamicFunctionCallArgumentMarker = true;
          argDetailsStrPartsList.add(m_token);
@@ -685,12 +692,32 @@ public class XPathParser
          nextToken();
          isXpathDynamicFuncCallParseAhead = true; 
       }
-      else if (fDynamicFunctionCallArgumentMarker) {
-         argDetailsStrPartsList.add(m_token);
-         nextToken();
+      else {
+         String argDetailsAccumulatedStrSoFar = "(" + getStrValueFromStrList(
+                                                                  argDetailsStrPartsList) + ")";         
+         if (!isStrHasBalancedParentheses(argDetailsAccumulatedStrSoFar)) {
+            argDetailsStrPartsList.add(m_token);
+            nextToken();
+            isXpathDynamicFuncCallParseAhead = true;
+         }         
       }
 
       return isXpathDynamicFuncCallParseAhead; 
+  }
+  
+  /**
+   * Given a list of strings, concatenate list items to form
+   * a string and return the string formed to the caller of 
+   * this method.
+   */
+  private String getStrValueFromStrList(List<String> strList) {
+      String concatenatedStrInfo = "";
+      
+      for (int idx = 0; idx < strList.size(); idx++) {
+         concatenatedStrInfo = concatenatedStrInfo + strList.get(idx);   
+      }
+      
+      return concatenatedStrInfo; 
   }
   
   /**
@@ -2281,7 +2308,7 @@ public class XPathParser
        
        List<String> argDetailsStrPartsList = new ArrayList<String>();
        
-       // we create here a temporary function call argument delimiter 
+       // We create here a temporary function call argument delimiter 
        // string, for this processing.
        long currentTimeMills = System.currentTimeMillis();
        String delimSuffix = (Long.valueOf(currentTimeMills)).toString();
