@@ -329,6 +329,12 @@ public class Keywords
   /** seconds-from-duration function string. */
   public static final String FUNC_SECONDS_FROM_DURATION = "seconds-from-duration";
   
+  /** fold-left function string. */
+  public static final String FUNC_FOLD_LEFT = "fold-left";
+  
+  /** fold-right function string. */
+  public static final String FUNC_FOLD_RIGHT = "fold-right";
+  
   // XML Schema built-in data type name keywords
   
   /** xs:decimal data type string. */

@@ -251,6 +251,12 @@ public class FunctionTable
   
   /** The 'seconds-from-duration()' id. */
   public static final int FUNC_SECONDS_FROM_DURATION = 75;
+  
+  /** The 'fold-left()' id. */
+  public static final int FUNC_FOLD_LEFT = 76;
+  
+  /** The 'fold-right()' id. */
+  public static final int FUNC_FOLD_RIGHT = 77;
 
   // Proprietary
 
@@ -308,7 +314,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 76;
+  private static final int NUM_BUILT_IN_FUNCS = 78;
 
   /**
    * Number of built-in functions that may be added.
@@ -410,6 +416,10 @@ public class FunctionTable
       org.apache.xpath.functions.FuncForEach.class;
     m_functions[FUNC_FILTER] = 
       org.apache.xpath.functions.FuncFilter.class;
+    m_functions[FUNC_FOLD_LEFT] = 
+      org.apache.xpath.functions.FuncFoldLeft.class;
+    m_functions[FUNC_FOLD_RIGHT] = 
+      org.apache.xpath.functions.FuncFoldRight.class;
     m_functions[FUNC_DISTINCT_VALUES] = 
       org.apache.xpath.functions.FuncDistinctValues.class;
     
@@ -615,6 +625,11 @@ public class FunctionTable
                          new Integer(FunctionTable.FUNC_MINUTES_FROM_DURATION));
          m_functionID.put(Keywords.FUNC_SECONDS_FROM_DURATION,
                          new Integer(FunctionTable.FUNC_SECONDS_FROM_DURATION));
+         
+         m_functionID.put(Keywords.FUNC_FOLD_LEFT,
+                         new Integer(FunctionTable.FUNC_FOLD_LEFT));
+         m_functionID.put(Keywords.FUNC_FOLD_RIGHT,
+                         new Integer(FunctionTable.FUNC_FOLD_RIGHT));
   }
   
   public FunctionTable(){

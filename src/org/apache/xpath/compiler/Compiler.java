@@ -221,7 +221,7 @@ public class Compiler extends OpMap
     case OpCodes.OP_FUNCTION :
       expr = compileFunction(opPos); break;
     case OpCodes.OP_INLINE_FUNCTION :
-      expr = compileInlineFunction(opPos); break;
+      expr = compileInlineFunctionDefinition(opPos); break;
     case OpCodes.OP_DYNAMIC_FUNCTION_CALL :
       expr = compileDynamicFunctionCall(opPos); break;
     case OpCodes.OP_LOCATIONPATH :
@@ -1292,36 +1292,124 @@ private static final boolean DEBUG = false;
     }
   }
   
-  Expression compileInlineFunction(int opPos) throws TransformerException
+  /**
+   * Compile an XPath function item inline function definition, expression.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   *
+   * @return the compiled inline function definition expression returned
+   *         as an object of class InlineFunction. An object of class
+   *         InlineFunction has already been created and populated by XPath 
+   *         expression parser, and this function just returns that object
+   *         to the caller of this method.
+   *
+   * @throws TransformerException if a error occurs creating the Expression.
+   */
+  Expression compileInlineFunctionDefinition(int opPos) throws TransformerException
   {
       return XPathParser.fInlineFunction;
   }
   
+  /**
+   * Compile an XPath dynamic function call, expression.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   *
+   * @return the compiled dynamic function call expression returned
+   *         as an object of class DynamicFunctionCall. An object of class
+   *         DynamicFunctionCall has already been created and populated by 
+   *         XPath expression parser, and this function just returns that
+   *         object to the caller of this method.
+   *
+   * @throws TransformerException if a error occurs creating the Expression.
+   */
   Expression compileDynamicFunctionCall(int opPos) throws TransformerException
   {
       return XPathParser.fDynamicFunctionCall;
   }
   
+  /**
+   * Compile an XPath "for", expression.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   *
+   * @return the compiled "for" expression returned as an object of class
+   *         ForExpr. An object of class ForExpr has already been created and
+   *         populated by XPath expression parser, and this function just 
+   *         returns that object to the caller of this method.
+   *
+   * @throws TransformerException if a error occurs creating the Expression.
+   */
   Expression forExpr(int opPos) throws TransformerException
   {
       return XPathParser.fForExpr;
   }
   
+  /**
+   * Compile an XPath "let", expression.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   *
+   * @return the compiled "let" expression returned as an object of class
+   *         LetExpr. An object of class LetExpr has already been created
+   *         and populated by XPath expression parser, and this function 
+   *         just returns that object to the caller of this method.
+   *
+   * @throws TransformerException if a error occurs creating the Expression.
+   */
   Expression letExpr(int opPos) throws TransformerException
   {
       return XPathParser.fLetExpr;
   }
   
+  /**
+   * Compile an XPath quantified, expression (either 'some' or 'every').
+   * 
+   * @param opPos The current position in the m_opMap array.
+   *
+   * @return the compiled quantified expression returned as an object of class
+   *         QuantifiedExpr. An object of class QuantifiedExpr has already
+   *         been created and populated by XPath expression parser, and 
+   *         this function just returns that object to the caller of this
+   *         method.
+   *
+   * @throws TransformerException if a error occurs creating the Expression.
+   */
   Expression quantifiedExpr(int opPos) throws TransformerException
   {
       return XPathParser.fQuantifiedExpr;
   }
   
+  /**
+   * Compile an XPath "if", expression.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   *
+   * @return the compiled "if" expression returned as an object of class
+   *         IfExpr. An object of class IfExpr has already been created and
+   *         populated by XPath expression parser, and this function just 
+   *         returns that object to the caller of this method.       
+   *
+   * @throws TransformerException if a error occurs creating the Expression.
+   */
   Expression ifExpr(int opPos) throws TransformerException
   {
       return XPathParser.fIfExpr;
   }
   
+  /**
+   * Compile an XPath sequence constructor, expression.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   *
+   * @return the compiled sequence constructor expression returned as an object
+   *         of class SimpleSequenceConstructor. An object of class
+   *         SimpleSequenceConstructor has already been created and populated by
+   *         XPath expression parser, and this function just returns that object 
+   *         to the caller of this method.       
+   *
+   * @throws TransformerException if a error occurs creating the Expression.
+   */
   Expression sequenceConstructorExpr(int opPos) throws TransformerException
   {
       return XPathParser.fSimpleSequenceConstructor;
