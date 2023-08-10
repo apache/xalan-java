@@ -19,6 +19,8 @@ package org.apache.xalan.xslt.util;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.xs.types.XSAnyType;
+import org.apache.xpath.xs.types.XSUntyped;
+import org.apache.xpath.xs.types.XSUntypedAtomic;
 
 import java.util.List;
 
@@ -89,6 +91,79 @@ public class XslTransformEvaluationHelper {
        }
        
        return strVal;
+    }
+    
+    /**
+     * Add an xdm input item to result sequence, if that already doesn't exist within
+     * the result sequence. 
+     */
+    public static void addItemToResultSequence(ResultSequence resultSeq, XObject inpItem, 
+                                                                       boolean cardinalityCheck) {
+        if (cardinalityCheck) {
+            if (resultSeq.size() == 0) {                     
+                resultSeq.add(inpItem);    
+            }
+            else if (!contains(resultSeq, inpItem)) {
+                resultSeq.add(inpItem);
+            }   
+        }
+        else {
+            resultSeq.add(inpItem);   
+        }
+    }
+    
+    /**
+     * Check whether a 'ResultSequence' object, contains a specific xdm item.
+     */
+    private static boolean contains(ResultSequence resultSeq, XObject srch) {
+       
+       boolean isSeqContains = false;
+       
+       for (int idx = 0; idx < resultSeq.size(); idx++) {
+          XObject existingItemWithinResultSeq = resultSeq.item(idx);
+          if ((existingItemWithinResultSeq instanceof XSUntyped) && 
+                                                            (srch instanceof XSUntyped)) {
+             if (((XSUntyped)existingItemWithinResultSeq).equals((XSUntyped)srch)) {
+                 isSeqContains = true;
+                 break;    
+             }
+          }
+          else if ((existingItemWithinResultSeq instanceof XSUntypedAtomic) && 
+                                                                  (srch instanceof XSUntypedAtomic)) {
+              if (((XSUntypedAtomic)existingItemWithinResultSeq).equals((XSUntypedAtomic)srch)) {
+                 isSeqContains = true;
+                 break;    
+              } 
+          }
+          else if ((existingItemWithinResultSeq instanceof XSUntyped) && 
+                                                                (srch instanceof XSUntypedAtomic)) {
+              if (((XSUntyped)existingItemWithinResultSeq).equals((XSUntypedAtomic)srch)) {
+                 isSeqContains = true;
+                 break;    
+              } 
+          }
+          else if ((existingItemWithinResultSeq instanceof XSUntypedAtomic) && 
+                                                                (srch instanceof XSUntyped)) {
+              if (((XSUntypedAtomic)existingItemWithinResultSeq).equals((XSUntyped)srch)) {
+                 isSeqContains = true;
+                 break;    
+              }
+          }
+          else if ((existingItemWithinResultSeq instanceof XSAnyType) && 
+                                                                 (srch instanceof XSAnyType)) {
+              if (((XSAnyType)existingItemWithinResultSeq).equals((XSAnyType)srch)) {
+                  isSeqContains = true;
+                  break;    
+              }   
+          }
+          else if (existingItemWithinResultSeq.equals(srch)) {
+              isSeqContains = true;
+              break;    
+          }
+       }
+       
+       return isSeqContains;
+       
     }
 
 }

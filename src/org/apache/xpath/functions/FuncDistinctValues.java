@@ -20,6 +20,7 @@ package org.apache.xpath.functions;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
@@ -94,15 +95,18 @@ public class FuncDistinctValues extends Function2Args {
               
               if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
                  XSUntyped xsUntyped = new XSUntyped(nodeStrValue);                 
-                 addItemToResultSequence(resultSeq, xsUntyped, true);
+                 XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
+                                                                           xsUntyped, true);
               }
               else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
                  XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
-                 addItemToResultSequence(resultSeq, xsUntypedAtomic, true);
+                 XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
+                                                                           xsUntypedAtomic, true);
               }
               else {
                  XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
-                 addItemToResultSequence(resultSeq, xsUntypedAtomic, true);
+                 XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
+                                                                           xsUntypedAtomic, true);
               }
            }
         }
@@ -112,10 +116,12 @@ public class FuncDistinctValues extends Function2Args {
               XObject xObj = inpResultSeq.item(idx);
               if (xObj instanceof XSAnyType) {
                  XSAnyType xsAnyType = (XSAnyType)xObj;
-                 addItemToResultSequence(resultSeq, xsAnyType, true);
+                 XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
+                                                                             xsAnyType, true);
               }
               else {
-                 addItemToResultSequence(resultSeq, xObj, true);
+                  XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
+                                                                             xObj, true);
               }
            }
         }
@@ -124,12 +130,13 @@ public class FuncDistinctValues extends Function2Args {
            // xdm singleton item.            
            if (arg0Obj instanceof XSAnyType) {
               XSAnyType xsAnyType = (XSAnyType)arg0Obj;
-              addItemToResultSequence(resultSeq, xsAnyType, false);
+              XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
+                                                                          xsAnyType, false);
            }
            else {
               String seqItemStrValue = arg0Obj.str();
-              addItemToResultSequence(resultSeq, new XString(seqItemStrValue),
-                                                                         false);
+              XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
+                                                                        new XString(seqItemStrValue), false);
            }
         }
             
@@ -159,79 +166,6 @@ public class FuncDistinctValues extends Function2Args {
   protected void reportWrongNumberArgs() throws WrongNumberArgsException {
       throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
                                               XPATHErrorResources.ER_ONE_OR_TWO, null)); //"1 or 2"
-  }
-  
-  /**
-   * Add an xdm input item to result sequence, if that already doesn't exist within
-   * the result sequence. 
-   */
-  private void addItemToResultSequence(ResultSequence resultSeq, XObject inpItem, 
-                                                                     boolean cardinalityCheck) {
-      if (cardinalityCheck) {
-          if (resultSeq.size() == 0) {                     
-              resultSeq.add(inpItem);    
-          }
-          else if (!contains(resultSeq, inpItem)) {
-              resultSeq.add(inpItem);
-          }   
-      }
-      else {
-          resultSeq.add(inpItem);   
-      }
-  }
-  
-  /**
-   * Check whether a 'ResultSequence' object, contains a specific xdm item.
-   */
-  private boolean contains(ResultSequence resultSeq, XObject srch) {
-     
-     boolean isSeqContains = false;
-     
-     for (int idx = 0; idx < resultSeq.size(); idx++) {
-        XObject existingItemWithinResultSeq = resultSeq.item(idx);
-        if ((existingItemWithinResultSeq instanceof XSUntyped) && 
-                                                          (srch instanceof XSUntyped)) {
-           if (((XSUntyped)existingItemWithinResultSeq).equals((XSUntyped)srch)) {
-               isSeqContains = true;
-               break;    
-           }
-        }
-        else if ((existingItemWithinResultSeq instanceof XSUntypedAtomic) && 
-                                                                (srch instanceof XSUntypedAtomic)) {
-            if (((XSUntypedAtomic)existingItemWithinResultSeq).equals((XSUntypedAtomic)srch)) {
-               isSeqContains = true;
-               break;    
-            } 
-        }
-        else if ((existingItemWithinResultSeq instanceof XSUntyped) && 
-                                                              (srch instanceof XSUntypedAtomic)) {
-            if (((XSUntyped)existingItemWithinResultSeq).equals((XSUntypedAtomic)srch)) {
-               isSeqContains = true;
-               break;    
-            } 
-        }
-        else if ((existingItemWithinResultSeq instanceof XSUntypedAtomic) && 
-                                                              (srch instanceof XSUntyped)) {
-            if (((XSUntypedAtomic)existingItemWithinResultSeq).equals((XSUntyped)srch)) {
-               isSeqContains = true;
-               break;    
-            }
-        }
-        else if ((existingItemWithinResultSeq instanceof XSAnyType) && 
-                                                               (srch instanceof XSAnyType)) {
-            if (((XSAnyType)existingItemWithinResultSeq).equals((XSAnyType)srch)) {
-                isSeqContains = true;
-                break;    
-            }   
-        }
-        else if (existingItemWithinResultSeq.equals(srch)) {
-            isSeqContains = true;
-            break;    
-        }
-     }
-     
-     return isSeqContains;
-     
   }
 
 }

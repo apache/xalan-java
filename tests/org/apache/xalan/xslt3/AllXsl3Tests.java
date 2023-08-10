@@ -22,6 +22,8 @@ import org.apache.xalan.xpath3.DynamicFunctionCallTests;
 import org.apache.xalan.xpath3.FnAbsTests;
 import org.apache.xalan.xpath3.FnDistinctValuesTests;
 import org.apache.xalan.xpath3.FnFilterTests;
+import org.apache.xalan.xpath3.FnFoldLeftTests;
+import org.apache.xalan.xpath3.FnFoldRightTests;
 import org.apache.xalan.xpath3.FnForEachTests;
 import org.apache.xalan.xpath3.FnIndexOfTests;
 import org.apache.xalan.xpath3.FnStringJoinTests;
@@ -72,7 +74,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 TrignometricAndExponentialFunctionTests.class, BuiltinFunctionsNamespceTests.class,
                 SequenceConstructorTests.class, StringConcatExprTests.class, 
                 XsDurationComponentExtractionFunctionTests.class, XPathArithmeticOnDurationValuesTests.class,
-                NodeComparisonTests.class, SimpleMapOperatorTests.class })
+                NodeComparisonTests.class, SimpleMapOperatorTests.class, FnFoldLeftTests.class,
+                FnFoldRightTests.class })
 public class AllXsl3Tests {
 
 }

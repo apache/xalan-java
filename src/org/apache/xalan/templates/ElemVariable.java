@@ -46,6 +46,7 @@ import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XRTreeFragSelectWrapper;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Operation;
+import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.xs.types.XSAnyType;
 import org.apache.xpath.xs.types.XSNumericType;
@@ -339,6 +340,11 @@ public class ElemVariable extends ElemTemplateElement
             XObject evalResult = selectExpression.execute(xctxt);
             
             return evalResult;
+        }
+        else if (selectExpression instanceof Range) {
+            XObject evalResult = ((Range)selectExpression).execute(xctxt);
+            
+            return evalResult; 
         }
         else if (selectExpression instanceof Operation) {
             Operation opn = (Operation)selectExpression;
