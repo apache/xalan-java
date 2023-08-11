@@ -257,6 +257,9 @@ public class FunctionTable
   
   /** The 'fold-right()' id. */
   public static final int FUNC_FOLD_RIGHT = 77;
+  
+  /** The 'for-each-pair()' id. */
+  public static final int FUNC_FOR_EACH_PAIR = 78;
 
   // Proprietary
 
@@ -314,7 +317,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 78;
+  private static final int NUM_BUILT_IN_FUNCS = 79;
 
   /**
    * Number of built-in functions that may be added.
@@ -411,7 +414,10 @@ public class FunctionTable
     m_functions[FUNC_IMPLICIT_TIMEZONE] = 
       org.apache.xpath.functions.FuncImplicitTimezone.class;
     m_functions[FUNC_INDEX_OF] = 
-      org.apache.xpath.functions.FuncIndexOf.class;
+      org.apache.xpath.functions.FuncIndexOf.class;        
+    m_functions[FUNC_DISTINCT_VALUES] = 
+      org.apache.xpath.functions.FuncDistinctValues.class;
+    
     m_functions[FUNC_FOR_EACH] = 
       org.apache.xpath.functions.FuncForEach.class;
     m_functions[FUNC_FILTER] = 
@@ -420,8 +426,8 @@ public class FunctionTable
       org.apache.xpath.functions.FuncFoldLeft.class;
     m_functions[FUNC_FOLD_RIGHT] = 
       org.apache.xpath.functions.FuncFoldRight.class;
-    m_functions[FUNC_DISTINCT_VALUES] = 
-      org.apache.xpath.functions.FuncDistinctValues.class;
+    m_functions[FUNC_FOR_EACH_PAIR] = 
+      org.apache.xpath.functions.FuncForEachPair.class;
     
     // XPath 3.1 functions configurations for the math functions 
     // namespace http://www.w3.org/2005/xpath-functions/math.
@@ -572,13 +578,20 @@ public class FunctionTable
           m_functionID.put(Keywords.FUNC_IMPLICIT_TIMEZONE,
                           new Integer(FunctionTable.FUNC_IMPLICIT_TIMEZONE));
           m_functionID.put(Keywords.FUNC_INDEX_OF,
-                          new Integer(FunctionTable.FUNC_INDEX_OF));
+                          new Integer(FunctionTable.FUNC_INDEX_OF));          
+          m_functionID.put(Keywords.FUNC_DISTINCT_VALUES,
+                          new Integer(FunctionTable.FUNC_DISTINCT_VALUES));
+          
           m_functionID.put(Keywords.FUNC_FOR_EACH,
                           new Integer(FunctionTable.FUNC_FOR_EACH));
           m_functionID.put(Keywords.FUNC_FILTER,
                           new Integer(FunctionTable.FUNC_FILTER));
-          m_functionID.put(Keywords.FUNC_DISTINCT_VALUES,
-                          new Integer(FunctionTable.FUNC_DISTINCT_VALUES));
+          m_functionID.put(Keywords.FUNC_FOLD_LEFT,
+                          new Integer(FunctionTable.FUNC_FOLD_LEFT));
+          m_functionID.put(Keywords.FUNC_FOLD_RIGHT,
+                          new Integer(FunctionTable.FUNC_FOLD_RIGHT));
+          m_functionID.put(Keywords.FUNC_FOR_EACH_PAIR,
+                          new Integer(FunctionTable.FUNC_FOR_EACH_PAIR));
           
           // XPath 3.1 functions configurations for the math functions 
           // namespace http://www.w3.org/2005/xpath-functions/math.
@@ -624,12 +637,7 @@ public class FunctionTable
          m_functionID.put(Keywords.FUNC_MINUTES_FROM_DURATION,
                          new Integer(FunctionTable.FUNC_MINUTES_FROM_DURATION));
          m_functionID.put(Keywords.FUNC_SECONDS_FROM_DURATION,
-                         new Integer(FunctionTable.FUNC_SECONDS_FROM_DURATION));
-         
-         m_functionID.put(Keywords.FUNC_FOLD_LEFT,
-                         new Integer(FunctionTable.FUNC_FOLD_LEFT));
-         m_functionID.put(Keywords.FUNC_FOLD_RIGHT,
-                         new Integer(FunctionTable.FUNC_FOLD_RIGHT));
+                         new Integer(FunctionTable.FUNC_SECONDS_FROM_DURATION));         
   }
   
   public FunctionTable(){

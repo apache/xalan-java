@@ -27,6 +27,8 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.xs.types.XSNumericType;
+import org.apache.xpath.xs.types.XSUntyped;
+import org.apache.xpath.xs.types.XSUntypedAtomic;
 import org.apache.xpath.xs.types.XSYearMonthDuration;
 
 /**
@@ -51,7 +53,43 @@ public class Plus extends Operation
                                            throws javax.xml.transform.TransformerException {
       XObject result = null;
    
-      if ((left instanceof XNumber) && (right instanceof XSNumericType)) {
+      if ((left instanceof XSUntyped) && (right instanceof XSUntyped)) {
+          java.lang.String lStrVal = ((XSUntyped)left).stringValue();
+          double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+          
+          java.lang.String rStrVal = ((XSUntyped)right).stringValue();
+          double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+          
+          result = new XNumber(lDouble + rDouble);
+      }
+      else if ((left instanceof XSUntypedAtomic) && (right instanceof XSUntypedAtomic)) {
+          java.lang.String lStrVal = ((XSUntypedAtomic)left).stringValue();
+          double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+          
+          java.lang.String rStrVal = ((XSUntypedAtomic)right).stringValue();
+          double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+          
+          result = new XNumber(lDouble + rDouble);
+      }
+      else if ((left instanceof XSUntyped) && (right instanceof XSUntypedAtomic)) {
+          java.lang.String lStrVal = ((XSUntyped)left).stringValue();
+          double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+          
+          java.lang.String rStrVal = ((XSUntypedAtomic)right).stringValue();
+          double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+          
+          result = new XNumber(lDouble + rDouble);
+      }
+      else if ((left instanceof XSUntypedAtomic) && (right instanceof XSUntyped)) {
+          java.lang.String lStrVal = ((XSUntypedAtomic)left).stringValue();
+          double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+          
+          java.lang.String rStrVal = ((XSUntyped)right).stringValue();
+          double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+          
+          result = new XNumber(lDouble + rDouble);
+      }
+      else if ((left instanceof XNumber) && (right instanceof XSNumericType)) {
           double lDouble = ((XNumber)left).num();
           
           java.lang.String rStrVal = ((XSNumericType)right).stringValue();

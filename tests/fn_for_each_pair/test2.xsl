@@ -4,29 +4,20 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- Test for the XPath 3.1 fn:fold-right() function.
+   <!-- use with test1_a.xml -->
    
-        The XPath fn:fold-right() function usage examples, as
-        illustrated within this stylesheet are borrowed from
-        XPath 3.1 spec, and https://www.altova.com/. -->                 
+   <!-- Test for the XPath 3.1 fn:for-each-pair() function. -->                
 
    <xsl:output method="xml" indent="yes"/>
    
-   <xsl:variable name="fnStrConcat" select="function($arg1, $arg2) { concat($arg1, $arg2) }"/>
+   <xsl:variable name="fnAdd" select="function($arg1, $arg2) { $arg1 + $arg2 }"/>
       
-   <xsl:template match="/">      
+   <xsl:template match="/temp">      
       <result>
-        <val1><xsl:value-of select="fold-right(1 to 5, 0, function($a, $b) { $a + $b })"/></val1>
-        
-        <val2><xsl:value-of select="fold-right(1 to 5, 0, function($arg1, $arg2) { $arg1 - $arg2 })"/></val2>
-        
-        <xsl:variable name="charListSeq1" select="('a', 'b', 'c')"/>
-        <val3><xsl:value-of select="fold-right($charListSeq1, 'z' , function($arg1, $arg2) { concat($arg1, $arg2) })"/></val3>
-        
-        <!-- the following fn:fold-right function call example, refers an inline function, 
-             via a variable reference. -->
-        <xsl:variable name="charListSeq2" select="('a', 'b', 'c', 'd', 'e')"/>
-        <val4><xsl:value-of select="fold-right($charListSeq2, 'z' , $fnStrConcat)"/></val4>
+         <one><xsl:value-of select="for-each-pair(data1/val, data2/val, $fnAdd)"/></one>
+         <two><xsl:value-of select="for-each-pair(data3/@*, data4/@*, $fnAdd)"/></two>
+         <three><xsl:value-of select="for-each-pair(data1/val, data3/@*, $fnAdd)"/></three>
+         <four><xsl:value-of select="for-each-pair(data3/@*, data1/val, $fnAdd)"/></four>
       </result>
    </xsl:template>
    
