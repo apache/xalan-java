@@ -260,14 +260,23 @@ public class Keywords
   /** index-of function string. */
   public static final String FUNC_INDEX_OF = "index-of";
   
+  /** distinct-values function string. */
+  public static final String FUNC_DISTINCT_VALUES = "distinct-values";
+  
   /** for-each function string. */
   public static final String FUNC_FOR_EACH = "for-each";
   
   /** filter function string. */
   public static final String FUNC_FILTER = "filter";
   
-  /** distinct-values function string. */
-  public static final String FUNC_DISTINCT_VALUES = "distinct-values";
+  /** fold-left function string. */
+  public static final String FUNC_FOLD_LEFT = "fold-left";
+  
+  /** fold-right function string. */
+  public static final String FUNC_FOLD_RIGHT = "fold-right";
+  
+  /** for-each-pair function string. */
+  public static final String FUNC_FOR_EACH_PAIR = "for-each-pair";
   
   /** math:pi function string. */
   public static final String FUNC_MATH_PI = "pi";
@@ -328,12 +337,6 @@ public class Keywords
   
   /** seconds-from-duration function string. */
   public static final String FUNC_SECONDS_FROM_DURATION = "seconds-from-duration";
-  
-  /** fold-left function string. */
-  public static final String FUNC_FOLD_LEFT = "fold-left";
-  
-  /** fold-right function string. */
-  public static final String FUNC_FOLD_RIGHT = "fold-right";
   
   // XML Schema built-in data type name keywords
   
