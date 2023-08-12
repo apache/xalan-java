@@ -45,11 +45,9 @@ public class XPathHigherOrderBuiltinFunctionsSupport extends Function3Args {
 
     /**
      * This method, evaluates an XPath expression to produce an xdm sequence, that
-     * can be used as an argument to an XPath higher order function call.
+     * can be used as argument to an XPath higher order function call.
      *  
-     * @param xpathExpr      an XPath expression, that is evaluated by this method,
-     *                       to produce an xdm sequence that can be used as an
-     *                       argument to the call of an XPath higher order function.
+     * @param xpathExpr      an XPath expression, that is evaluated by this method
      * @param xctxt          an XPath context object
      * 
      * @return               an xdm sequence produced by this method.
