@@ -278,6 +278,9 @@ public class Keywords
   /** for-each-pair function string. */
   public static final String FUNC_FOR_EACH_PAIR = "for-each-pair";
   
+  /** sort function string. */
+  public static final String FUNC_SORT = "sort";
+  
   /** math:pi function string. */
   public static final String FUNC_MATH_PI = "pi";
   
