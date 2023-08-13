@@ -98,6 +98,12 @@ public class XPathParser
                                                       "else", "some", "every", "satisfies", 
                                                       "let", ":=", "-", "||"};
   
+  // If the XPath expression is () (i.e, representing an xdm empty sequence), we
+  // translate that internally within this XPath parser implementation, to an
+  // XPath range "to" expression using this class field (this equivalently produces
+  // an xdm empty sequence).
+  private static final String XPATH_EXPR_STR_EMPTY_SEQUENCE = "1 to 0";
+  
   private static final List<String> fXpathOpArrTokensList = Arrays.asList(XPATH_OP_ARR);
   
   private boolean fDynamicFunctionCallArgumentMarker = false;
@@ -659,7 +665,7 @@ public class XPathParser
       boolean isXpathDynamicFuncCallParseAhead = false;
 
       if (lookahead('(', 1)) {
-         // Handles the case, where the function call argument
+         // handles the case, where the function call argument
          // is itself another function call.
          fDynamicFunctionCallArgumentMarker = true;
          argDetailsStrPartsList.add(m_token);
@@ -981,9 +987,30 @@ public class XPathParser
           //    parse an XPath expression delimited by braces '(' and ')'.
           // 2) The second pass, is XPath parsing as usual, using the result
           //    determined during step 1) as mentioned above.
-          nextToken();                  
+          nextToken();
           
           List<String> sequenceConstructorXPathParts = new ArrayList<String>();
+          
+          if (tokenIs(')') && (getTokenRelative(0) == null)) {
+              // handles the case, where the XPath expression is ()
+              
+              int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+              
+              nextToken();                            
+              
+              insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+              
+              sequenceConstructorXPathParts.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
+              
+              fSimpleSequenceConstructor = new SimpleSequenceConstructor();              
+              fSimpleSequenceConstructor.setSequenceConstructorXPathParts(
+                                                                    sequenceConstructorXPathParts);
+              
+              m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
+                                                  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+              
+              return;
+          }                    
           
           while (m_token != null)
           {                            
@@ -1090,7 +1117,7 @@ public class XPathParser
           }
       }
       else {
-         ExprSingle();    
+         ExprSingle();  
       }
   }
 
@@ -2263,9 +2290,6 @@ public class XPathParser
    * | Number
    * | FunctionCall
    * | FunctionItemExpr
-   * 
-   * The XPath grammar option 'VarRef ArgumentList' mentioned above
-   * denotes, dynamic function call.
    *
    * @return true if this method successfully matched a PrimaryExpr
    *
@@ -2290,7 +2314,7 @@ public class XPathParser
       matchFound = true;
     }
     else if ((m_tokenChar == '$') && (lookahead('(', 2))) {
-       // support for XPath 3.1 dynamic function calls
+       // support for XPath 3.1 dynamic function call
                      
        appendOp(2, OpCodes.OP_DYNAMIC_FUNCTION_CALL);
        
@@ -2498,7 +2522,7 @@ public class XPathParser
 
     appendOp(2, OpCodes.OP_ARGUMENT);
     Expr();
-
+    
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
       m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
   }
@@ -2603,7 +2627,7 @@ public class XPathParser
     {
       int funcTok = getFunctionToken(m_token);
 
-      if (-1 == funcTok)
+      if (funcTok == -1)
       {
           error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
               new Object[]{"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});

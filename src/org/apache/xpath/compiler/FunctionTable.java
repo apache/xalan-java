@@ -260,6 +260,9 @@ public class FunctionTable
   
   /** The 'for-each-pair()' id. */
   public static final int FUNC_FOR_EACH_PAIR = 78;
+  
+  /** The 'sort()' id. */
+  public static final int FUNC_SORT = 79;
 
   // Proprietary
 
@@ -317,7 +320,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 79;
+  private static final int NUM_BUILT_IN_FUNCS = 80;
 
   /**
    * Number of built-in functions that may be added.
@@ -428,6 +431,8 @@ public class FunctionTable
       org.apache.xpath.functions.FuncFoldRight.class;
     m_functions[FUNC_FOR_EACH_PAIR] = 
       org.apache.xpath.functions.FuncForEachPair.class;
+    m_functions[FUNC_SORT] = 
+      org.apache.xpath.functions.FuncSort.class;
     
     // XPath 3.1 functions configurations for the math functions 
     // namespace http://www.w3.org/2005/xpath-functions/math.
@@ -592,6 +597,8 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_FOLD_RIGHT));
           m_functionID.put(Keywords.FUNC_FOR_EACH_PAIR,
                           new Integer(FunctionTable.FUNC_FOR_EACH_PAIR));
+          m_functionID.put(Keywords.FUNC_SORT,
+                          new Integer(FunctionTable.FUNC_SORT));
           
           // XPath 3.1 functions configurations for the math functions 
           // namespace http://www.w3.org/2005/xpath-functions/math.

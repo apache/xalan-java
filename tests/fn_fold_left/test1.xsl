@@ -14,9 +14,7 @@
    
    <xsl:variable name="fnAdd" select="function($arg1, $arg2) { $arg1 + $arg2 }"/>
    
-   <!-- the XPath evaluation of select expression of this variable,
-        produces an empty sequence. -->
-   <xsl:variable name="emptySeq" select="1 to 0"/>
+   <xsl:variable name="emptySeq" select="()"/>
       
    <xsl:template match="/">      
       <result>

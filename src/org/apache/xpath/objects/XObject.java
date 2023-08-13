@@ -574,14 +574,7 @@ public class XObject extends Expression implements Serializable, Cloneable
    *
    * @return True if this object is less than the given object
    *
-   * @throws javax.xml.transform.TransformerException
-   * 
-   * Notes : Currently, we haven't implemented following XPath 3.1 spec definitions for
-   *         value comparison operator "lt"/"ge",
-   *         1) XPath 3.1 spec, requires atomizing the operands of XPath operator "lt"/"ge",
-   *            before applying operator "lt"/"ge" to the operands.
-   *         2) If any of the operands of operator "lt"/"ge", after atomization is an empty
-   *            sequence, the result of operation "lt"/"ge" should be an empty sequence.              
+   * @throws javax.xml.transform.TransformerException             
    */
   public boolean vcLessThan(XObject obj2, ExpressionNode expressionOwner, boolean isLtTest) throws 
                                                                     javax.xml.transform.TransformerException {
@@ -613,6 +606,11 @@ public class XObject extends Expression implements Serializable, Cloneable
        else if ((this instanceof XNumber) && (obj2 instanceof XNumber)) {
            return ((XNumber)this).num() < ((XNumber)obj2).num(); 
        }
+       else if ((this instanceof XString) && (obj2 instanceof XString)) {
+           String lStr = (((XString)this)).str();
+           String rStr = (((XString)obj2)).str();
+           return (lStr.compareTo(rStr) < 0) ? true : false;
+        }
        
        boolean isOperandNodeSet1 = false;
        boolean isOperandNodeSet2 = false;
@@ -655,14 +653,7 @@ public class XObject extends Expression implements Serializable, Cloneable
    *
    * @return True if this object is greater than the given object
    *
-   * @throws javax.xml.transform.TransformerException
-   * 
-   * Notes : Currently, we haven't implemented following XPath 3.1 spec definitions for
-   *         value comparison operator "gt"/"le",
-   *         1) XPath 3.1 spec, requires atomizing the operands of XPath operator "gt"/"le",
-   *            before applying operator "gt"/"le" to the operands.
-   *         2) If any of the operands of operator "gt"/"le", after atomization is an empty
-   *            sequence, the result of operation "gt"/"le" should be an empty sequence.              
+   * @throws javax.xml.transform.TransformerException            
    */
   public boolean vcGreaterThan(XObject obj2, ExpressionNode expressionOwner, boolean isGtTest) throws 
                                                                     javax.xml.transform.TransformerException {
@@ -689,7 +680,12 @@ public class XObject extends Expression implements Serializable, Cloneable
           return ((XSInt)this).gt((XSInt)obj2);    
        }
        else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
-           return ((XSDate)this).gt((XSDate)obj2);    
+          return ((XSDate)this).gt((XSDate)obj2);    
+       }
+       else if ((this instanceof XString) && (obj2 instanceof XString)) {
+          String lStr = (((XString)this)).str();
+          String rStr = (((XString)obj2)).str();
+          return (lStr.compareTo(rStr) > 0) ? true : false;
        }
        
        boolean isOperandNodeSet1 = false;
@@ -712,10 +708,10 @@ public class XObject extends Expression implements Serializable, Cloneable
        }
        
        if (isOperandNodeSet1 || this instanceof XNumber) {
-           return this.num() > obj2.num();    
+          return this.num() > obj2.num();    
        }    
        else if (isOperandNodeSet2 || obj2 instanceof XNumber) {
-           return obj2.num() > this.num();    
+          return obj2.num() > this.num();    
        }
        
        return true;
@@ -863,15 +859,7 @@ public class XObject extends Expression implements Serializable, Cloneable
    *
    * @return True if this object is equal to the given object
    *
-   * @throws javax.xml.transform.TransformerException
-   * 
-   * Notes : Currently, we haven't implemented following XPath 3.1 spec definitions for
-   *         value comparison operator "eq"/"ne",
-   *         1) XPath 3.1 spec, requires atomizing the operands of XPath operator "eq"/"ne",
-   *            before applying operator "eq"/"ne" to the operands.
-   *         2) If any of the operands of operator "eq"/"ne", after atomization is an empty
-   *            sequence, the result of operation "eq"/"ne" should be an empty sequence. 
-   *            Instead, we return the result as false for such cases.  
+   * @throws javax.xml.transform.TransformerException 
    */
   public boolean vcEquals(XObject obj2, ExpressionNode expressionOwner, boolean isEqTest) 
                                                                throws javax.xml.transform.TransformerException
