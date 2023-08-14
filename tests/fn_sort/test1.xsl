@@ -14,15 +14,13 @@
    <xsl:variable name="seq1" select="(1, 4, 6, 5, 3)"/>
    <xsl:variable name="seq2" select="(1, -2, 5, 10, -10, 10, 8)"/>
    
-   <xsl:variable name="emptySeq" select="()"/>
-   
    <xsl:template match="/">
       <result>
         <one><xsl:value-of select="sort($seq1)"/></one>
                  
-        <two><xsl:value-of select="sort($seq2, $emptySeq, function($a) { abs($a) })"/></two>
+        <two><xsl:value-of select="sort($seq2, (), function($a) { abs($a) })"/></two>
         
-        <three><xsl:value-of select="sort($seq2, $emptySeq)"/></three>
+        <three><xsl:value-of select="sort($seq2, ())"/></three>
         
         <four><xsl:value-of select="sort($seq2)"/></four>
       </result>

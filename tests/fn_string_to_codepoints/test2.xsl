@@ -4,22 +4,23 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_b.xml -->
+   <!-- use with test1_a.xml -->
    
-   <!-- An XSLT stylesheet test case, to test XPath 3.1 fn:sort function,
-        by reading input data from an XML external source document. 
-        
-        This stylesheet, sorts a sequence of XML person elements by last name 
-        as the major sort key and first name as the minor sort key, using the 
-        default collation.
-   -->                
+   <!-- An XSLT stylesheet test, to test the XPath 3.1 fn:string-to-codepoints() 
+        function. This stylesheet, gets input data from an XML external source 
+        document. -->                
 
    <xsl:output method="xml" indent="yes"/>
    
    <xsl:template match="/document">
-      <document>       
-         <xsl:copy-of select="sort(person, (), function($person) { $person/lName || ':' || $person/fName })"/>
-      </document>
+      <result>
+         <xsl:for-each select="a">
+            <codepoints inpStr="{.}"><xsl:value-of select="string-to-codepoints(.)"/></codepoints>
+         </xsl:for-each>
+         <xsl:for-each select="data/@*">
+            <codepoints inpStr="{.}"><xsl:value-of select="string-to-codepoints(.)"/></codepoints>
+         </xsl:for-each>
+      </result>
    </xsl:template>
    
    <!--

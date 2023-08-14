@@ -4,21 +4,27 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_b.xml -->
+   <!-- use with test1_c.xml -->
    
    <!-- An XSLT stylesheet test case, to test XPath 3.1 fn:sort function,
-        by reading input data from an XML external source document. 
+        by reading input data from an XML external source document.
         
-        This stylesheet, sorts a sequence of XML person elements by last name 
-        as the major sort key and first name as the minor sort key, using the 
-        default collation.
+        The fn:sort function call result, produced by this stylesheet,
+        is in the ascending order.
+        
+        This stylesheet example, post processes the result of fn:sort
+        function call, by the xsl:iterate instruction.
    -->                
 
    <xsl:output method="xml" indent="yes"/>
    
    <xsl:template match="/document">
-      <document>       
-         <xsl:copy-of select="sort(person, (), function($person) { $person/lName || ':' || $person/fName })"/>
+      <document>
+        <xsl:iterate select="sort((a | data/@*), (), function($val) { number($val) })">
+          <val>
+            <xsl:value-of select="."/>
+          </val>        
+        </xsl:iterate>
       </document>
    </xsl:template>
    

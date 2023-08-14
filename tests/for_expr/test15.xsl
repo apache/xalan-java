@@ -2,24 +2,18 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="3.0">
                 
-   <!-- Author: mukulg@apache.org -->
+   <!-- Author: mukulg@apache.org -->               
    
-   <!-- use with test1_b.xml -->
-   
-   <!-- An XSLT stylesheet test case, to test XPath 3.1 fn:sort function,
-        by reading input data from an XML external source document. 
-        
-        This stylesheet, sorts a sequence of XML person elements by last name 
-        as the major sort key and first name as the minor sort key, using the 
-        default collation.
-   -->                
+   <!-- An XSLT stylesheet test, to test the evaluation of an 
+        XPath 3.1 "for" expression. The XPath "for" expression
+        illustrated within this stylesheet, produces a string
+        by reversing the characters of a given input string. -->                
 
-   <xsl:output method="xml" indent="yes"/>
+   <xsl:output method="text"/>
    
-   <xsl:template match="/document">
-      <document>       
-         <xsl:copy-of select="sort(person, (), function($person) { $person/lName || ':' || $person/fName })"/>
-      </document>
+   <xsl:template match="/">
+      <xsl:variable name="str" select="'hello'"/>
+      <xsl:value-of select="for $idx in (-1 * string-length($str)) to -1 return substring($str, -1 * $idx, 1)"/>
    </xsl:template>
    
    <!--
