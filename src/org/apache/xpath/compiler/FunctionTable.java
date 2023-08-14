@@ -263,6 +263,12 @@ public class FunctionTable
   
   /** The 'sort()' id. */
   public static final int FUNC_SORT = 79;
+  
+  /** The 'codepoints-to-string()' id. */
+  public static final int FUNC_CODE_POINTS_TO_STRING = 80;
+  
+  /** The 'string-to-codepoints()' id. */
+  public static final int FUNC_STRING_TO_CODE_POINTS = 81;
 
   // Proprietary
 
@@ -320,7 +326,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 80;
+  private static final int NUM_BUILT_IN_FUNCS = 82;
 
   /**
    * Number of built-in functions that may be added.
@@ -479,6 +485,11 @@ public class FunctionTable
       org.apache.xpath.functions.FuncMinutesFromDuration.class;
     m_functions[FUNC_SECONDS_FROM_DURATION] = 
       org.apache.xpath.functions.FuncSecondsFromDuration.class;
+    
+    m_functions[FUNC_CODE_POINTS_TO_STRING] = 
+      org.apache.xpath.functions.FuncCodePointsToString.class;
+    m_functions[FUNC_STRING_TO_CODE_POINTS] = 
+      org.apache.xpath.functions.FuncStringToCodepoints.class;
   }
 
   static{
@@ -644,7 +655,12 @@ public class FunctionTable
          m_functionID.put(Keywords.FUNC_MINUTES_FROM_DURATION,
                          new Integer(FunctionTable.FUNC_MINUTES_FROM_DURATION));
          m_functionID.put(Keywords.FUNC_SECONDS_FROM_DURATION,
-                         new Integer(FunctionTable.FUNC_SECONDS_FROM_DURATION));         
+                         new Integer(FunctionTable.FUNC_SECONDS_FROM_DURATION));
+         
+         m_functionID.put(Keywords.FUNC_CODE_POINTS_TO_STRING,
+                         new Integer(FunctionTable.FUNC_CODE_POINTS_TO_STRING));
+         m_functionID.put(Keywords.FUNC_STRING_TO_CODE_POINTS,
+                         new Integer(FunctionTable.FUNC_STRING_TO_CODE_POINTS));
   }
   
   public FunctionTable(){

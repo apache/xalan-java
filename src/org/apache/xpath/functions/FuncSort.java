@@ -101,8 +101,8 @@ public class FuncSort extends FunctionMultiArgs
                                                                                      + "second argument to function call fn:sort, is "
                                                                                      + "not supported.", srcLocator);  
            }
-            
-           arg2 = m_arg2; 
+           
+           arg2 = m_arg2;
         }
         
         XObject xObjArg0 = null;
@@ -291,7 +291,7 @@ public class FuncSort extends FunctionMultiArgs
      */
     class FnSortComparator implements Comparator {
         
-        SourceLocator srcLocator;
+        private SourceLocator srcLocator;
         
         /*
          * The class constructor.

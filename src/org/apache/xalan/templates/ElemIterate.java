@@ -32,6 +32,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Operation;
@@ -207,7 +208,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
            // Evaluate xsl:iterate instruction, when value of its "select" attribute evaluates 
            // to a 'ResultSequence'. 
            if ((m_selectExpression instanceof Variable) || 
-                                                  (m_selectExpression instanceof Operation)) {
+                                                  (m_selectExpression instanceof Operation) || 
+                                                  (m_selectExpression instanceof Function)) {
                XObject  evalResult = m_selectExpression.execute(xctxt);
                if (evalResult instanceof ResultSequence) {
                    ResultSequence resultSeq = (ResultSequence)evalResult;

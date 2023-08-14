@@ -341,6 +341,12 @@ public class Keywords
   /** seconds-from-duration function string. */
   public static final String FUNC_SECONDS_FROM_DURATION = "seconds-from-duration";
   
+  /** codepoints-to-string function string. */
+  public static final String FUNC_CODE_POINTS_TO_STRING = "codepoints-to-string";
+  
+  /** string-to-codepoints function string. */
+  public static final String FUNC_STRING_TO_CODE_POINTS = "string-to-codepoints";
+  
   // XML Schema built-in data type name keywords
   
   /** xs:decimal data type string. */

@@ -13,8 +13,6 @@
    <xsl:output method="xml" indent="yes"/>
    
    <xsl:variable name="fnAdd" select="function($arg1, $arg2) { $arg1 + $arg2 }"/>
-   
-   <xsl:variable name="emptySeq" select="()"/>
       
    <xsl:template match="/">      
       <result>
@@ -55,7 +53,7 @@
         
         <!-- The fold-left function call below, reverses the order of xdm items within an input 
              sequence. -->
-        <val8><xsl:value-of select="fold-left(1 to 5, $emptySeq, function($a, $b) { ($b, $a) })"/></val8>
+        <val8><xsl:value-of select="fold-left(1 to 5, (), function($a, $b) { ($b, $a) })"/></val8>
         
         <!-- with this fold-left function call example, an inline function concatenates '$arg1' with 
              '$arg2', with a base value of 'z'. i.e, the following evaluation is performed :

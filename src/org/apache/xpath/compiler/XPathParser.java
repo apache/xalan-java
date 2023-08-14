@@ -2512,13 +2512,35 @@ public class XPathParser
    *
    * Argument    ::=    Expr
    *
-   *
    * @throws javax.xml.transform.TransformerException
    */
   protected void Argument() throws javax.xml.transform.TransformerException
   {
 
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+    
+    if (tokenIs('(') && lookahead(')', 1)) {
+        // handles the case, where the XPath expression (i.e, 
+        // function argument) is ().
+        
+        nextToken();
+        nextToken();                            
+        
+        insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+        
+        List<String> sequenceConstructorXPathParts = new ArrayList<String>(); 
+        
+        sequenceConstructorXPathParts.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
+        
+        fSimpleSequenceConstructor = new SimpleSequenceConstructor();              
+        fSimpleSequenceConstructor.setSequenceConstructorXPathParts(
+                                                              sequenceConstructorXPathParts);
+        
+        m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
+                                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+        
+        return; 
+    }
 
     appendOp(2, OpCodes.OP_ARGUMENT);
     Expr();

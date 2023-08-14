@@ -11,12 +11,10 @@
 
    <xsl:output method="xml" indent="yes"/>
    
-   <xsl:variable name="emptySeq" select="()"/>
-   
    <xsl:template match="/temp">
       <result>
-         <one><xsl:value-of select="sort(a, $emptySeq, function($a) { abs($a) })"/></one>
-         <two><xsl:value-of select="sort(data/@*, $emptySeq, function($val) { abs($val) })"/></two>
+         <one><xsl:value-of select="sort(a, (), function($a) { abs($a) })"/></one>
+         <two><xsl:value-of select="sort(data/@*, (), function($val) { abs($val) })"/></two>
       </result>
    </xsl:template>
    

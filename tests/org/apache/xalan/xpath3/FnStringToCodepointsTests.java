@@ -23,19 +23,19 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XPath 3.1 function fn:sort test cases.
+ * XPath 3.1 function fn:string-to-codepoints test cases.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FnSortTests extends XslTransformTestsUtil {        
+public class FnStringToCodepointsTests extends XslTransformTestsUtil {        
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + 
-                                                                                                           "fn_sort/";
+                                                                                                    "fn_string_to_codepoints/";
     
     private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + 
-                                                                                                           "fn_sort/gold/";
+                                                                                                    "fn_string_to_codepoints/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -50,7 +50,7 @@ public class FnSortTests extends XslTransformTestsUtil {
     }
 
     @Test
-    public void xslFnSortTest1() {
+    public void xslFnStringToCodepointsTest1() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
@@ -60,41 +60,11 @@ public class FnSortTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslFnSortTest2() {
+    public void xslFnStringToCodepointsTest2() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";                
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
-    
-    @Test
-    public void xslFnSortTest3() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_b.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";                
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
-    
-    @Test
-    public void xslFnSortTest4() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test4.out";                
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
-    }
-    
-    @Test
-    public void xslFnSortTest5() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
