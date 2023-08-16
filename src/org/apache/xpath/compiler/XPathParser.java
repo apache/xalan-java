@@ -98,9 +98,9 @@ public class XPathParser
                                                       "else", "some", "every", "satisfies", 
                                                       "let", ":=", "-", "||"};
   
-  // If the XPath expression is () (i.e, representing an xdm empty sequence), we
-  // translate that internally within this XPath parser implementation, to an
-  // XPath range "to" expression using this class field (this equivalently produces
+  // If the XPath expression is () (i.e, representing an xdm empty sequence),
+  // we translate that within this XPath parser implementation, to an XPath
+  // range "to" expression using this class field (this equivalently produces
   // an xdm empty sequence).
   private static final String XPATH_EXPR_STR_EMPTY_SEQUENCE = "1 to 0";
   
@@ -1226,7 +1226,7 @@ public class XPathParser
           
           ForQuantifiedExprVarBinding forExprVarBinding = new ForQuantifiedExprVarBinding();
           forExprVarBinding.setVarName(bindingVarName);
-          forExprVarBinding.setXpathExprStr(varBindingXpathStr);
+          forExprVarBinding.setXPathExprStr(varBindingXpathStr);
           
           forExprVarBindingList.add(forExprVarBinding);
           
@@ -1409,7 +1409,7 @@ public class XPathParser
           
           ForQuantifiedExprVarBinding quantifiedExprVarBinding = new ForQuantifiedExprVarBinding();
           quantifiedExprVarBinding.setVarName(bindingVarName);
-          quantifiedExprVarBinding.setXpathExprStr(varBindingXpathStr);
+          quantifiedExprVarBinding.setXPathExprStr(varBindingXpathStr);
           
           quantifiedExprVarBindingList.add(quantifiedExprVarBinding);
           
@@ -2519,9 +2519,11 @@ public class XPathParser
 
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
     
+    appendOp(2, OpCodes.OP_ARGUMENT);
+    
     if (tokenIs('(') && lookahead(')', 1)) {
-        // handles the case, where the XPath expression (i.e, 
-        // function argument) is ().
+        // handles the case, where the XPath function 
+        // argument is ().                
         
         nextToken();
         nextToken();                            
@@ -2542,11 +2544,10 @@ public class XPathParser
         return; 
     }
 
-    appendOp(2, OpCodes.OP_ARGUMENT);
     Expr();
     
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
-      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+                                           m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
   }
 
   /**

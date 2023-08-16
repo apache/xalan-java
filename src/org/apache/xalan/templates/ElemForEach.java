@@ -39,6 +39,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.ForExpr;
 import org.apache.xpath.composite.SimpleSequenceConstructor;
+import org.apache.xpath.functions.DynamicFunctionCall;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
@@ -345,12 +346,12 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         XObject evalResult = ((Function)m_selectExpression).execute(xctxt);
         if (evalResult instanceof ResultSequence) {
             processResultSequence(transformer, xctxt, evalResult);
-            transformer.setXPathContext(xctxtOriginal);            
+            transformer.setXPathContext(xctxtOriginal);
+            
             return;
         }                
-    }
-    
-    if (m_selectExpression instanceof Variable) {
+    }    
+    else if (m_selectExpression instanceof Variable) {
         // evaluate an xslt variable reference.
         // for example,
         // <xsl:variable name="tokens" select="tokenize(..)"/>
@@ -358,35 +359,47 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         XObject evalResult = ((Variable)m_selectExpression).execute(xctxt);
         if (evalResult instanceof ResultSequence) {
             processResultSequence(transformer, xctxt, evalResult);
-            transformer.setXPathContext(xctxtOriginal);            
+            transformer.setXPathContext(xctxtOriginal);
+            
             return;
         }
-    }
-    
-    if (m_selectExpression instanceof Operation) {
+    }    
+    else if (m_selectExpression instanceof Operation) {
         XObject  evalResult = m_selectExpression.execute(xctxt);
         if (evalResult instanceof ResultSequence) {
             processResultSequence(transformer, xctxt, evalResult);
             transformer.setXPathContext(xctxtOriginal);
+            
             return;
         }
-    }
-    
-    if (m_selectExpression instanceof ForExpr) {
+    }    
+    else if (m_selectExpression instanceof ForExpr) {
         ForExpr forExpr = (ForExpr)m_selectExpression;
         XObject  evalResult = forExpr.execute(xctxt);
         processResultSequence(transformer, xctxt, evalResult);
         transformer.setXPathContext(xctxtOriginal);
+        
         return;
-    }
-    
-    if (m_selectExpression instanceof SimpleSequenceConstructor) {
+    }    
+    else if (m_selectExpression instanceof SimpleSequenceConstructor) {
         SimpleSequenceConstructor seqCtrExpr = (SimpleSequenceConstructor)
                                                                      m_selectExpression;
         XObject  evalResult = seqCtrExpr.execute(xctxt);
         processResultSequence(transformer, xctxt, evalResult);
         transformer.setXPathContext(xctxtOriginal);
+        
         return;
+    }
+    else if (m_selectExpression instanceof DynamicFunctionCall) {
+        DynamicFunctionCall dfc = (DynamicFunctionCall)m_selectExpression;
+        XObject evalResult = dfc.execute(xctxt);
+        
+        if (evalResult instanceof ResultSequence) {
+           processResultSequence(transformer, xctxt, evalResult);
+           transformer.setXPathContext(xctxtOriginal);
+            
+           return;
+        }
     }
     
     // process the node-set, with body of xsl:for-each element as usual 
@@ -600,12 +613,10 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
        ResultSequence resultSeq = (ResultSequence)evalResult;
        List<XObject> resultSeqItems = resultSeq.getResultSequenceItems();
        
-       xctxt.setXPath3ContextSize(resultSeqItems.size());
-       
        for (int idx = 0; idx < resultSeqItems.size(); idx++) {
            XObject resultSeqItem = resultSeqItems.get(idx);
-           xctxt.setXPath3ContextItem(resultSeqItem);
-           xctxt.setXPath3ContextPosition(idx + 1);
+           
+           setXPathContextForXslSequenceProcessing(resultSeqItems.size(), idx, resultSeqItem, xctxt);
            
            for (ElemTemplateElement elemTemplateElem = this.m_firstChild; elemTemplateElem != null; 
                                                           elemTemplateElem = elemTemplateElem.m_nextSibling) {
@@ -613,12 +624,10 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
               transformer.setCurrentElement(elemTemplateElem);
               elemTemplateElem.execute(transformer);              
            }
+           
+           // reset the, XPath context details
+           resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);
        }
-
-       // reset the, XPath context's size, item and position variables
-       xctxt.setXPath3ContextSize(-1);
-       xctxt.setXPath3ContextItem(null);
-       xctxt.setXPath3ContextPosition(-1);
    }
    
 }

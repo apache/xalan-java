@@ -61,6 +61,7 @@ public class XslIterateParamWithparamData {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
+        
         XslIterateParamWithparamData paramWithparamData = 
                                                 (XslIterateParamWithparamData)obj;
         return nameVal.equals(paramWithparamData.getNameVal());

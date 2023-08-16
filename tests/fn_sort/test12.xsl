@@ -4,22 +4,32 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_b.xml -->
-   
-   <!-- An XSLT stylesheet test case, to test XPath 3.1 fn:sort function,
-        by reading input data from an XML external source document. 
-        
-        This stylesheet, sorts a sequence of XML person elements by last name 
-        as the major sort key and first name as the minor sort key, using the 
-        default collation.
-   -->                
+   <!-- An XSLT stylesheet test case, to test XPath 3.1 fn:sort function, and
+        post processing the fn:sort function result, with an XPath dynamic function
+        call to a function item.
+   -->                             
 
    <xsl:output method="xml" indent="yes"/>
    
-   <xsl:template match="/document">
-      <document>       
-         <xsl:copy-of select="sort(person, (), function($person) { string($person/lName) || ':' || string($person/fName) })"/>
-      </document>
+   <xsl:variable name="fnReverse" select="function($seq) { for $idx in (-1 * count($seq)) to -1 return $seq[abs($idx)]}"/>
+   
+   <xsl:template match="/">
+      <result>
+        <xsl:variable name="seq1" select="(10, 15, 16, 2, -2, 11, 12)"/>        
+        <xsl:variable name="sortedSequence" select="sort($seq1, (), function($num) { number($num) })"/>
+        <one>
+           <!-- process result of function call $fnReverse(..) with an xsl:for-each instruction. -->
+           <xsl:for-each select="$fnReverse($sortedSequence)">
+              <val><xsl:value-of select="."/></val>
+           </xsl:for-each>
+        </one>
+        <two>
+           <!-- process result of function call $fnReverse(..) with an xsl:iterate instruction. -->
+           <xsl:iterate select="$fnReverse($sortedSequence)">
+              <val><xsl:value-of select="."/></val>
+           </xsl:iterate>
+        </two>
+      </result>
    </xsl:template>
    
    <!--

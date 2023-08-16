@@ -32,6 +32,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.DynamicFunctionCall;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
@@ -73,11 +74,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
      
      private static final String OTHER_ELEM = "OTHER_ELEM";
      
-     // Can we have better way to maintain XSLT transformation xsl:iterate->xsl:param*
-     // run-time reference, instead of having this with 'public static' visibility?
-     // REVISIT
-     public static List<XslIterateParamWithparamData> fParamList = new 
-                                                              ArrayList<XslIterateParamWithparamData>();
+     public static List<XslIterateParamWithparamData> fXslIterateParamWithparamDataList = new 
+                                                                             ArrayList<XslIterateParamWithparamData>();
 
      /**
       * Construct an element representing xsl:iterate.
@@ -201,7 +199,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
            
            // Clear the, xsl:iterate->xsl:param* list storage before this xsl:iterate 
            // instruction's evaluation.
-           fParamList.clear();
+           fXslIterateParamWithparamDataList.clear();
            
            validateXslElemIterateChildElementsSequence(xctxt);
            
@@ -209,20 +207,24 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
            // to a 'ResultSequence'. 
            if ((m_selectExpression instanceof Variable) || 
                                                   (m_selectExpression instanceof Operation) || 
-                                                  (m_selectExpression instanceof Function)) {
+                                                  (m_selectExpression instanceof Function)  ||
+                                                  (m_selectExpression instanceof DynamicFunctionCall)) {
+               
                XObject  evalResult = m_selectExpression.execute(xctxt);
+               
                if (evalResult instanceof ResultSequence) {
                    ResultSequence resultSeq = (ResultSequence)evalResult;
-                   List<XObject> resultSeqItems = resultSeq.getResultSequenceItems();
-                   
-                   xctxt.setXPath3ContextSize(resultSeqItems.size());
+                   List<XObject> resultSeqItems = resultSeq.getResultSequenceItems();                                      
                    
                    ElemIterateOnCompletion xslOnCompletionTemplate = null;
                    
                    for (int idx = 0; idx < resultSeqItems.size(); idx++) {
                        XObject resultSeqItem = resultSeqItems.get(idx);
-                       xctxt.setXPath3ContextItem(resultSeqItem);
-                       xctxt.setXPath3ContextPosition(idx + 1);
+                       
+                       setXPathContextForXslSequenceProcessing(resultSeqItems.size(), idx, 
+                                                                                                 resultSeqItem, xctxt);
+                       
+                       boolean isBreakFromXslContentLoop = false;
                        
                        for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
                                                                              elemTemplate = elemTemplate.m_nextSibling) {
@@ -236,12 +238,22 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                                elemTemplate.execute(transformer);
                            }
                            else {
+                               // reset the, XPath context details                               
+                               resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);
+                               
+                               isBreakFromXslContentLoop = true;
+                               
                                break;    
                            }
                        }
                        
+                       if (!isBreakFromXslContentLoop) {
+                          // reset the, XPath context details                           
+                          resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);
+                       }
+                       
                        if ((XslTransformSharedDatastore.isXslIterateBreakEvaluated).booleanValue()) {                       
-                           break;   
+                          break;   
                        }
                    }
                    
@@ -263,7 +275,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                   
                   transformer.setXPathContext(xctxtOriginal);
                 
-                  return;  // return from this xsl:iterate instruction's evaluation
+                  return;  // return from this xsl:iterate instruction's evaluation                  
                }
            }
            
@@ -363,8 +375,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
               }
           }
           
-          // Get index of specific XSLT stylesheet elements first occurrence with the list object 
-          // 'xslElemNamesList'. If a particular kind of XSLT stylesheet element that is checked is 
+          // Get index of XSLT stylesheet specific element(s)'s, first occurrence within the list object 
+          // 'xslElemNamesList'. If a particular kind of XSLT stylesheet element that is checked, is 
           // not present within the list object 'xslElemNamesList', its index is returned as -1.
           int paramIdx = xslElemNamesList.indexOf(Constants.ELEMNAME_PARAMVARIABLE_STRING);
           int onCompletionIdx = xslElemNamesList.indexOf(Constants.ELEMNAME_ITERATE_ONCOMPLETION_STRING);          
@@ -394,12 +406,12 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                      XslIterateParamWithparamData paramWithparamDataObj = new XslIterateParamWithparamData();
                      paramWithparamDataObj.setNameVal(paramNameVal);
                      paramWithparamDataObj.setSelectVal(paramSelectXPath);
-                     if (fParamList.contains(paramWithparamDataObj)) {
-                         throw new TransformerException("XTSE0580 : the name of the xsl:param parameter '" + paramNameVal + "' "
+                     if (fXslIterateParamWithparamDataList.contains(paramWithparamDataObj)) {
+                        throw new TransformerException("XTSE0580 : the name of the xsl:param parameter '" + paramNameVal + "' "
                                                                                          + "is not unique.", xctxt.getSAXLocator());    
                      }
                      else {
-                         fParamList.add(paramWithparamDataObj);    
+                        fXslIterateParamWithparamDataList.add(paramWithparamDataObj);    
                      }
                   }                                    
               }

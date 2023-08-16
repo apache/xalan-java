@@ -18,6 +18,7 @@
 package org.apache.xalan.templates;
 
 import java.util.List;
+import java.util.Vector;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
@@ -79,6 +80,12 @@ public class ElemValueOf extends ElemTemplateElement {
    * True if the pattern is a simple ".".
    */
   private boolean m_isDot = false;
+  
+  // The following two fields of this class, are used during 
+  // XPath.fixupVariables(..) action as performed within object of 
+  // this class.    
+  private Vector fVars;    
+  private int fGlobalsSize;
 
   /**
    * Set the "select" attribute.
@@ -197,11 +204,14 @@ public class ElemValueOf extends ElemTemplateElement {
 
     super.compose(sroot);
 
-    java.util.Vector vnames = sroot.getComposeState().getVariableNames();
+    java.util.Vector vnames = (sroot.getComposeState()).getVariableNames();
+    
+    fVars = (Vector)(vnames.clone()); 
+    fGlobalsSize = (sroot.getComposeState()).getGlobalsSize();
 
-    if (null != m_selectExpression)
-      m_selectExpression.fixupVariables(
-        vnames, sroot.getComposeState().getGlobalsSize());
+    if (m_selectExpression != null) {
+        m_selectExpression.fixupVariables(vnames, fGlobalsSize);
+    }
   }
 
   /**
@@ -438,9 +448,13 @@ public class ElemValueOf extends ElemTemplateElement {
                         
                         if (xpathPatternStr.startsWith("$") && xpathPatternStr.contains("[") && 
                                                                                     xpathPatternStr.endsWith("]")) {
+                           // Within this 'if' clause, we handle the case, where the XPath expression is
+                           // syntactically of type $varName[expr], for example $varName[1], $varName[$idx],
+                           // $varName[funcCall(arg)] etc, and $varName resolves to a 'ResultSequence' object.
+                            
                            String varRefXPathExprStr = "$" + xpathPatternStr.substring(1, xpathPatternStr.indexOf('['));
                            String xpathIndexExprStr = xpathPatternStr.substring(xpathPatternStr.indexOf('[') + 1, 
-                                                                                                 xpathPatternStr.indexOf(']'));
+                                                                                                   xpathPatternStr.indexOf(']'));
                            
                            ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
                            List<XMLNSDecl> prefixTable = null;
@@ -448,7 +462,7 @@ public class ElemValueOf extends ElemTemplateElement {
                               prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
                            }
                            
-                           // evaluate the, variable reference XPath expression
+                           // Evaluate the, variable reference XPath expression
                            if (prefixTable != null) {
                               varRefXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
                                                                                                              varRefXPathExprStr, 
@@ -457,19 +471,24 @@ public class ElemValueOf extends ElemTemplateElement {
                            
                            XPath xpathObj = new XPath(varRefXPathExprStr, srcLocator, 
                                                                                  xctxt.getNamespaceContext(), XPath.SELECT, null);
+                           if (fVars != null) {
+                              xpathObj.fixupVariables(fVars, fGlobalsSize);                            
+                           }
+                           
                            XObject varEvalResult = xpathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
                            
-                           // evaluate the, xdm sequence index XPath expression
+                           // Evaluate the, xdm sequence index XPath expression
                            if (prefixTable != null) {
                               xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
                                                                                                               xpathIndexExprStr, 
                                                                                                               prefixTable);
                            }
-                           
-                           // There may be a possibility, of a variable reference within the xpath expression 
-                           // string 'xpathIndexExprStr'. To try, resolve those variable references.
-                           // REVISIT 
+                            
                            xpathObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+                           
+                           if (fVars != null) {
+                              xpathObj.fixupVariables(fVars, fGlobalsSize);                            
+                           }
                            
                            XObject seqIndexEvalResult = xpathObj.execute(xctxt, xctxt.getCurrentNode(), 
                                                                                                   xctxt.getNamespaceContext());
@@ -508,10 +527,6 @@ public class ElemValueOf extends ElemTemplateElement {
                                                                                                        + "reference, is not numeric.", srcLocator);  
                               }
                            }                           
-                        }
-                        else {
-                           // The implementation behavior is not known here.
-                           // REVISIT
                         }
                      }
                   }

@@ -56,7 +56,7 @@ public class DynamicFunctionCall extends Expression {
     
     private List<String> argList;
     
-    // the following two fields of this class, are used during 
+    // The following two fields of this class, are used during 
     // XPath.fixupVariables(..) action as performed within object of 
     // this class.    
     private Vector fVars;    
@@ -123,7 +123,7 @@ public class DynamicFunctionCall extends Expression {
        if ((functionRef != null) && (functionRef instanceof InlineFunction)) {
            InlineFunction inlineFunction = (InlineFunction)functionRef;
            
-           String inlineFnXpathStr = inlineFunction.getFuncBodyXPathExprStr();
+           String inlineFnXPathStr = inlineFunction.getFuncBodyXPathExprStr();
            List<String> funcParamNameList = inlineFunction.getFuncParamNameList();           
            
            if (argList.size() != funcParamNameList.size()) {
@@ -148,25 +148,30 @@ public class DynamicFunctionCall extends Expression {
                                                                                                       prefixTable);
               }
               
-              XPath argXpath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+              XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                         XPath.SELECT, null);
               if (fVars != null) {
-                 argXpath.fixupVariables(fVars, fGlobalsSize);
+                 argXPath.fixupVariables(fVars, fGlobalsSize);
               }
               
-              XObject argValue = argXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+              XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
               
+              m_xpathVarList.add(new QName(funcParamName));
               inlineFunctionVarMap.put(new QName(funcParamName), argValue);
            }
            
            if (prefixTable != null) {
-               inlineFnXpathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(inlineFnXpathStr, 
+              inlineFnXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(inlineFnXPathStr, 
                                                                                                            prefixTable);
            }
            
-           XPath inlineFnXpath = new XPath(inlineFnXpathStr, srcLocator, xctxt.getNamespaceContext(), 
+           XPath inlineFnXPath = new XPath(inlineFnXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                        XPath.SELECT, null);
-           evalResult = inlineFnXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+           if (fVars != null) {
+              inlineFnXPath.fixupVariables(fVars, fGlobalsSize);
+           }
+           
+           evalResult = inlineFnXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
            
            inlineFunctionVarMap.clear();           
        }

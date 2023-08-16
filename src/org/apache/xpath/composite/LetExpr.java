@@ -61,7 +61,7 @@ public class LetExpr extends Expression {
     
     private String fReturnExprXPathStr = null;
     
-    // the following two fields of this class, are used during 
+    // The following two fields of this class, are used during 
     // XPath.fixupVariables(..) action as performed within object of 
     // this class.    
     private Vector fVars;    

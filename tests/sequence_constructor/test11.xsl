@@ -4,21 +4,25 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_b.xml -->
+   <!-- use with test1_e.xml -->
    
-   <!-- An XSLT stylesheet test case, to test XPath 3.1 fn:sort function,
-        by reading input data from an XML external source document. 
-        
-        This stylesheet, sorts a sequence of XML person elements by last name 
-        as the major sort key and first name as the minor sort key, using the 
-        default collation.
-   -->                
+   <!-- An XSLT stylesheet test, to test the XPath 3.1 sequence construction
+        using comma operator. The XPath sequence constructor example,
+        illustrated within this stylesheet is a heterogeneous sequence
+        comprising of atomic values and XML elements. We traverse this
+        sequence, using xsl:for-each instruction. -->                              
 
    <xsl:output method="xml" indent="yes"/>
    
    <xsl:template match="/document">
-      <document>       
-         <xsl:copy-of select="sort(person, (), function($person) { string($person/lName) || ':' || string($person/fName) })"/>
+      <document>
+        <xsl:variable name="seq1" select="(10, 15, person[2], person[3])"/>
+
+        <xsl:for-each select="$seq1">
+           <info>
+              <xsl:copy-of select="."/>
+           </info>
+        </xsl:for-each>
       </document>
    </xsl:template>
    
