@@ -56,7 +56,7 @@ public class IfExpr extends Expression {
     
     private String elseExprXPathStr;
     
-    // the following two fields of this class, are used during 
+    // The following two fields of this class, are used during 
     // XPath.fixupVariables(..) action as performed within object of 
     // this class.    
     private Vector fVars;    

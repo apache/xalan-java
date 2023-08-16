@@ -28,8 +28,10 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.Compiler;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.patterns.NodeTest;
+import org.apache.xpath.xs.types.XSInteger;
 
 public abstract class PredicatedNodeTest extends NodeTest implements SubContextList
 {
@@ -340,6 +342,13 @@ public abstract class PredicatedNodeTest extends NodeTest implements SubContextL
       {
         // System.out.println("Executing predicate expression - waiting count: "+m_lpi.getWaitingCount());
         XObject pred = m_predicates[i].execute(xctxt);
+        
+        if (pred instanceof XSInteger) {
+           // added for XPath 3.1
+           String strValue = ((XSInteger)pred).stringValue();
+           pred = new XNumber((Double.valueOf(strValue)).doubleValue());
+        }
+        
         // System.out.println("\nBack from executing predicate expression - waiting count: "+m_lpi.getWaitingCount());
         // System.out.println("pred.getType(): "+pred.getType());
         if (XObject.CLASS_NUMBER == pred.getType())

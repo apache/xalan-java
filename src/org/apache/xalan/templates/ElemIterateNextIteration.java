@@ -225,13 +225,13 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
                 }
             }
             
-            if ((ElemIterate.fParamList).size() != fWithparamList.size()) {
+            if ((ElemIterate.fXslIterateParamWithparamDataList).size() != fWithparamList.size()) {
                 throw new TransformerException("XTSE0580 : within xsl:iterate, the number of xsl:param elements are not equal to "
                                                                + "number of xsl:next-iteration's xsl:with-param elements.", xctxt.getSAXLocator());     
             }
             else {
-               for (int idx = 0; idx < (ElemIterate.fParamList).size(); idx ++) {
-                   XslIterateParamWithparamData paramData = (ElemIterate.fParamList).get(idx);
+               for (int idx = 0; idx < (ElemIterate.fXslIterateParamWithparamDataList).size(); idx ++) {
+                   XslIterateParamWithparamData paramData = (ElemIterate.fXslIterateParamWithparamDataList).get(idx);
                    XslIterateParamWithparamData withParamData = fWithparamList.get(idx);
                    if (!(paramData.getNameVal()).equals(withParamData.getNameVal())) {
                        throw new TransformerException("XTSE3130 : within xsl:iterate, xsl:param and xsl:with-param names at position " + 

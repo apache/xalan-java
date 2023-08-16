@@ -4,29 +4,39 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- use with test1_c.xml -->
+   <!-- use with test1_e.xml -->
    
    <!-- An XSLT stylesheet test case, to test XPath 3.1 fn:sort function,
         by reading input data from an XML external source document.
-        
-        The fn:sort function call result, produced by this stylesheet,
-        is in the descending order (due to the fact that, fn:sort function
-        call specifies an XPath sort key expression as -1 * number(..)). 
-        
-        This stylesheet example, post processes the result of fn:sort
-        function call, by the xsl:iterate instruction.
-   -->                
+   
+        This stylesheet example, first sorts an XML input element list using
+        fn:sort function, and then reverses that produced sequence using a 
+        dynamic function call to a function item, which provides us the
+        final resulting information in descending order.
+   -->                             
 
    <xsl:output method="xml" indent="yes"/>
    
+   <!-- A variable, defining a function item, that reverses the order of an xdm 
+        input sequence. -->
+   <xsl:variable name="fnReverse" select="function($seq) { for $idx in (-1 * count($seq)) to -1 return $seq[abs($idx)]}"/>
+   
    <xsl:template match="/document">
-      <document>
-        <xsl:iterate select="sort((a | data/@*), (), function($val) { -1 * number($val) })">
-          <val>
-            <xsl:value-of select="."/>
-          </val>        
+      <document>        
+        <xsl:variable name="sortedPersonList" select="sort(person, (), function($person) { string($person/name) })"/>
+        <xsl:iterate select="$fnReverse($sortedPersonList)">
+           <xsl:apply-templates select="." mode="m1"/>
         </xsl:iterate>
       </document>
+   </xsl:template>
+   
+   <!-- XSL transformation of XML person element, transforming an XML element 
+        information to attribute. Using a 'mode' attribute allows us to
+        unambiguously select this XSL template during transformation. -->
+   <xsl:template match="person" mode="m1">
+      <person id="{id}">
+         <xsl:copy-of select="name"/>
+      </person>
    </xsl:template>
    
    <!--

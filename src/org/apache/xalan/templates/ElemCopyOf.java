@@ -20,15 +20,17 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.Vector;
+
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.TreeWalker2Result;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.ref.DTMTreeWalker;
-import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
@@ -39,7 +41,7 @@ import org.apache.xpath.xs.types.XSNumericType;
 import org.apache.xpath.xs.types.XSUntyped;
 import org.apache.xpath.xs.types.XSUntypedAtomic;
 
-/*
+/**
  * Implementation of XSLT xsl:copy-of instruction.
  * 
  * XSLT 3.0 spec, provides following definition of xsl:copy-of
@@ -63,6 +65,17 @@ public class ElemCopyOf extends ElemTemplateElement
    * @serial
    */
   public XPath m_selectExpression = null;
+  
+  /**
+   * True if the pattern is a simple ".".
+   */
+  private boolean m_isDot = false;
+  
+  // The following two fields of this class, are used during 
+  // XPath.fixupVariables(..) action as performed within object of 
+  // this class.    
+  private Vector fVars;    
+  private int fGlobalsSize;
 
   /**
    * Set the "select" attribute.
@@ -72,6 +85,12 @@ public class ElemCopyOf extends ElemTemplateElement
    */
   public void setSelect(XPath expr)
   {
+    if (expr != null) {
+       String patternStr = expr.getPatternString();
+
+       m_isDot = (patternStr != null) && patternStr.equals(".");
+    }
+      
     m_selectExpression = expr;
   }
 
@@ -96,8 +115,14 @@ public class ElemCopyOf extends ElemTemplateElement
   {
     super.compose(sroot);
     
-    StylesheetRoot.ComposeState cstate = sroot.getComposeState();
-    m_selectExpression.fixupVariables(cstate.getVariableNames(), cstate.getGlobalsSize());
+    java.util.Vector vnames = (sroot.getComposeState()).getVariableNames();
+    
+    fVars = (Vector)(vnames.clone()); 
+    fGlobalsSize = (sroot.getComposeState()).getGlobalsSize();
+
+    if (m_selectExpression != null) {
+        m_selectExpression.fixupVariables(vnames, fGlobalsSize);
+    }
   }
 
   /**
@@ -140,8 +165,18 @@ public class ElemCopyOf extends ElemTemplateElement
     try
     {
       XPathContext xctxt = transformer.getXPathContext();
+              
       int sourceNode = xctxt.getCurrentNode();
-      XObject value = m_selectExpression.execute(xctxt, sourceNode, this);
+      
+      XObject value = null;
+      
+      XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+      if (m_isDot && (xpath3ContextItem != null)) {
+         value = xpath3ContextItem;  
+      }
+      else {
+         value = m_selectExpression.execute(xctxt, sourceNode, this);
+      }
 
       if (transformer.getDebug())
         transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
@@ -245,12 +280,12 @@ public class ElemCopyOf extends ElemTemplateElement
                     handler.characters(spaceCharArr, 0, 1);
                  } 
              }
-             else if (sequenceItem.getType() == XObject.CLASS_NODESET) {
+             else if (sequenceItem.getType() == XObject.CLASS_NODESET) {                 
                  DTMIterator nl1 = sequenceItem.iter();
 
                  DTMTreeWalker tw1 = new TreeWalker2Result(transformer, handler);
-                 int pos1;
-
+                 int pos1;                 
+                 
                  while (DTM.NULL != (pos1 = nl1.nextNode())) {
                      DTM dtm = xctxt.getDTMManager().getDTM(pos1);
                      short t = dtm.getNodeType(pos1);
@@ -267,7 +302,7 @@ public class ElemCopyOf extends ElemTemplateElement
                      else {
                          tw1.traverse(pos1);
                      }
-                 }    
+                 }
              }
           }
           
@@ -280,11 +315,6 @@ public class ElemCopyOf extends ElemTemplateElement
           break;
         }
       }
-                        
-      // I don't think we want this.  -sb
-      //  if (transformer.getDebug())
-      //  transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
-      //  "endSelect", m_selectExpression, value);
 
     }
     catch(org.xml.sax.SAXException se)

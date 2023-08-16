@@ -74,7 +74,7 @@ public class QuantifiedExpr extends Expression {
 
     private String fQuantifierTestXPathStr = null;
     
-    // the following two fields of this class, are used during 
+    // The following two fields of this class, are used during 
     // XPath.fixupVariables(..) action as performed within object of 
     // this class.    
     private Vector fVars;    
@@ -207,7 +207,7 @@ public class QuantifiedExpr extends Expression {
            // evaluate the current, variable binding xpath expression
            
            String varName = quantifiedExprVarBinding.getVarName();
-           String varBindingXPathStr = quantifiedExprVarBinding.getXpathExprStr();                      
+           String varBindingXPathStr = quantifiedExprVarBinding.getXPathExprStr();                      
            
            if (prefixTable != null) {
                varBindingXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(

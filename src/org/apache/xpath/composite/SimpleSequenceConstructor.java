@@ -63,7 +63,7 @@ public class SimpleSequenceConstructor extends Expression {
     
     private List<String> sequenceConstructorXPathParts = new ArrayList<String>();
     
-    // the following two fields of this class, are used during 
+    // The following two fields of this class, are used during 
     // XPath.fixupVariables(..) action as performed within object of 
     // this class.    
     private Vector fVars;    

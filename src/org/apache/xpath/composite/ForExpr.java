@@ -65,7 +65,7 @@ public class ForExpr extends Expression {
     
     private String fReturnExprXPathStr = null;
     
-    // the following two fields of this class, are used during 
+    // The following two fields of this class, are used during 
     // XPath.fixupVariables(..) action as performed within object of 
     // this class.    
     private Vector fVars;    
@@ -93,11 +93,11 @@ public class ForExpr extends Expression {
                                                                                        fReturnExprXPathStr, prefixTable);
        }
        
-       XPath returnExprXpath = new XPath(fReturnExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+       XPath returnExprXPath = new XPath(fReturnExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                XPath.SELECT, null);
        
        ResultSequence resultSeq = getForExpressionEvalResult(fForExprVarBindingList.listIterator(), 
-                                                                            returnExprXpath, xctxt);       
+                                                                            returnExprXPath, xctxt);       
        
        // An xdm sequence object 'resultSeq', may have items that are themselves sequence 
        // objects. We need to expand such nested sequence objects, to get a final sequence
@@ -141,7 +141,7 @@ public class ForExpr extends Expression {
      * of the XPath 'for' expression, returned as a 'ResultSequence' object.
      */
     private ResultSequence getForExpressionEvalResult(ListIterator listIter, 
-                                                                     XPath returnExprXpath, 
+                                                                     XPath returnExprXPath, 
                                                                      XPathContext xctxt) throws TransformerException {
         ResultSequence resultSeq = new ResultSequence();
         
@@ -154,10 +154,10 @@ public class ForExpr extends Expression {
         if (listIter.hasNext()) {           
            ForQuantifiedExprVarBinding forExprVarBinding = (ForQuantifiedExprVarBinding)listIter.next();            
             
-           // evaluate the current, variable binding xpath expression
+           // Evaluate the XPath 'for' expression's, one of the variable binding xpath expression
            
            String varName = forExprVarBinding.getVarName();
-           String varBindingXPathStr = forExprVarBinding.getXpathExprStr();
+           String varBindingXPathStr = forExprVarBinding.getXPathExprStr();
            
            ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
            List<XMLNSDecl> prefixTable = null;
@@ -170,16 +170,14 @@ public class ForExpr extends Expression {
                                                                                             varBindingXPathStr, prefixTable);
            }
            
-           XPath varBindingXpath = new XPath(varBindingXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+           XPath varBindingXPath = new XPath(varBindingXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                  XPath.SELECT, null);
            if (fVars != null) {
-              if (!m_xpathVarList.contains(new QName(varName))) {
-                 m_xpathVarList.add(new QName(varName));
-              }
-              varBindingXpath.fixupVariables(fVars, fGlobalsSize);
+              m_xpathVarList.add(new QName(varName));
+              varBindingXPath.fixupVariables(fVars, fGlobalsSize);
            }
            
-           XObject xsObj = varBindingXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+           XObject xsObj = varBindingXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
            
            ResultSequence xsObjResultSeq = new ResultSequence(); 
            
@@ -201,9 +199,7 @@ public class ForExpr extends Expression {
                }
            }
            else {
-              // we're assuming here that, 'for' expression's variable binding XPath 
-              // expression evaluation, returned a singleton value.
-              xsObjResultSeq.add(xsObj);
+               xsObjResultSeq.add(xsObj);
            }
            
            if (xsObjResultSeq.size() == 0) {
@@ -212,7 +208,7 @@ public class ForExpr extends Expression {
                return resultSeq;    
            }
            
-           // for each xdm item within sequence object 'xsObjResultSeq' (which is the 
+           // For each xdm item within sequence object 'xsObjResultSeq' (which is the 
            // result of variable binding xpath expression's evaluation), bind the 'for' 
            // expression's binding variable in turn to that item.
            for (int idx = 0; idx < xsObjResultSeq.size(); idx++) {
@@ -220,10 +216,11 @@ public class ForExpr extends Expression {
                              
                forExprVarBindingMap.put(new QName(varName), xdmItem);
                
-               ResultSequence res = getForExpressionEvalResult(listIter, returnExprXpath, xctxt);
-               // append xdm items of sequence 'res', to the final sequence object 'resultSeq'   
+               ResultSequence res = getForExpressionEvalResult(listIter, returnExprXPath, xctxt);
+               // Append xdm items of sequence 'res', to the final sequence object 'resultSeq'   
                for (int idx1 = 0; idx1 < res.size(); idx1++) {
-                  resultSeq.add(res.item(idx1));    
+                  XObject xObj = res.item(idx1);
+                  resultSeq.add(xObj);    
                }
            }
            
@@ -232,18 +229,44 @@ public class ForExpr extends Expression {
            return resultSeq;
         }
         else {
-            // this else clause, actually evaluates the current XPath 'for' expression's 
-            // 'return' expression clause.
+            // This else clause, evaluates the XPath 'for' expression's 'return' 
+            // expression. The XPath 'for' expression's 'return' expression may
+            // be evaluated multiple times depending upon, how may 'for' expression
+            // iterations are there.
             
             if (fVars != null) {              
-               returnExprXpath.fixupVariables(fVars, fGlobalsSize);
+               returnExprXPath.fixupVariables(fVars, fGlobalsSize);
             }
             
-            XObject retExprValue = returnExprXpath.execute(xctxt, contextNode, 
-                                                                        xctxt.getNamespaceContext());
-            resultSeq.add(retExprValue);
+            ResultSequence returnExprResultSet = new ResultSequence();
             
-            return resultSeq; 
+            XObject retExprResultVal = returnExprXPath.execute(xctxt, contextNode, 
+                                                                        xctxt.getNamespaceContext());
+            
+            if (retExprResultVal instanceof XNodeSet) { 
+               XNodeSet xNodeSetItem = (XNodeSet)retExprResultVal;
+               
+               XNodeSet xsObjNodeSet = (XNodeSet)xNodeSetItem;
+               DTMIterator dtmIter = xsObjNodeSet.iterRaw();
+               
+               int nextNodeDtmHandle;
+                      
+               while ((nextNodeDtmHandle = dtmIter.nextNode()) != DTM.NULL) {       
+                  XNodeSet singletonXPathNode = new XNodeSet(nextNodeDtmHandle, xctxt);
+                  returnExprResultSet.add(singletonXPathNode);
+               }
+            }
+            else if (retExprResultVal instanceof ResultSequence) {
+                ResultSequence rSeq = (ResultSequence)retExprResultVal;
+                for (int idx = 0; idx < rSeq.size(); idx++) {
+                    returnExprResultSet.add(rSeq.item(idx)); 
+                } 
+            }
+            else {
+                returnExprResultSet.add(retExprResultVal);
+            }
+            
+            return returnExprResultSet; 
         }
     }
 

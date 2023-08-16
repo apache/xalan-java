@@ -21,20 +21,30 @@
 package org.apache.xpath;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Vector;
 
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.SAXSourceLocator;
+import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.XPathParser;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xpath.xs.types.XSNumericType;
 
 /**
  * The XPath class wraps an expression object and provides general services 
@@ -53,6 +63,12 @@ public class XPath implements Serializable, ExpressionOwner
    * The function table for xpath built-in functions
    */
   private transient FunctionTable m_funcTable = null;
+  
+  // The following two fields of this class, are used during 
+  // XPath.fixupVariables(..) action as performed within object of 
+  // this class.    
+  private Vector fVars;    
+  private int fGlobalsSize;
 
   /**
    * initial the function table
@@ -84,6 +100,9 @@ public class XPath implements Serializable, ExpressionOwner
    */
   public void fixupVariables(java.util.Vector vars, int globalsSize)
   {
+    fVars = (Vector)(vars.clone());
+    fGlobalsSize = globalsSize;
+    
     m_mainExp.fixupVariables(vars, globalsSize);
   }
 
@@ -328,12 +347,111 @@ public class XPath implements Serializable, ExpressionOwner
     xctxt.pushNamespaceContext(namespaceContext);
 
     xctxt.pushCurrentNodeAndExpression(contextNode, contextNode);
+    
+    SourceLocator srcLocator = xctxt.getSAXLocator(); 
 
     XObject xobj = null;
+    
+    boolean isToBeProcessedAsNodeSet = true;
+    
+    if (m_mainExp instanceof LocPathIterator) {
+        LocPathIterator locPathIterator = (LocPathIterator)m_mainExp;
+        
+        DTMIterator dtmIter = null;                     
+        try {
+           dtmIter = locPathIterator.asIterator(xctxt, contextNode);
+        }
+        catch (ClassCastException ex) {
+           isToBeProcessedAsNodeSet = false;
+        }
+    }
 
     try
     {
-      xobj = m_mainExp.execute(xctxt);
+       if (isToBeProcessedAsNodeSet) {
+          xobj = m_mainExp.execute(xctxt);
+       }
+       else {
+           String xpathPatternStr = getPatternString();
+           
+           if (xpathPatternStr.startsWith("$") && xpathPatternStr.contains("[") && 
+                                                                        xpathPatternStr.endsWith("]")) {              
+              // Within this 'if' clause, we handle the case, where the XPath expression is
+              // syntactically of type $varName[expr], for example $varName[1], $varName[$idx],
+              // $varName[funcCall(arg)] etc, and $varName resolves to a 'ResultSequence' object.
+               
+              String varRefXPathExprStr = "$" + xpathPatternStr.substring(1, xpathPatternStr.indexOf('['));
+              String xpathIndexExprStr = xpathPatternStr.substring(xpathPatternStr.indexOf('[') + 1, 
+                                                                                      xpathPatternStr.indexOf(']'));
+              ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+              List<XMLNSDecl> prefixTable = null;
+              if (elemTemplateElement != null) {
+                 prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+              }
+              
+              // Evaluate the, variable reference XPath expression
+              if (prefixTable != null) {
+                 varRefXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                                varRefXPathExprStr, 
+                                                                                                prefixTable);
+              }
+              
+              XPath xpathObj = new XPath(varRefXPathExprStr, srcLocator, 
+                                                                    xctxt.getNamespaceContext(), XPath.SELECT, null);            
+              if (fVars != null) {
+                 xpathObj.fixupVariables(fVars, fGlobalsSize);  
+              }
+              
+              XObject varEvalResult = xpathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
+              
+              // Evaluate the, xdm sequence index XPath expression
+              if (prefixTable != null) {
+                 xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                                 xpathIndexExprStr, 
+                                                                                                 prefixTable);
+              }
+              
+              xpathObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+              
+              if (fVars != null) {
+                 xpathObj.fixupVariables(fVars, fGlobalsSize);  
+              }
+              
+              XObject seqIndexEvalResult = xpathObj.execute(xctxt, xctxt.getCurrentNode(), 
+                                                                                     xctxt.getNamespaceContext());
+              if (varEvalResult instanceof ResultSequence) {
+                 ResultSequence resultSeq = (ResultSequence)varEvalResult;
+                 
+                 if (seqIndexEvalResult instanceof XNumber) {
+                    double dValIndex = ((XNumber)seqIndexEvalResult).num();
+                    if (dValIndex == (int)dValIndex) {
+                       xobj = resultSeq.item((int)dValIndex - 1);
+                    }
+                    else {
+                       throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
+                                                                                            + "sequence reference, is not an integer.", 
+                                                                                                 srcLocator); 
+                    }  
+                 }
+                 else if (seqIndexEvalResult instanceof XSNumericType) {
+                    String indexStrVal = ((XSNumericType)seqIndexEvalResult).stringValue();
+                    double dValIndex = (Double.valueOf(indexStrVal)).doubleValue();
+                    if (dValIndex == (int)dValIndex) {
+                       xobj = resultSeq.item((int)dValIndex - 1);                                  
+                    }
+                    else {
+                       throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
+                                                                                            + "sequence reference, is not an integer.", 
+                                                                                                 srcLocator); 
+                    } 
+                 }
+                 else {
+                    throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm sequence "
+                                                                                           + "reference, is not numeric.", srcLocator);  
+                 }
+              }          
+           }  
+       }
     }
     catch (TransformerException te)
     {

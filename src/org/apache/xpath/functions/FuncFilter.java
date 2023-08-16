@@ -69,7 +69,7 @@ public class FuncFilter extends Function2Args {
    
    private static final String FUNCTION_NAME = "filter()";
    
-   // the following two fields of this class, are used during 
+   // The following two fields of this class, are used during 
    // XPath.fixupVariables(..) action as performed within object of 
    // this class.    
    private Vector fVars;    

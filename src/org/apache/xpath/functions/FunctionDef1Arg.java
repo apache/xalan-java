@@ -21,9 +21,11 @@
 package org.apache.xpath.functions;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 
@@ -93,8 +95,11 @@ public class FunctionDef1Arg extends FunctionOneArg
       }
       
     }
-    else
-      return m_arg0.execute(xctxt).xstr();   
+    else {
+      XObject arg0XObject = m_arg0.execute(xctxt);
+      
+      return new XString(XslTransformEvaluationHelper.getStrVal(arg0XObject));
+    }
   }
 
   /**

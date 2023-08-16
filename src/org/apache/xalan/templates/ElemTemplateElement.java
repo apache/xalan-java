@@ -31,11 +31,15 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.UnImplNode;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.WhitespaceStrippingElementMatcher;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XObject;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -62,13 +66,13 @@ public class ElemTemplateElement extends UnImplNode
 {
    static final long serialVersionUID = 4440018597841834447L;
     
-   // to support, xsl:for-each-group's grouping key. 
-   // the instance of this class, stores this value for a specific xsl:for-each-group element 
+   // This class field supports, implementation of xsl:for-each-group's grouping key. 
+   // An instance of this class, stores this value for a specific xsl:for-each-group element 
    // within the XSLT stylesheet.
    private Object fGroupingKey = null;
     
-   // to support, xsl:for-each-group's current-group contents. 
-   // the instance of this class, stores this value for a specific xsl:for-each-group element 
+   // This class field supports, implementation of xsl:for-each-group's current-group contents. 
+   // An instance of this class, stores this value for a specific xsl:for-each-group element 
    // within the XSLT stylesheet.
    private List<Integer> fGroupNodesDtmHandles;
 
@@ -1681,7 +1685,7 @@ public class ElemTemplateElement extends UnImplNode
       this.fGroupNodesDtmHandles = groupNodesDtmHandles;
   }
   
-  /*
+  /**
    * Method to determine whether, an XSLT instruction is in a sequence constructor's tail position.
    * 
    * The XSLT 3.0 spec, provides following definition to determine, whether an XSLT instruction
@@ -1700,12 +1704,10 @@ public class ElemTemplateElement extends UnImplNode
      5) J is in a tail position within the sequence constructor that forms the body of an xsl:catch element within 
         an xsl:try instruction that is itself in a tail position within SC.
         
-     Notes : Presently, we check only points 1), 2) and 3) as mentioned within previous definition above (excluding 
-             checking the constraints, specified for xsl:fallback instruction).
+     Currently, we check only points 1), 2) and 3) as mentioned within previous definition above.
              
      @param  xslInstr    the XSLT instruction for which we need to find, whether its in a tail position of an XSLT 
-                         sequence constructor.                         
-                          
+                         sequence constructor.                          
    */
   protected boolean isXslInstructionInTailPositionOfSequenceConstructor(ElemTemplateElement xslInstr) {
       
@@ -1735,6 +1737,54 @@ public class ElemTemplateElement extends UnImplNode
       }
       
       return isXslInstructionInTailPositionOfSequenceConstructor;
+  }
+  
+  /**
+   * During processing of, xsl:for-each or xsl:iterate instructions, when the input data to be
+   * processed by these instructions is a 'ResultSequence' object, we use this method to set
+   * the XPath context information before each sequence item is processed by these instructions.
+   * 
+   * @param inpSequenceLength                  an input data sequence length
+   * @param currentlyProcessingItemIndex       an index of currently processed item within an 
+                                               input sequence.
+   * @param currentContextItem                 the current xdm item been processed
+   * @param xctxt                              the currently active, XPath context object
+   */
+  protected void setXPathContextForXslSequenceProcessing(int inpSequenceLength, 
+                                                                  int currentlyProcessingItemIndex, 
+                                                                  XObject currentContextItem, 
+                                                                  XPathContext xctxt) {
+      if (!(currentContextItem instanceof XNodeSet)) {
+         xctxt.setXPath3ContextSize(inpSequenceLength);
+         xctxt.setXPath3ContextItem(currentContextItem);
+         xctxt.setXPath3ContextPosition(currentlyProcessingItemIndex + 1);
+      }
+      else {
+         XNodeSet xNodeSet = (XNodeSet)currentContextItem;
+         DTMIterator dtmIter = xNodeSet.iterRaw();
+         int contextNode = dtmIter.nextNode();
+         xctxt.pushCurrentNode(contextNode); 
+      }
+  }
+  
+  /**
+   * During processing of, xsl:for-each or xsl:iterate instructions, when the input data to be
+   * processed by these instructions is a 'ResultSequence' object, we use this method to reset
+   * the XPath context information after each sequence item is processed by these instructions. 
+   * 
+   * @param currentContextItem      the current xdm item been processed
+   * @param xctxt                   the currently active, XPath context object
+   */
+  protected void resetXPathContextForXslSequenceProcessing(XObject currentContextItem, 
+                                                                            XPathContext xctxt) {
+     if (!(currentContextItem instanceof XNodeSet)) {
+        xctxt.setXPath3ContextSize(-1);
+        xctxt.setXPath3ContextItem(null);
+        xctxt.setXPath3ContextPosition(-1);
+     }
+     else {
+        xctxt.popCurrentNode();
+     }
   }
 
 }

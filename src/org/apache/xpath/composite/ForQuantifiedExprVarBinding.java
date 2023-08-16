@@ -32,7 +32,7 @@ public class ForQuantifiedExprVarBinding {
     
     private String fVarName = null;
     
-    private String fXpathExprStr = null;
+    private String fXPathExprStr = null;
 
     public String getVarName() {
         return fVarName;
@@ -42,12 +42,12 @@ public class ForQuantifiedExprVarBinding {
         this.fVarName = varName;
     }
 
-    public String getXpathExprStr() {
-        return fXpathExprStr;
+    public String getXPathExprStr() {
+        return fXPathExprStr;
     }
 
-    public void setXpathExprStr(String xpathExprStr) {
-        this.fXpathExprStr = xpathExprStr;
+    public void setXPathExprStr(String xpathExprStr) {
+        this.fXPathExprStr = xpathExprStr;
     }
 
 }

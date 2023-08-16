@@ -62,6 +62,13 @@ public class FuncSum extends FunctionOneArg
           sum = sumResultSequence(resultSeq);          
        }       
     }
+    else if (m_arg0 instanceof Function) {
+       XObject resultObj = ((Function)m_arg0).execute(xctxt);
+       if (resultObj instanceof ResultSequence) {
+          ResultSequence resultSeq = (ResultSequence)resultObj;
+          sum = sumResultSequence(resultSeq);          
+       }  
+    }
     else if (m_arg0 instanceof ForExpr) {
        ForExpr forExpr = (ForExpr)m_arg0;
        ResultSequence forExprResult = (ResultSequence)(forExpr.execute(xctxt));
