@@ -61,10 +61,10 @@ public class QuantifiedExpr extends Expression {
 
     private static final long serialVersionUID = -3073535420126040669L;
     
-    // constant value, denoting XPath quantified expression "some" 
+    // Constant value, denoting XPath quantified expression 'some'.
     public static final int SOME = 0;
     
-    // constant value, denoting XPath quantified expression "every"
+    // Constant value, denoting XPath quantified expression 'every'.
     public static final int EVERY = 1;
     
     private int fCurrentXPathQuantifier;
@@ -204,7 +204,7 @@ public class QuantifiedExpr extends Expression {
         if (listIter.hasNext()) {           
            ForQuantifiedExprVarBinding quantifiedExprVarBinding = (ForQuantifiedExprVarBinding)listIter.next();            
             
-           // evaluate the current, variable binding xpath expression
+           // Evaluate the current, variable binding xpath expression
            
            String varName = quantifiedExprVarBinding.getVarName();
            String varBindingXPathStr = quantifiedExprVarBinding.getXPathExprStr();                      
@@ -242,9 +242,7 @@ public class QuantifiedExpr extends Expression {
                xsObjResultSeq = (ResultSequence)xsObj;
            }
            else {
-              // assuming here that, quantified expression's variable binding XPath expression 
-              // evaluation, returned a singleton value.
-              xsObjResultSeq.add(xsObj);
+               xsObjResultSeq.add(xsObj);
            }
            
            if (xsObjResultSeq.size() == 0) {
@@ -253,7 +251,7 @@ public class QuantifiedExpr extends Expression {
                return resultSeq;    
            }
            
-           // for each xdm item within sequence object 'xsObjResultSeq' (which is the 
+           // For each xdm item within sequence object 'xsObjResultSeq' (which is the 
            // result of variable binding xpath expression's evaluation), bind the 
            // quantifier expression's binding variable in turn to that item.
            for (int idx = 0; idx < xsObjResultSeq.size(); idx++) {
@@ -262,7 +260,7 @@ public class QuantifiedExpr extends Expression {
                quantifiedExprVarBindingMap.put(new QName(varName), xdmItem);
                
                ResultSequence res = getQuantifiedExpressionEvalResult(listIter, quantifiedExprXpath, xctxt);
-               // append xdm items of sequence 'res', to the final sequence object 'resultSeq'   
+               // Append xdm items of sequence 'res', to the final sequence object 'resultSeq'   
                for (int idx1 = 0; idx1 < res.size(); idx1++) {
                   resultSeq.add(res.item(idx1));    
                }
@@ -273,19 +271,23 @@ public class QuantifiedExpr extends Expression {
            return resultSeq;
         }
         else {
-            // this else clause, actually evaluates the current XPath quantified expression's 
-            // 'satisfies' expression clause.
+            // This else clause, evaluates the XPath quantified expression's 'satisfies' 
+            // clause. The XPath quantified expression's 'satisfies' clause may be evaluated
+            // multiple times depending upon, how may 'some'/'every' expression iterations
+            // are there.
             
             if (fVars != null) {              
                quantifiedExprXpath.fixupVariables(fVars, fGlobalsSize);
             }
             
+            ResultSequence satisfiesClauseEvalResult = new ResultSequence(); 
+            
             XObject quantifiedTestExprValue = quantifiedExprXpath.execute(xctxt, contextNode, 
                                                                                      xctxt.getNamespaceContext());            
             
-            resultSeq.add(new XSBoolean(quantifiedTestExprValue.bool()));
+            satisfiesClauseEvalResult.add(new XSBoolean(quantifiedTestExprValue.bool()));
             
-            return resultSeq; 
+            return satisfiesClauseEvalResult; 
         }
     }
 

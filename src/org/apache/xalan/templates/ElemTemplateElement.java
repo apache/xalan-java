@@ -1740,7 +1740,7 @@ public class ElemTemplateElement extends UnImplNode
   }
   
   /**
-   * During processing of, xsl:for-each or xsl:iterate instructions, when the input data to be
+   * During processing of, xsl:for-each or xsl:iterate instruction, when the input data to be
    * processed by these instructions is a 'ResultSequence' object, we use this method to set
    * the XPath context information before each sequence item is processed by these instructions.
    * 
@@ -1754,21 +1754,21 @@ public class ElemTemplateElement extends UnImplNode
                                                                   int currentlyProcessingItemIndex, 
                                                                   XObject currentContextItem, 
                                                                   XPathContext xctxt) {
-      if (!(currentContextItem instanceof XNodeSet)) {
+      if (currentContextItem instanceof XNodeSet) {         
+         XNodeSet xNodeSet = (XNodeSet)currentContextItem;
+         DTMIterator dtmIter = xNodeSet.iterRaw();
+         int contextNode = dtmIter.nextNode();
+         xctxt.pushCurrentNode(contextNode);
+      }
+      else {         
          xctxt.setXPath3ContextSize(inpSequenceLength);
          xctxt.setXPath3ContextItem(currentContextItem);
          xctxt.setXPath3ContextPosition(currentlyProcessingItemIndex + 1);
       }
-      else {
-         XNodeSet xNodeSet = (XNodeSet)currentContextItem;
-         DTMIterator dtmIter = xNodeSet.iterRaw();
-         int contextNode = dtmIter.nextNode();
-         xctxt.pushCurrentNode(contextNode); 
-      }
   }
   
   /**
-   * During processing of, xsl:for-each or xsl:iterate instructions, when the input data to be
+   * During processing of, xsl:for-each or xsl:iterate instruction, when the input data to be
    * processed by these instructions is a 'ResultSequence' object, we use this method to reset
    * the XPath context information after each sequence item is processed by these instructions. 
    * 
@@ -1777,13 +1777,13 @@ public class ElemTemplateElement extends UnImplNode
    */
   protected void resetXPathContextForXslSequenceProcessing(XObject currentContextItem, 
                                                                             XPathContext xctxt) {
-     if (!(currentContextItem instanceof XNodeSet)) {
+     if (currentContextItem instanceof XNodeSet) {        
+        xctxt.popCurrentNode();
+     }
+     else {     
         xctxt.setXPath3ContextSize(-1);
         xctxt.setXPath3ContextItem(null);
         xctxt.setXPath3ContextPosition(-1);
-     }
-     else {
-        xctxt.popCurrentNode();
      }
   }
 

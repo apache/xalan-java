@@ -35,14 +35,20 @@ import org.apache.xalan.transformer.ForEachGroupXslSortSorter;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.utils.NodeVector;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.NodeSequence;
+import org.apache.xpath.composite.SimpleSequenceConstructor;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.operations.Variable;
 
 /**
  *  XSLT 3.0 for-each-group element.
@@ -71,30 +77,17 @@ import org.apache.xpath.objects.XString;
      
     There are following two XSLT 3.0 grouping functions,
     1) fn:current-group()     
-    2) fn:current-grouping-key()     
+    2) fn:current-grouping-key()
+    
+    Ref : https://www.w3.org/TR/xslt-30/#xsl-for-each-group
   
    @author Mukul Gandhi <mukulg@apache.org>
   
    @xsl.usage advanced
 */
-
-/* 
-   Implementation of the XSLT 3.0 xsl:for-each-group instruction.
- 
-   The xsl:for-each-group's grouping attributes are as described below (and are further defined
-   within XSLT 3.0 spec),
-   
-   The xsl:for-each-group element can have following grouping attributes : "group-by", "group-adjacent", 
-   "group-starting-with", "group-ending-with". These xsl:for-each-group grouping attributes are 
-   mutually exclusive. i.e one of these is required and two or more of these is an error within 
-   the XSLT stylesheet.
-   
-   The XSLT transformation output result order of the groups, can be explicitly affected by one 
-   or more xsl:sort elements within the xsl:for-each-group element. If xsl:sort elements are not
-   present within xsl:for-each-group element, then the XSLT transformation output result order of 
-   the groups, is according to the default sorted order (also known as order of first appearance),
-   as defined by XSLT 3.0 spec.    
-*/
+/*
+ * Implementation of the XSLT 3.0 xsl:for-each-group instruction. 
+ */
 public class ElemForEachGroup extends ElemTemplateElement 
                                                 implements ExpressionOwner
 {
@@ -405,7 +398,27 @@ public class ElemForEachGroup extends ElemTemplateElement
         }
         
         final int sourceNode = xctxt.getCurrentNode();
-        DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
+        
+        DTMIterator sourceNodes = null;
+        
+        if (m_selectExpression instanceof Variable) {
+            XObject xObj = ((Variable)m_selectExpression).execute(xctxt);
+            
+            if (xObj instanceof ResultSequence) {                              
+               ResultSequence resultSeq = (ResultSequence)xObj;
+               sourceNodes = getSourceNodesFromResultSequence(resultSeq, xctxt);                
+            }
+        }
+        else if (m_selectExpression instanceof SimpleSequenceConstructor) {
+            XObject xObj = ((SimpleSequenceConstructor)m_selectExpression).execute(xctxt);
+            
+            ResultSequence resultSeq = (ResultSequence)xObj;
+            sourceNodes = getSourceNodesFromResultSequence(resultSeq, xctxt);
+        }
+        
+        if (sourceNodes == null) {        
+           sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
+        }
                       
         // hashmap to store groups formed for, either 'group-by' or 'group-adjacent' attributes.
         // hashmap's key is the grouping key value, and value of that hashmap item entry is the
@@ -841,6 +854,37 @@ public class ElemForEachGroup extends ElemTemplateElement
         return this.getNodeHandle().compareTo(obj.getNodeHandle());
      }
     
+  }
+  
+  private DTMIterator getSourceNodesFromResultSequence(ResultSequence resultSeq, XPathContext xctxt) 
+                                                                                          throws TransformerException {
+     DTMIterator sourceNodes = null;
+     
+     NodeVector nodeVector = new NodeVector();
+     
+     // we're assuming here that, all items within this 'resultSeq'
+     // object shall be XNodeSet objects.
+     
+     // how to do this 'resultSeq' object processing, when any of its
+     // items are other than XML nodes?
+     // REVISIT
+     for (int idx = 0; idx < resultSeq.size(); idx++) {
+         XObject xObject = resultSeq.item(idx);
+         xObject = ((XNodeSet)xObject).getFresh();
+         DTMIterator dtmIter = xObject.iter();
+         nodeVector.addElement(dtmIter.nextNode()); 
+     }
+   
+     NodeSequence nodeSequence = new NodeSequence(nodeVector);
+     
+     try {
+        sourceNodes = nodeSequence.cloneWithReset();
+     } catch (CloneNotSupportedException ex) {
+        throw new TransformerException("An error occured during XSL grouping with xsl:for-each-group "
+                                                                                            + "element.", xctxt.getSAXLocator());
+     }
+     
+     return sourceNodes; 
   }
 
 }
