@@ -35,6 +35,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.DynamicFunctionCall;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Variable;
@@ -221,8 +222,11 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                    for (int idx = 0; idx < resultSeqItems.size(); idx++) {
                        XObject resultSeqItem = resultSeqItems.get(idx);
                        
-                       setXPathContextForXslSequenceProcessing(resultSeqItems.size(), idx, 
-                                                                                                 resultSeqItem, xctxt);
+                       if (resultSeqItem instanceof XNodeSet) {
+                          resultSeqItem = ((XNodeSet)resultSeqItem).getFresh(); 
+                       }
+                       
+                       setXPathContextForXslSequenceProcessing(resultSeqItems.size(), idx, resultSeqItem, xctxt);
                        
                        boolean isBreakFromXslContentLoop = false;
                        
@@ -237,18 +241,14 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                                transformer.setCurrentElement(elemTemplate);
                                elemTemplate.execute(transformer);
                            }
-                           else {
-                               // reset the, XPath context details                               
-                               resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);
-                               
-                               isBreakFromXslContentLoop = true;
-                               
+                           else {                              
+                               resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);                               
+                               isBreakFromXslContentLoop = true;                               
                                break;    
                            }
                        }
                        
-                       if (!isBreakFromXslContentLoop) {
-                          // reset the, XPath context details                           
+                       if (!isBreakFromXslContentLoop) {                         
                           resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);
                        }
                        
@@ -275,7 +275,8 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                   
                   transformer.setXPathContext(xctxtOriginal);
                 
-                  return;  // return from this xsl:iterate instruction's evaluation                  
+                  // return from this xsl:iterate instruction's evaluation
+                  return;                  
                }
            }
            

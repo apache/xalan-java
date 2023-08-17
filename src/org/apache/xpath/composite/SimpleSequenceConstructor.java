@@ -134,7 +134,7 @@ public class SimpleSequenceConstructor extends Expression {
                    String xpathIndexExprStr = xpathExprStr.substring(xpathExprStr.indexOf('[') + 1, 
                                                                                        xpathExprStr.indexOf(']'));
                    
-                   // evaluate the, variable reference XPath expression
+                   // Evaluate the, variable reference XPath expression
                    if (prefixTable != null) {
                       varRefXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
                                                                                                varRefXPathExprStr, prefixTable);
@@ -144,7 +144,7 @@ public class SimpleSequenceConstructor extends Expression {
                                                                                                       XPath.SELECT, null);
                    XObject varEvalResult = varXPathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
                    
-                   // evaluate the, xdm sequence index XPath expression
+                   // Evaluate the, xdm sequence index XPath expression
                    if (prefixTable != null) {
                       xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
                                                                                                       xpathIndexExprStr, 

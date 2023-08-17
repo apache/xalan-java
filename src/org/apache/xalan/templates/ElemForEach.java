@@ -42,6 +42,7 @@ import org.apache.xpath.composite.SimpleSequenceConstructor;
 import org.apache.xpath.functions.DynamicFunctionCall;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Variable;
@@ -608,13 +609,17 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     * mentioned within body of current xsl:for-each element.
     */
    private void processResultSequence(TransformerImpl transformer,
-                                      XPathContext xctxt, XObject evalResult) 
+                                                              XPathContext xctxt, XObject evalResult) 
                                                               throws TransformerException {       
        ResultSequence resultSeq = (ResultSequence)evalResult;
        List<XObject> resultSeqItems = resultSeq.getResultSequenceItems();
        
        for (int idx = 0; idx < resultSeqItems.size(); idx++) {
            XObject resultSeqItem = resultSeqItems.get(idx);
+           
+           if (resultSeqItem instanceof XNodeSet) {
+              resultSeqItem = ((XNodeSet)resultSeqItem).getFresh(); 
+           }
            
            setXPathContextForXslSequenceProcessing(resultSeqItems.size(), idx, resultSeqItem, xctxt);
            
@@ -625,7 +630,6 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
               elemTemplateElem.execute(transformer);              
            }
            
-           // reset the, XPath context details
            resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);
        }
    }

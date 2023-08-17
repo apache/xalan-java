@@ -167,5 +167,45 @@ public class SequenceConstructorTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslSequenceConstructorTest13() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_f.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test10.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslSequenceConstructorTest14() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_f.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test10.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslSequenceConstructorTest15() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_f.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslSequenceConstructorTest16() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_f.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test16.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }
