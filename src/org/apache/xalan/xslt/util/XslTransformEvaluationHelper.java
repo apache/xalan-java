@@ -16,15 +16,14 @@
  */
 package org.apache.xalan.xslt.util;
 
+import java.util.List;
+
+import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.xs.types.XSAnyType;
 import org.apache.xpath.xs.types.XSUntyped;
 import org.apache.xpath.xs.types.XSUntypedAtomic;
-
-import java.util.List;
-
-import org.apache.xalan.templates.XMLNSDecl;
 
 /**
  * This class, has few utility methods, to help with certain 

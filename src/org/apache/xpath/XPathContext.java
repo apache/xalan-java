@@ -138,6 +138,16 @@ public class XPathContext extends DTMManager // implements ExpressionContext
    * We don't use, XalanJ XPath context's variable stack for this purpose.
    */
   private Map<QName, XObject> xpathVarMap = new HashMap<QName, XObject>();
+  
+  /**
+   * The default collation uri.
+   */
+  private String m_default_collation = XPathCollationSupport.UNICODE_CODEPOINT_COLLATION_URI;
+  
+  /**
+   * An XPathCollationSupport object instance to support, collations within XPath implementation.
+   */
+  private XPathCollationSupport m_collationSupport = new XPathCollationSupport(m_default_collation);
 	
   /**
    * Though XPathContext context extends 
@@ -1468,6 +1478,14 @@ public class XPathContext extends DTMManager // implements ExpressionContext
 
  public void setXPathVarMap(Map<QName, XObject> xpathVarMap) {
      this.xpathVarMap = xpathVarMap;
+ }
+
+ public XPathCollationSupport getXPathCollationSupport() {
+     return m_collationSupport;
+ }
+ 
+ public String getDefaultCollation() {
+     return m_default_collation;
  }
   
 }

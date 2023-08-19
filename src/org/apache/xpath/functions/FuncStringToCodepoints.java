@@ -22,6 +22,7 @@ package org.apache.xpath.functions;
 
 import java.math.BigInteger;
 
+import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
@@ -55,7 +56,9 @@ public class FuncStringToCodepoints extends FunctionDef1Arg
      
      String inpStr = (getArg0AsString(xctxt)).toString();
      
-     int[] codePointsArr = (inpStr.codePoints()).toArray();
+     XPathCollationSupport xPathCollationSupport = xctxt.getXPathCollationSupport();
+     
+     int[] codePointsArr = xPathCollationSupport.getCodepointsFromString(inpStr);
      
      ResultSequence resultSeq = new ResultSequence();
      
