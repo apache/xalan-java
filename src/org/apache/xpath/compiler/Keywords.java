@@ -347,7 +347,13 @@ public class Keywords
   /** string-to-codepoints function string. */
   public static final String FUNC_STRING_TO_CODE_POINTS = "string-to-codepoints";
   
+  /** compare function string. */
+  public static final String FUNC_COMPARE = "compare";
+  
   // XML Schema built-in data type name keywords
+  
+  /** xs:string data type string. */
+  public static final String XS_STRING = "string";
   
   /** xs:decimal data type string. */
   public static final String XS_DECIMAL = "decimal";

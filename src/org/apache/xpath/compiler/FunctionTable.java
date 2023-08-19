@@ -269,6 +269,9 @@ public class FunctionTable
   
   /** The 'string-to-codepoints()' id. */
   public static final int FUNC_STRING_TO_CODE_POINTS = 81;
+  
+  /** The 'compare()' id. */
+  public static final int FUNC_COMPARE = 82;
 
   // Proprietary
 
@@ -326,7 +329,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 82;
+  private static final int NUM_BUILT_IN_FUNCS = 83;
 
   /**
    * Number of built-in functions that may be added.
@@ -490,6 +493,8 @@ public class FunctionTable
       org.apache.xpath.functions.FuncCodePointsToString.class;
     m_functions[FUNC_STRING_TO_CODE_POINTS] = 
       org.apache.xpath.functions.FuncStringToCodepoints.class;
+    m_functions[FUNC_COMPARE] = 
+      org.apache.xpath.functions.FuncCompare.class;
   }
 
   static{
@@ -661,6 +666,8 @@ public class FunctionTable
                          new Integer(FunctionTable.FUNC_CODE_POINTS_TO_STRING));
          m_functionID.put(Keywords.FUNC_STRING_TO_CODE_POINTS,
                          new Integer(FunctionTable.FUNC_STRING_TO_CODE_POINTS));
+         m_functionID.put(Keywords.FUNC_COMPARE,
+                         new Integer(FunctionTable.FUNC_COMPARE));
   }
   
   public FunctionTable(){

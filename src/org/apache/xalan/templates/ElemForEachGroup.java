@@ -33,6 +33,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.ForEachGroupXslSortSorter;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.NodeVector;
@@ -41,6 +42,7 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.NodeSequence;
+import org.apache.xpath.composite.ForExpr;
 import org.apache.xpath.composite.SimpleSequenceConstructor;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -409,8 +411,9 @@ public class ElemForEachGroup extends ElemTemplateElement
                sourceNodes = getSourceNodesFromResultSequence(resultSeq, xctxt);                
             }
         }
-        else if (m_selectExpression instanceof SimpleSequenceConstructor) {
-            XObject xObj = ((SimpleSequenceConstructor)m_selectExpression).execute(xctxt);
+        else if ((m_selectExpression instanceof SimpleSequenceConstructor) ||
+                                                    (m_selectExpression instanceof ForExpr)) {
+            XObject xObj = m_selectExpression.execute(xctxt);
             
             ResultSequence resultSeq = (ResultSequence)xObj;
             sourceNodes = getSourceNodesFromResultSequence(resultSeq, xctxt);
@@ -422,7 +425,7 @@ public class ElemForEachGroup extends ElemTemplateElement
                       
         // hashmap to store groups formed for, either 'group-by' or 'group-adjacent' attributes.
         // hashmap's key is the grouping key value, and value of that hashmap item entry is the
-        // contents of that group. 
+        // content of that group. 
         Map<Object, List<Integer>> xslForEachGroupMap = new HashMap<Object, List<Integer>>();
         
         // list to store groups formed for, either 'group-starting-with' or 'group-ending-with' 
@@ -811,7 +814,7 @@ public class ElemForEachGroup extends ElemTemplateElement
       }
       else {
           // any other data type for grouping key, is treated as string
-          xpathRawResult = xpathEvalResult.str();   
+          xpathRawResult = XslTransformEvaluationHelper.getStrVal(xpathEvalResult);  
       }
       
       return xpathRawResult;
@@ -856,17 +859,18 @@ public class ElemForEachGroup extends ElemTemplateElement
     
   }
   
+  /*
+   * Get XML document source nodes (represented as an 'DTMIterator' object), from
+   * a list of XNodeSet objects contained within a 'ResultSequence' object.    
+   */
   private DTMIterator getSourceNodesFromResultSequence(ResultSequence resultSeq, XPathContext xctxt) 
                                                                                           throws TransformerException {
      DTMIterator sourceNodes = null;
      
      NodeVector nodeVector = new NodeVector();
      
-     // we're assuming here that, all items within this 'resultSeq'
-     // object shall be XNodeSet objects.
-     
-     // how to do this 'resultSeq' object processing, when any of its
-     // items are other than XML nodes?
+     // how to process the sequence object 'resultSeq', when any of
+     // its items are other than XNodeSet object instances?
      // REVISIT
      for (int idx = 0; idx < resultSeq.size(); idx++) {
          XObject xObject = resultSeq.item(idx);
@@ -881,7 +885,7 @@ public class ElemForEachGroup extends ElemTemplateElement
         sourceNodes = nodeSequence.cloneWithReset();
      } catch (CloneNotSupportedException ex) {
         throw new TransformerException("An error occured during XSL grouping with xsl:for-each-group "
-                                                                                            + "element.", xctxt.getSAXLocator());
+                                                                                            + "instruction.", xctxt.getSAXLocator());
      }
      
      return sourceNodes; 

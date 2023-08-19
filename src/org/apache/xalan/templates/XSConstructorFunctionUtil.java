@@ -38,6 +38,7 @@ import org.apache.xpath.xs.types.XSFloat;
 import org.apache.xpath.xs.types.XSInt;
 import org.apache.xpath.xs.types.XSInteger;
 import org.apache.xpath.xs.types.XSLong;
+import org.apache.xpath.xs.types.XSString;
 import org.apache.xpath.xs.types.XSYearMonthDuration;
 import org.xml.sax.SAXException;
 
@@ -71,7 +72,17 @@ public class XSConstructorFunctionUtil {
                 // evaluate XPath 3.1 constructor function calls, corresponding to XML Schema 
                 // built-in types.
                 
-                if ((Keywords.XS_DECIMAL).equals(funcExtFunction.getFunctionName())) {                              
+                if ((Keywords.XS_STRING).equals(funcExtFunction.getFunctionName())) {                              
+                    ResultSequence argSequence = new ResultSequence();
+                    for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+                        XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+                        argSequence.add(new XSString(XslTransformEvaluationHelper.getStrVal(argVal)));
+                    }
+
+                    ResultSequence rSeq = (new XSString()).constructor(argSequence);
+                    evalResult = rSeq.item(0);              
+                }
+                else if ((Keywords.XS_DECIMAL).equals(funcExtFunction.getFunctionName())) {                              
                     ResultSequence argSequence = new ResultSequence();
                     for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                         XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
