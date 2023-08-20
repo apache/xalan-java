@@ -30,6 +30,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.NodeSetDTM;
+import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.XPathVisitor;
@@ -567,7 +568,9 @@ public class XObject extends Expression implements Serializable, Cloneable
    * of value comparison operator "lt".
    *
    * @param obj2                Object to compare this to
-   * @param expressionOwner     this object is used, for error reporting 
+   * @param expressionOwner     this object is used, for error reporting
+   * @param collationUri        collation uri, that needs to be used for string
+   *                            comparison.
    * @param isLtTest            is this method called, to check "lt" or "ge"
    *                            operation. true, if that's "lt" check and false
    *                            otherwise. 
@@ -576,9 +579,12 @@ public class XObject extends Expression implements Serializable, Cloneable
    *
    * @throws javax.xml.transform.TransformerException             
    */
-  public boolean vcLessThan(XObject obj2, ExpressionNode expressionOwner, boolean isLtTest) throws 
-                                                                    javax.xml.transform.TransformerException {
+  public boolean vcLessThan(XObject obj2, ExpressionNode expressionOwner, 
+                                                               String collationUri, boolean isLtTest) 
+                                                                                throws javax.xml.transform.TransformerException {       
        
+       XPathContext xctxt = new XPathContext();
+      
        if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
           return ((XSDecimal)this).lt((XSDecimal)obj2);        
        }
@@ -608,8 +614,14 @@ public class XObject extends Expression implements Serializable, Cloneable
        }
        else if ((this instanceof XString) && (obj2 instanceof XString)) {
            String lStr = (((XString)this)).str();
-           String rStr = (((XString)obj2)).str();
-           return (lStr.compareTo(rStr) < 0) ? true : false;
+           String rStr = (((XString)obj2)).str();                      
+           
+           XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
+           
+           int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, 
+                                                                                             collationUri);
+           
+           return (comparisonResult < 0) ? true : false;
         }
        
        boolean isOperandNodeSet1 = false;
@@ -646,7 +658,9 @@ public class XObject extends Expression implements Serializable, Cloneable
    * of value comparison operator "gt".
    *
    * @param obj2                Object to compare this to
-   * @param expressionOwner     this object is used, for error reporting 
+   * @param expressionOwner     this object is used, for error reporting
+   * @param collationUri        collation uri, that needs to be used for string
+   *                            comparison. 
    * @param isGtTest            is this method called, to check "gt" or "le"
    *                            operation. true, if that's "gt" check and false
    *                            otherwise.
@@ -655,9 +669,12 @@ public class XObject extends Expression implements Serializable, Cloneable
    *
    * @throws javax.xml.transform.TransformerException            
    */
-  public boolean vcGreaterThan(XObject obj2, ExpressionNode expressionOwner, boolean isGtTest) throws 
-                                                                    javax.xml.transform.TransformerException {
+  public boolean vcGreaterThan(XObject obj2, ExpressionNode expressionOwner, 
+                                                  String collationUri, boolean isGtTest) 
+                                                                 throws javax.xml.transform.TransformerException {
        
+       XPathContext xctxt = new XPathContext();
+      
        if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
           return ((XSDecimal)this).gt((XSDecimal)obj2);        
        }
@@ -682,10 +699,16 @@ public class XObject extends Expression implements Serializable, Cloneable
        else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
           return ((XSDate)this).gt((XSDate)obj2);    
        }
-       else if ((this instanceof XString) && (obj2 instanceof XString)) {
+       else if ((this instanceof XString) && (obj2 instanceof XString)) {          
           String lStr = (((XString)this)).str();
           String rStr = (((XString)obj2)).str();
-          return (lStr.compareTo(rStr) > 0) ? true : false;
+          
+          XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
+          
+          int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, 
+                                                                                            collationUri);
+          
+          return (comparisonResult > 0) ? true : false;
        }
        
        boolean isOperandNodeSet1 = false;

@@ -27,7 +27,7 @@ import java.util.Map;
 import javax.xml.transform.TransformerException;
 
 /**
- * This class provides, collation support to XalanJ's XPath 3.1 
+ * This class provides, collation support for XalanJ's XPath 3.1 
  * implementation.
  * 
  * Ref : https://www.w3.org/TR/xpath-functions-31/#collations
@@ -99,8 +99,8 @@ public class XPathCollationSupport {
      *                             
      * @throws javax.xml.transform.TransformerException
      */
-    public int compareStringsUsingCollationUri(String str1, String str2, String collationUri) 
-                                                                                       throws javax.xml.transform.TransformerException {
+    public int compareStringsUsingCollation(String str1, String str2, String collationUri) 
+                                                                                  throws javax.xml.transform.TransformerException {
        int comparisonResult = 0;
        
        if (UNICODE_CODEPOINT_COLLATION_URI.equals(collationUri)) {
@@ -108,16 +108,17 @@ public class XPathCollationSupport {
        }
        else if (collationUri.startsWith(UNICODE_COLLATION_ALGORITHM_URI)) {
           try {
-             Collator collator = getCollatorFromCollationUri(collationUri);
+             Collator strComparisonCollator = getUCACollatorFromCollationUri(collationUri);
              
-             if (collator != null) {
-                comparisonResult = collator.compare(str1, str2);                
+             if (strComparisonCollator != null) {
+                comparisonResult = strComparisonCollator.compare(str1, str2);                
              }
              else if (UCA_FALLBACK_YES.equals(fQueryStrFallbackValue)) {                    
-                comparisonResult = compareStringsUsingCollationUri(str1, str2, fDefaultCollationUri);
+                comparisonResult = compareStringsUsingCollation(str1, str2, fDefaultCollationUri);
              }
              else {
-                throw new javax.xml.transform.TransformerException("FOCH0002 : The requested collation '" + collationUri + "' is not supported.");  
+                throw new javax.xml.transform.TransformerException("FOCH0002 : The requested collation '" + collationUri + 
+                                                                                                                   "' is not supported.");  
              }
           }
           catch (javax.xml.transform.TransformerException ex) {
@@ -157,7 +158,8 @@ public class XPathCollationSupport {
     }
     
     /**
-     * This method compares, two string values using 'unicode codepoint collation'.
+     * This method compares, two string values using 'Unicode Codepoint Collation'
+     * as specified by XPath 3.1 F&O spec.
      *
      * @param str1    the first string
      * @param str2    the second string
@@ -177,7 +179,7 @@ public class XPathCollationSupport {
     
     /**
      * Compare two int[] arrays comprising unicode codepoints, according to
-     * 'unicode codepoint collation'.
+     * 'Unicode Codepoint Collation'.
      */
     private int compareCodepointArrays(int[] codePointsArr1, int[] codePointsArr2) {
        
@@ -256,26 +258,25 @@ public class XPathCollationSupport {
     }
     
     /**
-     * This method helps to implement, unicode collation algorithm as specified by XPath 3.1 F&O
-     * spec, which in turn is based on UTS #10 (Unicode Technical Standard #10 : Unicode Collation
-     * Algorithm).
+     * This method implements, 'Unicode Collation Algorithm' as specified by XPath 3.1 F&O spec
+     * (which in turn is based on UTS #10 [Unicode Technical Standard #10 : Unicode Collation
+     * Algorithm]).
      * 
-     * @param collationUri     the collation uri, specified by users of XPath 3.1 string comparison
-     *                         , or sorting of strings.
+     * @param collationUri     the requested collation uri, during XPath 3.1 string comparisons,
+     *                         and sorting of strings.
      *                         
      * @return                 a configured Java object of type java.text.Collator, that callers of
      *                         this method can use to do locale specific string comparisons.
      * 
      * @throws TransformerException
      */
-    private Collator getCollatorFromCollationUri(String collationUri) throws TransformerException {
+    private Collator getUCACollatorFromCollationUri(String collationUri) throws TransformerException {
        
        Collator strComparisonCollator = null;
        
        try {
            if (collationUri.equals(UNICODE_COLLATION_ALGORITHM_URI)) {
-              strComparisonCollator = Collator.getInstance(DEFAULT_UCA_LOCALE);
-              strComparisonCollator.setStrength(Collator.TERTIARY);
+              strComparisonCollator = getDefaultUCACollator();
            }
            else {
               int ucaUriPrefixLength = UNICODE_COLLATION_ALGORITHM_URI.length();              
@@ -336,6 +337,34 @@ public class XPathCollationSupport {
        }
        
        return strComparisonCollator;
+    }
+    
+    /**
+     * Get the java.text.Collator object, for XalanJ's
+     * default collation when using 'unicode collation algorithm'.
+     */
+    private Collator getDefaultUCACollator() {
+        
+        Collator strComparisonCollator = Collator.getInstance(DEFAULT_UCA_LOCALE);
+        
+        switch (DEFAULT_UCA_STRENGTH_VALUE) {
+            case UCA_STRENGTH_PRIMARY :
+               strComparisonCollator.setStrength(Collator.PRIMARY);
+               break;
+            case UCA_STRENGTH_SECONDARY :
+               strComparisonCollator.setStrength(Collator.SECONDARY); 
+               break;
+            case UCA_STRENGTH_TERTIARY :   
+               strComparisonCollator.setStrength(Collator.TERTIARY);
+               break;
+            case UCA_STRENGTH_IDENTICAL :
+               strComparisonCollator.setStrength(Collator.TERTIARY);
+               break;
+            default :
+               // no op
+        }
+        
+        return strComparisonCollator;
     }
     
     /**
@@ -419,21 +448,24 @@ public class XPathCollationSupport {
     }
     
     /**
-     * An object of this class, stores definition of one
-     * "Unicode Collation Algorithm" (UCA) uri query
-     * parameter.
+     * An object of this class, stores data for one 'Unicode 
+     * Collation Algorithm' (UCA) collation uri query parameter/
+     * keyword (the words 'parameter' and 'keyword' are synonym,
+     * here).
+     * 
+     * XalanJ's XPath 3.1 implementation, currently supports only
+     * following UCA parameters : 'fallback', 'lang', 'strength'. 
      */
     private class UCAParameter {        
         
-        // Variable denoting, keyword/parameter name
-        // (for e.g, 'fallback', 'lang', 'strength').
+        // Variable denoting, UCA keyword name (for e.g, 
+        // 'fallback', 'lang', 'strength').
         private String keywordName;
         
-        // Variable denoting, permitted values for the keyword/parameter
-        // name.
-        // For e.g, the 'fallback' parameter has possible values 'yes'/'no'.
-        // The 'strength' parameter has possible values 'primary',
-        // 'secondary', 'tertiary', 'identical'.
+        // Variable denoting, permitted values for an UCA keyword (for e.g, 
+        // the 'fallback' parameter has possible values 'yes', 'no'. The 
+        // 'strength' parameter has possible values 'primary', 'secondary',
+        // 'tertiary', 'identical').
         private List<String> paramValues;
         
         public UCAParameter(String keywordName, List<String> paramValues) {
@@ -445,16 +477,8 @@ public class XPathCollationSupport {
             return keywordName;
         }
 
-        public void setKeywordName(String keywordName) {
-            this.keywordName = keywordName;
-        }
-
         public List<String> getParamValues() {
             return paramValues;
-        }
-
-        public void setParamValues(List<String> paramValues) {
-            this.paramValues = paramValues;
         }
         
     }

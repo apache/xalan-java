@@ -20,6 +20,7 @@
  */
 package org.apache.xpath.operations;
 
+import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 
@@ -49,6 +50,9 @@ public class VcGt extends Operation
   public XObject operate(XObject left, XObject right) 
                                                  throws javax.xml.transform.TransformerException
   {
-      return left.vcGreaterThan(right, getExpressionOwner(), true) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+      XPathContext xctxt = new XPathContext();            
+      
+      return left.vcGreaterThan(right, getExpressionOwner(), xctxt.getDefaultCollation(), 
+                                                                                  true) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
   }
 }
