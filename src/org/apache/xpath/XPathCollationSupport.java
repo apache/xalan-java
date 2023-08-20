@@ -358,7 +358,7 @@ public class XPathCollationSupport {
                strComparisonCollator.setStrength(Collator.TERTIARY);
                break;
             case UCA_STRENGTH_IDENTICAL :
-               strComparisonCollator.setStrength(Collator.TERTIARY);
+               strComparisonCollator.setStrength(Collator.IDENTICAL);
                break;
             default :
                // no op
