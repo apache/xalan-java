@@ -80,8 +80,8 @@ public class FuncCompare extends FunctionMultiArgs {
                // set the collation to default collation
                String collationUri = xctxt.getDefaultCollation();
                
-               int comparisonResult = xPathCollationSupport.compareStringsUsingCollationUri(
-                                                                                       str0, str1, collationUri);
+               int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(
+                                                                                    str0, str1, collationUri);
                
                result = new XSInteger(BigInteger.valueOf((long)comparisonResult));
             }
@@ -100,8 +100,8 @@ public class FuncCompare extends FunctionMultiArgs {
                 
                 String collationUri = XslTransformEvaluationHelper.getStrVal(xObject2);
                 
-                int comparisonResult = xPathCollationSupport.compareStringsUsingCollationUri(
-                                                                                        str0, str1, collationUri);
+                int comparisonResult = xPathCollationSupport.compareStringsUsingCollation(
+                                                                                     str0, str1, collationUri);
                 
                 result = new XSInteger(BigInteger.valueOf((long)comparisonResult)); 
             }

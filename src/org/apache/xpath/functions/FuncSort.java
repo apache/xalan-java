@@ -91,15 +91,21 @@ public class FuncSort extends FunctionMultiArgs
         List<InpSeqItemWithSortKeyValue> inpSeqItemWithSortKeyValueList = new 
                                                                    ArrayList<InpSeqItemWithSortKeyValue>();
         
-        if ((numOfArgs == 3) || (numOfArgs == 2)) {
-           arg1 = m_arg1;           
+        String collationUri = xctxt.getDefaultCollation();
+        
+        if ((numOfArgs == 2) || (numOfArgs == 3)) {
+           arg1 = m_arg1;
+           
            XObject XObjArg1 = arg1.execute(xctxt);
             
-           if (!((XObjArg1 instanceof ResultSequence) && 
-                                                (((ResultSequence)XObjArg1).size() == 0))) {
-               throw new javax.xml.transform.TransformerException("FORG0006 : The collation corresponding to supplied value of "
-                                                                                     + "second argument to function call fn:sort, is "
-                                                                                     + "not supported.", srcLocator);  
+           if ((XObjArg1 instanceof ResultSequence) && 
+                                                (((ResultSequence)XObjArg1).size() == 0)) {
+              collationUri = xctxt.getDefaultCollation();   
+           }
+           else {
+              // a collation uri was, explicitly provided during the function call fn:sort
+               
+              collationUri = XslTransformEvaluationHelper.getStrVal(XObjArg1); 
            }
            
            arg2 = m_arg2;
@@ -160,7 +166,12 @@ public class FuncSort extends FunctionMultiArgs
                }
            }
            
-           inpSeqItemWithSortKeyValueList.sort(new FnSortComparator(srcLocator));
+           FnSortComparator fnSortComparator = new FnSortComparator(collationUri, srcLocator);           
+           inpSeqItemWithSortKeyValueList.sort(fnSortComparator);
+           
+           if (fnSortComparator.getErrMessage() != null) {
+              throw new javax.xml.transform.TransformerException(fnSortComparator.getErrMessage(), srcLocator); 
+           }
            
            for (int idx = 0; idx < inpSeqItemWithSortKeyValueList.size(); idx++) {
               InpSeqItemWithSortKeyValue inpSeqItemWithSortKeyValue = inpSeqItemWithSortKeyValueList.get(idx);
@@ -208,7 +219,12 @@ public class FuncSort extends FunctionMultiArgs
               }
            }
            
-           inpSeqItemWithSortKeyValueList.sort(new FnSortComparator(srcLocator));
+           FnSortComparator fnSortComparator = new FnSortComparator(collationUri, srcLocator);
+           inpSeqItemWithSortKeyValueList.sort(fnSortComparator);
+           
+           if (fnSortComparator.getErrMessage() != null) {
+              throw new javax.xml.transform.TransformerException(fnSortComparator.getErrMessage(), srcLocator); 
+           }
                
            for (int idx = 0; idx < inpSeqItemWithSortKeyValueList.size(); idx++) {
               InpSeqItemWithSortKeyValue inpSeqItemWithSortKeyValue = inpSeqItemWithSortKeyValueList.get(idx);
@@ -289,14 +305,19 @@ public class FuncSort extends FunctionMultiArgs
      * An object of this class, is used to support sorting of an 
      * xdm input sequence. 
      */
-    class FnSortComparator implements Comparator {
+    private class FnSortComparator implements Comparator {
+        
+        private String collationUri;
         
         private SourceLocator srcLocator;
+        
+        private String errMesg = null;
         
         /*
          * The class constructor.
          */
-        public FnSortComparator(SourceLocator srcLocator) {
+        public FnSortComparator(String collationUri, SourceLocator srcLocator) {
+           this.collationUri = collationUri; 
            this.srcLocator = srcLocator;    
         }
 
@@ -308,20 +329,23 @@ public class FuncSort extends FunctionMultiArgs
            XObject sortKeyVal2 = ((InpSeqItemWithSortKeyValue)obj2).getInpSeqItemSortKeyVal();
            
            try {
-              if (sortKeyVal1.vcGreaterThan(sortKeyVal2, null, true)) {
+              if (sortKeyVal1.vcGreaterThan(sortKeyVal2, null, collationUri, true)) {
                  comparisonResult = 1;  
               }
-              else if (sortKeyVal1.vcLessThan(sortKeyVal2, null, false)) {
+              else if (sortKeyVal1.vcLessThan(sortKeyVal2, null, collationUri, true)) {
                  comparisonResult = -1; 
               }
            }
            catch (javax.xml.transform.TransformerException ex) {
-              // NO OP
-              // REVISIT
+              errMesg = ex.getMessage();
            }
            
            return comparisonResult;           
-        }        
+        }
+        
+        public String getErrMessage() {
+           return errMesg; 
+        }
     }
     
 }
