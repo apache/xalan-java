@@ -23,9 +23,11 @@ package org.apache.xpath.functions;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
+import org.apache.xpath.xs.types.XSNumericType;
 
 /**
  * Execute the Substring() function.
@@ -47,7 +49,22 @@ public class FuncSubstring extends Function3Args
   {
 
     XMLString s1 = m_arg0.execute(xctxt).xstr();
-    double start = m_arg1.execute(xctxt).num();
+    
+    double start = 0.0;
+    
+    XObject arg1Obj = m_arg1.execute(xctxt);
+    
+    if (arg1Obj instanceof XNumber) {
+       start = arg1Obj.num(); 
+    }
+    else if (arg1Obj instanceof XSNumericType) {
+       String arg1StrVal = ((XSNumericType)arg1Obj).stringValue();
+       start = (Double.valueOf(arg1StrVal)).doubleValue();
+    }
+    else {
+       start = arg1Obj.num(); 
+    }
+    
     int lenOfS1 = s1.length();
     XMLString substr;
 

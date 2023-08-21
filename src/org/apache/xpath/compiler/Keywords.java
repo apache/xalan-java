@@ -350,6 +350,9 @@ public class Keywords
   /** compare function string. */
   public static final String FUNC_COMPARE = "compare";
   
+  /** codepoint-equal function string. */
+  public static final String FUNC_CODEPOINT_EQUAL = "codepoint-equal";
+  
   // XML Schema built-in data type name keywords
   
   /** xs:string data type string. */

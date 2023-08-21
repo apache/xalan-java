@@ -72,7 +72,6 @@ public class XPathCollationSupport {
     
     private List<UCAParameter> fUcaSupportedParameters = new ArrayList<UCAParameter>();
     
-    // This class field, is needed by unicode collation algorithm
     private String fQueryStrFallbackValue = null;
     
     private String fDefaultCollationUri = null;
@@ -178,8 +177,9 @@ public class XPathCollationSupport {
     }
     
     /**
-     * Compare two int[] arrays comprising unicode codepoints, according to
-     * 'Unicode Codepoint Collation'.
+     * This method compares two int[] arrays comprising unicode codepoints 
+     * (corresponding to the strings to be compared), according to 'Unicode 
+     * Codepoint Collation' as defined by XPath 3.1 F&O spec.
      */
     private int compareCodepointArrays(int[] codePointsArr1, int[] codePointsArr2) {
        
@@ -187,37 +187,38 @@ public class XPathCollationSupport {
        
        if (((codePointsArr1 == null) || (codePointsArr1.length == 0)) && 
            ((codePointsArr2 == null) || (codePointsArr2.length == 0))) {
-          // both strings are considered equal
+          // both strings are equal
           comparisonResult = 0; 
        }
        else if (((codePointsArr1 == null) || (codePointsArr1.length == 0)) &&
                 ((codePointsArr2 != null) && (codePointsArr2.length > 0))) {
-          // the first string is less than the second one
+          // the first string collates before the second one
           comparisonResult = -1; 
        }
        else if (((codePointsArr1 != null) && (codePointsArr1.length > 0)) &&
                 ((codePointsArr2 == null) || (codePointsArr2.length == 0))) {
-          // the second string is less than the first one
+          // the first string collates after the second one
           comparisonResult = 1; 
        }
        else {
-          // both the strings to be compared, have non empty code point arrays
+          // both the strings to be compared, have non empty code point 
+          // arrays.
           int arr1FirstCodepoint = codePointsArr1[0];
           int arr2FirstCodepoint = codePointsArr2[0];
-          if (arr1FirstCodepoint > arr2FirstCodepoint) {
-             comparisonResult = 1;  
+          if (arr1FirstCodepoint < arr2FirstCodepoint) {
+             comparisonResult = -1;  
           }
-          else if (arr2FirstCodepoint > arr1FirstCodepoint) {
-             comparisonResult = -1; 
+          else if (arr1FirstCodepoint > arr2FirstCodepoint) {
+             comparisonResult = 1; 
           }
           else {             
              List<Integer> list1 = getIntegerListFromIntArray(codePointsArr1);
              List<Integer> list2 = getIntegerListFromIntArray(codePointsArr2);
                  
-             // get all, but the first item in the list 'list1'
+             // get all, except the first item in the list 'list1'
              list1 = list1.subList(1, list1.size());
              
-             // get all, but the first item in the list 'list2'
+             // get all, except the first item in the list 'list2'
              list2 = list2.subList(1, list2.size());
              
              // recursive call to this function
@@ -340,8 +341,8 @@ public class XPathCollationSupport {
     }
     
     /**
-     * Get the java.text.Collator object, for XalanJ's
-     * default collation when using 'unicode collation algorithm'.
+     * Get the java.text.Collator object, corresponding to XalanJ's 
+     * default collation when using 'Unicode Collation Algorithm' (UCA).
      */
     private Collator getDefaultUCACollator() {
         
@@ -368,8 +369,8 @@ public class XPathCollationSupport {
     }
     
     /**
-     * From the requested collation uri, build a corresponding java.util.Map object
-     * representation.  
+     * From the requested collation uri, build a corresponding java.util.Map
+     * object representation.  
      */
     private Map<String, String> getUCAQueryStrComponents(String uriQueryStr) throws TransformerException {
        Map<String, String> queryStrMap = new HashMap<String, String>();

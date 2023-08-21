@@ -302,8 +302,8 @@ public class FuncSort extends FunctionMultiArgs
     }
     
     /*
-     * An object of this class, is used to support sorting of an 
-     * xdm input sequence. 
+     * An object of this class, supports sorting of an xdm input 
+     * sequence, when using fn:sort function call. 
      */
     private class FnSortComparator implements Comparator {
         
@@ -322,18 +322,18 @@ public class FuncSort extends FunctionMultiArgs
         }
 
         @Override
-        public int compare(Object obj1, Object obj2) {
+        public int compare(Object obj1, Object obj2) {           
            int comparisonResult = 0;
            
            XObject sortKeyVal1 = ((InpSeqItemWithSortKeyValue)obj1).getInpSeqItemSortKeyVal();
            XObject sortKeyVal2 = ((InpSeqItemWithSortKeyValue)obj2).getInpSeqItemSortKeyVal();
            
            try {
-              if (sortKeyVal1.vcGreaterThan(sortKeyVal2, null, collationUri, true)) {
-                 comparisonResult = 1;  
+              if (sortKeyVal1.vcLessThan(sortKeyVal2, null, collationUri, true)) {
+                 comparisonResult = -1;  
               }
-              else if (sortKeyVal1.vcLessThan(sortKeyVal2, null, collationUri, true)) {
-                 comparisonResult = -1; 
+              else if (sortKeyVal1.vcGreaterThan(sortKeyVal2, null, collationUri, true)) {
+                 comparisonResult = 1; 
               }
            }
            catch (javax.xml.transform.TransformerException ex) {

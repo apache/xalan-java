@@ -35,11 +35,13 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.xs.types.XSNumericType;
 import org.apache.xpath.xs.types.XSUntyped;
 import org.apache.xpath.xs.types.XSUntypedAtomic;
+import org.xml.sax.SAXException;
 
 /**
  * Implementation of XSLT xsl:copy-of instruction.
@@ -76,6 +78,8 @@ public class ElemCopyOf extends ElemTemplateElement
   // this class.    
   private Vector fVars;    
   private int fGlobalsSize;
+  
+  private final char SPACE_CHAR = ' ';
 
   /**
    * Set the "select" attribute.
@@ -155,9 +159,7 @@ public class ElemCopyOf extends ElemTemplateElement
    *
    * @throws TransformerException
    */
-  public void execute(
-          TransformerImpl transformer)
-            throws TransformerException
+  public void execute(TransformerImpl transformer) throws TransformerException
   {
     if (transformer.getDebug())
     	transformer.getTraceManager().fireTraceEvent(this);
@@ -186,132 +188,34 @@ public class ElemCopyOf extends ElemTemplateElement
 
       if (value != null) {
         int type = value.getType();
-        String s;
+        String str;
 
         switch (type)
         {
         case XObject.CLASS_BOOLEAN :
         case XObject.CLASS_NUMBER :
         case XObject.CLASS_STRING :
-          s = value.str();
+          str = value.str();
 
-          handler.characters(s.toCharArray(), 0, s.length());
+          handler.characters(str.toCharArray(), 0, str.length());
           break;
-        case XObject.CLASS_NODESET :
-
-          // System.out.println(value);
-          DTMIterator nl = value.iter();
-
-          // Copy the tree.
-          DTMTreeWalker tw = new TreeWalker2Result(transformer, handler);
-          int pos;
-
-          while (DTM.NULL != (pos = nl.nextNode()))
-          {
-            DTM dtm = xctxt.getDTMManager().getDTM(pos);
-            short t = dtm.getNodeType(pos);
-
-            // If we just copy the whole document, a startDoc and endDoc get 
-            // generated, so we need to only walk the child nodes.
-            if (t == DTM.DOCUMENT_NODE)
-            {
-              for (int child = dtm.getFirstChild(pos); child != DTM.NULL;
-                   child = dtm.getNextSibling(child))
-              {
-                tw.traverse(child);
-              }
-            }
-            else if (t == DTM.ATTRIBUTE_NODE)
-            {
-              SerializerUtils.addAttribute(handler, pos);
-            }
-            else
-            {
-              tw.traverse(pos);
-            }
-          }
-          // nl.detach();
+        case XObject.CLASS_NODESET :          
+          copyOfActionOnNodeSet((XNodeSet)value, transformer, handler, xctxt);          
           break;
         case XObject.CLASS_RTREEFRAG :
           SerializerUtils.outputResultTreeFragment(
-            handler, value, transformer.getXPathContext());
+                                                handler, value, transformer.getXPathContext());
           break;
         case XObject.CLASS_RESULT_SEQUENCE :
           // added for XSLT 3.0          
           ResultSequence resultSequence = (ResultSequence)value;
-          char[] spaceCharArr = new char[1];
-          spaceCharArr[0] = ' ';
           
-          for (int idx = 0; idx < resultSequence.size(); idx++) {             
-             XObject sequenceItem = resultSequence.item(idx);
-             
-             if (sequenceItem.getType() == XObject.CLASS_STRING) {
-                 String str = sequenceItem.str();
-                 handler.characters(str.toCharArray(), 0, str.length());
-                 if (idx < (resultSequence.size() - 1)) {                     
-                    handler.characters(spaceCharArr, 0, 1);
-                 }
-             }
-             else if (sequenceItem.getType() == XObject.CLASS_NUMBER) {
-                 String str = ((XNumber)sequenceItem).str();
-                 handler.characters(str.toCharArray(), 0, str.length());
-                 if (idx < (resultSequence.size() - 1)) {                     
-                    handler.characters(spaceCharArr, 0, 1);
-                 }
-             }
-             else if (sequenceItem instanceof XSNumericType) {
-                 String str = ((XSNumericType)sequenceItem).stringValue();
-                 handler.characters(str.toCharArray(), 0, str.length());
-                 if (idx < (resultSequence.size() - 1)) {                     
-                    handler.characters(spaceCharArr, 0, 1);
-                 }
-             }
-             else if (sequenceItem instanceof XSUntyped) {
-                 String str = ((XSUntyped)sequenceItem).stringValue();
-                 handler.characters(str.toCharArray(), 0, str.length());
-                 if (idx < (resultSequence.size() - 1)) {                     
-                    handler.characters(spaceCharArr, 0, 1);
-                 }
-             }
-             else if (sequenceItem instanceof XSUntypedAtomic) {
-                 String str = ((XSUntypedAtomic)sequenceItem).stringValue();
-                 handler.characters(str.toCharArray(), 0, str.length());
-                 if (idx < (resultSequence.size() - 1)) {                     
-                    handler.characters(spaceCharArr, 0, 1);
-                 } 
-             }
-             else if (sequenceItem.getType() == XObject.CLASS_NODESET) {                 
-                 DTMIterator nl1 = sequenceItem.iter();
-
-                 DTMTreeWalker tw1 = new TreeWalker2Result(transformer, handler);
-                 int pos1;                 
-                 
-                 while (DTM.NULL != (pos1 = nl1.nextNode())) {
-                     DTM dtm = xctxt.getDTMManager().getDTM(pos1);
-                     short t = dtm.getNodeType(pos1);
-                   
-                     if (t == DTM.DOCUMENT_NODE) {
-                        for (int child = dtm.getFirstChild(pos1); child != DTM.NULL; 
-                                                                     child = dtm.getNextSibling(child)) {
-                            tw1.traverse(child);
-                        }
-                     }
-                     else if (t == DTM.ATTRIBUTE_NODE) {
-                         SerializerUtils.addAttribute(handler, pos1);
-                     }
-                     else {
-                         tw1.traverse(pos1);
-                     }
-                 }
-             }
-          }
-          
+          copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt);          
           break;
-        default :
+        default :          
+          str = value.str();
+          handler.characters(str.toCharArray(), 0, str.length());
           
-          s = value.str();
-
-          handler.characters(s.toCharArray(), 0, s.length());
           break;
         }
       }
@@ -356,6 +260,89 @@ public class ElemCopyOf extends ElemTemplateElement
   	if(callAttrs)
   		m_selectExpression.getExpression().callVisitors(m_selectExpression, visitor);
     super.callChildVisitors(visitor, callAttrs);
+  }
+  
+  /**
+   *  Method to perform xsl:copy-of instruction's action, on an XNodeSet object.
+   */
+  private void copyOfActionOnNodeSet(XNodeSet nodeSet, TransformerImpl transformer, 
+                                                               SerializationHandler serializationHandler, XPathContext xctxt) 
+                                                                                          throws TransformerException, SAXException {
+      DTMIterator dtmIter = nodeSet.iter();
+
+      DTMTreeWalker tw = new TreeWalker2Result(transformer, serializationHandler);
+      int pos;                 
+
+      while ((pos = dtmIter.nextNode()) != DTM.NULL) {
+          DTM dtm = xctxt.getDTMManager().getDTM(pos);
+          short t = dtm.getNodeType(pos);
+
+          if (t == DTM.DOCUMENT_NODE) {
+             for (int child = dtm.getFirstChild(pos); child != DTM.NULL; 
+                      child = dtm.getNextSibling(child)) {
+                tw.traverse(child);
+             }
+          }
+          else if (t == DTM.ATTRIBUTE_NODE) {
+             SerializerUtils.addAttribute(serializationHandler, pos);
+          }
+          else {
+             tw.traverse(pos);
+          }
+      } 
+  }
+  
+  /**
+   * Method to perform xsl:copy-of instruction's action, on an ResultSequence object.
+   */
+  private void copyOfActionOnResultSequence(ResultSequence resultSequence, TransformerImpl transformer, 
+                                                                      SerializationHandler serializationHandler, 
+                                                                                       XPathContext xctxt) throws TransformerException, SAXException {
+      char[] spaceCharArr = new char[1];      
+      spaceCharArr[0] = SPACE_CHAR;
+      
+      for (int idx = 0; idx < resultSequence.size(); idx++) {             
+         XObject sequenceItem = resultSequence.item(idx);
+         
+         if (sequenceItem.getType() == XObject.CLASS_STRING) {
+             String str = sequenceItem.str();
+             serializationHandler.characters(str.toCharArray(), 0, str.length());
+             if (idx < (resultSequence.size() - 1)) {                     
+                serializationHandler.characters(spaceCharArr, 0, 1);
+             }
+         }
+         else if (sequenceItem.getType() == XObject.CLASS_NUMBER) {
+             String str = ((XNumber)sequenceItem).str();
+             serializationHandler.characters(str.toCharArray(), 0, str.length());
+             if (idx < (resultSequence.size() - 1)) {                     
+                serializationHandler.characters(spaceCharArr, 0, 1);
+             }
+         }
+         else if (sequenceItem instanceof XSNumericType) {
+             String str = ((XSNumericType)sequenceItem).stringValue();
+             serializationHandler.characters(str.toCharArray(), 0, str.length());
+             if (idx < (resultSequence.size() - 1)) {                     
+                serializationHandler.characters(spaceCharArr, 0, 1);
+             }
+         }
+         else if (sequenceItem instanceof XSUntyped) {
+             String str = ((XSUntyped)sequenceItem).stringValue();
+             serializationHandler.characters(str.toCharArray(), 0, str.length());
+             if (idx < (resultSequence.size() - 1)) {                     
+                serializationHandler.characters(spaceCharArr, 0, 1);
+             }
+         }
+         else if (sequenceItem instanceof XSUntypedAtomic) {
+             String str = ((XSUntypedAtomic)sequenceItem).stringValue();
+             serializationHandler.characters(str.toCharArray(), 0, str.length());
+             if (idx < (resultSequence.size() - 1)) {                     
+                serializationHandler.characters(spaceCharArr, 0, 1);
+             } 
+         }
+         else if (sequenceItem.getType() == XObject.CLASS_NODESET) {                 
+             copyOfActionOnNodeSet((XNodeSet)sequenceItem, transformer, serializationHandler, xctxt);
+         }
+      } 
   }
 
 }

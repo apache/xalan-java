@@ -16,6 +16,10 @@
  */
 package org.apache.xpath.xs.types;
 
+import javax.xml.transform.TransformerException;
+
+import org.apache.xpath.XPathCollationSupport;
+import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 
 /**
@@ -33,11 +37,15 @@ public class XSString extends XSCtrType {
     
     private String _value;
     
+    private XPathContext fXctxt = new XPathContext();
+    
+    private XPathCollationSupport fXpathCollationSupport = fXctxt.getXPathCollationSupport();
+    
     /*
      * Class constructor.
     */
     public XSString(String str) {
-       _value = str;
+       _value = str;       
     }
 
     /*
@@ -86,19 +94,34 @@ public class XSString extends XSCtrType {
         return stringValue();
     }
     
-    public boolean equals(XSString xsStr) {
-        // TO DO
-        return false; 
+    /**
+     * This function implements the semantics of XPath 3.1 'eq' operator,
+     * on xs:string values.
+     */
+    public boolean equals(XSString xsStr) throws TransformerException {
+        int comparisonResult = fXpathCollationSupport.compareStringsUsingCollation(_value, xsStr.stringValue(), 
+                                                                                                       fXctxt.getDefaultCollation());
+        return (comparisonResult == 0); 
     }
     
-    public boolean lt(XSString xsStr) {
-        // TO DO
-        return false;  
+    /**
+     * This function implements the semantics of XPath 3.1 'lt' operator,
+     * on xs:string values.
+     */
+    public boolean lt(XSString xsStr) throws TransformerException {
+        int comparisonResult = fXpathCollationSupport.compareStringsUsingCollation(_value, xsStr.stringValue(), 
+                                                                                                       fXctxt.getDefaultCollation());
+        return (comparisonResult < 0);  
     }
     
-    public boolean gt(XSString xsStr) {
-        // TO DO
-        return false;  
+    /**
+     * This function implements the semantics of XPath 3.1 'gt' operator,
+     * on xs:string values.
+     */
+    public boolean gt(XSString xsStr) throws TransformerException {
+        int comparisonResult = fXpathCollationSupport.compareStringsUsingCollation(_value, xsStr.stringValue(), 
+                                                                                                       fXctxt.getDefaultCollation());
+        return (comparisonResult > 0);  
     }
 
 }

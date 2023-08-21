@@ -43,6 +43,7 @@ import org.apache.xpath.xs.types.XSFloat;
 import org.apache.xpath.xs.types.XSInt;
 import org.apache.xpath.xs.types.XSInteger;
 import org.apache.xpath.xs.types.XSLong;
+import org.apache.xpath.xs.types.XSString;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
@@ -622,7 +623,40 @@ public class XObject extends Expression implements Serializable, Cloneable
                                                                                              collationUri);
            
            return (comparisonResult < 0) ? true : false;
-        }
+       }
+       else if ((this instanceof XSString) && (obj2 instanceof XSString)) {
+           String lStr = (((XSString)this)).stringValue();
+           String rStr = (((XSString)obj2)).stringValue();                      
+           
+           XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
+           
+           int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, 
+                                                                                             collationUri);
+           
+           return (comparisonResult < 0) ? true : false;
+       }
+       else if ((this instanceof XSString) && (obj2 instanceof XString)) {
+           String lStr = (((XSString)this)).stringValue();
+           String rStr = (((XString)obj2)).str();                      
+           
+           XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
+           
+           int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, 
+                                                                                             collationUri);
+           
+           return (comparisonResult < 0) ? true : false;
+       }
+       else if ((this instanceof XString) && (obj2 instanceof XSString)) {
+           String lStr = (((XString)this)).str();
+           String rStr = (((XSString)obj2)).stringValue();                      
+           
+           XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
+           
+           int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, 
+                                                                                             collationUri);
+           
+           return (comparisonResult < 0) ? true : false;
+       }
        
        boolean isOperandNodeSet1 = false;
        boolean isOperandNodeSet2 = false;
@@ -643,10 +677,10 @@ public class XObject extends Expression implements Serializable, Cloneable
           }
        }
        
-       if (isOperandNodeSet1 || this instanceof XNumber) {
+       if (isOperandNodeSet1 || (this instanceof XNumber)) {
            return this.num() < obj2.num();    
        }    
-       else if (isOperandNodeSet2 || obj2 instanceof XNumber) {
+       else if (isOperandNodeSet2 || (obj2 instanceof XNumber)) {
            return obj2.num() < this.num();    
        }
        
@@ -710,6 +744,39 @@ public class XObject extends Expression implements Serializable, Cloneable
           
           return (comparisonResult > 0) ? true : false;
        }
+       else if ((this instanceof XSString) && (obj2 instanceof XSString)) {
+           String lStr = (((XSString)this)).stringValue();
+           String rStr = (((XSString)obj2)).stringValue();                      
+           
+           XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
+           
+           int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, 
+                                                                                             collationUri);
+           
+           return (comparisonResult > 0) ? true : false;
+       }
+       else if ((this instanceof XSString) && (obj2 instanceof XString)) {
+           String lStr = (((XSString)this)).stringValue();
+           String rStr = (((XString)obj2)).str();                      
+           
+           XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
+           
+           int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, 
+                                                                                             collationUri);
+           
+           return (comparisonResult > 0) ? true : false;
+       }
+       else if ((this instanceof XString) && (obj2 instanceof XSString)) {
+           String lStr = (((XString)this)).str();
+           String rStr = (((XSString)obj2)).stringValue();                      
+           
+           XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
+           
+           int comparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, 
+                                                                                             collationUri);
+           
+           return (comparisonResult > 0) ? true : false;
+       }
        
        boolean isOperandNodeSet1 = false;
        boolean isOperandNodeSet2 = false;
@@ -730,10 +797,10 @@ public class XObject extends Expression implements Serializable, Cloneable
           }
        }
        
-       if (isOperandNodeSet1 || this instanceof XNumber) {
+       if (isOperandNodeSet1 || (this instanceof XNumber)) {
           return this.num() > obj2.num();    
        }    
-       else if (isOperandNodeSet2 || obj2 instanceof XNumber) {
+       else if (isOperandNodeSet2 || (obj2 instanceof XNumber)) {
           return obj2.num() > this.num();    
        }
        
@@ -911,6 +978,27 @@ public class XObject extends Expression implements Serializable, Cloneable
     else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
         return ((XSDate)this).equals((XSDate)obj2);    
     }
+    else if ((this instanceof XSString) && (obj2 instanceof XSString)) {
+        return ((XSString)this).equals((XSString)obj2);    
+    }
+    else if ((this instanceof XString) && (obj2 instanceof XString)) {
+        String lStr = (((XString)this)).str();
+        String rStr = (((XString)obj2)).str();
+        
+        return (new XSString(lStr)).equals(new XSString(rStr));
+    }
+    else if ((this instanceof XSString) && (obj2 instanceof XString)) {
+        String lStr = ((((XSString)this))).stringValue();
+        String rStr = (((XString)obj2)).str();
+        
+        return (new XSString(lStr)).equals(new XSString(rStr));
+    }
+    else if ((this instanceof XString) && (obj2 instanceof XSString)) {
+        String lStr = (((XString)this)).str();
+        String rStr = ((((XSString)obj2))).stringValue();
+        
+        return (new XSString(lStr)).equals(new XSString(rStr));
+    }
     
     boolean isOperandNodeSet1 = false;
     boolean isOperandNodeSet2 = false;
@@ -931,10 +1019,10 @@ public class XObject extends Expression implements Serializable, Cloneable
        }
     }
     
-    if (isOperandNodeSet1 || this instanceof XNumber) {
+    if (isOperandNodeSet1 || (this instanceof XNumber)) {
         return this.equals(obj2);    
     }    
-    else if (isOperandNodeSet2 || obj2 instanceof XNumber) {
+    else if (isOperandNodeSet2 || (obj2 instanceof XNumber)) {
         return obj2.equals(this);    
     }
 
