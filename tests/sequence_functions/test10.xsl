@@ -4,21 +4,22 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- An XSLT stylesheet test, for the XPath 3.1 fn:codepoint-equal 
-        function.
-        
-        The fn:codepoint-equal function examples used within this stylesheet,
-        are borrowed from XPath 3.1 F&O spec. -->                             
-
-   <xsl:output method="xml" indent="yes"/>
+   <!-- use with test1_d.xml -->
    
-   <xsl:template match="/">
+   <!-- An XSLT stylesheet test, to test XPath 3.1 function 
+        fn:insert-before. -->                            
+
+   <xsl:output method="xml" indent="yes"/>      
+   
+   <xsl:template match="/info">
       <result>
-         <one><xsl:value-of select="codepoint-equal('abcd', 'abcd')"/></one>
-         <two><xsl:value-of select="codepoint-equal('abcd', 'abcd ')"/></two>
-         <three><xsl:value-of select="codepoint-equal('', '')"/></three>
-         <four><xsl:value-of select="codepoint-equal('', ())"/></four>
-         <five><xsl:value-of select="codepoint-equal((), ())"/></five>
+         <xsl:variable name="seq1" select="(elem1, elem2, elem3)"/>
+         
+         <one><xsl:copy-of select="insert-before($seq1, 0, elem7)"/></one>
+         <two><xsl:copy-of select="insert-before($seq1, 1, elem7)"/></two>
+         <three><xsl:copy-of select="insert-before($seq1, 2, elem7)"/></three>
+         <four><xsl:copy-of select="insert-before($seq1, 3, elem7)"/></four>
+         <five><xsl:copy-of select="insert-before($seq1, 4, elem7)"/></five>
       </result>
    </xsl:template>
    

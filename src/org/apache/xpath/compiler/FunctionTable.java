@@ -275,6 +275,30 @@ public class FunctionTable
   
   /** The 'codepoint-equal()' id. */
   public static final int FUNC_CODEPOINT_EQUAL = 83;
+  
+  /** The 'empty()' id. */
+  public static final int FUNC_EMPTY = 84;
+  
+  /** The 'exists()' id. */
+  public static final int FUNC_EXISTS = 85;
+  
+  /** The 'head()' id. */
+  public static final int FUNC_HEAD = 86;
+  
+  /** The 'tail()' id. */
+  public static final int FUNC_TAIL = 87;
+  
+  /** The 'insert-before()' id. */
+  public static final int FUNC_INSERT_BEFORE = 88;
+  
+  /** The 'remove()' id. */
+  public static final int FUNC_REMOVE = 89;
+  
+  /** The 'reverse()' id. */
+  public static final int FUNC_REVERSE = 90;
+  
+  /** The 'subsequence()' id. */
+  public static final int FUNC_SUBSEQUENCE = 91;
 
   // Proprietary
 
@@ -332,7 +356,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 84;
+  private static final int NUM_BUILT_IN_FUNCS = 92;
 
   /**
    * Number of built-in functions that may be added.
@@ -500,6 +524,23 @@ public class FunctionTable
       org.apache.xpath.functions.FuncCompare.class;
     m_functions[FUNC_CODEPOINT_EQUAL] = 
       org.apache.xpath.functions.FuncCodepointEqual.class;
+    
+    m_functions[FUNC_EMPTY] = 
+      org.apache.xpath.functions.FuncEmpty.class;
+    m_functions[FUNC_EXISTS] = 
+      org.apache.xpath.functions.FuncExists.class;
+    m_functions[FUNC_HEAD] = 
+      org.apache.xpath.functions.FuncHead.class;
+    m_functions[FUNC_TAIL] = 
+      org.apache.xpath.functions.FuncTail.class;
+    m_functions[FUNC_INSERT_BEFORE] = 
+      org.apache.xpath.functions.FuncInsertBefore.class;
+    m_functions[FUNC_REMOVE] = 
+      org.apache.xpath.functions.FuncRemove.class;
+    m_functions[FUNC_REVERSE] = 
+      org.apache.xpath.functions.FuncReverse.class;
+    m_functions[FUNC_SUBSEQUENCE] = 
+      org.apache.xpath.functions.FuncSubsequence.class;
   }
 
   static{
@@ -675,6 +716,23 @@ public class FunctionTable
                          new Integer(FunctionTable.FUNC_COMPARE));
          m_functionID.put(Keywords.FUNC_CODEPOINT_EQUAL,
                          new Integer(FunctionTable.FUNC_CODEPOINT_EQUAL));
+         
+         m_functionID.put(Keywords.FUNC_EMPTY,
+                         new Integer(FunctionTable.FUNC_EMPTY));
+         m_functionID.put(Keywords.FUNC_EXISTS,
+                         new Integer(FunctionTable.FUNC_EXISTS));
+         m_functionID.put(Keywords.FUNC_HEAD,
+                         new Integer(FunctionTable.FUNC_HEAD));
+         m_functionID.put(Keywords.FUNC_TAIL,
+                         new Integer(FunctionTable.FUNC_TAIL));
+         m_functionID.put(Keywords.FUNC_INSERT_BEFORE,
+                         new Integer(FunctionTable.FUNC_INSERT_BEFORE));
+         m_functionID.put(Keywords.FUNC_REMOVE,
+                         new Integer(FunctionTable.FUNC_REMOVE));
+         m_functionID.put(Keywords.FUNC_REVERSE,
+                         new Integer(FunctionTable.FUNC_REVERSE));
+         m_functionID.put(Keywords.FUNC_SUBSEQUENCE,
+                         new Integer(FunctionTable.FUNC_SUBSEQUENCE));
   }
   
   public FunctionTable(){

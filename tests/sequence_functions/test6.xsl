@@ -4,21 +4,19 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- An XSLT stylesheet test, for the XPath 3.1 fn:codepoint-equal 
-        function.
-        
-        The fn:codepoint-equal function examples used within this stylesheet,
-        are borrowed from XPath 3.1 F&O spec. -->                             
+   <!-- use with test1_b.xml -->
+   
+   <!-- An XSLT stylesheet test, to test XPath 3.1 function 
+        fn:head. -->                             
 
    <xsl:output method="xml" indent="yes"/>
    
-   <xsl:template match="/">
+   <xsl:template match="/info">
       <result>
-         <one><xsl:value-of select="codepoint-equal('abcd', 'abcd')"/></one>
-         <two><xsl:value-of select="codepoint-equal('abcd', 'abcd ')"/></two>
-         <three><xsl:value-of select="codepoint-equal('', '')"/></three>
-         <four><xsl:value-of select="codepoint-equal('', ())"/></four>
-         <five><xsl:value-of select="codepoint-equal((), ())"/></five>
+         <one><xsl:copy-of select="head(*)"/></one>
+         <two><xsl:copy-of select="head(data/@*)"/></two>
+         <three><xsl:copy-of select="head(elem1)"/></three>
+         <four><xsl:copy-of select="head(elem1/@*)"/></four>
       </result>
    </xsl:template>
    

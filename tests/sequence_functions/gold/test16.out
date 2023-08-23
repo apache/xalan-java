@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <elem4>test value 4</elem4>
+    <elem5>test value 5</elem5>
+  </one>
+  <two>
+    <elem3>test value 3</elem3>
+    <elem4>test value 4</elem4>
+  </two>
+</result>

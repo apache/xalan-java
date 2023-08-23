@@ -385,6 +385,31 @@ public class Keywords
   /** xs:dayTimeDuration data type string. */
   public static final String XS_DAY_TIME_DURATION = "dayTimeDuration";
   
+  
+  /** empty function string. */
+  public static final String FUNC_EMPTY = "empty";
+  
+  /** exists function string. */
+  public static final String FUNC_EXISTS = "exists";
+  
+  /** head function string. */
+  public static final String FUNC_HEAD = "head";
+  
+  /** tail function string. */
+  public static final String FUNC_TAIL = "tail";
+  
+  /** insert-before function string. */
+  public static final String FUNC_INSERT_BEFORE = "insert-before";
+  
+  /** remove function string. */
+  public static final String FUNC_REMOVE = "remove";
+  
+  /** reverse function string. */
+  public static final String FUNC_REVERSE = "reverse";
+  
+  /** subsequence function string. */
+  public static final String FUNC_SUBSEQUENCE = "subsequence";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

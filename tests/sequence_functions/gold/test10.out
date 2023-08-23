@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <elem7>test value 7</elem7>
+    <elem1>test value 1</elem1>
+    <elem2>test value 2</elem2>
+    <elem3>test value 3</elem3>
+  </one>
+  <two>
+    <elem7>test value 7</elem7>
+    <elem1>test value 1</elem1>
+    <elem2>test value 2</elem2>
+    <elem3>test value 3</elem3>
+  </two>
+  <three>
+    <elem1>test value 1</elem1>
+    <elem7>test value 7</elem7>
+    <elem2>test value 2</elem2>
+    <elem3>test value 3</elem3>
+  </three>
+  <four>
+    <elem1>test value 1</elem1>
+    <elem2>test value 2</elem2>
+    <elem7>test value 7</elem7>
+    <elem3>test value 3</elem3>
+  </four>
+  <five>
+    <elem1>test value 1</elem1>
+    <elem2>test value 2</elem2>
+    <elem3>test value 3</elem3>
+    <elem7>test value 7</elem7>
+  </five>
+</result>

@@ -1,0 +1,8 @@
+<info>
+  <elem1>test value 1</elem1>
+  <elem2>test value 2</elem2>
+  <elem3>test value 3</elem3>
+  <elem4>test value 4</elem4>
+  <elem5>test value 5</elem5>
+  <data val1="abc" val2="pqr" val3="mno" val4="uvw" val5="ijk"/>
+</info>
