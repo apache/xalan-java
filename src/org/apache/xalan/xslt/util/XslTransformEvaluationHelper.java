@@ -19,11 +19,16 @@ package org.apache.xalan.xslt.util;
 import java.util.List;
 
 import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.xs.types.XSAnyType;
 import org.apache.xpath.xs.types.XSUntyped;
 import org.apache.xpath.xs.types.XSUntypedAtomic;
+
+import com.sun.org.apache.xml.internal.dtm.DTM;
 
 /**
  * This class, has few utility methods, to help with certain 
@@ -36,10 +41,10 @@ import org.apache.xpath.xs.types.XSUntypedAtomic;
 public class XslTransformEvaluationHelper {
     
     /**
-     * Given an XDM input sequence, expand that sequence to produce a new sequence
+     * Given an xdm input sequence, expand that sequence to produce a new sequence
      * none of whose items are sequence with cardinality greater than one.
      * 
-     * The caller of this method, needs to pass an XDM sequence to be expanded
+     * The caller of this method, needs to pass an xdm sequence to be expanded
      * as an argument, and another argument reference to get the result from this 
      * method.
      */
@@ -109,6 +114,37 @@ public class XslTransformEvaluationHelper {
         else {
             resultSeq.add(inpItem);   
         }
+    }
+    
+    /**
+     * Given an XObject object instance, get its contents as a ResultSequence object.  
+     */
+    public static ResultSequence getResultSequenceFromXObject(XObject xObject, XPathContext xctxt) {        
+        
+        ResultSequence resultSeq = new ResultSequence();
+        
+        if (xObject instanceof XNodeSet) {
+           XNodeSet nodeSet = (XNodeSet)xObject;
+            
+           DTMIterator dtmIter = nodeSet.iterRaw();
+           int nextNode;
+           while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
+              XNodeSet xdmNode = new XNodeSet(nextNode, xctxt);
+              resultSeq.add(xdmNode);
+           }
+        }
+        else if (xObject instanceof ResultSequence) {
+           ResultSequence rSeq = (ResultSequence)xObject;
+           
+           for (int idx = 0; idx < rSeq.size(); idx++) {
+              resultSeq.add(rSeq.item(idx)); 
+           }
+        }
+        else {
+           resultSeq.add(xObject);
+        }
+        
+        return resultSeq;
     }
     
     /**

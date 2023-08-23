@@ -6,7 +6,7 @@
    
    <!-- use with test1_a.xml -->
    
-   <!-- An XSLT stylesheet test, for the XPath 3.1 fn:codepoint-equal() 
+   <!-- An XSLT stylesheet test, for the XPath 3.1 fn:codepoint-equal 
         function.
         
         This stylesheet reads input data to be transformed, from an 
