@@ -6,9 +6,9 @@
    
    <!-- An XSLT stylesheet test case, to test an XPath 3.1 function
         fn:sort which produces the result in an ascending order of input 
-        sequence items, and producing a descending ordered sort result
-        of input sequence items using the function fn:reverse on result
-        of call to function fn:sort. -->                            
+        sequence items. This stylesheet, also produces a descending ordered
+        sort result of input sequence items using the function fn:reverse
+        on result of call to function fn:sort. -->                            
 
    <xsl:output method="xml" indent="yes"/>
    
