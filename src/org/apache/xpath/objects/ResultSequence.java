@@ -46,18 +46,38 @@ public class ResultSequence extends XObject
         return CLASS_RESULT_SEQUENCE;
     }
     
+    /** 
+     * Append an item at the end of the sequence.
+     */
     public void add(XObject item) {
         rsList.add(item);    
     }
     
+    /**
+     * Set an item at a particular index.
+     */
+    public void set(int idx, XObject item) {
+        rsList.set(idx, item);
+    }
+    
+    /**
+     * Get an item stored at a particular index.
+     */
     public XObject item(int idx) {
         return rsList.get(idx);     
     }
     
+    /**
+     * Get the size of the current sequence object.
+     */
     public int size() {
         return rsList.size();   
     }
     
+    /**
+     * Get the contents of this sequence object, as list of 
+     * XObject objects. 
+     */
     public List<XObject> getResultSequenceItems() {
         return rsList;   
     }

@@ -59,26 +59,40 @@ public class FuncInsertBefore extends Function3Args {
             
             ResultSequence rsArg0 = XslTransformEvaluationHelper.getResultSequenceFromXObject(
                                                                                           xObject0, xctxt);
-            
-            int seqInsertPos = getSequenceInsertPosition(xObject1);
-            
-            if (seqInsertPos < 1) {
-               seqInsertPos = 1; 
-            }
-            
             ResultSequence rsArg2 = XslTransformEvaluationHelper.getResultSequenceFromXObject(
                                                                                           xObject2, xctxt);
             
-            for (int idx = 0; idx < (seqInsertPos - 1); idx++) {
-               result.add(rsArg0.item(idx));  
+            if (rsArg0.size() == 0) {
+                for (int idx = 0; idx < rsArg2.size(); idx++) {
+                   result.add(rsArg2.item(idx));   
+                }   
             }
-            
-            for (int idx = 0; idx < rsArg2.size(); idx++) {
-               result.add(rsArg2.item(idx));   
+            else if (rsArg2.size() == 0) {
+                for (int idx = 0; idx < rsArg0.size(); idx++) {
+                   result.add(rsArg0.item(idx));   
+                }
             }
-            
-            for (int idx = (seqInsertPos - 1); idx < rsArg0.size(); idx++) {
-               result.add(rsArg0.item(idx));  
+            else {
+                int seqInsertPos = getSequenceInsertPosition(xObject1);
+                
+                if (seqInsertPos < 1) {
+                   seqInsertPos = 1; 
+                }
+                else if (seqInsertPos > rsArg0.size()) {
+                   seqInsertPos = rsArg0.size() + 1;  
+                }
+                
+                for (int idx = 0; idx < (seqInsertPos - 1); idx++) {
+                   result.add(rsArg0.item(idx));  
+                }
+                
+                for (int idx = 0; idx < rsArg2.size(); idx++) {
+                   result.add(rsArg2.item(idx));   
+                }
+                
+                for (int idx = (seqInsertPos - 1); idx < rsArg0.size(); idx++) {
+                   result.add(rsArg0.item(idx));  
+                }
             }
         }
         catch (TransformerException ex) {

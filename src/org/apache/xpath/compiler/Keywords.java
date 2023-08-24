@@ -410,6 +410,9 @@ public class Keywords
   /** subsequence function string. */
   public static final String FUNC_SUBSEQUENCE = "subsequence";
   
+  /** unordered function string. */
+  public static final String FUNC_UNORDERED = "unordered";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
