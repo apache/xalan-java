@@ -299,6 +299,9 @@ public class FunctionTable
   
   /** The 'subsequence()' id. */
   public static final int FUNC_SUBSEQUENCE = 91;
+  
+  /** The 'unordered()' id. */
+  public static final int FUNC_UNORDERED = 92;
 
   // Proprietary
 
@@ -356,7 +359,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 92;
+  private static final int NUM_BUILT_IN_FUNCS = 93;
 
   /**
    * Number of built-in functions that may be added.
@@ -541,6 +544,8 @@ public class FunctionTable
       org.apache.xpath.functions.FuncReverse.class;
     m_functions[FUNC_SUBSEQUENCE] = 
       org.apache.xpath.functions.FuncSubsequence.class;
+    m_functions[FUNC_UNORDERED] = 
+      org.apache.xpath.functions.FuncUnordered.class;
   }
 
   static{
@@ -733,6 +738,8 @@ public class FunctionTable
                          new Integer(FunctionTable.FUNC_REVERSE));
          m_functionID.put(Keywords.FUNC_SUBSEQUENCE,
                          new Integer(FunctionTable.FUNC_SUBSEQUENCE));
+         m_functionID.put(Keywords.FUNC_UNORDERED,
+                         new Integer(FunctionTable.FUNC_UNORDERED));
   }
   
   public FunctionTable(){

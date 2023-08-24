@@ -73,6 +73,8 @@ public class FuncSubsequence extends FunctionMultiArgs {
             XObject arg1Obj = arg1.execute(xctxt);
             int startingLoc = getIntFromXObject(arg1Obj);
             
+            startingLoc = (startingLoc <= 0) ? 1 : startingLoc; 
+            
             // This function call requires either two arguments, or three arguments
             if (numOfArgs == 2) {
                for (int idx = (startingLoc - 1); idx < rsArg0.size(); idx++) {
@@ -84,15 +86,15 @@ public class FuncSubsequence extends FunctionMultiArgs {
                arg2 = m_arg2;
                XObject arg2Obj = arg2.execute(xctxt);           
                int lengthVal = getIntFromXObject(arg2Obj);
-               if (lengthVal > rsArg0.size()) {
-                   throw new javax.xml.transform.TransformerException("FORG0006 : The third argument value " + 
-                                                                                         lengthVal + " of call to function fn:subsequence, is "
-                                                                                                   + "greater than the size of input sequence."); 
+               if (lengthVal < 0) {
+                  lengthVal = 0;    
                }
-               else { 
-                  for (int idx = (startingLoc - 1); idx < ((startingLoc - 1) + lengthVal); idx++) {
-                     result.add(rsArg0.item(idx)); 
-                  }
+               else if ((startingLoc + lengthVal) > rsArg0.size()) {
+                  lengthVal = rsArg0.size() - startingLoc + 1;    
+               }
+               
+               for (int idx = (startingLoc - 1); idx < ((startingLoc - 1) + lengthVal); idx++) {
+                  result.add(rsArg0.item(idx)); 
                }
             }
         }
