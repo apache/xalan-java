@@ -20,15 +20,14 @@
     <xsl:template match="/">
        <result>
           <xsl:for-each select="$nameValSeq">
-             <xsl:variable name="currentSeqItem" select="."/>
              <data>
                 <one>
                    <xsl:value-of select="if (current-date() gt xs:date('2000-12-31')) 
-                                                                    then upper-case($currentSeqItem) else lower-case($currentSeqItem)"/>
+                                                                    then upper-case(.) else lower-case(.)"/>
                 </one>
                 <two>
-	               <xsl:value-of select="if (current-date() gt xs:date('2501-12-31')) 
-	                                                                then upper-case($currentSeqItem) else lower-case($currentSeqItem)"/>
+	           <xsl:value-of select="if (current-date() gt xs:date('2501-12-31')) 
+	                                                                then upper-case(.) else lower-case(.)"/>
                 </two>
              </data>
           </xsl:for-each>

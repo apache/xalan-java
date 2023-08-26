@@ -17,7 +17,7 @@
                                                                            then true() 
                                                                            else false() }"/>
 
-   <xsl:template match="/list">
+   <xsl:template match="/list">      
       <result>
          <one> 
             <xsl:copy-of select="word[$filterCheck(., 'l')]"/>
