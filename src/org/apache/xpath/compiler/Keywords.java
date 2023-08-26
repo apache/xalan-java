@@ -413,6 +413,9 @@ public class Keywords
   /** unordered function string. */
   public static final String FUNC_UNORDERED = "unordered";
   
+  /** parse-xml function string. */
+  public static final String FUNC_PARSE_XML = "parse-xml";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
