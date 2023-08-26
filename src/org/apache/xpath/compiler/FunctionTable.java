@@ -302,6 +302,9 @@ public class FunctionTable
   
   /** The 'unordered()' id. */
   public static final int FUNC_UNORDERED = 92;
+  
+  /** The 'parse-xml()' id. */
+  public static final int FUNC_PARSE_XML = 93;
 
   // Proprietary
 
@@ -359,7 +362,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 93;
+  private static final int NUM_BUILT_IN_FUNCS = 94;
 
   /**
    * Number of built-in functions that may be added.
@@ -425,6 +428,7 @@ public class FunctionTable
       org.apache.xpath.functions.FuncDoclocation.class;
     m_functions[FUNC_UNPARSED_ENTITY_URI] =
       org.apache.xpath.functions.FuncUnparsedEntityURI.class;
+    
     m_functions[FUNC_MATCHES] = 
       org.apache.xpath.functions.FuncMatches.class;
     m_functions[FUNC_REPLACE] = 
@@ -473,8 +477,8 @@ public class FunctionTable
     m_functions[FUNC_SORT] = 
       org.apache.xpath.functions.FuncSort.class;
     
-    // XPath 3.1 functions configurations for the math functions 
-    // namespace http://www.w3.org/2005/xpath-functions/math.
+    // XPath 3.1 built-in functions configurations for the math 
+    // functions namespace http://www.w3.org/2005/xpath-functions/math    
     m_functions[FUNC_MATH_PI] = 
       org.apache.xpath.functions.math.FuncMathPi.class;
     m_functions[FUNC_MATH_EXP] = 
@@ -504,8 +508,6 @@ public class FunctionTable
     m_functions[FUNC_MATH_ATAN2] = 
       org.apache.xpath.functions.math.FuncMathAtan2.class;
     
-    // XPath 3.1 functions configurations for component 
-    // extraction functions on duration values.
     m_functions[FUNC_YEARS_FROM_DURATION] = 
       org.apache.xpath.functions.FuncYearsFromDuration.class;
     m_functions[FUNC_MONTHS_FROM_DURATION] = 
@@ -546,6 +548,10 @@ public class FunctionTable
       org.apache.xpath.functions.FuncSubsequence.class;
     m_functions[FUNC_UNORDERED] = 
       org.apache.xpath.functions.FuncUnordered.class;
+    
+    m_functions[FUNC_PARSE_XML] = 
+      org.apache.xpath.functions.FuncParseXml.class;
+    
   }
 
   static{
@@ -668,7 +674,7 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_SORT));
           
           // XPath 3.1 functions configurations for the math functions 
-          // namespace http://www.w3.org/2005/xpath-functions/math.
+          // namespace http://www.w3.org/2005/xpath-functions/math
           m_functionID.put(Keywords.FUNC_MATH_PI,
                           new Integer(FunctionTable.FUNC_MATH_PI));
           m_functionID.put(Keywords.FUNC_MATH_EXP,
@@ -698,8 +704,6 @@ public class FunctionTable
           m_functionID.put(Keywords.FUNC_MATH_ATAN2,
                          new Integer(FunctionTable.FUNC_MATH_ATAN2));
           
-         // XPath 3.1 functions configurations for component 
-         // extraction functions on xdm duration values.
          m_functionID.put(Keywords.FUNC_YEARS_FROM_DURATION,
                          new Integer(FunctionTable.FUNC_YEARS_FROM_DURATION));
          m_functionID.put(Keywords.FUNC_MONTHS_FROM_DURATION,
@@ -740,6 +744,9 @@ public class FunctionTable
                          new Integer(FunctionTable.FUNC_SUBSEQUENCE));
          m_functionID.put(Keywords.FUNC_UNORDERED,
                          new Integer(FunctionTable.FUNC_UNORDERED));
+         
+         m_functionID.put(Keywords.FUNC_PARSE_XML,
+                         new Integer(FunctionTable.FUNC_PARSE_XML));
   }
   
   public FunctionTable(){
