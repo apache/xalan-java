@@ -25,6 +25,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -83,23 +84,38 @@ public class FunctionDef1Arg extends FunctionOneArg
   protected XMLString getArg0AsString(XPathContext xctxt)
           throws javax.xml.transform.TransformerException
   {
-    if(null == m_arg0)
+    XMLString resultVal = null;
+      
+    if (m_arg0 == null)
     {
       int currentNode = xctxt.getCurrentNode();
-      if(DTM.NULL == currentNode)
-        return XString.EMPTYSTRING;
+      if(DTM.NULL == currentNode) {
+          resultVal = XString.EMPTYSTRING;
+      }
       else
       {
-        DTM dtm = xctxt.getDTM(currentNode);
-        return dtm.getStringValue(currentNode);
-      }
-      
+          DTM dtm = xctxt.getDTM(currentNode);
+          resultVal = dtm.getStringValue(currentNode);
+      }      
+    }
+    else if (m_arg0 instanceof SelfIteratorNoPredicate) {
+       XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+       if (xpath3ContextItem != null) {
+          resultVal = new XString(XslTransformEvaluationHelper.getStrVal(xpath3ContextItem));
+       }
+       else {
+          XObject arg0XObject = m_arg0.execute(xctxt);
+           
+          resultVal = new XString(XslTransformEvaluationHelper.getStrVal(arg0XObject));
+       }
     }
     else {
-      XObject arg0XObject = m_arg0.execute(xctxt);
-      
-      return new XString(XslTransformEvaluationHelper.getStrVal(arg0XObject));
+       XObject arg0XObject = m_arg0.execute(xctxt);
+        
+       resultVal = new XString(XslTransformEvaluationHelper.getStrVal(arg0XObject));  
     }
+    
+    return resultVal;
   }
 
   /**

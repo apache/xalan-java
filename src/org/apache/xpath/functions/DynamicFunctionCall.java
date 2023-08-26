@@ -105,8 +105,8 @@ public class DynamicFunctionCall extends Expression {
               functionRef = exprContext.getVariableOrParam(new QName(funcRefVarName));
            }
            catch (TransformerException ex) {
-              // Try to get an XPath inline function reference, within stylesheet's 
-              // global scope. 
+              // Try to get an XPath inline function reference, from within 
+              // stylesheet's global scope. 
               ExpressionNode expressionNode = getExpressionOwner();
               ExpressionNode stylesheetRootNode = null;
               while (expressionNode != null) {
