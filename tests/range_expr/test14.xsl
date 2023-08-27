@@ -1,29 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                exclude-result-prefixes="xs"
                 version="3.0">
                 
-    <!-- Author: mukulg@apache.org -->
-   
-    <!-- An XSLT stylesheet test, to test the XPath 3.1 fn:parse-xml()
-         function. The XPath function fn:parse-xml's usage example, as used
-         within this stylesheet is borrowed from XPath 3.1 F&O spec. -->                
+    <!-- Author: mukulg@apache.org -->                
                 
+    <!-- use with test1_d.xml -->
+    
+    <!-- An XSLT stylesheet test case, to test XPath 3.1
+         range "to" expression.
+     -->
+    
     <xsl:output method="xml" indent="yes"/>
     
-    <!-- The XML document string value, passed to fn:parse-xml 
-         function call within below mentioned xsl:variable 
-         declaration is following (with XML special characters 
-         escaped within function call fn:parse-xml's argument, 
-         according to XML conventions),
-         
-         <alpha>abcd</alpha> 
-    -->
-    <xsl:variable name="xmlDocNode" select="parse-xml('&lt;alpha&gt;abcd&lt;/alpha&gt;')"/>
+    <xsl:variable name="repetitionCount" select="3"/>
         
     <xsl:template match="/">
-       <result>
-          <xsl:copy-of select="$xmlDocNode"/>
-       </result>
+       <alpha>
+         <xsl:apply-templates select="alpha/*"/>
+       </alpha>
+    </xsl:template>
+    
+    <xsl:template match="*">
+      <xsl:variable name="elem" select="."/>
+      <xsl:for-each select="1 to $repetitionCount">
+         <xsl:element name="{name($elem)}">
+            <xsl:if test="position() = 1">
+               <xsl:attribute name="strLen" select="string-length(xs:string($elem))"/>
+            </xsl:if>
+            <xsl:copy-of select="$elem/node()"/>
+         </xsl:element>
+      </xsl:for-each>
     </xsl:template>
     
     <!--

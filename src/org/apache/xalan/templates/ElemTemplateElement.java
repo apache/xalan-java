@@ -1742,7 +1742,8 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * During processing of, xsl:for-each or xsl:iterate instruction, when the input data to be
    * processed by these instructions is a 'ResultSequence' object, we use this method to set
-   * the XPath context information before each sequence item is processed by these instructions.
+   * the XPath context information before each sequence item is processed by these 
+   * XSL instructions.
    * 
    * @param inpSequenceLength                  an input data sequence length
    * @param currentlyProcessingItemIndex       an index of currently processed item within an 
@@ -1770,7 +1771,8 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * During processing of, xsl:for-each or xsl:iterate instruction, when the input data to be
    * processed by these instructions is a 'ResultSequence' object, we use this method to reset
-   * the XPath context information after each sequence item is processed by these instructions. 
+   * the XPath context information after each sequence item has been processed by these 
+   * XSL instructions. 
    * 
    * @param currentContextItem      the current xdm item been processed
    * @param xctxt                   the currently active, XPath context object

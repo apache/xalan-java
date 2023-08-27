@@ -2,28 +2,33 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 version="3.0">
                 
-    <!-- Author: mukulg@apache.org -->
-   
-    <!-- An XSLT stylesheet test, to test the XPath 3.1 fn:parse-xml()
-         function. The XPath function fn:parse-xml's usage example, as used
-         within this stylesheet is borrowed from XPath 3.1 F&O spec. -->                
+    <!-- Author: mukulg@apache.org -->                
+                
+    <!-- use with test1_a.xml -->
+    
+    <!-- This XSLT stylesheet test case, tests the
+         xsl:template instruction.
+    -->                
                 
     <xsl:output method="xml" indent="yes"/>
-    
-    <!-- The XML document string value, passed to fn:parse-xml 
-         function call within below mentioned xsl:variable 
-         declaration is following (with XML special characters 
-         escaped within function call fn:parse-xml's argument, 
-         according to XML conventions),
-         
-         <alpha>abcd</alpha> 
-    -->
-    <xsl:variable name="xmlDocNode" select="parse-xml('&lt;alpha&gt;abcd&lt;/alpha&gt;')"/>
         
     <xsl:template match="/">
-       <result>
-          <xsl:copy-of select="$xmlDocNode"/>
-       </result>
+       <alpha>
+         <xsl:apply-templates select="alpha/*"/>
+       </alpha>
+    </xsl:template>
+    
+    <xsl:template match="alpha">
+       <xsl:element name="{name()}">
+          <xsl:attribute name="pos" select="position()"/>
+          <xsl:copy-of select="node()"/>
+       </xsl:element>
+    </xsl:template>
+    
+    <xsl:template match="*">
+       <xsl:element name="{name()}">
+          <xsl:copy-of select="node()"/>
+       </xsl:element>
     </xsl:template>
     
     <!--

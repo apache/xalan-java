@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><alpha>
+  <a strLen="5">hello</a>
+  <a>hello</a>
+  <a>hello</a>
+  <b strLen="5">world</b>
+  <b>world</b>
+  <b>world</b>
+  <c strLen="4">this</c>
+  <c>this</c>
+  <c>this</c>
+  <d strLen="2">is</d>
+  <d>is</d>
+  <d>is</d>
+  <e strLen="22">an xml sample document</e>
+  <e>an xml sample document</e>
+  <e>an xml sample document</e>
+</alpha>

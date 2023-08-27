@@ -416,6 +416,9 @@ public class Keywords
   /** parse-xml function string. */
   public static final String FUNC_PARSE_XML = "parse-xml";
   
+  /** parse-xml-fragment function string. */
+  public static final String FUNC_PARSE_XML_FRAGMENT = "parse-xml-fragment";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

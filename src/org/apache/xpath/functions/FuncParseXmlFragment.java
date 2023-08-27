@@ -31,17 +31,19 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Document;
+import org.w3c.dom.DocumentFragment;
+import org.w3c.dom.NodeList;
 
 /**
- * Implementation of the parse-xml() function.
+ * Implementation of the parse-xml-fragment() function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncParseXml extends FunctionOneArg {
+public class FuncParseXmlFragment extends FunctionOneArg {
 
-    private static final long serialVersionUID = -6262670777202140694L;
+    private static final long serialVersionUID = -3212697250471567672L;
 
     /**
      * Execute the function. The function must return a valid object.
@@ -58,7 +60,7 @@ public class FuncParseXml extends FunctionOneArg {
         SourceLocator srcLocator = xctxt.getSAXLocator();
 
         try {
-            XObject xObject0 = m_arg0.execute(xctxt);
+            XObject xObject0 = m_arg0.execute(xctxt);            
             
             String argStrVal = XslTransformEvaluationHelper.getStrVal(xObject0);
             
@@ -72,7 +74,7 @@ public class FuncParseXml extends FunctionOneArg {
     }
     
     /**
-     * Get an XDM nodeset corresponding to an XML string value.
+     * Get an XDM nodeset corresponding to an XML fragment string value.
      */
     private XNodeSet getNodeSetFromStr(String strVal, XPathContext xctxt) throws 
                                                           javax.xml.transform.TransformerException {
@@ -87,11 +89,25 @@ public class FuncParseXml extends FunctionOneArg {
             
             DocumentBuilder dBuilder = dbf.newDocumentBuilder();
             
-            InputStream inpStream = new ByteArrayInputStream(strVal.getBytes(
-                                                                      StandardCharsets.UTF_8));
+            // Wrap the originally provided string value (that is supposed to be an XML fragment 
+            // string value), with a temporary XML outer element.
+            String currentTimeMillisec = String.valueOf(System.currentTimeMillis());
+            String tempOuterWrapperElementName = "t0_" + currentTimeMillisec;            
+            String wrappedXmlStrVal = "<"+tempOuterWrapperElementName+">" + strVal + 
+                                                                              "</"+tempOuterWrapperElementName+">"; 
+            
+            InputStream inpStream = new ByteArrayInputStream(wrappedXmlStrVal.getBytes(
+                                                                                    StandardCharsets.UTF_8));
             Document xmlDocument = dBuilder.parse(inpStream);
             
-            DTM dtm = xctxt.getDTM(new DOMSource(xmlDocument), true, null, false, false);            
+            DocumentFragment xmlDocFragment = xmlDocument.createDocumentFragment();            
+            NodeList xmlDomChildNodes = (xmlDocument.getDocumentElement()).getChildNodes();
+            
+            while (xmlDomChildNodes.getLength() > 0) {
+               xmlDocFragment.appendChild(xmlDomChildNodes.item(0));
+            }
+            
+            DTM dtm = xctxt.getDTM(new DOMSource(xmlDocFragment), true, null, false, false);            
             int documentNodeHandleVal = dtm.getDocument();
             
             nodeSet = new XNodeSet(documentNodeHandleVal, xctxt.getDTMManager());
