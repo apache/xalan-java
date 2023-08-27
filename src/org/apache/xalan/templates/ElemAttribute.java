@@ -20,6 +20,8 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.Vector;
+
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
@@ -62,6 +64,12 @@ public class ElemAttribute extends ElemElement
      * The "select" expression.
      */
     protected Expression m_selectExpression = null;
+    
+    // The following two variables are used, for performing fixupVariables
+    // action on certain XPath expression objects, within an object of this
+    // class.
+    private Vector fVars;    
+    private int fGlobalsSize;
 
   /**
    * Get an int constant identifying the type of element.
@@ -102,6 +110,18 @@ public class ElemAttribute extends ElemElement
   public Expression getSelect()
   {
       return m_selectExpression;
+  }
+  
+  public void compose(StylesheetRoot sroot) throws TransformerException
+  {
+    super.compose(sroot);
+    
+    StylesheetRoot.ComposeState cstate = sroot.getComposeState();
+    java.util.Vector vnames = cstate.getVariableNames();
+    int golbalsSize = cstate.getGlobalsSize();
+    
+    fVars = (java.util.Vector)(vnames.clone());
+    fGlobalsSize = golbalsSize; 
   }
   
   /**
@@ -189,6 +209,11 @@ public class ElemAttribute extends ElemElement
                             
               if (m_selectExpression != null) {
                   // evaluate the value of xsl:attribute's "select" attribute
+                  
+                  if (fVars != null) {
+                     m_selectExpression.fixupVariables(fVars, fGlobalsSize);   
+                  }
+                  
                   XObject xpathEvalResult = m_selectExpression.execute(xctxt);              
                   val = xpathEvalResult.str();
               }

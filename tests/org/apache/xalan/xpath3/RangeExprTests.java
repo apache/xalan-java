@@ -24,7 +24,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XSLT 3.0 test cases, for using XPath 3.1 range expressions.
+ * XSLT 3.0 test cases, for the XPath 3.1 range "to" 
+ * expression.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -176,6 +177,16 @@ public class RangeExprTests extends XslTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslRangeExprTest14() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_d.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test14.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

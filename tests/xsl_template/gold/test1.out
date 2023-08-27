@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><alpha>
+  <a>hello</a>
+  <b>world</b>
+  <alpha pos="3">this</alpha>
+  <d>is</d>
+  <e>an xml sample document</e>
+</alpha>

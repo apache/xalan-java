@@ -4,7 +4,7 @@
                 
     <!-- Author: mukulg@apache.org -->
    
-    <!-- An XSLT stylesheet test, for the XPath 3.1 fn:parse-xml() 
+    <!-- An XSLT stylesheet test, to test the XPath 3.1 fn:parse-xml() 
          function.
          
          Within this stylesheet, we parse an XML document string value
