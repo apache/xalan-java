@@ -20,6 +20,7 @@
  */
 package org.apache.xpath;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
@@ -501,6 +502,8 @@ public class VariableStack implements Cloneable
 
     org.apache.xml.utils.PrefixResolver prefixResolver =
       xctxt.getNamespaceContext();
+    
+    SourceLocator srcLocator = xctxt.getSAXLocator();
 
     // Get the current ElemTemplateElement, which must be pushed in as the 
     // prefix resolver, and then walk backwards in document order, searching 
@@ -541,7 +544,8 @@ public class VariableStack implements Cloneable
         return getGlobalVariable(xctxt, vvar.getIndex());
     }
 
-    throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_VAR_NOT_RESOLVABLE, new Object[]{qname.toString()})); //"Variable not resolvable: " + qname);
+    throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_VAR_NOT_RESOLVABLE, 
+                                                                             new Object[]{qname.toString()}), srcLocator); //"Variable not resolvable: " + qname);
   }
 }  // end VariableStack
 
