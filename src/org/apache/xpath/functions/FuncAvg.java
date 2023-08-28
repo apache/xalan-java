@@ -22,20 +22,24 @@ package org.apache.xpath.functions;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 
 /**
- * Implementation of an XPath function fn:sum.
+ * Implementation of an XPath 3.1 function fn:avg.
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncSum extends FunctionOneArg
+public class FuncAvg extends FunctionOneArg
 {
-    static final long serialVersionUID = -2719049259574677519L;
+
+  private static final long serialVersionUID = 6282866669363344636L;
 
   /**
-   * Execute the function.  The function must return
+   * Execute the function. The function must return
    * a valid object.
    * @param xctxt The current execution context.
    * @return A valid XObject.
@@ -43,9 +47,27 @@ public class FuncSum extends FunctionOneArg
    * @throws javax.xml.transform.TransformerException
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {    
-     XNumber result = XslTransformEvaluationHelper.getSumOfValues(m_arg0, xctxt);
-     
-     return result;    
+  {          
+      XObject result = null;
+      
+      XNumber sumOfValues = XslTransformEvaluationHelper.getSumOfValues(
+                                                                     m_arg0, xctxt);
+      
+      XNumber countOfSeqItems = XslTransformEvaluationHelper.getCountOfSequenceItems(
+                                                                     m_arg0, xctxt);
+      if (countOfSeqItems.num() > 0) {
+         result = new XNumber(sumOfValues.num() / countOfSeqItems.num()); 
+      }
+      else {
+         // if this function's argument has evaluated to an empty sequence,
+         // the result of this function call is empty sequence.
+         result = new ResultSequence();
+      }
+      
+      // average calculation involving for example, xs:duration values and 
+      // its subtypes. TO DO
+      
+      return result;
   }
+  
 }

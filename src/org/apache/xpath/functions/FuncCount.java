@@ -20,19 +20,13 @@
  */
 package org.apache.xpath.functions;
 
-import org.apache.xml.dtm.DTMIterator;
-import org.apache.xpath.Expression;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.composite.ForExpr;
-import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.operations.Range;
-import org.apache.xpath.operations.Variable;
 
 /**
- * Execute the count() function.
+ * Implementation of an XPath function fn:count.
  * 
  * @xsl.usage advanced
  */
@@ -50,43 +44,9 @@ public class FuncCount extends FunctionOneArg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-        int count = 0;
-        
-        if (m_arg0 instanceof Function) {
-            XObject evalResult = ((Function)m_arg0).execute(xctxt);
-            if (evalResult instanceof XNodeSet) {
-                count = ((XNodeSet)evalResult).getLength();   
-            }
-            else if (evalResult instanceof ResultSequence) {
-               count = ((ResultSequence)evalResult).size();
-            }
-        }
-        else if (m_arg0 instanceof Variable) {
-           XObject evalResult = ((Variable)m_arg0).execute(xctxt);
-           if (evalResult instanceof XNodeSet) {
-               count = ((XNodeSet)evalResult).getLength();   
-           }
-           else if (evalResult instanceof ResultSequence) {
-              count = ((ResultSequence)evalResult).size();
-           }
-        }
-        else if (m_arg0 instanceof Expression) {
-            if (m_arg0 instanceof Range) {
-                ResultSequence resultSeq = (ResultSequence)(((Range)m_arg0).execute(xctxt));
-                count = resultSeq.size();
-            }
-            else if (m_arg0 instanceof ForExpr) {
-                ResultSequence resultSeq = (ResultSequence)(((ForExpr)m_arg0).execute(xctxt));
-                count = resultSeq.size();   
-            }
-            else {
-                DTMIterator nl = m_arg0.asIterator(xctxt, xctxt.getCurrentNode());
-                count = nl.getLength();	
-                nl.detach();
-            }
-        }
-    
-        return new XNumber((double)count);    
+      XNumber result = XslTransformEvaluationHelper.getCountOfSequenceItems(m_arg0, xctxt);
+      
+      return result;    
   }
   
 }

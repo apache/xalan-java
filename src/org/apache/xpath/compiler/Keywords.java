@@ -419,6 +419,9 @@ public class Keywords
   /** parse-xml-fragment function string. */
   public static final String FUNC_PARSE_XML_FRAGMENT = "parse-xml-fragment";
   
+  /** avg function string. */
+  public static final String FUNC_AVG = "avg";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
@@ -476,8 +479,6 @@ public class Keywords
                     new Integer(OpCodes.NODETYPE_PI));
     m_nodetests.put(NODETYPE_NODE_STRING,
                     new Integer(OpCodes.NODETYPE_NODE));    
-    /*m_keywords.put(FUNC_KEY_STRING,
-                     new Integer(FunctionTable.FUNC_KEY));*/
   }
   
   static Object getAxisName(String key){

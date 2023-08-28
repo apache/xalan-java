@@ -19,16 +19,25 @@ package org.apache.xalan.xslt.util;
 import java.util.List;
 
 import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.utils.XMLString;
+import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.ForExpr;
+import org.apache.xpath.composite.SimpleSequenceConstructor;
+import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XString;
+import org.apache.xpath.operations.Range;
+import org.apache.xpath.operations.SimpleMapOperator;
+import org.apache.xpath.operations.Variable;
 import org.apache.xpath.xs.types.XSAnyType;
 import org.apache.xpath.xs.types.XSUntyped;
 import org.apache.xpath.xs.types.XSUntypedAtomic;
-
-import com.sun.org.apache.xml.internal.dtm.DTM;
 
 /**
  * This class, has few utility methods, to help with certain 
@@ -145,6 +154,147 @@ public class XslTransformEvaluationHelper {
         }
         
         return resultSeq;
+    }
+    
+    /**
+     * Given a compiled XPath expression and an XPath context object, find
+     * the sum of values of xdm items represented by the provided compiled 
+     * XPath expression object. 
+     */
+    public static XNumber getSumOfValues(Expression expr, XPathContext xctxt) throws 
+                                                                  javax.xml.transform.TransformerException {        
+        double sum = 0.0;    
+        
+        if (expr instanceof Variable) {
+           Variable xslVariable = (Variable)expr;
+           XObject resultObj = xslVariable.execute(xctxt);
+           if (resultObj instanceof ResultSequence) {
+              ResultSequence resultSeq = (ResultSequence)resultObj;
+              sum = sumResultSequence(resultSeq);          
+           }       
+        }
+        else if (expr instanceof Function) {
+           XObject resultObj = ((Function)expr).execute(xctxt);
+           if (resultObj instanceof ResultSequence) {
+              ResultSequence resultSeq = (ResultSequence)resultObj;
+              sum = sumResultSequence(resultSeq);          
+           }  
+        }
+        else if (expr instanceof ForExpr) {
+           ForExpr forExpr = (ForExpr)expr;
+           ResultSequence forExprResult = (ResultSequence)(forExpr.execute(xctxt));
+           sum = sumResultSequence(forExprResult);
+        }
+        else if (expr instanceof SimpleSequenceConstructor) {
+           SimpleSequenceConstructor simpleSeqConstructor = (SimpleSequenceConstructor)expr;
+           ResultSequence seqCtrEvalResult = (ResultSequence)(simpleSeqConstructor.
+                                                                                execute(xctxt));
+           sum = sumResultSequence(seqCtrEvalResult);
+        }
+        else if (expr instanceof SimpleMapOperator) {
+           SimpleMapOperator simpleMapOperator = (SimpleMapOperator)expr;
+           ResultSequence simpleMapOperatorResult = (ResultSequence)(simpleMapOperator.
+                                                                                  execute(xctxt));
+           sum = sumResultSequence(simpleMapOperatorResult);
+        }
+        else {
+           int pos;
+            
+           DTMIterator nodes = expr.asIterator(xctxt, xctxt.getCurrentNode());
+
+           while ((pos = nodes.nextNode()) != DTM.NULL) {
+              DTM dtm = nodes.getDTM(pos);
+              XMLString xmlStr = dtm.getStringValue(pos);
+
+              if (xmlStr != null) {
+                 sum += xmlStr.toDouble();
+              }
+           }
+           nodes.detach();
+        }
+
+        return new XNumber(sum);    
+    }
+    
+    /**
+     * Given a compiled XPath expression object and an XPath context object, find
+     * the count of xdm items represented by the provided compiled XPath expression 
+     * object.  
+     */
+    public static XNumber getCountOfSequenceItems(Expression expr, XPathContext xctxt) throws 
+                                                                                  javax.xml.transform.TransformerException {
+        int count = 0;
+        
+        if (expr instanceof Function) {
+            XObject evalResult = ((Function)expr).execute(xctxt);
+            if (evalResult instanceof XNodeSet) {
+                count = ((XNodeSet)evalResult).getLength();   
+            }
+            else if (evalResult instanceof ResultSequence) {
+               count = ((ResultSequence)evalResult).size();
+            }
+        }
+        else if (expr instanceof Variable) {
+           XObject evalResult = ((Variable)expr).execute(xctxt);
+           if (evalResult instanceof XNodeSet) {
+               count = ((XNodeSet)evalResult).getLength();   
+           }
+           else if (evalResult instanceof ResultSequence) {
+              count = ((ResultSequence)evalResult).size();
+           }
+        }
+        else if (expr instanceof SimpleSequenceConstructor) {
+           SimpleSequenceConstructor simpleSeqConstructor = (SimpleSequenceConstructor)expr;
+           ResultSequence seqCtrEvalResult = (ResultSequence)(simpleSeqConstructor.
+                                                                                execute(xctxt));
+           count = seqCtrEvalResult.size();
+        }
+        else if (expr instanceof Expression) {
+            if (expr instanceof Range) {
+                ResultSequence resultSeq = (ResultSequence)(((Range)expr).execute(xctxt));
+                count = resultSeq.size();
+            }
+            else if (expr instanceof ForExpr) {
+                ResultSequence resultSeq = (ResultSequence)(((ForExpr)expr).execute(xctxt));
+                count = resultSeq.size();   
+            }
+            else {
+                DTMIterator nl = expr.asIterator(xctxt, xctxt.getCurrentNode());
+                count = nl.getLength(); 
+                nl.detach();
+            }
+        }
+    
+        return new XNumber((double)count);
+    }
+    
+    /**
+     * Summation of the values of ResultSequence data items.
+     *  
+     * @param resultSeq  The ResultSequence object instance, whose items
+     *                   need to be added to produce a summation value. 
+     * @return           The summation value with data type double.
+     */
+    private static double sumResultSequence(ResultSequence resultSeq) {
+       
+       double sum = 0.0;
+       
+       for (int idx = 0; idx < resultSeq.size(); idx++) {
+          XObject xObj = resultSeq.item(idx);
+          String str = null;
+          if (xObj instanceof XSAnyType) {
+             str = ((XSAnyType)xObj).stringValue();     
+          }
+          else {
+             str = xObj.str();
+          }
+          if (str != null) {
+             XString xStr = new XString(str);
+             sum +=  xStr.toDouble();
+          }
+       }
+       
+       return sum;
     }
     
     /**

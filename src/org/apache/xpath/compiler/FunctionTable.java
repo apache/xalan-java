@@ -308,6 +308,9 @@ public class FunctionTable
   
   /** The 'parse-xml-fragment()' id. */
   public static final int FUNC_PARSE_XML_FRAGMENT = 94;
+  
+  /** The 'avg()' id. */
+  public static final int FUNC_AVG = 95;
 
   // Proprietary
 
@@ -365,7 +368,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 95;
+  private static final int NUM_BUILT_IN_FUNCS = 96;
 
   /**
    * Number of built-in functions that may be added.
@@ -556,6 +559,8 @@ public class FunctionTable
       org.apache.xpath.functions.FuncParseXml.class;
     m_functions[FUNC_PARSE_XML_FRAGMENT] = 
       org.apache.xpath.functions.FuncParseXmlFragment.class;
+    
+    m_functions[FUNC_AVG] = org.apache.xpath.functions.FuncAvg.class;
     
   }
 
@@ -754,6 +759,9 @@ public class FunctionTable
                          new Integer(FunctionTable.FUNC_PARSE_XML));
          m_functionID.put(Keywords.FUNC_PARSE_XML_FRAGMENT,
                          new Integer(FunctionTable.FUNC_PARSE_XML_FRAGMENT));
+         
+         m_functionID.put(Keywords.FUNC_AVG,
+                         new Integer(FunctionTable.FUNC_AVG));
   }
   
   public FunctionTable(){
