@@ -19,6 +19,7 @@ package org.apache.xalan.xslt3;
 import org.apache.xalan.xpath3.BuiltinFunctionsNamespceTests;
 import org.apache.xalan.xpath3.DynamicFunctionCallTests;
 import org.apache.xalan.xpath3.FnAbsTests;
+import org.apache.xalan.xpath3.FnAvgTests;
 import org.apache.xalan.xpath3.FnCodepointEqualTests;
 import org.apache.xalan.xpath3.FnCodepointsToStringTests;
 import org.apache.xalan.xpath3.FnCompareTests;
@@ -86,7 +87,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 NodeComparisonTests.class, SimpleMapOperatorTests.class, FnFoldLeftTests.class,
                 FnFoldRightTests.class, FnForEachPairTests.class, FnSortTests.class, FnCodepointsToStringTests.class,
                 FnStringToCodepointsTests.class, FnCompareTests.class, FnCodepointEqualTests.class,
-                SequenceFunctionTests.class, FnParseXmlTests.class, FnParseXmlFragmentTests.class, TemplateTests.class})
+                SequenceFunctionTests.class, FnParseXmlTests.class, FnParseXmlFragmentTests.class,
+                TemplateTests.class, FnAvgTests.class })
 public class AllXsl3Tests {
 
 }
