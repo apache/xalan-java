@@ -20,6 +20,8 @@
  */
 package org.apache.xpath.xs.types;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.objects.ResultSequence;
 
 /**
@@ -48,8 +50,10 @@ public abstract class XSCtrType extends XSAnyAtomicType {
 	 * @param arg    either an empty sequence, or an XML Schema atomic type
 	 * 
 	 * @return       the resulting ResultSequence
+	 * 
+     * @throws TransformerException 
 	 */
-	public abstract ResultSequence constructor(ResultSequence arg);
+	public abstract ResultSequence constructor(ResultSequence arg) throws TransformerException;
 
 	/**
 	 * Get the datatype's name.

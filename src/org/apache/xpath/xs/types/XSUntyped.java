@@ -46,7 +46,7 @@ public class XSUntyped extends XSAnyType {
     }
 
     public String typeName() {
-        return "untypedAtomic";
+        return "untyped";
     }
     
     @Override

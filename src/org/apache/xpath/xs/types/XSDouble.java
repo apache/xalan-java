@@ -53,17 +53,18 @@ public class XSDouble extends XSNumericType {
 	/*
      * Class constructor.
      */
-	public XSDouble(String val) {
+	public XSDouble(String strVal) throws javax.xml.transform.TransformerException {
 		try {
-			if (val.equals("-INF")) {
+			if (strVal.equals("-INF")) {
 				_value = new Double(Double.NEGATIVE_INFINITY);
-			} else if (val.equals("INF")) {
+			} else if (strVal.equals("INF")) {
 				_value = new Double(Double.POSITIVE_INFINITY);
 			} else {
-				_value = new Double(val);
+				_value = new Double(strVal);
 			}
 		} catch (NumberFormatException ex) {
-			// to do
+			throw new javax.xml.transform.TransformerException("FORG0006 : The string value '" + 
+		                                                             strVal + "' cannot be cast to xs:double."); 
 		}
 	}
 
@@ -71,31 +72,33 @@ public class XSDouble extends XSNumericType {
 	 * Get a XSDouble object, corresponding to the string valued 
 	 * argument provided.
 	 * 
-	 * @param str   string value, to be parsed to an XSDouble object
+	 * @param strVal   string value, to be parsed to an XSDouble object
 	 * 
 	 * @return      an XSDouble object, corresponding to the string
 	 *              argument provided.
 	 */
-	public static XSDouble parseDouble(String str) {	    
+	public static XSDouble parseDouble(String strVal) throws javax.xml.transform.TransformerException {	    
 		try {
 			Double d1 = null;
 			
-			if (str.equals("INF")) {
+			if (strVal.equals("INF")) {
 				d1 = new Double(Double.POSITIVE_INFINITY);
-			} else if (str.equals("-INF")) {
+			} else if (strVal.equals("-INF")) {
 				d1 = new Double(Double.NEGATIVE_INFINITY);
 			} else {
-				d1 = new Double(str);
+				d1 = new Double(strVal);
 			}
 			
 			return new XSDouble(d1.doubleValue());			
 		} catch (NumberFormatException ex) {
-			return null;
+		    throw new javax.xml.transform.TransformerException("FORG0006 : The string value '" + 
+		                                                             strVal + "' cannot be cast to xs:double.");
 		}		
 	}
 	
 	@Override
-    public ResultSequence constructor(ResultSequence arg) {
+    public ResultSequence constructor(ResultSequence arg) throws 
+                                                              javax.xml.transform.TransformerException {
         ResultSequence resultSeq = new ResultSequence();
         
         if (arg.size() == 0) {
