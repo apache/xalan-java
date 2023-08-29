@@ -64,8 +64,8 @@ public class FuncAvg extends FunctionOneArg
          result = new ResultSequence();
       }
       
-      // average calculation involving for example, xs:duration values and 
-      // its subtypes. TO DO
+      // TO DO : average calculation involving for example, xs:duration and 
+      // its subtypes.
       
       return result;
   }

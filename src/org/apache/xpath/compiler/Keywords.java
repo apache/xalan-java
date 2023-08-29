@@ -422,6 +422,12 @@ public class Keywords
   /** avg function string. */
   public static final String FUNC_AVG = "avg";
   
+  /** max function string. */
+  public static final String FUNC_MAX = "max";
+  
+  /** min function string. */
+  public static final String FUNC_MIN = "min";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

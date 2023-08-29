@@ -20,6 +20,8 @@
  */
 package org.apache.xpath.xs.types;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.objects.ResultSequence;
 
 /**
@@ -38,7 +40,7 @@ public abstract class XSAnyAtomicType extends XSAnySimpleType {
      * XDM objects with data types xs:boolean, xs:decimal etc.
      * 
      */
-    public abstract ResultSequence constructor(ResultSequence arg);
+    public abstract ResultSequence constructor(ResultSequence arg) throws TransformerException;
     
     /**
      * Get the datatype's name

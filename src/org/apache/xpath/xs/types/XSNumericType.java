@@ -16,6 +16,8 @@
  */
 package org.apache.xpath.xs.types;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.objects.ResultSequence;
 
 /**
@@ -31,7 +33,7 @@ public class XSNumericType extends XSCtrType {
     private static final long serialVersionUID = 6842313858622701811L;
 
     @Override
-    public ResultSequence constructor(ResultSequence arg) {
+    public ResultSequence constructor(ResultSequence arg) throws TransformerException {
         return null;
     }
 

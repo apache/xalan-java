@@ -311,6 +311,12 @@ public class FunctionTable
   
   /** The 'avg()' id. */
   public static final int FUNC_AVG = 95;
+  
+  /** The 'max()' id. */
+  public static final int FUNC_MAX = 96;
+  
+  /** The 'min()' id. */
+  public static final int FUNC_MIN = 97;
 
   // Proprietary
 
@@ -368,7 +374,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 96;
+  private static final int NUM_BUILT_IN_FUNCS = 98;
 
   /**
    * Number of built-in functions that may be added.
@@ -561,7 +567,8 @@ public class FunctionTable
       org.apache.xpath.functions.FuncParseXmlFragment.class;
     
     m_functions[FUNC_AVG] = org.apache.xpath.functions.FuncAvg.class;
-    
+    m_functions[FUNC_MAX] = org.apache.xpath.functions.FuncMax.class;
+    m_functions[FUNC_MIN] = org.apache.xpath.functions.FuncMin.class;
   }
 
   static{
@@ -762,6 +769,10 @@ public class FunctionTable
          
          m_functionID.put(Keywords.FUNC_AVG,
                          new Integer(FunctionTable.FUNC_AVG));
+         m_functionID.put(Keywords.FUNC_MAX,
+                         new Integer(FunctionTable.FUNC_MAX));
+         m_functionID.put(Keywords.FUNC_MIN,
+                         new Integer(FunctionTable.FUNC_MIN));
   }
   
   public FunctionTable(){

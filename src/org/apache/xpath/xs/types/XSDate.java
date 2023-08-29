@@ -250,7 +250,7 @@ public class XSDate extends XSCalendarType {
     
     /*
      * Determine whether, this XSDate object is less that, the 
-     * XSDate object passed as an argument to this method. 
+     * XSDate object provided as an argument to this method. 
      */
     public boolean lt(XSDate xsDate) {
         boolean isDateBefore = false;
@@ -269,8 +269,8 @@ public class XSDate extends XSCalendarType {
     }
     
     /*
-     * Determine whether, this XSDate object is greater that, the 
-     * XSDate object passed as an argument to this method. 
+     * Determine whether, this XSDate object is greater than, the 
+     * XSDate object provided as an argument to this method. 
      */
     public boolean gt(XSDate xsDate) {
         boolean isDateAfter = false;
