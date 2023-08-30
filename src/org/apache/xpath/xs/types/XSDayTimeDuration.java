@@ -19,6 +19,10 @@
  */
 package org.apache.xpath.xs.types;
 
+import java.math.BigDecimal;
+
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.objects.ResultSequence;
 
 /**
@@ -201,6 +205,110 @@ public class XSDayTimeDuration extends XSDuration {
 	public String stringType() {
 		return XS_DAY_TIME_DURATION;
 	}
+	
+	/**
+	 * Method to add an XSDayTimeDuration value, to this 
+	 * XSDayTimeDuration value.
+	 */
+	public XSDayTimeDuration add(XSDayTimeDuration xsDayTimeDuration) {       
+        double sum = value() + xsDayTimeDuration.value();
+
+        return new XSDayTimeDuration(sum);
+    }
+	
+    /**
+     * Method to subtract an XSDayTimeDuration value, from this 
+     * XSDayTimeDuration value.
+     */
+    public XSDayTimeDuration subtract(XSDayTimeDuration xsDayTimeDuration) {       
+        double diff = value() - xsDayTimeDuration.value();
+
+        return new XSDayTimeDuration(diff);
+    }
+    
+    /**
+     * Method to multiply an XSDayTimeDuration value represented by this
+     * object, with a numeric value represented by an argument passed to
+     * this method.
+     * 
+     * @throws TransformerException 
+     */
+    public XSDayTimeDuration mult(XSAnyType xsAnyType) throws TransformerException {
+        
+        XSDayTimeDuration result = null;
+        
+        if (xsAnyType instanceof XSNumericType) {
+           String argStrVal = ((XSNumericType)xsAnyType).stringValue();
+           XSDouble argDoubleVal = new XSDouble(argStrVal);
+           if (argDoubleVal.nan()) {
+              throw new TransformerException("FOCA0005 : Cannot multiply an XSDayTimeDuration value with NaN.");  
+           }
+           else {
+              result = new XSDayTimeDuration(value() * argDoubleVal.doubleValue()); 
+           }
+        }
+        else {
+           throw new TransformerException("FOCA0005 : Cannot multiply an XSDayTimeDuration value with a "
+                                                                                                   + "non-numeric value"); 
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Method to divide this XSDayTimeDuration value, by a value (that needs to be
+     * either a numeric value or a XSDayTimeDuration value) that is passed as an
+     * argument to this method.
+     * 
+     * @throws TransformerException 
+     */
+    public XSDayTimeDuration div(XSAnyType xsAnyType) throws TransformerException {
+        
+        XSDayTimeDuration result = null;
+        
+        if (xsAnyType instanceof XSNumericType) {
+           String argStrVal = ((XSNumericType)xsAnyType).stringValue();
+           XSDouble argDoubleVal = new XSDouble(argStrVal);
+           if (argDoubleVal.nan()) {
+              throw new TransformerException("FOCA0005 : Cannot divide an XSDayTimeDuration value with NaN.");  
+           }
+           else if (argDoubleVal.zero()) {
+              throw new TransformerException("FODT0001 : Cannot divide an XSDayTimeDuration value with zero."); 
+           }
+           else if (argDoubleVal.infinite()) {
+              double doubleResultVal = value() / argDoubleVal.doubleValue();
+              result = new XSDayTimeDuration(doubleResultVal);
+           }
+           else {
+              BigDecimal bigDecimal1 = new BigDecimal(value());
+              BigDecimal bigDecimal2 = new BigDecimal(argDoubleVal.doubleValue());
+              BigDecimal bigDecimalResult = bigDecimal1.divide(new BigDecimal(bigDecimal2.doubleValue()), 
+                                                                                                 18, BigDecimal.ROUND_HALF_EVEN);
+              result = new XSDayTimeDuration(bigDecimalResult.doubleValue());
+           }
+        }
+        else if (xsAnyType instanceof XSDayTimeDuration) {
+           double dbl2 = ((XSDayTimeDuration)xsAnyType).seconds();
+           
+           if (dbl2 != 0) {
+               BigDecimal bigDecimal1 = new BigDecimal(value());
+               BigDecimal bigDecimal2 = new BigDecimal(dbl2);
+               BigDecimal bigDecimalResult = bigDecimal1.divide(new BigDecimal(bigDecimal2.doubleValue()), 
+                                                                                                  18, BigDecimal.ROUND_HALF_EVEN);
+               result = new XSDayTimeDuration(bigDecimalResult.doubleValue());  
+           }
+           else {
+              throw new TransformerException("FODT0001 : Cannot divide an XSDayTimeDuration value, with a XSDayTimeDuration "
+                                                                                               + "value that represents zero seconds."); 
+           }
+        }
+        else {
+           throw new TransformerException("FORG0006 : Cannot divide an XSDayTimeDuration value, with a value that is of "
+                                                                                   + "a type other than numeric or XSDayTimeDuration.");
+        }
+        
+        return result;
+    }
 	
 	/**
      * Do a data type cast, of a XSAnyType value to an XSDuration

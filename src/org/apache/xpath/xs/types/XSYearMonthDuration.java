@@ -19,7 +19,10 @@
  */
 package org.apache.xpath.xs.types;
 
-import org.apache.xpath.XPathException;
+import java.math.BigDecimal;
+
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.objects.ResultSequence;
 
 /**
@@ -245,10 +248,44 @@ public class XSYearMonthDuration extends XSDuration {
     public int monthValue() {
        int retVal = (year() * 12) + month();
 
-       if (negative())
+       if (negative()) {
           retVal *= -1;
+       }
 
        return retVal;
+    }
+    
+    /**
+     * This method does an equality comparison between, this and
+     * another XSYearMonthDuration value. 
+     */
+    public boolean equals(XSYearMonthDuration xsYearMonthDuration) {
+       double val1 = monthValue();
+       double val2 = xsYearMonthDuration.monthValue();
+       
+       return val1 == val2;
+    }
+    
+    /**
+     * This method checks whether, this XSYearMonthDuration value is
+     * less than another one.  
+     */
+    public boolean lt(XSYearMonthDuration xsYearMonthDuration) {
+       double val1 = monthValue();
+       double val2 = xsYearMonthDuration.monthValue();
+       
+       return val1 < val2;
+    }
+    
+    /**
+     * This method checks whether, this XSYearMonthDuration value is
+     * greater than another one.  
+     */
+    public boolean gt(XSYearMonthDuration xsYearMonthDuration) {
+       double val1 = monthValue();
+       double val2 = xsYearMonthDuration.monthValue();
+       
+       return val1 > val2;
     }
     
     /**
@@ -272,56 +309,73 @@ public class XSYearMonthDuration extends XSDuration {
     }
     
     /**
-     * Multiply an XSYearMonthDuration value by a numeric value, and return the 
-     * result as an XSYearMonthDuration value.
+     * Method to multiply an XSYearMonthDuration value represented by this
+     * object, with a numeric value represented by an argument passed to
+     * this method.
+     * 
+     * @throws TransformerException 
      */
-    public XSYearMonthDuration mult(XSDouble arg) throws XPathException {
-       XSYearMonthDuration result = null;
-       
-       if (arg.nan()) {
-          throw new XPathException("FOCA0005 : NaN supplied as float/double value.");    
-       }
-       
-       if (arg.infinite()) {
-          throw new XPathException("FODT0001 : Overflow/underflow of value for the "
-                                                                         + "date/time operation.");
-       }
-       
-       int intVal = (int)Math.round(monthValue() * arg.doubleValue());
-       
-       result = new XSYearMonthDuration(intVal);
-       
-       return result; 
+    public XSYearMonthDuration mult(XSAnyType xsAnyType) throws TransformerException {
+        
+        XSYearMonthDuration result = null;
+        
+        if (xsAnyType instanceof XSNumericType) {
+           String argStrVal = ((XSNumericType)xsAnyType).stringValue();
+           XSDouble argDoubleVal = new XSDouble(argStrVal);
+           if (argDoubleVal.nan()) {
+              throw new TransformerException("FOCA0005 : Cannot multiply an XSYearMonthDuration value with NaN.");  
+           }
+           else {
+              int res = (int) Math.round(monthValue() * argDoubleVal.doubleValue());
+               
+              result = new XSYearMonthDuration(res); 
+           }
+        }
+        else {
+           throw new TransformerException("FOCA0005 : Cannot multiply an XSYearMonthDuration value with a "
+                                                                                                   + "non-numeric value"); 
+        }
+        
+        return result;
     }
     
     /**
-     * Divide an XSYearMonthDuration value by a numeric value, and return the 
-     * result as an XSYearMonthDuration value.
+     * Method to divide this XSYearMonthDuration value, by a value (that needs to be
+     * either a numeric value or a XSYearMonthDuration value) that is passed as an
+     * argument to this method.
+     * 
+     * @throws TransformerException 
      */
-    public XSYearMonthDuration div(XSDouble arg) throws XPathException {
-        XSYearMonthDuration result = null;
+    public XSAnyType div(XSAnyType xsAnyType) throws TransformerException {
         
-        if (arg.nan()) {
-           throw new XPathException("FOCA0005 : NaN supplied as float/double value.");    
-        }
+        XSAnyType result = null;
         
-        if (arg.infinite()) {
-           result = new XSYearMonthDuration(0); 
-        }
-        else {
-           XSDouble xsDouble = (XSDouble)arg;
-
-           if (!arg.zero()) {
-              int intVal = (int)Math.round(monthValue() / xsDouble.doubleValue());
-              result = new XSYearMonthDuration(intVal); 
+        if (xsAnyType instanceof XSNumericType) {
+           String argStrVal = ((XSNumericType)xsAnyType).stringValue();
+           XSDouble argDoubleVal = new XSDouble(argStrVal);
+           if (argDoubleVal.nan()) {
+              throw new TransformerException("FOCA0005 : Cannot divide an XSYearMonthDuration value with NaN.");  
+           }
+           else if (argDoubleVal.zero()) {
+              throw new TransformerException("FODT0001 : Cannot divide an XSYearMonthDuration value with zero."); 
            }
            else {
-              throw new XPathException("FODT0001 : Overflow/underflow of value for the "
-                                                                                    + "date/time operation."); 
-           } 
+              int intResultVal = (int) Math.round(monthValue() / argDoubleVal.doubleValue());
+              result = new XSYearMonthDuration(intResultVal);
+           }
         }
-
-        return result;
+        else if (xsAnyType instanceof XSYearMonthDuration) {
+           XSYearMonthDuration argXSYearMonthDuration = (XSYearMonthDuration) xsAnyType;
+           double dblResultVal = (double) monthValue() / argXSYearMonthDuration.monthValue();
+           
+           result = new XSDecimal(new BigDecimal(dblResultVal));
+        }
+        else {
+           throw new TransformerException("FORG0006 : Cannot divide an XSYearMonthDuration value, with a value that is of "
+                                                                                   + "a type other than numeric or XSYearMonthDuration.");
+        }
+        
+        return result; 
     }
     
     /**
