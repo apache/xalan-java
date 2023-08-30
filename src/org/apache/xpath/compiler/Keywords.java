@@ -379,6 +379,9 @@ public class Keywords
   /** xs:date data type string. */
   public static final String XS_DATE = "date";
   
+  /** xs:duration data type string. */
+  public static final String XS_DURATION = "duration";
+  
   /** xs:yearMonthDuration data type string. */
   public static final String XS_YEAR_MONTH_DURATION = "yearMonthDuration";
   

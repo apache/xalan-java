@@ -20,6 +20,8 @@
  */
 package org.apache.xpath.xs.types;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.objects.ResultSequence;
 
 /**
@@ -31,7 +33,9 @@ import org.apache.xpath.objects.ResultSequence;
  */
 public class XSDuration extends XSCtrType {
 
-	private static final String XS_DURATION = "xs:duration";
+    private static final long serialVersionUID = -8460416911698841833L;
+
+    private static final String XS_DURATION = "xs:duration";
 	
 	protected int _year;
 	protected int _month;
@@ -248,41 +252,56 @@ public class XSDuration extends XSCtrType {
 		ret += seconds();
 
 		if (negative()) {
-			ret *= -1;
+		   ret *= -1;
 		}
 		
 		return ret;
 	}
 	
-	public double time_value() {
+	public double timeValue() {
 		double ret = 0;
 		ret += hours() * 60 * 60;
 		ret += minutes() * 60;
 		ret += seconds();
 
-		if (negative())
-			ret *= -1;
+		if (negative()) {
+		   ret *= -1;
+		}
+		
 		return ret;
 	}
 
 	/**
-	 * TO DO
-	 */
-	public ResultSequence constructor(ResultSequence arg) {
-		ResultSequence rs = null;		
+     * A method to construct an xdm sequence comprising a
+     * xs:duration value, given input data as argument to 
+     * this method.
+     * 
+	 * @throws TransformerException 
+     */
+	public ResultSequence constructor(ResultSequence arg) throws TransformerException {
+	    ResultSequence resultSeq = new ResultSequence();
+	    
+	    if (arg.size() == 0) {
+	       return resultSeq;     
+	    }
+	    
+	    XSAnyType xsAnyType = (XSAnyType)arg.item(0);
+	    
+        XSDuration xsDuration = castToDuration(xsAnyType);
+        
+        resultSeq.add(xsDuration);
 
-		return rs;
+		return resultSeq;
 	}
 
 	/**
-	 * Construct a new XSDuration object, by parsing the 
-	 * supplied string.
+	 * Construct a new XSDuration object, by parsing the supplied string.
 	 * 
 	 * @param str   string to be parsed
 	 * 
 	 * @return      XSDuration object representing the duration of time supplied
 	 */
-	public static XSDuration parse(String str) {
+	public static XSDuration parseDuration(String str) throws TransformerException {
 		boolean negative = false;
 		int years = 0;
 		int months = 0;
@@ -291,29 +310,28 @@ public class XSDuration extends XSCtrType {
 		int minutes = 0;
 		double seconds = 0;
 
-		// string following the P
 		String pstr = "";
 		String tstr = "";
 
-		// get the negative and pstr
 		if (str.startsWith("-P")) {
 			negative = true;
 			pstr = str.substring(2, str.length());
 		} else if (str.startsWith("P")) {
 			negative = false;
 			pstr = str.substring(1, str.length());
-		} else
+		} else {
 			return null;
+		}
 
 		try {
 			int index = pstr.indexOf('Y');
-			boolean did_something = false;
+			boolean isAction = false;
 
 			if (index != -1) {
 				String digit = pstr.substring(0, index);
 				years = Integer.parseInt(digit);
 				pstr = pstr.substring(index + 1, pstr.length());
-				did_something = true;
+				isAction = true;
 			}
 
 			index = pstr.indexOf('M');
@@ -321,10 +339,10 @@ public class XSDuration extends XSCtrType {
 				String digit = pstr.substring(0, index);
 				months = Integer.parseInt(digit);
 				pstr = pstr.substring(index + 1, pstr.length());
-				did_something = true;
+				isAction = true;
 			}
 
-			// get the days
+			// days
 			index = pstr.indexOf('D');
 
 			if (index == -1) {
@@ -340,25 +358,25 @@ public class XSDuration extends XSCtrType {
 					tstr = tstr.substring(1, tstr.length());
 				} else {
 					tstr = "";
-					did_something = true;
+					isAction = true;
 				}
 			}
 
-			// hour
+			// hours
 			index = tstr.indexOf('H');
 			if (index != -1) {
 				String digit = tstr.substring(0, index);
 				hours = Integer.parseInt(digit);
 				tstr = tstr.substring(index + 1, tstr.length());
-				did_something = true;
+				isAction = true;
 			}
-			// minute
+			// minutes
 			index = tstr.indexOf('M');
 			if (index != -1) {
 				String digit = tstr.substring(0, index);
 				minutes = Integer.parseInt(digit);
 				tstr = tstr.substring(index + 1, tstr.length());
-				did_something = true;
+				isAction = true;
 			}
 			// seconds
 			index = tstr.indexOf('S');
@@ -366,14 +384,15 @@ public class XSDuration extends XSCtrType {
 				String digit = tstr.substring(0, index);
 				seconds = Double.parseDouble(digit);
 				tstr = tstr.substring(index + 1, tstr.length());
-				did_something = true;
+				isAction = true;
 			}
-			if (!did_something) {
+			if (!isAction) {
 				return null;
 			}
 
 		} catch (NumberFormatException ex) {
-			return null;
+			throw new TransformerException("FORG0001 : The provided string, cannot be parsed "
+			                                                                   + "to a xs:duration value."); 
 		}
 
 		return new XSDuration(years, months, days, hours, minutes, seconds, negative);
@@ -396,5 +415,56 @@ public class XSDuration extends XSCtrType {
 	public int month() {
 		return _month;
 	}
+	
+	/**
+	 * This method does an equality comparison between, this and
+	 * another XSDuration value. 
+	 */
+	public boolean equals(XSDuration xsDuration) {
+       double val1 = value();
+       double val2 = xsDuration.value();
+       
+       return val1 == val2;
+    }
+	
+	/**
+     * This method checks whether, this XSDuration value is less
+     * than another one.  
+     */
+    public boolean lt(XSDuration xsDuration) {
+       double val1 = value();
+       double val2 = xsDuration.value();
+       
+       return val1 < val2;
+    }
+    
+    /**
+     * This method checks whether, this XSDuration value is
+     * greater than another one.  
+     */
+    public boolean gt(XSDuration xsDuration) {
+       double val1 = value();
+       double val2 = xsDuration.value();
+       
+       return val1 > val2;
+    }
+    
+    /**
+     * Do a data type cast, of a XSAnyType value to an XSDuration
+     * value.
+     *  
+     * @throws TransformerException 
+     */
+    private XSDuration castToDuration(XSAnyType xsAnyType) throws TransformerException {
+        
+        if (xsAnyType instanceof XSDuration) {
+            XSDuration duration = (XSDuration) xsAnyType;
+            
+            return new XSDuration(duration.year(), duration.month(), duration.days(), duration.hours(), 
+                                                              duration.minutes(), duration.seconds(), duration.negative());
+        }
+        
+        return parseDuration(xsAnyType.stringValue());
+    }
 
 }

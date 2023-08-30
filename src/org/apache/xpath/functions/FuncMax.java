@@ -33,11 +33,13 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.xs.types.XSDate;
+import org.apache.xpath.xs.types.XSDayTimeDuration;
 import org.apache.xpath.xs.types.XSDouble;
 import org.apache.xpath.xs.types.XSNumericType;
 import org.apache.xpath.xs.types.XSString;
 import org.apache.xpath.xs.types.XSUntyped;
 import org.apache.xpath.xs.types.XSUntypedAtomic;
+import org.apache.xpath.xs.types.XSYearMonthDuration;
 
 /**
  * Implementation of an XPath 3.1 function fn:max.
@@ -87,6 +89,8 @@ public class FuncMax extends FunctionMultiArgs
       int doubleItemCount = 0;
       int strItemCount = 0;
       int dateItemCount = 0;
+      int yearMonthDurationItemCount = 0;
+      int dayTimeDurationItemCount = 0;
       
       if (xObjArg0 instanceof XNodeSet) {
          // If for all the nodes of an input sequence, the node's string
@@ -148,10 +152,15 @@ public class FuncMax extends FunctionMultiArgs
                convetedInpSequence.add((XSDate)seqObj);
                dateItemCount++;
             }
+            else if (seqObj instanceof XSYearMonthDuration) {
+               convetedInpSequence.add((XSYearMonthDuration)seqObj);
+               yearMonthDurationItemCount++;
+            }
+            else if (seqObj instanceof XSDayTimeDuration) {
+               convetedInpSequence.add((XSDayTimeDuration)seqObj);
+               dayTimeDurationItemCount++;
+            }
          }
-         
-         // TO DO : to handle XML Schema types xs:duration (and its subtypes), xs:anyURI as
-         //         well, within function call fn:max's input sequence. 
       }
       else {
          result = xObjArg0;  
@@ -169,16 +178,25 @@ public class FuncMax extends FunctionMultiArgs
          else if ((dateItemCount > 0) && (convetedInpSequence.size() == dateItemCount)) {
             result = getMaxValueFromXSDateSequence(convetedInpSequence);
          }
+         else if ((yearMonthDurationItemCount > 0) && (convetedInpSequence.size() == 
+                                                                              yearMonthDurationItemCount)) {
+            result = getMaxValueFromXSYearMonthDurationSequence(convetedInpSequence);
+         }
+         else if ((dayTimeDurationItemCount > 0) && (convetedInpSequence.size() == 
+                                                                              dayTimeDurationItemCount)) {
+            result = getMaxValueFromXSDayTimeDurationSequence(convetedInpSequence);
+         }
          else if ((xObjArg0 instanceof ResultSequence) && (((ResultSequence)xObjArg0).
                                                                                   size() == 0)) {
             // the result value is an empty sequence
             result = new ResultSequence(); 
          }
          else {
-            throw new javax.xml.transform.TransformerException("FORG0006 : An input sequence processed by function fn:max, "
+            throw new javax.xml.transform.TransformerException("FORG0006 : An input sequence processed by function fn:max "
                                                                      + "should have data values of same type for all the items of "
-                                                                     + "sequence (for e.g, all xs:double, all xs:string, all xs:date "
-                                                                     + "etc).", srcLocator); 
+                                                                     + "sequence (for e.g, all xs:double, all xs:string, all xs:date, "
+                                                                     + "all xs:yearMonthDuration, all xs:dayTimeDuration etc).", 
+                                                                     srcLocator); 
          }
       }
       
@@ -272,6 +290,44 @@ public class FuncMax extends FunctionMultiArgs
          
      for (int idx = 1; idx < inpSeq.size(); idx++) {
         XSDate nextVal = (XSDate)(inpSeq.item(idx));
+        if (nextVal.gt(result)) {
+           result = nextVal;   
+        }
+     }
+     
+     return result;
+  }
+  
+  /**
+   * Given a sequence of xdm XSYearMonthDuration objects, find the
+   * XSYearMonthDuration object that represents the latest value amongst
+   * the items of the provided sequence.  
+   */
+  private XSYearMonthDuration getMaxValueFromXSYearMonthDurationSequence(
+                                                                     ResultSequence inpSeq) {
+     XSYearMonthDuration result = (XSYearMonthDuration)(inpSeq.item(0));
+         
+     for (int idx = 1; idx < inpSeq.size(); idx++) {
+        XSYearMonthDuration nextVal = (XSYearMonthDuration)(inpSeq.item(idx));
+        if (nextVal.gt(result)) {
+           result = nextVal;   
+        }
+     }
+     
+     return result;
+  }
+  
+  /**
+   * Given a sequence of xdm XSDayTimeDuration objects, find the
+   * XSDayTimeDuration object that represents the latest value amongst
+   * the items of the provided sequence.  
+   */
+  private XSDayTimeDuration getMaxValueFromXSDayTimeDurationSequence(
+                                                                     ResultSequence inpSeq) {
+     XSDayTimeDuration result = (XSDayTimeDuration)(inpSeq.item(0));
+         
+     for (int idx = 1; idx < inpSeq.size(); idx++) {
+        XSDayTimeDuration nextVal = (XSDayTimeDuration)(inpSeq.item(idx));
         if (nextVal.gt(result)) {
            result = nextVal;   
         }
