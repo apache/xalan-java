@@ -132,9 +132,53 @@ public class XPathCollationSupport {
           }    
        }
        else if (HTML_ASCII_CASE_INSENSITIVE_COLLATION_URI.equals(collationUri)) {
-          // REVISIT
-          throw new javax.xml.transform.TransformerException("FOCH0002 : The requested collation '" + collationUri + "' "
-                                                                                                           + "is not supported.");          
+          int str1Len = str1.length();
+          int str2Len = str2.length();
+           
+          int idx1 = 0;
+          int idx2 = 0;
+           
+          while (true) {
+             if (idx1 == str1Len) {
+                if (idx2 == str2Len) {
+                   comparisonResult = 0;
+                   break;
+                } else {
+                   comparisonResult = -1;
+                   break;
+                }
+             }
+             
+             if (idx2 == str2Len) {
+                comparisonResult = 1;
+                break;
+             }
+             
+             int codepoint1 = str1.codePointAt(idx1);
+             idx1 += 1;
+             
+             int codepoint2 = str2.codePointAt(idx2);
+             idx2 += 1;
+             
+             if ((codepoint1 >= 'a') && (codepoint1 <= 'z')) {
+                codepoint1 += 'A' - 'a';
+             }
+             
+             if ((codepoint2 >= 'a') && (codepoint2 <= 'z')) {
+                codepoint2 += 'A' - 'a';
+             }
+             
+             int codepointDiff = codepoint1 - codepoint2;             
+             if (codepointDiff != 0) {
+                if (codepointDiff < 0) {
+                   comparisonResult = -1;
+                }
+                else {
+                   comparisonResult = 1; 
+                }                
+                break;
+             }
+          }          
        }
        else {
           throw new javax.xml.transform.TransformerException("FOCH0002 : The requested collation '" + collationUri + "' "

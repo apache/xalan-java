@@ -353,6 +353,9 @@ public class Keywords
   /** codepoint-equal function string. */
   public static final String FUNC_CODEPOINT_EQUAL = "codepoint-equal";
   
+  /** contains-token function string. */
+  public static final String FUNC_CONTAINS_TOKEN = "contains-token";
+  
   // XML Schema built-in data type name keywords
   
   /** xs:string data type string. */

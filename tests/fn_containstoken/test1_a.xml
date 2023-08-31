@@ -1,0 +1,7 @@
+<info>
+  <val1>red green blue </val1>
+  <val2>red, green, blue</val2>
+  <val3>red green blue</val3>  
+  <data1 val="red green blue "/>
+  <data2 val="red, green, blue"/>
+</info>

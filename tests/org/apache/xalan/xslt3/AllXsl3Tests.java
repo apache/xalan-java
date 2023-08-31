@@ -23,6 +23,7 @@ import org.apache.xalan.xpath3.FnAvgTests;
 import org.apache.xalan.xpath3.FnCodepointEqualTests;
 import org.apache.xalan.xpath3.FnCodepointsToStringTests;
 import org.apache.xalan.xpath3.FnCompareTests;
+import org.apache.xalan.xpath3.FnContainsTokenTests;
 import org.apache.xalan.xpath3.FnDistinctValuesTests;
 import org.apache.xalan.xpath3.FnFilterTests;
 import org.apache.xalan.xpath3.FnFoldLeftTests;
@@ -90,7 +91,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnFoldRightTests.class, FnForEachPairTests.class, FnSortTests.class, FnCodepointsToStringTests.class,
                 FnStringToCodepointsTests.class, FnCompareTests.class, FnCodepointEqualTests.class,
                 SequenceFunctionTests.class, FnParseXmlTests.class, FnParseXmlFragmentTests.class,
-                TemplateTests.class, FnAvgTests.class, FnMaxTests.class, FnMinTests.class })
+                TemplateTests.class, FnAvgTests.class, FnMaxTests.class, FnMinTests.class, FnContainsTokenTests.class })
 public class AllXsl3Tests {
 
 }
