@@ -317,6 +317,9 @@ public class FunctionTable
   
   /** The 'min()' id. */
   public static final int FUNC_MIN = 97;
+  
+  /** The 'contains-token()' id. */
+  public static final int FUNC_CONTAINS_TOKEN = 98;
 
   // Proprietary
 
@@ -374,7 +377,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 98;
+  private static final int NUM_BUILT_IN_FUNCS = 99;
 
   /**
    * Number of built-in functions that may be added.
@@ -541,6 +544,8 @@ public class FunctionTable
       org.apache.xpath.functions.FuncCompare.class;
     m_functions[FUNC_CODEPOINT_EQUAL] = 
       org.apache.xpath.functions.FuncCodepointEqual.class;
+    m_functions[FUNC_CONTAINS_TOKEN] = 
+      org.apache.xpath.functions.FuncContainsToken.class;
     
     m_functions[FUNC_EMPTY] = 
       org.apache.xpath.functions.FuncEmpty.class;
@@ -742,6 +747,8 @@ public class FunctionTable
                          new Integer(FunctionTable.FUNC_COMPARE));
          m_functionID.put(Keywords.FUNC_CODEPOINT_EQUAL,
                          new Integer(FunctionTable.FUNC_CODEPOINT_EQUAL));
+         m_functionID.put(Keywords.FUNC_CONTAINS_TOKEN,
+                         new Integer(FunctionTable.FUNC_CONTAINS_TOKEN));
          
          m_functionID.put(Keywords.FUNC_EMPTY,
                          new Integer(FunctionTable.FUNC_EMPTY));
