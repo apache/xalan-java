@@ -134,7 +134,7 @@ public class FuncContainsToken extends FunctionMultiArgs {
            for (int idx1 = 0; idx1 < arg0StrList.size(); idx1++) {
               String strVal = arg0StrList.get(idx1);
               // split this string at whitespace boundaries
-              String[] strPartsArr = strVal.split("\s+");
+              String[] strPartsArr = strVal.split("\\s+");
               for (int idx2 = 0; idx2 < strPartsArr.length; idx2++) {
                  String strPart = strPartsArr[idx2];
                  if (xpathCollationSupport.compareStringsUsingCollation(strPart, tokenStrVal, 
