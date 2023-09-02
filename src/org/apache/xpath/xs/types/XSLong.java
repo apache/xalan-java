@@ -104,5 +104,9 @@ public class XSLong extends XSInteger {
 	public boolean gt(XSLong xsLong) {
 	    return _value.compareTo(xsLong.intValue()) > 0; 
     }
+	
+    public int getType() {
+        return CLASS_XS_LONG;
+    }
 
 }

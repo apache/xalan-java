@@ -297,12 +297,14 @@ public class XSDuration extends XSCtrType {
 	/**
 	 * Construct a new XSDuration object, by parsing the supplied string.
 	 * 
-	 * @param str   string to be parsed
+	 * @param strVal   string to be parsed
 	 * 
 	 * @return      XSDuration object representing the duration of time supplied
 	 */
-	public static XSDuration parseDuration(String str) throws TransformerException {
-		boolean negative = false;
+	public static XSDuration parseDuration(String strVal) throws TransformerException {
+		
+	    boolean isDurationNegative = false;
+		
 		int years = 0;
 		int months = 0;
 		int days = 0;
@@ -313,14 +315,15 @@ public class XSDuration extends XSCtrType {
 		String pstr = "";
 		String tstr = "";
 
-		if (str.startsWith("-P")) {
-			negative = true;
-			pstr = str.substring(2, str.length());
-		} else if (str.startsWith("P")) {
-			negative = false;
-			pstr = str.substring(1, str.length());
+		if (strVal.startsWith("-P")) {
+			isDurationNegative = true;
+			pstr = strVal.substring(2, strVal.length());
+		} else if (strVal.startsWith("P")) {
+			isDurationNegative = false;
+			pstr = strVal.substring(1, strVal.length());
 		} else {
-			return null;
+		    throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+		                                                                                         + "cannot be parsed to a xs:duration value.");
 		}
 
 		try {
@@ -387,15 +390,16 @@ public class XSDuration extends XSCtrType {
 				isAction = true;
 			}
 			if (!isAction) {
-				return null;
+			    throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                               + "cannot be parsed to a xs:duration value.");
 			}
 
-		} catch (NumberFormatException ex) {
-			throw new TransformerException("FORG0001 : The provided string, cannot be parsed "
-			                                                                   + "to a xs:duration value."); 
+		} catch (Exception ex) {
+		    throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                              + "cannot be parsed to a xs:duration value."); 
 		}
 
-		return new XSDuration(years, months, days, hours, minutes, seconds, negative);
+		return new XSDuration(years, months, days, hours, minutes, seconds, isDurationNegative);
 	}
 
 	/**
@@ -447,6 +451,10 @@ public class XSDuration extends XSCtrType {
        double val2 = xsDuration.value();
        
        return val1 > val2;
+    }
+    
+    public int getType() {
+        return CLASS_XS_DURATION;
     }
     
     /**

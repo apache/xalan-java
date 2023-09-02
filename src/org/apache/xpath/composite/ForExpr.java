@@ -244,16 +244,15 @@ public class ForExpr extends Expression {
                                                                         xctxt.getNamespaceContext());
             
             if (retExprResultVal instanceof XNodeSet) { 
-               XNodeSet xNodeSetItem = (XNodeSet)retExprResultVal;
+               XNodeSet xNodeSet = (XNodeSet)retExprResultVal;
                
-               XNodeSet xsObjNodeSet = (XNodeSet)xNodeSetItem;
-               DTMIterator dtmIter = xsObjNodeSet.iterRaw();
+               DTMIterator dtmIter = xNodeSet.iterRaw();               
                
                int nextNodeDtmHandle;
-                      
+               
                while ((nextNodeDtmHandle = dtmIter.nextNode()) != DTM.NULL) {       
-                  XNodeSet singletonXPathNode = new XNodeSet(nextNodeDtmHandle, xctxt);
-                  returnExprResultSet.add(singletonXPathNode);
+                  XNodeSet nodeSetItem = new XNodeSet(nextNodeDtmHandle, xctxt);
+                  returnExprResultSet.add(nodeSetItem);
                }
             }
             else if (retExprResultVal instanceof ResultSequence) {

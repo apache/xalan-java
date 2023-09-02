@@ -123,5 +123,9 @@ public class XSString extends XSCtrType {
                                                                                                        fXctxt.getDefaultCollation());
         return (comparisonResult > 0);  
     }
+    
+    public int getType() {
+        return CLASS_STRING;
+    }
 
 }

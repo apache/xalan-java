@@ -76,8 +76,9 @@ public class XSYearMonthDuration extends XSDuration {
      * @return           new XSYearMonthDuration object, representing the
      *                   duration of time supplied.
      */
-    public static XSDuration parseYearMonthDuration(String strVal) {
-        boolean negative = false;
+    public static XSDuration parseYearMonthDuration(String strVal) throws TransformerException {
+        
+        boolean isDurationNegative = false;
         
         int year = 0;
         int month = 0;
@@ -86,80 +87,97 @@ public class XSYearMonthDuration extends XSDuration {
 
         String digits = "";
         
-        for (int idx = 0; idx < strVal.length(); idx++) {
-            char charVal = strVal.charAt(idx);
-
-            switch (moveAheadIndication) {
-            case 0:
-                if (charVal == '-') {
-                   negative = true;
-                   moveAheadIndication = 4;
-                } else if (charVal == 'P') {
-                   moveAheadIndication = 5;
-                }
-                else {
-                   return null;
-                }
-                break;
-            case 4:
-                if (charVal == 'P') {
-                   moveAheadIndication = 5;
-                }
-                else {
-                   return null;
-                }
-                break;
-            case 5:
-                if ('0' <= charVal && charVal <= '9') {
-                   digits += charVal;
-                }
-                else if (charVal == 'Y') {
-                    if (digits.length() == 0) {
-                       return null;
+        try {
+            for (int idx = 0; idx < strVal.length(); idx++) {
+                char charVal = strVal.charAt(idx);
+    
+                switch (moveAheadIndication) {
+                case 0:
+                    if (charVal == '-') {
+                       isDurationNegative = true;
+                       moveAheadIndication = 4;
+                    } else if (charVal == 'P') {
+                       moveAheadIndication = 5;
                     }
-                    year = Integer.parseInt(digits);
-                    digits = "";
-                    moveAheadIndication = 6;
-                } else if (charVal == 'M') {
-                    if (digits.length() == 0) {
-                       return null;
+                    else {
+                       throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                          + "cannot be parsed to a xs:yearMonthDuration value.");
                     }
-                    month = Integer.parseInt(digits);
-                    moveAheadIndication = 7;
-                } else {
-                    return null;
+                    break;
+                case 4:
+                    if (charVal == 'P') {
+                       moveAheadIndication = 5;
+                    }
+                    else {
+                       throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                                      + "cannot be parsed to a xs:yearMonthDuration value.");
+                    }
+                    break;
+                case 5:
+                    if ('0' <= charVal && charVal <= '9') {
+                       digits += charVal;
+                    }
+                    else if (charVal == 'Y') {
+                        if (digits.length() == 0) {
+                           throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                                         + "cannot be parsed to a xs:yearMonthDuration value.");
+                        }
+                        year = Integer.parseInt(digits);
+                        digits = "";
+                        moveAheadIndication = 6;
+                    } else if (charVal == 'M') {
+                        if (digits.length() == 0) {
+                           throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                                         + "cannot be parsed to a xs:yearMonthDuration value.");
+                        }
+                        month = Integer.parseInt(digits);
+                        moveAheadIndication = 7;
+                    } else {
+                        throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                                      + "cannot be parsed to a xs:yearMonthDuration value.");
+                    }
+                    break;
+                case 6:
+                   if ('0' <= charVal && charVal <= '9') {
+                      digits += charVal;
+                   }
+                   else if (charVal == 'M') {
+                      if (digits.length() == 0) {
+                         throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                                        + "cannot be parsed to a xs:yearMonthDuration value.");
+                      }
+                      month = Integer.parseInt(digits);
+                      moveAheadIndication = 7;
+                    } else {
+                        throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                                      + "cannot be parsed to a xs:yearMonthDuration value.");
+                    }
+                    break;
+                case 7:
+                    throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                                  + "cannot be parsed to a xs:yearMonthDuration value.");
+                default:
+                    throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                                  + "cannot be parsed to a xs:yearMonthDuration value.");
                 }
-                break;
-            case 6:
-               if ('0' <= charVal && charVal <= '9') {
-                  digits += charVal;
-               }
-               else if (charVal == 'M') {
-                  if (digits.length() == 0) {
-                     return null;
-                  }
-                  month = Integer.parseInt(digits);
-                  moveAheadIndication = 7;
-                } else {
-                    return null;
-                }
-                break;
-            case 7:
-               return null;
-            default:
-               return null;
             }
         }
+        catch (Exception ex) {
+           throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                         + "cannot be parsed to a xs:yearMonthDuration value."); 
+        }
 
-        return new XSYearMonthDuration(year, month, negative);
+        return new XSYearMonthDuration(year, month, isDurationNegative);
     }
 
     /**
      * A method to construct an xdm sequence comprising a
      * xs:yearMonthDuration value, given input data as argument
      * to this method.
+     * 
+     * @throws TransformerException 
      */
-	public ResultSequence constructor(ResultSequence arg) {
+	public ResultSequence constructor(ResultSequence arg) throws TransformerException {
         ResultSequence resultSeq = new ResultSequence();
         
         if (arg.size() == 0) {
@@ -378,11 +396,17 @@ public class XSYearMonthDuration extends XSDuration {
         return result; 
     }
     
+    public int getType() {
+        return CLASS_XS_YEARMONTH_DURATION;
+    }
+    
     /**
      * Do a data type cast, of a XSAnyType value to an XSDuration
-     * value. 
+     * value.
+     *  
+     * @throws TransformerException 
      */
-    private XSDuration castToYearMonthDuration(XSAnyType xsAnyType) {
+    private XSDuration castToYearMonthDuration(XSAnyType xsAnyType) throws TransformerException {
         if (xsAnyType instanceof XSDuration) {
            XSDuration xsDuration = (XSDuration) xsAnyType;
            

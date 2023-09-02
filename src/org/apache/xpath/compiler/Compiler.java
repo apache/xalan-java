@@ -172,6 +172,8 @@ public class Compiler extends OpMap
       expr = nodeComparisonFollows(opPos); break;
     case OpCodes.OP_SIMPLE_MAP_OPERATOR :
       expr = simpleMapOperator(opPos); break;
+    case OpCodes.OP_SEQUENCE_TYPE_EXPR :
+      expr = sequenceTypeExpr(opPos); break;
     case OpCodes.OP_LTE :
       expr = lte(opPos); break;
     case OpCodes.OP_LT :
@@ -511,6 +513,24 @@ public class Compiler extends OpMap
   protected Expression simpleMapOperator(int opPos) throws TransformerException
   {
     return compileOperation(new SimpleMapOperator(), opPos);
+  }
+  
+  /**
+   * Compile an XPath 'SequenceType', expression.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   *
+   * @return the compiled 'SequenceType' expression returned as an object of class
+   *         XPathSequenceTypeExpr. An object of class XPathSequenceTypeExpr
+   *         has already been created and populated by XPath expression parser,
+   *         and this function just returns that object to the caller of this 
+   *         method.       
+   *
+   * @throws TransformerException if a error occurs creating the Expression.
+   */
+  Expression sequenceTypeExpr(int opPos) throws TransformerException
+  {
+      return XPathParser.fXpathSequenceTypeExpr;
   }
 
   /**

@@ -77,8 +77,10 @@ public class XSDayTimeDuration extends XSDuration {
 	 * A method to construct an xdm sequence comprising a
 	 * xs:dayTimeDuration value, given input data as argument
 	 * to this method.
+	 * 
+	 * @throws TransformerException 
 	 */
-	public ResultSequence constructor(ResultSequence arg) {
+	public ResultSequence constructor(ResultSequence arg) throws TransformerException {
         ResultSequence resultSeq = new ResultSequence();
         
         if (arg.size() == 0) {
@@ -104,8 +106,10 @@ public class XSDayTimeDuration extends XSDuration {
 	 * @return               new XSDuration object, representing the 
 	 *                       supplied string.
 	 */
-	public static XSDuration parseDayTimeDuration(String strVal) {
-		boolean negative = false;
+	public static XSDuration parseDayTimeDuration(String strVal) throws TransformerException {
+		
+	    boolean isDurationNegative = false;
+		
 		int days = 0;
 		int hours = 0;
 		int minutes = 0;
@@ -115,13 +119,14 @@ public class XSDayTimeDuration extends XSDuration {
 		String tstr = null;
 
 		if (strVal.startsWith("-P")) {
-			negative = true;
+			isDurationNegative = true;
 			pstr = strVal.substring(2, strVal.length());
 		} else if (strVal.startsWith("P")) {
-			negative = false;
+			isDurationNegative = false;
 			pstr = strVal.substring(1, strVal.length());
 		} else {
-			return null;
+		    throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                          + "cannot be parsed to a xs:dayTimeDuration value.");
 		}
 
 		try {
@@ -132,7 +137,8 @@ public class XSDayTimeDuration extends XSDuration {
 				if (pstr.startsWith("T")) {
 					tstr = pstr.substring(1, pstr.length());
 				} else {
-					return null;
+				    throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                                  + "cannot be parsed to a xs:dayTimeDuration value.");
 				}
 			} else {
 				String digit = pstr.substring(0, index);
@@ -143,7 +149,8 @@ public class XSDayTimeDuration extends XSDuration {
 					tstr = tstr.substring(1, tstr.length());
 				} else {
 					if (tstr.length() > 0) {
-						return null;
+					   throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                                     + "cannot be parsed to a xs:dayTimeDuration value.");
 					}
 					tstr = "";
 					actionStatus = true;
@@ -175,17 +182,19 @@ public class XSDayTimeDuration extends XSDuration {
 			}
 			if (actionStatus) {
 				if (tstr.length() != 0) {
-					return null;
+				    throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                                  + "cannot be parsed to a xs:dayTimeDuration value.");
 				}
 			} else {
-				return null;
+			    throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                                     + "cannot be parsed to a xs:dayTimeDuration value.");
 			}
-
-		} catch (NumberFormatException err) {
-			return null;
+		} catch (Exception ex) {
+		    throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                          + "cannot be parsed to a xs:dayTimeDuration value.");
 		}
 
-		return new XSDayTimeDuration(days, hours, minutes, seconds, negative);
+		return new XSDayTimeDuration(days, hours, minutes, seconds, isDurationNegative);
 	}
 
 	/**
@@ -309,13 +318,17 @@ public class XSDayTimeDuration extends XSDuration {
         
         return result;
     }
+    
+    public int getType() {
+        return CLASS_XS_DAYTIME_DURATION;
+    }
 	
 	/**
      * Do a data type cast, of a XSAnyType value to an XSDuration
      * value. 
+	 * @throws TransformerException 
      */
-	private XSDuration castToDayTimeDuration(XSAnyType xsAnyType) {
-        
+	private XSDuration castToDayTimeDuration(XSAnyType xsAnyType) throws TransformerException {        
 	    if (xsAnyType instanceof XSDuration) {
             XSDuration xsDuration = (XSDuration) xsAnyType;
             

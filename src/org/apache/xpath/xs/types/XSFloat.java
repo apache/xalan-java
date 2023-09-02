@@ -195,4 +195,8 @@ public class XSFloat extends XSNumericType {
 	    return floatValue() > xsFloat.floatValue(); 
     }
 	
+    public int getType() {
+        return CLASS_XS_FLOAT;
+    }
+	
 }

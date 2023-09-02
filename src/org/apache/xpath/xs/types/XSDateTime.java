@@ -23,6 +23,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.objects.ResultSequence;
 
 /**
@@ -382,99 +384,116 @@ public class XSDateTime extends XSCalendarType {
      * @return          the XSDateTime representation of the date and time (with an 
      *                  optional timezone value)
      */
-    public static XSDateTime parseDateTime(String strVal) {
+    public static XSDateTime parseDateTime(String strVal) throws TransformerException {
         
         XSDateTime xsDateTime = null;
 
-        int idx = strVal.indexOf('T');
-        if (idx == -1) {
-            return null;
-        }
-
-        String date = strVal.substring(0, idx);
-        String time = strVal.substring(idx + 1, strVal.length());
-        String timezone = null;
-
-        idx = time.indexOf('+');
-        if (idx == -1) {
-            idx = time.indexOf('-');
-        }
-        if (idx == -1) {
-            idx = time.indexOf('Z');
-        }
-        if (idx != -1) {
-            timezone = time.substring(idx, time.length());
-            time = time.substring(0, idx);
-        }
-
-        int d[] = parseDate(date);
-        if (d == null) {
-            return null;
-        }
-
-        TimeZone defaultTimezone = TimeZone.getDefault();
-        GregorianCalendar gregorianCalendarObj = new GregorianCalendar(
-                                                                 defaultTimezone);
-
-        int year = d[0];
-        if (year < 0) {
-            year *= -1;
-            gregorianCalendarObj.set(Calendar.ERA, GregorianCalendar.BC);
-        } else {
-            gregorianCalendarObj.set(Calendar.ERA, GregorianCalendar.AD);
-        }
-
-        gregorianCalendarObj.set(Calendar.DAY_OF_MONTH, 2);
-        gregorianCalendarObj.set(Calendar.MONTH, 2);
-
-        if (!setItem(gregorianCalendarObj, Calendar.YEAR, year)) {
-            return null;
-        }
-
-        if (!setItem(gregorianCalendarObj, Calendar.MONTH, d[1] - 1)) {
-            return null;
-        }
-
-        if (!setItem(gregorianCalendarObj, Calendar.DAY_OF_MONTH, d[2])) {
-            return null;
-        }
-
-        double t[] = parseTime(time);
-        if (t == null) {
-            return null;
-        }
-
-        if (!setItem(gregorianCalendarObj, Calendar.HOUR_OF_DAY, (int) t[0])) {
-            return null;
-        }
-
-        if (!setItem(gregorianCalendarObj, Calendar.MINUTE, (int) t[1])) {
-            return null;
-        }
-
-        if (!setItem(gregorianCalendarObj, Calendar.SECOND, (int) t[2])) {
-            return null;
-        }
-
-        double ms = t[2] - ((int) t[2]);
-        ms *= 1000;
-        if (!setItem(gregorianCalendarObj, Calendar.MILLISECOND, (int) ms)) {
-            return null;
-        }
-
-        int tz[] = null;
-        XSDuration timezoneVal = null;
-        if (timezone != null) {
-            tz = parseTimezone(timezone);
-
-            if (tz == null) {
-                return null;
+        try {
+            int idx = strVal.indexOf('T');
+            if (idx == -1) {
+               throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                  + "cannot be parsed to a xs:dateTime value.");
             }
-
-            timezoneVal = new XSDayTimeDuration(0, tz[1], tz[2], 0.0, tz[0] < 0);
+    
+            String date = strVal.substring(0, idx);
+            String time = strVal.substring(idx + 1, strVal.length());
+            String timezone = null;
+    
+            idx = time.indexOf('+');
+            if (idx == -1) {
+                idx = time.indexOf('-');
+            }
+            if (idx == -1) {
+                idx = time.indexOf('Z');
+            }
+            if (idx != -1) {
+                timezone = time.substring(idx, time.length());
+                time = time.substring(0, idx);
+            }
+    
+            int d[] = parseDate(date);
+            if (d == null) {
+               throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                             + "cannot be parsed to a xs:dateTime value.");
+            }
+    
+            TimeZone defaultTimezone = TimeZone.getDefault();
+            GregorianCalendar gregorianCalendarObj = new GregorianCalendar(
+                                                                     defaultTimezone);
+    
+            int year = d[0];
+            if (year < 0) {
+                year *= -1;
+                gregorianCalendarObj.set(Calendar.ERA, GregorianCalendar.BC);
+            } else {
+                gregorianCalendarObj.set(Calendar.ERA, GregorianCalendar.AD);
+            }
+    
+            gregorianCalendarObj.set(Calendar.DAY_OF_MONTH, 2);
+            gregorianCalendarObj.set(Calendar.MONTH, 2);
+    
+            if (!setItem(gregorianCalendarObj, Calendar.YEAR, year)) {
+                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                              + "cannot be parsed to a xs:dateTime value.");
+            }
+    
+            if (!setItem(gregorianCalendarObj, Calendar.MONTH, d[1] - 1)) {
+                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                              + "cannot be parsed to a xs:dateTime value.");
+            }
+    
+            if (!setItem(gregorianCalendarObj, Calendar.DAY_OF_MONTH, d[2])) {
+                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                              + "cannot be parsed to a xs:dateTime value.");
+            }
+    
+            double t[] = parseTime(time);
+            if (t == null) {
+                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                              + "cannot be parsed to a xs:dateTime value.");
+            }
+    
+            if (!setItem(gregorianCalendarObj, Calendar.HOUR_OF_DAY, (int) t[0])) {
+                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                              + "cannot be parsed to a xs:dateTime value.");
+            }
+    
+            if (!setItem(gregorianCalendarObj, Calendar.MINUTE, (int) t[1])) {
+                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                              + "cannot be parsed to a xs:dateTime value.");
+            }
+    
+            if (!setItem(gregorianCalendarObj, Calendar.SECOND, (int) t[2])) {
+                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                              + "cannot be parsed to a xs:dateTime value.");
+            }
+    
+            double ms = t[2] - ((int) t[2]);
+            ms *= 1000;
+            if (!setItem(gregorianCalendarObj, Calendar.MILLISECOND, (int) ms)) {
+                throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                              + "cannot be parsed to a xs:dateTime value.");
+            }
+    
+            int tz[] = null;
+            XSDuration timezoneVal = null;
+            if (timezone != null) {
+                tz = parseTimezone(timezone);
+    
+                if (tz == null) {
+                   throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                                                 + "cannot be parsed to a xs:dateTime value.");
+                }
+    
+                timezoneVal = new XSDayTimeDuration(0, tz[1], tz[2], 0.0, tz[0] < 0);
+            }
+            
+            xsDateTime = new XSDateTime(gregorianCalendarObj, timezoneVal);
         }
-        
-        xsDateTime = new XSDateTime(gregorianCalendarObj, timezoneVal); 
+        catch (Exception ex) {
+            throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                               + "cannot be parsed to a xs:dateTime value."); 
+        }
 
         return xsDateTime;
     }
@@ -597,6 +616,10 @@ public class XSDateTime extends XSCalendarType {
         }
 
         return returnVal;
+    }
+    
+    public int getType() {
+        return CLASS_XS_DATETIME;
     }
     
     /**

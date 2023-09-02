@@ -252,7 +252,8 @@ class Lexer
       case ')' :
       case ']' :
       case '{' :   // added for XPath 3.1
-      case '}' :   // added for XPath 3.1    
+      case '}' :   // added for XPath 3.1
+      case '?' :   // added for XPath 3.1    
       case '|' :
         if ((pat.length() > (i + 1)) && (pat.charAt(i + 1) == '|')) {
           // added for XPath 3.1.

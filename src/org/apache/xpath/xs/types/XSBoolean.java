@@ -123,6 +123,10 @@ public class XSBoolean extends XSCtrType {
         return resultVal;  
     }
     
+    public int getType() {
+        return CLASS_BOOLEAN;
+    }
+    
     /*
      * Check whether, a string value represents a boolean 
      * 'false' value.
