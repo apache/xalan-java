@@ -33,7 +33,7 @@ public class XSUntyped extends XSAnyType {
 
     private static final long serialVersionUID = 6146147730252441632L;
     
-    private static final String XS_UNTYPED = "untyped";
+    private static final String XS_UNTYPED = "xs:untyped";
     
     private String _value;
     

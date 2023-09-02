@@ -204,4 +204,8 @@ public class XSDouble extends XSNumericType {
         return doubleValue() > xsDouble.doubleValue(); 
     }
     
+    public int getType() {
+        return CLASS_XS_DOUBLE;
+    }
+    
 }

@@ -20,6 +20,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.objects.ResultSequence;
 
 /**
@@ -73,7 +75,7 @@ public class XSDate extends XSCalendarType {
     public XSDate() {}
 
     @Override
-    public ResultSequence constructor(ResultSequence arg) {
+    public ResultSequence constructor(ResultSequence arg) throws TransformerException {
         ResultSequence resultSeq = new ResultSequence();
         
         if (arg.size() == 0) {
@@ -100,39 +102,55 @@ public class XSDate extends XSCalendarType {
      * @param strVal     the string representation of the date
      * @return           the XSDate representation of the provided string
      */
-    public static XSDate parseDate(String strVal) {
-        String dateStr = "";
-        String timeStr = "T00:00:00.0";
-
-        int idx = strVal.indexOf('+', 1);
-        if (idx == -1) {
-            idx = strVal.indexOf('-', 1);
+    public static XSDate parseDate(String strVal) throws TransformerException {
+        
+        XSDate result = null;
+        
+        try {
+            String dateStr = "";
+            String timeStr = "T00:00:00.0";
+    
+            int idx = strVal.indexOf('+', 1);
             if (idx == -1) {
-                return null;
+                idx = strVal.indexOf('-', 1);
+                if (idx == -1) {
+                    throw new TransformerException("XTTE0570 : The supplied string value '" + 
+                                                                         strVal + "' cannot be parsed to a xs:date value."); 
+                }
+                idx = strVal.indexOf('-', idx + 1);
+                if (idx == -1) {
+                    throw new TransformerException("XTTE0570 : The supplied string value '" + 
+                                                                         strVal + "' cannot be parsed to a xs:date value.");
+                }
+                idx = strVal.indexOf('-', idx + 1);
             }
-            idx = strVal.indexOf('-', idx + 1);
             if (idx == -1) {
-                return null;
+                idx = strVal.indexOf('Z', 1);
             }
-            idx = strVal.indexOf('-', idx + 1);
+            if (idx != -1) {
+                dateStr = strVal.substring(0, idx);
+                dateStr += timeStr;
+                dateStr += strVal.substring(idx, strVal.length());
+            } else {
+                dateStr = strVal + timeStr;
+            }
+    
+            XSDateTime dateTime = XSDateTime.parseDateTime(dateStr);
+            
+            if (dateTime != null) {
+                result = new XSDate(dateTime.getCalendar(), dateTime.getTimezone());;
+            }
+            else {
+                throw new TransformerException("XTTE0570 : The supplied string value '" + 
+                                                                                  strVal + "' cannot be parsed to a xs:date value."); 
+            }
         }
-        if (idx == -1) {
-            idx = strVal.indexOf('Z', 1);
+        catch (Exception ex) {
+            throw new TransformerException("XTTE0570 : The supplied string value '" + 
+                                                                                  strVal + "' cannot be parsed to a xs:date value."); 
         }
-        if (idx != -1) {
-            dateStr = strVal.substring(0, idx);
-            dateStr += timeStr;
-            dateStr += strVal.substring(idx, strVal.length());
-        } else {
-            dateStr = strVal + timeStr;
-        }
-
-        XSDateTime dateTime = XSDateTime.parseDateTime(dateStr);        
-        if (dateTime == null) {
-           return null;
-        }
-
-        return new XSDate(dateTime.getCalendar(), dateTime.getTimezone());
+        
+        return result;
         
     }
     
@@ -296,11 +314,15 @@ public class XSDate extends XSCalendarType {
         this.isPopulatedFromFnCurrentDate = isPopulatedFromFnCurrentDate;
     }
     
+    public int getType() {
+        return CLASS_XS_DATE;
+    }
+    
     /*
      * Do a data type cast, of an XSAnyType argument passed to this method, to
      * an XSDate object.
      */
-    private XSDate castToDate(XSAnyType xsAnyType) {
+    private XSDate castToDate(XSAnyType xsAnyType) throws TransformerException {
         if (xsAnyType instanceof XSDate) {
             XSDate date = (XSDate) xsAnyType;
             return new XSDate(date.getCalendar(), date.getTimezone());

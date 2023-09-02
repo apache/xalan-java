@@ -34,7 +34,7 @@ public class XSUntypedAtomic extends XSCtrType {
 
     private static final long serialVersionUID = 3034074443706977457L;
     
-    private static final String XS_UNTYPED_ATOMIC = "untypedAtomic";
+    private static final String XS_UNTYPED_ATOMIC = "xs:untypedAtomic";
     
     private String _value;
     

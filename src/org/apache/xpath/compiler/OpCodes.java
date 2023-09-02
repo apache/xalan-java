@@ -724,8 +724,10 @@ public class OpCodes
    * @xsl.usage advanced
    */
   public static final int OP_SIMPLE_MAP_OPERATOR = 72;
+  
+  public static final int OP_SEQUENCE_TYPE_EXPR = 73;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 73;
+  private static final int NEXT_FREE_ID = 74;
   
 }

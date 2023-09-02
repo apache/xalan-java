@@ -244,7 +244,12 @@ public class XSLTSchema extends XSLTElementDef
     // Optional.                                          
     // xsl:variable, xsl:param, xsl:with-param, xsl:attribute, xsl:break, xsl:on-completion                                       
     XSLTAttributeDef selectAttrOpt = new XSLTAttributeDef(null, "select",
-                                       XSLTAttributeDef.T_EXPR, false, false,XSLTAttributeDef.ERROR);
+                                       XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
+    
+    // Optional.
+    // xsl:variable 
+    XSLTAttributeDef asAttrOpt = new XSLTAttributeDef(null, "as",
+                                       XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
 
     // Optional.
     // Default: "node()"
@@ -595,7 +600,7 @@ public class XSLTSchema extends XSLTElementDef
                                    null /*alias */,
                                    templateElements /* elements */,  // %template;>
                                    new XSLTAttributeDef[]{ nameAttrRequired,
-                                                           selectAttrOpt }, 
+                                                           selectAttrOpt, asAttrOpt }, 
                                   new ProcessorTemplateElem(),
                                    ElemVariable.class /* class object */, 20, true);
     XSLTElementDef xslParam = new XSLTElementDef(this,
@@ -872,7 +877,7 @@ public class XSLTSchema extends XSLTElementDef
                                            templateElements /* elements */,
                                            new XSLTAttributeDef[]{
                                                    nameAttrRequired,
-                                                   selectAttrOpt }, 
+                                                   selectAttrOpt, asAttrOpt }, 
                                            new ProcessorGlobalVariableDecl(),
                                            ElemVariable.class /* class object */, 20, true),
                                   new XSLTElementDef(

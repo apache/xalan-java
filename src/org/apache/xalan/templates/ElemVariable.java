@@ -34,6 +34,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.InlineFunction;
@@ -153,6 +154,26 @@ public class ElemVariable extends ElemTemplateElement
   {
     return m_selectPattern;
   }
+  
+  /**
+   * The value of the "as" attribute.
+   */
+  private String m_asAttr;
+  
+  /**
+   * Set the "as" attribute.
+   */
+  public void setAs(String val) {
+     m_asAttr = val;
+  }
+  
+  /**
+   * Get the "as" attribute.
+   */
+  public String getAs()
+  {
+     return m_asAttr;
+  }
 
   /**
    * The value of the "name" attribute.
@@ -253,7 +274,7 @@ public class ElemVariable extends ElemTemplateElement
   {
 
     m_selectPattern = param.m_selectPattern;
-    m_qname = param.m_qname;
+    m_qname = param.m_qname;   
     m_isTopLevel = param.m_isTopLevel;
 
     // m_value = param.m_value;
@@ -314,15 +335,21 @@ public class ElemVariable extends ElemTemplateElement
 
     xctxt.pushCurrentNode(sourceNode);
     
-    SourceLocator srcLocator = xctxt.getSAXLocator(); 
+    SourceLocator srcLocator = xctxt.getSAXLocator();
+    
+    Expression selectExpression = null;
  
     try {        
       if (m_selectPattern != null) {          
-        Expression selectExpression = m_selectPattern.getExpression();
+        selectExpression = m_selectPattern.getExpression();
         if (selectExpression instanceof FuncExtFunction) {
             XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, 
                                                                                         selectExpression);
             if (evalResult != null) {
+                if (m_asAttr != null) {
+                   evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, xctxt);  
+                }
+                
                 return evalResult;    
             }
             else {
@@ -332,18 +359,30 @@ public class ElemVariable extends ElemTemplateElement
         else if (selectExpression instanceof Function) {
             XObject evalResult = ((Function)selectExpression).execute(xctxt);            
             if ((evalResult instanceof ResultSequence) || 
-                                                (evalResult instanceof XSAnyType)) {                
+                                                (evalResult instanceof XSAnyType)) {
+                if (m_asAttr != null) {
+                   evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, xctxt);  
+                }
+                
                 return evalResult; 
             }
         }
         else if (selectExpression instanceof SimpleMapOperator) {
             XObject evalResult = selectExpression.execute(xctxt);
             
+            if (m_asAttr != null) {
+               evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, xctxt);  
+            }
+             
             return evalResult;
         }
         else if (selectExpression instanceof Range) {
             XObject evalResult = ((Range)selectExpression).execute(xctxt);
             
+            if (m_asAttr != null) {
+               evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, xctxt);  
+            }
+             
             return evalResult; 
         }
         else if (selectExpression instanceof Operation) {
@@ -354,12 +393,20 @@ public class ElemVariable extends ElemTemplateElement
                                                                                          xctxt, opn.getRightOperand());
             XObject evalResult = opn.operate(leftOperand, rightOperand);
             
+            if (m_asAttr != null) {
+               evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, xctxt);  
+            }
+             
             return evalResult;
         }
         else if (selectExpression instanceof SelfIteratorNoPredicate) {
             XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
-            if (xpath3ContextItem != null) {
-               return xpath3ContextItem;     
+            if (xpath3ContextItem != null) {               
+              if (m_asAttr != null) {
+                 xpath3ContextItem = SequenceTypeSupport.convertXDMValueToAnotherType(xpath3ContextItem, m_asAttr, xctxt);  
+              }
+                
+              return xpath3ContextItem;
             }
         }
         else if (selectExpression instanceof LocPathIterator) {                        
@@ -377,7 +424,11 @@ public class ElemVariable extends ElemTemplateElement
             
             if (dtmIter != null) {               
                var = new XNodeSet(dtmIter);
-                
+               
+               if (m_asAttr != null) {
+                  var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, xctxt);  
+               }
+                 
                return var; 
             }
             else {
@@ -397,7 +448,7 @@ public class ElemVariable extends ElemTemplateElement
                    String xpathIndexExprStr = xpathExprStr.substring(xpathExprStr.indexOf('[') + 1, 
                                                                                         xpathExprStr.indexOf(']'));
 
-                   // evaluate the, variable reference XPath expression
+                   // Evaluate the, variable reference XPath expression
                    if (prefixTable != null) {
                        varRefXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
                                                                                                  varRefXPathExprStr, 
@@ -412,7 +463,7 @@ public class ElemVariable extends ElemTemplateElement
                    
                    XObject varEvalResult = varXPathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
 
-                   // evaluate the, xdm sequence index XPath expression
+                   // Evaluate the, xdm sequence index XPath expression
                    if (prefixTable != null) {
                        xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
                                                                                                      xpathIndexExprStr, 
@@ -467,6 +518,10 @@ public class ElemVariable extends ElemTemplateElement
                
                var = resultSeq;
                
+               if (m_asAttr != null) {
+                  var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, xctxt);  
+               }
+                  
                return var;
             }
         }
@@ -505,7 +560,7 @@ public class ElemVariable extends ElemTemplateElement
 
         // var = new XRTreeFrag(df, xctxt, this);
 		
-		// with XSLT 3.0, RTFs are treated as proper node sets
+		// With XSLT 3.0, RTFs are treated as proper node sets
 		NodeList nodeList = (new XRTreeFrag(df, xctxt, this)).convertToNodeset();		
 		
 		var = new XNodeSetForDOM(nodeList, xctxt); 
@@ -518,9 +573,13 @@ public class ElemVariable extends ElemTemplateElement
        xctxt.popCurrentNode();
     }
     
-    // restore the original xpath context, on the xslt transformer object
+    // Restore the original xpath context, on the xslt transformer object
     transformer.setXPathContext(xctxtOriginal);
-
+    
+    if (m_asAttr != null) {
+       var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, xctxt);  
+    }
+        
     return var;
     
   }

@@ -186,5 +186,9 @@ public class XSTime extends XSCalendarType {
 
          return returnVal;
     }
+    
+    public int getType() {
+        return CLASS_XS_TIME;
+    }
 
 }

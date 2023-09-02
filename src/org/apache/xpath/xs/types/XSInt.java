@@ -106,4 +106,8 @@ public class XSInt extends XSLong {
 	    return _value.compareTo(xsInt.intValue()) > 0; 
     }
 	
+    public int getType() {
+        return CLASS_XS_INT;
+    }
+	
 }

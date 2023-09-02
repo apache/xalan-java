@@ -145,6 +145,10 @@ public class XSDecimal extends XSNumericType {
         return (_value.compareTo(xsDecimal.getValue()) == 1);
     }
     
+    public int getType() {
+        return CLASS_XS_DECIMAL;
+    }
+    
     /*
      * Cast an object of type XSAnyType, to an object of type 
      * XSDecimal.  

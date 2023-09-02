@@ -91,7 +91,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnFoldRightTests.class, FnForEachPairTests.class, FnSortTests.class, FnCodepointsToStringTests.class,
                 FnStringToCodepointsTests.class, FnCompareTests.class, FnCodepointEqualTests.class,
                 SequenceFunctionTests.class, FnParseXmlTests.class, FnParseXmlFragmentTests.class,
-                TemplateTests.class, FnAvgTests.class, FnMaxTests.class, FnMinTests.class, FnContainsTokenTests.class })
+                TemplateTests.class, FnAvgTests.class, FnMaxTests.class, FnMinTests.class, FnContainsTokenTests.class,
+                XslAttributeAsTests.class })
 public class AllXsl3Tests {
 
 }

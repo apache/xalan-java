@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.TransformerException;
 
@@ -37,7 +38,9 @@ import org.apache.xpath.composite.IfExpr;
 import org.apache.xpath.composite.LetExpr;
 import org.apache.xpath.composite.LetExprVarBinding;
 import org.apache.xpath.composite.QuantifiedExpr;
+import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.SimpleSequenceConstructor;
+import org.apache.xpath.composite.XPathSequenceTypeExpr;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
 import org.apache.xpath.functions.DynamicFunctionCall;
 import org.apache.xpath.objects.InlineFunction;
@@ -112,6 +115,8 @@ public class XPathParser
   
   private boolean fIsBeginParse = false;
   
+  private boolean fIsSequenceTypeXPathExpr = false;
+  
   static InlineFunction fInlineFunction = null;
   
   static DynamicFunctionCall fDynamicFunctionCall = null;
@@ -125,6 +130,8 @@ public class XPathParser
   static IfExpr fIfExpr = null;
   
   static SimpleSequenceConstructor fSimpleSequenceConstructor = null;
+  
+  static XPathSequenceTypeExpr fXpathSequenceTypeExpr = null;
   
   /**
    * The parser constructor.
@@ -149,17 +156,25 @@ public class XPathParser
    * @param expression A string conforming to the XPath grammar.
    * @param namespaceContext An object that is able to resolve prefixes in
    * the XPath to namespaces.
+   * @param isSequenceTypeXPathExpr When this method is called, with this parameter
+   *                                set to boolean value 'true', then an XPath parser object 
+   *                                instance, instantiated from this class shall parse the XPath
+   *                                expression string assuming that it represents an XPath 3.1
+   *                                sequence type expression (for e.g, as a value of "as" 
+   *                                attribute of xsl:variable instruction). 
    *
    * @throws javax.xml.transform.TransformerException
    */
   public void initXPath(
-          Compiler compiler, String expression, PrefixResolver namespaceContext)
+          Compiler compiler, String expression, PrefixResolver namespaceContext, boolean isSequenceTypeXPathExpr)
             throws javax.xml.transform.TransformerException
   {
 
     m_ops = compiler;
     m_namespaceContext = namespaceContext;
     m_functionTable = compiler.getFunctionTable();
+    
+    fIsSequenceTypeXPathExpr = isSequenceTypeXPathExpr; 
 
     Lexer lexer = new Lexer(compiler, namespaceContext, this);
 
@@ -211,7 +226,7 @@ public class XPathParser
 		// What I _want_ to do is null out this XPath.
 		// I doubt this has the desired effect, but I'm not sure what else to do.
 		// %REVIEW%!!!
-		initXPath(compiler, "/..",  namespaceContext);
+		initXPath(compiler, "/..",  namespaceContext, false);
 	  }
 	  else
 		throw e;
@@ -1115,6 +1130,9 @@ public class XPathParser
              nextToken();
              ExprSingle();
           }
+      }
+      else if (fIsSequenceTypeXPathExpr) {
+         fXpathSequenceTypeExpr = SequenceTypeExpr(); 
       }
       else {
          ExprSingle();  
@@ -3552,6 +3570,97 @@ public class XPathParser
       m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
 
     return trailingSlashConsumed;
+  }
+  
+  protected XPathSequenceTypeExpr SequenceTypeExpr() throws javax.xml.transform.TransformerException
+  {
+      int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+                  
+      insertOp(opPos, 2, OpCodes.OP_SEQUENCE_TYPE_EXPR);
+      
+      XPathSequenceTypeExpr xpathSequenceTypeExpr = new XPathSequenceTypeExpr();
+      
+      if (tokenIs("empty-sequence") && lookahead('(', 1) && lookahead(')', 2)) {
+         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.EMPTY_SEQUENCE);
+         consumeExpected("empty-sequence");
+         consumeExpected('(');
+         consumeExpected(')');
+      }
+      else if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
+         consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+         consumeExpected(':');
+         
+         switch (m_token) {
+            case Keywords.FUNC_BOOLEAN_STRING :
+               xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.BOOLEAN);
+               break;
+            case Keywords.XS_STRING :
+               xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.STRING);
+               break; 
+            case Keywords.XS_DECIMAL :
+               xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DECIMAL);
+               break; 
+            case Keywords.XS_FLOAT :
+               xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_FLOAT);
+               break; 
+            case Keywords.XS_DOUBLE :
+               xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DOUBLE);
+               break;
+            case Keywords.XS_INTEGER :
+               xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_INTEGER);
+               break;
+            case Keywords.XS_LONG :
+               xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_LONG);
+               break; 
+            case Keywords.XS_INT :
+               xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_INT);
+               break;
+            case Keywords.XS_DATE :
+               xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DATE);
+               break;
+            case Keywords.XS_DURATION :
+               xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DURATION);
+               break;
+            case Keywords.XS_YEAR_MONTH_DURATION :
+               xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_YEARMONTH_DURATION);
+               break;
+            case Keywords.XS_DAY_TIME_DURATION :
+               xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DAYTIME_DURATION);
+               break;
+            default :
+               throw new XPathProcessorException("XPST0051 An XML Schema type 'xs:" + m_token + "' is not "
+                                                                             + "recognized, within the provided sequence type expression.");        
+         }
+         
+         nextToken();
+         
+         if ((m_token != null) && (xpathSequenceTypeExpr.getSequenceType() > 0)) {
+            if (tokenIs(SequenceTypeSupport.Q_MARK)) {
+               xpathSequenceTypeExpr.setItemTypeOccurrenceIndicator(SequenceTypeSupport.
+                                                                                     OccurenceIndicator.ZERO_OR_ONE);
+               nextToken();
+            }
+            else if (tokenIs(SequenceTypeSupport.STAR)) {
+               xpathSequenceTypeExpr.setItemTypeOccurrenceIndicator(SequenceTypeSupport.
+                                                                                     OccurenceIndicator.ZERO_OR_MANY);
+               nextToken();
+            }
+            else if (tokenIs(SequenceTypeSupport.PLUS)) {
+               xpathSequenceTypeExpr.setItemTypeOccurrenceIndicator(SequenceTypeSupport.
+                                                                                     OccurenceIndicator.ONE_OR_MANY);
+               nextToken();
+            }
+            else {
+               throw new XPathProcessorException("XPST0051 A sequence type occurence indicator '" + m_token + "', is not recognized."); 
+            }
+         }
+         
+      }
+      
+      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                                             m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+      
+      return xpathSequenceTypeExpr;
   }
   
 }

@@ -181,7 +181,7 @@ public class XPath implements Serializable, ExpressionOwner
     Compiler compiler = new Compiler(errorListener, locator, m_funcTable);
 
     if (SELECT == type)
-      parser.initXPath(compiler, exprString, prefixResolver);
+      parser.initXPath(compiler, exprString, prefixResolver, false);
     else if (MATCH == type)
       parser.initMatchPattern(compiler, exprString, prefixResolver);
     else
@@ -228,7 +228,7 @@ public class XPath implements Serializable, ExpressionOwner
     Compiler compiler = new Compiler(errorListener, locator, m_funcTable);
 
     if (SELECT == type)
-      parser.initXPath(compiler, exprString, prefixResolver);
+      parser.initXPath(compiler, exprString, prefixResolver, false);
     else if (MATCH == type)
       parser.initMatchPattern(compiler, exprString, prefixResolver);
     else
@@ -265,6 +265,43 @@ public class XPath implements Serializable, ExpressionOwner
             throws javax.xml.transform.TransformerException
   {  
     this(exprString, locator, prefixResolver, type, null);    
+  }
+  
+  /**
+   * Construct an XPath object. This method has an additional parameter
+   * 'isSequenceTypeXPathExpr', to handle XPath 3.1 expressions that 
+   * represent sequence type declarations. 
+   *
+   * @throws javax.xml.transform.TransformerException if syntax or other error.
+   */
+  public XPath(
+          String exprString, SourceLocator locator, PrefixResolver prefixResolver, int type,
+          ErrorListener errorListener, boolean isSequenceTypeXPathExpr)
+            throws javax.xml.transform.TransformerException {
+      initFunctionTable();     
+      if(null == errorListener)
+        errorListener = new org.apache.xml.utils.DefaultErrorHandler();
+      
+      m_patternString = exprString;
+
+      XPathParser parser = new XPathParser(errorListener, locator);
+      Compiler compiler = new Compiler(errorListener, locator, m_funcTable);
+
+      if (SELECT == type)
+        parser.initXPath(compiler, exprString, prefixResolver, isSequenceTypeXPathExpr);
+      else if (MATCH == type)
+        parser.initMatchPattern(compiler, exprString, prefixResolver);
+      else
+        throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, new Object[]{Integer.toString(type)}));
+
+      Expression expr = compiler.compile(0);
+
+      this.setExpression(expr);
+      
+      if((null != locator) && locator instanceof ExpressionNode)
+      {
+          expr.exprSetParent((ExpressionNode)locator);
+      } 
   }
 
   /**

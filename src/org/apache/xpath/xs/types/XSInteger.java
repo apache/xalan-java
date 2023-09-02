@@ -144,6 +144,10 @@ public class XSInteger extends XSDecimal {
 	    return new XSInteger((intValue()).multiply(xsInteger.intValue()));   
 	}
 	
+    public int getType() {
+        return CLASS_XS_INTEGER;
+    }
+	
 	/*
      * Cast an object of type XSAnyType, to an object of type 
      * java.math.BigInteger.  
