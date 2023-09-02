@@ -1,0 +1,225 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>apache-xalan-j-2.7.3-maint-main</groupId>
+    <artifactId>apache-xalan-j-2.7.3-maint-main</artifactId>
+    <version>2.7.3-SNAPSHOT</version>
+  </parent>
+  <artifactId>xalan</artifactId>
+  <version>2.7.3-SNAPSHOT</version>
+  <name>Apache Xalan-Java 2.7.3</name>
+  <description>Apache's XSLT processor</description>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  <build>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <resources>
+      <resource>
+	<directory>META-INF</directory>
+	<includes>
+	  <include>LICENSE.txt</include>
+	  <include>NOTICE.txt</include>
+	</includes>
+      </resource>
+      <resource>
+	<directory>src/main/resources</directory>
+	<includes>
+	  <include>**/*.properties</include>
+	</includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<version>3.8.1</version>
+	<configuration>
+	  <source>1.8</source>
+	  <target>1.8</target>
+	</configuration>
+      </plugin>
+
+       <!-- https://github.com/vbmacher/cup-maven-plugin -->
+      <!-- NOTE: There is an XPathParser.java in both xalan/xsltc/compiler/ and
+               xpath/compiler/. THEY ARE NOT IDENTICAL. -->
+      <!-- Should .cup and .lex be in src/main/resources rather than
+	   src/main/java? -->
+      <plugin>
+        <groupId>com.github.vbmacher</groupId>
+        <artifactId>cup-maven-plugin</artifactId>
+        <version>11b-20160615-2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <className>XPathParser</className>
+          <symbolsName>sym</symbolsName>
+          <cupDefinition>${project.basedir}/src/main/java/org/apache/xalan/xsltc/compiler/xpath.cup</cupDefinition>
+          <outputDirectory>${project.basedir}/src/main/java</outputDirectory>
+        </configuration>
+      </plugin>
+
+      <!-- https://jflex-de.github.io/jflex-web/jflex-maven-plugin/usage.html
+	   Must run after java_cup has produced the sym.java file
+	   sym.java + xpath.lex -> xpath.lex.java, moved to XPathLexer.java
+	   It Is Claimed that JFlex is a compatible replacement for JLex.
+      -->
+      <!-- https://mvnrepository.com/artifact/de.jflex/jflex -->
+      <plugin>
+        <groupId>de.jflex</groupId>
+        <artifactId>jflex-maven-plugin</artifactId>	
+	<version>1.9.1</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+	      <jlex>true</jlex> <!-- Strict jlex compatibility? -->
+              <outputDirectory>src/main/java</outputDirectory>
+              <lexDefinitions>
+                <lexDefinition>src/main/java/org/apache/xalan/xsltc/compiler/xpath.lex</lexDefinition>
+              </lexDefinitions>
+            </configuration>
+            </execution>
+        </executions>
+      </plugin>
+
+      <!--
+	  https://maven.apache.org/plugins/maven-shade-plugin/examples/includes-excludes.html -->
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-shade-plugin</artifactId>
+	<version>3.5.0</version>
+	<executions>
+	  <execution>
+	    <phase>package</phase>
+	    <goals>
+	      <goal>shade</goal>
+	    </goals>
+	    <configuration>
+	      <artifactSet>
+		<excludes>
+		  <!-- Their examples (testing) -->
+		  <exclude>junit:junit</exclude>
+		  <exclude>jmock:*</exclude>
+		  <exclude>org.apache.maven:lib:tests</exclude>
+		  <!-- What I think I need to exclude.
+		       Some are direct dependencies, some come in
+		       via maven packages. -->
+		  <exclude>com.github.vbmacher:java-cup</exclude>
+		  <exclude>commons-logging:commons-logging</exclude>
+		  <exclude>org.apache.commons:commons-lang3</exclude>
+		  <exclude>org.apache.ant:ant</exclude>
+		  <exclude>org.apache.ant:ant-launcher</exclude>
+		  <exclude>apache-xalan-j-2.7.3-maint-main:serializer</exclude>
+		  <exclude>de.jflex:jflex</exclude>	
+		</excludes>
+	      </artifactSet>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>apache-xalan-j-2.7.3-maint-main</groupId>
+      <artifactId>serializer</artifactId>
+      <version>2.7.3-SNAPSHOT</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.apache.bcel/bcel -->
+    <dependency>
+      <groupId>org.apache.bcel</groupId>
+      <artifactId>bcel</artifactId>
+      <version>6.7.0</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.2</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.mozilla/rhino -->
+    <dependency>
+      <groupId>org.mozilla</groupId>
+      <artifactId>rhino</artifactId>
+      <version>1.7.14</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.bsf/bsf-api -->
+    <dependency>
+      <groupId>org.apache.bsf</groupId>
+      <artifactId>bsf-api</artifactId>
+      <version>3.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/javax/javaee-api -->
+    <dependency>
+      <groupId>javax</groupId>
+      <artifactId>javaee-api</artifactId>
+      <version>6.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version> <!-- jakata servlet is at 6.0 -->
+      <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/xerces/xercesImpl -->
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.12.2</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/xml-apis/xml-apis -->
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>1.4.01</version>
+      <!-- We were actually using 1.4.02 in the Ant build. -->
+      <scope>provided</scope>
+    </dependency>
+
+
+    <!-- https://github.com/vbmacher/cup-maven-plugin -->
+    <dependency>
+      <groupId>com.github.vbmacher</groupId>
+      <artifactId>java-cup</artifactId>
+      <version>11b-20160615-2</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.vbmacher</groupId>
+      <artifactId>java-cup-runtime</artifactId>
+      <version>11b-20160615-2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.jflex</groupId>
+      <artifactId>jflex</artifactId>
+      <version>1.9.1</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>regexp</groupId>
+      <artifactId>regexp</artifactId>
+      <version>1.3</version>
+    </dependency>
+  </dependencies>
+
+    <!-- Brazil is needed only for xsltc sample. -->
+</project>
