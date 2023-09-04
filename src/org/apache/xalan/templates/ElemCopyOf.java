@@ -38,7 +38,9 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XString;
 import org.apache.xpath.xs.types.XSNumericType;
+import org.apache.xpath.xs.types.XSString;
 import org.apache.xpath.xs.types.XSUntyped;
 import org.apache.xpath.xs.types.XSUntypedAtomic;
 import org.xml.sax.SAXException;
@@ -304,8 +306,15 @@ public class ElemCopyOf extends ElemTemplateElement
       for (int idx = 0; idx < resultSequence.size(); idx++) {             
          XObject sequenceItem = resultSequence.item(idx);
          
-         if (sequenceItem.getType() == XObject.CLASS_STRING) {
+         if (sequenceItem instanceof XString) {
              String str = sequenceItem.str();
+             serializationHandler.characters(str.toCharArray(), 0, str.length());
+             if (idx < (resultSequence.size() - 1)) {                     
+                serializationHandler.characters(spaceCharArr, 0, 1);
+             }
+         }
+         else if (sequenceItem instanceof XSString) {
+             String str = ((XSString)sequenceItem).stringValue();
              serializationHandler.characters(str.toCharArray(), 0, str.length());
              if (idx < (resultSequence.size() - 1)) {                     
                 serializationHandler.characters(spaceCharArr, 0, 1);

@@ -145,6 +145,9 @@ public class XSDate extends XSCalendarType {
                                                                                   strVal + "' cannot be parsed to a xs:date value."); 
             }
         }
+        catch (TransformerException ex) {
+           throw ex;  
+        }
         catch (Exception ex) {
             throw new TransformerException("XTTE0570 : The supplied string value '" + 
                                                                                   strVal + "' cannot be parsed to a xs:date value."); 

@@ -33,9 +33,13 @@ import org.apache.xpath.objects.XObject;
  */
 public class SequenceTypeData extends XObject {
     
+    private static final long serialVersionUID = -8207360998434418776L;
+
     private int fSequenceType;
     
     private int fItemTypeOccurrenceIndicator;
+    
+    private SequenceTypeKindTest sequenceTypeKindTest; 
 
     public int getSequenceType() {
         return fSequenceType;
@@ -51,6 +55,14 @@ public class SequenceTypeData extends XObject {
 
     public void setItemTypeOccurrenceIndicator(int itemTypeOccurrenceIndicator) {
         this.fItemTypeOccurrenceIndicator = itemTypeOccurrenceIndicator;
+    }
+
+    public SequenceTypeKindTest getSequenceTypeKindTest() {
+        return sequenceTypeKindTest;
+    }
+
+    public void setSequenceTypeKindTest(SequenceTypeKindTest sequenceTypeKindTest) {
+        this.sequenceTypeKindTest = sequenceTypeKindTest;
     }
 
 }

@@ -38,6 +38,7 @@ import org.apache.xpath.composite.IfExpr;
 import org.apache.xpath.composite.LetExpr;
 import org.apache.xpath.composite.LetExprVarBinding;
 import org.apache.xpath.composite.QuantifiedExpr;
+import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.SimpleSequenceConstructor;
 import org.apache.xpath.composite.XPathSequenceTypeExpr;
@@ -794,6 +795,112 @@ public class XPathParser
 
       throw new RuntimeException(fMsg);
     }
+  }
+  
+  /**
+   * This method helps to implement, XPath 3.1 sequence type expressions.
+   */
+  private void setSequenceTypeOccurenceIndicator(XPathSequenceTypeExpr xpathSequenceTypeExpr) throws TransformerException {
+      if (tokenIs(SequenceTypeSupport.Q_MARK)) {
+         xpathSequenceTypeExpr.setItemTypeOccurrenceIndicator(SequenceTypeSupport.
+                                                                                 OccurenceIndicator.ZERO_OR_ONE);
+         nextToken();
+      }
+      else if (tokenIs(SequenceTypeSupport.STAR)) {
+         xpathSequenceTypeExpr.setItemTypeOccurrenceIndicator(SequenceTypeSupport.
+                                                                                 OccurenceIndicator.ZERO_OR_MANY);
+         nextToken();
+      }
+      else if (tokenIs(SequenceTypeSupport.PLUS)) {
+         xpathSequenceTypeExpr.setItemTypeOccurrenceIndicator(SequenceTypeSupport.
+                                                                                 OccurenceIndicator.ONE_OR_MANY);
+         nextToken();
+      }
+      else {
+         throw new javax.xml.transform.TransformerException("XPST0051 A sequence type occurence indicator '" + m_token + "', is not recognized."); 
+      }
+   }
+  
+  /**
+   * Given an XML node's raw name like abc:pqr, this method returns
+   * a String array having the XML name components 'abc' and 'pqr'
+   * within individual array elements.
+   */
+   private String[] getXmlNamespaceStrComponents(String xmlRawName) {     
+      String[] xmlNamespaceStrParts = new String[2];
+      
+      int idx = xmlRawName.lastIndexOf(':');             
+      String localName = null;
+      String nsUri = null;
+      if (idx != -1) {
+         nsUri = xmlRawName.substring(0, idx);
+         localName = xmlRawName.substring(idx + 1);                
+      }
+      else {
+         localName = xmlRawName;  
+      }
+      
+      xmlNamespaceStrParts[0] = localName;
+      xmlNamespaceStrParts[1] = nsUri;
+      
+      return xmlNamespaceStrParts; 
+   }
+   
+   /**
+    * This method helps to implement, XPath 3.1 sequence type expressions.
+    */
+   private SequenceTypeKindTest constructSeqTypeKindTestForXmlNodes(XPathSequenceTypeExpr 
+                                                                                  xpathSequenceTypeExpr, int nodeType) throws TransformerException {
+
+       SequenceTypeKindTest sequenceTypeKindTest = new SequenceTypeKindTest();
+
+       sequenceTypeKindTest.setKindVal(nodeType);          
+       nextToken();
+       consumeExpected('(');
+       String nodeKindTestStr = "";
+       while (!tokenIs(")") && m_token != null) {
+           nodeKindTestStr += m_token;
+           nextToken();
+       }
+       if (tokenIs(')')) {
+           if (getTokenRelative(0) == null) {
+               nextToken();                
+           }
+           else if (getTokenRelative(1) == null) {
+               nextToken();                
+               setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr);
+           }
+           else {
+               throw new javax.xml.transform.TransformerException("XPST0051 : The sequence type expression is "
+                                                                                                      + "not well-formed."); 
+           }
+       }
+       else {
+           throw new javax.xml.transform.TransformerException("XPST0051 : The sequence type expression is "
+                                                                                                  + "not well-formed. The expected token ')' within "
+                                                                                                  + "a sequence type expression is not present.");  
+       }
+
+       String[] seqTypeSubParts = nodeKindTestStr.split(",");
+       if (seqTypeSubParts.length == 1) {
+           String[] nsParts = getXmlNamespaceStrComponents(seqTypeSubParts[0]);
+           sequenceTypeKindTest.setNodeLocalName(nsParts[0]);
+           sequenceTypeKindTest.setNodeNsUri(nsParts[1]);
+       }
+       else if (seqTypeSubParts.length == 2) {
+           String[] nodeNsParts = getXmlNamespaceStrComponents(seqTypeSubParts[0]);
+           String[] nodeDataTypeParts = getXmlNamespaceStrComponents(seqTypeSubParts[1]);
+           sequenceTypeKindTest.setNodeLocalName(nodeNsParts[0]);
+           sequenceTypeKindTest.setNodeNsUri(nodeNsParts[1]);
+           sequenceTypeKindTest.setDataTypeName(nodeDataTypeParts[0]);
+           sequenceTypeKindTest.setDataTypeUri(nodeDataTypeParts[1]);
+       }
+       else if (seqTypeSubParts.length > 2) {
+           throw new javax.xml.transform.TransformerException("XPST0051 : The sequence type expression is "
+                                                                                                    + "not well-formed."); 
+       }
+
+       return sequenceTypeKindTest;
   }
 
   /**
@@ -3580,6 +3687,8 @@ public class XPathParser
       
       XPathSequenceTypeExpr xpathSequenceTypeExpr = new XPathSequenceTypeExpr();
       
+      SequenceTypeKindTest sequenceTypeKindTest = null;
+      
       if (tokenIs("empty-sequence") && lookahead('(', 1) && lookahead(')', 2)) {
          xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.EMPTY_SEQUENCE);
          consumeExpected("empty-sequence");
@@ -3628,33 +3737,73 @@ public class XPathParser
                xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DAYTIME_DURATION);
                break;
             default :
-               throw new XPathProcessorException("XPST0051 An XML Schema type 'xs:" + m_token + "' is not "
-                                                                             + "recognized, within the provided sequence type expression.");        
+               throw new javax.xml.transform.TransformerException("XPST0051 An XML Schema type 'xs:" + m_token + "' is not "
+                                                                                        + "recognized, within the provided sequence type expression.");        
          }
          
          nextToken();
          
          if ((m_token != null) && (xpathSequenceTypeExpr.getSequenceType() > 0)) {
-            if (tokenIs(SequenceTypeSupport.Q_MARK)) {
-               xpathSequenceTypeExpr.setItemTypeOccurrenceIndicator(SequenceTypeSupport.
-                                                                                     OccurenceIndicator.ZERO_OR_ONE);
-               nextToken();
-            }
-            else if (tokenIs(SequenceTypeSupport.STAR)) {
-               xpathSequenceTypeExpr.setItemTypeOccurrenceIndicator(SequenceTypeSupport.
-                                                                                     OccurenceIndicator.ZERO_OR_MANY);
-               nextToken();
-            }
-            else if (tokenIs(SequenceTypeSupport.PLUS)) {
-               xpathSequenceTypeExpr.setItemTypeOccurrenceIndicator(SequenceTypeSupport.
-                                                                                     OccurenceIndicator.ONE_OR_MANY);
-               nextToken();
-            }
-            else {
-               throw new XPathProcessorException("XPST0051 A sequence type occurence indicator '" + m_token + "', is not recognized."); 
-            }
-         }
-         
+            setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr);
+         }         
+      }
+      else if (tokenIs("element")) {
+          sequenceTypeKindTest = constructSeqTypeKindTestForXmlNodes(xpathSequenceTypeExpr, 
+                                                                                        SequenceTypeSupport.ELEMENT_KIND);          
+          xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);          
+      }
+      else if (tokenIs("attribute")) {
+          sequenceTypeKindTest = constructSeqTypeKindTestForXmlNodes(xpathSequenceTypeExpr, 
+                                                                                        SequenceTypeSupport.ATTRIBUTE_KIND);          
+          xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
+      }
+      else if (tokenIs("text")) {
+          sequenceTypeKindTest = new SequenceTypeKindTest();
+          sequenceTypeKindTest.setKindVal(SequenceTypeSupport.TEXT_KIND);          
+          nextToken();
+          consumeExpected('(');
+          consumeExpected(')');
+          xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
+          if (m_token != null) {
+             setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr); 
+          }          
+      }
+      else if (tokenIs("namespace-node")) {
+          sequenceTypeKindTest = new SequenceTypeKindTest();
+          sequenceTypeKindTest.setKindVal(SequenceTypeSupport.NAMESPACE_NODE_KIND);          
+          nextToken();
+          consumeExpected('(');
+          consumeExpected(')');
+          xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
+          if (m_token != null) {
+             setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr); 
+          }
+      }
+      else if (tokenIs("node")) { 
+          sequenceTypeKindTest = new SequenceTypeKindTest();
+          sequenceTypeKindTest.setKindVal(SequenceTypeSupport.NODE_KIND);          
+          nextToken();
+          consumeExpected('(');
+          consumeExpected(')');
+          xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
+          if (m_token != null) {
+             setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr);  
+          }
+      }
+      else if (tokenIs("item")) {
+          sequenceTypeKindTest = new SequenceTypeKindTest();
+          sequenceTypeKindTest.setKindVal(SequenceTypeSupport.ITEM_KIND);          
+          nextToken();
+          consumeExpected('(');
+          consumeExpected(')');
+          xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
+          if (m_token != null) {
+             setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr);  
+          }
+      }            
+      else {
+          throw new javax.xml.transform.TransformerException("XPST0051 The sequence type '" + m_token + "' is not "
+                                                                                                   + "recognized, within the provided sequence type expression."); 
       }
       
       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
