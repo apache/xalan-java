@@ -189,7 +189,11 @@ public class XSDayTimeDuration extends XSDuration {
 			    throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
                                                                                                      + "cannot be parsed to a xs:dayTimeDuration value.");
 			}
-		} catch (Exception ex) {
+		} 
+		catch (TransformerException ex) {
+	        throw ex;  
+	    }
+		catch (Exception ex) {
 		    throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
                                                                                           + "cannot be parsed to a xs:dayTimeDuration value.");
 		}

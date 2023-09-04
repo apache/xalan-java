@@ -394,7 +394,11 @@ public class XSDuration extends XSCtrType {
                                                                                                + "cannot be parsed to a xs:duration value.");
 			}
 
-		} catch (Exception ex) {
+		} 
+		catch (TransformerException ex) {
+	        throw ex;  
+	    }
+		catch (Exception ex) {
 		    throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
                                                                                               + "cannot be parsed to a xs:duration value."); 
 		}

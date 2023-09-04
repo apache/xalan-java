@@ -19,8 +19,10 @@ package org.apache.xpath.composite;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
@@ -95,6 +97,20 @@ public class SequenceTypeSupport {
     public static int XS_DOUBLE = 14;
     
     public static int XS_FLOAT = 15;
+    
+        
+    public static int ELEMENT_KIND = 101;
+    
+    public static int ATTRIBUTE_KIND = 102;
+    
+    public static int TEXT_KIND = 103;
+    
+    public static int NAMESPACE_NODE_KIND = 104;
+    
+    public static int NODE_KIND = 105;
+    
+    public static int ITEM_KIND = 106;
+    
         
     public static class OccurenceIndicator {
        // Represents the sequence type occurrence indicator '?'
@@ -114,9 +130,15 @@ public class SequenceTypeSupport {
     public static String PLUS = "+";
     
     /**
-     * This method converts/casts an xdm source value represented by an XObject
-     * object instance, to a value of another type. This method is called 
-     * recursively at certain places.
+     * This method converts/casts an XPath 3.1 xdm source value represented by an
+     * XObject object instance, to a value of another xdm data type.
+     * 
+     * For XPath sequence type expressions that represent KindTest (i.e,
+     * element(), attribute() etc), this method only checks whether an XML input
+     * item conforms with the provided KindTest sequence type expression, and
+     * returns an input value unchanged.  
+     * 
+     * This method is called recursively at certain places.
      *  
      * @param srcValue                     an XObject object instance that represents a
      *                                     source xdm value. 
@@ -150,13 +172,17 @@ public class SequenceTypeSupport {
             
             int expectedType = seqExpectedTypeData.getSequenceType();            
             int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
+            SequenceTypeKindTest sequenceTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
             
             if (srcValue instanceof XString) {
                 String srcStrVal = ((XString)srcValue).str();
                 
                 if (expectedType == STRING) {
-                   // The source and expected data types are same. Return the original value unchanged.
                    result = srcValue; 
+                }
+                else if (sequenceTypeKindTest != null) {                   
+                   result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                    "xs:string", sequenceTypeXPathExprStr);
                 }
                 else {
                    result = convertStringValueToAnExpectedType(srcStrVal, expectedType);
@@ -166,8 +192,11 @@ public class SequenceTypeSupport {
                String srcStrVal = ((XSString)srcValue).stringValue();
                
                if (expectedType == STRING) {
-                  // The source and expected data types are same. Return the original value unchanged.
                   result = srcValue; 
+               }
+               else if (sequenceTypeKindTest != null) {
+                  result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                   "xs:string", sequenceTypeXPathExprStr);
                }
                else {
                   result = convertStringValueToAnExpectedType(srcStrVal, expectedType);
@@ -175,19 +204,49 @@ public class SequenceTypeSupport {
             }
             else if (srcValue instanceof XNumber) {
                XSDouble xsDouble = new XSDouble(((XNumber)srcValue).num());
-               result = performXDMNumericTypeConversion(xsDouble, expectedType);
+               String srcStrVal = xsDouble.stringValue(); 
+               
+               if (expectedType == XS_DOUBLE) {
+                  result = srcValue; 
+               }
+               else if (sequenceTypeKindTest != null) {
+                  result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                   "xs:double", sequenceTypeXPathExprStr);
+               }
+               else {
+                  result = performXDMNumericTypeConversion(xsDouble, expectedType);
+               }
             }
             else if (srcValue instanceof XSNumericType) {
-               result = performXDMNumericTypeConversion((XSNumericType)srcValue, expectedType); 
+               XSNumericType xsNumericType = (XSNumericType)srcValue;
+               
+               try {
+                   result = performXDMNumericTypeConversion(xsNumericType, expectedType);
+               }
+               catch (TransformerException ex1) {
+                  if (sequenceTypeKindTest != null) {
+                     String srcStrVal = xsNumericType.stringValue();
+                     try {
+                        result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                         xsNumericType.stringType(), sequenceTypeXPathExprStr);
+                     }
+                     catch (TransformerException ex2) {
+                        throw ex2; 
+                     }
+                  }
+                  else {
+                     throw ex1;   
+                  }
+               }
             }
             else if (srcValue instanceof XBoolean) {
                String srcStrVal = ((XBoolean)srcValue).str();
                if (expectedType == BOOLEAN) {
                   result = srcValue; 
                }
-               else {
-                  throw new TransformerException("XTTE0570 : The boolean value " + srcStrVal + " cannot be "
-                                                                            + "cast to a type " + getDataTypeNameFromIntValue(expectedType) + ".", srcLocator); 
+               else if (sequenceTypeKindTest != null) {
+                  result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                    "xs:boolean", sequenceTypeXPathExprStr);
                }
             }
             else if (srcValue instanceof XSBoolean) {
@@ -195,9 +254,9 @@ public class SequenceTypeSupport {
                if (expectedType == BOOLEAN) {
                   result = srcValue; 
                }
-               else {
-                  throw new TransformerException("XTTE0570 : The boolean value " + srcStrVal + " cannot be "
-                                                                             + "cast to a type " + getDataTypeNameFromIntValue(expectedType) + ".", srcLocator); 
+               else if (sequenceTypeKindTest != null) {
+                  result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                    "xs:boolean", sequenceTypeXPathExprStr);
                } 
             }
             else if (srcValue instanceof XSDate) {
@@ -205,9 +264,9 @@ public class SequenceTypeSupport {
                if (expectedType == XS_DATE) {
                   result = srcValue; 
                }
-               else {
-                  throw new TransformerException("XTTE0570 : The xs:date value " + srcStrVal + " cannot be "
-                                                                            + "cast to a type " + getDataTypeNameFromIntValue(expectedType) + ".", srcLocator);   
+               else if (sequenceTypeKindTest != null) {
+                  result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                    "xs:date", sequenceTypeXPathExprStr);
                } 
             }
             else if (srcValue instanceof XSDateTime) {
@@ -215,19 +274,19 @@ public class SequenceTypeSupport {
                if (expectedType == XS_DATETIME) {
                   result = srcValue; 
                }
-               else {
-                  throw new TransformerException("XTTE0570 : The xs:dateTime value " + srcStrVal + " cannot be "
-                                                                                + "cast to a type " + getDataTypeNameFromIntValue(expectedType) + ".", srcLocator);     
-               } 
+               else if (sequenceTypeKindTest != null) {
+                  result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                    "xs:dateTime", sequenceTypeXPathExprStr);
+               }
             }
             else if (srcValue instanceof XSTime) {
                String srcStrVal = ((XSTime)srcValue).stringValue();
                if (expectedType == XS_TIME) {
                   result = srcValue; 
                }
-               else {
-                  throw new TransformerException("XTTE0570 : The xs:time value " + srcStrVal + " cannot be "
-                                                                            + "cast to a type " + getDataTypeNameFromIntValue(expectedType) + ".", srcLocator);       
+               else if (sequenceTypeKindTest != null) {
+                  result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                   "xs:time", sequenceTypeXPathExprStr);
                }
             }
             else if (srcValue instanceof XSDuration) {
@@ -235,29 +294,29 @@ public class SequenceTypeSupport {
                if (expectedType == XS_DURATION) {
                   result = srcValue; 
                }
-               else {
-                  throw new TransformerException("XTTE0570 : The xs:duration value " + srcStrVal + " cannot be "
-                                                                                + "cast to a type " + getDataTypeNameFromIntValue(expectedType) + ".", srcLocator);       
+               else if (sequenceTypeKindTest != null) {
+                  result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                   "xs:duration", sequenceTypeXPathExprStr);
                } 
             }
             else if (srcValue instanceof XSDayTimeDuration) {
-               String srcStrVal = ((XSDayTimeDuration)srcValue).stringValue();
+               String srcStrVal = ((XSDayTimeDuration)srcValue).stringValue();     
                if (expectedType == XS_DAYTIME_DURATION) {
                   result = srcValue; 
                }
-               else {
-                  throw new TransformerException("XTTE0570 : The xs:dayTimeDuration value " + srcStrVal + " cannot be "
-                                                                                 + "cast to a type " + getDataTypeNameFromIntValue(expectedType) + ".", srcLocator);       
+               else if (sequenceTypeKindTest != null) {
+                  result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                   "xs:dayTimeDuration", sequenceTypeXPathExprStr);
                } 
             }
             else if (srcValue instanceof XSYearMonthDuration) {
-               String srcStrVal = ((XSYearMonthDuration)srcValue).stringValue();
+               String srcStrVal = ((XSYearMonthDuration)srcValue).stringValue();      
                if (expectedType == XS_YEARMONTH_DURATION) {
                   result = srcValue; 
                }
-               else {
-                   throw new TransformerException("XTTE0570 : The xs:yearMonthDuration value " + srcStrVal + " cannot be "
-                                                                                  + "cast to a type " + getDataTypeNameFromIntValue(expectedType) + ".", srcLocator);       
+               else if (sequenceTypeKindTest != null) {
+                  result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                   "xs:yearMonthDuration", sequenceTypeXPathExprStr);
                } 
             }
             else if (srcValue instanceof XSUntyped) {
@@ -281,6 +340,8 @@ public class SequenceTypeSupport {
                 else { 
                     ResultSequence convertedResultSeq = new ResultSequence();
                     
+                    DTMManager dtmMgr = (DTMManager)xctxt;
+                    
                     DTMIterator dtmIter = xdmNodeSet.iterRaw();
                     
                     int nextNodeDtmHandle;
@@ -295,9 +356,91 @@ public class SequenceTypeSupport {
                           sequenceTypeNewXPathExprStr = sequenceTypeXPathExprStr.substring(0, sequenceTypeXPathExprStr.length() - 1);  
                        }
                        
-                       XObject xObject = convertXDMValueToAnotherType(new XSString(nodeStrVal), sequenceTypeNewXPathExprStr, xctxt);
-                       
-                       convertedResultSeq.add(xObject);
+                       if (sequenceTypeKindTest != null) {
+                          DTM dtm = dtmMgr.getDTM(nextNodeDtmHandle);
+                          
+                          String nodeName = dtm.getNodeName(nextNodeDtmHandle);
+                          String nodeNsUri = dtm.getNamespaceURI(nextNodeDtmHandle);
+                          
+                          if (sequenceTypeKindTest.getDataTypeName() != null) {
+                             String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr; 
+                             throw new TransformerException("XTTE0570 : The required item type of an XML instance node is " + dataTypeStr + 
+                                                                                                             ". The supplied value " + nodeName + " does not match. The "
+                                                                                                             + "supplied node has not been validated with a schema.", srcLocator); 
+                          }
+                          else {
+                             if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
+                                String elemNodeKindTestNodeName = sequenceTypeKindTest.getNodeLocalName();
+                                if (elemNodeKindTestNodeName == null || "".equals(elemNodeKindTestNodeName) || 
+                                                                                                        STAR.equals(elemNodeKindTestNodeName)) {
+                                   elemNodeKindTestNodeName = nodeName;  
+                                }
+                                
+                                if ((sequenceTypeKindTest.getKindVal() == ELEMENT_KIND) && (nodeName.equals(elemNodeKindTestNodeName)) 
+                                                                                                         && (isTwoXmlNamespacesEqual(nodeNsUri, sequenceTypeKindTest.getNodeNsUri()))) {
+                                   convertedResultSeq.add(nodeSetItem);  
+                                }
+                                else if ((sequenceTypeKindTest.getKindVal() == NODE_KIND) || (sequenceTypeKindTest.getKindVal() == ITEM_KIND)) {
+                                   convertedResultSeq.add(nodeSetItem); 
+                                }
+                                else {
+                                   String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr;
+                                   throw new TransformerException("XTTE0570 : The required item type of an XML instance node is " + dataTypeStr + 
+                                                                                                         ". The supplied value " + nodeName + " does not match.", srcLocator); 
+                                }
+                             }
+                             else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
+                                String attrNodeKindTestNodeName = sequenceTypeKindTest.getNodeLocalName();
+                                if (attrNodeKindTestNodeName == null || "".equals(attrNodeKindTestNodeName) || 
+                                                                                                        STAR.equals(attrNodeKindTestNodeName)) {
+                                   attrNodeKindTestNodeName = nodeName;  
+                                }
+                                
+                                if ((sequenceTypeKindTest.getKindVal() == ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
+                                                                                                           && (isTwoXmlNamespacesEqual(nodeNsUri, sequenceTypeKindTest.getNodeNsUri()))) {
+                                    convertedResultSeq.add(nodeSetItem);  
+                                }
+                                else if ((sequenceTypeKindTest.getKindVal() == NODE_KIND) || (sequenceTypeKindTest.getKindVal() == ITEM_KIND)) {
+                                    convertedResultSeq.add(nodeSetItem); 
+                                }
+                                else {
+                                    String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr;
+                                    throw new TransformerException("XTTE0570 : The required item type of an XML instance node is " + dataTypeStr + 
+                                                                                                          ". The supplied value " + nodeName + " does not match.", srcLocator);  
+                                }
+                             }
+                             else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.TEXT_NODE) {
+                                if (sequenceTypeKindTest.getKindVal() == TEXT_KIND) {
+                                   convertedResultSeq.add(nodeSetItem); 
+                                }
+                                else {
+                                   String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr;
+                                   throw new TransformerException("XTTE0570 : The required item type of an XML instance node is " + dataTypeStr + ". "
+                                                                                                                    + "The supplied value does not match.", srcLocator); 
+                                }
+                             }
+                             else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.NAMESPACE_NODE) {
+                                 if (sequenceTypeKindTest.getKindVal() == NAMESPACE_NODE_KIND) {
+                                    convertedResultSeq.add(nodeSetItem); 
+                                 }
+                                 else {
+                                    String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr;
+                                    throw new TransformerException("XTTE0570 : The required item type of an XML instance node is " + dataTypeStr + ". "
+                                                                                                                     + "The supplied value does not match.", srcLocator); 
+                                 }
+                             }
+                             else {
+                                convertedResultSeq.add(nodeSetItem); 
+                             }
+                          }
+                       }
+                       else {
+                          if (sequenceTypeNewXPathExprStr == null) {
+                             sequenceTypeNewXPathExprStr = sequenceTypeXPathExprStr;  
+                          }                          
+                          XObject xObject = convertXDMValueToAnotherType(new XSString(nodeStrVal), sequenceTypeNewXPathExprStr, xctxt);                       
+                          convertedResultSeq.add(xObject);
+                       }
                     }
                     
                     result = convertedResultSeq;
@@ -327,7 +470,7 @@ public class SequenceTypeSupport {
                     ResultSequence convertedResultSeq = new ResultSequence();
                     
                     for (int idx = 0; idx < srcResultSeq.size(); idx++) {
-                       XObject seqItem = (XObject)(srcResultSeq.item(idx));
+                       XObject seqItem = (XObject)(srcResultSeq.item(idx));                       
                        XObject convertedSeqItem = convertXDMValueToAnotherType(seqItem, sequenceTypeNewXPathExprStr, xctxt);
                        convertedResultSeq.add(convertedSeqItem);
                     }
@@ -337,7 +480,12 @@ public class SequenceTypeSupport {
             }
         }
         catch (TransformerException ex) {
-            throw new TransformerException(ex.getMessage(), srcLocator); 
+            throw ex; 
+        }
+        catch (Exception ex) {
+            String srcStrVal = XslTransformEvaluationHelper.getStrVal(srcValue); 
+            throw new TransformerException("XTTE0570 : The source value '" + srcStrVal + "' cannot be cast "
+                                                                                    + "to a type " + sequenceTypeXPathExprStr + ".", srcLocator); 
         }
         
         return result;
@@ -380,6 +528,9 @@ public class SequenceTypeSupport {
                throw new TransformerException("XTTE0570 : The string value '" + srcStrVal + "' cannot be "
                                                                                                   + "cast to a type " + getDataTypeNameFromIntValue(expectedType) + "."); 
             }
+        }
+        catch (TransformerException ex) {
+            throw ex;    
         }
         catch (Exception ex) {
             throw new TransformerException("XTTE0570 : The string value '" + srcStrVal + "' cannot be cast to "
@@ -448,6 +599,9 @@ public class SequenceTypeSupport {
                                                                                                  + "to a type " + getDataTypeNameFromIntValue(expectedType) + ".");  
             }
         }
+        catch (TransformerException ex) {
+            throw ex;  
+        }
         catch (Exception ex) {
             throw new TransformerException("XTTE0570 : The numeric value " + srcStrVal + " cannot be cast "
                                                                                                + "to a type " + getDataTypeNameFromIntValue(expectedType) + ".");
@@ -512,5 +666,42 @@ public class SequenceTypeSupport {
        
        return dataTypeName;       
     }
+    
+    /**
+     * Given an XObject object instance representing an atomic data value, check whether
+     * a sequence type item() type annotation could be applied.
+     */
+    private static XObject performXdmItemTypeNormalizationOnAtomicType(SequenceTypeKindTest sequenceTypeKindTest, 
+                                                                                     XObject srcValue, String srcStrVal, 
+                                                                                     String srcDataTypeName, 
+                                                                                     String sequenceTypeXPathExprStr) throws TransformerException {
+        XObject result = null;
+        
+        if (sequenceTypeKindTest.getKindVal() == ITEM_KIND) {
+           result = srcValue;
+        }
+        else {
+           throw new TransformerException("XTTE0570 : An " + srcDataTypeName + " value '" + srcStrVal + "' cannot be cast to "
+                                                                                                   + "a type " + sequenceTypeXPathExprStr + "."); 
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Check whether, two XML namespace uris are equal.
+     */
+    private static boolean isTwoXmlNamespacesEqual(String nsUr1, String nsUri2) {
+        boolean xmlNamespacesEqual = false;
+        
+        if ((nsUr1 == null) && (nsUri2 == null)) {
+           xmlNamespacesEqual = true; 
+        }
+        else if ((nsUr1 != null) && (nsUri2 != null)) {
+           xmlNamespacesEqual = nsUr1.equals(nsUri2);  
+        }
+        
+        return xmlNamespacesEqual; 
+     }
 
 }
