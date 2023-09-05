@@ -1,23 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                exclude-result-prefixes="xs"
                 version="3.0">
-    
+                
     <!-- Author: mukulg@apache.org -->                
-    
-    <!-- An XSLT stylesheet test case, to test the sequence type
-         declaration attribute "as" on an xsl:variable instruction.
-    -->
+                
+    <!-- This XSLT stylesheet test case, tests function recursion,
+         for an XPath 3.1 dynamic function call.
+        
+         This stylesheet, specifies an XPath inline function expression
+         to calculate factorial of a numerical integer value. 
+    -->                
     
     <xsl:output method="xml" indent="yes"/>
     
-    <xsl:variable name="var1" select="'4'" as="xs:integer"/>
-        
+    <xsl:variable name="factorial" select="function($num) {if ($num = 0) then 1 else ($num * $factorial($num - 1))}"/>
+    
     <xsl:template match="/">       
-       <result>
-          <xsl:value-of select="$var1"/>
-       </result> 
+       <factorial>
+          <xsl:for-each select="0 to 10">
+             <xsl:variable name="num" select="."/>
+             <inp val="{$num}">
+                <result>               
+                   <xsl:value-of select="$factorial($num)"/>
+                </result>
+             </inp>
+          </xsl:for-each>
+       </factorial> 
     </xsl:template>
     
     <!--
@@ -36,6 +44,6 @@
       * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
       * See the License for the specific language governing permissions and
       * limitations under the License.
-    -->
+   -->
     
 </xsl:stylesheet>

@@ -200,7 +200,7 @@ public class ElemCopyOf extends ElemTemplateElement
           str = value.str();
 
           handler.characters(str.toCharArray(), 0, str.length());
-          break;
+          break;            
         case XObject.CLASS_NODESET :          
           copyOfActionOnNodeSet((XNodeSet)value, transformer, handler, xctxt);          
           break;
@@ -219,6 +219,11 @@ public class ElemCopyOf extends ElemTemplateElement
           handler.characters(str.toCharArray(), 0, str.length());
           
           break;
+        }
+        
+        if (value instanceof XSNumericType) {
+           str = ((XSNumericType)value).stringValue();
+           handler.characters(str.toCharArray(), 0, str.length());
         }
       }
 

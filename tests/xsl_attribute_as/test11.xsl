@@ -3,21 +3,45 @@
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 exclude-result-prefixes="xs"
                 version="3.0">
-    
+                
     <!-- Author: mukulg@apache.org -->                
     
     <!-- An XSLT stylesheet test case, to test the sequence type
          declaration attribute "as" on an xsl:variable instruction.
-    -->
+         
+         Within this stylesheet example, the named template 'Template1''s
+         output is wrapped within an xsl:variable. The named template's
+         output needs to conform to the sequence type specified as
+         value of xsl:variable's "as" attribute.   
+    -->                
     
     <xsl:output method="xml" indent="yes"/>
     
-    <xsl:variable name="var1" select="'4'" as="xs:integer"/>
-        
+    <xsl:variable name="varElemName" select="'a1'"/>
+    <xsl:variable name="iterFrom" select="xs:integer(1)"/>
+    <xsl:variable name="iterTo" select="xs:integer(5)"/>
+    
     <xsl:template match="/">       
        <result>
-          <xsl:value-of select="$var1"/>
+          <xsl:variable name="var1" as="element(a1)*">
+	         <xsl:call-template name="Template1">
+	            <xsl:with-param name="elemName" select="$varElemName"/>
+	            <xsl:with-param name="from" select="$iterFrom"/>
+	            <xsl:with-param name="to" select="$iterTo"/>
+	         </xsl:call-template>
+	      </xsl:variable>
+	      <xsl:copy-of select="$var1"/>
        </result> 
+    </xsl:template>
+    
+    <xsl:template name="Template1">
+       <xsl:param name="elemName"/>
+       <xsl:param name="from"/>
+       <xsl:param name="to"/>
+       
+       <xsl:for-each select="$from to $to">
+          <xsl:element name="{$elemName}"/>
+       </xsl:for-each>
     </xsl:template>
     
     <!--
