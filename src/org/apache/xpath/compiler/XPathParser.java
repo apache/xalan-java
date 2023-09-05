@@ -849,8 +849,8 @@ public class XPathParser
    /**
     * This method helps to implement, XPath 3.1 sequence type expressions.
     */
-   private SequenceTypeKindTest constructSeqTypeKindTestForXmlNodes(XPathSequenceTypeExpr 
-                                                                                  xpathSequenceTypeExpr, int nodeType) throws TransformerException {
+   private SequenceTypeKindTest constructSequenceTypeKindTestForXDMNodes(XPathSequenceTypeExpr 
+                                                                                         xpathSequenceTypeExpr, int nodeType) throws TransformerException {
 
        SequenceTypeKindTest sequenceTypeKindTest = new SequenceTypeKindTest();
 
@@ -877,7 +877,7 @@ public class XPathParser
        }
        else {
            throw new javax.xml.transform.TransformerException("XPST0051 : The sequence type expression is "
-                                                                                                  + "not well-formed. The expected token ')' within "
+                                                                                                  + "not well-formed. An expected token ')' within "
                                                                                                   + "a sequence type expression is not present.");  
        }
 
@@ -3748,12 +3748,12 @@ public class XPathParser
          }         
       }
       else if (tokenIs("element")) {
-          sequenceTypeKindTest = constructSeqTypeKindTestForXmlNodes(xpathSequenceTypeExpr, 
+          sequenceTypeKindTest = constructSequenceTypeKindTestForXDMNodes(xpathSequenceTypeExpr, 
                                                                                         SequenceTypeSupport.ELEMENT_KIND);          
           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);          
       }
       else if (tokenIs("attribute")) {
-          sequenceTypeKindTest = constructSeqTypeKindTestForXmlNodes(xpathSequenceTypeExpr, 
+          sequenceTypeKindTest = constructSequenceTypeKindTestForXDMNodes(xpathSequenceTypeExpr, 
                                                                                         SequenceTypeSupport.ATTRIBUTE_KIND);          
           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
       }

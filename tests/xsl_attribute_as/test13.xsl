@@ -1,22 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                exclude-result-prefixes="xs"
                 version="3.0">
-    
-    <!-- Author: mukulg@apache.org -->                
+                
+   <!-- Author: mukulg@apache.org -->                
     
     <!-- An XSLT stylesheet test case, to test the sequence type
          declaration attribute "as" on an xsl:variable instruction.
-    -->
+    -->                
     
     <xsl:output method="xml" indent="yes"/>
     
-    <xsl:variable name="var1" select="'4'" as="xs:integer"/>
-        
     <xsl:template match="/">       
        <result>
-          <xsl:value-of select="$var1"/>
+          <!-- The following variable when evaluated, produces
+               three XDM sibling top-level nodes (two element nodes,
+               and one text node. Each of these nodes match the 
+               sequence type expression node()).
+          -->
+          <xsl:variable name="var1" as="node()*">
+             <elem>
+                <a>123</a>
+             </elem>
+             hi there
+             <elem>
+                <b>456</b>
+             </elem>
+          </xsl:variable>
+          <one nodeCount="{count($var1)}">
+             <xsl:copy-of select="$var1"/> 
+          </one>
        </result> 
     </xsl:template>
     
