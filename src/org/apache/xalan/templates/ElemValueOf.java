@@ -43,9 +43,6 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Operation;
-import org.apache.xpath.operations.Range;
-import org.apache.xpath.operations.SimpleMapOperator;
-import org.apache.xpath.operations.StrConcat;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.xs.types.XSAnyType;
 import org.apache.xpath.xs.types.XSNumericType;
@@ -359,21 +356,8 @@ public class ElemValueOf extends ElemTemplateElement {
                       }
                       (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
-                  else if (expr instanceof Operation) {
-                     Operation opn = (Operation)expr;
-                     
-                     XObject evalResult = null;
-                     if ((opn instanceof Range) || (opn instanceof StrConcat) || 
-                                                                       (opn instanceof SimpleMapOperator)) {
-                        evalResult = opn.execute(xctxt);                        
-                     }
-                     else {
-                        XObject leftOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                                           xctxt, opn.getLeftOperand());
-                        XObject rightOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                                           xctxt, opn.getRightOperand());
-                        evalResult = opn.operate(leftOperand, rightOperand);
-                     }
+                  else if (expr instanceof Operation) {                     
+                     XObject evalResult = expr.execute(xctxt);
                      
                      String strValue = null;
                      

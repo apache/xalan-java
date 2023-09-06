@@ -27,7 +27,6 @@ import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.operations.Operation;
 import org.apache.xpath.xs.types.XSBoolean;
 import org.apache.xpath.xs.types.XSDate;
 import org.apache.xpath.xs.types.XSDayTimeDuration;
@@ -54,8 +53,8 @@ import org.xml.sax.SAXException;
 public class XSConstructorFunctionUtil {
     
     /**
-     * Process an XPath expression of type FuncExtFunction, XPath operation, 
-     * and also few XPath default expression processing.
+     * Evaluate an XPath expression of type FuncExtFunction, and also few 
+     * other kinds of XPath expressions.
      */
     public static XObject processFuncExtFunctionOrXPathOpn(XPathContext xctxt, Expression expr)
                                                                     throws TransformerException, SAXException {        
@@ -64,8 +63,8 @@ public class XSConstructorFunctionUtil {
         SourceLocator srcLocator = xctxt.getSAXLocator();
 
         // XalanJ's extension function handler mechanism, treats at a syntactic level,
-        // XPath 3.1 constructor function calls like xs:type_name(..) as calls to XSLT/XPath
-        // extension functions. If the XML namespace of XSLT/XPath function calls is an XML Schema
+        // XPath 3.1 constructor function calls like xs:type_name(..) as calls to XalanJ 
+        // extension functions. If the XML namespace of these function calls is an XML Schema
         // namespace, then we use this fact to treat such function calls as XPath 3.1 constructor 
         // function calls, as has been implemented within code below.
         
@@ -226,19 +225,10 @@ public class XSConstructorFunctionUtil {
                     default:
                        // no op
                   }
-            }
-        }
-        else if (expr instanceof Operation) {
-            // We need to call this method recursively, for the possibility of more than one
-            // XPath expression evaluation operator present within an XPath expression 
-            // (for e.g, a + b - c).
-            Operation opn = (Operation)expr;
-            XObject leftOperand = processFuncExtFunctionOrXPathOpn(xctxt, opn.getLeftOperand());
-            XObject rightOperand = processFuncExtFunctionOrXPathOpn(xctxt, opn.getRightOperand());
-            evalResult = opn.operate(leftOperand, rightOperand);
+             }
         }
         else {
-            evalResult = expr.execute(xctxt);   
+           evalResult = expr.execute(xctxt);   
         }
 
         return evalResult;

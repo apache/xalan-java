@@ -16,6 +16,7 @@
  */
 package org.apache.xpath.functions;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -138,6 +139,8 @@ public class DynamicFunctionCall extends Expression {
                prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
            }
            
+           Map<QName, XObject> functionParamAndArgMap = new HashMap<QName, XObject>();
+           
            for (int idx = 0; idx < funcParamNameList.size(); idx++) {              
               String funcParamName = funcParamNameList.get(idx);
               
@@ -157,8 +160,11 @@ public class DynamicFunctionCall extends Expression {
               XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
               
               m_xpathVarList.add(new QName(funcParamName));
-              inlineFunctionVarMap.put(new QName(funcParamName), argValue);
+              
+              functionParamAndArgMap.put(new QName(funcParamName), argValue);
            }
+           
+           inlineFunctionVarMap.putAll(functionParamAndArgMap);
            
            if (prefixTable != null) {
               inlineFnXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(inlineFnXPathStr, 

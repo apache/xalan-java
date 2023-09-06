@@ -96,11 +96,11 @@ public class XPathParser
    * XPath language key words and symbols that need this support.
    */
   private static final String[] XPATH_OP_ARR = new String[] 
-                                                     {"div", "or", "and", "mod", "to", 
+                                                     { "div", "or", "and", "mod", "to", 
                                                       "eq", "ne", "lt", "gt", "le", "ge", 
                                                       "for", "in", "return", "if", "then", 
                                                       "else", "some", "every", "satisfies", 
-                                                      "let", ":=", "-", "||"};
+                                                      "let", ":=", "-", "||", "instance", "of" };
   
   // If the XPath expression is () (i.e, representing an xdm empty sequence),
   // we translate that within this XPath parser implementation, to an XPath
@@ -2012,7 +2012,7 @@ public class XPathParser
           
           int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
           
-          fXpathSequenceTypeExpr = SequenceTypeExpr();
+          fXpathSequenceTypeExpr = SequenceTypeExpr();          
           m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
                                                   m_ops.getOp(addPos + op1 + 1) + op1);
           addPos += 2;
