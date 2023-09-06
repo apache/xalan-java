@@ -726,8 +726,15 @@ public class OpCodes
   public static final int OP_SIMPLE_MAP_OPERATOR = 72;
   
   public static final int OP_SEQUENCE_TYPE_EXPR = 73;
+  
+  /**
+   * For XPath 3.1 "instance of" expression.
+   * 
+   * @xsl.usage advanced
+   */
+  public static final int OP_INSTANCE_OF = 74;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 74;
+  private static final int NEXT_FREE_ID = 75;
   
 }

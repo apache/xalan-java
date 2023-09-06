@@ -45,6 +45,7 @@ import org.apache.xpath.operations.Div;
 import org.apache.xpath.operations.Equals;
 import org.apache.xpath.operations.Gt;
 import org.apache.xpath.operations.Gte;
+import org.apache.xpath.operations.InstanceOf;
 import org.apache.xpath.operations.Lt;
 import org.apache.xpath.operations.Lte;
 import org.apache.xpath.operations.Minus;
@@ -174,6 +175,8 @@ public class Compiler extends OpMap
       expr = simpleMapOperator(opPos); break;
     case OpCodes.OP_SEQUENCE_TYPE_EXPR :
       expr = sequenceTypeExpr(opPos); break;
+    case OpCodes.OP_INSTANCE_OF :
+      expr = instanceOfExpr(opPos); break;
     case OpCodes.OP_LTE :
       expr = lte(opPos); break;
     case OpCodes.OP_LT :
@@ -531,6 +534,20 @@ public class Compiler extends OpMap
   Expression sequenceTypeExpr(int opPos) throws TransformerException
   {
       return XPathParser.fXpathSequenceTypeExpr;
+  }
+  
+  /**
+   * Compile an XPath 3.1 "instance of" expression.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   * 
+   * @return reference to {@link org.apache.xpath.operations.InstanceOf} instance.
+   * 
+   * @throws TransformerException if a error occurs creating the Expression.
+   */
+  protected Expression instanceOfExpr(int opPos) throws TransformerException
+  {
+    return compileOperation(new InstanceOf(), opPos);
   }
 
   /**
