@@ -17,6 +17,7 @@
 package org.apache.xpath.composite;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -79,9 +80,7 @@ public class LetExpr extends Expression {
         
        SourceLocator srcLocator = xctxt.getSAXLocator();
         
-       int contextNode = xctxt.getContextNode();
-       
-       Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
+       int contextNode = xctxt.getContextNode();              
        
        ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
        List<XMLNSDecl> prefixTable = null;
@@ -89,7 +88,9 @@ public class LetExpr extends Expression {
           prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
        }
        
-       for (int idx = 0; idx < fLetExprVarBindingList.size(); idx++) {
+       Map<QName, XObject> letExprVarBindingMap = new HashMap<QName, XObject>();
+       
+       for (int idx = 0; idx < fLetExprVarBindingList.size(); idx++) {          
           LetExprVarBinding letExprVarBinding = fLetExprVarBindingList.get(idx);
           String varName = letExprVarBinding.getVarName();
           String fXpathExprStr = letExprVarBinding.getXpathExprStr();
@@ -109,8 +110,13 @@ public class LetExpr extends Expression {
                                                                                      xctxt.getNamespaceContext());
           
           m_xpathVarList.add(new QName(varName));
-          xpathVarMap.put(new QName(varName), varBindingEvalResult);
+          
+          letExprVarBindingMap.put(new QName(varName), varBindingEvalResult);
        }
+       
+       Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
+       
+       xpathVarMap.putAll(letExprVarBindingMap);
        
        if (prefixTable != null) {
           fReturnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
@@ -127,7 +133,7 @@ public class LetExpr extends Expression {
        evalResult = returnExprXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
        
        if (evalResult == null) {
-          // return an empty sequence, here
+          // Return an empty sequence, here
           evalResult = new ResultSequence();   
        }
         
