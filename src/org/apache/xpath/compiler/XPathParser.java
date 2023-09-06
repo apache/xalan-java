@@ -1821,6 +1821,7 @@ public class XPathParser
    * | RelationalExpr 'is' AdditiveExpr
    * | RelationalExpr '<<' AdditiveExpr
    * | RelationalExpr '>>' AdditiveExpr
+   * | RelationalExpr 'instance of' SequenceType
    *
    * @param addPos Position where expression is to be added, or -1 for append.
    *
@@ -1999,6 +2000,21 @@ public class XPathParser
           addPos = RelationalExpr(addPos);
           m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
              m_ops.getOp(addPos + op1 + 1) + op1);
+          addPos += 2;
+      }
+      else if (tokenIs("instance") && lookahead("of", 1)) {
+          // support for XPath 3.1 "instance of" expression
+          
+          consumeExpected("instance");
+          consumeExpected("of");
+          
+          insertOp(addPos, 2, OpCodes.OP_INSTANCE_OF);
+          
+          int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
+          
+          fXpathSequenceTypeExpr = SequenceTypeExpr();
+          m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
+                                                  m_ops.getOp(addPos + op1 + 1) + op1);
           addPos += 2;
       }
     }

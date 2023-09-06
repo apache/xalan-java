@@ -347,7 +347,7 @@ public class ElemVariable extends ElemTemplateElement
                                                                                         selectExpression);
             if (evalResult != null) {
                 if (m_asAttr != null) {
-                   evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, xctxt);  
+                   evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
                 }
                 
                 return evalResult;    
@@ -361,7 +361,7 @@ public class ElemVariable extends ElemTemplateElement
             if ((evalResult instanceof ResultSequence) || 
                                                 (evalResult instanceof XSAnyType)) {
                 if (m_asAttr != null) {
-                   evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, xctxt);  
+                   evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
                 }
                 
                 return evalResult; 
@@ -371,7 +371,7 @@ public class ElemVariable extends ElemTemplateElement
             XObject evalResult = selectExpression.execute(xctxt);
             
             if (m_asAttr != null) {
-               evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, xctxt);  
+               evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
             }
              
             return evalResult;
@@ -380,7 +380,7 @@ public class ElemVariable extends ElemTemplateElement
             XObject evalResult = ((Range)selectExpression).execute(xctxt);
             
             if (m_asAttr != null) {
-               evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, xctxt);  
+               evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
             }
              
             return evalResult; 
@@ -394,7 +394,7 @@ public class ElemVariable extends ElemTemplateElement
             XObject evalResult = opn.operate(leftOperand, rightOperand);
             
             if (m_asAttr != null) {
-               evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, xctxt);  
+               evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
             }
              
             return evalResult;
@@ -403,7 +403,8 @@ public class ElemVariable extends ElemTemplateElement
             XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
             if (xpath3ContextItem != null) {               
               if (m_asAttr != null) {
-                 xpath3ContextItem = SequenceTypeSupport.convertXDMValueToAnotherType(xpath3ContextItem, m_asAttr, xctxt);  
+                 xpath3ContextItem = SequenceTypeSupport.convertXDMValueToAnotherType(xpath3ContextItem, m_asAttr, 
+                                                                                                               null, xctxt);  
               }
                 
               return xpath3ContextItem;
@@ -426,7 +427,7 @@ public class ElemVariable extends ElemTemplateElement
                var = new XNodeSet(dtmIter);
                
                if (m_asAttr != null) {
-                  var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, xctxt);  
+                  var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, xctxt);  
                }
                  
                return var; 
@@ -519,7 +520,7 @@ public class ElemVariable extends ElemTemplateElement
                var = resultSeq;
                
                if (m_asAttr != null) {
-                  var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, xctxt);  
+                  var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, xctxt);  
                }
                   
                return var;
@@ -577,7 +578,7 @@ public class ElemVariable extends ElemTemplateElement
     transformer.setXPathContext(xctxtOriginal);
     
     if (m_asAttr != null) {
-       var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, xctxt);  
+       var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, xctxt);  
     }
         
     return var;
