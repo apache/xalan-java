@@ -1455,22 +1455,23 @@ public class ToHTMLStream extends ToStream
                     {
                     writer.write(ch);  // no escaping in this case
                     }
-                    else
                     */
-                    String outputStringForChar = m_charInfo.getOutputStringForChar(ch);
-                    if (null != outputStringForChar)
-                    {
-                        writer.write(outputStringForChar);
-                    }
-                    else if (escapingNotNeeded(ch))
-                    {
-                        writer.write(ch); // no escaping in this case
-                    }
-                    else
-                    {
-                        writer.write("&#");
-                        writer.write(Integer.toString(ch));
-                        writer.write(';');
+                    else {
+                        String outputStringForChar = m_charInfo.getOutputStringForChar(ch);
+                        if (null != outputStringForChar)
+                        {
+                            writer.write(outputStringForChar);
+                        }
+                        else if (escapingNotNeeded(ch))
+                        {
+                            writer.write(ch); // no escaping in this case
+                        }
+                        else
+                        {
+                            writer.write("&#");
+                            writer.write(Integer.toString(ch));
+                            writer.write(';');
+                        }
                     }
                 }
                 cleanStart = i + 1;

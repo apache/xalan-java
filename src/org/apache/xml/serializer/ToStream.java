@@ -1600,6 +1600,14 @@ abstract public class ToStream extends SerializerBase
                         // just leave it get added on to the clean characters
                         
                     }
+                    else if (Encodings.isHighUTF16Surrogate(ch)) {
+                        writeOutCleanChars(chars, i, lastDirtyCharProcessed);
+                        writeUTF16Surrogate(ch, chars, i, end);
+                        // two input characters processed
+                        // this increments by one and the for()
+                        // loop i elf increments by another one.
+                        lastDirtyCharProcessed = ++i;
+                    }
                     else {
                         // This is a fallback plan, we should never get here
                         // but if the character wasn't previously handled
