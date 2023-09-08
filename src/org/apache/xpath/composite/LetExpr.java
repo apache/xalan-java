@@ -88,7 +88,7 @@ public class LetExpr extends Expression {
           prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
        }
        
-       Map<QName, XObject> letExprVarBindingMap = new HashMap<QName, XObject>();
+       Map<QName, XObject> letExprVarBackupMap = new HashMap<QName, XObject>();
        
        for (int idx = 0; idx < fLetExprVarBindingList.size(); idx++) {          
           LetExprVarBinding letExprVarBinding = fLetExprVarBindingList.get(idx);
@@ -111,12 +111,12 @@ public class LetExpr extends Expression {
           
           m_xpathVarList.add(new QName(varName));
           
-          letExprVarBindingMap.put(new QName(varName), varBindingEvalResult);
+          letExprVarBackupMap.put(new QName(varName), varBindingEvalResult);
        }
        
        Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
        
-       xpathVarMap.putAll(letExprVarBindingMap);
+       xpathVarMap.putAll(letExprVarBackupMap);
        
        if (prefixTable != null) {
           fReturnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(

@@ -55,25 +55,16 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * Implementation of XSLT 3.0 xsl:variable element.
+ * Implementation of XSLT xsl:variable element.
  * 
-    <xsl:variable
-          name = eqname
-          select? = expression
-          as? = sequence-type
-          static? = boolean
-          visibility? = "public" | "private" | "final" | "abstract" >
-          <!-- Content: sequence-constructor -->
-    </xsl:variable>
-       
-    The value of an XSLT 3.0 variable, is calculated using an expression provided
-    within the "select" attribute or the contained sequence constructor.
+ * Ref : https://www.w3.org/TR/xslt-30/#element-variable
  *
  * @xsl.usage advanced
  */
 public class ElemVariable extends ElemTemplateElement
 {
-    static final long serialVersionUID = 9111131075322790061L;
+  
+  static final long serialVersionUID = 9111131075322790061L;
 
   /**
    * Constructor ElemVariable
@@ -154,26 +145,6 @@ public class ElemVariable extends ElemTemplateElement
   {
     return m_selectPattern;
   }
-  
-  /**
-   * The value of the "as" attribute.
-   */
-  private String m_asAttr;
-  
-  /**
-   * Set the "as" attribute.
-   */
-  public void setAs(String val) {
-     m_asAttr = val;
-  }
-  
-  /**
-   * Get the "as" attribute.
-   */
-  public String getAs()
-  {
-     return m_asAttr;
-  }
 
   /**
    * The value of the "name" attribute.
@@ -209,6 +180,26 @@ public class ElemVariable extends ElemTemplateElement
   public QName getName()
   {
     return m_qname;
+  }
+  
+  /**
+   * The value of the "as" attribute.
+   */
+  private String m_asAttr;
+  
+  /**
+   * Set the "as" attribute.
+   */
+  public void setAs(String val) {
+     m_asAttr = val;
+  }
+  
+  /**
+   * Get the "as" attribute.
+   */
+  public String getAs()
+  {
+     return m_asAttr;
   }
 
   /**
@@ -542,24 +533,17 @@ public class ElemVariable extends ElemTemplateElement
          var = XString.EMPTYSTRING;
       }
       else {
-        // Use result tree fragment.
-        // Global variables may be deferred (see XUnresolvedVariable) and hence
-        // need to be assigned to a different set of DTMs than local variables
-        // so they aren't popped off the stack on return from a template.
         int df;
 
 		try {
-			//////////xctxt.getVarStack().link(0);
 			if(m_parentNode instanceof Stylesheet) // Global variable
 				df = transformer.transformToGlobalRTF(this);
 			else
 				df = transformer.transformToRTF(this);
     	}
 		finally { 
-		   //////////////xctxt.getVarStack().unlink(); 
+		    // no op
 	    }
-
-        // var = new XRTreeFrag(df, xctxt, this);
 		
 		// With XSLT 3.0, RTFs are treated as proper node sets
 		NodeList nodeList = (new XRTreeFrag(df, xctxt, this)).convertToNodeset();		

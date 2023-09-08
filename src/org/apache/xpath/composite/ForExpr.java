@@ -149,8 +149,6 @@ public class ForExpr extends Expression {
         
         int contextNode = xctxt.getContextNode();
         
-        Map<QName, XObject> forExprVarBindingMap = xctxt.getXPathVarMap();
-        
         if (listIter.hasNext()) {           
            ForQuantifiedExprVarBinding forExprVarBinding = (ForQuantifiedExprVarBinding)listIter.next();            
             
@@ -207,6 +205,8 @@ public class ForExpr extends Expression {
                
                return resultSeq;    
            }
+           
+           Map<QName, XObject> forExprVarBindingMap = xctxt.getXPathVarMap();
            
            // For each xdm item within sequence object 'xsObjResultSeq' (which is the 
            // result of variable binding xpath expression's evaluation), bind the 'for' 

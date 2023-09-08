@@ -24,40 +24,39 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XNodeSetForDOM;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XRTreeFrag;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
- * Implement xsl:template.
- * <pre>
- * <!ELEMENT xsl:template
- *  (#PCDATA
- *   %instructions;
- *   %result-elements;
- *   | xsl:param)
- * >
- *
- * <!ATTLIST xsl:template
- *   match %pattern; #IMPLIED
- *   name %qname; #IMPLIED
- *   priority %priority; #IMPLIED
- *   mode %qname; #IMPLIED
- *   %space-att;
- * >
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
+ * Implementation of XSLT xsl:template element.
+ * 
+ * Ref : https://www.w3.org/TR/xslt-30/#element-template
+ * 
  * @xsl.usage advanced
  */
 public class ElemTemplate extends ElemTemplateElement
 {
-    static final long serialVersionUID = -5283056789965384058L;
-  /** The public identifier for the current document event.
-   *  @serial          */
+  
+  static final long serialVersionUID = -5283056789965384058L;
+  
+  /** 
+   * The public identifier for the current document event.
+   */
   private String m_publicId;
 
-  /** The system identifier for the current document event.
-   *  @serial          */
+  /** 
+   * The system identifier for the current document event.
+   */
   private String m_systemId;
 
   /**
@@ -257,6 +256,26 @@ public class ElemTemplate extends ElemTemplateElement
   {
     return m_mode;
   }
+  
+  /**
+   * The value of the "as" attribute.
+   */
+  private String m_asAttr;
+  
+  /**
+   * Set the "as" attribute.
+   */
+  public void setAs(String val) {
+     m_asAttr = val;
+  }
+  
+  /**
+   * Get the "as" attribute.
+   */
+  public String getAs()
+  {
+     return m_asAttr;
+  }
 
   /**
    * The priority of a template rule is specified by the priority
@@ -375,38 +394,79 @@ public class ElemTemplate extends ElemTemplateElement
    *
    * @throws TransformerException
    */
-  public void execute(
-          TransformerImpl transformer)
-            throws TransformerException
-  {
+  public void execute(TransformerImpl transformer) throws TransformerException {
+    
     XPathContext xctxt = transformer.getXPathContext();
+    
+    SourceLocator srcLocator = xctxt.getSAXLocator();
     
     transformer.getStackGuard().checkForInfinateLoop();
     
     xctxt.pushRTFContext();
 
-    if (transformer.getDebug())
+    if (transformer.getDebug()) {
       transformer.getTraceManager().fireTraceEvent(this);
+    }
 
-      // %REVIEW% commenting out of the code below.
-//    if (null != sourceNode)
-//    {
-      transformer.executeChildTemplates(this, true);
-//    }
-//    else  // if(null == sourceNode)
-//    {
-//      transformer.getMsgMgr().error(this,
-//        this, sourceNode,
-//        XSLTErrorResources.ER_NULL_SOURCENODE_HANDLEAPPLYTEMPLATES);
-//
-//      //"sourceNode is null in handleApplyTemplatesInstruction!");
-//    }
+    XObject templateEvalResultForAsAttr = null;
+    
+    if (m_asAttr != null) {         
+        try {
+           // The code within this 'try' block, checks whether the template's result contents
+           // conform to the 'sequence type' expression specified as value of template's 
+           // 'as' attribute.
+             
+           int dtmNodeHandle = transformer.transformToGlobalRTF(this);
+            
+           NodeList nodeList = (new XRTreeFrag(dtmNodeHandle, xctxt, this)).convertToNodeset();             
+           templateEvalResultForAsAttr = new XNodeSetForDOM(nodeList, xctxt);
+           templateEvalResultForAsAttr = SequenceTypeSupport.convertXDMValueToAnotherType(templateEvalResultForAsAttr, m_asAttr, 
+                                                                                                                   null, xctxt);
+           if (templateEvalResultForAsAttr == null) {
+              String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString(); 
+              throw new TransformerException("XTTE0505 : The required item type of the result of template " + 
+                                                                                     errTemplateStr + " is " + m_asAttr + ". But the template result "
+                                                                                     + "doesn't conform to this required item type.", srcLocator);   
+           }
+        }
+        catch (TransformerException ex) {
+           String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString(); 
+           throw new TransformerException("XTTE0505 : The required item type of the result of template " + 
+                                                                                  errTemplateStr + " is " + m_asAttr + ". But the template result "
+                                                                                  + "doesn't conform to this required item type.", srcLocator); 
+        }
+    }
+    
+    if (templateEvalResultForAsAttr != null) {        
+        SerializationHandler handler = transformer.getSerializationHandler();        
+        
+        try {
+            if (templateEvalResultForAsAttr instanceof XNodeSet) {
+               ElemCopyOf.copyOfActionOnNodeSet((XNodeSet)templateEvalResultForAsAttr, transformer, 
+                                                                                                handler, xctxt);
+            }
+            else {
+               ElemCopyOf.copyOfActionOnResultSequence((ResultSequence)templateEvalResultForAsAttr, 
+                                                                                                transformer, handler, xctxt); 
+            }
+        } 
+        catch (TransformerException ex) {
+            throw new TransformerException(ex.getMessage(), srcLocator); 
+        } 
+        catch (SAXException ex) {
+            transformer.getErrorListener().fatalError(new TransformerException(ex)); 
+        }  
+    }
+    else {
+       transformer.executeChildTemplates(this, true);
+    }
 
-    if (transformer.getDebug())
-      transformer.getTraceManager().fireTraceEndEvent(this);
+    if (transformer.getDebug()) {
+       transformer.getTraceManager().fireTraceEndEvent(this);
+    }
 
     xctxt.popRTFContext();  
-    }
+  }
 
   /**
    * This function is called during recomposition to

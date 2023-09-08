@@ -472,7 +472,7 @@ public class TemplateList implements java.io.Serializable
   /**
    * Given a target element, find the template that best
    * matches in the given XSL document, according
-   * to the rules specified in the xsl draft.  This variation of getTemplate 
+   * to the rules specified within XSLT 3.0 spec. This variation of getTemplate 
    * assumes the current node and current expression node have already been 
    * pushed. 
    *
