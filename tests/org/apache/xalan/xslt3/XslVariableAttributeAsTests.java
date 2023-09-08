@@ -23,20 +23,20 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XSLT test cases, to test the sequence type declaration
- * attribute "as" within stylesheets.
+ * XSLT test cases, to test xsl:variable element's "as" 
+ * attribute.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XslAttributeAsTests extends XslTransformTestsUtil {
+public class XslVariableAttributeAsTests extends XslTransformTestsUtil {
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX 
-                                                                                                         + "xsl_attribute_as/";
+                                                                                                    + "xsl_variable_attribute_as/";
     
     private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX 
-                                                                                                         + "xsl_attribute_as/gold/";      
+                                                                                                    + "xsl_variable_attribute_as/gold/";      
 
 
     @BeforeClass
@@ -52,7 +52,7 @@ public class XslAttributeAsTests extends XslTransformTestsUtil {
     }
 
     @Test
-    public void xslAttributeAsTest1() {
+    public void xslVariableAttributeAsTest1() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
@@ -62,7 +62,7 @@ public class XslAttributeAsTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslAttributeAsTest2() {
+    public void xslVariableAttributeAsTest2() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
         
@@ -72,7 +72,7 @@ public class XslAttributeAsTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslAttributeAsTest3() {
+    public void xslVariableAttributeAsTest3() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
         
@@ -82,7 +82,7 @@ public class XslAttributeAsTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslAttributeAsTest4() {
+    public void xslVariableAttributeAsTest4() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_b.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
         
@@ -92,7 +92,7 @@ public class XslAttributeAsTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslAttributeAsTest5() {
+    public void xslVariableAttributeAsTest5() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
         
@@ -102,7 +102,7 @@ public class XslAttributeAsTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslAttributeAsTest6() {
+    public void xslVariableAttributeAsTest6() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_d.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
         
@@ -113,7 +113,7 @@ public class XslAttributeAsTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslAttributeAsTest7() {
+    public void xslVariableAttributeAsTest7() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_b.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl";
         
@@ -123,7 +123,7 @@ public class XslAttributeAsTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslAttributeAsTest8() {
+    public void xslVariableAttributeAsTest8() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_b.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test8.xsl";
         
@@ -133,7 +133,7 @@ public class XslAttributeAsTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslAttributeAsTest9() {
+    public void xslVariableAttributeAsTest9() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_e.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9.xsl";
         
@@ -143,7 +143,7 @@ public class XslAttributeAsTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslAttributeAsTest10() {
+    public void xslVariableAttributeAsTest10() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10.xsl";
         
@@ -153,7 +153,7 @@ public class XslAttributeAsTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslAttributeAsTest11() {
+    public void xslVariableAttributeAsTest11() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";
         
@@ -163,7 +163,7 @@ public class XslAttributeAsTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslAttributeAsTest12() {
+    public void xslVariableAttributeAsTest12() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";
         
@@ -173,7 +173,7 @@ public class XslAttributeAsTests extends XslTransformTestsUtil {
     }
     
     @Test
-    public void xslAttributeAsTest13() {
+    public void xslVariableAttributeAsTest13() {
         String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl";
         

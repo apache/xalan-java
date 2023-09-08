@@ -372,8 +372,8 @@ public class SequenceTypeSupport {
             }
             else if (srcValue instanceof ResultSequence) {
                result = castResultSequenceInstance(srcValue, sequenceTypeXPathExprStr,
-                        seqExpectedTypeDataInp, xctxt, srcLocator,
-                        expectedType, itemTypeOccurenceIndicator);
+                                                                                   seqExpectedTypeDataInp, xctxt, srcLocator,
+                                                                                   expectedType, itemTypeOccurenceIndicator);
             }
         }
         catch (TransformerException ex) {
@@ -503,6 +503,15 @@ public class SequenceTypeSupport {
                   result = new XSDouble(srcStrVal);
                }
             }
+            else if (expectedType == XS_INT) {
+                result = new XSInt(srcStrVal);
+            }
+            else if (expectedType == XS_LONG) {
+                result = new XSLong(srcStrVal); 
+            }
+            else if (expectedType == XS_INTEGER) {
+                result = new XSInteger(srcStrVal); 
+            }
             else if (srcXsNumericType instanceof XSDecimal) {           
                if (expectedType == XS_DECIMAL) {
                   // The source and expected data types are same. Return the original value unchanged.
@@ -517,15 +526,6 @@ public class SequenceTypeSupport {
             }
             else if (expectedType == XS_DECIMAL) {
                result = new XSDecimal(srcStrVal);  
-            }
-            else if (expectedType == XS_INTEGER) {
-               result = new XSInteger(srcStrVal); 
-            }
-            else if (expectedType == XS_LONG) {
-               result = new XSLong(srcStrVal); 
-            }
-            else if (expectedType == XS_INT) {
-               result = new XSInt(srcStrVal);
             }
             else if (expectedType == XS_DOUBLE) {
                result = new XSDouble(srcStrVal); 
@@ -624,7 +624,7 @@ public class SequenceTypeSupport {
            result = srcValue;
         }
         else {
-           throw new TransformerException("XTTE0570 : An " + srcDataTypeName + " value '" + srcStrVal + "' cannot be cast to "
+           throw new TransformerException("XTTE0570 : The " + srcDataTypeName + " value '" + srcStrVal + "' cannot be cast to "
                                                                                                    + "a type " + sequenceTypeXPathExprStr + "."); 
         }
         
@@ -648,17 +648,16 @@ public class SequenceTypeSupport {
     }
     
     /**
-     * When for e.g, we've a xsl:variable declaration like following,
+     * This method is used to support following XSL transformation actions,
      * 
-     * <xsl:variable name="varName" as="sequenceTypeExpr">
-     *   <!-- sequence constructor -->
-     * </xsl:variable>
-     * 
-     * this method is used, to cast the provided XNodeSetForDOM object instance
-     * (representing xsl:variable's evaluated sequence constructor, when this
-     * sequence constructor represents an XML complex content) to an XObject value
-     * conforming to xsl:variable's sequence type expression which is the value of
-     * xsl:variable's "as" attribute.    
+     * 1) An xsl:variable element has an "as" attribute (specifying the expected type of variable's value),
+     *    not having a "select" attribute, and having a contained sequence constructor (which when
+     *    evaluated, construct's the variable's value). An xsl:variable's evaluated value passed as an
+     *    argument to this method, is checked against the variable's expected type.
+     *      
+     * 2) An xsl:template element has an "as" attribute (specifying the expected type of template's
+     *    evaluated content). The template's evaluated content passed as an argument to this method, 
+     *    is checked against the expected type.  
      */
     private static XObject castXNodeSetForDOMInstance(XObject srcValue,
                                                                   String sequenceTypeXPathExprStr,
@@ -783,7 +782,7 @@ public class SequenceTypeSupport {
         if (convertedResultSeq.size() > 0) {
             result = convertedResultSeq;  
         }
-        else {
+        else if (xdmNodesDtmList.size() > 0) {
             result = new XNodeSet(xdmNodesDtmList, dtmMgr); 
         }
         

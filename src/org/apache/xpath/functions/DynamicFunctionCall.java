@@ -139,7 +139,7 @@ public class DynamicFunctionCall extends Expression {
                prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
            }
            
-           Map<QName, XObject> functionParamAndArgMap = new HashMap<QName, XObject>();
+           Map<QName, XObject> functionParamAndArgBackupMap = new HashMap<QName, XObject>();
            
            for (int idx = 0; idx < funcParamNameList.size(); idx++) {              
               String funcParamName = funcParamNameList.get(idx);
@@ -161,10 +161,10 @@ public class DynamicFunctionCall extends Expression {
               
               m_xpathVarList.add(new QName(funcParamName));
               
-              functionParamAndArgMap.put(new QName(funcParamName), argValue);
+              functionParamAndArgBackupMap.put(new QName(funcParamName), argValue);
            }
            
-           inlineFunctionVarMap.putAll(functionParamAndArgMap);
+           inlineFunctionVarMap.putAll(functionParamAndArgBackupMap);
            
            if (prefixTable != null) {
               inlineFnXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(inlineFnXPathStr, 

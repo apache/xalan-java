@@ -35,28 +35,18 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.xs.types.XSNumericType;
-import org.apache.xpath.xs.types.XSString;
-import org.apache.xpath.xs.types.XSUntyped;
-import org.apache.xpath.xs.types.XSUntypedAtomic;
+import org.apache.xpath.xs.types.XSAnyAtomicType;
 import org.xml.sax.SAXException;
 
 /**
  * Implementation of XSLT xsl:copy-of instruction.
  * 
- * XSLT 3.0 spec, provides following definition of xsl:copy-of
- * instruction,
- *  
- * <xsl:copy-of
-          select = expression
-          copy-accumulators? = boolean
-          copy-namespaces? = boolean
-          type? = eqname
-          validation? = "strict" | "lax" | "preserve" | "strip" />
+ * Ref : https://www.w3.org/TR/xslt-30/#element-copy-of
  * 
  * @xsl.usage advanced
  */
@@ -81,7 +71,7 @@ public class ElemCopyOf extends ElemTemplateElement
   private Vector fVars;    
   private int fGlobalsSize;
   
-  private final char SPACE_CHAR = ' ';
+  private final static char SPACE_CHAR = ' ';
 
   /**
    * Set the "select" attribute.
@@ -176,66 +166,58 @@ public class ElemCopyOf extends ElemTemplateElement
       
       XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
       if (m_isDot && (xpath3ContextItem != null)) {
-         value = xpath3ContextItem;  
+          value = xpath3ContextItem;  
       }
       else {
-         value = m_selectExpression.execute(xctxt, sourceNode, this);
+          value = m_selectExpression.execute(xctxt, sourceNode, this);
       }
 
-      if (transformer.getDebug())
+      if (transformer.getDebug()) {
         transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
                                                         "select", m_selectExpression, value);
+      }
 
       SerializationHandler handler = transformer.getSerializationHandler();
 
       if (value != null) {
-        int type = value.getType();
-        String str;
-
-        switch (type)
-        {
-        case XObject.CLASS_BOOLEAN :
-        case XObject.CLASS_NUMBER :
-        case XObject.CLASS_STRING :
-          str = value.str();
-
-          handler.characters(str.toCharArray(), 0, str.length());
-          break;            
-        case XObject.CLASS_NODESET :          
-          copyOfActionOnNodeSet((XNodeSet)value, transformer, handler, xctxt);          
-          break;
-        case XObject.CLASS_RTREEFRAG :
-          SerializerUtils.outputResultTreeFragment(
-                                                handler, value, transformer.getXPathContext());
-          break;
-        case XObject.CLASS_RESULT_SEQUENCE :
-          // added for XSLT 3.0          
-          ResultSequence resultSequence = (ResultSequence)value;
-          
-          copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt);          
-          break;
-        default :          
-          str = value.str();
-          handler.characters(str.toCharArray(), 0, str.length());
-          
-          break;
-        }
-        
-        if (value instanceof XSNumericType) {
-           str = ((XSNumericType)value).stringValue();
-           handler.characters(str.toCharArray(), 0, str.length());
-        }
+            int xObjectType = value.getType();
+            String strVal = null;
+    
+            switch (xObjectType) {           
+                case XObject.CLASS_NODESET :          
+                  copyOfActionOnNodeSet((XNodeSet)value, transformer, handler, xctxt);          
+                  break;
+                case XObject.CLASS_RTREEFRAG :
+                  SerializerUtils.outputResultTreeFragment(
+                                                        handler, value, transformer.getXPathContext());
+                  break;
+                case XObject.CLASS_RESULT_SEQUENCE :         
+                  ResultSequence resultSequence = (ResultSequence)value;          
+                  copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt);          
+                  break;
+                default :
+                  // no op
+            }
+            
+            if ((value instanceof XBoolean) || (value instanceof XNumber) || 
+                                                                      (value instanceof XString)) {
+                strVal = value.str();
+                handler.characters(strVal.toCharArray(), 0, strVal.length());
+            }
+            else if (value instanceof XSAnyAtomicType) {
+                strVal = ((XSAnyAtomicType)value).stringValue();
+                handler.characters(strVal.toCharArray(), 0, strVal.length());
+            }
       }
 
     }
-    catch(org.xml.sax.SAXException se)
-    {
-      throw new TransformerException(se);
+    catch(org.xml.sax.SAXException se) {
+        throw new TransformerException(se);
     }
-    finally
-    {
-      if (transformer.getDebug())
-        transformer.getTraceManager().fireTraceEndEvent(this);
+    finally {
+      if (transformer.getDebug()) {
+         transformer.getTraceManager().fireTraceEndEvent(this);
+      }
     }
 
   }
@@ -252,9 +234,7 @@ public class ElemCopyOf extends ElemTemplateElement
 
     error(XSLTErrorResources.ER_CANNOT_ADD,
           new Object[]{ newChild.getNodeName(),
-                        this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
-
-    //" to " + this.m_elemName);
+                        this.getNodeName() });
     return null;
   }
   
@@ -264,17 +244,19 @@ public class ElemCopyOf extends ElemTemplateElement
    */
   protected void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
   {
-  	if(callAttrs)
-  		m_selectExpression.getExpression().callVisitors(m_selectExpression, visitor);
+  	if (callAttrs) {
+  	   m_selectExpression.getExpression().callVisitors(m_selectExpression, visitor);
+  	}
+  	
     super.callChildVisitors(visitor, callAttrs);
   }
   
   /**
    *  Method to perform xsl:copy-of instruction's action, on an XNodeSet object.
    */
-  private void copyOfActionOnNodeSet(XNodeSet nodeSet, TransformerImpl transformer, 
-                                                               SerializationHandler serializationHandler, XPathContext xctxt) 
-                                                                                          throws TransformerException, SAXException {
+  public static void copyOfActionOnNodeSet(XNodeSet nodeSet, TransformerImpl transformer, 
+                                                                      SerializationHandler serializationHandler, XPathContext xctxt) 
+                                                                               throws TransformerException, SAXException {
       DTMIterator dtmIter = nodeSet.iter();
 
       DTMTreeWalker tw = new TreeWalker2Result(transformer, serializationHandler);
@@ -282,19 +264,19 @@ public class ElemCopyOf extends ElemTemplateElement
 
       while ((pos = dtmIter.nextNode()) != DTM.NULL) {
           DTM dtm = xctxt.getDTMManager().getDTM(pos);
-          short t = dtm.getNodeType(pos);
+          short nodeType = dtm.getNodeType(pos);
 
-          if (t == DTM.DOCUMENT_NODE) {
+          if (nodeType == DTM.DOCUMENT_NODE) {
              for (int child = dtm.getFirstChild(pos); child != DTM.NULL; 
                       child = dtm.getNextSibling(child)) {
-                tw.traverse(child);
+                 tw.traverse(child);
              }
           }
-          else if (t == DTM.ATTRIBUTE_NODE) {
-             SerializerUtils.addAttribute(serializationHandler, pos);
+          else if (nodeType == DTM.ATTRIBUTE_NODE) {
+              SerializerUtils.addAttribute(serializationHandler, pos);
           }
           else {
-             tw.traverse(pos);
+              tw.traverse(pos);
           }
       } 
   }
@@ -302,59 +284,36 @@ public class ElemCopyOf extends ElemTemplateElement
   /**
    * Method to perform xsl:copy-of instruction's action, on an ResultSequence object.
    */
-  private void copyOfActionOnResultSequence(ResultSequence resultSequence, TransformerImpl transformer, 
+  public static void copyOfActionOnResultSequence(ResultSequence resultSequence, TransformerImpl transformer, 
                                                                       SerializationHandler serializationHandler, 
                                                                                        XPathContext xctxt) throws TransformerException, SAXException {
       char[] spaceCharArr = new char[1];      
       spaceCharArr[0] = SPACE_CHAR;
       
+      String strVal = null;
+      
       for (int idx = 0; idx < resultSequence.size(); idx++) {             
-         XObject sequenceItem = resultSequence.item(idx);
+         XObject xdmItem = resultSequence.item(idx);
          
-         if (sequenceItem instanceof XString) {
-             String str = sequenceItem.str();
-             serializationHandler.characters(str.toCharArray(), 0, str.length());
+         if ((xdmItem instanceof XBoolean) || (xdmItem instanceof XNumber) || (xdmItem instanceof XString)) {
+             strVal = xdmItem.str();
+             serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
              if (idx < (resultSequence.size() - 1)) {                     
                 serializationHandler.characters(spaceCharArr, 0, 1);
              }
          }
-         else if (sequenceItem instanceof XSString) {
-             String str = ((XSString)sequenceItem).stringValue();
-             serializationHandler.characters(str.toCharArray(), 0, str.length());
-             if (idx < (resultSequence.size() - 1)) {                     
-                serializationHandler.characters(spaceCharArr, 0, 1);
-             }
+         else if (xdmItem instanceof XSAnyAtomicType) {
+            strVal = ((XSAnyAtomicType)xdmItem).stringValue();
+            serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+            if (idx < (resultSequence.size() - 1)) {                     
+               serializationHandler.characters(spaceCharArr, 0, 1);
+            }
          }
-         else if (sequenceItem.getType() == XObject.CLASS_NUMBER) {
-             String str = ((XNumber)sequenceItem).str();
-             serializationHandler.characters(str.toCharArray(), 0, str.length());
-             if (idx < (resultSequence.size() - 1)) {                     
-                serializationHandler.characters(spaceCharArr, 0, 1);
-             }
+         else if (xdmItem.getType() == XObject.CLASS_NODESET) {                 
+             copyOfActionOnNodeSet((XNodeSet)xdmItem, transformer, serializationHandler, xctxt);
          }
-         else if (sequenceItem instanceof XSNumericType) {
-             String str = ((XSNumericType)sequenceItem).stringValue();
-             serializationHandler.characters(str.toCharArray(), 0, str.length());
-             if (idx < (resultSequence.size() - 1)) {                     
-                serializationHandler.characters(spaceCharArr, 0, 1);
-             }
-         }
-         else if (sequenceItem instanceof XSUntyped) {
-             String str = ((XSUntyped)sequenceItem).stringValue();
-             serializationHandler.characters(str.toCharArray(), 0, str.length());
-             if (idx < (resultSequence.size() - 1)) {                     
-                serializationHandler.characters(spaceCharArr, 0, 1);
-             }
-         }
-         else if (sequenceItem instanceof XSUntypedAtomic) {
-             String str = ((XSUntypedAtomic)sequenceItem).stringValue();
-             serializationHandler.characters(str.toCharArray(), 0, str.length());
-             if (idx < (resultSequence.size() - 1)) {                     
-                serializationHandler.characters(spaceCharArr, 0, 1);
-             } 
-         }
-         else if (sequenceItem.getType() == XObject.CLASS_NODESET) {                 
-             copyOfActionOnNodeSet((XNodeSet)sequenceItem, transformer, serializationHandler, xctxt);
+         else if (xdmItem.getType() == XObject.CLASS_RESULT_SEQUENCE) {                 
+             copyOfActionOnResultSequence((ResultSequence)xdmItem, transformer, serializationHandler, xctxt);
          }
       } 
   }

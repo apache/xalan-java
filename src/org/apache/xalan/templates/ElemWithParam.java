@@ -27,6 +27,7 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
@@ -34,21 +35,17 @@ import org.apache.xpath.objects.XString;
 import org.w3c.dom.NodeList;
 
 /**
- * Implement xsl:with-param.  xsl:with-param is allowed within
- * both xsl:call-template and xsl:apply-templates.
- * <pre>
- * <!ELEMENT xsl:with-param %template;>
- * <!ATTLIST xsl:with-param
- *   name %qname; #REQUIRED
- *   select %expr; #IMPLIED
- * >
- * </pre>
+ * Implementation of XSLT xsl:with-param element.
+ * 
+ * Ref : https://www.w3.org/TR/xslt-30/#element-with-param
  * 
  * @xsl.usage advanced
  */
 public class ElemWithParam extends ElemTemplateElement
 {
-    static final long serialVersionUID = -1070355175864326257L;
+  
+  static final long serialVersionUID = -1070355175864326257L;
+  
   /**
    * This is the index to the stack frame being called, <emph>not</emph> the 
    * stack frame that contains this element.
@@ -128,6 +125,26 @@ public class ElemWithParam extends ElemTemplateElement
   public QName getName()
   {
     return m_qname;
+  }
+  
+  /**
+   * The value of the "as" attribute.
+   */
+  private String m_asAttr;
+  
+  /**
+   * Set the "as" attribute.
+   */
+  public void setAs(String val) {
+     m_asAttr = val;
+  }
+  
+  /**
+   * Get the "as" attribute.
+   */
+  public String getAs()
+  {
+     return m_asAttr;
   }
 
   /**
@@ -247,6 +264,11 @@ public class ElemWithParam extends ElemTemplateElement
     finally
     {
       xctxt.popCurrentNode();
+    }
+    
+    if (m_asAttr != null) {
+       var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, 
+                                                                          transformer.getXPathContext()); 
     }
 
     return var;

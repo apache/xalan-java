@@ -33,6 +33,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.composite.IfExpr;
 import org.apache.xpath.composite.LetExpr;
 import org.apache.xpath.functions.DynamicFunctionCall;
 import org.apache.xpath.functions.FuncExtFunction;
@@ -50,17 +51,9 @@ import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
 /**
- * Implementation of XSLT 3.0 xsl:value-of element.
+ * Implementation of XSLT xsl:value-of element.
  * 
-    <xsl:value-of
-       select? = expression
-       separator? = { string }
-       [disable-output-escaping]? = boolean >
-          <!-- Content: sequence-constructor -->
-    </xsl:value-of>
- * 
- * Within a sequence constructor, the xsl:value-of instruction may be 
- * used to generate text nodes.
+ * Ref : https://www.w3.org/TR/xslt-30/#element-value-of
  * 
  * @xsl.usage advanced
  */
@@ -521,6 +514,14 @@ public class ElemValueOf extends ElemTemplateElement {
                      String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
                      
                      (new XString(strValue)).dispatchCharactersEvents(rth);
+                  }
+                  else if (expr instanceof IfExpr) {
+                      IfExpr ifExpr = (IfExpr)expr;
+                       
+                      XObject evalResult = ifExpr.execute(xctxt);                     
+                      String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
+                      
+                      (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
                   else {
                      expr.executeCharsToContentHandler(xctxt, rth);

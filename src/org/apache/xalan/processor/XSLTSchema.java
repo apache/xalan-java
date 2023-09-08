@@ -247,7 +247,7 @@ public class XSLTSchema extends XSLTElementDef
                                        XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
     
     // Optional.
-    // xsl:variable 
+    // xsl:variable, xsl:param, xsl:with-param, xsl:template 
     XSLTAttributeDef asAttrOpt = new XSLTAttributeDef(null, "as",
                                        XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
 
@@ -470,7 +470,7 @@ public class XSLTSchema extends XSLTElementDef
                                     "with-param", null /*alias */,
                                     templateElements /* elements */,  // %template;>
                                     new XSLTAttributeDef[]{ nameAttrRequired,
-                                                            selectAttrOpt }, new ProcessorTemplateElem(),
+                                                            selectAttrOpt, asAttrOpt }, new ProcessorTemplateElem(),
                                                                              ElemWithParam.class /* class object */, 19, true);
     XSLTElementDef xslApplyTemplates = new XSLTElementDef(this,
                                          Constants.S_XSLNAMESPACEURL,
@@ -608,7 +608,7 @@ public class XSLTSchema extends XSLTElementDef
                                 null /*alias */,
                                 templateElements /* elements */,  // %template;>
                                 new XSLTAttributeDef[]{ nameAttrRequired,
-                                                        selectAttrOpt }, 
+                                                        selectAttrOpt, asAttrOpt }, 
                                        new ProcessorTemplateElem(),
                                 ElemParam.class /* class object */, 19, true);
     XSLTElementDef xslText =
@@ -888,7 +888,7 @@ public class XSLTSchema extends XSLTElementDef
                                            templateElements /* elements */,
                                            new XSLTAttributeDef[]{
                                                    nameAttrRequired,
-                                                   selectAttrOpt }, 
+                                                   selectAttrOpt, asAttrOpt }, 
                                            new ProcessorGlobalParamDecl(),
                                            ElemParam.class /* class object */, 20, true),
                                   new XSLTElementDef(
@@ -902,6 +902,7 @@ public class XSLTSchema extends XSLTElementDef
                                                    nameAttrOpt_ERROR,
                                                    priorityAttr,
                                                    modeAttr,
+                                                   asAttrOpt,
                                                    spaceAttr }, 
                                            new ProcessorTemplate(), ElemTemplate.class /* class object */, true, 20, true), 
                                   new XSLTElementDef(

@@ -193,8 +193,6 @@ public class QuantifiedExpr extends Expression {
         
         int contextNode = xctxt.getContextNode();
         
-        Map<QName, XObject> quantifiedExprVarBindingMap = xctxt.getXPathVarMap();
-        
         ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
         List<XMLNSDecl> prefixTable = null;
         if (elemTemplateElement != null) {
@@ -250,6 +248,8 @@ public class QuantifiedExpr extends Expression {
                
                return resultSeq;    
            }
+           
+           Map<QName, XObject> quantifiedExprVarBindingMap = xctxt.getXPathVarMap();
            
            // For each xdm item within sequence object 'xsObjResultSeq' (which is the 
            // result of variable binding xpath expression's evaluation), bind the 
