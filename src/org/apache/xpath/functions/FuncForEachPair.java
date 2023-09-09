@@ -28,6 +28,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Variable;
@@ -119,11 +120,11 @@ public class FuncForEachPair extends XPathHigherOrderBuiltinFunctionsSupport {
         int contextNode = xctxt.getContextNode();
         
         String inlineFnXPathStr = inlineFunc.getFuncBodyXPathExprStr();
-        List<String> funcParamNameList = inlineFunc.getFuncParamNameList();
+        List<InlineFunctionParameter> funcParamList = inlineFunc.getFuncParamList();
         
-        if (funcParamNameList.size() == 2) {                           
-            String funcItemFirstArgName = funcParamNameList.get(0);
-            String funcItemSecondArgName = funcParamNameList.get(1);
+        if (funcParamList.size() == 2) {                           
+            String funcItemFirstArgName = (funcParamList.get(0)).getParamName();
+            String funcItemSecondArgName = (funcParamList.get(1)).getParamName();
             
             ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
             List<XMLNSDecl> prefixTable = null;
@@ -163,7 +164,7 @@ public class FuncForEachPair extends XPathHigherOrderBuiltinFunctionsSupport {
         }
         else {
             throw new javax.xml.transform.TransformerException("XPTY0004 : An inline function definition argument to "
-                                                                     + "function fn:for-each-pair has " + funcParamNameList.size() + " "
+                                                                     + "function fn:for-each-pair has " + funcParamList.size() + " "
                                                                      + "parameters. Expected 2.", srcLocator); 
         }
         

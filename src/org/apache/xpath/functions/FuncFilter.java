@@ -33,6 +33,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNodeSet;
@@ -172,10 +173,10 @@ public class FuncFilter extends Function2Args {
    */
   private void validateInlineFunctionParamCardinality(InlineFunction inlineFuncArg, SourceLocator srcLocator) throws 
                                                                                                 javax.xml.transform.TransformerException {
-      List<String> funcParamNameList = inlineFuncArg.getFuncParamNameList();
-      if (funcParamNameList.size() != 1) {
+      List<InlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
+      if (funcParamList.size() != 1) {
           throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied function fn:filter's function item has " + 
-                                                                                                      funcParamNameList.size() + " parameters. "
+                                                                                                      funcParamList.size() + " parameters. "
                                                                                                       + "Expected 1.", srcLocator);   
       }
   }
@@ -184,12 +185,12 @@ public class FuncFilter extends Function2Args {
    * Evaluate the function call fn:filter.
    */
   private ResultSequence evaluateFnFilter(XPathContext xctxt, XObject arg0XsObject, 
-                                               DTMIterator arg0DtmIterator, InlineFunction arg1) 
+                                                 DTMIterator arg0DtmIterator, InlineFunction arg1) 
                                                                                     throws TransformerException {
         ResultSequence resultSeq = new ResultSequence(); 
         
-        List<String> funcParamNameList = arg1.getFuncParamNameList();
-        QName varQname = new QName(funcParamNameList.get(0));
+        List<InlineFunctionParameter> funcParamList = arg1.getFuncParamList();
+        QName varQname = new QName((funcParamList.get(0)).getParamName());
         
         String funcBodyXPathExprStr = arg1.getFuncBodyXPathExprStr();
         

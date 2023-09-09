@@ -388,7 +388,7 @@ public class ElemValueOf extends ElemTemplateElement {
                      
                      XObject evalResult = dfc.execute(xctxt);
                      
-                     String strValue = evalResult.str();
+                     String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
                      
                      (new XString(strValue)).dispatchCharactersEvents(rth);
                   }

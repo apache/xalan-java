@@ -28,6 +28,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Variable;
@@ -94,11 +95,11 @@ public class FuncFoldLeft extends XPathHigherOrderBuiltinFunctionsSupport {
         }
            
         String inlineFnXPathStr = foldLeftThirdArg.getFuncBodyXPathExprStr();
-        List<String> funcParamNameList = foldLeftThirdArg.getFuncParamNameList();
+        List<InlineFunctionParameter> funcParamList = foldLeftThirdArg.getFuncParamList();
            
-        if (funcParamNameList.size() == 2) {              
-           String funcItemFirstArgName = funcParamNameList.get(0);
-           String funcItemSecondArgName = funcParamNameList.get(1);
+        if (funcParamList.size() == 2) {              
+           String funcItemFirstArgName = (funcParamList.get(0)).getParamName();
+           String funcItemSecondArgName = (funcParamList.get(1)).getParamName();
               
            ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
            List<XMLNSDecl> prefixTable = null;
@@ -134,8 +135,8 @@ public class FuncFoldLeft extends XPathHigherOrderBuiltinFunctionsSupport {
         }
         else {
            throw new javax.xml.transform.TransformerException("XPTY0004 : An inline function definition argument to "
-                                                                    + "function fn:fold-left has " + funcParamNameList.size() + " "
-                                                                    + "parameters. Expected 2.", srcLocator); 
+                                                                                           + "function fn:fold-left has " + funcParamList.size() + " "
+                                                                                           + "parameters. Expected 2.", srcLocator); 
         }
         
         return evalResult;

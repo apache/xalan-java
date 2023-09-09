@@ -33,6 +33,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
@@ -175,11 +176,11 @@ public class FuncForEach extends Function2Args {
    */
   private void validateInlineFunctionParamCardinality(InlineFunction inlineFuncArg, SourceLocator srcLocator) throws 
                                                                                                 javax.xml.transform.TransformerException {
-      List<String> funcParamNameList = inlineFuncArg.getFuncParamNameList();
-      if (funcParamNameList.size() != 1) {
+      List<InlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
+      if (funcParamList.size() != 1) {
           throw new javax.xml.transform.TransformerException("XPTY0004 : The supplied function fn:for-each's function item has " + 
-                                                                                   funcParamNameList.size() + " parameters. "
-                                                                                          + "Expected 1.", srcLocator);   
+                                                                                             funcParamList.size() + " parameters. "
+                                                                                             + "Expected 1.", srcLocator);   
       }
   }
   
@@ -191,8 +192,8 @@ public class FuncForEach extends Function2Args {
                                                                                     throws TransformerException {
         ResultSequence resultSeq = new ResultSequence(); 
         
-        List<String> funcParamNameList = arg1.getFuncParamNameList();
-        QName varQname = new QName(funcParamNameList.get(0));
+        List<InlineFunctionParameter> funcParamList = arg1.getFuncParamList();
+        QName varQname = new QName((funcParamList.get(0)).getParamName());
         
         String funcBodyXPathExprStr = arg1.getFuncBodyXPathExprStr();
         

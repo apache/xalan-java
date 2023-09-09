@@ -648,7 +648,7 @@ public class SequenceTypeSupport {
     }
     
     /**
-     * This method is used to support following XSL transformation actions,
+     * This method helps to support following XSL transformation actions,
      * 
      * 1) An xsl:variable element has an "as" attribute (specifying the expected type of variable's value),
      *    not having a "select" attribute, and having a contained sequence constructor (which when
@@ -948,12 +948,15 @@ public class SequenceTypeSupport {
         
         int seqLen = srcResultSeq.size();
         
-        if ((seqLen > 0) && (expectedType == EMPTY_SEQUENCE)) {
+        if ((seqLen == 0) && (itemTypeOccurenceIndicator == OccurenceIndicator.ONE_OR_MANY)) {
+           throw new TransformerException("XTTE0570 : An empty sequence is not allowed, as result of evaluation for sequence "
+                                                                                                              + "type's occurence indicator +.", srcLocator);  
+        }
+        else if ((seqLen > 0) && (expectedType == EMPTY_SEQUENCE)) {
            throw new TransformerException("XTTE0570 : The sequence doesn't conform to an expected type empty-sequence(). "
                                                                                                + "The supplied sequence has size " + seqLen + ".", srcLocator);  
         }
-        else if ((seqLen > 1) && ((itemTypeOccurenceIndicator == 0) || (itemTypeOccurenceIndicator == 
-                                                                                                OccurenceIndicator.ZERO_OR_ONE))) {
+        else if ((seqLen > 1) && (itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_ONE)) {
             throw new TransformerException("XTTE0570 : A sequence of size " + seqLen + ", cannot be cast to a type " 
                                                                                                                 + sequenceTypeXPathExprStr + ".", srcLocator); 
         }

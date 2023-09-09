@@ -36,7 +36,10 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.composite.SequenceTypeData;
+import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XObject;
 
 /*
@@ -125,12 +128,12 @@ public class DynamicFunctionCall extends Expression {
            InlineFunction inlineFunction = (InlineFunction)functionRef;
            
            String inlineFnXPathStr = inlineFunction.getFuncBodyXPathExprStr();
-           List<String> funcParamNameList = inlineFunction.getFuncParamNameList();           
+           List<InlineFunctionParameter> funcParamList = inlineFunction.getFuncParamList();           
            
-           if (argList.size() != funcParamNameList.size()) {
+           if (argList.size() != funcParamList.size()) {
                throw new javax.xml.transform.TransformerException("XPTY0004 : Number of arguments required for "
-                                                       + "dynamic call to function is " + funcParamNameList.size() + ". "
-                                                       + "Number of arguments provided " + argList.size() + ".", xctxt.getSAXLocator());    
+                                                                                  + "dynamic call to function is " + funcParamList.size() + ". "
+                                                                                  + "Number of arguments provided " + argList.size() + ".", xctxt.getSAXLocator());    
            }
            
            ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
@@ -141,8 +144,8 @@ public class DynamicFunctionCall extends Expression {
            
            Map<QName, XObject> functionParamAndArgBackupMap = new HashMap<QName, XObject>();
            
-           for (int idx = 0; idx < funcParamNameList.size(); idx++) {              
-              String funcParamName = funcParamNameList.get(idx);
+           for (int idx = 0; idx < funcParamList.size(); idx++) {
+              InlineFunctionParameter funcParam = funcParamList.get(idx);                                                         
               
               String argXPathStr = argList.get(idx);
               
@@ -158,6 +161,25 @@ public class DynamicFunctionCall extends Expression {
               }
               
               XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+              
+              String funcParamName = funcParam.getParamName();
+              SequenceTypeData paramType = funcParam.getParamType();
+              
+              if (paramType != null) {
+                  try {
+                     argValue = SequenceTypeSupport.convertXDMValueToAnotherType(argValue, null, paramType, null);                     
+                     if (argValue == null) {
+                        throw new TransformerException("XTTE0505 : The item type of argument at position " + (idx + 1) + " of dynamic function call "
+                                                                                                           + "$" + funcRefVarName + ", doesn't match "
+                                                                                                           + "an expected type.", srcLocator);  
+                     }
+                  }
+                  catch (TransformerException ex) {
+                     throw new TransformerException("XTTE0505 : The item type of argument at position " + (idx + 1) + " of dynamic function call "
+                                                                                                        + "$" + funcRefVarName + ", doesn't match "
+                                                                                                        + "an expected type.", srcLocator); 
+                  }
+              }
               
               m_xpathVarList.add(new QName(funcParamName));
               
@@ -176,15 +198,30 @@ public class DynamicFunctionCall extends Expression {
            if (fVars != null) {
               inlineFnXPath.fixupVariables(fVars, fGlobalsSize);
            }
-           
+                      
            evalResult = inlineFnXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+           
+           SequenceTypeData funcReturnType = inlineFunction.getReturnType();
+           if (funcReturnType != null) {
+              try {
+                 evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, null, funcReturnType, null);
+                 if (evalResult == null) {
+                    throw new TransformerException("XTTE0505 : The item type of result of dynamic function call $"+ funcRefVarName + ", doesn't match an "
+                                                                                                                                   + "expected type.", srcLocator);  
+                 }
+              }
+              catch (TransformerException ex) {
+                  throw new TransformerException("XTTE0505 : The item type of result of dynamic function call $"+ funcRefVarName + ", doesn't match an "
+                                                                                                                                 + "expected type.", srcLocator);  
+              }
+           }
            
            inlineFunctionVarMap.clear();           
        }
        else {
-           throw new javax.xml.transform.TransformerException("XPST0008 variable '" + funcRefVarName + "' has "
-                                                        + "not been declared, or its declaration is not in scope.", 
-                                                                                                      xctxt.getSAXLocator());    
+           throw new javax.xml.transform.TransformerException("XPST0008 : Variable '" + funcRefVarName + "' has "
+                                                                                                       + "not been declared, or its declaration is not in scope.", 
+                                                                                                                                              xctxt.getSAXLocator());    
        }
                
        return evalResult;
