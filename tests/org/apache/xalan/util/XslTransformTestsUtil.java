@@ -89,11 +89,11 @@ public class XslTransformTestsUtil {
                List<String> trfErrorList = errHandler.getTrfErrorList();
                List<String> trfFatalErrorList = errHandler.getTrfFatalErrorList();
                if (trfErrorList.size() > 0 || trfFatalErrorList.size() > 0) {
-                   // the test has passed
+                   // The test has passed
                    return;
                }
                else {
-                   // the test has failed
+                   // The test has failed
                    Assert.fail();  
                }
            }

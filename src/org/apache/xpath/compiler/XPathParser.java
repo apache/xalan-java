@@ -38,6 +38,7 @@ import org.apache.xpath.composite.IfExpr;
 import org.apache.xpath.composite.LetExpr;
 import org.apache.xpath.composite.LetExprVarBinding;
 import org.apache.xpath.composite.QuantifiedExpr;
+import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.SimpleSequenceConstructor;
@@ -45,6 +46,7 @@ import org.apache.xpath.composite.XPathSequenceTypeExpr;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
 import org.apache.xpath.functions.DynamicFunctionCall;
 import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -100,7 +102,8 @@ public class XPathParser
                                                       "eq", "ne", "lt", "gt", "le", "ge", 
                                                       "for", "in", "return", "if", "then", 
                                                       "else", "some", "every", "satisfies", 
-                                                      "let", ":=", "-", "||", "instance", "of" };
+                                                      "let", ":=", "-", "||", "instance", "of", 
+                                                      "as" };
   
   // If the XPath expression is () (i.e, representing an xdm empty sequence),
   // we translate that within this XPath parser implementation, to an XPath
@@ -800,7 +803,8 @@ public class XPathParser
   /**
    * This method helps to implement, XPath 3.1 sequence type expressions.
    */
-  private void setSequenceTypeOccurenceIndicator(XPathSequenceTypeExpr xpathSequenceTypeExpr) throws TransformerException {
+  private void setSequenceTypeOccurenceIndicator(XPathSequenceTypeExpr xpathSequenceTypeExpr, 
+                                                                                   boolean isInlineFunction) throws TransformerException {
       if (tokenIs(SequenceTypeSupport.Q_MARK)) {
          xpathSequenceTypeExpr.setItemTypeOccurrenceIndicator(SequenceTypeSupport.
                                                                                  OccurenceIndicator.ZERO_OR_ONE);
@@ -816,7 +820,7 @@ public class XPathParser
                                                                                  OccurenceIndicator.ONE_OR_MANY);
          nextToken();
       }
-      else {
+      else if (!isInlineFunction) {
          throw new javax.xml.transform.TransformerException("XPST0051 A sequence type occurence indicator '" + m_token + "', is not recognized."); 
       }
    }
@@ -850,7 +854,9 @@ public class XPathParser
     * This method helps to implement, XPath 3.1 sequence type expressions.
     */
    private SequenceTypeKindTest constructSequenceTypeKindTestForXDMNodes(XPathSequenceTypeExpr 
-                                                                                         xpathSequenceTypeExpr, int nodeType) throws TransformerException {
+                                                                                     xpathSequenceTypeExpr, 
+                                                                                     int nodeType, 
+                                                                                     boolean isInlineFunction) throws TransformerException {
 
        SequenceTypeKindTest sequenceTypeKindTest = new SequenceTypeKindTest();
 
@@ -863,16 +869,22 @@ public class XPathParser
            nextToken();
        }
        if (tokenIs(')')) {
-           if (getTokenRelative(0) == null) {
+           if (isInlineFunction) {
                nextToken();                
-           }
-           else if (getTokenRelative(1) == null) {
-               nextToken();                
-               setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr);
+               setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction);  
            }
            else {
-               throw new javax.xml.transform.TransformerException("XPST0051 : The sequence type expression is "
-                                                                                                      + "not well-formed."); 
+               if (getTokenRelative(0) == null) {
+                   nextToken();                
+               }
+               else if (getTokenRelative(1) == null) {
+                   nextToken();                
+                   setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction);
+               }
+               else {
+                   throw new javax.xml.transform.TransformerException("XPST0051 : The sequence type expression is "
+                                                                                                          + "not well-formed."); 
+               }
            }
        }
        else {
@@ -1239,7 +1251,7 @@ public class XPathParser
           }
       }
       else if (fIsSequenceTypeXPathExpr) {
-         fXpathSequenceTypeExpr = SequenceTypeExpr(); 
+         fXpathSequenceTypeExpr = SequenceTypeExpr(false); 
       }
       else {
          ExprSingle();  
@@ -2012,7 +2024,7 @@ public class XPathParser
           
           int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
           
-          fXpathSequenceTypeExpr = SequenceTypeExpr();          
+          fXpathSequenceTypeExpr = SequenceTypeExpr(false);          
           m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
                                                   m_ops.getOp(addPos + op1 + 1) + op1);
           addPos += 2;
@@ -2480,8 +2492,7 @@ public class XPathParser
        String delim = "t0_" + delimSuffix;
        
        while (m_token != null && isXPathDynamicFuncCallParseAhead(
-                                                      argDetailsStrPartsList, delim))
-       {
+                                                      argDetailsStrPartsList, delim)) {
           // no op here
        }
        
@@ -2581,7 +2592,7 @@ public class XPathParser
   protected InlineFunction InlineFunctionExpr() throws javax.xml.transform.TransformerException {
       InlineFunction inlineFunction = new InlineFunction();
       
-      List<String> funcParamNameList = new ArrayList<String>();      
+      List<InlineFunctionParameter> funcParamList = new ArrayList<InlineFunctionParameter>();      
       String funcBodyXPathExprStr = null;
       
       nextToken();
@@ -2599,8 +2610,25 @@ public class XPathParser
               if (m_tokenChar == '$')
               {
                   nextToken();
-                  funcParamNameList.add(m_token);
-                  nextToken();
+                  
+                  InlineFunctionParameter inlineFunctionParameter = new InlineFunctionParameter();                   
+                  if (lookahead("as", 1)) {
+                     inlineFunctionParameter.setParamName(m_token);                     
+                     nextToken();
+                     nextToken();                     
+                     SequenceTypeData paramType = new SequenceTypeData();
+                     XPathSequenceTypeExpr seqTypeExpr = SequenceTypeExpr(true);
+                     paramType.setSequenceType(seqTypeExpr.getSequenceType());
+                     paramType.setItemTypeOccurrenceIndicator(seqTypeExpr.getItemTypeOccurrenceIndicator());
+                     paramType.setSequenceTypeKindTest(seqTypeExpr.getSequenceTypeKindTest());
+                     inlineFunctionParameter.setParamType(paramType);                     
+                  }
+                  else {
+                     inlineFunctionParameter.setParamName(m_token);
+                     nextToken();
+                  }
+                  
+                  funcParamList.add(inlineFunctionParameter);
               }
     
               if (!tokenIs(')'))
@@ -2615,9 +2643,20 @@ public class XPathParser
           }    
       }
       
-      inlineFunction.setFuncParamNameList(funcParamNameList);
+      inlineFunction.setFuncParamList(funcParamList);
       
       consumeExpected(')');
+      
+      if (tokenIs("as")) {
+         nextToken();
+         XPathSequenceTypeExpr seqTypeExpr = SequenceTypeExpr(true);
+         SequenceTypeData returnType = new SequenceTypeData();
+         returnType.setSequenceType(seqTypeExpr.getSequenceType());
+         returnType.setItemTypeOccurrenceIndicator(seqTypeExpr.getItemTypeOccurrenceIndicator());
+         returnType.setSequenceTypeKindTest(seqTypeExpr.getSequenceTypeKindTest());
+         
+         inlineFunction.setReturnType(returnType);
+      }
       
       consumeExpected('{');
       
@@ -3695,11 +3734,14 @@ public class XPathParser
     return trailingSlashConsumed;
   }
   
-  protected XPathSequenceTypeExpr SequenceTypeExpr() throws javax.xml.transform.TransformerException
-  {
-      int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
-                  
-      insertOp(opPos, 2, OpCodes.OP_SEQUENCE_TYPE_EXPR);
+  protected XPathSequenceTypeExpr SequenceTypeExpr(boolean isInlineFunction) 
+                                                                          throws javax.xml.transform.TransformerException {
+      int opPos = 0;
+      
+      if (!isInlineFunction) {
+         opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);                  
+         insertOp(opPos, 2, OpCodes.OP_SEQUENCE_TYPE_EXPR);
+      }
       
       XPathSequenceTypeExpr xpathSequenceTypeExpr = new XPathSequenceTypeExpr();
       
@@ -3760,17 +3802,17 @@ public class XPathParser
          nextToken();
          
          if ((m_token != null) && (xpathSequenceTypeExpr.getSequenceType() > 0)) {
-            setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr);
+            setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction);
          }         
       }
       else if (tokenIs("element")) {
           sequenceTypeKindTest = constructSequenceTypeKindTestForXDMNodes(xpathSequenceTypeExpr, 
-                                                                                        SequenceTypeSupport.ELEMENT_KIND);          
+                                                                                        SequenceTypeSupport.ELEMENT_KIND, isInlineFunction);          
           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);          
       }
       else if (tokenIs("attribute")) {
           sequenceTypeKindTest = constructSequenceTypeKindTestForXDMNodes(xpathSequenceTypeExpr, 
-                                                                                        SequenceTypeSupport.ATTRIBUTE_KIND);          
+                                                                                        SequenceTypeSupport.ATTRIBUTE_KIND, isInlineFunction);          
           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
       }
       else if (tokenIs("text")) {
@@ -3781,7 +3823,7 @@ public class XPathParser
           consumeExpected(')');
           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
           if (m_token != null) {
-             setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr); 
+             setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction); 
           }          
       }
       else if (tokenIs("namespace-node")) {
@@ -3792,7 +3834,7 @@ public class XPathParser
           consumeExpected(')');
           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
           if (m_token != null) {
-             setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr); 
+             setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction); 
           }
       }
       else if (tokenIs("node")) { 
@@ -3803,7 +3845,7 @@ public class XPathParser
           consumeExpected(')');
           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
           if (m_token != null) {
-             setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr);  
+             setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction);  
           }
       }
       else if (tokenIs("item")) {
@@ -3814,7 +3856,7 @@ public class XPathParser
           consumeExpected(')');
           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
           if (m_token != null) {
-             setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr);  
+             setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction);  
           }
       }            
       else {
@@ -3822,8 +3864,10 @@ public class XPathParser
                                                                                                    + "recognized, within the provided sequence type expression."); 
       }
       
-      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
-                                             m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+      if (!isInlineFunction) {
+         m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                                                m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+      }
       
       return xpathSequenceTypeExpr;
   }

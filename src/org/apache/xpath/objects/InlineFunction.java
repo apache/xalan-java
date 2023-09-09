@@ -21,26 +21,14 @@ import java.util.List;
 
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.composite.SequenceTypeData;
 
-/*
- * The XalanJ XPath parser, creates and populates an object of this class, 
- * as a representation of XPath 3.1 function item "inline function" definition 
- * within XPath expressions.
+/**
+ * An object of this class represents, a run-time representation
+ * of XalanJ's function item "inline function expression".
  * 
- * The XPath 3.1 spec, defines function item "inline function" XPath expressions 
- * with following grammar,
- *
- *   InlineFunctionExpr        ::=  "function" "(" ParamList? ")" ("as" SequenceType)? 
- *                                                                             FunctionBody
-
- *   ParamList                 ::=   Param ("," Param)*
-
- *   Param                     ::=   "$" EQName TypeDeclaration?
-
- *   FunctionBody              ::=   EnclosedExpr
-
- *   EnclosedExpr              ::=   "{" Expr? "}"
-    
+ * Ref : https://www.w3.org/TR/xpath-31/#id-inline-func
+ *  
  * @author Mukul Gandhi <mukulg@apache.org>
  *   
  * @xsl.usage advanced 
@@ -49,16 +37,18 @@ public class InlineFunction extends XObject {
 
     private static final long serialVersionUID = 9219253671212483045L;
     
-    private List<String> funcParamNameList = new ArrayList<String>();
+    private List<InlineFunctionParameter> funcParamList = new ArrayList<InlineFunctionParameter>();
     
     private String funcBodyXPathExprStr = null;
+    
+    private SequenceTypeData returnType = null;
 
-    public List<String> getFuncParamNameList() {
-        return funcParamNameList;
+    public List<InlineFunctionParameter> getFuncParamList() {
+        return funcParamList;
     }
 
-    public void setFuncParamNameList(List<String> funcParamNameList) {
-        this.funcParamNameList = funcParamNameList;
+    public void setFuncParamList(List<InlineFunctionParameter> funcParamList) {
+        this.funcParamList = funcParamList;
     }
 
     public String getFuncBodyXPathExprStr() {
@@ -69,8 +59,15 @@ public class InlineFunction extends XObject {
         this.funcBodyXPathExprStr = funcBodyXPathExprStr;
     }
     
-    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor)
-    {
+    public SequenceTypeData getReturnType() {
+        return returnType;
+    }
+
+    public void setReturnType(SequenceTypeData returnType) {
+        this.returnType = returnType;
+    }
+
+    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
         // no op
     }
     

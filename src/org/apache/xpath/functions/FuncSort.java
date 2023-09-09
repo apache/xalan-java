@@ -39,6 +39,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
@@ -142,8 +143,9 @@ public class FuncSort extends FunctionMultiArgs
               if (numOfArgs == 3) {                                   
                   InlineFunction arg2InlineFunc = (InlineFunction)arg2;
                   
-                  List<String> funcParamNameList = arg2InlineFunc.getFuncParamNameList();
-                  inlineFunctionVarMap.put(new QName(funcParamNameList.get(0)), xNodeSetItem);
+                  List<InlineFunctionParameter> funcParamList = arg2InlineFunc.getFuncParamList();
+                  inlineFunctionVarMap.put(new QName((funcParamList.get(0)).getParamName()), 
+                                                                                       xNodeSetItem);
                   
                   String sortKeyXPathStr = arg2InlineFunc.getFuncBodyXPathExprStr();
                   
@@ -157,7 +159,7 @@ public class FuncSort extends FunctionMultiArgs
                   XObject sortKeyVal = sortKeyXPathExpr.execute(xctxt, nextNodeDtmHandle, xctxt.getNamespaceContext());
                   
                   // reset the function item argument reference value
-                  inlineFunctionVarMap.put(new QName(funcParamNameList.get(0)), null);
+                  inlineFunctionVarMap.put(new QName((funcParamList.get(0)).getParamName()), null);
                   
                   inpSeqItemWithSortKeyValueList.add(new InpSeqItemWithSortKeyValue(xNodeSetItem, sortKeyVal));
                }
@@ -195,8 +197,8 @@ public class FuncSort extends FunctionMultiArgs
               if (numOfArgs == 3) {                                   
                  InlineFunction arg2InlineFunc = (InlineFunction)arg2;
                  
-                 List<String> funcParamNameList = arg2InlineFunc.getFuncParamNameList();
-                 inlineFunctionVarMap.put(new QName(funcParamNameList.get(0)), inputSeqItem);
+                 List<InlineFunctionParameter> funcParamList = arg2InlineFunc.getFuncParamList();
+                 inlineFunctionVarMap.put(new QName((funcParamList.get(0)).getParamName()), inputSeqItem);
                  
                  String sortKeyXPathStr = arg2InlineFunc.getFuncBodyXPathExprStr();
                  
@@ -210,7 +212,7 @@ public class FuncSort extends FunctionMultiArgs
                  XObject sortKeyVal = sortKeyXPathExpr.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
                  
                  // reset the function item argument reference value
-                 inlineFunctionVarMap.put(new QName(funcParamNameList.get(0)), null);
+                 inlineFunctionVarMap.put(new QName((funcParamList.get(0)).getParamName()), null);
                  
                  inpSeqItemWithSortKeyValueList.add(new InpSeqItemWithSortKeyValue(inputSeqItem, sortKeyVal));
               }
