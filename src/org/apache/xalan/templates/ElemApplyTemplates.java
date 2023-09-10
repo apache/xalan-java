@@ -251,7 +251,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
       if(nParams > 0)
       {
         // This code will create a section on the stack that is all the 
-        // evaluated arguments.  These will be copied into the real params 
+        // evaluated arguments. These will be copied into the real params 
         // section of each called template.
         argsFrame = vars.link(nParams);
         vars.setStackFrame(thisframe);
@@ -434,18 +434,18 @@ public class ElemApplyTemplates extends ElemCallTemplate
                    QName m_name = template.getName();
                    String m_matchPatternStr = (template.getMatch()).getPatternString();
                    String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPatternStr; 
-                   throw new TransformerException("XTTE0505 : The required item type of the result of template " + 
-                                                                                                           errTemplateStr + " is " + templateAsAttrVal + ". But the template "
-                                                                                                           + "result doesn't conform to this required item type.", srcLocator);  
+                   throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
+                                                                                                 + " is " + templateAsAttrVal + ". But the template "
+                                                                                                 + "result doesn't conform to this required type.", srcLocator);  
                }
             }
             catch (TransformerException ex) {
                QName m_name = template.getName();
                String m_matchPatternStr = (template.getMatch()).getPatternString();
                String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPatternStr; 
-               throw new TransformerException("XTTE0505 : The required item type of the result of template " + 
-                                                                                                       errTemplateStr + " is " + templateAsAttrVal + ". But the template "
-                                                                                                       + "result doesn't conform to this required item type.", srcLocator); 
+               throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
+                                                                                                 + " is " + templateAsAttrVal + ". But the template "
+                                                                                                 + "result doesn't conform to this required type.", srcLocator); 
             }  
         }
         else {
