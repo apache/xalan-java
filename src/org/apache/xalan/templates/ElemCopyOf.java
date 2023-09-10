@@ -22,6 +22,7 @@ package org.apache.xalan.templates;
 
 import java.util.Vector;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
@@ -34,6 +35,7 @@ import org.apache.xml.dtm.ref.DTMTreeWalker;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.InlineFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNodeSet;
@@ -159,6 +161,8 @@ public class ElemCopyOf extends ElemTemplateElement
     try
     {
       XPathContext xctxt = transformer.getXPathContext();
+      
+      SourceLocator srcLocator = xctxt.getSAXLocator();
               
       int sourceNode = xctxt.getCurrentNode();
       
@@ -173,8 +177,8 @@ public class ElemCopyOf extends ElemTemplateElement
       }
 
       if (transformer.getDebug()) {
-        transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
-                                                        "select", m_selectExpression, value);
+         transformer.getTraceManager().fireSelectedEvent(sourceNode, this,
+                                                                        "select", m_selectExpression, value);
       }
 
       SerializationHandler handler = transformer.getSerializationHandler();
@@ -207,6 +211,10 @@ public class ElemCopyOf extends ElemTemplateElement
             else if (value instanceof XSAnyAtomicType) {
                 strVal = ((XSAnyAtomicType)value).stringValue();
                 handler.characters(strVal.toCharArray(), 0, strVal.length());
+            }
+            else if (value instanceof InlineFunction) {
+                throw new TransformerException("XTDE0450 : Cannot add a function item to an XDM result tree, "
+                                                                                                     + "via xsl:copy-of instruction.", srcLocator);
             }
       }
 

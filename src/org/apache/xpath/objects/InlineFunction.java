@@ -71,4 +71,9 @@ public class InlineFunction extends XObject {
         // no op
     }
     
+    public int getType()
+    {
+      return CLASS_FUNCTION_ITEM;
+    }
+    
 }

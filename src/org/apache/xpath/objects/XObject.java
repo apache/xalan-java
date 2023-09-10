@@ -216,44 +216,47 @@ public class XObject extends Expression implements Serializable, Cloneable
   /** Constant for XPath 3.1 sequence object type */
   public static final int CLASS_RESULT_SEQUENCE = 6;
   
+  /** Constant for XPath 3.1 function item object type */
+  public static final int CLASS_FUNCTION_ITEM = 7;
+  
   /** Constant for XPath 3.1 xs:untypedAtomic object type */
-  public static final int CLASS_XS_UNTYPED_ATOMIC = 7;
+  public static final int CLASS_XS_UNTYPED_ATOMIC = 8;
   
   /** Constant for XPath 3.1 xs:date object type */
-  public static final int CLASS_XS_DATE = 8;
+  public static final int CLASS_XS_DATE = 9;
   
   /** Constant for XPath 3.1 xs:dateTime object type */
-  public static final int CLASS_XS_DATETIME = 9;
+  public static final int CLASS_XS_DATETIME = 10;
   
   /** Constant for XPath 3.1 xs:time object type */
-  public static final int CLASS_XS_TIME = 10;
+  public static final int CLASS_XS_TIME = 11;
   
   /** Constant for XPath 3.1 xs:duration object type */
-  public static final int CLASS_XS_DURATION = 11;
+  public static final int CLASS_XS_DURATION = 12;
   
   /** Constant for XPath 3.1 xs:dayTimeDuration object type */
-  public static final int CLASS_XS_DAYTIME_DURATION = 12;
+  public static final int CLASS_XS_DAYTIME_DURATION = 13;
   
   /** Constant for XPath 3.1 xs:yearMonthDuration object type */
-  public static final int CLASS_XS_YEARMONTH_DURATION = 13;
+  public static final int CLASS_XS_YEARMONTH_DURATION = 14;
   
   /** Constant for XPath 3.1 xs:decimal object type */
-  public static final int CLASS_XS_DECIMAL = 14;
+  public static final int CLASS_XS_DECIMAL = 15;
   
   /** Constant for XPath 3.1 xs:integer object type */
-  public static final int CLASS_XS_INTEGER = 15;
+  public static final int CLASS_XS_INTEGER = 16;
   
   /** Constant for XPath 3.1 xs:long object type */
-  public static final int CLASS_XS_LONG = 16;
+  public static final int CLASS_XS_LONG = 17;
   
   /** Constant for XPath 3.1 xs:int object type */
-  public static final int CLASS_XS_INT = 17;
+  public static final int CLASS_XS_INT = 18;
   
   /** Constant for XPath 3.1 xs:double object type */
-  public static final int CLASS_XS_DOUBLE = 18;
+  public static final int CLASS_XS_DOUBLE = 19;
   
   /** Constant for XPath 3.1 xs:float object type */
-  public static final int CLASS_XS_FLOAT = 19;
+  public static final int CLASS_XS_FLOAT = 20;
 
   /** Represents an unresolved variable type as an integer. */
   public static final int CLASS_UNRESOLVEDVARIABLE = 600;

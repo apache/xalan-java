@@ -424,16 +424,16 @@ public class ElemTemplate extends ElemTemplateElement
                                                                                                                    null, xctxt);
            if (templateEvalResultForAsAttr == null) {
               String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString(); 
-              throw new TransformerException("XTTE0505 : The required item type of the result of template " + 
-                                                                                     errTemplateStr + " is " + m_asAttr + ". But the template result "
-                                                                                     + "doesn't conform to this required item type.", srcLocator);   
+              throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
+                                                                                                + " is " + m_asAttr + ". But the template result "
+                                                                                                + "doesn't conform to this required type.", srcLocator);   
            }
         }
         catch (TransformerException ex) {
            String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString(); 
-           throw new TransformerException("XTTE0505 : The required item type of the result of template " + 
-                                                                                  errTemplateStr + " is " + m_asAttr + ". But the template result "
-                                                                                  + "doesn't conform to this required item type.", srcLocator); 
+           throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
+                                                                                             + " is " + m_asAttr + ". But the template result "
+                                                                                             + "doesn't conform to this required type.", srcLocator); 
         }
     }
     
