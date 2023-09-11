@@ -434,14 +434,15 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
    */
   public Object callFunction(FuncExtFunction extFunction,
                              Vector args,
-                             ExpressionContext exprContext) throws TransformerException
+                             ExpressionContext exprContext,
+                             TransformerImpl transformer) throws TransformerException
   {
       
       Object funcEvalResult = null;
       
       try {
           XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn
-                                                                           (exprContext.getXPathContext(), extFunction);
+                                                                          (exprContext.getXPathContext(), extFunction, transformer);
           if (evalResult != null) {
              funcEvalResult = evalResult;
           }

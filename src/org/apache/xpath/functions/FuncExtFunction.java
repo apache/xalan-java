@@ -203,7 +203,7 @@ public class FuncExtFunction extends Function
        // as an XPath 3.1 constructor function call within this section of code.
        try {
           result = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                        xctxt, this);
+                                                                        xctxt, this, null);
        } 
        catch (TransformerException ex) {        
           throw new TransformerException(ex.getMessage(), xctxt.getSAXLocator());

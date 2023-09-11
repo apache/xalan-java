@@ -335,7 +335,7 @@ public class ElemVariable extends ElemTemplateElement
         selectExpression = m_selectPattern.getExpression();
         if (selectExpression instanceof FuncExtFunction) {
             XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, 
-                                                                                        selectExpression);
+                                                                                      selectExpression, transformer);
             if (evalResult != null) {
                 if (m_asAttr != null) {
                    evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
@@ -379,9 +379,9 @@ public class ElemVariable extends ElemTemplateElement
         else if (selectExpression instanceof Operation) {
             Operation opn = (Operation)selectExpression;
             XObject leftOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                                         xctxt, opn.getLeftOperand());
+                                                                                 xctxt, opn.getLeftOperand(), transformer);
             XObject rightOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                                         xctxt, opn.getRightOperand());
+                                                                                 xctxt, opn.getRightOperand(), transformer);
             XObject evalResult = opn.operate(leftOperand, rightOperand);
             
             if (m_asAttr != null) {

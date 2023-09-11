@@ -434,7 +434,8 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
    */
   public Object callFunction(FuncExtFunction extFunction,
                              Vector args,
-                             ExpressionContext exprContext)
+                             ExpressionContext exprContext,
+                             TransformerImpl transformer)
       throws TransformerException
   {
     return callFunction(extFunction.getFunctionName(), args, 

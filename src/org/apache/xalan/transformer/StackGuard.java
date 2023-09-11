@@ -137,7 +137,7 @@ public class StackGuard
    *
    * @throws TransformerException
    */
-  public void checkForInfinateLoop() throws TransformerException
+  public void checkForInfiniteLoop() throws TransformerException
   {
     int nTemplates = m_transformer.getCurrentTemplateElementsCount();
     if(nTemplates < m_recursionLimit)

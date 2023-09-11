@@ -16,11 +16,13 @@
  */
 package org.apache.xalan.xslt.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
@@ -154,6 +156,37 @@ public class XslTransformEvaluationHelper {
         }
         
         return resultSeq;
+    }
+    
+    /**
+     * Given a ResultSequence object instance, return a corresponding XNodeSet object if
+     * all the items within the supplied ResultSequence are xdm nodes.    
+     *
+     * If all the items within the supplied ResultSequence object instance are not xdm nodes,
+     * then this method returns a null value.  
+     */
+    public static XNodeSet getXNodeSetFromResultSequence(ResultSequence resultSeq, DTMManager dtmMgr) {
+        
+        XNodeSet nodeSet = null;
+        
+        List<Integer> dtmNodeHandleList = new ArrayList<Integer>();
+        
+        for (int idx = 0; idx < resultSeq.size(); idx++) {
+           XObject nodeSetItem = resultSeq.item(idx);
+           if (nodeSetItem instanceof XNodeSet) {
+              int nodeDtmHandle = (((XNodeSet)nodeSetItem).iter()).nextNode();
+              dtmNodeHandleList.add(nodeDtmHandle);
+           }
+           else {
+              break; 
+           }
+        }
+        
+        if (dtmNodeHandleList.size() == resultSeq.size()) {
+           nodeSet = new XNodeSet(dtmNodeHandleList, dtmMgr);
+        }
+        
+        return nodeSet; 
     }
     
     /**

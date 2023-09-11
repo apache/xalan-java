@@ -50,7 +50,7 @@ public class FuncNot extends FunctionOneArg
       if (m_arg0 instanceof Operation) {
           try {
              XObject result = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                                    xctxt, m_arg0);
+                                                                                    xctxt, m_arg0, null);
              return result.bool() ? XBoolean.S_FALSE : XBoolean.S_TRUE; 
           }
           catch(SAXException ex) {
