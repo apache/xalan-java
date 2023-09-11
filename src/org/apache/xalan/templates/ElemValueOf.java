@@ -310,7 +310,7 @@ public class ElemValueOf extends ElemTemplateElement {
               else {
                   if (expr instanceof FuncExtFunction) {                      
                       XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn
-                                                                                              (xctxt, expr);
+                                                                                          (xctxt, expr, transformer);
                       if (evalResult != null) {
                           String strValue = null;
                           

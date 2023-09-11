@@ -40,6 +40,7 @@ import org.apache.xalan.templates.ElemExtensionScript;
 import org.apache.xalan.templates.ElemFallback;
 import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.ElemForEachGroup;
+import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemIf;
 import org.apache.xalan.templates.ElemIterate;
 import org.apache.xalan.templates.ElemIterateBreak;
@@ -130,8 +131,9 @@ public class XSLTSchema extends XSLTElementDef
                                        
                   
     // Required.
-    // It is an error if the name attribute is invalid on any of these elements
-    // xsl:key, xsl:attribute-set, xsl:call-template, xsl:with-param, xsl:variable, xsl:param
+    // It is an error if the name attribute is not present on any of these elements
+    // xsl:key, xsl:attribute-set, xsl:call-template, xsl:with-param, xsl:variable, xsl:param, 
+    // xsl:function
     XSLTAttributeDef nameAttrRequired = new XSLTAttributeDef(null, "name",
                                           XSLTAttributeDef.T_QNAME, true, false,XSLTAttributeDef.ERROR);
 	// Required.
@@ -247,7 +249,7 @@ public class XSLTSchema extends XSLTElementDef
                                        XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
     
     // Optional.
-    // xsl:variable, xsl:param, xsl:with-param, xsl:template 
+    // xsl:variable, xsl:param, xsl:with-param, xsl:template, xsl:function 
     XSLTAttributeDef asAttrOpt = new XSLTAttributeDef(null, "as",
                                        XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
 
@@ -904,7 +906,17 @@ public class XSLTSchema extends XSLTElementDef
                                                    modeAttr,
                                                    asAttrOpt,
                                                    spaceAttr }, 
-                                           new ProcessorTemplate(), ElemTemplate.class /* class object */, true, 20, true), 
+                                           new ProcessorTemplate(), ElemTemplate.class /* class object */, true, 20, true),
+                                  new XSLTElementDef(
+                                          this,
+                                          Constants.S_XSLNAMESPACEURL,
+                                          "function",
+                                          null /*alias */,
+                                          templateElementsAndParams /* elements */,
+                                          new XSLTAttributeDef[] {
+                                                  nameAttrRequired,
+                                                  asAttrOpt }, 
+                                          new ProcessorTemplate(), ElemFunction.class /* class object */, true, 20, true),
                                   new XSLTElementDef(
                                            this,
                                            Constants.S_XSLNAMESPACEURL,

@@ -20,8 +20,11 @@ import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.functions.FuncExtFunction;
@@ -42,9 +45,9 @@ import org.apache.xpath.xs.types.XSYearMonthDuration;
 import org.xml.sax.SAXException;
 
 /**
- * An utility class, to support evaluation of XPath 3.1 constructor 
- * functions (ref, https://www.w3.org/TR/xpath-functions-31/#constructor-functions), 
- * and few other XPath expression evaluations.
+ * A utility class that primarily supports, evaluations of XSLT stylesheet
+ * function calls (for the stylesheet functions, defined with syntax 
+ * xsl:function), and XPath 3.1 constructor function calls.  
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -53,27 +56,58 @@ import org.xml.sax.SAXException;
 public class XSConstructorFunctionUtil {
     
     /**
-     * Evaluate an XPath expression of type FuncExtFunction, and also few 
-     * other kinds of XPath expressions.
+     * We use this method, primarily to evaluate XSLT stylesheet function calls (for the
+     * stylesheet functions, defined with syntax xsl:function), and XPath 3.1 constructor
+     * function calls (having syntax with form xs:type_name(..)).
+     * 
+     *  XalanJ's extension function handling mechanism, treats at a syntactic level,
+     *  function calls belonging to non-null XML namespaces as calls to extension functions.
+     *  
+     *  Currently, XPath function calls having XML namespaces
+     *  http://www.w3.org/2005/xpath-functions, http://www.w3.org/2005/xpath-functions/math
+     *  within function names, are treated as XPath built-in functions by XalanJ. All other
+     *  XPath function calls having other non-null XML namespaces are handling by XalanJ's
+     *  extension function handling mechanism. 
      */
-    public static XObject processFuncExtFunctionOrXPathOpn(XPathContext xctxt, Expression expr)
-                                                                    throws TransformerException, SAXException {        
+    public static XObject processFuncExtFunctionOrXPathOpn(XPathContext xctxt, Expression expr, TransformerImpl transformer)
+                                                                                                              throws TransformerException, SAXException {        
         XObject evalResult = null;
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
-
-        // XalanJ's extension function handler mechanism, treats at a syntactic level,
-        // XPath 3.1 constructor function calls like xs:type_name(..) as calls to XalanJ 
-        // extension functions. If the XML namespace of these function calls is an XML Schema
-        // namespace, then we use this fact to treat such function calls as XPath 3.1 constructor 
-        // function calls, as has been implemented within code below.
         
         if (expr instanceof FuncExtFunction) {
             FuncExtFunction funcExtFunction = (FuncExtFunction)expr;
             
-            if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcExtFunction.getNamespace())) {
-                // Handle as an XPath 3.1 constructor function call
+            String funcName = funcExtFunction.getFunctionName();
+            String funcNamespace = funcExtFunction.getNamespace();
+            
+            ExpressionNode expressionNode = expr.getExpressionOwner();
+            ExpressionNode stylesheetRootNode = null;
+            while (expressionNode != null) {
+                stylesheetRootNode = expressionNode;
+                expressionNode = expressionNode.exprGetParent();                     
+            }
+            
+            StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
+            
+            TemplateList templateList = stylesheetRoot.getTemplateListComposed();
+            
+            ElemTemplate elemTemplate = templateList.getTemplate(new QName(funcNamespace, funcName));
+                        
+            if ((elemTemplate != null) && (elemTemplate instanceof ElemFunction)) {
+                // Handle call to XSLT stylesheet function definition, specified with syntax 
+                // xsl:function.                
+                ResultSequence argSequence = new ResultSequence();
+                for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+                    XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+                    argSequence.add(argVal);
+                }
                 
+                evalResult = ((ElemFunction)elemTemplate).executeXslFunction(transformer, argSequence);
+            }            
+            else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcExtFunction.getNamespace())) {                
+                // Handle call to XPath 3.1 constructor function, having syntax with form
+                // xs:type_name(..). 
                 ResultSequence argSequence = new ResultSequence();
                 ResultSequence evalResultSequence = null;
                 
@@ -151,8 +185,9 @@ public class XSConstructorFunctionUtil {
                     case Keywords.FUNC_BOOLEAN_STRING :
                         for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
                             XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
-                            Boolean boolVal = Boolean.valueOf("0".equals(XslTransformEvaluationHelper.getStrVal(argVal)) ? 
-                                                                                     "false" : "true");
+                            String argStrVal = XslTransformEvaluationHelper.getStrVal(argVal);
+                            Boolean boolVal = Boolean.valueOf(("0".equals(argStrVal) || "false".equals(argStrVal)) ? 
+                                                                                                     "false" : "true");
                             argSequence.add(new XSBoolean(boolVal));
                         }
     

@@ -178,7 +178,8 @@ public class ExtensionHandlerExsltFunction extends ExtensionHandler
    */
   public Object callFunction(FuncExtFunction extFunction,
                              Vector args,
-                             ExpressionContext exprContext)
+                             ExpressionContext exprContext,
+                             TransformerImpl transformer)
       throws TransformerException
   {
     // Find the template which invokes this EXSLT function.
@@ -203,7 +204,6 @@ public class ExtensionHandlerExsltFunction extends ExtensionHandler
       
       if (null != elemFunc) {
         XPathContext context = exprContext.getXPathContext();
-        TransformerImpl transformer = (TransformerImpl)context.getOwnerObject();
         transformer.pushCurrentFuncResult(null);
 
         elemFunc.execute(transformer, methodArgs);

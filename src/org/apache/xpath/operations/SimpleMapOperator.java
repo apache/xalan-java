@@ -61,7 +61,7 @@ public class SimpleMapOperator extends Operation
            FuncExtFunction extFunction = (FuncExtFunction)m_left;
            if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
                try {
-                   expr1 = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, m_left);
+                   expr1 = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, m_left, null);
                }
                catch (TransformerException ex) {
                    throw ex; 

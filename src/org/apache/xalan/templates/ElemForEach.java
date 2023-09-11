@@ -29,6 +29,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.NodeSorter;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
@@ -54,6 +55,8 @@ import org.apache.xpath.operations.Variable;
  *           select = expression>
  *     <!-- Content: (xsl:sort*, sequence-constructor) -->
  * </xsl:for-each>
+ * 
+ * Ref : https://www.w3.org/TR/xslt-30/#for-each
  * 
  * @xsl.usage advanced
  */
@@ -168,25 +171,6 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     
     super.endCompose(sroot);
   }
-
-
-  //  /**
-  //   * This function is called after everything else has been
-  //   * recomposed, and allows the template to set remaining
-  //   * values that may be based on some other property that
-  //   * depends on recomposition.
-  //   *
-  //   * @throws TransformerException
-  //   */
-  //  public void compose() throws TransformerException
-  //  {
-  //
-  //    if (null == m_selectExpression)
-  //    {
-  //      m_selectExpression =
-  //        getStylesheetRoot().m_selectDefault.getExpression();
-  //    }
-  //  }
 
   /**
    * Vector containing the xsl:sort elements associated with this element.
@@ -340,72 +324,121 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     
     XPathContext xctxt = transformer.getXPathContext();
     
+    DTMIterator resultSeqDtmIterator = null;
+    
     if (m_selectExpression instanceof Function) {
-        // evaluate an xslt/xpath function reference.
-        // for example,
-        // <xsl:for-each select="tokenize(..)"> ...
         XObject evalResult = ((Function)m_selectExpression).execute(xctxt);
+        
         if (evalResult instanceof ResultSequence) {
-            processResultSequence(transformer, xctxt, evalResult);
-            transformer.setXPathContext(xctxtOriginal);
-            
-            return;
+            XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
+                                                                                                                  (DTMManager)xctxt);             
+            if (nodeSet == null) {
+               processResultSequence(transformer, xctxt, evalResult);
+               transformer.setXPathContext(xctxtOriginal);
+               
+               return;
+            }
+            else {
+               resultSeqDtmIterator = nodeSet.iter(); 
+            }
         }                
     }    
     else if (m_selectExpression instanceof Variable) {
-        // evaluate an xslt variable reference.
-        // for example,
-        // <xsl:variable name="tokens" select="tokenize(..)"/>
-        // <xsl:for-each select="$tokens"> ...
         XObject evalResult = ((Variable)m_selectExpression).execute(xctxt);
+        
         if (evalResult instanceof ResultSequence) {
-            processResultSequence(transformer, xctxt, evalResult);
-            transformer.setXPathContext(xctxtOriginal);
-            
-            return;
+            XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
+                                                                                                                  (DTMManager)xctxt);             
+            if (nodeSet == null) {
+                processResultSequence(transformer, xctxt, evalResult);
+                transformer.setXPathContext(xctxtOriginal);
+
+                return;
+            }
+            else {
+                resultSeqDtmIterator = nodeSet.iter(); 
+            }
         }
     }    
     else if (m_selectExpression instanceof Operation) {
         XObject  evalResult = m_selectExpression.execute(xctxt);
+        
         if (evalResult instanceof ResultSequence) {
-            processResultSequence(transformer, xctxt, evalResult);
-            transformer.setXPathContext(xctxtOriginal);
-            
-            return;
+            XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
+                                                                                                                  (DTMManager)xctxt);             
+            if (nodeSet == null) {
+                processResultSequence(transformer, xctxt, evalResult);
+                transformer.setXPathContext(xctxtOriginal);
+
+                return;
+            }
+            else {
+                resultSeqDtmIterator = nodeSet.iter(); 
+            }
         }
     }    
     else if (m_selectExpression instanceof ForExpr) {
         ForExpr forExpr = (ForExpr)m_selectExpression;
         XObject  evalResult = forExpr.execute(xctxt);
-        processResultSequence(transformer, xctxt, evalResult);
-        transformer.setXPathContext(xctxtOriginal);
         
-        return;
+        XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
+                                                                                                              (DTMManager)xctxt);             
+        if (nodeSet == null) {
+            processResultSequence(transformer, xctxt, evalResult);
+            transformer.setXPathContext(xctxtOriginal);
+
+            return;
+        }
+        else {
+            resultSeqDtmIterator = nodeSet.iter(); 
+        }
     }    
     else if (m_selectExpression instanceof SimpleSequenceConstructor) {
         SimpleSequenceConstructor seqCtrExpr = (SimpleSequenceConstructor)
                                                                      m_selectExpression;
         XObject  evalResult = seqCtrExpr.execute(xctxt);
-        processResultSequence(transformer, xctxt, evalResult);
-        transformer.setXPathContext(xctxtOriginal);
         
-        return;
+        XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
+                                                                                                              (DTMManager)xctxt);             
+        if (nodeSet == null) {
+            processResultSequence(transformer, xctxt, evalResult);
+            transformer.setXPathContext(xctxtOriginal);
+
+            return;
+        }
+        else {
+            resultSeqDtmIterator = nodeSet.iter(); 
+        }
     }
     else if (m_selectExpression instanceof DynamicFunctionCall) {
         DynamicFunctionCall dfc = (DynamicFunctionCall)m_selectExpression;
         XObject evalResult = dfc.execute(xctxt);
         
         if (evalResult instanceof ResultSequence) {
-           processResultSequence(transformer, xctxt, evalResult);
-           transformer.setXPathContext(xctxtOriginal);
-            
-           return;
+            XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
+                                                                                                                  (DTMManager)xctxt);             
+            if (nodeSet == null) {
+                processResultSequence(transformer, xctxt, evalResult);
+                transformer.setXPathContext(xctxtOriginal);
+
+                return;
+            }
+            else {
+                resultSeqDtmIterator = nodeSet.iter(); 
+            }
         }
     }
     
-    // process the node-set, with body of xsl:for-each element as usual 
+    DTMIterator sourceNodes = null;
+    
     final int sourceNode = xctxt.getCurrentNode();
-    DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
+    
+    if (resultSeqDtmIterator != null) {
+       sourceNodes = resultSeqDtmIterator;
+    }
+    else {       
+       sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
+    }
 
     try
     {

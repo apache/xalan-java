@@ -124,7 +124,7 @@ public class Operation extends Expression implements ExpressionOwner
            FuncExtFunction extFunction = (FuncExtFunction)m_left;
            if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
               left = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                             xctxt, m_left); 
+                                                                             xctxt, m_left, null); 
            }
            else {
               left = m_left.execute(xctxt, true);  
@@ -147,7 +147,7 @@ public class Operation extends Expression implements ExpressionOwner
            FuncExtFunction extFunction = (FuncExtFunction)m_right;
            if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
               right = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                            xctxt, m_right); 
+                                                                            xctxt, m_right, null); 
            }
            else {
               right = m_right.execute(xctxt, true);  

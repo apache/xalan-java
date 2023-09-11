@@ -26,6 +26,7 @@ import java.util.Vector;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.XPathProcessorException;
 import org.apache.xpath.functions.FuncExtFunction;
 
@@ -206,7 +207,7 @@ public class ExtensionsTable
    * @throws javax.xml.transform.TransformerException
    */
   public Object extFunction(FuncExtFunction extFunction, Vector argVec, 
-                            ExpressionContext exprContext)
+                            ExpressionContext exprContext, TransformerImpl transformer)
          throws javax.xml.transform.TransformerException
   {
     Object result = null;
@@ -219,7 +220,7 @@ public class ExtensionsTable
       {
         try
         {
-          result = extNS.callFunction(extFunction, argVec, exprContext);
+          result = extNS.callFunction(extFunction, argVec, exprContext, transformer);
         }
         catch (javax.xml.transform.TransformerException e)
         {

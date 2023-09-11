@@ -122,7 +122,7 @@ public abstract class ExtensionHandler
    */
   public abstract Object callFunction(
     FuncExtFunction extFunction, Vector args,
-      ExpressionContext exprContext) throws TransformerException;
+      ExpressionContext exprContext, TransformerImpl transformer) throws TransformerException;
 
   /**
    * Process a call to this extension namespace via an element. As a side

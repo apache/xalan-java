@@ -475,7 +475,7 @@ public class TransformerImpl extends Transformer
             throws javax.xml.transform.TransformerException
   {
     return getExtensionsTable().extFunction(extFunction, argVec,
-                                            getXPathContext().getExpressionContext());   
+                                            getXPathContext().getExpressionContext(), this);   
   }
   
   //=========================

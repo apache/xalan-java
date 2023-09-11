@@ -400,7 +400,7 @@ public class ElemTemplate extends ElemTemplateElement
     
     SourceLocator srcLocator = xctxt.getSAXLocator();
     
-    transformer.getStackGuard().checkForInfinateLoop();
+    transformer.getStackGuard().checkForInfiniteLoop();
     
     xctxt.pushRTFContext();
 

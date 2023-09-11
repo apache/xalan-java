@@ -72,7 +72,7 @@ public class Range extends Operation
           if (m_left instanceof FuncExtFunction) {
              FuncExtFunction extFunction = (FuncExtFunction)m_left;
              if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
-                 expr1 = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, m_left); 
+                 expr1 = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, m_left, null); 
              }
              else {
                  expr1 = m_left.execute(xctxt, true);  
@@ -85,7 +85,7 @@ public class Range extends Operation
           if (m_right instanceof FuncExtFunction) {
              FuncExtFunction extFunction = (FuncExtFunction)m_right;
              if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
-                 expr2 = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, m_right); 
+                 expr2 = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, m_right, null); 
              }
              else {
                  expr2 = m_right.execute(xctxt, true);  
