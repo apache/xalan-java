@@ -146,7 +146,7 @@ public class DOM2SAX implements XMLReader, Locator {
     }
 
     public void parse(InputSource unused) throws IOException, SAXException {
-        parse(_dom);
+        parse();
     }
 
     public void parse() throws IOException, SAXException {
