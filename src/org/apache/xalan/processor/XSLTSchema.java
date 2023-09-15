@@ -54,6 +54,7 @@ import org.apache.xalan.templates.ElemNumber;
 import org.apache.xalan.templates.ElemOtherwise;
 import org.apache.xalan.templates.ElemPI;
 import org.apache.xalan.templates.ElemParam;
+import org.apache.xalan.templates.ElemSequence;
 import org.apache.xalan.templates.ElemSort;
 import org.apache.xalan.templates.ElemTemplate;
 import org.apache.xalan.templates.ElemText;
@@ -244,7 +245,7 @@ public class XSLTSchema extends XSLTElementDef
                                                   XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
 
     // Optional.                                          
-    // xsl:variable, xsl:param, xsl:with-param, xsl:attribute, xsl:break, xsl:on-completion                                       
+    // xsl:variable, xsl:param, xsl:with-param, xsl:attribute, xsl:break, xsl:on-completion, xsl:sequence                                       
     XSLTAttributeDef selectAttrOpt = new XSLTAttributeDef(null, "select",
                                        XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
     
@@ -394,11 +395,11 @@ public class XSLTSchema extends XSLTElementDef
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "*",
                            XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.WARNING);
                            
-    XSLTElementDef[] templateElements = new XSLTElementDef[31];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[32];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[32];
+    XSLTElementDef[] templateElements = new XSLTElementDef[32];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[33];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[33];
     //exslt
-    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[32];
+    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[33];
     
     XSLTElementDef[] charTemplateElements = new XSLTElementDef[16];
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
@@ -605,6 +606,13 @@ public class XSLTSchema extends XSLTElementDef
                                                            selectAttrOpt, asAttrOpt }, 
                                   new ProcessorTemplateElem(),
                                    ElemVariable.class /* class object */, 20, true);
+    XSLTElementDef xslSequence = new XSLTElementDef(this,
+                                                 Constants.S_XSLNAMESPACEURL, "sequence",
+                                                 null /*alias */,
+                                                 templateElements /* elements */,  // %template;>
+                                                 new XSLTAttributeDef[]{ selectAttrOpt }, 
+                                                 new ProcessorTemplateElem(),
+                                                 ElemSequence.class /* class object */, 20, true);
     XSLTElementDef xslParam = new XSLTElementDef(this,
                                 Constants.S_XSLNAMESPACEURL, "param",
                                 null /*alias */,
@@ -714,6 +722,7 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = xslText;
     templateElements[i++] = xslCopy;
     templateElements[i++] = xslVariable;
+    templateElements[i++] = xslSequence;
     templateElements[i++] = xslMessage;
     templateElements[i++] = xslFallback;
 

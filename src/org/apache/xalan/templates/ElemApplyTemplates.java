@@ -420,7 +420,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
                         }
                         else {
                            ElemCopyOf.copyOfActionOnResultSequence((ResultSequence)templateEvalResultForAsAttr, 
-                                                                                                            transformer, handler, xctxt); 
+                                                                                                            transformer, handler, xctxt, false); 
                         }
                     } 
                     catch (TransformerException ex) {
