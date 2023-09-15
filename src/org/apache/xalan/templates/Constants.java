@@ -104,9 +104,11 @@ public class Constants extends org.apache.xml.utils.Constants
   
   ELEMNAME_ITERATE_BREAK = 97,
   
-  ELEMNAME_FUNCTION = 98;
+  ELEMNAME_FUNCTION = 98,
   
-  // next available number : 99
+  ELEMNAME_SEQUENCE = 99;
+  
+  // next available number : 100
 
   /**
    * Literals for XSL element names. Note that there are more
@@ -188,7 +190,8 @@ public class Constants extends org.apache.xml.utils.Constants
       ELEMNAME_VARIABLE_STRING = "variable",
       ELEMNAME_WHEN_STRING = "when",
       ELEMNAME_WITHPARAM_STRING = "with-param",
-      ELEMNAME_FUNCTION_STRING = "function";
+      ELEMNAME_FUNCTION_STRING = "function",
+      ELEMNAME_SEQUENCE_STRING = "sequence";
   
   /**
    * Literals for EXSLT function elements.

@@ -73,7 +73,7 @@ public class ElemCopyOf extends ElemTemplateElement
   private Vector fVars;    
   private int fGlobalsSize;
   
-  private final static char SPACE_CHAR = ' ';
+  public final static char SPACE_CHAR = ' ';
 
   /**
    * Set the "select" attribute.
@@ -197,7 +197,7 @@ public class ElemCopyOf extends ElemTemplateElement
                   break;
                 case XObject.CLASS_RESULT_SEQUENCE :         
                   ResultSequence resultSequence = (ResultSequence)value;          
-                  copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt);          
+                  copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, false);          
                   break;
                 default :
                   // no op
@@ -293,8 +293,8 @@ public class ElemCopyOf extends ElemTemplateElement
    * Method to perform xsl:copy-of instruction's action, on an ResultSequence object.
    */
   public static void copyOfActionOnResultSequence(ResultSequence resultSequence, TransformerImpl transformer, 
-                                                                      SerializationHandler serializationHandler, 
-                                                                                       XPathContext xctxt) throws TransformerException, SAXException {
+                                                  SerializationHandler serializationHandler, 
+                                                  XPathContext xctxt, boolean xslSeqProc) throws TransformerException, SAXException {
       char[] spaceCharArr = new char[1];      
       spaceCharArr[0] = SPACE_CHAR;
       
@@ -305,23 +305,35 @@ public class ElemCopyOf extends ElemTemplateElement
          
          if ((xdmItem instanceof XBoolean) || (xdmItem instanceof XNumber) || (xdmItem instanceof XString)) {
              strVal = xdmItem.str();
-             serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
-             if (idx < (resultSequence.size() - 1)) {                     
-                serializationHandler.characters(spaceCharArr, 0, 1);
+             if (xslSeqProc) {
+                 strVal = strVal + ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX;
+                 serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+             }
+             else {
+                 serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+                 if (idx < (resultSequence.size() - 1)) {                     
+                    serializationHandler.characters(spaceCharArr, 0, 1);
+                 } 
              }
          }
          else if (xdmItem instanceof XSAnyAtomicType) {
             strVal = ((XSAnyAtomicType)xdmItem).stringValue();
-            serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
-            if (idx < (resultSequence.size() - 1)) {                     
-               serializationHandler.characters(spaceCharArr, 0, 1);
+            if (xslSeqProc) {
+                strVal = strVal + ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX;
+                serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+            }
+            else {
+                serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+                if (idx < (resultSequence.size() - 1)) {                     
+                   serializationHandler.characters(spaceCharArr, 0, 1);
+                }
             }
          }
          else if (xdmItem.getType() == XObject.CLASS_NODESET) {                 
              copyOfActionOnNodeSet((XNodeSet)xdmItem, transformer, serializationHandler, xctxt);
          }
          else if (xdmItem.getType() == XObject.CLASS_RESULT_SEQUENCE) {                 
-             copyOfActionOnResultSequence((ResultSequence)xdmItem, transformer, serializationHandler, xctxt);
+             copyOfActionOnResultSequence((ResultSequence)xdmItem, transformer, serializationHandler, xctxt, xslSeqProc);
          }
       } 
   }

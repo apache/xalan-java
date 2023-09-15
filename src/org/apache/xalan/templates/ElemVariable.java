@@ -315,7 +315,7 @@ public class ElemVariable extends ElemTemplateElement
    * @throws TransformerException
    */
   public XObject getValue(TransformerImpl transformer, int sourceNode) 
-                                                                 throws TransformerException
+                                                                    throws TransformerException
   {
 
     XObject var = null;
@@ -533,37 +533,47 @@ public class ElemVariable extends ElemTemplateElement
          var = XString.EMPTYSTRING;
       }
       else {
-        int df;
-
-		try {
-			if(m_parentNode instanceof Stylesheet) // Global variable
-				df = transformer.transformToGlobalRTF(this);
-			else
-				df = transformer.transformToRTF(this);
-    	}
-		finally { 
-		    // no op
+        int rootNodeHandleOfRtf;
+        
+	    if (m_parentNode instanceof Stylesheet) {
+	       // Global variable
+		   rootNodeHandleOfRtf = transformer.transformToGlobalRTF(this);
 	    }
+		else {
+		   rootNodeHandleOfRtf = transformer.transformToRTF(this);
+		}
 		
-		// With XSLT 3.0, RTFs are treated as proper node sets
-		NodeList nodeList = (new XRTreeFrag(df, xctxt, this)).convertToNodeset();		
+		// With XSLT 3.0, RTFs are treated as XDM node sets
+		NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();		
 		
-		var = new XNodeSetForDOM(nodeList, xctxt); 
+		var = new XNodeSetForDOM(nodeList, xctxt);
       }
     }
     catch (SAXException se) {
-        throw new TransformerException(se);
+       throw new TransformerException(se);
     }
     finally {      
        xctxt.popCurrentNode();
     }
     
+    if (m_asAttr != null) {
+       if (var instanceof XNodeSetForDOM) {
+          XObject variableConvertedVal = ElemFunction.preprocessXslFunctionOrAVariableResult(
+                                                                                           (XNodeSetForDOM)var, m_asAttr, xctxt);
+          if (variableConvertedVal != null) {
+             var = variableConvertedVal;    
+          }
+          else {
+             var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, xctxt); 
+          }
+       }       
+       else {
+          var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, xctxt); 
+       }
+    }
+    
     // Restore the original xpath context, on the xslt transformer object
     transformer.setXPathContext(xctxtOriginal);
-    
-    if (m_asAttr != null) {
-       var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, xctxt);  
-    }
         
     return var;
     

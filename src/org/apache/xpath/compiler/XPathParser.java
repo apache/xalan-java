@@ -109,7 +109,7 @@ public class XPathParser
   // we translate that within this XPath parser implementation, to an XPath
   // range "to" expression using this class field (this equivalently produces
   // an xdm empty sequence).
-  private static final String XPATH_EXPR_STR_EMPTY_SEQUENCE = "1 to 0";
+  public static final String XPATH_EXPR_STR_EMPTY_SEQUENCE = "1 to 0";
   
   private static final List<String> fXpathOpArrTokensList = Arrays.asList(XPATH_OP_ARR);
   

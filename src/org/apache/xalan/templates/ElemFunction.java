@@ -22,16 +22,34 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.dtm.ref.DTMNodeList;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.VariableStack;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
+import org.apache.xpath.xs.types.XSBoolean;
+import org.apache.xpath.xs.types.XSDate;
+import org.apache.xpath.xs.types.XSDateTime;
+import org.apache.xpath.xs.types.XSDayTimeDuration;
+import org.apache.xpath.xs.types.XSDecimal;
+import org.apache.xpath.xs.types.XSDouble;
+import org.apache.xpath.xs.types.XSDuration;
+import org.apache.xpath.xs.types.XSFloat;
+import org.apache.xpath.xs.types.XSInt;
+import org.apache.xpath.xs.types.XSInteger;
+import org.apache.xpath.xs.types.XSLong;
+import org.apache.xpath.xs.types.XSString;
+import org.apache.xpath.xs.types.XSYearMonthDuration;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 /**
  * Implementation of XSLT xsl:function element.
@@ -127,7 +145,7 @@ public class ElemFunction extends ElemTemplate
       int paramCount = 0;
       for (ElemTemplateElement elem = getFirstChildElem(); elem != null; 
                                                               elem = elem.getNextSiblingElem()) {
-          if(elem.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) {
+          if (elem.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) {
              if (argSequence.size() < (paramCount + 1)) {
                  throw new TransformerException("XPST0017 : Cannot find a " + argSequence.size() + " argument function named "
                                                                             + "{" + funcNameSpaceUri + "}" + funcLocalName + "() within a stylesheet scope. "
@@ -175,24 +193,29 @@ public class ElemFunction extends ElemTemplate
       NodeList nodeList = (new XRTreeFrag(df, xctxt, this)).convertToNodeset();     
       
       result = new XNodeSetForDOM(nodeList, xctxt);
-            
+                        
       XObject funcResultConvertedVal = result;
       
       String funcAsAttrStrVal = getAs();
       
-      if (funcAsAttrStrVal != null) {
+      if (funcAsAttrStrVal != null) {         
          try {
-            funcResultConvertedVal = SequenceTypeSupport.convertXDMValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);
+            funcResultConvertedVal = preprocessXslFunctionOrAVariableResult((XNodeSetForDOM)result, funcAsAttrStrVal, xctxt);
+            
             if (funcResultConvertedVal == null) {
-               throw new TransformerException("XPTY0004 : The function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
-                                                                                "(), doesn't match the declared function result type " + 
-                                                                                                                       funcAsAttrStrVal + ".", srcLocator);   
+                funcResultConvertedVal = SequenceTypeSupport.convertXDMValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);
+                
+                if (funcResultConvertedVal == null) {
+                   throw new TransformerException("XPTY0004 : The function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
+                                                                                    "(), doesn't match the declared function result type " + 
+                                                                                                                                  funcAsAttrStrVal + ".", srcLocator);   
+                }
             }
          }
          catch (TransformerException ex) {
             throw new TransformerException("XPTY0004 : The function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
                                                                                            "(), doesn't match the declared function result type " + 
-                                                                                                                       funcAsAttrStrVal + ".", srcLocator); 
+                                                                                                                                         funcAsAttrStrVal + ".", srcLocator); 
          }
       }
       
@@ -250,6 +273,141 @@ public class ElemFunction extends ElemTemplate
   public void recompose(StylesheetRoot root)
   {
       root.recomposeTemplates(this);
+  }
+  
+  /**
+   * This method helps us solve, XSLT's xsl:function and xsl:variable instruction use cases,
+   * where the XSL child contents of xsl:function or xsl:variable instructions contain 
+   * xsl:sequence instruction(s).
+   * 
+   * Given an initial result of computation of, XSL child contents of a xsl:function or xsl:variable
+   * instructions, and the function's or variable's expected data type, cast an input data
+   * value to the supplied expected data type.
+   */
+  public static ResultSequence preprocessXslFunctionOrAVariableResult(XNodeSetForDOM xNodeSetForDOM,
+                                                                      String sequenceTypeXPathExprStr,
+                                                                      XPathContext xctxt) throws TransformerException {
+     ResultSequence resultSequence = null;
+     
+     DTMNodeList dtmNodeList = (DTMNodeList)(xNodeSetForDOM.object());
+     
+     final int contextNode = xctxt.getContextNode(); 
+     SourceLocator srcLocator = xctxt.getSAXLocator(); 
+     
+     XPath seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, 
+                                                                       xctxt.getNamespaceContext(), XPath.SELECT, null, true);
+
+     XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+
+     SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+
+     Node localRootNode = dtmNodeList.item(0);
+     NodeList nodeList = localRootNode.getChildNodes();
+     int nodeSetLen = nodeList.getLength();
+     
+     if (nodeSetLen == 1) {
+        Node node = nodeList.item(0);
+        short nodeType = node.getNodeType();
+        if (nodeType == Node.TEXT_NODE) {
+             String strVal = ((Text)node).getNodeValue();             
+             if (seqExpectedTypeData.getSequenceTypeKindTest() == null) {               
+                  resultSequence = new ResultSequence();               
+                  if ((seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                                       (seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 
+                                                                                                                SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE)) {
+                     if (strVal.contains(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX)) {
+                         strVal = strVal.replaceAll(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX, ""); 
+                         XObject xObject = getXSTypedAtomicValue(strVal, seqExpectedTypeData.getSequenceType());
+                         if (xObject != null) {
+                            resultSequence.add(xObject);
+                         }
+                     }
+                     else {
+                         XObject xObject = getXSTypedAtomicValue(strVal, seqExpectedTypeData.getSequenceType());
+                         if (xObject != null) {
+                            resultSequence.add(xObject);
+                         }
+                     }
+                 }
+                 else {
+                     if (strVal.contains(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX)) {
+                         String[] strParts = strVal.split(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX);
+                         for (int idx = 0; idx < strParts.length; idx++) {
+                            String seqItemStrVal = strParts[idx];
+                            XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getSequenceType());
+                            if (xObject != null) {
+                               resultSequence.add(xObject);
+                            }
+                         }
+                     }
+                     else {
+                         XObject xObject = getXSTypedAtomicValue(strVal, seqExpectedTypeData.getSequenceType());
+                         if (xObject != null) {
+                            resultSequence.add(xObject);
+                         }
+                     } 
+                 }
+             }
+         }
+     }     
+     
+     return resultSequence;
+  }
+  
+  /**
+   * Given XalanJ's integer code value of, an XML Schema built-in data type and a 
+   * string representation of a data value, construct XalanJ's typed data object 
+   * corresponding to the data type's integer code value. 
+   */
+  private static XObject getXSTypedAtomicValue(String strVal, int sequenceType) throws TransformerException {
+      
+      XObject result = null;
+     
+      if (sequenceType == SequenceTypeSupport.BOOLEAN) {
+         boolean boolVal = ("false".equals(strVal) || "0".equals(strVal)) ? false : true;
+         result = new XSBoolean(boolVal);
+      }
+      else if (sequenceType == SequenceTypeSupport.STRING) {
+         result = new XSString(strVal);
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_DATE) {
+         result = XSDate.parseDate(strVal);
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_DATETIME) {
+         result = XSDateTime.parseDateTime(strVal);
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_TIME) {
+         // TO DO
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_DURATION) {
+         result = XSDuration.parseDuration(strVal);
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_DAYTIME_DURATION) {
+         result = XSDayTimeDuration.parseDayTimeDuration(strVal);
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_YEARMONTH_DURATION) {
+         result = XSYearMonthDuration.parseYearMonthDuration(strVal); 
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_DECIMAL) {
+         result = new XSDecimal(strVal); 
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_INTEGER) {
+         result = new XSInteger(strVal); 
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_LONG) {
+         result = new XSLong(strVal);
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_INT) {
+         result = new XSInt(strVal); 
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_DOUBLE) {
+         result = new XSDouble(strVal); 
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_FLOAT) {
+         result = new XSFloat(strVal); 
+      }
+     
+      return result;
   }
 
 }
