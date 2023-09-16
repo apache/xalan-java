@@ -320,6 +320,9 @@ public class FunctionTable
   
   /** The 'contains-token()' id. */
   public static final int FUNC_CONTAINS_TOKEN = 98;
+  
+  /** The 'doc()' id. */
+  public static final int FUNC_DOC = 99;
 
   // Proprietary
 
@@ -377,7 +380,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 99;
+  private static final int NUM_BUILT_IN_FUNCS = 100;
 
   /**
    * Number of built-in functions that may be added.
@@ -574,6 +577,8 @@ public class FunctionTable
     m_functions[FUNC_AVG] = org.apache.xpath.functions.FuncAvg.class;
     m_functions[FUNC_MAX] = org.apache.xpath.functions.FuncMax.class;
     m_functions[FUNC_MIN] = org.apache.xpath.functions.FuncMin.class;
+    
+    m_functions[FUNC_DOC] = org.apache.xpath.functions.FuncDoc.class;
   }
 
   static{
@@ -780,6 +785,9 @@ public class FunctionTable
                          new Integer(FunctionTable.FUNC_MAX));
          m_functionID.put(Keywords.FUNC_MIN,
                          new Integer(FunctionTable.FUNC_MIN));
+         
+         m_functionID.put(Keywords.FUNC_DOC,
+                         new Integer(FunctionTable.FUNC_DOC));
   }
   
   public FunctionTable(){

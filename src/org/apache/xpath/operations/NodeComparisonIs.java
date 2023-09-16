@@ -86,7 +86,7 @@ public class NodeComparisonIs extends Operation
           result = (lNodeHandle == rNodeHandle) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
        }
        else {
-          // as per XPath 3.1 spec for the node comparison "is" operator, if either operand 
+          // As per XPath 3.1 spec for the node comparison "is" operator, if either operand 
           // is an empty sequence the result of the comparison is an empty sequence.
           result = new ResultSequence();  
        }

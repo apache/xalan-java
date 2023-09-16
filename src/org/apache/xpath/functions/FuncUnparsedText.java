@@ -24,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -31,18 +32,14 @@ import java.net.URL;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xml.utils.XMLString;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * Execute the unparsed-text() function.
- * 
- * This function is designed, to read from an external resource 
- * (for example, a file) and returns a string representation 
- * of the resource.
+ * Implementation of the unparsed-text() function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -65,61 +62,67 @@ public class FuncUnparsedText extends Function2Args {
       XObject result = null;
       
       SourceLocator srcLocator = xctxt.getSAXLocator();
+      
+      XObject arg0Result = m_arg0.execute(xctxt);
         
-      XMLString href = m_arg0.execute(xctxt).xstr();
+      String hrefStrVal = XslTransformEvaluationHelper.getStrVal(arg0Result);
       
       String encodingStr = null;
         
       if (m_arg1 != null) {
-         XMLString encoding = m_arg1.execute(xctxt).xstr();
-         encodingStr = encoding.toString();
+         XObject arg1Result = m_arg1.execute(xctxt);
+         encodingStr = XslTransformEvaluationHelper.getStrVal(arg1Result);
          if (!("utf-8".equalsIgnoreCase(encodingStr) || "utf-16".equalsIgnoreCase(encodingStr))) {
              throw new javax.xml.transform.TransformerException("FOUT1190 : The value of the 'encoding' argument "
-                                                   + "is not a valid encoding name. Allowed encoding names are "
-                                                   + "UTF-8 and UTF-16.", srcLocator);    
+                                                                                    + "is not a valid encoding name. Allowed encoding names are "
+                                                                                    + "UTF-8 and UTF-16.", srcLocator);    
          }
       }
-        
-     try {                                                           
-          // if the first argument is a, relative uri reference, then 
-          // resolve that relative uri with base uri of the stylesheet
-          URL resolvedArg0Url = null;
-          
-          try {
-              URI arg0Uri = new URI(href.toString());
-              String stylesheetSystemId = srcLocator.getSystemId();  // base uri of stylesheet, if available
+                                                         
+      // If the first argument is a relative uri reference, then 
+      // resolve that relative uri with base uri of the stylesheet
+      URL resolvedArg0Url = null;
+
+      try {
+          URI arg0Uri = new URI(hrefStrVal);
+          String stylesheetSystemId = srcLocator.getSystemId();  // base uri of stylesheet, if available
+                  
+          if (!arg0Uri.isAbsolute() && (stylesheetSystemId != null)) {
+             URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(hrefStrVal);
+             resolvedArg0Url = resolvedUriArg.toURL(); 
+          }
               
-              if (!arg0Uri.isAbsolute() && stylesheetSystemId != null) {
-                  URI resolvedUriArg = (new URI(stylesheetSystemId)).resolve(href.toString());
-                  resolvedArg0Url = resolvedUriArg.toURL(); 
-              }
-          }
-          catch (URISyntaxException ex) {
-              throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator);    
-          }
-          
           if (resolvedArg0Url == null) {
-              resolvedArg0Url = new URL(href.toString());   
+             resolvedArg0Url = new URL(hrefStrVal);   
           }
-          
-          String urlContents = readDataFromUrl(resolvedArg0Url);
-          
+              
+          String urlStrContents = readStrDataFromUrl(resolvedArg0Url);
+              
           String resultStr = null;
           if (encodingStr != null) {
-              resultStr = new String(urlContents.getBytes(), encodingStr.toUpperCase());              
+             resultStr = new String(urlStrContents.getBytes(), encodingStr.toUpperCase());              
           }
           else {
-              resultStr = urlContents;  
+             resultStr = urlStrContents;  
           }
-          
+              
           result = new XString(resultStr);
       }
+      catch (URISyntaxException ex) {
+          throw new javax.xml.transform.TransformerException("FODC0005 : The uri '" + hrefStrVal + "' is not a valid absolute uri, "
+                                                                                              + "or cannot be resolved to an absolute uri.", srcLocator);  
+      }
+      catch (MalformedURLException ex) {
+          throw new javax.xml.transform.TransformerException("FODC0005 : The uri '" + hrefStrVal + "' is not a valid absolute uri, "
+                                                                                              + "or cannot be resolved to an absolute uri.", srcLocator);
+      }
       catch (IOException ex) {
-         throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator);  
+          throw new javax.xml.transform.TransformerException("FODC0002 : The data from uri '" + hrefStrVal + "' cannot be "
+                                                                                                                     + "retrieved.", srcLocator);
       }
         
       return result;
-
+      
   }
   
   
@@ -152,7 +155,7 @@ public class FuncUnparsedText extends Function2Args {
   /*
    * Read the string contents from a url.
    */
-  private String readDataFromUrl(URL url) throws IOException {
+  public static String readStrDataFromUrl(URL url) throws IOException {
       StringBuilder strBuilder = new StringBuilder();
       
       InputStream inpStream = url.openStream();

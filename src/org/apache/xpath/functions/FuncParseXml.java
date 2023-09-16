@@ -57,15 +57,17 @@ public class FuncParseXml extends FunctionOneArg {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
 
+        XObject xObject0 = m_arg0.execute(xctxt);
+            
+        String argStrVal = XslTransformEvaluationHelper.getStrVal(xObject0);
+            
         try {
-            XObject xObject0 = m_arg0.execute(xctxt);
-            
-            String argStrVal = XslTransformEvaluationHelper.getStrVal(xObject0);
-            
-            result = getNodeSetFromStr(argStrVal, xctxt);
-        }
-        catch (javax.xml.transform.TransformerException ex) {
-            throw new javax.xml.transform.TransformerException(ex.getMessage(), srcLocator);   
+           result = getNodeSetFromStr(argStrVal, xctxt);
+        } 
+        catch (Exception ex) {
+           throw new javax.xml.transform.TransformerException("FODC0002 : The string value supplied as an "
+                                                                                  + "argument to function fn:parse-xml(), cannot be "
+                                                                                  + "successfully parsed as an XML document.", srcLocator);
         }
         
         return result;
@@ -74,31 +76,24 @@ public class FuncParseXml extends FunctionOneArg {
     /**
      * Get an XDM nodeset corresponding to an XML string value.
      */
-    private XNodeSet getNodeSetFromStr(String strVal, XPathContext xctxt) throws 
-                                                          javax.xml.transform.TransformerException {
+    public static XNodeSet getNodeSetFromStr(String strVal, XPathContext xctxt) throws Exception {
         XNodeSet nodeSet = null;
-        
-        try {
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             
-            // Make the XML namespace processing active, on an XML parse 
-            // of the string value.
-            dbf.setNamespaceAware(true);         
+        // Enable the XML namespace processing, on an XML parse 
+        // of the string value.
+        dbf.setNamespaceAware(true);         
             
-            DocumentBuilder dBuilder = dbf.newDocumentBuilder();
+        DocumentBuilder dBuilder = dbf.newDocumentBuilder();
             
-            InputStream inpStream = new ByteArrayInputStream(strVal.getBytes(
-                                                                      StandardCharsets.UTF_8));
-            Document xmlDocument = dBuilder.parse(inpStream);
+        InputStream inpStream = new ByteArrayInputStream(strVal.getBytes(StandardCharsets.UTF_8));
+        Document xmlDocument = dBuilder.parse(inpStream);
             
-            DTM dtm = xctxt.getDTM(new DOMSource(xmlDocument), true, null, false, false);            
-            int documentNodeHandleVal = dtm.getDocument();
+        DTM dtm = xctxt.getDTM(new DOMSource(xmlDocument), true, null, false, false);            
+        int documentNodeHandleVal = dtm.getDocument();
             
-            nodeSet = new XNodeSet(documentNodeHandleVal, xctxt.getDTMManager());
-        }
-        catch (Exception ex) {
-           throw new javax.xml.transform.TransformerException("FODC0006 : " + ex.getMessage()); 
-        }
+        nodeSet = new XNodeSet(documentNodeHandleVal, xctxt.getDTMManager());
         
         return nodeSet;
     }

@@ -434,6 +434,9 @@ public class Keywords
   /** min function string. */
   public static final String FUNC_MIN = "min";
   
+  /** doc function string. */
+  public static final String FUNC_DOC = "doc";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
