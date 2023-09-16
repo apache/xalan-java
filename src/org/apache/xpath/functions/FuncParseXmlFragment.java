@@ -83,7 +83,7 @@ public class FuncParseXmlFragment extends FunctionOneArg {
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             
-            // Make the XML namespace processing active, on an XML parse 
+            // Enable the XML namespace processing, on an XML parse 
             // of the string value.
             dbf.setNamespaceAware(true);         
             
@@ -93,8 +93,8 @@ public class FuncParseXmlFragment extends FunctionOneArg {
             // string value), with a temporary XML outer element.
             String currentTimeMillisec = String.valueOf(System.currentTimeMillis());
             String tempOuterWrapperElementName = "t0_" + currentTimeMillisec;            
-            String wrappedXmlStrVal = "<"+tempOuterWrapperElementName+">" + strVal + 
-                                                                              "</"+tempOuterWrapperElementName+">"; 
+            String wrappedXmlStrVal = "<" + tempOuterWrapperElementName + ">" + strVal + 
+                                                                                     "</" + tempOuterWrapperElementName+">"; 
             
             InputStream inpStream = new ByteArrayInputStream(wrappedXmlStrVal.getBytes(
                                                                                     StandardCharsets.UTF_8));
@@ -113,7 +113,9 @@ public class FuncParseXmlFragment extends FunctionOneArg {
             nodeSet = new XNodeSet(documentNodeHandleVal, xctxt.getDTMManager());
         }
         catch (Exception ex) {
-           throw new javax.xml.transform.TransformerException("FODC0006 : " + ex.getMessage()); 
+           throw new javax.xml.transform.TransformerException("FODC0002 : The string value supplied as an argument to function "
+                                                                                         + "fn:parse-xml-fragment(), cannot be successfully "
+                                                                                         + "parsed as an XML document fragment."); 
         }
         
         return nodeSet;
