@@ -20,6 +20,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xpath.objects.ResultSequence;
 
 /**
@@ -73,9 +75,36 @@ public class XSTime extends XSCalendarType {
     }
 
     @Override
-    public ResultSequence constructor(ResultSequence arg) {
-        // TO DO
-        return null;
+    public ResultSequence constructor(ResultSequence arg) throws TransformerException {
+        ResultSequence resultSeq = new ResultSequence();
+        
+        if (arg.size() == 0) {
+           return resultSeq;     
+        }
+        
+        XSAnyType xsAnyType = (XSAnyType)arg.item(0);        
+        XSTime xsTime = castToTime(xsAnyType);
+        
+        resultSeq.add(xsTime);
+        
+        return resultSeq;
+    }
+    
+    /**
+     * Parse a string representation of a time value, and construct an new 
+     * XSTime object.
+     */
+    public static XSTime parseTime(String strVal) throws TransformerException {
+
+        String refDate = "1955-07-12T";
+        
+        XSDateTime xsDateTime = XSDateTime.parseDateTime(refDate + strVal);
+        if (xsDateTime == null) {
+           throw new TransformerException("XTTE0570 : The supplied string value '" + strVal + "' "
+                                                                       + "cannot be parsed to a xs:time value.");
+        }
+
+        return new XSTime(xsDateTime.getCalendar(), xsDateTime.getTimezone());
     }
     
     /**
@@ -109,7 +138,27 @@ public class XSTime extends XSCalendarType {
     }
     
     /**
-     * Get the seconds value as an integer stored within this 
+     * Get the hour value stored as an integer within this
+     * XSTime object.
+     * 
+     * @return   the hour value stored
+     */
+    public int hour() {
+        return _calendar.get(Calendar.HOUR_OF_DAY);
+    }
+
+    /**
+     * Get the minute value stored as an integer within this
+     * XSTime object.
+     * 
+     * @return   the minute value stored
+     */
+    public int minute() {
+        return _calendar.get(Calendar.MINUTE);
+    }
+    
+    /**
+     * Get the second value stored as an integer within this
      * XSTime object.
      * 
      * @return    the seconds value stored
@@ -189,6 +238,27 @@ public class XSTime extends XSCalendarType {
     
     public int getType() {
         return CLASS_XS_TIME;
+    }
+    
+    /**
+     * Do a data type cast, of an XSAnyType argument passed to this method, to
+     * an XSTime object.
+     */
+    private XSTime castToTime(XSAnyType xsAnyType) throws TransformerException {        
+        XSTime xsTime = null;
+        
+        if (xsAnyType instanceof XSTime) {
+           xsTime = (XSTime)xsAnyType;
+        }        
+        else if (xsAnyType instanceof XSDateTime) {
+           XSDateTime xsDateTime = (XSDateTime)xsAnyType;
+           xsTime = new XSTime(xsDateTime.getCalendar(), xsDateTime.getTimezone());
+        }
+        else {
+           xsTime = parseTime(xsAnyType.stringValue());
+        }
+        
+        return xsTime;
     }
 
 }

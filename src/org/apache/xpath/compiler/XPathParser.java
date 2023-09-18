@@ -3794,6 +3794,15 @@ public class XPathParser
             case Keywords.XS_DAY_TIME_DURATION :
                xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DAYTIME_DURATION);
                break;
+            case Keywords.XS_TIME :
+                xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_TIME);
+                break;
+            case Keywords.XS_UNTYPED_ATOMIC :
+                xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNTYPED_ATOMIC);
+                break;
+            case Keywords.XS_UNTYPED :
+                xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNTYPED);
+                break;
             default :
                throw new javax.xml.transform.TransformerException("XPST0051 An XML Schema type 'xs:" + m_token + "' is not "
                                                                                         + "recognized, within the provided sequence type expression.");        

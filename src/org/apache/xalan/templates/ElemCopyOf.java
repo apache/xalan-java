@@ -43,6 +43,8 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.xs.types.XSAnyAtomicType;
+import org.apache.xpath.xs.types.XSUntyped;
+import org.apache.xpath.xs.types.XSUntypedAtomic;
 import org.xml.sax.SAXException;
 
 /**
@@ -212,6 +214,14 @@ public class ElemCopyOf extends ElemTemplateElement
                 strVal = ((XSAnyAtomicType)value).stringValue();
                 handler.characters(strVal.toCharArray(), 0, strVal.length());
             }
+            else if (value instanceof XSUntypedAtomic) {
+                strVal = ((XSUntypedAtomic)value).stringValue();
+                handler.characters(strVal.toCharArray(), 0, strVal.length());
+            }
+            else if (value instanceof XSUntyped) {
+                strVal = ((XSUntyped)value).stringValue();
+                handler.characters(strVal.toCharArray(), 0, strVal.length());
+            }
             else if (value instanceof InlineFunction) {
                 throw new TransformerException("XTDE0450 : Cannot add a function item to an XDM result tree, "
                                                                                                      + "via xsl:copy-of instruction.", srcLocator);
@@ -329,6 +339,32 @@ public class ElemCopyOf extends ElemTemplateElement
                 }
             }
          }
+         else if (xdmItem instanceof XSUntypedAtomic) {
+             strVal = ((XSUntypedAtomic)xdmItem).stringValue();
+             if (xslSeqProc) {
+                 strVal = strVal + ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX;
+                 serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+             }
+             else {
+                 serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+                 if (idx < (resultSequence.size() - 1)) {                     
+                    serializationHandler.characters(spaceCharArr, 0, 1);
+                 }
+             }
+          }
+         else if (xdmItem instanceof XSUntyped) {
+             strVal = ((XSUntyped)xdmItem).stringValue();
+             if (xslSeqProc) {
+                 strVal = strVal + ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX;
+                 serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+             }
+             else {
+                 serializationHandler.characters(strVal.toCharArray(), 0, strVal.length());
+                 if (idx < (resultSequence.size() - 1)) {                     
+                    serializationHandler.characters(spaceCharArr, 0, 1);
+                 }
+             }
+          }
          else if (xdmItem.getType() == XObject.CLASS_NODESET) {                 
              copyOfActionOnNodeSet((XNodeSet)xdmItem, transformer, serializationHandler, xctxt);
          }

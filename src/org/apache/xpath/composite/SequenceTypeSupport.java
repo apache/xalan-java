@@ -68,17 +68,19 @@ import org.w3c.dom.NodeList;
  */
 public class SequenceTypeSupport {
     
-    // Following are various constant int values, denoting 
-    // XPath 3.1 and XML Schema data types.
+    /** 
+     * Following are various constant int values, denoting XPath 3.1 and 
+     * XML Schema data types.
+     */
         
     public static int EMPTY_SEQUENCE = 1;
     
-    // Represents both XalanJ legacy boolean data type,
-    // and XML Schema data type xs:boolean.
+    // Represents both XML Schema data type xs:boolean, and 
+    // XalanJ legacy boolean data type.
     public static int BOOLEAN = 2;
     
-    // Represents both XalanJ legacy string data type,
-    // and XML Schema data type xs:string.
+    // Represents both XML Schema data type xs:string, and 
+    // XalanJ legacy string data type.
     public static int STRING = 3;
     
     public static int XS_DATE = 4;
@@ -105,8 +107,14 @@ public class SequenceTypeSupport {
     
     public static int XS_FLOAT = 15;
     
-    // following are constant int values denoting XPath sequence type 
-    // KindTest expressions.
+    public static int XS_UNTYPED_ATOMIC = 16;
+    
+    public static int XS_UNTYPED = 17;
+    
+    /** 
+     * Following are constant int values denoting XPath 3.1 sequence
+     * type KindTest expressions.
+     */
     
     public static int ELEMENT_KIND = 101;
     
@@ -137,6 +145,7 @@ public class SequenceTypeSupport {
     public static String STAR = "*";
     
     public static String PLUS = "+";
+    
     
     /**
      * This method converts/casts an XPath 3.1 xdm source value represented by an
@@ -394,26 +403,19 @@ public class SequenceTypeSupport {
     }
     
     /**
-     * Check whether an XObject object instance conforms to an XPath sequence 
-     * type expression.
+     * Check whether, two XML namespace uris are equal.
      */
-    public static boolean isInstanceOf(XObject srcValue, SequenceTypeData sequenceTypeData) {
-       boolean isInstanceOf = true;
-       
-       XObject resultObj = null;
-       
-       try {
-          resultObj = convertXDMValueToAnotherType(srcValue, null, sequenceTypeData, null);
-       } 
-       catch (TransformerException ex) {        
-          isInstanceOf = false;
-       }
-       
-       if (resultObj == null) {
-          isInstanceOf = false; 
-       }
-       
-       return isInstanceOf; 
+    public static boolean isTwoXmlNamespacesEqual(String nsUr1, String nsUri2) {
+        boolean xmlNamespacesEqual = false;
+        
+        if ((nsUr1 == null) && (nsUri2 == null)) {
+           xmlNamespacesEqual = true; 
+        }
+        else if ((nsUr1 != null) && (nsUri2 != null)) {
+           xmlNamespacesEqual = nsUr1.equals(nsUri2);  
+        }
+        
+        return xmlNamespacesEqual; 
     }
     
     /**
@@ -629,22 +631,6 @@ public class SequenceTypeSupport {
         }
         
         return result;
-    }
-    
-    /**
-     * Check whether, two XML namespace uris are equal.
-     */
-    private static boolean isTwoXmlNamespacesEqual(String nsUr1, String nsUri2) {
-        boolean xmlNamespacesEqual = false;
-        
-        if ((nsUr1 == null) && (nsUri2 == null)) {
-           xmlNamespacesEqual = true; 
-        }
-        else if ((nsUr1 != null) && (nsUri2 != null)) {
-           xmlNamespacesEqual = nsUr1.equals(nsUri2);  
-        }
-        
-        return xmlNamespacesEqual; 
     }
     
     /**
