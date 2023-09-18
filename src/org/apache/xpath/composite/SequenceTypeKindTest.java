@@ -30,13 +30,13 @@ public class SequenceTypeKindTest {
     
     private int kindVal;
     
-    // for XML element and attribute nodes
+    // For XML element and attribute nodes
     private String nodeLocalName;
     
-    // for XML element and attribute nodes
+    // For XML element and attribute nodes
     private String nodeNsUri;
     
-    // data type's name (for e.g, string, integer etc)
+    // Data type's name (for e.g, string, integer etc)
     private String dataTypeLocalName;
     
     // XML namespace uri of the data type (for e.g, http://www.w3.org/2001/XMLSchema)

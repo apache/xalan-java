@@ -41,6 +41,7 @@ import org.apache.xpath.xs.types.XSInt;
 import org.apache.xpath.xs.types.XSInteger;
 import org.apache.xpath.xs.types.XSLong;
 import org.apache.xpath.xs.types.XSString;
+import org.apache.xpath.xs.types.XSTime;
 import org.apache.xpath.xs.types.XSYearMonthDuration;
 import org.xml.sax.SAXException;
 
@@ -233,7 +234,7 @@ public class XSConstructorFunctionUtil {
                                evalResult = evalResultSequence.item(0);
                             }
                             else {
-                                throw new TransformerException("FORG0001 : An incorrectly formatted xs:yearMonthDuration value '" + 
+                               throw new TransformerException("FORG0001 : An incorrectly formatted xs:yearMonthDuration value '" + 
                                                                                                 strVal + "' is present in the input.", srcLocator); 
                             }
                         }
@@ -250,7 +251,24 @@ public class XSConstructorFunctionUtil {
                                evalResult = evalResultSequence.item(0);
                             }
                             else {
-                                throw new TransformerException("FORG0001 : An incorrectly formatted xs:dayTimeDuration value '" + 
+                               throw new TransformerException("FORG0001 : An incorrectly formatted xs:dayTimeDuration value '" + 
+                                                                                                strVal + "' is present in the input.", srcLocator); 
+                            }                            
+                        }
+                        
+                        break;
+                    case Keywords.XS_TIME :                 
+                        for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+                            XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+                            String strVal = XslTransformEvaluationHelper.getStrVal(argVal);
+                            XSTime xsTime = XSTime.parseTime(strVal);
+                            if (xsTime != null) {
+                               argSequence.add(xsTime);
+                               evalResultSequence = (new XSTime()).constructor(argSequence); 
+                               evalResult = evalResultSequence.item(0);
+                            }
+                            else {
+                               throw new TransformerException("FORG0001 : An incorrectly formatted xs:time value '" + 
                                                                                                 strVal + "' is present in the input.", srcLocator); 
                             }                            
                         }

@@ -20,10 +20,37 @@
  */
 package org.apache.xpath.operations;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
 import org.apache.xpath.composite.SequenceTypeData;
+import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.SequenceTypeSupport.OccurenceIndicator;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XString;
+import org.apache.xpath.xs.types.XSBoolean;
+import org.apache.xpath.xs.types.XSDate;
+import org.apache.xpath.xs.types.XSDateTime;
+import org.apache.xpath.xs.types.XSDayTimeDuration;
+import org.apache.xpath.xs.types.XSDecimal;
+import org.apache.xpath.xs.types.XSDouble;
+import org.apache.xpath.xs.types.XSDuration;
+import org.apache.xpath.xs.types.XSFloat;
+import org.apache.xpath.xs.types.XSInt;
+import org.apache.xpath.xs.types.XSInteger;
+import org.apache.xpath.xs.types.XSLong;
+import org.apache.xpath.xs.types.XSString;
+import org.apache.xpath.xs.types.XSTime;
+import org.apache.xpath.xs.types.XSUntyped;
+import org.apache.xpath.xs.types.XSUntypedAtomic;
+import org.apache.xpath.xs.types.XSYearMonthDuration;
 
 /**
  * The XPath 3.1 "instance of" operation.
@@ -50,8 +77,238 @@ public class InstanceOf extends Operation
   public XObject operate(XObject left, XObject right) 
                                                  throws javax.xml.transform.TransformerException
   {
-      boolean isInstanceOf = SequenceTypeSupport.isInstanceOf(left, (SequenceTypeData)right);
+      boolean isInstanceOf = false;
+      
+      SequenceTypeData seqTypedData = (SequenceTypeData)right;
+      
+      isInstanceOf = isInstanceOf(left, seqTypedData);
       
       return isInstanceOf ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+  }
+
+  /**
+   * This method checks whether, an xdm value is an instance of 
+   * a specific type.
+   */
+  private boolean isInstanceOf(XObject xdmValue, SequenceTypeData seqTypedData) {
+    
+    boolean isInstanceOf = false;
+      
+    if ((xdmValue instanceof XSUntypedAtomic) && 
+          (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_UNTYPED_ATOMIC) && 
+          ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                     (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          isInstanceOf = true;  
+      }
+      else if ((xdmValue instanceof XSUntyped) && 
+              (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_UNTYPED) && 
+              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XString || xdmValue instanceof XSString) && 
+              (seqTypedData.getSequenceType() == SequenceTypeSupport.STRING) && 
+              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XBoolean || xdmValue instanceof XSBoolean) && 
+              (seqTypedData.getSequenceType() == SequenceTypeSupport.BOOLEAN) && 
+              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XNumber) && ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                             (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {          
+          if ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DOUBLE) || (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DECIMAL)) {
+             isInstanceOf = true; 
+          }
+          else {
+             double doubleVal = ((XNumber)xdmValue).num();
+             if ((doubleVal == (int)doubleVal) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_INTEGER) || 
+                                                   (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_LONG) ||
+                                                   (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_INT))) {
+                 isInstanceOf = true; 
+             }
+          }
+      }
+      else if ((xdmValue instanceof XSDouble) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DOUBLE) && 
+              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                      (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+         isInstanceOf = true; 
+      }
+      else if ((xdmValue instanceof XSFloat) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_FLOAT) && 
+              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSInt) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_INT) && 
+              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSLong) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_LONG) && 
+              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSInteger) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_INTEGER) && 
+              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSDecimal) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DECIMAL) && 
+              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSDate) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DATE) && 
+              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSDateTime) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DATETIME) && 
+              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSTime) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_TIME) && 
+              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSDuration) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DURATION) && 
+              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSDayTimeDuration) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DAYTIME_DURATION) && 
+              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSYearMonthDuration) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_YEARMONTH_DURATION) && 
+              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          isInstanceOf = true;
+      }
+      else if (xdmValue instanceof XNodeSet) {
+          XNodeSet xdmNodeSet = (XNodeSet)xdmValue;          
+          int nodeSetLen = xdmNodeSet.getLength();          
+          int itemTypeOccurenceIndicator = seqTypedData.getItemTypeOccurrenceIndicator();
+          SequenceTypeKindTest seqTypeKindTest = seqTypedData.getSequenceTypeKindTest();
+          
+          if ((nodeSetLen > 1) && ((itemTypeOccurenceIndicator == 0) || (itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_ONE))) {
+             isInstanceOf = false; 
+          }
+          else {
+             DTMIterator dtmIter = xdmNodeSet.iterRaw();
+                          
+             List<Boolean> nodeSetSequenceTypeKindTestResultList = new ArrayList<Boolean>();
+             
+             int nextNodeDtmHandle;
+             while ((nextNodeDtmHandle = dtmIter.nextNode()) != DTM.NULL) {                 
+                 DTM dtm = dtmIter.getDTM(nextNodeDtmHandle);
+                 java.lang.String nodeName = dtm.getNodeName(nextNodeDtmHandle);
+                 java.lang.String nodeNsUri = dtm.getNamespaceURI(nextNodeDtmHandle);
+                 
+                 if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
+                    if (seqTypeKindTest != null) {
+                       java.lang.String elemNodeKindTestNodeName = seqTypeKindTest.getNodeLocalName();
+                       if (elemNodeKindTestNodeName == null || "".equals(elemNodeKindTestNodeName) || 
+                                                                      SequenceTypeSupport.STAR.equals(elemNodeKindTestNodeName)) {
+                           elemNodeKindTestNodeName = nodeName;  
+                       }
+                       
+                       if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ELEMENT_KIND) && (nodeName.equals(elemNodeKindTestNodeName)) 
+                                                    && (SequenceTypeSupport.isTwoXmlNamespacesEqual(nodeNsUri, seqTypeKindTest.getNodeNsUri()))) {
+                           nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true));  
+                       }
+                       else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.NODE_KIND) || 
+                                (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+                           nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
+                       }
+                    }
+                    else {
+                       isInstanceOf = false;
+                       break;
+                    }
+                 }
+                 else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
+                    if (seqTypeKindTest != null) {
+                       java.lang.String attrNodeKindTestNodeName = seqTypeKindTest.getNodeLocalName();
+                       if (attrNodeKindTestNodeName == null || "".equals(attrNodeKindTestNodeName) || 
+                                                                                                SequenceTypeSupport.STAR.equals(attrNodeKindTestNodeName)) {
+                           attrNodeKindTestNodeName = nodeName;  
+                       }
+                        
+                       if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
+                                                                              && (SequenceTypeSupport.isTwoXmlNamespacesEqual(nodeNsUri, seqTypeKindTest.getNodeNsUri()))) {
+                           nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true));    
+                       }
+                       else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.NODE_KIND) || (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+                           nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true));   
+                       }   
+                    }
+                    else {
+                       isInstanceOf = false;
+                       break;
+                    } 
+                 }
+                 else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.TEXT_NODE) {
+                    if (seqTypeKindTest.getKindVal() == SequenceTypeSupport.TEXT_KIND) {
+                       nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
+                    }
+                 }
+                 else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.NAMESPACE_NODE) {
+                    if (seqTypeKindTest.getKindVal() == SequenceTypeSupport.NAMESPACE_NODE_KIND) {
+                       nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
+                    }
+                 }
+             }
+             
+             if (nodeSetSequenceTypeKindTestResultList.size() > 0 && (nodeSetSequenceTypeKindTestResultList.size() == nodeSetLen)) {
+                isInstanceOf = true; 
+             }
+          }
+      }
+      else if (xdmValue instanceof ResultSequence) {
+          ResultSequence srcResultSeq = (ResultSequence)xdmValue;
+          
+          int seqLen = srcResultSeq.size();
+          
+          if ((seqLen == 0) && (seqTypedData.getItemTypeOccurrenceIndicator() == OccurenceIndicator.ONE_OR_MANY)) {
+             isInstanceOf = false;  
+          }
+          else if ((seqLen > 0) && (seqTypedData.getSequenceType() == SequenceTypeSupport.EMPTY_SEQUENCE)) {
+             isInstanceOf = false;  
+          }
+          else if ((seqLen > 1) && (seqTypedData.getItemTypeOccurrenceIndicator() == OccurenceIndicator.ZERO_OR_ONE)) {
+             isInstanceOf = false;
+          }
+          
+          SequenceTypeData sequenceTypeDataNew = new SequenceTypeData();          
+          if (seqTypedData.getSequenceTypeKindTest() != null) {
+             sequenceTypeDataNew.setSequenceTypeKindTest(seqTypedData.getSequenceTypeKindTest()); 
+          }
+          else {
+             sequenceTypeDataNew.setSequenceType(seqTypedData.getSequenceType()); 
+          }
+          
+          boolean isInstanceOfOnSeqItem = true;
+          
+          for (int idx = 0; idx < srcResultSeq.size(); idx++) {
+             XObject seqItem = (XObject)(srcResultSeq.item(idx));
+             // Recursive call to this function
+             if (!isInstanceOf(seqItem, sequenceTypeDataNew)) {
+                isInstanceOfOnSeqItem = false;
+                break;
+             }
+          }
+          
+          isInstanceOf = isInstanceOfOnSeqItem; 
+      }
+    
+      return isInstanceOf;
   }
 }

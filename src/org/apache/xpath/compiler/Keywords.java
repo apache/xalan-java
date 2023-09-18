@@ -168,6 +168,9 @@ public class Keywords
 
   /** string function string. */
   public static final String FUNC_STRING_STRING = "string";
+  
+  /** data function string. */
+  public static final String FUNC_DATA_STRING = "data";
 
   /** starts-with function string. */
   public static final String FUNC_STARTS_WITH_STRING = "starts-with";
@@ -356,7 +359,9 @@ public class Keywords
   /** contains-token function string. */
   public static final String FUNC_CONTAINS_TOKEN = "contains-token";
   
-  // XML Schema built-in data type name keywords
+  /**
+   * XML Schema built-in data type name keywords.
+   */
   
   /** xs:string data type string. */
   public static final String XS_STRING = "string";
@@ -390,6 +395,15 @@ public class Keywords
   
   /** xs:dayTimeDuration data type string. */
   public static final String XS_DAY_TIME_DURATION = "dayTimeDuration";
+  
+  /** xs:time data type string. */
+  public static final String XS_TIME = "time";
+  
+  /** xs:untypedAtomic data type string. */
+  public static final String XS_UNTYPED_ATOMIC = "untypedAtomic";
+  
+  /** xs:untyped data type string. */
+  public static final String XS_UNTYPED = "untyped";
   
   
   /** empty function string. */

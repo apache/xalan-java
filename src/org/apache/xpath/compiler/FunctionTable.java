@@ -323,6 +323,9 @@ public class FunctionTable
   
   /** The 'doc()' id. */
   public static final int FUNC_DOC = 99;
+  
+  /** The 'data()' id. */
+  public static final int FUNC_DATA = 100;
 
   // Proprietary
 
@@ -380,7 +383,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 100;
+  private static final int NUM_BUILT_IN_FUNCS = 101;
 
   /**
    * Number of built-in functions that may be added.
@@ -420,6 +423,9 @@ public class FunctionTable
     m_functions[FUNC_ROUND] = org.apache.xpath.functions.FuncRound.class;
     m_functions[FUNC_SUM] = org.apache.xpath.functions.FuncSum.class;
     m_functions[FUNC_STRING] = org.apache.xpath.functions.FuncString.class;
+    
+    m_functions[FUNC_DATA] = org.apache.xpath.functions.FuncData.class;
+    
     m_functions[FUNC_STARTS_WITH] = 
       org.apache.xpath.functions.FuncStartsWith.class;
     m_functions[FUNC_CONTAINS] = org.apache.xpath.functions.FuncContains.class;
@@ -624,6 +630,10 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_SUM));
           m_functionID.put(Keywords.FUNC_STRING_STRING,
                           new Integer(FunctionTable.FUNC_STRING));
+          
+          m_functionID.put(Keywords.FUNC_DATA_STRING,
+                          new Integer(FunctionTable.FUNC_DATA));
+          
           m_functionID.put(Keywords.FUNC_STARTS_WITH_STRING,
                           new Integer(FunctionTable.FUNC_STARTS_WITH));
           m_functionID.put(Keywords.FUNC_CONTAINS_STRING,

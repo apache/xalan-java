@@ -30,38 +30,14 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.xs.types.XSAnyType;
 
-/** 
- * XSLT 3.0 xsl:choose element.
- * 
-   <xsl:choose>
-      <!-- Content: (xsl:when+, xsl:otherwise?) -->
-   </xsl:choose>
-
-   <xsl:when
-          test = expression>
-       <!-- Content: sequence-constructor -->
-   </xsl:when>
-
-   <xsl:otherwise>
-      <!-- Content: sequence-constructor -->
-   </xsl:otherwise>
-
- * @xsl.usage advanced
- */
-/*
+/**
  *  Implementation of the XSLT 3.0 xsl:choose instruction.
  *  
- *  An XSLT xsl:choose instruction is used, to perform conditional processing.
- *  
- *  The xsl:choose element selects one among a number of possible alternatives. 
- *  It consists of a sequence of one or more xsl:when elements followed by an 
- *  optional xsl:otherwise element. Each xsl:when element has a single attribute, 
- *  test, which specifies an expression. The content of the xsl:when and 
- *  xsl:otherwise elements is a sequence constructor.
+ *  @xsl.usage advanced
  */
 public class ElemChoose extends ElemTemplateElement
 {
-    static final long serialVersionUID = -3070117361903102033L;
+   static final long serialVersionUID = -3070117361903102033L;
 
   /**
    * Get an int constant identifying the type of element.
@@ -120,38 +96,25 @@ public class ElemChoose extends ElemTemplateElement
         // must be xsl:when
         XPathContext xctxt = transformer.getXPathContext();
         int sourceNode = xctxt.getCurrentNode();
-        
-        // System.err.println("\""+when.getTest().getPatternString()+"\"");
-        
-        // if(when.getTest().getPatternString().equals("COLLECTION/icuser/ictimezone/LITERAL='GMT +13:00 Pacific/Tongatapu'"))
-        // 	System.err.println("Found COLLECTION/icuser/ictimezone/LITERAL");
 
         if (transformer.getDebug())
         {
-          XObject test = when.getTest().execute(xctxt, sourceNode, when);
+            XObject test = when.getTest().execute(xctxt, sourceNode, when);
 
-          if (transformer.getDebug())
-            transformer.getTraceManager().fireSelectedEvent(sourceNode, when,
-                    "test", when.getTest(), test);
-
-          if (test.bool())
-          {
-            transformer.getTraceManager().fireTraceEvent(when);
+            if (transformer.getDebug())
+               transformer.getTraceManager().fireSelectedEvent(sourceNode, when,
+                                                                        "test", when.getTest(), test);
+            if (test.bool())
+            {
+               transformer.getTraceManager().fireTraceEvent(when);
             
-            transformer.executeChildTemplates(when, true);
+               transformer.executeChildTemplates(when, true);
 
-	        transformer.getTraceManager().fireTraceEndEvent(when); 
+	           transformer.getTraceManager().fireTraceEndEvent(when); 
 	                  
-            return;
-          }
-
+               return;
+            }
         }
-        /*else if (when.getTest().bool(xctxt, sourceNode, when))
-        {
-          transformer.executeChildTemplates(when, true);
-
-          return;
-        }*/
         else {
             XObject xpath3ContextItem = xctxt.getXPath3ContextItem();        
             if (xpath3ContextItem != null) {
@@ -225,17 +188,13 @@ public class ElemChoose extends ElemTemplateElement
 
     switch (type)
     {
-    case Constants.ELEMNAME_WHEN :
-    case Constants.ELEMNAME_OTHERWISE :
-
-      // TODO: Positional checking
-      break;
-    default :
-      error(XSLTErrorResources.ER_CANNOT_ADD,
-            new Object[]{ newChild.getNodeName(),
-                          this.getNodeName() });  //"Can not add " +((ElemTemplateElement)newChild).m_elemName +
-
-    //" to " + this.m_elemName);
+        case Constants.ELEMNAME_WHEN :
+        case Constants.ELEMNAME_OTHERWISE :
+          break;
+        default :
+          error(XSLTErrorResources.ER_CANNOT_ADD,
+                new Object[]{ newChild.getNodeName(),
+                              this.getNodeName() });
     }
 
     return super.appendChild(newChild);
