@@ -21,10 +21,6 @@ import org.apache.xpath.objects.ResultSequence;
 /**
  * An XML Schema data type representation, of the xs:boolean datatype.
  * 
- * We've this data type implementation, equivalent to XalanJ's legacy 
- * data type implementation org.apache.xpath.objects.XBoolean for boolean 
- * values. We may use, both of these classes for XalanJ's needs.
- * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
@@ -121,6 +117,10 @@ public class XSBoolean extends XSCtrType {
         }
         
         return resultVal;  
+    }
+    
+    public boolean bool() {
+        return value();  
     }
     
     public int getType() {
