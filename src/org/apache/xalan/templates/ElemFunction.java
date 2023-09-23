@@ -73,7 +73,7 @@ public class ElemFunction extends ElemTemplate
   /**
    * The value of the "name" attribute.
    */
-  protected QName m_qname;
+  protected static QName m_qname;
 
   public void setName(QName qName)
   {
@@ -200,7 +200,7 @@ public class ElemFunction extends ElemTemplate
       
       if (funcAsAttrStrVal != null) {         
          try {
-            funcResultConvertedVal = preprocessXslFunctionOrAVariableResult((XNodeSetForDOM)result, funcAsAttrStrVal, xctxt);
+            funcResultConvertedVal = preprocessXslFunctionOrAVariableResult((XNodeSetForDOM)result, funcAsAttrStrVal, xctxt, null);
             
             if (funcResultConvertedVal == null) {
                 funcResultConvertedVal = SequenceTypeSupport.convertXDMValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);
@@ -213,9 +213,7 @@ public class ElemFunction extends ElemTemplate
             }
          }
          catch (TransformerException ex) {
-            throw new TransformerException("XPTY0004 : The function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
-                                                                                           "(), doesn't match the declared function result type " + 
-                                                                                                                                         funcAsAttrStrVal + ".", srcLocator); 
+            throw new TransformerException(ex.getMessage(), srcLocator); 
          }
       }
       
@@ -286,7 +284,7 @@ public class ElemFunction extends ElemTemplate
    */
   public static ResultSequence preprocessXslFunctionOrAVariableResult(XNodeSetForDOM xNodeSetForDOM,
                                                                       String sequenceTypeXPathExprStr,
-                                                                      XPathContext xctxt) throws TransformerException {
+                                                                      XPathContext xctxt, QName varQName) throws TransformerException {
      ResultSequence resultSequence = null;
      
      DTMNodeList dtmNodeList = (DTMNodeList)(xNodeSetForDOM.object());
@@ -311,45 +309,46 @@ public class ElemFunction extends ElemTemplate
         if (nodeType == Node.TEXT_NODE) {
              String strVal = ((Text)node).getNodeValue();             
              if (seqExpectedTypeData.getSequenceTypeKindTest() == null) {               
-                  resultSequence = new ResultSequence();               
-                  if ((seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                                       (seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 
-                                                                                                                SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE)) {
-                     if (strVal.contains(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX)) {
-                         strVal = strVal.replaceAll(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX, ""); 
-                         XObject xObject = getXSTypedAtomicValue(strVal, seqExpectedTypeData.getSequenceType());
-                         if (xObject != null) {
-                            resultSequence.add(xObject);
-                         }
-                     }
-                     else {
-                         XObject xObject = getXSTypedAtomicValue(strVal, seqExpectedTypeData.getSequenceType());
-                         if (xObject != null) {
-                            resultSequence.add(xObject);
-                         }
-                     }
-                 }
-                 else {
-                     if (strVal.contains(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX)) {
-                         String[] strParts = strVal.split(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX);
-                         for (int idx = 0; idx < strParts.length; idx++) {
-                            String seqItemStrVal = strParts[idx];
-                            XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getSequenceType());
-                            if (xObject != null) {
-                               resultSequence.add(xObject);
-                            }
-                         }
-                     }
-                     else {
-                         XObject xObject = getXSTypedAtomicValue(strVal, seqExpectedTypeData.getSequenceType());
-                         if (xObject != null) {
-                            resultSequence.add(xObject);
-                         }
-                     } 
-                 }
+                resultSequence = new ResultSequence();                  
+                if (strVal.contains(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX)) {
+                   String[] strParts = strVal.split(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX);
+                   for (int idx = 0; idx < strParts.length; idx++) {
+                      String seqItemStrVal = strParts[idx];
+                      XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getSequenceType());
+                      if (xObject != null) {
+                         resultSequence.add(xObject);
+                      }
+                   }
+                }
+                else {
+                   XObject xObject = getXSTypedAtomicValue(strVal, seqExpectedTypeData.getSequenceType());
+                   if (xObject != null) {
+                      resultSequence.add(xObject);
+                   }
+                }
              }
          }
-     }     
+     }
+     
+     if (seqExpectedTypeData.getSequenceTypeKindTest() == null) {
+         if ((seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                               (seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 
+                                                                                                               SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE)) {
+             if ((resultSequence != null) && (resultSequence.size() > 1)) {
+                String errMesg = null;
+                if (m_qname != null) {
+                   errMesg = "XTTE0780 : A sequence of more than one item, is not allowed as a result of call to function '" + m_qname.toString() + "'. "
+                                                                                + "The expected result type of this function is " + sequenceTypeXPathExprStr + "."; 
+                }
+                else {
+                   errMesg = "XTTE0570 : A sequence of more than one item, is not allowed as the value of variable '$" + varQName.toString() + "'. "
+                                                                                + "This variable has expected type " + sequenceTypeXPathExprStr + "."; 
+                }
+                
+                throw new TransformerException(errMesg); 
+             }
+         }
+     }
      
      return resultSequence;
   }
