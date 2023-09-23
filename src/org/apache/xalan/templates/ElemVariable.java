@@ -558,8 +558,15 @@ public class ElemVariable extends ElemTemplateElement
     
     if (m_asAttr != null) {
        if (var instanceof XNodeSetForDOM) {
-          XObject variableConvertedVal = ElemFunction.preprocessXslFunctionOrAVariableResult(
-                                                                                           (XNodeSetForDOM)var, m_asAttr, xctxt);
+          XObject variableConvertedVal = null;
+          
+          try {
+             variableConvertedVal = ElemFunction.preprocessXslFunctionOrAVariableResult((XNodeSetForDOM)var, m_asAttr, xctxt, m_qname);
+          }
+          catch (TransformerException ex) {
+             throw new TransformerException(ex.getMessage(), srcLocator); 
+          }
+          
           if (variableConvertedVal != null) {
              var = variableConvertedVal;    
           }
