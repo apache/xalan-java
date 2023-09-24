@@ -757,7 +757,7 @@ public class SequenceTypeSupport {
                         sequenceTypeNewXPathExprStr = sequenceTypeXPathExprStr;  
                     }
 
-                    String nodeStrVal = node.getNodeValue();
+                    String nodeStrVal = node.getTextContent();
                     XObject xObject = convertXDMValueToAnotherType(new XSString(nodeStrVal), sequenceTypeNewXPathExprStr, 
                                                                                                                       seqExpectedTypeDataInp, xctxt);                       
                     convertedResultSeq.add(xObject); 

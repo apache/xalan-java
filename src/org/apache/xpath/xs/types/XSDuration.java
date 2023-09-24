@@ -458,7 +458,7 @@ public class XSDuration extends XSCtrType {
     }
     
     public int getType() {
-        return CLASS_XS_DURATION;
+       return CLASS_XS_DURATION;
     }
     
     /**

@@ -23,6 +23,7 @@ import java.util.GregorianCalendar;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XObject;
 
 /**
  * An XML Schema data type representation, of the xs:date datatype.
@@ -43,8 +44,8 @@ public class XSDate extends XSCalendarType {
     
     private XSDuration _tz;
     
-    // stores the fact that, whether this XSDate object is constructed
-    // via XPath function call fn:current-date().
+    // The value of this class field, stores the fact that whether this XSDate
+    // object is constructed via XPath function call fn:current-date().
     private boolean isPopulatedFromFnCurrentDate = false;
     
     /**
@@ -307,6 +308,73 @@ public class XSDate extends XSCalendarType {
         isDateAfter = date1.after(date2); 
         
         return isDateAfter; 
+    }
+    
+    /**
+    * Implementation of subtraction operation between this XSDate value, and a supplied value
+    * (as per XPath 3.1 spec, xs:date, xs:yearMonthDuration and xs:dayTimeDuration are the only
+    * permissible data type values, that may be subtracted from an xs:date value).
+    */
+    public XObject subtract(XObject xObject) throws TransformerException {
+        XObject result = null;
+        
+        if (!((xObject instanceof XSDate) || (xObject instanceof XSYearMonthDuration)
+                                          || (xObject instanceof XSDayTimeDuration))) {
+           throw new TransformerException("XPTY0004 : The values of types xs:date, xs:yearMonthDuration or "
+                                                                                 + "xs:dayTimeDuration are only ones that may be subtracted from an xs:date value.");
+        }
+        
+        if (xObject instanceof XSDate) {
+           Calendar cal1 = getCalendar();
+           Calendar cal2 = ((XSDate)xObject).getCalendar();
+           long diffDurationMilliSecs = cal1.getTimeInMillis() - cal2.getTimeInMillis();
+           result = new XSDuration(diffDurationMilliSecs / 1000);
+        }
+        else if (xObject instanceof XSYearMonthDuration) {
+           XSYearMonthDuration argVal = (XSYearMonthDuration)xObject;
+           Calendar cal1 = (Calendar)((getCalendar()).clone());
+           cal1.add(Calendar.MONTH, argVal.monthValue() * -1);
+           result = new XSDate(cal1, getTimezone());
+        }
+        else if (xObject instanceof XSDayTimeDuration) {
+           XSDayTimeDuration argVal = (XSDayTimeDuration)xObject;
+           double argValSecs = argVal.value();
+           Calendar cal1 = (Calendar)((getCalendar()).clone());
+           cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)argValSecs * 1000)) * -1));
+           result = new XSDate(cal1, getTimezone());
+        }
+        
+        return result;
+    }
+    
+    /**
+    * Implementation of addition operation between this XSDate value, and a supplied value
+    * (as per XPath 3.1 spec, xs:yearMonthDuration and xs:dayTimeDuration are the only permissible 
+    * data type values, that may be added to an xs:date value).
+    */
+    public XObject add(XObject xObject) throws TransformerException {
+        XObject result = null;
+        
+        if (!((xObject instanceof XSYearMonthDuration) || (xObject instanceof XSDayTimeDuration))) {
+           throw new TransformerException("XPTY0004 : The values of types xs:yearMonthDuration or "
+                                                                               + "xs:dayTimeDuration are only ones that may be added to an xs:date value.");
+        }
+        
+        if (xObject instanceof XSYearMonthDuration) {
+           XSYearMonthDuration argVal = (XSYearMonthDuration)xObject;
+           Calendar cal1 = (Calendar)((getCalendar()).clone());
+           cal1.add(Calendar.MONTH, argVal.monthValue());
+           result = new XSDate(cal1, getTimezone());
+        }
+        else if (xObject instanceof XSDayTimeDuration) {
+           XSDayTimeDuration argVal = (XSDayTimeDuration)xObject;
+           double argValSecs = argVal.value();
+           Calendar cal1 = (Calendar)((getCalendar()).clone());
+           cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)argValSecs * 1000))));
+           result = new XSDate(cal1, getTimezone());
+        }
+        
+        return result;
     }
 
     public boolean isPopulatedFromFnCurrentDate() {
