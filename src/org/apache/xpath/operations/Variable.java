@@ -37,7 +37,6 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 
-
 /**
  * The variable reference expression executer.
  */
@@ -99,10 +98,6 @@ public class Variable extends Expression implements PathComponent
   {
   	return m_isGlobal;
   }
-
-  
-  
-
   
   protected boolean m_isGlobal = false;
   
@@ -198,10 +193,9 @@ public class Variable extends Expression implements PathComponent
 
 
   /**
-   * Dereference the variable, and return the reference value.  Note that lazy 
-   * evaluation will occur.  If a variable within scope is not found, a warning 
+   * Dereference the variable, and return the reference value. Note that lazy 
+   * evaluation will occur. If a variable within scope is not found, a warning 
    * will be sent to the error listener, and an empty nodeset will be returned.
-   *
    *
    * @param xctxt The runtime execution context.
    *
@@ -211,69 +205,55 @@ public class Variable extends Expression implements PathComponent
    */
   public XObject execute(XPathContext xctxt, boolean destructiveOK) throws javax.xml.transform.TransformerException
   {
-    org.apache.xml.utils.PrefixResolver xprefixResolver = xctxt.getNamespaceContext();
-
-    XObject result;
-    
-    Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
-    XObject varValue = xpathVarMap.get(m_qname);
-    
-    if (varValue != null) {
-        // dereference, XPath 3.1 variable reference
-        if (varValue instanceof XNodeSet) {
-           result = ((XNodeSet)varValue).getFresh();    
-        }
-        else {
-           result = varValue;
+      
+        XObject result = null;
+        
+        Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
+        XObject varValue = xpathVarMap.get(m_qname);
+        
+        if (varValue != null) {
+           // added for XPath 3.1
+           if (varValue instanceof XNodeSet) {
+              result = ((XNodeSet)varValue).getFresh();    
+           }
+           else {
+              result = varValue;
+           }
+            
+           return result;
         }
         
+        try {
+           if (m_fixUpWasCalled) {    
+              if (m_isGlobal) {
+                 result = xctxt.getVarStack().getGlobalVariable(xctxt, m_index, destructiveOK);
+              }
+              else {
+                 result = xctxt.getVarStack().getLocalVariable(xctxt, m_index, destructiveOK);
+              }
+           } 
+           else {  
+              result = xctxt.getVarStack().getVariableOrParam(xctxt,m_qname);
+           }
+        }
+        catch (javax.xml.transform.TransformerException ex) {
+           if (m_qname == null) {
+              throw ex;   
+           }
+           else {
+              throw new javax.xml.transform.TransformerException("Variable $" + m_qname.toString() + " "
+                                                                                               + "accessed before it is bound!."); 
+           }
+        }
+      
+        if (result == null) {
+           // This should now never happen...
+           warn(xctxt, XPATHErrorResources.WG_ILLEGAL_VARIABLE_REFERENCE, 
+                                                                       new Object[]{ m_qname.getLocalPart() });            
+           result = new XNodeSet(xctxt.getDTMManager());
+        }
+      
         return result;
-    }
-    
-    // Is the variable fetched always the same?
-    // XObject result = xctxt.getVariable(m_qname);
-    if(m_fixUpWasCalled)
-    {    
-      if(m_isGlobal)
-        result = xctxt.getVarStack().getGlobalVariable(xctxt, m_index, destructiveOK);
-      else
-        result = xctxt.getVarStack().getLocalVariable(xctxt, m_index, destructiveOK);
-    } 
-    else {  
-    	result = xctxt.getVarStack().getVariableOrParam(xctxt,m_qname);
-    }
-  
-      if (null == result)
-      {
-        // This should now never happen...
-        warn(xctxt, XPATHErrorResources.WG_ILLEGAL_VARIABLE_REFERENCE,
-             new Object[]{ m_qname.getLocalPart() });  //"VariableReference given for variable out "+
-  //      (new RuntimeException()).printStackTrace();
-  //      error(xctxt, XPATHErrorResources.ER_COULDNOT_GET_VAR_NAMED,
-  //            new Object[]{ m_qname.getLocalPart() });  //"Could not get variable named "+varName);
-        
-        result = new XNodeSet(xctxt.getDTMManager());
-      }
-  
-      return result;
-//    }
-//    else
-//    {
-//      // Hack city... big time.  This is needed to evaluate xpaths from extensions, 
-//      // pending some bright light going off in my head.  Some sort of callback?
-//      synchronized(this)
-//      {
-//      	org.apache.xalan.templates.ElemVariable vvar= getElemVariable();
-//      	if(null != vvar)
-//      	{
-//          m_index = vvar.getIndex();
-//          m_isGlobal = vvar.getIsTopLevel();
-//          m_fixUpWasCalled = true;
-//          return execute(xctxt);
-//      	}
-//      }
-//      throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_VAR_NOT_RESOLVABLE, new Object[]{m_qname.toString()})); //"Variable not resolvable: "+m_qname);
-//    }
   }
   
   /**

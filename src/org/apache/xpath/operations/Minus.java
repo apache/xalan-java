@@ -26,6 +26,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.xs.types.XSDate;
 import org.apache.xpath.xs.types.XSNumericType;
 import org.apache.xpath.xs.types.XSYearMonthDuration;
 
@@ -88,7 +89,7 @@ public class Minus extends Operation
           
           XNodeSet rNodeSet = (XNodeSet)right;
           if (rNodeSet.getLength() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the second "
                                                                                    + "operand of subtraction operator '-'.");  
           }
@@ -104,7 +105,7 @@ public class Minus extends Operation
           
           XNodeSet lNodeSet = (XNodeSet)left;
           if (lNodeSet.getLength() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the first "
                                                                                    + "operand of subtraction operator '-'.");  
           }
@@ -121,7 +122,7 @@ public class Minus extends Operation
           
           XNodeSet rNodeSet = (XNodeSet)right;
           if (rNodeSet.getLength() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the second "
                                                                                    + "operand of subtraction operator '-'.");  
           }
@@ -138,7 +139,7 @@ public class Minus extends Operation
           
           XNodeSet lNodeSet = (XNodeSet)left;
           if (lNodeSet.getLength() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the first "
                                                                                    + "operand of subtraction operator '-'.");  
           }
@@ -155,7 +156,7 @@ public class Minus extends Operation
           
           XNodeSet lNodeSet = (XNodeSet)left;
           if (lNodeSet.getLength() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the first "
                                                                                    + "operand of subtraction operator '-'.");  
           }
@@ -166,7 +167,7 @@ public class Minus extends Operation
           
           XNodeSet rNodeSet = (XNodeSet)right;
           if (rNodeSet.getLength() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the second "
                                                                                    + "operand of subtraction operator '-'.");  
           }
@@ -185,7 +186,7 @@ public class Minus extends Operation
       else if ((left instanceof ResultSequence) && (right instanceof XNumber)) {
           ResultSequence rsLeft = (ResultSequence)left;          
           if (rsLeft.size() > 1) {
-              throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the first "
                                                                                    + "operand of subtraction operator '-'.");  
           }
@@ -201,7 +202,7 @@ public class Minus extends Operation
       else if ((left instanceof XNumber) && (right instanceof ResultSequence)) {
           ResultSequence rsRight = (ResultSequence)right;          
           if (rsRight.size() > 1) {
-              throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the second "
                                                                                    + "operand of subtraction operator '-'.");  
           }
@@ -217,7 +218,7 @@ public class Minus extends Operation
       else if ((left instanceof ResultSequence) && (right instanceof XSNumericType)) {
           ResultSequence rsLeft = (ResultSequence)left;          
           if (rsLeft.size() > 1) {
-              throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the first "
                                                                                    + "operand of subtraction operator '-'.");  
           }
@@ -234,7 +235,7 @@ public class Minus extends Operation
       else if ((left instanceof XSNumericType) && (right instanceof ResultSequence)) {
           ResultSequence rsRight = (ResultSequence)right;          
           if (rsRight.size() > 1) {
-              throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the second "
                                                                                    + "operand of subtraction operator '-'.");  
           }
@@ -251,34 +252,55 @@ public class Minus extends Operation
       else if ((left instanceof ResultSequence) && (right instanceof ResultSequence)) {
           ResultSequence rsLeft = (ResultSequence)left;          
           if (rsLeft.size() > 1) {
-              throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the left "
                                                                                    + "operand of subtraction operator '-'.");  
           }
           
           ResultSequence rsRight = (ResultSequence)right;          
           if (rsRight.size() > 1) {
-              throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
+              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
                                                                                    + "than one item is not allowed as the right "
                                                                                    + "operand of subtraction operator '-'.");  
           }
           
-          java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(rsLeft.item(0));
-          double lDouble = (Double.valueOf(lStr)).doubleValue();
+          XObject lArg = ((ResultSequence)left).item(0);
+          XObject rArg = ((ResultSequence)right).item(0);
           
-          java.lang.String rStr = XslTransformEvaluationHelper.getStrVal(rsRight.item(0));
-          double rDouble = (Double.valueOf(rStr)).doubleValue();
+          if (lArg instanceof XSDate) {
+              result = ((XSDate)lArg).subtract(rArg); 
+          }
+          else {
+              java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(lArg);
+              double lDouble = (Double.valueOf(lStr)).doubleValue();
+              
+              java.lang.String rStr = XslTransformEvaluationHelper.getStrVal(rArg);
+              double rDouble = (Double.valueOf(rStr)).doubleValue();
+              
+              result = new XNumber(lDouble - rDouble);
+          }
+      }
+      else if (left instanceof ResultSequence) {
+          ResultSequence rsLeft = (ResultSequence)left;          
+          if (rsLeft.size() > 1) {
+              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
+                                                                                   + "than one item is not allowed as the left "
+                                                                                   + "operand of subtraction operator '-'.");  
+          }
           
-          result = new XNumber(lDouble - rDouble);
+          XObject lArg = ((ResultSequence)left).item(0);
+          if (lArg instanceof XSDate) {
+              result = ((XSDate)lArg).subtract(right); 
+          }
       }
       else {          
           try {
              result = new XNumber(left.num() - right.num());
           }
           catch (Exception ex) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : could not apply the "
-                                                                                    + "subtraction operator '-', due to incorrectly "
-                                                                                    + "typed operand(s)."); 
+             throw new javax.xml.transform.TransformerException("XPTY0004 : Could not apply the "
+                                                                                              + "subtraction operator '-', due to incorrectly "
+                                                                                              + "typed operand(s)."); 
           }
       }
       
