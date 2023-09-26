@@ -249,6 +249,9 @@ public class Minus extends Operation
              result = new XNumber(lDouble - rDouble);
           }
       }
+      else if (left instanceof XSDate) {
+          result = ((XSDate)left).subtract(right);  
+      }
       else if ((left instanceof ResultSequence) && (right instanceof ResultSequence)) {
           ResultSequence rsLeft = (ResultSequence)left;          
           if (rsLeft.size() > 1) {
