@@ -380,9 +380,14 @@ public class SequenceTypeSupport {
                                                                                                                        sequenceTypeKindTest);
             }
             else if (srcValue instanceof ResultSequence) {
-               result = castResultSequenceInstance(srcValue, sequenceTypeXPathExprStr,
-                                                                                   seqExpectedTypeDataInp, xctxt, srcLocator,
-                                                                                   expectedType, itemTypeOccurenceIndicator);
+               ResultSequence srcResultSeq = (ResultSequence)srcValue;
+               if (srcResultSeq.size() == 1) {
+                   result = convertXDMValueToAnotherType(srcResultSeq.item(0), sequenceTypeXPathExprStr, seqExpectedTypeDataInp, xctxt);   
+               }
+               else {
+                   result = castResultSequenceInstance(srcValue, sequenceTypeXPathExprStr, seqExpectedTypeDataInp, xctxt, srcLocator, 
+                                                                                                               expectedType, itemTypeOccurenceIndicator);
+               }
             }
         }
         catch (TransformerException ex) {
