@@ -42,9 +42,15 @@ public class ElemParam extends ElemVariable
   static final long serialVersionUID = -1131781475589006431L;
   
   int m_qnameID;
+  
+  /**
+   * This class field, supports evaluation of stylesheet 
+   * xsl:iterate->xsl:param elements.
+   */
+  private int xslIterateIterationIdx = -1;
 
   /**
-   * Constructor ElemParam
+   * Constructor ElemParam.
    *
    */
   public ElemParam(){}
@@ -117,27 +123,27 @@ public class ElemParam extends ElemVariable
     
     SourceLocator srcLocator = xctx.getSAXLocator();
     
-    String asAttrVal = getAs();
+    boolean isChildElemOfXslElemIterate = false;
+    if (getParentElem() instanceof ElemIterate) {
+       isChildElemOfXslElemIterate = true; 
+    }
     
-    if(!vars.isLocalSet(m_index)) {
-        // The caller of this stylesheet callable component, didn't provide the 
-        // parameter value via xsl:with-param instruction.
-        
-        // We'll determine the parameter's value by evaluating either the parameter's
-        // 'select' attribute, or the contained sequence constructor within xsl:param 
-        // element.
+    if (!vars.isLocalSet(m_index) || (isChildElemOfXslElemIterate && (xslIterateIterationIdx == 0))) {
+        // The caller of an stylesheet callable component (associated with this xsl:param element), 
+        // didn't provide xsl:param's value via xsl:with-param instruction.
         
         int sourceNode = transformer.getXPathContext().getCurrentNode();
         
         try {
            XObject var = getValue(transformer, sourceNode);
-           if (var == null) {
+           if (var != null) {
+              transformer.getXPathContext().getVarStack().setLocalVariable(m_index, var);    
+           }
+           else {              
               throw new TransformerException("XTTE0590 : The value to parameter " + m_qname.toString() + " cannot be assigned. "
                                                                              + "Either an input content for parameter is not available within "
-                                                                             + "stylesheet context, or parameter's value cannot be cast to an expected type.", srcLocator);  
+                                                                             + "stylesheet context, or parameter's value cannot be cast to an expected type.", srcLocator);
            }
-           
-           transformer.getXPathContext().getVarStack().setLocalVariable(m_index, var);
         }
         catch (TransformerException ex) {
             throw new TransformerException("XTTE0590 : The value to parameter " + m_qname.toString() + " cannot be assigned. "
@@ -146,12 +152,13 @@ public class ElemParam extends ElemVariable
         }
     }
     else {
-        // The caller of this stylesheet callable component, has provided the 
-        // parameter's value via xsl:with-param instruction.
+        // The caller of an stylesheet callable component (associated with this xsl:param element), 
+        // has provided xsl:param's value via xsl:with-param instruction.
         
-        // If the xsl:param instruction has 'as' attribute, we'll check below
-        // whether the parameter's value conforms to the sequence type specified by
+        // If the xsl:param instruction has an 'as' attribute, we check below
+        // whether xsl:param's value conforms to the sequence type specified by
         // xsl:param's 'as' attribute.
+        String asAttrVal = getAs();
         
         if (asAttrVal != null) {
           try {
@@ -172,9 +179,15 @@ public class ElemParam extends ElemVariable
        }
     }
     
+    // Reset this class field
+    xslIterateIterationIdx = -1;
     
     if (transformer.getDebug())
       transformer.getTraceManager().fireTraceEndEvent(this);
+  }
+  
+  public void setXslIterateIterationIdx(int iterationIdx) {
+     xslIterateIterationIdx = iterationIdx;   
   }
   
 }
