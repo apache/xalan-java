@@ -20,7 +20,6 @@ package org.apache.xalan.templates;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -30,22 +29,14 @@ import org.xml.sax.SAXException;
 
 import com.sun.org.apache.xml.internal.dtm.DTM;
 
-/**
- * XSLT 3.0 xsl:on-completion element.
- * 
-   <xsl:on-completion select? = expression>
-      <!-- Content: sequence-constructor -->
-   </xsl:on-completion>
-         
-   @author Mukul Gandhi <mukulg@apache.org>
- * 
- * @xsl.usage advanced
- */
 /*
  * Implementation of the XSLT 3.0 xsl:on-completion instruction.
  * 
- * The XSLT xsl:on-completion element is intended to be used, within 
- * xsl:iterate element.
+ * Ref : https://www.w3.org/TR/xslt-30/#element-iterate
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ * 
+ * @xsl.usage advanced
  */
 public class ElemIterateOnCompletion extends ElemTemplateElement implements ExpressionOwner
 {
@@ -167,16 +158,15 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
        * 
        * @xsl.usage advanced
        */
-       public void transformXslOncompletionInstruction(TransformerImpl transformer) throws 
-                                                                               TransformerException {
+       private void transformXslOncompletionInstruction(TransformerImpl transformer) 
+                                                                                  throws TransformerException {
                                                                   
-           if ((XslTransformSharedDatastore.isXslIterateOnCompletionActive).booleanValue()) {
-               final XPathContext originalXctxt = transformer.getXPathContext();
-               
+           if (transformer.isXslIterateOnCompletionActive()) {               
                XPathContext xctxt = transformer.getXPathContext();
                
-               // during evaluation of xsl:on-completion, the context item is absent.
-               // we make following two changes to XPath context to ensure this.
+               // During evaluation of xsl:on-completion instruction, the XPath context item
+               // is absent. We make following two changes to an active XPath context to
+               // ensure this.
                xctxt.pushCurrentNode(DTM.NULL);
                xctxt.pushCurrentExpressionNode(DTM.NULL);
                
@@ -185,9 +175,11 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
                    
                    try {
                        m_selectExpression.executeCharsToContentHandler(xctxt, rth);
-                   } catch (TransformerException ex) {
+                   } 
+                   catch (TransformerException ex) {
                        throw ex;
-                   } catch (SAXException ex) {
+                   } 
+                   catch (SAXException ex) {
                        throw new TransformerException(ex);
                    }
                }
@@ -199,9 +191,6 @@ public class ElemIterateOnCompletion extends ElemTemplateElement implements Expr
                       elemTemplate.execute(transformer);
                    } 
                }
-               
-               // restore the XPath original context, on current XSLT transformer object
-               transformer.setXPathContext(originalXctxt);
            }                      
        }
       

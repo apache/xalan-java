@@ -363,6 +363,16 @@ public class TransformerImpl extends Transformer
 
   /** NEEDSDOC Field m_shouldReset          */
   private boolean m_shouldReset = true;
+  
+  /**
+   * A class field, to support xsl:iterate instruction evaluation.
+   */
+  private boolean isXslIterateBreakEvaluated = false;
+  
+  /**
+   * A class field, to support xsl:iterate instruction evaluation.
+   */
+  private boolean isXslIterateOnCompletionActive = false;
 
   /**
    * NEEDSDOC Method setShouldReset 
@@ -3787,6 +3797,22 @@ public class TransformerImpl extends Transformer
      */
     public boolean getSource_location() {
         return m_source_location;
+    }
+
+    public boolean isXslIterateBreakEvaluated() {
+        return isXslIterateBreakEvaluated;
+    }
+
+    public void setXslIterateBreakEvaluated(boolean isXslIterateBreakEvaluated) {
+        this.isXslIterateBreakEvaluated = isXslIterateBreakEvaluated;
+    }
+
+    public boolean isXslIterateOnCompletionActive() {
+        return isXslIterateOnCompletionActive;
+    }
+
+    public void setXslIterateOnCompletionActive(boolean isXslIterateOnCompletionActive) {
+        this.isXslIterateOnCompletionActive = isXslIterateOnCompletionActive;
     }
 
 }  // end TransformerImpl class

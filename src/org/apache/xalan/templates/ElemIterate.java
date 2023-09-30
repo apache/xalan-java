@@ -23,7 +23,6 @@ import java.util.List;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.IntStack;
@@ -32,41 +31,18 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.DynamicFunctionCall;
-import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.operations.Operation;
-import org.apache.xpath.operations.Variable;
 
-/**
- * XSLT 3.0 xsl:iterate element.
- * 
-   <xsl:iterate select = expression>
-      <!-- Content: (xsl:param*, xsl:on-completion?, sequence-constructor) -->
-   </xsl:iterate>
-   
-   <xsl:next-iteration>
-      <!-- Content: (xsl:with-param*) -->
-   </xsl:next-iteration>
-
-   <xsl:break select? = expression>
-      <!-- Content: sequence-constructor -->
-   </xsl:break>
-
-   <xsl:on-completion select? = expression>
-      <!-- Content: sequence-constructor -->
-   </xsl:on-completion>
-   
-   Ref : https://www.w3.org/TR/xslt-30/#iterate
-         
-   @author Mukul Gandhi <mukulg@apache.org>
- * 
- * @xsl.usage advanced
- */
 /*
  * Implementation of the XSLT 3.0 xsl:iterate instruction.
+ * 
+ * Ref : https://www.w3.org/TR/xslt-30/#element-iterate
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ * 
+ * @xsl.usage advanced
  */
 public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
 {
@@ -190,9 +166,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
        * 
        * @xsl.usage advanced
        */
-       public void transformSelectedNodes(TransformerImpl transformer) throws TransformerException {
-    
-           final XPathContext xctxtOriginal = transformer.getXPathContext();
+       private void transformSelectedNodes(TransformerImpl transformer) throws TransformerException {
         
            XPathContext xctxt = transformer.getXPathContext();
          
@@ -202,154 +176,163 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
            // instruction's evaluation.
            fXslIterateParamWithparamDataList.clear();
            
-           validateXslElemIterateChildElementsSequence(xctxt);
-           
-           // Evaluate xsl:iterate instruction, when value of its "select" attribute evaluates 
-           // to a 'ResultSequence'. 
-           if ((m_selectExpression instanceof Variable) || 
-                                                  (m_selectExpression instanceof Operation) || 
-                                                  (m_selectExpression instanceof Function)  ||
-                                                  (m_selectExpression instanceof DynamicFunctionCall)) {
+           validateXslElemIterateChildElementsSequence(xctxt); 
                
-               XObject  evalResult = m_selectExpression.execute(xctxt);
+           XObject evalResult = m_selectExpression.execute(xctxt);                              
                
-               if (evalResult instanceof ResultSequence) {
-                   ResultSequence resultSeq = (ResultSequence)evalResult;
-                   List<XObject> resultSeqItems = resultSeq.getResultSequenceItems();                                      
+           if (evalResult instanceof ResultSequence) {
+               ResultSequence resultSeq = (ResultSequence)evalResult;
+               List<XObject> resultSeqItems = resultSeq.getResultSequenceItems();                                      
                    
-                   ElemIterateOnCompletion xslOnCompletionTemplate = null;
-                   
-                   for (int idx = 0; idx < resultSeqItems.size(); idx++) {
-                       XObject resultSeqItem = resultSeqItems.get(idx);
-                       
-                       if (resultSeqItem instanceof XNodeSet) {
-                          resultSeqItem = ((XNodeSet)resultSeqItem).getFresh(); 
-                       }
-                       
-                       setXPathContextForXslSequenceProcessing(resultSeqItems.size(), idx, resultSeqItem, xctxt);
-                       
-                       boolean isBreakFromXslContentLoop = false;
-                       
-                       for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
-                                                                             elemTemplate = elemTemplate.m_nextSibling) {
-                           if ((elemTemplate instanceof ElemIterateOnCompletion) && (xslOnCompletionTemplate == null)) {
-                               xslOnCompletionTemplate = (ElemIterateOnCompletion)elemTemplate;     
-                           }
-                           
-                           if (!(XslTransformSharedDatastore.isXslIterateBreakEvaluated).booleanValue()) {
-                               xctxt.setSAXLocator(elemTemplate);
-                               transformer.setCurrentElement(elemTemplate);
-                               elemTemplate.execute(transformer);
-                           }
-                           else {                              
-                               resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);                               
-                               isBreakFromXslContentLoop = true;                               
-                               break;    
-                           }
-                       }
-                       
-                       if (!isBreakFromXslContentLoop) {                         
-                          resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);
-                       }
-                       
-                       if ((XslTransformSharedDatastore.isXslIterateBreakEvaluated).booleanValue()) {                       
-                          break;   
-                       }
-                   }
-                   
-                   // Reset the, XPath context's size, item and position variables
-                   xctxt.setXPath3ContextSize(-1);
-                   xctxt.setXPath3ContextItem(null);
-                   xctxt.setXPath3ContextPosition(-1);                                      
-                   
-                   if ((xslOnCompletionTemplate != null) && !(XslTransformSharedDatastore.
-                                                                              isXslIterateBreakEvaluated).booleanValue()) {
-                        XslTransformSharedDatastore.isXslIterateOnCompletionActive = Boolean.TRUE;
-                        xctxt.setSAXLocator(xslOnCompletionTemplate);
-                        transformer.setCurrentElement(xslOnCompletionTemplate);
-                        xslOnCompletionTemplate.execute(transformer);
-                        XslTransformSharedDatastore.isXslIterateOnCompletionActive = Boolean.FALSE;
-                  }
-
-                  XslTransformSharedDatastore.isXslIterateBreakEvaluated = Boolean.FALSE;
-                  
-                  transformer.setXPathContext(xctxtOriginal);
-                
-                  // return from this xsl:iterate instruction's evaluation
-                  return;                  
-               }
-           }
-           
-           // Evaluate xsl:iterate instruction, when value of its "select" attribute evaluates 
-           // to a node set. 
-           DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
-        
-           try {               
-               xctxt.pushCurrentNode(DTM.NULL);
-
-               IntStack currentNodes = xctxt.getCurrentNodeStack();
-
-               xctxt.pushCurrentExpressionNode(DTM.NULL);
-
-               IntStack currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
-
-               xctxt.pushSAXLocatorNull();
-               xctxt.pushContextNodeList(sourceNodes);
-               transformer.pushElemTemplateElement(null);                              
-                          
-               int nextNode;
-               
                ElemIterateOnCompletion xslOnCompletionTemplate = null;
-               
-               while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
-                   currentNodes.setTop(nextNode);
-                   currentExpressionNodes.setTop(nextNode);
-                                                                        
-                   for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
-                                                                          elemTemplate = elemTemplate.m_nextSibling) {
-                       if ((elemTemplate instanceof ElemIterateOnCompletion) && 
-                                                                        (xslOnCompletionTemplate == null)) {
-                           xslOnCompletionTemplate = (ElemIterateOnCompletion)elemTemplate;     
-                       }
-                       
-                       if (!(XslTransformSharedDatastore.isXslIterateBreakEvaluated).booleanValue()) {
-                           xctxt.setSAXLocator(elemTemplate);
-                           transformer.setCurrentElement(elemTemplate);
-                           elemTemplate.execute(transformer);
-                       }
-                       else {
-                           break;    
-                       }                                              
-                   }                                      
                    
-                   if ((XslTransformSharedDatastore.isXslIterateBreakEvaluated).booleanValue()) {                       
-                       break;   
-                   }
+               boolean isBreakFromXslContentLoop = false;
+                   
+               for (int idx = 0; idx < resultSeqItems.size(); idx++) {
+                  XObject resultSeqItem = resultSeqItems.get(idx);
+                       
+                  if (resultSeqItem instanceof XNodeSet) {
+                     resultSeqItem = ((XNodeSet)resultSeqItem).getFresh(); 
+                  }
+                       
+                  setXPathContextForXslSequenceProcessing(resultSeqItems.size(), idx, resultSeqItem, xctxt);
+                                                                     
+                  for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
+                                                                                       elemTemplate = elemTemplate.m_nextSibling) {                           
+                     if (idx == 0) {
+                          if (elemTemplate instanceof ElemParam) {
+                              // For xsl:iterate's first iteration, evaluate xsl:param element
+                              xctxt.setSAXLocator(elemTemplate);
+                              transformer.setCurrentElement(elemTemplate);
+                              ((ElemParam)elemTemplate).setXslIterateIterationIdx(idx);
+                              elemTemplate.execute(transformer);
+                          }                                
+                          else if (elemTemplate instanceof ElemIterateOnCompletion) {
+                              xslOnCompletionTemplate = (ElemIterateOnCompletion)elemTemplate;
+                          }
+                          else {
+                             if (!transformer.isXslIterateBreakEvaluated()) {
+                                xctxt.setSAXLocator(elemTemplate);
+                                transformer.setCurrentElement(elemTemplate);
+                                elemTemplate.execute(transformer);
+                             }
+                             else {                              
+                                resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);                               
+                                isBreakFromXslContentLoop = true;                               
+                                break;    
+                             }
+                          }
+                      }
+                      else {
+                          if (!transformer.isXslIterateBreakEvaluated()) {
+                             xctxt.setSAXLocator(elemTemplate);
+                             transformer.setCurrentElement(elemTemplate);
+                             elemTemplate.execute(transformer);
+                          }
+                          else {                              
+                             resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);                               
+                             isBreakFromXslContentLoop = true;                               
+                             break;    
+                          }
+                      }
+                  }
+                       
+                  if (!isBreakFromXslContentLoop) {                         
+                     resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);  
+                  }
+                  else {                          
+                     break;
+                  }
                }
-               
-               if ((xslOnCompletionTemplate != null) && !(XslTransformSharedDatastore.
-                                                                                isXslIterateBreakEvaluated).booleanValue()) {
-                    XslTransformSharedDatastore.isXslIterateOnCompletionActive = Boolean.TRUE;
-                    xctxt.setSAXLocator(xslOnCompletionTemplate);
-                    transformer.setCurrentElement(xslOnCompletionTemplate);
-                    xslOnCompletionTemplate.execute(transformer);
-                    XslTransformSharedDatastore.isXslIterateOnCompletionActive = Boolean.FALSE;
+                   
+               // Reset the, XPath context's size, item and position variables
+               xctxt.setXPath3ContextSize(-1);
+               xctxt.setXPath3ContextItem(null);
+               xctxt.setXPath3ContextPosition(-1);                                      
+                   
+               if ((xslOnCompletionTemplate != null) && !transformer.isXslIterateBreakEvaluated()) {
+                  transformer.setXslIterateOnCompletionActive(true);
+                  xctxt.setSAXLocator(xslOnCompletionTemplate);
+                  transformer.setCurrentElement(xslOnCompletionTemplate);
+                  xslOnCompletionTemplate.execute(transformer);
+                  transformer.setXslIterateOnCompletionActive(false);
                }
-               
-               XslTransformSharedDatastore.isXslIterateBreakEvaluated = Boolean.FALSE; 
+
+               transformer.setXslIterateBreakEvaluated(false);
            }
-           finally {
-              xctxt.popSAXLocator();
-              xctxt.popContextNodeList();
-              transformer.popElemTemplateElement();
-              xctxt.popCurrentExpressionNode();
-              xctxt.popCurrentNode();
-              sourceNodes.detach();
-           }
+           else {
+               // Evaluate xsl:iterate instruction, when value of its "select" attribute evaluates 
+               // to a node set. 
+               DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
         
-           // Restore the xpath context, to where it was before this xsl:iterate 
-           // instruction began an evaluation.
-           transformer.setXPathContext(xctxtOriginal);        
+               try {               
+                   xctxt.pushCurrentNode(DTM.NULL);
+                   IntStack currentNodes = xctxt.getCurrentNodeStack();
+                   xctxt.pushCurrentExpressionNode(DTM.NULL);
+                   IntStack currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
+                   xctxt.pushSAXLocatorNull();
+                   xctxt.pushContextNodeList(sourceNodes);
+                   transformer.pushElemTemplateElement(null);                              
+                          
+                   int nextNode;
+               
+                   ElemIterateOnCompletion xslOnCompletionTemplate = null;
+               
+                   int idx = -1;
+                   while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
+                      idx++;
+                      currentNodes.setTop(nextNode);
+                      currentExpressionNodes.setTop(nextNode);
+                                                                        
+                      for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
+                                                                          elemTemplate = elemTemplate.m_nextSibling) {
+                          if ((elemTemplate instanceof ElemIterateOnCompletion) && 
+                                                                        (xslOnCompletionTemplate == null)) {
+                              xslOnCompletionTemplate = (ElemIterateOnCompletion)elemTemplate;     
+                          }
+                       
+                          if ((idx == 0) && (elemTemplate instanceof ElemParam)) {
+                              xctxt.setSAXLocator(elemTemplate);
+                              transformer.setCurrentElement(elemTemplate);
+                              ((ElemParam)elemTemplate).setXslIterateIterationIdx(idx);
+                              elemTemplate.execute(transformer); 
+                          }
+                          else {
+                              if (!transformer.isXslIterateBreakEvaluated()) {
+                                  xctxt.setSAXLocator(elemTemplate);
+                                  transformer.setCurrentElement(elemTemplate);
+                                  elemTemplate.execute(transformer);
+                              }
+                              else {
+                                  break;    
+                              }
+                          }
+                      }                                      
+                   
+                      if (transformer.isXslIterateBreakEvaluated()) {
+                          break;   
+                      }
+                   }
+               
+                  if ((xslOnCompletionTemplate != null) && !transformer.isXslIterateBreakEvaluated()) {
+                       transformer.setXslIterateOnCompletionActive(true);
+                       xctxt.setSAXLocator(xslOnCompletionTemplate);
+                       transformer.setCurrentElement(xslOnCompletionTemplate);
+                       xslOnCompletionTemplate.execute(transformer);
+                       transformer.setXslIterateOnCompletionActive(false);
+                  }
+               
+                  transformer.setXslIterateBreakEvaluated(false);
+             }
+             finally {
+                 xctxt.popSAXLocator();
+                 xctxt.popContextNodeList();
+                 transformer.popElemTemplateElement();
+                 xctxt.popCurrentExpressionNode();
+                 xctxt.popCurrentNode();
+                 sourceNodes.detach();
+             }
+          }       
       }
       
       /**

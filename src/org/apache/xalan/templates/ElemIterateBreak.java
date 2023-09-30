@@ -20,7 +20,6 @@ package org.apache.xalan.templates;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
@@ -28,21 +27,14 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.xml.sax.SAXException;
 
-/**
- * XSLT 3.0 xsl:break element.
- * 
-   <xsl:break select? = expression>
-      <!-- Content: sequence-constructor -->
-   </xsl:break>
-         
-   @author Mukul Gandhi <mukulg@apache.org>
- * 
- * @xsl.usage advanced
- */
 /*
  * Implementation of the XSLT 3.0 xsl:break instruction.
  * 
- * The XSLT xsl:break element is intended to be used, within xsl:iterate element.
+ * Ref : https://www.w3.org/TR/xslt-30/#element-iterate
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ * 
+ * @xsl.usage advanced
  */
 public class ElemIterateBreak extends ElemTemplateElement implements ExpressionOwner
 {
@@ -169,7 +161,7 @@ public class ElemIterateBreak extends ElemTemplateElement implements ExpressionO
                       
             if (isXslBreakDescendantOfXslIterate && isXslInstructionInTailPositionOfSequenceConstructor(this)) {              
                 transformXslBreakInstruction(transformer);
-                XslTransformSharedDatastore.isXslIterateBreakEvaluated = Boolean.TRUE;
+                transformer.setXslIterateBreakEvaluated(true);
             }
             else {
                 throw new TransformerException("XTSE3120 : an xsl:break instruction is not in a "

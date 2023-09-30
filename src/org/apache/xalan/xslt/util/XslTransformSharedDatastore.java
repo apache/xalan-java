@@ -27,11 +27,5 @@ public class XslTransformSharedDatastore {
     
     // XSLT document's uri, used for error reporting
     public static String xslSystemId;
-    
-    // To support xsl:iterate instruction evaluation
-    public static Boolean isXslIterateBreakEvaluated = Boolean.FALSE;
-    
-    // To support xsl:iterate instruction evaluation
-    public static Boolean isXslIterateOnCompletionActive = Boolean.FALSE;
 
 }

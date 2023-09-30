@@ -290,5 +290,45 @@ public class XslIterateTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslIterateTest25() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test23.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test23.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test23.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslIterateTest26() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test24.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test24.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test24.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslIterateTest27() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test25.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test25.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test25.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslIterateTest28() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_g.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test26.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test26.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }
