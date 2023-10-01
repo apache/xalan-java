@@ -265,7 +265,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
                          throw ex;  
                       }
                       else {
-                         throw new TransformerException("XTTE0570 : The value of sequence constructor, contained within xsl:with-param element cannot "
+                         throw new TransformerException("XTTE0570 : The value of sequence constructor, supplied within xsl:with-param element cannot "
                                                                                                    + "be cast to the type " + withParamAsAttr, xctxt.getSAXLocator());  
                       }
                    }
