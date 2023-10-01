@@ -12,7 +12,7 @@
   
   <xsl:template match="/">     
      <result>
-        <!-- Evaluate factorial of various positive integer values,
+        <!-- Evaluate factorial of various positive integer numbers,
              provided by xsl:for-each instruction.
         -->
         <xsl:for-each select="1 to 7">
@@ -23,7 +23,7 @@
   </xsl:template>
   
   <!-- A stylesheet function, to evaluate factorial of a positive 
-       integer value. 
+       integer number. 
   -->
   <xsl:function name="fn0:factorial" as="element(factorial)">
      <xsl:param name="inpNum" as="xs:integer"/>

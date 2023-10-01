@@ -26,11 +26,6 @@ import org.apache.xpath.XPath;
  * 
  * @xsl.usage advanced
  */
-/*
- * An object of this class, stores information about one xsl:param 
- * element or one xsl:next-iteration->xsl:with-param element, for a 
- * particular xsl:iterate instruction.
- */
 public class XslIterateParamWithparamData {
     
     public QName nameVal;

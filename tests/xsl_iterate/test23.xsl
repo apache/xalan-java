@@ -11,7 +11,7 @@
   
   <xsl:template match="/">     
      <result>
-        <!-- Evaluate factorial of a positive integer value. -->
+        <!-- Evaluate factorial of a positive integer number. -->
         <xsl:variable name="inpNum" select="5" as="xs:integer"/>        
         <xsl:iterate select="2 to $inpNum">
 	       <xsl:param name="result" select="1" as="xs:integer"/>
@@ -26,7 +26,7 @@
 	       </xsl:next-iteration>
         </xsl:iterate>
 
-        <!-- Evaluate factorial of another positive integer value. -->
+        <!-- Evaluate factorial of another positive integer number. -->
         <xsl:variable name="inpNum" select="6" as="xs:integer"/>         
 	    <xsl:iterate select="2 to $inpNum">
            <xsl:param name="result" select="1" as="xs:integer"/>

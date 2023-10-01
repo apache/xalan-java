@@ -29,7 +29,10 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XRTreeFrag;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -227,25 +230,83 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
             // Update all of xsl:iterate's xsl:param values, using the corresponding
             // xsl:next-iteration's xsl:with-param values. The code within 'for' loop below,
             // updates each of the xsl:iterate->xsl:param's values for xsl:iterate's second and 
-            // greater iterations. For xsl:iterate's first iteration, xsl:param's get their
+            // subsequent iterations. For xsl:iterate's first iteration, xsl:param's get their
             // values from the xsl:param instructions themselves.
             VariableStack varStack = xctxt.getVarStack();
             for (int idx = 0; idx < fWithparamList.size(); idx++) {
-                XslIterateParamWithparamData withParamData = fWithparamList.get(idx);
-                                                
-                QName xslParamQName = withParamData.getNameVal();                
-                ElemParam elemParam = getElemParamForQName(xslParamQName);
-                XPath withParamSelectVal = withParamData.getSelectVal();                               
-                XObject withParamVal = withParamSelectVal.execute(xctxt, contextNode, this);
+                XObject withParamVal = null;
+                
+                XslIterateParamWithparamData withParamData = fWithparamList.get(idx);                                                
+                QName xslParamQName = withParamData.getNameVal();                                
+                ElemWithParam elemWithParam = getElemWithParamForQName(xslParamQName);
+                
+                XPath withParamSelectVal = withParamData.getSelectVal();                
+                if (withParamSelectVal != null) {
+                   // Evaluate xsl:with-param's value, from its "select" attribute
+                   withParamVal = withParamSelectVal.execute(xctxt, contextNode, this);
+                }
+                else {
+                   // Evaluate xsl:with-param's value, from the sequence constructor
+                   // provided as content within xsl:with-param element.                   
+                   int rootNodeHandleOfRtf = transformer.transformToRTF(elemWithParam);
+                   NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, 
+                                                                                elemWithParam)).convertToNodeset();                
+                   withParamVal = new XNodeSetForDOM(nodeList, xctxt);
+                }
+                
+                String withParamAsAttr = elemWithParam.getAs();
+                if (withParamAsAttr != null) {
+                   try {
+                      withParamVal = SequenceTypeSupport.convertXDMValueToAnotherType(withParamVal, withParamAsAttr, null, 
+                                                                                                                 transformer.getXPathContext());
+                   }
+                   catch (TransformerException ex) {
+                      if (withParamSelectVal != null) {
+                         throw ex;  
+                      }
+                      else {
+                         throw new TransformerException("XTTE0570 : The value of sequence constructor, supplied within xsl:with-param element cannot "
+                                                                                                   + "be cast to the type " + withParamAsAttr, xctxt.getSAXLocator());  
+                      }
+                   }
+                }
+                
+                ElemParam elemParam = getElemParamForQName(xslParamQName);                
                 varStack.setLocalVariable(elemParam.getIndex(), withParamVal);
             }
         }
         
-        /*
+        /**
+         * Given value of name for, xsl:next-iteration's xsl:with-param element,
+         * find corresponding reference of stylesheet element xsl:with-param.
+         * 
+         * We find this information, by traversing the stylesheet child elements
+         * of xsl:next-iteration element.
+         */
+        private ElemWithParam getElemWithParamForQName(QName xslWithparamQName) {
+           ElemWithParam elemWithParam = null;
+           
+           ElemTemplateElement elemTemplateElement = getFirstChildElem();
+           
+           while (elemTemplateElement != null) {
+              ElemWithParam elemWithParamTemp = (ElemWithParam)elemTemplateElement;
+              if ((elemWithParamTemp.getName()).equals(xslWithparamQName)) {
+                 elemWithParam = elemWithParamTemp;
+                 break;
+              }
+              else {
+                 elemTemplateElement = elemTemplateElement.getNextSiblingElem(); 
+              }
+           }
+           
+           return elemWithParam;
+        }
+        
+        /**
          * For the currently active xsl:next-iteration instruction, find reference to
          * its xsl:iterate->xsl:param element for a given xsl:iterate->xsl:param's name.
          * 
-         * We find this xsl:param element reference, by xsl element traversal on
+         * We find this xsl:param element reference, by element traversal on
          * preceding-sibling and ancestor axes directions starting from the current
          * xsl:next-iteration instruction.
          * 
