@@ -161,8 +161,6 @@ public class ElemSequence extends ElemTemplateElement
 
     XObject xslSequenceVal = null;
     
-    final XPathContext xctxtOriginal = transformer.getXPathContext();
-    
     XPathContext xctxt = transformer.getXPathContext();
 
     xctxt.pushCurrentNode(sourceNode);
@@ -379,10 +377,7 @@ public class ElemSequence extends ElemTemplateElement
     }
     finally {      
        xctxt.popCurrentNode();
-    }
-    
-    // Restore the original xpath context, on the xslt transformer object
-    transformer.setXPathContext(xctxtOriginal);    
+    }   
   }
 
   /**
@@ -475,6 +470,9 @@ public class ElemSequence extends ElemTemplateElement
          if (seqExpectedTypeData.getSequenceTypeKindTest() != null) {
             isToAddStrValSerializationSuffix = false; 
          }
+     }
+     else {
+         isToAddStrValSerializationSuffix = false;
      }
      
      return isToAddStrValSerializationSuffix; 

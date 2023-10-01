@@ -11,7 +11,7 @@
   
   <xsl:template match="/">     
      <result>
-        <!-- Evaluate factorial of a positive integer value, by invoking a 
+        <!-- Evaluate factorial of a positive integer number, by invoking a 
              stylesheet named template. 
         -->
         <xsl:variable name="inpNum" select="5" as="xs:integer"/>
@@ -19,7 +19,7 @@
            <xsl:with-param name="inpNum" select="$inpNum" as="xs:integer"/>
         </xsl:call-template>
         
-        <!-- Evaluate factorial of another positive integer value, by invoking a 
+        <!-- Evaluate factorial of another positive integer number, by invoking a 
              stylesheet named template. 
         -->
 	    <xsl:variable name="inpNum" select="6" as="xs:integer"/>
@@ -30,7 +30,7 @@
   </xsl:template>
   
   <!-- A stylesheet named template, to evaluate factorial of a positive 
-       integer value. 
+       integer number. 
   -->
   <xsl:template name="factorial" as="element(factorial)">
      <xsl:param name="inpNum" as="xs:integer"/>

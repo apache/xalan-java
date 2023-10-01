@@ -320,8 +320,6 @@ public class ElemVariable extends ElemTemplateElement
 
     XObject var = null;
     
-    final XPathContext xctxtOriginal = transformer.getXPathContext();
-    
     XPathContext xctxt = transformer.getXPathContext();
 
     xctxt.pushCurrentNode(sourceNode);
@@ -578,9 +576,6 @@ public class ElemVariable extends ElemTemplateElement
           var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, xctxt); 
        }
     }
-    
-    // Restore the original xpath context, on the xslt transformer object
-    transformer.setXPathContext(xctxtOriginal);
         
     return var;
     
