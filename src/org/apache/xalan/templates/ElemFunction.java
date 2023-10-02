@@ -17,12 +17,18 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.ref.DTMNodeList;
+import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
@@ -64,11 +70,6 @@ public class ElemFunction extends ElemTemplate
 {
 
   private static final long serialVersionUID = 4973132678982467288L;
-  
-  /**
-   * The value of the "name" attribute.
-   */
-  private static QName m_name;
 
   /**
    * Class constructor.
@@ -82,7 +83,6 @@ public class ElemFunction extends ElemTemplate
   public void setName(QName qName)
   {      
       super.setName(qName);
-      m_name = qName;
   }
 
   /**
@@ -124,69 +124,133 @@ public class ElemFunction extends ElemTemplate
                                                              ResultSequence argSequence) throws TransformerException {
       XObject result = null;
       
-      XPathContext xctxt = transformer.getXPathContext();
+      XPathContext xctxt = transformer.getXPathContext();            
       
-      SourceLocator srcLocator = xctxt.getSAXLocator(); 
-      
-      VariableStack varStack = xctxt.getVarStack();
-      
-      int thisframe = varStack.getStackFrame();
-      int nextFrame = varStack.link(m_frameSize);
-      
-      varStack.setStackFrame(thisframe);
+      SourceLocator srcLocator = xctxt.getSAXLocator();
       
       String funcLocalName = m_name.getLocalName();
-      String funcNameSpaceUri = m_name.getNamespaceURI(); 
+      String funcNameSpaceUri = m_name.getNamespaceURI();
       
-      int paramCount = 0;
-      for (ElemTemplateElement elem = getFirstChildElem(); elem != null; 
-                                                              elem = elem.getNextSiblingElem()) {
-          if (elem.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) {
-             if (argSequence.size() < (paramCount + 1)) {
-                 throw new TransformerException("XPST0017 : Cannot find a " + argSequence.size() + " argument function named "
-                                                                            + "{" + funcNameSpaceUri + "}" + funcLocalName + "() within a stylesheet scope. "
-                                                                            + "The function name was recognized, but number of arguments is wrong.", srcLocator); 
-             }
-             XObject argValue = argSequence.item(paramCount);
-             XObject argConvertedVal = argValue;
-             String paramAsAttrStrVal = ((ElemParam)elem).getAs();              
-             if (paramAsAttrStrVal != null) {
-                try {
-                   argConvertedVal = SequenceTypeSupport.convertXDMValueToAnotherType(argValue, paramAsAttrStrVal, null, xctxt);
-                   if (argConvertedVal == null) {
-                      throw new TransformerException("XPTY0004 : Function call argument at position " + (paramCount + 1) + " for "
-                                                                        + "function {" + funcNameSpaceUri + "}" + funcLocalName + "(), doesn't "
-                                                                        + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator); 
-                   }
+      // Validate few of the information of xsl:function's xsl:param declarations.         
+      Map<QName, Integer> xslParamMap = new HashMap<QName, Integer>();
+      int idx = 0;
+      PrefixResolver prefixResolver = xctxt.getNamespaceContext();
+      for (ElemTemplateElement elem = getFirstChildElem(); elem != null; elem = elem.getNextSiblingElem()) {
+         String nodeName = elem.getNodeName();         
+         if (nodeName.contains(":")) {
+            String nsPrefix = nodeName.substring(0, nodeName.indexOf(':'));
+            String namespaceUri = prefixResolver.getNamespaceForPrefix(nsPrefix);
+            String nodeLocalName = nodeName.substring(nodeName.indexOf(':') + 1);
+            if ((Constants.ELEMNAME_PARAMVARIABLE_STRING).equals(nodeLocalName) && 
+                                                                             (Constants.S_XSLNAMESPACEURL).equals(namespaceUri)) {
+                String xslParamName = elem.getAttribute(Constants.ATTRNAME_NAME);
+                if (xslParamMap.get(new QName(xslParamName)) == null) {
+                   xslParamMap.put(new QName(xslParamName), Integer.valueOf(idx)); 
                 }
-                catch (TransformerException ex) {
-                   throw new TransformerException("XPTY0004 : Function call argument at position " + (paramCount + 1) + " for "
-                                                                     + "function {" + funcNameSpaceUri + "}" + funcLocalName + "(), doesn't "
-                                                                     + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator); 
+                else {
+                   throw new TransformerException("XPST0017 : The xsl:function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
+                                                                             "(), has more than one xsl:param '" + xslParamName + "' declaration.", srcLocator); 
                 }
+            }
+         }
+         else if (elem instanceof ElemParam) {
+             ElemParam elemParam = (ElemParam)elem;
+             QName elemParamQName = elemParam.getName();
+             if (xslParamMap.get(elemParamQName) == null) {
+                xslParamMap.put(elemParamQName, Integer.valueOf(idx)); 
              }
-             
-             if (argConvertedVal instanceof ResultSequence) {                
-                XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)argConvertedVal, 
-                                                                                                                            xctxt);
-                if (nodeSet != null) {
-                   argConvertedVal = nodeSet;  
-                }
-             }
-             
-             varStack.setLocalVariable(paramCount, argConvertedVal, nextFrame);
-             paramCount++;
-          }
-          else {
-             break; 
-          }
+             else {
+                throw new TransformerException("XPST0017 : The xsl:function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
+                                                                          "(), has more than one xsl:param '" + elemParamQName + "' declaration.", srcLocator); 
+             } 
+         }
+         
+         idx++;
       }
       
-      varStack.setStackFrame(nextFrame);
+      if (xslParamMap.size() != argSequence.size()) {
+         throw new TransformerException("XPST0017 : For the xsl:function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
+                                                                       "(), the number of arguments provided with function call is not equal "
+                                                                       + "to number of function's xsl:param declarations.", srcLocator);  
+      }
       
-      int df = transformer.transformToGlobalRTF(this);
+      Collection<Integer> xslParamIdxs = xslParamMap.values();
+      Object[] idxArr = xslParamIdxs.toArray();
+      if (idxArr.length > 0) {
+         Arrays.sort(idxArr);
+         int currVal = ((Integer)idxArr[0]).intValue();
+         if (currVal != 0) {
+            throw new TransformerException("XPST0017 : For the xsl:function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
+                                                                          "(), there's a non xsl:param declaration as first child "
+                                                                          + "element of xsl:function.", srcLocator); 
+         }
+         
+         for (int idx1 = 1; idx1 < idxArr.length; idx1++) {
+            int nextVal = ((Integer)idxArr[idx1]).intValue();
+            if (nextVal != (currVal + 1)) {
+               throw new TransformerException("XPST0017 : For the xsl:function " + "{" + funcNameSpaceUri + "}" + funcLocalName + 
+                                                                             "(), there's a non xsl:param declaration between two "
+                                                                             + "xsl:param declarations.", srcLocator); 
+            }
+            else {
+               currVal = nextVal;  
+            }
+         }
+      }
       
-      NodeList nodeList = (new XRTreeFrag(df, xctxt, this)).convertToNodeset();     
+      // end, Validate few of the information of xsl:function's xsl:param declarations                        
+      
+      if (xslParamMap.size() > 0) {
+          // Set all xsl:function parameters to xpath context's variable stack,
+          // so that XSL instructions after xsl:param declarations can dereference
+          // those parameters.
+          
+          VariableStack varStack = xctxt.getVarStack();
+          int argsFrame = varStack.link(xslParamMap.size());            
+                    
+          int paramIdx = 0;
+          for (ElemTemplateElement elem = getFirstChildElem(); elem != null; 
+                                                                  elem = elem.getNextSiblingElem()) {
+              if (elem.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) {
+                 XObject argValue = argSequence.item(paramIdx);
+                 XObject argConvertedVal = argValue;
+                 String paramAsAttrStrVal = ((ElemParam)elem).getAs();              
+                 if (paramAsAttrStrVal != null) {
+                    try {
+                       argConvertedVal = SequenceTypeSupport.convertXDMValueToAnotherType(argValue, paramAsAttrStrVal, null, xctxt);
+                       if (argConvertedVal == null) {
+                          throw new TransformerException("XPTY0004 : Function call argument at position " + (paramIdx + 1) + " for "
+                                                                            + "function {" + funcNameSpaceUri + "}" + funcLocalName + "(), doesn't "
+                                                                            + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator); 
+                       }
+                    }
+                    catch (TransformerException ex) {
+                       throw new TransformerException("XPTY0004 : Function call argument at position " + (paramIdx + 1) + " for "
+                                                                         + "function {" + funcNameSpaceUri + "}" + funcLocalName + "(), doesn't "
+                                                                         + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator); 
+                    }
+                 }
+                 
+                 if (argConvertedVal instanceof ResultSequence) {                
+                    XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)argConvertedVal, 
+                                                                                                                                xctxt);
+                    if (nodeSet != null) {
+                       argConvertedVal = nodeSet;  
+                    }
+                 }
+                  
+                 varStack.setLocalVariable(paramIdx, argConvertedVal, argsFrame);
+                 paramIdx++;
+              }
+              else {
+                 break; 
+              }
+          }     
+      }            
+      
+      int nodeDtmHandle = transformer.transformToGlobalRTF(this);
+      
+      NodeList nodeList = (new XRTreeFrag(nodeDtmHandle, xctxt, this)).convertToNodeset();     
       
       result = new XNodeSetForDOM(nodeList, xctxt);
                         
@@ -257,7 +321,7 @@ public class ElemFunction extends ElemTemplate
   }
   
   /**
-   * This method helps us solve, xsl:function and xsl:variable instruction use cases,
+   * This method helps us to implement xsl:function and xsl:variable instructions,
    * when the XSL child contents of xsl:function or xsl:variable instructions contain 
    * xsl:sequence instruction(s).
    * 
@@ -265,9 +329,9 @@ public class ElemFunction extends ElemTemplate
    * instructions, and the function's or variable's expected data type, cast an input data
    * value to the supplied expected data type.
    */
-  public static ResultSequence preprocessXslFunctionOrAVariableResult(XNodeSetForDOM xNodeSetForDOM,
-                                                                      String sequenceTypeXPathExprStr,
-                                                                      XPathContext xctxt, QName varQName) throws TransformerException {
+  public ResultSequence preprocessXslFunctionOrAVariableResult(XNodeSetForDOM xNodeSetForDOM,
+                                                                                     String sequenceTypeXPathExprStr,
+                                                                                     XPathContext xctxt, QName varQName) throws TransformerException {
      ResultSequence resultSequence = null;
      
      DTMNodeList dtmNodeList = (DTMNodeList)(xNodeSetForDOM.object());
@@ -337,11 +401,18 @@ public class ElemFunction extends ElemTemplate
   }
   
   /**
+   * A method that returns a default instance of this class.
+   */
+  public static ElemFunction getXSLFunctionService() {
+     return new ElemFunction();  
+  }
+  
+  /**
    * Given XalanJ's integer code value of, an XML Schema built-in data type and a 
    * string representation of a data value, construct XalanJ's typed data object 
    * corresponding to the data type's integer code value. 
    */
-  private static XObject getXSTypedAtomicValue(String strVal, int sequenceType) throws TransformerException {
+  private XObject getXSTypedAtomicValue(String strVal, int sequenceType) throws TransformerException {
       
       XObject result = null;
      

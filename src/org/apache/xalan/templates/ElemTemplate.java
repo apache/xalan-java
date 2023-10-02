@@ -190,9 +190,8 @@ public class ElemTemplate extends ElemTemplateElement
 
   /**
    * An xsl:template element with a name attribute specifies a named template.
-   * @serial
    */
-  private QName m_name = null;
+  protected QName m_name = null;
 
   /**
    * Set the "name" attribute.

@@ -123,15 +123,7 @@ public class ElemParam extends ElemVariable
     
     SourceLocator srcLocator = xctx.getSAXLocator();
     
-    boolean isChildElemOfXslElemIterate = false;
-    if (getParentElem() instanceof ElemIterate) {
-       isChildElemOfXslElemIterate = true; 
-    }
-    
-    if (!vars.isLocalSet(m_index) || (isChildElemOfXslElemIterate && (xslIterateIterationIdx == 0))) {
-        // The caller of an stylesheet callable component (associated with this xsl:param element), 
-        // didn't provide xsl:param's value via xsl:with-param instruction.
-        
+    if (!vars.isLocalSet(m_index) || ((getParentElem() instanceof ElemIterate) && (xslIterateIterationIdx == 0))) {
         int sourceNode = transformer.getXPathContext().getCurrentNode();
         
         try {
@@ -151,31 +143,27 @@ public class ElemParam extends ElemVariable
                                                                            + "stylesheet context, or parameter's value cannot be cast to an expected type.", srcLocator);   
         }
     }
-    else {
-        // The caller of an stylesheet callable component (associated with this xsl:param element), 
-        // has provided xsl:param's value via xsl:with-param instruction.
-        
-        // If the xsl:param instruction has an 'as' attribute, we check below
-        // whether xsl:param's value conforms to the sequence type specified by
-        // xsl:param's 'as' attribute.
-        String asAttrVal = getAs();
-        
-        if (asAttrVal != null) {
-          try {
-             XObject var = transformer.getXPathContext().getVarStack().getLocalVariable(xctx, m_index);
-             var = SequenceTypeSupport.convertXDMValueToAnotherType(var, asAttrVal, null, 
-                                                                               transformer.getXPathContext());
-             if (var == null) {
-                throw new TransformerException("XTTE0590 : The required item type of the value of parameter " + 
-                                                                               m_qname.toString() + " is " + asAttrVal + ". The supplied value "
-                                                                               + "doesn't match the expected item type.", srcLocator);  
-             }
-          }
-          catch (TransformerException ex) {
-             throw new TransformerException("XTTE0590 : The required item type of the value of parameter " + 
-                                                                               m_qname.toString() + " is " + asAttrVal + ". The supplied value "
-                                                                               + "doesn't match the expected item type.", srcLocator); 
-          }
+    else {        
+        if (!(getParentElem() instanceof ElemFunction)) {
+            String asAttrVal = getAs();
+            
+            if (asAttrVal != null) {
+              try {
+                 XObject var = transformer.getXPathContext().getVarStack().getLocalVariable(xctx, m_index);
+                 var = SequenceTypeSupport.convertXDMValueToAnotherType(var, asAttrVal, null, 
+                                                                                   transformer.getXPathContext());
+                 if (var == null) {
+                    throw new TransformerException("XTTE0590 : The required item type of the value of parameter " + 
+                                                                                   m_qname.toString() + " is " + asAttrVal + ". The supplied value "
+                                                                                   + "doesn't match the expected item type.", srcLocator);  
+                 }
+              }
+              catch (TransformerException ex) {
+                 throw new TransformerException("XTTE0590 : The required item type of the value of parameter " + 
+                                                                                   m_qname.toString() + " is " + asAttrVal + ". The supplied value "
+                                                                                   + "doesn't match the expected item type.", srcLocator); 
+              }
+           }
        }
     }
     
