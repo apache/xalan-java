@@ -64,6 +64,11 @@ public class ElemFunction extends ElemTemplate
 {
 
   private static final long serialVersionUID = 4973132678982467288L;
+  
+  /**
+   * The value of the "name" attribute.
+   */
+  private static QName m_name;
 
   /**
    * Class constructor.
@@ -71,18 +76,22 @@ public class ElemFunction extends ElemTemplate
   public ElemFunction() {}
 
   /**
-   * The value of the "name" attribute.
+   * Set the value of xsl:function's "name" 
+   * attribute.
    */
-  protected static QName m_qname;
-
   public void setName(QName qName)
-  {
-      m_qname = qName;
+  {      
+      super.setName(qName);
+      m_name = qName;
   }
 
+  /**
+   * Get the value of xsl:function's "name" 
+   * attribute. 
+   */
   public QName getName()
   {
-      return m_qname;
+      return super.getName();
   }
 
   /**
@@ -106,19 +115,6 @@ public class ElemFunction extends ElemTemplate
   {
      return Constants.ELEMNAME_FUNCTION_STRING;
   }
-  
-  /**
-   * The stack frame size for this xsl:function definition, which is equal
-   * to the maximum number of params and variables that can be declared 
-   * in the function at one time.
-   */
-  public int m_frameSize;
-  
-  /**
-   * The size of the portion of the stack frame that can hold parameter 
-   * arguments.
-   */
-  int m_inArgsSize;
 
   /**
    * This method evaluates the xsl:function call, and returns the result
@@ -139,8 +135,8 @@ public class ElemFunction extends ElemTemplate
       
       varStack.setStackFrame(thisframe);
       
-      String funcLocalName = m_qname.getLocalName();
-      String funcNameSpaceUri = m_qname.getNamespaceURI(); 
+      String funcLocalName = m_name.getLocalName();
+      String funcNameSpaceUri = m_name.getNamespaceURI(); 
       
       int paramCount = 0;
       for (ElemTemplateElement elem = getFirstChildElem(); elem != null; 
@@ -230,17 +226,13 @@ public class ElemFunction extends ElemTemplate
   
   /**
    * This function is called after everything else has been
-   * recomposed, and allows an xsl:function to set remaining
+   * recomposed, and allows a xsl:function to set remaining
    * values that may be based on some other property that
    * depends on recomposition.
    */
   public void compose(StylesheetRoot sroot) throws TransformerException
   {
       super.compose(sroot);
-      StylesheetRoot.ComposeState cstate = sroot.getComposeState();
-      java.util.Vector vnames = cstate.getVariableNames();        
-      cstate.resetStackFrameSize();
-      m_inArgsSize = 0;
   }
   
   /**
@@ -250,32 +242,23 @@ public class ElemFunction extends ElemTemplate
    */
   public void endCompose(StylesheetRoot sroot) throws TransformerException
   {
-      StylesheetRoot.ComposeState cstate = sroot.getComposeState();
       super.endCompose(sroot);
-      m_frameSize = cstate.getFrameSize();
-      
-      cstate.resetStackFrameSize();
   }
   
   /**
-   * Set the parent as an ElemTemplateElement.
-   *
-   * @param p This node's parent as an ElemTemplateElement
+   * This function is called during recomposition to
+   * control how this element is composed.
+   * 
+   * @param root The root stylesheet for this transformation.
    */
-  public void setParentElem(ElemTemplateElement p)
-  {
-      super.setParentElem(p);
-      p.m_hasVariableDecl = true;
-  }
-  
   public void recompose(StylesheetRoot root)
   {
-      root.recomposeTemplates(this);
+      super.recompose(root);
   }
   
   /**
-   * This method helps us solve, XSLT's xsl:function and xsl:variable instruction use cases,
-   * where the XSL child contents of xsl:function or xsl:variable instructions contain 
+   * This method helps us solve, xsl:function and xsl:variable instruction use cases,
+   * when the XSL child contents of xsl:function or xsl:variable instructions contain 
    * xsl:sequence instruction(s).
    * 
    * Given an initial result of computation of, XSL child contents of a xsl:function or xsl:variable
@@ -336,8 +319,8 @@ public class ElemFunction extends ElemTemplate
                                                                                                                SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE)) {
              if ((resultSequence != null) && (resultSequence.size() > 1)) {
                 String errMesg = null;
-                if (m_qname != null) {
-                   errMesg = "XTTE0780 : A sequence of more than one item, is not allowed as a result of call to function '" + m_qname.toString() + "'. "
+                if (m_name != null) {
+                   errMesg = "XTTE0780 : A sequence of more than one item, is not allowed as a result of call to function '" + m_name.toString() + "'. "
                                                                                 + "The expected result type of this function is " + sequenceTypeXPathExprStr + "."; 
                 }
                 else {

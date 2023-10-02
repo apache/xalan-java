@@ -244,6 +244,8 @@ public class XSLTErrorResources extends ListResourceBundle
 	 "ER_IN_ELEMTEMPLATEELEM_READOBJECT";
   public static final String ER_DUPLICATE_NAMED_TEMPLATE = 
 	 "ER_DUPLICATE_NAMED_TEMPLATE";
+  public static final String ER_DUPLICATE_XSL_FUNCTION = 
+     "ER_DUPLICATE_XSL_FUNCTION";
   public static final String ER_INVALID_KEY_CALL = "ER_INVALID_KEY_CALL";
   public static final String ER_REFERENCING_ITSELF = "ER_REFERENCING_ITSELF";
   public static final String ER_ILLEGAL_DOMSOURCE_INPUT = 
@@ -795,6 +797,9 @@ public class XSLTErrorResources extends ListResourceBundle
 
     { ER_DUPLICATE_NAMED_TEMPLATE,
       "Found more than one template named: {0}"},
+    
+    { ER_DUPLICATE_XSL_FUNCTION,
+      "Found more than one stylesheet function named: {0}"},
 
     { ER_INVALID_KEY_CALL,
       "Invalid function call: recursive key() calls are not allowed"},
