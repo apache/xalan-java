@@ -66,9 +66,11 @@ public class TemplateList implements java.io.Serializable
     XPath matchXPath = template.getMatch();
     
     if (null == template.getName() && null == matchXPath)
-    {  
-      template.error(XSLTErrorResources.ER_NEED_NAME_OR_MATCH_ATTRIB,
-          new Object[]{ "xsl:template" });
+    {
+      if (!(template instanceof ElemFunction)) {
+         template.error(XSLTErrorResources.ER_NEED_NAME_OR_MATCH_ATTRIB,
+                                                      new Object[]{ "xsl:template" });
+      }
     }
     
     if (null != template.getName())
@@ -88,13 +90,18 @@ public class TemplateList implements java.io.Serializable
           // This should never happen
           m_namedTemplates.put(template.getName(), template);
         }
-        else if (newPrecedence == existingPrecedence)
-          template.error(XSLTErrorResources.ER_DUPLICATE_NAMED_TEMPLATE,
-                       new Object[]{ template.getName() });
+        else if (newPrecedence == existingPrecedence) {
+          if (template instanceof ElemFunction) {
+             template.error(XSLTErrorResources.ER_DUPLICATE_XSL_FUNCTION,
+                                             new Object[]{ template.getName() }); 
+          }
+          else {
+             template.error(XSLTErrorResources.ER_DUPLICATE_NAMED_TEMPLATE,
+                                             new Object[]{ template.getName() });
+          }
+        }
       }
-    }
-
-    
+    }    
 
     if (null != matchXPath)
     {
