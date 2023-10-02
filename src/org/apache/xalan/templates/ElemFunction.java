@@ -131,7 +131,7 @@ public class ElemFunction extends ElemTemplate
       String funcLocalName = m_name.getLocalName();
       String funcNameSpaceUri = m_name.getNamespaceURI();
       
-      // Validate few of the information of xsl:function's xsl:param declarations.         
+      // Validate few of the information of xsl:function's xsl:param declarations         
       Map<QName, Integer> xslParamMap = new HashMap<QName, Integer>();
       int idx = 0;
       PrefixResolver prefixResolver = xctxt.getNamespaceContext();
@@ -321,7 +321,7 @@ public class ElemFunction extends ElemTemplate
   }
   
   /**
-   * This method helps us to implement xsl:function and xsl:variable instructions,
+   * This method helps to implement xsl:function and xsl:variable instructions,
    * when the XSL child contents of xsl:function or xsl:variable instructions contain 
    * xsl:sequence instruction(s).
    * 
