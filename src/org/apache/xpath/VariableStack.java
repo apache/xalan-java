@@ -201,7 +201,7 @@ public class VariableStack implements Cloneable
    * <a href="http://math.millikin.edu/mprogers/Courses/currentCourses/CS481-ComputerArchitecture/cs481.Motorola68000.html">
    * Motorola 68000 assembler</a> memories.</p>
    *
-   * @param size The size of the stack frame allocation.  This ammount should
+   * @param size The size of the stack frame allocation. This amount should
    * normally be the maximum number of variables that you can have allocated
    * at one time in the new stack frame.
    *

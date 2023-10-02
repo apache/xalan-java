@@ -559,7 +559,9 @@ public class ElemVariable extends ElemTemplateElement
           XObject variableConvertedVal = null;
           
           try {
-             variableConvertedVal = ElemFunction.preprocessXslFunctionOrAVariableResult((XNodeSetForDOM)var, m_asAttr, xctxt, m_qname);
+             ElemFunction elemFunction = ElemFunction.getXSLFunctionService();
+             variableConvertedVal = elemFunction.preprocessXslFunctionOrAVariableResult((XNodeSetForDOM)var, 
+                                                                                                m_asAttr, xctxt, m_qname);
           }
           catch (TransformerException ex) {
              throw new TransformerException(ex.getMessage(), srcLocator); 
