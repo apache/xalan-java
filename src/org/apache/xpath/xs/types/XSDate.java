@@ -270,6 +270,24 @@ public class XSDate extends XSCalendarType {
         return isDateEqual; 
     }
     
+    @Override
+    public boolean equals(Object obj) {
+       boolean isDateEqual = false;
+        
+       if (obj instanceof XSDate) {
+          isDateEqual = this.equals((XSDate)obj);  
+       }
+       
+       return isDateEqual;
+    }
+    
+    @Override
+    public int hashCode() {       
+       String strVal = stringValue();       
+       
+       return strVal.hashCode();
+    }
+    
     /*
      * Determine whether, this XSDate object is less that, the 
      * XSDate object provided as an argument to this method. 

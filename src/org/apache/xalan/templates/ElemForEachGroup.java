@@ -49,6 +49,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.xs.types.XSBoolean;
+import org.apache.xpath.xs.types.XSDate;
 import org.apache.xpath.xs.types.XSNumericType;
 import org.apache.xpath.xs.types.XSString;
 
@@ -795,12 +796,12 @@ public class ElemForEachGroup extends ElemTemplateElement
   }
   
   /* 
-   * This method, converts initial value of xsl:for-each-group's grouping key value,
-   * into a normalized data typed value.
+   * This method, converts xsl:for-each-group grouping key's initial computed value, 
+   * into a normalized data typed value of type java.lang.Object.
    * 
    * For the purpose of, evaluating grouping key XPath expressions for xsl:for-each-group, 
-   * the grouping keys are treated as of type string, number or boolean. Any other data 
-   * type for grouping key is converted to a string value.
+   * the grouping keys are treated as of type string, number, boolean or xs:date. Any other 
+   * data type for grouping key is converted to a string value.
    */
   private Object getXPathEvaluationRawResult(XObject xpathEvalResult) {
       Object xpathRawResult = null;
@@ -823,6 +824,9 @@ public class ElemForEachGroup extends ElemTemplateElement
       }
       else if (xpathEvalResult instanceof XSBoolean) {
           xpathRawResult = Boolean.valueOf(((XSBoolean)xpathEvalResult).value());
+      }
+      else if (xpathEvalResult instanceof XSDate) {
+          xpathRawResult = xpathEvalResult;
       }
       else {
           // Any other data type for grouping key, is treated as string
