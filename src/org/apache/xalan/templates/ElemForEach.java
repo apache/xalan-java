@@ -49,19 +49,11 @@ import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Variable;
 
 /**
- * XSLT 3.0 for-each element.
- * 
- * <xsl:for-each 
- *           select = expression>
- *     <!-- Content: (xsl:sort*, sequence-constructor) -->
- * </xsl:for-each>
+ * Implementation of the XSLT 3.0 xsl:for-each instruction.
  * 
  * Ref : https://www.w3.org/TR/xslt-30/#for-each
  * 
  * @xsl.usage advanced
- */
-/*
- * Implementation of the XSLT 3.0 xsl:for-each instruction.
  */
 public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 {
@@ -319,8 +311,6 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
    */
   public void transformSelectedNodes(TransformerImpl transformer) throws 
                                                              TransformerException {
-
-    final XPathContext xctxtOriginal = transformer.getXPathContext();
     
     XPathContext xctxt = transformer.getXPathContext();
     
@@ -333,9 +323,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
             XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                                   (DTMManager)xctxt);             
             if (nodeSet == null) {
-               processResultSequence(transformer, xctxt, evalResult);
-               transformer.setXPathContext(xctxtOriginal);
-               
+               processResultSequence(transformer, xctxt, evalResult);               
                return;
             }
             else {
@@ -351,8 +339,6 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
                                                                                                                   (DTMManager)xctxt);             
             if (nodeSet == null) {
                 processResultSequence(transformer, xctxt, evalResult);
-                transformer.setXPathContext(xctxtOriginal);
-
                 return;
             }
             else {
@@ -368,8 +354,6 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
                                                                                                                   (DTMManager)xctxt);             
             if (nodeSet == null) {
                 processResultSequence(transformer, xctxt, evalResult);
-                transformer.setXPathContext(xctxtOriginal);
-
                 return;
             }
             else {
@@ -385,8 +369,6 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
                                                                                                               (DTMManager)xctxt);             
         if (nodeSet == null) {
             processResultSequence(transformer, xctxt, evalResult);
-            transformer.setXPathContext(xctxtOriginal);
-
             return;
         }
         else {
@@ -402,8 +384,6 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
                                                                                                               (DTMManager)xctxt);             
         if (nodeSet == null) {
             processResultSequence(transformer, xctxt, evalResult);
-            transformer.setXPathContext(xctxtOriginal);
-
             return;
         }
         else {
@@ -419,8 +399,6 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
                                                                                                                   (DTMManager)xctxt);             
             if (nodeSet == null) {
                 processResultSequence(transformer, xctxt, evalResult);
-                transformer.setXPathContext(xctxtOriginal);
-
                 return;
             }
             else {
@@ -555,10 +533,6 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
       xctxt.popCurrentNode();
       sourceNodes.detach();
     }
-    
-    // restore the xpath context, to where it was before this 
-    // xsl:for-each instruction began an evaluation.
-    transformer.setXPathContext(xctxtOriginal);
     
   }
 

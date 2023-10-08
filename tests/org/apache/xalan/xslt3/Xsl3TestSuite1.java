@@ -16,28 +16,21 @@
  */
 package org.apache.xalan.xslt3;
 
+import org.apache.xalan.xpath3.FnDataTests;
+import org.apache.xalan.xpath3.FnDocTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * A top level JUnit 4 test suite, for XalanJ XSLT 3.0 and XPath 3.1 
- * tests. This JUnit tests class is an entry point, to invoke all of
- * the XalanJ XSLT 3.0 and XPath 3.1 tests supported by this class.
- * 
- * All the XSLT and XPath tests, supported by this class are further
- * divided between two JUnit sub test suites.
- * 
- * For all the XSLT and XPath tests supported by this test suite, 
- * the XSLT transformation expected output files (i.e, the gold files) are 
- * sensitive to the whitespace contents available within those files.
+ * A JUnit 4 test suite, for XSLT 3.0 and XPath 3.1 tests.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ Xsl3TestSuite1.class, Xsl3TestSuite2.class})
-public class AllXsl3Tests {
+@SuiteClasses({ FnDocTests.class, FnDataTests.class, RecursiveFunctionTests.class })
+public class Xsl3TestSuite1 {
 
 }

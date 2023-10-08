@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <nums isEven="false">
+    <num val="1"/>
+    <num val="3"/>
+    <num val="5"/>
+    <num val="7"/>
+    <num val="9"/>
+    <num val="11"/>
+    <num val="13"/>
+    <num val="15"/>
+  </nums>
+  <nums isEven="true">
+    <num val="2"/>
+    <num val="4"/>
+    <num val="6"/>
+    <num val="8"/>
+    <num val="10"/>
+    <num val="12"/>
+    <num val="14"/>
+  </nums>
+</result>

@@ -4,26 +4,34 @@
                 version="3.0">
                 
   <!-- Author: mukulg@apache.org -->
-   
-  <!-- use with test1_h.xml -->
   
-  <!-- An XSLT stylesheet to test, xsl:for-each-group instruction. Within this
-       stylesheet example, from an XML input document, all "part" elements are
-       transformed into two groups, with one group having part's expiryDate
-       xs:date value less than current date, and remaining XML "part" elements
-       are put into the second group.    
+  <!-- An XSLT stylesheet test case, to test mutual recursion
+       between two XPath 3.1 function item expressions.
+       
+       The mutual recursion algorithm of the two XPath function item
+       expressions, as mentioned within this stylesheet, has been shared by 
+       Dimitre Novatchev (ref, https://dnovatchev.wordpress.com/2023/10/04/mutual-recursion-with-anonymous-inline-functions-in-xpath-3/).
   -->                
                 
   <xsl:output method="xml" indent="yes"/>
   
-  <xsl:template match="/parts">     
-     <RESULT>
-       <xsl:for-each-group select="part" group-by="xs:date(expiryDate) lt current-date()">
-          <PARTS expired="{current-grouping-key()}">           
-             <xsl:copy-of select="current-group()"/>
-          </PARTS>
-       </xsl:for-each-group>
-     </RESULT>
+  <xsl:variable name="isEven" select="function($n as xs:integer) as xs:boolean { 
+                                                          if ($n eq 0) then true() 
+                                                                          else $isOdd($n - 1) }"/>
+  
+  <xsl:variable name="isOdd" select="function($n as xs:integer) as xs:boolean { 
+                                                          if ($n eq 0) then false() 
+                                                                          else $isEven($n - 1) }"/>
+  
+  <xsl:template match="/">     
+     <result>
+       <one>
+         <xsl:value-of select="$isEven(255)"/>
+       </one>
+       <two>
+         <xsl:value-of select="$isOdd(255)"/>       
+       </two>
+     </result>
   </xsl:template>
   
   <!--
