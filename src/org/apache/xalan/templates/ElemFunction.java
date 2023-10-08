@@ -198,14 +198,16 @@ public class ElemFunction extends ElemTemplate
          }
       }
       
-      // end, Validate few of the information of xsl:function's xsl:param declarations                        
+      // end, Validate few of the information of xsl:function's xsl:param declarations            
+      
+      VariableStack varStack = xctxt.getVarStack();
       
       if (xslParamMap.size() > 0) {
           // Set all xsl:function parameters to xpath context's variable stack,
           // so that XSL instructions after xsl:param declarations can dereference
-          // those parameters.
+          // those parameters.                    
           
-          VariableStack varStack = xctxt.getVarStack();
+          varStack.unlink();
           int argsFrame = varStack.link(xslParamMap.size());            
                     
           int paramIdx = 0;
@@ -245,7 +247,7 @@ public class ElemFunction extends ElemTemplate
               else {
                  break; 
               }
-          }     
+          }                    
       }            
       
       int nodeDtmHandle = transformer.transformToGlobalRTF(this);

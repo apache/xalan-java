@@ -1,30 +1,39 @@
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                exclude-result-prefixes="xs"
+                xmlns:fn0="http://fn0"
+                exclude-result-prefixes="xs fn0"
                 version="3.0">
                 
   <!-- Author: mukulg@apache.org -->
-   
-  <!-- use with test1_h.xml -->
   
-  <!-- An XSLT stylesheet to test, xsl:for-each-group instruction. Within this
-       stylesheet example, from an XML input document, all "part" elements are
-       transformed into two groups, with one group having part's expiryDate
-       xs:date value less than current date, and remaining XML "part" elements
-       are put into the second group.    
-  -->                
+  <!-- An XSLT stylesheet test case, to test mutual recursion
+       between two XSLT stylesheet functions.
+  -->                 
                 
   <xsl:output method="xml" indent="yes"/>
   
-  <xsl:template match="/parts">     
-     <RESULT>
-       <xsl:for-each-group select="part" group-by="xs:date(expiryDate) lt current-date()">
-          <PARTS expired="{current-grouping-key()}">           
-             <xsl:copy-of select="current-group()"/>
-          </PARTS>
-       </xsl:for-each-group>
-     </RESULT>
+  <xsl:template match="/">     
+     <result>
+       <one>
+         <xsl:value-of select="fn0:isEven(255)"/>
+       </one>
+       <two>
+         <xsl:value-of select="fn0:isOdd(255)"/>       
+       </two>
+     </result>
   </xsl:template>
+  
+  <xsl:function name="fn0:isEven" as="xs:boolean">
+     <xsl:param name="num" as="xs:integer"/>
+     <xsl:sequence select="if ($num eq 0) then true() 
+                                             else fn0:isOdd($num - 1)"/>
+  </xsl:function>
+  
+  <xsl:function name="fn0:isOdd" as="xs:boolean">
+     <xsl:param name="num" as="xs:integer"/>
+     <xsl:sequence select="if ($num eq 0) then false() 
+                                             else fn0:isEven($num - 1)"/>  
+  </xsl:function>
   
   <!--
       * Licensed to the Apache Software Foundation (ASF) under one
