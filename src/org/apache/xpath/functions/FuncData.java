@@ -41,8 +41,8 @@ import org.apache.xpath.xs.types.XSUntypedAtomic;
  * Ref : https://www.w3.org/TR/xpath-functions-31/#func-data
  * 
  * This implementation of function fn:data() assumes that,
- * an XML input document (whose xdm information has been
- * constructed) has not been validated with an XML schema.
+ * an XML input document has not been validated with an 
+ * XML schema.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
