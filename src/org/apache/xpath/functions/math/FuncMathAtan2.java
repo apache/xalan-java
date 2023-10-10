@@ -18,8 +18,10 @@ package org.apache.xpath.functions.math;
 
 import javax.xml.transform.SourceLocator;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -53,6 +55,7 @@ public class FuncMathAtan2 extends Function2Args {
         
         return result;
     }
+    
     /*
      * Get an 'double' value from an object of type XObject. 
      */
@@ -89,6 +92,29 @@ public class FuncMathAtan2 extends Function2Args {
                
               resultVal = arg;
            }
+        }
+        else if (xObject instanceof ResultSequence) {
+            ResultSequence resultSeq = (ResultSequence)xObject;
+            if (resultSeq.size() != 1) {
+               throw new javax.xml.transform.TransformerException("XPTY0004 : The " + argNumStr + " argument to math:atan2 "
+                                                                        + "function must be a sequence of length one.", srcLocator);    
+            }
+            else {
+               XObject val = resultSeq.item(0);
+               String strVal = XslTransformEvaluationHelper.getStrVal(val);
+                
+               double arg = 0.0;             
+               try {
+                  arg = (new XSDouble(strVal)).doubleValue();
+               }
+               catch (Exception ex) {
+                  throw new javax.xml.transform.TransformerException("FORG0001 : Error with the " + argNumStr + " argument of "
+                                                                           + "math:atan2. Cannot convert the string \"" + strVal + "\" "
+                                                                                                  + "to a double value.", srcLocator);
+               }
+                
+               resultVal = arg;
+            }
         }
         else {
            throw new javax.xml.transform.TransformerException("XPTY0004 : The item type of " + argNumStr + " argument to function "

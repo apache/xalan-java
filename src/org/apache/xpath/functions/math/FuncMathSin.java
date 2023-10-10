@@ -19,6 +19,7 @@ package org.apache.xpath.functions.math;
 
 import javax.xml.transform.SourceLocator;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
@@ -93,6 +94,28 @@ public class FuncMathSin extends FunctionOneArg
              
              result = new XSDouble(Math.sin(arg));
           }
+       }
+       else if (arg0Result instanceof ResultSequence) {
+           ResultSequence resultSeq = (ResultSequence)arg0Result;
+           if (resultSeq.size() != 1) {
+              throw new javax.xml.transform.TransformerException("XPTY0004 : The argument to math:sin "
+                                                                      + "function must be a sequence of length one.", srcLocator);    
+           }
+           else {
+              XObject val = resultSeq.item(0);
+              String strVal = XslTransformEvaluationHelper.getStrVal(val);
+              
+              double arg = 0.0;             
+              try {
+                 arg = (new XSDouble(strVal)).doubleValue();
+              }
+              catch (Exception ex) {
+                 throw new javax.xml.transform.TransformerException("FORG0001 : Cannot convert the string \"" + strVal + "\" to "
+                                                                                                        + "a double value.", srcLocator);
+              }
+              
+              result = new XSDouble(Math.sin(arg));
+           }
        }
        else {
            throw new javax.xml.transform.TransformerException("XPTY0004 : The item type of first argument to function math:sin is not "
