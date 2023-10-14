@@ -3,10 +3,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>apache-xalan-j-2.7.3-maint-main</groupId>
-    <artifactId>apache-xalan-j-2.7.3-maint-main</artifactId>
-    <version>2.7.3-SNAPSHOT</version>
+    <groupId>xalan</groupId>
+    <artifactId>xalan-project</artifactId>
+    <version>2.7.3</version>
   </parent>
+
   <artifactId>serializer</artifactId>
   <name>XML Serializer</name>
   <description>Apache's XML serialization layer, as used in the Xalan XSLT processor</description>

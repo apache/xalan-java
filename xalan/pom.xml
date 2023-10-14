@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>apache-xalan-j-2.7.3-maint-main</groupId>
-    <artifactId>apache-xalan-j-2.7.3-maint-main</artifactId>
-    <version>2.7.3-SNAPSHOT</version>
+    <groupId>xalan</groupId>
+    <artifactId>xalan-project</artifactId>
+    <version>2.7.3</version>
   </parent>
+
   <artifactId>xalan</artifactId>
-  <version>2.7.3-SNAPSHOT</version>
-  <name>Apache Xalan-Java 2.7.3</name>
+  <name>Apache Xalan-Java</name>
   <description>Apache's XSLT processor</description>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -116,7 +116,7 @@
 		  <exclude>org.apache.commons:commons-lang3</exclude>
 		  <exclude>org.apache.ant:ant</exclude>
 		  <exclude>org.apache.ant:ant-launcher</exclude>
-		  <exclude>apache-xalan-j-2.7.3-maint-main:serializer</exclude>
+		  <exclude>xalan:serializer</exclude>
 		  <exclude>de.jflex:jflex</exclude>	
 		</excludes>
 	      </artifactSet>
@@ -131,9 +131,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>apache-xalan-j-2.7.3-maint-main</groupId>
+      <groupId>xalan</groupId>
       <artifactId>serializer</artifactId>
-      <version>2.7.3-SNAPSHOT</version>
+      <version>2.7.3</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/org.apache.bcel/bcel -->
