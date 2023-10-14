@@ -281,8 +281,7 @@ public class ElemFunction extends ElemTemplate
       
       if (funcResultConvertedVal instanceof ResultSequence) {
          ResultSequence resultSeq = (ResultSequence)funcResultConvertedVal;
-         int resultSeqSize = resultSeq.size();
-         if ((resultSeqSize == 1) && (resultSeq.item(0) instanceof XNodeSet)) {
+         if (resultSeq.size() == 1) {
             funcResultConvertedVal = resultSeq.item(0);   
          }
       }
