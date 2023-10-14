@@ -31,7 +31,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({ FnDocTests.class, FnDataTests.class, RecursiveFunctionTests.class,
-                HigherOrderFunctionTests.class })
+                XslFunctionTests.class, HigherOrderFunctionTests.class })
 public class Xsl3TestSuite1 {
 
 }

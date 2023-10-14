@@ -90,7 +90,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 SequenceFunctionTests.class, FnParseXmlTests.class, FnParseXmlFragmentTests.class,
                 TemplateTests.class, FnAvgTests.class, FnMaxTests.class, FnMinTests.class, FnContainsTokenTests.class,
                 XslVariableAttributeAsTests.class, InstanceOfExprTests.class, XslTemplateAttributeAsTests.class,
-                XslFunctionTests.class, FnRoundTests.class, XslSequenceInstTests.class })
+                FnRoundTests.class, XslSequenceInstTests.class })
 public class Xsl3TestSuite2 {
 
 }
