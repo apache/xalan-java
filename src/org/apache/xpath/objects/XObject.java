@@ -37,6 +37,7 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.xs.types.XSBoolean;
 import org.apache.xpath.xs.types.XSDate;
+import org.apache.xpath.xs.types.XSDateTime;
 import org.apache.xpath.xs.types.XSDecimal;
 import org.apache.xpath.xs.types.XSDouble;
 import org.apache.xpath.xs.types.XSFloat;
@@ -652,6 +653,9 @@ public class XObject extends Expression implements Serializable, Cloneable
        else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
            return ((XSDate)this).lt((XSDate)obj2);    
        }
+       else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
+           return ((XSDateTime)this).lt((XSDateTime)obj2);    
+       }
        else if ((this instanceof XNumber) && (obj2 instanceof XNumber)) {
            return ((XNumber)this).num() < ((XNumber)obj2).num(); 
        }
@@ -774,6 +778,9 @@ public class XObject extends Expression implements Serializable, Cloneable
        }
        else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
           return ((XSDate)this).gt((XSDate)obj2);    
+       }
+       else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
+           return ((XSDateTime)this).gt((XSDateTime)obj2);    
        }
        else if ((this instanceof XString) && (obj2 instanceof XString)) {          
           String lStr = (((XString)this)).str();
@@ -956,6 +963,9 @@ public class XObject extends Expression implements Serializable, Cloneable
     else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
        return ((XSDate)this).equals((XSDate)obj2);    
     }
+    else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
+        return ((XSDateTime)this).equals((XSDateTime)obj2);    
+    }
     else if ((this instanceof XSInteger) && (obj2 instanceof XNumber)) {
        double lDouble = ((XSInteger)this).doubleValue();
        double rDouble = ((XNumber)obj2).num();
@@ -1019,6 +1029,9 @@ public class XObject extends Expression implements Serializable, Cloneable
     }
     else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
         return ((XSDate)this).equals((XSDate)obj2);    
+    }
+    else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
+        return ((XSDateTime)this).equals((XSDateTime)obj2);    
     }
     else if ((this instanceof XSString) && (obj2 instanceof XSString)) {
         return ((XSString)this).equals((XSString)obj2);    

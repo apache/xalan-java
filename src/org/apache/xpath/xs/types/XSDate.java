@@ -44,8 +44,10 @@ public class XSDate extends XSCalendarType {
     
     private XSDuration _tz;
     
-    // The value of this class field, stores the fact that whether this XSDate
-    // object is constructed via XPath function call fn:current-date().
+    /**
+     * The value of this class field, stores the fact that whether this XSDate
+     * object is constructed via XPath function call fn:current-date().
+     */
     private boolean isPopulatedFromFnCurrentDate = false;
     
     /**
@@ -70,7 +72,7 @@ public class XSDate extends XSCalendarType {
         }
     }
 
-    /*
+    /**
      * Class constructor. 
      */
     public XSDate() {}
@@ -196,7 +198,7 @@ public class XSDate extends XSCalendarType {
      * @return true    if there is a timezone associated with this XSDate object.
      *                 false otherwise.
      */
-    public boolean isXsDateObjectTimezoned() {
+    public boolean isDateTimezoned() {
         return _timezoned;
     }
 
@@ -219,7 +221,7 @@ public class XSDate extends XSCalendarType {
         xsDateStrValue += XSDateTime.padInt(calendarObj.get(Calendar.
                                                                   DAY_OF_MONTH), 2);
 
-        if (isXsDateObjectTimezoned()) {
+        if (isDateTimezoned()) {
             int hrs = _tz.hours();
             int min = _tz.minutes();
             double secs = _tz.seconds();
@@ -243,7 +245,7 @@ public class XSDate extends XSCalendarType {
         return xsDateStrValue;
     }
     
-    /*
+    /**
      * Determine whether, two XSDate objects are equal.
      */
     public boolean equals(XSDate xsDate) {
@@ -263,9 +265,9 @@ public class XSDate extends XSCalendarType {
         XSDuration tz1 = getTimezone();
         XSDuration tz2 = xsDate.getTimezone();
         
-        isDateEqual = (((year1 + month1 + date1) == (year2 + month2 + date2)) && 
-                                     isTimezoneEqual(tz1, tz2, isPopulatedFromFnCurrentDate, 
-                                                                   xsDate.isPopulatedFromFnCurrentDate())); 
+        isDateEqual = ((year1 == year2) && (month1 == month2) && (date1 == date2)) && 
+                                               isTimezoneEqual(tz1, tz2, isPopulatedFromFnCurrentDate, 
+                                                                                   xsDate.isPopulatedFromFnCurrentDate()); 
         
         return isDateEqual; 
     }
@@ -288,7 +290,7 @@ public class XSDate extends XSCalendarType {
        return strVal.hashCode();
     }
     
-    /*
+    /**
      * Determine whether, this XSDate object is less that, the 
      * XSDate object provided as an argument to this method. 
      */
@@ -308,7 +310,7 @@ public class XSDate extends XSCalendarType {
         return isDateBefore;
     }
     
-    /*
+    /**
      * Determine whether, this XSDate object is greater than, the 
      * XSDate object provided as an argument to this method. 
      */
@@ -407,7 +409,7 @@ public class XSDate extends XSCalendarType {
         return CLASS_XS_DATE;
     }
     
-    /*
+    /**
      * Do a data type cast, of an XSAnyType argument passed to this method, to
      * an XSDate object.
      */
@@ -423,31 +425,6 @@ public class XSDate extends XSCalendarType {
         }
 
         return parseDate(xsAnyType.stringValue());
-    }
-    
-    /*
-     * Determine whether, two timezone values (represented as XSDuration objects) 
-     * are equal. 
-     */
-    private boolean isTimezoneEqual(XSDuration tz1, XSDuration tz2, 
-                                          boolean isPopulatedFromFnCurrentDate1, 
-                                                          boolean isPopulatedFromFnCurrentDate2) {
-         
-        boolean isTimezoneEqual = false;         
-        
-        if (tz1 == null && tz2 == null) {
-           isTimezoneEqual = true;
-        }
-        else if (tz1 != null && tz2 != null) {
-           isTimezoneEqual = ((tz1.hours() == tz2.hours()) && 
-                                                   (tz1.minutes() == tz2.minutes()) && 
-                                                           (tz1.negative() == tz2.negative()));
-        }
-        else if (isPopulatedFromFnCurrentDate1 || isPopulatedFromFnCurrentDate2) {
-            isTimezoneEqual = true; 
-        }
-        
-        return isTimezoneEqual;
     }
 
 }

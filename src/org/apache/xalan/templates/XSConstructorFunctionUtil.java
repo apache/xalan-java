@@ -32,6 +32,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.xs.types.XSBoolean;
 import org.apache.xpath.xs.types.XSDate;
+import org.apache.xpath.xs.types.XSDateTime;
 import org.apache.xpath.xs.types.XSDayTimeDuration;
 import org.apache.xpath.xs.types.XSDecimal;
 import org.apache.xpath.xs.types.XSDouble;
@@ -203,6 +204,16 @@ public class XSConstructorFunctionUtil {
                         }
     
                         evalResultSequence = (new XSDate()).constructor(argSequence); 
+                        evalResult = evalResultSequence.item(0);
+                        
+                        break;
+                    case Keywords.XS_DATETIME :
+                        for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+                            XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+                            argSequence.add(XSDateTime.parseDateTime(XslTransformEvaluationHelper.getStrVal(argVal)));
+                        }
+    
+                        evalResultSequence = (new XSDateTime()).constructor(argSequence); 
                         evalResult = evalResultSequence.item(0);
                         
                         break;

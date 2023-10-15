@@ -20,6 +20,7 @@
 package org.apache.xpath.xs.types;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
@@ -46,6 +47,13 @@ public class XSDateTime extends XSCalendarType {
     private boolean _timezoned;
     
     private XSDuration _tz;
+    
+    /**
+     * The value of this class field, stores the fact that whether this
+     * XSDateTime object is constructed via XPath function call 
+     * fn:current-dateTime().
+     */
+    private boolean isPopulatedFromFnCurrentDateTime = false;
     
     /**
      * Class constructor.
@@ -92,9 +100,20 @@ public class XSDateTime extends XSCalendarType {
     }
 
     @Override
-    public ResultSequence constructor(ResultSequence arg) {
-        // TO DO
-        return null;
+    public ResultSequence constructor(ResultSequence arg) throws TransformerException {
+        ResultSequence resultSeq = new ResultSequence();
+        
+        if (arg.size() == 0) {
+           return resultSeq;     
+        }
+        
+        XSAnyType xsAnyType = (XSAnyType)arg.item(0);
+        
+        XSDateTime xsDateTime = castToDateTime(xsAnyType);
+        
+        resultSeq.add(xsDateTime);
+        
+        return resultSeq;
     }
     
     public Calendar getCalendar() {
@@ -532,6 +551,31 @@ public class XSDateTime extends XSCalendarType {
         return returnVal;
     }
     
+    public int year() {
+        int year = _calendar.get(Calendar.YEAR);
+        if (_calendar.get(Calendar.ERA) == GregorianCalendar.BC) {
+           year = year * -1;
+        }
+
+        return year;
+    }
+    
+    public int month() {
+        return _calendar.get(Calendar.MONTH) + 1;
+    }
+    
+    public int day() {
+        return _calendar.get(Calendar.DAY_OF_MONTH);
+    }
+    
+    public int hour() {
+        return _calendar.get(Calendar.HOUR_OF_DAY);
+    }
+    
+    public int minute() {
+        return _calendar.get(Calendar.MINUTE);
+    }
+    
     public double second() {
         double secondVal = _calendar.get(Calendar.SECOND);
         double millisecVal = _calendar.get(Calendar.MILLISECOND);
@@ -542,17 +586,13 @@ public class XSDateTime extends XSCalendarType {
         return secondVal;
     }
     
-    public int month() {
-        return _calendar.get(Calendar.MONTH) + 1;
-    }
-    
     /**
      * Check whether this XSDateTime object has an, timezone associated with it.
      * 
      * @return true    if there is a timezone associated with this XSDateTime object.
      *                 false otherwise.
      */
-    public boolean isXsDateTimeObjectTimezoned() {
+    public boolean isDateTimeTimezoned() {
         return _timezoned;
     }
 
@@ -597,7 +637,7 @@ public class XSDateTime extends XSCalendarType {
             }
         }
 
-        if (isXsDateTimeObjectTimezoned()) {
+        if (isDateTimeTimezoned()) {
             int hrs = _tz.hours();
             int min = _tz.minutes();
             double secs = _tz.seconds();
@@ -621,8 +661,176 @@ public class XSDateTime extends XSCalendarType {
         return returnVal;
     }
     
+    /**
+     * Determine whether, two XSDateTime objects are equal.
+     */
+    public boolean equals(XSDateTime xsDateTime) {
+        boolean isDateTimeEqual = false;
+        
+        Calendar cal1 = getCalendar();
+        Calendar cal2 = xsDateTime.getCalendar();
+        
+        int year1 = cal1.get(Calendar.YEAR);
+        int month1 = cal1.get(Calendar.MONTH);
+        int date1 = cal1.get(Calendar.DATE);
+        int hour1 = hour();
+        int mins1 = minute();
+        double secs1 = second();
+        
+        int year2 = cal2.get(Calendar.YEAR);
+        int month2 = cal2.get(Calendar.MONTH);
+        int date2 = cal2.get(Calendar.DATE);
+        int hour2 = xsDateTime.hour();
+        int mins2 = xsDateTime.minute();
+        double secs2 = xsDateTime.second();
+        
+        XSDuration tz1 = getTimezone();
+        XSDuration tz2 = xsDateTime.getTimezone();
+        
+        isDateTimeEqual = ((year1 == year2) && (month1 == month2) && (date1 == date2) && 
+                           (hour1 == hour2) && (mins1 == mins2) && (secs1 == secs2)) && 
+                                                    isTimezoneEqual(tz1, tz2, isPopulatedFromFnCurrentDateTime, 
+                                                                    xsDateTime.isPopulatedFromFnCurrentDateTime());
+        
+        return isDateTimeEqual;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+       boolean isDateTimeEqual = false;
+        
+       if (obj instanceof XSDateTime) {
+           isDateTimeEqual = this.equals((XSDateTime)obj);  
+       }
+       
+       return isDateTimeEqual;
+    }
+    
+    @Override
+    public int hashCode() {       
+       String strVal = stringValue();       
+       
+       return strVal.hashCode();
+    }
+    
+    /**
+     * Determine whether, this XSDateTime object is less that, the 
+     * XSDateTime object provided as an argument to this method. 
+     */
+    public boolean lt(XSDateTime xsDateTime) {
+        boolean isDateTimeBefore = false;
+        
+        Calendar cal1 = getCalendar();
+        Calendar cal2 = xsDateTime.getCalendar();
+        
+        Date date1 = new Date(cal1.get(Calendar.YEAR), cal1.get(Calendar.MONTH), 
+                                                                     cal1.get(Calendar.DATE));
+        Date date2 = new Date(cal2.get(Calendar.YEAR), cal2.get(Calendar.MONTH), 
+                                                                     cal2.get(Calendar.DATE));
+        
+        if (date1.before(date2)) {
+           isDateTimeBefore = true;  
+        }
+        else if (date1.equals(date2)) {
+            int hour1 = hour();
+            int mins1 = minute();
+            double secs1 = second();
+            
+            int hour2 = xsDateTime.hour();
+            int mins2 = xsDateTime.minute();
+            double secs2 = xsDateTime.second();
+            
+            if (hour1 < hour2) {
+               isDateTimeBefore = true; 
+            }
+            else if (hour1 == hour2) {
+               if (mins1 < mins2) {
+                  isDateTimeBefore = true;  
+               }
+               else if (mins1 == mins2) {
+                  if (secs1 < secs2) {
+                     isDateTimeBefore = true;  
+                  }
+               }
+            }
+        }
+        
+        return isDateTimeBefore;
+    }
+    
+    /**
+     * Determine whether, this XSDateTime object is greater that, the 
+     * XSDateTime object provided as an argument to this method. 
+     */
+    public boolean gt(XSDateTime xsDateTime) {
+        boolean isDateTimeAfter = false;
+        
+        Calendar cal1 = getCalendar();
+        Calendar cal2 = xsDateTime.getCalendar();
+        
+        Date date1 = new Date(cal1.get(Calendar.YEAR), cal1.get(Calendar.MONTH), 
+                                                                     cal1.get(Calendar.DATE));
+        Date date2 = new Date(cal2.get(Calendar.YEAR), cal2.get(Calendar.MONTH), 
+                                                                     cal2.get(Calendar.DATE));
+        
+        if (date1.after(date2)) {
+           isDateTimeAfter = true;  
+        }
+        else if (date1.equals(date2)) {
+            int hour1 = hour();
+            int mins1 = minute();
+            double secs1 = second();
+            
+            int hour2 = xsDateTime.hour();
+            int mins2 = xsDateTime.minute();
+            double secs2 = xsDateTime.second();
+            
+            if (hour1 > hour2) {
+               isDateTimeAfter = true; 
+            }
+            else if (hour1 == hour2) {
+               if (mins1 > mins2) {
+                  isDateTimeAfter = true;  
+               }
+               else if (mins1 == mins2) {
+                  if (secs1 > secs2) {
+                     isDateTimeAfter = true;  
+                  }
+               }
+            }
+        }
+        
+        return isDateTimeAfter;
+    }
+    
+    public boolean isPopulatedFromFnCurrentDateTime() {
+        return isPopulatedFromFnCurrentDateTime;
+    }
+    
+    public void setPopulatedFromFnCurrentDateTime(boolean isPopulatedFromFnCurrentDateTime) {
+        this.isPopulatedFromFnCurrentDateTime = isPopulatedFromFnCurrentDateTime;
+    }
+    
     public int getType() {
         return CLASS_XS_DATETIME;
+    }
+    
+    /**
+     * Do a data type cast, of an XSAnyType argument passed to this method, to
+     * an XSDateTime object.
+     */
+    private XSDateTime castToDateTime(XSAnyType xsAnyType) throws TransformerException {
+        if (xsAnyType instanceof XSDate) {
+            XSDate xsDate = (XSDate) xsAnyType;
+            return new XSDateTime(xsDate.getCalendar(), xsDate.getTimezone());
+        }
+
+        if (xsAnyType instanceof XSDateTime) {
+            XSDateTime xsDateTime = (XSDateTime) xsAnyType;
+            return new XSDateTime(xsDateTime.getCalendar(), xsDateTime.getTimezone());
+        }
+
+        return parseDateTime(xsAnyType.stringValue()); 
     }
     
     /**
