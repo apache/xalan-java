@@ -387,6 +387,9 @@ public class Keywords
   /** xs:date data type string. */
   public static final String XS_DATE = "date";
   
+  /** xs:dateTime data type string. */
+  public static final String XS_DATETIME = "dateTime";
+  
   /** xs:duration data type string. */
   public static final String XS_DURATION = "duration";
   
