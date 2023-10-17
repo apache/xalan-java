@@ -804,12 +804,12 @@ public class SequenceTypeSupport {
         }
         else { 
             ResultSequence convertedResultSeq = new ResultSequence();
-            
-            DTMIterator dtmIter = xdmNodeSet.iterRaw();
+
+            DTMIterator dtmIter = (DTMIterator)xdmNodeSet; 
             
             int nextNodeDtmHandle;
                    
-            while ((nextNodeDtmHandle = dtmIter.nextNode()) != DTM.NULL) {               
+            while ((nextNodeDtmHandle = dtmIter.nextNode()) != DTM.NULL) {
                XNodeSet nodeSetItem = new XNodeSet(nextNodeDtmHandle, xctxt);
                
                String sequenceTypeNewXPathExprStr = null;
@@ -821,7 +821,14 @@ public class SequenceTypeSupport {
                }
                
                if (sequenceTypeKindTest != null) {
-                  DTM dtm = dtmIter.getDTM(nextNodeDtmHandle);
+                  DTM dtm = null;
+                  DTMManager dtmMgr = (DTMManager)xctxt; 
+                  if (dtmMgr != null) {
+                     dtm = dtmMgr.getDTM(nextNodeDtmHandle);
+                  }
+                  else {
+                     dtm = dtmIter.getDTM(nextNodeDtmHandle);
+                  }
                   
                   String nodeName = dtm.getNodeName(nextNodeDtmHandle);
                   String nodeNsUri = dtm.getNamespaceURI(nextNodeDtmHandle);
