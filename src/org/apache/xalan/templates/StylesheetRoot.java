@@ -85,6 +85,12 @@ public class StylesheetRoot extends StylesheetComposed
     private Map<QName, InlineFunction> m_inlineFunctionVarMap = 
                                                   new HashMap<QName, InlineFunction>();
     
+    /*
+     * Within an object of this class, this class field keeps reference of 
+     * an XSLT transformation wide TransformerImpl object.  
+     */
+    private TransformerImpl m_transformerImpl = null;
+    
   /**
    * Uses an XSL stylesheet document.
    * @throws TransformerConfigurationException if the baseIdentifier can not be resolved to a URL.
@@ -207,7 +213,9 @@ public class StylesheetRoot extends StylesheetComposed
    */
   public Transformer newTransformer()
   {
-    return new TransformerImpl(this);
+    m_transformerImpl = new TransformerImpl(this); 
+    
+    return m_transformerImpl;
   }
   
 
@@ -1429,6 +1437,14 @@ public class StylesheetRoot extends StylesheetComposed
     public void setInlineFunctionVarMap(Map<QName, InlineFunction> 
                                                              inlineFunctionVarMap) {
         this.m_inlineFunctionVarMap = inlineFunctionVarMap;
+    }
+
+    public TransformerImpl getTransformerImpl() {
+        return m_transformerImpl;
+    }
+
+    public void setTransformerImpl(TransformerImpl transformerImpl) {
+        this.m_transformerImpl = transformerImpl;
     }
 
 }

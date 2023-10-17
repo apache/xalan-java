@@ -71,8 +71,9 @@ public class XSConstructorFunctionUtil {
      *  XPath function calls having other non-null XML namespaces are handling by XalanJ's
      *  extension function handling mechanism. 
      */
-    public static XObject processFuncExtFunctionOrXPathOpn(XPathContext xctxt, Expression expr, TransformerImpl transformer)
-                                                                                                              throws TransformerException, SAXException {        
+    public static XObject processFuncExtFunctionOrXPathOpn(XPathContext xctxt, Expression expr, 
+                                                           TransformerImpl transformer) 
+                                                                                        throws TransformerException, SAXException {        
         XObject evalResult = null;
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
@@ -91,6 +92,10 @@ public class XSConstructorFunctionUtil {
             }
             
             StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
+            
+            if (transformer == null) {
+               transformer = stylesheetRoot.getTransformerImpl();  
+            }
             
             TemplateList templateList = stylesheetRoot.getTemplateListComposed();
             

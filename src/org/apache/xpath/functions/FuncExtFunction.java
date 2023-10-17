@@ -22,7 +22,6 @@ package org.apache.xpath.functions;
 
 import java.util.Vector;
 
-import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
@@ -195,23 +194,22 @@ public class FuncExtFunction extends Function
       
     XObject result = null;
     
-    if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(this.getNamespace())) {
-       // An XPath 3.1 constructor function call, is syntactically similar
-       // to XalanJ extension function call (both have, syntax like 
-       // nsPrefix:functionName(..)). If the XML namespace of XPath function 
-       // name is http://www.w3.org/2001/XMLSchema, this class implements that
-       // as an XPath 3.1 constructor function call within this section of code.
-       try {
-          result = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
+    try {
+       // Attempting to resolve this function call, as XSLT stylesheet function call (i.e, for
+       // functions defined with XSLT stylesheet element xsl:function), or as XPath 3.1 
+       // constructor function call (i.e, function calls with syntax xs:type_name(..), where the 
+       // XML namespace prefix 'xs' is bound to XML namespace uri http://www.w3.org/2001/XMLSchema).
+       result = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
                                                                         xctxt, this, null);
-       } 
-       catch (TransformerException ex) {        
-          throw new TransformerException(ex.getMessage(), xctxt.getSAXLocator());
-       } 
-       catch (SAXException ex) {        
-          throw new TransformerException(ex.getMessage(), xctxt.getSAXLocator());
-       }
+    } 
+    catch (TransformerException ex) {        
+       throw new TransformerException(ex.getMessage(), xctxt.getSAXLocator());
+    } 
+    catch (SAXException ex) {        
+       throw new TransformerException(ex.getMessage(), xctxt.getSAXLocator());
+    }
        
+    if (result != null) {
        return result;
     }
     

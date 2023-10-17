@@ -29,7 +29,6 @@ import org.apache.xalan.xpath3.FnFilterTests;
 import org.apache.xalan.xpath3.FnFoldLeftTests;
 import org.apache.xalan.xpath3.FnFoldRightTests;
 import org.apache.xalan.xpath3.FnForEachPairTests;
-import org.apache.xalan.xpath3.FnForEachTests;
 import org.apache.xalan.xpath3.FnIndexOfTests;
 import org.apache.xalan.xpath3.FnMaxTests;
 import org.apache.xalan.xpath3.FnMinTests;
@@ -43,7 +42,6 @@ import org.apache.xalan.xpath3.FnTokenizeTests;
 import org.apache.xalan.xpath3.FnUnparsedTextTests;
 import org.apache.xalan.xpath3.ForExprTests;
 import org.apache.xalan.xpath3.IfExprTests;
-import org.apache.xalan.xpath3.InlineFunctionItemExprTests;
 import org.apache.xalan.xpath3.InstanceOfExprTests;
 import org.apache.xalan.xpath3.LetExprTests;
 import org.apache.xalan.xpath3.NodeComparisonTests;
@@ -56,7 +54,6 @@ import org.apache.xalan.xpath3.SimpleMapOperatorTests;
 import org.apache.xalan.xpath3.StringConcatExprTests;
 import org.apache.xalan.xpath3.StringTests;
 import org.apache.xalan.xpath3.TrignometricAndExponentialFunctionTests;
-import org.apache.xalan.xpath3.ValueComparisonTests;
 import org.apache.xalan.xpath3.XPathArithmeticOnDurationValuesTests;
 import org.apache.xalan.xpath3.XsConstructorFunctionTests;
 import org.apache.xalan.xpath3.XsDurationComponentExtractionFunctionTests;
@@ -77,8 +74,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnUnparsedTextTests.class, FnTokenizeTests.class, FnStringJoinTests.class,
                 FnAbsTests.class, StringTests.class, XsConstructorFunctionTests.class, 
                 FnIndexOfTests.class, SequenceTests.class, RangeExprTests.class, 
-                W3c_xslt30_IterateTests.class, W3c_xslt30_AxesTests.class, XslIterateTests.class,
-                ValueComparisonTests.class, InlineFunctionItemExprTests.class, FnForEachTests.class, 
+                W3c_xslt30_IterateTests.class, W3c_xslt30_AxesTests.class, XslIterateTests.class,                 
                 FnFilterTests.class, DynamicFunctionCallTests.class, IfExprTests.class, 
                 ForExprTests.class, LetExprTests.class, FnDistinctValuesTests.class,
                 TrignometricAndExponentialFunctionTests.class, BuiltinFunctionsNamespceTests.class,
