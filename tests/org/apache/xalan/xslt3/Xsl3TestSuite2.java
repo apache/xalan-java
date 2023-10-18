@@ -18,7 +18,6 @@ package org.apache.xalan.xslt3;
 
 import org.apache.xalan.xpath3.BuiltinFunctionsNamespceTests;
 import org.apache.xalan.xpath3.DynamicFunctionCallTests;
-import org.apache.xalan.xpath3.FnAbsTests;
 import org.apache.xalan.xpath3.FnAvgTests;
 import org.apache.xalan.xpath3.FnCodepointEqualTests;
 import org.apache.xalan.xpath3.FnCodepointsToStringTests;
@@ -52,10 +51,8 @@ import org.apache.xalan.xpath3.SequenceFunctionTests;
 import org.apache.xalan.xpath3.SequenceTests;
 import org.apache.xalan.xpath3.SimpleMapOperatorTests;
 import org.apache.xalan.xpath3.StringConcatExprTests;
-import org.apache.xalan.xpath3.StringTests;
 import org.apache.xalan.xpath3.TrignometricAndExponentialFunctionTests;
 import org.apache.xalan.xpath3.XPathArithmeticOnDurationValuesTests;
-import org.apache.xalan.xpath3.XsConstructorFunctionTests;
 import org.apache.xalan.xpath3.XsDurationComponentExtractionFunctionTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -71,8 +68,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({ AnalyzeStringTests.class, AttributeTests.class, GroupingTests.class,
                 GroupingWithSortTests.class, RtfMigrationTests.class, QuantifiedExprTests.class, 
-                FnUnparsedTextTests.class, FnTokenizeTests.class, FnStringJoinTests.class,
-                FnAbsTests.class, StringTests.class, XsConstructorFunctionTests.class, 
+                FnUnparsedTextTests.class, FnTokenizeTests.class, FnStringJoinTests.class,                 
                 FnIndexOfTests.class, SequenceTests.class, RangeExprTests.class, 
                 W3c_xslt30_IterateTests.class, W3c_xslt30_AxesTests.class, XslIterateTests.class,                 
                 FnFilterTests.class, DynamicFunctionCallTests.class, IfExprTests.class, 

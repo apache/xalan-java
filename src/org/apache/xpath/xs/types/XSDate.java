@@ -329,6 +329,36 @@ public class XSDate extends XSCalendarType {
         
         return isDateAfter; 
     }
+       
+    /**
+    * Implementation of addition operation between this XSDate value, and a supplied value
+    * (as per XPath 3.1 spec, xs:yearMonthDuration and xs:dayTimeDuration are the only permissible 
+    * data type values, that may be added to an xs:date value).
+    */
+    public XObject add(XObject xObject) throws TransformerException {
+        XObject result = null;
+        
+        if (!((xObject instanceof XSYearMonthDuration) || (xObject instanceof XSDayTimeDuration))) {
+           throw new TransformerException("XPTY0004 : The values of types xs:yearMonthDuration or "
+                                                                               + "xs:dayTimeDuration are only ones that may be added to an xs:date value.");
+        }
+        
+        if (xObject instanceof XSYearMonthDuration) {
+           XSYearMonthDuration argVal = (XSYearMonthDuration)xObject;
+           Calendar cal1 = (Calendar)((getCalendar()).clone());
+           cal1.add(Calendar.MONTH, argVal.monthValue());
+           result = new XSDate(cal1, getTimezone());
+        }
+        else if (xObject instanceof XSDayTimeDuration) {
+           XSDayTimeDuration argVal = (XSDayTimeDuration)xObject;
+           double argValSecs = argVal.value();
+           Calendar cal1 = (Calendar)((getCalendar()).clone());
+           cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)argValSecs * 1000))));
+           result = new XSDate(cal1, getTimezone());
+        }
+        
+        return result;
+    }
     
     /**
     * Implementation of subtraction operation between this XSDate value, and a supplied value
@@ -361,36 +391,6 @@ public class XSDate extends XSCalendarType {
            double argValSecs = argVal.value();
            Calendar cal1 = (Calendar)((getCalendar()).clone());
            cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)argValSecs * 1000)) * -1));
-           result = new XSDate(cal1, getTimezone());
-        }
-        
-        return result;
-    }
-    
-    /**
-    * Implementation of addition operation between this XSDate value, and a supplied value
-    * (as per XPath 3.1 spec, xs:yearMonthDuration and xs:dayTimeDuration are the only permissible 
-    * data type values, that may be added to an xs:date value).
-    */
-    public XObject add(XObject xObject) throws TransformerException {
-        XObject result = null;
-        
-        if (!((xObject instanceof XSYearMonthDuration) || (xObject instanceof XSDayTimeDuration))) {
-           throw new TransformerException("XPTY0004 : The values of types xs:yearMonthDuration or "
-                                                                               + "xs:dayTimeDuration are only ones that may be added to an xs:date value.");
-        }
-        
-        if (xObject instanceof XSYearMonthDuration) {
-           XSYearMonthDuration argVal = (XSYearMonthDuration)xObject;
-           Calendar cal1 = (Calendar)((getCalendar()).clone());
-           cal1.add(Calendar.MONTH, argVal.monthValue());
-           result = new XSDate(cal1, getTimezone());
-        }
-        else if (xObject instanceof XSDayTimeDuration) {
-           XSDayTimeDuration argVal = (XSDayTimeDuration)xObject;
-           double argValSecs = argVal.value();
-           Calendar cal1 = (Calendar)((getCalendar()).clone());
-           cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)argValSecs * 1000))));
            result = new XSDate(cal1, getTimezone());
         }
         
