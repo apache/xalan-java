@@ -16,11 +16,14 @@
  */
 package org.apache.xalan.xslt3;
 
+import org.apache.xalan.xpath3.FnAbsTests;
 import org.apache.xalan.xpath3.FnDataTests;
 import org.apache.xalan.xpath3.FnDocTests;
 import org.apache.xalan.xpath3.FnForEachTests;
 import org.apache.xalan.xpath3.InlineFunctionItemExprTests;
+import org.apache.xalan.xpath3.StringTests;
 import org.apache.xalan.xpath3.ValueComparisonTests;
+import org.apache.xalan.xpath3.XsConstructorFunctionTests;
 import org.apache.xalan.xpath3.XsDateTimeTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -37,7 +40,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({ FnDocTests.class, FnDataTests.class, RecursiveFunctionTests.class,
                 XslFunctionTests.class, HigherOrderFunctionTests.class, XsDateTimeTests.class,
                 ValueComparisonTests.class, InlineFunctionItemExprTests.class, 
-                FnForEachTests.class })
+                FnForEachTests.class, XsConstructorFunctionTests.class,
+                FnAbsTests.class, StringTests.class })
 public class Xsl3TestSuite1 {
 
 }

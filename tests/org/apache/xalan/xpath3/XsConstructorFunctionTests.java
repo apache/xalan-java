@@ -247,5 +247,25 @@ public class XsConstructorFunctionTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void XsConstructorFunctionsTest21() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test21.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test21.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test21.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void XsConstructorFunctionsTest22() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test22.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test22.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test22.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }

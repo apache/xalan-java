@@ -27,6 +27,7 @@ import java.util.TimeZone;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XObject;
 
 /**
  * An XML Schema data type representation, of the xs:dateTime 
@@ -801,6 +802,73 @@ public class XSDateTime extends XSCalendarType {
         }
         
         return isDateTimeAfter;
+    }
+    
+    /**
+    * Implementation of addition operation between this XSDateTime value, and a supplied value
+    * (as per XPath 3.1 spec, xs:yearMonthDuration and xs:dayTimeDuration are the only permissible 
+    * data type values, that may be added to an xs:dateTime value).
+    */
+    public XObject add(XObject xObject) throws TransformerException {
+        XObject result = null;
+        
+        if (!((xObject instanceof XSYearMonthDuration) || (xObject instanceof XSDayTimeDuration))) {
+           throw new TransformerException("XPTY0004 : The values of types xs:yearMonthDuration or "
+                                                                               + "xs:dayTimeDuration are only ones that may be added to an xs:dateTime value.");
+        }
+        
+        if (xObject instanceof XSYearMonthDuration) {
+           XSYearMonthDuration argVal = (XSYearMonthDuration)xObject;
+           Calendar cal1 = (Calendar)((getCalendar()).clone());
+           cal1.add(Calendar.MONTH, argVal.monthValue());
+           result = new XSDateTime(cal1, getTimezone());
+        }
+        else if (xObject instanceof XSDayTimeDuration) {
+           XSDayTimeDuration argVal = (XSDayTimeDuration)xObject;
+           double argValSecs = argVal.value();
+           Calendar cal1 = (Calendar)((getCalendar()).clone());
+           cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)argValSecs * 1000))));
+           result = new XSDateTime(cal1, getTimezone());
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Implementation of subtraction operation between this XSDateTime value, and a supplied value
+     * (as per XPath 3.1 spec, xs:dateTime, xs:yearMonthDuration and xs:dayTimeDuration are the only
+     * permissible data type values, that may be subtracted from an xs:dateTime value).
+     */
+     public XObject subtract(XObject xObject) throws TransformerException {
+         XObject result = null;
+         
+         if (!((xObject instanceof XSDateTime) || (xObject instanceof XSYearMonthDuration)
+                                               || (xObject instanceof XSDayTimeDuration))) {
+            throw new TransformerException("XPTY0004 : The values of types xs:dateTime, xs:yearMonthDuration or "
+                                                                                  + "xs:dayTimeDuration are only ones that may be subtracted from an xs:dateTime value.");
+         }
+         
+         if (xObject instanceof XSDateTime) {
+            Calendar cal1 = getCalendar();
+            Calendar cal2 = ((XSDateTime)xObject).getCalendar();
+            long diffDurationMilliSecs = cal1.getTimeInMillis() - cal2.getTimeInMillis();
+            result = new XSDayTimeDuration(diffDurationMilliSecs / 1000);
+         }
+         else if (xObject instanceof XSYearMonthDuration) {
+            XSYearMonthDuration argVal = (XSYearMonthDuration)xObject;
+            Calendar cal1 = (Calendar)((getCalendar()).clone());
+            cal1.add(Calendar.MONTH, argVal.monthValue() * -1);
+            result = new XSDateTime(cal1, getTimezone());
+         }
+         else if (xObject instanceof XSDayTimeDuration) {
+            XSDayTimeDuration argVal = (XSDayTimeDuration)xObject;
+            double argValSecs = argVal.value();
+            Calendar cal1 = (Calendar)((getCalendar()).clone());
+            cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)argValSecs * 1000)) * -1));
+            result = new XSDateTime(cal1, getTimezone());
+         }
+         
+         return result;
     }
     
     public boolean isPopulatedFromFnCurrentDateTime() {
