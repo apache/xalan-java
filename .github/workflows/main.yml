@@ -56,9 +56,11 @@ jobs:
 # /home/runner/work/xalan-java/xalan-java/build.xml:1399: /home/runner/work/xalan-java/xalan-test does not exist.
 # Error replicated on my system if there is not a sibling xalan-test.
 # NOT replicated if sibling xalan-test directory is present
-# Simplest fix would be to have the above test checkout emulate the dev environment
+# Simplest fix would be to have the above test checkout emulate the dev environment,
+# but CI is resisting that, and I doubt I can cheat past it. Next simplest might be
+# to try to fix fulldist to handle the "contained" xalan-test; need to dig.
     - id: build_artifacts
       run: |
-        ls .. .
+        mv xalan-test ..
 #      ant fulldist
 
