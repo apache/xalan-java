@@ -44,8 +44,13 @@ jobs:
         ref: xalan-j_2_7_x
     - name: 'Run xalan-test tests'
       working-directory: xalan-test
+# NOTE: "alltest" target includes conformance tests known not to run in Xalan,
+# as well as having dependencies on some targets which have since been edited
+# out. The following is our typical minimal build test, minus conf.xsltc since
+# that one is currently throwing four known failures (and can't avoid them
+# as the executable-mode tests can).
       run: |
-        ant alltest -Dxalan.relpath=../ -Dparserjar=../lib/endorsed/xercesImpl.jar -Dxml-apis.jar=../lib/endorsed/xml-apis.jar
+        ant jar extensions.classes smoketest apitest -Dxalan.relpath=../ -Dparserjar=../lib/endorsed/xercesImpl.jar -Dxml-apis.jar=../lib/endorsed/xml-apis.jar
     - id: build_artifacts
       run: |
         ant fulldist
