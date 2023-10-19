@@ -50,7 +50,7 @@ jobs:
 # that one is currently throwing four known failures (and can't avoid them
 # as the executable-mode tests can).
       run: |
-        ant jar extensions.classes smoketest apitest -Dxalan.relpath=../ -Dparserjar=../lib/endorsed/xercesImpl.jar -Dxml-apis.jar=../lib/endorsed/xml-apis.jar
+        ant jar extensions.classes smoketest apitest conf.xsltc -Dxalan.relpath=../ -Dparserjar=../lib/endorsed/xercesImpl.jar -Dxml-apis.jar=../lib/endorsed/xml-apis.jar
     - id: build_artifacts
       run: |
         ant fulldist
