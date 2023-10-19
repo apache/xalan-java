@@ -61,6 +61,6 @@ jobs:
 # to try to fix fulldist to handle the "contained" xalan-test; need to dig.
     - id: build_artifacts
       run: |
-        mv xalan-test ..
+        mv xalan-test ..; ls ..
 #      ant fulldist
 
