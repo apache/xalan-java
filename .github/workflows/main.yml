@@ -53,6 +53,6 @@ jobs:
         ant jar extensions.classes smoketest apitest -Dxalan.relpath=../ -Dparserjar=../lib/endorsed/xercesImpl.jar -Dxml-apis.jar=../lib/endorsed/xml-apis.jar
 
     - id: build_artifacts
-      working-directory: xalan-java 
+      working-directory: .. 
       run: |
         ant fulldist
