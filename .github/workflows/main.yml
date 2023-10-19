@@ -51,6 +51,14 @@ jobs:
 # isn't set up to say "but that's not a regression".
       run: |
         ant jar extensions.classes smoketest apitest -Dxalan.relpath=../ -Dparserjar=../lib/endorsed/xercesImpl.jar -Dxml-apis.jar=../lib/endorsed/xml-apis.jar
+        
+    - name: 'Where are we'
+      run: |
+        pwd
+    - name: 'And why are we in this handbasket'
+      run: |
+        ls /home/runner/work/xalan-java
+
     - id: build_artifacts
       run: |
         ant fulldist
