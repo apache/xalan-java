@@ -52,6 +52,12 @@ jobs:
       run: |
         ant jar extensions.classes smoketest apitest -Dxalan.relpath=../ -Dparserjar=../lib/endorsed/xercesImpl.jar -Dxml-apis.jar=../lib/endorsed/xml-apis.jar
 
+# This is failing: in CI
+# /home/runner/work/xalan-java/xalan-java/build.xml:1399: /home/runner/work/xalan-java/xalan-test does not exist.
+# Replicated on my system if there is neither child nor sibling xalan-test.
+# NOT replicated if sibling xalan-test directory is present
+# REPLICATED if only child xalan-test directory is present
+# So message appears to be misleading...?
     - id: build_artifacts
       run: |
        ant fulldist
