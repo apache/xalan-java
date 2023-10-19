@@ -54,5 +54,4 @@ jobs:
 
     - id: build_artifacts
       run: |
-        ls
-#       ant fulldist
+       ant fulldist
