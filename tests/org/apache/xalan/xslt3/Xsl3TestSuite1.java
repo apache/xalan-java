@@ -24,6 +24,7 @@ import org.apache.xalan.xpath3.InlineFunctionItemExprTests;
 import org.apache.xalan.xpath3.StringTests;
 import org.apache.xalan.xpath3.ValueComparisonTests;
 import org.apache.xalan.xpath3.XsConstructorFunctionTests;
+import org.apache.xalan.xpath3.XsDateTimeArithmeticTests;
 import org.apache.xalan.xpath3.XsDateTimeTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -41,7 +42,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 XslFunctionTests.class, HigherOrderFunctionTests.class, XsDateTimeTests.class,
                 ValueComparisonTests.class, InlineFunctionItemExprTests.class, 
                 FnForEachTests.class, XsConstructorFunctionTests.class,
-                FnAbsTests.class, StringTests.class })
+                FnAbsTests.class, StringTests.class, XsDateTimeArithmeticTests.class })
 public class Xsl3TestSuite1 {
 
 }
