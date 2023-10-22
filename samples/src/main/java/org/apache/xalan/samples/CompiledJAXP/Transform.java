@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package org.apache.xalan.samples.CompiledJAXP;
 
 import java.io.OutputStreamWriter;
 

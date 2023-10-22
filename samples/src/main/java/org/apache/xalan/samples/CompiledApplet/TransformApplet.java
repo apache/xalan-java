@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package org.apache.xalan.samples.CompiledApplet;
 
 import java.applet.Applet;
 

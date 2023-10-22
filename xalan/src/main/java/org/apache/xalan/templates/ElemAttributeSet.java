@@ -136,11 +136,11 @@ public class ElemAttributeSet extends ElemUse
 
   /**
    * Add a child to the child list.
-   * <!ELEMENT xsl:attribute-set (xsl:attribute)*>
-   * <!ATTLIST xsl:attribute-set
+   * &lt;!ELEMENT xsl:attribute-set (xsl:attribute)*&gt;
+   * &lt;!ATTLIST xsl:attribute-set
    *   name %qname; #REQUIRED
    *   use-attribute-sets %qnames; #IMPLIED
-   * >
+   * &gt;
    *
    * @param newChild Child to be added to this node's list of children
    *

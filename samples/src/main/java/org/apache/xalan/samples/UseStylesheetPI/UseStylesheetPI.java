@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package org.apache.xalan.samples.UseStylesheetPI;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;

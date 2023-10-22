@@ -184,9 +184,9 @@ public class ExsltStrings extends ExsltBase
    * <pre>
    * str:split('a, simple, list', ', ') gives the node set consisting of: 
    *
-   * <token>a</token>
-   * <token>simple</token>
-   * <token>list</token>
+   * &lt;tokent&gt;a&lt;/token&gt;
+   * &lt;tokent&gt;simple&lt;/token&gt;
+   * &lt;tokent&gt;list&lt;/token&gt;
    * </pre>
    * If the second argument is omitted, the default is the string '&#x20;' (i.e. a space).
    *
@@ -253,14 +253,14 @@ public class ExsltStrings extends ExsltBase
    * <pre>
    * str:tokenize('2001-06-03T11:40:23', '-T:') gives the node set consisting of: 
    *
-   * <token>2001</token>
-   * <token>06</token>
-   * <token>03</token>
-   * <token>11</token>
-   * <token>40</token>
-   * <token>23</token>
+   * &lt;tokent&gt;2001&lt;/token&gt;
+   * &lt;tokent&gt;06&lt;/token&gt;
+   * &lt;tokent&gt;03&lt;/token&gt;
+   * &lt;tokent&gt;11&lt;/token&gt;
+   * &lt;tokent&gt;40&lt;/token&gt;
+   * &lt;tokent&gt;23&lt;/token&gt;
    * </pre>
-   * If the second argument is omitted, the default is the string '&#x9;&#xA;&#xD;&#x20;' 
+   * If the second argument is omitted, the default is the string '&#x09;&#x0A;&#x0D;&#x20;' 
    * (i.e. whitespace characters). 
    * <p>
    * If the second argument is an empty string, the function returns a set of token 

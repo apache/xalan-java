@@ -27,13 +27,11 @@ package org.apache.xml.serializer;
 interface SerializerConstants
 {
 
-    /** To insert ]]> in a CDATA section by ending the last CDATA section with
-     * ]] and starting the next CDATA section with >
+    /** Use to insert ]]&lt; in a CDATA section context by ending the
+     * last CDATA section with ]] and starting the next CDATA section
+     * with &lt;
      */
     static final String CDATA_CONTINUE = "]]]]><![CDATA[>";
-    /**
-     * The constant "]]>"
-     */
     static final String CDATA_DELIMITER_CLOSE = "]]>";
     static final String CDATA_DELIMITER_OPEN = "<![CDATA[";
 

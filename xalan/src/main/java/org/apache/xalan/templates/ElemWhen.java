@@ -25,11 +25,11 @@ import org.apache.xpath.XPath;
 /**
  * Implement xsl:when.
  * <pre>
- * <!ELEMENT xsl:when %template;>
- * <!ATTLIST xsl:when
+ * &lt;!ELEMENT xsl:when %template;&gt;
+ * &lt;!ATTLIST xsl:when
  *   test %expr; #REQUIRED
  *   %space-att;
- * >
+ * &gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Conditional-Processing-with-xsl:choose">XXX in XSLT Specification</a>
  * @xsl.usage advanced

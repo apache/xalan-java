@@ -77,44 +77,44 @@ import org.xml.sax.ContentHandler;
  *
  * <p>Example:</p>
  * <PRE>
- * &lt;?xml version="1.0"?>
+ * &lt;?xml version="1.0"?&gt;
  * &lt;xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
  *                 version="1.0"
  *                 xmlns:redirect="http://xml.apache.org/xalan/redirect"
- *                 extension-element-prefixes="redirect">
+ *                 extension-element-prefixes="redirect"&gt;
  *
- *   &lt;xsl:template match="/">
- *     &lt;out>
+ *   &lt;xsl:template match="/"&gt;
+ *     &lt;out&gt;
  *       default output.
- *     &lt;/out>
- *     &lt;redirect:open file="doc3.out"/>
- *     &lt;redirect:write file="doc3.out">
- *       &lt;out>
- *         &lt;redirect:write file="doc1.out">
- *           &lt;out>
+ *     &lt;/out&gt;
+ *     &lt;redirect:open file="doc3.out"/&gt;
+ *     &lt;redirect:write file="doc3.out"&gt;
+ *       &lt;out&gt;
+ *         &lt;redirect:write file="doc1.out"&gt;
+ *           &lt;out&gt;
  *             doc1 output.
- *             &lt;redirect:write file="doc3.out">
+ *             &lt;redirect:write file="doc3.out"&gt;
  *               Some text to doc3
- *             &lt;/redirect:write>
- *           &lt;/out>
- *         &lt;/redirect:write>
- *         &lt;redirect:write file="doc2.out">
- *           &lt;out>
+ *             &lt;/redirect:write&gt;
+ *           &lt;/out&gt;
+ *         &lt;/redirect:write&gt;
+ *         &lt;redirect:write file="doc2.out"&gt;
+ *           &lt;out&gt;
  *             doc2 output.
- *             &lt;redirect:write file="doc3.out">
+ *             &lt;redirect:write file="doc3.out"&gt;
  *               Some more text to doc3
- *               &lt;redirect:write select="doc/foo">
+ *               &lt;redirect:write select="doc/foo"&gt;
  *                 text for doc4
- *               &lt;/redirect:write>
- *             &lt;/redirect:write>
- *           &lt;/out>
- *         &lt;/redirect:write>
- *       &lt;/out>
- *     &lt;/redirect:write>
- *     &lt;redirect:close file="doc3.out"/>
- *   &lt;/xsl:template>
+ *               &lt;/redirect:write&gt;
+ *             &lt;/redirect:write&gt;
+ *           &lt;/out&gt;
+ *         &lt;/redirect:write&gt;
+ *       &lt;/out&gt;
+ *     &lt;/redirect:write&gt;
+ *     &lt;redirect:close file="doc3.out"/&gt;
+ *   &lt;/xsl:template&gt;
  *
- * &lt;/xsl:stylesheet>
+ * &lt;/xsl:stylesheet&gt;
  * </PRE>
  *
  * @author Scott Boag

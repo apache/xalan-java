@@ -49,7 +49,7 @@ public abstract class SerializerFactory
      * @return A suitable serializer, or null
      * @throws IllegalArgumentException (apparently -sc) if method is
      * null or an appropriate serializer can't be found
-     * @throws WrappedRuntimeException (apparently -sc) if an
+     * @throws org.apache.xml.utils.WrappedRuntimeException (apparently -sc) if an
      * exception is thrown while trying to find serializer
      * @deprecated Use org.apache.xml.serializer.SerializerFactory
      */

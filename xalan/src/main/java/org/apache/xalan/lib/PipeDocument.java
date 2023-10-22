@@ -100,9 +100,9 @@ public class PipeDocument
  * Notes:</pre>
  * <ul>
  *   <li>The base URI for the source attribute is the XML "listing" document.<li/>
- *   <li>The target attribute is taken as is (base is the current user directory).<li/>
+ *   <li>The target attribute is taken as is (base is the current user directory).</li>
  *   <li>The stylsheet containg the extension element is the base URI for the
- *   stylesheet hrefs.<li/>
+ *   stylesheet hrefs.</li>
  * </ul>
  */
   public void pipeDocument(XSLProcessorContext context, ElemExtensionCall elem)

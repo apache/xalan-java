@@ -18,6 +18,8 @@
 /*
  * $Id$
  */
+package org.apache.xalan.samples.translets;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;

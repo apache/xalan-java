@@ -29,11 +29,11 @@ import org.apache.xpath.objects.XObject;
 /**
  * Implement xsl:param.
  * <pre>
- * <!ELEMENT xsl:param %template;>
- * <!ATTLIST xsl:param
+ * &lt;! xsl:param %template;&gt;
+ * &lt;!ATTLIST xsl:param
  *   name %qname; #REQUIRED
  *   select %expr; #IMPLIED
- * >
+ * &gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#variables">variables in XSLT Specification</a>
  * @xsl.usage advanced

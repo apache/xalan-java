@@ -30,8 +30,8 @@ import org.apache.xpath.objects.XObject;
 /**
  * Implement xsl:choose.
  * <pre>
- * <!ELEMENT xsl:choose (xsl:when+, xsl:otherwise?)>
- * <!ATTLIST xsl:choose %space-att;>
+ * &lt;!ELEMENT xsl:choose (xsl:when+, xsl:otherwise?)&gt;
+ * &lt;!ATTLIST xsl:choose %space-att;&gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Conditional-Processing-with-xsl:choose">XXX in XSLT Specification</a>
  * @xsl.usage advanced

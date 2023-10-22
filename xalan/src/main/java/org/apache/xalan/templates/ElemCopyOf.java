@@ -37,8 +37,8 @@ import org.apache.xpath.objects.XObject;
 /**
  * Implement xsl:copy-of.
  * <pre>
- * <!ELEMENT xsl:copy-of EMPTY>
- * <!ATTLIST xsl:copy-of select %expr; #REQUIRED>
+ * &lt;!ELEMENT xsl:copy-of EMPTY&gt;
+ * &lt;!ATTLIST xsl:copy-of select %expr; #REQUIRED&gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#copy-of">copy-of in XSLT Specification</a>
  * @xsl.usage advanced

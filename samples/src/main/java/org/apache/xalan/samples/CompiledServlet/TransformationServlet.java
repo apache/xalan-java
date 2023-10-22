@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package org.apache.xalan.samples.CompiledServlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -48,7 +49,7 @@ import org.xml.sax.SAXException;
  * @author Morten Jorgensen
  * @author Jacek Ambroziak
  */
-public final class TransformServlet extends HttpServlet {
+public final class TransformationServlet extends HttpServlet {
 
     /**
      * Main servlet entry point

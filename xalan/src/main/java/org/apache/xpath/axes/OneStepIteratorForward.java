@@ -133,7 +133,7 @@ public class OneStepIteratorForward extends ChildTestIterator
 //  }
   
   /**
-   * Get the next node via getFirstAttribute && getNextAttribute.
+   * Get the next node via getFirstAttribute and getNextAttribute.
    */
   protected int getNextNode()
   {

@@ -18,6 +18,8 @@
 /*
  * $Id$
  */
+package org.apache.xalan.samples.CompiledEJB;
+
 
 import java.rmi.RemoteException;
 

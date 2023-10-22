@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package org.apache.xalan.samples.Validate;
 
 import java.io.File;
 import java.io.FileInputStream;

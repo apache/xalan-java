@@ -31,12 +31,12 @@ import org.xml.sax.Attributes;
 /**
  * TransformerFactory for xsl:key markup.
  * <pre>
- * <!ELEMENT xsl:key EMPTY>
- * <!ATTLIST xsl:key
+ * &lt;!ELEMENT xsl:key EMPTY&gt;
+ * &lt;!ATTLIST xsl:key
  *   name %qname; #REQUIRED
  *   match %pattern; #REQUIRED
  *   use %expr; #REQUIRED
- * >
+ * &gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
  * @see <a href="http://www.w3.org/TR/xslt#key">key in XSLT Specification</a>

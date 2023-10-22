@@ -29,11 +29,11 @@ import org.apache.xalan.transformer.TransformerImpl;
 /**
  * Implement xsl:message.
  * <pre>
- * <!ELEMENT xsl:message %template;>
- * <!ATTLIST xsl:message
+ * &lt;!ELEMENT xsl:message %template;&gt;
+ * &lt;!ATTLIST xsl:message
  *   %space-att;
  *   terminate (yes|no) "no"
- * >
+ * &gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#message">message in XSLT Specification</a>
  * @xsl.usage advanced

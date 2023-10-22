@@ -27,6 +27,7 @@ import javax.xml.transform.OutputKeys;
 
 import org.apache.xml.serializer.utils.MsgKey;
 import org.apache.xml.serializer.utils.Utils;
+import org.apache.xml.serializer.utils.WrappedRuntimeException;
 import org.xml.sax.ContentHandler;
 
 /**
@@ -39,12 +40,13 @@ import org.xml.sax.ContentHandler;
    * using this factory ensures that the default key/value properties
    * are set for the given output "method".
    * 
-   * <p>
-   * The standard property keys supported are: "method", "version", "encoding",
-   * "omit-xml-declaration", "standalone", doctype-public",
-   * "doctype-system", "cdata-section-elements", "indent", "media-type". 
-   * These property keys and their values are described in the XSLT recommendation,
-   * see {@link <a href="http://www.w3.org/TR/1999/REC-xslt-19991116"> XSLT 1.0 recommendation</a>}
+   * <p> The standard property keys supported are: "method",
+   * "version", "encoding", "omit-xml-declaration", "standalone",
+   * doctype-public", "doctype-system", "cdata-section-elements",
+   * "indent", "media-type".  These property keys and their values are
+   * described in the <a
+   * href="http://www.w3.org/TR/1999/REC-xslt-19991116"> XSLT 1.0
+   * recommendation</a>
    * 
    * <p>
    * The value of the "cdata-section-elements" property key is a whitespace
@@ -79,13 +81,13 @@ public final class SerializerFactory
    * an exception of some type will be thrown.
    * For a list of the output "method" key values see {@link Method}.
    *
+   * May thrown an Exception if the class for the serializer is not
+   * found, or is found but does not implement ContentHandler.
+   *
    * @param format The output format, minimally the "method" property must be set.
    * @return A suitable serializer.
    * @throws IllegalArgumentException if method is
    * null or an appropriate serializer can't be found
-   * @throws Exception if the class for the serializer is found but does not
-   * implement ContentHandler.
-   * @throws WrappedRuntimeException if an exception is thrown while trying to find serializer
    */
   public static Serializer getSerializer(Properties format)
   {

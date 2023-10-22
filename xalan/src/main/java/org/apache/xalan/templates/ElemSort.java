@@ -29,16 +29,16 @@ import org.w3c.dom.Node;
 /**
  * Implement xsl:sort.
  * <pre>
- * <!ELEMENT xsl:sort EMPTY>
- * <!ATTLIST xsl:sort
+ * &lt;!ELEMENT xsl:sort EMPTY&gt;
+ * &lt;!ATTLIST xsl:sort
  *   select %expr; "."
  *   lang %avt; #IMPLIED
  *   data-type %avt; "text"
  *   order %avt; "ascending"
  *   case-order %avt; #IMPLIED
- * >
- * <!-- xsl:sort cannot occur after any other elements or
- * any non-whitespace character -->
+ * &gt;
+ * &lt;!-- xsl:sort cannot occur after any other elements or
+ * any non-whitespace character --&gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#sorting">sorting in XSLT Specification</a>
  * @xsl.usage advanced

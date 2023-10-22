@@ -150,6 +150,9 @@ public class NamespaceSupport {
     } // popContext()
 
 	/**
+	 * @param prefix String containing the QName prefix to be bound
+	 * @param uri String containing the namespace URI to bind to prefix
+	 * @return false if binding the prefix is forbidden(xml: and xmlns:), otherwise true
 	 * @see org.apache.xerces.xni.NamespaceContext#declarePrefix(String, String)
 	 */
     public boolean declarePrefix(String prefix, String uri) {
@@ -189,6 +192,9 @@ public class NamespaceSupport {
     } // declarePrefix(String,String):boolean
 
 	/**
+	 * @param prefix String prefix to be looked up in this context
+	 * @return String containing the Namespace URI bound to that prefix,
+	 * or null if unbound
 	 * @see org.apache.xerces.xni.NamespaceContext#getURI(String)
 	 */
     public String getURI(String prefix) {
@@ -207,9 +213,13 @@ public class NamespaceSupport {
     } // getURI(String):String
 
 
-	/**
-	 * @see org.apache.xerces.xni.NamespaceContext#getPrefix(String)
-	 */
+    /**
+     * @param uri String containing the Namespace URI to be looked up
+     * @return String containing a prefix bound to that namespace
+     * or null if unbound. CAVEAT: There may be multiple prefixes bound
+     * to the same namespace; this returns the first found.
+     * @see org.apache.xerces.xni.NamespaceContext#getPrefix(String)
+     */
     public String getPrefix(String uri) {
 
         // find uri in current context
@@ -228,24 +238,28 @@ public class NamespaceSupport {
     } // getPrefix(String):String
 
 
-	/**
-	 * @see org.apache.xerces.xni.NamespaceContext#getDeclaredPrefixCount()
-	 */
+    /** @return number of prefixes currently bound
+     * @see org.apache.xerces.xni.NamespaceContext#getDeclaredPrefixCount()
+     */
     public int getDeclaredPrefixCount() {
         return (fNamespaceSize - fContext[fCurrentContext]) / 2;
     } // getDeclaredPrefixCount():int
 
-	/**
-	 * @see org.apache.xerces.xni.NamespaceContext#getDeclaredPrefixAt(int)
-	 */
+    /**
+     * @param index Select prefix from all currently bound
+     * @return The prefix in that slot of our table. Equivalent to
+     * indexing into enumerator returned by #getAllPrefixes()
+     * @see org.apache.xerces.xni.NamespaceContext#getDeclaredPrefixAt(int)
+     */
     public String getDeclaredPrefixAt(int index) {
         return fNamespace[fContext[fCurrentContext] + index * 2];
     } // getDeclaredPrefixAt(int):String
-
-	/**
-	 * @see org.apache.xerces.xni.NamespaceContext#getAllPrefixes()
-	 */
-	public Enumeration getAllPrefixes() {
+    
+    /**
+     * @return an Enumeration of the namespace prefixes currently bound
+     * @see org.apache.xerces.xni.NamespaceContext#getAllPrefixes()
+     */
+    public Enumeration getAllPrefixes() {
         int count = 0;
         if (fPrefixes.length < (fNamespace.length/2)) {
             // resize prefix array          
@@ -269,36 +283,43 @@ public class NamespaceSupport {
         }
 		return new Prefixes(fPrefixes, count);
 	}
-    
+
+    // I'm a bit confused by Prefixes.prefixes vs. NamespaceSupper.fPrefixes.
+    // Need to review the logic and document that. -- jkesselm GONK
     protected final class Prefixes implements Enumeration {
         private String[] prefixes;
         private int counter = 0;
         private int size = 0;
                
-		/**
-		 * Constructor for Prefixes.
-		 */
-		public Prefixes(String [] prefixes, int size) {
-			this.prefixes = prefixes;
+	/**
+	 * Constructor for Prefixes enumerator
+	 * @param prefixes String[] Set of prefixes.
+	 * @param size integer Number of preloaded prefixes
+	 */
+	public Prefixes(String [] prefixes, int size) {
+	    this.prefixes = prefixes;
             this.size = size;
-		}
-
+	}
+	
        /**
-		 * @see java.util.Enumeration#hasMoreElements()
-		 */
-		public boolean hasMoreElements() {           
-			return (counter< size);
-		}
-
-		/**
-		 * @see java.util.Enumeration#nextElement()
-		 */
-		public Object nextElement() {
+	* @return true if this object, as an Enumeration, can return
+	* more bindings
+	* @see java.util.Enumeration#hasMoreElements()
+	*/
+	public boolean hasMoreElements() {           
+	    return (counter< size);
+	}
+	
+	/**
+	 * @return the next binding's prefix, as an Enumeration result
+	 * @see java.util.Enumeration#nextElement()
+	 */
+	public Object nextElement() {
             if (counter< size){
                 return fPrefixes[counter++];
             }
-			throw new NoSuchElementException("Illegal access to Namespace prefixes enumeration.");
-		}
+	    throw new NoSuchElementException("Illegal access to Namespace prefixes enumeration.");
+	}
         
         public String toString(){
             StringBuffer buf = new StringBuffer();
@@ -310,6 +331,6 @@ public class NamespaceSupport {
             return buf.toString(); 
         }
 
-}
-
+    }
+    
 } // class NamespaceSupport

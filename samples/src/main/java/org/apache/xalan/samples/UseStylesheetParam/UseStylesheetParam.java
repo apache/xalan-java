@@ -18,7 +18,7 @@
 /*
  * $Id$
  */
-
+package org.apache.xalan.samples.UseStylesheetParam;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 

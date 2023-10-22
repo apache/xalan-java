@@ -83,14 +83,17 @@ public final class ToXMLSAXHandler extends ToSAXHandler
 
     /**
      * Do nothing for SAX.
+     * @param n Indentation in character-columns, ignored here
+     * @throws SAXException never, but inheritance requires it.
      */
     public void indent(int n) throws SAXException
     {
     }
 
 
-    /**
+    /** @param node A DOM node (which this implementation will ignore)
      * @see DOMSerializer#serialize(Node)
+     * @throws IOException never, but inheritance requires it.
      */
     public void serialize(Node node) throws IOException
     {
@@ -217,12 +220,11 @@ public final class ToXMLSAXHandler extends ToSAXHandler
      * unlike the this.endCDATA() method (from the LexicalHandler) interface,
      * this "internal" method will send the endCDATA() call to the wrapped
      * handler.
-     * 
      */
     public void closeCDATA() throws SAXException
     {
 
-        // Output closing bracket - "]]>"
+        // Output CDATA closing bracket - "]]>"
         if (m_lexHandler != null && m_cdataTagOpen) {
             m_lexHandler.endCDATA();
         }
@@ -491,7 +493,7 @@ public final class ToXMLSAXHandler extends ToSAXHandler
 
     /**
      * Start an element in the output document. This might be an XML element
-     * (<elem>data</elem> type) or a CDATA section.
+     * (&lt;elem&gt;data&lt;/elem&gt; type) or a CDATA section.
      */
     public void startElement(
     String elementNamespaceURI,
@@ -570,9 +572,11 @@ public final class ToXMLSAXHandler extends ToSAXHandler
     }
 
     /**
-     *
-     * @see org.xml.sax.ContentHandler#processingInstruction(String, String)
      * Send a processing instruction to the output document
+     * @param target "name" of processing instruction
+     * @param data "value" of processing instruction
+     * @throws SAXException if underlying handler throws one
+     * @see org.xml.sax.ContentHandler#processingInstruction(String, String)
      */
     public void processingInstruction(String target, String data)
         throws SAXException
@@ -591,6 +595,8 @@ public final class ToXMLSAXHandler extends ToSAXHandler
     /**
      * Undeclare the namespace that is currently pointed to by a given
      * prefix. Inform SAX handler if prefix was previously mapped.
+     * @param prefix Namespace prefix mapping to be removed
+     * @return true iff a mapping was present to be removed
      */
     protected boolean popNamespace(String prefix)
     {

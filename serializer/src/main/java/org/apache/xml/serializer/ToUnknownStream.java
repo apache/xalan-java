@@ -37,9 +37,9 @@ import org.xml.sax.SAXException;
 
 
 /**
- *This class wraps another SerializationHandler. The wrapped object will either
+ * This class wraps another SerializationHandler. The wrapped object will either
  * handler XML or HTML, which is not known until a little later when the first XML
- * tag is seen.  If the first tag is <html> then the wrapped object is an HTML
+ * tag is seen.  If the first tag is &lt;html&gt; then the wrapped object is an HTML
  * handler, otherwise it is an XML handler.
  *
  * This class effectively caches the first few calls to it then passes them

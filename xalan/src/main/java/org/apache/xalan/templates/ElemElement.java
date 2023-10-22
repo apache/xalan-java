@@ -33,13 +33,13 @@ import org.xml.sax.SAXException;
 /**
  * Implement xsl:element
  * <pre>
- * <!ELEMENT xsl:element %template;>
- * <!ATTLIST xsl:element
+ * &lt;!ELEMENT xsl:element %template;&gt;
+ * &lt;!ATTLIST xsl:element
  *   name %avt; #REQUIRED
  *   namespace %avt; #IMPLIED
  *   use-attribute-sets %qnames; #IMPLIED
  *   %space-att;
- * >
+ * &gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Elements-with-xsl:element">XXX in XSLT Specification</a>
  * @xsl.usage advanced

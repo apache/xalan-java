@@ -18,6 +18,8 @@
 /*
  * $Id$
  */
+package org.apache.xalan.samples.CompiledServlet;
+
 
 import java.io.IOException;
 import java.io.PrintWriter;

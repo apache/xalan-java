@@ -24,6 +24,7 @@ import java.io.File;
 
 import org.apache.xml.serializer.utils.AttList;
 import org.apache.xml.serializer.utils.DOM2Helper;
+import org.apache.xml.serializer.utils.WrappedRuntimeException;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Element;
 import org.w3c.dom.EntityReference;
@@ -33,6 +34,7 @@ import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.LocatorImpl;
 
@@ -84,6 +86,8 @@ public final class TreeWalker
    * Constructor.
    * @param   contentHandler The implemention of the
    * contentHandler operation (toXMLString, digest, ...)
+   * @param systemId to be set into the output document. If null we
+   * use a default (currently dummy.xsl)
    */
   public TreeWalker(ContentHandler contentHandler, String systemId)
   {
@@ -131,7 +135,7 @@ public final class TreeWalker
    *  
    * @param pos Node in the tree where to start traversal
    *
-   * @throws TransformerException
+   * @throws SAXException if the ContentHandler objects to the request.
    */
   public void traverse(Node pos) throws org.xml.sax.SAXException
   {
@@ -187,7 +191,7 @@ public final class TreeWalker
    * @param pos Node in the tree where to start traversal
    * @param top Node in the tree where to end traversal
    *
-   * @throws TransformerException
+   * @throws SAXException if the ContentHandler objects to the request.
    */
   public void traverse(Node pos, Node top) throws org.xml.sax.SAXException
   {
@@ -232,6 +236,7 @@ public final class TreeWalker
   
   /**
    * Optimized dispatch of characters.
+   * @throws SAXException if the ContentHandler objects to the request.
    */
   private final void dispatachChars(Node node)
      throws org.xml.sax.SAXException
@@ -252,8 +257,7 @@ public final class TreeWalker
    *
    *
    * @param node Node to process
-   *
-   * @throws org.xml.sax.SAXException
+   * @throws SAXException if the ContentHandler objects to the request.
    */
   protected void startNode(Node node) throws org.xml.sax.SAXException
   {
@@ -428,7 +432,6 @@ public final class TreeWalker
       }
       else
       {
-
         // warning("Can not output entity to a pure SAX ContentHandler");
       }
     }
@@ -443,7 +446,7 @@ public final class TreeWalker
    *
    * @param node Node we just finished processing
    *
-   * @throws org.xml.sax.SAXException
+   * @throws SAXException if the ContentHandler objects to the request.
    */
   protected void endNode(Node node) throws org.xml.sax.SAXException
   {

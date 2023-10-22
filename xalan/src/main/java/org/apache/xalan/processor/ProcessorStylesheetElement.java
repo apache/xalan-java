@@ -116,6 +116,7 @@ public class ProcessorStylesheetElement extends XSLTElementProcessor
   /**
    * This method can be over-ridden by a class that extends this one.
    * @param handler The calling StylesheetHandler/TemplatesBuilder.
+   * @return the root element of the new stylesheet
    */
   protected Stylesheet getStylesheetRoot(StylesheetHandler handler) throws TransformerConfigurationException
   {

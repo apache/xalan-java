@@ -14,110 +14,201 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 -->
-
+Apache Xalan-Java Build, Test, and Release Notes
 Copyright 1999-2023 The Apache Software Foundation
 
 Authors:
    Gary Gregory <ggregory@apache.org>
-   Joe Kesselman
+   Joe Kesselman <jkesselm@apache.org>
    Mukul Gandhi <mukulg@apache.org>
 
-This file primarily, contains instructions to the person(s) who shall be making an Apache XalanJ 
-release for distribution, along with the instructions about how to test XalanJ release before 
-recommending the release for distribution.
+This document's primarily focused on building artifacts for production
+releases of the Apache Xalan-J XSLT processor, but may be helpful for
+others working with Xalan's source.
 
-The details mentioned within this file, may also be used, by XalanJ source distribution users to 
-build and test XalanJ from the source distribution (except that, "git clone" steps as mentioned 
-within this file, might not be required to be run by XalanJ source distribution users).
+(0) Prerequisites
+
+Official Xalan builds are currently being performed using Maven
+version 6.3.6 and a Java 1.8 Development Kit. We recommend Eclipse
+Temurun for the latter; it is available from
+https://adoptium.net/temurin/releases/?version=8. Be sure to install
+the JDK, not just the JRE.
+
+The xalan tests, however, are still relying on Apache Ant. You can
+obtain this from https://ant.apache.org/bindownload.cgi. I have been
+testing with Ant 1.10.12, but have successfully built with 1.9.16 as
+well.
+
 
 (1) Steps to build the XalanJ release
 
-1) Do a git clone, of the relevant XalanJ branches:
+1.1) Obtain the source for XalanJ and its test package.
 
-git clone --single-branch https://gitbox.apache.org/repos/asf/xalan-java.git -b xalan-j_2_7_1_maint
+"Source Distribution" jarfiles are available which contain a snapshot
+of a particular release of the source code; extracting them with "jar
+-xf" will yield the xalan-java and xalan-test directories.
 
-git clone https://gitbox.apache.org/repos/asf/xalan-test.git
+Or (usually preferred) you can use "git clone" to obtain these from
+either github.com. or gitbox.apache.org. New development takes place
+on the branch currently called "master", which git will fetch by default:
 
-This creates two folders: xalan-java and xalan-test. These folders need to be parallel to
-each other, to be able to follow the XalanJ build and tests steps as described in this document,
-for making a XalanJ release for distribution.
+  git clone https://github.com/apache/xalan-java.git
+  git clone https://github.com/apache/xalan-test.git
 
-2) Set JAVA_HOME and ANT_HOME environment variables, for example on Windows:
+(In the past this code was hosted at gitbox.apache.org, but that now
+redirects to the github copy.)
 
-set JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-8.0.352.8-hotspot\
+If you want to build a specific release rather than the development
+version, you can obtain that by adding the release's branch name to
+the git clone operation. For example, to get the code released as
+version 2.7.1, you would issue the command
 
-set ANT_HOME=C:\java\apache-ant-1.10.12
+  git clone https://github.com/apache/xalan-java.git --single-branch --branch xalan-j_2_7_1
 
-3) Run the command, "build clean fulldist" from folder xalan-java.
+There will also usually be a _maint branch, which is used for development and testing of "hot fixes" that will be made available as new point releases (for example, 2.7.1.1). You would access this as
 
-For XalanJ source distribution users, this command needs to be run from, the root 
-of the XalanJ source distribution folder (i.e, from the source distribution folder, 
-which contains folders "src", "tools" etc).
+  git clone https://github.com/apache/xalan-java.git --single-branch --branch xalan-j_2_7_1_maint
 
-(2) Steps to run the XalanJ tests, on XalanJ implementation
+Whether you perform the git clone operations or unpack the source
+distribution jarfiles, each produces its own folder: xalan-java and
+xalan-test. Since xalan-test looks for code to be tested via the path
+../xalan-java, these will need to be children of the same parent
+directory for the tests to run.
 
-Note that, for XalanJ source distribution users, XalanJ implementation shall be 
-produced (that XalanJ source distribution users, might want to test) by running 
-the build command "build clean fulldist" from the root of the XalanJ source 
-distribution folder.
 
-1) Go to the XalanJ tests repos's, local git clone folder:
-cd ..\xalan-test
+1.2) Set JAVA_HOME and ANT_HOME environment variable. On Linux, assuming
+a standard installation of the JDK with the "alternatives" tooling,
+the easiest way to be sure you have the right JDK may be to use the
+command
 
-For XalanJ source distribution users, xalan-test folder is located at the root of the XalanJ 
-source distribution folder (i.e, parallel to folders "src", "tools" etc within the main XalanJ 
-codebase folder location), from where XalanJ source distribution users may run XalanJ 
-tests, by using the "build" script located at this folder location.
+  export ANT_HOME=/usr/share/ant	
+  export JAVA_HOME=$(readlink -f /etc/alternatives/java_sdk_1.8.0)
 
-2) Set JAVA_HOME and ANT_HOME environment variables, for example:
+On Windows, you will probably need to set these more explicitly, and add them to your PATH:
 
-set JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-8.0.352.8-hotspot\
+  set ANT_HOME=C:\path\to\your\installed\apache-ant-
+  set JAVA_HOME=C:\Program Files\Eclipse Adoptium\jdk-8.0.352.8-hotspot\
+  set PATH=%JAVA_HOME%;%ANT_HOME%;%PATH%
 
-set ANT_HOME=C:\java\apache-ant-1.10.12
 
-3) Run the command "build clean jar" from folder xalan-test. This produces
-the file testxsl.jar that acts as main XalanJ test driver, within folder xalan-test/java/build.
+1.3) Go to the xalan-java source directory (i.e, from the source
+distribution folder, which contains folders "src", "tools" etc), and
+from there run the clean-and-distribution-build command:
 
-4) Run the necessary XalanJ tests as follows,
+   On Linux, run ./mvnbuild.sh
+   On Windows, run ./mvnbuild.bat
 
-The tests described below within points 4.1, 4.2, 4.3 need to be run from folder xalan-test. 
+This will build:
+   ./target/site/apidocs: Javadoc for the Xalan code base
 
-4.1 Run the ant target "smoketest", using following two commands in sequence shown below
+   ./target/site/design: Architecture documentation for Xalan
+     (probably outdated)
 
-build extensions.classes
+   ./target/site/xsltc: Architecture documentation for the Xalan bytecode
+     compilation operations (probably outdated)
 
-build smoketest
+   ./build/*.jar: Executable jarfiles for the XML Serializer, the Xalan
+     XSLT Processor, some old xsltc samples and the @xsl.usage taglet
+     we used in producing the Javadoc/apidocs (see above).
 
-The final result of the command "build smoketest" should be following,
+1.4) IMPORTANT: Until we get xalan-test updated, you will need to go to the
+xalan-java/build directory and manually copy or rename the jarfiles to
+remove the version number:
+
+       Linux: 
+           mv xalan-*.jar xalan.jar
+	   mv serializer-*.jar serializer.jar
+       Windows: 
+           ren xalan-*.jar xalan.jar
+	   ren serializer-*.jar serializer.jar
+
+
+(2) Steps to run the XalanJ tests, assuming you have already build
+xalan-java as discussed above:
+
+2.1) Go to the xalan-tests local folder. If you have cloned xalan-java
+and xalan-test from Git, it will be a sibling of xalan-java.
+
+BUT: For XalanJ source distribution users, the xalan-test folder is
+shipped as a child of the xalan-java source folder (i.e, parallel to
+folders "src", "tools" etc within the main XalanJ codebase folder
+location). In theory you *should* be able to run the tests directly
+from here, but if you run into trouble try moving xalan-test up to be
+a sibling of xalan-java.
+
+2.2) Ensure the JAVA_HOME, ANT_HOME, and (on Windows) PATH environment
+variables have been set as discussed above.
+
+2.3) Go to the xalan-test folder, and from there run a clean source
+build. Unfortunately we don't currently have a single target for this,
+so you need to spell out some of the supporting packages:
+
+  Linux: ./build.sh clean jar extensions.classes bugzilla.classes jira.classes
+  Windows: build clean jar extensions.classes bugzilla.classes jira.classes
+
+The jar target builds the main XalanJ test driver, testxsl.jar, which
+acts as main XalanJ test driver. The .classes targets build supporting
+code specific to testing XSLT Extensions or some old issues reported
+via Bugzilla or (more recently) Jira.
+
+
+2.4) From the xalan-test directory, you can run the necessary XalanJ
+tests as follows:
+
+2.4.1) The most important test set is smoketest. This exercises all
+the testcases known to work in Apache Xalan-J, while avoiding some
+which have open issues against them.
+
+Make sure you have built the jar and extensions.classes, as
+above. Then, from the xalan-test directory:
+
+  Linux: ./build.sh smoketest
+  Windows: build smoketest
+
+At the end of the test run, smoketest should report:
 
 smoketest-pass:
      [echo]  [minitest] CONGRATULATIONS! The Smoketest passed!
-     
-4.2 Run the ant target "apitest", using following command
 
-build apitest
 
-The final result of the command "build apitest" should be following,
+2.4.2) Run the ant target "apitest", using following command
+
+  Linux: ./build.sh apitest
+  Windows: build apitest
+
+At the end of the test run, apitest should report:
 
 apitest-pass-file-check:
      [echo]  [minitest] CONGRATULATIONS! The api tests passed!     
 
-4.3 Run the ant target "conf.xsltc", using the following command 
 
-build conf.xsltc
+2.4.3) Run the ant target "conf.xsltc", using the following command 
 
-The final result of the command "build conf.xsltc" should be following,
+  Linux: ./build.sh conf.xsltc
+  Windows: build conf.xsltc
+
+At the end of the test run, conf.xsltc should report:
 
 [echo]  [minitest] CONGRATULATIONS! The conf.xsltc tests passed!
 
-The XalanJ XSLTC processor, producing compiled translets, is known to have certain issues 
-as summarized by the following jira tickets, for the respective mentioned XalanJ conf.xsltc 
-test cases as mentioned below (users shall currently see, these xalanj test cases as failing, 
-within the test build conf.xsltc's output).
+PLEASE NOTE that XSLTC has some known issues, which will cause FAIL
+reports during this test. These are not considered regressions, and
+are specialcased so conf.xsltc reports "passed" despite them. There
+are Jira tickets open to address these bugs, and when fixes become
+available we will again insist that these tests pass.
 
-1) output63         https://issues.apache.org/jira/browse/XALANJ-2642
-2) idkey49          https://issues.apache.org/jira/browse/XALANJ-2640
-3) math111          https://issues.apache.org/jira/browse/XALANJ-2641
-4) whitespace35     https://issues.apache.org/jira/browse/XALANJ-2643
+   output63         https://issues.apache.org/jira/browse/XALANJ-2642
+   idkey49          https://issues.apache.org/jira/browse/XALANJ-2640
+   math111          https://issues.apache.org/jira/browse/XALANJ-2641
+   whitespace35     https://issues.apache.org/jira/browse/XALANJ-2643
 
-These XSLT transformation issues, do not exist with the XalanJ interpretive processor.
+2.4.4) Other test targets exist, which are either subsets of the above
+or are considered less essential for regression testing. You may want
+to read through the build.xml file to find them. NOTE that one target,
+"api", is currently missing, which causes the "all" target to fail; we
+need to clean that up at some point.
+
+2.5) When bugs are reported, tests should be added (at least to the
+jira test set) to demonstrate the problem. When bugs are fixed, those
+tests should be migrated either to the appropriate category or to the
+"contrib" bucket if they don't fit nicely anywhere else. If the bug report was in error, the test demonstrating the (correct but unexpected) behavior may be either discarded, or moved as above if we think it's a useful illustration.

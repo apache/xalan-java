@@ -113,7 +113,7 @@ public abstract class ToSAXHandler extends SerializerBase
      *
      * @param characters The string of characters to process.
      *
-     * @throws org.xml.sax.SAXException
+     * @throws SAXException if underlying handler reports an error
      *
      * @see ExtendedContentHandler#characters(String)
      */
@@ -179,13 +179,11 @@ public abstract class ToSAXHandler extends SerializerBase
      * SAX method additional namespace or attribute information can occur before
      * or after this call, that is associated with this element.
      *
-     * @throws org.xml.sax.SAXException Any SAX exception, possibly
-     *            wrapping another exception.
      * @see org.xml.sax.ContentHandler#startElement
      * @see org.xml.sax.ContentHandler#endElement
      * @see org.xml.sax.AttributeList
      *
-     * @throws org.xml.sax.SAXException
+     * @throws SAXException if underlying handler reports an error
      *
      * @see org.xml.sax.ContentHandler#startElement(String,String,String,Attributes)
      */
@@ -342,7 +340,7 @@ public abstract class ToSAXHandler extends SerializerBase
      * This method gets the node's value as a String and uses that String as if
      * it were an input character notification.
      * @param node the Node to serialize
-     * @throws org.xml.sax.SAXException
+     * @throws SAXException if underlying handler reports an error
      */    
     public void characters(org.w3c.dom.Node node)
         throws org.xml.sax.SAXException

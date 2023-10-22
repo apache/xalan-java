@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>xalan</groupId>
+    <artifactId>xalan-project</artifactId>
+    <version>2.7.3</version>
+  </parent>
+
+  <artifactId>xalan2jtaglet</artifactId>
+  <name>@xsl.usage taglet</name>
+  <description>Implementation of the @xsl.usage taglet, used in the Xalan package's javadoc to indicate classes which, while public for cross-module access, are not intended to be called by end-users.</description>
+
+  <!-- Needs com.sun.javadoc.*, of course.  WARNING: The rules for
+       finding the tools.jar equivalent can get a bit hairy. This
+       *should* work on Linux and Windows; Mac may want the resolving
+       plugin instead.
+  -->
+  <properties>
+    <toolsjar>${java.home}/../lib/tools.jar</toolsjar>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>com.sun</groupId>
+      <artifactId>tools</artifactId>
+      <version>1.6.0</version>
+      <scope>system</scope>
+      <systemPath>${toolsjar}</systemPath>
+    </dependency>
+  </dependencies>
+
+
+  <!-- <dependencies> -->
+  <!--   <!-\- https://mvnrepository.com/artifact/org.apache.bcel/bcel -\-> -->
+  <!--   <dependency> -->
+  <!--     <groupId>org.apache.bcel</groupId> -->
+  <!--     <artifactId>bcel</artifactId> -->
+  <!--     <version>6.7.0</version> -->
+  <!--   </dependency> -->
+  <!--   <!-\- https://mvnrepository.com/artifact/commons-logging/commons-logging -\-> -->
+  <!--   <dependency> -->
+  <!--     <groupId>commons-logging</groupId> -->
+  <!--     <artifactId>commons-logging</artifactId> -->
+  <!--     <version>1.2</version> -->
+  <!--     <scope>provided</scope> -->
+  <!--   </dependency> -->
+  <!--   <!-\- https://mvnrepository.com/artifact/javax/javaee-api -\-> -->
+  <!--   <dependency> -->
+  <!--     <groupId>javax</groupId> -->
+  <!--     <artifactId>javaee-api</artifactId> -->
+  <!--     <version>6.0</version> -->
+  <!--     <scope>provided</scope> -->
+  <!--   </dependency> -->
+  <!--   <!-\- https://mvnrepository.com/artifact/javax.servlet/servlet-api -\-> -->
+  <!--   <dependency> -->
+  <!--     <groupId>javax.servlet</groupId> -->
+  <!--     <artifactId>servlet-api</artifactId> -->
+  <!--     <version>2.5</version> <!-\- jakata servlet is at 6.0 -\-> -->
+  <!--     <scope>provided</scope> -->
+  <!--   </dependency> -->
+  <!--   <!-\- https://mvnrepository.com/artifact/xerces/xercesImpl -\-> -->
+  <!--   <dependency> -->
+  <!--     <groupId>xerces</groupId> -->
+  <!--     <artifactId>xercesImpl</artifactId> -->
+  <!--     <version>2.12.2</version> -->
+  <!--     <scope>provided</scope> -->
+  <!--   </dependency> -->
+  <!--   <!-\- https://mvnrepository.com/artifact/xml-apis/xml-apis -\-> -->
+  <!--   <dependency> -->
+  <!--     <groupId>xml-apis</groupId> -->
+  <!--     <artifactId>xml-apis</artifactId> -->
+  <!--     <version>1.4.01</version> -->
+  <!--     <!-\- We were actually using 1.4.02 in the Ant build. -\-> -->
+  <!--     <scope>provided</scope> -->
+  <!--   </dependency> -->
+
+  <!-- </dependencies> -->
+
+</project>

@@ -42,9 +42,9 @@ package org.apache.xml.serializer;
  * <code>m_last</code>). It will handle a certain range of values
  * explicitly (<code>m_explFirst</code> to <code>m_explLast</code>).
  * If the unicode point is before that explicit range, that is it
- * is in the range <code>m_first <= value < m_explFirst</code>, then it will delegate to another EncodingInfo object for The root
+ * is in the range <code>m_first &lt;= value &lt; m_explFirst</code>, then it will delegate to another EncodingInfo object for The root
  * of such a tree, m_before.  Likewise for values in the range 
- * <code>m_explLast < value <= m_last</code>, but delgating to <code>m_after</code>
+ * <code>m_explLast &lt; value &lt;= m_last</code>, but delgating to <code>m_after</code>
  * <p>
  * Actually figuring out if a code point is in the encoding is expensive. So the
  * purpose of this tree is to cache such determinations, and not to build the
@@ -97,6 +97,7 @@ public final class EncodingInfo extends Object
      * This is not a public API. It returns true if the
      * char in question is in the encoding.
      * @param ch the char in question.
+     * @return true if the character is a member of the encoding's charset
      * <p>
      * This method is not a public API.
      * @xsl.usage internal
@@ -118,6 +119,7 @@ public final class EncodingInfo extends Object
      * character formed by the high/low pair is in the encoding.
      * @param high a char that the a high char of a high/low surrogate pair.
      * @param low a char that is the low char of a high/low surrogate pair.
+     * @return true if the character is a member of the encoding's charset
      * <p>
      * This method is not a public API.
      * @xsl.usage internal
@@ -167,23 +169,24 @@ public final class EncodingInfo extends Object
      */
     private interface InEncoding {
         /**
-         * Returns true if the char is in the encoding
+         * @return true if the char is in the encoding
          */
         public boolean isInEncoding(char ch);
         /**
-         * Returns true if the high/low surrogate pair forms
+         * @return true if the high/low surrogate pair forms
          * a character that is in the encoding.
          */
         public boolean isInEncoding(char high, char low);
     }
 
     /**
-     * This class implements the 
+     * This class implements the InEncoding interface
      */
     private class EncodingImpl implements InEncoding {
-        
 
-
+	/** 
+	 * @return true if the char is in the encoding
+	 */
         public boolean isInEncoding(char ch1) {
             final boolean ret;
             int codePoint = Encodings.toCodePoint(ch1);
@@ -231,6 +234,10 @@ public final class EncodingInfo extends Object
             return ret;
         }
 
+        /**
+         * @return true if the high/low surrogate pair forms
+         * a character that is in the encoding.
+         */
         public boolean isInEncoding(char high, char low) {
             final boolean ret;
             int codePoint = Encodings.toCodePoint(high,low);
@@ -551,6 +558,7 @@ public final class EncodingInfo extends Object
      * If the value returned is '\u0000' it means that every character must be tested
      * with an isInEncoding method {@link #isInEncoding(char)} or {@link #isInEncoding(char, char)} 
      * for surrogate pairs.
+     * @return highest character in lowest group of characters handled by this encoding
      * <p>
      * This method is not a public API.
      * @xsl.usage internal

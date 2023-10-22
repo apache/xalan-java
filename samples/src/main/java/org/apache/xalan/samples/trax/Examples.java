@@ -18,6 +18,8 @@
 /*
  * $Id$
  */
+package org.apache.xalan.samples.trax;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;

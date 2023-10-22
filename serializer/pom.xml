@@ -1,0 +1,110 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>xalan</groupId>
+    <artifactId>xalan-project</artifactId>
+    <version>2.7.3</version>
+  </parent>
+
+  <artifactId>serializer</artifactId>
+  <name>XML Serializer</name>
+  <description>Apache's XML serialization layer, as used in the Xalan XSLT processor</description>
+
+  <dependencies>
+    <!-- https://mvnrepository.com/artifact/org.apache.bcel/bcel -->
+    <dependency>
+      <groupId>org.apache.bcel</groupId>
+      <artifactId>bcel</artifactId>
+      <version>6.7.0</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.2</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/javax/javaee-api -->
+    <dependency>
+      <groupId>javax</groupId>
+      <artifactId>javaee-api</artifactId>
+      <version>6.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version> <!-- jakata servlet is at 6.0 -->
+      <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/xerces/xercesImpl -->
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.12.2</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/xml-apis/xml-apis -->
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+      <version>1.4.01</version>
+      <!-- We were actually using 1.4.02 in the Ant build. -->
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+
+      <plugin>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<version>3.8.1</version>
+	<configuration>
+	  <source>1.8</source>
+	  <target>1.8</target>
+	</configuration>
+      </plugin>
+
+      <!-- Filter out packages we don't want copied to the output jar
+	  https://maven.apache.org/plugins/maven-shade-plugin/examples/includes-excludes.html -->
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-shade-plugin</artifactId>
+	<version>3.5.0</version>
+	<executions>
+	  <execution>
+	    <phase>package</phase>
+	    <goals>
+	      <goal>shade</goal>
+	    </goals>
+	    <configuration>
+	      <artifactSet>
+		<excludes>
+		  <!-- Their examples (testing) -->
+		  <exclude>junit:junit</exclude>
+		  <exclude>jmock:*</exclude>
+		  <exclude>org.apache.maven:lib:tests</exclude>
+		  <!-- What I think I need to exclude.
+		       Some are direct dependencies, some come in
+		       via maven packages. -->
+		  <exclude>com.github.vbmacher:java-cup</exclude>
+		  <exclude>commons-logging:commons-logging</exclude>
+		  <exclude>org.apache.commons:commons-lang3</exclude>
+		  <exclude>org.apache.ant:ant</exclude>
+		  <exclude>org.apache.ant:ant-launcher</exclude>
+		  <exclude>org.apache.bcel:bcel</exclude>
+		</excludes>
+	      </artifactSet>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>

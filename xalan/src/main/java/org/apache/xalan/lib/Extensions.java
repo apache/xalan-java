@@ -265,8 +265,8 @@ public class Extensions
 
   /**
    * Returns a NodeSet containing one text node for each token in the first argument.
-   * Delimiters are whitespace.  That is, the delimiters that are used are tab (&#x09),
-   * linefeed (&#x0A), return (&#x0D), and space (&#x20).
+   * Delimiters are whitespace.  That is, the delimiters that are used are tab (&amp;#x09),
+   * linefeed (&amp;#x0A), return (&amp;#x0D), and space (&amp;#x20).
    * Tokens are determined by a call to <code>StringTokenizer</code>.
    * If the first argument is an empty string or contains only delimiters, the result
    * will be an empty NodeSet.

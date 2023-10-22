@@ -31,8 +31,8 @@ import org.xml.sax.Attributes;
 /**
  * TransformerFactory for xsl:preserve-space markup.
  * <pre>
- * <!ELEMENT xsl:preserve-space EMPTY>
- * <!ATTLIST xsl:preserve-space elements CDATA #REQUIRED>
+ * &lt;!ELEMENT xsl:preserve-space EMPTY&gt;
+ * &lt;!ATTLIST xsl:preserve-space elements CDATA #REQUIRED&gt;
  * </pre>
  */
 class ProcessorPreserveSpace extends XSLTElementProcessor

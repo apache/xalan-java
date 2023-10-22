@@ -18,11 +18,12 @@
 /*
  * $Id$
  */
-package servlet;
+package org.apache.xalan.samples.servlet;
 
 import java.io.*;
 import org.xml.sax.*;
 import org.apache.xml.utils.DefaultErrorHandler;
+import org.xml.sax.SAXException;
 
 /*****************************************************************************************************
  * ApplyXSLTListener provides a buffered listener essential for capturing, and then subsequently

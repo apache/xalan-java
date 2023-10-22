@@ -146,7 +146,7 @@ public interface Serializer {
      * "omit-xml-declaration", "standalone", doctype-public",
      * "doctype-system", "cdata-section-elements", "indent", "media-type". 
      * These property keys and their values are described in the XSLT recommendation,
-     * see {@link <a href="http://www.w3.org/TR/1999/REC-xslt-19991116"> XSLT 1.0 recommendation</a>}
+     * &lt;a href="http://www.w3.org/TR/1999/REC-xslt-19991116"&gt; XSLT 1.0 recommendation&lt;/a&gt;
      * <p>
      * The non-standard property keys supported are defined in {@link OutputPropertiesFactory}.
      *

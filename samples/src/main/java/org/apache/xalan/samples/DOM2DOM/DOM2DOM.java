@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package org.apache.xalan.samples.DOM2DOM;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

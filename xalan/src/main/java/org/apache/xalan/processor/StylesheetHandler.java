@@ -139,6 +139,7 @@ public class StylesheetHandler extends DefaultHandler
    * Must be public for access by the AVT class.
    *
    * @param str A non-null reference to a valid or invalid XPath expression string.
+   * @param owningTemplate Template element from which this is applied
    *
    * @return A non-null reference to an XPath object that represents the string argument.
    *
@@ -563,7 +564,7 @@ public class StylesheetHandler extends DefaultHandler
    * @param rawName The qualified name (with prefix).
    * @param attributes The specified or defaulted attributes.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException if the event could not be processed
    */
   public void startElement(
           String uri, String localName, String rawName, Attributes attributes)

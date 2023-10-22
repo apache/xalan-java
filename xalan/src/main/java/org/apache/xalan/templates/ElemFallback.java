@@ -27,8 +27,8 @@ import org.apache.xalan.transformer.TransformerImpl;
 /**
  * Implement xsl:fallback.
  * <pre>
- * <!ELEMENT xsl:fallback %template;>
- * <!ATTLIST xsl:fallback %space-att;>
+ * &lt;!ELEMENT xsl:fallback %template;&gt;
+ * &lt;!ATTLIST xsl:fallback %space-att;&gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#fallback">fallback in XSLT Specification</a>
  * @xsl.usage advanced

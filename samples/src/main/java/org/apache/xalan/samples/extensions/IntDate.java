@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package org.apache.xalan.samples.exptensions;
 import java.util.Calendar;
 import java.util.Date;
 

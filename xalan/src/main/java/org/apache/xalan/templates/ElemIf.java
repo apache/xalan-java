@@ -30,11 +30,11 @@ import org.apache.xpath.objects.XObject;
 /**
  * Implement xsl:if.
  * <pre>
- * <!ELEMENT xsl:if %template;>
- * <!ATTLIST xsl:if
+ * &lt;!ELEMENT xsl:if %template;&gt;
+ * &lt;!ATTLIST xsl:if
  *   test %expr; #REQUIRED
  *   %space-att;
- * >
+ * &gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Conditional-Processing-with-xsl:if">XXX in XSLT Specification</a>
  * @xsl.usage advanced

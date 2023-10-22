@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package org.apache.xalan.samples.CompiledEJB;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

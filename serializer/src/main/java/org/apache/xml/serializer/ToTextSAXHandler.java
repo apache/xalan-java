@@ -69,9 +69,7 @@ public final class ToTextSAXHandler extends ToSAXHandler
         super(hdlr, lex, encoding);
     }
     
-        /**
-     * From XSLTC
-     */
+    // This constructor supports XSLTC
     public ToTextSAXHandler(ContentHandler handler, String encoding)
     {
         super(handler,encoding);
@@ -120,9 +118,9 @@ public final class ToTextSAXHandler extends ToSAXHandler
     }
 
     /**
-     * Does nothing because 
-     * the indent attribute is ignored for text output.
-     *
+     * Does nothing
+     * @param n the indent attribute, ignored for text output.
+     * @throws SAXException never, but the method signature requires it.
      */
     public void indent(int n) throws SAXException
     {

@@ -35,11 +35,11 @@ import org.apache.xpath.objects.XString;
  * Implement xsl:with-param.  xsl:with-param is allowed within
  * both xsl:call-template and xsl:apply-templates.
  * <pre>
- * <!ELEMENT xsl:with-param %template;>
- * <!ATTLIST xsl:with-param
+ * &lt;!ELEMENT xsl:with-param %template;&gt;
+ * &lt;!ATTLIST xsl:with-param
  *   name %qname; #REQUIRED
  *   select %expr; #IMPLIED
- * >
+ * &gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#element-with-param">element-with-param in XSLT Specification</a>
  * @xsl.usage advanced

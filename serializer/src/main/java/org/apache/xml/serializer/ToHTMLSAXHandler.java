@@ -79,7 +79,6 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
     }
 
     /**
-     * Returns null
      * @return null
      * @see Serializer#getWriter()
      */
@@ -90,14 +89,19 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
 
     /**
      * Does nothing.
-     *
+     * @throws SAXException never
+     * @param n would normally be the number of columns to indent by
      */
     public void indent(int n) throws SAXException
     {
     }
 
     /**
-     * Does nothing.
+     * Does nothing. NOTE: we *COULD* have functionality here that
+     * Did Something Appropriate, if we could agree on what that is.
+     * Convert to text?
+     * @throws IOException never
+     * @param node DOM node to be ignored
      * @see DOMSerializer#serialize(Node)
      */
     public void serialize(Node node) throws IOException
@@ -108,10 +112,9 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
     /**
      * Turns special character escaping on/off.
      *
-     *
      * @param escape true if escaping is to be set on.
-     *
      * @see SerializationHandler#setEscaping(boolean)
+     * @throws SAXException never (I think), but signature requires it.
      */
     public boolean setEscaping(boolean escape) throws SAXException
     {
@@ -283,8 +286,6 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      *        none was supplied.
      * @throws org.xml.sax.SAXException Any SAX exception, possibly
      *            wrapping another exception.
-     *
-     * @throws org.xml.sax.SAXException
      * @see org.xml.sax.ContentHandler#processingInstruction(String, String)
      */
     public void processingInstruction(String target, String data)
@@ -335,9 +336,6 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * @see org.xml.sax.ContentHandler#startElement
      * @see org.xml.sax.ContentHandler#endElement
      * @see org.xml.sax.AttributeList
-     *
-     * @throws org.xml.sax.SAXException
-     *
      * @see org.xml.sax.ContentHandler#startElement(String, String, String, Attributes)
      */
     public void startElement(
@@ -419,10 +417,6 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      *
      * @throws org.xml.sax.SAXException Any SAX exception, possibly
      *            wrapping another exception.
-     *
-     * @throws org.xml.sax.SAXException
-     *
-     *
      */
     public void endDocument() throws SAXException
     {
@@ -467,9 +461,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * Receive notification of character data.
      *
      * @param chars The string of characters to process.
-     *
-     * @throws org.xml.sax.SAXException
-     *
+     * @throws org.xml.sax.SAXException if buffering fails
      * @see ExtendedContentHandler#characters(String)
      */
     public void characters(final String chars) throws SAXException
@@ -599,7 +591,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
      * @see #ignorableWhitespace
      * @see org.xml.sax.Locator
      *
-     * @throws org.xml.sax.SAXException
+     * @throws org.xml.sax.SAXException if the underlying saxHandler objects
      *
      * @see org.xml.sax.ContentHandler#characters(char[], int, int)
      */

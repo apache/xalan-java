@@ -18,6 +18,8 @@
 /*
  * $Id$
  */
+package org.apache.xalan.samples.extensions.sql.extConnection;
+
 // Imported TraX classes
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Transformer;

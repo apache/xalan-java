@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package org.apache.xalan.samples.Pipe;
 
 import java.io.IOException;
 

@@ -28,8 +28,8 @@ import org.apache.xalan.transformer.TransformerImpl;
 /**
  * Implement xsl:comment.
  * <pre>
- * <!ELEMENT xsl:comment %char-template;>
- * <!ATTLIST xsl:comment %space-att;>
+ * &lt;!ELEMENT xsl:comment %char-template;&gt;
+ * &lt;!ATTLIST xsl:comment %space-att;&gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Comments">section-Creating-Comments in XSLT Specification</a>
  * @xsl.usage advanced

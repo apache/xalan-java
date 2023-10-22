@@ -206,12 +206,12 @@ public class ElemAttribute extends ElemElement
 
   /**
    * Add a child to the child list.
-   * <!ELEMENT xsl:attribute %char-template;>
-   * <!ATTLIST xsl:attribute
+   * &lt;!ELEMENT xsl:attribute %char-template;&gt;
+   * &lt;!ATTLIST xsl:attribute
    *   name %avt; #REQUIRED
    *   namespace %avt; #IMPLIED
    *   %space-att;
-   * >
+   * &gt;
    *
    * @param newChild Child to append to the list of this node's children
    *

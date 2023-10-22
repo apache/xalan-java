@@ -18,7 +18,7 @@
 /*
  * $Id$
  */
-package servlet;
+package org.apache.xalan.samples.servlet;
 
 import java.io.*;
 import java.util.*;

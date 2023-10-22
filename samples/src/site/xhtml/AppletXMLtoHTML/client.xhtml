@@ -15,14 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 -->
-<!doctype HTML public "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
   <head>
-	  <title>Untitled</title>
+	  <title>AppletXMLtoHTML</title>
   </head>
   <script language="JavaScript">
-
-    
+    <![CDATA[
     function writeSource(sourceString)
     {
 
@@ -94,10 +92,11 @@
       writeStylesheet(styleString);
       writeTarget(targetString);
     }
+    ]]>
   </script>
   <body onLoad="clearFrames();" bgcolor="#808080" text="#ffffff">
     <form name="xmlTransform" action="" method="POST">
-      <h2><img border="0" hspace="0" vspace="0" align="left" src="rabbitwhorn.jpg">&nbsp;Transform XML Document</h2>
+      <h2><img border="0" hspace="0" vspace="0" align="left" src="rabbitwhorn.jpg"/>&nbsp;Transform XML Document</h2>
         <table>
           <tr>
             <td width="50"></td>
@@ -108,17 +107,17 @@
           <td></td>
           <td align="center">
             <select name="xmlSourceList">
-              <option value="xalanApplets.xml" selected>&nbsp;xalanApplets.xml&nbsp;
-              <option value="foo-s1.xml">&nbsp;foo-s1.xml&nbsp;
+              <option value="xalanApplets.xml" selected="true">&nbsp;xalanApplets.xml&nbsp;</option>
+              <option value="foo-s1.xml">&nbsp;foo-s1.xml&nbsp;</option>
             </select>
           </td>
           <td align="center">
-            <input type="radio" name="displayMode" checked>HTML&nbsp;&nbsp;
-            <input type="radio" name="displayMode">HTML Source
+            <input type="radio" name="displayMode" checked="true">HTML&nbsp;&nbsp;</input>
+            <input type="radio" name="displayMode">HTML Source</input>
           </td>
           <td>&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="button" name="transformButton" value="Transform" 
-            onClick="transform();">
+            onClick="transform();"/>
           </td>
         </tr>
       </table>

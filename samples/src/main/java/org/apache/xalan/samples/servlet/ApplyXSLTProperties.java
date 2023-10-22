@@ -18,7 +18,7 @@
 /*
  * $Id$
  */
-package servlet;
+package org.apache.xalan.samples.servlet;
 
 import java.net.MalformedURLException;
 import javax.servlet.*;

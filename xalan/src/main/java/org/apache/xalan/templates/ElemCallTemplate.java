@@ -325,11 +325,11 @@ public class ElemCallTemplate extends ElemForEach
 
   /**
    * Add a child to the child list.
-   * <!ELEMENT xsl:apply-templates (xsl:sort|xsl:with-param)*>
-   * <!ATTLIST xsl:apply-templates
+   * &lt;!ELEMENT xsl:apply-templates (xsl:sort|xsl:with-param)*&gt;
+   * &lt;!ATTLIST xsl:apply-templates
    *   select %expr; "node()"
    *   mode %qname; #IMPLIED
-   * >
+   * &gt;
    *
    * @param newChild Child to add to this node's children list
    *

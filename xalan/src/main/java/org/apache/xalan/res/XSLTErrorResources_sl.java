@@ -1456,7 +1456,7 @@ public class XSLTErrorResources_sl extends ListResourceBundle
    *
    *   @param className the name of the class that implements the resource bundle.
    *   @return the ResourceBundle
-   *   @throws MissingResourceException
+   *   @throws MissingResourceException if the requested resources can not be loaded
    */
   public static final XSLTErrorResources loadResourceBundle(String className)
           throws MissingResourceException

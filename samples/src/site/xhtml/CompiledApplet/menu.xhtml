@@ -17,16 +17,17 @@
 -->
 <html>
 <head></head>
-<body bgcolor=#ffffff>
-<hr>
+<body bgcolor="#ffffff">
+<hr/>
 
 <center><h3>Xalan/XSLTC Applet Demo</h3></center>
+<p>
 Each of these examples illustrate the use of translets
 within a Java applet:
-<p>
+</p>
 
   <script language="JavaScript">
-
+    <![CDATA[
     function run_transform(form) {
       /* Get the input document and translet class name from input form */
       var translet = form.translet.value;
@@ -41,16 +42,15 @@ within a Java applet:
       output_frame.close();
       return(true);
     }
-
+    ]]>
   </script>
 
   <form name="xslt_form" onSubmit="run_transform(this.form)">
     <p>Select translet:</p>
-    <p><input name="translet" width="64"></p>
+    <p><input name="translet" width="64"/></p>
     <p>Select XML source document:</p>
-    <p><input name="doc" width="64"></p>
-    <p><input type="button" value="Run" onClick="run_transform(this.form)"></p>
-
+    <p><input name="doc" width="64"/></p>
+    <p><input type="button" value="Run" onClick="run_transform(this.form)"/></p>
   </form>
 
   <!--
@@ -61,7 +61,8 @@ within a Java applet:
           code="TransformApplet"
           name="TransformApplet"
           width="10"
-          height="10">
-  </applet>
+          height="10"
+	  />
 
 </body>
+</html>

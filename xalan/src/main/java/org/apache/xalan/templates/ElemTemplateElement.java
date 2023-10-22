@@ -113,14 +113,12 @@ public class ElemTemplateElement extends UnImplNode
     return getNodeName();
   }
 
-
   /**
    * This function will be called on top-level elements
    * only, just before the transform begins.
    *
    * @param transformer The XSLT TransformerFactory.
-   *
-   * @throws TransformerException
+   * @throws TransformerException if initialization could not complete
    */
   public void runtimeInit(TransformerImpl transformer) throws TransformerException{}
 
@@ -177,6 +175,8 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * This function is called during recomposition to
    * control how this element is composed.
+   * @param root StylesheetRoot at base of tree to recompose
+   * @throws TransformerException if recomposition fails
    */
   public void recompose(StylesheetRoot root) throws TransformerException
   {
@@ -187,6 +187,8 @@ public class ElemTemplateElement extends UnImplNode
    * recomposed, and allows the template to set remaining
    * values that may be based on some other property that
    * depends on recomposition.
+   * @param sroot StylesheetRoot at base of tree to compose
+   * @throws TransformerException if composition fails
    */
   public void compose(StylesheetRoot sroot) throws TransformerException
   {
@@ -202,6 +204,8 @@ public class ElemTemplateElement extends UnImplNode
   
   /**
    * This after the template's children have been composed.
+   * @param sroot StylesheetRoot at base of tree to compose
+   * @throws TransformerException if composition fails
    */
   public void endCompose(StylesheetRoot sroot) throws TransformerException
   {
@@ -249,7 +253,7 @@ public class ElemTemplateElement extends UnImplNode
    * @param newChild Child to be added to child list
    *
    * @return Child just added to the child list
-   * @throws DOMException
+   * @throws DOMException if the child would be poorly formed or misplaced
    */
   public Node appendChild(Node newChild) throws DOMException
   {
@@ -389,7 +393,7 @@ public class ElemTemplateElement extends UnImplNode
    *
    * @return The new child
    *
-   * @throws DOMException
+   * @throws DOMException if the replacement could not be made
    */
   public Node replaceChild(Node newChild, Node oldChild) throws DOMException
   {
@@ -429,7 +433,7 @@ public class ElemTemplateElement extends UnImplNode
    *
    * @return null
    *
-   * @throws DOMException
+   * @throws DOMException if the insertion was not possible
    */
   public Node insertBefore(Node newChild, Node refChild) throws DOMException
   {
@@ -499,7 +503,7 @@ public class ElemTemplateElement extends UnImplNode
    *
    * @return The new child
    *
-   * @throws DOMException
+   * @throws DOMException if the replacement could not be performed
    */
   public ElemTemplateElement replaceChild(ElemTemplateElement newChildElem, 
                                           ElemTemplateElement oldChildElem)
@@ -831,7 +835,7 @@ public class ElemTemplateElement extends UnImplNode
    * @param nsSupport non-null reference to NamespaceSupport from 
    * the ContentHandler.
    *
-   * @throws TransformerException
+   * @throws TransformerException if the prefixes could not be bound
    */
   public void setPrefixes(NamespaceSupport nsSupport) throws TransformerException
   {
@@ -847,7 +851,7 @@ public class ElemTemplateElement extends UnImplNode
    * the ContentHandler.
    * @param excludeXSLDecl true if XSLT namespaces should be ignored.
    *
-   * @throws TransformerException
+   * @throws TransformerException if the prefixes could not be set
    */
   public void setPrefixes(NamespaceSupport nsSupport, boolean excludeXSLDecl)
           throws TransformerException
@@ -974,6 +978,7 @@ public class ElemTemplateElement extends UnImplNode
    * @see <a href="http://www.w3.org/TR/xslt#extension-element">extension-element in XSLT Specification</a>
    *
    * @param prefix non-null reference to prefix that might be excluded.
+   * @param uri non-null reference to URI that might be excluded
    *
    * @return true if the prefix should normally be excluded.
    */
@@ -996,7 +1001,7 @@ public class ElemTemplateElement extends UnImplNode
    *
    * @return true if the given namespace should be excluded.
    *
-   * @throws TransformerException
+   * @throws TransformerException if exclusion could not be performed
    */
   private boolean excludeResultNSDecl(String prefix, String uri)
           throws TransformerException
@@ -1024,7 +1029,7 @@ public class ElemTemplateElement extends UnImplNode
    * Note that this method builds m_prefixTable with aliased 
    * namespaces, *not* the original namespaces.
    *
-   * @throws TransformerException
+   * @throws TransformerException if prefixes could not be resolved
    */
   public void resolvePrefixTables() throws TransformerException
   {
@@ -1159,7 +1164,7 @@ public class ElemTemplateElement extends UnImplNode
    *
    * @param transformer non-null reference to the the current transform-time state.
    *
-   * @throws TransformerException
+   * @throws TransformerException if the handler objected to the prefix mappings
    */
   void executeNSDecls(TransformerImpl transformer) throws TransformerException
   {
@@ -1173,7 +1178,7 @@ public class ElemTemplateElement extends UnImplNode
    * @param transformer non-null reference to the the current transform-time state.
    * @param ignorePrefix string prefix to not startPrefixMapping
    *
-   * @throws TransformerException
+   * @throws TransformerException if the handler objected to the prefix mappings
    */
   void executeNSDecls(TransformerImpl transformer, String ignorePrefix) throws TransformerException
   {  
@@ -1528,7 +1533,7 @@ public class ElemTemplateElement extends UnImplNode
    *
    * @return true if the whitespace should be stripped.
    *
-   * @throws TransformerException
+   * @throws TransformerException if stylesheet root can't answer the question
    */
   public boolean shouldStripWhiteSpace(
           org.apache.xpath.XPathContext support, 
@@ -1629,6 +1634,7 @@ public class ElemTemplateElement extends UnImplNode
   /**
    * Call the children visitors.
    * @param visitor The visitor whose appropriate method will be called.
+   * @param callAttributes has no effect in this implementation
    */
   protected void callChildVisitors(XSLTVisitor visitor, boolean callAttributes)
   {
@@ -1636,8 +1642,8 @@ public class ElemTemplateElement extends UnImplNode
       node != null;
       node = node.m_nextSibling)
       {
-      node.callVisitors(visitor);
-    }
+	  node.callVisitors(visitor);
+      }
   }
   
   /**

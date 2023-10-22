@@ -87,7 +87,7 @@ public final class DOM3SerializerImpl implements DOM3Serializer {
     }
     
     /**
-     * Gets the end-of-line sequence of characters to be used during serialization.
+     * @return char[] containing the end-of-line sequence of characters to be used during serialization.
      */
     public char[] getNewLine() {
         return (fNewLine != null) ? fNewLine.toCharArray() : null;

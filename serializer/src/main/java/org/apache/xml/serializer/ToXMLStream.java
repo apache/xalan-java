@@ -102,8 +102,6 @@ public class ToXMLStream extends ToStream
      *
      * @throws org.xml.sax.SAXException Any SAX exception, possibly
      *            wrapping another exception.
-     *
-     * @throws org.xml.sax.SAXException
      */
     public void startDocumentInternal() throws org.xml.sax.SAXException
     {
@@ -178,8 +176,6 @@ public class ToXMLStream extends ToStream
      *
      * @throws org.xml.sax.SAXException Any SAX exception, possibly
      *            wrapping another exception.
-     *
-     * @throws org.xml.sax.SAXException
      */
     public void endDocument() throws org.xml.sax.SAXException
     {
@@ -212,7 +208,7 @@ public class ToXMLStream extends ToStream
      * The contents of the whitespace preserving section will be delivered
      * through the regular <tt>characters</tt> event.
      *
-     * @throws org.xml.sax.SAXException
+     * @throws org.xml.sax.SAXException never (I think) but required by signature
      */
     public void startPreserving() throws org.xml.sax.SAXException
     {
@@ -228,7 +224,7 @@ public class ToXMLStream extends ToStream
      *
      * @see #startPreserving
      *
-     * @throws org.xml.sax.SAXException
+     * @throws org.xml.sax.SAXException never (I think), but required by signature.
      */
     public void endPreserving() throws org.xml.sax.SAXException
     {
@@ -245,8 +241,6 @@ public class ToXMLStream extends ToStream
      *        none was supplied.
      * @throws org.xml.sax.SAXException Any SAX exception, possibly
      *            wrapping another exception.
-     *
-     * @throws org.xml.sax.SAXException
      */
     public void processingInstruction(String target, String data)
         throws org.xml.sax.SAXException
@@ -339,7 +333,7 @@ public class ToXMLStream extends ToStream
      *
      * @param name The name of the entity.
      *
-     * @throws org.xml.sax.SAXException
+     * @throws org.xml.sax.SAXException never (I think), but required by signature.
      */
     public void entityReference(String name) throws org.xml.sax.SAXException
     {
@@ -418,14 +412,14 @@ public class ToXMLStream extends ToStream
 
     /**
      * Add an attribute to the current element.
-     * @param uri the URI associated with the element name
+     * @param uri the URI associated with the attribute's namespace prefix
      * @param localName local part of the attribute name
      * @param rawName   prefix:localName
-     * @param type
+     * @param type the attribute type typically character data (CDATA)
      * @param value the value of the attribute
      * @param xslAttribute true if this attribute is from an xsl:attribute,
      * false if declared within the elements opening tag.
-     * @throws SAXException
+     * @throws org.xml.sax.SAXException never (I think), but required by signature.
      */
     public void addAttribute(
         String uri,
@@ -553,6 +547,9 @@ public class ToXMLStream extends ToStream
      * From XSLTC
      * Declare a prefix to point to a namespace URI. Inform SAX handler
      * if this is a new prefix mapping.
+     * @param prefix to be bound to namespace URI
+     * @param uri namespace identifier string
+     * @return true if prefix successfully bound, false otherwise.
      */
     protected boolean pushNamespace(String prefix, String uri)
     {

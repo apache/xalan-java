@@ -33,22 +33,22 @@ import org.xml.sax.SAXException;
  * 
  * <p>For example:
  * <pre>
- * <chapter xmlns:p1="def">
- *   <paragraph xmlns:p2="ghi">
- *      <sentance xmlns:p3="jkl">
- *      </sentance>
- *    </paragraph>
- *    <paragraph xlmns:p4="mno">
- *    </paragraph>
- * </chapter>
+ * &lt;chapter xmlns:p1="def"&gt;
+ *   &lt;paragraph xmlns:p2="ghi"&gt;
+ *      &lt;sentence xmlns:p3="jkl"&gt;
+ *      &lt;/sentence&gt;
+ *    &lt;/paragraph&gt;
+ *    &lt;paragraph xlmns:p4="mno"&gt;
+ *    &lt;/paragraph&gt;
+ * &lt;/chapter&gt;
  * </pre>
  * 
- * When the <chapter> element is encounted the prefix "p1" associated with uri
+ * When the &lt;chapter&gt; element is encounted the prefix "p1" associated with uri
  * "def" is pushed on the stack with depth 1.
- * When the first <paragraph> is encountered "p2" and "ghi" are pushed with
+ * When the first &lt;paragraph&gt; is encountered "p2" and "ghi" are pushed with
  * depth 2.
- * When the <sentance> is encountered "p3" and "jkl" are pushed with depth 3.
- * When </sentance> occurs the popNamespaces(3) will pop "p3"/"jkl" off the
+ * When the &lt;sentence&gt; is encountered "p3" and "jkl" are pushed with depth 3.
+ * When &lt;/sentence&gt; occurs the popNamespaces(3) will pop "p3"/"jkl" off the
  * stack.  Of course popNamespaces(2) would pop anything with depth 2 or
  * greater.
  * 
@@ -221,6 +221,7 @@ public class NamespaceMappings
      * @param prefix a String with the prefix for a qualified name
      * @param uri a String with the uri to which the prefix is to map
      * @param elemDepth the depth of current declaration
+     * @return true if binding succeeded, false otherwise
      */
     public boolean pushNamespace(String prefix, String uri, int elemDepth)
     {

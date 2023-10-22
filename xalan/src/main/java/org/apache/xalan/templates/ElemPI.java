@@ -30,11 +30,11 @@ import org.apache.xpath.XPathContext;
 /**
  * Implement xsl:processing-instruction.
  * <pre>
- * <!ELEMENT xsl:processing-instruction %char-template;>
- * <!ATTLIST xsl:processing-instruction
+ * &lt;!ELEMENT xsl:processing-instruction %char-template;&gt;
+ * &lt;!ATTLIST xsl:processing-instruction
  *   name %avt; #REQUIRED
  *   %space-att;
- * >
+ * &gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Creating-Processing-Instructions">section-Creating-Processing-Instructions in XSLT Specification</a>
  * @xsl.usage advanced

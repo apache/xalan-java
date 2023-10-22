@@ -1363,9 +1363,7 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
      * 
      * @param  nodeArg The Node to serialize
      * @return A String containing the version pseudo-attribute of the XMLDecl.  
-     * @throws Throwable if the DOM implementation does not implement Document.getXmlVersion()      
      */
-    //protected String getXMLVersion(Node nodeArg) throws Throwable {
     protected String getXMLVersion(Node nodeArg) {
         Document doc = null;
         
@@ -1393,10 +1391,10 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
     /** 
      * Determines the XML Encoding of the Document Node to serialize.  If the Document Node
      * is not a DOM Level 3 Node, then the default encoding "UTF-8" is returned.
+     * NOTE: May throw an unspecified Throwable if the DOM implementation does not implement Document.getXmlEncoding()     
      * 
      * @param  nodeArg The Node to serialize
      * @return A String containing the encoding pseudo-attribute of the XMLDecl.  
-     * @throws Throwable if the DOM implementation does not implement Document.getXmlEncoding()     
      */
     protected String getXMLEncoding(Node nodeArg) {
         Document doc = null;

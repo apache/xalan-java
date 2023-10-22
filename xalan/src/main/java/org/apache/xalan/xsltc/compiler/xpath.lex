@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* Modified from Jlex manual lookahead to JFlex RE LA */
 /*
  * $Id$
  */
@@ -22,7 +23,7 @@
  * @author Jacek Ambroziak
  * @author Santiago Pericas-Geertsen
  * @author Morten Jorgensen
- *
+ * @author Joseph Kesselman
  */
 
 package org.apache.xalan.xsltc.compiler;
@@ -46,29 +47,10 @@ import java_cup.runtime.Symbol;
         }
 
         /**
-         * If symbol is not followed by '::' or '(', then treat it as a
+	 * Lookahead disambiguation is now handled in the patterns: If
+         * symbol is not followed by '::' or '(', then treat it as a
          * name instead of an axis or function (Jira-1912).
-         */ 
-        Symbol disambiguateAxisOrFunction(int ss) throws Exception {
-            // Peek in the input buffer without changing the internal state
-            int index = yy_buffer_index;
-
-            // Skip whitespace
-            while (index < yy_buffer_read && isWhitespace(yy_buffer[index])) {
-                index++;
-            }
-
-            // If end of buffer, can't disambiguate :(
-            if (index >= yy_buffer_read) {
-                // Can't disambiguate, so return as symbol
-                return new Symbol(ss);
-            }
-
-            // Return symbol if next token is '::' or '('
-            return (yy_buffer[index] == ':' && yy_buffer[index+1] == ':' ||
-                    yy_buffer[index] == '(') ?
-                    newSymbol(ss) : newSymbol(sym.QNAME, yytext());
-        }
+	 */
 
         /**
          * If symbol is first token or if it follows any of the operators
@@ -189,6 +171,8 @@ HighSurrogate=[\uD800-\uDBFF]
 
 LowSurrogate=[\uDC00-\uDFFF]
 
+%state COMMENT  
+
 %%
 
 "*"                      { return disambiguateStar(); }
@@ -210,32 +194,66 @@ LowSurrogate=[\uDC00-\uDFFF]
 ">"                      { return newSymbol(sym.GT); }
 "<="                     { return newSymbol(sym.LE); }
 ">="                     { return newSymbol(sym.GE); }
-"id"                     { return disambiguateAxisOrFunction(sym.ID); }
-"key"                    { return disambiguateAxisOrFunction(sym.KEY); }
-"text()"                 { return newSymbol(sym.TEXT); }
-"text"+[ \t\r\n\f]+"()"  { return newSymbol(sym.TEXT); }
-"node()"                 { return newSymbol(sym.NODE); }
-"node"+[ \t\r\n\f]+"()"  { return newSymbol(sym.NODE); }
-"comment()"                 { return newSymbol(sym.COMMENT); }
-"comment"+[ \t\r\n\f]+"()"  { return newSymbol(sym.COMMENT); }
-"processing-instruction" { return disambiguateAxisOrFunction(sym.PIPARAM); }
-"processing-instruction()"                { return newSymbol(sym.PI); }
-"processing-instruction"+[ \t\r\n\f]+"()" { return newSymbol(sym.PI); }
-"or"                     { return disambiguateOperator(sym.OR); }
-"and"                    { return disambiguateOperator(sym.AND); }
-"child"                  { return disambiguateAxisOrFunction(sym.CHILD); }
-"attribute"              { return disambiguateAxisOrFunction(sym.ATTRIBUTE); }
-"ancestor"               { return disambiguateAxisOrFunction(sym.ANCESTOR); }
-"ancestor-or-self"       { return disambiguateAxisOrFunction(sym.ANCESTORORSELF); }
-"descendant"             { return disambiguateAxisOrFunction(sym.DESCENDANT); }
-"descendant-or-self"     { return disambiguateAxisOrFunction(sym.DESCENDANTORSELF); }
-"following"              { return disambiguateAxisOrFunction(sym.FOLLOWING); }
-"following-sibling"      { return disambiguateAxisOrFunction(sym.FOLLOWINGSIBLING); }
-"namespace"              { return disambiguateAxisOrFunction(sym.NAMESPACE); }
-"parent"                 { return disambiguateAxisOrFunction(sym.PARENT); }
-"preceding"              { return disambiguateAxisOrFunction(sym.PRECEDING); }
-"preceding-sibling"      { return disambiguateAxisOrFunction(sym.PRECEDINGSIBLING); }
-"self"                   { return disambiguateAxisOrFunction(sym.SELF); }
+
+"id"/\s*"("		 { return newSymbol(sym.ID); }
+"id"/\s*"::"		 { return newSymbol(sym.ID); }
+
+"key"/\s*"("		 { return newSymbol(sym.KEY); }
+"key"/\s*"::"		 { return newSymbol(sym.KEY); }
+
+"text"\s*"()"		 { return newSymbol(sym.TEXT); }
+"node"\s*"()"            { return newSymbol(sym.NODE); }
+"comment"\s*"()"         { return newSymbol(sym.COMMENT); }
+
+"processing-instruction"\s*"()"  { return newSymbol(sym.PI); }
+/* NOTE: This may be redundent with next rule. */
+"processing-instruction"/\s*"::" { return newSymbol(sym.PIPARAM); }
+/* NOTE PI's departure from usual fallthrough (QNAME) */
+"processing-instruction" 	 { return newSymbol(sym.PIPARAM); }
+
+"or"                    { return disambiguateOperator(sym.OR); }
+"and"                   { return disambiguateOperator(sym.AND); }
+
+"child"/\s*"("          { return newSymbol(sym.CHILD); }
+"child"/\s*"::"         { return newSymbol(sym.CHILD); }
+
+
+"attribute"/\s*"::"     { return newSymbol(sym.ATTRIBUTE); }
+"attribute"/\s*"("      { return newSymbol(sym.ATTRIBUTE); }
+
+"ancestor"/\s*"::"      { return newSymbol(sym.ANCESTOR); }
+"ancestor"/\s*"("       { return newSymbol(sym.ANCESTOR); }
+
+"ancestor-or-self"/\s*"::" { return newSymbol(sym.ANCESTORORSELF); }
+"ancestor-or-self"/\s*"("  { return newSymbol(sym.ANCESTORORSELF); }
+
+"descendant"/\s*"::"    { return newSymbol(sym.DESCENDANT); }
+"descendant"/\s*"("     { return newSymbol(sym.DESCENDANT); }
+
+"descendant-or-self"/\s*"::"     { return newSymbol(sym.DESCENDANTORSELF); }
+"descendant-or-self"/\s*"("      { return newSymbol(sym.DESCENDANTORSELF); }
+
+"following"/\s*"::"     { return newSymbol(sym.FOLLOWING); }
+"following"/\s*"("      { return newSymbol(sym.FOLLOWING); }
+
+"following-sibling"/\s*"::"     { return newSymbol(sym.FOLLOWINGSIBLING); }
+"following-sibling"/\s*"("      { return newSymbol(sym.FOLLOWINGSIBLING); }
+
+"namespace"/\s*"::"     { return newSymbol(sym.NAMESPACE); }
+"namespace"/\s*"("      { return newSymbol(sym.NAMESPACE); }
+
+"parent"/\s*"::"        { return newSymbol(sym.PARENT); }
+"parent"/\s*"("         { return newSymbol(sym.PARENT); }
+
+"preceding"/\s*"::"     { return newSymbol(sym.PRECEDING); }
+"preceding"/\s*"("      { return newSymbol(sym.PRECEDING); }
+
+"preceding-sibling"/\s*"::"	{ return newSymbol(sym.PRECEDINGSIBLING); }
+"preceding-sibling"/\s*"("      { return newSymbol(sym.PRECEDINGSIBLING); }
+
+"self"/\s*"::"		 { return newSymbol(sym.SELF); }
+"self"/\s*"("		 { return newSymbol(sym.SELF); }
+
 "["                      { return newSymbol(sym.LBRACK); }
 "]"                      { return newSymbol(sym.RBRACK); }
 "("                      { return newSymbol(sym.LPAREN); }
@@ -253,5 +271,5 @@ LowSurrogate=[\uDC00-\uDFFF]
 ({NCName}":")?{NCName}   { return newSymbol(sym.QNAME, yytext()); }
 ({NCName}":")?"*"        { return newSymbol(sym.QNAME, yytext()); }
 ({NCName}":")?"@*"       { return newSymbol(sym.QNAME, yytext()); }
-[ \t\r\n\f]              { /* ignore white space. */ }
+\s		         { /* ignore white space. */ }
 .                        { throw new Exception(yytext()); }

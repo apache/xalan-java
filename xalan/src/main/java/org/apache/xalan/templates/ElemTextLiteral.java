@@ -120,7 +120,7 @@ public class ElemTextLiteral extends ElemTemplateElement
 
   /**
    * Set the "disable-output-escaping" attribute.
-   * Normally, the xml output method escapes & and < (and
+   * Normally, the xml output method escapes &amp; and &lt; (and
    * possibly other characters) when outputting text nodes.
    * This ensures that the output is well-formed XML. However,
    * it is sometimes convenient to be able to produce output
@@ -145,7 +145,7 @@ public class ElemTextLiteral extends ElemTemplateElement
 
   /**
    * Get the "disable-output-escaping" attribute.
-   * Normally, the xml output method escapes & and < (and
+   * Normally, the xml output method escapes &amp; and &lt; (and
    * possibly other characters) when outputting text nodes.
    * This ensures that the output is well-formed XML. However,
    * it is sometimes convenient to be able to produce output

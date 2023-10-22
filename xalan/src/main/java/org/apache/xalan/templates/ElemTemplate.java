@@ -31,20 +31,20 @@ import org.apache.xpath.XPathContext;
 /**
  * Implement xsl:template.
  * <pre>
- * <!ELEMENT xsl:template
+ * &lt;!ELEMENT xsl:template
  *  (#PCDATA
  *   %instructions;
  *   %result-elements;
  *   | xsl:param)
- * >
+ * &gt;
  *
- * <!ATTLIST xsl:template
+ * &lt;!ATTLIST xsl:template
  *   match %pattern; #IMPLIED
  *   name %qname; #IMPLIED
  *   priority %priority; #IMPLIED
  *   mode %qname; #IMPLIED
  *   %space-att;
- * >
+ * &gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Defining-Template-Rules">section-Defining-Template-Rules in XSLT Specification</a>
  * @xsl.usage advanced

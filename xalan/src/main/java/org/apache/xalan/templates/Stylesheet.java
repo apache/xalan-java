@@ -44,7 +44,7 @@ import org.apache.xml.utils.SystemIDResolver;
  * defined in the <a href="XSLTAttributeDef#getSetterMethodName">getSetterMethodName</a>
  * function.</p>
  * <p><pre>
- * <!ENTITY % top-level "
+ * &lt;!ENTITY % top-level "
  *  (xsl:import*,
  *   (xsl:include
  *   | xsl:strip-space
@@ -58,22 +58,22 @@ import org.apache.xml.utils.SystemIDResolver;
  *   | xsl:template
  *   | xsl:namespace-alias
  *   %non-xsl-top-level;)*)
- * ">
+ * "&gt;
  *
- * <!ENTITY % top-level-atts '
+ * &lt;!ENTITY % top-level-atts '
  *   extension-element-prefixes CDATA #IMPLIED
  *   exclude-result-prefixes CDATA #IMPLIED
  *   id ID #IMPLIED
  *   version NMTOKEN #REQUIRED
  *   xmlns:xsl CDATA #FIXED "http://www.w3.org/1999/XSL/Transform"
  *   %space-att;
- * '>
+ * '&gt;
  *
- * <!ELEMENT xsl:stylesheet %top-level;>
- * <!ATTLIST xsl:stylesheet %top-level-atts;>
+ * &lt;!ELEMENT xsl:stylesheet %top-level;&gt;
+ * &lt;!ATTLIST xsl:stylesheet %top-level-atts;&gt;
  *
- * <!ELEMENT xsl:transform %top-level;>
- * <!ATTLIST xsl:transform %top-level-atts;>
+ * &lt;!ELEMENT xsl:transform %top-level;&gt;
+ * &lt;!ATTLIST xsl:transform %top-level-atts;&gt;
  *
  * </p></pre>
  * @see <a href="http://www.w3.org/TR/xslt#section-Stylesheet-Structure">section-Stylesheet-Structure in XSLT Specification</a>

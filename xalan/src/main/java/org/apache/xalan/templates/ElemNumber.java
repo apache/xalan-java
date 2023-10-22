@@ -56,8 +56,8 @@ import org.xml.sax.SAXException;
 /**
  * Implement xsl:number.
  * <pre>
- * <!ELEMENT xsl:number EMPTY>
- * <!ATTLIST xsl:number
+ * &lt;!ELEMENT xsl:number EMPTY&gt;
+ * &lt;!ATTLIST xsl:number
  *    level (single|multiple|any) "single"
  *    count %pattern; #IMPLIED
  *    from %pattern; #IMPLIED
@@ -67,7 +67,7 @@ import org.xml.sax.SAXException;
  *    letter-value %avt; #IMPLIED
  *    grouping-separator %avt; #IMPLIED
  *    grouping-size %avt; #IMPLIED
- * >
+ * &gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#number">number in XSLT Specification</a>
  * @xsl.usage advanced

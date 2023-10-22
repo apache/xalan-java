@@ -86,6 +86,7 @@ public class XSLTElementProcessor extends ElemTemplateElement
    *                 document.
    * @return The new input source, or null to require the
    *         default behaviour.
+   * @throws org.xml.sax.SAXException if StylesheetHandler throws an error.
    */
   public InputSource resolveEntity(
           StylesheetHandler handler, String publicId, String systemId)
@@ -137,6 +138,7 @@ public class XSLTElementProcessor extends ElemTemplateElement
    * is sent to the current processor when any non-text event occurs.
    *
    * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
+   * @throws org.xml.sax.SAXException if StylesheetHandler throws an error.
    */
   public void startNonText(StylesheetHandler handler) throws org.xml.sax.SAXException
   {
@@ -152,6 +154,7 @@ public class XSLTElementProcessor extends ElemTemplateElement
    * @param localName The local name (without prefix), or empty string if not namespace processing.
    * @param rawName The qualified name (with prefix).
    * @param attributes The specified or defaulted attributes.
+   * @throws org.xml.sax.SAXException if StylesheetHandler throws an error.
    */
   public void startElement(
           StylesheetHandler handler, String uri, String localName, String rawName, Attributes attributes)
@@ -171,6 +174,7 @@ public class XSLTElementProcessor extends ElemTemplateElement
    * @param uri The Namespace URI, or an empty string.
    * @param localName The local name (without prefix), or empty string if not namespace processing.
    * @param rawName The qualified name (with prefix).
+   * @throws org.xml.sax.SAXException if StylesheetHandler throws an error.
    */
   public void endElement(
           StylesheetHandler handler, String uri, String localName, String rawName)
@@ -192,6 +196,7 @@ public class XSLTElementProcessor extends ElemTemplateElement
    * @param start The start position in the character array.
    * @param length The number of characters to use from the
    *               character array.
+   * @throws org.xml.sax.SAXException if StylesheetHandler throws an error.
    */
   public void characters(
           StylesheetHandler handler, char ch[], int start, int length)
@@ -210,6 +215,7 @@ public class XSLTElementProcessor extends ElemTemplateElement
    * @param start The start position in the character array.
    * @param length The number of characters to use from the
    *               character array.
+   * @throws org.xml.sax.SAXException if StylesheetHandler throws an error.
    */
   public void ignorableWhitespace(
           StylesheetHandler handler, char ch[], int start, int length)
@@ -227,12 +233,12 @@ public class XSLTElementProcessor extends ElemTemplateElement
    * @param target The processing instruction target.
    * @param data The processing instruction data, or null if
    *             none is supplied.
+   * @throws org.xml.sax.SAXException if StylesheetHandler throws an error.
    */
   public void processingInstruction(
           StylesheetHandler handler, String target, String data)
             throws org.xml.sax.SAXException
   {
-
     // no op
   }
 
@@ -242,11 +248,11 @@ public class XSLTElementProcessor extends ElemTemplateElement
    *
    * @param handler non-null reference to current StylesheetHandler that is constructing the Templates.
    * @param name The name of the skipped entity.
+   * @throws org.xml.sax.SAXException never
    */
   public void skippedEntity(StylesheetHandler handler, String name)
           throws org.xml.sax.SAXException
   {
-
     // no op
   }
 
@@ -258,6 +264,7 @@ public class XSLTElementProcessor extends ElemTemplateElement
    *                error reporting.
    * @param attributes The list of attributes.
    * @param target The target element where the properties will be set.
+   * @throws org.xml.sax.SAXException if StylesheetHandler throws an error.
    */
   void setPropertiesFromAttributes(
           StylesheetHandler handler, String rawName, Attributes attributes, 
@@ -279,7 +286,7 @@ public class XSLTElementProcessor extends ElemTemplateElement
    * attribute is not defined.
    * @return the attributes not allowed on this element.
    *
-   * @throws TransformerException
+   * @throws org.xml.sax.SAXException if StylesheetHandler throws an error.
    */
   Attributes setPropertiesFromAttributes(
           StylesheetHandler handler, String rawName, Attributes attributes, 

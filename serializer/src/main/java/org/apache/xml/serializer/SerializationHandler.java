@@ -54,7 +54,7 @@ public interface SerializationHandler
     /**
      * Set the SAX Content handler that the serializer sends its output to. This
      * method only applies to a ToSAXHandler, not to a ToStream serializer.
-     * 
+     * @param ch the ContentHandler to recieve serializer's output
      * @see Serializer#asContentHandler()
      * @see ToSAXHandler
      */
@@ -67,7 +67,7 @@ public interface SerializationHandler
      * serialized.
      * 
      * @param node the DOM node to be serialized.
-     * @throws IOException
+     * @throws IOException if the serializer encounters IO problems.
      */
     public void serialize(Node node) throws IOException;
     /**
@@ -75,9 +75,14 @@ public interface SerializationHandler
      * 
      * Note that characters will
      * never, even if this option is set to 'true', be escaped within
-     * CDATA sections in output XML documents.
+     * CDATA sections in output XML documents. The only kind of escaping
+     * which takes place in that mode is when we are forced to end a
+     * CDATA section and begin a new one in order to split content that
+     * would otherwise include the CDATA end sequence.
      * 
      * @param escape true if escaping is to be set on.
+     * @return prior state of this flag, to permit restoring it later.
+     * @throws SAXException if the request cannot be handled correctly
      */
     public boolean setEscaping(boolean escape) throws SAXException;
 
@@ -131,6 +136,8 @@ public interface SerializationHandler
      * <p> 
      * For performance reasons this method should not be called
      * very often. 
+     * @throws SAXException if one was produced in the course of
+     * flushing the buffers (eg disk full or connection lost).
      */
     public void flushPending() throws SAXException;
     

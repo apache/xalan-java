@@ -28,7 +28,7 @@ import java.util.Vector;
  * 
  * In an XSLT stylesheet these attributes appear for example as:
  * <pre>
- * <xsl:output method="xml" omit-xml-declaration="no" indent="yes"/> 
+ * &lt;xsl:output method="xml" omit-xml-declaration="no" indent="yes"/&gt;
  * </pre>
  * The xsl:output attributes covered in this interface are:
  * <pre>
@@ -215,7 +215,7 @@ interface XSLOutputAttributes
      * <li> "{http://xml.apache.org/xalan}indent-amount"
      * <li> "{http://xml.apache.org/xalan}line-separator"
      * </ul>
-     * @val The non-default value of the parameter
+     * @param val The non-default value of the parameter
      */    
     public void   setOutputProperty(String name, String val);
     
@@ -230,7 +230,7 @@ interface XSLOutputAttributes
      * <li> "{http://xml.apache.org/xalan}indent-amount"
      * <li> "{http://xml.apache.org/xalan}line-separator"
      * </ul>
-     * @val The default value of the parameter
+     * @param val The default value of the parameter
      */ 
     public void   setOutputPropertyDefault(String name, String val);
 }

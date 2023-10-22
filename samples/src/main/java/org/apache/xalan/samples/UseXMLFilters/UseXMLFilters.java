@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package org.apache.xalan.samples.UseXMLFilters;
 
 import java.io.IOException;
 

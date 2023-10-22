@@ -19,7 +19,7 @@
  * $Id$
  */
 package org.apache.xml.utils;
-
+import java.util.EmptyStackException;
 
 /**
  * Simple stack for boolean values.

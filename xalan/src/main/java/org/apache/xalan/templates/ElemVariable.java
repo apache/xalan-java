@@ -35,11 +35,11 @@ import org.apache.xalan.res.XSLTErrorResources;
 /**
  * Implement xsl:variable.
  * <pre>
- * <!ELEMENT xsl:variable %template;>
- * <!ATTLIST xsl:variable
+ * &lt;!ELEMENT xsl:variable %template;&gt;
+ * &lt;!ATTLIST xsl:variable
  *   name %qname; #REQUIRED
  *   select %expr; #IMPLIED
- * >
+ * &gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#variables">variables in XSLT Specification</a>
  * @xsl.usage advanced

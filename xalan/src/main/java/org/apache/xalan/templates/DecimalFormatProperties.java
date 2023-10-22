@@ -27,8 +27,8 @@ import org.apache.xml.utils.QName;
 /**
  * Implement xsl:decimal-format.
  * <pre>
- * <!ELEMENT xsl:decimal-format EMPTY>
- * <!ATTLIST xsl:decimal-format
+ * &lt;!ELEMENT xsl:decimal-format EMPTY&gt;
+ * &lt;!ATTLIST xsl:decimal-format
  *   name %qname; #IMPLIED
  *   decimal-separator %char; "."
  *   grouping-separator %char; ","
@@ -36,11 +36,11 @@ import org.apache.xml.utils.QName;
  *   minus-sign %char; "-"
  *   NaN CDATA "NaN"
  *   percent %char; "%"
- *   per-mille %char; "&#x2030;"
+ *   per-mille %char; "&amp;#x2030;"
  *   zero-digit %char; "0"
  *   digit %char; "#"
  *   pattern-separator %char; ";"
- * >
+ * &gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#format-number">format-number in XSLT Specification</a>
  * @xsl.usage advanced

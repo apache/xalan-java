@@ -19,6 +19,7 @@
  * $Id$
  */
 // This file uses 4 space indents, no tabs.
+package org.apache.xalan.samples.ApplyXPath;
 
 import java.io.FileInputStream;
 import java.io.OutputStreamWriter;

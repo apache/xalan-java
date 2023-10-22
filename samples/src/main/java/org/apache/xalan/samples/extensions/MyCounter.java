@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package org.apache.xalan.samples.extensions;
 import java.util.Hashtable;
 
 public class MyCounter {

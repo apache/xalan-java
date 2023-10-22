@@ -115,9 +115,14 @@ public class ProcessorExsltFunction extends ProcessorTemplateElem
   }
   
   /**
-   * Non-recursive traversal of FunctionElement tree based on TreeWalker to verify that
-   * there are no literal result elements except within a func:result element and that
-   * the func:result element does not contain any following siblings except xsl:fallback.
+   * Non-recursive traversal of FunctionElement tree based on
+   * TreeWalker to verify that there are no literal result elements
+   * except within a func:result element and that the func:result
+   * element does not contain any following siblings except
+   * xsl:fallback.
+   * @param elem FunctionElement node to be examined
+   * @param handler StylesheetHandler to be called against each node in turn
+   * @throws SAXException if handler throws one
    */
   public void validate(ElemTemplateElement elem, StylesheetHandler handler)
     throws SAXException

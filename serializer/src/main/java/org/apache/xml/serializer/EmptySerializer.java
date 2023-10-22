@@ -50,43 +50,66 @@ public class EmptySerializer implements SerializationHandler
 {
     protected static final String ERR = "EmptySerializer method not over-ridden";
     /**
-     * @see SerializationHandler#asContentHandler()
+     * Architectural placeholder, overridden in derived classes
+     * @throws IOException if one arises in override implementation.
      */
-    
     protected void couldThrowIOException() throws IOException
     {
         return; // don't do anything.
     }
     
+    /**
+     * Architectural placeholder, overridden in derived classes
+     * @throws SAXException if one arises in override implementation.
+     */
     protected void couldThrowSAXException() throws SAXException
     {
         return; // don't do anything.
     }
     
+    /**
+     * Architectural placeholder, overridden in derived classes
+     * @param chars char[] containing content being serialized
+     * @param off integer offset into chars, start of content under consideration
+     * @param len integer character count, length of content under consideration
+     * @throws SAXException if one arises in override implementation.
+     */
     protected void couldThrowSAXException(char[] chars, int off, int len) throws SAXException
     {
         return; // don't do anything.
     }
     
+    /**
+     * Architectural placeholder, overridden in derived classes
+     * @param elemQName qualified name of element being serialized
+     * @throws SAXException if one arises in override implementation.
+     */
     protected void couldThrowSAXException(String elemQName) throws SAXException
     {
         return; // don't do anything.
     }
     
+    /**
+     * Architectural placeholder, overridden in derived classes
+     * @throws Exception (unknown which type) if one arises in override implementation.
+     */
     protected void couldThrowException() throws Exception
     {
         return; // don't do anything.
     }
 
+    /**
+     * Architectural placeholder, overridden in derived implementation.
+     * A handler method might be invoked, or inlined, from this location.
+     */
     void aMethodIsCalled()
     {
 
         // throw new RuntimeException(err);
         return;
     }
-  
     
-    /**
+    /** 
      * @see SerializationHandler#asContentHandler()
      */
     public ContentHandler asContentHandler() throws IOException
@@ -94,14 +117,14 @@ public class EmptySerializer implements SerializationHandler
         couldThrowIOException();
         return null;
     }
-    /**
+    /** 
      * @see SerializationHandler#setContentHandler(org.xml.sax.ContentHandler)
      */
     public void setContentHandler(ContentHandler ch)
     {
         aMethodIsCalled();
     }
-    /**
+    /** 
      * @see SerializationHandler#close()
      */
     public void close()
@@ -109,6 +132,7 @@ public class EmptySerializer implements SerializationHandler
         aMethodIsCalled();
     }
     /**
+     * @return Properties object describing the serializer's configuration
      * @see SerializationHandler#getOutputFormat()
      */
     public Properties getOutputFormat()
@@ -117,6 +141,7 @@ public class EmptySerializer implements SerializationHandler
         return null;
     }
     /**
+     * @return the OutputStream that this serializer would write to
      * @see SerializationHandler#getOutputStream()
      */
     public OutputStream getOutputStream()
@@ -125,6 +150,7 @@ public class EmptySerializer implements SerializationHandler
         return null;
     }
     /**
+     * @return the Writer this serializer uses to write to the OutputStream
      * @see SerializationHandler#getWriter()
      */
     public Writer getWriter()
@@ -133,6 +159,7 @@ public class EmptySerializer implements SerializationHandler
         return null;
     }
     /**
+     * return 
      * @see SerializationHandler#reset()
      */
     public boolean reset()
@@ -155,6 +182,7 @@ public class EmptySerializer implements SerializationHandler
         aMethodIsCalled();
     }
     /**
+     * @return previous state of this flag, so it can be restored if desired.
      * @see SerializationHandler#setEscaping(boolean)
      */
     public boolean setEscaping(boolean escape) throws SAXException
@@ -217,7 +245,7 @@ public class EmptySerializer implements SerializationHandler
     public Transformer getTransformer()
     {
         aMethodIsCalled();
-        return null;
+	return null;
     }
     /**
      * @see SerializationHandler#flushPending()
@@ -559,7 +587,14 @@ public class EmptySerializer implements SerializationHandler
         return null;
     }
     /**
-     * @see XSLOutputAttributes#setCdataSectionElements
+    /**
+     * I believe this is intended to be a convenience front-end for the
+     * version which takes a Vector.
+     * @see #setCdataSectionElements(java.util.Vector)
+     * @param h Hashtable listing the element types (as opposed to datatypes)
+     * to be handled as CData.
+     * @throws Exception if the request can't be fulfilled (details
+     * depend on implementation)
      */
     public void setCdataSectionElements(Hashtable h) throws Exception
     {

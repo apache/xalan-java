@@ -29,11 +29,11 @@ import org.xml.sax.Attributes;
  * A stylesheet can use the xsl:namespace-alias element to
  * declare that one namespace URI is an alias for another namespace URI.
  * <pre>
- * <!ELEMENT xsl:namespace-alias EMPTY>
- * <!ATTLIST xsl:namespace-alias
+ * &lt;!ELEMENT xsl:namespace-alias EMPTY&gt;
+ * &lt;!ATTLIST xsl:namespace-alias
  *   stylesheet-prefix CDATA #REQUIRED
  *   result-prefix CDATA #REQUIRED
- * >
+ * &gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
  * @see <a href="http://www.w3.org/TR/xslt#literal-result-element">literal-result-element in XSLT Specification</a>

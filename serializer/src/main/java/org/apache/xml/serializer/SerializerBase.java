@@ -91,6 +91,7 @@ public abstract class SerializerBase
     /**
      * To fire off the end element trace event
      * @param name Name of element
+     * @throws SAXException if the trace handler produces one
      */
     protected void fireEndElem(String name)
         throws org.xml.sax.SAXException
@@ -107,6 +108,7 @@ public abstract class SerializerBase
      * @param chars  content of characters
      * @param start  starting index of characters to output
      * @param length  number of characters to output
+     * @throws SAXException if the trace handler produces one
      */
     protected void fireCharEvent(char[] chars, int start, int length)
         throws org.xml.sax.SAXException
@@ -123,7 +125,7 @@ public abstract class SerializerBase
 	 */
     protected boolean m_needToCallStartDocument = true; 
 
-    /** True if a trailing "]]>" still needs to be written to be
+    /** True if a trailing "]]&gt;" still needs to be written to be
      * written out. Used to merge adjacent CDATA sections
      */
     protected boolean m_cdataTagOpen = false;
@@ -273,6 +275,8 @@ public abstract class SerializerBase
      * TODO: This method is a HACK! We do not have access to the
      * XML file, it sometimes generates a NS prefix of the form "ns?" for
      * an attribute.
+     * @param qname Qualified name to be patched.
+     * @return Replacement qname
      */
     protected String patchName(String qname)
     {
@@ -563,7 +567,7 @@ public abstract class SerializerBase
 
    /**
      * Sets the character encoding coming from the xsl:output encoding stylesheet attribute.
-     * @param m_encoding the character encoding
+     * @param encoding the character encoding
      */
     public void setEncoding(String encoding)
     {
@@ -895,8 +899,7 @@ public abstract class SerializerBase
      * Entity reference event.
      *
      * @param name Name of entity
-     *
-     * @throws org.xml.sax.SAXException
+     * @throws org.xml.sax.SAXException if the serializer or tracer encounters an error.
      */
     public void entityReference(String name) throws org.xml.sax.SAXException
     {
@@ -943,7 +946,7 @@ public abstract class SerializerBase
      * This method gets the nodes value as a String and uses that String as if
      * it were an input character notification.
      * @param node the Node to serialize
-     * @throws org.xml.sax.SAXException
+     * @throws org.xml.sax.SAXException if the serializer or tracer encounters an error.
      */
     public void characters(org.w3c.dom.Node node)
         throws org.xml.sax.SAXException
@@ -988,6 +991,7 @@ public abstract class SerializerBase
     /**
      * To fire off start entity trace event
      * @param name Name of entity
+     * @throws org.xml.sax.SAXException if the tracer encounters an error.
      */
     protected void fireStartEntity(String name)
         throws org.xml.sax.SAXException
@@ -1041,6 +1045,7 @@ public abstract class SerializerBase
      * @param chars  content of CDATA
      * @param start  starting index of characters to output
      * @param length  number of characters to output
+     * @throws org.xml.sax.SAXException if the serializer or tracer encounters an error.
      */
     protected void fireCDATAEvent(char[] chars, int start, int length)
         throws org.xml.sax.SAXException
@@ -1057,6 +1062,7 @@ public abstract class SerializerBase
      * @param chars  content of comment
      * @param start  starting index of comment to output
      * @param length  number of characters to output
+     * @throws org.xml.sax.SAXException if the serializer or tracer encounters an error.
      */
     protected void fireCommentEvent(char[] chars, int start, int length)
         throws org.xml.sax.SAXException
@@ -1072,6 +1078,7 @@ public abstract class SerializerBase
     /**
      * To fire off end entity trace event
      * @param name Name of entity
+     * @throws org.xml.sax.SAXException if the serializer or tracer encounters an error.
      */
     public void fireEndEntity(String name)
         throws org.xml.sax.SAXException
@@ -1083,6 +1090,7 @@ public abstract class SerializerBase
 
     /**
      * To fire off start document trace  event
+     * @throws org.xml.sax.SAXException if the serializer or tracer encounters an error.
      */
      protected void fireStartDoc()
         throws org.xml.sax.SAXException
@@ -1097,6 +1105,7 @@ public abstract class SerializerBase
 
     /**
      * To fire off end document trace event
+     * @throws org.xml.sax.SAXException if the serializer or tracer encounters an error.
      */
     protected void fireEndDoc()
         throws org.xml.sax.SAXException
@@ -1113,6 +1122,7 @@ public abstract class SerializerBase
      * called just before the attributes are cleared.
      * 
      * @param elemName the qualified name of the element
+     * @throws org.xml.sax.SAXException if the serializer or tracer encounters an error.
      * 
      */
     protected void fireStartElem(String elemName)
@@ -1128,20 +1138,10 @@ public abstract class SerializerBase
 
 
     /**
-     * To fire off the end element event
-     * @param name Name of element
-     */
-//    protected void fireEndElem(String name)
-//        throws org.xml.sax.SAXException
-//    {
-//        if (m_tracer != null)
-//            m_tracer.fireGenerateEvent(SerializerTrace.EVENTTYPE_ENDELEMENT,name, (Attributes)null);     	        	    	
-//    }    
-
-
-    /**
      * To fire off the PI trace event
      * @param name Name of PI
+     * @param data PI parameters (typically pseudoattributes)
+     * @throws org.xml.sax.SAXException if the serializer or tracer encounters an error.
      */
     protected void fireEscapingEvent(String name, String data)
         throws org.xml.sax.SAXException
@@ -1158,6 +1158,7 @@ public abstract class SerializerBase
     /**
      * To fire off the entity reference trace event
      * @param name Name of entity reference
+     * @throws org.xml.sax.SAXException if the serializer or tracer encounters an error.
      */
     protected void fireEntityReference(String name)
         throws org.xml.sax.SAXException
@@ -1180,8 +1181,6 @@ public abstract class SerializerBase
      *
      * @throws org.xml.sax.SAXException Any SAX exception, possibly
      *            wrapping another exception.
-     *
-     * @throws org.xml.sax.SAXException
      */
     public void startDocument() throws org.xml.sax.SAXException
     {
@@ -1206,7 +1205,8 @@ public abstract class SerializerBase
      * called from an external caller, which in principle is just a matter of
      * style.
      * 
-     * @throws SAXException
+     * @throws org.xml.sax.SAXException Any SAX exception, possibly
+     *            wrapping another exception.
      */
     protected void startDocumentInternal() throws org.xml.sax.SAXException
     {
@@ -1443,10 +1443,9 @@ public abstract class SerializerBase
     
     
     /**
-     * Return true if nothing has been sent to this result tree yet.
+     * @return true if nothing has been sent to this result tree yet.
      * <p>
      * This is not a public API.
-     * 
      * @xsl.usage internal
      */
     public boolean documentIsEmpty() {
@@ -1455,9 +1454,9 @@ public abstract class SerializerBase
     }    
     
     /**
-     * Return true if the current element in m_elemContext
+     * @return true if the current element in m_elemContext
      * is a CDATA section.
-     * CDATA sections are specified in the <xsl:output> attribute
+     * CDATA sections are specified in the &lt;xsl:output&gt; attribute
      * cdata-section-names or in the JAXP equivalent property.
      * In any case the format of the value of such a property is:
      * <pre>
@@ -1561,8 +1560,8 @@ public abstract class SerializerBase
      * not the default value. If there is a default
      * value, but no non-default value this method
      * will return null.
-     * <p>
-     * 
+     * @param name Property name to be queried
+     * @return default value, or null if no default is defined
      */
     public String getOutputPropertyNonDefault(String name )
     {

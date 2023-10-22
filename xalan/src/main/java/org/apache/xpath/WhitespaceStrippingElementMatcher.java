@@ -39,7 +39,7 @@ public interface WhitespaceStrippingElementMatcher
    *
    * @return true if the whitespace should be stripped.
    *
-   * @throws TransformerException
+   * @throws TransformerException if the question can't be answered (bad arguments, bad state).
    */
   public boolean shouldStripWhiteSpace(
           XPathContext support, Element targetElement) throws TransformerException;

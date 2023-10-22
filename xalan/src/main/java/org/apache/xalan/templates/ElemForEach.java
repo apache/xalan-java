@@ -41,17 +41,17 @@ import java.io.IOException;
 /**
  * Implement xsl:for-each.
  * <pre>
- * <!ELEMENT xsl:for-each
+ * &lt;!ELEMENT xsl:for-each
  *  (#PCDATA
  *   %instructions;
  *   %result-elements;
  *   | xsl:sort)
- * >
+ * &gt;
  *
- * <!ATTLIST xsl:for-each
+ * &lt;!ATTLIST xsl:for-each
  *   select %expr; #REQUIRED
  *   %space-att;
- * >
+ * &gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#for-each">for-each in XSLT Specification</a>
  * @xsl.usage advanced
@@ -475,11 +475,11 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
 
   /**
    * Add a child to the child list.
-   * <!ELEMENT xsl:apply-templates (xsl:sort|xsl:with-param)*>
-   * <!ATTLIST xsl:apply-templates
+   * &lt;!ELEMENT xsl:apply-templates (xsl:sort|xsl:with-param)*&gt;
+   * &lt;!ATTLIST xsl:apply-templates
    *   select %expr; "node()"
    *   mode %qname; #IMPLIED
-   * >
+   * &gt;
    *
    * @param newChild Child to add to child list
    *

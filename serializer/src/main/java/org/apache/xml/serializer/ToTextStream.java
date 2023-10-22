@@ -57,8 +57,6 @@ public class ToTextStream extends ToStream
    *
    * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
-   *
-   * @throws org.xml.sax.SAXException
    */
   protected void startDocumentInternal() throws org.xml.sax.SAXException
   {
@@ -80,8 +78,6 @@ public class ToTextStream extends ToStream
    *
    * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
-   *
-   * @throws org.xml.sax.SAXException
    */
   public void endDocument() throws org.xml.sax.SAXException
   {
@@ -120,8 +116,6 @@ public class ToTextStream extends ToStream
    *            wrapping another exception.
    * @see #endElement
    * @see org.xml.sax.AttributeList
-   *
-   * @throws org.xml.sax.SAXException
    */
   public void startElement(
           String namespaceURI, String localName, String name, Attributes atts)
@@ -157,8 +151,6 @@ public class ToTextStream extends ToStream
    *        empty string if qualified names are not available.
    * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
-   *
-   * @throws org.xml.sax.SAXException
    */
   public void endElement(String namespaceURI, String localName, String name)
           throws org.xml.sax.SAXException
@@ -264,8 +256,8 @@ public class ToTextStream extends ToStream
      * @param useLineSep true if the operating systems 
      * end-of-line separator should be output rather than a new-line character.
      * 
-     * @throws IOException
-     * @throws org.xml.sax.SAXException
+     * @throws IOException if the write fails
+     * @throws org.xml.sax.SAXException if processing fails in the handler layer
      */
     void writeNormalizedChars(
         final char ch[],
@@ -412,8 +404,6 @@ public class ToTextStream extends ToStream
    * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
    * @see #characters
-   *
-   * @throws org.xml.sax.SAXException
    */
   public void ignorableWhitespace(char ch[], int start, int length)
           throws org.xml.sax.SAXException
@@ -445,8 +435,6 @@ public class ToTextStream extends ToStream
    *        none was supplied.
    * @throws org.xml.sax.SAXException Any SAX exception, possibly
    *            wrapping another exception.
-   *
-   * @throws org.xml.sax.SAXException
    */
   public void processingInstruction(String target, String data)
           throws org.xml.sax.SAXException
@@ -504,7 +492,7 @@ public class ToTextStream extends ToStream
    *
    * @param name non-null reference to the name of the entity.
    *
-   * @throws org.xml.sax.SAXException
+   * @throws org.xml.sax.SAXException if processing fails in the handler layer
    */
   public void entityReference(String name) throws org.xml.sax.SAXException
   {

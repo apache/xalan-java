@@ -32,11 +32,11 @@ import org.apache.xpath.XPathContext;
 /**
  * Implement xsl:copy.
  * <pre>
- * <!ELEMENT xsl:copy %template;>
- * <!ATTLIST xsl:copy
+ * &lt;!ELEMENT xsl:copy %template;&gt;
+ * &lt;!ATTLIST xsl:copy
  *   %space-att;
  *   use-attribute-sets %qnames; #IMPLIED
- * >
+ * &gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#copying">copying in XSLT Specification</a>
  * @xsl.usage advanced

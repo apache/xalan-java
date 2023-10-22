@@ -54,7 +54,7 @@ public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
      * @param type the attribute type typically character data (CDATA)
      * @param value the value of the attribute
      * @param XSLAttribute true if the added attribute is coming from an xsl:attribute element
-     * @throws SAXException
+     * @throws SAXException if attribute could not be written to output
      */
     public void addAttribute(
         String uri,
@@ -67,7 +67,7 @@ public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
     /**
      * Add attributes to the current element
      * @param atts the attributes to add.
-     * @throws SAXException
+     * @throws SAXException if attributes could not be written to output
      */
     public void addAttributes(org.xml.sax.Attributes atts)
         throws org.xml.sax.SAXException;
@@ -75,8 +75,8 @@ public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
      * Add an attribute to the current element. The namespace URI of the
      * attribute will be calculated from the prefix of qName. The local name
      * will be derived from qName and the type will be assumed to be "CDATA".
-     * @param qName
-     * @param value
+     * @param qName Qualified Name of the attribute to be added
+     * @param value String value of the attribute to be added
      */
     public void addAttribute(String qName, String value);
     
@@ -84,7 +84,7 @@ public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
      * This method is used to notify of a character event, but passing the data
      * as a character String rather than the standard character array.
      * @param chars the character data
-     * @throws SAXException
+     * @throws SAXException if characters could not be written to output
      */
     public void characters(String chars) throws SAXException;
     
@@ -92,7 +92,7 @@ public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
      * This method is used to notify of a character event, but passing the data
      * as a DOM Node rather than the standard character array.
      * @param node a DOM Node containing text.
-     * @throws SAXException
+     * @throws SAXException if characters could not be written to output
      */    
     public void characters(org.w3c.dom.Node node) throws org.xml.sax.SAXException;
     /**
@@ -105,7 +105,7 @@ public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
      * the localName from the qualified name and derive the namespaceURI from
      * its implementation.
      * @param elemName the fully qualified element name.
-     * @throws SAXException
+     * @throws SAXException if end tag could not be written to output
      */
     public void endElement(String elemName) throws SAXException;
 
@@ -119,8 +119,7 @@ public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
      * @param uri the namespace URI of the element
      * @param localName the local name (without prefix) of the element
      * @param qName the qualified name of the element
-     * 
-     * @throws SAXException
+     * @throws SAXException if start tag could not be written to output
      */
     public void startElement(String uri, String localName, String qName)
         throws org.xml.sax.SAXException;
@@ -128,9 +127,10 @@ public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
     /**
      * This method is used to notify of the start of an element
      * @param qName the fully qualified name of the element
-     * @throws SAXException
+     * @throws SAXException if start tag could not be written to output
      */
     public void startElement(String qName) throws SAXException;
+
     /**
      * This method is used to notify that a prefix mapping is to start, but
      * after an element is started. The SAX method call
@@ -147,7 +147,7 @@ public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
      * 
      * @param uri the namespace URI being declared
      * @param prefix the prefix that maps to the given namespace
-     * @throws SAXException
+     * @throws SAXException if namespace declaration could not be processed
      */
     public void namespaceAfterStartElement(String uri, String prefix)
         throws SAXException;
@@ -163,7 +163,7 @@ public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
      * @return boolean false if the prefix mapping was already in effect (in
      * other words we are just re-declaring), true if this is a new, never
      * before seen mapping for the element.
-     * @throws SAXException
+     * @throws SAXException if namespace declaration could not be processed
      */
     public boolean startPrefixMapping(
         String prefix,
@@ -173,7 +173,7 @@ public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
     /**
      * Notify of an entity reference.
      * @param entityName the name of the entity
-     * @throws SAXException
+     * @throws SAXException if entity reference could not be written to output
      */
     public void entityReference(String entityName) throws SAXException;
 
@@ -239,6 +239,7 @@ public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
      * @param qName the fully qualified attribute name.
      * @param value the attribute value
      * @param flags a bitwise flag
+     * @throws SAXException if attribute could not be added to output
      */
     public void addUniqueAttribute(String qName, String value, int flags)
         throws SAXException;
@@ -259,7 +260,7 @@ public interface ExtendedContentHandler extends org.xml.sax.ContentHandler
      * @param rawName the qualified name of the attribute
      * @param type the attribute type typically character data (CDATA)
      * @param value the value of the attribute
-     * @throws SAXException
+     * @throws SAXException if attribute could not be added to output
      */
     public void addAttribute(
         String uri,

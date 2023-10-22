@@ -31,8 +31,8 @@ import org.xml.sax.Attributes;
 /**
  * TransformerFactory for xsl:strip-space markup.
  * <pre>
- * <!ELEMENT xsl:strip-space EMPTY>
- * <!ATTLIST xsl:strip-space elements CDATA #REQUIRED>
+ * &lt;!ELEMENT xsl:strip-space EMPTY&gt;
+ * &lt;!ATTLIST xsl:strip-space elements CDATA #REQUIRED&gt;
  * </pre>
  */
 class ProcessorStripSpace extends ProcessorPreserveSpace

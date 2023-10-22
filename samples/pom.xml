@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>xalan-project</artifactId>
+    <groupId>xalan</groupId>
+    <version>2.7.3</version>
+  </parent>
+
+  <artifactId>samples</artifactId>
+  <name>Apache Xalan-Java Samples</name>
+  <!-- FIXME change it to the project's website -->
+  <url>http://www.example.com</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>serializer</artifactId>
+      <version>2.7.3</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+      <version>2.7.3</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version> <!-- jakata servlet is at 6.0 -->
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/javax.ejb/ejb-api -->
+    <dependency>
+      <groupId>javax.ejb</groupId>
+      <artifactId>ejb-api</artifactId>
+      <version>3.0</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/xerces/xercesImpl -->
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.12.2</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- It isn't clear whether, or where, the Brazil server code
+	 is avalable on Maven. And I suspect the right answer is
+	 really to eliminate use of it in favor of more modern
+	 solutions. But Sun used it in their XSLTC samples, and
+	 for now I'll just continue carrying a local (ugh) copy.
+	 -->
+    <dependency>
+      <groupId>sunlabs</groupId>
+      <artifactId>brazil</artifactId>
+      <version>2.1</version>
+      <scope>system</scope>
+      <systemPath>${basedir}/lib/brazil-2.1.jar</systemPath>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.jboss.spec.javax.rmi/jboss-rmi-api_1.0_spec -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.rmi</groupId>
+      <artifactId>jboss-rmi-api_1.0_spec</artifactId>
+      <version>1.0.6.Final</version>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!--
+	  https://maven.apache.org/plugins/maven-shade-plugin/examples/includes-excludes.html -->
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-shade-plugin</artifactId>
+	<version>3.5.0</version>
+	<executions>
+	  <execution>
+	    <phase>package</phase>
+	    <goals>
+	      <goal>shade</goal>
+	    </goals>
+	    <configuration>
+	      <artifactSet>
+		<excludes>
+		  <!-- Their examples (testing) -->
+		  <exclude>junit:junit</exclude>
+		  <exclude>jmock:*</exclude>
+		  <exclude>org.apache.maven:lib:tests</exclude>
+		  <!-- What I think I need to exclude.
+		       Some are direct dependencies, some come in
+		       via maven packages. -->
+		  <exclude>com.github.vbmacher:java-cup</exclude>
+		  <exclude>commons-logging:commons-logging</exclude>
+		  <exclude>org.apache.commons:commons-lang3</exclude>
+		  <exclude>org.apache.ant:ant</exclude>
+		  <exclude>org.apache.ant:ant-launcher</exclude>
+		  <exclude>xalan:serializer</exclude>
+		  <exclude>de.jflex:jflex</exclude>	
+		</excludes>
+	      </artifactSet>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
+  </plugins>
+  </build>
+</project>

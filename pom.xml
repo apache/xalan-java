@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <packaging>pom</packaging>
+  <!-- KNOWN ISSUES:
+	"Production" jar/tar files?
+	stylebook (currenly, see stylebook.docgen.sh)
+       
+       xalan-test compatibility/success/submodule
+
+       NOTE: To get dependency tree from a multi-module project, use the 
+       command "mvn compile dependency:tree" so everything is in scope.
+  -->
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>xalan</groupId>
+  <artifactId>xalan-project</artifactId>
+  <version>2.7.3</version>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <modules>
+    <module>serializer</module>
+    <module>xalan</module>
+    <module>samples</module>
+    <module>xalan2jtaglet</module>
+  </modules>
+
+  <build>
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <resources>
+      <resource>
+	<directory>META-INF</directory>
+	<includes>
+	  <include>LICENSE.txt</include>
+	  <include>NOTICE.txt</include>
+	</includes>
+      </resource>
+      <resource>
+	<directory>resources</directory>
+	<includes>
+	  <include>**/*.properties</include>
+	</includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<version>3.8.1</version>
+	<configuration>
+	  <source>1.8</source>
+	  <target>1.8</target>
+	</configuration>
+      </plugin>
+
+      <!--
+	  https://maven.apache.org/plugins/maven-shade-plugin/examples/includes-excludes.html -->
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-shade-plugin</artifactId>
+	<version>3.5.0</version>
+	<executions>
+	  <execution>
+	    <phase>package</phase>
+	    <goals>
+	      <goal>shade</goal>
+	    </goals>
+	    <configuration>
+	      <artifactSet>
+		<excludes>
+		  <!-- Their examples -->
+		  <exclude>junit:junit</exclude>
+		  <exclude>jmock:*</exclude>
+		  <exclude>*:xml-apis</exclude>
+		  <exclude>org.apache.maven:lib:tests</exclude>
+		  <!-- What I think I need to exclude -->
+		  <exclude>com.github.vbmacher:java-cup</exclude>
+		  <exclude>commons-logging:commons-logging</exclude>
+		  <!-- Fighting to excluse javax/script/... -->
+		  <exclude>javax:*</exclude>
+		</excludes>
+	      </artifactSet>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
+
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-site-plugin</artifactId>
+	<version>3.7.1</version>
+      </plugin>
+
+      <!-- Maven finds this without assistance, but grumbles about
+	   unspecified plugin version, so... -->
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-project-info-reports-plugin</artifactId>
+	<version>3.4.5</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>             
+            <id>copy-artifact</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>${project.artifactId}</artifactId>
+                  <version>${project.version}</version>
+                  <type>${project.packaging}</type>
+                </artifactItem>
+              </artifactItems>
+              <outputDirectory>../build</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.6.0</version>
+	<configuration>
+
+	  <!-- Mute "missing" javadoc errors. We have lots of 'em, and
+	       they're a distraction from simply getting the Maven
+	       build up and running. Open a jira task to fix this
+	       later. GONK. -->
+	  <doclint>none</doclint>
+
+	  <groups>
+            <group>
+	      <title>XPath</title>
+	      <packages>org.apache.xpath*</packages>
+	    </group>
+            <group>
+	      <title>Document Table Model (DTM)</title>
+	      <packages>org.apache.xml.dtm*</packages>
+	    </group>          
+            <group>
+	      <title>Utilities</title>
+	      <packages>org.apache.xml.utils*</packages>
+	    </group>
+            <group>
+	      <title>Xalan Other</title>
+	      <packages>org.apache.xalan.client:org:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.xslt</packages>
+	    </group>
+            <group>
+	      <title>Xalan Extensions</title>
+	      <packages>org.apache.xalan.lib*</packages>
+	    </group>
+            <group>
+	      <title>Serializers</title>
+	      <packages>org.apache.xml.serialize*:org.apache.xalan.serialize</packages>
+	    </group>
+            <group>
+	      <title>SAX 2</title>
+	      <packages>org.xml.sax*</packages>
+	    </group>
+            <group>
+	      <title>DOM 2</title>
+	      <packages>org.w3c.dom*</packages>
+	    </group>
+            <group>
+	      <title>XSLTC Core</title>
+	      <packages>org.apache.xalan.xsltc*</packages>
+	    </group>
+	  </groups>
+
+	  <!-- Locally provided taglet; see xalan2jtaglet module -->
+	  <taglets>
+            <taglet>
+	      <tagletClass>xalan2jtaglet.XSLUsageTag</tagletClass>
+	    </taglet>
+	  </taglets>
+	  <tagletArtifact>
+	    <groupId>xalan</groupId>
+	    <artifactId>xalan2jtaglet</artifactId>
+	    <version>2.7.3</version>
+	  </tagletArtifact>
+
+	</configuration>
+
+        <reportSets>
+          <reportSet>
+            <id>aggregate</id>
+            <inherited>false</inherited>        
+            <reports>
+              <report>aggregate</report>
+            </reports>
+          </reportSet>
+          <reportSet>
+            <id>default</id>
+            <reports>
+              <report>javadoc</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
+
+</project>

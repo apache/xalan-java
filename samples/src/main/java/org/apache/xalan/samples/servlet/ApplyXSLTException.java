@@ -25,7 +25,7 @@
  * @author Tom Rowe (trowe@us.ibm.com)
  *
  *****************************************************************************************************/
-package servlet;
+package org.apache.xalan.samples.servlet;
 
 public class ApplyXSLTException extends Exception {
 

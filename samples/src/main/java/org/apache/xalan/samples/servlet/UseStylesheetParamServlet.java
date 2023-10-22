@@ -22,7 +22,7 @@
 /*
 Simple Servlet Example using a stylesheet parameter
  */
-package servlet;
+package org.apache.xalan.samples.servlet;
 // Imported TraX classes
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.Transformer;

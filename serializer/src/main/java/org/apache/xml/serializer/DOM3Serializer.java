@@ -45,7 +45,7 @@ import org.w3c.dom.ls.LSSerializerFilter;
  * <p>
  * Example:
  * <pre>
- *    public class TestDOM3 {
+ *    public class TestDOM3 { 
  *
  *    public static void main(String args[]) throws Exception {
  *        // Get document to serialize
@@ -55,7 +55,8 @@ import org.w3c.dom.ls.LSSerializerFilter;
  *        System.out.println(test.testDOM3LS());
  *    }
  *
- *    public org.w3c.dom.Document getDocument() throws Exception {
+ *    // Javadoc needs an @code hint or it complains about angle brackets
+ *    public org.w3c.dom.Document getDocument() throws Exception {@code
  *        // Create a simple DOM Document.
  *        javax.xml.parsers.DocumentBuilderFactory factory = 
  *            javax.xml.parsers.DocumentBuilderFactory.newInstance();

@@ -25,7 +25,7 @@ import javax.xml.transform.Transformer;
 import org.w3c.dom.Node;
 /**
  * This interface is meant to be used by a base interface to
- * TransformState, but which as only the setters which have non Xalan
+ * TransformState, but which has only the setters which have non Xalan
  * specific types in their signature, so that there are no dependancies
  * of the serializer on Xalan.
  * 
@@ -49,7 +49,7 @@ public interface TransformStateSetter
   /**
    * Reset the state on the given transformer object.
    *
-   * @param transformer
+   * @param transformer The transformer to have its state reset
    */
   void resetState(Transformer transformer);
 

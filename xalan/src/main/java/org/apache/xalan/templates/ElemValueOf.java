@@ -35,11 +35,11 @@ import org.xml.sax.SAXException;
 /**
  * Implement xsl:value-of.
  * <pre>
- * <!ELEMENT xsl:value-of EMPTY>
- * <!ATTLIST xsl:value-of
+ * &lt;!ELEMENT xsl:value-of EMPTY&gt;
+ * &lt;!ATTLIST xsl:value-of
  *   select %expr; #REQUIRED
  *   disable-output-escaping (yes|no) "no"
- * >
+ * &gt;
  * </pre>
  * @see <a href="http://www.w3.org/TR/xslt#value-of">value-of in XSLT Specification</a>
  * @xsl.usage advanced
@@ -102,7 +102,7 @@ public class ElemValueOf extends ElemTemplateElement
 
   /**
    * Set the "disable-output-escaping" attribute.
-   * Normally, the xml output method escapes & and < (and
+   * Normally, the xml output method escapes &amp; and &lt; (and
    * possibly other characters) when outputting text nodes.
    * This ensures that the output is well-formed XML. However,
    * it is sometimes convenient to be able to produce output
@@ -127,7 +127,7 @@ public class ElemValueOf extends ElemTemplateElement
 
   /**
    * Get the "disable-output-escaping" attribute.
-   * Normally, the xml output method escapes & and < (and
+   * Normally, the xml output method escapes &amp; and &lt; (and
    * possibly other characters) when outputting text nodes.
    * This ensures that the output is well-formed XML. However,
    * it is sometimes convenient to be able to produce output
