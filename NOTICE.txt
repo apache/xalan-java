@@ -67,7 +67,16 @@
      - software copyright (c) 1999, Sun Microsystems., http://www.sun.com.
      - voluntary contributions made by Paul Eng on behalf of the 
        Apache Software Foundation that were originally developed at iClick, Inc.,
-       software copyright (c) 1999.    
+       software copyright (c) 1999.
+       
+   =========================================================================   
+   Eclipse Web Tools Platform Project (https://projects.eclipse.org/projects/webtools)
+   
+   Few of the algorithms for XPath expressions implementation and XML Schema  
+   data types implementation, for the XPath 3.1 processor have been borrowed 
+   from Eclipse Foundation's Web Tools Platform (WTP)'s XPath 2.0 processor.
+   
+   See - LICENSE.org.eclipse.wst.xml.xpath2.processor_1.2.1.html           
 
    =========================================================================   
    Apache xml-commons xml-apis (redistribution of xml-apis.jar)
@@ -81,5 +90,6 @@
    Portions of this software were originally based on the following:
      - software copyright (c) 1999, IBM Corporation., http://www.ibm.com.
      - software copyright (c) 1999, Sun Microsystems., http://www.sun.com.
-     - software copyright (c) 2000 World Wide Web Consortium, http://www.w3.org
+     - software copyright (c) 2000 World Wide Web Consortium, http://www.w3.org 
+         
 

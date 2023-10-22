@@ -3785,6 +3785,9 @@ public class XPathParser
             case Keywords.XS_DATE :
                xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DATE);
                break;
+            case Keywords.XS_DATETIME :
+                xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DATETIME);
+                break;
             case Keywords.XS_DURATION :
                xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DURATION);
                break;
@@ -3804,8 +3807,8 @@ public class XPathParser
                 xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNTYPED);
                 break;
             default :
-               throw new javax.xml.transform.TransformerException("XPST0051 An XML Schema type 'xs:" + m_token + "' is not "
-                                                                                        + "recognized, within the provided sequence type expression.");        
+               throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
+                                                                                          + "recognized, within the provided sequence type expression.");        
          }
          
          nextToken();
