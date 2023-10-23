@@ -42,6 +42,7 @@ import junit.framework.Assert;
  * A class providing, common services to this JUnit test suite.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
+ * @author Vladimir Sitnikov <sitnikov.vladimir@gmail.com>
  * 
  * @xsl.usage advanced
  */

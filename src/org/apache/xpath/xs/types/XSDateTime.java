@@ -715,7 +715,7 @@ public class XSDateTime extends XSCalendarType {
     }
     
     /**
-     * Determine whether, this XSDateTime object is less that, the 
+     * Determine whether, this XSDateTime object is less than, the 
      * XSDateTime object provided as an argument to this method. 
      */
     public boolean lt(XSDateTime xsDateTime) {
@@ -760,7 +760,7 @@ public class XSDateTime extends XSCalendarType {
     }
     
     /**
-     * Determine whether, this XSDateTime object is greater that, the 
+     * Determine whether, this XSDateTime object is greater than, the 
      * XSDateTime object provided as an argument to this method. 
      */
     public boolean gt(XSDateTime xsDateTime) {
