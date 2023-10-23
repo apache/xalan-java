@@ -29,6 +29,7 @@
 
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
+    <finalName>${project.artifactId}</finalName>
     <resources>
       <resource>
 	<directory>META-INF</directory>
@@ -54,8 +55,6 @@
 	</configuration>
       </plugin>
 
-      <!--
-	  https://maven.apache.org/plugins/maven-shade-plugin/examples/includes-excludes.html -->
       <plugin>
 	<groupId>org.apache.maven.plugins</groupId>
 	<artifactId>maven-shade-plugin</artifactId>
@@ -77,7 +76,6 @@
 		  <!-- What I think I need to exclude -->
 		  <exclude>com.github.vbmacher:java-cup</exclude>
 		  <exclude>commons-logging:commons-logging</exclude>
-		  <!-- Fighting to excluse javax/script/... -->
 		  <exclude>javax:*</exclude>
 		</excludes>
 	      </artifactSet>
@@ -100,6 +98,32 @@
 	<version>3.4.5</version>
       </plugin>
 
+      <!-- During cleaning phase, empty the /build directory, which
+	   is normally not present except in the parent module. -->
+      <plugin>
+	<artifactId>maven-clean-plugin</artifactId>
+	<version>3.3.1</version>
+	<configuration>
+	  <filesets>
+            <fileset>
+              <directory>./build</directory>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+	  </filesets>
+	</configuration>
+      </plugin>
+
+      <!-- Copy produced jarfile up to xalan-java/build/,
+	   renaming to remove the version number, for
+	   backward compatibility with things build for the 
+	   Ant builds. 
+	   ...
+	   ISSUE: We really want this NOT to run for the
+	   parent module. It looks like a conditional profile
+	   is Maven's standard solution for this, using an
+	   </exists> test to see if the expected jarfile is
+	   present. 
+	   -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -111,22 +135,28 @@
               <goal>copy</goal>
             </goals>
             <configuration>
+	      <skip>${isParentModule}</skip>
               <artifactItems>
-                <artifactItem>
+		<artifactItem>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>${project.artifactId}</artifactId>
                   <version>${project.version}</version>
                   <type>${project.packaging}</type>
-                </artifactItem>
+		  <!-- Copy without the "-${project.version}" suffix?
+		       ... Interacts badly with toplevel, which is
+		       currently outputting a POM.
+		  <destFileName>${project.artifactId}.jar</destFileName>
+		   -->
+		</artifactItem>
               </artifactItems>
               <outputDirectory>../build</outputDirectory>
             </configuration>
           </execution>
         </executions>
       </plugin>
+
     </plugins>
   </build>
-
 
   <reporting>
     <plugins>
