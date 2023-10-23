@@ -23,6 +23,7 @@ import java.util.TimeZone;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XObject;
 
 /**
  * An XML Schema data type representation, of the xs:time datatype.
@@ -42,6 +43,12 @@ public class XSTime extends XSCalendarType {
     private boolean _timezoned;
     
     private XSDuration _tz;
+    
+    /**
+     * The value of this class field, stores the fact that whether this
+     * XSTime object is constructed via XPath function call fn:current-time().
+     */
+    private boolean isPopulatedFromFnCurrentTime = false;
     
     /**
      * Class constructor.
@@ -133,8 +140,12 @@ public class XSTime extends XSCalendarType {
      * 
      * @return    Calendar representation of the time stored
      */
-    public Calendar calendar() {
+    public Calendar getCalendar() {
         return _calendar;
+    }
+    
+    public XSDuration getTimezone() {
+        return _tz;
     }
     
     /**
@@ -179,7 +190,7 @@ public class XSTime extends XSCalendarType {
      * @return true    if there is a timezone associated with this XSTime object.
      *                 false otherwise.
      */
-    public boolean isXsTimeObjectTimezoned() {
+    public boolean isTimetimezoned() {
         return _timezoned;
     }
 
@@ -187,7 +198,7 @@ public class XSTime extends XSCalendarType {
     public String stringValue() {
         String returnVal = "";
         
-        Calendar calendarVal = calendar();
+        Calendar calendarVal = getCalendar();
         returnVal += XSDateTime.padInt(calendarVal.get(Calendar.HOUR_OF_DAY), 2);
         
         returnVal += ":";
@@ -210,7 +221,7 @@ public class XSTime extends XSCalendarType {
             }
         }
 
-        if (isXsTimeObjectTimezoned()) {
+        if (isTimetimezoned()) {
             int hrs = _tz.hours();
             int min = _tz.minutes();
             double secs = _tz.seconds();
@@ -236,11 +247,178 @@ public class XSTime extends XSCalendarType {
          return returnVal;
     }
     
+    /**
+     * Determine whether, two XSTime objects are equal.
+     */
+    public boolean equals(XSTime xsTime) {
+        boolean isXsTimeEqual = false;
+        
+        int hour1 = hour();
+        int mins1 = minute();
+        double secs1 = second();
+        
+        int hour2 = xsTime.hour();
+        int mins2 = xsTime.minute();
+        double secs2 = xsTime.second();
+        XSDuration tz1 = getTimezone();
+        XSDuration tz2 = xsTime.getTimezone();
+        
+        isXsTimeEqual = ((hour1 == hour2) && (mins1 == mins2) && (secs1 == secs2)) && 
+                                                            isTimezoneEqual(tz1, tz2, isPopulatedFromFnCurrentTime, 
+                                                                            xsTime.isPopulatedFromFnCurrentTime());
+        
+        return isXsTimeEqual;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+       boolean isTimeEqual = false;
+        
+       if (obj instanceof XSTime) {
+    	   isTimeEqual = this.equals((XSTime)obj);  
+       }
+       
+       return isTimeEqual;
+    }
+    
+    @Override
+    public int hashCode() {       
+       String strVal = stringValue();       
+       
+       return strVal.hashCode();
+    }
+    
+    /**
+     * Determine whether, this XSTime object is less than, the XSTime 
+     * object provided as an argument to this method. 
+     */
+    public boolean lt(XSTime xsTime) {
+       boolean isTimeBefore = false;
+       
+       int hour1 = hour();
+       int mins1 = minute();
+       double secs1 = second();
+       
+       int hour2 = xsTime.hour();
+       int mins2 = xsTime.minute();
+       double secs2 = xsTime.second();
+       
+       if (hour1 < hour2) {
+    	  isTimeBefore = true; 
+       }
+       else if (hour1 == hour2) {
+          if (mins1 < mins2) {
+        	 isTimeBefore = true;  
+          }
+          else if (mins1 == mins2) {
+             if (secs1 < secs2) {
+            	isTimeBefore = true;  
+             }
+          }
+       }
+    
+       return isTimeBefore;
+    }
+    
+    /**
+     * Determine whether, this XSTime object is greater than, the 
+     * XSTime object provided as an argument to this method. 
+     */
+    public boolean gt(XSTime xsTime) {
+    	boolean isTimeAfter = false;
+        
+        int hour1 = hour();
+        int mins1 = minute();
+        double secs1 = second();
+        
+        int hour2 = xsTime.hour();
+        int mins2 = xsTime.minute();
+        double secs2 = xsTime.second();
+        
+        if (hour1 > hour2) {
+        	isTimeAfter = true; 
+        }
+        else if (hour1 == hour2) {
+           if (mins1 > mins2) {
+        	   isTimeAfter = true;  
+           }
+           else if (mins1 == mins2) {
+              if (secs1 > secs2) {
+            	  isTimeAfter = true;  
+              }
+           }
+        }
+     
+        return isTimeAfter;
+    }
+    
+    /**
+     * Implementation of addition operation between this XSTime value, and a
+     * supplied value (as per XPath 3.1 spec, xs:dayTimeDuration is the only 
+     * permissible data type value, that may be added to an xs:Time value).
+     */
+    public XObject add(XObject xObject) throws TransformerException {
+         XObject result = null;
+         
+         if (!(xObject instanceof XSDayTimeDuration)) {
+            throw new TransformerException("XPTY0004 : The value of type xs:dayTimeDuration is the only "
+            		                                                                      + "one that may be added to an xs:Time value.");
+         }
+         
+         XSDayTimeDuration argVal = (XSDayTimeDuration)xObject;
+         double argValSecs = argVal.value();
+         Calendar cal1 = (Calendar)((getCalendar()).clone());
+         cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)argValSecs * 1000))));
+         result = new XSTime(cal1, getTimezone());
+         
+         return result;
+    }
+     
+    /**
+     * Implementation of subtraction operation between this XSTime value, and a
+     * supplied value (as per XPath 3.1 spec, xs:time and xs:dayTimeDuration are
+     * the only permissible data type values, that may be subtracted from an 
+     * xs:time value).
+     */
+     public XObject subtract(XObject xObject) throws TransformerException {
+          XObject result = null;
+          
+          if (!((xObject instanceof XSTime) || (xObject instanceof XSDayTimeDuration))) {
+             throw new TransformerException("XPTY0004 : The values of types xs:time and xs:dayTimeDuration "
+             		                                                     + "are only ones that may be subtracted "
+             		                                                     + "from an xs:time value.");
+          }
+          
+          if (xObject instanceof XSTime) {
+             Calendar cal1 = getCalendar();
+             Calendar cal2 = ((XSTime)xObject).getCalendar();
+             long diffDurationMilliSecs = cal1.getTimeInMillis() - cal2.getTimeInMillis();
+             result = new XSDayTimeDuration(diffDurationMilliSecs / 1000);
+          }          
+          else if (xObject instanceof XSDayTimeDuration) {
+             XSDayTimeDuration argVal = (XSDayTimeDuration)xObject;
+             double argValSecs = argVal.value();
+             Calendar cal1 = (Calendar)((getCalendar()).clone());
+             cal1.setTimeInMillis(cal1.getTimeInMillis() + ((((long)argValSecs * 1000)) * -1));
+             result = new XSTime(cal1, getTimezone());
+          }
+          
+          return result;
+    }
+    
     public int getType() {
         return CLASS_XS_TIME;
     }
     
-    /**
+    public boolean isPopulatedFromFnCurrentTime() {
+		return isPopulatedFromFnCurrentTime;
+	}
+
+	public void setPopulatedFromFnCurrentTime(boolean isPopulatedFromFnCurrentTime) {
+		this.isPopulatedFromFnCurrentTime = isPopulatedFromFnCurrentTime;
+	}
+
+	/**
      * Do a data type cast, of an XSAnyType argument passed to this method, to
      * an XSTime object.
      */

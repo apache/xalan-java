@@ -22,8 +22,6 @@ package org.apache.xpath.functions;
 
 import java.util.Vector;
 
-import javax.xml.transform.SourceLocator;
-
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
@@ -52,13 +50,12 @@ public class FuncCurrentTime extends Function {
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
-
-    SourceLocator srcLocator = xctxt.getSAXLocator();
+  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {    
     
-    XSTime currentTime = new XSTime(xctxt.getCurrentDateTime(), xctxt.getTimezone());
-
-    return (XObject)currentTime;
+    XSTime xsCurrentTime = new XSTime(xctxt.getCurrentDateTime(), xctxt.getTimezone());
+    xsCurrentTime.setPopulatedFromFnCurrentTime(true);
+    
+    return xsCurrentTime;
   }
 
   /**

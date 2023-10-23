@@ -29,6 +29,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.xs.types.XSDate;
 import org.apache.xpath.xs.types.XSDateTime;
 import org.apache.xpath.xs.types.XSNumericType;
+import org.apache.xpath.xs.types.XSTime;
 import org.apache.xpath.xs.types.XSYearMonthDuration;
 
 /**
@@ -256,6 +257,9 @@ public class Minus extends Operation
       else if (left instanceof XSDateTime) {
           result = ((XSDateTime)left).subtract(right);  
       }
+      else if (left instanceof XSTime) {
+          result = ((XSTime)left).subtract(right);  
+      }
       else if ((left instanceof ResultSequence) && (right instanceof ResultSequence)) {
           ResultSequence rsLeft = (ResultSequence)left;          
           if (rsLeft.size() > 1) {
@@ -279,6 +283,9 @@ public class Minus extends Operation
           }
           else if (lArg instanceof XSDateTime) {
               result = ((XSDateTime)lArg).subtract(rArg); 
+          }
+          else if (lArg instanceof XSTime) {
+              result = ((XSTime)lArg).subtract(rArg); 
           }
           else {
               java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(lArg);
@@ -304,6 +311,9 @@ public class Minus extends Operation
           }
           else if (lArg instanceof XSDateTime) {
               result = ((XSDateTime)lArg).subtract(right); 
+          }
+          else if (lArg instanceof XSTime) {
+              result = ((XSTime)lArg).subtract(right); 
           }
       }
       else {          

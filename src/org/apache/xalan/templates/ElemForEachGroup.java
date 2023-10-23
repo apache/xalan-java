@@ -53,6 +53,7 @@ import org.apache.xpath.xs.types.XSDate;
 import org.apache.xpath.xs.types.XSDateTime;
 import org.apache.xpath.xs.types.XSNumericType;
 import org.apache.xpath.xs.types.XSString;
+import org.apache.xpath.xs.types.XSTime;
 
 /**
  * Implementation of the XSLT 3.0 xsl:for-each-group instruction.
@@ -826,7 +827,8 @@ public class ElemForEachGroup extends ElemTemplateElement
       else if (xpathEvalResult instanceof XSBoolean) {
           xpathRawResult = Boolean.valueOf(((XSBoolean)xpathEvalResult).value());
       }
-      else if ((xpathEvalResult instanceof XSDate) || (xpathEvalResult instanceof XSDateTime)) {
+      else if ((xpathEvalResult instanceof XSDate) || (xpathEvalResult instanceof XSDateTime) || 
+    		                                          (xpathEvalResult instanceof XSTime)) {
           xpathRawResult = xpathEvalResult;
       }
       else {
