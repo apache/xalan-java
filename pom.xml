@@ -27,7 +27,48 @@
     <module>xalan2jtaglet</module>
   </modules>
 
+
   <build>
+    <pluginManagement>
+      <!-- Standardized configuration for plugin used by child modules,
+	   though not invoked by parent module -->
+      <plugins>
+	<!-- Copy produced jarfile up to xalan-java/build/,
+	     renaming to remove the version number, for
+	     backward compatibility with things build for the 
+	     Ant builds. 
+	-->
+	<plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <executions>
+            <execution>             
+              <id>copy-artifact</id>
+              <phase>package</phase>
+              <goals>
+		<goal>copy</goal>
+              </goals>
+              <configuration>
+		<artifactItems>
+		  <artifactItem>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>${project.artifactId}</artifactId>
+                    <version>${project.version}</version>
+                    <type>${project.packaging}</type>
+		    <!-- Copy without the "-${project.version}" suffix,
+			 but with the filetype?
+		    -->
+		    <destFileName>${project.artifactId}.${project.packaging}</destFileName>
+		  </artifactItem>
+		</artifactItems>
+		<outputDirectory>../build</outputDirectory>
+              </configuration>
+            </execution>
+          </executions>
+	</plugin>
+      </plugins>
+    </pluginManagement>
+
     <sourceDirectory>src/main/java</sourceDirectory>
     <resources>
       <resource>
@@ -97,8 +138,12 @@
 	<version>3.4.5</version>
       </plugin>
 
-      <!-- During cleaning phase, empty the /build directory, which
-	   is normally not present except in the parent module. -->
+      <!-- During cleaning phase, empty the ./build directory, which
+	   is normally not present except in the parent module. 
+	   NOTE that even with the current problem where the POM
+	   is being copied up to ../build, this does NOT reach upward
+	   to clean.
+      -->
       <plugin>
 	<artifactId>maven-clean-plugin</artifactId>
 	<version>3.3.1</version>
@@ -110,49 +155,6 @@
             </fileset>
 	  </filesets>
 	</configuration>
-      </plugin>
-
-      <!-- Copy produced jarfile up to xalan-java/build/,
-	   renaming to remove the version number, for
-	   backward compatibility with things build for the 
-	   Ant builds. 
-	   ...
-	   ISSUE: We really want this NOT to run for the
-	   parent module. It looks like a conditional profile
-	   is Maven's standard solution for this, using an
-	   </exists> test to see if the expected jarfile is
-	   present. 
-      -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>             
-            <id>copy-artifact</id>
-            <phase>package</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-	      <skip></skip> <!-- Sensitive only to exactly "false" -->
-              <artifactItems>
-		<artifactItem>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>${project.artifactId}</artifactId>
-                  <version>${project.version}</version>
-                  <type>${project.packaging}</type>
-		  <!-- Copy without the "-${project.version}" suffix,
-		       but with the filetype?
-		       -->
-		       <destFileName>${project.artifactId}.${project.packaging}</destFileName>
-		       <!--
-		       -->
-		</artifactItem>
-              </artifactItems>
-              <outputDirectory>../build</outputDirectory>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
 
     </plugins>

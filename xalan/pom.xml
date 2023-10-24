@@ -125,6 +125,13 @@
 	</executions>
       </plugin>
 
+      <!-- Copy generated jarfile up to xalan-java/build/,
+	   for backward compatibility with Ant builds. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+
     </plugins>
   </build>
 
