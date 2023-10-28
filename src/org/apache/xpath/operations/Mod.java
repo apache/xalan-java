@@ -23,7 +23,8 @@ package org.apache.xpath.operations;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.xs.types.XSInteger;
+
+import xml.xpath31.processor.types.XSInteger;
 
 /**
  * The 'mod' operation expression executer.

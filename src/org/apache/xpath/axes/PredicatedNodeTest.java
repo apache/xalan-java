@@ -31,7 +31,8 @@ import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.patterns.NodeTest;
-import org.apache.xpath.xs.types.XSInteger;
+
+import xml.xpath31.processor.types.XSInteger;
 
 public abstract class PredicatedNodeTest extends NodeTest implements SubContextList
 {

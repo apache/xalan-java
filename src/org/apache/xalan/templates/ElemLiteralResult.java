@@ -33,7 +33,6 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.StringVector;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.xs.types.XSAnyType;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -44,6 +43,8 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.TypeInfo;
 import org.w3c.dom.UserDataHandler;
 import org.xml.sax.SAXException;
+
+import xml.xpath31.processor.types.XSAnyType;
 
 /**
  * Implement a Literal Result Element.

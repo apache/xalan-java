@@ -28,7 +28,8 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.xs.types.XSAnyType;
+
+import xml.xpath31.processor.types.XSAnyType;
 
 /**
  * The XSLT xsl:if element, is used to perform conditional processing,

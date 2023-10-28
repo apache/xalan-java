@@ -23,7 +23,8 @@ package org.apache.xpath.objects;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.xs.types.XSDecimal;
+
+import xml.xpath31.processor.types.XSDecimal;
 
 /**
  * This class represents an XPath number, and is capable of

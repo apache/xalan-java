@@ -20,7 +20,7 @@ package org.apache.xpath.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.xpath.xs.types.XSAnyType;
+import xml.xpath31.processor.types.XSAnyType;
 
 /**
  * This class represents, the XPath 3.1 data model sequence.

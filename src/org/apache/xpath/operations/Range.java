@@ -29,9 +29,10 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.xs.types.XSInteger;
-import org.apache.xpath.xs.types.XSNumericType;
 import org.xml.sax.SAXException;
+
+import xml.xpath31.processor.types.XSInteger;
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
  * The XPath 3.1 range "to" operation.

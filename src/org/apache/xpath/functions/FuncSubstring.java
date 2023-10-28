@@ -27,7 +27,8 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xpath.xs.types.XSNumericType;
+
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
  * Execute the Substring() function.

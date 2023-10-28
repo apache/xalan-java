@@ -24,7 +24,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.xs.types.XSNumericType;
+
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
  * Implementation of the remove() function.

@@ -40,7 +40,8 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.xs.types.XSBoolean;
+
+import xml.xpath31.processor.types.XSBoolean;
 
 /*
  * The XalanJ XPath parser, creates and populates an object of this class, 

@@ -24,8 +24,9 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.xs.types.XSDecimal;
-import org.apache.xpath.xs.types.XSDuration;
+
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDuration;
 
 /**
  * Implementation of the seconds-from-duration() function.

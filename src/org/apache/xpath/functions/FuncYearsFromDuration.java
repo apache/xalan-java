@@ -24,8 +24,9 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.xs.types.XSDuration;
-import org.apache.xpath.xs.types.XSInteger;
+
+import xml.xpath31.processor.types.XSDuration;
+import xml.xpath31.processor.types.XSInteger;
 
 /**
  * Implementation of the years-from-duration() function.

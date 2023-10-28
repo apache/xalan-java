@@ -70,13 +70,15 @@
        software copyright (c) 1999.
        
    =========================================================================   
-   Eclipse Web Tools Platform Project (https://projects.eclipse.org/projects/webtools)
+   Eclipse Web Tools Platform (WTP) Project (https://projects.eclipse.org/projects/webtools)
    
-   Few of the algorithms for XPath expressions implementation and XML Schema  
-   data types implementation, for the XPath 3.1 processor have been borrowed 
-   from Eclipse Foundation's Web Tools Platform (WTP)'s XPath 2.0 processor.
+   This project reuses with few source code adaptations, of WTP's XPath 2.0 processor's
+   XML Schema datatypes implementation.
    
-   See - LICENSE.org.eclipse.wst.xml.xpath2.processor_1.2.1.html           
+   The source code that XalanJ's XSLT 3.0 and XPath 3.1 processors use for this dependency
+   is located at : https://github.com/xercesj/xalanj_xpath31_types. 
+   
+   See - LICENSE.EPL_v1.0.html          
 
    =========================================================================   
    Apache xml-commons xml-apis (redistribution of xml-apis.jar)

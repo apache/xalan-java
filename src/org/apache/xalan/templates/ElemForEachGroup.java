@@ -48,12 +48,13 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Variable;
-import org.apache.xpath.xs.types.XSBoolean;
-import org.apache.xpath.xs.types.XSDate;
-import org.apache.xpath.xs.types.XSDateTime;
-import org.apache.xpath.xs.types.XSNumericType;
-import org.apache.xpath.xs.types.XSString;
-import org.apache.xpath.xs.types.XSTime;
+
+import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSDate;
+import xml.xpath31.processor.types.XSDateTime;
+import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSString;
+import xml.xpath31.processor.types.XSTime;
 
 /**
  * Implementation of the XSLT 3.0 xsl:for-each-group instruction.
@@ -334,7 +335,7 @@ public class ElemForEachGroup extends ElemTemplateElement
   }
   
   /**
-   * Sort given xsl:for-each-group groups.
+   * Sort the provided xsl:for-each-group groups.
    *
    *
    * @param xctxt             the XPath runtime state for the sort
@@ -730,7 +731,7 @@ public class ElemForEachGroup extends ElemTemplateElement
          xctxt.pushCurrentNode(sourceNode);
   }
   
-  /* 
+  /**
    * A class to support, reordering the xsl:for-each-group's groups as per definition of default 
    * sorted order (i.e, order of first appearance) when xsl:sort elements are not present within 
    * xsl:for-each-group.
@@ -769,9 +770,10 @@ public class ElemForEachGroup extends ElemTemplateElement
     
   }
   
-  /*
+  /**
    * Method to support, validating the presence and count of xsl:for-each-group
-   * attributes "group-by", "group-adjacent", "group-starting-with", "group-ending-with". 
+   * attributes "group-by", "group-adjacent", "group-starting-with", 
+   * "group-ending-with". 
    */
   private int getForEachGroupGroupingAttributesCount() 
                                           throws TransformerException {
@@ -797,13 +799,14 @@ public class ElemForEachGroup extends ElemTemplateElement
         return forEachGroupGroupingAttributesCount;
   }
   
-  /* 
-   * This method, converts xsl:for-each-group grouping key's initial computed value, 
+  /**
+   * This method, converts xsl:for-each-group grouping key's initially computed value, 
    * into a normalized data typed value of type java.lang.Object.
    * 
    * For the purpose of, evaluating grouping key XPath expressions for xsl:for-each-group, 
-   * the grouping keys are treated as of type string, number, boolean, xs:date or 
-   * xs:dateTime. Any other data type for grouping key is converted to a string value.
+   * the following data types are currently supported : string, number, boolean, xs:date, 
+   * xs:dateTime, xs:time. Any other data type for grouping key is converted to a 
+   * string value.
    */
   private Object getXPathEvaluationRawResult(XObject xpathEvalResult) {
       Object xpathRawResult = null;
@@ -839,7 +842,7 @@ public class ElemForEachGroup extends ElemTemplateElement
       return xpathRawResult;
   }
   
-  /*
+  /**
    * Get XML document source nodes (represented as an 'DTMIterator' object), from
    * a list of XNodeSet objects contained within a 'ResultSequence' object.    
    */

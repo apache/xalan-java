@@ -30,10 +30,11 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.XMLStringFactory;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.xs.types.XSAnyType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
+
+import xml.xpath31.processor.types.XSAnyType;
 
 /**
  * A DTMManager instance can be used to create DTM and

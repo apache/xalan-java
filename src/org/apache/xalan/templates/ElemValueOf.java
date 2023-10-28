@@ -45,10 +45,11 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Variable;
-import org.apache.xpath.xs.types.XSAnyType;
-import org.apache.xpath.xs.types.XSNumericType;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
+
+import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
  * Implementation of XSLT xsl:value-of element.

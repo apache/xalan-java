@@ -26,7 +26,8 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xpath.xs.types.XSTime;
+
+import xml.xpath31.processor.types.XSTime;
 
 /**
  * Execute the current-time() function.

@@ -32,14 +32,15 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xpath.xs.types.XSDate;
-import org.apache.xpath.xs.types.XSDayTimeDuration;
-import org.apache.xpath.xs.types.XSDouble;
-import org.apache.xpath.xs.types.XSNumericType;
-import org.apache.xpath.xs.types.XSString;
-import org.apache.xpath.xs.types.XSUntyped;
-import org.apache.xpath.xs.types.XSUntypedAtomic;
-import org.apache.xpath.xs.types.XSYearMonthDuration;
+
+import xml.xpath31.processor.types.XSDate;
+import xml.xpath31.processor.types.XSDayTimeDuration;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSString;
+import xml.xpath31.processor.types.XSUntyped;
+import xml.xpath31.processor.types.XSUntypedAtomic;
+import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
  * Implementation of an XPath 3.1 function fn:max.
