@@ -57,9 +57,10 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.DTMXRTreeFrag;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xpath.xs.types.XSDayTimeDuration;
-import org.apache.xpath.xs.types.XSDuration;
 import org.xml.sax.XMLReader;
+
+import xml.xpath31.processor.types.XSDayTimeDuration;
+import xml.xpath31.processor.types.XSDuration;
 
 /**
  * Default class for the runtime execution context for XPath.

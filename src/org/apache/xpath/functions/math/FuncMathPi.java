@@ -20,7 +20,8 @@ package org.apache.xpath.functions.math;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.xs.types.XSDouble;
+
+import xml.xpath31.processor.types.XSDouble;
 
 /**
  * Implementation of the math:pi() function.

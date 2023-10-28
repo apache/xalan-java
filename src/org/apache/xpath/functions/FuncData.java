@@ -30,10 +30,11 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.xs.types.XSAnyAtomicType;
-import org.apache.xpath.xs.types.XSString;
-import org.apache.xpath.xs.types.XSUntyped;
-import org.apache.xpath.xs.types.XSUntypedAtomic;
+
+import xml.xpath31.processor.types.XSAnyAtomicType;
+import xml.xpath31.processor.types.XSString;
+import xml.xpath31.processor.types.XSUntyped;
+import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
  * Implementation of an XPath 3.1 function data().

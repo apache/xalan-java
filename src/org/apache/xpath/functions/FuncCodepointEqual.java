@@ -23,8 +23,9 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.xs.types.XSAnyType;
-import org.apache.xpath.xs.types.XSBoolean;
+
+import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSBoolean;
 
 /**
  * Implementation of the codepoint-equal() function.

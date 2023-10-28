@@ -34,7 +34,8 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xpath.xs.types.XSBoolean;
+
+import xml.xpath31.processor.types.XSBoolean;
 
 /**
  * Implementation of an XPath 3.1 function contains-token().

@@ -39,7 +39,8 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.xs.types.XSNumericType;
+
+import xml.xpath31.processor.types.XSNumericType;
 
 /*
  * The XalanJ XPath parser, creates and populates an object of this class, 

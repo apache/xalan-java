@@ -27,11 +27,12 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.xs.types.XSDouble;
-import org.apache.xpath.xs.types.XSNumericType;
-import org.apache.xpath.xs.types.XSUntyped;
-import org.apache.xpath.xs.types.XSUntypedAtomic;
-import org.apache.xpath.xs.types.XSYearMonthDuration;
+
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSUntyped;
+import xml.xpath31.processor.types.XSUntypedAtomic;
+import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
  * The '*' operation expression executer.

@@ -30,21 +30,22 @@ import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.xs.types.XSBoolean;
-import org.apache.xpath.xs.types.XSDate;
-import org.apache.xpath.xs.types.XSDateTime;
-import org.apache.xpath.xs.types.XSDayTimeDuration;
-import org.apache.xpath.xs.types.XSDecimal;
-import org.apache.xpath.xs.types.XSDouble;
-import org.apache.xpath.xs.types.XSDuration;
-import org.apache.xpath.xs.types.XSFloat;
-import org.apache.xpath.xs.types.XSInt;
-import org.apache.xpath.xs.types.XSInteger;
-import org.apache.xpath.xs.types.XSLong;
-import org.apache.xpath.xs.types.XSString;
-import org.apache.xpath.xs.types.XSTime;
-import org.apache.xpath.xs.types.XSYearMonthDuration;
 import org.xml.sax.SAXException;
+
+import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSDate;
+import xml.xpath31.processor.types.XSDateTime;
+import xml.xpath31.processor.types.XSDayTimeDuration;
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSDuration;
+import xml.xpath31.processor.types.XSFloat;
+import xml.xpath31.processor.types.XSInt;
+import xml.xpath31.processor.types.XSInteger;
+import xml.xpath31.processor.types.XSLong;
+import xml.xpath31.processor.types.XSString;
+import xml.xpath31.processor.types.XSTime;
+import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
  * A utility class that primarily supports, evaluations of XSLT stylesheet

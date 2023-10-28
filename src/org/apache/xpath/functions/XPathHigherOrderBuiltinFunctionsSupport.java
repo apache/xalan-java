@@ -28,8 +28,9 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.Variable;
-import org.apache.xpath.xs.types.XSUntyped;
-import org.apache.xpath.xs.types.XSUntypedAtomic;
+
+import xml.xpath31.processor.types.XSUntyped;
+import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
  * This class provides few utility methods, to help with XPath 3.1 

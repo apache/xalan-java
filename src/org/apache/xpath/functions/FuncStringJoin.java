@@ -36,9 +36,10 @@ import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xpath.xs.types.XSAnyType;
-import org.apache.xpath.xs.types.XSUntyped;
-import org.apache.xpath.xs.types.XSUntypedAtomic;
+
+import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSUntyped;
+import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
  * Execute the string-join() function.

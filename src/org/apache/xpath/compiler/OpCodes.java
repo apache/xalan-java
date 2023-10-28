@@ -733,8 +733,15 @@ public class OpCodes
    * @xsl.usage advanced
    */
   public static final int OP_INSTANCE_OF = 74;
+  
+  /**
+   * For XPath 3.1 "cast as" expression.
+   * 
+   * @xsl.usage advanced
+   */
+  public static final int OP_CAST_AS = 75;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 75;
+  private static final int NEXT_FREE_ID = 76;
   
 }

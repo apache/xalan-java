@@ -32,8 +32,9 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.xs.types.XSAnyType;
 import org.xml.sax.SAXException;
+
+import xml.xpath31.processor.types.XSAnyType;
 
 /**
  * The XPath 3.1 simple map '!' operation.

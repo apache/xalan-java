@@ -29,7 +29,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xpath.xs.types.XSInteger;
+
+import xml.xpath31.processor.types.XSInteger;
 
 /**
  * Implementation of the compare() function.

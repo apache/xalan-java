@@ -32,10 +32,11 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xpath.xs.types.XSAnyType;
-import org.apache.xpath.xs.types.XSInteger;
-import org.apache.xpath.xs.types.XSUntyped;
-import org.apache.xpath.xs.types.XSUntypedAtomic;
+
+import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSInteger;
+import xml.xpath31.processor.types.XSUntyped;
+import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
  * Execute the index-of() function.

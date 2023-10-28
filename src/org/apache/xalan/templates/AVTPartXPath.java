@@ -26,7 +26,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathFactory;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.xs.types.XSAnyType;
+
+import xml.xpath31.processor.types.XSAnyType;
 
 /**
  * Simple string part of a complex AVT.

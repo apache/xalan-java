@@ -29,9 +29,10 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.axes.NodeSequence;
-import org.apache.xpath.xs.types.XSUntyped;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
+
+import xml.xpath31.processor.types.XSUntyped;
 
 /**
  * This class represents an XPath nodeset object, and is capable of
