@@ -116,6 +116,7 @@
 		  <exclude>org.apache.ant:ant-launcher</exclude>
 		  <exclude>xalan:serializer</exclude>
 		  <exclude>de.jflex:jflex</exclude>	
+		  <exclude>org.jboss.spec.javax.rmi:jboss-rmi-api_1.0_spec</exclude>
 		</excludes>
 	      </artifactSet>
 	    </configuration>

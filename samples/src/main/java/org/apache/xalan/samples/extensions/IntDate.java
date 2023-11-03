@@ -18,7 +18,7 @@
 /*
  * $Id$
  */
-package org.apache.xalan.samples.exptensions;
+package org.apache.xalan.samples.extensions;
 import java.util.Calendar;
 import java.util.Date;
 
