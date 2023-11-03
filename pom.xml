@@ -51,15 +51,32 @@
               <configuration>
 		<artifactItems>
 		  <artifactItem>
+		    <!-- Copy built artifact to ../build -->
                     <groupId>${project.groupId}</groupId>
                     <artifactId>${project.artifactId}</artifactId>
                     <version>${project.version}</version>
                     <type>${project.packaging}</type>
-		    <!-- Copy without the "-${project.version}" suffix,
-			 but with the filetype?
+		  </artifactItem>
+		  <artifactItem>
+		    <!-- Also copy without the "-${project.version}" suffix
+			 (but with the filetype), for backward compatibility
+			 with Ant build's behavior
 		    -->
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>${project.artifactId}</artifactId>
+                    <version>${project.version}</version>
+                    <type>${project.packaging}</type>
+		    <!-- stripVersion does not seem to do what's needed, so: -->
 		    <destFileName>${project.artifactId}.${project.packaging}</destFileName>
 		  </artifactItem>
+		  <!-- And copy the source archive -->
+		  <!-- artifactItem>
+                    <groupId>${project.groupId}</groupId>
+                    <artifactId>${project.artifactId}</artifactId>
+                    <version>${project.version}</version>
+                    <type>jar</type>
+		    <classifier>sources</classifier>
+		  </artifactItem -->
 		</artifactItems>
 		<outputDirectory>../build</outputDirectory>
               </configuration>
