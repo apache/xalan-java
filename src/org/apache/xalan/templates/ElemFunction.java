@@ -204,9 +204,9 @@ public class ElemFunction extends ElemTemplate
       VariableStack varStack = xctxt.getVarStack();
       
       if (xslParamMap.size() > 0) {
-          // Set all xsl:function parameters to xpath context's variable stack,
-          // so that XSL instructions after xsl:param declarations can dereference
-          // those parameters.                    
+          // Assign all of the xsl:function parameter value mappings to xpath context's
+          // variable stack, after which the XSL instructions after xsl:param declarations
+          // can dereference those parameters.                   
           
           varStack.unlink();
           int argsFrame = varStack.link(xslParamMap.size());            
@@ -220,7 +220,8 @@ public class ElemFunction extends ElemTemplate
                  String paramAsAttrStrVal = ((ElemParam)elem).getAs();              
                  if (paramAsAttrStrVal != null) {
                     try {
-                       argConvertedVal = SequenceTypeSupport.convertXDMValueToAnotherType(argValue, paramAsAttrStrVal, null, xctxt);
+                       argConvertedVal = SequenceTypeSupport.convertXDMValueToAnotherType(argValue, paramAsAttrStrVal, null, 
+                    		                                                                                        xctxt, elem.getPrefixTable());
                        if (argConvertedVal == null) {
                           throw new TransformerException("XPTY0004 : Function call argument at position " + (paramIdx + 1) + " for "
                                                                             + "function {" + funcNameSpaceUri + "}" + funcLocalName + "(), doesn't "
@@ -228,9 +229,15 @@ public class ElemFunction extends ElemTemplate
                        }
                     }
                     catch (TransformerException ex) {
-                       throw new TransformerException("XPTY0004 : Function call argument at position " + (paramIdx + 1) + " for "
-                                                                         + "function {" + funcNameSpaceUri + "}" + funcLocalName + "(), doesn't "
-                                                                         + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator); 
+                       if ((SequenceTypeSupport.INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR).equals(ex.getMessage())) {
+                    	  throw new TransformerException("XPTY0004 : The number of inline function parameters, is not equal to "
+                    	  		                                             + "the number of expected type specifications for them.", srcLocator);   
+                       }
+                       else {
+                          throw new TransformerException("XPTY0004 : Function call argument at position " + (paramIdx + 1) + " for "
+                                                                                 + "function {" + funcNameSpaceUri + "}" + funcLocalName + "(), doesn't "
+                                                                                 + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator);
+                       }
                     }
                  }
                  

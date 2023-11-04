@@ -39,7 +39,9 @@ public class SequenceTypeData extends XObject {
     
     private int fItemTypeOccurrenceIndicator;
     
-    private SequenceTypeKindTest sequenceTypeKindTest; 
+    private SequenceTypeKindTest sequenceTypeKindTest;
+    
+    private SequenceTypeFunctionTest fSequenceTypeFunctionTest;
 
     public int getSequenceType() {
         return fSequenceType;
@@ -64,5 +66,38 @@ public class SequenceTypeData extends XObject {
     public void setSequenceTypeKindTest(SequenceTypeKindTest sequenceTypeKindTest) {
         this.sequenceTypeKindTest = sequenceTypeKindTest;
     }
+
+	public SequenceTypeFunctionTest getSequenceTypeFunctionTest() {
+		return fSequenceTypeFunctionTest;
+	}
+
+	public void setSequenceTypeFunctionTest(SequenceTypeFunctionTest sequenceTypeFunctionTest) {
+		this.fSequenceTypeFunctionTest = sequenceTypeFunctionTest;
+	}
+	
+    /**
+     * Check whether, one SequenceTypeData object is functionally
+     * equal to another SequenceTypeData object.  
+     */
+	public boolean equal(SequenceTypeData sequenceTypeData) {
+	    boolean isEqual = true;
+	    
+	    int seqType2 = sequenceTypeData.getSequenceType();
+	    int occrInd2 = sequenceTypeData.getItemTypeOccurrenceIndicator();
+	    SequenceTypeKindTest sequenceTypeKindTest2 = sequenceTypeData.getSequenceTypeKindTest();
+	    
+	    if ((this.fSequenceType != 0) && (this.fSequenceType == seqType2) 
+	    		                           && (this.fItemTypeOccurrenceIndicator == occrInd2)) {
+	       isEqual = true;
+	    }
+	    else if (this.fItemTypeOccurrenceIndicator != occrInd2) {
+	       isEqual = false;
+	    }
+	    else if (!(this.sequenceTypeKindTest).equal(sequenceTypeKindTest2)) {
+	       isEqual = false;
+	    }
+	    
+	    return isEqual;
+	}
 
 }

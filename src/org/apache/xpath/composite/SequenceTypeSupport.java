@@ -29,6 +29,8 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMNodeList;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNodeSet;
@@ -127,8 +129,7 @@ public class SequenceTypeSupport {
     
     public static int NODE_KIND = 105;
     
-    public static int ITEM_KIND = 106;
-    
+    public static int ITEM_KIND = 106;    
         
     public static class OccurenceIndicator {
        // Represents the sequence type occurrence indicator '?'
@@ -147,6 +148,9 @@ public class SequenceTypeSupport {
     
     public static String PLUS = "+";
     
+    public static String INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR = "INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR";
+    
+    private static List fPrefixTable;
     
     /**
      * This method converts/casts an XPath 3.1 xdm source value represented by an
@@ -155,9 +159,40 @@ public class SequenceTypeSupport {
      * For XPath sequence type expressions that represent KindTest (i.e,
      * element(), attribute() etc), this method only checks whether an XML input
      * item conforms with the provided KindTest sequence type expression, and
-     * returns an input value unchanged.  
+     * returns an input value unchanged.
      * 
-     * This method is called recursively at certain places.
+     * @param srcValue                        an XObject object instance that represents a source xdm value
+     * @param sequenceTypeXPathExprStr        an XPath sequence type expression string
+     * @param seqExpectedTypeDataInp          an XPath sequence type compiled expression
+     * @param xctxt                           the current XPath context object
+     * @param prefixTable                     an XSLT transformation run-time XML namespace bindings prefix table
+     * 
+     * @return                                an XObject object instance produced, as a result of data type
+     *                                        conversion performed by this method on an object instance
+     *                                        srcValue.
+     * 
+     * @throws TransformerException
+     */
+    public static XObject convertXDMValueToAnotherType(XObject srcValue, String sequenceTypeXPathExprStr, 
+                                                       SequenceTypeData seqExpectedTypeDataInp,  
+                                                       XPathContext xctxt, List prefixTable) throws TransformerException {
+    	XObject result = null;
+    	
+    	fPrefixTable = prefixTable;    	
+    	result = convertXDMValueToAnotherType(srcValue, sequenceTypeXPathExprStr, null, xctxt);
+    	
+    	return result;
+    }
+    
+    
+    /**
+     * This method converts/casts an XPath 3.1 xdm source value represented by an
+     * XObject object instance, to a value of another xdm data type.
+     * 
+     * For XPath sequence type expressions that represent KindTest (i.e,
+     * element(), attribute() etc), this method only checks whether an XML input
+     * item conforms with the provided KindTest sequence type expression, and
+     * returns an input value unchanged.
      *  
      * @param srcValue                     an XObject object instance that represents a
      *                                     source xdm value. 
@@ -362,11 +397,13 @@ public class SequenceTypeSupport {
             }
             else if (srcValue instanceof XSUntyped) {
                String srcStrVal = ((XSUntyped)srcValue).stringValue();
+               // Recursive call to this function
                result = convertXDMValueToAnotherType(new XSString(srcStrVal), sequenceTypeXPathExprStr, 
                                                                                                     seqExpectedTypeDataInp, xctxt);
             }
             else if (srcValue instanceof XSUntypedAtomic) {
                String srcStrVal = ((XSUntypedAtomic)srcValue).stringValue();
+               // Recursive call to this function
                result = convertXDMValueToAnotherType(new XSString(srcStrVal), sequenceTypeXPathExprStr, 
                                                                                                     seqExpectedTypeDataInp, xctxt);
             }
@@ -383,11 +420,66 @@ public class SequenceTypeSupport {
             else if (srcValue instanceof ResultSequence) {
                ResultSequence srcResultSeq = (ResultSequence)srcValue;
                if (srcResultSeq.size() == 1) {
+            	   // Recursive call to this function
                    result = convertXDMValueToAnotherType(srcResultSeq.item(0), sequenceTypeXPathExprStr, seqExpectedTypeDataInp, xctxt);   
                }
                else {
                    result = castResultSequenceInstance(srcValue, sequenceTypeXPathExprStr, seqExpectedTypeDataInp, xctxt, srcLocator, 
                                                                                                                expectedType, itemTypeOccurenceIndicator);
+               }
+            }
+            else if (srcValue instanceof InlineFunction) {
+               SequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
+               if (sequenceTypeFunctionTest != null) {
+            	  InlineFunction inlineFunctionExpr = (InlineFunction)srcValue;
+            	  if (sequenceTypeFunctionTest.isAnyFunctionTest()) {
+            		 result = srcValue; 
+            	  }
+            	  else {
+            		 List<InlineFunctionParameter> inlineFuncParameterList = inlineFunctionExpr.getFuncParamList();            		 
+            		 
+            		 List<String> functionExpectedParamTypes = sequenceTypeFunctionTest.getTypedFunctionTestPrefixList();
+            		 if (functionExpectedParamTypes.size() == inlineFuncParameterList.size()) {
+            		    for (int idx = 0; idx < functionExpectedParamTypes.size(); idx++) {
+            		       String expectedParamTypeStr = functionExpectedParamTypes.get(idx);
+            		       if (fPrefixTable != null) {
+            		    	  expectedParamTypeStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+            		    			                                                                 expectedParamTypeStr, fPrefixTable);  
+            		       }
+            		       
+            		       XPath expectedParamTypeXPath = new XPath(expectedParamTypeStr, srcLocator, 
+            		    		                                                    xctxt.getNamespaceContext(), XPath.SELECT, 
+            		    		                                                    null, true);
+            		       XObject evalResult = expectedParamTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+            		       SequenceTypeData sequenceTypeData1 = (SequenceTypeData)evalResult;
+            		       SequenceTypeData sequenceTypeData2 = (inlineFuncParameterList.get(idx)).getParamType();
+            		       if (!sequenceTypeData1.equal(sequenceTypeData2)) {
+            		    	  throw new TransformerException("XPTY0004 : Sequence type information for function test doesn't match.");  
+            		       }
+            		    }
+            		 }
+            		 else {
+            			throw new TransformerException(INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR); 
+            		 }
+            		 
+            		 SequenceTypeData funcReturnType = inlineFunctionExpr.getReturnType();
+            		 String functionReturnTypeStr = sequenceTypeFunctionTest.getTypedFunctionTestReturnType();
+            		 
+            		 if (fPrefixTable != null) {
+            			functionReturnTypeStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+       		    	    		                                                                     functionReturnTypeStr, fPrefixTable);  
+       		         }
+            		 
+            		 XPath functionReturnTypeXPath = new XPath(functionReturnTypeStr, srcLocator, 
+                                                                                xctxt.getNamespaceContext(), XPath.SELECT, 
+                                                                                null, true);
+                     XObject evalResult = functionReturnTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+                     if (!funcReturnType.equal((SequenceTypeData)evalResult)) {
+       		    	    throw new TransformerException("XPTY0004 : Sequence type information for function test doesn't match.");  
+       		         }
+                     
+            		 result = srcValue;
+            	  }
                }
             }
         }
@@ -620,7 +712,7 @@ public class SequenceTypeSupport {
     
     /**
      * Given an XObject object instance representing an atomic data value, check whether
-     * a sequence type item() type annotation could be applied.
+     * a sequence type item() type annotation is applicable to the atomic data value.
      */
     private static XObject performXdmItemTypeNormalizationOnAtomicType(SequenceTypeKindTest sequenceTypeKindTest, 
                                                                                      XObject srcValue, String srcStrVal, 
@@ -640,7 +732,7 @@ public class SequenceTypeSupport {
     }
     
     /**
-     * This method helps to support following XSL transformation actions,
+     * This method provides support, for following XSL transformation actions,
      * 
      * 1) An xsl:variable element has an "as" attribute (specifying the expected type of variable's value),
      *    not having a "select" attribute, and having a contained sequence constructor (which when

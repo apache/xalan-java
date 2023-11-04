@@ -39,6 +39,7 @@ import org.apache.xpath.composite.LetExpr;
 import org.apache.xpath.composite.LetExprVarBinding;
 import org.apache.xpath.composite.QuantifiedExpr;
 import org.apache.xpath.composite.SequenceTypeData;
+import org.apache.xpath.composite.SequenceTypeFunctionTest;
 import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.SimpleSequenceConstructor;
@@ -2621,6 +2622,7 @@ public class XPathParser
                      paramType.setSequenceType(seqTypeExpr.getSequenceType());
                      paramType.setItemTypeOccurrenceIndicator(seqTypeExpr.getItemTypeOccurrenceIndicator());
                      paramType.setSequenceTypeKindTest(seqTypeExpr.getSequenceTypeKindTest());
+                     paramType.setSequenceTypeFunctionTest(seqTypeExpr.getSequenceTypeFunctionTest());
                      inlineFunctionParameter.setParamType(paramType);                     
                   }
                   else {
@@ -3870,10 +3872,91 @@ public class XPathParser
           if (m_token != null) {
              setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction);  
           }
-      }            
+      }
+      else if (tokenIs("function")) {
+    	  SequenceTypeFunctionTest sequenceTypeFunctionTest = null;
+    	  
+    	  if (lookahead('(', 1) && lookahead('*', 2) && lookahead(')', 3)) {
+    		  // Handles FunctionTest of variety AnyFunctionTest
+	    	  sequenceTypeFunctionTest = new SequenceTypeFunctionTest();
+	    	  sequenceTypeFunctionTest.setIsAnyFunctionTest(true);
+	    	  nextToken();
+	    	  consumeExpected('(');
+	          consumeExpected('*');
+	          consumeExpected(')');
+	          xpathSequenceTypeExpr.setSequenceTypeFunctionTest(sequenceTypeFunctionTest);
+	      }
+    	  else {
+    		  // Handles FunctionTest of variety TypedFunctionTest
+    		  sequenceTypeFunctionTest = new SequenceTypeFunctionTest();
+    		  nextToken();
+    		  consumeExpected('(');
+    		  List<String> typedFunctionTestPrefixList = new ArrayList<String>();    		  
+    		  if (!lookahead(')', 1)) {
+    			 // There's at-least one parameter definition, for TypedFunctionTest
+    			 String typedFunctionTestPrefixPart = "";
+    			 while (m_token != null) {
+    				if (!(tokenIs(',') || tokenIs(')'))) {
+      				   typedFunctionTestPrefixPart = typedFunctionTestPrefixPart + m_token;
+      				   nextToken();
+      				}
+    				else if (tokenIs(',')) {
+    				   if (!isStrHasBalancedParentheses(typedFunctionTestPrefixPart)) {
+    				      typedFunctionTestPrefixPart = typedFunctionTestPrefixPart + m_token;
+       				      nextToken();
+    				   }
+    				   else {
+    					  typedFunctionTestPrefixList.add(typedFunctionTestPrefixPart);
+        				  typedFunctionTestPrefixPart = "";
+        				  if (tokenIs(')')) {
+        					 break;  
+        				  }
+        				  else {
+        				     nextToken();
+        				  }
+    				   }
+    				}
+    				else if (tokenIs(')')) {
+    				   if (lookahead(',', 1) || lookahead(')', 1) || lookahead('*', 1) || 
+    						                    lookahead('+', 1) || lookahead('?', 1)) {
+    					  typedFunctionTestPrefixPart = typedFunctionTestPrefixPart + m_token;
+        				  nextToken(); 
+    				   }
+    				   else {
+    					  typedFunctionTestPrefixList.add(typedFunctionTestPrefixPart);
+         				  typedFunctionTestPrefixPart = "";
+         				  if (tokenIs(')')) {
+       					     break;  
+       				      }
+       				      else {
+       				         nextToken();
+       				      }
+    				   }
+    				}
+    			 }
+    		  }
+    		  
+    		  sequenceTypeFunctionTest.setTypedFunctionTestPrefixList(typedFunctionTestPrefixList);
+    		  
+    		  consumeExpected(')');
+    		  consumeExpected("as");
+    		  
+    		  String typedFunctionTestReturnType = "";
+    		  while (m_token != null) {
+    			 typedFunctionTestReturnType = typedFunctionTestReturnType + m_token;
+    			 nextToken();
+    		  }
+    		  
+    		  if (!"".equals(typedFunctionTestReturnType)) {
+    			 sequenceTypeFunctionTest.setTypedFunctionTestReturnType(typedFunctionTestReturnType);  
+    		  }
+    		  
+    		  xpathSequenceTypeExpr.setSequenceTypeFunctionTest(sequenceTypeFunctionTest);
+    	  }
+      }
       else {
           throw new javax.xml.transform.TransformerException("XPST0051 The sequence type '" + m_token + "' is not "
-                                                                                                   + "recognized, within the provided sequence type expression."); 
+                                                                                   + "recognized, within the provided sequence type expression."); 
       }
       
       if (!isInlineFunction) {
