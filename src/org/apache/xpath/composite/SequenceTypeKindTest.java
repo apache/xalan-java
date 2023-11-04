@@ -81,5 +81,60 @@ public class SequenceTypeKindTest {
     public void setDataTypeUri(String dataTypeUri) {
         this.dataTypeUri = dataTypeUri;
     }
+    
+    /**
+     * Check whether, one SequenceTypeKindTest object is functionally
+     * equal to another SequenceTypeKindTest object.  
+     */
+    public boolean equal(SequenceTypeKindTest sequenceTypeKindTest) {
+    	boolean isEqual = true;
+    	
+    	int kindVal2 = sequenceTypeKindTest.getKindVal();
+    	String nodeLocalName2 = sequenceTypeKindTest.getNodeLocalName();
+    	String nodeNsUri2 = sequenceTypeKindTest.getNodeNsUri();
+        String dataTypeLocalName2 = sequenceTypeKindTest.getNodeLocalName();
+        
+        if (this.kindVal != kindVal2) {
+           isEqual = false;
+        }
+        else if ((this.nodeLocalName == null) && (nodeLocalName2 == null)) {
+           isEqual = true;
+        }
+        else if ((this.nodeLocalName == null) && (nodeLocalName2 != null)) {
+           isEqual = false;
+        }
+        else if ((this.nodeLocalName != null) && (nodeLocalName2 == null)) {
+           isEqual = false;
+        }
+        else if (!(this.nodeLocalName).equals(nodeLocalName2)) {
+           isEqual = false;
+        }
+        else if ((this.nodeNsUri == null) && (nodeNsUri2 == null)) {
+           isEqual = true;
+        }
+        else if ((this.nodeNsUri == null) && (nodeNsUri2 != null)) {
+           isEqual = false;
+        }
+        else if ((this.nodeNsUri != null) && (nodeNsUri2 == null)) {
+           isEqual = false;
+        }
+        else if (!(this.nodeNsUri).equals(nodeNsUri2)) {
+           isEqual = false;
+        }
+        else if ((this.dataTypeLocalName == null) && (dataTypeLocalName2 == null)) {
+           isEqual = true;
+        }
+        else if ((this.dataTypeLocalName == null) && (dataTypeLocalName2 != null)) {
+           isEqual = false;
+        }
+        else if ((this.dataTypeLocalName != null) && (dataTypeLocalName2 == null)) {
+           isEqual = false;
+        }
+        else if (!(this.dataTypeLocalName).equals(dataTypeLocalName2)) {
+           isEqual = false;
+        }
+    	
+    	return isEqual;
+    }
 
 }

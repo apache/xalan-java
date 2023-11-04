@@ -43,6 +43,8 @@ public class XPathSequenceTypeExpr extends Expression {
     private int fItemTypeOccurrenceIndicator;
     
     private SequenceTypeKindTest fSequenceTypeKindTest;
+    
+    private SequenceTypeFunctionTest fSequenceTypeFunctionTest;
 
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
@@ -51,6 +53,7 @@ public class XPathSequenceTypeExpr extends Expression {
        sequenceTypeData.setSequenceType(fSequenceType);       
        sequenceTypeData.setSequenceTypeKindTest(fSequenceTypeKindTest);       
        sequenceTypeData.setItemTypeOccurrenceIndicator(fItemTypeOccurrenceIndicator);
+       sequenceTypeData.setSequenceTypeFunctionTest(fSequenceTypeFunctionTest);
        
        return sequenceTypeData;
     }
@@ -90,7 +93,15 @@ public class XPathSequenceTypeExpr extends Expression {
         this.fSequenceTypeKindTest = sequenceTypeKindTest;
     }
 
-    @Override
+    public SequenceTypeFunctionTest getSequenceTypeFunctionTest() {
+		return fSequenceTypeFunctionTest;
+	}
+
+	public void setSequenceTypeFunctionTest(SequenceTypeFunctionTest fSequenceTypeFunctionTest) {
+		this.fSequenceTypeFunctionTest = fSequenceTypeFunctionTest;
+	}
+
+	@Override
     public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
        // NO OP        
     }
