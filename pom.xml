@@ -2,13 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <packaging>pom</packaging>
   <!-- KNOWN ISSUES:
-	"Production" jar/tar files?
-	stylebook (currenly, see stylebook.docgen.sh)
-       
-       xalan-test compatibility/success/submodule
+       "Production" jar/tar files?
+       stylebook (currenly, see stylebook.docgen.sh)
+       xalan-test integration
 
-       NOTE: To get dependency tree from a multi-module project, use the 
-       command "mvn compile dependency:tree" so everything is in scope.
+NOTE: To get dependency tree from a multi-module project, use the 
+command "mvn compile dependency:tree" so everything is in scope.
   -->
   
   <modelVersion>4.0.0</modelVersion>
@@ -69,14 +68,13 @@
 		    <!-- stripVersion does not seem to do what's needed, so: -->
 		    <destFileName>${project.artifactId}.${project.packaging}</destFileName>
 		  </artifactItem>
-		  <!-- And copy the source archive -->
-		  <!-- artifactItem>
-                    <groupId>${project.groupId}</groupId>
-                    <artifactId>${project.artifactId}</artifactId>
-                    <version>${project.version}</version>
-                    <type>jar</type>
-		    <classifier>sources</classifier>
-		  </artifactItem -->
+
+		  <!-- Should copy the source archives too.  That
+		       should be <classifier>sources</classifier>.
+		       Issue: I haven't yet gotten that to refrain
+		       from copying all dependencies rather than
+		       just our own -sources.jar Separate Execution?
+		  -->
 		</artifactItems>
 		<outputDirectory>../build</outputDirectory>
               </configuration>
@@ -157,9 +155,6 @@
 
       <!-- During cleaning phase, empty the ./build directory, which
 	   is normally not present except in the parent module. 
-	   NOTE that even with the current problem where the POM
-	   is being copied up to ../build, this does NOT reach upward
-	   to clean.
       -->
       <plugin>
 	<artifactId>maven-clean-plugin</artifactId>
@@ -173,7 +168,6 @@
 	  </filesets>
 	</configuration>
       </plugin>
-
     </plugins>
   </build>
 
