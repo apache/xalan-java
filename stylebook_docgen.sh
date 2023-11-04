@@ -15,7 +15,8 @@ doc_generator="org.apache.stylebook.StyleBook"
 doc_generator_styletar="${stylebook_dir}/xml-site-style.tar.gz"
 xalan_cmdline_class="org.apache.xalan.xslt.Process"
 
-stylebook_class_path="xml-apis.jar":"${parser_jar}":"${bcel_jar}":"runtime.jar":"stylebook/stylebook-1.0-b3_xalan-2.jar":tools/*.jar:"serializer/target/classes":"xalan/target/classes"
+stylebook_class_path="xml-apis.jar":"runtime.jar":"stylebook/stylebook-1.0-b3_xalan-2.jar":tools/xalan2jdoc.jar:"serializer/target/classes":"xalan/target/classes"
+stylebook_class_path="stylebook/stylebook-1.0-b3_xalan-2.jar":tools/xalan2jdoc.jar:"serializer/target/classes":"xalan/target/classes"
 
 
 # Note --directory affects any following options, so put it at EOL here
