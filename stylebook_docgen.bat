@@ -44,7 +44,13 @@ rem harmless.
 echo "Generate XSLTC Architectural documentation"
 java -cp %stylebook_class_path% %doc_generator% loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=.\target\site\xsltc\ .\stylebook\sources\xsltc.xml .\stylebook\style
 
-rem NOTE; Ditto re loaderdesign.
+rem Diff tells me that the -jlocal output is almost identical to the
+rem -jsite output despite the slight difference in the .xml files used
+rem as their sources. (The only effective difference appears to be that
+rem -jlocal doesn't produce the index or charter documents.)
+rem I'm not convinced that's enough difference to merit generating both, but
+rem until I better grok why this duplication was done in the first place I'm
+rem hesitant to remove it. -- jkesselm, 20231105
 echo "Generate xalan-jlocal documentation"
 java -cp %stylebook_class_path% %doc_generator% loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=.\target\site\xalan\local .\stylebook\sources\xalan-jlocal.xml .\stylebook\style
 

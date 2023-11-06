@@ -40,11 +40,16 @@ fi
 # org/apache/xerces/dom/DocumentImpl. loaderDesign is just saying that
 # xslt shouild be called with design2project.xsl, so that seems
 # harmless.
-
 echo "Generate XSLTC Architectural documentation"
 java -cp ${stylebook_class_path} ${doc_generator} loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xsltc/ ./stylebook/sources/xsltc.xml ./stylebook/style
 
-# NOTE: Ditto re loaderdesign.
+# Diff tells me that the -jlocal output is almost identical to the
+# -jsite output despite the slight difference in the .xml files used
+# as their sources. (The only effective difference appears to be that
+# -jlocal doesn't produce the index or charter documents.)
+# I'm not convinced that's enough difference to merit generating both, but
+# until I better grok why this duplication was done in the first place I'm
+# hesitant to remove it. -- jkesselm, 20231105
 echo "Generate xalan-jlocal documentation"
 java -cp ${stylebook_class_path} ${doc_generator} loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan/local ./stylebook/sources/xalan-jlocal.xml ./stylebook/style
 
