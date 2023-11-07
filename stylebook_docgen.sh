@@ -10,7 +10,7 @@
 
 stylebook_dir="./stylebook"
 stylebook_book="${stylebook_dir}/sources/xalan-jlocal.xml"
-stylebook_style="${stylebook_dir}/stylebook-1.0-b3_xalan-2.expanded"
+stylebook_style="${stylebook_dir}/style"
 doc_generator="org.apache.stylebook.StyleBook"
 doc_generator_styletar="${stylebook_dir}/xml-site-style.tar.gz"
 xalan_cmdline_class="org.apache.xalan.xslt.Process"
@@ -25,14 +25,14 @@ stylebook_class_path="stylebook/stylebook-1.0-b3_xalan-2.jar":tools/xalan2jdoc.j
 #tar -xf ${doc_generator_styletar} --directory ${stylebook_dir}
 
 echo "Generate Xalan-J 2.x design document"
-java -cp ${stylebook_class_path} ${doc_generator} loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/design/ ./stylebook/sources/xalandesign.xml ./stylebook/stylebook-1.0-b3_xalan-2.expanded
+java -cp ${stylebook_class_path} ${doc_generator} loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/design/ ./stylebook/sources/xalandesign.xml ./stylebook/style
 
 
 # Generate a PDF file, via collation, xml2fo.xsl, and FOP (if we have it)
 # In Fact, this whole sequence is not being called in our normal Ant-driven builds either.
 if false; then 
     java -cp ${stylebook_class_path} ${xalan_cmdline_class} -xsl ./stylebook/sources/xalan-collate.xsl -out ./stylebook/sources/xalan/xalan-collate.xml
-    java -cp ${stylebook_class_path} ${xalan_cmdline_class} -in ./stylebook/sources/xalan/xalan-collate.xml -xsl ./stylebook/stylebook-1.0-b3_xalan-2.expanded/stylesheets/xml2fo.xsl  -param resourceFile ../../sources/xalan/resources.xml -param project Xalan-Java -out ./target/site/sources/xalan/xalan-collate.fo
+    java -cp ${stylebook_class_path} ${xalan_cmdline_class} -in ./stylebook/sources/xalan/xalan-collate.xml -xsl ./stylebook/style/stylesheets/xml2fo.xsl  -param resourceFile ../../sources/xalan/resources.xml -param project Xalan-Java -out ./target/site/sources/xalan/xalan-collate.fo
 fi
 
 # NOTE: Without the loaderConfig, we get complaints from
@@ -41,7 +41,7 @@ fi
 # xslt shouild be called with design2project.xsl, so that seems
 # harmless.
 echo "Generate XSLTC Architectural documentation"
-java -cp ${stylebook_class_path} ${doc_generator} loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xsltc/ ./stylebook/sources/xsltc.xml ./stylebook/stylebook-1.0-b3_xalan-2.expanded
+java -cp ${stylebook_class_path} ${doc_generator} loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xsltc/ ./stylebook/sources/xsltc.xml ./stylebook/style
 
 # Diff tells me that the -jlocal output is almost identical to the
 # -jsite output despite the slight difference in the .xml files used
@@ -51,11 +51,11 @@ java -cp ${stylebook_class_path} ${doc_generator} loaderConfig=sbk:/style/loader
 # until I better grok why this duplication was done in the first place I'm
 # hesitant to remove it. -- jkesselm, 20231105
 echo "Generate xalan-jlocal documentation"
-java -cp ${stylebook_class_path} ${doc_generator} loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan/local ./stylebook/sources/xalan-jlocal.xml ./stylebook/stylebook-1.0-b3_xalan-2.expanded
+java -cp ${stylebook_class_path} ${doc_generator} loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan/local ./stylebook/sources/xalan-jlocal.xml ./stylebook/style
 
 echo "autodocs equivalent"
 mkdir -p ./target/site/xalan
-java -cp ${stylebook_class_path} ${doc_generator} loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan ./stylebook/sources/xalan-jsite.xml ./stylebook/stylebook-1.0-b3_xalan-2.expanded
+java -cp ${stylebook_class_path} ${doc_generator} loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan ./stylebook/sources/xalan-jsite.xml ./stylebook/style
 
 mkdir -p ./target/site/xsltc
 cp stylebook/sources/xsltc/README.x* target/site/xsltc/
