@@ -440,12 +440,18 @@ public class ElemApplyTemplates extends ElemCallTemplate
                }
             }
             catch (TransformerException ex) {
-               QName m_name = template.getName();
-               String m_matchPatternStr = (template.getMatch()).getPatternString();
-               String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPatternStr; 
-               throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
-                                                                                                 + " is " + templateAsAttrVal + ". But the template "
-                                                                                                 + "result doesn't conform to this required type.", srcLocator); 
+               String trfExpMessage = ex.getMessage();
+               if ((trfExpMessage != null) && trfExpMessage.startsWith("XTTE0590")) {
+            	   throw ex;   
+               }
+               else {
+	               QName m_name = template.getName();
+	               String m_matchPatternStr = (template.getMatch()).getPatternString();
+	               String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPatternStr; 
+	               throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
+	                                                                                                 + " is " + templateAsAttrVal + ". But the template "
+	                                                                                                 + "result doesn't conform to this required type.", srcLocator);
+               }
             }  
         }
         else {
