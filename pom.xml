@@ -168,6 +168,104 @@ command "mvn compile dependency:tree" so everything is in scope.
 	  </filesets>
 	</configuration>
       </plugin>
+
+      <!-- StyleBook processing.
+	   NOTE: Stylebook as it has been calls System.exit() on its way out.
+	   That means running exec:java will malfunction since it'll blow out
+	   the entire Maven process. Workaround is to invoke Stylebook from
+	   the command line with exec:exec. Proper fix is to remove that
+	   behavior from Stylebook's code and have it exit more cleanly.
+	   -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+	<inherited>false</inherited> <!-- Run only in xalan-package parent -->
+        <executions>
+          <execution>
+	    <id>Xalan2 design documentation</id>
+            <phase>package</phase>
+            <goals>
+	      <goal>exec</goal>
+            </goals>
+	    <configuration>
+	      <executable>java</executable>
+	      <commandlineArgs>-cp "stylebook/stylebook-1.0-b3_xalan-2.jar:tools/xalan2jdoc.jar:serializer/target/classes:xalan/target/classes:%classpath" org.apache.stylebook.StyleBook loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/design/ ./stylebook/sources/xalandesign.xml ./stylebook/style</commandlineArgs>
+	    </configuration>
+          </execution>
+
+          <execution>
+	    <id>Xalan2 compiled (xsltc) documentation</id>
+            <phase>package</phase>
+            <goals>
+	      <goal>exec</goal>
+            </goals>
+	    <configuration>
+	      <executable>java</executable>
+	      <commandlineArgs>-cp "stylebook/stylebook-1.0-b3_xalan-2.jar:tools/xalan2jdoc.jar:serializer/target/classes:xalan/target/classes:%classpath" org.apache.stylebook.StyleBook loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xsltc/ ./stylebook/sources/xsltc.xml ./stylebook/style</commandlineArgs>
+	    </configuration>
+          </execution>
+          <execution>
+	    <id>Xalan2 interpretive documentation</id>
+            <phase>package</phase>
+            <goals>
+	      <goal>exec</goal>
+            </goals>
+	    <configuration>
+	      <executable>java</executable>
+	      <commandlineArgs>-cp "stylebook/stylebook-1.0-b3_xalan-2.jar:tools/xalan2jdoc.jar:serializer/target/classes:xalan/target/classes:%classpath" org.apache.stylebook.StyleBook loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan ./stylebook/sources/xalan-jsite.xml ./stylebook/style</commandlineArgs>
+	    </configuration>
+          </execution>
+
+	  <!-- Diff tells me that the -jlocal output is almost
+	       identical to the -jsite output despite the slight
+	       difference in the .xml files used as their
+	       sources. (The only effective difference appears to be
+	       that -jlocal doesn't produce the index or charter
+	       documents.)  I'm not convinced that's enough difference
+	       to merit generating both, but until I better grok why
+	       this duplication was done in the first place I'm
+	       hesitant to remove it. (jkesselm, 20231105) -->
+          <execution>
+	    <id>Xalan2 interpretive documentation, local</id>
+            <phase>package</phase>
+            <goals>
+	      <goal>exec</goal>
+            </goals>
+	    <configuration>
+	      <executable>java</executable>
+	      <commandlineArgs>-cp "stylebook/stylebook-1.0-b3_xalan-2.jar:tools/xalan2jdoc.jar:serializer/target/classes:xalan/target/classes:%classpath" org.apache.stylebook.StyleBook loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan/local ./stylebook/sources/xalan-jlocal.xml ./stylebook/style</commandlineArgs>
+	    </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Two more files to copy to the site directory -->
+      <plugin>
+	<artifactId>maven-resources-plugin</artifactId>
+	<version>3.0.2</version>
+	<executions>
+          <execution>
+            <id>copy-resource-one</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/site/xsltc</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>stylebook/sources/xsltc</directory>
+                  <includes>
+                    <include>README.x*</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+	</executions>
+      </plugin>      
+
     </plugins>
   </build>
 
