@@ -1,3 +1,3 @@
-mvn clean package site source:jar source:test-jar
-# moved stylebook_docgen into toplevel pom.xml
+# Package last to gather source jars into /build
+mvn clean site source:jar source:test-jar package
 

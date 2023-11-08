@@ -29,7 +29,7 @@ command "mvn compile dependency:tree" so everything is in scope.
 
   <build>
     <pluginManagement>
-      <!-- Standardized configuration for plugin used by child modules,
+      <!-- Standardized configuration for plugins used by child modules,
 	   though not invoked by parent module -->
       <plugins>
 	<!-- Copy produced jarfile up to xalan-java/build/,
@@ -68,19 +68,37 @@ command "mvn compile dependency:tree" so everything is in scope.
 		    <!-- stripVersion does not seem to do what's needed, so: -->
 		    <destFileName>${project.artifactId}.${project.packaging}</destFileName>
 		  </artifactItem>
-
-		  <!-- Should copy the source archives too.  That
-		       should be <classifier>sources</classifier>.
-		       Issue: I haven't yet gotten that to refrain
-		       from copying all dependencies rather than
-		       just our own -sources.jar Separate Execution?
-		  -->
 		</artifactItems>
 		<outputDirectory>../build</outputDirectory>
               </configuration>
             </execution>
           </executions>
 	</plugin>
+	<!-- And copy -sources.jar to parent's build/ -->
+	<plugin>
+	  <artifactId>maven-resources-plugin</artifactId>
+	  <version>3.0.2</version>
+	  <executions>
+            <execution>
+              <id>copy-source.jar</id>
+              <phase>package</phase>
+              <goals>
+		<goal>copy-resources</goal>
+              </goals>
+              <configuration>
+		<outputDirectory>../build</outputDirectory>
+		<resources>
+                  <resource>
+                    <directory>target</directory>
+                    <includes>
+                      <include>*-sources.jar</include>
+                    </includes>
+                  </resource>
+		</resources>
+              </configuration>
+            </execution>
+	  </executions>
+	</plugin>      
       </plugins>
     </pluginManagement>
 
