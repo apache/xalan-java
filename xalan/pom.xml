@@ -112,6 +112,7 @@
 		       Some are direct dependencies, some come in
 		       via maven packages. -->
 		  <exclude>com.github.vbmacher:java-cup</exclude>
+		  <!-- java-cup-runtime, however, is needed -->
 		  <exclude>commons-logging:commons-logging</exclude>
 		  <exclude>org.apache.commons:commons-lang3</exclude>
 		  <exclude>org.apache.ant:ant</exclude>

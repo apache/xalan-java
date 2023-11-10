@@ -35,6 +35,10 @@ package org.apache.xalan.xsltc;
  *              architectural changes.  MINOR field goes to zero
  *		and MAJOR is incremented such as: {...,1.1.14,1.2,2.0}
  * Stability of a release follows: X.0 > X.X > X.X.X  
+ *
+ * Futurework: have this read version info from jar manifest,
+ * pom.properties, and/or a file updated during maven build.
+ *
  * @author G. Todd Miller 
  */
 public class ProcessorVersion {

@@ -39,7 +39,8 @@ public class Version
    * Version String formatted like 
    * <CODE>"<B>Xalan</B> <B>Java</B> v.r[.dd| <B>D</B>nn]"</CODE>.
    *
-   * Futurework: have this read version info from jar manifest.
+   * Futurework: have this read version info from jar manifest,
+   * pom.properties, and/or a file updated during maven build.
    *
    * @return String denoting our current version
    */

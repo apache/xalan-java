@@ -1,2 +1,10 @@
-/bin/
-/build/
+samples/target/ 
+serializer/target/ 
+xalan2jtaglet/target/ 
+xalan/target/
+target/
+build/
+**/dependency-reduced-pom.xml
+**/xsltc/compiler/XPathLexer.java
+**/xsltc/compiler/XPathParser.java
+**/xsltc/compiler/sym.java
