@@ -299,10 +299,12 @@ command "mvn compile dependency:tree" so everything is in scope.
         <configuration>
           <descriptors>
             <descriptor>src/assembly/src.xml</descriptor>
-	   <!-- PROBLEM: The bin assembly wants package phase to have
-	   completed first. Examples show it as being run during
-	   package:single. I'm confused. Disabled for now...
-	   -->
+	    <!-- NOTE: Dependencies must be used to sequence the
+		 maven build so this runs only after child modules
+		 have finished compilation. But I'm getting cyclic
+		 dependency errors when I try. Disabling binary
+		 assembly until I resolve that.
+	    -->
 	    <!-- <descriptor>src/assembly/bin.xml</descriptor> -->
           </descriptors>
         </configuration>
@@ -405,5 +407,33 @@ command "mvn compile dependency:tree" so everything is in scope.
       </plugin>
     </plugins>
   </reporting>
+
+  <!-- Must make the parent module explicitly dependent upon children
+       so they complete before we try to assemble the binary distribution?
+       ... No, that gets inherited and we get cyclical dependency errors.
+       I'm sure the fix is obvious...
+       -->
+  <!-- <dependencies> -->
+  <!--   <dependency> -->
+  <!--     <groupId>xalan</groupId> -->
+  <!--     <artifactId>serializer</artifactId> -->
+  <!--     <version>2.7.3</version> -->
+  <!--   </dependency> -->
+  <!--   <dependency> -->
+  <!--     <groupId>xalan</groupId> -->
+  <!--     <artifactId>xalan</artifactId> -->
+  <!--     <version>2.7.3</version> -->
+  <!--   </dependency> -->
+  <!--   <dependency> -->
+  <!--     <groupId>xalan</groupId> -->
+  <!--     <artifactId>samples</artifactId> -->
+  <!--     <version>2.7.3</version> -->
+  <!--   </dependency> -->
+  <!--   <dependency> -->
+  <!--     <groupId>xalan</groupId> -->
+  <!--     <artifactId>xalan2jtaglet</artifactId> -->
+  <!--     <version>2.7.3</version> -->
+  <!--   </dependency> -->
+  <!-- </dependencies> -->
 
 </project>
