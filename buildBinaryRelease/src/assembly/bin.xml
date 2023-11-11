@@ -23,8 +23,11 @@
     <moduleSets>
     <moduleSet>
     
-      <!-- useAll drags in all the runtime dependencies? -->
-      <!-- <useAllReactorProjects>true</useAllReactorProjects> -->
+      <!-- useAll drags in runtime dependencies (bcel, commons, regexp, cup)
+	   Those weren't present in the Ant build.
+	   Exclude them? 
+      -->
+      <useAllReactorProjects>true</useAllReactorProjects>
       
       <!-- Now, select which projects to include in this module-set. -->
       <includes>
@@ -42,4 +45,17 @@
 	 Ant behavior. I think that's either fileSets or files;
 	 not sure if that goes inside the moduleSet(s) or not.
     -->
+    <fileSets>
+      <fileSet>
+	<directory>../target/site</directory>
+	<outputDirectory>docs</outputDirectory>
+      </fileSet>
+      <fileSet>
+	<directory>../samples</directory>
+	<excludes>
+	  <exclude>target</exclude>
+	  <exclude>src/site</exclude>
+	</excludes>
+      </fileSet>
+    </fileSets>
 </assembly>
