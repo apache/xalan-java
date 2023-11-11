@@ -1,0 +1,32 @@
+<!-- Maven assembly plugin configuration for source packaging -->
+
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.2.0"
+	  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	  xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.2.0 https://maven.apache.org/xsd/assembly-2.2.0.xsd">
+  <id>src</id>
+  <formats>
+    <format>tar.gz</format>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>true</includeBaseDirectory>
+  <moduleSets>
+    <moduleSet>
+      <useAllReactorProjects>true</useAllReactorProjects>
+    </moduleSet>
+  </moduleSets>
+  <fileSets>
+    <fileSet>
+      <directory>${project.basedir}</directory>
+      <useDefaultExcludes>true</useDefaultExcludes>
+      <excludes>
+	<exclude>.settings/**</exclude>
+        <exclude>**/dependency-reduced-pom.xml</exclude>
+        <exclude>**/xsltc/compiler/XPathLexer.java</exclude>
+        <exclude>**/xsltc/compiler/XPathParser.java</exclude>
+        <exclude>**/xsltc/compiler/sym.java</exclude>
+        <exclude>**/${project.build.directory}/**</exclude>
+        <exclude>build</exclude>
+      </excludes>
+    </fileSet>
+  </fileSets>
+</assembly>

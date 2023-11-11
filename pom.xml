@@ -291,19 +291,19 @@ command "mvn compile dependency:tree" so everything is in scope.
 	</executions>
       </plugin>
 
-      <!-- Create "download" artifacts -->
+      <!-- Create "distribution download" artifacts -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>3.6.0</version>
 	<inherited>false</inherited>
         <configuration>
-	  <!-- Canned... -->
-          <!-- <descriptorRefs>  -->
-          <!--   <descriptorRef>src</descriptorRef> -->
-          <!-- </descriptorRefs> -->
-	  <!-- Custom... -->
           <descriptors>
             <descriptor>src/assembly/src.xml</descriptor>
+	   <!-- PROBLEM: The bin assembly wants package phase to have
+	   completed first. Examples show it as being run during
+	   package:single. I'm confused. Disabled for now...
+	   -->
+	    <!-- <descriptor>src/assembly/bin.xml</descriptor> -->
           </descriptors>
         </configuration>
 	<executions>
