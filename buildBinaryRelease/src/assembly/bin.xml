@@ -53,8 +53,8 @@
       <fileSet>
 	<directory>../samples</directory>
 	<excludes>
-	  <exclude>target</exclude>
-	  <exclude>src/site</exclude>
+	  <exclude>target/**</exclude>
+	  <exclude>src/site/**</exclude>
 	</excludes>
       </fileSet>
     </fileSets>
