@@ -74,36 +74,6 @@ command "mvn compile dependency:tree" so everything is in scope.
             </execution>
           </executions>
 	</plugin>
-
-	<!-- copy -sources.jar to parent's build? 
-	     Ant build set up its own aggregation zip/tar.gzip
-	     files, which include some slightly different mixes.
-	     Consider moving to that., using maven-assembly-plugin.
-	-->
-	<plugin>
-	  <artifactId>maven-resources-plugin</artifactId>
-	  <version>3.0.2</version>
-	  <executions>
-            <execution>
-              <id>copy-source.jar</id>
-              <phase>package</phase>
-              <goals>
-		<goal>copy-resources</goal>
-              </goals>
-              <configuration>
-		<outputDirectory>../build</outputDirectory>
-		<resources>
-                  <resource>
-                    <directory>target</directory>
-                    <includes>
-                      <include>*-sources.jar</include>
-                    </includes>
-                  </resource>
-		</resources>
-              </configuration>
-            </execution>
-	  </executions>
-	</plugin>      
       </plugins>
     </pluginManagement>
 
@@ -291,33 +261,41 @@ command "mvn compile dependency:tree" so everything is in scope.
 	</executions>
       </plugin>
 
-      <!-- Create "distribution download" artifacts -->
+      <!-- Standardized Apache "source distribution" -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.6.0</version>
-	<inherited>false</inherited>
-        <configuration>
-          <descriptors>
-            <descriptor>src/assembly/src.xml</descriptor>
-	    <!-- NOTE: Dependencies must be used to sequence the
-		 maven build so this runs only after child modules
-		 have finished compilation. But I'm getting cyclic
-		 dependency errors when I try. Disabling binary
-		 assembly until I resolve that.
-	    -->
-	    <!-- <descriptor>src/assembly/bin.xml</descriptor> -->
-          </descriptors>
-        </configuration>
-	<executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.apache.resources</groupId>
+            <artifactId>apache-source-release-assembly-descriptor</artifactId>
+            <version>1.5</version>
+          </dependency>
+        </dependencies>
+        <executions>
           <execution>
-            <id>make-assembly</id> <!-- this is used for inheritance merges -->
-            <phase>package</phase> <!-- bind to the packaging phase -->
+            <id>source-release-assembly</id>
+            <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>
+            <configuration>
+              <!-- Use  this flag to generate source release assembly
+                  from the top of a multi modules maven project.  -->
+              <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
+              <descriptorRefs>
+                <!--
+                    There are 3 descriptors available, choose one of them:
+                    * source-release (zip only, this one is used in the ASF parent POM) 
+                    * source-release-zip-tar (both zip and tar) 
+                    * source-release-tar (tar only) 
+                -->
+                <descriptorRef>source-release-zip-tar</descriptorRef>
+              </descriptorRefs>
+              <tarLongFileMode>gnu</tarLongFileMode>
+            </configuration>
           </execution>
         </executions>
-      </plugin>
+      </plugin>      
 
     </plugins>
   </build>
@@ -407,33 +385,5 @@ command "mvn compile dependency:tree" so everything is in scope.
       </plugin>
     </plugins>
   </reporting>
-
-  <!-- Must make the parent module explicitly dependent upon children
-       so they complete before we try to assemble the binary distribution?
-       ... No, that gets inherited and we get cyclical dependency errors.
-       I'm sure the fix is obvious...
-       -->
-  <!-- <dependencies> -->
-  <!--   <dependency> -->
-  <!--     <groupId>xalan</groupId> -->
-  <!--     <artifactId>serializer</artifactId> -->
-  <!--     <version>2.7.3</version> -->
-  <!--   </dependency> -->
-  <!--   <dependency> -->
-  <!--     <groupId>xalan</groupId> -->
-  <!--     <artifactId>xalan</artifactId> -->
-  <!--     <version>2.7.3</version> -->
-  <!--   </dependency> -->
-  <!--   <dependency> -->
-  <!--     <groupId>xalan</groupId> -->
-  <!--     <artifactId>samples</artifactId> -->
-  <!--     <version>2.7.3</version> -->
-  <!--   </dependency> -->
-  <!--   <dependency> -->
-  <!--     <groupId>xalan</groupId> -->
-  <!--     <artifactId>xalan2jtaglet</artifactId> -->
-  <!--     <version>2.7.3</version> -->
-  <!--   </dependency> -->
-  <!-- </dependencies> -->
 
 </project>
