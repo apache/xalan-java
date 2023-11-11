@@ -40,11 +40,13 @@
       <artifactId>xalan</artifactId>
       <version>2.7.3</version>
     </dependency>
+    <!-- Used only for javadoc generation; shouldn't have to ship...?
     <dependency>
       <groupId>xalan</groupId>
       <artifactId>xalanj2taglet</artifactId>
       <version>2.7.3</version>
     </dependency>
+    -->
   </dependencies>
 
 
