@@ -74,7 +74,12 @@ command "mvn compile dependency:tree" so everything is in scope.
             </execution>
           </executions>
 	</plugin>
-	<!-- And copy -sources.jar to parent's build/ -->
+
+	<!-- copy -sources.jar to parent's build? 
+	     Ant build set up its own aggregation zip/tar.gzip
+	     files, which include some slightly different mixes.
+	     Consider moving to that., using maven-assembly-plugin.
+	-->
 	<plugin>
 	  <artifactId>maven-resources-plugin</artifactId>
 	  <version>3.0.2</version>
@@ -192,7 +197,9 @@ command "mvn compile dependency:tree" so everything is in scope.
 	   That means running exec:java will malfunction since it'll blow out
 	   the entire Maven process. Workaround is to invoke Stylebook from
 	   the command line with exec:exec. Proper fix is to remove that
-	   behavior from Stylebook's code and have it exit more cleanly.
+	   behavior from Stylebook's code and have it exit more cleanly,
+	   or to have exec optionally fork a process for java.
+	   The latter is in development.
 	   -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -282,7 +289,33 @@ command "mvn compile dependency:tree" so everything is in scope.
             </configuration>
           </execution>
 	</executions>
-      </plugin>      
+      </plugin>
+
+      <!-- Create "download" artifacts -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.6.0</version>
+	<inherited>false</inherited>
+        <configuration>
+	  <!-- Canned... -->
+          <!-- <descriptorRefs>  -->
+          <!--   <descriptorRef>src</descriptorRef> -->
+          <!-- </descriptorRefs> -->
+	  <!-- Custom... -->
+          <descriptors>
+            <descriptor>src/assembly/src.xml</descriptor>
+          </descriptors>
+        </configuration>
+	<executions>
+          <execution>
+            <id>make-assembly</id> <!-- this is used for inheritance merges -->
+            <phase>package</phase> <!-- bind to the packaging phase -->
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 
     </plugins>
   </build>
