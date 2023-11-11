@@ -20,13 +20,26 @@
 	reference moved into the new child module alongside the
 	descriptor itself."  (eg documentation).
   -->
-  <moduleSets>
+    <moduleSets>
     <moduleSet>
-      <useAllReactorProjects>true</useAllReactorProjects>
+    
+      <!-- useAll drags in all the runtime dependencies? -->
+      <!-- <useAllReactorProjects>true</useAllReactorProjects> -->
+      
+      <!-- Now, select which projects to include in this module-set. -->
+      <includes>
+        <include>xalan:serializer</include>
+        <include>xalan:xalan</include>
+        <include>xalan:samples</include>
+      </includes>
       <binaries>
-        <outputDirectory>modules/maven-assembly-plugin</outputDirectory>
         <unpack>false</unpack>
       </binaries>
     </moduleSet>
   </moduleSets>
+    <!-- Should also include source for all the samples, and
+	 all the documentation (docs/site), for emulation of
+	 Ant behavior. I think that's either fileSets or files;
+	 not sure if that goes inside the moduleSet(s) or not.
+    -->
 </assembly>
