@@ -3,7 +3,6 @@
   <packaging>pom</packaging>
   <!-- KNOWN ISSUES:
        "Production" jar/tar files?
-       stylebook (currenly, see stylebook.docgen.sh)
        xalan-test integration
 
 NOTE: To get dependency tree from a multi-module project, use the 
@@ -24,6 +23,13 @@ command "mvn compile dependency:tree" so everything is in scope.
     <module>xalan</module>
     <module>samples</module>
     <module>xalan2jtaglet</module>
+    <!-- The binary mode of maven-assembly-plugin needs to run after all the
+	 other modules have created their artifacts. Standard solution to
+	 achieve this sequencing is to make it a separate module which
+	 depends on all the others. See
+	 https://maven.apache.org/plugins/maven-assembly-plugin/faq.html#module-binaries
+	 -->
+    <!-- <module>buildBinaryRelease</module> -->
   </modules>
 
 
