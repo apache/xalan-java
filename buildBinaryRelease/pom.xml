@@ -79,11 +79,35 @@
         </executions>
       </plugin>
 
-      <!-- Copy generated jarfile up to xalan-java/build/,
-	   for backward compatibility with Ant builds. -->
+      <!-- At this point, I'd like to copy the newly generated
+	   .zip and .tar.gz files up to the Ant-emulation build/
+	   directory. Unfortunately this seems to be running before
+	   those are generated.
+	   -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
+	<artifactId>maven-resources-plugin</artifactId>
+	<version>3.0.2</version>
+	<executions>
+          <execution>
+            <id>copy-archives</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>../build</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>target</directory>
+                  <includes>
+                    <include>*-bin.zip</include>
+                    <include>*-bin.tar.gz</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+	</executions>
       </plugin>
 
     </plugins>

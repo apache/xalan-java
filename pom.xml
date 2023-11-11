@@ -29,7 +29,7 @@ command "mvn compile dependency:tree" so everything is in scope.
 	 depends on all the others. See
 	 https://maven.apache.org/plugins/maven-assembly-plugin/faq.html#module-binaries
 	 -->
-    <!-- <module>buildBinaryRelease</module> -->
+    <module>buildBinaryRelease</module>
   </modules>
 
 
@@ -247,7 +247,7 @@ command "mvn compile dependency:tree" so everything is in scope.
 	<version>3.0.2</version>
 	<executions>
           <execution>
-            <id>copy-resource-one</id>
+            <id>copy-resources</id>
             <phase>package</phase>
             <goals>
               <goal>copy-resources</goal>
