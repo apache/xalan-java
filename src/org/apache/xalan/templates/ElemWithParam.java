@@ -28,6 +28,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
@@ -268,7 +269,10 @@ public class ElemWithParam extends ElemTemplateElement
     
     if (m_asAttr != null) {
        var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, 
-                                                                          transformer.getXPathContext()); 
+                                                                          transformer.getXPathContext());
+       if ((var != null) && (var instanceof ResultSequence) && (((ResultSequence)var).size() == 1)) {
+       	  var = (((ResultSequence)var)).item(0); 
+       }
     }
 
     return var;
