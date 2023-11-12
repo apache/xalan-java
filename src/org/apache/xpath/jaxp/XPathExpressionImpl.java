@@ -177,7 +177,7 @@ public class XPathExpressionImpl  implements javax.xml.xpath.XPathExpression{
         } catch ( java.lang.NullPointerException npe ) {
             // If VariableResolver returns null Or if we get 
             // NullPointerException at this stage for some other reason
-            // then we have to reurn XPathException
+            // then we have to return XPathException
             throw new XPathExpressionException ( npe );
         } catch ( javax.xml.transform.TransformerException te ) {
             Throwable nestedException = te.getException();
