@@ -3286,7 +3286,7 @@ are unlikely to be equal. Saving them in a plain Vector has a
 lower cost than saving them in DTMStringPool. Only prefixed QNames
 are saved in DTMStringPool after this change.
 
-Need to make changes in a few interfaces to accommadate this change.
+Need to make changes in a few interfaces to accommodate this change.
 <br/><br/></li><li><ref>Committed by </ref>mkwan@apache.org<ref> on </ref>2003/03/13<br/><ref>Modified: </ref> xml-xalan/java/src/org/apache/xml/utils FastStringBuffer.java<br/><ref>Committer's log entry: </ref>
 XSLTC_DTM performance work
 Small improvement in FastStringBuffer.sendSAXCharacters() when the whole
@@ -4798,7 +4798,7 @@ alternatives.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref>
 transforms so that when the transformer is reused, we were using nodesets from 
 the previous transform which were using a different DTM. Note that we want keep 
 any variables that have been set externally by the user (using 
-Transformer.setParameter()).<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>01/28/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/res XPATHErrorResources.java<br/><ref>Committer's log entry: </ref>bug 4762: Fixed the duplicate error message in XPATH.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>01/28/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>Bugzilla 4054: Retain previously set output properties when adding new ones.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>01/28/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>Bug 5872. We were using a constructor of TranformerException without the 
+Transformer.setParameter()).<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>01/28/2002<br/><ref>Modified: </ref>java/src/org/apache/xpath/res XPATHErrorResources.java<br/><ref>Committer's log entry: </ref>bug 4762: Fixed the duplicate error message in XPATH.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>01/28/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>Bugzilla 4054: Retain previously set output properties when adding new ones.<br/><br/></li><li><ref>Committed by </ref>mmidy@apache.org<ref> on </ref>01/28/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer TransformerImpl.java<br/><ref>Committer's log entry: </ref>Bug 5872. We were using a constructor of TransformerException without the
 locator information. Changed to code to use a locator if info is available.<br/><br/></li><li><ref>Committed by </ref>dleslie@apache.org<ref> on </ref>01/30/2002<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib NodeInfo.java<br/><ref>Committer's log entry: </ref>Changed "system id" to "public identifier" in javadoc
  comments for publicId() methods.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>01/30/2002<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/sax2dtm SAX2DTM.java<br/><ref>Committer's log entry: </ref>Bugzilla 2617, part 1: Construct the data structures and access them 
 correctly.
@@ -6512,7 +6512,7 @@ Frame slot was available. Unfortunately, this also indicated that the item was
 passed as a parameter which it wasn't. This fix changes isParamVar into to 
 fields, isAvailable which indicates that the slot is available and 
 isFromWithParam indicating the Frame slot came from an xsl:with-param or a 
-top-level parameter passed in via the tranformerImpl.setParameter() API.
+top-level parameter passed in via the transformerImpl.setParameter() API.
  I have tested this change against the conformance suite and had no 
 regression. I've also submitted a test case which fails on the existing 
 codebase but works okay after this fix.

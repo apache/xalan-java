@@ -178,7 +178,7 @@
           }
           e = e.parentElement;
           
-          // call the correct funtion to change the collapse/expand state and display
+          // call the correct function to change the collapse/expand state and display
           if (e.className == "e")
             ch(e);
           if (e.className == "k")

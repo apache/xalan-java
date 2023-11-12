@@ -392,7 +392,7 @@ parser</link>.</p>
   <li>Perform the transformation, using a StreamSource object for the XML
       input and a StreamResult object to hold the transformation output.</li>
 </ol>
-<p>Both a <code>Templates</code> object and a <code>Tranformer</code> object are
+<p>Both a <code>Templates</code> object and a <code>Transformer</code> object are
    processed representations of a stylesheet, but you cannot use a
    <code>Templates</code> object to perform transformations.  Instead,
    you can use a <code>Templates</code> object to create new

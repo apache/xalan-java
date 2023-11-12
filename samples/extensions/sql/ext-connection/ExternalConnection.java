@@ -69,7 +69,7 @@ public class ExternalConnection
   // org.apache.xalan.transformer.TransformerImpl.
 	TransformerFactory tFactory = TransformerFactory.newInstance();
 
-  // Grab the Name of the Stylesheet from the commad line
+  // Grab the Name of the Stylesheet from the command line
   if (args.length == 0)
   {
     System.out.println("You must provide the path and name to a stylesheet to process");
