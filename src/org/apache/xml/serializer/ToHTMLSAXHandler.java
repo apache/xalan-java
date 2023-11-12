@@ -69,7 +69,7 @@ public final class ToHTMLSAXHandler extends ToSAXHandler
     }
 
     /**
-     * Reurns null
+     * Returns null
      * @return null
      * @see Serializer#getOutputStream()
      */
