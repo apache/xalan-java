@@ -10,9 +10,9 @@
 
   <artifactId>distribution</artifactId>
   <packaging>pom</packaging>
-  <name>Build binary .tar.gz and .zip files for distribution</name>
-  <description></description>
-
+ 
+  <name>distribution</name>
+  
   <!-- NOTE: These dependency declarations are only required to sort
        this project to the end of the queue in the multimodule build.
   -->
@@ -33,7 +33,7 @@
       <version>2.7.3</version>
     </dependency>
   </dependencies>
-
+ 
   <build>
     <plugins>
       <plugin>
@@ -55,5 +55,4 @@
       </plugin>
     </plugins>
   </build>
-  
 </project>

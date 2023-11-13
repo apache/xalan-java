@@ -2,33 +2,17 @@
      See https://maven.apache.org/plugins/maven-assembly-plugin/faq.html#module-binaries
 -->
 <assembly xmlns="http://maven.apache.org/ASSEMBLY/2.2.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.2.0 http://maven.apache.org/xsd/assembly-2.2.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.2.0 http://maven.apache.org/xsd/assembly-2.2.0.xsd">
   <id>bin</id>
   <formats>
-    <format>tar.gz</format>
     <format>zip</format>
+    <format>tar-gz</format>
   </formats>
-  <includeBaseDirectory>true</includeBaseDirectory>
-  <!-- "At this point, you have the option of either changing all
-       moduleSet/binaries references to dependencySet references,
-       or you can keep the moduleSets and instead set the
-       useAllReactorProjects flag to true for each moduleSet.
-
-	Obviously, any fileSet or file references you may have in this
-	descriptor may need to be adjusted or have the files they
-	reference moved into the new child module alongside the
-	descriptor itself."  (eg documentation).
-  -->
-    <moduleSets>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <moduleSets>
     <moduleSet>
-    
-      <!-- useAll drags in runtime dependencies (bcel, commons, regexp, cup)
-	   Those weren't present in the Ant build.
-	   Exclude them? 
-      -->
       <useAllReactorProjects>true</useAllReactorProjects>
-      
       <!-- Now, select which projects to include in this module-set. -->
       <includes>
         <include>xalan:serializer</include>
@@ -36,26 +20,27 @@
         <include>xalan:samples</include>
       </includes>
       <binaries>
+        <outputDirectory>modules/maven-assembly-plugin</outputDirectory>
         <unpack>false</unpack>
       </binaries>
     </moduleSet>
   </moduleSets>
-    <!-- Should also include source for all the samples, and
-	 all the documentation (docs/site), for emulation of
-	 Ant behavior. I think that's either fileSets or files;
-	 not sure if that goes inside the moduleSet(s) or not.
-    -->
-    <fileSets>
-      <fileSet>
-	<directory>../target/site</directory>
-	<outputDirectory>docs</outputDirectory>
-      </fileSet>
-      <fileSet>
-	<directory>../samples</directory>
-	<excludes>
-	  <exclude>target/**</exclude>
-	  <exclude>src/site/**</exclude>
-	</excludes>
-      </fileSet>
-    </fileSets>
+  <!-- Should also include source for all the samples, and
+       all the documentation (docs/site), for emulation of
+       Ant behavior. I think that's either fileSets or files;
+       not sure if that goes inside the moduleSet(s) or not.
+  -->
+  <fileSets>
+    <fileSet>
+      <directory>../target/site</directory>
+      <outputDirectory>docs</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>../samples</directory>
+      <excludes>
+	<exclude>target/**</exclude>
+	<exclude>src/site/**</exclude>
+      </excludes>
+    </fileSet>
+  </fileSets>
 </assembly>
