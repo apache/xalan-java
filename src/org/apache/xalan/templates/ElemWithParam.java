@@ -20,6 +20,7 @@
  */
 package org.apache.xalan.templates;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
@@ -224,6 +225,8 @@ public class ElemWithParam extends ElemTemplateElement
 
     XObject var;
     XPathContext xctxt = transformer.getXPathContext();
+    
+    SourceLocator srcLocator = xctxt.getSAXLocator();
 
     xctxt.pushCurrentNode(sourceNode);
 
@@ -270,8 +273,15 @@ public class ElemWithParam extends ElemTemplateElement
     if (m_asAttr != null) {
        var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, 
                                                                           transformer.getXPathContext());
-       if ((var != null) && (var instanceof ResultSequence) && (((ResultSequence)var).size() == 1)) {
-       	  var = (((ResultSequence)var)).item(0); 
+       if (var == null) {
+          throw new TransformerException("XTTE0590 : The required item type of the value of argument used for xsl:with-param " + 
+                                                                     m_qname.toString() + " is " + m_asAttr + ". The supplied value "
+                                                                     + "doesn't match the expected item type.", srcLocator);  
+       }
+       else {
+          if ((var instanceof ResultSequence) && (((ResultSequence)var).size() == 1)) {
+       	     var = (((ResultSequence)var)).item(0); 
+          }
        }
     }
 

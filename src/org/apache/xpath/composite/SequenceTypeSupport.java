@@ -788,9 +788,9 @@ public class SequenceTypeSupport {
 
                     if (sequenceTypeKindTest.getDataTypeName() != null) {
                         String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr; 
-                        throw new TransformerException("XTTE0570 : The required item type of an XML instance node is " + dataTypeStr + 
-                                                                                                        ". The supplied value " + nodeName + " does not match. The "
-                                                                                                        + "supplied node has not been validated with a schema.", srcLocator); 
+                        throw new TransformerException("XTTE0570 : The required item type of an xdm input node is " + dataTypeStr + ". "
+                        		                                                  + "The supplied value " + nodeName + " does'nt match an expected type. "
+                        		                                                  + "The supplied node has not been validated with a schema.", srcLocator); 
                     }
                     else {
                         if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -812,8 +812,10 @@ public class SequenceTypeSupport {
 
                             if (!isSeqTypeMatchOk) {
                                 String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr;
-                                throw new TransformerException("XTTE0570 : The required item type of an XML instance node is " + dataTypeStr + 
-                                                                                                                ". The supplied value " + nodeName + " does not match.", srcLocator); 
+                                throw new TransformerException("XTTE0570 : The required item type of an xdm input node is " + dataTypeStr + ". "
+                                		                                             + "The supplied value " + nodeName + " does'nt match an expected "
+                                		                                             + "type.", srcLocator);
+                                
                             }
                         }
                         else if (node.getNodeType() == Node.ATTRIBUTE_NODE) {
@@ -834,9 +836,10 @@ public class SequenceTypeSupport {
                             }
 
                             if (!isSeqTypeMatchOk) {
-                                String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr;
-                                throw new TransformerException("XTTE0570 : The required item type of an XML instance node is " + dataTypeStr + 
-                                                                                                      ". The supplied value " + nodeName + " does not match.", srcLocator);  
+                                String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr;                                
+                                throw new TransformerException("XTTE0570 : The required item type of an xdm input node is " + dataTypeStr + ". "
+                                                                                           + "The supplied value " + nodeName + " does'nt match an expected "
+                                                                                           + "type.", srcLocator);
                             } 
                         }
                         else if (node.getNodeType() == Node.TEXT_NODE) {
@@ -844,8 +847,8 @@ public class SequenceTypeSupport {
                                                                 (sequenceTypeKindTest.getKindVal() == NODE_KIND) || 
                                                                 (sequenceTypeKindTest.getKindVal() == ITEM_KIND))) {
                                 String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr;
-                                throw new TransformerException("XTTE0570 : The required item type of an XML instance node is " + dataTypeStr + ". "
-                                                                                                      + "The supplied value does not match.", srcLocator);  
+                                throw new TransformerException("XTTE0570 : The required item type of an xdm input node is " + dataTypeStr + ". "
+                                                                                           + "The supplied value does'nt match an expected type.", srcLocator);  
                             }
                         }
                     }
@@ -927,10 +930,10 @@ public class SequenceTypeSupport {
                   String nodeNsUri = dtm.getNamespaceURI(nextNodeDtmHandle);
                   
                   if (sequenceTypeKindTest.getDataTypeName() != null) {
-                     String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr; 
-                     throw new TransformerException("XTTE0570 : The required item type of an XML instance node is " + dataTypeStr + 
-                                                                                                     ". The supplied value " + nodeName + " does not match. The "
-                                                                                                     + "supplied node has not been validated with a schema.", srcLocator); 
+                     String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr;
+                     throw new TransformerException("XTTE0570 : The required item type of an xdm input node is " + dataTypeStr + ". "
+                                                                          + "The supplied value " + nodeName + " does'nt match an expected type. "
+                                                                          + "The supplied node has not been validated with a schema.", srcLocator);
                   }
                   else {
                      if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
@@ -949,8 +952,9 @@ public class SequenceTypeSupport {
                         }
                         else {
                            String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr;
-                           throw new TransformerException("XTTE0570 : The required item type of an XML instance node is " + dataTypeStr + 
-                                                                                                 ". The supplied value " + nodeName + " does not match.", srcLocator); 
+                           throw new TransformerException("XTTE0570 : The required item type of an xdm input node is " + dataTypeStr + ". "
+                           		                                                + "The supplied value " + nodeName + " does'nt match an expected "
+                           		                                                + "type.", srcLocator); 
                         }
                      }
                      else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
@@ -969,8 +973,9 @@ public class SequenceTypeSupport {
                         }
                         else {
                             String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr;
-                            throw new TransformerException("XTTE0570 : The required item type of an XML instance node is " + dataTypeStr + 
-                                                                                                  ". The supplied value " + nodeName + " does not match.", srcLocator);  
+                            throw new TransformerException("XTTE0570 : The required item type of an xdm input node is " + dataTypeStr + ". "
+                            		                                             + "The supplied value " + nodeName + " does'nt match an expected "
+                            		                                             + "type.", srcLocator);  
                         }
                      }
                      else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.TEXT_NODE) {
@@ -979,8 +984,8 @@ public class SequenceTypeSupport {
                         }
                         else {
                            String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr;
-                           throw new TransformerException("XTTE0570 : The required item type of an XML instance node is " + dataTypeStr + ". "
-                                                                                                            + "The supplied value does not match.", srcLocator); 
+                           throw new TransformerException("XTTE0570 : The required item type of an xdm input node is " + dataTypeStr + ". "
+                                                                                + "The supplied value does'nt match an expected type.", srcLocator); 
                         }
                      }
                      else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.NAMESPACE_NODE) {
@@ -989,12 +994,12 @@ public class SequenceTypeSupport {
                          }
                          else {
                             String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr;
-                            throw new TransformerException("XTTE0570 : The required item type of an XML instance node is " + dataTypeStr + ". "
-                                                                                                             + "The supplied value does not match.", srcLocator); 
+                            throw new TransformerException("XTTE0570 : The required item type of an xdm input node is " + dataTypeStr + ". "
+                                                                                 + "The supplied value does'nt match an expected type.", srcLocator);
                          }
                      }
                      else {
-                        convertedResultSeq.add(nodeSetItem); 
+                         convertedResultSeq.add(nodeSetItem); 
                      }
                   }
                }
