@@ -411,9 +411,9 @@ public class ElemTemplate extends ElemTemplateElement
     
     if (m_asAttr != null) {         
         try {
-           // The code within this 'try' block, checks whether the template's result contents
-           // conform to the 'sequence type' expression specified as value of template's 
-           // 'as' attribute.
+           // The XSL transformation code logic within this 'try' block, checks whether an xsl:template
+           // element's result contents conform to the SequenceType expression specified as value of 
+           // xsl:template element's 'as' attribute.
              
            int dtmNodeHandle = transformer.transformToGlobalRTF(this);
             
@@ -422,17 +422,23 @@ public class ElemTemplate extends ElemTemplateElement
            templateEvalResultForAsAttr = SequenceTypeSupport.convertXDMValueToAnotherType(templateEvalResultForAsAttr, m_asAttr, 
                                                                                                                    null, xctxt);
            if (templateEvalResultForAsAttr == null) {
-              String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString(); 
+              String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();
               throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
                                                                                                 + " is " + m_asAttr + ". But the template result "
                                                                                                 + "doesn't conform to this required type.", srcLocator);   
            }
         }
         catch (TransformerException ex) {
-           String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString(); 
-           throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
-                                                                                             + " is " + m_asAttr + ". But the template result "
-                                                                                             + "doesn't conform to this required type.", srcLocator); 
+           String errMesg = ex.getMessage();
+           if ((errMesg != null) && (errMesg.startsWith("XTTE0505") || errMesg.startsWith("XTTE0590"))) {
+        	  throw ex;   
+           }
+           else {
+              String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString(); 
+              throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
+                                                                                + " is " + m_asAttr + ". But the template result "
+                                                                                + "doesn't conform to this required type.", srcLocator);
+           }
         }
     }
     
