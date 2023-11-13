@@ -1,0 +1,59 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>xalan</groupId>
+    <artifactId>xalan-project</artifactId>
+    <version>2.7.3</version>
+  </parent>
+
+  <artifactId>distribution</artifactId>
+  <packaging>pom</packaging>
+  <name>Build binary .tar.gz and .zip files for distribution</name>
+  <description></description>
+
+  <!-- NOTE: These dependency declarations are only required to sort
+       this project to the end of the queue in the multimodule build.
+  -->
+  <dependencies>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>serializer</artifactId>
+      <version>2.7.3</version>
+    </dependency>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+      <version>2.7.3</version>
+    </dependency>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>samples</artifactId>
+      <version>2.7.3</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>distro-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <descriptors>
+                <descriptor>src/assembly/bin.xml</descriptor>
+              </descriptors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
+</project>
