@@ -20,7 +20,7 @@
         <include>xalan:samples</include>
       </includes>
       <binaries>
-        <outputDirectory>modules/maven-assembly-plugin</outputDirectory>
+        <outputDirectory>xalan</outputDirectory>
         <unpack>false</unpack>
       </binaries>
     </moduleSet>

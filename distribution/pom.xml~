@@ -56,7 +56,4 @@
     </plugins>
   </build>
 </project>
-<<<<<<< HEAD
-=======
  
->>>>>>> 4394bc1a (bin-dist work, wierdnesses with getting wrong assembly plugin)
