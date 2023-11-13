@@ -26,14 +26,15 @@
     </moduleSet>
   </moduleSets>
   <!-- Should also include source for all the samples, and
-       all the documentation (docs/site), for emulation of
-       Ant behavior. I think that's either fileSets or files;
-       not sure if that goes inside the moduleSet(s) or not.
+       all the documentation, for emulation of
+       Ant behavior. Rename site to docs for back-compatibility.
+       Should pick up version from variable...?
   -->
   <fileSets>
     <fileSet>
       <directory>../target/site</directory>
-      <outputDirectory>docs</outputDirectory>
+      <!-- Might want explicitly defined values in parent. TODO GONK -->
+      <outputDirectory>${project.parent.name}_${project.parent.version}/docs</outputDirectory>
     </fileSet>
     <fileSet>
       <directory>../samples</directory>

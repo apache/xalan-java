@@ -181,7 +181,7 @@ command "mvn compile dependency:tree" so everything is in scope.
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
-	<inherited>false</inherited> <!-- Run only in xalan-package parent -->
+	<inherited>false</inherited> <!-- Run only in xalan-project parent -->
         <executions>
           <execution>
 	    <id>Xalan2 design documentation</id>
@@ -270,6 +270,7 @@ command "mvn compile dependency:tree" so everything is in scope.
       <!-- Standardized Apache "source distribution" -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
+	<version>3.6.0</version>
         <dependencies>
           <dependency>
             <groupId>org.apache.apache.resources</groupId>

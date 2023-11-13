@@ -9,7 +9,12 @@
   </parent>
 
   <artifactId>distribution</artifactId>
-  <packaging>pom</packaging>
+  
+<!-- PROBLEM: Something has been overwriting this pom. I don't know
+       whether making the packaging "pom" had anything to do with that,
+       but changing it may have helped. 
+  -->
+  <packaging>jar</packaging>
  
   <name>distribution</name>
   
@@ -54,6 +59,9 @@
           </execution>
         </executions>
       </plugin>
+
+
+
     </plugins>
   </build>
 </project>
