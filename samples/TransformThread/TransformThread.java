@@ -138,7 +138,7 @@ public class TransformThread implements Runnable
       StreamSource xslSource = new StreamSource(xslSourceFileName);
       xslSource.setSystemId(xslSourceURI);
       
-      // Initialize the tranformer
+      // Initialize the transformer
       m_transformer =
         TransformerFactory.newInstance().newTransformer(xslSource);
       m_thread = new Thread(this);
