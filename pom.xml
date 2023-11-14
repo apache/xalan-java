@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <packaging>pom</packaging>
-  <!-- KNOWN ISSUES:
-       "Production" jar/tar files?
-       xalan-test integration
-
-NOTE: To get dependency tree from a multi-module project, use the 
-command "mvn compile dependency:tree" so everything is in scope.
-  -->
-  
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
+  <!--
+    KNOWN ISSUES:
+    "Production" jar/tar files?
+    xalan-test integration
+    
+    NOTE: To get dependency tree from a multi-module project, use the command "mvn compile dependency:tree" so
+    everything is in scope.
+  -->
+
   <groupId>xalan</groupId>
   <artifactId>xalan-project</artifactId>
   <version>2.7.3</version>
+  <packaging>pom</packaging>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,229 +29,233 @@ command "mvn compile dependency:tree" so everything is in scope.
     <module>xalan</module>
     <module>samples</module>
     <module>xalan2jtaglet</module>
-    <!-- The binary mode of maven-assembly-plugin needs to run after all the
-	 other modules have created their artifacts. Standard solution to
-	 achieve this sequencing is to make it a separate module which
-	 depends on all the others. See
-	 https://maven.apache.org/plugins/maven-assembly-plugin/faq.html#module-binaries
-	 -->
+    <!--
+      The binary mode of maven-assembly-plugin needs to run after all the other modules have created their artifacts.
+      Standard solution to achieve this sequencing is to make it a separate module which depends on all the others.
+      See https://maven.apache.org/plugins/maven-assembly-plugin/faq.html#module-binaries.
+    -->
     <module>distribution</module>
   </modules>
 
-
   <build>
     <pluginManagement>
-      <!-- Standardized configuration for plugins used by child modules,
-	   though not invoked by parent module -->
+      <!-- Standardized configuration for plugins used by child modules, though not invoked by parent module -->
       <plugins>
-	<!-- Copy produced jarfile up to xalan-java/build/,
-	     renaming to remove the version number, for
-	     backward compatibility with things build for the 
-	     Ant builds. 
-	-->
-	<plugin>
+        <!--
+          Copy produced jarfile up to xalan-java/build/, renaming to remove the version number, for backward
+          compatibility with things build for the Ant builds. 
+        -->
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
           <executions>
-            <execution>             
+            <execution>
               <id>copy-artifact</id>
               <phase>package</phase>
               <goals>
-		<goal>copy</goal>
+                <goal>copy</goal>
               </goals>
               <configuration>
-		<artifactItems>
-		  <artifactItem>
-		    <!-- Copy built artifact to ../build -->
+                <artifactItems>
+                  <artifactItem>
+                    <!-- Copy built artifact to ../build -->
                     <groupId>${project.groupId}</groupId>
                     <artifactId>${project.artifactId}</artifactId>
                     <version>${project.version}</version>
                     <type>${project.packaging}</type>
-		  </artifactItem>
-		  <artifactItem>
-		    <!-- Also copy without the "-${project.version}" suffix
-			 (but with the filetype), for backward compatibility
-			 with Ant build's behavior
-		    -->
+                  </artifactItem>
+                  <artifactItem>
+                    <!--
+                      Also copy without the "-${project.version}" suffix (but with the filetype), for backward
+                      compatibility with Ant build's behavior
+                    -->
                     <groupId>${project.groupId}</groupId>
                     <artifactId>${project.artifactId}</artifactId>
                     <version>${project.version}</version>
                     <type>${project.packaging}</type>
-		    <!-- stripVersion does not seem to do what's needed, so: -->
-		    <destFileName>${project.artifactId}.${project.packaging}</destFileName>
-		  </artifactItem>
-		</artifactItems>
-		<outputDirectory>../build</outputDirectory>
+                    <!-- stripVersion does not seem to do what's needed, so: -->
+                    <destFileName>${project.artifactId}.${project.packaging}</destFileName>
+                  </artifactItem>
+                </artifactItems>
+                <outputDirectory>../build</outputDirectory>
               </configuration>
             </execution>
           </executions>
-	</plugin>
+        </plugin>
       </plugins>
     </pluginManagement>
 
     <sourceDirectory>src/main/java</sourceDirectory>
     <resources>
       <resource>
-	<directory>META-INF</directory>
-	<includes>
-	  <include>LICENSE.txt</include>
-	  <include>NOTICE.txt</include>
-	</includes>
+        <directory>META-INF</directory>
+        <includes>
+          <include>LICENSE.txt</include>
+          <include>NOTICE.txt</include>
+        </includes>
       </resource>
       <resource>
-	<directory>resources</directory>
-	<includes>
-	  <include>**/*.properties</include>
-	</includes>
+        <directory>resources</directory>
+        <includes>
+          <include>**/*.properties</include>
+        </includes>
       </resource>
     </resources>
     <plugins>
       <plugin>
-	<artifactId>maven-compiler-plugin</artifactId>
-	<version>3.8.1</version>
-	<configuration>
-	  <source>1.8</source>
-	  <target>1.8</target>
-	</configuration>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-shade-plugin</artifactId>
-	<version>3.5.0</version>
-	<executions>
-	  <execution>
-	    <phase>package</phase>
-	    <goals>
-	      <goal>shade</goal>
-	    </goals>
-	    <configuration>
-	      <artifactSet>
-		<excludes>
-		  <!-- Their examples -->
-		  <exclude>junit:junit</exclude>
-		  <exclude>jmock:*</exclude>
-		  <exclude>*:xml-apis</exclude>
-		  <exclude>org.apache.maven:lib:tests</exclude>
-		  <!-- What I think I need to exclude -->
-		  <exclude>com.github.vbmacher:java-cup</exclude>
-		  <exclude>commons-logging:commons-logging</exclude>
-		  <exclude>javax:*</exclude>
-		</excludes>
-	      </artifactSet>
-	    </configuration>
-	  </execution>
-	</executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <excludes>
+                  <!-- Their examples -->
+                  <exclude>junit:junit</exclude>
+                  <exclude>jmock:*</exclude>
+                  <exclude>*:xml-apis</exclude>
+                  <exclude>org.apache.maven:lib:tests</exclude>
+                  <!-- What I think I need to exclude -->
+                  <exclude>com.github.vbmacher:java-cup</exclude>
+                  <exclude>commons-logging:commons-logging</exclude>
+                  <exclude>javax:*</exclude>
+                </excludes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-site-plugin</artifactId>
-	<version>3.7.1</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.7.1</version>
       </plugin>
 
-      <!-- Maven finds this without assistance, but grumbles about
-	   unspecified plugin version, so... -->
+      <!-- Maven finds this without assistance, but grumbles about unspecified plugin version, so... -->
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-project-info-reports-plugin</artifactId>
-	<version>3.4.5</version>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>3.4.5</version>
       </plugin>
 
-      <!-- During cleaning phase, empty the ./build directory, which
-	   is normally not present except in the parent module. 
+      <!--
+        During cleaning phase, empty the ./build directory, which is normally not present except in the parent module. 
       -->
       <plugin>
-	<artifactId>maven-clean-plugin</artifactId>
-	<version>3.3.1</version>
-	<configuration>
-	  <filesets>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.3.1</version>
+        <configuration>
+          <filesets>
             <fileset>
               <directory>./build</directory>
               <followSymlinks>false</followSymlinks>
             </fileset>
-	  </filesets>
-	</configuration>
+          </filesets>
+        </configuration>
       </plugin>
 
-      <!-- StyleBook processing.
-	   NOTE: Stylebook as it has been calls System.exit() on its way out.
-	   That means running exec:java will malfunction since it'll blow out
-	   the entire Maven process. Workaround is to invoke Stylebook from
-	   the command line with exec:exec. Proper fix is to remove that
-	   behavior from Stylebook's code and have it exit more cleanly,
-	   or to have exec optionally fork a process for java.
-	   The latter is in development.
-	   -->
+      <!--
+        StyleBook processing.
+        
+        NOTE: Stylebook as it has been calls System.exit() on its way out. That means running exec:java will malfunction
+        since it'll blow out the entire Maven process. Workaround is to invoke Stylebook from the command line with
+        exec:exec. Proper fix is to remove that behavior from Stylebook's code and have it exit more cleanly, or to have
+        exec optionally fork a process for java. The latter is in development.
+      -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
-	<inherited>false</inherited> <!-- Run only in xalan-project parent -->
+        <inherited>false</inherited> <!-- Run only in xalan-project parent -->
         <executions>
           <execution>
-	    <id>Xalan2 design documentation</id>
+            <id>Xalan2 design documentation</id>
             <phase>package</phase>
             <goals>
-	      <goal>exec</goal>
+              <goal>exec</goal>
             </goals>
-	    <configuration>
-	      <executable>java</executable>
-	      <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/design/ ./stylebook/sources/xalandesign.xml ./stylebook/style</commandlineArgs>
-	    </configuration>
+            <configuration>
+              <executable>java</executable>
+              <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook
+                loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/design/
+                ./stylebook/sources/xalandesign.xml ./stylebook/style
+              </commandlineArgs>
+            </configuration>
           </execution>
 
           <execution>
-	    <id>Xalan2 compiled (xsltc) documentation</id>
+            <id>Xalan2 compiled (xsltc) documentation</id>
             <phase>package</phase>
             <goals>
-	      <goal>exec</goal>
+              <goal>exec</goal>
             </goals>
-	    <configuration>
-	      <executable>java</executable>
-	      <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xsltc/ ./stylebook/sources/xsltc.xml ./stylebook/style</commandlineArgs>
-	    </configuration>
+            <configuration>
+              <executable>java</executable>
+              <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook
+                loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xsltc/
+                ./stylebook/sources/xsltc.xml ./stylebook/style
+              </commandlineArgs>
+            </configuration>
           </execution>
           <execution>
-	    <id>Xalan2 interpretive documentation</id>
+            <id>Xalan2 interpretive documentation</id>
             <phase>package</phase>
             <goals>
-	      <goal>exec</goal>
+              <goal>exec</goal>
             </goals>
-	    <configuration>
-	      <executable>java</executable>
-	      <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan ./stylebook/sources/xalan-jsite.xml ./stylebook/style</commandlineArgs>
-	    </configuration>
+            <configuration>
+              <executable>java</executable>
+              <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook
+                loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan
+                ./stylebook/sources/xalan-jsite.xml ./stylebook/style
+              </commandlineArgs>
+            </configuration>
           </execution>
 
-	  <!-- Diff tells me that the -jlocal output is almost
-	       identical to the -jsite output despite the slight
-	       difference in the .xml files used as their
-	       sources. (The only effective difference appears to be
-	       that -jlocal doesn't produce the index or charter
-	       documents.)  I'm not convinced that's enough difference
-	       to merit generating both, but until I better grok why
-	       this duplication was done in the first place I'm
-	       hesitant to remove it. (jkesselm, 20231105) -->
+          <!--
+            Diff tells me that the -jlocal output is almost identical to the -jsite output despite the slight difference
+            in the .xml files used as their sources. (The only effective difference appears to be that -jlocal doesn't
+            produce the index or charter documents.)  I'm not convinced that's enough difference to merit generating
+            both, but until I better grok why this duplication was done in the first place I'm hesitant to remove it.
+            (jkesselm, 20231105)
+          -->
           <execution>
-	    <id>Xalan2 interpretive documentation, local</id>
+            <id>Xalan2 interpretive documentation, local</id>
             <phase>package</phase>
             <goals>
-	      <goal>exec</goal>
+              <goal>exec</goal>
             </goals>
-	    <configuration>
-	      <executable>java</executable>
-	      <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan/local ./stylebook/sources/xalan-jlocal.xml ./stylebook/style</commandlineArgs>
-	    </configuration>
+            <configuration>
+              <executable>java</executable>
+              <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook
+                loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan/local
+                ./stylebook/sources/xalan-jlocal.xml ./stylebook/style
+              </commandlineArgs>
+            </configuration>
           </execution>
         </executions>
       </plugin>
 
       <!-- Two more files to copy to the site directory -->
       <plugin>
-	<artifactId>maven-resources-plugin</artifactId>
-	<version>3.0.2</version>
-	<executions>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.0.2</version>
+        <executions>
           <execution>
             <id>copy-resources</id>
             <phase>package</phase>
@@ -267,13 +274,13 @@ command "mvn compile dependency:tree" so everything is in scope.
               </resources>
             </configuration>
           </execution>
-	</executions>
+        </executions>
       </plugin>
 
       <!-- Standardized Apache "source distribution" -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-	<version>3.6.0</version>
+        <version>3.6.0</version>
         <dependencies>
           <dependency>
             <groupId>org.apache.apache.resources</groupId>
@@ -289,12 +296,11 @@ command "mvn compile dependency:tree" so everything is in scope.
               <goal>single</goal>
             </goals>
             <configuration>
-              <!-- Use  this flag to generate source release assembly
-                  from the top of a multi modules maven project.  -->
+              <!-- Use this flag to generate source release assembly from the top of a multi modules maven project -->
               <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
               <descriptorRefs>
                 <!--
-                    There are 3 descriptors available, choose one of them:
+                  There are 3 descriptors available, choose one of them:
                     * source-release (zip only, this one is used in the ASF parent POM) 
                     * source-release-zip-tar (both zip and tar) 
                     * source-release-tar (tar only) 
@@ -305,7 +311,7 @@ command "mvn compile dependency:tree" so everything is in scope.
             </configuration>
           </execution>
         </executions>
-      </plugin>      
+      </plugin>
 
     </plugins>
   </build>
@@ -316,71 +322,73 @@ command "mvn compile dependency:tree" so everything is in scope.
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>3.6.0</version>
-	<configuration>
+        <configuration>
 
-	  <!-- Mute "missing" javadoc errors. We have lots of 'em, and
-	       they're a distraction from simply getting the Maven
-	       build up and running. Open a jira task to fix this
-	       later. GONK. -->
-	  <doclint>none</doclint>
+          <!--
+            Mute "missing" javadoc errors. We have lots of 'em, and they're a distraction from simply getting the Maven
+            build up and running. Open a jira task to fix this later. GONK. 
+          -->
+          <doclint>none</doclint>
 
-	  <groups>
+          <groups>
             <group>
-	      <title>XPath</title>
-	      <packages>org.apache.xpath*</packages>
-	    </group>
+              <title>XPath</title>
+              <packages>org.apache.xpath*</packages>
+            </group>
             <group>
-	      <title>Document Table Model (DTM)</title>
-	      <packages>org.apache.xml.dtm*</packages>
-	    </group>          
+              <title>Document Table Model (DTM)</title>
+              <packages>org.apache.xml.dtm*</packages>
+            </group>
             <group>
-	      <title>Utilities</title>
-	      <packages>org.apache.xml.utils*</packages>
-	    </group>
+              <title>Utilities</title>
+              <packages>org.apache.xml.utils*</packages>
+            </group>
             <group>
-	      <title>Xalan Other</title>
-	      <packages>org.apache.xalan.client:org:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.xslt</packages>
-	    </group>
+              <title>Xalan Other</title>
+              <packages>
+                org.apache.xalan.client:org:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.xslt
+              </packages>
+            </group>
             <group>
-	      <title>Xalan Extensions</title>
-	      <packages>org.apache.xalan.lib*</packages>
-	    </group>
+              <title>Xalan Extensions</title>
+              <packages>org.apache.xalan.lib*</packages>
+            </group>
             <group>
-	      <title>Serializers</title>
-	      <packages>org.apache.xml.serialize*:org.apache.xalan.serialize</packages>
-	    </group>
+              <title>Serializers</title>
+              <packages>org.apache.xml.serialize*:org.apache.xalan.serialize</packages>
+            </group>
             <group>
-	      <title>SAX 2</title>
-	      <packages>org.xml.sax*</packages>
-	    </group>
+              <title>SAX 2</title>
+              <packages>org.xml.sax*</packages>
+            </group>
             <group>
-	      <title>DOM 2</title>
-	      <packages>org.w3c.dom*</packages>
-	    </group>
+              <title>DOM 2</title>
+              <packages>org.w3c.dom*</packages>
+            </group>
             <group>
-	      <title>XSLTC Core</title>
-	      <packages>org.apache.xalan.xsltc*</packages>
-	    </group>
-	  </groups>
+              <title>XSLTC Core</title>
+              <packages>org.apache.xalan.xsltc*</packages>
+            </group>
+          </groups>
 
-	  <!-- Locally provided taglet; see xalan2jtaglet module -->
-	  <taglets>
+          <!-- Locally provided taglet; see xalan2jtaglet module -->
+          <taglets>
             <taglet>
-	      <tagletClass>xalan2jtaglet.XSLUsageTag</tagletClass>
-	    </taglet>
-	  </taglets>
-	  <tagletArtifact>
-	    <groupId>xalan</groupId>
-	    <artifactId>xalan2jtaglet</artifactId>
-	    <version>2.7.3</version>
-	  </tagletArtifact>
+              <tagletClass>xalan2jtaglet.XSLUsageTag</tagletClass>
+            </taglet>
+          </taglets>
+          <tagletArtifact>
+            <groupId>xalan</groupId>
+            <artifactId>xalan2jtaglet</artifactId>
+            <version>2.7.3</version>
+          </tagletArtifact>
 
-	</configuration>
+        </configuration>
 
         <reportSets>
           <reportSet>
             <id>aggregate</id>
-            <inherited>false</inherited>        
+            <inherited>false</inherited>
             <reports>
               <report>aggregate</report>
             </reports>

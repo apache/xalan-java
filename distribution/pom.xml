@@ -1,7 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>xalan</groupId>
     <artifactId>xalan-project</artifactId>
@@ -9,17 +10,18 @@
   </parent>
 
   <artifactId>distribution</artifactId>
-  
-<!-- PROBLEM: Something has been overwriting this pom. I don't know
-       whether making the packaging "pom" had anything to do with that,
-       but changing it may have helped. 
+
+  <!--
+    PROBLEM: Something has been overwriting this pom. I don't know whether making the packaging "pom" had anything to do
+    with that, but changing it may have helped. 
   -->
   <packaging>jar</packaging>
- 
+
   <name>distribution</name>
-  
-  <!-- NOTE: These dependency declarations are only required to sort
-       this project to the end of the queue in the multimodule build.
+
+  <!--
+    NOTE: These dependency declarations are only required to sort this project to the end of the queue in the
+    multimodule build.
   -->
   <dependencies>
     <dependency>
@@ -38,12 +40,12 @@
       <version>2.7.3</version>
     </dependency>
   </dependencies>
- 
+
   <build>
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-	<version>3.6.0</version>
+        <version>3.6.0</version>
         <executions>
           <execution>
             <id>distro-assembly</id>
@@ -59,8 +61,6 @@
           </execution>
         </executions>
       </plugin>
-
-
 
     </plugins>
   </build>
