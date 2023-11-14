@@ -16,6 +16,9 @@ command "mvn compile dependency:tree" so everything is in scope.
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <stylebook.classpath>
+      "stylebook/stylebook-1.0-b3_xalan-2.jar${path.separator}tools/xalan2jdoc.jar${path.separator}serializer/target/classes${path.separator}xalan/target/classes${path.separator}"
+    </stylebook.classpath>
   </properties>
 
   <modules>
@@ -191,7 +194,7 @@ command "mvn compile dependency:tree" so everything is in scope.
             </goals>
 	    <configuration>
 	      <executable>java</executable>
-	      <commandlineArgs>-cp "stylebook/stylebook-1.0-b3_xalan-2.jar:tools/xalan2jdoc.jar:serializer/target/classes:xalan/target/classes:%classpath" org.apache.stylebook.StyleBook loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/design/ ./stylebook/sources/xalandesign.xml ./stylebook/style</commandlineArgs>
+	      <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/design/ ./stylebook/sources/xalandesign.xml ./stylebook/style</commandlineArgs>
 	    </configuration>
           </execution>
 
@@ -203,7 +206,7 @@ command "mvn compile dependency:tree" so everything is in scope.
             </goals>
 	    <configuration>
 	      <executable>java</executable>
-	      <commandlineArgs>-cp "stylebook/stylebook-1.0-b3_xalan-2.jar:tools/xalan2jdoc.jar:serializer/target/classes:xalan/target/classes:%classpath" org.apache.stylebook.StyleBook loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xsltc/ ./stylebook/sources/xsltc.xml ./stylebook/style</commandlineArgs>
+	      <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xsltc/ ./stylebook/sources/xsltc.xml ./stylebook/style</commandlineArgs>
 	    </configuration>
           </execution>
           <execution>
@@ -214,7 +217,7 @@ command "mvn compile dependency:tree" so everything is in scope.
             </goals>
 	    <configuration>
 	      <executable>java</executable>
-	      <commandlineArgs>-cp "stylebook/stylebook-1.0-b3_xalan-2.jar:tools/xalan2jdoc.jar:serializer/target/classes:xalan/target/classes:%classpath" org.apache.stylebook.StyleBook loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan ./stylebook/sources/xalan-jsite.xml ./stylebook/style</commandlineArgs>
+	      <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan ./stylebook/sources/xalan-jsite.xml ./stylebook/style</commandlineArgs>
 	    </configuration>
           </execution>
 
@@ -235,7 +238,7 @@ command "mvn compile dependency:tree" so everything is in scope.
             </goals>
 	    <configuration>
 	      <executable>java</executable>
-	      <commandlineArgs>-cp "stylebook/stylebook-1.0-b3_xalan-2.jar:tools/xalan2jdoc.jar:serializer/target/classes:xalan/target/classes:%classpath" org.apache.stylebook.StyleBook loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan/local ./stylebook/sources/xalan-jlocal.xml ./stylebook/style</commandlineArgs>
+	      <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan/local ./stylebook/sources/xalan-jlocal.xml ./stylebook/style</commandlineArgs>
 	    </configuration>
           </execution>
         </executions>
