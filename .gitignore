@@ -1,11 +1,16 @@
-samples/target/ 
-serializer/target/ 
-xalan2jtaglet/target/ 
-xalan/target/
-target/
-build/
+# Maven
+target/ 
 **/dependency-reduced-pom.xml
+
+# Eclipse
+.settings/
+.project
+
+# IntelliJ IDEA
+.idea/
+
+# Xalan
+build/
 **/xsltc/compiler/XPathLexer.java
 **/xsltc/compiler/XPathParser.java
 **/xsltc/compiler/sym.java
-.settings/**
