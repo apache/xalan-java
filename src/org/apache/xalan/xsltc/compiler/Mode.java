@@ -168,7 +168,7 @@ final class Mode implements Constants {
      * Creates a new Mode.
      *
      * @param name A textual representation of the mode's QName
-     * @param stylesheet The Stylesheet in which the mode occured
+     * @param stylesheet The Stylesheet in which the mode occurred
      * @param suffix A suffix to append to the method name for this mode
      *               (normally a sequence number - still in a String).
      */

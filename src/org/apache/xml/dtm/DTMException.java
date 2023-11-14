@@ -31,19 +31,19 @@ import org.apache.xml.res.XMLMessages;
 
 
 /**
- * This class specifies an exceptional condition that occured
+ * This class specifies an exceptional condition that occurred
  * in the DTM module.
  */
 public class DTMException extends RuntimeException {
     static final long serialVersionUID = -775576419181334734L;
 
-    /** Field locator specifies where the error occured.
+    /** Field locator specifies where the error occurred.
      *  @serial */
     SourceLocator locator;
 
     /**
      * Method getLocator retrieves an instance of a SourceLocator
-     * object that specifies where an error occured.
+     * object that specifies where an error occurred.
      *
      * @return A SourceLocator object, or null if none was specified.
      */
@@ -53,7 +53,7 @@ public class DTMException extends RuntimeException {
 
     /**
      * Method setLocator sets an instance of a SourceLocator
-     * object that specifies where an error occured.
+     * object that specifies where an error occurred.
      *
      * @param location A SourceLocator object, or null to clear the location.
      */

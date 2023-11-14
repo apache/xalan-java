@@ -4646,7 +4646,7 @@ any).
  Submitted by: morten@xml.apache.org
  Reviewed by: morten@xml.apache.org<br/><br/></li><li><ref>Committed by </ref>morten@apache.org<ref> on </ref>06/12/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/xsltc/compiler AttributeSet.java<br/><ref>Committer's log entry: </ref>Final fix (for now) for attribute sets. In cases where multiple
  &lt;xsl:attribute-set.../&gt; elements make up one attribute set (ie. they share
- the same name) attributes that occured last in the stylesheet will take
+ the same name) attributes that occurred last in the stylesheet will take
  precedence.
  PR: n/a
  Obtained from: n/a

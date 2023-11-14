@@ -281,7 +281,7 @@ public class SQLDocument extends DTMDocument
   private boolean m_MultipleResults = false;
 
   /**
-   * Flag to detect if an error occured during an operation
+   * Flag to detect if an error occurred during an operation
    * Defines how errors are handled and how the SQL Connection
    * is closed.
    */

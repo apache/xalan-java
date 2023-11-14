@@ -1039,7 +1039,7 @@ public class Parser implements Constants, ContentHandler {
 
     /**
      * Parse an XPath expression:
-     *  @param parent - XSL element where the expression occured
+     *  @param parent - XSL element where the expression occurred
      *  @param exp    - textual representation of the expression
      */
     public Expression parseExpression(SyntaxTreeNode parent, String exp) {
@@ -1048,7 +1048,7 @@ public class Parser implements Constants, ContentHandler {
 
     /**
      * Parse an XPath expression:
-     *  @param parent - XSL element where the expression occured
+     *  @param parent - XSL element where the expression occurred
      *  @param attr   - name of this element's attribute to get expression from
      *  @param def    - default expression (if the attribute was not found)
      */
@@ -1064,7 +1064,7 @@ public class Parser implements Constants, ContentHandler {
 
     /**
      * Parse an XPath pattern:
-     *  @param parent  - XSL element where the pattern occured
+     *  @param parent  - XSL element where the pattern occurred
      *  @param pattern - textual representation of the pattern
      */
     public Pattern parsePattern(SyntaxTreeNode parent, String pattern) {
@@ -1073,7 +1073,7 @@ public class Parser implements Constants, ContentHandler {
 
     /**
      * Parse an XPath pattern:
-     *  @param parent - XSL element where the pattern occured
+     *  @param parent - XSL element where the pattern occurred
      *  @param attr   - name of this element's attribute to get pattern from
      *  @param def    - default pattern (if the attribute was not found)
      */

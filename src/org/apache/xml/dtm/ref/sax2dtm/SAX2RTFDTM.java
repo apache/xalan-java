@@ -223,7 +223,7 @@ public class SAX2RTFDTM extends SAX2DTM
   public void startDocument() throws SAXException
   {
     // Re-initialize the tree append process
-    m_endDocumentOccured = false;
+    m_endDocumentOccurred = false;
     m_prefixMappings = new java.util.Vector();
     m_contextIndexes = new IntStack();
     m_parents = new IntStack();
@@ -261,7 +261,7 @@ public class SAX2RTFDTM extends SAX2DTM
     m_contextIndexes = null;
 
     m_currentDocumentNode= NULL; // no longer open
-    m_endDocumentOccured = true;
+    m_endDocumentOccurred = true;
   }
  
 
@@ -357,6 +357,6 @@ public class SAX2RTFDTM extends SAX2DTM
    * */
   public boolean isTreeIncomplete()
   {
-    return !m_endDocumentOccured;
+    return !m_endDocumentOccurred;
   }
 }

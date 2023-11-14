@@ -63,12 +63,12 @@ public interface DOMSerializer
 {
     /**
      * Serializes the DOM node. Throws an exception only if an I/O
-     * exception occured while serializing.
+     * exception occurred while serializing.
      * 
      * This interface is a public API.
      *
      * @param node the DOM node to serialize
-     * @throws IOException if an I/O exception occured while serializing
+     * @throws IOException if an I/O exception occurred while serializing
      */
     public void serialize(Node node) throws IOException;
 }

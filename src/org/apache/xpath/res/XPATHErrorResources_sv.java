@@ -425,12 +425,12 @@ public static final int MAX_CODE = 108;  // this is needed to keep track of the 
       "FEL! Hittade inte ENDOP efter OP_LOCATIONPATH"},
 
 
-  /** Field ER_ERROR_OCCURED          */
-  //public static final int ER_ERROR_OCCURED = 42;
+  /** Field ER_ERROR_OCCURRED          */
+  //public static final int ER_ERROR_OCCURRED = 42;
 
 
   {
-    ER_ERROR_OCCURED, "Fel intr\u00e4ffade!"},
+    ER_ERROR_OCCURRED, "Fel intr\u00e4ffade!"},
 
 
   /** Field ER_ILLEGAL_VARIABLE_REFERENCE          */

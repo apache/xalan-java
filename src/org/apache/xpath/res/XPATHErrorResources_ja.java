@@ -163,7 +163,7 @@ public class XPATHErrorResources_ja extends ListResourceBundle
          "ER_DIDNOT_FIND_XPATH_SELECT_EXP";
   public static final String ER_COULDNOT_FIND_ENDOP_AFTER_OPLOCATIONPATH =
          "ER_COULDNOT_FIND_ENDOP_AFTER_OPLOCATIONPATH";
-  public static final String ER_ERROR_OCCURED = "ER_ERROR_OCCURED";
+  public static final String ER_ERROR_OCCURRED = "ER_ERROR_OCCURRED";
   public static final String ER_ILLEGAL_VARIABLE_REFERENCE =
          "ER_ILLEGAL_VARIABLE_REFERENCE";
   public static final String ER_AXES_NOT_ALLOWED = "ER_AXES_NOT_ALLOWED";
@@ -491,7 +491,7 @@ public static final String ER_IGNORABLE_WHITESPACE_NOT_HANDLED =
   { ER_COULDNOT_FIND_ENDOP_AFTER_OPLOCATIONPATH,
       "\u30a8\u30e9\u30fc:  OP_LOCATIONPATH \u306e\u5f8c\u306b ENDOP \u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f"},
 
-  { ER_ERROR_OCCURED,
+  { ER_ERROR_OCCURRED,
      "\u30a8\u30e9\u30fc\u304c\u8d77\u3053\u308a\u307e\u3057\u305f\u3002"},
 
   { ER_ILLEGAL_VARIABLE_REFERENCE,

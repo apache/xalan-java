@@ -33,7 +33,7 @@ import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 /**
  * A test sequence is a sequence of patterns that
  *
- *  (1) occured in templates in the same mode
+ *  (1) occurred in templates in the same mode
  *  (2) share the same kernel node type (e.g. A/B and C/C/B)
  *  (3) may also contain patterns matching "*" and "node()"
  *      (element sequence only) or matching "@*" (attribute
