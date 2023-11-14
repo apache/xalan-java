@@ -61,51 +61,51 @@
     <plugins>
 
       <plugin>
-	<artifactId>maven-compiler-plugin</artifactId>
-	<version>3.8.1</version>
-	<configuration>
-	  <source>1.8</source>
-	  <target>1.8</target>
-	</configuration>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
       </plugin>
 
       <!-- Filter out packages we don't want copied to the output jar
-	  https://maven.apache.org/plugins/maven-shade-plugin/examples/includes-excludes.html -->
+          https://maven.apache.org/plugins/maven-shade-plugin/examples/includes-excludes.html -->
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-shade-plugin</artifactId>
-	<version>3.5.0</version>
-	<executions>
-	  <execution>
-	    <phase>package</phase>
-	    <goals>
-	      <goal>shade</goal>
-	    </goals>
-	    <configuration>
-	      <artifactSet>
-		<excludes>
-		  <!-- Their examples (testing) -->
-		  <exclude>junit:junit</exclude>
-		  <exclude>jmock:*</exclude>
-		  <exclude>org.apache.maven:lib:tests</exclude>
-		  <!-- What I think I need to exclude.
-		       Some are direct dependencies, some come in
-		       via maven packages. -->
-		  <exclude>com.github.vbmacher:java-cup</exclude>
-		  <exclude>commons-logging:commons-logging</exclude>
-		  <exclude>org.apache.commons:commons-lang3</exclude>
-		  <exclude>org.apache.ant:ant</exclude>
-		  <exclude>org.apache.ant:ant-launcher</exclude>
-		  <exclude>org.apache.bcel:bcel</exclude>
-		</excludes>
-	      </artifactSet>
-	    </configuration>
-	  </execution>
-	</executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <excludes>
+                  <!-- Their examples (testing) -->
+                  <exclude>junit:junit</exclude>
+                  <exclude>jmock:*</exclude>
+                  <exclude>org.apache.maven:lib:tests</exclude>
+                  <!-- What I think I need to exclude.
+                       Some are direct dependencies, some come in
+                       via maven packages. -->
+                  <exclude>com.github.vbmacher:java-cup</exclude>
+                  <exclude>commons-logging:commons-logging</exclude>
+                  <exclude>org.apache.commons:commons-lang3</exclude>
+                  <exclude>org.apache.ant:ant</exclude>
+                  <exclude>org.apache.ant:ant-launcher</exclude>
+                  <exclude>org.apache.bcel:bcel</exclude>
+                </excludes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <!-- Copy generated jarfile up to xalan-java/build/,
-	   for backward compatibility with Ant builds. -->
+           for backward compatibility with Ant builds. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>

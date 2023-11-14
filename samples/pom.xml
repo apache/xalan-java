@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <artifactId>xalan-project</artifactId>
@@ -63,11 +65,11 @@
     </dependency>
 
     <!-- It isn't clear whether, or where, the Brazil server code
-	 is avalable on Maven. And I suspect the right answer is
-	 really to eliminate use of it in favor of more modern
-	 solutions. But Sun used it in their XSLTC samples, and
-	 for now I'll just continue carrying a local (ugh) copy.
-	 -->
+         is avalable on Maven. And I suspect the right answer is
+         really to eliminate use of it in favor of more modern
+         solutions. But Sun used it in their XSLTC samples, and
+         for now I'll just continue carrying a local (ugh) copy.
+         -->
     <dependency>
       <groupId>sunlabs</groupId>
       <artifactId>brazil</artifactId>
@@ -88,44 +90,44 @@
   <build>
     <plugins>
       <!--
-	  https://maven.apache.org/plugins/maven-shade-plugin/examples/includes-excludes.html -->
+          https://maven.apache.org/plugins/maven-shade-plugin/examples/includes-excludes.html -->
       <plugin>
-	<groupId>org.apache.maven.plugins</groupId>
-	<artifactId>maven-shade-plugin</artifactId>
-	<version>3.5.0</version>
-	<executions>
-	  <execution>
-	    <phase>package</phase>
-	    <goals>
-	      <goal>shade</goal>
-	    </goals>
-	    <configuration>
-	      <artifactSet>
-		<excludes>
-		  <!-- Their examples (testing) -->
-		  <exclude>junit:junit</exclude>
-		  <exclude>jmock:*</exclude>
-		  <exclude>org.apache.maven:lib:tests</exclude>
-		  <!-- What I think I need to exclude.
-		       Some are direct dependencies, some come in
-		       via maven packages. -->
-		  <exclude>com.github.vbmacher:java-cup</exclude>
-		  <exclude>commons-logging:commons-logging</exclude>
-		  <exclude>org.apache.commons:commons-lang3</exclude>
-		  <exclude>org.apache.ant:ant</exclude>
-		  <exclude>org.apache.ant:ant-launcher</exclude>
-		  <exclude>xalan:serializer</exclude>
-		  <exclude>de.jflex:jflex</exclude>	
-		  <exclude>org.jboss.spec.javax.rmi:jboss-rmi-api_1.0_spec</exclude>
-		</excludes>
-	      </artifactSet>
-	    </configuration>
-	  </execution>
-	</executions>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.5.0</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <excludes>
+                  <!-- Their examples (testing) -->
+                  <exclude>junit:junit</exclude>
+                  <exclude>jmock:*</exclude>
+                  <exclude>org.apache.maven:lib:tests</exclude>
+                  <!-- What I think I need to exclude.
+                       Some are direct dependencies, some come in
+                       via maven packages. -->
+                  <exclude>com.github.vbmacher:java-cup</exclude>
+                  <exclude>commons-logging:commons-logging</exclude>
+                  <exclude>org.apache.commons:commons-lang3</exclude>
+                  <exclude>org.apache.ant:ant</exclude>
+                  <exclude>org.apache.ant:ant-launcher</exclude>
+                  <exclude>xalan:serializer</exclude>
+                  <exclude>de.jflex:jflex</exclude>     
+                  <exclude>org.jboss.spec.javax.rmi:jboss-rmi-api_1.0_spec</exclude>
+                </excludes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <!-- Copy generated jarfile up to xalan-java/build/,
-	   for backward compatibility with Ant builds. -->
+           for backward compatibility with Ant builds. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>

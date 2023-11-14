@@ -1,12 +1,12 @@
 <!-- Maven assembly plugin configuration for executable packaging 
      See https://maven.apache.org/plugins/maven-assembly-plugin/faq.html#module-binaries
      TODO: Should include xercesImpl and xml-apis jarfiles? 
-	Not regex, bcel, commons
-	And those should be moved to xalan-X_version/
+     Not regex, bcel, commons
+     And those should be moved to xalan-X_version/
 -->
 <assembly xmlns="http://maven.apache.org/ASSEMBLY/2.2.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.2.0 http://maven.apache.org/xsd/assembly-2.2.0.xsd">
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.2.0 http://maven.apache.org/xsd/assembly-2.2.0.xsd">
   <id>bin</id>
   <formats>
     <format>zip</format>
@@ -43,8 +43,8 @@
       <directory>../samples</directory>
       <outputDirectory>${project.parent.name}_${project.parent.version}/samples</outputDirectory>
       <excludes>
-	<exclude>target/**</exclude>
-	<exclude>src/site/**</exclude>
+        <exclude>target/**</exclude>
+        <exclude>src/site/**</exclude>
       </excludes>
     </fileSet>
   </fileSets>

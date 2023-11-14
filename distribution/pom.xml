@@ -9,16 +9,10 @@
   </parent>
 
   <artifactId>distribution</artifactId>
-  
-<!-- PROBLEM: Something has been overwriting this pom. I don't know
-       whether making the packaging "pom" had anything to do with that,
-       but changing it may have helped. 
-  -->
-  <packaging>jar</packaging>
- 
   <name>distribution</name>
+  <packaging>pom</packaging>
   
-  <!-- NOTE: These dependency declarations are only required to sort
+  <!-- NOTE: These dependency declarations are only used to sort
        this project to the end of the queue in the multimodule build.
   -->
   <dependencies>
@@ -43,7 +37,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-	<version>3.6.0</version>
+        <version>3.6.0</version>
         <executions>
           <execution>
             <id>distro-assembly</id>
