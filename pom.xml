@@ -13,7 +13,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>xalan</groupId>
-  <artifactId>xalan-project</artifactId>
+  <artifactId>xalan-j</artifactId>
   <version>2.7.3</version>
 
   <properties>
@@ -186,7 +186,7 @@
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
-        <inherited>false</inherited> <!-- Run only in xalan-project parent -->
+        <inherited>false</inherited> <!-- Run only in xalan-j parent -->
         <executions>
           <execution>
             <id>Xalan2 design documentation</id>
