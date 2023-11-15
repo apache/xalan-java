@@ -2,6 +2,9 @@
 <!-- Based upon Apache standard Source Release Assembly,
      with customizations as needed for Xalan's source
      release bundle.
+
+     1) Has to start scan from parent project, not current project.
+     Coded to .. now; should probably use a ${...parent...} reference
 -->
 
 <!--
@@ -24,7 +27,7 @@ under the License.
 -->
 
 <assembly>
-  <id>source-release</id>
+  <id>src</id>
   <formats>
     <format>zip</format>
     <format>tar.gz</format>
@@ -33,7 +36,7 @@ under the License.
   <fileSets>
     <!-- main project directory structure -->
     <fileSet>
-      <directory>.</directory>
+      <directory>..</directory> <!-- Standard: was . -->
       <outputDirectory>/</outputDirectory>
       <useDefaultExcludes>true</useDefaultExcludes>
       <excludes>
@@ -75,7 +78,7 @@ under the License.
 
     <!-- license, readme, etc. calculated at build time -->
     <fileSet>
-      <directory>${project.build.directory}/maven-shared-archive-resources/META-INF</directory>
+      <directory>../maven-shared-archive-resources/META-INF</directory>
       <outputDirectory>/</outputDirectory>
     </fileSet>
   </fileSets>

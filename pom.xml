@@ -280,6 +280,42 @@
         </executions>
       </plugin>
 
+      <!-- Stylistically, better to do this from distribution/pom.xml.
+	   Can't do that until I have a src.xml assembly description
+	   that is appropriately tuned.
+	   -->
+      <!-- <plugin> -->
+      <!--   <artifactId>maven-assembly-plugin</artifactId> -->
+      <!--   <version>3.6.0</version> -->
+      <!--   <dependencies> -->
+      <!--     <dependency> -->
+      <!--       <groupId>org.apache.apache.resources</groupId> -->
+      <!--       <artifactId>apache-source-release-assembly-descriptor</artifactId> -->
+      <!--       <version>1.5</version> -->
+      <!--     </dependency> -->
+      <!--   </dependencies> -->
+      <!--   <executions> -->
+      <!--     <execution> -->
+      <!--       <id>source-release-assembly</id> -->
+      <!--       <phase>package</phase> -->
+      <!--       <goals> -->
+      <!--         <goal>single</goal> -->
+      <!--       </goals> -->
+      <!--       <configuration> -->
+      <!-- 	      <!-\- Standardized Apache "source distribution"  -->
+      <!-- 		   But there's stuff we may want to cheat into it. -->
+      <!-- 	      -\-> -->
+      <!--         <descriptorRefs> -->
+      <!--           <descriptorRef>source-release-zip-tar</descriptorRef> -->
+      <!--         </descriptorRefs> -->
+      <!-- 	      <!-\- <descriptors> -\-> -->
+      <!--         <!-\-   <descriptor>src/assembly/src.tar</descriptor> -\-> -->
+      <!--         <!-\- </descriptors> -\-> -->
+      <!--         <tarLongFileMode>gnu</tarLongFileMode> -->
+      <!--       </configuration> -->
+      <!--     </execution> -->
+      <!--   </executions> -->
+      <!-- </plugin> -->
 
     </plugins>
   </build>

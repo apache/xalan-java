@@ -59,6 +59,8 @@
               <goal>single</goal>
             </goals>
             <configuration>
+	      <finalName>${project.parent.build.finalName}</finalName>
+	      <outputDirectory>../build</outputDirectory>
               <descriptors>
                 <descriptor>src/assembly/bin.xml</descriptor>
               </descriptors>
@@ -85,43 +87,16 @@
               <goal>single</goal>
             </goals>
             <configuration>
-	      <!-- Standardized Apache "source distribution" 
-		   But there's stuff we may want to cheat into it.
-	      -->
-              <descriptorRefs>
-                <descriptorRef>source-release-zip-tar</descriptorRef>
-              </descriptorRefs>
-	      <!-- <descriptors> -->
-              <!--   <descriptor>src/assembly/src.tar</descriptor> -->
-              <!-- </descriptors> -->
+	      <finalName>${project.parent.build.finalName}</finalName>
+	      <outputDirectory>../build</outputDirectory>
+              <descriptors>
+		<!-- "Standard" mvn assembly descriptor starts from current
+		     module. If I'm doing this from distribution, I need one
+		     that starts from parent module
+		-->
+                <descriptor>src/assembly/src.xml</descriptor>
+              </descriptors>
               <tarLongFileMode>gnu</tarLongFileMode>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Copy and rename to the ant-emulation directory -->
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>3.0.2</version>
-        <executions>
-          <execution>
-            <id>copy-resources</id>
-            <phase>package</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>../build</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>target</directory>
-                  <includes>
-                    <include>*.tar.gz</include>
-                    <include>*.zip</include>
-                  </includes>
-                </resource>
-              </resources>
             </configuration>
           </execution>
         </executions>
