@@ -43,9 +43,26 @@
               <goal>single</goal>
             </goals>
             <configuration>
+	      <finalName>${project.parent.build.finalName}</finalName>
+	      <outputDirectory>../build</outputDirectory>
               <descriptors>
                 <descriptor>src/assembly/bin.xml</descriptor>
               </descriptors>
+            </configuration>
+          </execution>
+          <execution>
+            <id>source-release-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+	      <finalName>${project.parent.build.finalName}</finalName>
+	      <outputDirectory>../build</outputDirectory>
+              <descriptors>
+                <descriptor>src/assembly/src.xml</descriptor>
+              </descriptors>
+              <tarLongFileMode>gnu</tarLongFileMode>
             </configuration>
           </execution>
         </executions>
