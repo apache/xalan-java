@@ -114,34 +114,34 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.5.0</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <artifactSet>
-                <excludes>
-                  <!-- Their examples -->
-                  <exclude>junit:junit</exclude>
-                  <exclude>jmock:*</exclude>
-                  <exclude>*:xml-apis</exclude>
-                  <exclude>org.apache.maven:lib:tests</exclude>
-                  <!-- What I think I need to exclude -->
-                  <exclude>com.github.vbmacher:java-cup</exclude>
-                  <exclude>commons-logging:commons-logging</exclude>
-                  <exclude>javax:*</exclude>
-                </excludes>
-              </artifactSet>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+      <!-- <plugin> -->
+      <!--   <groupId>org.apache.maven.plugins</groupId> -->
+      <!--   <artifactId>maven-shade-plugin</artifactId> -->
+      <!--   <version>3.5.0</version> -->
+      <!--   <executions> -->
+      <!--     <execution> -->
+      <!--       <phase>package</phase> -->
+      <!--       <goals> -->
+      <!--         <goal>shade</goal> -->
+      <!--       </goals> -->
+      <!--       <configuration> -->
+      <!--         <artifactSet> -->
+      <!--           <excludes> -->
+      <!--             <!-\- Their examples -\-> -->
+      <!--             <exclude>junit:junit</exclude> -->
+      <!--             <exclude>jmock:*</exclude> -->
+      <!--             <exclude>*:xml-apis</exclude> -->
+      <!--             <exclude>org.apache.maven:lib:tests</exclude> -->
+      <!--             <!-\- What I think I need to exclude -\-> -->
+      <!--             <exclude>com.github.vbmacher:java-cup</exclude> -->
+      <!--             <exclude>commons-logging:commons-logging</exclude> -->
+      <!--             <exclude>javax:*</exclude> -->
+      <!--           </excludes> -->
+      <!--         </artifactSet> -->
+      <!--       </configuration> -->
+      <!--     </execution> -->
+      <!--   </executions> -->
+      <!-- </plugin> -->
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -280,36 +280,6 @@
         </executions>
       </plugin>
 
-      <!-- Standardized Apache "source distribution" -->
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.6.0</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.apache.resources</groupId>
-            <artifactId>apache-source-release-assembly-descriptor</artifactId>
-            <version>1.5</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <id>source-release-assembly</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <!-- Use  this flag to generate source release assembly
-                  from the top of a multi modules maven project.  -->
-              <runOnlyAtExecutionRoot>true</runOnlyAtExecutionRoot>
-              <descriptorRefs>
-                <descriptorRef>source-release-zip-tar</descriptorRef>
-              </descriptorRefs>
-              <tarLongFileMode>gnu</tarLongFileMode>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
 
     </plugins>
   </build>

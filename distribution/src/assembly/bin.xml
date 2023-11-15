@@ -23,7 +23,7 @@
         <include>xalan:samples</include>
       </includes>
       <binaries>
-        <outputDirectory>xalan</outputDirectory>
+        <outputDirectory>${project.parent.name}_${project.parent.version}</outputDirectory>
         <unpack>false</unpack>
       </binaries>
     </moduleSet>

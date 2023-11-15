@@ -67,6 +67,34 @@
         </executions>
       </plugin>
 
+      <!-- Standardized Apache "source distribution" -->
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.6.0</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.apache.resources</groupId>
+            <artifactId>apache-source-release-assembly-descriptor</artifactId>
+            <version>1.5</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>source-release-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+	      <descriptors>
+                <descriptor>src/assembly/src.xml</descriptor>
+              </descriptors>
+              <tarLongFileMode>gnu</tarLongFileMode>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
     </plugins>
   </build>
 </project>
