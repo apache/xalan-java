@@ -10,39 +10,23 @@
 
   <artifactId>distribution</artifactId>
   <name>distribution</name>
-  <!-- I don't understand why, but on my system when I set the packaging
-       to pom I wind up with the pom.xml file being overwritten with binary
-       stuff, apparently one of the archives.
-
-       When set to jar, the pom is undamaged. If I mark the dependencies
-       as provided, I can at least avoid wasting much time on that, but
-       this is the simplest workaround I've yet found for weird behavior.
-  -->
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
   
-  <!-- NOTE: These dependency declarations are only used to sort
-       this project to the end of the queue in the multimodule build.
-       Marking them as provided keeps them out of the output jarfile
-       (if any).
+  <!-- Depend on modules containing source code that needs to be compiled
+       before being able to create a binary distribution
   -->
   <dependencies>
     <dependency>
       <groupId>xalan</groupId>
       <artifactId>serializer</artifactId>
-      <version>2.7.3</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>xalan</groupId>
       <artifactId>xalan</artifactId>
-      <version>2.7.3</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>xalan</groupId>
       <artifactId>samples</artifactId>
-      <version>2.7.3</version>
-      <scope>provided</scope>
     </dependency>
   </dependencies>
  
