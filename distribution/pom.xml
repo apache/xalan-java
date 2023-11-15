@@ -67,7 +67,6 @@
         </executions>
       </plugin>
 
-      <!-- Standardized Apache "source distribution" -->
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>3.6.0</version>
@@ -86,10 +85,43 @@
               <goal>single</goal>
             </goals>
             <configuration>
-	      <descriptors>
-                <descriptor>src/assembly/src.xml</descriptor>
-              </descriptors>
+	      <!-- Standardized Apache "source distribution" 
+		   But there's stuff we may want to cheat into it.
+	      -->
+              <descriptorRefs>
+                <descriptorRef>source-release-zip-tar</descriptorRef>
+              </descriptorRefs>
+	      <!-- <descriptors> -->
+              <!--   <descriptor>src/assembly/src.tar</descriptor> -->
+              <!-- </descriptors> -->
               <tarLongFileMode>gnu</tarLongFileMode>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Copy and rename to the ant-emulation directory -->
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.0.2</version>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>../build</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>target</directory>
+                  <includes>
+                    <include>*.tar.gz</include>
+                    <include>*.zip</include>
+                  </includes>
+                </resource>
+              </resources>
             </configuration>
           </execution>
         </executions>
