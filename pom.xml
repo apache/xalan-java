@@ -401,9 +401,17 @@
           <tagletArtifact>
             <groupId>xalan</groupId>
             <artifactId>xalan2jtaglet</artifactId>
-            <version>{project.version}</version>
+            <version>${project.version}</version>
           </tagletArtifact>
 
+          <!-- FIXME: Without this exclude, the build only works if module
+                      'xalan2jtaglet' was first installed locally or deployed to
+                       a remote repository. I.e., we have to use something like
+                      'mvn clean install site', at least for the taglet module.
+                      'mvn clean package site' on top level is not enough for a
+                       build when the local Maven repo is clean.
+          -->
+          <excludePackageNames>xalan2jtaglet</excludePackageNames>
         </configuration>
 
         <reportSets>
