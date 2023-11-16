@@ -1,9 +1,10 @@
 package xalan2jtaglet;
 
-import com.sun.javadoc.Tag;
-import com.sun.tools.doclets.Taglet;
+import com.sun.source.doctree.DocTree;
+import jdk.javadoc.doclet.Taglet;
 
-import java.util.Map;
+import javax.lang.model.element.Element;
+import java.util.*;
 
 /**
  * Taglet for Xalan-Java documentation, giving us a standard way to
@@ -19,39 +20,14 @@ import java.util.Map;
  * into their expanded renderings in the Javadoc.
  * <p>
  * Source code recreated from xalan2jtaglet.jar by IntelliJ IDEA (powered by
- * FernFlower decompiler), then adjusted to JDK 8 taglet API.
+ * FernFlower decompiler), then adjusted to JDK 9+ taglet API.
  */
 public class XSLUsageTag implements Taglet {
   private static final String HEADER = "Usage:";
 
   @Override
-  public boolean inConstructor() {
-    return true;
-  }
-
-  @Override
-  public boolean inField() {
-    return true;
-  }
-
-  @Override
-  public boolean inMethod() {
-    return true;
-  }
-
-  @Override
-  public boolean inOverview() {
-    return true;
-  }
-
-  @Override
-  public boolean inPackage() {
-    return true;
-  }
-
-  @Override
-  public boolean inType() {
-    return true;
+  public Set<Location> getAllowedLocations() {
+    return new HashSet<>(Arrays.asList(Location.values()));
   }
 
   @Override
@@ -65,17 +41,12 @@ public class XSLUsageTag implements Taglet {
   }
 
   @Override
-  public String toString(Tag tag) {
-    return "\n<DT><b>Usage:</b><DD>" + XSLUsage.getHTML(tag) + "</DD>\n";
-  }
-
-  @Override
-  public String toString(Tag[] tags) {
-    if (tags == null || tags.length == 0)
+  public String toString(List<? extends DocTree> tags, Element element) {
+    if (tags == null || tags.isEmpty())
       return "";
 
     String string = "\n<DT><b>Usage:</b><DD>";
-    for (Tag tag : tags)
+    for (DocTree tag : tags)
       string = string + XSLUsage.getHTML(tag) + ", ";
 
     // Remove trailing ", ", add end tag

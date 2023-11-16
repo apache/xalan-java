@@ -1,6 +1,7 @@
 package xalan2jtaglet;
 
-import com.sun.javadoc.Tag;
+import com.sun.source.doctree.DocTree;
+import com.sun.source.doctree.UnknownBlockTagTree;
 
 /**
  * Taglet for Xalan-Java documentation, giving us a standard way to
@@ -16,7 +17,7 @@ import com.sun.javadoc.Tag;
  * into their expanded renderings in the Javadoc.
  * <p>
  * Source code recreated from xalan2jtaglet.jar by IntelliJ IDEA (powered by
- * FernFlower decompiler), then adjusted to JDK 8 taglet API.
+ * FernFlower decompiler), then adjusted to JDK 9+ taglet API.
  */
 public class XSLUsage {
   public static final String TAG = "xsl.usage";
@@ -34,17 +35,20 @@ public class XSLUsage {
     "**For internal use only**", "**For advanced use only**", "**Experimental**"
   };
 
-  public static String getHTML(Tag usageTag) {
+  public static String getHTML(DocTree usageTag) {
     int key = getKey(usageTag);
     return key == -1
       ? ""
       : "<i><font size=\"-1\" color=\"#" + colours[key] + "\"> " + messages[key] + "</font></i></DD>\n";
   }
 
-  private static int getKey(Tag usageTag) {
-    for (int i = 0; i < names.length; ++i) {
-      if (names[i].equals(usageTag.text()))
-        return i;
+  private static int getKey(DocTree usageTag) {
+    if (usageTag instanceof UnknownBlockTagTree) {
+      UnknownBlockTagTree tag = (UnknownBlockTagTree) usageTag;
+      for (int i = 0; i < names.length; ++i) {
+        if (names[i].equals(tag.getContent().toString()))
+          return i;
+      }
     }
     return -1;
   }
