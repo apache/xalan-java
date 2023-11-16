@@ -24,20 +24,16 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>xalan</groupId>
       <artifactId>serializer</artifactId>
-      <version>2.7.3</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>xalan</groupId>
       <artifactId>xalan</artifactId>
-      <version>2.7.3</version>
-      <scope>provided</scope>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
@@ -89,43 +85,6 @@
 
   <build>
     <plugins>
-      <!--
-          https://maven.apache.org/plugins/maven-shade-plugin/examples/includes-excludes.html -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.5.0</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <artifactSet>
-                <excludes>
-                  <!-- Their examples (testing) -->
-                  <exclude>junit:junit</exclude>
-                  <exclude>jmock:*</exclude>
-                  <exclude>org.apache.maven:lib:tests</exclude>
-                  <!-- What I think I need to exclude.
-                       Some are direct dependencies, some come in
-                       via maven packages. -->
-                  <exclude>com.github.vbmacher:java-cup</exclude>
-                  <exclude>commons-logging:commons-logging</exclude>
-                  <exclude>org.apache.commons:commons-lang3</exclude>
-                  <exclude>org.apache.ant:ant</exclude>
-                  <exclude>org.apache.ant:ant-launcher</exclude>
-                  <exclude>xalan:serializer</exclude>
-                  <exclude>de.jflex:jflex</exclude>     
-                  <exclude>org.jboss.spec.javax.rmi:jboss-rmi-api_1.0_spec</exclude>
-                </excludes>
-              </artifactSet>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <!-- Copy generated jarfile up to xalan-java/build/,
            for backward compatibility with Ant builds. -->
       <plugin>

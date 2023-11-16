@@ -25,6 +25,13 @@
       <binaries>
         <outputDirectory>${project.parent.name}_${project.parent.version}</outputDirectory>
         <unpack>false</unpack>
+        <dependencySets>
+          <dependencySet>
+            <excludes>
+              <exclude>org.jboss.spec.javax.rmi:jboss-rmi-api_1.0_spec</exclude>
+            </excludes>
+          </dependencySet>
+        </dependencySets>
       </binaries>
     </moduleSet>
   </moduleSets>

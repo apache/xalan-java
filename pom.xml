@@ -114,35 +114,6 @@
         </configuration>
       </plugin>
 
-      <!-- <plugin> -->
-      <!--   <groupId>org.apache.maven.plugins</groupId> -->
-      <!--   <artifactId>maven-shade-plugin</artifactId> -->
-      <!--   <version>3.5.0</version> -->
-      <!--   <executions> -->
-      <!--     <execution> -->
-      <!--       <phase>package</phase> -->
-      <!--       <goals> -->
-      <!--         <goal>shade</goal> -->
-      <!--       </goals> -->
-      <!--       <configuration> -->
-      <!--         <artifactSet> -->
-      <!--           <excludes> -->
-      <!--             <!-\- Their examples -\-> -->
-      <!--             <exclude>junit:junit</exclude> -->
-      <!--             <exclude>jmock:*</exclude> -->
-      <!--             <exclude>*:xml-apis</exclude> -->
-      <!--             <exclude>org.apache.maven:lib:tests</exclude> -->
-      <!--             <!-\- What I think I need to exclude -\-> -->
-      <!--             <exclude>com.github.vbmacher:java-cup</exclude> -->
-      <!--             <exclude>commons-logging:commons-logging</exclude> -->
-      <!--             <exclude>javax:*</exclude> -->
-      <!--           </excludes> -->
-      <!--         </artifactSet> -->
-      <!--       </configuration> -->
-      <!--     </execution> -->
-      <!--   </executions> -->
-      <!-- </plugin> -->
-
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
@@ -280,45 +251,28 @@
         </executions>
       </plugin>
 
-      <!-- Stylistically, better to do this from distribution/pom.xml.
-	   Can't do that until I have a src.xml assembly description
-	   that is appropriately tuned.
-	   -->
-      <!-- <plugin> -->
-      <!--   <artifactId>maven-assembly-plugin</artifactId> -->
-      <!--   <version>3.6.0</version> -->
-      <!--   <dependencies> -->
-      <!--     <dependency> -->
-      <!--       <groupId>org.apache.apache.resources</groupId> -->
-      <!--       <artifactId>apache-source-release-assembly-descriptor</artifactId> -->
-      <!--       <version>1.5</version> -->
-      <!--     </dependency> -->
-      <!--   </dependencies> -->
-      <!--   <executions> -->
-      <!--     <execution> -->
-      <!--       <id>source-release-assembly</id> -->
-      <!--       <phase>package</phase> -->
-      <!--       <goals> -->
-      <!--         <goal>single</goal> -->
-      <!--       </goals> -->
-      <!--       <configuration> -->
-      <!-- 	      <!-\- Standardized Apache "source distribution"  -->
-      <!-- 		   But there's stuff we may want to cheat into it. -->
-      <!-- 	      -\-> -->
-      <!--         <descriptorRefs> -->
-      <!--           <descriptorRef>source-release-zip-tar</descriptorRef> -->
-      <!--         </descriptorRefs> -->
-      <!-- 	      <!-\- <descriptors> -\-> -->
-      <!--         <!-\-   <descriptor>src/assembly/src.tar</descriptor> -\-> -->
-      <!--         <!-\- </descriptors> -\-> -->
-      <!--         <tarLongFileMode>gnu</tarLongFileMode> -->
-      <!--       </configuration> -->
-      <!--     </execution> -->
-      <!--   </executions> -->
-      <!-- </plugin> -->
-
     </plugins>
   </build>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>xalan</groupId>
+        <artifactId>serializer</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>xalan</groupId>
+        <artifactId>xalan</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>xalan</groupId>
+        <artifactId>samples</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <reporting>
     <plugins>
@@ -382,9 +336,17 @@
           <tagletArtifact>
             <groupId>xalan</groupId>
             <artifactId>xalan2jtaglet</artifactId>
-            <version>2.7.3</version>
+            <version>${project.version}</version>
           </tagletArtifact>
 
+          <!-- FIXME: Without this exclude, the build only works if module
+                      'xalan2jtaglet' was first installed locally or deployed to
+                       a remote repository. I.e., we have to use something like
+                      'mvn clean install site', at least for the taglet module.
+                      'mvn clean package site' on top level is not enough for a
+                       build when the local Maven repo is clean.
+          -->
+          <excludePackageNames>xalan2jtaglet</excludePackageNames>
         </configuration>
 
         <reportSets>
