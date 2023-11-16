@@ -43,8 +43,8 @@
               <goal>single</goal>
             </goals>
             <configuration>
-	      <finalName>${project.parent.build.finalName}</finalName>
-	      <outputDirectory>../build</outputDirectory>
+              <finalName>${project.parent.build.finalName}</finalName>
+              <outputDirectory>../build</outputDirectory>
               <descriptors>
                 <descriptor>src/assembly/bin.xml</descriptor>
               </descriptors>
@@ -57,8 +57,8 @@
               <goal>single</goal>
             </goals>
             <configuration>
-	      <finalName>${project.parent.build.finalName}</finalName>
-	      <outputDirectory>../build</outputDirectory>
+              <finalName>${project.parent.build.finalName}</finalName>
+              <outputDirectory>../build</outputDirectory>
               <descriptors>
                 <descriptor>src/assembly/src.xml</descriptor>
               </descriptors>
