@@ -201,13 +201,13 @@ public class ElemFunction extends ElemTemplate
       
       // end, Validate few of the information of xsl:function's xsl:param declarations            
       
-      VariableStack varStack = xctxt.getVarStack();
-      
       if (xslParamMap.size() > 0) {
           // Assign all of the xsl:function parameter value mappings to xpath context's
           // variable stack, after which the XSL instructions after xsl:param declarations
           // can dereference those parameters.                   
           
+    	  VariableStack varStack = xctxt.getVarStack();
+    	  
           varStack.unlink();
           int argsFrame = varStack.link(xslParamMap.size());            
                     
