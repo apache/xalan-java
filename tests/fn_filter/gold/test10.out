@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <val>1.1</val>
+    <val>2.1</val>
+    <val>3.1</val>
+    <val>4.1</val>
+    <val>5.1</val>
+  </one>
+  <two>
+    <val>6.1</val>
+    <val>7.1</val>
+    <val>8.1</val>
+  </two>
+  <three>
+    <val>5.1</val>
+  </three>
+</result>
