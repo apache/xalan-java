@@ -20,24 +20,87 @@
  */
 package org.apache.xml.serializer;
 
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Administrative class to keep track of the version number of
  * the Serializer release.
  * <P>This class implements the upcoming standard of having
- * org.apache.project-name.Version.getVersion() be a standard way 
- * to get version information.</P> 
+ * org.apache.project-name.Version.getVersion() be a standard way
+ * to get version information.</P>
  * @xsl.usage general
  */
 public final class Version
 {
+  private static final String POM_PROPERTIES_JAR = "META-INF/maven/xalan/serializer/pom.properties";
+  private static final String POM_PROPERTIES_FILE_SYSTEM = "serializer/target/maven-archiver/pom.properties";
+  private static final String VERSION_NUMBER_PATTERN = "^(\\d+)[.](\\d+)[.](D)?(\\d+)(-SNAPSHOT)?$";
+  private static final String NO_VERSION = "0.0.0";
+
+  private static String version = NO_VERSION;
+  private static int majorVersionNum;
+  private static int releaseVersionNum;
+  private static int maintenanceVersionNum;
+  private static int developmentVersionNum;
+
+  private static boolean snapshot;
+
+  static {
+    readProperties();
+    parseVersionNumber();
+  }
+
+  private static void readProperties() {
+    Properties pomProperties = new Properties();
+    try (InputStream fromJar = Version.class.getResourceAsStream(POM_PROPERTIES_JAR)) {
+      if (fromJar != null) {
+        pomProperties.load(fromJar);
+        version = pomProperties.getProperty("version", NO_VERSION);
+      }
+      else {
+        try (FileInputStream fromFileSystem = new FileInputStream(POM_PROPERTIES_FILE_SYSTEM)) {
+          pomProperties.load(fromFileSystem);
+          version = pomProperties.getProperty("version", NO_VERSION);
+        }
+      }
+    }
+    catch (IOException e) {
+      new RuntimeException("Cannot read properties file to extract version number information: ", e)
+        .printStackTrace();
+    }
+  }
+
+  private static void parseVersionNumber() {
+    Matcher matcher = Pattern.compile(VERSION_NUMBER_PATTERN).matcher(version);
+    if (matcher.find()) {
+      majorVersionNum = Integer.parseInt(matcher.group(1));
+      releaseVersionNum = Integer.parseInt(matcher.group(2));
+      if (matcher.group(3) == null) {
+        maintenanceVersionNum = Integer.parseInt(matcher.group(4));
+      }
+      else {
+        developmentVersionNum = Integer.parseInt(matcher.group(4));
+      }
+      snapshot = matcher.group(5) != null && !matcher.group(5).isEmpty();
+    }
+    else {
+      System.err.println(
+        "Cannot match version \"" + version + "\" " +
+          "against expected pattern \"" + VERSION_NUMBER_PATTERN + "\""
+      );
+    }
+  }
 
   /**
    * Get the basic version string for the current Serializer.
-   * Version String formatted like 
-   * <CODE>"<B>Serializer</B> <B>Java</B> v.r[.dd| <B>D</B>nn]"</CODE>.
-   *
-   * Futurework: have this read version info from jar manifest,
-   * pom.properties, and/or a file updated during maven build.
+   * Version String formatted like
+   * <CODE>"<B>Xalan Serializer</B> <B>Java</B> v.r[.dd| <B>D</B>nn]"</CODE>.
    *
    * @return String denoting our current version
    */
@@ -45,8 +108,9 @@ public final class Version
   {
      return getProduct()+" "+getImplementationLanguage()+" "
            +getMajorVersionNum()+"."+getReleaseVersionNum()+"."
-           +( (getDevelopmentVersionNum() > 0) ? 
-               ("D"+getDevelopmentVersionNum()) : (""+getMaintenanceVersionNum()));  
+           +( (getDevelopmentVersionNum() > 0) ?
+               ("D"+getDevelopmentVersionNum()) : (""+getMaintenanceVersionNum()))
+           +(isSnapshot() ? "-SNAPSHOT" :"");
   }
 
   /**
@@ -58,13 +122,13 @@ public final class Version
   {
     System.out.println(getVersion());
   }
-  
+
   /**
    * @return String name of product: Serializer.
    */
   public static String getProduct()
   {
-    return "Serializer";
+    return "Xalan Serializer";
   }
 
   /**
@@ -74,8 +138,8 @@ public final class Version
   {
     return "Java";
   }
-  
-  
+
+
   /**
    * @return int Major version number.
    * Version number. This changes only when there is a
@@ -89,9 +153,8 @@ public final class Version
    */
   public static int getMajorVersionNum()
   {
-    return 2;
-    
-  }  
+    return majorVersionNum;
+  }
 
   /**
    * @return int Release Number.
@@ -103,9 +166,9 @@ public final class Version
    */
   public static int getReleaseVersionNum()
   {
-    return 7;
+    return releaseVersionNum;
   }
-  
+
   /**
    * @return int Maintenance Drop Number.
    * Optional identifier used to designate maintenance
@@ -117,7 +180,7 @@ public final class Version
    */
   public static int getMaintenanceVersionNum()
   {
-    return 3;
+    return maintenanceVersionNum;
   }
 
   /**
@@ -138,14 +201,18 @@ public final class Version
    *          the final releases.
    */
   public static int getDevelopmentVersionNum()
-  { 
-    try {   
-        if ((new String("")).length() == 0)
-          return 0;
-        else  
-          return Integer.parseInt("");
-    } catch (NumberFormatException nfe) {
-           return 0;
-    }    
-  }      
+  {
+    return developmentVersionNum;
+    }
+
+  /**
+   * Snapshot flag.
+   * Specifies whether the version number has a "-SNAPSHOT" suffix,
+   *          which by Maven/Gradle conventions designates a
+   *          development version.
+   */
+  public static boolean isSnapshot()
+  {
+    return snapshot;
+  }
 }

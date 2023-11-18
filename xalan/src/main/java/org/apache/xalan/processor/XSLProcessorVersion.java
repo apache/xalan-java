@@ -20,6 +20,13 @@
  */
 package org.apache.xalan.processor;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Administrative class to keep track of the version number of
  * the Xalan release.
@@ -29,6 +36,80 @@ package org.apache.xalan.processor;
  */
 public class XSLProcessorVersion
 {
+  private static final String POM_PROPERTIES_JAR = "META-INF/maven/xalan/xalan/pom.properties";
+  private static final String POM_PROPERTIES_FILE_SYSTEM = "xalan/target/maven-archiver/pom.properties";
+  private static final String VERSION_NUMBER_PATTERN = "^(\\d+)[.](\\d+)[.](D)?(\\d+)(-SNAPSHOT)?$";
+  private static final String NO_VERSION = "0.0.0";
+
+  private static String version = NO_VERSION;
+  private static int majorVersionNum;
+  private static int releaseVersionNum;
+  private static int maintenanceVersionNum;
+  private static int developmentVersionNum;
+
+  private static boolean snapshot;
+
+  static {
+    readProperties();
+    parseVersionNumber();
+  }
+
+  private static void readProperties() {
+    Properties pomProperties = new Properties();
+    try (InputStream fromJar = XSLProcessorVersion.class.getResourceAsStream(POM_PROPERTIES_JAR)) {
+      if (fromJar != null) {
+        pomProperties.load(fromJar);
+        version = pomProperties.getProperty("version", NO_VERSION);
+      }
+      else {
+        try (FileInputStream fromFileSystem = new FileInputStream(POM_PROPERTIES_FILE_SYSTEM)) {
+          pomProperties.load(fromFileSystem);
+          version = pomProperties.getProperty("version", NO_VERSION);
+        }
+      }
+    }
+    catch (IOException e) {
+      new RuntimeException("Cannot read properties file to extract version number information: ", e)
+        .printStackTrace();
+    }
+  }
+
+  private static void parseVersionNumber() {
+    Matcher matcher = Pattern.compile(VERSION_NUMBER_PATTERN).matcher(version);
+    if (matcher.find()) {
+      majorVersionNum = Integer.parseInt(matcher.group(1));
+      releaseVersionNum = Integer.parseInt(matcher.group(2));
+      if (matcher.group(3) == null) {
+        maintenanceVersionNum = Integer.parseInt(matcher.group(4));
+      }
+      else {
+        developmentVersionNum = Integer.parseInt(matcher.group(4));
+      }
+      snapshot = matcher.group(5) != null && !matcher.group(5).isEmpty();
+    }
+    else {
+      System.err.println(
+        "Cannot match version \"" + version + "\" " +
+          "against expected pattern \"" + VERSION_NUMBER_PATTERN + "\""
+      );
+    }
+  }
+
+  /**
+   * Get the basic version string for the current Xalan release.
+   * Version String formatted like
+   * <CODE>"<B>Xalan Processor</B> <B>Java</B> v.r[.dd| <B>D</B>nn]"</CODE>.
+   *
+   * @return String denoting our current version
+   */
+  public static String getVersion()
+  {
+     return getProduct()+" "+getImplementationLanguage()+" "
+           +getMajorVersionNum()+"."+getReleaseVersionNum()+"."
+           +( (getDevelopmentVersionNum() > 0) ?
+               ("D"+getDevelopmentVersionNum()) : (""+getMaintenanceVersionNum()))
+           +(isSnapshot() ? "-SNAPSHOT" :"");
+  }
 
   /**
    * Print the processor version to the command line.
@@ -37,18 +118,25 @@ public class XSLProcessorVersion
    */
   public static void main(String argv[])
   {
-    System.out.println(S_VERSION);
+    System.out.println(getVersion());
   }
 
   /**
-   * Constant name of product.
+   * Name of product: Xalan Processor.
    */
-  public static final String PRODUCT = "Xalan";
+  public static String getProduct()
+  {
+    return "Xalan Processor";
+  }
 
   /**
-   * Implementation Language.
+   * Implementation Language: Java.
    */
-  public static final String LANGUAGE = "Java";
+  public static String getImplementationLanguage()
+  {
+    return "Java";
+  }
+
 
   /**
    * Major version number.
@@ -61,7 +149,10 @@ public class XSLProcessorVersion
    *          of new versions as external interfaces and behaviour
    *          may have changed.
    */
-  public static final int VERSION = 2;
+  public static int getMajorVersionNum()
+  {
+    return majorVersionNum;
+  }
 
   /**
    * Release Number.
@@ -71,7 +162,10 @@ public class XSLProcessorVersion
    *            -  API or behaviour change.
    *            -  its designated as a reference release.
    */
-  public static final int RELEASE = 7;
+  public static int getReleaseVersionNum()
+  {
+    return releaseVersionNum;
+  }
 
   /**
    * Maintenance Drop Number.
@@ -82,7 +176,10 @@ public class XSLProcessorVersion
    *          When missing, it designates the final and complete
    *          development drop for a release.
    */
-  public static final int MAINTENANCE = 3;
+  public static int getMaintenanceVersionNum()
+  {
+    return maintenanceVersionNum;
+  }
 
   /**
    * Development Drop Number.
@@ -101,16 +198,19 @@ public class XSLProcessorVersion
    *          well as defect fixes. 'D' drops may not be as stable as
    *          the final releases.
    */
-  public static final int DEVELOPMENT = 0;
-  
-  /**
-   * Version String like <CODE>"<B>Xalan</B> <B>Language</B>
-   * v.r[.dd| <B>D</B>nn]"</CODE>.
-   * <P>Semantics of the version string are identical to the Xerces project.</P>
-   */
-  public static final String S_VERSION = PRODUCT+" "+LANGUAGE+" "
-                                   +VERSION+"."+RELEASE+"."
-                                   +(DEVELOPMENT > 0 ? ("D"+DEVELOPMENT)
-                                     : (""+MAINTENANCE));
+  public static int getDevelopmentVersionNum()
+  {
+    return developmentVersionNum;
+  }
 
+  /**
+   * Snapshot flag.
+   * Specifies whether the version number has a "-SNAPSHOT" suffix,
+   *          which by Maven/Gradle conventions designates a
+   *          development version.
+   */
+  public static boolean isSnapshot()
+  {
+    return snapshot;
+  }
 }
