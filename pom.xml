@@ -27,7 +27,6 @@
     <module>serializer</module>
     <module>xalan</module>
     <module>samples</module>
-    <module>xalan2jtaglet</module>
     <!-- The binary mode of maven-assembly-plugin needs to run after all the
          other modules have created their artifacts. Standard solution to
          achieve this sequencing is to make it a separate module which
@@ -37,6 +36,32 @@
     <module>distribution</module>
   </modules>
 
+  <profiles>
+    <profile>
+      <id>jdk8</id>
+      <activation>
+        <jdk>[,9)</jdk>
+      </activation>
+      <properties>
+        <xalan.taglet.artifactId>xalan2jtaglet</xalan.taglet.artifactId>
+      </properties>
+      <modules>
+        <module>xalan2jtaglet</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>jdk9+</id>
+      <activation>
+        <jdk>[9,)</jdk>
+      </activation>
+      <properties>
+        <xalan.taglet.artifactId>xalan2jtaglet_jdk9</xalan.taglet.artifactId>
+      </properties>
+      <modules>
+        <module>xalan2jtaglet_jdk9</module>
+      </modules>
+    </profile>
+  </profiles>
 
   <build>
     <pluginManagement>
@@ -85,6 +110,15 @@
             </execution>
           </executions>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.11.0</version>
+          <configuration>
+            <source>1.8</source>
+            <target>1.8</target>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
 
@@ -105,14 +139,6 @@
       </resource>
     </resources>
     <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -327,7 +353,9 @@
             </group>
           </groups>
 
-          <!-- Locally provided taglet; see xalan2jtaglet module -->
+          <!-- Locally provided taglet; see xalan2jtaglet and
+               xalan2jtaglet_jdk9 modules
+          -->
           <taglets>
             <taglet>
               <tagletClass>xalan2jtaglet.XSLUsageTag</tagletClass>
@@ -335,7 +363,7 @@
           </taglets>
           <tagletArtifact>
             <groupId>xalan</groupId>
-            <artifactId>xalan2jtaglet</artifactId>
+            <artifactId>${xalan.taglet.artifactId}</artifactId>
             <version>${project.version}</version>
           </tagletArtifact>
 
@@ -347,6 +375,8 @@
                        build when the local Maven repo is clean.
           -->
           <excludePackageNames>xalan2jtaglet</excludePackageNames>
+          <!-- Necessary when building on JDK 9+ -->
+          <source>1.8</source>
         </configuration>
 
         <reportSets>
