@@ -38,8 +38,8 @@ import java.util.regex.Pattern;
  */
 public final class Version
 {
-  private static final String POM_PROPERTIES_JAR = "META-INF/maven/xalan/serializer/pom.properties";
-  private static final String POM_PROPERTIES_FILE_SYSTEM = "serializer/target/maven-archiver/pom.properties";
+  private static final String POM_PROPERTIES_JAR = "org/apache/xml/serializer/version.properties";
+  private static final String POM_PROPERTIES_FILE_SYSTEM = "serializer/target/classes" + POM_PROPERTIES_JAR;
   private static final String VERSION_NUMBER_PATTERN = "^(\\d+)[.](\\d+)[.](D)?(\\d+)(-SNAPSHOT)?$";
   private static final String NO_VERSION = "0.0.0";
 
@@ -58,7 +58,7 @@ public final class Version
 
   private static void readProperties() {
     Properties pomProperties = new Properties();
-    try (InputStream fromJar = Version.class.getResourceAsStream(POM_PROPERTIES_JAR)) {
+    try (InputStream fromJar = Version.class.getClassLoader().getResourceAsStream(POM_PROPERTIES_JAR)) {
       if (fromJar != null) {
         pomProperties.load(fromJar);
         version = pomProperties.getProperty("version", NO_VERSION);
