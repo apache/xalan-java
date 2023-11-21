@@ -20,8 +20,6 @@
  */
 package org.apache.xml.serializer;
 
-
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
@@ -38,8 +36,7 @@ import java.util.regex.Pattern;
  */
 public final class Version
 {
-  private static final String POM_PROPERTIES_JAR = "org/apache/xml/serializer/version.properties";
-  private static final String POM_PROPERTIES_FILE_SYSTEM = "serializer/target/classes" + POM_PROPERTIES_JAR;
+  private static final String POM_PROPERTIES_PATH = "org/apache/xml/serializer/version.properties";
   private static final String VERSION_NUMBER_PATTERN = "^(\\d+)[.](\\d+)[.](D)?(\\d+)(-SNAPSHOT)?$";
   private static final String NO_VERSION = "0.0.0";
 
@@ -58,20 +55,14 @@ public final class Version
 
   private static void readProperties() {
     Properties pomProperties = new Properties();
-    try (InputStream fromJar = Version.class.getClassLoader().getResourceAsStream(POM_PROPERTIES_JAR)) {
-      if (fromJar != null) {
-        pomProperties.load(fromJar);
+    try (InputStream fromResource = Version.class.getClassLoader().getResourceAsStream(POM_PROPERTIES_PATH)) {
+      if (fromResource != null) {
+        pomProperties.load(fromResource);
         version = pomProperties.getProperty("version", NO_VERSION);
-      }
-      else {
-        try (FileInputStream fromFileSystem = new FileInputStream(POM_PROPERTIES_FILE_SYSTEM)) {
-          pomProperties.load(fromFileSystem);
-          version = pomProperties.getProperty("version", NO_VERSION);
-        }
       }
     }
     catch (IOException e) {
-      new RuntimeException("Cannot read properties file to extract version number information: ", e)
+      new RuntimeException("Cannot read properties file to extract Xalan version number information: ", e)
         .printStackTrace();
     }
   }
@@ -91,7 +82,7 @@ public final class Version
     }
     else {
       System.err.println(
-        "Cannot match version \"" + version + "\" " +
+        "Cannot match Xalan version \"" + version + "\" " +
           "against expected pattern \"" + VERSION_NUMBER_PATTERN + "\""
       );
     }
