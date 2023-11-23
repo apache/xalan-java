@@ -1,10 +1,11 @@
 # Maven
-target/ 
+target/
 **/dependency-reduced-pom.xml
 
 # Eclipse
 .settings/
 .project
+.classpath
 
 # IntelliJ IDEA
 .idea/
