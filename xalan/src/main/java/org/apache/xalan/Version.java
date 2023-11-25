@@ -58,7 +58,16 @@ public class Version
 
   private static void readProperties() {
     Properties pomProperties = new Properties();
-    try (InputStream fromResource = Version.class.getClassLoader().getResourceAsStream(POM_PROPERTIES_PATH)) {
+    ClassLoader classLoader = Version.class.getClassLoader();
+    if (classLoader == null) {
+      // Oops! Someone put Xalan is on the bootstrap class loader (BCL) -> fall
+      // back to the system class loader, because there is no Classloader
+      // instance for the BCL (native code). Due to class loader hierarchy,
+      // however, the resource will also be found when asking for it from a
+      // level below the BCL.
+      classLoader = ClassLoader.getSystemClassLoader();
+    }
+    try (InputStream fromResource = classLoader.getResourceAsStream(POM_PROPERTIES_PATH)) {
       if (fromResource != null) {
         pomProperties.load(fromResource);
           version = pomProperties.getProperty("version", NO_VERSION);
