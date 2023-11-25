@@ -1,1 +1,1 @@
-mvn clean compile site package
+mvn clean package site
