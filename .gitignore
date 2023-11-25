@@ -13,6 +13,7 @@ target/
 
 # Xalan
 build/
+lib/
 **/xsltc/compiler/XPathLexer.java
 **/xsltc/compiler/XPathParser.java
 **/xsltc/compiler/sym.java
