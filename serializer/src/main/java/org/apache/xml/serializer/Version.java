@@ -36,7 +36,6 @@ import java.util.regex.Pattern;
  */
 public final class Version
 {
-  private static final String POM_PROPERTIES_PATH = "org/apache/xml/serializer/version.properties";
   private static final String VERSION_NUMBER_PATTERN = "^(\\d+)[.](\\d+)[.](D)?(\\d+)(-SNAPSHOT)?$";
   private static final String NO_VERSION = "0.0.0";
 
@@ -55,16 +54,17 @@ public final class Version
 
   private static void readProperties() {
     Properties pomProperties = new Properties();
-    ClassLoader classLoader = Version.class.getClassLoader();
-    if (classLoader == null) {
-      // Oops! Someone put Xalan is on the bootstrap class loader (BCL) -> fall
-      // back to the system class loader, because there is no Classloader
-      // instance for the BCL (native code). Due to class loader hierarchy,
-      // however, the resource will also be found when asking for it from a
-      // level below the BCL.
-      classLoader = ClassLoader.getSystemClassLoader();
-    }
-    try (InputStream fromResource = classLoader.getResourceAsStream(POM_PROPERTIES_PATH)) {
+    // IMPLEMENTATION NOTE: Class.getResourceAsStream uses a *relative* path by
+    // default, in contrast to Classloader.getResourceAsStream, which uses an
+    // *absolute* one. This is not clearly documented in the JDK, only
+    // noticeable by the absence of the word "absolute" in
+    // Class.getResourceAsStream javadocs. For more details, see
+    // https://www.baeldung.com/java-class-vs-classloader-getresource.
+    //
+    // Because we expect the properties file to be in the same directory/package
+    // as this class, the relative path comes in handy and as a bonus is also
+    // relocation-friendly (think Maven Shade).
+    try (InputStream fromResource = Version.class.getResourceAsStream("version.properties")) {
       if (fromResource != null) {
         pomProperties.load(fromResource);
         version = pomProperties.getProperty("version", NO_VERSION);
