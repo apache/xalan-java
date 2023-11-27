@@ -1,0 +1,18 @@
+# Auto detect text files and perform LF normalization
+*        text=auto
+
+# Below types are listed explicitly just in case to avoid unexpected mistakes in git auto above
+*.java   text
+*.html   text
+*.xml    text
+*.xsl    text
+*.css    text
+*.js     text
+
+# Note: executable is a non-standard attribute, and it is helpful for the release plugin
+*.sh     text eol=lf executable
+*.cgi    text eol=lf executable
+
+# Windows expects CRLF always
+*.bat    text eol=crlf
+*.cmd    text eol=crlf
