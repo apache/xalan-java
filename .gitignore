@@ -8,8 +8,10 @@ target/
 .classpath
 
 # IntelliJ IDEA
+classes/
 .idea/
 *.iml
+.DS_Store
 
 # Xalan: "Ant emulation" directories for xalan-test and distribution
 build/
