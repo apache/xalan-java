@@ -11,8 +11,10 @@ target/
 .idea/
 *.iml
 
-# Xalan
+# Xalan: "Ant emulation" directories for xalan-test and distribution,
+# generated XPath parser/lexer code in xsltc
 build/
+lib/
 **/xsltc/compiler/XPathLexer.java
 **/xsltc/compiler/XPathParser.java
 **/xsltc/compiler/sym.java
