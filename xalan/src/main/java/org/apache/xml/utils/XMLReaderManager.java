@@ -161,6 +161,6 @@ public class XMLReaderManager {
             m_readers.set(null);
 	    m_inUse.put(reader, Boolean.FALSE);
         }
-        m.inUse.remove(reader);
+        m_inUse.remove(reader);
     }
 }
