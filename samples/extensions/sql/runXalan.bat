@@ -51,7 +51,7 @@ REM directory component as part of the Endorsed Dir command line
 REM argument when running under JDK 1.4 this should also work for JDK 1.5
 
 REM The XML Apis are going to be either in the LIB dir for a source
-REM release or in the root directory for a binary release.
+REM release or in the root direcctory for a binary release.
 
 IF EXIST "..\..\..\lib\xercesImpl.jar" goto BIN_DIR_BINRELEASE
 
