@@ -8,12 +8,15 @@ target/
 .classpath
 
 # IntelliJ IDEA
+classes/
 .idea/
 *.iml
+.DS_Store
 
-# Xalan
+# Xalan: "Ant emulation" directories for xalan-test and distribution
 build/
 lib/
+# Xalan: Generated XPath parser/lexer code in xsltc
 **/xsltc/compiler/XPathLexer.java
 **/xsltc/compiler/XPathParser.java
 **/xsltc/compiler/sym.java

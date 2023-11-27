@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+permissions:
+  contents: read
+
+# https://help.github.com/en/actions/automating-your-workflow-with-github-actions/software-installed-on-github-hosted-runners
+# GitHub Actions does not support Docker, PostgreSQL server on Windows, macOS :(
+
+concurrency:
+  # On master/release, we don't want any jobs cancelled so the sha is used to name the group
+  # On PR branches, we cancel the job if new commits are pushed
+  # More info: https://stackoverflow.com/a/68422069/253468
+  group: ${{ github.ref == 'refs/heads/trunk' && format('ci-main-{0}', github.sha) || format('ci-main-{0}', github.ref) }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: 'Java 8'
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Checkout xalan-java'
+      uses: actions/checkout@v3
+    - name: 'Set up JDK 8'
+      uses: actions/setup-java@v2
+      with:
+        distribution: zulu
+        java-version: 8
+    - name: 'Build Xalan jars'
+      run: |
+        mvn --no-transfer-progress clean compile site package
+    - uses: actions/checkout@v3
+      name: 'Checkout xalan-test'
+      with:
+        repository: apache/xalan-test
+        path: xalan-test
+        ref: master
+    - name: 'Run xalan-test tests'
+      working-directory: xalan-test
+# NOTE: "alltest" target includes conformance tests known not to run in Xalan,
+# as well as having dependencies on some targets which have since been edited
+# out. The following is our typical minimal build test as documented in README,
+# minus conf.xsltc since that one is currently throwing four known failures and
+# isn't set up to say "but that's not a regression".
+      run: |
+        ant jar extensions.classes smoketest apitest -Dxalan.relpath=../ -Dparserjar=../lib/endorsed/xercesImpl.jar -Dxml-apis.jar=../lib/endorsed/xml-apis.jar
+
+# ant fulldist is failing: in CI
+# /home/runner/work/xalan-java/xalan-java/build.xml:1399: /home/runner/work/xalan-java/xalan-test does not exist.
+# Error replicated on my system if there is not a sibling xalan-test.
+# NOT replicated if sibling xalan-test directory is present
+# Simplest fix would be to have the above test checkout emulate the dev environment;
+# better would be to fix fulldist to intelligently check both locations;
+# best might be to adopt xalan-test back into the xalan repository, if it's no longer being used elsewhere.
+    - name: 'Cheat xalan-test up to be sibling of xalan-java'
+      run: |
+        mv xalan-test ..; ls ..
+    - id: build_artifacts
+      run: |
+        ant fulldist
+

@@ -88,7 +88,7 @@ public class ValidateXMLInput
       }
       catch (TransformerException te)
       {
-        // The TransformerException wraps someting other than a SAXParseException
+        // The TransformerException wraps something other than a SAXParseException
         // warning or error, either of which should be "caught" by the Handler.
         System.out.println("Not a SAXParseException warning or error: " + te.getMessage());
       }

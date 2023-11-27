@@ -44,64 +44,65 @@ import java.io.IOException;
  */
 public class ExternalConnection
 {
-	public static void main(String[] args)
+  public static void main(String[] args)
     throws TransformerException, TransformerConfigurationException,
-           FileNotFoundException, IOException
+         FileNotFoundException, IOException
   {
-
-  // Create a connection to the database server
-  // Up the connection pool count for testing
-  DefaultConnectionPool cp = new DefaultConnectionPool();
-  cp.setDriver("org.apache.derby.jdbc.EmbeddedDriver");
-  cp.setURL("jdbc:derby:sampleDB");
-  //cp.setUser("sa");
-  //cp.setPassword("");
-  cp.setMinConnections(10);
-  cp.setPoolEnabled(true);
-
-  // Now let's register our connection pool so we can use
-  // in a stylesheet
-  ConnectionPoolManager pm = new ConnectionPoolManager();
-  pm.registerPool("extpool", cp);
-
-
-  // Use the static TransformerFactory.newInstance() method to instantiate
-  // a TransformerFactory. The javax.xml.transform.TransformerFactory
-  // system property setting determines the actual class to instantiate --
-  // org.apache.xalan.transformer.TransformerImpl.
-	TransformerFactory tFactory = TransformerFactory.newInstance();
-
-  // Grab the Name of the Stylesheet from the commad line
-  if (args.length == 0)
-  {
-    System.out.println("You must provide the path and name to a stylesheet to process");
-    System.exit(0);
-  }
-  
-  String stylesheet = args[0];
-  System.out.println("Transforming Stylesheet " + stylesheet);
-  
-	// Use the TransformerFactory to instantiate a Transformer that will work with
-	// the stylesheet you specify. This method call also processes the stylesheet
-  // into a compiled Templates object.
-	Transformer transformer = tFactory.newTransformer(
-        new StreamSource(stylesheet));
-
-	// For this transformation, all the required information is in the stylesheet, so generate 
-  // a minimal XML source document for the input.
-  // Note: the command-line processor (org.apache.xalan.xslt.Process) uses this strategy when 
-  // the user does not provide an -IN parameter.
-  StringReader reader =
-              new StringReader("<?xml version=\"1.0\"?> <doc/>");
-
-  // Use the Transformer to apply the associated Templates object to an XML document
-	// and write the output to a file.
-	transformer.transform(
-        new StreamSource(reader),
-        new StreamResult(new FileOutputStream("dbtest-out.html")));
-
-	System.out.println("************* The result is in dbtest-out.html *************");
-  
-  cp.setPoolEnabled(false);
+    
+    // Create a connection to the database server
+    // Up the connection pool count for testing
+    DefaultConnectionPool cp = new DefaultConnectionPool();
+    cp.setDriver("org.apache.derby.jdbc.EmbeddedDriver");
+    cp.setURL("jdbc:derby:sampleDB");
+    //cp.setUser("sa");
+    //cp.setPassword("");
+    cp.setMinConnections(10);
+    cp.setPoolEnabled(true);
+    
+    // Now let's register our connection pool so we can use
+    // in a stylesheet
+    ConnectionPoolManager pm = new ConnectionPoolManager();
+    pm.registerPool("extpool", cp);
+    
+    
+    // Use the static TransformerFactory.newInstance() method to instantiate
+    // a TransformerFactory. The javax.xml.transform.TransformerFactory
+    // system property setting determines the actual class to instantiate --
+    // org.apache.xalan.transformer.TransformerImpl.
+    TransformerFactory tFactory = TransformerFactory.newInstance();
+    
+    // Grab the Name of the Stylesheet from the command line
+    if (args.length == 0)
+      {
+        System.out.println("You must provide the path and name to a stylesheet to process");
+        System.exit(0);
+      }
+    
+    String stylesheet = args[0];
+    System.out.println("Transforming Stylesheet " + stylesheet);
+    
+    // Use the TransformerFactory to instantiate a Transformer that will work with
+    // the stylesheet you specify. This method call also processes the stylesheet
+    // into a compiled Templates object.
+    Transformer transformer = tFactory.newTransformer(
+                              new StreamSource(stylesheet));
+    
+    // For this transformation, all the required information is in the
+    // stylesheet, so generate a minimal XML source document for the
+    // input.  Note: the command-line processor
+    // (org.apache.xalan.xslt.Process) uses this strategy when the user
+    // does not provide an -IN parameter.
+    StringReader reader =
+      new StringReader("<?xml version=\"1.0\"?> <doc/>");
+    
+    // Use the Transformer to apply the associated Templates object to
+    // an XML document and write the output to a file.
+    transformer.transform(
+                new StreamSource(reader),
+                new StreamResult(new FileOutputStream("dbtest-out.html")));
+    
+    System.out.println("************* The result is in dbtest-out.html *************");
+    
+    cp.setPoolEnabled(false);
   }
 }

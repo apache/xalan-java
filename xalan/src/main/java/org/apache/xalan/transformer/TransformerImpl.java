@@ -356,7 +356,7 @@ public class TransformerImpl extends Transformer
    */
   private boolean m_isTransformDone = false;
 
-  /** Flag to to tell if the tranformer needs to be reset. */
+  /** Flag to tell if the transformer needs to be reset. */
   private boolean m_hasBeenReset = false;
 
   /** NEEDSDOC Field m_shouldReset          */
@@ -2262,7 +2262,7 @@ public class TransformerImpl extends Transformer
         // since much (most? all?) of the processing has been inlined.
         // (It would be nice if there was a single entry point that
         // worked for both... but the interpretive system works by
-        // having the Tranformer execute the children, while the
+        // having the Transformer execute the children, while the
         // compiled obviously has to run its own code. It's
         // also unclear that "execute" is really the right name for
         // that entry point.)
