@@ -12,7 +12,7 @@
  * This JSP uses PMA to set param1 in the
 *  foo.xsl stylesheet before using the
  * stylesheet to transform foo.xml
- * and outputing the result.
+ * and outputting the result.
  *
  * Invoke the jsp from the appropriate
  * context for your servlet/jsp server.

@@ -169,7 +169,7 @@ public final class TemplatesImpl implements Templates, Serializable {
 
     /**
      *  Overrides the default readObject implementation since we decided
-     *  it would be cleaner not to serialize the entire tranformer
+     *  it would be cleaner not to serialize the entire transformer
      *  factory.  [ ref bugzilla 12317 ]
      *  We need to check if the user defined class for URIResolver also
      *  implemented Serializable
