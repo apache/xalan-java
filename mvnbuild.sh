@@ -1,1 +1,1 @@
-mvn clean package site
+mvn clean site package
