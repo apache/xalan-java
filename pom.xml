@@ -61,6 +61,100 @@
         <module>xalan2jtaglet_jdk9</module>
       </modules>
     </profile>
+    <profile>
+      <id>create-docs</id>
+      <activation>
+        <!--
+          Activate by default. Workaround for 'activeByDefault', which is broken
+          by design, see https://issues.apache.org/jira/browse/MNG-4917.
+        -->
+        <jdk>[1.)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <!-- StyleBook processing.
+               NOTE: Stylebook as it has been calls System.exit() on its way out.
+               That means running exec:java will malfunction since it'll blow out
+               the entire Maven process. Workaround is to invoke Stylebook from
+               the command line with exec:exec. Proper fix is to remove that
+               behavior from Stylebook's code and have it exit more cleanly,
+               or to have exec optionally fork a process for java.
+               The latter is in development.
+               -->
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>exec-maven-plugin</artifactId>
+            <version>3.1.0</version>
+            <inherited>false</inherited> <!-- Run only in xalan-project parent -->
+            <executions>
+              <execution>
+                <id>Xalan2 design documentation</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>java</executable>
+                  <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook
+                  loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/design/
+                  ./stylebook/sources/xalandesign.xml ./stylebook/style</commandlineArgs>
+                </configuration>
+              </execution>
+
+              <execution>
+                <id>Xalan2 compiled (xsltc) documentation</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>java</executable>
+                  <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook
+                  loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xsltc/
+                  ./stylebook/sources/xsltc.xml ./stylebook/style</commandlineArgs>
+                </configuration>
+              </execution>
+              <execution>
+                <id>Xalan2 interpretive documentation</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>java</executable>
+                  <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook
+                  loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan
+                  ./stylebook/sources/xalan-jsite.xml ./stylebook/style</commandlineArgs>
+                </configuration>
+              </execution>
+
+              <!-- Diff tells me that the -jlocal output is almost
+                   identical to the -jsite output despite the slight
+                   difference in the .xml files used as their
+                   sources. (The only effective difference appears to be
+                   that -jlocal doesn't produce the index or charter
+                   documents.)  I'm not convinced that's enough difference
+                   to merit generating both, but until I better grok why
+                   this duplication was done in the first place I'm
+                   hesitant to remove it. (jkesselm, 20231105) -->
+              <execution>
+                <id>Xalan2 interpretive documentation, local</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>exec</goal>
+                </goals>
+                <configuration>
+                  <executable>java</executable>
+                  <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook
+                  loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan/local
+                  ./stylebook/sources/xalan-jlocal.xml ./stylebook/style</commandlineArgs>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
   <build>
@@ -202,87 +296,6 @@
             </fileset>
           </filesets>
         </configuration>
-      </plugin>
-
-      <!-- StyleBook processing.
-           NOTE: Stylebook as it has been calls System.exit() on its way out.
-           That means running exec:java will malfunction since it'll blow out
-           the entire Maven process. Workaround is to invoke Stylebook from
-           the command line with exec:exec. Proper fix is to remove that
-           behavior from Stylebook's code and have it exit more cleanly,
-           or to have exec optionally fork a process for java.
-           The latter is in development.
-           -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.0</version>
-        <inherited>false</inherited> <!-- Run only in xalan-project parent -->
-        <executions>
-          <execution>
-            <id>Xalan2 design documentation</id>
-            <phase>package</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>java</executable>
-              <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook
-              loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/design/
-              ./stylebook/sources/xalandesign.xml ./stylebook/style</commandlineArgs>
-            </configuration>
-          </execution>
-
-          <execution>
-            <id>Xalan2 compiled (xsltc) documentation</id>
-            <phase>package</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>java</executable>
-              <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook
-              loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xsltc/
-              ./stylebook/sources/xsltc.xml ./stylebook/style</commandlineArgs>
-            </configuration>
-          </execution>
-          <execution>
-            <id>Xalan2 interpretive documentation</id>
-            <phase>package</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>java</executable>
-              <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook
-              loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan
-              ./stylebook/sources/xalan-jsite.xml ./stylebook/style</commandlineArgs>
-            </configuration>
-          </execution>
-
-          <!-- Diff tells me that the -jlocal output is almost
-               identical to the -jsite output despite the slight
-               difference in the .xml files used as their
-               sources. (The only effective difference appears to be
-               that -jlocal doesn't produce the index or charter
-               documents.)  I'm not convinced that's enough difference
-               to merit generating both, but until I better grok why
-               this duplication was done in the first place I'm
-               hesitant to remove it. (jkesselm, 20231105) -->
-          <execution>
-            <id>Xalan2 interpretive documentation, local</id>
-            <phase>package</phase>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-            <configuration>
-              <executable>java</executable>
-              <commandlineArgs>-cp ${stylebook.classpath} org.apache.stylebook.StyleBook
-              loaderConfig=sbk:/style/loaderdesign.xml targetDirectory=./target/site/xalan/local
-              ./stylebook/sources/xalan-jlocal.xml ./stylebook/style</commandlineArgs>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
 
       <!-- Two more files to copy to the site directory -->
