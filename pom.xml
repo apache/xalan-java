@@ -19,7 +19,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <stylebook.classpath>
-      "stylebook/stylebook-1.0-b3_xalan-2.jar${path.separator}tools/xalan2jdoc.jar${path.separator}serializer/target/classes${path.separator}xalan/target/classes${path.separator}"
+      "stylebook/stylebook-1.0-b3_xalan-2.jar${path.separator}serializer/target/classes${path.separator}xalan/target/classes${path.separator}"
     </stylebook.classpath>
   </properties>
 
