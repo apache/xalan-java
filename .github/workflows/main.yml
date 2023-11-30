@@ -35,7 +35,7 @@ jobs:
         java-version: 8
     - name: 'Build Xalan jars'
       run: |
-        mvn --no-transfer-progress clean compile site package
+        mvn --no-transfer-progress clean compile site verify
     - uses: actions/checkout@v3
       name: 'Checkout xalan-test'
       with:
@@ -65,4 +65,3 @@ jobs:
     - id: build_artifacts
       run: |
         ant fulldist
-
