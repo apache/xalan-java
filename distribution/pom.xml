@@ -1,6 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>xalan</groupId>
@@ -11,7 +11,7 @@
   <artifactId>distribution</artifactId>
   <name>distribution</name>
   <packaging>pom</packaging>
-  
+
   <!-- Depend on modules containing source code that needs to be compiled
        before being able to create a binary distribution
   -->
@@ -29,45 +29,57 @@
       <artifactId>samples</artifactId>
     </dependency>
   </dependencies>
- 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.6.0</version>
-        <executions>
-          <execution>
-            <id>distro-assembly</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <finalName>${project.parent.build.finalName}</finalName>
-              <outputDirectory>../build</outputDirectory>
-              <descriptors>
-                <descriptor>src/assembly/bin.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-          <execution>
-            <id>source-release-assembly</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <finalName>${project.parent.build.finalName}</finalName>
-              <outputDirectory>../build</outputDirectory>
-              <descriptors>
-                <descriptor>src/assembly/src.xml</descriptor>
-              </descriptors>
-              <tarLongFileMode>gnu</tarLongFileMode>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
 
-    </plugins>
-  </build>
+  <profiles>
+    <profile>
+      <id>create-distros</id>
+      <activation>
+        <!--
+          Activate by default. Workaround for 'activeByDefault', which is broken
+          by design, see https://issues.apache.org/jira/browse/MNG-4917.
+        -->
+        <jdk>[1.)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <version>3.6.0</version>
+            <executions>
+              <execution>
+                <id>distro-assembly</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <finalName>${project.parent.build.finalName}</finalName>
+                  <outputDirectory>../build</outputDirectory>
+                  <descriptors>
+                    <descriptor>src/assembly/bin.xml</descriptor>
+                  </descriptors>
+                </configuration>
+              </execution>
+              <execution>
+                <id>source-release-assembly</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <finalName>${project.parent.build.finalName}</finalName>
+                  <outputDirectory>../build</outputDirectory>
+                  <descriptors>
+                    <descriptor>src/assembly/src.xml</descriptor>
+                  </descriptors>
+                  <tarLongFileMode>gnu</tarLongFileMode>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
