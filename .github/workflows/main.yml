@@ -12,7 +12,6 @@ permissions:
   contents: read
 
 # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/software-installed-on-github-hosted-runners
-# GitHub Actions does not support Docker, PostgreSQL server on Windows, macOS :(
 
 concurrency:
   # On master/release, we don't want any jobs cancelled so the sha is used to name the group
@@ -23,16 +22,25 @@ concurrency:
 
 jobs:
   build:
-    name: 'Java 8'
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+        java-version:
+          - 8
+          - 17
+    name: 'Java ${{ matrix.java-version }}, ${{ matrix.os }}'
+    runs-on: ${{ matrix.os }}
     steps:
     - name: 'Checkout xalan-java'
       uses: actions/checkout@v3
-    - name: 'Set up JDK 8'
+    - name: 'Set up Java ${{ matrix.java-version }}'
       uses: actions/setup-java@v2
       with:
         distribution: zulu
-        java-version: 8
+        java-version: ${{ matrix.java-version }}
     - name: 'Build Xalan jars'
       run: |
         ant jar
