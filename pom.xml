@@ -61,6 +61,11 @@
       </activation>
       <properties>
         <xalan.taglet.artifactId>xalan2jtaglet_jdk9</xalan.taglet.artifactId>
+        <!--
+          JDK 21 starts warning about dynamic agent attachment by Mockito, if
+          not present, but the option is also accepted by JDK 9+.
+        -->
+        <maven-surefire-plugin.argLine>-XX:+EnableDynamicAgentLoading</maven-surefire-plugin.argLine>
       </properties>
       <modules>
         <module>xalan2jtaglet_jdk9</module>
@@ -252,6 +257,9 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.2.2</version>
+          <configuration>
+            <argLine>${maven-surefire-plugin.argLine}</argLine>
+          </configuration>
         </plugin>
         <!-- Integration tests using our own packaged JARs -->
         <plugin>
