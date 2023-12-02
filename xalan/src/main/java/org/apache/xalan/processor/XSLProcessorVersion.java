@@ -29,8 +29,7 @@ import org.apache.xalan.Version;
  * @deprecated To be replaced by org.apache.xalan.Version.getVersion()
  * @xsl.usage general
  */
-public class XSLProcessorVersion extends Version
-{
+public class XSLProcessorVersion extends Version {
 
   /**
    * Get the basic version string for the current Xalan release.
@@ -39,8 +38,7 @@ public class XSLProcessorVersion extends Version
    *
    * @return String denoting our current version
    */
-  public static String getVersion()
-  {
+  public static String getVersion() {
      return getProduct()+" "+getImplementationLanguage()+" "
            +getMajorVersionNum()+"."+getReleaseVersionNum()+"."
            +( (getDevelopmentVersionNum() > 0) ?
@@ -53,16 +51,14 @@ public class XSLProcessorVersion extends Version
    *
    * @param argv command line arguments, unused.
    */
-  public static void main(String argv[])
-  {
+  public static void main(String argv[]) {
     System.out.println(getVersion());
   }
 
   /**
    * Name of product: Xalan Processor.
    */
-  public static String getProduct()
-  {
+  public static String getProduct() {
     return "Xalan Processor";
   }
 }
