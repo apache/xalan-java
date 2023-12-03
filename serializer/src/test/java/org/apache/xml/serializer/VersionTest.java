@@ -17,7 +17,11 @@
  */
 package org.apache.xml.serializer;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Isolated;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -25,11 +29,34 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@Isolated("redirecting System.err is not thread-safe")
 public class VersionTest {
+  private static final PrintStream originalPrintStream = System.err;
+  private static final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+  private static final PrintStream mockPrintStream = new PrintStream(buffer, true);
+
+  @BeforeAll
+  public static void beforeAll() {
+    System.setErr(mockPrintStream);
+  }
+
+  @AfterAll
+  public static void afterAll() {
+    System.setErr(originalPrintStream);
+  }
+
+  @BeforeEach
+  public void beforeEach() {
+    buffer.reset();
+  }
+
   @ParameterizedTest(name = "{0} -> {2}")
   @MethodSource("testReadPropertiesArgs")
   public void testReadProperties(String ignoredName, String properties, String version) {
@@ -58,14 +85,16 @@ public class VersionTest {
         .when(Version::getPropertiesStream)
         .thenThrow(NullPointerException.class);
       assertEquals("0.0.0", Version.readVersionNumber());
+      assertTrue(buffer.toString().contains("RuntimeException: Cannot read properties file"));
     }
   }
 
   @ParameterizedTest(name = "{0} -> {1}")
   @MethodSource("testParseVersionNumberArgs")
   public void testParseVersionNumber(
-    String inputVersion, String parsedVersion,
-    int major, int release, int maintenance, int development, boolean snapshot) {
+    String inputVersion, boolean matchSuccessful, String parsedVersion,
+    int major, int release, int maintenance, int development, boolean snapshot
+  ) {
     Version.parseVersionNumber(inputVersion);
     assertEquals(parsedVersion, Version.getVersion());
     assertEquals(major, Version.getMajorVersionNum());
@@ -73,26 +102,30 @@ public class VersionTest {
     assertEquals(maintenance, Version.getMaintenanceVersionNum());
     assertEquals(development, Version.getDevelopmentVersionNum());
     assertEquals(snapshot, Version.isSnapshot());
+    boolean cannotMatchWarningFound = buffer.toString().contains("Cannot match Xalan version");
+    assertEquals(matchSuccessful, !cannotMatchWarningFound);
   }
 
   private static Stream<Arguments> testParseVersionNumberArgs() {
     return Stream.of(
       // Pattern match
-      Arguments.of("1.2.3", "Xalan Serializer Java 1.2.3", 1, 2, 3, 0, false),
-      Arguments.of("1.2.D3", "Xalan Serializer Java 1.2.D3", 1, 2, 0, 3, false),
-      Arguments.of("1.2.3-SNAPSHOT", "Xalan Serializer Java 1.2.3-SNAPSHOT", 1, 2, 3, 0, true),
-      Arguments.of("1.2.D03-SNAPSHOT", "Xalan Serializer Java 1.2.D3-SNAPSHOT", 1, 2, 0, 3, true),
+      Arguments.of("1.2.3", true, "Xalan Serializer Java 1.2.3", 1, 2, 3, 0, false),
+      Arguments.of("1.2.D3", true, "Xalan Serializer Java 1.2.D3", 1, 2, 0, 3, false),
+      Arguments.of("1.2.3-SNAPSHOT", true, "Xalan Serializer Java 1.2.3-SNAPSHOT", 1, 2, 3, 0, true),
+      Arguments.of("1.2.D03-SNAPSHOT", true, "Xalan Serializer Java 1.2.D3-SNAPSHOT", 1, 2, 0, 3, true),
+      Arguments.of("0.0.0", true, "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false),
       // No pattern match
-      Arguments.of("", "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false),
-      Arguments.of("-1.2.3", "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false),
-      Arguments.of("-1.2.3", "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false),
-      Arguments.of("1. 2.3", "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false),
-      Arguments.of("1.2.D3x", "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false),
-      Arguments.of("1.2.3-XSNAPSHOT", "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false),
-      Arguments.of("1.2.D3-snapshot", "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false),
-      Arguments.of("1.2.D3-SNAPSHOT-1", "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false),
-      // Input version null
-      Arguments.of(null, "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false)
+      Arguments.of("", false, "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false),
+      Arguments.of("-1.2.3", false, "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false),
+      Arguments.of("-1.2.3", false, "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false),
+      Arguments.of("1. 2.3", false, "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false),
+      Arguments.of("1.2.D3x", false, "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false),
+      Arguments.of("1.2.3-XSNAPSHOT", false, "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false),
+      Arguments.of("1.2.D3-snapshot", false, "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false),
+      Arguments.of("1.2.D3-SNAPSHOT-1", false, "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false),
+      // Input version null -> cannot happen in class under test, but we know
+      // what would happen if it did
+      Arguments.of(null, true, "Xalan Serializer Java 0.0.0", 0, 0, 0, 0, false)
     );
   }
 
