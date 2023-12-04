@@ -27,6 +27,7 @@
     <junit-jupiter.version>5.10.1</junit-jupiter.version>
     <!-- TODO: Upgrade to 5.x after dropping requirement to build on JDK 8 -->
     <mockito.version>4.11.0</mockito.version>
+    <maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
   </properties>
 
   <modules>
@@ -286,6 +287,97 @@
           <artifactId>maven-shade-plugin</artifactId>
           <version>${maven-shade-plugin.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${maven-javadoc-plugin.version}</version>
+
+          <configuration>
+            <!-- Deactivate doclint checks in order to suppress errors -->
+            <doclint>none</doclint>
+            <!-- Generate class use xref, making javadocs considerably bigger,
+                 but also more informative. Just navigate to any documented
+                 class or package and click on the "Use" link between "Class"
+                 and "Tree". -->
+            <use>true</use>
+            <!-- FIXME: Why does it fail without this parameter? -->
+            <javadocVersion>8</javadocVersion>
+            <source>1.8</source>
+
+            <!-- Custom taglet. Make sure to make each module using this plugin
+                 depend on xalan:${xalan.taglet.artifactId} with scope
+                 'provided', because the dependency is only used during build
+                 time. -->
+            <taglets>
+              <taglet>
+                <tagletClass>xalan2jtaglet.XSLUsageTag</tagletClass>
+              </taglet>
+            </taglets>
+            <tagletArtifact>
+              <groupId>xalan</groupId>
+              <artifactId>${xalan.taglet.artifactId}</artifactId>
+              <version>${project.version}</version>
+            </tagletArtifact>
+
+            <!-- Group package names by topic. Empty groups will not be
+                 rendered, i.e. it does not hurt to specify all groups in the
+                 global configuration. -->
+            <groups>
+              <group>
+                <title>XPath</title>
+                <packages>org.apache.xpath*</packages>
+              </group>
+              <group>
+                <title>Document Table Model (DTM)</title>
+                <packages>org.apache.xml.dtm*</packages>
+              </group>
+              <group>
+                <title>Utilities</title>
+                <packages>org.apache.xml.utils*</packages>
+              </group>
+              <group>
+                <title>Xalan Other</title>
+                <packages>org.apache.xalan.client:org:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.xslt</packages>
+              </group>
+              <group>
+                <title>Xalan Extensions</title>
+                <packages>org.apache.xalan.lib*</packages>
+              </group>
+              <group>
+                <title>Serializers</title>
+                <packages>org.apache.xml.serialize*:org.apache.xalan.serialize</packages>
+              </group>
+              <group>
+                <title>SAX 2</title>
+                <packages>org.xml.sax*</packages>
+              </group>
+              <group>
+                <title>DOM 2</title>
+                <packages>org.w3c.dom*</packages>
+              </group>
+              <group>
+                <title>XSLTC Core</title>
+                <packages>org.apache.xalan.xsltc*</packages>
+              </group>
+              <group>
+                <title>Samples</title>
+                <packages>org.apache.xalan.samples*</packages>
+              </group>
+            </groups>
+          </configuration>
+
+          <executions>
+            <execution>
+              <id>javadoc-jar</id>
+              <phase>package</phase>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+
+        </plugin>
+
       </plugins>
     </pluginManagement>
 
@@ -397,6 +489,22 @@
         <version>${project.version}</version>
       </dependency>
 
+      <!-- For javadoc generation only. Which of the two 'xalan2jtaglet*'
+           artifacts is used, is determined automatically by Maven profiles
+           based on the JDK used during the build. The result will be in
+           property ${xalan.taglet.artifactId}, which is what modules generating
+           javadocs should depend on with 'provided' scope. -->
+      <dependency>
+        <groupId>xalan</groupId>
+        <artifactId>xalan2jtaglet</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>xalan</groupId>
+        <artifactId>xalan2jtaglet_jdk9</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <!-- Test dependencies -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>
@@ -431,78 +539,15 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.6.0</version>
         <configuration>
-
-          <!-- Mute "missing" javadoc errors. We have lots of 'em, and
-               they're a distraction from simply getting the Maven
-               build up and running. Open a jira task to fix this
-               later. GONK. -->
-          <doclint>none</doclint>
-
-          <groups>
-            <group>
-              <title>XPath</title>
-              <packages>org.apache.xpath*</packages>
-            </group>
-            <group>
-              <title>Document Table Model (DTM)</title>
-              <packages>org.apache.xml.dtm*</packages>
-            </group>
-            <group>
-              <title>Utilities</title>
-              <packages>org.apache.xml.utils*</packages>
-            </group>
-            <group>
-              <title>Xalan Other</title>
-              <packages>org.apache.xalan.client:org:org.apache.xalan.extensions:org.apache.xalan.res:org.apache.xalan.stree:org.apache.xalan.trace:org.apache.xalan.xslt</packages>
-            </group>
-            <group>
-              <title>Xalan Extensions</title>
-              <packages>org.apache.xalan.lib*</packages>
-            </group>
-            <group>
-              <title>Serializers</title>
-              <packages>org.apache.xml.serialize*:org.apache.xalan.serialize</packages>
-            </group>
-            <group>
-              <title>SAX 2</title>
-              <packages>org.xml.sax*</packages>
-            </group>
-            <group>
-              <title>DOM 2</title>
-              <packages>org.w3c.dom*</packages>
-            </group>
-            <group>
-              <title>XSLTC Core</title>
-              <packages>org.apache.xalan.xsltc*</packages>
-            </group>
-          </groups>
-
-          <!-- Locally provided taglet; see xalan2jtaglet and
-               xalan2jtaglet_jdk9 modules
-          -->
-          <taglets>
-            <taglet>
-              <tagletClass>xalan2jtaglet.XSLUsageTag</tagletClass>
-            </taglet>
-          </taglets>
-          <tagletArtifact>
-            <groupId>xalan</groupId>
-            <artifactId>${xalan.taglet.artifactId}</artifactId>
-            <version>${project.version}</version>
-          </tagletArtifact>
-
           <!-- FIXME: Without this exclude, the build only works if module
                       'xalan2jtaglet' was first installed locally or deployed to
                        a remote repository. I.e., we have to use something like
-                      'mvn clean install site', at least for the taglet module.
+                      'mvn clean install', at least for the taglet module.
                       'mvn clean package site' on top level is not enough for a
                        build when the local Maven repo is clean.
           -->
           <excludePackageNames>xalan2jtaglet</excludePackageNames>
-          <!-- Necessary when building on JDK 9+ -->
-          <source>1.8</source>
         </configuration>
 
         <reportSets>
