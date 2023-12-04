@@ -28,6 +28,7 @@
     <!-- TODO: Upgrade to 5.x after dropping requirement to build on JDK 8 -->
     <mockito.version>4.11.0</mockito.version>
     <maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
+    <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
   </properties>
 
   <modules>
@@ -376,6 +377,21 @@
             </execution>
           </executions>
 
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${maven-source-plugin.version}</version>
+          <executions>
+            <execution>
+              <id>source-jar</id>
+              <phase>package</phase>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
 
       </plugins>

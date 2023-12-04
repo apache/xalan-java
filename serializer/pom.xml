@@ -130,6 +130,24 @@
         </plugins>
       </build>
     </profile>
+    <profile>
+      <id>create-sources</id>
+      <activation>
+        <!--
+          Activate by default. Workaround for 'activeByDefault', which is broken
+          by design, see https://issues.apache.org/jira/browse/MNG-4917.
+        -->
+        <jdk>[1,)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
   </profiles>
 
 </project>
