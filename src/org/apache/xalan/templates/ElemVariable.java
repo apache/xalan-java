@@ -332,12 +332,18 @@ public class ElemVariable extends ElemTemplateElement
     try {        
       if (m_selectPattern != null) {          
         selectExpression = m_selectPattern.getExpression();
+        
         if (selectExpression instanceof FuncExtFunction) {
             XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, 
                                                                                       selectExpression, transformer);
             if (evalResult != null) {
                 if (m_asAttr != null) {
-                   evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
+                   evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, null, xctxt);
+                   if (evalResult == null) {
+                	  String xpathPatternStr = m_selectPattern.getPatternString();
+                	  throw new TransformerException("XTTE0570 : The supplied value " + xpathPatternStr + ", doesn't "
+                	  		                                       + "match the expected sequence type " + m_asAttr + ".", srcLocator); 
+                   }
                 }
                 
                 return evalResult;    

@@ -364,20 +364,10 @@ public class SequenceTypeSupport {
                   result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
                                                                                                    "xs:time", sequenceTypeXPathExprStr);
                }
-            }
-            else if (srcValue instanceof XSDuration) {
-               String srcStrVal = ((XSDuration)srcValue).stringValue();
-               if (expectedType == XS_DURATION) {
-                  result = srcValue; 
-               }
-               else if (sequenceTypeKindTest != null) {
-                  result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
-                                                                                                   "xs:duration", sequenceTypeXPathExprStr);
-               } 
-            }
+            }            
             else if (srcValue instanceof XSDayTimeDuration) {
                String srcStrVal = ((XSDayTimeDuration)srcValue).stringValue();     
-               if (expectedType == XS_DAYTIME_DURATION) {
+               if ((expectedType == XS_DAYTIME_DURATION) || (expectedType == XS_DURATION)) {
                   result = srcValue; 
                }
                else if (sequenceTypeKindTest != null) {
@@ -387,12 +377,22 @@ public class SequenceTypeSupport {
             }
             else if (srcValue instanceof XSYearMonthDuration) {
                String srcStrVal = ((XSYearMonthDuration)srcValue).stringValue();      
-               if (expectedType == XS_YEARMONTH_DURATION) {
+               if ((expectedType == XS_YEARMONTH_DURATION) || (expectedType == XS_DURATION)) {
                   result = srcValue; 
                }
                else if (sequenceTypeKindTest != null) {
                   result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
                                                                                                    "xs:yearMonthDuration", sequenceTypeXPathExprStr);
+               } 
+            }
+            else if (srcValue instanceof XSDuration) {
+               String srcStrVal = ((XSDuration)srcValue).stringValue();
+               if (expectedType == XS_DURATION) {
+                  result = srcValue; 
+               }
+               else if (sequenceTypeKindTest != null) {
+                  result = performXdmItemTypeNormalizationOnAtomicType(sequenceTypeKindTest, srcValue, srcStrVal, 
+                                                                                                   "xs:duration", sequenceTypeXPathExprStr);
                } 
             }
             else if (srcValue instanceof XSUntyped) {
