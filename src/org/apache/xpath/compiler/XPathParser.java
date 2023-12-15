@@ -288,7 +288,6 @@ public class XPathParser
             new Object[]{ extraTokens });  //"Extra illegal tokens: "+extraTokens);
     }
 
-    // Terminate for safety.
     m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
     m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH)+1);
 
@@ -2360,7 +2359,6 @@ public class XPathParser
 
       }
 
-      // Terminate for safety.
       if (locationPathStarted)
       {
         m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
@@ -2885,7 +2883,6 @@ public class XPathParser
 
     consumeExpected(')');
 
-    // Terminate for safety.
     m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
     m_ops.setOp(OpMap.MAPINDEX_LENGTH,m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
@@ -2938,7 +2935,6 @@ public class XPathParser
       }
     }
 
-    // Terminate for safety.
     m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
     m_ops.setOp(OpMap.MAPINDEX_LENGTH,m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
@@ -3290,7 +3286,6 @@ public class XPathParser
     appendOp(2, OpCodes.OP_PREDICATE);
     Expr();
 
-    // Terminate for safety.
     m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
     m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
@@ -3549,7 +3544,6 @@ public class XPathParser
       }
     }
 
-    // Terminate for safety.
     m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
     m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,

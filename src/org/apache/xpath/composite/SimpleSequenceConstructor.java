@@ -48,11 +48,6 @@ import xml.xpath31.processor.types.XSNumericType;
  * comma operator.
  * 
  * Ref : https://www.w3.org/TR/xpath-31/#construct_seq
- *       
- *       The XPath grammar fragment, for such a sequence constructor
- *       is following,
- *       
- *       Expr    ::=   ExprSingle ("," ExprSingle)*
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
