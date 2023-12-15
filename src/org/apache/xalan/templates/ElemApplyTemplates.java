@@ -27,6 +27,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.StackGuard;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.serializer.SerializationHandler;
@@ -36,6 +37,7 @@ import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.composite.SimpleSequenceConstructor;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNodeSetForDOM;
@@ -88,12 +90,6 @@ public class ElemApplyTemplates extends ElemCallTemplate
    * 
    */
   private boolean m_isDefaultTemplate = false;
-  
-//  /**
-//   * List of namespace/localname IDs, for identification of xsl:with-param to 
-//   * xsl:params.  Initialized in the compose() method.
-//   */
-//  private int[] m_paramIDs;
 
   /**
    * Set if this belongs to a default template,
@@ -157,10 +153,6 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
     try
     {
-      // %REVIEW% Do we need this check??
-      //      if (null != sourceNode)
-      //      {
-      // boolean needToTurnOffInfiniteLoopCheck = false;
       QName mode = transformer.getMode();
 
       if (!m_isDefaultTemplate)
@@ -205,7 +197,20 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
     final XPathContext xctxt = transformer.getXPathContext();
     final int sourceNode = xctxt.getCurrentNode();
-    DTMIterator sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
+    
+    DTMIterator sourceNodes = null;
+    
+    if (m_selectExpression instanceof SimpleSequenceConstructor) {
+       ResultSequence resultSeq = (ResultSequence)(((SimpleSequenceConstructor)
+    		                                                               m_selectExpression).execute(xctxt));
+       XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(
+    		                                                                     resultSeq, xctxt);
+       sourceNodes = nodeSet.asIterator(xctxt, sourceNode);
+    }
+    else {
+       sourceNodes = m_selectExpression.asIterator(xctxt, sourceNode);
+    }
+    
     VariableStack vars = xctxt.getVarStack();
     int nParams = getParamElemCount();
     int thisframe = vars.getStackFrame();
@@ -227,7 +232,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
                           ? null
                           : transformer.processSortKeys(this, sourceNode);
 
-      // Sort if we need to.
+      // Sort if we need to
       if (null != keys)
         sourceNodes = sortNodes(xctxt, keys, sourceNodes);
             
@@ -239,12 +244,12 @@ public class ElemApplyTemplates extends ElemCallTemplate
       }
 
       final SerializationHandler rth = transformer.getSerializationHandler();
-//      ContentHandler chandler = rth.getContentHandler();
       final StylesheetRoot sroot = transformer.getStylesheet();
       final TemplateList tl = sroot.getTemplateListComposed();
       final boolean quiet = transformer.getQuietConflictWarnings();
       
-      // Should be able to get this from the iterator but there must be a bug.
+      // Should be able to get this from the iterator 
+      // but there might be a codebase issue.
       DTM dtm = xctxt.getDTM(sourceNode);
       
       int argsFrame = -1;
@@ -284,9 +289,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
       
       IntStack currentNodes = xctxt.getCurrentNodeStack();
       
-      IntStack currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();     
-      
-      // pushParams(transformer, xctxt);
+      IntStack currentExpressionNodes = xctxt.getCurrentExpressionNodeStack();
       
       int child;
       while (DTM.NULL != (child = sourceNodes.nextNode()))
@@ -317,16 +320,12 @@ public class ElemApplyTemplates extends ElemCallTemplate
           case DTM.DOCUMENT_FRAGMENT_NODE :
           case DTM.ELEMENT_NODE :
             template = sroot.getDefaultRule();
-            // %OPT% direct faster?
             break;
           case DTM.ATTRIBUTE_NODE :
           case DTM.CDATA_SECTION_NODE :
           case DTM.TEXT_NODE :
-            // if(rth.m_elemIsPending || rth.m_docPending)
-            //  rth.flushPending(true);
             transformer.pushPairCurrentMatched(sroot.getDefaultTextRule(), child);
             transformer.setCurrentElement(sroot.getDefaultTextRule());
-            // dtm.dispatchCharactersEvents(child, chandler, false);
             dtm.dispatchCharactersEvents(child, rth, false);
             transformer.popCurrentMatched();
             continue;
@@ -334,8 +333,6 @@ public class ElemApplyTemplates extends ElemCallTemplate
             template = sroot.getDefaultRootRule();
             break;
           default :
-
-            // No default rules for processing instructions and the like.
             continue;
           }
         }
@@ -399,9 +396,9 @@ public class ElemApplyTemplates extends ElemCallTemplate
         
         if (templateAsAttrVal != null) {         
             try {
-               // The code within this 'try' block, checks whether the template's result contents
-               // conform to the 'sequence type' expression specified as value of template's 
-               // 'as' attribute.
+               // The codebase logic within this 'try' block, checks whether an
+               // XSLT template's result contents conform to an XPath 'sequence type' 
+               // expression specified as value of template's 'as' attribute.
                  
                int dtmNodeHandle = transformer.transformToGlobalRTF(template);
                 
@@ -480,21 +477,6 @@ public class ElemApplyTemplates extends ElemCallTemplate
 	    
         if(template.m_frameSize > 0)
         {
-          // See Frank Weiss bug around 03/19/2002 (no Bugzilla report yet).
-          // While unlink will restore to the proper place, the real position 
-          // may have been changed for xsl:with-param, so that variables 
-          // can be accessed.  
-          // of right now.
-          // More:
-          // When we entered this function, the current 
-          // frame buffer (cfb) index in the variable stack may 
-          // have been manually set.  If we just call 
-          // unlink(), however, it will restore the cfb to the 
-          // previous link index from the link stack, rather than 
-          // the manually set cfb.  So, 
-          // the only safe solution is to restore it back 
-          // to the same position it was on entry, since we're 
-          // really not working in a stack context here. (Bug4218)
           vars.unlink(currentFrameBottom);
           xctxt.popRTFContext();
         }
