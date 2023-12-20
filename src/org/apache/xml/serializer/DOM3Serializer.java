@@ -115,12 +115,12 @@ import org.w3c.dom.ls.LSSerializerFilter;
 public interface DOM3Serializer {
     /**
      * Serializes the Level 3 DOM node. Throws an exception only if an I/O
-     * exception occured while serializing.
+     * exception occurred while serializing.
      * 
      * This interface is a public API.
      *
      * @param node the Level 3 DOM node to serialize
-     * @throws IOException if an I/O exception occured while serializing
+     * @throws IOException if an I/O exception occurred while serializing
      */
     public void serializeDOM3(Node node) throws IOException;
 

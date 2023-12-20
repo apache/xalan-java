@@ -1477,7 +1477,7 @@ public class ElemLiteralResult extends ElemUse
     /**
      * Throw a DOMException
      *
-     * @param msg key of the error that occured.
+     * @param msg key of the error that occurred.
      */
     public void throwDOMException(short code, String msg)
     {

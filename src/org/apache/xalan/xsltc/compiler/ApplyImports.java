@@ -55,8 +55,8 @@ final class ApplyImports extends Instruction {
     /**
      * Determine the lowest import precedence for any stylesheet imported
      * or included by the stylesheet in which this <xsl:apply-imports/>
-     * element occured. The templates that are imported by the stylesheet in
-     * which this element occured will all have higher import precedence than
+     * element occurred. The templates that are imported by the stylesheet in
+     * which this element occurred will all have higher import precedence than
      * the integer returned by this method.
      */
     private int getMinPrecedence(int max) {

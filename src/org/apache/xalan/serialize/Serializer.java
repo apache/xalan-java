@@ -110,7 +110,7 @@ public interface Serializer
    *
    * @return A {@link ContentHandler} interface into this serializer,
    *  or null if the serializer is not SAX 2 capable
-   * @throws IOException An I/O exception occured
+   * @throws IOException An I/O exception occurred
    * @deprecated Use org.apache.xml.serializer.Serializer
    */
   public ContentHandler asContentHandler() throws IOException;
@@ -122,7 +122,7 @@ public interface Serializer
    *
    * @return A {@link DOMSerializer} interface into this serializer,
    *  or null if the serializer is not DOM capable
-   * @throws IOException An I/O exception occured
+   * @throws IOException An I/O exception occurred
    * @deprecated Use org.apache.xml.serializer.Serializer
    */
   public DOMSerializer asDOMSerializer() throws IOException;

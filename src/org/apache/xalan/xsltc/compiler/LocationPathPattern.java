@@ -71,7 +71,7 @@ public abstract class LocationPathPattern extends Pattern {
      * mode and that match on the same core pattern. The rules used are:
      *  o) first check precedence - highest precedence wins
      *  o) then check priority - highest priority wins
-     *  o) then check the position - the template that occured last wins
+     *  o) then check the position - the template that occurred last wins
      */
     public boolean noSmallerThan(LocationPathPattern other) {
 	if (_importPrecedence > other._importPrecedence) {

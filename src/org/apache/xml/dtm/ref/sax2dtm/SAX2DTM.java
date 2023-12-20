@@ -134,7 +134,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
   /** End document has been reached.
    * Made protected rather than private so SAX2RTFDTM can access it.
    */
-  protected boolean m_endDocumentOccured = false;
+  protected boolean m_endDocumentOccurred = false;
 
   /** Data or qualified name values, one array element for each node. */
   protected SuballocatedIntVector m_dataOrQName;
@@ -777,7 +777,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     if (null == m_incrementalSAXSource)
       return false;
 
-    if (m_endDocumentOccured)
+    if (m_endDocumentOccurred)
     {
       clearCoRoutine();
 
@@ -1370,7 +1370,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
       if (null != intObj)
         return makeNodeHandle(intObj.intValue());
 
-      if (!isMore || m_endDocumentOccured)
+      if (!isMore || m_endDocumentOccurred)
         break;
 
       isMore = nextNode();
@@ -1726,7 +1726,7 @@ public class SAX2DTM extends DTMDefaultBaseIterators
     m_prefixMappings = null;
     m_contextIndexes = null;
 
-    m_endDocumentOccured = true;
+    m_endDocumentOccurred = true;
     
     // Bugzilla 4858: throw away m_locator. we cache m_systemId
     m_locator = null;

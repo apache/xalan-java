@@ -204,10 +204,10 @@ abstract public class ToStream extends SerializerBase
 
     /**
      * Serializes the DOM node. Throws an exception only if an I/O
-     * exception occured while serializing.
+     * exception occurred while serializing.
      *
      * @param node Node to serialize.
-     * @throws IOException An I/O exception occured while serializing
+     * @throws IOException An I/O exception occurred while serializing
      */
     public void serialize(Node node) throws IOException
     {

@@ -347,7 +347,7 @@ public abstract class SerializerBase
      * there is a currently open element.
      * 
      * An element is currently open if a startElement() notification has
-     * occured but the start of the element has not yet been written to the
+     * occurred but the start of the element has not yet been written to the
      * output.  In the stream case this means that we have not yet been forced
      * to close the elements opening tag by another notification, such as a
      * character notification.
@@ -508,7 +508,7 @@ public abstract class SerializerBase
      *
      * @return A {@link ContentHandler} interface into this serializer,
      *  or null if the serializer is not SAX 2 capable
-     * @throws IOException An I/O exception occured
+     * @throws IOException An I/O exception occurred
      */
     public ContentHandler asContentHandler() throws IOException
     {
@@ -786,7 +786,7 @@ public abstract class SerializerBase
      *
      * @return A {@link DOMSerializer} interface into this serializer,  or null
      * if the serializer is not DOM capable
-     * @throws IOException An I/O exception occured
+     * @throws IOException An I/O exception occurred
      * @see Serializer#asDOMSerializer()
      */
     public DOMSerializer asDOMSerializer() throws IOException
@@ -1576,7 +1576,7 @@ public abstract class SerializerBase
      *
      * @return A {@link DOM3Serializer} interface into this serializer,  or null
      * if the serializer is not DOM capable
-     * @throws IOException An I/O exception occured
+     * @throws IOException An I/O exception occurred
      * @see org.apache.xml.serializer.Serializer#asDOM3Serializer()
      */
     public Object asDOM3Serializer() throws IOException

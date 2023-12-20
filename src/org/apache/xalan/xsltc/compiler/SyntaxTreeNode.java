@@ -344,7 +344,7 @@ public abstract class SyntaxTreeNode implements Constants {
 
     /**
      * Get the import precedence of this element. The import precedence equals
-     * the import precedence of the stylesheet in which this element occured.
+     * the import precedence of the stylesheet in which this element occurred.
      * @return The import precedence of this syntax tree node.
      */
     protected int getImportPrecedence() {
@@ -355,7 +355,7 @@ public abstract class SyntaxTreeNode implements Constants {
 
     /**
      * Get the Stylesheet node that represents the <xsl:stylesheet/> element
-     * that this node occured under.
+     * that this node occurred under.
      * @return The Stylesheet ancestor node of this node.
      */
     public Stylesheet getStylesheet() {
@@ -373,7 +373,7 @@ public abstract class SyntaxTreeNode implements Constants {
 
     /**
      * Get the Template node that represents the <xsl:template/> element
-     * that this node occured under. Note that this method will return 'null'
+     * that this node occurred under. Note that this method will return 'null'
      * for nodes that represent top-level elements.
      * @return The Template ancestor node of this node or 'null'.
      */
@@ -913,7 +913,7 @@ public abstract class SyntaxTreeNode implements Constants {
 
     /**
      * Report an error to the parser.
-     * @param element The element in which the error occured (normally 'this'
+     * @param element The element in which the error occurred (normally 'this'
      * but it could also be an expression/pattern/etc.)
      * @param parser The XSLT parser to report the error to.
      * @param error The error code (from util/ErrorMsg).
@@ -927,7 +927,7 @@ public abstract class SyntaxTreeNode implements Constants {
 
     /**
      * Report a recoverable error to the parser.
-     * @param element The element in which the error occured (normally 'this'
+     * @param element The element in which the error occurred (normally 'this'
      * but it could also be an expression/pattern/etc.)
      * @param parser The XSLT parser to report the error to.
      * @param error The error code (from util/ErrorMsg).

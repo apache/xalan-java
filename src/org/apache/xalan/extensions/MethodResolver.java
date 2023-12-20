@@ -539,7 +539,7 @@ public class MethodResolver
    * given set of Java parameters.
    * If any invocations of this function for a method with 
    * the same name return the same positive value, then a conflict 
-   * has occured, and an error should be signaled.
+   * has occurred, and an error should be signaled.
    * @param javaParamTypes Must be filled with valid class names, and 
    * of the same length as xsltArgs.
    * @param xsltArgs Must be filled with valid object instances, and 

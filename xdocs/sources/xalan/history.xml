@@ -5040,7 +5040,7 @@ rely
  selfdoc for this and a few other newer options.<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<ref> on </ref>11/28/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/transformer ResultTreeHandler.java<br/><ref>Committer's log entry: </ref>Catch exceptions from the output content handler in flush(), and throw a
  SAXParseException with line numbers filled in.
  If we don't do this, and the exception is a RuntimeException,
- good line numbers of where the exception occured in the stylesheet
+ good line numbers of where the exception occurred in the stylesheet
  won't get reported. I tried just catching RuntimeException, but
  for whatever reason it didn't seem to catch.
  Fix for Christina's DOMException error problem.<br/><br/></li><li><ref>Committed by </ref>jkesselm@apache.org<ref> on </ref>11/29/2001<br/><ref>Modified: </ref>java/src/org/apache/xml/dtm/ref/dom2dtm DOM2DTM.java<br/><ref>Added: </ref>java/src/org/apache/xml/dtm/ref/dom2dtm
@@ -5342,7 +5342,7 @@ xsl:apply-template<br/><br/></li><li><ref>Committed by </ref>sboag@apache.org<re
  when m_foundLast is found to be true on function entry
  (after the cache check). This allows getCurrentNode() to
  fullfill it's contract of returning null if the last fetch was
- null. The bug occured after an optimization for positional
+ null. The bug occurred after an optimization for positional
  predicates to have them not continue searching once
  the positional node was found, by setting m_foundLast
  to true.<br/><br/></li><li><ref>Committed by </ref>johng@apache.org<ref> on </ref>08/24/2001<br/><ref>Modified: </ref>java/src/org/apache/xalan/lib/sql SQLDocument.java<br/><ref>Committer's log entry: </ref>Removed debug flag
@@ -6088,7 +6088,7 @@ The DTM has many features, including direct character dispatch to SAX2,
 native DTM iterators and "traversers", multiple document management, etc.<br/><br/></li>
 <li>Joe Kesselman's CoRoutine parsers, which are in a threaded SAX flavor
 and in a Xerces parseMore() flavor (no threads).  These do away with the
-"race" conditions that occured in the original code, and should make Xalan
+"race" conditions that occurred in the original code, and should make Xalan
 much more robust.<br/><br/></li>
 <li>*Much* more robust XPath itteration.  The "waiting" iterators of old are
 no more, and good riddance.  There is stil lots more we want to do with
