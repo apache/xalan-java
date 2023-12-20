@@ -13,6 +13,13 @@
   <description>Apache's XML serialization layer, as used in the Xalan XSLT processor</description>
 
   <dependencies>
+    <!-- For javadoc generation only, hence 'provided' scope -->
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>${xalan.taglet.artifactId}</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- https://mvnrepository.com/artifact/org.apache.bcel/bcel -->
     <dependency>
       <groupId>org.apache.bcel</groupId>
@@ -103,5 +110,44 @@
     </plugins>
 
   </build>
+
+  <profiles>
+    <profile>
+      <id>create-javadocs</id>
+      <activation>
+        <!--
+          Activate by default. Workaround for 'activeByDefault', which is broken
+          by design, see https://issues.apache.org/jira/browse/MNG-4917.
+        -->
+        <jdk>[1,)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>create-sources</id>
+      <activation>
+        <!--
+          Activate by default. Workaround for 'activeByDefault', which is broken
+          by design, see https://issues.apache.org/jira/browse/MNG-4917.
+        -->
+        <jdk>[1,)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>
