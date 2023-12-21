@@ -47,8 +47,10 @@ import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSInt;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSLong;
+import xml.xpath31.processor.types.XSNormalizedString;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSTime;
+import xml.xpath31.processor.types.XSToken;
 import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 import xml.xpath31.processor.types.XSYearMonthDuration;
@@ -109,6 +111,16 @@ public class InstanceOf extends Operation
       }
       else if ((xdmValue instanceof XString || xdmValue instanceof XSString) && 
               (seqTypedData.getSequenceType() == SequenceTypeSupport.STRING) && 
+              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSNormalizedString) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_NORMALIZED_STRING) && 
+              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
+                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSToken) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_TOKEN) && 
               ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
                                                          (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
           isInstanceOf = true;
@@ -312,4 +324,5 @@ public class InstanceOf extends Operation
     
       return isInstanceOf;
   }
+  
 }

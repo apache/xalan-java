@@ -261,6 +261,12 @@ public class XObject extends Expression implements Serializable, Cloneable
   
   /** Constant for XPath 3.1 xs:float object type */
   public static final int CLASS_XS_FLOAT = 20;
+  
+  /** Constant for XPath 3.1 xs:normalizedString object type */
+  public static final int CLASS_XS_NORMALIZED_STRING = 21;
+  
+  /** Constant for XPath 3.1 xs:token object type */
+  public static final int CLASS_XS_TOKEN = 22;
 
   /** Represents an unresolved variable type as an integer. */
   public static final int CLASS_UNRESOLVEDVARIABLE = 600;
