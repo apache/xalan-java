@@ -3760,6 +3760,12 @@ public class XPathParser
             case Keywords.XS_STRING :
                xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.STRING);
                break; 
+            case Keywords.XS_NORMALIZED_STRING :
+                xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_NORMALIZED_STRING);
+                break;
+            case Keywords.XS_TOKEN :
+                xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_TOKEN);
+                break;
             case Keywords.XS_DECIMAL :
                xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DECIMAL);
                break; 

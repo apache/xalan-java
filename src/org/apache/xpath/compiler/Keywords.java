@@ -366,6 +366,12 @@ public class Keywords
   /** xs:string data type string. */
   public static final String XS_STRING = "string";
   
+  /** xs:normalizedString data type string. */
+  public static final String XS_NORMALIZED_STRING = "normalizedString";
+  
+  /** xs:token data type string. */
+  public static final String XS_TOKEN = "token";
+  
   /** xs:decimal data type string. */
   public static final String XS_DECIMAL = "decimal";
   

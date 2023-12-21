@@ -114,6 +114,10 @@ public class SequenceTypeSupport {
     
     public static int XS_UNTYPED = 17;
     
+    public static int XS_NORMALIZED_STRING = 18;
+    
+    public static int XS_TOKEN = 19;
+    
     /** 
      * Following are constant int values denoting XPath 3.1 sequence
      * type KindTest expressions.
