@@ -53,7 +53,7 @@ jobs:
 # minus conf.xsltc since that one is currently throwing four known failures and
 # isn't set up to say "but that's not a regression".
       run: |
-        ls; ant -debug jar extensions.classes smoketest apitest -Dxalan.relpath=../ -Dparserjar=../lib/endorsed/xercesImpl.jar -Dxml-apis.jar=../lib/endorsed/xml-apis.jar
+        ls; ant -debug jar extensions.classes smoketest apitest -Dxalan.relpath=../xalan-java -Dparserjar=..xalan-java/lib/endorsed/xercesImpl.jar -Dxml-apis.jar=..xalan-java/lib/endorsed/xml-apis.jar
 
 # fulldist isn't currently a separate target in the mvn build process
 # We should make sure the equivalent is done.
