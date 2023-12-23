@@ -42,8 +42,11 @@ jobs:
         repository: apache/xalan-test
         path: xalan-test
         ref: master
+    - name: 'Cheat xalan-test up to be sibling of xalan-java'
+      run: |
+        mv xalan-test ..; ls ..
     - name: 'Run xalan-test tests'
-      working-directory: xalan-test
+      working-directory: ../xalan-test
 # NOTE: "alltest" target includes conformance tests known not to run in Xalan,
 # as well as having dependencies on some targets which have since been edited
 # out. The following is our typical minimal build test as documented in README,
@@ -52,16 +55,7 @@ jobs:
       run: |
         ant jar extensions.classes smoketest apitest -Dxalan.relpath=../ -Dparserjar=../lib/endorsed/xercesImpl.jar -Dxml-apis.jar=../lib/endorsed/xml-apis.jar
 
-# ant fulldist is failing: in CI
-# /home/runner/work/xalan-java/xalan-java/build.xml:1399: /home/runner/work/xalan-java/xalan-test does not exist.
-# Error replicated on my system if there is not a sibling xalan-test.
-# NOT replicated if sibling xalan-test directory is present
-# Simplest fix would be to have the above test checkout emulate the dev environment;
-# better would be to fix fulldist to intelligently check both locations;
-# best might be to adopt xalan-test back into the xalan repository, if it's no longer being used elsewhere.
-    - name: 'Cheat xalan-test up to be sibling of xalan-java'
-      run: |
-        mv xalan-test ..; ls ..
-    - id: build_artifacts
-      run: |
-        ant fulldist
+# fulldist isn't currently a separate target in the mvn build process
+# We should make sure the equivalent is done.
+# Note that the fullbuild binary distro has traditionally included
+# xalan-test as a subdirectory; TODO REVIEW whether we can drop that.
