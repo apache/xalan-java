@@ -365,6 +365,22 @@
                 <packages>org.apache.xalan.samples*</packages>
               </group>
             </groups>
+            <reportSet>
+              <id>xalan2jdoc</id>
+              <name>xalan2jdoc</name>
+              <description>Doclet using old APIs; may not run</description>
+              <configuration>
+                <doclet>xalanjdoc.Standard</doclet>
+                <docletPath>xalan2jdoc/legacy_blob/xalan2jdoc.jar</docletPath>
+                <!-- Not sure what value ant's build.apidocs is equivalent
+                     to here. and not sure we need it. 
+                -->
+                <!-- <additionalOptions> -->
+                <!--   <additionalOption>-d</additionalOption> -->
+                <!--   <additionalOption>${build.apidocs}</additionalOption> -->
+                <!-- </additionalOptions> -->
+              </configuration>
+            </reportSet>
           </configuration>
 
           <executions>

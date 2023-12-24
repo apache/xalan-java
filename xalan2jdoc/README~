@@ -1,0 +1,2 @@
+Unfortunately, this will not currently build, since it depends on com.tools.doclets,
+predating the new jdk.javadoc.doclet API. There is some evidence that it may still _run_.
