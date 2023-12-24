@@ -85,8 +85,6 @@
         </executions>
       </plugin>
 
-      <!--
-          https://maven.apache.org/plugins/maven-shade-plugin/examples/includes-excludes.html -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
@@ -99,15 +97,7 @@
             <configuration>
               <artifactSet>
                 <excludes>
-                  <!-- Their examples (testing) -->
-                  <exclude>junit:junit</exclude>
-                  <exclude>jmock:*</exclude>
-                  <exclude>org.apache.maven:lib:tests</exclude>
-                  <!-- What I think I need to exclude.
-                       Some are direct dependencies, some come in
-                       via maven packages. -->
                   <exclude>com.github.vbmacher:java-cup</exclude>
-                  <!-- java-cup-runtime, however, is needed -->
                   <exclude>commons-logging:commons-logging</exclude>
                   <exclude>org.apache.commons:commons-lang3</exclude>
                   <exclude>org.apache.ant:ant</exclude>
@@ -116,6 +106,18 @@
                   <exclude>de.jflex:jflex</exclude>
                 </excludes>
               </artifactSet>
+              <relocations>
+                <!-- We could instead make java-cup-runtime another dependency
+                     provided externally, and perhaps should, but this
+                     replicates the ant build's practice of including it
+                     while keeping it from interfering with a user instance.
+                     TODO: REVIEW.
+                -->
+                <relocation>
+                  <pattern>java_cup.runtime</pattern>
+                  <shadedPattern>org.apache.xalan.shaded.java_cup.runtime</shadedPattern>
+                </relocation>
+              </relocations>
             </configuration>
           </execution>
         </executions>
