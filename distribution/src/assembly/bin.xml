@@ -36,6 +36,18 @@
     </moduleSet>
   </moduleSets>
   <fileSets>
+    <!-- The above isn't picking up Xerces and xml-apis, for whatever reason.
+         Ugly empirical solution.Should these have been copied into build/?
+         TODO REVIEW: Improve!
+    -->
+    <fileSet>
+      <directory>${rootlocation}/lib</directory>
+      <outputDirectory>${project.parent.name}_${project.parent.version}</outputDirectory>
+      <includes>
+        <include>xercesImpl*.jar</include>
+        <include>xml-apis*.jar</include>
+      </includes>
+    </fileSet>
     <!-- In Maven builds, LICENSE and NOTICE go into META-INF -->
     <fileSet>
       <directory>..</directory>
