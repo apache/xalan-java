@@ -42,6 +42,18 @@
   -->
   <fileSets>
     <fileSet>
+      <directory>..</directory>
+      <!-- Strict filtering is supposed to test for file presence,
+	   and error if not. Nice, but doesn't seem supported in
+	   this version of the plug-in. -->
+      <!-- <useStrictFiltering>true</useStrictFiltering> -->
+      <outputDirectory>META-INF</outputDirectory>
+      <includes>
+        <include>LICENSE.txt</include>
+        <include>NOTICE.txt</include>
+      </includes>
+    </fileSet>
+    <fileSet>
       <directory>../target/site</directory>
       <!-- Might want explicitly defined values in parent. TODO GONK -->
       <outputDirectory>${project.parent.name}_${project.parent.version}/docs</outputDirectory>
