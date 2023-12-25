@@ -35,28 +35,22 @@
       </binaries>
     </moduleSet>
   </moduleSets>
-  <!-- Should also include source for all the samples, and
-       all the documentation, for emulation of
-       Ant behavior. Rename site to docs for back-compatibility.
-       Should pick up version from variable...?
-  -->
   <fileSets>
+    <!-- In Maven builds, LICENSE and NOTICE go into META-INF -->
     <fileSet>
       <directory>..</directory>
-      <!-- Strict filtering is supposed to test for file presence,
-	   and error if not. Nice, but doesn't seem supported in
-	   this version of the plug-in. -->
-      <!-- <useStrictFiltering>true</useStrictFiltering> -->
       <outputDirectory>META-INF</outputDirectory>
       <includes>
         <include>LICENSE.txt</include>
         <include>NOTICE.txt</include>
       </includes>
     </fileSet>
+    <!-- Rename site to docs for back-compatibility. -->
     <fileSet>
       <directory>../target/site</directory>
       <outputDirectory>${project.parent.name}_${project.parent.version}/docs</outputDirectory>
     </fileSet>
+    <!-- Include source for samples -->
     <fileSet>
       <directory>../samples</directory>
       <outputDirectory>${project.parent.name}_${project.parent.version}/samples</outputDirectory>
@@ -65,11 +59,12 @@
         <exclude>src/site/**</exclude>
       </excludes>
     </fileSet>
+    <!-- Include (generated) readme.html for samples -->
     <fileSet>
       <directory>../samples/target/site/</directory>
       <outputDirectory>${project.parent.name}_${project.parent.version}/samples</outputDirectory>
       <includes>
-	<include>**/readme.html</include>
+        <include>**/readme.html</include>
       </includes>
     </fileSet>
   </fileSets>
