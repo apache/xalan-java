@@ -55,7 +55,6 @@
     </fileSet>
     <fileSet>
       <directory>../target/site</directory>
-      <!-- Might want explicitly defined values in parent. TODO GONK -->
       <outputDirectory>${project.parent.name}_${project.parent.version}/docs</outputDirectory>
     </fileSet>
     <fileSet>
@@ -65,6 +64,13 @@
         <exclude>target/**</exclude>
         <exclude>src/site/**</exclude>
       </excludes>
+    </fileSet>
+    <fileSet>
+      <directory>../samples/target/site/</directory>
+      <outputDirectory>${project.parent.name}_${project.parent.version}/samples</outputDirectory>
+      <includes>
+	<include>**/readme.html</include>
+      </includes>
     </fileSet>
   </fileSets>
 </assembly>
