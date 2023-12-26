@@ -71,12 +71,12 @@
         <exclude>src/site/**</exclude>
       </excludes>
     </fileSet>
-    <!-- Include (generated) readme.html for samples -->
+    <!-- Include (generated) html for samples -->
     <fileSet>
       <directory>../samples/target/site/</directory>
       <outputDirectory>${project.parent.name}_${project.parent.version}/samples</outputDirectory>
       <includes>
-        <include>**/readme.html</include>
+        <include>**/*.html</include>
       </includes>
     </fileSet>
   </fileSets>
