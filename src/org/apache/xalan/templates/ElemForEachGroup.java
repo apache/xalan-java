@@ -53,6 +53,7 @@ import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSTime;
 
@@ -811,7 +812,7 @@ public class ElemForEachGroup extends ElemTemplateElement
   private Object getXPathEvaluationRawResult(XObject xpathEvalResult) {
       Object xpathRawResult = null;
       
-      if (xpathEvalResult instanceof XString) {
+      if ((xpathEvalResult instanceof XString) || (xpathEvalResult instanceof XSQName)) {
           xpathRawResult = xpathEvalResult.str();    
       }
       else if (xpathEvalResult instanceof XSString) {
