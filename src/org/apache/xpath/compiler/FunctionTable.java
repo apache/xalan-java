@@ -326,6 +326,9 @@ public class FunctionTable
   
   /** The 'data()' id. */
   public static final int FUNC_DATA = 100;
+  
+  /** The 'node-name()' id. */
+  public static final int FUNC_NODE_NAME = 101;
 
   // Proprietary
 
@@ -383,7 +386,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 101;
+  private static final int NUM_BUILT_IN_FUNCS = 102;
 
   /**
    * Number of built-in functions that may be added.
@@ -585,6 +588,8 @@ public class FunctionTable
     m_functions[FUNC_MIN] = org.apache.xpath.functions.FuncMin.class;
     
     m_functions[FUNC_DOC] = org.apache.xpath.functions.FuncDoc.class;
+    
+    m_functions[FUNC_NODE_NAME] = org.apache.xpath.functions.FuncNodeName.class;
   }
 
   static{
@@ -798,6 +803,9 @@ public class FunctionTable
          
          m_functionID.put(Keywords.FUNC_DOC,
                          new Integer(FunctionTable.FUNC_DOC));
+         
+         m_functionID.put(Keywords.FUNC_NODE_NAME,
+                         new Integer(FunctionTable.FUNC_NODE_NAME));
   }
   
   public FunctionTable(){

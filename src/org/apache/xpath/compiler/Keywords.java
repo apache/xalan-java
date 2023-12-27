@@ -460,6 +460,9 @@ public class Keywords
   /** doc function string. */
   public static final String FUNC_DOC = "doc";
   
+  /** node-name function string. */
+  public static final String FUNC_NODE_NAME = "node-name";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
