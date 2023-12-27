@@ -35,6 +35,7 @@
     <module>serializer</module>
     <module>xalan</module>
     <module>samples</module>
+    <module>xalanservlet</module>
     <!-- The binary mode of maven-assembly-plugin needs to run after all the
          other modules have created their artifacts. Standard solution to
          achieve this sequencing is to make it a separate module which
