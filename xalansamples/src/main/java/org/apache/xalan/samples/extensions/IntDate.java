@@ -1,4 +1,4 @@
-<!--
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements. See the NOTICE file
  * distributed with this work for additional information
@@ -14,17 +14,24 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
--->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+ */
+/*
+ * $Id$
+ */
+package org.apache.xalan.samples.extensions;
+import java.util.Calendar;
+import java.util.Date;
 
-<html>
-<head>
-	<title>Xalan Samples</title>
-</head>
-<body>
-<h2>Xalan Samples</h2>
-<p>For information about the samples (what they illustrate and how to run them), see <a href="../../docs/samples.html">Samples</a>.</p>
+public class IntDate
+{
+  public static Date getDate(String year, String month, String day)
+    {
+      // Date(int, int, int) has been deprecated, so use Calendar to
+      // set the year, month, and day.
+      Calendar c = Calendar.getInstance();
+      // Convert each argument to int.
+      c.set(Integer.parseInt(year),Integer.parseInt(month),Integer.parseInt(day));
+      return c.getTime();
+    }
+}
 
-
-</body>
-</html>

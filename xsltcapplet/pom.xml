@@ -1,18 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>xalan</groupId>
     <artifactId>xalan-project</artifactId>
+    <groupId>xalan</groupId>
     <version>2.7.3</version>
   </parent>
 
-  <artifactId>serializer</artifactId>
-  <name>Apache XML Serializer</name>
-  <description>Apache's XML serialization layer, as used in the Xalan XSLT processor</description>
+  <artifactId>xsltcapplet</artifactId>
+  <name>Apache Xalan-Java Applet Sample</name>
+  <!-- FIXME change it to the project's website -->
+  <url>http://www.example.com</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>serializer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+    </dependency>
     <!-- For javadoc generation only, hence 'provided' scope -->
     <dependency>
       <groupId>xalan</groupId>
@@ -20,26 +36,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.apache.bcel/bcel -->
-    <dependency>
-      <groupId>org.apache.bcel</groupId>
-      <artifactId>bcel</artifactId>
-      <version>6.7.0</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/commons-logging/commons-logging -->
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.2</version>
-      <scope>provided</scope>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/javax/javaee-api -->
-    <dependency>
-      <groupId>javax</groupId>
-      <artifactId>javaee-api</artifactId>
-      <version>6.0</version>
-      <scope>provided</scope>
-    </dependency>
     <!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -47,6 +43,15 @@
       <version>2.5</version> <!-- jakata servlet is at 6.0 -->
       <scope>provided</scope>
     </dependency>
+
+    <!-- https://mvnrepository.com/artifact/javax.ejb/ejb-api -->
+    <dependency>
+      <groupId>javax.ejb</groupId>
+      <artifactId>ejb-api</artifactId>
+      <version>3.0</version>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- https://mvnrepository.com/artifact/xerces/xercesImpl -->
     <dependency>
       <groupId>xerces</groupId>
@@ -54,53 +59,25 @@
       <version>2.12.2</version>
       <scope>provided</scope>
     </dependency>
-    <!-- https://mvnrepository.com/artifact/xml-apis/xml-apis -->
+
+    <!-- https://github.com/dev-aspectj/brazil -->
     <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis</artifactId>
-      <version>1.4.01</version>
-      <!-- We were actually using 1.4.02 in the Ant build. -->
-      <scope>provided</scope>
+      <groupId>dev.aspectj</groupId>
+      <artifactId>sunlabs.brazil</artifactId>
+      <version>2.3.1</version>
     </dependency>
 
-    <!-- Test dependencies -->
+    <!-- https://mvnrepository.com/artifact/org.jboss.spec.javax.rmi/jboss-rmi-api_1.0_spec -->
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-params</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-inline</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-junit-jupiter</artifactId>
-      <scope>test</scope>
+      <groupId>org.jboss.spec.javax.rmi</groupId>
+      <artifactId>jboss-rmi-api_1.0_spec</artifactId>
+      <version>1.0.6.Final</version>
     </dependency>
 
   </dependencies>
 
   <build>
-
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
-
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
       <!-- Copy generated jarfile up to xalan-java/build/,
            for backward compatibility with Ant builds. -->
       <plugin>
@@ -108,7 +85,6 @@
         <artifactId>maven-dependency-plugin</artifactId>
       </plugin>
     </plugins>
-
   </build>
 
   <profiles>
