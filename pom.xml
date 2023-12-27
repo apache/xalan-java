@@ -34,8 +34,12 @@
   <modules>
     <module>serializer</module>
     <module>xalan</module>
-    <module>samples</module>
+    <module>xalansamples</module>
     <module>xalanservlet</module>
+    <module>xsltcapplet</module>
+    <module>xsltcbrazil</module>
+    <module>xsltcejb</module>
+    <module>xsltcservlet</module>
     <!-- The binary mode of maven-assembly-plugin needs to run after all the
          other modules have created their artifacts. Standard solution to
          achieve this sequencing is to make it a separate module which
@@ -502,7 +506,7 @@
       </dependency>
       <dependency>
         <groupId>xalan</groupId>
-        <artifactId>samples</artifactId>
+        <artifactId>xalansamples</artifactId>
         <version>${project.version}</version>
       </dependency>
 

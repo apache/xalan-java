@@ -10,8 +10,8 @@
     <version>2.7.3</version>
   </parent>
 
-  <artifactId>xalansamples</artifactId>
-  <name>Apache Xalan-Java Samples</name>
+  <artifactId>xsltcservlet</artifactId>
+  <name>Apache Xalan-Java Compiled Servlet Sample</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
