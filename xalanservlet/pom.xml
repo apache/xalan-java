@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- ISSUE: This is dragging in a bit pile of jarfiles
+     which this sample did not include when building through Ant:
+     bcel, commons-lang3, java-cup-runtime, jboss-rmi, regexp,
+     brazil. 
+     It also adds serializer.
+     Notably, neither includes XML parser, presumably gotten from JRE.
+
+NOTE: The directory/WAR tree is not exactly as suggested by the Mavn WAR
+Plugin documentation. However, this arrangement mirrors the output produced
+by the previous (ant) build, which I am not willing to change right now.
+(I'd rather not grovel through the code more than I must.)
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -9,8 +21,9 @@
     <version>2.7.3</version>
   </parent>
 
-  <artifactId>samples</artifactId>
-  <name>Apache Xalan-Java Samples</name>
+  <artifactId>xalanservlet</artifactId>
+  <name>Apache Xalan-Java Servlet Sample</name>
+  <packaging>war</packaging>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
@@ -20,6 +33,8 @@
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 
+  <!-- NOTE: Currently dragging in transitive dependencies unneeded in
+       this servlet. Need maven advice on how to avoid that. -->
   <dependencies>
     <dependency>
       <groupId>xalan</groupId>
@@ -73,7 +88,6 @@
       <artifactId>jboss-rmi-api_1.0_spec</artifactId>
       <version>1.0.6.Final</version>
     </dependency>
-
   </dependencies>
 
   <build>
