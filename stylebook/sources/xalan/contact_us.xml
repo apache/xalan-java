@@ -89,14 +89,21 @@
   </p>
   <p>
     To subscribe an email account to the Xalan user mailing list send a note to 
-    xalan-j-users-subscribe&#64;xml.apache.org from that account. To unsubscribe
-    do the same, except replace <em>subscribe</em> with <em>unsubscribe</em>.
+    j-users-subscribe&#64;xalan.apache.org from that account.
   </p>
   <p>
     To subscribe to the Xalan developer mailing list send a note to 
-    xalan-dev-subscribe&#64;xml.apache.org. To unsubscribe
-    do the same, except replace <em>subscribe</em> with <em>unsubscribe</em>.
-  </p>  
+    dev-subscribe&#64;xalan.apache.org.
+  </p>
+  <p>
+    For either of these mailing lists, doing the same but replacing
+    <em>subscribe</em> with <em>help</em> will return a message
+    telling you more about configuring your subscription's behavior.
+  </p>
+  <p>
+    To stop receiving mail from one of these lists, do the same but replace
+    <em>subscribe</em> with <em>unsubscribe</em>.
+  </p>
   <p>
     For more information on XML related Apache mailing lists go to
     <jump href="http://xml.apache.org/mail.html">Apache mailing lists</jump>. 
