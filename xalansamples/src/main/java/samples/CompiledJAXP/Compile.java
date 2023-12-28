@@ -18,7 +18,6 @@
 /*
  * $Id$
  */
-package samples.CompiledJAXP;
 
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerFactory;

@@ -18,7 +18,6 @@
 /*
  * $Id$
  */
-package samples.trax;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;

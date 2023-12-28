@@ -20,9 +20,6 @@
  */
 // This file uses 4 space indents, no tabs.
 
-package samples.ApplyXPathDOM;
-
-
 import java.io.FileInputStream;
 import java.io.OutputStreamWriter;
 

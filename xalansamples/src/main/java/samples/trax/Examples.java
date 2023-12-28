@@ -18,7 +18,6 @@
 /*
  * $Id$
  */
-package samples.trax;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;

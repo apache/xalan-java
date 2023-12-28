@@ -18,7 +18,6 @@
 /*
  * $Id$
  */
-package samples.UseStylesheetParam;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 

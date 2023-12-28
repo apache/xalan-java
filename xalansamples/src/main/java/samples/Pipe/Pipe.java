@@ -18,7 +18,6 @@
 /*
  * $Id$
  */
-package samples.Pipe;
 
 import java.io.IOException;
 

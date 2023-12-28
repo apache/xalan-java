@@ -18,7 +18,6 @@
 /*
  * $Id$
  */
-package samples.extensions;
 import java.util.Calendar;
 import java.util.Date;
 
