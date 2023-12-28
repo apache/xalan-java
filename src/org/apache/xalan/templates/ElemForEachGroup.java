@@ -806,14 +806,20 @@ public class ElemForEachGroup extends ElemTemplateElement
    * 
    * For the purpose of, evaluating grouping key XPath expressions for xsl:for-each-group, 
    * the following data types are currently supported : string, number, boolean, xs:date, 
-   * xs:dateTime, xs:time. Any other data type for grouping key is converted to a 
+   * xs:dateTime, xs:time, xs:QName. Any other data type for grouping key is converted to a 
    * string value.
    */
   private Object getXPathEvaluationRawResult(XObject xpathEvalResult) {
       Object xpathRawResult = null;
       
-      if ((xpathEvalResult instanceof XString) || (xpathEvalResult instanceof XSQName)) {
+      if (xpathEvalResult instanceof XString) {
           xpathRawResult = xpathEvalResult.str();    
+      }
+      else if (xpathEvalResult instanceof XSQName) {
+    	  XSQName qName = (XSQName)xpathEvalResult;
+    	  String localName = qName.getLocalName();
+    	  String namespaceUri = qName.getNamespaceUri();
+    	  xpathRawResult = localName + ((namespaceUri == null) ? "" : ":" + namespaceUri); 
       }
       else if (xpathEvalResult instanceof XSString) {
           xpathRawResult = ((XSString)xpathEvalResult).stringValue();  
