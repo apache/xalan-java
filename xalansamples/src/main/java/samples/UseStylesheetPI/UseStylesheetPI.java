@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package samples.UseStylesheetPI;
 
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;

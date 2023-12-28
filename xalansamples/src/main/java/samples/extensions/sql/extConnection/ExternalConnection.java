@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package samples.extensions.sql.extConnection;
 
 // Imported TraX classes
 import javax.xml.transform.TransformerFactory;

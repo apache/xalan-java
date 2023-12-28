@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package samples.XPathAPI;
 
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;

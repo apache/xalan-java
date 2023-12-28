@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package samples.Trace;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;

@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package samples.Validate;
 
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Transformer;

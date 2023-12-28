@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package samples.SimpleTransform;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

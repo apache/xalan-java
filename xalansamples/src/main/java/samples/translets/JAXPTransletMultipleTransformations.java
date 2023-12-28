@@ -19,6 +19,7 @@
  * $Id$
  */
 
+package samples.translets;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package samples.TransformThread;
 
 import java.io.File;
 import java.io.FileInputStream;

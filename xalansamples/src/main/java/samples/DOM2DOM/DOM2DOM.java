@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package samples.DOM2DOM;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

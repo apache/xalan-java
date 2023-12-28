@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package samples.UseXMLFilters;
 
 import java.io.IOException;
 

@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package samples.CompiledJAXP;
 
 import java.io.OutputStreamWriter;
 

@@ -18,6 +18,7 @@
 /*
  * $Id$
  */
+package samples.extensions;
 import java.util.Hashtable;
 
 public class MyCounter {

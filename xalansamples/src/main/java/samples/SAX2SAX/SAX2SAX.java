@@ -24,6 +24,7 @@
  *  Replicate the SimpleTransform sample, explicitly using the SAX model to handle the
  *  stylesheet, the XML input, and the transformation.
  */
+package samples.SAX2SAX;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
