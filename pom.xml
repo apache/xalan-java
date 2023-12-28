@@ -365,14 +365,10 @@
                 <title>XSLTC Core</title>
                 <packages>org.apache.xalan.xsltc*</packages>
               </group>
-	      <!-- Eventually, I want these under org.apache.xalan.samples.
-		   But that requires a bunch of doc work I don't want to
-		   deal with right now. Deferred.
-		   -->
-              <!-- <group> -->
-              <!--   <title>Samples</title> -->
-              <!--   <packages>*</packages> -->
-              <!-- </group> -->
+              <group>
+                <title>Samples</title>
+                <packages>samples*</packages>
+              </group>
             </groups>
           </configuration>
 
