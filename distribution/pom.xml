@@ -24,10 +24,37 @@
       <groupId>xalan</groupId>
       <artifactId>xalan</artifactId>
     </dependency>
-    <dependency>
-      <groupId>xalan</groupId>
-      <artifactId>xalansamples</artifactId>
-    </dependency>
+    <!-- When I add dependencies on the samples, maven complains that
+         dependencies.dependency.version is missing. I'm not sure
+	 why, since they should be picking up the project version like
+	 xalan and serializer. For now, it appears I can cheat and
+	 not explicitly sequence these, but ... ugh?
+	 TODO: REVIEW.
+	 -->
+    <!-- <dependency> -->
+    <!--   <groupId>xalan</groupId> -->
+    <!--   <artifactId>xalansamples</artifactId> -->
+    <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!--   <groupId>xalan</groupId> -->
+    <!--   <artifactId>xalanservlet</artifactId> -->
+    <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!--   <groupId>xalan</groupId> -->
+    <!--   <artifactId>xsltcapplet</artifactId> -->
+    <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!--   <groupId>xalan</groupId> -->
+    <!--   <artifactId>xsltcejb</artifactId> -->
+    <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!--   <groupId>xalan</groupId> -->
+    <!--   <artifactId>xsltcbrazil</artifactId> -->
+    <!-- </dependency> -->
+    <!-- <dependency> -->
+    <!--   <groupId>xalan</groupId> -->
+    <!--   <artifactId>xsltcservlet</artifactId> -->
+    <!-- </dependency> -->
   </dependencies>
 
   <profiles>

@@ -13,19 +13,34 @@
   <moduleSets>
     <moduleSet>
       <useAllReactorProjects>true</useAllReactorProjects>
-      <!-- Now, select which projects to include in this module-set. -->
-      <includes>
+       <includes>
         <include>xalan:serializer</include>
         <include>xalan:xalan</include>
-        <include>xalan:xalansamples</include>
-	<include>xalan:xalanservlet</include>
-	<include>xalan:xsltcapplet</include>
-	<include>xalan:xsltcbrazil</include>
-	<include>xalan:xsltcejb</include>
-	<include>xalan:xsltcservlet</include>
       </includes>
       <binaries>
         <outputDirectory>${project.parent.name}_${project.parent.version}</outputDirectory>
+        <unpack>false</unpack>
+        <dependencySets>
+          <dependencySet>
+            <excludes>
+              <exclude>org.jboss.spec.javax.rmi:jboss-rmi-api_1.0_spec</exclude>
+            </excludes>
+          </dependencySet>
+        </dependencySets>
+      </binaries>
+    </moduleSet>
+    <moduleSet>
+      <useAllReactorProjects>true</useAllReactorProjects>
+       <includes>
+         <include>xalan:xalansamples</include>
+         <include>xalan:xalanservlet</include>
+         <include>xalan:xsltcapplet</include>
+         <include>xalan:xsltcbrazil</include>
+         <include>xalan:xsltcejb</include>
+         <include>xalan:xsltcservlet</include>
+      </includes>
+      <binaries>
+        <outputDirectory>${project.parent.name}_${project.parent.version}/samples</outputDirectory>
         <unpack>false</unpack>
         <dependencySets>
           <dependencySet>
