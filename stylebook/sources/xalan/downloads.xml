@@ -84,12 +84,11 @@
     If you have downloaded a binary distribution, you already have a build 
     (you have the jars). This is also true for a source distribution, however
     if you downloaded a source distribution, 
-    you have the option to use Ant to build &xslt4j;, 
-    including <code>xalan.jar</code>, <code>xsltc.jar</code>, <code>serializer.jar</code>
+    you have the option to use Maven to build &xslt4j;, 
+    including <code>xalan.jar</code>, <code>serializer.jar</code>
     and other things, see <link anchor="using-ant">Using Ant</link> for more
     details.
   </p>  
-    
     
 </s2>
 <anchor name="download"/>
@@ -207,27 +206,35 @@
     the test harness provided with Xalan then it is easiest if you keep the
     local directory names
     as suggested. With your paths set up to compile Java code, go into the local <em>java</em>
-    directory and issue these two commands:
+    directory and issue the command:
     <source>
-  build clean
-  build  
-  </source>
+      mvnbuild.sh
+    </source>
+      or, on windows,
+    <source>
+      mvnbuild.bat
+    </source>
+    This is equivalent to
+    <source>
+      mvn clean package site
+    </source>
   </p>
   <p>
-  The <em>build.bat</em> batch file, or <em>build.sh</em> shell script (depending on
-  your operating system use <em>ant</em> and the buildfile <em>build.xml</em>. See
+  The <em>mvnbuild.bat</em> batch file, or <em>mvnbuild.sh</em> shell script (depending on
+  your operating system) use <em>maven</em> and the buildfiles <em>pom.xml</em>.  See
   the section <link anchor="jar">Using ant</link> for more information.
   </p>
   <p>
-  Other useful targets may be <code>xsltc.jar</code> or <code>serializer.jar</code>.
   If you want to test the jars you just built in the directory <em>java/build</em>, change to
-  directory <em>test</em> and issue this command:
+  directory <em>xalan-test</em> and issue this command:
   <source>
-  build jar
-  build smoketest
+    build jar extensions.classes
+    build smoketest
     </source>
     The first target, <em>jar</em> builds the test harness and only needs to be done
-    once after the <em>test</em> repository is checked out. The second target, <em>smoketest</em>,
+    once after the <em>test</em> repository is checked out. 
+    The second target builds plug-in extensions used to test that capability.
+    The third target, <em>smoketest</em>,
     runs the Xalan-J intepretive smoketest. 
     Running the <em>build smoketest</em> or other targets in the <em>test</em> directory
     automatically looks for the jars in the directory <em>../java/build</em>
@@ -267,6 +274,10 @@ build completed!
 
 <anchor name="using-ant"/>
 <s2 title="Using Ant To Build">
+  <p>
+    WARNING: THIS SECTION REFERS TO THE OLD ANT-BASED BUILD OF XALAN.
+    IT NEEDS TO BE REWRITTEN FOR MAVEN-BASED BUILD
+  </p>
     <p>
       If you have downloaded a source distribution, or obtained source code
       using subversion, this section may be of interest to you.
