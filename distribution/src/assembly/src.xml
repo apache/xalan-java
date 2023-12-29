@@ -38,9 +38,20 @@ under the License.
     <fileSet>
       <directory>..</directory> <!-- Standard: was . -->
       <outputDirectory>/</outputDirectory>
-      <useDefaultExcludes>true</useDefaultExcludes>
+      <!-- Since this is a "developer quickstart" bundle, we can not use
+           default excludes and must suppress target, intermediate,
+           and development state files. See
+           https://maven.apache.org/plugins/maven-assembly-plugin/advanced-descriptor-topics.html 
+      -->
+      <useDefaultExcludes>false</useDefaultExcludes>
       <excludes>
-        <!-- build output -->
+        <!-- Note: May need to use negative lookahead if /target/ occurs
+             under src or someplace else that we want to keep it.
+        -->
+        <exclude>**/target/**</exclude>   <!-- build output (anywhere) -->
+        <exclude>lib/**</exclude>         <!-- build output (at top level> -->
+        <exclude>build/**</exclude>       <!-- build output (at top level> -->
+
         <exclude>%regex[(?!((?!${project.basedir}/)[^/]+/)*src/).*${project.basedir}.*]</exclude>
         
         <!-- NOTE: Most of the following excludes should not be required 
@@ -54,6 +65,10 @@ under the License.
              or generate a project website, it's definitely possible that some
              of these files will be present. So, it's safer to exclude them.
         -->
+        
+        <!-- Emacs -->
+        <exclude>%regex[\~$]</exclude> <!-- backup -->
+        <exclude>%regex[/\#.*\#$]</exclude> <!-- snapshot -->
         
         <!-- IDEs -->
         <exclude>%regex[(?!((?!${project.basedir}/)[^/]+/)*src/)(.*/)?maven-eclipse\.xml]</exclude>
@@ -77,10 +92,27 @@ under the License.
       </excludes>
     </fileSet>
 
-    <!-- license, readme, etc. calculated at build time -->
+    <!-- license, notice, etc. calculated at build time -->
     <fileSet>
       <directory>../maven-shared-archive-resources/META-INF</directory>
       <outputDirectory>/</outputDirectory>
+    </fileSet>
+    <!-- Specific files *not* calculated at build -->
+    <fileSet>
+      <directory>..</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+	<!-- Files in project root -->
+        <include>KEYS</include>
+        <include>README</include>
+        <include>LICENSE.txt</include>
+        <include>NOTICE.txt</include>
+        <include>*.bat</include>
+        <include>*.sh</include>
+	<!-- Files which weren't being picked up by standard defaults -->
+        <include>**/pom.xml</include>
+        <include>**/stylebook/**</include>
+      </includes>
     </fileSet>
   </fileSets>
 
