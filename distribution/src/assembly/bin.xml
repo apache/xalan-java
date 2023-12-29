@@ -45,7 +45,12 @@
         <dependencySets>
           <dependencySet>
             <excludes>
-              <exclude>org.jboss.spec.javax.rmi:jboss-rmi-api_1.0_spec</exclude>
+              <exclude>bcel-*</exclude>
+              <exclude>commons-lang3-*</exclude>
+              <exclude>java-cup-runtime**</exclude>
+              <exclude>regexp-*</exclude>
+              <exclude>serializer-*</exclude>
+              <exclude>xalan-*</exclude>
             </excludes>
           </dependencySet>
         </dependencySets>
