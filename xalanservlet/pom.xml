@@ -16,7 +16,7 @@ by the previous (ant) build, which I am not willing to change right now.
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>xalan-project</artifactId>
+    <artifactId>xalan-j</artifactId>
     <groupId>xalan</groupId>
     <version>2.7.3</version>
   </parent>
