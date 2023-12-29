@@ -92,8 +92,6 @@ by the previous (ant) build, which I am not willing to change right now.
 
   <build>
     <plugins>
-      <!-- Copy generated jarfile up to xalan-java/build/,
-           for backward compatibility with Ant builds. -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>

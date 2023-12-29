@@ -195,7 +195,7 @@
       <plugins>
         <!-- Copy produced jarfile up to xalan-java/build/,
              renaming to remove the version number, for
-             backward compatibility with things build for the
+             backward compatibility with things built for the
              Ant builds.
         -->
         <plugin>
