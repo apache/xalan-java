@@ -463,6 +463,9 @@ public class Keywords
   /** node-name function string. */
   public static final String FUNC_NODE_NAME = "node-name";
   
+  /** deep-equal function string. */
+  public static final String FUNC_DEEP_EQUAL = "deep-equal";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

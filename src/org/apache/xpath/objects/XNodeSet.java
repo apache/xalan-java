@@ -28,7 +28,9 @@ import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.NodeSetDTM;
+import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.NodeSequence;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
 
@@ -37,17 +39,21 @@ import xml.xpath31.processor.types.XSUntyped;
 /**
  * This class represents an XPath nodeset object, and is capable of
  * converting the nodeset to other types, such as a string.
+ * 
+ * For XPath 3.1 processor, we use an object of this class along with 
+ * ResultSequence object and an XObject instance to be treated as 
+ * representations of sequence.
+ * 
  * @xsl.usage general
  */
 public class XNodeSet extends NodeSequence
 {  
-    static final long serialVersionUID = 1916026368035639667L;
+  static final long serialVersionUID = 1916026368035639667L;
+  
   /**
    * Default constructor for derived objects.
    */
-  protected XNodeSet()
-  {
-  }
+  protected XNodeSet() { }
 
   /**
    * Construct a XNodeSet object.
@@ -696,6 +702,148 @@ public class XNodeSet extends NodeSequence
 
     return result;
   }
+  
+  /*
+   * Check whether two xdm nodes are functionally equal, on the basis
+   * of string values of their names, and string values of nodes 
+   * themselves.
+   */
+  public boolean compareWithNodeNames(XObject obj2, XPathContext xctxt, 
+		                             Comparator comparator) throws javax.xml.transform.TransformerException {
+
+	    boolean result = false;
+	    
+	    int obj2Type = obj2.getType();
+	
+	    if (obj2Type == XObject.CLASS_NODESET) {
+		   DTMIterator dtmIter1 = iterRaw();
+		   DTMIterator dtmIter2 = ((XNodeSet) obj2).iterRaw();
+		   int nodeHandle1;
+		
+		   while ((nodeHandle1 = dtmIter1.nextNode()) != DTM.NULL) {
+		        XMLString s1 = getStringFromNode(nodeHandle1);
+		          
+		        int nodeHandle2;
+		
+		        while ((nodeHandle2 = dtmIter2.nextNode()) != DTM.NULL) {
+		            XMLString s2 = getStringFromNode(nodeHandle2);
+		
+		            if (comparator.compareStrings(s1, s2)) {
+		               DTM dtm1 = xctxt.getDTM(nodeHandle1);
+		     	       Node node1 = dtm1.getNode(nodeHandle1);
+		     	       DTM dtm2 = xctxt.getDTM(nodeHandle2);
+		     	       Node node2 = dtm2.getNode(nodeHandle2);
+		     	       if (isNodeNameEqual(node1, node2)) {
+		     	    	  result = true;  
+		     	       }		              
+		
+		               break;
+		            }
+		        }
+		  }
+		      
+		  dtmIter1.reset();
+		  dtmIter2.reset();
+	   }
+	   else if (obj2Type == XObject.CLASS_RESULT_SEQUENCE) {        
+	      ResultSequence rSeq = (ResultSequence)obj2;
+	        
+	      DTMIterator list1 = iterRaw();        
+	      int nodeHandle1;
+	      while ((nodeHandle1 = list1.nextNode()) != DTM.NULL) {
+	         XMLString s1 = getStringFromNode(nodeHandle1);
+	            
+	         for (int idx = 0; idx < rSeq.size(); idx++) {
+	            XObject xObj = rSeq.item(idx);               
+	            XMLString s2 = new XString(xObj.str());
+	            if (comparator.compareStrings(s1, s2))
+	            {
+	                DTM dtm = xctxt.getDTM(nodeHandle1);
+		     	    Node node1 = dtm.getNode(nodeHandle1);
+		     	    if (xObj instanceof XNodeSet) {
+		     	       XNodeSet xObjNodeSet = (XNodeSet)xObj;
+		     	       int nodeHandle2 = (xObjNodeSet.iter()).nextNode();
+		     	       DTM dtm2 = xctxt.getDTM(nodeHandle2);
+		     	       Node node2 = dtm.getNode(nodeHandle2);
+		     	       if (isNodeNameEqual(node1, node2)) {
+		     	    	  result = true;  
+		     	       }
+		     	    }
+		     	    else {
+		     	       result = true;   
+		     	    }
+		
+		            break;
+	            }
+	         }
+	            
+	         if (result) {
+	            break;  
+	         }
+	      }        
+	   }
+	   else if (obj2Type == XObject.CLASS_BOOLEAN) {
+	      double num1 = bool() ? 1.0 : 0.0;
+	      double num2 = obj2.num();
+	
+	      result = comparator.compareNumbers(num1, num2);
+	   }
+	   else if (obj2Type == XObject.CLASS_NUMBER) {     
+	      DTMIterator list1 = iterRaw();
+	      double num2 = obj2.num();
+	      int node;
+	
+	      while ((node = list1.nextNode()) != DTM.NULL) {
+	        double num1 = getNumberFromNode(node);
+	
+	        if (comparator.compareNumbers(num1, num2)) {
+	          result = true;	
+	          break;
+	        }
+	      }
+	      
+	      list1.reset();
+	   }
+	   else if (obj2Type == XObject.CLASS_STRING) {
+	      XMLString s2 = obj2.xstr();
+	      DTMIterator list1 = iterRaw();
+	      int node;
+	
+	      while ((node = list1.nextNode()) != DTM.NULL) {
+	        XMLString s1 = getStringFromNode(node);
+	        if (comparator.compareStrings(s1, s2)) {
+	          result = true;
+	
+	          break;
+	        }
+	      }
+	      
+	      list1.reset();
+	    }
+	    else if (obj2 instanceof XSUntyped) {
+	       XSUntyped obj2Val = (XSUntyped)obj2;
+	       
+	       XMLString s2 = new XString(obj2Val.stringValue());
+	       DTMIterator list1 = iterRaw();
+	       int node;
+	
+	       while ((node = list1.nextNode()) != DTM.NULL) {
+	         XMLString s1 = getStringFromNode(node);
+	         if (comparator.compareStrings(s1, s2)) {
+	           result = true;
+	
+	           break;
+	         }
+	       }
+	       
+	       list1.reset();       
+	    }
+	    else {
+	       result = comparator.compareNumbers(this.num(), obj2.num());
+	    }
+	
+	    return result;
+  }
 
   /**
    * Tell if one object is less than the other.
@@ -774,6 +922,22 @@ public class XNodeSet extends NodeSequence
       throw new org.apache.xml.utils.WrappedRuntimeException(te);
     }
   }
+  
+  /*
+   * Check whether two xdm nodes are equal, considering string
+   * values of their names as well.
+   */
+  public boolean equalsWithNodeName(XObject obj2, XPathContext xctxt)
+  {
+    try
+    {
+       return compareWithNodeNames(obj2, xctxt, S_EQ);
+    }
+    catch(javax.xml.transform.TransformerException te)
+    {
+       throw new org.apache.xml.utils.WrappedRuntimeException(te);
+    }
+  }
 
   /**
    * Tell if two objects are functionally not equal.
@@ -787,6 +951,50 @@ public class XNodeSet extends NodeSequence
   public boolean notEquals(XObject obj2) throws javax.xml.transform.TransformerException
   {
     return compare(obj2, S_NEQ);
+  }
+  
+  /*
+   * Check whether fully qualified names of two XML nodes are equal.
+   */
+  private boolean isNodeNameEqual(Node node1, Node node2) {	 
+	 boolean isNodeNameEqual = false;
+	 
+	 if ((node1.getNodeType() == Node.ELEMENT_NODE) && (node2.getNodeType() == Node.ELEMENT_NODE)) {
+		String localName1 = node1.getLocalName();
+		String localName2 = node2.getLocalName();
+		if (localName1.equals(localName2) && isNsNameEqual(node1.getNamespaceURI(), node2.getNamespaceURI())) {
+		   isNodeNameEqual = true;
+		}
+	 }
+	 if ((node1.getNodeType() == Node.ATTRIBUTE_NODE) && (node2.getNodeType() == Node.ATTRIBUTE_NODE)) {
+		String localName1 = node1.getLocalName();
+		String localName2 = node2.getLocalName();
+		if (localName1.equals(localName2) && isNsNameEqual(node1.getNamespaceURI(), node2.getNamespaceURI())) {
+		   isNodeNameEqual = true;
+		}
+	 }
+	 else if ((node1.getNodeType() == Node.TEXT_NODE) && (node2.getNodeType() == Node.TEXT_NODE)) {
+		isNodeNameEqual = true;	 
+	 }
+	 
+	 return isNodeNameEqual;
+  }
+  
+  /*
+   * Check whether two XML namespace names are equal.
+   */
+  private boolean isNsNameEqual(String nsName1, String nsName2) {	 
+	 boolean isNsNameEqual = true;
+	 
+	 if (((nsName1 != null) && (nsName2 == null)) || 
+		  ((nsName1 == null) && (nsName2 != null))) {
+		isNsNameEqual = false; 
+	 }
+	 else if ((nsName1 != null) && (nsName2 != null) && nsName1.equals(nsName2)) {
+		isNsNameEqual = true; 
+	 }
+	 
+	 return isNsNameEqual;
   }
 }
 
