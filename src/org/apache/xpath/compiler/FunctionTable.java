@@ -329,6 +329,9 @@ public class FunctionTable
   
   /** The 'node-name()' id. */
   public static final int FUNC_NODE_NAME = 101;
+  
+  /** The 'deep-equal()' id. */
+  public static final int FUNC_DEEP_EQUAL = 102;
 
   // Proprietary
 
@@ -386,7 +389,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 102;
+  private static final int NUM_BUILT_IN_FUNCS = 103;
 
   /**
    * Number of built-in functions that may be added.
@@ -590,6 +593,7 @@ public class FunctionTable
     m_functions[FUNC_DOC] = org.apache.xpath.functions.FuncDoc.class;
     
     m_functions[FUNC_NODE_NAME] = org.apache.xpath.functions.FuncNodeName.class;
+    m_functions[FUNC_DEEP_EQUAL] = org.apache.xpath.functions.FuncDeepEqual.class;
   }
 
   static{
@@ -806,6 +810,8 @@ public class FunctionTable
          
          m_functionID.put(Keywords.FUNC_NODE_NAME,
                          new Integer(FunctionTable.FUNC_NODE_NAME));
+         m_functionID.put(Keywords.FUNC_DEEP_EQUAL,
+                         new Integer(FunctionTable.FUNC_DEEP_EQUAL));
   }
   
   public FunctionTable(){
