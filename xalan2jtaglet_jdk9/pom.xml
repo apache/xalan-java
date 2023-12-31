@@ -1,0 +1,39 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>xalan</groupId>
+    <artifactId>xalan-j</artifactId>
+    <version>2.7.3</version>
+  </parent>
+
+  <artifactId>xalan2jtaglet_jdk9</artifactId>
+  <name>@xsl.usage taglet JDK9+</name>
+  <description>
+    Implementation of the @xsl.usage taglet, used in the Xalan package's javadoc
+    to indicate classes which, while public for cross-module access, are not
+    intended to be called by end-users.
+  </description>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <!-- Override default 1.8 from parent POM -->
+          <source>9</source>
+          <target>9</target>
+        </configuration>
+      </plugin>
+      <!-- Copy generated jarfile up to xalan-java/build/,
+           for backward compatibility with Ant builds. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

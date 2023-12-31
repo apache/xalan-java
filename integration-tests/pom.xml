@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>xalan</groupId>
+    <artifactId>xalan-j</artifactId>
+    <version>2.7.3</version>
+  </parent>
+
+  <artifactId>integration-tests</artifactId>
+  <packaging>pom</packaging>
+
+  <!-- Add all modules here which potentially ought to be integration-tested -->
+  <dependencies>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>serializer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalansamples</artifactId>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Integration tests using our own packaged JARs -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-invoker-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>install</goal>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <projectsDirectory>src/it</projectsDirectory>
+          <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+          <postBuildHookScript>verify</postBuildHookScript>
+          <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
+          <goals>
+            <goal>clean</goal>
+            <goal>test</goal>
+          </goals>
+          <settingsFile>src/it/settings.xml</settingsFile>
+          <scriptVariables>
+            <projectVersion>${project.version}</projectVersion>
+          </scriptVariables>
+          <streamLogsOnFailures>true</streamLogsOnFailures>
+          <!-- Use this to limit IT to one or a few tests -->
+          <!--<invokerTest>VersionCheck_*Boot*</invokerTest>-->
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

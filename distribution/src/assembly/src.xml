@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Based upon Apache standard Source Release Assembly,
+     with customizations as needed for Xalan's source
+     release bundle.
+
+     1) Has to start scan from parent project, not current project.
+     Coded to .. now; should probably use a ${...parent...} reference
+-->
+
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<assembly>
+  <id>src</id>
+  <formats>
+    <format>zip</format>
+    <format>tar.gz</format>
+  </formats>
+
+  <fileSets>
+    <!-- main project directory structure -->
+    <fileSet>
+      <directory>..</directory> <!-- Standard: was . -->
+      <outputDirectory>/</outputDirectory>
+      <!-- Since this is a "developer quickstart" bundle, we can not use
+           default excludes and must suppress target, intermediate,
+           and development state files. See
+           https://maven.apache.org/plugins/maven-assembly-plugin/advanced-descriptor-topics.html 
+      -->
+      <useDefaultExcludes>false</useDefaultExcludes>
+      <excludes>
+        <!-- Note: May need to use negative lookahead if /target/ occurs
+             under src or someplace else that we want to keep it.
+        -->
+        <exclude>**/target/**</exclude>   <!-- build output (anywhere) -->
+        <exclude>lib/**</exclude>         <!-- build output (at top level> -->
+        <exclude>build/**</exclude>       <!-- build output (at top level> -->
+
+        <exclude>%regex[(?!((?!${project.basedir}/)[^/]+/)*src/).*${project.basedir}.*]</exclude>
+        
+        <!-- NOTE: Most of the following excludes should not be required 
+             if the standard release process is followed. This is because the 
+             release plugin checks out project sources into a location like
+             target/checkout, then runs the build from there. The result is
+             a source-release archive that comes from a pretty clean directory
+             structure.
+             
+             HOWEVER, if the release plugin is configured to run extra goals
+             or generate a project website, it's definitely possible that some
+             of these files will be present. So, it's safer to exclude them.
+        -->
+        
+        <!-- Emacs -->
+        <exclude>%regex[\~$]</exclude> <!-- backup -->
+        <exclude>%regex[/\#.*\#$]</exclude> <!-- snapshot -->
+        
+        <!-- IDEs -->
+        <exclude>%regex[(?!((?!${project.basedir}/)[^/]+/)*src/)(.*/)?maven-eclipse\.xml]</exclude>
+        <exclude>%regex[(?!((?!${project.basedir}/)[^/]+/)*src/)(.*/)?\.project]</exclude>
+        <exclude>%regex[(?!((?!${project.basedir}/)[^/]+/)*src/)(.*/)?\.classpath]</exclude>
+        <exclude>%regex[(?!((?!${project.basedir}/)[^/]+/)*src/)(.*/)?\.idea]</exclude>
+        <exclude>%regex[(?!((?!${project.basedir}/)[^/]+/)*src/)(.*/)?[^/]*\.iws]</exclude>
+        <exclude>%regex[(?!((?!${project.basedir}/)[^/]+/)*src/)(.*/)?[^/]*\.ipr]</exclude>
+        <exclude>%regex[(?!((?!${project.basedir}/)[^/]+/)*src/)(.*/)?[^/]*\.iml]</exclude>
+        <exclude>%regex[(?!((?!${project.basedir}/)[^/]+/)*src/)(.*/)?\.settings(/.*)?]</exclude>
+        <exclude>%regex[(?!((?!${project.basedir}/)[^/]+/)*src/)(.*/)?\.externalToolBuilders(/.*)?]</exclude>
+        <exclude>%regex[(?!((?!${project.basedir}/)[^/]+/)*src/)(.*/)?\.deployables(/.*)?]</exclude>
+        <exclude>%regex[(?!((?!${project.basedir}/)[^/]+/)*src/)(.*/)?\.wtpmodules(/.*)?]</exclude>
+        
+        <!-- misc -->
+        <exclude>%regex[(?!((?!${project.basedir}/)[^/]+/)*src/)(.*/)?cobertura\.ser]</exclude>
+        
+        <!-- release-plugin temp files -->
+        <exclude>%regex[(?!((?!${project.basedir}/)[^/]+/)*src/)(.*/)?pom\.xml\.releaseBackup]</exclude>
+        <exclude>%regex[(?!((?!${project.basedir}/)[^/]+/)*src/)(.*/)?release\.properties]</exclude>
+      </excludes>
+    </fileSet>
+
+    <!-- license, notice, etc. calculated at build time -->
+    <fileSet>
+      <directory>../maven-shared-archive-resources/META-INF</directory>
+      <outputDirectory>/</outputDirectory>
+    </fileSet>
+    <!-- Specific files *not* calculated at build -->
+    <fileSet>
+      <directory>..</directory>
+      <outputDirectory>/</outputDirectory>
+      <includes>
+	<!-- Files in project root -->
+        <include>KEYS</include>
+        <include>README</include>
+        <include>LICENSE.txt</include>
+        <include>NOTICE.txt</include>
+        <include>*.bat</include>
+        <include>*.sh</include>
+	<!-- Files which weren't being picked up by standard defaults -->
+        <include>**/pom.xml</include>
+        <include>**/stylebook/**</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+
+</assembly>

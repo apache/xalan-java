@@ -1,36 +1,41 @@
-/bin/
-/build/
-/classes/
-/.idea/
+# Maven output
+target/
+**/dependency-reduced-pom.xml
+
+# In Maven, dependencies are downloaded during build; 
+# we don't want to check them in
+/tools/
+
+# Xalan "Ant emulation" directories for xalan-test and distribution,
+# created by Maven build.
+# (xalan-test referenced dependencies from xalan-java; distro may be
+# publishing from lib/ though I hope not.)
+build/
+lib/
+
+# Eclipse configuration
+.settings/
+.project
+.classpath
+
+# IntelliJ IDEA
+.idea/
 *.iml
+
+# MacOS Finder
 .DS_Store
 
-# We download the dependencies if they are missing
-/lib/
-/tools/java_cup.jar
-/tmp/
-
-# Generated sources
+# XPath parser generated during compilation
 /src/org/apache/xalan/processor/XSLProcessorVersion.java
 /src/org/apache/xalan/xsltc/compiler/XPathLexer.java
 /src/org/apache/xalan/xsltc/compiler/XPathParser.java
 /src/org/apache/xalan/xsltc/compiler/sym.java
-/xdocs/sources/xalan/DONE
-/xdocs/sources/xalan/XSLTCDONE
 
-# The following are unpacked from zipfile
-# NOTE: Might be simpler to just check 'em in unzipped.
-/xdocs/style/graphics/
-/xdocs/style/loader.xml
-/xdocs/style/resources/
-/xdocs/style/stylesheets/any2header.xsl
-/xdocs/style/stylesheets/any2project.xsl
-/xdocs/style/stylesheets/book2group.xsl
-/xdocs/style/stylesheets/book2project.xsl
-/xdocs/style/stylesheets/changes2document.xsl
-/xdocs/style/stylesheets/context2footer.xsl
-/xdocs/style/stylesheets/context2label.xsl
-/xdocs/style/stylesheets/directory2project.xsl
-/xdocs/style/stylesheets/document2html.xsl
-/xdocs/style/stylesheets/faqs2document.xsl
-/xdocs/style/stylesheets/group2document.xsl
+# Stylebook processing progress flags.
+/stylebook/sources/xalan/DONE
+/stylebook/sources/xalan/XSLTCDONE
+
+# Various temporary/work directories used by other tools
+/bin/
+/classes/
+/tmp/

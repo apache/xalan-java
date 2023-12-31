@@ -1,0 +1,105 @@
+<!-- Maven assembly plugin configuration for executable packaging 
+     See https://maven.apache.org/plugins/maven-assembly-plugin/faq.html#module-binaries
+-->
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.2.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.2.0 http://maven.apache.org/xsd/assembly-2.2.0.xsd">
+  <id>bin</id>
+  <formats>
+    <format>zip</format>
+    <format>tar.gz</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <moduleSets>
+    <moduleSet>
+      <useAllReactorProjects>true</useAllReactorProjects>
+       <includes>
+        <include>xalan:serializer</include>
+        <include>xalan:xalan</include>
+      </includes>
+      <binaries>
+        <outputDirectory>${project.parent.name}_${project.parent.version}</outputDirectory>
+        <unpack>false</unpack>
+        <dependencySets>
+          <dependencySet>
+            <excludes>
+              <exclude>org.jboss.spec.javax.rmi:jboss-rmi-api_1.0_spec</exclude>
+            </excludes>
+          </dependencySet>
+        </dependencySets>
+      </binaries>
+    </moduleSet>
+    <moduleSet>
+      <useAllReactorProjects>true</useAllReactorProjects>
+       <includes>
+         <include>xalan:xalansamples</include>
+         <include>xalan:xalanservlet</include>
+         <include>xalan:xsltcapplet</include>
+         <include>xalan:xsltcbrazil</include>
+         <include>xalan:xsltcejb</include>
+         <include>xalan:xsltcservlet</include>
+      </includes>
+      <binaries>
+        <outputDirectory>${project.parent.name}_${project.parent.version}/samples</outputDirectory>
+        <unpack>false</unpack>
+        <dependencySets>
+          <dependencySet>
+            <excludes>
+              <exclude>bcel-*</exclude>
+              <exclude>commons-lang3-*</exclude>
+              <exclude>java-cup-runtime**</exclude>
+              <exclude>regexp-*</exclude>
+              <exclude>serializer-*</exclude>
+              <exclude>xalan-*</exclude>
+            </excludes>
+          </dependencySet>
+        </dependencySets>
+      </binaries>
+    </moduleSet>
+  </moduleSets>
+  <fileSets>
+    <!-- The above isn't picking up Xerces and xml-apis, for whatever reason.
+         Ugly empirical solution.Should these have been copied into build/?
+         TODO REVIEW: Improve!
+    -->
+    <fileSet>
+      <directory>${rootlocation}/lib</directory>
+      <outputDirectory>${project.parent.name}_${project.parent.version}</outputDirectory>
+      <includes>
+        <include>xercesImpl*.jar</include>
+        <include>xml-apis*.jar</include>
+      </includes>
+    </fileSet>
+    <!-- In Maven builds, LICENSE and NOTICE go into META-INF -->
+    <fileSet>
+      <directory>..</directory>
+      <outputDirectory>META-INF</outputDirectory>
+      <includes>
+        <include>LICENSE.txt</include>
+        <include>NOTICE.txt</include>
+      </includes>
+    </fileSet>
+    <!-- Rename site to docs for back-compatibility. -->
+    <fileSet>
+      <directory>../target/site</directory>
+      <outputDirectory>${project.parent.name}_${project.parent.version}/docs</outputDirectory>
+    </fileSet>
+    <!-- Include source for samples -->
+    <fileSet>
+      <directory>../samples</directory>
+      <outputDirectory>${project.parent.name}_${project.parent.version}/samples</outputDirectory>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>src/site/**</exclude>
+      </excludes>
+    </fileSet>
+    <!-- Include (generated) html for samples -->
+    <fileSet>
+      <directory>../samples/target/site/</directory>
+      <outputDirectory>${project.parent.name}_${project.parent.version}/samples</outputDirectory>
+      <includes>
+        <include>**/*.html</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+</assembly>
