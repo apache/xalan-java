@@ -37,25 +37,36 @@ import javax.xml.transform.stream.StreamSource;
  */
 public class SimpleTransform
 {
-	public static void main(String[] args)
-    throws TransformerException, TransformerConfigurationException, 
-           FileNotFoundException, IOException
-  {  
-  // Use the static TransformerFactory.newInstance() method to instantiate 
-  // a TransformerFactory. The javax.xml.transform.TransformerFactory 
-  // system property setting determines the actual class to instantiate --
-  // org.apache.xalan.transformer.TransformerImpl.
-	TransformerFactory tFactory = TransformerFactory.newInstance();
-	
-	// Use the TransformerFactory to instantiate a Transformer that will work with  
-	// the stylesheet you specify. This method call also processes the stylesheet
-  // into a compiled Templates object.
-	Transformer transformer = tFactory.newTransformer(new StreamSource("birds.xsl"));
+  public static void main(String[] args)
+    throws TransformerException, TransformerConfigurationException,
+       FileNotFoundException, IOException
+  {
+    // Use the static TransformerFactory.newInstance() method to instantiate
+    // a TransformerFactory. The javax.xml.transform.TransformerFactory
+    // system property setting determines the actual class to instantiate --
+    // for Xalan, org.apache.xalan.transformer.TransformerImpl.
+    TransformerFactory tFactory = TransformerFactory.newInstance();
 
-	// Use the Transformer to apply the associated Templates object to an XML document
-	// (foo.xml) and write the output to a file (foo.out).
-	transformer.transform(new StreamSource("birds.xml"), new StreamResult(new FileOutputStream("birds.out")));
-	
-	System.out.println("************* The result is in birds.out *************");
+    // Grab the Name of the Stylesheet from the command line
+    String stylesheet="birds.xml";
+    if (args.length == 0)
+    {
+       System.out.println("You must provide the path and name to a stylesheet to process birds.xml into birds.out");
+       System.out.println("Defaulting to birds.xsl");
+    }
+    else
+       stylesheet = args[0];
+
+    System.out.println("Transforming birds.xml with stylesheet "+ stylesheet);
+
+    //  processes the stylesheet into a compiled Templates object.
+    Transformer transformer = tFactory.newTransformer(new StreamSource("birds.xsl"));
+
+    // Use the Transformer to apply the associated Templates object to
+    // an XML document and write the output to a file
+    transformer.transform(new StreamSource("birds.xml"),
+              new StreamResult(new FileOutputStream("birds.out")));
+
+    System.out.println("************* The result is in birds.out *************");
   }
 }

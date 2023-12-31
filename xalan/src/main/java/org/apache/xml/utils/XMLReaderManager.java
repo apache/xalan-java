@@ -146,20 +146,20 @@ public class XMLReaderManager {
     }
 
     /**
-     * Mark the cached XMLReader as available.  If the reader was not
-     * for this thread, mark it as no longer being in use.
+     * Mark the cached XMLReader as available for reuse.
      *
      * @param reader The XMLReader that's being released.
      */
     public synchronized void releaseXMLReader(XMLReader reader) {
-        if(reader == null) {
+	if (reader == null) {
             return;
         }
         // If the reader that's being released is the cached reader
-        // for this thread, remove it from the m_isUse list.
-        if (m_readers.get() == reader && reader != null) {
-            m_readers.set(null);
-	    m_inUse.put(reader, Boolean.FALSE);
+        // for this thread, mark it as no longer being in use.
+	// TODO: REVIEW. I'm not sure this sequence makes sense.
+        if (m_readers.get() == reader) {
+           m_readers.set(null);
+           m_inUse.put(reader, Boolean.FALSE);
         }
         m_inUse.remove(reader);
     }

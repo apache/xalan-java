@@ -1,8 +1,19 @@
-# Maven
+# Maven output
 target/
 **/dependency-reduced-pom.xml
 
-# Eclipse
+# In Maven, dependencies are downloaded during build; 
+# we don't want to check them in
+/tools/
+
+# Xalan "Ant emulation" directories for xalan-test and distribution,
+# created by Maven build.
+# (xalan-test referenced dependencies from xalan-java; distro may be
+# publishing from lib/ though I hope not.)
+build/
+lib/
+
+# Eclipse configuration
 .settings/
 .project
 .classpath
@@ -14,14 +25,17 @@ target/
 # MacOS Finder
 .DS_Store
 
-# Xalan: "Ant emulation" directories for xalan-test and distribution
-build/
-lib/
+# XPath parser generated during compilation
+/src/org/apache/xalan/processor/XSLProcessorVersion.java
+/src/org/apache/xalan/xsltc/compiler/XPathLexer.java
+/src/org/apache/xalan/xsltc/compiler/XPathParser.java
+/src/org/apache/xalan/xsltc/compiler/sym.java
 
-# Xalan: Generated XPath parser/lexer code in xsltc
-**/xsltc/compiler/XPathLexer.java
-**/xsltc/compiler/XPathParser.java
-**/xsltc/compiler/sym.java
+# Stylebook processing progress flags.
+/stylebook/sources/xalan/DONE
+/stylebook/sources/xalan/XSLTCDONE
 
-# Others
-classes/
+# Various temporary/work directories used by other tools
+/bin/
+/classes/
+/tmp/
