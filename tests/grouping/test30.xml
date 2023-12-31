@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <a>
+    <itm1>hi</itm1>
+    <itm2>hello</itm2>
+    <itm3>there</itm3>
+  </a>
+  <b>
+    <itm1>this</itm1>
+    <itm2>is</itm2>
+    <itm3>nice</itm3>
+  </b>
+  <c>
+    <itm1>hello</itm1>
+    <itm2>friends</itm2>
+  </c>
+  <d>
+    <itm1>this is ok</itm1>
+  </d>
+</root>

@@ -1090,6 +1090,11 @@ public class XObject extends Expression implements Serializable, Cloneable
     else if ((this instanceof XSBoolean) && (obj2 instanceof XSBoolean)) {
        return ((XSBoolean)this).equals((XSBoolean)obj2);    
     }
+    else if ((this instanceof XBoolean) && (obj2 instanceof XBooleanStatic)) {
+       boolean lBool = ((XBoolean)this).bool();
+       boolean rBool = ((XBooleanStatic)obj2).bool();
+       return (lBool == rBool);
+    }
     else if ((this instanceof XSInteger) && (obj2 instanceof XSInteger)) {
        return ((XSInteger)this).equals((XSInteger)obj2);    
     }
