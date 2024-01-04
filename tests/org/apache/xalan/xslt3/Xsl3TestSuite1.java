@@ -47,7 +47,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnForEachTests.class, XsConstructorFunctionTests.class,
                 FnAbsTests.class, StringTests.class, XsDateTimeArithmeticTests.class,
                 XsTimeWithArithmeticTests.class, XsDurationSubtypes.class,
-                FnDeepEqualTests.class })
+                FnDeepEqualTests.class, XSLImportSchemaTests.class })
 public class Xsl3TestSuite1 {
 
 }

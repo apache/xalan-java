@@ -69,7 +69,6 @@ public class Range extends Operation
       
       XObject expr2 = null;
       
-      try {
           if (m_left instanceof FuncExtFunction) {
              FuncExtFunction extFunction = (FuncExtFunction)m_left;
              if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
@@ -95,10 +94,6 @@ public class Range extends Operation
           else {
               expr2 = m_right.execute(xctxt, true); 
           }
-      }
-      catch (SAXException ex) {
-         throw new javax.xml.transform.TransformerException(ex.getMessage(), xctxt.getSAXLocator()); 
-      }
       
       double firstArg = (expr1 instanceof XSNumericType) ?  (Double.valueOf((
                                                                        (XSNumericType)expr1).stringValue())).doubleValue() : expr1.num();  

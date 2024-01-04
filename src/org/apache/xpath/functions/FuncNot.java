@@ -48,14 +48,9 @@ public class FuncNot extends FunctionOneArg
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
       if (m_arg0 instanceof Operation) {
-          try {
              XObject result = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
                                                                                     xctxt, m_arg0, null);
              return result.bool() ? XBoolean.S_FALSE : XBoolean.S_TRUE; 
-          }
-          catch(SAXException ex) {
-             throw new javax.xml.transform.TransformerException(ex.getMessage());    
-          }
       }
       else {
           return m_arg0.execute(xctxt).bool() ? XBoolean.S_FALSE : XBoolean.S_TRUE;

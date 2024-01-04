@@ -28,6 +28,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
@@ -50,10 +51,10 @@ import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyType;
 import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSString;
 
 /**
  * Implementation of XSLT xsl:variable element.
@@ -333,18 +334,47 @@ public class ElemVariable extends ElemTemplateElement
       if (m_selectPattern != null) {          
         selectExpression = m_selectPattern.getExpression();
         
-        if (selectExpression instanceof FuncExtFunction) {
+        if (selectExpression instanceof FuncExtFunction) {        	
             XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, 
                                                                                       selectExpression, transformer);
+            
+            QName asAttrQName = null;
+            
+            if (m_asAttr != null) {
+            	PrefixResolver prefixResolver = xctxt.getNamespaceContext();
+            	asAttrQName = new QName(m_asAttr, prefixResolver);
+            }
+            
             if (evalResult != null) {
-                if (m_asAttr != null) {
+            	String funcName = ((FuncExtFunction)selectExpression).getFunctionName();
+            	String funcNamespace = ((FuncExtFunction)selectExpression).getNamespace();
+            	
+            	String evalResultStrValue = (evalResult instanceof XSString) ? ((XSString)evalResult).stringValue() : null;            	
+            	if (m_asAttr != null && !(XSConstructorFunctionUtil.XS_VALID_TRUE).equals(evalResultStrValue)) {           	     
                    evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                    if (evalResult == null) {
                 	  String xpathPatternStr = m_selectPattern.getPatternString();
                 	  throw new TransformerException("XTTE0570 : The supplied value " + xpathPatternStr + ", doesn't "
-                	  		                                       + "match the expected sequence type " + m_asAttr + ".", srcLocator); 
+                	  		                                               + "match the expected sequence type " + m_asAttr + ".", srcLocator); 
                    }
                 }
+            	else if (m_asAttr != null && (XSConstructorFunctionUtil.XS_VALID_TRUE).equals(evalResultStrValue)) {
+            	   String typeName = asAttrQName.getLocalName();
+            	   String typeNamespace = asAttrQName.getNamespace();
+            	   if (funcName.equals(typeName) && typeNamespace.equals(funcNamespace)) {            		  
+            	      XObject valToBeValidated = (((FuncExtFunction)selectExpression).getArg(0)).execute(xctxt);
+            	      evalResult = valToBeValidated; 
+            	   }
+            	   else {
+            		  String xpathPatternStr = m_selectPattern.getPatternString();
+                 	  throw new TransformerException("XTTE0570 : The supplied value " + xpathPatternStr + ", doesn't "
+                 	  		                                               + "match the expected sequence type " + m_asAttr + ".", srcLocator); 
+            	   }
+            	}
+            	else if (m_asAttr == null && (XSConstructorFunctionUtil.XS_VALID_TRUE).equals(evalResultStrValue)) {
+            	   XObject valToBeValidated = (((FuncExtFunction)selectExpression).getArg(0)).execute(xctxt);
+          	       evalResult = valToBeValidated; 	
+            	}
                 
                 return evalResult;    
             }
@@ -554,9 +584,6 @@ public class ElemVariable extends ElemTemplateElement
 		var = new XNodeSetForDOM(nodeList, xctxt);
       }
     }
-    catch (SAXException se) {
-       throw new TransformerException(se);
-    }
     finally {      
        xctxt.popCurrentNode();
     }
@@ -589,8 +616,7 @@ public class ElemVariable extends ElemTemplateElement
     return var;
     
   }
-  
-  
+
   /**
    * This function is called after everything else has been
    * recomposed, and allows the template to set remaining
@@ -801,6 +827,10 @@ public class ElemVariable extends ElemTemplateElement
       return null;
     }
     return super.appendChild(elem);
+  }
+  
+  private boolean isXsLaxilyValid(XObject evalResult) {
+	return false;
   }
 
 }

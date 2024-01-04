@@ -16,12 +16,21 @@
  */
 package org.apache.xalan.templates;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.HashMap;
+
 import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
+import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
+import org.apache.xerces.impl.xs.XMLSchemaLoader;
+import org.apache.xerces.xs.XSModel;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
@@ -30,7 +39,9 @@ import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
-import org.xml.sax.SAXException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDate;
@@ -59,6 +70,14 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * @xsl.usage advanced
  */
 public class XSConstructorFunctionUtil {
+	
+	public static final String XS_VALID_TRUE = "XS_VALID_TRUE";
+	
+	private static final String UTF_16 = "UTF-16";
+	
+	private static final String UTF_8 = "UTF-8";
+	
+	private static final String DOM_FORMAT_PRETTY_PRINT = "format-pretty-print";
     
     /**
      * We use this method, primarily to evaluate XSLT stylesheet function calls (for the
@@ -72,21 +91,25 @@ public class XSConstructorFunctionUtil {
      *  http://www.w3.org/2005/xpath-functions, http://www.w3.org/2005/xpath-functions/math
      *  within function names, are treated as XPath built-in functions by XalanJ. All other
      *  XPath function calls having other non-null XML namespaces are handling by XalanJ's
-     *  extension function handling mechanism. 
+     *  extension function handling mechanism.
      */
     public static XObject processFuncExtFunctionOrXPathOpn(XPathContext xctxt, Expression expr, 
-                                                           TransformerImpl transformer) 
-                                                                                        throws TransformerException, SAXException {        
+                                                           TransformerImpl transformer) throws TransformerException {        
         XObject evalResult = null;
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
+        StylesheetRoot stylesheetRoot = null;
+        
+        FuncExtFunction funcExtFunction = null;
+        String funcName = null;
+        String funcNamespace = null;
+        
         try {        
 	        if (expr instanceof FuncExtFunction) {
-	            FuncExtFunction funcExtFunction = (FuncExtFunction)expr;
-	            
-	            String funcName = funcExtFunction.getFunctionName();
-	            String funcNamespace = funcExtFunction.getNamespace();
+	            funcExtFunction = (FuncExtFunction)expr;	            
+	            funcName = funcExtFunction.getFunctionName();
+	            funcNamespace = funcExtFunction.getNamespace();
 	            
 	            ExpressionNode expressionNode = expr.getExpressionOwner();
 	            ExpressionNode stylesheetRootNode = null;
@@ -95,7 +118,7 @@ public class XSConstructorFunctionUtil {
 	                expressionNode = expressionNode.exprGetParent();                     
 	            }
 	            
-	            StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
+	            stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
 	            
 	            if (transformer == null) {
 	               transformer = stylesheetRoot.getTransformerImpl();  
@@ -318,7 +341,7 @@ public class XSConstructorFunctionUtil {
 	                    default:
 	                       // no op
 	                  }
-	             }
+	             }	             
 	        }
 	        else {
 	           evalResult = expr.execute(xctxt);   
@@ -327,9 +350,61 @@ public class XSConstructorFunctionUtil {
         catch (TransformerException ex) {
             throw new TransformerException(ex.getMessage(), srcLocator); 
         }
+        
+        if ((evalResult == null) && (funcNamespace != null) && !(XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace) || 
+        		                                                (Constants.S_EXTENSIONS_JAVA_URL).equals(funcNamespace))) {
+        	HashMap stylesheetAvailableElems = stylesheetRoot.getAvailableElements();
+        	if (stylesheetAvailableElems.containsKey(new QName(Constants.S_XSLNAMESPACEURL, Constants.ELEMNAME_IMPORT_SCHEMA_STRING))) {
+        	   Node elemTemplateElem = stylesheetRoot.getFirstChildElem();
+        	   
+        	   while (elemTemplateElem != null && !(Constants.ELEMNAME_IMPORT_SCHEMA_STRING).equals(elemTemplateElem.getLocalName())) {   
+        		   elemTemplateElem = elemTemplateElem.getNextSibling();
+        	   }
+        	   
+        	   if ((Constants.ELEMNAME_IMPORT_SCHEMA_STRING).equals(elemTemplateElem.getLocalName())) {
+        		   NodeList nodeList = elemTemplateElem.getChildNodes();
+        		   Node node = nodeList.item(0);
+        		   String xsSchemaStr = null;
+        		   try {
+        		       org.w3c.dom.ls.DOMImplementationLS domImplLS = (org.w3c.dom.ls.DOMImplementationLS) 
+        		    		                                                org.w3c.dom.bootstrap.DOMImplementationRegistry.newInstance().getDOMImplementation("LS");
+        		       org.w3c.dom.ls.LSSerializer lsSerializer = domImplLS.createLSSerializer();
+        	           org.w3c.dom.DOMConfiguration domConfig = lsSerializer.getDomConfig();
+        	           domConfig.setParameter(DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
+        	           xsSchemaStr = lsSerializer.writeToString((Document)node);
+        	           xsSchemaStr = xsSchemaStr.replaceFirst(UTF_16, UTF_8);
+        	           xsSchemaStr = xsSchemaStr.replaceFirst("xs:schema", "xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"");
+        	           
+        	           String xsFileName = "xalan_1_" + System.currentTimeMillis() + ".xsd";
+        	           BufferedWriter buffWriter = new BufferedWriter(new FileWriter(xsFileName));
+        	           buffWriter.write(xsSchemaStr);	            	           
+        	           buffWriter.close();	            	           	            	           
+        	           
+        	           XMLSchemaLoader xsLoader = new XMLSchemaLoader();
+        	           XSModel xsModel = xsLoader.loadURI(xsFileName);
+        	           
+        	           // The purpose of temporary file created here has been achieved. We could delete this file now.
+        	           (new File(xsFileName)).delete();
+        	           
+        	           XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)(xsModel.getTypeDefinition(funcName, funcNamespace));
+        	           
+        	           XObject xsSimpleTypeInpObj = (funcExtFunction.getArg(0)).execute(xctxt);
+        	           xsSimpleTypeDecl.validate(xsSimpleTypeInpObj.str(), null, null);
+        	           
+        	           evalResult = new XSString(XS_VALID_TRUE); 
+        		   }
+        		   catch (InvalidDatatypeValueException ex) {
+        			   throw new TransformerException(ex.getMessage(), srcLocator); 
+        		   }
+        		   catch (Exception ex) {
+        			   throw new TransformerException(ex.getMessage(), srcLocator);
+        		   }
+        	   }
+        	}
+        }
 
         return evalResult;
         
     }
-
+    
 }

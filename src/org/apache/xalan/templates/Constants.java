@@ -191,7 +191,8 @@ public class Constants extends org.apache.xml.utils.Constants
       ELEMNAME_WHEN_STRING = "when",
       ELEMNAME_WITHPARAM_STRING = "with-param",
       ELEMNAME_FUNCTION_STRING = "function",
-      ELEMNAME_SEQUENCE_STRING = "sequence";
+      ELEMNAME_SEQUENCE_STRING = "sequence",
+      ELEMNAME_IMPORT_SCHEMA_STRING = "import-schema";
   
   /**
    * Literals for EXSLT function elements.

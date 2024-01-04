@@ -723,7 +723,7 @@ public class UnImplNode implements Node, Element, NodeList, Document
   public String getNamespaceURI()
   {
 
-    error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getNamespaceURI not supported!");
+    // error(XMLErrorResources.ER_FUNCTION_NOT_SUPPORTED);  //"getNamespaceURI not supported!");
 
     return null;
   }
