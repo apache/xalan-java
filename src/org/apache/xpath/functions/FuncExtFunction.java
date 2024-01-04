@@ -204,9 +204,6 @@ public class FuncExtFunction extends Function
     } 
     catch (TransformerException ex) {        
        throw new TransformerException(ex.getMessage(), xctxt.getSAXLocator());
-    } 
-    catch (SAXException ex) {        
-       throw new TransformerException(ex.getMessage(), xctxt.getSAXLocator());
     }
        
     if (result != null) {

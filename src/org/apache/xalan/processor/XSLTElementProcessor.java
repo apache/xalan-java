@@ -34,13 +34,15 @@ import org.xml.sax.InputSource;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * This class acts as the superclass for all stylesheet element
- * processors, and deals with things that are common to all elements.
- * @see <a href="http://www.w3.org/TR/xslt#dtd">XSLT DTD</a>
+ * This class acts as the superclass for all XSLT stylesheet element
+ * processors, and deals with things that are common to all 
+ * stylesheet elements.
+ * 
+ * @see <a href="https://www.w3.org/TR/xslt-30/#xsd11-schema-for-xslt">XML Schema 1.1 definition for XSLT 3.0 stylesheets</a>
  */
 public class XSLTElementProcessor extends ElemTemplateElement
 {
-    static final long serialVersionUID = 5597421564955304421L;
+  static final long serialVersionUID = 5597421564955304421L;
 
   /**
    * Construct a processor for top-level elements.
@@ -48,7 +50,7 @@ public class XSLTElementProcessor extends ElemTemplateElement
    */
   XSLTElementProcessor(){}
 	
-	private IntStack m_savedLastOrder;
+  private IntStack m_savedLastOrder;
 
   /**
    * The element definition that this processor conforms to.

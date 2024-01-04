@@ -1122,6 +1122,10 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
             // Determine the XML Document version of the Node 
             String xmlVersion = getXMLVersion(nodeArg);
             
+            if (xmlVersion == null) {
+               xmlVersion = "1.0";	
+            }
+            
             serializer.getOutputFormat().setProperty("version", xmlVersion);
             
             // Set the output encoding and xml version properties
@@ -1380,8 +1384,12 @@ final public class LSSerializerImpl implements DOMConfiguration, LSSerializer {
             }
             
             // Determine the DOM Version.
-            if (doc != null && doc.getImplementation().hasFeature("Core","3.0")) {
+            /*if (doc != null && doc.getImplementation().hasFeature("Core","3.0")) {
                 return doc.getXmlVersion();
+            }*/
+            
+            if (doc != null) {
+               return doc.getXmlVersion();
             }
         } 
         // The version will be treated as "1.0" which may result in

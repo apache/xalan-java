@@ -28,7 +28,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 
-import org.apache.xml.serializer.dom3.NamespaceSupport;
+import javax.xml.transform.TransformerException;
+
 import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.serializer.utils.MsgKey;
@@ -50,6 +51,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
+import org.w3c.dom.TypeInfo;
 import org.w3c.dom.ls.LSSerializerFilter;
 import org.w3c.dom.traversal.NodeFilter;
 import org.xml.sax.Locator;
@@ -247,9 +249,12 @@ final class DOM3TreeWalker {
         // Determine if the Node is a DOM Level 3 Core Node.
         if (pos.getNodeType() != Node.DOCUMENT_NODE) {
             Document ownerDoc = pos.getOwnerDocument();
-            if (ownerDoc != null
+            /*if (ownerDoc != null
                 && ownerDoc.getImplementation().hasFeature("Core", "3.0")) {
                 fIsLevel3DOM = true;
+            }*/
+            if (ownerDoc != null) {
+               fIsLevel3DOM = true;
             }
         } else {
             if (((Document) pos)
@@ -675,7 +680,10 @@ final class DOM3TreeWalker {
             // Determine the Attr's type.
             String type = null;
             if (fIsLevel3DOM) {
-                type = ((Attr) attr).getSchemaTypeInfo().getTypeName();
+               TypeInfo schemaTypeInfo = ((Attr) attr).getSchemaTypeInfo();
+               if (schemaTypeInfo != null) {
+                  type = ((Attr) attr).getSchemaTypeInfo().getTypeName();
+               }
             }
             type = type == null ? "CDATA" : type;
 

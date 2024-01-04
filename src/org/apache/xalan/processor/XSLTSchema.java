@@ -42,6 +42,7 @@ import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.ElemForEachGroup;
 import org.apache.xalan.templates.ElemFunction;
 import org.apache.xalan.templates.ElemIf;
+import org.apache.xalan.templates.ElemImportSchema;
 import org.apache.xalan.templates.ElemIterate;
 import org.apache.xalan.templates.ElemIterateBreak;
 import org.apache.xalan.templates.ElemIterateNextIteration;
@@ -91,15 +92,20 @@ public class XSLTSchema extends XSLTElementDef
   {
 	// xsl:import, xsl:include
     XSLTAttributeDef hrefAttr = new XSLTAttributeDef(null, "href",
-                                  XSLTAttributeDef.T_URL, true, false,XSLTAttributeDef.ERROR);
+                                  XSLTAttributeDef.T_URL, true, false, XSLTAttributeDef.ERROR);
+    
+    // xsl:import-schema
+    XSLTAttributeDef namespaceAttr = new XSLTAttributeDef(null, "namespace",
+                                  XSLTAttributeDef.T_URL, false, false, XSLTAttributeDef.ERROR);
+    
+    // xsl:import-schema
+    XSLTAttributeDef schemaLocationAttr = new XSLTAttributeDef(null, "schema-location",
+                                  XSLTAttributeDef.T_URL, false, false, XSLTAttributeDef.ERROR);
                                   
 	// xsl:preserve-space, xsl:strip-space
     XSLTAttributeDef elementsAttr = new XSLTAttributeDef(null, "elements",
                                       XSLTAttributeDef.T_SIMPLEPATTERNLIST,
-                                      true, false, XSLTAttributeDef.ERROR);
-                                      
-    // XSLTAttributeDef anyNamespacedAttr = new XSLTAttributeDef("*", "*",
-    //                                XSLTAttributeDef.T_CDATA, false);
+                                      true, false, XSLTAttributeDef.ERROR);                                   
     
     // xsl:output
     XSLTAttributeDef methodAttr = new XSLTAttributeDef(null, "method",
@@ -395,11 +401,11 @@ public class XSLTSchema extends XSLTElementDef
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "*",
                            XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.WARNING);
                            
-    XSLTElementDef[] templateElements = new XSLTElementDef[32];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[33];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[33];
+    XSLTElementDef[] templateElements = new XSLTElementDef[33];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[34];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[34];
     //exslt
-    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[33];
+    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[34];
     
     XSLTElementDef[] charTemplateElements = new XSLTElementDef[16];
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
@@ -424,8 +430,8 @@ public class XSLTSchema extends XSLTElementDef
                                                  xslVersionAttr,
                                                  xslResultAttr,
                                                  resultAttr }, 
-                                                                                                 new ProcessorUnknown(),
-                         ElemUnknown.class /* class object */, 20, true);
+                                                 new ProcessorUnknown(),
+                                                 ElemUnknown.class /* class object */, 20, true);
     XSLTElementDef xslValueOf = new XSLTElementDef(this,
                                   Constants.S_XSLNAMESPACEURL, "value-of",
                                   null /*alias */, null /* elements */,
@@ -696,6 +702,12 @@ public class XSLTSchema extends XSLTElementDef
                                   new ProcessorExsltFuncResult(),
                                   ElemExsltFuncResult.class  /* class object */);            
     
+    XSLTElementDef importSchemaDef = new XSLTElementDef(this,
+                                  Constants.S_XSLNAMESPACEURL, "import-schema",
+                                  null /*alias */, templateElements /* elements */,  // EMPTY
+                                  new XSLTAttributeDef[]{ namespaceAttr, schemaLocationAttr },
+                                  new ProcessorImportSchema(),
+                                  ElemImportSchema.class /* class object */, 1, true);
 
     int i = 0;
 
@@ -735,6 +747,7 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = unknownElement;
     templateElements[i++] = exsltFunction;
     templateElements[i++] = exsltResult;
+    templateElements[i++] = importSchemaDef;
 
     System.arraycopy(templateElements, 0, templateElementsAndParams, 0, i);
     System.arraycopy(templateElements, 0, templateElementsAndSort, 0, i);
@@ -777,7 +790,7 @@ public class XSLTSchema extends XSLTElementDef
                                   new XSLTAttributeDef[]{ hrefAttr },
                                   new ProcessorInclude(),
                                   null /* class object */,
-                                               20, true);
+                                               20, true);        
     
     XSLTAttributeDef[] scriptAttrs = new XSLTAttributeDef[]{
     					    new XSLTAttributeDef(null, "lang", XSLTAttributeDef.T_NMTOKEN,
@@ -794,8 +807,9 @@ public class XSLTSchema extends XSLTElementDef
                                             			 false, false,XSLTAttributeDef.WARNING) };
 
     XSLTElementDef[] topLevelElements = new XSLTElementDef[]
-                                 {includeDef,
+                                 {includeDef,                                  	
                                   importDef,
+                                  importSchemaDef,
                                   // resultElement,
                                   whiteSpaceOnly,
                                   unknownElement,

@@ -1070,7 +1070,7 @@ public class XSLTErrorResources extends ListResourceBundle
      "Programmer''s assertion in RedundentExprEliminator: {0}"},
 
     { ER_NOT_ALLOWED_IN_POSITION,
-     "{0} is not allowed in this position in the stylesheet!"},
+     "{0} is not allowed in this position in the stylesheet"},
 
     { ER_NONWHITESPACE_NOT_ALLOWED_IN_POSITION,
      "Non-whitespace text is not allowed in this position in the stylesheet!"},

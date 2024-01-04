@@ -119,7 +119,6 @@ public class Operation extends Expression implements ExpressionOwner
     
     XObject right = null;
     
-    try {
         if (m_left instanceof FuncExtFunction) {
            FuncExtFunction extFunction = (FuncExtFunction)m_left;
            if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
@@ -165,11 +164,6 @@ public class Operation extends Expression implements ExpressionOwner
         else {
            right = m_right.execute(xctxt, true); 
         }
-    }
-    catch (SAXException ex) {
-       throw new javax.xml.transform.TransformerException(ex.getMessage(), 
-                                                                    xctxt.getSAXLocator()); 
-    }
 
     XObject result = operate(left, right);
     

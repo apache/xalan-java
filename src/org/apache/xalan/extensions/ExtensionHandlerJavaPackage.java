@@ -440,7 +440,6 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
       
       Object funcEvalResult = null;
       
-      try {
           XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn
                                                                           (exprContext.getXPathContext(), extFunction, transformer);
           if (evalResult != null) {
@@ -450,10 +449,6 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
              funcEvalResult = callFunction(extFunction.getFunctionName(), args, extFunction.getMethodKey(), 
                                                                                                      exprContext);    
           }
-      }
-      catch (SAXException ex) {
-          throw new TransformerException(ex);   
-      }
       
       return funcEvalResult;
       

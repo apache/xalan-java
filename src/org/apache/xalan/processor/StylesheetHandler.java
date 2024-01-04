@@ -85,6 +85,8 @@ public class StylesheetHandler extends DefaultHandler
    */
   private boolean m_source_location = false;
   
+  private ProcessorImportSchema processorImportSchema = null;
+  
   /**
    * Create a StylesheetHandler object, creating a root stylesheet
    * as the target.
@@ -367,23 +369,26 @@ public class StylesheetHandler extends DefaultHandler
     XSLTElementProcessor currentProcessor = getCurrentProcessor();
     XSLTElementDef def = currentProcessor.getElemDef();
     XSLTElementProcessor elemProcessor = def.getProcessorFor(uri, localName);
-
-    if (null == elemProcessor
-            && !(currentProcessor instanceof ProcessorStylesheetDoc)
-            && ((null == getStylesheet()
-                || Double.valueOf(getStylesheet().getVersion()).doubleValue()
-                   > Constants.XSLTVERSUPPORTED) 
-                ||(!uri.equals(Constants.S_XSLNAMESPACEURL) &&
-                            currentProcessor instanceof ProcessorStylesheetElement)
-                || getElemVersion() > Constants.XSLTVERSUPPORTED
-        ))
-    {
-      elemProcessor = def.getProcessorForUnknown(uri, localName);
+    
+    if ((elemProcessor != null) && (elemProcessor instanceof ProcessorImportSchema)) {
+       processorImportSchema = (ProcessorImportSchema)elemProcessor; 
     }
 
-    if (null == elemProcessor)
-      error(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_ALLOWED_IN_POSITION, new Object[]{rawName}),null);//rawName + " is not allowed in this position in the stylesheet!",
-            
+    if (elemProcessor == null
+                    && !(currentProcessor instanceof ProcessorStylesheetDoc)
+                    && ((null == getStylesheet()
+                        || Double.valueOf(getStylesheet().getVersion()).doubleValue() > Constants.XSLTVERSUPPORTED) 
+                        || (!uri.equals(Constants.S_XSLNAMESPACEURL) && currentProcessor instanceof ProcessorStylesheetElement)
+                        || getElemVersion() > Constants.XSLTVERSUPPORTED)) {
+       elemProcessor = def.getProcessorForUnknown(uri, localName);
+    }
+
+    if (elemProcessor == null) {
+       if (processorImportSchema == null) {
+    	   // added for XSLT 3.0
+    	   error(XSLMessages.createMessage(XSLTErrorResources.ER_NOT_ALLOWED_IN_POSITION, new Object[] {rawName}), null);
+       }
+    }            
                 
     return elemProcessor;
   }

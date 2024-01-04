@@ -66,9 +66,6 @@ public class SimpleMapOperator extends Operation
                }
                catch (TransformerException ex) {
                    throw ex; 
-               }
-               catch (SAXException ex) {
-                   throw new TransformerException(ex.getMessage(), srcLocator);
                } 
            }
            else {
