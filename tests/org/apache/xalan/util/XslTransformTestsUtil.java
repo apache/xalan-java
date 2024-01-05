@@ -83,7 +83,9 @@ public class XslTransformTestsUtil {
            if (errHandler != null) {
                xslTransformer.setErrorListener(errHandler);  
            }
+           
            StringWriter resultStrWriter = new StringWriter();
+           
            xslTransformer.transform(new DOMSource(xmlDomSource), new StreamResult(resultStrWriter));
            
            if (errHandler != null) {
