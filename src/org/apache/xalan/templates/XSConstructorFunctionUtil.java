@@ -19,6 +19,10 @@ package org.apache.xalan.templates;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 
 import javax.xml.XMLConstants;
@@ -39,9 +43,15 @@ import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
+import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDate;
@@ -70,6 +80,10 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  * @xsl.usage advanced
  */
 public class XSConstructorFunctionUtil {
+	
+	// The below mentioned class fields define constants used by implementation
+	// within this class, and also within few other parts of XalanJ's XSLT 3.0 
+	// implementation.
 	
 	public static final String XS_VALID_TRUE = "XS_VALID_TRUE";
 	
@@ -363,41 +377,116 @@ public class XSConstructorFunctionUtil {
         	   
         	   if ((Constants.ELEMNAME_IMPORT_SCHEMA_STRING).equals(elemTemplateElem.getLocalName())) {
         		   NodeList nodeList = elemTemplateElem.getChildNodes();
-        		   Node node = nodeList.item(0);
-        		   String xsSchemaStr = null;
-        		   try {
-        		       org.w3c.dom.ls.DOMImplementationLS domImplLS = (org.w3c.dom.ls.DOMImplementationLS) 
-        		    		                                                org.w3c.dom.bootstrap.DOMImplementationRegistry.newInstance().getDOMImplementation("LS");
-        		       org.w3c.dom.ls.LSSerializer lsSerializer = domImplLS.createLSSerializer();
-        	           org.w3c.dom.DOMConfiguration domConfig = lsSerializer.getDomConfig();
-        	           domConfig.setParameter(DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
-        	           xsSchemaStr = lsSerializer.writeToString((Document)node);
-        	           xsSchemaStr = xsSchemaStr.replaceFirst(UTF_16, UTF_8);
-        	           xsSchemaStr = xsSchemaStr.replaceFirst("xs:schema", "xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"");
-        	           
-        	           String xsFileName = "xalan_1_" + System.currentTimeMillis() + ".xsd";
-        	           BufferedWriter buffWriter = new BufferedWriter(new FileWriter(xsFileName));
-        	           buffWriter.write(xsSchemaStr);	            	           
-        	           buffWriter.close();	            	           	            	           
-        	           
-        	           XMLSchemaLoader xsLoader = new XMLSchemaLoader();
-        	           XSModel xsModel = xsLoader.loadURI(xsFileName);
-        	           
-        	           // The purpose of temporary file created here has been achieved. We could delete this file now.
-        	           (new File(xsFileName)).delete();
-        	           
-        	           XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)(xsModel.getTypeDefinition(funcName, funcNamespace));
-        	           
-        	           XObject xsSimpleTypeInpObj = (funcExtFunction.getArg(0)).execute(xctxt);
-        	           xsSimpleTypeDecl.validate(xsSimpleTypeInpObj.str(), null, null);
-        	           
-        	           evalResult = new XSString(XS_VALID_TRUE); 
+        		   Node xsSchemaTopMostNode = nodeList.item(0);
+        		   
+        		   // We shall attempt to use here, XercesJ's XMLSchemaLoader object  
+        		   XMLSchemaLoader xsLoader = new XMLSchemaLoader();
+        		   
+        		   XSModel xsModel = null;
+        		   
+        		   if (xsSchemaTopMostNode == null) {
+        			   // We shall attempt here to construct, an XML Schema XSModel instance via schema document 
+        			   // uri referred by an attribute value 'schema-location'. 
+        			   NamedNodeMap importSchemaNodeAttributes = ((Element)elemTemplateElem).getAttributes();        			   
+        			   
+        			   if (importSchemaNodeAttributes != null) {
+	        			   Node attrNode1 = importSchemaNodeAttributes.item(0);
+	        			   Node attrNode2 = importSchemaNodeAttributes.item(1);	        			   	        			   	        			   
+	        			   
+	        			   try {
+		        			   if (attrNode1 != null) {
+		        				   URI inpUri = new URI(attrNode1.getNodeValue());
+		        				   String stylesheetSystemId = srcLocator.getSystemId();
+		        				   
+		        				   if (!inpUri.isAbsolute() && (stylesheetSystemId != null)) {
+		        			          URI resolvedUri = (new URI(stylesheetSystemId)).resolve(inpUri);
+		        			          URL url = resolvedUri.toURL();
+		        			          if (!"namespace".equals(attrNode1.getNodeName())) {
+		        			             xsModel = xsLoader.loadURI(url.toString());
+		        			          }
+		        			       }
+		        			   }
+	        			   
+	        			       if (attrNode2 != null && xsModel == null) {
+	        			    	   URI inpUri = new URI(attrNode2.getNodeValue());
+		        				   String stylesheetSystemId = srcLocator.getSystemId();
+		        				   
+		        				   if (!inpUri.isAbsolute() && (stylesheetSystemId != null)) {
+		        			          URI resolvedUri = (new URI(stylesheetSystemId)).resolve(inpUri);
+		        			          URL url = resolvedUri.toURL();
+		        			          if ("schema-location".equals(attrNode2.getNodeName())) {
+		        			             xsModel = xsLoader.loadURI(url.toString());
+		        			          }
+		        			       }	        				  
+	        			       }
+	        			       
+	        			       if (xsModel != null) {
+		        			       XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)(xsModel.getTypeDefinition(funcName, funcNamespace));
+			        	           
+			        	           XObject xsSimpleTypeInpObj = (funcExtFunction.getArg(0)).execute(xctxt);
+			        	           xsSimpleTypeDecl.validate(xsSimpleTypeInpObj.str(), null, null);
+			        	           
+			        	           evalResult = new XSString(XS_VALID_TRUE);
+	        			       }
+	        			       else {
+	        			    	   throw new javax.xml.transform.TransformerException("FODC0005 : While analyzing xsl:import-schema instruction, a compiled "
+	        			    	   		                                                      + "representation of a an XML Schema document cannot be built. "
+	        			    	   		                                                      + "Please check the stylesheet context to resolve.", srcLocator);
+	        			       }
+	        			   }
+	        			   catch (URISyntaxException ex) {
+	        				   throw new javax.xml.transform.TransformerException("FODC0005 : The uri analyzed, while processing xsl:import-schema "
+	        				   		                                                          + "instruction is not a valid absolute uri, "
+                                                                                              + "or cannot be resolved to an absolute uri.", srcLocator);   
+	        			   }
+	        			   catch (MalformedURLException ex) {
+	        				   throw new javax.xml.transform.TransformerException("FODC0005 : The uri analyzed, while processing xsl:import-schema "
+	        				   		                                                          + "instruction is not a valid absolute uri, "
+                                                                                              + "or cannot be resolved to an absolute uri.", srcLocator); 
+	        			   }
+	        			   catch (InvalidDatatypeValueException ex) {
+	        				   throw new TransformerException(ex.getMessage(), srcLocator);
+	        			   }
+        			   }
         		   }
-        		   catch (InvalidDatatypeValueException ex) {
-        			   throw new TransformerException(ex.getMessage(), srcLocator); 
-        		   }
-        		   catch (Exception ex) {
-        			   throw new TransformerException(ex.getMessage(), srcLocator);
+        		   else {
+        			   // We shall attempt here to construct, an XML Schema XSModel instance via lexical 
+        			   // schema document information available as child contents of an element node 
+        			   // import-schema.
+        			   String xsSchemaStr = null;
+        			   
+	        		   try {
+	        		       DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.newInstance()).getDOMImplementation("LS"));
+	        		       LSSerializer lsSerializer = domImplLS.createLSSerializer();
+	        	           DOMConfiguration domConfig = lsSerializer.getDomConfig();
+	        	           domConfig.setParameter(DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
+	        	           xsSchemaStr = lsSerializer.writeToString((Document)xsSchemaTopMostNode);
+	        	           xsSchemaStr = xsSchemaStr.replaceFirst(UTF_16, UTF_8);
+	        	           xsSchemaStr = xsSchemaStr.replaceFirst("schema", "schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"");
+	        	           
+	        	           String xsFileName = "xalan_1_" + System.currentTimeMillis() + ".xsd";
+	        	           BufferedWriter buffWriter = new BufferedWriter(new FileWriter(xsFileName));
+	        	           buffWriter.write(xsSchemaStr);	            	           
+	        	           buffWriter.close();	            	           	            	           
+
+	        	           xsModel = xsLoader.loadURI(xsFileName);
+	        	           
+	        	           // The purpose of temporary file created here has been achieved. We could delete this file now.
+	        	           (new File(xsFileName)).delete();
+	        	           
+	        	           XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)(xsModel.getTypeDefinition(funcName, funcNamespace));
+	        	           
+	        	           XObject xsSimpleTypeInpObj = (funcExtFunction.getArg(0)).execute(xctxt);
+	        	           xsSimpleTypeDecl.validate(xsSimpleTypeInpObj.str(), null, null);
+	        	           
+	        	           evalResult = new XSString(XS_VALID_TRUE); 
+	        		   }
+	        		   catch (InvalidDatatypeValueException ex) {
+	        			   throw new TransformerException(ex.getMessage(), srcLocator); 
+	        		   }
+	        		   catch (Exception ex) {
+	        			   throw new TransformerException(ex.getMessage(), srcLocator);
+	        		   }
         		   }
         	   }
         	}
