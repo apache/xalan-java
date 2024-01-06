@@ -379,7 +379,9 @@ public class XSConstructorFunctionUtil {
         		   NodeList nodeList = elemTemplateElem.getChildNodes();
         		   Node xsSchemaTopMostNode = nodeList.item(0);
         		   
-        		   // We shall attempt to use here, XercesJ's XMLSchemaLoader object  
+        		   // We shall attempt to use here, XercesJ's XMLSchemaLoader object
+        		   // instance to try constructing an XSModel object instance which
+        		   // is a compiled representation of an XML Schema document.
         		   XMLSchemaLoader xsLoader = new XMLSchemaLoader();
         		   
         		   XSModel xsModel = null;
@@ -452,11 +454,12 @@ public class XSConstructorFunctionUtil {
         		   else {
         			   // We shall attempt here to construct, an XML Schema XSModel instance via lexical 
         			   // schema document information available as child contents of an element node 
-        			   // import-schema.
+        			   // xsl:import-schema.
         			   String xsSchemaStr = null;
         			   
 	        		   try {
-	        		       DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.newInstance()).getDOMImplementation("LS"));
+	        		       DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.
+	        		    		                                                                        newInstance()).getDOMImplementation("LS"));
 	        		       LSSerializer lsSerializer = domImplLS.createLSSerializer();
 	        	           DOMConfiguration domConfig = lsSerializer.getDomConfig();
 	        	           domConfig.setParameter(DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
