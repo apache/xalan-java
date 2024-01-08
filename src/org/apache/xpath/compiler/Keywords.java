@@ -466,6 +466,9 @@ public class Keywords
   /** deep-equal function string. */
   public static final String FUNC_DEEP_EQUAL = "deep-equal";
   
+  /** dateTime function string. */
+  public static final String FUNC_DATE_TIME = "dateTime";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

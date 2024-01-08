@@ -332,6 +332,9 @@ public class FunctionTable
   
   /** The 'deep-equal()' id. */
   public static final int FUNC_DEEP_EQUAL = 102;
+  
+  /** The 'dateTime()' id. */
+  public static final int FUNC_DATE_TIME = 103;
 
   // Proprietary
 
@@ -389,7 +392,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 103;
+  private static final int NUM_BUILT_IN_FUNCS = 104;
 
   /**
    * Number of built-in functions that may be added.
@@ -594,6 +597,8 @@ public class FunctionTable
     
     m_functions[FUNC_NODE_NAME] = org.apache.xpath.functions.FuncNodeName.class;
     m_functions[FUNC_DEEP_EQUAL] = org.apache.xpath.functions.FuncDeepEqual.class;
+    
+    m_functions[FUNC_DATE_TIME] = org.apache.xpath.functions.FuncDateTime.class;
   }
 
   static{
@@ -812,6 +817,9 @@ public class FunctionTable
                          new Integer(FunctionTable.FUNC_NODE_NAME));
          m_functionID.put(Keywords.FUNC_DEEP_EQUAL,
                          new Integer(FunctionTable.FUNC_DEEP_EQUAL));
+         
+         m_functionID.put(Keywords.FUNC_DATE_TIME,
+                         new Integer(FunctionTable.FUNC_DATE_TIME));
   }
   
   public FunctionTable(){

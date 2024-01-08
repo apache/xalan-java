@@ -18,6 +18,7 @@ package org.apache.xalan.xslt3;
 
 import org.apache.xalan.xpath3.FnAbsTests;
 import org.apache.xalan.xpath3.FnDataTests;
+import org.apache.xalan.xpath3.FnDateTimeTests;
 import org.apache.xalan.xpath3.FnDeepEqualTests;
 import org.apache.xalan.xpath3.FnDocTests;
 import org.apache.xalan.xpath3.FnForEachTests;
@@ -47,7 +48,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnForEachTests.class, XsConstructorFunctionTests.class,
                 FnAbsTests.class, StringTests.class, XsDateTimeArithmeticTests.class,
                 XsTimeWithArithmeticTests.class, XsDurationSubtypes.class,
-                FnDeepEqualTests.class, XSLImportSchemaTests.class })
+                FnDeepEqualTests.class, XSLImportSchemaTests.class, FnDateTimeTests.class })
 public class Xsl3TestSuite1 {
 
 }
