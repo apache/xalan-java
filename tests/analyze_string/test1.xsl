@@ -15,12 +15,12 @@
          </head>
          <body>
             <xsl:analyze-string select="abstract" regex="\n">
-	       <xsl:matching-substring>
-	          <br/>
-	       </xsl:matching-substring>
-	       <xsl:non-matching-substring>
-	          <xsl:value-of select="."/>
-	       </xsl:non-matching-substring>
+	           <xsl:matching-substring>
+	              <br/>
+	           </xsl:matching-substring>
+	           <xsl:non-matching-substring>
+	              <xsl:value-of select="."/>
+	           </xsl:non-matching-substring>
             </xsl:analyze-string>
          </body>
       </html>

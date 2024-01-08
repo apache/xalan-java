@@ -322,6 +322,7 @@ public class ElemValueOf extends ElemTemplateElement {
                               strValue = evalResult.str();  
                           }
     
+                          strValue = preProcessStrBeforeXslSerialization(strValue);
                           (new XString(strValue)).dispatchCharactersEvents(rth);
                       }
                       else {
@@ -586,6 +587,23 @@ public class ElemValueOf extends ElemTemplateElement {
   	if(callAttrs)
   		m_selectExpression.getExpression().callVisitors(m_selectExpression, visitor);
     super.callChildVisitors(visitor, callAttrs);
+  }
+  
+  /**
+   * We might have earlier added a suffix STRING_VAL_SERIALIZATION_SUFFIX to 
+   * certain string values for the purpose of correct XSLT transformation
+   * serialization to the result. If those suffixes are still present on 
+   * those strings, they need to be trimmed to restore original string 
+   * values.
+   */
+  private String preProcessStrBeforeXslSerialization(String str) {
+	 String resultStr = str;
+	 
+	 if (resultStr.contains(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX)) {
+	     resultStr = resultStr.replace(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX, "");
+	 }
+	 
+	 return resultStr;
   }
 
 }
