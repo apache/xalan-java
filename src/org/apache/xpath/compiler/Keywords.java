@@ -469,6 +469,24 @@ public class Keywords
   /** dateTime function string. */
   public static final String FUNC_DATE_TIME = "dateTime";
   
+  /** year-from-dateTime function string. */
+  public static final String FUNC_YEAR_FROM_DATE_TIME = "year-from-dateTime";
+  
+  /** month-from-dateTime function string. */
+  public static final String FUNC_MONTH_FROM_DATE_TIME = "month-from-dateTime";
+  
+  /** day-from-dateTime function string. */
+  public static final String FUNC_DAY_FROM_DATE_TIME = "day-from-dateTime";
+  
+  /** hours-from-dateTime function string. */
+  public static final String FUNC_HOURS_FROM_DATE_TIME = "hours-from-dateTime";
+  
+  /** minutes-from-dateTime function string. */
+  public static final String FUNC_MINUTES_FROM_DATE_TIME = "minutes-from-dateTime";
+  
+  /** seconds-from-dateTime function string. */
+  public static final String FUNC_SECONDS_FROM_DATE_TIME = "seconds-from-dateTime";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
