@@ -335,6 +335,24 @@ public class FunctionTable
   
   /** The 'dateTime()' id. */
   public static final int FUNC_DATE_TIME = 103;
+  
+  /** The 'year-from-dateTime()' id. */
+  public static final int FUNC_YEAR_FROM_DATE_TIME = 104;
+  
+  /** The 'month-from-dateTime()' id. */
+  public static final int FUNC_MONTH_FROM_DATE_TIME = 105;
+  
+  /** The 'day-from-dateTime()' id. */
+  public static final int FUNC_DAY_FROM_DATE_TIME = 106;
+  
+  /** The 'hours-from-dateTime()' id. */
+  public static final int FUNC_HOURS_FROM_DATE_TIME = 107;
+  
+  /** The 'minutes-from-dateTime()' id. */
+  public static final int FUNC_MINUTES_FROM_DATE_TIME = 108;
+  
+  /** The 'seconds-from-dateTime()' id. */
+  public static final int FUNC_SECONDS_FROM_DATE_TIME = 109;
 
   // Proprietary
 
@@ -392,7 +410,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 104;
+  private static final int NUM_BUILT_IN_FUNCS = 110;
 
   /**
    * Number of built-in functions that may be added.
@@ -599,6 +617,12 @@ public class FunctionTable
     m_functions[FUNC_DEEP_EQUAL] = org.apache.xpath.functions.FuncDeepEqual.class;
     
     m_functions[FUNC_DATE_TIME] = org.apache.xpath.functions.FuncDateTime.class;
+    m_functions[FUNC_YEAR_FROM_DATE_TIME] = org.apache.xpath.functions.FuncYearFromDateTime.class;
+    m_functions[FUNC_MONTH_FROM_DATE_TIME] = org.apache.xpath.functions.FuncMonthFromDateTime.class;
+    m_functions[FUNC_DAY_FROM_DATE_TIME] = org.apache.xpath.functions.FuncDayFromDateTime.class;
+    m_functions[FUNC_HOURS_FROM_DATE_TIME] = org.apache.xpath.functions.FuncHoursFromDateTime.class;
+    m_functions[FUNC_MINUTES_FROM_DATE_TIME] = org.apache.xpath.functions.FuncMinutesFromDateTime.class;
+    m_functions[FUNC_SECONDS_FROM_DATE_TIME] = org.apache.xpath.functions.FuncSecondsFromDateTime.class;
   }
 
   static{
@@ -820,6 +844,18 @@ public class FunctionTable
          
          m_functionID.put(Keywords.FUNC_DATE_TIME,
                          new Integer(FunctionTable.FUNC_DATE_TIME));
+         m_functionID.put(Keywords.FUNC_YEAR_FROM_DATE_TIME,
+                         new Integer(FunctionTable.FUNC_YEAR_FROM_DATE_TIME));
+         m_functionID.put(Keywords.FUNC_MONTH_FROM_DATE_TIME,
+                         new Integer(FunctionTable.FUNC_MONTH_FROM_DATE_TIME));
+         m_functionID.put(Keywords.FUNC_DAY_FROM_DATE_TIME,
+                         new Integer(FunctionTable.FUNC_DAY_FROM_DATE_TIME));
+         m_functionID.put(Keywords.FUNC_HOURS_FROM_DATE_TIME,
+                         new Integer(FunctionTable.FUNC_HOURS_FROM_DATE_TIME));
+         m_functionID.put(Keywords.FUNC_MINUTES_FROM_DATE_TIME,
+                         new Integer(FunctionTable.FUNC_MINUTES_FROM_DATE_TIME));
+         m_functionID.put(Keywords.FUNC_SECONDS_FROM_DATE_TIME,
+                         new Integer(FunctionTable.FUNC_SECONDS_FROM_DATE_TIME));
   }
   
   public FunctionTable(){
