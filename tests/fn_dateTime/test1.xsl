@@ -1,39 +1,34 @@
 <?xml version="1.0"?> 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:ns0="http://my.uri/"               
-                exclude-result-prefixes="ns0"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                exclude-result-prefixes="xs"
                 version="3.0">
                 
   <!-- Author: mukulg@apache.org -->
   
-  <!-- An XSLT stylesheet test case, to test serialization of a
-       sequence of atomic values produced by recursion, and also 
-       serialization of another sequence of atomic values produced 
-       via an XPath sequence literal expression.
-       
-       The stylesheet recursive function used within this stylesheet
-       has been borrowed from W3C XSLT 3.0 test suite, and output
-       of that function has been adjusted for XalanJ implementation 
-       (which we believe, is compliant to XSLT 3.0 specification).
-  -->
+  <!-- An XSLT stylesheet test case, to test XPath 3.1 
+       function fn:dateTime. 
+  -->                  
                 
-  <xsl:output method="xml" indent="yes"/>                
+  <xsl:output method="xml" indent="yes"/>    
 
+  <xsl:variable name="dateTime1" select="dateTime(xs:date('1999-12-31'), xs:time('12:00:00'))"/>  
+  <xsl:variable name="dateTime2" select="dateTime(xs:date('1999-12-31'), xs:time('24:00:00'))"/>
+  <xsl:variable name="dateTime3" select="dateTime(xs:date('2012-10-05+05:30'), xs:time('24:00:00'))"/>
+  
   <xsl:template match="/">
-    <result>
-       <one>
-          <xsl:value-of select="ns0:func1(12)"/>
-       </one>
-       <two>
-          <xsl:value-of select="('a', 'b', 'c', 'd', 'e')"/>
-       </two>
+    <result>      
+      <one isXsDateTimeValue="{$dateTime1 instance of xs:dateTime}">
+        <xsl:value-of select="$dateTime1"/>
+      </one>
+      <two isXsDateTimeValue="{$dateTime2 instance of xs:dateTime}">
+        <xsl:value-of select="$dateTime2"/>
+      </two>
+      <three isXsDateTimeValue="{$dateTime3 instance of xs:dateTime}">
+        <xsl:value-of select="$dateTime3"/>
+      </three>
     </result> 
   </xsl:template>
-  
-  <xsl:function name="ns0:func1">
-     <xsl:param name="x"/>
-     <xsl:sequence select="if ($x = 0) then () else ($x, ns0:func1($x - 1))"/>
-  </xsl:function>
   
   <!--
       * Licensed to the Apache Software Foundation (ASF) under one
