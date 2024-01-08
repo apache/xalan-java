@@ -380,8 +380,8 @@ public class XSConstructorFunctionUtil {
         		   Node xsSchemaTopMostNode = nodeList.item(0);
         		   
         		   // We shall attempt to use here, XercesJ's XMLSchemaLoader object
-        		   // instance to try constructing an XSModel object instance which
-        		   // is a compiled representation of an XML Schema document.
+        		   // instance to try constructing an XSModel object instance (which
+        		   // is a compiled representation of an XML Schema document).
         		   XMLSchemaLoader xsLoader = new XMLSchemaLoader();
         		   
         		   XSModel xsModel = null;
@@ -402,7 +402,7 @@ public class XSConstructorFunctionUtil {
 		        				   
 		        				   if (!inpUri.isAbsolute() && (stylesheetSystemId != null)) {
 		        			          URI resolvedUri = (new URI(stylesheetSystemId)).resolve(inpUri);
-		        			          URL url = resolvedUri.toURL();
+		        			          URL url = resolvedUri.toURL(); 
 		        			          if (!"namespace".equals(attrNode1.getNodeName())) {
 		        			             xsModel = xsLoader.loadURI(url.toString());
 		        			          }
