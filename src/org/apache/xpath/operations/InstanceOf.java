@@ -84,6 +84,13 @@ public class InstanceOf extends Operation
       
       SequenceTypeData seqTypedData = (SequenceTypeData)right;
       
+      int seqType = seqTypedData.getSequenceType();
+      if ((left instanceof ResultSequence) && ((ResultSequence)left).size() == 0) {
+    	 if ((seqType != SequenceTypeSupport.EMPTY_SEQUENCE) && (seqType > 0)) {
+    	    return XBoolean.S_FALSE; 
+    	 }
+      }
+      
       isInstanceOf = isInstanceOf(left, seqTypedData);
       
       return isInstanceOf ? XBoolean.S_TRUE : XBoolean.S_FALSE;

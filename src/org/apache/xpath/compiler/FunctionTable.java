@@ -353,6 +353,33 @@ public class FunctionTable
   
   /** The 'seconds-from-dateTime()' id. */
   public static final int FUNC_SECONDS_FROM_DATE_TIME = 109;
+  
+  /** The 'timezone-from-dateTime()' id. */
+  public static final int FUNC_TIMEZONE_FROM_DATE_TIME = 110;
+  
+  /** The 'year-from-date()' id. */
+  public static final int FUNC_YEAR_FROM_DATE = 111;
+  
+  /** The 'month-from-date()' id. */
+  public static final int FUNC_MONTH_FROM_DATE = 112;
+  
+  /** The 'day-from-date()' id. */
+  public static final int FUNC_DAY_FROM_DATE = 113;
+  
+  /** The 'timezone-from-date()' id. */
+  public static final int FUNC_TIMEZONE_FROM_DATE = 114;
+  
+  /** The 'hours-from-time()' id. */
+  public static final int FUNC_HOURS_FROM_TIME = 115;
+  
+  /** The 'minutes-from-time()' id. */
+  public static final int FUNC_MINUTES_FROM_TIME = 116;
+  
+  /** The 'seconds-from-time()' id. */
+  public static final int FUNC_SECONDS_FROM_TIME = 117;
+  
+  /** The 'timezone-from-time()' id. */
+  public static final int FUNC_TIMEZONE_FROM_TIME = 118;
 
   // Proprietary
 
@@ -410,7 +437,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 110;
+  private static final int NUM_BUILT_IN_FUNCS = 119;
 
   /**
    * Number of built-in functions that may be added.
@@ -623,6 +650,15 @@ public class FunctionTable
     m_functions[FUNC_HOURS_FROM_DATE_TIME] = org.apache.xpath.functions.FuncHoursFromDateTime.class;
     m_functions[FUNC_MINUTES_FROM_DATE_TIME] = org.apache.xpath.functions.FuncMinutesFromDateTime.class;
     m_functions[FUNC_SECONDS_FROM_DATE_TIME] = org.apache.xpath.functions.FuncSecondsFromDateTime.class;
+    m_functions[FUNC_TIMEZONE_FROM_DATE_TIME] = org.apache.xpath.functions.FuncTimezoneFromDateTime.class;
+    m_functions[FUNC_YEAR_FROM_DATE] = org.apache.xpath.functions.FuncYearFromDate.class;
+    m_functions[FUNC_MONTH_FROM_DATE] = org.apache.xpath.functions.FuncMonthFromDate.class;
+    m_functions[FUNC_DAY_FROM_DATE] = org.apache.xpath.functions.FuncDayFromDate.class;
+    m_functions[FUNC_TIMEZONE_FROM_DATE] = org.apache.xpath.functions.FuncTimezoneFromDate.class;
+    m_functions[FUNC_HOURS_FROM_TIME] = org.apache.xpath.functions.FuncHoursFromTime.class;
+    m_functions[FUNC_MINUTES_FROM_TIME] = org.apache.xpath.functions.FuncMinutesFromTime.class;
+    m_functions[FUNC_SECONDS_FROM_TIME] = org.apache.xpath.functions.FuncSecondsFromTime.class;
+    m_functions[FUNC_TIMEZONE_FROM_TIME] = org.apache.xpath.functions.FuncTimezoneFromTime.class;
   }
 
   static{
@@ -856,6 +892,24 @@ public class FunctionTable
                          new Integer(FunctionTable.FUNC_MINUTES_FROM_DATE_TIME));
          m_functionID.put(Keywords.FUNC_SECONDS_FROM_DATE_TIME,
                          new Integer(FunctionTable.FUNC_SECONDS_FROM_DATE_TIME));
+         m_functionID.put(Keywords.FUNC_TIMEZONE_FROM_DATE_TIME,
+                         new Integer(FunctionTable.FUNC_TIMEZONE_FROM_DATE_TIME));
+         m_functionID.put(Keywords.FUNC_YEAR_FROM_DATE,
+                         new Integer(FunctionTable.FUNC_YEAR_FROM_DATE));
+         m_functionID.put(Keywords.FUNC_MONTH_FROM_DATE,
+                         new Integer(FunctionTable.FUNC_MONTH_FROM_DATE));
+         m_functionID.put(Keywords.FUNC_DAY_FROM_DATE,
+                         new Integer(FunctionTable.FUNC_DAY_FROM_DATE));
+         m_functionID.put(Keywords.FUNC_TIMEZONE_FROM_DATE,
+                         new Integer(FunctionTable.FUNC_TIMEZONE_FROM_DATE));
+         m_functionID.put(Keywords.FUNC_HOURS_FROM_TIME,
+                         new Integer(FunctionTable.FUNC_HOURS_FROM_TIME));
+         m_functionID.put(Keywords.FUNC_MINUTES_FROM_TIME,
+                         new Integer(FunctionTable.FUNC_MINUTES_FROM_TIME));
+         m_functionID.put(Keywords.FUNC_SECONDS_FROM_TIME,
+                         new Integer(FunctionTable.FUNC_SECONDS_FROM_TIME));
+         m_functionID.put(Keywords.FUNC_TIMEZONE_FROM_TIME,
+                         new Integer(FunctionTable.FUNC_TIMEZONE_FROM_TIME));
   }
   
   public FunctionTable(){
