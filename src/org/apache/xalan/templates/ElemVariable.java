@@ -557,11 +557,13 @@ public class ElemVariable extends ElemTemplateElement
            var = m_selectPattern.execute(xctxt, sourceNode, this);
         }
         
-        var.allowDetachToRelease(false);
+        if (var != null) {
+           var.allowDetachToRelease(false);
 
-        if (transformer.getDebug()) {
-            transformer.getTraceManager().fireSelectedEvent(sourceNode, this, "select", 
-                                                                    m_selectPattern, var);
+           if (transformer.getDebug()) {
+               transformer.getTraceManager().fireSelectedEvent(sourceNode, this, "select", 
+                                                                        m_selectPattern, var);
+           }
         }
       }
       else if (null == getFirstChildElem()) {

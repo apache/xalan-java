@@ -487,6 +487,33 @@ public class Keywords
   /** seconds-from-dateTime function string. */
   public static final String FUNC_SECONDS_FROM_DATE_TIME = "seconds-from-dateTime";
   
+  /** timezone-from-dateTime function string. */
+  public static final String FUNC_TIMEZONE_FROM_DATE_TIME = "timezone-from-dateTime";
+  
+  /** year-from-date function string. */
+  public static final String FUNC_YEAR_FROM_DATE = "year-from-date";
+  
+  /** year-from-date function string. */
+  public static final String FUNC_MONTH_FROM_DATE = "month-from-date";
+  
+  /** day-from-date function string. */
+  public static final String FUNC_DAY_FROM_DATE = "day-from-date";
+  
+  /** timezone-from-date function string. */
+  public static final String FUNC_TIMEZONE_FROM_DATE = "timezone-from-date";
+  
+  /** hours-from-time function string. */
+  public static final String FUNC_HOURS_FROM_TIME = "hours-from-time";
+  
+  /** minutes-from-time function string. */
+  public static final String FUNC_MINUTES_FROM_TIME = "minutes-from-time";
+  
+  /** seconds-from-time function string. */
+  public static final String FUNC_SECONDS_FROM_TIME = "seconds-from-time";
+  
+  /** timezone-from-time function string. */
+  public static final String FUNC_TIMEZONE_FROM_TIME = "timezone-from-time";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
