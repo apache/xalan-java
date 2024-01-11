@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<info>
+  <val priority="2" a="1" b="2"/>
+  <val priority="2" a="2" b="3"/>
+  <val priority="1" a="3" b="4"/>
+  <val priority="2" a="4" b="5"/>
+  <val priority="3" a="1" b="2"/>
+  <val priority="3" a="2" b="3"/>
+  <val priority="3" a="3" b="4"/>
+  <val priority="1" a="5" b="6"/>
+  <val priority="1" a="6" b="7"/>
+  <val priority="1" a="7" b="8"/>
+  <val priority="2" a="8" b="9"/>
+</info>
