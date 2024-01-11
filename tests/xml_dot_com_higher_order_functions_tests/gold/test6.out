@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <temperature degrees="5">41</temperature>
+  <temperature degrees="10.2">50.36</temperature>
+  <temperature degrees="15">59</temperature>
+  <temperature degrees="20.7">69.26</temperature>
+  <temperature degrees="25">77</temperature>
+</result>
