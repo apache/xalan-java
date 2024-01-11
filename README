@@ -111,17 +111,8 @@ This will build:
      XSLT Processor, some old xsltc samples and the @xsl.usage taglet
      we used in producing the Javadoc/apidocs (see above).
 
-1.4) IMPORTANT: Until we get xalan-test updated, you will need to go to the
-xalan-java/build directory and manually copy or rename the jarfiles to
-remove the version number:
-
-       Linux: 
-           mv xalan-*.jar xalan.jar
-	   mv serializer-*.jar serializer.jar
-       Windows: 
-           ren xalan-*.jar xalan.jar
-	   ren serializer-*.jar serializer.jar
-
+   ./lib: Xalan dependencies that xalan-test relies on our
+     having fetched, copied to where xalan-test can reach them easily.
 
 (2) Steps to run the XalanJ tests, assuming you have already build
 xalan-java as discussed above:
@@ -129,7 +120,7 @@ xalan-java as discussed above:
 2.1) Go to the xalan-tests local folder. If you have cloned xalan-java
 and xalan-test from Git, it will be a sibling of xalan-java.
 
-BUT: For XalanJ source distribution users, the xalan-test folder is
+BUT: For XalanJ source distribution users, the xalan-test folder was
 shipped as a child of the xalan-java source folder (i.e, parallel to
 folders "src", "tools" etc within the main XalanJ codebase folder
 location). In theory you *should* be able to run the tests directly
