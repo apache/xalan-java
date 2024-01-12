@@ -905,12 +905,12 @@ public class SequenceTypeSupport {
         else { 
             ResultSequence convertedResultSeq = new ResultSequence();
 
-            DTMIterator dtmIter = (DTMIterator)xdmNodeSet; 
+            DTMIterator dtmIter = (DTMIterator)xdmNodeSet;
             
             int nextNodeDtmHandle;
                    
-            while ((nextNodeDtmHandle = dtmIter.nextNode()) != DTM.NULL) {
-               XNodeSet nodeSetItem = new XNodeSet(nextNodeDtmHandle, xctxt);
+            while ((nextNodeDtmHandle = dtmIter.nextNode()) != DTM.NULL) {               
+               XNodeSet nodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmIter.getDTMManager());               
                
                String sequenceTypeNewXPathExprStr = null;
                if (sequenceTypeXPathExprStr != null) {
