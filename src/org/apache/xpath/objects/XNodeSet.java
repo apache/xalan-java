@@ -976,6 +976,9 @@ public class XNodeSet extends NodeSequence
 	 else if ((node1.getNodeType() == Node.TEXT_NODE) && (node2.getNodeType() == Node.TEXT_NODE)) {
 		isNodeNameEqual = true;	 
 	 }
+	 else if ((node1.getNodeType() == Node.COMMENT_NODE) && (node2.getNodeType() == Node.COMMENT_NODE)) {
+	    isNodeNameEqual = true;	 
+     }
 	 
 	 return isNodeNameEqual;
   }
