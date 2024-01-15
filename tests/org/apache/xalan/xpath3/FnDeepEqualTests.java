@@ -88,5 +88,25 @@ public class FnDeepEqualTests extends XslTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslFnDeepEqualTest5() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_b.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFnDeepEqualTest6() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_c.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test6.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }

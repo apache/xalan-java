@@ -1161,6 +1161,12 @@ public class XObject extends Expression implements Serializable, Cloneable
         
        return (new XSString(lStr)).equals(new XSString(rStr));
     }
+    else if ((this instanceof XSNumericType) && (obj2 instanceof XSString)) {
+       return false;
+    }
+    else if ((obj2 instanceof XSString) && (obj2 instanceof XSNumericType)) {
+       return false;
+    }
     
     boolean isOperandNodeSet1 = false;
     boolean isOperandNodeSet2 = false;
