@@ -83,15 +83,15 @@ public class XSConstructorFunctionUtil {
 	
 	// The below mentioned class fields define constants used by implementation
 	// within this class, and also within few other parts of XalanJ's XSLT 3.0 
-	// implementation.
+	// implementation.				
+	
+	public static final String UTF_16 = "UTF-16";
+	
+	public static final String UTF_8 = "UTF-8";
+	
+	public static final String DOM_FORMAT_PRETTY_PRINT = "format-pretty-print";
 	
 	public static final String XS_VALID_TRUE = "XS_VALID_TRUE";
-	
-	private static final String UTF_16 = "UTF-16";
-	
-	private static final String UTF_8 = "UTF-8";
-	
-	private static final String DOM_FORMAT_PRETTY_PRINT = "format-pretty-print";
     
     /**
      * We use this method, primarily to evaluate XSLT stylesheet function calls (for the

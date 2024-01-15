@@ -966,7 +966,7 @@ public class XNodeSet extends NodeSequence
 		   isNodeNameEqual = true;
 		}
 	 }
-	 if ((node1.getNodeType() == Node.ATTRIBUTE_NODE) && (node2.getNodeType() == Node.ATTRIBUTE_NODE)) {
+	 else if ((node1.getNodeType() == Node.ATTRIBUTE_NODE) && (node2.getNodeType() == Node.ATTRIBUTE_NODE)) {
 		String localName1 = node1.getLocalName();
 		String localName2 = node2.getLocalName();
 		if (localName1.equals(localName2) && isNsNameEqual(node1.getNamespaceURI(), node2.getNamespaceURI())) {
