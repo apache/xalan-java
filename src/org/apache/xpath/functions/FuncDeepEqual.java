@@ -26,6 +26,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.XSConstructorFunctionUtil;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xerces.dom.ElementImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xpath.Expression;
@@ -226,16 +227,30 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		                                                               throws Exception {
 	 boolean isTwoXmlDomElementNodesEqual = true;
 	 
+	 // Using XercesJ DOM parser api, to construct an XML document object 
+	 // from an XML string value.
+	 System.setProperty("javax.xml.parsers.DocumentBuilderFactory", 
+			                                                  "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+	 
 	 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 	 dbf.setNamespaceAware(true);
 	 
 	 DocumentBuilder dBuilder = dbf.newDocumentBuilder();
 	 
 	 Document document1 = dBuilder.parse(new ByteArrayInputStream(xmlStr1.getBytes()));
+	 ElementImpl elem1 = (ElementImpl)(document1.getDocumentElement());
 	 
 	 Document document2 = dBuilder.parse(new ByteArrayInputStream(xmlStr2.getBytes()));
+	 ElementImpl elem2 = (ElementImpl)(document2.getDocumentElement());
 	 
-	 isTwoXmlDomElementNodesEqual = document1.isEqualNode(document2);
+	 // The method 'isEqualNodeWithQName' used here, has been newly implemented
+	 // within XercesJ's class org.apache.xerces.dom.ElementImpl to support
+	 // few of the use cases of xpath 3.1 fn:deep-equal function. The method
+	 // 'isEqualNodeWithQName' used here is very similar to the standard
+	 // XML DOM method 'isEqualNode', except for few enhancements to compare
+	 // XML namespace declarations on element nodes as specified for xpath 3.1 
+	 // fn:deep-equal function. 
+	 isTwoXmlDomElementNodesEqual = elem1.isEqualNodeWithQName(elem2);
 	 
 	 return isTwoXmlDomElementNodesEqual;
   }
@@ -247,7 +262,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 	 String resultStr = null;
 	 
 	 DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.
-			                                                                newInstance()).getDOMImplementation("LS"));
+			                                                           newInstance()).getDOMImplementation("LS"));
      LSSerializer lsSerializer = domImplLS.createLSSerializer();
      DOMConfiguration domConfig = lsSerializer.getDomConfig();
      domConfig.setParameter(XSConstructorFunctionUtil.DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);

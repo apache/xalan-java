@@ -1913,14 +1913,25 @@ final class DOM3TreeWalker {
                 // already present, change its value to use this namespace.
                 
                 // Add the xmlns declaration attribute
-            	//fNSBinder.pushNamespace(prefix, namespaceURI, fElementDepth);
+            	// fNSBinder.pushNamespace(prefix, namespaceURI, fElementDepth);
+            	
+            	/*
+            	  // mukul : The setAttributeNS(..) method used below when reached
+            	  // during an XSLT transformation with XalanJ, emit an error
+            	  // "not implemented method". This was causing an issue, when
+            	  // using xpath 3.1 fn:deep-equal method to check equality of
+            	  // XML namespace declarations on element nodes.            	   
+            	  // Commenting this block of code. This modification doesn't
+            	  // seem to cause issues as of now.            	  
                 if ((fFeatures & NAMESPACEDECLS) != 0) {
                     if ("".equals(prefix) || "".equals(namespaceURI)) {
                     	((Element)node).setAttributeNS(XMLNS_URI, XMLNS_PREFIX, namespaceURI);
                     } else {
                     	((Element)node).setAttributeNS(XMLNS_URI, XMLNS_PREFIX + ":" + prefix, namespaceURI);
-                    }
+                    }                	
                 }
+                */
+            	
                 fLocalNSBinder.declarePrefix(prefix, namespaceURI);
                 fNSBinder.declarePrefix(prefix, namespaceURI);
 
