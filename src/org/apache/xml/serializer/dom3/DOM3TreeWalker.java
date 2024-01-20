@@ -1916,13 +1916,13 @@ final class DOM3TreeWalker {
             	// fNSBinder.pushNamespace(prefix, namespaceURI, fElementDepth);
             	
             	/*
-            	  // mukul : The setAttributeNS(..) method used below when reached
-            	  // during an XSLT transformation with XalanJ, emit an error
-            	  // "not implemented method". This was causing an issue, when
-            	  // using xpath 3.1 fn:deep-equal method to check equality of
-            	  // XML namespace declarations on element nodes.            	   
-            	  // Commenting this block of code. This modification doesn't
-            	  // seem to cause issues as of now.            	  
+            	  // mukul : The method ((Element)node).setAttributeNS(..) used below
+            	  // (on an object of XalanJ class DTMNodeProxy) when reached during 
+            	  // an XSLT transformation, emits an "not supported error". This has 
+            	  // been causing issue, when using xpath 3.1 fn:deep-equal function 
+            	  // to check equality of XML namespace declarations that're present 
+            	  // on XML element nodes. Commenting this block of code. This 
+            	  // modification doesn't seem to cause issues as of now.            	  
                 if ((fFeatures & NAMESPACEDECLS) != 0) {
                     if ("".equals(prefix) || "".equals(namespaceURI)) {
                     	((Element)node).setAttributeNS(XMLNS_URI, XMLNS_PREFIX, namespaceURI);
