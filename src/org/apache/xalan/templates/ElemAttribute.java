@@ -26,6 +26,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.serializer.NamespaceMappings;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
@@ -195,41 +196,47 @@ public class ElemAttribute extends ElemElement
         if (null != nodeName && nodeName.length() > 0) {
               SerializationHandler rhandler = transformer.getSerializationHandler();
               
-              // XSLT 3.0 spec notes : the string value of the new attribute node may be defined either 
-              // by using the select attribute, or by the sequence constructor that forms the content of 
-              // the xsl:attribute element. These are mutually exclusive: if the select attribute is present 
-              // then the sequence constructor must be empty, and if the sequence constructor is non-empty  
-              // then the select attribute must be absent.              
+              // XSLT 3.0 spec changes wrt XSLT 1.0 : The string value of the new attribute node may be
+              // defined either by using the select attribute, or by the sequence constructor that forms 
+              // the content of the xsl:attribute element. These are mutually exclusive. i.e, if the
+              // select attribute is present then the sequence constructor must be empty, and if the 
+              // sequence constructor is non-empty then the select attribute must be absent.              
               if (m_selectExpression != null && this.m_firstChild != null) {
                   throw new TransformerException("XTSE0840 : An xsl:attribute element with a select attribute must "
-                                                     + "be empty.", xctxt.getSAXLocator());   
+                                                                  + "have an empty child sequence constructor.", 
+                                                                        xctxt.getSAXLocator());   
               }
         
-              String val = null;
+              String attrVal = null;
                             
               if (m_selectExpression != null) {
-                  // evaluate the value of xsl:attribute's "select" attribute
-                  
+                  // Evaluate an xsl:attribute 'select' attribute's XPath expression,
+            	  // to determine the value of an attribute for emitting to XSLT
+            	  // transformation's output.
+            	  
                   if (fVars != null) {
                      m_selectExpression.fixupVariables(fVars, fGlobalsSize);   
                   }
                   
-                  XObject xpathEvalResult = m_selectExpression.execute(xctxt);              
-                  val = xpathEvalResult.str();
+                  XObject xpathEvalResult = m_selectExpression.execute(xctxt);
+                  attrVal = XslTransformEvaluationHelper.getStrVal(xpathEvalResult);
               }
               else {
-                  // evaluate the value of xsl:attribute element's child contents          
-                  val = transformer.transformToString(this);
+                  // Evaluate an xsl:attribute's child sequence constructor, to determine 
+            	  // the value of an attribute for emitting to XSLT transformation's 
+            	  // output.          
+                  attrVal = transformer.transformToString(this);
               }
               
               try {
-                    // let the result tree handler add the attribute and its String value.
+                    // Let an XSL result tree handler add the attribute and its 
+            	    // string value.
                     String localName = QName.getLocalPart(nodeName);
                     if (prefix != null && prefix.length() > 0) {
-                        rhandler.addAttribute(nodeNamespace, localName, nodeName, "CDATA", val, true);
+                        rhandler.addAttribute(nodeNamespace, localName, nodeName, "CDATA", attrVal, true);
                     }
                     else {
-                        rhandler.addAttribute("", localName, nodeName, "CDATA", val, true);
+                        rhandler.addAttribute("", localName, nodeName, "CDATA", attrVal, true);
                     }
               }
               catch (SAXException e) {

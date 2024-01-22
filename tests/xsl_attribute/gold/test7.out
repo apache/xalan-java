@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><info>
+  <a x="1" y="2" z="3" trfVal="14">
+    <b>
+      <c mesg="hello1" depth="4">
+        <c1 seq="1" depth="5"/>
+        <c1 seq="2" depth="5"/>
+        <c1 seq="3" depth="5"/>
+      </c>
+    </b>
+  </a>
+  <a x="4" y="5" z="6" trfVal="77">
+    <b>
+      <c mesg="hello2" depth="4">
+        <c1 seq="1" depth="5"/>
+        <c1 seq="2" depth="5"/>
+        <c1 seq="3" depth="5"/>
+      </c>
+    </b>
+  </a>
+  <a x="7" y="8" z="9" trfVal="194">
+    <b>
+      <c mesg="hello3" depth="4">
+        <c1 seq="1" depth="5"/>
+        <c1 seq="2" depth="5"/>
+        <c1 seq="3" depth="5"/>
+      </c>
+    </b>
+  </a>
+</info>
