@@ -1594,13 +1594,24 @@ abstract public class ToStream extends SerializerBase
                         // If the character is in the encoding, and
                         // not in the normal ASCII range, we also
                         // just leave it get added on to the clean characters
-                        
                     }
-                    else {
-                        // This is a fallback plan, we should never get here
-                        // but if the character wasn't previously handled
-                        // (i.e. isn't in the encoding, etc.) then what
-                        // should we do?  We choose to write out an entity
+                    else if (Encodings.isHighUTF16Surrogate(ch) && i < end-1 && Encodings.isLowUTF16Surrogate(chars[i+1])) {
+                    	// So, this is a (valid) surrogate pair
+                    	if (! m_encodingInfo.isInEncoding(ch, chars[i+1])) {
+                    		int codepoint = Encodings.toCodePoint(ch, chars[i+1]);
+                    		writeOutCleanChars(chars, i, lastDirtyCharProcessed);
+                    		writer.write("&#");
+                    		writer.write(Integer.toString(codepoint));
+                    		writer.write(';');
+                    		lastDirtyCharProcessed = i+1;
+                    	}
+                    	i++; // skip the low surrogate, too
+                    }
+                	else {
+                        // This is a fallback plan, we get here if the
+                    	// encoding doesn't contain ch and it's not part
+                    	// of a surrogate pair
+                        // The right thing is to write out an entity
                         writeOutCleanChars(chars, i, lastDirtyCharProcessed);
                         writer.write("&#");
                         writer.write(Integer.toString(ch));
@@ -2165,6 +2176,11 @@ abstract public class ToStream extends SerializerBase
                     // not in the normal ASCII range, we also
                     // just write it out
                     writer.write(ch);
+                }
+                else if (Encodings.isHighUTF16Surrogate(ch))
+                {
+                    writeUTF16Surrogate(ch, stringChars, i, len);
+                    i++ ; // process two input characters
                 }
                 else {
                     // This is a fallback plan, we should never get here
