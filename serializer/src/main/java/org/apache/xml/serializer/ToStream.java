@@ -1609,9 +1609,9 @@ abstract public class ToStream extends SerializerBase
                     }
                     else if (m_highUTF16Surrogate != 0 && Encodings.isLowUTF16Surrogate(ch)) {
                         // The complete utf16 byte sequence is now available and may be serialized.
-                        int codepoint = Encodings.toCodePoint(m_highUTF16Surrogate, ch);
+                       	writeOutCleanChars(chars, i, lastDirtyCharProcessed);
                     	if (! m_encodingInfo.isInEncoding(m_highUTF16Surrogate, ch)) {
-                        	writeOutCleanChars(chars, i, lastDirtyCharProcessed);
+                        	int codepoint = Encodings.toCodePoint(m_highUTF16Surrogate, ch);
                         	writer.write("&#");
                         	writer.write(Integer.toString(codepoint));
                         	writer.write(';');
