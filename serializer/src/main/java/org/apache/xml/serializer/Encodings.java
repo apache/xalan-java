@@ -36,6 +36,12 @@ import java.util.StringTokenizer;
 /**
  * Provides information about encodings. Depends on the Java runtime
  * to provides writers for the different encodings.
+ *
+ * NOTE: When a Java or MIME names appears more than once in the
+ * encodings.properties table, priority is given to the first instance
+ * seen. For example, MIME name ISO-8859-1 will be mapped to Java name
+ * ISO8859-1, even though the file includes synonyms such as ISO8859_1
+ * and 8859-1.
  * <p>
  * This class is not a public API. It is only public because it
  * is used outside of this package.
@@ -369,9 +375,9 @@ public final class Encodings extends Object
                         mimeName = st.nextToken();
                         EncodingInfo ei = new EncodingInfo(mimeName, javaName, highChar);
                         encodingInfo_list.add(ei);
-                        _encodingTableKeyMime.put(mimeName.toUpperCase(), ei);
+                        _encodingTableKeyMime.putIfAbsent(mimeName.toUpperCase(), ei);
                         if (first)
-                            _encodingTableKeyJava.put(javaName.toUpperCase(), ei);
+                            _encodingTableKeyJava.putIfAbsent(javaName.toUpperCase(), ei);
                     }
                 }
             }
