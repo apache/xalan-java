@@ -175,6 +175,10 @@ abstract public class ToStream extends SerializerBase
      */
     private boolean m_expandDTDEntities = true;
   
+    /**
+     * Track multibyte character in order to serialize when the whole byte sequence is available.
+     */
+    private char m_highUTF16Surrogate = 0;
 
     /**
      * Default constructor
@@ -1595,23 +1599,40 @@ abstract public class ToStream extends SerializerBase
                         // not in the normal ASCII range, we also
                         // just leave it get added on to the clean characters
                     }
-                    else if (Encodings.isHighUTF16Surrogate(ch) && i < end-1 && Encodings.isLowUTF16Surrogate(chars[i+1])) {
-                    	// So, this is a (valid) surrogate pair
-                    	if (! m_encodingInfo.isInEncoding(ch, chars[i+1])) {
-                    		int codepoint = Encodings.toCodePoint(ch, chars[i+1]);
-                    		writeOutCleanChars(chars, i, lastDirtyCharProcessed);
-                    		writer.write("&#");
-                    		writer.write(Integer.toString(codepoint));
-                    		writer.write(';');
-                    		lastDirtyCharProcessed = i+1;
-                    	}
-                    	i++; // skip the low surrogate, too
+                    else if (Encodings.isHighUTF16Surrogate(ch)) {
+                        // Store for later processing. We may be at the end of a buffer,
+						// and must wait till low surrogate arrives
+						// before we can do anything with this.
+                        writeOutCleanChars(chars, i, lastDirtyCharProcessed);
+                        m_highUTF16Surrogate = ch;
+                        lastDirtyCharProcessed = i;
+                    }
+                    else if (m_highUTF16Surrogate != 0 && Encodings.isLowUTF16Surrogate(ch)) {
+                        // The complete utf16 byte sequence is now available and may be serialized.
+                    	if (! m_encodingInfo.isInEncoding(m_highUTF16Surrogate, ch)) {
+                        	int codepoint = Encodings.toCodePoint(m_highUTF16Surrogate, ch);
+                        	writer.write("&#");
+                        	writer.write(Integer.toString(codepoint));
+                        	writer.write(';');
+						} else {
+                        	writer.write(m_highUTF16Surrogate);
+                        	writer.write(ch);
+						}
+                        lastDirtyCharProcessed = i;
+                        m_highUTF16Surrogate = 0;
                     }
                 	else {
                         // This is a fallback plan, we get here if the
                     	// encoding doesn't contain ch and it's not part
                     	// of a surrogate pair
                         // The right thing is to write out an entity
+						if(m_highUTF16Surrogate != 0) {
+                            writer.write("&#");
+                            writer.write(Integer.toString(m_highUTF16Surrogate));
+                            writer.write(';');
+                            m_highUTF16Surrogate = 0;
+                        }
+
                         writeOutCleanChars(chars, i, lastDirtyCharProcessed);
                         writer.write("&#");
                         writer.write(Integer.toString(ch));
