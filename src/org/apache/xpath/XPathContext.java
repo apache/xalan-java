@@ -141,7 +141,8 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   private Map<QName, XObject> xpathVarMap = new HashMap<QName, XObject>();
   
   /**
-   * The default collation uri.
+   * The default collation uri (the default collation for XalanJ's XSL3 support 
+   * is, "Unicode Codepoint Collation").
    */
   private String m_default_collation = XPathCollationSupport.UNICODE_CODEPOINT_COLLATION_URI;
   

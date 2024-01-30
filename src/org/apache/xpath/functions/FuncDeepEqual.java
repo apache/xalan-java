@@ -56,9 +56,14 @@ import xml.xpath31.processor.types.XSString;
  */
 public class FuncDeepEqual extends FunctionMultiArgs {
 
-  private static final long serialVersionUID = -7233896041672168880L;
+  private static final long serialVersionUID = -7233896041672168880L;    
+  
+  private static final String JAXP_XML_DOCUMENT_BUILDER_FACTORY_NAME = "javax.xml.parsers.DocumentBuilderFactory";
+  
+  private static final String JAXP_XML_DOCUMENT_BUILDER_FACTORY_IMPL = "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl";
   
   private XPathCollationSupport fXPathCollationSupport = null;
+  
 
   /**
    * Execute the function. The function must return a valid object.
@@ -99,6 +104,9 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		     XObject collationXObj = arg2.execute(xctxt);
 		     collationUri = XslTransformEvaluationHelper.getStrVal(collationXObj); 			 			 
 		  }
+		  else {
+			 collationUri = xctxt.getDefaultCollation(); 
+		  }
 		  
 		  ResultSequence resultSeq0 = XslTransformEvaluationHelper.getResultSequenceFromXObject(arg0Val, xctxt);
 		  
@@ -113,81 +121,55 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 					 XObject item1 = resultSeq0.item(idx1);
 					 XObject item2 = resultSeq1.item(idx2);
 					 
-					 if ((item1 instanceof XSAnyAtomicType) && (item2 instanceof XSAnyAtomicType)) {
-						if (collationUri != null) {						
-							if ((item1 instanceof XSString) && (item2 instanceof XSString)) {
-							   String str1 = ((((XSString)item1))).stringValue();
-							   String str2 = ((((XSString)item2))).stringValue();
-							   int strComparisonResult = fXPathCollationSupport.compareStringsUsingCollation(str1, 
-                                                                                                             str2, collationUri);
-                               if (strComparisonResult != 0) {
-                                  isDeepEqual = false;
-                                  break;
-                               }
-							}
-						}
-						else if (!item1.vcEquals(item2, null, true)) {
-						   isDeepEqual = false;
-		                   break;
-						}
-					 }
+					 if ((item1 instanceof XSString) && (item2 instanceof XSString)) {
+						 String str1 = ((((XSString)item1))).stringValue();
+						 String str2 = ((((XSString)item2))).stringValue();
+						 int strComparisonResult = fXPathCollationSupport.compareStringsUsingCollation(str1, 
+                                                                                                       str2, collationUri);
+                         if (strComparisonResult != 0) {
+                            isDeepEqual = false;
+                            break;
+                         }
+				     }
 					 else if ((item1 instanceof XSString) && (item2 instanceof XString)) {
 						String str1 = ((((XSString)item1))).stringValue();
 						String str2 = (((XString)item2)).str();
-						if (collationUri != null) {
-							int strComparisonResult = fXPathCollationSupport.compareStringsUsingCollation(str1, 
-                                                                                                          str2, collationUri);
-                            if (strComparisonResult != 0) {
-                               isDeepEqual = false;
-                               break;
-                            }
-						}
-						else if (!str1.equals(str2)) {
-						    isDeepEqual = false;
-                            break;
-						}
-					 }
-                     else if ((item1 instanceof XString) && (item2 instanceof XSString)) {
+					    int strComparisonResult = fXPathCollationSupport.compareStringsUsingCollation(str1, 
+                                                                                                      str2, collationUri);
+                        if (strComparisonResult != 0) {
+                           isDeepEqual = false;
+                           break;
+                        }
+					}
+                    else if ((item1 instanceof XString) && (item2 instanceof XSString)) {
                     	String str1 = (((XString)item1)).str();
                     	String str2 = ((((XSString)item2))).stringValue();
-                    	if (collationUri != null) {
-							int strComparisonResult = fXPathCollationSupport.compareStringsUsingCollation(str1, 
-                                                                                                          str2, collationUri);
-                            if (strComparisonResult != 0) {
-                               isDeepEqual = false;
-                               break;
-                            }
-						}
-						else if (!str1.equals(str2)) {
-						    isDeepEqual = false;
-                            break;
-						}
-					 }
-                     else if ((item1 instanceof XString) && (item2 instanceof XString)) {
+					    int strComparisonResult = fXPathCollationSupport.compareStringsUsingCollation(str1, 
+                                                                                                      str2, collationUri);
+                        if (strComparisonResult != 0) {
+                           isDeepEqual = false;
+                           break;
+                        }
+					}
+                    else if ((item1 instanceof XString) && (item2 instanceof XString)) {
                     	String str1 = (((XString)item1)).str();
                     	String str2 = (((XString)item2)).str();
-                    	if (collationUri != null) {
-							int strComparisonResult = fXPathCollationSupport.compareStringsUsingCollation(str1, 
-                                                                                                          str2, collationUri);
-                            if (strComparisonResult != 0) {
-                               isDeepEqual = false;
-                               break;
-                            }
-						}
-						else if (!str1.equals(str2)) {
-						    isDeepEqual = false;
-                            break;
-						}
-					 }
-					 else if ((item1 instanceof XSAnyAtomicType) && (item2 instanceof XNodeSet)) {
+					    int strComparisonResult = fXPathCollationSupport.compareStringsUsingCollation(str1, 
+                                                                                                      str2, collationUri);
+                        if (strComparisonResult != 0) {
+                           isDeepEqual = false;
+                           break;
+                        }
+					}
+					else if ((item1 instanceof XSAnyAtomicType) && (item2 instanceof XNodeSet)) {
 						 isDeepEqual = false;
 		                 break; 
-					 }
-	                 else if ((item1 instanceof XNodeSet) && (item2 instanceof XSAnyAtomicType)) {
+					}
+	                else if ((item1 instanceof XNodeSet) && (item2 instanceof XSAnyAtomicType)) {
 	                	 isDeepEqual = false;
 	                 	 break; 
-					 }
-	                 else if ((item1 instanceof XNodeSet) && (item2 instanceof XNodeSet)) {
+					}
+	                else if ((item1 instanceof XNodeSet) && (item2 instanceof XNodeSet)) {
 	                	 item1 = ((XNodeSet)item1).getFresh();
 	                	 item2 = ((XNodeSet)item2).getFresh();
 	                	 DTMIterator dtmIter1 = ((XNodeSet)item1).iterRaw();
@@ -202,12 +184,12 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 			     	        isDeepEqual = false;
 		                 	break; 
 			     	     }	 
-					 }
-	                 else {
-	                	isDeepEqual = false;
-	                	break;
-	                 }
-				  }			 			 
+					}
+	                else if (!item1.vcEquals(item2, null, true)) {
+						 isDeepEqual = false;
+		                 break;
+					}
+				 }			 			 
 			  }
 				 
 			  if (!isDeepEqual) {
@@ -264,14 +246,9 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		if (isTwoDomNodesEqual) {
 		   String node1StrVal = node1.getNodeValue();
 		   String node2StrVal = node2.getNodeValue();
-		   if (collationUri != null) {
-			  int strComparisonResult = fXPathCollationSupport.compareStringsUsingCollation(node1StrVal, 
-					                                                                        node2StrVal, collationUri);
-			  if (strComparisonResult != 0) {
-				 isTwoDomNodesEqual = false;  
-			  }
-		   }
-		   else if (!node1StrVal.equals(node2StrVal)) {
+		   int strComparisonResult = fXPathCollationSupport.compareStringsUsingCollation(node1StrVal, 
+					                                                                     node2StrVal, collationUri);
+		   if (strComparisonResult != 0) {
 			  isTwoDomNodesEqual = false;  
 		   }
 		}		
@@ -280,30 +257,20 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 			                                       (node2.getNodeType() == Node.TEXT_NODE)) {
 		String node1StrVal = node1.getNodeValue();
 		String node2StrVal = node2.getNodeValue();
-		if (collationUri != null) {
-		   int strComparisonResult = fXPathCollationSupport.compareStringsUsingCollation(node1StrVal, 
-					                                                                     node2StrVal, collationUri);
-		   if (strComparisonResult != 0) {
-			  isTwoDomNodesEqual = false;  
-		   }
-		}
-		else if (!node1StrVal.equals(node2StrVal)) {
-		   isTwoDomNodesEqual = false;
+		int strComparisonResult = fXPathCollationSupport.compareStringsUsingCollation(node1StrVal, 
+					                                                                  node2StrVal, collationUri);
+		if (strComparisonResult != 0) {
+		   isTwoDomNodesEqual = false;  
 		}
 	 }
 	 else if ((node1.getNodeType() == Node.COMMENT_NODE) && 
 			                                          (node2.getNodeType() == Node.COMMENT_NODE)) {
 		String node1StrVal = node1.getNodeValue();
 		String node2StrVal = node2.getNodeValue();
-		if (collationUri != null) {
-		   int strComparisonResult = fXPathCollationSupport.compareStringsUsingCollation(node1StrVal, 
-						                                                                 node2StrVal, collationUri);
-		   if (strComparisonResult != 0) {
-		      isTwoDomNodesEqual = false;  
-		   }
-		}
-		else if (!node1StrVal.equals(node2StrVal)) {
-		   isTwoDomNodesEqual = false;
+		int strComparisonResult = fXPathCollationSupport.compareStringsUsingCollation(node1StrVal, 
+						                                                              node2StrVal, collationUri);
+		if (strComparisonResult != 0) {
+		   isTwoDomNodesEqual = false;  
 		}
 	 }
 	 
@@ -319,8 +286,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 	 
 	 // Using XercesJ DOM parser api, to construct an XML document object 
 	 // from an XML string value.
-	 System.setProperty("javax.xml.parsers.DocumentBuilderFactory", 
-			                                                  "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+	 System.setProperty(JAXP_XML_DOCUMENT_BUILDER_FACTORY_NAME, JAXP_XML_DOCUMENT_BUILDER_FACTORY_IMPL);
 	 
 	 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 	 dbf.setNamespaceAware(true);
@@ -346,7 +312,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
   }
   
   /*
-   * Serialize an XML DOM element node, to string value.
+   * Serialize an XML DOM element node, to XML string value.
    */
   private String serializeXmlDomElementNode(Node node) throws Exception {
 	 String resultStr = null;
