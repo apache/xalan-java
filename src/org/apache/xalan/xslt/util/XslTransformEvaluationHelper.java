@@ -19,12 +19,15 @@ package org.apache.xalan.xslt.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
+import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.ForExpr;
 import org.apache.xpath.composite.SimpleSequenceConstructor;
@@ -39,6 +42,8 @@ import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.Variable;
 
 import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
@@ -112,14 +117,38 @@ public class XslTransformEvaluationHelper {
     /**
      * Add an xdm input item to result sequence, if that already doesn't exist within
      * the result sequence. 
+     * @throws TransformerException 
      */
     public static void addItemToResultSequence(ResultSequence resultSeq, XObject inpItem, 
-                                                                       boolean cardinalityCheck) {
+                                                                     boolean cardinalityCheck) throws TransformerException {
         if (cardinalityCheck) {
             if (resultSeq.size() == 0) {                     
                 resultSeq.add(inpItem);    
             }
-            else if (!contains(resultSeq, inpItem)) {
+            else if (!contains(resultSeq, inpItem, null, null)) {
+                resultSeq.add(inpItem);
+            }   
+        }
+        else {
+            resultSeq.add(inpItem);   
+        }
+    }
+    
+    /**
+     * Add an xdm input item to result sequence, if that already doesn't exist within
+     * the result sequence. 
+     * @throws TransformerException 
+     */
+    public static void addItemToResultSequence(ResultSequence resultSeq, XObject inpItem, 
+                                                                     boolean cardinalityCheck,
+                                                                     String collationUri,
+                                                                     XPathCollationSupport xpathCollationSupport) 
+                                                                    		                  throws TransformerException {
+        if (cardinalityCheck) {
+            if (resultSeq.size() == 0) {                     
+                resultSeq.add(inpItem);    
+            }
+            else if (!contains(resultSeq, inpItem, collationUri, xpathCollationSupport)) {
                 resultSeq.add(inpItem);
             }   
         }
@@ -334,7 +363,9 @@ public class XslTransformEvaluationHelper {
     /**
      * Check whether a 'ResultSequence' object, contains a specific xdm item.
      */
-    private static boolean contains(ResultSequence resultSeq, XObject srch) {
+    private static boolean contains(ResultSequence resultSeq, XObject srch, String collationUri,
+    		                                                                XPathCollationSupport xpathCollationSupport) 
+    		                                                                		     throws TransformerException {
        
        boolean isSeqContains = false;
        
@@ -342,47 +373,95 @@ public class XslTransformEvaluationHelper {
           XObject existingItemWithinResultSeq = resultSeq.item(idx);
           if ((existingItemWithinResultSeq instanceof XSUntyped) && 
                                                             (srch instanceof XSUntyped)) {
-             if (((XSUntyped)existingItemWithinResultSeq).equals((XSUntyped)srch)) {
+             if (((XSUntyped)existingItemWithinResultSeq).equals((XSUntyped)srch, collationUri, xpathCollationSupport)) {
                  isSeqContains = true;
                  break;    
              }
           }
           else if ((existingItemWithinResultSeq instanceof XSUntypedAtomic) && 
                                                                   (srch instanceof XSUntypedAtomic)) {
-              if (((XSUntypedAtomic)existingItemWithinResultSeq).equals((XSUntypedAtomic)srch)) {
+              if (((XSUntypedAtomic)existingItemWithinResultSeq).equals((XSUntypedAtomic)srch, collationUri, xpathCollationSupport)) {
                  isSeqContains = true;
                  break;    
               } 
           }
           else if ((existingItemWithinResultSeq instanceof XSUntyped) && 
-                                                                (srch instanceof XSUntypedAtomic)) {
-              if (((XSUntyped)existingItemWithinResultSeq).equals((XSUntypedAtomic)srch)) {
+                                                                  (srch instanceof XSUntypedAtomic)) {
+              if (((XSUntyped)existingItemWithinResultSeq).equals((XSUntypedAtomic)srch, collationUri, xpathCollationSupport)) {
                  isSeqContains = true;
                  break;    
               } 
           }
           else if ((existingItemWithinResultSeq instanceof XSUntypedAtomic) && 
-                                                                (srch instanceof XSUntyped)) {
-              if (((XSUntypedAtomic)existingItemWithinResultSeq).equals((XSUntyped)srch)) {
+                                                                  (srch instanceof XSUntyped)) {
+              if (((XSUntypedAtomic)existingItemWithinResultSeq).equals((XSUntyped)srch, collationUri, xpathCollationSupport)) {
                  isSeqContains = true;
                  break;    
               }
           }
-          else if ((existingItemWithinResultSeq instanceof XSAnyType) && 
+          else if ((existingItemWithinResultSeq instanceof XSNumericType) && (srch instanceof XSNumericType)) {
+        	  // We ignore the collationUri, for comparing numeric values 
+        	  String lStr = ((XSNumericType)existingItemWithinResultSeq).stringValue();
+         	  XSDouble lDouble = new XSDouble(lStr);
+         	  
+         	  String rStr = ((XSNumericType)srch).stringValue();
+        	  XSDouble rDouble = new XSDouble(rStr);
+        	  
+        	  if (lDouble.equals(rDouble)) {
+        		 isSeqContains = true;
+                 break;  
+        	  }
+          }
+          else if ((existingItemWithinResultSeq instanceof XSNumericType) && (srch instanceof XNumber)) {
+        	  // We ignore the collationUri, for comparing numeric values
+        	  String lStr = ((XSNumericType)existingItemWithinResultSeq).stringValue();
+         	  XSDouble lDouble = new XSDouble(lStr);
+         	  
+         	  double rdbl = ((XNumber)srch).num();
+         	  XSDouble rDouble = new XSDouble(rdbl);
+         	  
+         	 if (lDouble.equals(rDouble)) {
+        		isSeqContains = true;
+                break;  
+        	 }
+          }
+          else if ((existingItemWithinResultSeq instanceof XNumber) && (srch instanceof XSNumericType)) {
+        	 // We ignore the collationUri, for comparing numeric values
+        	 double ldbl = ((XNumber)existingItemWithinResultSeq).num();
+          	 XSDouble lDouble = new XSDouble(ldbl);
+          	  
+          	 String rStr = ((XSNumericType)srch).stringValue();
+         	 XSDouble rDouble = new XSDouble(rStr);
+          	  
+         	 if (lDouble.equals(rDouble)) {
+          		isSeqContains = true;
+                break;  
+          	 } 
+         }
+         else if ((existingItemWithinResultSeq instanceof XNumber) && (srch instanceof XNumber)) {
+        	 // We ignore the collationUri, for comparing numeric values
+        	 double num1 = ((XNumber)existingItemWithinResultSeq).num();
+        	 double num2 = ((XNumber)srch).num();
+        	 if (num1 == num2) {
+        		isSeqContains = true;
+        		break; 
+        	 }
+         }
+         else if ((existingItemWithinResultSeq instanceof XSAnyType) && 
                                                                  (srch instanceof XSAnyType)) {
-              if (((XSAnyType)existingItemWithinResultSeq).equals((XSAnyType)srch)) {
-                  isSeqContains = true;
-                  break;    
-              }   
-          }
-          else if (existingItemWithinResultSeq.equals(srch)) {
-              isSeqContains = true;
-              break;    
-          }
-       }
+             if (((XSAnyType)existingItemWithinResultSeq).equals((XSAnyType)srch, collationUri, xpathCollationSupport)) {
+                isSeqContains = true;
+                break;    
+             }   
+         }
+         else if (existingItemWithinResultSeq.equals(srch, collationUri, xpathCollationSupport)) {
+             isSeqContains = true;
+             break;    
+         }
+      }
        
-       return isSeqContains;
+      return isSeqContains;
        
-    }
+   }
 
 }
