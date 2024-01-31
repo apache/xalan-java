@@ -19,46 +19,32 @@ package org.apache.xpath.functions;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
+import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.res.XPATHErrorResources;
 
 import xml.xpath31.processor.types.XSAnyType;
 import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * Execute the distinct-values() function.
+ * Implementation of an XPath 3.1 fn:distinct-values function.
  * 
- * XPath 3.1 F&O spec, defines the function fn:distinct-values as follows,
- *  
- * This function returns the values that appear in a sequence, with 
- * duplicates eliminated.
- * 
- * Function signatures :
- *      1) fn:distinct-values($arg as xs:anyAtomicType*) as xs:anyAtomicType*
-
-        2) fn:distinct-values($arg as xs:anyAtomicType*, $collation as xs:string) 
-                                                                            as xs:anyAtomicType*
-                                                                                                                                                        
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncDistinctValues extends Function2Args {
+public class FuncDistinctValues extends FunctionMultiArgs {
     
    private static final long serialVersionUID = -1637800188441824456L;
-    
-   private static final String FUNCTION_NAME = "distinct-values()"; 
 
   /**
    * Execute the function. The function must return a valid object.
@@ -76,7 +62,27 @@ public class FuncDistinctValues extends Function2Args {
         ResultSequence resultSeq = new ResultSequence();
         
         Expression arg0 = getArg0();        
-        Expression arg1 = getArg1();   // the second argument of this function, is unused for now
+        Expression arg1 = getArg1();
+        
+  	    if (arg0 == null) {
+ 		   throw new javax.xml.transform.TransformerException("FOAP0001 : The number of arguments specified while "
+ 		 		                                                     + "calling distinct-values() function is wrong. Expected "
+ 		 		                                                     + "number of arguments for distinct-values() function is one "
+ 		 		                                                     + "or two.", srcLocator);  
+ 	    }
+  	    
+  	    XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
+		  
+	    String collationUri = null;
+	      
+		if (arg1 != null) {
+		   // A collation uri was, explicitly provided during the function call fn:distinct-values
+		   XObject collationXObj = arg1.execute(xctxt);
+		   collationUri = XslTransformEvaluationHelper.getStrVal(collationXObj); 			 			 
+		}
+		else {
+		   collationUri = xctxt.getDefaultCollation(); 
+		}
         
         XObject arg0Obj = arg0.execute(xctxt);
         
@@ -97,17 +103,17 @@ public class FuncDistinctValues extends Function2Args {
               if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
                  XSUntyped xsUntyped = new XSUntyped(nodeStrValue);                 
                  XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
-                                                                           xsUntyped, true);
+                                                                      xsUntyped, true, collationUri, xpathCollationSupport);
               }
               else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
                  XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
                  XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
-                                                                           xsUntypedAtomic, true);
+                                                                      xsUntypedAtomic, true, collationUri, xpathCollationSupport);
               }
               else {
                  XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
                  XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
-                                                                           xsUntypedAtomic, true);
+                                                                      xsUntypedAtomic, true, collationUri, xpathCollationSupport);
               }
            }
         }
@@ -118,55 +124,30 @@ public class FuncDistinctValues extends Function2Args {
               if (xObj instanceof XSAnyType) {
                  XSAnyType xsAnyType = (XSAnyType)xObj;
                  XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
-                                                                             xsAnyType, true);
+                                                                      xsAnyType, true, collationUri, xpathCollationSupport);
               }
               else {
                   XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
-                                                                             xObj, true);
+                                                                       xObj, true, collationUri, xpathCollationSupport);
               }
            }
         }
         else {
-           // we're assuming here that, an input value is an 
+           // We're assuming here that, an input value is an 
            // xdm singleton item.            
            if (arg0Obj instanceof XSAnyType) {
               XSAnyType xsAnyType = (XSAnyType)arg0Obj;
               XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
-                                                                          xsAnyType, false);
+                                                                   xsAnyType, false, collationUri, xpathCollationSupport);
            }
            else {
               String seqItemStrValue = arg0Obj.str();
-              XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, 
-                                                                        new XString(seqItemStrValue), false);
+              XslTransformEvaluationHelper.addItemToResultSequence(resultSeq, new XString(seqItemStrValue), 
+                                                                   false, collationUri, xpathCollationSupport);
            }
         }
             
         return resultSeq;
-  }
-
-/**
-   * Check that the number of arguments passed to this function is correct.
-   *
-   * @param argNum The number of arguments that is being passed to the function.
-   *
-   * @throws WrongNumberArgsException
-   */
-  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
-  {
-     if (!(argNum == 1 || argNum == 2)) {
-        reportWrongNumberArgs();
-     }
-  }
-
-  /**
-   * Constructs and throws a WrongNumberArgException with the appropriate
-   * message for this function object.
-   *
-   * @throws WrongNumberArgsException
-   */
-  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
-      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
-                                              XPATHErrorResources.ER_ONE_OR_TWO, null)); //"1 or 2"
   }
 
 }

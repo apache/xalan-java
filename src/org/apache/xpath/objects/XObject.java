@@ -22,6 +22,8 @@ package org.apache.xpath.objects;
 
 import java.io.Serializable;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
@@ -1008,57 +1010,108 @@ public class XObject extends Expression implements Serializable, Cloneable
    */
   public boolean equals(XObject obj2)
   {
-    if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
-       return ((XSDecimal)this).equals((XSDecimal)obj2);        
-    }
-    else if ((this instanceof XSFloat) && (obj2 instanceof XSFloat)) {
-       return ((XSFloat)this).equals((XSFloat)obj2);        
-    }
-    else if ((this instanceof XSDouble) && (obj2 instanceof XSDouble)) {
-       return ((XSDouble)this).equals((XSDouble)obj2);        
-    }
-    else if ((this instanceof XSBoolean) && (obj2 instanceof XSBoolean)) {
-       return ((XSBoolean)this).equals((XSBoolean)obj2);    
-    }
-    else if ((this instanceof XSInteger) && (obj2 instanceof XSInteger)) {
-       return ((XSInteger)this).equals((XSInteger)obj2);    
-    }
-    else if ((this instanceof XSLong) && (obj2 instanceof XSLong)) {
-       return ((XSLong)this).equals((XSLong)obj2);    
-    }
-    else if ((this instanceof XSInt) && (obj2 instanceof XSInt)) {
-       return ((XSInt)this).equals((XSInt)obj2);    
-    }
-    else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
-       return ((XSDate)this).equals((XSDate)obj2);    
-    }
-    else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
-        return ((XSDateTime)this).equals((XSDateTime)obj2);    
-    }
-    else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
-        return ((XSTime)this).equals((XSTime)obj2);    
-    }
-    else if ((this instanceof XSInteger) && (obj2 instanceof XNumber)) {
-       double lDouble = ((XSInteger)this).doubleValue();
-       double rDouble = ((XNumber)obj2).num();
-       return (lDouble == rDouble); 
-    }
-    else if ((this instanceof XNumber) && (obj2 instanceof XSInteger)) {
-       double lDouble = ((XNumber)this).num();
-       double rDouble = ((XSInteger)obj2).doubleValue();
-       return (lDouble == rDouble);      
-    }
-        
-    if (obj2.getType() == XObject.CLASS_NODESET) {
-       return obj2.equals(this);
-    }
-
-    if (m_obj != null) {
-       return m_obj.equals(obj2.m_obj);
-    }
-    else {
-       return obj2.m_obj == null;
-    }    
+	    if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
+	       return ((XSDecimal)this).equals((XSDecimal)obj2);        
+	    }
+	    else if ((this instanceof XSFloat) && (obj2 instanceof XSFloat)) {
+	       return ((XSFloat)this).equals((XSFloat)obj2);        
+	    }
+	    else if ((this instanceof XSDouble) && (obj2 instanceof XSDouble)) {
+	       return ((XSDouble)this).equals((XSDouble)obj2);        
+	    }
+	    else if ((this instanceof XSBoolean) && (obj2 instanceof XSBoolean)) {
+	       return ((XSBoolean)this).equals((XSBoolean)obj2);    
+	    }
+	    else if ((this instanceof XSInteger) && (obj2 instanceof XSInteger)) {
+	       return ((XSInteger)this).equals((XSInteger)obj2);    
+	    }
+	    else if ((this instanceof XSLong) && (obj2 instanceof XSLong)) {
+	       return ((XSLong)this).equals((XSLong)obj2);    
+	    }
+	    else if ((this instanceof XSInt) && (obj2 instanceof XSInt)) {
+	       return ((XSInt)this).equals((XSInt)obj2);    
+	    }
+	    else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
+	       return ((XSDate)this).equals((XSDate)obj2);    
+	    }
+	    else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
+	        return ((XSDateTime)this).equals((XSDateTime)obj2);    
+	    }
+	    else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
+	        return ((XSTime)this).equals((XSTime)obj2);    
+	    }
+	    else if ((this instanceof XSInteger) && (obj2 instanceof XNumber)) {
+	       double lDouble = ((XSInteger)this).doubleValue();
+	       double rDouble = ((XNumber)obj2).num();
+	       return (lDouble == rDouble); 
+	    }
+	    else if ((this instanceof XNumber) && (obj2 instanceof XSInteger)) {
+	       double lDouble = ((XNumber)this).num();
+	       double rDouble = ((XSInteger)obj2).doubleValue();
+	       return (lDouble == rDouble);      
+	    }
+	        
+	    if (obj2.getType() == XObject.CLASS_NODESET) {
+	       return obj2.equals(this);
+	    }
+	
+	    if (m_obj != null) {
+	       return m_obj.equals(obj2.m_obj);
+	    }
+	    else {
+	       return obj2.m_obj == null;
+	    }    
+  }
+  
+  /**
+   * Perform equality check for values between two XObject instances, considering
+   * string comparison collation.  
+   */
+  public boolean equals(XObject obj2, String collationUri, 
+		                                               XPathCollationSupport xpathCollationSupport) throws TransformerException {
+	  boolean isEquals = false;
+	  
+	  if ((this instanceof XSString) && (obj2 instanceof XSString)) {
+		 String lStr = ((XSString)this).stringValue();
+		 String rStr = ((XSString)obj2).stringValue();
+		 
+		 int strComparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
+         if (strComparisonResult == 0) {
+            isEquals = true; 
+         }
+	  }
+	  else if ((this instanceof XSString) && (obj2 instanceof XString)) {
+		 String lStr = ((XSString)this).stringValue();
+		 String rStr = ((XString)obj2).str();
+		 
+		 int strComparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
+         if (strComparisonResult == 0) {
+            isEquals = true; 
+         }
+	  }
+      else if ((this instanceof XString) && (obj2 instanceof XSString)) {
+    	 String lStr = ((XString)this).str();
+ 		 String rStr = ((XSString)obj2).stringValue();
+ 		 
+ 		 int strComparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
+         if (strComparisonResult == 0) {
+            isEquals = true; 
+         } 
+	  }
+      else if ((this instanceof XString) && (obj2 instanceof XString)) {
+    	 String lStr = ((XString)this).str();
+  		 String rStr = ((XString)obj2).str();
+  		 
+  		 int strComparisonResult = xpathCollationSupport.compareStringsUsingCollation(lStr, rStr, collationUri);
+         if (strComparisonResult == 0) {
+            isEquals = true; 
+         }  
+	  }
+      else {
+    	 isEquals = this.equals(obj2);
+      }
+	  
+	  return isEquals; 
   }
   
   /**
