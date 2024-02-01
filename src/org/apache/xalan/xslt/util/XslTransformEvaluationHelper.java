@@ -286,49 +286,57 @@ public class XslTransformEvaluationHelper {
      */
     public static XNumber getCountOfSequenceItems(Expression expr, XPathContext xctxt) throws 
                                                                                   javax.xml.transform.TransformerException {
-        int count = 0;
+        int xdmSequenceSize = 0;
         
         if (expr instanceof Function) {
             XObject evalResult = ((Function)expr).execute(xctxt);
             if (evalResult instanceof XNodeSet) {
-                count = ((XNodeSet)evalResult).getLength();   
+                xdmSequenceSize = ((XNodeSet)evalResult).getLength();   
             }
             else if (evalResult instanceof ResultSequence) {
-               count = ((ResultSequence)evalResult).size();
+               xdmSequenceSize = ((ResultSequence)evalResult).size();
+            }
+            else {
+               // here evalResult is probably of types XSAnyAtomicType, XString, XNumber etc
+          	   xdmSequenceSize = 1; 
             }
         }
         else if (expr instanceof Variable) {
            XObject evalResult = ((Variable)expr).execute(xctxt);
            if (evalResult instanceof XNodeSet) {
-               count = ((XNodeSet)evalResult).getLength();   
+               xdmSequenceSize = ((XNodeSet)evalResult).getLength();   
            }
            else if (evalResult instanceof ResultSequence) {
-              count = ((ResultSequence)evalResult).size();
+              xdmSequenceSize = ((ResultSequence)evalResult).size();
+           }
+           else {
+        	  // here evalResult is probably of types XSAnyAtomicType, XString, XNumber etc
+        	  xdmSequenceSize = 1; 
            }
         }
         else if (expr instanceof SimpleSequenceConstructor) {
            SimpleSequenceConstructor simpleSeqConstructor = (SimpleSequenceConstructor)expr;
            ResultSequence seqCtrEvalResult = (ResultSequence)(simpleSeqConstructor.
                                                                                 execute(xctxt));
-           count = seqCtrEvalResult.size();
+           xdmSequenceSize = seqCtrEvalResult.size();
         }
         else if (expr instanceof Expression) {
             if (expr instanceof Range) {
                 ResultSequence resultSeq = (ResultSequence)(((Range)expr).execute(xctxt));
-                count = resultSeq.size();
+                xdmSequenceSize = resultSeq.size();
             }
             else if (expr instanceof ForExpr) {
                 ResultSequence resultSeq = (ResultSequence)(((ForExpr)expr).execute(xctxt));
-                count = resultSeq.size();   
+                xdmSequenceSize = resultSeq.size();   
             }
             else {
                 DTMIterator nl = expr.asIterator(xctxt, xctxt.getCurrentNode());
-                count = nl.getLength(); 
+                xdmSequenceSize = nl.getLength(); 
                 nl.detach();
             }
         }
     
-        return new XNumber((double)count);
+        return new XNumber((double)xdmSequenceSize);
     }
     
     /**
