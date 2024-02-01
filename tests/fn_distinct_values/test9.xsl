@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                version="3.0">
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                exclude-result-prefixes="xs"
+                version="3.0"> 
                 
    <!-- Author: mukulg@apache.org -->
    
    <!-- use with test1_f.xml -->
    
    <!-- Test for the XPath 3.1 fn:distinct-values() function,
-        when providing collation argument.
-   -->                               
+        when providing collation argument. This stylesheet example,
+        also does an xdm type checking via xsl:variable's "as" 
+        attribute. 
+   -->                              
 
     <xsl:output method="xml" indent="yes"/>
 
     <xsl:template match="/info">
-       <xsl:variable name="distValues1" select="distinct-values(a)"/>
-       <xsl:variable name="distValues2" select="distinct-values(a, 'http://www.w3.org/2013/collation/UCA?lang=de;strength=primary')"/>
+       <xsl:variable name="distValues1" select="distinct-values(a)" as="xs:string*"/>
+       <xsl:variable name="distValues2" select="distinct-values(a, 
+                                             'http://www.w3.org/2013/collation/UCA?lang=de;strength=primary')" as="xs:string*"/>                                      
        <info>
           <result1 num="{count($distValues1)}">
              <xsl:for-each select="$distValues1">

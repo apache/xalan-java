@@ -48,6 +48,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Variable;
 
+import xml.xpath31.processor.types.XSAnyAtomicType;
+
 /**
  * Implementation of the XSLT 3.0 xsl:for-each instruction.
  * 
@@ -332,9 +334,17 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         }                
     }    
     else if (m_selectExpression instanceof Variable) {
-        XObject evalResult = ((Variable)m_selectExpression).execute(xctxt);
+        XObject evalResult = ((Variable)m_selectExpression).execute(xctxt);                
         
-        if (evalResult instanceof ResultSequence) {
+        if (evalResult instanceof XSAnyAtomicType) {
+        	ResultSequence resultSequence = new ResultSequence();
+        	resultSequence.add(evalResult);
+        	
+        	processResultSequence(transformer, xctxt, resultSequence);
+        	
+            return;
+        }        
+        else if (evalResult instanceof ResultSequence) {
             XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                                   (DTMManager)xctxt);             
             if (nodeSet == null) {
