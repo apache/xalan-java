@@ -291,6 +291,7 @@ public class ToTextStream extends ToStream
                 if (codePoint != 0) {
                     // I think we can just emit the message,
                     // not crash and burn.
+		    // Git commit ffb244aaa0f88368a0bf483bddc7e74d8a4d83bf?
                     final String integralValue = Integer.toString(codePoint);
                     final String msg = Utils.messages.createMessage(
                         MsgKey.ER_ILLEGAL_CHARACTER,
@@ -306,7 +307,7 @@ public class ToTextStream extends ToStream
             } else {
                 // Don't know what to do with this char, it is
                 // not in the encoding and not a high char in
-                // a surrogate pair, so write out as an entity ref
+                // a surrogate pair, so write out as numeric char ref
                 if (encoding != null) {
                     /* The output encoding is known, 
                      * so somthing is wrong.

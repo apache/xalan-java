@@ -47,8 +47,10 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 
 /**
- * This abstract class is a base class for other stream 
- * serializers (xml, html, text ...) that write output to a stream.
+ * This abstract class is a base class for other stream serializers
+ * (xml, html, text ...) that write output to a stream.  Note that
+ * this is stateful, NOT designed to be multithreaded; each thread and
+ * each output stream should have its own instance.
  * 
  * @xsl.usage internal
  */
@@ -60,7 +62,6 @@ abstract public class ToStream extends SerializerBase
 
     /** Stack to keep track of disabling output escaping. */
     protected BoolStack m_disableOutputEscapingStates = new BoolStack();
-
 
     /**
      * The encoding information associated with this serializer.
@@ -174,7 +175,40 @@ abstract public class ToStream extends SerializerBase
      * which is exiting older behavior.
      */
     private boolean m_expandDTDEntities = true;
-  
+
+    /**
+     * Traditionally, we handled Surrogate Character Pairs by looking
+     * ahead in the input buffer. This could fail if, eg, the pair crossed
+     * between one call to characters() and the next, which can happen
+     * since SAX providers are free to manage buffering as they see fit
+     * and what the XML Data Model considers a single block of text
+     * may be delivered in multiple calls.
+     *
+     * The more robust solution is to maintain state, setting the High
+     * UTF16 Surrogate character aside and processing it when the Low
+     * Surrogate arrives.
+     *
+     * However, handling this robustly this requires recognizing, and
+     * handling, cases where a Surrogate appears but is not adjacent to
+     * the other half of the pair. That's illegal UTF16, but as utility
+     * code we can't guarantee some caller won't attempt it.
+     *
+     * Historically, we have handled this one of two ways, either
+     * generating an IOException with ER_INVALID_UTF18_SURROGATE or
+     * outputting the bad surrogate as a Numeric Character Reference
+     * (and possibly issuing a message to stderr, as in ToTextStream).
+     * The inconsistency annoys me a bit.  Only SGML-based formats
+     * support NCRs, and XML explicitly says that even an NCR may not
+     * represent an isolated surrogate.  Hence, for correctness, we AT
+     * LEAST want the stderr message, and arguably should be throwing
+     * the exception.  However, if we change any of this behavior we
+     * want to be able to revert to the prior response, in case some
+     * user is actually expecting to see that.
+     *
+     * Note that since we process char arrays, the "pending high surrogate"
+     * buffer is a char, with 0 used to indicate "empty buffer".
+     */
+    private char m_pendingUTF16HighSurrogate = 0;
 
     /**
      * Default constructor
@@ -959,7 +993,7 @@ abstract public class ToStream extends SerializerBase
     /**
      * Once a surrogate has been detected, write out the pair of
      * characters if it is in the encoding, or if there is no
-     * encoding, otherwise write out an entity reference
+     * encoding, otherwise write out an numeric character reference
      * of the value of the unicode code point of the character
      * represented by the high/low surrogate pair.
      * <p>
@@ -967,59 +1001,61 @@ abstract public class ToStream extends SerializerBase
      * because the array ends unexpectely, or if the low char is there
      * but its value is such that it is not a low surrogate.
      *
-     * @param c the first (high) part of the surrogate, which
+     * @param high the first (high) part of the surrogate, which
      * must be confirmed before calling this method.
      * @param ch Character array.
      * @param i position Where the surrogate was detected.
      * @param end The end index of the significant characters.
      * @return 0 if the pair of characters was written out as-is,
      * the unicode code point of the character represented by
-     * the surrogate pair if an entity reference with that value
+     * the surrogate pair if a numeric char ref with that value
      * was written out. 
      * 
      * @throws IOException if  invalid UTF-16 surrogate detected.
      */
-    protected int writeUTF16Surrogate(char c, char ch[], int i, int end)
+    protected int writeUTF16Surrogate(final char high, char ch[], int i, int end)
         throws IOException
     {
-        int codePoint = 0;
+	// THROWS if surrogate pair crosses input buffers
+	// Should probably handle this better.
         if (i + 1 >= end)
         {
             throw new IOException(
                 Utils.messages.createMessage(
                     MsgKey.ER_INVALID_UTF16_SURROGATE,
-                    new Object[] { Integer.toHexString((int) c)}));
+                    new Object[] { Integer.toHexString((int) high)}));
         }
         
-        final char high = c;
         final char low = ch[i+1];
         if (!Encodings.isLowUTF16Surrogate(low)) {
             throw new IOException(
                 Utils.messages.createMessage(
                     MsgKey.ER_INVALID_UTF16_SURROGATE,
                     new Object[] {
-                        Integer.toHexString((int) c)
+                        Integer.toHexString((int) high)
                             + " "
                             + Integer.toHexString(low)}));
         }
 
         final java.io.Writer writer = m_writer;
+        int codePoint = 0; // Nonzero iff written as NCR
                 
         // If we make it to here we have a valid high, low surrogate pair
-        if (m_encodingInfo.isInEncoding(c,low)) {
+        if (m_encodingInfo.isInEncoding(high,low)) {
             // If the character formed by the surrogate pair
             // is in the encoding, so just write it out
+	    // NOTE: Assumes same buffer
             writer.write(ch,i,2);
         }
         else {
             // Don't know what to do with this char, it is
             // not in the encoding and not a high char in
-            // a surrogate pair, so write out as an entity ref
+            // a surrogate pair, so write out as a numeric char ref
             final String encoding = getEncoding();
             if (encoding != null) {
                 /* The output encoding is known, 
                  * so somthing is wrong.
-                  */
+                 */
                 codePoint = Encodings.toCodePoint(high, low);
                 // not in the encoding, so write out a character reference
                 writer.write('&');
@@ -1033,7 +1069,10 @@ abstract public class ToStream extends SerializerBase
                 writer.write(ch, i, 2);
             }
         }
-        // non-zero only if character reference was written out.
+
+	// ToTextStream tests this and issues an error message (but
+	// not exception) if the not-in-encoding case arises,
+	// outputting an NCR in passing. 
         return codePoint;
     }
 
