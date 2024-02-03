@@ -16,7 +16,7 @@
  */
 package org.apache.xalan.xpath3;
 
-import org.apache.xalan.util.XslTransformTestsUtil;
+import org.apache.xalan.util.XSLTransformTestsUtil;
 import org.apache.xalan.xslt3.XSLConstants;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -29,7 +29,7 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class DynamicFunctionCallTests extends XslTransformTestsUtil {        
+public class DynamicFunctionCallTests extends XSLTransformTestsUtil {        
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "dynamic_function_call/";
     

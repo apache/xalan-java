@@ -16,7 +16,7 @@
  */
 package org.apache.xalan.xslt3;
 
-import org.apache.xalan.util.XslTransformTestsUtil;
+import org.apache.xalan.util.XSLTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,7 +30,7 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class XslTemplateAttributeAsTests extends XslTransformTestsUtil {
+public class XslTemplateAttributeAsTests extends XSLTransformTestsUtil {
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX 
                                                                                                     + "xsl_template_attribute_as/";

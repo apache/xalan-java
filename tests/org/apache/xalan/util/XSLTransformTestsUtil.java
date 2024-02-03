@@ -16,6 +16,7 @@
  */
 package org.apache.xalan.util;
 
+import java.io.File;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -39,14 +40,15 @@ import org.xml.sax.InputSource;
 import junit.framework.Assert;
 
 /**
- * A class providing, common services to this JUnit test suite.
+ * A class providing, various common services to this JUnit test 
+ * suite.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * @author Vladimir Sitnikov <sitnikov.vladimir@gmail.com>
  * 
  * @xsl.usage advanced
  */
-public class XslTransformTestsUtil {        
+public class XSLTransformTestsUtil {        
     
     protected static DocumentBuilderFactory xmlDocumentBuilderFactory = null;
     
@@ -54,10 +56,10 @@ public class XslTransformTestsUtil {
     
     protected static TransformerFactory xslTransformerFactory = null;
     
-    /*
+    /**
      * Class constructor.
      */
-    public XslTransformTestsUtil() {
+    public XSLTransformTestsUtil() {
         System.setProperty(XSLConstants.XERCES_DOCUMENT_BUILDER_FACTORY_KEY, XSLConstants.XERCES_DOCUMENT_BUILDER_FACTORY_VALUE);
         System.setProperty(XSLConstants.XSLT_TRANSFORMER_FACTORY_KEY, XSLConstants.XSLT_TRANSFORMER_FACTORY_VALUE);                
         
@@ -73,24 +75,35 @@ public class XslTransformTestsUtil {
         xslTransformerFactory = TransformerFactory.newInstance();
     }
 
+    /**
+     * This function is the primary function, that is invoked by all the XalanJ XSL3 test 
+     * cases within this test suite.
+     * 
+     * This function does an XSLT transformation via JAXP XSL transformation API, and
+     * compares the XSLT transformation's output with the corresponding expected output.
+     */
     protected void runXslTransformAndAssertOutput(String xmlFilePath, String xslFilePath, 
-                                                            String goldFilePath, 
-                                                            XslTestsErrorHandler errHandler) {
+                                                               String xslGoldFilePath, 
+                                                               XslTestsErrorHandler xslTransformErrHandler) {
         try {
-           Node xmlDomSource = xmlDocumentBuilder.parse(new InputSource(xmlFilePath));
+           String xmlDocumentUriStr = ((new File(xmlFilePath)).toURI()).toString();
+           String xslDocumentUriStr = ((new File(xslFilePath)).toURI()).toString();
+           
+           Node xmlDomSource = xmlDocumentBuilder.parse(new InputSource(xmlDocumentUriStr));
        
-           Transformer xslTransformer = xslTransformerFactory.newTransformer(new StreamSource(xslFilePath));
-           if (errHandler != null) {
-               xslTransformer.setErrorListener(errHandler);  
+           Transformer xslTransformer = xslTransformerFactory.newTransformer(new 
+        		                                                          StreamSource(xslDocumentUriStr));
+           if (xslTransformErrHandler != null) {
+               xslTransformer.setErrorListener(xslTransformErrHandler);  
            }
            
            StringWriter resultStrWriter = new StringWriter();
            
            xslTransformer.transform(new DOMSource(xmlDomSource), new StreamResult(resultStrWriter));
            
-           if (errHandler != null) {
-               List<String> trfErrorList = errHandler.getTrfErrorList();
-               List<String> trfFatalErrorList = errHandler.getTrfFatalErrorList();
+           if (xslTransformErrHandler != null) {
+               List<String> trfErrorList = xslTransformErrHandler.getTrfErrorList();
+               List<String> trfFatalErrorList = xslTransformErrHandler.getTrfFatalErrorList();
                if (trfErrorList.size() > 0 || trfFatalErrorList.size() > 0) {
                    // The test has passed
                    return;
@@ -101,7 +114,7 @@ public class XslTransformTestsUtil {
                }
            }
            else {
-              byte[] goldFileBytes = Files.readAllBytes(Paths.get(goldFilePath));
+              byte[] goldFileBytes = Files.readAllBytes(Paths.get(xslGoldFilePath));
            
               Assert.assertEquals(new String(goldFileBytes), resultStrWriter.toString());
            }
@@ -111,12 +124,20 @@ public class XslTransformTestsUtil {
         }
      }
     
+     /**
+      * This function is used by, few of XalanJ XSL3 Java extension functions used
+      * within the .xsl test files.
+      */
      public static Date getCurrentDate() {
          Date currentDate = new Date();
        
          return currentDate;
      }
     
+     /**
+      * This function is used by, few of XalanJ XSL3 Java extension functions used
+      * within the .xsl test files.
+      */
      public static String getDefaultTimezoneOffsetStr() {
          String timeZoneoffsetStr = null;
         
