@@ -21,47 +21,32 @@ import java.math.BigInteger;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
+import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.res.XPATHErrorResources;
 
-import xml.xpath31.processor.types.XSAnyType;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * Execute the index-of() function.
- * 
- * This function, returns a sequence of positive integers giving the positions 
- * within the sequence $seq of items that are equal to $search.
- * 
- * Function signatures :
- *      1) fn:index-of($seq         as xs:anyAtomicType*,
-                       $search      as xs:anyAtomicType) as xs:integer*
-
-        2) fn:index-of($seq         as xs:anyAtomicType*,
-                       $search      as xs:anyAtomicType,
-                       $collation   as xs:string) as xs:integer*
- *
+ * Implementation of an XPath 3.1 fn:index-of function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncIndexOf extends Function3Args {
+public class FuncIndexOf extends FunctionMultiArgs {
 
    private static final long serialVersionUID = 2912594883291006421L;
-   
-   private static final String FUNCTION_NAME = "index-of()"; 
 
   /**
    * Execute the function. The function must return a valid object.
@@ -84,6 +69,27 @@ public class FuncIndexOf extends Function3Args {
         
         Expression arg0 = getArg0();
         Expression arg1 = getArg1();
+        Expression arg2 = getArg2();
+        
+  	    if ((arg0 == null) || (arg1 == null)) {
+ 		   throw new javax.xml.transform.TransformerException("FOAP0001 : The number of arguments specified while "
+ 		 		                                                            + "calling index-of() function is wrong. Expected "
+ 		 		                                                            + "number of arguments for index-of() function is two "
+ 		 		                                                            + "or three.", srcLocator);  
+ 	    }
+  	    
+  	    XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
+  	    
+  	    String collationUri = null;
+      
+		if (arg2 != null) {
+		   // A collation uri was, explicitly provided during the function call fn:index-of
+		   XObject collationXObj = arg2.execute(xctxt);
+		   collationUri = XslTransformEvaluationHelper.getStrVal(collationXObj); 			 			 
+		}
+		else {
+		   collationUri = xctxt.getDefaultCollation(); 
+		}
         
         DTMManager dtmMgr = (DTMManager)xctxt;
         
@@ -157,76 +163,17 @@ public class FuncIndexOf extends Function3Args {
         }
         
         for (int idx = 0; idx < arg0ResultSeq.size(); idx++) {
-           if (equals(arg0ResultSeq.item(idx), arg1Obj)) {
+           ResultSequence resultSeqWithOneItem = new ResultSequence();
+           resultSeqWithOneItem.add(arg0ResultSeq.item(idx));
+           
+           // The following call to 'XslTransformEvaluationHelper.contains' method, checks the
+           // equality between XObject instances arg0ResultSeq.item(idx) and arg1Obj.  
+           if (XslTransformEvaluationHelper.contains(resultSeqWithOneItem, arg1Obj, collationUri, xpathCollationSupport)) {
               resultSeq.add(new XSInteger(BigInteger.valueOf(idx + 1)));    
            }
         }
             
         return resultSeq;
-  }
-
-  /**
-   * Check that the number of arguments passed to this function is correct.
-   *
-   * @param argNum The number of arguments that is being passed to the function.
-   *
-   * @throws WrongNumberArgsException
-   */
-  public void checkNumberArgs(int argNum) throws WrongNumberArgsException
-  {
-     if (!(argNum == 2 || argNum == 3)) {
-        reportWrongNumberArgs();
-     }
-  }
-
-  /**
-   * Constructs and throws a WrongNumberArgException with the appropriate
-   * message for this function object.
-   *
-   * @throws WrongNumberArgsException
-   */
-  protected void reportWrongNumberArgs() throws WrongNumberArgsException {
-      throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
-                                              XPATHErrorResources.ER_TWO_OR_THREE, null)); //"2 or 3"
-  }
-  
-  /**
-   * Check equality of two xdm items.
-   */
-  private boolean equals(XObject obj1, XObject obj2) {
-      
-      boolean isEquals = false;
-      
-      if ((obj1 instanceof XSUntyped) && (obj2 instanceof XSUntyped)) {
-         if (((XSUntyped)obj1).equals((XSUntyped)obj2)) {
-            isEquals = true;   
-         }
-      }
-      else if ((obj1 instanceof XSUntypedAtomic) && (obj2 instanceof XSUntypedAtomic)) {
-         if (((XSUntypedAtomic)obj1).equals((XSUntypedAtomic)obj2)) {
-            isEquals = true;   
-         }
-      }
-      else if ((obj1 instanceof XSUntyped) && (obj2 instanceof XSUntypedAtomic)) {
-         if (((XSUntyped)obj1).equals((XSUntypedAtomic)obj2)) {
-            isEquals = true;   
-         } 
-      }
-      else if ((obj1 instanceof XSUntypedAtomic) && (obj2 instanceof XSUntyped)) {
-         if (((XSUntypedAtomic)obj1).equals((XSUntyped)obj2)) {
-            isEquals = true; 
-         }
-      }
-      else if ((obj1 instanceof XSAnyType) && (obj2 instanceof XSAnyType)) {
-         if (((XSAnyType)obj1).equals((XSAnyType)obj2)) {
-            isEquals = true;  
-         }   
-      }
-      else if (obj1.equals(obj2)) {
-          isEquals = true;   
-      }
-      
-      return isEquals; 
   }
 
 }
