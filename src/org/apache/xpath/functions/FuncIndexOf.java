@@ -69,7 +69,7 @@ public class FuncIndexOf extends FunctionMultiArgs {
         
         Expression arg0 = getArg0();
         Expression arg1 = getArg1();
-        Expression arg2 = getArg2();
+        Expression arg2 = getArg2();                
         
   	    if ((arg0 == null) || (arg1 == null)) {
  		   throw new javax.xml.transform.TransformerException("FOAP0001 : The number of arguments specified while "
@@ -77,6 +77,14 @@ public class FuncIndexOf extends FunctionMultiArgs {
  		 		                                                            + "number of arguments for index-of() function is two "
  		 		                                                            + "or three.", srcLocator);  
  	    }
+  	    
+  	    Expression[] fourthAndAboveArgs = getArgs();
+  	    if ((fourthAndAboveArgs != null) && (fourthAndAboveArgs.length > 0)) {
+  	       throw new javax.xml.transform.TransformerException("FOAP0001 : The number of arguments specified while "
+                                                                            + "calling index-of() function is wrong. Expected "
+                                                                            + "number of arguments for index-of() function is two "
+                                                                            + "or three.", srcLocator);
+  	    }
   	    
   	    XPathCollationSupport xpathCollationSupport = xctxt.getXPathCollationSupport();
   	    
