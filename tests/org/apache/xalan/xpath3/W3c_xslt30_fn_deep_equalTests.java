@@ -16,7 +16,7 @@
  */
 package org.apache.xalan.xpath3;
 
-import org.apache.xalan.util.XslTransformTestsUtil;
+import org.apache.xalan.util.XSLTransformTestsUtil;
 import org.apache.xalan.xslt3.XSLConstants;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -29,7 +29,7 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class W3c_xslt30_fn_deep_equalTests extends XslTransformTestsUtil {
+public class W3c_xslt30_fn_deep_equalTests extends XSLTransformTestsUtil {
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + 
                                                                                                  "w3c_xslt30_testsuite/fn/deep_equal/";

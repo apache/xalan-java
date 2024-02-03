@@ -33,11 +33,13 @@ public class XSLConstants {
     
     public static final String XSLT_TRANSFORMER_FACTORY_VALUE = "org.apache.xalan.processor.TransformerFactoryImpl";
     
-    // the values of following, two variables are host specific where this test suite shall be run. the values of
+    // The values of following, two variables are host specific where this test suite shall be run. The values of
     // following two variables may be modified, accordingly.
+    // The sample values shown for following two variables, is for Windows platform ('Z' is a sample Windows
+    // drive letter). For Linux systems, these variable values may be for e.g /home/<userName>/xalanj/xalan-j_xslt3.0/tests/ 
     
-    public static final String XSL_TRANSFORM_INPUT_DIRPATH_PREFIX = "file:///E:/eclipseWorkspace/xalanj/xalan-j_xslt3.0/tests/";
+    public static final String XSL_TRANSFORM_INPUT_DIRPATH_PREFIX = "Z:/<prefix>/xalanj/xalan-j_xslt3.0/tests/";
     
-    public static final String XSL_TRANSFORM_GOLD_DIRPATH_PREFIX = "E:/eclipseWorkspace/xalanj/xalan-j_xslt3.0/tests/";
+    public static final String XSL_TRANSFORM_GOLD_DIRPATH_PREFIX = "Z:/<prefix>/xalanj/xalan-j_xslt3.0/tests/";
 
 }
