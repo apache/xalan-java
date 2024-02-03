@@ -371,9 +371,9 @@ public class XslTransformEvaluationHelper {
     /**
      * Check whether a 'ResultSequence' object, contains a specific xdm item.
      */
-    private static boolean contains(ResultSequence resultSeq, XObject srch, String collationUri,
-    		                                                                XPathCollationSupport xpathCollationSupport) 
-    		                                                                		     throws TransformerException {
+    public static boolean contains(ResultSequence resultSeq, XObject srch, String collationUri,
+    		                                                                   XPathCollationSupport xpathCollationSupport) 
+    		                                                                		               throws TransformerException {
        
        boolean isSeqContains = false;
        

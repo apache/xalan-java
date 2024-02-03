@@ -6,7 +6,7 @@
    
    <!-- use with test1_a.xml -->
    
-   <!-- test for the XPath 3.1 fn:index-of() function -->                
+   <!-- Test for the XPath 3.1 fn:index-of() function -->                
 
    <xsl:output method="xml" indent="yes"/>
 
