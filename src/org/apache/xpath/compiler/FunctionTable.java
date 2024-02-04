@@ -380,6 +380,9 @@ public class FunctionTable
   
   /** The 'timezone-from-time()' id. */
   public static final int FUNC_TIMEZONE_FROM_TIME = 118;
+  
+  /** The 'default-collation()' id. */
+  public static final int FUNC_DEFAULT_COLLATION = 119;
 
   // Proprietary
 
@@ -437,7 +440,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 119;
+  private static final int NUM_BUILT_IN_FUNCS = 120;
 
   /**
    * Number of built-in functions that may be added.
@@ -659,6 +662,8 @@ public class FunctionTable
     m_functions[FUNC_MINUTES_FROM_TIME] = org.apache.xpath.functions.FuncMinutesFromTime.class;
     m_functions[FUNC_SECONDS_FROM_TIME] = org.apache.xpath.functions.FuncSecondsFromTime.class;
     m_functions[FUNC_TIMEZONE_FROM_TIME] = org.apache.xpath.functions.FuncTimezoneFromTime.class;
+    
+    m_functions[FUNC_DEFAULT_COLLATION] = org.apache.xpath.functions.FuncDefaultCollation.class;
   }
 
   static{
@@ -910,6 +915,9 @@ public class FunctionTable
                          new Integer(FunctionTable.FUNC_SECONDS_FROM_TIME));
          m_functionID.put(Keywords.FUNC_TIMEZONE_FROM_TIME,
                          new Integer(FunctionTable.FUNC_TIMEZONE_FROM_TIME));
+         
+         m_functionID.put(Keywords.FUNC_DEFAULT_COLLATION,
+                         new Integer(FunctionTable.FUNC_DEFAULT_COLLATION));
   }
   
   public FunctionTable(){
