@@ -514,6 +514,9 @@ public class Keywords
   /** timezone-from-time function string. */
   public static final String FUNC_TIMEZONE_FROM_TIME = "timezone-from-time";
   
+  /** default-collation function string. */
+  public static final String FUNC_DEFAULT_COLLATION = "default-collation";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
