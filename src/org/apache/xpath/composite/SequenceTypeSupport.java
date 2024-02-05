@@ -896,6 +896,17 @@ public class SequenceTypeSupport {
         XNodeSet xdmNodeSet = (XNodeSet)srcValue;
         
         int nodeSetLen = xdmNodeSet.getLength();
+                
+        if ((nodeSetLen == 0) && 
+            ((sequenceTypeKindTest != null) && isSequenceTypeExprOneOfTheNodeKinds(sequenceTypeKindTest.getKindVal())) && 
+            (itemTypeOccurenceIndicator == 0)) {
+        	// Here, an input value is an empty sequence, and the sequence type expression refers 
+        	// to one the various node kinds and no occurrence indicator character has been 
+        	// specified (few examples of such sequence type expressions are, element(), attribute(), 
+        	// attribute(name), node() etc. Therefore, an input value (i.e, an empty sequence) hasn't matched 
+        	// the sequence type specified.
+        	return result;
+        }
         
         if ((nodeSetLen > 1) && ((itemTypeOccurenceIndicator == 0) || (itemTypeOccurenceIndicator == 
                                                                                              OccurenceIndicator.ZERO_OR_ONE))) {
@@ -1031,8 +1042,8 @@ public class SequenceTypeSupport {
         
         return result;
     }
-    
-    /**
+
+	/**
      * This method casts a provided XDM evaluated sequence, to another type 
      * specified by an xdm sequence type expression.
      */
@@ -1083,5 +1094,20 @@ public class SequenceTypeSupport {
         
         return result;
     }
+    
+    /**
+     * Check whether the, xdm sequence type's xalanj kind value refers to one of 
+     * the various node kinds.
+     */
+    private static boolean isSequenceTypeExprOneOfTheNodeKinds(int kindVal) {
+		boolean isXdmItemOneOfTheNodeKinds = false;
+		
+		isXdmItemOneOfTheNodeKinds = ((kindVal == SequenceTypeSupport.ELEMENT_KIND) || 
+				                     (kindVal == SequenceTypeSupport.ATTRIBUTE_KIND) || 
+				                     (kindVal == SequenceTypeSupport.NAMESPACE_NODE_KIND) || 
+				                     (kindVal == SequenceTypeSupport.NODE_KIND));
+		
+		return isXdmItemOneOfTheNodeKinds; 
+	}
 
 }
