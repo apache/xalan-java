@@ -27,9 +27,9 @@ lib/
 
 # XPath parser generated during compilation
 /src/org/apache/xalan/processor/XSLProcessorVersion.java
-/src/org/apache/xalan/xsltc/compiler/XPathLexer.java
-/src/org/apache/xalan/xsltc/compiler/XPathParser.java
-/src/org/apache/xalan/xsltc/compiler/sym.java
+xalan/src/main/java/org/apache/xalan/xsltc/compiler/XPathLexer.java
+xalan/src/main/java/org/apache/xalan/xsltc/compiler/XPathParser.java
+xalan/src/main/java/org/apache/xalan/xsltc/compiler/sym.java
 
 # Stylebook processing progress flags.
 /stylebook/sources/xalan/DONE
