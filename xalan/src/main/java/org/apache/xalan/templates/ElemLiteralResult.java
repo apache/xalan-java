@@ -266,7 +266,7 @@ public class ElemLiteralResult extends ElemUse
   /**
    * Return the raw value of the attribute.
    *
-   * @param namespaceURI:localName or localName if the namespaceURI is null of 
+   * @param rawName Either "namespaceURI:localName" (or "localName" if the namespaceURI is null) of
    * the attribute to get
    *
    * @return The Attr value as a string, or the empty string if that attribute 
@@ -697,12 +697,12 @@ public class ElemLiteralResult extends ElemUse
           /**
            * Unimplemented. See org.w3c.dom.NamedNodeMap
            *
-           * @param A node to store in this map
+           * @param arg A node to store in this map
            * 
            * @return If the new Node replaces an existing node the replaced 
            * Node is returned, otherwise null is returned
            *
-           * @throws DOMException
+           * @throws DOMException will be thrown as this method is not implemented
            */
           public Node setNamedItem(Node arg) throws DOMException
           {
@@ -714,12 +714,12 @@ public class ElemLiteralResult extends ElemUse
           /**
            * Unimplemented. See org.w3c.dom.NamedNodeMap
            *
-           * @param A node to store in this map
+           * @param arg A node to store in this map
            * 
            * @return If the new Node replaces an existing node the replaced 
            * Node is returned, otherwise null is returned
            *
-           * @throws DOMException
+           * @throws DOMException will be thrown as this method is not implemented
            */
           public Node setNamedItemNS(Node arg) throws DOMException
           {

@@ -798,9 +798,7 @@ public class TransformerImpl extends Transformer
   /**
    * Get the base URL of the source.
    *
-   *
    * NEEDSDOC @param base
-   * @return The base URL of the source tree, or null.
    */
   public void setBaseURLOfSource(String base)
   {

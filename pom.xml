@@ -21,13 +21,13 @@
     <stylebook.classpath>
       "stylebook/stylebook-1.0-b3_xalan-2.jar${path.separator}serializer/target/classes${path.separator}xalan/target/classes${path.separator}"
     </stylebook.classpath>
-    <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-    <exec-maven-plugin.version>3.1.0</exec-maven-plugin.version>
+    <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
+    <exec-maven-plugin.version>3.1.1</exec-maven-plugin.version>
     <maven-shade-plugin.version>3.5.1</maven-shade-plugin.version>
-    <junit-jupiter.version>5.10.1</junit-jupiter.version>
+    <junit-jupiter.version>5.10.2</junit-jupiter.version>
     <!-- TODO: Upgrade to 5.x after dropping requirement to build on JDK 8 -->
     <mockito.version>4.11.0</mockito.version>
-    <maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
+    <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
     <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
   </properties>
 
@@ -264,7 +264,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.2.2</version>
+          <version>3.2.5</version>
           <configuration>
             <argLine>${maven-surefire-plugin.argLine}</argLine>
           </configuration>
@@ -423,7 +423,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.7.1</version>
+        <version>3.12.1</version>
       </plugin>
 
       <!-- Maven finds this without assistance, but grumbles about
@@ -431,7 +431,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>3.4.5</version>
+        <version>3.5.0</version>
       </plugin>
 
       <!-- During cleaning phase, empty directories ./build and ./lib, which
@@ -459,7 +459,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.0.2</version>
+        <version>3.3.1</version>
         <executions>
           <execution>
             <id>copy-resources</id>

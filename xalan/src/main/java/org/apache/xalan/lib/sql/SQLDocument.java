@@ -717,7 +717,6 @@ public class SQLDocument extends DTMDocument
   /**
    * Populate the Expanded Name Table with the Node that we will use.
    * Keep a reference of each of the types for access speed.
-   * @return
    */
   protected void createExpandedNameTable( )
   {
