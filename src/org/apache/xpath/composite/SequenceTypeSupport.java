@@ -118,6 +118,10 @@ public class SequenceTypeSupport {
     
     public static int XS_TOKEN = 19;
     
+    public static int XS_ANY_URI = 20;
+        
+    public static int XS_ANY_ATOMIC_TYPE = 50;
+    
     /** 
      * Following are constant int values denoting XPath 3.1 sequence
      * type KindTest expressions.
@@ -903,8 +907,8 @@ public class SequenceTypeSupport {
         	// Here, an input value is an empty sequence, and the sequence type expression refers 
         	// to one the various node kinds and no occurrence indicator character has been 
         	// specified (few examples of such sequence type expressions are, element(), attribute(), 
-        	// attribute(name), node() etc. Therefore, an input value (i.e, an empty sequence) hasn't matched 
-        	// the sequence type specified.
+        	// attribute(name), node() etc). Therefore, an input value (i.e, an empty sequence) hasn't 
+        	// matched the sequence type specified.
         	return result;
         }
         

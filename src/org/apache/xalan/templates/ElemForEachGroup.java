@@ -49,6 +49,7 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Variable;
 
+import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
@@ -805,9 +806,10 @@ public class ElemForEachGroup extends ElemTemplateElement
    * into a normalized data typed value of type java.lang.Object.
    * 
    * For the purpose of, evaluating grouping key XPath expressions for xsl:for-each-group, 
-   * the following data types are currently supported : string, number, boolean, xs:date, 
-   * xs:dateTime, xs:time, xs:QName. Any other data type for grouping key is converted to a 
-   * string value.
+   * the following data types are currently supported : string (xs:string and xalanj's XString), 
+   * number (XML Schema numeric types, and xalanj's XNumber), boolean (xs:boolean and xalanj's 
+   * XBoolean), xs:date, xs:dateTime, xs:time, xs:QName, xs:anyURI. Any other data type for 
+   * grouping key is converted to a string value.
    */
   private Object getXPathEvaluationRawResult(XObject xpathEvalResult) {
       Object xpathRawResult = null;
@@ -840,6 +842,9 @@ public class ElemForEachGroup extends ElemTemplateElement
       else if ((xpathEvalResult instanceof XSDate) || (xpathEvalResult instanceof XSDateTime) || 
     		                                          (xpathEvalResult instanceof XSTime)) {
           xpathRawResult = xpathEvalResult;
+      }
+      else if (xpathEvalResult instanceof XSAnyURI) {
+    	  xpathRawResult = xpathEvalResult; 
       }
       else {
           // Any other data type for grouping key, is treated as string

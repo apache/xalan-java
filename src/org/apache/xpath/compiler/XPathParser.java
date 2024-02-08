@@ -3802,6 +3802,12 @@ public class XPathParser
             case Keywords.XS_TIME :
                 xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_TIME);
                 break;
+            case Keywords.XS_ANY_URI :
+                xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_ANY_URI);
+                break;
+            case Keywords.XS_ANY_ATOMIC_TYPE :
+                xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_ANY_ATOMIC_TYPE);
+                break;
             case Keywords.XS_UNTYPED_ATOMIC :
                 xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNTYPED_ATOMIC);
                 break;

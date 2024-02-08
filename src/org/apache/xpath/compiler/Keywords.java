@@ -408,6 +408,12 @@ public class Keywords
   /** xs:time data type string. */
   public static final String XS_TIME = "time";
   
+  /** xs:anyURI data type string. */
+  public static final String XS_ANY_URI = "anyURI";
+    
+  /** xs:anyAtomicType data type string. */
+  public static final String XS_ANY_ATOMIC_TYPE = "anyAtomicType";
+  
   /** xs:untypedAtomic data type string. */
   public static final String XS_UNTYPED_ATOMIC = "untypedAtomic";
   

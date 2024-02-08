@@ -4,6 +4,8 @@
                 exclude-result-prefixes="xs"
                 version="3.0">
                 
+  <!-- Author: mukulg@apache.org -->                
+                
   <!-- An XSLT stylesheet test case, that tests invalid
        construction of an XML Schema xs:token value.
   -->                

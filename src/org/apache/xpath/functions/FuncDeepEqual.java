@@ -321,7 +321,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 			                                                           newInstance()).getDOMImplementation("LS"));
      LSSerializer lsSerializer = domImplLS.createLSSerializer();
      DOMConfiguration domConfig = lsSerializer.getDomConfig();
-     domConfig.setParameter(XSConstructorFunctionUtil.DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
+     domConfig.setParameter(XSConstructorFunctionUtil.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
      resultStr = lsSerializer.writeToString(node);
      resultStr = resultStr.replaceFirst(XSConstructorFunctionUtil.UTF_16, XSConstructorFunctionUtil.UTF_8);
 	 
