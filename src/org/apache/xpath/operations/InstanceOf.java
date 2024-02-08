@@ -36,6 +36,7 @@ import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
+import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
@@ -105,111 +106,95 @@ public class InstanceOf extends Operation
     boolean isInstanceOf = false;
       
     if ((xdmValue instanceof XSUntypedAtomic) && 
-          (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_UNTYPED_ATOMIC) && 
-          ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                     (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+          (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_UNTYPED_ATOMIC)) {
           isInstanceOf = true;  
       }
       else if ((xdmValue instanceof XSUntyped) && 
-              (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_UNTYPED) && 
-              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+              (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_UNTYPED)) {
           isInstanceOf = true;
       }
       else if ((xdmValue instanceof XString || xdmValue instanceof XSString) && 
-              (seqTypedData.getSequenceType() == SequenceTypeSupport.STRING) && 
-              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+              ((seqTypedData.getSequenceType() == SequenceTypeSupport.STRING) || (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSNormalizedString) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_NORMALIZED_STRING) && 
-              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+      else if ((xdmValue instanceof XSNormalizedString) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_NORMALIZED_STRING) || 
+    		                                                (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSToken) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_TOKEN) && 
-              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+      else if ((xdmValue instanceof XSToken) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_TOKEN) || 
+    		                                     (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XBoolean || xdmValue instanceof XSBoolean) && 
-              (seqTypedData.getSequenceType() == SequenceTypeSupport.BOOLEAN) && 
-              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+      else if ((xdmValue instanceof XSAnyURI) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_URI) || 
+    		                                      (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XNumber) && ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                             (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {          
-          if ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DOUBLE) || (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DECIMAL)) {
+      else if (((xdmValue instanceof XBoolean) || (xdmValue instanceof XSBoolean)) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.BOOLEAN) || 
+    		                                                                           (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+          isInstanceOf = true;
+      }
+      else if (xdmValue instanceof XNumber) {          
+          if ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DOUBLE) || (seqTypedData.getSequenceType() == 
+        		                                                                    SequenceTypeSupport.XS_DECIMAL) || 
+        		                                                          (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE)) {
              isInstanceOf = true; 
           }
           else {
              double doubleVal = ((XNumber)xdmValue).num();
              if ((doubleVal == (int)doubleVal) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_INTEGER) || 
                                                    (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_LONG) ||
-                                                   (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_INT))) {
+                                                   (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_INT) || 
+                                                   (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
                  isInstanceOf = true; 
              }
           }
       }
-      else if ((xdmValue instanceof XSDouble) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DOUBLE) && 
-              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                      (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+      else if ((xdmValue instanceof XSDouble) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DOUBLE) || 
+    		                                      (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
          isInstanceOf = true; 
       }
-      else if ((xdmValue instanceof XSFloat) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_FLOAT) && 
-              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+      else if ((xdmValue instanceof XSFloat) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_FLOAT) || 
+    		                                     (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSInt) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_INT) && 
-              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+      else if ((xdmValue instanceof XSInt) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_INT) || 
+    		                                   (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSLong) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_LONG) && 
-              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+      else if ((xdmValue instanceof XSLong) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_LONG) || 
+    		                                    (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSInteger) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_INTEGER) && 
-              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+      else if ((xdmValue instanceof XSInteger) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_INTEGER) || 
+    		                                       (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSDecimal) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DECIMAL) && 
-              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+      else if ((xdmValue instanceof XSDecimal) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DECIMAL) || 
+    		                                       (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSDate) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DATE) && 
-              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+      else if ((xdmValue instanceof XSDate) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DATE) || 
+    		                                    (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSDateTime) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DATETIME) && 
-              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+      else if ((xdmValue instanceof XSDateTime) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DATETIME) || 
+    		                                        (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSTime) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_TIME) && 
-              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+      else if ((xdmValue instanceof XSTime) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_TIME) || 
+    		                                    (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSDuration) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DURATION) && 
-              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+      else if ((xdmValue instanceof XSDuration) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DURATION) || 
+    		                                        (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSDayTimeDuration) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DAYTIME_DURATION) && 
-              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+      else if ((xdmValue instanceof XSDayTimeDuration) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_DAYTIME_DURATION) || 
+    		                                               (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSYearMonthDuration) && (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_YEARMONTH_DURATION) && 
-              ((seqTypedData.getItemTypeOccurrenceIndicator() == 0) || 
-                                                         (seqTypedData.getItemTypeOccurrenceIndicator() == SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE))) {
+      else if ((xdmValue instanceof XSYearMonthDuration) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_YEARMONTH_DURATION) || 
+    		                                                 (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
       else if (xdmValue instanceof XNodeSet) {
@@ -258,15 +243,17 @@ public class InstanceOf extends Operation
                     if (seqTypeKindTest != null) {
                        java.lang.String attrNodeKindTestNodeName = seqTypeKindTest.getNodeLocalName();
                        if (attrNodeKindTestNodeName == null || "".equals(attrNodeKindTestNodeName) || 
-                                                                                                SequenceTypeSupport.STAR.equals(attrNodeKindTestNodeName)) {
+                                                               SequenceTypeSupport.STAR.equals(attrNodeKindTestNodeName)) {
                            attrNodeKindTestNodeName = nodeName;  
                        }
                         
                        if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
-                                                                              && (SequenceTypeSupport.isTwoXmlNamespacesEqual(nodeNsUri, seqTypeKindTest.getNodeNsUri()))) {
+                                                                                       && (SequenceTypeSupport.isTwoXmlNamespacesEqual(
+                                                                                    		               nodeNsUri, seqTypeKindTest.getNodeNsUri()))) {
                            nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true));    
                        }
-                       else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.NODE_KIND) || (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
+                       else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.NODE_KIND) || 
+                    		    (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
                            nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true));   
                        }   
                     }

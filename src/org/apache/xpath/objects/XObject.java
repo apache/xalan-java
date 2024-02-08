@@ -41,6 +41,7 @@ import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;
 
+import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
@@ -269,6 +270,9 @@ public class XObject extends Expression implements Serializable, Cloneable
   
   /** Constant for XPath 3.1 xs:token object type */
   public static final int CLASS_XS_TOKEN = 22;
+  
+  /** Constant for XPath 3.1 xs:anyURI object type */
+  public static final int CLASS_XS_ANY_URI = 23;
 
   /** Represents an unresolved variable type as an integer. */
   public static final int CLASS_UNRESOLVEDVARIABLE = 600;
@@ -1050,6 +1054,18 @@ public class XObject extends Expression implements Serializable, Cloneable
 	       double rDouble = ((XSInteger)obj2).doubleValue();
 	       return (lDouble == rDouble);      
 	    }
+	    else if (this instanceof XSAnyURI) {
+	       boolean isEqual = false;
+	       
+	       try {
+			  isEqual = ((XSAnyURI)this).eq(obj2);
+		   } 
+	       catch (TransformerException ex) {
+	          isEqual = false;
+		   }   
+	       
+	       return isEqual;
+	    }
 	        
 	    if (obj2.getType() == XObject.CLASS_NODESET) {
 	       return obj2.equals(this);
@@ -1220,6 +1236,18 @@ public class XObject extends Expression implements Serializable, Cloneable
     else if ((obj2 instanceof XSString) && (obj2 instanceof XSNumericType)) {
        return false;
     }
+    else if (this instanceof XSAnyURI) {
+	   boolean isEqual = false;
+	       
+	   try {
+	      isEqual = ((XSAnyURI)this).eq(obj2);
+	   } 
+	   catch (TransformerException ex) {
+	      throw ex;
+	   }   
+	       
+	   return isEqual;
+	}
     
     boolean isOperandNodeSet1 = false;
     boolean isOperandNodeSet2 = false;

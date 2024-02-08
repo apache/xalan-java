@@ -53,6 +53,7 @@ import org.w3c.dom.bootstrap.DOMImplementationRegistry;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 
+import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
@@ -89,7 +90,7 @@ public class XSConstructorFunctionUtil {
 	
 	public static final String UTF_8 = "UTF-8";
 	
-	public static final String DOM_FORMAT_PRETTY_PRINT = "format-pretty-print";
+	public static final String XML_DOM_FORMAT_PRETTY_PRINT = "format-pretty-print";
 	
 	public static final String XS_VALID_TRUE = "XS_VALID_TRUE";
     
@@ -351,6 +352,16 @@ public class XSConstructorFunctionUtil {
 	                        }
 	                        
 	                        break;
+	                    case Keywords.XS_ANY_URI :                        
+	                        for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+	                            XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+	                            argSequence.add(new XSAnyURI(XslTransformEvaluationHelper.getStrVal(argVal)));
+	                        }
+	    
+	                        evalResultSequence = (new XSAnyURI()).constructor(argSequence);
+	                        evalResult = evalResultSequence.item(0);
+	                        
+	                        break;
 	                        
 	                    default:
 	                       // no op
@@ -462,7 +473,7 @@ public class XSConstructorFunctionUtil {
 	        		    		                                                                        newInstance()).getDOMImplementation("LS"));
 	        		       LSSerializer lsSerializer = domImplLS.createLSSerializer();
 	        	           DOMConfiguration domConfig = lsSerializer.getDomConfig();
-	        	           domConfig.setParameter(DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
+	        	           domConfig.setParameter(XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
 	        	           xsSchemaStr = lsSerializer.writeToString((Document)xsSchemaTopMostNode);
 	        	           xsSchemaStr = xsSchemaStr.replaceFirst(UTF_16, UTF_8);
 	        	           xsSchemaStr = xsSchemaStr.replaceFirst("schema", "schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"");
