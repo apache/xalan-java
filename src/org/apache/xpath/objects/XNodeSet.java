@@ -41,8 +41,8 @@ import xml.xpath31.processor.types.XSUntyped;
  * converting the nodeset to other types, such as a string.
  * 
  * For XPath 3.1 processor, we use an object of this class along with 
- * ResultSequence object and an XObject instance to be treated as 
- * representations of sequence.
+ * ResultSequence object and an XObject instance, all of them as 
+ * representations of XDM sequence.
  * 
  * @xsl.usage general
  */

@@ -523,6 +523,9 @@ public class Keywords
   /** default-collation function string. */
   public static final String FUNC_DEFAULT_COLLATION = "default-collation";
   
+  /** base-uri function string. */
+  public static final String FUNC_BASE_URI = "base-uri";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

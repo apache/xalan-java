@@ -383,6 +383,9 @@ public class FunctionTable
   
   /** The 'default-collation()' id. */
   public static final int FUNC_DEFAULT_COLLATION = 119;
+  
+  /** The 'base-uri()' id. */
+  public static final int FUNC_BASE_URI = 120;
 
   // Proprietary
 
@@ -440,7 +443,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 120;
+  private static final int NUM_BUILT_IN_FUNCS = 121;
 
   /**
    * Number of built-in functions that may be added.
@@ -664,6 +667,8 @@ public class FunctionTable
     m_functions[FUNC_TIMEZONE_FROM_TIME] = org.apache.xpath.functions.FuncTimezoneFromTime.class;
     
     m_functions[FUNC_DEFAULT_COLLATION] = org.apache.xpath.functions.FuncDefaultCollation.class;
+    m_functions[FUNC_BASE_URI] = org.apache.xpath.functions.FuncBaseUri.class;
+    
   }
 
   static{
@@ -918,6 +923,8 @@ public class FunctionTable
          
          m_functionID.put(Keywords.FUNC_DEFAULT_COLLATION,
                          new Integer(FunctionTable.FUNC_DEFAULT_COLLATION));
+         m_functionID.put(Keywords.FUNC_BASE_URI,
+                         new Integer(FunctionTable.FUNC_BASE_URI));
   }
   
   public FunctionTable(){
