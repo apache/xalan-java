@@ -49,6 +49,9 @@ public class FnBaseUriTests extends XSLTransformTestsUtil {
         xslTransformerFactory = null;
     }
 
+    /*
+     * Although this test case is fine, commenting this test case for now, 
+     * since this is dependent on an online web location.
     @Test
     public void xslFnBaseUriTest1() {
         String xmlDocumentUri= "https://xalan.apache.org/xalan-j/xsl3/tests/data/test1_a.xml"; 
@@ -57,7 +60,7 @@ public class FnBaseUriTests extends XSLTransformTestsUtil {
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";                
         
         runXslUriTransformAndAssertOutput(xmlDocumentUri, xslFilePath, goldFilePath, null);
-    }
+    }*/
     
     @Test
     public void xslFnBaseUriTest2() {
