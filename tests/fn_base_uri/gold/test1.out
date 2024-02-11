@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><result>
-  <baseUri1 isOfTypeXsAnyURI="true">https://svn.apache.org/repos/asf/xerces/java/trunk/tests/jaxp/data/personal-schema.xml</baseUri1>
-  <baseUri2 isOfTypeXsAnyURI="true">https://svn.apache.org/repos/asf/xerces/java/trunk/tests/jaxp/data/personal-schema.xml</baseUri2>
+  <baseUri1 isOfTypeXsAnyURI="true">https://xalan.apache.org/xalan-j/xsl3/tests/data/test1_a.xml</baseUri1>
+  <baseUri2 isOfTypeXsAnyURI="true">https://xalan.apache.org/xalan-j/xsl3/tests/data/test1_a.xml</baseUri2>
   <baseUriOfEmptySequenceIsEmptySequence>true</baseUriOfEmptySequenceIsEmptySequence>
 </result>
