@@ -51,12 +51,22 @@ public class FnBaseUriTests extends XSLTransformTestsUtil {
 
     @Test
     public void xslFnBaseUriTest1() {
-        String xmlDocumentUri= "https://svn.apache.org/repos/asf/xerces/java/trunk/tests/jaxp/data/personal-schema.xml"; 
+        String xmlDocumentUri= "https://xalan.apache.org/xalan-j/xsl3/tests/data/test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";                
         
         runXslUriTransformAndAssertOutput(xmlDocumentUri, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFnBaseUriTest2() {
+    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_b.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
 
 }
