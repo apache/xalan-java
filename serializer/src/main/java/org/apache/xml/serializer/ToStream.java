@@ -1027,6 +1027,34 @@ abstract public class ToStream extends SerializerBase
         }
         
         final char low = ch[i+1];
+	return writeUTF16Surrogate(high, low);
+    }
+	
+
+    /**
+     * Once a surrogate has been detected, write out the pair of
+     * characters if it is in the encoding, or if there is no
+     * encoding, otherwise write out an numeric character reference
+     * of the value of the unicode code point of the character
+     * represented by the high/low surrogate pair.
+     * <p>
+     * An exception is thrown if there is no low surrogate in the pair,
+     * because the array ends unexpectely, or if the low char is there
+     * but its value is such that it is not a low surrogate.
+     *
+     * @param high the first (high) part of the surrogate, which
+     * must be confirmed before calling this method.
+     * @param low the second (low) part of the presumed surrogate
+     * @return 0 if the pair of characters was written out as-is,
+     * or the unicode code point of the character represented by
+     * the surrogate pair if a numeric char ref with that value
+     * was written out. (REVIEW: Is this needed?)
+     * 
+     * @throws IOException if  invalid UTF-16 surrogate detected.
+     */
+    protected int writeUTF16Surrogate(final char high, final char low)
+        throws IOException
+    {
         if (!Encodings.isLowUTF16Surrogate(low)) {
             throw new IOException(
                 Utils.messages.createMessage(
@@ -1038,14 +1066,15 @@ abstract public class ToStream extends SerializerBase
         }
 
         final java.io.Writer writer = m_writer;
-        int codePoint = 0; // Nonzero iff written as NCR
+        int codePoint = 0; // Nonzero iff written as NCR. REVIEW: Needed?
                 
         // If we make it to here we have a valid high, low surrogate pair
         if (m_encodingInfo.isInEncoding(high,low)) {
             // If the character formed by the surrogate pair
             // is in the encoding, so just write it out
 	    // NOTE: Assumes same buffer
-            writer.write(ch,i,2);
+            writer.write(high);
+            writer.write(low);
         }
         else {
             // Don't know what to do with this char, it is
@@ -1053,20 +1082,21 @@ abstract public class ToStream extends SerializerBase
             // a surrogate pair, so write out as a numeric char ref
             final String encoding = getEncoding();
             if (encoding != null) {
-                /* The output encoding is known, 
-                 * so somthing is wrong.
+                /* The output encoding is known but does not include
+                 * this character. Fallback: Write as NCR
                  */
                 codePoint = Encodings.toCodePoint(high, low);
-                // not in the encoding, so write out a character reference
                 writer.write('&');
                 writer.write('#');
                 writer.write(Integer.toString(codePoint));
                 writer.write(';');
             } else {
-                /* The output encoding is not known,
-                 * so just write it out as-is.
+                /* The output encoding is not known, so presume
+                 * Unicode and just write it out. This handles the
+                 * case of serializing to a character buffer.
                  */
-                writer.write(ch, i, 2);
+		writer.write(high);
+		writer.write(low);
             }
         }
 
