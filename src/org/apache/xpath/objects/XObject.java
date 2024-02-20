@@ -273,6 +273,9 @@ public class XObject extends Expression implements Serializable, Cloneable
   
   /** Constant for XPath 3.1 xs:anyURI object type */
   public static final int CLASS_XS_ANY_URI = 23;
+  
+  /** Constant for XPath 3.1 xs:QName object type */
+  public static final int CLASS_XS_QNAME = 24;
 
   /** Represents an unresolved variable type as an integer. */
   public static final int CLASS_UNRESOLVEDVARIABLE = 600;

@@ -26,21 +26,22 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import xml.xpath31.processor.types.XSAnyURI;
 
 /**
- * Implementation of the base-uri() function.
+ * Implementation of the document-uri() function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncBaseUri extends FunctionDef1Arg
+public class FuncDocumentUri extends FunctionDef1Arg
 {
 
-	private static final long serialVersionUID = -637288976892401962L;
+	private static final long serialVersionUID = 685581942265897866L;
 
 	/**
       * Execute the function. The function must return a valid object.
@@ -58,24 +59,24 @@ public class FuncBaseUri extends FunctionDef1Arg
     	
     	DTMManager dtmMgr = xctxt.getDTMManager();
     	
-    	String baseUriStr = null;
+    	String documentUriStr = null;
     	
     	if (m_arg0 != null) {
     	   XObject argValue = m_arg0.execute(xctxt);
     	   if ((argValue != null) && (argValue.getType() == XObject.CLASS_NODESET)) {
     		  XNodeSet nodeSet = (XNodeSet)argValue;
     		  if (nodeSet.getLength() == 1) {
-    			 baseUriStr = getXdmNodeBaseUri(nodeSet, dtmMgr);
-    			 if (baseUriStr != null) {
-    			    result = new XSAnyURI(baseUriStr);
+    			 documentUriStr = getXdmNodeDocumentUri(nodeSet, dtmMgr);
+    			 if (documentUriStr != null) {
+    			    result = new XSAnyURI(documentUriStr);
     			 }
     			 else {
     				result = new ResultSequence();  
     			 }
     		  }
     		  else {
-    			  throw new javax.xml.transform.TransformerException("XPDY0002 : While trying to find base uri of a node using "
-                                                                            + "function fn:base-uri, the context nodeset is not "
+    			  throw new javax.xml.transform.TransformerException("XPDY0002 : While trying to find document uri of a node using "
+                                                                            + "function fn:document-uri, the context nodeset is not "
                                                                             + "of size one", srcLocator);   
     		  }
     	   }
@@ -83,7 +84,7 @@ public class FuncBaseUri extends FunctionDef1Arg
     		  result = new ResultSequence(); 
     	   }
     	   else {
-    		  throw new javax.xml.transform.TransformerException("XPDY0002 : The fn:base-uri argument didn't evaluate to a node", 
+    		  throw new javax.xml.transform.TransformerException("XPDY0002 : The fn:document-uri's argument didn't evaluate to a node", 
                                                                                                                               srcLocator);  
     	   }
     	}
@@ -92,17 +93,17 @@ public class FuncBaseUri extends FunctionDef1Arg
       	   if (contextXdmNodeHandle != DTM.NULL) {    		   
       		  XNodeSet nodeSet = new XNodeSet(contextXdmNodeHandle, dtmMgr);
       		  if (nodeSet.getLength() == 1) {
-      			 baseUriStr = getXdmNodeBaseUri(nodeSet, dtmMgr);
-      			 if (baseUriStr != null) {
-    			    result = new XSAnyURI(baseUriStr);
+      			 documentUriStr = getXdmNodeDocumentUri(nodeSet, dtmMgr);
+      			 if (documentUriStr != null) {
+    			    result = new XSAnyURI(documentUriStr);
     			 }
     			 else {
     				result = new ResultSequence();  
     			 }
       		  }
       		  else {
-      			 throw new javax.xml.transform.TransformerException("XPDY0002 : While trying to find base uri of a node using "
-                                                                           + "function fn:base-uri, the context nodeset is not "
+      			 throw new javax.xml.transform.TransformerException("XPDY0002 : While trying to find document uri of a node using "
+                                                                           + "function fn:document-uri, the context nodeset is not "
                                                                            + "of size one", srcLocator);   
       		  }
       	   }
@@ -111,22 +112,22 @@ public class FuncBaseUri extends FunctionDef1Arg
       		  if ((contextItem != null) && (contextItem.getType() == XObject.CLASS_NODESET)) {
       			 XNodeSet nodeSet = (XNodeSet)contextItem;
       			 if (nodeSet.getLength() == 1) {
-      				baseUriStr = getXdmNodeBaseUri(nodeSet, dtmMgr);
-      				if (baseUriStr != null) {
-        			   result = new XSAnyURI(baseUriStr);
+      				documentUriStr = getXdmNodeDocumentUri(nodeSet, dtmMgr);
+      				if (documentUriStr != null) {
+        			   result = new XSAnyURI(documentUriStr);
         			}
         			else {
         			   result = new ResultSequence();  
         			}
          		 }
          		 else {
-         			throw new javax.xml.transform.TransformerException("XPDY0002 : While trying to find base uri of a node using "
-         					                                                  + "function fn:base-uri, the context nodeset is not "
+         			throw new javax.xml.transform.TransformerException("XPDY0002 : While trying to find document uri of a node using "
+         					                                                  + "function fn:document-uri, the context nodeset is not "
          					                                                  + "of size one", srcLocator);  
          		 }
       		  }
       		  else {
-      		     throw new javax.xml.transform.TransformerException("XPDY0002 : While calling fn:base-uri "
+      		     throw new javax.xml.transform.TransformerException("XPDY0002 : While calling fn:document-uri "
                                                                                    + "function without an argument, a context node must be available", 
                                                                                    srcLocator);
       		  }
@@ -137,37 +138,29 @@ public class FuncBaseUri extends FunctionDef1Arg
     }
     
     /**
-     * Find and return an XML base uri of an xdm node.
+     * Find and return an XML document uri of an xdm node.
      * 
-     * (as per XPath Data Model specification, XML base uri of only document, element 
-     * and PI nodes are available [which could possibly be null as well, for e.g when 
-     * an XML document object has not been constructed from an XML document file or 
-     * a url location]. For all other kinds of xdm nodes, XML base uri is null)
-     * 
-     * An XML base uri of a node, is either uri of the document to which an xdm node
-     * belongs, or value of an XML attribute named xml:base (if an XML attribute named 
-     * xml:base is present, then it overrides XML document's uri for the value of 
-     * xdm base uri) present on an xdm element node (an XML attribute named xml:base on 
-     * an element node itself, or on nearest ancestor element node is considered 
-     * when considering xml:base attribute).
+     * (as per XPath Data Model specification, XML document uri of only document node 
+     * is available [which could possibly be null as well, for e.g when an XML document 
+     * object has not been constructed from an XML document file or a url location]. 
+     * For all other kinds of xdm nodes, XML document uri is null)
      * 
      * @param nodeSet    an xdm node object    
      * @param dtmMgr     XalanJ XSL transformer's DTMManager object
-     * @return           XML base uri of the node as string value
+     * @return           XML document uri of the node as string value
      * @throws           TransformerException 
      */
-    private String getXdmNodeBaseUri(XNodeSet nodeSet, DTMManager dtmMgr) {
-       String xmlBaseUri = null;
+    private String getXdmNodeDocumentUri(XNodeSet nodeSet, DTMManager dtmMgr) {
+       String xmlDocumentUri = null;
               
        int nodeHandle = nodeSet.nextNode();
 	   DTM dtm = dtmMgr.getDTM(nodeHandle);
 	   short nodeType = dtm.getNodeType(nodeHandle);
-	   if ((nodeType == DTM.DOCUMENT_NODE) || (nodeType == DTM.ELEMENT_NODE) || 
-				                              (nodeType == DTM.PROCESSING_INSTRUCTION_NODE)) {
+	   if (nodeType == DTM.DOCUMENT_NODE) {
 		  Node node = dtm.getNode(nodeHandle);
-		  xmlBaseUri = node.getBaseURI();
+		  xmlDocumentUri = ((Document)node).getDocumentURI();
 	   }
               
-       return xmlBaseUri;
+       return xmlDocumentUri;
     }
 }

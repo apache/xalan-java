@@ -58,7 +58,7 @@ public class FuncNodeName extends FunctionDef1Arg {
 	       String nodeLocalName = node.getLocalName();
 	       String namespaceUri = node.getNamespaceURI();
 	       String nodeNamePrefix = node.getPrefix();
-	       result = new XSQName(nodeLocalName, namespaceUri, nodeNamePrefix);
+	       result = new XSQName(nodeNamePrefix, nodeLocalName, namespaceUri);
 	    }
 	
 	    return result;

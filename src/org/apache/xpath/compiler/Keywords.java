@@ -526,6 +526,9 @@ public class Keywords
   /** base-uri function string. */
   public static final String FUNC_BASE_URI = "base-uri";
   
+  /** document-uri function string. */
+  public static final String FUNC_DOCUMENT_URI = "document-uri";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
