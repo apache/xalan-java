@@ -819,9 +819,9 @@ public class ElemForEachGroup extends ElemTemplateElement
       }
       else if (xpathEvalResult instanceof XSQName) {
     	  XSQName qName = (XSQName)xpathEvalResult;
-    	  String localName = qName.getLocalName();
+    	  String localPart = qName.getLocalPart();
     	  String namespaceUri = qName.getNamespaceUri();
-    	  xpathRawResult = localName + ((namespaceUri == null) ? "" : ":" + namespaceUri); 
+    	  xpathRawResult = localPart + ((namespaceUri == null) ? "" : ":" + namespaceUri); 
       }
       else if (xpathEvalResult instanceof XSString) {
           xpathRawResult = ((XSString)xpathEvalResult).stringValue();  

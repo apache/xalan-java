@@ -386,6 +386,9 @@ public class FunctionTable
   
   /** The 'base-uri()' id. */
   public static final int FUNC_BASE_URI = 120;
+  
+  /** The 'document-uri()' id. */
+  public static final int FUNC_DOCUMENT_URI = 121;
 
   // Proprietary
 
@@ -443,7 +446,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 121;
+  private static final int NUM_BUILT_IN_FUNCS = 122;
 
   /**
    * Number of built-in functions that may be added.
@@ -668,6 +671,7 @@ public class FunctionTable
     
     m_functions[FUNC_DEFAULT_COLLATION] = org.apache.xpath.functions.FuncDefaultCollation.class;
     m_functions[FUNC_BASE_URI] = org.apache.xpath.functions.FuncBaseUri.class;
+    m_functions[FUNC_DOCUMENT_URI] = org.apache.xpath.functions.FuncDocumentUri.class;
     
   }
 
@@ -925,6 +929,8 @@ public class FunctionTable
                          new Integer(FunctionTable.FUNC_DEFAULT_COLLATION));
          m_functionID.put(Keywords.FUNC_BASE_URI,
                          new Integer(FunctionTable.FUNC_BASE_URI));
+         m_functionID.put(Keywords.FUNC_DOCUMENT_URI,
+                         new Integer(FunctionTable.FUNC_DOCUMENT_URI));
   }
   
   public FunctionTable(){

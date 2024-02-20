@@ -23,19 +23,19 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XPath 3.1 function fn:base-uri test cases.
+ * XPath 3.1 function fn:document-uri test cases.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FnBaseUriTests extends XSLTransformTestsUtil {        
+public class FnDocumentUriTests extends XSLTransformTestsUtil {        
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX 
-    		                                                                                               + "fn_base_uri/";
+    		                                                                                               + "fn_document_uri/";
     
     private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX 
-    		                                                                                             + "fn_base_uri/gold/";
+    		                                                                                             + "fn_document_uri/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -50,23 +50,13 @@ public class FnBaseUriTests extends XSLTransformTestsUtil {
     }
 
     @Test
-    public void xslFnBaseUriTest1() {
+    public void xslFnDocumentUriTest1() {
         String xmlDocumentUri= "https://xalan.apache.org/xalan-j/xsl3/tests/data/test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";                
         
         runXslUriTransformAndAssertOutput(xmlDocumentUri, xslFilePath, goldFilePath, null);
-    }
-    
-    @Test
-    public void xslFnBaseUriTest2() {
-    	String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
-        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
-        
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";                
-        
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
 
 }
