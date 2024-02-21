@@ -410,6 +410,9 @@ public class Keywords
   
   /** xs:anyURI data type string. */
   public static final String XS_ANY_URI = "anyURI";
+  
+  /** xs:QName data type string. */
+  public static final String XS_QNAME = "QName";
     
   /** xs:anyAtomicType data type string. */
   public static final String XS_ANY_ATOMIC_TYPE = "anyAtomicType";
@@ -528,6 +531,12 @@ public class Keywords
   
   /** document-uri function string. */
   public static final String FUNC_DOCUMENT_URI = "document-uri";
+  
+  /** resolve-QName function string. */
+  public static final String FUNC_RESOLVE_QNAME = "resolve-QName";
+  
+  /** QName function string. */
+  public static final String FUNC_XPATH31_QNAME = "QName";
   
   // Proprietary, built in functions
 

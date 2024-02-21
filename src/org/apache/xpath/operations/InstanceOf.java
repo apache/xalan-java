@@ -49,6 +49,7 @@ import xml.xpath31.processor.types.XSInt;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSLong;
 import xml.xpath31.processor.types.XSNormalizedString;
+import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSTime;
 import xml.xpath31.processor.types.XSToken;
@@ -127,6 +128,10 @@ public class InstanceOf extends Operation
       }
       else if ((xdmValue instanceof XSAnyURI) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_URI) || 
     		                                      (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSQName) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.XS_QNAME) || 
+                                                 (seqTypedData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
       else if (((xdmValue instanceof XBoolean) || (xdmValue instanceof XSBoolean)) && ((seqTypedData.getSequenceType() == SequenceTypeSupport.BOOLEAN) || 
