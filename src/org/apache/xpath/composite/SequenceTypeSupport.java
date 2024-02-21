@@ -119,6 +119,8 @@ public class SequenceTypeSupport {
     public static int XS_TOKEN = 19;
     
     public static int XS_ANY_URI = 20;
+    
+    public static int XS_QNAME = 21;
         
     public static int XS_ANY_ATOMIC_TYPE = 50;
     
