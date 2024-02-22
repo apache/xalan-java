@@ -1497,9 +1497,22 @@ abstract public class ToStream extends SerializerBase
       // that was processed
       final Writer writer = m_writer;
       boolean isAllWhitespace = true;
-
-      // process any leading whitespace
       i = start;
+      
+      // Note: The case where m_pendingHighUTF16Surrogate is set upon entry
+      // but the first character is not the low surrogate is perplexing.
+      // THEORETICALLY, everything but characters() should recognize that
+      // case as meaning characters() just ended abnormally and flush or
+      // report the isolated high surrogate before they start, rather than
+      // leaving it for us to erroneously insert into the next character block.
+      // But that's a pretty pervasive change for a rare error case.
+      //
+      // (Not handling it that way risks the high surrogate being flushed into
+      // the start of the next characters() block, and that in turn would need
+      // a special case here or it would be flushed after the whitespace...
+      // This needs more thought. GONK TODO REVIEW.
+          
+      // process any leading whitespace
       while (i < end && isAllWhitespace) {
         char ch1 = chars[i];
 
@@ -1558,6 +1571,7 @@ abstract public class ToStream extends SerializerBase
         m_ispreserve = true;
 
 
+      // Process characters after initial whitespace (if any)
       for (; i < end; i++)
       {
         char ch = chars[i];
@@ -1571,117 +1585,103 @@ abstract public class ToStream extends SerializerBase
           writer.write(outputStringForChar);
           lastDirtyCharProcessed = i;
         }
-        else {
-          if (ch <= 0x1F) {
-            // Range 0x00 through 0x1F inclusive
-            //
-            // This covers the non-whitespace control characters
-            // in the range 0x1 to 0x1F inclusive.
-            // It also covers the whitespace control characters in the same way:
-            // 0x9   TAB
-            // 0xA   NEW LINE
-            // 0xD   CARRIAGE RETURN
-            //
-            // We also cover 0x0 ... It isn't valid
-            // but we will output "&#0;" 
+        else if (ch <= 0x1F) {
+          // Range 0x00 through 0x1F inclusive
+          //
+          // This covers the non-whitespace control characters
+          // in the range 0x1 to 0x1F inclusive.
+          // It also covers the whitespace control characters in the same way:
+          // 0x9   TAB
+          // 0xA   NEW LINE
+          // 0xD   CARRIAGE RETURN
+          //
+          // We also cover 0x0 ... It isn't valid
+          // but we will output "&#0;" 
 
-            // The default will handle this just fine, but this
-            // is a little performance boost to handle the more
-            // common TAB, NEW-LINE, CARRIAGE-RETURN
-            switch (ch) {
+          // The default will handle this just fine, but this
+          // is a little performance boost to handle the more
+          // common TAB, NEW-LINE, CARRIAGE-RETURN
+          switch (ch) {
 
-            case CharInfo.S_HORIZONAL_TAB:
-              // Leave whitespace TAB as a real character
-              break;
-            case CharInfo.S_LINEFEED:
-              lastDirtyCharProcessed = processLineFeed(chars, i, lastDirtyCharProcessed, writer);
-              break;
-            case CharInfo.S_CARRIAGERETURN:
-              writeOutCleanChars(chars, i, lastDirtyCharProcessed);
-              writer.write("&#13;");
-              lastDirtyCharProcessed = i;
-              // Leave whitespace carriage return as a real character
-              break;
-            default:
-              writeOutCleanChars(chars, i, lastDirtyCharProcessed);
-              writer.write("&#");
-              writer.write(Integer.toString(ch));
-              writer.write(';');
-              lastDirtyCharProcessed = i;
-              break;
-
-            }
-          }
-          else if (ch < 0x7F) {  
-            // Range 0x20 through 0x7E inclusive
-            // Normal ASCII chars, do nothing, just add it to
-            // the clean characters
-
-          }
-          else if (ch <= 0x9F){
-            // Range 0x7F through 0x9F inclusive
-            // More control characters, including NEL (0x85)
+          case CharInfo.S_HORIZONAL_TAB:
+            // Leave whitespace TAB as a real character
+            break;
+          case CharInfo.S_LINEFEED:
+            lastDirtyCharProcessed = processLineFeed(chars, i, lastDirtyCharProcessed, writer);
+            break;
+          case CharInfo.S_CARRIAGERETURN:
+            writeOutCleanChars(chars, i, lastDirtyCharProcessed);
+            writer.write("&#13;");
+            lastDirtyCharProcessed = i;
+            // Leave whitespace carriage return as a real character
+            break;
+          default:
             writeOutCleanChars(chars, i, lastDirtyCharProcessed);
             writer.write("&#");
             writer.write(Integer.toString(ch));
             writer.write(';');
             lastDirtyCharProcessed = i;
-          }
-          else if (ch == CharInfo.S_LINE_SEPARATOR) {
-            // LINE SEPARATOR
-            writeOutCleanChars(chars, i, lastDirtyCharProcessed);
-            writer.write("&#8232;");
-            lastDirtyCharProcessed = i;
-          }
-          else if (m_encodingInfo.isInEncoding(ch)) {
-            // If the character is in the encoding, and
-            // not in the normal ASCII range, we also
-            // just leave it get added on to the clean characters
-          }
-          //                    else if (Encodings.isHighUTF16Surrogate(ch) && i < end-1 && Encodings.isLowUTF16Surrogate(chars[i+1])) {
-          //                      // So, this is a (valid) surrogate pair
-          //                      if (! m_encodingInfo.isInEncoding(ch, chars[i+1])) {
-          //                        int codepoint = Encodings.toCodePoint(ch, chars[i+1]);
-          //                        writeOutCleanChars(chars, i, lastDirtyCharProcessed);
-          //                        writer.write("&#");
-          //                        writer.write(Integer.toString(codepoint));
-          //                        writer.write(';');
-          //                        lastDirtyCharProcessed = i+1;
-          //                      }  // Else pair is in encoding, not "dirty", just copy
-          //                      i++; // skip the low surrogate, too
-          //                    }
-          else if (Encodings.isHighUTF16Surrogate(ch)) {
-            writeOutCleanChars(chars,i,lastDirtyCharProcessed);
-            m_pendingHighUTF16Surrogate=ch;
-            lastDirtyCharProcessed=i;
-          }
-          else if (Encodings.isLowUTF16Surrogate(ch)) {
-            if(m_encodingInfo.isInEncoding(m_pendingHighUTF16Surrogate,ch)) {
-              char[] buffer= {m_pendingHighUTF16Surrogate,ch};
-              writer.write(buffer);
-            } else {
-              // Clean characters should have been flushed by high surrogate
-              int codepoint = Encodings.toCodePoint(m_pendingHighUTF16Surrogate,ch);
-              writer.write("&#");
-              writer.write(Integer.toString(codepoint));
-              writer.write(';');
-            }
-            m_pendingHighUTF16Surrogate=0;
-            lastDirtyCharProcessed=i;                      
-          }
-          else {
-            // This is a fallback plan, we get here if the
-            // encoding doesn't contain ch and it's not part
-            // of a surrogate pair
-            // The right thing is to write out an entity
-            writeOutCleanChars(chars, i, lastDirtyCharProcessed);
-            writer.write("&#");
-            writer.write(Integer.toString(ch));
-            writer.write(';');
-            lastDirtyCharProcessed = i;
+            break;
+
           }
         }
-      }
+        else if (ch < 0x7F) {  
+          // Range 0x20 through 0x7E inclusive
+          // Normal ASCII chars, do nothing, just add it to
+          // the clean characters
+
+        }
+        else if (ch <= 0x9F){
+          // Range 0x7F through 0x9F inclusive
+          // More control characters, including NEL (0x85)
+          writeOutCleanChars(chars, i, lastDirtyCharProcessed);
+          writer.write("&#");
+          writer.write(Integer.toString(ch));
+          writer.write(';');
+          lastDirtyCharProcessed = i;
+        }
+        else if (ch == CharInfo.S_LINE_SEPARATOR) {
+          // LINE SEPARATOR
+          writeOutCleanChars(chars, i, lastDirtyCharProcessed);
+          writer.write("&#8232;");
+          lastDirtyCharProcessed = i;
+        }
+        else if (m_encodingInfo.isInEncoding(ch)) {
+          // If the character is in the encoding, and
+          // not in the normal ASCII range, we also
+          // just leave it get added on to the clean characters
+        }
+        else if (Encodings.isLowUTF16Surrogate(ch)) {
+          if(m_encodingInfo.isInEncoding(m_pendingHighUTF16Surrogate,ch)) {
+            char[] buffer= {m_pendingHighUTF16Surrogate,ch};
+            writer.write(buffer);
+          } else {
+            // Clean characters should have been flushed by high surrogate
+            int codepoint = Encodings.toCodePoint(m_pendingHighUTF16Surrogate,ch);
+            writer.write("&#");
+            writer.write(Integer.toString(codepoint));
+            writer.write(';');
+          }
+          m_pendingHighUTF16Surrogate=0;
+          lastDirtyCharProcessed=i;                      
+        }
+        else if (Encodings.isHighUTF16Surrogate(ch)) {
+          writeOutCleanChars(chars,i,lastDirtyCharProcessed);
+          m_pendingHighUTF16Surrogate=ch;
+          lastDirtyCharProcessed=i;
+        }
+        else {
+          // This is a fallback plan, we get here if the
+          // encoding doesn't contain ch and it's not part
+          // of a surrogate pair
+          // The right thing is to write out an entity
+          writeOutCleanChars(chars, i, lastDirtyCharProcessed);
+          writer.write("&#");
+          writer.write(Integer.toString(ch));
+          writer.write(';');
+          lastDirtyCharProcessed = i;
+        }
+      } // end input scan loop
 
       // we've reached the end. Any clean characters at the
       // end of the array than need to be written out?
