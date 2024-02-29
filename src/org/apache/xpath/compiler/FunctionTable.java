@@ -26,7 +26,6 @@ import java.util.List;
 
 import javax.xml.transform.TransformerException;
 
-import org.apache.xpath.functions.FuncXPath31QName;
 import org.apache.xpath.functions.Function;
 
 /**
@@ -397,6 +396,15 @@ public class FunctionTable
   
   /** The 'QName()' id. */
   public static final int FUNC_XPATH31_QNAME = 123;
+  
+  /** The 'array:size()' id. */
+  public static final int FUNC_ARRAY_SIZE = 124;
+  
+  /** The 'array:get()' id. */
+  public static final int FUNC_ARRAY_GET = 125;
+  
+  /** The 'array:put()' id. */
+  public static final int FUNC_ARRAY_PUT = 126;
 
   // Proprietary
 
@@ -408,7 +416,7 @@ public class FunctionTable
    * available to XPath 3.1 language users. The XPath functions available within
    * this namespace, may be used without binding the function name with an XML 
    * namespace, or binding with a non-null XML namespace (the commonly used XML 
-   * namespace prefix for this namespace uri is "fn", as suggested by
+   * namespace prefix for this namespace uri is "fn", as specified by
    * XPath 3.1 spec).
    */
   static final String XPATH_BUILT_IN_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions";
@@ -417,7 +425,7 @@ public class FunctionTable
    * XPath 3.1 built-in functions namespace uri, for maths trigonometric and exponential 
    * functions. The XPath functions available within this namespace, must be used by 
    * qualifying the function name with an XML namespace bound to this uri (the commonly 
-   * used XML namespace prefix for this namespace uri is "math", as suggested by 
+   * used XML namespace prefix for this namespace uri is "math", as specified by 
    * XPath 3.1 spec).
    */
   static final String XPATH_BUILT_IN_MATH_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions/math";
@@ -430,7 +438,20 @@ public class FunctionTable
                                                                new Integer(FUNC_MATH_ASIN), new Integer(FUNC_MATH_ACOS),
                                                                new Integer(FUNC_MATH_ATAN), new Integer(FUNC_MATH_ATAN2) };
   
-  static final List<Integer> XPATH_MATH_FUNC_IDS_ARR = Arrays.asList(XPATH_MATH_FUNC_IDS); 
+  static final List<Integer> XPATH_MATH_FUNC_IDS_ARR = Arrays.asList(XPATH_MATH_FUNC_IDS);
+  
+  /**
+   * XPath 3.1 built-in functions namespace uri, for array related functions. The XPath functions available 
+   * within this namespace, must be used by qualifying the function name with an XML namespace bound to this 
+   * uri (the commonly used XML namespace prefix for this namespace uri is "array", as specified by 
+   * XPath 3.1 spec).
+   */
+  static final String XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions/array";
+    
+  static final Integer[] XPATH_ARRAY_FUNC_IDS = new Integer[] { new Integer(FUNC_ARRAY_SIZE), new Integer(FUNC_ARRAY_GET),
+		                                                        new Integer(FUNC_ARRAY_PUT) };
+  
+  static final List<Integer> XPATH_ARRAY_FUNC_IDS_ARR = Arrays.asList(XPATH_ARRAY_FUNC_IDS);  
 
   /**
    * The function table.
@@ -454,7 +475,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 124;
+  private static final int NUM_BUILT_IN_FUNCS = 127;
 
   /**
    * Number of built-in functions that may be added.
@@ -682,6 +703,12 @@ public class FunctionTable
     m_functions[FUNC_DOCUMENT_URI] = org.apache.xpath.functions.FuncDocumentUri.class;
     m_functions[FUNC_RESOLVE_QNAME] = org.apache.xpath.functions.FuncResolveQName.class;
     m_functions[FUNC_XPATH31_QNAME] = org.apache.xpath.functions.FuncXPath31QName.class;
+    
+    // XPath 3.1 built-in functions configurations for the array 
+    // functions namespace http://www.w3.org/2005/xpath-functions/array    
+    m_functions[FUNC_ARRAY_SIZE] = org.apache.xpath.functions.array.FuncArraySize.class;
+    m_functions[FUNC_ARRAY_GET] = org.apache.xpath.functions.array.FuncArrayGet.class;
+    m_functions[FUNC_ARRAY_PUT] = org.apache.xpath.functions.array.FuncArrayPut.class;
     
   }
 
@@ -945,6 +972,15 @@ public class FunctionTable
                          new Integer(FunctionTable.FUNC_RESOLVE_QNAME));
          m_functionID.put(Keywords.FUNC_XPATH31_QNAME,
                          new Integer(FunctionTable.FUNC_XPATH31_QNAME));
+         
+         // XPath 3.1 functions configurations for the math functions 
+         // namespace http://www.w3.org/2005/xpath-functions/array
+         m_functionID.put(Keywords.FUNC_ARRAY_SIZE,
+                          new Integer(FunctionTable.FUNC_ARRAY_SIZE));
+         m_functionID.put(Keywords.FUNC_ARRAY_GET,
+                          new Integer(FunctionTable.FUNC_ARRAY_GET));
+         m_functionID.put(Keywords.FUNC_ARRAY_PUT,
+                          new Integer(FunctionTable.FUNC_ARRAY_PUT));
   }
   
   public FunctionTable(){

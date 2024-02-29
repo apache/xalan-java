@@ -538,6 +538,15 @@ public class Keywords
   /** QName function string. */
   public static final String FUNC_XPATH31_QNAME = "QName";
   
+  /** array:size function string. */
+  public static final String FUNC_ARRAY_SIZE = "size";
+  
+  /** array:get function string. */
+  public static final String FUNC_ARRAY_GET = "get";
+  
+  /** array:put function string. */
+  public static final String FUNC_ARRAY_PUT = "put";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
