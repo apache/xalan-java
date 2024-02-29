@@ -145,6 +145,8 @@ public class Compiler extends OpMap
       expr = ifExpr(opPos); break;
     case OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR :
       expr = sequenceConstructorExpr(opPos); break;
+    case OpCodes.OP_SQUARE_ARRAY_CONSTRUCTOR_EXPR :
+      expr = squareArrayConstructorExpr(opPos); break;
     case OpCodes.OP_OR :
       expr = or(opPos); break;
     case OpCodes.OP_AND :
@@ -1450,6 +1452,14 @@ private static final boolean DEBUG = false;
   Expression sequenceConstructorExpr(int opPos) throws TransformerException
   {
       return XPathParser.fSimpleSequenceConstructor;
+  }
+  
+  /**
+   * Compile an XPath square array constructor, expression.
+   */
+  Expression squareArrayConstructorExpr(int opPos) throws TransformerException
+  {
+      return XPathParser.fSquareArrayConstructor;
   }
 
   // The current id for extension functions.

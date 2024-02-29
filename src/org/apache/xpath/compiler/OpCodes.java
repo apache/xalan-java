@@ -740,8 +740,10 @@ public class OpCodes
    * @xsl.usage advanced
    */
   public static final int OP_CAST_AS = 75;
+  
+  public static final int OP_SQUARE_ARRAY_CONSTRUCTOR_EXPR = 76;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 76;
+  private static final int NEXT_FREE_ID = 77;
   
 }

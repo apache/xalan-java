@@ -43,6 +43,7 @@ import org.apache.xpath.composite.SequenceTypeFunctionTest;
 import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.SimpleSequenceConstructor;
+import org.apache.xpath.composite.SquareArrayConstructor;
 import org.apache.xpath.composite.XPathSequenceTypeExpr;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
 import org.apache.xpath.functions.DynamicFunctionCall;
@@ -135,6 +136,8 @@ public class XPathParser
   static IfExpr fIfExpr = null;
   
   static SimpleSequenceConstructor fSimpleSequenceConstructor = null;
+  
+  static SquareArrayConstructor fSquareArrayConstructor = null;
   
   static XPathSequenceTypeExpr fXpathSequenceTypeExpr = null;
   
@@ -1111,8 +1114,13 @@ public class XPathParser
    */
   protected void Expr() throws javax.xml.transform.TransformerException
   {
-      if (fIsBeginParse && tokenIs("(")) {
-          // We implement within this 'if' branch, the XPath expression parse 
+      if (fIsBeginParse && (tokenIs("(") || tokenIs("["))) {
+    	  boolean isSquareArrayConstructor = false;
+    	  if (tokenIs("[")) {
+    		 isSquareArrayConstructor = true; 
+    	  }
+    	  
+          // We implement within this code block, the XPath expression parse 
           // with following mentioned two pass approach,
           // 1) The first pass, determines whether XPath 3.1's sequence (using comma
           //    operator, to separate each of the sequence operands mentioned with 
@@ -1121,6 +1129,10 @@ public class XPathParser
           //    parse an XPath expression delimited by braces '(' and ')'.
           // 2) The second pass, is XPath parsing as usual, using the result
           //    determined during step 1) as mentioned above.
+    	  
+    	  // This code block, also handles XPath parse of use of arrays constructed
+    	  // using square array constructor syntax.
+    	  
           nextToken();
           
           List<String> sequenceConstructorXPathParts = new ArrayList<String>();
@@ -1144,7 +1156,12 @@ public class XPathParser
                                                   m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
               
               return;
-          }                    
+          }          
+          else if (tokenIs(']') && (getTokenRelative(0) == null)) {
+             // handles the case, where the XPath expression is []
+        	 
+        	 // TO DO
+          }
           
           while (m_token != null)
           {                            
@@ -1232,11 +1249,18 @@ public class XPathParser
               
               nextToken();
               
-              insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
-              
-              fSimpleSequenceConstructor = new SimpleSequenceConstructor();              
-              fSimpleSequenceConstructor.setSequenceConstructorXPathParts(
-                                                             sequenceConstructorXPathParts);
+              if (isSquareArrayConstructor) {
+            	 insertOp(opPos, 2, OpCodes.OP_SQUARE_ARRAY_CONSTRUCTOR_EXPR);
+            	 fSquareArrayConstructor = new SquareArrayConstructor();              
+            	 fSquareArrayConstructor.setSquareArrayConstructorXPathParts(
+                                                                sequenceConstructorXPathParts);
+              }
+              else {
+                 insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+                 fSimpleSequenceConstructor = new SimpleSequenceConstructor();              
+                 fSimpleSequenceConstructor.setSequenceConstructorXPathParts(
+                                                                sequenceConstructorXPathParts);
+              }
               
               m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
                                              m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -2762,6 +2786,11 @@ public class XPathParser
              error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
                    new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  
          }
+         else if ((FunctionTable.XPATH_ARRAY_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
+             funcTok = -1;
+             error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
+                   new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  
+         }
 
          switch (funcTok)
          {
@@ -2813,6 +2842,40 @@ public class XPathParser
 
          nextToken();
       }
+      else if (tokenIs(FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI)) 
+      {
+         nextToken();
+         consumeExpected(':');
+         
+         int funcTok = getFunctionToken(m_token);
+
+         if (-1 == funcTok)
+         {
+           error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
+                 new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI + "}" + m_token + "()"});
+         }
+         else if (!(FunctionTable.XPATH_ARRAY_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
+             funcTok = -1;
+             error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
+                   new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI + "}" + m_token + "()"});  
+         }
+
+         switch (funcTok)
+         {
+            case OpCodes.NODETYPE_PI :
+            case OpCodes.NODETYPE_COMMENT :
+            case OpCodes.NODETYPE_TEXT :
+            case OpCodes.NODETYPE_NODE :
+              // Node type tests look like function calls, but they're not
+              return false;
+            default :
+              appendOp(3, OpCodes.OP_FUNCTION);
+
+            m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1, funcTok);
+         }
+
+         nextToken();
+      }
       else {  
         appendOp(4, OpCodes.OP_EXTFUNCTION);
 
@@ -2836,6 +2899,11 @@ public class XPathParser
               new Object[]{"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});
       }
       else if ((FunctionTable.XPATH_MATH_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
+          funcTok = -1;
+          error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
+                new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  
+      }
+      else if ((FunctionTable.XPATH_ARRAY_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
           funcTok = -1;
           error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
                 new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  

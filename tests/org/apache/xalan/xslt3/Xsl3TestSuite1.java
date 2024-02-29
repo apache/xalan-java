@@ -30,6 +30,7 @@ import org.apache.xalan.xpath3.FnResolveQNameTests;
 import org.apache.xalan.xpath3.InlineFunctionItemExprTests;
 import org.apache.xalan.xpath3.StringTests;
 import org.apache.xalan.xpath3.ValueComparisonTests;
+import org.apache.xalan.xpath3.XPathArrayTests;
 import org.apache.xalan.xpath3.XsConstructorFunctionTests;
 import org.apache.xalan.xpath3.XsDateTimeArithmeticTests;
 import org.apache.xalan.xpath3.XsDateTimeTests;
@@ -56,7 +57,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnDeepEqualTests.class, XSLImportSchemaTests.class, FnDateTimeTests.class,
                 XmlDotComHigherOrderFunctionsTests.class, FnDefaultCollation.class,
                 FnBaseUriTests.class, FnDocumentUriTests.class, FnResolveQNameTests.class,
-                FnQNameTests.class })
+                FnQNameTests.class, XPathArrayTests.class })
 public class Xsl3TestSuite1 {
 
 }

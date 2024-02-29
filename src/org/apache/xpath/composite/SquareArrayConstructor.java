@@ -44,18 +44,18 @@ import xml.xpath31.processor.types.XSNumericType;
 
 /*
  * The XalanJ XPath parser, creates and populates an object of this class, 
- * to help produce an XDM sequence constructed using an XPath expression having
- * one or more occurrences of comma operator.
+ * to help produce an XDM array constructed using XPath square array 
+ * constructor.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class SimpleSequenceConstructor extends Expression {
-
-    private static final long serialVersionUID = -5141131877741250613L;
+public class SquareArrayConstructor extends Expression {
     
-    private List<String> sequenceConstructorXPathParts = new ArrayList<String>();
+	private static final long serialVersionUID = 6480756741454381402L;
+
+	private List<String> sqrArrayConstructorXPathParts = new ArrayList<String>();
     
     // The following two fields of this class, are used during 
     // XPath.fixupVariables(..) action as performed within object of 
@@ -84,11 +84,11 @@ public class SimpleSequenceConstructor extends Expression {
         }
         
         // We evaluate below all the, XPath expression parts within the list 
-        // 'sequenceConstructorXPathParts', and concatenate the sequences resulting
+        // 'sqrArrayConstructorXPathParts', and concatenate the sequences resulting
         // from each of them, to get the final result sequence that is returned by
         // this method.
-        for (int idx = 0; idx < sequenceConstructorXPathParts.size(); idx++) {
-           String xpathExprStr = sequenceConstructorXPathParts.get(idx);
+        for (int idx = 0; idx < sqrArrayConstructorXPathParts.size(); idx++) {
+           String xpathExprStr = sqrArrayConstructorXPathParts.get(idx);
            
            if (prefixTable != null) {
               xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, 
@@ -151,26 +151,26 @@ public class SimpleSequenceConstructor extends Expression {
                       xpathIndexObj.fixupVariables(fVars, fGlobalsSize);
                    }
                    
-                   XObject seqIndexEvalResult = xpathIndexObj.execute(xctxt, xctxt.getCurrentNode(), 
+                   XObject arrIndexEvalResult = xpathIndexObj.execute(xctxt, xctxt.getCurrentNode(), 
                                                                                                 xctxt.getNamespaceContext());
                    
                    if (varEvalResult instanceof ResultSequence) {
                        ResultSequence varEvalResultSeq = (ResultSequence)varEvalResult; 
                        
-                       if (seqIndexEvalResult instanceof XNumber) {
-                          double dValIndex = ((XNumber)seqIndexEvalResult).num();
+                       if (arrIndexEvalResult instanceof XNumber) {
+                          double dValIndex = ((XNumber)arrIndexEvalResult).num();
                           if (dValIndex == (int)dValIndex) {
                              XObject evalResult = varEvalResultSeq.item((int)dValIndex - 1);
                              resultSeq.add(evalResult);
                           }
                           else {
                               throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
-                                                                                       + "sequence reference, is not an integer.", 
+                                                                                       + "array reference, is not an integer.", 
                                                                                               srcLocator);  
                           }
                        }
-                       else if (seqIndexEvalResult instanceof XSNumericType) {
-                          String indexStrVal = ((XSNumericType)seqIndexEvalResult).stringValue();
+                       else if (arrIndexEvalResult instanceof XSNumericType) {
+                          String indexStrVal = ((XSNumericType)arrIndexEvalResult).stringValue();
                           double dValIndex = (Double.valueOf(indexStrVal)).doubleValue();
                           if (dValIndex == (int)dValIndex) {
                              XObject evalResult = varEvalResultSeq.item((int)dValIndex - 1);
@@ -178,12 +178,12 @@ public class SimpleSequenceConstructor extends Expression {
                           }
                           else {
                               throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
-                                                                                       + "sequence reference, is not an integer.", 
+                                                                                       + "array reference, is not an integer.", 
                                                                                               srcLocator);  
                           }
                        }
                        else {
-                           throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm sequence "
+                           throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm array "
                                                                                     + "reference, is not numeric.", srcLocator);  
                        }
                    }
@@ -235,13 +235,12 @@ public class SimpleSequenceConstructor extends Expression {
         return false;
     }
 
-    public List<String> getSequenceConstructorXPathParts() {
-        return sequenceConstructorXPathParts;
+    public List<String> getSquareArrayConstructorXPathParts() {
+        return sqrArrayConstructorXPathParts;
     }
 
-    public void setSequenceConstructorXPathParts(List<String> 
-                                                        sequenceConstructorXpathParts) {
-        this.sequenceConstructorXPathParts = sequenceConstructorXpathParts;
+    public void setSquareArrayConstructorXPathParts(List<String> squareArrayConstructorXPathParts) {
+        this.sqrArrayConstructorXPathParts = squareArrayConstructorXPathParts;
     }
 
 }
