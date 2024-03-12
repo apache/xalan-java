@@ -689,11 +689,27 @@ Used by: Xalan-Java 2, Xalan-C++
  */
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+The following, java software artifacts that're provided as part of XalanJ's 
+implementation, are provided under Mozilla Public License (MPL) 2.0:
 
-The following license applies to the jar file 
-rhino-1.7.14.jar - JavaScript implementation in Java
+1) Java jar library 'rhino-1.7.14.jar' : JavaScript implementation in Java
 Source:  https://github.com/mozilla/rhino
 Used by: Xalan-Java 2's non Java extensions
+
+2) The following parts of java code within XalanJ's XSLT 3.0 implementation class 
+org.apache.xpath.XPathCollationSupport's method 'compareStringsUsingCollation' :
+The "HTML ASCII Case-Insensitive Collation"'s implementation, as specified by XPath 3.1 
+F&O spec. These parts of XalanJ's XSLT 3.0 implementation code, have been borrowed from 
+Saxon-HE XSLT 3.0 processor (which is licensed under MPL 2.0).
+
+3) Many of the XalanJ's XSLT 3.0 and XPath 3.1 test cases, are written by
+mimicking Saxon-HE XSLT 3.0 processor's XSL transformations output. This
+has helped XalanJ's XSLT 3.0 implementation achieve similar XSL transformation
+behavior as exhibited by Saxon-HE XSLT 3.0 processor, to large extent. Although,
+the XSL transformation's lexical code of many of these test cases is provided under 
+Apache License version 2.0 [these phrases as written within this point, are for 
+information purpose], but these test cases's expected output (that're based on 
+Saxon-HE XSLT 3.0 processor) results are provided under Mozilla Public License (MPL).
 
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 The majority of Rhino is licensed under the MPL 2.0:

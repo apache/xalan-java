@@ -27,10 +27,9 @@ import java.util.Map;
 import javax.xml.transform.TransformerException;
 
 /**
- * This class provides, collation support for XalanJ's XPath 3.1 
+ * This class provides, collation (used for, string comparison and 
+ * sorting of strings) support for XalanJ's XPath 3.1 
  * implementation.
- * 
- * Ref : https://www.w3.org/TR/xpath-functions-31/#collations
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *
