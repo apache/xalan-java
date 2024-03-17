@@ -176,7 +176,7 @@ class NumeratorFormatter
    * @param prefixesAreOK true_ to enable prefix notation (e.g. 4 = "IV"),
    * false_ to disable prefix notation (e.g. 4 = "IIII").
    * @return Roman numeral string.
-   * @see DecimalToRoman
+   * @see org.apache.xalan.transformer.DecimalToRoman
    * @see m_romanConvertTable
    */
   String long2roman(long val, boolean prefixesAreOK)
