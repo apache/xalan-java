@@ -11,6 +11,11 @@
   <artifactId>serializer</artifactId>
   <name>Apache XML Serializer</name>
   <description>Apache's XML serialization layer, as used in the Xalan XSLT processor</description>
+  <licenses>
+    <license>
+      <name>Apache-2.0</name>
+    </license>
+  </licenses>
 
   <dependencies>
     <!-- For javadoc generation only, hence 'provided' scope -->

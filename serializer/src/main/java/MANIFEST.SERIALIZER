@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 Created-By: @java.version@ (@java.vendor@)
 Main-Class: org.apache.xml.serializer.Version
 Class-Path: xml-apis.jar
+Bundle-License: Apache-2.0; link="http://opensource.org/licenses/apache2.0.php"
 
 Name: org/apache/xml/serializer/
 Comment: Serializer to write out XML, HTML etc. as a stream of characters from an input DOM or from input SAX events.

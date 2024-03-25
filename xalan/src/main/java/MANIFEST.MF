@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Created-By: @java.version@ (@java.vendor@)
 Main-Class: org.apache.xalan.xslt.Process
 Class-Path: xercesImpl.jar xml-apis.jar serializer.jar
-
+Bundle-License: Apache-2.0; link="http://opensource.org/licenses/apache2.0.php"
 
 Name: org/apache/xalan/
 Comment: Main Xalan engine implementing TrAX/JAXP
