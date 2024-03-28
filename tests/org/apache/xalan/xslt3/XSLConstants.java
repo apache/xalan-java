@@ -41,5 +41,10 @@ public class XSLConstants {
     public static final String XSL_TRANSFORM_INPUT_DIRPATH_PREFIX = "Z:/<prefix>/xalanj/xalan-j_xslt3.0/tests/";
     
     public static final String XSL_TRANSFORM_GOLD_DIRPATH_PREFIX = "Z:/<prefix>/xalanj/xalan-j_xslt3.0/tests/";
+    
+    // Currently, one test each within files FnBaseUriTests.java and FnDocumentUriTests.java, require
+    // user workstation running these tests to be connected to web. Specify boolean value of following
+    // class variable to false to disable running these tests.
+    public static final boolean IS_TESTS_USING_ONLINE_URIS_ENABLED = true;
 
 }
