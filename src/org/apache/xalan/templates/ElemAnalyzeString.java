@@ -34,6 +34,8 @@ import org.apache.xpath.functions.RegexEvaluationSupport;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.regex.Matcher;
 
+import xml.xpath31.processor.types.XSString;
+
 /**
  * XSLT 3.0 analyze-string element.
  * 
@@ -230,7 +232,14 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
        
        XObject xpathEvalResult = m_selectExpression.execute(xctxt);
        
-       String strToBeAnalyzed = xpathEvalResult.str();
+       String strToBeAnalyzed = null;
+       
+       if (xpathEvalResult instanceof XSString) {
+          strToBeAnalyzed = ((XSString)xpathEvalResult).stringValue();
+       }
+       else {
+    	  strToBeAnalyzed = xpathEvalResult.str();      	   
+       }
        
        if (m_regex == null) {
            throw new javax.xml.transform.TransformerException("XTSE0010 : xsl:analyze-string element must "
