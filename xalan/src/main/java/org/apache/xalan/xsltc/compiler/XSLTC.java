@@ -860,7 +860,7 @@ public final class XSLTC {
     		  // check that the, class to be serialized to filesystem, is of the valid format.
     		  // check with the native JVM class loader
     		  byte[] classByteArray = clazz.getBytes();
-    		  ByteArrayClassLoader classLoader = new ByteArrayClassLoader(classByteArray);
+    		  ByteArrayClassLoader classLoader = new ByteArrayClassLoader(classByteArray, ObjectFactory.findClassLoader());
     		  Class clz = classLoader.findClass(clazz.getClassName());
     		  
     		  clazz.dump(new BufferedOutputStream(
@@ -881,7 +881,8 @@ public final class XSLTC {
 
         byte[] ba;
         
-        public ByteArrayClassLoader(byte[] bArray) {
+        public ByteArrayClassLoader(byte[] bArray, ClassLoader parent) {
+            super(parent);
             ba = bArray;
         }
         
