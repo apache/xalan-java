@@ -21,13 +21,7 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 import org.apache.bcel.Constants;
 import org.apache.bcel.classfile.Field;
@@ -819,14 +813,13 @@ public class MethodGenerator extends MethodGen
     /**
      * Find the outlineable chunks in this method that would be the best choices
      * to outline, based on size and position in the method.
-     * @param classGen The {@link ClassGen} with which the generated methods
+     * @param classGen The {@link ClassGenerator} with which the generated methods
      *                 will be associated 
      * @param totalMethodSize the size of the bytecode in the original method
      * @return a <code>java.util.ArrayList</code> containing the
      *  {@link MethodGenerator.Chunk}s that may be outlined from this method
      */
-    private ArrayList getCandidateChunks(ClassGenerator classGen,
-                                         int totalMethodSize) {
+    private ArrayList getCandidateChunks(ClassGenerator classGen, int totalMethodSize) {
         Iterator instructions = getInstructionList().iterator();
         ArrayList candidateChunks = new ArrayList();
         ArrayList currLevelChunks = new ArrayList();
@@ -1125,7 +1118,7 @@ public class MethodGenerator extends MethodGen
      * Breaks up the IL for this {@link MethodGenerator} into separate
      * outlined methods so that no method exceeds the 64KB limit on the length
      * of the byte code associated with a method. 
-     * @param classGen The {@link ClassGen} with which the generated methods
+     * @param classGen The {@link ClassGenerator} with which the generated methods
      *                 will be associated
      * @param originalMethodSize The number of bytes of bytecode represented by
      *                 the {@link InstructionList} of this method
@@ -1134,7 +1127,7 @@ public class MethodGenerator extends MethodGen
      */
     public Method[] outlineChunks(ClassGenerator classGen,
                                   int originalMethodSize) {
-        ArrayList methodsOutlined = new ArrayList();
+        List<Method> methodsOutlined = new ArrayList<>();
         int currentMethodSize = originalMethodSize;
 
         int outlinedCount = 0;
@@ -1788,12 +1781,12 @@ public class MethodGenerator extends MethodGen
 
     /**
      * Helper method to generate an instance of a subclass of
-     * {@link StoreInstruction} based on the specified {@link Type} that will
+     * {@link Instruction} based on the specified {@link Type} that will
      * store a value in the specified local variable
      * @param index the JVM stack frame index of the variable that is to be
      * stored
      * @param type the {@link Type} of the variable
-     * @return the generated {@link StoredInstruction}
+     * @return the generated {@link Instruction}
      */
     private static Instruction storeLocal(int index, Type type) {
         if (type == Type.BOOLEAN) {
@@ -1973,7 +1966,7 @@ public class MethodGenerator extends MethodGen
      * </p>
      * @return <code>true</code> if the <code>InstructionList</code> was
      * modified; <code>false</code> otherwise
-     * @see The Java Virtual Machine Specification, Second Edition
+     * @see <a href="https://docs.oracle.com/javase/specs/jvms/se6/html/VMSpecTOC.doc.html">The Java Virtual Machine Specification, Second Edition</a>
      */
     boolean widenConditionalBranchTargetOffsets() {
         boolean ilChanged = false;
