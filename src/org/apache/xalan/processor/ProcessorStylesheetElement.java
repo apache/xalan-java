@@ -26,7 +26,6 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetComposed;
 import org.apache.xalan.templates.StylesheetRoot;
-
 import org.xml.sax.Attributes;
 
 /**

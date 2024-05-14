@@ -23,11 +23,9 @@ package org.apache.xalan.xsltc;
 
 import org.apache.xalan.xsltc.runtime.Hashtable;
 import org.apache.xml.dtm.DTMAxisIterator;
-
+import org.apache.xml.serializer.SerializationHandler;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import org.apache.xml.serializer.SerializationHandler;
 
 /**
  * @author Jacek Ambroziak

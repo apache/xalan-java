@@ -22,9 +22,6 @@
 package org.apache.xml.serializer.utils;
 
 import java.util.ListResourceBundle;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 /**
  * An instance of this class is a ListResourceBundle that

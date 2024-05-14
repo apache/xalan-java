@@ -27,11 +27,10 @@ import java.util.Properties;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.OutputProperties;
+import org.apache.xml.serializer.Method;
 import org.apache.xml.serializer.Serializer;
 import org.apache.xml.serializer.SerializerFactory;
-import org.apache.xml.serializer.Method;
-import org.apache.xalan.templates.OutputProperties;
-
 import org.xml.sax.ContentHandler;
 
 /**

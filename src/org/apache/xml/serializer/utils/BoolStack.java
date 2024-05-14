@@ -20,6 +20,7 @@
  */
 package org.apache.xml.serializer.utils;
 
+import java.util.EmptyStackException;
 
 /**
  * Simple stack for boolean values.

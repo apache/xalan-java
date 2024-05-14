@@ -17,8 +17,8 @@
 package org.apache.xalan.xpath3;
 
 import org.apache.xalan.util.XslTestsErrorHandler;
+import org.apache.xalan.util.XSLConstants;
 import org.apache.xalan.util.XSLTransformTestsUtil;
-import org.apache.xalan.xslt3.XSLConstants;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

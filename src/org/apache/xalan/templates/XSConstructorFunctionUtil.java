@@ -66,6 +66,7 @@ import xml.xpath31.processor.types.XSInt;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSLong;
 import xml.xpath31.processor.types.XSNormalizedString;
+import xml.xpath31.processor.types.XSQName;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSTime;
 import xml.xpath31.processor.types.XSToken;
@@ -362,7 +363,25 @@ public class XSConstructorFunctionUtil {
 	                        evalResult = evalResultSequence.item(0);
 	                        
 	                        break;
+	                    case Keywords.XS_QNAME :
+	                    	XSQName xsQName = new XSQName();
+	                        for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+	                            XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+	                            String argStrVal = XslTransformEvaluationHelper.getStrVal(argVal);
+	                            if (idx == 0) {
+	                            	xsQName.setPrefix(argStrVal);	
+	                            }
+	                            else if (idx == 1) {
+	                            	xsQName.setLocalPart(argStrVal);
+	                            }
+	                            else {
+	                            	xsQName.setNamespaceUri(argStrVal);
+	                            }
+	                        }
 	                        
+	                        evalResult = xsQName;
+	                        
+	                        break;
 	                    default:
 	                       // no op
 	                  }

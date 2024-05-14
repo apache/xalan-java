@@ -21,7 +21,6 @@
 package org.apache.xml.serializer.utils;
 
 import java.io.IOException;
-import java.io.Serializable;
 
 
 /**

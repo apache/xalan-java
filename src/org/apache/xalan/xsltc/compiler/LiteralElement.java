@@ -34,7 +34,6 @@ import org.apache.xalan.xsltc.compiler.util.MethodGenerator;
 import org.apache.xalan.xsltc.compiler.util.Type;
 import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
-
 import org.apache.xml.serializer.ElemDesc;
 import org.apache.xml.serializer.ToHTMLStream;
 

@@ -23,7 +23,6 @@ package org.apache.xml.dtm.ref;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMDOMException;
 import org.apache.xml.dtm.DTMIterator;
-
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeFilter;

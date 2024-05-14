@@ -27,7 +27,7 @@ import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xpath.res.XPATHErrorResources;
-
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;

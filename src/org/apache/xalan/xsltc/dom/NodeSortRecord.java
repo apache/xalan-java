@@ -21,7 +21,6 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import java.text.CollationKey;
 import java.text.Collator;
 import java.util.Locale;
 

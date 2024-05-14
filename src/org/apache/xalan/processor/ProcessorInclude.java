@@ -34,9 +34,7 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.TreeWalker;
-
 import org.w3c.dom.Node;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;

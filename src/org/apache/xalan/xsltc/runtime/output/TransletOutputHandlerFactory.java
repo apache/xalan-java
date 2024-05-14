@@ -28,14 +28,13 @@ import java.io.Writer;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xalan.xsltc.trax.SAX2DOM;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.serializer.ToHTMLStream;
 import org.apache.xml.serializer.ToTextStream;
 import org.apache.xml.serializer.ToUnknownStream;
 import org.apache.xml.serializer.ToXMLSAXHandler;
 import org.apache.xml.serializer.ToXMLStream;
-import org.apache.xml.serializer.SerializationHandler;
 import org.w3c.dom.Node;
-
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
 

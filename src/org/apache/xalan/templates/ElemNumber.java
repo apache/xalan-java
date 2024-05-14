@@ -37,18 +37,17 @@ import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.NodeVector;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.StringBufferPool;
-import org.apache.xml.utils.res.XResourceBundle;
 import org.apache.xml.utils.res.CharArrayWrapper;
 import org.apache.xml.utils.res.IntArrayWrapper;
 import org.apache.xml.utils.res.LongArrayWrapper;
 import org.apache.xml.utils.res.StringArrayWrapper;
+import org.apache.xml.utils.res.XResourceBundle;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
-
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
-
 import org.xml.sax.SAXException;
 
 // import org.apache.xalan.dtm.*;

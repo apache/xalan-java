@@ -26,7 +26,6 @@ import java.io.IOException;
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
 import org.apache.xml.utils.ThreadControllerWrapper;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;

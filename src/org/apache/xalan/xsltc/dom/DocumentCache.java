@@ -43,7 +43,6 @@ import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xalan.xsltc.runtime.Constants;
 import org.apache.xml.utils.SystemIDResolver;
-
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;

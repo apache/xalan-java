@@ -24,8 +24,8 @@ package org.apache.xalan.xsltc.trax;
 import javax.xml.transform.Result;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.sax.TransformerHandler;
 
 import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
@@ -35,7 +35,6 @@ import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.serializer.SerializationHandler;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;

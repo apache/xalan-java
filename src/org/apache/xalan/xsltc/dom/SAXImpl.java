@@ -21,7 +21,6 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 

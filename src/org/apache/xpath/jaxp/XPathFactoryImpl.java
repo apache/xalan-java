@@ -19,14 +19,14 @@
 
 package org.apache.xpath.jaxp;
 
-import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
-
 import javax.xml.XMLConstants;
 import javax.xml.xpath.XPathFactory;
 import javax.xml.xpath.XPathFactoryConfigurationException;
 import javax.xml.xpath.XPathFunctionResolver;
 import javax.xml.xpath.XPathVariableResolver;
+
+import org.apache.xalan.res.XSLMessages;
+import org.apache.xpath.res.XPATHErrorResources;
 
 /**
  * The XPathFactory builds XPaths.

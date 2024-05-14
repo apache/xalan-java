@@ -21,6 +21,7 @@
 package org.apache.xalan.templates;
 
 import org.apache.xalan.res.XSLTErrorResources;
+import org.w3c.dom.DOMException;
 
 /**
  * Implement xsl:template.

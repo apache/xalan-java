@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.xslt3;
+package org.apache.xalan.util;
 
 /**
  * The constant definitions, used by this XSLT and XPath test suite.
@@ -33,14 +33,12 @@ public class XSLConstants {
     
     public static final String XSLT_TRANSFORMER_FACTORY_VALUE = "org.apache.xalan.processor.TransformerFactoryImpl";
     
-    // The values of following, two variables are host specific where this test suite shall be run. The values of
-    // following two variables may be modified, accordingly.
-    // The sample values shown for following two variables, is for Windows platform ('Z' is a sample Windows
-    // drive letter). For Linux systems, these variable values may be for e.g /home/<userName>/xalanj/xalan-j_xslt3.0/tests/ 
+    // The values of following two variables, are host specific where this test suite shall be run.
+    // The sample values shown for following two variables, are for windows.
     
-    public static final String XSL_TRANSFORM_INPUT_DIRPATH_PREFIX = "Z:/<prefix>/xalanj/xalan-j_xslt3.0/tests/";
+    public static final String XSL_TRANSFORM_INPUT_DIRPATH_PREFIX = "d:/eclipseWorkspaces/xalanj/xalan-j_xslt3.0/tests/";
     
-    public static final String XSL_TRANSFORM_GOLD_DIRPATH_PREFIX = "Z:/<prefix>/xalanj/xalan-j_xslt3.0/tests/";
+    public static final String XSL_TRANSFORM_GOLD_DIRPATH_PREFIX = "d:/eclipseWorkspaces/xalanj/xalan-j_xslt3.0/tests/";
     
     // Currently, one test each within files FnBaseUriTests.java and FnDocumentUriTests.java, require
     // user workstation running these tests to be connected to web. Specify boolean value of following

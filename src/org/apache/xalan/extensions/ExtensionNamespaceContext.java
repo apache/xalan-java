@@ -19,8 +19,10 @@
 package org.apache.xalan.extensions;
 
 import java.util.Iterator;
+
 import javax.xml.XMLConstants;
 import javax.xml.namespace.NamespaceContext;
+
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 

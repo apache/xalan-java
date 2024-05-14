@@ -23,7 +23,6 @@ package org.apache.xpath.objects;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.NodeSetDTM;
 import org.apache.xpath.XPathContext;
-
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.traversal.NodeIterator;

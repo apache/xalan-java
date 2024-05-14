@@ -25,9 +25,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Properties;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Properties;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.Templates;

@@ -23,9 +23,10 @@ package org.apache.xalan.xsltc.trax;
 
 import java.io.IOException;
 
+import org.apache.xml.serializer.NamespaceMappings;
+import org.apache.xml.serializer.SerializationHandler;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.apache.xml.serializer.SerializationHandler;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;
@@ -36,7 +37,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.XMLReader;
-import org.apache.xml.serializer.NamespaceMappings;
 
 /**
  * @author Santiago Pericas-Geertsen

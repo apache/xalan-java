@@ -22,8 +22,6 @@
 package org.apache.xalan.lib;
 
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -35,9 +33,7 @@ import java.util.TimeZone;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
-import javax.xml.namespace.QName;
 
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNumber;

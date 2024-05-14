@@ -37,7 +37,6 @@ import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.XPath;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
 import org.xml.sax.helpers.AttributesImpl;

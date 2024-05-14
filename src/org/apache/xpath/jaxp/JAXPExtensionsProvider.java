@@ -20,22 +20,20 @@
 
 package org.apache.xpath.jaxp;
 
-import javax.xml.transform.TransformerException;
-import javax.xml.xpath.XPathFunctionResolver;
+import java.util.ArrayList;
+import java.util.Vector;
+
+import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathFunction;
 import javax.xml.xpath.XPathFunctionException;
+import javax.xml.xpath.XPathFunctionResolver;
 
-import org.apache.xpath.ExtensionsProvider;
-import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XNodeSet;
-import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xalan.res.XSLMessages;
-
+import org.apache.xpath.ExtensionsProvider;
 import org.apache.xpath.functions.FuncExtFunction;
-import java.util.Vector;
-import java.util.ArrayList;
-import javax.xml.namespace.QName;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.res.XPATHErrorResources;
 
 /**
  * 

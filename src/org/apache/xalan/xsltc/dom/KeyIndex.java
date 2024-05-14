@@ -28,7 +28,6 @@ import org.apache.xalan.xsltc.DOMEnhancedForDTM;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xalan.xsltc.runtime.Hashtable;
 import org.apache.xalan.xsltc.util.IntegerArray;
-
 import org.apache.xml.dtm.Axis;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;

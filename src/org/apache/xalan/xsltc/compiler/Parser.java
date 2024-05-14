@@ -32,7 +32,6 @@ import java.util.Stack;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import java_cup.runtime.Symbol;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -50,6 +49,8 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
+
+import java_cup.runtime.Symbol;
 
 /**
  * @author Jacek Ambroziak

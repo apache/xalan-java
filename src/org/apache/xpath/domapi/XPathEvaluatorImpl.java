@@ -34,6 +34,7 @@ import org.w3c.dom.xpath.XPathEvaluator;
 import org.w3c.dom.xpath.XPathException;
 import org.w3c.dom.xpath.XPathExpression;
 import org.w3c.dom.xpath.XPathNSResolver;
+import org.w3c.dom.xpath.XPathResult;
 
 /**
  *

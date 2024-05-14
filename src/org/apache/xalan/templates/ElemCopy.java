@@ -22,10 +22,10 @@ package org.apache.xalan.templates;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.transformer.ClonerToResultTree;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
-import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.XPathContext;
 

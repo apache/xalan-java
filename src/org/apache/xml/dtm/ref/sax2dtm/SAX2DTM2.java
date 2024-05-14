@@ -20,20 +20,29 @@
  */
 package org.apache.xml.dtm.ref.sax2dtm;
 
-import org.apache.xml.dtm.*;
-import org.apache.xml.dtm.ref.*;
+import java.util.Vector;
+
+import javax.xml.transform.Source;
+
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMAxisIterator;
+import org.apache.xml.dtm.DTMException;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTMWSFilter;
+import org.apache.xml.dtm.ref.DTMDefaultBase;
+import org.apache.xml.dtm.ref.ExpandedNameTable;
+import org.apache.xml.dtm.ref.ExtendedType;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.FastStringBuffer;
+import org.apache.xml.utils.SuballocatedIntVector;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringDefault;
 import org.apache.xml.utils.XMLStringFactory;
-import org.apache.xml.res.XMLMessages;
-import org.apache.xml.res.XMLErrorResources;
-import org.apache.xml.serializer.SerializationHandler;
-
-import javax.xml.transform.Source;
-import java.util.Vector;
-import org.apache.xml.utils.SuballocatedIntVector;
-import org.xml.sax.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 
 /**
  * SAX2DTM2 is an optimized version of SAX2DTM which is used in non-incremental situation.

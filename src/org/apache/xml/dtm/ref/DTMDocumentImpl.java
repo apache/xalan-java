@@ -30,7 +30,6 @@ import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;

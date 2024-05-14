@@ -24,6 +24,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.w3c.dom.DOMException;
 
 /**
  * Implement xsl:comment.

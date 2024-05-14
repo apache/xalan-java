@@ -28,7 +28,6 @@ import java.lang.reflect.Method;
 import org.apache.xerces.parsers.SAXParser;
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
-
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;

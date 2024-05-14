@@ -37,9 +37,7 @@ import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.StringBufferPool;
 import org.apache.xml.utils.SuballocatedIntVector;
 import org.apache.xml.utils.XMLString;
-
 import org.w3c.dom.Node;
-
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
 import org.xml.sax.EntityResolver;

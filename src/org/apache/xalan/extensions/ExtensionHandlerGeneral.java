@@ -20,18 +20,17 @@
  */
 package org.apache.xalan.extensions;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
-
-import org.apache.xml.res.XMLErrorResources;
-import org.apache.xml.res.XMLMessages;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;

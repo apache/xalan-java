@@ -20,7 +20,9 @@
  */
 package org.apache.xalan.extensions;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.Vector;
 
 import javax.xml.transform.TransformerException;

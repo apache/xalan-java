@@ -23,18 +23,17 @@ package org.apache.xalan.xsltc.dom;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.StripFilter;
-import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xalan.xsltc.runtime.Hashtable;
-import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.Axis;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMAxisIteratorBase;
 import org.apache.xml.dtm.ref.DTMDefaultBase;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.SuballocatedIntVector;
-
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 

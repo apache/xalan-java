@@ -20,6 +20,8 @@
  */
 package org.apache.xpath.axes;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMFilter;

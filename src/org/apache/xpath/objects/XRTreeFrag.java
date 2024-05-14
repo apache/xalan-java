@@ -27,7 +27,6 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.RTFIterator;
-
 import org.w3c.dom.NodeList;
 
 /**

@@ -31,6 +31,7 @@ import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.OpCodes;
 import org.apache.xpath.compiler.OpMap;
 import org.apache.xpath.patterns.NodeTest;
+import org.w3c.dom.DOMException;
 
 /**
  * This class implements an optimized iterator for

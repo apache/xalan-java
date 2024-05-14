@@ -25,7 +25,6 @@ import java.util.Vector;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.WhiteSpaceInfo;
 import org.apache.xpath.XPath;
-
 import org.xml.sax.Attributes;
 
 /**

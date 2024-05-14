@@ -21,10 +21,10 @@
 
 package org.apache.xml.serializer.dom3;
 
-import org.w3c.dom.ls.LSOutput;
-
-import java.io.Writer;
 import java.io.OutputStream;
+import java.io.Writer;
+
+import org.w3c.dom.ls.LSOutput;
 
 /**
  * This is a copy of the Xerces-2J class org.apache.xerces.dom.DOMOutputImpl.java

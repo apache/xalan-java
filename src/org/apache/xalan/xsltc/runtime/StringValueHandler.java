@@ -21,9 +21,8 @@
 
 package org.apache.xalan.xsltc.runtime;
 
-import org.xml.sax.SAXException;
-
 import org.apache.xml.serializer.EmptySerializer;
+import org.xml.sax.SAXException;
 
 /**
  * @author Jacek Ambroziak

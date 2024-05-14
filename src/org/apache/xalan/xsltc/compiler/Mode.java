@@ -26,7 +26,6 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Vector;
 
-import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.BranchHandle;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.DUP;
@@ -36,6 +35,7 @@ import org.apache.bcel.generic.ILOAD;
 import org.apache.bcel.generic.INVOKEINTERFACE;
 import org.apache.bcel.generic.INVOKEVIRTUAL;
 import org.apache.bcel.generic.ISTORE;
+import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.LocalVariableGen;

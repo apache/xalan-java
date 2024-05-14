@@ -532,12 +532,6 @@ public class Keywords
   /** document-uri function string. */
   public static final String FUNC_DOCUMENT_URI = "document-uri";
   
-  /** resolve-QName function string. */
-  public static final String FUNC_RESOLVE_QNAME = "resolve-QName";
-  
-  /** QName function string. */
-  public static final String FUNC_XPATH31_QNAME = "QName";
-  
   /** array:size function string. */
   public static final String FUNC_ARRAY_SIZE = "size";
   
@@ -546,6 +540,27 @@ public class Keywords
   
   /** array:put function string. */
   public static final String FUNC_ARRAY_PUT = "put";
+  
+  /** resolve-QName function string. */
+  public static final String FUNC_RESOLVE_QNAME = "resolve-QName";
+  
+  /** QName function string. */
+  public static final String FUNC_QNAME = "QName";
+  
+  /** prefix-from-QName function string. */
+  public static final String FUNC_PREFIX_FROM_QNAME = "prefix-from-QName";
+  
+  /** local-name-from-QName function string. */
+  public static final String FUNC_LOCAL_NAME_FROM_QNAME = "local-name-from-QName";
+  
+  /** namespace-uri-from-QName function string. */
+  public static final String FUNC_NAMESPACE_URI_FROM_QNAME = "namespace-uri-from-QName";
+  
+  /** namespace-uri-for-prefix function string. */
+  public static final String FUNC_NAMESPACE_URI_FOR_PREFIX = "namespace-uri-for-prefix";
+  
+  /** in-scope-prefixes function string. */
+  public static final String FUNC_IN_SCOPE_PREFIXES = "in-scope-prefixes";
   
   // Proprietary, built in functions
 

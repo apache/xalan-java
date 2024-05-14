@@ -32,7 +32,6 @@ import org.apache.xalan.xsltc.dom.DOMWSFilter;
 import org.apache.xalan.xsltc.dom.SAXImpl;
 import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
-
 import org.xml.sax.SAXException;
 
 /**

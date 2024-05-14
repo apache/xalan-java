@@ -26,9 +26,7 @@ import java.io.Reader;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.dom.DOMSource;
@@ -37,9 +35,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xalan.xsltc.compiler.XSLTC;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
-
 import org.w3c.dom.Document;
-
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXNotRecognizedException;

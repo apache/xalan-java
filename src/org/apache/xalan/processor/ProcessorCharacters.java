@@ -26,7 +26,6 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.ElemText;
 import org.apache.xalan.templates.ElemTextLiteral;
 import org.apache.xml.utils.XMLCharacterRecognizer;
-
 import org.w3c.dom.Node;
 
 /**

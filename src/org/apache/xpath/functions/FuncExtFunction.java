@@ -36,7 +36,6 @@ import org.apache.xpath.objects.XNull;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.res.XPATHMessages;
-import org.xml.sax.SAXException;
 
 /**
  * An object of this class represents an extension call expression.  When

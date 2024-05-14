@@ -25,7 +25,6 @@ import javax.xml.transform.TransformerException;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.PrefixResolverDefault;
 import org.apache.xpath.objects.XObject;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

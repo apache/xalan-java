@@ -22,11 +22,9 @@ import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xml.dtm.DTMIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
 

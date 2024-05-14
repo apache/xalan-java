@@ -31,7 +31,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.xml.dtm.ref.DTMNodeProxy;
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;

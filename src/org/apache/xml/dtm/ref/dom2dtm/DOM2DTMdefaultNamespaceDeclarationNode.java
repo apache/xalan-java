@@ -22,8 +22,8 @@
 package org.apache.xml.dtm.ref.dom2dtm;
 
 import org.apache.xml.dtm.DTMException;
-
 import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -31,7 +31,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.TypeInfo;
 import org.w3c.dom.UserDataHandler;
-import org.w3c.dom.DOMException;
 
 /** This is a kluge to let us shove a declaration for xml: into the
  * DOM2DTM model.  Basically, it creates a proxy node in DOM space to

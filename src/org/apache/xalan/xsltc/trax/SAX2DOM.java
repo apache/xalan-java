@@ -25,18 +25,16 @@ package org.apache.xalan.xsltc.trax;
 import java.util.Stack;
 import java.util.Vector;
 
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.xalan.xsltc.runtime.Constants;
-
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.Text;
 import org.w3c.dom.ProcessingInstruction;
+import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;

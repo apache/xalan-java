@@ -29,7 +29,6 @@ import org.apache.xml.utils.IntStack;
 import org.apache.xml.utils.IntVector;
 import org.apache.xml.utils.StringVector;
 import org.apache.xml.utils.XMLStringFactory;
-
 import org.xml.sax.SAXException;
 
 /**

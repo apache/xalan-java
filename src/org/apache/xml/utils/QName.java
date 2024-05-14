@@ -25,7 +25,6 @@ import java.util.StringTokenizer;
 
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
-
 import org.w3c.dom.Element;
 
 /**

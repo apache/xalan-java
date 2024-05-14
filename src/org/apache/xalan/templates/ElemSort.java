@@ -22,7 +22,6 @@ package org.apache.xalan.templates;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xpath.XPath;
-
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 

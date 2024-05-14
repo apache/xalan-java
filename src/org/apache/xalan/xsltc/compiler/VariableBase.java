@@ -24,9 +24,9 @@ package org.apache.xalan.xsltc.compiler;
 import java.util.Vector;
 
 import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.InstructionList;
-import org.apache.bcel.generic.INVOKESPECIAL;
 import org.apache.bcel.generic.LocalVariableGen;
 import org.apache.bcel.generic.NEW;
 import org.apache.bcel.generic.PUSH;

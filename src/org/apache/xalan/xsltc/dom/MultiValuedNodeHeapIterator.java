@@ -21,7 +21,6 @@
 
 package org.apache.xalan.xsltc.dom;
 
-import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.runtime.BasisLibrary;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.ref.DTMAxisIteratorBase;

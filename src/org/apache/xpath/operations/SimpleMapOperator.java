@@ -32,7 +32,6 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
-import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyType;
 

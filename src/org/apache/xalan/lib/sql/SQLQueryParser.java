@@ -28,12 +28,14 @@
 
 package org.apache.xalan.lib.sql;
 
-import java.util.*;
-import java.sql.*;
-import org.apache.xpath.objects.*;
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Vector;
+
 import org.apache.xalan.extensions.ExpressionContext;
 import org.apache.xml.utils.QName;
-import javax.xml.transform.TransformerException;
+import org.apache.xpath.objects.XObject;
 
 
 

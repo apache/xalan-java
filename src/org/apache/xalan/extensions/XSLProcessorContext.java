@@ -22,13 +22,13 @@ package org.apache.xalan.extensions;
 
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.transformer.ClonerToResultTree;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.DTMIterator;
-import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPathContext;

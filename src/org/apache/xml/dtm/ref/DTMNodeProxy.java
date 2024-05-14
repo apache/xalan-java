@@ -25,10 +25,10 @@ import java.util.Vector;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMDOMException;
 import org.apache.xpath.NodeSet;
-
 import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
+import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
@@ -41,10 +41,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
-
-import org.w3c.dom.UserDataHandler;
-import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.TypeInfo;
+import org.w3c.dom.UserDataHandler;
 
 /**
  * <code>DTMNodeProxy</code> presents a DOM Node API front-end to the DTM model.

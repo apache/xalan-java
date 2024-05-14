@@ -35,7 +35,7 @@ import org.w3c.dom.Node;
 import xml.xpath31.processor.types.XSQName;
 
 /**
- * Implementation of the resolve-QName() function.
+ * Implementation of XPath 3.1 fn:resolve-QName() function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

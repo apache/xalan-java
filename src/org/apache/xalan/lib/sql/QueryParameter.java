@@ -24,9 +24,6 @@
 package org.apache.xalan.lib.sql;
 
 import java.util.Hashtable;
-import java.sql.PreparedStatement;
-import java.sql.CallableStatement;
-import java.sql.Statement;
 
 public class QueryParameter
 {

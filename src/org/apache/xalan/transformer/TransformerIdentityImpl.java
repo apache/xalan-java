@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
@@ -43,22 +43,20 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.OutputProperties;
+import org.apache.xml.serializer.Method;
 import org.apache.xml.serializer.Serializer;
 import org.apache.xml.serializer.SerializerFactory;
-import org.apache.xml.serializer.Method;
 import org.apache.xml.utils.DOMBuilder;
 import org.apache.xml.utils.XMLReaderManager;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Node;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;

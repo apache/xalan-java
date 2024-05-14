@@ -61,7 +61,6 @@ import org.apache.xml.utils.DefaultErrorHandler;
 import org.apache.xml.utils.SystemIDResolver;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-
 import org.xml.sax.ContentHandler;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;

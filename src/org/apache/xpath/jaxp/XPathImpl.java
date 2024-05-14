@@ -19,31 +19,32 @@
 
 package org.apache.xpath.jaxp;
 
-import javax.xml.namespace.QName;
+import java.io.IOException;
+
 import javax.xml.namespace.NamespaceContext;
-import javax.xml.xpath.XPathExpressionException;
+import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFunction;
 import javax.xml.xpath.XPathFunctionResolver;
 import javax.xml.xpath.XPathVariableResolver;
-import javax.xml.xpath.XPathExpression;
 
+import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.dtm.DTM;
-import org.apache.xpath.*;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathFactory;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.apache.xalan.res.XSLMessages;
-
-import org.w3c.dom.Node;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.traversal.NodeIterator;
-
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import javax.xml.parsers.*;
-
-import java.io.IOException;
 
 /**
  * The XPathImpl class provides implementation for the methods defined  in

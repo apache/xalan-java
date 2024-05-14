@@ -21,12 +21,10 @@
 
 package org.apache.xml.utils;
 
-import java.util.Vector;
+import java.text.CollationElementIterator;
 import java.text.Collator;
 import java.text.RuleBasedCollator;
-import java.text.CollationElementIterator;
 import java.util.Locale;
-import java.text.CollationKey;
 
 
 /**

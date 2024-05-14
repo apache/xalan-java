@@ -20,6 +20,8 @@
  */
 package org.apache.xalan.transformer;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.ref.DTMTreeWalker;

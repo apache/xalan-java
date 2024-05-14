@@ -16,6 +16,7 @@
  */
 package org.apache.xalan.xslt3;
 
+import org.apache.xalan.util.XSLConstants;
 import org.apache.xalan.util.XSLTransformTestsUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

@@ -22,6 +22,8 @@ package org.apache.xml.serializer;
 
 import java.io.File;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xml.serializer.utils.AttList;
 import org.apache.xml.serializer.utils.DOM2Helper;
 import org.w3c.dom.Comment;

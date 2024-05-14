@@ -25,7 +25,6 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.operations.Operation;
-import org.xml.sax.SAXException;
 
 /**
  * Execute the not() function.

@@ -27,7 +27,6 @@ import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.INVOKESTATIC;
 import org.apache.bcel.generic.InstructionList;
 import org.apache.bcel.generic.PUSH;
-
 import org.apache.xalan.xsltc.compiler.util.ClassGenerator;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.MethodGenerator;

@@ -20,6 +20,8 @@
  */
 package org.apache.xpath.compiler;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.utils.ObjectVector;
 import org.apache.xpath.patterns.NodeTest;

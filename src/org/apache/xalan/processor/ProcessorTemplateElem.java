@@ -24,7 +24,6 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.ElemTemplateElement;
-
 import org.xml.sax.Attributes;
 
 /**

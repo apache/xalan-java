@@ -30,7 +30,6 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.XObject;
-import org.xml.sax.SAXException;
 
 /**
  * The baseclass for a binary operation.

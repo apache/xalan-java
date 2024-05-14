@@ -28,13 +28,10 @@ import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Vector;
-import javax.xml.transform.Templates;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.DOMImplementation;
-import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.xml.dtm.DTM;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Templates;
 
 import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.DOMCache;
@@ -44,8 +41,11 @@ import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.dom.DOMAdapter;
 import org.apache.xalan.xsltc.dom.KeyIndex;
 import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.serializer.SerializationHandler;
+import org.w3c.dom.DOMImplementation;
+import org.w3c.dom.Document;
 
 /**
  * @author Jacek Ambroziak

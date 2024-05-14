@@ -21,14 +21,13 @@
 
 package org.apache.xalan.xsltc.compiler;
 
-import java.util.Vector;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.Vector;
 
-import org.apache.xml.utils.SystemIDResolver;
 import org.apache.bcel.generic.ANEWARRAY;
 import org.apache.bcel.generic.BasicType;
 import org.apache.bcel.generic.ConstantPoolGen;
@@ -57,6 +56,7 @@ import org.apache.xalan.xsltc.compiler.util.TypeCheckError;
 import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xml.dtm.DTM;
+import org.apache.xml.utils.SystemIDResolver;
 
 public final class Stylesheet extends SyntaxTreeNode {
 

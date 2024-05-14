@@ -21,20 +21,21 @@
 
 package org.apache.xalan.lib.sql;
 
-import java.util.Vector;
-
-import org.apache.xalan.extensions.ExpressionContext;
-import org.apache.xpath.XPathContext;
-
-import org.apache.xml.dtm.DTMManager;
-import org.apache.xml.dtm.DTM;
+import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.*;
-import org.apache.xml.dtm.ref.*;
+import java.sql.SQLWarning;
+import java.sql.Statement;
+import java.util.Vector;
+
+import org.apache.xalan.extensions.ExpressionContext;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.ref.DTMManagerDefault;
+import org.apache.xpath.XPathContext;
 
 /**
  * The SQL Document is the main controlling class the executesa SQL Query

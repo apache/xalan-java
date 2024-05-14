@@ -22,24 +22,42 @@ package org.apache.xml.dtm.ref.sax2dtm;
 
 import java.util.Hashtable;
 import java.util.Vector;
+
 import javax.xml.transform.Source;
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xml.dtm.*;
-import org.apache.xml.dtm.ref.*;
-import org.apache.xml.utils.StringVector;
-import org.apache.xml.utils.IntVector;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTMWSFilter;
+import org.apache.xml.dtm.ref.DTMDefaultBaseIterators;
+import org.apache.xml.dtm.ref.DTMManagerDefault;
+import org.apache.xml.dtm.ref.DTMStringPool;
+import org.apache.xml.dtm.ref.DTMTreeWalker;
+import org.apache.xml.dtm.ref.IncrementalSAXSource;
+import org.apache.xml.dtm.ref.IncrementalSAXSource_Filter;
+import org.apache.xml.dtm.ref.NodeLocator;
+import org.apache.xml.res.XMLErrorResources;
+import org.apache.xml.res.XMLMessages;
 import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xml.utils.IntStack;
+import org.apache.xml.utils.IntVector;
+import org.apache.xml.utils.StringVector;
 import org.apache.xml.utils.SuballocatedIntVector;
 import org.apache.xml.utils.SystemIDResolver;
 import org.apache.xml.utils.WrappedRuntimeException;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringFactory;
-import org.apache.xml.res.XMLErrorResources;
-import org.apache.xml.res.XMLMessages;
-import org.xml.sax.*;
-import org.xml.sax.ext.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.DTDHandler;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.ext.DeclHandler;
+import org.xml.sax.ext.LexicalHandler;
 
 /**
  * This class implements a DTM that tends to be optimized more for speed than

@@ -21,6 +21,8 @@
 
 package org.apache.xalan.xsltc.trax;
 
+import java.util.Vector;
+
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
 import javax.xml.transform.Templates;
@@ -35,14 +37,11 @@ import org.apache.xalan.xsltc.compiler.Stylesheet;
 import org.apache.xalan.xsltc.compiler.SyntaxTreeNode;
 import org.apache.xalan.xsltc.compiler.XSLTC;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
-
+import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
-import org.xml.sax.Attributes;
-
-import java.util.Vector;
 
 /**
  * Implementation of a JAXP1.1 TemplatesHandler

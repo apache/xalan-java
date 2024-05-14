@@ -36,7 +36,6 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.sax.SAXResult;
 
 import org.apache.xml.utils.XMLReaderManager;
-
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;

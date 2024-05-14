@@ -33,14 +33,12 @@ import org.apache.xpath.NodeSet;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.DocumentFragment;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.w3c.dom.traversal.NodeIterator;
-
 import org.xml.sax.SAXNotSupportedException;
 
 /**

@@ -20,10 +20,11 @@
  */
 package org.apache.xml.dtm.ref;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.NodeConsumer;
 import org.apache.xml.utils.XMLString;
-
 import org.xml.sax.ContentHandler;
 import org.xml.sax.ext.LexicalHandler;
 

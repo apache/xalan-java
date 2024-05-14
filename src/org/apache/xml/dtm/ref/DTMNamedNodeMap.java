@@ -21,7 +21,6 @@
 package org.apache.xml.dtm.ref;
 
 import org.apache.xml.dtm.DTM;
-
 import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;

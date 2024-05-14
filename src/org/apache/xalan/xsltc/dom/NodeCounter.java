@@ -27,7 +27,6 @@ import org.apache.xalan.xsltc.DOM;
 import org.apache.xalan.xsltc.Translet;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
-import org.apache.xml.dtm.Axis;
 
 /**
  * @author Jacek Ambroziak

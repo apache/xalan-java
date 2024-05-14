@@ -16,14 +16,14 @@
  */
 package org.apache.xalan.xpath3;
 
+import org.apache.xalan.util.XSLConstants;
 import org.apache.xalan.util.XSLTransformTestsUtil;
-import org.apache.xalan.xslt3.XSLConstants;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XPath 3.1 function fn:QName test cases.
+ * XPath 3.1 function fn:QName and other related test cases.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -53,6 +53,66 @@ public class FnQNameTests extends XSLTransformTestsUtil {
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFnQNameTest2() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFnQNameTest3() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFnQNameTest4() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test4.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFnQNameTest5() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFnQNameTest6() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test6.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslFnQNameTest7() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test7.out";                
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

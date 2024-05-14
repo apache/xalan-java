@@ -22,6 +22,8 @@ package org.apache.xml.utils;
 
 import java.io.File;
 
+import javax.xml.transform.TransformerException;
+
 import org.w3c.dom.Comment;
 import org.w3c.dom.Element;
 import org.w3c.dom.EntityReference;
@@ -29,7 +31,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
-
 import org.xml.sax.ContentHandler;
 import org.xml.sax.Locator;
 import org.xml.sax.ext.LexicalHandler;

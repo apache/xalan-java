@@ -21,7 +21,6 @@
 
 package org.apache.xalan.xsltc.compiler.util;
 
-import org.apache.bcel.generic.PUSH;
 import org.apache.bcel.generic.ALOAD;
 import org.apache.bcel.generic.ASTORE;
 import org.apache.bcel.generic.ConstantPoolGen;
@@ -31,10 +30,9 @@ import org.apache.bcel.generic.INVOKEINTERFACE;
 import org.apache.bcel.generic.INVOKESTATIC;
 import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.InstructionList;
-
+import org.apache.bcel.generic.PUSH;
 import org.apache.xalan.xsltc.compiler.Constants;
 import org.apache.xalan.xsltc.compiler.FlowList;
-
 import org.apache.xml.dtm.DTM;
 
 /**

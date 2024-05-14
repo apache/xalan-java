@@ -20,15 +20,17 @@
  */
 package org.apache.xml.dtm.ref;
 
-import org.apache.xml.dtm.*;
-
 import javax.xml.transform.Source;
 
-import org.apache.xml.utils.XMLStringFactory;
-
+import org.apache.xml.dtm.Axis;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMAxisTraverser;
+import org.apache.xml.dtm.DTMException;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
-import org.apache.xalan.xsltc.dom.NodeCounter;
+import org.apache.xml.utils.XMLStringFactory;
 
 /**
  * This class implements the traversers for DTMDefaultBase.

@@ -38,7 +38,6 @@ import org.apache.xalan.extensions.ExtensionNamespacesManager;
 import org.apache.xalan.processor.XSLTSchema;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
-
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.ref.ExpandedNameTable;

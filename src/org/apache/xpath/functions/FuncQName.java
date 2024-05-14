@@ -29,13 +29,13 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSQName;
 
 /**
- * Implementation of the QName() function.
+ * Implementation of the fn:QName() function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncXPath31QName extends Function2Args
+public class FuncQName extends Function2Args
 {
 
 	private static final long serialVersionUID = -8738986526447227857L;

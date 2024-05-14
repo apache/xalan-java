@@ -22,9 +22,9 @@
 package org.apache.xalan.xsltc.compiler;
 
 import java.util.Enumeration;
-import java.util.Vector;
-import java.util.StringTokenizer;
 import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
+import java.util.Vector;
 
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.INVOKESPECIAL;

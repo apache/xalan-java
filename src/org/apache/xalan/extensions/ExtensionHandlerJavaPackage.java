@@ -38,7 +38,6 @@ import org.apache.xalan.trace.ExtensionEvent;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.XObject;
-import org.xml.sax.SAXException;
 
 /**
  * Represents an extension namespace for XPath that handles java packages

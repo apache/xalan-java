@@ -56,10 +56,7 @@ public class FunctionTable
   public static final int FUNC_LOCAL_PART = 7;
 
   /** The 'namespace-uri()' id. */
-  public static final int FUNC_NAMESPACE = 8;
-
-  /** The 'name()' id. */
-  public static final int FUNC_QNAME = 9;
+  public static final int FUNC_NAMESPACE = 8;  
 
   /** The 'generate-id()' id. */
   public static final int FUNC_GENERATE_ID = 10;
@@ -391,12 +388,6 @@ public class FunctionTable
   /** The 'document-uri()' id. */
   public static final int FUNC_DOCUMENT_URI = 121;
   
-  /** The 'resolve-QName()' id. */
-  public static final int FUNC_RESOLVE_QNAME = 122;
-  
-  /** The 'QName()' id. */
-  public static final int FUNC_XPATH31_QNAME = 123;
-  
   /** The 'array:size()' id. */
   public static final int FUNC_ARRAY_SIZE = 124;
   
@@ -405,6 +396,33 @@ public class FunctionTable
   
   /** The 'array:put()' id. */
   public static final int FUNC_ARRAY_PUT = 126;
+  
+  /** The 'name()' id. */
+  public static final int FUNC_NAME = 127;
+  
+  /** The 'resolve-QName()' id. */
+  public static final int FUNC_RESOLVE_QNAME = 128;
+  
+  /** The 'QName()' id. */
+  public static final int FUNC_QNAME = 129;
+  
+  /** The 'QName-equal()' id. */
+  public static final int FUNC_QNAME_EQUAL = 130;
+  
+  /** The 'prefix-from-QName' id. */
+  public static final int FUNC_PREFIX_FROM_QNAME = 131;
+  
+  /** The 'local-name-from-QName' id. */
+  public static final int FUNC_LOCAL_NAME_FROM_QNAME = 132;
+  
+  /** The 'namespace-uri-from-QName' id. */
+  public static final int FUNC_NAMESPACE_URI_FROM_QNAME = 133;
+  
+  /** The 'namespace-uri-for-prefix' id. */
+  public static final int FUNC_NAMESPACE_URI_FOR_PREFIX = 134;
+  
+  /** The 'in-scope-prefixes' id. */
+  public static final int FUNC_IN_SCOPE_PREFIXES = 135;
 
   // Proprietary
 
@@ -475,7 +493,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 127;
+  private static final int NUM_BUILT_IN_FUNCS = 136;
 
   /**
    * Number of built-in functions that may be added.
@@ -501,7 +519,17 @@ public class FunctionTable
       org.apache.xpath.functions.FuncLocalPart.class;
     m_functions[FUNC_NAMESPACE] = 
       org.apache.xpath.functions.FuncNamespace.class;
-    m_functions[FUNC_QNAME] = org.apache.xpath.functions.FuncQname.class;
+    
+    m_functions[FUNC_NAME] = org.apache.xpath.functions.FuncName.class;
+    
+    m_functions[FUNC_RESOLVE_QNAME] = org.apache.xpath.functions.FuncResolveQName.class;
+    m_functions[FUNC_QNAME] = org.apache.xpath.functions.FuncQName.class;
+    m_functions[FUNC_PREFIX_FROM_QNAME] = org.apache.xpath.functions.FuncPrefixFromQName.class;
+    m_functions[FUNC_LOCAL_NAME_FROM_QNAME] = org.apache.xpath.functions.FuncLocalNameFromQName.class;
+    m_functions[FUNC_NAMESPACE_URI_FROM_QNAME] = org.apache.xpath.functions.FuncNamespaceUriFromQName.class;
+    m_functions[FUNC_NAMESPACE_URI_FOR_PREFIX] = org.apache.xpath.functions.FuncNamespaceUriForPrefix.class;
+    m_functions[FUNC_IN_SCOPE_PREFIXES] = org.apache.xpath.functions.FuncInScopePrefixes.class;
+    
     m_functions[FUNC_GENERATE_ID] = 
       org.apache.xpath.functions.FuncGenerateId.class;
     m_functions[FUNC_NOT] = org.apache.xpath.functions.FuncNot.class;
@@ -700,9 +728,7 @@ public class FunctionTable
     
     m_functions[FUNC_DEFAULT_COLLATION] = org.apache.xpath.functions.FuncDefaultCollation.class;
     m_functions[FUNC_BASE_URI] = org.apache.xpath.functions.FuncBaseUri.class;
-    m_functions[FUNC_DOCUMENT_URI] = org.apache.xpath.functions.FuncDocumentUri.class;
-    m_functions[FUNC_RESOLVE_QNAME] = org.apache.xpath.functions.FuncResolveQName.class;
-    m_functions[FUNC_XPATH31_QNAME] = org.apache.xpath.functions.FuncXPath31QName.class;
+    m_functions[FUNC_DOCUMENT_URI] = org.apache.xpath.functions.FuncDocumentUri.class;    
     
     // XPath 3.1 built-in functions configurations for the array 
     // functions namespace http://www.w3.org/2005/xpath-functions/array    
@@ -728,9 +754,7 @@ public class FunctionTable
           m_functionID.put(Keywords.FUNC_LOCAL_PART_STRING,
                           new Integer(FunctionTable.FUNC_LOCAL_PART));
           m_functionID.put(Keywords.FUNC_NAMESPACE_STRING,
-                          new Integer(FunctionTable.FUNC_NAMESPACE));
-          m_functionID.put(Keywords.FUNC_NAME_STRING,
-                          new Integer(FunctionTable.FUNC_QNAME));
+                          new Integer(FunctionTable.FUNC_NAMESPACE));          
           m_functionID.put(Keywords.FUNC_GENERATE_ID_STRING,
                           new Integer(FunctionTable.FUNC_GENERATE_ID));
           m_functionID.put(Keywords.FUNC_NOT_STRING,
@@ -967,11 +991,7 @@ public class FunctionTable
          m_functionID.put(Keywords.FUNC_BASE_URI,
                          new Integer(FunctionTable.FUNC_BASE_URI));
          m_functionID.put(Keywords.FUNC_DOCUMENT_URI,
-                         new Integer(FunctionTable.FUNC_DOCUMENT_URI));
-         m_functionID.put(Keywords.FUNC_RESOLVE_QNAME,
-                         new Integer(FunctionTable.FUNC_RESOLVE_QNAME));
-         m_functionID.put(Keywords.FUNC_XPATH31_QNAME,
-                         new Integer(FunctionTable.FUNC_XPATH31_QNAME));
+                         new Integer(FunctionTable.FUNC_DOCUMENT_URI));         
          
          // XPath 3.1 functions configurations for the math functions 
          // namespace http://www.w3.org/2005/xpath-functions/array
@@ -981,6 +1001,24 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_ARRAY_GET));
          m_functionID.put(Keywords.FUNC_ARRAY_PUT,
                           new Integer(FunctionTable.FUNC_ARRAY_PUT));
+         
+         m_functionID.put(Keywords.FUNC_NAME_STRING,
+                          new Integer(FunctionTable.FUNC_NAME));
+         
+         m_functionID.put(Keywords.FUNC_RESOLVE_QNAME,
+                          new Integer(FunctionTable.FUNC_RESOLVE_QNAME));
+         m_functionID.put(Keywords.FUNC_QNAME,
+                          new Integer(FunctionTable.FUNC_QNAME));
+         m_functionID.put(Keywords.FUNC_PREFIX_FROM_QNAME,
+                          new Integer(FunctionTable.FUNC_PREFIX_FROM_QNAME));
+         m_functionID.put(Keywords.FUNC_LOCAL_NAME_FROM_QNAME,
+                          new Integer(FunctionTable.FUNC_LOCAL_NAME_FROM_QNAME));
+         m_functionID.put(Keywords.FUNC_NAMESPACE_URI_FROM_QNAME,
+                          new Integer(FunctionTable.FUNC_NAMESPACE_URI_FROM_QNAME));
+         m_functionID.put(Keywords.FUNC_NAMESPACE_URI_FOR_PREFIX,
+                          new Integer(FunctionTable.FUNC_NAMESPACE_URI_FOR_PREFIX));
+         m_functionID.put(Keywords.FUNC_IN_SCOPE_PREFIXES,
+                          new Integer(FunctionTable.FUNC_IN_SCOPE_PREFIXES));
   }
   
   public FunctionTable(){

@@ -25,16 +25,15 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.xalan.xsltc.trax.DOM2SAX;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.ref.DTMDefaultBase;
 import org.apache.xml.dtm.DTMException;
 import org.apache.xml.dtm.DTMWSFilter;
+import org.apache.xml.dtm.ref.DTMDefaultBase;
 import org.apache.xml.dtm.ref.DTMManagerDefault;
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
 import org.apache.xml.utils.SystemIDResolver;
-import org.apache.xalan.xsltc.trax.DOM2SAX;
-
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;

@@ -30,23 +30,21 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.sax.SAXSource;
 
+import org.apache.xalan.xsltc.DOMEnhancedForDTM;
+import org.apache.xalan.xsltc.StripFilter;
 import org.apache.xalan.xsltc.TransletException;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
-import org.apache.xalan.xsltc.DOMEnhancedForDTM;
+import org.apache.xalan.xsltc.dom.DOMWSFilter;
 import org.apache.xalan.xsltc.dom.XSLTCDTMManager;
 import org.apache.xalan.xsltc.runtime.AbstractTranslet;
 import org.apache.xalan.xsltc.runtime.Constants;
 import org.apache.xalan.xsltc.runtime.Parameter;
 import org.apache.xalan.xsltc.runtime.output.TransletOutputHandlerFactory;
+import org.apache.xml.dtm.DTMWSFilter;
 import org.apache.xml.serializer.SerializationHandler;
-
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-
-import org.apache.xalan.xsltc.StripFilter;
-import org.apache.xml.dtm.DTMWSFilter;
-import org.apache.xalan.xsltc.dom.DOMWSFilter;
 
 /**
  * @author Jacek Ambroziak

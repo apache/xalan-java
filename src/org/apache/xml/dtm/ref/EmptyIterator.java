@@ -22,7 +22,6 @@
 package org.apache.xml.dtm.ref;
 
 import org.apache.xml.dtm.DTMAxisIterator;
-import org.apache.xml.dtm.DTM;
 
 
 /**

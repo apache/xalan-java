@@ -29,11 +29,10 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xml.dtm.DTM;
-import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.IncrementalSAXSource_Filter;
 import org.apache.xml.dtm.ref.sax2dtm.SAX2DTM;
+import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.XPathContext;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.DTDHandler;
@@ -45,7 +44,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ext.DeclHandler;
 import org.xml.sax.ext.LexicalHandler;
-import org.apache.xml.serializer.SerializationHandler;
 
 
 /**

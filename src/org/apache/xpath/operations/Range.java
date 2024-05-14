@@ -29,7 +29,6 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
-import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;

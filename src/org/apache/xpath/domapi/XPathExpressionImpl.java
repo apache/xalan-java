@@ -35,6 +35,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.xpath.XPathException;
 import org.w3c.dom.xpath.XPathExpression;
 import org.w3c.dom.xpath.XPathNamespace;
+import org.w3c.dom.xpath.XPathResult;
 
 /**
  * 

@@ -43,7 +43,6 @@ import org.apache.bcel.classfile.JavaClass;
 import org.apache.xalan.xsltc.compiler.util.ErrorMsg;
 import org.apache.xalan.xsltc.compiler.util.Util;
 import org.apache.xml.dtm.DTM;
-
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 

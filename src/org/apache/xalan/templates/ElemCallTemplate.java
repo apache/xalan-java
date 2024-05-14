@@ -30,6 +30,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
+import org.w3c.dom.DOMException;
 
 /**
  * Implement xsl:call-template.

@@ -20,13 +20,14 @@
  */
 package org.apache.xalan.xsltc.dom;
 
-import org.apache.xalan.xsltc.DOM;
-import org.apache.xalan.xsltc.TransletException;
-import org.apache.xalan.xsltc.StripFilter;
-import org.apache.xalan.xsltc.runtime.Hashtable;
+import javax.xml.transform.SourceLocator;
 
-import org.apache.xml.dtm.DTM;
+import org.apache.xalan.xsltc.DOM;
+import org.apache.xalan.xsltc.StripFilter;
+import org.apache.xalan.xsltc.TransletException;
+import org.apache.xalan.xsltc.runtime.Hashtable;
 import org.apache.xml.dtm.Axis;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMAxisIterator;
 import org.apache.xml.dtm.DTMAxisTraverser;
 import org.apache.xml.dtm.DTMManager;
@@ -36,13 +37,9 @@ import org.apache.xml.serializer.EmptySerializer;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.XMLString;
 import org.apache.xml.utils.XMLStringDefault;
-
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import org.xml.sax.SAXException;
-
-import javax.xml.transform.SourceLocator;
 
 /**
  * This class represents a light-weight DOM model for simple result tree fragment(RTF).

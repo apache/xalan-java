@@ -28,6 +28,7 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
+import org.w3c.dom.DOMException;
 
 import xml.xpath31.processor.types.XSAnyType;
 

@@ -32,7 +32,6 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.SystemIDResolver;
-
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
