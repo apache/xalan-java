@@ -125,7 +125,7 @@ public class Keywords
   public static final String FUNC_LOCAL_PART_STRING = "local-name";
 
   /** namespace-uri function string. */
-  public static final String FUNC_NAMESPACE_STRING = "namespace-uri";
+  public static final String FUNC_NAMESPACE_URI_STRING = "namespace-uri";
 
   /** name function string. */
   public static final String FUNC_NAME_STRING = "name";

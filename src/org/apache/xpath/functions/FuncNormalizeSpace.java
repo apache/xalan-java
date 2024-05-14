@@ -24,11 +24,13 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
 import org.xml.sax.ContentHandler;
 
+import xml.xpath31.processor.types.XSString;
+
 /**
- * Execute the normalize-space() function.
+ * Implementation of XPath 3.1 fn:normalize-space function.
+ * 
  * @xsl.usage advanced
  */
 public class FuncNormalizeSpace extends FunctionDef1Arg
@@ -36,8 +38,9 @@ public class FuncNormalizeSpace extends FunctionDef1Arg
     static final long serialVersionUID = -3377956872032190880L;
 
   /**
-   * Execute the function.  The function must return
+   * Implementation of the function. The function must return
    * a valid object.
+   * 
    * @param xctxt The current execution context.
    * @return A valid XObject.
    *
@@ -45,9 +48,11 @@ public class FuncNormalizeSpace extends FunctionDef1Arg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-    XMLString s1 = getArg0AsString(xctxt);
+      XMLString s1 = getArg0AsString(xctxt);
+    
+      XMLString xmlStr = s1.fixWhiteSpace(true, true, false);
 
-    return (XString)s1.fixWhiteSpace(true, true, false);
+      return new XSString(xmlStr.toString());
   }
   
   /**

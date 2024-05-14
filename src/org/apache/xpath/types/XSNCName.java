@@ -41,7 +41,8 @@ public class XSNCName extends XSName {
 		   fNcNameStr = str;
 		}
 		else {
-		   throw new TransformerException("The string value '" + str + "' is not a valid XML 1.1 NCName (ref, https://www.w3.org/TR/xml-names11/#NT-NCName).");
+		   throw new TransformerException("The string value '" + str + "' is not a valid XML NCName according "
+		   		                             + "to 'XML namespaces 1.0 recommendation'.");
 		}
 	}
 	
@@ -50,11 +51,12 @@ public class XSNCName extends XSName {
 	}
 
 	/*
-	 * Find whether, a string represents a valid XML NCName.
+	 * Find whether, a string represents a valid XML NCName according 
+	 * to 'XML namespaces 1.0 recommendation'.
 	 */
 	private boolean isValidNCName(String str) {
-	   boolean isXML11NCName = XMLChar.isValidNCName(str);	   
-	   return isXML11NCName;
+	   boolean isValidXMLNCName = XMLChar.isValidNCName(str);	   
+	   return isValidXMLNCName;
 	}
 
 }

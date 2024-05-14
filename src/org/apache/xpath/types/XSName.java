@@ -38,32 +38,32 @@ public class XSName extends XSToken {
 	}
 	
 	public void setStrVal(String str) throws TransformerException {
-		if (isValidXML11Name(str)) {
+		if (isValidXMLName(str)) {
 		   fNameStr = str;
 		}
 		else {
-		   throw new TransformerException("The string value '" + str + "' is not a valid XML 1.1 name (ref, https://www.w3.org/TR/xml11/#NT-Name).");
+		   throw new TransformerException("The string value '" + str + "' is not a valid XML 1.1 name.");
 		}
 	}
 	
-	public String getStrVal() {
+	public String stringValue() {
 		return fNameStr;
 	}
 
 	/*
 	 * Find whether, a string represents a valid XML 1.1 name.
 	 */
-	private boolean isValidXML11Name(String str) {
-	   boolean isValidXML11Name = true;
+	private boolean isValidXMLName(String str) {
+	   boolean isValidXMLName = true;
 	   
 	   for (int idx = 0; idx < str.length(); idx++) {
 		  if (!XML11Char.isXML11Valid(str.indexOf(idx))) {
-			 isValidXML11Name = false;
+			 isValidXMLName = false;
 			 break;
 		  }
 	   }
 	   
-	   return isValidXML11Name;
+	   return isValidXMLName;
 	}
 
 }

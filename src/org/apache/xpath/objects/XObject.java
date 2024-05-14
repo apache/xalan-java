@@ -1068,6 +1068,26 @@ public class XObject extends Expression implements Serializable, Cloneable
 		   }   
 	       
 	       return isEqual;
+	    }	    
+	    else if ((this instanceof XSString) && (obj2 instanceof XSString)) {
+	       String lStr = ((XSString)this).stringValue();
+	       String rStr = ((XSString)obj2).stringValue();
+	       return lStr.equals(rStr);
+	    }
+        else if ((this instanceof XSString) && (obj2 instanceof XString)) {
+           String lStr = ((XSString)this).stringValue();
+ 	       String rStr = ((XString)obj2).str();
+ 	       return lStr.equals(rStr);
+	    }
+        else if ((this instanceof XString) && (obj2 instanceof XSString)) {           
+  	       String lStr = ((XString)this).str();
+  	       String rStr = ((XSString)obj2).stringValue();
+  	       return lStr.equals(rStr);
+	    }
+        else if ((this instanceof XString) && (obj2 instanceof XString)) {
+           String lStr = ((XString)this).str();
+   	       String rStr = ((XString)obj2).str();
+   	       return lStr.equals(rStr);
 	    }
 	        
 	    if (obj2.getType() == XObject.CLASS_NODESET) {

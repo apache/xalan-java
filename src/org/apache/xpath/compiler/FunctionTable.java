@@ -56,7 +56,7 @@ public class FunctionTable
   public static final int FUNC_LOCAL_PART = 7;
 
   /** The 'namespace-uri()' id. */
-  public static final int FUNC_NAMESPACE = 8;  
+  public static final int FUNC_NAMESPACE_URI = 8;  
 
   /** The 'generate-id()' id. */
   public static final int FUNC_GENERATE_ID = 10;
@@ -516,9 +516,9 @@ public class FunctionTable
     m_functions[FUNC_KEY] =
       org.apache.xalan.templates.FuncKey.class;
     m_functions[FUNC_LOCAL_PART] = 
-      org.apache.xpath.functions.FuncLocalPart.class;
-    m_functions[FUNC_NAMESPACE] = 
-      org.apache.xpath.functions.FuncNamespace.class;
+      org.apache.xpath.functions.FuncLocalName.class;
+    m_functions[FUNC_NAMESPACE_URI] = 
+      org.apache.xpath.functions.FuncNamespaceUri.class;
     
     m_functions[FUNC_NAME] = org.apache.xpath.functions.FuncName.class;
     
@@ -753,8 +753,8 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_KEY));
           m_functionID.put(Keywords.FUNC_LOCAL_PART_STRING,
                           new Integer(FunctionTable.FUNC_LOCAL_PART));
-          m_functionID.put(Keywords.FUNC_NAMESPACE_STRING,
-                          new Integer(FunctionTable.FUNC_NAMESPACE));          
+          m_functionID.put(Keywords.FUNC_NAMESPACE_URI_STRING,
+                          new Integer(FunctionTable.FUNC_NAMESPACE_URI));          
           m_functionID.put(Keywords.FUNC_GENERATE_ID_STRING,
                           new Integer(FunctionTable.FUNC_GENERATE_ID));
           m_functionID.put(Keywords.FUNC_NOT_STRING,
