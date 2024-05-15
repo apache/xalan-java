@@ -29,7 +29,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xpath.functions.Function;
 
 /**
- * The function table for XPath.
+ * The function table for XPath 3.1.
  */
 public class FunctionTable
 {
@@ -53,7 +53,7 @@ public class FunctionTable
   public static final int FUNC_KEY = 5;
 
   /** The 'local-name()' id. */
-  public static final int FUNC_LOCAL_PART = 7;
+  public static final int FUNC_LOCAL_NAME = 7;
 
   /** The 'namespace-uri()' id. */
   public static final int FUNC_NAMESPACE_URI = 8;  
@@ -423,6 +423,9 @@ public class FunctionTable
   
   /** The 'in-scope-prefixes' id. */
   public static final int FUNC_IN_SCOPE_PREFIXES = 135;
+  
+  /** The 'root' id. */
+  public static final int FUNC_ROOT = 136;
 
   // Proprietary
 
@@ -493,7 +496,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 136;
+  private static final int NUM_BUILT_IN_FUNCS = 137;
 
   /**
    * Number of built-in functions that may be added.
@@ -515,7 +518,7 @@ public class FunctionTable
     m_functions[FUNC_ID] = org.apache.xpath.functions.FuncId.class;
     m_functions[FUNC_KEY] =
       org.apache.xalan.templates.FuncKey.class;
-    m_functions[FUNC_LOCAL_PART] = 
+    m_functions[FUNC_LOCAL_NAME] = 
       org.apache.xpath.functions.FuncLocalName.class;
     m_functions[FUNC_NAMESPACE_URI] = 
       org.apache.xpath.functions.FuncNamespaceUri.class;
@@ -537,6 +540,7 @@ public class FunctionTable
     m_functions[FUNC_FALSE] = org.apache.xpath.functions.FuncFalse.class;
     m_functions[FUNC_BOOLEAN] = org.apache.xpath.functions.FuncBoolean.class;
     m_functions[FUNC_LANG] = org.apache.xpath.functions.FuncLang.class;
+    m_functions[FUNC_ROOT] = org.apache.xpath.functions.FuncRoot.class;
     m_functions[FUNC_NUMBER] = org.apache.xpath.functions.FuncNumber.class;
     m_functions[FUNC_FLOOR] = org.apache.xpath.functions.FuncFloor.class;
     m_functions[FUNC_CEILING] = org.apache.xpath.functions.FuncCeiling.class;
@@ -751,8 +755,8 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_ID));
           m_functionID.put(Keywords.FUNC_KEY_STRING,
                           new Integer(FunctionTable.FUNC_KEY));
-          m_functionID.put(Keywords.FUNC_LOCAL_PART_STRING,
-                          new Integer(FunctionTable.FUNC_LOCAL_PART));
+          m_functionID.put(Keywords.FUNC_LOCAL_NAME_STRING,
+                          new Integer(FunctionTable.FUNC_LOCAL_NAME));
           m_functionID.put(Keywords.FUNC_NAMESPACE_URI_STRING,
                           new Integer(FunctionTable.FUNC_NAMESPACE_URI));          
           m_functionID.put(Keywords.FUNC_GENERATE_ID_STRING,
@@ -767,6 +771,8 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_BOOLEAN));
           m_functionID.put(Keywords.FUNC_LANG_STRING,
                           new Integer(FunctionTable.FUNC_LANG));
+          m_functionID.put(Keywords.FUNC_ROOT_STRING,
+                          new Integer(FunctionTable.FUNC_ROOT));
           m_functionID.put(Keywords.FUNC_NUMBER_STRING,
                           new Integer(FunctionTable.FUNC_NUMBER));
           m_functionID.put(Keywords.FUNC_FLOOR_STRING,

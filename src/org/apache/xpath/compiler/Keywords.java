@@ -23,7 +23,8 @@ package org.apache.xpath.compiler;
 import java.util.Hashtable;
 
 /**
- * Table of strings to operation code lookups.
+ * Table of strings to operation code lookups
+ * to support implementation of XPath 3.1.
  * 
  * @xsl.usage internal
  */
@@ -122,7 +123,7 @@ public class Keywords
   public static final String FUNC_KEY_STRING = "key";
 
   /** local-name function string. */
-  public static final String FUNC_LOCAL_PART_STRING = "local-name";
+  public static final String FUNC_LOCAL_NAME_STRING = "local-name";
 
   /** namespace-uri function string. */
   public static final String FUNC_NAMESPACE_URI_STRING = "namespace-uri";
@@ -150,6 +151,9 @@ public class Keywords
 
   /** lang function string. */
   public static final String FUNC_LANG_STRING = "lang";
+  
+  /** root function string. */
+  public static final String FUNC_ROOT_STRING = "root";
 
   /** number function string. */
   public static final String FUNC_NUMBER_STRING = "number";
