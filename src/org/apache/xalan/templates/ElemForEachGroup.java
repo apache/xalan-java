@@ -40,7 +40,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.NodeSequence;
 import org.apache.xpath.composite.ForExpr;
-import org.apache.xpath.composite.SimpleSequenceConstructor;
+import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNodeSet;
@@ -464,7 +464,7 @@ public class ElemForEachGroup extends ElemTemplateElement
                sourceNodes = getSourceNodesFromResultSequence(resultSeq, xctxt);                
             }
         }
-        else if ((m_selectExpression instanceof SimpleSequenceConstructor) ||
+        else if ((m_selectExpression instanceof XPathSequenceConstructor) ||
                                                     (m_selectExpression instanceof ForExpr)) {
             XObject xObj = m_selectExpression.execute(xctxt);
             

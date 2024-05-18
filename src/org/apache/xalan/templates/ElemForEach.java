@@ -39,7 +39,7 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.ForExpr;
-import org.apache.xpath.composite.SimpleSequenceConstructor;
+import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.DynamicFunctionCall;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
@@ -385,8 +385,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
             resultSeqDtmIterator = nodeSet.iter(); 
         }
     }    
-    else if (m_selectExpression instanceof SimpleSequenceConstructor) {
-        SimpleSequenceConstructor seqCtrExpr = (SimpleSequenceConstructor)
+    else if (m_selectExpression instanceof XPathSequenceConstructor) {
+        XPathSequenceConstructor seqCtrExpr = (XPathSequenceConstructor)
                                                                      m_selectExpression;
         XObject  evalResult = seqCtrExpr.execute(xctxt);
         

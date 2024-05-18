@@ -742,8 +742,10 @@ public class OpCodes
   public static final int OP_CAST_AS = 75;
   
   public static final int OP_SQUARE_ARRAY_CONSTRUCTOR_EXPR = 76;
+  
+  public static final int OP_MAP_CONSTRUCTOR_EXPR = 77;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 77;
+  private static final int NEXT_FREE_ID = 78;
   
 }

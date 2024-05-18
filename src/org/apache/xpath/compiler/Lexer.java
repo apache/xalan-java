@@ -22,6 +22,7 @@ package org.apache.xpath.compiler;
 
 import java.util.Vector;
 
+import org.apache.xml.utils.ObjectVector;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.res.XPATHErrorResources;
 
@@ -45,7 +46,7 @@ class Lexer
   /**
    * The XPath processor object.
    */
-  XPathParser m_processor;
+  XPathParserImpl m_processor;
 
   /**
    * This value is added to each element name in the TARGETEXTRA
@@ -78,7 +79,7 @@ class Lexer
    * @param xpathProcessor The parser that is processing strings to opcodes.
    */
   Lexer(Compiler compiler, PrefixResolver resolver,
-        XPathParser xpathProcessor)
+        XPathParserImpl xpathProcessor)
   {
 
     m_compiler = compiler;
@@ -625,9 +626,15 @@ class Lexer
           }
           else
           {
-            uName =
-              ((PrefixResolver) m_namespaceContext).getNamespaceForPrefix(
-                prefix);
+        	if (((m_compiler.getTokenQueue()).indexOf("map") != -1)) 
+        	{
+        	   // To handle XPath 3.1 "map" expression 
+        	   addToTokenQueue(":");
+        	   return -1;
+        	}
+        	else {
+               uName = ((PrefixResolver) m_namespaceContext).getNamespaceForPrefix(prefix);
+        	}
           }
         }
       }

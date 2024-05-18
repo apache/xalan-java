@@ -1,0 +1,280 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.apache.xpath.composite;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.Vector;
+
+import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
+
+import org.apache.xalan.templates.ElemTemplateElement;
+import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.dtm.DTM;
+import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.dtm.DTMManager;
+import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.XPath;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XNumber;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathMap;
+
+import xml.xpath31.processor.types.XSNumericType;
+
+/*
+ * An XalanJ XPath parser, constructs an object of this class, 
+ * to produce run-time representation of an XPath map expression.
+ * 
+ * Ref: https://www.w3.org/TR/xpath-31/#id-maps
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ * 
+ * @xsl.usage advanced
+ */
+public class MapConstructor extends Expression {
+    
+	private static final long serialVersionUID = 2664427126053000318L;
+	
+	// Variable reference, denoting an native run-time map
+	private Map<String, String> fMapVar = new HashMap<String, String>();
+	
+	// The following two fields of this class, are used during 
+    // XPath.fixupVariables(..) action as performed within object of 
+    // this class.    
+    private Vector fVars;    
+    private int fGlobalsSize;
+    
+    @Override
+    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
+       // no op
+    }
+
+    @Override
+    public XObject execute(XPathContext xctxt) throws TransformerException {        
+    	XPathMap xpathResultMap = new XPathMap();                                
+        
+        ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+        List<XMLNSDecl> prefixTable = null;
+        if (elemTemplateElement != null) {
+            prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+        }
+        
+        Set<Entry<String, String>> mapEntrySet = fMapVar.entrySet();
+        Iterator<Entry<String, String>> mapIter = mapEntrySet.iterator();
+        while (mapIter.hasNext()) {
+           Entry<String, String> mapEntry = mapIter.next();
+           String xpathKeyStr = mapEntry.getKey();
+           String xpathValueStr = mapEntry.getValue();
+           
+           if (prefixTable != null) {
+        	  xpathKeyStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathKeyStr, 
+                                                                                                      prefixTable);        	  
+           }
+           
+           ResultSequence mapEntryKey = evaluateXPathExpression(xpathKeyStr, xctxt);
+           
+           if (prefixTable != null) {
+        	  xpathValueStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathValueStr, 
+                                                                                                       prefixTable);        	  
+           }
+           
+           ResultSequence mapEntryValue = evaluateXPathExpression(xpathValueStr, xctxt);
+           
+           xpathResultMap.put(mapEntryKey, mapEntryValue);
+        }
+        
+        return xpathResultMap;
+    }
+
+    @Override
+    public void fixupVariables(Vector vars, int globalsSize) {
+        fVars = (Vector)(vars.clone());
+        fGlobalsSize = globalsSize;
+    }
+
+	public Map<String, String> getNativeMap() {
+		return fMapVar;
+	}
+
+	public void setNativeMap(Map<String, String> map) {
+		this.fMapVar = map;
+	}
+	
+    @Override
+    public boolean deepEquals(Expression expr) {
+        return false;
+    }
+    
+    private ResultSequence evaluateXPathExpression(String xpathExprStr, XPathContext xctxt) throws TransformerException {
+    	ResultSequence resultSeq = null;
+    	
+    	int contextNode = xctxt.getContextNode();
+    	
+    	SourceLocator srcLocator = xctxt.getSAXLocator();
+    	
+    	ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+        List<XMLNSDecl> prefixTable = null;
+        if (elemTemplateElement != null) {
+            prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+        }
+    	
+    	resultSeq = new ResultSequence();
+    	
+    	XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+        if (fVars != null) {
+           xpathObj.fixupVariables(fVars, fGlobalsSize);
+        }
+
+        Expression xpathExpr = xpathObj.getExpression();
+    	
+    	if (xpathExpr instanceof LocPathIterator) {    		
+            LocPathIterator locPathIterator = (LocPathIterator)xpathExpr;
+            
+            DTMIterator dtmIter = null;                     
+            try {
+                dtmIter = locPathIterator.asIterator(xctxt, contextNode);
+            }
+            catch (ClassCastException ex) {
+                // no op
+            }
+            
+            if (dtmIter != null) {
+               int nextNode;
+               while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
+                   XNodeSet xNodeSetItem = new XNodeSet(nextNode, xctxt);
+                   resultSeq.add(xNodeSetItem);
+               }
+            }
+            else if (xpathExprStr.startsWith("$") && xpathExprStr.contains("[") && 
+                                                                        xpathExprStr.endsWith("]")) {
+                String varRefXPathExprStr = "$" + xpathExprStr.substring(1, xpathExprStr.indexOf('['));
+                String xpathIndexExprStr = xpathExprStr.substring(xpathExprStr.indexOf('[') + 1, 
+                                                                                    xpathExprStr.indexOf(']'));
+                
+                // Evaluate the, variable reference XPath expression
+                if (prefixTable != null) {
+                   varRefXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                            varRefXPathExprStr, prefixTable);
+                }
+                
+                XPath varXPathObj = new XPath(varRefXPathExprStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                                   XPath.SELECT, null);
+                XObject varEvalResult = varXPathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
+                
+                // Evaluate the, xdm sequence index XPath expression
+                if (prefixTable != null) {
+                   xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                                   xpathIndexExprStr, 
+                                                                                                   prefixTable);
+                }
+                
+                XPath xpathIndexObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                                  XPath.SELECT, null);
+                if (fVars != null) {
+                   xpathIndexObj.fixupVariables(fVars, fGlobalsSize);
+                }
+                
+                XObject arrIndexEvalResult = xpathIndexObj.execute(xctxt, xctxt.getCurrentNode(), 
+                                                                                             xctxt.getNamespaceContext());
+                
+                if (varEvalResult instanceof ResultSequence) {
+                    ResultSequence varEvalResultSeq = (ResultSequence)varEvalResult; 
+                    
+                    if (arrIndexEvalResult instanceof XNumber) {
+                       double dValIndex = ((XNumber)arrIndexEvalResult).num();
+                       if (dValIndex == (int)dValIndex) {
+                          XObject evalResult = varEvalResultSeq.item((int)dValIndex - 1);
+                          resultSeq.add(evalResult);
+                       }
+                       else {
+                           throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
+                                                                                    + "array reference, is not an integer.", 
+                                                                                           srcLocator);  
+                       }
+                    }
+                    else if (arrIndexEvalResult instanceof XSNumericType) {
+                       String indexStrVal = ((XSNumericType)arrIndexEvalResult).stringValue();
+                       double dValIndex = (Double.valueOf(indexStrVal)).doubleValue();
+                       if (dValIndex == (int)dValIndex) {
+                          XObject evalResult = varEvalResultSeq.item((int)dValIndex - 1);
+                          resultSeq.add(evalResult);
+                       }
+                       else {
+                           throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
+                                                                                    + "array reference, is not an integer.", 
+                                                                                           srcLocator);  
+                       }
+                    }
+                    else {
+                        throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm array "
+                                                                                 + "reference, is not numeric.", srcLocator);  
+                    }
+                }
+            }
+        }
+        else {
+        	xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+            if (fVars != null) {
+               xpathObj.fixupVariables(fVars, fGlobalsSize);
+            }
+            
+            XObject xPathExprPartResult = xpathObj.execute(xctxt, contextNode, 
+                                                                           xctxt.getNamespaceContext());
+            
+            if (xPathExprPartResult instanceof XNodeSet) {
+               DTMManager dtmMgr = (DTMManager)xctxt;
+                
+               XNodeSet xNodeSet = (XNodeSet)xPathExprPartResult;
+               DTMIterator sourceNodes = xNodeSet.iter();
+                
+               int nextNodeDtmHandle;
+                
+               while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
+                  XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);
+                  resultSeq.add(xNodeSetItem);
+               }               
+            }
+            else if (xPathExprPartResult instanceof ResultSequence) {
+               ResultSequence inpResultSeq = (ResultSequence)xPathExprPartResult; 
+               for (int idx1 = 0; idx1 < inpResultSeq.size(); idx1++) {
+                  XObject xObj = inpResultSeq.item(idx1);
+                  resultSeq.add(xObj);                 
+               }
+            }
+            else {
+               // We're assuming here that, an input value is an xdm sequence 
+               // with cardinality one.
+               resultSeq.add(xPathExprPartResult);               
+            }
+        }
+    	
+    	return resultSeq;
+    }
+
+}

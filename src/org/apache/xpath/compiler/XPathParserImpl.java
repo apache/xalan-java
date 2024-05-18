@@ -22,7 +22,9 @@ package org.apache.xpath.compiler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 import javax.xml.XMLConstants;
@@ -37,12 +39,13 @@ import org.apache.xpath.composite.ForQuantifiedExprVarBinding;
 import org.apache.xpath.composite.IfExpr;
 import org.apache.xpath.composite.LetExpr;
 import org.apache.xpath.composite.LetExprVarBinding;
+import org.apache.xpath.composite.MapConstructor;
 import org.apache.xpath.composite.QuantifiedExpr;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeFunctionTest;
 import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
-import org.apache.xpath.composite.SimpleSequenceConstructor;
+import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.composite.SquareArrayConstructor;
 import org.apache.xpath.composite.XPathSequenceTypeExpr;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
@@ -54,16 +57,13 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * Tokenizes and parses XPath expressions. This should really be named
- * XPathParserImpl, and may be renamed in the future.
+ * Tokenizes and parses XPath expressions, as specified by 
+ * XPath 3.1 spec.
+ * 
  * @xsl.usage general
  */
-public class XPathParser
+public class XPathParserImpl
 {
-	// %REVIEW% Is there a better way of doing this?
-	// Upside is minimum object churn. Downside is that we don't have a useful
-	// backtrace in the exception itself -- but we don't expect to need one.
-	static public final String CONTINUE_AFTER_FATAL_ERROR="CONTINUE_AFTER_FATAL_ERROR";
 
   /**
    * The XPath to be processed.
@@ -86,6 +86,8 @@ public class XPathParser
    * The position in the token queue is tracked by m_queueMark.
    */
   int m_queueMark = 0;
+  
+  private static final String CONTINUE_AFTER_FATAL_ERROR = "CONTINUE_AFTER_FATAL_ERROR";
 
   /**
    * Results from checking FilterExpr syntax
@@ -107,7 +109,7 @@ public class XPathParser
                                                       "let", ":=", "-", "||", "instance", "of", 
                                                       "as" };
   
-  // If the XPath expression is () (i.e, representing an xdm empty sequence),
+  // If an XPath expression is () (i.e, representing an xdm empty sequence),
   // we translate that within this XPath parser implementation, to an XPath
   // range "to" expression using this class field (this equivalently produces
   // an xdm empty sequence).
@@ -135,16 +137,18 @@ public class XPathParser
   
   static IfExpr fIfExpr = null;
   
-  static SimpleSequenceConstructor fSimpleSequenceConstructor = null;
+  static XPathSequenceConstructor fXPathSequenceConstructor = null;
   
   static SquareArrayConstructor fSquareArrayConstructor = null;
+  
+  static MapConstructor fMapConstructor = null;
   
   static XPathSequenceTypeExpr fXpathSequenceTypeExpr = null;
   
   /**
    * The parser constructor.
    */
-  public XPathParser(ErrorListener errorListener, javax.xml.transform.SourceLocator sourceLocator)
+  public XPathParserImpl(ErrorListener errorListener, javax.xml.transform.SourceLocator sourceLocator)
   {
     m_errorListener = errorListener;
     m_sourceLocator = sourceLocator;
@@ -1148,8 +1152,8 @@ public class XPathParser
               
               sequenceConstructorXPathParts.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
               
-              fSimpleSequenceConstructor = new SimpleSequenceConstructor();              
-              fSimpleSequenceConstructor.setSequenceConstructorXPathParts(
+              fXPathSequenceConstructor = new XPathSequenceConstructor();              
+              fXPathSequenceConstructor.setSequenceConstructorXPathParts(
                                                                     sequenceConstructorXPathParts);
               
               m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
@@ -1257,8 +1261,8 @@ public class XPathParser
               }
               else {
                  insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
-                 fSimpleSequenceConstructor = new SimpleSequenceConstructor();              
-                 fSimpleSequenceConstructor.setSequenceConstructorXPathParts(
+                 fXPathSequenceConstructor = new XPathSequenceConstructor();              
+                 fXPathSequenceConstructor.setSequenceConstructorXPathParts(
                                                                 sequenceConstructorXPathParts);
               }
               
@@ -1273,6 +1277,39 @@ public class XPathParser
              nextToken();
              ExprSingle();
           }
+      }
+      else if (fIsBeginParse && tokenIs("map")) {
+    	  // Parse an XPath "map" expression
+    	  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+          
+          nextToken();
+
+          insertOp(opPos, 2, OpCodes.OP_MAP_CONSTRUCTOR_EXPR);
+          fMapConstructor = new MapConstructor();
+          Map<String, String> nativeMapVar = new HashMap<String, String>();
+          
+          consumeExpected('{');
+          
+          while (m_token != null) {        	 
+        	 String mapKeyExprStr = m_token;
+        	 nextToken();
+        	 consumeExpected(':');
+        	 String mapValueExprStr = m_token;        	 
+        	 nativeMapVar.put(mapKeyExprStr, mapValueExprStr);
+        	 nextToken();
+        	 if (tokenIs(',')) {
+        		consumeExpected(','); 
+        	 }
+        	 else if (tokenIs('}')) {
+        		consumeExpected('}');
+        		break;
+        	 }
+          }
+          
+          fMapConstructor.setNativeMap(nativeMapVar);
+          
+          m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                                         m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);  
       }
       else if (fIsSequenceTypeXPathExpr) {
          fXpathSequenceTypeExpr = SequenceTypeExpr(false); 
@@ -2738,8 +2775,8 @@ public class XPathParser
         
         sequenceConstructorXPathParts.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
         
-        fSimpleSequenceConstructor = new SimpleSequenceConstructor();              
-        fSimpleSequenceConstructor.setSequenceConstructorXPathParts(
+        fXPathSequenceConstructor = new XPathSequenceConstructor();              
+        fXPathSequenceConstructor.setSequenceConstructorXPathParts(
                                                               sequenceConstructorXPathParts);
         
         m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 

@@ -30,7 +30,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.ForExpr;
-import org.apache.xpath.composite.SimpleSequenceConstructor;
+import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
@@ -248,8 +248,8 @@ public class XslTransformEvaluationHelper {
            ResultSequence forExprResult = (ResultSequence)(forExpr.execute(xctxt));
            sum = sumResultSequence(forExprResult);
         }
-        else if (expr instanceof SimpleSequenceConstructor) {
-           SimpleSequenceConstructor simpleSeqConstructor = (SimpleSequenceConstructor)expr;
+        else if (expr instanceof XPathSequenceConstructor) {
+           XPathSequenceConstructor simpleSeqConstructor = (XPathSequenceConstructor)expr;
            ResultSequence seqCtrEvalResult = (ResultSequence)(simpleSeqConstructor.
                                                                                 execute(xctxt));
            sum = sumResultSequence(seqCtrEvalResult);
@@ -314,8 +314,8 @@ public class XslTransformEvaluationHelper {
         	  xdmSequenceSize = 1; 
            }
         }
-        else if (expr instanceof SimpleSequenceConstructor) {
-           SimpleSequenceConstructor simpleSeqConstructor = (SimpleSequenceConstructor)expr;
+        else if (expr instanceof XPathSequenceConstructor) {
+           XPathSequenceConstructor simpleSeqConstructor = (XPathSequenceConstructor)expr;
            ResultSequence seqCtrEvalResult = (ResultSequence)(simpleSeqConstructor.
                                                                                 execute(xctxt));
            xdmSequenceSize = seqCtrEvalResult.size();

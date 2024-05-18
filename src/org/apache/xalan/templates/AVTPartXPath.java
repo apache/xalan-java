@@ -24,7 +24,7 @@ import org.apache.xml.utils.FastStringBuffer;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathFactory;
-import org.apache.xpath.compiler.XPathParser;
+import org.apache.xpath.compiler.XPathParserImpl;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSAnyType;
@@ -99,7 +99,7 @@ public class AVTPartXPath extends AVTPart
    */
   public AVTPartXPath(
           String val, org.apache.xml.utils.PrefixResolver nsNode, 
-          XPathParser xpathProcessor, XPathFactory factory, 
+          XPathParserImpl xpathProcessor, XPathFactory factory, 
           XPathContext liaison)
             throws javax.xml.transform.TransformerException
   {

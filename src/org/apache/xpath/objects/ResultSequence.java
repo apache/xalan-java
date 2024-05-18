@@ -23,7 +23,7 @@ import java.util.List;
 import xml.xpath31.processor.types.XSAnyType;
 
 /**
- * This class represents, the XPath 3.1 data model sequence.
+ * This class represents, an XPath 3.1 xdm sequence.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -126,6 +126,27 @@ public class ResultSequence extends XObject
         resultStr = strBuff.toString(); 
         
         return resultStr;
+    }
+    
+    public boolean equals(Object obj) {
+    	boolean isEquals = true;
+    	
+    	if (!(obj instanceof ResultSequence)) {
+    	   return false;	
+    	}
+    	
+    	String strVal1 = str();
+    	String strVal2 = ((ResultSequence)obj).str();
+    	
+    	isEquals = strVal1.equals(strVal2);
+    	
+    	return isEquals;
+    }
+    
+    public int hashCode() {
+    	String strVal = str();
+    	
+    	return strVal.hashCode();
     }
 
 }

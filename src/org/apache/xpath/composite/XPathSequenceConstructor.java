@@ -43,15 +43,15 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSNumericType;
 
 /*
- * The XalanJ XPath parser, creates and populates an object of this class, 
+ * XalanJ's xpath parser, constructs an object of this class 
  * to help produce an XDM sequence constructed using an XPath expression having
- * one or more occurrences of comma operator.
+ * one or more occurrences of an XPath ',' operator.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class SimpleSequenceConstructor extends Expression {
+public class XPathSequenceConstructor extends Expression {
 
     private static final long serialVersionUID = -5141131877741250613L;
     

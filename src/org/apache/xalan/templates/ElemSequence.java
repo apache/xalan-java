@@ -33,7 +33,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
-import org.apache.xpath.compiler.XPathParser;
+import org.apache.xpath.compiler.XPathParserImpl;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.functions.Function;
@@ -318,7 +318,7 @@ public class ElemSequence extends ElemTemplateElement
       if (xslSequenceVal == null) {
           // The result of evaluation of xsl:sequence instruction here,
           // is an empty sequence.
-          XPath emptySeqXPath = new XPath(XPathParser.XPATH_EXPR_STR_EMPTY_SEQUENCE, srcLocator, 
+          XPath emptySeqXPath = new XPath(XPathParserImpl.XPATH_EXPR_STR_EMPTY_SEQUENCE, srcLocator, 
                                                                                   null, XPath.SELECT, null);
           xslSequenceVal = emptySeqXPath.execute(xctxt, DTM.NULL, null);
       }

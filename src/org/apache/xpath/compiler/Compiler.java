@@ -147,6 +147,8 @@ public class Compiler extends OpMap
       expr = sequenceConstructorExpr(opPos); break;
     case OpCodes.OP_SQUARE_ARRAY_CONSTRUCTOR_EXPR :
       expr = squareArrayConstructorExpr(opPos); break;
+    case OpCodes.OP_MAP_CONSTRUCTOR_EXPR :
+      expr = mapConstructorExpr(opPos); break;
     case OpCodes.OP_OR :
       expr = or(opPos); break;
     case OpCodes.OP_AND :
@@ -535,7 +537,7 @@ public class Compiler extends OpMap
    */
   Expression sequenceTypeExpr(int opPos) throws TransformerException
   {
-      return XPathParser.fXpathSequenceTypeExpr;
+      return XPathParserImpl.fXpathSequenceTypeExpr;
   }
   
   /**
@@ -1346,7 +1348,7 @@ private static final boolean DEBUG = false;
    */
   Expression compileInlineFunctionDefinition(int opPos) throws TransformerException
   {
-      return XPathParser.fInlineFunction;
+      return XPathParserImpl.fInlineFunction;
   }
   
   /**
@@ -1364,7 +1366,7 @@ private static final boolean DEBUG = false;
    */
   Expression compileDynamicFunctionCall(int opPos) throws TransformerException
   {
-      return XPathParser.fDynamicFunctionCall;
+      return XPathParserImpl.fDynamicFunctionCall;
   }
   
   /**
@@ -1381,7 +1383,7 @@ private static final boolean DEBUG = false;
    */
   Expression forExpr(int opPos) throws TransformerException
   {
-      return XPathParser.fForExpr;
+      return XPathParserImpl.fForExpr;
   }
   
   /**
@@ -1398,7 +1400,7 @@ private static final boolean DEBUG = false;
    */
   Expression letExpr(int opPos) throws TransformerException
   {
-      return XPathParser.fLetExpr;
+      return XPathParserImpl.fLetExpr;
   }
   
   /**
@@ -1416,7 +1418,7 @@ private static final boolean DEBUG = false;
    */
   Expression quantifiedExpr(int opPos) throws TransformerException
   {
-      return XPathParser.fQuantifiedExpr;
+      return XPathParserImpl.fQuantifiedExpr;
   }
   
   /**
@@ -1433,7 +1435,7 @@ private static final boolean DEBUG = false;
    */
   Expression ifExpr(int opPos) throws TransformerException
   {
-      return XPathParser.fIfExpr;
+      return XPathParserImpl.fIfExpr;
   }
   
   /**
@@ -1442,8 +1444,8 @@ private static final boolean DEBUG = false;
    * @param opPos The current position in the m_opMap array.
    *
    * @return the compiled sequence constructor expression returned as an object
-   *         of class SimpleSequenceConstructor. An object of class
-   *         SimpleSequenceConstructor has already been created and populated by
+   *         of class XPathSequenceConstructor. An object of class
+   *         XPathSequenceConstructor has already been created and populated by
    *         XPath expression parser, and this function just returns that object 
    *         to the caller of this method.       
    *
@@ -1451,7 +1453,7 @@ private static final boolean DEBUG = false;
    */
   Expression sequenceConstructorExpr(int opPos) throws TransformerException
   {
-      return XPathParser.fSimpleSequenceConstructor;
+      return XPathParserImpl.fXPathSequenceConstructor;
   }
   
   /**
@@ -1459,7 +1461,15 @@ private static final boolean DEBUG = false;
    */
   Expression squareArrayConstructorExpr(int opPos) throws TransformerException
   {
-      return XPathParser.fSquareArrayConstructor;
+      return XPathParserImpl.fSquareArrayConstructor;
+  }
+  
+  /**
+   * Compile an XPath map constructor, expression.
+   */
+  Expression mapConstructorExpr(int opPos) throws TransformerException
+  {
+	  return XPathParserImpl.fMapConstructor; 
   }
 
   // The current id for extension functions.

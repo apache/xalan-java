@@ -37,7 +37,7 @@ import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.SequenceTypeSupport;
-import org.apache.xpath.composite.SimpleSequenceConstructor;
+import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNodeSetForDOM;
@@ -200,8 +200,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
     
     DTMIterator sourceNodes = null;
     
-    if (m_selectExpression instanceof SimpleSequenceConstructor) {
-       ResultSequence resultSeq = (ResultSequence)(((SimpleSequenceConstructor)
+    if (m_selectExpression instanceof XPathSequenceConstructor) {
+       ResultSequence resultSeq = (ResultSequence)(((XPathSequenceConstructor)
     		                                                               m_selectExpression).execute(xctxt));
        XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence(
     		                                                                     resultSeq, xctxt);
