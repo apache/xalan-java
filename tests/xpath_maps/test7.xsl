@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                version="3.0">
-                
-   <!-- Author: mukulg@apache.org -->                
+                xmlns:map="http://www.w3.org/2005/xpath-functions/map"
+				exclude-result-prefixes="map"
+                version="3.0">				
 
-   <xsl:output method="text"/>
+  <!-- Author: mukulg@apache.org -->                
+
+   <xsl:output method="xml" indent="yes"/>
    
-   <!-- An XPath 3.1 test case, to test an XPath 'map' 
-        expression. -->   
+   <!-- An XPath 3.1 test case, to test an XPath map:entry 
+        function. -->
 
    <xsl:template match="/">
-      <xsl:variable name="map1" select="map {
-			  'Su' : 'Sunday',
-			  'Mo' : 'Monday',
-			  'Tu' : 'Tuesday',
-			  'We' : 'Wednesday',
-			  'Th' : 'Thursday',
-			  'Fr' : 'Friday',
-			  'Sa' : 'Saturday'}"/>
-			  
-	  <!-- map lookup using function call syntax -->
-	  <xsl:value-of select="$map1('Su')"/>
+      <result>
+         <xsl:variable name="map1" select="map:entry('mesg', 'hello')"/>
+         <xsl:variable name="map2" select="map:entry('mesg', 'hi')"/>
+         <xsl:variable name="map3" select="map:entry('mesg', 'there')"/>
+         <one>
+            <xsl:value-of select="map:get($map1, 'mesg')"/>
+         </one>
+         <two>
+            <xsl:value-of select="map:get($map2, 'mesg')"/>
+         </two>
+         <three>
+            <xsl:value-of select="map:get($map3, 'mesg')"/>
+         </three>
+      </result>
    </xsl:template>
    
    <!--

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                version="3.0">
-                
+                xmlns:map="http://www.w3.org/2005/xpath-functions/map"
+				exclude-result-prefixes="map"
+                version="3.0">				
+
    <!-- Author: mukulg@apache.org -->                
 
-   <xsl:output method="text"/>
+   <xsl:output method="xml" indent="yes"/>
    
-   <!-- An XPath 3.1 test case, to test an XPath 'map' 
-        expression. -->   
+   <!-- An XPath 3.1 test case, to test an XPath map:size 
+        function. -->
 
    <xsl:template match="/">
       <xsl:variable name="map1" select="map {
@@ -18,9 +20,25 @@
 			  'Th' : 'Thursday',
 			  'Fr' : 'Friday',
 			  'Sa' : 'Saturday'}"/>
-			  
-	  <!-- map lookup using function call syntax -->
-	  <xsl:value-of select="$map1('Su')"/>
+	  <xsl:variable name="map2" select="map {'true' : 1, 'false' : 0}"/>
+	  <xsl:variable name="map3" select="map {}"/>
+      <result>
+         <map name="weekDaysMap">   	  
+	       <size>
+		      <xsl:value-of select="map:size($map1)"/>
+		   </size>
+		 </map>
+		 <map name="boolMap">   	  
+	       <size>
+		      <xsl:value-of select="map:size($map2)"/>
+		   </size>
+		 </map>
+		 <map name="emptyMap">   	  
+	       <size>
+		      <xsl:value-of select="map:size($map3)"/>
+		   </size>
+		 </map>
+	  </result>
    </xsl:template>
    
    <!--

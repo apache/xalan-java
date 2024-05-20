@@ -426,6 +426,24 @@ public class FunctionTable
   
   /** The 'root' id. */
   public static final int FUNC_ROOT = 136;
+  
+  /** The 'map:size()' id. */
+  public static final int FUNC_MAP_SIZE = 137;
+  
+  /** The 'map:keys()' id. */
+  public static final int FUNC_MAP_KEYS = 138;
+  
+  /** The 'map:contains()' id. */
+  public static final int FUNC_MAP_CONTAINS = 139;
+  
+  /** The 'map:get()' id. */
+  public static final int FUNC_MAP_GET = 140;
+  
+  /** The 'map:put()' id. */
+  public static final int FUNC_MAP_PUT = 141;
+  
+  /** The 'map:entry()' id. */
+  public static final int FUNC_MAP_ENTRY = 142;
 
   // Proprietary
 
@@ -440,7 +458,7 @@ public class FunctionTable
    * namespace prefix for this namespace uri is "fn", as specified by
    * XPath 3.1 spec).
    */
-  static final String XPATH_BUILT_IN_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions";
+  public static final String XPATH_BUILT_IN_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions";
   
   /**
    * XPath 3.1 built-in functions namespace uri, for maths trigonometric and exponential 
@@ -449,7 +467,7 @@ public class FunctionTable
    * used XML namespace prefix for this namespace uri is "math", as specified by 
    * XPath 3.1 spec).
    */
-  static final String XPATH_BUILT_IN_MATH_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions/math";
+  public static final String XPATH_BUILT_IN_MATH_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions/math";
   
   static final Integer[] XPATH_MATH_FUNC_IDS = new Integer[] { new Integer(FUNC_MATH_PI), new Integer(FUNC_MATH_EXP),
                                                                new Integer(FUNC_MATH_EXP10), new Integer(FUNC_MATH_LOG),
@@ -467,12 +485,26 @@ public class FunctionTable
    * uri (the commonly used XML namespace prefix for this namespace uri is "array", as specified by 
    * XPath 3.1 spec).
    */
-  static final String XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions/array";
+  public static final String XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions/array";
     
   static final Integer[] XPATH_ARRAY_FUNC_IDS = new Integer[] { new Integer(FUNC_ARRAY_SIZE), new Integer(FUNC_ARRAY_GET),
 		                                                        new Integer(FUNC_ARRAY_PUT) };
   
-  static final List<Integer> XPATH_ARRAY_FUNC_IDS_ARR = Arrays.asList(XPATH_ARRAY_FUNC_IDS);  
+  static final List<Integer> XPATH_ARRAY_FUNC_IDS_ARR = Arrays.asList(XPATH_ARRAY_FUNC_IDS);
+  
+  /**
+   * XPath 3.1 built-in functions namespace uri, for map related functions. The XPath functions available 
+   * within this namespace, must be used by qualifying the function name with an XML namespace bound to this 
+   * uri (the commonly used XML namespace prefix for this namespace uri is "map", as specified by 
+   * XPath 3.1 spec).
+   */
+  public static final String XPATH_BUILT_IN_MAP_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions/map";
+    
+  static final Integer[] XPATH_MAP_FUNC_IDS = new Integer[] { new Integer(FUNC_MAP_SIZE), new Integer(FUNC_MAP_KEYS),
+		                                                                         new Integer(FUNC_MAP_CONTAINS), new Integer(FUNC_MAP_GET), 
+		                                                                         new Integer(FUNC_MAP_PUT), new Integer(FUNC_MAP_ENTRY)};
+  
+  static final List<Integer> XPATH_MAP_FUNC_IDS_ARR = Arrays.asList(XPATH_MAP_FUNC_IDS);
 
   /**
    * The function table.
@@ -496,7 +528,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 137;
+  private static final int NUM_BUILT_IN_FUNCS = 143;
 
   /**
    * Number of built-in functions that may be added.
@@ -739,6 +771,15 @@ public class FunctionTable
     m_functions[FUNC_ARRAY_SIZE] = org.apache.xpath.functions.array.FuncArraySize.class;
     m_functions[FUNC_ARRAY_GET] = org.apache.xpath.functions.array.FuncArrayGet.class;
     m_functions[FUNC_ARRAY_PUT] = org.apache.xpath.functions.array.FuncArrayPut.class;
+    
+    // XPath 3.1 built-in functions configurations for the map 
+    // functions namespace http://www.w3.org/2005/xpath-functions/map    
+    m_functions[FUNC_MAP_SIZE] = org.apache.xpath.functions.map.FuncMapSize.class;
+    m_functions[FUNC_MAP_KEYS] = org.apache.xpath.functions.map.FuncMapKeys.class;
+    m_functions[FUNC_MAP_CONTAINS] = org.apache.xpath.functions.map.FuncMapContains.class;
+    m_functions[FUNC_MAP_GET] = org.apache.xpath.functions.map.FuncMapGet.class;
+    m_functions[FUNC_MAP_PUT] = org.apache.xpath.functions.map.FuncMapPut.class;
+    m_functions[FUNC_MAP_ENTRY] = org.apache.xpath.functions.map.FuncMapEntry.class;
     
   }
 
@@ -1007,6 +1048,21 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_ARRAY_GET));
          m_functionID.put(Keywords.FUNC_ARRAY_PUT,
                           new Integer(FunctionTable.FUNC_ARRAY_PUT));
+         
+         // XPath 3.1 functions configurations for the map functions 
+         // namespace http://www.w3.org/2005/xpath-functions/map
+         m_functionID.put(Keywords.FUNC_MAP_SIZE,
+                          new Integer(FunctionTable.FUNC_MAP_SIZE));
+         m_functionID.put(Keywords.FUNC_MAP_KEYS,
+                          new Integer(FunctionTable.FUNC_MAP_KEYS));
+         m_functionID.put(Keywords.FUNC_MAP_CONTAINS,
+                         new Integer(FunctionTable.FUNC_MAP_CONTAINS));
+         m_functionID.put(Keywords.FUNC_MAP_GET,
+                         new Integer(FunctionTable.FUNC_MAP_GET));
+         m_functionID.put(Keywords.FUNC_MAP_PUT,
+                         new Integer(FunctionTable.FUNC_MAP_PUT));
+         m_functionID.put(Keywords.FUNC_MAP_ENTRY,
+                         new Integer(FunctionTable.FUNC_MAP_ENTRY));
          
          m_functionID.put(Keywords.FUNC_NAME_STRING,
                           new Integer(FunctionTable.FUNC_NAME));

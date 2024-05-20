@@ -1,26 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                version="3.0">
-                
-   <!-- Author: mukulg@apache.org -->                
+                xmlns:map="http://www.w3.org/2005/xpath-functions/map"
+				exclude-result-prefixes="map"
+                version="3.0">				
 
-   <xsl:output method="text"/>
+  <!-- Author: mukulg@apache.org -->                
+
+   <xsl:output method="xml" indent="yes"/>
    
-   <!-- An XPath 3.1 test case, to test an XPath 'map' 
-        expression. -->   
+   <!-- An XPath 3.1 test case, to test an XPath map:contains 
+        function. -->
 
    <xsl:template match="/">
-      <xsl:variable name="map1" select="map {
-			  'Su' : 'Sunday',
-			  'Mo' : 'Monday',
-			  'Tu' : 'Tuesday',
-			  'We' : 'Wednesday',
-			  'Th' : 'Thursday',
-			  'Fr' : 'Friday',
-			  'Sa' : 'Saturday'}"/>
-			  
-	  <!-- map lookup using function call syntax -->
-	  <xsl:value-of select="$map1('Su')"/>
+      <xsl:variable name="map1" select="map{ 0 : 'Sonntag', 1 : 'Montag', 2 : 'Dienstag',
+                                            3 : 'Mittwoch', 4 : 'Donnerstag', 5 : 'Freitag', 6 : 'Samstag' }"/>
+      <xsl:variable name="map2" select="map{}"/>
+	  <xsl:variable name="map3" select="map{'xyz' : 23}"/>
+      <contains>
+	    <one>
+		  <xsl:value-of select="map:contains($map1, 2)"/>
+		</one>
+		<two>
+		  <xsl:value-of select="map:contains($map1, 9)"/>
+		</two>
+		<three>
+		  <xsl:value-of select="map:contains($map2, 'xyz')"/>
+		</three>
+		<four>
+		  <xsl:value-of select="map:contains($map3, 'xyz')"/>
+		</four>
+	  </contains>
    </xsl:template>
    
    <!--

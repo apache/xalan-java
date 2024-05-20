@@ -566,6 +566,24 @@ public class Keywords
   /** in-scope-prefixes function string. */
   public static final String FUNC_IN_SCOPE_PREFIXES = "in-scope-prefixes";
   
+  /** map:size function string. */
+  public static final String FUNC_MAP_SIZE = "size";
+  
+  /** map:keys function string. */
+  public static final String FUNC_MAP_KEYS = "keys";
+  
+  /** map:contains function string. */
+  public static final String FUNC_MAP_CONTAINS = "contains";
+  
+  /** map:get function string. */
+  public static final String FUNC_MAP_GET = "get";
+  
+  /** map:put function string. */
+  public static final String FUNC_MAP_PUT = "put";
+  
+  /** map:entry function string. */
+  public static final String FUNC_MAP_ENTRY = "entry";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                version="3.0">
-                
-   <!-- Author: mukulg@apache.org -->                
+                xmlns:map="http://www.w3.org/2005/xpath-functions/map"
+				exclude-result-prefixes="map"
+                version="3.0">				
 
-   <xsl:output method="text"/>
+  <!-- Author: mukulg@apache.org -->                
+
+   <xsl:output method="xml" indent="yes"/>
    
-   <!-- An XPath 3.1 test case, to test an XPath 'map' 
-        expression. -->   
+   <!-- An XPath 3.1 test case, to test an XPath map:get 
+        function. -->
 
    <xsl:template match="/">
-      <xsl:variable name="map1" select="map {
-			  'Su' : 'Sunday',
-			  'Mo' : 'Monday',
-			  'Tu' : 'Tuesday',
-			  'We' : 'Wednesday',
-			  'Th' : 'Thursday',
-			  'Fr' : 'Friday',
-			  'Sa' : 'Saturday'}"/>
-			  
-	  <!-- map lookup using function call syntax -->
-	  <xsl:value-of select="$map1('Su')"/>
+      <xsl:variable name="map1" select="map{ 0 : 'Sonntag', 1 : 'Montag', 2 : 'Dienstag',
+                                            3 : 'Mittwoch', 4 : 'Donnerstag', 5 : 'Freitag', 6 : 'Samstag' }"/>
+      <mapGetResult>
+	    <one>
+		  <xsl:value-of select="map:get($map1, 4)"/>
+		</one>
+		<two>
+		  <xsl:variable name="mapGetResult2" select="map:get($map1, 10)"/> 
+		  <xsl:value-of select="$mapGetResult2 instance of empty-sequence()"/>
+		</two>
+	  </mapGetResult>
    </xsl:template>
    
    <!--

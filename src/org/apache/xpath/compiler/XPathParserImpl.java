@@ -784,28 +784,6 @@ public class XPathParserImpl
      
      return isStrHasBalancedParentheses; 
   }
-
-  /**
-   * Notify the user of an assertion error, and probably throw an
-   * exception.
-   *
-   * @param b  If false, a runtime exception will be thrown.
-   * @param msg The assertion message, which should be informative.
-   * 
-   * @throws RuntimeException if the b argument is false.
-   */
-  private void assertion(boolean b, String msg)
-  {
-
-    if (!b)
-    {
-      String fMsg = XSLMessages.createXPATHMessage(
-        XPATHErrorResources.ER_INCORRECT_PROGRAMMER_ASSERTION,
-        new Object[]{ msg });
-
-      throw new RuntimeException(fMsg);
-    }
-  }
   
   /**
    * This method helps to implement, XPath 3.1 sequence type expressions.
@@ -1041,7 +1019,7 @@ public class XPathParserImpl
    *    values found in {@link org.apache.xpath.compiler.FunctionTable}, but may 
    *    be a value installed by an external module.
    */
-  final int getFunctionToken(String key)
+  final int getFunctionToken(String key, String nsUri)
   {
 
     int tok;
@@ -1053,7 +1031,50 @@ public class XPathParserImpl
       // These are nodetests, xpathparser treats them as functions when parsing
       // a FilterExpr. 
       id = Keywords.lookupNodeTest(key);
-      if (null == id) id = m_functionTable.getFunctionID(key);
+      if (id == null) {
+    	if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(nsUri)) {
+    	   if ("contains".equals(key)) {
+      		  id = FunctionTable.FUNC_CONTAINS;  
+      	   }
+    	   else {
+    		  id = m_functionTable.getFunctionID(key); 
+    	   }
+    	}
+    	else if ((FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(nsUri)) {
+    	   if ("size".equals(key)) {
+        	  id = FunctionTable.FUNC_ARRAY_SIZE;   
+           }
+    	   else if ("get".equals(key)) {
+    		  id = FunctionTable.FUNC_ARRAY_GET; 
+    	   }
+    	   else if ("put".equals(key)) {
+     		  id = FunctionTable.FUNC_ARRAY_PUT; 
+     	   }
+    	   else {
+    		  id = m_functionTable.getFunctionID(key); 
+    	   }
+    	}
+    	else if ((FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(nsUri)) {
+    	   if ("size".equals(key)) {
+          	  id = FunctionTable.FUNC_MAP_SIZE;   
+           }
+    	   else if ("get".equals(key)) {
+     		  id = FunctionTable.FUNC_MAP_GET; 
+     	   }
+    	   else if ("put".equals(key)) {
+      		  id = FunctionTable.FUNC_MAP_PUT; 
+      	   }
+    	   else if ("contains".equals(key)) {
+    		  id = FunctionTable.FUNC_MAP_CONTAINS;  
+    	   }
+    	   else {
+     		  id = m_functionTable.getFunctionID(key); 
+     	   }
+    	}
+    	else {
+    	   id = m_functionTable.getFunctionID(key);
+    	}
+      }
       tok = ((Integer) id).intValue();
     }
     catch (NullPointerException npe)
@@ -1285,25 +1306,31 @@ public class XPathParserImpl
           nextToken();
 
           insertOp(opPos, 2, OpCodes.OP_MAP_CONSTRUCTOR_EXPR);
+          
           fMapConstructor = new MapConstructor();
           Map<String, String> nativeMapVar = new HashMap<String, String>();
           
           consumeExpected('{');
           
-          while (m_token != null) {        	 
-        	 String mapKeyExprStr = m_token;
-        	 nextToken();
-        	 consumeExpected(':');
-        	 String mapValueExprStr = m_token;        	 
-        	 nativeMapVar.put(mapKeyExprStr, mapValueExprStr);
-        	 nextToken();
-        	 if (tokenIs(',')) {
-        		consumeExpected(','); 
-        	 }
-        	 else if (tokenIs('}')) {
-        		consumeExpected('}');
-        		break;
-        	 }
+          if (!(tokenIs('}') && (getTokenRelative(1) == null))) {
+        	  while (m_token != null) {        	 
+ 	        	 String mapKeyExprStr = m_token;
+ 	        	 nextToken();
+ 	        	 consumeExpected(':');
+ 	        	 String mapValueExprStr = m_token;        	 
+ 	        	 nativeMapVar.put(mapKeyExprStr, mapValueExprStr);
+ 	        	 nextToken();
+ 	        	 if (tokenIs(',')) {
+ 	        		consumeExpected(','); 
+ 	        	 }
+ 	        	 else if (tokenIs('}')) {
+ 	        		consumeExpected('}');
+ 	        		break;
+ 	        	 }
+ 	          }    
+          }
+          else {
+        	  consumeExpected('}'); 
           }
           
           fMapConstructor.setNativeMap(nativeMapVar);
@@ -2811,7 +2838,7 @@ public class XPathParserImpl
          nextToken();
          consumeExpected(':');
          
-         int funcTok = getFunctionToken(m_token);
+         int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
 
          if (-1 == funcTok)
          {
@@ -2824,6 +2851,11 @@ public class XPathParserImpl
                    new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  
          }
          else if ((FunctionTable.XPATH_ARRAY_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
+             funcTok = -1;
+             error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
+                   new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  
+         }
+         else if ((FunctionTable.XPATH_MAP_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
              funcTok = -1;
              error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
                    new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  
@@ -2850,7 +2882,7 @@ public class XPathParserImpl
          nextToken();
          consumeExpected(':');
          
-         int funcTok = getFunctionToken(m_token);
+         int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI);
 
          if (-1 == funcTok)
          {
@@ -2884,7 +2916,7 @@ public class XPathParserImpl
          nextToken();
          consumeExpected(':');
          
-         int funcTok = getFunctionToken(m_token);
+         int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI);
 
          if (-1 == funcTok)
          {
@@ -2892,6 +2924,40 @@ public class XPathParserImpl
                  new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI + "}" + m_token + "()"});
          }
          else if (!(FunctionTable.XPATH_ARRAY_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
+             funcTok = -1;
+             error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
+                   new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI + "}" + m_token + "()"});  
+         }
+
+         switch (funcTok)
+         {
+            case OpCodes.NODETYPE_PI :
+            case OpCodes.NODETYPE_COMMENT :
+            case OpCodes.NODETYPE_TEXT :
+            case OpCodes.NODETYPE_NODE :
+              // Node type tests look like function calls, but they're not
+              return false;
+            default :
+              appendOp(3, OpCodes.OP_FUNCTION);
+
+            m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1, funcTok);
+         }
+
+         nextToken();
+      }
+      else if (tokenIs(FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI)) 
+      {
+         nextToken();
+         consumeExpected(':');
+         
+         int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI);
+
+         if (-1 == funcTok)
+         {
+             error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
+                 new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI + "}" + m_token + "()"});
+         }
+         else if (!(FunctionTable.XPATH_MAP_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
              funcTok = -1;
              error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
                    new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI + "}" + m_token + "()"});  
@@ -2928,7 +2994,7 @@ public class XPathParserImpl
     }
     else
     {
-      int funcTok = getFunctionToken(m_token);
+      int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
 
       if (funcTok == -1)
       {
@@ -2941,6 +3007,11 @@ public class XPathParserImpl
                 new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  
       }
       else if ((FunctionTable.XPATH_ARRAY_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
+          funcTok = -1;
+          error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
+                new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  
+      }
+      else if ((FunctionTable.XPATH_MAP_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
           funcTok = -1;
           error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
                 new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  

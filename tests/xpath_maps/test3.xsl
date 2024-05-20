@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                version="3.0">
-                
+                xmlns:map="http://www.w3.org/2005/xpath-functions/map"
+				exclude-result-prefixes="map"
+                version="3.0">				
+
    <!-- Author: mukulg@apache.org -->                
 
-   <xsl:output method="text"/>
+   <xsl:output method="xml" indent="yes"/>
    
-   <!-- An XPath 3.1 test case, to test an XPath 'map' 
-        expression. -->   
+   <!-- An XPath 3.1 test case, to test an XPath map:keys 
+        function. -->
 
    <xsl:template match="/">
       <xsl:variable name="map1" select="map {
@@ -18,9 +20,31 @@
 			  'Th' : 'Thursday',
 			  'Fr' : 'Friday',
 			  'Sa' : 'Saturday'}"/>
-			  
-	  <!-- map lookup using function call syntax -->
-	  <xsl:value-of select="$map1('Su')"/>
+	  <xsl:variable name="map2" select="map{1 : 'yes', 2 : 'no'}"/>
+	  <xsl:variable name="map3" select="map {}"/>
+      <result>
+         <map>
+		   <keys>
+		     <xsl:for-each select="map:keys($map1)">
+			   <val><xsl:value-of select="."/></val>
+			 </xsl:for-each>
+		   </keys>
+		 </map>
+		 <map>   	  
+	       <keys>
+		     <xsl:for-each select="map:keys($map2)">
+			   <val><xsl:value-of select="."/></val>
+			 </xsl:for-each>
+		   </keys>
+		 </map>
+		 <map>   	  
+	       <keys>
+		     <xsl:for-each select="map:keys($map3)">
+			   <val><xsl:value-of select="."/></val>
+			 </xsl:for-each>
+		   </keys>
+		 </map>
+	  </result>
    </xsl:template>
    
    <!--

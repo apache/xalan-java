@@ -1156,6 +1156,28 @@ public class XObject extends Expression implements Serializable, Cloneable
 	  return isEquals; 
   }
   
+  public boolean equals(Object obj2) {
+	 boolean isEqual = false;
+	 
+	 try {
+		if (obj2 instanceof ResultSequence) {
+		   obj2 = ((ResultSequence)obj2).item(0);	
+		}		
+		isEqual = this.vcEquals((XObject)obj2, null, true);
+	 } 
+	 catch (TransformerException ex) {
+	    // no op
+	 }
+	 
+	 return isEqual;
+  }
+  
+  public int hashCode() {
+	 String strVal = this.str();
+	 
+	 return strVal.hashCode();
+  }
+  
   /**
    * Tell if two objects are functionally equal, using the rules 
    * of value comparison operator "eq".

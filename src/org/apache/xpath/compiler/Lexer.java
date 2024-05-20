@@ -22,7 +22,6 @@ package org.apache.xpath.compiler;
 
 import java.util.Vector;
 
-import org.apache.xml.utils.ObjectVector;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.res.XPATHErrorResources;
 
@@ -604,9 +603,10 @@ class Lexer
     {
       try
       {
-        if (prefix.length() > 0)
-          uName = ((PrefixResolver) m_namespaceContext).getNamespaceForPrefix(
-            prefix);
+        if (prefix.length() > 0) {
+           uName = ((PrefixResolver) m_namespaceContext).getNamespaceForPrefix
+        		                                                            (prefix);
+        }
         else
         {
 

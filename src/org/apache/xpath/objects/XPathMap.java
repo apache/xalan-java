@@ -28,10 +28,10 @@ import java.util.Map;
  */
 public class XPathMap extends XObject {
 	
-	private static final long serialVersionUID = -6876597720235822722L;
+   private static final long serialVersionUID = -6876597720235822722L;
 	
-	// the underlying native map object, to store items of an XPath map 
-    private Map<XObject, XObject> fMap = new HashMap<XObject, XObject>();
+   // the underlying native map object, to store items of an XPath map 
+   private Map<XObject, XObject> fMap = new HashMap<XObject, XObject>();
     
    /*
     * Class constructor.
@@ -60,8 +60,15 @@ public class XPathMap extends XObject {
    /**
     * Get native contents of this map object.
     */
-   public Map<XObject, XObject> getMap() {
+   public Map<XObject, XObject> getNativeMap() {
        return fMap;   
+   }
+   
+   /**
+    * Set a new native map object, as content of this XPath map.
+    */
+   public void setNativeMap(Map mapObj) {
+      fMap = mapObj;
    }
    
    /**
