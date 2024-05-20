@@ -727,7 +727,7 @@ public class XPathParserImpl
       else {
          String argDetailsAccumulatedStrSoFar = "(" + getStrValueFromStrList(
                                                                   argDetailsStrPartsList) + ")";         
-         if (!isStrHasBalancedParentheses(argDetailsAccumulatedStrSoFar)) {
+         if (!isStrHasBalancedParentheses(argDetailsAccumulatedStrSoFar, '(', ')')) {
             argDetailsStrPartsList.add(m_token);
             nextToken();
             isXpathDynamicFuncCallParseAhead = true;
@@ -753,10 +753,9 @@ public class XPathParserImpl
   }
   
   /**
-   * Check whether a, string has balanced parentheses pairs 
-   * '(' and ')'.
+   * Check whether a, string has balanced parentheses pairs.
    */
-  private boolean isStrHasBalancedParentheses(String str) {
+  private boolean isStrHasBalancedParentheses(String str, char lParentType, char rParenType) {
      
      boolean isStrHasBalancedParentheses = true;
      
@@ -766,11 +765,11 @@ public class XPathParserImpl
      
      for(int idx = 0; idx < strLen; idx++) {
          char ch = str.charAt(idx);
-         if (ch == '(') {
+         if (ch == lParentType) {
             charStack.push(ch); 
          }
-         else if (ch == ')'){
-            if (charStack.isEmpty() || (charStack.pop() != '(')) {
+         else if (ch == rParenType){
+            if (charStack.isEmpty() || (charStack.pop() != lParentType)) {
                // unbalanced parentheses
                isStrHasBalancedParentheses = false;
                break;
@@ -1253,23 +1252,23 @@ public class XPathParserImpl
           // has balanced parentheses pairs '(' and ')'.
           for (int idx = 0; idx < sequenceConstructorXPathParts.size(); idx++) {
              String seqItemXPathExprStr = sequenceConstructorXPathParts.get(idx);
-             boolean isStrHasBalancedParentheses = isStrHasBalancedParentheses(seqItemXPathExprStr);
+             boolean isStrHasBalancedParentheses = isStrHasBalancedParentheses(seqItemXPathExprStr, '(', ')');
              if (!isStrHasBalancedParentheses) {
                 isXPathExprOkToProceed = false;
                 break;
              }
           }
           
-          // To check, whether an xdm sequence with at-least two items could be constructed.
+          // To check, whether an xdm sequence with at-least two items could be constructed
           if (!(isXPathExprOkToProceed && (sequenceConstructorXPathParts.size() > 1))) {
              isXPathExprOkToProceed = false;    
           }
           
-          // Upto here within this method, we've only analyzed the XPath input
-          // string by traversing its sequence of tokens. Based on this result,
-          // we choose from one of the two options below to continue with this
-          // XPath expression parse.          
-          if (isXPathExprOkToProceed) {              
+          // Upto here within this method, we've analyzed an given XPath input string 
+          // completely by traversing its sequence of XPath tokens. We can now choose from one of 
+          // following two options to continue with this XPath expression parse.          
+          if (isXPathExprOkToProceed) {
+        	  // Here we've a valid XPath parse state to continue further
               int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
               
               nextToken();
@@ -1292,8 +1291,7 @@ public class XPathParserImpl
              
           }
           else {
-             // Reset the XPath parse position to beginning of XPath expression string,
-             // and start the XPath expression parse again.             
+             // Start fresh XPath expression parse             
              m_queueMark = 0;
              nextToken();
              ExprSingle();
@@ -1317,7 +1315,22 @@ public class XPathParserImpl
  	        	 String mapKeyExprStr = m_token;
  	        	 nextToken();
  	        	 consumeExpected(':');
- 	        	 String mapValueExprStr = m_token;        	 
+ 	        	 String mapValueExprStr = null;
+ 	        	 if (tokenIs('[')) {
+ 	        		// Possibly there is an XPath square array constructor here, 
+ 	        		// within this map. 	        		
+ 	        		mapValueExprStr = getSquareArrayConstructorStrValue();
+ 	        	 }
+ 	        	 else if (tokenIs("map")) {
+ 	        		// Possibly there is an XPath map constructor here, 
+ 	        		// within this map. 	        		
+ 	        		mapValueExprStr = getMapConstructorStrValue();
+ 	        	 }
+ 	        	 else {
+ 	        		// The map's key value here is a simple value (i.e, not an array or 
+ 	        		// map).
+ 	        		mapValueExprStr = m_token; 
+ 	        	 }
  	        	 nativeMapVar.put(mapKeyExprStr, mapValueExprStr);
  	        	 nextToken();
  	        	 if (tokenIs(',')) {
@@ -1342,7 +1355,7 @@ public class XPathParserImpl
          fXpathSequenceTypeExpr = SequenceTypeExpr(false); 
       }
       else {
-         ExprSingle();  
+         ExprSingle();
       }
   }
 
@@ -1398,6 +1411,76 @@ public class XPathParserImpl
       else {
          OrExpr();
       }
+  }
+  
+  /**
+   *  Get XPath square array constructor's string value.
+   */
+  private String getSquareArrayConstructorStrValue() throws TransformerException {
+	 StringBuffer arrayStrBuf = new StringBuffer();
+	 
+	 arrayStrBuf.append(m_token);
+	 
+	 consumeExpected('[');
+	 
+	 while (m_token != null) {
+		if (tokenIs(']')) {
+		   arrayStrBuf.append(m_token);
+		   break;
+		}
+		else {
+		   arrayStrBuf.append(m_token);
+		   nextToken();
+		}			 
+     }
+	 
+	 return arrayStrBuf.toString(); 
+  }
+  
+  /**
+   *  Get XPath map constructor's string value.
+   */
+  private String getMapConstructorStrValue() throws TransformerException {
+	 StringBuffer mapStrBuf = new StringBuffer();
+	 
+	 mapStrBuf.append(m_token);
+	 
+	 consumeExpected("map");
+	 while (m_token != null) {
+		if (tokenIs('}')) {
+		   mapStrBuf.append(m_token);
+		   consumeExpected('}');
+		   if (countCharInStr(mapStrBuf.toString(), '{') == 
+				                 countCharInStr(mapStrBuf.toString(), '}')) {
+			   break; 
+		   }
+		   else {
+			   mapStrBuf.append(m_token);
+			   nextToken(); 
+		   }
+		}
+		else {
+		   mapStrBuf.append(m_token);
+		   nextToken();
+		}			 
+     }
+	 
+	 return mapStrBuf.toString(); 
+  }
+  
+  /**
+   * Get the count of a specific character within a string.
+   */
+  private int countCharInStr(String str, char cVal) {
+	 int count = 0;
+	 
+	 for (int idx = 0; idx < str.length(); idx++) {
+		if (str.charAt(idx) == cVal) {
+		   count++;	
+		}
+	 }
+	 
+	 return count;
   }
   
   protected ForExpr ForExpr(String prevTokenStrBeforeFor) throws javax.xml.transform.TransformerException
@@ -4086,7 +4169,7 @@ public class XPathParserImpl
       				   nextToken();
       				}
     				else if (tokenIs(',')) {
-    				   if (!isStrHasBalancedParentheses(typedFunctionTestPrefixPart)) {
+    				   if (!isStrHasBalancedParentheses(typedFunctionTestPrefixPart, '(', ')')) {
     				      typedFunctionTestPrefixPart = typedFunctionTestPrefixPart + m_token;
        				      nextToken();
     				   }

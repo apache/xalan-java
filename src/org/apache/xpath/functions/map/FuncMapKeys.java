@@ -51,7 +51,13 @@ public class FuncMapKeys extends FunctionOneArg {
 	    
 	    if (arg0 instanceof Variable) {
 	       XObject xObject = ((Variable)arg0).execute(xctxt);
-	       XPathMap xpathMap = (XPathMap)xObject;
+	       XPathMap xpathMap = null;
+	       if (xObject instanceof ResultSequence) {
+	    	  xpathMap = (XPathMap)(((ResultSequence)xObject).item(0)); 
+	       }
+	       else {
+	          xpathMap = (XPathMap)xObject;
+	       }
 	       Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
 	       Set<XObject> keySet = nativeMap.keySet();
 	       Iterator<XObject> iter = keySet.iterator();
@@ -62,7 +68,13 @@ public class FuncMapKeys extends FunctionOneArg {
 	    }
 	    else {
 	    	XObject xObject = arg0.execute(xctxt);
-		    XPathMap xpathMap = (XPathMap)xObject;
+	    	XPathMap xpathMap = null;
+		    if (xObject instanceof ResultSequence) {
+		       xpathMap = (XPathMap)(((ResultSequence)xObject).item(0)); 
+		    }
+		    else {
+		       xpathMap = (XPathMap)xObject;
+		    }
 		    Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
 		    Set<XObject> keySet = nativeMap.keySet();
 		    Iterator<XObject> iter = keySet.iterator();

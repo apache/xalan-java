@@ -595,47 +595,28 @@ class Lexer
     if ((startSubstring >= 0) && (posOfNSSep >= 0))
     {
        prefix = pat.substring(startSubstring, posOfNSSep);
-    }
+    }    
     String uName;
 
     if ((null != m_namespaceContext) &&!prefix.equals("*")
-            &&!prefix.equals("xmlns"))
+                                            &&!prefix.equals("xmlns"))
     {
       try
       {
         if (prefix.length() > 0) {
-           uName = ((PrefixResolver) m_namespaceContext).getNamespaceForPrefix
-        		                                                            (prefix);
+           uName = ((PrefixResolver) m_namespaceContext).getNamespaceForPrefix(prefix);
         }
         else
         {
-
-          // Assume last was wildcard. This is not legal according
-          // to the draft. Set the below to true to make namespace
-          // wildcards work.
-          if (false)
-          {
-            addToTokenQueue(":");
-
-            String s = pat.substring(posOfNSSep + 1, posOfScan);
-
-            if (s.length() > 0)
-              addToTokenQueue(s);
-
-            return -1;
-          }
-          else
-          {
-        	if (((m_compiler.getTokenQueue()).indexOf("map") != -1)) 
-        	{
+           if (((m_compiler.getTokenQueue()).indexOf("map") != -1)) 
+           {
         	   // To handle XPath 3.1 "map" expression 
         	   addToTokenQueue(":");
         	   return -1;
-        	}
-        	else {
-               uName = ((PrefixResolver) m_namespaceContext).getNamespaceForPrefix(prefix);
-        	}
-          }
+           }
+           else {
+              uName = ((PrefixResolver) m_namespaceContext).getNamespaceForPrefix(prefix);
+           }
         }
       }
       catch (ClassCastException cce)

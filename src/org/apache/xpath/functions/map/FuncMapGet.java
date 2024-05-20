@@ -67,7 +67,18 @@ public class FuncMapGet extends Function2Args {
 	    XObject arg1Obj = arg1.execute(xctxt);
 	    
 	    result = nativeMap.get(arg1Obj);
-	    if (result == null) {
+	    if (result != null) {
+	       if (result instanceof ResultSequence) {
+	    	  ResultSequence rSeq = (ResultSequence)result;
+	    	  if (rSeq.size() == 1) {
+	    	     result = rSeq.item(0);
+	    	  }
+	    	  else {
+	    	     result = rSeq;
+	    	  }
+	       }
+	    }
+	    else {
 	       result = new ResultSequence();	
 	    }
 	    

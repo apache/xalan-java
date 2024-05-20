@@ -21,6 +21,7 @@ import javax.xml.transform.SourceLocator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.operations.Variable;
@@ -48,16 +49,34 @@ public class FuncMapSize extends FunctionOneArg {
 	    
 	    if (arg0 instanceof Variable) {
 	       XObject xObject = ((Variable)arg0).execute(xctxt);
-	       XPathMap xpathMap = (XPathMap)xObject;
+	       XPathMap xpathMap = getNativeMap(xObject);
 	       result = new XSInteger(String.valueOf(xpathMap.size()));
 	    }
 	    else {
-	    	XObject xObject = arg0.execute(xctxt);
-		    XPathMap xpathMap = (XPathMap)xObject;
-		    result = new XSInteger(String.valueOf(xpathMap.size()));
+	       XObject xObject = arg0.execute(xctxt);
+	       XPathMap xpathMap = getNativeMap(xObject);
+		   result = new XSInteger(String.valueOf(xpathMap.size()));
 	    }
 	    
 	    return result;
+	}
+
+	/**
+     * Given an XPath map instance, get an underlying native map. --> 
+	 */
+	private XPathMap getNativeMap(XObject xObject) {
+	   XPathMap xpathMap = null;
+	   if (xObject instanceof ResultSequence) {
+		  ResultSequence rSeq = ((ResultSequence)xObject);
+		  if ((rSeq.size() == 1) && (rSeq.item(0) instanceof XPathMap)) {
+		     xpathMap = (XPathMap)(rSeq.item(0)); 
+		  }
+	   }
+	   else {
+	      xpathMap = (XPathMap)xObject;	
+	   }
+	    
+	   return xpathMap;
 	}
 
 }

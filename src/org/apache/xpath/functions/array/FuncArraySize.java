@@ -47,8 +47,10 @@ public class FuncArraySize extends FunctionOneArg {
 	       
 	    Expression arg0 = getArg0();
 	    
+	    XObject xObject = null;
+	    
 	    if (arg0 instanceof Variable) {
-	       XObject xObject = ((Variable)arg0).execute(xctxt);
+	       xObject = ((Variable)arg0).execute(xctxt);
 	       if (xObject instanceof XNodeSet) {
 	    	  result = new XSInteger(((XNodeSet)xObject).getLength() + "");  
 	       }
@@ -60,7 +62,16 @@ public class FuncArraySize extends FunctionOneArg {
 	       }
 	    }
 	    else {
-	       // TO DO
+	       xObject = arg0.execute(xctxt);
+	       if (xObject instanceof XNodeSet) {
+		   	  result = new XSInteger(((XNodeSet)xObject).getLength() + "");  
+		   }
+		   else if (xObject instanceof ResultSequence) {
+		      result = new XSInteger(((ResultSequence)xObject).size() + "");  
+		   }
+		   else {
+		      result = new XSInteger("1");  
+		   }
 	    }
 	    
 	    return result;
