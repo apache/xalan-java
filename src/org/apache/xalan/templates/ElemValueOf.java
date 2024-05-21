@@ -42,6 +42,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Variable;
@@ -334,6 +335,9 @@ public class ElemValueOf extends ElemTemplateElement {
                       String strValue = null;
                       if (evalResult instanceof XSAnyType) {
                           strValue = ((XSAnyType)evalResult).stringValue();    
+                      }
+                      else if (evalResult instanceof XPathMap) {
+                    	 throw new TransformerException("FOTY0013 : Cannot atomize a map", srcLocator);  
                       }
                       else {
                           strValue = evalResult.str();  

@@ -54,7 +54,16 @@
      - Mozilla Foundation 
          - Rhino: JavaScript implementation in Java - see LICENSE.txt         
 
-   =========================================================================       
+   =========================================================================
+   JSON Java library (redistribution of json-20200518.jar)
+   
+     - software copyright (c), https://github.com/stleary/JSON-java
+   
+   Apache Xalan-J's XSLT 3.0 implementation uses this JSON library, to implement 
+   XPath 3.1 functions on JSON data.
+   
+   =========================================================================
+         
    Apache Xerces Java
    Copyright 1999-2022 The Apache Software Foundation
 
@@ -70,15 +79,17 @@
        software copyright (c) 1999.
        
    =========================================================================   
-   Eclipse Web Tools Platform (WTP) Project (https://projects.eclipse.org/projects/webtools)
+   Eclipse 'Web Tools Platform' (WTP) project (ref, https://projects.eclipse.org/projects/webtools)
    
-   This project reuses with few source code adaptations, of WTP's XPath 2.0 processor's
-   XML Schema datatypes implementation.
+   Apache Xalan-J's XSLT 3.0 implementation, reuses WTP XPath 2.0 implementation's XML Schema datatype 
+   implementation src code.
    
-   The source code that XalanJ's XSLT 3.0 and XPath 3.1 processors use for this dependency
-   is located at : https://github.com/xercesj/xalanj_xpath31_types. 
+   The src code that Apache Xalan-J's XSLT 3.0 implementation reuses for these implementation dependencies 
+   is located at, https://github.com/xercesj/xalanj_xpath31_types. The src code repos 
+   https://github.com/xercesj is owned by Apache Xerces-J project. Apache 'Xalan-J' and 'Xerces-J' projects
+   are very much functionally related.
    
-   See - LICENSE.EPL_v1.0.html          
+   Ref, LICENSE.EPL_v1.0.html          
 
    =========================================================================   
    Apache xml-commons xml-apis (redistribution of xml-apis.jar)
@@ -92,6 +103,5 @@
    Portions of this software were originally based on the following:
      - software copyright (c) 1999, IBM Corporation., http://www.ibm.com.
      - software copyright (c) 1999, Sun Microsystems., http://www.sun.com.
-     - software copyright (c) 2000 World Wide Web Consortium, http://www.w3.org 
-         
-
+     - software copyright (c) 2000 World Wide Web Consortium, http://www.w3.org
+  

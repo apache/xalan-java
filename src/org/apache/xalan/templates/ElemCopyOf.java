@@ -20,6 +20,7 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.List;
 import java.util.Vector;
 
 import javax.xml.transform.SourceLocator;
@@ -41,6 +42,8 @@ import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.xml.sax.SAXException;
 
@@ -202,6 +205,12 @@ public class ElemCopyOf extends ElemTemplateElement
                   ResultSequence resultSequence = (ResultSequence)value;          
                   copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, false);          
                   break;
+                case XObject.CLASS_ARRAY : 
+                  XPathArray xpathArray = (XPathArray)value;
+                  List<XObject> nativeArr = xpathArray.getNativeArray();
+                  ResultSequence resultSequenceArr = getResultSequenceFromXPathArray(nativeArr);
+                  copyOfActionOnResultSequence(resultSequenceArr, transformer, handler, xctxt, false);
+                  break;
                 default :
                   // no op
             }
@@ -223,9 +232,13 @@ public class ElemCopyOf extends ElemTemplateElement
                 strVal = ((XSUntyped)value).stringValue();
                 handler.characters(strVal.toCharArray(), 0, strVal.length());
             }
+            else if (value instanceof XPathMap) {
+                throw new TransformerException("XTDE0450 : Cannot add a map to an xdm node tree, "
+                                                                             + "via xsl:copy-of instruction.", srcLocator);
+            }
             else if (value instanceof InlineFunction) {
-                throw new TransformerException("XTDE0450 : Cannot add a function item to an XDM result tree, "
-                                                                                                     + "via xsl:copy-of instruction.", srcLocator);
+                throw new TransformerException("XTDE0450 : Cannot add a function item to an xdm node tree, "
+                                                                             + "via xsl:copy-of instruction.", srcLocator);
             }
       }
 
@@ -373,6 +386,20 @@ public class ElemCopyOf extends ElemTemplateElement
              copyOfActionOnResultSequence((ResultSequence)xdmItem, transformer, serializationHandler, xctxt, xslSeqProc);
          }
       } 
+   }
+  
+  /**
+   * Get the contents of an XPath array, as an ResultSequence object. 
+   */
+  public static ResultSequence getResultSequenceFromXPathArray(List<XObject> xpathArr) {
+	 ResultSequence rSeq = new ResultSequence();
+	
+	 int arrSize = xpathArr.size();
+	 for (int idx = 0; idx < arrSize; idx++) {
+	    rSeq.add(xpathArr.get(idx)); 	
+	 }
+	
+	 return rSeq;
   }
 
 }

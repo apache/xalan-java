@@ -16,76 +16,75 @@
  */
 package org.apache.xpath.objects;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * This class represents, an XPath 3.1 xdm map.
+ * This class represents, an XPath 3.1 xdm array.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPathMap extends XObject {
-	
-   private static final long serialVersionUID = -6876597720235822722L;
-	
-   // The underlying native map object, to store items of an XPath map 
-   private Map<XObject, XObject> fMap = new HashMap<XObject, XObject>();
+public class XPathArray extends XObject {
+
+   private static final long serialVersionUID = -2635521758204654450L;
+ 
+   private List<XObject> fList = new ArrayList<XObject>();
     
    /*
     * Class constructor.
     */
-   public XPathMap() {}
+   public XPathArray() {}
    
    public int getType()
    {
-       return CLASS_MAP;
+       return CLASS_ARRAY;
    }
   
    /**
-    * For a given key value, get corresponding map entry value.
+    * Get an item at a particular index of an array.
     */
-   public XObject get(XObject key) {
-	  return fMap.get(key);  
+   public XObject get(int index) {
+	  return fList.get(index);  
    }
    
    /**
-    * Add an key, value entry to map.
+    * Appending a value, to an array.
     */
-   public void put(XObject key, XObject value) {
-	  fMap.put(key, value);  
+   public void add(XObject value) {
+	  fList.add(value);  
    }
    
    /**
-    * Get native contents of this map object.
+    * Get native contents of this array object.
     */
-   public Map<XObject, XObject> getNativeMap() {
-       return fMap;   
+   public List<XObject> getNativeArray() {
+       return fList;   
    }
    
    /**
-    * Set a new native map object, as content of this XPath map.
+    * Set a new native array object, as content of this XPath array.
     */
-   public void setNativeMap(Map<XObject, XObject> mapObj) {
-      fMap = mapObj;
+   public void setNativeArray(List<XObject> arr) {
+	  fList = arr;
    }
    
    /**
-    * Get number of entries in this map.
+    * Get number of entries in this array.
     */
    public int size() {
-       return fMap.size();   
+      return fList.size();
    }
    
    /**
     * Cast result object to a boolean.
     *
-    * @return True if the size of this 'XPathMap' object
-    * is greater than 0.
+    * @return    true, if the size of this 'XPathArray' object 
+    *            is greater than 0.
     */
    public boolean bool() {
-       return (fMap.size() > 0);       
+       return (fList.size() > 0);       
    }
 
 }

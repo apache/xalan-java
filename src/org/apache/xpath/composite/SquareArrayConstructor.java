@@ -39,6 +39,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
 
 import xml.xpath31.processor.types.XSNumericType;
 
@@ -71,7 +72,7 @@ public class SquareArrayConstructor extends Expression {
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
         
-        ResultSequence resultSeq = new ResultSequence();
+        XPathArray xpathArr = new XPathArray();
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
@@ -119,7 +120,7 @@ public class SquareArrayConstructor extends Expression {
                   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
                   {
                       XNodeSet xNodeSetItem = new XNodeSet(nextNode, xctxt);
-                      resultSeq.add(xNodeSetItem);
+                      xpathArr.add(xNodeSetItem);
                   }
                }
                else if (xpathExprStr.startsWith("$") && xpathExprStr.contains("[") && 
@@ -161,7 +162,7 @@ public class SquareArrayConstructor extends Expression {
                           double dValIndex = ((XNumber)arrIndexEvalResult).num();
                           if (dValIndex == (int)dValIndex) {
                              XObject evalResult = varEvalResultSeq.item((int)dValIndex - 1);
-                             resultSeq.add(evalResult);
+                             xpathArr.add(evalResult);
                           }
                           else {
                               throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
@@ -174,7 +175,7 @@ public class SquareArrayConstructor extends Expression {
                           double dValIndex = (Double.valueOf(indexStrVal)).doubleValue();
                           if (dValIndex == (int)dValIndex) {
                              XObject evalResult = varEvalResultSeq.item((int)dValIndex - 1);
-                             resultSeq.add(evalResult);
+                             xpathArr.add(evalResult);
                           }
                           else {
                               throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
@@ -203,25 +204,25 @@ public class SquareArrayConstructor extends Expression {
                    
                   while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
                      XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);
-                     resultSeq.add(xNodeSetItem);
+                     xpathArr.add(xNodeSetItem);
                   }               
                }
                else if (xPathExprPartResult instanceof ResultSequence) {
                   ResultSequence inpResultSeq = (ResultSequence)xPathExprPartResult; 
                   for (int idx1 = 0; idx1 < inpResultSeq.size(); idx1++) {
                      XObject xObj = inpResultSeq.item(idx1);
-                     resultSeq.add(xObj);                 
+                     xpathArr.add(xObj);                 
                   }
                }
                else {
                   // We're assuming here that, an input value is an xdm sequence 
                   // with cardinality one.
-                  resultSeq.add(xPathExprPartResult);               
+            	   xpathArr.add(xPathExprPartResult);               
                }
            }
         }
         
-        return resultSeq;
+        return xpathArr;
     }
 
     @Override

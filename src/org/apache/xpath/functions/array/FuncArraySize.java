@@ -24,6 +24,7 @@ import org.apache.xpath.functions.FunctionOneArg;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.operations.Variable;
 
 import xml.xpath31.processor.types.XSInteger;
@@ -51,7 +52,10 @@ public class FuncArraySize extends FunctionOneArg {
 	    
 	    if (arg0 instanceof Variable) {
 	       xObject = ((Variable)arg0).execute(xctxt);
-	       if (xObject instanceof XNodeSet) {
+	       if (xObject instanceof XPathArray) {
+	    	   result = new XSInteger(((XPathArray)xObject).size() + ""); 
+	       }
+	       else if (xObject instanceof XNodeSet) {
 	    	  result = new XSInteger(((XNodeSet)xObject).getLength() + "");  
 	       }
 	       else if (xObject instanceof ResultSequence) {
@@ -63,7 +67,10 @@ public class FuncArraySize extends FunctionOneArg {
 	    }
 	    else {
 	       xObject = arg0.execute(xctxt);
-	       if (xObject instanceof XNodeSet) {
+	       if (xObject instanceof XPathArray) {
+	    	   result = new XSInteger(((XPathArray)xObject).size() + ""); 
+	       }
+	       else if (xObject instanceof XNodeSet) {
 		   	  result = new XSInteger(((XNodeSet)xObject).getLength() + "");  
 		   }
 		   else if (xObject instanceof ResultSequence) {

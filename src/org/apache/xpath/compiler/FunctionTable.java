@@ -444,6 +444,10 @@ public class FunctionTable
   
   /** The 'map:entry()' id. */
   public static final int FUNC_MAP_ENTRY = 142;
+  
+  
+  /** The 'parse-json' id. */
+  public static final int FUNC_PARSE_JSON = 143;
 
   // Proprietary
 
@@ -528,7 +532,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 143;
+  private static final int NUM_BUILT_IN_FUNCS = 144;
 
   /**
    * Number of built-in functions that may be added.
@@ -780,6 +784,8 @@ public class FunctionTable
     m_functions[FUNC_MAP_GET] = org.apache.xpath.functions.map.FuncMapGet.class;
     m_functions[FUNC_MAP_PUT] = org.apache.xpath.functions.map.FuncMapPut.class;
     m_functions[FUNC_MAP_ENTRY] = org.apache.xpath.functions.map.FuncMapEntry.class;
+    
+    m_functions[FUNC_PARSE_JSON] = org.apache.xpath.functions.FuncParseJson.class;
     
   }
 
@@ -1081,6 +1087,9 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_NAMESPACE_URI_FOR_PREFIX));
          m_functionID.put(Keywords.FUNC_IN_SCOPE_PREFIXES,
                           new Integer(FunctionTable.FUNC_IN_SCOPE_PREFIXES));
+         
+         m_functionID.put(Keywords.FUNC_PARSE_JSON,
+                          new Integer(FunctionTable.FUNC_PARSE_JSON));         
   }
   
   public FunctionTable(){

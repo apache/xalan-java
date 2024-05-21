@@ -16,8 +16,11 @@
  */
 package org.apache.xpath.functions.array;
 
+import java.util.List;
+
 import javax.xml.transform.SourceLocator;
 
+import org.apache.xalan.templates.ElemCopyOf;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
@@ -25,6 +28,7 @@ import org.apache.xpath.functions.Function3Args;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.operations.Variable;
 
 /**
@@ -60,6 +64,11 @@ public class FuncArrayPut extends Function3Args {
 	       else if (xObject instanceof ResultSequence) {
 	    	  arg0Seq = (ResultSequence)xObject; 
 	       }
+	       else if (xObject instanceof XPathArray) {
+		      XPathArray xpathArr = (XPathArray)xObject;
+		      List<XObject> nativeArr = xpathArr.getNativeArray();
+		      arg0Seq = ElemCopyOf.getResultSequenceFromXPathArray(nativeArr);
+		   }
 	       else {
 	    	  // TO DO  
 	       }

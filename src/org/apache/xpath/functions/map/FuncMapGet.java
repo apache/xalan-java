@@ -20,17 +20,13 @@ import java.util.Map;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.operations.Variable;
-
-import xml.xpath31.processor.types.XSBoolean;
 
 /**
  * Implementation of an map:get function.
