@@ -19,42 +19,32 @@ package org.apache.xpath.composite;
 /**
  * An object of this class stores, an XSLT transformation run-time
  * information for an occurrence of a XPath 3.1 sequence type 
- * MapTest.
+ * ArrayTest.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class SequenceTypeMapTest {
+public class SequenceTypeArrayTest {
 
-    private boolean fIsAnyMapTest;
+    private boolean fIsAnyArrayTest;
 
-    private SequenceTypeData keySequenceTypeData;
-    
-    private SequenceTypeData valueSequenceTypeData;
+    private SequenceTypeData arrayItemTypeInfo;
 
-	public boolean isAnyMapTest() {
-		return fIsAnyMapTest;
-	}
-	
-	public void setIsAnyMapTest(boolean isAnyMapTest) {
-		this.fIsAnyMapTest = isAnyMapTest;
+	public boolean isAnyArrayTest() {
+		return fIsAnyArrayTest;
 	}
 
-	public SequenceTypeData getKeySequenceTypeData() {
-		return keySequenceTypeData;
+	public void setIsAnyArrayTest(boolean isAnyArrayTest) {
+		this.fIsAnyArrayTest = isAnyArrayTest;
 	}
 
-	public void setKeySequenceTypeData(SequenceTypeData keySequenceTypeData) {
-		this.keySequenceTypeData = keySequenceTypeData;
+	public SequenceTypeData getArrayItemTypeInfo() {
+		return arrayItemTypeInfo;
 	}
 
-	public SequenceTypeData getValueSequenceTypeData() {
-		return valueSequenceTypeData;
-	}
-
-	public void setValueSequenceTypeData(SequenceTypeData valueSequenceTypeData) {
-		this.valueSequenceTypeData = valueSequenceTypeData;
+	public void setArrayItemTypeInfo(SequenceTypeData arrayItemTypeInfo) {
+		this.arrayItemTypeInfo = arrayItemTypeInfo;
 	}
 
 }

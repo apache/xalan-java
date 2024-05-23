@@ -19,6 +19,8 @@ package org.apache.xpath.objects;
 import java.util.ArrayList;
 import java.util.List;
 
+import xml.xpath31.processor.types.XSAnyType;
+
 /**
  * This class represents, an XPath 3.1 xdm array.
  * 
@@ -85,6 +87,42 @@ public class XPathArray extends XObject {
     */
    public boolean bool() {
        return (fList.size() > 0);       
+   }
+   
+   /**
+    * Get the string value of this XPathArray object.
+    * 
+    * This method, produces a default serialization of this
+    * string value, which is space separated string values 
+    * of the xdm items of this XPathArray.
+    */
+   public String str() {
+       String resultStr = null;
+       
+       StringBuffer strBuff = new StringBuffer();
+       for (int idx = 0; idx < fList.size(); idx++) {
+          XObject item = fList.get(idx);
+          if (idx < (fList.size() - 1)) {
+             if (item instanceof XSAnyType) {
+                 strBuff.append(((XSAnyType)item).stringValue() + " ");    
+             }
+             else {
+                strBuff.append((fList.get(idx)).str() + " ");
+             }
+          }
+          else {
+             if (item instanceof XSAnyType) {
+                 strBuff.append(((XSAnyType)item).stringValue());     
+             }
+             else {
+                strBuff.append((fList.get(idx)).str());
+             }
+          }
+       }
+       
+       resultStr = strBuff.toString(); 
+       
+       return resultStr;
    }
 
 }

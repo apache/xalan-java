@@ -44,6 +44,8 @@ public class SequenceTypeData extends XObject {
     private SequenceTypeFunctionTest fSequenceTypeFunctionTest;
     
     private SequenceTypeMapTest fSequenceTypeMapTest;
+    
+    private SequenceTypeArrayTest fSequenceTypeArrayTest;
 
     public int getSequenceType() {
         return fSequenceType;
@@ -83,6 +85,14 @@ public class SequenceTypeData extends XObject {
 
 	public void setSequenceTypeMapTest(SequenceTypeMapTest sequenceTypeMapTest) {
 		this.fSequenceTypeMapTest = sequenceTypeMapTest;
+	}
+	
+	public SequenceTypeArrayTest getSequenceTypeArrayTest() {
+		return fSequenceTypeArrayTest;
+	}
+
+	public void setSequenceTypeArrayTest(SequenceTypeArrayTest sequenceTypeArrayTest) {
+		this.fSequenceTypeArrayTest = sequenceTypeArrayTest;
 	}
 	
     /**

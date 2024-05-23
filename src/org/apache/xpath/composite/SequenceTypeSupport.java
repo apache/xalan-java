@@ -40,6 +40,7 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.w3c.dom.Node;
@@ -304,14 +305,14 @@ public class SequenceTypeSupport {
                                                                                                    "xs:double", sequenceTypeXPathExprStr);
                }
                else {
-                  result = performXDMNumericTypeConversion(xsDouble, expectedType);
+                  result = xpathNumericTypeConversionAndPromotion(xsDouble, expectedType, sequenceTypeXPathExprStr);
                }
             }
             else if (srcValue instanceof XSNumericType) {
                XSNumericType xsNumericType = (XSNumericType)srcValue;
                
                try {
-                   result = performXDMNumericTypeConversion(xsNumericType, expectedType);
+                   result = xpathNumericTypeConversionAndPromotion(xsNumericType, expectedType, sequenceTypeXPathExprStr);
                }
                catch (TransformerException ex1) {
                   if (sequenceTypeKindTest != null) {
@@ -499,7 +500,7 @@ public class SequenceTypeSupport {
             else if (srcValue instanceof XPathMap) {
             	SequenceTypeMapTest sequenceTypeMapTest = seqExpectedTypeData.getSequenceTypeMapTest();
                 if (sequenceTypeMapTest != null) {
-             	   if (sequenceTypeMapTest.isfIsAnyMapTest()) {
+             	   if (sequenceTypeMapTest.isAnyMapTest()) {
              		  result = srcValue; 
              	   }
              	   else {
@@ -534,6 +535,38 @@ public class SequenceTypeSupport {
              		  }
              		  
              		  result = srcValue; 
+             	   }
+                }
+            }
+            else if (srcValue instanceof XPathArray) {
+            	SequenceTypeArrayTest sequenceTypeArrayTest = seqExpectedTypeData.getSequenceTypeArrayTest();
+                if (sequenceTypeArrayTest != null) {
+             	   if (sequenceTypeArrayTest.isAnyArrayTest()) {
+             		  result = srcValue; 
+             	   }
+             	   else {
+             		  XPathArray xpathArr = (XPathArray)srcValue;
+             		  List<XObject> nativeArr = xpathArr.getNativeArray();
+             		  Iterator<XObject> arrIter = nativeArr.iterator();
+             		  // We check below each of array items, with an expected type 
+             		  while (arrIter.hasNext()) {
+             			 XObject arrItem = arrIter.next();
+             			 if (arrItem instanceof ResultSequence) {
+             				arrItem = ((ResultSequence)arrItem).item(0);
+             			 }
+             			 if (arrItem instanceof ResultSequence) {
+             				arrItem = ((ResultSequence)arrItem).item(0);
+             			 }
+             			 SequenceTypeData arrayItemTypeInfo = sequenceTypeArrayTest.getArrayItemTypeInfo();
+             			 XObject arrayItemTypeCheckResult = SequenceTypeSupport.convertXDMValueToAnotherType(arrItem, null, arrayItemTypeInfo, xctxt);
+             			 String arrayItemSequenceTypeStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : "";
+             			 if (arrayItemTypeCheckResult == null) {             				
+             				throw new TransformerException("XPTY0004 : One or more, of XPath array's item doesn't conform to array item's expected "
+             						                                                             + "type '" + arrayItemSequenceTypeStr + "'."); 
+             			 }           			 
+             		  }
+             		  
+             		  result = srcValue;  
              	   }
                 }
             }
@@ -639,14 +672,16 @@ public class SequenceTypeSupport {
     }
     
     /**
-     * This method performs XPath numeric type conversions, and numeric type
-     * promotion as defined by XPath 3.1 spec (ref, https://www.w3.org/TR/xpath-31/#promotion).
+     * This method does numeric type conversion, and numeric type promotion as 
+     * defined by XPath 3.1 spec.
      */
-    private static XObject performXDMNumericTypeConversion(XSNumericType srcXsNumericType, 
-                                                                             int expectedType) throws TransformerException {
+    private static XObject xpathNumericTypeConversionAndPromotion(XSNumericType srcXsNumericType, 
+                                                                  int expectedType, String sequenceTypeXPathExprStr) throws TransformerException {
         XObject result = null;
         
         String srcStrVal = srcXsNumericType.stringValue();
+        
+        String dataTypeName = getDataTypeNameFromIntValue(expectedType);
         
         try {
             if (srcXsNumericType instanceof XSFloat) {           
@@ -688,21 +723,27 @@ public class SequenceTypeSupport {
             else if (expectedType == XS_FLOAT) {
                result = new XSFloat(srcStrVal); 
             }
-            else if ((srcXsNumericType.stringType()).equals(getDataTypeNameFromIntValue(expectedType))) {
+            else if ((srcXsNumericType.stringType()).equals(dataTypeName)) {
                // The source and expected data types are same. Return the original value unchanged.
                result = srcXsNumericType;
             }
             else {
-               throw new TransformerException("XTTE0570 : The numeric value " + srcStrVal + " cannot be cast "
-                                                                                                 + "to a type " + getDataTypeNameFromIntValue(expectedType) + ".");  
+               if (dataTypeName == null) {
+            	   dataTypeName = sequenceTypeXPathExprStr;   
+               }               
+               throw new TransformerException("XTTE0570 : The numeric value " + srcStrVal + " cannot be converted or promoted "
+                                                                                                 + "to a type " + dataTypeName + ".");  
             }
         }
         catch (TransformerException ex) {
             throw ex;  
         }
         catch (Exception ex) {
-            throw new TransformerException("XTTE0570 : The numeric value " + srcStrVal + " cannot be cast "
-                                                                                               + "to a type " + getDataTypeNameFromIntValue(expectedType) + ".");
+        	if (dataTypeName == null) {
+         	   dataTypeName = sequenceTypeXPathExprStr;   
+            }        	
+            throw new TransformerException("XTTE0570 : The numeric value " + srcStrVal + " cannot be converted or promoted "
+                                                                                               + "to a type " + dataTypeName + ".");
         }
         
         return result;

@@ -42,6 +42,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Operation;
@@ -333,26 +334,82 @@ public class ElemValueOf extends ElemTemplateElement {
                   else if (expr instanceof Function) {
                       XObject evalResult = ((Function)expr).execute(xctxt);
                       String strValue = null;
+                      
                       if (evalResult instanceof XSAnyType) {
                           strValue = ((XSAnyType)evalResult).stringValue();    
                       }
+                      else if (evalResult instanceof XPathArray) {
+                    	 XPathArray xpathArr = (XPathArray)evalResult;
+                    	 List<XObject> nativeArr = xpathArr.getNativeArray();
+                    	 
+                         StringBuffer strBuff = new StringBuffer();                         
+                         for (int idx = 0; idx < nativeArr.size(); idx++) {
+                            XObject arrItem = nativeArr.get(idx);
+                            String arrItemStrValue = (arrItem instanceof XSAnyType) ? 
+                                                                             ((XSAnyType)arrItem).stringValue() : 
+                                                                            	 arrItem.str(); 
+                            if (idx < (nativeArr.size() - 1)) {
+                               strBuff.append(arrItemStrValue + " ");   
+                            }
+                            else {
+                               strBuff.append(arrItemStrValue); 
+                            }                            
+                         }
+                         
+                         strValue = strBuff.toString();
+                      }
                       else if (evalResult instanceof XPathMap) {
-                    	 throw new TransformerException("FOTY0013 : Cannot atomize a map", srcLocator);  
+                    	 throw new TransformerException("FOTY0013 : Cannot do an XPath atomization of a map "
+                    	 		                                              + "(ref, https://www.w3.org/TR/xpath-31/#id-atomization).", srcLocator);
                       }
                       else {
                           strValue = evalResult.str();  
                       }
+                      
                       (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
                   else if (expr instanceof Variable) {
                       XObject evalResult = ((Variable)expr).execute(xctxt);
                       String strValue = null;
-                      if (evalResult instanceof XSAnyType) {
+                      /*if (evalResult instanceof XSAnyType) {
                           strValue = ((XSAnyType)evalResult).stringValue();
                       }
                       else {
                           strValue = evalResult.str();
                       }
+                      (new XString(strValue)).dispatchCharactersEvents(rth);*/
+                      
+                      if (evalResult instanceof XSAnyType) {
+                          strValue = ((XSAnyType)evalResult).stringValue();    
+                      }
+                      else if (evalResult instanceof XPathArray) {
+                    	 XPathArray xpathArr = (XPathArray)evalResult;
+                    	 List<XObject> nativeArr = xpathArr.getNativeArray();
+                    	 
+                         StringBuffer strBuff = new StringBuffer();                         
+                         for (int idx = 0; idx < nativeArr.size(); idx++) {
+                            XObject arrItem = nativeArr.get(idx);
+                            String arrItemStrValue = (arrItem instanceof XSAnyType) ? 
+                                                                             ((XSAnyType)arrItem).stringValue() : 
+                                                                            	 arrItem.str(); 
+                            if (idx < (nativeArr.size() - 1)) {
+                               strBuff.append(arrItemStrValue + " ");   
+                            }
+                            else {
+                               strBuff.append(arrItemStrValue); 
+                            }                            
+                         }
+                         
+                         strValue = strBuff.toString();
+                      }
+                      else if (evalResult instanceof XPathMap) {
+                    	 throw new TransformerException("FOTY0013 : Cannot do an XPath atomization of a map "
+                    	 		                                              + "(ref, https://www.w3.org/TR/xpath-31/#id-atomization).", srcLocator);
+                      }
+                      else {
+                          strValue = evalResult.str();  
+                      }
+                      
                       (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
                   else if (expr instanceof Operation) {                     

@@ -105,8 +105,12 @@ public class MapConstructor extends Expression {
            }
            
            ResultSequence mapEntryValue = evaluateXPathExpression(xpathValueStr, xctxt);
+           XObject mapEntryValueObj = mapEntryValue; 
+           if (mapEntryValue.size() == 1) {
+        	  mapEntryValueObj = mapEntryValue.item(0);
+           }
            
-           xpathResultMap.put(mapEntryKey, mapEntryValue);
+           xpathResultMap.put(mapEntryKey, mapEntryValueObj);
         }
         
         return xpathResultMap;
