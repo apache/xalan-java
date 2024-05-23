@@ -44,6 +44,7 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XRTreeFragSelectWrapper;
 import org.apache.xpath.objects.XString;
@@ -609,7 +610,24 @@ public class ElemVariable extends ElemTemplateElement
           else {
              var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, xctxt); 
           }
-       }       
+       }
+       else if (var instanceof XPathMap) {
+    	  try {
+    	     var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, xctxt);
+    	  }
+    	  catch (TransformerException ex) {
+    		 String errMesg = ex.getMessage();
+    		 boolean indicatorOne = errMesg.contains("The string value"); 
+    		 boolean indicatorTwo = errMesg.contains("cannot be cast to a type");
+    		 if (indicatorOne && indicatorTwo) {
+    		    errMesg = errMesg + " An error occured, while evaluating xdm map's key or value [map's sequenceType is '" + m_asAttr + "'].";
+    		    throw new TransformerException(errMesg, srcLocator);
+    		 }
+    		 else {
+    		    throw new TransformerException(errMesg, srcLocator);
+    		 }
+    	  }    	   
+       }
        else {
           var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, xctxt); 
        }

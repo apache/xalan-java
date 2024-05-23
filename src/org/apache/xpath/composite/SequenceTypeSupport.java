@@ -17,7 +17,10 @@
 package org.apache.xpath.composite;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
@@ -37,6 +40,7 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -234,7 +238,7 @@ public class SequenceTypeSupport {
             XObject seqTypeExpressionEvalResult = null;
             SequenceTypeData seqExpectedTypeData = null;
             
-            if (xctxt != null) {
+            if ((xctxt != null) && (sequenceTypeXPathExprStr != null) && (seqExpectedTypeDataInp == null)) {
                seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, 
                                                                           xctxt.getNamespaceContext(), XPath.SELECT, null, true);
             
@@ -317,7 +321,7 @@ public class SequenceTypeSupport {
                                                                                                          xsNumericType.stringType(), sequenceTypeXPathExprStr);
                      }
                      catch (TransformerException ex2) {
-                        throw ex2; 
+                        throw ex2;
                      }
                   }
                   else {
@@ -491,6 +495,47 @@ public class SequenceTypeSupport {
             		 result = srcValue;
             	  }
                }
+            }
+            else if (srcValue instanceof XPathMap) {
+            	SequenceTypeMapTest sequenceTypeMapTest = seqExpectedTypeData.getSequenceTypeMapTest();
+                if (sequenceTypeMapTest != null) {
+             	   if (sequenceTypeMapTest.isfIsAnyMapTest()) {
+             		  result = srcValue; 
+             	   }
+             	   else {
+             		  XPathMap xpathMap = (XPathMap)srcValue;
+             		  Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
+             		  Set<XObject> mapKeys = nativeMap.keySet();
+             		  Iterator<XObject> keysIter = mapKeys.iterator();
+             		  // We check below each of map's entry, with expected type of map entry's keys and values 
+             		  while (keysIter.hasNext()) {
+             			 XObject mapKey = keysIter.next();
+             			 XObject mapEntry = nativeMap.get(mapKey);
+             			 String keyStrVal = XslTransformEvaluationHelper.getStrVal(mapKey);
+             			 if (mapKey instanceof ResultSequence) {
+             				mapKey = ((ResultSequence)mapKey).item(0);
+             			 }
+             			 if (mapEntry instanceof ResultSequence) {
+             				mapEntry = ((ResultSequence)mapEntry).item(0);
+             			 }
+             			 SequenceTypeData keySeqTypeData = sequenceTypeMapTest.getKeySequenceTypeData();
+             			 SequenceTypeData valueSeqTypeData = sequenceTypeMapTest.getValueSequenceTypeData();
+             			 XObject mapKeyValTypeCheckResult = SequenceTypeSupport.convertXDMValueToAnotherType(mapKey, null, keySeqTypeData, xctxt);
+             			 String mapSequenceTypeStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : "";
+             			 if (mapKeyValTypeCheckResult == null) {             				
+             				throw new TransformerException("XPTY0004 : XPath map entry key's [entry's key name: '" + keyStrVal + "'] value doesn't conform to the key's expected "
+             						                                            + "type [map's sequenceType is '" + mapSequenceTypeStr + "']."); 
+             			 }
+             			 XObject mapEntryValTypeCheckResult = SequenceTypeSupport.convertXDMValueToAnotherType(mapEntry, null, valueSeqTypeData, xctxt);
+             			 if (mapEntryValTypeCheckResult == null) {
+             				throw new TransformerException("XPTY0004 : XPath map entry's [entry's key name: '" + keyStrVal + "'] value doesn't conform to the map entry value's expected "
+             						                                            + "type [map's sequenceType is '" + mapSequenceTypeStr + "'].");  
+             			 }           			 
+             		  }
+             		  
+             		  result = srcValue; 
+             	   }
+                }
             }
         }
         catch (TransformerException ex) {

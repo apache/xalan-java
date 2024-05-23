@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <map noOfEntries="2">
+    <entry value="false" key="zero"/>
+    <entry value="true" key="one"/>
+  </map>
+  <map noOfEntries="5">
+    <entry value="Mukul" key="1"/>
+    <entry value="Joseph" key="2"/>
+    <entry value="Gary" key="3"/>
+    <entry value="John" key="4"/>
+    <entry value="Henry" key="5"/>
+  </map>
+</result>
