@@ -61,16 +61,13 @@ import org.apache.xpath.res.XPATHErrorResources;
 /**
  * Tokenizes and parses XPath expressions.
  * 
- * Author: Scott Boag,
- *         Myriam Midy,
- *         Joseph Kesselman
- * 
- * @modification notes: Mukul Gandhi 
- * XalanJ's XPath 1.0 implementation class XPathParser has been renamed to 
- * XPathParserImpl, with modifications/additions to implement XPath 3.1 grammar
- * to produce the present form of this class.
- * 
  * @xsl.usage general
+ * 
+ * @author Scott Boag, IBM
+ * @author Myriam Midy, IBM
+ * @author Joseph Kesselman, IBM
+ * @author Mukul Gandhi <mukulg@apache.org>
+ * 
  */
 public class XPathParserImpl
 {
