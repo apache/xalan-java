@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <castableAsResult targetType="xs:double" srcType="xs:integer" inpValue="2">true</castableAsResult>
+  <castableAsResult targetType="xs:string" srcType="xs:normalizedString" inpValue="hello">true</castableAsResult>
+  <castableAsResult targetType="xs:normalizedString" srcType="xs:string" inpValue="hello">false</castableAsResult>
+</result>

@@ -199,6 +199,19 @@ public class SequenceTypeSupport {
     	return result;
     }
     
+    /**
+     * This method, supports XPath implementation of "cast as" and 
+     * "castable as" expressions.
+     */
+    public static XObject castAsAnotherType(XObject srcValue, SequenceTypeData seqExpectedTypeDataInp) 
+    		                                                                                throws TransformerException {
+        XObject result = null;
+    	
+        result = convertXDMValueToAnotherType(srcValue, null, seqExpectedTypeDataInp, null);
+
+        return result;
+    }
+    
     
     /**
      * This method converts/casts an XPath 3.1 xdm source value represented by an

@@ -142,12 +142,6 @@ public class MapConstructor extends Expression {
     	
     	SourceLocator srcLocator = xctxt.getSAXLocator();
     	
-    	ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-        List<XMLNSDecl> prefixTable = null;
-        if (elemTemplateElement != null) {
-            prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-        }
-    	
     	resultSeq = new ResultSequence();
     	
     	XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
@@ -165,7 +159,7 @@ public class MapConstructor extends Expression {
                 dtmIter = locPathIterator.asIterator(xctxt, contextNode);
             }
             catch (ClassCastException ex) {
-                // no op
+                // NO OP
             }
             
             if (dtmIter != null) {
@@ -182,21 +176,10 @@ public class MapConstructor extends Expression {
                                                                                     xpathExprStr.indexOf(']'));
                 
                 // Evaluate the, variable reference XPath expression
-                if (prefixTable != null) {
-                   varRefXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-                                                                                            varRefXPathExprStr, prefixTable);
-                }
                 
                 XPath varXPathObj = new XPath(varRefXPathExprStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                    XPath.SELECT, null);
                 XObject varEvalResult = varXPathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
-                
-                // Evaluate the, xdm sequence index XPath expression
-                if (prefixTable != null) {
-                   xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-                                                                                                   xpathIndexExprStr, 
-                                                                                                   prefixTable);
-                }
                 
                 XPath xpathIndexObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                   XPath.SELECT, null);

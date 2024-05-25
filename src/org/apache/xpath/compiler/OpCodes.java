@@ -727,25 +727,17 @@ public class OpCodes
   
   public static final int OP_SEQUENCE_TYPE_EXPR = 73;
   
-  /**
-   * For XPath 3.1 "instance of" expression.
-   * 
-   * @xsl.usage advanced
-   */
-  public static final int OP_INSTANCE_OF = 74;
+  public static final int OP_SQUARE_ARRAY_CONSTRUCTOR_EXPR = 74;
   
-  /**
-   * For XPath 3.1 "cast as" expression.
-   * 
-   * @xsl.usage advanced
-   */
-  public static final int OP_CAST_AS = 75;
+  public static final int OP_MAP_CONSTRUCTOR_EXPR = 75;
   
-  public static final int OP_SQUARE_ARRAY_CONSTRUCTOR_EXPR = 76;
+  public static final int OP_INSTANCE_OF = 76;
   
-  public static final int OP_MAP_CONSTRUCTOR_EXPR = 77;
+  public static final int OP_CAST_AS = 77;
+  
+  public static final int OP_CASTABLE_AS = 78;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 78;
+  private static final int NEXT_FREE_ID = 79;
   
 }

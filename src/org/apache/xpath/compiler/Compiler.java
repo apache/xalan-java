@@ -41,6 +41,8 @@ import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.And;
+import org.apache.xpath.operations.CastAs;
+import org.apache.xpath.operations.CastableAs;
 import org.apache.xpath.operations.Div;
 import org.apache.xpath.operations.Equals;
 import org.apache.xpath.operations.Gt;
@@ -181,6 +183,10 @@ public class Compiler extends OpMap
       expr = sequenceTypeExpr(opPos); break;
     case OpCodes.OP_INSTANCE_OF :
       expr = instanceOfExpr(opPos); break;
+    case OpCodes.OP_CAST_AS :
+      expr = castAsExpr(opPos); break;
+    case OpCodes.OP_CASTABLE_AS :
+        expr = castableAsExpr(opPos); break;
     case OpCodes.OP_LTE :
       expr = lte(opPos); break;
     case OpCodes.OP_LT :
@@ -552,6 +558,30 @@ public class Compiler extends OpMap
   protected Expression instanceOfExpr(int opPos) throws TransformerException
   {
     return compileOperation(new InstanceOf(), opPos);
+  }
+  
+  /**
+   * Compile a 'cast as' operation.
+   * 
+   * @param    opPos The current position in the m_opMap array.
+   * @return   an XPath compiled representation of 'cast as' expression 
+   * @throws TransformerException
+   */
+  protected Expression castAsExpr(int opPos) throws TransformerException
+  {
+	return compileOperation(new CastAs(), opPos); 
+  }
+  
+  /**
+   * Compile a 'castable as' operation.
+   * 
+   * @param    opPos The current position in the m_opMap array.
+   * @return   an XPath compiled representation of 'castable as' expression 
+   * @throws TransformerException
+   */
+  protected Expression castableAsExpr(int opPos) throws TransformerException
+  {
+	return compileOperation(new CastableAs(), opPos); 
   }
 
   /**
