@@ -353,7 +353,7 @@ public class ElemVariable extends ElemTemplateElement
             	
             	String evalResultStrValue = (evalResult instanceof XSString) ? ((XSString)evalResult).stringValue() : null;            	
             	if (m_asAttr != null && !(XSConstructorFunctionUtil.XS_VALID_TRUE).equals(evalResultStrValue)) {           	     
-                   evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, null, xctxt);
+                   evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                    if (evalResult == null) {
                 	  String xpathPatternStr = m_selectPattern.getPatternString();
                 	  throw new TransformerException("XTTE0570 : The supplied value " + xpathPatternStr + ", doesn't "
@@ -386,10 +386,10 @@ public class ElemVariable extends ElemTemplateElement
         }
         else if (selectExpression instanceof Function) {
             XObject evalResult = ((Function)selectExpression).execute(xctxt);            
-            if ((evalResult instanceof ResultSequence) || 
+            if ((evalResult instanceof ResultSequence) || (evalResult instanceof XPathArray) || 
                                                 (evalResult instanceof XSAnyType)) {
                 if (m_asAttr != null) {
-                   evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
+                   evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
                 }
                 
                 return evalResult; 
@@ -399,7 +399,7 @@ public class ElemVariable extends ElemTemplateElement
             XObject evalResult = selectExpression.execute(xctxt);
             
             if (m_asAttr != null) {
-               evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
+               evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
             }
              
             return evalResult;
@@ -408,7 +408,7 @@ public class ElemVariable extends ElemTemplateElement
             XObject evalResult = ((Range)selectExpression).execute(xctxt);
             
             if (m_asAttr != null) {
-               evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
+               evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
             }
              
             return evalResult; 
@@ -422,7 +422,7 @@ public class ElemVariable extends ElemTemplateElement
             XObject evalResult = opn.operate(leftOperand, rightOperand);
             
             if (m_asAttr != null) {
-               evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
+               evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
             }
              
             return evalResult;
@@ -431,7 +431,7 @@ public class ElemVariable extends ElemTemplateElement
             XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
             if (xpath3ContextItem != null) {               
               if (m_asAttr != null) {
-                 xpath3ContextItem = SequenceTypeSupport.convertXDMValueToAnotherType(xpath3ContextItem, m_asAttr, 
+                 xpath3ContextItem = SequenceTypeSupport.convertXdmValueToAnotherType(xpath3ContextItem, m_asAttr, 
                                                                                                                null, xctxt);  
               }
                 
@@ -455,7 +455,7 @@ public class ElemVariable extends ElemTemplateElement
                var = new XNodeSet(dtmIter);
                
                if (m_asAttr != null) {
-                  var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, xctxt);  
+                  var = SequenceTypeSupport.convertXdmValueToAnotherType(var, m_asAttr, null, xctxt);  
                }
                  
                return var; 
@@ -548,7 +548,7 @@ public class ElemVariable extends ElemTemplateElement
                var = resultSeq;
                
                if (m_asAttr != null) {
-                  var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, xctxt);  
+                  var = SequenceTypeSupport.convertXdmValueToAnotherType(var, m_asAttr, null, xctxt);  
                }
                   
                return var;
@@ -609,12 +609,12 @@ public class ElemVariable extends ElemTemplateElement
              var = variableConvertedVal;    
           }
           else {
-             var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, xctxt); 
+             var = SequenceTypeSupport.convertXdmValueToAnotherType(var, m_asAttr, null, xctxt); 
           }
        }
        else if (var instanceof XPathMap) {
     	  try {
-    	     var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, xctxt);
+    	     var = SequenceTypeSupport.convertXdmValueToAnotherType(var, m_asAttr, null, xctxt);
     	  }
     	  catch (TransformerException ex) {
     		 String errMesg = ex.getMessage();
@@ -631,7 +631,7 @@ public class ElemVariable extends ElemTemplateElement
        }
        else if (var instanceof XPathArray) {
     	  try {
-      	     var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, xctxt);
+      	     var = SequenceTypeSupport.convertXdmValueToAnotherType(var, m_asAttr, null, xctxt);
       	  }
       	  catch (TransformerException ex) {
       		 String errMesg = ex.getMessage();
@@ -648,7 +648,7 @@ public class ElemVariable extends ElemTemplateElement
        }
        else {
     	  try {
-             var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, xctxt);
+             var = SequenceTypeSupport.convertXdmValueToAnotherType(var, m_asAttr, null, xctxt);
     	  }
     	  catch (TransformerException ex) {
     		 throw ex; 

@@ -19,6 +19,7 @@ package org.apache.xpath.functions.array;
 import java.util.List;
 
 import javax.xml.transform.SourceLocator;
+import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.ElemCopyOf;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
@@ -26,10 +27,12 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.operations.Variable;
+
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
  * Implementation of the array:get() function.
@@ -42,51 +45,84 @@ public class FuncArrayGet extends Function2Args {
 	
 	private static final long serialVersionUID = 9085303963460501516L;
 
-	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-	{
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
+		
 	    XObject result = null;
 	       
 	    SourceLocator srcLocator = xctxt.getSAXLocator();
 	       
-	    Expression arg0 = getArg0();
-	    
-	    Expression arg1 = getArg1();
+	    Expression arg0Expr = getArg0();	    
+	    Expression arg1Expr = getArg1();	    	    
 	    
 	    ResultSequence arg0Seq = null;
-	    
-	    if (arg0 instanceof Variable) {
-	       XObject xObject = ((Variable)arg0).execute(xctxt);
-	       if (xObject instanceof XNodeSet) {
-	    	  // TO DO 
-	       }
-	       else if (xObject instanceof ResultSequence) {
-	    	  arg0Seq = (ResultSequence)xObject; 
-	       }
-	       else if (xObject instanceof XPathArray) {
-	    	  XPathArray xpathArr = (XPathArray)xObject;
-	    	  List<XObject> nativeArr = xpathArr.getNativeArray();
-	    	  arg0Seq = ElemCopyOf.getResultSequenceFromXPathArray(nativeArr);
+	    if (arg0Expr instanceof Variable) {
+	       XObject arg0Value = ((Variable)arg0Expr).execute(xctxt);
+	       if (arg0Value instanceof XPathArray) {
+	          arg0Seq = getArg0Seq((XPathArray)arg0Value, srcLocator);
 	       }
 	       else {
-	    	  // TO DO  
+	    	  throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument of array:get function call, "
+	    	  		                                                                      + "needs to be an xdm array", srcLocator);  
 	       }
 	    }
 	    else {
-	       // TO DO
+	    	XObject arg0Value = arg0Expr.execute(xctxt);
+	    	if (arg0Value instanceof XPathArray) {
+		       arg0Seq = getArg0Seq((XPathArray)arg0Value, srcLocator);
+		    }
+		    else {
+		       throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument of array:get function call, "
+		       		                                                                      + "needs to be an xdm array", srcLocator);   
+		    }
 	    }
 	    
-	    if (arg1 instanceof Variable) {
-	       XObject arg1XObj = ((Variable)arg1).execute(xctxt);
-	       String arg1Str = XslTransformEvaluationHelper.getStrVal(arg1XObj);
-	       result = arg0Seq.item((Integer.valueOf(arg1Str)).intValue() - 1);
+	    XObject arg1 = null;	    
+	    if (arg1Expr instanceof Variable) {
+	       arg1 = ((Variable)arg1Expr).execute(xctxt);
+	       if ((arg1 instanceof XSNumericType) || (arg1 instanceof XNumber)) {
+	    	  result = getFuncResult(arg0Seq, arg1, srcLocator);   
+	       }
+	       else {
+	    	  throw new javax.xml.transform.TransformerException("FOAY0001 : The 2nd argument of array:get function "
+	    	  		                                                    + "call, needs to be an xs:integer value", srcLocator); 
+	       }
 	    }
 	    else {
-	       XObject arg1XObj = arg1.execute(xctxt);
-		   String arg1Str = XslTransformEvaluationHelper.getStrVal(arg1XObj);
-		   result = arg0Seq.item((Integer.valueOf(arg1Str)).intValue() - 1);
+	       arg1 = arg1Expr.execute(xctxt);
+	       if ((arg1 instanceof XSNumericType) || (arg1 instanceof XNumber)) {
+		      result = getFuncResult(arg0Seq, arg1, srcLocator);   
+		   }
+		   else {
+			  throw new javax.xml.transform.TransformerException("FOAY0001 : The 2nd argument of array:get function "
+                                                                         + "call, needs to be an xs:integer value", srcLocator);	   
+		   }
 	    }
 	    
 	    return result;
+	}
+
+	/**
+	 * Get the value of array:get function's first argument, as ResultSequence object.
+	 */
+	private ResultSequence getArg0Seq(XPathArray arg0Value, SourceLocator srcLocator) {
+		ResultSequence arg0Seq = null;
+
+	    List<XObject> nativeArr = arg0Value.getNativeArray();
+	    arg0Seq = ElemCopyOf.getResultSequenceFromXPathArray(nativeArr);
+		
+		return arg0Seq;
+	}
+	
+	/**
+	 * Get the result of array:get function call. 
+	 */
+	private XObject getFuncResult(ResultSequence arg0Seq, XObject arg1, SourceLocator srcLocator) 			                                                                                   throws TransformerException {
+		XObject result = null;
+		
+	    String secondArgStr = XslTransformEvaluationHelper.getStrVal(arg1);
+		result = arg0Seq.item((Integer.valueOf(secondArgStr)).intValue() - 1);
+		
+		return result;
 	}
 
 }

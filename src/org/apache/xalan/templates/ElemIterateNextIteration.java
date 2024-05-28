@@ -257,7 +257,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
                 String withParamAsAttr = elemWithParam.getAs();
                 if (withParamAsAttr != null) {
                    try {
-                      withParamVal = SequenceTypeSupport.convertXDMValueToAnotherType(withParamVal, withParamAsAttr, null, 
+                      withParamVal = SequenceTypeSupport.convertXdmValueToAnotherType(withParamVal, withParamAsAttr, null, 
                                                                                                                  transformer.getXPathContext());
                    }
                    catch (TransformerException ex) {

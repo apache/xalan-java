@@ -34,6 +34,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
 
 /*
  * Implementation of the XSLT 3.0 xsl:iterate instruction.
@@ -176,26 +177,33 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
            // instruction's evaluation.
            fXslIterateParamWithparamDataList.clear();
            
-           validateXslElemIterateChildElementsSequence(xctxt); 
+           verifyXslElemIterateChildElementsSequence(xctxt); 
                
-           XObject evalResult = m_selectExpression.execute(xctxt);                              
+           XObject evalResult = m_selectExpression.execute(xctxt);
+           
+           List<XObject> itemsToBeProcessed = null;
                
-           if (evalResult instanceof ResultSequence) {
-               ResultSequence resultSeq = (ResultSequence)evalResult;
-               List<XObject> resultSeqItems = resultSeq.getResultSequenceItems();                                      
+           if ((evalResult instanceof ResultSequence) || (evalResult instanceof XPathArray)) {
+        	   if (evalResult instanceof ResultSequence) {
+        		   itemsToBeProcessed = ((ResultSequence)evalResult).getResultSequenceItems();
+        	   }
+        	   else {
+        		   XPathArray xpathArr = (XPathArray)evalResult;
+        		   itemsToBeProcessed = xpathArr.getNativeArray();
+        	   }
                    
                ElemIterateOnCompletion xslOnCompletionTemplate = null;
                    
                boolean isBreakFromXslContentLoop = false;
                    
-               for (int idx = 0; idx < resultSeqItems.size(); idx++) {
-                  XObject resultSeqItem = resultSeqItems.get(idx);
+               for (int idx = 0; idx < itemsToBeProcessed.size(); idx++) {
+                  XObject resultSeqItem = itemsToBeProcessed.get(idx);
                        
                   if (resultSeqItem instanceof XNodeSet) {
                      resultSeqItem = ((XNodeSet)resultSeqItem).getFresh(); 
                   }
                        
-                  setXPathContextForXslSequenceProcessing(resultSeqItems.size(), idx, resultSeqItem, xctxt);
+                  setXPathContextForXslSequenceProcessing(itemsToBeProcessed.size(), idx, resultSeqItem, xctxt);
                                                                      
                   for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
                                                                                        elemTemplate = elemTemplate.m_nextSibling) {                           
@@ -338,9 +346,9 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
       /**
        * The XSLT 3.0 spec specifies constraints, about what should be the order of XSLT elements 
        * xsl:param and xsl:on-completion within the xsl:iterate element. This method ensures that, 
-       * these XSLT element constraints are validated during an XSLT stylesheet transformation.  
+       * these XSLT element constraints are verified during an XSLT stylesheet transformation.  
        */
-      private void validateXslElemIterateChildElementsSequence(XPathContext xctxt) 
+      private void verifyXslElemIterateChildElementsSequence(XPathContext xctxt) 
                                                                        throws TransformerException {
           
           List<String> xslElemNamesList = new ArrayList<String>();
@@ -399,8 +407,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                      }
                   }                                    
               }
-          }
-          
+          }          
       }
       
 }

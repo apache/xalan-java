@@ -45,6 +45,7 @@ import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Variable;
 
@@ -325,14 +326,30 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
             XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                                   (DTMManager)xctxt);             
             if (nodeSet == null) {
-               processResultSequence(transformer, xctxt, evalResult);               
+               processSequenceOrArray(transformer, xctxt, evalResult);               
                return;
             }
             else {
                resultSeqDtmIterator = nodeSet.iter(); 
             }
         }                
-    }    
+    }
+    else if (m_selectExpression instanceof DynamicFunctionCall) {
+        DynamicFunctionCall dfc = (DynamicFunctionCall)m_selectExpression;
+        XObject evalResult = dfc.execute(xctxt);
+        
+        if (evalResult instanceof ResultSequence) {
+            XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
+                                                                                                                  (DTMManager)xctxt);             
+            if (nodeSet == null) {
+                processSequenceOrArray(transformer, xctxt, evalResult);                
+                return;
+            }
+            else {
+                resultSeqDtmIterator = nodeSet.iter(); 
+            }
+        }
+    }
     else if (m_selectExpression instanceof Variable) {
         XObject evalResult = ((Variable)m_selectExpression).execute(xctxt);                
         
@@ -340,20 +357,23 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         	ResultSequence resultSequence = new ResultSequence();
         	resultSequence.add(evalResult);
         	
-        	processResultSequence(transformer, xctxt, resultSequence);
-        	
+        	processSequenceOrArray(transformer, xctxt, resultSequence);        	
             return;
         }        
         else if (evalResult instanceof ResultSequence) {
             XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                                   (DTMManager)xctxt);             
             if (nodeSet == null) {
-                processResultSequence(transformer, xctxt, evalResult);
+                processSequenceOrArray(transformer, xctxt, evalResult);                
                 return;
             }
             else {
                 resultSeqDtmIterator = nodeSet.iter(); 
             }
+        }
+        else if (evalResult instanceof XPathArray) {
+        	processSequenceOrArray(transformer, xctxt, evalResult);        	
+        	return;
         }
     }    
     else if (m_selectExpression instanceof Operation) {
@@ -363,7 +383,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
             XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                                   (DTMManager)xctxt);             
             if (nodeSet == null) {
-                processResultSequence(transformer, xctxt, evalResult);
+                processSequenceOrArray(transformer, xctxt, evalResult);                
                 return;
             }
             else {
@@ -378,7 +398,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                               (DTMManager)xctxt);             
         if (nodeSet == null) {
-            processResultSequence(transformer, xctxt, evalResult);
+            processSequenceOrArray(transformer, xctxt, evalResult);            
             return;
         }
         else {
@@ -393,27 +413,11 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                               (DTMManager)xctxt);             
         if (nodeSet == null) {
-            processResultSequence(transformer, xctxt, evalResult);
+            processSequenceOrArray(transformer, xctxt, evalResult);
             return;
         }
         else {
             resultSeqDtmIterator = nodeSet.iter(); 
-        }
-    }
-    else if (m_selectExpression instanceof DynamicFunctionCall) {
-        DynamicFunctionCall dfc = (DynamicFunctionCall)m_selectExpression;
-        XObject evalResult = dfc.execute(xctxt);
-        
-        if (evalResult instanceof ResultSequence) {
-            XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
-                                                                                                                  (DTMManager)xctxt);             
-            if (nodeSet == null) {
-                processResultSequence(transformer, xctxt, evalResult);
-                return;
-            }
-            else {
-                resultSeqDtmIterator = nodeSet.iter(); 
-            }
         }
     }
     
@@ -621,24 +625,31 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
    }
    
    /*
-    * Process each of the XDM items stored within a 'ResultSequence', 
-    * in order, and apply each XDM item to all the XSLT instructions
-    * mentioned within body of current xsl:for-each element.
+    * Process each xdm item stored within a sequence or an array 
+    * in order, and apply xdm item's information to all XSL instructions
+    * mentioned within xsl:for-each's sequence constructor.
     */
-   private void processResultSequence(TransformerImpl transformer,
+   private void processSequenceOrArray(TransformerImpl transformer,
                                                               XPathContext xctxt, XObject evalResult) 
                                                               throws TransformerException {       
-       ResultSequence resultSeq = (ResultSequence)evalResult;
-       List<XObject> resultSeqItems = resultSeq.getResultSequenceItems();
+	   List<XObject> itemsToBeProcessed = null;
+	   if (evalResult instanceof ResultSequence) {
+		   ResultSequence resultSeq = (ResultSequence)evalResult;
+		   itemsToBeProcessed = resultSeq.getResultSequenceItems();   
+	   }
+	   else if (evalResult instanceof XPathArray) {
+		   XPathArray xpathArr = (XPathArray)evalResult;
+		   itemsToBeProcessed = xpathArr.getNativeArray();
+	   }	   
        
-       for (int idx = 0; idx < resultSeqItems.size(); idx++) {
-           XObject resultSeqItem = resultSeqItems.get(idx);
+       for (int idx = 0; idx < itemsToBeProcessed.size(); idx++) {
+           XObject resultSeqItem = itemsToBeProcessed.get(idx);
            
            if (resultSeqItem instanceof XNodeSet) {
               resultSeqItem = ((XNodeSet)resultSeqItem).getFresh(); 
            }
            
-           setXPathContextForXslSequenceProcessing(resultSeqItems.size(), idx, resultSeqItem, xctxt);
+           setXPathContextForXslSequenceProcessing(itemsToBeProcessed.size(), idx, resultSeqItem, xctxt);
            
            for (ElemTemplateElement elemTemplateElem = this.m_firstChild; elemTemplateElem != null; 
                                                           elemTemplateElem = elemTemplateElem.m_nextSibling) {

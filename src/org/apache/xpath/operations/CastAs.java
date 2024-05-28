@@ -53,7 +53,7 @@ public class CastAs extends Operation
       
       SequenceTypeData seqTypedData = (SequenceTypeData)right;
       
-      result = SequenceTypeSupport.castAsAnotherType(left, seqTypedData);
+      result = SequenceTypeSupport.castXdmValueToAnotherType(left, seqTypedData);
       
       return result;
   }

@@ -52,7 +52,7 @@ public class XPathArray extends XObject {
    }
    
    /**
-    * Appending a value, to an array.
+    * Append an xdm item, to an array.
     */
    public void add(XObject value) {
 	  fList.add(value);  
@@ -87,6 +87,10 @@ public class XPathArray extends XObject {
     */
    public boolean bool() {
        return (fList.size() > 0);       
+   }
+   
+   public void reset() {
+	   fList.clear(); 
    }
    
    /**

@@ -273,7 +273,7 @@ public class ElemFunction extends ElemTemplate
             funcResultConvertedVal = preprocessXslFunctionOrAVariableResult((XNodeSetForDOM)result, funcAsAttrStrVal, xctxt, null);
             
             if (funcResultConvertedVal == null) {
-                funcResultConvertedVal = SequenceTypeSupport.convertXDMValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);
+                funcResultConvertedVal = SequenceTypeSupport.convertXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);
                 
                 if (funcResultConvertedVal == null) {
                    throw new TransformerException("XPTY0004 : The function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 

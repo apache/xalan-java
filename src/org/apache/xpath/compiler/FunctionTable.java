@@ -27,6 +27,7 @@ import java.util.List;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.array.FuncSubarray;
 
 /**
  * The function table for XPath 3.1.
@@ -444,10 +445,30 @@ public class FunctionTable
   
   /** The 'map:entry()' id. */
   public static final int FUNC_MAP_ENTRY = 142;
-  
-  
+    
   /** The 'parse-json' id. */
   public static final int FUNC_PARSE_JSON = 143;
+  
+  /** The 'array:append()' id. */
+  public static final int FUNC_ARRAY_APPEND = 144;
+  
+  /** The 'array:subarray()' id. */
+  public static final int FUNC_ARRAY_SUBARRAY = 145;
+  
+  /** The 'array:remove()' id. */
+  public static final int FUNC_ARRAY_REMOVE = 146;
+  
+  /** The 'array:insert-before()' id. */
+  public static final int FUNC_ARRAY_INSERT_BEFORE = 147;
+  
+  /** The 'array:head()' id. */
+  public static final int FUNC_ARRAY_HEAD = 148;
+  
+  /** The 'array:tail()' id. */
+  public static final int FUNC_ARRAY_TAIL = 149;
+  
+  /** The 'array:reverse()' id. */
+  public static final int FUNC_ARRAY_REVERSE = 150;
 
   // Proprietary
 
@@ -492,7 +513,10 @@ public class FunctionTable
   public static final String XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions/array";
     
   static final Integer[] XPATH_ARRAY_FUNC_IDS = new Integer[] { new Integer(FUNC_ARRAY_SIZE), new Integer(FUNC_ARRAY_GET),
-		                                                        new Integer(FUNC_ARRAY_PUT) };
+		                                                        new Integer(FUNC_ARRAY_PUT), new Integer(FUNC_ARRAY_APPEND),
+		                                                        new Integer(FUNC_ARRAY_SUBARRAY), new Integer(FUNC_ARRAY_REMOVE),
+		                                                        new Integer(FUNC_ARRAY_INSERT_BEFORE),new Integer(FUNC_ARRAY_HEAD),
+		                                                        new Integer(FUNC_ARRAY_TAIL),new Integer(FUNC_ARRAY_REVERSE) };
   
   static final List<Integer> XPATH_ARRAY_FUNC_IDS_ARR = Arrays.asList(XPATH_ARRAY_FUNC_IDS);
   
@@ -532,7 +556,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 144;
+  private static final int NUM_BUILT_IN_FUNCS = 151;
 
   /**
    * Number of built-in functions that may be added.
@@ -775,6 +799,8 @@ public class FunctionTable
     m_functions[FUNC_ARRAY_SIZE] = org.apache.xpath.functions.array.FuncArraySize.class;
     m_functions[FUNC_ARRAY_GET] = org.apache.xpath.functions.array.FuncArrayGet.class;
     m_functions[FUNC_ARRAY_PUT] = org.apache.xpath.functions.array.FuncArrayPut.class;
+    m_functions[FUNC_ARRAY_APPEND] = org.apache.xpath.functions.array.FuncArrayAppend.class;
+    m_functions[FUNC_ARRAY_SUBARRAY] = org.apache.xpath.functions.array.FuncSubarray.class;
     
     // XPath 3.1 built-in functions configurations for the map 
     // functions namespace http://www.w3.org/2005/xpath-functions/map    
@@ -1054,6 +1080,10 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_ARRAY_GET));
          m_functionID.put(Keywords.FUNC_ARRAY_PUT,
                           new Integer(FunctionTable.FUNC_ARRAY_PUT));
+         m_functionID.put(Keywords.FUNC_ARRAY_APPEND,
+                          new Integer(FunctionTable.FUNC_ARRAY_APPEND));
+         m_functionID.put(Keywords.FUNC_ARRAY_SUBARRAY,
+                          new Integer(FunctionTable.FUNC_ARRAY_SUBARRAY));
          
          // XPath 3.1 functions configurations for the map functions 
          // namespace http://www.w3.org/2005/xpath-functions/map
@@ -1089,7 +1119,7 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_IN_SCOPE_PREFIXES));
          
          m_functionID.put(Keywords.FUNC_PARSE_JSON,
-                          new Integer(FunctionTable.FUNC_PARSE_JSON));         
+                          new Integer(FunctionTable.FUNC_PARSE_JSON));                  
   }
   
   public FunctionTable(){

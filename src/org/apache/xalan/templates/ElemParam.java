@@ -150,7 +150,7 @@ public class ElemParam extends ElemVariable
             if (asAttrVal != null) {
               try {
                  XObject var = transformer.getXPathContext().getVarStack().getLocalVariable(xctx, m_index);
-                 var = SequenceTypeSupport.convertXDMValueToAnotherType(var, asAttrVal, null, 
+                 var = SequenceTypeSupport.convertXdmValueToAnotherType(var, asAttrVal, null, 
                                                                                    transformer.getXPathContext());
                  if (var == null) {
                     throw new TransformerException("XTTE0590 : The required item type of the value of parameter " + 

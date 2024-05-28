@@ -193,7 +193,7 @@ public class DynamicFunctionCall extends Expression {
 	              
 	              if (paramType != null) {
 	                  try {
-	                     argValue = SequenceTypeSupport.convertXDMValueToAnotherType(argValue, null, paramType, null);                     
+	                     argValue = SequenceTypeSupport.convertXdmValueToAnotherType(argValue, null, paramType, null);                     
 	                     if (argValue == null) {
 	                        throw new TransformerException("XTTE0505 : The item type of argument at position " + (idx + 1) + " of dynamic function call "
 	                                                                                                           + "$" + funcRefVarName + ", doesn't match "
@@ -230,7 +230,7 @@ public class DynamicFunctionCall extends Expression {
 	           SequenceTypeData funcReturnType = inlineFunction.getReturnType();
 	           if (funcReturnType != null) {
 	              try {
-	                 evalResult = SequenceTypeSupport.convertXDMValueToAnotherType(evalResult, null, funcReturnType, null);
+	                 evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, null, funcReturnType, null);
 	                 if (evalResult == null) {
 	                    throw new TransformerException("XTTE0505 : The item type of result of dynamic function call $"+ funcRefVarName + ", doesn't match an "
 	                                                                                                                                   + "expected type.", srcLocator);  

@@ -20,16 +20,16 @@ import java.util.List;
 
 import javax.xml.transform.SourceLocator;
 
-import org.apache.xalan.templates.ElemCopyOf;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function3Args;
-import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.operations.Variable;
+
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
  * Implementation of the array:put() function.
@@ -48,52 +48,77 @@ public class FuncArrayPut extends Function3Args {
 	       
 	    SourceLocator srcLocator = xctxt.getSAXLocator();
 	       
-	    Expression arg0 = getArg0();	    
-	    Expression arg1 = getArg1();	    
-	    Expression arg2 = getArg2();
+	    Expression arg0Expr = getArg0();	    
+	    Expression arg1Expr = getArg1();	    
+	    Expression arg2Expr = getArg2();
 	    
-	    ResultSequence arg0Seq = null;	    
-	    XObject arg1XObj = null;	    
-	    XObject arg2XObj = null;
+	    XPathArray arg0XPathArr = null;
 	    
-	    if (arg0 instanceof Variable) {
-	       XObject xObject = ((Variable)arg0).execute(xctxt);
-	       if (xObject instanceof XNodeSet) {
-	    	  // TO DO 
-	       }
-	       else if (xObject instanceof ResultSequence) {
-	    	  arg0Seq = (ResultSequence)xObject; 
-	       }
-	       else if (xObject instanceof XPathArray) {
-		      XPathArray xpathArr = (XPathArray)xObject;
-		      List<XObject> nativeArr = xpathArr.getNativeArray();
-		      arg0Seq = ElemCopyOf.getResultSequenceFromXPathArray(nativeArr);
+	    List<XObject> nativeArr = null;	    
+	    if (arg0Expr instanceof Variable) {
+	       XObject xObject = ((Variable)arg0Expr).execute(xctxt);
+	       if (xObject instanceof XPathArray) {
+	    	  arg0XPathArr = (XPathArray)xObject;
+		      nativeArr = arg0XPathArr.getNativeArray();
 		   }
 	       else {
-	    	  // TO DO  
+	    	   throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument of array:put function call, "
+                                                                         + "needs to be an xdm array", srcLocator);   
 	       }
 	    }
 	    else {
-	       // TO DO
+	    	XObject xObject = arg0Expr.execute(xctxt);
+		    if (xObject instanceof XPathArray) {
+		       arg0XPathArr = (XPathArray)xObject;
+			   nativeArr = arg0XPathArr.getNativeArray();
+			}
+		    else {
+		       throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument of array:put function call, "
+	                                                                         + "needs to be an xdm array", srcLocator);   
+		    }
 	    }
 	    
-	    if (arg1 instanceof Variable) {
-	       arg1XObj = ((Variable)arg1).execute(xctxt);
+	    XObject arg1XObj = null;
+	    if (arg1Expr instanceof Variable) {
+	       arg1XObj = ((Variable)arg1Expr).execute(xctxt);
+	       if (!((arg1XObj instanceof XSNumericType) || (arg1XObj instanceof XNumber))) {
+	    	  throw new javax.xml.transform.TransformerException("FOAY0001 : The 2nd argument of array:put function "
+                                                                                               + "call, needs to be an xs:integer value", srcLocator); 
+	       }
 	    }
 	    else {
-	       arg1XObj = arg1.execute(xctxt);
+	       arg1XObj = arg1Expr.execute(xctxt);
+	       if (!((arg1XObj instanceof XSNumericType) || (arg1XObj instanceof XNumber))) {
+		      throw new javax.xml.transform.TransformerException("FOAY0001 : The 2nd argument of array:put function "
+	                                                                                           + "call, needs to be an xs:integer value", srcLocator); 
+		   }
 	    }
 	    
-	    if (arg2 instanceof Variable) {
-		   arg2XObj = ((Variable)arg2).execute(xctxt);
+	    XObject arg2XObj = null;
+	    if (arg2Expr instanceof Variable) {
+		   arg2XObj = ((Variable)arg2Expr).execute(xctxt);
 		}
 		else {
-		   arg2XObj = arg2.execute(xctxt);
+		   arg2XObj = arg2Expr.execute(xctxt);
 		}
 	    
-	    arg0Seq.set(Integer.valueOf(XslTransformEvaluationHelper.getStrVal(arg1XObj)) - 1, arg2XObj);
+	    int arg1Int;	    
+	    try {
+	       arg1Int = Integer.valueOf(XslTransformEvaluationHelper.getStrVal(arg1XObj));
+	       int inpArrSize = nativeArr.size();
+	       if ((arg1Int < 1) || (arg1Int > inpArrSize)) {
+	    	   throw new javax.xml.transform.TransformerException("FOAY0001 : The 2nd argument of array:put function all, needs to be "
+	    	   		                                                       + "an xs:integer value in the range 1 to array:size($array) inclusive", srcLocator);  
+	       }	       
+	    }
+	    catch (NumberFormatException ex) {
+	       throw new javax.xml.transform.TransformerException("FOAY0001 : The 2nd argument of array:put function "
+                                                                      + "call, needs to be an xs:integer value", srcLocator); 
+	    }
 	    
-	    result = arg0Seq;
+	    nativeArr.set(arg1Int - 1, arg2XObj);
+	    
+	    result = arg0XPathArr;
 	    
 	    return result;
 	}

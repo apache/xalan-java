@@ -194,7 +194,7 @@ public class SequenceTypeSupport {
     	XObject result = null;
     	
     	fPrefixTable = prefixTable;    	
-    	result = convertXDMValueToAnotherType(srcValue, sequenceTypeXPathExprStr, null, xctxt);
+    	result = convertXdmValueToAnotherType(srcValue, sequenceTypeXPathExprStr, null, xctxt);
     	
     	return result;
     }
@@ -203,11 +203,11 @@ public class SequenceTypeSupport {
      * This method, supports XPath implementation of "cast as" and 
      * "castable as" expressions.
      */
-    public static XObject castAsAnotherType(XObject srcValue, SequenceTypeData seqExpectedTypeDataInp) 
+    public static XObject castXdmValueToAnotherType(XObject srcValue, SequenceTypeData seqExpectedTypeDataInp) 
     		                                                                                throws TransformerException {
         XObject result = null;
     	
-        result = convertXDMValueToAnotherType(srcValue, null, seqExpectedTypeDataInp, null);
+        result = convertXdmValueToAnotherType(srcValue, null, seqExpectedTypeDataInp, null);
 
         return result;
     }
@@ -234,7 +234,7 @@ public class SequenceTypeSupport {
      *                                
      * @throws TransformerException 
      */
-    public static XObject convertXDMValueToAnotherType(XObject srcValue, String sequenceTypeXPathExprStr, 
+    public static XObject convertXdmValueToAnotherType(XObject srcValue, String sequenceTypeXPathExprStr, 
                                                                                        SequenceTypeData seqExpectedTypeDataInp, 
                                                                                        XPathContext xctxt) throws TransformerException {
         XObject result = null;
@@ -426,13 +426,13 @@ public class SequenceTypeSupport {
             else if (srcValue instanceof XSUntyped) {
                String srcStrVal = ((XSUntyped)srcValue).stringValue();
                // Recursive call to this function
-               result = convertXDMValueToAnotherType(new XSString(srcStrVal), sequenceTypeXPathExprStr, 
+               result = convertXdmValueToAnotherType(new XSString(srcStrVal), sequenceTypeXPathExprStr, 
                                                                                                     seqExpectedTypeDataInp, xctxt);
             }
             else if (srcValue instanceof XSUntypedAtomic) {
                String srcStrVal = ((XSUntypedAtomic)srcValue).stringValue();
                // Recursive call to this function
-               result = convertXDMValueToAnotherType(new XSString(srcStrVal), sequenceTypeXPathExprStr, 
+               result = convertXdmValueToAnotherType(new XSString(srcStrVal), sequenceTypeXPathExprStr, 
                                                                                                     seqExpectedTypeDataInp, xctxt);
             }
             else if (srcValue instanceof XNodeSetForDOM) {               
@@ -449,7 +449,7 @@ public class SequenceTypeSupport {
                ResultSequence srcResultSeq = (ResultSequence)srcValue;
                if (srcResultSeq.size() == 1) {
             	   // Recursive call to this function
-                   result = convertXDMValueToAnotherType(srcResultSeq.item(0), sequenceTypeXPathExprStr, seqExpectedTypeDataInp, xctxt);   
+                   result = convertXdmValueToAnotherType(srcResultSeq.item(0), sequenceTypeXPathExprStr, seqExpectedTypeDataInp, xctxt);   
                }
                else {
                    result = castResultSequenceInstance(srcValue, sequenceTypeXPathExprStr, seqExpectedTypeDataInp, xctxt, srcLocator, 
@@ -534,13 +534,13 @@ public class SequenceTypeSupport {
              			 }
              			 SequenceTypeData keySeqTypeData = sequenceTypeMapTest.getKeySequenceTypeData();
              			 SequenceTypeData valueSeqTypeData = sequenceTypeMapTest.getValueSequenceTypeData();
-             			 XObject mapKeyValTypeCheckResult = SequenceTypeSupport.convertXDMValueToAnotherType(mapKey, null, keySeqTypeData, xctxt);
+             			 XObject mapKeyValTypeCheckResult = SequenceTypeSupport.convertXdmValueToAnotherType(mapKey, null, keySeqTypeData, xctxt);
              			 String mapSequenceTypeStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : "";
              			 if (mapKeyValTypeCheckResult == null) {             				
              				throw new TransformerException("XPTY0004 : XPath map entry key's [entry's key name: '" + keyStrVal + "'] value doesn't conform to the key's expected "
              						                                            + "type [map's sequenceType is '" + mapSequenceTypeStr + "']."); 
              			 }
-             			 XObject mapEntryValTypeCheckResult = SequenceTypeSupport.convertXDMValueToAnotherType(mapEntry, null, valueSeqTypeData, xctxt);
+             			 XObject mapEntryValTypeCheckResult = SequenceTypeSupport.convertXdmValueToAnotherType(mapEntry, null, valueSeqTypeData, xctxt);
              			 if (mapEntryValTypeCheckResult == null) {
              				throw new TransformerException("XPTY0004 : XPath map entry's [entry's key name: '" + keyStrVal + "'] value doesn't conform to the map entry value's expected "
              						                                            + "type [map's sequenceType is '" + mapSequenceTypeStr + "'].");  
@@ -567,11 +567,8 @@ public class SequenceTypeSupport {
              			 if (arrItem instanceof ResultSequence) {
              				arrItem = ((ResultSequence)arrItem).item(0);
              			 }
-             			 if (arrItem instanceof ResultSequence) {
-             				arrItem = ((ResultSequence)arrItem).item(0);
-             			 }
              			 SequenceTypeData arrayItemTypeInfo = sequenceTypeArrayTest.getArrayItemTypeInfo();
-             			 XObject arrayItemTypeCheckResult = SequenceTypeSupport.convertXDMValueToAnotherType(arrItem, null, arrayItemTypeInfo, xctxt);
+             			 XObject arrayItemTypeCheckResult = SequenceTypeSupport.convertXdmValueToAnotherType(arrItem, null, arrayItemTypeInfo, xctxt);
              			 String arrayItemSequenceTypeStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : "";
              			 if (arrayItemTypeCheckResult == null) {             				
              				throw new TransformerException("XPTY0004 : One or more, of XPath array's item doesn't conform to array item's expected "
@@ -968,7 +965,7 @@ public class SequenceTypeSupport {
                     }
 
                     String nodeStrVal = node.getTextContent();
-                    XObject xObject = convertXDMValueToAnotherType(new XSString(nodeStrVal), sequenceTypeNewXPathExprStr, 
+                    XObject xObject = convertXdmValueToAnotherType(new XSString(nodeStrVal), sequenceTypeNewXPathExprStr, 
                                                                                                                       seqExpectedTypeDataInp, xctxt);                       
                     convertedResultSeq.add(xObject); 
                 }
@@ -1131,7 +1128,7 @@ public class SequenceTypeSupport {
                   if (!((xctxt == null) && ((seqExpectedTypeDataInp != null) && 
                                                                (seqExpectedTypeDataInp.getSequenceTypeKindTest() == null)))) {
                      String nodeStrVal = nodeSetItem.str();
-                     XObject xObject = convertXDMValueToAnotherType(new XSString(nodeStrVal), sequenceTypeNewXPathExprStr, 
+                     XObject xObject = convertXdmValueToAnotherType(new XSString(nodeStrVal), sequenceTypeNewXPathExprStr, 
                                                                                                                     seqExpectedTypeDataInp, xctxt);                       
                      convertedResultSeq.add(xObject);
                   }
@@ -1189,7 +1186,7 @@ public class SequenceTypeSupport {
             
             for (int idx = 0; idx < srcResultSeq.size(); idx++) {
                XObject seqItem = (XObject)(srcResultSeq.item(idx));                       
-               XObject convertedSeqItem = convertXDMValueToAnotherType(seqItem, sequenceTypeNewXPathExprStr, 
+               XObject convertedSeqItem = convertXdmValueToAnotherType(seqItem, sequenceTypeNewXPathExprStr, 
                                                                                                          seqExpectedTypeDataInp, xctxt);
                convertedResultSeq.add(convertedSeqItem);
             }

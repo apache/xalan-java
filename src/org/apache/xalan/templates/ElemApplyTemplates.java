@@ -405,7 +405,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
                NodeList nodeList = (new XRTreeFrag(dtmNodeHandle, xctxt, template)).convertToNodeset();             
                XObject templateEvalResultForAsAttr = new XNodeSetForDOM(nodeList, xctxt);
                
-               templateEvalResultForAsAttr = SequenceTypeSupport.convertXDMValueToAnotherType(templateEvalResultForAsAttr, templateAsAttrVal, 
+               templateEvalResultForAsAttr = SequenceTypeSupport.convertXdmValueToAnotherType(templateEvalResultForAsAttr, templateAsAttrVal, 
                                                                                                                                           null, xctxt);
                if (templateEvalResultForAsAttr != null) {
                    SerializationHandler handler = transformer.getSerializationHandler();        

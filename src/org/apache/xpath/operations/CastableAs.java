@@ -56,7 +56,7 @@ public class CastableAs extends Operation
       SequenceTypeData seqTypedData = (SequenceTypeData)right;
       
       try {
-         result = SequenceTypeSupport.castAsAnotherType(left, seqTypedData);
+         result = SequenceTypeSupport.castXdmValueToAnotherType(left, seqTypedData);
          if (result != null) {
         	result = new XSBoolean(true); 
          }

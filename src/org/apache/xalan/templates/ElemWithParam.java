@@ -271,7 +271,7 @@ public class ElemWithParam extends ElemTemplateElement
     }
     
     if (m_asAttr != null) {
-       var = SequenceTypeSupport.convertXDMValueToAnotherType(var, m_asAttr, null, 
+       var = SequenceTypeSupport.convertXdmValueToAnotherType(var, m_asAttr, null, 
                                                                           transformer.getXPathContext());
        if (var == null) {
           throw new TransformerException("XTTE0590 : The required item type of the value of argument used for xsl:with-param " + 

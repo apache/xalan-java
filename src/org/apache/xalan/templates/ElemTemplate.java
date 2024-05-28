@@ -419,7 +419,7 @@ public class ElemTemplate extends ElemTemplateElement
             
            NodeList nodeList = (new XRTreeFrag(dtmNodeHandle, xctxt, this)).convertToNodeset();             
            templateEvalResultForAsAttr = new XNodeSetForDOM(nodeList, xctxt);
-           templateEvalResultForAsAttr = SequenceTypeSupport.convertXDMValueToAnotherType(templateEvalResultForAsAttr, m_asAttr, 
+           templateEvalResultForAsAttr = SequenceTypeSupport.convertXdmValueToAnotherType(templateEvalResultForAsAttr, m_asAttr, 
                                                                                                                    null, xctxt);
            if (templateEvalResultForAsAttr == null) {
               String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();

@@ -587,6 +587,27 @@ public class Keywords
   /** parse-json function string. */
   public static final String FUNC_PARSE_JSON = "parse-json";
   
+  /** array:append function string. */
+  public static final String FUNC_ARRAY_APPEND = "append";
+  
+  /** array:subarray function string. */
+  public static final String FUNC_ARRAY_SUBARRAY = "subarray";
+  
+  /** array:remove function string. */
+  public static final String FUNC_ARRAY_REMOVE = "remove";
+  
+  /** array:insert-before function string. */
+  public static final String FUNC_ARRAY_INSERT_BEFORE = "insert-before";
+  
+  /** array:head function string. */
+  public static final String FUNC_ARRAY_HEAD = "head";
+  
+  /** array:tail function string. */
+  public static final String FUNC_ARRAY_TAIL = "tail";
+  
+  /** array:reverse function string. */
+  public static final String FUNC_ARRAY_REVERSE = "reverse";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
