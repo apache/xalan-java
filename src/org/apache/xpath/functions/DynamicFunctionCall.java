@@ -42,6 +42,9 @@ import org.apache.xpath.objects.InlineFunction;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
+import org.apache.xpath.objects.XString;
+
+import xml.xpath31.processor.types.XSString;
 
 /*
  * XalanJ xpath parser, constructs an object of this class 
@@ -152,6 +155,9 @@ public class DynamicFunctionCall extends Expression {
                   }
 
                   XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+                  if (argValue instanceof XString) {
+                	 argValue = new XSString(((XString)argValue).str());  
+                  }
                   
                   evalResult = xpathMap.get(argValue); 
     		   }    		   

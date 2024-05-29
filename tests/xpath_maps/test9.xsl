@@ -21,20 +21,8 @@
 											        },
 											'two' : 2,
 											'three' : [5, 6, 7, 8, 9, 'a1'] }"/>
-      <innerMap>		 
-		 <xsl:variable name="innerMap" select="map:get($map1, 'one')"/>
-		 <xsl:for-each select="map:keys($innerMap)">
-		   <xsl:variable name="keyName" select="."/>
-		   <entry>
-			   <key>
-				 <xsl:value-of select="$keyName"/>
-			   </key>
-			   <value>
-				 <xsl:value-of select="map:get($innerMap, $keyName)"/>
-			   </value>
-		   </entry>
-		 </xsl:for-each>
-	  </innerMap>
+      <xsl:variable name="innerMap" select="map:get($map1, 'one')"/>											
+      <innerMap noOfEntries="{count(map:keys($innerMap))}"/>
    </xsl:template>
 
 </xsl:stylesheet>

@@ -371,13 +371,6 @@ public class ElemValueOf extends ElemTemplateElement {
                   else if (expr instanceof Variable) {
                       XObject evalResult = ((Variable)expr).execute(xctxt);
                       String strValue = null;
-                      /*if (evalResult instanceof XSAnyType) {
-                          strValue = ((XSAnyType)evalResult).stringValue();
-                      }
-                      else {
-                          strValue = evalResult.str();
-                      }
-                      (new XString(strValue)).dispatchCharactersEvents(rth);*/
                       
                       if (evalResult instanceof XSAnyType) {
                           strValue = ((XSAnyType)evalResult).stringValue();    

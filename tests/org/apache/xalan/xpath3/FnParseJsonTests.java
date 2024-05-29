@@ -76,5 +76,15 @@ public class FnParseJsonTests extends XSLTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
+    
+    @Test
+    public void xslFnParseJsonTest4() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "xml-sample-with-json-data1.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "parse-json-test1.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "xalanj_2738.out";                
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
 
 }

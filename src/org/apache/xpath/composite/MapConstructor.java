@@ -43,9 +43,12 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
+import org.apache.xpath.objects.XString;
 
 import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSString;
 
 /*
  * An XalanJ XPath parser, constructs an object of this class, 
@@ -69,6 +72,9 @@ public class MapConstructor extends Expression {
     // this class.    
     private Vector fVars;    
     private int fGlobalsSize;
+    
+    private String KEY = "key";
+    private String VALUE = "value";
     
     @Override
     public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
@@ -97,20 +103,18 @@ public class MapConstructor extends Expression {
                                                                                                       prefixTable);        	  
            }
            
-           ResultSequence mapEntryKey = evaluateXPathExpression(xpathKeyStr, xctxt);
+           XObject mapEntryKey = evaluateXPathExpression(xpathKeyStr, xctxt, KEY);
+           if (mapEntryKey instanceof XString) {
+        	  mapEntryKey = new XSString(((XString)mapEntryKey).str()); 
+           }
            
            if (prefixTable != null) {
         	  xpathValueStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathValueStr, 
                                                                                                        prefixTable);        	  
            }
            
-           ResultSequence mapEntryValue = evaluateXPathExpression(xpathValueStr, xctxt);
-           XObject mapEntryValueObj = mapEntryValue; 
-           if (mapEntryValue.size() == 1) {
-        	  mapEntryValueObj = mapEntryValue.item(0);
-           }
-           
-           xpathResultMap.put(mapEntryKey, mapEntryValueObj);
+           XObject mapEntryValue = evaluateXPathExpression(xpathValueStr, xctxt, VALUE);           
+           xpathResultMap.put(mapEntryKey, mapEntryValue);
         }
         
         return xpathResultMap;
@@ -135,14 +139,21 @@ public class MapConstructor extends Expression {
         return false;
     }
     
-    private ResultSequence evaluateXPathExpression(String xpathExprStr, XPathContext xctxt) throws TransformerException {
-    	ResultSequence resultSeq = null;
+    /**
+     * 
+     * @param xpathExprStr   XPath expression string to be evaluated
+     * @param xctxt          XPath context
+     * @param mapComponent   is either of strings "key", or "value"
+     * @return               Result of XPath expression evaluation
+     * 
+     * @throws TransformerException
+     */
+    private XObject evaluateXPathExpression(String xpathExprStr, XPathContext xctxt, String mapComponentName) throws TransformerException {
+    	XObject result = null;
     	
     	int contextNode = xctxt.getContextNode();
     	
     	SourceLocator srcLocator = xctxt.getSAXLocator();
-    	
-    	resultSeq = new ResultSequence();
     	
     	XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
         if (fVars != null) {
@@ -164,19 +175,31 @@ public class MapConstructor extends Expression {
             
             if (dtmIter != null) {
                int nextNode;
+               int nodeCount = 0;
+               XPathArray mapEntryValue = new XPathArray();
                while ((nextNode = dtmIter.nextNode()) != DTM.NULL) {
+            	   nodeCount++;
+            	   if (KEY.equals(mapComponentName)) {
+            	      if (nodeCount > 1) {
+            		     throw new javax.xml.transform.TransformerException("XPTY0004 : Key of a map cannot be a sequence of size "
+            		  		                                                                   + "greater than one.", srcLocator); 
+            	      }
+            	      else {
+            	    	 result = new XNodeSet(nextNode, xctxt);
+            	    	 return result;
+            	      }
+            	   }            	   
                    XNodeSet xNodeSetItem = new XNodeSet(nextNode, xctxt);
-                   resultSeq.add(xNodeSetItem);
+                   mapEntryValue.add(xNodeSetItem);
                }
+               
+               return mapEntryValue; 
             }
             else if (xpathExprStr.startsWith("$") && xpathExprStr.contains("[") && 
                                                                         xpathExprStr.endsWith("]")) {
                 String varRefXPathExprStr = "$" + xpathExprStr.substring(1, xpathExprStr.indexOf('['));
                 String xpathIndexExprStr = xpathExprStr.substring(xpathExprStr.indexOf('[') + 1, 
-                                                                                    xpathExprStr.indexOf(']'));
-                
-                // Evaluate the, variable reference XPath expression
-                
+                                                                                    xpathExprStr.indexOf(']'));                
                 XPath varXPathObj = new XPath(varRefXPathExprStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                    XPath.SELECT, null);
                 XObject varEvalResult = varXPathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
@@ -197,7 +220,8 @@ public class MapConstructor extends Expression {
                        double dValIndex = ((XNumber)arrIndexEvalResult).num();
                        if (dValIndex == (int)dValIndex) {
                           XObject evalResult = varEvalResultSeq.item((int)dValIndex - 1);
-                          resultSeq.add(evalResult);
+                          result = evalResult;                          
+                          return result;
                        }
                        else {
                            throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
@@ -210,7 +234,8 @@ public class MapConstructor extends Expression {
                        double dValIndex = (Double.valueOf(indexStrVal)).doubleValue();
                        if (dValIndex == (int)dValIndex) {
                           XObject evalResult = varEvalResultSeq.item((int)dValIndex - 1);
-                          resultSeq.add(evalResult);
+                          result = evalResult;                          
+                          return result;
                        }
                        else {
                            throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
@@ -240,28 +265,49 @@ public class MapConstructor extends Expression {
                XNodeSet xNodeSet = (XNodeSet)xPathExprPartResult;
                DTMIterator sourceNodes = xNodeSet.iter();
                 
-               int nextNodeDtmHandle;
-                
-               while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
-                  XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);
-                  resultSeq.add(xNodeSetItem);
+               int nextNode;
+               int nodeCount = 0;               
+               while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
+            	  nodeCount++;
+                  XNodeSet xNodeSetItem = new XNodeSet(nextNode, dtmMgr);
+                  if (KEY.equals(mapComponentName)) {
+            	     if (nodeCount > 1) {
+            		    throw new javax.xml.transform.TransformerException("XPTY0004 : Key of a map cannot be a sequence of size "
+            		  		                                                                   + "greater than one.", srcLocator); 
+            	     }
+            	     else {
+            	    	result = new XNodeSet(nextNode, xctxt);
+            	    	return result;
+            	     }
+            	  } 
                }               
             }
             else if (xPathExprPartResult instanceof ResultSequence) {
-               ResultSequence inpResultSeq = (ResultSequence)xPathExprPartResult; 
+               ResultSequence inpResultSeq = (ResultSequence)xPathExprPartResult;
+               XPathArray mapEntryValue = new XPathArray();
                for (int idx1 = 0; idx1 < inpResultSeq.size(); idx1++) {
+            	  if (KEY.equals(mapComponentName)) {
+            		 if (idx1 > 0) {
+            	        throw new javax.xml.transform.TransformerException("XPTY0004 : Key of a map cannot be a sequence of size "
+            	     		                                                                        + "greater than one.", srcLocator);
+            		 }
+            		 else {
+            			result = inpResultSeq.item(idx1);
+            			return result;
+            		 }
+            	  }
                   XObject xObj = inpResultSeq.item(idx1);
-                  resultSeq.add(xObj);                 
+                  mapEntryValue.add(xObj);                 
                }
+               
+               return mapEntryValue;
             }
             else {
-               // We're assuming here that, an input value is an xdm sequence 
-               // with cardinality one.
-               resultSeq.add(xPathExprPartResult);               
+               return xPathExprPartResult;               
             }
         }
     	
-    	return resultSeq;
+    	return result;
     }
 
 }

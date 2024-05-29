@@ -24,25 +24,13 @@
 	  <xsl:variable name="map3" select="map {}"/>
       <result>
          <map>
-		   <keys>
-		     <xsl:for-each select="map:keys($map1)">
-			   <val><xsl:value-of select="."/></val>
-			 </xsl:for-each>
-		   </keys>
+		   <keys count="{count(map:keys($map1))}"/>
 		 </map>
 		 <map>   	  
-	       <keys>
-		     <xsl:for-each select="map:keys($map2)">
-			   <val><xsl:value-of select="."/></val>
-			 </xsl:for-each>
-		   </keys>
+	       <keys count="{count(map:keys($map2))}"/>
 		 </map>
 		 <map>   	  
-	       <keys>
-		     <xsl:for-each select="map:keys($map3)">
-			   <val><xsl:value-of select="."/></val>
-			 </xsl:for-each>
-		   </keys>
+	       <keys count="{count(map:keys($map3))}"/>
 		 </map>
 	  </result>
    </xsl:template>

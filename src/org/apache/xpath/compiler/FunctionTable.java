@@ -27,7 +27,6 @@ import java.util.List;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.functions.Function;
-import org.apache.xpath.functions.array.FuncSubarray;
 
 /**
  * The function table for XPath 3.1.
@@ -801,6 +800,7 @@ public class FunctionTable
     m_functions[FUNC_ARRAY_PUT] = org.apache.xpath.functions.array.FuncArrayPut.class;
     m_functions[FUNC_ARRAY_APPEND] = org.apache.xpath.functions.array.FuncArrayAppend.class;
     m_functions[FUNC_ARRAY_SUBARRAY] = org.apache.xpath.functions.array.FuncSubarray.class;
+    m_functions[FUNC_ARRAY_REMOVE] = org.apache.xpath.functions.array.FuncArrayRemove.class;
     
     // XPath 3.1 built-in functions configurations for the map 
     // functions namespace http://www.w3.org/2005/xpath-functions/map    
@@ -1070,20 +1070,7 @@ public class FunctionTable
          m_functionID.put(Keywords.FUNC_BASE_URI,
                          new Integer(FunctionTable.FUNC_BASE_URI));
          m_functionID.put(Keywords.FUNC_DOCUMENT_URI,
-                         new Integer(FunctionTable.FUNC_DOCUMENT_URI));         
-         
-         // XPath 3.1 functions configurations for the math functions 
-         // namespace http://www.w3.org/2005/xpath-functions/array
-         m_functionID.put(Keywords.FUNC_ARRAY_SIZE,
-                          new Integer(FunctionTable.FUNC_ARRAY_SIZE));
-         m_functionID.put(Keywords.FUNC_ARRAY_GET,
-                          new Integer(FunctionTable.FUNC_ARRAY_GET));
-         m_functionID.put(Keywords.FUNC_ARRAY_PUT,
-                          new Integer(FunctionTable.FUNC_ARRAY_PUT));
-         m_functionID.put(Keywords.FUNC_ARRAY_APPEND,
-                          new Integer(FunctionTable.FUNC_ARRAY_APPEND));
-         m_functionID.put(Keywords.FUNC_ARRAY_SUBARRAY,
-                          new Integer(FunctionTable.FUNC_ARRAY_SUBARRAY));
+                         new Integer(FunctionTable.FUNC_DOCUMENT_URI));
          
          // XPath 3.1 functions configurations for the map functions 
          // namespace http://www.w3.org/2005/xpath-functions/map
@@ -1099,6 +1086,21 @@ public class FunctionTable
                          new Integer(FunctionTable.FUNC_MAP_PUT));
          m_functionID.put(Keywords.FUNC_MAP_ENTRY,
                          new Integer(FunctionTable.FUNC_MAP_ENTRY));
+         
+         // XPath 3.1 functions configurations for the array functions 
+         // namespace http://www.w3.org/2005/xpath-functions/array
+         m_functionID.put(Keywords.FUNC_ARRAY_SIZE,
+                          new Integer(FunctionTable.FUNC_ARRAY_SIZE));
+         m_functionID.put(Keywords.FUNC_ARRAY_GET,
+                          new Integer(FunctionTable.FUNC_ARRAY_GET));
+         m_functionID.put(Keywords.FUNC_ARRAY_PUT,
+                          new Integer(FunctionTable.FUNC_ARRAY_PUT));
+         m_functionID.put(Keywords.FUNC_ARRAY_APPEND,
+                          new Integer(FunctionTable.FUNC_ARRAY_APPEND));
+         m_functionID.put(Keywords.FUNC_ARRAY_SUBARRAY,
+                          new Integer(FunctionTable.FUNC_ARRAY_SUBARRAY));
+         m_functionID.put(Keywords.FUNC_ARRAY_REMOVE,
+                          new Integer(FunctionTable.FUNC_ARRAY_REMOVE));
          
          m_functionID.put(Keywords.FUNC_NAME_STRING,
                           new Integer(FunctionTable.FUNC_NAME));

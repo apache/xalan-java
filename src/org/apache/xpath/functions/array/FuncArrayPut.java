@@ -32,7 +32,7 @@ import org.apache.xpath.operations.Variable;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of the array:put() function.
+ * Implementation of the array:put function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

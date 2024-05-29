@@ -23,7 +23,10 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
+import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Variable;
+
+import xml.xpath31.processor.types.XSString;
 
 /**
  * Implementation of an map:entry function.
@@ -55,12 +58,20 @@ public class FuncMapEntry extends Function2Args {
 	       resultMapEntryKey = arg0.execute(xctxt);
 	    }
 	    
+	    if (resultMapEntryKey instanceof XString) {
+	    	resultMapEntryKey = new XSString(((XString)resultMapEntryKey).str());
+	    }
+	    
 	    if (arg1 instanceof Variable) {
 	       resultMapEntryVal = ((Variable)arg1).execute(xctxt);
 		}
 		else {
 		   resultMapEntryVal = arg1.execute(xctxt);
 		}
+	    
+	    if (resultMapEntryVal instanceof XString) {
+	       resultMapEntryVal = new XSString(((XString)resultMapEntryVal).str());
+	    }
 	    
 	    XPathMap resultMap = new XPathMap();
 	    resultMap.put(resultMapEntryKey, resultMapEntryVal);

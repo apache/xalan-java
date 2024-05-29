@@ -9,20 +9,12 @@
 
    <xsl:output method="xml" indent="yes"/>
    
-   <!-- An XPath 3.1 test case, to test maps and arrays. Within this stylesheet example 
-        the map entry values are arrays, and we emit the contents of these arrays as AVT 
-        value of user-defined attributes.
-   -->
+   <!-- An XPath 3.1 test case, to test maps and arrays. -->
 
    <xsl:template match="/">	  
       <result>
 	     <xsl:variable name="map1" select="map {'ids' : [1, 2, 3, 4, 5], 'names' : ['Mukul', 'Joseph', 'Gary', 'John', 'Henry']}" as="map(*)"/>		 
-	     <map noOfEntries="{count(map:keys($map1))}">
-            <xsl:for-each select="map:keys($map1)">
-			   <xsl:variable name="key" select="."/>
-			   <entry key="{$key}" value="{map:get($map1, $key)}"/>
-			</xsl:for-each>
-		 </map>		 
+	     <map noOfEntries="{count(map:keys($map1))}"/>		 
 	  </result>
    </xsl:template>
    

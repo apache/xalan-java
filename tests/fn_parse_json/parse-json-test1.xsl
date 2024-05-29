@@ -1,27 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+<?xml version="1.0" encoding="utf-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"                
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
                 xmlns:map="http://www.w3.org/2005/xpath-functions/map"
-				exclude-result-prefixes="xs map"
-                version="3.0">				
+                xmlns:array="http://www.w3.org/2005/xpath-functions/array"
+				version="3.0"
+                exclude-result-prefixes="xs map array">
+                
+  <!-- XSL test case stylesheet, provided within XalanJ jira issue 
+       XALANJ-2738. Courtesy, Martin Honnen. -->
+       
+  <!-- use with xml-sample-with-json-data1.xml -->                      
 
-   <!-- Author: mukulg@apache.org -->                 				
+  <xsl:output method="xml" indent="yes"/>
 
-   <xsl:output method="xml" indent="yes"/>
-   
-   <!-- An XPath 3.1 test case, to test SequenceType MapTest specified as 
-        value of xsl:variable's "as" attribute. -->
-
-   <xsl:template match="/">	  
-      <result>
-	     <xsl:variable name="map1" select="map {'zero' : xs:boolean(0), 'one' : xs:boolean(1)}" as="map(xs:string, xs:boolean)"/>		 
-	     <map noOfEntries="{count(map:keys($map1))}"/>	 
-		 <xsl:variable name="map2" select="map {1 : 'Mukul', 2 : 'Joseph', 3 : 'Gary', 4 : 'John', 5 : 'Henry'}" as="map(xs:integer, xs:string)"/>
-		 <map noOfEntries="{count(map:keys($map2))}"/>
-	  </result>
-   </xsl:template>
-   
-   <!--
+  <xsl:template match="/">
+    <result>
+       <value>
+	      <xsl:apply-templates select="root/data"/>
+	   </value>
+	</result>
+  </xsl:template>
+  
+  <xsl:template match="data">
+    <xsl:variable name="json-map" select="parse-json(.)"/>
+    <xsl:value-of select="array:get(map:get($json-map, 'data'), 1)"/>
+  </xsl:template>
+  
+  <!--
       * Licensed to the Apache Software Foundation (ASF) under one
       * or more contributor license agreements. See the NOTICE file
       * distributed with this work for additional information

@@ -30,7 +30,7 @@ import org.apache.xpath.operations.Variable;
 import xml.xpath31.processor.types.XSInteger;
 
 /**
- * Implementation of the array:size() function.
+ * Implementation of the array:size function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

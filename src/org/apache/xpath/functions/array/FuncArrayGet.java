@@ -35,7 +35,7 @@ import org.apache.xpath.operations.Variable;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of the array:get() function.
+ * Implementation of the array:get function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -62,7 +62,7 @@ public class FuncArrayGet extends Function2Args {
 	       }
 	       else {
 	    	  throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument of array:get function call, "
-	    	  		                                                                      + "needs to be an xdm array", srcLocator);  
+	    	  		                                                                      + "needs to be of type array", srcLocator);  
 	       }
 	    }
 	    else {
@@ -72,7 +72,7 @@ public class FuncArrayGet extends Function2Args {
 		    }
 		    else {
 		       throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument of array:get function call, "
-		       		                                                                      + "needs to be an xdm array", srcLocator);   
+		       		                                                                      + "needs to be of type array", srcLocator);   
 		    }
 	    }
 	    

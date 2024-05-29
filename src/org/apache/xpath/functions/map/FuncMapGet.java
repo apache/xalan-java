@@ -26,7 +26,10 @@ import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
+import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Variable;
+
+import xml.xpath31.processor.types.XSString;
 
 /**
  * Implementation of an map:get function.
@@ -46,35 +49,27 @@ public class FuncMapGet extends Function2Args {
 	    SourceLocator srcLocator = xctxt.getSAXLocator();
 	       
 	    Expression arg0 = getArg0();
-	    XPathMap xpathMap = null;
+	    XPathMap arg0Map = null;
 	    
 	    if (arg0 instanceof Variable) {
 	       XObject xObject = ((Variable)arg0).execute(xctxt);
-	       xpathMap = (XPathMap)xObject;
+	       arg0Map = (XPathMap)xObject;
 	    }
 	    else {
 	       XObject xObject = arg0.execute(xctxt);
-		   xpathMap = (XPathMap)xObject;
+		   arg0Map = (XPathMap)xObject;
 	    }
 	    
-	    Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
+	    Map<XObject, XObject> nativeMap = arg0Map.getNativeMap();
 	    
 	    Expression arg1 = getArg1();
 	    XObject arg1Obj = arg1.execute(xctxt);
+	    if (arg1Obj instanceof XString) {
+	       arg1Obj = new XSString(((XString)arg1Obj).str());	
+	    }
 	    
 	    result = nativeMap.get(arg1Obj);
-	    if (result != null) {
-	       if (result instanceof ResultSequence) {
-	    	  ResultSequence rSeq = (ResultSequence)result;
-	    	  if (rSeq.size() == 1) {
-	    	     result = rSeq.item(0);
-	    	  }
-	    	  else {
-	    	     result = rSeq;
-	    	  }
-	       }
-	    }
-	    else {
+	    if (result == null) {	       
 	       result = new ResultSequence();	
 	    }
 	    

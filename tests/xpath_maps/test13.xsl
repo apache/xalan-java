@@ -14,14 +14,7 @@
    <xsl:template match="/">	  
       <result>
 	     <xsl:variable name="map1" select="map {'ids' : [1, 2, 3, 4, 5], 'names' : ['Mukul', 'Joseph', 'Gary', 'John', 'Henry']}" as="map(*)"/>		 
-	     <map noOfEntries="{count(map:keys($map1))}">
-            <xsl:for-each select="map:keys($map1)">
-			   <xsl:variable name="key" select="."/>
-			   <entry key="{$key}">
-			      <xsl:value-of select="map:get($map1, $key)"/>
-			   </entry>
-			</xsl:for-each>
-		 </map>		 
+	     <map noOfEntries="{count(map:keys($map1))}"/>		 
 	  </result>
    </xsl:template>
    

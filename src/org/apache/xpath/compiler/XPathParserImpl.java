@@ -66,7 +66,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  *      (please also refer to section 'A XPath 3.1 Grammar', within
  *       this document)
  * 
- * @author Scott Boag,
+ * @author Scott Boag
  * @author Myriam Midy
  * @author Joseph Kesselman, Ilene Seelemann, Yash Talwar, 
  *         Henry Zongaro, Christine Li
@@ -1049,24 +1049,13 @@ public class XPathParserImpl
     	   if ("contains".equals(key)) {
       		  id = FunctionTable.FUNC_CONTAINS;  
       	   }
+    	   else if ("remove".equals(key)) {
+       		  id = FunctionTable.FUNC_REMOVE;  
+       	   }
     	   else {
     		  id = m_functionTable.getFunctionID(key); 
     	   }
-    	}
-    	else if ((FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(nsUri)) {
-    	   if ("size".equals(key)) {
-        	  id = FunctionTable.FUNC_ARRAY_SIZE;   
-           }
-    	   else if ("get".equals(key)) {
-    		  id = FunctionTable.FUNC_ARRAY_GET; 
-    	   }
-    	   else if ("put".equals(key)) {
-     		  id = FunctionTable.FUNC_ARRAY_PUT; 
-     	   }
-    	   else {
-    		  id = m_functionTable.getFunctionID(key); 
-    	   }
-    	}
+    	}    	
     	else if ((FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(nsUri)) {
     	   if ("size".equals(key)) {
           	  id = FunctionTable.FUNC_MAP_SIZE;   
@@ -1080,10 +1069,33 @@ public class XPathParserImpl
     	   else if ("contains".equals(key)) {
     		  id = FunctionTable.FUNC_MAP_CONTAINS;  
     	   }
-    	   else {
-     		  id = m_functionTable.getFunctionID(key); 
+    	   else if ("keys".equals(key)) {
+     		  id = FunctionTable.FUNC_MAP_KEYS;  
      	   }
+    	   else if ("entry".equals(key)) {
+      		  id = FunctionTable.FUNC_MAP_ENTRY;  
+      	   }
     	}
+    	else if ((FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(nsUri)) {
+     	   if ("size".equals(key)) {
+         	  id = FunctionTable.FUNC_ARRAY_SIZE;   
+           }
+     	   else if ("get".equals(key)) {
+     		  id = FunctionTable.FUNC_ARRAY_GET; 
+     	   }
+     	   else if ("put".equals(key)) {
+      		  id = FunctionTable.FUNC_ARRAY_PUT; 
+      	   }
+     	   else if ("append".equals(key)) {
+       		  id = FunctionTable.FUNC_ARRAY_APPEND; 
+       	   }
+     	   else if ("subarray".equals(key)) {
+       		  id = FunctionTable.FUNC_ARRAY_SUBARRAY; 
+       	   }
+     	   else if ("remove".equals(key)) {
+       		  id = FunctionTable.FUNC_ARRAY_REMOVE; 
+       	   }
+     	}
     	else {
     	   id = m_functionTable.getFunctionID(key);
     	}
@@ -1175,7 +1187,7 @@ public class XPathParserImpl
           
           List<String> sequenceConstructorXPathParts = new ArrayList<String>();
           
-          if (tokenIs(')') && (getTokenRelative(0) == null)) {
+          if (!isSquareArrayConstructor && tokenIs(')') && (getTokenRelative(0) == null)) {
               // handles the case, where the XPath expression is ()
               
               int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
@@ -1191,18 +1203,30 @@ public class XPathParserImpl
                                                                     sequenceConstructorXPathParts);
               
               m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
-                                                  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+            		                                 m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
               
               return;
           }          
-          else if (tokenIs(']') && (getTokenRelative(0) == null)) {
+          else if (isSquareArrayConstructor && tokenIs(']') && (getTokenRelative(0) == null)) {
              // handles the case, where the XPath expression is []
         	 
-        	 // TO DO
+             int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+              
+             nextToken();                            
+              
+             insertOp(opPos, 2, OpCodes.OP_SQUARE_ARRAY_CONSTRUCTOR_EXPR);
+             
+             fSquareArrayConstructor = new SquareArrayConstructor();
+             
+             // TO DO
+             
+             m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
+                                                    m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+
+             return;             
           }
           
-          while (m_token != null)
-          {                            
+          while (m_token != null) {                            
               if (tokenIs("function")) {
                  // XPath expression parse from here, till the token '}' shall get 
                  // an 'inline function expression' string. The XPath expression
@@ -1247,7 +1271,8 @@ public class XPathParserImpl
                  
                  if (seqItemXPathStrPartsList.size() > 0) {
                     String seqItemXPathExprStr = getXPathStrFromComponentParts(seqItemXPathStrPartsList);
-                    if (seqItemXPathExprStr.endsWith(")")) {
+                    boolean xpathExprEndsWithParen = !isSquareArrayConstructor ? seqItemXPathExprStr.endsWith(")") : seqItemXPathExprStr.endsWith("]");
+                    if (xpathExprEndsWithParen) {
                         seqItemXPathExprStr = seqItemXPathExprStr.substring(0, 
                                                                        seqItemXPathExprStr.length());    
                     }
@@ -1266,7 +1291,9 @@ public class XPathParserImpl
           // has balanced parentheses pairs '(' and ')'.
           for (int idx = 0; idx < sequenceConstructorXPathParts.size(); idx++) {
              String seqItemXPathExprStr = sequenceConstructorXPathParts.get(idx);
-             boolean isStrHasBalancedParentheses = isStrHasBalancedParentheses(seqItemXPathExprStr, '(', ')');
+             char lParenChar = !isSquareArrayConstructor ? '(' : '[';
+             char rParenChar = !isSquareArrayConstructor ? ')' : ']';
+             boolean isStrHasBalancedParentheses = isStrHasBalancedParentheses(seqItemXPathExprStr, lParenChar, rParenChar);
              if (!isStrHasBalancedParentheses) {
                 isXPathExprOkToProceed = false;
                 break;
@@ -1274,9 +1301,9 @@ public class XPathParserImpl
           }
           
           // To check, whether an xdm sequence with at-least two items could be constructed
-          if (!(isXPathExprOkToProceed && (sequenceConstructorXPathParts.size() > 1))) {
-             isXPathExprOkToProceed = false;    
-          }
+	      if (!isSquareArrayConstructor && !(isXPathExprOkToProceed && (sequenceConstructorXPathParts.size() > 1))) {
+	         isXPathExprOkToProceed = false;    
+	      }
           
           // Upto here within this method, we've analyzed an given XPath input string 
           // completely by traversing its sequence of XPath tokens. We can now choose from one of 
@@ -3197,13 +3224,13 @@ public class XPathParserImpl
           funcTok = -1;
           error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
                 new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  
-      }
-      else if ((FunctionTable.XPATH_ARRAY_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
+      }      
+      else if ((FunctionTable.XPATH_MAP_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
           funcTok = -1;
           error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
                 new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  
       }
-      else if ((FunctionTable.XPATH_MAP_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
+      else if ((FunctionTable.XPATH_ARRAY_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
           funcTok = -1;
           error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
                 new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  

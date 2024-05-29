@@ -30,7 +30,7 @@ import org.apache.xpath.operations.Variable;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of the array:subarray() function.
+ * Implementation of the array:subarray function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

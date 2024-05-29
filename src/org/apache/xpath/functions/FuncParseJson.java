@@ -24,8 +24,8 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.json.JSONArray;
@@ -130,7 +130,7 @@ public class FuncParseJson extends FunctionMultiArgs {
 	      		  ((XPathMap)result).put(new XSString(key), value1);
 	      	   }
 	      	   else if (value instanceof JSONArray) {
-	      		  ResultSequence rSeq = new ResultSequence();
+	      		  XPathArray xpathArr = new XPathArray();
 	      		  
 	      		  JSONArray jsonArr = (JSONArray)value;	      		  
 	      		  int arrLen = jsonArr.length();
@@ -151,15 +151,15 @@ public class FuncParseJson extends FunctionMultiArgs {
 	      				xObj = getXdmValueFromNativeJson(arrItem);
 	      			 }
 	      			 
-	      			 rSeq.add(xObj);
+	      			xpathArr.add(xObj);
 	      		  }
 	      		  
-	      		  ((XPathMap)result).put(new XSString(key), rSeq);
+	      		  ((XPathMap)result).put(new XSString(key), xpathArr);
 	      	   }
 	        }
     	}
     	else if (jsonObj instanceof JSONArray) {
-    		ResultSequence rSeq = new ResultSequence();
+    		XPathArray xpathArr = new XPathArray();
     		
     		JSONArray jsonArr = (JSONArray)jsonObj;	      		  
     		int arrLen = jsonArr.length();
@@ -180,10 +180,10 @@ public class FuncParseJson extends FunctionMultiArgs {
     		      xObj = getXdmValueFromNativeJson(arrItem);
     		   }
     			 
-    		   rSeq.add(xObj);
+    		   xpathArr.add(xObj);
     		}
     		  
-    		result = rSeq;
+    		result = xpathArr;
     	}
     	
     	return result;

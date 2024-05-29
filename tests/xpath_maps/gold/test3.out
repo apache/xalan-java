@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?><result>
   <map>
-    <keys>
-      <val>Tu</val>
-      <val>Mo</val>
-      <val>Su</val>
-      <val>Th</val>
-      <val>Fr</val>
-      <val>Sa</val>
-      <val>We</val>
-    </keys>
+    <keys count="7"/>
   </map>
   <map>
-    <keys>
-      <val>1</val>
-      <val>2</val>
-    </keys>
+    <keys count="2"/>
   </map>
   <map>
-    <keys/>
+    <keys count="0"/>
   </map>
 </result>

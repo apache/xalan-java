@@ -26,7 +26,7 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.operations.Variable;
 
 /**
- * Implementation of the array:append() function.
+ * Implementation of the array:append function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

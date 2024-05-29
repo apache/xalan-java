@@ -23,7 +23,6 @@ import javax.xml.transform.SourceLocator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function3Args;
-import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.operations.Variable;
@@ -60,26 +59,10 @@ public class FuncMapPut extends Function3Args {
 	    Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
 	    
 	    Expression arg1 = getArg1();    // 'key' argument
-	    XObject arg1Obj = arg1.execute(xctxt);
-	    ResultSequence mapEntryKey = null;
-	    if (!(arg1Obj instanceof ResultSequence)) {
-	       mapEntryKey = new ResultSequence();
-	       mapEntryKey.add(arg1Obj);	       
-	    }
-	    else {
-	       mapEntryKey = (ResultSequence)arg1Obj;
-	    }
+	    XObject mapEntryKey = arg1.execute(xctxt);
 	    
 	    Expression arg2 = getArg2();   // 'value' argument
-	    XObject arg2Obj = arg2.execute(xctxt);
-	    ResultSequence mapEntryValue = null;
-	    if (!(arg2Obj instanceof ResultSequence)) {
-	       mapEntryValue = new ResultSequence();
-	       mapEntryValue.add(arg2Obj);	       
-	    }
-	    else {
-	       mapEntryValue = (ResultSequence)arg2Obj; 
-	    }
+	    XObject mapEntryValue = arg2.execute(xctxt);
 	    
 	    nativeMap.put(mapEntryKey, mapEntryValue);
 	    
