@@ -1075,6 +1075,9 @@ public class XPathParserImpl
     	   else if ("entry".equals(key)) {
       		  id = FunctionTable.FUNC_MAP_ENTRY;  
       	   }
+    	   else if ("for-each".equals(key)) {
+       		  id = FunctionTable.FUNC_MAP_FOREACH;  
+       	   }
     	}
     	else if ((FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(nsUri)) {
      	   if ("size".equals(key)) {

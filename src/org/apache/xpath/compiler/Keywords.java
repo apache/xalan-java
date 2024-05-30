@@ -584,6 +584,9 @@ public class Keywords
   /** map:entry function string. */
   public static final String FUNC_MAP_ENTRY = "entry";
   
+  /** map:for-each function string. */
+  public static final String FUNC_MAP_FOREACH = "for-each";
+  
   /** parse-json function string. */
   public static final String FUNC_PARSE_JSON = "parse-json";
   
