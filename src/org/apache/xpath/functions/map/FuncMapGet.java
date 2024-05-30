@@ -18,10 +18,9 @@ package org.apache.xpath.functions.map;
 
 import java.util.Map;
 
-import javax.xml.transform.SourceLocator;
-
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
@@ -42,11 +41,9 @@ public class FuncMapGet extends Function2Args {
 
 	private static final long serialVersionUID = -749857579667076961L;
 
-	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-	{
+	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
+		
 		XObject result = null;
-	       
-	    SourceLocator srcLocator = xctxt.getSAXLocator();
 	       
 	    Expression arg0 = getArg0();
 	    XPathMap arg0Map = null;
@@ -63,9 +60,18 @@ public class FuncMapGet extends Function2Args {
 	    Map<XObject, XObject> nativeMap = arg0Map.getNativeMap();
 	    
 	    Expression arg1 = getArg1();
-	    XObject arg1Obj = arg1.execute(xctxt);
-	    if (arg1Obj instanceof XString) {
-	       arg1Obj = new XSString(((XString)arg1Obj).str());	
+	    XObject arg1Obj = null;
+	    if (arg1 instanceof SelfIteratorNoPredicate) {
+	    	XObject xpathContextItem = xctxt.getXPath3ContextItem();
+	    	if (xpathContextItem != null) {
+	    		arg1Obj = xpathContextItem; 
+	    	}
+	    } 
+	    else {
+	       arg1Obj = arg1.execute(xctxt);
+	       if (arg1Obj instanceof XString) {
+	    	  arg1Obj = new XSString(((XString)arg1Obj).str());  
+	       }
 	    }
 	    
 	    result = nativeMap.get(arg1Obj);
