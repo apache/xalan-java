@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                xmlns:fn0="http://fn0"
                 xmlns:map="http://www.w3.org/2005/xpath-functions/map"
-				exclude-result-prefixes="xs map"
+				exclude-result-prefixes="xs fn0 map"
                 version="3.0">
                 
    <!-- Author: mukulg@apache.org -->                 
@@ -18,42 +19,19 @@
 	   <xsl:variable name="seq1" select="map:for-each($map1, $action1)"/>
 	   <one itemCount="{count($seq1)}">
 	     <ok>
-		   <xsl:call-template name="contains">
-		     <xsl:with-param name="seq1" select="$seq1"/>
-			 <xsl:with-param name="value1" select="1"/>
-		   </xsl:call-template>
-		   <xsl:text> ### </xsl:text>
-		   <xsl:call-template name="contains">
-		     <xsl:with-param name="seq1" select="$seq1"/>
-			 <xsl:with-param name="value1" select="2"/>
-		   </xsl:call-template>
+		   <xsl:value-of select="fn0:contains($seq1, 1)"/> ### <xsl:value-of select="fn0:contains($seq1, 2)"/>
 		 </ok>
 	   </one>
 	 </result>
    </xsl:template>
    
-   <!-- An XSL named template, to check whether a sequence 
+   <!-- An XSL function, to check whether a sequence 
         contains a specific value. -->
-   <xsl:template name="contains" as="xs:boolean">
+   <xsl:function name="fn0:contains" as="xs:boolean">
      <xsl:param name="seq1" as="xs:integer*"/>
 	 <xsl:param name="value1" as="xs:integer"/>
-	 <xsl:variable name="temp1">
-	   <xsl:for-each select="$seq1">
-	      <xsl:variable name="x1" select="."/>
-	      <xsl:if test="$x1 eq $value1">
-		    <yes/>
-		  </xsl:if>
-	   </xsl:for-each>
-	 </xsl:variable>
-	 <xsl:choose>
-	   <xsl:when test="$temp1/yes">
-	      <xsl:value-of select="xs:boolean(1)"/>
-	   </xsl:when>
-	   <xsl:otherwise>
-	      <xsl:value-of select="xs:boolean(0)"/>
-	   </xsl:otherwise>
-	 </xsl:choose>
-   </xsl:template>
+	 <xsl:sequence select="some $v1 in $seq1 satisfies $v1 eq $value1"/>
+   </xsl:function>
    
    <!--
       * Licensed to the Apache Software Foundation (ASF) under one

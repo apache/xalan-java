@@ -59,8 +59,7 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * This class implements an XPath language parser, using 
- * an XPath input expression string.
+ * Tokenizes and parses XPath expressions.
  * 
  * Ref: https://www.w3.org/TR/xpath-31/
  *      (please also refer to section 'A XPath 3.1 Grammar', within
@@ -72,9 +71,9 @@ import org.apache.xpath.res.XPATHErrorResources;
  *         Henry Zongaro, Christine Li
  *         
  * @author Mukul Gandhi
- *         (XPath 3 language changes, to this class)
+ *         (XPath 3 specific changes, to this class)
  * 
- * @xsl.usage internal
+ * @xsl.usage general
  */
 public class XPathParserImpl
 {
@@ -1045,62 +1044,17 @@ public class XPathParserImpl
       // a FilterExpr. 
       id = Keywords.lookupNodeTest(key);
       if (id == null) {
-    	if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(nsUri)) {
-    	   if ("contains".equals(key)) {
-      		  id = FunctionTable.FUNC_CONTAINS;  
-      	   }
-    	   else if ("remove".equals(key)) {
-       		  id = FunctionTable.FUNC_REMOVE;  
-       	   }
-    	   else {
-    		  id = m_functionTable.getFunctionID(key); 
-    	   }
+    	if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(nsUri)) {    	   
+    	   id = getFunctionTokenForXPathBuiltinFuncs(key);
     	}    	
-    	else if ((FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(nsUri)) {
-    	   if ("size".equals(key)) {
-          	  id = FunctionTable.FUNC_MAP_SIZE;   
-           }
-    	   else if ("get".equals(key)) {
-     		  id = FunctionTable.FUNC_MAP_GET; 
-     	   }
-    	   else if ("put".equals(key)) {
-      		  id = FunctionTable.FUNC_MAP_PUT; 
-      	   }
-    	   else if ("contains".equals(key)) {
-    		  id = FunctionTable.FUNC_MAP_CONTAINS;  
-    	   }
-    	   else if ("keys".equals(key)) {
-     		  id = FunctionTable.FUNC_MAP_KEYS;  
-     	   }
-    	   else if ("entry".equals(key)) {
-      		  id = FunctionTable.FUNC_MAP_ENTRY;  
-      	   }
-    	   else if ("for-each".equals(key)) {
-       		  id = FunctionTable.FUNC_MAP_FOREACH;  
-       	   }
+    	else if ((FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(nsUri)) {    	       	   
+    	   id = getFunctionTokenForXPathBuiltinMapFuncs(key);
     	}
-    	else if ((FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(nsUri)) {
-     	   if ("size".equals(key)) {
-         	  id = FunctionTable.FUNC_ARRAY_SIZE;   
-           }
-     	   else if ("get".equals(key)) {
-     		  id = FunctionTable.FUNC_ARRAY_GET; 
-     	   }
-     	   else if ("put".equals(key)) {
-      		  id = FunctionTable.FUNC_ARRAY_PUT; 
-      	   }
-     	   else if ("append".equals(key)) {
-       		  id = FunctionTable.FUNC_ARRAY_APPEND; 
-       	   }
-     	   else if ("subarray".equals(key)) {
-       		  id = FunctionTable.FUNC_ARRAY_SUBARRAY; 
-       	   }
-     	   else if ("remove".equals(key)) {
-       		  id = FunctionTable.FUNC_ARRAY_REMOVE; 
-       	   }
+    	else if ((FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(nsUri)) {     	   
+     	  id = getFunctionTokenForXPathBuiltinArrayFuncs(key);
      	}
     	else {
-    	   id = m_functionTable.getFunctionID(key);
+    	  id = m_functionTable.getFunctionID(key);
     	}
       }
       tok = ((Integer) id).intValue();
@@ -1116,6 +1070,123 @@ public class XPathParserImpl
 
     return tok;
   }
+
+  /**
+   * Get function token, for XPath built-in functions from namespace
+   * http://www.w3.org/2005/xpath-functions. 
+   */
+  private Object getFunctionTokenForXPathBuiltinFuncs(String key) {	
+		Object id = null;
+		
+		switch (key) {
+		      case "contains":
+			     id = FunctionTable.FUNC_CONTAINS;
+			     break;
+		      case "remove":
+			     id = FunctionTable.FUNC_REMOVE;
+			     break;
+		      case "for-each":
+			     id = FunctionTable.FUNC_FOR_EACH;
+			     break;
+		      case "insert-before":
+			     id = FunctionTable.FUNC_INSERT_BEFORE;
+			     break;
+		      case "head":
+			     id = FunctionTable.FUNC_HEAD;
+			     break;
+		      case "tail":
+			     id = FunctionTable.FUNC_TAIL;
+			     break;
+		      case "reverse":
+				 id = FunctionTable.FUNC_REVERSE;
+				 break;
+			  default:
+				 id = m_functionTable.getFunctionID(key); 
+		}
+		
+		return id;	
+  }
+  
+  /**
+   * Get function token, for XPath built-in map functions from namespace
+   * http://www.w3.org/2005/xpath-functions/map. 
+   */
+  private Object getFunctionTokenForXPathBuiltinMapFuncs(String key) {		
+		Object id = null;
+		
+		switch (key) {
+		      case "size":
+			     id = FunctionTable.FUNC_MAP_SIZE;
+			     break;
+		      case "get":
+			     id = FunctionTable.FUNC_MAP_GET;
+			     break;
+		      case "put":
+			     id = FunctionTable.FUNC_MAP_PUT;
+			     break;
+		      case "contains":
+			     id = FunctionTable.FUNC_MAP_CONTAINS;
+			     break;
+		      case "keys":
+			     id = FunctionTable.FUNC_MAP_KEYS;
+			     break;
+		      case "entry":
+			     id = FunctionTable.FUNC_MAP_ENTRY;
+			     break;
+		      case "for-each":
+			     id = FunctionTable.FUNC_MAP_FOREACH;
+			     break;
+			  default:
+				 // NO OP 
+		}
+		
+		return id;	
+  }
+  
+  /**
+   * Get function token, for XPath built-in array functions from namespace
+   * http://www.w3.org/2005/xpath-functions/array. 
+   */
+  private Object getFunctionTokenForXPathBuiltinArrayFuncs(String key) {	  
+		Object id = null;
+		
+		switch (key) {
+		      case "size":
+			     id = FunctionTable.FUNC_ARRAY_SIZE;
+			     break;
+		      case "get":
+			     id = FunctionTable.FUNC_ARRAY_GET;
+			     break;
+		      case "put":
+			     id = FunctionTable.FUNC_ARRAY_PUT;
+			     break;
+		      case "append":
+			     id = FunctionTable.FUNC_ARRAY_APPEND;
+			     break;
+		      case "subarray":
+			     id = FunctionTable.FUNC_ARRAY_SUBARRAY;
+			     break;
+		      case "remove":
+			     id = FunctionTable.FUNC_ARRAY_REMOVE;
+			     break;
+		      case "insert-before":
+			     id = FunctionTable.FUNC_ARRAY_INSERT_BEFORE;
+			     break;
+		      case "head":
+			     id = FunctionTable.FUNC_ARRAY_HEAD;
+			     break;
+		      case "tail":
+			     id = FunctionTable.FUNC_ARRAY_TAIL;
+			     break;
+		      case "reverse":
+				 id = FunctionTable.FUNC_ARRAY_REVERSE;
+				 break;
+			  default:
+				 // NO OP 
+		}
+		
+		return id;		
+   }
 
   /**
    * Insert room for operation.  This will NOT set

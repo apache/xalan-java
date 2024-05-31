@@ -33,17 +33,19 @@
    </xsl:template>
    
    <!-- An XSL named template, to check whether a sequence 
-        contains a specific value. -->
+        contains a specific value.
+   -->
    <xsl:template name="contains" as="xs:boolean">
      <xsl:param name="seq1" as="xs:integer*"/>
 	 <xsl:param name="value1" as="xs:integer"/>
 	 <xsl:variable name="temp1">
-	   <xsl:for-each select="$seq1">
+	   <xsl:iterate select="$seq1">
 	      <xsl:variable name="x1" select="."/>
 	      <xsl:if test="$x1 eq $value1">
 		    <yes/>
+		    <xsl:break/>
 		  </xsl:if>
-	   </xsl:for-each>
+	   </xsl:iterate>
 	 </xsl:variable>
 	 <xsl:choose>
 	   <xsl:when test="$temp1/yes">

@@ -23,8 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XPath 3.1 "function item" inline function expression test 
- * cases.
+ * XPath 3.1 inline function expression test cases.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

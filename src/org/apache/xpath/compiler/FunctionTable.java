@@ -805,6 +805,10 @@ public class FunctionTable
     m_functions[FUNC_ARRAY_APPEND] = org.apache.xpath.functions.array.FuncArrayAppend.class;
     m_functions[FUNC_ARRAY_SUBARRAY] = org.apache.xpath.functions.array.FuncSubarray.class;
     m_functions[FUNC_ARRAY_REMOVE] = org.apache.xpath.functions.array.FuncArrayRemove.class;
+    m_functions[FUNC_ARRAY_INSERT_BEFORE] = org.apache.xpath.functions.array.FuncArrayInsertBefore.class;
+    m_functions[FUNC_ARRAY_HEAD] = org.apache.xpath.functions.array.FuncArrayHead.class;
+    m_functions[FUNC_ARRAY_TAIL] = org.apache.xpath.functions.array.FuncArrayTail.class;
+    m_functions[FUNC_ARRAY_REVERSE] = org.apache.xpath.functions.array.FuncArrayReverse.class;
     
     // XPath 3.1 built-in functions configurations for the map 
     // functions namespace http://www.w3.org/2005/xpath-functions/map    
@@ -1108,6 +1112,14 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_ARRAY_SUBARRAY));
          m_functionID.put(Keywords.FUNC_ARRAY_REMOVE,
                           new Integer(FunctionTable.FUNC_ARRAY_REMOVE));
+         m_functionID.put(Keywords.FUNC_ARRAY_INSERT_BEFORE,
+                          new Integer(FunctionTable.FUNC_ARRAY_INSERT_BEFORE));
+         m_functionID.put(Keywords.FUNC_ARRAY_HEAD,
+                          new Integer(FunctionTable.FUNC_ARRAY_HEAD));
+         m_functionID.put(Keywords.FUNC_ARRAY_TAIL,
+                          new Integer(FunctionTable.FUNC_ARRAY_TAIL));
+         m_functionID.put(Keywords.FUNC_ARRAY_REVERSE,
+                          new Integer(FunctionTable.FUNC_ARRAY_REVERSE));
          
          m_functionID.put(Keywords.FUNC_NAME_STRING,
                           new Integer(FunctionTable.FUNC_NAME));

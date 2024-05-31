@@ -111,7 +111,7 @@ public class FuncForEach extends Function2Args {
                     
         if (arg1 instanceof InlineFunction) {
             InlineFunction inlineFuncArg = (InlineFunction)arg1;
-            validateInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
+            verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
             resultSeq = evaluateFnForEach(xctxt, arg0XsObject, arg0DtmIterator, inlineFuncArg); 
         }
         else if (arg1 instanceof Variable) {
@@ -122,7 +122,7 @@ public class FuncForEach extends Function2Args {
             XObject arg1VarValue = arg1.execute(xctxt);
             if (arg1VarValue instanceof InlineFunction) {
                 InlineFunction inlineFuncArg = (InlineFunction)arg1VarValue;
-                validateInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
+                verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
                 resultSeq = evaluateFnForEach(xctxt, arg0XsObject, arg0DtmIterator, inlineFuncArg);   
             }
             else {
@@ -172,9 +172,9 @@ public class FuncForEach extends Function2Args {
   }
   
   /*
-   * Validate the, number of function parameters, that the inline function is allowed to have for fn:for-each.
+   * Verify the, number of function parameters, that the inline function is allowed to have for fn:for-each.
    */
-  private void validateInlineFunctionParamCardinality(InlineFunction inlineFuncArg, SourceLocator srcLocator) throws 
+  private void verifyInlineFunctionParamCardinality(InlineFunction inlineFuncArg, SourceLocator srcLocator) throws 
                                                                                                 javax.xml.transform.TransformerException {
       List<InlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
       if (funcParamList.size() != 1) {

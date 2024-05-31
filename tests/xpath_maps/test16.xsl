@@ -18,12 +18,12 @@
 	   <xsl:variable name="seq1" select="distinct-values(map:for-each($map1, $action1))"/>
 	   <one itemCount="{count($seq1)}">
 	     <ok>
-		   <xsl:call-template name="exists">
+		   <xsl:call-template name="contains">
 		     <xsl:with-param name="seq1" select="$seq1"/>
 			 <xsl:with-param name="value1" select="'yes'"/>
 		   </xsl:call-template>
 		   <xsl:text> ### </xsl:text>
-		   <xsl:call-template name="exists">
+		   <xsl:call-template name="contains">
 		     <xsl:with-param name="seq1" select="$seq1"/>
 			 <xsl:with-param name="value1" select="'no'"/>
 		   </xsl:call-template>
@@ -34,7 +34,7 @@
    
    <!-- An XSL named template, to check whether a sequence 
         contains a specific value. -->
-   <xsl:template name="exists" as="xs:boolean">
+   <xsl:template name="contains" as="xs:boolean">
      <xsl:param name="seq1" as="xs:string*"/>
 	 <xsl:param name="value1" as="xs:string"/>
 	 <xsl:variable name="temp1">

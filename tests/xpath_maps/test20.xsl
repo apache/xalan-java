@@ -4,28 +4,28 @@
                 xmlns:map="http://www.w3.org/2005/xpath-functions/map"
 				exclude-result-prefixes="xs map"
                 version="3.0">
-                
+				
    <!-- Author: mukulg@apache.org -->                 
 				
    <xsl:output method="xml" indent="yes"/>
    
-   <!-- An XSLT test case, to test XPath 3.1 function map:for-each. --> 
+   <!-- An XSLT test case, to test XPath 3.1 function map:for-each. -->
   
    <xsl:template match="/">
      <result>
 	   <xsl:variable name="map1" select="map{1 : 'yes', 2 : 'no'}"/>
-	   <xsl:variable name="action1" select="function($k, $v) { $k }"/>
-	   <xsl:variable name="seq1" select="map:for-each($map1, $action1)"/>
+	   <xsl:variable name="action1" select="function($k, $v) { $v }"/>
+	   <xsl:variable name="seq1" select="distinct-values(map:for-each($map1, $action1))"/>
 	   <one itemCount="{count($seq1)}">
 	     <ok>
 		   <xsl:call-template name="contains">
 		     <xsl:with-param name="seq1" select="$seq1"/>
-			 <xsl:with-param name="value1" select="1"/>
+			 <xsl:with-param name="value1" select="'yes'"/>
 		   </xsl:call-template>
 		   <xsl:text> ### </xsl:text>
 		   <xsl:call-template name="contains">
 		     <xsl:with-param name="seq1" select="$seq1"/>
-			 <xsl:with-param name="value1" select="2"/>
+			 <xsl:with-param name="value1" select="'no'"/>
 		   </xsl:call-template>
 		 </ok>
 	   </one>
@@ -33,17 +33,19 @@
    </xsl:template>
    
    <!-- An XSL named template, to check whether a sequence 
-        contains a specific value. -->
+        contains a specific value.
+   -->
    <xsl:template name="contains" as="xs:boolean">
-     <xsl:param name="seq1" as="xs:integer*"/>
-	 <xsl:param name="value1" as="xs:integer"/>
+     <xsl:param name="seq1" as="xs:string*"/>
+	 <xsl:param name="value1" as="xs:string"/>
 	 <xsl:variable name="temp1">
-	   <xsl:for-each select="$seq1">
+	   <xsl:iterate select="$seq1">
 	      <xsl:variable name="x1" select="."/>
 	      <xsl:if test="$x1 eq $value1">
 		    <yes/>
+		    <xsl:break/>
 		  </xsl:if>
-	   </xsl:for-each>
+	   </xsl:iterate>
 	 </xsl:variable>
 	 <xsl:choose>
 	   <xsl:when test="$temp1/yes">

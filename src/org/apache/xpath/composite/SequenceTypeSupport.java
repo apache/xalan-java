@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
@@ -165,7 +166,7 @@ public class SequenceTypeSupport {
     
     public static String INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR = "INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR";
     
-    private static List fPrefixTable;
+    private static List<XMLNSDecl> fPrefixTable;
     
     /**
      * This method converts/casts an XPath 3.1 xdm source value represented by an
@@ -267,6 +268,25 @@ public class SequenceTypeSupport {
             int expectedType = seqExpectedTypeData.getSequenceType();            
             int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
             SequenceTypeKindTest sequenceTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+            
+            if ((srcValue != null) && (sequenceTypeKindTest != null)) {
+            	if (sequenceTypeKindTest.getKindVal() == ITEM_KIND) {
+            	   if (srcValue instanceof XPathArray) {
+            		  XPathArray xpathArr = (XPathArray)srcValue;
+            		  if (itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_MANY) {
+            			 result = xpathArr;   
+            		  }
+            		  else if ((itemTypeOccurenceIndicator == OccurenceIndicator.ONE_OR_MANY) && (xpathArr.size() > 0)) {
+            			 result = xpathArr; 
+            		  }
+            		  else if ((itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_ONE) && (xpathArr.size() <= 1)) {
+            			 result = xpathArr; 
+            		  }
+            		  
+            		  return result;
+            	   }
+            	}
+            }
             
             if (srcValue instanceof XString) {
                 String srcStrVal = ((XString)srcValue).str();
