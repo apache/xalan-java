@@ -94,8 +94,11 @@ public class FuncMapForEach extends Function2Args {
 		   }
 		}
 		else {
-		   throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument to function call map:for-each, "
-                                                                                        + "is not a map.", xctxt.getSAXLocator());
+		   arg0XsObject = arg0.execute(xctxt);
+		   if (!(arg0XsObject instanceof XPathMap)) {
+			   throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument to function call map:for-each, "
+                                                                                            + "is not a map.", xctxt.getSAXLocator()); 
+		   }
 		}
 
 		if (arg1 instanceof InlineFunction) {

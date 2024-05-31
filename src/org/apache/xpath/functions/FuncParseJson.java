@@ -83,13 +83,13 @@ public class FuncParseJson extends FunctionMultiArgs {
         		 jsonObj = new JSONArray(arg0StrValue);  
         	  }
         	  else {
-        		 throw new javax.xml.transform.TransformerException("FOUT1190 : The first argument provided with function call "
+        		 throw new javax.xml.transform.TransformerException("FOUT1190 : The 1st argument provided with function call "
                             												+ "fn:parse-json is not a valid json string. A json string can begin "
-                            												+ "with only '{' or '[' characters.", srcLocator); 
+                            												+ "only with '{' or '[' characters.", srcLocator); 
         	  }
            }
            catch (JSONException ex) {
-        	  throw new javax.xml.transform.TransformerException("FOUT1190 : The first argument provided with function call "
+        	  throw new javax.xml.transform.TransformerException("FOUT1190 : The 1st argument provided with function call "
         	  		                                                        + "fn:parse-json is not a valid json string.", srcLocator); 
            }
                       
@@ -126,6 +126,7 @@ public class FuncParseJson extends FunctionMultiArgs {
 	      		  ((XPathMap)result).put(new XSString(key), new XSBoolean(new Boolean(value.toString()))); 
 	      	   }	      	   
 	      	   else if (value instanceof JSONObject) {
+	      		  // Recursive call to this function
 	      		  XObject value1 = getXdmValueFromNativeJson(value);
 	      		  ((XPathMap)result).put(new XSString(key), value1);
 	      	   }
@@ -148,6 +149,7 @@ public class FuncParseJson extends FunctionMultiArgs {
 	      				xObj = new XSBoolean(new Boolean(arrItem.toString())); 
 	      			 }
 	      			 else if ((arrItem instanceof JSONObject) || (arrItem instanceof JSONArray)) {
+	      			   // Recursive call to this function
 	      				xObj = getXdmValueFromNativeJson(arrItem);
 	      			 }
 	      			 
@@ -177,6 +179,7 @@ public class FuncParseJson extends FunctionMultiArgs {
     		      xObj = new XSBoolean(new Boolean(arrItem.toString())); 
     		   }
     		   else if ((arrItem instanceof JSONObject) || (arrItem instanceof JSONArray)) {
+    			  // Recursive call to this function
     		      xObj = getXdmValueFromNativeJson(arrItem);
     		   }
     			 
