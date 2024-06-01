@@ -147,8 +147,8 @@ public class Compiler extends OpMap
       expr = ifExpr(opPos); break;
     case OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR :
       expr = sequenceConstructorExpr(opPos); break;
-    case OpCodes.OP_SQUARE_ARRAY_CONSTRUCTOR_EXPR :
-      expr = squareArrayConstructorExpr(opPos); break;
+    case OpCodes.OP_ARRAY_CONSTRUCTOR_EXPR :
+      expr = arrayConstructorExpr(opPos); break;
     case OpCodes.OP_MAP_CONSTRUCTOR_EXPR :
       expr = mapConstructorExpr(opPos); break;
     case OpCodes.OP_OR :
@@ -1487,11 +1487,11 @@ private static final boolean DEBUG = false;
   }
   
   /**
-   * Compile an XPath square array constructor, expression.
+   * Compile an XPath array constructor, expression.
    */
-  Expression squareArrayConstructorExpr(int opPos) throws TransformerException
+  Expression arrayConstructorExpr(int opPos) throws TransformerException
   {
-      return XPathParserImpl.fSquareArrayConstructor;
+      return XPathParserImpl.fXPathArrayConstructor;
   }
   
   /**

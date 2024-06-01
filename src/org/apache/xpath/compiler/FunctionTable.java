@@ -471,6 +471,9 @@ public class FunctionTable
   
   /** The 'map:for-each()' id. */
   public static final int FUNC_MAP_FOREACH = 151;
+  
+  /** The 'array:join()' id. */
+  public static final int FUNC_ARRAY_JOIN = 152;
 
   // Proprietary
 
@@ -518,7 +521,8 @@ public class FunctionTable
 		                                                        new Integer(FUNC_ARRAY_PUT), new Integer(FUNC_ARRAY_APPEND),
 		                                                        new Integer(FUNC_ARRAY_SUBARRAY), new Integer(FUNC_ARRAY_REMOVE),
 		                                                        new Integer(FUNC_ARRAY_INSERT_BEFORE),new Integer(FUNC_ARRAY_HEAD),
-		                                                        new Integer(FUNC_ARRAY_TAIL),new Integer(FUNC_ARRAY_REVERSE) };
+		                                                        new Integer(FUNC_ARRAY_TAIL),new Integer(FUNC_ARRAY_REVERSE), 
+		                                                        new Integer(FUNC_ARRAY_JOIN) };
   
   static final List<Integer> XPATH_ARRAY_FUNC_IDS_ARR = Arrays.asList(XPATH_ARRAY_FUNC_IDS);
   
@@ -559,7 +563,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 152;
+  private static final int NUM_BUILT_IN_FUNCS = 153;
 
   /**
    * Number of built-in functions that may be added.
@@ -809,6 +813,7 @@ public class FunctionTable
     m_functions[FUNC_ARRAY_HEAD] = org.apache.xpath.functions.array.FuncArrayHead.class;
     m_functions[FUNC_ARRAY_TAIL] = org.apache.xpath.functions.array.FuncArrayTail.class;
     m_functions[FUNC_ARRAY_REVERSE] = org.apache.xpath.functions.array.FuncArrayReverse.class;
+    m_functions[FUNC_ARRAY_JOIN] = org.apache.xpath.functions.array.FuncArrayJoin.class;
     
     // XPath 3.1 built-in functions configurations for the map 
     // functions namespace http://www.w3.org/2005/xpath-functions/map    

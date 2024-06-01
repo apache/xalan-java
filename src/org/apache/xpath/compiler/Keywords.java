@@ -611,6 +611,9 @@ public class Keywords
   /** array:reverse function string. */
   public static final String FUNC_ARRAY_REVERSE = "reverse";
   
+  /** array:join function string. */
+  public static final String FUNC_ARRAY_JOIN = "join";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

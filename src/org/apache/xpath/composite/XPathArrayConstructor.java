@@ -44,35 +44,35 @@ import org.apache.xpath.objects.XPathArray;
 import xml.xpath31.processor.types.XSNumericType;
 
 /*
- * The XalanJ XPath parser, creates and populates an object of this class, 
- * to help produce an XDM array constructed using XPath square array 
- * constructor.
+ * Xalan-J's xpath parser, constructs an object of this class 
+ * to help implement XPath 3.1 arrays.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class SquareArrayConstructor extends Expression {
+public class XPathArrayConstructor extends Expression {
     
 	private static final long serialVersionUID = 6480756741454381402L;
 
-	private List<String> sqrArrayConstructorXPathParts = new ArrayList<String>();
+	private List<String> arrayConstructorXPathParts = new ArrayList<String>();
+	
+	private boolean fIsEmptyArray = false;
     
     // The following two fields of this class, are used during 
     // XPath.fixupVariables(..) action as performed within object of 
     // this class.    
     private Vector fVars;    
     private int fGlobalsSize;
-    
-    @Override
-    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
-       // no op
-    }
 
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
         
-        XPathArray xpathArr = new XPathArray();
+        XPathArray xpathArrResult = new XPathArray();
+        
+        if (fIsEmptyArray) {
+           return xpathArrResult;  	
+        }
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
@@ -88,8 +88,8 @@ public class SquareArrayConstructor extends Expression {
         // 'sqrArrayConstructorXPathParts', and concatenate the sequences resulting
         // from each of them, to get the final result sequence that is returned by
         // this method.
-        for (int idx = 0; idx < sqrArrayConstructorXPathParts.size(); idx++) {
-           String xpathExprStr = sqrArrayConstructorXPathParts.get(idx);
+        for (int idx = 0; idx < arrayConstructorXPathParts.size(); idx++) {
+           String xpathExprStr = arrayConstructorXPathParts.get(idx);
            
            if (prefixTable != null) {
               xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, 
@@ -120,7 +120,7 @@ public class SquareArrayConstructor extends Expression {
                   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
                   {
                       XNodeSet xNodeSetItem = new XNodeSet(nextNode, xctxt);
-                      xpathArr.add(xNodeSetItem);
+                      xpathArrResult.add(xNodeSetItem);
                   }
                }
                else if (xpathExprStr.startsWith("$") && xpathExprStr.contains("[") && 
@@ -162,7 +162,7 @@ public class SquareArrayConstructor extends Expression {
                           double dValIndex = ((XNumber)arrIndexEvalResult).num();
                           if (dValIndex == (int)dValIndex) {
                              XObject evalResult = varEvalResultSeq.item((int)dValIndex - 1);
-                             xpathArr.add(evalResult);
+                             xpathArrResult.add(evalResult);
                           }
                           else {
                               throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
@@ -175,7 +175,7 @@ public class SquareArrayConstructor extends Expression {
                           double dValIndex = (Double.valueOf(indexStrVal)).doubleValue();
                           if (dValIndex == (int)dValIndex) {
                              XObject evalResult = varEvalResultSeq.item((int)dValIndex - 1);
-                             xpathArr.add(evalResult);
+                             xpathArrResult.add(evalResult);
                           }
                           else {
                               throw new javax.xml.transform.TransformerException("XPTY0004 : an index value used with an xdm "
@@ -204,25 +204,25 @@ public class SquareArrayConstructor extends Expression {
                    
                   while ((nextNodeDtmHandle = sourceNodes.nextNode()) != DTM.NULL) {
                      XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);
-                     xpathArr.add(xNodeSetItem);
+                     xpathArrResult.add(xNodeSetItem);
                   }               
                }
                else if (xPathExprPartResult instanceof ResultSequence) {
                   ResultSequence inpResultSeq = (ResultSequence)xPathExprPartResult; 
                   for (int idx1 = 0; idx1 < inpResultSeq.size(); idx1++) {
                      XObject xObj = inpResultSeq.item(idx1);
-                     xpathArr.add(xObj);                 
+                     xpathArrResult.add(xObj);                 
                   }
                }
                else {
                   // We're assuming here that, an input value is an xdm sequence 
                   // with cardinality one.
-            	   xpathArr.add(xPathExprPartResult);               
+            	   xpathArrResult.add(xPathExprPartResult);               
                }
            }
         }
         
-        return xpathArr;
+        return xpathArrResult;
     }
 
     @Override
@@ -230,18 +230,31 @@ public class SquareArrayConstructor extends Expression {
         fVars = (Vector)(vars.clone());
         fGlobalsSize = globalsSize;
     }
+    
+    @Override
+    public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
+        // no op
+    }
 
     @Override
     public boolean deepEquals(Expression expr) {
         return false;
     }
 
-    public List<String> getSquareArrayConstructorXPathParts() {
-        return sqrArrayConstructorXPathParts;
+    public List<String> getArrayConstructorXPathParts() {
+        return arrayConstructorXPathParts;
     }
 
-    public void setSquareArrayConstructorXPathParts(List<String> squareArrayConstructorXPathParts) {
-        this.sqrArrayConstructorXPathParts = squareArrayConstructorXPathParts;
+    public void setArrayConstructorXPathParts(List<String> arrayConstructorXPathParts) {
+        this.arrayConstructorXPathParts = arrayConstructorXPathParts;
     }
+
+	public boolean isEmptyArray() {
+		return fIsEmptyArray;
+	}
+
+	public void setIsEmptyArray(boolean isEmptyArray) {
+		this.fIsEmptyArray = isEmptyArray;
+	}
 
 }

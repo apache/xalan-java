@@ -727,7 +727,7 @@ public class OpCodes
   
   public static final int OP_SEQUENCE_TYPE_EXPR = 73;
   
-  public static final int OP_SQUARE_ARRAY_CONSTRUCTOR_EXPR = 74;
+  public static final int OP_ARRAY_CONSTRUCTOR_EXPR = 74;
   
   public static final int OP_MAP_CONSTRUCTOR_EXPR = 75;
   
