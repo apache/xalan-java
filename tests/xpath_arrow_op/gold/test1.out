@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>ABC</one>
+  <two>true</two>
+  <three>false</three>
+  <four>
+    <item>abc</item>
+    <item>pqr</item>
+  </four>
+</result>

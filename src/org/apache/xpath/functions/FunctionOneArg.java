@@ -31,12 +31,7 @@ import org.apache.xpath.XPathVisitor;
  */
 public class FunctionOneArg extends Function implements ExpressionOwner
 {
-    static final long serialVersionUID = -5180174180765609758L;
-
-  /** The first argument passed to the function (at index 0).
-   *
-   */
-  Expression m_arg0;
+  static final long serialVersionUID = -5180174180765609758L;
   
   private boolean fArgCountErr = false;
 

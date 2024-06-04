@@ -49,6 +49,7 @@ import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XRTreeFragSelectWrapper;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.operations.ArrowOp;
 import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
@@ -404,8 +405,8 @@ public class ElemVariable extends ElemTemplateElement
              
             return evalResult;
         }
-        else if (selectExpression instanceof Range) {
-            XObject evalResult = ((Range)selectExpression).execute(xctxt);
+        else if ((selectExpression instanceof Range) || (selectExpression instanceof ArrowOp)) {
+            XObject evalResult = selectExpression.execute(xctxt);
             
             if (m_asAttr != null) {
                evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);  

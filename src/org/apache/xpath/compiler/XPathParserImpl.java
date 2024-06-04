@@ -47,8 +47,8 @@ import org.apache.xpath.composite.SequenceTypeFunctionTest;
 import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeMapTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
-import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.composite.XPathArrayConstructor;
+import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.composite.XPathSequenceTypeExpr;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
 import org.apache.xpath.functions.DynamicFunctionCall;
@@ -119,8 +119,8 @@ public class XPathParserImpl
                                                       "eq", "ne", "lt", "gt", "le", "ge", 
                                                       "for", "in", "return", "if", "then", 
                                                       "else", "some", "every", "satisfies", 
-                                                      "let", ":=", "-", "||", "instance", "of", 
-                                                      "as" };
+                                                      "let", ":=", "-", "||", "=>", "instance", 
+                                                      "of", "as" };
   
   // If an XPath expression is () (i.e, representing an xdm empty sequence),
   // we translate that within this XPath parser implementation, to an XPath
@@ -157,6 +157,8 @@ public class XPathParserImpl
   static MapConstructor fMapConstructor = null;
   
   static XPathSequenceTypeExpr fXpathSequenceTypeExpr = null;
+  
+  private String fArrowOpRemainingXPathExprStr = null;
   
   /**
    * The parser constructor.
@@ -2095,7 +2097,7 @@ public class XPathParserImpl
         }
         else 
         {
-           // Support for XPath 3.1 language simple map operator '!'.
+           // Support for XPath 3.1 simple map operator '!'.
         	
            // An XPath expression SEQ!Expr evaluates an expression Expr once for every 
            // item in the sequence obtained by evaluating SEQ. An XPath language operator "!" 
@@ -2130,7 +2132,7 @@ public class XPathParserImpl
       }
       else if (tokenIs("eq"))
       {
-        // Support for XPath 3.1 language value comparison operator "eq"
+        // Support for XPath 3.1 value comparison operator "eq"
           
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_VC_EQUALS);
@@ -2144,7 +2146,7 @@ public class XPathParserImpl
       }
       else if (tokenIs("ne"))
       {
-        // Support for XPath 3.1 language value comparison operator "ne"
+        // Support for XPath 3.1 value comparison operator "ne"
           
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_VC_NOT_EQUALS);
@@ -2211,7 +2213,7 @@ public class XPathParserImpl
         }
         else if (tokenIs('<'))
         {
-          // Support for XPath 3.1 language node comparison operator "<<"
+          // Support for XPath 3.1 node comparison operator "<<"
           
           nextToken();
           insertOp(addPos, 2, OpCodes.OP_NC_PRECEDE); 
@@ -2239,7 +2241,7 @@ public class XPathParserImpl
         }
         else if (tokenIs('>'))
         {
-          // Support for XPath 3.1 language node comparison operator ">>"
+          // Support for XPath 3.1 node comparison operator ">>"
           
           nextToken();
           insertOp(addPos, 2, OpCodes.OP_NC_FOLLOWS);
@@ -2258,7 +2260,7 @@ public class XPathParserImpl
       }
       else if (tokenIs("to"))
       {
-          // Support for XPath 3.1 language range expressions.
+          // Support for XPath 3.1 range expression (i.e, an XPath operator "to").
     	  
     	  // An XPath language range expressions are used to construct a 
     	  // sequence of consecutive integers. For e.g, an XPath language range expression
@@ -2279,7 +2281,7 @@ public class XPathParserImpl
       }
       else if (tokenIs("||"))
       {
-          // Support for XPath 3.1 language string concatenation operator "||".
+          // Support for XPath 3.1 string concatenation operator "||".
     	  
     	  // An XPath language string concatenation operator "||" may be used as an
     	  // alternative means, for XPath string concatenation function 'concat'.
@@ -2295,9 +2297,28 @@ public class XPathParserImpl
             m_ops.getOp(addPos + op1 + 1) + op1);
           addPos += 2; 
       }
+      else if (tokenIs("=>"))
+      {
+          // Support for XPath 3.1 arrow operator "=>"
+    	  
+          consumeExpected("=>");
+
+          insertOp(addPos, 2, OpCodes.OP_ARROW);
+          
+          FunctionCall();
+          
+          if (m_token != null) {
+        	 fArrowOpRemainingXPathExprStr = "";  
+          }
+          
+          while (m_token != null) {
+        	 fArrowOpRemainingXPathExprStr += m_token;
+        	 nextToken();
+          }
+      }
       else if (tokenIs("lt"))
       {
-          // Support for XPath 3.1 language value comparison operator "lt"
+          // Support for XPath 3.1 value comparison operator "lt"
           
           nextToken();
         
@@ -2312,7 +2333,7 @@ public class XPathParserImpl
       }
       else if (tokenIs("gt"))
       {
-          // Support for XPath 3.1 language value comparison operator "gt"
+          // Support for XPath 3.1 value comparison operator "gt"
           
           nextToken();
         
@@ -2327,7 +2348,7 @@ public class XPathParserImpl
       }
       else if (tokenIs("le"))
       {
-          // Support for XPath 3.1 language value comparison operator "le"
+          // Support for XPath 3.1 value comparison operator "le"
           
           nextToken();
         
@@ -2342,7 +2363,7 @@ public class XPathParserImpl
       }
       else if (tokenIs("ge"))
       {
-          // Support for XPath 3.1 language value comparison operator "ge"
+          // Support for XPath 3.1 value comparison operator "ge"
           
           nextToken();
         
@@ -2357,7 +2378,7 @@ public class XPathParserImpl
       }
       else if (tokenIs("is"))
       {
-          // Support for XPath 3.1 language node comparison operator "is"
+          // Support for XPath 3.1 node comparison operator "is"
           
           nextToken();
         
@@ -2371,7 +2392,7 @@ public class XPathParserImpl
           addPos += 2;
       }
       else if (tokenIs("instance") && lookahead("of", 1)) {
-          // Support for XPath 3.1 language "instance of" expression.
+          // Support for XPath 3.1 "instance of" expression.
     	  
     	  // An XPath language, "instance of" operator requires two operands. An 
     	  // XPath evaluation for "instance of" expression returns value 'true',
@@ -2392,7 +2413,7 @@ public class XPathParserImpl
           addPos += 2;
       }      
       else if (tokenIs("cast") && lookahead("as", 1)) {
-          // Support for XPath 3.1 language "cast as" expression.
+          // Support for XPath 3.1 "cast as" expression.
     	  
     	  // An XPath expression "cast as" converts an input value, 
     	  // to another value of a specific datatype.
@@ -2413,7 +2434,7 @@ public class XPathParserImpl
           addPos += 2;
       }
       else if (tokenIs("castable") && lookahead("as", 1)) {
-          // Support for XPath 3.1 language "castable as" expression.
+          // Support for XPath 3.1 "castable as" expression.
     	  
     	  // An XPath expression "castable as" tests (i.e, returns true, or false) 
     	  // whether a given value is castable into another datatype.
@@ -2870,7 +2891,7 @@ public class XPathParserImpl
       matchFound = true;
     }
     else if ((m_tokenChar == '$') && (lookahead('(', 2))) {
-       // Support for XPath 3.1 language dynamic function calls.
+       // Support for XPath 3.1 'dynamic function call' expression.
     	
        // For example, if an XPath inline function expression is bound
        // to an XSLT variable as follows : <xsl:variable name="sqr" select="function($val) { $val * $val }"/>,
@@ -2975,7 +2996,7 @@ public class XPathParserImpl
       matchFound = true;
     }
     else if (tokenIs("function") && lookahead('(', 1)) {
-      // Support for XPath 3.1 language "inline function" expressions
+      // Support for XPath 3.1 "inline function" expression
     	
       // Ref : https://www.w3.org/TR/xpath-31/#id-inline-func
       
@@ -4801,6 +4822,10 @@ public class XPathParserImpl
 		  
 		  xpathSequenceTypeExpr.setSequenceTypeFunctionTest(sequenceTypeFunctionTest);
 	  }	  
+   }
+  
+   public String getArrowOpRemainingXPathExprStr() {
+	   return fArrowOpRemainingXPathExprStr; 
    }
   
 }

@@ -44,6 +44,7 @@ import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.operations.ArrowOp;
 import org.apache.xpath.res.XPATHErrorResources;
 
 import xml.xpath31.processor.types.XSNumericType;
@@ -71,6 +72,12 @@ public class XPath implements Serializable, ExpressionOwner
   // this class.    
   private Vector fVars;    
   private int fGlobalsSize;
+  
+  /**
+   * This class field, is used when evaluating an 
+   * XPath arrow operator, "=>".
+   */
+  private String fArrowOpRemainingXPathExprStr = null;
 
   /**
    * initial the function table
@@ -179,17 +186,22 @@ public class XPath implements Serializable, ExpressionOwner
     m_patternString = exprString;
 
     XPathParserImpl parser = new XPathParserImpl(errorListener, locator);
-    Compiler compiler = new Compiler(errorListener, locator, m_funcTable);
-
-    if (SELECT == type)
+    Compiler compiler = new Compiler(errorListener, locator, m_funcTable);    
+    
+    if (SELECT == type) {
       parser.initXPath(compiler, exprString, prefixResolver, false);
+      fArrowOpRemainingXPathExprStr = parser.getArrowOpRemainingXPathExprStr();
+    }
     else if (MATCH == type)
       parser.initMatchPattern(compiler, exprString, prefixResolver);
     else
       throw new RuntimeException(XSLMessages.createXPATHMessage(XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, new Object[]{Integer.toString(type)})); //"Can not deal with XPath type: " + type);
 
     Expression expr = compiler.compile(0);
-
+    if (expr instanceof ArrowOp) {
+       ((ArrowOp)expr).setArrowOpRemainingXPathExprStr(fArrowOpRemainingXPathExprStr);
+    }
+    
     this.setExpression(expr);
     
     if((null != locator) && locator instanceof ExpressionNode)
@@ -226,10 +238,12 @@ public class XPath implements Serializable, ExpressionOwner
     m_patternString = exprString;
 
     XPathParserImpl parser = new XPathParserImpl(errorListener, locator);
-    Compiler compiler = new Compiler(errorListener, locator, m_funcTable);
-
-    if (SELECT == type)
+    Compiler compiler = new Compiler(errorListener, locator, m_funcTable);    
+    
+    if (SELECT == type) {
       parser.initXPath(compiler, exprString, prefixResolver, false);
+      fArrowOpRemainingXPathExprStr = parser.getArrowOpRemainingXPathExprStr();
+    }
     else if (MATCH == type)
       parser.initMatchPattern(compiler, exprString, prefixResolver);
     else
@@ -238,6 +252,9 @@ public class XPath implements Serializable, ExpressionOwner
             new Object[]{Integer.toString(type)})); 
 
     Expression expr = compiler.compile(0);
+    if (expr instanceof ArrowOp) {
+      ((ArrowOp)expr).setArrowOpRemainingXPathExprStr(fArrowOpRemainingXPathExprStr);
+    }
 
     this.setExpression(expr);
     
@@ -775,5 +792,13 @@ public class XPath implements Serializable, ExpressionOwner
    * @xsl.usage advanced
    */
   public static final double MATCH_SCORE_OTHER = 0.5;
+
+  public String getArrowOpRemainingXPathExprStr() {
+	 return fArrowOpRemainingXPathExprStr;
+  }
+
+  public void setArrowOpRemainingXPathExprStr(String arrowOpRemainingXPathExprStr) {
+	 this.fArrowOpRemainingXPathExprStr = arrowOpRemainingXPathExprStr;
+  }
 
 }

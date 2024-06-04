@@ -41,6 +41,7 @@ import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.And;
+import org.apache.xpath.operations.ArrowOp;
 import org.apache.xpath.operations.CastAs;
 import org.apache.xpath.operations.CastableAs;
 import org.apache.xpath.operations.Div;
@@ -201,6 +202,10 @@ public class Compiler extends OpMap
       expr = range(opPos); break;
     case OpCodes.OP_STR_CONCAT :
       expr = strConcat(opPos); break;
+    case OpCodes.OP_ARROW :
+      fIsCompileFuncPrecededByCompileArrow = true;
+      expr = arrowOp(opPos);
+      break;
     case OpCodes.OP_MINUS :
       expr = minus(opPos); break;
     case OpCodes.OP_MULT :
@@ -257,7 +262,7 @@ public class Compiler extends OpMap
     }
 //    if(null != expr)
 //      expr.setSourceLocator(m_locator);
-
+    
     return expr;
   }
 
@@ -652,6 +657,18 @@ public class Compiler extends OpMap
   protected Expression strConcat(int opPos) throws TransformerException
   {
     return compileOperation(new StrConcat(), opPos);   
+  }
+  
+  /**
+   * Compile an XPath 3.1 arrow "=>" operation.
+   * 
+   * @param opPos The current position in the m_opMap array.
+   * 
+   * @throws TransformerException if a error occurs creating the Expression.
+   */
+  protected Expression arrowOp(int opPos) throws TransformerException
+  {
+	return compileOperation(new ArrowOp(), opPos);
   }
 
   /**
@@ -1334,13 +1351,18 @@ private static final boolean DEBUG = false;
         int i = 0;
 
         for (int p = opPos; p < endFunc; p = getNextOpPos(p), i++)
-        {
-
-          // System.out.println("argPos: "+ p);
-          // System.out.println("argCode: "+ m_opMap[p]);
-          func.setArg(compile(p), i);
+        {          
+           func.setArg(compile(p), i);
         }
-
+        
+        if (fIsCompileFuncPrecededByCompileArrow) 
+        {
+           // This allows us to, permit the absence of XPath function's 1st 
+           // argument when evaluating with operator "=>".
+           i++;
+           fIsCompileFuncPrecededByCompileArrow = false;
+        }
+        
         func.checkNumberArgs(i);
       }
       catch (WrongNumberArgsException wnae)
@@ -1348,9 +1370,8 @@ private static final boolean DEBUG = false;
         java.lang.String name = m_functionTable.getFunctionName(funcID);
 
         m_errorHandler.fatalError( new TransformerException(
-                  XSLMessages.createXPATHMessage(XPATHErrorResources.ER_ONLY_ALLOWS, 
-                      new Object[]{name, wnae.getMessage()}), m_locator)); 
-              //"name + " only allows " + wnae.getMessage() + " arguments", m_locator));
+                                             XSLMessages.createXPATHMessage(XPATHErrorResources.ER_ONLY_ALLOWS, 
+                                             new Object[]{name, wnae.getMessage()}), m_locator));
       }
 
       return func;
@@ -1693,4 +1714,10 @@ private static final boolean DEBUG = false;
    * The FunctionTable for all xpath build-in functions
    */
   private FunctionTable m_functionTable;
+  
+  /**
+   * We store within this class field, the fact that, there is
+   * an XPath expression of kind "... => functionCall()".
+   */
+  private boolean fIsCompileFuncPrecededByCompileArrow;
 }

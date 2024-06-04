@@ -258,7 +258,7 @@ class Lexer
         if ((pat.length() > (i + 1)) && (pat.charAt(i + 1) == '|')) {
           // added for XPath 3.1.
           // to recognize the character sequence "||", as an XPath 
-          // language token.
+          // token.
           addToTokenQueue(pat.substring(i, i + 2));
           i += 1;
           break;
@@ -267,6 +267,14 @@ class Lexer
       case '*' :
       case '+' :
       case '=' :
+    	if ((pat.length() > (i + 1)) && (pat.charAt(i + 1) == '>')) {
+           // added for XPath 3.1.
+           // to recognize the character sequence "=>", as an XPath 
+           // token.
+           addToTokenQueue(pat.substring(i, i + 2));
+           i += 1;
+           break;
+        }
       case ',' :      
       case '\\' :  // Unused at the moment
       case '^' :   // Unused at the moment

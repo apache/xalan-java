@@ -736,8 +736,10 @@ public class OpCodes
   public static final int OP_CAST_AS = 77;
   
   public static final int OP_CASTABLE_AS = 78;
+  
+  public static final int OP_ARROW = 79;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 79;
+  private static final int NEXT_FREE_ID = 80;
   
 }

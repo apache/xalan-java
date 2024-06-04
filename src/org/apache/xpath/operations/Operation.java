@@ -118,51 +118,49 @@ public class Operation extends Expression implements ExpressionOwner
     
     XObject right = null;
     
-        if (m_left instanceof FuncExtFunction) {
-           FuncExtFunction extFunction = (FuncExtFunction)m_left;
-           if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
-              left = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                             xctxt, m_left, null); 
-           }
-           else {
-              left = m_left.execute(xctxt, true);  
-           }
-        }
-        else if (m_left instanceof SelfIteratorNoPredicate) {
-           XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
-           if (xpath3ContextItem != null) {
-              left = xpath3ContextItem;     
-           }
-           else {
-              left = m_left.execute(xctxt, true);   
-           }
-        }
-        else {
-           left = m_left.execute(xctxt, true); 
-        }
-        
-        if (m_right instanceof FuncExtFunction) {
-           FuncExtFunction extFunction = (FuncExtFunction)m_right;
-           if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
-              right = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                            xctxt, m_right, null); 
-           }
-           else {
-              right = m_right.execute(xctxt, true);  
-           }
-        }
-        else if (m_right instanceof SelfIteratorNoPredicate) {
-            XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
-            if (xpath3ContextItem != null) {
-               right = xpath3ContextItem;     
-            }
-            else {
-               right = m_right.execute(xctxt, true);   
-            }
-        }
-        else {
-           right = m_right.execute(xctxt, true); 
-        }
+    if (m_left instanceof FuncExtFunction) {
+    	FuncExtFunction extFunction = (FuncExtFunction)m_left;
+    	if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
+    		left = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, m_left, null); 
+    	}
+    	else {
+    		left = m_left.execute(xctxt, true);  
+    	}
+    }
+    else if (m_left instanceof SelfIteratorNoPredicate) {
+    	XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+    	if (xpath3ContextItem != null) {
+    		left = xpath3ContextItem;     
+    	}
+    	else {
+    		left = m_left.execute(xctxt, true);   
+    	}
+    }
+    else {
+    	left = m_left.execute(xctxt, true); 
+    }
+
+    if (m_right instanceof FuncExtFunction) {
+    	FuncExtFunction extFunction = (FuncExtFunction)m_right;
+    	if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
+    		right = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, m_right, null); 
+    	}
+    	else {
+    		right = m_right.execute(xctxt, true);  
+    	}
+    }
+    else if (m_right instanceof SelfIteratorNoPredicate) {
+    	XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+    	if (xpath3ContextItem != null) {
+    		right = xpath3ContextItem;     
+    	}
+    	else {
+    		right = m_right.execute(xctxt, true);   
+    	}
+    }
+    else {
+    	right = m_right.execute(xctxt, true); 
+    }
 
     XObject result = operate(left, right);
     

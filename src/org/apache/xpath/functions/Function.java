@@ -40,9 +40,14 @@ import org.apache.xpath.objects.XObject;
  */
 public abstract class Function extends Expression
 {
-    static final long serialVersionUID = 6927661240854599768L;
+   static final long serialVersionUID = 6927661240854599768L;
+    
+   /** 
+    * The first argument passed to the function (at index 0).
+    */
+   protected Expression m_arg0;
 
-  /**
+   /**
    * Set an argument expression for a function.  This method is called by the 
    * XPath compiler.
    *
@@ -140,5 +145,14 @@ public abstract class Function extends Expression
   public void postCompileStep(Compiler compiler)
   {
     // no default action
+  }
+  
+  public Expression getArg0()
+  {
+    return m_arg0;
+  }
+  
+  public void setArg0(Expression arg0) {
+	m_arg0 = arg0; 
   }
 }
