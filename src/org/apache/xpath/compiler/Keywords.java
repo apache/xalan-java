@@ -620,6 +620,9 @@ public class Keywords
   /** array:filter function string. */
   public static final String FUNC_ARRAY_FILTER = "filter";
   
+  /** array:for-each-pair function string. */
+  public static final String FUNC_ARRAY_FOR_EACH_PAIR = "for-each-pair";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

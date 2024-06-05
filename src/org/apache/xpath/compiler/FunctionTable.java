@@ -480,6 +480,9 @@ public class FunctionTable
   
   /** The 'array:filter()' id. */
   public static final int FUNC_ARRAY_FILTER = 154;
+  
+  /** The 'array:for-each-pair()' id. */
+  public static final int FUNC_ARRAY_FOR_EACH_PAIR = 155;
 
   // Proprietary
 
@@ -529,7 +532,7 @@ public class FunctionTable
 		                                                        new Integer(FUNC_ARRAY_INSERT_BEFORE),new Integer(FUNC_ARRAY_HEAD),
 		                                                        new Integer(FUNC_ARRAY_TAIL),new Integer(FUNC_ARRAY_REVERSE), 
 		                                                        new Integer(FUNC_ARRAY_JOIN), new Integer(FUNC_ARRAY_FOR_EACH),
-		                                                        new Integer(FUNC_ARRAY_FILTER) };
+		                                                        new Integer(FUNC_ARRAY_FILTER), new Integer(FUNC_ARRAY_FOR_EACH_PAIR) };
   
   static final List<Integer> XPATH_ARRAY_FUNC_IDS_ARR = Arrays.asList(XPATH_ARRAY_FUNC_IDS);
   
@@ -570,7 +573,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 155;
+  private static final int NUM_BUILT_IN_FUNCS = 156;
 
   /**
    * Number of built-in functions that may be added.
@@ -823,6 +826,7 @@ public class FunctionTable
     m_functions[FUNC_ARRAY_JOIN] = org.apache.xpath.functions.array.FuncArrayJoin.class;
     m_functions[FUNC_ARRAY_FOR_EACH] = org.apache.xpath.functions.array.FuncArrayForEach.class;
     m_functions[FUNC_ARRAY_FILTER] = org.apache.xpath.functions.array.FuncArrayFilter.class;
+    m_functions[FUNC_ARRAY_FOR_EACH_PAIR] = org.apache.xpath.functions.array.FuncArrayForEachPair.class;
     
     // XPath 3.1 built-in functions configurations for the map 
     // functions namespace http://www.w3.org/2005/xpath-functions/map    
@@ -1136,6 +1140,10 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_ARRAY_REVERSE));
          m_functionID.put(Keywords.FUNC_ARRAY_JOIN,
                           new Integer(FunctionTable.FUNC_ARRAY_JOIN));
+         m_functionID.put(Keywords.FUNC_ARRAY_FILTER,
+                          new Integer(FunctionTable.FUNC_ARRAY_FILTER));
+         m_functionID.put(Keywords.FUNC_ARRAY_FOR_EACH_PAIR,
+                          new Integer(FunctionTable.FUNC_ARRAY_FOR_EACH_PAIR));
          
          m_functionID.put(Keywords.FUNC_NAME_STRING,
                           new Integer(FunctionTable.FUNC_NAME));

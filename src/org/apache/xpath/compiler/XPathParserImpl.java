@@ -1105,7 +1105,10 @@ public class XPathParserImpl
 				 break;
 		      case "filter":
 				 id = FunctionTable.FUNC_FILTER;
-				 break;				     
+				 break;
+		      case "for-each-pair":
+				 id = FunctionTable.FUNC_FOR_EACH_PAIR;
+				 break;	
 			  default:
 				 id = m_functionTable.getFunctionID(key); 
 		}
@@ -1196,6 +1199,9 @@ public class XPathParserImpl
 		      case "filter":
 			     id = FunctionTable.FUNC_ARRAY_FILTER;
 			     break;
+		      case "for-each-pair":
+			     id = FunctionTable.FUNC_ARRAY_FOR_EACH_PAIR;
+				 break;
 			  default:
 				 // NO OP 
 		}
