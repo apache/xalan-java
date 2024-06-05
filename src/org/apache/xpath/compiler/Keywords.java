@@ -614,6 +614,12 @@ public class Keywords
   /** array:join function string. */
   public static final String FUNC_ARRAY_JOIN = "join";
   
+  /** array:for-each function string. */
+  public static final String FUNC_ARRAY_FOR_EACH = "for-each";
+  
+  /** array:filter function string. */
+  public static final String FUNC_ARRAY_FILTER = "filter";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

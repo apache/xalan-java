@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <one>
+    <value>false</value>
+    <value>false</value>
+    <value>true</value>
+    <value>true</value>
+  </one>
+  <two>
+    <sequence seqSize="2" isStrSeq="true">
+      <item>the</item>
+      <item>cat</item>
+    </sequence>
+    <sequence seqSize="1" isStrSeq="true">
+      <item>sat</item>
+    </sequence>
+    <sequence seqSize="3" isStrSeq="true">
+      <item>on</item>
+      <item>the</item>
+      <item>mat</item>
+    </sequence>
+  </two>
+</result>

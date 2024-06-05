@@ -1087,10 +1087,7 @@ public class XPathParserImpl
 			     break;
 		      case "remove":
 			     id = FunctionTable.FUNC_REMOVE;
-			     break;
-		      case "for-each":
-			     id = FunctionTable.FUNC_FOR_EACH;
-			     break;
+			     break;		      
 		      case "insert-before":
 			     id = FunctionTable.FUNC_INSERT_BEFORE;
 			     break;
@@ -1103,6 +1100,12 @@ public class XPathParserImpl
 		      case "reverse":
 				 id = FunctionTable.FUNC_REVERSE;
 				 break;
+		      case "for-each":
+				 id = FunctionTable.FUNC_FOR_EACH;
+				 break;
+		      case "filter":
+				 id = FunctionTable.FUNC_FILTER;
+				 break;				     
 			  default:
 				 id = m_functionTable.getFunctionID(key); 
 		}
@@ -1187,6 +1190,12 @@ public class XPathParserImpl
 		      case "join":
 			     id = FunctionTable.FUNC_ARRAY_JOIN;
 				 break;
+		      case "for-each":
+				 id = FunctionTable.FUNC_ARRAY_FOR_EACH;
+				 break;
+		      case "filter":
+			     id = FunctionTable.FUNC_ARRAY_FILTER;
+			     break;
 			  default:
 				 // NO OP 
 		}

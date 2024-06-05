@@ -47,7 +47,7 @@ public class ArrowOp extends Operation
 	
 	private java.lang.String fArrowOpRemainingXPathExprStr;
 
-  /**
+   /**
    * Evaluate an XPath arrow operator, and return the result.
    *
    * @param left non-null reference to the evaluated left operand.
@@ -124,7 +124,7 @@ public class ArrowOp extends Operation
       }
       
       if (fArrowOpRemainingXPathExprStr != null) {         
-          result = getFinalResult(result, fArrowOpRemainingXPathExprStr, xctxt);
+         result = getFinalResult(result, fArrowOpRemainingXPathExprStr, xctxt);
       }
       
       return result;
@@ -139,10 +139,11 @@ public class ArrowOp extends Operation
     }
     
     /**
-     * This method handles more than one '=>' operator occurrences, within an XPath expression. 
+     * Within an XPath expression, this method handles more than one occurrence of an 
+     * XPath arrow operator, "=>". 
      */
     private XObject getFinalResult(XObject prevResult, java.lang.String arrowOpRemainingXPathExprStr, 
-    		                                                                               XPathContext xctxt) throws TransformerException {
+    		                                                                          XPathContext xctxt) throws TransformerException {
        XObject result = null;
        
        SourceLocator srcLocator = xctxt.getSAXLocator(); 
@@ -154,7 +155,8 @@ public class ArrowOp extends Operation
        result = xpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
        
        java.lang.String xpathStr2 = xpath.getArrowOpRemainingXPathExprStr();
-       if (xpathStr2 != null) {         
+       if (xpathStr2 != null) {
+    	  // Recursive call to this function
           result = getFinalResult(result, xpathStr2, xctxt); 
        }
        
