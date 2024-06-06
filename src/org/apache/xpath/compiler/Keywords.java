@@ -566,6 +566,9 @@ public class Keywords
   /** in-scope-prefixes function string. */
   public static final String FUNC_IN_SCOPE_PREFIXES = "in-scope-prefixes";
   
+  /** map:merge function string. */
+  public static final String FUNC_MAP_MERGE = "merge";
+  
   /** map:size function string. */
   public static final String FUNC_MAP_SIZE = "size";
   

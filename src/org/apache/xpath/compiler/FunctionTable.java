@@ -483,6 +483,9 @@ public class FunctionTable
   
   /** The 'array:for-each-pair()' id. */
   public static final int FUNC_ARRAY_FOR_EACH_PAIR = 155;
+  
+  /** The 'map:merge()' id. */
+  public static final int FUNC_MAP_MERGE = 156;
 
   // Proprietary
 
@@ -519,6 +522,21 @@ public class FunctionTable
   static final List<Integer> XPATH_MATH_FUNC_IDS_ARR = Arrays.asList(XPATH_MATH_FUNC_IDS);
   
   /**
+   * XPath 3.1 built-in functions namespace uri, for map related functions. The XPath functions available 
+   * within this namespace, must be used by qualifying the function name with an XML namespace bound to this 
+   * uri (the commonly used XML namespace prefix for this namespace uri is "map", as specified by 
+   * XPath 3.1 spec).
+   */
+  public static final String XPATH_BUILT_IN_MAP_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions/map";
+    
+  static final Integer[] XPATH_MAP_FUNC_IDS = new Integer[] { new Integer(FUNC_MAP_MERGE), new Integer(FUNC_MAP_SIZE), 
+		                                                      new Integer(FUNC_MAP_KEYS), new Integer(FUNC_MAP_CONTAINS), 
+		                                                      new Integer(FUNC_MAP_GET), new Integer(FUNC_MAP_PUT), 
+		                                                      new Integer(FUNC_MAP_ENTRY), new Integer(FUNC_MAP_FOREACH) };
+  
+  static final List<Integer> XPATH_MAP_FUNC_IDS_ARR = Arrays.asList(XPATH_MAP_FUNC_IDS);
+  
+  /**
    * XPath 3.1 built-in functions namespace uri, for array related functions. The XPath functions available 
    * within this namespace, must be used by qualifying the function name with an XML namespace bound to this 
    * uri (the commonly used XML namespace prefix for this namespace uri is "array", as specified by 
@@ -535,21 +553,6 @@ public class FunctionTable
 		                                                        new Integer(FUNC_ARRAY_FILTER), new Integer(FUNC_ARRAY_FOR_EACH_PAIR) };
   
   static final List<Integer> XPATH_ARRAY_FUNC_IDS_ARR = Arrays.asList(XPATH_ARRAY_FUNC_IDS);
-  
-  /**
-   * XPath 3.1 built-in functions namespace uri, for map related functions. The XPath functions available 
-   * within this namespace, must be used by qualifying the function name with an XML namespace bound to this 
-   * uri (the commonly used XML namespace prefix for this namespace uri is "map", as specified by 
-   * XPath 3.1 spec).
-   */
-  public static final String XPATH_BUILT_IN_MAP_FUNCS_NS_URI = "http://www.w3.org/2005/xpath-functions/map";
-    
-  static final Integer[] XPATH_MAP_FUNC_IDS = new Integer[] { new Integer(FUNC_MAP_SIZE), new Integer(FUNC_MAP_KEYS),
-		                                                                         new Integer(FUNC_MAP_CONTAINS), new Integer(FUNC_MAP_GET), 
-		                                                                         new Integer(FUNC_MAP_PUT), new Integer(FUNC_MAP_ENTRY),
-		                                                                         new Integer(FUNC_MAP_FOREACH) };
-  
-  static final List<Integer> XPATH_MAP_FUNC_IDS_ARR = Arrays.asList(XPATH_MAP_FUNC_IDS);
 
   /**
    * The function table.
@@ -573,7 +576,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 156;
+  private static final int NUM_BUILT_IN_FUNCS = 157;
 
   /**
    * Number of built-in functions that may be added.
@@ -809,7 +812,18 @@ public class FunctionTable
     
     m_functions[FUNC_DEFAULT_COLLATION] = org.apache.xpath.functions.FuncDefaultCollation.class;
     m_functions[FUNC_BASE_URI] = org.apache.xpath.functions.FuncBaseUri.class;
-    m_functions[FUNC_DOCUMENT_URI] = org.apache.xpath.functions.FuncDocumentUri.class;    
+    m_functions[FUNC_DOCUMENT_URI] = org.apache.xpath.functions.FuncDocumentUri.class;        
+    
+    // XPath 3.1 built-in functions configurations for the map 
+    // functions namespace http://www.w3.org/2005/xpath-functions/map
+    m_functions[FUNC_MAP_MERGE] = org.apache.xpath.functions.map.FuncMapMerge.class;
+    m_functions[FUNC_MAP_SIZE] = org.apache.xpath.functions.map.FuncMapSize.class;
+    m_functions[FUNC_MAP_KEYS] = org.apache.xpath.functions.map.FuncMapKeys.class;
+    m_functions[FUNC_MAP_CONTAINS] = org.apache.xpath.functions.map.FuncMapContains.class;
+    m_functions[FUNC_MAP_GET] = org.apache.xpath.functions.map.FuncMapGet.class;
+    m_functions[FUNC_MAP_PUT] = org.apache.xpath.functions.map.FuncMapPut.class;
+    m_functions[FUNC_MAP_ENTRY] = org.apache.xpath.functions.map.FuncMapEntry.class;
+    m_functions[FUNC_MAP_FOREACH] = org.apache.xpath.functions.map.FuncMapForEach.class;
     
     // XPath 3.1 built-in functions configurations for the array 
     // functions namespace http://www.w3.org/2005/xpath-functions/array    
@@ -827,16 +841,6 @@ public class FunctionTable
     m_functions[FUNC_ARRAY_FOR_EACH] = org.apache.xpath.functions.array.FuncArrayForEach.class;
     m_functions[FUNC_ARRAY_FILTER] = org.apache.xpath.functions.array.FuncArrayFilter.class;
     m_functions[FUNC_ARRAY_FOR_EACH_PAIR] = org.apache.xpath.functions.array.FuncArrayForEachPair.class;
-    
-    // XPath 3.1 built-in functions configurations for the map 
-    // functions namespace http://www.w3.org/2005/xpath-functions/map    
-    m_functions[FUNC_MAP_SIZE] = org.apache.xpath.functions.map.FuncMapSize.class;
-    m_functions[FUNC_MAP_KEYS] = org.apache.xpath.functions.map.FuncMapKeys.class;
-    m_functions[FUNC_MAP_CONTAINS] = org.apache.xpath.functions.map.FuncMapContains.class;
-    m_functions[FUNC_MAP_GET] = org.apache.xpath.functions.map.FuncMapGet.class;
-    m_functions[FUNC_MAP_PUT] = org.apache.xpath.functions.map.FuncMapPut.class;
-    m_functions[FUNC_MAP_ENTRY] = org.apache.xpath.functions.map.FuncMapEntry.class;
-    m_functions[FUNC_MAP_FOREACH] = org.apache.xpath.functions.map.FuncMapForEach.class;
     
     m_functions[FUNC_PARSE_JSON] = org.apache.xpath.functions.FuncParseJson.class;
     
@@ -1101,6 +1105,8 @@ public class FunctionTable
          
          // XPath 3.1 functions configurations for the map functions 
          // namespace http://www.w3.org/2005/xpath-functions/map
+         m_functionID.put(Keywords.FUNC_MAP_MERGE,
+                          new Integer(FunctionTable.FUNC_MAP_MERGE));
          m_functionID.put(Keywords.FUNC_MAP_SIZE,
                           new Integer(FunctionTable.FUNC_MAP_SIZE));
          m_functionID.put(Keywords.FUNC_MAP_KEYS,
