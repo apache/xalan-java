@@ -18,6 +18,7 @@ package org.apache.xpath.functions.map;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -81,7 +82,7 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	       validateTypeOfSecondArg(arg1, xctxt);
 	    }
 	    
-	    if (OPTION_REJECT.equals(getOptionsStrVal(arg1, xctxt)) && isMapMergeReject(arg0, xctxt)) {
+	    if ((arg1 != null) && OPTION_REJECT.equals(getOptionsStrVal(arg1, xctxt)) && isMapMergeReject(arg0, xctxt)) {
 	        throw new javax.xml.transform.TransformerException("FOJS0003 : Maps could not be merged, because one or more duplicate "
 	        		                                                               + "keys were found within maps to be merged, and an map merge "
 	        		                                                               + "option 'reject' was used.", srcLocator);
@@ -119,15 +120,15 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    
 	    if (arg1 == null || OPTION_USE_FIRST.equals(getOptionsStrVal(arg1, xctxt)) || 
 	    		            OPTION_USE_ANY.equals(getOptionsStrVal(arg1, xctxt))) {
-	    	ResultSequence rSeq = null;
+	    	ResultSequence rSeq = null;	    	
 	    	Map<XObject, XObject> nativeResultMap = new HashMap<XObject, XObject>();
 	    	if (arg0 instanceof Variable) {
-	    		rSeq = (ResultSequence)(((Variable)arg0).execute(xctxt));
+	    		rSeq = (ResultSequence)(((Variable)arg0).execute(xctxt));	    		
 	    		for (int idx = rSeq.size() - 1; idx >= 0; idx--) {
 	    			XPathMap map = (XPathMap)rSeq.item(idx);
 	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
 	    			nativeResultMap.putAll(nativeMap);	        	 
-	    		}
+	    		}	    		
 	    		XPathMap resultMap = new XPathMap();
 	    		resultMap.setNativeMap(nativeResultMap);
 	    		result = resultMap;
@@ -138,37 +139,78 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    			XPathMap map = (XPathMap)rSeq.item(idx);
 	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
 	    			nativeResultMap.putAll(nativeMap);	        	 
-	    		}
+	    		}	    		
 	    		XPathMap resultMap = new XPathMap();
 	    		resultMap.setNativeMap(nativeResultMap);
 	    		result = resultMap;
 	    	}
 	    }
 	    else if (OPTION_USE_LAST.equals(getOptionsStrVal(arg1, xctxt))) {
-	    	ResultSequence rSeq = null;
-	    	Map<XObject, XObject> nativeResultMap = new HashMap<XObject, XObject>();
+	    	ResultSequence rSeq = null;	    	
+	    	Map<XObject, XObject> nativeResultMap = new HashMap<XObject, XObject>();	    	
+	    	if (arg0 instanceof Variable) {
+	    		rSeq = (ResultSequence)(((Variable)arg0).execute(xctxt));	    		
+	    		for (int idx = 0; idx < rSeq.size(); idx++) {
+	    			XPathMap map = (XPathMap)rSeq.item(idx);
+	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
+	    			nativeResultMap.putAll(nativeMap);	        	 
+	    		}	    		
+	    		XPathMap resultMap = new XPathMap();
+	    		resultMap.setNativeMap(nativeResultMap);
+	    		result = resultMap;
+	    	}
+	    	else {
+	    		rSeq = (ResultSequence)(arg0.execute(xctxt));	    		
+	    		for (int idx = 0; idx < rSeq.size(); idx++) {
+	    			XPathMap map = (XPathMap)rSeq.item(idx);
+	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
+	    			nativeResultMap.putAll(nativeMap);	        	 
+	    		}	    		
+	    		XPathMap resultMap = new XPathMap();
+	    		resultMap.setNativeMap(nativeResultMap);
+	    		result = resultMap;
+	    	}
+	    }	    
+	    else if (OPTION_COMBINE.equals(getOptionsStrVal(arg1, xctxt))) {
+	    	ResultSequence rSeq = null;	    	
+	    	
+	    	// This variable shall contain union of keys of all the maps, in 
+	    	// an input sequence (i.e, map:merge function call's 1st argument).
+	    	Set<XObject> distinctMapKeys = new HashSet<XObject>();	    	
 	    	if (arg0 instanceof Variable) {
 	    		rSeq = (ResultSequence)(((Variable)arg0).execute(xctxt));
 	    		for (int idx = 0; idx < rSeq.size(); idx++) {
 	    			XPathMap map = (XPathMap)rSeq.item(idx);
 	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
-	    			nativeResultMap.putAll(nativeMap);	        	 
-	    		}
-	    		XPathMap resultMap = new XPathMap();
-	    		resultMap.setNativeMap(nativeResultMap);
-	    		result = resultMap;
+	    			distinctMapKeys.addAll(nativeMap.keySet());    	 
+	    		}	    		
 	    	}
 	    	else {
 	    		rSeq = (ResultSequence)(arg0.execute(xctxt));
 	    		for (int idx = 0; idx < rSeq.size(); idx++) {
 	    			XPathMap map = (XPathMap)rSeq.item(idx);
 	    			Map<XObject, XObject> nativeMap = map.getNativeMap();
-	    			nativeResultMap.putAll(nativeMap);	        	 
-	    		}
-	    		XPathMap resultMap = new XPathMap();
-	    		resultMap.setNativeMap(nativeResultMap);
-	    		result = resultMap;
+	    			distinctMapKeys.addAll(nativeMap.keySet());	        	 
+	    		}	    			    		
 	    	}
+	    	
+	    	Iterator<XObject> iter = distinctMapKeys.iterator();	    	
+	    	Map<XObject, XObject> nativeResultMap = new HashMap<XObject, XObject>();	    		    
+	    	while (iter.hasNext()) {
+	    	   XObject key = iter.next();
+	    	   ResultSequence concatinatedValues = new ResultSequence();	    	   
+	    	   for (int idx = 0; idx < rSeq.size(); idx++) {
+	    		  XPathMap map = (XPathMap)rSeq.item(idx);
+	    		  XObject mapEntryValue = map.get(key);
+	    		  if (mapEntryValue != null) {
+	    		    concatinatedValues.add(mapEntryValue);
+	    		  }
+	    	   }	    	   
+	    	   nativeResultMap.put(key, concatinatedValues);	    	   
+	    	}
+	    	XPathMap resultMap = new XPathMap();
+	    	resultMap.setNativeMap(nativeResultMap);
+	    	result = resultMap;
 	    }
 	    
 	    return result;
