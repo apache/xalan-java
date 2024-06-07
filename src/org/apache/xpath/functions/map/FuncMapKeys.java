@@ -20,8 +20,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import javax.xml.transform.SourceLocator;
-
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
@@ -31,7 +29,7 @@ import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.operations.Variable;
 
 /**
- * Implementation of an map:keys function.
+ * Implementation of an XPath 3.1 function, map:keys.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -44,8 +42,6 @@ public class FuncMapKeys extends FunctionOneArg {
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{
 		ResultSequence resultSeq = new ResultSequence();
-	       
-	    SourceLocator srcLocator = xctxt.getSAXLocator();
 	       
 	    Expression arg0 = getArg0();
 	    

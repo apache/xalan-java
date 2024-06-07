@@ -18,8 +18,6 @@ package org.apache.xpath.functions.map;
 
 import java.util.Map;
 
-import javax.xml.transform.SourceLocator;
-
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
@@ -32,7 +30,7 @@ import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of an map:contains function.
+ * Implementation of an XPath 3.1 function, map:contains.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -45,8 +43,6 @@ public class FuncMapContains extends Function2Args {
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{
 		XObject result = null;
-	       
-	    SourceLocator srcLocator = xctxt.getSAXLocator();
 	       
 	    Expression arg0 = getArg0();
 	    XPathMap xpathMap = null;

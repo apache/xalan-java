@@ -18,8 +18,6 @@ package org.apache.xpath.functions.map;
 
 import java.util.Map;
 
-import javax.xml.transform.SourceLocator;
-
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function3Args;
@@ -28,7 +26,7 @@ import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.operations.Variable;
 
 /**
- * Implementation of an map:put function.
+ * Implementation of an XPath 3.1 function, map:put.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -42,9 +40,7 @@ public class FuncMapPut extends Function3Args {
 	{
 		XObject result = null;
 	       
-	    SourceLocator srcLocator = xctxt.getSAXLocator();
-	       
-	    Expression arg0 = getArg0();   // 'map' argument
+	    Expression arg0 = getArg0();
 	    XPathMap xpathMap = null;
 	    
 	    if (arg0 instanceof Variable) {
@@ -58,10 +54,10 @@ public class FuncMapPut extends Function3Args {
 	    
 	    Map<XObject, XObject> nativeMap = xpathMap.getNativeMap();
 	    
-	    Expression arg1 = getArg1();    // 'key' argument
+	    Expression arg1 = getArg1();
 	    XObject mapEntryKey = arg1.execute(xctxt);
 	    
-	    Expression arg2 = getArg2();   // 'value' argument
+	    Expression arg2 = getArg2();
 	    XObject mapEntryValue = arg2.execute(xctxt);
 	    
 	    nativeMap.put(mapEntryKey, mapEntryValue);

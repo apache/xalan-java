@@ -31,7 +31,7 @@ import org.apache.xpath.operations.Variable;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of an map:get function.
+ * Implementation of an XPath 3.1 function, map:get.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

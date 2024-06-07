@@ -37,7 +37,7 @@ import org.apache.xpath.operations.Variable;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of an map:merge function.
+ * Implementation of an XPath 3.1 function, map:merge.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -82,7 +82,7 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	       validateTypeOfSecondArg(arg1, xctxt);
 	    }
 	    
-	    if ((arg1 != null) && OPTION_REJECT.equals(getOptionsStrVal(arg1, xctxt)) && isMapMergeReject(arg0, xctxt)) {
+	    if ((arg1 != null) && OPTION_REJECT.equals(getOptionsStrVal(arg1, xctxt)) && isMapMergeToBeRejected(arg0, xctxt)) {
 	        throw new javax.xml.transform.TransformerException("FOJS0003 : Maps could not be merged, because one or more duplicate "
 	        		                                                               + "keys were found within maps to be merged, and an map merge "
 	        		                                                               + "option 'reject' was used.", srcLocator);
@@ -176,7 +176,8 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	    	
 	    	// This variable shall contain union of keys of all the maps, in 
 	    	// an input sequence (i.e, map:merge function call's 1st argument).
-	    	Set<XObject> distinctMapKeys = new HashSet<XObject>();	    	
+	    	Set<XObject> distinctMapKeys = new HashSet<XObject>();
+	    	
 	    	if (arg0 instanceof Variable) {
 	    		rSeq = (ResultSequence)(((Variable)arg0).execute(xctxt));
 	    		for (int idx = 0; idx < rSeq.size(); idx++) {
@@ -217,74 +218,75 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	}
 	
 	/**
-	 * Should the merge of maps be rejected, due to any duplicate keys present within maps.
+	 * Determine, whether the merge of maps is to be rejected, due to any duplicate 
+	 * keys present within all input maps to be merged.
 	 */
-	private boolean isMapMergeReject(Expression arg0, XPathContext xctxt) throws TransformerException {
+	private boolean isMapMergeToBeRejected(Expression inputMapsExpr, XPathContext xctxt) throws TransformerException {
 		
-		boolean isMapMergeReject = true;
+		boolean result = true;
 		
 		ResultSequence rSeq = null;
 		
-		if (arg0 instanceof Variable) {
-    	   rSeq = (ResultSequence)(((Variable)arg0).execute(xctxt));
+		if (inputMapsExpr instanceof Variable) {
+    	   rSeq = (ResultSequence)(((Variable)inputMapsExpr).execute(xctxt));
     	}
 		else {
-		   rSeq = (ResultSequence)(arg0.execute(xctxt));	
+		   rSeq = (ResultSequence)(inputMapsExpr.execute(xctxt));	
 		}
 		
-		int totalKeys = 0;
+		int totalMapKeys = 0;
 		
+		// This variable shall contain, distinct key values across 
+		// all input maps to be merged.
 		Set<XObject> mergeOfKeysSet = new HashSet<XObject>();
 		
 		for (int idx = 0; idx < rSeq.size(); idx++) {
 		   XPathMap map = (XPathMap)rSeq.item(idx);
 		   Map<XObject, XObject> nativeMap = map.getNativeMap();
 		   Set<XObject> keysSet = nativeMap.keySet();
-		   totalKeys += keysSet.size();
+		   totalMapKeys += keysSet.size();
 		   mergeOfKeysSet.addAll(keysSet);
 		}
 		
-		int countOfKeysAfterKeyMerge = mergeOfKeysSet.size();
-		
-		if (totalKeys == countOfKeysAfterKeyMerge) {
-			isMapMergeReject = false;
+		if (totalMapKeys == mergeOfKeysSet.size()) {
+			result = false;
 		}
 		
-		return isMapMergeReject;
+		return result;
 	}
 
 	/**
-	 * Get the string value, of map's key named "duplicates".
+	 * Get the string value, of map entry's value for entry key name "duplicates".
 	 */
-	private String getOptionsStrVal(Expression expr, XPathContext xctxt) throws TransformerException {
+	private String getOptionsStrVal(Expression optionsMapExpr, XPathContext xctxt) throws TransformerException {
 		
-	   String optionsStrVal = null;
+	   String optionsMapEntryValue = null;
 	   
-	   if (expr instanceof Variable) {
-	      XObject obj = ((Variable)expr).execute(xctxt);
+	   if (optionsMapExpr instanceof Variable) {
+	      XObject obj = ((Variable)optionsMapExpr).execute(xctxt);
 	      XPathMap xpathMap = (XPathMap)obj;
 	      obj = xpathMap.get(new XSString(DUPLICATES_KEY_NAME));
-	      optionsStrVal = XslTransformEvaluationHelper.getStrVal(obj);  
+	      optionsMapEntryValue = XslTransformEvaluationHelper.getStrVal(obj);  
 	   }
 	   else {
-		  XObject obj = expr.execute(xctxt);
+		  XObject obj = optionsMapExpr.execute(xctxt);
 		  XPathMap xpathMap = (XPathMap)obj;
 	      obj = xpathMap.get(new XSString(DUPLICATES_KEY_NAME));
-	      optionsStrVal = XslTransformEvaluationHelper.getStrVal(obj);
+	      optionsMapEntryValue = XslTransformEvaluationHelper.getStrVal(obj);
 	   }
 	   
-	   return optionsStrVal; 
+	   return optionsMapEntryValue; 
 	}
 
 	/**
      * Validate the expected type of map:merge function's, 1st argument.
 	 */
-	private void validateTypeOfFirstArg(Expression arg, XPathContext xctxt) throws TransformerException {
+	private void validateTypeOfFirstArg(Expression arg0, XPathContext xctxt) throws TransformerException {
 		
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 		
-		if (arg instanceof Variable) {
-	       XObject obj = ((Variable)arg).execute(xctxt);
+		if (arg0 instanceof Variable) {
+	       XObject obj = ((Variable)arg0).execute(xctxt);
 	       if (obj instanceof ResultSequence) {
 	    	  ResultSequence rSeq = (ResultSequence)obj;
 	    	  for (int idx = 0; idx < rSeq.size(); idx++) {
@@ -302,7 +304,7 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	       }
 		}
 		else {
-		   XObject obj = arg.execute(xctxt);
+		   XObject obj = arg0.execute(xctxt);
            if (obj instanceof ResultSequence) {
         	  ResultSequence rSeq = (ResultSequence)obj;
  	    	  for (int idx = 0; idx < rSeq.size(); idx++) {
@@ -324,18 +326,18 @@ public class FuncMapMerge extends FunctionMultiArgs {
 	/**
      * Validate the expected type of map:merge function's, 2nd argument.
 	 */
-	private void validateTypeOfSecondArg(Expression arg, XPathContext xctxt) throws TransformerException {        
+	private void validateTypeOfSecondArg(Expression arg1, XPathContext xctxt) throws TransformerException {        
         
 		SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        if (arg instanceof Variable) {
- 	       XObject obj = ((Variable)arg).execute(xctxt);
+        if (arg1 instanceof Variable) {
+ 	       XObject obj = ((Variable)arg1).execute(xctxt);
  	       if (obj instanceof XPathMap) {
  	    	  validateOptionsMap(obj, srcLocator);
  	       }
  		}
  		else {
- 		   XObject obj = arg.execute(xctxt);
+ 		   XObject obj = arg1.execute(xctxt);
  		   if (obj instanceof XPathMap) {
  			  validateOptionsMap(obj, srcLocator);
  	       }

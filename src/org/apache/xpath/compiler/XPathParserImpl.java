@@ -1603,6 +1603,37 @@ public class XPathParserImpl
   }
   
   /**
+   *  Get XPath map constructor's string value.
+   */
+  private String getMapConstructorStrValue() throws TransformerException {
+	 StringBuffer mapStrBuf = new StringBuffer();
+	 
+	 mapStrBuf.append(m_token);
+	 
+	 consumeExpected("map");
+	 while (m_token != null) {
+		if (tokenIs('}')) {
+		   mapStrBuf.append(m_token);
+		   consumeExpected('}');
+		   if (getCharCount(mapStrBuf.toString(), '{') == 
+				                 getCharCount(mapStrBuf.toString(), '}')) {
+			   break; 
+		   }
+		   else {
+			   mapStrBuf.append(m_token);
+			   nextToken(); 
+		   }
+		}
+		else {
+		   mapStrBuf.append(m_token);
+		   nextToken();
+		}			 
+     }
+	 
+	 return mapStrBuf.toString(); 
+  }
+  
+  /**
    *  Get XPath array constructor's string value.
    */
   private String getXPathArrayConstructorStrValue(boolean isSquareArrayCons) throws TransformerException {
@@ -1634,45 +1665,13 @@ public class XPathParserImpl
   }
   
   /**
-   *  Get XPath map constructor's string value.
+   * Get the count of specified character within a string.
    */
-  private String getMapConstructorStrValue() throws TransformerException {
-	 StringBuffer mapStrBuf = new StringBuffer();
-	 
-	 mapStrBuf.append(m_token);
-	 
-	 consumeExpected("map");
-	 while (m_token != null) {
-		if (tokenIs('}')) {
-		   mapStrBuf.append(m_token);
-		   consumeExpected('}');
-		   if (countCharInStr(mapStrBuf.toString(), '{') == 
-				                 countCharInStr(mapStrBuf.toString(), '}')) {
-			   break; 
-		   }
-		   else {
-			   mapStrBuf.append(m_token);
-			   nextToken(); 
-		   }
-		}
-		else {
-		   mapStrBuf.append(m_token);
-		   nextToken();
-		}			 
-     }
-	 
-	 return mapStrBuf.toString(); 
-  }
-  
-  /**
-   * Get the count of specified character within 
-   * a string.
-   */
-  private int countCharInStr(String str, char cVal) {
+  private int getCharCount(String str, char c) {
 	 int count = 0;
 	 
 	 for (int idx = 0; idx < str.length(); idx++) {
-		if (str.charAt(idx) == cVal) {
+		if (str.charAt(idx) == c) {
 		   count++;	
 		}
 	 }

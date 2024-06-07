@@ -16,8 +16,6 @@
  */
 package org.apache.xpath.functions.map;
 
-import javax.xml.transform.SourceLocator;
-
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
@@ -29,7 +27,7 @@ import org.apache.xpath.operations.Variable;
 import xml.xpath31.processor.types.XSInteger;
 
 /**
- * Implementation of the map:size function.
+ * Implementation of an XPath 3.1 function, map:size.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -42,8 +40,6 @@ public class FuncMapSize extends FunctionOneArg {
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{
 	    XObject result = null;
-	       
-	    SourceLocator srcLocator = xctxt.getSAXLocator();
 	       
 	    Expression arg0 = getArg0();
 	    

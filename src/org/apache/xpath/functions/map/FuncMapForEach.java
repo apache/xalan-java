@@ -43,7 +43,7 @@ import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
 
 /**
- * Implementation of map:for-each function.
+ * Implementation of an XPath 3.1 function, map:for-each.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

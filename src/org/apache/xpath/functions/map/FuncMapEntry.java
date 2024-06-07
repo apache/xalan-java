@@ -16,8 +16,6 @@
  */
 package org.apache.xpath.functions.map;
 
-import javax.xml.transform.SourceLocator;
-
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
@@ -29,7 +27,7 @@ import org.apache.xpath.operations.Variable;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of an map:entry function.
+ * Implementation of an XPath 3.1 function, map:entry.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -41,9 +39,7 @@ public class FuncMapEntry extends Function2Args {
 
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
 	{
-		XObject result = null;
-	       
-	    SourceLocator srcLocator = xctxt.getSAXLocator();
+		XObject result = null;	       
 	       
 	    Expression arg0 = getArg0();
 	    Expression arg1 = getArg1();
