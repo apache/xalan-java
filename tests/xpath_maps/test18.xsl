@@ -7,10 +7,10 @@
                 version="3.0">
                 
    <!-- Author: mukulg@apache.org -->                 
-				
-   <xsl:output method="xml" indent="yes"/>
    
-   <!-- An XSLT test case, to test XPath 3.1 function map:for-each. --> 
+   <!-- An XSLT test case, to test XPath 3.1 function map:for-each. -->
+   
+   <xsl:output method="xml" indent="yes"/>
   
    <xsl:template match="/">
      <result>

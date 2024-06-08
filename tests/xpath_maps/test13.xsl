@@ -6,10 +6,10 @@
                 version="3.0">				
 
    <!-- Author: mukulg@apache.org -->                 				
-
-   <xsl:output method="xml" indent="yes"/>
    
-   <!-- An XPath 3.1 test case, to test maps and arrays. -->
+   <!-- An XSLT test case to test, XPath 3.1 maps and arrays. -->
+   
+   <xsl:output method="xml" indent="yes"/>
 
    <xsl:template match="/">	  
       <result>

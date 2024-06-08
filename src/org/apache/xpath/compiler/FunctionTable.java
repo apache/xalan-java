@@ -498,6 +498,9 @@ public class FunctionTable
   
   /** The 'array:fold-right()' id. */
   public static final int FUNC_ARRAY_FOLD_RIGHT = 158;
+  
+  /** The 'map:remove()' id. */
+  public static final int FUNC_MAP_REMOVE = 159;
 
   // Proprietary
 
@@ -544,7 +547,8 @@ public class FunctionTable
   static final Integer[] XPATH_MAP_FUNC_IDS = new Integer[] { new Integer(FUNC_MAP_MERGE), new Integer(FUNC_MAP_SIZE), 
 		                                                      new Integer(FUNC_MAP_KEYS), new Integer(FUNC_MAP_CONTAINS), 
 		                                                      new Integer(FUNC_MAP_GET), new Integer(FUNC_MAP_PUT), 
-		                                                      new Integer(FUNC_MAP_ENTRY), new Integer(FUNC_MAP_FOREACH) };
+		                                                      new Integer(FUNC_MAP_ENTRY), new Integer(FUNC_MAP_FOREACH),
+		                                                      new Integer(FUNC_MAP_REMOVE) };
   
   static final List<Integer> XPATH_MAP_FUNC_IDS_ARR = Arrays.asList(XPATH_MAP_FUNC_IDS);
   
@@ -589,7 +593,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 159;
+  private static final int NUM_BUILT_IN_FUNCS = 160;
 
   /**
    * Number of built-in functions that may be added.
@@ -837,6 +841,7 @@ public class FunctionTable
     m_functions[FUNC_MAP_PUT] = org.apache.xpath.functions.map.FuncMapPut.class;
     m_functions[FUNC_MAP_ENTRY] = org.apache.xpath.functions.map.FuncMapEntry.class;
     m_functions[FUNC_MAP_FOREACH] = org.apache.xpath.functions.map.FuncMapForEach.class;
+    m_functions[FUNC_MAP_REMOVE] = org.apache.xpath.functions.map.FuncMapRemove.class;
     
     // XPath 3.1 built-in functions configurations for the array 
     // functions namespace http://www.w3.org/2005/xpath-functions/array    
@@ -1136,6 +1141,8 @@ public class FunctionTable
                          new Integer(FunctionTable.FUNC_MAP_ENTRY));
          m_functionID.put(Keywords.FUNC_MAP_FOREACH,
                          new Integer(FunctionTable.FUNC_MAP_FOREACH));
+         m_functionID.put(Keywords.FUNC_MAP_REMOVE,
+                         new Integer(FunctionTable.FUNC_MAP_REMOVE));
          
          // XPath 3.1 functions configurations for the array functions 
          // namespace http://www.w3.org/2005/xpath-functions/array

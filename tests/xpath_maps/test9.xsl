@@ -4,11 +4,14 @@
 				exclude-result-prefixes="map"
                 version="3.0">
                 
-   <!-- Author: mukulg@apache.org -->                  			
-
-   <xsl:output method="xml" indent="yes"/>
+   <!-- Author: mukulg@apache.org -->                  			                 				
    
-   <!-- An XPath 3.1 test case, to test nesting of arrays and maps within another map. -->
+   <!-- An XSLT test case to test, XPath 3.1 map constructor expression
+        that nests another map. -->
+        
+   <xsl:output method="xml" indent="yes"/> 
+   
+   <xsl:output method="xml" indent="yes"/>
 
    <xsl:template match="/">
 	  <xsl:variable name="map1" select="map {

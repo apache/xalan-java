@@ -4,12 +4,11 @@
 				exclude-result-prefixes="map"
                 version="3.0">				
 
-   <!-- Author: mukulg@apache.org -->                
-
-   <xsl:output method="xml" indent="yes"/>
+   <!-- Author: mukulg@apache.org -->                   
    
-   <!-- An XPath 3.1 test case, to test an XPath map:get 
-        function. -->
+   <!-- An XPath 3.1 test case, to test an XPath function map:get. -->
+        
+   <xsl:output method="xml" indent="yes"/>        
 
    <xsl:template match="/">
       <xsl:variable name="map1" select="map{ 0 : 'Sonntag', 1 : 'Montag', 2 : 'Dienstag',

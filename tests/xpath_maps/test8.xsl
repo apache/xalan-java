@@ -6,10 +6,11 @@
                 version="3.0">
                 
    <!-- Author: mukulg@apache.org -->                
-
-   <xsl:output method="xml" indent="yes"/>
    
-   <!-- An XPath 3.1 test case, to test nesting of arrays and maps within another map. -->                			
+   <!-- An XSLT test case to test, XPath 3.1 map constructor expression
+        that nests other maps and arrays. -->
+   
+   <xsl:output method="xml" indent="yes"/>                			
 
    <xsl:output method="xml" indent="yes"/>
 

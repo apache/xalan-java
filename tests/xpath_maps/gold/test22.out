@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><map>
+  <entry>
+    <key>0</key>
+    <value>Sonntag</value>
+  </entry>
+  <entry>
+    <key>1</key>
+    <value>Montag</value>
+  </entry>
+  <entry>
+    <key>2</key>
+    <value>Dienstag</value>
+  </entry>
+  <entry>
+    <key>3</key>
+    <value>Mittwoch</value>
+  </entry>
+  <entry>
+    <key>4</key>
+    <value>Donnerstag</value>
+  </entry>
+  <entry>
+    <key>5</key>
+    <value>Freitag</value>
+  </entry>
+  <entry>
+    <key>6</key>
+    <value>Samstag</value>
+  </entry>
+</map>

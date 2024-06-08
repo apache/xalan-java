@@ -5,11 +5,10 @@
                 version="3.0">				
 
    <!-- Author: mukulg@apache.org -->                
-
-   <xsl:output method="xml" indent="yes"/>
    
-   <!-- An XPath 3.1 test case, to test an XPath map:size 
-        function. -->
+   <!-- An XPath 3.1 test case, to test an XPath function map:size. -->
+        
+   <xsl:output method="xml" indent="yes"/>        
 
    <xsl:template match="/">
       <xsl:variable name="map1" select="map {

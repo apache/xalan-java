@@ -597,6 +597,9 @@ public class Keywords
   /** map:for-each function string. */
   public static final String FUNC_MAP_FOREACH = "for-each";
   
+  /** map:remove function string. */
+  public static final String FUNC_MAP_REMOVE = "remove";
+  
   /** parse-json function string. */
   public static final String FUNC_PARSE_JSON = "parse-json";
   

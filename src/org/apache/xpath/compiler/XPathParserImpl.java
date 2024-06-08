@@ -1151,6 +1151,9 @@ public class XPathParserImpl
 		      case "entry":
 			     id = FunctionTable.FUNC_MAP_ENTRY;
 			     break;
+		      case "remove":
+				 id = FunctionTable.FUNC_MAP_REMOVE;
+				 break;
 		      case "for-each":
 			     id = FunctionTable.FUNC_MAP_FOREACH;
 			     break;

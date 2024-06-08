@@ -5,12 +5,12 @@
 				exclude-result-prefixes="xs map"
                 version="3.0">				
 
-   <!-- Author: mukulg@apache.org -->                 				
+   <!-- Author: mukulg@apache.org -->
+   
+   <!-- An XSLT test case to test, XPath 3.1 SequenceType MapTest specified as 
+        value of xsl:variable's "as" attribute. -->            				
 
    <xsl:output method="xml" indent="yes"/>
-   
-   <!-- An XPath 3.1 test case, to test SequenceType MapTest specified as 
-        value of xsl:variable's "as" attribute. -->
 
    <xsl:template match="/">	  
       <result>

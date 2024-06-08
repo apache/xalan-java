@@ -6,11 +6,11 @@
                 version="3.0">
                 
    <!-- Author: mukulg@apache.org -->                 				
-
-   <xsl:output method="xml" indent="yes"/>
    
-   <!-- An XPath 3.1 test case, to test map constructor expression
-        and the associated map functions. -->
+   <!-- An XSLT test case to test, XPath 3.1 map constructor expression
+        and function map:keys. -->
+        
+   <xsl:output method="xml" indent="yes"/>        
 
    <xsl:template match="/">
 	  <xsl:variable name="map1" select="map {'true' : xs:boolean(1), 'false' : xs:boolean(0)}"/>

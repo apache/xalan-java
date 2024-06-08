@@ -5,11 +5,11 @@
                 version="3.0">				
 
    <!-- Author: mukulg@apache.org -->                
-
-   <xsl:output method="xml" indent="yes"/>
    
-   <!-- An XPath 3.1 test case, to test an XPath map:entry 
-        function. -->
+   <!-- An XPath 3.1 test case, to test XPath functions map:entry, 
+        map:get. -->
+        
+  <xsl:output method="xml" indent="yes"/>
 
    <xsl:template match="/">
       <result>

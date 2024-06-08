@@ -47,6 +47,7 @@ import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 
+import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 
@@ -106,6 +107,9 @@ public class MapConstructor extends Expression {
            XObject mapEntryKey = evaluateXPathExpression(xpathKeyStr, xctxt, KEY);
            if (mapEntryKey instanceof XString) {
         	  mapEntryKey = new XSString(((XString)mapEntryKey).str()); 
+           }
+           else if (mapEntryKey instanceof XNumber) {
+        	  mapEntryKey = new XSDouble(((XNumber)mapEntryKey).num());  
            }
            
            if (prefixTable != null) {

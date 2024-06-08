@@ -3,11 +3,11 @@
                 version="3.0">
                 
    <!-- Author: mukulg@apache.org -->                
-
-   <xsl:output method="text"/>
    
    <!-- An XPath 3.1 test case, to test an XPath 'map' 
-        expression. -->   
+        expression. -->
+        
+   <xsl:output method="text"/>          
 
    <xsl:template match="/">
       <xsl:variable name="map1" select="map {
@@ -19,7 +19,8 @@
 			  'Fr' : 'Friday',
 			  'Sa' : 'Saturday'}"/>
 			  
-	  <!-- map lookup using function call syntax -->
+	  <!-- The XPath expression used below, does map value lookup 
+	       using function call syntax. -->
 	  <xsl:value-of select="$map1('Su')"/>
    </xsl:template>
    
