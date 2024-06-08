@@ -26,6 +26,13 @@ import java.util.Hashtable;
  * Table of strings to operation code lookups
  * to support implementation of XPath 3.1.
  * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Gary L Peskin <garyp@apache.org>
+ * @author Christine Li <jycli@apache.org>
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XPath 3 specific changes, to this class)
+ * 
  * @xsl.usage internal
  */
 public class Keywords

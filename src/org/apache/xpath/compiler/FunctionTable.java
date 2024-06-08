@@ -30,6 +30,12 @@ import org.apache.xpath.functions.Function;
 
 /**
  * The function table for XPath 3.1.
+ * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Christine Li <jycli@apache.org>
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XPath 3 specific changes, to this class)
  */
 public class FunctionTable
 {

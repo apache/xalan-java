@@ -65,12 +65,12 @@ import org.apache.xpath.res.XPATHErrorResources;
  *      (please also refer to section 'A XPath 3.1 Grammar', within
  *       this document)
  * 
- * @author Scott Boag
+ * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Myriam Midy
- * @author Joseph Kesselman, Ilene Seelemann, Yash Talwar, 
- *         Henry Zongaro, Christine Li
+ * @author Joseph Kesselman <jkesselm@apache.org>, Ilene Seelemann, Yash Talwar, 
+ *         Henry Zongaro (IBM Canada Software Lab), Christine Li <jycli@apache.org>
  *         
- * @author Mukul Gandhi
+ * @author Mukul Gandhi <mukulg@apache.org>
  *         (XPath 3 specific changes, to this class)
  * 
  * @xsl.usage general
