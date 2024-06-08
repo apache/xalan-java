@@ -626,6 +626,12 @@ public class Keywords
   /** array:for-each-pair function string. */
   public static final String FUNC_ARRAY_FOR_EACH_PAIR = "for-each-pair";
   
+  /** array:fold-left function string. */
+  public static final String FUNC_ARRAY_FOLD_LEFT = "fold-left";
+  
+  /** array:fold-right function string. */
+  public static final String FUNC_ARRAY_FOLD_RIGHT = "fold-right";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */

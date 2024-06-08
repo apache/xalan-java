@@ -486,6 +486,12 @@ public class FunctionTable
   
   /** The 'map:merge()' id. */
   public static final int FUNC_MAP_MERGE = 156;
+  
+  /** The 'array:fold-left()' id. */
+  public static final int FUNC_ARRAY_FOLD_LEFT = 157;
+  
+  /** The 'array:fold-right()' id. */
+  public static final int FUNC_ARRAY_FOLD_RIGHT = 158;
 
   // Proprietary
 
@@ -550,7 +556,8 @@ public class FunctionTable
 		                                                        new Integer(FUNC_ARRAY_INSERT_BEFORE),new Integer(FUNC_ARRAY_HEAD),
 		                                                        new Integer(FUNC_ARRAY_TAIL),new Integer(FUNC_ARRAY_REVERSE), 
 		                                                        new Integer(FUNC_ARRAY_JOIN), new Integer(FUNC_ARRAY_FOR_EACH),
-		                                                        new Integer(FUNC_ARRAY_FILTER), new Integer(FUNC_ARRAY_FOR_EACH_PAIR) };
+		                                                        new Integer(FUNC_ARRAY_FILTER), new Integer(FUNC_ARRAY_FOR_EACH_PAIR),
+		                                                        new Integer(FUNC_ARRAY_FOLD_LEFT), new Integer(FUNC_ARRAY_FOLD_RIGHT) };
   
   static final List<Integer> XPATH_ARRAY_FUNC_IDS_ARR = Arrays.asList(XPATH_ARRAY_FUNC_IDS);
 
@@ -576,7 +583,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 157;
+  private static final int NUM_BUILT_IN_FUNCS = 159;
 
   /**
    * Number of built-in functions that may be added.
@@ -841,6 +848,8 @@ public class FunctionTable
     m_functions[FUNC_ARRAY_FOR_EACH] = org.apache.xpath.functions.array.FuncArrayForEach.class;
     m_functions[FUNC_ARRAY_FILTER] = org.apache.xpath.functions.array.FuncArrayFilter.class;
     m_functions[FUNC_ARRAY_FOR_EACH_PAIR] = org.apache.xpath.functions.array.FuncArrayForEachPair.class;
+    m_functions[FUNC_ARRAY_FOLD_LEFT] = org.apache.xpath.functions.array.FuncArrayFoldLeft.class;
+    m_functions[FUNC_ARRAY_FOLD_RIGHT] = org.apache.xpath.functions.array.FuncArrayFoldRight.class;
     
     m_functions[FUNC_PARSE_JSON] = org.apache.xpath.functions.FuncParseJson.class;
     
@@ -1150,6 +1159,10 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_ARRAY_FILTER));
          m_functionID.put(Keywords.FUNC_ARRAY_FOR_EACH_PAIR,
                           new Integer(FunctionTable.FUNC_ARRAY_FOR_EACH_PAIR));
+         m_functionID.put(Keywords.FUNC_ARRAY_FOLD_LEFT,
+                          new Integer(FunctionTable.FUNC_ARRAY_FOLD_LEFT));
+         m_functionID.put(Keywords.FUNC_ARRAY_FOLD_RIGHT,
+                          new Integer(FunctionTable.FUNC_ARRAY_FOLD_RIGHT));
          
          m_functionID.put(Keywords.FUNC_NAME_STRING,
                           new Integer(FunctionTable.FUNC_NAME));

@@ -1108,7 +1108,13 @@ public class XPathParserImpl
 				 break;
 		      case "for-each-pair":
 				 id = FunctionTable.FUNC_FOR_EACH_PAIR;
-				 break;	
+				 break;
+		      case "fold-left":
+				 id = FunctionTable.FUNC_FOLD_LEFT;
+				 break;
+		      case "fold-right":
+			     id = FunctionTable.FUNC_FOLD_RIGHT;
+			     break;
 			  default:
 				 id = m_functionTable.getFunctionID(key); 
 		}
@@ -1204,6 +1210,12 @@ public class XPathParserImpl
 			     break;
 		      case "for-each-pair":
 			     id = FunctionTable.FUNC_ARRAY_FOR_EACH_PAIR;
+				 break;
+		      case "fold-left":
+				 id = FunctionTable.FUNC_ARRAY_FOLD_LEFT;
+			     break;
+		      case "fold-right":
+			     id = FunctionTable.FUNC_ARRAY_FOLD_RIGHT;
 				 break;
 			  default:
 				 // NO OP 
