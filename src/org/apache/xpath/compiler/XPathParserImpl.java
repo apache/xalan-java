@@ -3213,11 +3213,6 @@ public class XPathParserImpl
 	  
 	  int opPos1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 
-	  if (fIsSequenceTypeXPathExpr) {
-		  fXpathSequenceTypeExpr = SequenceTypeExpr(false);
-		  return;
-	  }
-
 	  nextToken();
 
 	  insertOp(opPos1, 2, OpCodes.OP_MAP_CONSTRUCTOR_EXPR);
