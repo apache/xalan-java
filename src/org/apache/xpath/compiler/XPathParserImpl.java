@@ -66,7 +66,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  *       this document)
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
- * @author Myriam Midy
+ * @author Myriam Midy <mmidy@apache.org>
  * @author Joseph Kesselman <jkesselm@apache.org>, Ilene Seelemann, Yash Talwar, 
  *         Henry Zongaro <zongaro@ca.ibm.com>, Christine Li <jycli@apache.org>
  *         

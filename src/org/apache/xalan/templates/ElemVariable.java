@@ -63,6 +63,15 @@ import xml.xpath31.processor.types.XSString;
  * Implementation of XSLT xsl:variable element.
  * 
  * Ref : https://www.w3.org/TR/xslt-30/#element-variable
+ * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Gary L Peskin <garyp@apache.org>
+ * @author Joseph Kesselman <jkesselm@apache.org>, Morris Kwan <mkwan@apache.org>,
+ *         Brian James Minchau <minchau@apache.org>, Henry Zongaro <zongaro@ca.ibm.com>, 
+ *         Christine Li <jycli@apache.org>
+ *         
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XSLT 3 specific changes, to this class)
  *
  * @xsl.usage advanced
  */

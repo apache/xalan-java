@@ -54,6 +54,13 @@ import xml.xpath31.processor.types.XSAnyAtomicType;
 /**
  * Implementation of the XSLT 3.0 xsl:for-each instruction.
  * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Joseph Kesselman <jkesselm@apache.org>, Myriam Midy <mmidy@apache.org>,
+ *         Ilene Seelemann <ilene@apache.org>
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XSLT 3 specific changes, to this class)
+ * 
  * Ref : https://www.w3.org/TR/xslt-30/#for-each
  * 
  * @xsl.usage advanced

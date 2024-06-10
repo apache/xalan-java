@@ -58,6 +58,13 @@ import org.xml.sax.helpers.NamespaceSupport;
  *
  * @see Stylesheet
  * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Myriam Midy <mmidy@apache.org>
+ * @author Joseph Kesselman <jkesselm@apache.org>
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XSLT 3 specific changes, to this class)
+ * 
  * @xsl.usage advanced
  */
 public class ElemTemplateElement extends UnImplNode
