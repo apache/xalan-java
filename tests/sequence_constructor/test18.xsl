@@ -1,36 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                xmlns:xs="http://www.w3.org/2001/XMLSchema"
-                xmlns:fn1="http://fn1"
-                exclude-result-prefixes="xs fn1"
+                xmlns:math="http://www.w3.org/2005/xpath-functions/math"
+                exclude-result-prefixes="math"
                 version="3.0">
                 
-    <!-- Author: mukulg@apache.org -->                
+   <!-- Author: mukulg@apache.org -->
+   
+   <!-- An XSLT stylesheet test case, where XPath 3.1 built-in function calls 
+        have literal sequence arguments.        
+   -->                                           
 
     <xsl:output method="xml" indent="yes"/>
 
-    <xsl:variable name="degreeCelsiusTemps" select="(5, 10.2, 15, 20.7, 25)" as="xs:double*"/>
-
     <xsl:template match="/">
-      <result>
-        <xsl:for-each select="$degreeCelsiusTemps">
-          <xsl:variable name="degreesTemp" select="."/>
-          <temperature degrees="{$degreesTemp}">
-            <xsl:value-of select="fn1:degreeCelsiusToFahrenheit($degreesTemp)"/>
-          </temperature>
-        </xsl:for-each>
-      </result>
+	   <result>
+	     <xsl:variable name="p" select="math:sin(1)"/>
+	     <xsl:variable name="q" select="math:sin(2)"/>
+	     <xsl:variable name="r" select="math:sin(3)"/>
+	     <one>	       	       
+           <xsl:value-of select="for-each(($p,$q,$r), function($x) { 5 * $x })"/>
+	     </one>
+	     <two>	       
+           <xsl:value-of select="for-each(($p,$q,$r,4,5), function($x) { 5 * $x })"/>
+	     </two>
+	   </result>
     </xsl:template>
-    
-    <!-- An XSL stylesheet function, that converts a degrees celsius temperature
-         value to fahrenheit temperature value, and rounds the result to 
-         two decimal places.
-    -->
-    <xsl:function name="fn1:degreeCelsiusToFahrenheit" as="xs:double">
-       <xsl:param name="c1" as="xs:double"/>
-       <xsl:variable name="formula1" select="($c1 * (9 div 5)) + 32"/>
-       <xsl:sequence select="round($formula1, 2)"/>
-    </xsl:function>
     
     <!--
       * Licensed to the Apache Software Foundation (ASF) under one
@@ -49,5 +43,5 @@
       * See the License for the specific language governing permissions and
       * limitations under the License.
    -->
-
+    
 </xsl:stylesheet>

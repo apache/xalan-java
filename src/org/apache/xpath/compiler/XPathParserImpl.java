@@ -1277,7 +1277,7 @@ public class XPathParserImpl
    */
   protected void Expr() throws javax.xml.transform.TransformerException
   {	  
-      if (fIsBeginParse && isSequenceOrArrayOnParseBegin()) {
+      if (fIsBeginParse && isSequenceOrArrayBegin()) {
     	  boolean isSequenceConstructor = false;    	  
     	  if (tokenIs("(")) {
     		 isSequenceConstructor = true; 
@@ -1467,7 +1467,7 @@ public class XPathParserImpl
               nextToken();
               ExprSingle();
           }
-      }
+      }      
       else if (fIsBeginParse && tokenIs("map")) {
     	  // Parse an XPath "map" expression
     	  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
@@ -1556,10 +1556,10 @@ public class XPathParserImpl
   }
 
   /**
-   * Check whether, XPath expression begins with a literal sequence 
-   * constructor, or literal array constructor.
+   * Check whether, there's beginning of a literal sequence constructor, 
+   * or literal array constructor.
    */
-  private boolean isSequenceOrArrayOnParseBegin() {
+  private boolean isSequenceOrArrayBegin() {
 	  return tokenIs("(") || tokenIs("[") || (tokenIs("array") && lookahead('{', 1));
   }
 
@@ -3171,53 +3171,140 @@ public class XPathParserImpl
    */
   protected void Argument() throws javax.xml.transform.TransformerException
   {
-
+	
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
     
     appendOp(2, OpCodes.OP_ARGUMENT);
     
-    if (tokenIs('(') && lookahead(')', 1)) {
-        // the XPath function argument is ()                
-        
-        nextToken();
-        nextToken();                            
-        
-        insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
-        
-        List<String> sequenceConstructorXPathParts = new ArrayList<String>(); 
-        
-        sequenceConstructorXPathParts.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
-        
-        fXPathSequenceConstructor = new XPathSequenceConstructor();              
-        fXPathSequenceConstructor.setSequenceConstructorXPathParts(
-                                                              sequenceConstructorXPathParts);
-        
-        m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
-                                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
-        
-        return; 
+    if (tokenIs('(')) {
+    	// XPath literal sequence as, function argument
+    	int prevQueueMark = m_queueMark;
+    	
+    	if (lookahead(')', 1)) {
+	        // the XPath function argument is ()                
+	        
+	        consumeExpected('(');
+	        consumeExpected(')');                            
+	        
+	        insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+	        
+	        List<String> sequenceConstructorXPathParts = new ArrayList<String>(); 
+	        
+	        sequenceConstructorXPathParts.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
+	        
+	        fXPathSequenceConstructor = new XPathSequenceConstructor();              
+	        fXPathSequenceConstructor.setSequenceConstructorXPathParts(
+	                                                              sequenceConstructorXPathParts);
+	        
+	        m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
+	                                             m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+	
+	        return;
+    	}
+    	else {
+	       consumeExpected('(');    		
+	    		
+	       List<String> sequenceConstructorXPathParts = new ArrayList<String>();
+	       	 
+	       String xpathExpr = "";
+	       boolean fl1 = true;	       
+	       while (!tokenIs(')')) {
+		      if (!(tokenIs(',') || tokenIs(')'))) {
+		       	 xpathExpr += m_token;
+		       	 nextToken();
+		       	 if (tokenIs(')') && !isStrHasBalancedParentheses("(" + xpathExpr, '(', ')')) {
+		       		if (lookahead(null, 1)) {
+		       		   sequenceConstructorXPathParts.add(xpathExpr);
+		       		   break;
+		       		}
+		       		else if (lookahead(',', 1)) {
+		       		   sequenceConstructorXPathParts.add(xpathExpr);
+					   xpathExpr = "";
+					   break;
+		       		}
+		       		else if (!xpathExpr.contains("(") && tokenIs(')')) {
+		       		   sequenceConstructorXPathParts.add(xpathExpr);
+					   xpathExpr = "";
+					   break;
+		       		}
+		       		else {
+		       		  xpathExpr += m_token;
+		       		}
+			       	nextToken();
+			       	if (tokenIs(')')) {
+			       	   if (isStrHasBalancedParentheses("(" + xpathExpr + ")", '(', ')') && !lookahead(')', 1)) {
+			       		  xpathExpr = ("(" + xpathExpr + m_token); 
+				       	  nextToken();
+				       	  fl1 = false;
+			       	   }
+			       	}
+			       	else {
+			       	   xpathExpr += m_token;
+				       nextToken();
+			       	}
+		       	 }
+		       	 else if (fl1){		       	    
+		       	    if (tokenIs(',')) {
+		       	       sequenceConstructorXPathParts.add(xpathExpr);
+				       xpathExpr = "";
+				       consumeExpected(',');
+		       	    }
+		       	    continue;
+		       	 }
+		       	 else {
+		       		fl1 = true;
+		       		xpathExpr += m_token;
+		       		nextToken();
+		       		break;
+		       	 }
+		      }
+		      else if (tokenIs(',')) {
+		    	 sequenceConstructorXPathParts.add(xpathExpr);
+		    	 xpathExpr = "";
+		    	 consumeExpected(',');
+		      }
+	       } 
+	    		
+	       consumeExpected(')'); 
+	            
+	       if (sequenceConstructorXPathParts.size() > 1) {
+	          insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+	          fXPathSequenceConstructor = new XPathSequenceConstructor();                 
+	          fXPathSequenceConstructor.setSequenceConstructorXPathParts(sequenceConstructorXPathParts);
+	            
+	          m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
+	                                                 m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);	          
+	       }
+	       else {
+	          m_queueMark = prevQueueMark;
+	          m_tokenChar = '(';
+	          Expr();
+	       }
+    	}
     }    
     else if (tokenIs("map")) {
-       // Map expression as, function argument
+       // XPath map expression as, function argument
   	   mapFuncArg();	
     }
-    else {
-       Expr();
+    else {       
+       Expr();       
     }
     
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
                                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+    
   }
 
-  private void mapFuncArg() throws TransformerException {
-	  
+  private void mapFuncArg() throws TransformerException {	  
+
 	  int opPos1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
-
+	  
 	  nextToken();
-
+	  
 	  insertOp(opPos1, 2, OpCodes.OP_MAP_CONSTRUCTOR_EXPR);
 
 	  fMapConstructor = new MapConstructor();
+	  
 	  Map<String, String> nativeMapVar = new HashMap<String, String>();                    
 
 	  consumeExpected('{');
@@ -3274,9 +3361,9 @@ public class XPathParserImpl
 	  }
 
 	  fMapConstructor.setNativeMap(nativeMapVar);
-
+	  
 	  m_ops.setOp(opPos1 + OpMap.MAPINDEX_LENGTH,
-			  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos1);
+			                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos1);
   }
 
   /**
