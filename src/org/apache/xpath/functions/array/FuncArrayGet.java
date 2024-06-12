@@ -25,6 +25,7 @@ import org.apache.xalan.templates.ElemCopyOf;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
@@ -76,8 +77,18 @@ public class FuncArrayGet extends Function2Args {
 		    }
 	    }
 	    
-	    XObject arg1 = null;	    
-	    if (arg1Expr instanceof Variable) {
+	    XObject arg1 = null;
+	    if (arg1Expr instanceof SelfIteratorNoPredicate) {
+	       arg1 = xctxt.getXPath3ContextItem();
+	       if ((arg1 instanceof XSNumericType) || (arg1 instanceof XNumber)) {
+		      result = getFuncResult(arg0Seq, arg1, srcLocator);   
+		   }
+		   else {
+		      throw new javax.xml.transform.TransformerException("FOAY0001 : The 2nd argument of array:get function "
+		    	  		                                                + "call, needs to be an xs:integer value", srcLocator); 
+		   }
+	    }
+	    else if (arg1Expr instanceof Variable) {
 	       arg1 = ((Variable)arg1Expr).execute(xctxt);
 	       if ((arg1 instanceof XSNumericType) || (arg1 instanceof XNumber)) {
 	    	  result = getFuncResult(arg0Seq, arg1, srcLocator);   
