@@ -52,7 +52,7 @@ import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 
 /*
- * An XalanJ XPath parser, constructs an object of this class, 
+ * Xalan-J XPath parser, constructs an object of this class, 
  * to produce run-time representation of an XPath map expression.
  * 
  * Ref: https://www.w3.org/TR/xpath-31/#id-maps
@@ -61,7 +61,7 @@ import xml.xpath31.processor.types.XSString;
  * 
  * @xsl.usage advanced
  */
-public class MapConstructor extends Expression {
+public class XPathMapConstructor extends Expression {
     
 	private static final long serialVersionUID = 2664427126053000318L;
 	

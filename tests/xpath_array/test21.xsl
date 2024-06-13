@@ -21,6 +21,15 @@
 		 <two>
             <xsl:value-of select="array:filter(array {'A', 'B', 1, 2}, function($x) {$x instance of xs:integer})"/>
 	     </two>
+	     <three>
+            <xsl:variable name="arrayWithPairs" select="array:for-each-pair(['A', 'B', 'C'], [1, 2, 3], function($x, $y) {[$x, $y]})"/>
+			<xsl:for-each select="1 to array:size($arrayWithPairs)">
+			   <xsl:variable name="item" select="array:get($arrayWithPairs, .)"/>
+			   <item isArray="{$item instance of array(*)}">
+			      <xsl:value-of select="$item"/>
+			   </item>
+			</xsl:for-each>
+	      </three>
 	   </result>
     </xsl:template>
     

@@ -256,13 +256,8 @@ public abstract class DTMManager
   }
   
   /*
-   * This method constructs a DTM object representing an XML document.
-   * The DTM object instance that is constructed by this method, represents
-   * a sequence of XML elements sourced from a 'ResultSequence' input object.
-   * 
-   * Notes : currently, this method is unused within XalanJ's XSLT 3.0 
-   *         implementation, but could possibly/likely be useful for 
-   *         future XalanJ functional implementation.
+   * Given an XDM sequence, this method constructs an Xalan-J DTM object 
+   * from the information provided in an input sequence. 
    */
   public DTM createDTMFromResultSequence(ResultSequence resultSeq) {
       try {

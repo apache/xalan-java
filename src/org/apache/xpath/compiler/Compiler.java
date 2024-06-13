@@ -20,6 +20,8 @@
  */
 package org.apache.xpath.compiler;
 
+import java.util.List;
+
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
@@ -34,6 +36,8 @@ import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.axes.WalkerFactory;
+import org.apache.xpath.compiler.XPathParserImpl.XPathArrayConsFuncArgs;
+import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.functions.FuncExtFunctionAvailable;
 import org.apache.xpath.functions.Function;
@@ -548,7 +552,7 @@ public class Compiler extends OpMap
    */
   Expression sequenceTypeExpr(int opPos) throws TransformerException
   {
-      return XPathParserImpl.fXpathSequenceTypeExpr;
+      return XPathParserImpl.fXPathSequenceTypeExpr;
   }
   
   /**
@@ -1512,7 +1516,30 @@ private static final boolean DEBUG = false;
    */
   Expression arrayConstructorExpr(int opPos) throws TransformerException
   {
-      return XPathParserImpl.fXPathArrayConstructor;
+	  Expression xpathArrayCons = null;
+	  
+	  if (XPathParserImpl.fXPathArrayConstructor != null) {
+		 xpathArrayCons = XPathParserImpl.fXPathArrayConstructor;
+		 XPathParserImpl.fXPathArrayConstructor = null;
+	  }
+	  else {
+		 // We use an implementation within this 'else' branch, when XPath
+		 // built-in function call arguments are literal array expressions.
+		 XPathArrayConsFuncArgs xpathArrayConsFuncArgs = XPathParserImpl.fXPathArrayConsFuncArgs;
+		 
+		 List<XPathArrayConstructor> arrayConsList = xpathArrayConsFuncArgs.getArrayFuncArgList();		 
+		 List<Boolean> funcArgUserArr = xpathArrayConsFuncArgs.getIsFuncArgUsedArr();		 
+		 for (int idx = 0; idx < funcArgUserArr.size(); idx++) {
+			Boolean boolVal = funcArgUserArr.get(idx);
+			if (!boolVal.booleanValue()) {
+			   xpathArrayCons = arrayConsList.get(idx);
+			   funcArgUserArr.set(idx, Boolean.valueOf(true));
+			   break;
+			}
+		 }
+	  }
+	  
+	  return xpathArrayCons; 
   }
   
   /**
@@ -1520,7 +1547,7 @@ private static final boolean DEBUG = false;
    */
   Expression mapConstructorExpr(int opPos) throws TransformerException
   {
-	  return XPathParserImpl.fMapConstructor; 
+	  return XPathParserImpl.fXPathMapConstructor; 
   }
 
   // The current id for extension functions.

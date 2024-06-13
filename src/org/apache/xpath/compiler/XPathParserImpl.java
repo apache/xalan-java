@@ -39,7 +39,7 @@ import org.apache.xpath.composite.ForQuantifiedExprVarBinding;
 import org.apache.xpath.composite.IfExpr;
 import org.apache.xpath.composite.LetExpr;
 import org.apache.xpath.composite.LetExprVarBinding;
-import org.apache.xpath.composite.MapConstructor;
+import org.apache.xpath.composite.XPathMapConstructor;
 import org.apache.xpath.composite.QuantifiedExpr;
 import org.apache.xpath.composite.SequenceTypeArrayTest;
 import org.apache.xpath.composite.SequenceTypeData;
@@ -154,9 +154,38 @@ public class XPathParserImpl
   
   static XPathArrayConstructor fXPathArrayConstructor = null;
   
-  static MapConstructor fMapConstructor = null;
+  /**
+   * This class is used, to implement literal arrays as XPath 
+   * function call arguments.
+   */
+  static class XPathArrayConsFuncArgs {	 
+	  
+	 public List<Boolean> isFuncArgUsedArr = new ArrayList<Boolean>();
+	 
+	 public List<XPathArrayConstructor> arrayFuncArgList = new ArrayList<XPathArrayConstructor>();
+
+	 public List<Boolean> getIsFuncArgUsedArr() {
+		return isFuncArgUsedArr;
+	 }
+
+	 public void setIsFuncArgUsedArr(List<Boolean> isArgUsedArr) {
+		this.isFuncArgUsedArr = isArgUsedArr;
+	 }
+
+	 public List<XPathArrayConstructor> getArrayFuncArgList() {
+		return arrayFuncArgList;
+	 }
+
+	 public void setArrayFuncArgList(List<XPathArrayConstructor> arrayFuncArgList) {
+		this.arrayFuncArgList = arrayFuncArgList;
+	 } 
+  }
   
-  static XPathSequenceTypeExpr fXpathSequenceTypeExpr = null;
+  static XPathArrayConsFuncArgs fXPathArrayConsFuncArgs = null;
+  
+  static XPathMapConstructor fXPathMapConstructor = null;
+  
+  static XPathSequenceTypeExpr fXPathSequenceTypeExpr = null;
   
   private String fArrowOpRemainingXPathExprStr = null;
   
@@ -201,7 +230,9 @@ public class XPathParserImpl
     m_namespaceContext = namespaceContext;
     m_functionTable = compiler.getFunctionTable();
     
-    fIsSequenceTypeXPathExpr = isSequenceTypeXPathExpr; 
+    fIsSequenceTypeXPathExpr = isSequenceTypeXPathExpr;
+    
+    fXPathArrayConsFuncArgs = new XPathArrayConsFuncArgs();
 
     Lexer lexer = new Lexer(compiler, namespaceContext, this);
 
@@ -1473,7 +1504,7 @@ public class XPathParserImpl
     	  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
     	  
     	  if (fIsSequenceTypeXPathExpr) {
-             fXpathSequenceTypeExpr = SequenceTypeExpr(false);
+             fXPathSequenceTypeExpr = SequenceTypeExpr(false);
              return;
           }
           
@@ -1481,7 +1512,7 @@ public class XPathParserImpl
 
           insertOp(opPos, 2, OpCodes.OP_MAP_CONSTRUCTOR_EXPR);
           
-          fMapConstructor = new MapConstructor();
+          fXPathMapConstructor = new XPathMapConstructor();
           Map<String, String> nativeMapVar = new HashMap<String, String>();                    
           
           consumeExpected('{');
@@ -1542,13 +1573,13 @@ public class XPathParserImpl
         	  consumeExpected('}'); 
           }
           
-          fMapConstructor.setNativeMap(nativeMapVar);
+          fXPathMapConstructor.setNativeMap(nativeMapVar);
           
           m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
                                          m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);  
       }
       else if (fIsSequenceTypeXPathExpr) {
-         fXpathSequenceTypeExpr = SequenceTypeExpr(false); 
+         fXPathSequenceTypeExpr = SequenceTypeExpr(false); 
       }
       else {
          ExprSingle();
@@ -2448,7 +2479,7 @@ public class XPathParserImpl
           
           int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
           
-          fXpathSequenceTypeExpr = SequenceTypeExpr(false);          
+          fXPathSequenceTypeExpr = SequenceTypeExpr(false);          
           m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
                                                   m_ops.getOp(addPos + op1 + 1) + op1);
           addPos += 2;
@@ -2468,7 +2499,7 @@ public class XPathParserImpl
           
           int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
           
-          fXpathSequenceTypeExpr = SequenceTypeExpr(false);
+          fXPathSequenceTypeExpr = SequenceTypeExpr(false);
           
           m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
                                                   m_ops.getOp(addPos + op1 + 1) + op1);
@@ -2489,7 +2520,7 @@ public class XPathParserImpl
           
           int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
           
-          fXpathSequenceTypeExpr = SequenceTypeExpr(false);
+          fXPathSequenceTypeExpr = SequenceTypeExpr(false);
           
           m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
                                                   m_ops.getOp(addPos + op1 + 1) + op1);
@@ -3236,9 +3267,12 @@ public class XPathParserImpl
     	consumeExpected(']'); 
 
     	insertOp(opPos, 2, OpCodes.OP_ARRAY_CONSTRUCTOR_EXPR);
-    	fXPathArrayConstructor = new XPathArrayConstructor();                 
-    	fXPathArrayConstructor.setArrayConstructorXPathParts(arrConstructorXPathParts);
-    	
+    	List<XPathArrayConstructor> arrConsList = fXPathArrayConsFuncArgs.getArrayFuncArgList();
+    	XPathArrayConstructor xPathArrayConstructor = new XPathArrayConstructor();                 
+    	xPathArrayConstructor.setArrayConstructorXPathParts(arrConstructorXPathParts);    	
+    	arrConsList.add(xPathArrayConstructor);
+    	List<Boolean> funcArgUsedArr = fXPathArrayConsFuncArgs.getIsFuncArgUsedArr();
+    	funcArgUsedArr.add(Boolean.valueOf(false));
 
     	m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
     			                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);	       
@@ -3255,12 +3289,15 @@ public class XPathParserImpl
     	consumeExpected('}'); 
 
     	insertOp(opPos, 2, OpCodes.OP_ARRAY_CONSTRUCTOR_EXPR);
-    	fXPathArrayConstructor = new XPathArrayConstructor();                 
-    	fXPathArrayConstructor.setArrayConstructorXPathParts(arrConstructorXPathParts);
+    	List<XPathArrayConstructor> arrConsList = fXPathArrayConsFuncArgs.getArrayFuncArgList();
+    	XPathArrayConstructor xPathArrayConstructor = new XPathArrayConstructor();                 
+    	xPathArrayConstructor.setArrayConstructorXPathParts(arrConstructorXPathParts);    	    	
+    	arrConsList.add(xPathArrayConstructor);
+    	List<Boolean> funcArgUsedArr = fXPathArrayConsFuncArgs.getIsFuncArgUsedArr();
+    	funcArgUsedArr.add(Boolean.valueOf(false));
 
     	m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
-    			                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);	          
-	       
+    			                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);	       
     }
     else if (tokenIs("map")) {
        // XPath literal map expression as, function argument
@@ -3355,7 +3392,7 @@ public class XPathParserImpl
 	  
 	  insertOp(opPos1, 2, OpCodes.OP_MAP_CONSTRUCTOR_EXPR);
 
-	  fMapConstructor = new MapConstructor();
+	  fXPathMapConstructor = new XPathMapConstructor();
 	  
 	  Map<String, String> nativeMapObj = new HashMap<String, String>();                    
 
@@ -3412,7 +3449,7 @@ public class XPathParserImpl
 		  }
 	  }
 
-	  fMapConstructor.setNativeMap(nativeMapObj);
+	  fXPathMapConstructor.setNativeMap(nativeMapObj);
 	  
 	  m_ops.setOp(opPos1 + OpMap.MAPINDEX_LENGTH,
 			                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos1);

@@ -56,6 +56,13 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
  * 
  * Ref : https://www.w3.org/TR/xslt-30/#element-copy-of
  * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Morris Kwan <mkwan@apache.org>
+ * @author Christine Li <jycli@apache.org>
+ *         
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XSLT 3 specific changes, to this class)
+ * 
  * @xsl.usage advanced
  */
 public class ElemCopyOf extends ElemTemplateElement

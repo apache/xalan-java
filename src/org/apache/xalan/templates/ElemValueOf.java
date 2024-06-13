@@ -58,6 +58,13 @@ import xml.xpath31.processor.types.XSNumericType;
  * 
  * Ref : https://www.w3.org/TR/xslt-30/#element-value-of
  * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Ilene Seelemann
+ *         Morris Kwan <mkwan@apache.org>, Christine Li <jycli@apache.org>
+ *         
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XSLT 3 specific changes, to this class)
+ * 
  * @xsl.usage advanced
  */
 public class ElemValueOf extends ElemTemplateElement {
