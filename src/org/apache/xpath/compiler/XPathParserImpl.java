@@ -183,6 +183,35 @@ public class XPathParserImpl
   
   static XPathArrayConsFuncArgs fXPathArrayConsFuncArgs = null;
   
+  /**
+   * This class is used, to implement literal sequence as XPath 
+   * function call arguments.
+   */
+  static class XPathSeqConsFuncArgs {	 
+	  
+	 public List<Boolean> isFuncArgUsedList = new ArrayList<Boolean>();
+	 
+	 public List<XPathSequenceConstructor> seqFuncArgList = new ArrayList<XPathSequenceConstructor>();
+
+	 public List<Boolean> getIsFuncArgUsedList() {
+		return isFuncArgUsedList;
+	 }
+
+	 public void setIsFuncArgUsedList(List<Boolean> isArgUsedList) {
+		this.isFuncArgUsedList = isArgUsedList;
+	 }
+
+	 public List<XPathSequenceConstructor> getSeqFuncArgList() {
+		return seqFuncArgList;
+	 }
+
+	 public void setSeqFuncArgList(List<XPathSequenceConstructor> seqFuncArgList) {
+		this.seqFuncArgList = seqFuncArgList;
+	 } 
+  }
+  
+  static XPathSeqConsFuncArgs fXPathSeqConsFuncArgs = null;
+  
   static XPathMapConstructor fXPathMapConstructor = null;
   
   static XPathSequenceTypeExpr fXPathSequenceTypeExpr = null;
@@ -233,6 +262,8 @@ public class XPathParserImpl
     fIsSequenceTypeXPathExpr = isSequenceTypeXPathExpr;
     
     fXPathArrayConsFuncArgs = new XPathArrayConsFuncArgs();
+    
+    fXPathSeqConsFuncArgs = new XPathSeqConsFuncArgs(); 
 
     Lexer lexer = new Lexer(compiler, namespaceContext, this);
 
@@ -3214,38 +3245,43 @@ public class XPathParserImpl
     	int prevQueueMark = m_queueMark;
     	
     	if (lookahead(')', 1)) {
-	        // an XPath function argument is ()                
+	        // an XPath function argument is () (i.e, an empty sequence)                
 	        
 	        consumeExpected('(');
 	        consumeExpected(')');                            
 	        
 	        insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
 	        
-	        List<String> sequenceConstructorXPathParts = new ArrayList<String>(); 
+	        List<String> seqConstructorXPathParts = new ArrayList<String>();
+	        seqConstructorXPathParts.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
 	        
-	        sequenceConstructorXPathParts.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
-	        
-	        fXPathSequenceConstructor = new XPathSequenceConstructor();              
-	        fXPathSequenceConstructor.setSequenceConstructorXPathParts(
-	                                                              sequenceConstructorXPathParts);
+	        List<XPathSequenceConstructor> seqConsList = fXPathSeqConsFuncArgs.getSeqFuncArgList();
+	        XPathSequenceConstructor xPathSeqConstructor = new XPathSequenceConstructor();                 
+	        xPathSeqConstructor.setSequenceConstructorXPathParts(seqConstructorXPathParts);    	
+	        seqConsList.add(xPathSeqConstructor);
+	      	List<Boolean> funcArgUsedSeq = fXPathSeqConsFuncArgs.getIsFuncArgUsedList();
+	      	funcArgUsedSeq.add(Boolean.valueOf(false));
 	        
 	        m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
-	                                             m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
-	
-	        return;
+	                                             m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);	
     	}
     	else {
 	       consumeExpected('(');    		
 	 	    		
-	       List<String> sequenceConstructorXPathParts = new ArrayList<String>();
-	       parseSequenceOrArrayConstructorFuncArg(sequenceConstructorXPathParts, '(', ')');
+	       List<String> seqConstructorXPathParts = new ArrayList<String>();
+	       parseSequenceOrArrayConstructorFuncArg(seqConstructorXPathParts, '(', ')');
 	       consumeExpected(')'); 
 	            
-	       if (sequenceConstructorXPathParts.size() > 1) {
+	       if (seqConstructorXPathParts.size() > 1) {
 	          insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
-	          fXPathSequenceConstructor = new XPathSequenceConstructor();                 
-	          fXPathSequenceConstructor.setSequenceConstructorXPathParts(sequenceConstructorXPathParts);
-	            
+	          
+	          List<XPathSequenceConstructor> seqConsList = fXPathSeqConsFuncArgs.getSeqFuncArgList();
+	          XPathSequenceConstructor xPathSeqConstructor = new XPathSequenceConstructor();                 
+	          xPathSeqConstructor.setSequenceConstructorXPathParts(seqConstructorXPathParts);    	
+	          seqConsList.add(xPathSeqConstructor);
+	      	  List<Boolean> funcArgUsedSeq = fXPathSeqConsFuncArgs.getIsFuncArgUsedList();
+	      	  funcArgUsedSeq.add(Boolean.valueOf(false));
+	      	
 	          m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
 	                                                 m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);	          
 	       }
@@ -3267,6 +3303,7 @@ public class XPathParserImpl
     	consumeExpected(']'); 
 
     	insertOp(opPos, 2, OpCodes.OP_ARRAY_CONSTRUCTOR_EXPR);
+    	
     	List<XPathArrayConstructor> arrConsList = fXPathArrayConsFuncArgs.getArrayFuncArgList();
     	XPathArrayConstructor xPathArrayConstructor = new XPathArrayConstructor();                 
     	xPathArrayConstructor.setArrayConstructorXPathParts(arrConstructorXPathParts);    	
@@ -3289,6 +3326,7 @@ public class XPathParserImpl
     	consumeExpected('}'); 
 
     	insertOp(opPos, 2, OpCodes.OP_ARRAY_CONSTRUCTOR_EXPR);
+    	
     	List<XPathArrayConstructor> arrConsList = fXPathArrayConsFuncArgs.getArrayFuncArgList();
     	XPathArrayConstructor xPathArrayConstructor = new XPathArrayConstructor();                 
     	xPathArrayConstructor.setArrayConstructorXPathParts(arrConstructorXPathParts);    	    	
@@ -3313,8 +3351,19 @@ public class XPathParserImpl
   }
   
   /**
-   * This method is used to parse, XPath 'literal sequence constructor', 
-   * 'square array constructor', or an 'curly array constructor'.
+   * This method is used to parse any of the following XPath literals : 
+   * 'sequence constructor', 'square array constructor', 'curly array 
+   * constructor'.
+   * 
+   * A valid pair of <lParen, rParen> characters, determine whether the
+   * token queue from current position incrementally shall be interpreted as
+   * one of the following XPath literals : 'sequence constructor', 'square array 
+   * constructor', or 'curly array constructor'.
+   * 
+   * @xpathExprPartList : String array, that'll be populated with xpath expression
+   *                      strings of the sequence/array items in order.
+   * @lParen            : This shall be one of following : '(', '[', '{'.
+   * @rParen            : This shall be one of following : ')', ']', '}'.                        
    */
   private void parseSequenceOrArrayConstructorFuncArg(List<String> xpathExprPartList, char lParen, 
 		                                                               char rParen) throws TransformerException {	  

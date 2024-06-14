@@ -23,6 +23,7 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
@@ -33,8 +34,10 @@ import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * This class provides few utility methods, to help with XPath 3.1 
- * built-in higher order function evaluations.
+ * This class provides few utility methods, to support XPath 3.1 
+ * built-in higher order function evaluations. The language higher
+ * order functions do one or both of following : accept functions as
+ * arguments, or return function as function call result.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -63,6 +66,9 @@ public class XPathHigherOrderBuiltinFunctionsSupport extends Function3Args {
 
         if (xpathExpr instanceof Range) {
             resultSeq = (ResultSequence)(((Range)xpathExpr).execute(xctxt));    
+        }
+        else if (xpathExpr instanceof XPathSequenceConstructor) {
+        	resultSeq = (ResultSequence)(((XPathSequenceConstructor)xpathExpr).execute(xctxt));
         }
         else if (xpathExpr instanceof Variable) {
             XObject xObj = ((Variable)xpathExpr).execute(xctxt);

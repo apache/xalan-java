@@ -37,7 +37,9 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.axes.WalkerFactory;
 import org.apache.xpath.compiler.XPathParserImpl.XPathArrayConsFuncArgs;
+import org.apache.xpath.compiler.XPathParserImpl.XPathSeqConsFuncArgs;
 import org.apache.xpath.composite.XPathArrayConstructor;
+import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.functions.FuncExtFunctionAvailable;
 import org.apache.xpath.functions.Function;
@@ -88,6 +90,17 @@ import org.apache.xpath.res.XPATHErrorResources;
  * a Expression object.  This class compiles the string into a sequence 
  * of operation codes (op map) and then builds from that into an Expression 
  * tree.
+ * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Myriam Midy <mmidy@apache.org>
+ * @author Gary L Peskin <garyp@apache.org>, Ilene Seelemann <ilene@apache.org>,
+ *         Henry Zongaro <zongaro@ca.ibm.com>, Morris Kwan <mkwan@apache.org>,
+ *         Brian James Minchau <minchau@apache.org>, Santiago Pericas-Geertsen <santiagopg@apache.org>,
+ *         Christine Li <jycli@apache.org>
+ *         
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XPath 3 specific changes, to this class)         
+ * 
  * @xsl.usage advanced
  */
 public class Compiler extends OpMap
@@ -1495,20 +1508,33 @@ private static final boolean DEBUG = false;
   
   /**
    * Compile an XPath sequence constructor, expression.
-   * 
-   * @param opPos The current position in the m_opMap array.
-   *
-   * @return the compiled sequence constructor expression returned as an object
-   *         of class XPathSequenceConstructor. An object of class
-   *         XPathSequenceConstructor has already been created and populated by
-   *         XPath expression parser, and this function just returns that object 
-   *         to the caller of this method.       
-   *
-   * @throws TransformerException if a error occurs creating the Expression.
    */
   Expression sequenceConstructorExpr(int opPos) throws TransformerException
-  {
-      return XPathParserImpl.fXPathSequenceConstructor;
+  {	  
+      Expression xpathSequenceCons = null;
+	  
+	  if (XPathParserImpl.fXPathSequenceConstructor != null) {
+		 xpathSequenceCons = XPathParserImpl.fXPathSequenceConstructor;
+		 XPathParserImpl.fXPathSequenceConstructor = null;
+	  }
+	  else {
+		 // We use an implementation within this 'else' branch, when XPath
+		 // built-in function call arguments are literal sequence expressions.
+		 XPathSeqConsFuncArgs xpathSeqConsFuncArgs = XPathParserImpl.fXPathSeqConsFuncArgs;
+		 
+		 List<XPathSequenceConstructor> seqConsList = xpathSeqConsFuncArgs.getSeqFuncArgList();		 
+		 List<Boolean> funcArgUsedList = xpathSeqConsFuncArgs.getIsFuncArgUsedList();		 
+		 for (int idx = 0; idx < funcArgUsedList.size(); idx++) {
+			Boolean boolVal = funcArgUsedList.get(idx);
+			if (!boolVal.booleanValue()) {
+			   xpathSequenceCons = seqConsList.get(idx);
+			   funcArgUsedList.set(idx, Boolean.valueOf(true));
+			   break;
+			}
+		 }
+	  }
+	  
+	  return xpathSequenceCons;
   }
   
   /**
@@ -1528,12 +1554,12 @@ private static final boolean DEBUG = false;
 		 XPathArrayConsFuncArgs xpathArrayConsFuncArgs = XPathParserImpl.fXPathArrayConsFuncArgs;
 		 
 		 List<XPathArrayConstructor> arrayConsList = xpathArrayConsFuncArgs.getArrayFuncArgList();		 
-		 List<Boolean> funcArgUserArr = xpathArrayConsFuncArgs.getIsFuncArgUsedArr();		 
-		 for (int idx = 0; idx < funcArgUserArr.size(); idx++) {
-			Boolean boolVal = funcArgUserArr.get(idx);
+		 List<Boolean> funcArgUsedArr = xpathArrayConsFuncArgs.getIsFuncArgUsedArr();		 
+		 for (int idx = 0; idx < funcArgUsedArr.size(); idx++) {
+			Boolean boolVal = funcArgUsedArr.get(idx);
 			if (!boolVal.booleanValue()) {
 			   xpathArrayCons = arrayConsList.get(idx);
-			   funcArgUserArr.set(idx, Boolean.valueOf(true));
+			   funcArgUsedArr.set(idx, Boolean.valueOf(true));
 			   break;
 			}
 		 }

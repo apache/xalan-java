@@ -73,6 +73,35 @@ public class XSLTransformTestsUtil {
         
         xslTransformerFactory = TransformerFactory.newInstance();
     }
+    
+    /**
+     * This function is used by, few of Xalan-J java extension functions used
+     * within the .xsl test files.
+     */
+    public static Date getCurrentDate() {
+        Date currentDate = new Date();
+      
+        return currentDate;
+    }
+   
+    /**
+     * This function is used by, few of Xalan-J java extension functions used
+     * within the .xsl test files.
+     */
+    public static String getDefaultTimezoneOffsetStr() {
+        String timeZoneoffsetStr = null;
+       
+        String dateStr = (OffsetDateTime.now()).toString();
+        if (dateStr.endsWith("Z")) {
+            timeZoneoffsetStr = "Z";   
+        }
+        else {
+            int dateStrLength = dateStr.length();
+            timeZoneoffsetStr = dateStr.substring(dateStrLength - 6, dateStrLength); 
+        }
+       
+        return timeZoneoffsetStr;
+    }
 
     /**
      * This function is the primary function, that is invoked by all the XalanJ XSL3 test 
@@ -171,35 +200,6 @@ public class XSLTransformTestsUtil {
         catch (Exception ex) {
             Assert.fail();    
         }
-     }
-    
-     /**
-      * This function is used by, few of XalanJ XSL3 Java extension functions used
-      * within the .xsl test files.
-      */
-     public static Date getCurrentDate() {
-         Date currentDate = new Date();
-       
-         return currentDate;
-     }
-    
-     /**
-      * This function is used by, few of XalanJ XSL3 Java extension functions used
-      * within the .xsl test files.
-      */
-     public static String getDefaultTimezoneOffsetStr() {
-         String timeZoneoffsetStr = null;
-        
-         String dateStr = (OffsetDateTime.now()).toString();
-         if (dateStr.endsWith("Z")) {
-             timeZoneoffsetStr = "Z";   
-         }
-         else {
-             int dateStrLength = dateStr.length();
-             timeZoneoffsetStr = dateStr.substring(dateStrLength - 6, dateStrLength); 
-         }
-        
-         return timeZoneoffsetStr;
      }
     
 }
