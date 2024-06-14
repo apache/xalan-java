@@ -37,7 +37,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.axes.WalkerFactory;
 import org.apache.xpath.compiler.XPathParserImpl.XPathArrayConsFuncArgs;
-import org.apache.xpath.compiler.XPathParserImpl.XPathSeqConsFuncArgs;
+import org.apache.xpath.compiler.XPathParserImpl.XPathSequenceConsFuncArgs;
 import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.FuncExtFunction;
@@ -1520,7 +1520,7 @@ private static final boolean DEBUG = false;
 	  else {
 		 // We use an implementation within this 'else' branch, when XPath
 		 // built-in function call arguments are literal sequence expressions.
-		 XPathSeqConsFuncArgs xpathSeqConsFuncArgs = XPathParserImpl.fXPathSeqConsFuncArgs;
+		 XPathSequenceConsFuncArgs xpathSeqConsFuncArgs = XPathParserImpl.fXPathSequenceConsFuncArgs;
 		 
 		 List<XPathSequenceConstructor> seqConsList = xpathSeqConsFuncArgs.getSeqFuncArgList();		 
 		 List<Boolean> funcArgUsedList = xpathSeqConsFuncArgs.getIsFuncArgUsedList();		 

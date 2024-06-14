@@ -36,7 +36,7 @@ public class Function2Args extends FunctionOneArg
   /** The second argument passed to the function (at index 1).
    *  
    */
-  Expression m_arg1;
+  protected Expression m_arg1;
 
   /**
    * Return the second argument passed to the function (at index 1).

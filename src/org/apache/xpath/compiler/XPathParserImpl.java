@@ -187,7 +187,7 @@ public class XPathParserImpl
    * This class is used, to implement literal sequence as XPath 
    * function call arguments.
    */
-  static class XPathSeqConsFuncArgs {	 
+  static class XPathSequenceConsFuncArgs {	 
 	  
 	 public List<Boolean> isFuncArgUsedList = new ArrayList<Boolean>();
 	 
@@ -210,7 +210,7 @@ public class XPathParserImpl
 	 } 
   }
   
-  static XPathSeqConsFuncArgs fXPathSeqConsFuncArgs = null;
+  static XPathSequenceConsFuncArgs fXPathSequenceConsFuncArgs = null;
   
   static XPathMapConstructor fXPathMapConstructor = null;
   
@@ -263,7 +263,7 @@ public class XPathParserImpl
     
     fXPathArrayConsFuncArgs = new XPathArrayConsFuncArgs();
     
-    fXPathSeqConsFuncArgs = new XPathSeqConsFuncArgs(); 
+    fXPathSequenceConsFuncArgs = new XPathSequenceConsFuncArgs(); 
 
     Lexer lexer = new Lexer(compiler, namespaceContext, this);
 
@@ -1177,6 +1177,9 @@ public class XPathParserImpl
 		      case "fold-right":
 			     id = FunctionTable.FUNC_FOLD_RIGHT;
 			     break;
+		      case "sort":
+				 id = FunctionTable.FUNC_SORT;
+				 break;
 			  default:
 				 id = m_functionTable.getFunctionID(key); 
 		}
@@ -1282,6 +1285,9 @@ public class XPathParserImpl
 		      case "fold-right":
 			     id = FunctionTable.FUNC_ARRAY_FOLD_RIGHT;
 				 break;
+		      case "sort":
+				 id = FunctionTable.FUNC_ARRAY_SORT;
+			     break;
 			  default:
 				 // NO OP 
 		}
@@ -3255,11 +3261,11 @@ public class XPathParserImpl
 	        List<String> seqConstructorXPathParts = new ArrayList<String>();
 	        seqConstructorXPathParts.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
 	        
-	        List<XPathSequenceConstructor> seqConsList = fXPathSeqConsFuncArgs.getSeqFuncArgList();
+	        List<XPathSequenceConstructor> seqConsList = fXPathSequenceConsFuncArgs.getSeqFuncArgList();
 	        XPathSequenceConstructor xPathSeqConstructor = new XPathSequenceConstructor();                 
 	        xPathSeqConstructor.setSequenceConstructorXPathParts(seqConstructorXPathParts);    	
 	        seqConsList.add(xPathSeqConstructor);
-	      	List<Boolean> funcArgUsedSeq = fXPathSeqConsFuncArgs.getIsFuncArgUsedList();
+	      	List<Boolean> funcArgUsedSeq = fXPathSequenceConsFuncArgs.getIsFuncArgUsedList();
 	      	funcArgUsedSeq.add(Boolean.valueOf(false));
 	        
 	        m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
@@ -3275,11 +3281,11 @@ public class XPathParserImpl
 	       if (seqConstructorXPathParts.size() > 1) {
 	          insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
 	          
-	          List<XPathSequenceConstructor> seqConsList = fXPathSeqConsFuncArgs.getSeqFuncArgList();
+	          List<XPathSequenceConstructor> seqConsList = fXPathSequenceConsFuncArgs.getSeqFuncArgList();
 	          XPathSequenceConstructor xPathSeqConstructor = new XPathSequenceConstructor();                 
 	          xPathSeqConstructor.setSequenceConstructorXPathParts(seqConstructorXPathParts);    	
 	          seqConsList.add(xPathSeqConstructor);
-	      	  List<Boolean> funcArgUsedSeq = fXPathSeqConsFuncArgs.getIsFuncArgUsedList();
+	      	  List<Boolean> funcArgUsedSeq = fXPathSequenceConsFuncArgs.getIsFuncArgUsedList();
 	      	  funcArgUsedSeq.add(Boolean.valueOf(false));
 	      	
 	          m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 

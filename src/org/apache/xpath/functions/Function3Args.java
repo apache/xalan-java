@@ -36,7 +36,7 @@ public class Function3Args extends Function2Args
   /** The third argument passed to the function (at index 2).
    *
    */
-  Expression m_arg2;
+  protected Expression m_arg2;
 
   /**
    * Return the third argument passed to the function (at index 2).

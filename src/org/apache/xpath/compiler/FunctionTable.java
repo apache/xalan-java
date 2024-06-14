@@ -501,6 +501,9 @@ public class FunctionTable
   
   /** The 'map:remove()' id. */
   public static final int FUNC_MAP_REMOVE = 159;
+  
+  /** The 'array:sort()' id. */
+  public static final int FUNC_ARRAY_SORT = 160;
 
   // Proprietary
 
@@ -567,7 +570,8 @@ public class FunctionTable
 		                                                        new Integer(FUNC_ARRAY_TAIL),new Integer(FUNC_ARRAY_REVERSE), 
 		                                                        new Integer(FUNC_ARRAY_JOIN), new Integer(FUNC_ARRAY_FOR_EACH),
 		                                                        new Integer(FUNC_ARRAY_FILTER), new Integer(FUNC_ARRAY_FOR_EACH_PAIR),
-		                                                        new Integer(FUNC_ARRAY_FOLD_LEFT), new Integer(FUNC_ARRAY_FOLD_RIGHT) };
+		                                                        new Integer(FUNC_ARRAY_FOLD_LEFT), new Integer(FUNC_ARRAY_FOLD_RIGHT),
+		                                                        new Integer(FUNC_ARRAY_SORT) };
   
   static final List<Integer> XPATH_ARRAY_FUNC_IDS_ARR = Arrays.asList(XPATH_ARRAY_FUNC_IDS);
 
@@ -593,7 +597,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 160;
+  private static final int NUM_BUILT_IN_FUNCS = 161;
 
   /**
    * Number of built-in functions that may be added.
@@ -861,8 +865,9 @@ public class FunctionTable
     m_functions[FUNC_ARRAY_FOR_EACH_PAIR] = org.apache.xpath.functions.array.FuncArrayForEachPair.class;
     m_functions[FUNC_ARRAY_FOLD_LEFT] = org.apache.xpath.functions.array.FuncArrayFoldLeft.class;
     m_functions[FUNC_ARRAY_FOLD_RIGHT] = org.apache.xpath.functions.array.FuncArrayFoldRight.class;
+    m_functions[FUNC_ARRAY_SORT] = org.apache.xpath.functions.array.FuncArraySort.class;
     
-    m_functions[FUNC_PARSE_JSON] = org.apache.xpath.functions.FuncParseJson.class;
+    m_functions[FUNC_PARSE_JSON] = org.apache.xpath.functions.FuncParseJson.class;    
     
   }
 
@@ -1176,6 +1181,8 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_ARRAY_FOLD_LEFT));
          m_functionID.put(Keywords.FUNC_ARRAY_FOLD_RIGHT,
                           new Integer(FunctionTable.FUNC_ARRAY_FOLD_RIGHT));
+         m_functionID.put(Keywords.FUNC_ARRAY_SORT,
+                          new Integer(FunctionTable.FUNC_ARRAY_SORT));
          
          m_functionID.put(Keywords.FUNC_NAME_STRING,
                           new Integer(FunctionTable.FUNC_NAME));
@@ -1196,7 +1203,7 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_IN_SCOPE_PREFIXES));
          
          m_functionID.put(Keywords.FUNC_PARSE_JSON,
-                          new Integer(FunctionTable.FUNC_PARSE_JSON));                  
+                          new Integer(FunctionTable.FUNC_PARSE_JSON));         
   }
   
   public FunctionTable(){

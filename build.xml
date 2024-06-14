@@ -70,9 +70,9 @@ $Id$
 
   <!-- Xalan Java version information -->
   <property name="version.VERSION"        value="2"/>
-  <property name="version.RELEASE"        value="8"/>
+  <property name="version.RELEASE"        value="7"/>
   <property name="version.DEVELOPER"      value=""/><!-- Set this to 'D' if a developer release; blank "" if maintenance release -->
-  <property name="version.MINOR"          value="0"/><!-- EITHER the developer release number, or a maintenance release number -->
+  <property name="version.MINOR"          value="4"/><!-- EITHER the developer release number, or a maintenance release number -->
   <property name="version"                value="${version.VERSION}_${version.RELEASE}_${version.DEVELOPER}${version.MINOR}"/><!-- GUMP: version # of dist file -->
   <property name="impl.version"           value="${version.VERSION}.${version.RELEASE}.${version.DEVELOPER}${version.MINOR}"/><!-- Used in jar task for filtering MANIFEST.MF file -->
   
@@ -106,8 +106,8 @@ $Id$
   <property name="parser.jar"                       value="${endorsed.dir}/${parser.jar.name}"/>
   <property name="bcel.jar.name"                    value="bcel-6.7.0.jar"/>
   <property name="bcel.jar"                         value="${lib.dir}/${bcel.jar.name}"/>
-  <property name="xalanj_xpath31_types.jar.name"    value="xpath31_types.jar"/>
-  <property name="xalanj_xpath31_types.jar"         value="${lib.dir}/${xalanj_xpath31_types.jar.name}"/>
+  <property name="xpath31_types.jar.name"           value="xpath31_types.jar"/>
+  <property name="xpath31_types.jar"                value="${lib.dir}/${xpath31_types.jar.name}"/>
   <property name="json.jar.name"                    value="json-20200518.jar"/>
   <property name="json.jar"                         value="${lib.dir}/${json.jar.name}"/>
   <property name="runtime.jar.name"                 value="runtime.jar"/>
@@ -236,7 +236,7 @@ $Id$
     <pathelement location="${xmlapis.jar}" />
     <pathelement location="${build.serializer.jar}" />
     <pathelement location="${parser.jar}" />
-  	<pathelement location="${xalanj_xpath31_types.jar}" />
+  	<pathelement location="${xpath31_types.jar}" />
   	<pathelement location="${json.jar}" />
   </path>
   <path id="xslt.boot.class.path">
@@ -260,6 +260,8 @@ $Id$
     <include name="${dist.file}/xsltc.jar"/>     
     <include name="${dist.file}/${xmlapis.jar.name}"/>
     <include name="${dist.file}/${parser.jar.name}"/>
+  	<include name="${dist.file}/${xpath31_types.jar.name}"/>
+  	<include name="${dist.file}/${json.jar.name}"/>
     <include name="${dist.file}/${serializer.jar.name}"/>
     <include name="${dist.file}/samples/"/>    
     <include name="${dist.file}/samples/xalansamples.jar"/>
@@ -1390,36 +1392,14 @@ $Id$
     <copy file="${xmlapis.jar}" todir="${dist.dir}" />  
     <copy file="${parser.jar}" todir="${dist.dir}" />
   	
-  	<!--<antcall target="xalan-transform-build-file-for-src-distro"/>-->
-  	
-  	<!--<antcall target="xalan-tests-create-for-src-distro"/>-->
+  	<copy file="${xpath31_types.jar}" todir="${dist.dir}" />
+  	<copy file="${json.jar}" todir="${dist.dir}" />  	  	
 
     <copy todir="${dist.dir}">
       <fileset dir="." includes="readme.html,KEYS,build.xml,build.sh,deprecated_build.sh,build.bat,
       	                         commits.xml,LICENSE.txt,NOTICE.txt"/>      
     </copy>
   </target>
-	
-  <target name="xalan-transform-build-file-for-src-distro">
-  	<copy file="./build_srcdist_xalan.xml" todir="${dist.dir}"/>
-  	<copy file="./build_srcdist_xalan.xml" tofile="${dist.dir}/build.xml"/>
-  	<!-- copy readme file as well -->
-  	<copy file="./README" todir="${dist.dir}"/>
-  </target>
-	
-  <!--<target name="xalan-tests-create-for-src-distro">
-  	<mkdir dir="${dist.dir}/xalan-test"/>
-  	<copy todir="${dist.dir}/xalan-test">
-  	  <fileset dir="${test.relpath}">
-  	    <exclude name="build.xml"/>
-  	  </fileset>	
-  	</copy>
-  	  	
-  	<copy file="./build_srcdist_xalan_tests.xml" todir="${dist.dir}"/>
-  	<copy file="./build_srcdist_xalan_tests.xml" tofile="${dist.dir}/xalan-test/build.xml"/>
-  	
-  	<delete dir="${dist.dir}/xalan-test/.git" /> 	
-  </target>-->
 
   <target name="autodist-copy-files-docs">
     <!-- Copy built documentation and javadoc -->

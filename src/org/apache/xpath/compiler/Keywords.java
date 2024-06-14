@@ -642,6 +642,9 @@ public class Keywords
   /** array:fold-right function string. */
   public static final String FUNC_ARRAY_FOLD_RIGHT = "fold-right";
   
+  /** array:sort function string. */
+  public static final String FUNC_ARRAY_SORT = "sort";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
