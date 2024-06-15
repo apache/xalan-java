@@ -134,7 +134,7 @@ public class XPathParserImpl
   
   private boolean fIsXPathPredicateParsingActive = false;
   
-  private boolean fIsBeginParse = false;
+  private boolean fIsXPathExprBeginParse = false;
   
   private boolean fIsSequenceTypeXPathExpr = false;
   
@@ -155,7 +155,7 @@ public class XPathParserImpl
   static XPathArrayConstructor fXPathArrayConstructor = null;
   
   /**
-   * This class is used, to implement literal arrays as XPath 
+   * This class supports, implementation of literal array as XPath 
    * function call arguments.
    */
   static class XPathArrayConsFuncArgs {	 
@@ -184,7 +184,7 @@ public class XPathParserImpl
   static XPathArrayConsFuncArgs fXPathArrayConsFuncArgs = null;
   
   /**
-   * This class is used, to implement literal sequence as XPath 
+   * This class supports, implementation of literal sequence as XPath 
    * function call arguments.
    */
   static class XPathSequenceConsFuncArgs {	 
@@ -285,7 +285,7 @@ public class XPathParserImpl
 
       nextToken();
       
-      fIsBeginParse = true;
+      fIsXPathExprBeginParse = true;
       
       Expr();
 
@@ -737,7 +737,7 @@ public class XPathParserImpl
           
           if ("$".equals(funcBodyXPathExprStrPartsArr[idx]) && (idx < 
                                                                   (funcBodyXPathExprStrPartsArr.length - 1))) {
-              // this handles, variable references within XPath expression string
+              // This handles, variable references within XPath expression string
               // that's been formed within this method.
               xpathExprStrPart = "$" + funcBodyXPathExprStrPartsArr[idx + 1];
               idx += 1;
@@ -1345,7 +1345,42 @@ public class XPathParserImpl
    */
   protected void Expr() throws javax.xml.transform.TransformerException
   {	  
-      if (fIsBeginParse && isSequenceOrArrayBegin()) {
+	  if (fIsXPathExprBeginParse && tokenIs("(") && (lookahead("to", 2) || lookahead("to", 3))) {
+		  // To parse an XPath expression like '(a to b) => function()', it seems simpler
+		  // to handle its parse here.
+		  
+		  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+		  
+		  nextToken();
+	      appendOp(2, OpCodes.OP_GROUP);     
+	      Expr();
+	      consumeExpected(')');
+	      
+	      m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+	    	                                     m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+	      
+	      if (tokenIs("=>")) {	    	  
+	          consumeExpected("=>");
+
+	          insertOp(opPos, 2, OpCodes.OP_ARROW);
+	          
+	          FunctionCall();
+	          
+	          if (m_token != null) {
+	        	 fArrowOpRemainingXPathExprStr = "";  
+	          }
+	          
+	          while (m_token != null) {
+	        	 fArrowOpRemainingXPathExprStr += m_token;
+	        	 nextToken();
+	          }
+	      }
+	  }
+	  else if (fIsXPathExprBeginParse && isSequenceOrArrayBegin()) {
+    	  // We consider XPath parse of sequence and array, in similar 
+    	  // way. These are different lexically only, by virtue of 
+    	  // sequence/array expression's delimiter characters.
+    	  
     	  boolean isSequenceConstructor = false;    	  
     	  if (tokenIs("(")) {
     		 isSequenceConstructor = true; 
@@ -1367,7 +1402,7 @@ public class XPathParserImpl
         	 consumeExpected('{'); 
           }
           
-          List<String> xpathExprParts = new ArrayList<String>();
+          List<String> seqOrArrayXPathItems = new ArrayList<String>();
           
           if (isSequenceConstructor && tokenIs(')') && (getTokenRelative(0) == null)) {
               // The XPath expression is ()
@@ -1378,11 +1413,11 @@ public class XPathParserImpl
               
               insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
               
-              xpathExprParts.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
+              seqOrArrayXPathItems.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
               
               fXPathSequenceConstructor = new XPathSequenceConstructor();              
               fXPathSequenceConstructor.setSequenceConstructorXPathParts(
-                                                                    xpathExprParts);
+                                                                    seqOrArrayXPathItems);
               
               m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
             		                                 m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -1410,8 +1445,7 @@ public class XPathParserImpl
           
           while (m_token != null) {                            
               if (tokenIs("function")) {
-                 // Trying to parse an entire XPath expression string as 
-            	 // 'inline function expression'.
+                 // An XPath expression parse of 'inline function expression'
                  List<String> inlineFuncBodyXPathStrPartsList = new ArrayList<String>();
                  
                  while (!tokenIs('}') && m_token != null) {
@@ -1431,36 +1465,33 @@ public class XPathParserImpl
                  
                  if (inlineFuncBodyXPathStrPartsList.size() > 0) {
                     String xpathExprStr = getXPathStrFromComponentParts(inlineFuncBodyXPathStrPartsList);                 
-                    xpathExprParts.add(xpathExprStr);
+                    seqOrArrayXPathItems.add(xpathExprStr);
                  }
               }
               else {
-                 // XPath expression parse from here, till the token ',' (which we assume 
-                 // here, as an XPath sequence/array constructor's member delimiter) shall get
-                 // an XPath sub-expression that represents anything else than an XPath
-                 // 'inline function expression'.
-                 List<String> seqOrArrayMemberXPathStrPartsList = new ArrayList<String>();                 
+                 List<String> xpathExprTokens = new ArrayList<String>();                 
                  
                  while (!tokenIs(",") && (m_token != null)) {
-                    if (getTokenRelative(0) != null) {
-                       seqOrArrayMemberXPathStrPartsList.add(m_token);
+                    if (!lookahead(null, 1)) {
+                       xpathExprTokens.add(m_token);
                     }
                     nextToken();
                  }
                  
-                 if (seqOrArrayMemberXPathStrPartsList.size() > 0) {
-                    String seqOrArrayMemeberXPathExprStr = getXPathStrFromComponentParts(seqOrArrayMemberXPathStrPartsList);
-                    if (isSequenceConstructor && seqOrArrayMemeberXPathExprStr.endsWith(")")) {
-                        seqOrArrayMemeberXPathExprStr = seqOrArrayMemeberXPathExprStr.substring(0, seqOrArrayMemeberXPathExprStr.length());    
+                 if (xpathExprTokens.size() > 0) {
+                    String seqOrArrayItemXPath = getXPathStrFromComponentParts(xpathExprTokens);
+                    if (isSequenceConstructor && seqOrArrayItemXPath.endsWith(")")) {
+                        seqOrArrayItemXPath = seqOrArrayItemXPath.substring(0, seqOrArrayItemXPath.length());    
+                    }
+                    else {
+	                    boolean xpathExprCompletesLiteralArray = (isSquareArrayConstructor && seqOrArrayItemXPath.endsWith("]")) || 
+	                    		                                 (isCurlyArrayConstructor && seqOrArrayItemXPath.endsWith("}"));
+	                    if (xpathExprCompletesLiteralArray) {
+	                        seqOrArrayItemXPath = seqOrArrayItemXPath.substring(0, seqOrArrayItemXPath.length());    
+	                    }
                     }
                     
-                    boolean xpathExprCompletesLiteralArray = (isSquareArrayConstructor && seqOrArrayMemeberXPathExprStr.endsWith("]")) || 
-                    		                                 (isCurlyArrayConstructor && seqOrArrayMemeberXPathExprStr.endsWith("}"));
-                    if (xpathExprCompletesLiteralArray) {
-                        seqOrArrayMemeberXPathExprStr = seqOrArrayMemeberXPathExprStr.substring(0, seqOrArrayMemeberXPathExprStr.length());    
-                    }
-                    
-                    xpathExprParts.add(seqOrArrayMemeberXPathExprStr);
+                    seqOrArrayXPathItems.add(seqOrArrayItemXPath);
                  }
                  
                  if (m_token != null) {
@@ -1471,10 +1502,10 @@ public class XPathParserImpl
           
           boolean isXPathParseOkToProceed = true;
           
-          // Verify that, each xpath string member within the list 
+          // We verify here that, each XPath string within the list 
           // 'xpathExprParts' has balanced parentheses pairs.
-          for (int idx = 0; idx < xpathExprParts.size(); idx++) {
-             String seqOrArrayMemberXPathExprStr = xpathExprParts.get(idx);
+          for (int idx = 0; idx < seqOrArrayXPathItems.size(); idx++) {
+             String seqOrArrayMemberXPathExprStr = seqOrArrayXPathItems.get(idx);
              char lParenChar = '(';
              char rParenChar = ')';
              if (isSequenceConstructor) {
@@ -1490,21 +1521,22 @@ public class XPathParserImpl
             	 rParenChar = '}'; 
              }
              
-             boolean isStrHasBalancedParentheses = isStrHasBalancedParentheses(seqOrArrayMemberXPathExprStr, 
-            		                                                                                     lParenChar, rParenChar);
+             boolean isStrHasBalancedParentheses = isStrHasBalancedParentheses(
+            		                                                    seqOrArrayMemberXPathExprStr, 
+            		                                                    lParenChar, rParenChar);
              if (!isStrHasBalancedParentheses) {
                 isXPathParseOkToProceed = false;
                 break;
              }
           }
           
-          // Verifying, whether sequence constructor expression, has at-least two 
-          // xpath expression members.          
+          // Verifying, whether sequence constructor expression, can build 
+          // at-least two xdm items.          
 	      // (Sequence constructor expressions having single '(' & ')' parentheses, 
-          // are evaluated with Xalan-J parser legacy op code OpCodes.OP_GROUP from 
+          // are evaluated with Xalan-J parser op code OpCodes.OP_GROUP from 
           // within the Xalan-J parse method call ExprSingle())
 	      if (isXPathParseOkToProceed && isSequenceConstructor) {
-	    	 if (!(xpathExprParts.size() > 1)) {
+	    	 if (!(seqOrArrayXPathItems.size() > 1)) {
 	    		isXPathParseOkToProceed = false; 
 	    	 }
 	      }
@@ -1517,12 +1549,12 @@ public class XPathParserImpl
               if (isSquareArrayConstructor || isCurlyArrayConstructor) {
             	 insertOp(opPos, 2, OpCodes.OP_ARRAY_CONSTRUCTOR_EXPR);
             	 fXPathArrayConstructor = new XPathArrayConstructor();            	 
-            	 fXPathArrayConstructor.setArrayConstructorXPathParts(xpathExprParts);
+            	 fXPathArrayConstructor.setArrayConstructorXPathParts(seqOrArrayXPathItems);
               }
               else {
                  insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
                  fXPathSequenceConstructor = new XPathSequenceConstructor();                 
-                 fXPathSequenceConstructor.setSequenceConstructorXPathParts(xpathExprParts);
+                 fXPathSequenceConstructor.setSequenceConstructorXPathParts(seqOrArrayXPathItems);
               }
               
               m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
@@ -1536,8 +1568,9 @@ public class XPathParserImpl
               ExprSingle();
           }
       }      
-      else if (fIsBeginParse && tokenIs("map")) {
-    	  // Parse an XPath "map" expression
+      else if (fIsXPathExprBeginParse && tokenIs("map")) {
+    	  // An XPath parse of 'map' expression
+    	  
     	  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
     	  
     	  if (fIsSequenceTypeXPathExpr) {
@@ -1561,23 +1594,25 @@ public class XPathParserImpl
  	        	 consumeExpected(':');
  	        	 String mapEntryValueXPathExprStr = null;
  	        	 if (tokenIs("map")) {
- 	        		// There's likely an XPath map constructor here, 
- 	        		// within this map. 	        		
+ 	        		// There's an XPath map constructor here, within this map.
+ 	        		// i.e, map entry's 'value' here is map.
  	        		mapEntryValueXPathExprStr = getMapConstructorStrValue();
  	        	 }
  	        	 else if (tokenIs('[')) {
- 	        		// There's likely an XPath square array constructor here, 
-  	        		// within this map. 	        		
+ 	        		// There's an XPath square array constructor here, within this map.
+ 	        		// i.e, map entry's 'value' here is an array (specified with XPath 
+ 	        		// syntax, [ ... ] ).
   	        		mapEntryValueXPathExprStr = getXPathArrayConstructorStrValue(true); 
  	        	 }
  	        	 else if (tokenIs("array") && lookahead('{', 1)) {
- 	        		// There's likely an XPath curly array constructor here, 
-  	        		// within this map. 	        		
+ 	        		// There's an XPath curly array constructor here, within this map.
+ 	        		// i.e, map entry's 'value' here is an array (specified with XPath 
+ 	        		// syntax, array { ... } ).
   	        		mapEntryValueXPathExprStr = getXPathArrayConstructorStrValue(false); 
  	        	 }
  	        	 else {
- 	        		// The map's key value here is a simple value (i.e, not an array, or 
- 	        		// map).
+ 	        		// The map entry's 'value' here, is any xdm value other than 
+ 	        		// 'map', or array.
  	        		mapEntryValueXPathExprStr = m_token;
  	        		while (!(tokenIs(',') || tokenIs('}'))) {
  	        		   nextToken();
@@ -1586,7 +1621,9 @@ public class XPathParserImpl
  	        		   }
  	        		}
  	        	 }
+ 	        	 
  	        	 nativeMapVar.put(mapEntryKeyXPathExprStr, mapEntryValueXPathExprStr);
+ 	        	 
  	        	 if (tokenIs(',')) {
  	        		consumeExpected(','); 
  	        	 }
@@ -1613,7 +1650,7 @@ public class XPathParserImpl
           fXPathMapConstructor.setNativeMap(nativeMapVar);
           
           m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
-                                         m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);  
+                                                 m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);  
       }
       else if (fIsSequenceTypeXPathExpr) {
          fXPathSequenceTypeExpr = SequenceTypeExpr(false); 
@@ -1643,7 +1680,7 @@ public class XPathParserImpl
    */
   protected void ExprSingle() throws javax.xml.transform.TransformerException
   {
-      fIsBeginParse = false;
+      fIsXPathExprBeginParse = false;
       
       if (tokenIs("for")) {
          // To check, whether XPath 'for' expression is a sub expression of another 

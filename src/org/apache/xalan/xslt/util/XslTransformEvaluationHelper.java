@@ -29,6 +29,7 @@ import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.composite.ForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.Function;
@@ -48,8 +49,8 @@ import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * This class, has few utility methods, to help with certain 
- * XalanJ XSLT transformation implementation tasks.
+ * This class, has few utility methods, that provide support for
+ * XSL 3 transformation processor implementation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -260,7 +261,12 @@ public class XslTransformEvaluationHelper {
                                                                                   execute(xctxt));
            sum = sumResultSequence(simpleMapOperatorResult);
         }
-        else {
+        else if (expr instanceof Range) {
+        	Range rangeExpr = (Range)expr;
+            ResultSequence simpleMapOperatorResult = (ResultSequence)(rangeExpr.execute(xctxt));
+            sum = sumResultSequence(simpleMapOperatorResult);
+        }
+        else if (expr instanceof LocPathIterator) {
            int pos;
             
            DTMIterator nodes = expr.asIterator(xctxt, xctxt.getCurrentNode());
@@ -340,35 +346,6 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Summation of the values of ResultSequence data items.
-     *  
-     * @param resultSeq  The ResultSequence object instance, whose items
-     *                   need to be added to produce a summation value. 
-     * @return           The summation value with data type double.
-     */
-    private static double sumResultSequence(ResultSequence resultSeq) {
-       
-       double sum = 0.0;
-       
-       for (int idx = 0; idx < resultSeq.size(); idx++) {
-          XObject xObj = resultSeq.item(idx);
-          String str = null;
-          if (xObj instanceof XSAnyType) {
-             str = ((XSAnyType)xObj).stringValue();     
-          }
-          else {
-             str = xObj.str();
-          }
-          if (str != null) {
-             XString xStr = new XString(str);
-             sum +=  xStr.toDouble();
-          }
-       }
-       
-       return sum;
-    }
-    
-    /**
      * Check whether a 'ResultSequence' object, contains a specific xdm item.
      */
     public static boolean contains(ResultSequence resultSeq, XObject srch, String collationUri,
@@ -408,7 +385,7 @@ public class XslTransformEvaluationHelper {
               }
           }
           else if ((existingItemWithinResultSeq instanceof XSNumericType) && (srch instanceof XSNumericType)) {
-        	  // We ignore the collationUri, for comparing numeric values 
+        	  // When comparing numeric values, collationUri is not used
         	  String lStr = ((XSNumericType)existingItemWithinResultSeq).stringValue();
          	  XSDouble lDouble = new XSDouble(lStr);
          	  
@@ -421,7 +398,7 @@ public class XslTransformEvaluationHelper {
         	  }
           }
           else if ((existingItemWithinResultSeq instanceof XSNumericType) && (srch instanceof XNumber)) {
-        	  // We ignore the collationUri, for comparing numeric values
+        	  // When comparing numeric values, collationUri is not used
         	  String lStr = ((XSNumericType)existingItemWithinResultSeq).stringValue();
          	  XSDouble lDouble = new XSDouble(lStr);
          	  
@@ -434,7 +411,7 @@ public class XslTransformEvaluationHelper {
         	 }
           }
           else if ((existingItemWithinResultSeq instanceof XNumber) && (srch instanceof XSNumericType)) {
-        	 // We ignore the collationUri, for comparing numeric values
+        	 // When comparing numeric values, collationUri is not used
         	 double ldbl = ((XNumber)existingItemWithinResultSeq).num();
           	 XSDouble lDouble = new XSDouble(ldbl);
           	  
@@ -447,7 +424,7 @@ public class XslTransformEvaluationHelper {
           	 } 
          }
          else if ((existingItemWithinResultSeq instanceof XNumber) && (srch instanceof XNumber)) {
-        	 // We ignore the collationUri, for comparing numeric values
+        	 // When comparing numeric values, collationUri is not used
         	 double num1 = ((XNumber)existingItemWithinResultSeq).num();
         	 double num2 = ((XNumber)srch).num();
         	 if (num1 == num2) {
@@ -468,8 +445,36 @@ public class XslTransformEvaluationHelper {
          }
       }
        
-      return isSeqContains;
-       
+      return isSeqContains;       
    }
+    
+    /**
+     * This method produces, numerical sum of xdm sequence items.
+     *  
+     * @param resultSeq  An xdm sequence object instance, whose items
+     *                   need to be numerically added to produce a sum. 
+     * @return           The summation value.
+     */
+    private static double sumResultSequence(ResultSequence resultSeq) {
+       
+       double sum = 0.0;
+       
+       for (int idx = 0; idx < resultSeq.size(); idx++) {
+          XObject xObj = resultSeq.item(idx);
+          String str = null;
+          if (xObj instanceof XSAnyType) {
+             str = ((XSAnyType)xObj).stringValue();     
+          }
+          else {
+             str = xObj.str();
+          }
+          if (str != null) {
+             XString xStr = new XString(str);
+             sum +=  xStr.toDouble();
+          }
+       }
+       
+       return sum;
+    }
 
 }

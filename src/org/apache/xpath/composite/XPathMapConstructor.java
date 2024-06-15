@@ -51,8 +51,8 @@ import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 
-/*
- * Xalan-J XPath parser, constructs an object of this class, 
+/**
+ * Xalan-J's XPath parser, constructs an object of this class, 
  * to produce run-time representation of an XPath map expression.
  * 
  * Ref: https://www.w3.org/TR/xpath-31/#id-maps

@@ -23,7 +23,8 @@
              <xsl:value-of select="array:sort([1, -2, 5, 10, -10, 10, 8], (), function($x) {abs($x)})"/>
 	      </two>
 		  <three>
-		     <!-- Sort an array of strings, using Swedish collation -->
+		     <!-- Sort an array of strings, using Swedish collation. Collected the following, 
+		          list of words via web search. -->
 		     <xsl:variable name="words" select="['Ja', 'Nej', 'God', 'Natt', 'Snalla']"/>
              <xsl:value-of select="array:sort($words, 'http://www.w3.org/2013/collation/UCA?lang=se')"/>
 	      </three>
