@@ -504,6 +504,9 @@ public class FunctionTable
   
   /** The 'array:sort()' id. */
   public static final int FUNC_ARRAY_SORT = 160;
+  
+  /** The 'json-to-xml()' id. */
+  public static final int FUNC_JSON_TO_XML = 161;
 
   // Proprietary
 
@@ -597,7 +600,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 161;
+  private static final int NUM_BUILT_IN_FUNCS = 162;
 
   /**
    * Number of built-in functions that may be added.
@@ -867,7 +870,8 @@ public class FunctionTable
     m_functions[FUNC_ARRAY_FOLD_RIGHT] = org.apache.xpath.functions.array.FuncArrayFoldRight.class;
     m_functions[FUNC_ARRAY_SORT] = org.apache.xpath.functions.array.FuncArraySort.class;
     
-    m_functions[FUNC_PARSE_JSON] = org.apache.xpath.functions.FuncParseJson.class;    
+    m_functions[FUNC_PARSE_JSON] = org.apache.xpath.functions.FuncParseJson.class;
+    m_functions[FUNC_JSON_TO_XML] = org.apache.xpath.functions.FuncJsonToXml.class;
     
   }
 
@@ -1203,7 +1207,9 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_IN_SCOPE_PREFIXES));
          
          m_functionID.put(Keywords.FUNC_PARSE_JSON,
-                          new Integer(FunctionTable.FUNC_PARSE_JSON));         
+                          new Integer(FunctionTable.FUNC_PARSE_JSON));
+         m_functionID.put(Keywords.FUNC_JSON_TO_XML,
+                          new Integer(FunctionTable.FUNC_JSON_TO_XML));
   }
   
   public FunctionTable(){

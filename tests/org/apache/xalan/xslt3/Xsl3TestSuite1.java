@@ -25,6 +25,7 @@ import org.apache.xalan.xpath3.FnDefaultCollation;
 import org.apache.xalan.xpath3.FnDocTests;
 import org.apache.xalan.xpath3.FnDocumentUriTests;
 import org.apache.xalan.xpath3.FnForEachTests;
+import org.apache.xalan.xpath3.FnJsonToXmlTests;
 import org.apache.xalan.xpath3.FnLangTests;
 import org.apache.xalan.xpath3.FnMapMerge;
 import org.apache.xalan.xpath3.FnParseJsonTests;
@@ -49,7 +50,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * An JUnit test suite, for XSLT 3.0 and XPath 3.1 
- * language tests.
+ * specification implementation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -67,7 +68,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnBaseUriTests.class, FnDocumentUriTests.class, FnResolveQNameTests.class,
                 FnQNameTests.class, XPathMapTests.class, XPathArrayTests.class, FnLangTests.class, 
                 FnRootTests.class, FnParseJsonTests.class, XPathCastTests.class,
-                XPathArrowOpTests.class, FnMapMerge.class })
+                XPathArrowOpTests.class, FnMapMerge.class, FnJsonToXmlTests.class })
 public class Xsl3TestSuite1 {
 
 }
