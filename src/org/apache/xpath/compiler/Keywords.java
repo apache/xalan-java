@@ -604,7 +604,10 @@ public class Keywords
   public static final String FUNC_PARSE_JSON = "parse-json";
   
   /** json-to-xml function string. */
-  public static final String FUNC_JSON_TO_XML = "json-to-xml"; 
+  public static final String FUNC_JSON_TO_XML = "json-to-xml";
+  
+  /** xml-to-json function string. */
+  public static final String FUNC_XML_TO_JSON = "xml-to-json";
   
   /** array:append function string. */
   public static final String FUNC_ARRAY_APPEND = "append";

@@ -22,6 +22,7 @@ import java.util.List;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.templates.XSConstructorFunctionUtil;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
@@ -41,6 +42,11 @@ import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.Variable;
+import org.w3c.dom.DOMConfiguration;
+import org.w3c.dom.Node;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 
 import xml.xpath31.processor.types.XSAnyType;
 import xml.xpath31.processor.types.XSDouble;
@@ -447,6 +453,23 @@ public class XslTransformEvaluationHelper {
        
       return isSeqContains;       
    }
+    
+    /*
+     * Serialize an XML DOM element node, to XML string value.
+     */
+    public static String serializeXmlDomElementNode(Node node) throws Exception {
+    	String resultStr = null;
+
+    	DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.
+    			newInstance()).getDOMImplementation("LS"));
+    	LSSerializer lsSerializer = domImplLS.createLSSerializer();
+    	DOMConfiguration domConfig = lsSerializer.getDomConfig();
+    	domConfig.setParameter(XSConstructorFunctionUtil.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
+    	resultStr = lsSerializer.writeToString(node);
+    	resultStr = resultStr.replaceFirst(XSConstructorFunctionUtil.UTF_16, XSConstructorFunctionUtil.UTF_8);
+
+    	return resultStr;
+    }
     
     /**
      * This method produces, numerical sum of xdm sequence items.

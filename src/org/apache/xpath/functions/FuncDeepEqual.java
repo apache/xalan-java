@@ -24,7 +24,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.templates.XSConstructorFunctionUtil;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xerces.dom.ElementImpl;
 import org.apache.xml.dtm.DTM;
@@ -36,12 +35,8 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
-import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
-import org.w3c.dom.bootstrap.DOMImplementationRegistry;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSSerializer;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSBoolean;
@@ -220,8 +215,8 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 	 
 	 if ((node1.getNodeType() == Node.ELEMENT_NODE) && 
 			                                     (node2.getNodeType() == Node.ELEMENT_NODE)) {
-		String xmlStr1 = serializeXmlDomElementNode(node1);
-		String xmlStr2 = serializeXmlDomElementNode(node2);
+		String xmlStr1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(node1);
+		String xmlStr2 = XslTransformEvaluationHelper.serializeXmlDomElementNode(node2);
 		isTwoDomNodesEqual = isTwoXmlDocumentStrEqual(xmlStr1, xmlStr2, collationUri);
 	 }
 	 else if ((node1.getNodeType() == Node.ATTRIBUTE_NODE) && 
@@ -284,7 +279,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		                                                               throws Exception {
 	 boolean isTwoXmlDomElementNodesEqual = true;
 	 
-	 // Using XercesJ DOM parser api, to construct an XML document object 
+	 // Using Xerces-J DOM parser api, to construct an XML document object 
 	 // from an XML string value.
 	 System.setProperty(JAXP_XML_DOCUMENT_BUILDER_FACTORY_NAME, JAXP_XML_DOCUMENT_BUILDER_FACTORY_IMPL);
 	 
@@ -300,32 +295,15 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 	 ElementImpl elem2 = (ElementImpl)(document2.getDocumentElement());
 	 
 	 // The method 'isEqualNodeWithQName' used here, has been newly implemented
-	 // within XercesJ's class org.apache.xerces.dom.ElementImpl to support
-	 // few of the use cases of xpath 3.1 fn:deep-equal function. The method
+	 // within Xerces-J's class org.apache.xerces.dom.ElementImpl to support
+	 // few of the use cases of XPath 3.1 fn:deep-equal function. The method
 	 // 'isEqualNodeWithQName' used here is very similar to the standard
 	 // XML DOM method 'isEqualNode', except for few enhancements to compare
-	 // XML namespace declarations on element nodes as specified for xpath 3.1 
+	 // XML namespace declarations on element nodes as specified for XPath 3.1 
 	 // fn:deep-equal function. 
 	 isTwoXmlDomElementNodesEqual = elem1.isEqualNodeWithQName(elem2, collationUri);
 	 
 	 return isTwoXmlDomElementNodesEqual;
-  }
-  
-  /*
-   * Serialize an XML DOM element node, to XML string value.
-   */
-  private String serializeXmlDomElementNode(Node node) throws Exception {
-	 String resultStr = null;
-	 
-	 DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.
-			                                                           newInstance()).getDOMImplementation("LS"));
-     LSSerializer lsSerializer = domImplLS.createLSSerializer();
-     DOMConfiguration domConfig = lsSerializer.getDomConfig();
-     domConfig.setParameter(XSConstructorFunctionUtil.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
-     resultStr = lsSerializer.writeToString(node);
-     resultStr = resultStr.replaceFirst(XSConstructorFunctionUtil.UTF_16, XSConstructorFunctionUtil.UTF_8);
-	 
-	 return resultStr;
   }
   
 }

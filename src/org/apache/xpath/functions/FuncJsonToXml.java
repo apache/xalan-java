@@ -128,7 +128,7 @@ public class FuncJsonToXml extends FunctionMultiArgs
            else {
         	  throw new javax.xml.transform.TransformerException("FOJS0001 : The string value provided in XPath "
                                                               + "function call fn:json-to-xml's 1st argument is, not a "
-                                                              + "valid JSON string. A JSON string can only start with "
+                                                              + "correct lexical JSON string. A JSON string can only start with "
                                                               + "characters '{', or '['.", srcLocator); 
            }
         }
@@ -136,7 +136,7 @@ public class FuncJsonToXml extends FunctionMultiArgs
            String jsonParseErrStr = ex.getMessage();
            throw new javax.xml.transform.TransformerException("FOJS0001 : The string value provided in XPath "
            		                                                      + "function call fn:json-to-xml's 1st argument is, not "
-           		                                                      + "a valid JSON string. The JSON parser produced an "
+           		                                                      + "a correct lexical JSON string. The JSON parser produced following "
            		                                                      + "error: " + jsonParseErrStr + ".", srcLocator);
         }
         
@@ -170,12 +170,16 @@ public class FuncJsonToXml extends FunctionMultiArgs
     /**
      * A method to construct an XML DOM object, from an input JSON object.
      * 
-     * @param jsonObj        An object that is either of type JSONObject, or JSONArray 
+     * @param jsonObj        An object that is either of type org.json.JSONObject, or 
+     *                       org.json.JSONArray. 
      * @param document       An empty XML DOM object, that needs to be built 
      *                       to a fully populated DOM document node within this method 
      *                       implementation.
-     * @parentNode           This method supports to construct an XML DOM object, via
-     *                       recursive calls to this method.                     
+     * @param parentNode     An XML DOM node argument, that is needed to construct fully 
+     *                       populated XML DOM object, via recursive calls to this method.
+     * @param keyVal         This function argument is needed, to be able to properly create
+     *                       certain XML nodes within produced XML DOM object by this method.
+     *                                             
      * @return               void
      */
     private void constructXmlDom(Object jsonObj, Document document, Node parentNode, String keyVal) {
@@ -240,14 +244,17 @@ public class FuncJsonToXml extends FunctionMultiArgs
 	    				  arrayElem.appendChild(boolElem);  
 	    			  }
 	    			  else if (arrItem instanceof JSONObject) {
+	    				  // Recursive call to this function
 	    				  constructXmlDom(arrItem, document, arrayElem, null);
 	    			  }
 	    			  else if (arrItem instanceof JSONArray) {
+	    				  // Recursive call to this function
 	    				  constructXmlDom(arrItem, document, arrayElem, null);
 	    			  }
 	    		  }
 	      	   }
 	      	   else if (value instanceof JSONObject) {
+	      		  // Recursive call to this function
 	      		  constructXmlDom(value, document, mapElem, key); 
 	      	   }
 	      	   else if (JSONObject.NULL.equals(value)) {
@@ -288,9 +295,11 @@ public class FuncJsonToXml extends FunctionMultiArgs
     	          arrayElem.appendChild(boolElem);  
     		   }
     		   else if (arrItem instanceof JSONObject) {
+    			  // Recursive call to this function
       		      constructXmlDom(arrItem, document, arrayElem, null);
       		   }
     		   else if (arrItem instanceof JSONArray) {
+    			  // Recursive call to this function
     		      constructXmlDom(arrItem, document, arrayElem, null);
     		   }    		   
     		}
