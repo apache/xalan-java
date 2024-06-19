@@ -603,6 +603,9 @@ public class Keywords
   /** parse-json function string. */
   public static final String FUNC_PARSE_JSON = "parse-json";
   
+  /** json-doc function string. */
+  public static final String FUNC_JSON_DOC = "json-doc";
+  
   /** json-to-xml function string. */
   public static final String FUNC_JSON_TO_XML = "json-to-xml";
   

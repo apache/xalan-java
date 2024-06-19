@@ -82,7 +82,7 @@ public class FuncDoc extends FunctionOneArg {
                resolvedArg0Url = new URL(hrefStrVal);   
             }
                 
-            String urlStrContents = FuncUnparsedText.readStrDataFromUrl(resolvedArg0Url);
+            String urlStrContents = XslTransformEvaluationHelper.getStringContentFromUrl(resolvedArg0Url);
                 
             result = FuncParseXml.getNodeSetFromStr(urlStrContents, xctxt);
         }

@@ -25,6 +25,7 @@ import org.apache.xalan.xpath3.FnDefaultCollation;
 import org.apache.xalan.xpath3.FnDocTests;
 import org.apache.xalan.xpath3.FnDocumentUriTests;
 import org.apache.xalan.xpath3.FnForEachTests;
+import org.apache.xalan.xpath3.FnJsonDocTests;
 import org.apache.xalan.xpath3.FnJsonToXmlTests;
 import org.apache.xalan.xpath3.FnLangTests;
 import org.apache.xalan.xpath3.FnMapMerge;
@@ -68,8 +69,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 XmlDotComHigherOrderFunctionsTests.class, FnDefaultCollation.class,
                 FnBaseUriTests.class, FnDocumentUriTests.class, FnResolveQNameTests.class,
                 FnQNameTests.class, XPathMapTests.class, XPathArrayTests.class, FnLangTests.class, 
-                FnRootTests.class, FnParseJsonTests.class, XPathCastTests.class,
-                XPathArrowOpTests.class, FnMapMerge.class, FnJsonToXmlTests.class,
+                FnRootTests.class, XPathCastTests.class, XPathArrowOpTests.class, FnMapMerge.class,
+                FnParseJsonTests.class, FnJsonDocTests.class, FnJsonToXmlTests.class,
                 FnXmlToJsonTests.class })
 public class Xsl3TestSuite1 {
 

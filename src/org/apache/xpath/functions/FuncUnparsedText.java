@@ -96,7 +96,7 @@ public class FuncUnparsedText extends Function2Args {
              resolvedArg0Url = new URL(hrefStrVal);   
           }
               
-          String urlStrContents = readStrDataFromUrl(resolvedArg0Url);
+          String urlStrContents = XslTransformEvaluationHelper.getStringContentFromUrl(resolvedArg0Url);
               
           String resultStr = null;
           if (encodingStr != null) {
@@ -150,27 +150,6 @@ public class FuncUnparsedText extends Function2Args {
   protected void reportWrongNumberArgs() throws WrongNumberArgsException {
       throw new WrongNumberArgsException(XSLMessages.createXPATHMessage(
                                               XPATHErrorResources.ER_ONE_OR_TWO, null)); //"1 or 2"
-  }
-  
-  /*
-   * Read the string contents from a url.
-   */
-  public static String readStrDataFromUrl(URL url) throws IOException {
-      StringBuilder strBuilder = new StringBuilder();
-      
-      InputStream inpStream = url.openStream();
-      
-      try {                    
-          BufferedReader buffReader = new BufferedReader(new InputStreamReader(inpStream));
-          int chr;
-          while ((chr = buffReader.read()) != -1) {
-             strBuilder.append((char)chr);
-          }
-      } finally {
-          inpStream.close();
-      }
-   
-      return strBuilder.toString();
   }
   
 }

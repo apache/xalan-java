@@ -18,9 +18,14 @@
 /*
  * $Id$
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.json;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,6 +39,8 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.functions.FunctionMultiArgs;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
@@ -46,6 +53,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.Text;
 
+import xml.xpath31.processor.types.XSBoolean;
+
 /**
  * Implementation of XPath 3.1 function, json-to-xml().
  * 
@@ -57,6 +66,16 @@ public class FuncJsonToXml extends FunctionMultiArgs
 {
 	
 	private static final long serialVersionUID = 945183900907386647L;
+	
+	private static final List<String> OPTIONS_SUPPORTED_LIST = new ArrayList<String>();
+	
+    /**
+     * Class constructor.
+     */
+    public FuncJsonToXml() {
+       OPTIONS_SUPPORTED_LIST.add(XSLJsonConstants.LIBERAL);
+       OPTIONS_SUPPORTED_LIST.add(XSLJsonConstants.DUPLICATES);
+    }
 
     /**
      * Implementation of the function. The function must return a valid object.
@@ -94,10 +113,9 @@ public class FuncJsonToXml extends FunctionMultiArgs
            XObject arg0Obj = arg0.execute(xctxt);
            jsonStr = XslTransformEvaluationHelper.getStrVal(arg0Obj);
         }
+                 
+        XPathMap optionsMap = null;
         
-        // REVISIT
-        // To try implementing fn:json-to-xml function's 2nd argument 
-        XPathMap optionsMap = null;        
         if (arg1 != null) {
            XObject arg1Obj = null;
            if (arg1 instanceof Variable) {
@@ -113,7 +131,55 @@ public class FuncJsonToXml extends FunctionMultiArgs
         	  		                                                     + "the function call fn:json-to-xml.", srcLocator); 
            }
            else {
-        	  optionsMap = (XPathMap)arg1Obj;    
+        	  optionsMap = (XPathMap)arg1Obj;
+        	  
+        	  Map<XObject, XObject> optionsNativeMap = optionsMap.getNativeMap();
+        	  Set<Entry<XObject,XObject>> optionEntries = optionsNativeMap.entrySet();
+        	  Iterator<Entry<XObject,XObject>> optionsIter = optionEntries.iterator();
+        	  String optionDuplicatesValStr = null;
+        	  while (optionsIter.hasNext()) {
+        		 Entry<XObject,XObject> mapEntry = optionsIter.next();
+        		 String keyStr = XslTransformEvaluationHelper.getStrVal(mapEntry.getKey());
+        		 XObject optionValue = mapEntry.getValue();
+        		 if (!OPTIONS_SUPPORTED_LIST.contains(keyStr)) {
+        			throw new javax.xml.transform.TransformerException("FOUT1190 : An option '" + keyStr + "' used during "
+        					                                       + "function call fn:json-to-xml, is not supported. "
+        					                                       + "This implementation supports, only the options 'liberal' & "
+        					                                       + "'duplicates' for the function fn:json-to-xml.", srcLocator); 
+        		 }
+        		 else if (XSLJsonConstants.LIBERAL.equals(keyStr)) {
+        			if ((optionValue instanceof XSBoolean) || (optionValue instanceof XBooleanStatic)) {
+        			   boolean liberalVal = optionValue.bool();
+        			   if (liberalVal) {
+        				  throw new javax.xml.transform.TransformerException("FOUT1190 : An implementation for function fn:json-to-xml, doesn't "
+        				  		                                         + "support an option liberal=true. An input JSON string to function "
+        				  		                                         + "fn:json-to-xml, should strictly conform to the JSON syntax rules, "
+        				  		                                         + "as specified by RFC 7159.", srcLocator);  
+        			   }
+        			}
+        			else {
+        			   throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:json-to-xml option "
+        			   		                                             + "\"liberal\"'s value is not of type xs:boolean.", 
+        			   		                                             srcLocator);
+        			}
+        		 }
+        		 else if (XSLJsonConstants.DUPLICATES.equals(keyStr)) {
+        			optionDuplicatesValStr = XslTransformEvaluationHelper.getStrVal(optionValue);
+        			if (!(XSLJsonConstants.DUPLICATES_REJECT.equals(optionDuplicatesValStr) || 
+        				  XSLJsonConstants.DUPLICATES_USE_FIRST.equals(optionDuplicatesValStr) || 
+        				  XSLJsonConstants.DUPLICATES_RETAIN.equals(optionDuplicatesValStr))) {
+        				throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:json-to-xml option "
+                                                                        + "\"duplicates\"'s value is not one of following : 'reject', 'use-first', "
+                                                                        + "'retain'.", srcLocator);
+        			}
+        			else if (XSLJsonConstants.DUPLICATES_USE_FIRST.equals(optionDuplicatesValStr) || 
+        					XSLJsonConstants.DUPLICATES_RETAIN.equals(optionDuplicatesValStr)) {
+        				throw new javax.xml.transform.TransformerException("FOUT1190 : The function fn:json-to-xml option \"duplicates\"'s value "
+        						                                        + "'use-first', or 'retain' is not supported. There should be no duplicate "
+        						                                        + "keys within an input JSON document.", srcLocator);
+        			}
+        		 }
+        	  }
            }
         }
         
@@ -157,12 +223,10 @@ public class FuncJsonToXml extends FunctionMultiArgs
         
         Element docElem = document.getDocumentElement();
         docElem.setAttribute("xmlns", FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
-        
-        DTMManager dtmMgr = xctxt.getDTMManager();
          
-        DTM dtm = dtmMgr.getDTM(new DOMSource(document), true, null, false, false);
-        
-        result = new XNodeSet(dtm.getDocument(), dtmMgr);
+        DTMManager dtmMgr = xctxt.getDTMManager();             
+        DTM dtm = dtmMgr.getDTM(new DOMSource(document), true, null, false, false);            
+        result = new XNodeSet(dtm.getDocument(), dtmMgr);           
         
         return result;
     }
@@ -185,11 +249,11 @@ public class FuncJsonToXml extends FunctionMultiArgs
     private void constructXmlDom(Object jsonObj, Document document, Node parentNode, String keyVal) {
     	
     	if (jsonObj instanceof JSONObject) {
-    		Element mapElem = document.createElement("map");
+    		Element mapElem = document.createElement(XSLJsonConstants.MAP);
     		parentNode.appendChild(mapElem);
     		
     		if (keyVal != null) {
-    		   mapElem.setAttribute("key", keyVal);	
+    		   mapElem.setAttribute(XSLJsonConstants.KEY, keyVal);	
     		}
     		
 	    	Iterator<String> jsonKeys = ((JSONObject)jsonObj).keys();	    	
@@ -197,48 +261,48 @@ public class FuncJsonToXml extends FunctionMultiArgs
 	      	   String key = jsonKeys.next();
 	      	   Object value = ((JSONObject)jsonObj).get(key);        	  
 	      	   if (value instanceof String) {
-	      		 Element strElem = document.createElement("string");
-	      		 strElem.setAttribute("key", key);
+	      		 Element strElem = document.createElement(XSLJsonConstants.STRING);
+	      		 strElem.setAttribute(XSLJsonConstants.KEY, key);
 	      		 Text text = document.createTextNode((String)value);
 	      		 strElem.appendChild(text);
 	      		 mapElem.appendChild(strElem);
 	      	   }
 	      	   else if (value instanceof Number) {
-	      		 Element numberElem = document.createElement("number");
-	      		 numberElem.setAttribute("key", key);
+	      		 Element numberElem = document.createElement(XSLJsonConstants.NUMBER);
+	      		 numberElem.setAttribute(XSLJsonConstants.KEY, key);
 	      		 Text text = document.createTextNode(value.toString());
 	      		 numberElem.appendChild(text);
 	      		 mapElem.appendChild(numberElem);
 	      	   }
 	      	   else if (value instanceof Boolean) {
-	      		 Element boolElem = document.createElement("boolean");
-	      		 boolElem.setAttribute("key", key);
+	      		 Element boolElem = document.createElement(XSLJsonConstants.BOOLEAN);
+	      		 boolElem.setAttribute(XSLJsonConstants.KEY, key);
 	      		 Text text = document.createTextNode(value.toString());
 	      		 boolElem.appendChild(text);
 	      		 mapElem.appendChild(boolElem);
 	      	   }	      	   
 	      	   else if (value instanceof JSONArray) {
-	      		  Element arrayElem = document.createElement("array");
-	      		  arrayElem.setAttribute("key", key);
+	      		  Element arrayElem = document.createElement(XSLJsonConstants.ARRAY);
+	      		  arrayElem.setAttribute(XSLJsonConstants.KEY, key);
 	      		  mapElem.appendChild(arrayElem);
 	      		  JSONArray jsonArr = (JSONArray)value;
 	      		  int arrLen = jsonArr.length();
 	    		  for (int idx = 0; idx < arrLen; idx++) {
 	    			  Object arrItem = jsonArr.get(idx);
 	    			  if (arrItem instanceof String) {
-	    				  Element strElem = document.createElement("string");
+	    				  Element strElem = document.createElement(XSLJsonConstants.STRING);
 	    				  Text text = document.createTextNode((String)arrItem);
 	    				  strElem.appendChild(text);
 	    				  arrayElem.appendChild(strElem);	 
 	    			  }
 	    			  else if (arrItem instanceof Number) {
-	    				  Element numberElem = document.createElement("number");
+	    				  Element numberElem = document.createElement(XSLJsonConstants.NUMBER);
 	    				  Text text = document.createTextNode(arrItem.toString());
 	    				  numberElem.appendChild(text);
 	    				  arrayElem.appendChild(numberElem); 
 	    			  }
 	    			  else if (arrItem instanceof Boolean) {
-	    				  Element boolElem = document.createElement("boolean");
+	    				  Element boolElem = document.createElement(XSLJsonConstants.BOOLEAN);
 	    				  Text text = document.createTextNode(arrItem.toString());
 	    				  boolElem.appendChild(text);
 	    				  arrayElem.appendChild(boolElem);  
@@ -259,17 +323,17 @@ public class FuncJsonToXml extends FunctionMultiArgs
 	      	   }
 	      	   else if (JSONObject.NULL.equals(value)) {
 	      		  Element nullElem = document.createElement("null");
-	      		  nullElem.setAttribute("key", key);
+	      		  nullElem.setAttribute(XSLJsonConstants.KEY, key);
 	      		  mapElem.appendChild(nullElem);
 	      	   }
 	        }	    		    	
     	}
     	else if (jsonObj instanceof JSONArray) {
-    		Element arrayElem = document.createElement("array");
+    		Element arrayElem = document.createElement(XSLJsonConstants.ARRAY);
      		parentNode.appendChild(arrayElem);
      		
      		if (keyVal != null) {
-     		   arrayElem.setAttribute("key", keyVal);	
+     		   arrayElem.setAttribute(XSLJsonConstants.KEY, keyVal);	
      		}
     		
     		JSONArray jsonArr = (JSONArray)jsonObj;	      		  
@@ -277,19 +341,19 @@ public class FuncJsonToXml extends FunctionMultiArgs
     		for (int idx = 0; idx < arrLen; idx++) {
     		   Object arrItem = jsonArr.get(idx);
     		   if (arrItem instanceof String) {
-    			  Element strElem = document.createElement("string");
+    			  Element strElem = document.createElement(XSLJsonConstants.STRING);
   	      		  Text text = document.createTextNode((String)arrItem);
   	      		  strElem.appendChild(text);
   	      		  arrayElem.appendChild(strElem);	 
     		   }
     		   else if (arrItem instanceof Number) {
-    			  Element numberElem = document.createElement("number");
+    			  Element numberElem = document.createElement(XSLJsonConstants.NUMBER);
    	      		  Text text = document.createTextNode(arrItem.toString());
    	      		  numberElem.appendChild(text);
    	      		  arrayElem.appendChild(numberElem); 
     		   }
     		   else if (arrItem instanceof Boolean) {
-    			  Element boolElem = document.createElement("boolean");
+    			  Element boolElem = document.createElement(XSLJsonConstants.BOOLEAN);
     	          Text text = document.createTextNode(arrItem.toString());
     	          boolElem.appendChild(text);
     	          arrayElem.appendChild(boolElem);  

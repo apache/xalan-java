@@ -18,7 +18,7 @@
 /*
  * $Id$
  */
-package org.apache.xpath.functions;
+package org.apache.xpath.functions.json;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -36,6 +36,7 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
@@ -62,13 +63,6 @@ public class FuncXmlToJson extends FunctionMultiArgs
 {
 
 	private static final long serialVersionUID = -7072675375842927045L;
-	
-	// Reference within this implementation to an, XML Schema document file 
-	// (which specifies an XML schema for, an XML document input to function fn:xml-to-json) 
-	// provided by XPath 3.1 F&O spec.
-	private static final String XML_JSON_SCHEMA_DOCUMENT = "schema-for-json.xsd";
-	
-	private static final int JSON_INDENT_FACTOR = 1;
 
 	/**
      * Implementation of the function. The function must return a valid object.
@@ -165,19 +159,19 @@ public class FuncXmlToJson extends FunctionMultiArgs
    	    int nodeHandle = dtmIter.nextNode();
    	    DTM dtm = xctxt.getDTM(nodeHandle);
    	    Node node = dtm.getNode(nodeHandle);
-   	    String xmlDocStr = null;   	    
+   	    String xmlDocStr = null;
+   	    
    	    try {
-   	       xmlDocStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
-   	       
-   	       if (isXmlStrValidWithSchema(xmlDocStr, XML_JSON_SCHEMA_DOCUMENT)) {
+   	       xmlDocStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);   	       
+   	       if (isXmlStrValidWithSchema(xmlDocStr, XSLJsonConstants.XML_JSON_SCHEMA_DOCUMENT)) {
    	    	  Object obj = getJsonFromXmlNode(node, null);
    	    	  if (obj instanceof JSONObject) {
-   	    		 String jsonStr = jsonIndent ? ((JSONObject)obj).toString(JSON_INDENT_FACTOR) : 
+   	    		 String jsonStr = jsonIndent ? ((JSONObject)obj).toString(XSLJsonConstants.JSON_INDENT_FACTOR) : 
    	    			                                                   ((JSONObject)obj).toString();   
    	    	     result = new XSString(jsonStr);
    	    	  }
    	    	  else {
-   	    		 String jsonStr = jsonIndent ? ((JSONArray)obj).toString(JSON_INDENT_FACTOR) : 
+   	    		 String jsonStr = jsonIndent ? ((JSONArray)obj).toString(XSLJsonConstants.JSON_INDENT_FACTOR) : 
    	    			                                                   ((JSONArray)obj).toString();
    	    		 result = new XSString(jsonStr); 
    	    	  }
@@ -204,32 +198,31 @@ public class FuncXmlToJson extends FunctionMultiArgs
      *                         XML Schema document.
      * @param schemaFileName   XML Schema document's file name
      * 
-     * @return             true, or false indicating whether an XML input document is valid
-     *                     or invalid when validated by an XML Schema document.
+     * @return                 true, or false indicating whether an XML input document is valid,
+     *                         or invalid when validated by an XML Schema document.
      * @throws javax.xml.transform.TransformerException
      */
     private boolean isXmlStrValidWithSchema(String xmlStr, String schemaFileName) throws 
                                                                        javax.xml.transform.TransformerException {
         boolean isXmlStrValid = false;
          
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        
+        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);        
         try {
 			Schema schema = schemaFactory.newSchema(this.getClass().getResource(schemaFileName));
-			Validator xmlSchemaValidaor = schema.newValidator();
+			Validator validator = schema.newValidator();
 			StringReader xmlInputStrReader = new StringReader(xmlStr);
-			xmlSchemaValidaor.validate(new StreamSource(xmlInputStrReader));
+			validator.validate(new StreamSource(xmlInputStrReader));
 			isXmlStrValid = true;
 		} 
         catch (SAXException ex) {
 			throw new javax.xml.transform.TransformerException("FOAP0001 : An XML Schema validation of function fn:xml-to-json's "
-					                                                  + "1st argument which is an XML node, produced following validation messages : " 
-					                                                  + ex.getMessage()); 
+					                                                  + "1st argument which is an XML node, failed with following XML Schema "
+					                                                  + "validation result details : " + ex.getMessage()); 
 		}
         catch (IOException ex) {
         	throw new javax.xml.transform.TransformerException("FOAP0001 : An XML Schema validation of function fn:xml-to-json's "
-        			                                                  + "1st argument which is an XML node, produced following validation messages : " 
-        			                                                  + ex.getMessage());
+        			                                                  + "1st argument which is an XML node, failed with following XML Schema "
+        			                                                  + "validation result details : " + ex.getMessage());
         }        
         
         return isXmlStrValid; 
@@ -256,35 +249,35 @@ public class FuncXmlToJson extends FunctionMultiArgs
         
         if (nodeType == Node.ELEMENT_NODE) {
            String elemName = node.getNodeName();
-           if ("map".equals(elemName)) {
+           if (XSLJsonConstants.MAP.equals(elemName)) {
         	  JSONObject jsonObj = new JSONObject(); 
         	  NodeList nodeList = node.getChildNodes();
         	  for (int idx = 0; idx < nodeList.getLength(); idx++) {
         		 Node node1 = nodeList.item(idx);
          		 if (node1.getNodeType() == Node.ELEMENT_NODE) {
          			String nodeName = node1.getNodeName();
-         			if ("map".equals(nodeName) || "array".equals(nodeName)) {
+         			if (XSLJsonConstants.MAP.equals(nodeName) || XSLJsonConstants.ARRAY.equals(nodeName)) {
          			   // Recursive call to this function
          			   Object result1 = getJsonFromXmlNode(node1, jsonObj);
          			   Element elem = (Element)node1;
-                       String keyVal = elem.getAttribute("key");
+                       String keyVal = elem.getAttribute(XSLJsonConstants.KEY);
          			   jsonObj.put(keyVal, result1);
          			}
-         			else if ("number".equals(nodeName)) {
+         			else if (XSLJsonConstants.NUMBER.equals(nodeName)) {
                        Element elem = (Element)node1;
-                       String keyVal = elem.getAttribute("key");
+                       String keyVal = elem.getAttribute(XSLJsonConstants.KEY);
          			   String nodeStrVal = node1.getTextContent();
          			   jsonObj.put(keyVal, Double.valueOf(nodeStrVal));
          			}
-         			else if ("string".equals(nodeName)) {
+         			else if (XSLJsonConstants.STRING.equals(nodeName)) {
                        Element elem = (Element)node1;
-                       String keyVal = elem.getAttribute("key");
+                       String keyVal = elem.getAttribute(XSLJsonConstants.KEY);
           			   String nodeStrVal = node1.getTextContent();
           			   jsonObj.put(keyVal, nodeStrVal);
           			}
-         			else if ("boolean".equals(nodeName)) {
+         			else if (XSLJsonConstants.BOOLEAN.equals(nodeName)) {
                        Element elem = (Element)node1;
-                       String keyVal = elem.getAttribute("key");
+                       String keyVal = elem.getAttribute(XSLJsonConstants.KEY);
            			   String nodeStrVal = node1.getTextContent();
            			   boolean boolVal;
                        if ("0".equals(nodeStrVal) || "false".equals(nodeStrVal)) {
@@ -295,9 +288,9 @@ public class FuncXmlToJson extends FunctionMultiArgs
                        }
            			   jsonObj.put(keyVal, boolVal);
            			}
-         			else if ("null".equals(nodeName)) {
+         			else if (XSLJsonConstants.NULL.equals(nodeName)) {
          				Element elem = (Element)node1;
-                        String keyVal = elem.getAttribute("key");
+                        String keyVal = elem.getAttribute(XSLJsonConstants.KEY);
                         jsonObj.put(keyVal, JSONObject.NULL);
          			}
          		 }
@@ -305,27 +298,27 @@ public class FuncXmlToJson extends FunctionMultiArgs
         	  
         	  result = jsonObj;
            }
-           else if ("array".equals(elemName)) {
+           else if (XSLJsonConstants.ARRAY.equals(elemName)) {
         	  JSONArray jsonArr = new JSONArray();
         	  NodeList nodeList = node.getChildNodes();
         	  for (int idx = 0; idx < nodeList.getLength(); idx++) {
         		 Node node1 = nodeList.item(idx);
         		 if (node1.getNodeType() == Node.ELEMENT_NODE) {
         			String nodeName = node1.getNodeName();
-        			if ("map".equals(nodeName) || "array".equals(nodeName)) {
+        			if (XSLJsonConstants.MAP.equals(nodeName) || XSLJsonConstants.ARRAY.equals(nodeName)) {
         			   // Recursive call to this function
         			   Object result1 = getJsonFromXmlNode(node1, jsonArr);
         			   jsonArr.put(result1);
         			}
-        			else if ("number".equals(nodeName)) {
+        			else if (XSLJsonConstants.NUMBER.equals(nodeName)) {
         			   String nodeStrVal = node1.getTextContent();
         			   jsonArr.put(Double.valueOf(nodeStrVal));
         			}
-                    else if ("string".equals(nodeName)) {
+                    else if (XSLJsonConstants.STRING.equals(nodeName)) {
                        String nodeStrVal = node1.getTextContent();
                        jsonArr.put(nodeStrVal);
         			}
-                    else if ("boolean".equals(nodeName)) {
+                    else if (XSLJsonConstants.BOOLEAN.equals(nodeName)) {
                        String nodeStrVal = node1.getTextContent();
                        boolean boolVal;
                        if ("0".equals(nodeStrVal) || "false".equals(nodeStrVal)) {
@@ -336,7 +329,7 @@ public class FuncXmlToJson extends FunctionMultiArgs
                        }
                        jsonArr.put(boolVal);
         			}
-                    else if ("null".equals(nodeName)) {
+                    else if (XSLJsonConstants.NULL.equals(nodeName)) {
                        jsonArr.put(JSONObject.NULL);
         			}
         		 }

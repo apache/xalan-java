@@ -20,11 +20,22 @@
  */
 package org.apache.xpath.functions;
 
+import java.util.Iterator;
+
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.res.XPATHErrorResources;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSString;
 
 /**
  * Base class for functions that accept an undetermined number of multiple
@@ -202,6 +213,102 @@ public class FunctionMultiArgs extends Function3Args
           m_args[i].callVisitors(new ArgMultiOwner(i), visitor);
         }
       }
+    }
+    
+    /**
+     * Given an object of type org.json.JSONObject or org.json.JSONArray,
+     * construct either an XDM 'map', or an XDM 'array' from these objects.   
+     * 
+     * @param jsonObj   an input argument of type org.json.JSONObject, or 
+     *                  org.json.JSONArray.  
+     * @return          an XDM object of type XPathMap, or XPathArray 
+     */
+    protected XObject getXdmMapOrArrayFromNativeJson(Object jsonObj) {
+    	
+    	XObject result = null;
+    	
+    	if (jsonObj instanceof JSONObject) {
+    		result = new XPathMap();
+	    	Iterator<String> jsonKeys = ((JSONObject)jsonObj).keys();
+	    	
+	    	while (jsonKeys.hasNext()) {
+	      	   String key = jsonKeys.next();
+	      	   Object value = ((JSONObject)jsonObj).get(key);        	  
+	      	   if (value instanceof String) {
+	      		 ((XPathMap)result).put(new XSString(key), new XSString(String.valueOf(value)));  
+	      	   }
+	      	   else if (value instanceof Number) {
+	      		  double doubleVal = ((Number)value).doubleValue();
+	      		  ((XPathMap)result).put(new XSString(key), new XSDecimal(String.valueOf(doubleVal)));
+	      	   }
+	      	   else if (value instanceof Boolean) {
+	      		  ((XPathMap)result).put(new XSString(key), new XSBoolean(new Boolean(value.toString()))); 
+	      	   }	      	   
+	      	   else if (value instanceof JSONObject) {
+	      		  // Recursive call to this function
+	      		  XObject value1 = getXdmMapOrArrayFromNativeJson(value);
+	      		  ((XPathMap)result).put(new XSString(key), value1);
+	      	   }
+	      	   else if (value instanceof JSONArray) {
+	      		  XPathArray xpathArr = new XPathArray();
+	      		  
+	      		  JSONArray jsonArr = (JSONArray)value;	      		  
+	      		  int arrLen = jsonArr.length();
+	      		  for (int idx = 0; idx < arrLen; idx++) {
+	      			 Object arrItem = jsonArr.get(idx);
+	      			 XObject xObj = null;
+	      			 if (arrItem instanceof String) {
+	      				xObj = new XSString(arrItem.toString());	 
+	      			 }
+	      			 else if (arrItem instanceof Number) {
+	      				double doubleVal = ((Number)arrItem).doubleValue();
+	      				xObj = new XSDecimal(String.valueOf(doubleVal)); 
+	      			 }
+	      			 else if (arrItem instanceof Boolean) {
+	      				xObj = new XSBoolean(new Boolean(arrItem.toString())); 
+	      			 }
+	      			 else if ((arrItem instanceof JSONObject) || (arrItem instanceof JSONArray)) {
+	      			   // Recursive call to this function
+	      				xObj = getXdmMapOrArrayFromNativeJson(arrItem);
+	      			 }
+	      			 
+	      			xpathArr.add(xObj);
+	      		  }
+	      		  
+	      		  ((XPathMap)result).put(new XSString(key), xpathArr);
+	      	   }
+	        }
+    	}
+    	else if (jsonObj instanceof JSONArray) {
+    		XPathArray xpathArr = new XPathArray();
+    		
+    		JSONArray jsonArr = (JSONArray)jsonObj;	      		  
+    		int arrLen = jsonArr.length();
+    		for (int idx = 0; idx < arrLen; idx++) {
+    		   Object arrItem = jsonArr.get(idx);
+    		   XObject xObj = null;
+    		   if (arrItem instanceof String) {
+    		      xObj = new XSString(arrItem.toString());	 
+    		   }
+    		   else if (arrItem instanceof Number) {
+    		      double doubleVal = ((Number)arrItem).doubleValue();
+    		      xObj = new XSDecimal(String.valueOf(doubleVal)); 
+    		   }
+    		   else if (arrItem instanceof Boolean) {
+    		      xObj = new XSBoolean(new Boolean(arrItem.toString())); 
+    		   }
+    		   else if ((arrItem instanceof JSONObject) || (arrItem instanceof JSONArray)) {
+    			  // Recursive call to this function
+    		      xObj = getXdmMapOrArrayFromNativeJson(arrItem);
+    		   }
+    			 
+    		   xpathArr.add(xObj);
+    		}
+    		  
+    		result = xpathArr;
+    	}
+    	
+    	return result;
     }
     
     /**

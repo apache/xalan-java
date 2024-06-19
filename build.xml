@@ -108,7 +108,7 @@ $Id$
   <property name="bcel.jar"                         value="${lib.dir}/${bcel.jar.name}"/>
   <property name="xpath31_types.jar.name"           value="xpath31_types.jar"/>
   <property name="xpath31_types.jar"                value="${lib.dir}/${xpath31_types.jar.name}"/>
-  <property name="json.jar.name"                    value="json-20200518.jar"/>
+  <property name="json.jar.name"                    value="json-20240303.jar"/>
   <property name="json.jar"                         value="${lib.dir}/${json.jar.name}"/>
   <property name="runtime.jar.name"                 value="runtime.jar"/>
   <property name="runtime.jar"                      value="${lib.dir}/${runtime.jar.name}"/>

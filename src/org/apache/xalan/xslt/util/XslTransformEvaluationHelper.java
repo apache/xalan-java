@@ -16,6 +16,11 @@
  */
 package org.apache.xalan.xslt.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -469,6 +474,26 @@ public class XslTransformEvaluationHelper {
     	resultStr = resultStr.replaceFirst(XSConstructorFunctionUtil.UTF_16, XSConstructorFunctionUtil.UTF_8);
 
     	return resultStr;
+    }
+    
+    /**
+     * Get the string contents from an url.
+     */
+    public static String getStringContentFromUrl(URL url) throws IOException {
+        StringBuilder strBuilder = new StringBuilder();
+        
+        InputStream inpStream = url.openStream();        
+        try {                    
+            BufferedReader buffReader = new BufferedReader(new InputStreamReader(inpStream));
+            int c;
+            while ((c = buffReader.read()) != -1) {
+               strBuilder.append((char)c);
+            }
+        } finally {
+            inpStream.close();
+        }
+     
+        return strBuilder.toString();
     }
     
     /**
