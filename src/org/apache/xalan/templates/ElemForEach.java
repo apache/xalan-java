@@ -339,7 +339,11 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
             else {
                resultSeqDtmIterator = nodeSet.iter(); 
             }
-        }                
+        }
+        else if (evalResult instanceof XPathArray) {
+        	processSequenceOrArray(transformer, xctxt, evalResult);               
+            return;
+        }
     }
     else if (m_selectExpression instanceof DynamicFunctionCall) {
         DynamicFunctionCall dfc = (DynamicFunctionCall)m_selectExpression;
