@@ -34,6 +34,7 @@ import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.regex.Matcher;
+import org.apache.xpath.regex.Pattern;
 import org.apache.xpath.res.XPATHErrorResources;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -147,7 +148,8 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         			int idx1 = matchInfo.getStartIdx();
         			int idx2 = matchInfo.getEndIdx();
         			String matchStr = strToBeAnalyzed.substring(idx1, idx2);
-        			createMatchNodeToResult(document, analyzeStrResultElem, matchStr); 
+        			createMatchNodeToResult(document, analyzeStrResultElem, 
+        					                matchStr, regexStr); 
         			
         			if (isNonMatchingStringAvailable(strToBeAnalyzed, idx2)) {
         				String nonMatchStr = null;
@@ -173,7 +175,8 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         			int idx1 = matchInfo.getStartIdx();
         			int idx2 = matchInfo.getEndIdx();
         			String matchStr = strToBeAnalyzed.substring(idx1, idx2);
-        			createMatchNodeToResult(document, analyzeStrResultElem, matchStr);
+        			createMatchNodeToResult(document, analyzeStrResultElem, 
+        					                matchStr, regexStr);
 
         			if (isNonMatchingStringAvailable(strToBeAnalyzed, idx2)) {
         				if ((idx + 1) == regexMatchInfoList.size()) {
@@ -228,9 +231,6 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
      * A class representing, a pair of string index values,
      * for a substring that matched with the fn:analyze-string 
      * function's regex argument.
-     * 
-     * The result of function call fn:analyze-string, shall be
-     * determined by a list of objects of this class.
      */
     class RegexMatchInfo {    	
     	private int startIdx;
@@ -289,7 +289,8 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
 	 * @param analyzeStrResultElem        XML result element, that is appended with more information
 	 * @param nonMatchStr                 text value that is appended as child of XML "non-match" element 
 	 */
-	private void createNonMatchNodeToResult(Document document, Element analyzeStrResultElem, String nonMatchStr) {
+	private void createNonMatchNodeToResult(Document document, Element analyzeStrResultElem, 
+			                                String nonMatchStr) {
 		Element nonMatchElem = document.createElement("non-match");
 		Text txtNode2 = document.createTextNode(nonMatchStr);
 		nonMatchElem.appendChild(txtNode2);
@@ -301,14 +302,39 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
 	 * 
 	 * @param document                    XML document node
 	 * @param analyzeStrResultElem        XML result element, that is appended with more information
-	 * @param matchStr                    text value that is appended as child of XML "match" element 
+	 * @param subsequenceStr              text value that is appended as child of XML "match" element
+	 * @param regexStr					  regex string, provided as an argument to function 
+	 *                                    call fn:analyze-string. 
 	 */
-	private void createMatchNodeToResult(Document document, Element analyzeStrResultElem, String matchStr) {
-		Element matchElem = document.createElement("match");
-		
-		Text txtNode1 = document.createTextNode(matchStr);
-		matchElem.appendChild(txtNode1);
-		analyzeStrResultElem.appendChild(matchElem);
+	private void createMatchNodeToResult(Document document, Element analyzeStrResultElem, 
+			                             String subsequenceStr, String regexStr) {
+		Element matchElem = document.createElement("match");		
+		Pattern regexSubsequencePattern = Pattern.compile(regexStr);
+		Matcher regexSubsequenceMatcher = regexSubsequencePattern.matcher(subsequenceStr);
+		int grpCount = regexSubsequenceMatcher.groupCount();
+		if (grpCount > 0) {
+		   if (regexSubsequenceMatcher.matches()) {
+			   for (int idx = 0; idx < grpCount; idx++) {			  
+				  Element grpElem = document.createElement("group");
+				  grpElem.setAttribute("nr", String.valueOf(idx+1));
+				  String grpStrValue = regexSubsequenceMatcher.group(idx+1);
+				  Text grpTxtNode = document.createTextNode(grpStrValue);
+				  grpElem.appendChild(grpTxtNode);
+				  matchElem.appendChild(grpElem);
+				  if (idx < (grpCount - 1)) {
+					 Text hyphenTxtNode = document.createTextNode("-");
+					 matchElem.appendChild(hyphenTxtNode);
+				  }
+			   }			   
+			   analyzeStrResultElem.appendChild(matchElem);
+		   }		   
+		   regexSubsequenceMatcher.reset();
+		}				
+		else {
+		   Text txtNode1 = document.createTextNode(subsequenceStr);
+		   matchElem.appendChild(txtNode1);
+		   analyzeStrResultElem.appendChild(matchElem);
+		}				
 	}
 
     /**
