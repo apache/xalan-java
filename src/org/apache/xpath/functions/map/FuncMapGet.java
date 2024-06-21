@@ -18,6 +18,8 @@ package org.apache.xpath.functions.map;
 
 import java.util.Map;
 
+import javax.xml.transform.SourceLocator;
+
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
@@ -26,7 +28,6 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
-import org.apache.xpath.operations.Variable;
 
 import xml.xpath31.processor.types.XSString;
 
@@ -44,20 +45,29 @@ public class FuncMapGet extends Function2Args {
 	public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
 		
 		XObject result = null;
+		
+		SourceLocator srcLocator = xctxt.getSAXLocator();
 	       
 	    Expression arg0 = getArg0();
-	    XPathMap arg0Map = null;
-	    
-	    if (arg0 instanceof Variable) {
-	       XObject xObject = ((Variable)arg0).execute(xctxt);
-	       arg0Map = (XPathMap)xObject;
+	    XObject arg0Obj = null;
+	    if (arg0 instanceof SelfIteratorNoPredicate) {
+	       XObject xpathContextItem = xctxt.getXPath3ContextItem();
+	       if (xpathContextItem != null) {
+	    	  arg0Obj = xpathContextItem; 
+	       }
 	    }
 	    else {
-	       XObject xObject = arg0.execute(xctxt);
-		   arg0Map = (XPathMap)xObject;
+	       arg0Obj = arg0.execute(xctxt);
 	    }
 	    
-	    Map<XObject, XObject> nativeMap = arg0Map.getNativeMap();
+	    Map<XObject, XObject> nativeMap = null;
+	    if ((arg0Obj != null) && (arg0Obj instanceof XPathMap)) {
+	       nativeMap = ((XPathMap)arg0Obj).getNativeMap();
+	    }
+	    else {
+	       throw new javax.xml.transform.TransformerException("FORG0006: The 1st argument provided to function call "
+	       		                                                            + "map:get, is not an xdm map.", srcLocator);
+	    }
 	    
 	    Expression arg1 = getArg1();
 	    XObject arg1Obj = null;
@@ -75,6 +85,7 @@ public class FuncMapGet extends Function2Args {
 	    }
 	    
 	    result = nativeMap.get(arg1Obj);
+	    
 	    if (result == null) {	       
 	       result = new ResultSequence();	
 	    }
