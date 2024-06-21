@@ -76,7 +76,7 @@ public class FuncMatches extends Function3Args {
         boolean result = false;
         
         try {                
-            Matcher matcher = RegexEvaluationSupport.regex(RegexEvaluationSupport.trfPatternStrForSubtraction(pattern.toString()), 
+            Matcher matcher = RegexEvaluationSupport.regex(RegexEvaluationSupport.transformRegexStrForSubtractionOp(pattern.toString()), 
                                                             flags != null ? flags.toString() : null, inputStr.toString());
             while (matcher.find()) {
                result = true;

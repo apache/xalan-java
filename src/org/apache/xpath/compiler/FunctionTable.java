@@ -513,6 +513,9 @@ public class FunctionTable
   
   /** The 'json-doc()' id. */
   public static final int FUNC_JSON_DOC = 163;
+  
+  /** The 'analyze-string()' id. */
+  public static final int FUNC_ANALYZE_STRING = 164;
 
   // Proprietary
 
@@ -606,7 +609,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 164;
+  private static final int NUM_BUILT_IN_FUNCS = 165;
 
   /**
    * Number of built-in functions that may be added.
@@ -701,6 +704,8 @@ public class FunctionTable
       org.apache.xalan.templates.FuncRegexGroup.class;
     m_functions[FUNC_TOKENIZE] = 
       org.apache.xpath.functions.FuncTokenize.class;
+    m_functions[FUNC_ANALYZE_STRING] = 
+      org.apache.xpath.functions.FuncAnalyzeString.class;
     m_functions[FUNC_UNPARSED_TEXT] = 
       org.apache.xpath.functions.FuncUnparsedText.class;
     m_functions[FUNC_STRING_JOIN] = 
@@ -972,6 +977,8 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_REGEX_GROUP));
           m_functionID.put(Keywords.FUNC_TOKENIZE,
                           new Integer(FunctionTable.FUNC_TOKENIZE));
+          m_functionID.put(Keywords.FUNC_ANALYZE_STRING,
+                          new Integer(FunctionTable.FUNC_ANALYZE_STRING));
           m_functionID.put(Keywords.FUNC_UNPARSED_TEXT,
                           new Integer(FunctionTable.FUNC_UNPARSED_TEXT));
           m_functionID.put(Keywords.FUNC_STRING_JOIN,

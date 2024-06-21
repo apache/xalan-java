@@ -247,6 +247,9 @@ public class Keywords
   /** tokenize function string. */
   public static final String FUNC_TOKENIZE = "tokenize";
   
+  /** analyze-string function string. */
+  public static final String FUNC_ANALYZE_STRING = "analyze-string";
+  
   /** unparsed-text function string. */
   public static final String FUNC_UNPARSED_TEXT = "unparsed-text";
   

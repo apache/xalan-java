@@ -17,6 +17,7 @@
 package org.apache.xalan.xslt3;
 
 import org.apache.xalan.xpath3.FnAbsTests;
+import org.apache.xalan.xpath3.FnAnalyzeStringTests;
 import org.apache.xalan.xpath3.FnBaseUriTests;
 import org.apache.xalan.xpath3.FnDataTests;
 import org.apache.xalan.xpath3.FnDateTimeTests;
@@ -71,7 +72,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnQNameTests.class, XPathMapTests.class, XPathArrayTests.class, FnLangTests.class, 
                 FnRootTests.class, XPathCastTests.class, XPathArrowOpTests.class, FnMapMerge.class,
                 FnParseJsonTests.class, FnJsonDocTests.class, FnJsonToXmlTests.class,
-                FnXmlToJsonTests.class })
+                FnXmlToJsonTests.class, FnAnalyzeStringTests.class })
 public class Xsl3TestSuite1 {
 
 }

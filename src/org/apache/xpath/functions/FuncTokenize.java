@@ -175,7 +175,7 @@ public class FuncTokenize extends Function3Args {
       Matcher regexMatcher = null;
 
       try {
-          regexMatcher = RegexEvaluationSupport.regex(RegexEvaluationSupport.trfPatternStrForSubtraction(
+          regexMatcher = RegexEvaluationSupport.regex(RegexEvaluationSupport.transformRegexStrForSubtractionOp(
                                                   pattern.toString()), flags != null ? flags.toString() : 
                                                                                   null, inputStr.toString());
       }

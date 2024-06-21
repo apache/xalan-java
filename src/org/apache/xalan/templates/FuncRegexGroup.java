@@ -90,7 +90,7 @@ public class FuncRegexGroup extends FunctionOneArg
         String regex = customDataMap.get(ElemMatchingSubstring.REGEX);
         String regexFlags = customDataMap.get(ElemMatchingSubstring.REGEX_FLAGS);
         
-        Matcher regexMatcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.trfPatternStrForSubtraction(
+        Matcher regexMatcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.transformRegexStrForSubtractionOp(
                                                                                    regex), regexFlags, strValue);
         String regexGrpStr = null;
         if (regexMatcher.matches()) {

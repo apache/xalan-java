@@ -78,7 +78,7 @@ public class FuncReplace extends Function4Args {
         String resultStr = null;
         
         try {
-            Matcher matcher = RegexEvaluationSupport.regex(RegexEvaluationSupport.trfPatternStrForSubtraction(pattern.toString()), 
+            Matcher matcher = RegexEvaluationSupport.regex(RegexEvaluationSupport.transformRegexStrForSubtractionOp(pattern.toString()), 
                                                            flags != null ? flags.toString() : null, inputStr.toString());
             resultStr = matcher.replaceAll(replacement.toString());
         }

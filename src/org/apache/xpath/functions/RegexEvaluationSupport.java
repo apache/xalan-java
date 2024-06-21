@@ -34,13 +34,17 @@ import org.apache.xpath.regex.Pattern;
  */
 public class RegexEvaluationSupport {
 	
-    private static final String validRegexflags = "smixq";
+	/**
+	 * Variable indicating that, XPath regex valid flag 
+	 * characters are : s, m, i, x, q.
+	 */
+    private static final String VALID_REGEX_FLAG_CHARS = "smixq";
 	
 	/*
 	 * Transform regex pattern input string, to resolve differences between, 
 	 * XML Schema regex subtraction operator and Java regex subtraction operator. 
 	 */
-	public static String trfPatternStrForSubtraction(String pattern) {
+	public static String transformRegexStrForSubtractionOp(String pattern) {
 		String transformedPatternStr = pattern;
 		
 		int indx1 = transformedPatternStr.indexOf("-[");
@@ -66,7 +70,7 @@ public class RegexEvaluationSupport {
        
        if (flags.length() > 0) {
     	  for (int idx = 0; idx < flags.length(); idx++) {
-    		 if (validRegexflags.indexOf(flags.charAt(idx)) == -1) {
+    		 if (VALID_REGEX_FLAG_CHARS.indexOf(flags.charAt(idx)) == -1) {
     			flagStrValid = false;
     			break;
     		 }

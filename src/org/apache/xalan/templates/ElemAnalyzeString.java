@@ -253,7 +253,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
 
        String effectiveRegexStrValue = m_regex.evaluate(xctxt, xctxt.getContextNode(), this);
        
-       Matcher regexMatcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.trfPatternStrForSubtraction(
+       Matcher regexMatcher = RegexEvaluationSupport.compileAndExecute(RegexEvaluationSupport.transformRegexStrForSubtractionOp(
                                                                                     effectiveRegexStrValue), m_regex_flags, strToBeAnalyzed);
        
        ElemTemplateElement templateElem1 = this.m_firstChild;
