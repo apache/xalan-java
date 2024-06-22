@@ -31,6 +31,7 @@ import org.apache.xml.dtm.DTMIterator;
 import org.apache.xpath.composite.SequenceTypeArrayTest;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeKindTest;
+import org.apache.xpath.composite.SequenceTypeMapTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.SequenceTypeSupport.OccurenceIndicator;
 import org.apache.xpath.objects.ResultSequence;
@@ -39,6 +40,7 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 
 import xml.xpath31.processor.types.XSAnyURI;
@@ -212,10 +214,13 @@ public class InstanceOf extends Operation
       }
       else if (xdmValue instanceof ResultSequence) {
           isInstanceOf = checkXdmSequenceWithType(xdmValue, seqTypeData); 
-      }    
+      }
+      else if (xdmValue instanceof XPathMap) {
+    	  isInstanceOf = isInstanceOfMap(xdmValue, seqTypeData);
+      }
       else if (xdmValue instanceof XPathArray) {
     	  isInstanceOf = isInstanceOfArray(xdmValue, seqTypeData);
-     }
+      }
     
      return isInstanceOf;
   }
@@ -354,6 +359,22 @@ public class InstanceOf extends Operation
 	  isInstanceOf = isInstanceOfOnSeqItem;
 	  
 	  return isInstanceOf;
+  }
+  
+  /**
+   * Check whether, an xdm value is an instance of xpath map.
+   */
+  private boolean isInstanceOfMap(XObject xdmValue, SequenceTypeData seqTypeData) {
+	  boolean isInstanceOf = false;
+	  
+	  SequenceTypeMapTest sequenceTypeMapTest = seqTypeData.getSequenceTypeMapTest();
+	  if (sequenceTypeMapTest != null) {
+		 if (sequenceTypeMapTest.isAnyMapTest()) {
+		    isInstanceOf = true;
+		 }
+	  }
+	  
+	  return isInstanceOf; 
   }
 
   /**
