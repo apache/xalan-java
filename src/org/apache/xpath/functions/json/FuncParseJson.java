@@ -213,7 +213,8 @@ public class FuncParseJson extends FunctionMultiArgs {
      * 
      * @param xpath      1st argument provided to function fn:parse-json
      * @param xctxt      XPath context object
-     * @return           an xdm object of type XPathMap, or XPathArray
+     * @return           an xdm object of type XPathMap, XPathArray, XSDouble,
+     *                   XSBoolean, ResultSequence, XSString. 
      *  
      * @throws javax.xml.transform.TransformerException
      */
