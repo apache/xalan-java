@@ -43,7 +43,13 @@ import org.json.JSONObject;
 import xml.xpath31.processor.types.XSBoolean;
 
 /**
- * Implementation of the fn:parse-json function.
+ * Implementation of an XPath 3.1 function, fn:parse-json.
+ * 
+ * This function accepts as an argument a json document 
+ * string, and returns an XDM 'map', or an 'array'.
+ * 
+ * (It's also useful to refer, to following json RFC : 
+ * https://datatracker.ietf.org/doc/html/rfc7159)
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -216,6 +222,7 @@ public class FuncParseJson extends FunctionMultiArgs {
 		
 		XObject arg0Value = xpath.execute(xctxt);
 		String arg0StrValue = XslTransformEvaluationHelper.getStrVal(arg0Value);
+		arg0StrValue = arg0StrValue.trim();
 		Object jsonObj = null;
 		try {
 			if (arg0StrValue.charAt(0) == '{') {

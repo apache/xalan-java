@@ -48,7 +48,13 @@ import org.json.JSONObject;
 import xml.xpath31.processor.types.XSBoolean;
 
 /**
- * Implementation of the fn:json-doc function.
+ * Implementation of an XPath 3.1 function, fn:json-doc.
+ * 
+ * This function accepts as an argument a URL having a 
+ * json document, and returns an XDM 'map', or an 'array'.
+ * 
+ * (It's also useful to refer, to following json RFC : 
+ * https://datatracker.ietf.org/doc/html/rfc7159)
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -242,6 +248,7 @@ public class FuncJsonDoc extends FunctionMultiArgs {
 			}
 
 			urlStrContents = XslTransformEvaluationHelper.getStringContentFromUrl(resolvedArg0Url);
+			urlStrContents = urlStrContents.trim();
 		}
 		catch (URISyntaxException ex) {
 			throw new javax.xml.transform.TransformerException("FODC0005 : The uri '" + hrefStrVal + "' is not a valid absolute uri, "

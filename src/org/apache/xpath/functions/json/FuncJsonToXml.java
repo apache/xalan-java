@@ -56,7 +56,14 @@ import org.w3c.dom.Text;
 import xml.xpath31.processor.types.XSBoolean;
 
 /**
- * Implementation of XPath 3.1 function, json-to-xml().
+ * Implementation of an XPath 3.1 function, fn:json-to-xml.
+ * 
+ * The result of the function call fn:json-to-xml,
+ * is an XML document conforming to an XML Schema document
+ * specified at : https://www.w3.org/TR/xpath-functions-31/#schema-for-json.
+ * 
+ * (It's also useful to refer, to following json RFC : 
+ * https://datatracker.ietf.org/doc/html/rfc7159)
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

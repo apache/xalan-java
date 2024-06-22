@@ -53,7 +53,11 @@ import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Implementation of XPath 3.1 function, xml-to-json().
+ * Implementation of an XPath 3.1 function, fn:xml-to-json.
+ * 
+ * An XML document input, provided to the function call 
+ * fn:xml-to-json, must conform to an XML Schema document 
+ * specified at : https://www.w3.org/TR/xpath-functions-31/#schema-for-json. 
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 

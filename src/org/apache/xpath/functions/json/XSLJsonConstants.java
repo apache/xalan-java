@@ -51,10 +51,7 @@ public class XSLJsonConstants {
 	public static final String DUPLICATES_USE_LAST = "use-last";
 	
 	public static final String DUPLICATES_RETAIN = "retain";
-	
-	// Reference within this implementation to an, XML Schema document file 
-	// (which specifies an XML schema for, an XML document input to function fn:xml-to-json) 
-	// provided by XPath 3.1 F&O spec.
+		
 	public static final String XML_JSON_SCHEMA_DOCUMENT = "schema-for-json.xsd";
 	
 	public static final int JSON_INDENT_FACTOR = 1;
