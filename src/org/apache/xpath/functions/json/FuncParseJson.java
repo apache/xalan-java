@@ -31,6 +31,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.functions.WrongNumberArgsException;
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
@@ -41,6 +42,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSString;
 
 /**
  * Implementation of an XPath 3.1 function, fn:parse-json.
@@ -216,25 +219,47 @@ public class FuncParseJson extends FunctionMultiArgs {
      */
 	private XObject parseJson(Expression xpath, XPathContext xctxt) throws javax.xml.transform.TransformerException {
 		
-		XObject result;
+		XObject result = null;
 		
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 		
 		XObject arg0Value = xpath.execute(xctxt);
-		String arg0StrValue = XslTransformEvaluationHelper.getStrVal(arg0Value);
-		arg0StrValue = arg0StrValue.trim();
+		String arg0StrValue = XslTransformEvaluationHelper.getStrVal(arg0Value);		
 		Object jsonObj = null;
 		try {
-			if (arg0StrValue.charAt(0) == '{') {
-				jsonObj = new JSONObject(arg0StrValue);
+			if ((arg0StrValue.trim()).charAt(0) == '{') {
+			   jsonObj = new JSONObject(arg0StrValue);
+			   result = getXdmMapOrArrayFromNativeJson(jsonObj);
 			}
-			else if (arg0StrValue.charAt(0) == '[') {
-				jsonObj = new JSONArray(arg0StrValue);  
+			else if ((arg0StrValue.trim()).charAt(0) == '[') {
+			   jsonObj = new JSONArray(arg0StrValue);
+			   result = getXdmMapOrArrayFromNativeJson(jsonObj);
 			}
 			else {
-				throw new javax.xml.transform.TransformerException("FOUT1190 : The 1st argument provided with function call "
-						                                                 + "fn:parse-json is not a correct json lexical string. A json "
-						                                                 + "string can begin only with '{' or '[' characters.", srcLocator); 
+				try {
+				   Double dbl = Double.valueOf(arg0StrValue);
+				   result = new XSDouble(dbl);
+				}
+				catch (NumberFormatException ex) {
+				   // NO OP	
+				}
+				
+				if (result == null) {
+					if ("false".equals(arg0StrValue) || "0".equals(arg0StrValue) 
+							|| "true".equals(arg0StrValue) || "1".equals(arg0StrValue)) {
+					   result = new XSBoolean(Boolean.valueOf(arg0StrValue));
+					}
+				}
+				
+				if (result == null) {
+					if ("null".equals(arg0StrValue)) {
+					   result = new ResultSequence();
+					}
+				}
+				
+				if (result == null) {
+				   result = new XSString(arg0StrValue);
+				}
 			}
 		}
 		catch (JSONException ex) {
@@ -243,8 +268,6 @@ public class FuncParseJson extends FunctionMultiArgs {
 					                                                 + "parser produced following error : " + ex.getMessage() + ".", 
 					                                                 srcLocator); 
 		}
-		
-		result = getXdmMapOrArrayFromNativeJson(jsonObj);
 		
 		return result;
 	}
