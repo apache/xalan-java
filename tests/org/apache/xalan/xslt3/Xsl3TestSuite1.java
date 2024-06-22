@@ -30,6 +30,7 @@ import org.apache.xalan.xpath3.FnJsonDocTests;
 import org.apache.xalan.xpath3.FnJsonToXmlTests;
 import org.apache.xalan.xpath3.FnLangTests;
 import org.apache.xalan.xpath3.FnMapMerge;
+import org.apache.xalan.xpath3.XPathMapOtherTests;
 import org.apache.xalan.xpath3.FnParseJsonTests;
 import org.apache.xalan.xpath3.FnQNameTests;
 import org.apache.xalan.xpath3.FnResolveQNameTests;
@@ -72,7 +73,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnQNameTests.class, XPathMapTests.class, XPathArrayTests.class, FnLangTests.class, 
                 FnRootTests.class, XPathCastTests.class, XPathArrowOpTests.class, FnMapMerge.class,
                 FnParseJsonTests.class, FnJsonDocTests.class, FnJsonToXmlTests.class,
-                FnXmlToJsonTests.class, FnAnalyzeStringTests.class })
+                FnXmlToJsonTests.class, FnAnalyzeStringTests.class, XPathMapOtherTests.class })
 public class Xsl3TestSuite1 {
 
 }

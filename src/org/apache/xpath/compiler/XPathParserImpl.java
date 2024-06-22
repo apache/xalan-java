@@ -1610,9 +1610,20 @@ public class XPathParserImpl
  	        		// syntax, array { ... } ).
   	        		mapEntryValueXPathExprStr = getXPathArrayConstructorStrValue(false); 
  	        	 }
+ 	        	 else if (tokenIs('(')) {
+ 	        		// Map entry value is literal sequence
+ 	        		mapEntryValueXPathExprStr = m_token;
+ 	        		nextToken();
+ 	        		while (!tokenIs(')') && (m_token != null)) { 	        		   
+ 	        		   mapEntryValueXPathExprStr += m_token;
+ 	        		   nextToken();
+ 	        		}
+ 	        		mapEntryValueXPathExprStr += m_token;
+ 	        		consumeExpected(')');
+ 	        	 }
  	        	 else {
  	        		// The map entry's 'value' here, is any xdm value other than 
- 	        		// 'map', or array.
+ 	        		// map, array, or sequence.
  	        		mapEntryValueXPathExprStr = m_token;
  	        		while (!(tokenIs(',') || tokenIs('}'))) {
  	        		   nextToken();

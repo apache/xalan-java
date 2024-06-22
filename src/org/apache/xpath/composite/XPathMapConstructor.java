@@ -254,6 +254,10 @@ public class XPathMapConstructor extends Expression {
                 }
             }
         }
+    	else if (xpathExpr instanceof XPathSequenceConstructor) {
+    		ResultSequence sequence = (ResultSequence)xpathExpr.execute(xctxt);
+    		return sequence;
+    	}
         else {
         	xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
             if (fVars != null) {
@@ -273,7 +277,6 @@ public class XPathMapConstructor extends Expression {
                int nodeCount = 0;               
                while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
             	  nodeCount++;
-                  XNodeSet xNodeSetItem = new XNodeSet(nextNode, dtmMgr);
                   if (KEY.equals(mapComponentName)) {
             	     if (nodeCount > 1) {
             		    throw new javax.xml.transform.TransformerException("XPTY0004 : Key of a map cannot be a sequence of size "
