@@ -34,33 +34,24 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.functions.WrongNumberArgsException;
 import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import xml.xpath31.processor.types.XSBoolean;
 
 /**
  * Implementation of an XPath 3.1 function, fn:json-doc.
  * 
- * This function accepts as an argument a URL having a 
- * json document, and returns an XDM 'map', or an 'array'.
- * 
- * (It's also useful to refer, to following json RFC : 
- * https://datatracker.ietf.org/doc/html/rfc7159)
- * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncJsonDoc extends FunctionMultiArgs {
+public class FuncJsonDoc extends JsonFunction {
 	
 	private static final long serialVersionUID = 4521998080023197937L;
 
@@ -107,7 +98,7 @@ public class FuncJsonDoc extends FunctionMultiArgs {
         }
         
         if (fNumOfArgs == 1) {
-           result = parseJson(arg0, xctxt);           
+           result = getFnJsonDocResult(arg0, xctxt);           
         }
         else {
            // fn:json-doc function was called, with two arguments
@@ -170,7 +161,7 @@ public class FuncJsonDoc extends FunctionMultiArgs {
         		 }
         	  }
         	  
-        	  result = parseJson(arg0, xctxt);
+        	  result = getFnJsonDocResult(arg0, xctxt);
            }
            else {
         	  throw new javax.xml.transform.TransformerException("FOUT1190 : The 2nd argument passed to function call "
@@ -210,28 +201,28 @@ public class FuncJsonDoc extends FunctionMultiArgs {
     }
 
     /**
-     * This method parses a string value, to XDM object representations for 
-     * JSON documents.
+     * This method parses a string value (that is expected to be a json string), 
+     * to xdm object representations for JSON data values.
      * 
      * @param xpath      1st argument provided to function fn:json-doc
      * @param xctxt      XPath context object
-     * @return           an xdm object of type XPathMap, or XPathArray
+     * @return           an xdm object of type XPathMap, XPathArray, XSDouble,
+     *                   XSBoolean, ResultSequence, XSString.
      *  
      * @throws javax.xml.transform.TransformerException
      */
-	private XObject parseJson(Expression xpath, XPathContext xctxt) throws javax.xml.transform.TransformerException {
+	private XObject getFnJsonDocResult(Expression xpath, XPathContext xctxt) 
+			                                                        throws javax.xml.transform.TransformerException {
 		
-		XObject result;
+		XObject result = null;
 		
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 		
 		XObject arg0Value = xpath.execute(xctxt);
 		String hrefStrVal = XslTransformEvaluationHelper.getStrVal(arg0Value);
 		
-		String urlStrContents = null;
-		
 		// If the first argument is a relative uri reference, then 
-		// resolve that relative uri with base uri of the stylesheet
+		// resolve that relative uri with base uri of the stylesheet.
 		URL resolvedArg0Url = null;
 
 		try {
@@ -247,8 +238,10 @@ public class FuncJsonDoc extends FunctionMultiArgs {
 				resolvedArg0Url = new URL(hrefStrVal);   
 			}
 
-			urlStrContents = XslTransformEvaluationHelper.getStringContentFromUrl(resolvedArg0Url);
-			urlStrContents = urlStrContents.trim();
+			String urlStrContents = XslTransformEvaluationHelper.getStringContentFromUrl(resolvedArg0Url);
+			
+			result = getJsonXdmValueFromStr(urlStrContents);
+
 		}
 		catch (URISyntaxException ex) {
 			throw new javax.xml.transform.TransformerException("FODC0005 : The uri '" + hrefStrVal + "' is not a valid absolute uri, "
@@ -262,29 +255,12 @@ public class FuncJsonDoc extends FunctionMultiArgs {
 			throw new javax.xml.transform.TransformerException("FODC0002 : The data from uri '" + hrefStrVal + "' cannot be "
 					+ "retrieved.", srcLocator);
 		}
-		
-		Object jsonObj = null;
-		try {
-			if (urlStrContents.charAt(0) == '{') {
-				jsonObj = new JSONObject(urlStrContents);
-			}
-			else if (urlStrContents.charAt(0) == '[') {
-				jsonObj = new JSONArray(urlStrContents);  
-			}
-			else {
-				throw new javax.xml.transform.TransformerException("FOUT1190 : The 1st argument provided with function call "
-						                                                 + "fn:json-doc is not a correct json lexical string. A json "
-						                                                 + "string can begin only with '{' or '[' characters.", srcLocator); 
-			}
-		}
 		catch (JSONException ex) {
-			throw new javax.xml.transform.TransformerException("FOUT1190 : The 1st argument provided with function call "
+			throw new javax.xml.transform.TransformerException("FOUT1190 : The 1st argument provided to function call "
 					                                                 + "fn:json-doc is not a correct json lexical string. The JSON "
 					                                                 + "parser produced following error : " + ex.getMessage() + ".", 
 					                                                 srcLocator); 
 		}
-		
-		result = getXdmMapOrArrayFromNativeJson(jsonObj);
 		
 		return result;
 	}

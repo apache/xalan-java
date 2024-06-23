@@ -29,36 +29,24 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.FunctionMultiArgs;
 import org.apache.xpath.functions.WrongNumberArgsException;
-import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import xml.xpath31.processor.types.XSBoolean;
-import xml.xpath31.processor.types.XSDouble;
-import xml.xpath31.processor.types.XSString;
 
 /**
  * Implementation of an XPath 3.1 function, fn:parse-json.
- * 
- * This function accepts as an argument a json document 
- * string, and returns an XDM 'map', or an 'array'.
- * 
- * (It's also useful to refer, to following json RFC : 
- * https://datatracker.ietf.org/doc/html/rfc7159)
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class FuncParseJson extends FunctionMultiArgs {
+public class FuncParseJson extends JsonFunction {
 
 	private static final long serialVersionUID = 8542161858023543436L;
 	
@@ -105,7 +93,7 @@ public class FuncParseJson extends FunctionMultiArgs {
         }
         
         if (fNumOfArgs == 1) {
-           result = parseJson(arg0, xctxt);           
+           result = getJsonXdmValue(arg0, xctxt);           
         }
         else {
            // fn:parse-json function was called, with two arguments
@@ -168,7 +156,7 @@ public class FuncParseJson extends FunctionMultiArgs {
         		 }
         	  }
         	  
-        	  result = parseJson(arg0, xctxt);
+        	  result = getJsonXdmValue(arg0, xctxt);
            }
            else {
         	  throw new javax.xml.transform.TransformerException("FOUT1190 : The 2nd argument passed to function call "
@@ -208,60 +196,29 @@ public class FuncParseJson extends FunctionMultiArgs {
     }
 
     /**
-     * This method parses a string value, to XDM object representations for 
-     * JSON documents.
+     * This method parses an input string value using a JSON parser, 
+     * and returns an applicable XDM object representation corresponding to 
+     * JSON value.
      * 
-     * @param xpath      1st argument provided to function fn:parse-json
+     * @param xpath      Represents 1st argument provided to function 
+     *                   fn:parse-json.
      * @param xctxt      XPath context object
      * @return           an xdm object of type XPathMap, XPathArray, XSDouble,
      *                   XSBoolean, ResultSequence, XSString. 
      *  
      * @throws javax.xml.transform.TransformerException
      */
-	private XObject parseJson(Expression xpath, XPathContext xctxt) throws javax.xml.transform.TransformerException {
+	private XObject getJsonXdmValue(Expression xpath, XPathContext xctxt) throws javax.xml.transform.TransformerException {
 		
 		XObject result = null;
 		
 		SourceLocator srcLocator = xctxt.getSAXLocator();
 		
 		XObject arg0Value = xpath.execute(xctxt);
-		String arg0StrValue = XslTransformEvaluationHelper.getStrVal(arg0Value);		
-		Object jsonObj = null;
-		try {
-			if ((arg0StrValue.trim()).charAt(0) == '{') {
-			   jsonObj = new JSONObject(arg0StrValue);
-			   result = getXdmMapOrArrayFromNativeJson(jsonObj);
-			}
-			else if ((arg0StrValue.trim()).charAt(0) == '[') {
-			   jsonObj = new JSONArray(arg0StrValue);
-			   result = getXdmMapOrArrayFromNativeJson(jsonObj);
-			}
-			else {
-				try {
-				   Double dbl = Double.valueOf(arg0StrValue);
-				   result = new XSDouble(dbl);
-				}
-				catch (NumberFormatException ex) {
-				   // NO OP	
-				}
-				
-				if (result == null) {
-					if ("false".equals(arg0StrValue) || "0".equals(arg0StrValue) 
-							|| "true".equals(arg0StrValue) || "1".equals(arg0StrValue)) {
-					   result = new XSBoolean(Boolean.valueOf(arg0StrValue));
-					}
-				}
-				
-				if (result == null) {
-					if ("null".equals(arg0StrValue)) {
-					   result = new ResultSequence();
-					}
-				}
-				
-				if (result == null) {
-				   result = new XSString(arg0StrValue);
-				}
-			}
+		String arg0StrValue = XslTransformEvaluationHelper.getStrVal(arg0Value);
+		
+		try {			
+			result = getJsonXdmValueFromStr(arg0StrValue);
 		}
 		catch (JSONException ex) {
 			throw new javax.xml.transform.TransformerException("FOUT1190 : The 1st argument provided with function call "

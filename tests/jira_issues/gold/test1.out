@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+  <map-test>
+  <map-instance-of-test>true</map-instance-of-test>
+</map-test>
+  <array-test>
+  <array-instance-of-test>true</array-instance-of-test>
+</array-test>

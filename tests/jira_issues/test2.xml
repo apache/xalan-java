@@ -1,0 +1,8 @@
+<root>
+  <map>{ "name" : "foo", "data" : [3,2,1] }</map>
+  <array>[ { "name" : "foo", "value" : 3.2 } ]</array>
+  <string>"foo"</string>
+  <number>42</number>
+  <boolean>false</boolean>
+  <empty>null</empty>
+</root>
