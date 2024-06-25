@@ -516,6 +516,9 @@ public class FunctionTable
   
   /** The 'analyze-string()' id. */
   public static final int FUNC_ANALYZE_STRING = 164;
+  
+  /** The 'apply()' id. */
+  public static final int FUNC_APPLY = 165;
 
   // Proprietary
 
@@ -609,7 +612,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 165;
+  private static final int NUM_BUILT_IN_FUNCS = 166;
 
   /**
    * Number of built-in functions that may be added.
@@ -739,6 +742,7 @@ public class FunctionTable
       org.apache.xpath.functions.FuncForEachPair.class;
     m_functions[FUNC_SORT] = 
       org.apache.xpath.functions.FuncSort.class;
+    m_functions[FUNC_APPLY] = org.apache.xpath.functions.FuncApply.class;
     
     // XPath 3.1 built-in functions configurations for the math 
     // functions namespace http://www.w3.org/2005/xpath-functions/math    
@@ -1012,6 +1016,8 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_FOR_EACH_PAIR));
           m_functionId.put(Keywords.FUNC_SORT,
                           new Integer(FunctionTable.FUNC_SORT));
+          m_functionId.put(Keywords.FUNC_APPLY,
+                          new Integer(FunctionTable.FUNC_APPLY));
           
           // XPath 3.1 functions configurations for the math functions 
           // namespace http://www.w3.org/2005/xpath-functions/math

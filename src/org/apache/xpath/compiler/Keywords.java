@@ -657,6 +657,9 @@ public class Keywords
   /** array:sort function string. */
   public static final String FUNC_ARRAY_SORT = "sort";
   
+  /** apply function string. */
+  public static final String FUNC_APPLY = "apply";
+  
   // Proprietary, built in functions
 
   /** current function string (Proprietary). */
