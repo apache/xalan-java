@@ -40,7 +40,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.ForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
-import org.apache.xpath.functions.DynamicFunctionCall;
+import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
@@ -345,8 +345,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
             return;
         }
     }
-    else if (m_selectExpression instanceof DynamicFunctionCall) {
-        DynamicFunctionCall dfc = (DynamicFunctionCall)m_selectExpression;
+    else if (m_selectExpression instanceof XPathDynamicFunctionCall) {
+        XPathDynamicFunctionCall dfc = (XPathDynamicFunctionCall)m_selectExpression;
         XObject evalResult = dfc.execute(xctxt);
         
         if (evalResult instanceof ResultSequence) {

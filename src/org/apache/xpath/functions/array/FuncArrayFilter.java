@@ -35,7 +35,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.functions.WrongNumberArgsException;
-import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XObject;
@@ -92,15 +92,15 @@ public class FuncArrayFilter extends Function2Args {
             		                                                            + "is not an array.", xctxt.getSAXLocator());
         }
                     
-        if (arg1 instanceof InlineFunction) {
-            InlineFunction inlineFuncArg = (InlineFunction)arg1;
+        if (arg1 instanceof XPathInlineFunction) {
+            XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1;
             verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
             result = evaluateArrayFilter(xctxt, (XPathArray)arg0XsObject, inlineFuncArg); 
         }
         else if (arg1 instanceof Variable) {
             XObject arg1VarValue = arg1.execute(xctxt);
-            if (arg1VarValue instanceof InlineFunction) {
-                InlineFunction inlineFuncArg = (InlineFunction)arg1VarValue;
+            if (arg1VarValue instanceof XPathInlineFunction) {
+                XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1VarValue;
                 verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
                 result = evaluateArrayFilter(xctxt, (XPathArray)arg0XsObject, inlineFuncArg);   
             }
@@ -152,7 +152,7 @@ public class FuncArrayFilter extends Function2Args {
    * Verify the, number of function parameters, that an inline function argument is allowed 
    * to have for array:filter's function call.
    */
-  private void verifyInlineFunctionParamCardinality(InlineFunction inlineFuncArg, SourceLocator srcLocator) throws 
+  private void verifyInlineFunctionParamCardinality(XPathInlineFunction inlineFuncArg, SourceLocator srcLocator) throws 
                                                                                                 javax.xml.transform.TransformerException {
       List<InlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
       if (funcParamList.size() != 1) {
@@ -172,7 +172,7 @@ public class FuncArrayFilter extends Function2Args {
    *                                    function item has evaluated to true.
    * @throws TransformerException
    */
-  private XPathArray evaluateArrayFilter(XPathContext xctxt, XPathArray xpathArr, InlineFunction funcItem) 
+  private XPathArray evaluateArrayFilter(XPathContext xctxt, XPathArray xpathArr, XPathInlineFunction funcItem) 
                                                                                     throws TransformerException {
 	  XPathArray resultArr = new XPathArray();
 	  

@@ -38,7 +38,7 @@ import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.functions.Function;
-import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNodeSetForDOM;
@@ -304,7 +304,7 @@ public class ElemVariable extends ElemTemplateElement
   
     XObject var = getValue(transformer, sourceNode);
     
-    if (var instanceof InlineFunction) 
+    if (var instanceof XPathInlineFunction) 
     {
         Map<QName, XObject> xpathVarMap = (transformer.getXPathContext()).getXPathVarMap();
         xpathVarMap.put(m_qname, var);

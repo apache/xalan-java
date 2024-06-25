@@ -46,7 +46,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.XPathInlineFunction;
 
 /**
  * This class represents the root object of the stylesheet tree.
@@ -81,8 +81,8 @@ public class StylesheetRoot extends StylesheetComposed
      * We store stylesheet global variable declarations that refer to
      * XPath 3.1 inline functions, within this java.util.Map object.   
      */
-    private Map<QName, InlineFunction> m_inlineFunctionVarMap = 
-                                                  new HashMap<QName, InlineFunction>();
+    private Map<QName, XPathInlineFunction> m_inlineFunctionVarMap = 
+                                                  new HashMap<QName, XPathInlineFunction>();
     
     /*
      * Within an object of this class, this class field keeps reference of 
@@ -853,9 +853,9 @@ public class StylesheetRoot extends StylesheetComposed
       XPath selectXPath = elemVar.getSelect();
       if (selectXPath != null) {
          Expression selectExpression = selectXPath.getExpression();
-         if (selectExpression instanceof InlineFunction) {
+         if (selectExpression instanceof XPathInlineFunction) {
              QName elemVarQname = elemVar.getName();
-             m_inlineFunctionVarMap.put(elemVarQname, (InlineFunction)
+             m_inlineFunctionVarMap.put(elemVarQname, (XPathInlineFunction)
                                                                 selectExpression);
          }
       }
@@ -1429,11 +1429,11 @@ public class StylesheetRoot extends StylesheetComposed
         m_source_location = b;
     }
 
-    public Map<QName, InlineFunction> getInlineFunctionVarMap() {
+    public Map<QName, XPathInlineFunction> getInlineFunctionVarMap() {
         return m_inlineFunctionVarMap;
     }
 
-    public void setInlineFunctionVarMap(Map<QName, InlineFunction> 
+    public void setInlineFunctionVarMap(Map<QName, XPathInlineFunction> 
                                                              inlineFunctionVarMap) {
         this.m_inlineFunctionVarMap = inlineFunctionVarMap;
     }

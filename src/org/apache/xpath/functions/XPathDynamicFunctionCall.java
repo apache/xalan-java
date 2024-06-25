@@ -38,7 +38,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
-import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathMap;
@@ -47,9 +47,9 @@ import org.apache.xpath.objects.XString;
 import xml.xpath31.processor.types.XSString;
 
 /*
- * XalanJ xpath parser, constructs an object of this class 
- * as representation of XPath 3.1 'dynamic function call' or 'map lookup' 
- * both of which have similar syntax.
+ * Xalan-J xpath parser, constructs an object of this class 
+ * as representation of XPath expressions for 'dynamic function call' 
+ * and 'map lookup' both of which have similar syntax.
  * 
  * Ref : https://www.w3.org/TR/xpath-31/#id-dynamic-function-invocation,
  *       https://www.w3.org/TR/xpath-31/#id-map-lookup
@@ -58,7 +58,7 @@ import xml.xpath31.processor.types.XSString;
  * 
  * @xsl.usage advanced
  */
-public class DynamicFunctionCall extends Expression {
+public class XPathDynamicFunctionCall extends Expression {
     
     private static final long serialVersionUID = -4177034386870890029L;
 
@@ -124,7 +124,7 @@ public class DynamicFunctionCall extends Expression {
                  expressionNode = expressionNode.exprGetParent();                     
               }
               StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
-              Map<QName, InlineFunction> globalInlineFunctionVarMap = stylesheetRoot.
+              Map<QName, XPathInlineFunction> globalInlineFunctionVarMap = stylesheetRoot.
                                                                             getInlineFunctionVarMap();
               functionRef = globalInlineFunctionVarMap.get(new QName(funcRefVarName)); 
            }           
@@ -162,8 +162,8 @@ public class DynamicFunctionCall extends Expression {
                   evalResult = xpathMap.get(argValue); 
     		   }    		   
     	   }
-    	   else if (functionRef instanceof InlineFunction) {
-	           InlineFunction inlineFunction = (InlineFunction)functionRef;
+    	   else if (functionRef instanceof XPathInlineFunction) {
+	           XPathInlineFunction inlineFunction = (XPathInlineFunction)functionRef;
 	           
 	           String inlineFnXPathStr = inlineFunction.getFuncBodyXPathExprStr();
 	           List<InlineFunctionParameter> funcParamList = inlineFunction.getFuncParamList();           

@@ -35,7 +35,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.composite.IfExpr;
 import org.apache.xpath.composite.LetExpr;
-import org.apache.xpath.functions.DynamicFunctionCall;
+import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
@@ -446,8 +446,8 @@ public class ElemValueOf extends ElemTemplateElement {
                      
                      (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
-                  else if (expr instanceof DynamicFunctionCall) {
-                     DynamicFunctionCall dfc = (DynamicFunctionCall)expr;
+                  else if (expr instanceof XPathDynamicFunctionCall) {
+                     XPathDynamicFunctionCall dfc = (XPathDynamicFunctionCall)expr;
                      
                      XObject evalResult = dfc.execute(xctxt);
                      

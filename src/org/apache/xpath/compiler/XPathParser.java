@@ -40,6 +40,7 @@ import org.apache.xpath.composite.IfExpr;
 import org.apache.xpath.composite.LetExpr;
 import org.apache.xpath.composite.LetExprVarBinding;
 import org.apache.xpath.composite.XPathMapConstructor;
+import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.composite.QuantifiedExpr;
 import org.apache.xpath.composite.SequenceTypeArrayTest;
 import org.apache.xpath.composite.SequenceTypeData;
@@ -51,8 +52,8 @@ import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.composite.XPathSequenceTypeExpr;
 import org.apache.xpath.domapi.XPathStylesheetDOM3Exception;
-import org.apache.xpath.functions.DynamicFunctionCall;
-import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.functions.XPathDynamicFunctionCall;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XString;
@@ -75,7 +76,7 @@ import org.apache.xpath.res.XPATHErrorResources;
  * 
  * @xsl.usage general
  */
-public class XPathParserImpl
+public class XPathParser
 {
 
   /**
@@ -128,31 +129,31 @@ public class XPathParserImpl
   // an xdm empty sequence).
   public static final String XPATH_EXPR_STR_EMPTY_SEQUENCE = "1 to 0";
   
-  private static final List<String> fXpathOpArrTokensList = Arrays.asList(XPATH_OP_ARR);
+  private static final List<String> XPATH_OP_ARR_TOKENS_LIST = Arrays.asList(XPATH_OP_ARR);
   
-  private boolean fDynamicFunctionCallArgumentMarker = false;
+  private boolean m_dynamicFunctionCallArgumentMarker = false;
   
-  private boolean fIsXPathPredicateParsingActive = false;
+  private boolean m_isXPathPredicateParsingActive = false;
   
-  private boolean fIsXPathExprBeginParse = false;
+  private boolean m_isXPathExprBeginParse = false;
   
-  private boolean fIsSequenceTypeXPathExpr = false;
+  private boolean m_isSequenceTypeXPathExpr = false;
   
-  static InlineFunction fInlineFunction = null;
+  static XPathInlineFunction m_xpath_inlineFunction = null;
   
-  static DynamicFunctionCall fDynamicFunctionCall = null;
+  static XPathDynamicFunctionCall m_dynamicFunctionCall = null;
   
-  static ForExpr fForExpr = null;
+  static ForExpr m_forExpr = null;
   
-  static LetExpr fLetExpr = null;
+  static LetExpr m_letExpr = null;
   
-  static QuantifiedExpr fQuantifiedExpr = null;
+  static QuantifiedExpr m_quantifiedExpr = null;
   
-  static IfExpr fIfExpr = null;
+  static IfExpr m_ifExpr = null;
   
-  static XPathSequenceConstructor fXPathSequenceConstructor = null;
+  static XPathSequenceConstructor m_xpathSequenceConstructor = null;
   
-  static XPathArrayConstructor fXPathArrayConstructor = null;
+  static XPathArrayConstructor m_xpathArrayConstructor = null;
   
   /**
    * This class supports, implementation of literal array as XPath 
@@ -181,7 +182,7 @@ public class XPathParserImpl
 	 } 
   }
   
-  static XPathArrayConsFuncArgs fXPathArrayConsFuncArgs = null;
+  static XPathArrayConsFuncArgs m_xpathArrayConsFuncArgs = null;
   
   /**
    * This class supports, implementation of literal sequence as XPath 
@@ -210,18 +211,20 @@ public class XPathParserImpl
 	 } 
   }
   
-  static XPathSequenceConsFuncArgs fXPathSequenceConsFuncArgs = null;
+  static XPathSequenceConsFuncArgs m_xpathSequenceConsFuncArgs = null;
   
-  static XPathMapConstructor fXPathMapConstructor = null;
+  static XPathMapConstructor m_xpathMapConstructor = null;
   
-  static XPathSequenceTypeExpr fXPathSequenceTypeExpr = null;
+  static XPathSequenceTypeExpr m_xpathSequenceTypeExpr = null;
   
-  private String fArrowOpRemainingXPathExprStr = null;
+  static XPathNamedFunctionReference m_xpathNamedFunctionReference = null;
+  
+  private String m_arrowOpRemainingXPathExprStr = null;
   
   /**
    * The parser constructor.
    */
-  public XPathParserImpl(ErrorListener errorListener, javax.xml.transform.SourceLocator sourceLocator)
+  public XPathParser(ErrorListener errorListener, javax.xml.transform.SourceLocator sourceLocator)
   {
     m_errorListener = errorListener;
     m_sourceLocator = sourceLocator;
@@ -259,11 +262,11 @@ public class XPathParserImpl
     m_namespaceContext = namespaceContext;
     m_functionTable = compiler.getFunctionTable();
     
-    fIsSequenceTypeXPathExpr = isSequenceTypeXPathExpr;
+    m_isSequenceTypeXPathExpr = isSequenceTypeXPathExpr;
     
-    fXPathArrayConsFuncArgs = new XPathArrayConsFuncArgs();
+    m_xpathArrayConsFuncArgs = new XPathArrayConsFuncArgs();
     
-    fXPathSequenceConsFuncArgs = new XPathSequenceConsFuncArgs(); 
+    m_xpathSequenceConsFuncArgs = new XPathSequenceConsFuncArgs(); 
 
     Lexer lexer = new Lexer(compiler, namespaceContext, this);
 
@@ -285,7 +288,7 @@ public class XPathParserImpl
 
       nextToken();
       
-      fIsXPathExprBeginParse = true;
+      m_isXPathExprBeginParse = true;
       
       Expr();
 
@@ -744,7 +747,7 @@ public class XPathParserImpl
           }
           else {              
               xpathExprStrPart = (String)funcBodyXPathExprStrPartsArr[idx];
-              if (fXpathOpArrTokensList.contains(xpathExprStrPart)) {
+              if (XPATH_OP_ARR_TOKENS_LIST.contains(xpathExprStrPart)) {
                  isXpathInlineFunctionOpToken = true;   
               }
           }
@@ -769,7 +772,7 @@ public class XPathParserImpl
 
       if (lookahead('(', 1)) {
          // The function call argument is itself another function call
-         fDynamicFunctionCallArgumentMarker = true;
+         m_dynamicFunctionCallArgumentMarker = true;
          argDetailsStrPartsList.add(m_token);
          nextToken();
          isXpathDynamicFuncCallParseAhead = true;
@@ -779,13 +782,13 @@ public class XPathParserImpl
          nextToken();
          argDetailsStrPartsList.add(delim);
          nextToken();
-         fDynamicFunctionCallArgumentMarker = false;
+         m_dynamicFunctionCallArgumentMarker = false;
          isXpathDynamicFuncCallParseAhead = true;
       }
       else if (lookahead(',', 1)) {
          argDetailsStrPartsList.add(m_token);
          nextToken();
-         if (!fDynamicFunctionCallArgumentMarker) {
+         if (!m_dynamicFunctionCallArgumentMarker) {
             argDetailsStrPartsList.add(delim);
             nextToken();
          }
@@ -1110,16 +1113,19 @@ public class XPathParserImpl
     	if ((FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI).equals(nsUri)) {
     	   // This check is there, to avoid XPath parse conflicts with map & array 
     	   // functions with same local name as functions from namespace http://www.w3.org/2005/xpath-functions. 
-    	   id = getFunctionTokenForXPathBuiltinFuncs(key);
-    	}    	
+    	   id = m_functionTable.getFunctionIdForXPathBuiltinFuncs(key);
+    	}
+    	else if ((FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI).equals(nsUri)) {    	       	   
+     	   id = m_functionTable.getFunctionIdForXPathBuiltinMathFuncs(key);
+     	}
     	else if ((FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI).equals(nsUri)) {    	       	   
-    	   id = getFunctionTokenForXPathBuiltinMapFuncs(key);
+    	   id = m_functionTable.getFunctionIdForXPathBuiltinMapFuncs(key);
     	}
     	else if ((FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI).equals(nsUri)) {     	   
-     	  id = getFunctionTokenForXPathBuiltinArrayFuncs(key);
+     	  id = m_functionTable.getFunctionIdForXPathBuiltinArrayFuncs(key);
      	}
     	else {
-    	  id = m_functionTable.getFunctionID(key);
+    	  id = m_functionTable.getFunctionId(key);
     	}
       }
       tok = ((Integer) id).intValue();
@@ -1135,165 +1141,6 @@ public class XPathParserImpl
 
     return tok;
   }
-
-  /**
-   * Get function token, for XPath built-in functions from xpath namespace 
-   * http://www.w3.org/2005/xpath-functions. 
-   */
-  private Object getFunctionTokenForXPathBuiltinFuncs(String key) {	
-		Object id = null;
-		
-		switch (key) {
-		      case "contains":
-			     id = FunctionTable.FUNC_CONTAINS;
-			     break;
-		      case "remove":
-			     id = FunctionTable.FUNC_REMOVE;
-			     break;		      
-		      case "insert-before":
-			     id = FunctionTable.FUNC_INSERT_BEFORE;
-			     break;
-		      case "head":
-			     id = FunctionTable.FUNC_HEAD;
-			     break;
-		      case "tail":
-			     id = FunctionTable.FUNC_TAIL;
-			     break;
-		      case "reverse":
-				 id = FunctionTable.FUNC_REVERSE;
-				 break;
-		      case "for-each":
-				 id = FunctionTable.FUNC_FOR_EACH;
-				 break;
-		      case "filter":
-				 id = FunctionTable.FUNC_FILTER;
-				 break;
-		      case "for-each-pair":
-				 id = FunctionTable.FUNC_FOR_EACH_PAIR;
-				 break;
-		      case "fold-left":
-				 id = FunctionTable.FUNC_FOLD_LEFT;
-				 break;
-		      case "fold-right":
-			     id = FunctionTable.FUNC_FOLD_RIGHT;
-			     break;
-		      case "sort":
-				 id = FunctionTable.FUNC_SORT;
-				 break;
-			  default:
-				 id = m_functionTable.getFunctionID(key); 
-		}
-		
-		return id;	
-  }
-  
-  /**
-   * Get function token, for XPath built-in map functions from xpath namespace
-   * http://www.w3.org/2005/xpath-functions/map. 
-   */
-  private Object getFunctionTokenForXPathBuiltinMapFuncs(String key) {		
-		Object id = null;
-		
-		switch (key) {
-		      case "merge":
-		        id = FunctionTable.FUNC_MAP_MERGE;
-		        break;
-		      case "size":
-			     id = FunctionTable.FUNC_MAP_SIZE;
-			     break;
-		      case "keys":
-				 id = FunctionTable.FUNC_MAP_KEYS;
-				 break;
-		      case "contains":
-				 id = FunctionTable.FUNC_MAP_CONTAINS;
-				 break;
-		      case "get":
-			     id = FunctionTable.FUNC_MAP_GET;
-			     break;
-		      case "put":
-			     id = FunctionTable.FUNC_MAP_PUT;
-			     break;		      		      
-		      case "entry":
-			     id = FunctionTable.FUNC_MAP_ENTRY;
-			     break;
-		      case "remove":
-				 id = FunctionTable.FUNC_MAP_REMOVE;
-				 break;
-		      case "for-each":
-			     id = FunctionTable.FUNC_MAP_FOREACH;
-			     break;
-			  default:
-				 // NO OP 
-		}
-		
-		return id;	
-  }
-  
-  /**
-   * Get function token, for XPath built-in array functions from xpath namespace
-   * http://www.w3.org/2005/xpath-functions/array. 
-   */
-  private Object getFunctionTokenForXPathBuiltinArrayFuncs(String key) {	  
-		Object id = null;
-		
-		switch (key) {
-		      case "size":
-			     id = FunctionTable.FUNC_ARRAY_SIZE;
-			     break;
-		      case "get":
-			     id = FunctionTable.FUNC_ARRAY_GET;
-			     break;
-		      case "put":
-			     id = FunctionTable.FUNC_ARRAY_PUT;
-			     break;
-		      case "append":
-			     id = FunctionTable.FUNC_ARRAY_APPEND;
-			     break;
-		      case "subarray":
-			     id = FunctionTable.FUNC_ARRAY_SUBARRAY;
-			     break;
-		      case "remove":
-			     id = FunctionTable.FUNC_ARRAY_REMOVE;
-			     break;
-		      case "insert-before":
-			     id = FunctionTable.FUNC_ARRAY_INSERT_BEFORE;
-			     break;
-		      case "head":
-			     id = FunctionTable.FUNC_ARRAY_HEAD;
-			     break;
-		      case "tail":
-			     id = FunctionTable.FUNC_ARRAY_TAIL;
-			     break;
-		      case "reverse":
-				 id = FunctionTable.FUNC_ARRAY_REVERSE;
-				 break;
-		      case "join":
-			     id = FunctionTable.FUNC_ARRAY_JOIN;
-				 break;
-		      case "for-each":
-				 id = FunctionTable.FUNC_ARRAY_FOR_EACH;
-				 break;
-		      case "filter":
-			     id = FunctionTable.FUNC_ARRAY_FILTER;
-			     break;
-		      case "for-each-pair":
-			     id = FunctionTable.FUNC_ARRAY_FOR_EACH_PAIR;
-				 break;
-		      case "fold-left":
-				 id = FunctionTable.FUNC_ARRAY_FOLD_LEFT;
-			     break;
-		      case "fold-right":
-			     id = FunctionTable.FUNC_ARRAY_FOLD_RIGHT;
-				 break;
-		      case "sort":
-				 id = FunctionTable.FUNC_ARRAY_SORT;
-			     break;
-			  default:
-				 // NO OP 
-		}
-		
-		return id;		
-   }
 
   /**
    * Insert room for operation.  This will NOT set
@@ -1345,7 +1192,7 @@ public class XPathParserImpl
    */
   protected void Expr() throws javax.xml.transform.TransformerException
   {	  
-	  if (fIsXPathExprBeginParse && tokenIs("(") && (lookahead("to", 2) || lookahead("to", 3))) {
+	  if (m_isXPathExprBeginParse && tokenIs("(") && (lookahead("to", 2) || lookahead("to", 3))) {
 		  // To parse an XPath expression like '(a to b) => function()', it seems simpler
 		  // to handle its parse here.
 		  
@@ -1367,16 +1214,16 @@ public class XPathParserImpl
 	          FunctionCall();
 	          
 	          if (m_token != null) {
-	        	 fArrowOpRemainingXPathExprStr = "";  
+	        	 m_arrowOpRemainingXPathExprStr = "";  
 	          }
 	          
 	          while (m_token != null) {
-	        	 fArrowOpRemainingXPathExprStr += m_token;
+	        	 m_arrowOpRemainingXPathExprStr += m_token;
 	        	 nextToken();
 	          }
 	      }
 	  }
-	  else if (fIsXPathExprBeginParse && isSequenceOrArrayBegin()) {
+	  else if (m_isXPathExprBeginParse && isSequenceOrArrayBegin()) {
     	  // We consider XPath parse of sequence and array, in similar 
     	  // way. These are different lexically only, by virtue of 
     	  // sequence/array expression's delimiter characters.
@@ -1415,8 +1262,8 @@ public class XPathParserImpl
               
               seqOrArrayXPathItems.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
               
-              fXPathSequenceConstructor = new XPathSequenceConstructor();              
-              fXPathSequenceConstructor.setSequenceConstructorXPathParts(
+              m_xpathSequenceConstructor = new XPathSequenceConstructor();              
+              m_xpathSequenceConstructor.setSequenceConstructorXPathParts(
                                                                     seqOrArrayXPathItems);
               
               m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
@@ -1434,8 +1281,8 @@ public class XPathParserImpl
               
              insertOp(opPos, 2, OpCodes.OP_ARRAY_CONSTRUCTOR_EXPR);
              
-             fXPathArrayConstructor = new XPathArrayConstructor();             
-             fXPathArrayConstructor.setIsEmptyArray(true);
+             m_xpathArrayConstructor = new XPathArrayConstructor();             
+             m_xpathArrayConstructor.setIsEmptyArray(true);
              
              m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
                                                     m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -1548,13 +1395,13 @@ public class XPathParserImpl
               
               if (isSquareArrayConstructor || isCurlyArrayConstructor) {
             	 insertOp(opPos, 2, OpCodes.OP_ARRAY_CONSTRUCTOR_EXPR);
-            	 fXPathArrayConstructor = new XPathArrayConstructor();            	 
-            	 fXPathArrayConstructor.setArrayConstructorXPathParts(seqOrArrayXPathItems);
+            	 m_xpathArrayConstructor = new XPathArrayConstructor();            	 
+            	 m_xpathArrayConstructor.setArrayConstructorXPathParts(seqOrArrayXPathItems);
               }
               else {
                  insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
-                 fXPathSequenceConstructor = new XPathSequenceConstructor();                 
-                 fXPathSequenceConstructor.setSequenceConstructorXPathParts(seqOrArrayXPathItems);
+                 m_xpathSequenceConstructor = new XPathSequenceConstructor();                 
+                 m_xpathSequenceConstructor.setSequenceConstructorXPathParts(seqOrArrayXPathItems);
               }
               
               m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
@@ -1568,13 +1415,13 @@ public class XPathParserImpl
               ExprSingle();
           }
       }      
-      else if (fIsXPathExprBeginParse && tokenIs("map")) {
+      else if (m_isXPathExprBeginParse && tokenIs("map")) {
     	  // An XPath parse of 'map' expression
     	  
     	  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
     	  
-    	  if (fIsSequenceTypeXPathExpr) {
-             fXPathSequenceTypeExpr = SequenceTypeExpr(false);
+    	  if (m_isSequenceTypeXPathExpr) {
+             m_xpathSequenceTypeExpr = SequenceTypeExpr(false);
              return;
           }
           
@@ -1582,7 +1429,7 @@ public class XPathParserImpl
 
           insertOp(opPos, 2, OpCodes.OP_MAP_CONSTRUCTOR_EXPR);
           
-          fXPathMapConstructor = new XPathMapConstructor();
+          m_xpathMapConstructor = new XPathMapConstructor();
           Map<String, String> nativeMapVar = new HashMap<String, String>();                    
           
           consumeExpected('{');
@@ -1658,17 +1505,41 @@ public class XPathParserImpl
         	  consumeExpected('}'); 
           }
           
-          fXPathMapConstructor.setNativeMap(nativeMapVar);
+          m_xpathMapConstructor.setNativeMap(nativeMapVar);
           
           m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
                                                  m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);  
       }
-      else if (fIsSequenceTypeXPathExpr) {
-         fXPathSequenceTypeExpr = SequenceTypeExpr(false); 
+      else if (m_isSequenceTypeXPathExpr) {
+         m_xpathSequenceTypeExpr = SequenceTypeExpr(false); 
       }
       else {
          ExprSingle();
       }
+  }
+  
+  /**
+   * For named function references specified with syntax functionNameString#integerLiteral,
+   * check whether integerLiteral (i.e, function arity, of the function to be called) is 
+   * an integer >= 0.
+   */
+  private boolean isFuncArityWellFormedForNamedFuncRef(String funcRefStr) {	  
+	 boolean isFuncArityWellFormed = true;
+	 
+	 int idx = funcRefStr.indexOf('#');
+	 String intStr = funcRefStr.substring(idx+1);
+	 Integer intVal = null;
+	 try {
+	    intVal = Integer.valueOf(intStr);
+	    if (intVal < 0) {
+	    	isFuncArityWellFormed = false;
+	    }
+	 }
+	 catch (NumberFormatException ex) {
+		 isFuncArityWellFormed = false; 
+	 }
+	 
+	 return isFuncArityWellFormed;
   }
 
   /**
@@ -1691,7 +1562,7 @@ public class XPathParserImpl
    */
   protected void ExprSingle() throws javax.xml.transform.TransformerException
   {
-      fIsXPathExprBeginParse = false;
+      m_isXPathExprBeginParse = false;
       
       if (tokenIs("for")) {
          // To check, whether XPath 'for' expression is a sub expression of another 
@@ -1699,7 +1570,7 @@ public class XPathParserImpl
          // argument).
          String prevTokenStr = getTokenRelative(-2);
          
-         fForExpr = ForExpr(prevTokenStr);
+         m_forExpr = ForExpr(prevTokenStr);
       }
       else if (tokenIs("let")) {
          // To check, whether XPath 'let' expression is a sub expression of another 
@@ -1707,7 +1578,7 @@ public class XPathParserImpl
          // argument).
          String prevTokenStr = getTokenRelative(-2);
           
-         fLetExpr = LetExpr(prevTokenStr);
+         m_letExpr = LetExpr(prevTokenStr);
       }
       else if (tokenIs("some")) {
          // To check, whether XPath quantified 'some' expression is a sub expression 
@@ -1715,7 +1586,7 @@ public class XPathParserImpl
          // function argument, or may be written within an XPath predicate).
          String prevTokenStr = getTokenRelative(-2);
          
-         fQuantifiedExpr = QuantifiedExpr(prevTokenStr, QuantifiedExpr.SOME);
+         m_quantifiedExpr = QuantifiedExpr(prevTokenStr, QuantifiedExpr.SOME);
       }
       else if (tokenIs("every")) {
          // To check, whether XPath quantified 'every' expression is a sub expression 
@@ -1723,10 +1594,10 @@ public class XPathParserImpl
          // function argument, or may be written within an XPath predicate).
          String prevTokenStr = getTokenRelative(-2);
          
-         fQuantifiedExpr = QuantifiedExpr(prevTokenStr, QuantifiedExpr.EVERY);
+         m_quantifiedExpr = QuantifiedExpr(prevTokenStr, QuantifiedExpr.EVERY);
       }
       else if (tokenIs("if")) {         
-         fIfExpr = IfExpr();
+         m_ifExpr = IfExpr();
       }
       else {
          OrExpr();
@@ -2067,7 +1938,7 @@ public class XPathParserImpl
                nextToken();
             }
          }
-         else if (fIsXPathPredicateParsingActive && tokenIs(']')) {
+         else if (m_isXPathPredicateParsingActive && tokenIs(']')) {
             break;    
          }
          else {
@@ -2130,7 +2001,7 @@ public class XPathParserImpl
       
       while (m_token != null)
       {
-          if (fIsXPathPredicateParsingActive && lookahead(']', 1)) {
+          if (m_isXPathPredicateParsingActive && lookahead(']', 1)) {
              elseExprXPathStrPartsList.add(m_token);
              elseExprXPathStrPartsList.subList(0, elseExprXPathStrPartsList.size() - 1);
              nextToken();
@@ -2465,11 +2336,11 @@ public class XPathParserImpl
           FunctionCall();
           
           if (m_token != null) {
-        	 fArrowOpRemainingXPathExprStr = "";  
+        	 m_arrowOpRemainingXPathExprStr = "";  
           }
           
           while (m_token != null) {
-        	 fArrowOpRemainingXPathExprStr += m_token;
+        	 m_arrowOpRemainingXPathExprStr += m_token;
         	 nextToken();
           }
       }
@@ -2564,7 +2435,7 @@ public class XPathParserImpl
           
           int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
           
-          fXPathSequenceTypeExpr = SequenceTypeExpr(false);          
+          m_xpathSequenceTypeExpr = SequenceTypeExpr(false);          
           m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
                                                   m_ops.getOp(addPos + op1 + 1) + op1);
           addPos += 2;
@@ -2584,7 +2455,7 @@ public class XPathParserImpl
           
           int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
           
-          fXPathSequenceTypeExpr = SequenceTypeExpr(false);
+          m_xpathSequenceTypeExpr = SequenceTypeExpr(false);
           
           m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
                                                   m_ops.getOp(addPos + op1 + 1) + op1);
@@ -2605,7 +2476,7 @@ public class XPathParserImpl
           
           int op1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
           
-          fXPathSequenceTypeExpr = SequenceTypeExpr(false);
+          m_xpathSequenceTypeExpr = SequenceTypeExpr(false);
           
           m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH, 
                                                   m_ops.getOp(addPos + op1 + 1) + op1);
@@ -3084,7 +2955,7 @@ public class XPathParserImpl
           // NO OP
        }
        
-       fDynamicFunctionCallArgumentMarker = false;
+       m_dynamicFunctionCallArgumentMarker = false;
        
        int startIdx = 0;
        int idxDelim;       
@@ -3109,9 +2980,9 @@ public class XPathParserImpl
 
        consumeExpected(')');
        
-       fDynamicFunctionCall = new DynamicFunctionCall();
-       fDynamicFunctionCall.setFuncRefVarName(funcRefVarName);
-       fDynamicFunctionCall.setArgList(argList);
+       m_dynamicFunctionCall = new XPathDynamicFunctionCall();
+       m_dynamicFunctionCall.setFuncRefVarName(funcRefVarName);
+       m_dynamicFunctionCall.setArgList(argList);
        
        m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
                                m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -3159,7 +3030,7 @@ public class XPathParserImpl
       
       appendOp(2, OpCodes.OP_INLINE_FUNCTION);
       
-      fInlineFunction = InlineFunctionExpr();
+      m_xpath_inlineFunction = InlineFunctionExpr();
       
       m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -3179,8 +3050,8 @@ public class XPathParserImpl
     return matchFound;
   }
   
-  protected InlineFunction InlineFunctionExpr() throws javax.xml.transform.TransformerException {
-      InlineFunction inlineFunction = new InlineFunction();
+  protected XPathInlineFunction InlineFunctionExpr() throws javax.xml.transform.TransformerException {
+      XPathInlineFunction inlineFunction = new XPathInlineFunction();
       
       List<InlineFunctionParameter> funcParamList = new ArrayList<InlineFunctionParameter>();      
       String funcBodyXPathExprStr = null;
@@ -3294,13 +3165,10 @@ public class XPathParserImpl
     
     if (tokenIs('(')) {
     	// XPath literal sequence as, function argument.
-    	// XPath 3.1 spec : 3.4.1 Constructing Sequences
-    	
-    	int prevQueueMark = m_queueMark;
-    	
+    	// XPath 3.1 spec : 3.4.1 Constructing Sequences    	
+    	int prevQueueMark = m_queueMark;    	
     	if (lookahead(')', 1)) {
-	        // an XPath function argument is () (i.e, an empty sequence)                
-	        
+	        // an XPath function argument is () (i.e, an empty sequence)	        
 	        consumeExpected('(');
 	        consumeExpected(')');                            
 	        
@@ -3309,11 +3177,11 @@ public class XPathParserImpl
 	        List<String> seqConstructorXPathParts = new ArrayList<String>();
 	        seqConstructorXPathParts.add(XPATH_EXPR_STR_EMPTY_SEQUENCE);
 	        
-	        List<XPathSequenceConstructor> seqConsList = fXPathSequenceConsFuncArgs.getSeqFuncArgList();
+	        List<XPathSequenceConstructor> seqConsList = m_xpathSequenceConsFuncArgs.getSeqFuncArgList();
 	        XPathSequenceConstructor xPathSeqConstructor = new XPathSequenceConstructor();                 
 	        xPathSeqConstructor.setSequenceConstructorXPathParts(seqConstructorXPathParts);    	
 	        seqConsList.add(xPathSeqConstructor);
-	      	List<Boolean> funcArgUsedSeq = fXPathSequenceConsFuncArgs.getIsFuncArgUsedList();
+	      	List<Boolean> funcArgUsedSeq = m_xpathSequenceConsFuncArgs.getIsFuncArgUsedList();
 	      	funcArgUsedSeq.add(Boolean.valueOf(false));
 	        
 	        m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
@@ -3329,11 +3197,11 @@ public class XPathParserImpl
 	       if (seqConstructorXPathParts.size() > 1) {
 	          insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
 	          
-	          List<XPathSequenceConstructor> seqConsList = fXPathSequenceConsFuncArgs.getSeqFuncArgList();
+	          List<XPathSequenceConstructor> seqConsList = m_xpathSequenceConsFuncArgs.getSeqFuncArgList();
 	          XPathSequenceConstructor xPathSeqConstructor = new XPathSequenceConstructor();                 
 	          xPathSeqConstructor.setSequenceConstructorXPathParts(seqConstructorXPathParts);    	
 	          seqConsList.add(xPathSeqConstructor);
-	      	  List<Boolean> funcArgUsedSeq = fXPathSequenceConsFuncArgs.getIsFuncArgUsedList();
+	      	  List<Boolean> funcArgUsedSeq = m_xpathSequenceConsFuncArgs.getIsFuncArgUsedList();
 	      	  funcArgUsedSeq.add(Boolean.valueOf(false));
 	      	
 	          m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
@@ -3348,8 +3216,7 @@ public class XPathParserImpl
     }
     else if (tokenIs('[')) {
     	// XPath literal square array as, function argument.
-    	// XPath 3.1 spec : 3.11.2.1 Array Constructors
-    	
+    	// XPath 3.1 spec : 3.11.2.1 Array Constructors    	
     	consumeExpected('[');    		
 
     	List<String> arrConstructorXPathParts = new ArrayList<String>();
@@ -3358,11 +3225,11 @@ public class XPathParserImpl
 
     	insertOp(opPos, 2, OpCodes.OP_ARRAY_CONSTRUCTOR_EXPR);
     	
-    	List<XPathArrayConstructor> arrConsList = fXPathArrayConsFuncArgs.getArrayFuncArgList();
+    	List<XPathArrayConstructor> arrConsList = m_xpathArrayConsFuncArgs.getArrayFuncArgList();
     	XPathArrayConstructor xPathArrayConstructor = new XPathArrayConstructor();                 
     	xPathArrayConstructor.setArrayConstructorXPathParts(arrConstructorXPathParts);    	
     	arrConsList.add(xPathArrayConstructor);
-    	List<Boolean> funcArgUsedArr = fXPathArrayConsFuncArgs.getIsFuncArgUsedArr();
+    	List<Boolean> funcArgUsedArr = m_xpathArrayConsFuncArgs.getIsFuncArgUsedArr();
     	funcArgUsedArr.add(Boolean.valueOf(false));
 
     	m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
@@ -3370,8 +3237,7 @@ public class XPathParserImpl
     }
     else if (tokenIs("array") && lookahead('{', 1)) {
     	// XPath literal curly array as, function argument.
-    	// XPath 3.1 spec : 3.11.2.1 Array Constructors
-    	
+    	// XPath 3.1 spec : 3.11.2.1 Array Constructors    	
     	consumeExpected("array");
     	consumeExpected('{');
 
@@ -3381,11 +3247,11 @@ public class XPathParserImpl
 
     	insertOp(opPos, 2, OpCodes.OP_ARRAY_CONSTRUCTOR_EXPR);
     	
-    	List<XPathArrayConstructor> arrConsList = fXPathArrayConsFuncArgs.getArrayFuncArgList();
+    	List<XPathArrayConstructor> arrConsList = m_xpathArrayConsFuncArgs.getArrayFuncArgList();
     	XPathArrayConstructor xPathArrayConstructor = new XPathArrayConstructor();                 
     	xPathArrayConstructor.setArrayConstructorXPathParts(arrConstructorXPathParts);    	    	
     	arrConsList.add(xPathArrayConstructor);
-    	List<Boolean> funcArgUsedArr = fXPathArrayConsFuncArgs.getIsFuncArgUsedArr();
+    	List<Boolean> funcArgUsedArr = m_xpathArrayConsFuncArgs.getIsFuncArgUsedArr();
     	funcArgUsedArr.add(Boolean.valueOf(false));
 
     	m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
@@ -3394,6 +3260,73 @@ public class XPathParserImpl
     else if (tokenIs("map")) {
        // XPath literal map expression as, function argument
   	   mapFuncArg();	
+    }
+    else if (lookahead(':', 1)) {
+    	int queueMark = m_queueMark;
+    	char tokenChar = m_tokenChar;
+    	// Parse named function reference, for built-in functions
+    	// Ref : XPath 3.1 spec, "3.1.6 Named Function References"
+    	if (tokenIs(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI) || tokenIs(FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI) ||
+    		tokenIs(FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI) || tokenIs(FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI)) {
+    		String funcNamespaceUri = m_token;
+    		String nextTokenToAnalyze = getTokenRelative(1); 
+    		if ((nextTokenToAnalyze != null) && (nextTokenToAnalyze.contains("#")) 
+    				                         && isFuncArityWellFormedForNamedFuncRef(nextTokenToAnalyze)) {
+    		    nextToken();
+       		    consumeExpected(':');
+	       		String funcName = m_token.substring(0, m_token.indexOf('#'));
+				int funcTok = getFunctionToken(funcName, funcNamespaceUri);    			
+				if (funcTok >= 0) {
+					String namedFuncRef = m_token;
+					nextToken();
+					insertOp(opPos, 2, OpCodes.OP_NAMED_FUNCTION_REFERENCE);
+	
+					m_xpathNamedFunctionReference = new XPathNamedFunctionReference();
+					m_xpathNamedFunctionReference.setFuncNamespace(funcNamespaceUri);
+					m_xpathNamedFunctionReference.setFuncName(funcName);
+					String funcArityStr = namedFuncRef.substring(namedFuncRef.indexOf('#')+1);
+					m_xpathNamedFunctionReference.setFuncArity(Integer.valueOf(funcArityStr));
+	
+					m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
+							                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+				}
+    		}
+    		else {
+    			m_queueMark = queueMark;
+    			m_tokenChar = tokenChar;
+    			ExprSingle();
+    		}
+    	}
+    	else {
+    	    ExprSingle();
+    	}
+    }
+    else if (!m_token.contains(":") && m_token.contains("#") && isFuncArityWellFormedForNamedFuncRef(m_token)) {
+    	// Parse named function reference, for built-in functions
+    	// Ref : XPath 3.1 spec, "3.1.6 Named Function References"
+    	int queueMark = m_queueMark;
+    	char tokenChar = m_tokenChar;
+    	String funcName = m_token.substring(0, m_token.indexOf('#'));
+		int funcTok = getFunctionToken(funcName, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
+		if (funcTok >= 0) {
+			String namedFuncRef = m_token;
+			nextToken();
+			insertOp(opPos, 2, OpCodes.OP_NAMED_FUNCTION_REFERENCE);
+
+			m_xpathNamedFunctionReference = new XPathNamedFunctionReference();
+			m_xpathNamedFunctionReference.setFuncNamespace(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
+			m_xpathNamedFunctionReference.setFuncName(funcName);
+			String funcArityStr = namedFuncRef.substring(namedFuncRef.indexOf('#')+1);
+			m_xpathNamedFunctionReference.setFuncArity(Integer.valueOf(funcArityStr));
+
+			m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
+					                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+		}
+		else {
+			m_queueMark = queueMark;
+			m_tokenChar = tokenChar;
+			ExprSingle();
+		}
     }
     else {       
        Expr();       
@@ -3495,7 +3428,7 @@ public class XPathParserImpl
 	  
 	  insertOp(opPos1, 2, OpCodes.OP_MAP_CONSTRUCTOR_EXPR);
 
-	  fXPathMapConstructor = new XPathMapConstructor();
+	  m_xpathMapConstructor = new XPathMapConstructor();
 	  
 	  Map<String, String> nativeMapObj = new HashMap<String, String>();                    
 
@@ -3552,7 +3485,7 @@ public class XPathParserImpl
 		  }
 	  }
 
-	  fXPathMapConstructor.setNativeMap(nativeMapObj);
+	  m_xpathMapConstructor.setNativeMap(nativeMapObj);
 	  
 	  m_ops.setOp(opPos1 + OpMap.MAPINDEX_LENGTH,
 			                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos1);
@@ -3573,12 +3506,15 @@ public class XPathParserImpl
 
     if (lookahead(':', 1))
     {
+      int ii = 0;
       if (tokenIs(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI)) 
       {
          nextToken();
          consumeExpected(':');
          
-         int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
+         // int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
+         Object funcTokenObj = m_functionTable.getFunctionId(m_token);
+         int funcTok = Integer.valueOf(funcTokenObj.toString());
 
          if (-1 == funcTok)
          {
@@ -4179,11 +4115,11 @@ public class XPathParserImpl
 
     if (tokenIs('['))
     {
-      fIsXPathPredicateParsingActive = true;      
+      m_isXPathPredicateParsingActive = true;      
       nextToken();
       PredicateExpr();
       consumeExpected(']');      
-      fIsXPathPredicateParsingActive = false;
+      m_isXPathPredicateParsingActive = false;
     }
   }
 
@@ -5220,7 +5156,7 @@ public class XPathParserImpl
    }
   
    public String getArrowOpRemainingXPathExprStr() {
-	   return fArrowOpRemainingXPathExprStr; 
+	   return m_arrowOpRemainingXPathExprStr; 
    }
   
 }

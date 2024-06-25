@@ -36,7 +36,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -114,15 +114,15 @@ public class FuncFilter extends Function2Args {
         
         ResultSequence resultSeq = new ResultSequence();
                     
-        if (arg1 instanceof InlineFunction) {
-            InlineFunction inlineFuncArg = (InlineFunction)arg1;
+        if (arg1 instanceof XPathInlineFunction) {
+            XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1;
             validateInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
             resultSeq = evaluateFnFilter(xctxt, arg0XsObject, arg0DtmIterator, inlineFuncArg); 
         }
         else if (arg1 instanceof Variable) {
             XObject arg1VarValue = arg1.execute(xctxt);
-            if (arg1VarValue instanceof InlineFunction) {
-                InlineFunction inlineFuncArg = (InlineFunction)arg1VarValue;
+            if (arg1VarValue instanceof XPathInlineFunction) {
+                XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1VarValue;
                 validateInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
                 resultSeq = evaluateFnFilter(xctxt, arg0XsObject, arg0DtmIterator, inlineFuncArg);   
             }
@@ -175,7 +175,7 @@ public class FuncFilter extends Function2Args {
   /*
    * Validate the, number of function parameters, that the inline function is allowed to have for fn:filter.
    */
-  private void validateInlineFunctionParamCardinality(InlineFunction inlineFuncArg, SourceLocator srcLocator) throws 
+  private void validateInlineFunctionParamCardinality(XPathInlineFunction inlineFuncArg, SourceLocator srcLocator) throws 
                                                                                                 javax.xml.transform.TransformerException {
       List<InlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
       if (funcParamList.size() != 1) {
@@ -189,7 +189,7 @@ public class FuncFilter extends Function2Args {
    * Evaluate the function call fn:filter.
    */
   private ResultSequence evaluateFnFilter(XPathContext xctxt, XObject arg0XsObject, 
-                                                 DTMIterator arg0DtmIterator, InlineFunction arg1) 
+                                                 DTMIterator arg0DtmIterator, XPathInlineFunction arg1) 
                                                                                     throws TransformerException {
         ResultSequence resultSeq = new ResultSequence(); 
         

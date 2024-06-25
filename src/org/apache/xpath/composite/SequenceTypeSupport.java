@@ -33,7 +33,7 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMNodeList;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -476,10 +476,10 @@ public class SequenceTypeSupport {
                                                                                                                expectedType, itemTypeOccurenceIndicator);
                }
             }
-            else if (srcValue instanceof InlineFunction) {
+            else if (srcValue instanceof XPathInlineFunction) {
                SequenceTypeFunctionTest sequenceTypeFunctionTest = seqExpectedTypeData.getSequenceTypeFunctionTest();
                if (sequenceTypeFunctionTest != null) {
-            	  InlineFunction inlineFunctionExpr = (InlineFunction)srcValue;
+            	  XPathInlineFunction inlineFunctionExpr = (XPathInlineFunction)srcValue;
             	  if (sequenceTypeFunctionTest.isAnyFunctionTest()) {
             		 result = srcValue; 
             	  }

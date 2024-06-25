@@ -45,7 +45,7 @@ class Lexer
   /**
    * The XPath processor object.
    */
-  XPathParserImpl m_processor;
+  XPathParser m_processor;
 
   /**
    * This value is added to each element name in the TARGETEXTRA
@@ -78,7 +78,7 @@ class Lexer
    * @param xpathProcessor The parser that is processing strings to opcodes.
    */
   Lexer(Compiler compiler, PrefixResolver resolver,
-        XPathParserImpl xpathProcessor)
+        XPathParser xpathProcessor)
   {
 
     m_compiler = compiler;

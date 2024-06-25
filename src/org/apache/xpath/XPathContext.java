@@ -53,6 +53,7 @@ import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.axes.SubContextList;
+import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.objects.DTMXRTreeFrag;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
@@ -103,7 +104,8 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   
   /**
    *  This data value, represents the XPath 3.1's current evaluation 
-   *  context item.
+   *  context item. This is in addition to, XPath context item
+   *  retrieved in other ways, by Xalan-J implementation.
    */
   private XObject m_xpath3ContextItem = null;
   
@@ -1405,89 +1407,93 @@ public class XPathContext extends DTMManager // implements ExpressionContext
       iter.remove();
     }
     m_DTMXRTreeFrags = null;
- }
+  }
+  
+  public FunctionTable getFunctionTable() {
+	  return new FunctionTable();
+  }
 
- public Map<String, String> getCustomDataMap() {
-    return m_customDataMap;
- }
+  public Map<String, String> getCustomDataMap() {
+	  return m_customDataMap;
+  }
 
- public void setCustomDataMap(Map<String, String> customDataMap) {
-    this.m_customDataMap = customDataMap;
- }
+  public void setCustomDataMap(Map<String, String> customDataMap) {
+	  this.m_customDataMap = customDataMap;
+  }
 
- public XObject getXPath3ContextItem() {
-     return m_xpath3ContextItem;
- }
+  public XObject getXPath3ContextItem() {
+	  return m_xpath3ContextItem;
+  }
 
- public void setXPath3ContextItem(XObject xpath3ContextItem) {
-     this.m_xpath3ContextItem = xpath3ContextItem;
- }
+  public void setXPath3ContextItem(XObject xpath3ContextItem) {
+	  this.m_xpath3ContextItem = xpath3ContextItem;
+  }
 
- public int getXPath3ContextPosition() {
-    return m_xpath3ContextPosition;
- }
+  public int getXPath3ContextPosition() {
+	  return m_xpath3ContextPosition;
+  }
 
- public void setXPath3ContextPosition(int xpath3ContextPosition) {
-    this.m_xpath3ContextPosition = xpath3ContextPosition;
- }
+  public void setXPath3ContextPosition(int xpath3ContextPosition) {
+	  this.m_xpath3ContextPosition = xpath3ContextPosition;
+  }
 
- public int getXPath3ContextSize() {
-    return m_xpath3ContextSize;
- }
+  public int getXPath3ContextSize() {
+	  return m_xpath3ContextSize;
+  }
 
- public void setXPath3ContextSize(int xpath3ContextSize) {
-    this.m_xpath3ContextSize = xpath3ContextSize;
- }
+  public void setXPath3ContextSize(int xpath3ContextSize) {
+	  this.m_xpath3ContextSize = xpath3ContextSize;
+  }
 
- public GregorianCalendar getCurrentDateTime() {
-     if (m_currentDateTime == null) {
-         m_currentDateTime = new GregorianCalendar(TimeZone.getDefault());
-     }
-     
-     return m_currentDateTime;
- }
+  public GregorianCalendar getCurrentDateTime() {
+	  if (m_currentDateTime == null) {
+		  m_currentDateTime = new GregorianCalendar(TimeZone.getDefault());
+	  }
 
- public void setCurrentDateTime(GregorianCalendar currentDateTime) {
-     this.m_currentDateTime = currentDateTime;
- }
+	  return m_currentDateTime;
+  }
 
- public XSDuration getTimezone() {
-     if (m_timezone == null) {
-        ZonedDateTime zonedDateTime = ZonedDateTime.now();
-        ZoneOffset zoneOffset = zonedDateTime.getOffset();
-        String zoneOffsetStr = zoneOffset.toString();
-        String[] zoneOffsetStrParts = zoneOffsetStr.split("\\+|\\-|:");
-        int zoneHrs = 0;
-        int zoneMinutes = 0;
-        if (zoneOffsetStrParts.length > 1) {
-           zoneHrs = (new Integer(zoneOffsetStrParts[1])).intValue();
-           zoneMinutes = (new Integer(zoneOffsetStrParts[2])).intValue();
-        }
-        boolean isNegativeTimezone = !zoneOffsetStr.startsWith("+");
-        m_timezone = new XSDayTimeDuration(0, zoneHrs, zoneMinutes, 0, isNegativeTimezone);
-     }
-     
-     return m_timezone;
- }
+  public void setCurrentDateTime(GregorianCalendar currentDateTime) {
+	  this.m_currentDateTime = currentDateTime;
+  }
 
- public void setTimezone(XSDuration timezone) {
-     this.m_timezone = timezone;
- }
+  public XSDuration getTimezone() {
+	  if (m_timezone == null) {
+		  ZonedDateTime zonedDateTime = ZonedDateTime.now();
+		  ZoneOffset zoneOffset = zonedDateTime.getOffset();
+		  String zoneOffsetStr = zoneOffset.toString();
+		  String[] zoneOffsetStrParts = zoneOffsetStr.split("\\+|\\-|:");
+		  int zoneHrs = 0;
+		  int zoneMinutes = 0;
+		  if (zoneOffsetStrParts.length > 1) {
+			  zoneHrs = (new Integer(zoneOffsetStrParts[1])).intValue();
+			  zoneMinutes = (new Integer(zoneOffsetStrParts[2])).intValue();
+		  }
+		  boolean isNegativeTimezone = !zoneOffsetStr.startsWith("+");
+		  m_timezone = new XSDayTimeDuration(0, zoneHrs, zoneMinutes, 0, isNegativeTimezone);
+	  }
 
- public Map<QName, XObject> getXPathVarMap() {
-     return xpathVarMap;
- }
+	  return m_timezone;
+  }
 
- public void setXPathVarMap(Map<QName, XObject> xpathVarMap) {
-     this.xpathVarMap = xpathVarMap;
- }
+  public void setTimezone(XSDuration timezone) {
+	  this.m_timezone = timezone;
+  }
 
- public XPathCollationSupport getXPathCollationSupport() {
-     return m_collationSupport;
- }
- 
- public String getDefaultCollation() {
-     return m_default_collation;
- }
+  public Map<QName, XObject> getXPathVarMap() {
+	  return xpathVarMap;
+  }
+
+  public void setXPathVarMap(Map<QName, XObject> xpathVarMap) {
+	  this.xpathVarMap = xpathVarMap;
+  }
+
+  public XPathCollationSupport getXPathCollationSupport() {
+	  return m_collationSupport;
+  }
+
+  public String getDefaultCollation() {
+	  return m_default_collation;
+  }
   
 }

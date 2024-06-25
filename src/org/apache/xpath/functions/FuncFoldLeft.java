@@ -27,7 +27,7 @@ import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
@@ -70,12 +70,12 @@ public class FuncFoldLeft extends XPathHigherOrderBuiltinFunctionsSupport {
         
         XObject foldLeftBaseVal = m_arg1.execute(xctxt);
         
-        InlineFunction foldLeftThirdArg = null;
+        XPathInlineFunction foldLeftThirdArg = null;
         
         if (m_arg2 instanceof Variable) {
            XObject arg2XObj = m_arg2.execute(xctxt);
-           if (arg2XObj instanceof InlineFunction) {
-              foldLeftThirdArg = (InlineFunction)arg2XObj;
+           if (arg2XObj instanceof XPathInlineFunction) {
+              foldLeftThirdArg = (XPathInlineFunction)arg2XObj;
            }
            else {
                QName varQname = (((Variable)m_arg2).getElemVariable()).getName();
@@ -85,8 +85,8 @@ public class FuncFoldLeft extends XPathHigherOrderBuiltinFunctionsSupport {
                                                                         + "evaluated to a function item.", srcLocator);  
            }
         }        
-        else if (m_arg2 instanceof InlineFunction) {
-           foldLeftThirdArg = (InlineFunction)m_arg2;                                           
+        else if (m_arg2 instanceof XPathInlineFunction) {
+           foldLeftThirdArg = (XPathInlineFunction)m_arg2;                                           
         }
         else {
            throw new javax.xml.transform.TransformerException("FORG0006 : The third argument to function call "

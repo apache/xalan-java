@@ -29,7 +29,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function3Args;
-import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
@@ -64,12 +64,12 @@ public class FuncArrayForEachPair extends Function3Args {
            		                                                     + "arguments need to be XPath arrays, or can be evaluated to arrays.", srcLocator);
         }
         
-        InlineFunction funcItem3rdArg = null;
+        XPathInlineFunction funcItem3rdArg = null;
         
         if (arg2 instanceof Variable) {
            XObject arg2XObj = arg2.execute(xctxt);
-           if (arg2XObj instanceof InlineFunction) {
-              funcItem3rdArg = (InlineFunction)arg2XObj;
+           if (arg2XObj instanceof XPathInlineFunction) {
+              funcItem3rdArg = (XPathInlineFunction)arg2XObj;
            }
            else {
               QName varQname = (((Variable)arg2).getElemVariable()).getName();
@@ -78,8 +78,8 @@ public class FuncArrayForEachPair extends Function3Args {
               		                                                    + "evaluate to a function item.", srcLocator);  
            }
         }        
-        else if (arg2 instanceof InlineFunction) {
-           funcItem3rdArg = (InlineFunction)arg2;                                           
+        else if (arg2 instanceof XPathInlineFunction) {
+           funcItem3rdArg = (XPathInlineFunction)arg2;                                           
         }
         else {
            throw new javax.xml.transform.TransformerException("FORG0006 : The 3rd argument to function call array:for-each-pair is not a function "
@@ -91,7 +91,7 @@ public class FuncArrayForEachPair extends Function3Args {
         return result;
     }
     
-    private XPathArray evaluateArrayForEachPairFunc(XPathArray arg0, XPathArray arg1, InlineFunction funcItem3rdArg, XPathContext xctxt) 
+    private XPathArray evaluateArrayForEachPairFunc(XPathArray arg0, XPathArray arg1, XPathInlineFunction funcItem3rdArg, XPathContext xctxt) 
                                                                                        throws javax.xml.transform.TransformerException {        
         XPathArray resultArr = new XPathArray();
         

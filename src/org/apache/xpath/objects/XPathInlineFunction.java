@@ -25,7 +25,7 @@ import org.apache.xpath.composite.SequenceTypeData;
 
 /**
  * An object of this class represents, a run-time representation
- * of XalanJ's function item "inline function expression".
+ * of an XPath function item "inline function expression".
  * 
  * Ref : https://www.w3.org/TR/xpath-31/#id-inline-func
  *  
@@ -33,7 +33,7 @@ import org.apache.xpath.composite.SequenceTypeData;
  *   
  * @xsl.usage advanced 
  */
-public class InlineFunction extends XObject {
+public class XPathInlineFunction extends XObject {
 
     private static final long serialVersionUID = 9219253671212483045L;
     

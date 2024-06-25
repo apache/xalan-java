@@ -29,7 +29,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function3Args;
-import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
@@ -91,12 +91,12 @@ public class FuncArrayFoldRight extends Function3Args {
            foldRightInitObj = arg1.execute(xctxt);	
         }
         
-        InlineFunction foldRightFunc = null;
+        XPathInlineFunction foldRightFunc = null;
         
         if (arg2 instanceof Variable) {
            XObject arg2XObj = arg2.execute(xctxt);
-           if (arg2XObj instanceof InlineFunction) {
-        	   foldRightFunc = (InlineFunction)arg2XObj;
+           if (arg2XObj instanceof XPathInlineFunction) {
+        	   foldRightFunc = (XPathInlineFunction)arg2XObj;
            }
            else {
               QName varQname = (((Variable)arg2).getElemVariable()).getName();
@@ -105,8 +105,8 @@ public class FuncArrayFoldRight extends Function3Args {
                                                                              + "evaluate to a function item.", srcLocator);  
            }
         }        
-        else if (arg2 instanceof InlineFunction) {
-        	foldRightFunc = (InlineFunction)arg2;                                           
+        else if (arg2 instanceof XPathInlineFunction) {
+        	foldRightFunc = (XPathInlineFunction)arg2;                                           
         }
         else {
            throw new javax.xml.transform.TransformerException("FORG0006 : The 3rd argument to function call array:fold-right is not a "

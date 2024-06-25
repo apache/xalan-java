@@ -738,8 +738,10 @@ public class OpCodes
   public static final int OP_CASTABLE_AS = 78;
   
   public static final int OP_ARROW = 79;
+  
+  public static final int OP_NAMED_FUNCTION_REFERENCE = 80;
 
   /** The next free ID. Please keep this up to date. */
-  private static final int NEXT_FREE_ID = 80;
+  private static final int NEXT_FREE_ID = 81;
   
 }

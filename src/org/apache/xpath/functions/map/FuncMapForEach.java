@@ -34,7 +34,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function2Args;
 import org.apache.xpath.functions.WrongNumberArgsException;
-import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
@@ -101,8 +101,8 @@ public class FuncMapForEach extends Function2Args {
 		   }
 		}
 
-		if (arg1 instanceof InlineFunction) {
-			InlineFunction inlineFuncArg = (InlineFunction)arg1;
+		if (arg1 instanceof XPathInlineFunction) {
+			XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1;
 			verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
 			result = evaluateFnMapforEach(xctxt, (XPathMap)arg0XsObject, inlineFuncArg); 
 		}
@@ -112,8 +112,8 @@ public class FuncMapForEach extends Function2Args {
 			}
 
 			XObject arg1VarValue = arg1.execute(xctxt);
-			if (arg1VarValue instanceof InlineFunction) {
-				InlineFunction inlineFuncArg = (InlineFunction)arg1VarValue;
+			if (arg1VarValue instanceof XPathInlineFunction) {
+				XPathInlineFunction inlineFuncArg = (XPathInlineFunction)arg1VarValue;
 				verifyInlineFunctionParamCardinality(inlineFuncArg, srcLocator);
 				result = evaluateFnMapforEach(xctxt, (XPathMap)arg0XsObject, inlineFuncArg);   
 			}
@@ -165,7 +165,7 @@ public class FuncMapForEach extends Function2Args {
 	 * Verify the number of function parameters, that the inline function is allowed to 
 	 * have for map:for-each function call.
 	 */
-	private void verifyInlineFunctionParamCardinality(InlineFunction inlineFuncArg, SourceLocator srcLocator) throws 
+	private void verifyInlineFunctionParamCardinality(XPathInlineFunction inlineFuncArg, SourceLocator srcLocator) throws 
 																								javax.xml.transform.TransformerException {
 		List<InlineFunctionParameter> funcParamList = inlineFuncArg.getFuncParamList();
 		if (funcParamList.size() != 2) {
@@ -177,7 +177,7 @@ public class FuncMapForEach extends Function2Args {
 	/*
 	 * Construct result of map:for-each function call.
 	 */
-	private ResultSequence evaluateFnMapforEach(XPathContext xctxt, XPathMap xpathMap, InlineFunction funcItem) 
+	private ResultSequence evaluateFnMapforEach(XPathContext xctxt, XPathMap xpathMap, XPathInlineFunction funcItem) 
 					                                                                                     throws TransformerException {
 		ResultSequence resultSeq = new ResultSequence();
 		

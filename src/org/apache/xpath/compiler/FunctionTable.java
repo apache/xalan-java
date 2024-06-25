@@ -593,7 +593,7 @@ public class FunctionTable
   private static Class m_functions[];
 
   /** Table of function name to function ID associations. */
-  private static HashMap m_functionID = new HashMap();
+  private static HashMap m_functionId = new HashMap();
     
   /**
    * The function table contains customized functions
@@ -603,7 +603,7 @@ public class FunctionTable
   /**
    * Table of function name to function ID associations for customized functions
    */
-  private HashMap m_functionID_customer = new HashMap();
+  private HashMap m_functionId_customer = new HashMap();
   
   /**
    * Number of built in functions. Be sure to update this as
@@ -889,345 +889,345 @@ public class FunctionTable
   }
 
   static{
-          m_functionID.put(Keywords.FUNC_CURRENT_STRING,
+          m_functionId.put(Keywords.FUNC_CURRENT_STRING,
                           new Integer(FunctionTable.FUNC_CURRENT));
-          m_functionID.put(Keywords.FUNC_LAST_STRING,
+          m_functionId.put(Keywords.FUNC_LAST_STRING,
                           new Integer(FunctionTable.FUNC_LAST));
-          m_functionID.put(Keywords.FUNC_POSITION_STRING,
+          m_functionId.put(Keywords.FUNC_POSITION_STRING,
                           new Integer(FunctionTable.FUNC_POSITION));
-          m_functionID.put(Keywords.FUNC_COUNT_STRING,
+          m_functionId.put(Keywords.FUNC_COUNT_STRING,
                           new Integer(FunctionTable.FUNC_COUNT));
-          m_functionID.put(Keywords.FUNC_ID_STRING,
+          m_functionId.put(Keywords.FUNC_ID_STRING,
                           new Integer(FunctionTable.FUNC_ID));
-          m_functionID.put(Keywords.FUNC_KEY_STRING,
+          m_functionId.put(Keywords.FUNC_KEY_STRING,
                           new Integer(FunctionTable.FUNC_KEY));
-          m_functionID.put(Keywords.FUNC_LOCAL_NAME_STRING,
+          m_functionId.put(Keywords.FUNC_LOCAL_NAME_STRING,
                           new Integer(FunctionTable.FUNC_LOCAL_NAME));
-          m_functionID.put(Keywords.FUNC_NAMESPACE_URI_STRING,
+          m_functionId.put(Keywords.FUNC_NAMESPACE_URI_STRING,
                           new Integer(FunctionTable.FUNC_NAMESPACE_URI));          
-          m_functionID.put(Keywords.FUNC_GENERATE_ID_STRING,
+          m_functionId.put(Keywords.FUNC_GENERATE_ID_STRING,
                           new Integer(FunctionTable.FUNC_GENERATE_ID));
-          m_functionID.put(Keywords.FUNC_NOT_STRING,
+          m_functionId.put(Keywords.FUNC_NOT_STRING,
                           new Integer(FunctionTable.FUNC_NOT));
-          m_functionID.put(Keywords.FUNC_TRUE_STRING,
+          m_functionId.put(Keywords.FUNC_TRUE_STRING,
                           new Integer(FunctionTable.FUNC_TRUE));
-          m_functionID.put(Keywords.FUNC_FALSE_STRING,
+          m_functionId.put(Keywords.FUNC_FALSE_STRING,
                           new Integer(FunctionTable.FUNC_FALSE));
-          m_functionID.put(Keywords.FUNC_BOOLEAN_STRING,
+          m_functionId.put(Keywords.FUNC_BOOLEAN_STRING,
                           new Integer(FunctionTable.FUNC_BOOLEAN));
-          m_functionID.put(Keywords.FUNC_LANG_STRING,
+          m_functionId.put(Keywords.FUNC_LANG_STRING,
                           new Integer(FunctionTable.FUNC_LANG));
-          m_functionID.put(Keywords.FUNC_ROOT_STRING,
+          m_functionId.put(Keywords.FUNC_ROOT_STRING,
                           new Integer(FunctionTable.FUNC_ROOT));
-          m_functionID.put(Keywords.FUNC_NUMBER_STRING,
+          m_functionId.put(Keywords.FUNC_NUMBER_STRING,
                           new Integer(FunctionTable.FUNC_NUMBER));
-          m_functionID.put(Keywords.FUNC_FLOOR_STRING,
+          m_functionId.put(Keywords.FUNC_FLOOR_STRING,
                           new Integer(FunctionTable.FUNC_FLOOR));
-          m_functionID.put(Keywords.FUNC_CEILING_STRING,
+          m_functionId.put(Keywords.FUNC_CEILING_STRING,
                           new Integer(FunctionTable.FUNC_CEILING));
-          m_functionID.put(Keywords.FUNC_ROUND_STRING,
+          m_functionId.put(Keywords.FUNC_ROUND_STRING,
                           new Integer(FunctionTable.FUNC_ROUND));
-          m_functionID.put(Keywords.FUNC_SUM_STRING,
+          m_functionId.put(Keywords.FUNC_SUM_STRING,
                           new Integer(FunctionTable.FUNC_SUM));
-          m_functionID.put(Keywords.FUNC_STRING_STRING,
+          m_functionId.put(Keywords.FUNC_STRING_STRING,
                           new Integer(FunctionTable.FUNC_STRING));
           
-          m_functionID.put(Keywords.FUNC_DATA_STRING,
+          m_functionId.put(Keywords.FUNC_DATA_STRING,
                           new Integer(FunctionTable.FUNC_DATA));
           
-          m_functionID.put(Keywords.FUNC_STARTS_WITH_STRING,
+          m_functionId.put(Keywords.FUNC_STARTS_WITH_STRING,
                           new Integer(FunctionTable.FUNC_STARTS_WITH));
-          m_functionID.put(Keywords.FUNC_CONTAINS_STRING,
+          m_functionId.put(Keywords.FUNC_CONTAINS_STRING,
                           new Integer(FunctionTable.FUNC_CONTAINS));
-          m_functionID.put(Keywords.FUNC_SUBSTRING_BEFORE_STRING,
+          m_functionId.put(Keywords.FUNC_SUBSTRING_BEFORE_STRING,
                           new Integer(FunctionTable.FUNC_SUBSTRING_BEFORE));
-          m_functionID.put(Keywords.FUNC_SUBSTRING_AFTER_STRING,
+          m_functionId.put(Keywords.FUNC_SUBSTRING_AFTER_STRING,
                           new Integer(FunctionTable.FUNC_SUBSTRING_AFTER));
-          m_functionID.put(Keywords.FUNC_NORMALIZE_SPACE_STRING,
+          m_functionId.put(Keywords.FUNC_NORMALIZE_SPACE_STRING,
                           new Integer(FunctionTable.FUNC_NORMALIZE_SPACE));
-          m_functionID.put(Keywords.FUNC_TRANSLATE_STRING,
+          m_functionId.put(Keywords.FUNC_TRANSLATE_STRING,
                           new Integer(FunctionTable.FUNC_TRANSLATE));
-          m_functionID.put(Keywords.FUNC_CONCAT_STRING,
+          m_functionId.put(Keywords.FUNC_CONCAT_STRING,
                           new Integer(FunctionTable.FUNC_CONCAT));
-          m_functionID.put(Keywords.FUNC_SYSTEM_PROPERTY_STRING,
+          m_functionId.put(Keywords.FUNC_SYSTEM_PROPERTY_STRING,
                           new Integer(FunctionTable.FUNC_SYSTEM_PROPERTY));
-          m_functionID.put(Keywords.FUNC_EXT_FUNCTION_AVAILABLE_STRING,
+          m_functionId.put(Keywords.FUNC_EXT_FUNCTION_AVAILABLE_STRING,
                           new Integer(FunctionTable.FUNC_EXT_FUNCTION_AVAILABLE));
-          m_functionID.put(Keywords.FUNC_EXT_ELEM_AVAILABLE_STRING,
+          m_functionId.put(Keywords.FUNC_EXT_ELEM_AVAILABLE_STRING,
                           new Integer(FunctionTable.FUNC_EXT_ELEM_AVAILABLE));
-          m_functionID.put(Keywords.FUNC_SUBSTRING_STRING,
+          m_functionId.put(Keywords.FUNC_SUBSTRING_STRING,
                           new Integer(FunctionTable.FUNC_SUBSTRING));
-          m_functionID.put(Keywords.FUNC_STRING_LENGTH_STRING,
+          m_functionId.put(Keywords.FUNC_STRING_LENGTH_STRING,
                           new Integer(FunctionTable.FUNC_STRING_LENGTH));
-          m_functionID.put(Keywords.FUNC_UNPARSED_ENTITY_URI_STRING,
+          m_functionId.put(Keywords.FUNC_UNPARSED_ENTITY_URI_STRING,
                           new Integer(FunctionTable.FUNC_UNPARSED_ENTITY_URI));
-          m_functionID.put(Keywords.FUNC_MATCHES_STRING,
+          m_functionId.put(Keywords.FUNC_MATCHES_STRING,
                           new Integer(FunctionTable.FUNC_MATCHES));
-          m_functionID.put(Keywords.FUNC_REPLACE_STRING,
+          m_functionId.put(Keywords.FUNC_REPLACE_STRING,
                           new Integer(FunctionTable.FUNC_REPLACE));
-          m_functionID.put(Keywords.FUNC_DOCLOCATION_STRING,
+          m_functionId.put(Keywords.FUNC_DOCLOCATION_STRING,
                           new Integer(FunctionTable.FUNC_DOCLOCATION));          
-          m_functionID.put(Keywords.FUNC_CURRENT_GROUPING_KEY,
+          m_functionId.put(Keywords.FUNC_CURRENT_GROUPING_KEY,
                           new Integer(FunctionTable.FUNC_CURRENT_GROUPING_KEY));
-          m_functionID.put(Keywords.FUNC_CURRENT_GROUP,
+          m_functionId.put(Keywords.FUNC_CURRENT_GROUP,
                           new Integer(FunctionTable.FUNC_CURRENT_GROUP));
-          m_functionID.put(Keywords.FUNC_ABS,
+          m_functionId.put(Keywords.FUNC_ABS,
                           new Integer(FunctionTable.FUNC_ABS));
-          m_functionID.put(Keywords.FUNC_REGEX_GROUP,
+          m_functionId.put(Keywords.FUNC_REGEX_GROUP,
                           new Integer(FunctionTable.FUNC_REGEX_GROUP));
-          m_functionID.put(Keywords.FUNC_TOKENIZE,
+          m_functionId.put(Keywords.FUNC_TOKENIZE,
                           new Integer(FunctionTable.FUNC_TOKENIZE));
-          m_functionID.put(Keywords.FUNC_ANALYZE_STRING,
+          m_functionId.put(Keywords.FUNC_ANALYZE_STRING,
                           new Integer(FunctionTable.FUNC_ANALYZE_STRING));
-          m_functionID.put(Keywords.FUNC_UNPARSED_TEXT,
+          m_functionId.put(Keywords.FUNC_UNPARSED_TEXT,
                           new Integer(FunctionTable.FUNC_UNPARSED_TEXT));
-          m_functionID.put(Keywords.FUNC_STRING_JOIN,
+          m_functionId.put(Keywords.FUNC_STRING_JOIN,
                           new Integer(FunctionTable.FUNC_STRING_JOIN));
-          m_functionID.put(Keywords.FUNC_CURRENT_DATETIME,
+          m_functionId.put(Keywords.FUNC_CURRENT_DATETIME,
                           new Integer(FunctionTable.FUNC_CURRENT_DATETIME));
-          m_functionID.put(Keywords.FUNC_CURRENT_DATE,
+          m_functionId.put(Keywords.FUNC_CURRENT_DATE,
                           new Integer(FunctionTable.FUNC_CURRENT_DATE));
-          m_functionID.put(Keywords.FUNC_CURRENT_TIME,
+          m_functionId.put(Keywords.FUNC_CURRENT_TIME,
                           new Integer(FunctionTable.FUNC_CURRENT_TIME));
-          m_functionID.put(Keywords.FUNC_UPPER_CASE,
+          m_functionId.put(Keywords.FUNC_UPPER_CASE,
                           new Integer(FunctionTable.FUNC_UPPER_CASE));
-          m_functionID.put(Keywords.FUNC_LOWER_CASE,
+          m_functionId.put(Keywords.FUNC_LOWER_CASE,
                           new Integer(FunctionTable.FUNC_LOWER_CASE));
-          m_functionID.put(Keywords.FUNC_IMPLICIT_TIMEZONE,
+          m_functionId.put(Keywords.FUNC_IMPLICIT_TIMEZONE,
                           new Integer(FunctionTable.FUNC_IMPLICIT_TIMEZONE));
-          m_functionID.put(Keywords.FUNC_INDEX_OF,
+          m_functionId.put(Keywords.FUNC_INDEX_OF,
                           new Integer(FunctionTable.FUNC_INDEX_OF));          
-          m_functionID.put(Keywords.FUNC_DISTINCT_VALUES,
+          m_functionId.put(Keywords.FUNC_DISTINCT_VALUES,
                           new Integer(FunctionTable.FUNC_DISTINCT_VALUES));
           
-          m_functionID.put(Keywords.FUNC_FOR_EACH,
+          m_functionId.put(Keywords.FUNC_FOR_EACH,
                           new Integer(FunctionTable.FUNC_FOR_EACH));
-          m_functionID.put(Keywords.FUNC_FILTER,
+          m_functionId.put(Keywords.FUNC_FILTER,
                           new Integer(FunctionTable.FUNC_FILTER));
-          m_functionID.put(Keywords.FUNC_FOLD_LEFT,
+          m_functionId.put(Keywords.FUNC_FOLD_LEFT,
                           new Integer(FunctionTable.FUNC_FOLD_LEFT));
-          m_functionID.put(Keywords.FUNC_FOLD_RIGHT,
+          m_functionId.put(Keywords.FUNC_FOLD_RIGHT,
                           new Integer(FunctionTable.FUNC_FOLD_RIGHT));
-          m_functionID.put(Keywords.FUNC_FOR_EACH_PAIR,
+          m_functionId.put(Keywords.FUNC_FOR_EACH_PAIR,
                           new Integer(FunctionTable.FUNC_FOR_EACH_PAIR));
-          m_functionID.put(Keywords.FUNC_SORT,
+          m_functionId.put(Keywords.FUNC_SORT,
                           new Integer(FunctionTable.FUNC_SORT));
           
           // XPath 3.1 functions configurations for the math functions 
           // namespace http://www.w3.org/2005/xpath-functions/math
-          m_functionID.put(Keywords.FUNC_MATH_PI,
+          m_functionId.put(Keywords.FUNC_MATH_PI,
                           new Integer(FunctionTable.FUNC_MATH_PI));
-          m_functionID.put(Keywords.FUNC_MATH_EXP,
+          m_functionId.put(Keywords.FUNC_MATH_EXP,
                           new Integer(FunctionTable.FUNC_MATH_EXP));
-          m_functionID.put(Keywords.FUNC_MATH_EXP10,
+          m_functionId.put(Keywords.FUNC_MATH_EXP10,
                           new Integer(FunctionTable.FUNC_MATH_EXP10));
-          m_functionID.put(Keywords.FUNC_MATH_LOG,
+          m_functionId.put(Keywords.FUNC_MATH_LOG,
                           new Integer(FunctionTable.FUNC_MATH_LOG));
-          m_functionID.put(Keywords.FUNC_MATH_LOG10,
+          m_functionId.put(Keywords.FUNC_MATH_LOG10,
                           new Integer(FunctionTable.FUNC_MATH_LOG10));
-          m_functionID.put(Keywords.FUNC_MATH_POW,
+          m_functionId.put(Keywords.FUNC_MATH_POW,
                           new Integer(FunctionTable.FUNC_MATH_POW));
-          m_functionID.put(Keywords.FUNC_MATH_SQRT,
+          m_functionId.put(Keywords.FUNC_MATH_SQRT,
                           new Integer(FunctionTable.FUNC_MATH_SQRT));
-          m_functionID.put(Keywords.FUNC_MATH_SIN,
+          m_functionId.put(Keywords.FUNC_MATH_SIN,
                           new Integer(FunctionTable.FUNC_MATH_SIN));
-          m_functionID.put(Keywords.FUNC_MATH_COS,
+          m_functionId.put(Keywords.FUNC_MATH_COS,
                           new Integer(FunctionTable.FUNC_MATH_COS));
-          m_functionID.put(Keywords.FUNC_MATH_TAN,
+          m_functionId.put(Keywords.FUNC_MATH_TAN,
                           new Integer(FunctionTable.FUNC_MATH_TAN));
-          m_functionID.put(Keywords.FUNC_MATH_ASIN,
+          m_functionId.put(Keywords.FUNC_MATH_ASIN,
                           new Integer(FunctionTable.FUNC_MATH_ASIN));
-          m_functionID.put(Keywords.FUNC_MATH_ACOS,
+          m_functionId.put(Keywords.FUNC_MATH_ACOS,
                          new Integer(FunctionTable.FUNC_MATH_ACOS));
-          m_functionID.put(Keywords.FUNC_MATH_ATAN,
+          m_functionId.put(Keywords.FUNC_MATH_ATAN,
                          new Integer(FunctionTable.FUNC_MATH_ATAN));
-          m_functionID.put(Keywords.FUNC_MATH_ATAN2,
+          m_functionId.put(Keywords.FUNC_MATH_ATAN2,
                          new Integer(FunctionTable.FUNC_MATH_ATAN2));
           
-         m_functionID.put(Keywords.FUNC_YEARS_FROM_DURATION,
+         m_functionId.put(Keywords.FUNC_YEARS_FROM_DURATION,
                          new Integer(FunctionTable.FUNC_YEARS_FROM_DURATION));
-         m_functionID.put(Keywords.FUNC_MONTHS_FROM_DURATION,
+         m_functionId.put(Keywords.FUNC_MONTHS_FROM_DURATION,
                          new Integer(FunctionTable.FUNC_MONTHS_FROM_DURATION));
-         m_functionID.put(Keywords.FUNC_DAYS_FROM_DURATION,
+         m_functionId.put(Keywords.FUNC_DAYS_FROM_DURATION,
                          new Integer(FunctionTable.FUNC_DAYS_FROM_DURATION));
-         m_functionID.put(Keywords.FUNC_HOURS_FROM_DURATION,
+         m_functionId.put(Keywords.FUNC_HOURS_FROM_DURATION,
                          new Integer(FunctionTable.FUNC_HOURS_FROM_DURATION));
-         m_functionID.put(Keywords.FUNC_MINUTES_FROM_DURATION,
+         m_functionId.put(Keywords.FUNC_MINUTES_FROM_DURATION,
                          new Integer(FunctionTable.FUNC_MINUTES_FROM_DURATION));
-         m_functionID.put(Keywords.FUNC_SECONDS_FROM_DURATION,
+         m_functionId.put(Keywords.FUNC_SECONDS_FROM_DURATION,
                          new Integer(FunctionTable.FUNC_SECONDS_FROM_DURATION));
          
-         m_functionID.put(Keywords.FUNC_CODE_POINTS_TO_STRING,
+         m_functionId.put(Keywords.FUNC_CODE_POINTS_TO_STRING,
                          new Integer(FunctionTable.FUNC_CODE_POINTS_TO_STRING));
-         m_functionID.put(Keywords.FUNC_STRING_TO_CODE_POINTS,
+         m_functionId.put(Keywords.FUNC_STRING_TO_CODE_POINTS,
                          new Integer(FunctionTable.FUNC_STRING_TO_CODE_POINTS));
-         m_functionID.put(Keywords.FUNC_COMPARE,
+         m_functionId.put(Keywords.FUNC_COMPARE,
                          new Integer(FunctionTable.FUNC_COMPARE));
-         m_functionID.put(Keywords.FUNC_CODEPOINT_EQUAL,
+         m_functionId.put(Keywords.FUNC_CODEPOINT_EQUAL,
                          new Integer(FunctionTable.FUNC_CODEPOINT_EQUAL));
-         m_functionID.put(Keywords.FUNC_CONTAINS_TOKEN,
+         m_functionId.put(Keywords.FUNC_CONTAINS_TOKEN,
                          new Integer(FunctionTable.FUNC_CONTAINS_TOKEN));
          
-         m_functionID.put(Keywords.FUNC_EMPTY,
+         m_functionId.put(Keywords.FUNC_EMPTY,
                          new Integer(FunctionTable.FUNC_EMPTY));
-         m_functionID.put(Keywords.FUNC_EXISTS,
+         m_functionId.put(Keywords.FUNC_EXISTS,
                          new Integer(FunctionTable.FUNC_EXISTS));
-         m_functionID.put(Keywords.FUNC_HEAD,
+         m_functionId.put(Keywords.FUNC_HEAD,
                          new Integer(FunctionTable.FUNC_HEAD));
-         m_functionID.put(Keywords.FUNC_TAIL,
+         m_functionId.put(Keywords.FUNC_TAIL,
                          new Integer(FunctionTable.FUNC_TAIL));
-         m_functionID.put(Keywords.FUNC_INSERT_BEFORE,
+         m_functionId.put(Keywords.FUNC_INSERT_BEFORE,
                          new Integer(FunctionTable.FUNC_INSERT_BEFORE));
-         m_functionID.put(Keywords.FUNC_REMOVE,
+         m_functionId.put(Keywords.FUNC_REMOVE,
                          new Integer(FunctionTable.FUNC_REMOVE));
-         m_functionID.put(Keywords.FUNC_REVERSE,
+         m_functionId.put(Keywords.FUNC_REVERSE,
                          new Integer(FunctionTable.FUNC_REVERSE));
-         m_functionID.put(Keywords.FUNC_SUBSEQUENCE,
+         m_functionId.put(Keywords.FUNC_SUBSEQUENCE,
                          new Integer(FunctionTable.FUNC_SUBSEQUENCE));
-         m_functionID.put(Keywords.FUNC_UNORDERED,
+         m_functionId.put(Keywords.FUNC_UNORDERED,
                          new Integer(FunctionTable.FUNC_UNORDERED));
          
-         m_functionID.put(Keywords.FUNC_PARSE_XML,
+         m_functionId.put(Keywords.FUNC_PARSE_XML,
                          new Integer(FunctionTable.FUNC_PARSE_XML));
-         m_functionID.put(Keywords.FUNC_PARSE_XML_FRAGMENT,
+         m_functionId.put(Keywords.FUNC_PARSE_XML_FRAGMENT,
                          new Integer(FunctionTable.FUNC_PARSE_XML_FRAGMENT));
          
-         m_functionID.put(Keywords.FUNC_AVG,
+         m_functionId.put(Keywords.FUNC_AVG,
                          new Integer(FunctionTable.FUNC_AVG));
-         m_functionID.put(Keywords.FUNC_MAX,
+         m_functionId.put(Keywords.FUNC_MAX,
                          new Integer(FunctionTable.FUNC_MAX));
-         m_functionID.put(Keywords.FUNC_MIN,
+         m_functionId.put(Keywords.FUNC_MIN,
                          new Integer(FunctionTable.FUNC_MIN));
          
-         m_functionID.put(Keywords.FUNC_DOC,
+         m_functionId.put(Keywords.FUNC_DOC,
                          new Integer(FunctionTable.FUNC_DOC));
          
-         m_functionID.put(Keywords.FUNC_NODE_NAME,
+         m_functionId.put(Keywords.FUNC_NODE_NAME,
                          new Integer(FunctionTable.FUNC_NODE_NAME));
-         m_functionID.put(Keywords.FUNC_DEEP_EQUAL,
+         m_functionId.put(Keywords.FUNC_DEEP_EQUAL,
                          new Integer(FunctionTable.FUNC_DEEP_EQUAL));
          
-         m_functionID.put(Keywords.FUNC_DATE_TIME,
+         m_functionId.put(Keywords.FUNC_DATE_TIME,
                          new Integer(FunctionTable.FUNC_DATE_TIME));
-         m_functionID.put(Keywords.FUNC_YEAR_FROM_DATE_TIME,
+         m_functionId.put(Keywords.FUNC_YEAR_FROM_DATE_TIME,
                          new Integer(FunctionTable.FUNC_YEAR_FROM_DATE_TIME));
-         m_functionID.put(Keywords.FUNC_MONTH_FROM_DATE_TIME,
+         m_functionId.put(Keywords.FUNC_MONTH_FROM_DATE_TIME,
                          new Integer(FunctionTable.FUNC_MONTH_FROM_DATE_TIME));
-         m_functionID.put(Keywords.FUNC_DAY_FROM_DATE_TIME,
+         m_functionId.put(Keywords.FUNC_DAY_FROM_DATE_TIME,
                          new Integer(FunctionTable.FUNC_DAY_FROM_DATE_TIME));
-         m_functionID.put(Keywords.FUNC_HOURS_FROM_DATE_TIME,
+         m_functionId.put(Keywords.FUNC_HOURS_FROM_DATE_TIME,
                          new Integer(FunctionTable.FUNC_HOURS_FROM_DATE_TIME));
-         m_functionID.put(Keywords.FUNC_MINUTES_FROM_DATE_TIME,
+         m_functionId.put(Keywords.FUNC_MINUTES_FROM_DATE_TIME,
                          new Integer(FunctionTable.FUNC_MINUTES_FROM_DATE_TIME));
-         m_functionID.put(Keywords.FUNC_SECONDS_FROM_DATE_TIME,
+         m_functionId.put(Keywords.FUNC_SECONDS_FROM_DATE_TIME,
                          new Integer(FunctionTable.FUNC_SECONDS_FROM_DATE_TIME));
-         m_functionID.put(Keywords.FUNC_TIMEZONE_FROM_DATE_TIME,
+         m_functionId.put(Keywords.FUNC_TIMEZONE_FROM_DATE_TIME,
                          new Integer(FunctionTable.FUNC_TIMEZONE_FROM_DATE_TIME));
-         m_functionID.put(Keywords.FUNC_YEAR_FROM_DATE,
+         m_functionId.put(Keywords.FUNC_YEAR_FROM_DATE,
                          new Integer(FunctionTable.FUNC_YEAR_FROM_DATE));
-         m_functionID.put(Keywords.FUNC_MONTH_FROM_DATE,
+         m_functionId.put(Keywords.FUNC_MONTH_FROM_DATE,
                          new Integer(FunctionTable.FUNC_MONTH_FROM_DATE));
-         m_functionID.put(Keywords.FUNC_DAY_FROM_DATE,
+         m_functionId.put(Keywords.FUNC_DAY_FROM_DATE,
                          new Integer(FunctionTable.FUNC_DAY_FROM_DATE));
-         m_functionID.put(Keywords.FUNC_TIMEZONE_FROM_DATE,
+         m_functionId.put(Keywords.FUNC_TIMEZONE_FROM_DATE,
                          new Integer(FunctionTable.FUNC_TIMEZONE_FROM_DATE));
-         m_functionID.put(Keywords.FUNC_HOURS_FROM_TIME,
+         m_functionId.put(Keywords.FUNC_HOURS_FROM_TIME,
                          new Integer(FunctionTable.FUNC_HOURS_FROM_TIME));
-         m_functionID.put(Keywords.FUNC_MINUTES_FROM_TIME,
+         m_functionId.put(Keywords.FUNC_MINUTES_FROM_TIME,
                          new Integer(FunctionTable.FUNC_MINUTES_FROM_TIME));
-         m_functionID.put(Keywords.FUNC_SECONDS_FROM_TIME,
+         m_functionId.put(Keywords.FUNC_SECONDS_FROM_TIME,
                          new Integer(FunctionTable.FUNC_SECONDS_FROM_TIME));
-         m_functionID.put(Keywords.FUNC_TIMEZONE_FROM_TIME,
+         m_functionId.put(Keywords.FUNC_TIMEZONE_FROM_TIME,
                          new Integer(FunctionTable.FUNC_TIMEZONE_FROM_TIME));
          
-         m_functionID.put(Keywords.FUNC_DEFAULT_COLLATION,
+         m_functionId.put(Keywords.FUNC_DEFAULT_COLLATION,
                          new Integer(FunctionTable.FUNC_DEFAULT_COLLATION));
-         m_functionID.put(Keywords.FUNC_BASE_URI,
+         m_functionId.put(Keywords.FUNC_BASE_URI,
                          new Integer(FunctionTable.FUNC_BASE_URI));
-         m_functionID.put(Keywords.FUNC_DOCUMENT_URI,
+         m_functionId.put(Keywords.FUNC_DOCUMENT_URI,
                          new Integer(FunctionTable.FUNC_DOCUMENT_URI));
          
          // XPath 3.1 functions configurations for the map functions 
          // namespace http://www.w3.org/2005/xpath-functions/map
-         m_functionID.put(Keywords.FUNC_MAP_MERGE,
+         m_functionId.put(Keywords.FUNC_MAP_MERGE,
                           new Integer(FunctionTable.FUNC_MAP_MERGE));
-         m_functionID.put(Keywords.FUNC_MAP_SIZE,
+         m_functionId.put(Keywords.FUNC_MAP_SIZE,
                           new Integer(FunctionTable.FUNC_MAP_SIZE));
-         m_functionID.put(Keywords.FUNC_MAP_KEYS,
+         m_functionId.put(Keywords.FUNC_MAP_KEYS,
                           new Integer(FunctionTable.FUNC_MAP_KEYS));
-         m_functionID.put(Keywords.FUNC_MAP_CONTAINS,
+         m_functionId.put(Keywords.FUNC_MAP_CONTAINS,
                          new Integer(FunctionTable.FUNC_MAP_CONTAINS));
-         m_functionID.put(Keywords.FUNC_MAP_GET,
+         m_functionId.put(Keywords.FUNC_MAP_GET,
                          new Integer(FunctionTable.FUNC_MAP_GET));
-         m_functionID.put(Keywords.FUNC_MAP_PUT,
+         m_functionId.put(Keywords.FUNC_MAP_PUT,
                          new Integer(FunctionTable.FUNC_MAP_PUT));
-         m_functionID.put(Keywords.FUNC_MAP_ENTRY,
+         m_functionId.put(Keywords.FUNC_MAP_ENTRY,
                          new Integer(FunctionTable.FUNC_MAP_ENTRY));
-         m_functionID.put(Keywords.FUNC_MAP_FOREACH,
+         m_functionId.put(Keywords.FUNC_MAP_FOREACH,
                          new Integer(FunctionTable.FUNC_MAP_FOREACH));
-         m_functionID.put(Keywords.FUNC_MAP_REMOVE,
+         m_functionId.put(Keywords.FUNC_MAP_REMOVE,
                          new Integer(FunctionTable.FUNC_MAP_REMOVE));
          
          // XPath 3.1 functions configurations for the array functions 
          // namespace http://www.w3.org/2005/xpath-functions/array
-         m_functionID.put(Keywords.FUNC_ARRAY_SIZE,
+         m_functionId.put(Keywords.FUNC_ARRAY_SIZE,
                           new Integer(FunctionTable.FUNC_ARRAY_SIZE));
-         m_functionID.put(Keywords.FUNC_ARRAY_GET,
+         m_functionId.put(Keywords.FUNC_ARRAY_GET,
                           new Integer(FunctionTable.FUNC_ARRAY_GET));
-         m_functionID.put(Keywords.FUNC_ARRAY_PUT,
+         m_functionId.put(Keywords.FUNC_ARRAY_PUT,
                           new Integer(FunctionTable.FUNC_ARRAY_PUT));
-         m_functionID.put(Keywords.FUNC_ARRAY_APPEND,
+         m_functionId.put(Keywords.FUNC_ARRAY_APPEND,
                           new Integer(FunctionTable.FUNC_ARRAY_APPEND));
-         m_functionID.put(Keywords.FUNC_ARRAY_SUBARRAY,
+         m_functionId.put(Keywords.FUNC_ARRAY_SUBARRAY,
                           new Integer(FunctionTable.FUNC_ARRAY_SUBARRAY));
-         m_functionID.put(Keywords.FUNC_ARRAY_REMOVE,
+         m_functionId.put(Keywords.FUNC_ARRAY_REMOVE,
                           new Integer(FunctionTable.FUNC_ARRAY_REMOVE));
-         m_functionID.put(Keywords.FUNC_ARRAY_INSERT_BEFORE,
+         m_functionId.put(Keywords.FUNC_ARRAY_INSERT_BEFORE,
                           new Integer(FunctionTable.FUNC_ARRAY_INSERT_BEFORE));
-         m_functionID.put(Keywords.FUNC_ARRAY_HEAD,
+         m_functionId.put(Keywords.FUNC_ARRAY_HEAD,
                           new Integer(FunctionTable.FUNC_ARRAY_HEAD));
-         m_functionID.put(Keywords.FUNC_ARRAY_TAIL,
+         m_functionId.put(Keywords.FUNC_ARRAY_TAIL,
                           new Integer(FunctionTable.FUNC_ARRAY_TAIL));
-         m_functionID.put(Keywords.FUNC_ARRAY_REVERSE,
+         m_functionId.put(Keywords.FUNC_ARRAY_REVERSE,
                           new Integer(FunctionTable.FUNC_ARRAY_REVERSE));
-         m_functionID.put(Keywords.FUNC_ARRAY_JOIN,
+         m_functionId.put(Keywords.FUNC_ARRAY_JOIN,
                           new Integer(FunctionTable.FUNC_ARRAY_JOIN));
-         m_functionID.put(Keywords.FUNC_ARRAY_FILTER,
+         m_functionId.put(Keywords.FUNC_ARRAY_FILTER,
                           new Integer(FunctionTable.FUNC_ARRAY_FILTER));
-         m_functionID.put(Keywords.FUNC_ARRAY_FOR_EACH_PAIR,
+         m_functionId.put(Keywords.FUNC_ARRAY_FOR_EACH_PAIR,
                           new Integer(FunctionTable.FUNC_ARRAY_FOR_EACH_PAIR));
-         m_functionID.put(Keywords.FUNC_ARRAY_FOLD_LEFT,
+         m_functionId.put(Keywords.FUNC_ARRAY_FOLD_LEFT,
                           new Integer(FunctionTable.FUNC_ARRAY_FOLD_LEFT));
-         m_functionID.put(Keywords.FUNC_ARRAY_FOLD_RIGHT,
+         m_functionId.put(Keywords.FUNC_ARRAY_FOLD_RIGHT,
                           new Integer(FunctionTable.FUNC_ARRAY_FOLD_RIGHT));
-         m_functionID.put(Keywords.FUNC_ARRAY_SORT,
+         m_functionId.put(Keywords.FUNC_ARRAY_SORT,
                           new Integer(FunctionTable.FUNC_ARRAY_SORT));
          
-         m_functionID.put(Keywords.FUNC_NAME_STRING,
+         m_functionId.put(Keywords.FUNC_NAME_STRING,
                           new Integer(FunctionTable.FUNC_NAME));
          
-         m_functionID.put(Keywords.FUNC_RESOLVE_QNAME,
+         m_functionId.put(Keywords.FUNC_RESOLVE_QNAME,
                           new Integer(FunctionTable.FUNC_RESOLVE_QNAME));
-         m_functionID.put(Keywords.FUNC_QNAME,
+         m_functionId.put(Keywords.FUNC_QNAME,
                           new Integer(FunctionTable.FUNC_QNAME));
-         m_functionID.put(Keywords.FUNC_PREFIX_FROM_QNAME,
+         m_functionId.put(Keywords.FUNC_PREFIX_FROM_QNAME,
                           new Integer(FunctionTable.FUNC_PREFIX_FROM_QNAME));
-         m_functionID.put(Keywords.FUNC_LOCAL_NAME_FROM_QNAME,
+         m_functionId.put(Keywords.FUNC_LOCAL_NAME_FROM_QNAME,
                           new Integer(FunctionTable.FUNC_LOCAL_NAME_FROM_QNAME));
-         m_functionID.put(Keywords.FUNC_NAMESPACE_URI_FROM_QNAME,
+         m_functionId.put(Keywords.FUNC_NAMESPACE_URI_FROM_QNAME,
                           new Integer(FunctionTable.FUNC_NAMESPACE_URI_FROM_QNAME));
-         m_functionID.put(Keywords.FUNC_NAMESPACE_URI_FOR_PREFIX,
+         m_functionId.put(Keywords.FUNC_NAMESPACE_URI_FOR_PREFIX,
                           new Integer(FunctionTable.FUNC_NAMESPACE_URI_FOR_PREFIX));
-         m_functionID.put(Keywords.FUNC_IN_SCOPE_PREFIXES,
+         m_functionId.put(Keywords.FUNC_IN_SCOPE_PREFIXES,
                           new Integer(FunctionTable.FUNC_IN_SCOPE_PREFIXES));
          
-         m_functionID.put(Keywords.FUNC_PARSE_JSON,
+         m_functionId.put(Keywords.FUNC_PARSE_JSON,
                           new Integer(FunctionTable.FUNC_PARSE_JSON));
-         m_functionID.put(Keywords.FUNC_JSON_DOC,
+         m_functionId.put(Keywords.FUNC_JSON_DOC,
                           new Integer(FunctionTable.FUNC_JSON_DOC));
-         m_functionID.put(Keywords.FUNC_JSON_TO_XML,
+         m_functionId.put(Keywords.FUNC_JSON_TO_XML,
                           new Integer(FunctionTable.FUNC_JSON_TO_XML));
-         m_functionID.put(Keywords.FUNC_XML_TO_JSON,
+         m_functionId.put(Keywords.FUNC_XML_TO_JSON,
                           new Integer(FunctionTable.FUNC_XML_TO_JSON));
   }
   
@@ -1255,7 +1255,7 @@ public class FunctionTable
    * @throws javax.xml.transform.TransformerException if ClassNotFoundException, 
    *    IllegalAccessException, or InstantiationException is thrown.
    */
-  Function getFunction(int which)
+  public Function getFunction(int which)
           throws javax.xml.transform.TransformerException
   {
           try{
@@ -1272,17 +1272,238 @@ public class FunctionTable
   }
   
   /**
-   * Obtain a function ID from a given function name
+   * Obtain a function id from a given function name
    * @param key the function name in a java.lang.String format.
-   * @return a function ID, which may correspond to one of the FUNC_XXX values
+   * @return a function id, which may correspond to one of the FUNC_XXX values
    * found in {@link org.apache.xpath.compiler.FunctionTable}, but may be a 
    * value installed by an external module.
    */
-  Object getFunctionID(String key){
-          Object id = m_functionID_customer.get(key);
-          if (null == id) id = m_functionID.get(key);
-          return id;
+  public Object getFunctionId(String funcName){
+	  Object id = m_functionId_customer.get(funcName);
+	  if (null == id) id = m_functionId.get(funcName);
+	  return id;
   }
+  
+  /**
+   * Obtain a function id from a given function name, for XPath built-in 
+   * functions from namespace http://www.w3.org/2005/xpath-functions.
+   * This method serves a different purpose than the method, 'getFunctionID'.   
+   */
+  public Object getFunctionIdForXPathBuiltinFuncs(String funcName) {
+	  
+	    Object id = null;
+		
+		switch (funcName) {
+		      case "contains":
+			     id = FunctionTable.FUNC_CONTAINS;
+			     break;
+		      case "remove":
+			     id = FunctionTable.FUNC_REMOVE;
+			     break;		      
+		      case "insert-before":
+			     id = FunctionTable.FUNC_INSERT_BEFORE;
+			     break;
+		      case "head":
+			     id = FunctionTable.FUNC_HEAD;
+			     break;
+		      case "tail":
+			     id = FunctionTable.FUNC_TAIL;
+			     break;
+		      case "reverse":
+				 id = FunctionTable.FUNC_REVERSE;
+				 break;
+		      case "for-each":
+				 id = FunctionTable.FUNC_FOR_EACH;
+				 break;
+		      case "filter":
+				 id = FunctionTable.FUNC_FILTER;
+				 break;
+		      case "for-each-pair":
+				 id = FunctionTable.FUNC_FOR_EACH_PAIR;
+				 break;
+		      case "fold-left":
+				 id = FunctionTable.FUNC_FOLD_LEFT;
+				 break;
+		      case "fold-right":
+			     id = FunctionTable.FUNC_FOLD_RIGHT;
+			     break;
+		      case "sort":
+				 id = FunctionTable.FUNC_SORT;
+				 break;
+			  default:
+				 id = getFunctionId(funcName); 
+		}
+		
+		return id;	
+  }
+  
+  /**
+   * Obtain a function id from a given function name, for XPath built-in 
+   * functions from namespace http://www.w3.org/2005/xpath-functions/math.   
+   */
+  public Object getFunctionIdForXPathBuiltinMathFuncs(String funcName) {	    
+	    
+	    Object id = null;
+		
+		switch (funcName) {
+		      case Keywords.FUNC_MATH_ACOS:
+		        id = FunctionTable.FUNC_MATH_ACOS;
+		        break;
+		      case Keywords.FUNC_MATH_ASIN:
+			     id = FunctionTable.FUNC_MATH_ASIN;
+			     break;
+		      case Keywords.FUNC_MATH_ATAN:
+				 id = FunctionTable.FUNC_MATH_ATAN;
+				 break;
+		      case Keywords.FUNC_MATH_ATAN2:
+				 id = FunctionTable.FUNC_MATH_ATAN2;
+				 break;
+		      case Keywords.FUNC_MATH_COS:
+			     id = FunctionTable.FUNC_MATH_COS;
+			     break;
+		      case Keywords.FUNC_MATH_EXP:
+			     id = FunctionTable.FUNC_MATH_EXP;
+			     break;		      		      
+		      case Keywords.FUNC_MATH_EXP10:
+			     id = FunctionTable.FUNC_MATH_EXP10;
+			     break;
+		      case Keywords.FUNC_MATH_LOG:
+				 id = FunctionTable.FUNC_MATH_LOG;
+				 break;
+		      case Keywords.FUNC_MATH_LOG10:
+			     id = FunctionTable.FUNC_MATH_LOG10;
+			     break;
+		      case Keywords.FUNC_MATH_PI:
+				 id = FunctionTable.FUNC_MATH_PI;
+				 break;
+		      case Keywords.FUNC_MATH_POW:
+			     id = FunctionTable.FUNC_MATH_POW;
+				 break;
+		      case Keywords.FUNC_MATH_SIN:
+				 id = FunctionTable.FUNC_MATH_SIN;
+				 break;
+		      case Keywords.FUNC_MATH_SQRT:
+				 id = FunctionTable.FUNC_MATH_SQRT;
+				 break;
+		      case Keywords.FUNC_MATH_TAN:
+				 id = FunctionTable.FUNC_MATH_TAN;
+				 break;
+			  default:
+				 // NO OP 
+		}
+		
+		return id; 
+  }
+  
+  /**
+   * Obtain a function id from a given function name, for XPath built-in 
+   * functions from namespace http://www.w3.org/2005/xpath-functions/map.   
+   */
+  public Object getFunctionIdForXPathBuiltinMapFuncs(String funcName) {		
+		
+	    Object id = null;
+		
+		switch (funcName) {
+		      case Keywords.FUNC_MAP_MERGE:
+		        id = FunctionTable.FUNC_MAP_MERGE;
+		        break;
+		      case Keywords.FUNC_MAP_SIZE:
+			     id = FunctionTable.FUNC_MAP_SIZE;
+			     break;
+		      case Keywords.FUNC_MAP_KEYS:
+				 id = FunctionTable.FUNC_MAP_KEYS;
+				 break;
+		      case Keywords.FUNC_MAP_CONTAINS:
+				 id = FunctionTable.FUNC_MAP_CONTAINS;
+				 break;
+		      case Keywords.FUNC_MAP_GET:
+			     id = FunctionTable.FUNC_MAP_GET;
+			     break;
+		      case Keywords.FUNC_MAP_PUT:
+			     id = FunctionTable.FUNC_MAP_PUT;
+			     break;		      		      
+		      case Keywords.FUNC_MAP_ENTRY:
+			     id = FunctionTable.FUNC_MAP_ENTRY;
+			     break;
+		      case Keywords.FUNC_MAP_REMOVE:
+				 id = FunctionTable.FUNC_MAP_REMOVE;
+				 break;
+		      case Keywords.FUNC_MAP_FOREACH:
+			     id = FunctionTable.FUNC_MAP_FOREACH;
+			     break;
+			  default:
+				 // NO OP 
+		}
+		
+		return id;	
+  }
+  
+  /**
+   * Obtain a function id from a given function name, for XPath built-in 
+   * functions from namespace http://www.w3.org/2005/xpath-functions/array.   
+   */
+  public Object getFunctionIdForXPathBuiltinArrayFuncs(String funcName) {	  
+		
+	    Object id = null;
+		
+		switch (funcName) {
+		      case Keywords.FUNC_ARRAY_SIZE:
+			     id = FunctionTable.FUNC_ARRAY_SIZE;
+			     break;
+		      case Keywords.FUNC_ARRAY_GET:
+			     id = FunctionTable.FUNC_ARRAY_GET;
+			     break;
+		      case Keywords.FUNC_ARRAY_PUT:
+			     id = FunctionTable.FUNC_ARRAY_PUT;
+			     break;
+		      case Keywords.FUNC_ARRAY_APPEND:
+			     id = FunctionTable.FUNC_ARRAY_APPEND;
+			     break;
+		      case Keywords.FUNC_ARRAY_SUBARRAY:
+			     id = FunctionTable.FUNC_ARRAY_SUBARRAY;
+			     break;
+		      case Keywords.FUNC_ARRAY_REMOVE:
+			     id = FunctionTable.FUNC_ARRAY_REMOVE;
+			     break;
+		      case Keywords.FUNC_ARRAY_INSERT_BEFORE:
+			     id = FunctionTable.FUNC_ARRAY_INSERT_BEFORE;
+			     break;
+		      case Keywords.FUNC_ARRAY_HEAD:
+			     id = FunctionTable.FUNC_ARRAY_HEAD;
+			     break;
+		      case Keywords.FUNC_ARRAY_TAIL:
+			     id = FunctionTable.FUNC_ARRAY_TAIL;
+			     break;
+		      case Keywords.FUNC_ARRAY_REVERSE:
+				 id = FunctionTable.FUNC_ARRAY_REVERSE;
+				 break;
+		      case Keywords.FUNC_ARRAY_JOIN:
+			     id = FunctionTable.FUNC_ARRAY_JOIN;
+				 break;
+		      case Keywords.FUNC_ARRAY_FOR_EACH:
+				 id = FunctionTable.FUNC_ARRAY_FOR_EACH;
+				 break;
+		      case Keywords.FUNC_ARRAY_FILTER:
+			     id = FunctionTable.FUNC_ARRAY_FILTER;
+			     break;
+		      case Keywords.FUNC_ARRAY_FOR_EACH_PAIR:
+			     id = FunctionTable.FUNC_ARRAY_FOR_EACH_PAIR;
+				 break;
+		      case Keywords.FUNC_ARRAY_FOLD_LEFT:
+				 id = FunctionTable.FUNC_ARRAY_FOLD_LEFT;
+			     break;
+		      case Keywords.FUNC_ARRAY_FOLD_RIGHT:
+			     id = FunctionTable.FUNC_ARRAY_FOLD_RIGHT;
+				 break;
+		      case Keywords.FUNC_ARRAY_SORT:
+				 id = FunctionTable.FUNC_ARRAY_SORT;
+			     break;
+			  default:
+				 // NO OP 
+		}
+		
+		return id;		
+   }
   
   /**
    * Install a built-in function.
@@ -1294,7 +1515,7 @@ public class FunctionTable
   {
 
     int funcIndex;
-    Object funcIndexObj = getFunctionID(name);
+    Object funcIndexObj = getFunctionId(name);
 
     if (null != funcIndexObj)
     {
@@ -1302,7 +1523,7 @@ public class FunctionTable
       
       if (funcIndex < NUM_BUILT_IN_FUNCS){
               funcIndex = m_funcNextFreeIndex++;
-              m_functionID_customer.put(name, new Integer(funcIndex)); 
+              m_functionId_customer.put(name, new Integer(funcIndex)); 
       }
       m_functions_customer[funcIndex - NUM_BUILT_IN_FUNCS] = func;          
     }
@@ -1312,7 +1533,7 @@ public class FunctionTable
                           
             m_functions_customer[funcIndex-NUM_BUILT_IN_FUNCS] = func;
                     
-            m_functionID_customer.put(name, 
+            m_functionId_customer.put(name, 
                 new Integer(funcIndex));   
     }
     return funcIndex;
@@ -1327,10 +1548,10 @@ public class FunctionTable
    */
   public boolean functionAvailable(String methName)
   {
-      Object tblEntry = m_functionID.get(methName);
+      Object tblEntry = m_functionId.get(methName);
       if (null != tblEntry) return true;
       else{
-              tblEntry = m_functionID_customer.get(methName);
+              tblEntry = m_functionId_customer.get(methName);
               return (null != tblEntry)? true : false;
       }
   }

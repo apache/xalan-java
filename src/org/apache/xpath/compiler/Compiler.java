@@ -36,8 +36,8 @@ import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.axes.UnionPathIterator;
 import org.apache.xpath.axes.WalkerFactory;
-import org.apache.xpath.compiler.XPathParserImpl.XPathArrayConsFuncArgs;
-import org.apache.xpath.compiler.XPathParserImpl.XPathSequenceConsFuncArgs;
+import org.apache.xpath.compiler.XPathParser.XPathArrayConsFuncArgs;
+import org.apache.xpath.compiler.XPathParser.XPathSequenceConsFuncArgs;
 import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.FuncExtFunction;
@@ -269,6 +269,8 @@ public class Compiler extends OpMap
       expr = matchPattern(opPos + 2); break;
     case OpCodes.OP_LOCATIONPATHPATTERN :
       expr = locationPathPattern(opPos); break;
+    case OpCodes.OP_NAMED_FUNCTION_REFERENCE :
+      expr = namedFunctionReference(opPos); break;	
     case OpCodes.OP_QUO:
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE,
             new Object[]{ "quo" });  //"ERROR! Unknown op code: "+m_opMap[opPos]);
@@ -565,7 +567,7 @@ public class Compiler extends OpMap
    */
   Expression sequenceTypeExpr(int opPos) throws TransformerException
   {
-      return XPathParserImpl.fXPathSequenceTypeExpr;
+      return XPathParser.m_xpathSequenceTypeExpr;
   }
   
   /**
@@ -1052,6 +1054,15 @@ public class Compiler extends OpMap
 
     return stepPattern(opPos, 0, null);
   }
+  
+  /**
+   * Compile an XPath 'named function reference' expression.
+   * 
+   * Ref : https://www.w3.org/TR/xpath-31/#id-named-function-ref
+   */
+  public Expression namedFunctionReference(int opPos) {
+	return XPathParser.m_xpathNamedFunctionReference;  
+  }
 
   /**
    * Get a {@link org.w3c.dom.traversal.NodeFilter} bit set that tells what 
@@ -1416,7 +1427,7 @@ private static final boolean DEBUG = false;
    */
   Expression compileInlineFunctionDefinition(int opPos) throws TransformerException
   {
-      return XPathParserImpl.fInlineFunction;
+      return XPathParser.m_xpath_inlineFunction;
   }
   
   /**
@@ -1434,7 +1445,7 @@ private static final boolean DEBUG = false;
    */
   Expression compileDynamicFunctionCall(int opPos) throws TransformerException
   {
-      return XPathParserImpl.fDynamicFunctionCall;
+      return XPathParser.m_dynamicFunctionCall;
   }
   
   /**
@@ -1451,7 +1462,7 @@ private static final boolean DEBUG = false;
    */
   Expression forExpr(int opPos) throws TransformerException
   {
-      return XPathParserImpl.fForExpr;
+      return XPathParser.m_forExpr;
   }
   
   /**
@@ -1468,7 +1479,7 @@ private static final boolean DEBUG = false;
    */
   Expression letExpr(int opPos) throws TransformerException
   {
-      return XPathParserImpl.fLetExpr;
+      return XPathParser.m_letExpr;
   }
   
   /**
@@ -1486,7 +1497,7 @@ private static final boolean DEBUG = false;
    */
   Expression quantifiedExpr(int opPos) throws TransformerException
   {
-      return XPathParserImpl.fQuantifiedExpr;
+      return XPathParser.m_quantifiedExpr;
   }
   
   /**
@@ -1503,7 +1514,7 @@ private static final boolean DEBUG = false;
    */
   Expression ifExpr(int opPos) throws TransformerException
   {
-      return XPathParserImpl.fIfExpr;
+      return XPathParser.m_ifExpr;
   }
   
   /**
@@ -1513,14 +1524,14 @@ private static final boolean DEBUG = false;
   {	  
       Expression xpathSequenceCons = null;
 	  
-	  if (XPathParserImpl.fXPathSequenceConstructor != null) {
-		 xpathSequenceCons = XPathParserImpl.fXPathSequenceConstructor;
-		 XPathParserImpl.fXPathSequenceConstructor = null;
+	  if (XPathParser.m_xpathSequenceConstructor != null) {
+		 xpathSequenceCons = XPathParser.m_xpathSequenceConstructor;
+		 XPathParser.m_xpathSequenceConstructor = null;
 	  }
 	  else {
 		 // We use an implementation within this 'else' branch, when XPath
 		 // built-in function call arguments are literal sequence expressions.
-		 XPathSequenceConsFuncArgs xpathSeqConsFuncArgs = XPathParserImpl.fXPathSequenceConsFuncArgs;
+		 XPathSequenceConsFuncArgs xpathSeqConsFuncArgs = XPathParser.m_xpathSequenceConsFuncArgs;
 		 
 		 List<XPathSequenceConstructor> seqConsList = xpathSeqConsFuncArgs.getSeqFuncArgList();		 
 		 List<Boolean> funcArgUsedList = xpathSeqConsFuncArgs.getIsFuncArgUsedList();		 
@@ -1544,14 +1555,14 @@ private static final boolean DEBUG = false;
   {
 	  Expression xpathArrayCons = null;
 	  
-	  if (XPathParserImpl.fXPathArrayConstructor != null) {
-		 xpathArrayCons = XPathParserImpl.fXPathArrayConstructor;
-		 XPathParserImpl.fXPathArrayConstructor = null;
+	  if (XPathParser.m_xpathArrayConstructor != null) {
+		 xpathArrayCons = XPathParser.m_xpathArrayConstructor;
+		 XPathParser.m_xpathArrayConstructor = null;
 	  }
 	  else {
 		 // We use an implementation within this 'else' branch, when XPath
 		 // built-in function call arguments are literal array expressions.
-		 XPathArrayConsFuncArgs xpathArrayConsFuncArgs = XPathParserImpl.fXPathArrayConsFuncArgs;
+		 XPathArrayConsFuncArgs xpathArrayConsFuncArgs = XPathParser.m_xpathArrayConsFuncArgs;
 		 
 		 List<XPathArrayConstructor> arrayConsList = xpathArrayConsFuncArgs.getArrayFuncArgList();		 
 		 List<Boolean> funcArgUsedArr = xpathArrayConsFuncArgs.getIsFuncArgUsedArr();		 
@@ -1573,7 +1584,7 @@ private static final boolean DEBUG = false;
    */
   Expression mapConstructorExpr(int opPos) throws TransformerException
   {
-	  return XPathParserImpl.fXPathMapConstructor; 
+	  return XPathParser.m_xpathMapConstructor; 
   }
 
   // The current id for extension functions.

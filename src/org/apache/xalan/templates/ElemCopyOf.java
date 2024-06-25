@@ -36,7 +36,7 @@ import org.apache.xml.dtm.ref.DTMTreeWalker;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.InlineFunction;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNodeSet;
@@ -243,7 +243,7 @@ public class ElemCopyOf extends ElemTemplateElement
                 throw new TransformerException("XTDE0450 : Cannot add a map to an xdm node tree, "
                                                                              + "via xsl:copy-of instruction.", srcLocator);
             }
-            else if (value instanceof InlineFunction) {
+            else if (value instanceof XPathInlineFunction) {
                 throw new TransformerException("XTDE0450 : Cannot add a function item to an xdm node tree, "
                                                                              + "via xsl:copy-of instruction.", srcLocator);
             }

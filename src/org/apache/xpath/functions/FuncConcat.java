@@ -23,6 +23,7 @@ package org.apache.xpath.functions;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
@@ -30,6 +31,8 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XString;
 
 import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSUntyped;
+import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
  * Execute the concat() function.
@@ -105,27 +108,27 @@ public class FuncConcat extends FunctionMultiArgs
   private String inspectXPathSelfAxesExpression(Expression expr, XPathContext xctxt) 
                                                                    throws TransformerException {
       String resultStr = null;
-      
-      XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
+            
       if (expr instanceof SelfIteratorNoPredicate) {
+    	  XObject xpath3ContextItem = xctxt.getXPath3ContextItem();    	  
           if (xpath3ContextItem != null) {
-              resultStr = xpath3ContextItem.str();
+        	  resultStr = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem);
           }
           else {
-              resultStr = expr.execute(xctxt).str();   
+        	  XObject xObj = expr.execute(xctxt);
+        	  resultStr = XslTransformEvaluationHelper.getStrVal(xObj);   
           }
       }
       else if (expr instanceof Function) {
           XObject evalResult = ((Function)expr).execute(xctxt);
-          if (evalResult instanceof XSAnyType) {
-              resultStr = ((XSAnyType)evalResult).stringValue();    
-          }
-          else {
-              resultStr = evalResult.str();  
-          }
+          resultStr = XslTransformEvaluationHelper.getStrVal(evalResult);
+      }
+      else if (expr instanceof XSUntyped || expr instanceof XSUntypedAtomic) {
+          resultStr = ((XSAnyType)expr).stringValue();
       }
       else {
-          resultStr = expr.execute(xctxt).str();
+    	  XObject xObj = expr.execute(xctxt);
+    	  resultStr = XslTransformEvaluationHelper.getStrVal(xObj);
       }
       
       return resultStr;      

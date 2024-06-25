@@ -39,7 +39,7 @@ import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.FunctionTable;
-import org.apache.xpath.compiler.XPathParserImpl;
+import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
@@ -185,7 +185,7 @@ public class XPath implements Serializable, ExpressionOwner
     
     m_patternString = exprString;
 
-    XPathParserImpl parser = new XPathParserImpl(errorListener, locator);
+    XPathParser parser = new XPathParser(errorListener, locator);
     Compiler compiler = new Compiler(errorListener, locator, m_funcTable);    
     
     if (SELECT == type) {
@@ -237,7 +237,7 @@ public class XPath implements Serializable, ExpressionOwner
     
     m_patternString = exprString;
 
-    XPathParserImpl parser = new XPathParserImpl(errorListener, locator);
+    XPathParser parser = new XPathParser(errorListener, locator);
     Compiler compiler = new Compiler(errorListener, locator, m_funcTable);    
     
     if (SELECT == type) {
@@ -302,7 +302,7 @@ public class XPath implements Serializable, ExpressionOwner
       
       m_patternString = exprString;
 
-      XPathParserImpl parser = new XPathParserImpl(errorListener, locator);
+      XPathParser parser = new XPathParser(errorListener, locator);
       Compiler compiler = new Compiler(errorListener, locator, m_funcTable);
 
       if (SELECT == type)
