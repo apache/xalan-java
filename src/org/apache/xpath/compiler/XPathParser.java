@@ -3166,7 +3166,8 @@ public class XPathParser
     if (tokenIs('(')) {
     	// XPath literal sequence as, function argument.
     	// XPath 3.1 spec : 3.4.1 Constructing Sequences    	
-    	int prevQueueMark = m_queueMark;    	
+    	TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
+    			                                                           m_queueMark, m_tokenChar, m_token);
     	if (lookahead(')', 1)) {
 	        // an XPath function argument is () (i.e, an empty sequence)	        
 	        consumeExpected('(');
@@ -3192,7 +3193,18 @@ public class XPathParser
 	 	    		
 	       List<String> seqConstructorXPathParts = new ArrayList<String>();
 	       parseSequenceOrArrayConstructorFuncArg(seqConstructorXPathParts, '(', ')');
-	       consumeExpected(')'); 
+	       if (tokenIs(')')) {
+	          consumeExpected(')');
+	       }
+	       else {	    	  
+	    	  restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+	    	  
+	    	  Expr();
+	    	  
+	    	  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH, 
+                                                     m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+	    	  return;
+	       }
 	            
 	       if (seqConstructorXPathParts.size() > 1) {
 	          insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
@@ -3208,8 +3220,8 @@ public class XPathParser
 	                                                 m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);	          
 	       }
 	       else {
-	          m_queueMark = prevQueueMark;
-	          m_tokenChar = '(';
+	    	  restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+	    	  
 	          Expr();
 	       }
     	}
@@ -3262,8 +3274,8 @@ public class XPathParser
   	   mapFuncArg();	
     }
     else if (lookahead(':', 1)) {
-    	int queueMark = m_queueMark;
-    	char tokenChar = m_tokenChar;
+    	TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
+                                                                                 m_queueMark, m_tokenChar, m_token);
     	// Parse named function reference, for built-in functions
     	// Ref : XPath 3.1 spec, "3.1.6 Named Function References"
     	if (tokenIs(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI) || tokenIs(FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI) ||
@@ -3292,8 +3304,8 @@ public class XPathParser
 				}
     		}
     		else {
-    			m_queueMark = queueMark;
-    			m_tokenChar = tokenChar;
+    			restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+    			
     			ExprSingle();
     		}
     	}
@@ -3304,8 +3316,8 @@ public class XPathParser
     else if (!m_token.contains(":") && m_token.contains("#") && isFuncArityWellFormedForNamedFuncRef(m_token)) {
     	// Parse named function reference, for built-in functions
     	// Ref : XPath 3.1 spec, "3.1.6 Named Function References"
-    	int queueMark = m_queueMark;
-    	char tokenChar = m_tokenChar;
+    	TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
+                                                                                  m_queueMark, m_tokenChar, m_token);
     	String funcName = m_token.substring(0, m_token.indexOf('#'));
 		int funcTok = getFunctionToken(funcName, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
 		if (funcTok >= 0) {
@@ -3323,8 +3335,8 @@ public class XPathParser
 					                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
 		}
 		else {
-			m_queueMark = queueMark;
-			m_tokenChar = tokenChar;
+			restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+			
 			ExprSingle();
 		}
     }
@@ -3336,7 +3348,7 @@ public class XPathParser
                                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
     
   }
-  
+
   /**
    * This method is used to parse any of the following XPath literals : 
    * 'sequence constructor', 'square array constructor', 'curly array 
@@ -5157,6 +5169,68 @@ public class XPathParser
   
    public String getArrowOpRemainingXPathExprStr() {
 	   return m_arrowOpRemainingXPathExprStr; 
+   }
+   
+   /**
+    * Sometimes, during an XPath expression parse, the current parse
+    * attempt having occurred upto a point in token queue, needs to be 
+    * discarded and another parse choice has to be explored.
+    * 
+    * This class, saves information about a previous XPath parse 
+    * position.
+    * 
+    * Mukul Gandhi <mukulg@apache.org>
+    */
+   class TokenQueueScanPosition {
+	   
+	  private int queueMark;
+	  
+	  private char tokenChar;
+	  
+	  private String token;
+	  
+	  /**
+	   * Class constructor.
+	   */
+	  public TokenQueueScanPosition(int queueMark, char tokenChar, 
+			                        String token) {
+		 this.queueMark = queueMark;
+		 this.tokenChar = tokenChar;
+		 this.token = token;
+	  }
+
+	  public int getQueueMark() {
+		 return queueMark;
+	  }
+
+	  public void setQueueMark(int queueMark) {
+		 this.queueMark = queueMark;
+	  }
+
+	  public char getTokenChar() {
+		 return tokenChar;
+	  }
+
+	  public void setTokenChar(char tokenChar) {
+		 this.tokenChar = tokenChar;
+	  }
+
+	  public String getToken() {
+		 return token;
+	  }
+
+	  public void setToken(String token) {
+		 this.token = token;
+	  }
+   }
+   
+   /**
+    * Restore XPath parse position to, a particular previous saved state.
+    */
+   private void restoreTokenQueueScanPosition(TokenQueueScanPosition tokQueueScanPosition) {
+	  m_queueMark = tokQueueScanPosition.getQueueMark();
+	  m_tokenChar = tokQueueScanPosition.getTokenChar();
+	  m_token = tokQueueScanPosition.getToken();	
    }
   
 }

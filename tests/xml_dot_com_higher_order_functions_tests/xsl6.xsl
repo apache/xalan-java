@@ -28,8 +28,7 @@
     -->
     <xsl:function name="fn1:degreeCelsiusToFahrenheit" as="xs:double">
        <xsl:param name="c1" as="xs:double"/>
-       <xsl:variable name="formula1" select="($c1 * (9 div 5)) + 32"/>
-       <xsl:sequence select="round($formula1, 2)"/>
+       <xsl:sequence select="round(($c1 * (9 div 5)) + 32, 2)"/>
     </xsl:function>
     
     <!--
