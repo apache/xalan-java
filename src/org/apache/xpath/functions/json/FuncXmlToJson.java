@@ -257,14 +257,14 @@ public class FuncXmlToJson extends FunctionMultiArgs
         short nodeType = node.getNodeType();
         
         if (nodeType == Node.ELEMENT_NODE) {
-           String elemName = node.getNodeName();
+           String elemName = node.getLocalName();
            if (XSLJsonConstants.MAP.equals(elemName)) {
         	  JSONObject jsonObj = new JSONObject(); 
         	  NodeList nodeList = node.getChildNodes();
         	  for (int idx = 0; idx < nodeList.getLength(); idx++) {
         		 Node node1 = nodeList.item(idx);
          		 if (node1.getNodeType() == Node.ELEMENT_NODE) {
-         			String nodeName = node1.getNodeName();
+         			String nodeName = node1.getLocalName();
          			if (XSLJsonConstants.MAP.equals(nodeName) || XSLJsonConstants.ARRAY.equals(nodeName)) {
          			   // Recursive call to this function
          			   Object result1 = getJsonFromXmlNode(node1, jsonObj);
@@ -313,7 +313,7 @@ public class FuncXmlToJson extends FunctionMultiArgs
         	  for (int idx = 0; idx < nodeList.getLength(); idx++) {
         		 Node node1 = nodeList.item(idx);
         		 if (node1.getNodeType() == Node.ELEMENT_NODE) {
-        			String nodeName = node1.getNodeName();
+        			String nodeName = node1.getLocalName();
         			if (XSLJsonConstants.MAP.equals(nodeName) || XSLJsonConstants.ARRAY.equals(nodeName)) {
         			   // Recursive call to this function
         			   Object result1 = getJsonFromXmlNode(node1, jsonArr);
