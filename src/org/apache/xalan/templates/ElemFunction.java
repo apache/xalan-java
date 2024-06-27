@@ -56,6 +56,7 @@ import xml.xpath31.processor.types.XSInt;
 import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSLong;
 import xml.xpath31.processor.types.XSString;
+import xml.xpath31.processor.types.XSTime;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
@@ -417,8 +418,8 @@ public class ElemFunction extends ElemTemplate
   }
   
   /**
-   * Given XalanJ's integer code value of, an XML Schema built-in data type and a 
-   * string representation of a data value, construct XalanJ's typed data object 
+   * Given Xalan-J's integer code value of, an XML Schema built-in data type and a 
+   * string representation of a data value, construct Xalan-J's typed data object 
    * corresponding to the data type's integer code value. 
    */
   private XObject getXSTypedAtomicValue(String strVal, int sequenceType) throws TransformerException {
@@ -439,7 +440,7 @@ public class ElemFunction extends ElemTemplate
          result = XSDateTime.parseDateTime(strVal);
       }
       else if (sequenceType == SequenceTypeSupport.XS_TIME) {
-         // TO DO
+    	 result = XSTime.parseTime(strVal);
       }
       else if (sequenceType == SequenceTypeSupport.XS_DURATION) {
          result = XSDuration.parseDuration(strVal);
@@ -467,6 +468,9 @@ public class ElemFunction extends ElemTemplate
       }
       else if (sequenceType == SequenceTypeSupport.XS_FLOAT) {
          result = new XSFloat(strVal); 
+      }
+      else {
+    	 result = new XSString(strVal); 
       }
      
       return result;

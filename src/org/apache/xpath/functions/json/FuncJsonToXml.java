@@ -227,9 +227,6 @@ public class FuncJsonToXml extends FunctionMultiArgs
         Document document = dBuilder.newDocument();
         
         constructXmlDom(jsonObj, document, document, null);
-        
-        Element docElem = document.getDocumentElement();
-        docElem.setAttribute("xmlns", FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
          
         DTMManager dtmMgr = xctxt.getDTMManager();             
         DTM dtm = dtmMgr.getDTM(new DOMSource(document), true, null, false, false);            
@@ -256,9 +253,8 @@ public class FuncJsonToXml extends FunctionMultiArgs
     private void constructXmlDom(Object jsonObj, Document document, Node parentNode, String keyVal) {
     	
     	if (jsonObj instanceof JSONObject) {
-    		Element mapElem = document.createElement(XSLJsonConstants.MAP);
-    		parentNode.appendChild(mapElem);
-    		
+    		Element mapElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.MAP);
+    		parentNode.appendChild(mapElem);    		
     		if (keyVal != null) {
     		   mapElem.setAttribute(XSLJsonConstants.KEY, keyVal);	
     		}
@@ -268,28 +264,28 @@ public class FuncJsonToXml extends FunctionMultiArgs
 	      	   String key = jsonKeys.next();
 	      	   Object value = ((JSONObject)jsonObj).get(key);        	  
 	      	   if (value instanceof String) {
-	      		 Element strElem = document.createElement(XSLJsonConstants.STRING);
+	      		 Element strElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.STRING);
 	      		 strElem.setAttribute(XSLJsonConstants.KEY, key);
 	      		 Text text = document.createTextNode((String)value);
 	      		 strElem.appendChild(text);
 	      		 mapElem.appendChild(strElem);
 	      	   }
 	      	   else if (value instanceof Number) {
-	      		 Element numberElem = document.createElement(XSLJsonConstants.NUMBER);
+	      		 Element numberElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.NUMBER);
 	      		 numberElem.setAttribute(XSLJsonConstants.KEY, key);
 	      		 Text text = document.createTextNode(value.toString());
 	      		 numberElem.appendChild(text);
 	      		 mapElem.appendChild(numberElem);
 	      	   }
 	      	   else if (value instanceof Boolean) {
-	      		 Element boolElem = document.createElement(XSLJsonConstants.BOOLEAN);
+	      		 Element boolElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.BOOLEAN);
 	      		 boolElem.setAttribute(XSLJsonConstants.KEY, key);
 	      		 Text text = document.createTextNode(value.toString());
 	      		 boolElem.appendChild(text);
 	      		 mapElem.appendChild(boolElem);
 	      	   }	      	   
 	      	   else if (value instanceof JSONArray) {
-	      		  Element arrayElem = document.createElement(XSLJsonConstants.ARRAY);
+	      		  Element arrayElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.ARRAY);
 	      		  arrayElem.setAttribute(XSLJsonConstants.KEY, key);
 	      		  mapElem.appendChild(arrayElem);
 	      		  JSONArray jsonArr = (JSONArray)value;
@@ -297,19 +293,19 @@ public class FuncJsonToXml extends FunctionMultiArgs
 	    		  for (int idx = 0; idx < arrLen; idx++) {
 	    			  Object arrItem = jsonArr.get(idx);
 	    			  if (arrItem instanceof String) {
-	    				  Element strElem = document.createElement(XSLJsonConstants.STRING);
+	    				  Element strElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.STRING);
 	    				  Text text = document.createTextNode((String)arrItem);
 	    				  strElem.appendChild(text);
 	    				  arrayElem.appendChild(strElem);	 
 	    			  }
 	    			  else if (arrItem instanceof Number) {
-	    				  Element numberElem = document.createElement(XSLJsonConstants.NUMBER);
+	    				  Element numberElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.NUMBER);
 	    				  Text text = document.createTextNode(arrItem.toString());
 	    				  numberElem.appendChild(text);
 	    				  arrayElem.appendChild(numberElem); 
 	    			  }
 	    			  else if (arrItem instanceof Boolean) {
-	    				  Element boolElem = document.createElement(XSLJsonConstants.BOOLEAN);
+	    				  Element boolElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.BOOLEAN);
 	    				  Text text = document.createTextNode(arrItem.toString());
 	    				  boolElem.appendChild(text);
 	    				  arrayElem.appendChild(boolElem);  
@@ -329,14 +325,20 @@ public class FuncJsonToXml extends FunctionMultiArgs
 	      		  constructXmlDom(value, document, mapElem, key); 
 	      	   }
 	      	   else if (JSONObject.NULL.equals(value)) {
-	      		  Element nullElem = document.createElement("null");
+	      		  Element nullElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, "null");
 	      		  nullElem.setAttribute(XSLJsonConstants.KEY, key);
 	      		  mapElem.appendChild(nullElem);
 	      	   }
 	        }	    		    	
     	}
     	else if (jsonObj instanceof JSONArray) {
-    		Element arrayElem = document.createElement(XSLJsonConstants.ARRAY);
+    		Element arrayElem = null;
+    		if (parentNode.getNodeType() == Node.DOCUMENT_NODE) {
+    		   arrayElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.ARRAY);
+     		}
+     		else {
+     		   arrayElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.ARRAY);
+     		}
      		parentNode.appendChild(arrayElem);
      		
      		if (keyVal != null) {
@@ -348,19 +350,19 @@ public class FuncJsonToXml extends FunctionMultiArgs
     		for (int idx = 0; idx < arrLen; idx++) {
     		   Object arrItem = jsonArr.get(idx);
     		   if (arrItem instanceof String) {
-    			  Element strElem = document.createElement(XSLJsonConstants.STRING);
+    			  Element strElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.STRING);
   	      		  Text text = document.createTextNode((String)arrItem);
   	      		  strElem.appendChild(text);
   	      		  arrayElem.appendChild(strElem);	 
     		   }
     		   else if (arrItem instanceof Number) {
-    			  Element numberElem = document.createElement(XSLJsonConstants.NUMBER);
+    			  Element numberElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.NUMBER);
    	      		  Text text = document.createTextNode(arrItem.toString());
    	      		  numberElem.appendChild(text);
    	      		  arrayElem.appendChild(numberElem); 
     		   }
     		   else if (arrItem instanceof Boolean) {
-    			  Element boolElem = document.createElement(XSLJsonConstants.BOOLEAN);
+    			  Element boolElem = document.createElementNS(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI, XSLJsonConstants.BOOLEAN);
     	          Text text = document.createTextNode(arrItem.toString());
     	          boolElem.appendChild(text);
     	          arrayElem.appendChild(boolElem);  

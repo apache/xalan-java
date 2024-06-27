@@ -89,13 +89,13 @@ public class ElemSequence extends ElemTemplateElement
   
   /**
    * We use this string value constant to add as a suffix to, a string value that
-   * is getting serialized by XalanJ serializer, when XSL serialization is
+   * is getting serialized by Xalan-J serializer, when XSL serialization is
    * getting done during evaluation of xsl:sequence instruction. This helps us
    * construct later during XSL transformation process, a sequence of XDM atomic
    * values.
    * 
    * We're assuming that, this string value is significantly random, and is unlikely
-   * to exist within an input document that is getting transformed by XalanJ.
+   * to exist within an input document that is getting transformed by Xalan-J.
    */
   public static String STRING_VAL_SERIALIZATION_SUFFIX = "XSL_SEQ" + ElemCopyOf.SPACE_CHAR + "XSL_SEQ";
 
@@ -171,7 +171,19 @@ public class ElemSequence extends ElemTemplateElement
     Expression selectExpression = null;
  
     try {        
-      if (m_selectPattern != null) {          
+      if (m_selectPattern != null) {
+    	 ElemTemplateElement xslSeqChildElem = getFirstChildElem();
+    	 while (xslSeqChildElem != null) {
+    	   if (!(xslSeqChildElem instanceof ElemFallback)) {
+    		  throw new javax.xml.transform.TransformerException("XTSE3185 : An xsl:sequence element cannot "
+    		  		                                                   + "have both \"select\" attribute, and child content "
+    		  		                                                   + "other than xsl:fallback element(s).", srcLocator); 
+    	   }
+    	   else {
+    		  xslSeqChildElem = xslSeqChildElem.getNextSiblingElem(); 
+    	   }
+    	}
+    	  
         selectExpression = m_selectPattern.getExpression();
         
         if (selectExpression instanceof FuncExtFunction) {
@@ -331,7 +343,7 @@ public class ElemSequence extends ElemTemplateElement
   
           switch (xObjectType) {           
               case XObject.CLASS_NODESET :          
-                  ElemCopyOf.copyOfActionOnNodeSet((XNodeSet)xslSequenceVal, transformer, handler, xctxt);          
+                ElemCopyOf.copyOfActionOnNodeSet((XNodeSet)xslSequenceVal, transformer, handler, xctxt);          
                 break;
               case XObject.CLASS_RTREEFRAG :
                 SerializerUtils.outputResultTreeFragment(handler, xslSequenceVal, xctxt);
@@ -436,7 +448,7 @@ public class ElemSequence extends ElemTemplateElement
   }
   
   /**
-   * This method determines that, should a XalanJ serialization suffix be added, when
+   * This method determines that, should a Xalan-J serialization suffix be added, when
    * emitting xdm atomic values to an XSLT result sequence.
    */
   private boolean isToAddStrValSerializationSuffix(XPathContext xctxt) throws TransformerException {

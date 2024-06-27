@@ -162,7 +162,12 @@ public class FuncXmlToJson extends FunctionMultiArgs
         DTMIterator dtmIter = arg0NodeSet.iterRaw();
    	    int nodeHandle = dtmIter.nextNode();
    	    DTM dtm = xctxt.getDTM(nodeHandle);
+   	    
    	    Node node = dtm.getNode(nodeHandle);
+   	    if (node.getNodeType() == Node.DOCUMENT_NODE) {
+   	       node = node.getFirstChild();
+   	    }
+   	    
    	    String xmlDocStr = null;
    	    
    	    try {
