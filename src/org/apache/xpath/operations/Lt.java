@@ -20,8 +20,12 @@
  */
 package org.apache.xpath.operations;
 
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
  * The '<' operation expression executer.
@@ -43,7 +47,23 @@ public class Lt extends Operation
    */
   public XObject operate(XObject left, XObject right)
           throws javax.xml.transform.TransformerException
-  {
-    return left.lessThan(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+  {	  
+	  XObject result = null;
+  	  
+	  if (right instanceof ResultSequence) {
+		 if (left instanceof XNumber) {
+			 boolean bool = XPathGeneralComparisonRelationalOpSupport.lessThan((XNumber)left, (ResultSequence)right, false);
+			 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE); 
+		 }
+		 else if (left instanceof XSNumericType) {
+			 boolean bool = XPathGeneralComparisonRelationalOpSupport.lessThan((XSNumericType)left, (ResultSequence)right, false);
+			 result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+		 }		 
+	  }
+	  else {
+		 result = left.lessThan(right) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+	  }
+	  
+	  return result;
   }
 }

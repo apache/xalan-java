@@ -20,6 +20,7 @@
  */
 package org.apache.xpath.operations;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNumber;
@@ -54,25 +55,24 @@ public class NotEquals extends Operation
 	  
 	  if (right instanceof ResultSequence) {
 		  if (left instanceof XNumber) {
-			  XNumber lNum = (XNumber)left;
-			  boolean bool = XPathGeneralComparisonSupport.notEquals(lNum, (ResultSequence)right);
+			  boolean bool = XPathGeneralComparisonEqualityOpSupport.equals((XNumber)left, (ResultSequence)right, true);
 			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE); 
 		  }
 		  else if (left instanceof XSNumericType) {
-			  boolean bool = XPathGeneralComparisonSupport.notEquals((XSNumericType)left, (ResultSequence)right);
+			  boolean bool = XPathGeneralComparisonEqualityOpSupport.equals((XSNumericType)left, (ResultSequence)right, true);
 			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 		  }
 		  else if (left instanceof XSString) {
-			  boolean bool = XPathGeneralComparisonSupport.notEquals((XSString)left, (ResultSequence)right);
+			  boolean bool = XPathGeneralComparisonEqualityOpSupport.equals((XSString)left, (ResultSequence)right, true);
 			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 		  }
 		  else if (left instanceof XString) {
-			  boolean bool = XPathGeneralComparisonSupport.notEquals((XString)left, (ResultSequence)right);
+			  boolean bool = XPathGeneralComparisonEqualityOpSupport.equals((XString)left, (ResultSequence)right, true);
 			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 		  }
 		  else {
-			  XSString xsStrLeft = new XSString(left.str());
-			  boolean bool = XPathGeneralComparisonSupport.notEquals(xsStrLeft, (ResultSequence)right);
+			  java.lang.String lStrVal = XslTransformEvaluationHelper.getStrVal(left);
+			  boolean bool = XPathGeneralComparisonEqualityOpSupport.equals(new XSString(lStrVal), (ResultSequence)right, true);
 			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
 		  }
 	  }
