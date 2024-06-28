@@ -20,8 +20,14 @@
  */
 package org.apache.xpath.operations;
 
+import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
+import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XString;
+
+import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSString;
 
 /**
  * The '!=' operation expression executer.
@@ -44,6 +50,36 @@ public class NotEquals extends Operation
   public XObject operate(XObject left, XObject right)
           throws javax.xml.transform.TransformerException
   {
-    return (left.notEquals(right)) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+	  XObject result = null;
+	  
+	  if (right instanceof ResultSequence) {
+		  if (left instanceof XNumber) {
+			  XNumber lNum = (XNumber)left;
+			  boolean bool = XPathGeneralComparisonSupport.notEquals(lNum, (ResultSequence)right);
+			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE); 
+		  }
+		  else if (left instanceof XSNumericType) {
+			  boolean bool = XPathGeneralComparisonSupport.notEquals((XSNumericType)left, (ResultSequence)right);
+			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+		  }
+		  else if (left instanceof XSString) {
+			  boolean bool = XPathGeneralComparisonSupport.notEquals((XSString)left, (ResultSequence)right);
+			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+		  }
+		  else if (left instanceof XString) {
+			  boolean bool = XPathGeneralComparisonSupport.notEquals((XString)left, (ResultSequence)right);
+			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+		  }
+		  else {
+			  XSString xsStrLeft = new XSString(left.str());
+			  boolean bool = XPathGeneralComparisonSupport.notEquals(xsStrLeft, (ResultSequence)right);
+			  result = (bool ? XBoolean.S_TRUE : XBoolean.S_FALSE);
+		  }
+	  }
+	  else {
+		  result = (left.notEquals(right)) ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+	  }
+      
+	  return result;
   }
 }

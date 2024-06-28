@@ -2103,6 +2103,77 @@ public class XPathParser
 
     if (-1 == addPos)
       addPos = opPos;
+    
+    if (tokenIs('(')) {
+      if ("=".equals(getTokenRelative(-2))) {
+    	  // If previous token is, '='.
+    	  
+    	  // XPath 3.1 parse for RHS of general comparison operator, =. 
+    	  // The implementation here is able to handle an operator != 
+    	  // as well. RHS of an operator =, or != that's handled here,
+    	  // has syntax of type (a,b,c), i.e a literal sequence.
+    	  TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
+                                                                                   m_queueMark, m_tokenChar, m_token);
+    	  nextToken();
+    	  if (!tokenIs(')') && (getTokenRelative(0) != null)) {
+    		  List<String> seqXPathItems = new ArrayList<String>();
+    		  
+    		  while (m_token != null) {
+    			  List<String> xpathExprTokens = new ArrayList<String>();                 
+
+    			  while (!tokenIs(",") && (m_token != null)) {
+    				  if (!lookahead(null, 1)) {
+    					  xpathExprTokens.add(m_token);
+    				  }
+    				  nextToken();
+    			  }
+
+    			  if (xpathExprTokens.size() > 0) {
+    				  String seqItemXPath = getXPathStrFromComponentParts(xpathExprTokens);
+    				  if (seqItemXPath.endsWith(")")) {
+    					  seqItemXPath = seqItemXPath.substring(0, seqItemXPath.length());    
+    				  }    			                   
+
+    				  seqXPathItems.add(seqItemXPath);
+    			  }
+
+    			  if (m_token != null) {
+    				  nextToken();   
+    			  }
+    		   }
+    		  
+    		  boolean isXPathParseOkToProceed = true;
+                            
+              for (int idx = 0; idx < seqXPathItems.size(); idx++) {
+                 String seqItemXPathExprStr = seqXPathItems.get(idx);
+                 char lParenChar = '(';
+                 char rParenChar = ')';                 
+                 boolean isStrHasBalancedParentheses = isStrHasBalancedParentheses(
+                		                                                    seqItemXPathExprStr, 
+                		                                                    lParenChar, rParenChar);
+                 if (!isStrHasBalancedParentheses) {
+                    isXPathParseOkToProceed = false;
+                    break;
+                 }
+              }
+              
+              if (isXPathParseOkToProceed) {                  
+                  nextToken();
+                  insertOp(opPos, 2, OpCodes.OP_SEQUENCE_CONSTRUCTOR_EXPR);
+                  m_xpathSequenceConstructor = new XPathSequenceConstructor();                 
+                  m_xpathSequenceConstructor.setSequenceConstructorXPathParts(seqXPathItems);                  
+                  
+                  m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                                                 m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+                  
+                  return addPos;
+              }
+              else {
+            	  restoreTokenQueueScanPosition(prevTokQueueScanPosition); 
+              }
+    	   }
+        }
+    }
 
     RelationalExpr(-1);
 
@@ -2117,7 +2188,7 @@ public class XPathParser
            insertOp(addPos, 2, OpCodes.OP_NOTEQUALS);
 
            int opPlusLeftHandLen = m_ops.getOp(OpMap.MAPINDEX_LENGTH) - addPos;
-
+           
            addPos = EqualityExpr(addPos);
            m_ops.setOp(addPos + OpMap.MAPINDEX_LENGTH,
              m_ops.getOp(addPos + opPlusLeftHandLen + 1) + opPlusLeftHandLen);
@@ -3518,7 +3589,6 @@ public class XPathParser
 
     if (lookahead(':', 1))
     {
-      int ii = 0;
       if (tokenIs(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI)) 
       {
          nextToken();
