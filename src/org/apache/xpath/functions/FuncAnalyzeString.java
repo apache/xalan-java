@@ -142,7 +142,7 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         	RegexMatchInfo firstRegexMatchInfo = regexMatchInfoList.get(0);
         	int startIdx1 = firstRegexMatchInfo.getStartIdx();
         	if (startIdx1 == 0) {
-        		// The string to be analyzed, starts with a 'match' node     		
+        		// Regex has matched a substring, which is prefix of an input string        		
         		for (int idx = 0; idx < regexMatchInfoList.size(); idx++) {
         			RegexMatchInfo matchInfo = regexMatchInfoList.get(idx);
         			int idx1 = matchInfo.getStartIdx();
@@ -162,10 +162,10 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
         				}                    	                    	
         				createNonMatchNodeToResult(document, analyzeStrResultElem, nonMatchStr);
         			}        		
-        		 }	
+        		}	
         	}
         	else if (startIdx1 > 0) {
-        		// The string to be analyzed, starts with a 'non-match' node        		
+        		// Any prefix of an input string, hasn't been matched by regex        		
         		RegexMatchInfo pof1 = regexMatchInfoList.get(0);
         		String nonMatchStr = strToBeAnalyzed.substring(0, pof1.getStartIdx());
  			    createNonMatchNodeToResult(document, analyzeStrResultElem, nonMatchStr);
@@ -267,14 +267,14 @@ public class FuncAnalyzeString extends FunctionMultiArgs {
      * 
      * @param strToBeAnalyzed    this is an original string that is analyzed by 
      *                           the function call fn:analyze-string. 
-     * @param idx2               an end index of a particular regex match
+     * @param idx                an end index of a particular regex match
      * @return                   true, or false result, indicating whether an
      *                           XML "non-match" element can be constructed.
      */
-    private boolean isNonMatchingStringAvailable(String strToBeAnalyzed, int idx2) {
+    private boolean isNonMatchingStringAvailable(String strToBeAnalyzed, int idx) {
 		boolean isNonMatchAvailable;
 		try {
-			isNonMatchAvailable = (strToBeAnalyzed.charAt(idx2) != -1);
+			isNonMatchAvailable = (strToBeAnalyzed.charAt(idx) != -1);
 		}
 		catch (IndexOutOfBoundsException ex) {
 			isNonMatchAvailable = false;
