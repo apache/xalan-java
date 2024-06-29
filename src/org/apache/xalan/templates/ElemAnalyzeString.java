@@ -22,6 +22,7 @@ package org.apache.xalan.templates;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.xml.transform.TransformerException;
 
@@ -58,20 +59,6 @@ import xml.xpath31.processor.types.XSString;
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
- */
-
-/*
- * Implementation of the XSLT 3.0 xsl:analyze-string instruction.
- * 
- * This XSLT instruction is intended to process, all the 'non overlapping' substrings 
- * of the input string that match the provided regular expression.
- * 
- * The XSLT function fn:regex-group may be used optionally, along with XSLT instruction 
- * xsl:analyze-string.
- * 
- * With xsl:analyze-string element, we've presently not implemented xsl:fallback 
- * elements. xsl:fallback elements don't seem to have much useful use cases within 
- * xsl:analyze-string element.   // revisit
  */
 public class ElemAnalyzeString extends ElemTemplateElement implements ExpressionOwner {
   
@@ -247,7 +234,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
        }
        
        if (m_regex_flags != null && !RegexEvaluationSupport.isFlagStrValid(m_regex_flags)) {
-           throw new javax.xml.transform.TransformerException("XTDE1145 : Invalid regular expression flag(s) are present, with "
+           throw new javax.xml.transform.TransformerException("XTDE1145 : incorrect regex flag(s) are present, on an "
                    + "xsl:analyze-string element.", xctxt.getSAXLocator());    
        }
 
@@ -261,8 +248,8 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
        ElemTemplateElement templateElem3 = null;
        
        if (templateElem1 == null) {
-           throw new javax.xml.transform.TransformerException("XTSE1130 : At least one of the elements xsl:matching-substring or "
-                                                                  + "xsl:non-matching-substring must be present within xsl:analyze-string "
+           throw new javax.xml.transform.TransformerException("XTSE1130 : At-least one of the elements xsl:matching-substring, or "
+                                                                  + "xsl:non-matching-substring must be present as child of xsl:analyze-string "
                                                                   + "element.", xctxt.getSAXLocator());    
        }
        else {
@@ -275,8 +262,8 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
                templateElem3 = templateElem2.m_nextSibling;
                if (templateElem3 != null) {
                    throw new javax.xml.transform.TransformerException("XTSE0010 : Only xsl:matching-substring and xsl:non-matching-substring "
-                                                                                              + "elements are allowed within xsl:analyze-string "
-                                                                                              + "element.", xctxt.getSAXLocator());    
+                                                                                          + "elements are allowed to be present within xsl:analyze-string "
+                                                                                          + "element.", xctxt.getSAXLocator());    
                }
            }
        }
@@ -292,16 +279,16 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
            strToBeAnalyzedMatchingSubsequences.add(str);
        }
        
-       // we use the string value of 'System.currentTimeMillis()' representing
+       // We use the string value of a random UUID value, representing
        // a fairly random string, to help us pre-process the input string 
-       // that is been analyzed by xsl:analyze-string instruction. 
-       long currentTimeMills = System.currentTimeMillis();
-       String str1 = (Long.valueOf(currentTimeMills)).toString();
-       String str1Replaced = regexMatcher.replaceAll(str1);
+       // that is been analyzed by xsl:analyze-string instruction.       
+       String randomStr1 = (UUID.randomUUID()).toString();
        
-       if (str1Replaced.equals(str1)) {
-          // handle the case, where xsl:analyze-string's regex matches 
-          // the whole of the input string. 
+       String str1Replaced = regexMatcher.replaceAll(randomStr1);
+       
+       if (str1Replaced.equals(randomStr1)) {
+          // Handle the case, where xsl:analyze-string's regex value matches 
+          // the whole of an input string. 
           if ((templateElem1 != null) && (templateElem1 instanceof ElemMatchingSubstring)) {
               ((ElemMatchingSubstring)templateElem1).setStrValue(strToBeAnalyzed);
               ((ElemMatchingSubstring)templateElem1).setRegex(effectiveRegexStrValue);
@@ -314,7 +301,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
           return;
        }
        
-       String[] strParts = str1Replaced.split(str1);
+       String[] strParts = str1Replaced.split(randomStr1);
        
        int i2 = 0;
        for (int idx = 0; idx < strParts.length; idx++) {           
@@ -334,7 +321,7 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
                }
                else {
                    if ((idx < strParts.length - 1) || ((idx == strParts.length - 1) && 
-                                                                 str1Replaced.endsWith(str1))) {
+                                                                 str1Replaced.endsWith(randomStr1))) {
                       ((ElemMatchingSubstring)templateElem1).setStrValue(
                                                                  strToBeAnalyzedMatchingSubsequences.get(i2));
                       ((ElemMatchingSubstring)templateElem1).setRegex(effectiveRegexStrValue);
