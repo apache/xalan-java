@@ -234,8 +234,8 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
        }
        
        if (m_regex_flags != null && !RegexEvaluationSupport.isFlagStrValid(m_regex_flags)) {
-           throw new javax.xml.transform.TransformerException("XTDE1145 : incorrect regex flag(s) are present, on an "
-                   + "xsl:analyze-string element.", xctxt.getSAXLocator());    
+           throw new javax.xml.transform.TransformerException("XTDE1145 : Incorrect regex flag value(s) are present as value of 'flags' "
+           		                                                                 + "attribute of an xsl:analyze-string element.", xctxt.getSAXLocator());    
        }
 
        String effectiveRegexStrValue = m_regex.evaluate(xctxt, xctxt.getContextNode(), this);
@@ -261,8 +261,8 @@ public class ElemAnalyzeString extends ElemTemplateElement implements Expression
                }
                templateElem3 = templateElem2.m_nextSibling;
                if (templateElem3 != null) {
-                   throw new javax.xml.transform.TransformerException("XTSE0010 : Only xsl:matching-substring and xsl:non-matching-substring "
-                                                                                          + "elements are allowed to be present within xsl:analyze-string "
+                   throw new javax.xml.transform.TransformerException("XTSE0010 : Only xsl:matching-substring, and xsl:non-matching-substring "
+                                                                                          + "elements are allowed to be present within an xsl:analyze-string "
                                                                                           + "element.", xctxt.getSAXLocator());    
                }
            }
