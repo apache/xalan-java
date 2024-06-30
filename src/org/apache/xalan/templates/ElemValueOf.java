@@ -33,7 +33,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xpath.composite.IfExpr;
+import org.apache.xpath.composite.XPathIfExpr;
 import org.apache.xpath.composite.LetExpr;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.FuncExtFunction;
@@ -578,8 +578,8 @@ public class ElemValueOf extends ElemTemplateElement {
                      
                      (new XString(strValue)).dispatchCharactersEvents(rth);
                   }
-                  else if (expr instanceof IfExpr) {
-                      IfExpr ifExpr = (IfExpr)expr;
+                  else if (expr instanceof XPathIfExpr) {
+                      XPathIfExpr ifExpr = (XPathIfExpr)expr;
                        
                       XObject evalResult = ifExpr.execute(xctxt);                     
                       String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);

@@ -41,22 +41,15 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 
 /*
- * The XalanJ XPath parser, creates and populates an object of this class, 
- * as a representation of XPath 3.1 "for" expression.
- * 
- * The XPath 3.1 spec, defines "for" expression with following grammar,
- * 
- *   ForExpr               ::=      SimpleForClause "return" ExprSingle 
- *   SimpleForClause       ::=      "for" SimpleForBinding ("," SimpleForBinding)*  
- *   SimpleForBinding      ::=      "$" VarName "in" ExprSingle
+ * An implementation of XPath 3.1 'for' expression.
  *    
- *  Ref : https://www.w3.org/TR/xpath-31/#id-for-expressions
+ * Ref : https://www.w3.org/TR/xpath-31/#id-for-expressions
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class ForExpr extends Expression {
+public class XPathForExpr extends Expression {
     
     private static final long serialVersionUID = -7289739978026057248L;
 

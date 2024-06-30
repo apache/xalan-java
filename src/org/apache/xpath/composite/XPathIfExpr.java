@@ -33,12 +33,7 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.XObject;
 
 /*
- * The XalanJ XPath parser, creates and populates an object of this class, 
- * as a representation of XPath 3.1 "if" conditional expression.
- * 
- * The XPath 3.1 spec, defines "if" expression with following grammar,
- * 
- *   IfExpr   ::=   "if" "(" Expr ")" "then" ExprSingle "else" ExprSingle
+ * An implementation of XPath 3.1 'if' expression.
  * 
  * Ref : https://www.w3.org/TR/xpath-31/#id-conditionals
  * 
@@ -46,7 +41,7 @@ import org.apache.xpath.objects.XObject;
  * 
  * @xsl.usage advanced
  */
-public class IfExpr extends Expression {
+public class XPathIfExpr extends Expression {
     
     private static final long serialVersionUID = 4057572946055830336L;
 
@@ -110,15 +105,15 @@ public class IfExpr extends Expression {
                                                                                     conditionalExprXPathStr, prefixTable);
        }
        
-       XPath conditionlExprXpath = new XPath(conditionalExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+       XPath ifConditionalXPath = new XPath(conditionalExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                  XPath.SELECT, null);
        if (fVars != null) {
-          conditionlExprXpath.fixupVariables(fVars, fGlobalsSize);
+          ifConditionalXPath.fixupVariables(fVars, fGlobalsSize);
        }
        
-       XObject conditionalXpathExprResult = conditionlExprXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+       XObject ifConditionalXPathResult = ifConditionalXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
        
-       if (conditionalXpathExprResult.bool()) {
+       if (ifConditionalXPathResult.bool()) {
            if (prefixTable != null) {
               thenExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
                                                                                         thenExprXPathStr, prefixTable);

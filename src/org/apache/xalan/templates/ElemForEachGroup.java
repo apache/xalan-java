@@ -39,7 +39,7 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.NodeSequence;
-import org.apache.xpath.composite.ForExpr;
+import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -465,7 +465,7 @@ public class ElemForEachGroup extends ElemTemplateElement
             }
         }
         else if ((m_selectExpression instanceof XPathSequenceConstructor) ||
-                                                    (m_selectExpression instanceof ForExpr)) {
+                                                    (m_selectExpression instanceof XPathForExpr)) {
             XObject xObj = m_selectExpression.execute(xctxt);
             
             ResultSequence resultSeq = (ResultSequence)xObj;

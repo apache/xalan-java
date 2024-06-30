@@ -44,21 +44,15 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSBoolean;
 
 /*
- * The XalanJ XPath parser, creates and populates an object of this class, 
- * as a representation of XPath 3.1 quantified expression.
- * 
- * The XPath 3.1 spec, defines quantified expressions with following grammar,
- * 
- *   QuantifiedExpr   ::=   ("some" | "every") "$" VarName "in" ExprSingle ("," "$" VarName "in" 
- *                                                   ExprSingle)* "satisfies" ExprSingle
+ * Implementation of XPath 3.1 quantified expressions.
  *    
- *  Ref : https://www.w3.org/TR/xpath-31/#id-quantified-expressions
+ * Ref : https://www.w3.org/TR/xpath-31/#id-quantified-expressions
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class QuantifiedExpr extends Expression {
+public class XPathQuantifiedExpr extends Expression {
 
     private static final long serialVersionUID = -3073535420126040669L;
     

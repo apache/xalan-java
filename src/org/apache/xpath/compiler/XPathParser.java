@@ -34,14 +34,14 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPathProcessorException;
-import org.apache.xpath.composite.ForExpr;
+import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.ForQuantifiedExprVarBinding;
-import org.apache.xpath.composite.IfExpr;
+import org.apache.xpath.composite.XPathIfExpr;
 import org.apache.xpath.composite.LetExpr;
 import org.apache.xpath.composite.LetExprVarBinding;
 import org.apache.xpath.composite.XPathMapConstructor;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
-import org.apache.xpath.composite.QuantifiedExpr;
+import org.apache.xpath.composite.XPathQuantifiedExpr;
 import org.apache.xpath.composite.SequenceTypeArrayTest;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeFunctionTest;
@@ -143,13 +143,13 @@ public class XPathParser
   
   static XPathDynamicFunctionCall m_dynamicFunctionCall = null;
   
-  static ForExpr m_forExpr = null;
+  static XPathForExpr m_forExpr = null;
   
   static LetExpr m_letExpr = null;
   
-  static QuantifiedExpr m_quantifiedExpr = null;
+  static XPathQuantifiedExpr m_quantifiedExpr = null;
   
-  static IfExpr m_ifExpr = null;
+  static XPathIfExpr m_ifExpr = null;
   
   static XPathSequenceConstructor m_xpathSequenceConstructor = null;
   
@@ -1586,7 +1586,7 @@ public class XPathParser
          // function argument, or may be written within an XPath predicate).
          String prevTokenStr = getTokenRelative(-2);
          
-         m_quantifiedExpr = QuantifiedExpr(prevTokenStr, QuantifiedExpr.SOME);
+         m_quantifiedExpr = QuantifiedExpr(prevTokenStr, XPathQuantifiedExpr.SOME);
       }
       else if (tokenIs("every")) {
          // To check, whether XPath quantified 'every' expression is a sub expression 
@@ -1594,7 +1594,7 @@ public class XPathParser
          // function argument, or may be written within an XPath predicate).
          String prevTokenStr = getTokenRelative(-2);
          
-         m_quantifiedExpr = QuantifiedExpr(prevTokenStr, QuantifiedExpr.EVERY);
+         m_quantifiedExpr = QuantifiedExpr(prevTokenStr, XPathQuantifiedExpr.EVERY);
       }
       else if (tokenIs("if")) {         
          m_ifExpr = IfExpr();
@@ -1681,7 +1681,7 @@ public class XPathParser
 	 return count;
   }
   
-  protected ForExpr ForExpr(String prevTokenStrBeforeFor) throws javax.xml.transform.TransformerException
+  protected XPathForExpr ForExpr(String prevTokenStrBeforeFor) throws javax.xml.transform.TransformerException
   {
       int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
       
@@ -1689,7 +1689,7 @@ public class XPathParser
       
       insertOp(opPos, 2, OpCodes.OP_FOR_EXPR);
       
-      ForExpr forExpr = new ForExpr();
+      XPathForExpr forExpr = new XPathForExpr();
       
       List<ForQuantifiedExprVarBinding> forExprVarBindingList = new  
                                                            ArrayList<ForQuantifiedExprVarBinding>();
@@ -1863,7 +1863,7 @@ public class XPathParser
       return letExpr;
   }
   
-  protected QuantifiedExpr QuantifiedExpr(String prevTokenStrBeforeQuantifier, int quantifierExprType) 
+  protected XPathQuantifiedExpr QuantifiedExpr(String prevTokenStrBeforeQuantifier, int quantifierExprType) 
                                                               throws javax.xml.transform.TransformerException
   {
       int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
@@ -1872,7 +1872,7 @@ public class XPathParser
       
       insertOp(opPos, 2, OpCodes.OP_QUANTIFIED_EXPR);
       
-      QuantifiedExpr quantifiedExpr = new QuantifiedExpr();
+      XPathQuantifiedExpr quantifiedExpr = new XPathQuantifiedExpr();
       quantifiedExpr.setCurrentXPathQuantifier(quantifierExprType);
       
       List<ForQuantifiedExprVarBinding> quantifiedExprVarBindingList = new 
@@ -1958,7 +1958,7 @@ public class XPathParser
       return quantifiedExpr;
   }
   
-  protected IfExpr IfExpr() throws javax.xml.transform.TransformerException
+  protected XPathIfExpr IfExpr() throws javax.xml.transform.TransformerException
   {
       int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
       
@@ -1966,7 +1966,7 @@ public class XPathParser
       
       insertOp(opPos, 2, OpCodes.OP_IF_EXPR);
       
-      IfExpr ifExpr = new IfExpr();            
+      XPathIfExpr ifExpr = new XPathIfExpr();            
       
       consumeExpected('(');
       

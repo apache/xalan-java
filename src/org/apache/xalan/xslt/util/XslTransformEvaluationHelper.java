@@ -36,7 +36,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPathCollationSupport;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xpath.composite.ForExpr;
+import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
@@ -255,8 +255,8 @@ public class XslTransformEvaluationHelper {
               sum = sumResultSequence(resultSeq);          
            }  
         }
-        else if (expr instanceof ForExpr) {
-           ForExpr forExpr = (ForExpr)expr;
+        else if (expr instanceof XPathForExpr) {
+           XPathForExpr forExpr = (XPathForExpr)expr;
            ResultSequence forExprResult = (ResultSequence)(forExpr.execute(xctxt));
            sum = sumResultSequence(forExprResult);
         }
@@ -342,8 +342,8 @@ public class XslTransformEvaluationHelper {
                 ResultSequence resultSeq = (ResultSequence)(((Range)expr).execute(xctxt));
                 xdmSequenceSize = resultSeq.size();
             }
-            else if (expr instanceof ForExpr) {
-                ResultSequence resultSeq = (ResultSequence)(((ForExpr)expr).execute(xctxt));
+            else if (expr instanceof XPathForExpr) {
+                ResultSequence resultSeq = (ResultSequence)(((XPathForExpr)expr).execute(xctxt));
                 xdmSequenceSize = resultSeq.size();   
             }
             else {
