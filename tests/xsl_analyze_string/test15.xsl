@@ -1,21 +1,26 @@
-<?xml version="1.0"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+<?xml version="1.0" encoding="UTF-8"?>
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"                
                 version="3.0">
                 
-   <!-- Author: mukulg@apache.org -->
+   <!-- Author: mukulg@apache.org -->                
+				
+   <!-- use with test2.xml -->
    
-   <!-- use with test1_c.xml -->
+   <!-- An XSLT stylesheet test case, to test an XSL instruction 
+        xsl:analyze-string. -->
 
    <xsl:output method="xml" indent="yes"/>
 
    <xsl:template match="/">
-      <elem>
-         <xsl:analyze-string select="elem" regex="\s">
-	    <xsl:non-matching-substring>
-	       <item><xsl:value-of select="."/></item>
-	    </xsl:non-matching-substring>
-         </xsl:analyze-string>
-      </elem>
+     <stringRegexAnalysis>
+	     <xsl:analyze-string select="info" regex="\s+">	         
+	         <xsl:non-matching-substring>
+		       <word>
+                 <xsl:value-of select="."/>
+			   </word>
+             </xsl:non-matching-substring>
+	     </xsl:analyze-string>
+	 </stringRegexAnalysis>
    </xsl:template>
    
    <!--

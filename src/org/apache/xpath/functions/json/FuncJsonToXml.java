@@ -228,9 +228,9 @@ public class FuncJsonToXml extends FunctionMultiArgs
         
         constructXmlDom(jsonObj, document, document, null);
          
-        DTMManager dtmMgr = xctxt.getDTMManager();             
-        DTM dtm = dtmMgr.getDTM(new DOMSource(document), true, null, false, false);            
-        result = new XNodeSet(dtm.getDocument(), dtmMgr);           
+        DTMManager dtmMgr = xctxt.getDTMManager();
+        int dtmHandleOfResultNode = dtmMgr.getDTMHandleFromNode(document);           
+        result = new XNodeSet(dtmHandleOfResultNode, dtmMgr);           
         
         return result;
     }

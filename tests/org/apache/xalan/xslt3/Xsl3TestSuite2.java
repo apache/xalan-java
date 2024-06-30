@@ -67,7 +67,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ AnalyzeStringTests.class, AttributeTests.class, GroupingTests.class,
+@SuiteClasses({ XslAnalyzeStringTests.class, AttributeTests.class, GroupingTests.class,
                 GroupingWithSortTests.class, RtfMigrationTests.class, QuantifiedExprTests.class, 
                 FnUnparsedTextTests.class, FnTokenizeTests.class, FnStringJoinTests.class,                 
                 FnIndexOfTests.class, SequenceTests.class, RangeExprTests.class, 
