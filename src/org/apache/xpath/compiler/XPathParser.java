@@ -37,7 +37,7 @@ import org.apache.xpath.XPathProcessorException;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.ForQuantifiedExprVarBinding;
 import org.apache.xpath.composite.XPathIfExpr;
-import org.apache.xpath.composite.LetExpr;
+import org.apache.xpath.composite.XPathLetExpr;
 import org.apache.xpath.composite.LetExprVarBinding;
 import org.apache.xpath.composite.XPathMapConstructor;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
@@ -145,7 +145,7 @@ public class XPathParser
   
   static XPathForExpr m_forExpr = null;
   
-  static LetExpr m_letExpr = null;
+  static XPathLetExpr m_letExpr = null;
   
   static XPathQuantifiedExpr m_quantifiedExpr = null;
   
@@ -1772,7 +1772,7 @@ public class XPathParser
       return forExpr;
   }
   
-  protected LetExpr LetExpr(String prevTokenStrBeforeLet) throws javax.xml.transform.TransformerException
+  protected XPathLetExpr LetExpr(String prevTokenStrBeforeLet) throws javax.xml.transform.TransformerException
   {
       int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
       
@@ -1780,7 +1780,7 @@ public class XPathParser
       
       insertOp(opPos, 2, OpCodes.OP_LET_EXPR);
       
-      LetExpr letExpr = new LetExpr();
+      XPathLetExpr letExpr = new XPathLetExpr();
       
       List<LetExprVarBinding> letExprVarBindingList = new ArrayList<LetExprVarBinding>();
       

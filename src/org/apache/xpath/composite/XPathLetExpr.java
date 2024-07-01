@@ -38,22 +38,15 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 /*
- * The XalanJ XPath parser, creates and populates an object of this class, 
- * as a representation of XPath 3.1 "let" expression.
- * 
- * The XPath 3.1 spec, defines "let" expression with following grammar,
- * 
- *   LetExpr               ::=     SimpleLetClause "return" ExprSingle 
- *   SimpleLetClause       ::=     "let" SimpleLetBinding ("," SimpleLetBinding)* 
- *   SimpleLetBinding      ::=     "$" VarName ":=" ExprSingle
+ * An implementation of XPath 3.1 'let' expression.
  *    
- *  Ref : https://www.w3.org/TR/xpath-31/#id-let-expressions
+ * Ref : https://www.w3.org/TR/xpath-31/#id-let-expressions
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class LetExpr extends Expression {
+public class XPathLetExpr extends Expression {
 
     private static final long serialVersionUID = 3063682088023616108L;
 
@@ -86,9 +79,9 @@ public class LetExpr extends Expression {
        List<XMLNSDecl> prefixTable = null;
        if (elemTemplateElement != null) {
           prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-       }
+       }              
        
-       Map<QName, XObject> letExprVarBackupMap = new HashMap<QName, XObject>();
+       Map<QName, XObject> letExprVarBindingMap = new HashMap<QName, XObject>();
        
        for (int idx = 0; idx < fLetExprVarBindingList.size(); idx++) {          
           LetExprVarBinding letExprVarBinding = fLetExprVarBindingList.get(idx);
@@ -111,12 +104,11 @@ public class LetExpr extends Expression {
           
           m_xpathVarList.add(new QName(varName));
           
-          letExprVarBackupMap.put(new QName(varName), varBindingEvalResult);
-       }
+          letExprVarBindingMap.put(new QName(varName), varBindingEvalResult);
+       }              
        
        Map<QName, XObject> xpathVarMap = xctxt.getXPathVarMap();
-       
-       xpathVarMap.putAll(letExprVarBackupMap);
+       xpathVarMap.putAll(letExprVarBindingMap);
        
        if (prefixTable != null) {
           fReturnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(

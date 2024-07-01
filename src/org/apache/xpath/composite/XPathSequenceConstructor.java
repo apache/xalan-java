@@ -43,9 +43,8 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSNumericType;
 
 /*
- * XalanJ's xpath parser, constructs an object of this class 
- * to help produce an XDM sequence constructed using an XPath expression having
- * one or more occurrences of an XPath ',' operator.
+ * This class implements and evaluates XPath 3.1 literal 
+ * sequence constructor expressions.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -96,10 +95,7 @@ public class XPathSequenceConstructor extends Expression {
            }
            
            XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), 
-                                                                                      XPath.SELECT, null);
-           if (fVars != null) {
-              xpathObj.fixupVariables(fVars, fGlobalsSize);
-           }
+                                                                                      XPath.SELECT, null);           
            
            Expression xpathExpr = xpathObj.getExpression();
            
@@ -136,6 +132,10 @@ public class XPathSequenceConstructor extends Expression {
                    
                    XPath varXPathObj = new XPath(varRefXPathExprStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                       XPath.SELECT, null);
+                   if (fVars != null) {
+                	   varXPathObj.fixupVariables(fVars, fGlobalsSize);
+                   }
+                   
                    XObject varEvalResult = varXPathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
                    
                    // Evaluate the, xdm sequence index XPath expression
@@ -190,8 +190,12 @@ public class XPathSequenceConstructor extends Expression {
                }
            }
            else {
+        	   if (fVars != null) {
+        		   xpathObj.fixupVariables(fVars, fGlobalsSize);
+               }
+        	   
                XObject xPathExprPartResult = xpathObj.execute(xctxt, contextNode, 
-                                                                              xctxt.getNamespaceContext());
+                                                                              xctxt.getNamespaceContext());                              
                
                if (xPathExprPartResult instanceof XNodeSet) {
                   DTMManager dtmMgr = (DTMManager)xctxt;

@@ -34,10 +34,10 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.composite.XPathIfExpr;
-import org.apache.xpath.composite.LetExpr;
-import org.apache.xpath.functions.XPathDynamicFunctionCall;
+import org.apache.xpath.composite.XPathLetExpr;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
@@ -54,7 +54,7 @@ import xml.xpath31.processor.types.XSAnyType;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of XSLT xsl:value-of element.
+ * Implementation of XSLT xsl:value-of instruction.
  * 
  * Ref : https://www.w3.org/TR/xslt-30/#element-value-of
  * 
@@ -405,7 +405,7 @@ public class ElemValueOf extends ElemTemplateElement {
                       else if (evalResult instanceof XPathMap) {
                     	 throw new TransformerException("FOTY0013 : Cannot do an XPath atomization of a map "
                     	 		                                              + "(ref, https://www.w3.org/TR/xpath-31/#id-atomization).", srcLocator);
-                      }
+                      }                      
                       else {
                           strValue = evalResult.str();  
                       }
@@ -570,8 +570,8 @@ public class ElemValueOf extends ElemTemplateElement {
                         }
                      }
                   }
-                  else if (expr instanceof LetExpr) {
-                     LetExpr letExpr = (LetExpr)expr;
+                  else if (expr instanceof XPathLetExpr) {
+                     XPathLetExpr letExpr = (XPathLetExpr)expr;
                       
                      XObject evalResult = letExpr.execute(xctxt);                     
                      String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);

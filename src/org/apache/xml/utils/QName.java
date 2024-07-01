@@ -603,21 +603,30 @@ public class QName implements java.io.Serializable
   public boolean equals(Object object)
   {
 
-    if (object == this)
-      return true;
+	  boolean result = false;
 
-    if (object instanceof QName) {
-      QName qname = (QName) object;
-      String thisnamespace = getNamespaceURI();
-      String thatnamespace = qname.getNamespaceURI();
+	  if (object == this) {
+		  result = true;
+	  }
+	  else if (object instanceof QName) {
+		  QName qname = (QName)object;
+		  boolean isLocalNameEqual = (getLocalName()).equals(qname.getLocalName());
+		  if (isLocalNameEqual) {
+			  String thisNs = getNamespaceURI();
+			  String argNs = qname.getNamespaceURI();
+			  if (((thisNs != null) && (argNs != null)) && thisNs.equals(argNs)) {
+				  result = true; 
+			  }
+			  else if ((thisNs == null) && (argNs == null)){
+				  result = true;  
+			  }
+			  else {
+				  result = true;
+			  }
+		  }
+	  }
 
-      return getLocalName().equals(qname.getLocalName())
-             && (((null != thisnamespace) && (null != thatnamespace))
-                 ? thisnamespace.equals(thatnamespace)
-                 : ((null == thisnamespace) && (null == thatnamespace)));
-    }
-    else
-      return false;
+	  return result;
   }
 
   /**

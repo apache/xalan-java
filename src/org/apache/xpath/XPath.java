@@ -390,7 +390,7 @@ public class XPath implements Serializable, ExpressionOwner
 
     XObject xobj = null;
     
-    boolean isToBeProcessedAsNodeSet = true;
+    boolean isProcessAsNodeset = true;
     
     if (m_mainExp instanceof LocPathIterator) {
         LocPathIterator locPathIterator = (LocPathIterator)m_mainExp;
@@ -400,12 +400,12 @@ public class XPath implements Serializable, ExpressionOwner
            dtmIter = locPathIterator.asIterator(xctxt, contextNode);
         }
         catch (ClassCastException ex) {
-           isToBeProcessedAsNodeSet = false;
+           isProcessAsNodeset = false;
         }
     }
 
     try {
-       if (isToBeProcessedAsNodeSet) {
+       if (isProcessAsNodeset) {
           if (m_mainExp instanceof Function) {
              xobj = ((Function)m_mainExp).execute(xctxt); 
           }

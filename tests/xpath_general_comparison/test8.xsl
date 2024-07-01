@@ -1,24 +1,29 @@
-<?xml version="1.0"?>
+<?xml version='1.0' encoding='utf-8'?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-                version="3.0">
-
-   <!-- Author: mukulg@apache.org -->
-   
-   <!-- An XSLT stylesheet test, to test an XPath 3.1 "let" expression.
-              
-        This XSL stylesheet, uses an XPath "let" expression example 
-        borrowed from https://www.altova.com/, with slight modifications. -->
-        
-   <xsl:output method="text"/>
-                                            
-   <xsl:template match="/">                                                 
-      <xsl:variable name="areaValue" select="let $pi := 3.14,
-                                                 $area := function ($arg) { ($pi * $arg * $arg) },
-                                                 $r := 5 return $area($r)"/>
-      <xsl:value-of select="concat('area = ', $areaValue)"/>      
-   </xsl:template>
-   
-   <!--
+				version="3.0">
+				
+  <!-- Author: mukulg@apache.org -->
+  
+  <!-- An XSL test case to test, XPath 3.1 general comparison 
+       operator =. -->											
+				
+  <xsl:output method="xml" indent="yes"/>
+  
+  <xsl:template match='/'>
+     <result>
+        <!-- user-defined function that does numerical square of the 
+             function argument. -->
+	    <xsl:variable name="func1" select="function($x) { $x*$x }"/>
+		<one>
+		   <xsl:value-of select="if (4 = ($func1(2),$func1(4))) then 'abc' else 'pqr'"/>
+		</one>
+		<two>
+		   <xsl:value-of select="if (10 = ($func1(2),$func1(4))) then 'abc' else 'pqr'"/>
+		</two>
+	 </result>
+  </xsl:template>
+  
+  <!--
       * Licensed to the Apache Software Foundation (ASF) under one
       * or more contributor license agreements. See the NOTICE file
       * distributed with this work for additional information
@@ -35,5 +40,5 @@
       * See the License for the specific language governing permissions and
       * limitations under the License.
    -->
-
+  
 </xsl:stylesheet>

@@ -133,12 +133,11 @@ public class XPathContext extends DTMManager // implements ExpressionContext
   private XSDuration m_timezone;
   
   /**
-   * We use this java.util.Map object, to store XPath 3.1 variable binding
-   * information (i.e, a mapping from variable name to its run-time value). 
-   * These variable bindings, are used for XPath feature implementations 
-   * like function item, "for", "let", 'quantified' expressions.
+   * We use this java.util.Map object, to store variable binding information 
+   * (i.e, mapping from variable name to its value) for implementations of 
+   * XPath 3.1 'inline function', 'for', 'let' and 'quantified' expressions.
    * 
-   * We don't use, XalanJ XPath context's variable stack for this purpose.
+   * We don't use, Xalan-J xpath variable stack for this purpose.
    */
   private Map<QName, XObject> xpathVarMap = new HashMap<QName, XObject>();
   

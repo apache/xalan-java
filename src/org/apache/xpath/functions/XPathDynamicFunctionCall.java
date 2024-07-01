@@ -17,8 +17,10 @@
 package org.apache.xpath.functions;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 
 import javax.xml.transform.SourceLocator;
@@ -47,9 +49,8 @@ import org.apache.xpath.objects.XString;
 import xml.xpath31.processor.types.XSString;
 
 /*
- * Xalan-J xpath parser, constructs an object of this class 
- * as representation of XPath expressions for 'dynamic function call' 
- * and 'map lookup' both of which have similar syntax.
+ * This class implements XPath 3.1 dynamic function calls and map
+ * lookup expressions.
  * 
  * Ref : https://www.w3.org/TR/xpath-31/#id-dynamic-function-invocation,
  *       https://www.w3.org/TR/xpath-31/#id-map-lookup
@@ -174,7 +175,7 @@ public class XPathDynamicFunctionCall extends Expression {
 	                                                                                  + "Number of arguments provided " + argList.size() + ".", xctxt.getSAXLocator());    
 	           }	           	           
 	           
-	           Map<QName, XObject> functionParamAndArgBackupMap = new HashMap<QName, XObject>();
+	           Map<QName, XObject> functionParamAndArgMap = new HashMap<QName, XObject>();
 	           
 	           for (int idx = 0; idx < funcParamList.size(); idx++) {
 	              InlineFunctionParameter funcParam = funcParamList.get(idx);                                                         
@@ -215,10 +216,10 @@ public class XPathDynamicFunctionCall extends Expression {
 	              
 	              m_xpathVarList.add(new QName(funcParamName));
 	              
-	              functionParamAndArgBackupMap.put(new QName(funcParamName), argValue);
+	              functionParamAndArgMap.put(new QName(funcParamName), argValue);
 	           }
 	           
-	           inlineFunctionVarMap.putAll(functionParamAndArgBackupMap);
+	           inlineFunctionVarMap.putAll(functionParamAndArgMap);
 	           
 	           if (prefixTable != null) {
 	              inlineFnXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(inlineFnXPathStr, 
@@ -248,7 +249,12 @@ public class XPathDynamicFunctionCall extends Expression {
 	              }
 	           }
 	           
-	           inlineFunctionVarMap.clear();           
+	           Set<QName> keysOfArgVariables = functionParamAndArgMap.keySet();
+	           Iterator<QName> iter = keysOfArgVariables.iterator();
+	           while (iter.hasNext()) {
+	        	  QName key = iter.next();
+	        	  inlineFunctionVarMap.remove(key);
+	           }
 	        }
       }
       else {
