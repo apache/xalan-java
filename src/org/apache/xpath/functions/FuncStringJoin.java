@@ -23,6 +23,7 @@ package org.apache.xpath.functions;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
@@ -37,15 +38,12 @@ import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.res.XPATHErrorResources;
 
-import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * Execute the string-join() function.
- * 
- * This function returns a string created by concatenating the items 
- * in a sequence, with a defined separator between adjacent items.
+ * Implementation of an XPath 3.1 string-join function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -56,8 +54,7 @@ public class FuncStringJoin extends Function2Args {
    private static final long serialVersionUID = 4171534319684252331L;
 
    /**
-   * Execute the function. The function must return
-   * a valid object.
+   * Implementation of the function.
    * 
    * @param xctxt The current execution context.
    * 
@@ -67,119 +64,98 @@ public class FuncStringJoin extends Function2Args {
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-
-    SourceLocator srcLocator = xctxt.getSAXLocator();
     
-    ResultSequence arg0ResultSeq = null;
-    
-    final int contextNode = xctxt.getCurrentNode();
-    
-    if (m_arg0 instanceof Function) {
-        XObject evalResult = ((Function)m_arg0).execute(xctxt);
-        if (evalResult instanceof ResultSequence) {
-           arg0ResultSeq = (ResultSequence)evalResult;   
-        }                
-    }    
-    else if (m_arg0 instanceof Variable) {
-        XObject evalResult = ((Variable)m_arg0).execute(xctxt);
-        if (evalResult instanceof ResultSequence) {
-           arg0ResultSeq = (ResultSequence)evalResult;    
-        }
-    }
-    else if (m_arg0 instanceof Range) {
-        XObject evalResult = ((Range)m_arg0).execute(xctxt);
-        if (evalResult instanceof ResultSequence) {
-           arg0ResultSeq = (ResultSequence)evalResult;    
-        }
-    }
-    else if (m_arg0 instanceof LocPathIterator) {
-        arg0ResultSeq = new ResultSequence();
-        
-        DTMManager dtmMgr = (DTMManager)xctxt;        
-        DTMIterator arg0DtmIterator = m_arg0.asIterator(xctxt, contextNode);        
-        
-        int nextNodeDtmHandle;
-        
-        while ((nextNodeDtmHandle = arg0DtmIterator.nextNode()) != DTM.NULL) {
-            XNodeSet xNodeSetItem = new XNodeSet(nextNodeDtmHandle, dtmMgr);            
-            String nodeStrValue = xNodeSetItem.str();
-            
-            DTM dtm = dtmMgr.getDTM(nextNodeDtmHandle);
-            
-            if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
-               XSUntyped xsUntyped = new XSUntyped(nodeStrValue);
-               arg0ResultSeq.add(xsUntyped);
-            }
-            else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
-               XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
-               arg0ResultSeq.add(xsUntypedAtomic);
-            }
-            else {
-               XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
-               arg0ResultSeq.add(xsUntypedAtomic);
-            }                        
-        }
-    }
-    else if (m_arg0 instanceof Operation) {
-        arg0ResultSeq = new ResultSequence();
-        
-        XObject evalResult = ((Operation)m_arg0).execute(xctxt);
-        if (evalResult instanceof ResultSequence) {
-           ResultSequence resultSeq = (ResultSequence)evalResult;
-           for (int idx = 0; idx < resultSeq.size(); idx++) {
-              arg0ResultSeq.add(resultSeq.item(idx));  
-           }
-        }
-    }
-    
-    if (arg0ResultSeq == null) {
-        throw new javax.xml.transform.TransformerException("The first argument of fn:string-join, "
-                                                              + "did not evaluate to a sequence.", 
-                                                                             srcLocator);    
-    }
-    
-    String strJoinSeparator = null;
-    
-    if (m_arg1 == null) {
-       strJoinSeparator = "";   
-    }    
-    else if (m_arg1 instanceof XString) {
-       strJoinSeparator = ((XString)m_arg1).str();
-    }
-    else {
-       throw new javax.xml.transform.TransformerException("The second argument of fn:string-join must "
-                                                               + "be absent, or it must be a string value.", 
-                                                                                     srcLocator);
-    }
-    
-    StringBuffer strBuffer = new StringBuffer();
-    
-    for (int idx = 0; idx < arg0ResultSeq.size(); idx++) {
-       String strValue = null;
-       
-       XObject xObject = arg0ResultSeq.item(idx);
-       if (xObject instanceof XSUntyped) {
-          strValue = ((XSUntyped)xObject).stringValue();     
-       }
-       else if (xObject instanceof XSUntypedAtomic) {
-          strValue = ((XSUntypedAtomic)xObject).stringValue();  
-       }
-       else if (xObject instanceof XSAnyType) {
-          strValue = ((XSAnyType)xObject).stringValue(); 
-       }
-       else {
-          strValue = xObject.str(); 
-       }
-       
-       if (idx < (arg0ResultSeq.size() - 1)) {
-          strBuffer.append(strValue + strJoinSeparator);    
-       }
-       else {
-          strBuffer.append(strValue);    
-       }
-    }        
-
-    return new XString(strBuffer.toString());
+		XObject result = null;		
+	    
+	    SourceLocator srcLocator = xctxt.getSAXLocator();	    	    
+	    
+	    ResultSequence arg0ResultSeq = null;
+	    
+	    if ((m_arg0 instanceof Function) || (m_arg0 instanceof Variable) || 
+	    		                            (m_arg0 instanceof Range) || 
+	    		                            (m_arg0 instanceof Operation)) {
+	        XObject evalResult = m_arg0.execute(xctxt);
+	        if (evalResult instanceof ResultSequence) {
+	           arg0ResultSeq = (ResultSequence)evalResult;   
+	        }                
+	    }    
+	    else if (m_arg0 instanceof LocPathIterator) {
+	        arg0ResultSeq = new ResultSequence();
+	        	        
+	        final int contextNode = xctxt.getCurrentNode();
+	        DTMIterator arg0DtmIterator = m_arg0.asIterator(xctxt, contextNode);        
+	        
+	        int nodeDtmHandle;	        
+	        DTMManager dtmMgr = (DTMManager)xctxt;
+	        
+	        while ((nodeDtmHandle = arg0DtmIterator.nextNode()) != DTM.NULL) {
+	            XNodeSet xNodeSetItem = new XNodeSet(nodeDtmHandle, dtmMgr);            
+	            String nodeStrValue = xNodeSetItem.str();
+	            
+	            DTM dtm = dtmMgr.getDTM(nodeDtmHandle);
+	            
+	            if (dtm.getNodeType(nodeDtmHandle) == DTM.ELEMENT_NODE) {
+	               XSUntyped xsUntyped = new XSUntyped(nodeStrValue);
+	               arg0ResultSeq.add(xsUntyped);
+	            }
+	            else if (dtm.getNodeType(nodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
+	               XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
+	               arg0ResultSeq.add(xsUntypedAtomic);
+	            }
+	            else {
+	               XSUntypedAtomic xsUntypedAtomic = new XSUntypedAtomic(nodeStrValue);
+	               arg0ResultSeq.add(xsUntypedAtomic);
+	            }                        
+	        }
+	    }
+	    else if (m_arg0 instanceof ResultSequence) {
+	    	arg0ResultSeq = (ResultSequence)m_arg0;
+	    }
+	    else {
+	    	XObject evalResult = m_arg0.execute(xctxt);
+	    	if (evalResult instanceof ResultSequence) {
+	    		arg0ResultSeq = new ResultSequence();
+	    		ResultSequence resultSeq = (ResultSequence)evalResult;
+	    		for (int idx = 0; idx < resultSeq.size(); idx++) {
+	    			arg0ResultSeq.add(resultSeq.item(idx));  
+	    		}
+	    	}
+	    }
+	    
+	    if (arg0ResultSeq == null) {
+	        throw new javax.xml.transform.TransformerException("The 1st argument of function call fn:string-join, did "
+	        		                                            + "not evaluate to a sequence.", srcLocator);    
+	    }
+	    
+	    String strJoinSeparator = null;
+	    
+	    if (m_arg1 == null) {
+	       strJoinSeparator = "";   
+	    }    
+	    else if (m_arg1 instanceof XString) {
+	       strJoinSeparator = ((XString)m_arg1).str();
+	    }
+	    else {
+	       throw new javax.xml.transform.TransformerException("The 2nd argument of function call fn:string-join must be "
+	       		                                               + "absent, or it must be a string value.", srcLocator);
+	    }
+	    
+	    StringBuffer strBuffer = new StringBuffer();
+	    
+	    for (int idx = 0; idx < arg0ResultSeq.size(); idx++) {       
+	       XObject xObject = arg0ResultSeq.item(idx);       
+	       String strValue = XslTransformEvaluationHelper.getStrVal(xObject);       
+	       if (idx < (arg0ResultSeq.size() - 1)) {
+	          strBuffer.append(strValue + strJoinSeparator);    
+	       }
+	       else {
+	          strBuffer.append(strValue);    
+	       }
+	    }
+	    
+	    result = new XSString(strBuffer.toString());
+	
+	    return result;
   }
 
   /**
