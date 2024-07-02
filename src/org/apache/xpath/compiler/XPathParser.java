@@ -143,7 +143,7 @@ public class XPathParser
   
   static XPathDynamicFunctionCall m_dynamicFunctionCall = null;
   
-  static XPathForExpr m_forExpr = null;
+  static List<XPathForExpr> m_forExprList = new ArrayList<XPathForExpr>();
   
   static XPathLetExpr m_letExpr = null;
   
@@ -1223,7 +1223,7 @@ public class XPathParser
 	          }
 	      }
 	  }
-	  else if (m_isXPathExprBeginParse && isSequenceOrArrayBegin()) {
+	  else if (m_isXPathExprBeginParse && isLiteralSequenceOrArrayBegin()) {
     	  // We consider XPath parse of sequence and array, in similar 
     	  // way. These are different lexically only, by virtue of 
     	  // sequence/array expression's delimiter characters.
@@ -1546,7 +1546,7 @@ public class XPathParser
    * Check whether, there's beginning of a literal sequence constructor, 
    * or literal array constructor.
    */
-  private boolean isSequenceOrArrayBegin() {
+  private boolean isLiteralSequenceOrArrayBegin() {
 	  return tokenIs("(") || tokenIs("[") || (tokenIs("array") && lookahead('{', 1));
   }
 
@@ -1570,7 +1570,8 @@ public class XPathParser
          // argument).
          String prevTokenStr = getTokenRelative(-2);
          
-         m_forExpr = ForExpr(prevTokenStr);
+         XPathForExpr forExpr = ForExpr(prevTokenStr);
+         m_forExprList.add(forExpr);
       }
       else if (tokenIs("let")) {
          // To check, whether XPath 'let' expression is a sub expression of another 
@@ -1754,6 +1755,17 @@ public class XPathParser
                xPathReturnExprStrPartsList.add(m_token);
                nextToken();
             }
+         }
+         else if (tokenIs(',') && (",".equals(prevTokenStrBeforeFor) || "(".equals(prevTokenStrBeforeFor))) {
+        	String lstStrJoin = xPathReturnExprStrPartsList.toString();
+        	lstStrJoin = lstStrJoin.substring(1, lstStrJoin.length()-1);
+        	if (isStrHasBalancedParentheses(lstStrJoin, '(', ')')) {        	
+        	   break;
+        	}
+        	else {
+        	   xPathReturnExprStrPartsList.add(m_token);
+               nextToken();
+        	}
          }
          else {
             xPathReturnExprStrPartsList.add(m_token);
@@ -3527,6 +3539,14 @@ public class XPathParser
 			
 			ExprSingle();
 		}
+    }
+    else if (tokenIs("for")) {
+       ExprSingle();
+    }
+    else if (tokenIs("function")) {
+       appendOp(2, OpCodes.OP_INLINE_FUNCTION);
+        
+       m_xpath_inlineFunction = InlineFunctionExpr();               
     }
     else {       
        Expr();       

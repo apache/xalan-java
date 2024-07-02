@@ -39,6 +39,7 @@ import org.apache.xpath.axes.WalkerFactory;
 import org.apache.xpath.compiler.XPathParser.XPathArrayConsFuncArgs;
 import org.apache.xpath.compiler.XPathParser.XPathSequenceConsFuncArgs;
 import org.apache.xpath.composite.XPathArrayConstructor;
+import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.functions.FuncExtFunctionAvailable;
@@ -1454,15 +1455,17 @@ private static final boolean DEBUG = false;
    * @param opPos The current position in the m_opMap array.
    *
    * @return the compiled "for" expression returned as an object of class
-   *         ForExpr. An object of class ForExpr has already been created and
-   *         populated by XPath expression parser, and this function just 
-   *         returns that object to the caller of this method.
+   *         XPathForExpr. An object of class XPathForExpr has already been
+   *         created and populated by XPath expression parser, and this function 
+   *         just returns that object to the caller of this method.
    *
    * @throws TransformerException if a error occurs creating the Expression.
    */
   Expression forExpr(int opPos) throws TransformerException
   {
-      return XPathParser.m_forExpr;
+	  XPathForExpr forExpr = (XPathParser.m_forExprList).get(0);
+	  (XPathParser.m_forExprList).remove(0);
+      return forExpr;	  
   }
   
   /**
@@ -1471,8 +1474,8 @@ private static final boolean DEBUG = false;
    * @param opPos The current position in the m_opMap array.
    *
    * @return the compiled "let" expression returned as an object of class
-   *         LetExpr. An object of class LetExpr has already been created
-   *         and populated by XPath expression parser, and this function 
+   *         XPathLetExpr. An object of class XPathLetExpr has already been
+   *         created and populated by XPath expression parser, and this function 
    *         just returns that object to the caller of this method.
    *
    * @throws TransformerException if a error occurs creating the Expression.
@@ -1488,8 +1491,8 @@ private static final boolean DEBUG = false;
    * @param opPos The current position in the m_opMap array.
    *
    * @return the compiled quantified expression returned as an object of class
-   *         QuantifiedExpr. An object of class QuantifiedExpr has already
-   *         been created and populated by XPath expression parser, and 
+   *         XPathQuantifiedExpr. An object of class XPathQuantifiedExpr has
+   *         already been created and populated by XPath expression parser, and 
    *         this function just returns that object to the caller of this
    *         method.
    *
@@ -1529,8 +1532,8 @@ private static final boolean DEBUG = false;
 		 XPathParser.m_xpathSequenceConstructor = null;
 	  }
 	  else {
-		 // We use an implementation within this 'else' branch, when XPath
-		 // built-in function call arguments are literal sequence expressions.
+		 // We use an implementation here, when XPath built-in function call 
+		 // arguments are literal sequence expressions.
 		 XPathSequenceConsFuncArgs xpathSeqConsFuncArgs = XPathParser.m_xpathSequenceConsFuncArgs;
 		 
 		 List<XPathSequenceConstructor> seqConsList = xpathSeqConsFuncArgs.getSeqFuncArgList();		 

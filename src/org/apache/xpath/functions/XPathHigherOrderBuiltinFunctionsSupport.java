@@ -23,6 +23,7 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
@@ -136,6 +137,10 @@ public class XPathHigherOrderBuiltinFunctionsSupport extends Function3Args {
                     resultSeq.add(xsUntypedAtomic);
                 }                        
             }
+        }
+        else if (xpathExpr instanceof XPathForExpr) { 
+           XObject xObj = ((XPathForExpr)xpathExpr).execute(xctxt);
+           resultSeq = (ResultSequence)xObj;
         }
 
         return resultSeq;

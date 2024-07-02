@@ -1,28 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"                
                 version="3.0">
                 
-    <!-- Author: mukulg@apache.org -->       
+   <!-- Author: mukulg@apache.org -->
    
-    <!-- Test for the XPath 3.1 fn:for-each-pair() function. This function 
-         also tests having literal sequence arguments, to XPath built-in 
-         functions.
-         
-         An XPath function expression used within this stylesheet, is
-         borrowed from XPath 3.1 F&O spec.
-    -->                                              
+   <!-- An XSLT test case to test, an XPath 3.1 string-join function.
+        Within this test case, the function string-join's 1st argument
+        is an XPath literal 'for' expression.
+    -->                
 
-    <xsl:output method="xml" indent="yes"/>
+   <xsl:output method="text"/>
 
-    <xsl:template match="/">
-	   <result>
-		  <one>
-             <xsl:value-of select="for-each-pair(('a', 'b', 'c'), ('x', 'y', 'z'), function($x,$y) {$x || $y})"/>
-	      </one>
-	   </result>
-    </xsl:template>
-    
-    <!--
+   <xsl:template match="/">
+	  <xsl:value-of select="string-join(for $x in ('hello','how','are','you') return $x, '|')"/>
+   </xsl:template>
+   
+   <!--
       * Licensed to the Apache Software Foundation (ASF) under one
       * or more contributor license agreements. See the NOTICE file
       * distributed with this work for additional information
@@ -38,5 +31,6 @@
       * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
       * See the License for the specific language governing permissions and
       * limitations under the License.
-    -->
+   -->
+
 </xsl:stylesheet>

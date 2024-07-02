@@ -1,28 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"               
                 version="3.0">
                 
-    <!-- Author: mukulg@apache.org -->       
+   <!-- Author: mukulg@apache.org -->
    
-    <!-- Test for the XPath 3.1 fn:for-each-pair() function. This function 
-         also tests having literal sequence arguments, to XPath built-in 
-         functions.
-         
-         An XPath function expression used within this stylesheet, is
-         borrowed from XPath 3.1 F&O spec.
-    -->                                              
+   <!-- An XSLT test case to test, an XPath 3.1 function 
+        call fn:for-each-pair, where the 1st two arguments of
+        this function are XPath literal 'for' expressions and
+        3rd argument of this function call is a literal inline 
+        function expression. -->                
 
-    <xsl:output method="xml" indent="yes"/>
+   <xsl:output method="xml" indent="yes"/>
 
-    <xsl:template match="/">
-	   <result>
-		  <one>
-             <xsl:value-of select="for-each-pair(('a', 'b', 'c'), ('x', 'y', 'z'), function($x,$y) {$x || $y})"/>
-	      </one>
-	   </result>
-    </xsl:template>
-    
-    <!--
+   <xsl:template match="/">
+     <result>
+	    <xsl:value-of select="for-each-pair(for $x in (1,2,3) return $x, for $x in (4,5,6) return $x, function($a,$b) {$a+$b})"/>
+	 </result>
+   </xsl:template>
+   
+   <!--
       * Licensed to the Apache Software Foundation (ASF) under one
       * or more contributor license agreements. See the NOTICE file
       * distributed with this work for additional information
@@ -39,4 +35,5 @@
       * See the License for the specific language governing permissions and
       * limitations under the License.
     -->
+
 </xsl:stylesheet>
