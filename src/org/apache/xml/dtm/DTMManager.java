@@ -24,6 +24,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.dom.DOMSource;
 
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.res.XMLErrorResources;
 import org.apache.xml.res.XMLMessages;
 import org.apache.xml.utils.PrefixResolver;
@@ -33,8 +34,6 @@ import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
-
-import xml.xpath31.processor.types.XSAnyType;
 
 /**
  * A DTMManager instance can be used to create DTM and
@@ -259,7 +258,7 @@ public abstract class DTMManager
    * Given an XDM sequence, this method constructs an Xalan-J DTM object 
    * from the information provided in an input sequence. 
    */
-  public DTM createDTMFromResultSequence(ResultSequence resultSeq) {
+  public DTM getDTMFromResultSequence(ResultSequence resultSeq) {
       try {
           DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
           
@@ -267,27 +266,16 @@ public abstract class DTMManager
      
           DocumentBuilder dBuilder = dbf.newDocumentBuilder();
           Document document = dBuilder.newDocument();
-          
-          long currentTimeMills = System.currentTimeMillis();
-          String elemNameSuffix = (Long.valueOf(currentTimeMills)).toString();
-          Element documentElem = document.createElement("t0_" + elemNameSuffix);          
+                    
+          Element docElem = document.createElement("docElem1");          
           for (int idx = 0; idx < resultSeq.size(); idx++) {
-              XObject obj1 = resultSeq.item(idx);
-              String strVal = null;
-              if (obj1 instanceof XSAnyType) {
-                  strVal = ((XSAnyType)obj1).stringValue();     
-              }
-              else {
-                  strVal = obj1.str();    
-              }
-              
-              Text textNode = document.createTextNode(strVal);
-              Element nTempElem = document.createElement("n0");
-              nTempElem.appendChild(textNode);
-              documentElem.appendChild(nTempElem);
+              XObject seqItem = resultSeq.item(idx);
+              String strVal = XslTransformEvaluationHelper.getStrVal(seqItem); 
+              Text textNode = document.createTextNode(strVal);              
+              docElem.appendChild(textNode);
           }
           
-          document.appendChild(documentElem);
+          document.appendChild(docElem);
           
           return getDTM(new DOMSource(document), true, null, false, false);
       }

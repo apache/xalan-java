@@ -25,6 +25,7 @@ import java.io.ObjectInputStream;
 import java.util.List;
 import java.util.Vector;
 
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.NodeSorter;
@@ -34,15 +35,18 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.utils.IntStack;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
-import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XBooleanStatic;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
@@ -50,6 +54,7 @@ import org.apache.xpath.operations.Operation;
 import org.apache.xpath.operations.Variable;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
+import xml.xpath31.processor.types.XSBoolean;
 
 /**
  * Implementation of the XSLT 3.0 xsl:for-each instruction.
@@ -60,8 +65,6 @@ import xml.xpath31.processor.types.XSAnyAtomicType;
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  *         (XSLT 3 specific changes, to this class)
- * 
- * Ref : https://www.w3.org/TR/xslt-30/#for-each
  * 
  * @xsl.usage advanced
  */
@@ -324,6 +327,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     
     XPathContext xctxt = transformer.getXPathContext();
     
+    final int sourceNode = xctxt.getCurrentNode();
+    
     DTMIterator resultSeqDtmIterator = null;
     
     if (m_selectExpression instanceof Function) {
@@ -333,7 +338,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
             XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                                   (DTMManager)xctxt);             
             if (nodeSet == null) {
-               processSequenceOrArray(transformer, xctxt, evalResult);               
+               processSequenceOrArray(transformer, xctxt, evalResult);
+               
                return;
             }
             else {
@@ -341,7 +347,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
             }
         }
         else if (evalResult instanceof XPathArray) {
-        	processSequenceOrArray(transformer, xctxt, evalResult);               
+        	processSequenceOrArray(transformer, xctxt, evalResult);
+        	
             return;
         }
     }
@@ -353,7 +360,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
             XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                                   (DTMManager)xctxt);             
             if (nodeSet == null) {
-                processSequenceOrArray(transformer, xctxt, evalResult);                
+                processSequenceOrArray(transformer, xctxt, evalResult);
+                
                 return;
             }
             else {
@@ -368,14 +376,16 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         	ResultSequence resultSequence = new ResultSequence();
         	resultSequence.add(evalResult);
         	
-        	processSequenceOrArray(transformer, xctxt, resultSequence);        	
+        	processSequenceOrArray(transformer, xctxt, resultSequence);
+        	
             return;
         }        
         else if (evalResult instanceof ResultSequence) {
             XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                                   (DTMManager)xctxt);             
             if (nodeSet == null) {
-                processSequenceOrArray(transformer, xctxt, evalResult);                
+                processSequenceOrArray(transformer, xctxt, evalResult);
+                
                 return;
             }
             else {
@@ -383,7 +393,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
             }
         }
         else if (evalResult instanceof XPathArray) {
-        	processSequenceOrArray(transformer, xctxt, evalResult);        	
+        	processSequenceOrArray(transformer, xctxt, evalResult);
+        	
         	return;
         }
     }    
@@ -394,7 +405,8 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
             XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                                   (DTMManager)xctxt);             
             if (nodeSet == null) {
-                processSequenceOrArray(transformer, xctxt, evalResult);                
+                processSequenceOrArray(transformer, xctxt, evalResult);
+                
                 return;
             }
             else {
@@ -404,12 +416,13 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     }    
     else if (m_selectExpression instanceof XPathForExpr) {
         XPathForExpr forExpr = (XPathForExpr)m_selectExpression;
-        XObject  evalResult = forExpr.execute(xctxt);
+        XObject evalResult = forExpr.execute(xctxt);
         
         XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)evalResult, 
                                                                                                               (DTMManager)xctxt);             
         if (nodeSet == null) {
-            processSequenceOrArray(transformer, xctxt, evalResult);            
+            processSequenceOrArray(transformer, xctxt, evalResult);
+            
             return;
         }
         else {
@@ -425,16 +438,123 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
                                                                                                               (DTMManager)xctxt);             
         if (nodeSet == null) {
             processSequenceOrArray(transformer, xctxt, evalResult);
+            
             return;
         }
         else {
             resultSeqDtmIterator = nodeSet.iter(); 
         }
     }
+    else if (m_selectExpression instanceof LocPathIterator) {
+        LocPathIterator locPathIterator = (LocPathIterator)m_selectExpression;
+        
+        boolean isProcessAsNodeset = true;
+        DTMIterator dtmIter = null;                     
+        try {
+           dtmIter = locPathIterator.asIterator(xctxt, sourceNode);
+        }
+        catch (ClassCastException ex) {
+           isProcessAsNodeset = false;
+        }
+        
+        if (!isProcessAsNodeset) {        	
+        	String xpathPatternStr = m_xpath.getPatternString();
+            
+            if (xpathPatternStr.startsWith("$") && xpathPatternStr.contains("[") && 
+                                                                              xpathPatternStr.endsWith("]")) {              
+               // Here we handle the case, when an XPath expression has syntax of type $varName[expr], 
+               // for example $varName[1], $varName[$idx], $varName[funcCall(arg)] etc, and $varName 
+               // resolves to a 'ResultSequence' object.
+                     
+               String varRefXPathExprStr = "$" + xpathPatternStr.substring(1, xpathPatternStr.indexOf('['));
+               String xpathIndexExprStr = xpathPatternStr.substring(xpathPatternStr.indexOf('[') + 1, 
+                                                                                            xpathPatternStr.indexOf(']'));
+               ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+               List<XMLNSDecl> prefixTable = null;
+               if (elemTemplateElement != null) {
+                  prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+               }
+                    
+               // Evaluate the, variable reference XPath expression
+               if (prefixTable != null) {
+                  varRefXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                                   varRefXPathExprStr, 
+                                                                                                   prefixTable);
+               }
+               
+               SourceLocator srcLocator = xctxt.getSAXLocator();
+               
+               XPath xpathObj = new XPath(varRefXPathExprStr, srcLocator, 
+                                                                     xctxt.getNamespaceContext(), XPath.SELECT, null);
+               
+               Vector vars = new Vector();
+               QName varQName = new QName(xpathPatternStr.substring(1, xpathPatternStr.indexOf('[')));
+               vars.add(varQName);
+               int globalsSize = 0;               
+               xpathObj.fixupVariables(vars, globalsSize);
+               
+               XObject varEvalResult = xpathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());                              
+                    
+               // Evaluate an, xdm sequence index XPath expression
+               if (prefixTable != null) {
+                  xpathIndexExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                                  xpathIndexExprStr, 
+                                                                                                  prefixTable);
+               }
+                                   
+               if (varEvalResult instanceof ResultSequence) {
+                  ResultSequence inpResultSeq = (ResultSequence)varEvalResult;
+                       
+                  Integer indexVal = null;
+                  try {
+                     indexVal = Integer.valueOf(xpathIndexExprStr);
+                  }
+                  catch (NumberFormatException ex) {
+                	 // NO OP
+                  }
+                  
+                  ResultSequence rSeq = new ResultSequence();
+                  
+                  if (indexVal != null) {
+                     XObject xObj = inpResultSeq.item((int)indexVal - 1);
+                     rSeq.add(xObj);                       
+                  }                  
+                  else {
+                     for (int idx = 0; idx < inpResultSeq.size(); idx++) {
+                    	XObject seqItem = inpResultSeq.item(idx);
+                    	
+                    	setXPathContextForXslSequenceProcessing(inpResultSeq.size(), idx, seqItem, xctxt);
+                    	
+                    	xpathObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);                                                      
+                        XObject xObj = xpathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
+                        if (xObj != null) {
+	                        if (xObj instanceof XSBoolean) {
+	                        	XSBoolean xsBoolean = (XSBoolean)xObj;
+	                        	if (xsBoolean.bool()) {
+	                        	   rSeq.add(seqItem);
+	                        	}
+	                        }
+	                        else if (xObj instanceof XBooleanStatic) {
+	                        	XBooleanStatic xBool = (XBooleanStatic)xObj;
+	                        	if (xBool.bool()) {
+	                        	   rSeq.add(seqItem);
+	                        	}
+	                        }	                        
+                        }
+                        
+                    	resetXPathContextForXslSequenceProcessing(seqItem, xctxt);
+                     }
+                     
+                     processSequenceOrArray(transformer, xctxt, rSeq);
+                     
+                     return;
+                  }
+                }          
+             }
+          }
+    }
     
     DTMIterator sourceNodes = null;
-    
-    final int sourceNode = xctxt.getCurrentNode();
     
     if (resultSeqDtmIterator != null) {
        sourceNodes = resultSeqDtmIterator;

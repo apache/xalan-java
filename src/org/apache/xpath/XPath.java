@@ -418,9 +418,9 @@ public class XPath implements Serializable, ExpressionOwner
                
           if (xpathPatternStr.startsWith("$") && xpathPatternStr.contains("[") && 
                                                                             xpathPatternStr.endsWith("]")) {              
-             // Within this 'if' clause, we handle the case, where the XPath expression is
-             // syntactically of type $varName[expr], for example $varName[1], $varName[$idx],
-             // $varName[funcCall(arg)] etc, and $varName resolves to a 'ResultSequence' object.
+        	 // Here we handle the case, when an XPath expression has syntax of type $varName[expr], 
+             // for example $varName[1], $varName[$idx], $varName[funcCall(arg)] etc, and $varName 
+             // resolves to a 'ResultSequence' object.
                    
              String varRefXPathExprStr = "$" + xpathPatternStr.substring(1, xpathPatternStr.indexOf('['));
              String xpathIndexExprStr = xpathPatternStr.substring(xpathPatternStr.indexOf('[') + 1, 
