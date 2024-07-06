@@ -603,6 +603,9 @@ public class Keywords
   /** map:remove function string. */
   public static final String FUNC_MAP_REMOVE = "remove";
   
+  /** map:find function string. */
+  public static final String FUNC_MAP_FIND = "find";
+  
   /** parse-json function string. */
   public static final String FUNC_PARSE_JSON = "parse-json";
   

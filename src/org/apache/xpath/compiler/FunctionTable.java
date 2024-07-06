@@ -519,6 +519,9 @@ public class FunctionTable
   
   /** The 'apply()' id. */
   public static final int FUNC_APPLY = 165;
+  
+  /** The 'map:find()' id. */
+  public static final int FUNC_MAP_FIND = 166;
 
   // Proprietary
 
@@ -566,7 +569,7 @@ public class FunctionTable
 		                                                      new Integer(FUNC_MAP_KEYS), new Integer(FUNC_MAP_CONTAINS), 
 		                                                      new Integer(FUNC_MAP_GET), new Integer(FUNC_MAP_PUT), 
 		                                                      new Integer(FUNC_MAP_ENTRY), new Integer(FUNC_MAP_FOREACH),
-		                                                      new Integer(FUNC_MAP_REMOVE) };
+		                                                      new Integer(FUNC_MAP_REMOVE), new Integer(FUNC_MAP_FIND) };
   
   static final List<Integer> XPATH_MAP_FUNC_IDS_ARR = Arrays.asList(XPATH_MAP_FUNC_IDS);
   
@@ -612,7 +615,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 166;
+  private static final int NUM_BUILT_IN_FUNCS = 167;
 
   /**
    * Number of built-in functions that may be added.
@@ -864,6 +867,7 @@ public class FunctionTable
     m_functions[FUNC_MAP_ENTRY] = org.apache.xpath.functions.map.FuncMapEntry.class;
     m_functions[FUNC_MAP_FOREACH] = org.apache.xpath.functions.map.FuncMapForEach.class;
     m_functions[FUNC_MAP_REMOVE] = org.apache.xpath.functions.map.FuncMapRemove.class;
+    m_functions[FUNC_MAP_FIND] = org.apache.xpath.functions.map.FuncMapFind.class;
     
     // XPath 3.1 built-in functions configurations for the array 
     // functions namespace http://www.w3.org/2005/xpath-functions/array    
@@ -1173,6 +1177,8 @@ public class FunctionTable
                          new Integer(FunctionTable.FUNC_MAP_FOREACH));
          m_functionId.put(Keywords.FUNC_MAP_REMOVE,
                          new Integer(FunctionTable.FUNC_MAP_REMOVE));
+         m_functionId.put(Keywords.FUNC_MAP_FIND,
+                         new Integer(FunctionTable.FUNC_MAP_FIND));
          
          // XPath 3.1 functions configurations for the array functions 
          // namespace http://www.w3.org/2005/xpath-functions/array
@@ -1437,6 +1443,9 @@ public class FunctionTable
 		      case Keywords.FUNC_MAP_FOREACH:
 			     id = FunctionTable.FUNC_MAP_FOREACH;
 			     break;
+		      case Keywords.FUNC_MAP_FIND:
+				 id = FunctionTable.FUNC_MAP_FIND;
+				 break;
 			  default:
 				 // NO OP 
 		}

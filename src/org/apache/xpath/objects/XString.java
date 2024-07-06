@@ -30,6 +30,8 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 
+import xml.xpath31.processor.types.XSString;
+
 /**
  * This class represents an XPath string object, and is capable of
  * converting the string to other types, such as a number.
@@ -384,8 +386,10 @@ public class XString extends XObject implements XMLString
       // nodeset function.
     else if (obj2 instanceof XNodeSet)
       return obj2.equals(this);
-    else if(obj2 instanceof XNumber)
-    	return obj2.equals(this);
+    else if (obj2 instanceof XNumber)
+      return obj2.equals(this);
+    else if (obj2 instanceof XSString)
+      return str().equals(((XSString)obj2).stringValue()); 
     else
       return str().equals(obj2.toString());
   }

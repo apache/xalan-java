@@ -1318,11 +1318,30 @@ public class XPathParser
               else {
                  List<String> xpathExprTokens = new ArrayList<String>();                 
                  
-                 while (!tokenIs(",") && (m_token != null)) {
-                    if (!lookahead(null, 1)) {
-                       xpathExprTokens.add(m_token);
+                 if (tokenIs("map")) {
+                	 xpathExprTokens.add(m_token);
+                	 nextToken();
+                	 xpathExprTokens.add(m_token);
+                	 nextToken();
+                	 while (!tokenIs("}") && (m_token != null)) {
+                		if (tokenIs(':')) {
+                		   xpathExprTokens.add(" " + m_token + " ");
+                		}
+                		else {
+                		   xpathExprTokens.add(m_token);
+                		}
+                		nextToken();
+                	 }
+                	 xpathExprTokens.add(m_token);
+                	 nextToken();
+                 }
+                 else {
+                    while (!tokenIs(",") && (m_token != null)) {
+                       if (!lookahead(null, 1)) {
+                          xpathExprTokens.add(m_token);
+                       }
+                       nextToken();
                     }
-                    nextToken();
                  }
                  
                  if (xpathExprTokens.size() > 0) {
