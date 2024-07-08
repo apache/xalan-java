@@ -26,14 +26,13 @@ import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.FunctionTable;
+import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathNamedFunctionReference;
 import org.apache.xpath.objects.InlineFunctionParameter;
-import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
@@ -72,21 +71,21 @@ public class FuncApply extends Function2Args {
  
         if (arg0 instanceof XPathNamedFunctionReference) {
             XPathNamedFunctionReference namedFuncRef = (XPathNamedFunctionReference)arg0;
-            result = getFnApplyResult(arg1, namedFuncRef, xctxt);
+            result = getFnApplyResult(namedFuncRef, arg1, xctxt);
         }
         else if (arg0 instanceof XPathInlineFunction) {
         	XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)arg0;
-        	result = evaluateInlineFunctionRef(arg1, xpathInlineFunction, xctxt);
+        	result = getFnApplyResult(xpathInlineFunction, arg1, xctxt);
         }
         else if (arg0 instanceof Variable) {           
             XObject arg0VarValue = arg0.execute(xctxt);
             if (arg0VarValue instanceof XPathNamedFunctionReference) {
             	XPathNamedFunctionReference namedFuncRef = (XPathNamedFunctionReference)arg0VarValue;
-            	result = getFnApplyResult(arg1, namedFuncRef, xctxt);
+            	result = getFnApplyResult(namedFuncRef, arg1, xctxt);
             }
             else if (arg0VarValue instanceof XPathInlineFunction) {            	
             	XPathInlineFunction xpathInlineFunction = (XPathInlineFunction)arg0VarValue;
-            	result = evaluateInlineFunctionRef(arg1, xpathInlineFunction, xctxt);
+            	result = getFnApplyResult(xpathInlineFunction, arg1, xctxt);
             }
             else {
                 throw new javax.xml.transform.TransformerException("FORG0006 : The 1st argument provided to function call fn:apply, "
@@ -127,11 +126,11 @@ public class FuncApply extends Function2Args {
   }
   
   /**
-   * Get the result of function call, fn:apply where the 1st argument to fn:apply
-   * function call is an XPath named function reference.
+   * Get the result of fn:apply function call, where function call fn:apply's
+   * 1st argument is an XPath named function reference.
    */
-  private XObject getFnApplyResult(Expression arg1XpathExpr, XPathNamedFunctionReference 
-		                                                namedFuncRef, XPathContext xctxt) throws TransformerException {
+  private XObject getFnApplyResult(XPathNamedFunctionReference namedFuncRef, 
+		                           Expression arg1XpathExpr, XPathContext xctxt) throws TransformerException {
 	  XObject result = null;
 	  
 	  XObject arg1XObj = arg1XpathExpr.execute(xctxt);
@@ -190,12 +189,11 @@ public class FuncApply extends Function2Args {
   }
   
   /**
-   * Evaluate a function call to inline function expression, that gets its arguments
-   * from an xdm array. This method effectively produces the result of fn:apply 
-   * function call.
+   * Evaluate an XPath function call, to an inline function expression that gets its arguments
+   * from an xdm array. This method effectively produces the result of fn:apply function call.
    */
-  private XObject evaluateInlineFunctionRef(Expression arrXPathExpr, XPathInlineFunction 
-		                                             xpathInlineFunction, XPathContext xctxt) throws TransformerException {
+  private XObject getFnApplyResult(XPathInlineFunction xpathInlineFunction, Expression arrXPathExpr, 
+		                           XPathContext xctxt) throws TransformerException {
 	  
 	  XObject result = null;
 	  
@@ -211,34 +209,27 @@ public class FuncApply extends Function2Args {
 	  Map<QName, XObject> inlineFunctionVarMap = xctxt.getXPathVarMap();
 	  inlineFunctionVarMap.put(new QName(funcRefVarName), xpathInlineFunction);
 
-	  XObject arg1XObj = arrXPathExpr.execute(xctxt);
-	  if (!(arg1XObj instanceof XPathArray)) {
+	  if (!(arrXPathExpr instanceof XPathArrayConstructor)) {
 		  throw new TransformerException("XPTY0004 : The 2nd argument provided to function call fn:apply, "
-				                                                    + "is not an array reference.", srcLocator);   
+				                                                             + "is not an array reference.", srcLocator);   
 	  }
 	  else {
-		  XPathArray arg1XpathArr = (XPathArray)arg1XObj;
+		  XPathArrayConstructor xpathArrConstructor = (XPathArrayConstructor)arrXPathExpr;
+		  List<String> arrConsXPathParts = xpathArrConstructor.getArrayConstructorXPathParts();
 		  List<InlineFunctionParameter> inlineFuncParamList = xpathInlineFunction.getFuncParamList();
-		  if (arg1XpathArr.size() != inlineFuncParamList.size()) {
+		  if (arrConsXPathParts.size() != inlineFuncParamList.size()) {
 			  throw new TransformerException("XPTY0004 : The number of arguments provided with function call fn:apply() "
-					                                                        + "within its arguments array is " + arg1XpathArr.size() + ". Required " + 
-					                                                         inlineFuncParamList.size() + "."); 
+					                                     + "within its arguments array is " + arrConsXPathParts.size() + 
+					                                       ". Required " + inlineFuncParamList.size() + "."); 
 		  }
 		  else {
 			  List<String> dfcArgList = new ArrayList<String>();
-			  for (int idx = 0; idx < arg1XpathArr.size(); idx++) {
-				  XObject argObj = arg1XpathArr.get(idx);
-				  String argStr = null;
-				  if (argObj instanceof XNumber) {
-					  argStr = ((XNumber)argObj).num() + "";	 
-				  }
-				  else {
-					  argStr = XslTransformEvaluationHelper.getStrVal(argObj);  
-				  }
-				  dfcArgList.add(argStr);
+			  for (int idx = 0; idx < arrConsXPathParts.size(); idx++) {
+				  String arrItemXPathStr = arrConsXPathParts.get(idx);				  
+				  dfcArgList.add(arrItemXPathStr);
 			  }
-
 			  xpathDynamicFunctionCall.setArgList(dfcArgList);
+			  
 			  result = xpathDynamicFunctionCall.execute(xctxt);
 		  }
 	  }

@@ -255,10 +255,8 @@ public class SequenceTypeSupport {
             
             if ((xctxt != null) && (sequenceTypeXPathExprStr != null) && (seqExpectedTypeDataInp == null)) {
                seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, 
-                                                                          xctxt.getNamespaceContext(), XPath.SELECT, null, true);
-            
-               seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-            
+                                                                          xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
+               seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
                seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
             }
             else {
@@ -471,9 +469,12 @@ public class SequenceTypeSupport {
             	   // Recursive call to this function
                    result = convertXdmValueToAnotherType(srcResultSeq.item(0), sequenceTypeXPathExprStr, seqExpectedTypeDataInp, xctxt);   
                }
+               else if ((srcResultSeq.size() > 1) && (itemTypeOccurenceIndicator == 0)) {
+            	   return null;
+               }
                else {
                    result = castResultSequenceInstance(srcValue, sequenceTypeXPathExprStr, seqExpectedTypeDataInp, xctxt, srcLocator, 
-                                                                                                               expectedType, itemTypeOccurenceIndicator);
+                                                                                                         expectedType, itemTypeOccurenceIndicator);
                }
             }
             else if (srcValue instanceof XPathInlineFunction) {
@@ -1093,6 +1094,11 @@ public class SequenceTypeSupport {
                            		                                                + "The supplied value " + nodeName + " does'nt match an expected "
                            		                                                + "type.", srcLocator); 
                         }
+                        
+                        if (nodeSetLen == 1) {
+                           result = nodeSetItem;                           
+                           return result;
+                        }
                      }
                      else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
                         String attrNodeKindTestNodeName = sequenceTypeKindTest.getNodeLocalName();
@@ -1114,6 +1120,11 @@ public class SequenceTypeSupport {
                             		                                             + "The supplied value " + nodeName + " does'nt match an expected "
                             		                                             + "type.", srcLocator);  
                         }
+                        
+                        if (nodeSetLen == 1) {
+                           result = nodeSetItem;                            
+                           return result;
+                        }
                      }
                      else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.TEXT_NODE) {
                         if (sequenceTypeKindTest.getKindVal() == TEXT_KIND) {
@@ -1123,6 +1134,11 @@ public class SequenceTypeSupport {
                            String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr;
                            throw new TransformerException("XTTE0570 : The required item type of an xdm input node is " + dataTypeStr + ". "
                                                                                 + "The supplied value does'nt match an expected type.", srcLocator); 
+                        }
+                        
+                        if (nodeSetLen == 1) {
+                           result = nodeSetItem;                            
+                           return result;
                         }
                      }
                      else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.NAMESPACE_NODE) {
@@ -1134,9 +1150,19 @@ public class SequenceTypeSupport {
                             throw new TransformerException("XTTE0570 : The required item type of an xdm input node is " + dataTypeStr + ". "
                                                                                  + "The supplied value does'nt match an expected type.", srcLocator);
                          }
+                         
+                         if (nodeSetLen == 1) {
+                            result = nodeSetItem;                             
+                            return result;
+                         }
                      }
                      else {
-                         convertedResultSeq.add(nodeSetItem); 
+                         convertedResultSeq.add(nodeSetItem);
+                         
+                         if (nodeSetLen == 1) {
+                            result = nodeSetItem;                             
+                            return result;
+                         }
                      }
                   }
                }
@@ -1149,13 +1175,19 @@ public class SequenceTypeSupport {
                                                                (seqExpectedTypeDataInp.getSequenceTypeKindTest() == null)))) {
                      String nodeStrVal = nodeSetItem.str();
                      XObject xObject = convertXdmValueToAnotherType(new XSString(nodeStrVal), sequenceTypeNewXPathExprStr, 
-                                                                                                                    seqExpectedTypeDataInp, xctxt);                       
-                     convertedResultSeq.add(xObject);
+                                                                                                                    seqExpectedTypeDataInp, xctxt);                     
+                     if (nodeSetLen == 1) {
+                         result = xObject;                             
+                         return result;
+                     }
+                     else {
+                    	 convertedResultSeq.add(xObject); 
+                     }
                   }
                   else {
                      throw new TransformerException("XTTE0570 : The source xdm sequence cannot be cast "
                                                                                          + "to the provided sequence type.", srcLocator); 
-                  }
+                  }                  
                }
             }
             
