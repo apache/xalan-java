@@ -43,6 +43,11 @@ import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.types.XSNegativeInteger;
+import org.apache.xpath.types.XSNonNegativeInteger;
+import org.apache.xpath.types.XSNonPositiveInteger;
+import org.apache.xpath.types.XSPositiveInteger;
+import org.apache.xpath.types.XSShort;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -83,8 +88,8 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  */
 public class XSConstructorFunctionUtil {
 	
-	// The below mentioned class fields define constants used by implementation
-	// within this class, and also within few other parts of XalanJ's XSLT 3.0 
+	// The following class field declarations specify constants used by implementation
+	// within this class, and also within few other parts of Xalan-J's XSLT 3.0 
 	// implementation.				
 	
 	public static final String UTF_16 = "UTF-16";
@@ -100,13 +105,13 @@ public class XSConstructorFunctionUtil {
      * stylesheet functions, defined with syntax xsl:function), and XPath 3.1 constructor
      * function calls (having syntax with form xs:type_name(..)).
      * 
-     *  XalanJ's extension function handling mechanism, treats at a syntactic level,
+     *  Xalan-J's extension function handling mechanism, treats at a syntactic level,
      *  function calls belonging to non-null XML namespaces as calls to extension functions.
      *  
      *  Currently, XPath function calls having XML namespaces
      *  http://www.w3.org/2005/xpath-functions, http://www.w3.org/2005/xpath-functions/math
-     *  within function names, are treated as XPath built-in functions by XalanJ. All other
-     *  XPath function calls having other non-null XML namespaces are handling by XalanJ's
+     *  within function names, are treated as XPath built-in functions by Xalan-J. All other
+     *  XPath function calls having other non-null XML namespaces are handling by Xalan-J's
      *  extension function handling mechanism.
      */
     public static XObject processFuncExtFunctionOrXPathOpn(XPathContext xctxt, Expression expr, 
@@ -231,7 +236,47 @@ public class XSConstructorFunctionUtil {
 	                        evalResultSequence = (new XSInteger()).constructor(argSequence);
 	                        evalResult = evalResultSequence.item(0); 
 	                        
-	                        break;                
+	                        break;
+	                    case Keywords.XS_NON_POSITIVE_INTEGER :
+	                        for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+	                            XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+	                            argSequence.add(new XSNonPositiveInteger(XslTransformEvaluationHelper.getStrVal(argVal)));
+	                        }
+	    
+	                        evalResultSequence = (new XSNonPositiveInteger()).constructor(argSequence);
+	                        evalResult = evalResultSequence.item(0); 
+	                        
+	                        break;
+	                    case Keywords.XS_NEGATIVE_INTEGER :
+	                        for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+	                            XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+	                            argSequence.add(new XSNegativeInteger(XslTransformEvaluationHelper.getStrVal(argVal)));
+	                        }
+	    
+	                        evalResultSequence = (new XSNegativeInteger()).constructor(argSequence);
+	                        evalResult = evalResultSequence.item(0); 
+	                        
+	                        break;
+	                    case Keywords.XS_NON_NEGATIVE_INTEGER :
+	                        for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+	                            XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+	                            argSequence.add(new XSNonNegativeInteger(XslTransformEvaluationHelper.getStrVal(argVal)));
+	                        }
+	    
+	                        evalResultSequence = (new XSNonNegativeInteger()).constructor(argSequence);
+	                        evalResult = evalResultSequence.item(0); 
+	                        
+	                        break;
+	                    case Keywords.XS_POSITIVE_INTEGER :
+	                        for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+	                            XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+	                            argSequence.add(new XSPositiveInteger(XslTransformEvaluationHelper.getStrVal(argVal)));
+	                        }
+	    
+	                        evalResultSequence = (new XSPositiveInteger()).constructor(argSequence);
+	                        evalResult = evalResultSequence.item(0); 
+	                        
+	                        break;
 	                    case Keywords.XS_LONG :
 	                        for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
 	                            XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
@@ -249,6 +294,16 @@ public class XSConstructorFunctionUtil {
 	                        }
 	    
 	                        evalResultSequence = (new XSInt()).constructor(argSequence);
+	                        evalResult = evalResultSequence.item(0);
+	                        
+	                        break;
+	                    case Keywords.XS_SHORT :
+	                        for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+	                            XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+	                            argSequence.add(new XSShort(XslTransformEvaluationHelper.getStrVal(argVal)));
+	                        }
+	    
+	                        evalResultSequence = (new XSShort()).constructor(argSequence);
 	                        evalResult = evalResultSequence.item(0);
 	                        
 	                        break;

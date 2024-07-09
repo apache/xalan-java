@@ -16,6 +16,7 @@
  */
 package org.apache.xpath.composite;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -44,6 +45,11 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.types.XSNegativeInteger;
+import org.apache.xpath.types.XSNonNegativeInteger;
+import org.apache.xpath.types.XSNonPositiveInteger;
+import org.apache.xpath.types.XSPositiveInteger;
+import org.apache.xpath.types.XSShort;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -130,6 +136,16 @@ public class SequenceTypeSupport {
         
     public static int XS_ANY_ATOMIC_TYPE = 50;
     
+    public static int XS_NON_POSITIVE_INTEGER = 51;
+    
+    public static int XS_NEGATIVE_INTEGER = 52;
+    
+    public static int XS_NON_NEGATIVE_INTEGER = 53;
+    
+    public static int XS_POSITIVE_INTEGER = 54;
+    
+    public static int XS_SHORT = 55;
+    
     /** 
      * Following are constant int values denoting XPath 3.1 sequence
      * type KindTest expressions.
@@ -167,6 +183,72 @@ public class SequenceTypeSupport {
     public static String INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR = "INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR";
     
     private static List<XMLNSDecl> fPrefixTable;
+    
+    /**
+     * This class specifies min and max value ranges, for XML Schema 
+     * built-in types derived from type xs:integer as defined by 
+     * XML Schema specification.
+     * 
+     * @author Mukul Gandhi <mukulg@apache.org>
+     */
+    public static class XmlSchemaBuiltInNumericTypeRange {
+    	
+    	public class LONG {
+    	   public long minInclusive = -9223372036854775808l;
+    	   public long maxInclusive = 9223372036854775807l;
+    	}
+    	
+    	public class INT {
+     	   public int minInclusive = -2147483648;
+     	   public int maxInclusive = 2147483647;
+     	}
+    	
+    	public class SHORT {
+      	   public short minInclusive = -32768;
+      	   public short maxInclusive = 32767;
+      	}
+    	
+    	public class BYTE {
+       	   public byte minInclusive = -128;
+       	   public byte maxInclusive = 127;
+       	}
+    	
+    	public class NON_NEGATIVE_INTEGER {
+           public byte minInclusive = 0;
+        }
+    	
+    	public class POSITIVE_INTEGER {
+           public byte minInclusive = 1;
+        }
+    	
+    	public class NON_POSITIVE_INTEGER {
+           public byte maxInclusive = 0;
+        }
+    	
+    	public class NEGATIVE_INTEGER {
+           public byte maxInclusive = -1;
+        }
+    	
+    	public class UNSIGNED_LONG {
+    	   public long minInclusive = 0;
+           public BigInteger maxInclusive = new BigInteger("18446744073709551615");
+        }
+    	
+    	public class UNSIGNED_INT {
+     	   public int minInclusive = 0;
+           public long maxInclusive = 4294967295l;
+        }
+    	
+    	public class UNSIGNED_SHORT {
+      	   public int minInclusive = 0;
+           public int maxInclusive = 65535;
+        }
+    	
+    	public class UNSIGNED_BYTE {
+       	   public int minInclusive = 0;
+           public int maxInclusive = 255;
+        }
+    }
     
     /**
      * This method converts/casts an XPath 3.1 xdm source value represented by an
@@ -659,11 +741,26 @@ public class SequenceTypeSupport {
             else if (expectedType == XS_INTEGER) {
                result = new XSInteger(srcStrVal); 
             }
+            else if (expectedType == XS_NON_POSITIVE_INTEGER) {
+               result = new XSNonPositiveInteger(srcStrVal); 
+            }
+            else if (expectedType == XS_NEGATIVE_INTEGER) {
+               result = new XSNegativeInteger(srcStrVal); 
+            }
+            else if (expectedType == XS_NON_NEGATIVE_INTEGER) {
+               result = new XSNonNegativeInteger(srcStrVal); 
+            }
+            else if (expectedType == XS_POSITIVE_INTEGER) {
+               result = new XSPositiveInteger(srcStrVal); 
+            }
             else if (expectedType == XS_LONG) {
                result = new XSLong(srcStrVal); 
             }
             else if (expectedType == XS_INT) {
                result = new XSInt(srcStrVal);
+            }
+            else if (expectedType == XS_SHORT) {
+               result = new XSShort(srcStrVal);
             }
             else if (expectedType == XS_DOUBLE) {
                result = new XSDouble(srcStrVal); 
@@ -727,11 +824,26 @@ public class SequenceTypeSupport {
             else if (expectedType == XS_INT) {
                 result = new XSInt(srcStrVal);
             }
+            else if (expectedType == XS_SHORT) {
+                result = new XSShort(srcStrVal);
+            }
             else if (expectedType == XS_LONG) {
                 result = new XSLong(srcStrVal); 
             }
             else if (expectedType == XS_INTEGER) {
                 result = new XSInteger(srcStrVal); 
+            }
+            else if (expectedType == XS_NON_POSITIVE_INTEGER) {
+                result = new XSNonPositiveInteger(srcStrVal); 
+            }
+            else if (expectedType == XS_NEGATIVE_INTEGER) {
+                result = new XSNegativeInteger(srcStrVal); 
+            }
+            else if (expectedType == XS_NON_NEGATIVE_INTEGER) {
+                result = new XSNonNegativeInteger(srcStrVal); 
+            }
+            else if (expectedType == XS_POSITIVE_INTEGER) {
+                result = new XSPositiveInteger(srcStrVal); 
             }
             else if (srcXsNumericType instanceof XSDecimal) {           
                if (expectedType == XS_DECIMAL) {
@@ -821,11 +933,26 @@ public class SequenceTypeSupport {
        else if (sequenceType == XS_INTEGER) {
           dataTypeName = "xs:integer";
        }
+       else if (sequenceType == XS_NON_POSITIVE_INTEGER) {
+          dataTypeName = "xs:nonPositiveInteger";
+       }
+       else if (sequenceType == XS_NEGATIVE_INTEGER) {
+          dataTypeName = "xs:negativeInteger";
+       }
+       else if (sequenceType == XS_NON_NEGATIVE_INTEGER) {
+          dataTypeName = "xs:nonNegativeInteger";
+       }
+       else if (sequenceType == XS_POSITIVE_INTEGER) {
+          dataTypeName = "xs:positiveInteger";
+       }
        else if (sequenceType == XS_LONG) {
           dataTypeName = "xs:long"; 
        }
        else if (sequenceType == XS_INT) {
           dataTypeName = "xs:int"; 
+       }
+       else if (sequenceType == XS_SHORT) {
+          dataTypeName = "xs:short"; 
        }
        else if (sequenceType == XS_DOUBLE) {
           dataTypeName = "xs:double"; 

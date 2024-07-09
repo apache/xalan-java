@@ -283,6 +283,21 @@ public class XObject extends Expression implements Serializable, Cloneable
   
   /** Constant for an XPath 3.1 map object type */
   public static final int CLASS_MAP = 26;
+  
+  /** Constant for XPath 3.1 xs:nonPositiveInteger object type */
+  public static final int CLASS_NON_POSITIVE_INTEGER = 27;
+  
+  /** Constant for XPath 3.1 xs:negativeInteger object type */
+  public static final int CLASS_NEGATIVE_INTEGER = 28;
+  
+  /** Constant for XPath 3.1 xs:nonNegativeInteger object type */
+  public static final int CLASS_NON_NEGATIVE_INTEGER = 29;
+  
+  /** Constant for XPath 3.1 xs:positiveInteger object type */
+  public static final int CLASS_POSITIVE_INTEGER = 30;
+  
+  /** Constant for XPath 3.1 xs:short object type */
+  public static final int CLASS_SHORT = 31;
 
   /** Represents an unresolved variable type as an integer. */
   public static final int CLASS_UNRESOLVEDVARIABLE = 600;    

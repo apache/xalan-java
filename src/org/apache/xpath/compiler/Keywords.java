@@ -398,11 +398,26 @@ public class Keywords
   /** xs:integer data type string. */
   public static final String XS_INTEGER = "integer";
   
+  /** xs:nonPositiveInteger data type string. */
+  public static final String XS_NON_POSITIVE_INTEGER = "nonPositiveInteger";
+  
+  /** xs:negativeInteger data type string. */
+  public static final String XS_NEGATIVE_INTEGER = "negativeInteger";
+  
+  /** xs:nonNegativeInteger data type string. */
+  public static final String XS_NON_NEGATIVE_INTEGER = "nonNegativeInteger";
+  
+  /** xs:positiveInteger data type string. */
+  public static final String XS_POSITIVE_INTEGER = "positiveInteger";
+  
   /** xs:long data type string. */
   public static final String XS_LONG = "long";
   
   /** xs:int data type string. */
   public static final String XS_INT = "int";
+  
+  /** xs:short data type string. */
+  public static final String XS_SHORT = "short";
   
   /** xs:date data type string. */
   public static final String XS_DATE = "date";

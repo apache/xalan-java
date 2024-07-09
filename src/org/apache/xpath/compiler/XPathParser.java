@@ -4955,12 +4955,27 @@ public class XPathParser
 	     case Keywords.XS_INTEGER :
 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_INTEGER);
 	        break;
+	     case Keywords.XS_NON_POSITIVE_INTEGER :
+		    xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_NON_POSITIVE_INTEGER);
+		    break;
+	     case Keywords.XS_NEGATIVE_INTEGER :
+			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_NEGATIVE_INTEGER);
+			break;
+	     case Keywords.XS_NON_NEGATIVE_INTEGER :
+			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER);
+			break;
+	     case Keywords.XS_POSITIVE_INTEGER :
+			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_POSITIVE_INTEGER);
+			break;
 	     case Keywords.XS_LONG :
 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_LONG);
 	        break; 
 	     case Keywords.XS_INT :
 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_INT);
 	        break;
+	     case Keywords.XS_SHORT :
+		    xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_SHORT);
+		    break;
 	     case Keywords.XS_DATE :
 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DATE);
 	        break;
@@ -5038,10 +5053,10 @@ public class XPathParser
 			    switch (m_token) {
 		            case Keywords.FUNC_BOOLEAN_STRING :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.BOOLEAN);
-		               break;
+		                break;
 		            case Keywords.XS_STRING :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.STRING);
-		               break; 
+		                break; 
 		            case Keywords.XS_NORMALIZED_STRING :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_NORMALIZED_STRING);
 		                break;
@@ -5053,52 +5068,67 @@ public class XPathParser
 		                break; 
 		            case Keywords.XS_FLOAT :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_FLOAT);
-		               break; 
+		                break; 
 		            case Keywords.XS_DOUBLE :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_DOUBLE);
-		               break;
+		                break;
 		            case Keywords.XS_INTEGER :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_INTEGER);
-		               break;
+		                break;
+		            case Keywords.XS_NON_POSITIVE_INTEGER :
+		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_NON_POSITIVE_INTEGER);
+		                break;
+		            case Keywords.XS_NEGATIVE_INTEGER :
+		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_NEGATIVE_INTEGER);
+		                break;
+		            case Keywords.XS_NON_NEGATIVE_INTEGER :
+		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER);
+		                break;
+		            case Keywords.XS_POSITIVE_INTEGER :
+		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_POSITIVE_INTEGER);
+		                break;
 		            case Keywords.XS_LONG :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_LONG);
-		               break; 
+		                break; 
 		            case Keywords.XS_INT :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_INT);
-		               break;
+		                break;
+		            case Keywords.XS_SHORT :
+		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_SHORT);
+		                break;
 		            case Keywords.XS_DATE :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_DATE);
-		               break;
+		                break;
 		            case Keywords.XS_DATETIME :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_DATETIME);
-		               break;
+		                break;
 		            case Keywords.XS_DURATION :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_DURATION);
-		               break;
+		                break;
 		            case Keywords.XS_YEAR_MONTH_DURATION :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_YEARMONTH_DURATION);
-		               break;
+		                break;
 		            case Keywords.XS_DAY_TIME_DURATION :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_DAYTIME_DURATION);
-		               break;
+		                break;
 		            case Keywords.XS_TIME :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_TIME);
-		               break;
+		                break;
 		            case Keywords.XS_ANY_URI :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_ANY_URI);
-		               break;
+		                break;
 		            case Keywords.XS_QNAME :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_QNAME);
-		               break;
+		                break;
 		            case Keywords.XS_ANY_ATOMIC_TYPE :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_ANY_ATOMIC_TYPE);
-		               break;
+		                break;
 		            case Keywords.XS_UNTYPED_ATOMIC :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_UNTYPED_ATOMIC);
-		               break;
+		                break;
 		            case Keywords.XS_UNTYPED :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_UNTYPED);
-		               break;
+		                break;
 		            default :
 		               throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
 	                                                                                          + "recognized, within the provided sequence type expression.");        
@@ -5149,10 +5179,10 @@ public class XPathParser
 			    switch (m_token) {
 		            case Keywords.FUNC_BOOLEAN_STRING :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.BOOLEAN);
-		               break;
+		                break;
 		            case Keywords.XS_STRING :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.STRING);
-		               break; 
+		                break; 
 		            case Keywords.XS_NORMALIZED_STRING :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_NORMALIZED_STRING);
 		                break;
@@ -5164,54 +5194,69 @@ public class XPathParser
 		                break; 
 		            case Keywords.XS_FLOAT :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_FLOAT);
-		               break; 
+		                break; 
 		            case Keywords.XS_DOUBLE :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DOUBLE);
-		               break;
+		                break;
 		            case Keywords.XS_INTEGER :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_INTEGER);
-		               break;
+		                break;
+		            case Keywords.XS_NON_POSITIVE_INTEGER :
+		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_NON_POSITIVE_INTEGER);
+		                break;
+		            case Keywords.XS_NEGATIVE_INTEGER :
+		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_NEGATIVE_INTEGER);
+		                break;
+		            case Keywords.XS_NON_NEGATIVE_INTEGER :
+		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER);
+		                break;
+		            case Keywords.XS_POSITIVE_INTEGER :
+		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_POSITIVE_INTEGER);
+		                break;
 		            case Keywords.XS_LONG :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_LONG);
-		               break; 
+		                break; 
 		            case Keywords.XS_INT :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_INT);
-		               break;
+		                break;
+		            case Keywords.XS_SHORT :
+		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_SHORT);
+		                break;
 		            case Keywords.XS_DATE :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DATE);
-		               break;
+		                break;
 		            case Keywords.XS_DATETIME :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DATETIME);
-		               break;
+		                break;
 		            case Keywords.XS_DURATION :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DURATION);
-		               break;
+		                break;
 		            case Keywords.XS_YEAR_MONTH_DURATION :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_YEARMONTH_DURATION);
-		               break;
+		                break;
 		            case Keywords.XS_DAY_TIME_DURATION :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DAYTIME_DURATION);
-		               break;
+		                break;
 		            case Keywords.XS_TIME :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_TIME);
-		               break;
+		                break;
 		            case Keywords.XS_ANY_URI :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_ANY_URI);
-		               break;
+		                break;
 		            case Keywords.XS_QNAME :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_QNAME);
-		               break;
+		                break;
 		            case Keywords.XS_ANY_ATOMIC_TYPE :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_ANY_ATOMIC_TYPE);
-		               break;
+		                break;
 		            case Keywords.XS_UNTYPED_ATOMIC :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNTYPED_ATOMIC);
-		               break;
+		                break;
 		            case Keywords.XS_UNTYPED :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNTYPED);
-		               break;
+		                break;
 		            default :
-		               throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
+		                throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
 	                                                                                          + "recognized, within the provided sequence type expression.");        
 	         }
 			 
@@ -5228,11 +5273,11 @@ public class XPathParser
 			    
 			    switch (m_token) {
 		            case Keywords.FUNC_BOOLEAN_STRING :
-		               valueSequenceTypeData.setSequenceType(SequenceTypeSupport.BOOLEAN);
-		               break;
+		                valueSequenceTypeData.setSequenceType(SequenceTypeSupport.BOOLEAN);
+		                break;
 		            case Keywords.XS_STRING :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.STRING);
-		               break; 
+		                break; 
 		            case Keywords.XS_NORMALIZED_STRING :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_NORMALIZED_STRING);
 		                break;
@@ -5244,54 +5289,69 @@ public class XPathParser
 		                break; 
 		            case Keywords.XS_FLOAT :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_FLOAT);
-		               break; 
+		                break; 
 		            case Keywords.XS_DOUBLE :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DOUBLE);
-		               break;
+		                break;
 		            case Keywords.XS_INTEGER :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_INTEGER);
-		               break;
+		                break;
+		            case Keywords.XS_NON_POSITIVE_INTEGER :
+		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_NON_POSITIVE_INTEGER);
+		                break;
+		            case Keywords.XS_NEGATIVE_INTEGER :
+		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_NEGATIVE_INTEGER);
+		                break;
+		            case Keywords.XS_NON_NEGATIVE_INTEGER :
+		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER);
+		                break;
+		            case Keywords.XS_POSITIVE_INTEGER :
+		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_POSITIVE_INTEGER);
+		                break;
 		            case Keywords.XS_LONG :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_LONG);
-		               break; 
+		                break; 
 		            case Keywords.XS_INT :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_INT);
-		               break;
+		                break;
+		            case Keywords.XS_SHORT :
+		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_SHORT);
+		                break;
 		            case Keywords.XS_DATE :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DATE);
-		               break;
+		                break;
 		            case Keywords.XS_DATETIME :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DATETIME);
-		               break;
+		                break;
 		            case Keywords.XS_DURATION :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DURATION);
-		               break;
+		                break;
 		            case Keywords.XS_YEAR_MONTH_DURATION :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_YEARMONTH_DURATION);
-		               break;
+		                break;
 		            case Keywords.XS_DAY_TIME_DURATION :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DAYTIME_DURATION);
-		               break;
+		                break;
 		            case Keywords.XS_TIME :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_TIME);
-		               break;
+		                break;
 		            case Keywords.XS_ANY_URI :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_ANY_URI);
-		               break;
+		                break;
 		            case Keywords.XS_QNAME :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_QNAME);
-		               break;
+		                break;
 		            case Keywords.XS_ANY_ATOMIC_TYPE :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_ANY_ATOMIC_TYPE);
-		               break;
+		                break;
 		            case Keywords.XS_UNTYPED_ATOMIC :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNTYPED_ATOMIC);
-		               break;
+		                break;
 		            case Keywords.XS_UNTYPED :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNTYPED);
-		               break;
+		                break;
 		            default :
-		               throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
+		                throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
 	                                                                                          + "recognized, within the provided sequence type expression.");        
 	         }    	             	         
 	         

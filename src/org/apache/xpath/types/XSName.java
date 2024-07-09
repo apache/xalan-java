@@ -51,7 +51,8 @@ public class XSName extends XSToken {
 	}
 
 	/*
-	 * Find whether, a string represents a valid XML 1.1 name.
+	 * This method determines whether, a string represents a valid 
+	 * XML 1.1 name.
 	 */
 	private boolean isValidXMLName(String str) {
 	   boolean isValidXMLName = true;

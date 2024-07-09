@@ -26,7 +26,6 @@ import org.apache.xerces.util.XMLChar;
  * @author : Mukul Gandhi <mukulg@apache.org>
  */
 public class XSNCName extends XSName {
-
 	
 	private static final long serialVersionUID = 576149921912815294L;
 	
@@ -51,8 +50,8 @@ public class XSNCName extends XSName {
 	}
 
 	/*
-	 * Find whether, a string represents a valid XML NCName according 
-	 * to 'XML namespaces 1.0 recommendation'.
+	 * This method determines whether, a string represents a valid XML NCName 
+	 * according to 'XML namespaces 1.0 recommendation'.
 	 */
 	private boolean isValidNCName(String str) {
 	   boolean isValidXMLNCName = XMLChar.isValidNCName(str);	   

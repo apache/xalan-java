@@ -42,6 +42,11 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.types.XSNegativeInteger;
+import org.apache.xpath.types.XSNonNegativeInteger;
+import org.apache.xpath.types.XSNonPositiveInteger;
+import org.apache.xpath.types.XSPositiveInteger;
+import org.apache.xpath.types.XSShort;
 
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
@@ -146,18 +151,17 @@ public class InstanceOf extends Operation
           isInstanceOf = true;
       }
       else if (xdmValue instanceof XNumber) {          
-          if ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_DOUBLE) || (seqTypeData.getSequenceType() == 
-        		                                                                    SequenceTypeSupport.XS_DECIMAL) || 
-        		                                                          (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE)) {
+          if ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_DOUBLE) || 
+        	  (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_DECIMAL) || 
+        	  (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE)) {
              isInstanceOf = true; 
           }
           else {
              double doubleVal = ((XNumber)xdmValue).num();
-             if ((doubleVal == (int)doubleVal) && ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_INTEGER) || 
-                                                   (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_LONG) ||
-                                                   (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_INT) || 
-                                                   (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
-                 isInstanceOf = true; 
+             if ((doubleVal == (int)doubleVal) && ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_INTEGER) ||            		                               
+                                                   (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {            	 
+                 // Revisit
+            	 isInstanceOf = true; 
              }
           }
       }
@@ -169,18 +173,46 @@ public class InstanceOf extends Operation
     		                                     (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSInt) && ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_INT) || 
-    		                                   (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if (((xdmValue instanceof XSInteger) || (xdmValue instanceof XSNonNegativeInteger) || 
+    		    (xdmValue instanceof XSPositiveInteger) || (xdmValue instanceof XSNonPositiveInteger) || 
+    		    (xdmValue instanceof XSNegativeInteger) || (xdmValue instanceof XSLong) || 
+    		    (xdmValue instanceof XSInt) || (xdmValue instanceof XSShort)) && 
+    		     ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_INTEGER) ||                                                   
+                  (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {          
+    	  isInstanceOf = true;                    
+      }
+      else if (((xdmValue instanceof XSLong) || (xdmValue instanceof XSInt) || (xdmValue instanceof XSShort)) && 
+    		                                      ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_LONG) || 
+                                                   (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {          
+    	  isInstanceOf = true;
+      }
+      else if (((xdmValue instanceof XSInt) || (xdmValue instanceof XSShort)) && 
+    		                                     ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_INT) || 
+    		                                      (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {    	  
+    	  isInstanceOf = true;
+      }      
+      else if ((xdmValue instanceof XSShort) && ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_SHORT) || 
+                                                 (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSLong) && ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_LONG) || 
-    		                                    (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if (((xdmValue instanceof XSNonNegativeInteger) || (xdmValue instanceof XSPositiveInteger)) && 
+    		                                                   ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER) || 
+                                                                (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {    	  
+    	  isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSPositiveInteger) && ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_POSITIVE_INTEGER) || 
+                                                           (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
-      else if ((xdmValue instanceof XSInteger) && ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_INTEGER) || 
-    		                                       (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+      else if (((xdmValue instanceof XSNonPositiveInteger) || (xdmValue instanceof XSNegativeInteger)) && 
+    		   ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_NON_POSITIVE_INTEGER) || 
+                (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
+      else if ((xdmValue instanceof XSNegativeInteger) && ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_NEGATIVE_INTEGER) || 
+                                                           (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+          isInstanceOf = true;
+      }      
       else if ((xdmValue instanceof XSDecimal) && ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_DECIMAL) || 
     		                                       (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
