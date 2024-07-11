@@ -42,11 +42,16 @@ import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSNegativeInteger;
 import org.apache.xpath.types.XSNonNegativeInteger;
 import org.apache.xpath.types.XSNonPositiveInteger;
 import org.apache.xpath.types.XSPositiveInteger;
 import org.apache.xpath.types.XSShort;
+import org.apache.xpath.types.XSUnsignedByte;
+import org.apache.xpath.types.XSUnsignedInt;
+import org.apache.xpath.types.XSUnsignedLong;
+import org.apache.xpath.types.XSUnsignedShort;
 
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
@@ -193,6 +198,26 @@ public class InstanceOf extends Operation
       }      
       else if ((xdmValue instanceof XSShort) && ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_SHORT) || 
                                                  (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSByte) && ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_BYTE) || 
+                                                (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSUnsignedLong) && ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_UNSIGNED_LONG) || 
+                                                        (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSUnsignedInt) && ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_UNSIGNED_INT) || 
+                                                       (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSUnsignedShort) && ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_UNSIGNED_SHORT) || 
+                                                         (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
+          isInstanceOf = true;
+      }
+      else if ((xdmValue instanceof XSUnsignedByte) && ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_UNSIGNED_BYTE) || 
+                                                        (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
           isInstanceOf = true;
       }
       else if (((xdmValue instanceof XSNonNegativeInteger) || (xdmValue instanceof XSPositiveInteger)) && 

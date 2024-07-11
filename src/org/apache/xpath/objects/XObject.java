@@ -298,6 +298,21 @@ public class XObject extends Expression implements Serializable, Cloneable
   
   /** Constant for XPath 3.1 xs:short object type */
   public static final int CLASS_SHORT = 31;
+  
+  /** Constant for XPath 3.1 xs:byte object type */
+  public static final int CLASS_BYTE = 32;
+  
+  /** Constant for XPath 3.1 xs:unsignedLong object type */
+  public static final int CLASS_UNSIGNED_LONG = 33;
+  
+  /** Constant for XPath 3.1 xs:unsignedInt object type */
+  public static final int CLASS_UNSIGNED_INT = 34;
+  
+  /** Constant for XPath 3.1 xs:unsignedShort object type */
+  public static final int CLASS_UNSIGNED_SHORT = 35;
+  
+  /** Constant for XPath 3.1 xs:unsignedByte object type */
+  public static final int CLASS_UNSIGNED_BYTE = 36;
 
   /** Represents an unresolved variable type as an integer. */
   public static final int CLASS_UNRESOLVEDVARIABLE = 600;    

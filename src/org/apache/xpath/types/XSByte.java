@@ -26,49 +26,48 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSDouble;
-import xml.xpath31.processor.types.XSInt;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
- * Implementation of XML Schema data type xs:short.
+ * Implementation of XML Schema data type xs:byte.
  * 
  * @author : Mukul Gandhi <mukulg@apache.org>
  */
-public class XSShort extends XSInt {
+public class XSByte extends XSShort {
 
-	private static final long serialVersionUID = -4155842894636269334L;
+	private static final long serialVersionUID = 6792786954418596442L;
 
 	/**
 	 * Class constructor.
 	 */
-	public XSShort() {
+	public XSByte() {
 	   // NO OP	
 	}
 	
 	/**
 	 * Class constructor.
 	 */
-	public XSShort(BigInteger val) throws TransformerException {
+	public XSByte(BigInteger val) throws TransformerException {
 	   super(val);
-	   int cmprResult1 = val.compareTo(BigInteger.valueOf(XmlSchemaBuiltinNumericType.Long.MIN_INCLUSIVE));
-	   int cmprResult2 = val.compareTo(BigInteger.valueOf(XmlSchemaBuiltinNumericType.Long.MAX_INCLUSIVE));
+	   int cmprResult1 = val.compareTo(BigInteger.valueOf(XmlSchemaBuiltinNumericType.Byte.MIN_INCLUSIVE));
+	   int cmprResult2 = val.compareTo(BigInteger.valueOf(XmlSchemaBuiltinNumericType.Byte.MAX_INCLUSIVE));
 	   if ((cmprResult1 == -1) || (cmprResult2 == 1)) {
-		  throw new TransformerException("FOCA0003 : An xs:short value's numeric range is [" + XmlSchemaBuiltinNumericType.Long.MIN_INCLUSIVE + 
-				                                              ", " + XmlSchemaBuiltinNumericType.Long.MAX_INCLUSIVE + "] with both inclusive.");  
+		  throw new TransformerException("FOCA0003 : An xs:byte value's numeric range is [" + XmlSchemaBuiltinNumericType.Byte.MIN_INCLUSIVE + 
+				                                              ", " + XmlSchemaBuiltinNumericType.Byte.MAX_INCLUSIVE + "] with both inclusive.");  
 	   }			   	
 	}
 	
 	/**
 	 * Class constructor.
 	 */
-	public XSShort(String val) throws TransformerException {
+	public XSByte(String val) throws TransformerException {
 	   super(val);
 	   BigInteger bigInt = (getValue()).toBigInteger(); 
-	   int cmprResult1 = bigInt.compareTo(BigInteger.valueOf(XmlSchemaBuiltinNumericType.Long.MIN_INCLUSIVE));
-	   int cmprResult2 = bigInt.compareTo(BigInteger.valueOf(XmlSchemaBuiltinNumericType.Long.MAX_INCLUSIVE));
+	   int cmprResult1 = bigInt.compareTo(BigInteger.valueOf(XmlSchemaBuiltinNumericType.Byte.MIN_INCLUSIVE));
+	   int cmprResult2 = bigInt.compareTo(BigInteger.valueOf(XmlSchemaBuiltinNumericType.Byte.MAX_INCLUSIVE));
 	   if ((cmprResult1 == -1) || (cmprResult2 == 1)) {
-		  throw new TransformerException("FOCA0003 : An xs:short value's numeric range is [" + XmlSchemaBuiltinNumericType.Long.MIN_INCLUSIVE + 
-				                                              ", " + XmlSchemaBuiltinNumericType.Long.MAX_INCLUSIVE + "] with both inclusive.");  
+		  throw new TransformerException("FOCA0003 : An xs:byte value's numeric range is [" + XmlSchemaBuiltinNumericType.Byte.MIN_INCLUSIVE + 
+				                                              ", " + XmlSchemaBuiltinNumericType.Byte.MAX_INCLUSIVE + "] with both inclusive.");  
 	   }
 	}
 	
@@ -78,8 +77,8 @@ public class XSShort extends XSInt {
 		XObject xObj = seq.item(0);
 		String strVal = XslTransformEvaluationHelper.getStrVal(xObj);
 		try {
-			XSShort xsShort = new XSShort(strVal);
-			result.add(xsShort);
+			XSByte xsByte = new XSByte(strVal);
+			result.add(xsByte);
 		} catch (TransformerException ex) {
 			// NO OP
 		}
@@ -129,7 +128,7 @@ public class XSShort extends XSInt {
 	}
 		
     public int getType() {
-		return CLASS_SHORT;
+		return CLASS_BYTE;
 	}
 		
     /**

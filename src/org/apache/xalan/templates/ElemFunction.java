@@ -40,11 +40,16 @@ import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XRTreeFrag;
+import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSNegativeInteger;
 import org.apache.xpath.types.XSNonNegativeInteger;
 import org.apache.xpath.types.XSNonPositiveInteger;
 import org.apache.xpath.types.XSPositiveInteger;
 import org.apache.xpath.types.XSShort;
+import org.apache.xpath.types.XSUnsignedByte;
+import org.apache.xpath.types.XSUnsignedInt;
+import org.apache.xpath.types.XSUnsignedLong;
+import org.apache.xpath.types.XSUnsignedShort;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
@@ -470,6 +475,21 @@ public class ElemFunction extends ElemTemplate
       }
       else if (sequenceType == SequenceTypeSupport.XS_SHORT) {
          result = new XSShort(strVal); 
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_BYTE) {
+         result = new XSByte(strVal); 
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_UNSIGNED_LONG) {
+         result = new XSUnsignedLong(strVal); 
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_UNSIGNED_INT) {
+         result = new XSUnsignedInt(strVal); 
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_UNSIGNED_SHORT) {
+         result = new XSUnsignedShort(strVal); 
+      }
+      else if (sequenceType == SequenceTypeSupport.XS_UNSIGNED_BYTE) {
+          result = new XSUnsignedByte(strVal); 
       }
       else if (sequenceType == SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER) {
          result = new XSNonNegativeInteger(strVal); 

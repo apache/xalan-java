@@ -43,11 +43,16 @@ import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.functions.FuncExtFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSNegativeInteger;
 import org.apache.xpath.types.XSNonNegativeInteger;
 import org.apache.xpath.types.XSNonPositiveInteger;
 import org.apache.xpath.types.XSPositiveInteger;
 import org.apache.xpath.types.XSShort;
+import org.apache.xpath.types.XSUnsignedByte;
+import org.apache.xpath.types.XSUnsignedInt;
+import org.apache.xpath.types.XSUnsignedLong;
+import org.apache.xpath.types.XSUnsignedShort;
 import org.w3c.dom.DOMConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -304,6 +309,56 @@ public class XSConstructorFunctionUtil {
 	                        }
 	    
 	                        evalResultSequence = (new XSShort()).constructor(argSequence);
+	                        evalResult = evalResultSequence.item(0);
+	                        
+	                        break;
+	                    case Keywords.XS_BYTE :
+	                        for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+	                            XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+	                            argSequence.add(new XSByte(XslTransformEvaluationHelper.getStrVal(argVal)));
+	                        }
+	    
+	                        evalResultSequence = (new XSByte()).constructor(argSequence);
+	                        evalResult = evalResultSequence.item(0);
+	                        
+	                        break;
+	                    case Keywords.XS_UNSIGNED_LONG :
+	                        for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+	                            XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+	                            argSequence.add(new XSUnsignedLong(XslTransformEvaluationHelper.getStrVal(argVal)));
+	                        }
+	    
+	                        evalResultSequence = (new XSUnsignedLong()).constructor(argSequence);
+	                        evalResult = evalResultSequence.item(0);
+	                        
+	                        break;
+	                    case Keywords.XS_UNSIGNED_INT :
+	                        for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+	                            XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+	                            argSequence.add(new XSUnsignedInt(XslTransformEvaluationHelper.getStrVal(argVal)));
+	                        }
+	    
+	                        evalResultSequence = (new XSUnsignedInt()).constructor(argSequence);
+	                        evalResult = evalResultSequence.item(0);
+	                        
+	                        break;
+	                    case Keywords.XS_UNSIGNED_SHORT :
+	                        for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+	                            XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+	                            argSequence.add(new XSUnsignedShort(XslTransformEvaluationHelper.getStrVal(argVal)));
+	                        }
+	    
+	                        evalResultSequence = (new XSUnsignedShort()).constructor(argSequence);
+	                        evalResult = evalResultSequence.item(0);
+	                        
+	                        break;
+	                    case Keywords.XS_UNSIGNED_BYTE :
+	                        for (int idx = 0; idx < funcExtFunction.getArgCount(); idx++) {
+	                            XObject argVal = (funcExtFunction.getArg(idx)).execute(xctxt);
+	                            argSequence.add(new XSUnsignedByte(XslTransformEvaluationHelper.getStrVal(argVal)));
+	                        }
+	    
+	                        evalResultSequence = (new XSUnsignedByte()).constructor(argSequence);
 	                        evalResult = evalResultSequence.item(0);
 	                        
 	                        break;

@@ -4976,12 +4976,27 @@ public class XPathParser
 	     case Keywords.XS_SHORT :
 		    xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_SHORT);
 		    break;
+	     case Keywords.XS_BYTE :
+			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_BYTE);
+			break;
+	     case Keywords.XS_UNSIGNED_LONG :
+			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_LONG);
+			break;
+	     case Keywords.XS_UNSIGNED_INT :
+			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_INT);
+			break;
+	     case Keywords.XS_UNSIGNED_SHORT :
+			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_SHORT);
+			break;
+	     case Keywords.XS_UNSIGNED_BYTE :
+			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_BYTE);
+			break;
 	     case Keywords.XS_DATE :
 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DATE);
 	        break;
 	     case Keywords.XS_DATETIME :
-	         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DATETIME);
-	         break;
+	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DATETIME);
+	        break;
 	     case Keywords.XS_DURATION :
 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DURATION);
 	        break;
@@ -5095,6 +5110,21 @@ public class XPathParser
 		                break;
 		            case Keywords.XS_SHORT :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_SHORT);
+		                break;
+		            case Keywords.XS_BYTE :
+		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_BYTE);
+		                break;
+		            case Keywords.XS_UNSIGNED_LONG :
+		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_LONG);
+		                break;
+		            case Keywords.XS_UNSIGNED_INT :
+		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_INT);
+		                break;
+		            case Keywords.XS_UNSIGNED_SHORT :
+		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_SHORT);
+		                break;
+		            case Keywords.XS_UNSIGNED_BYTE :
+		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_BYTE);
 		                break;
 		            case Keywords.XS_DATE :
 		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_DATE);
@@ -5222,6 +5252,21 @@ public class XPathParser
 		            case Keywords.XS_SHORT :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_SHORT);
 		                break;
+		            case Keywords.XS_BYTE :
+		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_BYTE);
+		                break;
+		            case Keywords.XS_UNSIGNED_LONG :
+		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_LONG);
+		                break;
+		            case Keywords.XS_UNSIGNED_INT :
+		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_INT);
+		                break;
+		            case Keywords.XS_UNSIGNED_SHORT :
+		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_SHORT);
+		                break;
+		            case Keywords.XS_UNSIGNED_BYTE :
+		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_BYTE);
+		                break;
 		            case Keywords.XS_DATE :
 		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DATE);
 		                break;
@@ -5316,6 +5361,21 @@ public class XPathParser
 		                break;
 		            case Keywords.XS_SHORT :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_SHORT);
+		                break;
+		            case Keywords.XS_BYTE :
+		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_BYTE);
+		                break;
+		            case Keywords.XS_UNSIGNED_LONG :
+		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_LONG);
+		                break;
+		            case Keywords.XS_UNSIGNED_INT :
+		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_INT);
+		                break;
+		            case Keywords.XS_UNSIGNED_SHORT :
+		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_SHORT);
+		                break;
+		            case Keywords.XS_UNSIGNED_BYTE :
+		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_BYTE);
 		                break;
 		            case Keywords.XS_DATE :
 		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DATE);

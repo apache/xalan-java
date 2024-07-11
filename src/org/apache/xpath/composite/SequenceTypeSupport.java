@@ -16,7 +16,6 @@
  */
 package org.apache.xpath.composite;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -34,7 +33,6 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xml.dtm.ref.DTMNodeList;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -43,13 +41,19 @@ import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
+import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSNegativeInteger;
 import org.apache.xpath.types.XSNonNegativeInteger;
 import org.apache.xpath.types.XSNonPositiveInteger;
 import org.apache.xpath.types.XSPositiveInteger;
 import org.apache.xpath.types.XSShort;
+import org.apache.xpath.types.XSUnsignedByte;
+import org.apache.xpath.types.XSUnsignedInt;
+import org.apache.xpath.types.XSUnsignedLong;
+import org.apache.xpath.types.XSUnsignedShort;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -146,6 +150,16 @@ public class SequenceTypeSupport {
     
     public static int XS_SHORT = 55;
     
+    public static int XS_BYTE = 56;
+    
+    public static int XS_UNSIGNED_LONG = 57;
+    
+    public static int XS_UNSIGNED_INT = 58;
+    
+    public static int XS_UNSIGNED_SHORT = 59;
+    
+    public static int XS_UNSIGNED_BYTE = 60;
+    
     /** 
      * Following are constant int values denoting XPath 3.1 sequence
      * type KindTest expressions.
@@ -185,68 +199,68 @@ public class SequenceTypeSupport {
     private static List<XMLNSDecl> fPrefixTable;
     
     /**
-     * This class specifies min and max value ranges, for XML Schema 
-     * built-in types derived from type xs:integer as defined by 
+     * This class specifies min and max value ranges for XML Schema 
+     * built-in types derived from type xs:integer, as defined by 
      * XML Schema specification.
      * 
      * @author Mukul Gandhi <mukulg@apache.org>
      */
-    public static class XmlSchemaBuiltInNumericTypeRange {
+    public static class XmlSchemaBuiltinNumericType {
     	
-    	public class LONG {
-    	   public long minInclusive = -9223372036854775808l;
-    	   public long maxInclusive = 9223372036854775807l;
+    	public static class Long {
+    	   public static long MIN_INCLUSIVE = -9223372036854775808l;
+    	   public static long MAX_INCLUSIVE = 9223372036854775807l;
     	}
     	
-    	public class INT {
-     	   public int minInclusive = -2147483648;
-     	   public int maxInclusive = 2147483647;
+    	public static class Int {
+     	   public static int MIN_INCLUSIVE = -2147483648;
+     	   public static int MAX_INCLUSIVE = 2147483647;
      	}
     	
-    	public class SHORT {
-      	   public short minInclusive = -32768;
-      	   public short maxInclusive = 32767;
+    	public static class Short {
+      	   public static short MIN_INCLUSIVE = -32768;
+      	   public static short MAX_INCLUSIVE = 32767;
       	}
     	
-    	public class BYTE {
-       	   public byte minInclusive = -128;
-       	   public byte maxInclusive = 127;
+    	public static class Byte {
+       	   public static byte MIN_INCLUSIVE = -128;
+       	   public static byte MAX_INCLUSIVE = 127;
        	}
     	
-    	public class NON_NEGATIVE_INTEGER {
-           public byte minInclusive = 0;
+    	public static class NonNegativeInteger {
+           public static byte MIN_INCLUSIVE = 0;
         }
     	
-    	public class POSITIVE_INTEGER {
-           public byte minInclusive = 1;
+    	public static class PositiveInteger {
+           public static byte MIN_INCLUSIVE = 1;
         }
     	
-    	public class NON_POSITIVE_INTEGER {
-           public byte maxInclusive = 0;
+    	public static class NonPositiveInteger {
+           public static byte maxInclusive = 0;
         }
     	
-    	public class NEGATIVE_INTEGER {
-           public byte maxInclusive = -1;
+    	public static class NegativeInteger {
+           public static byte MAX_INCLUSIVE = -1;
         }
     	
-    	public class UNSIGNED_LONG {
-    	   public long minInclusive = 0;
-           public BigInteger maxInclusive = new BigInteger("18446744073709551615");
+    	public static class UnsignedLong {
+    	   public static long MIN_INCLUSIVE = 0;
+           public static String MAX_INCLUSIVE = new String("18446744073709551615");
         }
     	
-    	public class UNSIGNED_INT {
-     	   public int minInclusive = 0;
-           public long maxInclusive = 4294967295l;
+    	public static class UnsignedInt {
+     	   public static int MIN_INCLUSIVE = 0;
+           public static long MAX_INCLUSIVE = 4294967295l;
         }
     	
-    	public class UNSIGNED_SHORT {
-      	   public int minInclusive = 0;
-           public int maxInclusive = 65535;
+    	public static class UnsignedShort {
+      	   public static int MIN_INCLUSIVE = 0;
+           public static int MAX_INCLUSIVE = 65535;
         }
     	
-    	public class UNSIGNED_BYTE {
-       	   public int minInclusive = 0;
-           public int maxInclusive = 255;
+    	public static class UnsignedByte {
+       	   public static int MIN_INCLUSIVE = 0;
+           public static int MAX_INCLUSIVE = 255;
         }
     }
     
@@ -762,6 +776,21 @@ public class SequenceTypeSupport {
             else if (expectedType == XS_SHORT) {
                result = new XSShort(srcStrVal);
             }
+            else if (expectedType == XS_BYTE) {
+               result = new XSByte(srcStrVal);
+            }
+            else if (expectedType == XS_UNSIGNED_LONG) {
+               result = new XSUnsignedLong(srcStrVal);
+            }
+            else if (expectedType == XS_UNSIGNED_INT) {
+               result = new XSUnsignedInt(srcStrVal);
+            }
+            else if (expectedType == XS_UNSIGNED_SHORT) {
+               result = new XSUnsignedShort(srcStrVal);
+            }
+            else if (expectedType == XS_UNSIGNED_BYTE) {
+               result = new XSUnsignedByte(srcStrVal);
+            }
             else if (expectedType == XS_DOUBLE) {
                result = new XSDouble(srcStrVal); 
             }
@@ -826,6 +855,21 @@ public class SequenceTypeSupport {
             }
             else if (expectedType == XS_SHORT) {
                 result = new XSShort(srcStrVal);
+            }
+            else if (expectedType == XS_BYTE) {
+                result = new XSByte(srcStrVal);
+            }
+            else if (expectedType == XS_UNSIGNED_LONG) {
+                result = new XSUnsignedLong(srcStrVal);
+            }
+            else if (expectedType == XS_UNSIGNED_INT) {
+                result = new XSUnsignedInt(srcStrVal);
+            }
+            else if (expectedType == XS_UNSIGNED_SHORT) {
+                result = new XSUnsignedShort(srcStrVal);
+            }
+            else if (expectedType == XS_UNSIGNED_BYTE) {
+                result = new XSUnsignedByte(srcStrVal);
             }
             else if (expectedType == XS_LONG) {
                 result = new XSLong(srcStrVal); 
@@ -953,6 +997,21 @@ public class SequenceTypeSupport {
        }
        else if (sequenceType == XS_SHORT) {
           dataTypeName = "xs:short"; 
+       }
+       else if (sequenceType == XS_BYTE) {
+          dataTypeName = "xs:byte"; 
+       }
+       else if (sequenceType == XS_UNSIGNED_LONG) {
+          dataTypeName = "xs:unsignedLong"; 
+       }
+       else if (sequenceType == XS_UNSIGNED_INT) {
+          dataTypeName = "xs:unsignedInt"; 
+       }
+       else if (sequenceType == XS_UNSIGNED_SHORT) {
+          dataTypeName = "xs:unsignedShort"; 
+       }
+       else if (sequenceType == XS_UNSIGNED_BYTE) {
+          dataTypeName = "xs:unsignedByte"; 
        }
        else if (sequenceType == XS_DOUBLE) {
           dataTypeName = "xs:double"; 

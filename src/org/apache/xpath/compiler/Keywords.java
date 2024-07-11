@@ -419,6 +419,21 @@ public class Keywords
   /** xs:short data type string. */
   public static final String XS_SHORT = "short";
   
+  /** xs:short data type string. */
+  public static final String XS_BYTE = "byte";
+  
+  /** xs:short data type string. */
+  public static final String XS_UNSIGNED_LONG = "unsignedLong";
+  
+  /** xs:short data type string. */
+  public static final String XS_UNSIGNED_INT = "unsignedInt";
+  
+  /** xs:short data type string. */
+  public static final String XS_UNSIGNED_SHORT = "unsignedShort";
+  
+  /** xs:short data type string. */
+  public static final String XS_UNSIGNED_BYTE = "unsignedByte";
+  
   /** xs:date data type string. */
   public static final String XS_DATE = "date";
   
