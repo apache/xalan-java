@@ -50,11 +50,11 @@ public class XSShort extends XSInt {
 	 */
 	public XSShort(BigInteger val) throws TransformerException {
 	   super(val);
-	   int cmprResult1 = val.compareTo(BigInteger.valueOf(XmlSchemaBuiltinNumericType.Long.MIN_INCLUSIVE));
-	   int cmprResult2 = val.compareTo(BigInteger.valueOf(XmlSchemaBuiltinNumericType.Long.MAX_INCLUSIVE));
+	   int cmprResult1 = val.compareTo(BigInteger.valueOf(XmlSchemaBuiltinNumericType.Short.MIN_INCLUSIVE));
+	   int cmprResult2 = val.compareTo(BigInteger.valueOf(XmlSchemaBuiltinNumericType.Short.MAX_INCLUSIVE));
 	   if ((cmprResult1 == -1) || (cmprResult2 == 1)) {
-		  throw new TransformerException("FOCA0003 : An xs:short value's numeric range is [" + XmlSchemaBuiltinNumericType.Long.MIN_INCLUSIVE + 
-				                                              ", " + XmlSchemaBuiltinNumericType.Long.MAX_INCLUSIVE + "] with both inclusive.");  
+		  throw new TransformerException("FOCA0003 : An xs:short value's numeric range is [" + XmlSchemaBuiltinNumericType.Short.MIN_INCLUSIVE + 
+				                                              ", " + XmlSchemaBuiltinNumericType.Short.MAX_INCLUSIVE + "] with both inclusive.");  
 	   }			   	
 	}
 	
@@ -64,11 +64,11 @@ public class XSShort extends XSInt {
 	public XSShort(String val) throws TransformerException {
 	   super(val);
 	   BigInteger bigInt = (getValue()).toBigInteger(); 
-	   int cmprResult1 = bigInt.compareTo(BigInteger.valueOf(XmlSchemaBuiltinNumericType.Long.MIN_INCLUSIVE));
-	   int cmprResult2 = bigInt.compareTo(BigInteger.valueOf(XmlSchemaBuiltinNumericType.Long.MAX_INCLUSIVE));
+	   int cmprResult1 = bigInt.compareTo(BigInteger.valueOf(XmlSchemaBuiltinNumericType.Short.MIN_INCLUSIVE));
+	   int cmprResult2 = bigInt.compareTo(BigInteger.valueOf(XmlSchemaBuiltinNumericType.Short.MAX_INCLUSIVE));
 	   if ((cmprResult1 == -1) || (cmprResult2 == 1)) {
-		  throw new TransformerException("FOCA0003 : An xs:short value's numeric range is [" + XmlSchemaBuiltinNumericType.Long.MIN_INCLUSIVE + 
-				                                              ", " + XmlSchemaBuiltinNumericType.Long.MAX_INCLUSIVE + "] with both inclusive.");  
+		  throw new TransformerException("FOCA0003 : An xs:short value's numeric range is [" + XmlSchemaBuiltinNumericType.Short.MIN_INCLUSIVE + 
+				                                              ", " + XmlSchemaBuiltinNumericType.Short.MAX_INCLUSIVE + "] with both inclusive.");  
 	   }
 	}
 	

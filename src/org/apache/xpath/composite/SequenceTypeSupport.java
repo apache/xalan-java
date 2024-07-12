@@ -236,7 +236,7 @@ public class SequenceTypeSupport {
         }
     	
     	public static class NonPositiveInteger {
-           public static byte maxInclusive = 0;
+           public static byte MAX_INCLUSIVE = 0;
         }
     	
     	public static class NegativeInteger {
