@@ -21,6 +21,7 @@
 package org.apache.xpath.objects;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.xml.transform.TransformerException;
 
@@ -1094,6 +1095,19 @@ public class XObject extends Expression implements Serializable, Cloneable
 	       double rDouble = ((XSInteger)obj2).doubleValue();
 	       return (lDouble == rDouble);      
 	    }
+	    if ((this instanceof XSDecimal) && (obj2 instanceof XNumber)) {
+	    	XSDecimal lXsDecimal = (XSDecimal)this;
+	    	BigDecimal lBigDecimal = lXsDecimal.getValue();
+	    	double lDouble = lBigDecimal.doubleValue();
+	    	if (lBigDecimal.equals(new BigDecimal(lDouble))) {
+	    	   double rDouble = ((XNumber)obj2).num();
+	    	   return (lDouble == rDouble);
+	    	}
+	    	else {
+	    	   double rDouble = ((XNumber)obj2).num();
+	    	   return lBigDecimal.equals(new BigDecimal(rDouble)); 
+	    	}
+		}
 	    else if (this instanceof XSAnyURI) {
 	       boolean isEqual = false;
 	       

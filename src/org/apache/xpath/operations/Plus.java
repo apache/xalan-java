@@ -20,6 +20,9 @@
  */
 package org.apache.xpath.operations;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
@@ -29,6 +32,10 @@ import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSInteger;
+import xml.xpath31.processor.types.XSLong;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSTime;
 import xml.xpath31.processor.types.XSUntyped;
@@ -64,7 +71,7 @@ public class Plus extends Operation
           java.lang.String rStrVal = ((XSUntyped)right).stringValue();
           double rDouble = (Double.valueOf(rStrVal)).doubleValue();
           
-          result = new XNumber(lDouble + rDouble);
+          result = new XSDouble(lDouble + rDouble);
       }
       else if ((left instanceof XSUntypedAtomic) && (right instanceof XSUntypedAtomic)) {
           java.lang.String lStrVal = ((XSUntypedAtomic)left).stringValue();
@@ -73,7 +80,7 @@ public class Plus extends Operation
           java.lang.String rStrVal = ((XSUntypedAtomic)right).stringValue();
           double rDouble = (Double.valueOf(rStrVal)).doubleValue();
           
-          result = new XNumber(lDouble + rDouble);
+          result = new XSDouble(lDouble + rDouble);
       }
       else if ((left instanceof XSUntyped) && (right instanceof XSUntypedAtomic)) {
           java.lang.String lStrVal = ((XSUntyped)left).stringValue();
@@ -82,7 +89,7 @@ public class Plus extends Operation
           java.lang.String rStrVal = ((XSUntypedAtomic)right).stringValue();
           double rDouble = (Double.valueOf(rStrVal)).doubleValue();
           
-          result = new XNumber(lDouble + rDouble);
+          result = new XSDouble(lDouble + rDouble);
       }
       else if ((left instanceof XSUntypedAtomic) && (right instanceof XSUntyped)) {
           java.lang.String lStrVal = ((XSUntypedAtomic)left).stringValue();
@@ -91,36 +98,20 @@ public class Plus extends Operation
           java.lang.String rStrVal = ((XSUntyped)right).stringValue();
           double rDouble = (Double.valueOf(rStrVal)).doubleValue();
           
-          result = new XNumber(lDouble + rDouble);
+          result = new XSDouble(lDouble + rDouble);
       }
       else if ((left instanceof XNumber) && (right instanceof XSNumericType)) {
-          double lDouble = ((XNumber)left).num();
-          
-          java.lang.String rStrVal = ((XSNumericType)right).stringValue();
-          double rDouble = (Double.valueOf(rStrVal)).doubleValue();
-          
-          result = new XNumber(lDouble + rDouble);
+    	  result = addXNumberToXsNumericType((XNumber)left, (XSNumericType)right);
       }
       else if ((left instanceof XSNumericType) && (right instanceof XNumber)) {
-          java.lang.String lStrVal = ((XSNumericType)left).stringValue();
-          double lDouble = (Double.valueOf(lStrVal)).doubleValue();
-          
-          double rDouble = ((XNumber)right).num();
-          
-          result = new XNumber(lDouble + rDouble);
+    	  result = addXNumberToXsNumericType((XNumber)right, (XSNumericType)left);    	
+      }      
+      else if ((left instanceof XSNumericType) && (right instanceof XSNumericType)) {          
+          result = addXSNumericTypeToXsNumericType((XSNumericType)left, (XSNumericType)right);
       }
       else if ((left instanceof XNumber) && (right instanceof XNumber)) {
           double lDouble = ((XNumber)left).num();
           double rDouble = ((XNumber)right).num();
-          
-          result = new XNumber(lDouble + rDouble);
-      }
-      else if ((left instanceof XSNumericType) && (right instanceof XSNumericType)) {
-          java.lang.String lStrVal = ((XSNumericType)left).stringValue();
-          double lDouble = (Double.valueOf(lStrVal)).doubleValue();
-          
-          java.lang.String rStrVal = ((XSNumericType)right).stringValue();
-          double rDouble = (Double.valueOf(rStrVal)).doubleValue();
           
           result = new XNumber(lDouble + rDouble);
       }
@@ -378,6 +369,151 @@ public class Plus extends Operation
   {
 
     return (m_right.num(xctxt) + m_left.num(xctxt));
+  }
+  
+  /**
+   * Add a value of type XSNumericType, to another value of type 
+   * XSNumericType. 
+   * 
+   * Whereever possible, we try to return a value of type derived 
+   * from XSNumericType (i.e, an XML Schema type), and don't incur
+   * loss of precision. 
+   */
+  private XObject addXSNumericTypeToXsNumericType(XSNumericType leftVal, XSNumericType rightVal) {
+
+	  XObject result = null;
+
+	  if (leftVal instanceof XSInteger) {
+		  if (rightVal instanceof XSInteger) {
+			  XSInteger lXsInteger = (XSInteger)leftVal;
+			  BigDecimal lBigDecimal = lXsInteger.getValue();
+
+			  XSInteger rXsInteger = (XSInteger)rightVal;
+			  BigDecimal rBigDecimal = rXsInteger.getValue();
+
+			  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
+			  result = new XSInteger(resultBigDecimal.toString());
+		  }
+		  else if (rightVal instanceof XSLong) {
+			  XSInteger lXsInteger = (XSInteger)leftVal;
+			  BigDecimal lBigDecimal = lXsInteger.getValue();
+
+			  XSLong rXsLong = (XSLong)rightVal;
+			  BigDecimal rBigDecimal = rXsLong.getValue();
+
+			  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
+			  result = new XSInteger(resultBigDecimal.toString()); 
+		  }
+		  else if (rightVal instanceof XSDecimal) {
+			  XSDecimal rXsDecimal = (XSDecimal)rightVal;
+			  BigDecimal rBigDecimal = rXsDecimal.getValue();
+			  if (rBigDecimal.equals(rBigDecimal.toBigInteger())) {
+				  XSInteger lXsInteger = (XSInteger)leftVal;
+				  BigDecimal lBigDecimal = lXsInteger.getValue();
+				  result = new XSInteger((lBigDecimal.add(rBigDecimal)).toString());
+			  }
+			  else {
+				  XSInteger lXsInteger = (XSInteger)leftVal;
+				  BigDecimal lBigDecimal = lXsInteger.getValue();
+				  result = new XSDecimal((lBigDecimal.add(rBigDecimal)).toString());
+			  }
+		  }
+		  else {
+			  XSInteger lXsInteger = (XSInteger)leftVal;
+			  BigDecimal lBigDecimal = lXsInteger.getValue();
+
+			  java.lang.String rStrVal = rightVal.stringValue();
+			  BigDecimal rBigDecimal = new BigDecimal(rStrVal);
+
+			  result = new XSDecimal((lBigDecimal.add(rBigDecimal)).toString());
+		  }
+	  }
+	  else if (leftVal instanceof XSLong) {
+		  java.lang.String lStrVal = leftVal.stringValue();
+		  java.lang.String rStrVal = rightVal.stringValue();
+		  if (rightVal instanceof XSInteger) {
+			  BigDecimal lBigDecimal = new BigDecimal(lStrVal);
+			  BigDecimal rBigDecimal = new BigDecimal(rStrVal);
+			  result = new XSInteger((lBigDecimal.add(rBigDecimal)).toString());
+		  }
+		  else if (rightVal instanceof XSLong) {
+			  BigDecimal lBigDecimal = new BigDecimal(lStrVal);
+			  BigDecimal rBigDecimal = new BigDecimal(rStrVal);
+			  result = new XSInteger((lBigDecimal.add(rBigDecimal)).toString()); 
+		  }
+		  else if (rightVal instanceof XSDecimal) {
+			  BigDecimal lBigDecimal = new BigDecimal(lStrVal);
+			  BigDecimal rBigDecimal = new BigDecimal(rStrVal);
+			  result = new XSDecimal((lBigDecimal.add(rBigDecimal)).toString());  
+		  }
+		  else {
+			  XSLong lXsLong = (XSLong)leftVal;
+			  BigDecimal lBigDecimal = lXsLong.getValue();
+
+			  BigDecimal rBigDecimal = new BigDecimal(rStrVal);       		    
+			  result = new XSDecimal((lBigDecimal.add(rBigDecimal)).toString()); 
+		  } 
+	  }
+	  else {
+		  java.lang.String lStrVal = leftVal.stringValue();
+		  java.lang.String rStrVal = rightVal.stringValue();
+
+		  BigDecimal lBigDecimal = new BigDecimal(lStrVal);
+		  BigDecimal rBigDecimal = new BigDecimal(rStrVal);
+
+		  result = new XSDecimal((lBigDecimal.add(rBigDecimal)).toString());  
+	  }
+	  
+	  return result;
+  }
+
+  /**
+   * Add XNumber value to an XSNumericType value.
+   * 
+   * Whereever possible, we try to return a value of type derived 
+   * from XSNumericType (i.e, an XML Schema type), and don't incur
+   * loss of precision. 
+   */
+  private XObject addXNumberToXsNumericType(XNumber leftVal, XSNumericType rightVal) {
+	  
+	  XObject result = null;
+	  
+	  if (rightVal instanceof XSInteger) {
+		  java.lang.String rStrVal = rightVal.stringValue();
+		  BigInteger rBigInt = new BigInteger(rStrVal);
+		  double lDouble = leftVal.num();
+		  if (lDouble == (long)lDouble) {
+			  BigInteger resultBigInt = rBigInt.add(new BigInteger((long)lDouble + ""));
+			  result = new XSInteger(resultBigInt);
+		  }
+		  else {
+			  java.math.BigDecimal lBigDecimal = new java.math.BigDecimal(rStrVal); 
+			  java.math.BigDecimal resultBigDecimal = lBigDecimal.add(new java.math.BigDecimal(lDouble));
+			  result = new XSDecimal(resultBigDecimal);
+		  }
+	  }
+	  else if (rightVal instanceof XSLong) {
+		  java.lang.String rStrVal = rightVal.stringValue();
+		  BigInteger rBigInt = new BigInteger(rStrVal);
+		  double lDouble = leftVal.num();
+		  if (lDouble == (long)lDouble) {
+			  BigInteger resultBigInt = rBigInt.add(new BigInteger((long)lDouble + ""));
+			  result = new XSLong(resultBigInt);
+		  }
+		  else {
+			  java.math.BigDecimal rBigDecimal = new java.math.BigDecimal(rStrVal); 
+			  java.math.BigDecimal resultBigDecimal = rBigDecimal.add(new java.math.BigDecimal(lDouble));
+			  result = new XSDecimal(resultBigDecimal);
+		  }
+	  }    	  
+	  else {
+		  java.lang.String rStrVal = rightVal.stringValue();
+		  double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+		  double lDouble = leftVal.num();
+		  result = new XNumber(lDouble + rDouble);
+	  }
+	  
+	  return result;
   }
 
 }

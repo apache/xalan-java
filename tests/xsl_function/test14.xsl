@@ -20,7 +20,7 @@
          <xsl:value-of select="fn0:f1(7)"/>
        </one>
        <two>
-         <xsl:value-of select="fn0:f1(3.1)"/>
+         <xsl:value-of select="round(fn0:f1(3.1),2)"/>
        </two>
      </result>
   </xsl:template>

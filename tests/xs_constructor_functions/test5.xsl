@@ -15,8 +15,9 @@
 
    <xsl:template match="/elem">
       <result>
-         <one><xsl:value-of select="(xs:decimal(b) - xs:decimal(a))"/></one>
-         <two><xsl:value-of select="(xs:decimal(b) - xs:decimal(a)) + 0.12"/></two>
+         <xsl:variable name="sub1" select="xs:decimal(b) - xs:decimal(a)"/>
+         <one><xsl:value-of select="round($sub1,2)"/></one>
+         <two><xsl:value-of select="round($sub1 + 0.12,2)"/></two>
       </result>
    </xsl:template>
    
