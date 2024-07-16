@@ -23,6 +23,8 @@ package org.apache.xpath.operations;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
@@ -51,7 +53,6 @@ public class Plus extends Operation
 
   /**
    * Apply the operation to two operands, and return the result.
-   *
    *
    * @param left non-null reference to the evaluated left operand.
    * @param right non-null reference to the evaluated right operand.
@@ -113,7 +114,7 @@ public class Plus extends Operation
           double lDouble = ((XNumber)left).num();
           double rDouble = ((XNumber)right).num();
           
-          result = new XNumber(lDouble + rDouble);
+          result = new XNumber(lDouble + rDouble);                    
       }
       else if ((left instanceof XNumber) && (right instanceof XNodeSet)) {
           double lDouble = ((XNumber)left).num();
@@ -121,8 +122,8 @@ public class Plus extends Operation
           XNodeSet rNodeSet = (XNodeSet)right;
           if (rNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the second "
-                                                                                   + "operand of addition operator '+'.");  
+                                                                                   + "than one item is not allowed as the 2nd "
+                                                                                   + "operand of operator '+'.");  
           }
           else {
              java.lang.String rStrVal = rNodeSet.str();
@@ -137,8 +138,8 @@ public class Plus extends Operation
           XNodeSet lNodeSet = (XNodeSet)left;
           if (lNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the first "
-                                                                                   + "operand of addition operator '+'.");  
+                                                                                   + "than one item is not allowed as the 1st "
+                                                                                   + "operand of operator '+'.");  
           }
           else {
              java.lang.String lStrVal = lNodeSet.str();
@@ -148,133 +149,210 @@ public class Plus extends Operation
           }
       }
       else if ((left instanceof XSNumericType) && (right instanceof XNodeSet)) {
-          java.lang.String lStrVal = ((XSNumericType)left).stringValue();
-          double lDouble = (Double.valueOf(lStrVal)).doubleValue();
-          
-          XNodeSet rNodeSet = (XNodeSet)right;
+    	  XNodeSet rNodeSet = (XNodeSet)right;
           if (rNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the second "
-                                                                                   + "operand of addition operator '+'.");  
+                                                                                   + "than one item is not allowed as the 2nd "
+                                                                                   + "operand of operator '+'.");  
           }
           else {
-             java.lang.String rStrVal = rNodeSet.str();
-             double rDouble = (Double.valueOf(rStrVal)).doubleValue();
-             
-             result = new XNumber(lDouble + rDouble);
+        	  BigDecimal lBigDecimal = new BigDecimal(((XSNumericType)left).stringValue());
+        	  BigDecimal rBigDecimal = null;
+        	  try {
+        	     rBigDecimal = new BigDecimal(rNodeSet.str());
+        	  }
+        	  catch (NumberFormatException ex) {
+        		 throw new javax.xml.transform.TransformerException("XPTY0004 : The 2nd operand of operator '+' is not a numeric value or "
+        		 		                                                          + "cannot be converted to a numeric value."); 
+        	  }
+        	  
+        	  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
+        	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
+          		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
+          	  }
+          	  else {
+                 result = new XSDecimal(resultBigDecimal);
+          	  }
           }
       }
       else if ((left instanceof XNodeSet) && (right instanceof XSNumericType)) {
-          java.lang.String rStrVal = ((XSNumericType)right).stringValue();
-          double rDouble = (Double.valueOf(rStrVal)).doubleValue();
-          
-          XNodeSet lNodeSet = (XNodeSet)left;
+    	  XNodeSet lNodeSet = (XNodeSet)left;
           if (lNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the first "
-                                                                                   + "operand of addition operator '+'.");  
+                                                                                   + "than one item is not allowed as the 1st "
+                                                                                   + "operand of operator '+'.");  
           }
-          else {
-             java.lang.String lStrVal = lNodeSet.str();
-             double lDouble = (Double.valueOf(lStrVal)).doubleValue();
-             
-             result = new XNumber(lDouble + rDouble);
+          else {        	  
+        	  BigDecimal lBigDecimal = null;
+        	  try {
+        		 lBigDecimal = new BigDecimal(lNodeSet.str());
+        	  }
+        	  catch (NumberFormatException ex) {
+        		 throw new javax.xml.transform.TransformerException("XPTY0004 : The 1st operand of operator '+' is not a numeric value or "
+        		 		                                                          + "cannot be converted to a numeric value."); 
+        	  }
+        	  BigDecimal rBigDecimal = new BigDecimal(((XSNumericType)right).stringValue());
+        	  
+        	  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
+        	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
+          		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
+          	  }
+          	  else {
+                 result = new XSDecimal(resultBigDecimal);
+          	  }
           }
       }
       else if ((left instanceof XNodeSet) && (right instanceof XNodeSet)) {
-          double lDouble = 0.0d;
-          double rDouble = 0.0d;
-          
-          XNodeSet lNodeSet = (XNodeSet)left;
+    	  XNodeSet lNodeSet = (XNodeSet)left;
           if (lNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the first "
-                                                                                   + "operand of addition operator '+'.");  
-          }
-          else {
-             java.lang.String lStrVal = lNodeSet.str();
-             lDouble = (Double.valueOf(lStrVal)).doubleValue();
+                                                                                   + "than one item is not allowed as the 1st "
+                                                                                   + "operand of operator '+'.");  
           }
           
           XNodeSet rNodeSet = (XNodeSet)right;
           if (rNodeSet.getLength() > 1) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the second "
-                                                                                   + "operand of addition operator '+'.");  
-          }
-          else {
-             java.lang.String rStrVal = rNodeSet.str();
-             rDouble = (Double.valueOf(rStrVal)).doubleValue();
+                                                                                   + "than one item is not allowed as the 2nd "
+                                                                                   + "operand of operator '+'.");  
           }
           
-          result = new XNumber(lDouble + rDouble);
-      }
-      else if ((left instanceof XSYearMonthDuration) && (right instanceof XSYearMonthDuration)) {
-          result = ((XSYearMonthDuration)left).add((XSYearMonthDuration)right);  
-      }
+          BigDecimal lBigDecimal = null;
+    	  try {
+    		 lBigDecimal = new BigDecimal(lNodeSet.str());
+    	  }
+    	  catch (NumberFormatException ex) {
+    		 throw new javax.xml.transform.TransformerException("XPTY0004 : The 1st operand of operator '+' is not a numeric value or "
+    		 		                                                          + "cannot be converted to a numeric value."); 
+    	  }
+    	  
+    	  BigDecimal rBigDecimal = null;
+    	  try {
+    	     rBigDecimal = new BigDecimal(rNodeSet.str());
+    	  }
+    	  catch (NumberFormatException ex) {
+    		 throw new javax.xml.transform.TransformerException("XPTY0004 : The 2nd operand of operator '+' is not a numeric value or "
+    		 		                                                          + "cannot be converted to a numeric value."); 
+    	  }
+    	  
+    	  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
+    	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
+      		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
+      	  }
+      	  else {
+             result = new XSDecimal(resultBigDecimal);
+      	  }
+      }      
       else if ((left instanceof ResultSequence) && (right instanceof XNumber)) {
-          ResultSequence rsLeft = (ResultSequence)left;          
-          if (rsLeft.size() > 1) {
-              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the first "
-                                                                                   + "operand of addition operator '+'.");  
+    	  ResultSequence lSeq = (ResultSequence)left;
+          if (lSeq.size() > 1) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
+                                                                                   + "than one item is not allowed as the 1st "
+                                                                                   + "operand of operator '+'.");  
           }
-          else {
-             java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(rsLeft.item(0));
-             double lDouble = (Double.valueOf(lStr)).doubleValue();
-             double rDouble = ((XNumber)right).num();
-             
-             result = new XNumber(lDouble + rDouble);
+          else {        	  
+        	  BigDecimal lBigDecimal = null;
+        	  try {
+        		 lBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(lSeq.item(0)));
+        	  }
+        	  catch (NumberFormatException ex) {
+        		 throw new javax.xml.transform.TransformerException("XPTY0004 : The 1st operand of operator '+' is not a numeric value or "
+        		 		                                                          + "cannot be converted to a numeric value."); 
+        	  }
+        	  BigDecimal rBigDecimal = BigDecimal.valueOf(((XNumber)right).num());
+        	  
+        	  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
+        	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
+          		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
+          	  }
+          	  else {
+                 result = new XSDecimal(resultBigDecimal);
+          	  }
           }
       }
       else if ((left instanceof XNumber) && (right instanceof ResultSequence)) {
-          ResultSequence rsRight = (ResultSequence)right;          
-          if (rsRight.size() > 1) {
-              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the second "
-                                                                                   + "operand of addition operator '+'.");  
+    	  ResultSequence rSeq = (ResultSequence)right;
+          if (rSeq.size() > 1) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
+                                                                                   + "than one item is not allowed as the 2nd "
+                                                                                   + "operand of operator '+'.");  
           }
-          else {             
-             double lDouble = ((XNumber)left).num();
-             java.lang.String rStr = XslTransformEvaluationHelper.getStrVal(rsRight.item(0));
-             double rDouble = (Double.valueOf(rStr)).doubleValue();
-             
-             result = new XNumber(lDouble + rDouble);
+          else {
+        	  BigDecimal lBigDecimal = BigDecimal.valueOf(((XNumber)left).num());
+        	  BigDecimal rBigDecimal = null;
+        	  try {
+        	     rBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(rSeq.item(0)));
+        	  }
+        	  catch (NumberFormatException ex) {
+        		 throw new javax.xml.transform.TransformerException("XPTY0004 : The 2nd operand of operator '+' is not a numeric value or "
+        		 		                                                          + "cannot be converted to a numeric value."); 
+        	  }
+        	  
+        	  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
+        	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
+          		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
+          	  }
+          	  else {
+                 result = new XSDecimal(resultBigDecimal);
+          	  }
           }
       }
       else if ((left instanceof ResultSequence) && (right instanceof XSNumericType)) {
-          ResultSequence rsLeft = (ResultSequence)left;          
-          if (rsLeft.size() > 1) {
-              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the first "
-                                                                                   + "operand of addition operator '+'.");  
+    	  ResultSequence lSeq = (ResultSequence)left;
+          if (lSeq.size() > 1) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
+                                                                                   + "than one item is not allowed as the 1st "
+                                                                                   + "operand of operator '+'.");  
           }
-          else {
-             java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(rsLeft.item(0));
-             double lDouble = (Double.valueOf(lStr)).doubleValue();
-             
-             java.lang.String rStrVal = ((XSNumericType)right).stringValue();
-             double rDouble = (Double.valueOf(rStrVal)).doubleValue();
-             
-             result = new XNumber(lDouble + rDouble);
-          } 
+          else {        	  
+        	  BigDecimal lBigDecimal = null;
+        	  try {
+        		 lBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(lSeq.item(0)));
+        	  }
+        	  catch (NumberFormatException ex) {
+        		 throw new javax.xml.transform.TransformerException("XPTY0004 : The 1st operand of operator '+' is not a numeric value or "
+        		 		                                                          + "cannot be converted to a numeric value."); 
+        	  }
+        	  BigDecimal rBigDecimal = new BigDecimal(((XSNumericType)right).stringValue());
+        	  
+        	  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
+        	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
+          		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
+          	  }
+          	  else {
+                 result = new XSDecimal(resultBigDecimal);
+          	  }
+          }
       }
       else if ((left instanceof XSNumericType) && (right instanceof ResultSequence)) {
-          ResultSequence rsRight = (ResultSequence)right;          
-          if (rsRight.size() > 1) {
-              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the second "
-                                                                                   + "operand of addition operator '+'.");  
+    	  ResultSequence rSeq = (ResultSequence)right;
+          if (rSeq.size() > 1) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
+                                                                                   + "than one item is not allowed as the 2nd "
+                                                                                   + "operand of operator '+'.");  
           }
-          else {                          
-             java.lang.String lStrVal = ((XSNumericType)left).stringValue();
-             double lDouble = (Double.valueOf(lStrVal)).doubleValue();
-             
-             java.lang.String rStr = XslTransformEvaluationHelper.getStrVal(rsRight.item(0));
-             double rDouble = (Double.valueOf(rStr)).doubleValue();
-             
-             result = new XNumber(lDouble + rDouble);
+          else {
+        	  BigDecimal lBigDecimal = new BigDecimal(((XSNumericType)left).stringValue());
+        	  BigDecimal rBigDecimal = null;
+        	  try {
+        	     rBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(rSeq.item(0)));
+        	  }
+        	  catch (NumberFormatException ex) {
+        		 throw new javax.xml.transform.TransformerException("XPTY0004 : The 2nd operand of operator '+' is not a numeric value or "
+        		 		                                                          + "cannot be converted to a numeric value."); 
+        	  }
+        	  
+        	  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
+        	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
+          		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
+          	  }
+          	  else {
+                 result = new XSDecimal(resultBigDecimal);
+          	  }
           }
+      }
+      else if ((left instanceof XSYearMonthDuration) && (right instanceof XSYearMonthDuration)) {
+          result = ((XSYearMonthDuration)left).add((XSYearMonthDuration)right);  
       }
       else if (left instanceof XSDate) {
           result = ((XSDate)left).add(right);  
@@ -286,68 +364,130 @@ public class Plus extends Operation
           result = ((XSTime)left).add(right);  
       }
       else if ((left instanceof ResultSequence) && (right instanceof ResultSequence)) {
-          ResultSequence rsLeft = (ResultSequence)left;          
-          if (rsLeft.size() > 1) {
+    	  ResultSequence lSeq = (ResultSequence)left;          
+          if (lSeq.size() > 1) {
               throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the left "
-                                                                                   + "operand of addition operator '+'.");  
+                                                                                   + "than one item is not allowed as the 1st "
+                                                                                   + "operand of operator '+'.");  
           }
           
-          ResultSequence rsRight = (ResultSequence)right;          
-          if (rsRight.size() > 1) {
+          ResultSequence rSeq = (ResultSequence)right;
+          if (rSeq.size() > 1) {
               throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the right "
-                                                                                   + "operand of addition operator '+'.");  
+                                                                                   + "than one item is not allowed as the 2nd "
+                                                                                   + "operand of operator '+'.");  
           }
           
-          XObject lArg = ((ResultSequence)left).item(0);
-          XObject rArg = ((ResultSequence)right).item(0);
+          XObject lXObj = ((ResultSequence)left).item(0);
+          XObject rXObj = ((ResultSequence)right).item(0);
           
-          if (lArg instanceof XSDate) {
-             result = ((XSDate)lArg).add(rArg); 
+          if (lXObj instanceof XSDate) {
+              result = ((XSDate)lXObj).add(rXObj); 
           }
-          else if (lArg instanceof XSDateTime) {
-             result = ((XSDateTime)lArg).add(rArg); 
+          else if (lXObj instanceof XSDateTime) {
+              result = ((XSDateTime)lXObj).add(rXObj); 
           }
-          else if (lArg instanceof XSTime) {
-             result = ((XSTime)lArg).add(rArg); 
+          else if (lXObj instanceof XSTime) {
+              result = ((XSTime)lXObj).add(rXObj); 
           }
           else {
-             java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(rsLeft.item(0));
-             double lDouble = (Double.valueOf(lStr)).doubleValue();
-              
-             java.lang.String rStr = XslTransformEvaluationHelper.getStrVal(rsRight.item(0));
-             double rDouble = (Double.valueOf(rStr)).doubleValue();
-              
-             result = new XNumber(lDouble + rDouble);
+        	  BigDecimal lBigDecimal = null;
+        	  BigDecimal rBigDecimal = null;        	  
+        	  try {
+	              java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(lXObj);
+	              lBigDecimal = new BigDecimal(lStr);	              
+	              java.lang.String rStr = XslTransformEvaluationHelper.getStrVal(rXObj);
+	              rBigDecimal = new BigDecimal(rStr);
+        	  }
+        	  catch (NumberFormatException ex) {
+        		  throw new javax.xml.transform.TransformerException("XPTY0004 : 1st or the 2nd operand of operator '+', "
+        		  		                                                           + "is not numeric or cannot be converted to numeric.");
+        	  }
+        	  
+        	  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
+        	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
+          		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
+          	  }
+          	  else {
+                 result = new XSDecimal(resultBigDecimal);
+          	  }
           }
       }
       else if (left instanceof ResultSequence) {
-          ResultSequence rsLeft = (ResultSequence)left;          
-          if (rsLeft.size() > 1) {
+    	  ResultSequence lSeq = (ResultSequence)left;          
+          if (lSeq.size() > 1) {
               throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the left "
-                                                                                   + "operand of addition operator '+'.");  
+                                                                                   + "than one item is not allowed as the 1st "
+                                                                                   + "operand of operator '+'.");  
           }
           
-          XObject lArg = ((ResultSequence)left).item(0);
-          if (lArg instanceof XSDate) {
-              result = ((XSDate)lArg).add(right); 
+          XObject lXObj = ((ResultSequence)left).item(0);
+          if (lXObj instanceof XSDate) {
+              result = ((XSDate)lXObj).add(right); 
           }
-          else if (lArg instanceof XSDateTime) {
-              result = ((XSDateTime)lArg).add(right); 
+          else if (lXObj instanceof XSDateTime) {
+              result = ((XSDateTime)lXObj).add(right); 
           }
-          else if (lArg instanceof XSTime) {
-              result = ((XSTime)lArg).add(right); 
+          else if (lXObj instanceof XSTime) {
+              result = ((XSTime)lXObj).add(right); 
+          }
+          else {
+        	  BigDecimal lBigDecimal = null;
+        	  BigDecimal rBigDecimal = null;        	  
+        	  try {
+	              java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(lXObj);
+	              lBigDecimal = new BigDecimal(lStr);	              
+	              java.lang.String rStr = XslTransformEvaluationHelper.getStrVal(right);
+	              rBigDecimal = new BigDecimal(rStr);
+        	  }
+        	  catch (NumberFormatException ex) {
+        		  throw new javax.xml.transform.TransformerException("XPTY0004 : 1st or the 2nd operand of operator '+', "
+        		  		                                                           + "is not numeric or cannot be converted to numeric.");
+        	  }
+        	  
+        	  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
+        	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
+          		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
+          	  }
+          	  else {
+                 result = new XSDecimal(resultBigDecimal);
+          	  }
+          }
+      }
+      else if (left instanceof XNodeSet) {
+    	  XNodeSet lNodeSet = (XNodeSet)left;
+          if (lNodeSet.getLength() > 1) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
+                                                                                   + "than one item is not allowed as the 1st "
+                                                                                   + "operand of operator '+'.");  
+          }
+          
+          BigDecimal lBigDecimal = null;
+          BigDecimal rBigDecimal = null;
+    	  try {
+    		 lBigDecimal = new BigDecimal(lNodeSet.str());
+             rBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(right));
+    	  }
+    	  catch (NumberFormatException ex) {
+    		 throw new javax.xml.transform.TransformerException("XPTY0004 : 1st or the 2nd operand of operator '+', "
+                                                                               + "is not numeric or cannot be converted to numeric."); 
+    	  }
+        	  
+          BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
+          if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
+          	 result = new XSInteger(resultBigDecimal.toBigInteger()); 
+          }
+          else {
+             result = new XSDecimal(resultBigDecimal);
           }
       }
       else {
           try {
              result = new XNumber(left.num() + right.num());
           }
-          catch (Exception ex) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : Could not apply the "
-                                                                                              + "addition operator '+', due to incorrectly "
+          catch (TransformerException ex) {
+             throw new javax.xml.transform.TransformerException("XPTY0004 : Could not evaluate the "
+                                                                                              + "operator '+', due to incorrectly "
                                                                                               + "typed operand(s)."); 
           }
       }

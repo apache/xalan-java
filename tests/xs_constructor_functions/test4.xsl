@@ -17,8 +17,8 @@
       <result>
          <one><xsl:value-of select="(xs:decimal(a) + xs:decimal(b)) = xs:decimal(c)"/></one>
          <two><xsl:value-of select="(xs:decimal(a) + xs:decimal(b)) = xs:decimal(d)"/></two>
-         <three><xsl:value-of select="(xs:decimal(a) + b) = c"/></three>
-         <four><xsl:value-of select="(xs:decimal(a) + b) = d"/></four>
+         <three><xsl:value-of select="(xs:decimal(a) + b) = xs:decimal(c)"/></three>
+         <four><xsl:value-of select="(xs:decimal(a) + b) = xs:decimal(d)"/></four>
       </result>
    </xsl:template>
    

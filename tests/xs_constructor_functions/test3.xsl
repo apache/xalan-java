@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                exclude-result-prefixes="xs"
                 version="3.0">
                 
    <!-- Author: mukulg@apache.org -->
@@ -13,8 +15,8 @@
 
    <xsl:template match="/elem">
       <result>
-         <one><xsl:value-of select="a + b = c"/></one>
-         <two><xsl:value-of select="a + b = d"/></two>
+         <one><xsl:value-of select="a + b = xs:decimal(c)"/></one>
+         <two><xsl:value-of select="a + b = xs:decimal(d)"/></two>
       </result>
    </xsl:template>
    
