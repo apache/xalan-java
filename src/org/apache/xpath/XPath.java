@@ -78,6 +78,12 @@ public class XPath implements Serializable, ExpressionOwner
    * XPath arrow operator, "=>".
    */
   private String fArrowOpRemainingXPathExprStr = null;
+  
+  /**
+   * This variable being true denotes, that this XPath expression
+   * is for quantified expression's satisfies clause. 
+   */
+  private boolean fIsQuantifiedExpr;
 
   /**
    * initial the function table
@@ -499,7 +505,7 @@ public class XPath implements Serializable, ExpressionOwner
         {
           te.setLocator(this.getLocator());
           ErrorListener el = xctxt.getErrorListener();
-          if(null != el)
+          if(null != el && !fIsQuantifiedExpr)
           {
             el.error(te);
           }
@@ -799,6 +805,10 @@ public class XPath implements Serializable, ExpressionOwner
 
   public void setArrowOpRemainingXPathExprStr(String arrowOpRemainingXPathExprStr) {
 	 this.fArrowOpRemainingXPathExprStr = arrowOpRemainingXPathExprStr;
+  }
+
+  public void setIsQuantifiedExpr(boolean isQuantifiedExpr) {	
+	 this.fIsQuantifiedExpr = isQuantifiedExpr;
   }
 
 }

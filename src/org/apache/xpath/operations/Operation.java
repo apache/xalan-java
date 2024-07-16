@@ -110,9 +110,6 @@ public class Operation extends Expression implements ExpressionOwner
   public XObject execute(XPathContext xctxt)
           throws javax.xml.transform.TransformerException
   {
-    
-    // XObject left = m_left.execute(xctxt, true);
-    // XObject right = m_right.execute(xctxt, true);
       
     XObject left = null;
     

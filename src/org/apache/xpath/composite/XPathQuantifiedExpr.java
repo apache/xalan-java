@@ -43,10 +43,8 @@ import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSBoolean;
 
-/*
+/**
  * Implementation of XPath 3.1 quantified expressions.
- *    
- * Ref : https://www.w3.org/TR/xpath-31/#id-quantified-expressions
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -99,9 +97,11 @@ public class XPathQuantifiedExpr extends Expression {
         
         XPath quantifiedExprXpath = new XPath(fQuantifierTestXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                         XPath.SELECT, null);
+        quantifiedExprXpath.setIsQuantifiedExpr(true);
         
         ResultSequence resultSequence = getQuantifiedExpressionEvalResult(fQuantifiedExprVarBindingList.listIterator(), 
-                                                                                                 quantifiedExprXpath, xctxt);
+        		                                                                                     quantifiedExprXpath, xctxt);
+        
         m_xpathVarList.clear();
         
         boolean isEvalResultDecided = false;
@@ -180,7 +180,7 @@ public class XPathQuantifiedExpr extends Expression {
      * instance.
      */
     private ResultSequence getQuantifiedExpressionEvalResult(ListIterator listIter, 
-                                                                     XPath quantifiedExprXpath, 
+                                                                     XPath quantifiedExprXPath, 
                                                                      XPathContext xctxt) throws TransformerException {
         ResultSequence resultSeq = new ResultSequence();
         
@@ -207,16 +207,16 @@ public class XPathQuantifiedExpr extends Expression {
                                                                                         varBindingXPathStr, prefixTable);
            }
            
-           XPath varBindingXpath = new XPath(varBindingXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+           XPath varBindingXPath = new XPath(varBindingXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                    XPath.SELECT, null);
            if (fVars != null) {
               if (!m_xpathVarList.contains(new QName(varName))) {
                  m_xpathVarList.add(new QName(varName));
               }
-              varBindingXpath.fixupVariables(fVars, fGlobalsSize);
+              varBindingXPath.fixupVariables(fVars, fGlobalsSize);
            }
            
-           XObject xsObj = varBindingXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+           XObject xsObj = varBindingXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
            
            ResultSequence xsObjResultSeq = new ResultSequence(); 
            
@@ -254,7 +254,7 @@ public class XPathQuantifiedExpr extends Expression {
                              
                quantifiedExprVarBindingMap.put(new QName(varName), xdmItem);
                
-               ResultSequence res = getQuantifiedExpressionEvalResult(listIter, quantifiedExprXpath, xctxt);
+               ResultSequence res = getQuantifiedExpressionEvalResult(listIter, quantifiedExprXPath, xctxt);
                // Append xdm items of sequence 'res', to the final sequence object 'resultSeq'   
                for (int idx1 = 0; idx1 < res.size(); idx1++) {
                   resultSeq.add(res.item(idx1));    
@@ -266,21 +266,25 @@ public class XPathQuantifiedExpr extends Expression {
            return resultSeq;
         }
         else {
-            // This else clause, evaluates the XPath quantified expression's 'satisfies' 
-            // clause. The XPath quantified expression's 'satisfies' clause may be evaluated
-            // multiple times depending upon, how may 'some'/'every' expression iterations
-            // are there.
+            // Here we evaluate, an XPath quantified expression's satisfies clause. 
+        	// The XPath quantified expression's satisfies clause will typically be 
+        	// evaluated multiple times depending upon, how may quantified expression 
+        	// iterations are there.
             
             if (fVars != null) {              
-               quantifiedExprXpath.fixupVariables(fVars, fGlobalsSize);
+               quantifiedExprXPath.fixupVariables(fVars, fGlobalsSize);
             }
             
-            ResultSequence satisfiesClauseEvalResult = new ResultSequence(); 
+            ResultSequence satisfiesClauseEvalResult = new ResultSequence();
             
-            XObject quantifiedTestExprValue = quantifiedExprXpath.execute(xctxt, contextNode, 
-                                                                                     xctxt.getNamespaceContext());            
-            
-            satisfiesClauseEvalResult.add(new XSBoolean(quantifiedTestExprValue.bool()));
+            try {
+               XObject quantifiedTestExprValue = quantifiedExprXPath.execute(xctxt, contextNode, 
+                                                                                     xctxt.getNamespaceContext());
+               satisfiesClauseEvalResult.add(new XSBoolean(quantifiedTestExprValue.bool()));
+            }
+            catch (TransformerException ex) {
+               satisfiesClauseEvalResult.add(new XSBoolean(false));	
+            }                        
             
             return satisfiesClauseEvalResult; 
         }

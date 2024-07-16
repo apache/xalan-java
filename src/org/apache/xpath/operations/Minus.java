@@ -532,13 +532,15 @@ public class Minus extends Operation
           }
       }
       else {          
-          try {
-             result = new XNumber(left.num() - right.num());
+    	  try {
+          	 java.lang.String lStrVal = XslTransformEvaluationHelper.getStrVal(left);
+          	 java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
+             result = new XNumber(Double.valueOf(lStrVal) - Double.valueOf(rStrVal));
           }
-          catch (TransformerException ex) {
+          catch (NumberFormatException ex) {
              throw new javax.xml.transform.TransformerException("XPTY0004 : Could not evaluate the "
-                                                                                              + "operator '-', due to incorrectly "
-                                                                                              + "typed operand(s)."); 
+                                                                                                + "operator '-', due to incorrectly "
+                                                                                                + "typed operand(s)."); 
           }
       }
       
