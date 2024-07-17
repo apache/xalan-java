@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
+import java.util.UUID;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.ErrorListener;
@@ -765,12 +766,63 @@ public class XPathParser
    * not. We simultaneously accumulate function call argument details within a list 
    * 'argDetailsStrPartsList' (that has been passed as an argument to this method) 
    * whose contents are accessible to the caller of this method.
+ * @throws TransformerException 
    */
   private boolean isXPathDynamicFuncCallParseAhead(List<String> argDetailsStrPartsList, 
-                                                                                  String delim) {
+		                                           String delim) throws TransformerException {
       boolean isXpathDynamicFuncCallParseAhead = false;
-
-      if (lookahead('(', 1)) {
+      
+      String prevToken = getTokenRelative(-2);
+      
+      if (tokenIs('(') && (prevToken.equals("(") || prevToken.equals(","))) {
+     	 // XPath parse of literal sequence
+     	 StringBuffer strBuff = new StringBuffer();
+     	 strBuff.append(m_token);    	 
+     	 consumeExpected('(');
+     	 while (m_token != null) {
+     	    if (tokenIs(')')) {
+     		   strBuff.append(m_token);
+     		   argDetailsStrPartsList.add(strBuff.toString());
+     		   consumeExpected(')');
+     		   if (tokenIs(',')) {
+     			  argDetailsStrPartsList.add(delim);
+     			  nextToken();
+     		      m_dynamicFunctionCallArgumentMarker = false;
+     		      isXpathDynamicFuncCallParseAhead = true;
+     		   }
+     		   break;
+     	    }
+     	    else {
+     		   strBuff.append(m_token);
+     		   nextToken();
+     	    }
+     	 }
+      }
+      else if (tokenIs('[') && (prevToken.equals("(") || prevToken.equals(","))) {
+     	 // XPath parse of literal array
+     	 StringBuffer strBuff = new StringBuffer();
+     	 strBuff.append(m_token);    	 
+     	 consumeExpected('[');
+     	 while (m_token != null) {
+     	    if (tokenIs(']')) {
+     		   strBuff.append(m_token);
+     		   argDetailsStrPartsList.add(strBuff.toString());
+     		   consumeExpected(']');
+     		   if (tokenIs(',')) {
+     			  argDetailsStrPartsList.add(delim);
+     			  nextToken();
+     		      m_dynamicFunctionCallArgumentMarker = false;
+     		      isXpathDynamicFuncCallParseAhead = true;
+     		   }    		   
+     		   break;
+     	    }
+     	    else {
+     		   strBuff.append(m_token);
+     		   nextToken();
+     	    }
+     	 }
+      }
+      else if (lookahead('(', 1)) {
          // The function call argument is itself another function call
          m_dynamicFunctionCallArgumentMarker = true;
          argDetailsStrPartsList.add(m_token);
@@ -3142,8 +3194,8 @@ public class XPathParser
     	
        // For example, if an XPath inline function expression is bound
        // to an XSLT variable as follows : <xsl:variable name="sqr" select="function($val) { $val * $val }"/>,
-       // then an XPath expression $sqr(5) shall return a value 25. Within this example, 
-       // an XPath expression $sqr(5) is referred to as an XPath dynamic function call.
+       // then an XPath expression $sqr(5) shall return a value 25. For this example, 
+       // an XPath expression $sqr(5) is referred to as dynamic function call.
     	
        // Ref : https://www.w3.org/TR/xpath-31/#id-dynamic-function-invocation
                      
@@ -3163,11 +3215,9 @@ public class XPathParser
        
        List<String> argDetailsStrPartsList = new ArrayList<String>();
        
-       // We create here a temporary function call argument delimiter 
-       // string, for this processing.
-       long currentTimeMills = System.currentTimeMillis();
-       String delimSuffix = (Long.valueOf(currentTimeMills)).toString();
-       String delim = "t0_" + delimSuffix;
+       // We specify here a temporary function call argument delimiter 
+       // string, for this processing.       
+       String delim = "t0_" + (UUID.randomUUID()).toString();
        
        while (m_token != null && isXPathDynamicFuncCallParseAhead(
                                                       argDetailsStrPartsList, delim)) {
@@ -3287,7 +3337,7 @@ public class XPathParser
                   error(XPATHErrorResources.ER_FOUND_COMMA_BUT_NO_PRECEDING_PARAM, null);
               }
     
-              if (m_tokenChar == '$')
+              if (tokenIs('$'))
               {
                   nextToken();
                   
@@ -3302,6 +3352,8 @@ public class XPathParser
                      paramType.setItemTypeOccurrenceIndicator(seqTypeExpr.getItemTypeOccurrenceIndicator());
                      paramType.setSequenceTypeKindTest(seqTypeExpr.getSequenceTypeKindTest());
                      paramType.setSequenceTypeFunctionTest(seqTypeExpr.getSequenceTypeFunctionTest());
+                     paramType.setSequenceTypeMapTest(seqTypeExpr.getSequenceTypeMapTest());
+                     paramType.setSequenceTypeArrayTest(seqTypeExpr.getSequenceTypeArrayTest());
                      inlineFunctionParameter.setParamType(paramType);                     
                   }
                   else {

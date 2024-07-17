@@ -25,7 +25,7 @@
         <val1><xsl:value-of select="$func1($func2(10) + 5)"/></val1>
         <val2><xsl:value-of select="$func1(abs(-10) + 20)"/></val2>
         <val3><xsl:value-of select="$func1($func2(10) + abs(-7))"/></val3>
-        <val4><xsl:value-of select="$func1(($func2(10) + $x1) + math:pi())"/></val4>
+        <val4><xsl:value-of select="$func1($func2(10) + $x1 + math:pi())"/></val4>
         <val5><xsl:value-of select="$func1($func2(10) + abs(-7)) + ($x1 * $x2)"/></val5>
       </result>
    </xsl:template>

@@ -23,7 +23,7 @@
         <xsl:variable name="func1" select="function($a) { ($a * 2) + $x1 }"/>
         <xsl:variable name="func2" select="function($b) { $b + $x2 + $func1(math:pi()) }"/>
         
-        <val><xsl:value-of select="$func1(($func2(val1) + val2) + math:pi())"/></val>
+        <val><xsl:value-of select="$func1($func2(val1) + val2 + math:pi())"/></val>
       </result>
    </xsl:template>
    
