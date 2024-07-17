@@ -48,6 +48,7 @@ import org.apache.xalan.xpath3.XPathCastTests;
 import org.apache.xalan.xpath3.XPathGeneralComparisonOpTests;
 import org.apache.xalan.xpath3.XPathMapTests;
 import org.apache.xalan.xpath3.XPathNamedFunctionReferenceTests;
+import org.apache.xalan.xpath3.XPathNumericArithmeticTests;
 import org.apache.xalan.xpath3.XsConstructorFunctionTests;
 import org.apache.xalan.xpath3.XsDateTimeArithmeticTests;
 import org.apache.xalan.xpath3.XsDateTimeTests;
@@ -80,7 +81,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnParseJsonTests.class, FnJsonDocTests.class, FnJsonToXmlTests.class,
                 FnXmlToJsonTests.class, FnAnalyzeStringTests.class, XPathMapOtherTests.class,
                 JiraIssuesTests.class, XPathNamedFunctionReferenceTests.class, FnApplyTests.class,
-                XPathGeneralComparisonOpTests.class, FnMapFindTests.class })
+                XPathGeneralComparisonOpTests.class, FnMapFindTests.class, XPathNumericArithmeticTests.class })
 public class Xsl3TestSuite1 {
 
 }
