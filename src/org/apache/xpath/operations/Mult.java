@@ -21,9 +21,6 @@
 package org.apache.xpath.operations;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-
-import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
@@ -36,7 +33,6 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSInteger;
-import xml.xpath31.processor.types.XSLong;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
@@ -51,7 +47,6 @@ public class Mult extends Operation
 
   /**
    * Apply the operation to two operands, and return the result.
-   *
    *
    * @param left non-null reference to the evaluated left operand.
    * @param right non-null reference to the evaluated right operand.
@@ -448,44 +443,13 @@ public class Mult extends Operation
              result = new XSDecimal(resultBigDecimal);
           }
       }
-      else if ((left instanceof XSYearMonthDuration) && (right instanceof XNumber)) {
+      else if (left instanceof XSYearMonthDuration) {
     	  try {
-    		  double rDouble = ((XNumber)right).num();
-    		  result = ((XSYearMonthDuration)left).mult(new XSDouble(rDouble));
-    	  }
-    	  catch (XPathException ex) {
-    		  throw new javax.xml.transform.TransformerException(ex.getMessage());  
-    	  }
-      }
-      else if ((left instanceof XSYearMonthDuration) && (right instanceof XSNumericType)) {
-    	  try {
-    		  java.lang.String rStrVal = ((XSNumericType)right).stringValue();
+    		  java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
     		  result = ((XSYearMonthDuration)left).mult(new XSDouble(rStrVal));
     	  }
     	  catch (XPathException ex) {
     		  throw new javax.xml.transform.TransformerException(ex.getMessage());  
-    	  }
-      }
-      else if ((left instanceof XSYearMonthDuration) && (right instanceof ResultSequence)) {
-    	  ResultSequence rSeq = (ResultSequence)right;
-    	  if (rSeq.size() > 1) {
-    		  throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more than one item is not "
-    		  		                                                                  + "allowed as the 2nd operand of operator '*'.");  
-    	  }
-    	  else {
-    		  java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(rSeq.item(0));
-    		  result = ((XSYearMonthDuration)left).mult(new XSDouble(rStrVal));
-    	  }
-      }
-      else if ((left instanceof XSYearMonthDuration) && (right instanceof XNodeSet)) {
-    	  XNodeSet rNodeSet = (XNodeSet)right;
-    	  if (rNodeSet.getLength() > 1) {
-    		  throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more than one item is not "
-    		  		                                                                  + "allowed as the 2nd operand of operator '*'.");  
-    	  }
-    	  else {
-    		  java.lang.String rStrVal = rNodeSet.str();
-    		  result = ((XSYearMonthDuration)left).mult(new XSDouble(rStrVal));
     	  }
       }
       else {
@@ -521,95 +485,23 @@ public class Mult extends Operation
   
   /**
    * Multiply a value of type XSNumericType, to another value of type 
-   * XSNumericType. 
-   * 
-   * Whereever possible, we try to return a value of type derived 
-   * from XSNumericType (i.e, an XML Schema type), and don't incur
-   * loss of precision. 
+   * XSNumericType.
    */
   private XObject multiplyXSNumericTypeToXsNumericType(XSNumericType leftVal, XSNumericType rightVal) {
 
 	  XObject result = null;
 
-	  if (leftVal instanceof XSInteger) {
-		  if (rightVal instanceof XSInteger) {
-			  XSInteger lXsInteger = (XSInteger)leftVal;
-			  BigDecimal lBigDecimal = lXsInteger.getValue();
+	  if ((leftVal instanceof XSDecimal) || (rightVal instanceof XSDecimal)) {
+		  BigDecimal lBigDecimal = new BigDecimal(leftVal.stringValue());
+		  BigDecimal rBigDecimal = new BigDecimal(rightVal.stringValue());
 
-			  XSInteger rXsInteger = (XSInteger)rightVal;
-			  BigDecimal rBigDecimal = rXsInteger.getValue();
-
-			  BigDecimal resultBigDecimal = lBigDecimal.multiply(rBigDecimal);
-			  result = new XSInteger(resultBigDecimal.toString());
-		  }
-		  else if (rightVal instanceof XSLong) {
-			  XSInteger lXsInteger = (XSInteger)leftVal;
-			  BigDecimal lBigDecimal = lXsInteger.getValue();
-
-			  XSLong rXsLong = (XSLong)rightVal;
-			  BigDecimal rBigDecimal = rXsLong.getValue();
-
-			  BigDecimal resultBigDecimal = lBigDecimal.multiply(rBigDecimal);
-			  result = new XSInteger(resultBigDecimal.toString()); 
-		  }
-		  else if (rightVal instanceof XSDecimal) {
-			  XSDecimal rXsDecimal = (XSDecimal)rightVal;
-			  BigDecimal rBigDecimal = rXsDecimal.getValue();
-			  if (rBigDecimal.equals(rBigDecimal.toBigInteger())) {
-				  XSInteger lXsInteger = (XSInteger)leftVal;
-				  BigDecimal lBigDecimal = lXsInteger.getValue();
-				  result = new XSInteger((lBigDecimal.multiply(rBigDecimal)).toString());
-			  }
-			  else {
-				  XSInteger lXsInteger = (XSInteger)leftVal;
-				  BigDecimal lBigDecimal = lXsInteger.getValue();
-				  result = new XSDecimal((lBigDecimal.multiply(rBigDecimal)).toString());
-			  }
-		  }
-		  else {
-			  XSInteger lXsInteger = (XSInteger)leftVal;
-			  BigDecimal lBigDecimal = lXsInteger.getValue();
-
-			  java.lang.String rStrVal = rightVal.stringValue();
-			  BigDecimal rBigDecimal = new BigDecimal(rStrVal);
-
-			  result = new XSDecimal((lBigDecimal.multiply(rBigDecimal)).toString());
-		  }
-	  }
-	  else if (leftVal instanceof XSLong) {
-		  java.lang.String lStrVal = leftVal.stringValue();
-		  java.lang.String rStrVal = rightVal.stringValue();
-		  if (rightVal instanceof XSInteger) {
-			  BigDecimal lBigDecimal = new BigDecimal(lStrVal);
-			  BigDecimal rBigDecimal = new BigDecimal(rStrVal);
-			  result = new XSInteger((lBigDecimal.multiply(rBigDecimal)).toString());
-		  }
-		  else if (rightVal instanceof XSLong) {
-			  BigDecimal lBigDecimal = new BigDecimal(lStrVal);
-			  BigDecimal rBigDecimal = new BigDecimal(rStrVal);
-			  result = new XSInteger((lBigDecimal.multiply(rBigDecimal)).toString()); 
-		  }
-		  else if (rightVal instanceof XSDecimal) {
-			  BigDecimal lBigDecimal = new BigDecimal(lStrVal);
-			  BigDecimal rBigDecimal = new BigDecimal(rStrVal);
-			  result = new XSDecimal((lBigDecimal.multiply(rBigDecimal)).toString());  
-		  }
-		  else {
-			  XSLong lXsLong = (XSLong)leftVal;
-			  BigDecimal lBigDecimal = lXsLong.getValue();
-
-			  BigDecimal rBigDecimal = new BigDecimal(rStrVal);       		    
-			  result = new XSDecimal((lBigDecimal.multiply(rBigDecimal)).toString()); 
-		  } 
+		  result = new XSDecimal((lBigDecimal.multiply(rBigDecimal)).toString());
 	  }
 	  else {
-		  java.lang.String lStrVal = leftVal.stringValue();
-		  java.lang.String rStrVal = rightVal.stringValue();
+		  Double lDouble = Double.valueOf(leftVal.stringValue());
+		  Double rDouble = Double.valueOf(rightVal.stringValue());
 
-		  BigDecimal lBigDecimal = new BigDecimal(lStrVal);
-		  BigDecimal rBigDecimal = new BigDecimal(rStrVal);
-
-		  result = new XSDecimal((lBigDecimal.multiply(rBigDecimal)).toString());  
+		  result = new XSDouble(lDouble.doubleValue() * rDouble.doubleValue());  
 	  }
 	  
 	  return result;
@@ -617,48 +509,23 @@ public class Mult extends Operation
 
   /**
    * Multiply XNumber value to an XSNumericType value.
-   * 
-   * Whereever possible, we try to return a value of type derived 
-   * from XSNumericType (i.e, an XML Schema type), and don't incur
-   * loss of precision. 
    */
   private XObject multiplyXNumberToXsNumericType(XNumber leftVal, XSNumericType rightVal) {
 	  
 	  XObject result = null;
 	  
-	  if (rightVal instanceof XSInteger) {
-		  java.lang.String rStrVal = rightVal.stringValue();
-		  BigInteger rBigInt = new BigInteger(rStrVal);
-		  double lDouble = leftVal.num();
-		  if (lDouble == (long)lDouble) {
-			  BigInteger resultBigInt = rBigInt.multiply(new BigInteger((long)lDouble + ""));
-			  result = new XSInteger(resultBigInt);
-		  }
-		  else {
-			  java.math.BigDecimal lBigDecimal = new java.math.BigDecimal(rStrVal); 
-			  java.math.BigDecimal resultBigDecimal = lBigDecimal.multiply(new java.math.BigDecimal(lDouble));
-			  result = new XSDecimal(resultBigDecimal);
-		  }
-	  }
-	  else if (rightVal instanceof XSLong) {
-		  java.lang.String rStrVal = rightVal.stringValue();
-		  BigInteger rBigInt = new BigInteger(rStrVal);
-		  double lDouble = leftVal.num();
-		  if (lDouble == (long)lDouble) {
-			  BigInteger resultBigInt = rBigInt.multiply(new BigInteger((long)lDouble + ""));
-			  result = new XSLong(resultBigInt);
-		  }
-		  else {
-			  java.math.BigDecimal rBigDecimal = new java.math.BigDecimal(rStrVal); 
-			  java.math.BigDecimal resultBigDecimal = rBigDecimal.multiply(new java.math.BigDecimal(lDouble));
-			  result = new XSDecimal(resultBigDecimal);
-		  }
-	  }    	  
+	  if (rightVal instanceof XSDecimal) {
+	      java.lang.String rStrVal = rightVal.stringValue();		  		  
+	      java.math.BigDecimal rBigDecimal = new java.math.BigDecimal(rStrVal);
+	      double lDouble = leftVal.num();
+		  java.math.BigDecimal resultVal = rBigDecimal.multiply(new java.math.BigDecimal(lDouble));
+		  result = new XSDecimal(resultVal);
+	  }	      	  
 	  else {
-		  java.lang.String rStrVal = rightVal.stringValue();
-		  double rDouble = (Double.valueOf(rStrVal)).doubleValue();
 		  double lDouble = leftVal.num();
-		  result = new XNumber(lDouble * rDouble);
+		  java.lang.String rStrVal = rightVal.stringValue();
+		  double rDouble = (Double.valueOf(rStrVal)).doubleValue();		  
+		  result = new XSDouble(lDouble * rDouble);
 	  }
 	  
 	  return result;

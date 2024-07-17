@@ -8,4 +8,10 @@
   <seven>12.2</seven>
   <eight>true</eight>
   <nine>false</nine>
+  <divOp>
+    <one>2469135780.2</one>
+    <two>3.142857142857142857</two>
+    <three>3.142857142857142857</three>
+    <four>3.142857142857142857</four>
+  </divOp>
 </result>

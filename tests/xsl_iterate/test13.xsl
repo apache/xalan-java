@@ -24,7 +24,7 @@
            <xsl:variable name="thisDate" select="xs:date(@date)"/>
            <xsl:choose>
               <xsl:when test="(position() eq 1) or ($thisDate eq $prevDate)">
-                 <balance date="{$thisDate}" value="{format-number($newBalance, '0.00')}"/>
+                 <balance date="{$thisDate}" value="{format-number(number(string($newBalance)), '0.00')}"/>
                  <xsl:next-iteration>
                     <xsl:with-param name="balance" select="$newBalance"/>
                     <xsl:with-param name="prevDate" select="$thisDate"/>

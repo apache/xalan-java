@@ -399,7 +399,11 @@ public class ElemVariable extends ElemTemplateElement
             if ((evalResult instanceof ResultSequence) || (evalResult instanceof XPathArray) || 
                                                 (evalResult instanceof XSAnyType)) {
                 if (m_asAttr != null) {
-                   evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
+                   evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
+                   if (evalResult == null) {
+                 	  throw new javax.xml.transform.TransformerException("XTTE0570 : variable's computed value is not of "
+                 	  		                                                        + "an expected type " + m_asAttr +".", srcLocator); 
+                   }
                 }
                 
                 return evalResult; 
@@ -409,7 +413,11 @@ public class ElemVariable extends ElemTemplateElement
             XObject evalResult = selectExpression.execute(xctxt);
             
             if (m_asAttr != null) {
-               evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
+               evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
+               if (evalResult == null) {
+             	  throw new javax.xml.transform.TransformerException("XTTE0570 : variable's computed value is not of "
+             	  		                                                         + "an expected type " + m_asAttr +".", srcLocator); 
+               }
             }
              
             return evalResult;
@@ -418,7 +426,11 @@ public class ElemVariable extends ElemTemplateElement
             XObject evalResult = selectExpression.execute(xctxt);
             
             if (m_asAttr != null) {
-               evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
+               evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
+               if (evalResult == null) {
+              	  throw new javax.xml.transform.TransformerException("XTTE0570 : variable's computed value is not of "
+              	  		                                                         + "an expected type " + m_asAttr +".", srcLocator); 
+               }
             }
              
             return evalResult; 
@@ -429,10 +441,20 @@ public class ElemVariable extends ElemTemplateElement
                                                                                  xctxt, opn.getLeftOperand(), transformer);
             XObject rightOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
                                                                                  xctxt, opn.getRightOperand(), transformer);
-            XObject evalResult = opn.operate(leftOperand, rightOperand);
+            XObject evalResult = null;
+            try {
+               evalResult = opn.operate(leftOperand, rightOperand);
+            }
+            catch (TransformerException ex) {
+               throw new TransformerException(ex.getMessage(), srcLocator); 
+            }
             
             if (m_asAttr != null) {
-               evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);  
+               evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
+               if (evalResult == null) {
+            	  throw new javax.xml.transform.TransformerException("XTTE0570 : variable's computed value is not of "
+            	  		                                                         + "an expected type " + m_asAttr +".", srcLocator); 
+               }
             }
              
             return evalResult;

@@ -6,9 +6,8 @@
                 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- This XSLT stylesheet, tests XPath 3.1 constructor function
-        xs:decimal(), and use of XPath logical operations on such 
-        values. -->                
+   <!-- This XSLT stylesheet, tests various XPath 3.1 constructor functions
+        and use of logical and div operations on such values. -->                
 
    <xsl:output method="xml" indent="yes"/>
 
@@ -25,6 +24,24 @@
 	     <seven><xsl:value-of select="$decimal2"/></seven>
 	     <eight><xsl:value-of select="$decimal1 = $decimal1"/></eight>
          <nine><xsl:value-of select="$decimal1 = $decimal2"/></nine>
+         <divOp>
+            <xsl:variable name="resultVal" select="xs:integer(12345678901) div xs:integer(5)" as="xs:decimal"/>
+		    <one>
+		      <xsl:value-of select="$resultVal"/>
+		    </one>
+            <xsl:variable name="resultVal" select="xs:integer(22) div xs:integer(7)" as="xs:decimal"/>
+		    <two>
+		      <xsl:value-of select="$resultVal"/>
+		    </two>
+		    <xsl:variable name="resultVal" select="xs:byte(22) div xs:byte(7)" as="xs:decimal"/>
+		    <three>
+		      <xsl:value-of select="$resultVal"/>
+		    </three>
+		    <xsl:variable name="resultVal" select="xs:unsignedByte(22) div xs:unsignedByte(7)" as="xs:decimal"/>
+		    <four>
+		      <xsl:value-of select="$resultVal"/>
+		    </four>
+         </divOp>
       </result>
    </xsl:template>
    
