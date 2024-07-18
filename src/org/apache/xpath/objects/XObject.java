@@ -49,6 +49,7 @@ import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSDuration;
 import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSInt;
 import xml.xpath31.processor.types.XSInteger;
@@ -1055,102 +1056,112 @@ public class XObject extends Expression implements Serializable, Cloneable
    */
   public boolean equals(XObject obj2)
   {
-	    if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
-	       return ((XSDecimal)this).equals((XSDecimal)obj2);        
-	    }
-	    else if ((this instanceof XSFloat) && (obj2 instanceof XSFloat)) {
-	       return ((XSFloat)this).equals((XSFloat)obj2);        
-	    }
-	    else if ((this instanceof XSDouble) && (obj2 instanceof XSDouble)) {
-	       return ((XSDouble)this).equals((XSDouble)obj2);        
-	    }
-	    else if ((this instanceof XSBoolean) && (obj2 instanceof XSBoolean)) {
-	       return ((XSBoolean)this).equals((XSBoolean)obj2);    
-	    }
-	    else if ((this instanceof XSInteger) && (obj2 instanceof XSInteger)) {
-	       return ((XSInteger)this).equals((XSInteger)obj2);    
-	    }
-	    else if ((this instanceof XSLong) && (obj2 instanceof XSLong)) {
-	       return ((XSLong)this).equals((XSLong)obj2);    
-	    }
-	    else if ((this instanceof XSInt) && (obj2 instanceof XSInt)) {
-	       return ((XSInt)this).equals((XSInt)obj2);    
-	    }
-	    else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
-	       return ((XSDate)this).equals((XSDate)obj2);    
-	    }
-	    else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
-	        return ((XSDateTime)this).equals((XSDateTime)obj2);    
-	    }
-	    else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
-	        return ((XSTime)this).equals((XSTime)obj2);    
-	    }
-	    else if ((this instanceof XSInteger) && (obj2 instanceof XNumber)) {
-	       double lDouble = ((XSInteger)this).doubleValue();
-	       double rDouble = ((XNumber)obj2).num();
-	       return (lDouble == rDouble); 
-	    }
-	    else if ((this instanceof XNumber) && (obj2 instanceof XSInteger)) {
-	       double lDouble = ((XNumber)this).num();
-	       double rDouble = ((XSInteger)obj2).doubleValue();
-	       return (lDouble == rDouble);      
-	    }
-	    if ((this instanceof XSDecimal) && (obj2 instanceof XNumber)) {
-	    	XSDecimal lXsDecimal = (XSDecimal)this;
-	    	BigDecimal lBigDecimal = lXsDecimal.getValue();
-	    	double lDouble = lBigDecimal.doubleValue();
-	    	if (lBigDecimal.equals(new BigDecimal(lDouble))) {
-	    	   double rDouble = ((XNumber)obj2).num();
-	    	   return (lDouble == rDouble);
-	    	}
-	    	else {
-	    	   double rDouble = ((XNumber)obj2).num();
-	    	   return lBigDecimal.equals(new BigDecimal(rDouble)); 
-	    	}
-		}
-	    else if (this instanceof XSAnyURI) {
-	       boolean isEqual = false;
-	       
-	       try {
+	  boolean result = false;
+
+	  if ((this instanceof XSNumericType) && (obj2 instanceof XSNumericType)) {
+		  String lStr = ((XSNumericType)this).stringValue();
+		  BigDecimal lBigDecimal = new BigDecimal(lStr);		  
+		  String rStr = ((XSNumericType)obj2).stringValue();
+		  BigDecimal rBigDecimal = new BigDecimal(rStr);
+		  
+		  result = (lBigDecimal.compareTo(rBigDecimal) == 0); 
+	  }
+	  else if ((this instanceof XSNumericType) && (obj2 instanceof XNumber)) {
+		  String lStr = ((XSNumericType)this).stringValue();
+		  BigDecimal lBigDecimal = new BigDecimal(lStr);		  
+		  BigDecimal rBigDecimal = BigDecimal.valueOf(((XNumber)obj2).num());
+		  
+		  result = (lBigDecimal.compareTo(rBigDecimal) == 0);
+	  }
+	  else if ((this instanceof XNumber) && (obj2 instanceof XSNumericType)) {
+		  BigDecimal lBigDecimal = BigDecimal.valueOf(((XNumber)this).num());		  
+		  BigDecimal rBigDecimal = new BigDecimal(((XSNumericType)obj2).stringValue());
+		  
+		  result = (lBigDecimal.compareTo(rBigDecimal) == 0);
+	  }
+	  else if ((this instanceof XNumber) && (obj2 instanceof XNumber)) {
+		  double lDouble = ((XNumber)this).num();
+		  double rDouble = ((XNumber)obj2).num();
+		  
+		  result = (lDouble == rDouble);
+	  }
+	  else if ((this instanceof XSBoolean) && (obj2 instanceof XSBoolean)) {
+		  result = ((XSBoolean)this).equals((XSBoolean)obj2);    
+	  }
+	  else if ((this instanceof XBoolean) && (obj2 instanceof XBoolean)) {
+		  boolean lBool = ((XBoolean)this).bool();
+		  boolean rBool = ((XBoolean)obj2).bool();
+		  
+		  result = (lBool == rBool);
+	  }
+	  else if ((this instanceof XSBoolean) && (obj2 instanceof XBoolean)) {
+		  boolean lBool = ((XSBoolean)this).bool();
+		  boolean rBool = ((XBoolean)obj2).bool();
+		  
+		  result = (lBool == rBool);    
+	  }
+	  else if ((this instanceof XBoolean) && (obj2 instanceof XSBoolean)) {
+		  boolean lBool = ((XBoolean)this).bool();
+		  boolean rBool = ((XSBoolean)obj2).bool();
+		  
+		  result = (lBool == rBool);    
+	  }	
+	  else if (this instanceof XSAnyURI) {
+		  boolean isEqual = false;
+
+		  try {
 			  isEqual = ((XSAnyURI)this).eq(obj2);
-		   } 
-	       catch (TransformerException ex) {
-	          isEqual = false;
-		   }   
-	       
-	       return isEqual;
-	    }	    
-	    else if ((this instanceof XSString) && (obj2 instanceof XSString)) {
-	       String lStr = ((XSString)this).stringValue();
-	       String rStr = ((XSString)obj2).stringValue();
-	       return lStr.equals(rStr);
-	    }
-        else if ((this instanceof XSString) && (obj2 instanceof XString)) {
-           String lStr = ((XSString)this).stringValue();
- 	       String rStr = ((XString)obj2).str();
- 	       return lStr.equals(rStr);
-	    }
-        else if ((this instanceof XString) && (obj2 instanceof XSString)) {           
-  	       String lStr = ((XString)this).str();
-  	       String rStr = ((XSString)obj2).stringValue();
-  	       return lStr.equals(rStr);
-	    }
-        else if ((this instanceof XString) && (obj2 instanceof XString)) {
-           String lStr = ((XString)this).str();
-   	       String rStr = ((XString)obj2).str();
-   	       return lStr.equals(rStr);
-	    }
-	        
-	    if (obj2.getType() == XObject.CLASS_NODESET) {
-	       return obj2.equals(this);
-	    }
-	
-	    if (m_obj != null) {
-	       return m_obj.equals(obj2.m_obj);
-	    }
-	    else {
-	       return obj2.m_obj == null;
-	    }    
+		  } 
+		  catch (TransformerException ex) {
+			  isEqual = false;
+		  }   
+
+		  result = isEqual;
+	  }	    
+	  else if ((this instanceof XSString) && (obj2 instanceof XSString)) {
+		  String lStr = ((XSString)this).stringValue();
+		  String rStr = ((XSString)obj2).stringValue();
+		  
+		  result = lStr.equals(rStr);
+	  }
+	  else if ((this instanceof XSString) && (obj2 instanceof XString)) {
+		  String lStr = ((XSString)this).stringValue();
+		  String rStr = ((XString)obj2).str();
+		  
+		  result = lStr.equals(rStr);
+	  }
+	  else if ((this instanceof XString) && (obj2 instanceof XSString)) {           
+		  String lStr = ((XString)this).str();
+		  String rStr = ((XSString)obj2).stringValue();
+		  
+		  result = lStr.equals(rStr);
+	  }
+	  else if ((this instanceof XString) && (obj2 instanceof XString)) {
+		  String lStr = ((XString)this).str();
+		  String rStr = ((XString)obj2).str();
+		  
+		  result = lStr.equals(rStr);
+	  }
+	  else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
+		  result = ((XSDate)this).equals((XSDate)obj2);    
+	  }
+	  else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
+		  result = ((XSDateTime)this).equals((XSDateTime)obj2);    
+	  }
+	  else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
+		  result = ((XSTime)this).equals((XSTime)obj2);    
+	  }	        
+	  else if (obj2.getType() == XObject.CLASS_NODESET) {
+		  result = obj2.equals(this);
+	  }	
+	  else if (m_obj != null) {
+		  result = m_obj.equals(obj2.m_obj);
+	  }
+	  else {
+		  result = (obj2.m_obj == null);
+	  }
+
+	  return result;
   }
   
   /**
@@ -1249,141 +1260,171 @@ public class XObject extends Expression implements Serializable, Cloneable
    */
   public boolean vcEquals(XObject obj2, ExpressionNode expressionOwner, boolean isEqTest) 
                                                                throws javax.xml.transform.TransformerException
-  {
-    if ((this instanceof XSDecimal) && (obj2 instanceof XSDecimal)) {
-       return ((XSDecimal)this).equals((XSDecimal)obj2);        
-    }
-    else if ((this instanceof XSFloat) && (obj2 instanceof XSFloat)) {
-       return ((XSFloat)this).equals((XSFloat)obj2);        
-    }
-    else if ((this instanceof XSDouble) && (obj2 instanceof XSDouble)) {
-       return ((XSDouble)this).equals((XSDouble)obj2);        
-    }
-    else if ((this instanceof XSBoolean) && (obj2 instanceof XSBoolean)) {
-       return ((XSBoolean)this).equals((XSBoolean)obj2);    
-    }
-    else if ((this instanceof XBoolean) && (obj2 instanceof XBooleanStatic)) {
-       boolean lBool = ((XBoolean)this).bool();
-       boolean rBool = ((XBooleanStatic)obj2).bool();
-       return (lBool == rBool);
-    }
-    else if ((this instanceof XSInteger) && (obj2 instanceof XSInteger)) {
-       return ((XSInteger)this).equals((XSInteger)obj2);    
-    }
-    else if ((this instanceof XSLong) && (obj2 instanceof XSLong)) {
-       return ((XSLong)this).equals((XSLong)obj2);    
-    }
-    else if ((this instanceof XSInt) && (obj2 instanceof XSInt)) {
-       return ((XSInt)this).equals((XSInt)obj2);    
-    }
-    else if ((this instanceof XSDate) && (obj2 instanceof XSDate)) {
-       return ((XSDate)this).equals((XSDate)obj2);    
-    }    
-    else if ((this instanceof XSDateTime) && (obj2 instanceof XSDateTime)) {
-       return ((XSDateTime)this).equals((XSDateTime)obj2);    
-    }
-    else if ((this instanceof XSTime) && (obj2 instanceof XSTime)) {
-       return ((XSTime)this).equals((XSTime)obj2);    
-    }
-    else if ((this instanceof XSNumericType) && (obj2 instanceof XNumber)) {
-  	   String lStr = ((XSNumericType)this).stringValue();
-  	   XSDouble lDouble = new XSDouble(lStr);
-  	  
-  	   double rdbl = ((XNumber)obj2).num();
-  	   XSDouble rDouble = new XSDouble(rdbl);
-  	  
-  	   return lDouble.equals(rDouble);
-    }
-    else if ((this instanceof XNumber) && (obj2 instanceof XSNumericType)) {     	  
-   	   double ldbl = ((XNumber)this).num();
-   	   XSDouble lDouble = new XSDouble(ldbl);
-   	  
-   	   String rStr = ((XSNumericType)obj2).stringValue();
-  	   XSDouble rDouble = new XSDouble(rStr);
-   	  
-   	   return lDouble.equals(rDouble);
-    }
-    else if ((this instanceof XSNumericType) && (obj2 instanceof XSNumericType)) {     	  
-  	   String lStr = ((XSNumericType)this).stringValue();
-       XSDouble lDouble = new XSDouble(lStr);
-    	  
-       String rStr = ((XSNumericType)obj2).stringValue();
-   	   XSDouble rDouble = new XSDouble(rStr);
-    	  
-       return lDouble.equals(rDouble);
-    }
-    else if ((this instanceof XSString) && (obj2 instanceof XSString)) {
-       return ((XSString)this).equals((XSString)obj2);    
-    }
-    else if ((this instanceof XString) && (obj2 instanceof XString)) {
-       String lStr = (((XString)this)).str();
-       String rStr = (((XString)obj2)).str();
-        
-       return (new XSString(lStr)).equals(new XSString(rStr));
-    }
-    else if ((this instanceof XSString) && (obj2 instanceof XString)) {
-       String lStr = ((((XSString)this))).stringValue();
-       String rStr = (((XString)obj2)).str();
-        
-       return (new XSString(lStr)).equals(new XSString(rStr));
-    }
-    else if ((this instanceof XString) && (obj2 instanceof XSString)) {
-       String lStr = (((XString)this)).str();
-       String rStr = ((((XSString)obj2))).stringValue();
-        
-       return (new XSString(lStr)).equals(new XSString(rStr));
-    }
-    else if ((this instanceof XSNumericType) && (obj2 instanceof XSString)) {
-       return false;
-    }
-    else if ((obj2 instanceof XSString) && (obj2 instanceof XSNumericType)) {
-       return false;
-    }
-    else if (this instanceof XSAnyURI) {
-	   boolean isEqual = false;
-	       
-	   try {
-	      isEqual = ((XSAnyURI)this).eq(obj2);
-	   } 
-	   catch (TransformerException ex) {
-	      throw ex;
-	   }   
-	       
-	   return isEqual;
-	}
-    
-    boolean isOperandNodeSet1 = false;
-    boolean isOperandNodeSet2 = false;
-    
-    if (this.getType() == XObject.CLASS_NODESET) {       
-       isOperandNodeSet1 = true;
-       if ((((XNodeSet)this).getLength() > 1)) {
-           error(isEqTest ? XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR : 
-                                                           XPATHErrorResources.ER_NE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
-       }
-    }
-    
-    if (obj2.getType() == XObject.CLASS_NODESET) {
-       isOperandNodeSet2 = true; 
-       if ((((XNodeSet)obj2).getLength() > 1)) {
-           error(isEqTest ? XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR : 
-                                                           XPATHErrorResources.ER_NE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
-       }
-    }
-    
-    if (isOperandNodeSet1 || (this instanceof XNumber)) {
-        return this.equals(obj2);    
-    }    
-    else if (isOperandNodeSet2 || (obj2 instanceof XNumber)) {
-        return obj2.equals(this);    
-    }
+  {	 
+	  boolean result = false;
 
-    if (m_obj != null) {
-        return m_obj.equals(obj2.m_obj);
-    }
-    else {
-        return obj2.m_obj == null;
-    }
+	  if ((this instanceof XSNumericType) && (obj2 instanceof XSNumericType)) {
+		  String lStr = ((XSNumericType)this).stringValue();
+		  BigDecimal lBigDecimal = new BigDecimal(lStr);		  
+		  String rStr = ((XSNumericType)obj2).stringValue();
+		  BigDecimal rBigDecimal = new BigDecimal(rStr);
+
+		  result = (lBigDecimal.compareTo(rBigDecimal) == 0); 
+	  }
+	  else if ((this instanceof XSNumericType) && (obj2 instanceof XNumber)) {
+		  String lStr = ((XSNumericType)this).stringValue();
+		  BigDecimal lBigDecimal = new BigDecimal(lStr);		  
+		  BigDecimal rBigDecimal = BigDecimal.valueOf(((XNumber)obj2).num());
+
+		  result = (lBigDecimal.compareTo(rBigDecimal) == 0);
+	  }
+	  else if ((this instanceof XNumber) && (obj2 instanceof XSNumericType)) {
+		  BigDecimal lBigDecimal = BigDecimal.valueOf(((XNumber)this).num());		  
+		  BigDecimal rBigDecimal = new BigDecimal(((XSNumericType)obj2).stringValue());
+
+		  result = (lBigDecimal.compareTo(rBigDecimal) == 0);
+	  }
+	  else if ((this instanceof XNumber) && (obj2 instanceof XNumber)) {
+		  double lDouble = ((XNumber)this).num();
+		  double rDouble = ((XNumber)obj2).num();
+
+		  result = (lDouble == rDouble);
+	  }
+	  else if ((this instanceof XSNumericType || this instanceof XNumber) && 
+			                                         !(obj2 instanceof XSNumericType || obj2 instanceof XNumber)) {
+		  result = false;
+	  }
+	  else if (!(this instanceof XSNumericType || this instanceof XNumber) && 
+                                                      (obj2 instanceof XSNumericType || obj2 instanceof XNumber)) {
+          result = false;
+      }
+	  else if ((this instanceof XSBoolean) && (obj2 instanceof XSBoolean)) {
+		  result = ((XSBoolean)this).equals((XSBoolean)obj2);    
+	  }
+	  else if ((this instanceof XBoolean) && (obj2 instanceof XBoolean)) {
+		  boolean lBool = ((XBoolean)this).bool();
+		  boolean rBool = ((XBoolean)obj2).bool();
+		  result = (lBool == rBool);
+	  }
+	  else if ((this instanceof XSBoolean) && (obj2 instanceof XBoolean)) {
+		  boolean lBool = ((XSBoolean)this).bool();
+		  boolean rBool = ((XBoolean)obj2).bool();
+		  result = (lBool == rBool);    
+	  }
+	  else if ((this instanceof XBoolean) && (obj2 instanceof XSBoolean)) {
+		  boolean lBool = ((XBoolean)this).bool();
+		  boolean rBool = ((XSBoolean)obj2).bool();
+		  result = (lBool == rBool);    
+	  }
+	  else if (this instanceof XSAnyURI) {
+		  boolean isEqual = false;
+
+		  try {
+			  isEqual = ((XSAnyURI)this).eq(obj2);
+		  } 
+		  catch (TransformerException ex) {
+			  throw ex;
+		  }   
+
+		  result = isEqual;
+	  }
+	  else if ((this instanceof XSString) && (obj2 instanceof XSString)) {
+		  result = ((XSString)this).equals((XSString)obj2);    
+	  }
+	  else if ((this instanceof XString) && (obj2 instanceof XString)) {
+		  String lStr = (((XString)this)).str();
+		  String rStr = (((XString)obj2)).str();
+
+		  result = (new XSString(lStr)).equals(new XSString(rStr));
+	  }
+	  else if ((this instanceof XSString) && (obj2 instanceof XString)) {
+		  String lStr = ((((XSString)this))).stringValue();
+		  String rStr = (((XString)obj2)).str();
+
+		  result = (new XSString(lStr)).equals(new XSString(rStr));
+	  }
+	  else if ((this instanceof XString) && (obj2 instanceof XSString)) {
+		  String lStr = (((XString)this)).str();
+		  String rStr = ((((XSString)obj2))).stringValue();
+
+		  result = (new XSString(lStr)).equals(new XSString(rStr));
+	  }
+	  else if (this instanceof XSDate) {
+		  if (obj2 instanceof XSDate) {
+			  result = ((XSDate)this).equals((XSDate)obj2);
+		  }
+		  else {
+			  result = false; 
+		  }    
+	  }    
+	  else if (this instanceof XSDateTime) {
+		  if (obj2 instanceof XSDateTime) {
+			  result = ((XSDateTime)this).equals((XSDateTime)obj2);
+		  }
+		  else {
+			  result = false; 
+		  }   
+	  }
+	  else if (this instanceof XSTime) {
+		  if (obj2 instanceof XSTime) {
+			  result = ((XSTime)this).equals((XSTime)obj2);
+		  }
+		  else {
+			  result = false; 
+		  }   
+	  }
+	  else if (this instanceof XSDuration) {
+		  if (obj2 instanceof XSDuration) {
+		     result = ((XSDuration)this).equals((XSDuration)obj2);
+		  }
+		  else {
+			 result = false; 
+		  }
+	  }
+	  else if (this.getType() == XObject.CLASS_NODESET) {
+		  if ((((XNodeSet)this).getLength() > 1)) {
+			  error(isEqTest ? XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR : 
+				  XPATHErrorResources.ER_NE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
+		  }
+		  else if (obj2.getType() == XObject.CLASS_NODESET) {
+			  if ((((XNodeSet)obj2).getLength() > 1)) {
+				  error(isEqTest ? XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR : 
+					  XPATHErrorResources.ER_NE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
+			  }
+			  else {
+				  result = this.equals(obj2); 
+			  }
+		  }
+		  else {
+			  result = this.equals(obj2);
+		  }
+	  }    
+	  else if (obj2.getType() == XObject.CLASS_NODESET) { 
+		  if ((((XNodeSet)obj2).getLength() > 1)) {
+			  error(isEqTest ? XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR : 
+				  XPATHErrorResources.ER_NE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
+		  }
+		  else if (this.getType() == XObject.CLASS_NODESET) {
+			  if ((((XNodeSet)this).getLength() > 1)) {
+				  error(isEqTest ? XPATHErrorResources.ER_EQ_OPERAND_CARDINALITY_ERROR : 
+					  XPATHErrorResources.ER_NE_OPERAND_CARDINALITY_ERROR, null, expressionOwner);    
+			  }
+			  else {
+				  result = obj2.equals(this); 
+			  }
+		  }
+		  else {
+			  result = obj2.equals(this);
+		  }
+	  }
+	  else if (m_obj != null) {
+		  result = m_obj.equals(obj2.m_obj);
+	  }
+	  else {
+		  result = (obj2.m_obj == null);
+	  }
+
+	  return result;
     
   }
 

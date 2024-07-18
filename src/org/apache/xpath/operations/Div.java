@@ -23,7 +23,10 @@ package org.apache.xpath.operations;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xpath.ArithmeticOperation;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.objects.ResultSequence;
@@ -36,16 +39,25 @@ import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
+import java.lang.String;
+
 /**
- * The 'div' operation expression executer.
+ * An XPath 'div' operation implementation.
+ * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XSLT 3 specific changes, to this class)
  */
-public class Div extends Operation
+public class Div extends ArithmeticOperation
 {
     static final long serialVersionUID = 6220756595959798135L;
     
-    private static final java.lang.String NON_TERMINATING_DECIMAL_EXPANSION = "Non-terminating decimal expansion";
+    private static final String OP_SYMBOL = "div";
     
-    private static final java.lang.String DIVISION_BY_ZERO = "Division by zero";
+    private static final String NON_TERMINATING_DECIMAL_EXPANSION = "Non-terminating decimal expansion";
+    
+    private static final String DIVISION_BY_ZERO = "Division by zero";
     
     private static final int DEFAULT_DIV_SCALE = 18;
 
@@ -70,7 +82,7 @@ public class Div extends Operation
         java.lang.String rStrVal = ((XSNumericType)right).stringValue();
         double rDouble = (Double.valueOf(rStrVal)).doubleValue();
         
-        result = new XNumber(lDouble / rDouble);
+        result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
      }
      else if ((left instanceof XSNumericType) && (right instanceof XNumber)) {
          java.lang.String lStrVal = ((XSNumericType)left).stringValue();
@@ -78,7 +90,7 @@ public class Div extends Operation
          
          double rDouble = ((XNumber)right).num();
          
-         result = new XNumber(lDouble / rDouble);
+         result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
      }     
      else if ((left instanceof XSNumericType) && (right instanceof XSNumericType)) {
     	 if ((left instanceof XSDecimal) || (right instanceof XSDecimal)) {    		
@@ -89,13 +101,7 @@ public class Div extends Operation
      		}
      		catch (ArithmeticException ex) {
      		   java.lang.String exceptionMesg = ex.getMessage();
-     		   if (exceptionMesg.startsWith(NON_TERMINATING_DECIMAL_EXPANSION)) {
-     			  BigDecimal bigDecimal = lBigDecimal.divide(rBigDecimal, DEFAULT_DIV_SCALE, RoundingMode.HALF_EVEN);
-     			  result = new XSDecimal(bigDecimal);
-     		   }
-     		   else if (exceptionMesg.startsWith(DIVISION_BY_ZERO)) {
-     			  throw new javax.xml.transform.TransformerException("FOAR0001 : An integer division by zero error."); 
-     		   }
+     		   result = arithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
      		} 
     	 }
     	 else {
@@ -105,7 +111,7 @@ public class Div extends Operation
              java.lang.String rStrVal = ((XSNumericType)right).stringValue();
              double rDouble = (Double.valueOf(rStrVal)).doubleValue();
              
-             result = new XSDouble(lDouble / rDouble);
+             result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
     	 }
     	 
     	 return result;
@@ -114,22 +120,20 @@ public class Div extends Operation
          double lDouble = ((XNumber)left).num();
          double rDouble = ((XNumber)right).num();
          
-         result = new XSDouble(lDouble / rDouble);
+         result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
      }
      else if ((left instanceof XNumber) && (right instanceof XNodeSet)) {
          double lDouble = ((XNumber)left).num();
          
          XNodeSet rNodeSet = (XNodeSet)right;
          if (rNodeSet.getLength() > 1) {
-            throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
-                                                                                  + "than one item is not allowed as the 2nd "
-                                                                                  + "operand of operator 'div'.");  
+        	 error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
          }
          else {
             java.lang.String rStrVal = rNodeSet.str();
             double rDouble = (Double.valueOf(rStrVal)).doubleValue();
             
-            result = new XSDouble(lDouble / rDouble);
+            result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
          }
      }
      else if ((left instanceof XNodeSet) && (right instanceof XNumber)) {
@@ -137,15 +141,13 @@ public class Div extends Operation
          
          XNodeSet lNodeSet = (XNodeSet)left;
          if (lNodeSet.getLength() > 1) {
-            throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
-                                                                                  + "than one item is not allowed as the 1st "
-                                                                                  + "operand of operator 'div'.");  
+        	 error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
          }
          else {
             java.lang.String lStrVal = lNodeSet.str();
             double lDouble = (Double.valueOf(lStrVal)).doubleValue();
             
-            result = new XSDouble(lDouble / rDouble);
+            result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
          }
      }
      else if ((left instanceof XSNumericType) && (right instanceof XNodeSet)) {
@@ -154,15 +156,13 @@ public class Div extends Operation
          
          XNodeSet rNodeSet = (XNodeSet)right;
          if (rNodeSet.getLength() > 1) {
-            throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
-                                                                                  + "than one item is not allowed as the 2nd "
-                                                                                  + "operand of operator 'div'.");  
+        	 error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
          }
          else {
             java.lang.String rStrVal = rNodeSet.str();
             double rDouble = (Double.valueOf(rStrVal)).doubleValue();
             
-            result = new XSDouble(lDouble / rDouble);
+            result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
          }
      }
      else if ((left instanceof XNodeSet) && (right instanceof XSNumericType)) {
@@ -171,15 +171,13 @@ public class Div extends Operation
          
          XNodeSet lNodeSet = (XNodeSet)left;
          if (lNodeSet.getLength() > 1) {
-            throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
-                                                                                  + "than one item is not allowed as the 1st "
-                                                                                  + "operand of operator 'div'.");  
+        	 error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
          }
          else {
             java.lang.String lStrVal = lNodeSet.str();
             double lDouble = (Double.valueOf(lStrVal)).doubleValue();
             
-            result = new XSDouble(lDouble / rDouble);
+            result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
          }
      }
      else if ((left instanceof XNodeSet) && (right instanceof XNodeSet)) {
@@ -188,9 +186,7 @@ public class Div extends Operation
          
          XNodeSet lNodeSet = (XNodeSet)left;
          if (lNodeSet.getLength() > 1) {
-            throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
-                                                                                  + "than one item is not allowed as the 1st "
-                                                                                  + "operand of operator 'div'.");  
+        	 error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
          }
          else {
             java.lang.String lStrVal = lNodeSet.str();
@@ -199,23 +195,19 @@ public class Div extends Operation
          
          XNodeSet rNodeSet = (XNodeSet)right;
          if (rNodeSet.getLength() > 1) {
-            throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
-                                                                                  + "than one item is not allowed as the 2nd "
-                                                                                  + "operand of operator 'div'.");  
+        	 error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
          }
          else {
             java.lang.String rStrVal = rNodeSet.str();
             rDouble = (Double.valueOf(rStrVal)).doubleValue();
          }
          
-         result = new XSDouble(lDouble / rDouble);
+         result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
      }     
      else if ((left instanceof ResultSequence) && (right instanceof XNumber)) {
          ResultSequence rsLeft = (ResultSequence)left;          
          if (rsLeft.size() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
-                                                                                  + "than one item is not allowed as the 1st "
-                                                                                  + "operand of operator 'div'.");  
+        	 error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
          }
          else {
             java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(rsLeft.item(0));
@@ -223,15 +215,13 @@ public class Div extends Operation
             
             double rDouble = ((XNumber)right).num();
             
-            result = new XSDouble(lDouble / rDouble);
+            result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
          }
      }
      else if ((left instanceof XNumber) && (right instanceof ResultSequence)) {
          ResultSequence rsRight = (ResultSequence)right;          
          if (rsRight.size() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
-                                                                                  + "than one item is not allowed as the 2nd "
-                                                                                  + "operand of operator 'div'.");  
+        	 error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
          }
          else {             
             double lDouble = ((XNumber)left).num();
@@ -239,15 +229,13 @@ public class Div extends Operation
             java.lang.String rStr = XslTransformEvaluationHelper.getStrVal(rsRight.item(0));
             double rDouble = (Double.valueOf(rStr)).doubleValue();
             
-            result = new XSDouble(lDouble / rDouble);
+            result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
          }
      }
      else if ((left instanceof ResultSequence) && (right instanceof XSNumericType)) {
          ResultSequence rsLeft = (ResultSequence)left;          
          if (rsLeft.size() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
-                                                                                  + "than one item is not allowed as the 1st "
-                                                                                  + "operand of operator 'div'.");  
+        	 error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
          }
          else {
             java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(rsLeft.item(0));
@@ -256,15 +244,13 @@ public class Div extends Operation
             java.lang.String rStrVal = ((XSNumericType)right).stringValue();
             double rDouble = (Double.valueOf(rStrVal)).doubleValue();
             
-            result = new XSDouble(lDouble / rDouble);
+            result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
          } 
      }
      else if ((left instanceof XSNumericType) && (right instanceof ResultSequence)) {
          ResultSequence rsRight = (ResultSequence)right;          
          if (rsRight.size() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
-                                                                                  + "than one item is not allowed as the 2nd "
-                                                                                  + "operand of operator 'div'.");  
+        	 error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
          }
          else {                          
             java.lang.String lStrVal = ((XSNumericType)left).stringValue();
@@ -273,22 +259,18 @@ public class Div extends Operation
             java.lang.String rStr = XslTransformEvaluationHelper.getStrVal(rsRight.item(0));
             double rDouble = (Double.valueOf(rStr)).doubleValue();
             
-            result = new XSDouble(lDouble / rDouble);
+            result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
          }
      }
      else if ((left instanceof ResultSequence) && (right instanceof ResultSequence)) {
          ResultSequence rsLeft = (ResultSequence)left;          
          if (rsLeft.size() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
-                                                                                  + "than one item is not allowed as the 1st "
-                                                                                  + "operand of operator 'div'.");  
+        	 error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
          }
          
          ResultSequence rsRight = (ResultSequence)right;          
          if (rsRight.size() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
-                                                                                  + "than one item is not allowed as the 2nd "
-                                                                                  + "operand of operator 'div'.");  
+        	 error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
          }
          
          java.lang.String lStr = XslTransformEvaluationHelper.getStrVal(rsLeft.item(0));
@@ -297,14 +279,12 @@ public class Div extends Operation
          java.lang.String rStr = XslTransformEvaluationHelper.getStrVal(rsRight.item(0));
          double rDouble = (Double.valueOf(rStr)).doubleValue();
          
-         result = new XSDouble(lDouble / rDouble);
+         result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
      }
      else if (left instanceof ResultSequence) {
     	 ResultSequence rSeq = (ResultSequence)left;
          if (rSeq.size() > 1) {
-            throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
-                                                                                  + "than one item is not allowed as the 1st "
-                                                                                  + "operand of operator 'div'.");  
+        	 error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
          }                  
     	 
          BigDecimal lBigDecimal = null;
@@ -318,26 +298,17 @@ public class Div extends Operation
     		 result = new XSDecimal(lBigDecimal.divide(rBigDecimal));
     	 }
     	 catch (NumberFormatException ex) {
-    		 throw new javax.xml.transform.TransformerException("XPTY0004 : One or both of the operands of operator 'div' "
-    		 		                                                                             + "are not numeric.");
+    		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});
     	 }
     	 catch (ArithmeticException ex) {
     		 java.lang.String exceptionMesg = ex.getMessage();
-    		 if (exceptionMesg.startsWith(NON_TERMINATING_DECIMAL_EXPANSION)) {
-    			 BigDecimal resultBigDecimal = lBigDecimal.divide(rBigDecimal, DEFAULT_DIV_SCALE, RoundingMode.HALF_EVEN);
-    			 result = new XSDecimal(resultBigDecimal);
-    		 }
-    		 else if (exceptionMesg.startsWith(DIVISION_BY_ZERO)) {
-    			 throw new javax.xml.transform.TransformerException("FOAR0001 : An integer division by zero error."); 
-    		 }
+    		 result = arithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
     	 }
      }
      else if (left instanceof XNodeSet) {
     	 XNodeSet lNodeSet = (XNodeSet)left;
          if (lNodeSet.getLength() > 1) {
-            throw new javax.xml.transform.TransformerException("XPTY0004 : a sequence of more "
-                                                                                  + "than one item is not allowed as the 1st "
-                                                                                  + "operand of operator 'div'.");  
+        	 error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL}); 
          }                  
     	 
          BigDecimal lBigDecimal = null;
@@ -351,18 +322,11 @@ public class Div extends Operation
     		 result = new XSDecimal(lBigDecimal.divide(rBigDecimal));
     	 }
     	 catch (NumberFormatException ex) {
-    		 throw new javax.xml.transform.TransformerException("XPTY0004 : One or both of the operands of operator 'div' "
-    		 		                                                                             + "are not numeric.");
+    		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});
     	 }
     	 catch (ArithmeticException ex) {
     		 java.lang.String exceptionMesg = ex.getMessage();
-    		 if (exceptionMesg.startsWith(NON_TERMINATING_DECIMAL_EXPANSION)) {
-    			 BigDecimal resultBigDecimal = lBigDecimal.divide(rBigDecimal, DEFAULT_DIV_SCALE, RoundingMode.HALF_EVEN);
-    			 result = new XSDecimal(resultBigDecimal);
-    		 }
-    		 else if (exceptionMesg.startsWith(DIVISION_BY_ZERO)) {
-    			 throw new javax.xml.transform.TransformerException("FOAR0001 : An integer division by zero error."); 
-    		 }
+    		 result = arithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
     	 }         
      }
      else if (left instanceof XSYearMonthDuration) {
@@ -377,12 +341,11 @@ public class Div extends Operation
      else {
     	 try {
             java.lang.String lStrVal = XslTransformEvaluationHelper.getStrVal(left);
-        	java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);
-            result = new XSDouble(Double.valueOf(lStrVal) / Double.valueOf(rStrVal));
+        	java.lang.String rStrVal = XslTransformEvaluationHelper.getStrVal(right);            
+            result = new XSDecimal(BigDecimal.valueOf(Double.valueOf(lStrVal) / Double.valueOf(rStrVal)));
          }
          catch (NumberFormatException ex) {
-            throw new javax.xml.transform.TransformerException("XPTY0004 : Could not evaluate the operator 'div', "
-            		                                                               + "due to incorrectly typed operand(s)."); 
+        	error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL}); 
          }
      }
       
@@ -403,6 +366,25 @@ public class Div extends Operation
   {
 
     return (m_left.num(xctxt) / m_right.num(xctxt));
+  }
+  
+  /**
+   * This method specifies the processing that takes place, when ArithmeticException occurs
+   * on 'div' operator's evaluation.  
+   */
+  private XObject arithmeticExceptionAction(BigDecimal lBigDecimal, BigDecimal rBigDecimal,
+		                                    java.lang.String exceptionMesg) throws TransformerException {
+	  XObject result = null;
+
+	  if (exceptionMesg.startsWith(NON_TERMINATING_DECIMAL_EXPANSION)) {
+		  BigDecimal resultBigDecimal = lBigDecimal.divide(rBigDecimal, DEFAULT_DIV_SCALE, RoundingMode.HALF_EVEN);
+		  result = new XSDecimal(resultBigDecimal);
+	  }
+	  else if (exceptionMesg.startsWith(DIVISION_BY_ZERO)) {
+		  error(DIV_BY_ZERO_ERR_MESG, new String[] {"FOAR0001"}); 
+	  }
+	  
+	  return result;
   }
 
 }

@@ -3,4 +3,5 @@
   <two>3.142857142857142857</two>
   <three>3.142857142857142857</three>
   <four>3.142857142857142857</four>
+  <five isDecimal="true">-1.5</five>
 </result>

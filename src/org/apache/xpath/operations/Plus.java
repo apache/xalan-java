@@ -21,11 +21,9 @@
 package org.apache.xpath.operations;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-
-import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xpath.ArithmeticOperation;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
@@ -37,19 +35,27 @@ import xml.xpath31.processor.types.XSDateTime;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSInteger;
-import xml.xpath31.processor.types.XSLong;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSTime;
 import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
+import java.lang.String;
+
 /**
- * The '+' operation expression executer.
+ * An XPath '+' operation implementation.
+ * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XSLT 3 specific changes, to this class)
  */
-public class Plus extends Operation
+public class Plus extends ArithmeticOperation
 {
     static final long serialVersionUID = -4492072861616504256L;
+    
+    private static final String OP_SYMBOL = "+";
 
   /**
    * Apply the operation to two operands, and return the result.
@@ -121,9 +127,7 @@ public class Plus extends Operation
           
           XNodeSet rNodeSet = (XNodeSet)right;
           if (rNodeSet.getLength() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the 2nd "
-                                                                                   + "operand of operator '+'.");  
+        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
           }
           else {
              java.lang.String rStrVal = rNodeSet.str();
@@ -137,9 +141,7 @@ public class Plus extends Operation
           
           XNodeSet lNodeSet = (XNodeSet)left;
           if (lNodeSet.getLength() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the 1st "
-                                                                                   + "operand of operator '+'.");  
+        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
           }
           else {
              java.lang.String lStrVal = lNodeSet.str();
@@ -151,9 +153,7 @@ public class Plus extends Operation
       else if ((left instanceof XSNumericType) && (right instanceof XNodeSet)) {
     	  XNodeSet rNodeSet = (XNodeSet)right;
           if (rNodeSet.getLength() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the 2nd "
-                                                                                   + "operand of operator '+'.");  
+        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
           }
           else {
         	  BigDecimal lBigDecimal = new BigDecimal(((XSNumericType)left).stringValue());
@@ -162,8 +162,7 @@ public class Plus extends Operation
         	     rBigDecimal = new BigDecimal(rNodeSet.str());
         	  }
         	  catch (NumberFormatException ex) {
-        		 throw new javax.xml.transform.TransformerException("XPTY0004 : The 2nd operand of operator '+' is not a numeric value or "
-        		 		                                                          + "cannot be converted to a numeric value."); 
+        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
@@ -178,9 +177,7 @@ public class Plus extends Operation
       else if ((left instanceof XNodeSet) && (right instanceof XSNumericType)) {
     	  XNodeSet lNodeSet = (XNodeSet)left;
           if (lNodeSet.getLength() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the 1st "
-                                                                                   + "operand of operator '+'.");  
+        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
           }
           else {        	  
         	  BigDecimal lBigDecimal = null;
@@ -188,8 +185,7 @@ public class Plus extends Operation
         		 lBigDecimal = new BigDecimal(lNodeSet.str());
         	  }
         	  catch (NumberFormatException ex) {
-        		 throw new javax.xml.transform.TransformerException("XPTY0004 : The 1st operand of operator '+' is not a numeric value or "
-        		 		                                                          + "cannot be converted to a numeric value."); 
+        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL}); 
         	  }
         	  BigDecimal rBigDecimal = new BigDecimal(((XSNumericType)right).stringValue());
         	  
@@ -205,16 +201,12 @@ public class Plus extends Operation
       else if ((left instanceof XNodeSet) && (right instanceof XNodeSet)) {
     	  XNodeSet lNodeSet = (XNodeSet)left;
           if (lNodeSet.getLength() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the 1st "
-                                                                                   + "operand of operator '+'.");  
+        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
           }
           
           XNodeSet rNodeSet = (XNodeSet)right;
           if (rNodeSet.getLength() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the 2nd "
-                                                                                   + "operand of operator '+'.");  
+        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
           }
           
           BigDecimal lBigDecimal = null;
@@ -222,8 +214,7 @@ public class Plus extends Operation
     		 lBigDecimal = new BigDecimal(lNodeSet.str());
     	  }
     	  catch (NumberFormatException ex) {
-    		 throw new javax.xml.transform.TransformerException("XPTY0004 : The 1st operand of operator '+' is not a numeric value or "
-    		 		                                                          + "cannot be converted to a numeric value."); 
+    		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL}); 
     	  }
     	  
     	  BigDecimal rBigDecimal = null;
@@ -231,8 +222,7 @@ public class Plus extends Operation
     	     rBigDecimal = new BigDecimal(rNodeSet.str());
     	  }
     	  catch (NumberFormatException ex) {
-    		 throw new javax.xml.transform.TransformerException("XPTY0004 : The 2nd operand of operator '+' is not a numeric value or "
-    		 		                                                          + "cannot be converted to a numeric value."); 
+    		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL}); 
     	  }
     	  
     	  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
@@ -246,9 +236,7 @@ public class Plus extends Operation
       else if ((left instanceof ResultSequence) && (right instanceof XNumber)) {
     	  ResultSequence lSeq = (ResultSequence)left;
           if (lSeq.size() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the 1st "
-                                                                                   + "operand of operator '+'.");  
+        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
           }
           else {        	  
         	  BigDecimal lBigDecimal = null;
@@ -256,8 +244,7 @@ public class Plus extends Operation
         		 lBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(lSeq.item(0)));
         	  }
         	  catch (NumberFormatException ex) {
-        		 throw new javax.xml.transform.TransformerException("XPTY0004 : The 1st operand of operator '+' is not a numeric value or "
-        		 		                                                          + "cannot be converted to a numeric value."); 
+        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL}); 
         	  }
         	  BigDecimal rBigDecimal = BigDecimal.valueOf(((XNumber)right).num());
         	  
@@ -273,9 +260,7 @@ public class Plus extends Operation
       else if ((left instanceof XNumber) && (right instanceof ResultSequence)) {
     	  ResultSequence rSeq = (ResultSequence)right;
           if (rSeq.size() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the 2nd "
-                                                                                   + "operand of operator '+'.");  
+        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
           }
           else {
         	  BigDecimal lBigDecimal = BigDecimal.valueOf(((XNumber)left).num());
@@ -284,8 +269,7 @@ public class Plus extends Operation
         	     rBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(rSeq.item(0)));
         	  }
         	  catch (NumberFormatException ex) {
-        		 throw new javax.xml.transform.TransformerException("XPTY0004 : The 2nd operand of operator '+' is not a numeric value or "
-        		 		                                                          + "cannot be converted to a numeric value."); 
+        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL}); 
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
@@ -300,9 +284,7 @@ public class Plus extends Operation
       else if ((left instanceof ResultSequence) && (right instanceof XSNumericType)) {
     	  ResultSequence lSeq = (ResultSequence)left;
           if (lSeq.size() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the 1st "
-                                                                                   + "operand of operator '+'.");  
+        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
           }
           else {        	  
         	  BigDecimal lBigDecimal = null;
@@ -310,8 +292,7 @@ public class Plus extends Operation
         		 lBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(lSeq.item(0)));
         	  }
         	  catch (NumberFormatException ex) {
-        		 throw new javax.xml.transform.TransformerException("XPTY0004 : The 1st operand of operator '+' is not a numeric value or "
-        		 		                                                          + "cannot be converted to a numeric value."); 
+        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL}); 
         	  }
         	  BigDecimal rBigDecimal = new BigDecimal(((XSNumericType)right).stringValue());
         	  
@@ -327,9 +308,7 @@ public class Plus extends Operation
       else if ((left instanceof XSNumericType) && (right instanceof ResultSequence)) {
     	  ResultSequence rSeq = (ResultSequence)right;
           if (rSeq.size() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the 2nd "
-                                                                                   + "operand of operator '+'.");  
+        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
           }
           else {
         	  BigDecimal lBigDecimal = new BigDecimal(((XSNumericType)left).stringValue());
@@ -338,8 +317,7 @@ public class Plus extends Operation
         	     rBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(rSeq.item(0)));
         	  }
         	  catch (NumberFormatException ex) {
-        		 throw new javax.xml.transform.TransformerException("XPTY0004 : The 2nd operand of operator '+' is not a numeric value or "
-        		 		                                                          + "cannot be converted to a numeric value."); 
+        		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL}); 
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
@@ -366,16 +344,12 @@ public class Plus extends Operation
       else if ((left instanceof ResultSequence) && (right instanceof ResultSequence)) {
     	  ResultSequence lSeq = (ResultSequence)left;          
           if (lSeq.size() > 1) {
-              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the 1st "
-                                                                                   + "operand of operator '+'.");  
+        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
           }
           
           ResultSequence rSeq = (ResultSequence)right;
           if (rSeq.size() > 1) {
-              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the 2nd "
-                                                                                   + "operand of operator '+'.");  
+        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL}); 
           }
           
           XObject lXObj = ((ResultSequence)left).item(0);
@@ -400,8 +374,7 @@ public class Plus extends Operation
 	              rBigDecimal = new BigDecimal(rStr);
         	  }
         	  catch (NumberFormatException ex) {
-        		  throw new javax.xml.transform.TransformerException("XPTY0004 : 1st or the 2nd operand of operator '+', "
-        		  		                                                           + "is not numeric or cannot be converted to numeric.");
+        		  error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
@@ -416,9 +389,7 @@ public class Plus extends Operation
       else if (left instanceof ResultSequence) {
     	  ResultSequence lSeq = (ResultSequence)left;          
           if (lSeq.size() > 1) {
-              throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the 1st "
-                                                                                   + "operand of operator '+'.");  
+        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});  
           }
           
           XObject lXObj = ((ResultSequence)left).item(0);
@@ -441,8 +412,7 @@ public class Plus extends Operation
 	              rBigDecimal = new BigDecimal(rStr);
         	  }
         	  catch (NumberFormatException ex) {
-        		  throw new javax.xml.transform.TransformerException("XPTY0004 : 1st or the 2nd operand of operator '+', "
-        		  		                                                           + "is not numeric or cannot be converted to numeric.");
+        		  error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL});
         	  }
         	  
         	  BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
@@ -457,9 +427,7 @@ public class Plus extends Operation
       else if (left instanceof XNodeSet) {
     	  XNodeSet lNodeSet = (XNodeSet)left;
           if (lNodeSet.getLength() > 1) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : A sequence of more "
-                                                                                   + "than one item is not allowed as the 1st "
-                                                                                   + "operand of operator '+'.");  
+        	  error(CARDINALITY_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL}); 
           }
           
           BigDecimal lBigDecimal = null;
@@ -469,8 +437,7 @@ public class Plus extends Operation
              rBigDecimal = new BigDecimal(XslTransformEvaluationHelper.getStrVal(right));
     	  }
     	  catch (NumberFormatException ex) {
-    		 throw new javax.xml.transform.TransformerException("XPTY0004 : 1st or the 2nd operand of operator '+', "
-                                                                               + "is not numeric or cannot be converted to numeric."); 
+    		 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL}); 
     	  }
         	  
           BigDecimal resultBigDecimal = lBigDecimal.add(rBigDecimal);
@@ -488,9 +455,7 @@ public class Plus extends Operation
              result = new XNumber(Double.valueOf(lStrVal) + Double.valueOf(rStrVal));
           }
           catch (NumberFormatException ex) {
-             throw new javax.xml.transform.TransformerException("XPTY0004 : Could not evaluate the "
-                                                                                               + "operator '+', due to incorrectly "
-                                                                                               + "typed operand(s)."); 
+        	 error(OPERAND_NOT_NUMERIC_ERR_MESG, new String[] {"XPTY0004", OP_SYMBOL}); 
           }
       }
       
