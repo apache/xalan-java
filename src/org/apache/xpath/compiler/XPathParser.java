@@ -3802,30 +3802,13 @@ public class XPathParser
          nextToken();
          consumeExpected(':');
          
-         // int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
-         Object funcTokenObj = m_functionTable.getFunctionId(m_token);
-         int funcTok = Integer.valueOf(funcTokenObj.toString());
+         int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
 
          if (-1 == funcTok)
          {
            error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
                  new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});
-         }
-         else if ((FunctionTable.XPATH_MATH_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
-             funcTok = -1;
-             error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-                   new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  
-         }
-         else if ((FunctionTable.XPATH_ARRAY_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
-             funcTok = -1;
-             error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-                   new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  
-         }
-         else if ((FunctionTable.XPATH_MAP_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
-             funcTok = -1;
-             error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-                   new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  
-         }
+         }         
 
          switch (funcTok)
          {
@@ -3854,12 +3837,7 @@ public class XPathParser
          {
            error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
                  new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI + "}" + m_token + "()"});
-         }
-         else if (!(FunctionTable.XPATH_MATH_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
-             funcTok = -1;
-             error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-                   new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI + "}" + m_token + "()"});  
-         }
+         }         
 
          switch (funcTok)
          {
@@ -3888,12 +3866,7 @@ public class XPathParser
          {
              error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
                  new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI + "}" + m_token + "()"});
-         }
-         else if (!(FunctionTable.XPATH_MAP_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
-             funcTok = -1;
-             error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-                   new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI + "}" + m_token + "()"});  
-         }
+         }         
 
          switch (funcTok)
          {
@@ -3922,12 +3895,7 @@ public class XPathParser
          {
            error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
                  new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI + "}" + m_token + "()"});
-         }
-         else if (!(FunctionTable.XPATH_ARRAY_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
-             funcTok = -1;
-             error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-                   new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI + "}" + m_token + "()"});  
-         }
+         }         
 
          switch (funcTok)
          {
@@ -3946,7 +3914,7 @@ public class XPathParser
          nextToken();
       }
       else {  
-        appendOp(4, OpCodes.OP_EXTFUNCTION);
+        appendOp(4, OpCodes.OP_CONSTRUCTOR_STYLESHEET_EXT_FUNCTION);
 
         m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1, m_queueMark - 1);
 
@@ -3962,26 +3930,11 @@ public class XPathParser
     {
       int funcTok = getFunctionToken(m_token, FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI);
 
-      if (funcTok == -1)
+      if (-1 == funcTok)
       {
           error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
               new Object[]{"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});
-      }
-      else if ((FunctionTable.XPATH_MATH_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
-          funcTok = -1;
-          error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-                new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  
       }      
-      else if ((FunctionTable.XPATH_MAP_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
-          funcTok = -1;
-          error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-                new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  
-      }
-      else if ((FunctionTable.XPATH_ARRAY_FUNC_IDS_ARR).contains(Integer.valueOf(funcTok))) {
-          funcTok = -1;
-          error(XPATHErrorResources.ER_COULDNOT_FIND_FUNCTION,
-                new Object[] {"{" + FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI + "}" + m_token + "()"});  
-      }
 
       switch (funcTok)
       {

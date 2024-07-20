@@ -35,8 +35,10 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.composite.SequenceTypeData;
-import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
+import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.XSLFunctionService;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
@@ -186,9 +188,10 @@ public class ElemSequence extends ElemTemplateElement
     	  
         selectExpression = m_selectPattern.getExpression();
         
-        if (selectExpression instanceof FuncExtFunction) {
-            XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, 
-                                                                                                selectExpression, transformer);
+        if (selectExpression instanceof XSLConstructorStylesheetOrExtensionFunction) {
+        	XSLConstructorStylesheetOrExtensionFunction xpathFunc = (XSLConstructorStylesheetOrExtensionFunction)selectExpression;
+        	XSLFunctionService xslFunctionService = xctxt.getXSLFunctionService();
+            XObject evalResult = xslFunctionService.callFunction(xpathFunc, transformer, xctxt);
             if (evalResult != null) {
                xslSequenceVal = evalResult;    
             }
@@ -202,12 +205,10 @@ public class ElemSequence extends ElemTemplateElement
             xslSequenceVal = selectExpression.execute(xctxt);
         }
         else if (selectExpression instanceof Operation) {
-            Operation opn = (Operation)selectExpression;
-            XObject leftOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                                           xctxt, opn.getLeftOperand(), transformer);
-            XObject rightOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                                           xctxt, opn.getRightOperand(), transformer);
-            xslSequenceVal = opn.operate(leftOperand, rightOperand);
+            Operation xpathOperation = (Operation)selectExpression;            
+            XObject leftOperand = (xpathOperation.getLeftOperand()).execute(xctxt);
+            XObject rightOperand = (xpathOperation.getRightOperand()).execute(xctxt);
+            xslSequenceVal = xpathOperation.operate(leftOperand, rightOperand);
         }
         else if (selectExpression instanceof SelfIteratorNoPredicate) {
             xslSequenceVal = xctxt.getXPath3ContextItem();

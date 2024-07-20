@@ -23,7 +23,7 @@ package org.apache.xalan.extensions;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.functions.FuncExtFunctionAvailable;
 import org.apache.xpath.functions.Function;
 
@@ -61,9 +61,9 @@ public class ExpressionVisitor extends XPathVisitor
    */
   public boolean visitFunction(ExpressionOwner owner, Function func)
   {
-    if (func instanceof FuncExtFunction)
+    if (func instanceof XSLConstructorStylesheetOrExtensionFunction)
     {
-      String namespace = ((FuncExtFunction)func).getNamespace();
+      String namespace = ((XSLConstructorStylesheetOrExtensionFunction)func).getNamespace();
       m_sroot.getExtensionNamespacesManager().registerExtension(namespace);      
     }
     else if (func instanceof FuncExtFunctionAvailable)

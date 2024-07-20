@@ -53,7 +53,7 @@ public class FuncMinutesFromDuration extends FunctionOneArg {
               return resultSeq;
            }
             
-           XSDuration xsDuration = (XSDuration)(((FuncExtFunction)arg0).execute(xctxt));
+           XSDuration xsDuration = (XSDuration)(((XSLConstructorStylesheetOrExtensionFunction)arg0).execute(xctxt));
             
            int minutes = xsDuration.minutes();
            if (xsDuration.negative()) {

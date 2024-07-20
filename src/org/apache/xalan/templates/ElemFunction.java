@@ -70,9 +70,7 @@ import xml.xpath31.processor.types.XSTime;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
- * Implementation of XSLT xsl:function element.
- * 
- * Ref : https://www.w3.org/TR/xslt-30/#stylesheet-functions
+ * Implementation of XSLT 2.0+ xsl:function element.
  *
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -129,12 +127,12 @@ public class ElemFunction extends ElemTemplate
   }
 
   /**
-   * This method evaluates the xsl:function call, and returns the result
-   * to the caller of this function.
+   * This method computes the result of xsl:function call, and returns 
+   * result to the caller of this function.
    */
-  public XObject executeXslFunction(TransformerImpl transformer, 
-                                                             ResultSequence argSequence) throws TransformerException {
-      XObject result = null;
+  public XObject evaluateXslFunction(TransformerImpl transformer, ResultSequence argSequence) throws TransformerException {
+      
+	  XObject result = null;
       
       XPathContext xctxt = transformer.getXPathContext();            
       
@@ -143,7 +141,7 @@ public class ElemFunction extends ElemTemplate
       String funcLocalName = m_name.getLocalName();
       String funcNameSpaceUri = m_name.getNamespaceURI();
       
-      // Validate few of the information of xsl:function's xsl:param declarations         
+      // Validate few of the information of xsl:function's xsl:param declarations      
       Map<QName, Integer> xslParamMap = new HashMap<QName, Integer>();
       int idx = 0;
       PrefixResolver prefixResolver = xctxt.getNamespaceContext();
@@ -208,12 +206,10 @@ public class ElemFunction extends ElemTemplate
                currVal = nextVal;  
             }
          }
-      }
-      
-      // end, Validate few of the information of xsl:function's xsl:param declarations            
+      }            
       
       if (xslParamMap.size() > 0) {
-          // Assign all of the xsl:function parameter value mappings to xpath context's
+          // Add all of the xsl:function parameter value mappings to xpath context's
           // variable stack, after which the XSL instructions after xsl:param declarations
           // can dereference those parameters.                   
           
@@ -269,19 +265,17 @@ public class ElemFunction extends ElemTemplate
           }                    
       }            
       
-      int nodeDtmHandle = transformer.transformToGlobalRTF(this);
-      
-      NodeList nodeList = (new XRTreeFrag(nodeDtmHandle, xctxt, this)).convertToNodeset();     
-      
-      result = new XNodeSetForDOM(nodeList, xctxt);
+      // Get xsl:function's result, before processing with "as" attribute
+      result = getXslFunctionResult(transformer, xctxt);
                         
       XObject funcResultConvertedVal = result;
       
       String funcAsAttrStrVal = getAs();
       
-      if (funcAsAttrStrVal != null) {         
+      if (funcAsAttrStrVal != null) {
+    	 // Process xsl:function's evaluation result with "as" attribute
          try {
-            funcResultConvertedVal = preprocessXslFunctionOrAVariableResult((XNodeSetForDOM)result, funcAsAttrStrVal, xctxt, null);
+            funcResultConvertedVal = preprocessXslFunctionOrAVariableResult(result, funcAsAttrStrVal, xctxt, null);
             
             if (funcResultConvertedVal == null) {
                 funcResultConvertedVal = SequenceTypeSupport.convertXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);
@@ -341,18 +335,20 @@ public class ElemFunction extends ElemTemplate
   }
   
   /**
-   * This method helps to implement xsl:function and xsl:variable instructions,
-   * when the XSL child contents of xsl:function or xsl:variable instructions contain 
+   * This method supports to implement xsl:function/xsl:variable instructions,
+   * when the XSL child contents of xsl:function/xsl:variable instructions contain 
    * xsl:sequence instruction(s).
    * 
-   * Given an initial result of computation of, XSL child contents of a xsl:function or xsl:variable
-   * instructions, and the function's or variable's expected data type, cast an input data
-   * value to the supplied expected data type.
+   * Given an initial result of computation of, XSL child contents of a xsl:function/xsl:variable
+   * instruction, and xsl:function or xsl:variable's expected data type, cast an input data
+   * value to the specified expected data type.
    */
-  public ResultSequence preprocessXslFunctionOrAVariableResult(XNodeSetForDOM xNodeSetForDOM,
-                                                                                     String sequenceTypeXPathExprStr,
-                                                                                     XPathContext xctxt, QName varQName) throws TransformerException {
+  public ResultSequence preprocessXslFunctionOrAVariableResult(XObject initialEvalResult,
+                                                               String sequenceTypeXPathExprStr,
+                                                               XPathContext xctxt, QName varQName) throws TransformerException {
      ResultSequence resultSequence = null;
+     
+     XNodeSetForDOM xNodeSetForDOM = (XNodeSetForDOM)initialEvalResult;
      
      DTMNodeList dtmNodeList = (DTMNodeList)(xNodeSetForDOM.object());
      
@@ -425,6 +421,31 @@ public class ElemFunction extends ElemTemplate
    */
   public static ElemFunction getXSLFunctionService() {
      return new ElemFunction();  
+  }
+  
+  /**
+   * Evaluate xsl:function's child contents to produce xsl:function's result, before 
+   * the function's result is processed with function's "as" attribute.
+   * 
+   * This method is implemented similarly to how, xsl:variable instruction's value
+   * is determined from xsl:variable's child contents. Any xsl:param prefix elements 
+   * present within xsl:function element, are processed according to xsl:variable 
+   * instruction's semantics (the class ElemParam extends the class ElemVariable). 
+   * 
+   * @param transformer				org.apache.xalan.transformer.TransformerImpl object
+   * @param xctxt           		xpath context object
+   * @return                		result of xsl:function's evaluation  
+   * @throws TransformerException
+   */
+  private XObject getXslFunctionResult(TransformerImpl transformer, XPathContext xctxt) throws TransformerException {		
+	  XObject result = null;
+
+	  int nodeDtmHandle = transformer.transformToGlobalRTF(this);
+	  NodeList nodeList = (new XRTreeFrag(nodeDtmHandle, xctxt, this)).convertToNodeset();     
+
+	  result = new XNodeSetForDOM(nodeList, xctxt);
+
+	  return result;
   }
   
   /**

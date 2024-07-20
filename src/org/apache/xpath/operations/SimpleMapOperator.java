@@ -18,14 +18,13 @@
 package org.apache.xpath.operations;
 
 import javax.xml.XMLConstants;
-import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
-import org.apache.xalan.templates.XSConstructorFunctionUtil;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xpath.functions.XSLFunctionService;
+import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNodeSet;
@@ -51,17 +50,16 @@ public class SimpleMapOperator extends Operation
 
    public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
    {
-       ResultSequence result = new ResultSequence();
-       
-       SourceLocator srcLocator = xctxt.getSAXLocator(); 
+       ResultSequence result = new ResultSequence();        
        
        XObject expr1 = null; 
                
-       if (m_left instanceof FuncExtFunction) {
-           FuncExtFunction extFunction = (FuncExtFunction)m_left;
-           if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
+       if (m_left instanceof XSLConstructorStylesheetOrExtensionFunction) {
+           XSLConstructorStylesheetOrExtensionFunction xpathFunc = (XSLConstructorStylesheetOrExtensionFunction)m_left;
+           if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(xpathFunc.getNamespace())) {
                try {
-                   expr1 = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, m_left, null);
+            	   XSLFunctionService xslFunctionService = xctxt.getXSLFunctionService();
+                   expr1 = xslFunctionService.callFunction(xpathFunc, null, xctxt);
                }
                catch (TransformerException ex) {
                    throw ex; 

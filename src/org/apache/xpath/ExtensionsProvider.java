@@ -22,7 +22,7 @@ package org.apache.xpath;
 
 import java.util.Vector;
 
-import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 
 /**
  * Interface that XPath objects can call to obtain access to an 
@@ -54,7 +54,7 @@ public interface ExtensionsProvider
   /**
    * Execute the extension function.
    */
-  public Object extFunction(FuncExtFunction extFunction, 
+  public Object extFunction(XSLConstructorStylesheetOrExtensionFunction extFunction, 
                             Vector argVec)
             throws javax.xml.transform.TransformerException;
 }

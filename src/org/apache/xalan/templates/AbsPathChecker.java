@@ -24,7 +24,7 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.functions.FuncCurrent;
-import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.operations.Variable;
 
@@ -60,7 +60,7 @@ public class AbsPathChecker extends XPathVisitor
 	public boolean visitFunction(ExpressionOwner owner, Function func)
 	{
 		if((func instanceof FuncCurrent) ||
-		   (func instanceof FuncExtFunction))
+		   (func instanceof XSLConstructorStylesheetOrExtensionFunction))
 			m_isAbs = false;
 		return true;
 	}

@@ -27,7 +27,6 @@ import java.util.List;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.XMLNSDecl;
-import org.apache.xalan.templates.XSConstructorFunctionUtil;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
@@ -39,6 +38,7 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.XSLFunctionService;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
@@ -469,9 +469,9 @@ public class XslTransformEvaluationHelper {
     			newInstance()).getDOMImplementation("LS"));
     	LSSerializer lsSerializer = domImplLS.createLSSerializer();
     	DOMConfiguration domConfig = lsSerializer.getDomConfig();
-    	domConfig.setParameter(XSConstructorFunctionUtil.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
+    	domConfig.setParameter(XSLFunctionService.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
     	resultStr = lsSerializer.writeToString(node);
-    	resultStr = resultStr.replaceFirst(XSConstructorFunctionUtil.UTF_16, XSConstructorFunctionUtil.UTF_8);
+    	resultStr = resultStr.replaceFirst(XSLFunctionService.UTF_16, XSLFunctionService.UTF_8);
 
     	return resultStr;
     }

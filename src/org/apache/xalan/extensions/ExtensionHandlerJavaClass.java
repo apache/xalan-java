@@ -34,7 +34,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.trace.ExtensionEvent;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -432,7 +432,7 @@ public class ExtensionHandlerJavaClass extends ExtensionHandlerJava
    * @return the return value of the function evaluation.
    * @throws TransformerException
    */
-  public Object callFunction(FuncExtFunction extFunction,
+  public Object callFunction(XSLConstructorStylesheetOrExtensionFunction extFunction,
                              Vector args,
                              ExpressionContext exprContext,
                              TransformerImpl transformer)

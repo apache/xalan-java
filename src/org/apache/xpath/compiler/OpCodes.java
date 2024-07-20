@@ -345,7 +345,7 @@ public class OpCodes
   public static final int OP_GROUP = 23;
 
   /**
-   * [OP_EXTFUNCTION] (Extension function.)
+   * [OP_CONSTRUCTOR_STYLESHEET_EXT_FUNCTION] (constructor, stylesheet or extension function)
    * [length]
    * [index to namespace token]
    * [index to function name token]
@@ -360,7 +360,7 @@ public class OpCodes
    *  XObject
    * @xsl.usage advanced
    */
-  public static final int OP_EXTFUNCTION = 24;
+  public static final int OP_CONSTRUCTOR_STYLESHEET_EXT_FUNCTION = 24;
 
   /**
    * [OP_FUNCTION]

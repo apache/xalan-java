@@ -41,7 +41,7 @@ import org.apache.xpath.compiler.XPathParser.XPathSequenceConsFuncArgs;
 import org.apache.xpath.composite.XPathArrayConstructor;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
-import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.functions.FuncExtFunctionAvailable;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.WrongNumberArgsException;
@@ -254,8 +254,8 @@ public class Compiler extends OpMap
       expr = numberlit(opPos); break;
     case OpCodes.OP_ARGUMENT :
       expr = arg(opPos); break;
-    case OpCodes.OP_EXTFUNCTION :
-      expr = compileExtension(opPos); break;
+    case OpCodes.OP_CONSTRUCTOR_STYLESHEET_EXT_FUNCTION :
+      expr = compileConstructorStylesheetOrExtensionFunction(opPos); break;
     case OpCodes.OP_FUNCTION :
       expr = compileFunction(opPos); break;
     case OpCodes.OP_INLINE_FUNCTION :
@@ -1605,15 +1605,15 @@ private static final boolean DEBUG = false;
   }
   
   /**
-   * Compile an extension function.
+   * Compile an XPath constructor, XSL stylesheet or an extension function.
    * 
    * @param opPos The current position in the m_opMap array.
    *
-   * @return reference to {@link org.apache.xpath.functions.FuncExtFunction} instance.
+   * @return reference to {@link org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction} instance.
    *
    * @throws TransformerException if a error occurs creating the Expression.
    */
-  private Expression compileExtension(int opPos)
+  private Expression compileConstructorStylesheetOrExtensionFunction(int opPos)
           throws TransformerException
   {
 
@@ -1634,7 +1634,7 @@ private static final boolean DEBUG = false;
     // can cache the object needed to invoke it.  This way, we only pay the
     // reflection overhead on the first call.
 
-    Function extension = new FuncExtFunction(ns, funcName, String.valueOf(getNextMethodId()));
+    Function funcObj = new XSLConstructorStylesheetOrExtensionFunction(ns, funcName, String.valueOf(getNextMethodId()));
 
     try
     {
@@ -1644,7 +1644,7 @@ private static final boolean DEBUG = false;
       {
         int nextOpPos = getNextOpPos(opPos);
 
-        extension.setArg(this.compile(opPos), i);
+        funcObj.setArg(this.compile(opPos), i);
 
         opPos = nextOpPos;
 
@@ -1656,7 +1656,7 @@ private static final boolean DEBUG = false;
       ;  // should never happen
     }
 
-    return extension;
+    return funcObj;
   }
 
   /**

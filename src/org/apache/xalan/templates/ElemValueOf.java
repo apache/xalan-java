@@ -35,8 +35,9 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.composite.XPathIfExpr;
 import org.apache.xpath.composite.XPathLetExpr;
-import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.XSLFunctionService;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
@@ -318,9 +319,10 @@ public class ElemValueOf extends ElemTemplateElement {
                   (new XString(strValue)).dispatchCharactersEvents(rth);
               }
               else {
-                  if (expr instanceof FuncExtFunction) {                      
-                      XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn
-                                                                                          (xctxt, expr, transformer);
+                  if (expr instanceof XSLConstructorStylesheetOrExtensionFunction) {
+                	  XSLConstructorStylesheetOrExtensionFunction xpathFunc = (XSLConstructorStylesheetOrExtensionFunction)expr;
+                	  XSLFunctionService xslFunctionService = xctxt.getXSLFunctionService();
+                      XObject evalResult = xslFunctionService.callFunction(xpathFunc, transformer, xctxt);
                       if (evalResult != null) {
                           String strValue = null;
                           

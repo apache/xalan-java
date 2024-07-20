@@ -53,7 +53,7 @@ public class FuncMonthsFromDuration extends FunctionOneArg {
               return resultSeq;
            }
             
-           XSDuration xsDuration = (XSDuration)(((FuncExtFunction)arg0).execute(xctxt));
+           XSDuration xsDuration = (XSDuration)(((XSLConstructorStylesheetOrExtensionFunction)arg0).execute(xctxt));
             
            int month = xsDuration.month();
            if (xsDuration.negative()) {

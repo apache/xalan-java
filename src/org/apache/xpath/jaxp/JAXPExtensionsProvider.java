@@ -30,7 +30,7 @@ import javax.xml.xpath.XPathFunctionResolver;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.ExtensionsProvider;
-import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.res.XPATHErrorResources;
@@ -155,7 +155,7 @@ public class JAXPExtensionsProvider implements ExtensionsProvider {
     /**
      * Execute the extension function.
      */
-    public Object extFunction(FuncExtFunction extFunction,
+    public Object extFunction(XSLConstructorStylesheetOrExtensionFunction extFunction,
                               Vector argVec)
         throws javax.xml.transform.TransformerException {
         try {

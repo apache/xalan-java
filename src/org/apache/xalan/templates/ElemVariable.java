@@ -36,8 +36,9 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.composite.SequenceTypeSupport;
-import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.XSLFunctionService;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
@@ -346,9 +347,10 @@ public class ElemVariable extends ElemTemplateElement
       if (m_selectPattern != null) {          
         selectExpression = m_selectPattern.getExpression();
         
-        if (selectExpression instanceof FuncExtFunction) {        	
-            XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, 
-                                                                                      selectExpression, transformer);
+        if (selectExpression instanceof XSLConstructorStylesheetOrExtensionFunction) {        	
+        	XSLConstructorStylesheetOrExtensionFunction xpathFunc = (XSLConstructorStylesheetOrExtensionFunction)selectExpression;
+        	XSLFunctionService xslFunctionService = xctxt.getXSLFunctionService();
+            XObject evalResult = xslFunctionService.callFunction(xpathFunc, transformer, xctxt);
             
             QName asAttrQName = null;
             
@@ -358,11 +360,11 @@ public class ElemVariable extends ElemTemplateElement
             }
             
             if (evalResult != null) {
-            	String funcName = ((FuncExtFunction)selectExpression).getFunctionName();
-            	String funcNamespace = ((FuncExtFunction)selectExpression).getNamespace();
+            	String funcName = ((XSLConstructorStylesheetOrExtensionFunction)selectExpression).getFunctionName();
+            	String funcNamespace = ((XSLConstructorStylesheetOrExtensionFunction)selectExpression).getNamespace();
             	
             	String evalResultStrValue = (evalResult instanceof XSString) ? ((XSString)evalResult).stringValue() : null;            	
-            	if (m_asAttr != null && !(XSConstructorFunctionUtil.XS_VALID_TRUE).equals(evalResultStrValue)) {           	     
+            	if (m_asAttr != null && !(XSLFunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {           	     
                    evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                    if (evalResult == null) {
                 	  String xpathPatternStr = m_selectPattern.getPatternString();
@@ -370,11 +372,11 @@ public class ElemVariable extends ElemTemplateElement
                 	  		                                               + "match the expected sequence type " + m_asAttr + ".", srcLocator); 
                    }
                 }
-            	else if (m_asAttr != null && (XSConstructorFunctionUtil.XS_VALID_TRUE).equals(evalResultStrValue)) {
+            	else if (m_asAttr != null && (XSLFunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {
             	   String typeName = asAttrQName.getLocalName();
             	   String typeNamespace = asAttrQName.getNamespace();
             	   if (funcName.equals(typeName) && typeNamespace.equals(funcNamespace)) {            		  
-            	      XObject valToBeValidated = (((FuncExtFunction)selectExpression).getArg(0)).execute(xctxt);
+            	      XObject valToBeValidated = (((XSLConstructorStylesheetOrExtensionFunction)selectExpression).getArg(0)).execute(xctxt);
             	      evalResult = valToBeValidated; 
             	   }
             	   else {
@@ -383,8 +385,8 @@ public class ElemVariable extends ElemTemplateElement
                  	  		                                               + "match the expected sequence type " + m_asAttr + ".", srcLocator); 
             	   }
             	}
-            	else if (m_asAttr == null && (XSConstructorFunctionUtil.XS_VALID_TRUE).equals(evalResultStrValue)) {
-            	   XObject valToBeValidated = (((FuncExtFunction)selectExpression).getArg(0)).execute(xctxt);
+            	else if (m_asAttr == null && (XSLFunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {
+            	   XObject valToBeValidated = (((XSLConstructorStylesheetOrExtensionFunction)selectExpression).getArg(0)).execute(xctxt);
           	       evalResult = valToBeValidated; 	
             	}
                 
@@ -436,14 +438,13 @@ public class ElemVariable extends ElemTemplateElement
             return evalResult; 
         }
         else if (selectExpression instanceof Operation) {
-            Operation opn = (Operation)selectExpression;
-            XObject leftOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                                 xctxt, opn.getLeftOperand(), transformer);
-            XObject rightOperand = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                                 xctxt, opn.getRightOperand(), transformer);
+        	Operation xpathOperation = (Operation)selectExpression;            
+            XObject leftOperand = (xpathOperation.getLeftOperand()).execute(xctxt);
+            XObject rightOperand = (xpathOperation.getRightOperand()).execute(xctxt);
+            
             XObject evalResult = null;
             try {
-               evalResult = opn.operate(leftOperand, rightOperand);
+               evalResult = xpathOperation.operate(leftOperand, rightOperand);
             }
             catch (TransformerException ex) {
                throw new TransformerException(ex.getMessage(), srcLocator); 
@@ -601,23 +602,22 @@ public class ElemVariable extends ElemTemplateElement
         }
       }
       else if (null == getFirstChildElem()) {
-         var = XString.EMPTYSTRING;
+          var = XString.EMPTYSTRING;
       }
       else {
-        int rootNodeHandleOfRtf;
-        
-	    if (m_parentNode instanceof Stylesheet) {
-	       // Global variable
-		   rootNodeHandleOfRtf = transformer.transformToGlobalRTF(this);
-	    }
-		else {
-		   rootNodeHandleOfRtf = transformer.transformToRTF(this);
-		}
-		
-		// With XSLT 3.0, RTFs are treated as XDM node sets
-		NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();		
-		
-		var = new XNodeSetForDOM(nodeList, xctxt);
+    	  int rootNodeHandleOfRtf;
+
+    	  if (m_parentNode instanceof Stylesheet) {
+    		  // Global variable
+    		  rootNodeHandleOfRtf = transformer.transformToGlobalRTF(this);
+    	  }
+    	  else {
+    		  rootNodeHandleOfRtf = transformer.transformToRTF(this);
+    	  }
+
+    	  NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();		
+
+    	  var = new XNodeSetForDOM(nodeList, xctxt);
       }
     }
     finally {      
@@ -630,8 +630,7 @@ public class ElemVariable extends ElemTemplateElement
           
           try {
              ElemFunction elemFunction = ElemFunction.getXSLFunctionService();
-             variableConvertedVal = elemFunction.preprocessXslFunctionOrAVariableResult((XNodeSetForDOM)var, 
-                                                                                                m_asAttr, xctxt, m_qname);
+             variableConvertedVal = elemFunction.preprocessXslFunctionOrAVariableResult(var, m_asAttr, xctxt, m_qname);
           }
           catch (TransformerException ex) {
              throw new TransformerException(ex.getMessage(), srcLocator); 

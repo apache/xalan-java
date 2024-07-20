@@ -33,10 +33,11 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
-import org.apache.xalan.templates.XSConstructorFunctionUtil;
 import org.apache.xalan.trace.ExtensionEvent;
 import org.apache.xalan.transformer.TransformerImpl;
-import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xpath.functions.XSLFunctionService;
+import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -423,33 +424,41 @@ public class ExtensionHandlerJavaPackage extends ExtensionHandlerJava
   }
 
   /**
-   * Process a call to an XPath extension function
+   * Process a call to either of following kinds of functions called from 
+   * within XPath expressions:
+   * 1) XPath 3.1 constructor function, called with syntax prefix:type_name(..)
+   * 2) XSL stylesheet function, specified with syntax xsl:function
+   * 3) XPath extension function, defined within Xalan-J's extensions function
+   *    library by Xalan-J implementation. 
    *
-   * @param extFunction The XPath extension function
-   * @param args The arguments of the function call.
-   * @param exprContext The context in which this expression is being executed.
-   * @return the return value of the function evaluation.
+   * @param funcObj                         an XPath constructor function, or stylesheet function
+   * @param args                            the arguments of the function call
+   * @param exprContext                     the context in which this expression is being executed
+   * @return                                the return value of the function evaluation
    * @throws TransformerException
    */
-  public Object callFunction(FuncExtFunction extFunction,
+  public Object callFunction(XSLConstructorStylesheetOrExtensionFunction funcObj,
                              Vector args,
                              ExpressionContext exprContext,
                              TransformerImpl transformer) throws TransformerException
   {
       
-      Object funcEvalResult = null;
-      
-          XObject evalResult = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn
-                                                                          (exprContext.getXPathContext(), extFunction, transformer);
-          if (evalResult != null) {
-             funcEvalResult = evalResult;
-          }
-          else {
-             funcEvalResult = callFunction(extFunction.getFunctionName(), args, extFunction.getMethodKey(), 
-                                                                                                     exprContext);    
-          }
-      
-      return funcEvalResult;
+	  Object funcEvalResult = null;
+	  
+	  XPathContext xctxt = transformer.getXPathContext();
+	  
+	  XSLFunctionService xslFunctionService = xctxt.getXSLFunctionService();
+
+	  XObject evalResult = xslFunctionService.callFunction(funcObj, transformer, xctxt);
+	  
+	  if (evalResult != null) {
+		  funcEvalResult = evalResult;
+	  }
+	  else {
+		  funcEvalResult = callFunction(funcObj.getFunctionName(), args, funcObj.getMethodKey(), exprContext);    
+	  }
+
+	  return funcEvalResult;
       
   }
 

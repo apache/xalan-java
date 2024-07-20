@@ -25,7 +25,6 @@ import java.util.Vector;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xalan.templates.XSConstructorFunctionUtil;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
@@ -38,12 +37,12 @@ import org.apache.xpath.res.XPATHErrorResources;
 import org.apache.xpath.res.XPATHMessages;
 
 /**
- * An object of this class represents an extension call expression.  When
- * the expression executes, it calls ExtensionsTable#extFunction, and then
- * converts the result to the appropriate XObject.
+ * An object of this class represents an XPath constructor function, 
+ * XSL stylesheet function or Xalan-J's extension function.
+ * 
  * @xsl.usage advanced
  */
-public class FuncExtFunction extends Function
+public class XSLConstructorStylesheetOrExtensionFunction extends Function
 {
     static final long serialVersionUID = 5196115554693708718L;
 
@@ -165,7 +164,7 @@ public class FuncExtFunction extends Function
    *                  ExtensionsTable#extFunction in order to allow caching
    *                  of the method.
    */
-  public FuncExtFunction(java.lang.String namespace,
+  public XSLConstructorStylesheetOrExtensionFunction(java.lang.String namespace,
                          java.lang.String extensionName, Object methodKey)
   {
     //try{throw new Exception("FuncExtFunction() " + namespace + " " + extensionName);} catch (Exception e){e.printStackTrace();}
@@ -194,46 +193,43 @@ public class FuncExtFunction extends Function
     XObject result = null;
     
     try {
-       // Attempting to resolve this function call, as XSLT stylesheet function call (i.e, for
-       // functions defined with XSLT stylesheet element xsl:function), or as XPath 3.1 
-       // constructor function call (i.e, function calls with syntax xs:type_name(..), where the 
-       // XML namespace prefix 'xs' is bound to XML namespace uri http://www.w3.org/2001/XMLSchema).
-       result = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(
-                                                                        xctxt, this, null);
+       // Attempting to make a call to an XPath constructor function, or an XSL 
+       // stylesheet function.
+       XSLFunctionService xslFunctionService = xctxt.getXSLFunctionService();
+       result = xslFunctionService.callFunction(this, null, xctxt);
     } 
     catch (TransformerException ex) {        
        throw new TransformerException(ex.getMessage(), xctxt.getSAXLocator());
-    }
-       
-    if (result != null) {
-       return result;
-    }
+    }           
     
-    Vector argVec = new Vector();
-    int nArgs = m_argVec.size();
+    if (result == null) {
+    	// Attempting to make a call to an XPath extension function
+    	Vector argVec = new Vector();
+    	int nArgs = m_argVec.size();
 
-    for (int i = 0; i < nArgs; i++)
-    {
-      Expression arg = (Expression) m_argVec.elementAt(i);
-      
-      XObject xobj = arg.execute(xctxt);
-      /*
-       * Should cache the arguments for func:function
-       */
-      xobj.allowDetachToRelease(false); 
-      argVec.addElement(xobj);
-    }
-    //dml
-    ExtensionsProvider extProvider = (ExtensionsProvider)xctxt.getOwnerObject();
-    Object val = extProvider.extFunction(this, argVec);
+    	for (int i = 0; i < nArgs; i++)
+    	{
+    		Expression arg = (Expression) m_argVec.elementAt(i);
 
-    if (null != val)
-    {
-      result = XObject.create(val, xctxt);
-    }
-    else
-    {
-      result = new XNull();
+    		XObject xobj = arg.execute(xctxt);
+    		/*
+    		 * Should cache the arguments for func:function
+    		 */
+    		xobj.allowDetachToRelease(false); 
+    		argVec.addElement(xobj);
+    	}
+    	//dml
+    	ExtensionsProvider extProvider = (ExtensionsProvider)xctxt.getOwnerObject();
+    	Object val = extProvider.extFunction(this, argVec);
+
+    	if (null != val)
+    	{
+    		result = XObject.create(val, xctxt);
+    	}
+    	else
+    	{
+    		result = new XNull();
+    	}
     }
 
     return result;
@@ -291,7 +287,7 @@ public class FuncExtFunction extends Function
      */
     public void setExpression(Expression exp)
     {
-    	exp.exprSetParent(FuncExtFunction.this);
+    	exp.exprSetParent(XSLConstructorStylesheetOrExtensionFunction.this);
     	m_exp = exp;
     }
   }

@@ -22,17 +22,17 @@ package org.apache.xpath.operations;
 
 import javax.xml.XMLConstants;
 
-import org.apache.xalan.templates.XSConstructorFunctionUtil;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
-import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xpath.functions.XSLFunctionService;
+import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.objects.XObject;
 
 /**
- * The baseclass for a binary operation.
+ * The base class for an XPath binary operation.
  */
 public class Operation extends Expression implements ExpressionOwner
 {
@@ -115,10 +115,12 @@ public class Operation extends Expression implements ExpressionOwner
     
     XObject right = null;
     
-    if (m_left instanceof FuncExtFunction) {
-    	FuncExtFunction extFunction = (FuncExtFunction)m_left;
-    	if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
-    		left = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, m_left, null); 
+    XSLFunctionService xslFunctionService = xctxt.getXSLFunctionService();
+    
+    if (m_left instanceof XSLConstructorStylesheetOrExtensionFunction) {
+    	XSLConstructorStylesheetOrExtensionFunction xpathFunc = (XSLConstructorStylesheetOrExtensionFunction)m_left;
+    	if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(xpathFunc.getNamespace())) {
+    		left = xslFunctionService.callFunction(xpathFunc, null, xctxt); 
     	}
     	else {
     		left = m_left.execute(xctxt, true);  
@@ -137,10 +139,10 @@ public class Operation extends Expression implements ExpressionOwner
     	left = m_left.execute(xctxt, true); 
     }
 
-    if (m_right instanceof FuncExtFunction) {
-    	FuncExtFunction extFunction = (FuncExtFunction)m_right;
-    	if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
-    		right = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, m_right, null); 
+    if (m_right instanceof XSLConstructorStylesheetOrExtensionFunction) {
+    	XSLConstructorStylesheetOrExtensionFunction xpathFunc = (XSLConstructorStylesheetOrExtensionFunction)m_right;
+    	if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(xpathFunc.getNamespace())) {
+    		right = xslFunctionService.callFunction(xpathFunc, null, xctxt); 
     	}
     	else {
     		right = m_right.execute(xctxt, true);  

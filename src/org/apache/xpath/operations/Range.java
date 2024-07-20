@@ -24,9 +24,9 @@ import java.math.BigInteger;
 
 import javax.xml.XMLConstants;
 
-import org.apache.xalan.templates.XSConstructorFunctionUtil;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.functions.FuncExtFunction;
+import org.apache.xpath.functions.XSLFunctionService;
+import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
@@ -35,11 +35,6 @@ import xml.xpath31.processor.types.XSNumericType;
 
 /**
  * The XPath 3.1 range "to" operation.
- * 
- * An XPath range "to" expression can be used to construct a sequence of 
- * consecutive integers. Each of the operands of the XPath range "to" 
- * operator is converted as though it was an argument of a function 
- * with the expected parameter type xs:integer.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -68,10 +63,12 @@ public class Range extends Operation
       
       XObject expr2 = null;
       
-      if (m_left instanceof FuncExtFunction) {
-         FuncExtFunction extFunction = (FuncExtFunction)m_left;
-         if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
-            expr1 = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, m_left, null); 
+      XSLFunctionService xslFunctionService = xctxt.getXSLFunctionService();
+      
+      if (m_left instanceof XSLConstructorStylesheetOrExtensionFunction) {
+         XSLConstructorStylesheetOrExtensionFunction xpathFunc = (XSLConstructorStylesheetOrExtensionFunction)m_left;
+         if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(xpathFunc.getNamespace())) {
+            expr1 = xslFunctionService.callFunction(xpathFunc, null, xctxt); 
          }
          else {
             expr1 = m_left.execute(xctxt, true);  
@@ -81,10 +78,10 @@ public class Range extends Operation
          expr1 = m_left.execute(xctxt, true); 
       }
           
-      if (m_right instanceof FuncExtFunction) {
-         FuncExtFunction extFunction = (FuncExtFunction)m_right;
-         if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(extFunction.getNamespace())) {
-            expr2 = XSConstructorFunctionUtil.processFuncExtFunctionOrXPathOpn(xctxt, m_right, null); 
+      if (m_right instanceof XSLConstructorStylesheetOrExtensionFunction) {
+         XSLConstructorStylesheetOrExtensionFunction xpathFunc = (XSLConstructorStylesheetOrExtensionFunction)m_right;
+         if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(xpathFunc.getNamespace())) {
+            expr2 = xslFunctionService.callFunction(xpathFunc, null, xctxt); 
          }
          else {
             expr2 = m_right.execute(xctxt, true);  

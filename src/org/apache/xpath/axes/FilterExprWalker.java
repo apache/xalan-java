@@ -69,7 +69,7 @@ public class FilterExprWalker extends AxesWalker
     switch (stepType)
     {
     case OpCodes.OP_FUNCTION :
-    case OpCodes.OP_EXTFUNCTION :
+    case OpCodes.OP_CONSTRUCTOR_STYLESHEET_EXT_FUNCTION :
     	m_mustHardReset = true;
     case OpCodes.OP_GROUP :
     case OpCodes.OP_VARIABLE :
