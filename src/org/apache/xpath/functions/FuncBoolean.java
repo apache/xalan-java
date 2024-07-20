@@ -41,7 +41,7 @@ import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * Implementation of XPath 3.1 xs:boolean function.
+ * Implementation of XPath 3.1 fn:boolean function.
  * 
  * @xsl.usage advanced
  */
