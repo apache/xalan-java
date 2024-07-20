@@ -67,6 +67,7 @@ import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XUnresolvedVariable;
 import org.apache.xalan.trace.GenerateEvent;
 import org.apache.xalan.trace.TraceManager;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
@@ -1948,6 +1949,18 @@ public class TransformerImpl extends Transformer
   }
   
   /**
+   * Method to get xsl:function's evaluation result.
+   */
+  public Object transformToGlobalRTFXslFunction(ElemTemplateElement templateParent) throws TransformerException {
+	  Object result = null;
+	  
+	  DTM dtmFrag = m_xcontext.getGlobalRTFDTM();
+	  result = transformToRTFXslFunction(templateParent, dtmFrag);
+	  
+	  return result;
+  }
+  
+  /**
    * Given a stylesheet element, create a result tree fragment from it's
    * contents.
    * @param templateParent The template element that holds the fragment.
@@ -2008,7 +2021,7 @@ public class TransformerImpl extends Transformer
         // received, but flushed, the startDocument, and may be invalid
         // again after the document has been closed (still debating that)
         // ... so waiting until just before the end seems simplest/safest. 
-	resultFragment = dtmFrag.getDocument();      
+	    resultFragment = dtmFrag.getDocument();      
       }
       finally
       {
@@ -2027,6 +2040,64 @@ public class TransformerImpl extends Transformer
     }
 
     return resultFragment;
+  }
+  
+  /**
+   * Method to get xsl:function's evaluation result.
+   */
+  private Object transformToRTFXslFunction(ElemTemplateElement templateParent, 
+		                                   DTM dtmFrag) throws TransformerException {
+
+	  Object result = null;
+
+	  ContentHandler rtfHandler = dtmFrag.getContentHandler();
+
+	  int resultFragment;
+
+	  // Save the current result tree handler
+	  SerializationHandler savedRTreeHandler = this.m_serializationHandler;
+
+	  // And make a new handler for the RTF
+	  ToSAXHandler h = new ToXMLSAXHandler();
+	  h.setContentHandler(rtfHandler);
+	  h.setTransformer(this);
+
+	  // Replace the old handler (which was already saved)
+	  m_serializationHandler = h;
+
+	  // Use local variable for the current handler
+	  SerializationHandler rth = m_serializationHandler;
+
+	  try {
+		  rth.startDocument();
+
+		  rth.flushPending(); 
+
+		  try {
+			  // Do the transformation of the child elements
+			  result = executeChildTemplatesXslFunction(templateParent, true);
+
+			  rth.flushPending();
+
+			  // Get the document ID
+			  if (result == null) { 
+				  resultFragment = dtmFrag.getDocument();
+				  result = Integer.valueOf(resultFragment);
+			  }
+		  }
+		  finally {
+			  rth.endDocument();
+		  }
+	  }
+	  catch (org.xml.sax.SAXException se) {
+		  throw new TransformerException(se);
+	  }
+	  finally {
+		  // Restore the previous result tree handler
+		  this.m_serializationHandler = savedRTreeHandler;
+	  }
+
+	  return result;
   }
 
   /**
@@ -2430,6 +2501,74 @@ public class TransformerImpl extends Transformer
 //    if (check)
 //      getStackGuard().pop();
   }
+  
+  /**
+   * Method that supports, to get xsl:function's evaluation result.
+   */
+  public Object executeChildTemplatesXslFunction(ElemTemplateElement elem, 
+		                                         boolean shouldAddAttrs) throws TransformerException {
+
+	  Object result = null;
+
+	  ElemTemplateElement t = elem.getFirstChildElem();
+
+	  if (null == t)
+		  return null;      
+
+	  if (elem.hasTextLitOnly() && m_optimizer) {      
+		  char[] chars = ((ElemTextLiteral)t).getChars();
+		  try {
+			  this.pushElemTemplateElement(t);
+			  m_serializationHandler.characters(chars, 0, chars.length);
+		  }
+		  catch(SAXException se)
+		  {
+			  throw new TransformerException(se);
+		  }
+		  finally
+		  {
+			  this.popElemTemplateElement();
+		  }
+		  
+		  return null;
+	  }
+
+	  XPathContext xctxt = m_xcontext;
+	  xctxt.pushSAXLocatorNull();
+	  int currentTemplateElementsTop = m_currentTemplateElements.size();
+	  m_currentTemplateElements.push(null);
+
+	  try
+	  {
+		  for (; t != null; t = t.getNextSiblingElem())
+		  {
+			  if (!shouldAddAttrs
+					  && t.getXSLToken() == Constants.ELEMNAME_ATTRIBUTE)
+				  continue;
+
+			  xctxt.setSAXLocator(t);
+			  m_currentTemplateElements.setElementAt(t,currentTemplateElementsTop);
+			  t.execute(this);
+			  if (XslTransformSharedDatastore.xpathInlineFunction != null) {
+				  result = XslTransformSharedDatastore.xpathInlineFunction;
+				  break;
+			  }
+		  }
+	  }
+	  catch(RuntimeException re)
+	  {
+		  TransformerException te = new TransformerException(re);
+		  te.setLocator(t);
+		  throw te;
+	  }
+	  finally
+	  {
+		  m_currentTemplateElements.pop();
+		  xctxt.popSAXLocator();
+	  }
+
+	  return result;
+   }
     /**
       * Execute each of the children of a template element.
       *

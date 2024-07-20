@@ -1245,8 +1245,7 @@ public class XPathParser
   protected void Expr() throws javax.xml.transform.TransformerException
   {	  
 	  if (m_isXPathExprBeginParse && tokenIs("(") && (lookahead("to", 2) || lookahead("to", 3))) {
-		  // To parse an XPath expression like '(a to b) => function()', it seems simpler
-		  // to handle its parse here.
+		  // XPath parse of expression like '(a to b) => function()'
 		  
 		  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
 		  

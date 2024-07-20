@@ -27,6 +27,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.dtm.ref.DTMNodeList;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
@@ -39,6 +40,7 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSNegativeInteger;
@@ -274,18 +276,36 @@ public class ElemFunction extends ElemTemplate
       
       if (funcAsAttrStrVal != null) {
     	 // Process xsl:function's evaluation result with "as" attribute
-         try {
-            funcResultConvertedVal = preprocessXslFunctionOrAVariableResult(result, funcAsAttrStrVal, xctxt, null);
+         try {        	 
+             if (funcResultConvertedVal instanceof XPathInlineFunction) {
+            	// The xsl:function's evaluation returned a function item. The 
+            	// value of xsl:function's "as" attribute if present, needs to 
+            	// match accordingly.
+            	XPath seqTypeXPath = new XPath(funcAsAttrStrVal, srcLocator, xctxt.getNamespaceContext(), 
+                                                                         XPath.SELECT, null, true);
+                XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
+                SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+            	if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {
+            	   return funcResultConvertedVal;
+            	}
+            	else {
+            	   throw new TransformerException("XPTY0004 : The function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
+                                                                         "(), doesn't match the declared function result type " + 
+                                                                         funcAsAttrStrVal + ".", srcLocator); 
+            	}
+             }
+             
+             funcResultConvertedVal = preprocessXslFunctionOrAVariableResult(result, funcAsAttrStrVal, xctxt, null);
             
-            if (funcResultConvertedVal == null) {
+             if (funcResultConvertedVal == null) {
                 funcResultConvertedVal = SequenceTypeSupport.convertXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);
                 
                 if (funcResultConvertedVal == null) {
                    throw new TransformerException("XPTY0004 : The function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
                                                                                     "(), doesn't match the declared function result type " + 
-                                                                                                                                  funcAsAttrStrVal + ".", srcLocator);   
+                                                                                                                 funcAsAttrStrVal + ".", srcLocator);   
                 }
-            }
+             }
          }
          catch (TransformerException ex) {
             throw new TransformerException(ex.getMessage(), srcLocator); 
@@ -429,8 +449,9 @@ public class ElemFunction extends ElemTemplate
    * 
    * This method is implemented similarly to how, xsl:variable instruction's value
    * is determined from xsl:variable's child contents. Any xsl:param prefix elements 
-   * present within xsl:function element, are processed according to xsl:variable 
-   * instruction's semantics (the class ElemParam extends the class ElemVariable). 
+   * available within xsl:function element, are processed as per xsl:variable 
+   * instruction's evaluation semantics (the class ElemParam extends the class 
+   * ElemVariable). 
    * 
    * @param transformer				org.apache.xalan.transformer.TransformerImpl object
    * @param xctxt           		xpath context object
@@ -439,11 +460,19 @@ public class ElemFunction extends ElemTemplate
    */
   private XObject getXslFunctionResult(TransformerImpl transformer, XPathContext xctxt) throws TransformerException {		
 	  XObject result = null;
-
-	  int nodeDtmHandle = transformer.transformToGlobalRTF(this);
-	  NodeList nodeList = (new XRTreeFrag(nodeDtmHandle, xctxt, this)).convertToNodeset();     
-
-	  result = new XNodeSetForDOM(nodeList, xctxt);
+	  
+	  Object xslFunctionResult = transformer.transformToGlobalRTFXslFunction(this);
+	  
+	  Integer nodeDtmHandle = null;	  
+	  try {
+		 nodeDtmHandle = Integer.valueOf(xslFunctionResult.toString());
+	     NodeList nodeList = (new XRTreeFrag(nodeDtmHandle.intValue(), xctxt, this)).convertToNodeset();
+	     result = new XNodeSetForDOM(nodeList, xctxt);
+	  }
+	  catch (NumberFormatException ex) {
+		 result = (XPathInlineFunction)xslFunctionResult;
+		 XslTransformSharedDatastore.xpathInlineFunction = null;
+	  }	  
 
 	  return result;
   }

@@ -26,6 +26,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.serialize.SerializerUtils;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xpath.Expression;
@@ -35,17 +36,16 @@ import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.composite.SequenceTypeData;
-import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
-import org.apache.xpath.functions.XSLFunctionBuilder;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.functions.XSLFunctionService;
-import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XBoolean;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Operation;
@@ -335,55 +335,60 @@ public class ElemSequence extends ElemTemplateElement
                                                                                   null, XPath.SELECT, null);
           xslSequenceVal = emptySeqXPath.execute(xctxt, DTM.NULL, null);
       }
-      
-      SerializationHandler handler = transformer.getSerializationHandler();
-      
+            
       if (xslSequenceVal != null) {
-          int xObjectType = xslSequenceVal.getType();
-          String strVal = null;
-  
-          switch (xObjectType) {           
-              case XObject.CLASS_NODESET :          
-                ElemCopyOf.copyOfActionOnNodeSet((XNodeSet)xslSequenceVal, transformer, handler, xctxt);          
-                break;
-              case XObject.CLASS_RTREEFRAG :
-                SerializerUtils.outputResultTreeFragment(handler, xslSequenceVal, xctxt);
-                break;
-              case XObject.CLASS_RESULT_SEQUENCE :         
-                ResultSequence resultSequence = (ResultSequence)xslSequenceVal;          
-                ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, true);          
-                break;
-              default :
-                // no op
-          }
-          
-          boolean isToAddStrValSerializationSuffix = isToAddStrValSerializationSuffix(xctxt); 
-          
-          if ((xslSequenceVal instanceof XBoolean) || (xslSequenceVal instanceof XNumber) || 
-                                                                    (xslSequenceVal instanceof XString)) {
-              if (isToAddStrValSerializationSuffix) {
-                 strVal = xslSequenceVal.str() + STRING_VAL_SERIALIZATION_SUFFIX;
-              }
-              else {
-                 strVal = xslSequenceVal.str();  
-              }
-              
-              handler.characters(strVal.toCharArray(), 0, strVal.length());
-          }
-          else if (xslSequenceVal instanceof XSAnyAtomicType) {
-              if (isToAddStrValSerializationSuffix) {
-                 strVal = ((XSAnyAtomicType)xslSequenceVal).stringValue() + STRING_VAL_SERIALIZATION_SUFFIX;
-              }
-              else {
-                 strVal = ((XSAnyAtomicType)xslSequenceVal).stringValue();
-              }
-              
-              handler.characters(strVal.toCharArray(), 0, strVal.length());
-          }
-          else if (xslSequenceVal instanceof XPathInlineFunction) {
+    	  if (xslSequenceVal instanceof XPathInlineFunction) {
+    		  XslTransformSharedDatastore.xpathInlineFunction = (XPathInlineFunction)xslSequenceVal;   
+    	  }
+    	  else {
+    		  SerializationHandler handler = transformer.getSerializationHandler();
+    		  
+	          int xObjectType = xslSequenceVal.getType();
+	          String strVal = null;
+	  
+	          switch (xObjectType) {           
+	              case XObject.CLASS_NODESET :          
+	                ElemCopyOf.copyOfActionOnNodeSet((XNodeSet)xslSequenceVal, transformer, handler, xctxt);          
+	                break;
+	              case XObject.CLASS_RTREEFRAG :
+	                SerializerUtils.outputResultTreeFragment(handler, xslSequenceVal, xctxt);
+	                break;
+	              case XObject.CLASS_RESULT_SEQUENCE :         
+	                ResultSequence resultSequence = (ResultSequence)xslSequenceVal;          
+	                ElemCopyOf.copyOfActionOnResultSequence(resultSequence, transformer, handler, xctxt, true);          
+	                break;
+	              default :
+	                // no op
+	          }
+	          
+	          boolean isToAddStrValSerializationSuffix = isToAddStrValSerializationSuffix(xctxt); 
+	          
+	          if ((xslSequenceVal instanceof XBoolean) || (xslSequenceVal instanceof XNumber) || 
+	                                                                    (xslSequenceVal instanceof XString)) {
+	              if (isToAddStrValSerializationSuffix) {
+	                 strVal = xslSequenceVal.str() + STRING_VAL_SERIALIZATION_SUFFIX;
+	              }
+	              else {
+	                 strVal = xslSequenceVal.str();  
+	              }
+	              
+	              handler.characters(strVal.toCharArray(), 0, strVal.length());
+	          }
+	          else if (xslSequenceVal instanceof XSAnyAtomicType) {
+	              if (isToAddStrValSerializationSuffix) {
+	                 strVal = ((XSAnyAtomicType)xslSequenceVal).stringValue() + STRING_VAL_SERIALIZATION_SUFFIX;
+	              }
+	              else {
+	                 strVal = ((XSAnyAtomicType)xslSequenceVal).stringValue();
+	              }
+	              
+	              handler.characters(strVal.toCharArray(), 0, strVal.length());
+	          }
+    	  }
+          /*else if (xslSequenceVal instanceof XPathInlineFunction) {
               throw new TransformerException("XTDE0450 : Cannot add a function item to an XDM result tree, "
                                                                                                    + "via xsl:sequence instruction.", srcLocator);
-          }
+          }*/
        }
     }
     catch (SAXException se) {

@@ -7,9 +7,9 @@
                 
   <!-- Author: mukulg@apache.org -->
   
- <!-- An XSLT stylesheet test case, that tests XPath arithmetic binary 
-      operators '+' and '-', when the operands to these XPath operators 
-      are stylesheet function calls. 
+  <!-- An XSLT stylesheet test case, that tests XPath arithmetic binary 
+       operators '+' and '-', when the operands to these XPath operators 
+       are stylesheet function calls. 
   -->                
                 
   <xsl:output method="xml" indent="yes"/>
