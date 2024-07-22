@@ -27,6 +27,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
@@ -35,6 +36,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.functions.Function;
@@ -606,7 +608,7 @@ public class ElemVariable extends ElemTemplateElement
       }
       else {
     	  int rootNodeHandleOfRtf;
-
+    	  
     	  if (m_parentNode instanceof Stylesheet) {
     		  // Global variable
     		  rootNodeHandleOfRtf = transformer.transformToGlobalRTF(this);
@@ -614,10 +616,17 @@ public class ElemVariable extends ElemTemplateElement
     	  else {
     		  rootNodeHandleOfRtf = transformer.transformToRTF(this);
     	  }
-
-    	  NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();		
-
-    	  var = new XNodeSetForDOM(nodeList, xctxt);
+    	  
+    	  if (XslTransformSharedDatastore.xpathInlineFunction != null) {
+    		  if (m_asAttr == null) {
+    			  var = XslTransformSharedDatastore.xpathInlineFunction;
+    			  XslTransformSharedDatastore.xpathInlineFunction = null;
+    		  }
+    	  }
+    	  else {
+    	     NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();    	  
+    	     var = new XNodeSetForDOM(nodeList, xctxt);
+    	  }
       }
     }
     finally {      
@@ -625,7 +634,21 @@ public class ElemVariable extends ElemTemplateElement
     }
     
     if (m_asAttr != null) {
-       if (var instanceof XNodeSetForDOM) {
+       if (XslTransformSharedDatastore.xpathInlineFunction != null) {
+    	   XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                       XPath.SELECT, null, true);
+           XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
+           SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+           if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {              	   
+    	      var = XslTransformSharedDatastore.xpathInlineFunction;
+    	      XslTransformSharedDatastore.xpathInlineFunction = null;
+           }
+           else {
+        	  throw new TransformerException("XTTE0505 : The variable " + m_qname.getLocalName() + "'s value doesn't conform "
+        	  		                                                + "to variable's expected type " + m_asAttr + ".", srcLocator); 
+           }
+       }
+       else if (var instanceof XNodeSetForDOM) {
           XObject variableConvertedVal = null;
           
           try {
@@ -901,10 +924,6 @@ public class ElemVariable extends ElemTemplateElement
       return null;
     }
     return super.appendChild(elem);
-  }
-  
-  private boolean isXsLaxilyValid(XObject evalResult) {
-	return false;
   }
 
 }

@@ -1949,13 +1949,13 @@ public class TransformerImpl extends Transformer
   }
   
   /**
-   * Method to get xsl:function's evaluation result.
+   * Method to get xsl:function or xsl:template's evaluation result.
    */
-  public Object transformToGlobalRTFXslFunction(ElemTemplateElement templateParent) throws TransformerException {
+  public Object transformToGlobalRTFXslFunctionOrTemplate(ElemTemplateElement templateParent) throws TransformerException {
 	  Object result = null;
 	  
 	  DTM dtmFrag = m_xcontext.getGlobalRTFDTM();
-	  result = transformToRTFXslFunction(templateParent, dtmFrag);
+	  result = transformToRTFXslFunctionOrTemplate(templateParent, dtmFrag);
 	  
 	  return result;
   }
@@ -2043,10 +2043,10 @@ public class TransformerImpl extends Transformer
   }
   
   /**
-   * Method to get xsl:function's evaluation result.
+   * Method to get xsl:function or xsl:template's evaluation result.
    */
-  private Object transformToRTFXslFunction(ElemTemplateElement templateParent, 
-		                                   DTM dtmFrag) throws TransformerException {
+  private Object transformToRTFXslFunctionOrTemplate(ElemTemplateElement templateParent, 
+		                                             DTM dtmFrag) throws TransformerException {
 
 	  Object result = null;
 
@@ -2482,7 +2482,7 @@ public class TransformerImpl extends Transformer
 
         xctxt.setSAXLocator(t);
         m_currentTemplateElements.setElementAt(t,currentTemplateElementsTop);
-        t.execute(this);
+        t.execute(this);        
       }
     }
     catch(RuntimeException re)

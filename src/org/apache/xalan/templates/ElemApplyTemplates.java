@@ -223,11 +223,10 @@ public class ElemApplyTemplates extends ElemCallTemplate
       
     try
     {
-
-            xctxt.pushCurrentNode(DTM.NULL);
-            xctxt.pushCurrentExpressionNode(DTM.NULL);
-            xctxt.pushSAXLocatorNull();
-            transformer.pushElemTemplateElement(null);
+      xctxt.pushCurrentNode(DTM.NULL);
+      xctxt.pushCurrentExpressionNode(DTM.NULL);
+      xctxt.pushSAXLocatorNull();
+      transformer.pushElemTemplateElement(null);
       final Vector keys = (m_sortElems == null)
                           ? null
                           : transformer.processSortKeys(this, sourceNode);
@@ -308,8 +307,7 @@ public class ElemApplyTemplates extends ElemCallTemplate
 
         final QName mode = transformer.getMode();
 
-        ElemTemplate template = tl.getTemplateFast(xctxt, child, exNodeType, mode, 
-                                      -1, quiet, dtm);
+        ElemTemplate template = tl.getTemplateFast(xctxt, child, exNodeType, mode, -1, quiet, dtm);
 
         // If that didn't locate a node, fall back to a default template rule.
         // See http://www.w3.org/TR/xslt#built-in-rule.
@@ -396,9 +394,9 @@ public class ElemApplyTemplates extends ElemCallTemplate
         
         if (templateAsAttrVal != null) {         
             try {
-               // The codebase logic within this 'try' block, checks whether an
-               // XSLT template's result contents conform to an XPath 'sequence type' 
-               // expression specified as value of template's 'as' attribute.
+               // Check whether an xsl:template element's result contents conform to the 
+               // SequenceType expression specified as value of xsl:template element's 
+               // 'as' attribute.
                  
                int dtmNodeHandle = transformer.transformToGlobalRTF(template);
                 

@@ -461,7 +461,7 @@ public class ElemFunction extends ElemTemplate
   private XObject getXslFunctionResult(TransformerImpl transformer, XPathContext xctxt) throws TransformerException {		
 	  XObject result = null;
 	  
-	  Object xslFunctionResult = transformer.transformToGlobalRTFXslFunction(this);
+	  Object xslFunctionResult = transformer.transformToGlobalRTFXslFunctionOrTemplate(this);
 	  
 	  Integer nodeDtmHandle = null;	  
 	  try {

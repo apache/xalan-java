@@ -28,11 +28,13 @@ import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -410,22 +412,32 @@ public class ElemTemplate extends ElemTemplateElement
     XObject templateEvalResultForAsAttr = null;
     
     if (m_asAttr != null) {         
-        try {
-           // The XSL transformation code logic within this 'try' block, checks whether an xsl:template
-           // element's result contents conform to the SequenceType expression specified as value of 
-           // xsl:template element's 'as' attribute.
-             
-           int dtmNodeHandle = transformer.transformToGlobalRTF(this);
-            
-           NodeList nodeList = (new XRTreeFrag(dtmNodeHandle, xctxt, this)).convertToNodeset();             
-           templateEvalResultForAsAttr = new XNodeSetForDOM(nodeList, xctxt);
-           templateEvalResultForAsAttr = SequenceTypeSupport.convertXdmValueToAnotherType(templateEvalResultForAsAttr, m_asAttr, 
-                                                                                                                   null, xctxt);
-           if (templateEvalResultForAsAttr == null) {
-              String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();
-              throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
-                                                                                                + " is " + m_asAttr + ". But the template result "
-                                                                                                + "doesn't conform to this required type.", srcLocator);   
+        try {                      
+           templateEvalResultForAsAttr = getXslTemplateResult(transformer, xctxt);
+           
+           if (templateEvalResultForAsAttr instanceof XPathInlineFunction) {
+        	   XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null, true);
+               XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
+               SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+               if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {            	  
+        	      return;
+               }
+               else {
+            	  String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();
+        		  throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
+        				                                                            + " is " + m_asAttr + ". But the template result "
+        				                                                            + "doesn't conform to this required type.", srcLocator); 
+               }
+           }
+           else {
+        	   templateEvalResultForAsAttr = SequenceTypeSupport.convertXdmValueToAnotherType(templateEvalResultForAsAttr, m_asAttr, 
+        			                                                                                                             null, xctxt);
+        	   if (templateEvalResultForAsAttr == null) {
+        		   String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();
+        		   throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
+        				                                                             + " is " + m_asAttr + ". But the template result "
+        				                                                             + "doesn't conform to this required type.", srcLocator);   
+        	   }
            }
         }
         catch (TransformerException ex) {
@@ -436,14 +448,14 @@ public class ElemTemplate extends ElemTemplateElement
            else {
               String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString(); 
               throw new TransformerException("XTTE0505 : The required result type of template " + errTemplateStr 
-                                                                                + " is " + m_asAttr + ". But the template result "
-                                                                                + "doesn't conform to this required type.", srcLocator);
+                                                                                            + " is " + m_asAttr + ". But the template result "
+                                                                                            + "doesn't conform to this required type.", srcLocator);
            }
         }
     }
     
     if (templateEvalResultForAsAttr != null) {        
-        SerializationHandler handler = transformer.getSerializationHandler();        
+        SerializationHandler handler = transformer.getSerializationHandler();
         
         try {
             if (templateEvalResultForAsAttr instanceof XNodeSet) {
@@ -470,7 +482,29 @@ public class ElemTemplate extends ElemTemplateElement
        transformer.getTraceManager().fireTraceEndEvent(this);
     }
 
-    xctxt.popRTFContext();  
+    xctxt.popRTFContext();
+    
+  }
+  
+  /**
+   * This method computes the result of, xsl:template element that has "as" attribute.
+   */
+  private XObject getXslTemplateResult(TransformerImpl transformer, XPathContext xctxt) throws TransformerException {		
+	  XObject result = null;
+	  
+	  Object xslFunctionResult = transformer.transformToGlobalRTFXslFunctionOrTemplate(this);
+	  
+	  Integer nodeDtmHandle = null;	  
+	  try {
+		 nodeDtmHandle = Integer.valueOf(xslFunctionResult.toString());
+	     NodeList nodeList = (new XRTreeFrag(nodeDtmHandle.intValue(), xctxt, this)).convertToNodeset();
+	     result = new XNodeSetForDOM(nodeList, xctxt);
+	  }
+	  catch (NumberFormatException ex) {
+		 result = (XPathInlineFunction)xslFunctionResult;
+	  }	  
+
+	  return result;
   }
 
   /**

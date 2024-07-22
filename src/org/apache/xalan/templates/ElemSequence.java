@@ -384,11 +384,7 @@ public class ElemSequence extends ElemTemplateElement
 	              
 	              handler.characters(strVal.toCharArray(), 0, strVal.length());
 	          }
-    	  }
-          /*else if (xslSequenceVal instanceof XPathInlineFunction) {
-              throw new TransformerException("XTDE0450 : Cannot add a function item to an XDM result tree, "
-                                                                                                   + "via xsl:sequence instruction.", srcLocator);
-          }*/
+    	  }          
        }
     }
     catch (SAXException se) {
