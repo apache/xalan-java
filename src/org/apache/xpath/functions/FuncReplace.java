@@ -23,20 +23,17 @@ package org.apache.xpath.functions;
 import javax.xml.transform.SourceLocator;
 
 import org.apache.xalan.res.XSLMessages;
-import org.apache.xml.utils.XMLString;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XString;
 import org.apache.xpath.regex.Matcher;
 import org.apache.xpath.regex.PatternSyntaxException;
 import org.apache.xpath.res.XPATHErrorResources;
 
+import xml.xpath31.processor.types.XSString;
+
 /**
- * Execute the replace() function.
- * 
- * This function returns a string, produced from the input string by 
- * replacing any substrings that match a given regular expression, 
- * with a supplied replacement string.
+ * Implementation of the fn:replace function.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -49,7 +46,7 @@ public class FuncReplace extends Function4Args {
    private static final String FUNCTION_NAME = "replace()";
 
   /**
-   * Execute the function. The function must return a valid object.
+   * Implementation of the function. The function must return a valid object.
    * 
    * @param xctxt The current execution context.
    * @return A valid XObject.
@@ -58,37 +55,38 @@ public class FuncReplace extends Function4Args {
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-        SourceLocator srcLocator = xctxt.getSAXLocator();
+        XObject result = null;
         
-        XMLString inputStr = m_arg0.execute(xctxt).xstr();
-        XMLString pattern = m_arg1.execute(xctxt).xstr();
-        XMLString replacement = m_arg2.execute(xctxt).xstr();
+	    SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        XMLString flags = null;
+        String inputStr = XslTransformEvaluationHelper.getStrVal(m_arg0.execute(xctxt));
+        String patternStr = XslTransformEvaluationHelper.getStrVal(m_arg1.execute(xctxt));
+        String replacementStr = XslTransformEvaluationHelper.getStrVal(m_arg2.execute(xctxt));
+        
+        String flagStr = null;
         
         if (m_arg3 != null) {
-           flags = m_arg3.execute(xctxt).xstr();
-           if (!RegexEvaluationSupport.isFlagStrValid(flags.toString())) {
+           flagStr = XslTransformEvaluationHelper.getStrVal(m_arg3.execute(xctxt));
+           if (!RegexEvaluationSupport.isFlagStrValid(flagStr)) {
                throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
-                                                                        ER_INVALID_REGEX_FLAGS, new Object[]{ FUNCTION_NAME }),
-                                                                               srcLocator);     
+                                                                                            ER_INVALID_REGEX_FLAGS, new Object[]{ FUNCTION_NAME }),
+                                                                                            srcLocator);     
            }
         }
         
-        String resultStr = null;
-        
         try {
-            Matcher matcher = RegexEvaluationSupport.regex(RegexEvaluationSupport.transformRegexStrForSubtractionOp(pattern.toString()), 
-                                                           flags != null ? flags.toString() : null, inputStr.toString());
-            resultStr = matcher.replaceAll(replacement.toString());
+            Matcher matcher = RegexEvaluationSupport.regex(RegexEvaluationSupport.transformRegexStrForSubtractionOp(
+            		                                                                                             patternStr), flagStr, inputStr);
+            String resultStr = matcher.replaceAll(replacementStr);
+            result = new XSString(resultStr);
         }
         catch (PatternSyntaxException ex) {
             throw new javax.xml.transform.TransformerException(XSLMessages.createXPATHMessage(XPATHErrorResources.
-                                                                        ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), 
-                                                                                srcLocator);   
-        }
+                                                                                           ER_INVALID_REGEX, new Object[]{ FUNCTION_NAME }), 
+                                                                                           srcLocator);   
+        }                
     
-        return new XString(resultStr);
+        return result;
   }
 
   /**
