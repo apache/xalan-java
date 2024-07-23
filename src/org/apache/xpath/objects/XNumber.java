@@ -25,6 +25,8 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 
 import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSInteger;
 
 /**
  * This class represents an XPath number, and is capable of
@@ -33,11 +35,17 @@ import xml.xpath31.processor.types.XSDecimal;
  */
 public class XNumber extends XObject
 {
-    static final long serialVersionUID = -2720400709619020193L;
+  static final long serialVersionUID = -2720400709619020193L;
 
   /** Value of the XNumber object.
    *  @serial         */
   double m_val;
+
+  private XSInteger m_XsInteger;
+
+  private XSDecimal m_XsDecimal;
+
+  private XSDouble m_XsDouble;
 
   /**
    * Construct a XNodeSet object.
@@ -436,5 +444,44 @@ public class XNumber extends XObject
   	visitor.visitNumberLiteral(owner, this);
   }
 
+  public void setXsInteger(XSInteger xsInteger) {
+	m_XsInteger = xsInteger;	
+  }
+  
+  public XSInteger getXsInteger() {
+	return m_XsInteger;  
+  }
 
+  public void setXsDecimal(XSDecimal xsDecimal) {
+	m_XsDecimal = xsDecimal; 	
+  }
+  
+  public XSDecimal getXsDecimal() {
+	return m_XsDecimal;  
+  }
+
+  public void setXsDouble(XSDouble xsDouble) {
+	m_XsDouble = xsDouble;	
+  }
+  
+  public XSDouble getXsDouble() {
+	return m_XsDouble;  
+  }
+  
+  public boolean isXsInteger() {
+    return (m_XsInteger != null);
+  }
+  
+  public boolean isXsDecimal() {
+	return (m_XsDecimal != null);
+  }
+  
+  public boolean isXsDouble() {
+	return (m_XsDouble != null);
+  }
+  
+  public void setVal(double val) {
+	m_val = val;  
+  }
+  
 }

@@ -20,6 +20,7 @@
  */
 package org.apache.xpath.compiler;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -59,6 +60,10 @@ import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.res.XPATHErrorResources;
+
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSInteger;
 
 /**
  * Tokenizes and parses XPath expressions.
@@ -4484,28 +4489,42 @@ public class XPathParser
   {
 
     if (null != m_token)
-    {
-
-      // Mutate the token to remove the quotes and have the XNumber object
-      // already made.
+    {          	
+      
       double num;
-
+      XNumber xNumber = null;
+      
       try
-      {
-      	// XPath 3.1 requires support for numbers in exp notation
-      	/*if ((m_token.indexOf('e') > -1)||(m_token.indexOf('E') > -1))
-      		throw new NumberFormatException();*/
-        num = Double.valueOf(m_token).doubleValue();
+      {          
+          BigDecimal bigDecimal = new BigDecimal(m_token);
+          num = bigDecimal.doubleValue();
+          
+          xNumber = new XNumber(num);
+          
+          if (!(m_token.contains(".") || m_token.contains("e") || m_token.contains("E"))) {
+        	  // if a literal number doesn't contain ., e and E, then the literal is of type xs:integer
+        	  XSInteger xsInteger = new XSInteger(m_token);
+        	  xNumber.setXsInteger(xsInteger);
+          }
+          else if (m_token.contains(".") && !(m_token.contains("e") || m_token.contains("E"))) {
+        	  // if a literal number contains . but not e and E, then the literal is of type xs:decimal
+        	  XSDecimal xsDecimal = new XSDecimal(m_token);
+        	  xNumber.setXsDecimal(xsDecimal);
+          }
+          else if (m_token.contains("e") || m_token.contains("E")) {
+        	  // if a literal number contains e or E, then the literal is of type xs:double
+        	  XSDouble xsDouble = new XSDouble(m_token);
+        	  xNumber.setXsDouble(xsDouble);
+          }
       }
       catch (NumberFormatException nfe)
       {
         num = 0.0;  // to shut up compiler.
 
-        error(XPATHErrorResources.ER_COULDNOT_BE_FORMATTED_TO_NUMBER,
-              new Object[]{ m_token });  //m_token+" could not be formatted to a number!");
+        error(XPATHErrorResources.ER_COULDNOT_BE_FORMATTED_TO_NUMBER, new Object[]{ m_token });
       }
 
-      m_ops.m_tokenQueue.setElementAt(new XNumber(num),m_queueMark - 1);
+      m_ops.m_tokenQueue.setElementAt(xNumber, m_queueMark - 1);
       m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), m_queueMark - 1);
       m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
 

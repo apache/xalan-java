@@ -658,10 +658,17 @@ public class XObject extends Expression implements Serializable, Cloneable
     // nodeset function.  Because the arguments 
     // are backwards, we call the opposite comparison
     // function.
-    if (obj2.getType() == XObject.CLASS_NODESET)
-      return obj2.greaterThan(this);
-
-    return this.num() < obj2.num();
+    if (obj2.getType() == XObject.CLASS_NODESET) {
+       return obj2.greaterThan(this);
+    }
+    else if (this instanceof XSNumericType) {
+       XSNumericType lXsNumericType = (XSNumericType)this;
+       String lStr = lXsNumericType.stringValue();
+       return Double.valueOf(lStr) < obj2.num();
+    }
+    else {
+       return this.num() < obj2.num();
+    }
   }
   
   /**

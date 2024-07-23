@@ -52,6 +52,9 @@ import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyType;
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 
 /**
@@ -407,9 +410,27 @@ public class ElemValueOf extends ElemTemplateElement {
                       else if (evalResult instanceof XPathMap) {
                     	 throw new TransformerException("FOTY0013 : Cannot do an XPath atomization of a map "
                     	 		                                              + "(ref, https://www.w3.org/TR/xpath-31/#id-atomization).", srcLocator);
-                      }                      
+                      }
+                      else if (evalResult instanceof XNumber) {
+                    	 XNumber xNumber = (XNumber)evalResult;
+                    	 if (xNumber.isXsInteger()) {
+                    		XSInteger xsInteger = xNumber.getXsInteger();
+                    		strValue = xsInteger.stringValue(); 
+                    	 }
+                    	 else if (xNumber.isXsDecimal()) {
+                    		XSDecimal xsDecimal = xNumber.getXsDecimal();
+                     		strValue = xsDecimal.stringValue(); 
+                    	 }
+                    	 else if (xNumber.isXsDouble()) {
+                    		XSDouble xsDouble = xNumber.getXsDouble();
+                      		strValue = xsDouble.stringValue(); 
+                    	 }
+                    	 else {
+                    		strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
+                    	 }
+                      }
                       else {
-                          strValue = evalResult.str();  
+                    	 strValue = XslTransformEvaluationHelper.getStrVal(evalResult);  
                       }
                       
                       (new XString(strValue)).dispatchCharactersEvents(rth);

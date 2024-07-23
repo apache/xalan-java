@@ -156,19 +156,22 @@ public class InstanceOf extends Operation
           isInstanceOf = true;
       }
       else if (xdmValue instanceof XNumber) {          
-          if ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_DOUBLE) || 
-        	  (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_DECIMAL) || 
-        	  (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE)) {
+    	  if (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE) {
+    		 isInstanceOf = true;
+    	  }
+    	  else if ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_DECIMAL) ||
+    			   (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_DOUBLE)) {
              isInstanceOf = true; 
           }
           else {
              double doubleVal = ((XNumber)xdmValue).num();
-             if ((doubleVal == (int)doubleVal) && ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_INTEGER) ||            		                               
-                                                   (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {            	 
-                 // Revisit
+             if ((doubleVal == (int)doubleVal) && (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_INTEGER)) {
             	 isInstanceOf = true; 
              }
-          }
+             else if ((doubleVal == (float)doubleVal) && (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_FLOAT)) {
+            	 isInstanceOf = true; 
+             }
+          }    	  
       }
       else if ((xdmValue instanceof XSDouble) && ((seqTypeData.getSequenceType() == SequenceTypeSupport.XS_DOUBLE) || 
     		                                      (seqTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE))) {
