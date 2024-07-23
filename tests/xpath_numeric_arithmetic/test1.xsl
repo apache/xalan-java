@@ -29,7 +29,7 @@
 		   <xsl:value-of select="$resultVal"/>
 		 </four>
 		 <xsl:variable name="resultVal" select="-3 div 2"/>
-		 <five isDecimal="{$resultVal instance of xs:decimal}">
+		 <five isDecimal="{$resultVal instance of xs:double}">
 		   <xsl:value-of select="$resultVal"/>
 		 </five>
       </result>

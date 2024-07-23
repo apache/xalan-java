@@ -37,10 +37,23 @@ public class XNumber extends XObject
 {
   static final long serialVersionUID = -2720400709619020193L;
 
-  /** Value of the XNumber object.
-   *  @serial         */
+  /** 
+   * Value of the XNumber object.
+   * 
+   * (One of the further declared XSInteger, XSDecimal or XSDouble 
+   *  object should be used in preference to this primitive double 
+   *  value, as the value of the XNumber object. This primitive double
+   *  value may have overflow/underflow and precision errors, for 
+   *  numbers than cannot be represented by primitive double.)   
+   */
   double m_val;
-
+  
+  /**
+     One of following XSInteger, XSDecimal or XSDouble object 
+     shall always be non-null. Whichever object from following 
+     is non-null is the value of the XNumber object. 
+  */
+  
   private XSInteger m_XsInteger;
 
   private XSDecimal m_XsDecimal;

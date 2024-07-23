@@ -104,10 +104,9 @@ public class Mod extends ArithmeticOperation
 		  return result;
 	  }
 	  else if ((left instanceof XNumber) && (right instanceof XNumber)) {
-		  double lDouble = ((XNumber)left).num();
-		  double rDouble = ((XNumber)right).num();
-
-		  result = new XSDecimal(BigDecimal.valueOf(lDouble % rDouble));
+		  XNumber lNumber = (XNumber)left;
+	   	  XNumber rNumber = (XNumber)right;
+	   	  result = arithmeticOpOnXNumberValues(lNumber, rNumber, OP_SYMBOL_MOD);
 	  }
 	  else if ((left instanceof XNumber) && (right instanceof XNodeSet)) {
 		  double lDouble = ((XNumber)left).num();

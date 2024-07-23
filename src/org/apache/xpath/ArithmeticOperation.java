@@ -18,6 +18,9 @@ package org.apache.xpath;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
+
+import javax.xml.transform.TransformerException;
 
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -48,12 +51,21 @@ public class ArithmeticOperation extends Operation {
 	
 	protected static final String OP_SYMBOL_DIV = "div";
 	
-	protected static final String OP_SYMBOL_MOD = "mod";	
+	protected static final String OP_SYMBOL_MOD = "mod";
+	
+    private static final String NON_TERMINATING_DECIMAL_EXPANSION = "Non-terminating decimal expansion";
+    
+    private static final String DIVISION_BY_ZERO = "Division by zero";
+    
+    private static final int DEFAULT_DIV_SCALE = 18;
 	
 	/**
-	 * This method does an arithmetic operation on two XNumber object values. 
+	 * This method does an arithmetic operation on two XNumber object values.
+	 *  
+	 * @throws TransformerException 
 	 */
-	protected XObject arithmeticOpOnXNumberValues(XNumber lNumber, XNumber rNumber, String opSymbol) {
+	protected XObject arithmeticOpOnXNumberValues(XNumber lNumber, XNumber rNumber, 
+			                                      String opSymbol) throws TransformerException {
 
 		XObject result = null;
 
@@ -68,102 +80,78 @@ public class ArithmeticOperation extends Operation {
 			else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
 			   result = new XSInteger(lBigInteger.subtract(rBigInteger));				
 			}
+			else if (opSymbol.equals(OP_SYMBOL_DIV)) {
+			   BigDecimal lBigDecimal = new BigDecimal(lXsIntegerStr); 
+			   BigDecimal rBigDecimal = new BigDecimal(rXsIntegerStr);			   
+			   try {				  
+			      result = new XSDecimal(lBigDecimal.divide(rBigDecimal));
+			   }
+			   catch (ArithmeticException ex) {
+				   java.lang.String exceptionMesg = ex.getMessage();
+	     		   result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
+			   }
+			}
+			else if (opSymbol.equals(OP_SYMBOL_MOD)) {
+			   try {
+				  BigDecimal lBigDecimal = new BigDecimal(lXsIntegerStr); 
+				  BigDecimal rBigDecimal = new BigDecimal(rXsIntegerStr);
+				  result = new XSDecimal(lBigDecimal.remainder(rBigDecimal));
+			   }
+			   catch (ArithmeticException ex) {				  
+				  error(DIV_BY_ZERO_ERR_MESG, new String[] {"FOAR0001"});
+			   }
+			}
 		}
 		else if (lNumber.isXsDecimal() && rNumber.isXsDecimal()) {
-			String lXsDecimalStr = (lNumber.getXsDecimal()).stringValue();
-			BigDecimal lBigDecimal = new BigDecimal(lXsDecimalStr);
-			String rXsDecimalStr = (rNumber.getXsDecimal()).stringValue();
-			BigDecimal rBigDecimal = new BigDecimal(rXsDecimalStr);
-			if (opSymbol.equals(OP_SYMBOL_PLUS)) {
-			   result = new XSDecimal(lBigDecimal.add(rBigDecimal));
-			}
-			else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
-			   result = new XSDecimal(lBigDecimal.subtract(rBigDecimal));				
-			}
+			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDecimal()).stringValue());
+			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDecimal()).stringValue());
+			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol);
 		}
 		else if (lNumber.isXsDouble() && rNumber.isXsDouble()) {
-			String lXsDoubleStr = (lNumber.getXsDouble()).stringValue();
-			Double lDbl = Double.valueOf(lXsDoubleStr);
-			String rXsDoubleStr = (rNumber.getXsDouble()).stringValue();
-			Double rDbl = Double.valueOf(rXsDoubleStr);
+			Double lDbl = Double.valueOf((lNumber.getXsDouble()).stringValue());
+			Double rDbl = Double.valueOf((rNumber.getXsDouble()).stringValue());
 			if (opSymbol.equals(OP_SYMBOL_PLUS)) {
 			   result = new XSDouble(lDbl + rDbl);
 			}
 			else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
 			   result = new XSDouble(lDbl - rDbl);				
 			}
+			else if (opSymbol.equals(OP_SYMBOL_DIV)) {
+			   result = new XSDecimal(BigDecimal.valueOf(lDbl.doubleValue() / rDbl.doubleValue()));
+			}
+			else if (opSymbol.equals(OP_SYMBOL_MOD)) {
+			   result = new XSDecimal(BigDecimal.valueOf(lDbl.doubleValue() % rDbl.doubleValue()));	
+			}			
 		}
 		else if (lNumber.isXsInteger() && rNumber.isXsDecimal()) {
-			String lXsIntegerStr = (lNumber.getXsInteger()).stringValue();
-			BigDecimal lBigDecimal = new BigDecimal(lXsIntegerStr);
-			String rXsDecimalStr = (rNumber.getXsDecimal()).stringValue();
-			BigDecimal rBigDecimal = new BigDecimal(rXsDecimalStr);
-			if (opSymbol.equals(OP_SYMBOL_PLUS)) {
-			   result = new XSDecimal(lBigDecimal.add(rBigDecimal));
-			}
-			else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
-			   result = new XSDecimal(lBigDecimal.subtract(rBigDecimal));				
-			} 
+			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsInteger()).stringValue());
+			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDecimal()).stringValue());
+			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol);
 		}
 		else if (lNumber.isXsInteger() && rNumber.isXsDouble()) {
-			String lXsIntegerStr = (lNumber.getXsInteger()).stringValue();
-			BigDecimal lBigDecimal = new BigDecimal(lXsIntegerStr);
-			String rXsDoubleStr = (rNumber.getXsDouble()).stringValue();
-			BigDecimal rBigDecimal = new BigDecimal(rXsDoubleStr);
-			if (opSymbol.equals(OP_SYMBOL_PLUS)) {
-			   result = new XSDecimal(lBigDecimal.add(rBigDecimal));
-			}
-			else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
-			   result = new XSDecimal(lBigDecimal.subtract(rBigDecimal));				
-			}
+			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsInteger()).stringValue());
+			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDouble()).stringValue());
+			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol);
 		}
 		else if (lNumber.isXsDecimal() && rNumber.isXsInteger()) {
-			String lXsDecimalStr = (lNumber.getXsDecimal()).stringValue();
-			BigDecimal lBigDecimal = new BigDecimal(lXsDecimalStr);
-			String rXsIntegerStr = (rNumber.getXsInteger()).stringValue();
-			BigDecimal rBigDecimal = new BigDecimal(rXsIntegerStr); 		 
-			if (opSymbol.equals(OP_SYMBOL_PLUS)) {
-			   result = new XSDecimal(lBigDecimal.add(rBigDecimal));
-			}
-			else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
-			   result = new XSDecimal(lBigDecimal.subtract(rBigDecimal));				
-			} 
+			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDecimal()).stringValue());
+			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsInteger()).stringValue()); 		 
+			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol);
 		}
 		else if (lNumber.isXsDecimal() && rNumber.isXsDouble()) {
-			String lXsDecimalStr = (lNumber.getXsDecimal()).stringValue();
-			BigDecimal lBigDecimal = new BigDecimal(lXsDecimalStr);
-			String rXsDoubleStr = (rNumber.getXsDouble()).stringValue();
-			BigDecimal rBigDecimal = new BigDecimal(rXsDoubleStr);
-			if (opSymbol.equals(OP_SYMBOL_PLUS)) {
-			   result = new XSDecimal(lBigDecimal.add(rBigDecimal));
-			}
-			else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
-			   result = new XSDecimal(lBigDecimal.subtract(rBigDecimal));				
-			}
+			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDecimal()).stringValue());
+			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDouble()).stringValue());
+			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol);
 		}
 		else if (lNumber.isXsDouble() && rNumber.isXsInteger()) {
-			String lXsDoubleStr = (lNumber.getXsDouble()).stringValue();
-			BigDecimal lBigDecimal = new BigDecimal(lXsDoubleStr);
-			String rXsIntegerStr = (rNumber.getXsInteger()).stringValue();
-			BigDecimal rBigDecimal = new BigDecimal(rXsIntegerStr);
-			if (opSymbol.equals(OP_SYMBOL_PLUS)) {
-			   result = new XSDecimal(lBigDecimal.add(rBigDecimal));
-			}
-			else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
-			   result = new XSDecimal(lBigDecimal.subtract(rBigDecimal));				
-			}
+			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDouble()).stringValue());
+			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsInteger()).stringValue());
+			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol);
 		}      
 		else if (lNumber.isXsDouble() && rNumber.isXsDecimal()) {
-			String lXsDoubleStr = (lNumber.getXsDouble()).stringValue();
-			BigDecimal lBigDecimal = new BigDecimal(lXsDoubleStr);
-			String rXsDecimalStr = (rNumber.getXsDecimal()).stringValue();
-			BigDecimal rBigDecimal = new BigDecimal(rXsDecimalStr);			
-			if (opSymbol.equals(OP_SYMBOL_PLUS)) {
-			   result = new XSDecimal(lBigDecimal.add(rBigDecimal));
-			}
-			else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
-			   result = new XSDecimal(lBigDecimal.subtract(rBigDecimal));				
-			}
+			BigDecimal lBigDecimal = new BigDecimal((lNumber.getXsDouble()).stringValue());
+			BigDecimal rBigDecimal = new BigDecimal((rNumber.getXsDecimal()).stringValue());			
+			result = arithmeticOpOnBigDecimalValues(lBigDecimal, rBigDecimal, opSymbol);
 		}      
 		else {
 			double lDouble = lNumber.num();
@@ -175,11 +163,36 @@ public class ArithmeticOperation extends Operation {
 			else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
 			   result = new XSDouble(lDouble - rDouble);				
 			}
+			else if (opSymbol.equals(OP_SYMBOL_DIV)) {
+			   result = new XSDouble(lDouble / rDouble);	
+			}
+			else if (opSymbol.equals(OP_SYMBOL_MOD)) {
+			   result = new XSDouble(lDouble % rDouble);	
+			}
 		}
 
 		return result;
 	}
+	
+	/**
+	 * This method specifies the processing that takes place, when ArithmeticException occurs
+	 * on 'div' operator's evaluation.  
+	 */
+	protected XObject divOpArithmeticExceptionAction(BigDecimal lBigDecimal, BigDecimal rBigDecimal,
+			                                         java.lang.String exceptionMesg) throws TransformerException {
+		XObject result = null;
 
+		if (exceptionMesg.startsWith(NON_TERMINATING_DECIMAL_EXPANSION)) {
+			BigDecimal resultBigDecimal = lBigDecimal.divide(rBigDecimal, DEFAULT_DIV_SCALE, RoundingMode.HALF_EVEN);
+			result = new XSDecimal(resultBigDecimal);
+		}
+		else if (exceptionMesg.startsWith(DIVISION_BY_ZERO)) {
+			error(DIV_BY_ZERO_ERR_MESG, new String[] {"FOAR0001"}); 
+		}
+
+		return result;
+	}
+	
 	/**
 	 * Method to construct a concrete error message string using information 
 	 * supplied as arguments, to be emitted as an javax.xml.transform.TransformerException 
@@ -191,6 +204,40 @@ public class ArithmeticOperation extends Operation {
 		}
 
 		throw new javax.xml.transform.TransformerException(errMesg); 
+	}
+	
+	/**
+	 * This method does an arithmetic operation on two BigDecimal values. 
+	 */
+	private XObject arithmeticOpOnBigDecimalValues(BigDecimal lBigDecimal, BigDecimal rBigDecimal, 
+			                                       String opSymbol) throws TransformerException {
+		XObject result = null;
+
+		if (opSymbol.equals(OP_SYMBOL_PLUS)) {
+			result = new XSDecimal(lBigDecimal.add(rBigDecimal));
+		}
+		else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
+			result = new XSDecimal(lBigDecimal.subtract(rBigDecimal));				
+		}
+		else if (opSymbol.equals(OP_SYMBOL_DIV)) {
+			try {
+				result = new XSDecimal(lBigDecimal.divide(rBigDecimal));
+			}
+			catch (ArithmeticException ex) {
+				java.lang.String exceptionMesg = ex.getMessage();
+				result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
+			}
+		}
+		else if (opSymbol.equals(OP_SYMBOL_MOD)) {
+			try {
+				result = new XSDecimal(lBigDecimal.remainder(rBigDecimal));
+			}
+			catch (ArithmeticException ex) {				  
+				error(DIV_BY_ZERO_ERR_MESG, new String[] {"FOAR0001"});
+			}
+		}
+
+		return result;
 	}
 
 }

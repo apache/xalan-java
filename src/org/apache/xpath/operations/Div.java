@@ -21,9 +21,6 @@
 package org.apache.xpath.operations;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-
-import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xpath.ArithmeticOperation;
@@ -51,13 +48,7 @@ import java.lang.String;
  */
 public class Div extends ArithmeticOperation
 {
-    static final long serialVersionUID = 6220756595959798135L;
-    
-    private static final String NON_TERMINATING_DECIMAL_EXPANSION = "Non-terminating decimal expansion";
-    
-    private static final String DIVISION_BY_ZERO = "Division by zero";
-    
-    private static final int DEFAULT_DIV_SCALE = 18;
+   static final long serialVersionUID = 6220756595959798135L;
 
   /**
    * Apply the operation to two operands, and return the result.
@@ -99,7 +90,7 @@ public class Div extends ArithmeticOperation
      		}
      		catch (ArithmeticException ex) {
      		   java.lang.String exceptionMesg = ex.getMessage();
-     		   result = arithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
+     		   result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
      		} 
     	 }
     	 else {
@@ -114,11 +105,10 @@ public class Div extends ArithmeticOperation
     	 
     	 return result;
      }
-     else if ((left instanceof XNumber) && (right instanceof XNumber)) {
-         double lDouble = ((XNumber)left).num();
-         double rDouble = ((XNumber)right).num();
-         
-         result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
+     else if ((left instanceof XNumber) && (right instanceof XNumber)) {         
+    	 XNumber lNumber = (XNumber)left;
+   	     XNumber rNumber = (XNumber)right;
+   	     result = arithmeticOpOnXNumberValues(lNumber, rNumber, OP_SYMBOL_DIV);    	 
      }
      else if ((left instanceof XNumber) && (right instanceof XNodeSet)) {
          double lDouble = ((XNumber)left).num();
@@ -300,7 +290,7 @@ public class Div extends ArithmeticOperation
     	 }
     	 catch (ArithmeticException ex) {
     		 java.lang.String exceptionMesg = ex.getMessage();
-    		 result = arithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
+    		 result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
     	 }
      }
      else if (left instanceof XNodeSet) {
@@ -324,7 +314,7 @@ public class Div extends ArithmeticOperation
     	 }
     	 catch (ArithmeticException ex) {
     		 java.lang.String exceptionMesg = ex.getMessage();
-    		 result = arithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
+    		 result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
     	 }         
      }
      else if (left instanceof XSYearMonthDuration) {
@@ -364,25 +354,6 @@ public class Div extends ArithmeticOperation
   {
 
     return (m_left.num(xctxt) / m_right.num(xctxt));
-  }
-  
-  /**
-   * This method specifies the processing that takes place, when ArithmeticException occurs
-   * on 'div' operator's evaluation.  
-   */
-  private XObject arithmeticExceptionAction(BigDecimal lBigDecimal, BigDecimal rBigDecimal,
-		                                    java.lang.String exceptionMesg) throws TransformerException {
-	  XObject result = null;
-
-	  if (exceptionMesg.startsWith(NON_TERMINATING_DECIMAL_EXPANSION)) {
-		  BigDecimal resultBigDecimal = lBigDecimal.divide(rBigDecimal, DEFAULT_DIV_SCALE, RoundingMode.HALF_EVEN);
-		  result = new XSDecimal(resultBigDecimal);
-	  }
-	  else if (exceptionMesg.startsWith(DIVISION_BY_ZERO)) {
-		  error(DIV_BY_ZERO_ERR_MESG, new String[] {"FOAR0001"}); 
-	  }
-	  
-	  return result;
   }
 
 }

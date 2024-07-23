@@ -41,6 +41,8 @@ import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
+import java.lang.String;
+
 /**
  * An XPath '+' operation implementation.
  * 
