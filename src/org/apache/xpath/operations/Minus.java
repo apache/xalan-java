@@ -66,9 +66,9 @@ public class Minus extends ArithmeticOperation
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject operate(XObject left, XObject right)
-                                           throws javax.xml.transform.TransformerException {
-      XObject result = null;
+  public XObject operate(XObject left, XObject right) throws javax.xml.transform.TransformerException {
+      
+	  XObject result = null;
       
       if ((left instanceof XSUntyped) && (right instanceof XSUntyped)) {
           java.lang.String lStrVal = ((XSUntyped)left).stringValue();
@@ -105,47 +105,24 @@ public class Minus extends ArithmeticOperation
           double rDouble = (Double.valueOf(rStrVal)).doubleValue();
           
           result = new XSDouble(lDouble - rDouble);
+      }      
+      else if ((left instanceof XNumber) && (right instanceof XSNumericType)) {
+    	  XNumber rightXNumber = getXNumberFromXSNumericType((XSNumericType)right);
+    	  result = arithmeticOpOnXNumberValues((XNumber)left, rightXNumber, OP_SYMBOL_MINUS);    	  
+      }
+      else if ((left instanceof XSNumericType) && (right instanceof XNumber)) {
+    	  XNumber leftXNumber = getXNumberFromXSNumericType((XSNumericType)left);
+    	  result = arithmeticOpOnXNumberValues(leftXNumber, (XNumber)right, OP_SYMBOL_MINUS);
+      }      
+      else if ((left instanceof XSNumericType) && (right instanceof XSNumericType)) {
+    	  XNumber leftXNumber = getXNumberFromXSNumericType((XSNumericType)left);
+    	  XNumber rightXNumber = getXNumberFromXSNumericType((XSNumericType)right);
+    	  result = arithmeticOpOnXNumberValues(leftXNumber, rightXNumber, OP_SYMBOL_MINUS);
       }
       else if ((left instanceof XNumber) && (right instanceof XNumber)) {
     	  XNumber lNumber = (XNumber)left;
     	  XNumber rNumber = (XNumber)right;
     	  result = arithmeticOpOnXNumberValues(lNumber, rNumber, OP_SYMBOL_MINUS);
-      }
-      else if ((left instanceof XNumber) && (right instanceof XSNumericType)) {
-          BigDecimal lBigDecimal = BigDecimal.valueOf(((XNumber)left).num());          
-          BigDecimal rBigDecimal = new BigDecimal(((XSNumericType)right).stringValue());
-          
-          BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);
-          if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
-     		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
-     	  }
-     	  else {
-              result = new XSDecimal(resultBigDecimal);
-     	  }
-      }
-      else if ((left instanceof XSNumericType) && (right instanceof XNumber)) {
-    	  BigDecimal lBigDecimal = new BigDecimal(((XSNumericType)left).stringValue());
-    	  BigDecimal rBigDecimal = BigDecimal.valueOf(((XNumber)right).num());
-    	  
-    	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);    	  
-    	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
-    		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
-    	  }
-    	  else {
-             result = new XSDecimal(resultBigDecimal);
-    	  }
-      }      
-      else if ((left instanceof XSNumericType) && (right instanceof XSNumericType)) {
-    	  BigDecimal lBigDecimal = new BigDecimal(((XSNumericType)left).stringValue());
-    	  BigDecimal rBigDecimal = new BigDecimal(((XSNumericType)right).stringValue());
-    	  
-    	  BigDecimal resultBigDecimal = lBigDecimal.subtract(rBigDecimal);    	  
-    	  if (resultBigDecimal.compareTo(new BigDecimal(resultBigDecimal.toBigInteger())) == 0) {
-     		 result = new XSInteger(resultBigDecimal.toBigInteger()); 
-     	  }
-     	  else {
-             result = new XSDecimal(resultBigDecimal);
-     	  }
       }
       else if ((left instanceof XNumber) && (right instanceof XNodeSet)) {          
           XNodeSet rNodeSet = (XNodeSet)right;

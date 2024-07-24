@@ -4,7 +4,7 @@
 
    <!-- Author: mukulg@apache.org -->
    
-   <!-- An XSLT stylesheet test, for the XPath 3.1 "let" expression.
+   <!-- An XSLT stylesheet test case, to test XPath 3.1 "let" expression.
         
         This XSLT stylesheet, borrows an XPath "let" expression example 
         from https://www.altova.com/. -->
@@ -14,7 +14,7 @@
    <xsl:template match="/">
       <xsl:value-of select="let $r := 5,
                                 $pi := 3.14
-                                return concat('area = ', $pi * ($r * $r))"/>
+                                return concat('area = ', $pi * round($r * $r, 2))"/>
    </xsl:template>
    
    <!--

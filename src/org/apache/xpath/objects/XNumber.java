@@ -49,7 +49,7 @@ public class XNumber extends XObject
   double m_val;
   
   /**
-     One of following XSInteger, XSDecimal or XSDouble object 
+     Only one of following objects(i.e, XSInteger, XSDecimal or XSDouble) 
      shall always be non-null. Whichever object from following 
      is non-null is the value of the XNumber object. 
   */

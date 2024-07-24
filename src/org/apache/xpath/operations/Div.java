@@ -34,6 +34,8 @@ import org.apache.xpath.objects.XObject;
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
 import xml.xpath31.processor.types.XSNumericType;
+import xml.xpath31.processor.types.XSUntyped;
+import xml.xpath31.processor.types.XSUntypedAtomic;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 import java.lang.String;
@@ -60,55 +62,63 @@ public class Div extends ArithmeticOperation
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject operate(XObject left, XObject right)
-                                           throws javax.xml.transform.TransformerException
+  public XObject operate(XObject left, XObject right) throws javax.xml.transform.TransformerException
   {  
      XObject result = null;
-          
-     if ((left instanceof XNumber) && (right instanceof XSNumericType)) {
-        double lDouble = ((XNumber)left).num();
-        
-        java.lang.String rStrVal = ((XSNumericType)right).stringValue();
-        double rDouble = (Double.valueOf(rStrVal)).doubleValue();
-        
-        result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
-     }
-     else if ((left instanceof XSNumericType) && (right instanceof XNumber)) {
-         java.lang.String lStrVal = ((XSNumericType)left).stringValue();
+     
+     if ((left instanceof XSUntyped) && (right instanceof XSUntyped)) {
+         java.lang.String lStrVal = ((XSUntyped)left).stringValue();
          double lDouble = (Double.valueOf(lStrVal)).doubleValue();
          
-         double rDouble = ((XNumber)right).num();
+         java.lang.String rStrVal = ((XSUntyped)right).stringValue();
+         double rDouble = (Double.valueOf(rStrVal)).doubleValue();
          
-         result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
+         result = new XSDouble(lDouble / rDouble);
+     }
+     else if ((left instanceof XSUntypedAtomic) && (right instanceof XSUntypedAtomic)) {
+         java.lang.String lStrVal = ((XSUntypedAtomic)left).stringValue();
+         double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+         
+         java.lang.String rStrVal = ((XSUntypedAtomic)right).stringValue();
+         double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+         
+         result = new XSDouble(lDouble / rDouble);
+     }
+     else if ((left instanceof XSUntyped) && (right instanceof XSUntypedAtomic)) {
+         java.lang.String lStrVal = ((XSUntyped)left).stringValue();
+         double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+         
+         java.lang.String rStrVal = ((XSUntypedAtomic)right).stringValue();
+         double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+         
+         result = new XSDouble(lDouble / rDouble);
+     }
+     else if ((left instanceof XSUntypedAtomic) && (right instanceof XSUntyped)) {
+         java.lang.String lStrVal = ((XSUntypedAtomic)left).stringValue();
+         double lDouble = (Double.valueOf(lStrVal)).doubleValue();
+         
+         java.lang.String rStrVal = ((XSUntyped)right).stringValue();
+         double rDouble = (Double.valueOf(rStrVal)).doubleValue();
+         
+         result = new XSDouble(lDouble / rDouble);
+     }
+     else if ((left instanceof XNumber) && (right instanceof XSNumericType)) {
+    	XNumber rightXNumber = getXNumberFromXSNumericType((XSNumericType)right);
+   	    result = arithmeticOpOnXNumberValues((XNumber)left, rightXNumber, OP_SYMBOL_DIV);
+     }
+     else if ((left instanceof XSNumericType) && (right instanceof XNumber)) {
+    	XNumber leftXNumber = getXNumberFromXSNumericType((XSNumericType)left);
+   	    result = arithmeticOpOnXNumberValues(leftXNumber, (XNumber)right, OP_SYMBOL_DIV);
      }     
      else if ((left instanceof XSNumericType) && (right instanceof XSNumericType)) {
-    	 if ((left instanceof XSDecimal) || (right instanceof XSDecimal)) {    		
-    		BigDecimal lBigDecimal = new BigDecimal(((XSNumericType)left).stringValue()); 
-    		BigDecimal rBigDecimal = new BigDecimal(((XSNumericType)right).stringValue());
-     		try {
-     		   result = new XSDecimal(lBigDecimal.divide(rBigDecimal));
-     		}
-     		catch (ArithmeticException ex) {
-     		   java.lang.String exceptionMesg = ex.getMessage();
-     		   result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
-     		} 
-    	 }
-    	 else {
-    		 java.lang.String lStrVal = ((XSNumericType)left).stringValue();
-             double lDouble = (Double.valueOf(lStrVal)).doubleValue();
-             
-             java.lang.String rStrVal = ((XSNumericType)right).stringValue();
-             double rDouble = (Double.valueOf(rStrVal)).doubleValue();
-             
-             result = new XSDecimal(BigDecimal.valueOf(lDouble / rDouble));
-    	 }
-    	 
-    	 return result;
+    	XNumber leftXNumber = getXNumberFromXSNumericType((XSNumericType)left);
+   	    XNumber rightXNumber = getXNumberFromXSNumericType((XSNumericType)right);
+   	    result = arithmeticOpOnXNumberValues(leftXNumber, rightXNumber, OP_SYMBOL_DIV);
      }
      else if ((left instanceof XNumber) && (right instanceof XNumber)) {         
-    	 XNumber lNumber = (XNumber)left;
-   	     XNumber rNumber = (XNumber)right;
-   	     result = arithmeticOpOnXNumberValues(lNumber, rNumber, OP_SYMBOL_DIV);    	 
+    	XNumber lNumber = (XNumber)left;
+   	    XNumber rNumber = (XNumber)right;
+   	    result = arithmeticOpOnXNumberValues(lNumber, rNumber, OP_SYMBOL_DIV);    	 
      }
      else if ((left instanceof XNumber) && (right instanceof XNodeSet)) {
          double lDouble = ((XNumber)left).num();

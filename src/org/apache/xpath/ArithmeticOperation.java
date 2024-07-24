@@ -28,10 +28,15 @@ import org.apache.xpath.operations.Operation;
 
 import xml.xpath31.processor.types.XSDecimal;
 import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSFloat;
 import xml.xpath31.processor.types.XSInteger;
+import xml.xpath31.processor.types.XSNumericType;
 
 /**
  * A base class for arithmetic operations +, -, div & mod.
+ * 
+ * This class has been defined, to support XSLT 3 
+ * implementation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  */
@@ -49,9 +54,11 @@ public class ArithmeticOperation extends Operation {
 	
 	protected static final String OP_SYMBOL_MINUS = "-";
 	
-	protected static final String OP_SYMBOL_DIV = "div";
+	protected static final String OP_SYMBOL_MULT = "*";
 	
-	protected static final String OP_SYMBOL_MOD = "mod";
+	protected static final String OP_SYMBOL_DIV = "div";  // produces quotient from arithmetic division
+	
+	protected static final String OP_SYMBOL_MOD = "mod";  // produces remainder from arithmetic division 
 	
     private static final String NON_TERMINATING_DECIMAL_EXPANSION = "Non-terminating decimal expansion";
     
@@ -61,6 +68,9 @@ public class ArithmeticOperation extends Operation {
 	
 	/**
 	 * This method does an arithmetic operation on two XNumber object values.
+	 * 
+	 * A numeric literal from a text data source, is always constructed to
+	 * an XNumber object value by XPath parser.
 	 *  
 	 * @throws TransformerException 
 	 */
@@ -79,6 +89,9 @@ public class ArithmeticOperation extends Operation {
 			}
 			else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
 			   result = new XSInteger(lBigInteger.subtract(rBigInteger));				
+			}
+			else if (opSymbol.equals(OP_SYMBOL_MULT)) {
+			   result = new XSInteger(lBigInteger.multiply(rBigInteger));				
 			}
 			else if (opSymbol.equals(OP_SYMBOL_DIV)) {
 			   BigDecimal lBigDecimal = new BigDecimal(lXsIntegerStr); 
@@ -115,6 +128,9 @@ public class ArithmeticOperation extends Operation {
 			}
 			else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
 			   result = new XSDouble(lDbl - rDbl);				
+			}
+			else if (opSymbol.equals(OP_SYMBOL_MULT)) {
+			   result = new XSDouble(lDbl * rDbl);				
 			}
 			else if (opSymbol.equals(OP_SYMBOL_DIV)) {
 			   result = new XSDecimal(BigDecimal.valueOf(lDbl.doubleValue() / rDbl.doubleValue()));
@@ -163,6 +179,9 @@ public class ArithmeticOperation extends Operation {
 			else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
 			   result = new XSDouble(lDouble - rDouble);				
 			}
+			else if (opSymbol.equals(OP_SYMBOL_MULT)) {
+			   result = new XSDouble(lDouble * rDouble);				
+			}
 			else if (opSymbol.equals(OP_SYMBOL_DIV)) {
 			   result = new XSDouble(lDouble / rDouble);	
 			}
@@ -172,6 +191,50 @@ public class ArithmeticOperation extends Operation {
 		}
 
 		return result;
+	}
+	
+	/**
+	 * Get XNumber object value from an XSNumericType object value. 
+	 */
+	protected XNumber getXNumberFromXSNumericType(XSNumericType xsNumericType) {
+	   
+	   XNumber result = null;
+	   
+	   double num = 0.0;
+	   
+	   /**
+	    * The following cases, covers the whole XML Schema built-in
+	    * atomic numeric type hierarchy. i.e, for every XML Schema
+	    * built-in atomic numeric type, one of the following code
+	    * branches will definitely be invoked.
+	    */	   
+	   if (xsNumericType instanceof XSInteger) {
+		  // will provide access to xs:integer and its subtypes
+		  XSInteger xsInteger = (XSInteger)xsNumericType;
+		  num = (xsInteger.getValue()).doubleValue();
+		  result = new XNumber(num);
+		  result.setXsInteger(xsInteger);
+	   }
+	   else if (xsNumericType instanceof XSDecimal) {
+		   XSDecimal xsDecimal = (XSDecimal)xsNumericType;
+		   num = (xsDecimal.getValue()).doubleValue();
+		   result = new XNumber(num);
+		   result.setXsDecimal(xsDecimal); 
+	   }
+	   else if (xsNumericType instanceof XSDouble) {
+		   XSDouble xsDouble = (XSDouble)xsNumericType;
+		   num = xsDouble.doubleValue();
+		   result = new XNumber(num);
+		   result.setXsDouble(xsDouble); 
+	   }
+	   else if (xsNumericType instanceof XSFloat) {
+		   XSFloat xsFloat = (XSFloat)xsNumericType;
+		   num = (double)(xsFloat.floatValue());
+		   result = new XNumber(num);
+		   result.setXsDouble(new XSDouble(num)); 
+	   }
+	   
+	   return result;
 	}
 	
 	/**
@@ -218,6 +281,9 @@ public class ArithmeticOperation extends Operation {
 		}
 		else if (opSymbol.equals(OP_SYMBOL_MINUS)) {
 			result = new XSDecimal(lBigDecimal.subtract(rBigDecimal));				
+		}
+		else if (opSymbol.equals(OP_SYMBOL_MULT)) {
+			result = new XSDecimal(lBigDecimal.multiply(rBigDecimal));
 		}
 		else if (opSymbol.equals(OP_SYMBOL_DIV)) {
 			try {

@@ -65,9 +65,9 @@ public class Plus extends ArithmeticOperation
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject operate(XObject left, XObject right)
-                                           throws javax.xml.transform.TransformerException {
-      XObject result = null;
+  public XObject operate(XObject left, XObject right) throws javax.xml.transform.TransformerException {
+      
+	  XObject result = null;
    
       if ((left instanceof XSUntyped) && (right instanceof XSUntyped)) {
           java.lang.String lStrVal = ((XSUntyped)left).stringValue();
@@ -106,13 +106,17 @@ public class Plus extends ArithmeticOperation
           result = new XSDouble(lDouble + rDouble);
       }
       else if ((left instanceof XNumber) && (right instanceof XSNumericType)) {
-    	  result = addXNumberToXsNumericType((XNumber)left, (XSNumericType)right);
+    	  XNumber rightXNumber = getXNumberFromXSNumericType((XSNumericType)right);
+    	  result = arithmeticOpOnXNumberValues((XNumber)left, rightXNumber, OP_SYMBOL_PLUS);
       }
       else if ((left instanceof XSNumericType) && (right instanceof XNumber)) {
-    	  result = addXNumberToXsNumericType((XNumber)right, (XSNumericType)left);    	
+    	  XNumber leftXNumber = getXNumberFromXSNumericType((XSNumericType)left);
+    	  result = arithmeticOpOnXNumberValues(leftXNumber, (XNumber)right, OP_SYMBOL_PLUS);
       }      
-      else if ((left instanceof XSNumericType) && (right instanceof XSNumericType)) {          
-          result = addXSNumericTypeToXsNumericType((XSNumericType)left, (XSNumericType)right);
+      else if ((left instanceof XSNumericType) && (right instanceof XSNumericType)) { 
+    	  XNumber leftXNumber = getXNumberFromXSNumericType((XSNumericType)left);
+    	  XNumber rightXNumber = getXNumberFromXSNumericType((XSNumericType)right);
+    	  result = arithmeticOpOnXNumberValues(leftXNumber, rightXNumber, OP_SYMBOL_PLUS);
       }
       else if ((left instanceof XNumber) && (right instanceof XNumber)) {          
     	  XNumber lNumber = (XNumber)left;

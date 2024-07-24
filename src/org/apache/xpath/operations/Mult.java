@@ -23,6 +23,7 @@ package org.apache.xpath.operations;
 import java.math.BigDecimal;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xpath.ArithmeticOperation;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathException;
 import org.apache.xpath.objects.ResultSequence;
@@ -39,11 +40,16 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
- * The '*' operation expression executer.
+ * An XPath '*' operation implementation.
+ * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XSLT 3 specific changes, to this class)
  */
-public class Mult extends Operation
+public class Mult extends ArithmeticOperation
 {
-    static final long serialVersionUID = -4956770147013414675L;
+   static final long serialVersionUID = -4956770147013414675L;
 
   /**
    * Apply the operation to two operands, and return the result.
@@ -55,8 +61,7 @@ public class Mult extends Operation
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject operate(XObject left, XObject right)
-                                           throws javax.xml.transform.TransformerException
+  public XObject operate(XObject left, XObject right) throws javax.xml.transform.TransformerException
   {
 	  XObject result = null;
 	   
@@ -97,19 +102,22 @@ public class Mult extends Operation
           result = new XSDouble(lDouble * rDouble);
       }
       else if ((left instanceof XNumber) && (right instanceof XSNumericType)) {
-    	  result = multiplyXNumberToXsNumericType((XNumber)left, (XSNumericType)right);
+    	  XNumber rightXNumber = getXNumberFromXSNumericType((XSNumericType)right);
+    	  result = arithmeticOpOnXNumberValues((XNumber)left, rightXNumber, OP_SYMBOL_MULT);
       }
       else if ((left instanceof XSNumericType) && (right instanceof XNumber)) {
-    	  result = multiplyXNumberToXsNumericType((XNumber)right, (XSNumericType)left);    	
+    	  XNumber leftXNumber = getXNumberFromXSNumericType((XSNumericType)left);
+    	  result = arithmeticOpOnXNumberValues(leftXNumber, (XNumber)right, OP_SYMBOL_MULT);    	
       }      
       else if ((left instanceof XSNumericType) && (right instanceof XSNumericType)) {          
-          result = multiplyXSNumericTypeToXsNumericType((XSNumericType)left, (XSNumericType)right);
+    	  XNumber leftXNumber = getXNumberFromXSNumericType((XSNumericType)left);
+    	  XNumber rightXNumber = getXNumberFromXSNumericType((XSNumericType)right);
+    	  result = arithmeticOpOnXNumberValues(leftXNumber, rightXNumber, OP_SYMBOL_MULT);
       }
       else if ((left instanceof XNumber) && (right instanceof XNumber)) {
-          double lDouble = ((XNumber)left).num();
-          double rDouble = ((XNumber)right).num();
-          
-          result = new XNumber(lDouble * rDouble);                    
+    	  XNumber lNumber = (XNumber)left;
+    	  XNumber rNumber = (XNumber)right;
+    	  result = arithmeticOpOnXNumberValues(lNumber, rNumber, OP_SYMBOL_MULT);                    
       }
       else if ((left instanceof XNumber) && (right instanceof XNodeSet)) {
           double lDouble = ((XNumber)left).num();

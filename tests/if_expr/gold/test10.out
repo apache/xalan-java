@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><result xmlns:math="http://www.w3.org/2005/xpath-functions/math" inpUnit="radian">
-  <math:sin inp="0.3490658503988659">0.3420201433256687</math:sin>
-  <math:sin inp="0.52359877559829885">0.4999999999999999</math:sin>
-  <math:sin inp="0.785398163397448275">0.7071067811865475</math:sin>
+  <math:sin inp="0.34906585039886588">0.3420201433256687</math:sin>
+  <math:sin inp="0.52359877559829882">0.4999999999999999</math:sin>
+  <math:sin inp="0.78539816339744823">0.7071067811865475</math:sin>
 </result>
