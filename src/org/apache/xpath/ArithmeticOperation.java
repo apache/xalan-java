@@ -70,7 +70,7 @@ public class ArithmeticOperation extends Operation {
 	 * This method does an arithmetic operation on two XNumber object values.
 	 * 
 	 * A numeric literal from a text data source, is always constructed to
-	 * an XNumber object value by XPath parser.
+	 * an XNumber object value by Xalan-J's XPath parser.
 	 *  
 	 * @throws TransformerException 
 	 */
@@ -270,7 +270,7 @@ public class ArithmeticOperation extends Operation {
 	}
 	
 	/**
-	 * This method does an arithmetic operation on two BigDecimal values. 
+	 * This method does an arithmetic operation on two java.math.BigDecimal values. 
 	 */
 	private XObject arithmeticOpOnBigDecimalValues(BigDecimal lBigDecimal, BigDecimal rBigDecimal, 
 			                                       String opSymbol) throws TransformerException {
@@ -287,11 +287,11 @@ public class ArithmeticOperation extends Operation {
 		}
 		else if (opSymbol.equals(OP_SYMBOL_DIV)) {
 			try {
-				result = new XSDecimal(lBigDecimal.divide(rBigDecimal));
+			   result = new XSDecimal(lBigDecimal.divide(rBigDecimal));				
 			}
 			catch (ArithmeticException ex) {
-				java.lang.String exceptionMesg = ex.getMessage();
-				result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
+			   java.lang.String exceptionMesg = ex.getMessage();
+			   result = divOpArithmeticExceptionAction(lBigDecimal, rBigDecimal, exceptionMesg);
 			}
 		}
 		else if (opSymbol.equals(OP_SYMBOL_MOD)) {

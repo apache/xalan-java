@@ -19,6 +19,7 @@ package org.apache.xalan.templates;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
@@ -173,12 +174,12 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
          
            final int sourceNode = xctxt.getCurrentNode();
            
-           // Clear the, xsl:iterate->xsl:param* list storage before this xsl:iterate 
+           // Clear the, xsl:iterate->xsl:param list storage before this xsl:iterate 
            // instruction's evaluation.
            fXslIterateParamWithparamDataList.clear();
            
-           verifyXslElemIterateChildElementsSequence(xctxt); 
-               
+           verifyXslElemIterateChildElementsSequence(xctxt);
+           
            XObject evalResult = m_selectExpression.execute(xctxt);
            
            List<XObject> itemsToBeProcessed = null;
@@ -203,45 +204,22 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                      resultSeqItem = ((XNodeSet)resultSeqItem).getFresh(); 
                   }
                        
-                  setXPathContextForXslSequenceProcessing(itemsToBeProcessed.size(), idx, resultSeqItem, xctxt);
-                                                                     
+                  setXPathContextForXslSequenceProcessing(itemsToBeProcessed.size(), idx, resultSeqItem, xctxt);                                                                     
                   for (ElemTemplateElement elemTemplate = this.m_firstChild; elemTemplate != null; 
-                                                                                       elemTemplate = elemTemplate.m_nextSibling) {                           
-                     if (idx == 0) {
-                          if (elemTemplate instanceof ElemParam) {
-                              // For xsl:iterate's first iteration, evaluate xsl:param element
-                              xctxt.setSAXLocator(elemTemplate);
-                              transformer.setCurrentElement(elemTemplate);
-                              ((ElemParam)elemTemplate).setXslIterateIterationIdx(idx);
-                              elemTemplate.execute(transformer);
-                          }                                
-                          else if (elemTemplate instanceof ElemIterateOnCompletion) {
-                              xslOnCompletionTemplate = (ElemIterateOnCompletion)elemTemplate;
-                          }
-                          else {
-                             if (!transformer.isXslIterateBreakEvaluated()) {
-                                xctxt.setSAXLocator(elemTemplate);
-                                transformer.setCurrentElement(elemTemplate);
-                                elemTemplate.execute(transformer);
-                             }
-                             else {                              
-                                resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);                               
-                                isBreakFromXslContentLoop = true;                               
-                                break;    
-                             }
-                          }
+                                                                                       elemTemplate = elemTemplate.m_nextSibling) {                	  
+                	  if ((elemTemplate instanceof ElemIterateOnCompletion) &&
+                			                                            (xslOnCompletionTemplate == null)) {
+                          xslOnCompletionTemplate = (ElemIterateOnCompletion)elemTemplate;     
                       }
-                      else {
-                          if (!transformer.isXslIterateBreakEvaluated()) {
-                             xctxt.setSAXLocator(elemTemplate);
-                             transformer.setCurrentElement(elemTemplate);
-                             elemTemplate.execute(transformer);
-                          }
-                          else {                              
-                             resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);                               
-                             isBreakFromXslContentLoop = true;                               
-                             break;    
-                          }
+                	  else if (!transformer.isXslIterateBreakEvaluated()) {
+                		  xctxt.setSAXLocator(elemTemplate);
+                          transformer.setCurrentElement(elemTemplate);
+                          elemTemplate.execute(transformer); 
+                	  }
+                	  else {                              
+                          resetXPathContextForXslSequenceProcessing(resultSeqItem, xctxt);                               
+                          isBreakFromXslContentLoop = true;                               
+                          break;    
                       }
                   }
                        
@@ -286,9 +264,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                
                    ElemIterateOnCompletion xslOnCompletionTemplate = null;
                
-                   int idx = -1;
                    while ((nextNode = sourceNodes.nextNode()) != DTM.NULL) {
-                      idx++;
                       currentNodes.setTop(nextNode);
                       currentExpressionNodes.setTop(nextNode);
                                                                         
@@ -298,22 +274,13 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                                                                         (xslOnCompletionTemplate == null)) {
                               xslOnCompletionTemplate = (ElemIterateOnCompletion)elemTemplate;     
                           }
-                       
-                          if ((idx == 0) && (elemTemplate instanceof ElemParam)) {
+                          else if (!transformer.isXslIterateBreakEvaluated()) {
                               xctxt.setSAXLocator(elemTemplate);
                               transformer.setCurrentElement(elemTemplate);
-                              ((ElemParam)elemTemplate).setXslIterateIterationIdx(idx);
-                              elemTemplate.execute(transformer); 
+                              elemTemplate.execute(transformer);
                           }
                           else {
-                              if (!transformer.isXslIterateBreakEvaluated()) {
-                                  xctxt.setSAXLocator(elemTemplate);
-                                  transformer.setCurrentElement(elemTemplate);
-                                  elemTemplate.execute(transformer);
-                              }
-                              else {
-                                  break;    
-                              }
+                              break;    
                           }
                       }                                      
                    
@@ -340,7 +307,16 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                  xctxt.popCurrentNode();
                  sourceNodes.detach();
              }
-          }       
+          }
+           
+          Map<QName, XObject> varMap = xctxt.getXPathVarMap();
+          
+          // Clear xsl:iterate xsl:param variable storage
+          for (int idx = 0; idx < fXslIterateParamWithparamDataList.size(); idx++) {
+        	 XslIterateParamWithparamData xslIterateParamWithparamData = fXslIterateParamWithparamDataList.get(idx);
+        	 QName varQName = xslIterateParamWithparamData.getNameVal();
+        	 varMap.remove(varQName);
+          }
       }
       
       /**

@@ -19,6 +19,7 @@ package org.apache.xalan.templates;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.transform.TransformerException;
 
@@ -26,7 +27,6 @@ import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
-import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.SequenceTypeSupport;
@@ -226,18 +226,15 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
                    }
                }
             }
+                                    
+            Map<QName, XObject> varMap = xctxt.getXPathVarMap();
             
-            // Update all of xsl:iterate's xsl:param values, using the corresponding
-            // xsl:next-iteration's xsl:with-param values. The code within 'for' loop below,
-            // updates each of the xsl:iterate->xsl:param's values for xsl:iterate's second and 
-            // subsequent iterations. For xsl:iterate's first iteration, xsl:param's get their
-            // values from the xsl:param instructions themselves.
-            VariableStack varStack = xctxt.getVarStack();
             for (int idx = 0; idx < fWithparamList.size(); idx++) {
                 XObject withParamVal = null;
                 
                 XslIterateParamWithparamData withParamData = fWithparamList.get(idx);                                                
-                QName xslParamQName = withParamData.getNameVal();                                
+                QName xslParamQName = withParamData.getNameVal();
+                
                 ElemWithParam elemWithParam = getElemWithParamForQName(xslParamQName);
                 
                 XPath withParamSelectVal = withParamData.getSelectVal();                
@@ -271,8 +268,7 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
                    }
                 }
                 
-                ElemParam elemParam = getElemParamForQName(xslParamQName);                
-                varStack.setLocalVariable(elemParam.getIndex(), withParamVal);
+                varMap.put(xslParamQName, withParamVal);
             }
         }
         
@@ -300,78 +296,6 @@ public class ElemIterateNextIteration extends ElemTemplateElement implements Exp
            }
            
            return elemWithParam;
-        }
-        
-        /**
-         * For the currently active xsl:next-iteration instruction, find reference to
-         * its xsl:iterate->xsl:param element for a given xsl:iterate->xsl:param's name.
-         * 
-         * We find this xsl:param element reference, by element traversal on
-         * preceding-sibling and ancestor axes directions starting from the current
-         * xsl:next-iteration instruction.
-         * 
-         * This method shall always find, an eligible non-null xsl:iterate->xsl:param 
-         * element reference for a given xsl:iterate->xsl:param's name.
-         */
-        private ElemParam getElemParamForQName(QName xslParamQName) {
-           ElemParam elemParam = null;
-           
-           // First, we search for the desired xsl:param element on the preceding-sibling 
-           // axis direction.
-           ElemTemplateElement prevSibling = (ElemTemplateElement)getPreviousSibling();
-           while (prevSibling != null) {
-              if (prevSibling instanceof ElemParam) {
-                 ElemParam elemParamTemp = (ElemParam)prevSibling;
-                 if ((elemParamTemp.getName()).equals(xslParamQName)) {
-                    elemParam = elemParamTemp;
-                    break; 
-                 }
-                 else {
-                    prevSibling = (ElemTemplateElement)(prevSibling.getPreviousSibling()); 
-                 }
-              }
-              else {
-                 prevSibling = (ElemTemplateElement)(prevSibling.getPreviousSibling()); 
-              }
-           }
-           
-           // The desired xsl:param element was not found, on the preceding-sibling axis
-           // direction. Now, we attempt a new search for desired xsl:param element 
-           // on the ancestor axis direction. 
-           if (elemParam == null) {
-              ElemTemplateElement parentElem = getParentElem();
-              while (parentElem != null) {
-                 if (parentElem instanceof ElemIterate) {
-                    ElemTemplateElement elemIterateChild = (ElemTemplateElement)(parentElem.getFirstChild());
-                    boolean isToBreakFromCheck = false;
-                    while (elemIterateChild != null) {
-                        if (elemIterateChild instanceof ElemParam) {
-                           ElemParam elemParamTemp = (ElemParam)elemIterateChild;
-                           if ((elemParamTemp.getName()).equals(xslParamQName)) {
-                               elemParam = elemParamTemp;
-                               isToBreakFromCheck = true;
-                               break;
-                           }
-                           else {
-                              elemIterateChild = elemIterateChild.getNextSiblingElem();
-                           }
-                        }
-                        else {
-                           elemIterateChild = elemIterateChild.getNextSiblingElem(); 
-                        }
-                    }
-                    
-                    if (isToBreakFromCheck) {
-                       break; 
-                    }
-                 }
-                 else {
-                    parentElem = parentElem.getParentElem();
-                 }
-              }
-           }
-           
-           return elemParam;
         }
         
         /*

@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.XMLString;
@@ -170,7 +171,10 @@ public class XObject extends Expression implements Serializable, Cloneable
   public void dispatchCharactersEvents(org.xml.sax.ContentHandler ch)
           throws org.xml.sax.SAXException
   {
-    xstr().dispatchCharactersEvents(ch);
+      // xstr().dispatchCharactersEvents(ch);
+	  String strVal = XslTransformEvaluationHelper.getStrVal(this);
+	  XMLString xmlStr = XMLStringFactoryImpl.getFactory().newstr(strVal);
+	  xmlStr.dispatchCharactersEvents(ch);
   }
 
   /**
