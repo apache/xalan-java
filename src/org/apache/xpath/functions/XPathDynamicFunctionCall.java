@@ -63,9 +63,9 @@ public class XPathDynamicFunctionCall extends Expression {
     
     private static final long serialVersionUID = -4177034386870890029L;
 
-    private String funcRefVarName;
+    private String m_funcRefVarName;
     
-    private List<String> argList;
+    private List<String> m_argList;
     
     // The following two fields of this class, are used during 
     // XPath.fixupVariables(..) action as performed within object of 
@@ -74,19 +74,19 @@ public class XPathDynamicFunctionCall extends Expression {
     private int fGlobalsSize;
 
     public String getFuncRefVarName() {
-        return funcRefVarName;
+        return m_funcRefVarName;
     }
 
     public void setFuncRefVarName(String funcRefVarName) {
-        this.funcRefVarName = funcRefVarName;
+        this.m_funcRefVarName = funcRefVarName;
     }
 
     public List<String> getArgList() {
-        return argList;
+        return m_argList;
     }
 
     public void setArgList(List<String> argList) {
-        this.argList = argList;
+        this.m_argList = argList;
     }
 
     @Override
@@ -107,13 +107,13 @@ public class XPathDynamicFunctionCall extends Expression {
        
        // We find below, reference of an XPath inline function, that this dynamic
        // function call refers to.       
-       XObject functionRef = inlineFunctionVarMap.get(new QName(funcRefVarName));
+       XObject functionRef = inlineFunctionVarMap.get(new QName(m_funcRefVarName));
        
        if (functionRef == null) {
            ExpressionContext exprContext = xctxt.getExpressionContext();
           
            try {
-              functionRef = exprContext.getVariableOrParam(new QName(funcRefVarName));
+              functionRef = exprContext.getVariableOrParam(new QName(m_funcRefVarName));
            }
            catch (TransformerException ex) {
               // Try to get an XPath inline function reference, from within 
@@ -127,7 +127,7 @@ public class XPathDynamicFunctionCall extends Expression {
               StylesheetRoot stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
               Map<QName, XPathInlineFunction> globalInlineFunctionVarMap = stylesheetRoot.
                                                                             getInlineFunctionVarMap();
-              functionRef = globalInlineFunctionVarMap.get(new QName(funcRefVarName)); 
+              functionRef = globalInlineFunctionVarMap.get(new QName(m_funcRefVarName)); 
            }           
        }
        
@@ -139,12 +139,12 @@ public class XPathDynamicFunctionCall extends Expression {
             }
     	    if (functionRef instanceof XPathMap) {
     		   XPathMap xpathMap = (XPathMap)functionRef;
-    		   if (argList.size() != 1) {
+    		   if (m_argList.size() != 1) {
     			   throw new javax.xml.transform.TransformerException("XPTY0004 : Function call syntax for map value lookup, should have only "
     			   		                                                     + "one argument which needs to be one of map key name.", xctxt.getSAXLocator()); 
     		   }
     		   else {
-    			  String argXPathStr = argList.get(0);
+    			  String argXPathStr = m_argList.get(0);
     			  if (prefixTable != null) {
  	                 argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, 
  	                                                                                                      prefixTable);
@@ -169,10 +169,10 @@ public class XPathDynamicFunctionCall extends Expression {
 	           String inlineFnXPathStr = inlineFunction.getFuncBodyXPathExprStr();
 	           List<InlineFunctionParameter> funcParamList = inlineFunction.getFuncParamList();           
 	           
-	           if (argList.size() != funcParamList.size()) {
+	           if (m_argList.size() != funcParamList.size()) {
 	               throw new javax.xml.transform.TransformerException("XPTY0004 : Number of arguments required for "
 	                                                                                  + "dynamic call to function is " + funcParamList.size() + ". "
-	                                                                                  + "Number of arguments provided " + argList.size() + ".", xctxt.getSAXLocator());    
+	                                                                                  + "Number of arguments provided " + m_argList.size() + ".", xctxt.getSAXLocator());    
 	           }	           	           
 	           
 	           Map<QName, XObject> functionParamAndArgMap = new HashMap<QName, XObject>();
@@ -180,7 +180,7 @@ public class XPathDynamicFunctionCall extends Expression {
 	           for (int idx = 0; idx < funcParamList.size(); idx++) {
 	              InlineFunctionParameter funcParam = funcParamList.get(idx);                                                         
 	              
-	              String argXPathStr = argList.get(idx);
+	              String argXPathStr = m_argList.get(idx);
 	              
 	              if (prefixTable != null) {
 	                  argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, 
@@ -203,13 +203,13 @@ public class XPathDynamicFunctionCall extends Expression {
 	                     argValue = SequenceTypeSupport.convertXdmValueToAnotherType(argValue, null, paramType, null);                     
 	                     if (argValue == null) {
 	                        throw new TransformerException("XTTE0505 : The item type of argument at position " + (idx + 1) + " of dynamic function call "
-	                                                                                                           + "$" + funcRefVarName + ", doesn't match "
+	                                                                                                           + "$" + m_funcRefVarName + ", doesn't match "
 	                                                                                                           + "an expected type.", srcLocator);  
 	                     }
 	                  }
 	                  catch (TransformerException ex) {
 	                     throw new TransformerException("XTTE0505 : The item type of argument at position " + (idx + 1) + " of dynamic function call "
-	                                                                                                        + "$" + funcRefVarName + ", doesn't match "
+	                                                                                                        + "$" + m_funcRefVarName + ", doesn't match "
 	                                                                                                        + "an expected type.", srcLocator); 
 	                  }
 	              }
@@ -239,12 +239,12 @@ public class XPathDynamicFunctionCall extends Expression {
 	              try {
 	                 evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, null, funcReturnType, null);
 	                 if (evalResult == null) {
-	                    throw new TransformerException("XTTE0505 : The item type of result of dynamic function call $"+ funcRefVarName + ", doesn't match an "
+	                    throw new TransformerException("XTTE0505 : The item type of result of dynamic function call $"+ m_funcRefVarName + ", doesn't match an "
 	                                                                                                                                   + "expected type.", srcLocator);  
 	                 }
 	              }
 	              catch (TransformerException ex) {
-	                  throw new TransformerException("XTTE0505 : The item type of result of dynamic function call $"+ funcRefVarName + ", doesn't match an "
+	                  throw new TransformerException("XTTE0505 : The item type of result of dynamic function call $"+ m_funcRefVarName + ", doesn't match an "
 	                                                                                                                                 + "expected type.", srcLocator);  
 	              }
 	           }
@@ -258,7 +258,7 @@ public class XPathDynamicFunctionCall extends Expression {
 	        }
       }
       else {
-         throw new javax.xml.transform.TransformerException("XPST0008 : Variable '" + funcRefVarName + "' has "
+         throw new javax.xml.transform.TransformerException("XPST0008 : Variable '" + m_funcRefVarName + "' has "
                                                                                                        + "not been declared, or its declaration is not in scope.", 
                                                                                                                                               xctxt.getSAXLocator());    
       }

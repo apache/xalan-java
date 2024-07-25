@@ -57,6 +57,7 @@ import org.apache.xpath.types.XSUnsignedShort;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSBoolean;
 import xml.xpath31.processor.types.XSDate;
 import xml.xpath31.processor.types.XSDateTime;
@@ -196,7 +197,7 @@ public class SequenceTypeSupport {
     
     public static String INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR = "INLINE_FUNCTION_PARAM_TYPECHECK_COUNT_ERROR";
     
-    private static List<XMLNSDecl> fPrefixTable;
+    private static List<XMLNSDecl> m_PrefixTable;
     
     /**
      * This class specifies min and max value ranges for XML Schema 
@@ -290,7 +291,7 @@ public class SequenceTypeSupport {
                                                        XPathContext xctxt, List prefixTable) throws TransformerException {
     	XObject result = null;
     	
-    	fPrefixTable = prefixTable;    	
+    	m_PrefixTable = prefixTable;    	
     	result = convertXdmValueToAnotherType(srcValue, sequenceTypeXPathExprStr, null, xctxt);
     	
     	return result;
@@ -363,22 +364,72 @@ public class SequenceTypeSupport {
             int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
             SequenceTypeKindTest sequenceTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
             
-            if ((srcValue != null) && (sequenceTypeKindTest != null)) {
-            	if (sequenceTypeKindTest.getKindVal() == ITEM_KIND) {
-            	   if (srcValue instanceof XPathArray) {
-            		  XPathArray xpathArr = (XPathArray)srcValue;
-            		  if (itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_MANY) {
-            			 result = xpathArr;   
-            		  }
-            		  else if ((itemTypeOccurenceIndicator == OccurenceIndicator.ONE_OR_MANY) && (xpathArr.size() > 0)) {
-            			 result = xpathArr; 
-            		  }
-            		  else if ((itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_ONE) && (xpathArr.size() <= 1)) {
-            			 result = xpathArr; 
-            		  }
-            		  
-            		  return result;
-            	   }
+            if (srcValue != null) {
+            	if (sequenceTypeKindTest != null) {
+	            	if (sequenceTypeKindTest.getKindVal() == ITEM_KIND) {
+	            		if (srcValue instanceof ResultSequence) {
+	            		  ResultSequence rSeq = (ResultSequence)srcValue;
+	               		  if (itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_MANY) {
+	               			 result = srcValue;   
+	               		  }
+	               		  else if ((itemTypeOccurenceIndicator == OccurenceIndicator.ONE_OR_MANY) && (rSeq.size() > 0)) {
+	               			 result = srcValue; 
+	               		  }
+	               		  else if ((itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_ONE) && (rSeq.size() <= 1)) {
+	               			 result = srcValue; 
+	               		  }
+	               		  
+	               		  return result;
+	               	   }
+	            	   else if (srcValue instanceof XPathArray) {
+	            		  XPathArray xpathArr = (XPathArray)srcValue;
+	            		  if (itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_MANY) {
+	            			 result = srcValue;   
+	            		  }
+	            		  else if ((itemTypeOccurenceIndicator == OccurenceIndicator.ONE_OR_MANY) && (xpathArr.size() > 0)) {
+	            			 result = srcValue; 
+	            		  }
+	            		  else if ((itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_ONE) && (xpathArr.size() <= 1)) {
+	            			 result = srcValue; 
+	            		  }
+	            		  
+	            		  return result;
+	            	   }
+	            	}
+            	}
+            	else if (seqExpectedTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE) {
+            		if (srcValue instanceof ResultSequence) {
+            			ResultSequence rSeq = (ResultSequence)srcValue;
+            			if ((rSeq.size() == 1) && ((itemTypeOccurenceIndicator == 0) || 
+            					                   (itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_ONE) || 
+            					                   (itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_MANY) ||
+            					                   (itemTypeOccurenceIndicator == OccurenceIndicator.ONE_OR_MANY))) {
+            			   if (rSeq.item(0) instanceof XSAnyAtomicType) {
+            			      result = rSeq.item(0);            			      
+            			      return result;
+            			   }
+            			}
+            			else if ((rSeq.size() > 0) && ((itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_MANY) || 
+            					                       (itemTypeOccurenceIndicator == OccurenceIndicator.ONE_OR_MANY))) {
+            			    boolean isSeqAnyAtomicType = true;
+            			    for (int idx = 0; idx < rSeq.size(); idx++) {
+            			       if (!(rSeq.item(0) instanceof XSAnyAtomicType)) {
+            			    	  isSeqAnyAtomicType = false;
+            			    	  break;
+            			       }
+            			    }
+            			    if (isSeqAnyAtomicType) {
+            			       result = rSeq;
+            			       return result;
+            			    }
+            			}
+            			else if ((itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_ONE) || 
+            					 (itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_MANY)) {
+            				// an input sequence is empty
+            				result = rSeq;
+         			        return result;
+            			}
+            		}            		
             	}
             }
             
@@ -587,9 +638,9 @@ public class SequenceTypeSupport {
             		 if (functionExpectedParamTypes.size() == inlineFuncParameterList.size()) {
             		    for (int idx = 0; idx < functionExpectedParamTypes.size(); idx++) {
             		       String expectedParamTypeStr = functionExpectedParamTypes.get(idx);
-            		       if (fPrefixTable != null) {
+            		       if (m_PrefixTable != null) {
             		    	  expectedParamTypeStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-            		    			                                                                 expectedParamTypeStr, fPrefixTable);  
+            		    			                                                                 expectedParamTypeStr, m_PrefixTable);  
             		       }
             		       
             		       XPath expectedParamTypeXPath = new XPath(expectedParamTypeStr, srcLocator, 
@@ -610,9 +661,9 @@ public class SequenceTypeSupport {
             		 SequenceTypeData funcReturnType = inlineFunctionExpr.getReturnType();
             		 String functionReturnTypeStr = sequenceTypeFunctionTest.getTypedFunctionTestReturnType();
             		 
-            		 if (fPrefixTable != null) {
+            		 if (m_PrefixTable != null) {
             			functionReturnTypeStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-       		    	    		                                                                     functionReturnTypeStr, fPrefixTable);  
+       		    	    		                                                                     functionReturnTypeStr, m_PrefixTable);  
        		         }
             		 
             		 XPath functionReturnTypeXPath = new XPath(functionReturnTypeStr, srcLocator, 

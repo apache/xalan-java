@@ -39,9 +39,9 @@ public class XPathInlineFunction extends XObject {
     
     private List<InlineFunctionParameter> funcParamList = new ArrayList<InlineFunctionParameter>();
     
-    private String funcBodyXPathExprStr = null;
+    private String m_funcBodyXPathExprStr = null;
     
-    private SequenceTypeData returnType = null;
+    private SequenceTypeData m_returnType = null;
 
     public List<InlineFunctionParameter> getFuncParamList() {
         return funcParamList;
@@ -52,19 +52,19 @@ public class XPathInlineFunction extends XObject {
     }
 
     public String getFuncBodyXPathExprStr() {
-        return funcBodyXPathExprStr;
+        return m_funcBodyXPathExprStr;
     }
 
     public void setFuncBodyXPathExprStr(String funcBodyXPathExprStr) {
-        this.funcBodyXPathExprStr = funcBodyXPathExprStr;
+        this.m_funcBodyXPathExprStr = funcBodyXPathExprStr;
     }
     
     public SequenceTypeData getReturnType() {
-        return returnType;
+        return m_returnType;
     }
 
     public void setReturnType(SequenceTypeData returnType) {
-        this.returnType = returnType;
+        this.m_returnType = returnType;
     }
 
     public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {

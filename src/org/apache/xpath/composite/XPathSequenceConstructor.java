@@ -59,8 +59,8 @@ public class XPathSequenceConstructor extends Expression {
     // The following two fields of this class, are used during 
     // XPath.fixupVariables(..) action as performed within object of 
     // this class.    
-    private Vector fVars;    
-    private int fGlobalsSize;
+    private Vector m_vars;    
+    private int m_globals_size;
     
     @Override
     public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
@@ -132,8 +132,8 @@ public class XPathSequenceConstructor extends Expression {
                    
                    XPath varXPathObj = new XPath(varRefXPathExprStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                       XPath.SELECT, null);
-                   if (fVars != null) {
-                	   varXPathObj.fixupVariables(fVars, fGlobalsSize);
+                   if (m_vars != null) {
+                	   varXPathObj.fixupVariables(m_vars, m_globals_size);
                    }
                    
                    XObject varEvalResult = varXPathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
@@ -147,8 +147,8 @@ public class XPathSequenceConstructor extends Expression {
                    
                    XPath xpathIndexObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                      XPath.SELECT, null);
-                   if (fVars != null) {
-                      xpathIndexObj.fixupVariables(fVars, fGlobalsSize);
+                   if (m_vars != null) {
+                      xpathIndexObj.fixupVariables(m_vars, m_globals_size);
                    }
                    
                    XObject seqIndexEvalResult = xpathIndexObj.execute(xctxt, xctxt.getCurrentNode(), 
@@ -190,8 +190,8 @@ public class XPathSequenceConstructor extends Expression {
                }
            }
            else {
-        	   if (fVars != null) {
-        		   xpathObj.fixupVariables(fVars, fGlobalsSize);
+        	   if (m_vars != null) {
+        		   xpathObj.fixupVariables(m_vars, m_globals_size);
                }
         	   
                XObject xPathExprPartResult = xpathObj.execute(xctxt, contextNode, 
@@ -230,8 +230,8 @@ public class XPathSequenceConstructor extends Expression {
 
     @Override
     public void fixupVariables(Vector vars, int globalsSize) {
-        fVars = (Vector)(vars.clone());
-        fGlobalsSize = globalsSize;
+        m_vars = (Vector)(vars.clone());
+        m_globals_size = globalsSize;
     }
 
     @Override

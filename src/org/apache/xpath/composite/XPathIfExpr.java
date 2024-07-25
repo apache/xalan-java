@@ -45,40 +45,40 @@ public class XPathIfExpr extends Expression {
     
     private static final long serialVersionUID = 4057572946055830336L;
 
-    private String conditionalExprXPathStr;
+    private String m_conditionalExprXPathStr;
     
-    private String thenExprXPathStr;
+    private String m_thenExprXPathStr;
     
-    private String elseExprXPathStr;
+    private String m_elseExprXPathStr;
     
     // The following two fields of this class, are used during 
     // XPath.fixupVariables(..) action as performed within object of 
     // this class.    
-    private Vector fVars;    
-    private int fGlobalsSize;
+    private Vector m_vars;    
+    private int m_globals_size;
 
     public String getConditionalExprXPathStr() {
-        return conditionalExprXPathStr;
+        return m_conditionalExprXPathStr;
     }
 
     public void setConditionalExprXPathStr(String conditionalExprXPathStr) {
-        this.conditionalExprXPathStr = conditionalExprXPathStr;
+        this.m_conditionalExprXPathStr = conditionalExprXPathStr;
     }
 
     public String getThenExprXPathStr() {
-        return thenExprXPathStr;
+        return m_thenExprXPathStr;
     }
 
     public void setThenExprXPathStr(String thenExprXPathStr) {
-        this.thenExprXPathStr = thenExprXPathStr;
+        this.m_thenExprXPathStr = thenExprXPathStr;
     }
 
     public String getElseExprXPathStr() {
-        return elseExprXPathStr;
+        return m_elseExprXPathStr;
     }
 
     public void setElseExprXPathStr(String elseExprXPathStr) {
-        this.elseExprXPathStr = elseExprXPathStr;
+        this.m_elseExprXPathStr = elseExprXPathStr;
     }
 
     @Override
@@ -101,42 +101,42 @@ public class XPathIfExpr extends Expression {
        }
        
        if (prefixTable != null) {
-          conditionalExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-                                                                                    conditionalExprXPathStr, prefixTable);
+          m_conditionalExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                    m_conditionalExprXPathStr, prefixTable);
        }
        
-       XPath ifConditionalXPath = new XPath(conditionalExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+       XPath ifConditionalXPath = new XPath(m_conditionalExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                  XPath.SELECT, null);
-       if (fVars != null) {
-          ifConditionalXPath.fixupVariables(fVars, fGlobalsSize);
+       if (m_vars != null) {
+          ifConditionalXPath.fixupVariables(m_vars, m_globals_size);
        }
        
        XObject ifConditionalXPathResult = ifConditionalXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
        
        if (ifConditionalXPathResult.bool()) {
            if (prefixTable != null) {
-              thenExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-                                                                                        thenExprXPathStr, prefixTable);
+              m_thenExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                        m_thenExprXPathStr, prefixTable);
            }
            
-           XPath thenExprXpath = new XPath(thenExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+           XPath thenExprXpath = new XPath(m_thenExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                XPath.SELECT, null);
-           if (fVars != null) {
-              thenExprXpath.fixupVariables(fVars, fGlobalsSize);
+           if (m_vars != null) {
+              thenExprXpath.fixupVariables(m_vars, m_globals_size);
            }
            
            evalResult = thenExprXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
        }
        else {
            if (prefixTable != null) {
-              elseExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(elseExprXPathStr, 
+              m_elseExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(m_elseExprXPathStr, 
                                                                                                           prefixTable);
            }
            
-           XPath elseExprXpath = new XPath(elseExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+           XPath elseExprXpath = new XPath(m_elseExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                               XPath.SELECT, null);
-           if (fVars != null) {
-              elseExprXpath.fixupVariables(fVars, fGlobalsSize);
+           if (m_vars != null) {
+              elseExprXpath.fixupVariables(m_vars, m_globals_size);
            }
            
            evalResult = elseExprXpath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
@@ -147,8 +147,8 @@ public class XPathIfExpr extends Expression {
 
     @Override
     public void fixupVariables(Vector vars, int globalsSize) {
-        fVars = (Vector)(vars.clone());
-        fGlobalsSize = globalsSize; 
+        m_vars = (Vector)(vars.clone());
+        m_globals_size = globalsSize; 
     }
 
     @Override

@@ -60,18 +60,18 @@ public class XPathQuantifiedExpr extends Expression {
     // Constant value, denoting XPath quantified expression 'every'.
     public static final int EVERY = 1;
     
-    private int fCurrentXPathQuantifier;
+    private int m_CurrentXPathQuantifier;
     
-    private List<ForQuantifiedExprVarBinding> fQuantifiedExprVarBindingList = new 
+    private List<ForQuantifiedExprVarBinding> m_QuantifiedExprVarBindingList = new 
                                                         ArrayList<ForQuantifiedExprVarBinding>();
 
-    private String fQuantifierTestXPathStr = null;
+    private String m_QuantifierTestXPathStr = null;
     
     // The following two fields of this class, are used during 
     // XPath.fixupVariables(..) action as performed within object of 
     // this class.    
-    private Vector fVars;    
-    private int fGlobalsSize;
+    private Vector m_vars;    
+    private int m_globals_size;
 
     @Override
     public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
@@ -91,15 +91,15 @@ public class XPathQuantifiedExpr extends Expression {
         }
         
         if (prefixTable != null) {
-            fQuantifierTestXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-                                                                                          fQuantifierTestXPathStr, prefixTable);
+            m_QuantifierTestXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                          m_QuantifierTestXPathStr, prefixTable);
         }
         
-        XPath quantifiedExprXpath = new XPath(fQuantifierTestXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+        XPath quantifiedExprXpath = new XPath(m_QuantifierTestXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                         XPath.SELECT, null);
         quantifiedExprXpath.setIsQuantifiedExpr(true);
         
-        ResultSequence resultSequence = getQuantifiedExpressionEvalResult(fQuantifiedExprVarBindingList.listIterator(), 
+        ResultSequence resultSequence = getQuantifiedExpressionEvalResult(m_QuantifiedExprVarBindingList.listIterator(), 
         		                                                                                     quantifiedExprXpath, xctxt);
         
         m_xpathVarList.clear();
@@ -110,7 +110,7 @@ public class XPathQuantifiedExpr extends Expression {
            XObject xsObject = resultSequence.item(idx);
            XSBoolean xsBoolean = (XSBoolean)xsObject;
            
-           if (fCurrentXPathQuantifier == SOME) {
+           if (m_CurrentXPathQuantifier == SOME) {
               if (xsBoolean.value()) {
                  quantifiedExprResult = XBoolean.S_TRUE;
                  isEvalResultDecided = true;
@@ -127,7 +127,7 @@ public class XPathQuantifiedExpr extends Expression {
         }
         
         if (!isEvalResultDecided) {
-           if (fCurrentXPathQuantifier == SOME) {
+           if (m_CurrentXPathQuantifier == SOME) {
               quantifiedExprResult = XBoolean.S_FALSE;    
            }
            else {
@@ -140,8 +140,8 @@ public class XPathQuantifiedExpr extends Expression {
 
     @Override
     public void fixupVariables(Vector vars, int globalsSize) {
-       fVars = (Vector)(vars.clone());
-       fGlobalsSize = globalsSize;
+       m_vars = (Vector)(vars.clone());
+       m_globals_size = globalsSize;
     }
 
     @Override
@@ -150,28 +150,28 @@ public class XPathQuantifiedExpr extends Expression {
     }
 
     public int getCurrentXPathQuantifier() {
-        return fCurrentXPathQuantifier;
+        return m_CurrentXPathQuantifier;
     }
 
     public void setCurrentXPathQuantifier(int fCurrentXPathQuantifier) {
-        this.fCurrentXPathQuantifier = fCurrentXPathQuantifier;
+        this.m_CurrentXPathQuantifier = fCurrentXPathQuantifier;
     }
 
     public List<ForQuantifiedExprVarBinding> getQuantifiedExprVarBindingList() {
-        return fQuantifiedExprVarBindingList;
+        return m_QuantifiedExprVarBindingList;
     }
 
     public void setQuantifiedExprVarBindingList(List<ForQuantifiedExprVarBinding> 
                                                                       fQuantifiedExprVarBindingList) {
-        this.fQuantifiedExprVarBindingList = fQuantifiedExprVarBindingList;
+        this.m_QuantifiedExprVarBindingList = fQuantifiedExprVarBindingList;
     }
 
     public String getQuantifierTestXPathStr() {
-        return fQuantifierTestXPathStr;
+        return m_QuantifierTestXPathStr;
     }
 
     public void setQuantifierTestXPathStr(String fQuantifierTestXPathStr) {
-        this.fQuantifierTestXPathStr = fQuantifierTestXPathStr;
+        this.m_QuantifierTestXPathStr = fQuantifierTestXPathStr;
     }
     
     /*
@@ -209,11 +209,11 @@ public class XPathQuantifiedExpr extends Expression {
            
            XPath varBindingXPath = new XPath(varBindingXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                    XPath.SELECT, null);
-           if (fVars != null) {
+           if (m_vars != null) {
               if (!m_xpathVarList.contains(new QName(varName))) {
                  m_xpathVarList.add(new QName(varName));
               }
-              varBindingXPath.fixupVariables(fVars, fGlobalsSize);
+              varBindingXPath.fixupVariables(m_vars, m_globals_size);
            }
            
            XObject xsObj = varBindingXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
@@ -271,8 +271,8 @@ public class XPathQuantifiedExpr extends Expression {
         	// evaluated multiple times depending upon, how may quantified expression 
         	// iterations are there.
             
-            if (fVars != null) {              
-               quantifiedExprXPath.fixupVariables(fVars, fGlobalsSize);
+            if (m_vars != null) {              
+               quantifiedExprXPath.fixupVariables(m_vars, m_globals_size);
             }
             
             ResultSequence satisfiesClauseEvalResult = new ResultSequence();

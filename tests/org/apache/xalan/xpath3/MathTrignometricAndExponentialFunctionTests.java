@@ -23,18 +23,20 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XPath 3.1 function test cases, for trigonometric and exponential functions
+ * XPath 3.1 function test cases, for math trigonometric and exponential functions
  * defined within XPath 3.1's XML namespace http://www.w3.org/2005/xpath-functions/math.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class TrignometricAndExponentialFunctionTests extends XSLTransformTestsUtil {        
+public class MathTrignometricAndExponentialFunctionTests extends XSLTransformTestsUtil {        
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "trigonometric_and_exponential_funcs/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + 
+    		                                                                                             "math_trigonometric_and_exponential_funcs/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "trigonometric_and_exponential_funcs/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + 
+    		                                                                                             "math_trigonometric_and_exponential_funcs/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {

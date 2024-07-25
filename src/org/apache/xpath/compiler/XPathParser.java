@@ -70,7 +70,7 @@ import xml.xpath31.processor.types.XSInteger;
  * 
  * Ref: https://www.w3.org/TR/xpath-31/
  *      (please also refer to section 'A XPath 3.1 Grammar', within
- *       this document)
+ *       XPath 3.1 spec)
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Myriam Midy <mmidy@apache.org>

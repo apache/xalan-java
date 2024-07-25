@@ -522,6 +522,9 @@ public class FunctionTable
   
   /** The 'map:find()' id. */
   public static final int FUNC_MAP_FIND = 166;
+  
+  /** The 'array:flatten()' id. */
+  public static final int FUNC_ARRAY_FLATTEN = 167;
 
   // Proprietary
 
@@ -589,7 +592,7 @@ public class FunctionTable
 		                                                        new Integer(FUNC_ARRAY_JOIN), new Integer(FUNC_ARRAY_FOR_EACH),
 		                                                        new Integer(FUNC_ARRAY_FILTER), new Integer(FUNC_ARRAY_FOR_EACH_PAIR),
 		                                                        new Integer(FUNC_ARRAY_FOLD_LEFT), new Integer(FUNC_ARRAY_FOLD_RIGHT),
-		                                                        new Integer(FUNC_ARRAY_SORT) };
+		                                                        new Integer(FUNC_ARRAY_SORT), new Integer(FUNC_ARRAY_FLATTEN)};
   
   static final List<Integer> XPATH_ARRAY_FUNC_IDS_ARR = Arrays.asList(XPATH_ARRAY_FUNC_IDS);
 
@@ -615,7 +618,7 @@ public class FunctionTable
    * Number of built in functions. Be sure to update this as
    * built-in functions are added.
    */
-  private static final int NUM_BUILT_IN_FUNCS = 167;
+  private static final int NUM_BUILT_IN_FUNCS = 168;
 
   /**
    * Number of built-in functions that may be added.
@@ -888,6 +891,7 @@ public class FunctionTable
     m_functions[FUNC_ARRAY_FOLD_LEFT] = org.apache.xpath.functions.array.FuncArrayFoldLeft.class;
     m_functions[FUNC_ARRAY_FOLD_RIGHT] = org.apache.xpath.functions.array.FuncArrayFoldRight.class;
     m_functions[FUNC_ARRAY_SORT] = org.apache.xpath.functions.array.FuncArraySort.class;
+    m_functions[FUNC_ARRAY_FLATTEN] = org.apache.xpath.functions.array.FuncArrayFlatten.class;
     
     m_functions[FUNC_PARSE_JSON] = org.apache.xpath.functions.json.FuncParseJson.class;
     m_functions[FUNC_JSON_DOC] = org.apache.xpath.functions.json.FuncJsonDoc.class;
@@ -1214,6 +1218,8 @@ public class FunctionTable
                           new Integer(FunctionTable.FUNC_ARRAY_FOLD_RIGHT));
          m_functionId.put(Keywords.FUNC_ARRAY_SORT,
                           new Integer(FunctionTable.FUNC_ARRAY_SORT));
+         m_functionId.put(Keywords.FUNC_ARRAY_FLATTEN,
+                          new Integer(FunctionTable.FUNC_ARRAY_FLATTEN));
          
          m_functionId.put(Keywords.FUNC_NAME_STRING,
                           new Integer(FunctionTable.FUNC_NAME));
@@ -1513,6 +1519,9 @@ public class FunctionTable
 		      case Keywords.FUNC_ARRAY_SORT:
 				 id = FunctionTable.FUNC_ARRAY_SORT;
 			     break;
+		      case Keywords.FUNC_ARRAY_FLATTEN:
+			     id = FunctionTable.FUNC_ARRAY_FLATTEN;
+				 break;
 			  default:
 				 // NO OP 
 		}

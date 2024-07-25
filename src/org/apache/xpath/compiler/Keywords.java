@@ -690,6 +690,9 @@ public class Keywords
   /** array:sort function string. */
   public static final String FUNC_ARRAY_SORT = "sort";
   
+  /** array:flatten function string. */
+  public static final String FUNC_ARRAY_FLATTEN = "flatten";
+  
   /** apply function string. */
   public static final String FUNC_APPLY = "apply";
   

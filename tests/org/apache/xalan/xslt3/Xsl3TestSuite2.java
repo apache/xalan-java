@@ -51,7 +51,7 @@ import org.apache.xalan.xpath3.SequenceFunctionTests;
 import org.apache.xalan.xpath3.SequenceTests;
 import org.apache.xalan.xpath3.SimpleMapOperatorTests;
 import org.apache.xalan.xpath3.StringConcatExprTests;
-import org.apache.xalan.xpath3.TrignometricAndExponentialFunctionTests;
+import org.apache.xalan.xpath3.MathTrignometricAndExponentialFunctionTests;
 import org.apache.xalan.xpath3.W3c_xslt30_fn_deep_equalTests;
 import org.apache.xalan.xpath3.XPathArithmeticOnDurationValuesTests;
 import org.apache.xalan.xpath3.XsDurationComponentExtractionFunctionTests;
@@ -75,7 +75,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 W3c_xslt30_fn_deep_equalTests.class, XslIterateTests.class,                 
                 FnFilterTests.class, DynamicFunctionCallTests.class, IfExprTests.class, 
                 ForExprTests.class, LetExprTests.class, FnDistinctValuesTests.class,
-                TrignometricAndExponentialFunctionTests.class, BuiltinFunctionsNamespceTests.class,
+                MathTrignometricAndExponentialFunctionTests.class, BuiltinFunctionsNamespceTests.class,
                 SequenceConstructorTests.class, StringConcatExprTests.class, 
                 XsDurationComponentExtractionFunctionTests.class, XPathArithmeticOnDurationValuesTests.class,
                 NodeComparisonTests.class, SimpleMapOperatorTests.class, FnFoldLeftTests.class,

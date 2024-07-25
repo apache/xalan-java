@@ -55,22 +55,22 @@ public class XPathArrayConstructor extends Expression {
     
 	private static final long serialVersionUID = 6480756741454381402L;
 
-	private List<String> arrayConstructorXPathParts = new ArrayList<String>();
+	private List<String> m_arrayConstructorXPathParts = new ArrayList<String>();
 	
-	private boolean fIsEmptyArray = false;
+	private boolean m_IsEmptyArray = false;
     
     // The following two fields of this class, are used during 
     // XPath.fixupVariables(..) action as performed within object of 
     // this class.    
-    private Vector fVars;    
-    private int fGlobalsSize;
+    private Vector m_vars;    
+    private int m_globals_size;
 
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {
         
         XPathArray xpathArrResult = new XPathArray();
         
-        if (fIsEmptyArray) {
+        if (m_IsEmptyArray) {
            return xpathArrResult;  	
         }
         
@@ -88,8 +88,8 @@ public class XPathArrayConstructor extends Expression {
         // 'sqrArrayConstructorXPathParts', and concatenate the sequences resulting
         // from each of them, to get the final result sequence that is returned by
         // this method.
-        for (int idx = 0; idx < arrayConstructorXPathParts.size(); idx++) {
-           String xpathExprStr = arrayConstructorXPathParts.get(idx);
+        for (int idx = 0; idx < m_arrayConstructorXPathParts.size(); idx++) {
+           String xpathExprStr = m_arrayConstructorXPathParts.get(idx);
            
            if (prefixTable != null) {
               xpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(xpathExprStr, 
@@ -98,8 +98,8 @@ public class XPathArrayConstructor extends Expression {
            
            XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                       XPath.SELECT, null);
-           if (fVars != null) {
-              xpathObj.fixupVariables(fVars, fGlobalsSize);
+           if (m_vars != null) {
+              xpathObj.fixupVariables(m_vars, m_globals_size);
            }
            
            Expression xpathExpr = xpathObj.getExpression();
@@ -148,8 +148,8 @@ public class XPathArrayConstructor extends Expression {
                    
                    XPath xpathIndexObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                      XPath.SELECT, null);
-                   if (fVars != null) {
-                      xpathIndexObj.fixupVariables(fVars, fGlobalsSize);
+                   if (m_vars != null) {
+                      xpathIndexObj.fixupVariables(m_vars, m_globals_size);
                    }
                    
                    XObject arrIndexEvalResult = xpathIndexObj.execute(xctxt, xctxt.getCurrentNode(), 
@@ -227,8 +227,8 @@ public class XPathArrayConstructor extends Expression {
 
     @Override
     public void fixupVariables(Vector vars, int globalsSize) {
-        fVars = (Vector)(vars.clone());
-        fGlobalsSize = globalsSize;
+        m_vars = (Vector)(vars.clone());
+        m_globals_size = globalsSize;
     }
     
     @Override
@@ -242,19 +242,19 @@ public class XPathArrayConstructor extends Expression {
     }
 
     public List<String> getArrayConstructorXPathParts() {
-        return arrayConstructorXPathParts;
+        return m_arrayConstructorXPathParts;
     }
 
     public void setArrayConstructorXPathParts(List<String> arrayConstructorXPathParts) {
-        this.arrayConstructorXPathParts = arrayConstructorXPathParts;
+        this.m_arrayConstructorXPathParts = arrayConstructorXPathParts;
     }
 
 	public boolean isEmptyArray() {
-		return fIsEmptyArray;
+		return m_IsEmptyArray;
 	}
 
 	public void setIsEmptyArray(boolean isEmptyArray) {
-		this.fIsEmptyArray = isEmptyArray;
+		this.m_IsEmptyArray = isEmptyArray;
 	}
 
 }

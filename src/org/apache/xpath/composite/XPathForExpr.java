@@ -53,16 +53,16 @@ public class XPathForExpr extends Expression {
     
     private static final long serialVersionUID = -7289739978026057248L;
 
-    private List<ForQuantifiedExprVarBinding> fForExprVarBindingList = new 
+    private List<ForQuantifiedExprVarBinding> m_ForExprVarBindingList = new 
                                                     ArrayList<ForQuantifiedExprVarBinding>();
     
-    private String fReturnExprXPathStr = null;
+    private String m_ReturnExprXPathStr = null;
     
     // The following two fields of this class, are used during 
     // XPath.fixupVariables(..) action as performed within object of 
     // this class.    
-    private Vector fVars;    
-    private int fGlobalsSize;
+    private Vector m_vars;    
+    private int m_globals_size;
 
     @Override
     public void callVisitors(ExpressionOwner owner, XPathVisitor visitor) {
@@ -82,14 +82,14 @@ public class XPathForExpr extends Expression {
        }
        
        if (prefixTable != null) {
-          fReturnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-                                                                                       fReturnExprXPathStr, prefixTable);
+          m_ReturnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                       m_ReturnExprXPathStr, prefixTable);
        }
        
-       XPath returnExprXPath = new XPath(fReturnExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+       XPath returnExprXPath = new XPath(m_ReturnExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                XPath.SELECT, null);
        
-       ResultSequence resultSeq = getForExpressionEvalResult(fForExprVarBindingList.listIterator(), 
+       ResultSequence resultSeq = getForExpressionEvalResult(m_ForExprVarBindingList.listIterator(), 
                                                                             returnExprXPath, xctxt);       
        
        // An xdm sequence object 'resultSeq', may have items that are themselves sequence 
@@ -104,8 +104,8 @@ public class XPathForExpr extends Expression {
 
     @Override
     public void fixupVariables(Vector vars, int globalsSize) {
-       fVars = (Vector)(vars.clone());
-       fGlobalsSize = globalsSize; 
+       m_vars = (Vector)(vars.clone());
+       m_globals_size = globalsSize; 
     }
 
     @Override
@@ -114,19 +114,19 @@ public class XPathForExpr extends Expression {
     }
 
     public List<ForQuantifiedExprVarBinding> getForExprVarBindingList() {
-        return fForExprVarBindingList;
+        return m_ForExprVarBindingList;
     }
 
     public void setForExprVarBindingList(List<ForQuantifiedExprVarBinding> forExprVarBindingList) {
-        this.fForExprVarBindingList = forExprVarBindingList;
+        this.m_ForExprVarBindingList = forExprVarBindingList;
     }
 
     public String getReturnExprXPathStr() {
-        return fReturnExprXPathStr;
+        return m_ReturnExprXPathStr;
     }
 
     public void setReturnExprXPathStr(String returnExprXPathStr) {
-        this.fReturnExprXPathStr = returnExprXPathStr;
+        this.m_ReturnExprXPathStr = returnExprXPathStr;
     }
     
     /*
@@ -163,9 +163,9 @@ public class XPathForExpr extends Expression {
            
            XPath varBindingXPath = new XPath(varBindingXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                  XPath.SELECT, null);
-           if (fVars != null) {
+           if (m_vars != null) {
               m_xpathVarList.add(new QName(varName));
-              varBindingXPath.fixupVariables(fVars, fGlobalsSize);
+              varBindingXPath.fixupVariables(m_vars, m_globals_size);
            }
            
            XObject xsObj = varBindingXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
@@ -227,8 +227,8 @@ public class XPathForExpr extends Expression {
             // be evaluated multiple times depending upon, how may 'for' expression
             // iterations are there.
             
-            if (fVars != null) {              
-               returnExprXPath.fixupVariables(fVars, fGlobalsSize);
+            if (m_vars != null) {              
+               returnExprXPath.fixupVariables(m_vars, m_globals_size);
             }
             
             ResultSequence returnExprResultSet = new ResultSequence();
