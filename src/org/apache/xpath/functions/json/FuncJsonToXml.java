@@ -31,10 +31,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.SourceLocator;
-import javax.xml.transform.dom.DOMSource;
 
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;

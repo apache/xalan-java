@@ -24,13 +24,9 @@ import javax.xml.transform.SourceLocator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.FunctionOneArg;
-import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.operations.Variable;
-
-import xml.xpath31.processor.types.XSInteger;
 
 /**
  * Implementation of the array:reverse function.

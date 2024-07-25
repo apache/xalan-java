@@ -28,7 +28,6 @@ import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
-import org.w3c.dom.Node;
 
 /**
  * Implementation of an XPath 3.1 fn:root function.

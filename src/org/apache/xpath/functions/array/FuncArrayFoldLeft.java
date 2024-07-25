@@ -29,11 +29,11 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.functions.Function3Args;
-import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.operations.Variable;
 
 /**

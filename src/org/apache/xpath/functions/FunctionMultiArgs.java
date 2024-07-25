@@ -20,22 +20,11 @@
  */
 package org.apache.xpath.functions;
 
-import java.util.Iterator;
-
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathVisitor;
-import org.apache.xpath.objects.XObject;
-import org.apache.xpath.objects.XPathArray;
-import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.res.XPATHErrorResources;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import xml.xpath31.processor.types.XSBoolean;
-import xml.xpath31.processor.types.XSDecimal;
-import xml.xpath31.processor.types.XSString;
 
 /**
  * Base class for functions that accept an undetermined number of multiple
