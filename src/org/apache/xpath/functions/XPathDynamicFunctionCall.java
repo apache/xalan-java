@@ -42,18 +42,16 @@ import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.InlineFunctionParameter;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XString;
 
 import xml.xpath31.processor.types.XSString;
 
-/*
- * This class implements XPath 3.1 dynamic function calls and map
- * lookup expressions.
- * 
- * Ref : https://www.w3.org/TR/xpath-31/#id-dynamic-function-invocation,
- *       https://www.w3.org/TR/xpath-31/#id-map-lookup
+/**
+ * This class implements XPath 3.1 dynamic function calls, and
+ * map/array information lookup using function call syntax.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -70,8 +68,8 @@ public class XPathDynamicFunctionCall extends Expression {
     // The following two fields of this class, are used during 
     // XPath.fixupVariables(..) action as performed within object of 
     // this class.    
-    private Vector fVars;    
-    private int fGlobalsSize;
+    private Vector m_vars;    
+    private int m_globals_size;
 
     public String getFuncRefVarName() {
         return m_funcRefVarName;
@@ -133,37 +131,13 @@ public class XPathDynamicFunctionCall extends Expression {
        
        if (functionRef != null) {
     	    ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-            List<XMLNSDecl> prefixTable = null;
+            
+    	    List<XMLNSDecl> prefixTable = null;
             if (elemTemplateElement != null) {
                prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
             }
-    	    if (functionRef instanceof XPathMap) {
-    		   XPathMap xpathMap = (XPathMap)functionRef;
-    		   if (m_argList.size() != 1) {
-    			   throw new javax.xml.transform.TransformerException("XPTY0004 : Function call syntax for map value lookup, should have only "
-    			   		                                                     + "one argument which needs to be one of map key name.", xctxt.getSAXLocator()); 
-    		   }
-    		   else {
-    			  String argXPathStr = m_argList.get(0);
-    			  if (prefixTable != null) {
- 	                 argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, 
- 	                                                                                                      prefixTable);
- 	              }
-    			   
-    			  XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-                  if (fVars != null) {
-                     argXPath.fixupVariables(fVars, fGlobalsSize);
-                  }
-
-                  XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
-                  if (argValue instanceof XString) {
-                	 argValue = new XSString(((XString)argValue).str());  
-                  }
-                  
-                  evalResult = xpathMap.get(argValue); 
-    		   }    		   
-    	   }
-    	   else if (functionRef instanceof XPathInlineFunction) {
+                	    
+    	    if (functionRef instanceof XPathInlineFunction) {
 	           XPathInlineFunction inlineFunction = (XPathInlineFunction)functionRef;
 	           
 	           String inlineFnXPathStr = inlineFunction.getFuncBodyXPathExprStr();
@@ -189,8 +163,8 @@ public class XPathDynamicFunctionCall extends Expression {
 	              
 	              XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), 
 	                                                                                        XPath.SELECT, null);
-	              if (fVars != null) {
-	                 argXPath.fixupVariables(fVars, fGlobalsSize);
+	              if (m_vars != null) {
+	                 argXPath.fixupVariables(m_vars, m_globals_size);
 	              }
 	              
 	              XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
@@ -228,8 +202,8 @@ public class XPathDynamicFunctionCall extends Expression {
 	           
 	           XPath inlineFnXPath = new XPath(inlineFnXPathStr, srcLocator, xctxt.getNamespaceContext(), 
 	                                                                                       XPath.SELECT, null);
-	           if (fVars != null) {
-	              inlineFnXPath.fixupVariables(fVars, fGlobalsSize);
+	           if (m_vars != null) {
+	              inlineFnXPath.fixupVariables(m_vars, m_globals_size);
 	           }
 	                      
 	           evalResult = inlineFnXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
@@ -256,6 +230,68 @@ public class XPathDynamicFunctionCall extends Expression {
 	        	  inlineFunctionVarMap.remove(key);
 	           }
 	        }
+    	    else if (functionRef instanceof XPathMap) {
+     		   XPathMap xpathMap = (XPathMap)functionRef;
+     		   if (m_argList.size() != 1) {
+     			   throw new javax.xml.transform.TransformerException("XPTY0004 : Function call syntax for map information lookup, needs to have "
+     			   		                                                     + "1 argument which should be one of map's key name.", 
+     			   		                                                     xctxt.getSAXLocator()); 
+     		   }
+     		   else {
+     			  String argXPathStr = m_argList.get(0);
+     			  if (".".equals(argXPathStr)) {
+     				 XObject contextItem = xctxt.getXPath3ContextItem();
+     				 evalResult = xpathMap.get(contextItem);
+     			  }
+     			  else {
+     				  if (prefixTable != null) {
+     					  argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, 
+     							  prefixTable);
+     				  }
+
+     				  XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+     				  if (m_vars != null) {
+     					  argXPath.fixupVariables(m_vars, m_globals_size);
+     				  }
+
+     				  XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+     				  if (argValue instanceof XString) {
+     					  argValue = new XSString(((XString)argValue).str());  
+     				  }
+
+     				  evalResult = xpathMap.get(argValue);
+     			  }
+     		   }    		   
+     	    }
+    	    else if (functionRef instanceof XPathArray) {
+    	       XPathArray xpathArr = (XPathArray)functionRef;    	       
+    	       if (m_argList.size() != 1) {
+    	    	   throw new javax.xml.transform.TransformerException("XPTY0004 : Function call syntax for array information lookup, needs to have "
+                                                                             + "1 argument which should be position within an array.", 
+                                                                             xctxt.getSAXLocator()); 
+     		   }
+     		   else {
+     			  String argXPathStr = m_argList.get(0);     			  
+     			  if (".".equals(argXPathStr)) {
+     				  XObject contextItem = xctxt.getXPath3ContextItem();     				  
+     				  evalResult = getArrayLookupResult(xctxt, xpathArr, contextItem);
+     			  }
+     			  else {
+	     			  if (prefixTable != null) {
+	  	                 argXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(argXPathStr, 
+	  	                                                                                                      prefixTable);
+	  	              }
+	     			   
+	     			  XPath argXPath = new XPath(argXPathStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+	                  if (m_vars != null) {
+	                     argXPath.fixupVariables(m_vars, m_globals_size);
+	                  }
+	
+	                  XObject argValue = argXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());
+	                  evalResult = getArrayLookupResult(xctxt, xpathArr, argValue);
+     			  }
+     		   }
+    	    }
       }
       else {
          throw new javax.xml.transform.TransformerException("XPST0008 : Variable '" + m_funcRefVarName + "' has "
@@ -268,13 +304,42 @@ public class XPathDynamicFunctionCall extends Expression {
 
     @Override
     public void fixupVariables(Vector vars, int globalsSize) {
-        fVars = (Vector)(vars.clone());
-        fGlobalsSize = globalsSize; 
+        m_vars = (Vector)(vars.clone());
+        m_globals_size = globalsSize; 
     }
 
     @Override
     public boolean deepEquals(Expression expr) {
         return false;
     }
+    
+    /**
+     * Given an xdm array object, get array item at a specified index position.
+     */
+    private XObject getArrayLookupResult(XPathContext xctxt, XPathArray xpathArr, XObject indexVal)
+			                                                                                      throws TransformerException {
+    	XObject evalResult;
+    	
+    	String argValStr = XslTransformEvaluationHelper.getStrVal(indexVal);     				  
+
+    	Integer intVal = null;     				  
+    	try {
+    		intVal = Integer.valueOf(argValStr);
+    		if (!(intVal > 0 && (intVal <= xpathArr.size()))) {
+    			throw new javax.xml.transform.TransformerException("XPTY0004 : Function call syntax for array information lookup, "
+    					                                                  + "needs to have 1 numeric argument >= 1 specifying position "
+    					                                                  + "within an array.", xctxt.getSAXLocator()); 
+    		}
+    	}
+    	catch (NumberFormatException ex) {
+    		throw new javax.xml.transform.TransformerException("XPTY0004 : Function call syntax for array information lookup, "
+    				                                                  + "needs to have 1 numeric argument >= 1 specifying position "
+    				                                                  + "within an array.", xctxt.getSAXLocator()); 
+    	}
+
+    	evalResult = xpathArr.get(intVal-1);
+    	
+    	return evalResult;
+	}
 
 }
