@@ -20,6 +20,9 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
@@ -148,6 +151,26 @@ public class ElemWithParam extends ElemTemplateElement
   {
      return m_asAttr;
   }
+  
+  /**
+   * The value of the "tunnel" attribute.
+   */
+  private String m_tunnelAttr;
+  
+  /**
+   * Set the "tunnel" attribute.
+   */
+  public void setTunnel(String val) {	 
+	 m_tunnelAttr = val;
+  }
+  
+  /**
+   * Get the "tunnel" attribute.
+   */
+  public String getTunnel()
+  {
+     return m_tunnelAttr;
+  }
 
   /**
    * Get an integer representation of the element type.
@@ -219,14 +242,19 @@ public class ElemWithParam extends ElemTemplateElement
    *
    * @throws TransformerException
    */
-  public XObject getValue(TransformerImpl transformer, int sourceNode)
-          throws TransformerException
+  public XObject getValue(TransformerImpl transformer, int sourceNode) throws TransformerException
   {
 
     XObject var;
     XPathContext xctxt = transformer.getXPathContext();
     
     SourceLocator srcLocator = xctxt.getSAXLocator();
+    
+    if (m_tunnelAttr != null && !isValidTunnelParamValue(m_tunnelAttr)) {
+       throw new TransformerException("XTTE0590 : Allowed values for xsl:with-param's tunnel "
+       		                                           + "attribute are : yes, true, 1, no, false, 0. The "
+       		                                           + "supplied value is " + m_tunnelAttr + ".", srcLocator); 
+    }
 
     xctxt.pushCurrentNode(sourceNode);
 
@@ -319,6 +347,17 @@ public class ElemWithParam extends ElemTemplateElement
     }
     return super.appendChild(elem);
   }
-
-
+  
+  /**
+   * Check whether a string value is a valid, XSLT tunnel attribute value.
+   */
+  private boolean isValidTunnelParamValue(String val) {
+	 boolean result = false;
+	 
+	 String[] allowedValuesStr = new String [] {"yes", "true", "1", "no", "false", "0"};
+	 List<String> strList = Arrays.asList(allowedValuesStr);
+	 result = strList.contains(val);
+	 
+	 return result;
+  }
 }

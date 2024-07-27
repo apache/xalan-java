@@ -20,10 +20,15 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xml.utils.QName;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.SequenceTypeSupport;
@@ -48,6 +53,26 @@ public class ElemParam extends ElemVariable
    *
    */
   public ElemParam(){}
+  
+  /**
+   * The value of the "tunnel" attribute.
+   */
+  private String m_tunnelAttr;
+  
+  /**
+   * Set the "tunnel" attribute.
+   */
+  public void setTunnel(String val) {
+	 m_tunnelAttr = val;
+  }
+  
+  /**
+   * Get the "tunnel" attribute.
+   */
+  public String getTunnel()
+  {
+     return m_tunnelAttr;
+  }
 
   /**
    * Get an int constant identifying the type of element.
@@ -116,6 +141,24 @@ public class ElemParam extends ElemVariable
     XPathContext xctx = transformer.getXPathContext();
     
     SourceLocator srcLocator = xctx.getSAXLocator();
+    
+    if (m_tunnelAttr != null && !isValidTunnelParamValue(m_tunnelAttr)) {
+       throw new TransformerException("XTTE0590 : Allowed values for xsl:param's tunnel "
+        		                                              + "attribute are : yes, true, 1, no, false, 0. The "
+        		                                              + "supplied value is " + m_tunnelAttr + ".", srcLocator); 
+    }
+    
+    if (vars.isLocalSet(m_index)) {
+       XObject var = vars.getLocalVariable(xctx, m_index);
+       String tunnelValStr = var.getTunnel();
+ 	   QName tunnelParamQName = var.getQName(); 	  
+ 	   if (m_qname.equals(tunnelParamQName) && !XslTransformEvaluationHelper.isTunnelAttributeYes(m_tunnelAttr) && 
+ 			                                               XslTransformEvaluationHelper.isTunnelAttributeYes(tunnelValStr)) {
+ 		  vars.setLocalVariable(m_index, null);
+ 		  ElemTemplateElement elemTemplateElement = getParentElem();
+ 		  elemTemplateElement.setTunnelParamObj(var);
+ 	   }
+    }
             
     if (!vars.isLocalSet(m_index) || (getParentElem() instanceof ElemIterate)) {
         int sourceNode = transformer.getXPathContext().getCurrentNode();
@@ -160,6 +203,19 @@ public class ElemParam extends ElemVariable
     
     if (transformer.getDebug())
       transformer.getTraceManager().fireTraceEndEvent(this);
+  }
+  
+  /**
+   * Check whether a string value is a valid, XSLT tunnel attribute value.
+   */
+  private boolean isValidTunnelParamValue(String val) {
+	 boolean result = false;
+	 
+	 String[] allowedValuesStr = new String [] {"yes", "true", "1", "no", "false", "0"};
+	 List<String> strList = Arrays.asList(allowedValuesStr);
+	 result = strList.contains(val);
+	 
+	 return result;
   }
   
 }

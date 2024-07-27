@@ -25,10 +25,6 @@ import org.apache.xpath.objects.XString;
 /**
  * The XPath 3.1 string concatenation "||" operation.
  * 
- * An XPath string concatenation "||" expression, may be used to concatenate 
- * two string values. With XPath 3.1 language, an XPath expression $a || $b 
- * is equivalent to fn:concat($a, $b).
- * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
@@ -50,26 +46,25 @@ public class StrConcat extends Operation
    */
     public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
         
-      XObject result = null;
-      
-      XObject left = m_left.execute(xctxt);
-      
-      XObject right = m_right.execute(xctxt);
-      
-      result = new XString(XslTransformEvaluationHelper.getStrVal(left) + 
-                                                             XslTransformEvaluationHelper.getStrVal(right));
-      
-      return result;
+    	XObject result = null;
+
+    	XObject left = m_left.execute(xctxt);
+
+    	XObject right = m_right.execute(xctxt);
+
+    	result = new XString(XslTransformEvaluationHelper.getStrVal(left) + 
+    			                                       XslTransformEvaluationHelper.getStrVal(right));
+
+    	return result;
     }
     
     /**
      * Apply the operation to two operands, and return the result.
      */
     public XObject operate(XObject left, XObject right) {
-        XObject result =  new XString(XslTransformEvaluationHelper.getStrVal(left) + 
-                                                             XslTransformEvaluationHelper.getStrVal(right));
-        
-        return result;
+    	XObject result =  new XString(XslTransformEvaluationHelper.getStrVal(left) + 
+    			                                                XslTransformEvaluationHelper.getStrVal(right));        
+    	return result;
     }
 
 }

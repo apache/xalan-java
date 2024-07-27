@@ -20,12 +20,15 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.List;
+
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.utils.QName;
 import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathContext;
@@ -33,14 +36,8 @@ import org.apache.xpath.objects.XObject;
 import org.w3c.dom.DOMException;
 
 /**
- * Implement xsl:call-template.
- * <pre>
- * &amp;!ELEMENT xsl:call-template (xsl:with-param)*>
- * &amp;!ATTLIST xsl:call-template
- *   name %qname; #REQUIRED
- * &amp;
- * </pre>
- * @see <a href="http://www.w3.org/TR/xslt#named-templates">named-templates in XSLT Specification</a>
+ * Implementation of XSLT xsl:call-template element.
+ * 
  * @xsl.usage advanced
  */
 public class ElemCallTemplate extends ElemForEach
@@ -83,6 +80,11 @@ public class ElemCallTemplate extends ElemForEach
    * @serial
    */
   private ElemTemplate m_template = null;
+  
+  /**
+   * Used to implement XSLT tunnel parameters.
+   */
+  protected final int MAX_PARAM_LIMIT = 100; 
 
   /**
    * Get an int constant identifying the type of element.
@@ -217,6 +219,8 @@ public class ElemCallTemplate extends ElemForEach
           vars.setStackFrame(thisframe);
           int size = m_paramElems.length;
           
+          int maxParamStackFrameIndex = -1;
+          
           for (int i = 0; i < size; i++) 
           {
             ElemWithParam ewp = m_paramElems[i];
@@ -226,14 +230,45 @@ public class ElemCallTemplate extends ElemForEach
                 transformer.getTraceManager().fireTraceEvent(ewp);
               XObject obj = ewp.getValue(transformer, currentNode);
               if (transformer.getDebug())
-                transformer.getTraceManager().fireTraceEndEvent(ewp);
+                transformer.getTraceManager().fireTraceEndEvent(ewp);                            
+              
+              String tunnelStrVal = ewp.getTunnel();
+              obj.setTunnel(tunnelStrVal);
+              QName qName = ewp.getName();
+              obj.setQName(qName);
               
               // Note here that the index for ElemWithParam must have been 
               // statically made relative to the xsl:template being called, 
               // NOT this xsl:template.
               vars.setLocalVariable(ewp.m_index, obj, nextFrame);
+              maxParamStackFrameIndex = ewp.m_index; 
             }
           }
+          
+          for (int idx = 0; idx < MAX_PARAM_LIMIT; idx++) {
+             XObject obj = vars.getLocalVariable(idx, thisframe);
+             if (obj != null) {
+            	String tunnelValStr = obj.getTunnel();            	
+            	if ((obj.getTunnel() != null) && XslTransformEvaluationHelper.isTunnelAttributeYes(tunnelValStr)) {
+            	   vars.setLocalVariable(++maxParamStackFrameIndex, obj, nextFrame);
+            	}
+             }
+             else {
+            	break; 
+             }
+          }
+          
+          ElemTemplateElement parentElem = getParentElem();
+          while (!(parentElem instanceof ElemTemplate)) {
+        	 parentElem = parentElem.getParentElem(); 
+          }
+          
+          List<XObject> tunnelParamObjList = parentElem.getTunnelParamObjList();
+          for (int idx = 0; idx < tunnelParamObjList.size(); idx++) {
+        	 XObject var = tunnelParamObjList.get(idx);
+        	 vars.setLocalVariable(++maxParamStackFrameIndex, var, nextFrame);
+          }
+          
           vars.setStackFrame(nextFrame);
         }
       }

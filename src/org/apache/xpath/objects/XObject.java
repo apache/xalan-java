@@ -29,6 +29,7 @@ import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XMLString;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
@@ -73,10 +74,24 @@ public class XObject extends Expression implements Serializable, Cloneable
   static final long serialVersionUID = -821887098985662951L;
 
   /**
-   * The java object which this object wraps.
-   *  @serial  
+   * The java object which this object wraps. 
    */
-  protected Object m_obj;  // This may be NULL!!!
+  protected Object m_obj;
+  
+  /**
+   * Stores XSLT parameter tunnel attribute's value.
+   * This shall be null, if this XObject instance 
+   * doesn't represent tunnel parameter's value.
+   */
+  private String m_tunnelStrVal;
+
+  /**
+   * Stores XSLT parameter's name, if the parameter
+   * has an attribute 'tunnel.
+   * This shall be null, if this XObject instance 
+   * doesn't represent tunnel parameter's value.
+   */
+  private QName m_QName;
 
   /**
    * Create an XObject.
@@ -1552,6 +1567,22 @@ public class XObject extends Expression implements Serializable, Cloneable
   		return false;
   		
   	return true;
+  }
+
+  public void setTunnel(String tunnelStrVal) {
+	 m_tunnelStrVal = tunnelStrVal;	
+  }
+  
+  public String getTunnel() {
+	 return m_tunnelStrVal;  
+  }
+
+  public void setQName(QName qName) {
+	 m_QName = qName;	
+  }
+  
+  public QName getQName() {
+	 return m_QName; 
   }
 
 }

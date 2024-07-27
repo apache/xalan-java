@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><result>
+  <info1>{a} hello </info1>
+  <info2>*** hello world ***</info2>
+  <info1>{b} hello </info1>
+  <info2>*** hello world ***</info2>
+  <info1>{c} hello </info1>
+  <info2>*** hello world ***</info2>
+</result>

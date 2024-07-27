@@ -259,6 +259,11 @@ public class XSLTSchema extends XSLTElementDef
     // xsl:variable, xsl:param, xsl:with-param, xsl:template, xsl:function 
     XSLTAttributeDef asAttrOpt = new XSLTAttributeDef(null, "as",
                                        XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
+    
+    // Optional.
+    // xsl:param, xsl:with-param 
+    XSLTAttributeDef tunnelAttrOpt = new XSLTAttributeDef(null, "tunnel",
+                                           XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
 
     // Optional.
     // Default: "node()"
@@ -479,8 +484,8 @@ public class XSLTSchema extends XSLTElementDef
                                     "with-param", null /*alias */,
                                     templateElements /* elements */,  // %template;>
                                     new XSLTAttributeDef[]{ nameAttrRequired,
-                                                            selectAttrOpt, asAttrOpt }, new ProcessorTemplateElem(),
-                                                                             ElemWithParam.class /* class object */, 19, true);
+                                                            selectAttrOpt, asAttrOpt, tunnelAttrOpt }, new ProcessorTemplateElem(),
+                                                            ElemWithParam.class /* class object */, 19, true);
     XSLTElementDef xslApplyTemplates = new XSLTElementDef(this,
                                          Constants.S_XSLNAMESPACEURL,
                                          "apply-templates", null /*alias */,
@@ -624,9 +629,9 @@ public class XSLTSchema extends XSLTElementDef
                                 null /*alias */,
                                 templateElements /* elements */,  // %template;>
                                 new XSLTAttributeDef[]{ nameAttrRequired,
-                                                        selectAttrOpt, asAttrOpt }, 
-                                       new ProcessorTemplateElem(),
-                                ElemParam.class /* class object */, 19, true);
+                                                        selectAttrOpt, asAttrOpt, tunnelAttrOpt }, 
+                                                        new ProcessorTemplateElem(),
+                                                        ElemParam.class /* class object */, 19, true);
     XSLTElementDef xslText =
       new XSLTElementDef(this, Constants.S_XSLNAMESPACEURL, "text",
                          null /*alias */,

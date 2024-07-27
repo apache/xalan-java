@@ -116,8 +116,8 @@ public class XPathParser
   protected final static int FILTER_MATCH_PRIMARY    = 1;
   protected final static int FILTER_MATCH_PREDICATES = 2;
   
-  /*
-   * While parsing certain XPath 3.1 expressions, we use this constant string 
+  /**
+   * With XPath parse of certain expressions, we use this constant string 
    * array to make parse decisions. The elements of this array are certain 
    * XPath language key words and symbols that need this support.
    */
@@ -129,10 +129,12 @@ public class XPathParser
                                                       "let", ":=", "-", "||", "=>", "instance", 
                                                       "of", "as" };
   
-  // If an XPath expression is () (i.e, representing an xdm empty sequence),
-  // we translate that within this XPath parser implementation, to an XPath
-  // range "to" expression using this class field (this equivalently produces
-  // an xdm empty sequence).
+  /**
+   * When an XPath expression is () (i.e, representing an xdm empty sequence),
+   * we translate that within this XPath parser implementation, to an XPath
+   * range "to" expression using this class field (this equivalently produces
+   * an xdm empty sequence).
+   */
   public static final String XPATH_EXPR_STR_EMPTY_SEQUENCE = "1 to 0";
   
   private static final List<String> XPATH_OP_ARR_TOKENS_LIST = Arrays.asList(XPATH_OP_ARR);
@@ -253,7 +255,7 @@ public class XPathParser
    * @param isSequenceTypeXPathExpr When this method is called, with this parameter
    *                                set to boolean value 'true', then an XPath parser object 
    *                                instance, instantiated from this class shall parse the XPath
-   *                                expression string assuming that it represents an XPath 3.1
+   *                                expression string assuming that it represents an XPath
    *                                sequence type expression (for e.g, as a value of "as" 
    *                                attribute of xsl:variable instruction). 
    *
@@ -280,16 +282,7 @@ public class XPathParser
 
     m_ops.setOp(0,OpCodes.OP_XPATH);
     m_ops.setOp(OpMap.MAPINDEX_LENGTH,2);
-    
-    
-	// Patch for Christine's gripe. She wants her errorHandler to return from
-	// a fatal error and continue trying to parse, rather than throwing an exception.
-	// Without the patch, that put us into an endless loop.
-	//
-	// %REVIEW% Is there a better way of doing this?
-	// %REVIEW% Are there any other cases which need the safety net?
-	// 	(and if so do we care right now, or should we rewrite the XPath
-	//	grammar engine and can fix it at that time?)
+        	
 	try {
 
       nextToken();
@@ -313,7 +306,7 @@ public class XPathParser
         }
 
         error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
-              new Object[]{ extraTokens });  //"Extra illegal tokens: "+extraTokens);
+              new Object[]{ extraTokens });
       }
 
     } 
@@ -321,13 +314,10 @@ public class XPathParser
     {
 	  if(CONTINUE_AFTER_FATAL_ERROR.equals(e.getMessage()))
 	  {
-		// What I _want_ to do is null out this XPath.
-		// I doubt this has the desired effect, but I'm not sure what else to do.
-		// %REVIEW%!!!
-		initXPath(compiler, "/..",  namespaceContext, false);
+		 initXPath(compiler, "/..",  namespaceContext, false);
 	  }
 	  else
-		throw e;
+		 throw e;
     }
 
     compiler.shrink();
@@ -378,7 +368,7 @@ public class XPathParser
       }
 
       error(XPATHErrorResources.ER_EXTRA_ILLEGAL_TOKENS,
-            new Object[]{ extraTokens });  //"Extra illegal tokens: "+extraTokens);
+            new Object[]{ extraTokens });
     }
 
     m_ops.setOp(m_ops.getOp(OpMap.MAPINDEX_LENGTH), OpCodes.ENDOP);
@@ -781,6 +771,7 @@ public class XPathParser
       
       if (tokenIs('(') && (prevToken.equals("(") || prevToken.equals(","))) {
      	 // XPath parse of literal sequence
+    	  
      	 StringBuffer strBuff = new StringBuffer();
      	 strBuff.append(m_token);    	 
      	 consumeExpected('(');
@@ -805,6 +796,7 @@ public class XPathParser
       }
       else if (tokenIs('[') && (prevToken.equals("(") || prevToken.equals(","))) {
      	 // XPath parse of literal array
+    	  
      	 StringBuffer strBuff = new StringBuffer();
      	 strBuff.append(m_token);    	 
      	 consumeExpected('[');
@@ -921,7 +913,7 @@ public class XPathParser
   }
   
   /**
-   * This method helps to implement, XPath 3.1 sequence type expressions.
+   * XPath parse of sequence type expressions.
    */
   private void setSequenceTypeOccurenceIndicator(XPathSequenceTypeExpr xpathSequenceTypeExpr, 
                                                                                    boolean isInlineFunction) throws TransformerException {
@@ -971,7 +963,7 @@ public class XPathParser
    }
    
    /**
-    * This method helps to implement, XPath 3.1 sequence type expressions.
+    * This method supports XPath parse of sequence type expressions.
     */
    private SequenceTypeKindTest constructSequenceTypeKindTestForXDMNodes(XPathSequenceTypeExpr 
                                                                                      xpathSequenceTypeExpr, 
@@ -1185,7 +1177,7 @@ public class XPathParser
     	  id = m_functionTable.getFunctionId(key);
     	}
       }
-      tok = ((Integer) id).intValue();
+      tok = ((Integer)id).intValue();
     }
     catch (NullPointerException npe)
     {
@@ -1280,9 +1272,11 @@ public class XPathParser
 	      }
 	  }
 	  else if (m_isXPathExprBeginParse && isLiteralSequenceOrArrayBegin()) {
-    	  // We consider XPath parse of sequence and array, in similar 
-    	  // way. These are different lexically only, by virtue of 
-    	  // sequence/array expression's delimiter characters.
+    	  /**
+		   * We consider XPath parse of sequence and array, in similar 
+    	   * way. These are lexically different only by virtue of sequence/array 
+    	   * expression's left-most and right-most delimiter characters.
+		   */
     	  
     	  boolean isSequenceConstructor = false;    	  
     	  if (tokenIs("(")) {
@@ -1491,7 +1485,7 @@ public class XPathParser
           }
       }      
       else if (m_isXPathExprBeginParse && tokenIs("map")) {
-    	  // An XPath parse of 'map' expression
+    	  // XPath parse of map expression
     	  
     	  int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
     	  
@@ -2193,10 +2187,11 @@ public class XPathParser
     
     if (tokenIs('(')) {
       if ("=".equals(getTokenRelative(-2))) {
-    	  // Previous token is, '='.    	  
-    	  // XPath 3.1 parse for RHS of general comparison operators, =, !=. 
+    	  // Previous token is, '='.
+    	  
+    	  // XPath parse for RHS of general comparison operators, =, !=. 
     	  // RHS of these operators that're handled here, have syntax of 
-    	  // type (a,b,c), i.e a literal sequence.
+    	  // type (a,b,c ...), i.e a literal sequence.
     	  
     	  TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
                                                                                    m_queueMark, m_tokenChar, m_token);
@@ -2301,15 +2296,7 @@ public class XPathParser
         }
         else 
         {
-           // Support for XPath 3.1 simple map operator '!'.
-        	
-           // An XPath expression SEQ!Expr evaluates an expression Expr once for every 
-           // item in the sequence obtained by evaluating SEQ. An XPath language operator "!" 
-           // may be applied to any sequence, irrespective of types of its items. An evaluation 
-           // for XPath operator '!', may also result in mixed sequence of XPath nodes, atomic 
-           // values, and function items.
-        	
-           // Ref : https://www.w3.org/TR/xpath-31/#id-map-operator
+           // XPath parse of simple map operator '!'        	           
             
            nextToken();
            insertOp(addPos, 2, OpCodes.OP_SIMPLE_MAP_OPERATOR);
@@ -2336,7 +2323,7 @@ public class XPathParser
       }
       else if (tokenIs("eq"))
       {
-        // Support for XPath 3.1 value comparison operator "eq"
+        // XPath parse of value comparison operator "eq"
           
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_VC_EQUALS);
@@ -2350,7 +2337,7 @@ public class XPathParser
       }
       else if (tokenIs("ne"))
       {
-        // Support for XPath 3.1 value comparison operator "ne"
+        // XPath parse of value comparison operator "ne"
           
         nextToken();
         insertOp(addPos, 2, OpCodes.OP_VC_NOT_EQUALS);
@@ -2404,10 +2391,10 @@ public class XPathParser
     
     if (tokenIs('(')) {
         if (isXPathGeneralRelationalComparisonWithSequence()) {
-        	// XPath 3.1 parse for RHS of general comparison relational 
+        	// XPath parse for RHS of general comparison relational 
         	// operators <, <=, >, >=.        	
-       	    // RHS for these operators that're handled here, have syntax 
-        	// of type (a,b,c), i.e a literal sequence.
+       	    // RHS for these XPath operators that're handled here, have 
+        	// syntax of type (a,b,c), i.e a literal sequence.
         	
         	TokenQueueScanPosition prevTokQueueScanPosition = new 
         			                                     TokenQueueScanPosition(m_queueMark, m_tokenChar, m_token);
@@ -2505,7 +2492,7 @@ public class XPathParser
         }
         else if (tokenIs('<'))
         {
-          // Support for XPath 3.1 node comparison operator "<<"
+          // XPath parse of node comparison operator "<<"
           
           nextToken();
           insertOp(addPos, 2, OpCodes.OP_NC_PRECEDE); 
@@ -2533,7 +2520,7 @@ public class XPathParser
         }
         else if (tokenIs('>'))
         {
-          // Support for XPath 3.1 node comparison operator ">>"
+          // XPath parse of node comparison operator ">>"
           
           nextToken();
           insertOp(addPos, 2, OpCodes.OP_NC_FOLLOWS);
@@ -2552,13 +2539,7 @@ public class XPathParser
       }
       else if (tokenIs("to"))
       {
-          // Support for XPath 3.1 range expression (i.e, an XPath operator "to").
-    	  
-    	  // An XPath language range expressions are used to construct a 
-    	  // sequence of consecutive integers. For e.g, an XPath language range expression
-    	  // "1 to 10" shall return following XPath result sequence (1, 2, 3, 4, 5, 6, 7, 8, 9, 10). 
-    	  
-    	  // Ref: https://www.w3.org/TR/xpath-31/#construct_seq    	  
+          // XPath parse of range "to" expression    	     	  
           
           nextToken();
           
@@ -2573,10 +2554,7 @@ public class XPathParser
       }
       else if (tokenIs("||"))
       {
-          // Support for XPath 3.1 string concatenation operator "||".
-    	  
-    	  // An XPath language string concatenation operator "||" may be used as an
-    	  // alternative means, for XPath string concatenation function 'concat'.
+          // XPath parse of string concatenation operator "||"    	  
           
           nextToken();
           
@@ -2591,7 +2569,7 @@ public class XPathParser
       }
       else if (tokenIs("=>"))
       {
-          // Support for XPath 3.1 arrow operator "=>"
+          // XPath parse of arrow operator "=>"
     	  
           consumeExpected("=>");
 
@@ -2610,7 +2588,7 @@ public class XPathParser
       }
       else if (tokenIs("lt"))
       {
-          // Support for XPath 3.1 value comparison operator "lt"
+          // XPath parse of value comparison operator "lt"
           
           nextToken();
         
@@ -2625,7 +2603,7 @@ public class XPathParser
       }
       else if (tokenIs("gt"))
       {
-          // Support for XPath 3.1 value comparison operator "gt"
+          // XPath parse of value comparison operator "gt"
           
           nextToken();
         
@@ -2640,7 +2618,7 @@ public class XPathParser
       }
       else if (tokenIs("le"))
       {
-          // Support for XPath 3.1 value comparison operator "le"
+          // XPath parse of value comparison operator "le"
           
           nextToken();
         
@@ -2655,7 +2633,7 @@ public class XPathParser
       }
       else if (tokenIs("ge"))
       {
-          // Support for XPath 3.1 value comparison operator "ge"
+          // XPath parse of value comparison operator "ge"
           
           nextToken();
         
@@ -2670,7 +2648,7 @@ public class XPathParser
       }
       else if (tokenIs("is"))
       {
-          // Support for XPath 3.1 node comparison operator "is"
+          // XPath parse of node comparison operator "is"
           
           nextToken();
         
@@ -2684,13 +2662,7 @@ public class XPathParser
           addPos += 2;
       }
       else if (tokenIs("instance") && lookahead("of", 1)) {
-          // Support for XPath 3.1 "instance of" expression.
-    	  
-    	  // An XPath language, "instance of" operator requires two operands. An 
-    	  // XPath evaluation for "instance of" expression returns value 'true',
-    	  // if the value of its first operand is of the type of its second operand.
-    	  
-    	  // Ref : https://www.w3.org/TR/xpath-31/#id-instance-of
+          // XPath parse of "instance of" expression    	  
           
           consumeExpected("instance");
           consumeExpected("of");
@@ -2705,12 +2677,7 @@ public class XPathParser
           addPos += 2;
       }      
       else if (tokenIs("cast") && lookahead("as", 1)) {
-          // Support for XPath 3.1 "cast as" expression.
-    	  
-    	  // An XPath expression "cast as" converts an input value, 
-    	  // to another value of a specific datatype.
-    	  
-    	  // Ref : https://www.w3.org/TR/xpath-31/#id-cast
+          // XPath parse of "cast as" expression    	  
           
           consumeExpected("cast");
           consumeExpected("as");
@@ -2726,12 +2693,7 @@ public class XPathParser
           addPos += 2;
       }
       else if (tokenIs("castable") && lookahead("as", 1)) {
-          // Support for XPath 3.1 "castable as" expression.
-    	  
-    	  // An XPath expression "castable as" tests (i.e, returns true, or false) 
-    	  // whether a given value is castable into another datatype.
-    	  
-    	  // Ref : https://www.w3.org/TR/xpath-31/#id-castable
+          // XPath parse of "castable as" expression    	  
           
           consumeExpected("castable");
           consumeExpected("as");
@@ -2753,7 +2715,7 @@ public class XPathParser
 
   /**
    * Check whether, there is XPath parse of general relational comparison using
-   * operators <,<=,>,>=.
+   * operators <, <=, >, >=.
    */
   private boolean isXPathGeneralRelationalComparisonWithSequence() {
 	  return ("<".equals(getTokenRelative(-2)) || 
@@ -3194,14 +3156,8 @@ public class XPathParser
       matchFound = true;
     }
     else if ((m_tokenChar == '$') && (lookahead('(', 2))) {
-       // Support for XPath 3.1 'dynamic function call' expression.
-    	
-       // For example, if an XPath inline function expression is bound
-       // to an XSLT variable as follows : <xsl:variable name="sqr" select="function($val) { $val * $val }"/>,
-       // then an XPath expression $sqr(5) shall return a value 25. For this example, 
-       // an XPath expression $sqr(5) is referred to as dynamic function call.
-    	
-       // Ref : https://www.w3.org/TR/xpath-31/#id-dynamic-function-invocation
+       // XPath parse of dynamic function call, & map and array
+       // information lookup using function call syntax.
                      
        appendOp(2, OpCodes.OP_DYNAMIC_FUNCTION_CALL);
        
@@ -3297,9 +3253,7 @@ public class XPathParser
       matchFound = true;
     }
     else if (tokenIs("function") && lookahead('(', 1)) {
-      // Support for XPath 3.1 "inline function" expression
-    	
-      // Ref : https://www.w3.org/TR/xpath-31/#id-inline-func
+      // XPath parse of inline function expression    	
       
       appendOp(2, OpCodes.OP_INLINE_FUNCTION);
       
@@ -3439,8 +3393,8 @@ public class XPathParser
     appendOp(2, OpCodes.OP_ARGUMENT);
     
     if (tokenIs('(')) {
-    	// XPath literal sequence as, function argument.
-    	// XPath 3.1 spec : 3.4.1 Constructing Sequences    	
+    	// XPath literal sequence as, function argument
+    	
     	TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
     			                                                           m_queueMark, m_tokenChar, m_token);
     	if (lookahead(')', 1)) {
@@ -3502,8 +3456,8 @@ public class XPathParser
     	}
     }
     else if (tokenIs('[')) {
-    	// XPath literal square array as, function argument.
-    	// XPath 3.1 spec : 3.11.2.1 Array Constructors    	
+    	// XPath literal square array as, function argument
+    	
     	consumeExpected('[');    		
 
     	List<String> arrConstructorXPathParts = new ArrayList<String>();
@@ -3523,8 +3477,8 @@ public class XPathParser
     			                               m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);	       
     }
     else if (tokenIs("array") && lookahead('{', 1)) {
-    	// XPath literal curly array as, function argument.
-    	// XPath 3.1 spec : 3.11.2.1 Array Constructors    	
+    	// XPath literal curly array as, function argument
+    	
     	consumeExpected("array");
     	consumeExpected('{');
 
@@ -3551,8 +3505,8 @@ public class XPathParser
     else if (lookahead(':', 1)) {
     	TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
                                                                                  m_queueMark, m_tokenChar, m_token);
-    	// Parse named function reference, for built-in functions
-    	// Ref : XPath 3.1 spec, "3.1.6 Named Function References"
+    	// XPath parse of named function reference, for built-in functions
+
     	if (tokenIs(FunctionTable.XPATH_BUILT_IN_FUNCS_NS_URI) || tokenIs(FunctionTable.XPATH_BUILT_IN_MATH_FUNCS_NS_URI) ||
     		tokenIs(FunctionTable.XPATH_BUILT_IN_MAP_FUNCS_NS_URI) || tokenIs(FunctionTable.XPATH_BUILT_IN_ARRAY_FUNCS_NS_URI)) {
     		String funcNamespaceUri = m_token;
@@ -3589,8 +3543,8 @@ public class XPathParser
     	}
     }
     else if (!m_token.contains(":") && m_token.contains("#") && isFuncArityWellFormedForNamedFuncRef(m_token)) {
-    	// Parse named function reference, for built-in functions
-    	// Ref : XPath 3.1 spec, "3.1.6 Named Function References"
+    	// XPath parse of named function reference, for built-in functions
+
     	TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
                                                                                   m_queueMark, m_tokenChar, m_token);
     	String funcName = m_token.substring(0, m_token.indexOf('#'));
@@ -3630,160 +3584,6 @@ public class XPathParser
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
                                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
     
-  }
-
-  /**
-   * This method is used to parse any of the following XPath literals : 
-   * 'sequence constructor', 'square array constructor', 'curly array 
-   * constructor'.
-   * 
-   * A valid pair of <lParen, rParen> characters, determine whether the
-   * token queue from current position incrementally shall be interpreted as
-   * one of the following XPath literals : 'sequence constructor', 'square array 
-   * constructor', or 'curly array constructor'.
-   * 
-   * @xpathExprPartList : String array, that'll be populated with xpath expression
-   *                      strings of the sequence/array items in order.
-   * @lParen            : This shall be one of following : '(', '[', '{'.
-   * @rParen            : This shall be one of following : ')', ']', '}'.                        
-   */
-  private void parseSequenceOrArrayConstructorFuncArg(List<String> xpathExprPartList, char lParen, 
-		                                                               char rParen) throws TransformerException {	  
-	  String xpathExpr = "";	  
-	  boolean fl1 = true;
-	  
-	  while (!tokenIs(rParen)) {
-		  if (!(tokenIs(',') || tokenIs(rParen))) {
-			  xpathExpr += m_token;
-			  nextToken();
-			  if (tokenIs(rParen) && !isStrHasBalancedParentheses(lParen + xpathExpr, lParen, rParen)) {
-				  if (lookahead(null, 1)) {
-					  xpathExprPartList.add(xpathExpr);
-					  break;
-				  }
-				  else if (lookahead(',', 1)) {
-					  xpathExprPartList.add(xpathExpr);
-					  xpathExpr = "";
-					  break;
-				  }
-				  else if (!xpathExpr.contains(lParen+"") && tokenIs(rParen)) {
-					  xpathExprPartList.add(xpathExpr);
-					  xpathExpr = "";
-					  break;
-				  }
-				  else {
-					  xpathExpr += m_token;
-				  }
-				  nextToken();
-				  if (tokenIs(rParen)) {
-					  if (isStrHasBalancedParentheses(lParen + xpathExpr + rParen, lParen, rParen) 
-							                                                    && !lookahead(rParen, 1)) {
-						  xpathExpr = (lParen + xpathExpr + m_token); 
-						  nextToken();
-						  fl1 = false;
-					  }
-				  }
-				  else {
-					  xpathExpr += m_token;
-					  nextToken();
-				  }
-			  }
-			  else if (fl1){		       	    
-				  if (tokenIs(',')) {
-					  xpathExprPartList.add(xpathExpr);
-					  xpathExpr = "";
-					  consumeExpected(',');
-				  }
-				  continue;
-			  }
-			  else {
-				  fl1 = true;
-				  xpathExpr += m_token;
-				  nextToken();
-				  break;
-			  }
-		  }
-		  else if (tokenIs(',')) {
-			  xpathExprPartList.add(xpathExpr);
-			  xpathExpr = "";
-			  consumeExpected(',');
-		  }
-	  } 
-  }
-
-  /**
-   * This method is used to parse, an XPath literal 'map' as 
-   * function argument.
-   */
-  private void mapFuncArg() throws TransformerException {	  
-
-	  int opPos1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
-	  
-	  nextToken();
-	  
-	  insertOp(opPos1, 2, OpCodes.OP_MAP_CONSTRUCTOR_EXPR);
-
-	  m_xpathMapConstructor = new XPathMapConstructor();
-	  
-	  Map<String, String> nativeMapObj = new HashMap<String, String>();                    
-
-	  consumeExpected('{');
-
-	  while (!tokenIs('}')) {        	 
-		  String mapEntryKeyXPathExprStr = m_token;
-		  nextToken();
-		  consumeExpected(':');
-		  String mapEntryValueXPathExprStr = null;
-		  if (tokenIs("map")) {
-			  // There's likely an XPath map constructor here, 
-			  // within this map. 	        		
-			  mapEntryValueXPathExprStr = getMapConstructorStrValue();
-		  }
-		  else if (tokenIs('[')) {
-			  // There's likely an XPath square array constructor here, 
-			  // within this map. 	        		
-			  mapEntryValueXPathExprStr = getXPathArrayConstructorStrValue(true); 
-		  }
-		  else if (tokenIs("array") && lookahead('{', 1)) {
-			  // There's likely an XPath curly array constructor here, 
-			  // within this map. 	        		
-			  mapEntryValueXPathExprStr = getXPathArrayConstructorStrValue(false); 
-		  }
-		  else {
-			  // The map's key value here is a simple value (i.e, not an array, or 
-			  // map).
-			  mapEntryValueXPathExprStr = m_token;
-			  while (!(tokenIs(',') || tokenIs('}'))) {
-				  nextToken();
-				  if (!(tokenIs(',') || tokenIs('}'))) {
-					  mapEntryValueXPathExprStr += m_token;
-				  }
-			  }
-		  }
-		  nativeMapObj.put(mapEntryKeyXPathExprStr, mapEntryValueXPathExprStr);
-		  if (tokenIs(',')) {
-			  consumeExpected(','); 
-		  }
-		  else if (tokenIs(']')) {
-			  consumeExpected(']');
-			  if (tokenIs(',')) {
-				  consumeExpected(','); 
-			  }
-			  else if (tokenIs('}')) {
-				  consumeExpected('}');
-				  break;
-			  }
-		  }
-		  else if (tokenIs('}')) {
-			  consumeExpected('}');
-			  break;
-		  }
-	  }
-
-	  m_xpathMapConstructor.setNativeMap(nativeMapObj);
-	  
-	  m_ops.setOp(opPos1 + OpMap.MAPINDEX_LENGTH,
-			                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos1);
   }
 
   /**
@@ -4840,700 +4640,7 @@ public class XPathParser
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
       m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
 
-    return trailingSlashConsumed;
-  }
-  
-  /**
-   * Parse XPath 'sequence type' expressions.
-   */
-  protected XPathSequenceTypeExpr SequenceTypeExpr(boolean isInlineFunction) 
-                                                                          throws javax.xml.transform.TransformerException {
-      int opPos = 0;
-      
-      if (!isInlineFunction) {
-         opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);                  
-         insertOp(opPos, 2, OpCodes.OP_SEQUENCE_TYPE_EXPR);
-      }
-      
-      XPathSequenceTypeExpr xpathSequenceTypeExpr = new XPathSequenceTypeExpr();
-      
-      SequenceTypeKindTest sequenceTypeKindTest = null;
-      
-      if (tokenIs("empty-sequence") && lookahead('(', 1) && lookahead(')', 2)) {
-         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.EMPTY_SEQUENCE);
-         consumeExpected("empty-sequence");
-         consumeExpected('(');
-         consumeExpected(')');
-      }      
-      else if (tokenIs("element")) {
-          sequenceTypeKindTest = constructSequenceTypeKindTestForXDMNodes(xpathSequenceTypeExpr, 
-                                                                                        SequenceTypeSupport.ELEMENT_KIND, isInlineFunction);          
-          xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);          
-      }
-      else if (tokenIs("attribute")) {
-          sequenceTypeKindTest = constructSequenceTypeKindTestForXDMNodes(xpathSequenceTypeExpr, 
-                                                                                        SequenceTypeSupport.ATTRIBUTE_KIND, isInlineFunction);          
-          xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
-      }
-      else if (tokenIs("text")) {
-          sequenceTypeKindTest = new SequenceTypeKindTest();
-          sequenceTypeKindTest.setKindVal(SequenceTypeSupport.TEXT_KIND);          
-          nextToken();
-          consumeExpected('(');
-          consumeExpected(')');
-          xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
-          if (m_token != null) {
-             setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction); 
-          }          
-      }
-      else if (tokenIs("namespace-node")) {
-          sequenceTypeKindTest = new SequenceTypeKindTest();
-          sequenceTypeKindTest.setKindVal(SequenceTypeSupport.NAMESPACE_NODE_KIND);          
-          nextToken();
-          consumeExpected('(');
-          consumeExpected(')');
-          xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
-          if (m_token != null) {
-             setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction); 
-          }
-      }
-      else if (tokenIs("node")) { 
-          sequenceTypeKindTest = new SequenceTypeKindTest();
-          sequenceTypeKindTest.setKindVal(SequenceTypeSupport.NODE_KIND);          
-          nextToken();
-          consumeExpected('(');
-          consumeExpected(')');
-          xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
-          if (m_token != null) {
-             setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction);  
-          }
-      }
-      else if (tokenIs("item")) {
-          sequenceTypeKindTest = new SequenceTypeKindTest();
-          sequenceTypeKindTest.setKindVal(SequenceTypeSupport.ITEM_KIND);          
-          nextToken();
-          consumeExpected('(');
-          consumeExpected(')');
-          xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
-          if (m_token != null) {
-             setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction);  
-          }
-      }
-      else if (tokenIs("function")) {
-    	  parseFunctionItemSequenceType(xpathSequenceTypeExpr);
-      }
-      else if (tokenIs("map")) {
-    	  parseXdmMapSequenceType(xpathSequenceTypeExpr);    	  
-      }
-      else if (tokenIs("array")) {
-          parseXdmArraySequenceType(xpathSequenceTypeExpr);
-      }
-      else if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
-          parseXdmBuiltInXmlSchemaSequenceType(isInlineFunction, xpathSequenceTypeExpr);         
-      }
-      else {
-          throw new javax.xml.transform.TransformerException("XPST0051 The sequence type '" + m_token + "' is not "
-                                                                                   + "recognized, within the provided sequence type expression."); 
-      }
-      
-      if (!isInlineFunction) {
-         m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
-                                                m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
-      }
-      
-      return xpathSequenceTypeExpr;
-  }
-
-  /**
-   * Parse XPath built-in XML Schema sequence type expressions.
-   */
-  private void parseXdmBuiltInXmlSchemaSequenceType(boolean isInlineFunction, XPathSequenceTypeExpr xpathSequenceTypeExpr)
-		                                                         throws TransformerException {	  
-	  
-	  consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-	  consumeExpected(':');
-	  
-	  switch (m_token) {
-	     case Keywords.FUNC_BOOLEAN_STRING :
-	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.BOOLEAN);
-	        break;
-	     case Keywords.XS_STRING :
-	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.STRING);
-	        break; 
-	     case Keywords.XS_NORMALIZED_STRING :
-	         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_NORMALIZED_STRING);
-	         break;
-	     case Keywords.XS_TOKEN :
-	         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_TOKEN);
-	         break;
-	     case Keywords.XS_DECIMAL :
-	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DECIMAL);
-	        break; 
-	     case Keywords.XS_FLOAT :
-	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_FLOAT);
-	        break; 
-	     case Keywords.XS_DOUBLE :
-	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DOUBLE);
-	        break;
-	     case Keywords.XS_INTEGER :
-	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_INTEGER);
-	        break;
-	     case Keywords.XS_NON_POSITIVE_INTEGER :
-		    xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_NON_POSITIVE_INTEGER);
-		    break;
-	     case Keywords.XS_NEGATIVE_INTEGER :
-			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_NEGATIVE_INTEGER);
-			break;
-	     case Keywords.XS_NON_NEGATIVE_INTEGER :
-			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER);
-			break;
-	     case Keywords.XS_POSITIVE_INTEGER :
-			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_POSITIVE_INTEGER);
-			break;
-	     case Keywords.XS_LONG :
-	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_LONG);
-	        break; 
-	     case Keywords.XS_INT :
-	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_INT);
-	        break;
-	     case Keywords.XS_SHORT :
-		    xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_SHORT);
-		    break;
-	     case Keywords.XS_BYTE :
-			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_BYTE);
-			break;
-	     case Keywords.XS_UNSIGNED_LONG :
-			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_LONG);
-			break;
-	     case Keywords.XS_UNSIGNED_INT :
-			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_INT);
-			break;
-	     case Keywords.XS_UNSIGNED_SHORT :
-			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_SHORT);
-			break;
-	     case Keywords.XS_UNSIGNED_BYTE :
-			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_BYTE);
-			break;
-	     case Keywords.XS_DATE :
-	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DATE);
-	        break;
-	     case Keywords.XS_DATETIME :
-	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DATETIME);
-	        break;
-	     case Keywords.XS_DURATION :
-	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DURATION);
-	        break;
-	     case Keywords.XS_YEAR_MONTH_DURATION :
-	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_YEARMONTH_DURATION);
-	        break;
-	     case Keywords.XS_DAY_TIME_DURATION :
-	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DAYTIME_DURATION);
-	        break;
-	     case Keywords.XS_TIME :
-	         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_TIME);
-	         break;
-	     case Keywords.XS_ANY_URI :
-	         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_ANY_URI);
-	         break;
-	     case Keywords.XS_QNAME :
-	         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_QNAME);
-	         break;
-	     case Keywords.XS_ANY_ATOMIC_TYPE :
-	         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_ANY_ATOMIC_TYPE);
-	         break;
-	     case Keywords.XS_UNTYPED_ATOMIC :
-	         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNTYPED_ATOMIC);
-	         break;
-	     case Keywords.XS_UNTYPED :
-	         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNTYPED);
-	         break;
-	     default :
-	        throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
-	                                                                                   + "recognized, within the provided sequence type expression.");        
-	  }
-	  
-	  nextToken();
-	  
-	  if ((m_token != null) && (xpathSequenceTypeExpr.getSequenceType() > 0)) {
-	     setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction);
-	  }
-  }
-
-  /**
-   * Parse XPath 'array' sequence type expressions.
-   */
-  private void parseXdmArraySequenceType(XPathSequenceTypeExpr xpathSequenceTypeExpr) throws TransformerException {
-	  
-	  SequenceTypeArrayTest sequenceTypeArrayTest = null;
-	  
-	  if (lookahead('(', 1) && lookahead('*', 2) && lookahead(')', 3)) {
-		  // handles ArrayTest of variety AnyArrayTest
-		  sequenceTypeArrayTest = new SequenceTypeArrayTest();
-		  sequenceTypeArrayTest.setIsAnyArrayTest(true);
-		  nextToken();
-		  consumeExpected('(');
-	      consumeExpected('*');
-	      consumeExpected(')');
-	      xpathSequenceTypeExpr.setSequenceTypeArrayTest(sequenceTypeArrayTest);
-	  }
-	  else {
-		  // handles ArrayTest of variety TypedArrayTest
-		  sequenceTypeArrayTest = new SequenceTypeArrayTest();
-		  nextToken();
-		  consumeExpected('(');
-		  
-		  SequenceTypeData arrayItemSequenceType = new SequenceTypeData();
-		  while ((m_token != null) && !tokenIs(')')) {
-			 if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
-			    consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			    consumeExpected(':');
-			    
-			    switch (m_token) {
-		            case Keywords.FUNC_BOOLEAN_STRING :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.BOOLEAN);
-		                break;
-		            case Keywords.XS_STRING :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.STRING);
-		                break; 
-		            case Keywords.XS_NORMALIZED_STRING :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_NORMALIZED_STRING);
-		                break;
-		            case Keywords.XS_TOKEN :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_TOKEN);
-		                break;
-		            case Keywords.XS_DECIMAL :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_DECIMAL);
-		                break; 
-		            case Keywords.XS_FLOAT :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_FLOAT);
-		                break; 
-		            case Keywords.XS_DOUBLE :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_DOUBLE);
-		                break;
-		            case Keywords.XS_INTEGER :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_INTEGER);
-		                break;
-		            case Keywords.XS_NON_POSITIVE_INTEGER :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_NON_POSITIVE_INTEGER);
-		                break;
-		            case Keywords.XS_NEGATIVE_INTEGER :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_NEGATIVE_INTEGER);
-		                break;
-		            case Keywords.XS_NON_NEGATIVE_INTEGER :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER);
-		                break;
-		            case Keywords.XS_POSITIVE_INTEGER :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_POSITIVE_INTEGER);
-		                break;
-		            case Keywords.XS_LONG :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_LONG);
-		                break; 
-		            case Keywords.XS_INT :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_INT);
-		                break;
-		            case Keywords.XS_SHORT :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_SHORT);
-		                break;
-		            case Keywords.XS_BYTE :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_BYTE);
-		                break;
-		            case Keywords.XS_UNSIGNED_LONG :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_LONG);
-		                break;
-		            case Keywords.XS_UNSIGNED_INT :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_INT);
-		                break;
-		            case Keywords.XS_UNSIGNED_SHORT :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_SHORT);
-		                break;
-		            case Keywords.XS_UNSIGNED_BYTE :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_BYTE);
-		                break;
-		            case Keywords.XS_DATE :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_DATE);
-		                break;
-		            case Keywords.XS_DATETIME :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_DATETIME);
-		                break;
-		            case Keywords.XS_DURATION :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_DURATION);
-		                break;
-		            case Keywords.XS_YEAR_MONTH_DURATION :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_YEARMONTH_DURATION);
-		                break;
-		            case Keywords.XS_DAY_TIME_DURATION :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_DAYTIME_DURATION);
-		                break;
-		            case Keywords.XS_TIME :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_TIME);
-		                break;
-		            case Keywords.XS_ANY_URI :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_ANY_URI);
-		                break;
-		            case Keywords.XS_QNAME :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_QNAME);
-		                break;
-		            case Keywords.XS_ANY_ATOMIC_TYPE :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_ANY_ATOMIC_TYPE);
-		                break;
-		            case Keywords.XS_UNTYPED_ATOMIC :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_UNTYPED_ATOMIC);
-		                break;
-		            case Keywords.XS_UNTYPED :
-		            	arrayItemSequenceType.setSequenceType(SequenceTypeSupport.XS_UNTYPED);
-		                break;
-		            default :
-		               throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
-	                                                                                          + "recognized, within the provided sequence type expression.");        
-	           }
-			 
-			   nextToken();
-		     }
-		 }
-		  
-		 consumeExpected(')');
-		  
-		 sequenceTypeArrayTest.setArrayItemTypeInfo(arrayItemSequenceType);  	    	  
-		 xpathSequenceTypeExpr.setSequenceTypeArrayTest(sequenceTypeArrayTest); 
-	  }
-  }
-
-  /**
-   * Parse XPath 'map' sequence type expressions.
-   */
-  private void parseXdmMapSequenceType(XPathSequenceTypeExpr xpathSequenceTypeExpr) throws TransformerException {
-	  
-	  SequenceTypeMapTest sequenceTypeMapTest = null;
-	  
-	  if (lookahead('(', 1) && lookahead('*', 2) && lookahead(')', 3)) {
-		  // handles MapTest of variety AnyMapTest
-		  sequenceTypeMapTest = new SequenceTypeMapTest();
-		  sequenceTypeMapTest.setIsAnyMapTest(true);
-		  nextToken();
-		  consumeExpected('(');
-	      consumeExpected('*');
-	      consumeExpected(')');
-	      xpathSequenceTypeExpr.setSequenceTypeMapTest(sequenceTypeMapTest);
-	  }
-	  else {
-		  // handles MapTest of variety TypedMapTest
-		  sequenceTypeMapTest = new SequenceTypeMapTest();
-		  nextToken();
-		  consumeExpected('(');
-		  
-		  SequenceTypeData keySequenceTypeData = new SequenceTypeData();    		  
-		  SequenceTypeData valueSequenceTypeData = new SequenceTypeData();
-		  
-		  while ((m_token != null) && !tokenIs(',')) {
-			 if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
-			    consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			    consumeExpected(':');
-			    
-			    switch (m_token) {
-		            case Keywords.FUNC_BOOLEAN_STRING :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.BOOLEAN);
-		                break;
-		            case Keywords.XS_STRING :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.STRING);
-		                break; 
-		            case Keywords.XS_NORMALIZED_STRING :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_NORMALIZED_STRING);
-		                break;
-		            case Keywords.XS_TOKEN :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_TOKEN);
-		                break;
-		            case Keywords.XS_DECIMAL :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DECIMAL);
-		                break; 
-		            case Keywords.XS_FLOAT :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_FLOAT);
-		                break; 
-		            case Keywords.XS_DOUBLE :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DOUBLE);
-		                break;
-		            case Keywords.XS_INTEGER :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_INTEGER);
-		                break;
-		            case Keywords.XS_NON_POSITIVE_INTEGER :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_NON_POSITIVE_INTEGER);
-		                break;
-		            case Keywords.XS_NEGATIVE_INTEGER :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_NEGATIVE_INTEGER);
-		                break;
-		            case Keywords.XS_NON_NEGATIVE_INTEGER :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER);
-		                break;
-		            case Keywords.XS_POSITIVE_INTEGER :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_POSITIVE_INTEGER);
-		                break;
-		            case Keywords.XS_LONG :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_LONG);
-		                break; 
-		            case Keywords.XS_INT :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_INT);
-		                break;
-		            case Keywords.XS_SHORT :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_SHORT);
-		                break;
-		            case Keywords.XS_BYTE :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_BYTE);
-		                break;
-		            case Keywords.XS_UNSIGNED_LONG :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_LONG);
-		                break;
-		            case Keywords.XS_UNSIGNED_INT :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_INT);
-		                break;
-		            case Keywords.XS_UNSIGNED_SHORT :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_SHORT);
-		                break;
-		            case Keywords.XS_UNSIGNED_BYTE :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_BYTE);
-		                break;
-		            case Keywords.XS_DATE :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DATE);
-		                break;
-		            case Keywords.XS_DATETIME :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DATETIME);
-		                break;
-		            case Keywords.XS_DURATION :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DURATION);
-		                break;
-		            case Keywords.XS_YEAR_MONTH_DURATION :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_YEARMONTH_DURATION);
-		                break;
-		            case Keywords.XS_DAY_TIME_DURATION :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DAYTIME_DURATION);
-		                break;
-		            case Keywords.XS_TIME :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_TIME);
-		                break;
-		            case Keywords.XS_ANY_URI :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_ANY_URI);
-		                break;
-		            case Keywords.XS_QNAME :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_QNAME);
-		                break;
-		            case Keywords.XS_ANY_ATOMIC_TYPE :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_ANY_ATOMIC_TYPE);
-		                break;
-		            case Keywords.XS_UNTYPED_ATOMIC :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNTYPED_ATOMIC);
-		                break;
-		            case Keywords.XS_UNTYPED :
-		            	keySequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNTYPED);
-		                break;
-		            default :
-		                throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
-	                                                                                          + "recognized, within the provided sequence type expression.");        
-	         }
-			 
-			 nextToken();
-		   }
-		}
-		  
-		consumeExpected(',');
-		  
-		while ((m_token != null) && !tokenIs(')')) {
-			 if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
-			    consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			    consumeExpected(':');
-			    
-			    switch (m_token) {
-		            case Keywords.FUNC_BOOLEAN_STRING :
-		                valueSequenceTypeData.setSequenceType(SequenceTypeSupport.BOOLEAN);
-		                break;
-		            case Keywords.XS_STRING :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.STRING);
-		                break; 
-		            case Keywords.XS_NORMALIZED_STRING :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_NORMALIZED_STRING);
-		                break;
-		            case Keywords.XS_TOKEN :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_TOKEN);
-		                break;
-		            case Keywords.XS_DECIMAL :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DECIMAL);
-		                break; 
-		            case Keywords.XS_FLOAT :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_FLOAT);
-		                break; 
-		            case Keywords.XS_DOUBLE :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DOUBLE);
-		                break;
-		            case Keywords.XS_INTEGER :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_INTEGER);
-		                break;
-		            case Keywords.XS_NON_POSITIVE_INTEGER :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_NON_POSITIVE_INTEGER);
-		                break;
-		            case Keywords.XS_NEGATIVE_INTEGER :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_NEGATIVE_INTEGER);
-		                break;
-		            case Keywords.XS_NON_NEGATIVE_INTEGER :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER);
-		                break;
-		            case Keywords.XS_POSITIVE_INTEGER :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_POSITIVE_INTEGER);
-		                break;
-		            case Keywords.XS_LONG :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_LONG);
-		                break; 
-		            case Keywords.XS_INT :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_INT);
-		                break;
-		            case Keywords.XS_SHORT :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_SHORT);
-		                break;
-		            case Keywords.XS_BYTE :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_BYTE);
-		                break;
-		            case Keywords.XS_UNSIGNED_LONG :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_LONG);
-		                break;
-		            case Keywords.XS_UNSIGNED_INT :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_INT);
-		                break;
-		            case Keywords.XS_UNSIGNED_SHORT :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_SHORT);
-		                break;
-		            case Keywords.XS_UNSIGNED_BYTE :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_BYTE);
-		                break;
-		            case Keywords.XS_DATE :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DATE);
-		                break;
-		            case Keywords.XS_DATETIME :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DATETIME);
-		                break;
-		            case Keywords.XS_DURATION :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DURATION);
-		                break;
-		            case Keywords.XS_YEAR_MONTH_DURATION :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_YEARMONTH_DURATION);
-		                break;
-		            case Keywords.XS_DAY_TIME_DURATION :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_DAYTIME_DURATION);
-		                break;
-		            case Keywords.XS_TIME :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_TIME);
-		                break;
-		            case Keywords.XS_ANY_URI :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_ANY_URI);
-		                break;
-		            case Keywords.XS_QNAME :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_QNAME);
-		                break;
-		            case Keywords.XS_ANY_ATOMIC_TYPE :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_ANY_ATOMIC_TYPE);
-		                break;
-		            case Keywords.XS_UNTYPED_ATOMIC :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNTYPED_ATOMIC);
-		                break;
-		            case Keywords.XS_UNTYPED :
-		            	valueSequenceTypeData.setSequenceType(SequenceTypeSupport.XS_UNTYPED);
-		                break;
-		            default :
-		                throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
-	                                                                                          + "recognized, within the provided sequence type expression.");        
-	         }    	             	         
-	         
-	         nextToken();     	         
-	         consumeExpected(')');
-		   }     			      		   
-		}
-		
-		sequenceTypeMapTest.setKeySequenceTypeData(keySequenceTypeData);
-		sequenceTypeMapTest.setValueSequenceTypeData(valueSequenceTypeData);
-		  
-		xpathSequenceTypeExpr.setSequenceTypeMapTest(sequenceTypeMapTest);
-	 }
-  }
-
-  /**
-   * Parse XPath 'function item' sequence type expressions.
-   */
-  private void parseFunctionItemSequenceType(XPathSequenceTypeExpr xpathSequenceTypeExpr) throws TransformerException {
-	
-	  SequenceTypeFunctionTest sequenceTypeFunctionTest = null;
-	  
-	  if (lookahead('(', 1) && lookahead('*', 2) && lookahead(')', 3)) {
-		  // handles FunctionTest of variety AnyFunctionTest
-		  sequenceTypeFunctionTest = new SequenceTypeFunctionTest();
-		  sequenceTypeFunctionTest.setIsAnyFunctionTest(true);
-		  nextToken();
-		  consumeExpected('(');
-	      consumeExpected('*');
-	      consumeExpected(')');
-	      xpathSequenceTypeExpr.setSequenceTypeFunctionTest(sequenceTypeFunctionTest);
-	  }
-	  else {
-		  // handles FunctionTest of variety TypedFunctionTest
-		  sequenceTypeFunctionTest = new SequenceTypeFunctionTest();
-		  nextToken();
-		  consumeExpected('(');
-		  List<String> typedFunctionTestPrefixList = new ArrayList<String>();    		  
-		  if (!lookahead(')', 1)) {
-			 // There's at-least one parameter definition, for TypedFunctionTest
-			 String typedFunctionTestPrefixPart = "";
-			 while (m_token != null) {
-				if (!(tokenIs(',') || tokenIs(')'))) {
-				   typedFunctionTestPrefixPart = typedFunctionTestPrefixPart + m_token;
-				   nextToken();
-				}
-				else if (tokenIs(',')) {
-				   if (!isStrHasBalancedParentheses(typedFunctionTestPrefixPart, '(', ')')) {
-				      typedFunctionTestPrefixPart = typedFunctionTestPrefixPart + m_token;
-				      nextToken();
-				   }
-				   else {
-					  typedFunctionTestPrefixList.add(typedFunctionTestPrefixPart);
-					  typedFunctionTestPrefixPart = "";
-					  if (tokenIs(')')) {
-						 break;  
-					  }
-					  else {
-					     nextToken();
-					  }
-				   }
-				}
-				else if (tokenIs(')')) {
-				   if (lookahead(',', 1) || lookahead(')', 1) || lookahead('*', 1) || 
-						                    lookahead('+', 1) || lookahead('?', 1)) {
-					  typedFunctionTestPrefixPart = typedFunctionTestPrefixPart + m_token;
-					  nextToken(); 
-				   }
-				   else {
-					  typedFunctionTestPrefixList.add(typedFunctionTestPrefixPart);
-	 				  typedFunctionTestPrefixPart = "";
-	 				  if (tokenIs(')')) {
-					     break;  
-				      }
-				      else {
-				         nextToken();
-				      }
-				   }
-				}
-			 }
-		  }
-		  
-		  sequenceTypeFunctionTest.setTypedFunctionTestPrefixList(typedFunctionTestPrefixList);
-		  
-		  consumeExpected(')');
-		  consumeExpected("as");
-		  
-		  String typedFunctionTestReturnType = "";
-		  while (m_token != null) {
-			 typedFunctionTestReturnType = typedFunctionTestReturnType + m_token;
-			 nextToken();
-		  }
-		  
-		  if (!"".equals(typedFunctionTestReturnType)) {
-			 sequenceTypeFunctionTest.setTypedFunctionTestReturnType(typedFunctionTestReturnType);  
-		  }
-		  
-		  xpathSequenceTypeExpr.setSequenceTypeFunctionTest(sequenceTypeFunctionTest);
-	  }	  
+     return trailingSlashConsumed;
    }
   
    public String getArrowOpRemainingXPathExprStr() {
@@ -5541,16 +4648,677 @@ public class XPathParser
    }
    
    /**
-    * Sometimes, during an XPath expression parse, the current parse
+    * This method is used to parse any of the following XPath literals : 
+    * 'sequence constructor', 'square array constructor', 'curly array 
+    * constructor'.
+    * 
+    * A valid pair of <lParen, rParen> characters, determine whether the
+    * token queue from current position incrementally shall be interpreted as
+    * one of the following XPath literals : 'sequence constructor', 'square array 
+    * constructor', or 'curly array constructor'.
+    * 
+    * @param       xpathExprPartList    String array, that'll be populated with xpath expression
+    *                                   strings of the sequence/array items in order.
+    * @param       lParen               This shall be one of following : '(', '[', '{'.
+    * @param       rParen               This shall be one of following : ')', ']', '}'.                        
+    */
+   private void parseSequenceOrArrayConstructorFuncArg(List<String> xpathExprPartList, char lParen, 
+ 		                                                                               char rParen) throws TransformerException {	  
+ 	  String xpathExpr = "";	  
+ 	  boolean fl1 = true;
+ 	  
+ 	  while (!tokenIs(rParen)) {
+ 		  if (!(tokenIs(',') || tokenIs(rParen))) {
+ 			  xpathExpr += m_token;
+ 			  nextToken();
+ 			  if (tokenIs(rParen) && !isStrHasBalancedParentheses(lParen + xpathExpr, lParen, rParen)) {
+ 				  if (lookahead(null, 1)) {
+ 					  xpathExprPartList.add(xpathExpr);
+ 					  break;
+ 				  }
+ 				  else if (lookahead(',', 1)) {
+ 					  xpathExprPartList.add(xpathExpr);
+ 					  xpathExpr = "";
+ 					  break;
+ 				  }
+ 				  else if (!xpathExpr.contains(lParen+"") && tokenIs(rParen)) {
+ 					  xpathExprPartList.add(xpathExpr);
+ 					  xpathExpr = "";
+ 					  break;
+ 				  }
+ 				  else {
+ 					  xpathExpr += m_token;
+ 				  }
+ 				  nextToken();
+ 				  if (tokenIs(rParen)) {
+ 					  if (isStrHasBalancedParentheses(lParen + xpathExpr + rParen, lParen, rParen) 
+ 							                                                    && !lookahead(rParen, 1)) {
+ 						  xpathExpr = (lParen + xpathExpr + m_token); 
+ 						  nextToken();
+ 						  fl1 = false;
+ 					  }
+ 				  }
+ 				  else {
+ 					  xpathExpr += m_token;
+ 					  nextToken();
+ 				  }
+ 			  }
+ 			  else if (fl1){		       	    
+ 				  if (tokenIs(',')) {
+ 					  xpathExprPartList.add(xpathExpr);
+ 					  xpathExpr = "";
+ 					  consumeExpected(',');
+ 				  }
+ 				  continue;
+ 			  }
+ 			  else {
+ 				  fl1 = true;
+ 				  xpathExpr += m_token;
+ 				  nextToken();
+ 				  break;
+ 			  }
+ 		  }
+ 		  else if (tokenIs(',')) {
+ 			  xpathExprPartList.add(xpathExpr);
+ 			  xpathExpr = "";
+ 			  consumeExpected(',');
+ 		  }
+ 	  } 
+   }
+   
+   /**
+    * XPath parse of literal map as function argument.
+    */
+   private void mapFuncArg() throws TransformerException {	  
+
+ 	  int opPos1 = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+ 	  
+ 	  nextToken();
+ 	  
+ 	  insertOp(opPos1, 2, OpCodes.OP_MAP_CONSTRUCTOR_EXPR);
+
+ 	  m_xpathMapConstructor = new XPathMapConstructor();
+ 	  
+ 	  Map<String, String> nativeMapObj = new HashMap<String, String>();                    
+
+ 	  consumeExpected('{');
+
+ 	  while (!tokenIs('}')) {        	 
+ 		  String mapEntryKeyXPathExprStr = m_token;
+ 		  nextToken();
+ 		  consumeExpected(':');
+ 		  String mapEntryValueXPathExprStr = null;
+ 		  if (tokenIs("map")) {
+ 			  // There's likely an XPath map constructor here, 
+ 			  // within this map. 	        		
+ 			  mapEntryValueXPathExprStr = getMapConstructorStrValue();
+ 		  }
+ 		  else if (tokenIs('[')) {
+ 			  // There's likely an XPath square array constructor here, 
+ 			  // within this map. 	        		
+ 			  mapEntryValueXPathExprStr = getXPathArrayConstructorStrValue(true); 
+ 		  }
+ 		  else if (tokenIs("array") && lookahead('{', 1)) {
+ 			  // There's likely an XPath curly array constructor here, 
+ 			  // within this map. 	        		
+ 			  mapEntryValueXPathExprStr = getXPathArrayConstructorStrValue(false); 
+ 		  }
+ 		  else {
+ 			  // The map's key value here is a simple value (i.e, not an array, or 
+ 			  // map).
+ 			  mapEntryValueXPathExprStr = m_token;
+ 			  while (!(tokenIs(',') || tokenIs('}'))) {
+ 				  nextToken();
+ 				  if (!(tokenIs(',') || tokenIs('}'))) {
+ 					  mapEntryValueXPathExprStr += m_token;
+ 				  }
+ 			  }
+ 		  }
+ 		  nativeMapObj.put(mapEntryKeyXPathExprStr, mapEntryValueXPathExprStr);
+ 		  if (tokenIs(',')) {
+ 			  consumeExpected(','); 
+ 		  }
+ 		  else if (tokenIs(']')) {
+ 			  consumeExpected(']');
+ 			  if (tokenIs(',')) {
+ 				  consumeExpected(','); 
+ 			  }
+ 			  else if (tokenIs('}')) {
+ 				  consumeExpected('}');
+ 				  break;
+ 			  }
+ 		  }
+ 		  else if (tokenIs('}')) {
+ 			  consumeExpected('}');
+ 			  break;
+ 		  }
+ 	  }
+
+ 	  m_xpathMapConstructor.setNativeMap(nativeMapObj);
+ 	  
+ 	  m_ops.setOp(opPos1 + OpMap.MAPINDEX_LENGTH,
+ 			                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos1);
+   }
+   
+   /**
+    * XPath parse of sequence type expressions.
+    */
+   private XPathSequenceTypeExpr SequenceTypeExpr(boolean isInlineFunction) 
+ 		                                                                 throws javax.xml.transform.TransformerException {
+       int opPos = 0;
+       
+       if (!isInlineFunction) {
+          opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);                  
+          insertOp(opPos, 2, OpCodes.OP_SEQUENCE_TYPE_EXPR);
+       }
+       
+       XPathSequenceTypeExpr xpathSequenceTypeExpr = new XPathSequenceTypeExpr();
+       
+       SequenceTypeKindTest sequenceTypeKindTest = null;
+       
+       if (tokenIs("empty-sequence") && lookahead('(', 1) && lookahead(')', 2)) {
+           xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.EMPTY_SEQUENCE);
+           consumeExpected("empty-sequence");
+           consumeExpected('(');
+           consumeExpected(')');
+       }      
+       else if (tokenIs("element")) {
+           sequenceTypeKindTest = constructSequenceTypeKindTestForXDMNodes(xpathSequenceTypeExpr, 
+                                                                                         SequenceTypeSupport.ELEMENT_KIND, isInlineFunction);          
+           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);          
+       }
+       else if (tokenIs("attribute")) {
+           sequenceTypeKindTest = constructSequenceTypeKindTestForXDMNodes(xpathSequenceTypeExpr, 
+                                                                                         SequenceTypeSupport.ATTRIBUTE_KIND, isInlineFunction);          
+           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
+       }
+       else if (tokenIs("text")) {
+           sequenceTypeKindTest = new SequenceTypeKindTest();
+           sequenceTypeKindTest.setKindVal(SequenceTypeSupport.TEXT_KIND);          
+           nextToken();
+           consumeExpected('(');
+           consumeExpected(')');
+           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
+           if (m_token != null) {
+              setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction); 
+           }          
+       }
+       else if (tokenIs("namespace-node")) {
+           sequenceTypeKindTest = new SequenceTypeKindTest();
+           sequenceTypeKindTest.setKindVal(SequenceTypeSupport.NAMESPACE_NODE_KIND);          
+           nextToken();
+           consumeExpected('(');
+           consumeExpected(')');
+           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
+           if (m_token != null) {
+              setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction); 
+           }
+       }
+       else if (tokenIs("node")) { 
+           sequenceTypeKindTest = new SequenceTypeKindTest();
+           sequenceTypeKindTest.setKindVal(SequenceTypeSupport.NODE_KIND);          
+           nextToken();
+           consumeExpected('(');
+           consumeExpected(')');
+           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
+           if (m_token != null) {
+              setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction);  
+           }
+       }
+       else if (tokenIs("item")) {
+           sequenceTypeKindTest = new SequenceTypeKindTest();
+           sequenceTypeKindTest.setKindVal(SequenceTypeSupport.ITEM_KIND);          
+           nextToken();
+           consumeExpected('(');
+           consumeExpected(')');
+           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
+           if (m_token != null) {
+              setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction);  
+           }
+       }
+       else if (tokenIs("function")) {
+     	   parseFunctionItemSequenceType(xpathSequenceTypeExpr);
+       }
+       else if (tokenIs("map")) {
+     	   parseXdmMapSequenceType(xpathSequenceTypeExpr);    	  
+       }
+       else if (tokenIs("array")) {
+           parseXdmArraySequenceType(xpathSequenceTypeExpr);
+       }
+       else if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
+           parseXdmBuiltInXmlSchemaSequenceType(isInlineFunction, xpathSequenceTypeExpr);         
+       }
+       else {
+           throw new javax.xml.transform.TransformerException("XPST0051 The sequence type '" + m_token + "' is not "
+                                                                                    + "recognized, within the provided sequence type expression."); 
+       }
+       
+       if (!isInlineFunction) {
+          m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                                                 m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+       }
+       
+       return xpathSequenceTypeExpr;
+   }
+   
+   /**
+    * XPath parse of built-in XML Schema sequence type expressions.
+    */
+   private void parseXdmBuiltInXmlSchemaSequenceType(boolean isInlineFunction, XPathSequenceTypeExpr xpathSequenceTypeExpr)
+ 		                                                                      throws TransformerException {	  
+ 	  
+ 	  consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+ 	  consumeExpected(':');
+ 	  
+ 	  switch (m_token) {
+ 	     case Keywords.FUNC_BOOLEAN_STRING :
+ 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.BOOLEAN);
+ 	        break;
+ 	     case Keywords.XS_STRING :
+ 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.STRING);
+ 	        break; 
+ 	     case Keywords.XS_NORMALIZED_STRING :
+ 	         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_NORMALIZED_STRING);
+ 	         break;
+ 	     case Keywords.XS_TOKEN :
+ 	         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_TOKEN);
+ 	         break;
+ 	     case Keywords.XS_DECIMAL :
+ 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DECIMAL);
+ 	        break; 
+ 	     case Keywords.XS_FLOAT :
+ 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_FLOAT);
+ 	        break; 
+ 	     case Keywords.XS_DOUBLE :
+ 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DOUBLE);
+ 	        break;
+ 	     case Keywords.XS_INTEGER :
+ 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_INTEGER);
+ 	        break;
+ 	     case Keywords.XS_NON_POSITIVE_INTEGER :
+ 		    xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_NON_POSITIVE_INTEGER);
+ 		    break;
+ 	     case Keywords.XS_NEGATIVE_INTEGER :
+ 			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_NEGATIVE_INTEGER);
+ 			break;
+ 	     case Keywords.XS_NON_NEGATIVE_INTEGER :
+ 			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER);
+ 			break;
+ 	     case Keywords.XS_POSITIVE_INTEGER :
+ 			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_POSITIVE_INTEGER);
+ 			break;
+ 	     case Keywords.XS_LONG :
+ 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_LONG);
+ 	        break; 
+ 	     case Keywords.XS_INT :
+ 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_INT);
+ 	        break;
+ 	     case Keywords.XS_SHORT :
+ 		    xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_SHORT);
+ 		    break;
+ 	     case Keywords.XS_BYTE :
+ 			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_BYTE);
+ 			break;
+ 	     case Keywords.XS_UNSIGNED_LONG :
+ 			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_LONG);
+ 			break;
+ 	     case Keywords.XS_UNSIGNED_INT :
+ 			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_INT);
+ 			break;
+ 	     case Keywords.XS_UNSIGNED_SHORT :
+ 			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_SHORT);
+ 			break;
+ 	     case Keywords.XS_UNSIGNED_BYTE :
+ 			xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_BYTE);
+ 			break;
+ 	     case Keywords.XS_DATE :
+ 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DATE);
+ 	        break;
+ 	     case Keywords.XS_DATETIME :
+ 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DATETIME);
+ 	        break;
+ 	     case Keywords.XS_DURATION :
+ 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DURATION);
+ 	        break;
+ 	     case Keywords.XS_YEAR_MONTH_DURATION :
+ 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_YEARMONTH_DURATION);
+ 	        break;
+ 	     case Keywords.XS_DAY_TIME_DURATION :
+ 	        xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_DAYTIME_DURATION);
+ 	        break;
+ 	     case Keywords.XS_TIME :
+ 	         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_TIME);
+ 	         break;
+ 	     case Keywords.XS_ANY_URI :
+ 	         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_ANY_URI);
+ 	         break;
+ 	     case Keywords.XS_QNAME :
+ 	         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_QNAME);
+ 	         break;
+ 	     case Keywords.XS_ANY_ATOMIC_TYPE :
+ 	         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_ANY_ATOMIC_TYPE);
+ 	         break;
+ 	     case Keywords.XS_UNTYPED_ATOMIC :
+ 	         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNTYPED_ATOMIC);
+ 	         break;
+ 	     case Keywords.XS_UNTYPED :
+ 	         xpathSequenceTypeExpr.setSequenceType(SequenceTypeSupport.XS_UNTYPED);
+ 	         break;
+ 	     default :
+ 	        throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
+ 	                                                                                   + "recognized, within the provided sequence type expression.");        
+ 	  }
+ 	  
+ 	  nextToken();
+ 	  
+ 	  if ((m_token != null) && (xpathSequenceTypeExpr.getSequenceType() > 0)) {
+ 	     setSequenceTypeOccurenceIndicator(xpathSequenceTypeExpr, isInlineFunction);
+ 	  }
+   }
+   
+   /**
+    * XPath parse of function item sequence type expressions.
+    */
+   private void parseFunctionItemSequenceType(XPathSequenceTypeExpr xpathSequenceTypeExpr) throws TransformerException {
+ 	
+ 	  SequenceTypeFunctionTest sequenceTypeFunctionTest = null;
+ 	  
+ 	  if (lookahead('(', 1) && lookahead('*', 2) && lookahead(')', 3)) {
+ 		  // sequence type FunctionTest of variety AnyFunctionTest
+ 		  sequenceTypeFunctionTest = new SequenceTypeFunctionTest();
+ 		  sequenceTypeFunctionTest.setIsAnyFunctionTest(true);
+ 		  nextToken();
+ 		  consumeExpected('(');
+ 	      consumeExpected('*');
+ 	      consumeExpected(')');
+ 	      xpathSequenceTypeExpr.setSequenceTypeFunctionTest(sequenceTypeFunctionTest);
+ 	  }
+ 	  else {
+ 		  // sequence type FunctionTest of variety TypedFunctionTest
+ 		  sequenceTypeFunctionTest = new SequenceTypeFunctionTest();
+ 		  nextToken();
+ 		  consumeExpected('(');
+ 		  List<String> typedFunctionTestPrefixList = new ArrayList<String>();    		  
+ 		  if (!lookahead(')', 1)) {
+ 			 // There's at-least one parameter definition, for TypedFunctionTest
+ 			 String typedFunctionTestPrefixPart = "";
+ 			 while (m_token != null) {
+ 				if (!(tokenIs(',') || tokenIs(')'))) {
+ 				   typedFunctionTestPrefixPart = typedFunctionTestPrefixPart + m_token;
+ 				   nextToken();
+ 				}
+ 				else if (tokenIs(',')) {
+ 				   if (!isStrHasBalancedParentheses(typedFunctionTestPrefixPart, '(', ')')) {
+ 				      typedFunctionTestPrefixPart = typedFunctionTestPrefixPart + m_token;
+ 				      nextToken();
+ 				   }
+ 				   else {
+ 					  typedFunctionTestPrefixList.add(typedFunctionTestPrefixPart);
+ 					  typedFunctionTestPrefixPart = "";
+ 					  if (tokenIs(')')) {
+ 						 break;  
+ 					  }
+ 					  else {
+ 					     nextToken();
+ 					  }
+ 				   }
+ 				}
+ 				else if (tokenIs(')')) {
+ 				   if (lookahead(',', 1) || lookahead(')', 1) || lookahead('*', 1) || 
+ 						                    lookahead('+', 1) || lookahead('?', 1)) {
+ 					  typedFunctionTestPrefixPart = typedFunctionTestPrefixPart + m_token;
+ 					  nextToken(); 
+ 				   }
+ 				   else {
+ 					  typedFunctionTestPrefixList.add(typedFunctionTestPrefixPart);
+ 	 				  typedFunctionTestPrefixPart = "";
+ 	 				  if (tokenIs(')')) {
+ 					     break;  
+ 				      }
+ 				      else {
+ 				         nextToken();
+ 				      }
+ 				   }
+ 				}
+ 			 }
+ 		  }
+ 		  
+ 		  sequenceTypeFunctionTest.setTypedFunctionTestPrefixList(typedFunctionTestPrefixList);
+ 		  
+ 		  consumeExpected(')');
+ 		  consumeExpected("as");
+ 		  
+ 		  String typedFunctionTestReturnType = "";
+ 		  while (m_token != null) {
+ 			 typedFunctionTestReturnType = typedFunctionTestReturnType + m_token;
+ 			 nextToken();
+ 		  }
+ 		  
+ 		  if (!"".equals(typedFunctionTestReturnType)) {
+ 			 sequenceTypeFunctionTest.setTypedFunctionTestReturnType(typedFunctionTestReturnType);  
+ 		  }
+ 		  
+ 		  xpathSequenceTypeExpr.setSequenceTypeFunctionTest(sequenceTypeFunctionTest);
+ 	  }	  
+    }
+
+   /**
+    * XPath parse of map sequence type expressions.
+    */
+   private void parseXdmMapSequenceType(XPathSequenceTypeExpr xpathSequenceTypeExpr) throws TransformerException {
+ 	  
+ 	  SequenceTypeMapTest sequenceTypeMapTest = null;
+ 	  
+ 	  if (lookahead('(', 1) && lookahead('*', 2) && lookahead(')', 3)) {
+ 		  // sequence type MapTest with variety AnyMapTest
+ 		  sequenceTypeMapTest = new SequenceTypeMapTest();
+ 		  sequenceTypeMapTest.setIsAnyMapTest(true);
+ 		  nextToken();
+ 		  consumeExpected('(');
+ 	      consumeExpected('*');
+ 	      consumeExpected(')');
+ 	      xpathSequenceTypeExpr.setSequenceTypeMapTest(sequenceTypeMapTest);
+ 	  }
+ 	  else {
+ 		  // sequence type MapTest with variety TypedMapTest
+ 		  sequenceTypeMapTest = new SequenceTypeMapTest();
+ 		  nextToken();
+ 		  consumeExpected('(');
+ 		  
+ 		  SequenceTypeData keySequenceTypeData = new SequenceTypeData();    		  
+ 		  SequenceTypeData valueSequenceTypeData = new SequenceTypeData();
+ 		  
+ 		  while ((m_token != null) && !tokenIs(',')) {
+ 			 if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
+ 			    consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+ 			    consumeExpected(':');
+ 			    
+ 			    populateSequenceTypeData(keySequenceTypeData);
+ 			 
+ 			    nextToken();
+ 		     }
+ 		  }
+ 		  
+ 		  consumeExpected(',');
+ 		  
+ 		  while ((m_token != null) && !tokenIs(')')) {
+ 			  if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
+ 				  consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+ 				  consumeExpected(':');
+
+ 				  populateSequenceTypeData(valueSequenceTypeData);    	             	         
+
+ 				  nextToken();     	         
+ 				  consumeExpected(')');
+ 			  }     			      		   
+ 		  }
+ 		
+ 		  sequenceTypeMapTest.setKeySequenceTypeData(keySequenceTypeData);
+ 		  sequenceTypeMapTest.setValueSequenceTypeData(valueSequenceTypeData);
+ 		  
+ 		  xpathSequenceTypeExpr.setSequenceTypeMapTest(sequenceTypeMapTest);
+ 	   }
+   }
+   
+   /**
+    * XPath parse of array sequence type expressions.
+    */
+   private void parseXdmArraySequenceType(XPathSequenceTypeExpr xpathSequenceTypeExpr) throws TransformerException {
+ 	  
+ 	  SequenceTypeArrayTest sequenceTypeArrayTest = null;
+ 	  
+ 	  if (lookahead('(', 1) && lookahead('*', 2) && lookahead(')', 3)) {
+ 		  // sequence type ArrayTest with variety AnyArrayTest
+ 		  sequenceTypeArrayTest = new SequenceTypeArrayTest();
+ 		  sequenceTypeArrayTest.setIsAnyArrayTest(true);
+ 		  nextToken();
+ 		  consumeExpected('(');
+ 	      consumeExpected('*');
+ 	      consumeExpected(')');
+ 	      xpathSequenceTypeExpr.setSequenceTypeArrayTest(sequenceTypeArrayTest);
+ 	  }
+ 	  else {
+ 		  // sequence type ArrayTest with variety TypedArrayTest
+ 		  sequenceTypeArrayTest = new SequenceTypeArrayTest();
+ 		  nextToken();
+ 		  consumeExpected('(');
+ 		  
+ 		  SequenceTypeData arrayItemSequenceType = new SequenceTypeData();
+ 		  while ((m_token != null) && !tokenIs(')')) {
+ 			 if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
+ 			    consumeExpected(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+ 			    consumeExpected(':');
+ 			    
+ 			    populateSequenceTypeData(arrayItemSequenceType);
+ 			 
+ 			    nextToken();
+ 		     }
+ 		  }
+ 		  
+ 		  consumeExpected(')');
+ 		  
+ 		  sequenceTypeArrayTest.setArrayItemTypeInfo(arrayItemSequenceType);  	    	  
+ 		  xpathSequenceTypeExpr.setSequenceTypeArrayTest(sequenceTypeArrayTest); 
+ 	  }
+   }
+
+   /**
+    * This method is used by XPath parse of map and array sequence 
+    * type expressions.
+    */
+   private void populateSequenceTypeData(SequenceTypeData seqTypeData) throws TransformerException {
+ 	  
+ 	switch (m_token) {
+ 	    case Keywords.FUNC_BOOLEAN_STRING :
+ 	        seqTypeData.setSequenceType(SequenceTypeSupport.BOOLEAN);
+ 	        break;
+ 	    case Keywords.XS_STRING :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.STRING);
+ 	        break; 
+ 	    case Keywords.XS_NORMALIZED_STRING :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_NORMALIZED_STRING);
+ 	        break;
+ 	    case Keywords.XS_TOKEN :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_TOKEN);
+ 	        break;
+ 	    case Keywords.XS_DECIMAL :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_DECIMAL);
+ 	        break; 
+ 	    case Keywords.XS_FLOAT :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_FLOAT);
+ 	        break; 
+ 	    case Keywords.XS_DOUBLE :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_DOUBLE);
+ 	        break;
+ 	    case Keywords.XS_INTEGER :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_INTEGER);
+ 	        break;
+ 	    case Keywords.XS_NON_POSITIVE_INTEGER :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_NON_POSITIVE_INTEGER);
+ 	        break;
+ 	    case Keywords.XS_NEGATIVE_INTEGER :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_NEGATIVE_INTEGER);
+ 	        break;
+ 	    case Keywords.XS_NON_NEGATIVE_INTEGER :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_NON_NEGATIVE_INTEGER);
+ 	        break;
+ 	    case Keywords.XS_POSITIVE_INTEGER :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_POSITIVE_INTEGER);
+ 	        break;
+ 	    case Keywords.XS_LONG :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_LONG);
+ 	        break; 
+ 	    case Keywords.XS_INT :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_INT);
+ 	        break;
+ 	    case Keywords.XS_SHORT :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_SHORT);
+ 	        break;
+ 	    case Keywords.XS_BYTE :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_BYTE);
+ 	        break;
+ 	    case Keywords.XS_UNSIGNED_LONG :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_LONG);
+ 	        break;
+ 	    case Keywords.XS_UNSIGNED_INT :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_INT);
+ 	        break;
+ 	    case Keywords.XS_UNSIGNED_SHORT :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_SHORT);
+ 	        break;
+ 	    case Keywords.XS_UNSIGNED_BYTE :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_UNSIGNED_BYTE);
+ 	        break;
+ 	    case Keywords.XS_DATE :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_DATE);
+ 	        break;
+ 	    case Keywords.XS_DATETIME :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_DATETIME);
+ 	        break;
+ 	    case Keywords.XS_DURATION :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_DURATION);
+ 	        break;
+ 	    case Keywords.XS_YEAR_MONTH_DURATION :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_YEARMONTH_DURATION);
+ 	        break;
+ 	    case Keywords.XS_DAY_TIME_DURATION :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_DAYTIME_DURATION);
+ 	        break;
+ 	    case Keywords.XS_TIME :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_TIME);
+ 	        break;
+ 	    case Keywords.XS_ANY_URI :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_ANY_URI);
+ 	        break;
+ 	    case Keywords.XS_QNAME :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_QNAME);
+ 	        break;
+ 	    case Keywords.XS_ANY_ATOMIC_TYPE :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_ANY_ATOMIC_TYPE);
+ 	        break;
+ 	    case Keywords.XS_UNTYPED_ATOMIC :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_UNTYPED_ATOMIC);
+ 	        break;
+ 	    case Keywords.XS_UNTYPED :
+ 	    	seqTypeData.setSequenceType(SequenceTypeSupport.XS_UNTYPED);
+ 	        break;
+ 	    default :
+ 	        throw new javax.xml.transform.TransformerException("XPST0051 : An XML Schema type 'xs:" + m_token + "' is not "
+ 	                                                                              + "recognized, within the provided sequence type expression.");        
+        }
+   }
+   
+   /**
+    * At various times during an XPath expression parse, the current parse
     * attempt having occurred upto a point in token queue, needs to be 
     * discarded and another parse choice has to be explored.
     * 
-    * This class, saves information about a previous XPath parse 
-    * position.
+    * An object of this class, saves information about a specific XPath 
+    * parse position.
     * 
     * Mukul Gandhi <mukulg@apache.org>
     */
-   class TokenQueueScanPosition {
+   private class TokenQueueScanPosition {
 	   
 	  private int queueMark;
 	  

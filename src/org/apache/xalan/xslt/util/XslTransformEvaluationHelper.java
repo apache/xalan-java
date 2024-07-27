@@ -524,5 +524,20 @@ public class XslTransformEvaluationHelper {
        
        return sum;
     }
+    
+    /**
+     * This method checks whether, an XSL xsl:with-param/xsl:param 
+     * tunnel attribute's value is true (i.e, having string 
+     * values "yes", "true", or "1").
+     */
+    public static boolean isTunnelAttributeYes(String val) {
+       boolean result = false;
+       
+       if (val != null) {
+    	  result = (val.equals("yes") || val.equals("true") || val.equals("1"));
+       }
+       
+       return result;
+    }
 
 }

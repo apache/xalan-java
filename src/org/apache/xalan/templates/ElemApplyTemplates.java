@@ -20,6 +20,7 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.List;
 import java.util.Vector;
 
 import javax.xml.transform.SourceLocator;
@@ -260,6 +261,8 @@ public class ElemApplyTemplates extends ElemCallTemplate
         argsFrame = vars.link(nParams);
         vars.setStackFrame(thisframe);
         
+        int maxParamStackFrameIndex = -1;
+        
         for (int i = 0; i < nParams; i++) 
         {
           ElemWithParam ewp = m_paramElems[i];
@@ -278,8 +281,39 @@ public class ElemApplyTemplates extends ElemCallTemplate
           if (transformer.getDebug())
             transformer.getTraceManager().fireTraceEndEvent(ewp);
           
+          String tunnelStrVal = ewp.getTunnel();
+          obj.setTunnel(tunnelStrVal);
+          QName qName = ewp.getName();
+          obj.setQName(qName);
+          
           vars.setLocalVariable(i, obj, argsFrame);
+          maxParamStackFrameIndex = i;
         }
+        
+        for (int idx = 0; idx < MAX_PARAM_LIMIT; idx++) {
+        	XObject obj = vars.getLocalVariable(idx, thisframe);
+        	if (obj != null) {
+        		String tunnelValStr = obj.getTunnel();
+        		if ((obj.getTunnel() != null) && XslTransformEvaluationHelper.isTunnelAttributeYes(tunnelValStr)) {
+        			vars.setLocalVariable(++maxParamStackFrameIndex, obj, argsFrame);
+        		}
+        	}
+        	else {
+        		break; 
+        	}
+        }
+
+        ElemTemplateElement parentElem = getParentElem();
+        while (!(parentElem instanceof ElemTemplate)) {
+        	parentElem = parentElem.getParentElem(); 
+        }
+
+        List<XObject> tunnelParamObjList = parentElem.getTunnelParamObjList();
+        for (int idx = 0; idx < tunnelParamObjList.size(); idx++) {
+        	XObject var = tunnelParamObjList.get(idx);
+        	vars.setLocalVariable(++maxParamStackFrameIndex, var, argsFrame);
+        }
+        
         vars.setStackFrame(argsFrame);
       }
       
@@ -343,15 +377,14 @@ public class ElemApplyTemplates extends ElemCallTemplate
         if (check)
 	        guard.checkForInfiniteLoop();
 
-        int currentFrameBottom;  // See comment with unlink, below
+        int currentFrameBottom;
         if(template.m_frameSize > 0)
         {
           xctxt.pushRTFContext();
-          currentFrameBottom = vars.getStackFrame();  // See comment with unlink, below
+          currentFrameBottom = vars.getStackFrame();
           vars.link(template.m_frameSize);
-          // You can't do the check for nParams here, otherwise the 
-          // xsl:params might not be nulled.
-          if(/* nParams > 0 && */ template.m_inArgsSize > 0)
+          
+          if (template.m_inArgsSize > 0)
           {
             int paramIndex = 0;
             for (ElemTemplateElement elem = template.getFirstChildElem(); 
@@ -365,22 +398,26 @@ public class ElemApplyTemplates extends ElemCallTemplate
                 for (i = 0; i < nParams; i++) 
                 {
                   ElemWithParam ewp = m_paramElems[i];
-                  if(ewp.m_qnameID == ep.m_qnameID)
+                  if (ewp.m_qnameID == ep.m_qnameID)                  
                   {
-                    XObject obj = vars.getLocalVariable(i, argsFrame);
-                    vars.setLocalVariable(paramIndex, obj);
-                    break;
+                      XObject obj = vars.getLocalVariable(i, argsFrame);
+                      vars.setLocalVariable(paramIndex, obj);
+                      break;
                   }
                 }
-                if(i == nParams)
-                  vars.setLocalVariable(paramIndex, null);
+                
+                // The below code before commenting has been causing, issues 
+                // implementing XSLT tunnel parameters. Commenting this seems 
+                // to be working fine for non-tunnel parameter use cases as 
+                // well. Pls review.
+                /*if (i == nParams) {
+                  vars.setLocalVariable(paramIndex, null);*/                
               }
               else
                 break;
               paramIndex++;
-            }
-            
-          }
+            }                        
+          }                    
         }
         else {
            currentFrameBottom = 0;

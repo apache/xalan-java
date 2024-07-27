@@ -73,15 +73,24 @@ public class ElemTemplateElement extends UnImplNode
 {
    static final long serialVersionUID = 4440018597841834447L;
     
-   // This class field supports, implementation of xsl:for-each-group's grouping key. 
-   // An instance of this class, stores this value for a specific xsl:for-each-group element 
-   // within the XSLT stylesheet.
-   private Object fGroupingKey = null;
+   /**
+    * This field supports implementation of, xsl:for-each-group's grouping key. 
+    * An instance of this class, stores this value for a specific xsl:for-each-group  
+    * element within an XSL stylesheet.
+    */
+   private Object m_groupingKey = null;
     
-   // This class field supports, implementation of xsl:for-each-group's current-group contents. 
-   // An instance of this class, stores this value for a specific xsl:for-each-group element 
-   // within the XSLT stylesheet.
-   private List<Integer> fGroupNodesDtmHandles;
+   /**
+    * This field supports implementation of, xsl:for-each-group's current-group contents. 
+    * An instance of this class, stores this value for a specific xsl:for-each-group 
+    * element within an XSL stylesheet. 
+    */
+   private List<Integer> m_groupNodesDtmHandles;
+   
+   /**
+    * This field supports implementation of, XSLT tunnel parameters.
+    */
+   private List<XObject> m_tunnelParamObjList = new ArrayList<XObject>();
 
   /**
    * Construct a template element instance.
@@ -1677,19 +1686,19 @@ public class ElemTemplateElement extends UnImplNode
   }
 
   public Object getGroupingKey() {
-      return fGroupingKey;
+      return m_groupingKey;
   }
 
   public void setGroupingKey(Object groupingKey) {
-      this.fGroupingKey = groupingKey;
+      this.m_groupingKey = groupingKey;
   }
 
   public List<Integer> getGroupNodesDtmHandles() {
-      return fGroupNodesDtmHandles;
+      return m_groupNodesDtmHandles;
   }
 
   public void setGroupNodesDtmHandles(List<Integer> groupNodesDtmHandles) {
-      this.fGroupNodesDtmHandles = groupNodesDtmHandles;
+      this.m_groupNodesDtmHandles = groupNodesDtmHandles;
   }
   
   /**
@@ -1794,6 +1803,14 @@ public class ElemTemplateElement extends UnImplNode
         xctxt.setXPath3ContextItem(null);
         xctxt.setXPath3ContextPosition(-1);
      }
+  }
+
+  public void setTunnelParamObj(XObject var) {
+	 m_tunnelParamObjList.add(var);	
+  }
+  
+  public List<XObject> getTunnelParamObjList() {
+	 return m_tunnelParamObjList; 
   }
 
 }
