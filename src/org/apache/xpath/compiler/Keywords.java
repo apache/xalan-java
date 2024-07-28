@@ -24,7 +24,7 @@ import java.util.Hashtable;
 
 /**
  * Table of strings to operation code lookups
- * to support implementation of XPath 3.1.
+ * to support implementation of XPath.
  * 
  * @author Scott Boag <scott_boag@us.ibm.com>
  * @author Gary L Peskin <garyp@apache.org>
@@ -54,8 +54,7 @@ public class Keywords
   private static final String FROM_ANCESTORS_STRING = "ancestor";
 
   /** ancestor-or-self axes string. */
-  private static final String FROM_ANCESTORS_OR_SELF_STRING =
-    "ancestor-or-self";
+  private static final String FROM_ANCESTORS_OR_SELF_STRING = "ancestor-or-self";
 
   /** attribute axes string. */
   private static final String FROM_ATTRIBUTES_STRING = "attribute";
@@ -67,15 +66,13 @@ public class Keywords
   private static final String FROM_DESCENDANTS_STRING = "descendant";
 
   /** ancestor axes string. */
-  private static final String FROM_DESCENDANTS_OR_SELF_STRING =
-    "descendant-or-self";
+  private static final String FROM_DESCENDANTS_OR_SELF_STRING = "descendant-or-self";
 
   /** following axes string. */
   private static final String FROM_FOLLOWING_STRING = "following";
 
   /** following-sibling axes string. */
-  private static final String FROM_FOLLOWING_SIBLINGS_STRING =
-    "following-sibling";
+  private static final String FROM_FOLLOWING_SIBLINGS_STRING = "following-sibling";
 
   /** parent axes string. */
   private static final String FROM_PARENT_STRING = "parent";
@@ -84,8 +81,7 @@ public class Keywords
   private static final String FROM_PRECEDING_STRING = "preceding";
 
   /** preceding-sibling axes string. */
-  private static final String FROM_PRECEDING_SIBLINGS_STRING =
-    "preceding-sibling";
+  private static final String FROM_PRECEDING_SIBLINGS_STRING = "preceding-sibling";
 
   /** self axes string. */
   private static final String FROM_SELF_STRING = "self";
@@ -151,7 +147,7 @@ public class Keywords
   public static final String FUNC_FALSE_STRING = "false";
 
   /**
-   * boolean function string. we use this same configuration, 
+   * boolean function string. we use this same keyword string 
    * for XML Schema data type xs:boolean as well.
    */
   public static final String FUNC_BOOLEAN_STRING = "boolean";
@@ -190,8 +186,7 @@ public class Keywords
   public static final String FUNC_CONTAINS_STRING = "contains";
 
   /** substring-before function string. */
-  public static final String FUNC_SUBSTRING_BEFORE_STRING =
-    "substring-before";
+  public static final String FUNC_SUBSTRING_BEFORE_STRING = "substring-before";
 
   /** substring-after function string. */
   public static final String FUNC_SUBSTRING_AFTER_STRING = "substring-after";
@@ -209,12 +204,10 @@ public class Keywords
   public static final String FUNC_SYSTEM_PROPERTY_STRING = "system-property";
 
   /** function-available function string (XSLT). */
-  public static final String FUNC_EXT_FUNCTION_AVAILABLE_STRING =
-    "function-available";
+  public static final String FUNC_EXT_FUNCTION_AVAILABLE_STRING = "function-available";
 
   /** element-available function string (XSLT). */
-  public static final String FUNC_EXT_ELEM_AVAILABLE_STRING =
-    "element-available";
+  public static final String FUNC_EXT_ELEM_AVAILABLE_STRING = "element-available";
 
   /** substring function string. */
   public static final String FUNC_SUBSTRING_STRING = "substring";
@@ -223,8 +216,7 @@ public class Keywords
   public static final String FUNC_STRING_LENGTH_STRING = "string-length";
 
   /** unparsed-entity-uri function string (XSLT). */
-  public static final String FUNC_UNPARSED_ENTITY_URI_STRING =
-    "unparsed-entity-uri";
+  public static final String FUNC_UNPARSED_ENTITY_URI_STRING = "unparsed-entity-uri";
   
   /** matches function string. */
   public static final String FUNC_MATCHES_STRING = "matches";
@@ -756,18 +748,18 @@ public class Keywords
   }
   
   static Object getAxisName(String key){
-          return m_axisnames.get(key);
+	  return m_axisnames.get(key);
   }
-  
+
   static Object lookupNodeTest(String key){
-          return m_nodetests.get(key);
+	  return m_nodetests.get(key);
   }
-  
+
   static Object getKeyWord(String key){
-          return m_keywords.get(key);
+	  return m_keywords.get(key);
   }
-  
+
   static Object getNodeType(String key){
-          return m_nodetypes.get(key);
+	  return m_nodetypes.get(key);
   }      
 }

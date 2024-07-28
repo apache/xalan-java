@@ -74,11 +74,17 @@ public class FuncFilter extends Function2Args {
    
    private static final String FUNCTION_NAME = "filter()";
    
-   // The following two fields of this class, are used during 
-   // XPath.fixupVariables(..) action as performed within object of 
-   // this class.    
-   private Vector fVars;    
-   private int fGlobalsSize;
+   /**
+    * This class field is used during, XPath.fixupVariables(..) action 
+    * as performed within object of this class.  
+    */    
+   private Vector m_vars;
+   
+   /**
+    * This class field is used during, XPath.fixupVariables(..) action 
+    * as performed within object of this class.  
+    */
+   private int m_globals_size;
 
    /**
    * Execute the function. The function must return a valid object.
@@ -168,8 +174,8 @@ public class FuncFilter extends Function2Args {
   
   public void fixupVariables(java.util.Vector vars, int globalsSize)
   {
-      fVars = (Vector)(vars.clone());
-      fGlobalsSize = globalsSize; 
+      m_vars = (Vector)(vars.clone());
+      m_globals_size = globalsSize; 
   }
   
   /*
@@ -257,11 +263,11 @@ public class FuncFilter extends Function2Args {
                   inlineFunctionVarMap.put(varQname, inpSeqItem);
                }
                
-               if (fVars != null) {
+               if (m_vars != null) {
                   if (!m_xpathVarList.contains(varQname)) {
                      m_xpathVarList.add(varQname);
                   }
-                  inlineFnXpath.fixupVariables(fVars, fGlobalsSize);
+                  inlineFnXpath.fixupVariables(m_vars, m_globals_size);
                   m_xpathVarList.remove(varQname);
                }
                

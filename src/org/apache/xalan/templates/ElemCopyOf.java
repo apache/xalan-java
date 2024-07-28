@@ -80,11 +80,17 @@ public class ElemCopyOf extends ElemTemplateElement
    */
   private boolean m_isDot = false;
   
-  // The following two fields of this class, are used during 
-  // XPath.fixupVariables(..) action as performed within object of 
-  // this class.    
-  private Vector fVars;    
-  private int fGlobalsSize;
+  /**
+   * This class field is used during, XPath.fixupVariables(..) action 
+   * as performed within object of this class.  
+   */    
+  private Vector m_vars;
+  
+  /**
+   * This class field is used during, XPath.fixupVariables(..) action 
+   * as performed within object of this class.  
+   */
+  private int m_globals_size;
   
   public final static char SPACE_CHAR = ' ';
 
@@ -128,11 +134,11 @@ public class ElemCopyOf extends ElemTemplateElement
     
     java.util.Vector vnames = (sroot.getComposeState()).getVariableNames();
     
-    fVars = (Vector)(vnames.clone()); 
-    fGlobalsSize = (sroot.getComposeState()).getGlobalsSize();
+    m_vars = (Vector)(vnames.clone()); 
+    m_globals_size = (sroot.getComposeState()).getGlobalsSize();
 
     if (m_selectExpression != null) {
-        m_selectExpression.fixupVariables(vnames, fGlobalsSize);
+        m_selectExpression.fixupVariables(vnames, m_globals_size);
     }
   }
 

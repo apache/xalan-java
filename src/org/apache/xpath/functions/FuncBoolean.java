@@ -15,9 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * $Id$
- */
 package org.apache.xpath.functions;
 
 import java.math.BigDecimal;
@@ -36,14 +33,15 @@ import org.apache.xpath.objects.XString;
 
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
+import xml.xpath31.processor.types.XSDecimal;
+import xml.xpath31.processor.types.XSDouble;
+import xml.xpath31.processor.types.XSInteger;
 import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
  * Implementation of XPath 3.1 fn:boolean function.
- * 
- * @xsl.usage advanced
  */
 public class FuncBoolean extends FunctionOneArg
 {
@@ -74,76 +72,90 @@ public class FuncBoolean extends FunctionOneArg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
-	XObject result = null;
-	
-	SourceLocator srcLocator = xctxt.getSAXLocator();
-	
-	XObject xObj = m_arg0.execute(xctxt);
-	
-	if (xObj instanceof ResultSequence) {
-	   ResultSequence rSeq = (ResultSequence)xObj;
-	   if (rSeq.size() == 0) {
-		  result = new XSBoolean(false); 
-	   }
-	   else {
-		  throw new javax.xml.transform.TransformerException("FORG0006 : Invalid argument type, for the "
-                                                                               + "function call fn:boolean.", srcLocator); 
-	   }
-	}
-	else if (xObj instanceof XNodeSet) {
-	   if (((XNodeSet)xObj).getLength() == 0) {
-	      result = new XSBoolean(false);
-	   }
-	   else {
-		  result = new XSBoolean(true); 
-	   }
-	}
-	else if (xObj instanceof XSBoolean) {
-	   result = xObj;
-	}
-	else if (xObj instanceof XBoolean) {
-	   XBoolean xBool = (XBoolean)xObj;
-	   result = new XSBoolean(xBool.bool());
-	}
-	else if ((xObj instanceof XSString) || (xObj instanceof XString) || 
-			 (xObj instanceof XSAnyURI) || (xObj instanceof XSUntypedAtomic)) {
-	   String argStrVal = XslTransformEvaluationHelper.getStrVal(xObj);
-	   if ((argStrVal == null) || (argStrVal.length() == 0)) {
-		  result = new XSBoolean(false); 
-	   }
-	   else {
-		  result = new XSBoolean(true);
-	   }
-	}
-	else if (xObj instanceof XSNumericType) {
-	   XSNumericType xsNumericType = (XSNumericType)xObj;
-	   String argStrVal = xsNumericType.stringValue();
-	   BigDecimal argBigDecimal = new BigDecimal(argStrVal);	   
-	   if ("NaN".equals(argStrVal)) {
-		  result = new XSBoolean(false);  
-	   }
-	   else if (argBigDecimal.compareTo(BigDecimal.valueOf(0)) == 0) {
-		  result = new XSBoolean(false); 
-	   }
-	   else {
-		  result = new XSBoolean(true); 
-	   }
-	}
-    else if (xObj instanceof XNumber) {
-	   double argDbl = ((XNumber)xObj).num();
-	   if (argDbl == 0d) {
-		  result = new XSBoolean(false);  
-	   }
-	   else {
-		  result = new XSBoolean(true);
-	   }
-	}
-    else {
-       throw new javax.xml.transform.TransformerException("FORG0006 : Invalid argument type, for the "
-       		                                                                + "function call fn:boolean.", srcLocator); 
-    } 
-	
-	return result;
+	  XObject result = null;
+
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+
+	  XObject xObj = m_arg0.execute(xctxt);
+
+	  if (xObj instanceof ResultSequence) {
+		  ResultSequence rSeq = (ResultSequence)xObj;
+		  if (rSeq.size() == 0) {
+			  result = new XSBoolean(false); 
+		  }
+		  else if (rSeq.item(0) instanceof XNodeSet) {
+			  result = new XSBoolean(true); 
+		  }
+		  else {
+			  throw new javax.xml.transform.TransformerException("FORG0006 : Invalid argument provided "
+					                                                            + "to function fn:boolean.", srcLocator);  
+		  }
+	  }
+	  else if (xObj instanceof XNodeSet) {
+		  if (((XNodeSet)xObj).getLength() == 0) {
+			  result = new XSBoolean(false);
+		  }
+		  else {
+			  result = new XSBoolean(true); 
+		  }
+	  }
+	  else if (xObj instanceof XSBoolean) {
+		  result = xObj;
+	  }
+	  else if (xObj instanceof XBoolean) {
+		  XBoolean xBool = (XBoolean)xObj;
+		  result = new XSBoolean(xBool.bool());
+	  }
+	  else if ((xObj instanceof XSString) || (xObj instanceof XString) || 
+			  (xObj instanceof XSAnyURI) || (xObj instanceof XSUntypedAtomic)) {
+		  String argStrVal = XslTransformEvaluationHelper.getStrVal(xObj);
+		  if ((argStrVal == null) || (argStrVal.length() == 0)) {
+			  result = new XSBoolean(false); 
+		  }
+		  else {
+			  result = new XSBoolean(true);
+		  }
+	  }
+	  else if (xObj instanceof XSNumericType) {
+		  XSNumericType xsNumericType = (XSNumericType)xObj;
+		  String argStrVal = xsNumericType.stringValue();
+		  BigDecimal argBigDecimal = new BigDecimal(argStrVal);	   
+		  if ("NaN".equals(argStrVal) || (argBigDecimal.compareTo(BigDecimal.valueOf(0)) == 0)) {
+			  result = new XSBoolean(false);  
+		  }
+		  else {
+			  result = new XSBoolean(true); 
+		  }
+	  }
+	  else if (xObj instanceof XNumber) {	  
+		  if (((XNumber)xObj).isXsInteger()) {
+			  XSInteger xsInteger = ((XNumber)xObj).getXsInteger();
+			  if ((xsInteger.getValue()).compareTo(BigDecimal.valueOf(0)) == 0) {
+				  result = new XSBoolean(false); 
+			  }
+		  }
+		  else if (((XNumber)xObj).isXsDecimal()) {
+			  XSDecimal xsDecimal = ((XNumber)xObj).getXsDecimal();
+			  if ((xsDecimal.getValue()).compareTo(BigDecimal.valueOf(0)) == 0) {
+				  result = new XSBoolean(false); 
+			  }
+		  }
+		  else if (((XNumber)xObj).isXsDouble()) {
+			  XSDouble xsDouble = ((XNumber)xObj).getXsDouble();
+			  if (xsDouble.nan() || (xsDouble.doubleValue() == 0d)) {
+				  result = new XSBoolean(false); 
+			  }
+		  }
+		  else {
+			  result = new XSBoolean(true);
+		  }
+	  }
+	  else {
+		  throw new javax.xml.transform.TransformerException("FORG0006 : Invalid argument provided "
+				                                                            + "to function fn:boolean.", srcLocator); 
+	  } 
+
+	  return result;
   }
   
 }

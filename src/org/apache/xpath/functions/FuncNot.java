@@ -29,12 +29,10 @@ import xml.xpath31.processor.types.XSBoolean;
 
 /**
  * Implementation of XPath 3.1 fn:not function.
- * 
- * @xsl.usage advanced
  */
 public class FuncNot extends FunctionOneArg
 {
-    static final long serialVersionUID = 7299699961076329790L;
+   static final long serialVersionUID = 7299699961076329790L;
 
   /**
    * Implementation of the function. The function must return
@@ -47,27 +45,32 @@ public class FuncNot extends FunctionOneArg
    */
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {	  
-	 XObject result = null;
-	 
-	 SourceLocator srcLocator = xctxt.getSAXLocator(); 
-	 
-	 try {
-		FuncBoolean fnBoolean = new FuncBoolean(m_arg0);
-	    result = fnBoolean.execute(xctxt);
-	 }
-	 catch (javax.xml.transform.TransformerException ex) {
-		throw new javax.xml.transform.TransformerException("FORG0006 : Invalid argument type, for the "
-                                                                             + "function call fn:not.", srcLocator); 
-	 }
+	  XObject result = null;
 
-	 if (((XSBoolean)result).value()) {
-		 result = new XSBoolean(false);  
-	 }
-	 else {
-		 result = new XSBoolean(true);
-	 }
-	 
-	 return result;
+	  SourceLocator srcLocator = xctxt.getSAXLocator(); 
+
+	  try {
+		  FuncBoolean fnBoolean = new FuncBoolean(m_arg0);
+		  result = fnBoolean.execute(xctxt);
+	  }
+	  catch (javax.xml.transform.TransformerException ex) {
+		  throw new javax.xml.transform.TransformerException("FORG0006 : Invalid argument provided "
+				                                                            + "to function fn:not.", srcLocator); 
+	  }
+ 
+	  /**
+	   * Result of fn:not function is boolean negation of fn:boolean 
+	   * function's result. 
+	   */
+	  
+	  if (((XSBoolean)result).value()) {
+		  result = new XSBoolean(false);  
+	  }
+	  else {
+		  result = new XSBoolean(true);
+	  }
+
+	  return result;
 	 
   }
   

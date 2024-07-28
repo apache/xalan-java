@@ -42,7 +42,7 @@ import org.apache.xpath.objects.XObject;
 
 import xml.xpath31.processor.types.XSNumericType;
 
-/*
+/**
  * This class implements and evaluates XPath 3.1 literal 
  * sequence constructor expressions.
  * 
@@ -56,10 +56,16 @@ public class XPathSequenceConstructor extends Expression {
     
     private List<String> sequenceConstructorXPathParts = new ArrayList<String>();
     
-    // The following two fields of this class, are used during 
-    // XPath.fixupVariables(..) action as performed within object of 
-    // this class.    
-    private Vector m_vars;    
+    /**
+     * This class field is used during, XPath.fixupVariables(..) action 
+     * as performed within object of this class.  
+     */    
+    private Vector m_vars;
+    
+    /**
+     * This class field is used during, XPath.fixupVariables(..) action 
+     * as performed within object of this class.  
+     */
     private int m_globals_size;
     
     @Override

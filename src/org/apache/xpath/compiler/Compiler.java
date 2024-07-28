@@ -151,7 +151,7 @@ public class Compiler extends OpMap
     int op = getOp(opPos);
 
     Expression expr = null;
-    // System.out.println(getPatternString()+"op: "+op);
+
     switch (op)
     {
     case OpCodes.OP_XPATH :
@@ -232,8 +232,6 @@ public class Compiler extends OpMap
       expr = div(opPos); break;
     case OpCodes.OP_MOD :
       expr = mod(opPos); break;
-//    case OpCodes.OP_QUO :
-//      expr = quo(opPos); break;
     case OpCodes.OP_NEG :
       expr = neg(opPos); break;
     case OpCodes.OP_STRING :
@@ -273,15 +271,12 @@ public class Compiler extends OpMap
     case OpCodes.OP_NAMED_FUNCTION_REFERENCE :
       expr = namedFunctionReference(opPos); break;	
     case OpCodes.OP_QUO:
-      error(XPATHErrorResources.ER_UNKNOWN_OPCODE,
-            new Object[]{ "quo" });  //"ERROR! Unknown op code: "+m_opMap[opPos]);
+      error(XPATHErrorResources.ER_UNKNOWN_OPCODE, new Object[]{ "quo" });
       break;
     default :
       error(XPATHErrorResources.ER_UNKNOWN_OPCODE,
-            new Object[]{ Integer.toString(getOp(opPos)) });  //"ERROR! Unknown op code: "+m_opMap[opPos]);
+            new Object[]{ Integer.toString(getOp(opPos)) });
     }
-//    if(null != expr)
-//      expr.setSourceLocator(m_locator);
     
     return expr;
   }

@@ -3091,8 +3091,6 @@ public class XPathParser
     {
       if (tokenIs('['))
       {
-
-        // int locationPathOpPos = opPos;
         insertOp(opPos, 2, OpCodes.OP_LOCATIONPATH);
 
         while (tokenIs('['))
@@ -3113,14 +3111,7 @@ public class XPathParser
     }
 
     return filterMatch;
-
-    /*
-     * if(tokenIs('['))
-     * {
-     *   Predicate();
-     *   m_ops.m_opMap[opPos + OpMap.MAPINDEX_LENGTH] = m_ops.m_opMap[OpMap.MAPINDEX_LENGTH] - opPos;
-     * }
-     */
+    
   }
 
   /**
@@ -4066,8 +4057,7 @@ public class XPathParser
 
       if (null == nodeTestOp)
       {
-        error(XPATHErrorResources.ER_UNKNOWN_NODETYPE,
-              new Object[]{ m_token });  //"Unknown nodetype: "+m_token);
+        error(XPATHErrorResources.ER_UNKNOWN_NODETYPE, new Object[]{ m_token });
       }
       else
       {
@@ -4151,9 +4141,8 @@ public class XPathParser
   }
 
   /**
-   *
+   * 
    * Predicate ::= '[' PredicateExpr ']'
-   *
    *
    * @throws javax.xml.transform.TransformerException
    */
@@ -4162,18 +4151,17 @@ public class XPathParser
 
     if (tokenIs('['))
     {
-      m_isXPathPredicateParsingActive = true;      
-      nextToken();
-      PredicateExpr();
-      consumeExpected(']');      
-      m_isXPathPredicateParsingActive = false;
+    	m_isXPathPredicateParsingActive = true;      
+    	nextToken();
+    	PredicateExpr();
+    	consumeExpected(']');      
+    	m_isXPathPredicateParsingActive = false;
     }
   }
 
   /**
-   *
+   * 
    * PredicateExpr ::= Expr
-   *
    *
    * @throws javax.xml.transform.TransformerException
    */

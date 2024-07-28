@@ -52,10 +52,8 @@ import xml.xpath31.processor.types.XSNumericType;
 import xml.xpath31.processor.types.XSString;
 
 /**
- * Xalan-J's XPath parser, constructs an object of this class, 
- * to produce run-time representation of an XPath map expression.
- * 
- * Ref: https://www.w3.org/TR/xpath-31/#id-maps
+ * This class implements and evaluates XPath 3.1 map 
+ * expressions.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -65,14 +63,23 @@ public class XPathMapConstructor extends Expression {
     
 	private static final long serialVersionUID = 2664427126053000318L;
 	
-	// Variable reference, denoting an native run-time map
-	private Map<String, String> fMapVar = new HashMap<String, String>();
+	/**
+     * This class field, serves as native run-time storage for 
+     * xpath maps.
+	 */
+	private Map<String, String> m_native_map = new HashMap<String, String>();
 	
-	// The following two fields of this class, are used during 
-    // XPath.fixupVariables(..) action as performed within object of 
-    // this class.    
-    private Vector fVars;    
-    private int fGlobalsSize;
+	/**
+	 * This class field is used during, XPath.fixupVariables(..) action 
+	 * as performed within object of this class.  
+	 */    
+	private Vector m_vars;
+	  
+	/**
+	 * This class field is used during, XPath.fixupVariables(..) action 
+	 * as performed within object of this class.  
+	 */
+	private int m_globals_size;
     
     private String KEY = "key";
     private String VALUE = "value";
@@ -92,7 +99,7 @@ public class XPathMapConstructor extends Expression {
             prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
         }
         
-        Set<Entry<String, String>> mapEntrySet = fMapVar.entrySet();
+        Set<Entry<String, String>> mapEntrySet = m_native_map.entrySet();
         Iterator<Entry<String, String>> mapIter = mapEntrySet.iterator();
         while (mapIter.hasNext()) {
            Entry<String, String> mapEntry = mapIter.next();
@@ -126,16 +133,16 @@ public class XPathMapConstructor extends Expression {
 
     @Override
     public void fixupVariables(Vector vars, int globalsSize) {
-        fVars = (Vector)(vars.clone());
-        fGlobalsSize = globalsSize;
+        m_vars = (Vector)(vars.clone());
+        m_globals_size = globalsSize;
     }
 
 	public Map<String, String> getNativeMap() {
-		return fMapVar;
+		return m_native_map;
 	}
 
 	public void setNativeMap(Map<String, String> map) {
-		this.fMapVar = map;
+		this.m_native_map = map;
 	}
 	
     @Override
@@ -160,8 +167,8 @@ public class XPathMapConstructor extends Expression {
     	SourceLocator srcLocator = xctxt.getSAXLocator();
     	
     	XPath xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-        if (fVars != null) {
-           xpathObj.fixupVariables(fVars, fGlobalsSize);
+        if (m_vars != null) {
+           xpathObj.fixupVariables(m_vars, m_globals_size);
         }
 
         Expression xpathExpr = xpathObj.getExpression();
@@ -210,8 +217,8 @@ public class XPathMapConstructor extends Expression {
                 
                 XPath xpathIndexObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                   XPath.SELECT, null);
-                if (fVars != null) {
-                   xpathIndexObj.fixupVariables(fVars, fGlobalsSize);
+                if (m_vars != null) {
+                   xpathIndexObj.fixupVariables(m_vars, m_globals_size);
                 }
                 
                 XObject arrIndexEvalResult = xpathIndexObj.execute(xctxt, xctxt.getCurrentNode(), 
@@ -260,8 +267,8 @@ public class XPathMapConstructor extends Expression {
     	}
         else {
         	xpathObj = new XPath(xpathExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
-            if (fVars != null) {
-               xpathObj.fixupVariables(fVars, fGlobalsSize);
+            if (m_vars != null) {
+               xpathObj.fixupVariables(m_vars, m_globals_size);
             }
             
             XObject xPathExprPartResult = xpathObj.execute(xctxt, contextNode, 

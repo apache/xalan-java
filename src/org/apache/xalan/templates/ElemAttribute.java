@@ -66,11 +66,17 @@ public class ElemAttribute extends ElemElement
      */
     protected Expression m_selectExpression = null;
     
-    // The following two variables are used, for performing fixupVariables
-    // action on certain XPath expression objects, within an object of this
-    // class.
-    private Vector fVars;    
-    private int fGlobalsSize;
+    /**
+     * This class field is used during, XPath.fixupVariables(..) action 
+     * as performed within object of this class.  
+     */    
+    private Vector m_vars;
+    
+    /**
+     * This class field is used during, XPath.fixupVariables(..) action 
+     * as performed within object of this class.  
+     */
+    private int m_globals_size;
 
   /**
    * Get an int constant identifying the type of element.
@@ -121,8 +127,8 @@ public class ElemAttribute extends ElemElement
     java.util.Vector vnames = cstate.getVariableNames();
     int golbalsSize = cstate.getGlobalsSize();
     
-    fVars = (java.util.Vector)(vnames.clone());
-    fGlobalsSize = golbalsSize; 
+    m_vars = (java.util.Vector)(vnames.clone());
+    m_globals_size = golbalsSize; 
   }
   
   /**
@@ -214,8 +220,8 @@ public class ElemAttribute extends ElemElement
             	  // to determine the value of an attribute for emitting to XSLT
             	  // transformation's output.
             	  
-                  if (fVars != null) {
-                     m_selectExpression.fixupVariables(fVars, fGlobalsSize);   
+                  if (m_vars != null) {
+                     m_selectExpression.fixupVariables(m_vars, m_globals_size);   
                   }
                   
                   XObject xpathEvalResult = m_selectExpression.execute(xctxt);

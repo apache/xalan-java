@@ -268,10 +268,6 @@ public class WalkerFactory
       }
       else
       {
-//        if (DEBUG_ITERATOR_CREATION)
-//          diagnoseIterator("MatchPatternIterator", analysis, compiler);
-//
-//        return new MatchPatternIterator(compiler, opPos, analysis);
         if (DEBUG_ITERATOR_CREATION)
           diagnoseIterator("WalkingIteratorSorted", analysis, compiler);
 

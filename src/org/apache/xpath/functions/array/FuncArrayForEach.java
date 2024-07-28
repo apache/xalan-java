@@ -53,11 +53,17 @@ public class FuncArrayForEach extends Function2Args {
 
    private static final long serialVersionUID = 2912594883291006421L;
    
-   // The following two fields of this class, are used during 
-   // XPath.fixupVariables(..) action as performed within object of 
-   // this class.    
-   private Vector fVars;    
-   private int fGlobalsSize;
+   /**
+    * This class field is used during, XPath.fixupVariables(..) action 
+    * as performed within object of this class.  
+    */    
+   private Vector m_vars;
+   
+   /**
+    * This class field is used during, XPath.fixupVariables(..) action 
+    * as performed within object of this class.  
+    */
+   private int m_globals_size;
 
    /**
    * Implementation of the function. The function must return a valid object.
@@ -80,8 +86,8 @@ public class FuncArrayForEach extends Function2Args {
         Expression arg0 = getArg0();
         Expression arg1 = getArg1();                
         
-        if (fVars != null) {
-           arg0.fixupVariables(fVars, fGlobalsSize);
+        if (m_vars != null) {
+           arg0.fixupVariables(m_vars, m_globals_size);
         }
         
         XObject arg0XsObject = arg0.execute(xctxt, contextNode);
@@ -97,8 +103,8 @@ public class FuncArrayForEach extends Function2Args {
             result = evaluateArrayForEach(xctxt, (XPathArray)arg0XsObject, inlineFuncArg); 
         }
         else if (arg1 instanceof Variable) {
-            if (fVars != null) {
-               arg1.fixupVariables(fVars, fGlobalsSize);
+            if (m_vars != null) {
+               arg1.fixupVariables(m_vars, m_globals_size);
             }
             
             XObject arg1VarValue = arg1.execute(xctxt);
@@ -136,8 +142,8 @@ public class FuncArrayForEach extends Function2Args {
   
   public void fixupVariables(java.util.Vector vars, int globalsSize)
   {
-      fVars = (Vector)(vars.clone());
-      fGlobalsSize = globalsSize; 
+      m_vars = (Vector)(vars.clone());
+      m_globals_size = globalsSize; 
   }
   
   /**

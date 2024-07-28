@@ -33,7 +33,7 @@ public class FunctionOneArg extends Function implements ExpressionOwner
 {
   static final long serialVersionUID = -5180174180765609758L;
   
-  private boolean fArgCountErr = false;
+  private boolean m_arg_count_err = false;
 
   /**
    * Return the first argument passed to the function (at index 0).
@@ -65,7 +65,7 @@ public class FunctionOneArg extends Function implements ExpressionOwner
       arg.exprSetParent(this);
     }
     else {
-      fArgCountErr = true;
+      m_arg_count_err = true;
       reportWrongNumberArgs();
     }
   }
@@ -95,7 +95,7 @@ public class FunctionOneArg extends Function implements ExpressionOwner
   }
   
   protected boolean isArgCountErr() {
-      return fArgCountErr;
+      return m_arg_count_err;
   }
   
   /**

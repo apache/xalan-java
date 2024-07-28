@@ -75,10 +75,8 @@ public class FilterExprWalker extends AxesWalker
     case OpCodes.OP_VARIABLE :
       m_expr = compiler.compile(opPos);
       m_expr.exprSetParent(this);
-      //if((OpCodes.OP_FUNCTION == stepType) && (m_expr instanceof org.apache.xalan.templates.FuncKey))
       if(m_expr instanceof org.apache.xpath.operations.Variable)
       {
-      	// hack/temp workaround
       	m_canDetachNodeset = false;
       }
       break;
@@ -86,20 +84,6 @@ public class FilterExprWalker extends AxesWalker
       m_expr = compiler.compile(opPos + 2);
       m_expr.exprSetParent(this);
     }
-//    if(m_expr instanceof WalkingIterator)
-//    {
-//      WalkingIterator wi = (WalkingIterator)m_expr;
-//      if(wi.getFirstWalker() instanceof FilterExprWalker)
-//      {
-//      	FilterExprWalker fw = (FilterExprWalker)wi.getFirstWalker();
-//      	if(null == fw.getNextWalker())
-//      	{
-//      		m_expr = fw.m_expr;
-//      		m_expr.exprSetParent(this);
-//      	}
-//      }
-//      		
-//    }
   }
   
   /**
@@ -214,8 +198,9 @@ public class FilterExprWalker extends AxesWalker
     return m_exprObj.getLength();
   }
   
-  /** The contained expression. Should be non-null.
-   *  @serial   */
+  /** 
+   * The contained expression. Should be non-null.   
+   */
   private Expression m_expr;
 
   /** The result of executing m_expr.  Needs to be deep cloned on clone op.  */

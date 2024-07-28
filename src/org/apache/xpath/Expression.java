@@ -74,18 +74,6 @@ public abstract class Expression implements java.io.Serializable, ExpressionNode
   {
     return false;
   }
-  
-//  /**
-//   * Set the location where this expression was built from.
-//   *
-//   *
-//   * @param locator the location where this expression was built from, may be
-//   *                null.
-//   */
-//  public void setSourceLocator(SourceLocator locator)
-//  {
-//    m_slocator = locator;
-//  }
 
   /**
    * Execute an expression in the XPath runtime context, and return the

@@ -43,9 +43,9 @@ import org.apache.xpath.objects.XPathArray;
 
 import xml.xpath31.processor.types.XSNumericType;
 
-/*
- * Xalan-J's xpath parser, constructs an object of this class 
- * to help implement XPath 3.1 arrays.
+/**
+ * This class implements and evaluates XPath 3.1 literal 
+ * array constructor expressions.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -59,11 +59,17 @@ public class XPathArrayConstructor extends Expression {
 	
 	private boolean m_IsEmptyArray = false;
     
-    // The following two fields of this class, are used during 
-    // XPath.fixupVariables(..) action as performed within object of 
-    // this class.    
-    private Vector m_vars;    
-    private int m_globals_size;
+	/**
+	 * This class field is used during, XPath.fixupVariables(..) action 
+	 * as performed within object of this class.  
+	 */    
+	private Vector m_vars;
+	  
+	/**
+	 * This class field is used during, XPath.fixupVariables(..) action 
+	 * as performed within object of this class.  
+	 */
+	private int m_globals_size;
 
     @Override
     public XObject execute(XPathContext xctxt) throws TransformerException {

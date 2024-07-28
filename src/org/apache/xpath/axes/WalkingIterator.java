@@ -32,7 +32,6 @@ import org.apache.xpath.compiler.OpMap;
 /**
  * Location path iterator that uses Walkers.
  */
-
 public class WalkingIterator extends LocPathIterator implements ExpressionOwner
 {
     static final long serialVersionUID = 9110225941815665906L;
@@ -112,9 +111,7 @@ public class WalkingIterator extends LocPathIterator implements ExpressionOwner
   {
 
     WalkingIterator clone = (WalkingIterator) super.clone();
-
-    //    clone.m_varStackPos = this.m_varStackPos;
-    //    clone.m_varStackContext = this.m_varStackContext;
+    
     if (null != m_firstWalker)
     {
       clone.m_firstWalker = m_firstWalker.cloneDeep(clone, null);

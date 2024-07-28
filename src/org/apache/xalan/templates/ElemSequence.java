@@ -78,11 +78,17 @@ public class ElemSequence extends ElemTemplateElement
    */
   public ElemSequence(){}
   
-  // The following two fields of this class, are used during 
-  // XPath.fixupVariables(..) action as performed within object of 
-  // this class.    
-  private Vector fVars;    
-  private int fGlobalsSize;
+  /**
+   * This class field is used during, XPath.fixupVariables(..) action 
+   * as performed within object of this class.  
+   */    
+  private Vector m_vars;
+  
+  /**
+   * This class field is used during, XPath.fixupVariables(..) action 
+   * as performed within object of this class.  
+   */
+  private int m_globals_size;
 
   /**
    * The value of the "select" attribute.
@@ -255,8 +261,8 @@ public class ElemSequence extends ElemTemplateElement
 
                    XPath varXPathObj = new XPath(varRefXPathExprStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                          XPath.SELECT, null);
-                   if (fVars != null) {
-                      varXPathObj.fixupVariables(fVars, fGlobalsSize);  
+                   if (m_vars != null) {
+                      varXPathObj.fixupVariables(m_vars, m_globals_size);  
                    }
                    
                    XObject varEvalResult = varXPathObj.execute(xctxt, xctxt.getCurrentNode(), xctxt.getNamespaceContext());
@@ -271,8 +277,8 @@ public class ElemSequence extends ElemTemplateElement
                    XPath xpathIndexObj = new XPath(xpathIndexExprStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                                           XPath.SELECT, null);
                    
-                   if (fVars != null) {
-                      xpathIndexObj.fixupVariables(fVars, fGlobalsSize);  
+                   if (m_vars != null) {
+                      xpathIndexObj.fixupVariables(m_vars, m_globals_size);  
                    }
                    
                    XObject seqIndexEvalResult = xpathIndexObj.execute(xctxt, xctxt.getCurrentNode(), 
@@ -406,8 +412,8 @@ public class ElemSequence extends ElemTemplateElement
     
      java.util.Vector vnames = cstate.getVariableNames();
         
-     fVars = (Vector)vnames.clone();
-     fGlobalsSize = cstate.getGlobalsSize();
+     m_vars = (Vector)vnames.clone();
+     m_globals_size = cstate.getGlobalsSize();
         
      if (m_selectPattern != null) {
         m_selectPattern.fixupVariables(vnames, cstate.getGlobalsSize());
