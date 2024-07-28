@@ -60,7 +60,7 @@ import xml.xpath31.processor.types.XSUntyped;
 import xml.xpath31.processor.types.XSUntypedAtomic;
 
 /**
- * This class, has few utility methods, that provide support for
+ * This class, defines few utility methods, that provide support for
  * XSL 3 transformation processor implementation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
@@ -497,6 +497,21 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
+     * This method checks whether, an XSL xsl:with-param/xsl:param 
+     * tunnel attribute's value is true (i.e, having string 
+     * values "yes", "true", or "1").
+     */
+    public static boolean isTunnelAttributeYes(String val) {
+       boolean result = false;
+       
+       if (val != null) {
+    	  result = (val.equals("yes") || val.equals("true") || val.equals("1"));
+       }
+       
+       return result;
+    }
+    
+    /**
      * This method produces, numerical sum of xdm sequence items.
      *  
      * @param resultSeq  An xdm sequence object instance, whose items
@@ -523,21 +538,6 @@ public class XslTransformEvaluationHelper {
        }
        
        return sum;
-    }
-    
-    /**
-     * This method checks whether, an XSL xsl:with-param/xsl:param 
-     * tunnel attribute's value is true (i.e, having string 
-     * values "yes", "true", or "1").
-     */
-    public static boolean isTunnelAttributeYes(String val) {
-       boolean result = false;
-       
-       if (val != null) {
-    	  result = (val.equals("yes") || val.equals("true") || val.equals("1"));
-       }
-       
-       return result;
     }
 
 }

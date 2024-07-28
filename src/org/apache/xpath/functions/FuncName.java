@@ -76,7 +76,7 @@ public class FuncName extends FunctionMultiArgs {
 			nodeNameStr = node.getNodeName();
 		 }
 		 else {
-			throw new javax.xml.transform.TransformerException("XPTY0004: The first argument of function fn:name is not a node.", srcLocator);  
+			throw new javax.xml.transform.TransformerException("XPTY0004: The 1st argument of function fn:name is not a node.", srcLocator);  
 		 }		 
 	  }
 	  

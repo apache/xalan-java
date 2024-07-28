@@ -245,32 +245,18 @@ public class ElemCallTemplate extends ElemForEach
             }
           }
           
-          for (int idx = 0; idx < MAX_PARAM_LIMIT; idx++) {
-             XObject obj = vars.getLocalVariable(idx, thisframe);
-             if (obj != null) {
-            	String tunnelValStr = obj.getTunnel();            	
-            	if ((obj.getTunnel() != null) && XslTransformEvaluationHelper.isTunnelAttributeYes(tunnelValStr)) {
-            	   vars.setLocalVariable(++maxParamStackFrameIndex, obj, nextFrame);
-            	}
-             }
-             else {
-            	break; 
-             }
-          }
-          
-          ElemTemplateElement parentElem = getParentElem();
-          while (!(parentElem instanceof ElemTemplate)) {
-        	 parentElem = parentElem.getParentElem(); 
-          }
-          
-          List<XObject> tunnelParamObjList = parentElem.getTunnelParamObjList();
-          for (int idx = 0; idx < tunnelParamObjList.size(); idx++) {
-        	 XObject var = tunnelParamObjList.get(idx);
-        	 vars.setLocalVariable(++maxParamStackFrameIndex, var, nextFrame);
-          }
+          propagateTunnelParameters(vars, thisframe, nextFrame, maxParamStackFrameIndex);
           
           vars.setStackFrame(nextFrame);
         }
+        else {
+            vars.setStackFrame(thisframe);            
+            int maxParamStackFrameIndex = -1;
+            
+            propagateTunnelParameters(vars, thisframe, nextFrame, maxParamStackFrameIndex);             
+            
+            vars.setStackFrame(nextFrame);
+         }
       }
       
       SourceLocator savedLocator = xctxt.getSAXLocator();
@@ -394,17 +380,41 @@ public class ElemCallTemplate extends ElemForEach
      */
     public void callChildVisitors(XSLTVisitor visitor, boolean callAttrs)
     {
-//      if (null != m_paramElems)
-//      {
-//        int size = m_paramElems.length;
-//
-//        for (int i = 0; i < size; i++)
-//        {
-//          ElemWithParam ewp = m_paramElems[i];
-//          ewp.callVisitors(visitor);
-//        }
-//      }
-
       super.callChildVisitors(visitor, callAttrs);
+    }
+    
+    /**
+     * This method does processing, to copy tunnel parameters stored within 
+     * XPath context's variable stack from the previous stack frame to next 
+     * stack frame.
+     */
+    private void propagateTunnelParameters(VariableStack vars, int thisframe, int nextFrame, 
+                                           int maxParamStackFrameIndex) throws TransformerException {
+
+    	for (int idx = 0; idx < MAX_PARAM_LIMIT; idx++) {
+    		XObject obj = vars.getLocalVariable(idx, thisframe);
+    		if (obj != null) {
+    			String tunnelValStr = obj.getTunnel();            	
+    			if ((obj.getTunnel() != null) && XslTransformEvaluationHelper.isTunnelAttributeYes(tunnelValStr)) {
+    				vars.setLocalVariable(++maxParamStackFrameIndex, obj, nextFrame);
+    			}
+    		}
+    		else {
+    			break; 
+    		}
+    	}
+
+    	ElemTemplateElement parentElem = getParentElem();
+
+    	while (!(parentElem instanceof ElemTemplate)) {
+    		parentElem = parentElem.getParentElem(); 
+    	}
+
+    	List<XObject> tunnelParamObjList = parentElem.getTunnelParamObjList();
+
+    	for (int idx = 0; idx < tunnelParamObjList.size(); idx++) {
+    		XObject var = tunnelParamObjList.get(idx);
+    		vars.setLocalVariable(++maxParamStackFrameIndex, var, nextFrame);
+    	}
     }
 }
