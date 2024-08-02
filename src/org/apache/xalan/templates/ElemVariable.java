@@ -373,7 +373,7 @@ public class ElemVariable extends ElemTemplateElement
             	
             	String evalResultStrValue = (evalResult instanceof XSString) ? ((XSString)evalResult).stringValue() : null;            	
             	if (m_asAttr != null && !(XSLFunctionService.XS_VALID_TRUE).equals(evalResultStrValue)) {           	     
-                   evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
+                   evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                    if (evalResult == null) {
                 	  String xpathPatternStr = m_selectPattern.getPatternString();
                 	  throw new TransformerException("XTTE0570 : The supplied value " + xpathPatternStr + ", doesn't "
@@ -409,7 +409,7 @@ public class ElemVariable extends ElemTemplateElement
             if ((evalResult instanceof ResultSequence) || (evalResult instanceof XPathArray) || 
                                                 (evalResult instanceof XSAnyType)) {
                 if (m_asAttr != null) {
-                   evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
+                   evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                    if (evalResult == null) {
                  	  throw new javax.xml.transform.TransformerException("XTTE0570 : variable's computed value is not of "
                  	  		                                                        + "an expected type " + m_asAttr +".", srcLocator); 
@@ -423,7 +423,7 @@ public class ElemVariable extends ElemTemplateElement
             XObject evalResult = selectExpression.execute(xctxt);
             
             if (m_asAttr != null) {
-               evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
+               evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                if (evalResult == null) {
              	  throw new javax.xml.transform.TransformerException("XTTE0570 : variable's computed value is not of "
              	  		                                                         + "an expected type " + m_asAttr +".", srcLocator); 
@@ -436,7 +436,7 @@ public class ElemVariable extends ElemTemplateElement
             XObject evalResult = selectExpression.execute(xctxt);
             
             if (m_asAttr != null) {
-               evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
+               evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                if (evalResult == null) {
               	  throw new javax.xml.transform.TransformerException("XTTE0570 : variable's computed value is not of "
               	  		                                                         + "an expected type " + m_asAttr +".", srcLocator); 
@@ -459,7 +459,7 @@ public class ElemVariable extends ElemTemplateElement
             }
             
             if (m_asAttr != null) {
-               evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
+               evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, m_asAttr, null, xctxt);
                if (evalResult == null) {
             	  throw new javax.xml.transform.TransformerException("XTTE0570 : variable's computed value is not of "
             	  		                                                         + "an expected type " + m_asAttr +".", srcLocator); 
@@ -472,7 +472,7 @@ public class ElemVariable extends ElemTemplateElement
             XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
             if (xpath3ContextItem != null) {               
               if (m_asAttr != null) {
-                 xpath3ContextItem = SequenceTypeSupport.convertXdmValueToAnotherType(xpath3ContextItem, m_asAttr, 
+                 xpath3ContextItem = SequenceTypeSupport.castXdmValueToAnotherType(xpath3ContextItem, m_asAttr, 
                                                                                                                null, xctxt);  
               }
                 
@@ -496,7 +496,7 @@ public class ElemVariable extends ElemTemplateElement
                var = new XNodeSet(dtmIter);
                
                if (m_asAttr != null) {
-                  var = SequenceTypeSupport.convertXdmValueToAnotherType(var, m_asAttr, null, xctxt);  
+                  var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt);  
                }
                  
                return var; 
@@ -589,7 +589,7 @@ public class ElemVariable extends ElemTemplateElement
                var = resultSeq;
                
                if (m_asAttr != null) {
-                  var = SequenceTypeSupport.convertXdmValueToAnotherType(var, m_asAttr, null, xctxt);  
+                  var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt);  
                }
                   
                return var;
@@ -669,12 +669,12 @@ public class ElemVariable extends ElemTemplateElement
              var = variableConvertedVal;    
           }
           else {
-             var = SequenceTypeSupport.convertXdmValueToAnotherType(var, m_asAttr, null, xctxt); 
+             var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt); 
           }
        }
        else if (var instanceof XPathMap) {
     	  try {
-    	     var = SequenceTypeSupport.convertXdmValueToAnotherType(var, m_asAttr, null, xctxt);
+    	     var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt);
     	  }
     	  catch (TransformerException ex) {
     		 String errMesg = ex.getMessage();
@@ -691,7 +691,7 @@ public class ElemVariable extends ElemTemplateElement
        }
        else if (var instanceof XPathArray) {
     	  try {
-      	     var = SequenceTypeSupport.convertXdmValueToAnotherType(var, m_asAttr, null, xctxt);
+      	     var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt);
       	  }
       	  catch (TransformerException ex) {
       		 String errMesg = ex.getMessage();
@@ -708,7 +708,7 @@ public class ElemVariable extends ElemTemplateElement
        }
        else {
     	  try {
-             var = SequenceTypeSupport.convertXdmValueToAnotherType(var, m_asAttr, null, xctxt);
+             var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt);
     	  }
     	  catch (TransformerException ex) {
     		 throw ex; 

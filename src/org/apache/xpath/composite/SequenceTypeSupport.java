@@ -16,17 +16,33 @@
  */
 package org.apache.xpath.composite;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.Validator;
 
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xerces.impl.dv.XSSimpleType;
+import org.apache.xerces.impl.xs.SchemaGrammar;
+import org.apache.xerces.impl.xs.XSComplexTypeDecl;
+import org.apache.xerces.impl.xs.XSDDescription;
+import org.apache.xerces.impl.xs.XSElementDecl;
+import org.apache.xerces.jaxp.validation.XMLSchemaFactory;
+import org.apache.xerces.util.XMLGrammarPoolImpl;
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
@@ -54,8 +70,10 @@ import org.apache.xpath.types.XSUnsignedByte;
 import org.apache.xpath.types.XSUnsignedInt;
 import org.apache.xpath.types.XSUnsignedLong;
 import org.apache.xpath.types.XSUnsignedShort;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyAtomicType;
 import xml.xpath31.processor.types.XSBoolean;
@@ -95,12 +113,16 @@ public class SequenceTypeSupport {
         
     public static int EMPTY_SEQUENCE = 1;
     
-    // Represents both XML Schema data type xs:boolean, and 
-    // XalanJ legacy boolean data type.
+    /**
+     * Represents both, an XML Schema data type xs:boolean and 
+     * Xalan-J legacy boolean data type.
+     */
     public static int BOOLEAN = 2;
     
-    // Represents both XML Schema data type xs:string, and 
-    // XalanJ legacy string data type.
+    /**
+     * Represents both, an XML Schema data type xs:string and 
+     * Xalan-J legacy string data type.
+     */
     public static int STRING = 3;
     
     public static int XS_DATE = 4;
@@ -177,8 +199,14 @@ public class SequenceTypeSupport {
     public static int NODE_KIND = 105;
     
     public static int ITEM_KIND = 106;    
-        
-    public static class OccurenceIndicator {
+    
+    /**
+     * Sequence type occurrence indicator values, for Xalan-J 
+     * implementation.
+     * 
+     * @author Mukul Gandhi <mukulg@apache.org>
+     */
+    public static class OccurrenceIndicator {
        // Represents the sequence type occurrence indicator '?'
        public static int ZERO_OR_ONE = 1;
        
@@ -266,7 +294,7 @@ public class SequenceTypeSupport {
     }
     
     /**
-     * This method converts/casts an XPath 3.1 xdm source value represented by an
+     * This method casts an XPath 3.1 xdm source value represented by an
      * XObject object instance, to a value of another xdm data type.
      * 
      * For XPath sequence type expressions that represent KindTest (i.e,
@@ -286,13 +314,13 @@ public class SequenceTypeSupport {
      * 
      * @throws TransformerException
      */
-    public static XObject convertXDMValueToAnotherType(XObject srcValue, String sequenceTypeXPathExprStr, 
-                                                       SequenceTypeData seqExpectedTypeDataInp,  
-                                                       XPathContext xctxt, List prefixTable) throws TransformerException {
+    public static XObject castXDMValueToAnotherType(XObject srcValue, String sequenceTypeXPathExprStr, 
+                                                    SequenceTypeData seqExpectedTypeDataInp,  
+                                                    XPathContext xctxt, List prefixTable) throws TransformerException {
     	XObject result = null;
     	
     	m_PrefixTable = prefixTable;    	
-    	result = convertXdmValueToAnotherType(srcValue, sequenceTypeXPathExprStr, null, xctxt);
+    	result = castXdmValueToAnotherType(srcValue, sequenceTypeXPathExprStr, null, xctxt);
     	
     	return result;
     }
@@ -301,18 +329,18 @@ public class SequenceTypeSupport {
      * This method, supports XPath implementation of "cast as" and 
      * "castable as" expressions.
      */
-    public static XObject castXdmValueToAnotherType(XObject srcValue, SequenceTypeData seqExpectedTypeDataInp) 
+    public static XObject castXdmValueToAnotherType(XObject srcValue, SequenceTypeData expectedSeqTypeData) 
     		                                                                                throws TransformerException {
         XObject result = null;
     	
-        result = convertXdmValueToAnotherType(srcValue, null, seqExpectedTypeDataInp, null);
+        result = castXdmValueToAnotherType(srcValue, null, expectedSeqTypeData, null);
 
         return result;
     }
     
     
     /**
-     * This method converts/casts an XPath 3.1 xdm source value represented by an
+     * This method casts an XPath 3.1 xdm source value represented by an
      * XObject object instance, to a value of another xdm data type.
      * 
      * For XPath sequence type expressions that represent KindTest (i.e,
@@ -323,7 +351,7 @@ public class SequenceTypeSupport {
      * @param srcValue                     an XObject object instance that represents a
      *                                     source xdm value. 
      * @param sequenceTypeXPathExprStr     an XPath sequence type expression string 
-     * @param seqExpectedTypeDataInp       an XPath sequence type compiled expression                                                                  
+     * @param expectedSeqTypeData          an XPath sequence type compiled expression                                                                  
      * @param xctxt                        the current XPath context object
      * 
      * @return                             an XObject object instance produced, as a result of data type 
@@ -332,9 +360,9 @@ public class SequenceTypeSupport {
      *                                
      * @throws TransformerException 
      */
-    public static XObject convertXdmValueToAnotherType(XObject srcValue, String sequenceTypeXPathExprStr, 
-                                                                                       SequenceTypeData seqExpectedTypeDataInp, 
-                                                                                       XPathContext xctxt) throws TransformerException {
+    public static XObject castXdmValueToAnotherType(XObject srcValue, String sequenceTypeXPathExprStr, 
+                                                    SequenceTypeData expectedSeqTypeData, XPathContext xctxt) 
+                                                    		                                          throws TransformerException {
         XObject result = null;
         
         int contextNode = DTM.NULL;        
@@ -350,32 +378,46 @@ public class SequenceTypeSupport {
             XObject seqTypeExpressionEvalResult = null;
             SequenceTypeData seqExpectedTypeData = null;
             
-            if ((xctxt != null) && (sequenceTypeXPathExprStr != null) && (seqExpectedTypeDataInp == null)) {
-               seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, 
-                                                                          xctxt.getNamespaceContext(), XPath.SELECT, null, true);            
-               seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
-               seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+            if ((xctxt != null) && (sequenceTypeXPathExprStr != null) && (expectedSeqTypeData == null)) {
+            	seqTypeXPath = new XPath(sequenceTypeXPathExprStr, srcLocator, xctxt.getNamespaceContext(), 
+            			                                                                          XPath.SELECT, null, true);            
+            	seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, contextNode, xctxt.getNamespaceContext());            
+            	seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
             }
             else {
-               seqExpectedTypeData = seqExpectedTypeDataInp; 
+            	seqExpectedTypeData = expectedSeqTypeData; 
             }
-            
-            int expectedType = seqExpectedTypeData.getSequenceType();            
+
+            int expectedType = seqExpectedTypeData.getBuiltInSequenceType();            
             int itemTypeOccurenceIndicator = seqExpectedTypeData.getItemTypeOccurrenceIndicator();
             SequenceTypeKindTest sequenceTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+
+            XSTypeDefinition xsTypeDefinition = seqExpectedTypeData.getXsTypeDefinition();
+            
+            XNodeSet nodeSet = getNodeReference(srcValue);
+            
+            if ((nodeSet != null) && (xsTypeDefinition != null)) {
+	            boolean isNodeValid = isXdmNodeValidWithSchemaType(nodeSet, xctxt, xsTypeDefinition);	            
+	            if (isNodeValid) {
+	               result = srcValue;
+	               result.setXsTypeDefinition(xsTypeDefinition);
+	               
+	               return result;
+	            }
+            }
             
             if (srcValue != null) {
             	if (sequenceTypeKindTest != null) {
 	            	if (sequenceTypeKindTest.getKindVal() == ITEM_KIND) {
 	            		if (srcValue instanceof ResultSequence) {
 	            		  ResultSequence rSeq = (ResultSequence)srcValue;
-	               		  if (itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_MANY) {
+	               		  if (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) {
 	               			 result = srcValue;   
 	               		  }
-	               		  else if ((itemTypeOccurenceIndicator == OccurenceIndicator.ONE_OR_MANY) && (rSeq.size() > 0)) {
+	               		  else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY) && (rSeq.size() > 0)) {
 	               			 result = srcValue; 
 	               		  }
-	               		  else if ((itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_ONE) && (rSeq.size() <= 1)) {
+	               		  else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE) && (rSeq.size() <= 1)) {
 	               			 result = srcValue; 
 	               		  }
 	               		  
@@ -383,13 +425,13 @@ public class SequenceTypeSupport {
 	               	   }
 	            	   else if (srcValue instanceof XPathArray) {
 	            		  XPathArray xpathArr = (XPathArray)srcValue;
-	            		  if (itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_MANY) {
+	            		  if (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) {
 	            			 result = srcValue;   
 	            		  }
-	            		  else if ((itemTypeOccurenceIndicator == OccurenceIndicator.ONE_OR_MANY) && (xpathArr.size() > 0)) {
+	            		  else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY) && (xpathArr.size() > 0)) {
 	            			 result = srcValue; 
 	            		  }
-	            		  else if ((itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_ONE) && (xpathArr.size() <= 1)) {
+	            		  else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE) && (xpathArr.size() <= 1)) {
 	            			 result = srcValue; 
 	            		  }
 	            		  
@@ -397,20 +439,20 @@ public class SequenceTypeSupport {
 	            	   }
 	            	}
             	}
-            	else if (seqExpectedTypeData.getSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE) {
+            	else if (seqExpectedTypeData.getBuiltInSequenceType() == SequenceTypeSupport.XS_ANY_ATOMIC_TYPE) {
             		if (srcValue instanceof ResultSequence) {
             			ResultSequence rSeq = (ResultSequence)srcValue;
             			if ((rSeq.size() == 1) && ((itemTypeOccurenceIndicator == 0) || 
-            					                   (itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_ONE) || 
-            					                   (itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_MANY) ||
-            					                   (itemTypeOccurenceIndicator == OccurenceIndicator.ONE_OR_MANY))) {
+            					                   (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE) || 
+            					                   (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) ||
+            					                   (itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY))) {
             			   if (rSeq.item(0) instanceof XSAnyAtomicType) {
             			      result = rSeq.item(0);            			      
             			      return result;
             			   }
             			}
-            			else if ((rSeq.size() > 0) && ((itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_MANY) || 
-            					                       (itemTypeOccurenceIndicator == OccurenceIndicator.ONE_OR_MANY))) {
+            			else if ((rSeq.size() > 0) && ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY) || 
+            					                       (itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY))) {
             			    boolean isSeqAnyAtomicType = true;
             			    for (int idx = 0; idx < rSeq.size(); idx++) {
             			       if (!(rSeq.item(0) instanceof XSAnyAtomicType)) {
@@ -423,8 +465,8 @@ public class SequenceTypeSupport {
             			       return result;
             			    }
             			}
-            			else if ((itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_ONE) || 
-            					 (itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_MANY)) {
+            			else if ((itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE) || 
+            					 (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_MANY)) {
             				// an input sequence is empty
             				result = rSeq;
          			        return result;
@@ -591,22 +633,22 @@ public class SequenceTypeSupport {
             else if (srcValue instanceof XSUntyped) {
                String srcStrVal = ((XSUntyped)srcValue).stringValue();
                // Recursive call to this function
-               result = convertXdmValueToAnotherType(new XSString(srcStrVal), sequenceTypeXPathExprStr, 
-                                                                                                    seqExpectedTypeDataInp, xctxt);
+               result = castXdmValueToAnotherType(new XSString(srcStrVal), sequenceTypeXPathExprStr, 
+                                                                                                    expectedSeqTypeData, xctxt);
             }
             else if (srcValue instanceof XSUntypedAtomic) {
                String srcStrVal = ((XSUntypedAtomic)srcValue).stringValue();
                // Recursive call to this function
-               result = convertXdmValueToAnotherType(new XSString(srcStrVal), sequenceTypeXPathExprStr, 
-                                                                                                    seqExpectedTypeDataInp, xctxt);
+               result = castXdmValueToAnotherType(new XSString(srcStrVal), sequenceTypeXPathExprStr, 
+                                                                                                    expectedSeqTypeData, xctxt);
             }
             else if (srcValue instanceof XNodeSetForDOM) {               
-               result = castXNodeSetForDOMInstance(srcValue, sequenceTypeXPathExprStr, seqExpectedTypeDataInp, 
+               result = castXNodeSetForDOMInstance(srcValue, sequenceTypeXPathExprStr, expectedSeqTypeData, 
                                                                               xctxt, srcLocator, itemTypeOccurenceIndicator, 
                                                                                                                        sequenceTypeKindTest);
             }
             else if (srcValue instanceof XNodeSet) {
-               result = castXNodeSetInstance(srcValue, sequenceTypeXPathExprStr, seqExpectedTypeDataInp, 
+               result = castXNodeSetInstance(srcValue, sequenceTypeXPathExprStr, expectedSeqTypeData, 
                                                                               xctxt, srcLocator, itemTypeOccurenceIndicator, 
                                                                                                                        sequenceTypeKindTest);
             }
@@ -614,14 +656,14 @@ public class SequenceTypeSupport {
                ResultSequence srcResultSeq = (ResultSequence)srcValue;
                if (srcResultSeq.size() == 1) {
             	   // Recursive call to this function
-                   result = convertXdmValueToAnotherType(srcResultSeq.item(0), sequenceTypeXPathExprStr, seqExpectedTypeDataInp, xctxt);   
+                   result = castXdmValueToAnotherType(srcResultSeq.item(0), sequenceTypeXPathExprStr, expectedSeqTypeData, xctxt);   
                }
                else if ((srcResultSeq.size() > 1) && (itemTypeOccurenceIndicator == 0)) {
             	   return null;
                }
                else {
-                   result = castResultSequenceInstance(srcValue, sequenceTypeXPathExprStr, seqExpectedTypeDataInp, xctxt, srcLocator, 
-                                                                                                         expectedType, itemTypeOccurenceIndicator);
+                   result = castResultSequenceInstance((ResultSequence)srcValue, sequenceTypeXPathExprStr, expectedSeqTypeData, xctxt, srcLocator, 
+                                                        expectedType, itemTypeOccurenceIndicator);
                }
             }
             else if (srcValue instanceof XPathInlineFunction) {
@@ -702,13 +744,13 @@ public class SequenceTypeSupport {
              			 }
              			 SequenceTypeData keySeqTypeData = sequenceTypeMapTest.getKeySequenceTypeData();
              			 SequenceTypeData valueSeqTypeData = sequenceTypeMapTest.getValueSequenceTypeData();
-             			 XObject mapKeyValTypeCheckResult = SequenceTypeSupport.convertXdmValueToAnotherType(mapKey, null, keySeqTypeData, xctxt);
+             			 XObject mapKeyValTypeCheckResult = SequenceTypeSupport.castXdmValueToAnotherType(mapKey, null, keySeqTypeData, xctxt);
              			 String mapSequenceTypeStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : "";
              			 if (mapKeyValTypeCheckResult == null) {             				
              				throw new TransformerException("XPTY0004 : XPath map entry key's [entry's key name: '" + keyStrVal + "'] value doesn't conform to the key's expected "
              						                                            + "type [map's sequenceType is '" + mapSequenceTypeStr + "']."); 
              			 }
-             			 XObject mapEntryValTypeCheckResult = SequenceTypeSupport.convertXdmValueToAnotherType(mapEntry, null, valueSeqTypeData, xctxt);
+             			 XObject mapEntryValTypeCheckResult = SequenceTypeSupport.castXdmValueToAnotherType(mapEntry, null, valueSeqTypeData, xctxt);
              			 if (mapEntryValTypeCheckResult == null) {
              				throw new TransformerException("XPTY0004 : XPath map entry's [entry's key name: '" + keyStrVal + "'] value doesn't conform to the map entry value's expected "
              						                                            + "type [map's sequenceType is '" + mapSequenceTypeStr + "'].");  
@@ -736,7 +778,7 @@ public class SequenceTypeSupport {
              				arrItem = ((ResultSequence)arrItem).item(0);
              			 }
              			 SequenceTypeData arrayItemTypeInfo = sequenceTypeArrayTest.getArrayItemTypeInfo();
-             			 XObject arrayItemTypeCheckResult = SequenceTypeSupport.convertXdmValueToAnotherType(arrItem, null, arrayItemTypeInfo, xctxt);
+             			 XObject arrayItemTypeCheckResult = SequenceTypeSupport.castXdmValueToAnotherType(arrItem, null, arrayItemTypeInfo, xctxt);
              			 String arrayItemSequenceTypeStr = (sequenceTypeXPathExprStr != null) ? sequenceTypeXPathExprStr : "";
              			 if (arrayItemTypeCheckResult == null) {             				
              				throw new TransformerException("XPTY0004 : One or more, of XPath array's item doesn't conform to array item's expected "
@@ -767,20 +809,101 @@ public class SequenceTypeSupport {
     }
     
     /**
-     * Check whether, two XML namespace uris are equal.
+     * Check whether, two XML namespace values are equal.
      */
-    public static boolean isTwoXmlNamespacesEqual(String nsUr1, String nsUri2) {
+    public static boolean isTwoXmlNamespaceValuesEqual(String ns0, String ns1) {
         boolean xmlNamespacesEqual = false;
         
-        if ((nsUr1 == null) && (nsUri2 == null)) {
+        if ((ns0 == null) && (ns1 == null)) {
            xmlNamespacesEqual = true; 
         }
-        else if ((nsUr1 != null) && (nsUri2 != null)) {
-           xmlNamespacesEqual = nsUr1.equals(nsUri2);  
+        else if ((ns0 != null) && (ns1 != null)) {
+           xmlNamespacesEqual = ns0.equals(ns1);  
         }
         
         return xmlNamespacesEqual; 
     }
+
+    /**
+     * Validate an XDM node with an XML Schema type definition.
+     */
+	private static boolean isXdmNodeValidWithSchemaType(XNodeSet xdmNode, XPathContext xctxt,
+														XSTypeDefinition xsTypeDefinition)
+														       throws Exception, ParserConfigurationException, SAXException, 
+															   IOException, TransformerException {
+		
+		boolean isNodeValidWithSchemaType = false;
+		
+		if (xsTypeDefinition instanceof XSSimpleType) {
+		    // TO DO
+		}
+		else {
+			// Validate the node with an XML Schema complexType
+			xdmNode = (XNodeSet)(xdmNode.getFresh());
+			DTMIterator dtmIter = ((XNodeSet)xdmNode).iterRaw();
+			int nodeHandle = dtmIter.nextNode();
+			DTM dtm = xctxt.getDTM(nodeHandle);
+			Node node = dtm.getNode(nodeHandle);
+
+			String xmlDocumentStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
+
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			dbf.setNamespaceAware(true);
+			DocumentBuilder dBuilder = dbf.newDocumentBuilder();
+			Document document = dBuilder.parse(new ByteArrayInputStream(xmlDocumentStr.getBytes()));
+
+			String elemName = (document.getDocumentElement()).getNodeName();
+
+			XSComplexTypeDecl xsComplexTypeDecl = (XSComplexTypeDecl)xsTypeDefinition;
+
+			String xsTargetNamespace = xsComplexTypeDecl.getTargetNamespace();	            		
+
+			SchemaGrammar schemaGrammar = new SchemaGrammar(xsTargetNamespace, new XSDDescription(), null);	            			            		
+
+			XSElementDecl xsElemDecl = new XSElementDecl();
+			xsElemDecl.fName = elemName;
+			xsElemDecl.fTargetNamespace = xsTargetNamespace;
+			xsElemDecl.fType = xsComplexTypeDecl;
+			xsElemDecl.setIsGlobal();
+
+			schemaGrammar.addGlobalElementDecl(xsElemDecl);	            		
+			schemaGrammar.addGlobalTypeDecl(xsComplexTypeDecl);	            		
+			XMLGrammarPoolImpl xmlGrammarPool = new XMLGrammarPoolImpl();
+			xmlGrammarPool.putGrammar(schemaGrammar);
+
+			XMLSchemaFactory xmlSchemaFactory = new XMLSchemaFactory();
+			Schema schema = xmlSchemaFactory.newSchema(xmlGrammarPool);
+			Validator validator = schema.newValidator();
+			validator.validate(new DOMSource(document));
+
+			isNodeValidWithSchemaType = true;
+			
+		}
+		
+		return isNodeValidWithSchemaType;
+	}
+	
+	/**
+	 * Given an XObject object instance check whether it represents
+	 * an XDM node. A non-null object reference returned by this
+	 * method, indicates that an input object reference is a node.
+	 */
+	public static XNodeSet getNodeReference(XObject item) {
+		
+		XNodeSet nodeSet = null;
+		
+		if (item instanceof XNodeSet) {
+		   nodeSet = (XNodeSet)item;			
+		}
+		else if (item instanceof ResultSequence) {
+			ResultSequence rSeq = (ResultSequence)item;
+			if ((rSeq.size() == 1) && (rSeq.item(0) instanceof XNodeSet)) {
+			   nodeSet = (XNodeSet)(rSeq.item(0));
+			}
+		}
+		
+		return nodeSet;
+	}
     
     /**
      * Cast a string value to an expected xdm type.
@@ -1129,7 +1252,7 @@ public class SequenceTypeSupport {
         ResultSequence convertedResultSeq = new ResultSequence();
         
         if ((nodeSetLen > 1) && ((itemTypeOccurenceIndicator == 0) || (itemTypeOccurenceIndicator == 
-                                                                                             OccurenceIndicator.ZERO_OR_ONE))) {
+                                                                                             OccurrenceIndicator.ZERO_OR_ONE))) {
             throw new TransformerException("XTTE0570 : A sequence of size " + nodeSetLen + ", cannot be cast to a type " 
                                                                                                          + sequenceTypeXPathExprStr + ".", srcLocator);  
         }
@@ -1152,7 +1275,7 @@ public class SequenceTypeSupport {
 
                     if (sequenceTypeKindTest.getDataTypeName() != null) {
                         String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr; 
-                        throw new TransformerException("XTTE0570 : The required item type of an xdm input node is " + dataTypeStr + ". "
+                        throw new TransformerException("XTTE0570 : The required item type of an xdm node is " + dataTypeStr + ". "
                         		                                                  + "The supplied value " + nodeName + " does'nt match an expected type. "
                         		                                                  + "The supplied node has not been validated with a schema.", srcLocator); 
                     }
@@ -1167,7 +1290,7 @@ public class SequenceTypeSupport {
                             boolean isSeqTypeMatchOk = false;
 
                             if ((sequenceTypeKindTest.getKindVal() == ELEMENT_KIND) && (nodeName.equals(elemNodeKindTestNodeName)) 
-                                                                                             && (isTwoXmlNamespacesEqual(nodeNsUri, sequenceTypeKindTest.getNodeNsUri()))) {
+                                                                                             && (isTwoXmlNamespaceValuesEqual(nodeNsUri, sequenceTypeKindTest.getNodeNsUri()))) {
                                 isSeqTypeMatchOk = true;
                             }
                             else if ((sequenceTypeKindTest.getKindVal() == NODE_KIND) || (sequenceTypeKindTest.getKindVal() == ITEM_KIND)) {
@@ -1192,7 +1315,7 @@ public class SequenceTypeSupport {
                             boolean isSeqTypeMatchOk = false;
 
                             if ((sequenceTypeKindTest.getKindVal() == ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
-                                                                                               && (isTwoXmlNamespacesEqual(nodeNsUri, sequenceTypeKindTest.getNodeNsUri()))) {
+                                                                                               && (isTwoXmlNamespaceValuesEqual(nodeNsUri, sequenceTypeKindTest.getNodeNsUri()))) {
                                 isSeqTypeMatchOk = true;  
                             }
                             else if ((sequenceTypeKindTest.getKindVal() == NODE_KIND) || (sequenceTypeKindTest.getKindVal() == ITEM_KIND)) {
@@ -1223,7 +1346,7 @@ public class SequenceTypeSupport {
                     }
 
                     String nodeStrVal = node.getTextContent();
-                    XObject xObject = convertXdmValueToAnotherType(new XSString(nodeStrVal), sequenceTypeNewXPathExprStr, 
+                    XObject xObject = castXdmValueToAnotherType(new XSString(nodeStrVal), sequenceTypeNewXPathExprStr, 
                                                                                                                       seqExpectedTypeDataInp, xctxt);                       
                     convertedResultSeq.add(xObject); 
                 }
@@ -1269,7 +1392,7 @@ public class SequenceTypeSupport {
         }
         
         if ((nodeSetLen > 1) && ((itemTypeOccurenceIndicator == 0) || (itemTypeOccurenceIndicator == 
-                                                                                             OccurenceIndicator.ZERO_OR_ONE))) {
+                                                                                             OccurrenceIndicator.ZERO_OR_ONE))) {
             throw new TransformerException("XTTE0570 : A sequence of size " + nodeSetLen + ", cannot be cast to a type " 
                                                                                                            + sequenceTypeXPathExprStr + ".", srcLocator);  
         }
@@ -1306,7 +1429,7 @@ public class SequenceTypeSupport {
                   
                   if (sequenceTypeKindTest.getDataTypeName() != null) {
                      String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr;
-                     throw new TransformerException("XTTE0570 : The required item type of an xdm input node is " + dataTypeStr + ". "
+                     throw new TransformerException("XTTE0570 : The required item type of an xdm node is " + dataTypeStr + ". "
                                                                           + "The supplied value " + nodeName + " does'nt match an expected type. "
                                                                           + "The supplied node has not been validated with a schema.", srcLocator);
                   }
@@ -1319,7 +1442,7 @@ public class SequenceTypeSupport {
                         }
                         
                         if ((sequenceTypeKindTest.getKindVal() == ELEMENT_KIND) && (nodeName.equals(elemNodeKindTestNodeName)) 
-                                                                                                 && (isTwoXmlNamespacesEqual(nodeNsUri, sequenceTypeKindTest.getNodeNsUri()))) {
+                                                                                                 && (isTwoXmlNamespaceValuesEqual(nodeNsUri, sequenceTypeKindTest.getNodeNsUri()))) {
                            convertedResultSeq.add(nodeSetItem);  
                         }
                         else if ((sequenceTypeKindTest.getKindVal() == NODE_KIND) || (sequenceTypeKindTest.getKindVal() == ITEM_KIND)) {
@@ -1345,7 +1468,7 @@ public class SequenceTypeSupport {
                         }
                         
                         if ((sequenceTypeKindTest.getKindVal() == ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
-                                                                                                   && (isTwoXmlNamespacesEqual(nodeNsUri, sequenceTypeKindTest.getNodeNsUri()))) {
+                                                                                                   && (isTwoXmlNamespaceValuesEqual(nodeNsUri, sequenceTypeKindTest.getNodeNsUri()))) {
                             convertedResultSeq.add(nodeSetItem);  
                         }
                         else if ((sequenceTypeKindTest.getKindVal() == NODE_KIND) || (sequenceTypeKindTest.getKindVal() == ITEM_KIND)) {
@@ -1411,7 +1534,7 @@ public class SequenceTypeSupport {
                   if (!((xctxt == null) && ((seqExpectedTypeDataInp != null) && 
                                                                (seqExpectedTypeDataInp.getSequenceTypeKindTest() == null)))) {
                      String nodeStrVal = nodeSetItem.str();
-                     XObject xObject = convertXdmValueToAnotherType(new XSString(nodeStrVal), sequenceTypeNewXPathExprStr, 
+                     XObject xObject = castXdmValueToAnotherType(new XSString(nodeStrVal), sequenceTypeNewXPathExprStr, 
                                                                                                                     seqExpectedTypeDataInp, xctxt);                     
                      if (nodeSetLen == 1) {
                          result = xObject;                             
@@ -1435,22 +1558,19 @@ public class SequenceTypeSupport {
     }
 
 	/**
-     * This method casts a provided XDM evaluated sequence, to another type 
-     * specified by an xdm sequence type expression.
+     * This method casts an xdm input sequence value, to another type 
+     * specified by a sequence type expression.
      */
-    private static XObject castResultSequenceInstance(XObject srcValue,
-                                                                    String sequenceTypeXPathExprStr,
-                                                                    SequenceTypeData seqExpectedTypeDataInp, XPathContext xctxt,
-                                                                    SourceLocator srcLocator, int expectedType,
-                                                                    int itemTypeOccurenceIndicator) throws TransformerException {
+    private static XObject castResultSequenceInstance(ResultSequence srcSeqValue, String sequenceTypeXPathExprStr,
+                                                      SequenceTypeData seqExpectedTypeDataInp, XPathContext xctxt,
+                                                      SourceLocator srcLocator, int expectedType, int itemTypeOccurenceIndicator) 
+                                                    		                                                     throws TransformerException {
         
         XObject result = null;
         
-        ResultSequence srcResultSeq = (ResultSequence)srcValue;
+        int seqLen = srcSeqValue.size();
         
-        int seqLen = srcResultSeq.size();
-        
-        if ((seqLen == 0) && (itemTypeOccurenceIndicator == OccurenceIndicator.ONE_OR_MANY)) {
+        if ((seqLen == 0) && (itemTypeOccurenceIndicator == OccurrenceIndicator.ONE_OR_MANY)) {
            throw new TransformerException("XTTE0570 : An empty sequence is not allowed, as result of evaluation for sequence "
                                                                                                               + "type's occurence indicator +.", srcLocator);  
         }
@@ -1458,7 +1578,7 @@ public class SequenceTypeSupport {
            throw new TransformerException("XTTE0570 : The sequence doesn't conform to an expected type empty-sequence(). "
                                                                                                + "The supplied sequence has size " + seqLen + ".", srcLocator);  
         }
-        else if ((seqLen > 1) && (itemTypeOccurenceIndicator == OccurenceIndicator.ZERO_OR_ONE)) {
+        else if ((seqLen > 1) && (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE)) {
             throw new TransformerException("XTTE0570 : A sequence of size " + seqLen + ", cannot be cast to a type " 
                                                                                                                 + sequenceTypeXPathExprStr + ".", srcLocator); 
         }
@@ -1473,9 +1593,9 @@ public class SequenceTypeSupport {
             
             ResultSequence convertedResultSeq = new ResultSequence();
             
-            for (int idx = 0; idx < srcResultSeq.size(); idx++) {
-               XObject seqItem = (XObject)(srcResultSeq.item(idx));                       
-               XObject convertedSeqItem = convertXdmValueToAnotherType(seqItem, sequenceTypeNewXPathExprStr, 
+            for (int idx = 0; idx < srcSeqValue.size(); idx++) {
+               XObject seqItem = (XObject)(srcSeqValue.item(idx));                       
+               XObject convertedSeqItem = castXdmValueToAnotherType(seqItem, sequenceTypeNewXPathExprStr, 
                                                                                                          seqExpectedTypeDataInp, xctxt);
                convertedResultSeq.add(convertedSeqItem);
             }
@@ -1487,16 +1607,16 @@ public class SequenceTypeSupport {
     }
     
     /**
-     * Check whether the, xdm sequence type's xalanj kind value refers to one of 
+     * Check whether the, xdm sequence type's xalan-j kind value refers to one of 
      * the various node kinds.
      */
-    private static boolean isSequenceTypeExprOneOfTheNodeKinds(int kindVal) {
+    private static boolean isSequenceTypeExprOneOfTheNodeKinds(int seqTypekindVal) {
 		boolean isXdmItemOneOfTheNodeKinds = false;
 		
-		isXdmItemOneOfTheNodeKinds = ((kindVal == SequenceTypeSupport.ELEMENT_KIND) || 
-				                     (kindVal == SequenceTypeSupport.ATTRIBUTE_KIND) || 
-				                     (kindVal == SequenceTypeSupport.NAMESPACE_NODE_KIND) || 
-				                     (kindVal == SequenceTypeSupport.NODE_KIND));
+		isXdmItemOneOfTheNodeKinds = ((seqTypekindVal == SequenceTypeSupport.ELEMENT_KIND) || 
+				                      (seqTypekindVal == SequenceTypeSupport.ATTRIBUTE_KIND) || 
+				                      (seqTypekindVal == SequenceTypeSupport.NAMESPACE_NODE_KIND) || 
+				                      (seqTypekindVal == SequenceTypeSupport.NODE_KIND));
 		
 		return isXdmItemOneOfTheNodeKinds; 
 	}

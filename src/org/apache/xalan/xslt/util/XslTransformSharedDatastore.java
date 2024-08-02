@@ -16,10 +16,13 @@
  */
 package org.apache.xalan.xslt.util;
 
+import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xpath.objects.XPathInlineFunction;
 
 /**
- * This class, has few Xalan-J, XSL stylesheet transformation wide variables.
+ * This class, has few XSL stylesheet transformation-wide 
+ * variables that're used during evaluation of specific XSLT 
+ * instructions and XPath expressions.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -27,11 +30,22 @@ import org.apache.xpath.objects.XPathInlineFunction;
  */
 public class XslTransformSharedDatastore {
     
-    // XSL stylesheet document's uri, used for error handling
+	/**    
+     * This class field represents, an XSL stylesheet 
+     * document's uri, if available.
+     */
     public static String xslSystemId;
     
-    // Used to return function items, from XSL stylesheet 
-    // xsl:function calls.
+    /**
+     * This class field represents, function items that're 
+     * returned from XSL stylesheet xsl:function calls.
+     */
     public static XPathInlineFunction xpathInlineFunction;
+    
+    /**
+     * This class field represents, compiled representation 
+     * of an XSL stylesheet.
+     */
+    public static StylesheetRoot stylesheetRoot;
 
 }

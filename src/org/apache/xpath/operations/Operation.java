@@ -23,12 +23,14 @@ package org.apache.xpath.operations;
 import javax.xml.XMLConstants;
 
 import org.apache.xpath.Expression;
+import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.functions.XSLFunctionService;
 import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 
 /**

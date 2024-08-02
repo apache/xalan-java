@@ -17,9 +17,9 @@
 package org.apache.xpath.composite;
 
 /**
- * An object of this class stores, an XSLT transformation run-time
- * information for an occurrence of a XPath 3.1 sequence type
- * kind test (for e.g, element(), element(elemName), attribute(), 
+ * An object of this class stores, an XPath run-time
+ * information for a sequence type kind test (for e.g, 
+ * element(), element(elemName), attribute(), 
  * element(elemName, typeName)* etc. 
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
@@ -28,18 +28,30 @@ package org.apache.xpath.composite;
  */
 public class SequenceTypeKindTest {
     
+	/**
+	 * Xalan-J specific valid values for this variable are
+	 * specified in the class SequenceTypeSupport.
+	 */
     private int kindVal;
     
-    // For XML element and attribute nodes
+    /**
+     * An XML element or attribute node's local-name.
+     */
     private String nodeLocalName;
     
-    // For XML element and attribute nodes
+    /**
+     * An XML element or attribute node's namespace-uri.
+     */
     private String nodeNsUri;
     
-    // Data type's name (for e.g, string, integer etc)
+    /**
+     * Data type's local-name.
+     */
     private String dataTypeLocalName;
     
-    // XML namespace uri of the data type (for e.g, http://www.w3.org/2001/XMLSchema)
+    /**
+     * Data type's namespace-uri.
+     */
     private String dataTypeUri;
 
     public int getKindVal() {

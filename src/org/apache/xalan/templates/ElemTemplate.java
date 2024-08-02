@@ -430,7 +430,7 @@ public class ElemTemplate extends ElemTemplateElement
                }
            }
            else {
-        	   templateEvalResultForAsAttr = SequenceTypeSupport.convertXdmValueToAnotherType(templateEvalResultForAsAttr, m_asAttr, 
+        	   templateEvalResultForAsAttr = SequenceTypeSupport.castXdmValueToAnotherType(templateEvalResultForAsAttr, m_asAttr, 
         			                                                                                                             null, xctxt);
         	   if (templateEvalResultForAsAttr == null) {
         		   String errTemplateStr = (m_name != null) ? m_name.toString() : m_matchPattern.getPatternString();

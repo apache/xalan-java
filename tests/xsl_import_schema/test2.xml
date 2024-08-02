@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<info>
+   <address>
+      <fName>abc 1</fName>
+	  <lName>mno 1</lName>
+	  <addressLine1>address location details 1</addressLine1>
+	  <city>hello 1</city>
+	  <country>USA</country>
+	  <state>state 1</state>
+	  <zip>zip 1</zip>
+   </address>
+   <address>
+      <fName>abc 2</fName>
+	  <lName>mno 2</lName>
+	  <addressLine1>address location details 2</addressLine1>
+	  <city>hello 2</city>
+	  <country>USA</country>
+	  <state>state 2</state>
+	  <zip>zip 2</zip>
+   </address>
+   <address>
+      <fName>abc 3</fName>
+	  <lName>mno 3</lName>
+	  <addressLine1>address location details 2</addressLine1>
+	  <city>hello 3</city>
+	  <country>Singapore</country>
+   </address>
+</info>

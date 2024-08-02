@@ -40,6 +40,12 @@ import org.apache.xpath.res.XPATHMessages;
  * An object of this class represents an XPath constructor function, 
  * XSL stylesheet function or Xalan-J's extension function.
  * 
+ * @author Scott Boag <scott_boag@us.ibm.com>
+ * @author Christine Li <jycli@apache.org>, Morris Kwan <mkwan@apache.org>
+ * 
+ * @author Mukul Gandhi <mukulg@apache.org>
+ *         (XPath 3 specific changes, to this class)
+ * 
  * @xsl.usage advanced
  */
 public class XSLConstructorStylesheetOrExtensionFunction extends Function

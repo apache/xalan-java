@@ -174,7 +174,7 @@ public class XPathDynamicFunctionCall extends Expression {
 	              
 	              if (paramType != null) {
 	                  try {
-	                     argValue = SequenceTypeSupport.convertXdmValueToAnotherType(argValue, null, paramType, null);                     
+	                     argValue = SequenceTypeSupport.castXdmValueToAnotherType(argValue, null, paramType, null);                     
 	                     if (argValue == null) {
 	                        throw new TransformerException("XTTE0505 : The item type of argument at position " + (idx + 1) + " of dynamic function call "
 	                                                                                                           + "$" + m_funcRefVarName + ", doesn't match "
@@ -211,7 +211,7 @@ public class XPathDynamicFunctionCall extends Expression {
 	           SequenceTypeData funcReturnType = inlineFunction.getReturnType();
 	           if (funcReturnType != null) {
 	              try {
-	                 evalResult = SequenceTypeSupport.convertXdmValueToAnotherType(evalResult, null, funcReturnType, null);
+	                 evalResult = SequenceTypeSupport.castXdmValueToAnotherType(evalResult, null, funcReturnType, null);
 	                 if (evalResult == null) {
 	                    throw new TransformerException("XTTE0505 : The item type of result of dynamic function call $"+ m_funcRefVarName + ", doesn't match an "
 	                                                                                                                                   + "expected type.", srcLocator);  

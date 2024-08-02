@@ -91,6 +91,8 @@ public class ElemTemplateElement extends UnImplNode
     * This field supports implementation of, XSLT tunnel parameters.
     */
    private List<XObject> m_tunnelParamObjList = new ArrayList<XObject>();
+   
+   private XPathContext m_xpathContext;
 
   /**
    * Construct a template element instance.
@@ -1811,6 +1813,14 @@ public class ElemTemplateElement extends UnImplNode
   
   public List<XObject> getTunnelParamObjList() {
 	 return m_tunnelParamObjList; 
+  }
+
+  public XPathContext getXPathContext() {
+	 return m_xpathContext;
+  }
+
+  public void setXPathContext(XPathContext xpathContext) {
+	 this.m_xpathContext = xpathContext;
   }
 
 }

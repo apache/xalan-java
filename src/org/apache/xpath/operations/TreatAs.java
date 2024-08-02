@@ -20,24 +20,21 @@
  */
 package org.apache.xpath.operations;
 
-import org.apache.xalan.templates.ElemTemplateElement;
-import org.apache.xpath.ExpressionNode;
-import org.apache.xpath.XPathContext;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.objects.XObject;
 
 /**
- * The XPath 3.1 "cast as" operation.
+ * The XPath 3.1 "treat as" operation.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class CastAs extends Operation
+public class TreatAs extends Operation
 {
 
-   private static final long serialVersionUID = -4194858144694864568L;
+   private static final long serialVersionUID = 8897640092248117520L;
 
   /**
    * Apply the operation to two operands, and return the result.
@@ -49,20 +46,13 @@ public class CastAs extends Operation
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject operate(XObject left, XObject right) 
-                                                 throws javax.xml.transform.TransformerException
+  public XObject operate(XObject left, XObject right) throws javax.xml.transform.TransformerException
   {
 	  XObject result = null;
       
       SequenceTypeData seqTypedData = (SequenceTypeData)right;
       
-      ExpressionNode exprNode = getExpressionOwner();
-      XPathContext xpathContext = null;
-      if (exprNode instanceof ElemTemplateElement) {
-    	 xpathContext = ((ElemTemplateElement)exprNode).getXPathContext();
-      }
-      
-      result = SequenceTypeSupport.castXdmValueToAnotherType(left, null, seqTypedData, xpathContext);
+      result = SequenceTypeSupport.castXdmValueToAnotherType(left, seqTypedData);
       
       return result;
   }

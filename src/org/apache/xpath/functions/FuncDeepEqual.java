@@ -211,13 +211,14 @@ public class FuncDeepEqual extends FunctionMultiArgs {
    * Check whether two XML DOM nodes are equal.
    */
   private boolean isTwoXmlDomNodesEqual(Node node1, Node node2, String collationUri) throws Exception {
-	 boolean isTwoDomNodesEqual = true;
+	 
+	 boolean isTwoXmlDomNodesEqual = true;
 	 
 	 if ((node1.getNodeType() == Node.ELEMENT_NODE) && 
 			                                     (node2.getNodeType() == Node.ELEMENT_NODE)) {
 		String xmlStr1 = XslTransformEvaluationHelper.serializeXmlDomElementNode(node1);
 		String xmlStr2 = XslTransformEvaluationHelper.serializeXmlDomElementNode(node2);
-		isTwoDomNodesEqual = isTwoXmlDocumentStrEqual(xmlStr1, xmlStr2, collationUri);
+		isTwoXmlDomNodesEqual = isTwoXmlDocumentStrEqual(xmlStr1, xmlStr2, collationUri);
 	 }
 	 else if ((node1.getNodeType() == Node.ATTRIBUTE_NODE) && 
 			                                     (node2.getNodeType() == Node.ATTRIBUTE_NODE)) {
@@ -227,24 +228,24 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		String nsUri2 = node2.getNamespaceURI();		
 		if (localName1.equals(localName2)) {
 		   if ((nsUri1 != null) && (nsUri2 != null) && !nsUri1.equals(nsUri2)) {
-			  isTwoDomNodesEqual = false;  
+			  isTwoXmlDomNodesEqual = false;  
 		   }
 		   else if (((nsUri1 != null) && (nsUri2 == null)) || 
 				                                ((nsUri1 == null) && (nsUri2 != null))) {
-			  isTwoDomNodesEqual = false; 
+			  isTwoXmlDomNodesEqual = false; 
 		   }
 		}
 		else {
-		   isTwoDomNodesEqual = false;
+		   isTwoXmlDomNodesEqual = false;
 		}
 		
-		if (isTwoDomNodesEqual) {
+		if (isTwoXmlDomNodesEqual) {
 		   String node1StrVal = node1.getNodeValue();
 		   String node2StrVal = node2.getNodeValue();
 		   int strComparisonResult = fXPathCollationSupport.compareStringsUsingCollation(node1StrVal, 
 					                                                                     node2StrVal, collationUri);
 		   if (strComparisonResult != 0) {
-			  isTwoDomNodesEqual = false;  
+			  isTwoXmlDomNodesEqual = false;  
 		   }
 		}		
 	 }
@@ -255,7 +256,7 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		int strComparisonResult = fXPathCollationSupport.compareStringsUsingCollation(node1StrVal, 
 					                                                                  node2StrVal, collationUri);
 		if (strComparisonResult != 0) {
-		   isTwoDomNodesEqual = false;  
+		   isTwoXmlDomNodesEqual = false;  
 		}
 	 }
 	 else if ((node1.getNodeType() == Node.COMMENT_NODE) && 
@@ -265,11 +266,11 @@ public class FuncDeepEqual extends FunctionMultiArgs {
 		int strComparisonResult = fXPathCollationSupport.compareStringsUsingCollation(node1StrVal, 
 						                                                              node2StrVal, collationUri);
 		if (strComparisonResult != 0) {
-		   isTwoDomNodesEqual = false;  
+		   isTwoXmlDomNodesEqual = false;  
 		}
 	 }
 	 
-	 return isTwoDomNodesEqual; 
+	 return isTwoXmlDomNodesEqual; 
   }
   
   /*

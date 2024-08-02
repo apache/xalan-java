@@ -59,8 +59,8 @@ public class FuncNot extends FunctionOneArg
 	  }
  
 	  /**
-	   * Result of fn:not function is boolean negation of fn:boolean 
-	   * function's result. 
+	   * Result of function fn:not is, boolean negation of fn:boolean 
+	   * function's result on the same function argument. 
 	   */
 	  
 	  if (((XSBoolean)result).value()) {

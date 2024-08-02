@@ -28,6 +28,7 @@ import javax.xml.transform.TransformerException;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.ref.DTMNodeList;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
@@ -224,13 +225,37 @@ public class ElemFunction extends ElemTemplate
           for (ElemTemplateElement elem = getFirstChildElem(); elem != null; 
                                                                   elem = elem.getNextSiblingElem()) {
               if (elem.getXSLToken() == Constants.ELEMNAME_PARAMVARIABLE) {
-                 XObject argValue = argSequence.item(paramIdx);
-                 XObject argConvertedVal = argValue;
-                 String paramAsAttrStrVal = ((ElemParam)elem).getAs();              
+                 XObject argValue = argSequence.item(paramIdx);                 
+                 XObject argConvertedVal = null;
+                 String paramAsAttrStrVal = ((ElemParam)elem).getAs();
+                 
                  if (paramAsAttrStrVal != null) {
                     try {
-                       argConvertedVal = SequenceTypeSupport.convertXDMValueToAnotherType(argValue, paramAsAttrStrVal, null, 
+                       XNodeSet nodeSet = SequenceTypeSupport.getNodeReference(argValue);
+                       if (nodeSet != null) {
+                    	  XSTypeDefinition typeDef = nodeSet.getXsTypeDefinition();                    	  
+                    	  if (typeDef != null) {
+                    		  XPath seqTypeXPath = new XPath(paramAsAttrStrVal, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                                             XPath.SELECT, null, true);            
+                              XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
+                              SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+                              XSTypeDefinition typeDef2 = seqExpectedTypeData.getXsTypeDefinition();
+                              if (typeDef2 != null && isTypeXsDefinitionEqual(typeDef, typeDef2)) {                            	  
+                            	  argConvertedVal = nodeSet;                      			
+                              }
+                              else {
+                            	  throw new TransformerException("XPTY0004 : Function call argument at position " + (paramIdx + 1) + " for "
+                                                                                                  + "function {" + funcNameSpaceUri + "}" + funcLocalName + "(), doesn't "
+                                                                                                  + "match the declared parameter type " + paramAsAttrStrVal + ".", srcLocator);
+                              }
+                    	  }
+                       }
+                       
+                       if (argConvertedVal == null) {
+                          argConvertedVal = SequenceTypeSupport.castXDMValueToAnotherType(argValue, paramAsAttrStrVal, null, 
                     		                                                                                        xctxt, elem.getPrefixTable());
+                       }
+                       
                        if (argConvertedVal == null) {
                           throw new TransformerException("XPTY0004 : Function call argument at position " + (paramIdx + 1) + " for "
                                                                             + "function {" + funcNameSpaceUri + "}" + funcLocalName + "(), doesn't "
@@ -249,6 +274,9 @@ public class ElemFunction extends ElemTemplate
                        }
                     }
                  }
+                 else {
+                	argConvertedVal = argValue;  
+                 }
                  
                  if (argConvertedVal instanceof ResultSequence) {                
                     XNodeSet nodeSet = XslTransformEvaluationHelper.getXNodeSetFromResultSequence((ResultSequence)argConvertedVal, 
@@ -257,7 +285,7 @@ public class ElemFunction extends ElemTemplate
                        argConvertedVal = nodeSet;  
                     }
                  }
-                  
+                 
                  varStack.setLocalVariable(paramIdx, argConvertedVal, argsFrame);
                  paramIdx++;
               }
@@ -298,7 +326,7 @@ public class ElemFunction extends ElemTemplate
              funcResultConvertedVal = preprocessXslFunctionOrAVariableResult(result, funcAsAttrStrVal, xctxt, null);
             
              if (funcResultConvertedVal == null) {
-                funcResultConvertedVal = SequenceTypeSupport.convertXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);
+                funcResultConvertedVal = SequenceTypeSupport.castXdmValueToAnotherType(result, funcAsAttrStrVal, null, xctxt);
                 
                 if (funcResultConvertedVal == null) {
                    throw new TransformerException("XPTY0004 : The function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
@@ -321,8 +349,8 @@ public class ElemFunction extends ElemTemplate
       
       return funcResultConvertedVal;
   }
-  
-  /**
+
+/**
    * This function is called after everything else has been
    * recomposed, and allows a xsl:function to set remaining
    * values that may be based on some other property that
@@ -397,14 +425,14 @@ public class ElemFunction extends ElemTemplate
                    String[] strParts = strVal.split(ElemSequence.STRING_VAL_SERIALIZATION_SUFFIX);
                    for (int idx = 0; idx < strParts.length; idx++) {
                       String seqItemStrVal = strParts[idx];
-                      XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getSequenceType());
+                      XObject xObject = getXSTypedAtomicValue(seqItemStrVal, seqExpectedTypeData.getBuiltInSequenceType());
                       if (xObject != null) {
                          resultSequence.add(xObject);
                       }
                    }
                 }
                 else {
-                   XObject xObject = getXSTypedAtomicValue(strVal, seqExpectedTypeData.getSequenceType());
+                   XObject xObject = getXSTypedAtomicValue(strVal, seqExpectedTypeData.getBuiltInSequenceType());
                    if (xObject != null) {
                       resultSequence.add(xObject);
                    }
@@ -416,7 +444,7 @@ public class ElemFunction extends ElemTemplate
      if (seqExpectedTypeData.getSequenceTypeKindTest() == null) {
          if ((seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 0) || 
                                                                (seqExpectedTypeData.getItemTypeOccurrenceIndicator() == 
-                                                                                                               SequenceTypeSupport.OccurenceIndicator.ZERO_OR_ONE)) {
+                                                                                                               SequenceTypeSupport.OccurrenceIndicator.ZERO_OR_ONE)) {
              if ((resultSequence != null) && (resultSequence.size() > 1)) {
                 String errMesg = null;
                 if (m_name != null) {
@@ -564,6 +592,31 @@ public class ElemFunction extends ElemTemplate
       }
      
       return result;
+  }
+  
+  /**
+   * Check whether two XSTypeDefinition objects, represent the same schema type. 
+   */
+  private boolean isTypeXsDefinitionEqual(XSTypeDefinition typeDef1, XSTypeDefinition typeDef2) {	  
+	  boolean result = false;
+
+	  String typeName1 = typeDef1.getName();
+	  String typeNamespace1 = typeDef1.getNamespace();
+
+	  String typeName2 = typeDef2.getName();
+	  String typeNamespace2 = typeDef2.getNamespace();
+	  
+	  if ((typeNamespace1 == null) && (typeNamespace2 == null)) {
+		 result = typeName1.equals(typeName2);   
+	  }
+	  else if (((typeNamespace1 == null) && (typeNamespace2 != null)) || ((typeNamespace1 != null) && (typeNamespace2 == null))) {
+		 result = false; 
+	  }
+	  else if (typeNamespace1.equals(typeNamespace2) && typeName1.equals(typeName2)) {
+		 result = true; 
+	  }
+
+	  return result;
   }
 
 }

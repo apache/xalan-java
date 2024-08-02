@@ -70,8 +70,8 @@ public class FuncBoolean extends FunctionOneArg
    *
    * @throws javax.xml.transform.TransformerException
    */
-  public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
-  {
+   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
+   {
 	  XObject result = null;
 
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
@@ -156,6 +156,6 @@ public class FuncBoolean extends FunctionOneArg
 	  } 
 
 	  return result;
-  }
+   }
   
 }

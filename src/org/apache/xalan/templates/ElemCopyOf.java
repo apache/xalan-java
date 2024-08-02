@@ -181,6 +181,8 @@ public class ElemCopyOf extends ElemTemplateElement
     {
       XPathContext xctxt = transformer.getXPathContext();
       
+      setXPathContext(xctxt);
+      
       SourceLocator srcLocator = xctxt.getSAXLocator();
               
       int sourceNode = xctxt.getCurrentNode();

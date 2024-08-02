@@ -38,6 +38,7 @@ import org.apache.xalan.templates.ElemForEach;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.utils.BoolStack;
 import org.apache.xml.utils.NamespaceSupport2;
 import org.apache.xml.utils.NodeConsumer;
@@ -114,9 +115,8 @@ public class StylesheetHandler extends DefaultHandler
             TransformerFactoryImpl.FEATURE_INCREMENTAL)).booleanValue();
     m_source_location = ((Boolean) processor.getAttribute(
             TransformerFactoryImpl.FEATURE_SOURCE_LOCATION)).booleanValue();
-    // m_schema = new XSLTSchema();
+    // m_schema = new XSLTSchema();    
     init(processor);
-    
   }
 
   /**
@@ -1196,12 +1196,16 @@ public class StylesheetHandler extends DefaultHandler
    */
   public StylesheetRoot getStylesheetRoot()
   {
-    if (m_stylesheetRoot != null){
-        m_stylesheetRoot.setOptimizer(m_optimize);
-        m_stylesheetRoot.setIncremental(m_incremental);
-        m_stylesheetRoot.setSource_location(m_source_location);  		
-    }
-    return m_stylesheetRoot;
+	  if (m_stylesheetRoot != null){
+		  m_stylesheetRoot.setOptimizer(m_optimize);
+		  m_stylesheetRoot.setIncremental(m_incremental);
+		  m_stylesheetRoot.setSource_location(m_source_location);  		
+	  }
+
+	  XslTransformSharedDatastore.stylesheetRoot = m_stylesheetRoot;
+	  XslTransformSharedDatastore.xslSystemId = getSystemId();
+
+	  return m_stylesheetRoot;
   }
 
   /** The root stylesheet of the stylesheets tree. */

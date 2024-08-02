@@ -16,6 +16,7 @@
  */
 package org.apache.xpath.composite;
 
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -35,32 +36,42 @@ public class SequenceTypeData extends XObject {
     
     private static final long serialVersionUID = -8207360998434418776L;
 
-    private int fSequenceType;
+    private int builtInSequenceType;
     
-    private int fItemTypeOccurrenceIndicator;
+    private XSTypeDefinition xsTypeDefinition;
+    
+    private int itemTypeOccurrenceIndicator;
     
     private SequenceTypeKindTest sequenceTypeKindTest;
     
-    private SequenceTypeFunctionTest fSequenceTypeFunctionTest;
+    private SequenceTypeFunctionTest sequenceTypeFunctionTest;
     
-    private SequenceTypeMapTest fSequenceTypeMapTest;
+    private SequenceTypeMapTest sequenceTypeMapTest;
     
-    private SequenceTypeArrayTest fSequenceTypeArrayTest;
+    private SequenceTypeArrayTest sequenceTypeArrayTest;
 
-    public int getSequenceType() {
-        return fSequenceType;
+    public int getBuiltInSequenceType() {
+        return builtInSequenceType;
     }
 
-    public void setSequenceType(int sequenceType) {
-        this.fSequenceType = sequenceType;
+    public void setBuiltInSequenceType(int sequenceType) {
+        this.builtInSequenceType = sequenceType;
     }
 
-    public int getItemTypeOccurrenceIndicator() {
-        return fItemTypeOccurrenceIndicator;
+    public XSTypeDefinition getXsTypeDefinition() {
+		return xsTypeDefinition;
+	}
+
+	public void setXsTypeDefinition(XSTypeDefinition xsTypeDefinition) {
+		this.xsTypeDefinition = xsTypeDefinition;
+	}
+
+	public int getItemTypeOccurrenceIndicator() {
+        return itemTypeOccurrenceIndicator;
     }
 
     public void setItemTypeOccurrenceIndicator(int itemTypeOccurrenceIndicator) {
-        this.fItemTypeOccurrenceIndicator = itemTypeOccurrenceIndicator;
+        this.itemTypeOccurrenceIndicator = itemTypeOccurrenceIndicator;
     }
 
     public SequenceTypeKindTest getSequenceTypeKindTest() {
@@ -72,27 +83,27 @@ public class SequenceTypeData extends XObject {
     }
 
 	public SequenceTypeFunctionTest getSequenceTypeFunctionTest() {
-		return fSequenceTypeFunctionTest;
+		return sequenceTypeFunctionTest;
 	}
 
 	public void setSequenceTypeFunctionTest(SequenceTypeFunctionTest sequenceTypeFunctionTest) {
-		this.fSequenceTypeFunctionTest = sequenceTypeFunctionTest;
+		this.sequenceTypeFunctionTest = sequenceTypeFunctionTest;
 	}
 	
 	public SequenceTypeMapTest getSequenceTypeMapTest() {
-		return fSequenceTypeMapTest;
+		return sequenceTypeMapTest;
 	}
 
 	public void setSequenceTypeMapTest(SequenceTypeMapTest sequenceTypeMapTest) {
-		this.fSequenceTypeMapTest = sequenceTypeMapTest;
+		this.sequenceTypeMapTest = sequenceTypeMapTest;
 	}
 	
 	public SequenceTypeArrayTest getSequenceTypeArrayTest() {
-		return fSequenceTypeArrayTest;
+		return sequenceTypeArrayTest;
 	}
 
 	public void setSequenceTypeArrayTest(SequenceTypeArrayTest sequenceTypeArrayTest) {
-		this.fSequenceTypeArrayTest = sequenceTypeArrayTest;
+		this.sequenceTypeArrayTest = sequenceTypeArrayTest;
 	}
 	
     /**
@@ -102,15 +113,15 @@ public class SequenceTypeData extends XObject {
 	public boolean equal(SequenceTypeData sequenceTypeData) {
 	    boolean isEqual = true;
 	    
-	    int seqType2 = sequenceTypeData.getSequenceType();
+	    int seqType2 = sequenceTypeData.getBuiltInSequenceType();
 	    int occrInd2 = sequenceTypeData.getItemTypeOccurrenceIndicator();
 	    SequenceTypeKindTest sequenceTypeKindTest2 = sequenceTypeData.getSequenceTypeKindTest();
 	    
-	    if ((this.fSequenceType != 0) && (this.fSequenceType == seqType2) 
-	    		                           && (this.fItemTypeOccurrenceIndicator == occrInd2)) {
+	    if ((this.builtInSequenceType != 0) && (this.builtInSequenceType == seqType2) 
+	    		                           && (this.itemTypeOccurrenceIndicator == occrInd2)) {
 	       isEqual = true;
 	    }
-	    else if (this.fItemTypeOccurrenceIndicator != occrInd2) {
+	    else if (this.itemTypeOccurrenceIndicator != occrInd2) {
 	       isEqual = false;
 	    }
 	    else if (!(this.sequenceTypeKindTest).equal(sequenceTypeKindTest2)) {

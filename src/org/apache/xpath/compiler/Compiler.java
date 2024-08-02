@@ -72,6 +72,7 @@ import org.apache.xpath.operations.Plus;
 import org.apache.xpath.operations.Range;
 import org.apache.xpath.operations.SimpleMapOperator;
 import org.apache.xpath.operations.StrConcat;
+import org.apache.xpath.operations.TreatAs;
 import org.apache.xpath.operations.UnaryOperation;
 import org.apache.xpath.operations.Variable;
 import org.apache.xpath.operations.VcEquals;
@@ -113,18 +114,17 @@ public class Compiler extends OpMap
    *
    * @param errorHandler Error listener where messages will be sent, or null 
    *                     if messages should be sent to System err.
-   * @param locator The location object where the expression lives, which 
-   *                may be null, but which, if not null, must be valid over 
-   *                the long haul, in other words, it will not be cloned.
-   * @param fTable  The FunctionTable object where the xpath build-in 
-   *                functions are stored.
+   * @param locator      The location object where the expression lives, which 
+   *                     may be null, but which, if not null, must be valid over 
+   *                     the long haul, in other words, it will not be cloned.
+   * @param funcTable    The FunctionTable object where the xpath build-in 
+   *                     functions are stored.
    */
-  public Compiler(ErrorListener errorHandler, SourceLocator locator, 
-            FunctionTable fTable)
+  public Compiler(ErrorListener errorHandler, SourceLocator locator, FunctionTable funcTable)
   {
     m_errorHandler = errorHandler;
     m_locator = locator;
-    m_functionTable = fTable;
+    m_functionTable = funcTable;
   }
 
   /**
@@ -205,7 +205,9 @@ public class Compiler extends OpMap
     case OpCodes.OP_CAST_AS :
       expr = castAsExpr(opPos); break;
     case OpCodes.OP_CASTABLE_AS :
-        expr = castableAsExpr(opPos); break;
+      expr = castableAsExpr(opPos); break;
+    case OpCodes.OP_TREAT_AS :
+      expr = treatAsExpr(opPos); break;
     case OpCodes.OP_LTE :
       expr = lte(opPos); break;
     case OpCodes.OP_LT :
@@ -602,6 +604,18 @@ public class Compiler extends OpMap
   protected Expression castableAsExpr(int opPos) throws TransformerException
   {
 	return compileOperation(new CastableAs(), opPos); 
+  }
+  
+  /**
+   * Compile a 'treat as' operation.
+   * 
+   * @param    opPos The current position in the m_opMap array.
+   * @return   an XPath compiled representation of 'treat as' expression 
+   * @throws TransformerException
+   */
+  protected Expression treatAsExpr(int opPos) throws TransformerException
+  {
+	return compileOperation(new TreatAs(), opPos); 
   }
 
   /**

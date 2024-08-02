@@ -45,6 +45,7 @@ import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.objects.ResultSequence;
+import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSNegativeInteger;
@@ -87,7 +88,7 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
  * An object of this class supports evaluation of an XPath 
- * constructor function call, or an XSL stylesheet function 
+ * constructor function call, and an XSL stylesheet function 
  * call.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
@@ -96,12 +97,15 @@ import xml.xpath31.processor.types.XSYearMonthDuration;
  */
 public class XSLFunctionService {
 	
-	// Class fields, specifying constant values used by this 
-	// implementation.				
-	
-	public static final String UTF_16 = "UTF-16";
+	/**
+	  * Class field declarations, specifying constant values used by this
+	  * implementation.
+	  * 		
+	 */
 	
 	public static final String UTF_8 = "UTF-8";
+	
+	public static final String UTF_16 = "UTF-16";
 	
 	public static final String XML_DOM_FORMAT_PRETTY_PRINT = "format-pretty-print";
 	
@@ -135,11 +139,11 @@ public class XSLFunctionService {
     		String funcNamespace = funcObj.getNamespace();
     		
     		if (!(Constants.S_EXTENSIONS_JAVA_URL).equals(funcNamespace)) {
-    			// Both XPath constructor (prefix:typeName) and XSL stylesheet function 
+    			// both XPath constructor (prefix:typeName) and XSL stylesheet function 
     			// calls (xsl:function), are syntactically similar to Xalan-J XPath 
-    			// extension function calls (prefix:functionName). All the code within 
-    			// this code-block, need not run, when an XSL stylesheet specifies an 
-    			// Xalan-J XPath extension function.
+    			// extension function calls (prefix:functionName). The implementation
+    			// here need not run when an XSL stylesheet specifies Xalan-J XPath 
+    			// extension function.
     			ExpressionNode expressionNode = xpathExpr.getExpressionOwner();
     			ExpressionNode stylesheetRootNode = null;
     			while (expressionNode != null) {
@@ -161,7 +165,7 @@ public class XSLFunctionService {
     				// Evaluate XSL stylesheet function call
     				ResultSequence argSequence = new ResultSequence();
     				for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    					XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
+    					XObject argVal = (funcObj.getArg(idx)).execute(xctxt);    					
     					argSequence.add(argVal);
     				}
 
@@ -501,6 +505,7 @@ public class XSLFunctionService {
     			else {
     				// We check and evaluate below, XPath constructor function calls to 
     				// XML Schema user-defined simple types.
+    				
     				HashMap stylesheetAvailableElems = stylesheetRoot.getAvailableElements();
 
     				if (stylesheetAvailableElems.containsKey(new QName(Constants.S_XSLNAMESPACEURL, 
@@ -512,15 +517,16 @@ public class XSLFunctionService {
     					}
 
     					NodeList nodeList = elemTemplateElem.getChildNodes();
-    					Node xsSchemaTopMostNode = nodeList.item(0);
+    					Node xsSchemaTopMostNode = nodeList.item(0);    					
 
-    					XSModel xsModel = null;        		   
-    					XSLoaderImpl xsLoader = new XSLoaderImpl();
-
-    					if (xsSchemaTopMostNode != null) {
+    					if (xsSchemaTopMostNode != null) {    						
     						// xsl:import-schema instruction's child contents, has 
-    						// XML Schema document available as string.
+    						// XML Schema document available as string value.
+    						
     						String xmlSchemaDocumentStr = null;
+    						
+    						XSModel xsModel = null;        		   
+        					XSLoaderImpl xsLoader = new XSLoaderImpl();
 
     						try {
     							DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.newInstance()).getDOMImplementation("LS"));
@@ -564,6 +570,10 @@ public class XSLFunctionService {
     					else {
     						// Use an XML Schema document available, at the uri specified by xsl:import-schema 
     						// element's attribute 'schema-location'.
+    						
+    						XSModel xsModel = null;        		   
+        					XSLoaderImpl xsLoader = new XSLoaderImpl();
+        					
     						NamedNodeMap importSchemaNodeAttributes = ((Element)elemTemplateElem).getAttributes();        			   
 
     						if (importSchemaNodeAttributes != null) {

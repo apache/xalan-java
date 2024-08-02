@@ -27,6 +27,7 @@ import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.QName;
@@ -336,7 +337,12 @@ public class XObject extends Expression implements Serializable, Cloneable
   public static final int CLASS_UNSIGNED_BYTE = 36;
 
   /** Represents an unresolved variable type as an integer. */
-  public static final int CLASS_UNRESOLVEDVARIABLE = 600;    
+  public static final int CLASS_UNRESOLVEDVARIABLE = 600;
+  
+  /** An XDM item may have a type annotation conforming to this
+      schema type. A non-null value of this class field implies that,
+      this object instance has this type annotation. **/
+  private XSTypeDefinition xsTypeDefinition;
 
   /**
    * Tell what kind of class this is.
@@ -1583,6 +1589,14 @@ public class XObject extends Expression implements Serializable, Cloneable
   
   public QName getQName() {
 	 return m_QName; 
+  }
+
+  public XSTypeDefinition getXsTypeDefinition() {
+	 return xsTypeDefinition;
+  }
+
+  public void setXsTypeDefinition(XSTypeDefinition xsTypeDefinition) {
+	 this.xsTypeDefinition = xsTypeDefinition;
   }
 
 }
