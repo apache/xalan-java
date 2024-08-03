@@ -47,7 +47,6 @@ import org.apache.xerces.impl.xs.XSLoaderImpl;
 import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.utils.PrefixResolver;
-import org.apache.xml.utils.QName;
 import org.apache.xpath.XPathProcessorException;
 import org.apache.xpath.composite.ForQuantifiedExprVarBinding;
 import org.apache.xpath.composite.LetExprVarBinding;
@@ -4970,16 +4969,13 @@ public class XPathParser
 		   type_namespace = null;
 	   }
 
-	   HashMap stylesheetAvailableElems = stylesheetRoot.getAvailableElements();
+	   Node elemTemplateElem = stylesheetRoot.getFirstChildElem();
 
-	   if (stylesheetAvailableElems.containsKey(new QName(Constants.S_XSLNAMESPACEURL, 
-			                                                     Constants.ELEMNAME_IMPORT_SCHEMA_STRING))) {
-		   Node elemTemplateElem = stylesheetRoot.getFirstChildElem();
+	   while (elemTemplateElem != null && !(Constants.ELEMNAME_IMPORT_SCHEMA_STRING).equals(elemTemplateElem.getLocalName())) {   
+		   elemTemplateElem = elemTemplateElem.getNextSibling();
+	   }
 
-		   while (elemTemplateElem != null && !(Constants.ELEMNAME_IMPORT_SCHEMA_STRING).equals(elemTemplateElem.getLocalName())) {   
-			   elemTemplateElem = elemTemplateElem.getNextSibling();
-		   }
-
+	   if (elemTemplateElem != null) {
 		   NodeList nodeList = elemTemplateElem.getChildNodes();
 		   Node xsSchemaTopMostNode = nodeList.item(0);		   
 
@@ -5001,50 +4997,45 @@ public class XPathParser
     */
    private void parseImportSchemaWithChildSchemaContents(XPathSequenceTypeExpr xpathSequenceTypeExpr, String typeNamespace,
 		                                                 String typeName, Node xsSchemaTopMostNode) throws TransformerException {
-	   String xmlSchemaDocumentStr = null;
 	   
-	   XSModel xsModel = null;
-	   XSLoaderImpl xsLoader = new XSLoaderImpl();
+	   StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+	   XSModel xsModel = stylesheetRoot.getXsModel();
+	   
+	   if (xsModel != null) {
+		   // A pre-compiled schema is available. Currently this is due to user's request
+		   // for an XML input document validation via command-line option -val.
+		   setXsTypeDefinitionOnSequenceTypeExpr(xsModel, xpathSequenceTypeExpr, typeNamespace, typeName);
+	   }
+	   else {
+		   String xmlSchemaDocumentStr = null;
+		   XSLoaderImpl xsLoader = new XSLoaderImpl();
 
-	   try {
-		   DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.newInstance()).getDOMImplementation("LS"));
-		   LSSerializer lsSerializer = domImplLS.createLSSerializer();
-		   DOMConfiguration domConfig = lsSerializer.getDomConfig();
-		   domConfig.setParameter(XSLFunctionService.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
-		   xmlSchemaDocumentStr = lsSerializer.writeToString((Document)xsSchemaTopMostNode);
-		   xmlSchemaDocumentStr = xmlSchemaDocumentStr.replaceFirst(XSLFunctionService.UTF_16, XSLFunctionService.UTF_8);
-		   xmlSchemaDocumentStr = xmlSchemaDocumentStr.replaceFirst("schema", "schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"");
+		   try {
+			   DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.newInstance()).getDOMImplementation("LS"));
+			   LSSerializer lsSerializer = domImplLS.createLSSerializer();
+			   DOMConfiguration domConfig = lsSerializer.getDomConfig();
+			   domConfig.setParameter(XSLFunctionService.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
+			   xmlSchemaDocumentStr = lsSerializer.writeToString((Document)xsSchemaTopMostNode);
+			   xmlSchemaDocumentStr = xmlSchemaDocumentStr.replaceFirst(XSLFunctionService.UTF_16, XSLFunctionService.UTF_8);
+			   xmlSchemaDocumentStr = xmlSchemaDocumentStr.replaceFirst("schema", "schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"");
 
-		   DOMInputImpl lsInput = new DOMInputImpl();
-		   lsInput.setCharacterStream(new StringReader(xmlSchemaDocumentStr));
+			   DOMInputImpl lsInput = new DOMInputImpl();
+			   lsInput.setCharacterStream(new StringReader(xmlSchemaDocumentStr));
 
-		   xsModel = xsLoader.load(lsInput);    						
+			   xsModel = xsLoader.load(lsInput);    						
 
-		   if (xsModel != null) {
-			   XSTypeDefinition xsTypeDefinition = xsModel.getTypeDefinition(typeName, typeNamespace);
-			   if (xsTypeDefinition != null) {
-				   if (!isFunctionArgumentParse && tokenIs(')')) {
-					   consumeExpected(')');
-				   }
-				   xpathSequenceTypeExpr.setXsSequenceTypeDefinition(xsTypeDefinition);
-
-				   // TO handle occurrence indicator
+			   if (xsModel != null) {
+				   setXsTypeDefinitionOnSequenceTypeExpr(xsModel, xpathSequenceTypeExpr, typeNamespace, typeName);	    							    						
 			   }
 			   else {
-				   throw new javax.xml.transform.TransformerException("FODC0005 : The child contents of xs:import-schema "
-						                                            + "instruction were successfully built to a valid XML schema, but this "
-						                                            + "schema doesn't contain the type definition with expanded name "
-						                                            + "{" + typeNamespace + "}:" + typeName + ".");							
-			   }	    							    						
+				   throw new javax.xml.transform.TransformerException("FODC0005 : A valid XML schema could not be built, from child "
+						   																	   + "contents of xs:import-schema instruction.");
+			   }
 		   }
-		   else {
-			   throw new javax.xml.transform.TransformerException("FODC0005 : A valid XML schema could not be built, from child "
-					                                                                  + "contents of xs:import-schema instruction.");
+		   catch (Exception ex) {
+			   throw new TransformerException(ex.getMessage());
 		   }
-	   }
-	   catch (Exception ex) {
-		   throw new TransformerException(ex.getMessage());
-	   }
+       }
    }
    
    /**
@@ -5054,74 +5045,93 @@ public class XPathParser
    private void parseImportSchemaFromExternalLocation(XPathSequenceTypeExpr xpathSequenceTypeExpr, String xslSystemId,
 		                                              String typeNamespace, String typeName, Node elemTemplateElem) throws TransformerException {
 	   
-	   XSModel xsModel = null;
-	   XSLoaderImpl xsLoader = new XSLoaderImpl();
+	   StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+	   XSModel xsModel = stylesheetRoot.getXsModel();
 
-	   NamedNodeMap importSchemaNodeAttributes = ((Element)elemTemplateElem).getAttributes();        			   
+	   if (xsModel != null) {
+		   // A pre-compiled schema is available. Currently this is due to user's request
+		   // for an XML input document validation via command-line option -val.
+		   setXsTypeDefinitionOnSequenceTypeExpr(xsModel, xpathSequenceTypeExpr, typeNamespace, typeName);
+	   }
+	   else {
+		   XSLoaderImpl xsLoader = new XSLoaderImpl();
 
-	   if (importSchemaNodeAttributes != null) {
-		   Node attrNode1 = importSchemaNodeAttributes.item(0);
-		   Node attrNode2 = importSchemaNodeAttributes.item(1);	        			   	        			   	        			   
+		   NamedNodeMap importSchemaNodeAttributes = ((Element)elemTemplateElem).getAttributes();        			   
 
-		   try {
-			   URL url = null;							
-			   if (attrNode1 != null) {
-				   URI inpUri = new URI(attrNode1.getNodeValue());
-				   String stylesheetSystemId = xslSystemId;
+		   if (importSchemaNodeAttributes != null) {
+			   Node attrNode1 = importSchemaNodeAttributes.item(0);
+			   Node attrNode2 = importSchemaNodeAttributes.item(1);	        			   	        			   	        			   
 
-				   if (!inpUri.isAbsolute() && (stylesheetSystemId != null)) {
-					   URI resolvedUri = (new URI(stylesheetSystemId)).resolve(inpUri);
-					   url = resolvedUri.toURL(); 
-					   if (!"namespace".equals(attrNode1.getNodeName())) {
-						   xsModel = xsLoader.loadURI(url.toString());
+			   try {
+				   URL url = null;							
+				   if (attrNode1 != null) {
+					   URI inpUri = new URI(attrNode1.getNodeValue());
+					   String stylesheetSystemId = xslSystemId;
+
+					   if (!inpUri.isAbsolute() && (stylesheetSystemId != null)) {
+						   URI resolvedUri = (new URI(stylesheetSystemId)).resolve(inpUri);
+						   url = resolvedUri.toURL(); 
+						   if (!"namespace".equals(attrNode1.getNodeName())) {
+							   xsModel = xsLoader.loadURI(url.toString());
+						   }
 					   }
 				   }
-			   }
 
-			   if (attrNode2 != null && xsModel == null) {
-				   URI inpUri = new URI(attrNode2.getNodeValue());
-				   String stylesheetSystemId = xslSystemId;
+				   if (attrNode2 != null && xsModel == null) {
+					   URI inpUri = new URI(attrNode2.getNodeValue());
+					   String stylesheetSystemId = xslSystemId;
 
-				   if (!inpUri.isAbsolute() && (stylesheetSystemId != null)) {
-					   URI resolvedUri = (new URI(stylesheetSystemId)).resolve(inpUri);
-					   url = resolvedUri.toURL();
-					   if ("schema-location".equals(attrNode2.getNodeName())) {
-						   xsModel = xsLoader.loadURI(url.toString());
-					   }
-				   }	        				  
-			   }
+					   if (!inpUri.isAbsolute() && (stylesheetSystemId != null)) {
+						   URI resolvedUri = (new URI(stylesheetSystemId)).resolve(inpUri);
+						   url = resolvedUri.toURL();
+						   if ("schema-location".equals(attrNode2.getNodeName())) {
+							   xsModel = xsLoader.loadURI(url.toString());
+						   }
+					   }	        				  
+				   }
 
-			   if (xsModel != null) {
-				   XSTypeDefinition xsTypeDefinition = xsModel.getTypeDefinition(typeName, typeNamespace);
-				   if (xsTypeDefinition != null) {									
-					   if (!isFunctionArgumentParse && tokenIs(')')) {
-						   consumeExpected(')');
-					   }
-					   xpathSequenceTypeExpr.setXsSequenceTypeDefinition(xsTypeDefinition);
-
-					   // TO handle occurrence indicator
+				   if (xsModel != null) {				   
+					   setXsTypeDefinitionOnSequenceTypeExpr(xsModel, xpathSequenceTypeExpr, typeNamespace, typeName);
 				   }
 				   else {
-					   throw new javax.xml.transform.TransformerException("FODC0005 : A valid XML schema was found at "
-																					   + "uri " + url.toString() + ". But it doesn't contain a schema "
-																					   + "type definition with expanded name {" + typeNamespace + "}:" + 
-																					   typeName + ".");							
+					   throw new javax.xml.transform.TransformerException("FODC0005 : A valid XML schema could not be built, "
+																						   + "from document available at uri " + url.toString() + " referenced "
+																						   + "from xs:import-schema instruction.");
 				   }
 			   }
-			   else {
-				   throw new javax.xml.transform.TransformerException("FODC0005 : A valid XML schema could not be built, "
-																					   + "from document available at uri " + url.toString() + " referenced "
-																					   + "from xs:import-schema instruction.");
+			   catch (URISyntaxException ex) {
+				   throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
+						   																  + "is not a valid absolute uri, or cannot be resolved to an absolute uri.");   
 			   }
+			   catch (MalformedURLException ex) {
+				   throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
+						   																  + "is not a valid absolute uri, or cannot be resolved to an absolute uri."); 
+			   }						
 		   }
-		   catch (URISyntaxException ex) {
-			   throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
-					   																   + "is not a valid absolute uri, or cannot be resolved to an absolute uri.");   
+	   }
+   }
+   
+   /**
+    * Set XSTypeDefinition object instance on an XPathSequenceTypeExpr object.  
+    */
+   private void setXsTypeDefinitionOnSequenceTypeExpr(XSModel xsModel, XPathSequenceTypeExpr xpathSequenceTypeExpr, String typeNamespace,
+		   											  String typeName) throws TransformerException {
+	   
+	   XSTypeDefinition xsTypeDefinition = xsModel.getTypeDefinition(typeName, typeNamespace);
+	   
+	   if (xsTypeDefinition != null) {
+		   if (!isFunctionArgumentParse && tokenIs(')')) {
+			   consumeExpected(')');
 		   }
-		   catch (MalformedURLException ex) {
-			   throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
-					   																   + "is not a valid absolute uri, or cannot be resolved to an absolute uri."); 
-		   }						
+		   xpathSequenceTypeExpr.setXsSequenceTypeDefinition(xsTypeDefinition);
+
+		   // TO handle occurrence indicator
+	   }
+	   else {
+		   throw new javax.xml.transform.TransformerException("FODC0005 : The child contents of xs:import-schema "
+																					   + "instruction were successfully built to a valid XML schema, but this "
+																					   + "schema doesn't contain the type definition with expanded name "
+																					   + "{" + typeNamespace + "}:" + typeName + ".");							
 	   }
    }
    

@@ -74,7 +74,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnForEachTests.class, XsConstructorFunctionTests.class,
                 FnAbsTests.class, StringTests.class, XsDateTimeArithmeticTests.class,
                 XsTimeWithArithmeticTests.class, XsDurationSubtypes.class,
-                FnDeepEqualTests.class, XSLImportSchemaTests.class, FnDateTimeTests.class,
+                FnDeepEqualTests.class, XslImportSchemaTests.class, FnDateTimeTests.class,
                 XmlDotComHigherOrderFunctionsTests.class, FnDefaultCollation.class,
                 FnBaseUriTests.class, FnDocumentUriTests.class, FnResolveQNameTests.class,
                 FnQNameTests.class, XPathMapTests.class, XPathArrayTests.class, FnLangTests.class, 

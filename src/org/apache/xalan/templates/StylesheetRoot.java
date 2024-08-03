@@ -20,25 +20,41 @@
  */
 package org.apache.xalan.templates;
 
+import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.ErrorListener;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import org.apache.xalan.extensions.ExtensionNamespacesManager;
 import org.apache.xalan.processor.XSLTSchema;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xerces.dom.DOMInputImpl;
+import org.apache.xerces.impl.xs.XSLoaderImpl;
+import org.apache.xerces.xs.XSModel;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.ref.ExpandedNameTable;
 import org.apache.xml.utils.IntStack;
@@ -46,7 +62,21 @@ import org.apache.xml.utils.QName;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.functions.XSLFunctionService;
 import org.apache.xpath.objects.XPathInlineFunction;
+import org.w3c.dom.DOMConfiguration;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /**
  * This class represents the root object of the stylesheet tree.
@@ -89,6 +119,12 @@ public class StylesheetRoot extends StylesheetComposed
      * an XSLT transformation wide TransformerImpl object.  
      */
     private TransformerImpl m_transformerImpl = null;
+    
+    /**
+     * This object stores a compiled representation of an XML Schema document, available
+     * via xsl:import-schema instruction.
+     */
+    private XSModel m_xsModel;
     
   /**
    * Uses an XSL stylesheet document.
@@ -1445,5 +1481,276 @@ public class StylesheetRoot extends StylesheetComposed
     public void setTransformerImpl(TransformerImpl transformerImpl) {
         this.m_transformerImpl = transformerImpl;
     }
+
+    /**
+     * Validate an XML input document, that needs to be transformed via an 
+     * XSL stylesheet. An XML Schema document used for this validation,
+     * needs to be specified via an XSL xsl:import-schema instruction. 
+     * 
+     * Reference to the compiled representation of the schema available as 
+     * an XSModel object instance, is also kept for further use within an 
+     * XSL stylesheet transformation (typically for XPath expression type 
+     * checking). 
+     */
+	public void validateXmlInputDoc(String inFileName) throws TransformerException {
+
+		Node elemTemplateElem = getFirstChildElem();
+
+		while (elemTemplateElem != null && !(Constants.ELEMNAME_IMPORT_SCHEMA_STRING).equals(elemTemplateElem.getLocalName())) {   
+			elemTemplateElem = elemTemplateElem.getNextSibling();
+		}
+
+		if (elemTemplateElem != null) {
+			NodeList nodeList = elemTemplateElem.getChildNodes();
+			Node xsSchemaTopMostNode = nodeList.item(0);		   
+
+			if (xsSchemaTopMostNode != null) {
+				// An xsl:import-schema instruction's child contents specifies a literal XML Schema document
+
+				try {
+					String xmlSchemaDocumentStr = null;
+					
+					DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.newInstance()).getDOMImplementation("LS"));
+					LSSerializer lsSerializer = domImplLS.createLSSerializer();
+					DOMConfiguration domConfig = lsSerializer.getDomConfig();
+					domConfig.setParameter(XSLFunctionService.XML_DOM_FORMAT_PRETTY_PRINT, Boolean.TRUE);
+					xmlSchemaDocumentStr = lsSerializer.writeToString((Document)xsSchemaTopMostNode);
+					xmlSchemaDocumentStr = xmlSchemaDocumentStr.replaceFirst(XSLFunctionService.UTF_16, XSLFunctionService.UTF_8);
+					xmlSchemaDocumentStr = xmlSchemaDocumentStr.replaceFirst("schema", "schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"");
+					
+					// Validate an XML input document with the schema
+					SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+					ValidationErrorHandler valErrorHandler = new ValidationErrorHandler();
+					sf.setErrorHandler(valErrorHandler);
+					InputSource saxInpSource = new InputSource(new StringReader(xmlSchemaDocumentStr));					
+					try {
+						Schema schema = sf.newSchema(new SAXSource(saxInpSource));
+						Validator validator = schema.newValidator();
+						validator.setErrorHandler(valErrorHandler);
+						validator.validate(new StreamSource(inFileName));
+					}
+					catch (Exception ex) {
+						throw new TransformerException("FODC0005 : An error occured during an XML input document's validation, with "
+								                                                         + "the schema retrieved via xs:import-schema instruction. " + ex.getMessage()); 
+					}
+					
+					try {
+						emitValidationErrMesg(valErrorHandler);
+					}
+					catch (TransformerException ex) {						
+						throw ex;
+					}
+
+					DOMInputImpl lsInput = new DOMInputImpl();
+					lsInput.setCharacterStream(new StringReader(xmlSchemaDocumentStr));
+
+					XSLoaderImpl xsLoader = new XSLoaderImpl();
+					m_xsModel = xsLoader.load(lsInput);
+
+					if (m_xsModel == null) {
+						throw new javax.xml.transform.TransformerException("FODC0005 : A compiled schema could not be built, from child "
+																										+ "contents of xs:import-schema instruction.");
+					}
+				}
+				catch (Exception ex) {
+					throw new TransformerException(ex.getMessage());
+				}
+			}
+			else {
+				// An XML Schema document is available, at the uri referenced by xsl:import-schema 
+				// element's attribute 'schema-location'.				
+
+				NamedNodeMap importSchemaNodeAttributes = ((Element)elemTemplateElem).getAttributes();
+
+				if (importSchemaNodeAttributes != null) {					
+					try {
+						SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+						ValidationErrorHandler valErrorHandler = new ValidationErrorHandler();
+						sf.setErrorHandler(valErrorHandler);
+						
+						String xslSystemId = XslTransformSharedDatastore.xslSystemId;
+						URL url = null;
+
+						Node attrNode1 = importSchemaNodeAttributes.item(0);
+						Node attrNode2 = importSchemaNodeAttributes.item(1);
+
+						if (attrNode1 != null) {
+							URI inpUri = new URI(attrNode1.getNodeValue());
+							String stylesheetSystemId = xslSystemId;
+
+							if (!inpUri.isAbsolute() && (stylesheetSystemId != null)) {
+								URI resolvedUri = (new URI(stylesheetSystemId)).resolve(inpUri);
+								url = resolvedUri.toURL(); 
+								if (!"namespace".equals(attrNode1.getNodeName())) {
+									// Validate an XML input document with the schema
+									try {
+										Schema schema = sf.newSchema(url);
+										Validator validator = schema.newValidator();
+										validator.setErrorHandler(valErrorHandler);
+										validator.validate(new StreamSource(inFileName));
+									}
+									catch (Exception ex) {
+										throw new TransformerException("FODC0005 : An error occured during an XML input document's validation, with "
+                                                                                                        + "the schema retrieved via xs:import-schema "
+                                                                                                        + "instruction. " + ex.getMessage());
+									}
+									
+									try {
+										emitValidationErrMesg(valErrorHandler);
+									}
+									catch (TransformerException ex) {
+										throw ex;
+									}
+									
+									XSLoaderImpl xsLoader = new XSLoaderImpl();
+									m_xsModel = xsLoader.loadURI(url.toString());
+								}
+							}
+						}
+
+						if (attrNode2 != null && m_xsModel == null) {
+							URI inpUri = new URI(attrNode2.getNodeValue());
+							String stylesheetSystemId = xslSystemId;
+
+							if (!inpUri.isAbsolute() && (stylesheetSystemId != null)) {
+								URI resolvedUri = (new URI(stylesheetSystemId)).resolve(inpUri);
+								url = resolvedUri.toURL();
+								if ("schema-location".equals(attrNode2.getNodeName())) {
+									// Validate an XML input document with the schema
+									try {
+										Schema schema = sf.newSchema(url);
+										Validator validator = schema.newValidator();
+										validator.setErrorHandler(valErrorHandler);
+										validator.validate(new StreamSource(inFileName));
+									}
+									catch (Exception ex) {
+										throw new TransformerException("FODC0005 : An error occured during an XML input document's validation, with "
+                                                                                                        + "the schema retrieved via xs:import-schema "
+                                                                                                        + "instruction. " + ex.getMessage());	
+									}
+									
+									try {
+										emitValidationErrMesg(valErrorHandler);
+									}
+									catch (TransformerException ex) {
+										throw ex;
+									}
+									
+									XSLoaderImpl xsLoader = new XSLoaderImpl();
+									m_xsModel = xsLoader.loadURI(url.toString());
+								}
+							}	        				  
+						}
+
+						if (m_xsModel == null) {
+							throw new javax.xml.transform.TransformerException("FODC0005 : A compiled schema could not be built, from schema "
+																									    + "details available from xs:import-schema "
+																									    + "instruction.");
+						}
+					}
+					catch (URISyntaxException ex) {
+						throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
+																										+ "is not a valid absolute uri, or cannot be "
+																										+ "resolved to an absolute uri.");   
+					}
+					catch (MalformedURLException ex) {
+						throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
+																										+ "is not a valid absolute uri, or cannot be "
+																										+ "resolved to an absolute uri."); 
+					}										
+				}
+			}
+		}
+		else {
+			throw new javax.xml.transform.TransformerException("FODC0005 : An XML Schema validation of input document was requested, but no schema "
+																										+ "document found via xsl:import-schema "
+																										+ "instruction.");
+		}
+	}
+	
+	public XSModel getXsModel() {
+		return m_xsModel;
+	}
+
+	public void setXsModel(XSModel xsModel) {
+		this.m_xsModel = xsModel;
+	}
+	
+	/**
+	 * An XML Schema validation error handler that is used
+	 * to report validation error messages.
+	 * 
+	 * @author Mukul Gandhi <mukulg@apache.org>
+	 */
+	class ValidationErrorHandler implements ErrorHandler {
+		
+		private List<String> errMesgList = new ArrayList<String>();
+		
+		private String ERROR = "error";
+		private String FATAL_ERROR = "fatalError";
+		private String WARNING = "warning";
+		
+		/**
+		 * Class constructor.
+		 */
+		public ValidationErrorHandler() {}
+
+		@Override
+		public void error(SAXParseException ex) throws SAXException {
+			String detailedErrMesg = getDetailedValidationErrorMesg(ERROR, ex.getMessage(), ex.getLineNumber(), 
+					                                                ex.getColumnNumber(), ex.getSystemId());
+			errMesgList.add(detailedErrMesg);
+		}
+
+		@Override
+		public void fatalError(SAXParseException ex) throws SAXException {			
+			String detailedErrMesg = getDetailedValidationErrorMesg(FATAL_ERROR, ex.getMessage(), ex.getLineNumber(), 
+					                                                ex.getColumnNumber(), ex.getSystemId());
+			errMesgList.add(detailedErrMesg);
+		}
+
+		@Override
+		public void warning(SAXParseException ex) throws SAXException {
+			String detailedErrMesg = getDetailedValidationErrorMesg(WARNING, ex.getMessage(), ex.getLineNumber(), 
+					                                                ex.getColumnNumber(), ex.getSystemId());
+			errMesgList.add(detailedErrMesg);
+			
+		}
+		
+		public List<String> getErrMessageList() {
+		    return errMesgList;	
+		}
+		
+	}
+	
+	/**
+	 * Get detailed error message string for an XML Schema validation error.
+	 */
+	private String getDetailedValidationErrorMesg(String errType, String errMesg, 
+			                                      int lineNo, int colNo, String systemId) {
+		String detailedErrMesg = "[" + errType + "] " + systemId + ". Following error occured at "
+				                                            + "location (" + lineNo + "," + colNo +") : " + errMesg;
+		
+		return detailedErrMesg;
+	}
+	
+	/**
+     * Print XML Schema validation error messages to output. 
+	 */
+	private void emitValidationErrMesg(ValidationErrorHandler valErrorHandler) throws TransformerException {
+		
+		List<String> valErrMesgList = valErrorHandler.getErrMessageList();
+		
+		if (valErrMesgList.size() > 0) {
+			String valErrMesgToDisplay = "";
+			for (int idx = 0; idx < valErrMesgList.size(); idx++) {
+				valErrMesgToDisplay += ((idx + 1) + ") " + valErrMesgList.get(idx) + " "); 
+			}
+
+			valErrMesgToDisplay = "FODC0005 : " + valErrMesgToDisplay.trim();
+
+			throw new TransformerException(valErrMesgToDisplay); 
+		}
+	}
 
 }

@@ -1358,6 +1358,7 @@ public class XSLTErrorResources extends ListResourceBundle
   { "optionXSLTC", "   [-XSLTC (use XSLTC for transformation)]"},
   { "optionIN", "   [-IN inputXMLURL]"},
   { "optionXSL", "   [-XSL XSLTransformationURL]"},
+  { "optionVAL", "   [-VAL (Request validation of XML input document)]"},
   { "optionOUT",  "   [-OUT outputFileName]"},
   { "optionLXCIN", "   [-LXCIN compiledStylesheetFileNameIn]"},
   { "optionLXCOUT", "   [-LXCOUT compiledStylesheetFileNameOutOut]"},

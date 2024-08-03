@@ -21,7 +21,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.SourceLocator;
@@ -45,7 +44,6 @@ import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.objects.ResultSequence;
-import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSNegativeInteger;
@@ -505,28 +503,25 @@ public class XSLFunctionService {
     			else {
     				// We check and evaluate below, XPath constructor function calls to 
     				// XML Schema user-defined simple types.
-    				
-    				HashMap stylesheetAvailableElems = stylesheetRoot.getAvailableElements();
 
-    				if (stylesheetAvailableElems.containsKey(new QName(Constants.S_XSLNAMESPACEURL, 
-    						                                           Constants.ELEMNAME_IMPORT_SCHEMA_STRING))) {
-    					Node elemTemplateElem = stylesheetRoot.getFirstChildElem();
+    				Node elemTemplateElem = stylesheetRoot.getFirstChildElem();
 
-    					while (elemTemplateElem != null && !(Constants.ELEMNAME_IMPORT_SCHEMA_STRING).equals(elemTemplateElem.getLocalName())) {   
-    						elemTemplateElem = elemTemplateElem.getNextSibling();
-    					}
+    				while (elemTemplateElem != null && !(Constants.ELEMNAME_IMPORT_SCHEMA_STRING).equals(elemTemplateElem.getLocalName())) {   
+    					elemTemplateElem = elemTemplateElem.getNextSibling();
+    				}
 
+    				if (elemTemplateElem != null) {
     					NodeList nodeList = elemTemplateElem.getChildNodes();
     					Node xsSchemaTopMostNode = nodeList.item(0);    					
 
     					if (xsSchemaTopMostNode != null) {    						
     						// xsl:import-schema instruction's child contents, has 
     						// XML Schema document available as string value.
-    						
+
     						String xmlSchemaDocumentStr = null;
-    						
+
     						XSModel xsModel = null;        		   
-        					XSLoaderImpl xsLoader = new XSLoaderImpl();
+    						XSLoaderImpl xsLoader = new XSLoaderImpl();
 
     						try {
     							DOMImplementationLS domImplLS = (DOMImplementationLS)((DOMImplementationRegistry.newInstance()).getDOMImplementation("LS"));
@@ -552,12 +547,12 @@ public class XSLFunctionService {
     								}
     								else {
     									throw new javax.xml.transform.TransformerException("FODC0005 : There's no in-scope schema type definition available "
-    											                                                       + "with name {" + funcNamespace + "}:" + funcName + ".", srcLocator);							
+    																					+ "with name {" + funcNamespace + "}:" + funcName + ".", srcLocator);							
     								}	    							    						
     							}
     							else {
     								throw new javax.xml.transform.TransformerException("FODC0005 : While processing xsl:import-schema instruction, a compiled "
-    										                                                           + "representation of an XML Schema document could not be built.", srcLocator);
+    																					+ "representation of an XML Schema document could not be built.", srcLocator);
     							}
     						}
     						catch (InvalidDatatypeValueException ex) {
@@ -570,10 +565,10 @@ public class XSLFunctionService {
     					else {
     						// Use an XML Schema document available, at the uri specified by xsl:import-schema 
     						// element's attribute 'schema-location'.
-    						
+
     						XSModel xsModel = null;        		   
-        					XSLoaderImpl xsLoader = new XSLoaderImpl();
-        					
+    						XSLoaderImpl xsLoader = new XSLoaderImpl();
+
     						NamedNodeMap importSchemaNodeAttributes = ((Element)elemTemplateElem).getAttributes();        			   
 
     						if (importSchemaNodeAttributes != null) {
@@ -617,21 +612,21 @@ public class XSLFunctionService {
     									}
     									else {
     										throw new javax.xml.transform.TransformerException("FODC0005 : There's no in-scope schema type definition available "
-    												                                                 + "with name {" + funcNamespace + "}:" + funcName + ".", srcLocator);							
+    																						+ "with name {" + funcNamespace + "}:" + funcName + ".", srcLocator);							
     									}
     								}
     								else {
     									throw new javax.xml.transform.TransformerException("FODC0005 : While processing xsl:import-schema instruction, a compiled "
-    											                                                     + "representation of an XML Schema document could not be built.", srcLocator);
+    																					+ "representation of an XML Schema document could not be built.", srcLocator);
     								}
     							}
     							catch (URISyntaxException ex) {
     								throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
-    										                                                         + "is not a valid absolute uri, or cannot be resolved to an absolute uri.", srcLocator);   
+    																				+ "is not a valid absolute uri, or cannot be resolved to an absolute uri.", srcLocator);   
     							}
     							catch (MalformedURLException ex) {
     								throw new javax.xml.transform.TransformerException("FODC0005 : The schema uri specified with xsl:import-schema instruction "
-    										                                                         + "is not a valid absolute uri, or cannot be resolved to an absolute uri.", srcLocator); 
+    																				+ "is not a valid absolute uri, or cannot be resolved to an absolute uri.", srcLocator); 
     							}
     							catch (InvalidDatatypeValueException ex) {
     								throw new TransformerException(ex.getMessage(), srcLocator);

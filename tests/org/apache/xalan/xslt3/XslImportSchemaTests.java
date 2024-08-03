@@ -29,7 +29,7 @@ import org.junit.Test;
  * 
  * @xsl.usage advanced
  */
-public class XSLImportSchemaTests extends XSLTransformTestsUtil {
+public class XslImportSchemaTests extends XSLTransformTestsUtil {
     
     private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xsl_import_schema/";
     

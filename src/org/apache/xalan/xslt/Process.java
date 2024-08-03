@@ -53,6 +53,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.apache.xalan.Version;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
+import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.trace.PrintTraceListener;
 import org.apache.xalan.trace.TraceManager;
 import org.apache.xalan.transformer.XalanProperties;
@@ -85,6 +86,7 @@ public class Process
     System.out.println(resbundle.getString("optionXSLTC"));  //"    [-XSLTC (use XSLTC for transformation)]
     System.out.println(resbundle.getString("optionIN"));  //"    [-IN inputXMLURL]");
     System.out.println(resbundle.getString("optionXSL"));  //"   [-XSL XSLTransformationURL]");
+    System.out.println(resbundle.getString("optionVAL"));  //"   [-VAL (Request validation of XML input document)]");
     System.out.println(resbundle.getString("optionOUT"));  //"   [-OUT outputFileName]");
 
     // System.out.println(resbundle.getString("optionE")); //"   [-E (Do not expand entity refs)]");
@@ -156,6 +158,7 @@ public class Process
     boolean doDiag = false;
     String msg = null;
     boolean isSecureProcessing = false;
+    boolean isSchemaValidation = false;
 
     // Runtime.getRuntime().traceMethodCalls(false);
     // Runtime.getRuntime().traceInstructions(false);
@@ -542,7 +545,7 @@ public class Process
                java.lang.Boolean.FALSE);
           else
             printInvalidXSLTCOption("-NOOPTIMIZE");
-	}
+	    }
         else if ("-RL".equalsIgnoreCase(argv[i]))
         {
           if (!useXSLTC)
@@ -693,6 +696,9 @@ public class Process
           }
           catch (TransformerConfigurationException e) {}
         }
+        else if ("-VAL".equalsIgnoreCase(argv[i])) {
+          isSchemaValidation = true;
+        }
         else
           System.err.println(
             XSLMessages.createMessage(
@@ -749,8 +755,7 @@ public class Process
           else
           {
             // System.out.println("Calling newTemplates: "+xslFileName);
-            XslTransformSharedDatastore.xslSystemId = SystemIDResolver.
-                                                                        getAbsoluteURI(xslFileName); 
+            XslTransformSharedDatastore.xslSystemId = SystemIDResolver.getAbsoluteURI(xslFileName); 
             stylesheet = tfactory.newTemplates(new StreamSource(xslFileName));
             // System.out.println("Done calling newTemplates: "+xslFileName);
           }
@@ -807,6 +812,12 @@ public class Process
 
         if (null != stylesheet)
         {
+          if (isSchemaValidation) {       	  
+        	  if (null != inFileName) {        		  
+        		 ((StylesheetRoot)stylesheet).validateXmlInputDoc(inFileName);
+        	  }
+          }
+          
           Transformer transformer = flavor.equals("th") ? null : stylesheet.newTransformer();
           transformer.setErrorListener(new DefaultErrorHandler(false));
 

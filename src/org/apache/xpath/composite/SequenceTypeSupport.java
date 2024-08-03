@@ -35,9 +35,7 @@ import javax.xml.validation.Validator;
 
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
-import org.apache.xerces.impl.dv.XSSimpleType;
 import org.apache.xerces.impl.xs.SchemaGrammar;
-import org.apache.xerces.impl.xs.XSComplexTypeDecl;
 import org.apache.xerces.impl.xs.XSDDescription;
 import org.apache.xerces.impl.xs.XSElementDecl;
 import org.apache.xerces.jaxp.validation.XMLSchemaFactory;
@@ -95,8 +93,8 @@ import xml.xpath31.processor.types.XSUntypedAtomic;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
- * This class provides few utility methods, to help evaluate
- * XPath 3.1 sequence type expressions.
+ * This class provides few utility methods, to support 
+ * evaluation of XPath 3.1 sequence type expressions.
  * 
  * Ref : https://www.w3.org/TR/xpath-31/#id-sequencetype-syntax
  * 
@@ -833,53 +831,44 @@ public class SequenceTypeSupport {
 															   IOException, TransformerException {
 		
 		boolean isNodeValidWithSchemaType = false;
-		
-		if (xsTypeDefinition instanceof XSSimpleType) {
-		    // TO DO
-		}
-		else {
-			// Validate the node with an XML Schema complexType
-			xdmNode = (XNodeSet)(xdmNode.getFresh());
-			DTMIterator dtmIter = ((XNodeSet)xdmNode).iterRaw();
-			int nodeHandle = dtmIter.nextNode();
-			DTM dtm = xctxt.getDTM(nodeHandle);
-			Node node = dtm.getNode(nodeHandle);
 
-			String xmlDocumentStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
+		// Validate the node with an XML Schema type
+		xdmNode = (XNodeSet)(xdmNode.getFresh());
+		DTMIterator dtmIter = ((XNodeSet)xdmNode).iterRaw();
+		int nodeHandle = dtmIter.nextNode();
+		DTM dtm = xctxt.getDTM(nodeHandle);
+		Node node = dtm.getNode(nodeHandle);
 
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			dbf.setNamespaceAware(true);
-			DocumentBuilder dBuilder = dbf.newDocumentBuilder();
-			Document document = dBuilder.parse(new ByteArrayInputStream(xmlDocumentStr.getBytes()));
+		String xmlDocumentStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
 
-			String elemName = (document.getDocumentElement()).getNodeName();
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		dbf.setNamespaceAware(true);
+		DocumentBuilder dBuilder = dbf.newDocumentBuilder();
+		Document document = dBuilder.parse(new ByteArrayInputStream(xmlDocumentStr.getBytes()));
 
-			XSComplexTypeDecl xsComplexTypeDecl = (XSComplexTypeDecl)xsTypeDefinition;
+		String elemName = (document.getDocumentElement()).getNodeName();			
+		String xsTargetNamespace = xsTypeDefinition.getNamespace();	            		
 
-			String xsTargetNamespace = xsComplexTypeDecl.getTargetNamespace();	            		
+		SchemaGrammar grammar = new SchemaGrammar(xsTargetNamespace, new XSDDescription(), null);	            			            		
 
-			SchemaGrammar schemaGrammar = new SchemaGrammar(xsTargetNamespace, new XSDDescription(), null);	            			            		
+		XSElementDecl xsElemDecl = new XSElementDecl();
+		xsElemDecl.fName = elemName;
+		xsElemDecl.fTargetNamespace = xsTargetNamespace;
+		xsElemDecl.fType = xsTypeDefinition;
+		xsElemDecl.setIsGlobal();
 
-			XSElementDecl xsElemDecl = new XSElementDecl();
-			xsElemDecl.fName = elemName;
-			xsElemDecl.fTargetNamespace = xsTargetNamespace;
-			xsElemDecl.fType = xsComplexTypeDecl;
-			xsElemDecl.setIsGlobal();
+		grammar.addGlobalElementDecl(xsElemDecl);	            		
+		grammar.addGlobalTypeDecl(xsTypeDefinition);	            		
+		XMLGrammarPoolImpl grammarPool = new XMLGrammarPoolImpl();
+		grammarPool.putGrammar(grammar);
 
-			schemaGrammar.addGlobalElementDecl(xsElemDecl);	            		
-			schemaGrammar.addGlobalTypeDecl(xsComplexTypeDecl);	            		
-			XMLGrammarPoolImpl xmlGrammarPool = new XMLGrammarPoolImpl();
-			xmlGrammarPool.putGrammar(schemaGrammar);
+		XMLSchemaFactory xmlSchemaFactory = new XMLSchemaFactory();
+		Schema schema = xmlSchemaFactory.newSchema(grammarPool);
+		Validator validator = schema.newValidator();
+		validator.validate(new DOMSource(document));
 
-			XMLSchemaFactory xmlSchemaFactory = new XMLSchemaFactory();
-			Schema schema = xmlSchemaFactory.newSchema(xmlGrammarPool);
-			Validator validator = schema.newValidator();
-			validator.validate(new DOMSource(document));
+		isNodeValidWithSchemaType = true;
 
-			isNodeValidWithSchemaType = true;
-			
-		}
-		
 		return isNodeValidWithSchemaType;
 	}
 	
