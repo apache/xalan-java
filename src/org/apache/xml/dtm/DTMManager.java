@@ -255,7 +255,7 @@ public abstract class DTMManager
   }
   
   /*
-   * Given an XDM sequence, this method constructs an Xalan-J DTM object 
+   * Given an xdm sequence, this method constructs a Xalan-J dtm object 
    * from the information provided in an input sequence. 
    */
   public DTM getDTMFromResultSequence(ResultSequence resultSeq) {

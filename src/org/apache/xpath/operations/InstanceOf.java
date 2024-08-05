@@ -20,14 +20,22 @@
  */
 package org.apache.xpath.operations;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
+import org.apache.xerces.impl.dv.XSSimpleType;
+import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
+import org.apache.xpath.XPath;
 import org.apache.xpath.composite.SequenceTypeArrayTest;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeKindTest;
@@ -52,6 +60,10 @@ import org.apache.xpath.types.XSUnsignedByte;
 import org.apache.xpath.types.XSUnsignedInt;
 import org.apache.xpath.types.XSUnsignedLong;
 import org.apache.xpath.types.XSUnsignedShort;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import xml.xpath31.processor.types.XSAnyURI;
 import xml.xpath31.processor.types.XSBoolean;
@@ -110,16 +122,22 @@ public class InstanceOf extends Operation
     	 }
       }
       
-      isInstanceOf = isInstanceOf(left, seqTypedData);
+      try {
+         isInstanceOf = isInstanceOf(left, seqTypedData);
+      }
+      catch (Exception ex) {    	 
+    	 isInstanceOf = false; 
+      }
       
-      return isInstanceOf ? XBoolean.S_TRUE : XBoolean.S_FALSE;
+      return ((isInstanceOf == true) ? XBoolean.S_TRUE : XBoolean.S_FALSE);
   }
 
   /**
    * This method checks whether, an xdm value is an instance of 
    * a specific type.
    */
-  private boolean isInstanceOf(XObject xdmValue, SequenceTypeData seqTypeData) {
+  private boolean isInstanceOf(XObject xdmValue, SequenceTypeData seqTypeData) throws ParserConfigurationException, SAXException, 
+                                                                                                             IOException, TransformerException, Exception {
     
     boolean isInstanceOf = false;
       
@@ -270,38 +288,39 @@ public class InstanceOf extends Operation
           isInstanceOf = true;
       }
       else if (xdmValue instanceof XNodeSet) {
-          isInstanceOf = checkXdmNodesetWithType(xdmValue, seqTypeData);
+          isInstanceOf = isNodesetInstanceOfType((XNodeSet)xdmValue, seqTypeData);
       }
       else if (xdmValue instanceof ResultSequence) {
-          isInstanceOf = checkXdmSequenceWithType(xdmValue, seqTypeData); 
+          isInstanceOf = isSequenceInstanceOfType((ResultSequence)xdmValue, seqTypeData); 
       }
       else if (xdmValue instanceof XPathMap) {
-    	  isInstanceOf = isInstanceOfMap(xdmValue, seqTypeData);
+    	  isInstanceOf = isXdmMapConformsWithSeqType((XPathMap)xdmValue, seqTypeData);
       }
       else if (xdmValue instanceof XPathArray) {
-    	  isInstanceOf = isInstanceOfArray(xdmValue, seqTypeData);
+    	  isInstanceOf = isXdmArrayConformsWithSeqType((XPathArray)xdmValue, seqTypeData);
       }
     
      return isInstanceOf;
   }
 
   /**
-   * Check whether, an xdm node set conforms to xpath sequence type information.
+   * This method checks whether, an xdm nodeset is an instance of 
+   * a specific type.
    */
-  private boolean checkXdmNodesetWithType(XObject xdmValue, SequenceTypeData seqTypeData) {
-	
+  private boolean isNodesetInstanceOfType(XNodeSet nodeset, SequenceTypeData seqTypeData) throws 
+                                                                         ParserConfigurationException, SAXException, 
+                                                                         IOException, TransformerException, Exception {
+	  
 	  boolean isInstanceOf = false;
-
-	  XNodeSet xdmNodeSet = (XNodeSet)xdmValue;          
-	  int nodeSetLen = xdmNodeSet.getLength();          
-	  int itemTypeOccurenceIndicator = seqTypeData.getItemTypeOccurrenceIndicator();
-	  SequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();
+          
+	  int nodeSetLen = nodeset.getLength();          
+	  int itemTypeOccurenceIndicator = seqTypeData.getItemTypeOccurrenceIndicator();	  
 
 	  if ((nodeSetLen > 1) && ((itemTypeOccurenceIndicator == 0) || (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE))) {
 		  isInstanceOf = false; 
 	  }
 	  else {
-		  DTMIterator dtmIter = xdmNodeSet.iterRaw();
+		  DTMIterator dtmIter = nodeset.iterRaw();
 
 		  List<Boolean> nodeSetSequenceTypeKindTestResultList = new ArrayList<Boolean>();
 
@@ -312,6 +331,7 @@ public class InstanceOf extends Operation
 			  java.lang.String nodeNsUri = dtm.getNamespaceURI(nextNodeDtmHandle);
 
 			  if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ELEMENT_NODE) {
+				  SequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();				  
 				  if (seqTypeKindTest != null) {
 					  java.lang.String elemNodeKindTestNodeName = seqTypeKindTest.getNodeLocalName();
 					  if (elemNodeKindTestNodeName == null || "".equals(elemNodeKindTestNodeName) || 
@@ -320,8 +340,85 @@ public class InstanceOf extends Operation
 					  }
 
 					  if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ELEMENT_KIND) && (nodeName.equals(elemNodeKindTestNodeName)) 
-							  && (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(nodeNsUri, seqTypeKindTest.getNodeNsUri()))) {
-						  nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true));  
+							                                                       && (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(nodeNsUri, 
+							                                                    		                                       seqTypeKindTest.getNodeNsUri()))) {
+						  XSTypeDefinition xsTypeDefn = seqTypeData.getXsTypeDefinition();
+						  if (xsTypeDefn != null) {
+							  XNodeSet node = new XNodeSet(nextNodeDtmHandle, dtmIter.getDTMManager());
+							  if (SequenceTypeSupport.isXdmElemNodeValidWithSchemaType(node, m_xctxt, xsTypeDefn)) {
+								  nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true));
+							  }
+							  else {
+								  isInstanceOf = false;
+								  break;
+							  }
+						  }
+						  else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(seqTypeKindTest.getDataTypeUri())) {
+							  XNodeSet node = new XNodeSet(nextNodeDtmHandle, dtmIter.getDTMManager());
+							  
+							  // Check whether this element node has complexContent (i.e, presence of 
+							  // child element or attribute). If 'yes' then instance of
+							  // check will be false for this case.
+							  node = (XNodeSet)(node.getFresh());
+							  DTMIterator dtmIter1 = ((XNodeSet)node).iterRaw();
+							  int nodeHandle = dtmIter1.nextNode();
+							  DTM dtm1 = m_xctxt.getDTM(nodeHandle);
+							  Node node1 = dtm1.getNode(nodeHandle);
+							  							  
+							  NodeList childNodes = node1.getChildNodes();
+							  boolean isComplexContent = false;
+							  for (int idx = 0; idx < childNodes.getLength(); idx++) {
+								  Node childNode = childNodes.item(idx);
+								  if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+									  isComplexContent = true;
+									  break;
+								  }
+							  }
+							  
+							  if (!isComplexContent) {
+								  NamedNodeMap attrNodes = node1.getAttributes();							  
+								  for (int idx = 0; idx < attrNodes.getLength(); idx++) {
+									  Node attrNode = attrNodes.item(idx);
+									  java.lang.String nodeNameStr = attrNode.getNodeName();									
+									  if (!"xmlns".equals(nodeNameStr)) {
+										  isComplexContent = true;
+										  break;
+									  }
+								  }
+							  }
+							  
+							  if (isComplexContent) {
+								  isInstanceOf = false;
+								  break;
+							  }
+							  else {
+								  dtmIter1.reset();
+							  }
+							  
+							  java.lang.String dataTypeLocalName = seqTypeKindTest.getDataTypeLocalName();
+							  java.lang.String xpathConstructorFuncExprStr = "xs:" + dataTypeLocalName + "('" + node.str() + "')";
+							  xpathConstructorFuncExprStr += " instance of xs:" + dataTypeLocalName; 							  
+							  XPath xpath = new XPath(xpathConstructorFuncExprStr, m_xctxt.getSAXLocator(), m_xctxt.getNamespaceContext(), 
+                                      																 XPath.SELECT, null);
+							  XObject xObj = null;
+							  try {
+							     xObj = xpath.executeInstanceOf(m_xctxt, DTM.NULL, null);
+							     isInstanceOf = ((xObj.bool() == true) ? true : false);
+							  }
+							  catch (TransformerException ex) {
+								  isInstanceOf = false;
+								  break;
+							  }
+							  if (isInstanceOf) {
+								 nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
+							  }
+							  else {
+								 break; 
+							  }
+						  }
+						  else {
+							  nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
+						  }
 					  }
 					  else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.NODE_KIND) || 
 							  (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
@@ -334,6 +431,7 @@ public class InstanceOf extends Operation
 				  }
 			  }
 			  else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.ATTRIBUTE_NODE) {
+				  SequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();				  
 				  if (seqTypeKindTest != null) {
 					  java.lang.String attrNodeKindTestNodeName = seqTypeKindTest.getNodeLocalName();
 					  if (attrNodeKindTestNodeName == null || "".equals(attrNodeKindTestNodeName) || 
@@ -342,9 +440,53 @@ public class InstanceOf extends Operation
 					  }
 
 					  if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
-							  && (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(
-									  nodeNsUri, seqTypeKindTest.getNodeNsUri()))) {
-						  nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true));    
+																						  && (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(
+																								  nodeNsUri, seqTypeKindTest.getNodeNsUri()))) {
+						  XSTypeDefinition xsTypeDefn = seqTypeData.getXsTypeDefinition();
+						  if (xsTypeDefn != null) {
+							  if (xsTypeDefn instanceof XSSimpleType) {
+								  XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)xsTypeDefn;
+								  XNodeSet node = new XNodeSet(nextNodeDtmHandle, dtmIter.getDTMManager());
+								  try {
+								      xsSimpleTypeDecl.validate(node.str(), null, null);
+								      nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true));
+								  }
+								  catch (InvalidDatatypeValueException ex) {
+									  isInstanceOf = false;
+									  break;
+								  }
+							  }
+							  else {
+								  isInstanceOf = false;
+								  break; 
+							  }
+						  }
+						  else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(seqTypeKindTest.getDataTypeUri())) {
+                              XNodeSet node = new XNodeSet(nextNodeDtmHandle, dtmIter.getDTMManager());							  
+							  java.lang.String dataTypeLocalName = seqTypeKindTest.getDataTypeLocalName();
+							  java.lang.String xpathConstructorFuncExprStr = "xs:" + dataTypeLocalName + "('" + node.str() + "')";
+							  xpathConstructorFuncExprStr += " instance of xs:" + dataTypeLocalName; 							  
+							  XPath xpath = new XPath(xpathConstructorFuncExprStr, m_xctxt.getSAXLocator(), m_xctxt.getNamespaceContext(), 
+                                      																 XPath.SELECT, null);
+							  XObject xObj = null;
+							  try {
+							     xObj = xpath.executeInstanceOf(m_xctxt, DTM.NULL, null);
+							     isInstanceOf = ((xObj.bool() == true) ? true : false);
+							  }
+							  catch (TransformerException ex) {
+								  isInstanceOf = false;
+								  break;
+							  }
+							  if (isInstanceOf) {
+								 nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
+							  }
+							  else {
+								 break; 
+							  } 
+						  }
+						  else {
+						      nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true));
+						  }
 					  }
 					  else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.NODE_KIND) || 
 							  (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
@@ -357,11 +499,13 @@ public class InstanceOf extends Operation
 				  } 
 			  }
 			  else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.TEXT_NODE) {
+				  SequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();				  
 				  if (seqTypeKindTest.getKindVal() == SequenceTypeSupport.TEXT_KIND) {
 					  nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
 				  }
 			  }
 			  else if (dtm.getNodeType(nextNodeDtmHandle) == DTM.NAMESPACE_NODE) {
+				  SequenceTypeKindTest seqTypeKindTest = seqTypeData.getSequenceTypeKindTest();				  
 				  if (seqTypeKindTest.getKindVal() == SequenceTypeSupport.NAMESPACE_NODE_KIND) {
 					  nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
 				  }
@@ -377,13 +521,14 @@ public class InstanceOf extends Operation
   }
 
   /**
-   * Check whether, an xdm sequence conforms to xpath sequence type information.
+   * This method checks whether, an xdm sequence is an instance of 
+   * a specific type.
    */
-  private boolean checkXdmSequenceWithType(XObject xdmValue, SequenceTypeData seqTypeData) {
+  private boolean isSequenceInstanceOfType(ResultSequence srcResultSeq, SequenceTypeData seqTypeData) throws ParserConfigurationException, 
+                                                                                                 SAXException, IOException, 
+                                                                                                 TransformerException, Exception {
 	  
 	  boolean isInstanceOf = false;
-	  
-	  ResultSequence srcResultSeq = (ResultSequence)xdmValue;
 
 	  int seqLen = srcResultSeq.size();
 
@@ -422,9 +567,9 @@ public class InstanceOf extends Operation
   }
   
   /**
-   * Check whether, an xdm value is an instance of xpath map.
+   * This method checks whether, an xdm map conforms with the specified sequence type.
    */
-  private boolean isInstanceOfMap(XObject xdmValue, SequenceTypeData seqTypeData) {
+  private boolean isXdmMapConformsWithSeqType(XPathMap map, SequenceTypeData seqTypeData) {
 	  boolean isInstanceOf = false;
 	  
 	  SequenceTypeMapTest sequenceTypeMapTest = seqTypeData.getSequenceTypeMapTest();
@@ -438,9 +583,9 @@ public class InstanceOf extends Operation
   }
 
   /**
-   * Check whether, an xdm value is an instance of xpath array.
+   * This method checks whether, an xdm array conforms with the specified sequence type.
    */
-  private boolean isInstanceOfArray(XObject xdmValue, SequenceTypeData seqTypeData) {
+  private boolean isXdmArrayConformsWithSeqType(XPathArray xpathArr, SequenceTypeData seqTypeData) {
 	  
 	  boolean isInstanceOf = false;
 	  
@@ -450,7 +595,6 @@ public class InstanceOf extends Operation
 			  isInstanceOf = true;
 		  }
 		  else {
-			  XPathArray xpathArr = (XPathArray)xdmValue;
 			  List<XObject> nativeArr = xpathArr.getNativeArray();
 			  Iterator<XObject> arrIter = nativeArr.iterator();
 			  // We check below each of array items, with an expected type

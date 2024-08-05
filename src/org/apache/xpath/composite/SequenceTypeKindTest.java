@@ -78,11 +78,11 @@ public class SequenceTypeKindTest {
         this.nodeNsUri = nodeNsUri;
     }
 
-    public String getDataTypeName() {
+    public String getDataTypeLocalName() {
         return dataTypeLocalName;
     }
 
-    public void setDataTypeName(String dataTypeName) {
+    public void setDataTypeLocalName(String dataTypeName) {
         this.dataTypeLocalName = dataTypeName;
     }
     

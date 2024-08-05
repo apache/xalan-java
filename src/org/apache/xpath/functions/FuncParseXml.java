@@ -74,7 +74,7 @@ public class FuncParseXml extends FunctionOneArg {
     }
     
     /**
-     * Get an XDM nodeset corresponding to an XML string value.
+     * Get an xdm nodeset corresponding to an XML string value.
      */
     public static XNodeSet getNodeSetFromStr(String strVal, XPathContext xctxt) throws Exception {
         XNodeSet nodeSet = null;

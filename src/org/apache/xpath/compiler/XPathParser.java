@@ -956,7 +956,7 @@ public class XPathParser
                                                                                  OccurrenceIndicator.ONE_OR_MANY);
          nextToken();
       }
-      else if ((m_token != null) && !isXPathInlineFunctionParse) {
+      else if ((m_token != null) && !isXPathInlineFunctionParse && !isFunctionArgumentParse) {
          throw new javax.xml.transform.TransformerException("XPST0051 A sequence type occurence indicator '" + m_token + "', is not recognized."); 
       }
   }
@@ -1042,7 +1042,7 @@ public class XPathParser
            String[] nodeDataTypeParts = getXmlNamespaceStrComponents(seqTypeSubParts[1]);
            sequenceTypeKindTest.setNodeLocalName(nodeNsParts[0]);
            sequenceTypeKindTest.setNodeNsUri(nodeNsParts[1]);
-           sequenceTypeKindTest.setDataTypeName(nodeDataTypeParts[0]);
+           sequenceTypeKindTest.setDataTypeLocalName(nodeDataTypeParts[0]);
            sequenceTypeKindTest.setDataTypeUri(nodeDataTypeParts[1]);
            if (nodeDataTypeParts[1] == null) {
         	  // Check for a possibility, of data type being an user-defined schema type
@@ -5128,10 +5128,10 @@ public class XPathParser
 		   // TO handle occurrence indicator
 	   }
 	   else {
-		   throw new javax.xml.transform.TransformerException("FODC0005 : The child contents of xs:import-schema "
-																					   + "instruction were successfully built to a valid XML schema, but this "
-																					   + "schema doesn't contain the type definition with expanded name "
-																					   + "{" + typeNamespace + "}:" + typeName + ".");							
+		   String typeExpandedName = (typeNamespace == null) ? typeName : "{" + typeNamespace + "}:" + typeName;   
+		   throw new javax.xml.transform.TransformerException("FODC0005 : The schema built via xs:import-schema instruction doesn't "
+		   		                                                             + "contain a type definition with expanded name " + 
+				                                                                 typeExpandedName + ".");							
 	   }
    }
    

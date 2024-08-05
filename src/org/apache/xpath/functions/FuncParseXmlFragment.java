@@ -74,7 +74,7 @@ public class FuncParseXmlFragment extends FunctionOneArg {
     }
     
     /**
-     * Get an XDM nodeset corresponding to an XML fragment string value.
+     * Get an xdm nodeset corresponding to an XML fragment string value.
      */
     private XNodeSet getNodeSetFromStr(String strVal, XPathContext xctxt) throws 
                                                           javax.xml.transform.TransformerException {

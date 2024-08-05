@@ -99,7 +99,7 @@ public class ElemSequence extends ElemTemplateElement
    * We use this string value constant to add as a suffix to, a string value that
    * is getting serialized by Xalan-J serializer, when XSL serialization is
    * getting done during evaluation of xsl:sequence instruction. This helps us
-   * construct later during XSL transformation process, a sequence of XDM atomic
+   * construct later during XSL transformation process, a sequence of xdm atomic
    * values.
    * 
    * We're assuming that, this string value is significantly random, and is unlikely

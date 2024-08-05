@@ -324,12 +324,14 @@ public class SequenceTypeSupport {
     }
     
     /**
-     * This method, supports XPath implementation of "cast as" and 
-     * "castable as" expressions.
+     * This method, supports XPath implementation of "cast as", "castable as" and 
+     * "treat as" expressions. 
      */
-    public static XObject castXdmValueToAnotherType(XObject srcValue, SequenceTypeData expectedSeqTypeData) 
+    public static XObject castXdmValueToAnotherType(XObject srcValue, SequenceTypeData expectedSeqTypeData, boolean isTreatAs) 
     		                                                                                throws TransformerException {
         XObject result = null;
+        
+        srcValue.setTreatAs(isTreatAs);
     	
         result = castXdmValueToAnotherType(srcValue, null, expectedSeqTypeData, null);
 
@@ -395,10 +397,21 @@ public class SequenceTypeSupport {
             XNodeSet nodeSet = getNodeReference(srcValue);
             
             if ((nodeSet != null) && (xsTypeDefinition != null)) {
-	            boolean isNodeValid = isXdmNodeValidWithSchemaType(nodeSet, xctxt, xsTypeDefinition);	            
+	            boolean isNodeValid = isXdmElemNodeValidWithSchemaType(nodeSet, xctxt, xsTypeDefinition);	            
 	            if (isNodeValid) {
 	               result = srcValue;
-	               result.setXsTypeDefinition(xsTypeDefinition);
+	               
+	               if (!srcValue.isTreatAs()) {
+	            	  // This is done for XPath "cast as" expression. Modifying the
+	            	  // static type of xdm value this way, is currently supported only
+	            	  // for user-defined schema types.
+	                  result.setXsTypeDefinition(xsTypeDefinition);
+	               }
+	               else {
+	            	  // Reset XPath treat as/castable as indicator of XObject value
+	            	  srcValue.setTreatAs(false);
+	            	  result.setTreatAs(false);
+	               }
 	               
 	               return result;
 	            }
@@ -823,10 +836,10 @@ public class SequenceTypeSupport {
     }
 
     /**
-     * Validate an XDM node with an XML Schema type definition.
+     * Validate an xdm element node with an XML Schema type definition.
      */
-	private static boolean isXdmNodeValidWithSchemaType(XNodeSet xdmNode, XPathContext xctxt,
-														XSTypeDefinition xsTypeDefinition)
+	public static boolean isXdmElemNodeValidWithSchemaType(XNodeSet xdmNode, XPathContext xctxt,
+													      XSTypeDefinition xsTypeDefinition)
 														       throws Exception, ParserConfigurationException, SAXException, 
 															   IOException, TransformerException {
 		
@@ -874,7 +887,7 @@ public class SequenceTypeSupport {
 	
 	/**
 	 * Given an XObject object instance check whether it represents
-	 * an XDM node. A non-null object reference returned by this
+	 * an xdm node. A non-null object reference returned by this
 	 * method, indicates that an input object reference is a node.
 	 */
 	public static XNodeSet getNodeReference(XObject item) {
@@ -1081,7 +1094,7 @@ public class SequenceTypeSupport {
                if (dataTypeName == null) {
             	   dataTypeName = sequenceTypeXPathExprStr;   
                }               
-               throw new TransformerException("XTTE0570 : The numeric value " + srcStrVal + " cannot be converted or promoted "
+               throw new TransformerException("XTTE0570 : The numeric value " + srcStrVal + " cannot be cast or promoted "
                                                                                                  + "to a type " + dataTypeName + ".");  
             }
         }
@@ -1092,7 +1105,7 @@ public class SequenceTypeSupport {
         	if (dataTypeName == null) {
          	   dataTypeName = sequenceTypeXPathExprStr;   
             }        	
-            throw new TransformerException("XTTE0570 : The numeric value " + srcStrVal + " cannot be converted or promoted "
+            throw new TransformerException("XTTE0570 : The numeric value " + srcStrVal + " cannot be cast or promoted "
                                                                                                + "to a type " + dataTypeName + ".");
         }
         
@@ -1100,7 +1113,7 @@ public class SequenceTypeSupport {
     }
     
     /**
-     * Given a primitive int value for an XDM data type, return the corresponding
+     * Given a primitive int value for an xdm data type, return the corresponding
      * data type's name.
      */
     private static String getDataTypeNameFromIntValue(int sequenceType) {
@@ -1262,7 +1275,7 @@ public class SequenceTypeSupport {
                     String nodeName = node.getLocalName();
                     String nodeNsUri = node.getNamespaceURI();
 
-                    if (sequenceTypeKindTest.getDataTypeName() != null) {
+                    if (sequenceTypeKindTest.getDataTypeLocalName() != null) {
                         String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr; 
                         throw new TransformerException("XTTE0570 : The required item type of an xdm node is " + dataTypeStr + ". "
                         		                                                  + "The supplied value " + nodeName + " does'nt match an expected type. "
@@ -1416,7 +1429,7 @@ public class SequenceTypeSupport {
                   String nodeName = dtm.getNodeName(nextNodeDtmHandle);
                   String nodeNsUri = dtm.getNamespaceURI(nextNodeDtmHandle);
                   
-                  if (sequenceTypeKindTest.getDataTypeName() != null) {
+                  if (sequenceTypeKindTest.getDataTypeLocalName() != null) {
                      String dataTypeStr = (sequenceTypeNewXPathExprStr != null) ? sequenceTypeNewXPathExprStr : sequenceTypeXPathExprStr;
                      throw new TransformerException("XTTE0570 : The required item type of an xdm node is " + dataTypeStr + ". "
                                                                           + "The supplied value " + nodeName + " does'nt match an expected type. "

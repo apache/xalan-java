@@ -1728,8 +1728,8 @@ public class StylesheetRoot extends StylesheetComposed
 	 */
 	private String getDetailedValidationErrorMesg(String errType, String errMesg, 
 			                                      int lineNo, int colNo, String systemId) {
-		String detailedErrMesg = "[" + errType + "] " + systemId + ". Following error occured at "
-				                                            + "location (" + lineNo + "," + colNo +") : " + errMesg;
+		String detailedErrMesg = "[" + errType + "] " + systemId + ". Validation error occured at document "
+				                                                               + "location (" + lineNo + "," + colNo +") : " + errMesg;
 		
 		return detailedErrMesg;
 	}

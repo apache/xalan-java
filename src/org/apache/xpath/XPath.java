@@ -401,7 +401,26 @@ public class XPath implements Serializable, ExpressionOwner
 
 	  SourceLocator srcLocator = xctxt.getSAXLocator();
 
-	  result = evaluateXPathExpr(xctxt, contextNode, srcLocator);
+	  result = evaluateXPathExpr(xctxt, contextNode, srcLocator, false);
+
+	  return result;
+  }
+  
+  /**
+   * Evaluate an XPath "instance of" expression.
+   */
+  public XObject executeInstanceOf(XPathContext xctxt, int contextNode, PrefixResolver namespaceContext)
+                                                                                  throws javax.xml.transform.TransformerException {
+
+	  XObject result = null;
+	  
+	  xctxt.pushNamespaceContext(namespaceContext);
+
+	  xctxt.pushCurrentNodeAndExpression(contextNode, contextNode);
+
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+
+	  result = evaluateXPathExpr(xctxt, contextNode, srcLocator, true);
 
 	  return result;
   }
@@ -675,7 +694,7 @@ public class XPath implements Serializable, ExpressionOwner
   /**
    * Evaluate an XPath expression, to produce an xdm result item.
    */
-  private XObject evaluateXPathExpr(XPathContext xctxt, int contextNode, SourceLocator srcLocator)
+  private XObject evaluateXPathExpr(XPathContext xctxt, int contextNode, SourceLocator srcLocator, boolean instanceOfCheck)
 		                                                              throws TransformerException {
 
 	  XObject result = null;
@@ -785,6 +804,9 @@ public class XPath implements Serializable, ExpressionOwner
 	  }
 	  catch (TransformerException te)
 	  {
+		  if (instanceOfCheck) {
+			  throw te; 
+		  }
 		  te.setLocator(this.getLocator());
 		  ErrorListener el = xctxt.getErrorListener();
 		  if(null != el && !m_is_quantified_expr)
@@ -799,6 +821,12 @@ public class XPath implements Serializable, ExpressionOwner
 		  while (e instanceof org.apache.xml.utils.WrappedRuntimeException)
 		  {
 			  e = ((org.apache.xml.utils.WrappedRuntimeException) e).getException();
+		  }
+		  
+		  if (instanceOfCheck) {
+			  String msg = XSLMessages.createXPATHMessage(XPATHErrorResources.ER_XPATH_ERROR, null);
+			  TransformerException te = new TransformerException(msg, getLocator(), e);
+			  throw te;
 		  }
 
 		  String msg = e.getMessage();

@@ -339,10 +339,18 @@ public class XObject extends Expression implements Serializable, Cloneable
   /** Represents an unresolved variable type as an integer. */
   public static final int CLASS_UNRESOLVEDVARIABLE = 600;
   
-  /** An XDM item may have a type annotation conforming to this
-      schema type. A non-null value of this class field implies that,
-      this object instance has this type annotation. **/
+  /** 
+   * An xdm item may have a type annotation conforming to this
+   * schema type. A non-null value of this class field implies that,
+   * this object instance has this type annotation.
+   */
   private XSTypeDefinition xsTypeDefinition;
+  
+  /** 
+   * If this variable has value true, then XPath "treat as" or 
+   * "castable as" evaluations are required on this XObject instance.
+   */
+  private boolean isTreatAs;
 
   /**
    * Tell what kind of class this is.
@@ -1597,6 +1605,14 @@ public class XObject extends Expression implements Serializable, Cloneable
 
   public void setXsTypeDefinition(XSTypeDefinition xsTypeDefinition) {
 	 this.xsTypeDefinition = xsTypeDefinition;
+  }
+
+  public void setTreatAs(boolean isTreatAs) {
+	 this.isTreatAs = isTreatAs;
+  }
+  
+  public boolean isTreatAs() {
+	 return isTreatAs; 
   }
 
 }

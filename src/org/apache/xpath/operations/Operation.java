@@ -23,14 +23,12 @@ package org.apache.xpath.operations;
 import javax.xml.XMLConstants;
 
 import org.apache.xpath.Expression;
-import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
-import org.apache.xpath.functions.XSLFunctionService;
 import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
-import org.apache.xpath.objects.XNodeSet;
+import org.apache.xpath.functions.XSLFunctionService;
 import org.apache.xpath.objects.XObject;
 
 /**
@@ -40,13 +38,20 @@ public class Operation extends Expression implements ExpressionOwner
 {
   static final long serialVersionUID = -3037139537171050430L;
 
-  /** The left operand expression.
-   *  @serial */
+  /** 
+   * The left operand expression.
+   */
   protected Expression m_left;
 
-  /** The right operand expression.
-   *  @serial */
+  /** 
+   * The right operand expression.
+   */
   protected Expression m_right;
+  
+  /**
+   * An XPath context object.
+   */
+  protected XPathContext m_xctxt;
   
   /**
    * This function is used to fixup variables from QNames to stack frame 
@@ -116,6 +121,8 @@ public class Operation extends Expression implements ExpressionOwner
     XObject left = null;
     
     XObject right = null;
+    
+    m_xctxt = xctxt; 
     
     XSLFunctionService xslFunctionService = xctxt.getXSLFunctionService();
     

@@ -52,7 +52,7 @@ public class TreatAs extends Operation
       
       SequenceTypeData seqTypedData = (SequenceTypeData)right;
       
-      result = SequenceTypeSupport.castXdmValueToAnotherType(left, seqTypedData);
+      result = SequenceTypeSupport.castXdmValueToAnotherType(left, seqTypedData, true);
       
       return result;
   }

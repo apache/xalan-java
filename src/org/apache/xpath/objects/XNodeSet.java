@@ -42,7 +42,7 @@ import xml.xpath31.processor.types.XSUntyped;
  * 
  * For XPath 3.1 processor, we use an object of this class along with 
  * ResultSequence object and an XObject instance, all of them as 
- * representations of XDM sequence.
+ * representations of xdm sequence.
  * 
  * @xsl.usage general
  */
