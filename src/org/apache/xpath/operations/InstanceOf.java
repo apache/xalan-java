@@ -29,9 +29,14 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
 import org.apache.xerces.impl.dv.XSSimpleType;
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
+import org.apache.xerces.xs.XSAttributeDeclaration;
+import org.apache.xerces.xs.XSElementDeclaration;
+import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
@@ -307,20 +312,20 @@ public class InstanceOf extends Operation
    * This method checks whether, an xdm nodeset is an instance of 
    * a specific type.
    */
-  private boolean isNodesetInstanceOfType(XNodeSet nodeset, SequenceTypeData seqTypeData) throws 
+  private boolean isNodesetInstanceOfType(XNodeSet nodeSet, SequenceTypeData seqTypeData) throws 
                                                                          ParserConfigurationException, SAXException, 
                                                                          IOException, TransformerException, Exception {
 	  
 	  boolean isInstanceOf = false;
           
-	  int nodeSetLen = nodeset.getLength();          
+	  int nodeSetLen = nodeSet.getLength();          
 	  int itemTypeOccurenceIndicator = seqTypeData.getItemTypeOccurrenceIndicator();	  
 
 	  if ((nodeSetLen > 1) && ((itemTypeOccurenceIndicator == 0) || (itemTypeOccurenceIndicator == OccurrenceIndicator.ZERO_OR_ONE))) {
 		  isInstanceOf = false; 
 	  }
 	  else {
-		  DTMIterator dtmIter = nodeset.iterRaw();
+		  DTMIterator dtmIter = nodeSet.iterRaw();
 
 		  List<Boolean> nodeSetSequenceTypeKindTestResultList = new ArrayList<Boolean>();
 
@@ -420,6 +425,22 @@ public class InstanceOf extends Operation
 							  nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
 						  }
 					  }
+					  else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.SCHEMA_ELEMENT_KIND) && (nodeName.equals(elemNodeKindTestNodeName)) 
+                              																	&& (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(nodeNsUri, 
+                              																				seqTypeKindTest.getNodeNsUri()))) {
+						  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+						  XSModel xsModel = stylesheetRoot.getXsModel();
+						  if (xsModel != null) {
+							  XSElementDeclaration elemDecl = xsModel.getElementDeclaration(elemNodeKindTestNodeName, seqTypeKindTest.getNodeNsUri());
+							  if (elemDecl != null) {
+								 nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
+							  }
+						  }
+						  else {
+							  isInstanceOf = false;
+							  break; 
+						  }
+					  }
 					  else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.NODE_KIND) || 
 							  (seqTypeKindTest.getKindVal() == SequenceTypeSupport.ITEM_KIND)) {
 						  nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
@@ -486,6 +507,22 @@ public class InstanceOf extends Operation
 						  }
 						  else {
 						      nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true));
+						  }
+					  }
+					  else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.SCHEMA_ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
+																								  && (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(
+																										  nodeNsUri, seqTypeKindTest.getNodeNsUri()))) {
+						  StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+						  XSModel xsModel = stylesheetRoot.getXsModel();
+						  if (xsModel != null) {
+							  XSAttributeDeclaration attrDecl = xsModel.getAttributeDeclaration(attrNodeKindTestNodeName, seqTypeKindTest.getNodeNsUri());
+							  if (attrDecl != null) {
+								 nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
+							  }
+						  }
+						  else {
+							  isInstanceOf = false;
+							  break; 
 						  }
 					  }
 					  else if ((seqTypeKindTest.getKindVal() == SequenceTypeSupport.NODE_KIND) || 

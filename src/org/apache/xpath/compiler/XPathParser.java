@@ -4925,6 +4925,44 @@ public class XPathParser
        else if (tokenIs(XMLConstants.W3C_XML_SCHEMA_NS_URI)) {
            parseXdmBuiltInXmlSchemaSequenceType(xpathSequenceTypeExpr, isXPathInlineFunctionParse);         
        }
+       else if (tokenIs("schema-element")) {
+    	   sequenceTypeKindTest = new SequenceTypeKindTest();
+           sequenceTypeKindTest.setKindVal(SequenceTypeSupport.SCHEMA_ELEMENT_KIND);
+           nextToken();
+           consumeExpected('(');
+           if (lookahead(':', 1)) {
+        	   sequenceTypeKindTest.setNodeNsUri(m_token);
+        	   nextToken();
+        	   consumeExpected(':');
+        	   sequenceTypeKindTest.setNodeLocalName(m_token);
+        	   nextToken();
+           }
+           else {
+        	   sequenceTypeKindTest.setNodeLocalName(m_token);
+        	   nextToken();
+           }
+           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
+           consumeExpected(')');
+       }
+       else if (tokenIs("schema-attribute")) {
+    	   sequenceTypeKindTest = new SequenceTypeKindTest();
+           sequenceTypeKindTest.setKindVal(SequenceTypeSupport.SCHEMA_ATTRIBUTE_KIND);
+           nextToken();
+           consumeExpected('(');
+           if (lookahead(':', 1)) {
+        	   sequenceTypeKindTest.setNodeNsUri(m_token);
+        	   nextToken();
+        	   consumeExpected(':');
+        	   sequenceTypeKindTest.setNodeLocalName(m_token);
+        	   nextToken();
+           }
+           else {
+        	   sequenceTypeKindTest.setNodeLocalName(m_token);
+        	   nextToken();
+           }
+           xpathSequenceTypeExpr.setSequenceTypeKindTest(sequenceTypeKindTest);
+           consumeExpected(')');
+       }
        else {
     	   // Check possibility of user-defined schema type specified within the sequence type expression
     	   parseSequenceTypeExprWithUserDefinedType(xpathSequenceTypeExpr, null);                                                                                    

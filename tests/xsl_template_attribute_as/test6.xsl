@@ -25,7 +25,7 @@
     </xsl:template>
     
     <xsl:template name="Template1" as="xs:date">       
-       <xsl:value-of select="'2005-10-07'"/>
+       <xsl:sequence select="xs:date('2005-10-07')"/>
     </xsl:template>
     
     <xsl:template name="Template2" as="element(elem)*">

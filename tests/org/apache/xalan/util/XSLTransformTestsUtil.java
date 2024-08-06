@@ -33,6 +33,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.xalan.transformer.TransformerImpl;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 
@@ -54,6 +55,8 @@ public class XSLTransformTestsUtil {
     protected static DocumentBuilder xmlDocumentBuilder = null;
     
     protected static TransformerFactory xslTransformerFactory = null;
+    
+    private boolean isXmlValidationRequired = false;
     
     /**
      * Class constructor.
@@ -102,6 +105,13 @@ public class XSLTransformTestsUtil {
        
         return timeZoneoffsetStr;
     }
+    
+    /**
+     * Set the XML validation property for the transformation.
+     */
+    protected void setXmlValidationProperty(boolean value) {
+    	isXmlValidationRequired = value;
+    }
 
     /**
      * This function is the primary function, that is invoked by all the XalanJ XSL3 test 
@@ -121,13 +131,21 @@ public class XSLTransformTestsUtil {
        
            Transformer xslTransformer = xslTransformerFactory.newTransformer(new 
         		                                                          StreamSource(xslDocumentUriStr));
+           if (isXmlValidationRequired) {
+        	   TransformerImpl transformerImpl = (TransformerImpl)xslTransformer;
+        	   transformerImpl.setProperty("http://apache.org/xalan/validation", Boolean.TRUE);
+           }
+           
            if (xslTransformErrHandler != null) {
                xslTransformer.setErrorListener(xslTransformErrHandler);  
            }
            
            StringWriter resultStrWriter = new StringWriter();
            
-           xslTransformer.transform(new DOMSource(xmlDomSource), new StreamResult(resultStrWriter));
+           DOMSource xmlDomSrc = new DOMSource(xmlDomSource);
+           xmlDomSrc.setSystemId(xmlDocumentUriStr);
+           
+           xslTransformer.transform(xmlDomSrc, new StreamResult(resultStrWriter));
            
            if (xslTransformErrHandler != null) {
                List<String> trfErrorList = xslTransformErrHandler.getTrfErrorList();

@@ -33,13 +33,17 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.Validator;
 
+import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xerces.impl.xs.SchemaGrammar;
 import org.apache.xerces.impl.xs.XSDDescription;
 import org.apache.xerces.impl.xs.XSElementDecl;
 import org.apache.xerces.jaxp.validation.XMLSchemaFactory;
 import org.apache.xerces.util.XMLGrammarPoolImpl;
+import org.apache.xerces.xs.XSElementDeclaration;
+import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
@@ -196,7 +200,11 @@ public class SequenceTypeSupport {
     
     public static int NODE_KIND = 105;
     
-    public static int ITEM_KIND = 106;    
+    public static int ITEM_KIND = 106;
+    
+    public static int SCHEMA_ELEMENT_KIND = 107;
+    
+    public static int SCHEMA_ATTRIBUTE_KIND = 108;
     
     /**
      * Sequence type occurrence indicator values, for Xalan-J 
@@ -415,6 +423,28 @@ public class SequenceTypeSupport {
 	               
 	               return result;
 	            }
+            }
+            else if ((nodeSet != null) && ((sequenceTypeKindTest != null) && (sequenceTypeKindTest.getKindVal() == 
+            		                                                                             SequenceTypeSupport.SCHEMA_ELEMENT_KIND))) {            	
+            	DTMIterator dtmIter = nodeSet.iterRaw();
+            	int nodeDtmHandle = dtmIter.nextNode();
+            	DTM dtm = dtmIter.getDTM(nodeDtmHandle);
+            	java.lang.String nodeName = dtm.getNodeName(nodeDtmHandle);
+            	java.lang.String nodeNsUri = dtm.getNamespaceURI(nodeDtmHandle);
+            	dtmIter.reset();
+            	if ((nodeName.equals(sequenceTypeKindTest.getNodeLocalName())) && (SequenceTypeSupport.isTwoXmlNamespaceValuesEqual(nodeNsUri, 
+            																						sequenceTypeKindTest.getNodeNsUri()))) {
+            		StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+            		XSModel xsModel = stylesheetRoot.getXsModel();
+            		if (xsModel != null) {
+            			XSElementDeclaration elemDecl = xsModel.getElementDeclaration(nodeName, nodeNsUri);
+            			if (elemDecl != null) {
+            				result = srcValue;
+            				
+            				return result;
+            			}
+            		}				
+            	}
             }
             
             if (srcValue != null) {

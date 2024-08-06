@@ -168,4 +168,37 @@ public class XslImportSchemaTests extends XSLTransformTestsUtil {
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }
     
+    @Test
+    public void xslImportSchemaTest13() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";                
+        
+        setXmlValidationProperty(true);
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
+    }
+    
+    @Test
+    public void xslImportSchemaTest14() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";                
+        
+        setXmlValidationProperty(true);
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
+    }
+    
+    @Test
+    public void xslImportSchemaTest15() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test14.out";                
+        
+        setXmlValidationProperty(true);
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
+    }
+    
 }

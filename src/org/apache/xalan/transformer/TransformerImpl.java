@@ -22,7 +22,9 @@ package org.apache.xalan.transformer;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import java.util.Stack;
 import java.util.StringTokenizer;
@@ -359,7 +361,7 @@ public class TransformerImpl extends Transformer
    */
   private boolean m_isTransformDone = false;
 
-  /** Flag to to tell if the tranformer needs to be reset. */
+  /** Flag to tell if the tranformer needs to be reset. */
   private boolean m_hasBeenReset = false;
 
   /** NEEDSDOC Field m_shouldReset          */
@@ -368,12 +370,20 @@ public class TransformerImpl extends Transformer
   /**
    * A class field, to support xsl:iterate instruction evaluation.
    */
-  private boolean isXslIterateBreakEvaluated = false;
+  private boolean m_isXslIterateBreakEvaluated = false;
   
   /**
    * A class field, to support xsl:iterate instruction evaluation.
    */
-  private boolean isXslIterateOnCompletionActive = false;
+  private boolean m_isXslIterateOnCompletionActive = false;
+  
+  private static final String XML_VALIDATION_PROPERTY = "http://apache.org/xalan/validation";
+  
+  /**
+   * If this list object contains a property string, then that means
+   * that property is enabled for XSL transformation with Xalan-J.
+   */
+  private List<String> m_enabledPropertyList = new ArrayList<String>(); 
 
   /**
    * NEEDSDOC Method setShouldReset 
@@ -550,26 +560,38 @@ public class TransformerImpl extends Transformer
    * <code>getProperty</code> returns the current setting of the
    * property described by the <code>property</code> argument.
    *
-   * %REVIEW% Obsolete now that source_location is handled in the TransformerFactory?
-   *
    * @param property a <code>String</code> value
    * @return a <code>boolean</code> value
    */
   public boolean getProperty(String property)
-  {
-    return false;
+  {	  
+	  return m_enabledPropertyList.contains(property);	  
   }
 
   /**
    * Set a runtime property for this <code>TransformerImpl</code>.
    *
-   * %REVIEW% Obsolete now that source_location is handled in the TransformerFactory?
-   *
    * @param property a <code>String</code> value
    * @param value an <code>Object</code> value
    */
-  public void setProperty(String property, Object value)
+  public void setProperty(String property, Object value) throws TransformerException
   {
+	  if (XML_VALIDATION_PROPERTY.equals(property)) {
+		 if (value instanceof Boolean) {
+			if (((Boolean)value).booleanValue() && !m_enabledPropertyList.contains(property)) {
+			   m_enabledPropertyList.add(property);
+			}
+			else {
+			   m_enabledPropertyList.remove(property);
+			}
+		 }
+		 else {
+			throw new TransformerException("The property value can only be boolean."); 
+		 }
+	  }
+	  else {
+		  throw new TransformerException("The property " + property + " is not recognized.");
+	  }
   }
 
   // ========= Transformer Interface Implementation ==========
@@ -718,9 +740,16 @@ public class TransformerImpl extends Transformer
 
       try
       {
-      	// NOTE: This will work because this is _NOT_ a shared DTM, and thus has
-      	// only a single Document node. If it could ever be an RTF or other
-      	// shared DTM, look at dtm.getDocumentRoot(nodeHandle).
+      	 // NOTE: This will work because this is _NOT_ a shared DTM, and thus has
+      	 // only a single Document node. If it could ever be an RTF or other
+      	 // shared DTM, look at dtm.getDocumentRoot(nodeHandle).
+    	  
+    	 // Validate an XML input document, if validation parameter is set 
+    	 // on the transformer.    	
+    	 if (m_enabledPropertyList.contains(XML_VALIDATION_PROPERTY)) { 
+    	    m_stylesheetRoot.validateXmlInputDoc(base);
+    	 }
+    	  
         this.transformNode(dtm.getDocument());
       }
       finally
@@ -3939,19 +3968,19 @@ public class TransformerImpl extends Transformer
     }
 
     public boolean isXslIterateBreakEvaluated() {
-        return isXslIterateBreakEvaluated;
+        return m_isXslIterateBreakEvaluated;
     }
 
     public void setXslIterateBreakEvaluated(boolean isXslIterateBreakEvaluated) {
-        this.isXslIterateBreakEvaluated = isXslIterateBreakEvaluated;
+        this.m_isXslIterateBreakEvaluated = isXslIterateBreakEvaluated;
     }
 
     public boolean isXslIterateOnCompletionActive() {
-        return isXslIterateOnCompletionActive;
+        return m_isXslIterateOnCompletionActive;
     }
 
     public void setXslIterateOnCompletionActive(boolean isXslIterateOnCompletionActive) {
-        this.isXslIterateOnCompletionActive = isXslIterateOnCompletionActive;
+        this.m_isXslIterateOnCompletionActive = isXslIterateOnCompletionActive;
     }
 
 }  // end TransformerImpl class
