@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.XMLNSDecl;
@@ -107,6 +108,23 @@ public class XslTransformEvaluationHelper {
        }
        
        return replacedXPathExprStr; 
+    }
+    
+    /**
+     * Get the XML Schema namespace prefix used within an XSL stylesheet.
+     */
+    public static String getXMLSchemaNsPref(List<XMLNSDecl> nsPrefixTable) {
+    	String xmlSchemaNsPrefix = null;
+
+    	for (int idx = 0; idx < nsPrefixTable.size(); idx++) {
+    		XMLNSDecl xmlNSDecl = nsPrefixTable.get(idx);
+    		if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(xmlNSDecl.getURI())) {
+    			xmlSchemaNsPrefix= xmlNSDecl.getPrefix();
+    			break;
+    		}
+    	}
+
+    	return xmlSchemaNsPrefix; 
     }
     
     /**

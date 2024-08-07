@@ -438,8 +438,8 @@ public class SequenceTypeSupport {
             		XSModel xsModel = stylesheetRoot.getXsModel();
             		if (xsModel != null) {
             			XSElementDeclaration elemDecl = xsModel.getElementDeclaration(nodeName, nodeNsUri);
-            			if (elemDecl != null) {
-            				result = srcValue;
+            			if (elemDecl != null && isXdmElemNodeValidWithSchemaType(nodeSet, xctxt, elemDecl.getTypeDefinition())) {
+            				result = srcValue;            				            				
             				
             				return result;
             			}
@@ -884,24 +884,48 @@ public class SequenceTypeSupport {
 
 		String xmlDocumentStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
 
+		isNodeValidWithSchemaType = isXmlStrValid(xmlDocumentStr, null, xsTypeDefinition);
+
+		return isNodeValidWithSchemaType;
+	}
+
+	/**
+	 * Validate an XML document provided as string, with the specified element declaration
+	 * or type definition. 
+	 */
+	public static boolean isXmlStrValid(String xmlDocumentStr, XSElementDecl elemDecl, XSTypeDefinition xsTypeDefinition)
+			                                                         throws ParserConfigurationException, SAXException, IOException {
+		boolean isNodeValidWithSchemaType = false;
+		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		dbf.setNamespaceAware(true);
 		DocumentBuilder dBuilder = dbf.newDocumentBuilder();
 		Document document = dBuilder.parse(new ByteArrayInputStream(xmlDocumentStr.getBytes()));
-
-		String elemName = (document.getDocumentElement()).getNodeName();			
-		String xsTargetNamespace = xsTypeDefinition.getNamespace();	            		
+					
+		String xsTargetNamespace = null;
+		if (xsTypeDefinition != null) {
+		   xsTargetNamespace = xsTypeDefinition.getNamespace();
+		}
+		else {
+		   xsTargetNamespace = elemDecl.getNamespace();
+		}
 
 		SchemaGrammar grammar = new SchemaGrammar(xsTargetNamespace, new XSDDescription(), null);	            			            		
 
-		XSElementDecl xsElemDecl = new XSElementDecl();
-		xsElemDecl.fName = elemName;
-		xsElemDecl.fTargetNamespace = xsTargetNamespace;
-		xsElemDecl.fType = xsTypeDefinition;
-		xsElemDecl.setIsGlobal();
+		XSElementDecl xsActiveElemDecl = null;
+		if (elemDecl != null) {
+			xsActiveElemDecl = elemDecl; 
+		}
+		else {
+			String elemName = (document.getDocumentElement()).getNodeName();			
+			xsActiveElemDecl = new XSElementDecl();
+			xsActiveElemDecl.fName = elemName;
+			xsActiveElemDecl.fTargetNamespace = xsTargetNamespace;
+			xsActiveElemDecl.fType = xsTypeDefinition;
+			xsActiveElemDecl.setIsGlobal();
+		}
 
-		grammar.addGlobalElementDecl(xsElemDecl);	            		
-		grammar.addGlobalTypeDecl(xsTypeDefinition);	            		
+		grammar.addGlobalElementDecl(xsActiveElemDecl);	            		
 		XMLGrammarPoolImpl grammarPool = new XMLGrammarPoolImpl();
 		grammarPool.putGrammar(grammar);
 
@@ -909,9 +933,9 @@ public class SequenceTypeSupport {
 		Schema schema = xmlSchemaFactory.newSchema(grammarPool);
 		Validator validator = schema.newValidator();
 		validator.validate(new DOMSource(document));
-
+		
 		isNodeValidWithSchemaType = true;
-
+		
 		return isNodeValidWithSchemaType;
 	}
 	

@@ -29,7 +29,10 @@ import javax.xml.XMLConstants;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
 import org.apache.xerces.impl.dv.XSSimpleType;
@@ -401,8 +404,24 @@ public class InstanceOf extends Operation
 							  }
 							  
 							  java.lang.String dataTypeLocalName = seqTypeKindTest.getDataTypeLocalName();
-							  java.lang.String xpathConstructorFuncExprStr = "xs:" + dataTypeLocalName + "('" + node.str() + "')";
-							  xpathConstructorFuncExprStr += " instance of xs:" + dataTypeLocalName; 							  
+							  
+							  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)m_xctxt.getNamespaceContext();
+							  List<XMLNSDecl> prefixTable = null;
+							  if (elemTemplateElement != null) {
+								  prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+							  }
+							  java.lang.String xmlSchemaNsPrefix = XslTransformEvaluationHelper.getXMLSchemaNsPref(prefixTable);
+				              
+							  java.lang.String xpathConstructorFuncExprStr = null;
+							  if (xmlSchemaNsPrefix != null) {
+								  xpathConstructorFuncExprStr = xmlSchemaNsPrefix + ":" + dataTypeLocalName + "('" + node.str() + "')";
+								  xpathConstructorFuncExprStr += " instance of " + xmlSchemaNsPrefix + ":" + dataTypeLocalName;
+							  }
+							  else {
+								  xpathConstructorFuncExprStr = "xs:" + dataTypeLocalName + "('" + node.str() + "')";
+								  xpathConstructorFuncExprStr += " instance of xs:" + dataTypeLocalName; 
+							  }
+							  
 							  XPath xpath = new XPath(xpathConstructorFuncExprStr, m_xctxt.getSAXLocator(), m_xctxt.getNamespaceContext(), 
                                       																 XPath.SELECT, null);
 							  XObject xObj = null;

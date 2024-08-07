@@ -142,8 +142,7 @@ public class XSLTransformTestsUtil {
            
            StringWriter resultStrWriter = new StringWriter();
            
-           DOMSource xmlDomSrc = new DOMSource(xmlDomSource);
-           xmlDomSrc.setSystemId(xmlDocumentUriStr);
+           DOMSource xmlDomSrc = new DOMSource(xmlDomSource, xmlDocumentUriStr);
            
            xslTransformer.transform(xmlDomSrc, new StreamResult(resultStrWriter));
            

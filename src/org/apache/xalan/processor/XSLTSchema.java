@@ -203,6 +203,15 @@ public class XSLTSchema extends XSLTElementDef
                                               "use-attribute-sets",
                                               XSLTAttributeDef.T_QNAMES,
                                               false, false, XSLTAttributeDef.ERROR);
+    
+    // xsl:element, xsl:attribute                                           
+    XSLTAttributeDef typeAttrOpt = new XSLTAttributeDef(null, "type",
+            										XSLTAttributeDef.T_QNAME, false, false, XSLTAttributeDef.ERROR);
+    
+    // xsl:element, xsl:attribute                                           
+    XSLTAttributeDef validationAttrOpt = new XSLTAttributeDef(null, "validation",
+            										XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
+        
 
     // xsl:if, xsl:when         
     XSLTAttributeDef testAttrRequired = new XSLTAttributeDef(null, "test",   
@@ -599,7 +608,8 @@ public class XSLTSchema extends XSLTElementDef
                                     charTemplateElements /* elements */,  // %char-template;>
                                     new XSLTAttributeDef[]{ nameAVTRequired,
                                                             namespaceAVTOpt,
-                                                            spaceAttr, selectAttrOpt }, 
+                                                            spaceAttr, selectAttrOpt, typeAttrOpt, 
+                                                            validationAttrOpt }, 
                                     new ProcessorTemplateElem(),
                                     ElemAttribute.class /* class object */, 20, true);
     XSLTElementDef xslCallTemplate =
@@ -655,7 +665,8 @@ public class XSLTSchema extends XSLTElementDef
                                   new XSLTAttributeDef[]{ nameAVTRequired,
                                                           namespaceAVTOpt,
                                                           useAttributeSetsAttr,
-                                                          spaceAttr }, 
+                                                          spaceAttr, typeAttrOpt, 
+                                                          validationAttrOpt }, 
                                                new ProcessorTemplateElem(),
                                   ElemElement.class /* class object */, 20, true);
     XSLTElementDef xslComment = new XSLTElementDef(this,

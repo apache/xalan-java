@@ -20,14 +20,32 @@
  */
 package org.apache.xalan.templates;
 
+import java.util.List;
+
+import javax.xml.XMLConstants;
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xerces.impl.xs.XSElementDecl;
+import org.apache.xerces.xs.XSElementDeclaration;
+import org.apache.xerces.xs.XSModel;
+import org.apache.xerces.xs.XSTypeDefinition;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
 import org.apache.xml.utils.XML11Char;
+import org.apache.xpath.Expression;
+import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.composite.SequenceTypeSupport;
+import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XRTreeFrag;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -119,6 +137,48 @@ public class ElemElement extends ElemUse
     return m_namespace_avt;
   }
   
+  /**
+   * An optional attribute "type" may be present on xsl:element 
+   * instruction. When this attribute is present, an element node
+   * created by xsl:element instruction is validated with this type.
+   */
+  protected QName m_type = null;
+  
+  /**
+   * Get the value of "type" attribute.
+   */
+  public QName getType() {
+	  return m_type;
+  }
+
+  /**
+   * Set the value of "type" attribute.
+   */
+  public void setType(QName type) {
+	  this.m_type = type;
+  }
+  
+  /**
+   * An optional attribute "validation" may be present on xsl:element 
+   * instruction. When this attribute is present, an element node
+   * created by xsl:element instruction is validated with this type.
+   */
+  protected String m_validation = null;
+  
+  /**
+   * Get the value of "validation" attribute.
+   */
+  public String getValidation() {
+	  return m_validation;
+  }
+
+  /**
+   * Set the value of "validation" attribute.
+   */
+  public void setValidation(String validation) {
+	  this.m_validation = validation;
+  }
+
   /**
    * This function is called after everything else has been
    * recomposed, and allows the template to set remaining
@@ -337,8 +397,108 @@ public class ElemElement extends ElemUse
 
         shouldAddAttrs = true;
       }
+      
+      XPathContext xctxt = transformer.getXPathContext();
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+	  
+      if ((m_type != null) && (m_validation != null)) {
+    	  throw new TransformerException("XTTE1540 : An xsl:element instruction cannot have both the attributes 'type' and 'validation'.", srcLocator); 
+      }
 
-      transformer.executeChildTemplates(this, shouldAddAttrs);
+      if (m_type != null) {
+    	  // An xsl:element instruction has an attribute "type".
+    	  // An element node constructed needs to be validated
+    	  // by this type.    	      	  
+    	  
+    	  int rootNodeHandleOfRtf = transformer.transformToRTF(this);    	      	  
+    	  
+    	  NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();
+    	  
+    	  if (nodeList != null) {
+    		 Node node = nodeList.item(0);    		     		 
+    		 
+    		 String xmlStr = null;    		 
+    		 try {
+    			 xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
+			 } catch (Exception ex) {
+				 throw new TransformerException("XTTE1540 : An error occured while evaluating an XSL stylesheet "
+				 		                                          							+ "xsl:element instruction.", srcLocator);
+			 }
+    		 
+    		 if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(m_type.getNamespace())) {
+    			// An element content needs to be validated with an XML Schema built-in type.    			 
+    			validateXslElementResultWithBuiltInSchemaType(xmlStr, m_type, xctxt);
+       	     }
+    		 else {    			 
+    			 XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
+    			 
+    			 if (xsModel != null) {
+    				 // An XML input document has been validated with a schema.
+    				 // An element content needs to be validated with an XML Schema 
+    				 // user-defined type.
+    				 validateXslElementResultWithUserDefinedSchemaType(nodeName, transformer, xctxt, xmlStr, xsModel);
+    			 }
+    			 else {
+    				 throw new TransformerException("XTTE1540 : Validation was requested of an XML node produced by instruction "
+		    				 		                                            + "xsl:element, but XML input document was not validated with a "
+		    				 		                                            + "schema.", srcLocator);
+    			 }
+    	     }
+    	  }
+      }
+      else if (m_validation != null) {
+    	 // An xsl:element instruction has an attribute "validation".
+    	 // An element node constructed needs to be validated
+    	 // by an element declaration available in the schema.
+    	  
+    	 if (!isValidationStrOk(m_validation)) {
+    		 throw new TransformerException("XTTE1540 : An xsl:element instruction's attribute 'validation' can only have one of following "
+    		 		                                                                        + "values : strict, lax, preserve, strip.", srcLocator);
+    	 }
+    	 else if ("strict".equals(m_validation)) {
+    		 XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
+    		 if (xsModel != null) {    			 
+    			 String nodeLocalName = QName.getLocalPart(nodeName);
+    			 XSElementDeclaration elemDecl = xsModel.getElementDeclaration(nodeLocalName, nodeNamespace);
+    			 if (elemDecl != null) {    				 
+    				 validateXslElementResultWithSchemaElemDecl(nodeName, transformer, xctxt, elemDecl);    				     				 
+    			 }
+    			 else {
+    				 throw new TransformerException("XTTE1540 : An xsl:element instruction's attribute \"validation\" has value 'strict', but "
+    				 		                                                    + "the schema available doesn't have a corresponding element "
+    				 		                                                    + "declaration.", srcLocator); 
+    			 }
+    		 }
+    		 else {
+    			 throw new TransformerException("XTTE1540 : An xsl:element instruction's attribute \"validation\" has value 'strict', but "
+																	                          + "an XML input document has not been validated with "
+																	                          + "a schema.", srcLocator);
+    		 }
+    	 }
+         else if ("lax".equals(m_validation)) {
+        	 // An attribute "validation"'s value 'lax' has the same effect as the value strict, except that 
+			 // whereas strict validation fails if there is no available top-level element declaration in 
+			 // the schema.
+        	 
+        	 XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
+    		 if (xsModel != null) {
+    			 String nodeLocalName = QName.getLocalPart(nodeName);
+    			 XSElementDeclaration elemDecl = xsModel.getElementDeclaration(nodeLocalName, nodeNamespace);
+    			 if (elemDecl != null) {
+    				 validateXslElementResultWithSchemaElemDecl(nodeName, transformer, xctxt, elemDecl);
+    			 }    			     			  
+    		 }
+    	 }
+    	 
+    	 // The validation value 'strip' requires no validation.
+    	 
+    	 // The validation value 'preserve' is presently not implemented.
+      }
+
+      // After any needed element node validation by xsl:element instruction's "type" or 
+      // "validation" attribute, emit the element node to XSL 
+      // transform's output.    	  
+      transformer.executeChildTemplates(this, shouldAddAttrs);  
 
       // Now end the element if name was valid
       if (null != nodeName)
@@ -356,7 +516,7 @@ public class ElemElement extends ElemUse
       throw new TransformerException(se);
     }
   }
-  
+
   /**
    * Call the children visitors.
    * @param visitor The visitor whose appropriate method will be called.
@@ -373,6 +533,185 @@ public class ElemElement extends ElemUse
   	}
   		
     super.callChildVisitors(visitor, callAttrs);
+  }
+  
+  /**
+   * Validate XSL instruction xsl:element's evaluation result, with an XML Schema built-in type,
+   * specified by xsl:element's 'type' attribute. 
+   */
+  private void validateXslElementResultWithBuiltInSchemaType(String xmlStr, QName typeQname, XPathContext xctxt) throws TransformerException {
+		
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
+
+	  xmlStr = xmlStr.replaceFirst("<\\?.*\\?>", "");
+	  String dataTypeLocalName = typeQname.getLocalName();
+	  String xpathConstructorFuncExprStr = "xs:" + dataTypeLocalName + "('" + xmlStr + "')";
+	  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+	  List<XMLNSDecl> prefixTable = null;
+	  if (elemTemplateElement != null) {
+		  prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+	  }
+	  String xmlSchemaNsPrefix = XslTransformEvaluationHelper.getXMLSchemaNsPref(prefixTable);
+	  if (xmlSchemaNsPrefix != null) {
+		  xpathConstructorFuncExprStr += " instance of " + xmlSchemaNsPrefix + ":" + dataTypeLocalName;
+	  }
+	  else {
+		  xpathConstructorFuncExprStr += " instance of xs:" + dataTypeLocalName;	
+	  }
+
+	  XPath xpath = new XPath(xpathConstructorFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+
+	  XObject xObj = null;
+	  boolean isInstanceOf;
+	  try {
+		  xObj = xpath.executeInstanceOf(xctxt, DTM.NULL, null);
+		  isInstanceOf = ((xObj.bool() == true) ? true : false);
+	  }
+	  catch (TransformerException ex) {
+		  isInstanceOf = false;
+	  }
+
+	  if (!isInstanceOf) {
+		  throw new TransformerException("XTTE1540 : An element node constructed via XSL stylesheet's xsl:element "
+																			  + "instruction, is not valid according to type xs:" + dataTypeLocalName + " "
+																			  + "specified as value of xsl:element's attribute 'type'.", srcLocator); 
+	  }
+   }
+  
+  /**
+   * Validate XSL instruction xsl:element's evaluation result, with an XML Schema user-defined type,
+   * specified by xsl:element's 'type' attribute. 
+   */
+   private void validateXslElementResultWithUserDefinedSchemaType(String nodeName, TransformerImpl transformer,
+																  XPathContext xctxt, String xmlStr, XSModel xsModel) throws TransformerException {
+	   String tempStr = xmlStr.replaceFirst("<\\?.*\\?>", "");
+
+	   xmlStr = "<" + nodeName + " ";
+
+	   SourceLocator srcLocator = xctxt.getSAXLocator();
+
+	   ElemTemplateElement childElem = getFirstChildElem();    		 
+	   while (childElem != null && childElem instanceof ElemAttribute) {
+		   ElemAttribute elemAttr = (ElemAttribute)childElem;    			 
+		   AVT attrAvt = elemAttr.getName();
+		   String attrName = attrAvt.evaluate(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());    			 
+		   Expression attrSelectExpr = elemAttr.getSelect();
+		   String attrVal = null;
+		   if (attrSelectExpr != null) {
+			   elemAttr.fixupVariables();    				 
+			   XObject xpathEvalResult = attrSelectExpr.execute(xctxt);
+			   attrVal = XslTransformEvaluationHelper.getStrVal(xpathEvalResult);    				 
+		   }
+		   else {
+			   attrVal = transformer.transformToString(elemAttr);
+		   }
+		   xmlStr = xmlStr + attrName+"=\"" + attrVal + "\" ";
+		   childElem = childElem.getNextSiblingElem();
+	   }
+
+	   xmlStr = xmlStr.trim() + ">" + tempStr + "</" + nodeName + ">";
+	   xmlStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + xmlStr;
+
+	   String dataTypeLocalName = m_type.getLocalName();
+	   String dataTypeNamespace = m_type.getNamespace();
+
+	   XSTypeDefinition typeDefn = xsModel.getTypeDefinition(dataTypeLocalName, dataTypeNamespace);
+
+	   if (typeDefn != null) {
+		   boolean isXmlStrValid;
+		   String errMesg = null;
+		   try {
+			   isXmlStrValid = SequenceTypeSupport.isXmlStrValid(xmlStr, null, typeDefn);
+		   }
+		   catch (Exception ex) {
+			   isXmlStrValid = false;
+			   errMesg = ex.getMessage();
+		   }
+
+		   if (!isXmlStrValid) {
+			   throw new TransformerException("XTTE1540 : An element node constructed via XSL stylesheet's xsl:element "
+																				   + "instruction, is not valid according to type " + dataTypeLocalName + " "
+																				   + "specified as value of xsl:element's attribute 'type'. " + errMesg, srcLocator); 
+		   }    					 
+	   }
+  }
+  
+  /**
+   * When an XSL instruction xsl:element has "validation" attribute with values 'strict' or 'lax',
+   * validate the result of xsl:element instruction evaluation with the corresponding element
+   * declaration available in the schema. 
+   */
+  private void validateXslElementResultWithSchemaElemDecl(String nodeName, TransformerImpl transformer,
+		                                                  XPathContext xctxt, 
+		                                                  XSElementDeclaration elemDecl) throws TransformerException {
+	  
+	  int rootNodeHandleOfRtf = transformer.transformToRTF(this);
+	  
+	  SourceLocator srcLocator = xctxt.getSAXLocator(); 
+
+	  NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();
+
+	  if (nodeList != null) {
+		  Node node = nodeList.item(0);    		     		 
+
+		  String xmlStr = null;    		 
+		  try {
+			  xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);    						 
+		  } catch (Exception ex) {
+			  throw new TransformerException("XTTE1540 : An error occured while evaluating an XSL stylesheet "
+					  													+ "xsl:element instruction.", srcLocator);
+		  }
+
+		  String tempStr = xmlStr.replaceFirst("<\\?.*\\?>", "");
+
+		  xmlStr = "<" + nodeName + " ";            		 
+
+		  ElemTemplateElement childElem = getFirstChildElem();    		 
+		  while (childElem != null && childElem instanceof ElemAttribute) {
+			  ElemAttribute elemAttr = (ElemAttribute)childElem;    			 
+			  AVT attrAvt = elemAttr.getName();
+			  String attrName = attrAvt.evaluate(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());    			 
+			  Expression attrSelectExpr = elemAttr.getSelect();
+			  String attrVal = null;
+			  if (attrSelectExpr != null) {
+				  elemAttr.fixupVariables();    				 
+				  XObject xpathEvalResult = attrSelectExpr.execute(xctxt);
+				  attrVal = XslTransformEvaluationHelper.getStrVal(xpathEvalResult);    				 
+			  }
+			  else {
+				  attrVal = transformer.transformToString(elemAttr);
+			  }
+			  xmlStr = xmlStr + attrName+"=\"" + attrVal + "\" ";
+			  childElem = childElem.getNextSiblingElem();
+		  }
+
+		  xmlStr = xmlStr.trim() + ">" + tempStr + "</" + nodeName + ">";
+		  xmlStr = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + xmlStr;
+
+		  boolean isXmlStrValid;
+		  String errMesg = null;
+		  try {
+			  isXmlStrValid = SequenceTypeSupport.isXmlStrValid(xmlStr, (XSElementDecl)elemDecl, null);
+		  }
+		  catch (Exception ex) {
+			  isXmlStrValid = false;
+			  errMesg = ex.getMessage();
+		  }
+
+		  if (!isXmlStrValid) {
+			  throw new TransformerException("XTTE1540 : An element node constructed via XSL stylesheet's xsl:element "
+																				  + "instruction, is not valid according to the corresponding "
+																				  + "element declaration available in the schema. " + errMesg, srcLocator); 
+		  }
+	  }
+  }
+  
+  /**
+   * Check for the allowed values of "validation" attribute.
+   */
+  private boolean isValidationStrOk(String validationStr) {
+	 return ("strict".equals(validationStr) || "lax".equals(validationStr) || 
+			 "preserve".equals(validationStr) || "strip".equals(validationStr));  
   }
 
 }

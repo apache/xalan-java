@@ -321,5 +321,11 @@ public class ElemAttribute extends ElemElement
         }
 		super.setName(v);
 	}
+	
+	public void fixupVariables() {
+		if ((m_selectExpression != null) && (m_vars != null)) {
+			m_selectExpression.fixupVariables(m_vars, m_globals_size);
+		}
+	}
 
 }

@@ -83,7 +83,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 FnXmlToJsonTests.class, FnAnalyzeStringTests.class, XPathMapOtherTests.class,
                 JiraIssuesTests.class, XPathNamedFunctionReferenceTests.class, FnApplyTests.class,
                 XPathGeneralComparisonOpTests.class, FnMapFindTests.class, XPathNumericArithmeticTests.class,
-                XslTunnelParameterTests.class, FuncBooleanValuesTests.class })
+                XslTunnelParameterTests.class, FuncBooleanValuesTests.class, XslElementValidationTests.class })
 public class Xsl3TestSuite1 {
 
 }

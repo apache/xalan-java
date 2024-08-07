@@ -176,6 +176,7 @@ public class XslImportSchemaTests extends XSLTransformTestsUtil {
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";                
         
         setXmlValidationProperty(true);
+        
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }
     
@@ -187,6 +188,7 @@ public class XslImportSchemaTests extends XSLTransformTestsUtil {
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";                
         
         setXmlValidationProperty(true);
+        
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }
     
@@ -198,6 +200,7 @@ public class XslImportSchemaTests extends XSLTransformTestsUtil {
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test14.out";                
         
         setXmlValidationProperty(true);
+        
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }
     
