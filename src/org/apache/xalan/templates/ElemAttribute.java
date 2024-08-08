@@ -22,11 +22,20 @@ package org.apache.xalan.templates;
 
 import java.util.Vector;
 
+import javax.xml.XMLConstants;
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xerces.impl.dv.InvalidDatatypeValueException;
+import org.apache.xerces.impl.dv.XSSimpleType;
+import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
+import org.apache.xerces.xs.XSAttributeDeclaration;
+import org.apache.xerces.xs.XSModel;
+import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.serializer.NamespaceMappings;
 import org.apache.xml.serializer.SerializationHandler;
 import org.apache.xml.utils.QName;
@@ -39,24 +48,12 @@ import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
 /**
- * XSLT 3.0 xsl:attribute element.
+ * Implementation of XSL stylesheet instruction xsl:attribute.
  * 
- * <xsl:attribute
-           name = { qname }
-           namespace? = { uri }
-           select? = expression
-           separator? = { string }
-           type? = eqname
-           validation? = "strict" | "lax" | "preserve" | "strip" >
-        <!-- Content: sequence-constructor -->
-   </xsl:attribute>
-
+ * @see <a href="https://www.w3.org/TR/xslt-30/#creating-attributes">xsl:attribute in XSLT 3.0 Specification</a>
+ * 
  * @xsl.usage advanced
  */
-
-/* 
-   Implementation of the XSLT 3.0 xsl:attribute instruction.
-*/
 public class ElemAttribute extends ElemElement
 {
     static final long serialVersionUID = 8817220961566919187L;
@@ -198,6 +195,8 @@ public class ElemAttribute extends ElemElement
                                                                             throws TransformerException {
     
         XPathContext xctxt = transformer.getXPathContext();
+        
+        SourceLocator srcLocator = xctxt.getSAXLocator();
     
         if (null != nodeName && nodeName.length() > 0) {
               SerializationHandler rhandler = transformer.getSerializationHandler();
@@ -209,8 +208,7 @@ public class ElemAttribute extends ElemElement
               // sequence constructor is non-empty then the select attribute must be absent.              
               if (m_selectExpression != null && this.m_firstChild != null) {
                   throw new TransformerException("XTSE0840 : An xsl:attribute element with a select attribute must "
-                                                                  + "have an empty child sequence constructor.", 
-                                                                        xctxt.getSAXLocator());   
+                                                                  + "have an empty child sequence constructor.", srcLocator);   
               }
         
               String attrVal = null;
@@ -234,6 +232,122 @@ public class ElemAttribute extends ElemElement
                   attrVal = transformer.transformToString(this);
               }
               
+              if ((m_type != null) && (m_validation != null)) {
+            	  throw new TransformerException("XTTE1540 : An xsl:attribute instruction cannot have both the attributes "
+            	  																						+ "'type' and 'validation'.", srcLocator); 
+              }
+              
+              if (m_type != null) {
+            	  // An xsl:attribute instruction has an attribute "type".
+            	  
+            	  // An attribute node constructed needs to be validated
+            	  // by this type.
+            	  
+            	  if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(m_type.getNamespace())) {
+            		 // An attribute value needs to be validated with an XML Schema built-in type.    			 
+          			 validateXslElementAttributeResultWithBuiltInSchemaType(attrVal, m_type, xctxt, ATTRIBUTE); 
+            	  }
+            	  else {
+            		 XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
+         			 
+         			 if (xsModel != null) {
+         				// An XML input document has been validated with a schema.
+         				 
+         				// An attribute value needs to be validated with an XML Schema 
+         				// user-defined type.
+         				 
+         				XSTypeDefinition typeDefn = xsModel.getTypeDefinition(m_type.getLocalName(), m_type.getNamespace());
+         				if ((typeDefn != null) && (typeDefn instanceof XSSimpleType)) {
+         					XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)typeDefn;
+         					try {
+								xsSimpleTypeDecl.validate(attrVal, null, null);
+							} 
+         					catch (InvalidDatatypeValueException ex) {
+								throw new TransformerException("XTTE1540 : An attribute value produced by the stylesheet, is not "
+										                                              + "valid with the schema type " + m_type.getLocalName() + ".", srcLocator);								
+							}
+         				}
+         				else {
+         				    throw new TransformerException("XTTE1540 : Validation was requested of an XML attribute produced by instruction "
+                                                                              + "xsl:attribute, but the schema available doesn't have a simple type "
+                                                                              + "definition referred by xsl:attribute's 'type' attribute.", srcLocator);
+         				}
+         			 }
+         			 else {
+         				 throw new TransformerException("XTTE1540 : Validation was requested of an XML attribute produced by instruction "
+     		    				 		                                            + "xsl:attribute, but XML input document was not validated with a "
+     		    				 		                                            + "schema.", srcLocator);
+         			 } 
+            	  }
+              }
+              else if (m_validation != null) {
+             	 // An xsl:attribute instruction has an attribute "validation".
+            	  
+             	 // An attribute node constructed needs to be validated
+             	 // by an attribute declaration available in the schema.
+             	  
+             	 if (!isValidationStrOk(m_validation)) {
+             		 throw new TransformerException("XTTE1540 : An xsl:attribute instruction's attribute 'validation' can only have one of following "
+             		 		                                                                        + "values : strict, lax, preserve, strip.", srcLocator);
+             	 }
+             	 else if ("strict".equals(m_validation)) {
+             		 XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
+             		 if (xsModel != null) {
+             			 String localName = QName.getLocalPart(nodeName);
+             			 XSAttributeDeclaration attrDecl = xsModel.getAttributeDeclaration(localName, nodeNamespace);
+             			 
+             			 if (attrDecl != null) {    				 
+             				 XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)(attrDecl.getTypeDefinition());
+             				 try {
+								xsSimpleTypeDecl.validate(attrVal, null, null);
+							 } 
+         					 catch (InvalidDatatypeValueException ex) {
+								throw new TransformerException("XTTE1540 : An attribute value produced by the stylesheet, is not "
+										                                                             + "valid with attribute's declaration available "
+										                                                             + "in the schema. " + ex.getMessage(), srcLocator);								
+							 }
+             			 }
+             			 else {
+             				 throw new TransformerException("XTTE1540 : An xsl:attribute instruction's attribute \"validation\" has value 'strict', but "
+																             						 + "the schema available doesn't have a corresponding attribute "
+																             						 + "declaration.", srcLocator); 
+             			 }
+             		 }
+             		 else {
+             			 throw new TransformerException("XTTE1540 : An xsl:attribute instruction's attribute \"validation\" has value 'strict', but "
+																	             					 + "an XML input document has not been validated with "
+																	             					 + "a schema.", srcLocator);
+             		 }
+           	     }
+             	 else if ("lax".equals(m_validation)) {
+             		 // An attribute "validation"'s value 'lax' has the same effect as the value strict, except that 
+             		 // whereas strict validation fails if there is no available top-level attribute declaration in 
+             		 // the schema.
+
+             		 XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
+             		 if (xsModel != null) {
+             			 String localName = QName.getLocalPart(nodeName);             			 
+            			 XSAttributeDeclaration attrDecl = xsModel.getAttributeDeclaration(localName, nodeNamespace);
+            			 
+             			 if (attrDecl != null) {    				 
+             				 XSSimpleTypeDecl xsSimpleTypeDecl = (XSSimpleTypeDecl)(attrDecl.getTypeDefinition());
+             				 try {
+             					 xsSimpleTypeDecl.validate(attrVal, null, null);
+             				 } 
+             				 catch (InvalidDatatypeValueException ex) {
+             					 throw new TransformerException("XTTE1540 : An attribute value produced by the stylesheet, is not "
+															             							 + "valid with attribute's declaration available "
+															             							 + "in the schema. " + ex.getMessage(), srcLocator);								
+             				 }
+             			 }    			     			  
+             		 }
+           	     }
+             	 
+             	 // The validation value 'strip' requires no validation.
+            	 
+            	 // The validation value 'preserve' is presently not implemented.
+              }
+              
               try {
                     // Let an XSL result tree handler add the attribute and its 
             	    // string value.
@@ -245,8 +359,8 @@ public class ElemAttribute extends ElemElement
                         rhandler.addAttribute("", localName, nodeName, "CDATA", attrVal, true);
                     }
               }
-              catch (SAXException e) {
-                   // no op
+              catch (SAXException ex) {
+            	  throw new TransformerException("XTSE0840 : An error occured while processing XSL instruction xsl:attribute.", srcLocator);
               }
         }
     

@@ -1440,7 +1440,7 @@ public class ElemLiteralResult extends ElemUse
           		 
           		 if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNsUri)) {
           			// An element content needs to be validated with an XML Schema built-in type.    			 
-          			validateXslElementResultWithBuiltInSchemaType(xmlStr, m_type, xctxt);
+          			validateXslElementAttributeResultWithBuiltInSchemaType(xmlStr, m_type, xctxt, LITERAL_RESULT_ELEMENT);
              	 }
           		 else {    			 
           			 XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
@@ -1449,7 +1449,7 @@ public class ElemLiteralResult extends ElemUse
           				 // An XML input document has been validated with a schema.          				 
           				 // An element content needs to be validated with an XML Schema 
           				 // user-defined type.          				 
-          				 validateXslElementResultWithUserDefinedSchemaType(nodeName, transformer, xctxt, xmlStr, xsModel);
+          				 validateXslElementResultWithUserDefinedSchemaType(nodeName, transformer, xctxt, xmlStr, xsModel, LITERAL_RESULT_ELEMENT);
           			 }
           			 else {
           				 throw new TransformerException("XTTE1540 : Validation was requested of an XML node produced by literal "
@@ -1475,7 +1475,7 @@ public class ElemLiteralResult extends ElemUse
             			String nodeLocalName = QName.getLocalPart(nodeName);
             			XSElementDeclaration elemDecl = xsModel.getElementDeclaration(nodeLocalName, nodeNamespace);
             			if (elemDecl != null) {    				 
-            				validateXslElementResultWithSchemaElemDecl(nodeName, transformer, xctxt, elemDecl);    				     				 
+            				validateXslElementResultWithSchemaElemDecl(nodeName, transformer, xctxt, elemDecl, LITERAL_RESULT_ELEMENT);    				     				 
             			}
             			else {
             				throw new TransformerException("XTTE1540 : A literal result element's attribute \"validation\" has value 'strict', but "
@@ -1499,7 +1499,7 @@ public class ElemLiteralResult extends ElemUse
             			String nodeLocalName = QName.getLocalPart(nodeName);
             			XSElementDeclaration elemDecl = xsModel.getElementDeclaration(nodeLocalName, nodeNamespace);
             			if (elemDecl != null) {
-            				validateXslElementResultWithSchemaElemDecl(nodeName, transformer, xctxt, elemDecl);
+            				validateXslElementResultWithSchemaElemDecl(nodeName, transformer, xctxt, elemDecl, LITERAL_RESULT_ELEMENT);
             			}    			     			  
             		}
             	}

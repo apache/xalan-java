@@ -890,8 +890,8 @@ public class SequenceTypeSupport {
 	}
 
 	/**
-	 * Validate an XML document provided as string, with the specified element declaration
-	 * or type definition. 
+	 * Validate an XML document provided as string value, with the specified element 
+	 * declaration or type definition. 
 	 */
 	public static boolean isXmlStrValid(String xmlDocumentStr, XSElementDecl elemDecl, XSTypeDefinition xsTypeDefinition)
 			                                                         throws ParserConfigurationException, SAXException, IOException {

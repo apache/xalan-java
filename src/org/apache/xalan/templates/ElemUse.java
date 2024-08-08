@@ -75,6 +75,24 @@ public class ElemUse extends ElemTemplateElement
   protected String m_validation = null;
   
   /**
+   * Class field to denote that, validation originated from 
+   * xsl:element instruction.
+   */
+  protected String XSL_ELEMENT = "ELEMENT";
+  
+  /**
+   * Class field to denote that, validation originated from 
+   * XSL stylesheet literal result element.
+   */
+  protected String LITERAL_RESULT_ELEMENT = "LITERAL_RESULT_ELEMENT";
+  
+  /**
+   * Class field to denote that, validation originated from 
+   * xsl:attribute instruction.
+   */
+  protected String ATTRIBUTE = "ATTRIBUTE";
+  
+  /**
    * Set value of an attribute xsl:type's value.
    */
   public void setType(QName type)
@@ -261,57 +279,73 @@ public class ElemUse extends ElemTemplateElement
   }
   
   /**
-   * Validate an XSL stylesheet's literal result element content with an XML Schema,
-   * built-in type specified by an attribute 'xsl:type'. 
+   * Validate a simple type value produced by xsl:element instruction, literal result element or an 
+   * xsl:attribute instruction, by the specified schema built-in simple type.  
    */
-  protected void validateXslElementResultWithBuiltInSchemaType(String xmlStr, QName typeQname, 
-  		                                                       XPathContext xctxt) throws TransformerException {
+  protected void validateXslElementAttributeResultWithBuiltInSchemaType(String xmlStr, QName typeQname, 
+  		                                                                XPathContext xctxt, String validationSource) throws TransformerException {
 		
-  	SourceLocator srcLocator = xctxt.getSAXLocator();
+	  SourceLocator srcLocator = xctxt.getSAXLocator();
 
-  	xmlStr = xmlStr.replaceFirst("<\\?.*\\?>", "");
-  	String dataTypeLocalName = typeQname.getLocalName();
-  	String xpathConstructorFuncExprStr = "xs:" + dataTypeLocalName + "('" + xmlStr + "')";
+	  xmlStr = xmlStr.replaceFirst("<\\?.*\\?>", "");
+	  String dataTypeLocalName = typeQname.getLocalName();
+	  String xpathConstructorFuncExprStr = "xs:" + dataTypeLocalName + "('" + xmlStr + "')";
 
-  	ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
-  	List<XMLNSDecl> prefixTable = null;
-  	if (elemTemplateElement != null) {
-  		prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
-  	}
-  	String xmlSchemaNsPrefix = XslTransformEvaluationHelper.getPrefixFromNsUri(XMLConstants.
-  			                                                                            W3C_XML_SCHEMA_NS_URI, prefixTable);
-  	if (xmlSchemaNsPrefix != null) {
-  		xpathConstructorFuncExprStr += " instance of " + xmlSchemaNsPrefix + ":" + dataTypeLocalName;
-  	}
-  	else {
-  		xpathConstructorFuncExprStr += " instance of xs:" + dataTypeLocalName;	
-  	}
+	  ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+	  List<XMLNSDecl> prefixTable = null;
+	  if (elemTemplateElement != null) {
+		  prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+	  }
+	  String xmlSchemaNsPrefix = XslTransformEvaluationHelper.getPrefixFromNsUri(XMLConstants.
+			  W3C_XML_SCHEMA_NS_URI, prefixTable);
+	  if (xmlSchemaNsPrefix != null) {
+		  xpathConstructorFuncExprStr += " instance of " + xmlSchemaNsPrefix + ":" + dataTypeLocalName;
+	  }
+	  else {
+		  xpathConstructorFuncExprStr += " instance of xs:" + dataTypeLocalName;	
+	  }
 
-  	XPath xpath = new XPath(xpathConstructorFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
+	  XPath xpath = new XPath(xpathConstructorFuncExprStr, srcLocator, xctxt.getNamespaceContext(), XPath.SELECT, null);
 
-  	XObject xObj = null;
-  	boolean isInstanceOf;
-  	try {
-  		xObj = xpath.executeInstanceOf(xctxt, DTM.NULL, null);
-  		isInstanceOf = ((xObj.bool() == true) ? true : false);
-  	}
-  	catch (TransformerException ex) {
-  		isInstanceOf = false;
-  	}
+	  XObject xObj = null;
+	  boolean isInstanceOf;
+	  try {
+		  xObj = xpath.executeInstanceOf(xctxt, DTM.NULL, null);
+		  isInstanceOf = ((xObj.bool() == true) ? true : false);
+	  }
+	  catch (TransformerException ex) {
+		  isInstanceOf = false;
+	  }
 
-  	if (!isInstanceOf) {
-  		throw new TransformerException("XTTE1540 : An element node constructed via literal result element,"
-															                    + " is not valid according to type xs:" + dataTypeLocalName + " "
-															    				+ "specified as value of literal result element's attribute 'xsl:type'.", srcLocator); 
-  	}
+	  if (!isInstanceOf) {
+		  String errMesgStr = null;
+		  if (XSL_ELEMENT.equals(validationSource)) {
+			  errMesgStr = "XTTE1540 : An element node constructed via xsl:element instruction, is not valid according "
+																						  + "to type xs:" + dataTypeLocalName + " specified as value of "
+																						  + "xsl:element's attribute 'type'.";  			
+		  }
+		  else if (LITERAL_RESULT_ELEMENT.equals(validationSource)) {
+			  errMesgStr = "XTTE1540 : An element node constructed via literal result element, is not valid according "
+																						  + "to type xs:" + dataTypeLocalName + " specified as value of "
+																						  + "literal result element's attribute 'xsl:type'.";
+		  }
+		  else if (ATTRIBUTE.equals(validationSource)) {
+			  errMesgStr = "XTTE1540 : An attribute node constructed via xsl:attribute instruction, is not valid according "
+																						  + "to type xs:" + dataTypeLocalName + " specified as value of "
+																						  + "xsl:attribute's attribute 'type'.";  			
+		  }
+
+		  throw new TransformerException(errMesgStr, srcLocator); 
+	  }
    }
   
   /**
-   * Validate an XSL stylesheet's literal result element content with an XML Schema,
-   * user-defined type specified by an attribute 'xsl:type'. 
+   * When an XSL instruction xsl:element or a literal result element has an attribute "type" or 
+   * "xsl:type" respectively, validate an element node by the specified schema type. 
    */
    protected void validateXslElementResultWithUserDefinedSchemaType(String nodeName, TransformerImpl transformer,
-																    XPathContext xctxt, String xmlStr, XSModel xsModel) throws TransformerException {
+																    XPathContext xctxt, String xmlStr, XSModel xsModel,
+																    String validationSource) throws TransformerException {
 	   String tempStr = xmlStr.replaceFirst("<\\?.*\\?>", "");
 
 	   xmlStr = "<" + nodeName + " ";
@@ -356,23 +390,32 @@ public class ElemUse extends ElemTemplateElement
 			   errMesg = ex.getMessage();
 		   }
 
-		   if (!isXmlStrValid) {  			   
-			   throw new TransformerException("XTTE1540 : An element node constructed via literal result element,"
-																                    + " is not valid according to type " + dataTypeLocalName + " "
-																    				+ "specified as value of literal result element's attribute 'xsl:type'. "
-																    				+ "" + errMesg, srcLocator);
+		   if (!isXmlStrValid) {
+			   String errMesgStr = null;			   
+			   if (XSL_ELEMENT.equals(validationSource)) {
+				   errMesgStr = "XTTE1540 : An element node constructed via xsl:element instruction, is not "
+										                             + "valid according to type " + dataTypeLocalName + " specified "
+										                             + "as value of xsl:element's attribute 'type'. " + errMesg;  
+			   }
+			   else if (LITERAL_RESULT_ELEMENT.equals(validationSource)) {
+				  errMesgStr = "XTTE1540 : An element node constructed via literal result element, is not "
+				  		                                             + "valid according to type " + dataTypeLocalName + " specified "
+				  		                                             + "as value of literal result element's attribute 'xsl:type'. " + errMesg;
+			   }
+			   
+			   throw new TransformerException(errMesgStr, srcLocator);
 		   }    					 
 	   }
   }
    
   /**
-   * When an XSL literal result element has "xsl:validation" attribute with values 
-   * 'strict' or 'lax', validate an element node produced by literal result element's 
-   * evaluation with the corresponding element declaration available in the schema. 
+   * When an XSL instruction xsl:element or a literal result element has an attribute "validation" or 
+   * "xsl:validation" respectively, validate an element node by corresponding XML Schema 
+   * element declaration. 
    */
   protected void validateXslElementResultWithSchemaElemDecl(String nodeName, TransformerImpl transformer,
  		                                                    XPathContext xctxt, 
- 		                                                    XSElementDeclaration elemDecl) throws TransformerException {
+ 		                                                    XSElementDeclaration elemDecl, String validationSource) throws TransformerException {
  	  
   	int rootNodeHandleOfRtf = transformer.transformToRTF(this);
 
@@ -386,9 +429,17 @@ public class ElemUse extends ElemTemplateElement
   		String xmlStr = null;    		 
   		try {
   			xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);    						 
-  		} catch (Exception ex) {
-  			throw new TransformerException("XTTE1540 : An error occured while evaluating an XSL stylesheet "
-  																						+ "literal result element.", srcLocator);
+  		} 
+  		catch (Exception ex) {
+  			String errMesgStr = null;			   
+  			if (XSL_ELEMENT.equals(validationSource)) {
+  				errMesgStr = "XTTE1540 : An error occured while evaluating an XSL stylesheet instruction xsl:element.";  
+  			}
+  			else if (LITERAL_RESULT_ELEMENT.equals(validationSource)) {
+  				errMesgStr = "XTTE1540 : An error occured while evaluating an XSL stylesheet literal result element.";
+  			}
+
+  			throw new TransformerException(errMesgStr, srcLocator);
   		}
 
   		String tempStr = xmlStr.replaceFirst("<\\?.*\\?>", "");
@@ -428,9 +479,19 @@ public class ElemUse extends ElemTemplateElement
   		}
 
   		if (!isXmlStrValid) {
-  			throw new TransformerException("XTTE1540 : An element node constructed via XSL stylesheet's literal "
-															    					+ "result element, is not valid according to the corresponding "
-															    					+ "element declaration available in the schema. " + errMesg, srcLocator); 
+  			String errMesgStr = null;			   
+  			if (XSL_ELEMENT.equals(validationSource)) {
+  				errMesgStr = "XTTE1540 : An element node constructed via an XSL stylesheet instruction xsl:element, "
+  						                                                     + "is not valid according to the corresponding element "
+  						                                                     + "declaration available in the schema. " + errMesg;  
+  			}
+  			else if (LITERAL_RESULT_ELEMENT.equals(validationSource)) {
+  				errMesgStr = "XTTE1540 : An element node constructed via XSL stylesheet's literal result element, is not "
+  						                                                     + "valid according to the corresponding element declaration "
+  						                                                     + "available in the schema. " + errMesg;
+  			}
+  			
+  			throw new TransformerException(errMesgStr, srcLocator); 
   		}
   	}
   } 

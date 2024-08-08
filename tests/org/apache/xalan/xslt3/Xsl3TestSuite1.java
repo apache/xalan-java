@@ -84,7 +84,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 JiraIssuesTests.class, XPathNamedFunctionReferenceTests.class, FnApplyTests.class,
                 XPathGeneralComparisonOpTests.class, FnMapFindTests.class, XPathNumericArithmeticTests.class,
                 XslTunnelParameterTests.class, FuncBooleanValuesTests.class, XslElementValidationTests.class,
-                XslLiteralResultElementValidationTests.class })
+                XslLiteralResultElementValidationTests.class, XslAttributeValidationTests.class })
 public class Xsl3TestSuite1 {
 
 }

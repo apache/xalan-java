@@ -350,6 +350,7 @@ public class ElemElement extends ElemUse
 
       if (m_type != null) {
     	  // An xsl:element instruction has an attribute "type".
+    	  
     	  // An element node constructed needs to be validated
     	  // by this type.    	      	  
     	  
@@ -370,16 +371,17 @@ public class ElemElement extends ElemUse
     		 
     		 if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(m_type.getNamespace())) {
     			// An element content needs to be validated with an XML Schema built-in type.    			 
-    			validateXslElementResultWithBuiltInSchemaType(xmlStr, m_type, xctxt);
+    			validateXslElementAttributeResultWithBuiltInSchemaType(xmlStr, m_type, xctxt, XSL_ELEMENT);
        	     }
     		 else {    			 
     			 XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
     			 
     			 if (xsModel != null) {
     				 // An XML input document has been validated with a schema.
+    				 
     				 // An element content needs to be validated with an XML Schema 
     				 // user-defined type.
-    				 validateXslElementResultWithUserDefinedSchemaType(nodeName, transformer, xctxt, xmlStr, xsModel);
+    				 validateXslElementResultWithUserDefinedSchemaType(nodeName, transformer, xctxt, xmlStr, xsModel, XSL_ELEMENT);
     			 }
     			 else {
     				 throw new TransformerException("XTTE1540 : Validation was requested of an XML node produced by instruction "
@@ -391,6 +393,7 @@ public class ElemElement extends ElemUse
       }
       else if (m_validation != null) {
     	 // An xsl:element instruction has an attribute "validation".
+    	  
     	 // An element node constructed needs to be validated
     	 // by an element declaration available in the schema.
     	  
@@ -404,7 +407,7 @@ public class ElemElement extends ElemUse
     			 String nodeLocalName = QName.getLocalPart(nodeName);
     			 XSElementDeclaration elemDecl = xsModel.getElementDeclaration(nodeLocalName, nodeNamespace);
     			 if (elemDecl != null) {    				 
-    				 validateXslElementResultWithSchemaElemDecl(nodeName, transformer, xctxt, elemDecl);    				     				 
+    				 validateXslElementResultWithSchemaElemDecl(nodeName, transformer, xctxt, elemDecl, XSL_ELEMENT);    				     				 
     			 }
     			 else {
     				 throw new TransformerException("XTTE1540 : An xsl:element instruction's attribute \"validation\" has value 'strict', but "
@@ -428,7 +431,7 @@ public class ElemElement extends ElemUse
     			 String nodeLocalName = QName.getLocalPart(nodeName);
     			 XSElementDeclaration elemDecl = xsModel.getElementDeclaration(nodeLocalName, nodeNamespace);
     			 if (elemDecl != null) {
-    				 validateXslElementResultWithSchemaElemDecl(nodeName, transformer, xctxt, elemDecl);
+    				 validateXslElementResultWithSchemaElemDecl(nodeName, transformer, xctxt, elemDecl, XSL_ELEMENT);
     			 }    			     			  
     		 }
     	 }

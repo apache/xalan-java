@@ -107,10 +107,10 @@ public class XSLTransformTestsUtil {
     }
     
     /**
-     * Set the XML validation property for the transformation.
+     * Set the XML validation property for an XSL transformation.
      */
-    protected void setXmlValidationProperty(boolean value) {
-    	isXmlValidationRequired = value;
+    protected void setXmlValidationProperty(boolean isEnableValidation) {
+    	isXmlValidationRequired = isEnableValidation;
     }
 
     /**
