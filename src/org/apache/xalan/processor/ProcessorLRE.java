@@ -35,6 +35,7 @@ import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.Stylesheet;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.templates.XMLNSDecl;
+import org.apache.xml.utils.QName;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.XPath;
 import org.xml.sax.Attributes;
@@ -301,6 +302,12 @@ public class ProcessorLRE extends ProcessorTemplateElem
           setPropertiesFromAttributes(handler, rawName, attributes, elem);
         }
       }
+      
+      if (elem instanceof ElemLiteralResult) {
+    	  // Store any available literal result element attributes 
+    	  // xsl:type and xsl:validation.
+    	  storeXslTypeValidationValue((ElemLiteralResult)elem, attributes);    	      	  
+      }
 
       appendAndPush(handler, elem);
     }
@@ -364,5 +371,38 @@ public class ProcessorLRE extends ProcessorTemplateElem
 				return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * This method stores the values of attributes xsl:type and xsl:validation, available
+	 * on XSL stylesheet's literal result element.
+	 */
+	private void storeXslTypeValidationValue(ElemLiteralResult elem, Attributes attributes) {		
+		
+		int n = attributes.getLength();		
+		for (int i = 0; i < n; i++)
+		{
+			String localName = attributes.getLocalName(i);
+			String uri = attributes.getURI(i);    	  
+			if (Constants.S_XSLNAMESPACEURL.equals(uri) && "type".equals(localName)) {
+				String attrValue = attributes.getValue(i);
+				QName typeQName = null;
+				if (attrValue.contains(":")) {
+					String typePrefix = attrValue.substring(0, attrValue.indexOf(':'));
+					String typeLocalName = attrValue.substring(attrValue.indexOf(':') + 1);
+					typeQName = new QName(null, typePrefix, typeLocalName);
+				}
+				else {
+					typeQName = new QName(null, null, attrValue);   
+				}
+				// The type's namespace will be determined within the class 
+				// object ElemLiteralResult. 
+				elem.setType(typeQName);
+			}
+			else if (Constants.S_XSLNAMESPACEURL.equals(uri) && "validation".equals(localName)) {
+				String attrValue = attributes.getValue(i);
+				elem.setValidation(attrValue);
+			}
+		}
 	}
 }

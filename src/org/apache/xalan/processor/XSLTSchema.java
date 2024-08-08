@@ -392,7 +392,13 @@ public class XSLTSchema extends XSLTElementDef
                            XSLTAttributeDef.T_QNAMES, false, false,XSLTAttributeDef.ERROR);
     XSLTAttributeDef xslVersionAttr =
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "version",
-                           XSLTAttributeDef.T_NMTOKEN, false, false,XSLTAttributeDef.ERROR);
+                           XSLTAttributeDef.T_NMTOKEN, false, false,XSLTAttributeDef.ERROR);    
+    XSLTAttributeDef xslTypeAttrOpt =
+    	      new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "type",
+    	                           XSLTAttributeDef.T_QNAME, false, false, XSLTAttributeDef.ERROR);
+    XSLTAttributeDef xslValidationAttrOpt =
+    	      new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "validation",
+    	                           XSLTAttributeDef.T_QNAME, false, false, XSLTAttributeDef.ERROR);
                            
     XSLTElementDef charData = new XSLTElementDef(this, null, "text()",
                                 null /*alias */, null /* elements */, null,  /* attributes */
@@ -432,7 +438,9 @@ public class XSLTSchema extends XSLTElementDef
                                        xslUseAttributeSetsAttr,
                                        xslVersionAttr,
                                        xslResultAttr,
-                                       resultAttr }, 
+                                       resultAttr,
+                                       xslTypeAttrOpt,
+                                       xslValidationAttrOpt }, 
                                         new ProcessorLRE(),
                                      ElemLiteralResult.class /* class object */, 20, true);
     XSLTElementDef unknownElement =

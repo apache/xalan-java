@@ -24,7 +24,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.XMLConstants;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.templates.XMLNSDecl;
@@ -111,20 +110,41 @@ public class XslTransformEvaluationHelper {
     }
     
     /**
-     * Get the XML Schema namespace prefix used within an XSL stylesheet.
+     * Get prefix from namespace uri, declared within XSL transformation context. 
      */
-    public static String getXMLSchemaNsPref(List<XMLNSDecl> nsPrefixTable) {
+    public static String getPrefixFromNsUri(String nsUri, List<XMLNSDecl> nsPrefixTable) {    	
     	String xmlSchemaNsPrefix = null;
 
-    	for (int idx = 0; idx < nsPrefixTable.size(); idx++) {
-    		XMLNSDecl xmlNSDecl = nsPrefixTable.get(idx);
-    		if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(xmlNSDecl.getURI())) {
-    			xmlSchemaNsPrefix= xmlNSDecl.getPrefix();
-    			break;
+    	if (nsUri != null) {
+    		for (int idx = 0; idx < nsPrefixTable.size(); idx++) {
+    			XMLNSDecl xmlNSDecl = nsPrefixTable.get(idx);
+    			if (nsUri.equals(xmlNSDecl.getURI())) {
+    				xmlSchemaNsPrefix = xmlNSDecl.getPrefix();
+    				break;
+    			}
     		}
     	}
 
     	return xmlSchemaNsPrefix; 
+    }
+    
+    /**
+     * Get namespace uri from prefix, declared within XSL transformation context. 
+     */
+    public static String getNsUriFromPrefix(String prefix, List<XMLNSDecl> nsPrefixTable) {
+    	String nsUri = null;
+    	
+    	if (prefix != null) {
+    		for (int idx = 0; idx < nsPrefixTable.size(); idx++) {
+    			XMLNSDecl xmlNSDecl = nsPrefixTable.get(idx);
+    			if (prefix.equals(xmlNSDecl.getPrefix())) {
+    				nsUri = xmlNSDecl.getURI();
+    				break;
+    			}
+    		}
+    	}
+    	
+    	return nsUri; 
     }
     
     /**

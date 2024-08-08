@@ -410,7 +410,8 @@ public class InstanceOf extends Operation
 							  if (elemTemplateElement != null) {
 								  prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
 							  }
-							  java.lang.String xmlSchemaNsPrefix = XslTransformEvaluationHelper.getXMLSchemaNsPref(prefixTable);
+							  java.lang.String xmlSchemaNsPrefix = XslTransformEvaluationHelper.getPrefixFromNsUri(XMLConstants.
+									                                                                                   W3C_XML_SCHEMA_NS_URI, prefixTable);
 				              
 							  java.lang.String xpathConstructorFuncExprStr = null;
 							  if (xmlSchemaNsPrefix != null) {

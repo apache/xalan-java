@@ -24,15 +24,23 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.xml.XMLConstants;
+import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
+import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
+import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xerces.xs.XSElementDeclaration;
+import org.apache.xerces.xs.XSModel;
 import org.apache.xml.serializer.SerializationHandler;
+import org.apache.xml.utils.QName;
 import org.apache.xml.utils.StringVector;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XRTreeFrag;
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
@@ -47,8 +55,10 @@ import org.xml.sax.SAXException;
 import xml.xpath31.processor.types.XSAnyType;
 
 /**
- * Implement a Literal Result Element.
- * @see <a href="https://www.w3.org/TR/xslt-30/#literal-result-element">literal-result-element within XSLT 3.0 Specification</a>
+ * Implementation of XSL stylesheet literal result element.
+ * 
+ * @see <a href="https://www.w3.org/TR/xslt-30/#literal-result-element">literal-result-element in XSLT 3.0 Specification</a>
+ * 
  * @xsl.usage advanced
  */
 public class ElemLiteralResult extends ElemUse
@@ -1304,6 +1314,10 @@ public class ElemLiteralResult extends ElemUse
         throws TransformerException
     {
         SerializationHandler rhandler = transformer.getSerializationHandler();
+        
+        XPathContext xctxt = transformer.getXPathContext();
+        
+        SourceLocator srcLocator = xctxt.getSAXLocator();
 
         try
         {
@@ -1351,7 +1365,6 @@ public class ElemLiteralResult extends ElemUse
                 for (int i = (nAttrs - 1); i >= 0; i--)
                 {
                     AVT avt = (AVT) m_avts.get(i);
-                    XPathContext xctxt = transformer.getXPathContext();
                     int sourceNode = xctxt.getCurrentNode();
                     XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
                     String avtStr = avt.getSimpleString();
@@ -1387,7 +1400,118 @@ public class ElemLiteralResult extends ElemUse
             }
 
             // Now process all the elements in this subtree
-            // TODO: Process m_extensionElementPrefixes && m_attributeSetsNames
+            
+            // Process xsl:type & xsl:validation attributes, if present
+            
+            if ((m_type != null) && (m_validation != null)) {
+          	   throw new TransformerException("XTTE1540 : A literal result element cannot have both the attributes "
+          	   																							  + "'xsl:type' and 'xsl:validation'.", srcLocator); 
+            }
+            
+            String nodeName = getNodeName();            
+            String nodeNamespace = getNamespace();
+            
+            if (m_type != null) {
+          	  // A literal result element has an attribute "xsl:type".
+          	  // An element node constructed needs to be validated
+          	  // by this type.    	      	  
+          	  
+          	  int rootNodeHandleOfRtf = transformer.transformToRTF(this);    	      	  
+          	  
+          	  NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();
+          	  
+          	  if (nodeList != null) {
+          		 Node node = nodeList.item(0);    		     		 
+          		 
+          		 String xmlStr = null;    		 
+          		 try {
+          			 xmlStr = XslTransformEvaluationHelper.serializeXmlDomElementNode(node);
+      			 } catch (Exception ex) {
+      				 throw new TransformerException("XTTE1540 : An error occured while evaluating an XSL literal result element.", srcLocator);
+      			 }
+          		 
+          		 ElemTemplateElement elemTemplateElement = (ElemTemplateElement)xctxt.getNamespaceContext();
+          	     List<XMLNSDecl> prefixTable = null;
+          	     if (elemTemplateElement != null) {
+          		    prefixTable = (List<XMLNSDecl>)elemTemplateElement.getPrefixTable();
+          	     }
+          	     
+          		 String typeNsUri = XslTransformEvaluationHelper.getNsUriFromPrefix(m_type.getPrefix(), prefixTable);
+          		 
+          		 if ((XMLConstants.W3C_XML_SCHEMA_NS_URI).equals(typeNsUri)) {
+          			// An element content needs to be validated with an XML Schema built-in type.    			 
+          			validateXslElementResultWithBuiltInSchemaType(xmlStr, m_type, xctxt);
+             	 }
+          		 else {    			 
+          			 XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
+          			 
+          			 if (xsModel != null) {
+          				 // An XML input document has been validated with a schema.          				 
+          				 // An element content needs to be validated with an XML Schema 
+          				 // user-defined type.          				 
+          				 validateXslElementResultWithUserDefinedSchemaType(nodeName, transformer, xctxt, xmlStr, xsModel);
+          			 }
+          			 else {
+          				 throw new TransformerException("XTTE1540 : Validation was requested of an XML node produced by literal "
+      		    				 		                                            + "result element, but XML input document was not validated with a "
+      		    				 		                                            + "schema.", srcLocator);
+          			 }
+          	     }
+          	  }
+            }
+            else if (m_validation != null) {
+            	// An XSL stylesheet literal result element has an attribute 
+            	// "validation".
+            	// An element node constructed needs to be validated
+            	// by an element declaration available in the schema.
+
+            	if (!isValidationStrOk(m_validation)) {
+            		throw new TransformerException("XTTE1540 : A literal result element's attribute 'xsl:validation' can only have one of following "
+            																									+ "values : strict, lax, preserve, strip.", srcLocator);
+            	}
+            	else if ("strict".equals(m_validation)) {
+            		XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
+            		if (xsModel != null) {    			 
+            			String nodeLocalName = QName.getLocalPart(nodeName);
+            			XSElementDeclaration elemDecl = xsModel.getElementDeclaration(nodeLocalName, nodeNamespace);
+            			if (elemDecl != null) {    				 
+            				validateXslElementResultWithSchemaElemDecl(nodeName, transformer, xctxt, elemDecl);    				     				 
+            			}
+            			else {
+            				throw new TransformerException("XTTE1540 : A literal result element's attribute \"validation\" has value 'strict', but "
+																	            						+ "the schema available doesn't have a corresponding element "
+																	            						+ "declaration.", srcLocator); 
+            			}
+            		}
+            		else {
+            			throw new TransformerException("XTTE1540 : A literal result element's attribute \"validation\" has value 'strict', but "
+																		            					+ "an XML input document has not been validated with "
+																		            					+ "a schema.", srcLocator);
+            		}
+            	}
+            	else if ("lax".equals(m_validation)) {
+            		// An attribute "validation"'s value 'lax' has the same effect as the value strict, except that 
+            		// whereas strict validation fails if there is no available top-level element declaration in 
+            		// the schema.
+
+            		XSModel xsModel = (XslTransformSharedDatastore.stylesheetRoot).getXsModel();
+            		if (xsModel != null) {
+            			String nodeLocalName = QName.getLocalPart(nodeName);
+            			XSElementDeclaration elemDecl = xsModel.getElementDeclaration(nodeLocalName, nodeNamespace);
+            			if (elemDecl != null) {
+            				validateXslElementResultWithSchemaElemDecl(nodeName, transformer, xctxt, elemDecl);
+            			}    			     			  
+            		}
+            	}
+
+            	// The validation value 'strip' requires no validation.
+
+            	// The validation value 'preserve' is presently not implemented.
+            }
+            
+            // After any needed element node validation by literal result element's 
+            // xsl:type/xsl:validation attribute, emit the element node to XSL 
+            // transform's output.
             transformer.executeChildTemplates(this, true);
         }
         catch (TransformerException te)
@@ -1501,5 +1625,5 @@ public class ElemLiteralResult extends ElemUse
 
       throw new DOMException(code, themsg);
     }
-
+    
 }
