@@ -34,9 +34,11 @@ import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.axes.WalkingIterator;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.XPathParser;
+import org.apache.xpath.composite.XPathExprFunctionSuffix;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
@@ -249,22 +251,51 @@ public class XPath implements Serializable, ExpressionOwner
     m_patternString = exprString;
 
     XPathParser parser = new XPathParser(errorListener, locator);
-    Compiler compiler = new Compiler(errorListener, locator, m_funcTable);    
+    Compiler compiler = new Compiler(errorListener, locator, m_funcTable);
+    
+    Expression expr = null;
     
     if (SELECT == type) {
       parser.initXPath(compiler, exprString, prefixResolver, false);
       m_arrowop_remaining_xpath_expr_str = parser.getArrowOpRemainingXPathExprStr();
+      
+      XPathExprFunctionSuffix pathExprFunctionSuffix = parser.getPathExprFunctionSuffix();
+      if (pathExprFunctionSuffix != null) {
+    	 parser = new XPathParser(errorListener, locator);
+    	 compiler = new Compiler(errorListener, locator, m_funcTable);
+    	 String xpathOneExprStr = pathExprFunctionSuffix.getXPathOneStr();    	     	 
+    	 parser.initXPath(compiler, xpathOneExprStr, prefixResolver, false);
+    	 Expression expr1 = compiler.compile(0);
+    	 
+    	 parser = new XPathParser(errorListener, locator);
+    	 compiler = new Compiler(errorListener, locator, m_funcTable);
+    	 String xpathTwoExprStr = pathExprFunctionSuffix.getXPathTwoStr();    	 
+    	 parser.initXPath(compiler, xpathTwoExprStr, prefixResolver, false);
+    	 Expression expr2 = compiler.compile(0);
+    	 
+    	 parser.setPathExprFunctionSuffix(null);
+    	 
+    	 expr = expr1;
+    	 
+    	 if ((expr instanceof WalkingIterator) && (expr2 instanceof Function)) {
+    		WalkingIterator walkingIter = (WalkingIterator)expr;
+    		walkingIter.setFuncExpr((Function)expr2);
+    	 }
+      }
     }
     else if (MATCH == type)
-      parser.initMatchPattern(compiler, exprString, prefixResolver);
+      parser.initMatchPattern(compiler, exprString, prefixResolver);    
     else
       throw new RuntimeException(XSLMessages.createXPATHMessage(
             XPATHErrorResources.ER_CANNOT_DEAL_XPATH_TYPE, 
-            new Object[]{Integer.toString(type)})); 
-
-    Expression expr = compiler.compile(0);
+            new Object[]{Integer.toString(type)}));
+    
+    if (expr == null) {
+       expr = compiler.compile(0);
+    }
+    
     if (expr instanceof ArrowOp) {
-      ((ArrowOp)expr).setArrowOpRemainingXPathExprStr(m_arrowop_remaining_xpath_expr_str);
+       ((ArrowOp)expr).setArrowOpRemainingXPathExprStr(m_arrowop_remaining_xpath_expr_str);
     }
 
     this.setExpression(expr);

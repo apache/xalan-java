@@ -32,12 +32,14 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.WalkingIterator;
+import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
 
-/*
+/**
  * Implementation of the XSLT 3.0 xsl:iterate instruction.
  * 
  * Ref : https://www.w3.org/TR/xslt-30/#element-iterate
@@ -180,7 +182,43 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
            
            verifyXslElemIterateChildElementsSequence(xctxt);
            
-           XObject evalResult = m_selectExpression.execute(xctxt);
+           XObject evalResult = null;
+           
+           Function func = null;
+           
+           if (m_selectExpression instanceof WalkingIterator) {
+               WalkingIterator walkingIter = (WalkingIterator)m_selectExpression;
+               func = walkingIter.getFuncExpr();
+               
+               DTMIterator dtmIter = null;
+               try {
+                   dtmIter = walkingIter.asIterator(xctxt, sourceNode);
+               }
+               catch (ClassCastException ex) {
+                   // no op
+               }
+               
+               if (dtmIter != null) {
+            	   ResultSequence rSeq = null;
+            	   if (func != null) {
+            		   rSeq = new ResultSequence();
+            		   int nextNode;
+            		   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
+            		   {
+            			   XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+            			   xctxt.setXPath3ContextItem(singletonXPathNode);                              
+            			   XObject funcEvalResult = func.execute(xctxt);
+            			   rSeq.add(funcEvalResult);
+            		   }
+            		   
+            		   evalResult = rSeq;
+            	   }
+               }
+           }
+           
+           if (evalResult == null) {
+              evalResult = m_selectExpression.execute(xctxt);
+           }
            
            List<XObject> itemsToBeProcessed = null;
                

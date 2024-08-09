@@ -28,6 +28,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.xslt.util.XslTransformEvaluationHelper;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
+import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.QName;
@@ -36,6 +37,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.axes.WalkingIterator;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
@@ -484,6 +486,13 @@ public class ElemVariable extends ElemTemplateElement
             
             LocPathIterator locPathIterator = (LocPathIterator)selectExpression;
             
+            Function func = null;
+            
+            if (locPathIterator instanceof WalkingIterator) {
+                WalkingIterator walkingIter = (WalkingIterator)locPathIterator;
+                func = walkingIter.getFuncExpr();
+            }
+            
             DTMIterator dtmIter = null;                     
             try {
                 dtmIter = locPathIterator.asIterator(xctxt, contextNode);
@@ -492,8 +501,23 @@ public class ElemVariable extends ElemTemplateElement
                 // no op
             }
             
-            if (dtmIter != null) {               
-               var = new XNodeSet(dtmIter);
+            if (dtmIter != null) {
+               ResultSequence rSeq = null;
+               if (func != null) {
+            	  rSeq = new ResultSequence();
+            	  int nextNode;
+            	  while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
+                  {
+                      XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+                      xctxt.setXPath3ContextItem(singletonXPathNode);                              
+                      XObject funcEvalResult = func.execute(xctxt);
+                      rSeq.add(funcEvalResult);
+                  }
+            	  var = rSeq; 
+               }
+               else {
+                  var = new XNodeSet(dtmIter);
+               }
                
                if (m_asAttr != null) {
                   var = SequenceTypeSupport.castXdmValueToAnotherType(var, m_asAttr, null, xctxt);  

@@ -33,12 +33,13 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.axes.WalkingIterator;
 import org.apache.xpath.composite.XPathIfExpr;
 import org.apache.xpath.composite.XPathLetExpr;
-import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.functions.Function;
-import org.apache.xpath.functions.XSLFunctionService;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
+import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
+import org.apache.xpath.functions.XSLFunctionService;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNumber;
@@ -460,6 +461,13 @@ public class ElemValueOf extends ElemTemplateElement {
                   else if (expr instanceof LocPathIterator) {
                      LocPathIterator locPathIterator = (LocPathIterator)expr;
                      
+                     Function func = null;
+                     
+                     if (locPathIterator instanceof WalkingIterator) {
+                         WalkingIterator walkingIter = (WalkingIterator)locPathIterator;
+                         func = walkingIter.getFuncExpr();
+                     }
+                     
                      DTMIterator dtmIter = null;                     
                      try {
                         dtmIter = locPathIterator.asIterator(xctxt, current);
@@ -474,8 +482,16 @@ public class ElemValueOf extends ElemTemplateElement {
                         while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
                         {
                            XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
-                           String nodeStrVal = singletonXPathNode.str();
-                           strBuff.append(nodeStrVal + " ");
+                           String resultStr = "";
+                           if (func != null) {
+                              xctxt.setXPath3ContextItem(singletonXPathNode);                              
+                              XObject funcEvalResult = func.execute(xctxt);
+                              resultStr = XslTransformEvaluationHelper.getStrVal(funcEvalResult);                               
+                           }
+                           else {
+                              resultStr = singletonXPathNode.str();
+                           }
+                           strBuff.append(resultStr + " ");
                         }
                          
                         String nodeSetStrValue = strBuff.toString();

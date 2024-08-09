@@ -50,6 +50,7 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPathProcessorException;
 import org.apache.xpath.composite.ForQuantifiedExprVarBinding;
 import org.apache.xpath.composite.LetExprVarBinding;
+import org.apache.xpath.composite.XPathExprFunctionSuffix;
 import org.apache.xpath.composite.SequenceTypeArrayTest;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeFunctionTest;
@@ -252,7 +253,9 @@ public class XPathParser
   
   private String m_arrowOpRemainingXPathExprStr = null;
   
-  private boolean isFunctionArgumentParse;
+  private XPathExprFunctionSuffix m_pathExprFunctionSuffix = null;
+  
+  private boolean m_isFunctionArgumentParse;
   
   /**
    * The parser constructor.
@@ -606,7 +609,7 @@ public class XPathParser
 
     if (m_queueMark < m_ops.getTokenQueueSize())
     {
-      m_token = (String) m_ops.m_tokenQueue.elementAt(m_queueMark++);
+      m_token = (String) m_ops.m_tokenQueue.elementAt(m_queueMark++);      
       m_tokenChar = m_token.charAt(0);
     }
     else
@@ -956,7 +959,7 @@ public class XPathParser
                                                                                  OccurrenceIndicator.ONE_OR_MANY);
          nextToken();
       }
-      else if ((m_token != null) && !isXPathInlineFunctionParse && !isFunctionArgumentParse) {
+      else if ((m_token != null) && !isXPathInlineFunctionParse && !m_isFunctionArgumentParse) {
          throw new javax.xml.transform.TransformerException("XPST0051 A sequence type occurence indicator '" + m_token + "', is not recognized."); 
       }
   }
@@ -3425,7 +3428,7 @@ public class XPathParser
   protected void Argument() throws javax.xml.transform.TransformerException
   {
 	
-    isFunctionArgumentParse = true;
+    m_isFunctionArgumentParse = true;
     
 	int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
     
@@ -3622,7 +3625,7 @@ public class XPathParser
     
     m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
                                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
-    isFunctionArgumentParse = false;
+    m_isFunctionArgumentParse = false;
     
   }
 
@@ -4026,7 +4029,9 @@ public class XPathParser
   {
 
     int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
-    int axesType;
+    int axesType = 0;
+    
+    boolean funcMatchFound = false;
 
     // The next blocks guarantee that a FROM_XXX will be added.
     if (lookahead("::", 1))
@@ -4041,23 +4046,98 @@ public class XPathParser
       axesType = OpCodes.FROM_ATTRIBUTES;
 
       appendOp(2, axesType);
-      nextToken();
+      nextToken();            
+    }
+    else if (!isXPathPatternExcludeTrailingNodeFunctions() && (lookahead('(', 1) || (lookahead(':', 1) && lookahead('(', 3))))
+    {
+    	TokenQueueScanPosition prevTokQueueScanPosition = new TokenQueueScanPosition(
+    			                                                                 m_queueMark, m_tokenChar, m_token);
+    	funcMatchFound = FunctionCall();
+    	if (funcMatchFound && (m_token != null)) {    		
+    	   restoreTokenQueueScanPosition(prevTokQueueScanPosition);
+    	   
+    	   axesType = OpCodes.FROM_CHILDREN;
+
+           appendOp(2, axesType);
+    	}
+    	else if (funcMatchFound) {    	   
+    	   m_queueMark = 0;
+    	   m_tokenChar = 0;
+    	   m_token = null;
+    	   
+    	   nextToken();
+    	   
+    	   int scanOneEndPos = 0;
+    	   int scanTwoStartPos = 0;
+    	   if (prevTokQueueScanPosition.getQueueMark() > 2) {
+    		   scanOneEndPos = (prevTokQueueScanPosition.getQueueMark() - 2);
+    		   scanTwoStartPos = prevTokQueueScanPosition.getQueueMark();
+    	   }
+    	   else if (prevTokQueueScanPosition.getQueueMark() > 1) {
+    		   scanOneEndPos = (prevTokQueueScanPosition.getQueueMark() - 1);
+    		   scanTwoStartPos = prevTokQueueScanPosition.getQueueMark();
+    	   }
+    	   
+    	   String xpathOneStr = "";
+    	   String xpathTwoStr = "";
+    	   xpathOneStr = m_token;
+    	   while (m_queueMark != scanOneEndPos) {
+    		   nextToken();
+    		   xpathOneStr += m_token; 
+    	   }
+    	   
+    	   for (int idx = scanOneEndPos; idx < scanTwoStartPos; idx++) {
+    		  nextToken(); 
+    	   }
+    	   
+    	   while (m_token != null) {
+    		   xpathTwoStr += m_token;
+    		   // The following is copy of the code of nextToken() 
+    		   // function, with minor modification for this need.
+    		   if (m_queueMark < m_ops.getTokenQueueSize())
+    		   {
+    			   Object tokenObj = m_ops.m_tokenQueue.elementAt(m_queueMark++);
+    			   if (tokenObj instanceof XString) {
+    				   m_token = "'" + ((XString)tokenObj).str() + "'";  
+    			   }
+    			   else {
+    				   m_token = (String)tokenObj; 
+    			   }
+    			   m_tokenChar = m_token.charAt(0);
+    		   }
+    		   else
+    		   {
+    			   m_token = null;
+    			   m_tokenChar = 0;
+    		   }
+    	   }
+    	   
+    	   m_pathExprFunctionSuffix = new XPathExprFunctionSuffix();    	   
+    	   m_pathExprFunctionSuffix.setXPathOneStr(xpathOneStr);
+    	   m_pathExprFunctionSuffix.setXPathTwoStr(xpathTwoStr);
+    	   
+    	   m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                                            m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+    	   
+    	}
     }
     else
-    {
-      axesType = OpCodes.FROM_CHILDREN;
+    {       
+        axesType = OpCodes.FROM_CHILDREN;
 
-      appendOp(2, axesType);
+        appendOp(2, axesType);
     }
 
-    // Make room for telling how long the step is without the predicate
-    m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
-
-    NodeTest(axesType);
-
-    // Tell how long the step is without the predicate
-    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1,
-      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+    if (!funcMatchFound) {
+	    // Make room for telling how long the step is without the predicate
+	    m_ops.setOp(OpMap.MAPINDEX_LENGTH, m_ops.getOp(OpMap.MAPINDEX_LENGTH) + 1);
+	
+	    NodeTest(axesType);
+	
+	    // Tell how long the step is without the predicate
+	    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH + 1,
+	      m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+    }
    }
 
   /**
@@ -5158,7 +5238,7 @@ public class XPathParser
 	   XSTypeDefinition xsTypeDefinition = xsModel.getTypeDefinition(typeName, typeNamespace);
 	   
 	   if (xsTypeDefinition != null) {
-		   if (!isFunctionArgumentParse && tokenIs(')')) {
+		   if (!m_isFunctionArgumentParse && tokenIs(')')) {
 			   consumeExpected(')');
 		   }
 		   xpathSequenceTypeExpr.setXsSequenceTypeDefinition(xsTypeDefinition);
@@ -5640,6 +5720,41 @@ public class XPathParser
 	  m_queueMark = tokQueueScanPosition.getQueueMark();
 	  m_tokenChar = tokQueueScanPosition.getTokenChar();
 	  m_token = tokQueueScanPosition.getToken();	
+   }
+
+   public XPathExprFunctionSuffix getPathExprFunctionSuffix() {
+	   return m_pathExprFunctionSuffix;
+   }
+
+   public void setPathExprFunctionSuffix(XPathExprFunctionSuffix pathExprFunctionSuffix) {
+	   this.m_pathExprFunctionSuffix = pathExprFunctionSuffix;
+   }
+   
+   /**
+    * This method checks, whether there's a function call suffix at an 
+    * end of XPath expression similar to /a/b/funcCall(..).
+    */
+   private boolean isXPathPatternExcludeTrailingNodeFunctions() {
+	  boolean isExclude = false;
+	  
+	  String currXPathPattern = m_ops.m_currentPattern;
+	  if (currXPathPattern.endsWith("node()") || currXPathPattern.endsWith("text()") || currXPathPattern.endsWith("comment()")) {
+		  isExclude = true; 
+	  }
+	  else {
+		  String[] spltResult = currXPathPattern.split("node\\(\\)[\\s]*[\\|][\\s]*");
+		  if (spltResult.length > 1) {
+			 isExclude = true; 
+		  }
+		  if (!isExclude) {
+			 spltResult = currXPathPattern.split("comment\\(\\)\\[.*\\],");
+			 if (spltResult.length > 1) {
+				isExclude = true; 
+			 }
+		  }
+	  }
+	  
+	  return isExclude;
    }
   
 }

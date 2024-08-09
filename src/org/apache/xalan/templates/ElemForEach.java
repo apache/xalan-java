@@ -41,6 +41,7 @@ import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
+import org.apache.xpath.axes.WalkingIterator;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathSequenceConstructor;
 import org.apache.xpath.functions.Function;
@@ -448,6 +449,13 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
     else if (m_selectExpression instanceof LocPathIterator) {
         LocPathIterator locPathIterator = (LocPathIterator)m_selectExpression;
         
+        Function func = null;
+        
+        if (locPathIterator instanceof WalkingIterator) {
+            WalkingIterator walkingIter = (WalkingIterator)locPathIterator;
+            func = walkingIter.getFuncExpr();
+        }                
+        
         boolean isProcessAsNodeset = true;
         DTMIterator dtmIter = null;                     
         try {
@@ -455,6 +463,25 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         }
         catch (ClassCastException ex) {
            isProcessAsNodeset = false;
+        }
+        
+        if (dtmIter != null) {
+        	ResultSequence rSeq = null;
+        	if (func != null) {
+        		rSeq = new ResultSequence();
+        		int nextNode;
+        		while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
+        		{
+        			XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+        			xctxt.setXPath3ContextItem(singletonXPathNode);                              
+        			XObject funcEvalResult = func.execute(xctxt);
+        			rSeq.add(funcEvalResult);
+        		}
+        		
+        		processSequenceOrArray(transformer, xctxt, rSeq);
+                
+                return;
+        	}
         }
         
         if (!isProcessAsNodeset) {        	
