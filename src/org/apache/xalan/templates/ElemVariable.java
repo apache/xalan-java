@@ -37,19 +37,18 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
-import org.apache.xpath.axes.WalkingIterator;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
-import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.functions.XSLFunctionService;
-import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathArray;
+import org.apache.xpath.objects.XPathInlineFunction;
 import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XRTreeFragSelectWrapper;
@@ -486,12 +485,7 @@ public class ElemVariable extends ElemTemplateElement
             
             LocPathIterator locPathIterator = (LocPathIterator)selectExpression;
             
-            Function func = null;
-            
-            if (locPathIterator instanceof WalkingIterator) {
-                WalkingIterator walkingIter = (WalkingIterator)locPathIterator;
-                func = walkingIter.getFuncExpr();
-            }
+            Function func = locPathIterator.getFuncExpr();
             
             DTMIterator dtmIter = null;                     
             try {

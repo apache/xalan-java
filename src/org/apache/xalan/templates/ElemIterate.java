@@ -32,7 +32,7 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
-import org.apache.xpath.axes.WalkingIterator;
+import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
@@ -186,13 +186,13 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
            
            Function func = null;
            
-           if (m_selectExpression instanceof WalkingIterator) {
-               WalkingIterator walkingIter = (WalkingIterator)m_selectExpression;
-               func = walkingIter.getFuncExpr();
+           if (m_selectExpression instanceof LocPathIterator) {
+        	   LocPathIterator locPathIter = (LocPathIterator)m_selectExpression;
+               func = locPathIter.getFuncExpr();
                
                DTMIterator dtmIter = null;
                try {
-                   dtmIter = walkingIter.asIterator(xctxt, sourceNode);
+                   dtmIter = locPathIter.asIterator(xctxt, sourceNode);
                }
                catch (ClassCastException ex) {
                    // no op

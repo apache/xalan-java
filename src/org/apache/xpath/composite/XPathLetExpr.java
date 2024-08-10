@@ -37,7 +37,7 @@ import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
 
-/*
+/**
  * An implementation of XPath 3.1 'let' expression.
  *    
  * Ref : https://www.w3.org/TR/xpath-31/#id-let-expressions
@@ -50,10 +50,10 @@ public class XPathLetExpr extends Expression {
 
     private static final long serialVersionUID = 3063682088023616108L;
 
-    private List<LetExprVarBinding> m_LetExprVarBindingList = 
+    private List<LetExprVarBinding> m_letExprVarBindingList = 
                                                    new ArrayList<LetExprVarBinding>();
     
-    private String m_ReturnExprXPathStr = null;
+    private String m_returnExprXPathStr = null;
     
     // The following two fields of this class, are used during 
     // XPath.fixupVariables(..) action as performed within object of 
@@ -83,23 +83,23 @@ public class XPathLetExpr extends Expression {
        
        Map<QName, XObject> letExprVarBindingMap = new HashMap<QName, XObject>();
        
-       for (int idx = 0; idx < m_LetExprVarBindingList.size(); idx++) {          
-          LetExprVarBinding letExprVarBinding = m_LetExprVarBindingList.get(idx);
+       for (int idx = 0; idx < m_letExprVarBindingList.size(); idx++) {          
+          LetExprVarBinding letExprVarBinding = m_letExprVarBindingList.get(idx);
           String varName = letExprVarBinding.getVarName();
-          String fXpathExprStr = letExprVarBinding.getXpathExprStr();
+          String varResultXPathExprStr = letExprVarBinding.getXPathExprStr();
           
           if (prefixTable != null) {
-             fXpathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-                                                                                  fXpathExprStr, prefixTable);
+             varResultXPathExprStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                  varResultXPathExprStr, prefixTable);
           }
           
-          XPath letExprVarBindingXpath = new XPath(fXpathExprStr, srcLocator, xctxt.getNamespaceContext(), 
+          XPath letExprVarBindingXPath = new XPath(varResultXPathExprStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                              XPath.SELECT, null);
           if (m_vars != null) {
-             letExprVarBindingXpath.fixupVariables(m_vars, m_globals_size);
+             letExprVarBindingXPath.fixupVariables(m_vars, m_globals_size);
           }
           
-          XObject varBindingEvalResult = letExprVarBindingXpath.execute(xctxt, contextNode, 
+          XObject varBindingEvalResult = letExprVarBindingXPath.execute(xctxt, contextNode, 
                                                                                      xctxt.getNamespaceContext());
           
           m_xpathVarList.add(new QName(varName));
@@ -111,11 +111,11 @@ public class XPathLetExpr extends Expression {
        xpathVarMap.putAll(letExprVarBindingMap);
        
        if (prefixTable != null) {
-          m_ReturnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
-                                                                                m_ReturnExprXPathStr, prefixTable);
+          m_returnExprXPathStr = XslTransformEvaluationHelper.replaceNsUrisWithPrefixesOnXPathStr(
+                                                                                m_returnExprXPathStr, prefixTable);
        }
        
-       XPath returnExprXpath = new XPath(m_ReturnExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
+       XPath returnExprXpath = new XPath(m_returnExprXPathStr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                              XPath.SELECT, null);
        
        if (m_vars != null) {
@@ -144,19 +144,19 @@ public class XPathLetExpr extends Expression {
     }
 
     public List<LetExprVarBinding> getLetExprVarBindingList() {
-        return m_LetExprVarBindingList;
+        return m_letExprVarBindingList;
     }
 
-    public void setLetExprVarBindingList(List<LetExprVarBinding> fLetExprVarBindingList) {
-        this.m_LetExprVarBindingList = fLetExprVarBindingList;
+    public void setLetExprVarBindingList(List<LetExprVarBinding> letExprVarBindingList) {
+        this.m_letExprVarBindingList = letExprVarBindingList;
     }
 
     public String getReturnExprXPathStr() {
-        return m_ReturnExprXPathStr;
+        return m_returnExprXPathStr;
     }
 
-    public void setReturnExprXPathStr(String fReturnExprXPathStr) {
-        this.m_ReturnExprXPathStr = fReturnExprXPathStr;
+    public void setReturnExprXPathStr(String returnExprXPathStr) {
+        this.m_returnExprXPathStr = returnExprXPathStr;
     }
 
 }

@@ -145,11 +145,20 @@ public class FunctionDef1Arg extends FunctionOneArg
         DTM dtm = xctxt.getDTM(currentNode);
         XMLString str = dtm.getStringValue(currentNode);
         return str.toDouble();
-      }
-      
+      }      
     }
-    else
-      return m_arg0.execute(xctxt).num();
+    else if (m_arg0 instanceof SelfIteratorNoPredicate) {
+    	XObject contextItem = xctxt.getXPath3ContextItem();
+    	if (contextItem != null) {
+    		String argStrVal = XslTransformEvaluationHelper.getStrVal(contextItem);
+    		return (Double.valueOf(argStrVal)).doubleValue();
+    	}
+    	else {
+    	   return m_arg0.execute(xctxt).num();
+    	}
+    }    	
+    else 
+       return m_arg0.execute(xctxt).num();
   }
 
   /**

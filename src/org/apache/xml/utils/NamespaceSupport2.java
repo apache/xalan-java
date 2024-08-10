@@ -369,8 +369,13 @@ public class NamespaceSupport2
         return currentContext.getDeclaredPrefixes();
     }
 
-
-
+    /**
+     * Get namespace prefix and uri mapping table.
+     */
+    public Hashtable getUriTable() {
+    	return currentContext.getUriTable(); 
+    }
+    
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -742,6 +747,10 @@ final class Context2 {
             attributeNameTable=new Hashtable(); 
         tablesDirty = true;
     }
+
+	public Hashtable getUriTable() {
+		return uriTable;
+	}
 
 }
 

@@ -33,7 +33,6 @@ import org.apache.xpath.Expression;
 import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xpath.axes.WalkingIterator;
 import org.apache.xpath.composite.XPathIfExpr;
 import org.apache.xpath.composite.XPathLetExpr;
 import org.apache.xpath.functions.Function;
@@ -461,12 +460,7 @@ public class ElemValueOf extends ElemTemplateElement {
                   else if (expr instanceof LocPathIterator) {
                      LocPathIterator locPathIterator = (LocPathIterator)expr;
                      
-                     Function func = null;
-                     
-                     if (locPathIterator instanceof WalkingIterator) {
-                         WalkingIterator walkingIter = (WalkingIterator)locPathIterator;
-                         func = walkingIter.getFuncExpr();
-                     }
+                     Function func = locPathIterator.getFuncExpr();;
                      
                      DTMIterator dtmIter = null;                     
                      try {

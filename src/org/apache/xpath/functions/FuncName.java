@@ -23,6 +23,7 @@ import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xpath.Expression;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
@@ -52,36 +53,77 @@ public class FuncName extends FunctionMultiArgs {
   public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException
   {
 
-	  XObject result = null;
+	  XSString result = null;
     
       SourceLocator srcLocator = xctxt.getSAXLocator();
 	  
 	  Expression arg0 = getArg0();
 	  String nodeNameStr = null;
 	  
+	  int nodeHandle = DTM.NULL;
+	  
 	  if (arg0 == null) {
-		 int contextNode = xctxt.getCurrentNode();
-		 DTM dtm = xctxt.getDTM(contextNode);
-		 Node node = dtm.getNode(contextNode);
-		 nodeNameStr = node.getNodeName();
+		 nodeHandle = xctxt.getCurrentNode();
+		 nodeNameStr = getNodeNameStrFromNodeHandle(nodeHandle, xctxt);
+	  }
+	  else if (arg0 instanceof SelfIteratorNoPredicate) {
+		  XObject contextItem = xctxt.getXPath3ContextItem();
+		  if ((contextItem != null) && (contextItem instanceof XNodeSet)) {
+			  nodeHandle = getNodeHandle((XNodeSet)contextItem);
+			  nodeNameStr = getNodeNameStrFromNodeHandle(nodeHandle, xctxt);
+		  }
+		  else {
+			  XObject xObject = m_arg0.execute(xctxt);
+			  if (xObject instanceof XNodeSet) {
+				  nodeHandle = getNodeHandle((XNodeSet)xObject);
+				  nodeNameStr = getNodeNameStrFromNodeHandle(nodeHandle, xctxt);
+			  }
+		  }
 	  }
 	  else {
 		 XObject nodeArg = arg0.execute(xctxt);
+		 
 		 if (nodeArg instanceof XNodeSet) {
 			XNodeSet nodeSet = (XNodeSet)nodeArg;
 			DTMIterator dtmIter = nodeSet.iterRaw();
-			int nodeHandle = dtmIter.nextNode();
-			DTM dtm = xctxt.getDTM(nodeHandle);
-			Node node = dtm.getNode(nodeHandle);
-			nodeNameStr = node.getNodeName();
-		 }
-		 else {
-			throw new javax.xml.transform.TransformerException("XPTY0004: The 1st argument of function fn:name is not a node.", srcLocator);  
+			nodeHandle = dtmIter.nextNode();			
+			nodeNameStr = getNodeNameStrFromNodeHandle(nodeHandle, xctxt);
 		 }		 
+	  }
+	  
+	  if (nodeHandle == DTM.NULL) {
+		 throw new javax.xml.transform.TransformerException("XPTY0004: The 1st argument of XPath function "
+		 		                                                                    + "fn:name is not a node, or there's no context node.", srcLocator); 
 	  }
 	  
 	  result = new XSString(nodeNameStr);
 
       return result;
   }
+  
+  /**
+   * Get dtm node handle of a node.
+   */
+  private int getNodeHandle(XNodeSet nodeSet) {	 
+	 int nodeHandle;
+	 
+	 DTMIterator dtmIter = nodeSet.iterRaw();
+	 nodeHandle = dtmIter.nextNode();
+	 
+	 return nodeHandle;
+  }
+
+  /**
+   *  Get node-name string value of xpath node.
+   */
+  private String getNodeNameStrFromNodeHandle(int nodeHandle, XPathContext xctxt) {	  
+	  String nodeNameStr = null;
+	  
+	  DTM dtm = xctxt.getDTM(nodeHandle);
+	  Node node = dtm.getNode(nodeHandle);
+	  nodeNameStr = node.getNodeName();
+	  
+	  return nodeNameStr;
+  }
+  
 }

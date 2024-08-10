@@ -16,7 +16,7 @@
  */
 package org.apache.xpath.composite;
 
-/*
+/**
  * An object of this class, is used to store information about
  * XPath 3.1 "let" expression's single variable binding (i.e, 
  * run-time information details related to the grammar fragment 
@@ -29,24 +29,24 @@ package org.apache.xpath.composite;
  */
 public class LetExprVarBinding {
     
-    private String fVarName = null;
+    private String m_varName = null;
     
-    private String fXpathExprStr = null;
+    private String m_xpathExprStr = null;
 
     public String getVarName() {
-        return fVarName;
+        return m_varName;
     }
 
     public void setVarName(String varName) {
-        this.fVarName = varName;
+        this.m_varName = varName;
     }
 
-    public String getXpathExprStr() {
-        return fXpathExprStr;
+    public String getXPathExprStr() {
+        return m_xpathExprStr;
     }
 
-    public void setXpathExprStr(String xpathExprStr) {
-        this.fXpathExprStr = xpathExprStr;
+    public void setXPathExprStr(String xpathExprStr) {
+        this.m_xpathExprStr = xpathExprStr;
     }
 
 }

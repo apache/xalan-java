@@ -17,6 +17,9 @@
 package org.apache.xpath.functions;
 
 import java.io.StringReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -40,8 +43,10 @@ import org.apache.xerces.impl.xs.XSLoaderImpl;
 import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
 import org.apache.xml.utils.QName;
+import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionNode;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.compiler.Keywords;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XObject;
@@ -85,9 +90,8 @@ import xml.xpath31.processor.types.XSToken;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
- * An object of this class supports evaluation of an XPath 
- * constructor function call, and an XSL stylesheet function 
- * call.
+ * An object of this class supports evaluation of XPath 
+ * constructor function and XSL stylesheet function calls.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -151,354 +155,226 @@ public class XSLFunctionService {
 
     			stylesheetRoot = (StylesheetRoot)stylesheetRootNode;
 
-    			if (transformerImpl == null) {
-    				transformerImpl = stylesheetRoot.getTransformerImpl();  
-    			}
-
-    			TemplateList templateList = stylesheetRoot.getTemplateListComposed();
-
-    			ElemTemplate elemTemplate = templateList.getTemplate(new QName(funcNamespace, funcName));
-
-    			if ((elemTemplate != null) && (elemTemplate instanceof ElemFunction)) {
-    				// Evaluate XSL stylesheet function call
-    				ResultSequence argSequence = new ResultSequence();
-    				for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    					XObject argVal = (funcObj.getArg(idx)).execute(xctxt);    					
-    					argSequence.add(argVal);
+    			if (stylesheetRoot != null) {
+    				if (transformerImpl == null) {
+    					transformerImpl = stylesheetRoot.getTransformerImpl();  
     				}
 
-    				evalResult = ((ElemFunction)elemTemplate).evaluateXslFunction(transformerImpl, argSequence);
-    			}            
-    			else if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace)) {                
+    				TemplateList templateList = stylesheetRoot.getTemplateListComposed();
+
+    				ElemTemplate elemTemplate = templateList.getTemplate(new QName(funcNamespace, funcName));
+
+    				if ((elemTemplate != null) && (elemTemplate instanceof ElemFunction)) {
+    					// Evaluate XSL stylesheet function call
+    					ResultSequence argSequence = new ResultSequence();
+    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);    					
+    						argSequence.add(argVal);
+    					}
+
+    					evalResult = ((ElemFunction)elemTemplate).evaluateXslFunction(transformerImpl, argSequence);
+    					
+    					return evalResult;
+    				}
+    			}
+    			
+    			if (XMLConstants.W3C_XML_SCHEMA_NS_URI.equals(funcNamespace)) {                
     				// Evaluate XPath constructor function call, for schema types 
     				// in XML Schema namespace.
+    				
     				ResultSequence argSequence = new ResultSequence();
     				ResultSequence evalResultSequence = null;
 
-    				switch (funcName) {
-    				case Keywords.XS_STRING :                        
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSString(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSString()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0);
-
-    					break;
-    				case Keywords.XS_NORMALIZED_STRING :                        
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSNormalizedString(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSNormalizedString()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0);
-
-    					break;
-    				case Keywords.XS_TOKEN :                        
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSToken(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSToken()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0);
-
-    					break;
-    				case Keywords.XS_DECIMAL :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSDecimal(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSDecimal()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0);
-
-    					break;
-    				case Keywords.XS_FLOAT :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSFloat(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSFloat()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0);
-
-    					break;                
-    				case Keywords.XS_DOUBLE :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSDouble(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSDouble()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0);
-
-    					break;                
-    				case Keywords.XS_INTEGER :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSInteger(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSInteger()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0); 
-
-    					break;
-    				case Keywords.XS_NON_POSITIVE_INTEGER :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSNonPositiveInteger(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSNonPositiveInteger()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0); 
-
-    					break;
-    				case Keywords.XS_NEGATIVE_INTEGER :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSNegativeInteger(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSNegativeInteger()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0); 
-
-    					break;
-    				case Keywords.XS_NON_NEGATIVE_INTEGER :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSNonNegativeInteger(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSNonNegativeInteger()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0); 
-
-    					break;
-    				case Keywords.XS_POSITIVE_INTEGER :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSPositiveInteger(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSPositiveInteger()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0); 
-
-    					break;
-    				case Keywords.XS_LONG :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSLong(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSLong()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0);
-
-    					break;
-    				case Keywords.XS_INT :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSInt(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSInt()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0);
-
-    					break;
-    				case Keywords.XS_SHORT :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSShort(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSShort()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0);
-
-    					break;
-    				case Keywords.XS_BYTE :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSByte(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSByte()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0);
-
-    					break;
-    				case Keywords.XS_UNSIGNED_LONG :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSUnsignedLong(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSUnsignedLong()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0);
-
-    					break;
-    				case Keywords.XS_UNSIGNED_INT :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSUnsignedInt(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSUnsignedInt()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0);
-
-    					break;
-    				case Keywords.XS_UNSIGNED_SHORT :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSUnsignedShort(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSUnsignedShort()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0);
-
-    					break;
-    				case Keywords.XS_UNSIGNED_BYTE :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSUnsignedByte(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSUnsignedByte()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0);
-
-    					break;
-    				case Keywords.FUNC_BOOLEAN_STRING :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						String argStrVal = XslTransformEvaluationHelper.getStrVal(argVal);
-    						Boolean boolVal = Boolean.valueOf(("0".equals(argStrVal) || "false".equals(argStrVal)) ? 
-    								"false" : "true");
-    						argSequence.add(new XSBoolean(boolVal));
-    					}
-
-    					evalResultSequence = (new XSBoolean()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0);
-
-    					break;
-    				case Keywords.XS_DATE :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(XSDate.parseDate(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSDate()).constructor(argSequence); 
-    					evalResult = evalResultSequence.item(0);
-
-    					break;
-    				case Keywords.XS_DATETIME :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(XSDateTime.parseDateTime(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSDateTime()).constructor(argSequence); 
-    					evalResult = evalResultSequence.item(0);
-
-    					break;
-    				case Keywords.XS_DURATION :
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						String strVal = XslTransformEvaluationHelper.getStrVal(argVal);
-    						XSDuration xsDuration = XSDuration.parseDuration(strVal);
-    						if (xsDuration != null) {
-    							argSequence.add(xsDuration);
-    							evalResultSequence = (new XSDuration()).constructor(argSequence); 
-    							evalResult = evalResultSequence.item(0);
-    						}
-    						else {
-    							throw new TransformerException("FORG0001 : An incorrectly formatted xs:duration value '" + 
-    									                                            strVal + "' is present in the input.", srcLocator); 
-    						}
-    					}
-
-    					break;
-    				case Keywords.XS_YEAR_MONTH_DURATION :                   
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						String strVal = XslTransformEvaluationHelper.getStrVal(argVal);
-    						XSDuration xsDuration = XSYearMonthDuration.parseYearMonthDuration(strVal);
-    						if (xsDuration != null) {
-    							argSequence.add(xsDuration);
-    							evalResultSequence = (new XSYearMonthDuration()).constructor(argSequence); 
-    							evalResult = evalResultSequence.item(0);
-    						}
-    						else {
-    							throw new TransformerException("FORG0001 : An incorrectly formatted xs:yearMonthDuration value '" + 
-    									                                            strVal + "' is present in the input.", srcLocator); 
-    						}
-    					}
-
-    					break;
-    				case Keywords.XS_DAY_TIME_DURATION :                 
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						String strVal = XslTransformEvaluationHelper.getStrVal(argVal);
-    						XSDuration xsDuration = XSDayTimeDuration.parseDayTimeDuration(strVal);
-    						if (xsDuration != null) {
-    							argSequence.add(xsDuration);
-    							evalResultSequence = (new XSDayTimeDuration()).constructor(argSequence); 
-    							evalResult = evalResultSequence.item(0);
-    						}
-    						else {
-    							throw new TransformerException("FORG0001 : An incorrectly formatted xs:dayTimeDuration value '" + 
-    									                                             strVal + "' is present in the input.", srcLocator); 
-    						}                            
-    					}
-
-    					break;
-    				case Keywords.XS_TIME :                 
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						String strVal = XslTransformEvaluationHelper.getStrVal(argVal);
-    						XSTime xsTime = XSTime.parseTime(strVal);
-    						if (xsTime != null) {
-    							argSequence.add(xsTime);
-    							evalResultSequence = (new XSTime()).constructor(argSequence); 
-    							evalResult = evalResultSequence.item(0);
-    						}
-    						else {
-    							throw new TransformerException("FORG0001 : An incorrectly formatted xs:time value '" + 
-    									                                             strVal + "' is present in the input.", srcLocator); 
-    						}                            
-    					}
-
-    					break;
-    				case Keywords.XS_ANY_URI :                        
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						argSequence.add(new XSAnyURI(XslTransformEvaluationHelper.getStrVal(argVal)));
-    					}
-
-    					evalResultSequence = (new XSAnyURI()).constructor(argSequence);
-    					evalResult = evalResultSequence.item(0);
-
-    					break;
-    				case Keywords.XS_QNAME :
-    					XSQName xsQName = new XSQName();
-    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
-    						XObject argVal = (funcObj.getArg(idx)).execute(xctxt);
-    						String argStrVal = XslTransformEvaluationHelper.getStrVal(argVal);
-    						if (idx == 0) {
-    							xsQName.setPrefix(argStrVal);	
-    						}
-    						else if (idx == 1) {
-    							xsQName.setLocalPart(argStrVal);
-    						}
-    						else {
-    							xsQName.setNamespaceUri(argStrVal);
-    						}
-    					}
-
-    					evalResult = xsQName;
-
-    					break;
-    				default:
-    					// no op
-    				}
+    				try {
+	    				switch (funcName) {
+		    				case Keywords.XS_STRING :
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSString.class, xctxt);
+		    					break;
+		    				case Keywords.XS_NORMALIZED_STRING :    					
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSNormalizedString.class, xctxt);
+		    					break;
+		    				case Keywords.XS_TOKEN :    					
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSToken.class, xctxt);
+		    					break;
+		    				case Keywords.XS_DECIMAL :    					
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSDecimal.class, xctxt);
+		    					break;
+		    				case Keywords.XS_FLOAT :  					
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSFloat.class, xctxt);
+		    					break;
+		    				case Keywords.XS_DOUBLE :    					
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSDouble.class, xctxt);    					
+		    					break;
+		    				case Keywords.XS_INTEGER :    					
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSInteger.class, xctxt);    					
+		    					break;
+		    				case Keywords.XS_NON_POSITIVE_INTEGER :
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSNonPositiveInteger.class, xctxt);
+		    					break;
+		    				case Keywords.XS_NEGATIVE_INTEGER :
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSNegativeInteger.class, xctxt);
+		    					break;
+		    				case Keywords.XS_NON_NEGATIVE_INTEGER :
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSNonNegativeInteger.class, xctxt);
+		    					break;
+		    				case Keywords.XS_POSITIVE_INTEGER :    					 
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSPositiveInteger.class, xctxt);
+		    					break;
+		    				case Keywords.XS_LONG :
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSLong.class, xctxt);
+		    					break;
+		    				case Keywords.XS_INT :
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSInt.class, xctxt);
+		    					break;
+		    				case Keywords.XS_SHORT :
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSShort.class, xctxt);
+		    					break;
+		    				case Keywords.XS_BYTE :
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSByte.class, xctxt);
+		    					break;
+		    				case Keywords.XS_UNSIGNED_LONG :    					
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSUnsignedLong.class, xctxt);
+		    					break;
+		    				case Keywords.XS_UNSIGNED_INT :    					
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSUnsignedInt.class, xctxt);
+		    					break;
+		    				case Keywords.XS_UNSIGNED_SHORT :    					
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSUnsignedShort.class, xctxt);
+		    					break;
+		    				case Keywords.XS_UNSIGNED_BYTE :    					
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSUnsignedByte.class, xctxt);
+		    					break;
+		    				case Keywords.FUNC_BOOLEAN_STRING :    					
+		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+		    						Expression funcArg = funcObj.getArg(idx);    						
+		    						String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+		    						Boolean boolVal = Boolean.valueOf(("0".equals(argStr) || "false".equals(argStr)) ? 
+		    								                                                               "false" : "true");
+		    						argSequence.add(new XSBoolean(boolVal));
+		    					}
+		    					evalResultSequence = (new XSBoolean()).constructor(argSequence);
+		    					evalResult = evalResultSequence.item(0);
+		
+		    					break;
+		    				case Keywords.XS_DATE :
+		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+		    						Expression funcArg = funcObj.getArg(idx);    						
+		    						String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);    						    						
+		    						argSequence.add(XSDate.parseDate(argStr));
+		    					}
+		    					evalResultSequence = (new XSDate()).constructor(argSequence); 
+		    					evalResult = evalResultSequence.item(0);
+		
+		    					break;
+		    				case Keywords.XS_DATETIME :
+		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+		    						Expression funcArg = funcObj.getArg(idx);    						
+		    						String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+		    						argSequence.add(XSDateTime.parseDateTime(argStr));
+		    					}
+		    					evalResultSequence = (new XSDateTime()).constructor(argSequence); 
+		    					evalResult = evalResultSequence.item(0);
+		
+		    					break;
+		    				case Keywords.XS_DURATION :
+		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+		    						Expression funcArg = funcObj.getArg(idx);    						
+		    						String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+		    						XSDuration xsDuration = XSDuration.parseDuration(argStr);
+		    						if (xsDuration != null) {
+		    							argSequence.add(xsDuration);
+		    							evalResultSequence = (new XSDuration()).constructor(argSequence); 
+		    							evalResult = evalResultSequence.item(0);
+		    						}
+		    						else {
+		    							throw new TransformerException("FORG0001 : An incorrectly formatted xs:duration value '" + 
+		    																							argStr + "' is present in the input.", srcLocator); 
+		    						}
+		    					}
+		
+		    					break;
+		    				case Keywords.XS_YEAR_MONTH_DURATION :                   
+		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+		    						Expression funcArg = funcObj.getArg(idx);    						
+		    						String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+		    						XSDuration xsDuration = XSYearMonthDuration.parseYearMonthDuration(argStr);
+		    						if (xsDuration != null) {
+		    							argSequence.add(xsDuration);
+		    							evalResultSequence = (new XSYearMonthDuration()).constructor(argSequence); 
+		    							evalResult = evalResultSequence.item(0);
+		    						}
+		    						else {
+		    							throw new TransformerException("FORG0001 : An incorrectly formatted xs:yearMonthDuration value '" + 
+		    																							argStr + "' is present in the input.", srcLocator); 
+		    						}
+		    					}
+		
+		    					break;
+		    				case Keywords.XS_DAY_TIME_DURATION :                 
+		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+		    						Expression funcArg = funcObj.getArg(idx);    						
+		    						String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+		    						XSDuration xsDuration = XSDayTimeDuration.parseDayTimeDuration(argStr);
+		    						if (xsDuration != null) {
+		    							argSequence.add(xsDuration);
+		    							evalResultSequence = (new XSDayTimeDuration()).constructor(argSequence); 
+		    							evalResult = evalResultSequence.item(0);
+		    						}
+		    						else {
+		    							throw new TransformerException("FORG0001 : An incorrectly formatted xs:dayTimeDuration value '" + 
+		    																							argStr + "' is present in the input.", srcLocator); 
+		    						}                            
+		    					}
+		
+		    					break;
+		    				case Keywords.XS_TIME :                 
+		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+		    						Expression funcArg = funcObj.getArg(idx);    						
+		    						String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+		    						XSTime xsTime = XSTime.parseTime(argStr);
+		    						if (xsTime != null) {
+		    							argSequence.add(xsTime);
+		    							evalResultSequence = (new XSTime()).constructor(argSequence); 
+		    							evalResult = evalResultSequence.item(0);
+		    						}
+		    						else {
+		    							throw new TransformerException("FORG0001 : An incorrectly formatted xs:time value '" + 
+		    																							argStr + "' is present in the input.", srcLocator); 
+		    						}                            
+		    					}
+		
+		    					break;
+		    				case Keywords.XS_ANY_URI :    					
+		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSAnyURI.class, xctxt);
+		    					break;
+		    				case Keywords.XS_QNAME :
+		    					XSQName xsQName = new XSQName();
+		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+		    						Expression funcArg = funcObj.getArg(idx);    						
+		    						String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+		    						if (idx == 0) {
+		    							xsQName.setPrefix(argStr);	
+		    						}
+		    						else if (idx == 1) {
+		    							xsQName.setLocalPart(argStr);
+		    						}
+		    						else {
+		    							xsQName.setNamespaceUri(argStr);
+		    						}
+		    					}
+		
+		    					evalResult = xsQName;
+		
+		    					break;
+		    				default:
+		    					// NO OP
+	    				}
+    			    }
+    			    catch (Exception ex) {
+    			       throw new TransformerException("FODC0005 : A dynamic error has occured, evaluating XPath built-in "
+    			       		                                                              + "constructor function call. " + 
+    			    		                                                              ex.getMessage() + ".", srcLocator);
+    			    }
     			}
     			else {
     				// We check and evaluate below, XPath constructor function calls to 
@@ -642,6 +518,56 @@ public class XSLFunctionService {
     	}
 
     	return evalResult;        
+    }
+    
+    /**
+     * Evaluate the XPath built-in constructor function call.
+     */
+    private XObject evaluateXPathBuiltInConstructionFunctionCall(XSLConstructorStylesheetOrExtensionFunction funcObj, 
+    		                                                     Class dataType, XPathContext xctxt) throws TransformerException, 
+                                                                                                 InstantiationException, IllegalAccessException, 
+                                                                                                 NoSuchMethodException, SecurityException, 
+                                                                                                 IllegalArgumentException, InvocationTargetException {
+    	XObject evalResult = null;
+    	
+    	ResultSequence evalResultSequence = null;
+    	ResultSequence argSequence = new ResultSequence();
+    	
+    	for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
+			Expression funcArg = funcObj.getArg(idx);    						
+			String argStr = getXPathBuiltInConstructorFunctionArgStr(funcArg, xctxt);
+			Constructor cons = dataType.getConstructor(new Class[] {String.class});
+			Object obj = cons.newInstance(new String[] {argStr});
+			argSequence.add((XObject)obj);
+		}
+    	
+    	Object obj = dataType.newInstance();
+    	
+    	Method method = dataType.getMethod("constructor", new Class[] {ResultSequence.class});
+    	evalResultSequence = (ResultSequence)(method.invoke(obj, new Object[] {argSequence}));
+
+		evalResult = evalResultSequence.item(0);
+    	
+    	return evalResult;
+    }
+
+    /**
+     * Get the effective value of XPath built-in constructor function call's argument.
+     */
+    private String getXPathBuiltInConstructorFunctionArgStr(Expression funcArg, XPathContext xctxt) 
+    		                                                                              throws TransformerException {
+    	String argStr = null;
+    	
+    	if (funcArg instanceof SelfIteratorNoPredicate) {
+    		XObject contextItem = xctxt.getXPath3ContextItem();
+    		argStr = XslTransformEvaluationHelper.getStrVal(contextItem); 
+    	}
+    	else {
+    		XObject argVal = funcArg.execute(xctxt);
+    		argStr = XslTransformEvaluationHelper.getStrVal(argVal); 
+    	}
+    	
+    	return argStr;
     }
     
 }

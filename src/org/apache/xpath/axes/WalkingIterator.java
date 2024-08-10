@@ -28,7 +28,6 @@ import org.apache.xpath.VariableStack;
 import org.apache.xpath.XPathVisitor;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.OpMap;
-import org.apache.xpath.functions.Function;
 
 /**
  * Location path iterator that uses Walkers.
@@ -36,13 +35,6 @@ import org.apache.xpath.functions.Function;
 public class WalkingIterator extends LocPathIterator implements ExpressionOwner
 {
     static final long serialVersionUID = 9110225941815665906L;
-    
-    /**
-     * If there's a function call suffix at an end of XPath expression 
-     * similar to /a/b/funcCall(..), we keep a compiled Function 
-     * object for funcCall(..) within this class field.  
-     */
-    private Function m_func_expr = null;
     
   /**
    * Create a WalkingIterator iterator, including creation
@@ -365,13 +357,5 @@ public class WalkingIterator extends LocPathIterator implements ExpressionOwner
 
       return true;
     }
-
-	public void setFuncExpr(Function expr) {		
-		m_func_expr = expr;
-	}
-	
-	public Function getFuncExpr() {
-		return m_func_expr;
-	}
 
 }

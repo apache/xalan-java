@@ -17,10 +17,13 @@
  */
 package org.apache.xpath.functions;
 
+import javax.xml.transform.SourceLocator;
+
 import org.apache.xml.dtm.DTM;
 import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.dtm.DTMManager;
 import org.apache.xpath.XPathContext;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Node;
@@ -45,24 +48,58 @@ public class FuncLocalName extends FunctionDef1Arg {
 	  *
 	  * @throws javax.xml.transform.TransformerException
 	*/
-	 public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {		 
+	 public XObject execute(XPathContext xctxt) throws javax.xml.transform.TransformerException {
+		 
+		 XSString result = null;
+		 
+		 SourceLocator srcLocator = xctxt.getSAXLocator();
+		 
 		 int nodeHandle = DTM.NULL;
 		 
 		 if (m_arg0 == null) {
 		    nodeHandle = xctxt.getCurrentNode();
 		 }
-		 else {
+		 else if (m_arg0 instanceof SelfIteratorNoPredicate) {
+			 XObject contextItem = xctxt.getXPath3ContextItem();
+			 if ((contextItem != null) && (contextItem instanceof XNodeSet)) {
+				 nodeHandle = getNodeHandle((XNodeSet)contextItem); 
+			 }
+			 else {
+				 XObject xObject = m_arg0.execute(xctxt);
+			     if (xObject instanceof XNodeSet) {
+			        nodeHandle = getNodeHandle((XNodeSet)xObject);
+			     }
+			 }
+		 }
+		 else {			 
 			 XObject xObject = m_arg0.execute(xctxt);
 		     if (xObject instanceof XNodeSet) {
-		        XNodeSet nodeSet = (XNodeSet)xObject;
-		        DTMIterator dtmIter = nodeSet.iterRaw();
-		        nodeHandle = dtmIter.nextNode();
+		        nodeHandle = getNodeHandle((XNodeSet)xObject);
 		     }
+		 }
+		 
+		 if (nodeHandle == DTM.NULL) {
+			 throw new javax.xml.transform.TransformerException("XPTY0004: The 1st argument of XPath function "
+			 		                                                                    + "fn:local-name is not a node, or there's no context node.", srcLocator); 
 		 }
 	     
 	     String localNameStrVal = getLocalName(nodeHandle, xctxt);
+	     
+	     result = new XSString(localNameStrVal);
 		
-		 return new XSString(localNameStrVal);
+		 return result;
+	 }
+
+	 /**
+	  * Get dtm node handle of a node.
+	  */
+	 private int getNodeHandle(XNodeSet nodeSet) {
+		 int nodeHandle;
+		 
+		 DTMIterator dtmIter = nodeSet.iterRaw();
+		 nodeHandle = dtmIter.nextNode();
+		 
+		 return nodeHandle;
 	 }
 	 
 	 /**

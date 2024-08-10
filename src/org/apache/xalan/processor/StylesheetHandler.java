@@ -20,6 +20,7 @@
  */
 package org.apache.xalan.processor;
 
+import java.util.Hashtable;
 import java.util.Stack;
 
 import javax.xml.transform.ErrorListener;
@@ -1576,6 +1577,19 @@ public class StylesheetHandler extends DefaultHandler
   NamespaceSupport getNamespaceSupport()
   {
     return (NamespaceSupport) m_nsSupportStack.peek();
+  }
+  
+  /**
+   * Get the namespace declaration table, in the current 
+   * stylesheet context.
+   */
+  public Hashtable getNamespaceUriTable() {	  
+	  Hashtable nsUriTable = null;
+	  
+	  NamespaceSupport2 nsSupport = (NamespaceSupport2)m_nsSupportStack.peek();	  
+	  nsUriTable = nsSupport.getUriTable();
+	  
+	  return nsUriTable;
   }
 
   /**

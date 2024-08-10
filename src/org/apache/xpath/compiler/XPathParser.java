@@ -1933,11 +1933,11 @@ public class XPathParser
                                                                     bindingXPathExprStrPartsList.size() - 1); 
           }
           
-          String varBindingXpathStr = getXPathStrFromComponentParts(bindingXPathExprStrPartsList);
+          String varBindingXPathStr = getXPathStrFromComponentParts(bindingXPathExprStrPartsList);
 
           LetExprVarBinding letExprVarBinding = new LetExprVarBinding();
           letExprVarBinding.setVarName(bindingVarName);
-          letExprVarBinding.setXpathExprStr(varBindingXpathStr);
+          letExprVarBinding.setXPathExprStr(varBindingXPathStr);
 
           letExprVarBindingList.add(letExprVarBinding);
 
@@ -4033,7 +4033,6 @@ public class XPathParser
     
     boolean funcMatchFound = false;
 
-    // The next blocks guarantee that a FROM_XXX will be added.
     if (lookahead("::", 1))
     {
       axesType = AxisName();
@@ -4099,6 +4098,23 @@ public class XPathParser
     			   Object tokenObj = m_ops.m_tokenQueue.elementAt(m_queueMark++);
     			   if (tokenObj instanceof XString) {
     				   m_token = "'" + ((XString)tokenObj).str() + "'";  
+    			   }
+    			   else if (tokenObj instanceof XNumber) {
+    				   XNumber xNumber = (XNumber)tokenObj;
+    				   String strVal = null;
+    				   if (xNumber.getXsDecimal() != null) {
+    					   strVal = (xNumber.getXsDecimal()).stringValue();  
+    				   }
+    				   else if (xNumber.getXsDouble() != null) {
+    					   strVal = (xNumber.getXsDouble()).stringValue();
+    				   }
+    				   else if (xNumber.getXsInteger() != null) {
+    					   strVal = (xNumber.getXsInteger()).stringValue();
+    				   }
+    				   else {
+    					   strVal = xNumber.str();  
+    				   }
+    				   m_token = strVal; 
     			   }
     			   else {
     				   m_token = (String)tokenObj; 

@@ -18,6 +18,8 @@
 package org.apache.xpath;
 
 import java.io.Serializable;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
@@ -25,6 +27,7 @@ import javax.xml.transform.ErrorListener;
 import javax.xml.transform.SourceLocator;
 import javax.xml.transform.TransformerException;
 
+import org.apache.xalan.processor.StylesheetHandler;
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xalan.templates.ElemTemplateElement;
 import org.apache.xalan.templates.XMLNSDecl;
@@ -34,7 +37,6 @@ import org.apache.xml.dtm.DTMIterator;
 import org.apache.xml.utils.PrefixResolver;
 import org.apache.xml.utils.SAXSourceLocator;
 import org.apache.xpath.axes.LocPathIterator;
-import org.apache.xpath.axes.WalkingIterator;
 import org.apache.xpath.compiler.Compiler;
 import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.XPathParser;
@@ -270,6 +272,16 @@ public class XPath implements Serializable, ExpressionOwner
     	 parser = new XPathParser(errorListener, locator);
     	 compiler = new Compiler(errorListener, locator, m_funcTable);
     	 String xpathTwoExprStr = pathExprFunctionSuffix.getXPathTwoStr();    	 
+    	 if (xpathTwoExprStr.contains(":")) {  		 
+    		 StylesheetHandler stylesheetHandler = (StylesheetHandler)prefixResolver;    		 
+    		 Hashtable nsUriTable = stylesheetHandler.getNamespaceUriTable();
+    		 Enumeration nsUriTableKeys = nsUriTable.keys();
+    		 while (nsUriTableKeys.hasMoreElements()) {
+    			String key = (nsUriTableKeys.nextElement()).toString();
+    			String value = (nsUriTable.get(key)).toString();
+    			xpathTwoExprStr = xpathTwoExprStr.replace(key, value);
+    		 }
+    	 }
     	 parser.initXPath(compiler, xpathTwoExprStr, prefixResolver, false);
     	 Expression expr2 = compiler.compile(0);
     	 
@@ -277,9 +289,10 @@ public class XPath implements Serializable, ExpressionOwner
     	 
     	 expr = expr1;
     	 
-    	 if ((expr instanceof WalkingIterator) && (expr2 instanceof Function)) {
-    		WalkingIterator walkingIter = (WalkingIterator)expr;
-    		walkingIter.setFuncExpr((Function)expr2);
+    	 if ((expr instanceof LocPathIterator) && (expr2 instanceof Function)) {
+    		LocPathIterator locPathIter = (LocPathIterator)expr;
+    		expr2.exprSetParent((ExpressionNode)locator);
+    		locPathIter.setFuncExpr((Function)expr2);
     	 }
       }
     }
