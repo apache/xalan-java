@@ -188,61 +188,61 @@ public class XSLFunctionService {
     				try {
 	    				switch (funcName) {
 		    				case Keywords.XS_STRING :
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSString.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSString.class, xctxt);
 		    					break;
 		    				case Keywords.XS_NORMALIZED_STRING :    					
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSNormalizedString.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNormalizedString.class, xctxt);
 		    					break;
 		    				case Keywords.XS_TOKEN :    					
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSToken.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSToken.class, xctxt);
 		    					break;
 		    				case Keywords.XS_DECIMAL :    					
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSDecimal.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSDecimal.class, xctxt);
 		    					break;
 		    				case Keywords.XS_FLOAT :  					
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSFloat.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSFloat.class, xctxt);
 		    					break;
 		    				case Keywords.XS_DOUBLE :    					
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSDouble.class, xctxt);    					
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSDouble.class, xctxt);    					
 		    					break;
 		    				case Keywords.XS_INTEGER :    					
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSInteger.class, xctxt);    					
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSInteger.class, xctxt);    					
 		    					break;
 		    				case Keywords.XS_NON_POSITIVE_INTEGER :
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSNonPositiveInteger.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNonPositiveInteger.class, xctxt);
 		    					break;
 		    				case Keywords.XS_NEGATIVE_INTEGER :
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSNegativeInteger.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNegativeInteger.class, xctxt);
 		    					break;
 		    				case Keywords.XS_NON_NEGATIVE_INTEGER :
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSNonNegativeInteger.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSNonNegativeInteger.class, xctxt);
 		    					break;
 		    				case Keywords.XS_POSITIVE_INTEGER :    					 
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSPositiveInteger.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSPositiveInteger.class, xctxt);
 		    					break;
 		    				case Keywords.XS_LONG :
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSLong.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSLong.class, xctxt);
 		    					break;
 		    				case Keywords.XS_INT :
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSInt.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSInt.class, xctxt);
 		    					break;
 		    				case Keywords.XS_SHORT :
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSShort.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSShort.class, xctxt);
 		    					break;
 		    				case Keywords.XS_BYTE :
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSByte.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSByte.class, xctxt);
 		    					break;
 		    				case Keywords.XS_UNSIGNED_LONG :    					
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSUnsignedLong.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSUnsignedLong.class, xctxt);
 		    					break;
 		    				case Keywords.XS_UNSIGNED_INT :    					
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSUnsignedInt.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSUnsignedInt.class, xctxt);
 		    					break;
 		    				case Keywords.XS_UNSIGNED_SHORT :    					
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSUnsignedShort.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSUnsignedShort.class, xctxt);
 		    					break;
 		    				case Keywords.XS_UNSIGNED_BYTE :    					
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSUnsignedByte.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSUnsignedByte.class, xctxt);
 		    					break;
 		    				case Keywords.FUNC_BOOLEAN_STRING :    					
 		    					for (int idx = 0; idx < funcObj.getArgCount(); idx++) {
@@ -345,7 +345,7 @@ public class XSLFunctionService {
 		
 		    					break;
 		    				case Keywords.XS_ANY_URI :    					
-		    					evalResult = evaluateXPathBuiltInConstructionFunctionCall(funcObj, XSAnyURI.class, xctxt);
+		    					evalResult = evaluateXPathBuiltInConstructorFunctionCall(funcObj, XSAnyURI.class, xctxt);
 		    					break;
 		    				case Keywords.XS_QNAME :
 		    					XSQName xsQName = new XSQName();
@@ -523,7 +523,7 @@ public class XSLFunctionService {
     /**
      * Evaluate the XPath built-in constructor function call.
      */
-    private XObject evaluateXPathBuiltInConstructionFunctionCall(XSLConstructorStylesheetOrExtensionFunction funcObj, 
+    private XObject evaluateXPathBuiltInConstructorFunctionCall(XSLConstructorStylesheetOrExtensionFunction funcObj, 
     		                                                     Class dataType, XPathContext xctxt) throws TransformerException, 
                                                                                                  InstantiationException, IllegalAccessException, 
                                                                                                  NoSuchMethodException, SecurityException, 
