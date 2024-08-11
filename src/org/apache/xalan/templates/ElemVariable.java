@@ -40,6 +40,7 @@ import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.functions.XSLConstructorStylesheetOrExtensionFunction;
 import org.apache.xpath.functions.XSLFunctionService;
 import org.apache.xpath.objects.ResultSequence;
@@ -486,6 +487,7 @@ public class ElemVariable extends ElemTemplateElement
             LocPathIterator locPathIterator = (LocPathIterator)selectExpression;
             
             Function func = locPathIterator.getFuncExpr();
+            XPathDynamicFunctionCall dfc = locPathIterator.getDynamicFuncCallExpr();
             
             DTMIterator dtmIter = null;                     
             try {
@@ -498,6 +500,7 @@ public class ElemVariable extends ElemTemplateElement
             if (dtmIter != null) {
                ResultSequence rSeq = null;
                if (func != null) {
+            	  // Evaluate an XPath path expression like /a/b/funcCall(..)
             	  rSeq = new ResultSequence();
             	  int nextNode;
             	  while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
@@ -507,7 +510,22 @@ public class ElemVariable extends ElemTemplateElement
                       XObject funcEvalResult = func.execute(xctxt);
                       rSeq.add(funcEvalResult);
                   }
+            	  
             	  var = rSeq; 
+               }
+               else if (dfc != null) {
+            	   // Evaluate an XPath path expression like /a/b/$funcCall(..)
+            	   rSeq = new ResultSequence();
+            	   int nextNode;
+            	   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
+            	   {
+            		   XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+            		   xctxt.setXPath3ContextItem(singletonXPathNode);                              
+            		   XObject evalResult = dfc.execute(xctxt);
+            		   rSeq.add(evalResult);
+            	   }
+            	   
+            	   var = rSeq; 
                }
                else {
                   var = new XNodeSet(dtmIter);

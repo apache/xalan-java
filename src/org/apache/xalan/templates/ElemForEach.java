@@ -446,9 +446,7 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         }
     }
     else if (m_selectExpression instanceof LocPathIterator) {
-        LocPathIterator locPathIterator = (LocPathIterator)m_selectExpression;
-        
-        Function func = locPathIterator.getFuncExpr();          
+        LocPathIterator locPathIterator = (LocPathIterator)m_selectExpression;          
         
         boolean isProcessAsNodeset = true;
         DTMIterator dtmIter = null;                     
@@ -460,19 +458,40 @@ public class ElemForEach extends ElemTemplateElement implements ExpressionOwner
         }
         
         if (dtmIter != null) {
-        	ResultSequence rSeq = null;
+        	ResultSequence inpSeq = null;
+        	
+        	Function func = locPathIterator.getFuncExpr();
+        	XPathDynamicFunctionCall dfc = locPathIterator.getDynamicFuncCallExpr();
+        	
         	if (func != null) {
-        		rSeq = new ResultSequence();
+        		// Evaluate an XPath path expression like /a/b/funcCall(..)
+        		inpSeq = new ResultSequence();
         		int nextNode;
         		while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
         		{
         			XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
         			xctxt.setXPath3ContextItem(singletonXPathNode);                              
         			XObject funcEvalResult = func.execute(xctxt);
-        			rSeq.add(funcEvalResult);
+        			inpSeq.add(funcEvalResult);
         		}
         		
-        		processSequenceOrArray(transformer, xctxt, rSeq);
+        		processSequenceOrArray(transformer, xctxt, inpSeq);
+                
+                return;
+        	}
+        	else if (dfc != null) {
+        		// Evaluate an XPath path expression like /a/b/$funcCall(..)
+        		inpSeq = new ResultSequence();
+        		int nextNode;
+        		while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
+        		{
+        			XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+        			xctxt.setXPath3ContextItem(singletonXPathNode);                              
+        			XObject dfcEvalResult = dfc.execute(xctxt);
+        			inpSeq.add(dfcEvalResult);
+        		}
+        		
+        		processSequenceOrArray(transformer, xctxt, inpSeq);
                 
                 return;
         	}

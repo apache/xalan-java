@@ -42,6 +42,7 @@ import org.apache.xpath.compiler.FunctionTable;
 import org.apache.xpath.compiler.XPathParser;
 import org.apache.xpath.composite.XPathExprFunctionSuffix;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
@@ -294,6 +295,11 @@ public class XPath implements Serializable, ExpressionOwner
     		expr2.exprSetParent((ExpressionNode)locator);
     		locPathIter.setFuncExpr((Function)expr2);
     	 }
+    	 else if ((expr instanceof LocPathIterator) && (expr2 instanceof XPathDynamicFunctionCall)) {
+     		LocPathIterator locPathIter = (LocPathIterator)expr;
+     		expr2.exprSetParent((ExpressionNode)locator);
+     		locPathIter.setDynamicFuncCallExpr((XPathDynamicFunctionCall)expr2);
+     	 }
       }
     }
     else if (MATCH == type)

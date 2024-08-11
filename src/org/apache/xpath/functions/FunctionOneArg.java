@@ -20,10 +20,15 @@
  */
 package org.apache.xpath.functions;
 
+import javax.xml.transform.TransformerException;
+
 import org.apache.xalan.res.XSLMessages;
 import org.apache.xpath.Expression;
 import org.apache.xpath.ExpressionOwner;
+import org.apache.xpath.XPathContext;
 import org.apache.xpath.XPathVisitor;
+import org.apache.xpath.axes.SelfIteratorNoPredicate;
+import org.apache.xpath.objects.XObject;
 
 /**
  * Base class for functions that accept one argument.
@@ -172,6 +177,28 @@ public class FunctionOneArg extends Function implements ExpressionOwner
   		return false;
 
   	return true;
+  }
+  
+  /**
+   * Get the effective value of function argument.
+   */
+  protected XObject getEffectiveFuncArgValue(Expression argExpr, XPathContext xctxt) throws TransformerException {
+	  XObject argValue = null;
+
+	  if (argExpr instanceof SelfIteratorNoPredicate) {
+		  XObject contextItem = xctxt.getXPath3ContextItem();
+		  if (contextItem != null) {
+			  argValue = contextItem;  
+		  }
+		  else {
+			  argValue = argExpr.execute(xctxt); 
+		  }
+	  }
+	  else {  
+		  argValue = argExpr.execute(xctxt);
+	  }
+	  
+	  return argValue;
   }
 
 }

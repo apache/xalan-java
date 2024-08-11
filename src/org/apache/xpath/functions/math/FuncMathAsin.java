@@ -64,7 +64,7 @@ public class FuncMathAsin extends FunctionOneArg
           return resultSeq;
        }
           
-       XObject arg0Result = arg0.execute(xctxt);
+       XObject arg0Result = getEffectiveFuncArgValue(arg0, xctxt);
        
        if (arg0Result instanceof XNumber) {
           double resultVal = Math.asin(((XNumber)arg0Result).num());

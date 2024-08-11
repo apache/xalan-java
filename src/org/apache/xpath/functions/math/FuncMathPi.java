@@ -55,7 +55,7 @@ public class FuncMathPi extends Function
    */
   public void fixupVariables(java.util.Vector vars, int globalsSize)
   {
-    // no-op
+     // NO OP
   }
 
 }

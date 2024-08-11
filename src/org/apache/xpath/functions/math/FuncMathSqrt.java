@@ -63,8 +63,8 @@ public class FuncMathSqrt extends FunctionOneArg
           ResultSequence resultSeq = new ResultSequence();
           return resultSeq;
        }
-          
-       XObject arg0Result = arg0.execute(xctxt);
+       
+       XObject arg0Result = getEffectiveFuncArgValue(arg0, xctxt);
        
        if (arg0Result instanceof XNumber) {
           double resultVal = Math.sqrt(((XNumber)arg0Result).num());
@@ -125,4 +125,5 @@ public class FuncMathSqrt extends FunctionOneArg
        
        return result;
     }
+
 }

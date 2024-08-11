@@ -46,8 +46,8 @@ public class FuncMathPow extends Function2Args {
         
         SourceLocator srcLocator = xctxt.getSAXLocator();
         
-        XObject arg0Result = (getArg0()).execute(xctxt);        
-        XObject arg1Result = (getArg1()).execute(xctxt);
+        XObject arg0Result = getEffectiveFuncArgValue(getArg0(), xctxt);        
+        XObject arg1Result = getEffectiveFuncArgValue(getArg1(), xctxt);
         
         double lDouble = getDoubleValue(arg0Result, srcLocator, "first");
         double rDouble = getDoubleValue(arg1Result, srcLocator, "second");

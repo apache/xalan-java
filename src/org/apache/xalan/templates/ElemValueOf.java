@@ -460,7 +460,8 @@ public class ElemValueOf extends ElemTemplateElement {
                   else if (expr instanceof LocPathIterator) {
                      LocPathIterator locPathIterator = (LocPathIterator)expr;
                      
-                     Function func = locPathIterator.getFuncExpr();;
+                     Function func = locPathIterator.getFuncExpr();
+                     XPathDynamicFunctionCall dfc = locPathIterator.getDynamicFuncCallExpr();
                      
                      DTMIterator dtmIter = null;                     
                      try {
@@ -478,9 +479,18 @@ public class ElemValueOf extends ElemTemplateElement {
                            XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
                            String resultStr = "";
                            if (func != null) {
+                        	  // Evaluate an XPath path expression like /a/b/funcCall(..).
+                        	  // Find one result item, since this is within a loop.
                               xctxt.setXPath3ContextItem(singletonXPathNode);                              
                               XObject funcEvalResult = func.execute(xctxt);
                               resultStr = XslTransformEvaluationHelper.getStrVal(funcEvalResult);                               
+                           }
+                           else if (dfc != null) {
+                        	   // Evaluate an XPath path expression like /a/b/$funcCall(..).
+                        	   // Find one result item, since this is within a loop.
+                               xctxt.setXPath3ContextItem(singletonXPathNode);                              
+                               XObject evalResult = dfc.execute(xctxt);
+                               resultStr = XslTransformEvaluationHelper.getStrVal(evalResult);                               
                            }
                            else {
                               resultStr = singletonXPathNode.str();

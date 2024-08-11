@@ -34,6 +34,7 @@ import org.apache.xpath.XPath;
 import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.functions.Function;
+import org.apache.xpath.functions.XPathDynamicFunctionCall;
 import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XObject;
@@ -182,13 +183,13 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
            
            verifyXslElemIterateChildElementsSequence(xctxt);
            
-           XObject evalResult = null;
-           
-           Function func = null;
+           XObject inpXObject = null;
            
            if (m_selectExpression instanceof LocPathIterator) {
         	   LocPathIterator locPathIter = (LocPathIterator)m_selectExpression;
-               func = locPathIter.getFuncExpr();
+        	   
+        	   Function func = locPathIter.getFuncExpr();
+        	   XPathDynamicFunctionCall dfc = locPathIter.getDynamicFuncCallExpr();
                
                DTMIterator dtmIter = null;
                try {
@@ -201,6 +202,7 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
                if (dtmIter != null) {
             	   ResultSequence rSeq = null;
             	   if (func != null) {
+            		   // Evaluate an XPath path expression like /a/b/funcCall(..)
             		   rSeq = new ResultSequence();
             		   int nextNode;
             		   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
@@ -211,23 +213,37 @@ public class ElemIterate extends ElemTemplateElement implements ExpressionOwner
             			   rSeq.add(funcEvalResult);
             		   }
             		   
-            		   evalResult = rSeq;
+            		   inpXObject = rSeq;
+            	   }
+            	   else if (dfc != null) {
+            		   // Evaluate an XPath path expression like /a/b/$funcCall(..)
+            		   rSeq = new ResultSequence();
+            		   int nextNode;
+            		   while ((nextNode = dtmIter.nextNode()) != DTM.NULL)
+            		   {
+            			   XNodeSet singletonXPathNode = new XNodeSet(nextNode, xctxt);
+            			   xctxt.setXPath3ContextItem(singletonXPathNode);                              
+            			   XObject funcEvalResult = dfc.execute(xctxt);
+            			   rSeq.add(funcEvalResult);
+            		   }
+            		   
+            		   inpXObject = rSeq;
             	   }
                }
            }
            
-           if (evalResult == null) {
-              evalResult = m_selectExpression.execute(xctxt);
+           if (inpXObject == null) {
+              inpXObject = m_selectExpression.execute(xctxt);
            }
            
            List<XObject> itemsToBeProcessed = null;
                
-           if ((evalResult instanceof ResultSequence) || (evalResult instanceof XPathArray)) {
-        	   if (evalResult instanceof ResultSequence) {
-        		   itemsToBeProcessed = ((ResultSequence)evalResult).getResultSequenceItems();
+           if ((inpXObject instanceof ResultSequence) || (inpXObject instanceof XPathArray)) {
+        	   if (inpXObject instanceof ResultSequence) {
+        		   itemsToBeProcessed = ((ResultSequence)inpXObject).getResultSequenceItems();
         	   }
         	   else {
-        		   XPathArray xpathArr = (XPathArray)evalResult;
+        		   XPathArray xpathArr = (XPathArray)inpXObject;
         		   itemsToBeProcessed = xpathArr.getNativeArray();
         	   }
                    

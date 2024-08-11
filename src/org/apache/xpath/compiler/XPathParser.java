@@ -50,7 +50,6 @@ import org.apache.xml.utils.PrefixResolver;
 import org.apache.xpath.XPathProcessorException;
 import org.apache.xpath.composite.ForQuantifiedExprVarBinding;
 import org.apache.xpath.composite.LetExprVarBinding;
-import org.apache.xpath.composite.XPathExprFunctionSuffix;
 import org.apache.xpath.composite.SequenceTypeArrayTest;
 import org.apache.xpath.composite.SequenceTypeData;
 import org.apache.xpath.composite.SequenceTypeFunctionTest;
@@ -58,6 +57,7 @@ import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeMapTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.composite.XPathArrayConstructor;
+import org.apache.xpath.composite.XPathExprFunctionSuffix;
 import org.apache.xpath.composite.XPathForExpr;
 import org.apache.xpath.composite.XPathIfExpr;
 import org.apache.xpath.composite.XPathLetExpr;
@@ -3906,10 +3906,44 @@ public class XPathParser
       nextToken();
 
       if (!Step())
-      {
-        // RelativeLocationPath can't end with a trailing '/'
-        // "Location step expected following '/' or '//'"
-        error(XPATHErrorResources.ER_EXPECTED_LOC_STEP, null);
+      {    	  
+    	if (!isXPathPatternExcludeTrailingNodeFunctions() && ((m_tokenChar == '$') && (lookahead('(', 2)))) {
+            // XPath parse of expression like /a/b/$func(..), i.e an XPath path expression 
+    		// with a dynamic function call suffix.
+    		
+    		String xpathOneStr = "";
+    		String xpathTwoStr = "";
+    		for (int idx = 0; idx < (m_queueMark - 2); idx++) {
+    		   xpathOneStr += (String)(m_ops.m_tokenQueue.elementAt(idx)); 
+    		}
+    		
+    		// XPath dynamic function call string accumulation
+    		xpathTwoStr += m_token;
+    		nextToken();
+    		xpathTwoStr += m_token;
+    		nextToken();
+    		xpathTwoStr += m_token;
+    		nextToken();
+    		
+    		while (m_token != null) {
+     		   xpathTwoStr += m_token;
+     		   nextToken();     		   
+     	    }
+    		
+    		m_pathExprFunctionSuffix = new XPathExprFunctionSuffix();    	   
+     	    m_pathExprFunctionSuffix.setXPathOneStr(xpathOneStr);
+     	    m_pathExprFunctionSuffix.setXPathTwoStr(xpathTwoStr);
+     	   
+     	    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
+     	    
+     	    m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
+                                             m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
+    	}
+    	else {
+           // RelativeLocationPath can't end with a trailing '/'
+           // "Location step expected following '/' or '//'"
+           error(XPATHErrorResources.ER_EXPECTED_LOC_STEP, null);
+    	}
       }
     }
 
@@ -4084,7 +4118,7 @@ public class XPathParser
     		   nextToken();
     		   xpathOneStr += m_token; 
     	   }
-    	   
+    	     
     	   for (int idx = scanOneEndPos; idx < scanTwoStartPos; idx++) {
     		  nextToken(); 
     	   }
@@ -5747,14 +5781,16 @@ public class XPathParser
    }
    
    /**
-    * This method checks, whether there's a function call suffix at an 
-    * end of XPath expression similar to /a/b/funcCall(..).
+    * This method checks, whether there's an XPath built-in node pattern like 
+    * node()/text()/comment() at an end of XPath expression. XPath node checks for 
+    * these patterns with predicate as suffix also need to be similarly excluded.
     */
    private boolean isXPathPatternExcludeTrailingNodeFunctions() {
 	  boolean isExclude = false;
 	  
 	  String currXPathPattern = m_ops.m_currentPattern;
-	  if (currXPathPattern.endsWith("node()") || currXPathPattern.endsWith("text()") || currXPathPattern.endsWith("comment()")) {
+	  if (currXPathPattern.endsWith("node()") || currXPathPattern.endsWith("text()") || 
+			                                                            currXPathPattern.endsWith("comment()")) {
 		  isExclude = true; 
 	  }
 	  else {
