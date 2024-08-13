@@ -27,6 +27,8 @@ import org.apache.xalan.transformer.TransformerImpl;
 /**
  *  Implementation of the XSLT 3.0 xsl:import-schema instruction.
  *  
+ *  @author Mukul Gandhi <mukulg@apache.org>
+ *  
  *  @xsl.usage advanced
  */
 public class ElemImportSchema extends ElemTemplateElement
@@ -41,7 +43,7 @@ public class ElemImportSchema extends ElemTemplateElement
    */
   public int getXSLToken()
   {
-    return Constants.ELEMNAME_CHOOSE;
+    return Constants.ELEMNAME_IMPORT_SCHEMA;
   }
 
   /**
@@ -51,18 +53,16 @@ public class ElemImportSchema extends ElemTemplateElement
    */
   public String getNodeName()
   {
-    return Constants.ELEMNAME_CHOOSE_STRING;
+    return Constants.ELEMNAME_IMPORT_SCHEMA_STRING;
   }
 
   /**
-   * Constructor ElemChoose
-   *
+   * Constructor ElemImportSchema
    */
   public ElemImportSchema(){}
 
   /**
-   * Execute the xsl:choose transformation.
-   *
+   * Execute the xsl:import-schema transformation.
    *
    * @param transformer non-null reference to the the current transform-time state.
    *
@@ -70,7 +70,7 @@ public class ElemImportSchema extends ElemTemplateElement
    */
   public void execute(TransformerImpl transformer) throws TransformerException
   {
-     // no op
+     // NO OP
   }
 
   /**
@@ -84,12 +84,12 @@ public class ElemImportSchema extends ElemTemplateElement
   
   public void compose(StylesheetRoot sroot) throws TransformerException
   {
-	  
+	 // NO OP  
   }
   
   public void endCompose(StylesheetRoot sroot) throws TransformerException
   {
-	  
+	 // NO OP  
   }
   
   public void setParentElem(ElemTemplateElement p)

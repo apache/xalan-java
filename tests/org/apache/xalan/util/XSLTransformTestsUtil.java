@@ -28,6 +28,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -56,7 +57,9 @@ public class XSLTransformTestsUtil {
     
     protected static TransformerFactory xslTransformerFactory = null;
     
-    private boolean isXmlValidationRequired = false;
+    private boolean isXmlValidationEnabled = false;
+    
+    private boolean isXslEvaluateEnabled = false;
     
     /**
      * Class constructor.
@@ -78,8 +81,8 @@ public class XSLTransformTestsUtil {
     }
     
     /**
-     * This function is used by, few of Xalan-J java extension functions used
-     * within the .xsl test files.
+     * This method is used by, Xalan-J Java extension functions used
+     * within few .xsl test files.
      */
     public static Date getCurrentDate() {
         Date currentDate = new Date();
@@ -88,8 +91,8 @@ public class XSLTransformTestsUtil {
     }
    
     /**
-     * This function is used by, few of Xalan-J java extension functions used
-     * within the .xsl test files.
+     * This method is used by, Xalan-J Java extension functions used
+     * within few .xsl test files.
      */
     public static String getDefaultTimezoneOffsetStr() {
         String timeZoneoffsetStr = null;
@@ -104,13 +107,6 @@ public class XSLTransformTestsUtil {
         }
        
         return timeZoneoffsetStr;
-    }
-    
-    /**
-     * Set the XML validation property for an XSL transformation.
-     */
-    protected void setXmlValidationProperty(boolean isEnableValidation) {
-    	isXmlValidationRequired = isEnableValidation;
     }
 
     /**
@@ -129,22 +125,19 @@ public class XSLTransformTestsUtil {
            
            Node xmlDomSource = xmlDocumentBuilder.parse(new InputSource(xmlDocumentUriStr));
        
-           Transformer xslTransformer = xslTransformerFactory.newTransformer(new 
-        		                                                          StreamSource(xslDocumentUriStr));
-           if (isXmlValidationRequired) {
-        	   TransformerImpl transformerImpl = (TransformerImpl)xslTransformer;
-        	   transformerImpl.setProperty("http://apache.org/xalan/validation", Boolean.TRUE);
-           }
+           Transformer transformer = xslTransformerFactory.newTransformer(new StreamSource(xslDocumentUriStr));
+           
+           enableXslTransformProperties(transformer);
            
            if (xslTransformErrHandler != null) {
-               xslTransformer.setErrorListener(xslTransformErrHandler);  
+               transformer.setErrorListener(xslTransformErrHandler);  
            }
            
            StringWriter resultStrWriter = new StringWriter();
            
            DOMSource xmlDomSrc = new DOMSource(xmlDomSource, xmlDocumentUriStr);
            
-           xslTransformer.transform(xmlDomSrc, new StreamResult(resultStrWriter));
+           transformer.transform(xmlDomSrc, new StreamResult(resultStrWriter));
            
            if (xslTransformErrHandler != null) {
                List<String> trfErrorList = xslTransformErrHandler.getTrfErrorList();
@@ -217,6 +210,36 @@ public class XSLTransformTestsUtil {
         catch (Exception ex) {
             Assert.fail();    
         }
-     }
+    }
+    
+    /**
+     * Set an XSL transformation, XML validation property.
+     */
+    protected void setXmlValidationProperty(boolean isEnableValidation) {
+    	isXmlValidationEnabled = isEnableValidation;
+    }
+    
+    /**
+     * Set an XSL transformation, xsl:evaluate instruction evaluation
+     * property.
+     */
+    protected void setXslEvaluateProperty(boolean isXslEvaluateEnable) {
+    	isXslEvaluateEnabled = isXslEvaluateEnable;
+    }
+    
+    /**
+     * Enable few XSL transformation properties, on Xalan-J's TransformerImpl object. 
+     */
+    private void enableXslTransformProperties(Transformer transformer) throws TransformerException {
+    	if (isXmlValidationEnabled) {
+    		TransformerImpl transformerImpl = (TransformerImpl)transformer;
+    		transformerImpl.setProperty(TransformerImpl.XML_VALIDATION_PROPERTY, Boolean.TRUE);
+    	}
+
+    	if (isXslEvaluateEnabled) {
+    		TransformerImpl transformerImpl = (TransformerImpl)transformer;
+    		transformerImpl.setProperty(TransformerImpl.XSL_EVALUATE_PROPERTY, Boolean.TRUE); 
+    	}
+    }
     
 }

@@ -377,11 +377,26 @@ public class TransformerImpl extends Transformer
    */
   private boolean m_isXslIterateOnCompletionActive = false;
   
-  private static final String XML_VALIDATION_PROPERTY = "http://apache.org/xalan/validation";
+  /**
+   * This Xalan-J transformation property is used, to determine whether 
+   * XML Schema validation of XML input document is enabled or not.
+   * 
+   * Default value is 'disabled'.
+   */
+  public static final String XML_VALIDATION_PROPERTY = "http://apache.org/xalan/validation";
   
   /**
-   * If this list object contains a property string, then that means
-   * that property is enabled for XSL transformation with Xalan-J.
+   * This Xalan-J transformation property is used, to determine whether 
+   * xsl:evaluate instruction's evaluation is enabled or not.
+   * 
+   * Default value is 'disabled'.
+   */
+  public static final String XSL_EVALUATE_PROPERTY = "http://apache.org/xalan/xslevaluate";
+  
+  /**
+   * When this list object contains a property identification string, 
+   * then that means that property is enabled for XSL transformation 
+   * with Xalan-J.
    */
   private List<String> m_enabledPropertyList = new ArrayList<String>(); 
 
@@ -428,7 +443,7 @@ public class TransformerImpl extends Transformer
     
     setXPathContext(xPath);
     getXPathContext().setNamespaceContext(stylesheet);
-    m_stackGuard = new StackGuard(this);    
+    m_stackGuard = new StackGuard(this);
   }
   
   // ================ ExtensionsTable ===================
@@ -576,7 +591,7 @@ public class TransformerImpl extends Transformer
    */
   public void setProperty(String property, Object value) throws TransformerException
   {
-	  if (XML_VALIDATION_PROPERTY.equals(property)) {
+	  if (XML_VALIDATION_PROPERTY.equals(property) || XSL_EVALUATE_PROPERTY.equals(property)) {
 		 if (value instanceof Boolean) {
 			if (((Boolean)value).booleanValue() && !m_enabledPropertyList.contains(property)) {
 			   m_enabledPropertyList.add(property);
@@ -586,7 +601,7 @@ public class TransformerImpl extends Transformer
 			}
 		 }
 		 else {
-			throw new TransformerException("The property value can only be boolean."); 
+			throw new TransformerException("An " + property + " property value can only be boolean."); 
 		 }
 	  }
 	  else {

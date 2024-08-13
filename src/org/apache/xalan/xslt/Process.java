@@ -56,6 +56,7 @@ import org.apache.xalan.res.XSLTErrorResources;
 import org.apache.xalan.templates.StylesheetRoot;
 import org.apache.xalan.trace.PrintTraceListener;
 import org.apache.xalan.trace.TraceManager;
+import org.apache.xalan.transformer.TransformerImpl;
 import org.apache.xalan.transformer.XalanProperties;
 import org.apache.xalan.xslt.util.XslTransformSharedDatastore;
 import org.apache.xml.utils.DefaultErrorHandler;
@@ -86,7 +87,8 @@ public class Process
     System.out.println(resbundle.getString("optionXSLTC"));  //"    [-XSLTC (use XSLTC for transformation)]
     System.out.println(resbundle.getString("optionIN"));  //"    [-IN inputXMLURL]");
     System.out.println(resbundle.getString("optionXSL"));  //"   [-XSL XSLTransformationURL]");
-    System.out.println(resbundle.getString("optionVAL"));  //"   [-VAL (Request validation of XML input document)]");
+    System.out.println(resbundle.getString("optionXSVAL"));  //"   [-XSVAL (Request XML Schema validation of XML input document)]");
+    System.out.println(resbundle.getString("optionXSLEVALUATE"));  //"   [-XSLEVALUATE (Request xsl:evaluate instruction to be enabled)]");
     System.out.println(resbundle.getString("optionOUT"));  //"   [-OUT outputFileName]");
 
     // System.out.println(resbundle.getString("optionE")); //"   [-E (Do not expand entity refs)]");
@@ -157,8 +159,9 @@ public class Process
     boolean setQuietMode = false;
     boolean doDiag = false;
     String msg = null;
-    boolean isSecureProcessing = false;
-    boolean isSchemaValidation = false;
+    boolean isSecureProcessing = false;    
+    boolean isSchemaValidation = false;    
+    boolean isXslEvaluate = false;
 
     // Runtime.getRuntime().traceMethodCalls(false);
     // Runtime.getRuntime().traceInstructions(false);
@@ -696,8 +699,11 @@ public class Process
           }
           catch (TransformerConfigurationException e) {}
         }
-        else if ("-VAL".equalsIgnoreCase(argv[i])) {
+        else if ("-XSVAL".equalsIgnoreCase(argv[i])) {
           isSchemaValidation = true;
+        }
+        else if ("-XSLEVALUATE".equalsIgnoreCase(argv[i])) {
+          isXslEvaluate = true;
         }
         else
           System.err.println(
@@ -749,15 +755,12 @@ public class Process
             DocumentBuilder docBuilder = dfactory.newDocumentBuilder();
             Node xslDOM = docBuilder.parse(new InputSource(xslFileName));
 
-            stylesheet = tfactory.newTemplates(new DOMSource(xslDOM,
-                    xslFileName));
+            stylesheet = tfactory.newTemplates(new DOMSource(xslDOM, xslFileName));
           }
           else
           {
-            // System.out.println("Calling newTemplates: "+xslFileName);
             XslTransformSharedDatastore.xslSystemId = SystemIDResolver.getAbsoluteURI(xslFileName); 
             stylesheet = tfactory.newTemplates(new StreamSource(xslFileName));
-            // System.out.println("Done calling newTemplates: "+xslFileName);
           }
         }
 
@@ -819,6 +822,11 @@ public class Process
           }
           
           Transformer transformer = flavor.equals("th") ? null : stylesheet.newTransformer();
+          
+          if (isXslEvaluate) {
+        	 ((TransformerImpl)transformer).setProperty(TransformerImpl.XSL_EVALUATE_PROPERTY, Boolean.TRUE);
+          }
+          
           transformer.setErrorListener(new DefaultErrorHandler(false));
 
           // Override the output format?

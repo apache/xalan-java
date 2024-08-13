@@ -451,9 +451,13 @@ public class ElemFunction extends ElemTemplate
                    errMesg = "XTTE0780 : A sequence of more than one item, is not allowed as a result of call to function '" + m_name.toString() + "'. "
                                                                                 + "The expected result type of this function is " + sequenceTypeXPathExprStr + "."; 
                 }
-                else {
+                else if (varQName != null) {
                    errMesg = "XTTE0570 : A sequence of more than one item, is not allowed as the value of variable '$" + varQName.toString() + "'. "
                                                                                 + "This variable has expected type " + sequenceTypeXPathExprStr + "."; 
+                }
+                else {
+                   errMesg = "XTTE0570 : A sequence of more than one item, is not allowed as the result of xsl:evaluate instruction's evaluation. "
+                            													+ "An xsl:evaluate instruction's expected type is " + sequenceTypeXPathExprStr + ".";
                 }
                 
                 throw new TransformerException(errMesg); 

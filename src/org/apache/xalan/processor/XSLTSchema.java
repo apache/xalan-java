@@ -33,6 +33,7 @@ import org.apache.xalan.templates.ElemComment;
 import org.apache.xalan.templates.ElemCopy;
 import org.apache.xalan.templates.ElemCopyOf;
 import org.apache.xalan.templates.ElemElement;
+import org.apache.xalan.templates.ElemEvaluate;
 import org.apache.xalan.templates.ElemExsltFuncResult;
 import org.apache.xalan.templates.ElemExsltFunction;
 import org.apache.xalan.templates.ElemExtensionDecl;
@@ -224,6 +225,18 @@ public class XSLTSchema extends XSLTElementDef
                                             "select",
                                             XSLTAttributeDef.T_EXPR, true, false, XSLTAttributeDef.ERROR);
     
+    // Required.
+    // xsl:evaluate
+    XSLTAttributeDef xpathAttrRequired = new XSLTAttributeDef(null,
+								            "xpath",
+								            XSLTAttributeDef.T_EXPR, true, false, XSLTAttributeDef.ERROR);
+    
+    // Optional.
+    // xsl:evaluate
+    XSLTAttributeDef contextItemAttrOpt = new XSLTAttributeDef(null,
+									                   "context-item",
+									                   XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
+    
     // Required.                                       
     // xsl:analyze-string
     XSLTAttributeDef regexAVTRequired = new XSLTAttributeDef(null, "regex",
@@ -265,7 +278,7 @@ public class XSLTSchema extends XSLTElementDef
                                        XSLTAttributeDef.T_EXPR, false, false, XSLTAttributeDef.ERROR);
     
     // Optional.
-    // xsl:variable, xsl:param, xsl:with-param, xsl:template, xsl:function 
+    // xsl:variable, xsl:param, xsl:with-param, xsl:template, xsl:function, xsl:evaluate
     XSLTAttributeDef asAttrOpt = new XSLTAttributeDef(null, "as",
                                        XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
     
@@ -421,11 +434,11 @@ public class XSLTSchema extends XSLTElementDef
       new XSLTAttributeDef(Constants.S_XSLNAMESPACEURL, "*",
                            XSLTAttributeDef.T_CDATA, false, false,XSLTAttributeDef.WARNING);
                            
-    XSLTElementDef[] templateElements = new XSLTElementDef[33];
-    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[34];
-    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[34];
+    XSLTElementDef[] templateElements = new XSLTElementDef[34];
+    XSLTElementDef[] templateElementsAndParams = new XSLTElementDef[35];
+    XSLTElementDef[] templateElementsAndSort = new XSLTElementDef[35];
     //exslt
-    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[34];
+    XSLTElementDef[] exsltFunctionElements = new XSLTElementDef[35];
     
     XSLTElementDef[] charTemplateElements = new XSLTElementDef[16];
     XSLTElementDef resultElement = new XSLTElementDef(this, null, "*",
@@ -460,7 +473,8 @@ public class XSLTSchema extends XSLTElementDef
                                   new XSLTAttributeDef[]{ selectAttrRequired,
                                                           disableOutputEscapingAttr }, 
                                                new ProcessorTemplateElem(),
-                                  ElemValueOf.class /* class object */, 20, true);
+                                  ElemValueOf.class /* class object */, 20, true);        
+    
     XSLTElementDef xslCopyOf = new XSLTElementDef(this,
                                  Constants.S_XSLNAMESPACEURL, "copy-of",
                                  null /*alias */, null /* elements */,
@@ -577,6 +591,13 @@ public class XSLTSchema extends XSLTElementDef
     XSLTElementDef xslIterateBreak = new XSLTElementDef(this, Constants.S_XSLNAMESPACEURL, "break", null /*alias */, templateElements,
                                                         new XSLTAttributeDef[]{ selectAttrOpt }, new ProcessorTemplateElem(), 
                                                         ElemIterateBreak.class /* class object */, true, false, true, 20, true);
+    
+    XSLTElementDef xslEvaluate = new XSLTElementDef(this, Constants.S_XSLNAMESPACEURL, "evaluate",
+										            null /*alias */, new XSLTElementDef[]{
+										                    xslWithParam } /* elements */,
+										            new XSLTAttributeDef[]{ xpathAttrRequired, contextItemAttrOpt, asAttrOpt }, 
+										                         new ProcessorTemplateElem(),
+										            ElemEvaluate.class /* class object */, 20, true);
     
     XSLTElementDef xslIf = new XSLTElementDef(this,
                                               Constants.S_XSLNAMESPACEURL,
@@ -751,6 +772,7 @@ public class XSLTSchema extends XSLTElementDef
     templateElements[i++] = xslIterateOnCompletion;
     templateElements[i++] = xslIterateNextIteration;
     templateElements[i++] = xslValueOf;
+    templateElements[i++] = xslEvaluate;
     templateElements[i++] = xslCopyOf;
     templateElements[i++] = xslNumber;
     templateElements[i++] = xslChoose;

@@ -106,9 +106,13 @@ public class Constants extends org.apache.xml.utils.Constants
   
   ELEMNAME_FUNCTION = 98,
   
-  ELEMNAME_SEQUENCE = 99;
+  ELEMNAME_SEQUENCE = 99,
   
-  // next available number : 100
+  ELEMNAME_IMPORT_SCHEMA = 100,
+  
+  ELEMNAME_EVALUATE = 101;
+  
+  // next available number : 102
 
   /**
    * Literals for XSL element names. Note that there are more
@@ -192,7 +196,8 @@ public class Constants extends org.apache.xml.utils.Constants
       ELEMNAME_WITHPARAM_STRING = "with-param",
       ELEMNAME_FUNCTION_STRING = "function",
       ELEMNAME_SEQUENCE_STRING = "sequence",
-      ELEMNAME_IMPORT_SCHEMA_STRING = "import-schema";
+      ELEMNAME_IMPORT_SCHEMA_STRING = "import-schema",
+      ELEMNAME_EVALUATE_STRING = "evaluate";
   
   /**
    * Literals for EXSLT function elements.

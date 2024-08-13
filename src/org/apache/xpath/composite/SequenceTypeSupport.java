@@ -698,6 +698,9 @@ public class SequenceTypeSupport {
                if (srcResultSeq.size() == 1) {
             	   // Recursive call to this function
                    result = castXdmValueToAnotherType(srcResultSeq.item(0), sequenceTypeXPathExprStr, expectedSeqTypeData, xctxt);   
+               }               
+               else if ((srcResultSeq.size() == 0) && (itemTypeOccurenceIndicator == 0)) {
+            	   return null;
                }
                else if ((srcResultSeq.size() > 1) && (itemTypeOccurenceIndicator == 0)) {
             	   return null;

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<info>
+   <a val="1">a1</a>
+   <a val="2">a2</a>
+   <a val="3">mesg1</a>
+   <a val="4">mesg2</a>
+   <mesg1>hello</mesg1>
+   <mesg2>there</mesg2>
+</info>

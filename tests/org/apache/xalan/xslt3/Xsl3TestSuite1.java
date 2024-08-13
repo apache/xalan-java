@@ -86,7 +86,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 XPathGeneralComparisonOpTests.class, FnMapFindTests.class, XPathNumericArithmeticTests.class,
                 XslTunnelParameterTests.class, FuncBooleanValuesTests.class, XslElementValidationTests.class,
                 XslLiteralResultElementValidationTests.class, XslAttributeValidationTests.class,
-                XPathExprFunctionCallSuffixTests.class })
+                XPathExprFunctionCallSuffixTests.class, XslEvaluateTests.class })
 public class Xsl3TestSuite1 {
 
 }
