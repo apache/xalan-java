@@ -204,4 +204,16 @@ public class XslImportSchemaTests extends XSLTransformTestsUtil {
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }
     
+    @Test
+    public void xslImportSchemaTest16() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test16.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test16.out";                
+        
+        setXmlValidationProperty(true);
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
+    }
+    
 }

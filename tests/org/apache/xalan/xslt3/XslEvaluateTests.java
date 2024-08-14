@@ -95,5 +95,41 @@ public class XslEvaluateTests extends XSLTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);      
     }
+    
+    @Test
+    public void xslEvaluateTest5() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";
+        
+        setXslEvaluateProperty(true);
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);      
+    }
+    
+    @Test
+    public void xslEvaluateTest6() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test6.out";
+        
+        setXslEvaluateProperty(true);
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);      
+    }
+    
+    @Test
+    public void xslEvaluateTest7() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test7.out";
+        
+        setXslEvaluateProperty(true);
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);      
+    }
 
 }

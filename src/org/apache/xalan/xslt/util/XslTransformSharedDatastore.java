@@ -17,6 +17,7 @@
 package org.apache.xalan.xslt.util;
 
 import org.apache.xalan.templates.StylesheetRoot;
+import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
 
 /**
@@ -41,6 +42,13 @@ public class XslTransformSharedDatastore {
      * returned from XSL stylesheet xsl:function calls.
      */
     public static XPathInlineFunction xpathInlineFunction;
+    
+    /**
+     * This class field represents, XPath array values
+     * returned from evaluation of xsl:evaluate 
+     * instruction.
+     */
+    public static XPathArray xpathArray;
     
     /**
      * This class field represents, compiled representation 

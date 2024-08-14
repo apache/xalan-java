@@ -365,8 +365,8 @@ public class InstanceOf extends Operation
 							  XNodeSet node = new XNodeSet(nextNodeDtmHandle, dtmIter.getDTMManager());
 							  
 							  // Check whether this element node has complexContent (i.e, presence of 
-							  // child element or attribute). If 'yes' then instance of
-							  // check will be false for this case.
+							  // child element or attribute). If 'yes' then instance of check will 
+							  // be false for this case.
 							  node = (XNodeSet)(node.getFresh());
 							  DTMIterator dtmIter1 = ((XNodeSet)node).iterRaw();
 							  int nodeHandle = dtmIter1.nextNode();
@@ -455,8 +455,18 @@ public class InstanceOf extends Operation
 							  if (elemDecl != null) {
 								 nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
 							  }
+							  else {
+								 // When an XML input document has been validated with a schema but the schema 
+								 // doesn't have a global element declaration for this element node, we 
+								 // produce 'instance of' result as false, instead of emitting an XPath 
+								 // dynamic error. 
+								 isInstanceOf = false;
+								 break; 
+							  }
 						  }
 						  else {
+							  // When an XML input document has not been validated with a schema, we produce 
+							  // 'instance of' result as false, instead of emitting an XPath dynamic error.
 							  isInstanceOf = false;
 							  break; 
 						  }
@@ -539,8 +549,18 @@ public class InstanceOf extends Operation
 							  if (attrDecl != null) {
 								 nodeSetSequenceTypeKindTestResultList.add(Boolean.valueOf(true)); 
 							  }
+							  else {
+								 // When an XML input document has been validated with a schema but the schema 
+								 // doesn't have a global attribute declaration for this attribute node, we 
+								 // produce 'instance of' result as false, instead of emitting an XPath 
+								 // dynamic error. 
+								 isInstanceOf = false;
+								 break; 
+							  }
 						  }
 						  else {
+							  // When an XML input document has not been validated with a schema, we produce 
+							  // 'instance of' result as false, instead of emitting an XPath dynamic error.   
 							  isInstanceOf = false;
 							  break; 
 						  }

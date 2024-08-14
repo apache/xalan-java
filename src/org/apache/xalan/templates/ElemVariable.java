@@ -38,6 +38,7 @@ import org.apache.xpath.XPathContext;
 import org.apache.xpath.axes.LocPathIterator;
 import org.apache.xpath.axes.SelfIteratorNoPredicate;
 import org.apache.xpath.composite.SequenceTypeData;
+import org.apache.xpath.composite.SequenceTypeKindTest;
 import org.apache.xpath.composite.SequenceTypeSupport;
 import org.apache.xpath.functions.Function;
 import org.apache.xpath.functions.XPathDynamicFunctionCall;
@@ -660,9 +661,19 @@ public class ElemVariable extends ElemTemplateElement
     	  }
     	  
     	  if (XslTransformSharedDatastore.xpathInlineFunction != null) {
+    		  // This condition is met after method call transformer.transformToGlobalRTF/transformer.transformToRTF 
+    		  // previously.
     		  if (m_asAttr == null) {
     			  var = XslTransformSharedDatastore.xpathInlineFunction;
     			  XslTransformSharedDatastore.xpathInlineFunction = null;
+    		  }
+    	  }
+    	  else if (XslTransformSharedDatastore.xpathArray != null) {
+    		  // This condition is met after method call transformer.transformToGlobalRTF/transformer.transformToRTF 
+    		  // previously.
+    		  if (m_asAttr == null) {
+    			  var = XslTransformSharedDatastore.xpathArray;
+    			  XslTransformSharedDatastore.xpathArray = null;
     		  }
     	  }
     	  else {
@@ -675,15 +686,39 @@ public class ElemVariable extends ElemTemplateElement
        xctxt.popCurrentNode();
     }
     
-    if (m_asAttr != null) {
+    if (m_asAttr != null) {       
        if (XslTransformSharedDatastore.xpathInlineFunction != null) {
     	   XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), 
                                                                                        XPath.SELECT, null, true);
            XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
            SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
-           if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {              	   
+           SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+           int seqTypeKindVal = 0;
+           if (seqTypeKindTest != null) {
+              seqTypeKindVal = seqTypeKindTest.getKindVal();
+           }
+           if ((seqExpectedTypeData.getSequenceTypeFunctionTest() != null) || (seqTypeKindVal == SequenceTypeSupport.ITEM_KIND)) {              	   
     	      var = XslTransformSharedDatastore.xpathInlineFunction;
     	      XslTransformSharedDatastore.xpathInlineFunction = null;
+           }
+           else {
+        	  throw new TransformerException("XTTE0505 : The variable " + m_qname.getLocalName() + "'s value doesn't conform "
+        	  		                                                + "to variable's expected type " + m_asAttr + ".", srcLocator); 
+           }
+       }
+       else if (XslTransformSharedDatastore.xpathArray != null) {
+    	   XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                       XPath.SELECT, null, true);
+           XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
+           SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+           SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+           int seqTypeKindVal = 0;
+           if (seqTypeKindTest != null) {
+              seqTypeKindVal = seqTypeKindTest.getKindVal();
+           }
+           if ((seqExpectedTypeData.getSequenceTypeArrayTest() != null) || (seqTypeKindVal == SequenceTypeSupport.ITEM_KIND)) {              	   
+    	      var = XslTransformSharedDatastore.xpathArray;
+    	      XslTransformSharedDatastore.xpathArray = null;
            }
            else {
         	  throw new TransformerException("XTTE0505 : The variable " + m_qname.getLocalName() + "'s value doesn't conform "

@@ -42,6 +42,7 @@ import org.apache.xerces.impl.xs.XSDDescription;
 import org.apache.xerces.impl.xs.XSElementDecl;
 import org.apache.xerces.jaxp.validation.XMLSchemaFactory;
 import org.apache.xerces.util.XMLGrammarPoolImpl;
+import org.apache.xerces.xs.XSAttributeDeclaration;
 import org.apache.xerces.xs.XSElementDeclaration;
 import org.apache.xerces.xs.XSModel;
 import org.apache.xerces.xs.XSTypeDefinition;
@@ -438,12 +439,23 @@ public class SequenceTypeSupport {
             		XSModel xsModel = stylesheetRoot.getXsModel();
             		if (xsModel != null) {
             			XSElementDeclaration elemDecl = xsModel.getElementDeclaration(nodeName, nodeNsUri);
-            			if (elemDecl != null && isXdmElemNodeValidWithSchemaType(nodeSet, xctxt, elemDecl.getTypeDefinition())) {
-            				result = srcValue;            				            				
+            			if (elemDecl != null) {
+            				if (isXdmElemNodeValidWithSchemaType(nodeSet, xctxt, elemDecl.getTypeDefinition())) {
+            					result = srcValue;            				            				
             				
-            				return result;
+            					return result;
+            				}
             			}
-            		}				
+            			else {
+            				throw new TransformerException("XPTY0004 : A sequence type schema-element test was requested, but a schema global element "
+				            						                                + "declaration for element node '" + nodeName + "' is not available in "
+				            						                                + "the schema fetched via xsl:import-schema instruction.");
+            			}
+            		}
+            		else {
+            			throw new TransformerException("XPTY0004 : A sequence type schema-element test was requested, but an XML input "
+            																									+ "document has not been validated with a schema.");
+            		}
             	}
             }
             
@@ -1529,6 +1541,28 @@ public class SequenceTypeSupport {
                         if ((sequenceTypeKindTest.getKindVal() == ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
                                                                                                    && (isTwoXmlNamespaceValuesEqual(nodeNsUri, sequenceTypeKindTest.getNodeNsUri()))) {
                             convertedResultSeq.add(nodeSetItem);  
+                        }
+                        else if ((sequenceTypeKindTest.getKindVal() == SCHEMA_ATTRIBUTE_KIND) && (nodeName.equals(attrNodeKindTestNodeName)) 
+                                																   && (isTwoXmlNamespaceValuesEqual(nodeNsUri, sequenceTypeKindTest.getNodeNsUri()))) {
+                        	StylesheetRoot stylesheetRoot = XslTransformSharedDatastore.stylesheetRoot;
+                        	XSModel xsModel = stylesheetRoot.getXsModel();
+                        	if (xsModel != null) {
+                        		XSAttributeDeclaration attrDecl = xsModel.getAttributeDeclaration(attrNodeKindTestNodeName, sequenceTypeKindTest.getNodeNsUri());
+                        		if (attrDecl != null) {
+                        			convertedResultSeq.add(nodeSetItem); 
+                        		}
+                        		else {
+                        			throw new TransformerException("XTTE0570 : A sequence type check with schema-attribute was requested for an attribute node " + nodeName + ", "
+                                                                                                               + "but the schema used to validate an XML input document doesn't "
+                                                                                                               + "contain a global attribute declaration for this attribute node.", 
+                                                                                                                                                                           srcLocator);
+                        		}
+                        	}
+                        	else {                        		
+                                throw new TransformerException("XTTE0570 : A sequence type check with schema-attribute was requested for an attribute node " + nodeName + ", "
+                                		                                                                         + "but an XML input document has not been validated with a "
+                                		                                                                         + "schema.", srcLocator);
+                        	}
                         }
                         else if ((sequenceTypeKindTest.getKindVal() == NODE_KIND) || (sequenceTypeKindTest.getKindVal() == ITEM_KIND)) {
                             convertedResultSeq.add(nodeSetItem); 
