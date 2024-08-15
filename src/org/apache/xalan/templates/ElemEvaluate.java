@@ -570,6 +570,9 @@ public class ElemEvaluate extends ElemTemplateElement {
 			case XObject.CLASS_ARRAY :
 				XslTransformSharedDatastore.xpathArray = (XPathArray)xdmItem;				          
 				break;
+			case XObject.CLASS_MAP :
+				XslTransformSharedDatastore.xpathMap = (XPathMap)xdmItem;				          
+				break;
 			default :
 				// no op
 		}      	           

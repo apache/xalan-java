@@ -676,6 +676,14 @@ public class ElemVariable extends ElemTemplateElement
     			  XslTransformSharedDatastore.xpathArray = null;
     		  }
     	  }
+    	  else if (XslTransformSharedDatastore.xpathMap != null) {
+    		  // This condition is met after method call transformer.transformToGlobalRTF/transformer.transformToRTF 
+    		  // previously.
+    		  if (m_asAttr == null) {
+    			  var = XslTransformSharedDatastore.xpathMap;
+    			  XslTransformSharedDatastore.xpathMap = null;
+    		  }
+    	  }
     	  else {
     	     NodeList nodeList = (new XRTreeFrag(rootNodeHandleOfRtf, xctxt, this)).convertToNodeset();    	  
     	     var = new XNodeSetForDOM(nodeList, xctxt);
@@ -719,6 +727,25 @@ public class ElemVariable extends ElemTemplateElement
            if ((seqExpectedTypeData.getSequenceTypeArrayTest() != null) || (seqTypeKindVal == SequenceTypeSupport.ITEM_KIND)) {              	   
     	      var = XslTransformSharedDatastore.xpathArray;
     	      XslTransformSharedDatastore.xpathArray = null;
+           }
+           else {
+        	  throw new TransformerException("XTTE0505 : The variable " + m_qname.getLocalName() + "'s value doesn't conform "
+        	  		                                                + "to variable's expected type " + m_asAttr + ".", srcLocator); 
+           }
+       }
+       else if (XslTransformSharedDatastore.xpathMap != null) {
+    	   XPath seqTypeXPath = new XPath(m_asAttr, srcLocator, xctxt.getNamespaceContext(), 
+                                                                                       XPath.SELECT, null, true);
+           XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
+           SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+           SequenceTypeKindTest seqTypeKindTest = seqExpectedTypeData.getSequenceTypeKindTest();
+           int seqTypeKindVal = 0;
+           if (seqTypeKindTest != null) {
+              seqTypeKindVal = seqTypeKindTest.getKindVal();
+           }
+           if ((seqExpectedTypeData.getSequenceTypeMapTest() != null) || (seqTypeKindVal == SequenceTypeSupport.ITEM_KIND)) {              	   
+    	      var = XslTransformSharedDatastore.xpathMap;
+    	      XslTransformSharedDatastore.xpathMap = null;
            }
            else {
         	  throw new TransformerException("XTTE0505 : The variable " + m_qname.getLocalName() + "'s value doesn't conform "

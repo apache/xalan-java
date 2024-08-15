@@ -112,11 +112,11 @@ public class FuncJsonToXml extends FunctionMultiArgs
         
         if (arg0 instanceof Variable) {
            XObject arg0Obj = ((Variable)arg0).execute(xctxt);
-           jsonStr = XslTransformEvaluationHelper.getStrVal(arg0Obj); 
+           jsonStr = (XslTransformEvaluationHelper.getStrVal(arg0Obj)).trim(); 
         }
         else {
            XObject arg0Obj = arg0.execute(xctxt);
-           jsonStr = XslTransformEvaluationHelper.getStrVal(arg0Obj);
+           jsonStr = (XslTransformEvaluationHelper.getStrVal(arg0Obj)).trim();
         }
                  
         XPathMap optionsMap = null;

@@ -1,28 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"  
-			    xmlns:array="http://www.w3.org/2005/xpath-functions/array"				
-			    exclude-result-prefixes="array" version="3.0">
-				
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"			     				
+			    exclude-result-prefixes="xs" version="3.0">
+			    
   <!-- Author: mukulg@apache.org -->
-    
-  <!-- use with test2.xml -->
-    
-  <!-- An XSLT stylesheet test case, to test xsl:evaluate 
-       instruction. -->				
+  
+  <!-- use with test6.xml -->
+  
+  <!-- An XSLT test case to test, xsl:evaluate instruction. -->						
   
   <xsl:output method="xml" indent="yes"/>
   
-  <xsl:template match="@* | node()">
-    <xsl:copy>
-      <xsl:apply-templates select="@* | node()"/>
-    </xsl:copy>
-  </xsl:template>
-  
-  <xsl:template match="data">
-    <xsl:variable name="array" as="item()">
-      <xsl:evaluate xpath="." context-item="."/>
+  <xsl:template match="/root">
+    <xsl:variable name="jsonStr1" as="xs:string">
+      <xsl:evaluate xpath="'xpath/string(.)'"/>
     </xsl:variable>
-    <xsl:value-of select="array:sort($array)"/>
+	<xsl:copy-of select="json-to-xml($jsonStr1)"/>
   </xsl:template>
   
   <!--

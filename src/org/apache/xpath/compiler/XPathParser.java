@@ -1551,13 +1551,13 @@ public class XPathParser
  	        		// There's an XPath square array constructor here, within this map.
  	        		// i.e, map entry's 'value' here is an array (specified with XPath 
  	        		// syntax, [ ... ] ).
-  	        		mapEntryValueXPathExprStr = getXPathArrayConstructorStrValue(true); 
+  	        		mapEntryValueXPathExprStr = getXPathArrayConstructorStrValue(true);
  	        	 }
  	        	 else if (tokenIs("array") && lookahead('{', 1)) {
  	        		// There's an XPath curly array constructor here, within this map.
  	        		// i.e, map entry's 'value' here is an array (specified with XPath 
  	        		// syntax, array { ... } ).
-  	        		mapEntryValueXPathExprStr = getXPathArrayConstructorStrValue(false); 
+  	        		mapEntryValueXPathExprStr = getXPathArrayConstructorStrValue(false);  	        		
  	        	 }
  	        	 else if (tokenIs('(')) {
  	        		// Map entry value is literal sequence
@@ -1725,12 +1725,22 @@ public class XPathParser
 			   break; 
 		   }
 		   else {
-			   mapStrBuf.append(m_token);
+			   if (tokenIs(':')) {
+				   mapStrBuf.append(" " + m_token + " "); 
+			   }
+			   else {
+				   mapStrBuf.append(m_token);   
+			   }
 			   nextToken(); 
 		   }
 		}
 		else {
-		   mapStrBuf.append(m_token);
+		   if (tokenIs(':')) {
+			  mapStrBuf.append(" " + m_token + " "); 
+		   }
+		   else {
+			  mapStrBuf.append(m_token);   
+		   }		   
 		   nextToken();
 		}			 
      }
@@ -1756,10 +1766,16 @@ public class XPathParser
 	 }
 	 
 	 while (m_token != null) {
-		if (tokenIs(']') || tokenIs('}')) {
+		if (tokenIs("map")) {
+			String mapStrVal = getMapConstructorStrValue();
+			arrayStrBuf.append(mapStrVal);
+			arrayStrBuf.append(m_token);
+			nextToken();
+		}
+		else if (tokenIs(']') || tokenIs('}')) {
 		   arrayStrBuf.append(m_token);
 		   break;
-		}
+		}		
 		else {
 		   arrayStrBuf.append(m_token);
 		   nextToken();
