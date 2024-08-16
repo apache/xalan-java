@@ -1451,6 +1451,11 @@ public class XPathParser
           
           boolean isXPathParseOkToProceed = true;
           
+          if (isSquareArrayConstructor) {
+        	 // Compact the array items if applicable
+             compactArrayItems(seqOrArrayXPathItems);
+	      }
+	  
           // We verify here that, each XPath string within the list 
           // 'xpathExprParts' has balanced parentheses pairs.
           for (int idx = 0; idx < seqOrArrayXPathItems.size(); idx++) {
@@ -1643,6 +1648,48 @@ public class XPathParser
 	 
 	 return isFuncArityWellFormed;
   }
+  
+  /**
+   * Given an information of XPath literal array items as a list 
+   * produced by "square array" constructor, compact the array 
+   * to produce correct desired literal array items.
+   */
+  private void compactArrayItems(List<String> arrayXPathItems) {
+	  
+	  List<String> arrayItemsXPathStrBackup = new ArrayList<String>();
+	  
+	  for (int idx = 0; idx < arrayXPathItems.size(); idx++) {
+		  arrayItemsXPathStrBackup.add(arrayXPathItems.get(idx)); 
+	  }
+
+	  arrayXPathItems.clear();
+
+	  for (int idx = 0; idx < arrayItemsXPathStrBackup.size(); idx++) {
+		  String strVal = arrayItemsXPathStrBackup.get(idx);
+		  if (!(strVal.charAt(0) == '[')) {
+			  arrayXPathItems.add(strVal); 
+		  } 
+		  else {
+			  StringBuffer strBuff = new StringBuffer();
+			  strBuff.append(strVal + ",");
+			  arrayXPathItems.add(strVal + ",");        		 
+			  for (int idx1 = idx + 1; idx1 < arrayItemsXPathStrBackup.size(); idx1++) {
+				  String strVal2 = arrayItemsXPathStrBackup.get(idx1);
+				  strBuff.append(strVal2);
+				  idx = idx1; 
+				  if ((strVal2.endsWith("]")) && (getCharCount(strBuff.toString(), '[') == 
+						                                                     getCharCount(strBuff.toString(), ']'))) {
+					  arrayXPathItems.remove(arrayXPathItems.size() - 1);
+					  break;
+				  }
+				  else {
+					  strBuff.append(",");
+				  }
+			  }
+			  arrayXPathItems.add(strBuff.toString());        		 ; 
+		  }
+	  }
+  }
 
   /**
    * Check whether, there's beginning of a literal sequence constructor, 
@@ -1772,10 +1819,19 @@ public class XPathParser
 			arrayStrBuf.append(m_token);
 			nextToken();
 		}
-		else if (tokenIs(']') || tokenIs('}')) {
+		else if (isSquareArrayCons && tokenIs(']')) {
+		   arrayStrBuf.append(m_token);
+		   if (getCharCount(arrayStrBuf.toString(), '[') == getCharCount(arrayStrBuf.toString(), ']')) {
+		      break;
+		   }
+		   else {
+			  nextToken(); 
+		   }
+		}
+		else if (!isSquareArrayCons && tokenIs('}')) {
 		   arrayStrBuf.append(m_token);
 		   break;
-		}		
+		}
 		else {
 		   arrayStrBuf.append(m_token);
 		   nextToken();

@@ -16,8 +16,8 @@
  */
 package org.apache.xalan.xslt3;
 
-import org.apache.xalan.xpath3.BuiltinFunctionsNamespceTests;
-import org.apache.xalan.xpath3.DynamicFunctionCallTests;
+import org.apache.xalan.xpath3.XPathBuiltinFunctionNamespceTests;
+import org.apache.xalan.xpath3.XPathDynamicFunctionCallTests;
 import org.apache.xalan.xpath3.FnAvgTests;
 import org.apache.xalan.xpath3.FnCodepointEqualTests;
 import org.apache.xalan.xpath3.FnCodepointsToStringTests;
@@ -39,19 +39,19 @@ import org.apache.xalan.xpath3.FnStringJoinTests;
 import org.apache.xalan.xpath3.FnStringToCodepointsTests;
 import org.apache.xalan.xpath3.FnTokenizeTests;
 import org.apache.xalan.xpath3.FnUnparsedTextTests;
-import org.apache.xalan.xpath3.ForExprTests;
-import org.apache.xalan.xpath3.IfExprTests;
-import org.apache.xalan.xpath3.InstanceOfExprTests;
-import org.apache.xalan.xpath3.LetExprTests;
-import org.apache.xalan.xpath3.NodeComparisonTests;
-import org.apache.xalan.xpath3.QuantifiedExprTests;
-import org.apache.xalan.xpath3.RangeExprTests;
-import org.apache.xalan.xpath3.SequenceConstructorTests;
-import org.apache.xalan.xpath3.SequenceFunctionTests;
-import org.apache.xalan.xpath3.SequenceTests;
-import org.apache.xalan.xpath3.SimpleMapOperatorTests;
-import org.apache.xalan.xpath3.StringConcatExprTests;
-import org.apache.xalan.xpath3.MathTrignometricAndExponentialFunctionTests;
+import org.apache.xalan.xpath3.XPathForExprTests;
+import org.apache.xalan.xpath3.XPathIfExprTests;
+import org.apache.xalan.xpath3.XPathInstanceOfExprTests;
+import org.apache.xalan.xpath3.XPathLetExprTests;
+import org.apache.xalan.xpath3.XPathNodeComparisonTests;
+import org.apache.xalan.xpath3.XPathQuantifiedExprTests;
+import org.apache.xalan.xpath3.XPathRangeExprTests;
+import org.apache.xalan.xpath3.XPathSequenceConstructorTests;
+import org.apache.xalan.xpath3.XPathSequenceFunctionTests;
+import org.apache.xalan.xpath3.XPathSequenceTests;
+import org.apache.xalan.xpath3.XPathSimpleMapOperatorTests;
+import org.apache.xalan.xpath3.XPathStringConcatExprTests;
+import org.apache.xalan.xpath3.XPathMathTrignometricAndExponentialFunctionTests;
 import org.apache.xalan.xpath3.W3c_xslt30_fn_deep_equalTests;
 import org.apache.xalan.xpath3.XPathArithmeticOnDurationValuesTests;
 import org.apache.xalan.xpath3.XsDurationComponentExtractionFunctionTests;
@@ -67,23 +67,23 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ XslAnalyzeStringTests.class, AttributeTests.class, GroupingTests.class,
-                GroupingWithSortTests.class, RtfMigrationTests.class, QuantifiedExprTests.class, 
+@SuiteClasses({ XslAnalyzeStringTests.class, XslAttributeTests.class, XslGroupingTests.class,
+                XslGroupingWithSortTests.class, XslRtfMigrationTests.class, XPathQuantifiedExprTests.class, 
                 FnUnparsedTextTests.class, FnTokenizeTests.class, FnStringJoinTests.class,                 
-                FnIndexOfTests.class, SequenceTests.class, RangeExprTests.class, 
+                FnIndexOfTests.class, XPathSequenceTests.class, XPathRangeExprTests.class, 
                 W3c_xslt30_IterateTests.class, W3c_xslt30_AxesTests.class, 
                 W3c_xslt30_fn_deep_equalTests.class, XslIterateTests.class,                 
-                FnFilterTests.class, DynamicFunctionCallTests.class, IfExprTests.class, 
-                ForExprTests.class, LetExprTests.class, FnDistinctValuesTests.class,
-                MathTrignometricAndExponentialFunctionTests.class, BuiltinFunctionsNamespceTests.class,
-                SequenceConstructorTests.class, StringConcatExprTests.class, 
+                FnFilterTests.class, XPathDynamicFunctionCallTests.class, XPathIfExprTests.class, 
+                XPathForExprTests.class, XPathLetExprTests.class, FnDistinctValuesTests.class,
+                XPathMathTrignometricAndExponentialFunctionTests.class, XPathBuiltinFunctionNamespceTests.class,
+                XPathSequenceConstructorTests.class, XPathStringConcatExprTests.class, 
                 XsDurationComponentExtractionFunctionTests.class, XPathArithmeticOnDurationValuesTests.class,
-                NodeComparisonTests.class, SimpleMapOperatorTests.class, FnFoldLeftTests.class,
+                XPathNodeComparisonTests.class, XPathSimpleMapOperatorTests.class, FnFoldLeftTests.class,
                 FnFoldRightTests.class, FnForEachPairTests.class, FnSortTests.class, FnCodepointsToStringTests.class,
                 FnStringToCodepointsTests.class, FnCompareTests.class, FnCodepointEqualTests.class,
-                SequenceFunctionTests.class, FnParseXmlTests.class, FnParseXmlFragmentTests.class,
-                TemplateTests.class, FnAvgTests.class, FnMaxTests.class, FnMinTests.class, FnContainsTokenTests.class,
-                XslVariableAttributeAsTests.class, InstanceOfExprTests.class, XslTemplateAttributeAsTests.class,
+                XPathSequenceFunctionTests.class, FnParseXmlTests.class, FnParseXmlFragmentTests.class,
+                XslTemplateTests.class, FnAvgTests.class, FnMaxTests.class, FnMinTests.class, FnContainsTokenTests.class,
+                XslVariableAttributeAsTests.class, XPathInstanceOfExprTests.class, XslTemplateAttributeAsTests.class,
                 FnRoundTests.class, XslSequenceInstTests.class })
 public class Xsl3TestSuite2 {
 

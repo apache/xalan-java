@@ -244,10 +244,10 @@ public class XPath implements Serializable, ExpressionOwner
   public XPath(
           String exprString, SourceLocator locator, 
           PrefixResolver prefixResolver, int type,
-          ErrorListener errorListener, FunctionTable aTable)
+          ErrorListener errorListener, FunctionTable funcTable)
             throws javax.xml.transform.TransformerException
   { 
-    m_funcTable = aTable;     
+    m_funcTable = funcTable;     
     if(null == errorListener)
       errorListener = new org.apache.xml.utils.DefaultErrorHandler();
     

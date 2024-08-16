@@ -130,6 +130,25 @@ public class ElemValueOf extends ElemTemplateElement {
   {
     return m_selectExpression;
   }
+  
+  /**
+   * The separator attribute value.
+   */
+  private String m_separator = null;
+  
+  /**
+   * Set the value of separator attribute. 
+   */
+  public void setSeparator(String separator) {
+     m_separator = separator; 
+  }
+  
+  /**
+   * Get the value of separator attribute. 
+   */
+  public String getSeparator() {
+	 return m_separator; 
+  }
 
   /**
    * Tells if this element should disable escaping.
@@ -289,15 +308,7 @@ public class ElemValueOf extends ElemTemplateElement {
           {
               XObject xpath3ContextItem = xctxt.getXPath3ContextItem();
               if (m_isDot && xpath3ContextItem != null) {                  
-                  String strValue = null;
-                  
-                  if (xpath3ContextItem instanceof XSAnyType) {
-                      strValue = ((XSAnyType)xpath3ContextItem).stringValue();    
-                  }
-                  else {
-                      strValue = xpath3ContextItem.str();  
-                  }
-
+                  String strValue = XslTransformEvaluationHelper.getStrVal(xpath3ContextItem);
                   (new XString(strValue)).dispatchCharactersEvents(rth);
               }
               else {
@@ -306,16 +317,8 @@ public class ElemValueOf extends ElemTemplateElement {
                 	  XSLFunctionService xslFunctionService = xctxt.getXSLFunctionService();
                       XObject evalResult = xslFunctionService.callFunction(xpathFunc, transformer, xctxt);
                       if (evalResult != null) {
-                          String strValue = null;
-                          
-                          if (evalResult instanceof XSAnyType) {
-                              strValue = ((XSAnyType)evalResult).stringValue();    
-                          }
-                          else {
-                              strValue = evalResult.str();  
-                          }
-    
-                          strValue = preProcessStrBeforeXslSerialization(strValue);
+                          String strValue = XslTransformEvaluationHelper.getStrVal(evalResult);                                                       
+                          strValue = preProcessStrBeforeXslSerialization(strValue);                          
                           (new XString(strValue)).dispatchCharactersEvents(rth);
                       }
                       else {
@@ -333,28 +336,22 @@ public class ElemValueOf extends ElemTemplateElement {
                     	 XPathArray xpathArr = (XPathArray)evalResult;
                     	 List<XObject> nativeArr = xpathArr.getNativeArray();
                     	 
-                         StringBuffer strBuff = new StringBuffer();                         
-                         for (int idx = 0; idx < nativeArr.size(); idx++) {
-                            XObject arrItem = nativeArr.get(idx);
-                            String arrItemStrValue = (arrItem instanceof XSAnyType) ? 
-                                                                             ((XSAnyType)arrItem).stringValue() : 
-                                                                            	 arrItem.str(); 
-                            if (idx < (nativeArr.size() - 1)) {
-                               strBuff.append(arrItemStrValue + " ");   
-                            }
-                            else {
-                               strBuff.append(arrItemStrValue); 
-                            }                            
+                    	 ResultSequence rSeq = new ResultSequence();
+                         for (int idx = 0; idx < nativeArr.size(); idx++) {                           
+                        	rSeq.add(nativeArr.get(idx));
                          }
                          
-                         strValue = strBuff.toString();
+                         strValue = getEffectiveSequenceStrValue(rSeq);
                       }
                       else if (evalResult instanceof XPathMap) {
                     	 throw new TransformerException("FOTY0013 : Cannot do an XPath atomization of a map "
                     	 		                                              + "(ref, https://www.w3.org/TR/xpath-31/#id-atomization).", srcLocator);
                       }
+                      else if (evalResult instanceof ResultSequence) {
+                    	  strValue = getEffectiveSequenceStrValue((ResultSequence)evalResult);
+                      }
                       else {
-                          strValue = evalResult.str();  
+                          strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
                       }
                       
                       (new XString(strValue)).dispatchCharactersEvents(rth);
@@ -368,23 +365,14 @@ public class ElemValueOf extends ElemTemplateElement {
                       }
                       else if (evalResult instanceof XPathArray) {
                     	 XPathArray xpathArr = (XPathArray)evalResult;
-                    	 List<XObject> nativeArr = xpathArr.getNativeArray();
-                    	 
-                         StringBuffer strBuff = new StringBuffer();                         
-                         for (int idx = 0; idx < nativeArr.size(); idx++) {
-                            XObject arrItem = nativeArr.get(idx);
-                            String arrItemStrValue = (arrItem instanceof XSAnyType) ? 
-                                                                             ((XSAnyType)arrItem).stringValue() : 
-                                                                            	 arrItem.str(); 
-                            if (idx < (nativeArr.size() - 1)) {
-                               strBuff.append(arrItemStrValue + " ");   
-                            }
-                            else {
-                               strBuff.append(arrItemStrValue); 
-                            }                            
+                    	 List<XObject> nativeArr = xpathArr.getNativeArray();                    	                          
+                         
+                         ResultSequence rSeq = new ResultSequence();
+                         for (int idx = 0; idx < nativeArr.size(); idx++) {                           
+                        	rSeq.add(nativeArr.get(idx));
                          }
                          
-                         strValue = strBuff.toString();
+                         strValue = getEffectiveSequenceStrValue(rSeq);
                       }
                       else if (evalResult instanceof XPathMap) {
                     	 throw new TransformerException("FOTY0013 : Cannot do an XPath atomization of a map "
@@ -408,6 +396,9 @@ public class ElemValueOf extends ElemTemplateElement {
                     		strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
                     	 }
                       }
+                      else if (evalResult instanceof ResultSequence) {
+                    	 strValue = getEffectiveSequenceStrValue((ResultSequence)evalResult); 
+                      }
                       else {
                     	 strValue = XslTransformEvaluationHelper.getStrVal(evalResult);  
                       }
@@ -419,31 +410,11 @@ public class ElemValueOf extends ElemTemplateElement {
                      
                      String strValue = null;
                      
-                     if (evalResult instanceof ResultSequence) {
-                         ResultSequence rSeq = (ResultSequence)evalResult;
-                         
-                         StringBuffer strBuff = new StringBuffer();
-                         
-                         for (int idx = 0; idx < rSeq.size(); idx++) {
-                            XObject seqItem = rSeq.item(idx);
-                            String seqItemStrValue = (seqItem instanceof XSAnyType) ? 
-                                                                             ((XSAnyType)seqItem).stringValue() : 
-                                                                                                          seqItem.str(); 
-                            if (idx < (rSeq.size() - 1)) {
-                               strBuff.append(seqItemStrValue + " ");   
-                            }
-                            else {
-                               strBuff.append(seqItemStrValue); 
-                            }
-                         }
-                         
-                         strValue = strBuff.toString(); 
-                     }
-                     else if (evalResult instanceof XSAnyType) {
-                         strValue = ((XSAnyType)evalResult).stringValue();
-                     }
+                     if (evalResult instanceof ResultSequence) {                         
+                         strValue = getEffectiveSequenceStrValue((ResultSequence)evalResult);
+                     }                     
                      else {
-                         strValue = evalResult.str();
+                         strValue = XslTransformEvaluationHelper.getStrVal(evalResult);
                      }
                      
                      (new XString(strValue)).dispatchCharactersEvents(rth);
@@ -640,7 +611,7 @@ public class ElemValueOf extends ElemTemplateElement {
     }
   }
 
-  /**
+/**
    * Add a child to the child list.
    *
    * @param newChild Child to add to children list
@@ -686,6 +657,21 @@ public class ElemValueOf extends ElemTemplateElement {
 	 }
 	 
 	 return resultStr;
+  }
+  
+  /**
+   * Get an effective string value of sequence to be emitted,
+   * considering xsl:value-of element's separator attribute if 
+   * available.
+   */
+  private String getEffectiveSequenceStrValue(ResultSequence seq) {	
+	String strValue = seq.str();
+	
+	if (m_separator != null) {
+	   strValue = strValue.replace(" ", m_separator);
+	}
+	
+	return strValue;
   }
 
 }

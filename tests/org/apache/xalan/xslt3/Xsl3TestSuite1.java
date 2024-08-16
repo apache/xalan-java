@@ -39,10 +39,10 @@ import org.apache.xalan.xpath3.FnResolveQNameTests;
 import org.apache.xalan.xpath3.FnRootTests;
 import org.apache.xalan.xpath3.FnXmlToJsonTests;
 import org.apache.xalan.xpath3.FuncBooleanValuesTests;
-import org.apache.xalan.xpath3.InlineFunctionItemExprTests;
+import org.apache.xalan.xpath3.XPathInlineFunctionItemExprTests;
 import org.apache.xalan.xpath3.JiraIssuesTests;
-import org.apache.xalan.xpath3.StringTests;
-import org.apache.xalan.xpath3.ValueComparisonTests;
+import org.apache.xalan.xpath3.XPathStringTests;
+import org.apache.xalan.xpath3.XPathValueComparisonTests;
 import org.apache.xalan.xpath3.XPathArrayTests;
 import org.apache.xalan.xpath3.XPathArrowOpTests;
 import org.apache.xalan.xpath3.XPathCastTests;
@@ -69,14 +69,14 @@ import org.junit.runners.Suite.SuiteClasses;
  * @xsl.usage advanced
  */
 @RunWith(Suite.class)
-@SuiteClasses({ FnDocTests.class, FnDataTests.class, RecursiveFunctionTests.class,
-                XslFunctionTests.class, HigherOrderFunctionTests.class, XsDateTimeTests.class,
-                ValueComparisonTests.class, InlineFunctionItemExprTests.class, 
+@SuiteClasses({ FnDocTests.class, FnDataTests.class, XslRecursiveFunctionTests.class,
+                XslFunctionTests.class, XslHigherOrderFunctionTests.class, XsDateTimeTests.class,
+                XPathValueComparisonTests.class, XPathInlineFunctionItemExprTests.class, 
                 FnForEachTests.class, XsConstructorFunctionTests.class,
-                FnAbsTests.class, StringTests.class, XsDateTimeArithmeticTests.class,
+                FnAbsTests.class, XPathStringTests.class, XsDateTimeArithmeticTests.class,
                 XsTimeWithArithmeticTests.class, XsDurationSubtypes.class,
                 FnDeepEqualTests.class, XslImportSchemaTests.class, FnDateTimeTests.class,
-                XmlDotComHigherOrderFunctionsTests.class, FnDefaultCollation.class,
+                XmlDotComXslHigherOrderFunctionTests.class, FnDefaultCollation.class,
                 FnBaseUriTests.class, FnDocumentUriTests.class, FnResolveQNameTests.class,
                 FnQNameTests.class, XPathMapTests.class, XPathArrayTests.class, FnLangTests.class, 
                 FnRootTests.class, XPathCastTests.class, XPathArrowOpTests.class, FnMapMerge.class,
@@ -86,7 +86,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 XPathGeneralComparisonOpTests.class, FnMapFindTests.class, XPathNumericArithmeticTests.class,
                 XslTunnelParameterTests.class, FuncBooleanValuesTests.class, XslElementValidationTests.class,
                 XslLiteralResultElementValidationTests.class, XslAttributeValidationTests.class,
-                XPathExprFunctionCallSuffixTests.class, XslEvaluateTests.class })
+                XPathExprFunctionCallSuffixTests.class, XslEvaluateTests.class, XslValueofTests.class })
 public class Xsl3TestSuite1 {
 
 }

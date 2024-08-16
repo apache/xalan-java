@@ -6,7 +6,7 @@
 				
   <!-- Author: mukulg@apache.org -->
   
-  <!-- use with test4.xml, test5.xml -->
+  <!-- use with test4.xml, test5.xml, test7.xml  -->
   
   <!-- An XSLT test case to test, xsl:evaluate instruction.
        This stylesheet also does a custom XML serialization of 

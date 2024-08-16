@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.xalan.xpath3;
+package org.apache.xalan.xslt3;
 
+import org.apache.xalan.util.XslTestsErrorHandler;
 import org.apache.xalan.util.XSLConstants;
 import org.apache.xalan.util.XSLTransformTestsUtil;
 import org.junit.AfterClass;
@@ -23,18 +24,17 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * XPath 3.1 test cases, to test XPath 'array' expressions 
- * and 'array' functions.
+ * XSLT xsl:for-each-group test cases.
  * 
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
  * @xsl.usage advanced
  */
-public class XPathArrayTests extends XSLTransformTestsUtil {        
+public class XslGroupingTests extends XSLTransformTestsUtil {
     
-    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "xpath_array/";
+    private static final String XSL_TRANSFORM_INPUT_DIRPATH = XSLConstants.XSL_TRANSFORM_INPUT_DIRPATH_PREFIX + "grouping/";
     
-    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "xpath_array/gold/";
+    private static final String XSL_TRANSFORM_GOLD_DIRPATH = XSLConstants.XSL_TRANSFORM_GOLD_DIRPATH_PREFIX + "grouping/gold/";
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -42,15 +42,15 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
 
     @AfterClass
-    public static void tearDownAfterClass() throws Exception {        
+    public static void tearDownAfterClass() throws Exception {
         xmlDocumentBuilderFactory = null;
         xmlDocumentBuilder = null;
         xslTransformerFactory = null;
     }
 
     @Test
-    public void xslArrayTest1() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl"; 
+    public void xslGroupingTest1() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test1.out";                
@@ -59,38 +59,38 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslArrayTest2() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl"; 
+    public void xslGroupingTest2() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_b.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test2.out";                
         
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }
     
     @Test
-    public void xslArrayTest3() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl"; 
+    public void xslGroupingTest3() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test3.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test3.out";                
         
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);   
     }
     
     @Test
-    public void xslArrayTest4() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl"; 
+    public void xslGroupingTest4() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test4.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test4.out";                
         
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);      
     }
     
     @Test
-    public void xslArrayTest5() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl"; 
+    public void xslGroupingTest5() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test5.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test5.out";                
@@ -99,8 +99,8 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslArrayTest6() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl"; 
+    public void xslGroupingTest6() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test6.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test6.out";                
@@ -109,8 +109,8 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslArrayTest7() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl"; 
+    public void xslGroupingTest7() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_a.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test7.out";                
@@ -119,8 +119,8 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslArrayTest8() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test8.xsl"; 
+    public void xslGroupingTest8() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test8.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test8.out";                
@@ -129,8 +129,8 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslArrayTest9() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9.xsl"; 
+    public void xslGroupingTest9() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test9.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test9.out";                
@@ -139,8 +139,8 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslArrayTest10() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10.xsl"; 
+    public void xslGroupingTest10() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_d.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test10.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test10.out";                
@@ -149,8 +149,8 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslArrayTest11() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl"; 
+    public void xslGroupingTest11() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_e.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test11.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";                
@@ -159,8 +159,8 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslArrayTest12() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl"; 
+    public void xslGroupingTest12() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_f.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test12.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test12.out";                
@@ -169,8 +169,8 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslArrayTest13() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl"; 
+    public void xslGroupingTest13() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_1.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test13.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test13.out";                
@@ -179,8 +179,8 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslArrayTest14() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14.xsl"; 
+    public void xslGroupingTest14() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_2.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test14.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test14.out";                
@@ -189,8 +189,8 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslArrayTest15() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15.xsl"; 
+    public void xslGroupingTest15() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_3.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test15.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test15.out";                
@@ -199,8 +199,8 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslArrayTest16() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test16.xsl"; 
+    public void xslGroupingTest16() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_3.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test16.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test16.out";                
@@ -209,8 +209,8 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslArrayTest17() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test17.xsl"; 
+    public void xslGroupingTest17() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_4.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test17.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test17.out";                
@@ -219,8 +219,8 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslArrayTest18() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test18.xsl"; 
+    public void xslGroupingTest18() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_5.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test18.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test18.out";                
@@ -229,8 +229,8 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslArrayTest19() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test19.xsl"; 
+    public void xslGroupingTest19() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_4.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test19.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test19.out";                
@@ -239,28 +239,30 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslArrayTest20() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test20.xsl"; 
+    public void xslGroupingTest20() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_4.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test20.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test20.out";                
         
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, 
+                                                          new XslTestsErrorHandler());
     }
     
     @Test
-    public void xslArrayTest21() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test21.xsl"; 
+    public void xslGroupingTest21() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_5.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test21.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test21.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test21.out";
         
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, 
+                                                            new XslTestsErrorHandler());
     }
     
     @Test
-    public void xslArrayTest22() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test22.xsl"; 
+    public void xslGroupingTest22() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_3.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test22.xsl";
         
         String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test22.out";                
@@ -269,51 +271,82 @@ public class XPathArrayTests extends XSLTransformTestsUtil {
     }
     
     @Test
-    public void xslArrayTest23() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test23.xsl"; 
+    public void xslGroupingTest23() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test2_3.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test23.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test23.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test23.out";
         
-        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, 
+                                                            new XslTestsErrorHandler());
     }
     
     @Test
-    public void xslArrayTest24() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test24.xsl"; 
+    public void xslGroupingTest24() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_c.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test24.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test24.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test24.out";
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
-    public void xslArrayTest25() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test25.xml"; 
+    public void xslGroupingTest25() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_g.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test25.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test25.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test25.out";
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
-    public void xslArrayTest26() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test26.xsl"; 
+    public void xslGroupingTest26() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_h.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test26.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test26.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test26.out";
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }
     
     @Test
-    public void xslArrayTest27() {
-        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test27.xsl"; 
+    public void xslGroupingTest27() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test1_i.xml"; 
         String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test27.xsl";
         
-        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test27.out";                
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test27.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslGroupingTest28() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test28.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test28.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test28.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslGroupingTest29() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test29.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test29.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test29.out";
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
+    }
+    
+    @Test
+    public void xslGroupingTest30() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test30.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test30.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test30.out";
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);
     }

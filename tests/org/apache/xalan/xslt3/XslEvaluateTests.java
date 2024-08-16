@@ -167,5 +167,17 @@ public class XslEvaluateTests extends XSLTransformTestsUtil {
         
         runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);      
     }
+    
+    @Test
+    public void xslEvaluateTest11() {
+        String xmlFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test7.xml"; 
+        String xslFilePath = XSL_TRANSFORM_INPUT_DIRPATH + "test8.xsl";
+        
+        String goldFilePath = XSL_TRANSFORM_GOLD_DIRPATH + "test11.out";
+        
+        setXslEvaluateProperty(true);
+        
+        runXslTransformAndAssertOutput(xmlFilePath, xslFilePath, goldFilePath, null);      
+    }
 
 }

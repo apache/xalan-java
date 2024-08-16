@@ -225,6 +225,12 @@ public class XSLTSchema extends XSLTElementDef
                                             "select",
                                             XSLTAttributeDef.T_EXPR, true, false, XSLTAttributeDef.ERROR);
     
+    // Optional.
+    // xsl:value-of
+    XSLTAttributeDef separatorAttrOpt = new XSLTAttributeDef(null,
+									                   "separator",
+									                   XSLTAttributeDef.T_STRING, false, false, XSLTAttributeDef.ERROR);
+    
     // Required.
     // xsl:evaluate
     XSLTAttributeDef xpathAttrRequired = new XSLTAttributeDef(null,
@@ -471,6 +477,7 @@ public class XSLTSchema extends XSLTElementDef
                                   Constants.S_XSLNAMESPACEURL, "value-of",
                                   null /*alias */, null /* elements */,
                                   new XSLTAttributeDef[]{ selectAttrRequired,
+                                		                  separatorAttrOpt,
                                                           disableOutputEscapingAttr }, 
                                                new ProcessorTemplateElem(),
                                   ElemValueOf.class /* class object */, 20, true);        
