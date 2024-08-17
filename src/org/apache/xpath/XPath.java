@@ -262,17 +262,17 @@ public class XPath implements Serializable, ExpressionOwner
       parser.initXPath(compiler, exprString, prefixResolver, false);
       m_arrowop_remaining_xpath_expr_str = parser.getArrowOpRemainingXPathExprStr();
       
-      XPathExprFunctionSuffix pathExprFunctionSuffix = parser.getPathExprFunctionSuffix();
-      if (pathExprFunctionSuffix != null) {
+      XPathExprFunctionSuffix xpathExprFunctionSuffix = parser.getXPathExprFunctionSuffix();
+      if (xpathExprFunctionSuffix != null) {
     	 parser = new XPathParser(errorListener, locator);
     	 compiler = new Compiler(errorListener, locator, m_funcTable);
-    	 String xpathOneExprStr = pathExprFunctionSuffix.getXPathOneStr();    	     	 
+    	 String xpathOneExprStr = xpathExprFunctionSuffix.getXPathOneStr();    	     	 
     	 parser.initXPath(compiler, xpathOneExprStr, prefixResolver, false);
     	 Expression expr1 = compiler.compile(0);
     	 
     	 parser = new XPathParser(errorListener, locator);
     	 compiler = new Compiler(errorListener, locator, m_funcTable);
-    	 String xpathTwoExprStr = pathExprFunctionSuffix.getXPathTwoStr();    	 
+    	 String xpathTwoExprStr = xpathExprFunctionSuffix.getXPathTwoStr();    	 
     	 if (xpathTwoExprStr.contains(":")) {  		 
     		 StylesheetHandler stylesheetHandler = (StylesheetHandler)prefixResolver;    		 
     		 Hashtable nsUriTable = stylesheetHandler.getNamespaceUriTable();
@@ -286,7 +286,7 @@ public class XPath implements Serializable, ExpressionOwner
     	 parser.initXPath(compiler, xpathTwoExprStr, prefixResolver, false);
     	 Expression expr2 = compiler.compile(0);
     	 
-    	 parser.setPathExprFunctionSuffix(null);
+    	 parser.setXPathExprFunctionSuffix(null);
     	 
     	 expr = expr1;
     	 

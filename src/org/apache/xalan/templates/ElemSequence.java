@@ -46,6 +46,7 @@ import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XNumber;
 import org.apache.xpath.objects.XObject;
 import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.objects.XString;
 import org.apache.xpath.operations.Operation;
@@ -345,6 +346,9 @@ public class ElemSequence extends ElemTemplateElement
       if (xslSequenceVal != null) {
     	  if (xslSequenceVal instanceof XPathInlineFunction) {
     		  XslTransformSharedDatastore.xpathInlineFunction = (XPathInlineFunction)xslSequenceVal;   
+    	  }
+    	  else if (xslSequenceVal instanceof XPathMap) {
+    		  XslTransformSharedDatastore.xpathMap = (XPathMap)xslSequenceVal;
     	  }
     	  else {
     		  SerializationHandler handler = transformer.getSerializationHandler();

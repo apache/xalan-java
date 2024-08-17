@@ -253,7 +253,7 @@ public class XPathParser
   
   private String m_arrowOpRemainingXPathExprStr = null;
   
-  private XPathExprFunctionSuffix m_pathExprFunctionSuffix = null;
+  private XPathExprFunctionSuffix m_xpathExprFunctionSuffix = null;
   
   private boolean m_isFunctionArgumentParse;
   
@@ -1545,6 +1545,10 @@ public class XPathParser
         	  while (m_token != null) {        	 
  	        	 String mapEntryKeyXPathExprStr = m_token;
  	        	 nextToken();
+ 	        	 while (!tokenIs(':') && (m_token != null)) {
+ 	        		mapEntryKeyXPathExprStr += m_token;
+ 	        		nextToken();
+ 	        	 }
  	        	 consumeExpected(':');
  	        	 String mapEntryValueXPathExprStr = null;
  	        	 if (tokenIs("map")) {
@@ -4002,9 +4006,9 @@ public class XPathParser
      		   nextToken();     		   
      	    }
     		
-    		m_pathExprFunctionSuffix = new XPathExprFunctionSuffix();    	   
-     	    m_pathExprFunctionSuffix.setXPathOneStr(xpathOneStr);
-     	    m_pathExprFunctionSuffix.setXPathTwoStr(xpathTwoStr);
+    		m_xpathExprFunctionSuffix = new XPathExprFunctionSuffix();    	   
+     	    m_xpathExprFunctionSuffix.setXPathOneStr(xpathOneStr);
+     	    m_xpathExprFunctionSuffix.setXPathTwoStr(xpathTwoStr);
      	   
      	    int opPos = m_ops.getOp(OpMap.MAPINDEX_LENGTH);
      	    
@@ -4234,9 +4238,9 @@ public class XPathParser
     		   }
     	   }
     	   
-    	   m_pathExprFunctionSuffix = new XPathExprFunctionSuffix();    	   
-    	   m_pathExprFunctionSuffix.setXPathOneStr(xpathOneStr);
-    	   m_pathExprFunctionSuffix.setXPathTwoStr(xpathTwoStr);
+    	   m_xpathExprFunctionSuffix = new XPathExprFunctionSuffix();    	   
+    	   m_xpathExprFunctionSuffix.setXPathOneStr(xpathOneStr);
+    	   m_xpathExprFunctionSuffix.setXPathTwoStr(xpathTwoStr);
     	   
     	   m_ops.setOp(opPos + OpMap.MAPINDEX_LENGTH,
                                             m_ops.getOp(OpMap.MAPINDEX_LENGTH) - opPos);
@@ -5844,12 +5848,12 @@ public class XPathParser
 	  m_token = tokQueueScanPosition.getToken();	
    }
 
-   public XPathExprFunctionSuffix getPathExprFunctionSuffix() {
-	   return m_pathExprFunctionSuffix;
+   public XPathExprFunctionSuffix getXPathExprFunctionSuffix() {
+	   return m_xpathExprFunctionSuffix;
    }
 
-   public void setPathExprFunctionSuffix(XPathExprFunctionSuffix pathExprFunctionSuffix) {
-	   this.m_pathExprFunctionSuffix = pathExprFunctionSuffix;
+   public void setXPathExprFunctionSuffix(XPathExprFunctionSuffix xpathExprFunctionSuffix) {
+	   this.m_xpathExprFunctionSuffix = xpathExprFunctionSuffix;
    }
    
    /**

@@ -41,7 +41,9 @@ import org.apache.xpath.objects.ResultSequence;
 import org.apache.xpath.objects.XNodeSet;
 import org.apache.xpath.objects.XNodeSetForDOM;
 import org.apache.xpath.objects.XObject;
+import org.apache.xpath.objects.XPathArray;
 import org.apache.xpath.objects.XPathInlineFunction;
+import org.apache.xpath.objects.XPathMap;
 import org.apache.xpath.objects.XRTreeFrag;
 import org.apache.xpath.types.XSByte;
 import org.apache.xpath.types.XSNegativeInteger;
@@ -73,7 +75,7 @@ import xml.xpath31.processor.types.XSTime;
 import xml.xpath31.processor.types.XSYearMonthDuration;
 
 /**
- * Implementation of XSLT 2.0+ xsl:function element.
+ * Implementation of XSLT xsl:function element.
  *
  * @author Mukul Gandhi <mukulg@apache.org>
  * 
@@ -305,14 +307,8 @@ public class ElemFunction extends ElemTemplate
       if (funcAsAttrStrVal != null) {
     	 // Process xsl:function's evaluation result with "as" attribute
          try {        	 
-             if (funcResultConvertedVal instanceof XPathInlineFunction) {
-            	// The xsl:function's evaluation returned a function item. The 
-            	// value of xsl:function's "as" attribute if present, needs to 
-            	// match accordingly.
-            	XPath seqTypeXPath = new XPath(funcAsAttrStrVal, srcLocator, xctxt.getNamespaceContext(), 
-                                                                         XPath.SELECT, null, true);
-                XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
-                SequenceTypeData seqExpectedTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+             if (funcResultConvertedVal instanceof XPathInlineFunction) {            	
+            	SequenceTypeData seqExpectedTypeData = getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
             	if (seqExpectedTypeData.getSequenceTypeFunctionTest() != null) {
             	   return funcResultConvertedVal;
             	}
@@ -321,6 +317,28 @@ public class ElemFunction extends ElemTemplate
                                                                          "(), doesn't match the declared function result type " + 
                                                                          funcAsAttrStrVal + ".", srcLocator); 
             	}
+             }
+             else if (funcResultConvertedVal instanceof XPathMap) {            	
+             	SequenceTypeData seqExpectedTypeData = getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
+             	if (seqExpectedTypeData.getSequenceTypeMapTest() != null) {
+             	   return funcResultConvertedVal;
+             	}
+             	else {
+             	   throw new TransformerException("XPTY0004 : The function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
+                                                                          "(), doesn't match the declared function result type " + 
+                                                                          funcAsAttrStrVal + ".", srcLocator); 
+             	}
+             }
+             else if (funcResultConvertedVal instanceof XPathArray) {            	
+              	SequenceTypeData seqExpectedTypeData = getSequenceTypeDataFromSeqTypeStr(funcAsAttrStrVal, xctxt, srcLocator);
+              	if (seqExpectedTypeData.getSequenceTypeArrayTest() != null) {
+              	   return funcResultConvertedVal;
+              	}
+              	else {
+              	   throw new TransformerException("XPTY0004 : The function call result for function {" + funcNameSpaceUri + "}" + funcLocalName + 
+                                                                           "(), doesn't match the declared function result type " + 
+                                                                           funcAsAttrStrVal + ".", srcLocator); 
+              	}
              }
              
              funcResultConvertedVal = preprocessXslFunctionOrAVariableResult(result, funcAsAttrStrVal, xctxt, null);
@@ -350,7 +368,7 @@ public class ElemFunction extends ElemTemplate
       return funcResultConvertedVal;
   }
 
-/**
+ /**
    * This function is called after everything else has been
    * recomposed, and allows a xsl:function to set remaining
    * values that may be based on some other property that
@@ -491,20 +509,29 @@ public class ElemFunction extends ElemTemplate
    * @throws TransformerException
    */
   private XObject getXslFunctionResult(TransformerImpl transformer, XPathContext xctxt) throws TransformerException {		
+	  
 	  XObject result = null;
 	  
 	  Object xslFunctionResult = transformer.transformToGlobalRTFXslFunctionOrTemplate(this);
 	  
-	  Integer nodeDtmHandle = null;	  
-	  try {
-		 nodeDtmHandle = Integer.valueOf(xslFunctionResult.toString());
-	     NodeList nodeList = (new XRTreeFrag(nodeDtmHandle.intValue(), xctxt, this)).convertToNodeset();
-	     result = new XNodeSetForDOM(nodeList, xctxt);
+	  if (XslTransformSharedDatastore.xpathInlineFunction != null) {
+		  result = XslTransformSharedDatastore.xpathInlineFunction;
+		  XslTransformSharedDatastore.xpathInlineFunction = null;
 	  }
-	  catch (NumberFormatException ex) {
-		 result = (XPathInlineFunction)xslFunctionResult;
-		 XslTransformSharedDatastore.xpathInlineFunction = null;
-	  }	  
+	  else if (XslTransformSharedDatastore.xpathMap != null) {
+		  result = XslTransformSharedDatastore.xpathMap;
+		  XslTransformSharedDatastore.xpathMap = null;
+	  }
+	  else if (XslTransformSharedDatastore.xpathArray != null) {
+		  result = XslTransformSharedDatastore.xpathArray;
+		  XslTransformSharedDatastore.xpathArray = null;
+	  }
+	  
+	  if (result == null) {		  
+		  int nodeDtmHandle = Integer.valueOf(xslFunctionResult.toString());
+		  NodeList nodeList = (new XRTreeFrag(nodeDtmHandle, xctxt, this)).convertToNodeset();
+		  result = new XNodeSetForDOM(nodeList, xctxt);		  
+	  }
 
 	  return result;
   }
@@ -621,6 +648,21 @@ public class ElemFunction extends ElemTemplate
 	  }
 
 	  return result;
+  }
+  
+  /**
+   * Given XPath sequence type string value, produce compiled SequenceTypeData object. 
+   */
+  private SequenceTypeData getSequenceTypeDataFromSeqTypeStr(String seqTypeStr, XPathContext xctxt, 
+                                                             SourceLocator srcLocator) throws TransformerException {
+	  SequenceTypeData seqTypeData = null;
+
+	  XPath seqTypeXPath = new XPath(seqTypeStr, srcLocator, xctxt.getNamespaceContext(), 
+			                                                                             XPath.SELECT, null, true);
+	  XObject seqTypeExpressionEvalResult = seqTypeXPath.execute(xctxt, xctxt.getContextNode(), xctxt.getNamespaceContext());
+	  seqTypeData = (SequenceTypeData)seqTypeExpressionEvalResult;
+
+	  return seqTypeData;
   }
 
 }
